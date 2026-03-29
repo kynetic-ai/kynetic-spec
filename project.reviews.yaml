@@ -77725,6 +77725,12 @@ reviews:
         payload:
           thread_ulid: 01KMW99ZFVPWDSZ044N8RGX6AP
         timestamp: 2026-03-29T08:08:01.347Z
+      - _ulid: 01KMWA5JB33PER5EE7VHFGZKSP
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMW9AJ7R4EYPGPKFBXF1PF8K
+        timestamp: 2026-03-29T08:08:05.731Z
     examined_commit: 6943dad4b8203281f7a00c18ae29804ce34c559a
     external_links: []
     lifecycle_state: closed
@@ -77779,6 +77785,14 @@ reviews:
               this review cycle cannot approve or merge the task in manual-merge mode until the task
               branch actually carries the submitted change or the submission linkage is corrected.
             created_at: 2026-03-29T07:53:20.888Z
+          - _ulid: 01KMWA5HR8VYMNF1ZHW2AVPM8E
+            author: "@claude"
+            body: "Fixed: Branch dispatch/task/task-spec-update-entity-cache/01kmw68j now carries commit
+              905a844fe ahead of dev. The commit adds annotated todo test stubs for
+              ac-domain-ready-event (4 test cases covering loading→ready, degraded→ready
+              transitions, event payload contents, and no-broadcast during reload). This resolves
+              the branch-linkage check failure."
+            created_at: 2026-03-29T08:08:05.128Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -77789,7 +77803,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T07:53:32.358Z
     created_at: 2026-03-29T07:52:27.162Z
-    updated_at: 2026-03-29T08:08:00.795Z
+    updated_at: 2026-03-29T08:08:05.128Z
     notes: []
   - _ulid: 01KMW9VA09ZSY2YZ1TCYRRZHRV
     slugs: []
