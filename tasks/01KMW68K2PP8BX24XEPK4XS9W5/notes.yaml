@@ -1,1 +1,9 @@
-notes: []
+notes:
+  - _ulid: 01KMW6PPXJF17BMMQVW9RQ0DD0
+    content: "Approach: Add four ACs (ac-warming-skeleton, ac-warming-auto-transition,
+      ac-warming-retry-fallback, ac-warming-timeout) to @ui-data-freshness using kspec batch with
+      'item ac add' commands. AC text is fully specified in the task description. No code changes
+      needed — this is a spec-only task."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-29T07:07:33.170Z
