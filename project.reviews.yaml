@@ -76079,6 +76079,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMW2ZRWAWMRTEDX5RWHMS376
         timestamp: 2026-03-29T06:02:36.355Z
+      - _ulid: 01KMW2ZXDY66F09XHXA5713DTY
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMW2ZWWB7J5YG5PC4PCXNCB2
+        timestamp: 2026-03-29T06:02:40.447Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -76215,7 +76222,27 @@ reviews:
               Suggest removing the header/side-channel mention to avoid confusion.
             created_at: 2026-03-29T06:02:35.787Z
         kind: nit
+      - _ulid: 01KMW2ZWWB7J5YG5PC4PCXNCB2
+        anchor:
+          type: structured
+          ref: "@task-e2e-cache-warming-transition"
+          section: Tasks
+        entries:
+          - _ulid: 01KMW2ZWWB1WSEBZQZKFX311MD
+            author: "@claude"
+            body: >-
+              The "How" section lists three options (a, b, c) for controlling cache warming timing
+              in tests but doesn't commit to one. For a standalone task, the agent needs a clear
+              recommendation. Option (c) "register a new project mid-test" is called "most
+              realistic" but then the timeout scenario says "a mock or very large dataset may be
+              needed" which contradicts the realistic approach.
+
+
+              Suggest picking one approach and stating it as the primary strategy, with fallback
+              noted briefly.
+            created_at: 2026-03-29T06:02:39.883Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-29T06:01:44.082Z
-    updated_at: 2026-03-29T06:02:35.787Z
+    updated_at: 2026-03-29T06:02:39.883Z
     notes: []
