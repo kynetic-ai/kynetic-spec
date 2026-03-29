@@ -81258,6 +81258,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-29T13:27:38.587Z
+      - _ulid: 01KMWWV4ZFJV7ZX3FWK0G59AMM
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMWWV4EBHXPP05P54DCMFQ39
+        timestamp: 2026-03-29T13:34:27.311Z
     examined_commit: 65b9cc87bfebad12330eaec3b14f345459cc8f92
     external_links: []
     lifecycle_state: open
@@ -81267,8 +81274,56 @@ reviews:
       content_hash: ""
       ref: "@01KMW68MZ5Z281YD9Z87K2G55A"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMWWV4EBHXPP05P54DCMFQ39
+        entries:
+          - _ulid: 01KMWWV4EBVN0ZQMFVMFCZ8F3P
+            author: Test User
+            body: >-
+              Review evidence log
+
+
+              Files read: packages/web-ui/src/lib/components/CacheWarmingBanner.svelte;
+              packages/web-ui/src/routes/inbox/+page.svelte;
+              packages/web-ui/src/routes/plans/+page.svelte;
+              packages/web-ui/src/routes/reviews/+page.svelte;
+              packages/web-ui/src/routes/sessions/+page.svelte;
+              packages/web-ui/src/routes/sessions/[id]/+page.svelte;
+              packages/web-ui/src/routes/specs/+page.svelte;
+              packages/web-ui/src/routes/tasks/+page.svelte;
+              packages/web-ui/src/routes/tasks/board/+page.svelte;
+              packages/web-ui/src/routes/triage/+page.svelte; packages/web-ui/src/lib/api.ts;
+              packages/web-ui/src/lib/query/client.ts; packages/web-ui/src/lib/query/keys.ts;
+              packages/web-ui/tests/cache-warming-view-states.test.ts;
+              packages/web-ui/tests/e2e/cache-warming-views.spec.ts; prior review
+              @01KMWVEC0YNRRH8MQVY735PQQZ; plan @plan-daemon-cache-warming-ux.
+
+
+              Commands run: git diff --stat/name-only against dev; git diff for changed files; git
+              diff against prior reviewed commit; node dist/cli/index.js task get; node
+              dist/cli/index.js review for-task/get/add/open; node dist/cli/index.js validate; rg AC
+              annotations; npm test; npm test --
+              packages/web-ui/tests/cache-warming-view-states.test.ts
+              packages/web-ui/tests/query-client-retry.test.ts; npm run test:e2e --
+              cache-warming-views.spec.ts.
+
+
+              Claims verified: sessions search-mode regression from cycle 2 is fixed in code and
+              covered by added Playwright spec; cache-warming utility tests pass in the targeted web
+              UI suite.
+
+
+              Categories searched: correctness, edge cases (search mode and dual-query triage
+              retry), error handling, test quality, integration. No blocking findings found in the
+              submitted diff.
+
+
+              Residual test context: npm test still fails in unrelated areas outside this task
+              surface in this snapshot, and Playwright cannot start its isolated daemon under
+              dispatch reviewer restrictions.
+            created_at: 2026-03-29T13:34:26.763Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-29T13:27:27.601Z
-    updated_at: 2026-03-29T13:27:37.984Z
+    updated_at: 2026-03-29T13:34:26.763Z
     notes: []
