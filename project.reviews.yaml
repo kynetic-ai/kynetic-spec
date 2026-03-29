@@ -81278,6 +81278,18 @@ reviews:
         runner: npm
         created_at: 2026-03-29T13:34:44.021Z
         completed_at: 2026-03-29T13:34:44.021Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm run test:e2e -- cache-warming-views.spec.ts could not execute under dispatch review
+          because the Playwright fixture tries to run kspec serve start/stop, which is blocked
+          inside agent invocations.
+        name: cache-warming e2e
+        required: false
+        runner: playwright
+        created_at: 2026-03-29T13:34:45.785Z
+        completed_at: 2026-03-29T13:34:45.785Z
     events:
       - _ulid: 01KMWWEB3GM07MRSRXCAY81V3B
         actor: Test User
@@ -81320,6 +81332,13 @@ reviews:
           status: fail
           name: full test suite
         timestamp: 2026-03-29T13:34:44.572Z
+      - _ulid: 01KMWWVQK4HWVQP1C5AAHTSZX1
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: skipped
+          name: cache-warming e2e
+        timestamp: 2026-03-29T13:34:46.373Z
     examined_commit: 65b9cc87bfebad12330eaec3b14f345459cc8f92
     external_links: []
     lifecycle_state: open
@@ -81380,5 +81399,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-29T13:27:27.601Z
-    updated_at: 2026-03-29T13:34:44.021Z
+    updated_at: 2026-03-29T13:34:45.785Z
     notes: []
