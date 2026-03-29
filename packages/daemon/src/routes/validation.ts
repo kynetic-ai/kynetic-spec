@@ -255,7 +255,7 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
         // AC: @api-contract ac-20 - Run validation and return ValidationResult
         const result = await validate(ctx);
 
-        return {
+        return wrapResponse({
           valid: result.valid,
           schemaErrors: result.schemaErrors,
           refErrors: result.refErrors,
@@ -263,7 +263,7 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
           orphans: result.orphans,
           completenessWarnings: result.completenessWarnings,
           traitCycles: result.traitCycleErrors,
-        };
+        });
       })
 
       // AC: @api-contract ac-21 - Get alignment stats and warnings
