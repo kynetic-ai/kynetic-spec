@@ -80435,6 +80435,18 @@ reviews:
         runner: npm
         created_at: 2026-03-29T12:11:04.040Z
         completed_at: 2026-03-29T12:11:04.040Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation returned warnings only (exit 6) with no schema/reference errors and no
+          task-specific coverage failures; warnings are pre-existing repo-wide
+          completeness/alignment issues.
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-03-29T12:11:08.053Z
+        completed_at: 2026-03-29T12:11:08.053Z
     events:
       - _ulid: 01KMWQYMAB3D9W3N0S79FA1G7A
         actor: Test User
@@ -80463,6 +80475,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMWR2GZY1PK3R9WN6KYFQQXQ
         timestamp: 2026-03-29T12:11:06.736Z
+      - _ulid: 01KMWR2KFHX85N2V5QS6NC6JQW
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-29T12:11:08.657Z
     examined_commit: 4ccb779f2f2c8a4cc6b34c8e6ae78520fc1d5120
     external_links: []
     lifecycle_state: open
@@ -80498,5 +80517,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-29T12:08:58.443Z
-    updated_at: 2026-03-29T12:11:06.110Z
+    updated_at: 2026-03-29T12:11:08.053Z
     notes: []
