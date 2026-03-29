@@ -10,7 +10,8 @@
 	import { page } from '$app/stores';
 	import type { BatchItemSummary, PlanDetail, PlanSummary } from '@kynetic-ai/shared';
 	import { createQuery } from '@tanstack/svelte-query';
-	import { fetchPlans, fetchPlanContent, fetchBatchItems } from '$lib/api';
+	import { fetchPlans, fetchPlanContent, fetchBatchItems, isCacheWarmingError } from '$lib/api';
+	import CacheWarmingBanner from '$lib/components/CacheWarmingBanner.svelte';
 	import { isStaticMode } from '$lib/stores/mode.svelte';
 	import { isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 	import { queryKeys } from '$lib/query/keys.js';
@@ -80,7 +81,9 @@
 
 	let plans = $derived(plansQuery.data?.items ?? []);
 	let loading = $derived(plansQuery.isLoading);
-	let error = $derived(plansQuery.error?.message ?? '');
+	// AC: @ui-data-freshness ac-warming-skeleton — Distinguish warming errors from other errors
+	let cacheWarming = $derived(isCacheWarmingError(plansQuery.error));
+	let error = $derived(cacheWarming ? '' : (plansQuery.error?.message ?? ''));
 
 	// ── Filtered plans ──
 	let filteredPlans = $derived.by(() => {
@@ -249,8 +252,11 @@
 		</div>
 	{/if}
 
-	<!-- Plans list -->
-	{#if loading}
+	<!-- AC: @ui-data-freshness ac-warming-skeleton — Show skeleton during cache warming -->
+	<!-- AC: @ui-data-freshness ac-warming-timeout — Show error banner after 30s timeout -->
+	{#if cacheWarming}
+		<CacheWarmingBanner entityName="plans" queryKey={queryKeys.plans.lists()} />
+	{:else if loading}
 		<div class="space-y-2" data-testid="plans-loading">
 			{#each Array(3) as _}
 				<div class="h-28 rounded-lg bg-muted ds-shimmer"></div>

@@ -29,7 +29,8 @@
 		SessionSearchResult,
 		FetchSessionSearchParams
 	} from '$lib/api';
-	import { fetchSessions, fetchSessionSearch } from '$lib/api';
+	import { fetchSessions, fetchSessionSearch, isCacheWarmingError } from '$lib/api';
+	import CacheWarmingBanner from '$lib/components/CacheWarmingBanner.svelte';
 	import { isStaticMode } from '$lib/stores/mode.svelte';
 	import { isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 	import { formatElapsed, formatAge, getTriggerLabel, isDispatchedSession } from '$lib/components/session/session-utils';
@@ -163,7 +164,9 @@
 	let loading = $derived(sessionsQuery.isLoading);
 	let loadingMore = $derived(sessionsQuery.isFetchingNextPage);
 	let allLoaded = $derived(searchMode ? true : !sessionsQuery.hasNextPage);
-	let error = $derived(sessionsQuery.error?.message ?? searchResultsQuery.error?.message ?? '');
+	// AC: @ui-data-freshness ac-warming-skeleton — Distinguish warming errors from other errors
+	let cacheWarming = $derived(isCacheWarmingError(sessionsQuery.error));
+	let error = $derived(cacheWarming ? '' : (sessionsQuery.error?.message ?? searchResultsQuery.error?.message ?? ''));
 
 	let searchResults = $derived<SessionSearchResult[]>(searchResultsQuery.data?.items ?? []);
 	let totalMatches = $derived(searchResultsQuery.data?.total_matches ?? 0);
@@ -468,8 +471,12 @@
 		</div>
 	{/if}
 
+	<!-- AC: @ui-data-freshness ac-warming-skeleton — Show skeleton during cache warming -->
+	<!-- AC: @ui-data-freshness ac-warming-timeout — Show error banner after 30s timeout -->
 	<!-- AC: @session-list-infinite-scroll ac-initial-load — Loading skeleton -->
-	{#if loading || (searchMode && searchLoading)}
+	{#if cacheWarming}
+		<CacheWarmingBanner entityName="sessions" queryKey={queryKeys.sessions.list({ ...buildFilterKey(), mode: 'paginated' })} />
+	{:else if loading || (searchMode && searchLoading)}
 		<div class="space-y-2" data-testid="sessions-loading">
 			{#each Array(5) as _}
 				<div class="h-16 rounded-lg bg-muted ds-shimmer"></div>

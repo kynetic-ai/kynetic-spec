@@ -11,9 +11,10 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { createQuery } from '@tanstack/svelte-query';
-	import { fetchItems } from '$lib/api';
+	import { fetchItems, isCacheWarmingError } from '$lib/api';
 	import ItemTree from '$lib/components/ItemTree.svelte';
 	import ItemDetail from '$lib/components/ItemDetail.svelte';
+	import CacheWarmingBanner from '$lib/components/CacheWarmingBanner.svelte';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import { isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 	import { queryKeys } from '$lib/query/keys.js';
@@ -35,7 +36,9 @@
 
 	let items = $derived(itemsQuery.data?.items ?? []);
 	let loading = $derived(itemsQuery.isLoading);
-	let error = $derived(itemsQuery.error?.message ?? null);
+	// AC: @ui-data-freshness ac-warming-skeleton — Distinguish warming errors from other errors
+	let cacheWarming = $derived(isCacheWarmingError(itemsQuery.error));
+	let error = $derived(cacheWarming ? null : (itemsQuery.error?.message ?? null));
 
 	function handleSelect(event: CustomEvent<string>) {
 		selectedRef = event.detail;
@@ -81,7 +84,11 @@
 		</div>
 	{/if}
 
-	{#if loading}
+	<!-- AC: @ui-data-freshness ac-warming-skeleton — Show skeleton during cache warming -->
+	<!-- AC: @ui-data-freshness ac-warming-timeout — Show error banner after 30s timeout -->
+	{#if cacheWarming}
+		<CacheWarmingBanner entityName="spec items" queryKey={queryKeys.items.list(planFilter ? { plan: planFilter } : {})} />
+	{:else if loading}
 		<div class="space-y-4">
 			<Skeleton class="h-12 w-full" />
 			<Skeleton class="h-12 w-full" />

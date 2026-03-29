@@ -16,8 +16,10 @@
 		fetchTriageRecords,
 		createTriageRecord,
 		overrideTriageRecord,
-		actOnTriageRecord
+		actOnTriageRecord,
+		isCacheWarmingError
 	} from '$lib/api';
+	import CacheWarmingBanner from '$lib/components/CacheWarmingBanner.svelte';
 	import { isStaticMode, ReadOnlyModeError } from '$lib/stores/mode.svelte';
 	import { isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 	import { renderMarkdown } from '$lib/utils/markdown';
@@ -169,11 +171,16 @@
 	// AC: @ui-data-freshness ac-1 — Only show loading on initial fetch (no cache)
 	let loading = $derived(mergedInboxQuery.isLoading || triageRecordsQuery.isLoading);
 
+	// AC: @ui-data-freshness ac-warming-skeleton — Distinguish warming errors from other errors
+	let cacheWarming = $derived(isCacheWarmingError(mergedInboxQuery.error) || isCacheWarmingError(triageRecordsQuery.error));
+
 	// AC: @ui-data-freshness ac-7 — Surface error from query or write operations
 	let error = $derived(
 		writeError ||
-		(mergedInboxQuery.error ? mergedInboxQuery.error.message : '') ||
-		(triageRecordsQuery.error ? triageRecordsQuery.error.message : '')
+		(cacheWarming ? '' : (
+			(mergedInboxQuery.error ? mergedInboxQuery.error.message : '') ||
+			(triageRecordsQuery.error ? triageRecordsQuery.error.message : '')
+		))
 	);
 
 	function updateFilterParam(key: 'status' | 'action' | 'tag', value: string) {
@@ -410,8 +417,16 @@
 		</div>
 	{/if}
 
-	{#if loading}
-		<div class="text-center text-muted-foreground py-12">Loading triage data...</div>
+	<!-- AC: @ui-data-freshness ac-warming-skeleton — Show skeleton during cache warming -->
+	<!-- AC: @ui-data-freshness ac-warming-timeout — Show error banner after 30s timeout -->
+	{#if cacheWarming}
+		<CacheWarmingBanner entityName="triage data" queryKey={queryKeys.inbox.merged()} />
+	{:else if loading}
+		<div class="space-y-2" data-testid="triage-loading">
+			{#each Array(3) as _}
+				<div class="h-20 rounded-lg bg-muted ds-shimmer"></div>
+			{/each}
+		</div>
 	{:else if filteredItems.length === 0}
 		<div class="text-center text-muted-foreground py-12">
 			{#if allItems.length === 0}
