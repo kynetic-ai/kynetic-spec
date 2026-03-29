@@ -78877,6 +78877,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-29T09:22:53.709Z
+      - _ulid: 01KMWEWJ5CX5SJAR3KFKTGG5TG
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMWEWHHX69DEQ23PZHC079Z6
+        timestamp: 2026-03-29T09:30:33.516Z
     examined_commit: 30b11d43a7c751c7b0f377892a3ad24a91974979
     external_links: []
     lifecycle_state: open
@@ -78886,8 +78893,27 @@ reviews:
       content_hash: ""
       ref: "@01KMW68KM0EXKESA30EMPW63VY"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMWEWHHX69DEQ23PZHC079Z6
+        anchor:
+          type: code
+          commit: 30b11d43a7c751c7b0f377892a3ad24a91974979
+          line_end: 449
+          line_start: 414
+          path: packages/daemon/src/routes/sessions.ts
+          side: head
+        entries:
+          - _ulid: 01KMWEWHHX5W39XQCFPX4064KR
+            author: Test User
+            body: GET /api/sessions/search still returns the legacy top-level object instead of the unified
+              {data, meta} envelope. This leaves one of the remaining read/query endpoints on the
+              old contract, so the web UI still has to special-case it ( and  both consume/assert
+              the raw shape). The task brief says every daemon route handler serving entity data
+              should migrate to wrapResponse(), and session search is not in the excluded
+              mutation/health/debug set.
+            created_at: 2026-03-29T09:30:32.893Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-29T09:22:31.567Z
-    updated_at: 2026-03-29T09:22:53.103Z
+    updated_at: 2026-03-29T09:30:32.893Z
     notes: []
