@@ -17948,7 +17948,7 @@ runs:
     completed_at: 2026-03-28T23:56:32.562Z
   - _ulid: 01KMVH9R483CC0Z8PPYW9EZC7K
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -17971,7 +17971,31 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-29T00:54:18.878Z
-        completed_at: 2026-03-29T00:54:18.878Z
+        completed_at: 2026-03-29T00:54:39.420Z
+        notes: >-
+          High-confidence friction:
+
+          1. daemon-command-api tests flake in the full suite due to process.chdir() being
+          process-wide (not thread-local in worker_threads). Existing observation 01KKE41E tracks
+          daemon test intermittency but not the root cause. Worth adding a specific observation
+          about the chdir mechanism.
+
+
+          Already tracked:
+
+          - KSPEC_SPEC_DIR env sharing: observation 01KMVAV9 (now resolved by AsyncLocalStorage fix)
+
+          - Daemon test intermittency: observation 01KKE41E (general, not root-caused)
+
+
+          High-confidence success:
+
+          - AsyncLocalStorage for env-var isolation in multi-threaded tests — clean, thread-safe
+          alternative to process.env mutation
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-29T00:54:39.420Z
+        completed_at: 2026-03-29T00:54:39.420Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-29T00:53:28.328Z
