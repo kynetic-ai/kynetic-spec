@@ -910,6 +910,10 @@ export class ProjectEntityCache {
   }
 
   private async doLoadDomain(domain: CacheDomain): Promise<void> {
+    // Test-only: wait for delay gate before loading (KSPEC_TEST)
+    await awaitTestDelay(this.projectPath);
+    if (this.disposed) return;
+
     const ctx = await initContext(this.projectPath);
     // AC: @daemon-entity-cache ac-unregister-cleanup — bail after each await
     // to prevent a completed load from repopulating stores that dispose() cleared.
@@ -1415,4 +1419,60 @@ export function clearAllEntityCaches(): void {
     cache.dispose();
   }
   cacheRegistry.clear();
+}
+
+// ─── Test-Only Cache Delay (KSPEC_TEST) ─────────────────────────────────────
+
+/**
+ * Per-project delay gates for E2E testing.
+ * When a delay is set for a project, loadDomain() awaits the gate promise
+ * before loading each domain. This lets E2E tests hold cache warming in the
+ * "loading" state for a controlled duration.
+ *
+ * Only available when KSPEC_TEST is set in the environment.
+ */
+const testDelayGates = new Map<string, { promise: Promise<void>; resolve: () => void }>();
+
+/**
+ * Set a delay gate for a project's cache loading.
+ * All future loadDomain() calls for this project will block until the gate
+ * is released via releaseTestDelay().
+ *
+ * No-op if KSPEC_TEST is not set.
+ */
+export function setTestDelay(projectPath: string): void {
+  if (!process.env.KSPEC_TEST) return;
+  let resolve: () => void;
+  const promise = new Promise<void>((r) => { resolve = r; });
+  testDelayGates.set(projectPath, { promise, resolve: resolve! });
+}
+
+/**
+ * Release a previously set delay gate, allowing cache loading to proceed.
+ * No-op if no delay is set for the project.
+ */
+export function releaseTestDelay(projectPath: string): void {
+  const gate = testDelayGates.get(projectPath);
+  if (gate) {
+    gate.resolve();
+    testDelayGates.delete(projectPath);
+  }
+}
+
+/**
+ * Check if a test delay is active for a project.
+ */
+export function hasTestDelay(projectPath: string): boolean {
+  return testDelayGates.has(projectPath);
+}
+
+/**
+ * Wait for the test delay gate if one is set for this project.
+ * Returns immediately if no gate is active.
+ */
+export async function awaitTestDelay(projectPath: string): Promise<void> {
+  const gate = testDelayGates.get(projectPath);
+  if (gate) {
+    await gate.promise;
+  }
 }

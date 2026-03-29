@@ -389,8 +389,15 @@ export async function createServer(options: ServerOptions) {
     .use(createDebugRoutes({
       projectManager: projectContextManager,
       getEntityCache: entityCacheModule.getEntityCache,
-    }))
+    }));
 
+  // Test-only routes: cache delay injection for E2E tests (KSPEC_TEST guard)
+  if (process.env.KSPEC_TEST) {
+    const { createTestHookRoutes } = await import("./routes/test-hooks.js");
+    app.use(createTestHookRoutes({ getEntityCache: entityCacheModule.getEntityCache }));
+  }
+
+  app
     // AC-4: WebSocket endpoint for real-time updates
     .ws<ConnectionData>("/ws", {
       async beforeHandle({ request, store }) {

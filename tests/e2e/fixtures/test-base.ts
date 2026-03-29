@@ -108,6 +108,7 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
         HOME: isolatedHome,
         USERPROFILE: isolatedHome,
         WEB_UI_DIR: WEB_UI_BUILD,
+        KSPEC_TEST: "1",
       };
 
       // Copy E2E test fixtures to .kspec subdirectory (simulating shadow worktree mode)
