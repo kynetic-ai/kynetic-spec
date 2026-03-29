@@ -81243,7 +81243,18 @@ reviews:
     slugs: []
     title: Review task-ui-warming-skeletons (cycle 3)
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm test -- packages/web-ui/tests/cache-warming-view-states.test.ts
+          packages/web-ui/tests/query-client-retry.test.ts => 12 suites passed, 21 tests passed.
+        name: web-ui targeted tests
+        required: true
+        runner: vitest
+        created_at: 2026-03-29T13:34:28.465Z
+        completed_at: 2026-03-29T13:34:28.465Z
     events:
       - _ulid: 01KMWWEB3GM07MRSRXCAY81V3B
         actor: Test User
@@ -81265,6 +81276,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMWWV4EBHXPP05P54DCMFQ39
         timestamp: 2026-03-29T13:34:27.311Z
+      - _ulid: 01KMWWV6NRGD5E7Z3W7ES47SCB
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: web-ui targeted tests
+        timestamp: 2026-03-29T13:34:29.048Z
     examined_commit: 65b9cc87bfebad12330eaec3b14f345459cc8f92
     external_links: []
     lifecycle_state: open
@@ -81325,5 +81343,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-29T13:27:27.601Z
-    updated_at: 2026-03-29T13:34:26.763Z
+    updated_at: 2026-03-29T13:34:28.465Z
     notes: []
