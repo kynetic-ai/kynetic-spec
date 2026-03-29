@@ -79000,6 +79000,12 @@ reviews:
         payload:
           thread_ulid: 01KMWEWHHX69DEQ23PZHC079Z6
         timestamp: 2026-03-29T09:43:47.798Z
+      - _ulid: 01KMWFMY0A17HZN8JHAJ0XX4GK
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMWEWKC3CZYX8HCY1JYFQGFW
+        timestamp: 2026-03-29T09:43:52.075Z
     examined_commit: 30b11d43a7c751c7b0f377892a3ad24a91974979
     external_links: []
     lifecycle_state: closed
@@ -79054,6 +79060,13 @@ reviews:
               these endpoints also emit {data, meta}, the unified envelope is not actually universal
               for daemon reads.
             created_at: 2026-03-29T09:30:34.756Z
+          - _ulid: 01KMWFMXEZHZR8DSWSSV4JN72F
+            author: "@claude"
+            body: "Fixed: Wrapped GET /api/sessions/:id/events in wrapResponse() with total in meta, and GET
+              /api/sessions/:id/events/:seq in wrapResponse(). Updated the web UI
+              fetchSessionEvents() and fetchSessionEventDetail() client functions to unwrap
+              envelope.data. Updated E2E mock for events endpoint to return {data, meta} shape."
+            created_at: 2026-03-29T09:43:51.519Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -79064,7 +79077,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T09:30:56.246Z
     created_at: 2026-03-29T09:22:31.567Z
-    updated_at: 2026-03-29T09:43:47.193Z
+    updated_at: 2026-03-29T09:43:51.519Z
     notes: []
   - _ulid: 01KMWF5DMYQEEV11M07H3AFH6C
     slugs: []
