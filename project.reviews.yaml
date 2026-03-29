@@ -74823,7 +74823,22 @@ reviews:
     slugs: []
     title: Review fix-workspace-reconciliation-cycle-for-completed-task-records
     author: Test User
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: >-
+          > @kynetic-ai/spec@0.12.0 test
+
+          > node scripts/test.cjs --fresh --run
+          tests/dispatch-workspace-terminal-reconciliation.test.ts tests/daemon-command-api.test.ts
+          reproduced the same 12 daemon-command-api failures in this review workspace.
+        name: targeted daemon+reconciliation repro
+        required: true
+        runner: npm
+        created_at: 2026-03-29T00:05:09.341Z
+        completed_at: 2026-03-29T00:05:09.341Z
     events:
       - _ulid: 01KMVE4KYX889Q367QVTTDRQS5
         actor: Test User
@@ -74838,6 +74853,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-28T23:59:19.647Z
+      - _ulid: 01KMVEH9Z5FFW36MHC89313AVE
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: targeted daemon+reconciliation repro
+        timestamp: 2026-03-29T00:05:10.246Z
     examined_commit: afd332b4c3b16543d6a80c9a905ac644ae07d3bd
     external_links: []
     lifecycle_state: open
@@ -74850,5 +74872,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-28T23:58:14.494Z
-    updated_at: 2026-03-28T23:59:19.093Z
+    updated_at: 2026-03-29T00:05:09.341Z
     notes: []
