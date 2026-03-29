@@ -6,6 +6,7 @@
  *
  * AC: @ui-data-freshness ac-3 — WS events invalidate cached data
  * AC: @ui-data-freshness ac-4 — Event-driven, not polling
+ * AC: @ui-data-freshness ac-warming-auto-transition — domain_ready events invalidate affected queries
  */
 
 import type { QueryClient } from "@tanstack/svelte-query";
@@ -26,6 +27,7 @@ const INVALIDATION_TOPICS = [
   "agents",
   "sessions",
   "files:updates",
+  "cache:status",
 ] as const;
 
 /**
@@ -105,9 +107,54 @@ function getInvalidationKeys(
         queryKeys.sessionContext.all,
       ];
 
+    case "cache:status":
+      // AC: @ui-data-freshness ac-warming-auto-transition
+      // When a cache domain finishes loading, invalidate queries for that domain
+      // so they refetch immediately instead of waiting for retry polling.
+      return getDomainReadyInvalidationKeys(event);
+
     default:
       return [];
   }
+}
+
+/**
+ * Map a cache domain name to query keys that should be invalidated when that
+ * domain becomes ready. Matches the daemon's CacheDomain type.
+ *
+ * AC: @ui-data-freshness ac-warming-auto-transition
+ */
+const DOMAIN_QUERY_KEY_MAP: Record<string, readonly (readonly unknown[])[]> = {
+  tasks: [queryKeys.tasks.all, queryKeys.validation.all, queryKeys.sessionContext.all],
+  items: [queryKeys.items.all, queryKeys.validation.all],
+  inbox: [queryKeys.inbox.all],
+  triage: [queryKeys.inbox.all],
+  reviews: [queryKeys.reviews.all],
+  plans: [queryKeys.plans.all],
+  sessions: [queryKeys.sessions.all],
+  // "meta" domain covers settings, workflows, observations, automation, and session context
+  meta: [
+    queryKeys.settings.all,
+    queryKeys.workflows.all,
+    queryKeys.observations.all,
+    queryKeys.automation.all,
+    queryKeys.sessionContext.all,
+  ],
+};
+
+/**
+ * Get invalidation keys for a domain_ready event.
+ * Only processes "domain_ready" events; other cache:status events are ignored.
+ */
+function getDomainReadyInvalidationKeys(
+  event: BroadcastEvent,
+): readonly (readonly unknown[])[] {
+  if (event.event !== "domain_ready") return [];
+
+  const domain = (event.data as { domain?: string })?.domain;
+  if (!domain) return [];
+
+  return DOMAIN_QUERY_KEY_MAP[domain] ?? [];
 }
 
 let queryClientRef: QueryClient | null = null;
