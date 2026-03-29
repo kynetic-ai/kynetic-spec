@@ -9541,6 +9541,26 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-29T04:08:18.578Z
+  - _ulid: 01KMVWVRX0P2FGWPHDVY4JCVWQ
+    type: friction
+    content: Dispatch review snapshots cannot `git checkout dev` when dev is already checked out in the
+      primary worktree; reviewers have to know to use `git checkout --ignore-other-worktrees dev`
+      before the required local merge. Consider making the merge workflow or helper command handle
+      review-worktree branch switching explicitly.
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-29T04:15:33.280Z
+  - _ulid: 01KMVWVS3295R37JETF7SCGBSP
+    type: friction
+    content: "`kspec validate` is noisy as a review-time gate because it emits large repo-wide warning
+      sets unrelated to the task under review. Consider a scoped validation mode for reviewer
+      workflows that isolates changed specs/tests or separates pre-existing warnings from task
+      regressions."
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-29T04:15:33.474Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
