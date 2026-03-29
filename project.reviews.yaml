@@ -78890,6 +78890,23 @@ reviews:
         runner: kspec
         created_at: 2026-03-29T09:30:37.886Z
         completed_at: 2026-03-29T09:30:37.886Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: daemon route diffs for
+          aggregation/inbox/items/meta/plans/refs/reviews/sessions/tasks/triage/validation;
+          response-envelope helper; web-ui API client and session E2E tests. Commands run: git
+          diff/stat/name-only, git log, kspec task get, kspec item get @api-contract, kspec review
+          get/for-task, kspec validate, rg AC annotations, rg route patterns, npm test. Claims
+          verified: prior validate blocker fixed; search/validate/alignment migrated; remaining
+          legacy session GET handlers still unwrapped; full test gate still red. Categories
+          searched: correctness, edge cases, error handling, test quality, integration."
+        name: review-evidence
+        required: false
+        runner: reviewer
+        created_at: 2026-03-29T09:30:41.770Z
+        completed_at: 2026-03-29T09:30:41.770Z
     events:
       - _ulid: 01KMWEDVGEAHA7YVTNPDT5X6M7
         actor: Test User
@@ -78925,6 +78942,13 @@ reviews:
           status: skipped
           name: kspec validate
         timestamp: 2026-03-29T09:30:38.512Z
+      - _ulid: 01KMWEWTTHYNVBHXADW9R65QRP
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-03-29T09:30:42.385Z
     examined_commit: 30b11d43a7c751c7b0f377892a3ad24a91974979
     external_links: []
     lifecycle_state: open
@@ -78975,5 +78999,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-29T09:22:31.567Z
-    updated_at: 2026-03-29T09:30:37.886Z
+    updated_at: 2026-03-29T09:30:41.770Z
     notes: []
