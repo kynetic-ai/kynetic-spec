@@ -9770,6 +9770,26 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-29T10:19:29.224Z
+  - _ulid: 01KMWJ4X5CHHH8QFS6X4NQ40K6
+    type: friction
+    content: API contract Playwright specs can drift silently because npm test does not run most web UI
+      E2E endpoint suites. In this review, daemon handlers and client code were updated to the
+      unified envelope and the unit gate passed, but multiple API E2E specs still asserted the old
+      bare response shape.
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-29T10:27:32.652Z
+  - _ulid: 01KMWJ4XB1ZWJ7MGQD4MP96SWB
+    type: friction
+    content: Targeted Playwright API verification is hard to run inside agent sessions because the
+      shared test fixture tries to start the daemon, and agent invocations are forbidden from
+      starting or restarting it. That leaves some endpoint-level regressions harder to confirm
+      during automated review.
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-29T10:27:32.833Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
