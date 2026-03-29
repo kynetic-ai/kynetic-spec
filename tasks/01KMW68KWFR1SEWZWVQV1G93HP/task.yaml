@@ -46,5 +46,14 @@ tags:
   - daemon
   - websocket
 vcs_refs: []
+history:
+  - author: "@claude"
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-03-29T07:02:52.576Z
 created_at: 2026-03-29T06:59:51.311Z
 todos: []
+automation: eligible

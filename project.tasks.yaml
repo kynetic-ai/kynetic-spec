@@ -23019,6 +23019,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-29T06:59:49.881Z
+  automation: eligible
 - _ulid: 01KMW68JT108S4RS3G1GNYH5A9
   slugs:
     - task-spec-update-entity-cache
@@ -23036,6 +23037,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-29T06:59:50.209Z
+  automation: eligible
 - _ulid: 01KMW68K2PP8BX24XEPK4XS9W5
   slugs:
     - task-spec-update-data-freshness
@@ -23053,6 +23055,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-29T06:59:50.486Z
+  automation: eligible
 - _ulid: 01KMW68KC5Z7W9QJP96GYRYPHE
   slugs:
     - task-api-response-envelope-type
@@ -23072,6 +23075,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-29T06:59:50.789Z
+  automation: eligible
 - _ulid: 01KMW68KM0EXKESA30EMPW63VY
   slugs:
     - task-migrate-route-handlers-envelope
@@ -23090,6 +23094,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-29T06:59:51.040Z
+  automation: eligible
 - _ulid: 01KMW68KWFR1SEWZWVQV1G93HP
   slugs:
     - task-cache-domain-ready-ws-event
@@ -23108,6 +23113,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-29T06:59:51.311Z
+  automation: eligible
 - _ulid: 01KMW68M6EEC48D7WFTP623BHG
   slugs:
     - task-ui-unwrap-envelope
@@ -23126,6 +23132,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-29T06:59:51.630Z
+  automation: eligible
 - _ulid: 01KMW68MFA3AFKAEQJS9M05J92
   slugs:
     - task-ui-cache-warming-interceptor
@@ -23145,6 +23152,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-29T06:59:51.914Z
+  automation: eligible
 - _ulid: 01KMW68MQ3V3C5PF4NXKB1PAG1
   slugs:
     - task-ui-cache-domain-ready-subscription
@@ -23164,6 +23172,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-29T06:59:52.163Z
+  automation: eligible
 - _ulid: 01KMW68MZ5Z281YD9Z87K2G55A
   slugs:
     - task-ui-warming-skeletons
@@ -23182,6 +23191,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-29T06:59:52.421Z
+  automation: eligible
 - _ulid: 01KMW68N7AB8WWRZMVQV3C2789
   slugs:
     - task-e2e-cache-warming-transition
@@ -23201,3 +23211,4 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-29T06:59:52.682Z
+  automation: eligible
