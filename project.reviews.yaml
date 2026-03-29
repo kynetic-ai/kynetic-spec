@@ -76029,7 +76029,39 @@ reviews:
     slugs: []
     title: "Plan review: Daemon Cache Warming UX"
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: >-
+          All 7 proposed ACs are claimed by at least one task:
+
+          - ac-envelope: task-api-response-envelope-type (define),
+          task-migrate-route-handlers-envelope (implement), task-ui-unwrap-envelope (client)
+
+          - ac-cache-status-field: task-migrate-route-handlers-envelope
+
+          - ac-domain-ready-event: task-cache-domain-ready-ws-event
+
+          - ac-warming-skeleton: task-ui-cache-warming-interceptor (detection) +
+          task-ui-warming-skeletons (display) + task-e2e-cache-warming-transition (E2E)
+
+          - ac-warming-auto-transition: task-ui-cache-domain-ready-subscription +
+          task-e2e-cache-warming-transition
+
+          - ac-warming-retry-fallback: task-ui-cache-warming-interceptor +
+          task-e2e-cache-warming-transition
+
+          - ac-warming-timeout: task-ui-cache-warming-interceptor + task-ui-warming-skeletons +
+          task-e2e-cache-warming-transition
+
+          No orphan ACs. Coverage is complete but ac-warming-skeleton split across tasks is
+          informally documented (see question thread).
+        name: AC coverage mapping
+        required: true
+        created_at: 2026-03-29T06:02:52.074Z
+        completed_at: 2026-03-29T06:02:52.074Z
     events:
       - _ulid: 01KMW2Y6CH7YP8X5216XWDVXT7
         actor: "@claude"
@@ -76086,6 +76118,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMW2ZWWB7J5YG5PC4PCXNCB2
         timestamp: 2026-03-29T06:02:40.447Z
+      - _ulid: 01KMW309AD8NZYG7EN227S9M5F
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: AC coverage mapping
+        timestamp: 2026-03-29T06:02:52.621Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -76244,5 +76283,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-29T06:01:44.082Z
-    updated_at: 2026-03-29T06:02:39.883Z
+    updated_at: 2026-03-29T06:02:52.074Z
     notes: []
