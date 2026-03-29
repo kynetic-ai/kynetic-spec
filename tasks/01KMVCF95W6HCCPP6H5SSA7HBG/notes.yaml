@@ -15,3 +15,13 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-29T00:01:22.446Z
+  - _ulid: 01KMVEWHCKYDEHDH92SJGW0VJZ
+    content: "Session complete. Implementation covers all 5 new ACs (ac-7 through ac-11). Key design
+      decisions: (1) acquireFileLock accepts number|options for backward compatibility, (2)
+      withDispatchShadowMutationLock callback param made optional to avoid breaking callers, (3)
+      reconciliation yields lock per-dirty-record with individual commits instead of batch, (4)
+      rollbackDirtyShadowWorktree uses git checkout then git clean as two-phase cleanup. Full suite
+      7072/7072 passed."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-29T00:11:18.291Z
