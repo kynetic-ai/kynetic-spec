@@ -79012,6 +79012,12 @@ reviews:
         payload:
           thread_ulid: 01KMWEWHHX69DEQ23PZHC079Z6
         timestamp: 2026-03-29T09:44:00.220Z
+      - _ulid: 01KMWFNA2R8TY15TCE5279E7J0
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMWEWKC3CZYX8HCY1JYFQGFW
+        timestamp: 2026-03-29T09:44:04.440Z
     examined_commit: 30b11d43a7c751c7b0f377892a3ad24a91974979
     external_links: []
     lifecycle_state: closed
@@ -79076,6 +79082,8 @@ reviews:
               envelope.data. Updated E2E mock for events endpoint to return {data, meta} shape."
             created_at: 2026-03-29T09:43:51.519Z
         kind: blocker
+        resolved_at: 2026-03-29T09:44:03.825Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -79085,7 +79093,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T09:30:56.246Z
     created_at: 2026-03-29T09:22:31.567Z
-    updated_at: 2026-03-29T09:43:59.545Z
+    updated_at: 2026-03-29T09:44:03.825Z
     notes: []
   - _ulid: 01KMWF5DMYQEEV11M07H3AFH6C
     slugs: []
