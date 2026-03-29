@@ -75263,6 +75263,19 @@ reviews:
         runner: npm-test
         created_at: 2026-03-29T00:58:33.813Z
         completed_at: 2026-03-29T00:58:33.813Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate exited 6 with repo-wide warnings only; no task-specific errors for
+          @dispatch-workspace-registry AC coverage. Verified AC annotations for ac-12 and ac-13 in
+          tests/dispatch-workspace-terminal-reconciliation.test.ts and trait-error-guidance N/A
+          annotations present.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-29T00:58:35.662Z
+        completed_at: 2026-03-29T00:58:35.662Z
     events:
       - _ulid: 01KMVHBZTTXN3A1D24G6KSTZQS
         actor: Test User
@@ -75291,6 +75304,13 @@ reviews:
           status: pass
           name: npm test -- --fresh
         timestamp: 2026-03-29T00:58:34.456Z
+      - _ulid: 01KMVHK4RXY3FV66E95CV1YQDW
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-29T00:58:36.189Z
     examined_commit: 9b50c4d10bde1740c6515d9e8fc7aaa52f1c7e5f
     external_links: []
     lifecycle_state: open
@@ -75303,5 +75323,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-29T00:54:41.754Z
-    updated_at: 2026-03-29T00:58:33.813Z
+    updated_at: 2026-03-29T00:58:35.662Z
     notes: []
