@@ -75545,6 +75545,12 @@ reviews:
         payload:
           thread_ulid: 01KMVJGDCTCNHWTV6541CCEB3J
         timestamp: 2026-03-29T01:25:43.878Z
+      - _ulid: 01KMVK4YAR7P843T7A4931EBJF
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMVJGQEG8M1VG6G821TFAG5T
+        timestamp: 2026-03-29T01:25:47.993Z
     examined_commit: 5055285aca2f919de50c96cdff688775120a90d5
     external_links: []
     lifecycle_state: closed
@@ -75617,6 +75623,8 @@ reviews:
               lock blocking/release, not reconciliation-specific yielding."
             created_at: 2026-03-29T01:25:33.519Z
         kind: blocker
+        resolved_at: 2026-03-29T01:25:47.473Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -75626,5 +75634,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T01:15:25.643Z
     created_at: 2026-03-29T01:10:23.502Z
-    updated_at: 2026-03-29T01:25:43.219Z
+    updated_at: 2026-03-29T01:25:47.473Z
     notes: []
