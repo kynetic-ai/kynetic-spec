@@ -74905,6 +74905,13 @@ reviews:
           status: fail
           name: targeted daemon+reconciliation repro
         timestamp: 2026-03-29T00:07:18.747Z
+      - _ulid: 01KMVENPHWZ2QGPW4H24ETXG5G
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMVENNKQ6BN3G50126AK2P83
+        timestamp: 2026-03-29T00:07:34.204Z
     examined_commit: afd332b4c3b16543d6a80c9a905ac644ae07d3bd
     external_links: []
     lifecycle_state: open
@@ -74936,7 +74943,30 @@ reviews:
               pattern is repeated in the batch path below as well.
             created_at: 2026-03-29T00:06:04.337Z
         kind: blocker
+      - _ulid: 01KMVENNKQ6BN3G50126AK2P83
+        entries:
+          - _ulid: 01KMVENNKQG771PGVGFMY4160J
+            author: Test User
+            body: >-
+              Evidence log
+
+              Files read: packages/daemon/src/routes/command.ts, src/agent-runtime/workspace.ts,
+              tests/dispatch-workspace-terminal-reconciliation.test.ts,
+              tests/daemon-command-api.test.ts, src/parser/yaml.ts, src/parser/config.ts.
+
+              Commands run: git diff/stat against dev base, kspec task get, kspec review
+              for-task/get, kspec validate, rg for AC annotations, targeted npm runs for
+              daemon+reconciliation, and full npm test -- --fresh.
+
+              Claims verified: AC coverage exists for ac-12/ac-13 in the new test file;
+              daemon-command-api passes in isolation but fails in this snapshot under broader
+              execution.
+
+              Categories searched: correctness, edge cases, error handling, test quality,
+              integration. Finding: integration/test regression in daemon command API remains.
+            created_at: 2026-03-29T00:07:33.239Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-28T23:58:14.494Z
-    updated_at: 2026-03-29T00:07:17.835Z
+    updated_at: 2026-03-29T00:07:33.239Z
     notes: []
