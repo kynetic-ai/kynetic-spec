@@ -165,8 +165,20 @@
 	let loadingMore = $derived(sessionsQuery.isFetchingNextPage);
 	let allLoaded = $derived(searchMode ? true : !sessionsQuery.hasNextPage);
 	// AC: @ui-data-freshness ac-warming-skeleton — Distinguish warming errors from other errors
-	let cacheWarming = $derived(isCacheWarmingError(sessionsQuery.error));
-	let error = $derived(cacheWarming ? '' : (sessionsQuery.error?.message ?? searchResultsQuery.error?.message ?? ''));
+	// Check the active query (search vs paginated) for cache warming state
+	let cacheWarming = $derived(
+		searchMode
+			? isCacheWarmingError(searchResultsQuery.error)
+			: isCacheWarmingError(sessionsQuery.error)
+	);
+	let error = $derived(
+		cacheWarming
+			? ''
+			: (
+				(isCacheWarmingError(sessionsQuery.error) ? '' : sessionsQuery.error?.message ?? '') ||
+				(isCacheWarmingError(searchResultsQuery.error) ? '' : searchResultsQuery.error?.message ?? '')
+			)
+	);
 
 	let searchResults = $derived<SessionSearchResult[]>(searchResultsQuery.data?.items ?? []);
 	let totalMatches = $derived(searchResultsQuery.data?.total_matches ?? 0);
@@ -475,7 +487,12 @@
 	<!-- AC: @ui-data-freshness ac-warming-timeout — Show error banner after 30s timeout -->
 	<!-- AC: @session-list-infinite-scroll ac-initial-load — Loading skeleton -->
 	{#if cacheWarming}
-		<CacheWarmingBanner entityName="sessions" queryKey={queryKeys.sessions.list({ ...buildFilterKey(), mode: 'paginated' })} />
+		<CacheWarmingBanner
+			entityName="sessions"
+			queryKey={searchMode
+				? queryKeys.sessions.list({ ...buildFilterKey(), mode: 'search', q: searchQuery })
+				: queryKeys.sessions.list({ ...buildFilterKey(), mode: 'paginated' })}
+		/>
 	{:else if loading || (searchMode && searchLoading)}
 		<div class="space-y-2" data-testid="sessions-loading">
 			{#each Array(5) as _}

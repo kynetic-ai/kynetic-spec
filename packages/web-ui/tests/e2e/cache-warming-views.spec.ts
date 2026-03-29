@@ -277,6 +277,72 @@ test.describe("Cache Warming View States", () => {
     });
   });
 
+  // AC: @ui-data-freshness ac-warming-skeleton — sessions search mode cache warming
+  // AC: @ui-data-freshness ac-warming-timeout — sessions search mode timeout banner
+  test.describe("sessions search mode cache warming", () => {
+    test("shows skeleton while search query is warming", async ({
+      page,
+      daemon: _daemon,
+    }) => {
+      await interceptCommonAPIs(page);
+
+      // Sessions list returns ready (won't be fetched in search mode)
+      await page.route("**/api/sessions?*", (route) => {
+        route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify(readyEnvelope({ items: [], total: 0, offset: 0, limit: 25 })),
+        });
+      });
+
+      // Sessions search returns cache_status: "loading"
+      await page.route("**/api/sessions/search*", (route) => {
+        route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify(warmingEnvelope({ items: [], total_sessions: 0, total_matches: 0, query: "test" })),
+        });
+      });
+
+      await page.goto("/sessions?q=test");
+
+      // During retries, searchLoading stays true — loading skeleton should appear
+      const skeleton = page.getByTestId("sessions-loading");
+      await expect(skeleton).toBeVisible({ timeout: 5000 });
+    });
+
+    test("shows timeout banner when search query exhausts retries", async ({
+      page,
+      daemon: _daemon,
+    }) => {
+      await page.clock.install();
+
+      await interceptCommonAPIs(page);
+
+      // Sessions search always returns cache_status: "loading"
+      await page.route("**/api/sessions/search*", (route) => {
+        route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify(warmingEnvelope({ items: [], total_sessions: 0, total_matches: 0, query: "test" })),
+        });
+      });
+
+      await page.goto("/sessions?q=test");
+      await page.clock.runFor(500);
+
+      // Fast-forward through retries
+      for (let i = 0; i < 20; i++) {
+        await page.clock.runFor(2500);
+      }
+
+      // Banner should be visible with sessions entity name
+      const banner = page.getByTestId("cache-warming-timeout");
+      await expect(banner).toBeVisible({ timeout: 5000 });
+      await expect(banner).toContainText("Unable to load sessions");
+    });
+  });
+
   // AC: @ui-data-freshness ac-warming-timeout — triage page resets both queries
   test.describe("triage page dual-query retry", () => {
     test("triage page shows timeout banner when either query has warming error", async ({
