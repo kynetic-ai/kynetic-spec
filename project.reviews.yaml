@@ -76600,7 +76600,18 @@ reviews:
     slugs: []
     title: "Plan re-review: Daemon Cache Warming UX"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: The context now correctly scopes the problem to cold-cache registration/restart and
+          explicitly excludes watcher-triggered reloads covered by @daemon-entity-cache
+          ac-stale-during-reload.
+        name: Existing spec alignment
+        required: true
+        created_at: 2026-03-29T06:55:42.054Z
+        completed_at: 2026-03-29T06:55:42.054Z
     events:
       - _ulid: 01KMW60D9G4EYVHYKC4CSXC39D
         actor: Jacob Chapel
@@ -76615,6 +76626,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-29T06:55:29.940Z
+      - _ulid: 01KMW6110VP6F3VX7QWN2T5JVJ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Existing spec alignment
+        timestamp: 2026-03-29T06:55:42.619Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -76627,5 +76645,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-29T06:55:22.417Z
-    updated_at: 2026-03-29T06:55:29.386Z
+    updated_at: 2026-03-29T06:55:42.054Z
     notes: []
