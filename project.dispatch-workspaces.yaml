@@ -28189,12 +28189,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-29T13:58:29.983Z
+      updated_at: 2026-03-29T13:58:33.902Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-29T13:58:29.983Z
+      updated_at: 2026-03-29T13:58:33.902Z
     integration:
       status: pending
       detail: null
@@ -28202,7 +28202,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: e5ad17fef11f6b5347a1f950dccf3e7e80cea343
-      updated_at: 2026-03-29T13:58:29.983Z
+      updated_at: 2026-03-29T13:58:33.902Z
     lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMW68N7AB8WWRZMVQV3C2789"
@@ -28210,9 +28210,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-29T13:36:49.855Z
-      last_reconciled_at: 2026-03-29T13:58:29.983Z
+      last_reconciled_at: 2026-03-29T13:58:33.902Z
       created_at: 2026-03-29T13:36:43.710Z
-      updated_at: 2026-03-29T13:58:29.983Z
+      updated_at: 2026-03-29T13:58:33.902Z
     workspace_id: dispatch-workspace-01KMW68N7AB8WWRZMVQV3C2789
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -28221,5 +28221,5 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-e2e-cache-warming-transition/01kmw68n
         head: e5ad17fef11f6b5347a1f950dccf3e7e80cea343
-        last_seen_at: 2026-03-29T13:36:43.710Z
+        last_seen_at: 2026-03-29T13:58:33.902Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-e2e-cache-warming-transition-01kmw68n
