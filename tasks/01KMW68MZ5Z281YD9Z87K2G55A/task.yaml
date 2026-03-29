@@ -52,6 +52,7 @@ tags:
   - web-ui
   - components
 vcs_refs: []
+review_ref: "@01KMWT2T3TE7M3ZEYNXF6MGS63"
 submission_linkage:
   review_url: null
   branch: dev
@@ -102,6 +103,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-03-29T12:42:25.750Z
+  - author: Test User
+    changes:
+      review_ref:
+        new: "@01KMWT2T3TE7M3ZEYNXF6MGS63"
+        previous: null
+    command: review-link
+    timestamp: 2026-03-29T12:46:14.769Z
 created_at: 2026-03-29T06:59:52.421Z
 started_at: 2026-03-29T12:27:24.355Z
 submitted_at: 2026-03-29T12:42:25.750Z

@@ -80662,3 +80662,29 @@ reviews:
     created_at: 2026-03-29T12:27:40.239Z
     updated_at: 2026-03-29T12:32:07.707Z
     notes: []
+  - _ulid: 01KMWT2T3TE7M3ZEYNXF6MGS63
+    slugs: []
+    title: Review task-ui-warming-skeletons
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KMWT2T3T053S2HZA9251BBQ9
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-29T12:46:12.602Z
+    examined_commit: 25f80a8785149c5266bda75c4441abc7057a00bd
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMW68MZ5Z281YD9Z87K2G55A"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-29T12:46:12.602Z
+    updated_at: null
+    notes: []
