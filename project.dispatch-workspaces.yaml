@@ -27187,12 +27187,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-29T07:54:36.785Z
+      updated_at: 2026-03-29T08:01:20.187Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-29T07:54:38.858Z
+      updated_at: 2026-03-29T08:01:20.187Z
     integration:
       status: pending
       detail: null
@@ -27200,7 +27200,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 6943dad4b8203281f7a00c18ae29804ce34c559a
-      updated_at: 2026-03-29T07:54:36.785Z
+      updated_at: 2026-03-29T08:01:20.187Z
     lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMW68JT108S4RS3G1GNYH5A9"
@@ -27208,9 +27208,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-29T07:52:05.880Z
-      last_reconciled_at: 2026-03-29T07:54:38.858Z
+      last_reconciled_at: 2026-03-29T08:01:20.187Z
       created_at: 2026-03-29T07:15:06.825Z
-      updated_at: 2026-03-29T07:54:38.858Z
+      updated_at: 2026-03-29T08:01:20.187Z
     workspace_id: dispatch-workspace-01KMW68JT108S4RS3G1GNYH5A9
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -27219,7 +27219,7 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-spec-update-entity-cache/01kmw68j
         head: 6943dad4b8203281f7a00c18ae29804ce34c559a
-        last_seen_at: 2026-03-29T07:51:57.937Z
+        last_seen_at: 2026-03-29T08:01:20.187Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-spec-update-entity-cache-01kmw68j
   - active_role: null
     base_branch_point: 6943dad4b8203281f7a00c18ae29804ce34c559a
