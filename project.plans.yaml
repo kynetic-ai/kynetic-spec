@@ -30398,7 +30398,7 @@ plans:
       - **Timing/race conditions** — WebSocket reconnection, siblings queries, content loading
 
       - **Platform limitations** — file watcher tests unreliable outside Linux with inotify
-    status: draft
+    status: rejected
     approved_at: null
     derived_specs: []
     derived_tasks: []
