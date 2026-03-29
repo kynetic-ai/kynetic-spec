@@ -81108,6 +81108,12 @@ reviews:
           status: pass
           name: validate
         timestamp: 2026-03-29T13:10:55.078Z
+      - _ulid: 01KMWVGZ03F4W1JE540MHXK5QC
+        actor: Test User
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMWVFXGPKGKHGN2CZWWTHR3K
+        timestamp: 2026-03-29T13:11:24.931Z
     examined_commit: 7aa92989e9de97463c356afbe1d2bdcc7fc92274
     external_links: []
     lifecycle_state: open
@@ -81136,6 +81142,16 @@ reviews:
               That violates @ui-data-freshness ac-warming-skeleton/ac-warming-timeout for one of the
               sessions view states."
             created_at: 2026-03-29T13:10:50.646Z
+          - _ulid: 01KMWVGYDPWGQVV3DTCT9X8347
+            author: Test User
+            body: "Clarification: `searchMode` enables `searchResultsQuery` and disables `sessionsQuery`, but
+              `cacheWarming` is derived only from `sessionsQuery.error`. Existing API tests already
+              prove `fetchSessionSearch()` throws `CacheWarmingError` for `cache_status:
+              \"loading\"`, so `/sessions?q=...` will surface the raw error string instead of the
+              skeleton/timeout banner path. The banner also resets `queryKeys.sessions.list({
+              ...buildFilterKey(), mode: 'paginated' })`, which does not reset the active search
+              query key."
+            created_at: 2026-03-29T13:11:24.342Z
         kind: blocker
       - _ulid: 01KMWVFZC57P4TDY63RM5A2V0M
         entries:
@@ -81166,5 +81182,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-29T13:09:59.966Z
-    updated_at: 2026-03-29T13:10:54.478Z
+    updated_at: 2026-03-29T13:11:24.342Z
     notes: []
