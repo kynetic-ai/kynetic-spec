@@ -79383,7 +79383,17 @@ reviews:
     slugs: []
     title: Review task-cache-domain-ready-ws-event
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 1974/1974 suites passed; 7128/7133 tests passed, 5 skipped.
+        name: npm test
+        required: true
+        runner: test.cjs
+        created_at: 2026-03-29T10:02:07.930Z
+        completed_at: 2026-03-29T10:02:07.930Z
     events:
       - _ulid: 01KMWGFA2NEW6ME4B3TD2KZFV6
         actor: Test User
@@ -79398,6 +79408,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-29T09:59:06.176Z
+      - _ulid: 01KMWGPCQW8XX9PHW7QCE69RPK
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-29T10:02:08.508Z
     examined_commit: 107be4397478b42cab064d2afccd4750bbce812c
     external_links: []
     lifecycle_state: open
@@ -79410,5 +79427,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-29T09:58:16.406Z
-    updated_at: 2026-03-29T09:59:05.198Z
+    updated_at: 2026-03-29T10:02:07.930Z
     notes: []
