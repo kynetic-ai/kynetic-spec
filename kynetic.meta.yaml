@@ -9561,6 +9561,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-29T04:15:33.474Z
+  - _ulid: 01KMW76MNN6GD56GWC2S8CCV03
+    type: friction
+    content: Detached review snapshots for spec-only tasks can present submission linkage as branch=dev
+      and commit already equal to dev, while the real change exists only in the shadow branch. This
+      makes normal git diff and merge checks look like a no-op and forces reviewers to rediscover
+      that they must verify the change through kspec item/task state instead of branch history.
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-29T07:16:15.157Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
