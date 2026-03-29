@@ -60,7 +60,7 @@ description: >-
 spec_ref: "@dispatch-workspace-registry"
 meta_ref: null
 plan_ref: null
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -70,6 +70,7 @@ tags:
   - workspace
   - bug
 vcs_refs: []
+session_id: 01KMVS4P12KM4WTV27CYDY6PXX
 history:
   - author: "@claude"
     changes:
@@ -78,6 +79,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-03-29T03:09:56.533Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KMVS4P12KM4WTV27CYDY6PXX
+        previous: null
+      started_at:
+        new: 2026-03-29T03:11:17.158Z
+        previous: null
+    command: task-start
+    timestamp: 2026-03-29T03:11:17.159Z
 created_at: 2026-03-29T03:05:53.019Z
+started_at: 2026-03-29T03:11:17.158Z
 todos: []
 automation: eligible
