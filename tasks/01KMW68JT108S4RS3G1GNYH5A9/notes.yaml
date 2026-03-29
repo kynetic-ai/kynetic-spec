@@ -58,3 +58,13 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-29T08:56:10.912Z
+  - _ulid: 01KMWDKS89AXJV2VWZ1H6DF1GF
+    content: "Fix cycle 4: addressed the blocker from review @01KMWCMK. The production wiring was
+      missing — onDomainReady callback was not being passed to registerEntityCache() in server.ts.
+      Fixed by passing a callback in onProjectRegistered that calls
+      pubsubManager.broadcast('cache:status', 'domain_ready', {domain, previousState, timestamp},
+      projectPath). Added integration test verifying registerEntityCache passes the callback
+      through. Full suite passes: 7128/7133 (5 skipped, 0 failures). Resolved both review threads."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-29T09:08:17.289Z
