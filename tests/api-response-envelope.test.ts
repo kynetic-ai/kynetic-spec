@@ -10,7 +10,13 @@
  */
 
 import { describe, expect, it } from "vitest";
+import { z } from "zod";
 import { wrapResponse, toCacheStatus } from "../dist/daemon/routes/response-envelope.ts";
+import {
+  CacheStatusSchema,
+  ApiResponseMetaSchema,
+  ApiResponseSchema,
+} from "../packages/shared/src/api.ts";
 
 // ─── Trait AC Coverage ──────────────────────────────────────────────────────
 // This task defines the envelope type and wrapper function only.
@@ -195,5 +201,152 @@ describe("wrapResponse", () => {
     expect(result.meta.total).toBe(0);
     expect(result.meta.offset).toBe(0);
     expect(result.meta.limit).toBe(0);
+  });
+});
+
+// ─── Zod Runtime Schema Tests ─────────────────────────────────────────────
+// These tests verify the runtime Zod schemas parse and validate correctly,
+// ensuring downstream consumers have a parseable runtime contract.
+
+describe("CacheStatusSchema", () => {
+  // AC: @api-contract ac-cache-status-field
+  it('accepts "ready" as a valid cache status', () => {
+    expect(CacheStatusSchema.parse("ready")).toBe("ready");
+  });
+
+  // AC: @api-contract ac-cache-status-field
+  it('accepts "loading" as a valid cache status', () => {
+    expect(CacheStatusSchema.parse("loading")).toBe("loading");
+  });
+
+  // AC: @api-contract ac-cache-status-field
+  it("rejects invalid cache status values", () => {
+    expect(() => CacheStatusSchema.parse("degraded")).toThrow();
+    expect(() => CacheStatusSchema.parse("unloaded")).toThrow();
+    expect(() => CacheStatusSchema.parse("")).toThrow();
+    expect(() => CacheStatusSchema.parse(42)).toThrow();
+  });
+});
+
+describe("ApiResponseMetaSchema", () => {
+  // AC: @api-contract ac-envelope
+  it("parses meta with only cache_status", () => {
+    const result = ApiResponseMetaSchema.parse({ cache_status: "ready" });
+    expect(result).toEqual({ cache_status: "ready" });
+  });
+
+  // AC: @api-contract ac-envelope
+  it("parses meta with pagination fields", () => {
+    const result = ApiResponseMetaSchema.parse({
+      cache_status: "loading",
+      total: 100,
+      offset: 20,
+      limit: 10,
+    });
+    expect(result).toEqual({
+      cache_status: "loading",
+      total: 100,
+      offset: 20,
+      limit: 10,
+    });
+  });
+
+  // AC: @api-contract ac-envelope
+  it("allows omitting optional pagination fields", () => {
+    const result = ApiResponseMetaSchema.parse({ cache_status: "ready" });
+    expect(result.total).toBeUndefined();
+    expect(result.offset).toBeUndefined();
+    expect(result.limit).toBeUndefined();
+  });
+
+  // AC: @api-contract ac-envelope
+  it("rejects meta without cache_status", () => {
+    expect(() => ApiResponseMetaSchema.parse({})).toThrow();
+    expect(() => ApiResponseMetaSchema.parse({ total: 10 })).toThrow();
+  });
+
+  // AC: @api-contract ac-cache-status-field
+  it("rejects meta with invalid cache_status", () => {
+    expect(() => ApiResponseMetaSchema.parse({ cache_status: "unknown" })).toThrow();
+  });
+});
+
+describe("ApiResponseSchema", () => {
+  // AC: @api-contract ac-envelope
+  it("parses a response envelope with array data", () => {
+    const schema = ApiResponseSchema(z.array(z.number()));
+    const result = schema.parse({
+      data: [1, 2, 3],
+      meta: { cache_status: "ready" },
+    });
+    expect(result.data).toEqual([1, 2, 3]);
+    expect(result.meta.cache_status).toBe("ready");
+  });
+
+  // AC: @api-contract ac-envelope
+  it("parses a response envelope with object data", () => {
+    const schema = ApiResponseSchema(z.object({ count: z.number() }));
+    const result = schema.parse({
+      data: { count: 42 },
+      meta: { cache_status: "ready", total: 42 },
+    });
+    expect(result.data.count).toBe(42);
+    expect(result.meta.total).toBe(42);
+  });
+
+  // AC: @api-contract ac-envelope
+  it("rejects response missing data field", () => {
+    const schema = ApiResponseSchema(z.array(z.string()));
+    expect(() => schema.parse({ meta: { cache_status: "ready" } })).toThrow();
+  });
+
+  // AC: @api-contract ac-envelope
+  it("rejects response missing meta field", () => {
+    const schema = ApiResponseSchema(z.array(z.string()));
+    expect(() => schema.parse({ data: [] })).toThrow();
+  });
+
+  // AC: @api-contract ac-envelope
+  it("rejects response with wrong data type", () => {
+    const schema = ApiResponseSchema(z.array(z.string()));
+    expect(() =>
+      schema.parse({ data: "not-an-array", meta: { cache_status: "ready" } }),
+    ).toThrow();
+  });
+
+  // AC: @api-contract ac-cache-status-field
+  it("validates cache status within the envelope", () => {
+    const schema = ApiResponseSchema(z.array(z.unknown()));
+    expect(() =>
+      schema.parse({ data: [], meta: { cache_status: "invalid" } }),
+    ).toThrow();
+  });
+
+  // AC: @api-contract ac-envelope
+  // AC: @api-contract ac-cache-status-field
+  it("validates wrapResponse output passes schema parsing", () => {
+    const schema = ApiResponseSchema(z.array(z.string()));
+    const wrapped = wrapResponse(["a", "b"], {
+      total: 2,
+      offset: 0,
+      limit: 10,
+      cacheDomainState: "ready",
+    });
+    const parsed = schema.parse(wrapped);
+    expect(parsed).toEqual(wrapped);
+  });
+
+  // AC: @api-contract ac-cache-status-field
+  it("validates wrapResponse loading output passes schema parsing", () => {
+    const schema = ApiResponseSchema(z.array(z.string()));
+    const wrapped = wrapResponse([] as string[], {
+      total: 0,
+      offset: 0,
+      limit: 0,
+      cacheDomainState: "loading",
+    });
+    const parsed = schema.parse(wrapped);
+    expect(parsed.meta.cache_status).toBe("loading");
+    expect(parsed.data).toEqual([]);
   });
 });
