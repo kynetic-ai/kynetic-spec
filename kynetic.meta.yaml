@@ -9748,6 +9748,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-29T09:55:28.406Z
+  - _ulid: 01KMWGA69VGV55ABWR7H4NMRMF
+    type: success
+    content: "The structured review workflow worked well for detached reviewer snapshots: create a fresh
+      review record, anchor the blocker to exact lines, record npm test and evidence checks, then
+      let the request_changes verdict auto-close the review and move the task to needs_work. That
+      kept the review auditable and avoided any manual state cleanup."
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-29T09:55:28.700Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
