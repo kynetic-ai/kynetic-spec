@@ -81442,6 +81442,19 @@ reviews:
         runner: npm
         created_at: 2026-03-29T21:46:55.709Z
         completed_at: 2026-03-29T21:46:55.709Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Local test suite completed with 9 failed suites / 4 failed tests after 3652.5s. Failures
+          were in tests/cli-plan.test.ts, tests/dispatch-workspace-registry.test.ts,
+          tests/triage-cli.test.ts, and tests/workflow-runs.test.ts. Attribution to this branch is
+          not yet established; running a dev comparison worktree next.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-29T21:48:43.666Z
+        completed_at: 2026-03-29T21:48:43.666Z
     events:
       - _ulid: 01KMXRXJKH9VYZV1FBF2XKK2WJ
         actor: Jacob Chapel
@@ -81470,6 +81483,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMXS0WVGW8R76THTJ1S9KCHT
         timestamp: 2026-03-29T21:46:58.361Z
+      - _ulid: 01KMXS46SYR58VF6BR0MEXVTJJ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-29T21:48:44.222Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -81500,5 +81520,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-29T21:45:06.930Z
-    updated_at: 2026-03-29T21:46:55.728Z
+    updated_at: 2026-03-29T21:48:43.666Z
     notes: []
