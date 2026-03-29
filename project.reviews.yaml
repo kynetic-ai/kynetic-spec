@@ -80952,6 +80952,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-29T13:10:20.669Z
+      - _ulid: 01KMWVFY3YW6KAG9VFYTE7XDC9
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMWVFXGPKGKHGN2CZWWTHR3K
+        timestamp: 2026-03-29T13:10:51.262Z
     examined_commit: 7aa92989e9de97463c356afbe1d2bdcc7fc92274
     external_links: []
     lifecycle_state: open
@@ -80961,8 +80968,27 @@ reviews:
       content_hash: ""
       ref: "@01KMW68MZ5Z281YD9Z87K2G55A"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMWVFXGPKGKHGN2CZWWTHR3K
+        anchor:
+          type: code
+          commit: 7aa92989e9de97463c356afbe1d2bdcc7fc92274
+          line_end: 169
+          line_start: 167
+          path: packages/web-ui/src/routes/sessions/+page.svelte
+          side: head
+        entries:
+          - _ulid: 01KMWVFXGPJ7N7J280PWJH8427
+            author: Test User
+            body: " still misses the cache-warming state in search mode. This page has two query paths ( and ),
+              but  only checks , while  can also throw . With , a warming search response falls
+              through to the generic error path instead of showing the required skeleton/banner, and
+              the retry banner resets only the paginated key rather than the active search query.
+              That violates @ui-data-freshness ac-warming-skeleton/ac-warming-timeout for one of the
+              sessions view states."
+            created_at: 2026-03-29T13:10:50.646Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-29T13:09:59.966Z
-    updated_at: 2026-03-29T13:10:20.042Z
+    updated_at: 2026-03-29T13:10:50.646Z
     notes: []
