@@ -78037,6 +78037,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-29T08:16:09.053Z
+      - _ulid: 01KMWCEWSNDBKBSGE7STHSD8TB
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMWAKVBTGQE0QCVX013Q197Q
+        timestamp: 2026-03-29T08:48:08.501Z
     examined_commit: 905a844fee7a14ce9a8667f502b96548ce3a3bff
     external_links: []
     lifecycle_state: closed
@@ -78064,6 +78070,16 @@ reviews:
               remains without a test that proves the loading→ready/degraded→ready event contract
               described by the spec.
             created_at: 2026-03-29T08:15:53.723Z
+          - _ulid: 01KMWCEW6TSJHP3T2DN9Y60YBC
+            author: "@claude"
+            body: "Fixed: replaced all 4 it.todo() stubs with behavioral tests that exercise the real
+              ProjectEntityCache. Added a DomainReadyCallback mechanism to the cache — tests create
+              a cache with the callback, trigger domain loads/transitions, and assert the callback
+              fires with correct domain, projectPath, and previousState. Coverage includes:
+              loading→ready, degraded→ready, event payload validation, and
+              no-broadcast-during-reload (ac-stale-during-reload). All 7092 tests pass with no
+              regressions."
+            created_at: 2026-03-29T08:48:07.898Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -78074,7 +78090,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T08:16:09.053Z
     created_at: 2026-03-29T08:11:35.940Z
-    updated_at: 2026-03-29T08:16:09.053Z
+    updated_at: 2026-03-29T08:48:07.898Z
     notes: []
   - _ulid: 01KMWBVQDKDDQM9YV99QWSQXEY
     slugs: []
