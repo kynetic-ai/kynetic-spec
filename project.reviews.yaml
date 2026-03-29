@@ -75161,6 +75161,12 @@ reviews:
         payload:
           thread_ulid: 01KMVF1K3JGT025XY76PJ5HHM4
         timestamp: 2026-03-29T01:07:20.608Z
+      - _ulid: 01KMVJ3DEWD01G1X6G1M74W0ZZ
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMVF1K3JGT025XY76PJ5HHM4
+        timestamp: 2026-03-29T01:07:29.372Z
     examined_commit: 6c58d673bad68d70fee52aa770d4792602926229
     external_links: []
     lifecycle_state: closed
@@ -75232,6 +75238,8 @@ reviews:
               is held and can interleave during yield windows."
             created_at: 2026-03-29T01:07:20.053Z
         kind: blocker
+        resolved_at: 2026-03-29T01:07:28.866Z
+        resolved_by: "@claude"
       - _ulid: 01KMVF1RDP5AKAQ1K4J3412149
         anchor:
           type: code
@@ -75274,7 +75282,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T00:15:47.454Z
     created_at: 2026-03-29T00:13:23.809Z
-    updated_at: 2026-03-29T01:07:20.053Z
+    updated_at: 2026-03-29T01:07:28.866Z
     notes: []
   - _ulid: 01KMVHBZTTQVVC52YQEGQSY2RC
     slugs: []
