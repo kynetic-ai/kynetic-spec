@@ -2020,3 +2020,22 @@ inbox:
       - meta
     added_by: "@claude"
     created_at: 2026-03-28T23:52:09.517Z
+  - _ulid: 01KMVSNV20CQ7WDSBJA4F602T1
+    text: Workspace registry CLI commands — at minimum a remove/purge command for operators to manually
+      remove stale workspace records without hand-editing YAML. Broader surface area (list, inspect,
+      reset) may also be valuable.
+    tags:
+      - dispatch
+      - cli
+      - workspace
+    added_by: "@claude"
+    created_at: 2026-03-29T03:19:53.152Z
+  - _ulid: 01KMVSNV4BZ8MRVBR8GVP36B74
+    text: "Shadow branch direct commit command (kspec shadow commit) — allow specifying files and
+      message for legitimate manual repairs. Companion: kspec shadow status should show
+      uncommitted/untracked changes in the worktree for easier debugging."
+    tags:
+      - shadow
+      - cli
+    added_by: "@claude"
+    created_at: 2026-03-29T03:19:53.227Z
