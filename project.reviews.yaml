@@ -79107,6 +79107,13 @@ reviews:
           status: pass
           name: npm-test
         timestamp: 2026-03-29T09:39:56.954Z
+      - _ulid: 01KMWFDT7KVNQWQ5TWTVN2ABMB
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMWFDSMMGHWJ73X1ZNEW2PP5
+        timestamp: 2026-03-29T09:39:58.835Z
     examined_commit: 15c4089d8a577e29087bbd383c53e194e6f2e31c
     external_links: []
     lifecycle_state: open
@@ -79116,8 +79123,35 @@ reviews:
       content_hash: ""
       ref: "@01KMW68JT108S4RS3G1GNYH5A9"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMWFDSMMGHWJ73X1ZNEW2PP5
+        entries:
+          - _ulid: 01KMWFDSMMN0E8X1ZHVZESCF6K
+            author: Test User
+            body: >-
+              Evidence log:
+
+              Files read: packages/daemon/src/server.ts, src/daemon/entity-cache.ts,
+              tests/daemon-entity-cache.test.ts, packages/daemon/src/websocket/pubsub.ts,
+              src/parser/index.ts
+
+              Commands run: git diff --stat dev...HEAD; git diff --unified=80 dev...HEAD; git log
+              --oneline dev..HEAD; kspec task get @01KMW68JT108S4RS3G1GNYH5A9; kspec item get
+              @daemon-entity-cache; kspec review get @01KMWDV038KPCXHVBV14CRX4YN; rg -n "AC:
+              @daemon-entity-cache|AC: @trait-" tests/daemon-entity-cache.test.ts tests; kspec
+              validate; npm test
+
+              Claims verified: verified the branch adds four commits beyond dev, verified server
+              wiring includes projectPath in the serialized broadcast payload, verified tests
+              exercise the PubSubManager/WebSocket path, verified full suite passes on this snapshot
+
+              Categories searched: correctness (no issues), edge cases (loading->ready,
+              degraded->ready, ready-state reload suppression covered), error handling (degraded
+              recovery covered), test quality (behavioral, no source scanning), integration (server
+              -> cache callback -> pubsub path covered)
+            created_at: 2026-03-29T09:39:58.228Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-29T09:35:23.806Z
-    updated_at: 2026-03-29T09:39:56.421Z
+    updated_at: 2026-03-29T09:39:58.228Z
     notes: []
