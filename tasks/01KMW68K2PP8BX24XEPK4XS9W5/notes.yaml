@@ -7,3 +7,20 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-29T07:07:33.170Z
+  - _ulid: 01KMW6R6FVJ8N9ZNMEGMJ53QXE
+    content: >-
+      Added all four warming ACs to @ui-data-freshness via kspec batch:
+
+      - ac-warming-skeleton: skeleton display + no cache persistence of warming responses
+
+      - ac-warming-auto-transition: auto-invalidation on domain-ready events
+
+      - ac-warming-retry-fallback: retry at short intervals for missed real-time events
+
+      - ac-warming-timeout: error state with manual retry after 30s ceiling
+
+      All ACs match the task description exactly. Spec now has 14 ACs total (10 original + 4 new).
+      No code changes needed — spec-only task.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-29T07:08:21.883Z
