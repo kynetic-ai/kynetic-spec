@@ -22,6 +22,7 @@ import type { PubSubManager } from "../websocket/pubsub";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
 import type { CacheDomain } from "../../daemon/entity-cache.js";
 import { getDispatchShadowMutationLockPath } from "../../agent-runtime/workspace.js";
+import { runWithoutSpecDirOverride } from "../../parser/yaml.js";
 
 // ── Types ──────────────────────────────────────────────────────────
 
@@ -184,17 +185,21 @@ async function executeCommand(
   installExitInterceptor();
 
   const originalCwd = process.cwd();
-  // Clear KSPEC_SPEC_DIR so initContext() discovers the project via cwd
-  // (set below) rather than an ambient env override that may point elsewhere.
-  const savedSpecDir = process.env.KSPEC_SPEC_DIR;
-  delete process.env.KSPEC_SPEC_DIR;
   let exitCode = 0;
 
   try {
     // Set process.cwd() to the project path so initContext() discovers
     // the correct kspec project
     process.chdir(projectPath);
-    await program.parseAsync(argv, { from: "user" });
+
+    // Run inside runWithoutSpecDirOverride so initContext() ignores the
+    // KSPEC_SPEC_DIR env var (which may be set by concurrent threads such
+    // as batch-atomic mode or test fixtures) and resolves the project
+    // purely from cwd.  This avoids mutating process.env which is shared
+    // across all threads in the process.
+    await runWithoutSpecDirOverride(() =>
+      program.parseAsync(argv, { from: "user" }),
+    );
   } catch (err) {
     if (err instanceof BatchExitError) {
       exitCode = err.code;
@@ -205,9 +210,6 @@ async function executeCommand(
     }
   } finally {
     process.chdir(originalCwd);
-    if (savedSpecDir !== undefined) {
-      process.env.KSPEC_SPEC_DIR = savedSpecDir;
-    }
     console.log = origLog;
     console.error = origError;
     console.warn = origWarn;
@@ -443,19 +445,19 @@ export function createCommandRoutes(options: CommandRouteOptions) {
         const batchResult = await dispatchMutex.run(async () => {
           const runBatch = () => {
             const originalCwd = process.cwd();
-            const savedBatchSpecDir = process.env.KSPEC_SPEC_DIR;
-            delete process.env.KSPEC_SPEC_DIR;
             process.chdir(projectPath);
-            return executeBatch(batchCommands, program, {
-              atomic: body.atomic !== false, // Default atomic
-              continueOnError: body.continue_on_error ?? false,
-              dryRun: false,
-              json: true,
-            }).finally(() => {
+            // Run inside runWithoutSpecDirOverride so initContext() ignores
+            // the ambient KSPEC_SPEC_DIR env var (same rationale as
+            // executeCommand above — avoids process.env mutation races).
+            return runWithoutSpecDirOverride(() =>
+              executeBatch(batchCommands, program, {
+                atomic: body.atomic !== false, // Default atomic
+                continueOnError: body.continue_on_error ?? false,
+                dryRun: false,
+                json: true,
+              }),
+            ).finally(() => {
               process.chdir(originalCwd);
-              if (savedBatchSpecDir !== undefined) {
-                process.env.KSPEC_SPEC_DIR = savedBatchSpecDir;
-              }
             });
           };
 

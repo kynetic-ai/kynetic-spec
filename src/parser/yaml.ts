@@ -1,3 +1,4 @@
+import { AsyncLocalStorage } from "node:async_hooks";
 import { execSync } from "node:child_process";
 import type { Dirent } from "node:fs";
 import * as fs from "node:fs/promises";
@@ -55,6 +56,26 @@ import {
 import { loadProjectConfig, type ResolvedKspecConfig } from "./config.js";
 import { consumeSyncMode, type ShadowSyncMode } from "../cli/sync-mode.js";
 import { TraitIndex } from "./traits.js";
+
+/**
+ * Async-context flag that tells initContext() to ignore the KSPEC_SPEC_DIR
+ * env var and resolve the project from cwd/startDir instead.
+ *
+ * Used by the daemon command executor to prevent ambient KSPEC_SPEC_DIR
+ * (set by concurrent tests or batch-atomic mode) from redirecting project
+ * resolution.  Unlike deleting the env var, this approach is confined to
+ * the current async execution chain and cannot race with other threads.
+ */
+const specDirOverrideStorage = new AsyncLocalStorage<{ ignore: boolean }>();
+
+/**
+ * Run `fn` in an async context where initContext() will skip the
+ * KSPEC_SPEC_DIR env-var override and resolve the project purely
+ * from cwd or startDir.
+ */
+export function runWithoutSpecDirOverride<T>(fn: () => T): T {
+  return specDirOverrideStorage.run({ ignore: true }, fn);
+}
 
 /**
  * Log a debug message (only when KSPEC_DEBUG=1)
@@ -526,8 +547,11 @@ export async function initContext(
 
   const { config } = configResult;
 
-  // KSPEC_SPEC_DIR override: used by batch atomic mode to redirect to temp copy
-  const specDirOverride = process.env.KSPEC_SPEC_DIR;
+  // KSPEC_SPEC_DIR override: used by batch atomic mode to redirect to temp copy.
+  // Suppressed when running inside runWithoutSpecDirOverride() (e.g. daemon
+  // command execution) to avoid process-env races with concurrent threads.
+  const alsContext = specDirOverrideStorage.getStore();
+  const specDirOverride = alsContext?.ignore ? undefined : process.env.KSPEC_SPEC_DIR;
   if (specDirOverride) {
     const specDir = path.resolve(specDirOverride);
     const manifestPath = await findManifestInDir(specDir);
@@ -832,7 +856,12 @@ export async function loadAllTasks(ctx: KspecContext): Promise<LoadedTask[]> {
   // When shadow is enabled (or spec dir is explicitly overridden), look only in specDir.
   // KSPEC_SPEC_DIR override is used by batch mode and some integration tests to isolate
   // task state to a temp directory; scanning ctx.rootDir can leak tasks from parent dirs.
-  if (ctx.shadow?.enabled || Boolean(process.env.KSPEC_SPEC_DIR)) {
+  // Respects runWithoutSpecDirOverride() context (same as initContext).
+  const specDirActive = (() => {
+    const als = specDirOverrideStorage.getStore();
+    return als?.ignore ? false : Boolean(process.env.KSPEC_SPEC_DIR);
+  })();
+  if (ctx.shadow?.enabled || specDirActive) {
     const taskFiles = await findTaskFiles(ctx.specDir);
 
     // Also check for standalone files in specDir
