@@ -9492,6 +9492,16 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-03-29T01:02:01.987Z
+  - _ulid: 01KMVK86REDMK9KZTYY2HT9Y0X
+    type: success
+    content: Fix cycle 2 for shadow mutation lock task completed efficiently in a single commit. Reading
+      full review JSON upfront (kspec review get --json) gave clear, actionable direction for both
+      blockers. Exporting an existing private function (rollbackDirtyShadowWorktree) to close the
+      CLI gap was the right minimal change — no new logic needed.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-29T01:27:34.926Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
