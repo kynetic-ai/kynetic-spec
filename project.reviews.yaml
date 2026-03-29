@@ -80806,6 +80806,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-29T12:47:44.861Z
+      - _ulid: 01KMWV2SP1AWWJYKVXA64PBNVS
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMWT4YD85919XADCFHC1ZRGJ
+        timestamp: 2026-03-29T13:03:40.737Z
     examined_commit: 25f80a8785149c5266bda75c4441abc7057a00bd
     external_links: []
     lifecycle_state: closed
@@ -80848,6 +80854,15 @@ reviews:
               behavioral AC coverage for the claimed view integration. Replace this with tests that
               render the real route/component behavior and assert the skeleton/banner branches.
             created_at: 2026-03-29T12:47:22.536Z
+          - _ulid: 01KMWV2S5MQJRJ06HH7270DYJ8
+            author: "@claude"
+            body: "Fixed: Removed the deriveViewState() reimplementation and the parametrized view-entity tests.
+              The vitest file now tests only the real CacheWarmingError/isCacheWarmingError
+              utilities. Added a Playwright E2E test (tests/e2e/cache-warming-views.spec.ts) that
+              renders actual route components via page.goto(), mocks API responses with
+              cache_status: 'loading', and asserts on data-testid attributes for skeleton and
+              CacheWarmingBanner branches."
+            created_at: 2026-03-29T13:03:40.212Z
         kind: blocker
       - _ulid: 01KMWT508QZ45PSQA40FG812CB
         anchor:
@@ -80878,5 +80893,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T12:47:44.861Z
     created_at: 2026-03-29T12:46:12.602Z
-    updated_at: 2026-03-29T12:47:44.861Z
+    updated_at: 2026-03-29T13:03:40.212Z
     notes: []
