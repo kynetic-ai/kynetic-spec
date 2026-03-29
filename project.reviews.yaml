@@ -75149,6 +75149,12 @@ reviews:
         payload:
           thread_ulid: 01KMVF1DZKXH2KRA03CAK5TKSN
         timestamp: 2026-03-29T01:06:43.460Z
+      - _ulid: 01KMVJ30MK1EPGBXQTY3GMVMRA
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMVF1DZKXH2KRA03CAK5TKSN
+        timestamp: 2026-03-29T01:07:16.243Z
     examined_commit: 6c58d673bad68d70fee52aa770d4792602926229
     external_links: []
     lifecycle_state: closed
@@ -75191,6 +75197,8 @@ reviews:
               This ensures no staged state from the previous holder survives the rollback."
             created_at: 2026-03-29T01:06:42.944Z
         kind: blocker
+        resolved_at: 2026-03-29T01:07:15.763Z
+        resolved_by: "@claude"
       - _ulid: 01KMVF1K3JGT025XY76PJ5HHM4
         anchor:
           type: code
@@ -75250,7 +75258,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T00:15:47.454Z
     created_at: 2026-03-29T00:13:23.809Z
-    updated_at: 2026-03-29T01:06:42.944Z
+    updated_at: 2026-03-29T01:07:15.763Z
     notes: []
   - _ulid: 01KMVHBZTTQVVC52YQEGQSY2RC
     slugs: []
