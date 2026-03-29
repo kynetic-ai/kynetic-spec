@@ -80678,6 +80678,17 @@ reviews:
         runner: kspec
         created_at: 2026-03-29T12:47:24.386Z
         completed_at: 2026-03-29T12:47:24.386Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "node scripts/test.cjs cache-warming-view-states --fresh: 8/8 suites passed, 26/26 tests
+          passed."
+        name: cache-warming-view-states
+        required: true
+        runner: vitest
+        created_at: 2026-03-29T12:47:28.437Z
+        completed_at: 2026-03-29T12:47:28.437Z
     events:
       - _ulid: 01KMWT2T3T053S2HZA9251BBQ9
         actor: Test User
@@ -80720,6 +80731,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMWT508QZ45PSQA40FG812CB
         timestamp: 2026-03-29T12:47:25.929Z
+      - _ulid: 01KMWT54QJ7BEYKB06FRT7K32F
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: cache-warming-view-states
+        timestamp: 2026-03-29T12:47:29.011Z
     examined_commit: 25f80a8785149c5266bda75c4441abc7057a00bd
     external_links: []
     lifecycle_state: open
@@ -80785,5 +80803,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-29T12:46:12.602Z
-    updated_at: 2026-03-29T12:47:24.439Z
+    updated_at: 2026-03-29T12:47:28.437Z
     notes: []
