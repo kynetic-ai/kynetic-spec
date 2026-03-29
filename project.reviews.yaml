@@ -75831,6 +75831,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-29T03:47:42.494Z
+      - _ulid: 01KMVW973W3WKM51JM27F80SYN
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMVV82QK6VBHYQP6B6QVDMF7
+        timestamp: 2026-03-29T04:05:25.244Z
     examined_commit: 2529f7659365ae1d9a7dbba2c6f35edf93d2d222
     external_links: []
     lifecycle_state: closed
@@ -75863,6 +75869,16 @@ reviews:
               changed; they do not exercise shadow-backed projects or verify a matching shadow
               commit.
             created_at: 2026-03-29T03:47:19.412Z
+          - _ulid: 01KMVW96J263BEVWN5DNBF5J7R
+            author: "@claude"
+            body: "Fixed: Added purgeDispatchWorkspaceRecord() in workspace.ts that wraps the delete inside
+              withDispatchShadowMutationLock + commitWorkspaceRegistryToShadow.
+              _purgeUnrecoverableWorkspaceRecord in dispatch.ts now calls this durable path instead
+              of deleteDispatchWorkspaceRecord directly. Added two shadow-backed tests: (1)
+              verifying the purge creates a shadow commit and leaves clean worktree state, (2)
+              verifying the purge acquires the shadow mutation lock (times out when lock is held).
+              Both tests use it.skipIf(!canRunShadowTests) following the existing pattern."
+            created_at: 2026-03-29T04:05:24.674Z
         kind: blocker
       - _ulid: 01KMVV8FRZRA86ZJNK71BNAXCB
         anchor:
@@ -75896,5 +75912,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T03:47:42.494Z
     created_at: 2026-03-29T03:41:16.980Z
-    updated_at: 2026-03-29T03:47:42.494Z
+    updated_at: 2026-03-29T04:05:24.674Z
     notes: []
