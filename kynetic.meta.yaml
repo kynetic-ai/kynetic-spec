@@ -9846,6 +9846,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-29T11:47:28.000Z
+  - _ulid: 01KMWQTD6GMNH3KYZNJYHCYQQZ
+    type: success
+    content: "web-ui test pattern for / alias modules: mock both /module and ../src/lib/module paths,
+      use vi.importActual for re-exporting real implementations. For @tanstack/svelte-query, mock
+      entire module with a MockQueryClient class to avoid .svelte file resolution errors. Pattern
+      established in api-envelope.test.ts and query-client-retry.test.ts."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-29T12:06:40.080Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
