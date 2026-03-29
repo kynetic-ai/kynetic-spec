@@ -9758,6 +9758,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-29T09:55:28.700Z
+  - _ulid: 01KMWHP527ZAC9J9E1BT04Z7T8
+    type: friction
+    content: E2E test specs using page.route() mocks each inline-construct API response JSON (e.g.
+      JSON.stringify({ items, total, offset, limit })). When daemon response format changes (like
+      adding the {data, meta} envelope), every spec file must be updated independently — 6 files
+      needed identical envelope() wrapper additions in fix cycle 4 of
+      task-migrate-route-handlers-envelope. A shared E2E mock utility (like the envelope() helper
+      added to each file) would reduce this to a single change point.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-29T10:19:29.224Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
