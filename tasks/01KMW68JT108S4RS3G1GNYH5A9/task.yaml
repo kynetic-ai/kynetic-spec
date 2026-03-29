@@ -26,8 +26,11 @@ description: |
 spec_ref: "@daemon-entity-cache"
 plan_ref: "@plan-daemon-cache-warming-ux"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev at 107be4397478b42cab064d2afccd4750bbce812c after approved review
+  @01KMWF5DMYQEEV11M07H3AFH6C. Verified domain-ready event wiring, payload shape, and full npm test
+  pass.
 depends_on: []
 context: []
 priority: 1
@@ -378,8 +381,24 @@ history:
         previous: "@01KMWDV038KPCXHVBV14CRX4YN"
     command: review-link
     timestamp: 2026-03-29T09:35:26.075Z
+  - author: Test User
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev at 107be4397478b42cab064d2afccd4750bbce812c after approved review
+          @01KMWF5DMYQEEV11M07H3AFH6C. Verified domain-ready event wiring, payload shape, and full
+          npm test pass.
+        previous: null
+      completed_at:
+        new: 2026-03-29T09:40:49.095Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-03-29T09:40:49.132Z
 created_at: 2026-03-29T06:59:50.209Z
 started_at: 2026-03-29T09:31:49.038Z
 submitted_at: 2026-03-29T09:31:52.288Z
+completed_at: 2026-03-29T09:40:49.095Z
 todos: []
 automation: eligible
