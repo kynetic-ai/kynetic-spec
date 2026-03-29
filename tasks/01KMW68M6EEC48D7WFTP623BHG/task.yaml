@@ -41,7 +41,7 @@ description: |
 spec_ref: "@api-contract"
 plan_ref: "@plan-daemon-cache-warming-ux"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-migrate-route-handlers-envelope"
@@ -51,6 +51,7 @@ tags:
   - web-ui
   - data-layer
 vcs_refs: []
+session_id: 01KMWM77SGJ1XZE8WZPBVPDZ1J
 history:
   - author: "@claude"
     changes:
@@ -59,6 +60,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-03-29T07:02:53.681Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KMWM77SGJ1XZE8WZPBVPDZ1J
+        previous: null
+      started_at:
+        new: 2026-03-29T11:05:34.970Z
+        previous: null
+    command: task-start
+    timestamp: 2026-03-29T11:05:34.971Z
 created_at: 2026-03-29T06:59:51.630Z
+started_at: 2026-03-29T11:05:34.970Z
 todos: []
 automation: eligible
