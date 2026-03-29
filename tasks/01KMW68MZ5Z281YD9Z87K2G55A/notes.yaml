@@ -28,3 +28,13 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-29T12:30:01.322Z
+  - _ulid: 01KMWSVN6E3A4MSVFNJNNWYJEE
+    content: "Implementation complete. Created CacheWarmingBanner.svelte component and updated 8 views
+      (tasks board, tasks list, specs, inbox, sessions, plans, reviews, triage). Pattern: derive
+      cacheWarming from isCacheWarmingError(query.error), suppress warming error from generic
+      display, show CacheWarmingBanner after timeout with retry button. During retries isLoading
+      stays true so existing skeletons shown. Also upgraded loading states from text to shimmer
+      skeletons in tasks list, reviews, triage. 26 new tests, full suite 7212 tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-29T12:42:18.190Z
