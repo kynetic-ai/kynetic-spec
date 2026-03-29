@@ -77959,3 +77959,29 @@ reviews:
     created_at: 2026-03-29T08:02:29.513Z
     updated_at: 2026-03-29T08:08:21.813Z
     notes: []
+  - _ulid: 01KMWABZM4NB3HHYSDMTHP2Z02
+    slugs: []
+    title: Review add domain ready event AC to entity cache spec
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KMWABZM4CFJS2NTGR68TKBXM
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-29T08:11:35.940Z
+    examined_commit: 905a844fee7a14ce9a8667f502b96548ce3a3bff
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMW68JT108S4RS3G1GNYH5A9"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-29T08:11:35.940Z
+    updated_at: null
+    notes: []
