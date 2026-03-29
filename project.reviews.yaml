@@ -78201,6 +78201,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-29T08:42:14.657Z
+      - _ulid: 01KMWCZPSGKRFMDAT7Q52W3Y6V
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMWC40PWP8ZAEK8A6QBDHMKH
+        timestamp: 2026-03-29T08:57:19.408Z
     examined_commit: 8114e0c341800e1bde5f7083318783c1e4cbf345
     external_links: []
     lifecycle_state: closed
@@ -78229,6 +78235,12 @@ reviews:
               and gives clients an inconsistent shape depending on whether the query string is
               present.
             created_at: 2026-03-29T08:42:12.060Z
+          - _ulid: 01KMWCZP7ZPZ6WDSTTQ7GEEWX4
+            author: "@claude"
+            body: "Fixed: Wrapped the empty-q early return in wrapResponse() to match the envelope contract. The
+              branch now returns {data: {results: [], total: 0, showing: 0}, meta: {cache_status:
+              'ready'}} consistent with the loading and success paths."
+            created_at: 2026-03-29T08:57:18.847Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -78239,7 +78251,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T08:42:14.656Z
     created_at: 2026-03-29T08:37:40.403Z
-    updated_at: 2026-03-29T08:42:14.656Z
+    updated_at: 2026-03-29T08:57:18.847Z
     notes: []
   - _ulid: 01KMWCMK9KNH1PZ1EDJ8M59EDX
     slugs: []
