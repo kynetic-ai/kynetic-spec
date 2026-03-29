@@ -1,1 +1,30 @@
-notes: []
+notes:
+  - _ulid: 01KMWMKD4MAA4WFNS7ABH2SXZZ
+    content: >-
+      Approach: The api.ts already has unwrapEnvelope() and unwrapPaginatedEnvelope() helpers, and
+      most endpoints already use them. The remaining work is:
+
+
+      1. Consolidate ~12 functions that use inline envelope.data access to use the helpers instead.
+
+      2. Add a new helper for the SessionListResponse pattern (fetchSessions, fetchTaskSessions,
+      fetchItemSessions) since they have an extra unfiltered_total field.
+
+      3. Update static mode (api-static.ts) to wrap returns in envelope shape {data, meta:
+      {cache_status: 'ready'}} so the unwrap path is identical.
+
+      4. Endpoints that don't use the server envelope (hooks, schedules, events, compositions,
+      mutations, diff, batch, health) are excluded per ac-envelope: 'Non-cache endpoints excluded
+      from this contract.'
+
+
+      Edge cases:
+
+      - fetchSessions wraps data.items + data.unfiltered_total — needs a dedicated unwrap.
+
+      - fetchValidation does normalize/default fields after unwrap — keep that logic.
+
+      - fetchSessionEvents has nested data.events structure.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-29T11:10:24.916Z
