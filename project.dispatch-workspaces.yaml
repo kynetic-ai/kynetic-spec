@@ -27509,12 +27509,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-29T09:57:13.149Z
+      updated_at: 2026-03-29T09:57:18.559Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-29T09:57:13.149Z
+      updated_at: 2026-03-29T09:57:18.559Z
     integration:
       status: pending
       detail: null
@@ -27522,7 +27522,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 107be4397478b42cab064d2afccd4750bbce812c
-      updated_at: 2026-03-29T09:57:13.149Z
+      updated_at: 2026-03-29T09:57:18.559Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KMW68KWFR1SEWZWVQV1G93HP"
@@ -27530,16 +27530,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-29T09:55:38.967Z
-      last_reconciled_at: 2026-03-29T09:57:13.149Z
+      last_reconciled_at: 2026-03-29T09:57:18.559Z
       created_at: 2026-03-29T09:45:55.099Z
-      updated_at: 2026-03-29T09:57:13.149Z
+      updated_at: 2026-03-29T09:57:18.559Z
     workspace_id: dispatch-workspace-01KMW68KWFR1SEWZWVQV1G93HP
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 107be4397478b42cab064d2afccd4750bbce812c
+        last_seen_at: 2026-03-29T09:57:18.559Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cache-domain-ready-ws-event-01kmw68k-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-cache-domain-ready-ws-event/01kmw68k
         head: 107be4397478b42cab064d2afccd4750bbce812c
-        last_seen_at: 2026-03-29T09:45:55.099Z
+        last_seen_at: 2026-03-29T09:57:18.559Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cache-domain-ready-ws-event-01kmw68k
