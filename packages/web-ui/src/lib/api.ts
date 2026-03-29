@@ -84,6 +84,15 @@ export class CacheWarmingError extends Error {
 }
 
 /**
+ * Type guard for CacheWarmingError. Useful in view components to distinguish
+ * cache warming from other query errors (e.g., to show skeletons vs error states).
+ * AC: @ui-data-freshness ac-warming-skeleton
+ */
+export function isCacheWarmingError(error: unknown): error is CacheWarmingError {
+  return error instanceof CacheWarmingError;
+}
+
+/**
  * Check envelope meta for cache_status and throw CacheWarmingError if "loading".
  * Must be called before extracting data so callers never see default/empty payloads
  * from a warming cache.
