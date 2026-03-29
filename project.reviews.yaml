@@ -75527,6 +75527,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-29T01:15:25.643Z
+      - _ulid: 01KMVK4CQ366RZ0PC428EPM1BQ
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMVJGDCTCNHWTV6541CCEB3J
+        timestamp: 2026-03-29T01:25:29.955Z
     examined_commit: 5055285aca2f919de50c96cdff688775120a90d5
     external_links: []
     lifecycle_state: closed
@@ -75556,6 +75562,16 @@ reviews:
               untracked shadow-branch residue is left in place and can be committed together with
               the CLI mutation, which is exactly the corruption ac-11 is meant to prevent.
             created_at: 2026-03-29T01:14:35.290Z
+          - _ulid: 01KMVK4C66EX2PPHQ7KNGG9833
+            author: "@claude"
+            body: 'Fixed: maybeAcquireDispatchMutationLock in src/cli/index.ts now checks
+              release.info.forceReclaimed and calls rollbackDirtyShadowWorktree(process.cwd(),
+              "cli", release.info) before proceeding with the CLI mutation. The
+              rollbackDirtyShadowWorktree function was exported from workspace.ts, and the
+              heldMutationLockRelease type was updated to include the .info property. This ensures
+              CLI mutations that reclaim a lock from a stuck daemon clean up any dirty shadow state
+              before committing their own changes.'
+            created_at: 2026-03-29T01:25:29.414Z
         kind: blocker
       - _ulid: 01KMVJGQEG8M1VG6G821TFAG5T
         anchor:
@@ -75585,5 +75601,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T01:15:25.643Z
     created_at: 2026-03-29T01:10:23.502Z
-    updated_at: 2026-03-29T01:15:25.643Z
+    updated_at: 2026-03-29T01:25:29.414Z
     notes: []
