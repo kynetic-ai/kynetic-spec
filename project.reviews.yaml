@@ -77824,6 +77824,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-29T08:02:47.105Z
+      - _ulid: 01KMWA5RH7JZNQAQC01ZRGXXV3
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMWA5QVJ0Q2X63EM5WK0T00G
+        timestamp: 2026-03-29T08:08:12.071Z
     examined_commit: 874f6f54ea34af06938220461a6500d1ca2bcddc
     external_links: []
     lifecycle_state: open
@@ -77833,8 +77840,29 @@ reviews:
       content_hash: ""
       ref: "@01KMW68KC5Z7W9QJP96GYRYPHE"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMWA5QVJ0Q2X63EM5WK0T00G
+        entries:
+          - _ulid: 01KMWA5QVJF855KFHD1MA270VQ
+            author: Test User
+            body: "Evidence log: Files read: packages/shared/src/api.ts,
+              packages/daemon/src/routes/response-envelope.ts, packages/shared/src/index.ts,
+              packages/shared/tests/types.test.ts, tests/api-response-envelope.test.ts,
+              packages/daemon/src/routes/entity-cache-types.ts, tests/agent-dispatch-engine.test.ts.
+              Commands run: kspec task get @01KMW68KC5Z7W9QJP96GYRYPHE, kspec item get
+              @api-contract, kspec review get @01KMW8EE8PDVXSJWMXTV7C4MCF, git diff against dev
+              base, rg for AC annotations/exports, kspec validate, npm test, npm test --
+              tests/api-response-envelope.test.ts packages/shared/tests/types.test.ts, npm test --
+              tests/agent-dispatch-engine.test.ts tests/canonical-task-workspace-contract.test.ts
+              tests/dispatch-workspace-cleanup.test.ts. Claims verified: the new envelope
+              schemas/types are exported from @kynetic-ai/shared; wrapResponse returns the
+              normalized {data, meta} shape; schema parsing covers ready vs loading cache status;
+              full-suite failures were reproduced only in aggregate and the failing untouched suites
+              passed when rerun directly. Categories searched: correctness, AC coverage, runtime
+              validation, integration/export wiring, regression risk, test quality."
+            created_at: 2026-03-29T08:08:11.378Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-29T08:02:29.513Z
-    updated_at: 2026-03-29T08:02:46.528Z
+    updated_at: 2026-03-29T08:08:11.378Z
     notes: []
