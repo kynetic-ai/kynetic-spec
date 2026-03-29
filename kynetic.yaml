@@ -416,8 +416,9 @@ traits:
         when: validation fails
       - given: list endpoint is called
         id: ac-4
-        then: accepts limit and offset query params, returns {items, total, offset, limit} wrapper
-        when: pagination supported
+        then: accepts limit and offset query params, response includes the total count of matching items and
+          the pagination parameters applied
+        when: pagination is supported
       - given: API endpoint mutates state
         id: ac-5
         then: shadow commit occurs with semantic message

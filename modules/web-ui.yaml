@@ -727,7 +727,7 @@ features:
         when: GET /api/tasks with status filter (e.g., ?status=pending&status=in_progress)
       - given: daemon is running
         id: ac-4
-        then: returns paginated results with {items, total, offset, limit} wrapper
+        then: returns paginated results including total count and the pagination parameters applied
         when: GET /api/tasks with pagination (?limit=10&offset=20)
       - given: daemon is running
         id: ac-5
@@ -845,6 +845,18 @@ features:
         id: ac-33
         then: receives shutdown event with {reason}, connection closes gracefully
         when: WebSocket connection active
+      - given: the daemon is running and receives an API request
+        id: ac-envelope
+        then: the response uses a normalized envelope with a typed data payload and a metadata object
+          containing cache readiness state, and pagination fields (total, offset, limit) when
+          applicable. Non-cache endpoints (health, projects, command, mutation responses) are
+          excluded from this contract.
+        when: an endpoint that serves entity data from the cache returns a response
+      - given: a cache domain is still loading for the requested project
+        id: ac-cache-status-field
+        then: the response metadata includes a cache status value of "loading" and the data payload is empty
+          or default, distinct from a normal empty result where cache status is "ready"
+        when: an API list or query endpoint is called
     tags:
       - api
       - rest
