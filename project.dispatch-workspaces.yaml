@@ -28105,7 +28105,7 @@ workspaces:
         head: 65b9cc87bfebad12330eaec3b14f345459cc8f92
         last_seen_at: 2026-03-29T13:25:12.000Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ui-warming-skeletons-01kmw68m
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: e5ad17fef11f6b5347a1f950dccf3e7e80cea343
     bootstrap:
       status: succeeded
@@ -28214,7 +28214,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-29T22:03:31.102Z
+      updated_at: 2026-03-29T22:03:37.963Z
     integration:
       status: pending
       detail: null
@@ -28229,10 +28229,10 @@ workspaces:
     task_slug: task-e2e-cache-warming-transition
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-29T13:58:37.168Z
-      last_reconciled_at: 2026-03-29T22:03:31.102Z
+      last_active_at: 2026-03-29T22:03:37.963Z
+      last_reconciled_at: 2026-03-29T22:03:37.963Z
       created_at: 2026-03-29T13:36:43.710Z
-      updated_at: 2026-03-29T22:03:35.601Z
+      updated_at: 2026-03-29T22:03:37.963Z
     workspace_id: dispatch-workspace-01KMW68N7AB8WWRZMVQV3C2789
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
