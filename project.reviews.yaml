@@ -79379,3 +79379,29 @@ reviews:
     created_at: 2026-03-29T09:46:40.217Z
     updated_at: 2026-03-29T09:54:25.958Z
     notes: []
+  - _ulid: 01KMWGFA2PRKXP0MZBPNPRW5AP
+    slugs: []
+    title: Review task-cache-domain-ready-ws-event
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KMWGFA2NEW6ME4B3TD2KZFV6
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-29T09:58:16.405Z
+    examined_commit: 107be4397478b42cab064d2afccd4750bbce812c
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMW68KWFR1SEWZWVQV1G93HP"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-29T09:58:16.406Z
+    updated_at: null
+    notes: []
