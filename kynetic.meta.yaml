@@ -9790,6 +9790,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-29T10:27:32.833Z
+  - _ulid: 01KMWKST7Z9D3TZA432BRJGP29
+    type: friction
+    content: "Agent context overflow (Prompt is too long) leaves tasks in inconsistent state: code
+      committed and review thread replies posted, but threads unresolved and task not resubmitted.
+      Recovery requires next invocation to reconstruct what was done vs what remains. Consider: (1)
+      making thread resolution + task submit the FIRST post-code step so it happens before context
+      fills, or (2) adding a dispatch-level checkpoint that records partial completion state for
+      cleaner handoff."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-29T10:56:26.367Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
