@@ -42,7 +42,7 @@ description: |
 spec_ref: "@ui-data-freshness"
 plan_ref: "@plan-daemon-cache-warming-ux"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-ui-cache-warming-interceptor"
@@ -56,7 +56,7 @@ review_ref: "@01KMWVEC0YNRRH8MQVY735PQQZ"
 submission_linkage:
   review_url: null
   branch: dev
-  captured_at: 2026-03-29T13:04:43.558Z
+  captured_at: 2026-03-29T13:23:58.904Z
   commit: 1b7a83926fb96ba7c9fac3b54a16d790fd8309b7
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
@@ -190,8 +190,35 @@ history:
         previous: 2026-03-29T13:04:39.767Z
     command: task-start
     timestamp: 2026-03-29T13:23:55.522Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-29T13:23:58.904Z
+          commit: 1b7a83926fb96ba7c9fac3b54a16d790fd8309b7
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-29T13:04:43.558Z
+          commit: 1b7a83926fb96ba7c9fac3b54a16d790fd8309b7
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+      submitted_at:
+        new: 2026-03-29T13:23:58.909Z
+        previous: 2026-03-29T13:04:43.562Z
+    command: task-submit
+    timestamp: 2026-03-29T13:23:58.909Z
 created_at: 2026-03-29T06:59:52.421Z
 started_at: 2026-03-29T13:23:55.521Z
-submitted_at: 2026-03-29T13:04:43.562Z
+submitted_at: 2026-03-29T13:23:58.909Z
 todos: []
 automation: eligible
