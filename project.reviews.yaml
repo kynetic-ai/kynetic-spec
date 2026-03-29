@@ -81591,6 +81591,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMXT9TMXP60W9K29S6YS3ZXK
         timestamp: 2026-03-29T22:09:17.517Z
+      - _ulid: 01KMXT9WWFS34CWNZZ5QYNKPRS
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMXT9WANBQ8RGBTMJCX49C1H
+        timestamp: 2026-03-29T22:09:19.247Z
     examined_commit: 16bf033f141f9de2e878c93802f2979933dacc09
     external_links: []
     lifecycle_state: open
@@ -81619,7 +81626,25 @@ reviews:
               full-stack test failing."
             created_at: 2026-03-29T22:09:16.957Z
         kind: blocker
+      - _ulid: 01KMXT9WANBQ8RGBTMJCX49C1H
+        anchor:
+          type: code
+          commit: 16bf033f141f9de2e878c93802f2979933dacc09
+          line_end: 152
+          line_start: 147
+          path: packages/web-ui/tests/e2e/cache-warming-transition.spec.ts
+          side: head
+        entries:
+          - _ulid: 01KMXT9WANAHKF721CPBBA0BXP
+            author: Test User
+            body: This test does not prove the WebSocket-driven transition it claims to cover. The assertion
+              explicitly accepts either the  invalidation path or the 2s retry fallback, so a broken
+              WS subscription/query-key mapping would still pass once the next retry refetches ready
+              data. The task exists to catch exactly that cross-system regression, so this needs an
+              assertion that distinguishes the push-driven path from the polling fallback.
+            created_at: 2026-03-29T22:09:18.677Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-29T22:04:14.293Z
-    updated_at: 2026-03-29T22:09:16.957Z
+    updated_at: 2026-03-29T22:09:18.677Z
     notes: []
