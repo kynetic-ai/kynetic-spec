@@ -26674,7 +26674,7 @@ workspaces:
         head: 50717a7c9736640f7450550e90c1fe5784e2c44b
         last_seen_at: 2026-03-29T01:28:17.444Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-dispatch-shadow-mutation-lock-contention-and-leak-between-daemon-and-agents-01kmvcf9
-  - active_role: null
+  - active_role: worker
     base_branch_point: 6e86281bb6f7af2c9307f20593ccbd80df68dcd1
     bootstrap:
       status: succeeded
@@ -26763,7 +26763,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-29T03:10:25.408Z
+      updated_at: 2026-03-29T03:10:31.444Z
     integration:
       status: pending
       detail: null
@@ -26772,16 +26772,16 @@ workspaces:
       target_branch: dev
       target_commit: 6e86281bb6f7af2c9307f20593ccbd80df68dcd1
       updated_at: 2026-03-29T03:10:25.408Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KMVRW6KV9FB4FNY76FBB85RA"
     task_slug: purge-unrecoverable-workspace-records-so-non-terminal-tasks-can-be-re-provisioned
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-03-29T03:10:25.408Z
+      last_active_at: 2026-03-29T03:10:31.444Z
+      last_reconciled_at: 2026-03-29T03:10:31.444Z
       created_at: 2026-03-29T03:10:25.408Z
-      updated_at: 2026-03-29T03:10:29.766Z
+      updated_at: 2026-03-29T03:10:31.444Z
     workspace_id: dispatch-workspace-01KMVRW6KV9FB4FNY76FBB85RA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
