@@ -81582,6 +81582,19 @@ reviews:
         runner: playwright
         created_at: 2026-03-29T22:09:32.039Z
         completed_at: 2026-03-29T22:09:32.039Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test exited 1 in this snapshot: 1996 suites passed, 2 failed; 7206 tests passed, 1
+          failed, 5 skipped. Visible failure: tests/dispatch-workspace-registry.test.ts ('dispatch
+          workspace registry shadow durability reconciliation acquires the lock per dirty record,
+          not once for the entire batch')."
+        name: npm-test
+        required: true
+        runner: test-runner
+        created_at: 2026-03-29T22:09:33.716Z
+        completed_at: 2026-03-29T22:09:33.716Z
     events:
       - _ulid: 01KMXT0K2MB7HETRGQTRXTK9VQ
         actor: Test User
@@ -81617,6 +81630,13 @@ reviews:
           status: pass
           name: targeted-playwright
         timestamp: 2026-03-29T22:09:32.589Z
+      - _ulid: 01KMXTABKD91X86TKVFA2FD217
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm-test
+        timestamp: 2026-03-29T22:09:34.317Z
     examined_commit: 16bf033f141f9de2e878c93802f2979933dacc09
     external_links: []
     lifecycle_state: open
@@ -81665,5 +81685,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-29T22:04:14.293Z
-    updated_at: 2026-03-29T22:09:32.039Z
+    updated_at: 2026-03-29T22:09:33.716Z
     notes: []
