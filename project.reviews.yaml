@@ -79601,6 +79601,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMWJ28ZVEHPX3XN9FCF76FAJ
         timestamp: 2026-03-29T10:26:07.147Z
+      - _ulid: 01KMWJ2BHXQBJ1HSS9J45862JM
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMWJ2AYQHHMXXSH6ESE5KG12
+        timestamp: 2026-03-29T10:26:09.086Z
     examined_commit: 9272feb686c31924d97cd35693791cc6a314ab97
     external_links: []
     lifecycle_state: open
@@ -79691,7 +79698,26 @@ reviews:
               the API E2E assertions to the envelope shape before approval.
             created_at: 2026-03-29T10:26:06.460Z
         kind: blocker
+      - _ulid: 01KMWJ2AYQHHMXXSH6ESE5KG12
+        anchor:
+          type: code
+          commit: 9272feb686c31924d97cd35693791cc6a314ab97
+          line_end: 180
+          line_start: 172
+          path: packages/web-ui/tests/e2e/api-sessions-pagination.spec.ts
+          side: head
+        entries:
+          - _ulid: 01KMWJ2AYQG490J6AA5TWNCP5T
+            author: Test User
+            body: "The session list/detail migration has the same coverage gap: these API E2E assertions still
+              expect items/total/offset/limit at the top level, even though the session endpoints
+              now return those values inside the envelope (data.items, meta.total, etc.). The
+              related session-context spec still does the same for /api/tasks/:ref/sessions and
+              /api/items/:ref/sessions. Without updating those tests, the session API coverage is no
+              longer verifying the current response contract."
+            created_at: 2026-03-29T10:26:08.471Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-29T10:20:48.683Z
-    updated_at: 2026-03-29T10:26:06.460Z
+    updated_at: 2026-03-29T10:26:08.471Z
     notes: []
