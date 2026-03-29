@@ -30,3 +30,15 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-29T00:15:48.789Z
+  - _ulid: 01KMVJ4S690H3KYW8JSCTSJ50E
+    content: "Fix cycle 1: addressed all 3 blocker threads from review @01KMVF0BZ1CFC953MH2ZPTN6KS. (1)
+      rollbackDirtyShadowWorktree now runs git reset HEAD before git checkout -- . to clear staged
+      index state — the original implementation only restored the working tree, leaving staged
+      additions in the index for the next holder to commit. (2) Rewrote the ac-9 test to actually
+      hold the lock while a CLI mutation is started, verify the mutation is blocked, then release
+      and verify it succeeds. (3) Added behavioral ac-11 test that creates staged+untracked dirty
+      state, plants a force-reclaimable lock, calls provisionDispatchWorkspace, and verifies both
+      are cleaned up. Full suite passes: 7073/7073 (5 skipped)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-29T01:08:14.154Z
