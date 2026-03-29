@@ -74997,7 +74997,20 @@ reviews:
     slugs: []
     title: Review fix-dispatch-shadow-mutation-lock-contention-and-leak-between-daemon-and-agents
     author: Test User
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Failed: 12 tests in tests/daemon-command-api.test.ts, 2 suites failed total, 7060 passed
+          / 12 failed / 5 skipped of 7077. Examples: writeThrough after successful mutating command,
+          batch atomics, websocket broadcast, and YAML mode leakage assertions returned 500s. Full
+          log: /tmp/kspec-test-cache/01KMVEXCA9HD4EHENEPVCWADKX/108332add5d5d879.log"
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-29T00:16:25.916Z
+        completed_at: 2026-03-29T00:16:25.916Z
     events:
       - _ulid: 01KMVF0BZ0HJDZRFEYNRVYM0CG
         actor: Test User
@@ -75056,6 +75069,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-29T00:15:47.454Z
+      - _ulid: 01KMVF5YB5QSH14SBZACGRK4JF
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-29T00:16:26.470Z
     examined_commit: 6c58d673bad68d70fee52aa770d4792602926229
     external_links: []
     lifecycle_state: closed
@@ -75148,5 +75168,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T00:15:47.454Z
     created_at: 2026-03-29T00:13:23.809Z
-    updated_at: 2026-03-29T00:15:47.454Z
+    updated_at: 2026-03-29T00:16:25.916Z
     notes: []
