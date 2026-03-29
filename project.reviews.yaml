@@ -80937,7 +80937,142 @@ reviews:
     slugs: []
     title: Review task-ui-warming-skeletons (cycle 2)
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: >-
+          UI Data Freshness and Caching
+
+          ────────────────────────────────────────
+
+          ULID:      01KKQRK0C161X7JRT3RZKDAB6F
+
+          Slugs:     ui-data-freshness
+
+          Type:      feature
+
+          Maturity:  draft
+
+          Implementation: in_progress
+
+
+          ─── Description ───
+
+          The web UI maintains a shared, reactive data cache that provides instant
+
+          page transitions, request deduplication, and real-time updates without
+
+          per-page independent fetching. Data fetched by one page is available to
+
+          all pages. Real-time events drive cache invalidation. The UI degrades
+
+          gracefully when the daemon is unreachable and supports read-only static
+
+          mode for exported snapshots.
+
+
+
+          ─── Acceptance Criteria ───
+            [ac-1]
+              Given: A page fetches data on first visit
+
+              When: The user navigates away and returns to the same page
+
+              Then: The page renders immediately from cached data without a loading
+          state, then revalidates in the background if the data is stale.
+
+            [ac-2]
+              Given: Two or more pages or components need the same data concurrently
+
+              When: Both are active at the same time
+
+              Then: Only one HTTP request is made. Both consumers share the result.
+
+            [ac-3]
+              Given: A WebSocket broadcast event indicates data has changed
+
+              When: The event is processed by the UI
+
+              Then: Cached data for the affected entity type is invalidated and
+          active views revalidate in the background. If the broadcast
+
+          includes sufficient enriched data, the cache is updated
+
+          immediately without a server round-trip.
+
+            [ac-4]
+              Given: The UI needs periodic status data (badge counts, agent status)
+
+              When: The data changes on the server
+
+              Then: The data is served from cache and kept current via event-driven
+          invalidation rather than timer-based polling.
+
+            [ac-5]
+              Given: The user switches projects in the multi-directory daemon
+
+              When: The project context changes
+
+              Then: All cached data is discarded. Subsequent data requests fetch
+          fresh data for the new project.
+
+            [ac-6]
+              Given: The app is running in static mode (exported snapshot)
+
+              When: A data request is made
+
+              Then: The request is served from the static data source. No daemon
+          HTTP calls are attempted.
+
+            [ac-7]
+              Given: The daemon is unreachable or returns an error
+
+              When: A data request fails
+
+              Then: The error is surfaced with appropriate messaging (e.g., daemon
+          not running vs data error). Retry behavior is appropriate for
+
+          localhost (minimal retries, short delay).
+
+            [ac-8]
+              Given: A write operation is performed (start task, add note, etc.)
+
+              When: The operation succeeds
+
+              Then: Related cached data is invalidated so the originating client
+          updates immediately without waiting for a broadcast.
+
+            [ac-9]
+              Given: A user performs a hard page refresh or navigates directly to a URL
+              When: The app initializes from scratch (no prior client state)
+              Then: The initialization lifecycle (mode detection, project loading, query enabling) completes and the page renders data. No SSR hydration mismatch prevents reactive state updates from propagating.
+            [ac-10]
+              Given: An entity can change through more than one server-side execution path
+              When: Any path changes list-visible data for an active view
+              Then: The active view stays fresh without a manual reload, and the freshness contract does not depend on which internal path produced the change.
+            [ac-warming-skeleton]
+              Given: the server signals that its cache is still warming
+              When: the UI receives the response
+              Then: a loading skeleton is displayed instead of empty content, and the warming response is not persisted in the client cache as real data
+            [ac-warming-auto-transition]
+              Given: the UI is displaying a loading skeleton due to cache warming
+              When: a real-time event indicates the cache domain is ready
+              Then: the affected queries are invalidated and the view transitions to real data without user interaction
+            [ac-warming-retry-fallback]
+              Given: the UI is displaying a loading skeleton due to cache warming
+              When: no real-time domain-ready event has been received
+              Then: the UI retries the request at short intervals as a fallback for missed or delayed real-time events
+            [ac-warming-timeout]
+              Given: the UI has been retrying a cache-warming response
+              When: the retry ceiling (30 seconds) is reached without the cache becoming ready
+              Then: the UI displays an error state with a manual retry option instead of continuing to show the loading skeleton and AC/test annotation grep completed during review; spec includes ac-warming-skeleton and ac-warming-timeout, and the submitted tests cover tasks/triage but not the sessions search-mode warming path described in the blocker.
+        name: validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-29T13:10:54.478Z
+        completed_at: 2026-03-29T13:10:54.478Z
     events:
       - _ulid: 01KMWVEC0XAQKDFFWY47HD3647
         actor: Test User
@@ -80966,6 +81101,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMWVFZC57P4TDY63RM5A2V0M
         timestamp: 2026-03-29T13:10:53.203Z
+      - _ulid: 01KMWVG1V6CT500ABKS4S62N9F
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: validate
+        timestamp: 2026-03-29T13:10:55.078Z
     examined_commit: 7aa92989e9de97463c356afbe1d2bdcc7fc92274
     external_links: []
     lifecycle_state: open
@@ -81024,5 +81166,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-29T13:09:59.966Z
-    updated_at: 2026-03-29T13:10:52.550Z
+    updated_at: 2026-03-29T13:10:54.478Z
     notes: []
