@@ -80456,6 +80456,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-29T12:11:04.643Z
+      - _ulid: 01KMWR2HKFNNG3DFBYJ2F7WVA0
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMWR2GZY1PK3R9WN6KYFQQXQ
+        timestamp: 2026-03-29T12:11:06.736Z
     examined_commit: 4ccb779f2f2c8a4cc6b34c8e6ae78520fc1d5120
     external_links: []
     lifecycle_state: open
@@ -80465,8 +80472,31 @@ reviews:
       content_hash: ""
       ref: "@01KMW68MFA3AFKAEQJS9M05J92"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMWR2GZY1PK3R9WN6KYFQQXQ
+        entries:
+          - _ulid: 01KMWR2GZYAYFA3J2WA1FKHNN0
+            author: Test User
+            body: >-
+              Evidence log:
+
+              Files read: packages/web-ui/src/lib/api.ts, packages/web-ui/src/lib/query/client.ts,
+              packages/web-ui/src/routes/+layout.svelte, packages/web-ui/tests/api-envelope.test.ts,
+              packages/web-ui/tests/query-client-retry.test.ts,
+              node_modules/@tanstack/query-core/src/retryer.ts.
+
+              Commands run: kspec task get, git diff, git show, kspec item get, kspec validate, rg
+              AC annotations, npm test, rg/query-core retry semantic checks.
+
+              Claims verified: CacheWarmingError already thrown by fetch layer; retry callback
+              semantics in installed TanStack core use failureCount before increment; full suite
+              passes on the reviewed snapshot.
+
+              Categories searched: correctness, edge cases, error handling, test quality,
+              integration. No findings.
+            created_at: 2026-03-29T12:11:06.110Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-29T12:08:58.443Z
-    updated_at: 2026-03-29T12:11:04.040Z
+    updated_at: 2026-03-29T12:11:06.110Z
     notes: []
