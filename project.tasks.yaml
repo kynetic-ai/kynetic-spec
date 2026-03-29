@@ -23098,7 +23098,7 @@
   type: task
   spec_ref: "@api-contract"
   plan_ref: "@plan-daemon-cache-warming-ux"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-api-response-envelope-type"
@@ -23111,7 +23111,7 @@
   todos_count: 0
   created_at: 2026-03-29T06:59:51.040Z
   started_at: 2026-03-29T08:57:50.832Z
-  submitted_at: 2026-03-29T08:34:55.866Z
+  submitted_at: 2026-03-29T08:57:53.974Z
   automation: eligible
 - _ulid: 01KMW68KWFR1SEWZWVQV1G93HP
   slugs:
