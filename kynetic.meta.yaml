@@ -9470,6 +9470,28 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-29T00:55:28.747Z
+  - _ulid: 01KMVHSDJKGNXKRD0JH4G147Y7
+    type: friction
+    content: Detached review snapshots make approved manual merges awkward when the integration branch
+      and task branch are already checked out in sibling worktrees. The reviewer cannot simply
+      checkout dev in the review worktree and has to merge via explicit git -C against another
+      worktree, which is easy to get wrong and is not surfaced by the merge workflow guidance.
+    author: Test User
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-03-29T01:02:01.812Z
+  - _ulid: 01KMVHSDR3NX3D9DYHVXCESC9Q
+    type: success
+    content: Combining a narrowly targeted repro (daemon-command-api plus terminal-reconciliation) with
+      a fresh full npm test run was effective for validating the AsyncLocalStorage KSPEC_SPEC_DIR
+      fix. The targeted check confirmed the intended daemon-path behavior, and the full suite
+      verified the change did not reintroduce the earlier cross-test race.
+    author: Test User
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-03-29T01:02:01.987Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
