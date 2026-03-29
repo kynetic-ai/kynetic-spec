@@ -79057,7 +79057,18 @@ reviews:
     slugs: []
     title: Review @01KMW68JT108S4RS3G1GNYH5A9
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Validation returned warnings only (exit 6): schema/references OK; repo has pre-existing
+          unrelated warnings."
+        name: kspec-validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-29T09:39:54.511Z
+        completed_at: 2026-03-29T09:39:54.511Z
     events:
       - _ulid: 01KMWF5DMYMYYGAWPXJVQZKVNQ
         actor: Test User
@@ -79072,6 +79083,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-29T09:35:42.138Z
+      - _ulid: 01KMWFDPJ5QMSVG5KFPJZC6CHK
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec-validate
+        timestamp: 2026-03-29T09:39:55.077Z
     examined_commit: 15c4089d8a577e29087bbd383c53e194e6f2e31c
     external_links: []
     lifecycle_state: open
@@ -79084,5 +79102,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-29T09:35:23.806Z
-    updated_at: 2026-03-29T09:35:41.424Z
+    updated_at: 2026-03-29T09:39:54.511Z
     notes: []
