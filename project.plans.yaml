@@ -30065,7 +30065,7 @@ plans:
       - plan-e2e-test-suite-audit-and-restructure
     title: E2E Test Suite Audit and Restructure
     content: ""
-    status: draft
+    status: rejected
     approved_at: null
     derived_specs: []
     derived_tasks: []
