@@ -75849,6 +75849,12 @@ reviews:
         payload:
           thread_ulid: 01KMVV8FRZRA86ZJNK71BNAXCB
         timestamp: 2026-03-29T04:05:42.807Z
+      - _ulid: 01KMVWATW4XYKVHQK62V8RR5ZD
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMVV8FRZRA86ZJNK71BNAXCB
+        timestamp: 2026-03-29T04:06:18.244Z
     examined_commit: 2529f7659365ae1d9a7dbba2c6f35edf93d2d222
     external_links: []
     lifecycle_state: closed
@@ -75925,6 +75931,8 @@ reviews:
               only returns eligible after the durable commit succeeds."
             created_at: 2026-03-29T04:05:42.230Z
         kind: blocker
+        resolved_at: 2026-03-29T04:06:17.653Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -75934,5 +75942,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T03:47:42.494Z
     created_at: 2026-03-29T03:41:16.980Z
-    updated_at: 2026-03-29T04:05:42.230Z
+    updated_at: 2026-03-29T04:06:17.653Z
     notes: []
