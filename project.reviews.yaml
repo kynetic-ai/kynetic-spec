@@ -81130,6 +81130,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-29T13:11:37.112Z
+      - _ulid: 01KMWW5YXGH6TD4WPF5XNNPZR6
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMWVFXGPKGKHGN2CZWWTHR3K
+        timestamp: 2026-03-29T13:22:52.976Z
     examined_commit: 7aa92989e9de97463c356afbe1d2bdcc7fc92274
     external_links: []
     lifecycle_state: closed
@@ -81168,6 +81174,16 @@ reviews:
               ...buildFilterKey(), mode: 'paginated' })`, which does not reset the active search
               query key."
             created_at: 2026-03-29T13:11:24.342Z
+          - _ulid: 01KMWW5YAF0WRDXDVS2A2JHWB5
+            author: "@claude"
+            body: "Fixed: cacheWarming is now derived from the active query based on searchMode — uses
+              searchResultsQuery.error when in search mode, sessionsQuery.error when paginated. The
+              CacheWarmingBanner queryKey prop is also mode-aware, passing the search query key
+              (with mode: 'search' and q param) when in search mode. The generic error derivation
+              now also suppresses CacheWarmingError from both queries. Added two E2E tests covering
+              sessions search mode: one verifying skeleton display during warming, another verifying
+              timeout banner after retries exhaust."
+            created_at: 2026-03-29T13:22:52.367Z
         kind: blocker
       - _ulid: 01KMWVFZC57P4TDY63RM5A2V0M
         entries:
@@ -81205,5 +81221,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T13:11:37.112Z
     created_at: 2026-03-29T13:09:59.966Z
-    updated_at: 2026-03-29T13:11:37.112Z
+    updated_at: 2026-03-29T13:22:52.367Z
     notes: []
