@@ -29552,7 +29552,7 @@ plans:
       - title: Define unified API response envelope type and wrapper
         slug: task-api-response-envelope-type
         spec_ref: "@api-contract"
-        priority: 2
+        priority: 1
         depends_on: ["@task-spec-update-api-contract"]
         tags: [api, daemon, schema]
         description: |
@@ -29589,7 +29589,7 @@ plans:
       - title: Migrate daemon route handlers to unified envelope
         slug: task-migrate-route-handlers-envelope
         spec_ref: "@api-contract"
-        priority: 3
+        priority: 2
         depends_on: ["@task-api-response-envelope-type"]
         tags: [api, daemon]
         description: |
@@ -29630,7 +29630,7 @@ plans:
       - title: Broadcast cache domain ready event via WebSocket
         slug: task-cache-domain-ready-ws-event
         spec_ref: "@daemon-entity-cache"
-        priority: 2
+        priority: 1
         depends_on: ["@task-spec-update-entity-cache"]
         tags: [daemon, websocket]
         description: |
@@ -29667,7 +29667,7 @@ plans:
       - title: Update web UI fetch functions for unified envelope
         slug: task-ui-unwrap-envelope
         spec_ref: "@api-contract"
-        priority: 4
+        priority: 3
         depends_on: ["@task-migrate-route-handlers-envelope"]
         tags: [web-ui, data-layer]
         description: |
@@ -29708,8 +29708,7 @@ plans:
       - title: Implement cache warming detection and retry in query layer
         slug: task-ui-cache-warming-interceptor
         spec_ref: "@ui-data-freshness"
-        priority: 5
-
+        priority: 3
         depends_on: ["@task-ui-unwrap-envelope", "@task-spec-update-data-freshness"]
         tags: [web-ui, data-layer]
         description: |
@@ -29748,7 +29747,7 @@ plans:
       - title: Subscribe to cache domain ready events for query invalidation
         slug: task-ui-cache-domain-ready-subscription
         spec_ref: "@ui-data-freshness"
-        priority: 6
+        priority: 4
         depends_on: ["@task-cache-domain-ready-ws-event", "@task-ui-cache-warming-interceptor"]
         tags: [web-ui, websocket]
         description: |
@@ -29786,7 +29785,7 @@ plans:
       - title: Show loading skeletons and timeout error across all views
         slug: task-ui-warming-skeletons
         spec_ref: "@ui-data-freshness"
-        priority: 7
+        priority: 4
         depends_on: ["@task-ui-cache-warming-interceptor"]
         tags: [web-ui, components]
         description: |
@@ -29830,7 +29829,7 @@ plans:
       - title: E2E test for cache warming to ready transition
         slug: task-e2e-cache-warming-transition
         spec_ref: "@ui-data-freshness"
-        priority: 8
+        priority: 5
         depends_on: ["@task-ui-warming-skeletons", "@task-ui-cache-domain-ready-subscription"]
         tags: [test, e2e]
         description: |
@@ -29944,3 +29943,7 @@ plans:
           priorities and dependencies"
         author: "@claude"
         created_at: 2026-03-29T05:58:03.448Z
+      - _ulid: 01KMW2RX4EVH6D07N32XNSBHRN
+        content: Fixed priorities to 1-5 range
+        author: "@claude"
+        created_at: 2026-03-29T05:58:50.766Z
