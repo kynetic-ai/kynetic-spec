@@ -47,3 +47,15 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-29T01:15:27.289Z
+  - _ulid: 01KMVK5T0B1NRADV5WN7Y0HZ66
+    content: "Fix cycle 2: addressed both blocker threads from review @01KMVJ8QGEZTKRG0P3X7RM1MBV. (1)
+      CLI maybeAcquireDispatchMutationLock now calls rollbackDirtyShadowWorktree after
+      force-reclaiming a lock — exported the function from workspace.ts and updated the release type
+      to carry .info. (2) Replaced simulated ac-9 test with behavioral test in
+      dispatch-workspace-registry.test.ts that provisions 2 workspace records, runs
+      reconcileDispatchWorkspaceRegistry with both dirty, and asserts acquireFileLock was called 2
+      times (per-record) not 1 (batch). Old test re-annotated as ac-4. Full suite: 7074/7074 passed,
+      5 skipped."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-29T01:26:16.331Z
