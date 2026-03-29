@@ -74851,6 +74851,18 @@ reviews:
         runner: npm
         created_at: 2026-03-29T00:06:37.699Z
         completed_at: 2026-03-29T00:06:37.699Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: The targeted pair run, npm test -- --fresh --run
+          tests/dispatch-workspace-terminal-reconciliation.test.ts tests/daemon-command-api.test.ts,
+          reproduced the same 12 daemon-command-api failures in this review workspace.
+        name: targeted daemon+reconciliation repro
+        required: true
+        runner: npm
+        created_at: 2026-03-29T00:07:17.835Z
+        completed_at: 2026-03-29T00:07:17.835Z
     events:
       - _ulid: 01KMVE4KYX889Q367QVTTDRQS5
         actor: Test User
@@ -74886,6 +74898,13 @@ reviews:
           status: fail
           name: npm test -- --fresh
         timestamp: 2026-03-29T00:06:38.378Z
+      - _ulid: 01KMVEN7EVQ9X6H562533EZQKY
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: targeted daemon+reconciliation repro
+        timestamp: 2026-03-29T00:07:18.747Z
     examined_commit: afd332b4c3b16543d6a80c9a905ac644ae07d3bd
     external_links: []
     lifecycle_state: open
@@ -74919,5 +74938,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-28T23:58:14.494Z
-    updated_at: 2026-03-29T00:06:37.699Z
+    updated_at: 2026-03-29T00:07:17.835Z
     notes: []
