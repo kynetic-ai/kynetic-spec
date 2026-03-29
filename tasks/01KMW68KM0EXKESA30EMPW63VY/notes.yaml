@@ -13,3 +13,17 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-29T08:21:55.061Z
+  - _ulid: 01KMWBPGE016J506AH3HTPMM4H
+    content: "Migrated all 11 route files to use wrapResponse() envelope. List endpoints (tasks, items,
+      inbox, plans, reviews, triage, sessions, meta/agents, meta/workflows, meta/conventions,
+      meta/observations) pass data arrays directly with pagination in meta. Detail endpoints
+      (task/:ref, item/:ref, plan/:ref, review/:ref, triage/:ref, session/:ref) wrap domain objects.
+      Aggregation endpoints (tasks/summary, validation, inbox) wrap their stats/result objects. Meta
+      endpoints (config, shadow, session) wrap config/status objects. Refs endpoint wraps the ref
+      index. Search endpoint wraps the {results, total, showing} object. Loading responses use
+      cacheDomainState: 'loading' to signal cache warming. Updated 3 test files (daemon-read-path,
+      daemon-cache-route-coverage, daemon-api-input-validation) to expect the new {data, meta}
+      envelope shape. All 7128 tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-29T08:34:49.408Z
