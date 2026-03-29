@@ -23192,7 +23192,7 @@
   type: task
   spec_ref: "@ui-data-freshness"
   plan_ref: "@plan-daemon-cache-warming-ux"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-cache-domain-ready-ws-event"
@@ -23207,6 +23207,7 @@
   created_at: 2026-03-29T06:59:52.163Z
   started_at: 2026-03-29T12:13:05.009Z
   submitted_at: 2026-03-29T12:24:32.592Z
+  completed_at: 2026-03-29T12:32:49.907Z
   automation: eligible
 - _ulid: 01KMW68MZ5Z281YD9Z87K2G55A
   slugs:

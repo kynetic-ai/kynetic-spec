@@ -37,8 +37,10 @@ description: |
 spec_ref: "@ui-data-freshness"
 plan_ref: "@plan-daemon-cache-warming-ux"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev via commit 1b7a83926. Review approved after verifying cache:status
+  domain_ready subscription, domain-to-query invalidation mapping, and full test suite pass.
 depends_on:
   - "@task-cache-domain-ready-ws-event"
   - "@task-ui-cache-warming-interceptor"
@@ -106,8 +108,23 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-03-29T12:27:42.555Z
+  - author: Test User
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev via commit 1b7a83926. Review approved after verifying cache:status domain_ready
+          subscription, domain-to-query invalidation mapping, and full test suite pass.
+        previous: null
+      completed_at:
+        new: 2026-03-29T12:32:49.907Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-03-29T12:32:49.915Z
 created_at: 2026-03-29T06:59:52.163Z
 started_at: 2026-03-29T12:13:05.009Z
 submitted_at: 2026-03-29T12:24:32.592Z
+completed_at: 2026-03-29T12:32:49.907Z
 todos: []
 automation: eligible
