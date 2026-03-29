@@ -27165,12 +27165,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-29T07:51:48.840Z
+      updated_at: 2026-03-29T07:51:57.937Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-29T07:51:48.840Z
+      updated_at: 2026-03-29T07:51:57.937Z
     integration:
       status: pending
       detail: null
@@ -27178,26 +27178,31 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 6943dad4b8203281f7a00c18ae29804ce34c559a
-      updated_at: 2026-03-29T07:51:48.840Z
-    lifecycle_state: ready
+      updated_at: 2026-03-29T07:51:57.937Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KMW68JT108S4RS3G1GNYH5A9"
     task_slug: task-spec-update-entity-cache
     timestamps:
       closed_at: null
       last_active_at: 2026-03-29T07:37:11.805Z
-      last_reconciled_at: 2026-03-29T07:51:48.840Z
+      last_reconciled_at: 2026-03-29T07:51:57.937Z
       created_at: 2026-03-29T07:15:06.825Z
-      updated_at: 2026-03-29T07:51:48.840Z
+      updated_at: 2026-03-29T07:51:57.937Z
     workspace_id: dispatch-workspace-01KMW68JT108S4RS3G1GNYH5A9
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 6943dad4b8203281f7a00c18ae29804ce34c559a
+        last_seen_at: 2026-03-29T07:51:57.937Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-spec-update-entity-cache-01kmw68j-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-spec-update-entity-cache/01kmw68j
         head: 6943dad4b8203281f7a00c18ae29804ce34c559a
-        last_seen_at: 2026-03-29T07:37:08.055Z
+        last_seen_at: 2026-03-29T07:51:57.937Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-spec-update-entity-cache-01kmw68j
   - active_role: worker
     base_branch_point: 6943dad4b8203281f7a00c18ae29804ce34c559a
