@@ -29508,16 +29508,41 @@ plans:
       # ─── Phase 1: Server-Side Envelope ───
 
 
-      - title: Implement unified API response envelope type and server wrapper
+      - title: Define unified API response envelope type and wrapper
         slug: task-api-response-envelope-type
         spec_ref: "@api-contract"
         priority: 1
-        tags: [api, daemon]
+        tags: [api, daemon, schema]
         description: |
-          Define the normalized response envelope type (data + meta with
-          cache_status, pagination). Create a server-side wrapper function
-          that all route handlers use to construct responses. Update the
-          shared types package.
+          Today, daemon API responses have inconsistent shapes: list endpoints
+          return {items, total, offset, limit}, aggregation endpoints return
+          {counts: {...}}, and cache warming state is an ad-hoc _cache_status
+          field mixed in at the top level. This makes it impossible for the
+          web UI to have a single response handling path.
+
+          Why: A normalized envelope is the prerequisite for centralized cache
+          warming detection in the UI. Without it, every fetch function needs
+          its own logic to find and interpret the cache status field, and the
+          UI cannot distinguish "cache is warming, data is empty" from "data
+          really is empty."
+
+          What: Define a generic ApiResponse<T> type with two fields: `data`
+          (typed payload — array for lists, object for aggregation/detail) and
+          `meta` (object with total, offset, limit as optional numbers, and
+          cache_status as a required "ready" | "loading" literal). Create a
+          server-side wrapper function (e.g. wrapResponse) that route handlers
+          call to construct envelope responses. Export the type from the shared
+          types package so the web UI can import it.
+
+          How: Add the Zod schema and TypeScript type to the shared types
+          package. The wrapper function takes the domain data, pagination
+          params, and cache domain state, and returns the envelope. For cache
+          warming responses, it returns {data: default-empty, meta: {
+          cache_status: "loading"}}. For normal responses, cache_status is
+          "ready". This is an internal contract change — no API versioning
+          needed since the only consumer is the web UI.
+
+          Covers: @api-contract ac-envelope.
 
       - title: Migrate daemon route handlers to unified envelope
         slug: task-migrate-route-handlers-envelope
@@ -29526,51 +29551,155 @@ plans:
         depends_on: ["@task-api-response-envelope-type"]
         tags: [api, daemon]
         description: |
-          Update all ~27 route handlers to use the envelope wrapper.
-          Includes list endpoints (tasks, items, sessions, inbox, plans,
-          reviews, triage, refs), aggregation, validation, and meta
-          endpoints. Each handler wraps its domain data in the envelope
-          with appropriate cache_status from domain state.
+          There are ~27 route handlers across the daemon that return responses
+          directly with varying shapes. Each currently has its own inline
+          cache warming check that returns a hand-crafted loading response
+          (e.g. {items: [], total: 0, _cache_status: "loading"} in tasks.ts,
+          {counts: {}, _cache_status: "loading"} in aggregation.ts). These
+          all need to use the envelope wrapper from the previous task.
 
-      # ─── Phase 2: WebSocket + Client Unwrapping ───
+          Why: The envelope type is defined but not yet used by any route. This
+          task is the mechanical migration that makes the contract real. Until
+          all routes use the envelope, the web UI cannot rely on a single
+          response shape.
+
+          What: Update every route handler in packages/daemon/src/routes/ to
+          use the wrapResponse helper. This includes: tasks.ts, items.ts,
+          sessions.ts, inbox.ts, plans.ts, reviews.ts, triage.ts, refs.ts
+          (list endpoints), aggregation.ts (counts/stats endpoints),
+          validation.ts, and all meta.ts endpoints (session, agents,
+          workflows, observations, config, shadow, conventions). Remove the
+          inline _cache_status field construction from each handler — the
+          wrapper handles it. Detail endpoints (single entity by ref) also
+          get the envelope.
+
+          How: For each route: replace the return statement with a call to
+          wrapResponse(), passing the domain data and cache domain state.
+          List endpoints pass their items array as data. Aggregation endpoints
+          pass their counts/stats object. The wrapper reads domain state from
+          EntityCache.getDomainState() to set cache_status. Existing tests
+          need updating to expect the new shape.
+
+          Covers: @api-contract ac-envelope, ac-cache-status-field.
+
+      # ─── Phase 2: WebSocket Event + Client Unwrapping ───
 
 
-      - title: Add cache domain ready WebSocket event
+      - title: Broadcast cache domain ready event via WebSocket
         slug: task-cache-domain-ready-ws-event
         spec_ref: "@daemon-entity-cache"
         priority: 1
         tags: [daemon, websocket]
         description: |
-          When EntityCache transitions a domain from loading to ready,
-          broadcast a domain_ready event via PubSub. Include domain name
-          and project path. Follows existing broadcast patterns.
+          The daemon's EntityCache tracks per-domain loading state (unloaded →
+          loading → ready/degraded) but does not notify WebSocket clients when
+          a domain finishes loading. The web UI currently has no way to know
+          when to refetch after receiving a cache-warming response except by
+          polling.
 
-      - title: Update web UI fetch functions to unwrap unified envelope
+          Why: WebSocket push is the primary mechanism for the UI to transition
+          from loading skeleton to real data. Without it, the UI must poll at
+          fixed intervals (2s), adding latency and unnecessary requests. The
+          daemon already has a PubSubManager that broadcasts entity mutation
+          events — domain-ready events follow the same pattern.
+
+          What: When EntityCache transitions a domain from "loading" to "ready"
+          (the setDomainState method), broadcast a domain_ready event on a
+          "cache:status" topic via PubSubManager. The event payload includes
+          the domain name (e.g. "tasks", "items", "sessions") and the project
+          path. This event is scoped to the project, matching how entity
+          mutation broadcasts work.
+
+          How: In the EntityCache class (src/daemon/entity-cache.ts), after
+          the domain state transitions to "ready", call pubsub.broadcast()
+          with topic "cache:status", type "domain_ready", and payload
+          {domain, project}. The PubSub instance needs to be accessible from
+          EntityCache — either pass it in at construction or emit an event
+          that the route layer relays. Follow the existing broadcast pattern
+          used in route handlers (e.g. tasks.ts broadcasts on "tasks:updates"
+          after mutations).
+
+          Covers: @daemon-entity-cache ac-domain-ready-event.
+
+      - title: Update web UI fetch functions for unified envelope
         slug: task-ui-unwrap-envelope
         spec_ref: "@api-contract"
         priority: 3
         depends_on: ["@task-migrate-route-handlers-envelope"]
         tags: [web-ui, data-layer]
         description: |
-          Update all fetch functions in the web UI API layer to work with
-          the new envelope shape. Unwrap data/meta for consumers. Update
-          TypeScript types for all response interfaces.
+          The web UI's api.ts contains ~20 fetch functions (fetchTasks,
+          fetchItems, fetchInbox, fetchPlans, fetchSessions, fetchReviews,
+          etc.) that each return response.json() directly, typed to the old
+          per-endpoint shapes (e.g. PaginatedResponse<TaskSummary> with
+          {items, total, offset, limit}). After the server migrates to the
+          unified envelope, these functions will receive {data, meta} but
+          still expect the old shape.
+
+          Why: Without updating the fetch functions, TypeScript types will be
+          wrong, destructuring will break, and components will receive
+          undefined where they expect arrays. This is the client-side
+          counterpart of the server migration.
+
+          What: Update all fetch functions in packages/web-ui/src/lib/api.ts
+          to unwrap the envelope. Each function should extract response.data
+          and response.meta, returning the domain data to callers. Update the
+          TypeScript return types to match. The meta object (including
+          cache_status) needs to be accessible to the query layer for cache
+          warming detection — either return a wrapped type that includes both,
+          or use a response header/side channel.
+
+          How: Import the ApiResponse<T> type from shared types. Each fetch
+          function calls response.json() to get the envelope, then returns
+          the unwrapped result. For static mode (isStaticMode()), the static
+          data functions also need to return envelope-compatible shapes, or
+          the unwrapping needs to handle both formats. Update all TypeScript
+          interfaces (PaginatedResponse, etc.) to match the new contract.
+          Update component-level destructuring as needed.
+
+          Covers: @api-contract ac-envelope (client-side).
 
       # ─── Phase 3: Cache Warming UX ───
 
 
-      - title: Create UI response interceptor for cache warming detection
+      - title: Implement cache warming detection and retry in query layer
         slug: task-ui-cache-warming-interceptor
         spec_ref: "@ui-data-freshness"
         priority: 4
         depends_on: ["@task-ui-unwrap-envelope"]
         tags: [web-ui, data-layer]
         description: |
-          Add a centralized response handler in the web UI that detects
-          cache warming from the envelope metadata. When cache_status is
-          "loading", signal to TanStack Query that this is not cacheable
-          real data (throw a typed error or use a query meta flag).
-          Configure retry behavior: 2s intervals, 30s ceiling.
+          After the fetch functions unwrap the envelope, the web UI has access
+          to meta.cache_status on every response. But TanStack Query doesn't
+          know that a cache_status: "loading" response is transient — it caches
+          it with the normal 30s staleTime, meaning users see empty pages for
+          up to 30 seconds even after the server cache is ready.
+
+          Why: Cache warming responses must not be treated as successful data.
+          They need to trigger automatic retry so the UI refetches when the
+          server is ready. Without this, the existing staleTime (30s) and
+          retry config (1 retry, 1s delay) are insufficient — the UI caches
+          the empty response and stops trying.
+
+          What: Add a centralized mechanism in the query layer that detects
+          cache_status: "loading" responses and treats them as retryable
+          transient conditions rather than successful empty results. Configure
+          retry behavior: 2-second intervals, maximum 15 attempts (30-second
+          ceiling). The retry should be specific to cache warming — normal
+          successful-but-empty responses (cache_status: "ready" with zero
+          items) must NOT retry.
+
+          How: Two approaches to evaluate: (1) Throw a typed CacheWarmingError
+          from the fetch function when cache_status is "loading" — TanStack
+          Query's retry mechanism handles it naturally. The retry callback
+          checks error type to only retry CacheWarmingError. (2) Use TanStack
+          Query's queryFn meta or select to flag warming responses and
+          configure per-query retry. Option 1 is simpler and recommended.
+          Either way, the warming response must not enter the query cache as
+          successful data.
+
+          Covers: @ui-data-freshness ac-warming-skeleton (detection half),
+          ac-warming-retry-fallback, ac-warming-timeout.
 
       - title: Subscribe to cache domain ready events for query invalidation
         slug: task-ui-cache-domain-ready-subscription
@@ -29579,22 +29708,77 @@ plans:
         depends_on: ["@task-cache-domain-ready-ws-event", "@task-ui-cache-warming-interceptor"]
         tags: [web-ui, websocket]
         description: |
-          Add a WebSocket subscription handler for domain_ready events
-          alongside existing mutation handlers. On receipt, invalidate
-          TanStack Query keys for the corresponding domain. This is the
-          primary mechanism for transitioning from skeleton to real data.
+          The web UI already subscribes to WebSocket events for entity mutation
+          invalidation (e.g. when a task is updated, the tasks query is
+          invalidated). Cache domain ready events need the same treatment —
+          when the server broadcasts that a domain finished loading, the UI
+          should invalidate queries for that domain so they refetch immediately
+          instead of waiting for the next retry interval.
 
-      - title: Update all web UI views to show loading skeletons during cache warming
+          Why: WebSocket push is faster and more efficient than retry polling.
+          When the daemon's tasks cache finishes loading, the UI should refetch
+          within milliseconds, not wait up to 2 seconds for the next retry.
+          This is the primary transition mechanism; retry is the fallback for
+          missed events or reconnection gaps.
+
+          What: Add a WebSocket subscription handler for the "cache:status"
+          topic alongside existing mutation topic handlers. When a
+          "domain_ready" event is received, map the domain name to TanStack
+          Query keys (e.g. domain "tasks" → query key ["tasks"], domain
+          "items" → query key ["items"]) and call
+          queryClient.invalidateQueries() for those keys. This triggers an
+          immediate refetch of any active queries for that domain.
+
+          How: The web UI's WebSocket handler (in the query/websocket
+          integration layer) already maps topics to query invalidation. Add
+          "cache:status" as a subscribed topic. The domain_ready event
+          payload includes {domain, project} — use the domain field to
+          determine which query keys to invalidate. If the domain maps to
+          multiple query keys (e.g. "meta" covers several endpoints), all
+          related keys should be invalidated.
+
+          Covers: @ui-data-freshness ac-warming-auto-transition.
+
+      - title: Show loading skeletons and timeout error across all views
         slug: task-ui-warming-skeletons
         spec_ref: "@ui-data-freshness"
         priority: 6
         depends_on: ["@task-ui-cache-warming-interceptor"]
         tags: [web-ui, components]
         description: |
-          Update all list views (tasks board, items, sessions, inbox,
-          plans, reviews, triage) to detect cache-warming state from the
-          query result and render existing skeleton components instead of
-          empty content. Add error state with retry button for timeout.
+          The web UI has existing skeleton components (Skeleton, BoardSkeleton,
+          SessionStreamSkeleton, SidebarMenuSkeleton) but no view currently
+          uses them for cache warming. Views either show empty content or their
+          own initial loading state only on first mount. Once TanStack Query
+          has cached data (even an empty warming response), views show that
+          cached data with no indication that it's incomplete.
+
+          Why: This is the user-facing piece — without it, the interceptor and
+          WebSocket plumbing work correctly but users still see empty pages
+          during cache warming. The existing skeleton components were built
+          for exactly this purpose but have never been connected to the cache
+          warming signal.
+
+          What: Update all list views in the web UI to detect when the query
+          is in a cache-warming retry state and render the appropriate skeleton
+          component instead of empty content. Views to update: tasks board
+          (BoardSkeleton), items list, sessions list (SessionStreamSkeleton
+          for detail), inbox, plans, reviews, and triage. Also add a timeout
+          error state component: after 30 seconds of retrying, show an error
+          message ("Unable to load [entity]. The server cache did not become
+          ready.") with a manual Retry button that resets the retry counter
+          and tries again.
+
+          How: The cache warming interceptor (previous task) either throws
+          CacheWarmingError or sets a flag. TanStack Query's isError +
+          error type, or a custom isPending-like flag, can be checked in
+          each view's template. When warming is detected, render the skeleton.
+          When the retry ceiling is exceeded (error is CacheWarmingError and
+          failureCount >= 15), render the error state instead. The Retry
+          button calls queryClient.resetQueries() for the relevant key.
+
+          Covers: @ui-data-freshness ac-warming-skeleton (display half),
+          ac-warming-timeout.
 
       # ─── Phase 4: Validation ───
 
@@ -29606,10 +29790,38 @@ plans:
         depends_on: ["@task-ui-warming-skeletons", "@task-ui-cache-domain-ready-subscription"]
         tags: [test, e2e]
         description: |
-          Playwright test that verifies: initial load during cache warming
-          shows skeleton, WebSocket domain_ready event triggers transition
-          to real data, and 30s timeout shows error state with working
-          retry button.
+          There are no tests verifying the cache warming UX end-to-end. The
+          daemon's cache warming behavior, WebSocket domain_ready event, and
+          the UI's skeleton/error/transition flow need integration coverage
+          to prevent regression.
+
+          Why: The cache warming flow spans three systems (EntityCache →
+          WebSocket PubSub → TanStack Query + Svelte views). Unit tests for
+          individual pieces don't catch integration failures — e.g. the
+          WebSocket event fires but the query key mapping is wrong, or the
+          skeleton renders but doesn't transition when data arrives.
+
+          What: A Playwright E2E test with three scenarios: (1) Navigate to
+          a view while the daemon cache is still warming — verify that a
+          loading skeleton is visible instead of empty content. (2) After
+          the cache finishes warming, verify the skeleton is replaced by
+          real data without user interaction (driven by WebSocket
+          domain_ready event). (3) Simulate a cache that never becomes ready
+          (or takes >30s) — verify the error state appears with a working
+          Retry button.
+
+          How: The E2E test needs to control cache warming timing. Options:
+          (a) Use the debug/cache-status endpoint to verify cache state and
+          time navigation to hit the warming window. (b) Add a test-only
+          daemon endpoint that delays cache domain loading. (c) Register a
+          new project mid-test to trigger fresh cache warming. Option (c) is
+          most realistic. For the timeout scenario, a mock or very large
+          dataset may be needed to extend warming time beyond 30s, or a
+          test-only delay endpoint. The test should use existing Playwright
+          fixture patterns from the e2e test suite.
+
+          Covers: @ui-data-freshness ac-warming-skeleton, ac-warming-auto-
+          transition, ac-warming-retry-fallback, ac-warming-timeout.
       ```
 
 
@@ -29679,3 +29891,7 @@ plans:
         content: "Fixed task format: added slugs, priorities, phases, derive_from_specs false"
         author: "@claude"
         created_at: 2026-03-29T05:50:52.969Z
+      - _ulid: 01KMW2GR6W63TX4MJKSY2Z7FZB
+        content: Rewrote tasks with standalone What/Why/How detail and AC coverage
+        author: "@claude"
+        created_at: 2026-03-29T05:54:23.580Z
