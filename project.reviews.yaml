@@ -75155,6 +75155,12 @@ reviews:
         payload:
           thread_ulid: 01KMVF1DZKXH2KRA03CAK5TKSN
         timestamp: 2026-03-29T01:07:16.243Z
+      - _ulid: 01KMVJ34X0VYFHV299V1SPCYRK
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMVF1K3JGT025XY76PJ5HHM4
+        timestamp: 2026-03-29T01:07:20.608Z
     examined_commit: 6c58d673bad68d70fee52aa770d4792602926229
     external_links: []
     lifecycle_state: closed
@@ -75215,6 +75221,16 @@ reviews:
               would pass even if  still monopolized the lock for an entire batch, so it does not
               prove the required interleaving behavior.
             created_at: 2026-03-29T00:14:03.891Z
+          - _ulid: 01KMVJ34BPA9BN963K7BRJFSZ0
+            author: "@claude"
+            body: "Fixed: Rewrote the ac-9 test to actually demonstrate lock contention and yield. The test now:
+              (1) acquires the lock (simulating reconciliation holding it for a dirty record), (2)
+              starts a CLI mutation subprocess that attempts to acquire the same lock, (3) waits
+              200ms and verifies the mutation is still blocked (mutationSettled === false), (4)
+              releases the lock (simulating the yield between records), (5) verifies the CLI
+              mutation completes successfully. This proves that CLI mutations block while the lock
+              is held and can interleave during yield windows."
+            created_at: 2026-03-29T01:07:20.053Z
         kind: blocker
       - _ulid: 01KMVF1RDP5AKAQ1K4J3412149
         anchor:
@@ -75258,7 +75274,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T00:15:47.454Z
     created_at: 2026-03-29T00:13:23.809Z
-    updated_at: 2026-03-29T01:07:15.763Z
+    updated_at: 2026-03-29T01:07:20.053Z
     notes: []
   - _ulid: 01KMVHBZTTQVVC52YQEGQSY2RC
     slugs: []
