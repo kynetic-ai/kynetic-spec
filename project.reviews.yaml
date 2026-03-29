@@ -76065,6 +76065,13 @@ reviews:
           kind: question
           thread_ulid: 01KMW2Z8PHPV0A0BTKTB55DB7C
         timestamp: 2026-03-29T06:02:19.792Z
+      - _ulid: 01KMW2ZNEASC3PF7B01QSZNGCB
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KMW2ZMWRERHV6R9NAV2PV4ES
+        timestamp: 2026-03-29T06:02:32.266Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -76163,7 +76170,29 @@ reviews:
               covers.
             created_at: 2026-03-29T06:02:19.218Z
         kind: question
+      - _ulid: 01KMW2ZMWRERHV6R9NAV2PV4ES
+        anchor:
+          type: structured
+          ref: "@task-cache-domain-ready-ws-event"
+          section: Tasks
+        entries:
+          - _ulid: 01KMW2ZMWRW3HG3W3MR725NC5B
+            author: "@claude"
+            body: >-
+              The existing @daemon-entity-cache has ac-warming-availability ("response indicating
+              the data is still loading") and ac-stale-during-reload ("domain never regresses to
+              loading during a reload"). The proposed ac-domain-ready-event introduces a broadcast
+              on loading->ready transition.
+
+
+              Question: should ac-domain-ready-event also cover the degraded->ready transition? The
+              EntityCache has a "degraded" state (per ac-graceful-degradation). If a domain recovers
+              from degraded to ready, should that also broadcast? The AC as written only says
+              "loading to ready" which may miss recovery scenarios. Consider whether this is
+              intentional scoping or an oversight.
+            created_at: 2026-03-29T06:02:31.704Z
+        kind: question
     verdicts: []
     created_at: 2026-03-29T06:01:44.082Z
-    updated_at: 2026-03-29T06:02:19.218Z
+    updated_at: 2026-03-29T06:02:31.704Z
     notes: []
