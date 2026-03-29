@@ -29955,8 +29955,8 @@ plans:
       event (P1, can run in parallel since independent). Then route handler migration (P2). Then
       client unwrapping + interceptor (P3). Then WS subscription + skeleton views (P4). Finally E2E
       test (P5).
-    status: draft
-    approved_at: null
+    status: approved
+    approved_at: 2026-03-29T06:59:34.916Z
     derived_specs: []
     derived_tasks: []
     module_ref: null
