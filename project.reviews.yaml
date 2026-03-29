@@ -78652,7 +78652,20 @@ reviews:
     slugs: []
     title: Review add domain ready event AC to entity cache spec (cycle 5)
     author: Test User
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Ran npm test in this snapshot. Result: 7123/7133 tests passed, 5 skipped, 5 failed across
+          6 suites. Failures were reported in tests/agent-dispatch-engine.test.ts,
+          tests/dispatch-workspace-cleanup.test.ts, and tests/native-guard-setup.test.ts. Full log:
+          /tmp/kspec-test-cache/01KMWDS840DZGE1Z993TCCB0SQ/45bdf8cc0bcfa0a4.log"
+        name: npm-test
+        required: true
+        runner: npm
+        created_at: 2026-03-29T09:19:13.302Z
+        completed_at: 2026-03-29T09:19:13.302Z
     events:
       - _ulid: 01KMWDV037N0D6HX6FRJQVCT4J
         actor: Test User
@@ -78674,6 +78687,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMWE7R8WVGCSM8964H93P2HY
         timestamp: 2026-03-29T09:19:12.208Z
+      - _ulid: 01KMWE7TDHH68PNJED5183M8GJ
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm-test
+        timestamp: 2026-03-29T09:19:13.841Z
     examined_commit: 82976814d411e8a10eed4d34c3bb531089798d47
     external_links: []
     lifecycle_state: open
@@ -78704,5 +78724,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-29T09:12:13.672Z
-    updated_at: 2026-03-29T09:19:11.644Z
+    updated_at: 2026-03-29T09:19:13.302Z
     notes: []
