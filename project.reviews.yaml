@@ -81142,6 +81142,12 @@ reviews:
         payload:
           thread_ulid: 01KMWVFXGPKGKHGN2CZWWTHR3K
         timestamp: 2026-03-29T13:23:00.899Z
+      - _ulid: 01KMWW6H7YJHRPDB8TJRC4JB18
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMWVFZC57P4TDY63RM5A2V0M
+        timestamp: 2026-03-29T13:23:11.742Z
     examined_commit: 7aa92989e9de97463c356afbe1d2bdcc7fc92274
     external_links: []
     lifecycle_state: closed
@@ -81220,6 +81226,8 @@ reviews:
               handling, test quality, integration."
             created_at: 2026-03-29T13:10:52.550Z
         kind: nit
+        resolved_at: 2026-03-29T13:23:11.170Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -81229,5 +81237,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T13:11:37.112Z
     created_at: 2026-03-29T13:09:59.966Z
-    updated_at: 2026-03-29T13:23:00.273Z
+    updated_at: 2026-03-29T13:23:11.170Z
     notes: []
