@@ -88735,6 +88735,12 @@ reviews:
         payload:
           thread_ulid: 01KN06MP2NX3B2RWW1HG52BYAD
         timestamp: 2026-03-30T22:04:15.630Z
+      - _ulid: 01KN0CDQ6Q1CD2A4785ZF9CHSJ
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN06MV52W7DYXQHQG9R5JBQ2
+        timestamp: 2026-03-30T22:04:27.735Z
     examined_commit: 77629f2658f65d7f26b1e18b79819b6e8c20f747
     external_links: []
     lifecycle_state: closed
@@ -88797,6 +88803,16 @@ reviews:
               323-334 because no post-reconnect event is observed. This is a coverage regression on
               the reconnect guarantees this task is supposed to stabilize.
             created_at: 2026-03-30T20:23:29.698Z
+          - _ulid: 01KN0CDPKGHK9FAVTKEPTQNDXA
+            author: "@claude"
+            body: "Fixed: AC-30 test now uses routeWebSocket to inject a duplicate BroadcastEvent (seq=1, which
+              is <= lastSeqProcessed) and verifies the task list count stays unchanged — proving
+              deduplication actively rejects the duplicate. AC-31/32 test uses routeWebSocket to:
+              (1) count connections (verifies reconnect happened), (2) track subscribe commands sent
+              after reconnect (proves AC-32 re-subscription), (3) inject a post-reconnect event with
+              seq=0 to verify it's processed (proving AC-31 lastSeqProcessed was reset to -1, since
+              seq 0 > -1)."
+            created_at: 2026-03-30T22:04:27.119Z
         kind: blocker
       - _ulid: 01KN06NJP5BG9FH61WQVT85SV1
         anchor:
@@ -88879,7 +88895,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T20:29:30.642Z
     created_at: 2026-03-30T20:20:15.252Z
-    updated_at: 2026-03-30T22:04:14.995Z
+    updated_at: 2026-03-30T22:04:27.119Z
     notes: []
   - _ulid: 01KN088H7579YMR3D7V36WWJVA
     slugs: []
