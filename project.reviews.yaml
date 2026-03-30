@@ -81990,6 +81990,18 @@ reviews:
         runner: npm
         created_at: 2026-03-30T10:14:07.630Z
         completed_at: 2026-03-30T10:14:07.630Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Representative fresh-load checks run serially after a successful build:  passed,
+          but  failed because  never appeared, and  failed because  never appeared. Failure
+          screenshots show  and  stuck on their loading skeletons."
+        name: playwright fresh-load pages
+        required: true
+        runner: playwright
+        created_at: 2026-03-30T10:14:09.547Z
+        completed_at: 2026-03-30T10:14:09.547Z
     events:
       - _ulid: 01KMZ3758BVNH957MYQ15YWXJD
         actor: Test User
@@ -82025,6 +82037,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-30T10:14:08.241Z
+      - _ulid: 01KMZ3S4E34N3C8XCYCWKPQD4D
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: playwright fresh-load pages
+        timestamp: 2026-03-30T10:14:10.116Z
     examined_commit: 137b046abd8a2482f82be089329a4075aab9bccc
     external_links: []
     lifecycle_state: open
@@ -82056,5 +82075,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-30T10:04:21.132Z
-    updated_at: 2026-03-30T10:14:07.630Z
+    updated_at: 2026-03-30T10:14:09.547Z
     notes: []
