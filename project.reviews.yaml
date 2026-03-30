@@ -81786,3 +81786,29 @@ reviews:
     created_at: 2026-03-29T22:04:14.293Z
     updated_at: 2026-03-29T22:10:34.361Z
     notes: []
+  - _ulid: 01KMYZ9YJ6JJA2885K48QQ698W
+    slugs: []
+    title: "Plan review: e2e test suite audit and restructure 2"
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KMYZ9YJ5W4T531GH48VWGK1N
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-30T08:55:58.277Z
+    examined_commit: null
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-30T08:55:58.278Z
+    updated_at: null
+    notes: []
