@@ -54,3 +54,35 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-30T19:19:07.945Z
+  - _ulid: 01KN06BNVGWEETK1X4HBSZ2WAE
+    content: >-
+      Fixed 21 timing/race condition failures across 3 E2E test files (search.spec.ts,
+      connection.spec.ts, cache-warming-views.spec.ts). All 29 tests in these files now pass
+      reliably.
+
+
+      Key fixes:
+
+      1. search.spec.ts (15 tests): Replaced waitForLoadState('domcontentloaded') with waiting for
+      sidebar nav link visibility to ensure SvelteKit hydration complete. Added openPalette() helper
+      with Control+k. Removed fixed timeouts for result assertions.
+
+
+      2. connection.spec.ts (7 tests): Replaced waitForTimeout with element-based waits. Rewrote
+      exponential backoff test using addInitScript WebSocket proxy. Rewrote 10s disconnect test
+      using page.routeWebSocket() to proxy first connection then block reconnects —
+      connectionLostTimer fires during the 16s backoff gap.
+
+
+      3. cache-warming-views.spec.ts (7 tests): Replaced page.clock.install() fake timers with real
+      time waits. Fake timers interfered with fetch() promises and Svelte reactivity in TanStack
+      Query. Added waitForRetriesExhausted() helper with 35s real-time wait.
+
+
+      Remaining 18 failures in sessions, task-board, and tasks specs are pre-existing on the base
+      branch (verified by stash/test/unstash against commit 76a99bcf5). These are NOT timing issues
+      — they are broken test assertions for detail panels/dialogs that fail even with 1 worker and
+      no changes. They belong to a different fix scope.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-30T20:18:29.360Z
