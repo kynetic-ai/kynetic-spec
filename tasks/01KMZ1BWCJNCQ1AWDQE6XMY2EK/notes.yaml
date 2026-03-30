@@ -12,3 +12,11 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-30T23:19:32.798Z
+  - _ulid: 01KN0HA5RYAXNXFD5ESRJ1A2YW
+    content: Implemented Playwright file-watcher coverage for direct .kspec mutations across tasks,
+      items, and inbox/sidebar state, plus a multi-project isolation case. Also fixed WebSocket
+      file-update invalidation so direct watcher events refresh active query-backed views after the
+      daemon cache reload window instead of leaving stale data in place.
+    supersedes: null
+    author: Test User
+    created_at: 2026-03-30T23:29:54.463Z
