@@ -88342,6 +88342,12 @@ reviews:
         payload:
           thread_ulid: 01KN005J93SAR5F3M8H99XX9RR
         timestamp: 2026-03-30T20:38:09.270Z
+      - _ulid: 01KN07FXZ55X5XFTNZS5GSVT4E
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KN004Y67ZCSKNMT5RB8Z65FV
+        timestamp: 2026-03-30T20:38:17.317Z
     examined_commit: 8305fc76efd2c40e026e5aee15fca3c500b5d462
     external_links: []
     lifecycle_state: closed
@@ -88411,6 +88417,8 @@ reviews:
               snapshot now includes a rebase onto latest dev.
             created_at: 2026-03-30T20:38:04.283Z
         kind: nit
+        resolved_at: 2026-03-30T20:38:16.727Z
+        resolved_by: "@claude"
       - _ulid: 01KN005J93SAR5F3M8H99XX9RR
         entries:
           - _ulid: 01KN005J94VQ3N1VXBA5R0SKQZ
@@ -88445,7 +88453,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T18:30:22.301Z
     created_at: 2026-03-30T18:13:08.575Z
-    updated_at: 2026-03-30T20:38:08.687Z
+    updated_at: 2026-03-30T20:38:16.727Z
     notes: []
   - _ulid: 01KMZZF5GMNQRBVECT9B9ASPZ9
     slugs: []
