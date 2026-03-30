@@ -1,1 +1,14 @@
-notes: []
+notes:
+  - _ulid: 01KN0CSH5K600PYCN0EYP54G7V
+    content: "Approach: replace raw browser WebSocket protocol assertions with behavioral Playwright
+      coverage for connection state, live task/inbox/dashboard updates, and move protocol-only
+      assertions to daemon-side vitest using a real daemon + WebSocket client. Edge cases: initial
+      connection readiness before assertions, reconnection after daemon restart, streaming output
+      visibility, and preserving AC coverage for both @api-contract ac-25..31 and
+      @trait-websocket-protocol ac-1..5 plus @daemon-server ac-4. Test plan: add a new UI websocket
+      spec with AC annotations for user-visible behaviors, add a daemon websocket protocol test file
+      for command/ack/subscription/close-code/heartbeat coverage, then delete or rewrite the old
+      api-websocket Playwright protocol tests."
+    supersedes: null
+    author: Test User
+    created_at: 2026-03-30T22:10:54.772Z
