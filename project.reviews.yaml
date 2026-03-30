@@ -81805,6 +81805,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-30T08:56:22.001Z
+      - _ulid: 01KMYZBA1Z73BRM9TH16CYX3PV
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMYZB9EA1CMF73J35Q7KYPES
+        timestamp: 2026-03-30T08:56:42.815Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -81814,8 +81821,25 @@ reviews:
       content_hash: ""
       ref: "@plan-e2e-test-suite-audit-and-restructure-2"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMYZB9EA1CMF73J35Q7KYPES
+        anchor:
+          type: structured
+          ref: "@task-fix-query-loading-state"
+          section: tasks
+        entries:
+          - _ulid: 01KMYZB9EB2ZHRPE7ACSXFAKYE
+            author: Jacob Chapel
+            body: This plan is framed as e2e test-suite cleanup, but this task is a product bug investigation
+              and implementation task in TanStack Query/web UI runtime code rather than test
+              cleanup. Deriving it from this plan will mix app-behavior repair with test
+              maintenance, making scope, ownership, and completion criteria ambiguous. Split this
+              into a separate bug-fix plan/task, and keep this plan focused on test cleanup work
+              that starts after the underlying UI bug is already fixed or explicitly accepted as a
+              prerequisite outside the plan.
+            created_at: 2026-03-30T08:56:42.187Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-30T08:55:58.278Z
-    updated_at: 2026-03-30T08:56:21.348Z
+    updated_at: 2026-03-30T08:56:42.187Z
     notes: []
