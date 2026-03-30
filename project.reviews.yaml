@@ -89928,6 +89928,12 @@ reviews:
         payload:
           thread_ulid: 01KN0CZJB44VFS7H9ZCGJJ3WAP
         timestamp: 2026-03-30T22:33:33.954Z
+      - _ulid: 01KN0E327M75YNCVXPE2DJFH49
+        actor: Test User
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN0CVYZ8E563MVB89C2FQBZ3
+        timestamp: 2026-03-30T22:33:35.732Z
     examined_commit: cf37063d1bdb0f467d1257680859d0acbafab22c
     external_links: []
     lifecycle_state: closed
@@ -89981,6 +89987,13 @@ reviews:
               after reconnect, such as asserting on the manager state or on a DOM/network effect
               that only occurs when the event handler runs.
             created_at: 2026-03-30T22:12:14.440Z
+          - _ulid: 01KN0E31MW8G7X0JS6H2YWVFMT
+            author: Test User
+            body: Addressed in the same 96979f51ac13f6ca691be360c82899c11de83f96 fix. The placeholder
+              page.evaluate(() => true) has been removed; the reconnect test now proves seq=0
+              acceptance through an observable /api/tasks refetch after the reconnect handshake and
+              re-subscribe path completes.
+            created_at: 2026-03-30T22:33:35.132Z
         kind: blocker
       - _ulid: 01KN0CZJB44VFS7H9ZCGJJ3WAP
         anchor:
@@ -90048,7 +90061,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T22:14:48.833Z
     created_at: 2026-03-30T22:09:32.061Z
-    updated_at: 2026-03-30T22:33:33.392Z
+    updated_at: 2026-03-30T22:33:35.132Z
     notes: []
   - _ulid: 01KN0DMBM3BK14076PF2NNA390
     slugs: []
