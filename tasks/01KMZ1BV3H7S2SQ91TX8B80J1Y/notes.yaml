@@ -90,3 +90,30 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-30T11:27:42.940Z
+  - _ulid: 01KMZBFRM4XCJY8FKFTM2VWPEV
+    content: >-
+      Fix cycle 1: addressed all 5 blocker threads from review @01KMZ7J5XKPEZZHF55RS94EJGJ.
+
+
+      Changes:
+
+      1. agent-dispatch.test.ts: Added stopAllEngines() cleanup in afterEach to prevent singleton
+      dispatch engine state leaking between tests. Strengthened all response-contract assertions to
+      match original Playwright coverage (dispatch_enabled, started, stopped, reason,
+      active_invocations, queue_depth, agent_definitions).
+
+      2. sessions-search.test.ts: Removed skipped x-request-id test, added N/A annotation explaining
+      x-request-id is only on command routes.
+
+      3. server.test.ts: Replaced hand-built Elysia stub with production middleware imports
+      (localhostOnly from server.ts, projectContextMiddleware, cors). Restored SPA fallback
+      regression test verifying GET / returns HTML.
+
+      4. packages/daemon/src/server.ts: Exported localhostOnly() for test import.
+
+
+      All 5 review threads addressed and resolved. Full test suite: 2070 suites pass, 7488 tests
+      pass. 1 pre-existing flaky timeout in dispatch-workspace-registry.test.ts (unrelated).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-30T12:28:51.716Z
