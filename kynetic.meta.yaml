@@ -10107,6 +10107,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-30T13:34:33.042Z
+  - _ulid: 01KMZH18DP5DWXBJ17VTA0T80V
+    type: success
+    content: "E2E daemon fixture: spawning bun directly (bypassing CLI serve start --detach) eliminates
+      PID-file contention and CLI timeout under parallel workers. Combined with cache readiness
+      polling, this makes E2E daemon startup reliable at 10 parallel workers."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-30T14:05:47.830Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:

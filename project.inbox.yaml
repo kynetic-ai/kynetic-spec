@@ -2059,3 +2059,13 @@ inbox:
       - docs
     added_by: "@claude"
     created_at: 2026-03-30T06:48:26.905Z
+  - _ulid: 01KMZH18BJPNKMPJAWHX0EJ5PZ
+    text: Daemon health endpoint (/api/health) lacks readiness flag — returns OK before entity cache
+      finishes loading. Clients polling health for startup readiness get false positives. Should add
+      a ready field that reflects cache domain state, or a separate /api/ready endpoint.
+    tags:
+      - daemon
+      - api
+      - reflection
+    added_by: "@claude"
+    created_at: 2026-03-30T14:05:47.762Z
