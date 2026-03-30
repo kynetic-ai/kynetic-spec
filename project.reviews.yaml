@@ -88934,6 +88934,13 @@ reviews:
           status: pass
           name: isolated-cli-serve
         timestamp: 2026-03-30T21:02:26.564Z
+      - _ulid: 01KN08W8G4Q5DEQQ8XYTRG4DNM
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KN08W7MER4WATK1D40SHCRYY
+        timestamp: 2026-03-30T21:02:29.892Z
     examined_commit: fc7d91827cb184171d49d28475980f2269aa4959
     external_links: []
     lifecycle_state: open
@@ -88960,7 +88967,722 @@ reviews:
               a snapshot that does not satisfy the repo's required full-suite gate.
             created_at: 2026-03-30T21:02:18.165Z
         kind: blocker
+      - _ulid: 01KN08W7MER4WATK1D40SHCRYY
+        entries:
+          - _ulid: 01KN08W7MEZG09DQX3AGJGYZN3
+            author: Test User
+            body: >-
+              Evidence log: Files read: packages/web-ui/src/lib/query/ws-invalidation.ts;
+              tests/web-ui/ws-cache-invalidation.test.ts; packages/shared/src/websocket.ts;
+              packages/web-ui/src/routes/agents/+page.svelte;
+              packages/web-ui/src/routes/sessions/[id]/+page.svelte. Commands
+              run:  packages/web-ui/src/lib/query/ws-invalidation.ts |  19 +++-
+               tests/web-ui/ws-cache-invalidation.test.ts       | 118 +++++++++++++++++++++++
+               2 files changed, 133 insertions(+), 4 deletions(-), diff --git a/packages/web-ui/src/lib/query/ws-invalidation.ts b/packages/web-ui/src/lib/query/ws-invalidation.ts
+              index c72bd2561..76e55408d 100644
+
+              --- a/packages/web-ui/src/lib/query/ws-invalidation.ts
+
+              +++ b/packages/web-ui/src/lib/query/ws-invalidation.ts
+
+              @@ -76,7 +76,10 @@ function getInvalidationKeys(
+                       return [];
+                     }
+                     // Completion events (message_complete, thinking_complete, tool_call_complete)
+              -      // and invocation lifecycle events invalidate session event caches.
+
+              +      // only invalidate session queries — they signal that a message/thought
+
+              +      // finished, which is relevant for session detail views but NOT for
+
+              +      // agent status or definitions. Avoids excessive agent/status refetches
+
+              +      // during active dispatch work.
+                     if (
+                       event.event === "message_complete" ||
+                       event.event === "thinking_complete" ||
+              @@ -84,11 +87,19 @@ function getInvalidationKeys(
+                     ) {
+                       const sessionId = (event.data as { session_id?: string })?.session_id;
+                       if (sessionId) {
+              -          return [queryKeys.sessions.all, queryKeys.agents.all];
+
+              +          return [queryKeys.sessions.all];
+                       }
+              +        return [];
+
+              +      }
+
+              +      // Agent lifecycle events: the daemon broadcasts a single "agent_invocation"
+
+              +      // event with data.status = "started" | "completed" | "failed".
+
+              +      // These represent actual dispatch state changes — invalidate both agents
+
+              +      // and sessions.
+
+              +      if (event.event === "agent_invocation") {
+
+              +        return [queryKeys.agents.all, queryKeys.sessions.all];
+                     }
+              -      // Agent lifecycle events (agent_invocation) also affect session lists
+
+              -      return [queryKeys.agents.all, queryKeys.sessions.all];
+
+              +      // Unknown agent events — no invalidation needed.
+
+              +      return [];
+                   }
+                   case "sessions":
+              diff --git a/tests/web-ui/ws-cache-invalidation.test.ts
+              b/tests/web-ui/ws-cache-invalidation.test.ts
+
+              index c21650d16..435c9c639 100644
+
+              --- a/tests/web-ui/ws-cache-invalidation.test.ts
+
+              +++ b/tests/web-ui/ws-cache-invalidation.test.ts
+
+              @@ -309,3 +309,121 @@ describe("ws-invalidation cache:status handling", () => {
+                   });
+                 });
+               });
+              +
+
+              +// AC: @task-fix-ws-invalidation-storm ac-1 (scoped invalidation for completion
+              events)
+
+              +// AC: @task-fix-ws-invalidation-storm ac-2 (lifecycle events still invalidate
+              agents.all)
+
+              +describe("ws-invalidation agents topic scoping", () => {
+
+              +  let mockQueryClient: ReturnType<typeof createMockQueryClient>;
+
+              +
+
+              +  beforeEach(() => {
+
+              +    connectionHandlers.clear();
+
+              +    subscribedTopics.clear();
+
+              +    mockQueryClient = createMockQueryClient();
+
+              +  });
+
+              +
+
+              +  afterEach(() => {
+
+              +    teardownWsInvalidation();
+
+              +  });
+
+              +
+
+              +  describe("completion events only invalidate sessions, not agents", () => {
+
+              +    for (const eventName of [
+
+              +      "message_complete",
+
+              +      "thinking_complete",
+
+              +      "tool_call_complete",
+
+              +    ]) {
+
+              +      it(`${eventName} with session_id invalidates sessions.all but NOT agents.all`,
+              () => {
+
+              +        setupWsInvalidation(mockQueryClient);
+
+              +        const event = makeBroadcastEvent("agents", eventName, {
+
+              +          session_id: "01TEST_SESSION_ID",
+
+              +          invocation_id: "01TEST_INVOCATION",
+
+              +        });
+
+              +
+
+              +        dispatchEvent("agents", event);
+
+              +
+
+              +        // Should invalidate sessions
+
+              +        expect(mockQueryClient.invalidateQueries).toHaveBeenCalledWith({
+
+              +          queryKey: queryKeys.sessions.all,
+
+              +        });
+
+              +        // Should NOT invalidate agents
+
+              +        expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
+
+              +          queryKey: queryKeys.agents.all,
+
+              +        });
+
+              +      });
+
+              +
+
+              +      it(`${eventName} without session_id does not invalidate agents.all`, () => {
+
+              +        setupWsInvalidation(mockQueryClient);
+
+              +        const event = makeBroadcastEvent("agents", eventName, {
+
+              +          invocation_id: "01TEST_INVOCATION",
+
+              +        });
+
+              +
+
+              +        dispatchEvent("agents", event);
+
+              +
+
+              +        // Without session_id, should still not invalidate agents.all
+
+              +        expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
+
+              +          queryKey: queryKeys.agents.all,
+
+              +        });
+
+              +      });
+
+              +    }
+
+              +  });
+
+              +
+
+              +  describe("streaming progress events produce no invalidation", () => {
+
+              +    for (const eventName of [
+
+              +      "message_start",
+
+              +      "message_progress",
+
+              +      "thinking_start",
+
+              +      "thinking_progress",
+
+              +      "tool_call_start",
+
+              +    ]) {
+
+              +      it(`${eventName} does not invalidate any queries`, () => {
+
+              +        setupWsInvalidation(mockQueryClient);
+
+              +        const event = makeBroadcastEvent("agents", eventName, {
+
+              +          session_id: "01TEST_SESSION_ID",
+
+              +        });
+
+              +
+
+              +        dispatchEvent("agents", event);
+
+              +
+
+              +        expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalled();
+
+              +      });
+
+              +    }
+
+              +  });
+
+              +
+
+              +  describe("agent lifecycle events still invalidate agents.all", () => {
+
+              +    // The daemon broadcasts a single "agent_invocation" event with data.status
+
+              +    // carrying "started", "completed", or "failed" — not separate event names.
+
+              +    for (const status of ["started", "completed", "failed"]) {
+
+              +      it(`agent_invocation with status="${status}" invalidates both agents.all and
+              sessions.all`, () => {
+
+              +        setupWsInvalidation(mockQueryClient);
+
+              +        const event = makeBroadcastEvent("agents", "agent_invocation", {
+
+              +          session_id: "01TEST_SESSION_ID",
+
+              +          agent_id: "task-worker",
+
+              +          task_id: "@task-auth",
+
+              +          task_title: "Implement authentication",
+
+              +          status,
+
+              +          timestamp: Date.now(),
+
+              +        });
+
+              +
+
+              +        dispatchEvent("agents", event);
+
+              +
+
+              +        expect(mockQueryClient.invalidateQueries).toHaveBeenCalledWith({
+
+              +          queryKey: queryKeys.agents.all,
+
+              +        });
+
+              +        expect(mockQueryClient.invalidateQueries).toHaveBeenCalledWith({
+
+              +          queryKey: queryKeys.sessions.all,
+
+              +        });
+
+              +      });
+
+              +    }
+
+              +  });
+
+              +
+
+              +  describe("unknown agent events produce no invalidation", () => {
+
+              +    it("unrecognized event name does not invalidate any queries", () => {
+
+              +      setupWsInvalidation(mockQueryClient);
+
+              +      const event = makeBroadcastEvent("agents", "some_unknown_event", {
+
+              +        session_id: "01TEST_SESSION_ID",
+
+              +      });
+
+              +
+
+              +      dispatchEvent("agents", event);
+
+              +
+
+              +      expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalled();
+
+              +    });
+
+              +  });
+
+              +});, Address excessive WebSocket query invalidation during dispatch
+
+              ────────────────────────────────────────
+
+              ULID:      01KMZ1BXDQRXEGC4DAS1F8T9H5
+
+              Slugs:     task-fix-ws-invalidation-storm
+
+              Type:      task
+
+              Status:    pending_review
+
+              Priority:  2
+
+              Automation: eligible
+
+              Session:   01KN06DEY8YFNMG7M1Q1HFMP2Q
+
+
+              ─── Description ───
+                What: When the dispatch engine is running with active agent invocations,
+                the web UI's centralized WebSocket invalidation handler in
+                packages/web-ui/src/lib/query/ws-invalidation.ts fires
+                queryKeys.agents.all invalidation for every message_complete,
+                thinking_complete, and tool_call_complete WebSocket event on the
+                "agents" topic. During active agent work, these events fire every few
+                seconds, causing the agent/status API endpoint to be re-fetched
+                continuously in a tight loop.
+                Why: HAR capture evidence (2026-03-30) shows 22 rounds of
+                GET /api/agent/status fetches over 45 seconds on the /automation page
+                with a single active agent invocation. Each fetch takes 400-800ms.
+                This wastes bandwidth, creates unnecessary daemon load, and may cause
+                visual flickering once the loading state bug (@task-fix-query-loading-state)
+                is fixed. The ws-invalidation.ts handler at lines 65-91 already filters
+                out streaming progress events (message_progress, thinking_progress,
+                etc.) to avoid cache thrashing, but the corresponding completion events
+                (message_complete, thinking_complete, tool_call_complete) are not
+                filtered and they trigger full agents.all invalidation.
+                How: Modify the "agents" case in getInvalidationKeys() in
+                packages/web-ui/src/lib/query/ws-invalidation.ts:
+                1. Add message_complete, thinking_complete, and tool_call_complete to
+                   the set of events that get scoped invalidation instead of blanket
+                   agents.all invalidation
+                2. For these completion events, only invalidate session-scoped queries
+                   (queryKeys.sessions.all) since they signal that a message/thought
+                   finished — relevant for session detail views but not for the
+                   agent status or definitions queries
+                3. Keep the existing behavior for agent_invocation lifecycle events
+                   (started, completed, failed) — these should continue to invalidate
+                   queryKeys.agents.all because they represent actual changes to
+                   dispatch state (new invocation, invocation finished)
+                4. Verify by running the web UI with dispatch active and confirming
+                   agent/status is not re-fetched on every message completion
+              Plan ref:  @plan-e2e-test-suite-audit-and-restructure-2
+
+              Review ref: @01KN088H7579YMR3D7V36WWJVA → Review task-fix-ws-invalidation-storm [open]
+              (pending)
+
+
+              ─── Submission Linkage ───
+                Branch:  dev
+                Commit:  829e357cac08ffc55e8071e21d6b28e3d34050ec
+                Remote:  origin (git@github.com:kynetic-ai/kynetic-spec.git)
+                Upstream: refs/heads/dev
+                Captured: 2026-03-30T20:38:44.213Z
+              Tags:      bug, web-ui, perf
+
+              Created:   2026-03-30T09:31:59.799Z
+
+              Started:   2026-03-30T20:38:40.945Z
+
+
+              ─── Notes ───
+
+              [2026-03-30T16:04:25.948Z] @claude:
+
+              Approach: Fix excessive query invalidation in ws-invalidation.ts agents case.
+
+
+              Current behavior (bug): message_complete, thinking_complete, tool_call_complete events
+              on the 'agents' topic trigger queryKeys.agents.all + queryKeys.sessions.all
+              invalidation, causing agent/status API to refetch on every message completion.
+
+
+              Fix: For these completion events, only invalidate queryKeys.sessions.all (relevant for
+              session detail views) and NOT queryKeys.agents.all (agent status/definitions don't
+              change when a message completes).
+
+
+              Keep existing behavior for agent lifecycle events (started, completed, failed) - these
+              represent actual dispatch state changes.
+
+
+              Implementation:
+
+              1. In the agents case, after the streaming progress filter, check for completion
+              events
+
+              2. For completion events, return only [queryKeys.sessions.all] instead of
+              [queryKeys.sessions.all, queryKeys.agents.all]  
+
+              3. The fallback (agent lifecycle events) keeps returning both
+
+
+              Test plan:
+
+              - message_complete with session_id → only sessions.all invalidated
+
+              - thinking_complete with session_id → only sessions.all invalidated  
+
+              - tool_call_complete with session_id → only sessions.all invalidated
+
+              - agent_invocation started/completed/failed → agents.all + sessions.all (unchanged)
+
+              - Streaming events → no invalidation (unchanged)
+
+              [2026-03-30T16:11:44.356Z] @claude:
+
+              Implementation complete. Changed ws-invalidation.ts getInvalidationKeys() agents case:
+
+
+              1. message_complete, thinking_complete, tool_call_complete with session_id now return
+              only [queryKeys.sessions.all] instead of [queryKeys.sessions.all,
+              queryKeys.agents.all]
+
+              2. These same events without session_id now return [] instead of falling through to
+              the agents.all default
+
+              3. Agent lifecycle events (started, completed, failed) unchanged — still return both
+              agents.all and sessions.all
+
+
+              Added 16 new tests covering: completion event scoping (6 tests), streaming no-op (5
+              tests), lifecycle events (3 tests). All 28 tests in the file pass. Full suite: 7502
+              pass, 1 unrelated flaky failure in dispatch-workspace-registry.
+
+              [2026-03-30T16:22:23.391Z] Test User:
+
+              [FIX_CYCLE: 1] Review verdict: changes_requested by codex
+
+              [2026-03-30T18:10:45.190Z] @claude:
+
+              Fix cycle 1: addressed both blocker threads from review @01KMZRCAEC7SWKD6BN7VP96XSM.
+
+
+              Changes:
+
+              1. Handler: Made agent_invocation matching explicit (event.event ===
+              'agent_invocation') instead of fallthrough default. Unknown agent events now return []
+              instead of invalidating both caches.
+
+              2. Tests: Replaced synthetic event names (agent_invocation_started/completed/failed)
+              with real production shape — single 'agent_invocation' event with data.status field
+              and full AgentInvocationEventData payload matching packages/shared/src/websocket.ts.
+
+              3. Added test for unknown agent events returning no invalidation.
+
+
+              Verified: all 29 ws-cache-invalidation tests pass. Full suite: 7504 pass, 5 skipped.
+
+              [2026-03-30T18:30:24.280Z] Test User:
+
+              [FIX_CYCLE: 2] Review verdict: changes_requested by codex
+
+              [2026-03-30T20:37:38.590Z] @claude:
+
+              Fix cycle 2: investigated full test suite failures flagged in review
+              @01KMZZ65AZ3BERCPCM5VBS1MQ4.
+
+
+              Findings:
+
+              1. Rebased onto latest origin/dev (829e357ca, includes fixture-envelope fixes)
+
+              2. This branch changes ONLY 2 files: packages/web-ui/src/lib/query/ws-invalidation.ts
+              and tests/web-ui/ws-cache-invalidation.test.ts
+
+              3. All 29 ws-cache-invalidation tests pass in isolation and in all 3 shards
+
+              4. The 34-47 failing suites are in unrelated backend tests (agent-dispatch-engine,
+              cli-serve, daemon-api, dispatch-workspace-*, etc.) — all pass when run individually
+              but fail under parallel suite contention
+
+              5. No failing suite involves any web-ui file — my changes cannot cause backend test
+              failures since web-ui is a separate SvelteKit package with no cross-imports into
+              backend code
+
+              6. These are pre-existing test infrastructure flakiness issues (port contention,
+              timing) in the parallel full suite run, not regressions from this change
+
+
+              ─── Activity ───
+
+              ⚑ just now Review @01KN088H7579YMR3D7V36WWJVA: check added (Test User)
+
+              ◆ 10 minutes ago Review @01KN088H7579YMR3D7V36WWJVA: lifecycle change (Test User)
+
+              ⚑ 10 minutes ago Review linked: @01KN088H7579YMR3D7V36WWJVA (Test User)
+
+              ◆ 10 minutes ago Review @01KN088H7579YMR3D7V36WWJVA: lifecycle change (Test User)
+
+              ↑ 23 minutes ago Task submitted for review (@claude)
+
+              ▶ 23 minutes ago Task started (@claude)
+
+              ✎ 24 minutes ago Note added (@claude)
+
+              ✎ 2 hours ago Note added (Test User)
+
+              ◆ 2 hours ago Updated status, session_id (Test User)
+
+              ⚑ 2 hours ago Review linked: @01KMZZ65AZ3BERCPCM5VBS1MQ4 (Test User)
+
+
+              (11 older entries hidden — use --activity to show all), Review
+              task-fix-ws-invalidation-storm
+
+              ────────────────────────────────────────
+
+              ULID:         01KMZRCAEC7SWKD6BN7VP96XSM
+
+              Lifecycle:    closed
+
+              Disposition:  changes_requested
+
+              Gate:         passing
+
+              Subject:      task: @01KMZ1BXDQRXEGC4DAS1F8T9H5
+
+              Author:       Test User
+
+              Examined:     c0eda9fb8b4060959805bfb589bccfdb19a22a0b
+
+              Created:      2026-03-30T16:14:10.380Z (4 hours ago)
+
+              Updated:      2026-03-30T18:10:33.511Z (2 hours ago)
+
+
+              ─── Threads (0 unresolved, 0 blockers) ───
+                ✓ [blocker] tests/web-ui/ws-cache-invalidation.test.ts:390 (2 entries)
+                  Test User: The new lifecycle coverage does not exercise the real WebSocket event shape u...
+                ✓ [blocker] tests/web-ui/ws-cache-invalidation.test.ts:390 (2 entries)
+                  Test User: The new lifecycle coverage does not exercise the real WebSocket event shape u...
+
+              ─── Checks ───
+                ✓ targeted-web-ui-test (required) — pass
+                ✓ build (required) — pass
+                ✓ validation (optional) — pass
+                ✗ full-test-suite (optional) — fail
+                ○ validation (optional) — skipped
+
+              ─── Verdicts ───
+                codex (reviewer): request_changes — 4 hours ago
+
+              ─── Events (15) ───
+                check_added by Test User — 4 hours ago
+                check_added by Test User — 4 hours ago
+                verdict_submitted by codex — 4 hours ago
+                lifecycle_change by codex — 4 hours ago
+                check_added by Test User — 4 hours ago
+                check_added by Test User — 4 hours ago
+                thread_replied by @claude — 2 hours ago
+                thread_replied by @claude — 2 hours ago
+                thread_resolved by @claude — 2 hours ago
+                thread_resolved by @claude — 2 hours ago
+                ... and 5 more, Review task-fix-ws-invalidation-storm
+              ────────────────────────────────────────
+
+              ULID:         01KMZZ65AZ3BERCPCM5VBS1MQ4
+
+              Lifecycle:    closed
+
+              Disposition:  changes_requested
+
+              Gate:         failing
+
+              Subject:      task: @01KMZ1BXDQRXEGC4DAS1F8T9H5
+
+              Author:       Test User
+
+              Examined:     8305fc76efd2c40e026e5aee15fca3c500b5d462
+
+              Created:      2026-03-30T18:13:08.575Z (2 hours ago)
+
+              Updated:      2026-03-30T20:38:20.734Z (24 minutes ago)
+
+
+              ─── Threads (0 unresolved, 0 blockers) ───
+                ✓ [blocker] tests/agent-dispatch-engine.test.ts:5721 (2 entries)
+                  Test User: > @kynetic-ai/spec@0.12.0 test
+              > node scripts/test.cjs does not pass on this ...
+                ✓ [nit] (2 entries)
+                  Test User: Evidence log: Files read: packages/web-ui/src/lib/query/ws-invalidation.ts, t...
+                ✓ [nit] (2 entries)
+                  Test User: Evidence log: Files read: packages/web-ui/src/lib/query/ws-invalidation.ts, t...
+
+              ─── Checks ───
+                ✓ targeted-web-ui-test (required) — pass
+                ✓ validation (optional) — pass
+                ✗ full-test-suite (required) — fail
+                ✗ full-test-suite (required) — fail
+
+              ─── Verdicts ───
+                codex (reviewer): request_changes — 2 hours ago
+
+              ─── Events (17) ───
+                thread_created by Test User — 2 hours ago
+                check_added by Test User — 2 hours ago
+                verdict_submitted by codex — 2 hours ago
+                lifecycle_change by codex — 2 hours ago
+                thread_replied by @claude — 24 minutes ago
+                thread_resolved by @claude — 24 minutes ago
+                thread_replied by @claude — 24 minutes ago
+                thread_replied by @claude — 24 minutes ago
+                thread_resolved by @claude — 24 minutes ago
+                thread_resolved by @claude — 24 minutes ago
+                ... and 7 more, ✓ Validation passed
+              ────────────────────────────────────────
+
+              Files checked: 10
+
+              Items checked: 567
+
+              Tasks checked: 0
+
+              Meta: 10 agents, 11 workflows, 10 conventions
+
+
+              Schema: OK
+
+              References: OK
+
+
+              Reference warnings: 1
+                ⚠ @skills
+                  Orphaned skill directory 'skills' has no corresponding meta entry
+                  in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+              Alignment warnings: 31
+                Orphaned specs (no tasks): 30
+                  ○ Test Trait
+                  ○ Filterable List Commands
+                  ○ Dry Run Preview Mode
+                  ... and 27 more
+                Status mismatches: 1
+                  ! Task Set Batch Support
+                    Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+
+              Alignment stats: 404/567 specs have tasks, 403 aligned
+
+
+              Completeness warnings: 519
+                Missing acceptance criteria: 1
+                  ○ @01KJN1WT - Test Trait
+                Missing own AC coverage: 229
+                  ! @spec-item - Spec Item
+                    Uncovered: ac-item-1, ac-item-2
+                  ! @ulid-system - ULID Identifier System
+                    Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+                  ! @slug-system - Slug Alias System
+                    Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+                  ... and 226 more
+                Invalid AC annotations: 289
+                  ! AC annotation references '@slug' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-ws-invalidation-storm-01kmz1bx-review/tests/ac-annotation-validation.test.ts:6
+                  ! AC annotation references '@my-spec' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-ws-invalidation-storm-01kmz1bx-review/tests/ac-annotation-validation.test.ts:84
+                  ! AC annotation references '@my-spec' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-ws-invalidation-storm-01kmz1bx-review/tests/ac-annotation-validation.test.ts:87
+                  ! AC annotation references '@spec-a' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-ws-invalidation-storm-01kmz1bx-review/tests/ac-annotation-validation.test.ts:114
+                  ! AC annotation references '@spec-b' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-ws-invalidation-storm-01kmz1bx-review/tests/ac-annotation-validation.test.ts:118
+                  ... and 284 more
+              Skills: OK (10 files checked), 
+
+              > @kynetic-ai/spec@0.12.0 test
+
+              > node scripts/test.cjs --run tests/web-ui/ws-cache-invalidation.test.ts, 
+
+              > @kynetic-ai/spec@0.12.0 test
+
+              > node scripts/test.cjs, 
+
+              > @kynetic-ai/spec@0.12.0 test
+
+              > node scripts/test.cjs --run tests/cli-serve.test.ts, 
+
+              > @kynetic-ai/spec@0.12.0 test
+
+              > node scripts/test.cjs --run tests/daemon-api/tasks.test.ts. Claims verified: daemon
+              uses a single  event shape (checked in packages/shared/src/websocket.ts and UI
+              consumers); targeted invalidation tests pass; full suite remains red; selected failing
+              suites pass when isolated. Categories searched: correctness, edge cases, contract
+              alignment, test quality, integration, merge gates.
+            created_at: 2026-03-30T21:02:29.006Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-30T20:51:43.461Z
-    updated_at: 2026-03-30T21:02:25.728Z
+    updated_at: 2026-03-30T21:02:29.006Z
     notes: []
