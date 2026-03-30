@@ -89824,7 +89824,20 @@ reviews:
     slugs: []
     title: Review @01KMZ1BVK6C9F7QKYK9DZD4TFQ
     author: Test User
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Ran npm test in the review snapshot. Result: 2 failed suites, 1 failed test, 2070 passed
+          suites, 7488 passed tests. Reported failure included
+          tests/dispatch-workspace-registry.test.ts; full log:
+          /tmp/kspec-test-cache/01KN0CP0YWA0J73H3TH3PCWXVF/1412b72bd6610747.log"
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-30T22:14:33.567Z
+        completed_at: 2026-03-30T22:14:33.567Z
     events:
       - _ulid: 01KN0CQ0CW5CPR7CWK61K28R4T
         actor: Test User
@@ -89860,6 +89873,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN0CZJB44VFS7H9ZCGJJ3WAP
         timestamp: 2026-03-30T22:14:13.239Z
+      - _ulid: 01KN0D07FFR1FSF9HEG9ASDW6E
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-30T22:14:34.223Z
     examined_commit: cf37063d1bdb0f467d1257680859d0acbafab22c
     external_links: []
     lifecycle_state: open
@@ -89938,5 +89958,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-30T22:09:32.061Z
-    updated_at: 2026-03-30T22:14:12.581Z
+    updated_at: 2026-03-30T22:14:33.567Z
     notes: []
