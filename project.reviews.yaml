@@ -90210,6 +90210,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-30T22:29:43.405Z
+      - _ulid: 01KN0EZKZR97MNSCE5QWZH9H0G
+        actor: Test User
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN0DSKXBRD2C39QNX3S4NMZ9
+        timestamp: 2026-03-30T22:49:11.416Z
     examined_commit: 3782c10f7bc15ce25b597a0454bd90326ffb2dad
     external_links: []
     lifecycle_state: closed
@@ -90257,6 +90263,13 @@ reviews:
               updated N/A comments in , , and  now point to non-existent coverage. Restore real
               heartbeat coverage or stop claiming this file covers ac-4.
             created_at: 2026-03-30T22:28:26.156Z
+          - _ulid: 01KN0EZK7J1BCX1DY86K4RE0HQ
+            author: Test User
+            body: "Fixed in 901eae907: removed the fake 2s-idle/ac-4 claim from websocket-protocol.test.ts,
+              added real heartbeat timing coverage in tests/daemon-heartbeat.test.ts for the 30s
+              ping, and updated the triage/watcher N/A annotations to point at the heartbeat test
+              instead of the protocol test."
+            created_at: 2026-03-30T22:49:10.642Z
         kind: blocker
       - _ulid: 01KN0DSP22HV7PN5A44HH9BWG8
         anchor:
@@ -90285,7 +90298,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T22:29:43.404Z
     created_at: 2026-03-30T22:25:33.827Z
-    updated_at: 2026-03-30T22:29:43.405Z
+    updated_at: 2026-03-30T22:49:10.642Z
     notes: []
   - _ulid: 01KN0E8VQ4QJW918F0657DQ7YT
     slugs: []
