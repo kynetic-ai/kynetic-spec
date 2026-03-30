@@ -28537,7 +28537,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-30T14:14:29.923Z
+      updated_at: 2026-03-30T14:14:31.928Z
     integration:
       status: pending
       detail: null
@@ -28546,25 +28546,20 @@ workspaces:
       target_branch: dev
       target_commit: 4696b19c2dbf188613c651e9d1698e5203f9ccfc
       updated_at: 2026-03-30T14:14:29.923Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMZ1BTVFQCM2XMFZPER1E45Z"
     task_slug: task-fix-loading-page-e2e
     timestamps:
       closed_at: null
       last_active_at: 2026-03-30T14:06:26.370Z
-      last_reconciled_at: 2026-03-30T14:14:29.923Z
+      last_reconciled_at: 2026-03-30T14:14:31.928Z
       created_at: 2026-03-30T12:30:04.123Z
-      updated_at: 2026-03-30T14:14:29.923Z
+      updated_at: 2026-03-30T14:14:31.928Z
     workspace_id: dispatch-workspace-01KMZ1BTVFQCM2XMFZPER1E45Z
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 22f19ef9bd1b10a5abe58111af3cb6d390bc49a3
-        last_seen_at: 2026-03-30T14:06:19.182Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-loading-page-e2e-01kmz1bt-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-fix-loading-page-e2e/01kmz1bt
