@@ -44,8 +44,12 @@ description: |
 spec_ref: null
 plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged dispatch/task/task-fix-loading-page-e2e/01kmz1bt into dev at
+  76a99bcf51ef31640b1724d9abb272f16311a624 after approval. Verified targeted
+  dashboard/agents/automation E2E coverage passes; no blocking review findings in the submitted
+  changes.
 depends_on:
   - "@task-fix-query-loading-state"
 context: []
@@ -284,8 +288,25 @@ history:
         previous: "@01KMZH7EQRA9MV25WEHHQ91662"
     command: review-link
     timestamp: 2026-03-30T15:41:33.178Z
+  - author: Test User
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged dispatch/task/task-fix-loading-page-e2e/01kmz1bt into dev at
+          76a99bcf51ef31640b1724d9abb272f16311a624 after approval. Verified targeted
+          dashboard/agents/automation E2E coverage passes; no blocking review findings in the
+          submitted changes.
+        previous: null
+      completed_at:
+        new: 2026-03-30T15:58:29.552Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-03-30T15:58:29.564Z
 created_at: 2026-03-30T09:31:57.167Z
 started_at: 2026-03-30T15:39:23.390Z
 submitted_at: 2026-03-30T15:39:31.028Z
+completed_at: 2026-03-30T15:58:29.552Z
 todos: []
 automation: eligible
