@@ -91534,7 +91534,20 @@ reviews:
     slugs: []
     title: Review task-fix-stale-selectors
     author: Test User
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite failed in this snapshot. Deterministic failure:
+          tests/daemon-api/reviews-list.test.ts:261, raw task ULID filter now returns linked
+          reviews. Additional full-suite timeout: tests/daemon-api/items.test.ts:327 timed out once;
+          isolated rerun passed, so the suite is still not green as submitted."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-30T23:56:11.574Z
+        completed_at: 2026-03-30T23:56:11.574Z
     events:
       - _ulid: 01KN0JR8WS5TPMJSVQREWNTDTK
         actor: Test User
@@ -91569,6 +91582,13 @@ reviews:
         payload:
           thread_ulid: 01KN0JSB1KD3BC3ZW7A2F1SMK2
         timestamp: 2026-03-30T23:56:10.361Z
+      - _ulid: 01KN0JTAGMK8MX1E5XVGN5VX1E
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-30T23:56:12.180Z
     examined_commit: d752fb33fe963e0fca963315bcc5c95881ba076c
     external_links: []
     lifecycle_state: open
@@ -91626,5 +91646,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-30T23:55:04.985Z
-    updated_at: 2026-03-30T23:56:09.757Z
+    updated_at: 2026-03-30T23:56:11.574Z
     notes: []
