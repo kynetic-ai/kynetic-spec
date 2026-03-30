@@ -85136,6 +85136,12 @@ reviews:
         payload:
           thread_ulid: 01KMZHB64SB6RVAK5YM9MGW05R
         timestamp: 2026-03-30T15:38:40.277Z
+      - _ulid: 01KMZPBKD5SSS1MK67XV007ESV
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMZHB64SB6RVAK5YM9MGW05R
+        timestamp: 2026-03-30T15:38:49.637Z
     examined_commit: 22f19ef9bd1b10a5abe58111af3cb6d390bc49a3
     external_links: []
     lifecycle_state: closed
@@ -85201,6 +85207,8 @@ reviews:
               in files touched by this branch (only tests/e2e/fixtures/test-base.ts was modified).
             created_at: 2026-03-30T15:38:39.719Z
         kind: nit
+        resolved_at: 2026-03-30T15:38:49.041Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -85210,7 +85218,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T14:13:22.860Z
     created_at: 2026-03-30T14:09:10.904Z
-    updated_at: 2026-03-30T15:38:39.719Z
+    updated_at: 2026-03-30T15:38:49.041Z
     notes: []
   - _ulid: 01KMZNDKHEZHH8ZTRC6NM32Z9D
     slugs: []
