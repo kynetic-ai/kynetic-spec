@@ -84402,6 +84402,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-30T13:21:53.542Z
+      - _ulid: 01KMZGVWM53SK92JXQKX2ZFGKH
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMZEFFRA0XX37YZMSW7HEZV7
+        timestamp: 2026-03-30T14:02:51.909Z
     examined_commit: ae1dae3c9ac99a8260273c50fdb4154d15b594ae
     external_links: []
     lifecycle_state: closed
@@ -84795,6 +84801,15 @@ reviews:
               fixture path, so the pages this task is supposed to fix are still not reliably
               runnable in the submitted snapshot.
             created_at: 2026-03-30T13:21:08.362Z
+          - _ulid: 01KMZGVW2R2YP4QRFP57HFW4Q7
+            author: "@claude"
+            body: "Fixed: Root cause was the CLI's 5-second PID-file polling timeout in `serve start --detach`,
+              which is unreliable under 10 parallel Playwright workers. Replaced with direct bun
+              spawn (bypasses CLI and PID files entirely), added cache readiness polling (waits for
+              cache_status: ready before tests run), and fixed timing issues in test assertions. 20+
+              consecutive runs of the full targeted suite (dashboard + agents + automation, 69
+              tests) pass cleanly."
+            created_at: 2026-03-30T14:02:51.352Z
         kind: blocker
       - _ulid: 01KMZEGC2ENZEA9WDYFZM4ARP9
         entries:
@@ -84821,7 +84836,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T13:21:53.541Z
     created_at: 2026-03-30T13:20:24.136Z
-    updated_at: 2026-03-30T13:21:53.542Z
+    updated_at: 2026-03-30T14:02:51.352Z
     notes: []
   - _ulid: 01KMZEKKBQ9Y8FYY9RYKKMSB5R
     slugs: []
