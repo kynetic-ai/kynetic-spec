@@ -8,7 +8,9 @@
 
 	// AC: @web-dashboard ac-23
 	let open = $state(false);
-	let query = $state('');
+	// searchText tracks the input field value (what the user types).
+	// This is separate from cmdk's `value` prop which tracks the selected item.
+	let searchText = $state('');
 	let results = $state<SearchResult[]>([]);
 	let loading = $state(false);
 	let debounceTimer: ReturnType<typeof setTimeout> | null = null;
@@ -30,7 +32,7 @@
 
 	// AC: @web-dashboard ac-24 - Debounced search (300ms)
 	$effect(() => {
-		if (query.trim() === '') {
+		if (searchText.trim() === '') {
 			results = [];
 			loading = false;
 			return;
@@ -43,7 +45,7 @@
 
 		debounceTimer = setTimeout(async () => {
 			try {
-				const response = await search(query);
+				const response = await search(searchText);
 				results = response.results;
 			} catch (error) {
 				console.error('Search failed:', error);
@@ -77,7 +79,7 @@
 	// AC: @web-dashboard ac-25 - Navigate to detail view on click
 	function handleSelect(result: SearchResult) {
 		open = false;
-		query = '';
+		searchText = '';
 		results = [];
 
 		// Map type to route
@@ -110,17 +112,17 @@
 </script>
 
 <!-- AC: @web-dashboard ac-23 -->
-<Command.Dialog data-testid="command-palette" bind:open bind:value={query} title="Search" description="Search across all entities">
+<Command.Dialog data-testid="command-palette" bind:open shouldFilter={false} title="Search" description="Search across all entities">
 	{@render children()}
 </Command.Dialog>
 
 {#snippet children()}
 	<!-- AC: @web-dashboard ac-23, ac-24 -->
-	<Command.Input data-testid="command-palette-input" placeholder="Search tasks, items, inbox..." />
+	<Command.Input data-testid="command-palette-input" placeholder="Search tasks, items, inbox..." bind:value={searchText} />
 	<Command.List data-testid="command-palette-results">
 		{#if loading}
 			<Command.Loading>Searching...</Command.Loading>
-		{:else if query.trim() && results.length === 0}
+		{:else if searchText.trim() && results.length === 0}
 			<Command.Empty>No results found.</Command.Empty>
 		{:else}
 			<!-- AC: @web-dashboard ac-24 - Group results by type -->
