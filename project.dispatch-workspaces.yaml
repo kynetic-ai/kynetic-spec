@@ -28806,7 +28806,7 @@ workspaces:
         head: fc7d91827cb184171d49d28475980f2269aa4959
         last_seen_at: 2026-03-30T23:28:00.315Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-ws-invalidation-storm-01kmz1bx
-  - active_role: worker
+  - active_role: null
     base_branch_point: 76a99bcf51ef31640b1724d9abb272f16311a624
     bootstrap:
       status: succeeded
@@ -28850,12 +28850,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-30T23:46:23.381Z
+      updated_at: 2026-03-30T23:47:25.504Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-30T23:46:23.381Z
+      updated_at: 2026-03-30T23:47:25.504Z
     integration:
       status: pending
       detail: null
@@ -28863,17 +28863,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 76a99bcf51ef31640b1724d9abb272f16311a624
-      updated_at: 2026-03-30T23:46:23.381Z
-    lifecycle_state: active
+      updated_at: 2026-03-30T23:47:25.504Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMZ1BVBBDPGQMSK3C8GDK3HP"
     task_slug: task-fix-stale-selectors
     timestamps:
       closed_at: null
       last_active_at: 2026-03-30T23:39:49.450Z
-      last_reconciled_at: 2026-03-30T23:46:23.381Z
+      last_reconciled_at: 2026-03-30T23:47:25.504Z
       created_at: 2026-03-30T16:13:27.997Z
-      updated_at: 2026-03-30T23:46:23.381Z
+      updated_at: 2026-03-30T23:47:25.504Z
     workspace_id: dispatch-workspace-01KMZ1BVBBDPGQMSK3C8GDK3HP
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
