@@ -1,1 +1,12 @@
-notes: []
+notes:
+  - _ulid: 01KMZCH94MHC4DCM1XQB0Z9Q9Y
+    content: "Completed fix. Agents (28/28) and automation (17/17) specs already pass after the loading
+      state fix from @task-fix-query-loading-state. Dashboard had 5 failures: 1 flaky daemon startup
+      (transient), 4 API contract tests broken by two issues: (1) response envelope migration
+      (data.items→envelope.data, data.total→envelope.meta.total, flat→envelope.data), (2) stale
+      fixture counts (2 pending→4 pending after needs-review/manual-only tasks added), (3) missing
+      cache-warmup wait causing total=0 on inbox/observations. Added fetchWhenReady() polling
+      helper. Full suite: 402 passed, 0 failed, 7206 unit tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-30T12:47:09.972Z
