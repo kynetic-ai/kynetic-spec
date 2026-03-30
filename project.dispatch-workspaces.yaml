@@ -29123,18 +29123,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-rewrite-websocket-e2e/01kmz1bw
-    canonical_branch_head: 829e357cac08ffc55e8071e21d6b28e3d34050ec
+    canonical_branch_head: 3782c10f7bc15ce25b597a0454bd90326ffb2dad
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-30T22:09:01.297Z
+      updated_at: 2026-03-30T22:22:21.873Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-30T22:09:27.273Z
+      updated_at: 2026-03-30T22:22:21.873Z
     integration:
       status: pending
       detail: null
@@ -29142,7 +29142,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 829e357cac08ffc55e8071e21d6b28e3d34050ec
-      updated_at: 2026-03-30T22:09:01.297Z
+      updated_at: 2026-03-30T22:22:21.873Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KMZ1BW4NHEGFXEDJ6WBRBQQ7"
@@ -29150,9 +29150,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-30T22:09:27.273Z
-      last_reconciled_at: 2026-03-30T22:09:27.273Z
+      last_reconciled_at: 2026-03-30T22:22:21.873Z
       created_at: 2026-03-30T22:09:01.297Z
-      updated_at: 2026-03-30T22:09:27.273Z
+      updated_at: 2026-03-30T22:22:21.873Z
     workspace_id: dispatch-workspace-01KMZ1BW4NHEGFXEDJ6WBRBQQ7
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
