@@ -83399,6 +83399,18 @@ reviews:
         runner: npm
         created_at: 2026-03-30T12:19:59.192Z
         completed_at: 2026-03-30T12:19:59.192Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Fresh-load page checks passed for /, /agents, and /automation via targeted Playwright run
+          (rendered active work section, agent cards, automation trigger section, and loading
+          skeleton completion).
+        name: playwright fresh-load pages
+        required: true
+        runner: playwright
+        created_at: 2026-03-30T12:20:04.044Z
+        completed_at: 2026-03-30T12:20:04.044Z
     events:
       - _ulid: 01KMZAH34V0466VA2BA0X7RXWA
         actor: Test User
@@ -83436,6 +83448,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-30T12:20:01.755Z
+      - _ulid: 01KMZAZP0VR6605NCF6QN2WPA5
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: playwright fresh-load pages
+        timestamp: 2026-03-30T12:20:04.764Z
     examined_commit: d067edacfbd8463a6aca643244557866358819d6
     external_links: []
     lifecycle_state: closed
@@ -83455,5 +83474,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T12:20:01.755Z
     created_at: 2026-03-30T12:12:06.684Z
-    updated_at: 2026-03-30T12:20:01.755Z
+    updated_at: 2026-03-30T12:20:04.044Z
     notes: []
