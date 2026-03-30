@@ -81812,6 +81812,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMYZB9EA1CMF73J35Q7KYPES
         timestamp: 2026-03-30T08:56:42.815Z
+      - _ulid: 01KMYZBB2CBENGPFKNQPS6WX2Y
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMYZB9J989JRJKXMSFX8S15B
+        timestamp: 2026-03-30T08:56:43.852Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -81839,7 +81846,22 @@ reviews:
               prerequisite outside the plan.
             created_at: 2026-03-30T08:56:42.187Z
         kind: blocker
+      - _ulid: 01KMYZB9J989JRJKXMSFX8S15B
+        anchor:
+          type: structured
+          ref: "@task-fix-ws-invalidation-storm"
+          section: tasks
+        entries:
+          - _ulid: 01KMYZB9J9Q1DAQ6N6MS7W0GJG
+            author: Jacob Chapel
+            body: This task is a web-ui performance bug fix, not e2e test cleanup. It changes product
+              invalidation behavior and may be worthwhile work, but it does not belong in a plan
+              whose stated purpose is cleaning up the e2e suite. Remove it from this plan or move it
+              into a separate bug/perf plan so the e2e cleanup backlog stays scoped to test fixes
+              and test architecture changes only.
+            created_at: 2026-03-30T08:56:42.313Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-30T08:55:58.278Z
-    updated_at: 2026-03-30T08:56:42.187Z
+    updated_at: 2026-03-30T08:56:42.313Z
     notes: []
