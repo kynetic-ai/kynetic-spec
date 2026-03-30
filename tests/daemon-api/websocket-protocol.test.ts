@@ -317,9 +317,6 @@ describe("daemon websocket protocol", () => {
     rmSync(runtime.tempDir, { recursive: true, force: true });
   });
 
-  // AC: @trait-websocket-protocol ac-5 — N/A: the 90s pong-timeout close path is too slow for this
-  // suite; the timeout logic remains covered in heartbeat-focused unit tests.
-
   // AC: @api-contract ac-25
   // AC: @trait-websocket-protocol ac-1
   it("sends a connected event with a session_id when the client connects", async () => {
@@ -333,11 +330,8 @@ describe("daemon websocket protocol", () => {
 
   // AC: @api-contract ac-26
   // AC: @api-contract ac-27
-  // AC: @trait-websocket-protocol ac-4
-  it("acknowledges valid commands and keeps the connection alive across a short idle period", async () => {
+  it("acknowledges valid commands with correlated ack metadata", async () => {
     const { ws } = await connectClient();
-
-    await new Promise((resolve) => setTimeout(resolve, 2_000));
 
     const ack = await sendCommandAndWaitForAck(ws, {
       action: "ping",
@@ -370,7 +364,7 @@ describe("daemon websocket protocol", () => {
     ws.send(JSON.stringify({ request_id: "bad-command" }));
     const ack = await ackPromise;
 
-    expect(ack.ack).toBe(true);
+    expect(ack.ack).toBe(false);
     expect(ack.success).toBe(false);
     expect(ack.request_id).toBeUndefined();
     expect(ack.error).toBe("validation_error");

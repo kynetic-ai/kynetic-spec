@@ -23,10 +23,10 @@
 // AC: @trait-websocket-protocol ac-1 — N/A: server connection lifecycle; tested in daemon-api/websocket-protocol.test.ts
 // AC: @trait-websocket-protocol ac-2 — N/A: WebSocket subscribe command; tested in daemon-api/websocket-protocol.test.ts
 // AC: @trait-websocket-protocol ac-3 — covered: triage mutation routes broadcast triage:updates events with protocol payload fields (see tests below)
-// AC: @trait-websocket-protocol ac-4 — N/A: heartbeat behavior tested in daemon-api/websocket-protocol.test.ts
-// AC: @trait-websocket-protocol ac-5 — N/A: pong-timeout handling is covered outside this triage-focused spec
+// AC: @trait-websocket-protocol ac-4 — N/A: heartbeat timing tested in daemon-heartbeat.test.ts
+// AC: @trait-websocket-protocol ac-5 — N/A: pong-timeout handling tested in daemon-heartbeat.test.ts
 // AC: @trait-websocket-protocol ac-6 — N/A: backpressure handling is outside this triage-focused spec
-// AC: @trait-websocket-protocol ac-7 — N/A: close codes tested in daemon-api/websocket-protocol.test.ts
+// AC: @trait-websocket-protocol ac-7 — N/A: clean shutdown code tested in daemon-api/websocket-protocol.test.ts; timeout close code tested in daemon-heartbeat.test.ts
 // AC: @trait-websocket-protocol ac-8 — N/A: reconnection behavior tested in connection.spec.ts
 
 import { test, expect } from "./fixtures/test-base";

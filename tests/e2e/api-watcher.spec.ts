@@ -46,10 +46,10 @@
 // AC: @trait-websocket-protocol ac-1 — N/A: server connection lifecycle tested in daemon-api/websocket-protocol.test.ts
 // AC: @trait-websocket-protocol ac-2 — N/A: subscribe ack tested in daemon-api/websocket-protocol.test.ts
 // AC: @trait-websocket-protocol ac-3 — N/A: broadcast format tested in daemon-api/websocket-protocol.test.ts
-// AC: @trait-websocket-protocol ac-4 — N/A: heartbeat behavior tested in daemon-api/websocket-protocol.test.ts
-// AC: @trait-websocket-protocol ac-5 — N/A: pong-timeout handling is covered outside this watcher-focused spec
+// AC: @trait-websocket-protocol ac-4 — N/A: heartbeat timing tested in daemon-heartbeat.test.ts
+// AC: @trait-websocket-protocol ac-5 — N/A: pong-timeout handling tested in daemon-heartbeat.test.ts
 // AC: @trait-websocket-protocol ac-6 — N/A: backpressure handling is outside this watcher-focused spec
-// AC: @trait-websocket-protocol ac-7 — N/A: close codes tested in daemon-api/websocket-protocol.test.ts
+// AC: @trait-websocket-protocol ac-7 — N/A: clean shutdown code tested in daemon-api/websocket-protocol.test.ts; timeout close code tested in daemon-heartbeat.test.ts
 // AC: @trait-websocket-protocol ac-8 — N/A: client reconnection sequence reset tested in connection.spec.ts
 
 import { mkdirSync, writeFileSync } from "fs";
