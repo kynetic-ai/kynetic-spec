@@ -598,6 +598,10 @@ Runtime fetch coverage should observe the real batch request.
     await stubActivePlanContent(page, LIVE_EMBEDDED_PLAN_CONTENT);
 
     const batchRequests: string[][] = [];
+    let batchRouteResolve: () => void;
+    const batchRouteCalled = new Promise<void>((resolve) => {
+      batchRouteResolve = resolve;
+    });
     await page.route("**/api/items/batch", async (route) => {
       const body = route.request().postDataJSON() as { refs?: string[] };
       batchRequests.push(body.refs ?? []);
@@ -606,10 +610,11 @@ Runtime fetch coverage should observe the real batch request.
         contentType: "application/json",
         body: JSON.stringify({ items: EMBEDDED_BATCH_ITEMS, unresolved: [] }),
       });
+      batchRouteResolve();
     });
 
     const activePlan = await expandActivePlan(page);
-    await page.waitForRequest("**/api/items/batch");
+    await batchRouteCalled;
 
     expect(batchRequests).toHaveLength(1);
     expect(batchRequests[0]).toEqual(
