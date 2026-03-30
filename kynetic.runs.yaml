@@ -19307,9 +19307,21 @@ runs:
     completed_at: 2026-03-30T22:08:31.396Z
   - _ulid: 01KN0DEX03PE12XY2ZBYVJ3EDB
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Test User
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-03-30T22:22:35.012Z
+        completed_at: 2026-03-30T22:23:44.374Z
+        notes: "Meaningful session completed: task @01KMZ1BW4NHEGFXEDJ6WBRBQQ7 moved to pending_review with
+          commit 3782c10f7. Main success was making the isolated Playwright daemon fixture
+          restartable so reconnect behavior could be tested behaviorally. Minor friction: workflow
+          show required an explicit run ref immediately after workflow start."
+      - status: completed
+        step_index: 1
+        started_at: 2026-03-30T22:23:44.374Z
+        completed_at: 2026-03-30T22:23:44.374Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-30T22:22:35.012Z
