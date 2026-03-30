@@ -89853,6 +89853,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN0CVYZ8E563MVB89C2FQBZ3
         timestamp: 2026-03-30T22:12:15.186Z
+      - _ulid: 01KN0CZJZQ2QBPBGED9H0GMSMX
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN0CZJB44VFS7H9ZCGJJ3WAP
+        timestamp: 2026-03-30T22:14:13.239Z
     examined_commit: cf37063d1bdb0f467d1257680859d0acbafab22c
     external_links: []
     lifecycle_state: open
@@ -89907,7 +89914,29 @@ reviews:
               that only occurs when the event handler runs.
             created_at: 2026-03-30T22:12:14.440Z
         kind: blocker
+      - _ulid: 01KN0CZJB44VFS7H9ZCGJJ3WAP
+        anchor:
+          type: code
+          commit: cf37063d1bdb0f467d1257680859d0acbafab22c
+          line_end: 200
+          line_start: 172
+          path: tests/e2e/connection.spec.ts
+          side: head
+        entries:
+          - _ulid: 01KN0CZJB538DT1ESSA9HXN4KM
+            author: Test User
+            body: AC-30 is still not proven by this test. It injects a duplicate task_updated event, then only
+              asserts that the number of visible task rows stayed the same. On the tasks page,
+              handling a task_updated broadcast invalidates and refetches the query, and this
+              payload moves a task from pending to in_progress; both statuses are still included in
+              the default active filter, so the row count can remain unchanged whether the duplicate
+              was skipped or processed. That means a broken deduplication path can still satisfy
+              this assertion. Replace the count-only check with an observable that differs between
+              “event skipped” and “event handled”, such as verifying that no refetch or no
+              highlighted update occurs for the duplicate event.
+            created_at: 2026-03-30T22:14:12.581Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-30T22:09:32.061Z
-    updated_at: 2026-03-30T22:12:14.440Z
+    updated_at: 2026-03-30T22:14:12.581Z
     notes: []
