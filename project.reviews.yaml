@@ -91486,3 +91486,29 @@ reviews:
     created_at: 2026-03-30T23:41:20.166Z
     updated_at: 2026-03-30T23:46:49.900Z
     notes: []
+  - _ulid: 01KN0JR8WSDJXP0Q23E4PZB4JW
+    slugs: []
+    title: Review task-fix-stale-selectors
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KN0JR8WS5TPMJSVQREWNTDTK
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-30T23:55:04.985Z
+    examined_commit: d752fb33fe963e0fca963315bcc5c95881ba076c
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMZ1BVBBDPGQMSK3C8GDK3HP"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-30T23:55:04.985Z
+    updated_at: null
+    notes: []
