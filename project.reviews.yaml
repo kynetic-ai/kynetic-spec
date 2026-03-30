@@ -83841,6 +83841,19 @@ reviews:
         runner: npm
         created_at: 2026-03-30T12:55:16.600Z
         completed_at: 2026-03-30T12:55:16.600Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm run test:e2e -- tests/e2e/dashboard.spec.ts tests/e2e/agents.spec.ts
+          tests/e2e/automation.spec.ts: 74 passed, 11 skipped, 1 failed. Failure: dashboard.spec.ts
+          responsive layout test hit ENOENT under tests/e2e/fixtures/test-base.ts while copying
+          fixtures into /tmp/kspec-e2e-1774875179405/.kspec."
+        name: targeted e2e
+        required: true
+        runner: playwright
+        created_at: 2026-03-30T12:55:18.429Z
+        completed_at: 2026-03-30T12:55:18.429Z
     events:
       - _ulid: 01KMZCPZVE5FCKTR87RK1VEN8G
         actor: Test User
@@ -83869,6 +83882,13 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-03-30T12:55:17.180Z
+      - _ulid: 01KMZD06RHAWPACB29RKG7RD91
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: targeted e2e
+        timestamp: 2026-03-30T12:55:19.057Z
     examined_commit: aa6f91a5b64674ee3d23ba8c9587d58046d6d64c
     external_links: []
     lifecycle_state: open
@@ -83901,5 +83921,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-30T12:50:17.070Z
-    updated_at: 2026-03-30T12:55:16.600Z
+    updated_at: 2026-03-30T12:55:18.429Z
     notes: []
