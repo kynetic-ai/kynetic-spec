@@ -1,9 +1,29 @@
-// AC: @kspec-review-list ac-1
-// AC: @kspec-review-list ac-2
-// AC: @kspec-review-list ac-3
-// AC: @kspec-review-detail ac-1
-// AC: @kspec-review-detail ac-2
-// AC: @kspec-review-detail ac-3
+// AC: @review-records-daemon-api ac-1 — GET /api/reviews returns paginated list with filtering
+// AC: @review-records-daemon-api ac-2 — GET /api/reviews/:id returns full review detail
+// AC: @review-records-daemon-api ac-10 — invalid data returns 400 with actionable error (404 case)
+// AC: @trait-json-output ac-1 — N/A: daemon API endpoints always return JSON, no --json flag
+// AC: @trait-json-output ac-2 — N/A: daemon API endpoints always return JSON, no --json flag
+// AC: @trait-json-output ac-3 — N/A: daemon API endpoints always return JSON, no --json flag
+// AC: @trait-json-output ac-4 — N/A: daemon API endpoints always return JSON, no --json flag
+// AC: @trait-json-output ac-5 — N/A: daemon API endpoints always return JSON, no --json flag
+// AC: @trait-json-output ac-6 — N/A: daemon API endpoints always return JSON, no --json flag
+// AC: @trait-error-guidance ac-1 — N/A: error guidance is a CLI trait, not applicable to daemon API
+// AC: @trait-error-guidance ac-2 — N/A: error guidance is a CLI trait, not applicable to daemon API
+// AC: @trait-error-guidance ac-3 — N/A: error guidance is a CLI trait, not applicable to daemon API
+// AC: @trait-error-guidance ac-4 — N/A: error guidance is a CLI trait, not applicable to daemon API
+// AC: @trait-error-guidance ac-5 — N/A: error guidance is a CLI trait, not applicable to daemon API
+// AC: @trait-error-guidance ac-6 — N/A: error guidance is a CLI trait, not applicable to daemon API
+// AC: @trait-localhost-security ac-1 — N/A: localhost binding tested in server.test.ts
+// AC: @trait-localhost-security ac-2 — N/A: non-localhost rejection tested in server.test.ts
+// AC: @trait-localhost-security ac-3 — N/A: external binding warning not tested (never configured)
+// AC: @trait-websocket-protocol ac-1 — N/A: WebSocket lifecycle not tested in review list API tests
+// AC: @trait-websocket-protocol ac-2 — N/A: WebSocket subscribe not tested in review list API tests
+// AC: @trait-websocket-protocol ac-3 — N/A: WebSocket broadcast not tested in review list API tests
+// AC: @trait-websocket-protocol ac-4 — N/A: WebSocket heartbeat not tested in review list API tests
+// AC: @trait-websocket-protocol ac-5 — N/A: WebSocket ping/pong not tested in review list API tests
+// AC: @trait-websocket-protocol ac-6 — N/A: WebSocket backpressure not tested in review list API tests
+// AC: @trait-websocket-protocol ac-7 — N/A: WebSocket close codes not tested in review list API tests
+// AC: @trait-websocket-protocol ac-8 — N/A: WebSocket reconnection not tested in review list API tests
 
 import type { Elysia } from "elysia";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";

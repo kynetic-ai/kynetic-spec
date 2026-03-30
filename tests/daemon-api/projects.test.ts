@@ -1,10 +1,17 @@
-// AC: @spec-daemon-projects ac-1
-// AC: @spec-daemon-projects ac-2
-// AC: @spec-daemon-projects ac-3
-// AC: @spec-daemon-projects ac-4
-// AC: @trait-api-endpoint ac-1
-// AC: @trait-api-endpoint ac-2
-// AC: @trait-api-endpoint ac-3
+// AC: @multi-directory-daemon ac-28 — GET /api/projects returns list with paths, registration time, watcher status
+// AC: @multi-directory-daemon ac-29 — POST /api/projects with {path} body for manual registration
+// AC: @multi-directory-daemon ac-30 — DELETE /api/projects/:encodedPath unregisters project and stops watcher
+// AC: @trait-localhost-security ac-1 — N/A: localhost binding tested in server.test.ts
+// AC: @trait-localhost-security ac-2 — N/A: non-localhost rejection tested in server.test.ts
+// AC: @trait-localhost-security ac-3 — N/A: external binding warning not tested (never configured)
+// AC: @trait-websocket-protocol ac-1 — N/A: WebSocket lifecycle not tested in projects API tests
+// AC: @trait-websocket-protocol ac-2 — N/A: WebSocket subscribe not tested in projects API tests
+// AC: @trait-websocket-protocol ac-3 — N/A: WebSocket broadcast not tested in projects API tests
+// AC: @trait-websocket-protocol ac-4 — N/A: WebSocket heartbeat not tested in projects API tests
+// AC: @trait-websocket-protocol ac-5 — N/A: WebSocket ping/pong not tested in projects API tests
+// AC: @trait-websocket-protocol ac-6 — N/A: WebSocket backpressure not tested in projects API tests
+// AC: @trait-websocket-protocol ac-7 — N/A: WebSocket close codes not tested in projects API tests
+// AC: @trait-websocket-protocol ac-8 — N/A: WebSocket reconnection not tested in projects API tests
 import { Elysia } from "elysia";
 import { mkdirSync, writeFileSync } from "node:fs";
 import * as path from "node:path";
