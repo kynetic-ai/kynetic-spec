@@ -90240,6 +90240,12 @@ reviews:
         payload:
           thread_ulid: 01KN0DSHEXWPP37C467JMZCGSN
         timestamp: 2026-03-30T22:49:30.678Z
+      - _ulid: 01KN0F096J75Q1D5HCDV1SXGYN
+        actor: Test User
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KN0DSP22HV7PN5A44HH9BWG8
+        timestamp: 2026-03-30T22:49:33.139Z
     examined_commit: 3782c10f7bc15ce25b597a0454bd90326ffb2dad
     external_links: []
     lifecycle_state: closed
@@ -90332,6 +90338,8 @@ reviews:
               the old implementation bug."
             created_at: 2026-03-30T22:49:13.070Z
         kind: blocker
+        resolved_at: 2026-03-30T22:49:32.349Z
+        resolved_by: Test User
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -90341,7 +90349,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T22:29:43.404Z
     created_at: 2026-03-30T22:25:33.827Z
-    updated_at: 2026-03-30T22:49:29.892Z
+    updated_at: 2026-03-30T22:49:32.349Z
     notes: []
   - _ulid: 01KN0E8VQ4QJW918F0657DQ7YT
     slugs: []
