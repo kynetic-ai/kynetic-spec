@@ -91548,6 +91548,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-30T23:55:42.449Z
+      - _ulid: 01KN0JSFBVSEDH9PNSS9474XY4
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN0JSEQQZC09PNYS6VEW50C9
+        timestamp: 2026-03-30T23:55:44.379Z
     examined_commit: d752fb33fe963e0fca963315bcc5c95881ba076c
     external_links: []
     lifecycle_state: open
@@ -91580,7 +91587,24 @@ reviews:
               mergeable as submitted.
             created_at: 2026-03-30T23:55:39.956Z
         kind: blocker
+      - _ulid: 01KN0JSEQQZC09PNYS6VEW50C9
+        anchor:
+          type: code
+          commit: d752fb33fe963e0fca963315bcc5c95881ba076c
+          line_end: 163
+          line_start: 162
+          path: tests/e2e/api-triage.spec.ts
+          side: head
+        entries:
+          - _ulid: 01KN0JSEQQWQBHK3XMPFKQ4JZZ
+            author: Test User
+            body: This change disables the entire triage API behavioral suite instead of replacing it. That
+              drops coverage for @triage-daemon-api ac-1 through ac-6 and the triage WebSocket
+              broadcast assertions, which is a coverage regression unrelated to stale-selector
+              fixes.
+            created_at: 2026-03-30T23:55:43.735Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-30T23:55:04.985Z
-    updated_at: 2026-03-30T23:55:41.841Z
+    updated_at: 2026-03-30T23:55:43.735Z
     notes: []
