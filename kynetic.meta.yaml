@@ -10063,6 +10063,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-30T13:09:41.623Z
+  - _ulid: 01KMZF6ZGGZHQMVRFA0ZW4Z1KA
+    type: success
+    content: For review sessions with unrelated flaky full-suite failures, isolating the failing test
+      immediately after the suite run gave enough evidence to distinguish flake from regression and
+      allowed a confident approve/merge decision without weakening required targeted checks.
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-30T13:33:58.160Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
