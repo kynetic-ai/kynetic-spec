@@ -68,3 +68,25 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-30T16:22:23.391Z
+  - _ulid: 01KMZZ1SA6ZE45MVY4RHPST0AY
+    content: >-
+      Fix cycle 1: addressed both blocker threads from review @01KMZRCAEC7SWKD6BN7VP96XSM.
+
+
+      Changes:
+
+      1. Handler: Made agent_invocation matching explicit (event.event === 'agent_invocation')
+      instead of fallthrough default. Unknown agent events now return [] instead of invalidating
+      both caches.
+
+      2. Tests: Replaced synthetic event names (agent_invocation_started/completed/failed) with real
+      production shape — single 'agent_invocation' event with data.status field and full
+      AgentInvocationEventData payload matching packages/shared/src/websocket.ts.
+
+      3. Added test for unknown agent events returning no invalidation.
+
+
+      Verified: all 29 ws-cache-invalidation tests pass. Full suite: 7504 pass, 5 skipped.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-30T18:10:45.190Z
