@@ -17,15 +17,15 @@
  */
 
 // Trait N/A annotations — @interactive-triage-ui inherits @trait-websocket-protocol.
-// Server-side WebSocket protocol behaviors are tested in api-websocket.spec.ts.
-// AC: @trait-websocket-protocol ac-1 — N/A: server connection ID assignment tested in api-websocket.spec.ts
-// AC: @trait-websocket-protocol ac-2 — N/A: server subscribe ack tested in api-websocket.spec.ts
-// AC: @trait-websocket-protocol ac-3 — N/A: server broadcast format tested in api-websocket.spec.ts
-// AC: @trait-websocket-protocol ac-4 — N/A: server heartbeat timing tested in api-websocket.spec.ts
-// AC: @trait-websocket-protocol ac-5 — N/A: server ping/pong timeout close with code 1001 tested in api-websocket.spec.ts
-// AC: @trait-websocket-protocol ac-6 — N/A: server backpressure handling tested in api-websocket.spec.ts
-// AC: @trait-websocket-protocol ac-7 — N/A: server close codes tested in api-websocket.spec.ts
-// AC: @trait-websocket-protocol ac-8 — N/A: client sequence reset on reconnect tested in api-websocket.spec.ts
+// Server-side WebSocket protocol behaviors are tested in daemon-api/websocket-protocol.test.ts.
+// AC: @trait-websocket-protocol ac-1 — N/A: server connection ID assignment tested in daemon-api/websocket-protocol.test.ts
+// AC: @trait-websocket-protocol ac-2 — N/A: server subscribe ack tested in daemon-api/websocket-protocol.test.ts
+// AC: @trait-websocket-protocol ac-3 — N/A: server broadcast format tested in daemon-api/websocket-protocol.test.ts
+// AC: @trait-websocket-protocol ac-4 — N/A: server heartbeat timing tested in daemon-api/websocket-protocol.test.ts
+// AC: @trait-websocket-protocol ac-5 — N/A: pong-timeout handling is covered outside this triage-focused spec
+// AC: @trait-websocket-protocol ac-6 — N/A: server backpressure handling is outside this triage-focused spec
+// AC: @trait-websocket-protocol ac-7 — N/A: server close codes tested in daemon-api/websocket-protocol.test.ts
+// AC: @trait-websocket-protocol ac-8 — N/A: client sequence reset on reconnect tested in connection.spec.ts
 
 import { test, expect } from "./fixtures/test-base";
 
