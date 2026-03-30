@@ -10127,6 +10127,27 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-30T15:21:11.908Z
+  - _ulid: 01KMZQH5ZG184686Y35ZBEFBB7
+    type: friction
+    content: Reviewer merge flow has a gap when working from a detached review snapshot and the
+      integration branch is already checked out in another worktree. `git checkout dev` and `git
+      worktree add <path> dev` both fail, forcing a manual detached-worktree merge and later
+      fast-forward of the real dev worktree. A first-class merge helper for review snapshots would
+      remove this workaround and reduce merge-mechanics risk.
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-30T15:59:21.072Z
+  - _ulid: 01KMZQH64WDZ6HSX9FAF7KEK0R
+    type: success
+    content: "The review verification ladder worked well for ambiguous full-suite failures: run the
+      targeted gate first, then reproduce the unrelated failure in isolation, then compare against
+      dev before deciding whether it blocks the task. That sequence prevented a likely
+      false-negative review on an E2E-only change while still preserving evidence for the decision."
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-30T15:59:21.244Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
