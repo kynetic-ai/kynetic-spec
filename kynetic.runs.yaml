@@ -19378,7 +19378,7 @@ runs:
     completed_at: 2026-03-30T22:51:55.736Z
   - _ulid: 01KN0GD49YAHGH6ZFN39W83FJ8
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Test User
     step_results:
       - status: completed
@@ -19392,7 +19392,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-30T23:15:25.624Z
-        completed_at: 2026-03-30T23:15:25.624Z
+        completed_at: 2026-03-30T23:15:56.778Z
+        notes: "High-confidence success: splitting websocket coverage into UI Playwright behavior and
+          daemon-side protocol vitest made the review surface smaller and the final fix easy to
+          verify. No high-confidence systemic friction beyond an already-adjacent workflow CLI inbox
+          item."
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-30T23:15:56.778Z
+        completed_at: 2026-03-30T23:15:56.778Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-30T23:14:02.687Z
