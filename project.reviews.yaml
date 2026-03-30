@@ -88587,6 +88587,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN06MV52W7DYXQHQG9R5JBQ2
         timestamp: 2026-03-30T20:23:31.023Z
+      - _ulid: 01KN06NMSQ76VA6JKNWQK9SBCJ
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN06NJP5BG9FH61WQVT85SV1
+        timestamp: 2026-03-30T20:23:55.960Z
     examined_commit: 77629f2658f65d7f26b1e18b79819b6e8c20f747
     external_links: []
     lifecycle_state: open
@@ -88637,7 +88644,29 @@ reviews:
               the reconnect guarantees this task is supposed to stabilize.
             created_at: 2026-03-30T20:23:29.698Z
         kind: blocker
+      - _ulid: 01KN06NJP5BG9FH61WQVT85SV1
+        anchor:
+          type: code
+          commit: 77629f2658f65d7f26b1e18b79819b6e8c20f747
+          line_end: 231
+          line_start: 61
+          path: tests/e2e/search.spec.ts
+          side: head
+        entries:
+          - _ulid: 01KN06NJP56936AEEPSK64FKB9
+            author: Test User
+            body: This rewrite drops behavioral coverage for AC-24 and AC-25. The debounce/loading tests only
+              assert the input value plus command-palette-results being attached, but Command.List
+              is always rendered in the component
+              (packages/web-ui/src/lib/components/CommandPalette.svelte lines 120-145), so those
+              assertions still pass if the 300ms debounce, loading state, or search request never
+              happen. The no-results/grouping/navigation cases are also guarded by if (resultCount >
+              0) / if (count > 0), which means they silently pass when search returns nothing. That
+              turns these E2Es into structure checks instead of proof that search groups results and
+              clicking one navigates.
+            created_at: 2026-03-30T20:23:53.797Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-30T20:20:15.252Z
-    updated_at: 2026-03-30T20:23:29.698Z
+    updated_at: 2026-03-30T20:23:53.797Z
     notes: []
