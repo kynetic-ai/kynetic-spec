@@ -84331,6 +84331,19 @@ reviews:
         runner: npm
         created_at: 2026-03-30T13:21:39.448Z
         completed_at: 2026-03-30T13:21:39.448Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm run test:e2e -- tests/e2e/dashboard.spec.ts tests/e2e/agents.spec.ts
+          tests/e2e/automation.spec.ts failed: 56 passed, 19 failed, 11 skipped. Failures repeatedly
+          reported Failed to start daemon ... Daemon failed to start within 5 seconds from the
+          shared E2E fixture."
+        name: targeted e2e
+        required: true
+        runner: playwright
+        created_at: 2026-03-30T13:21:41.573Z
+        completed_at: 2026-03-30T13:21:41.573Z
     events:
       - _ulid: 01KMZEE4J7RE6NNV54W9KWG9GX
         actor: Test User
@@ -84366,6 +84379,13 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-03-30T13:21:40.103Z
+      - _ulid: 01KMZEGGSN3DMZ2ME96WXTAV2T
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: targeted e2e
+        timestamp: 2026-03-30T13:21:42.197Z
     examined_commit: ae1dae3c9ac99a8260273c50fdb4154d15b594ae
     external_links: []
     lifecycle_state: open
@@ -84778,5 +84798,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-30T13:20:24.136Z
-    updated_at: 2026-03-30T13:21:39.448Z
+    updated_at: 2026-03-30T13:21:41.573Z
     notes: []
