@@ -1,1 +1,14 @@
-notes: []
+notes:
+  - _ulid: 01KN0GQ6NYYH99DCSCYBZS4XGY
+    content: "Approach: add a dedicated Playwright spec that reuses the isolated daemon fixture and
+      mutates fixture YAML on disk to drive the real watcher -> broadcast -> ws-invalidation ->
+      query refetch path. Reuse stable selectors from tasks/items/inbox/project-selector specs
+      instead of adding new UI hooks. Edge cases: debounce latency after file writes, query refresh
+      without manual reload, and project-scoped watcher isolation when a second project is
+      registered. Test plan: task list updates after project.tasks.yaml change, inbox/sidebar state
+      updates after project.inbox.yaml change, item tree updates after modules/core.yaml change, and
+      first-project UI remains unchanged when only the second project mutates. CI: skip watcher
+      tests under process.env.CI to match existing watcher coverage."
+    supersedes: null
+    author: Test User
+    created_at: 2026-03-30T23:19:32.798Z
