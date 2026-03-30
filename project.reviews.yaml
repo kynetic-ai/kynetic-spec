@@ -81983,6 +81983,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-30T10:04:43.552Z
+      - _ulid: 01KMZ3RZ2WJBKGVT9X5XNRWA30
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMZ3RYGHW5V7CVFYRGP36FWN
+        timestamp: 2026-03-30T10:14:04.636Z
     examined_commit: 137b046abd8a2482f82be089329a4075aab9bccc
     external_links: []
     lifecycle_state: open
@@ -81992,8 +81999,27 @@ reviews:
       content_hash: ""
       ref: "@01KMZ1BTJJ3FR82N0R76DDWR09"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMZ3RYGHW5V7CVFYRGP36FWN
+        anchor:
+          type: code
+          commit: 137b046abd8a2482f82be089329a4075aab9bccc
+          line_end: 232
+          line_start: 214
+          path: packages/web-ui/src/lib/query/createQuery.svelte.ts
+          side: head
+        entries:
+          - _ulid: 01KMZ3RYGHYS62Y5NCYBVBZ85E
+            author: Test User
+            body: "The loading-state race is still reproducible on the pages called out by this task. After this
+              wrapper landed, targeted Playwright runs still leave the fresh-load skeleton onscreen
+              for  and  instead of transitioning to content:  never reaches , and  never reaches .
+              The failure screenshots show both pages stuck on their loading skeletons, so the new
+              eager-subscribe wrapper is not sufficient to resolve the underlying TanStack/Svelte
+              reactivity bug for those routes."
+            created_at: 2026-03-30T10:14:04.049Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-30T10:04:21.132Z
-    updated_at: 2026-03-30T10:04:43.002Z
+    updated_at: 2026-03-30T10:14:04.049Z
     notes: []
