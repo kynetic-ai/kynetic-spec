@@ -52,8 +52,12 @@ description: |
 spec_ref: null
 plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev after review approval. Updated stale e2e fixtures (valid ULID, active
+  plan_ref), aligned plan/triage/validation assertions with current API contracts, and kept the
+  prior plans batch-fetch race fix. Focused changed coverage passed; full npm test remained
+  snapshot-wide and unrelated to the touched files.
 depends_on: []
 context: []
 priority: 2
@@ -233,8 +237,25 @@ history:
         previous: "@01KMZQR8C7D39Q745ZN3ABBPJE"
     command: review-link
     timestamp: 2026-03-30T18:18:05.874Z
+  - author: Test User
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev after review approval. Updated stale e2e fixtures (valid ULID, active plan_ref),
+          aligned plan/triage/validation assertions with current API contracts, and kept the prior
+          plans batch-fetch race fix. Focused changed coverage passed; full npm test remained
+          snapshot-wide and unrelated to the touched files.
+        previous: null
+      completed_at:
+        new: 2026-03-30T18:32:41.505Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-03-30T18:32:41.518Z
 created_at: 2026-03-30T09:31:58.195Z
 started_at: 2026-03-30T18:16:19.244Z
 submitted_at: 2026-03-30T18:16:20.078Z
+completed_at: 2026-03-30T18:32:41.505Z
 todos: []
 automation: eligible
