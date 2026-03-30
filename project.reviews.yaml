@@ -91541,9 +91541,16 @@ reviews:
           kind: blocker
           thread_ulid: 01KN0JSB1KD3BC3ZW7A2F1SMK2
         timestamp: 2026-03-30T23:55:40.583Z
+      - _ulid: 01KN0JSDFGBD0GGKHJJ01J7HGN
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-03-30T23:55:42.449Z
     examined_commit: d752fb33fe963e0fca963315bcc5c95881ba076c
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: open
     related_refs: []
     subject:
       type: task
@@ -91575,5 +91582,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-30T23:55:04.985Z
-    updated_at: 2026-03-30T23:55:39.956Z
+    updated_at: 2026-03-30T23:55:41.841Z
     notes: []
