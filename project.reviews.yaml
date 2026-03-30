@@ -83829,7 +83829,18 @@ reviews:
     slugs: []
     title: Review task-fix-loading-page-e2e
     author: Test User
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test failed: 11 suites failed, 1985 passed; 4 tests failed, 7202 passed, 5 skipped.
+          Full log: /tmp/kspec-test-cache/01KMZCNR5JN92QA2NM8TRXM2HH/a98166630bd30b01.log"
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-30T12:55:16.600Z
+        completed_at: 2026-03-30T12:55:16.600Z
     events:
       - _ulid: 01KMZCPZVE5FCKTR87RK1VEN8G
         actor: Test User
@@ -83851,6 +83862,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMZD02KJKYR0XG4NCM8VV0MF
         timestamp: 2026-03-30T12:55:15.364Z
+      - _ulid: 01KMZD04XWM3XXWJH7HZX1EQ18
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-30T12:55:17.180Z
     examined_commit: aa6f91a5b64674ee3d23ba8c9587d58046d6d64c
     external_links: []
     lifecycle_state: open
@@ -83883,5 +83901,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-30T12:50:17.070Z
-    updated_at: 2026-03-30T12:55:14.802Z
+    updated_at: 2026-03-30T12:55:16.600Z
     notes: []
