@@ -90845,6 +90845,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-30T23:11:42.757Z
+      - _ulid: 01KN0H1EJ20W9E6GYJN1MGSY08
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KN0H1DQR37W79DZQNTC2H3CS
+        timestamp: 2026-03-30T23:25:08.546Z
     examined_commit: 8339fac0f1f334a288a20705073571eeae3d7350
     external_links: []
     lifecycle_state: open
@@ -90854,8 +90861,33 @@ reviews:
       content_hash: ""
       ref: "@01KMZ1BVK6C9F7QKYK9DZD4TFQ"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KN0H1DQR37W79DZQNTC2H3CS
+        entries:
+          - _ulid: 01KN0H1DQRAKDY4KMS8B6CA58T
+            author: Test User
+            body: "Files read: packages/web-ui/src/lib/components/CommandPalette.svelte;
+              packages/web-ui/src/lib/components/ui/command/command-dialog.svelte;
+              packages/web-ui/src/lib/components/ui/command/command-input.svelte;
+              packages/daemon/src/routes/plans.ts; src/lib/plan-summary.ts;
+              tests/e2e/search.spec.ts; tests/e2e/connection.spec.ts;
+              tests/e2e/cache-warming-views.spec.ts; tests/e2e/plans.spec.ts;
+              tests/e2e/validate.spec.ts; tests/daemon-api/meta.test.ts;
+              tests/daemon-api/plans.test.ts. Commands run: git diff --stat/base diff; kspec task
+              get; kspec review for-task/get; kspec validate; rg AC annotations; kspec item get
+              @web-dashboard @ui-plans-view @01KM46FW; npm run test:e2e -- tests/e2e/search.spec.ts
+              tests/e2e/connection.spec.ts tests/e2e/cache-warming-views.spec.ts
+              tests/e2e/plans.spec.ts tests/e2e/validate.spec.ts tests/daemon-api/meta.test.ts; npm
+              test -- tests/daemon-api/plans.test.ts --fresh; npm test -- --fresh. Claims verified:
+              the moved plan-route coverage still exercises /api/plans/:ref behavior via daemon API
+              tests; the search fix now binds typed input rather than cmdk selected value; the
+              targeted flaky E2E set passes on this snapshot. Categories searched: correctness, edge
+              cases, error handling, test quality, integration. Findings: none in changed files.
+              Residual risk: full-suite failures remain in untouched suites/files outside this
+              diff."
+            created_at: 2026-03-30T23:25:07.704Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-30T23:11:14.932Z
-    updated_at: 2026-03-30T23:11:41.941Z
+    updated_at: 2026-03-30T23:25:07.704Z
     notes: []
