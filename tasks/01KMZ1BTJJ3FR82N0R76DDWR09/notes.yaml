@@ -73,3 +73,10 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-30T10:02:30.500Z
+  - _ulid: 01KMZ34C8ZNG7YWKXVX0N8TWHD
+    content: Affected pages e2e tests must load, the loading bug this task is meant to fix caused the
+      tests to fail by timing out because no content loaded so they should load properly for this
+      task to be considered complete beyond other quality markers.
+    supersedes: null
+    author: Test User
+    created_at: 2026-03-30T10:02:50.015Z
