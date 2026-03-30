@@ -90851,6 +90851,19 @@ reviews:
         runner: vitest
         created_at: 2026-03-30T23:25:12.729Z
         completed_at: 2026-03-30T23:25:12.729Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm test -- --fresh failed in 6 untouched suites (agent-dispatch-engine,
+          canonical-task-workspace-contract, dispatch-runtime-bootstrap-contract,
+          dispatch-workspace-registry, daemon-api/items, daemon-api/reviews-threads); no overlap
+          with files changed in 8339fac0f1f3
+        name: full suite
+        required: false
+        runner: test.cjs
+        created_at: 2026-03-30T23:25:15.283Z
+        completed_at: 2026-03-30T23:25:15.283Z
     events:
       - _ulid: 01KN0G80FMTW9ZBH6B83HH5RTV
         actor: Test User
@@ -90886,6 +90899,13 @@ reviews:
           status: pass
           name: daemon api plans
         timestamp: 2026-03-30T23:25:13.573Z
+      - _ulid: 01KN0H1NY7DBSSQ1F3FC5P7VM1
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: full suite
+        timestamp: 2026-03-30T23:25:16.103Z
     examined_commit: 8339fac0f1f334a288a20705073571eeae3d7350
     external_links: []
     lifecycle_state: open
@@ -90923,5 +90943,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-30T23:11:14.932Z
-    updated_at: 2026-03-30T23:25:12.729Z
+    updated_at: 2026-03-30T23:25:15.283Z
     notes: []
