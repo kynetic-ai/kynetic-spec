@@ -18710,9 +18710,24 @@ runs:
     completed_at: 2026-03-29T13:06:29.618Z
   - _ulid: 01KMZBHSG8YMM2QBAE0YCMSF19
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-03-30T12:29:58.152Z
+        completed_at: 2026-03-30T12:30:20.607Z
+        notes: "Session: fix cycle for task-migrate-api-tests-vitest. What worked well: (1) Reading all 5
+          review threads before starting any fixes gave clear picture of all issues. (2) Running
+          individual test files before full suite caught issues quickly. (3) The stopAllEngines()
+          export from agent-dispatch.ts was the clean solution for test isolation — no test-only
+          hacks needed. (4) Using production middleware imports (localhostOnly, cors,
+          projectContextMiddleware) in server.test.ts directly addressed the reviewer's concern
+          about stub drift."
+      - status: completed
+        step_index: 1
+        started_at: 2026-03-30T12:30:20.607Z
+        completed_at: 2026-03-30T12:30:20.607Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-30T12:29:58.152Z
