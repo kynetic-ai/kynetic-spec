@@ -90062,6 +90062,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN0DSHEXWPP37C467JMZCGSN
         timestamp: 2026-03-30T22:28:24.552Z
+      - _ulid: 01KN0DSMMP8CYMQM353M3X3NB2
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN0DSKXBRD2C39QNX3S4NMZ9
+        timestamp: 2026-03-30T22:28:26.902Z
     examined_commit: 3782c10f7bc15ce25b597a0454bd90326ffb2dad
     external_links: []
     lifecycle_state: open
@@ -90091,7 +90098,26 @@ reviews:
               the missing close-code cases or narrow the annotations/spec references accordingly.
             created_at: 2026-03-30T22:28:23.645Z
         kind: blocker
+      - _ulid: 01KN0DSKXBRD2C39QNX3S4NMZ9
+        anchor:
+          type: code
+          commit: 3782c10f7bc15ce25b597a0454bd90326ffb2dad
+          line_end: 356
+          line_start: 334
+          path: tests/daemon-api/websocket-protocol.test.ts
+          side: head
+        entries:
+          - _ulid: 01KN0DSKXCNTXK8H0YDJ3GKWTM
+            author: Test User
+            body: This test is annotated as covering , but it only idles for 2 seconds and then sends an
+              application-level  command. The AC requires the server to emit a WebSocket heartbeat
+              ping frame after 30 seconds of inactivity. Because the test never waits for that
+              threshold or inspects ping frames, it does not prove the heartbeat contract, and the
+              updated N/A comments in , , and  now point to non-existent coverage. Restore real
+              heartbeat coverage or stop claiming this file covers ac-4.
+            created_at: 2026-03-30T22:28:26.156Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-30T22:25:33.827Z
-    updated_at: 2026-03-30T22:28:23.645Z
+    updated_at: 2026-03-30T22:28:26.156Z
     notes: []
