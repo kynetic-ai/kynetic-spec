@@ -28908,12 +28908,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-30T17:16:03.235Z
+      updated_at: 2026-03-30T17:16:43.399Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-30T17:16:03.235Z
+      updated_at: 2026-03-30T17:16:43.399Z
     integration:
       status: pending
       detail: null
@@ -28921,7 +28921,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 76a99bcf51ef31640b1724d9abb272f16311a624
-      updated_at: 2026-03-30T17:16:03.235Z
+      updated_at: 2026-03-30T17:16:43.399Z
     lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMZ1BVBBDPGQMSK3C8GDK3HP"
@@ -28929,9 +28929,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-30T16:43:34.370Z
-      last_reconciled_at: 2026-03-30T17:16:03.235Z
+      last_reconciled_at: 2026-03-30T17:16:43.399Z
       created_at: 2026-03-30T16:13:27.997Z
-      updated_at: 2026-03-30T17:16:03.235Z
+      updated_at: 2026-03-30T17:16:43.399Z
     workspace_id: dispatch-workspace-01KMZ1BVBBDPGQMSK3C8GDK3HP
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -28940,5 +28940,5 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-fix-stale-selectors/01kmz1bv
         head: 76a99bcf51ef31640b1724d9abb272f16311a624
-        last_seen_at: 2026-03-30T16:43:30.507Z
+        last_seen_at: 2026-03-30T17:16:43.399Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-stale-selectors-01kmz1bv
