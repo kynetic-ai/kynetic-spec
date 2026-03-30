@@ -163,6 +163,7 @@ test.describe("Agent and Dispatch View", () => {
       });
 
       await page.goto("/agents");
+      await expect(page.getByTestId("agents-loading")).toHaveCount(0);
 
       const badge = page.getByTestId("dispatch-status-badge");
       await expect(badge).toContainText("Running");
@@ -189,6 +190,7 @@ test.describe("Agent and Dispatch View", () => {
       });
 
       await page.goto("/agents");
+      await expect(page.getByTestId("agents-loading")).toHaveCount(0);
 
       const toggleButton = page.getByTestId("dispatch-toggle-button");
       await expect(toggleButton).toBeVisible();
@@ -209,9 +211,11 @@ test.describe("Agent and Dispatch View", () => {
       });
 
       await page.goto("/agents");
+      await expect(page.getByTestId("agents-loading")).toHaveCount(0);
 
       // Click stop
       const toggleButton = page.getByTestId("dispatch-toggle-button");
+      await expect(toggleButton).toBeVisible();
       await toggleButton.click();
 
       // Wait for status to update
@@ -222,6 +226,7 @@ test.describe("Agent and Dispatch View", () => {
     // AC: @ui-agent-dispatch ac-2
     test("clicking start button starts dispatch", async ({ page, daemon }) => {
       await page.goto("/agents");
+      await expect(page.getByTestId("agents-loading")).toHaveCount(0);
 
       const toggleButton = page.getByTestId("dispatch-toggle-button");
       await expect(toggleButton).toContainText("Start");
@@ -353,7 +358,9 @@ test.describe("Agent and Dispatch View", () => {
       await page.goto("/agents");
       await expect(page.getByTestId("agents-loading")).toHaveCount(0);
 
+      // Wait for the conditionally-rendered invocations section to appear
       const invocationsSection = page.getByTestId("active-invocations-section");
+      await expect(invocationsSection).toBeVisible();
       await expect(invocationsSection).toHaveAttribute("aria-live", "polite");
 
       // Clean up
