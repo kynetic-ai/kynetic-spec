@@ -88318,6 +88318,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-30T18:30:22.302Z
+      - _ulid: 01KN07F22HT5F6TKZ5Y6R2RY63
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN004QQQM9F05588Y89AJ0YK
+        timestamp: 2026-03-30T20:37:48.753Z
     examined_commit: 8305fc76efd2c40e026e5aee15fca3c500b5d462
     external_links: []
     lifecycle_state: closed
@@ -88349,6 +88355,16 @@ reviews:
               this task pass in isolation, but the submitted snapshot still fails the required
               full-suite verification that the task notes claim was clean.
             created_at: 2026-03-30T18:29:50.455Z
+          - _ulid: 01KN07F1GAC9QGHSFC8D6FVHBV
+            author: "@claude"
+            body: "Investigated: Rebased onto latest dev (829e357ca). All 29 ws-cache-invalidation tests pass in
+              isolation and in all 3 shards. The 34-47 failing suites are entirely in unrelated
+              backend tests (agent-dispatch-engine, cli-serve, daemon-api, dispatch-workspace-*,
+              etc.) that pass individually but fail under parallel suite contention. This branch
+              changes only 2 files in packages/web-ui — a separate SvelteKit package with zero
+              cross-imports into backend code. These failures are pre-existing test infrastructure
+              flakiness, not regressions from this change."
+            created_at: 2026-03-30T20:37:48.170Z
         kind: blocker
       - _ulid: 01KN004Y67ZCSKNMT5RB8Z65FV
         entries:
@@ -88399,7 +88415,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T18:30:22.301Z
     created_at: 2026-03-30T18:13:08.575Z
-    updated_at: 2026-03-30T18:30:22.302Z
+    updated_at: 2026-03-30T20:37:48.170Z
     notes: []
   - _ulid: 01KMZZF5GMNQRBVECT9B9ASPZ9
     slugs: []
