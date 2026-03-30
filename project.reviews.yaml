@@ -81979,6 +81979,17 @@ reviews:
         required: false
         created_at: 2026-03-30T10:14:05.803Z
         completed_at: 2026-03-30T10:14:05.803Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite passed: 1996/1996 test suites, 7206/7211 tests passed, 5 skipped. Runner
+          rebuilt missing dist artifacts before executing."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-30T10:14:07.630Z
+        completed_at: 2026-03-30T10:14:07.630Z
     events:
       - _ulid: 01KMZ3758BVNH957MYQ15YWXJD
         actor: Test User
@@ -82007,6 +82018,13 @@ reviews:
           status: skipped
           name: kspec validate
         timestamp: 2026-03-30T10:14:06.383Z
+      - _ulid: 01KMZ3S2KHRNZCZVK6SMJFB3P3
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-30T10:14:08.241Z
     examined_commit: 137b046abd8a2482f82be089329a4075aab9bccc
     external_links: []
     lifecycle_state: open
@@ -82038,5 +82056,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-30T10:04:21.132Z
-    updated_at: 2026-03-30T10:14:05.803Z
+    updated_at: 2026-03-30T10:14:07.630Z
     notes: []
