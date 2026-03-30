@@ -10285,6 +10285,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-30T22:34:43.750Z
+  - _ulid: 01KN0E55072X4X3YE0R6JY8NRM
+    type: friction
+    content: npm test with a Playwright spec path can produce a misleading 0-passed/0-run failure
+      instead of clearly signaling that the repo test wrapper does not execute Playwright files
+      directly
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-30T22:34:44.104Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
