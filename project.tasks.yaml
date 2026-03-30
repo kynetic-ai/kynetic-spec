@@ -23396,7 +23396,7 @@
   title: Fix timing and race condition e2e failures
   type: task
   plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-fix-loading-page-e2e"
@@ -23405,7 +23405,7 @@
     - test
     - e2e
   review_ref: "@01KN06EX8M9BKVP47YV9BD9SBK"
-  notes_count: 4
+  notes_count: 5
   todos_count: 0
   created_at: 2026-03-30T09:31:57.926Z
   started_at: 2026-03-30T18:18:13.954Z
