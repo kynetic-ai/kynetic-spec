@@ -2069,3 +2069,14 @@ inbox:
       - reflection
     added_by: "@claude"
     created_at: 2026-03-30T14:05:47.762Z
+  - _ulid: 01KMZNBAMVFA7NY88PK9QQHHWP
+    text: Daemon plans route returns 500 instead of 404 for non-existent plans. GET
+      /api/plans/non-existent-plan returns HTTP 500 instead of the expected 404. The route uses
+      Elysia errorResponse(404, {...}) but the status code is not propagated correctly. Confirmed
+      pre-existing on dev branch.
+    tags:
+      - bug
+      - daemon
+      - plans
+    added_by: "@claude"
+    created_at: 2026-03-30T15:21:12.091Z
