@@ -10248,6 +10248,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-30T20:20:54.178Z
+  - _ulid: 01KN0CMWTGPWK7TTX1H58J565W
+    type: success
+    content: "Playwright routeWebSocket() pattern for WebSocket E2E testing: use routeWebSocket to proxy
+      the real server connection, then inject controlled BroadcastEvent messages to test
+      deduplication (inject duplicate seq), reconnect behavior (track subscribe commands and
+      connection count), and event delivery (inject post-reconnect events). This avoids unreliable
+      context.setOffline() and fixed waitForTimeout delays. Used successfully in connection.spec.ts
+      for AC-30/31/32 coverage."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-30T22:08:22.864Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
