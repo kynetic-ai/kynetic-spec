@@ -42,3 +42,24 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-30T16:04:25.948Z
+  - _ulid: 01KMZR7VV4FKCDKZ90832TCTNB
+    content: >-
+      Implementation complete. Changed ws-invalidation.ts getInvalidationKeys() agents case:
+
+
+      1. message_complete, thinking_complete, tool_call_complete with session_id now return only
+      [queryKeys.sessions.all] instead of [queryKeys.sessions.all, queryKeys.agents.all]
+
+      2. These same events without session_id now return [] instead of falling through to the
+      agents.all default
+
+      3. Agent lifecycle events (started, completed, failed) unchanged — still return both
+      agents.all and sessions.all
+
+
+      Added 16 new tests covering: completion event scoping (6 tests), streaming no-op (5 tests),
+      lifecycle events (3 tests). All 28 tests in the file pass. Full suite: 7502 pass, 1 unrelated
+      flaky failure in dispatch-workspace-registry.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-30T16:11:44.356Z
