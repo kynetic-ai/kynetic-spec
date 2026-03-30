@@ -68,3 +68,14 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-30T23:11:21.550Z
+  - _ulid: 01KN0GBMT0VZ14T436GAYWQV7T
+    content: "Fix cycle 2: resolved the remaining @api-contract ac-30 gap by making parsed-but-invalid
+      subscribe/unsubscribe commands return ack:false validation_error responses instead of ack:true
+      failures, and extended tests/daemon-api/websocket-protocol.test.ts to prove both invalid topic
+      payload cases. Verification: npm test -- --fresh tests/daemon-heartbeat.test.ts
+      tests/daemon-api/websocket-protocol.test.ts; npm run test:e2e --
+      tests/e2e/api-websocket.spec.ts; kspec validate (warnings-only exit 6 from pre-existing repo
+      debt)."
+    supersedes: null
+    author: Test User
+    created_at: 2026-03-30T23:13:14.049Z
