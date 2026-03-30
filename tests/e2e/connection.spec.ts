@@ -14,6 +14,38 @@ import { test, expect } from "./fixtures/test-base";
  * - AC-32: Re-subscribe to all topics on reconnect
  */
 
+function isTasksApiResponse(url: string): boolean {
+  return /\/api\/tasks(?:\?|$)/.test(url);
+}
+
+async function waitForTasksApiCountToSettle(
+  readCount: () => number,
+  stableMs = 750,
+  timeoutMs = 5000,
+): Promise<number> {
+  const pollMs = 100;
+  let lastCount = readCount();
+  let stableFor = 0;
+  const deadline = Date.now() + timeoutMs;
+
+  while (Date.now() < deadline) {
+    await new Promise((resolve) => setTimeout(resolve, pollMs));
+    const nextCount = readCount();
+    if (nextCount === lastCount) {
+      stableFor += pollMs;
+      if (stableFor >= stableMs) {
+        return nextCount;
+      }
+      continue;
+    }
+
+    lastCount = nextCount;
+    stableFor = 0;
+  }
+
+  throw new Error("Timed out waiting for /api/tasks traffic to settle");
+}
+
 test.describe("WebSocket Connection Handling", () => {
   // Start daemon for all tests
   test.beforeEach(async ({ daemon: _daemon }) => {
@@ -127,36 +159,25 @@ test.describe("WebSocket Connection Handling", () => {
   });
 
   // AC: @web-dashboard ac-30
-  test("skips duplicate events by sequence number", async ({ page, daemon }) => {
-    // Use routeWebSocket to proxy the real connection and inject a duplicate event.
-    // Strategy:
-    // 1. Proxy initial connection to real server (data loads normally)
-    // 2. Wait for task list to load (proves WS + REST are working)
-    // 3. Record the task count
-    // 4. Inject a task_updated broadcast event with seq=1 (already processed)
-    // 5. Verify the task list count does NOT change (duplicate was skipped)
+  test("skips duplicate events by sequence number", async ({ page, daemon: _daemon }) => {
+    // Prove the difference between "event handled" and "duplicate skipped":
+    // the first injected event must trigger a task-list refetch, while replaying
+    // the same seq must not trigger a second /api/tasks request.
 
     let clientWs: {
       send: (data: string) => void;
     } | null = null;
-    let lastSeenSeq = 0;
+    let tasksApiResponseCount = 0;
+
+    page.on("response", (response) => {
+      if (response.request().method() === "GET" && isTasksApiResponse(response.url())) {
+        tasksApiResponseCount++;
+      }
+    });
 
     await page.routeWebSocket(/ws/, (ws) => {
       const server = ws.connectToServer();
-      server.onMessage((msg) => {
-        // Track sequence numbers from real broadcast events
-        if (typeof msg === "string") {
-          try {
-            const parsed = JSON.parse(msg);
-            if (parsed.seq !== undefined && parsed.seq > lastSeenSeq) {
-              lastSeenSeq = parsed.seq;
-            }
-          } catch {
-            // not JSON, forward as-is
-          }
-        }
-        ws.send(msg);
-      });
+      server.onMessage((msg) => ws.send(msg));
       ws.onMessage((msg) => server.send(msg));
       clientWs = ws;
     });
@@ -166,18 +187,42 @@ test.describe("WebSocket Connection Handling", () => {
     // Wait for task list to load — proves connection and data are ready
     const taskListItems = page.getByTestId("task-list-item");
     await expect(taskListItems.first()).toBeVisible();
+    const baselineResponseCount = tasksApiResponseCount;
 
-    const initialCount = await taskListItems.count();
-
-    // Inject a duplicate broadcast event with seq=1 (which is ≤ lastSeqProcessed
-    // since the client has already received the connected event that resets seq to -1,
-    // and any subsequent broadcast events increment it past 1).
-    // If deduplication were broken, this would trigger the tasks:updates handler
-    // and potentially modify the DOM.
+    // First delivery of seq=500 must be handled and refetch the task list.
+    const firstRefetch = page.waitForResponse(
+      (response) =>
+        response.request().method() === "GET" &&
+        isTasksApiResponse(response.url()) &&
+        tasksApiResponseCount > baselineResponseCount,
+    );
     clientWs!.send(
       JSON.stringify({
-        msg_id: "test-duplicate-001",
-        seq: 1,
+        msg_id: "test-duplicate-001-first",
+        seq: 500,
+        timestamp: new Date().toISOString(),
+        topic: "tasks:updates",
+        event: "task_updated",
+        data: {
+          ref: "@test-task-ready",
+          ulid: "01KG0RR6CA45ZT43W2T6HJMVA1",
+          action: "status_change",
+          title: "Ready task",
+          old_status: "pending",
+          new_status: "in_progress",
+        },
+      }),
+    );
+    await firstRefetch;
+
+    const afterFirstDeliveryCount = await waitForTasksApiCountToSettle(() => tasksApiResponseCount);
+
+    // Replay the same seq. If deduplication is working, the second delivery is
+    // skipped and no second /api/tasks refetch occurs.
+    clientWs!.send(
+      JSON.stringify({
+        msg_id: "test-duplicate-001-second",
+        seq: 500,
         timestamp: new Date().toISOString(),
         topic: "tasks:updates",
         event: "task_updated",
@@ -192,16 +237,12 @@ test.describe("WebSocket Connection Handling", () => {
       }),
     );
 
-    // Wait a moment for any handler to potentially fire
-    await page.waitForTimeout(500);
-
-    // Task count should remain the same — the duplicate event was skipped
-    const finalCount = await taskListItems.count();
-    expect(finalCount).toBe(initialCount);
+    await page.waitForTimeout(1000);
+    expect(tasksApiResponseCount).toBe(afterFirstDeliveryCount);
   });
 
   // AC: @web-dashboard ac-31, ac-32
-  test("resets sequence and re-subscribes on reconnect", async ({ page, daemon }) => {
+  test("resets sequence and re-subscribes on reconnect", async ({ page, daemon: _daemon }) => {
     // Strategy:
     // 1. Proxy initial WebSocket connection to real server
     // 2. Wait for tasks page to load (proves subscription is active)
@@ -217,7 +258,13 @@ test.describe("WebSocket Connection Handling", () => {
     } | null = null;
     let connectionCount = 0;
     let subscribeCommandSeen = false;
-    let postReconnectEventDelivered = false;
+    let tasksApiResponseCount = 0;
+
+    page.on("response", (response) => {
+      if (response.request().method() === "GET" && isTasksApiResponse(response.url())) {
+        tasksApiResponseCount++;
+      }
+    });
 
     await page.routeWebSocket(/ws/, (ws) => {
       connectionCount++;
@@ -264,11 +311,18 @@ test.describe("WebSocket Connection Handling", () => {
     // AC-32: verify subscribe command was sent after reconnect
     expect(subscribeCommandSeen).toBe(true);
 
+    const baselineResponseCount = await waitForTasksApiCountToSettle(() => tasksApiResponseCount);
+
     // AC-31: inject a broadcast event with seq=0. If lastSeqProcessed was NOT
-    // reset to -1 on reconnect, this event would be skipped (seq 0 <= old value).
-    // Since it WAS reset, seq=0 > -1 and the event should be processed.
-    // We use a task_updated event that TanStack Query will handle by invalidating
-    // the task list, which we can observe.
+    // reset to -1 on reconnect, this event would be skipped and no /api/tasks
+    // refetch would happen. A refetch proves the handler accepted seq=0 after
+    // reconnect.
+    const postReconnectRefetch = page.waitForResponse(
+      (response) =>
+        response.request().method() === "GET" &&
+        isTasksApiResponse(response.url()) &&
+        tasksApiResponseCount > baselineResponseCount,
+    );
     currentClientWs!.send(
       JSON.stringify({
         msg_id: "test-reconnect-event-001",
@@ -286,30 +340,12 @@ test.describe("WebSocket Connection Handling", () => {
         },
       }),
     );
+    await postReconnectRefetch;
 
-    // Wait for the event to be processed. The task list should still show data
-    // (the event triggers a TanStack Query invalidation/refetch, but since the
-    // underlying data hasn't actually changed, the count stays the same).
-    // The key assertion is that seq=0 was processed (not skipped).
-    // We verify this indirectly: if seq=0 were skipped, the WS handler would
-    // not fire at all. We can check this by evaluating the client-side
-    // lastSeqProcessed value.
-    await page.waitForTimeout(500);
-
-    // Verify the page still shows data after reconnect
+    // The UI stays populated after reconnect, and the refetch above proves the
+    // seq=0 event was accepted instead of skipped.
     await expect(page.getByTestId("task-list-item").first()).toBeVisible();
-
-    // Verify lastSeqProcessed was updated to 0 (proving the event was processed,
-    // not skipped). This is the definitive proof that AC-31 (reset to -1) worked.
-    postReconnectEventDelivered = await page.evaluate(() => {
-      // The WebSocketManager is accessible via the connection store.
-      // Check console for the debug skip message — if it was NOT logged,
-      // the event was processed.
-      // Alternative: we can check if TanStack Query refetch happened.
-      // For robustness, just verify the task list is still rendering.
-      return true;
-    });
-    expect(postReconnectEventDelivered).toBe(true);
+    expect(tasksApiResponseCount).toBeGreaterThan(baselineResponseCount);
   });
 
   // AC: @web-dashboard ac-28
