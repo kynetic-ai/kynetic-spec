@@ -83627,7 +83627,26 @@ reviews:
     slugs: []
     title: Review task-migrate-api-tests-vitest (cycle 2)
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: packages/daemon/src/routes/inbox.ts, packages/daemon/src/routes/sessions.ts,
+          packages/daemon/src/server.ts, packages/daemon/src/routes/reviews.ts,
+          packages/daemon/src/routes/projects.ts, tests/daemon-api/helpers.ts,
+          tests/daemon-api/agent-dispatch.test.ts, tests/daemon-api/server.test.ts,
+          tests/daemon-api/sessions-search.test.ts, tests/daemon-api/reviews-list.test.ts,
+          tests/daemon-api/projects.test.ts. Commands run: git diff --stat/--name-only against dev,
+          targeted git diff reads for migrated specs, kspec task get, kspec review get/for-task, rg
+          AC annotations, kspec validate, npm test. Claims verified: previous review blockers were
+          addressed in agent-dispatch/server/sessions-search; projects/reviews migrations still
+          reduce coverage versus deleted Playwright specs; full suite is failing in this snapshot.
+          Categories searched: correctness, edge cases, error handling, test quality, integration."
+        name: review-evidence
+        required: false
+        created_at: 2026-03-30T12:37:54.953Z
+        completed_at: 2026-03-30T12:37:54.953Z
     events:
       - _ulid: 01KMZBVPKYDFZZK6PVYQBAHESV
         actor: Test User
@@ -83663,6 +83682,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMZBZQEJ7DN8VVB6T13MJAM0
         timestamp: 2026-03-30T12:37:35.533Z
+      - _ulid: 01KMZC0BNHYMAQQT4RB5P8EDKK
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-03-30T12:37:55.505Z
     examined_commit: 1b14f9251d210312870ad8acab4d20393f1c18c4
     external_links: []
     lifecycle_state: open
@@ -83736,5 +83762,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-30T12:35:22.878Z
-    updated_at: 2026-03-30T12:37:34.802Z
+    updated_at: 2026-03-30T12:37:54.953Z
     notes: []
