@@ -28687,7 +28687,7 @@ workspaces:
         head: 9270ac10690307f1121562922ae5408c81bc5b57
         last_seen_at: 2026-03-30T18:17:22.799Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-fixtures-envelope-01kmz1bv
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 76a99bcf51ef31640b1724d9abb272f16311a624
     bootstrap:
       status: succeeded
@@ -28779,7 +28779,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-30T23:57:55.946Z
+      updated_at: 2026-03-30T23:58:04.604Z
     integration:
       status: pending
       detail: null
@@ -28794,10 +28794,10 @@ workspaces:
     task_slug: task-fix-ws-invalidation-storm
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-30T23:47:36.519Z
-      last_reconciled_at: 2026-03-30T23:57:55.946Z
+      last_active_at: 2026-03-30T23:58:04.604Z
+      last_reconciled_at: 2026-03-30T23:58:04.604Z
       created_at: 2026-03-30T16:02:49.272Z
-      updated_at: 2026-03-30T23:58:01.950Z
+      updated_at: 2026-03-30T23:58:04.604Z
     workspace_id: dispatch-workspace-01KMZ1BXDQRXEGC4DAS1F8T9H5
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
