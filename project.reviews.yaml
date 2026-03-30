@@ -90576,6 +90576,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-30T22:53:51.858Z
+      - _ulid: 01KN0FPMTPN9NE0T6N2ES51481
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN0FPKNA1SFRNMM3FEQNJNSK
+        timestamp: 2026-03-30T23:01:45.942Z
     examined_commit: 901eae907a6a3bdc27e2c2956410efb43eadf937
     external_links: []
     lifecycle_state: open
@@ -90585,8 +90592,29 @@ reviews:
       content_hash: ""
       ref: "@01KMZ1BW4NHEGFXEDJ6WBRBQQ7"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KN0FPKNA1SFRNMM3FEQNJNSK
+        anchor:
+          type: code
+          commit: 901eae907a6a3bdc27e2c2956410efb43eadf937
+          line_end: 139
+          line_start: 132
+          path: packages/daemon/src/websocket/handler.ts
+          side: head
+        entries:
+          - _ulid: 01KN0FPKNBR4R8GV1B4F9CPC62
+            author: Test User
+            body: "@api-contract ac-30 still is not satisfied for malformed subscribe/unsubscribe commands. The
+              new protocol test only covers the missing-action case, but the handler still replies
+              with {ack:true, success:false, error:'validation_error'} when a parsed command is
+              invalid because topics are missing. I confirmed it by executing the handler directly
+              with {action:'subscribe', request_id:'bad-sub', payload:{}}; it returned ack:true at
+              runtime. Under ac-30, malformed commands that fail validation after parsing must
+              return ack:false validation_error responses, so this edge case remains a spec
+              violation and the rewrite no longer proves the full malformed-command behavior."
+            created_at: 2026-03-30T23:01:44.747Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-30T22:53:31.303Z
-    updated_at: 2026-03-30T22:53:50.982Z
+    updated_at: 2026-03-30T23:01:44.747Z
     notes: []
