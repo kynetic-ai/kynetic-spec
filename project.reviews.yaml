@@ -90036,3 +90036,29 @@ reviews:
     created_at: 2026-03-30T22:09:32.061Z
     updated_at: 2026-03-30T22:14:48.833Z
     notes: []
+  - _ulid: 01KN0DMBM3BK14076PF2NNA390
+    slugs: []
+    title: Review task-rewrite-websocket-e2e
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KN0DMBM34Q6M1P1R339JJEEZ
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-30T22:25:33.827Z
+    examined_commit: 3782c10f7bc15ce25b597a0454bd90326ffb2dad
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMZ1BW4NHEGFXEDJ6WBRBQQ7"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-30T22:25:33.827Z
+    updated_at: null
+    notes: []
