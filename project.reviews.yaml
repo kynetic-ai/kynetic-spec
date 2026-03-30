@@ -83212,9 +83212,25 @@ reviews:
           kind: blocker
           thread_ulid: 01KMZ7ZD2HCB8CBW6VY6SJ2MJ9
         timestamp: 2026-03-30T11:27:30.423Z
+      - _ulid: 01KMZ7ZRJ5PSYVWC9BT9N361Q2
+        actor: codex@local
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-30T11:27:41.637Z
+      - _ulid: 01KMZ7ZRJ5X7ABDNRS9JRNPHVS
+        actor: codex@local
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-30T11:27:41.637Z
     examined_commit: 48e6b79299b8817d4c06a0ba814a34aa9bac6128
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -83315,7 +83331,14 @@ reviews:
               proves  ac-17 or the existing non-API-route regression guard.
             created_at: 2026-03-30T11:27:29.873Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@local
+        role: reviewer
+        created_at: 2026-03-30T11:27:41.637Z
     created_at: 2026-03-30T11:20:16.563Z
-    updated_at: 2026-03-30T11:27:29.873Z
+    updated_at: 2026-03-30T11:27:41.637Z
     notes: []
