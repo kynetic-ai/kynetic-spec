@@ -88570,6 +88570,18 @@ reviews:
         runner: kspec
         created_at: 2026-03-30T20:29:14.602Z
         completed_at: 2026-03-30T20:29:14.602Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Failed in review snapshot: 32 suites, 61 tests failing across the repo; notable failures
+          in agent-dispatch-engine timing assertions and cli-serve daemon startup. Full log:
+          /tmp/kspec-test-cache/01KN06DQHD0WA7FXR0NBDDQ4AE/16e8b13585b6febf.log"
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-30T20:29:16.534Z
+        completed_at: 2026-03-30T20:29:16.534Z
     events:
       - _ulid: 01KN06EX8KQJTSQ837J4Z95SBR
         actor: Test User
@@ -88626,6 +88638,13 @@ reviews:
           status: skipped
           name: kspec validate
         timestamp: 2026-03-30T20:29:15.263Z
+      - _ulid: 01KN06ZEE3AJQE979B2932M6EB
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-30T20:29:17.124Z
     examined_commit: 77629f2658f65d7f26b1e18b79819b6e8c20f747
     external_links: []
     lifecycle_state: open
@@ -88750,5 +88769,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-30T20:20:15.252Z
-    updated_at: 2026-03-30T20:29:14.602Z
+    updated_at: 2026-03-30T20:29:16.534Z
     notes: []
