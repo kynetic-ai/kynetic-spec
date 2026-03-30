@@ -81826,6 +81826,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMYZB9HBRZ9QG1M2M2DMCYPS
         timestamp: 2026-03-30T08:56:44.830Z
+      - _ulid: 01KMYZBD01GNPN1SDXAKB4JK9P
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KMYZB9JANCTTRKKYW07GCYCX
+        timestamp: 2026-03-30T08:56:45.825Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -81883,7 +81890,21 @@ reviews:
               derivation set.
             created_at: 2026-03-30T08:56:42.283Z
         kind: blocker
+      - _ulid: 01KMYZB9JANCTTRKKYW07GCYCX
+        anchor:
+          type: structured
+          ref: "@task-ci-full-e2e"
+          section: tasks
+        entries:
+          - _ulid: 01KMYZB9JA9A88DDCKDGZ1Z8RM
+            author: Jacob Chapel
+            body: "The CI-gate expansion task is downstream operational rollout rather than cleanup of the suite
+              itself. If you keep it, make the dependency and success criteria explicit: it should
+              only derive after the cleanup tasks establish a stable passing set and a measured
+              runtime budget. Otherwise consider moving CI rollout into a separate follow-up plan."
+            created_at: 2026-03-30T08:56:42.314Z
+        kind: question
     verdicts: []
     created_at: 2026-03-30T08:55:58.278Z
-    updated_at: 2026-03-30T08:56:42.283Z
+    updated_at: 2026-03-30T08:56:42.314Z
     notes: []
