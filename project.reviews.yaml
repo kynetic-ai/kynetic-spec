@@ -88274,6 +88274,13 @@ reviews:
           kind: nit
           thread_ulid: 01KN004Y67ZCSKNMT5RB8Z65FV
         timestamp: 2026-03-30T18:29:57.807Z
+      - _ulid: 01KN005JW3163XN45WKJHTVXYR
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KN005J93SAR5F3M8H99XX9RR
+        timestamp: 2026-03-30T18:30:18.243Z
     examined_commit: 8305fc76efd2c40e026e5aee15fca3c500b5d462
     external_links: []
     lifecycle_state: open
@@ -88326,9 +88333,29 @@ reviews:
               error handling, test quality, integration.'
             created_at: 2026-03-30T18:29:57.063Z
         kind: nit
+      - _ulid: 01KN005J93SAR5F3M8H99XX9RR
+        entries:
+          - _ulid: 01KN005J94VQ3N1VXBA5R0SKQZ
+            author: Test User
+            body: 'Evidence log: Files read: packages/web-ui/src/lib/query/ws-invalidation.ts,
+              tests/web-ui/ws-cache-invalidation.test.ts, packages/shared/src/websocket.ts,
+              tests/agent-dispatch-engine.test.ts. Commands run: kspec task get
+              @01KMZ1BXDQRXEGC4DAS1F8T9H5, kspec review for-task @01KMZ1BXDQRXEGC4DAS1F8T9H5, kspec
+              review get @01KMZRCAEC7SWKD6BN7VP96XSM, git diff/stat against dev base, kspec
+              validate, grep for AC annotations, npm test, npm test -- --run
+              tests/web-ui/ws-cache-invalidation.test.ts, npm test -- --run
+              tests/agent-dispatch-engine.test.ts -t "Post-invocation re-evaluation should not
+              double-enqueue tasks already queued via skipIfActive dedup", npm test -- --run
+              tests/cli-serve.test.ts -t "kspec serve commands should stop then start on restart",
+              npm test -- --fresh. Claims verified: the fix now matches the real agent_invocation
+              event shape from packages/shared/src/websocket.ts; changed Web UI invalidation tests
+              pass; the snapshot still fails full-suite verification. Categories searched:
+              correctness, edge cases, error handling, test quality, integration.'
+            created_at: 2026-03-30T18:30:17.636Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-30T18:13:08.575Z
-    updated_at: 2026-03-30T18:29:57.063Z
+    updated_at: 2026-03-30T18:30:17.636Z
     notes: []
   - _ulid: 01KMZZF5GMNQRBVECT9B9ASPZ9
     slugs: []
