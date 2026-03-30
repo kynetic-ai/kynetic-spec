@@ -10390,6 +10390,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-30T23:48:50.198Z
+  - _ulid: 01KN0JW5VZXGMM22WYGEFS35BJ
+    type: friction
+    content: Prepared dispatch worker worktrees can start with a built local CLI but no 'kspec'
+      executable on PATH, forcing manual fallback to 'node dist/cli/index.js' before task, review,
+      and workflow commands can run.
+    author: Test User
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-03-30T23:57:12.959Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
