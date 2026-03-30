@@ -10331,6 +10331,25 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-03-30T23:15:23.870Z
+  - _ulid: 01KN0GJ60Y8ZV4D9GAAV06174J
+    type: success
+    content: HAR capture from browser DevTools was the most effective debugging tool for the
+      loading-state bug. It definitively proved API requests succeed and eliminated multiple wrong
+      hypotheses in minutes. Should ask for HAR early when investigating UI-never-updates issues.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-30T23:16:48.286Z
+  - _ulid: 01KN0GJ694FZK15504P22GDY5G
+    type: friction
+    content: Deep-diving TanStack Query internals to build a root cause theory without runtime evidence
+      wasted investigation time. The theory kept shifting as the user provided new facts (live app
+      bug, queries fire, switching pages works). For persistent bugs with multiple failed fix
+      attempts, insist on observability data (HAR, console logs) before theorizing.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-30T23:16:48.548Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
