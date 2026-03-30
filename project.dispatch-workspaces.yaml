@@ -28445,7 +28445,7 @@ workspaces:
         head: d0f61c721edf881be8985f4798b1c46667e688df
         last_seen_at: 2026-03-30T13:01:50.043Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-api-tests-vitest-01kmz1bv
-  - active_role: worker
+  - active_role: null
     base_branch_point: 4696b19c2dbf188613c651e9d1698e5203f9ccfc
     bootstrap:
       status: succeeded
@@ -28510,12 +28510,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-30T13:11:11.045Z
+      updated_at: 2026-03-30T13:12:10.586Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-30T13:11:11.045Z
+      updated_at: 2026-03-30T13:12:10.586Z
     integration:
       status: pending
       detail: null
@@ -28523,17 +28523,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 4696b19c2dbf188613c651e9d1698e5203f9ccfc
-      updated_at: 2026-03-30T13:11:11.045Z
-    lifecycle_state: active
+      updated_at: 2026-03-30T13:12:10.586Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMZ1BTVFQCM2XMFZPER1E45Z"
     task_slug: task-fix-loading-page-e2e
     timestamps:
       closed_at: null
       last_active_at: 2026-03-30T13:01:50.210Z
-      last_reconciled_at: 2026-03-30T13:11:11.045Z
+      last_reconciled_at: 2026-03-30T13:12:10.586Z
       created_at: 2026-03-30T12:30:04.123Z
-      updated_at: 2026-03-30T13:11:11.045Z
+      updated_at: 2026-03-30T13:12:10.586Z
     workspace_id: dispatch-workspace-01KMZ1BTVFQCM2XMFZPER1E45Z
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
