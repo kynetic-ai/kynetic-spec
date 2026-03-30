@@ -23304,3 +23304,233 @@
   started_at: 2026-03-29T21:28:50.416Z
   submitted_at: 2026-03-30T06:40:46.960Z
   completed_at: 2026-03-30T06:40:50.186Z
+- _ulid: 01KMZ1BTJJ3FR82N0R76DDWR09
+  slugs:
+    - task-fix-query-loading-state
+  title: "Fix TanStack Query reactivity bug: loading state never resolves"
+  type: task
+  plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - bug
+    - web-ui
+    - e2e
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-30T09:31:56.882Z
+- _ulid: 01KMZ1BTVFQCM2XMFZPER1E45Z
+  slugs:
+    - task-fix-loading-page-e2e
+  title: Fix e2e tests for dashboard, agents, and automation pages
+  type: task
+  plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-fix-query-loading-state"
+  priority: 1
+  tags:
+    - test
+    - e2e
+    - web-ui
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-30T09:31:57.167Z
+- _ulid: 01KMZ1BV3H7S2SQ91TX8B80J1Y
+  slugs:
+    - task-migrate-api-tests-vitest
+  title: Migrate API-only e2e specs to vitest using app.handle()
+  type: task
+  plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - test
+    - infra
+    - e2e
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-30T09:31:57.425Z
+- _ulid: 01KMZ1BVBBDPGQMSK3C8GDK3HP
+  slugs:
+    - task-fix-stale-selectors
+  title: Fix stale-selector e2e failures across UI specs
+  type: task
+  plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-fix-loading-page-e2e"
+  priority: 2
+  tags:
+    - test
+    - e2e
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-30T09:31:57.675Z
+- _ulid: 01KMZ1BVK6C9F7QKYK9DZD4TFQ
+  slugs:
+    - task-fix-timing-races
+  title: Fix timing and race condition e2e failures
+  type: task
+  plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-fix-loading-page-e2e"
+  priority: 2
+  tags:
+    - test
+    - e2e
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-30T09:31:57.926Z
+- _ulid: 01KMZ1BVVK329BJ49C6PB03T49
+  slugs:
+    - task-fix-fixtures-envelope
+  title: Fix stale fixture and envelope drift e2e failures
+  type: task
+  plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - test
+    - e2e
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-30T09:31:58.195Z
+- _ulid: 01KMZ1BW4NHEGFXEDJ6WBRBQQ7
+  slugs:
+    - task-rewrite-websocket-e2e
+  title: Rewrite api-websocket spec as behavioral UI e2e tests
+  type: task
+  plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-fix-query-loading-state"
+  priority: 3
+  tags:
+    - test
+    - e2e
+    - web-ui
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-30T09:31:58.485Z
+- _ulid: 01KMZ1BWCJNCQ1AWDQE6XMY2EK
+  slugs:
+    - task-add-filewatcher-e2e
+  title: Add file watcher e2e behavioral tests
+  type: task
+  plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-fix-query-loading-state"
+  priority: 3
+  tags:
+    - test
+    - e2e
+    - web-ui
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-30T09:31:58.738Z
+- _ulid: 01KMZ1BWMQGPZRECVEQCT2GS48
+  slugs:
+    - task-e2e-batch-item-fetch
+  title: Add e2e tests for batch item fetch UI behavior
+  type: task
+  plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-fix-stale-selectors"
+  priority: 3
+  tags:
+    - test
+    - e2e
+    - web-ui
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-30T09:31:58.999Z
+- _ulid: 01KMZ1BWX3KMC7GMD6H90F6SM3
+  slugs:
+    - task-e2e-session-search
+  title: Add e2e tests for session full-text search
+  type: task
+  plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-fix-timing-races"
+  priority: 3
+  tags:
+    - test
+    - e2e
+    - web-ui
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-30T09:31:59.267Z
+- _ulid: 01KMZ1BX5RN093G0MZASASRJ43
+  slugs:
+    - task-e2e-triage-export
+  title: Add e2e tests for triage export flow
+  type: task
+  plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-fix-fixtures-envelope"
+  priority: 3
+  tags:
+    - test
+    - e2e
+    - web-ui
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-30T09:31:59.544Z
+- _ulid: 01KMZ1BXDQRXEGC4DAS1F8T9H5
+  slugs:
+    - task-fix-ws-invalidation-storm
+  title: Address excessive WebSocket query invalidation during dispatch
+  type: task
+  plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - bug
+    - web-ui
+    - perf
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-30T09:31:59.799Z
+- _ulid: 01KMZ1BXPTATS8CAVJ2NMYADPW
+  slugs:
+    - task-ci-full-e2e
+  title: Validate and expand CI e2e gate to full suite
+  type: task
+  plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-fix-loading-page-e2e"
+    - "@task-fix-stale-selectors"
+    - "@task-fix-timing-races"
+    - "@task-fix-fixtures-envelope"
+  priority: 3
+  tags:
+    - ci
+    - e2e
+    - infra
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-30T09:32:00.090Z

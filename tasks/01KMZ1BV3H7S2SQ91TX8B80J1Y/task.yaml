@@ -1,0 +1,68 @@
+_ulid: 01KMZ1BV3H7S2SQ91TX8B80J1Y
+slugs:
+  - task-migrate-api-tests-vitest
+title: Migrate API-only e2e specs to vitest using app.handle()
+type: task
+description: |
+  What: 15 Playwright e2e specs containing 279 tests are currently skipped
+  (via test.describe.skip) in tests/e2e/ because they test HTTP API
+  contracts without any browser interaction — they use Playwright's
+  request fixture for HTTP calls but never use the page fixture. These
+  tests should be migrated to vitest using the Elysia app.handle()
+  pattern so they run without Chromium overhead.
+
+  Why: Running API contract tests in Playwright wastes resources: each
+  test spawns a Chromium process and a daemon subprocess despite never
+  opening a browser page. Migrating to vitest makes them run in the
+  fast shard pipeline (npm run test:shard1/2/3) with sub-second
+  execution per test instead of multi-second Playwright overhead.
+  The tests themselves are valuable — they cover 56 spec acceptance
+  criteria across @api-contract, @batch-item-fetch-api,
+  @daemon-agent-dispatch, @daemon-server, @multi-directory-daemon,
+  @review-records-daemon-api, @session-list-pagination-api,
+  @session-text-search, @triage-daemon-api, and @ui-api-aggregation.
+
+  How: Use the existing app.handle(Request) pattern established in
+  tests/daemon-api-input-validation.test.ts. This pattern imports
+  createServer from packages/daemon/src/server.ts, creates an Elysia
+  app instance, and calls app.handle(new Request(url, options)) directly
+  without starting an HTTP server. Required headers for each request:
+  Host: localhost, X-Kspec-Dir: <tempDir>, Content-Type: application/json.
+
+  For each of the 15 specs:
+  1. Create a corresponding vitest file under tests/daemon-api/
+     (e.g. tests/e2e/api-tasks.spec.ts → tests/daemon-api/tasks.test.ts)
+  2. Convert Playwright request.get/post/delete calls to
+     app.handle(new Request(...)) calls
+  3. Convert Playwright expect() assertions to vitest expect()
+  4. Set up shared beforeAll that creates a temp dir with fixtures,
+     initializes git repo with shadow worktree simulation (same setup
+     as tests/daemon-api-input-validation.test.ts)
+  5. Run the new vitest file and confirm all tests pass
+  6. Delete the skipped Playwright spec
+
+  Each spec can be migrated independently. The 15 specs (listed by
+  file name and test count):
+  api-tasks.spec.ts (35), api-items.spec.ts (26),
+  api-sessions-pagination.spec.ts (23), api-meta.spec.ts (23),
+  api-inbox.spec.ts (18), api-reviews-list.spec.ts (18),
+  api-reviews-threads.spec.ts (17), api-errors.spec.ts (14),
+  api-aggregation.spec.ts (11), api-projects.spec.ts (10),
+  api-agent-dispatch.spec.ts (9), api-server.spec.ts (8),
+  api-sessions-legacy.spec.ts (7), api-sessions-search.spec.ts (3),
+  api-triage.spec.ts (37).
+spec_ref: null
+plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - test
+  - infra
+  - e2e
+vcs_refs: []
+created_at: 2026-03-30T09:31:57.425Z
+todos: []

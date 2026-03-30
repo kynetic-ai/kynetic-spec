@@ -1,0 +1,58 @@
+_ulid: 01KMZ1BWMQGPZRECVEQCT2GS48
+slugs:
+  - task-e2e-batch-item-fetch
+title: Add e2e tests for batch item fetch UI behavior
+type: task
+description: |
+  What: Write Playwright e2e tests that exercise the batch item fetch
+  API endpoint (POST /api/items/batch) through UI flows that depend on
+  it. The batch endpoint is called by the web UI's fetchBatchItems()
+  function in packages/web-ui/src/lib/api.ts to resolve multiple item
+  references in a single request — used when rendering task details
+  that link to spec items, and item views that display trait references.
+
+  Why: The batch item fetch API has 5 acceptance criteria
+  (@batch-item-fetch-api ac-1 through ac-5) covering: valid ref
+  resolution, unresolved ref handling, task ref resolution, empty batch,
+  and batch size limits. These are currently only tested in the API-only
+  spec api-items.spec.ts (being migrated to vitest in
+  @task-migrate-api-tests-vitest). After migration, the API contract is
+  covered in vitest but no e2e test verifies that the UI correctly
+  renders batch-fetched data. If the batch endpoint works but the UI
+  fails to call it or render results, no test would catch that.
+
+  How: Add test cases to the existing tests/e2e/items.spec.ts and/or
+  tests/e2e/tasks.spec.ts:
+  1. Navigate to a task detail view where the task has a spec_ref
+     linking to a spec item. Verify the linked spec item title and
+     type are displayed (exercises batch fetch for spec item resolution).
+  2. Navigate to an item detail view where the item has traits. Verify
+     trait chips render with correct names (exercises batch fetch for
+     trait reference resolution).
+  3. Navigate to a task detail that references a nonexistent spec item.
+     Verify the UI shows the raw ref gracefully rather than crashing
+     (exercises unresolved ref handling).
+
+  The test fixtures in tests/e2e/fixtures/ already include tasks with
+  spec_ref fields (project.tasks.yaml) and items with traits
+  (modules/core.yaml). Verify these fixture relationships are intact
+  before writing tests; update fixtures if needed.
+
+  This task depends on @task-fix-stale-selectors because the items and
+  tasks specs need working selectors before new test cases can be added.
+spec_ref: null
+plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-fix-stale-selectors"
+context: []
+priority: 3
+tags:
+  - test
+  - e2e
+  - web-ui
+vcs_refs: []
+created_at: 2026-03-30T09:31:58.999Z
+todos: []

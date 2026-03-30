@@ -1,0 +1,58 @@
+_ulid: 01KMZ1BXPTATS8CAVJ2NMYADPW
+slugs:
+  - task-ci-full-e2e
+title: Validate and expand CI e2e gate to full suite
+type: task
+description: |
+  What: Expand the CI e2e test gate from the current 2-spec smoke test
+  to run the full Playwright e2e suite. Currently, the GitHub Actions
+  workflow at .github/workflows/test.yml runs only tests/e2e/smoke.spec.ts
+  and tests/e2e/api-server.spec.ts (which is itself skipped) via the
+  npm run test:e2e script in package.json.
+
+  Why: The current CI gate provides almost no e2e coverage — smoke.spec.ts
+  tests basic page loads and sidebar navigation, nothing else. The full
+  suite (npm run test:e2e:full in package.json, which runs
+  npx playwright test against all specs in tests/e2e/) exists but is
+  not wired into CI. Once the dependent tasks fix the failing tests,
+  the full suite should pass and CI should enforce it to prevent future
+  regression.
+
+  How:
+  1. After all dependent tasks are complete, run the full suite locally:
+     npm run test:e2e:full
+     Confirm the pass rate (should be 100% or near it; document any
+     intentionally skipped tests and why)
+  2. Time the full suite under CI-like conditions:
+     npx playwright test --workers=2 --retries=2
+     (CI uses 2 workers and 2 retries per playwright.config.ts)
+  3. If total time is acceptable (under ~5 minutes): change the test:e2e
+     script in package.json from running specific specs to running the
+     full suite (npm run build:e2e && npx playwright test)
+  4. If total time is too long: identify a meaningful subset of specs
+     that covers the most critical paths, or implement Playwright
+     sharding (--shard=1/N) with parallel CI jobs
+  5. Update .github/workflows/test.yml if any workflow changes are needed
+     (e.g. additional parallel jobs, timeout adjustments)
+  6. The vitest-migrated API contract tests (@task-migrate-api-tests-vitest)
+     will already run in the npm test shards, so API coverage is in CI
+     regardless of this task
+spec_ref: null
+plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-fix-loading-page-e2e"
+  - "@task-fix-stale-selectors"
+  - "@task-fix-timing-races"
+  - "@task-fix-fixtures-envelope"
+context: []
+priority: 3
+tags:
+  - ci
+  - e2e
+  - infra
+vcs_refs: []
+created_at: 2026-03-30T09:32:00.090Z
+todos: []

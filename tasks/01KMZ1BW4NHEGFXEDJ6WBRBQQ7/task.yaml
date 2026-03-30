@@ -1,0 +1,68 @@
+_ulid: 01KMZ1BW4NHEGFXEDJ6WBRBQQ7
+slugs:
+  - task-rewrite-websocket-e2e
+title: Rewrite api-websocket spec as behavioral UI e2e tests
+type: task
+description: |
+  What: tests/e2e/api-websocket.spec.ts contains 14 tests that verify
+  the WebSocket protocol by using page.evaluate() to open raw WebSocket
+  connections from the browser context. These test protocol-level
+  concerns (message format, ack/nack, subscribe commands, close codes,
+  heartbeat ping/pong) rather than user-visible behavior. They should
+  be split into two groups: behavioral UI tests (stays in Playwright)
+  and protocol tests (moves to vitest).
+
+  Why: API-level WebSocket protocol tests don't need a browser — opening
+  a raw WS connection via page.evaluate() is an unnecessary indirection
+  when a vitest test can use the ws npm package or Bun's native WebSocket
+  client directly. Meanwhile, there are zero e2e tests that verify
+  WebSocket-driven UI features from the user's perspective: real-time
+  data updates, connection status display, and live streaming. These
+  behavioral tests are the actual coverage gap.
+
+  How:
+  Behavioral UI tests (new Playwright spec, e.g. websocket-ui.spec.ts):
+  - Connection indicator: Navigate to any page, verify the sidebar shows
+    "Connected" text (rendered by Sidebar.svelte from the connection
+    store at packages/web-ui/src/lib/stores/connection.svelte)
+  - Real-time task updates: Navigate to /tasks, use the daemon fixture's
+    API to change a task status (POST /api/tasks/:ref/start), verify the
+    task list updates without page refresh
+  - Real-time inbox count: Navigate to /inbox, POST /api/inbox to add an
+    item, verify the sidebar inbox badge count increments
+  - Agent streaming: Navigate to / (dashboard), start dispatch via API,
+    verify the active fleet section appears with streaming output
+  - Disconnection: Stop the daemon, verify "Disconnected" indicator
+    appears; restart, verify reconnection
+
+  These tests depend on @task-fix-query-loading-state because pages must
+  render content before WebSocket-driven updates can be observed.
+
+  Protocol tests (new vitest spec under tests/daemon-api/):
+  - Move raw protocol assertions (message format {action, request_id,
+    payload}, ack format {ack, request_id, success}, subscribe command,
+    close codes 1000/1001, heartbeat timing) to a vitest test that
+    connects to the daemon using a WebSocket client library
+  - These need a real running daemon (unlike HTTP tests that use
+    app.handle()), so use the daemon subprocess pattern with
+    ephemeral port allocation
+
+  Original spec covers these ACs (preserve coverage in new locations):
+  @api-contract ac-25 through ac-31, @trait-websocket-protocol ac-1
+  through ac-5, @daemon-server ac-4.
+spec_ref: null
+plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-fix-query-loading-state"
+context: []
+priority: 3
+tags:
+  - test
+  - e2e
+  - web-ui
+vcs_refs: []
+created_at: 2026-03-30T09:31:58.485Z
+todos: []

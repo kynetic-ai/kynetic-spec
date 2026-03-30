@@ -1,0 +1,57 @@
+_ulid: 01KMZ1BWX3KMC7GMD6H90F6SM3
+slugs:
+  - task-e2e-session-search
+title: Add e2e tests for session full-text search
+type: task
+description: |
+  What: Write Playwright e2e tests that verify session full-text search
+  works through the sessions page UI at /sessions. The sessions page has
+  a search mode toggle that switches between the paginated session list
+  and a search view.
+
+  Why: Session full-text search has 2 acceptance criteria
+  (@session-text-search ac-api-search for search functionality and
+  ac-performance for search with metadata filters) that are currently
+  only tested in the API-only spec api-sessions-search.spec.ts (3 tests,
+  being migrated to vitest in @task-migrate-api-tests-vitest). No e2e
+  test verifies that a user can type a search query in the sessions page
+  and see matching results. The sessions page implements search mode
+  via a toggle in packages/web-ui/src/routes/sessions/+page.svelte
+  (searchMode state controls which query is enabled: the paginated list
+  query or the search query).
+
+  How: Add test cases to tests/e2e/sessions.spec.ts:
+  1. Navigate to /sessions, activate search mode (click the search
+     toggle or use the search input)
+  2. Type a search query that matches fixture session data
+  3. Verify matching session entries appear in the results
+  4. Type a query that matches nothing, verify empty state message
+  5. Combine search with a filter (e.g. status filter), verify results
+     are filtered correctly
+  6. Verify search input has debounce behavior — typing quickly should
+     not fire a request per keystroke (use page.waitForResponse to
+     count network requests)
+
+  The test fixtures need session data with searchable content. Check
+  whether tests/e2e/fixtures/ includes session YAML files; if not,
+  create fixture session data that contains known searchable text.
+
+  This task depends on @task-fix-timing-races because the sessions spec
+  already has timing failures related to search debounce and async state
+  updates; those must be fixed before adding new search tests.
+spec_ref: null
+plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-fix-timing-races"
+context: []
+priority: 3
+tags:
+  - test
+  - e2e
+  - web-ui
+vcs_refs: []
+created_at: 2026-03-30T09:31:59.267Z
+todos: []

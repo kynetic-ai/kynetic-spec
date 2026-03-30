@@ -1,0 +1,56 @@
+_ulid: 01KMZ1BXDQRXEGC4DAS1F8T9H5
+slugs:
+  - task-fix-ws-invalidation-storm
+title: Address excessive WebSocket query invalidation during dispatch
+type: task
+description: |
+  What: When the dispatch engine is running with active agent invocations,
+  the web UI's centralized WebSocket invalidation handler in
+  packages/web-ui/src/lib/query/ws-invalidation.ts fires
+  queryKeys.agents.all invalidation for every message_complete,
+  thinking_complete, and tool_call_complete WebSocket event on the
+  "agents" topic. During active agent work, these events fire every few
+  seconds, causing the agent/status API endpoint to be re-fetched
+  continuously in a tight loop.
+
+  Why: HAR capture evidence (2026-03-30) shows 22 rounds of
+  GET /api/agent/status fetches over 45 seconds on the /automation page
+  with a single active agent invocation. Each fetch takes 400-800ms.
+  This wastes bandwidth, creates unnecessary daemon load, and may cause
+  visual flickering once the loading state bug (@task-fix-query-loading-state)
+  is fixed. The ws-invalidation.ts handler at lines 65-91 already filters
+  out streaming progress events (message_progress, thinking_progress,
+  etc.) to avoid cache thrashing, but the corresponding completion events
+  (message_complete, thinking_complete, tool_call_complete) are not
+  filtered and they trigger full agents.all invalidation.
+
+  How: Modify the "agents" case in getInvalidationKeys() in
+  packages/web-ui/src/lib/query/ws-invalidation.ts:
+  1. Add message_complete, thinking_complete, and tool_call_complete to
+     the set of events that get scoped invalidation instead of blanket
+     agents.all invalidation
+  2. For these completion events, only invalidate session-scoped queries
+     (queryKeys.sessions.all) since they signal that a message/thought
+     finished — relevant for session detail views but not for the
+     agent status or definitions queries
+  3. Keep the existing behavior for agent_invocation lifecycle events
+     (started, completed, failed) — these should continue to invalidate
+     queryKeys.agents.all because they represent actual changes to
+     dispatch state (new invocation, invocation finished)
+  4. Verify by running the web UI with dispatch active and confirming
+     agent/status is not re-fetched on every message completion
+spec_ref: null
+plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - bug
+  - web-ui
+  - perf
+vcs_refs: []
+created_at: 2026-03-30T09:31:59.799Z
+todos: []

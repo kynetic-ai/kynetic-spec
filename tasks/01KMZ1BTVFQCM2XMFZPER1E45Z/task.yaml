@@ -1,0 +1,59 @@
+_ulid: 01KMZ1BTVFQCM2XMFZPER1E45Z
+slugs:
+  - task-fix-loading-page-e2e
+title: Fix e2e tests for dashboard, agents, and automation pages
+type: task
+description: |
+  What: After @task-fix-query-loading-state resolves the loading skeleton
+  bug, the e2e tests for dashboard, agents, and automation pages will get
+  past the loading state. However, they will likely still have additional
+  failures from stale selectors, stale fixtures, and timing issues. This
+  task fixes those remaining failures so all three specs pass cleanly.
+
+  Why: These three specs account for 59 of the 155 total e2e failures.
+  They are the highest-priority specs to fix because they block the
+  loading-affected failure category (46 tests across the suite) and
+  validate the most-used pages in the application.
+
+  How:
+  1. Run each spec individually after the loading fix is in place:
+     npx playwright test tests/e2e/dashboard.spec.ts
+     npx playwright test tests/e2e/agents.spec.ts
+     npx playwright test tests/e2e/automation.spec.ts
+  2. For each remaining failure, inspect the error-context.md snapshot
+     (in test-results/) and the current component markup to identify
+     the root cause (stale selector, stale fixture, timing race, or
+     envelope mismatch)
+  3. Fix in batches by cause type — selectors first (compare test
+     getByTestId/locator calls against current Svelte component
+     data-testid attributes), then fixtures (compare
+     tests/e2e/fixtures/*.yaml against src/schema/ Zod schemas),
+     then timing (replace fixed waits with Playwright waitFor patterns)
+
+  Affected specs with known failure breakdown from test-results/:
+  - dashboard.spec.ts (~18 failures): stale selectors for task-count-*
+    cards, navigation links; 2 envelope-drift failures in aggregation
+    count rendering; stale fixture for agent running state
+  - agents.spec.ts (~24 failures): stale selectors for dispatch-status,
+    dispatch-indicator-stopped, agent card elements, edit dialog fields;
+    timing issues on dispatch start/stop button state; 1 removed-feature
+    (trigger editing moved to automation view)
+  - automation.spec.ts (~17 failures): stale selectors for trigger rows,
+    tag filter chips, priority filter; timing on dialog close animation;
+    stale fixtures for eligibility criteria and filter schema changes
+spec_ref: null
+plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-fix-query-loading-state"
+context: []
+priority: 1
+tags:
+  - test
+  - e2e
+  - web-ui
+vcs_refs: []
+created_at: 2026-03-30T09:31:57.167Z
+todos: []

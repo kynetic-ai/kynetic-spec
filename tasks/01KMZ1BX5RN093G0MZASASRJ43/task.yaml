@@ -1,0 +1,51 @@
+_ulid: 01KMZ1BX5RN093G0MZASASRJ43
+slugs:
+  - task-e2e-triage-export
+title: Add e2e tests for triage export flow
+type: task
+description: |
+  What: Write Playwright e2e tests that verify the triage export feature
+  works through the triage page UI at /triage. The export endpoint
+  (GET /api/triage/export) returns triage records formatted as markdown
+  or JSON, and the triage UI should provide a way to trigger and view
+  this export.
+
+  Why: Triage export has 1 acceptance criterion (@triage-daemon-api ac-6:
+  GET /api/triage/export returns context markdown or JSON) that is
+  currently only tested in the API-only spec api-triage.spec.ts (being
+  migrated to vitest in @task-migrate-api-tests-vitest). No e2e test
+  verifies the export flow from the user's perspective.
+
+  How:
+  1. First check whether the triage page
+     (packages/web-ui/src/routes/triage/+page.svelte) has an export
+     action in the UI. If it does: write tests that click the export
+     button and verify the exported content appears or downloads.
+  2. If the triage page does not yet have an export UI action: this task
+     should document that the export feature exists at the API level but
+     has no UI surface, and create an inbox item for adding the UI.
+  3. If export UI exists, add test cases to tests/e2e/triage.spec.ts:
+     - Click export action, verify markdown/JSON content is displayed
+     - Verify exported content includes triage record data from fixtures
+       (tests/e2e/fixtures/project.triage.yaml has triaged, acted_on,
+       and pending records)
+     - If format selection exists, test both markdown and JSON formats
+
+  This task depends on @task-fix-fixtures-envelope because the triage
+  spec has fixture data that may need updating before new tests work.
+spec_ref: null
+plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-fix-fixtures-envelope"
+context: []
+priority: 3
+tags:
+  - test
+  - e2e
+  - web-ui
+vcs_refs: []
+created_at: 2026-03-30T09:31:59.544Z
+todos: []

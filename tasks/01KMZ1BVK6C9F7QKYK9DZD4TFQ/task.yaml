@@ -1,0 +1,69 @@
+_ulid: 01KMZ1BVK6C9F7QKYK9DZD4TFQ
+slugs:
+  - task-fix-timing-races
+title: Fix timing and race condition e2e failures
+type: task
+description: |
+  What: Approximately 38 e2e test failures are caused by timing and race
+  condition issues where tests assert on UI state before asynchronous
+  operations have completed. Common patterns include: WebSocket
+  subscription not established before testing real-time features, dialog
+  open/close animations not finished, keyboard event handlers not yet
+  registered, search debounce timers still pending, and scroll or
+  navigation state not settled.
+
+  Why: These tests verify real asynchronous behavior (WebSocket updates,
+  dialog interactions, search-as-you-type) but use insufficient wait
+  strategies. The features work correctly for users but the tests race
+  against async operations. This task depends on @task-fix-loading-page-e2e
+  because some timing failures may be masked by or compound with the
+  loading state bug.
+
+  How: For each timing failure, identify the async operation being raced
+  and add the appropriate Playwright wait pattern:
+
+  - WebSocket readiness: Before testing WS-dependent features, wait for
+    the connection indicator element (data-testid or text "Connected")
+    to be visible. The connection.svelte store manages WS state and the
+    Sidebar.svelte component renders the indicator.
+  - Dialog animations: After triggering dialog open/close, use
+    await expect(dialog).toBeVisible() or .toBeHidden() instead of
+    fixed setTimeout delays. Svelte transitions take variable time.
+  - Keyboard handlers: After page.goto(), wait for a known interactive
+    element to be ready before sending keyboard events (e.g. wait for
+    the command palette trigger to be attached)
+  - Search debounce: The CommandPalette.svelte uses a 300ms debounce.
+    After typing, use page.waitForResponse() or waitFor on result
+    elements rather than fixed delays.
+  - Navigation: After goto() or click(), use page.waitForURL() or
+    waitFor on destination content rather than assuming immediate state.
+
+  Affected specs (from failure categorization):
+  - search.spec.ts: ~10 failures (Cmd+K handler, debounce, result
+    clearing, navigation, palette reset, Escape key)
+  - automation-session-idle.spec.ts: ~9 failures (WebSocket subscription
+    timing, event arrival within test window)
+  - agents.spec.ts: subset (dispatch start/stop state propagation,
+    edit dialog data loading, dialog close animation)
+  - task-board.spec.ts: subset (WebSocket message timing, modal open)
+  - cache-warming-views.spec.ts: subset (cache warming cycle timing,
+    retry exhaustion)
+  - connection.spec.ts: 2 failures (WebSocket reconnection backoff)
+  - sessions.spec.ts: subset (scroll events, WebSocket event arrival)
+
+  Can be parallelized — each spec file is independent.
+spec_ref: null
+plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-fix-loading-page-e2e"
+context: []
+priority: 2
+tags:
+  - test
+  - e2e
+vcs_refs: []
+created_at: 2026-03-30T09:31:57.926Z
+todos: []

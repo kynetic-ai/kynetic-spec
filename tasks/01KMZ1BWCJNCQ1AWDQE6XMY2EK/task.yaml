@@ -1,0 +1,63 @@
+_ulid: 01KMZ1BWCJNCQ1AWDQE6XMY2EK
+slugs:
+  - task-add-filewatcher-e2e
+title: Add file watcher e2e behavioral tests
+type: task
+description: |
+  What: Write Playwright e2e tests that verify file system changes in
+  the .kspec/ directory propagate through the daemon's file watcher,
+  through WebSocket broadcasts, and into the web UI — all without the
+  user manually refreshing the page. Currently there are zero UI-level
+  tests for this end-to-end flow.
+
+  Why: The daemon watches .kspec/ for file changes (via
+  ProjectContextManager.startWatcher in packages/daemon/src/server.ts)
+  and broadcasts updates over WebSocket topics (tasks:updates,
+  items:updates, inbox:updates, files:updates). The web UI's centralized
+  ws-invalidation.ts handler receives these broadcasts and invalidates
+  TanStack Query caches, causing affected views to refetch. This entire
+  pipeline was previously only tested at the API level in
+  api-watcher.spec.ts, which verified file change detection and
+  WebSocket broadcast but never checked if the UI actually updated.
+
+  How: Write a new spec file tests/e2e/file-watcher.spec.ts:
+  1. Navigate to /tasks, wait for content to render
+  2. Write a modified project.tasks.yaml to the daemon fixture's
+     kspecDir (daemon.kspecDir from the test fixture) that adds or
+     changes a task
+  3. Wait for the tasks list to update (use Playwright waitFor on the
+     new/changed task element, with a reasonable timeout like 5s)
+  4. Verify the updated task appears in the UI without page refresh
+
+  Additional test cases:
+  - Modify project.inbox.yaml, verify inbox count updates in sidebar
+  - Modify modules/core.yaml, verify items view updates
+  - Multi-project isolation: Create a second project via
+    daemon.createSecondProject(), modify its files, verify the first
+    project's view is unaffected
+
+  Platform note: File watcher tests must be skipped in CI because
+  GitHub Actions runners don't support recursive fs.watch reliably.
+  Use testInfo.skip() with a CI environment check (process.env.CI).
+  This matches the existing pattern in api-watcher.spec.ts.
+
+  This task depends on @task-fix-query-loading-state because the file
+  watcher flow ends at TanStack Query cache invalidation — if the
+  loading bug prevents queries from rendering data, file change
+  propagation can't be observed.
+spec_ref: null
+plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-fix-query-loading-state"
+context: []
+priority: 3
+tags:
+  - test
+  - e2e
+  - web-ui
+vcs_refs: []
+created_at: 2026-03-30T09:31:58.738Z
+todos: []

@@ -1,0 +1,65 @@
+_ulid: 01KMZ1BVVK329BJ49C6PB03T49
+slugs:
+  - task-fix-fixtures-envelope
+title: Fix stale fixture and envelope drift e2e failures
+type: task
+description: |
+  What: Approximately 15 e2e failures are caused by two related issues:
+  (1) Test fixture YAML files in tests/e2e/fixtures/ contain data that
+  doesn't match the current Zod schemas in src/schema/, causing the
+  daemon to reject or misinterpret fixture data. (2) A small number of
+  tests expect API responses in the old unwrapped format ({items, total})
+  when the daemon now wraps responses in the {data, meta} envelope via
+  wrapResponse() from packages/daemon/src/routes/response-envelope.ts,
+  or vice versa.
+
+  Why: The fixture data was written against earlier schema versions and
+  hasn't been updated as schemas evolved. The envelope migration wrapped
+  most endpoints in {data, meta: {cache_status, total, ...}} format but
+  some test assertions still expect the old shape. These are mechanical
+  mismatches — the features work correctly, only the test data and
+  assertions are stale.
+
+  How:
+  Stale fixtures (10 failures):
+  1. For each failing test, check the daemon's console output or response
+     body to identify what the daemon rejects or returns differently
+  2. Compare the fixture YAML (e.g. tests/e2e/fixtures/project.tasks.yaml,
+     project.reviews.yaml, modules/core.yaml) against the corresponding
+     Zod schema in src/schema/ (TaskSchema, ReviewSchema, ItemSchema etc.)
+  3. Update fixture data to conform to current schemas — add missing
+     required fields, fix enum values, update nested structure
+  4. Run the individual spec to confirm
+
+  Envelope drift (5 failures):
+  1. For each failure, check whether the daemon endpoint uses wrapResponse
+     (grep for wrapResponse in packages/daemon/src/routes/<domain>.ts)
+  2. Check whether the client API function (packages/web-ui/src/lib/api.ts)
+     uses unwrapEnvelope/unwrapPaginatedEnvelope/unwrapListEnvelope
+  3. If the daemon wraps but the test expects unwrapped: update the test
+     assertion to account for the {data, meta} envelope
+  4. If the client unwraps but the daemon doesn't wrap (e.g. automation
+     routes /api/hooks, /api/schedules, /api/events/recent return raw
+     {items, total} without envelope): the pair is intentionally
+     consistent, check if the test itself is wrong
+
+  Affected specs: plans.spec.ts (stale fixtures for plan ref resolution),
+  reviews-detail.spec.ts (interaction fixture data), items.spec.ts
+  (AC fixture schema), session-context.spec.ts (spec filter fixture),
+  triage.spec.ts (triage action fixture), static-mode.spec.ts (envelope
+  format in static responses), dashboard.spec.ts (2 aggregation count
+  assertions expecting unwrapped data).
+spec_ref: null
+plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - test
+  - e2e
+vcs_refs: []
+created_at: 2026-03-30T09:31:58.195Z
+todos: []

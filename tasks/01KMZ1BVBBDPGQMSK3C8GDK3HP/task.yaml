@@ -1,0 +1,64 @@
+_ulid: 01KMZ1BVBBDPGQMSK3C8GDK3HP
+slugs:
+  - task-fix-stale-selectors
+title: Fix stale-selector e2e failures across UI specs
+type: task
+description: |
+  What: Approximately 35 e2e test failures across multiple UI specs are
+  caused by stale data-testid attributes or Playwright locator selectors
+  that no longer match the current Svelte component markup. The UI was
+  refactored after these tests were written, and the test selectors were
+  not updated.
+
+  Why: These tests were passing when written but broke as components
+  were refactored. They represent valid behavioral assertions — the
+  features they test still exist, only the DOM structure changed. Fixing
+  the selectors restores coverage for features like item detail views,
+  command palette search, task navigation, review badges, and validation
+  display. This task depends on @task-fix-loading-page-e2e because some
+  of these specs share pages with loading-affected specs and the loading
+  fix may change which failures remain.
+
+  How:
+  1. Run the full e2e suite: npx playwright test
+  2. For each failure with a "locator not found" or "element not visible"
+     error in test-results/<test>/error-context.md, compare the selector
+     used in the test (getByTestId, getByRole, locator) against the
+     current component markup in packages/web-ui/src/
+  3. Update the test selector to match the current markup. Prefer
+     updating the test over adding new testids — only add data-testid
+     attributes to components when no stable selector exists (role,
+     label, text content)
+  4. Run the individual spec to confirm the fix
+
+  Affected specs (from failure categorization of test-results/ directory):
+  - items.spec.ts: ~12 failures (AC expansion, collapse button, coverage
+    indicator, markdown renderer, linked task section, trait chips,
+    slide-over panel selectors)
+  - search.spec.ts: subset of ~15 failures (placeholder text, no-results
+    message, result grouping, ARIA attributes, keyboard navigation)
+  - tasks.spec.ts: ~4 failures (modal close, spec link, review badge,
+    navigation link selectors)
+  - task-board.spec.ts: subset (modal URL param trigger, close action)
+  - validate.spec.ts: subset of ~8 (coverage percentage, clean message,
+    count elements, severity grouping, skeleton testid)
+  - reviews-detail.spec.ts: subset of ~6 (revision selector, badge
+    structure, kind badge markup)
+  - triage.spec.ts, navigation.spec.ts, inbox.spec.ts: 1-2 each
+
+  Can be parallelized — each spec file is independent.
+spec_ref: null
+plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-fix-loading-page-e2e"
+context: []
+priority: 2
+tags:
+  - test
+  - e2e
+vcs_refs: []
+created_at: 2026-03-30T09:31:57.675Z
+todos: []

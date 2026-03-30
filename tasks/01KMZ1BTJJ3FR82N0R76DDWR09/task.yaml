@@ -1,0 +1,87 @@
+_ulid: 01KMZ1BTJJ3FR82N0R76DDWR09
+slugs:
+  - task-fix-query-loading-state
+title: "Fix TanStack Query reactivity bug: loading state never resolves"
+type: task
+description: |
+  What: The web UI pages at /, /agents, and /automation show a loading
+  skeleton forever on fresh page load. The page never transitions to
+  showing content. Navigating away to another page and back causes the
+  content to appear correctly.
+
+  Why: This is a live application bug affecting every user on every
+  fresh page load of these three pages. It also blocks ~46 e2e test
+  failures across dashboard.spec.ts, agents.spec.ts, automation.spec.ts,
+  and other specs whose tests time out waiting for content that never
+  appears past the loading skeleton.
+
+  Evidence (HAR capture, 2026-03-30): A fresh load of /automation fires
+  5 API queries (agent/status, meta/agents, hooks, schedules,
+  events/recent). All return 200 OK with valid data within 2 seconds.
+  No CacheWarmingError, no retry loops. The UI stays in loading skeleton
+  state indefinitely. When the user navigates to another page and returns,
+  the page renders correctly because the TanStack Query cache already has
+  data and the component reads it on mount.
+
+  Root cause hypothesis: TanStack Query Svelte v6 (installed at 6.1.0,
+  package @tanstack/svelte-query) uses a createRawRef proxy in
+  node_modules/@tanstack/svelte-query/src/containers.svelte.ts to bridge
+  query observer state into Svelte's reactivity system. The proxy uses
+  $state.raw inside a Proxy set trap with Object.defineProperty
+  getter/setter closures. The hypothesis is that when the query observer
+  transitions from {isLoading: true} to {isLoading: false, data: ...},
+  the proxy's update() function writes the new values, but Svelte's
+  $derived in the page component (e.g. let loading = $derived(
+  agentStatusQuery.isLoading || ...)) does not re-evaluate because the
+  reactive tracking doesn't follow through the proxy indirection.
+
+  CRITICAL: This bug has survived multiple previous fix attempts. Each
+  time a plausible root cause was identified, a fix was applied, and the
+  issue remained unchanged. Do NOT write fix code until the actual break
+  point is proven with runtime console output.
+
+  How:
+  1. Add console.log instrumentation in the installed
+     node_modules/@tanstack/svelte-query/src/createBaseQuery.svelte.ts:
+     - In the $effect at line 74, log when observer.subscribe callback
+       fires and the isLoading value from createResult()
+     - In the update() function of createRawRef (containers.svelte.ts),
+       log when properties are being set and their values
+  2. Add console.log in packages/web-ui/src/routes/automation/+page.svelte
+     in the $derived(loading) expression to log when it re-evaluates and
+     what values agentStatusQuery.isLoading etc. return
+  3. Build the web UI (npm run build:web-ui), start the daemon, do a
+     fresh page load of /automation, capture console output
+  4. The logs will show exactly where the chain breaks: does the observer
+     callback fire? Does update() get called? Does $derived re-evaluate?
+  5. Write a fix targeting only the confirmed break point
+  6. Verify the fix works on fresh page load (Ctrl+R, not navigate-back)
+     for all three pages: /, /agents, /automation
+  7. Remove all instrumentation before committing
+
+  If the fix requires changing TanStack internals, use a pnpm patch
+  (pnpm patch @tanstack/svelte-query) or create a local wrapper function
+  that components use instead of createQuery directly.
+
+  Key files:
+  - node_modules/@tanstack/svelte-query/src/createBaseQuery.svelte.ts
+  - node_modules/@tanstack/svelte-query/src/containers.svelte.ts
+  - packages/web-ui/src/routes/+page.svelte (dashboard loading logic)
+  - packages/web-ui/src/routes/agents/+page.svelte (agents loading logic)
+  - packages/web-ui/src/routes/automation/+page.svelte (automation loading)
+  - packages/web-ui/src/lib/query/client.ts (QueryClient configuration)
+spec_ref: null
+plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - bug
+  - web-ui
+  - e2e
+vcs_refs: []
+created_at: 2026-03-30T09:31:56.882Z
+todos: []
