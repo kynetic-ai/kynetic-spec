@@ -78,6 +78,21 @@ async function interceptCommonAPIs(page: import("@playwright/test").Page) {
   });
 }
 
+/**
+ * Wait for TanStack Query cache-warming retries to exhaust.
+ *
+ * TanStack Query retries CacheWarmingError 15 times with 2s delay = ~30s total.
+ * We wait with real time rather than fake timers because page.clock.install()
+ * can interfere with fetch() promise resolution and Svelte reactivity updates.
+ *
+ * The banner visibility assertion has its own timeout, so this function just
+ * needs to wait long enough for all retries to complete.
+ */
+async function waitForRetriesExhausted(page: import("@playwright/test").Page) {
+  // 15 retries × 2s delay = 30s + some margin for processing
+  await page.waitForTimeout(35000);
+}
+
 test.describe("Cache Warming View States", () => {
   // AC: @ui-data-freshness ac-warming-skeleton
   test.describe("skeleton during cache warming", () => {
@@ -166,13 +181,13 @@ test.describe("Cache Warming View States", () => {
 
   // AC: @ui-data-freshness ac-warming-timeout
   test.describe("timeout banner after retries exhausted", () => {
+    // These tests wait for real TanStack Query retries (15 × 2s = 30s)
+    test.setTimeout(60000);
+
     test("shows CacheWarmingBanner after all retries fail on tasks page", async ({
       page,
       daemon: _daemon,
     }) => {
-      // Install fake timers to fast-forward retry delays
-      await page.clock.install();
-
       await interceptCommonAPIs(page);
 
       // Always return cache_status: "loading" — retries will never succeed
@@ -185,18 +200,13 @@ test.describe("Cache Warming View States", () => {
       });
 
       await page.goto("/tasks");
-      // Advance time to let the page scripts run
-      await page.clock.runFor(500);
 
-      // Fast-forward through 15 retries × 2s delay = 30s
-      // TanStack Query uses setTimeout for retryDelay, so fake timers control it
-      for (let i = 0; i < 20; i++) {
-        await page.clock.runFor(2500);
-      }
+      // Wait for all 15 retries to exhaust (real time, ~30s)
+      await waitForRetriesExhausted(page);
 
       // After retries are exhausted, the CacheWarmingBanner should appear
       const banner = page.getByTestId("cache-warming-timeout");
-      await expect(banner).toBeVisible({ timeout: 5000 });
+      await expect(banner).toBeVisible({ timeout: 10000 });
 
       // Banner should display the entity name
       await expect(banner).toContainText("Unable to load tasks");
@@ -211,11 +221,8 @@ test.describe("Cache Warming View States", () => {
       page,
       daemon: _daemon,
     }) => {
-      await page.clock.install();
-
       await interceptCommonAPIs(page);
 
-      let requestCount = 0;
       const taskItems = [
         {
           _ulid: "01KG0RR6CA45ZT43W2T6HJMVA1",
@@ -230,12 +237,11 @@ test.describe("Cache Warming View States", () => {
         },
       ];
 
-      // First phase: always return loading (until we click retry)
-      // After retry: return ready data
-      await page.route(/\/api\/tasks/, (route) => {
-        requestCount++;
-        // After ~20 requests (initial + retries), switch to ready
-        if (requestCount > 20) {
+      // Use a flag to control when responses switch from "loading" to "ready".
+      // Initially always return loading; after clicking retry, switch to ready.
+      let returnReady = false;
+      await page.route(/\/api\/tasks(\?|$)/, (route) => {
+        if (returnReady) {
           route.fulfill({
             status: 200,
             contentType: "application/json",
@@ -253,27 +259,19 @@ test.describe("Cache Warming View States", () => {
       });
 
       await page.goto("/tasks");
-      await page.clock.runFor(500);
 
-      // Exhaust retries
-      for (let i = 0; i < 20; i++) {
-        await page.clock.runFor(2500);
-      }
+      // Wait for all retries to exhaust (real time, ~30s)
+      await waitForRetriesExhausted(page);
 
       // Banner should be visible
-      await expect(page.getByTestId("cache-warming-timeout")).toBeVisible({ timeout: 5000 });
+      await expect(page.getByTestId("cache-warming-timeout")).toBeVisible({ timeout: 10000 });
 
-      // Click retry button
+      // Switch to returning ready data, then click retry
+      returnReady = true;
       await page.getByTestId("cache-warming-retry").click();
-      await page.clock.runFor(500);
 
       // After retry with ready data, task list should appear
-      // The reset triggers a fresh query which now returns ready data
-      for (let i = 0; i < 5; i++) {
-        await page.clock.runFor(2500);
-      }
-
-      await expect(page.getByTestId("task-list")).toBeVisible({ timeout: 10000 });
+      await expect(page.getByTestId("task-list")).toBeVisible({ timeout: 15000 });
     });
   });
 
@@ -315,7 +313,7 @@ test.describe("Cache Warming View States", () => {
       page,
       daemon: _daemon,
     }) => {
-      await page.clock.install();
+      test.setTimeout(60000);
 
       await interceptCommonAPIs(page);
 
@@ -329,16 +327,13 @@ test.describe("Cache Warming View States", () => {
       });
 
       await page.goto("/sessions?q=test");
-      await page.clock.runFor(500);
 
-      // Fast-forward through retries
-      for (let i = 0; i < 20; i++) {
-        await page.clock.runFor(2500);
-      }
+      // Wait for all retries to exhaust (real time, ~30s)
+      await waitForRetriesExhausted(page);
 
       // Banner should be visible with sessions entity name
       const banner = page.getByTestId("cache-warming-timeout");
-      await expect(banner).toBeVisible({ timeout: 5000 });
+      await expect(banner).toBeVisible({ timeout: 10000 });
       await expect(banner).toContainText("Unable to load sessions");
     });
   });
@@ -349,7 +344,7 @@ test.describe("Cache Warming View States", () => {
       page,
       daemon: _daemon,
     }) => {
-      await page.clock.install();
+      test.setTimeout(60000);
 
       await interceptCommonAPIs(page);
 
@@ -371,16 +366,13 @@ test.describe("Cache Warming View States", () => {
       });
 
       await page.goto("/triage");
-      await page.clock.runFor(500);
 
-      // Fast-forward through retries
-      for (let i = 0; i < 20; i++) {
-        await page.clock.runFor(2500);
-      }
+      // Wait for all retries to exhaust (real time, ~30s)
+      await waitForRetriesExhausted(page);
 
       // Banner should show for triage data
       const banner = page.getByTestId("cache-warming-timeout");
-      await expect(banner).toBeVisible({ timeout: 5000 });
+      await expect(banner).toBeVisible({ timeout: 10000 });
       await expect(banner).toContainText("Unable to load triage data");
     });
   });

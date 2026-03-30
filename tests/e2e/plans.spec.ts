@@ -758,30 +758,8 @@ Runtime fetch coverage should observe the real batch request.
     expect(body.data.content).toContain("actively being implemented");
   });
 
-  // AC: @01KM46FW ac-1
-  // Known issue: This test dynamically mutates fixture YAML files and expects the
-  // daemon's entity cache to reload via file watcher. The watcher uses recursive
-  // fs.watch which is unreliable in ephemeral temp directories — changes are never
-  // detected, so the cache serves stale data indefinitely. The underlying behavior
-  // (cancelled task exclusion via plan_ref) is covered by plan-summary unit tests.
-  // TODO: Rewrite as a vitest daemon-api test using app.handle() to bypass cache.
-  test.fixme(
-    "GET /api/plans/:ref excludes cancelled tasks while preserving plan_ref links",
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    async () => {},
-  );
-
-  // AC: @ui-plans-view ac-2
-  test("GET /api/plans/:ref returns 404 for non-existent plan", async ({ request, daemon }) => {
-    const response = await request.get(`${daemon.baseUrl}/api/plans/non-existent-plan`, {
-      headers: { "X-Kspec-Dir": daemon.tempDir },
-    });
-
-    expect(response.status()).toBe(404);
-
-    const body = await response.json();
-    expect(body).toHaveProperty("error", "not_found");
-  });
+  // Route-edge cases for missing plans and plan_ref-linked cancelled-task filtering
+  // are covered in tests/daemon-api/plans.test.ts to avoid file-watcher/cache flake.
 
   // AC: @ui-plans-view ac-2
   test("GET /api/plans/:ref works with ULID reference", async ({ request, daemon }) => {

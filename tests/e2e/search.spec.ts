@@ -3,57 +3,74 @@ import { test, expect } from "./fixtures/test-base";
 test.describe("Command Palette / Search", () => {
   test.beforeEach(async ({ page, daemon: _daemon }) => {
     await page.goto("/");
-    // Wait for page to load
-    await page.waitForLoadState("domcontentloaded");
+    // Wait for SvelteKit hydration — sidebar nav links only render after onMount completes,
+    // which means the CommandPalette keyboard handler is also registered
+    await expect(page.getByTestId("nav-link-dashboard")).toBeVisible();
   });
+
+  /** Helper: open the command palette using the platform-appropriate shortcut */
+  async function openPalette(page: import("@playwright/test").Page) {
+    await page.keyboard.press("Control+k");
+    const palette = page.getByTestId("command-palette");
+    await expect(palette).toBeVisible();
+    return palette;
+  }
+
+  /**
+   * Helper: open palette, search for a term, and wait for actual search results
+   * to appear in the DOM. This ensures the debounce timer has fired, the API
+   * request has completed, and results have rendered.
+   */
+  async function searchAndWaitForResults(
+    page: import("@playwright/test").Page,
+    query: string,
+  ) {
+    await openPalette(page);
+    const input = page.getByTestId("command-palette-input");
+    await input.fill(query);
+    // Wait for at least one search result item to appear — this proves
+    // debounce fired, API responded, and results rendered
+    await expect(page.getByTestId("search-result-item").first()).toBeVisible({
+      timeout: 5000,
+    });
+  }
 
   test.describe("Keyboard Shortcuts", () => {
     // AC: @web-dashboard ac-23
     test("opens with Cmd+K on Mac", async ({ page }) => {
-      // Press Cmd+K
       await page.keyboard.press("Meta+k");
 
-      // Command palette should be visible
       const palette = page.getByTestId("command-palette");
       await expect(palette).toBeVisible({ timeout: 5000 });
 
-      // Input should be focused
       const input = page.getByTestId("command-palette-input");
       await expect(input).toBeVisible();
     });
 
     // AC: @web-dashboard ac-23
     test("opens with Ctrl+K on Windows/Linux", async ({ page }) => {
-      // Press Ctrl+K
       await page.keyboard.press("Control+k");
 
-      // Command palette should be visible
       const palette = page.getByTestId("command-palette");
       await expect(palette).toBeVisible({ timeout: 5000 });
 
-      // Input should be visible
       const input = page.getByTestId("command-palette-input");
       await expect(input).toBeVisible();
     });
 
     // AC: @web-dashboard ac-23
     test("closes when pressing Cmd+K again", async ({ page }) => {
-      // Open palette
-      await page.keyboard.press("Meta+k");
-      const palette = page.getByTestId("command-palette");
-      await expect(palette).toBeVisible();
+      const palette = await openPalette(page);
 
-      // Close palette by pressing Cmd+K again
-      await page.keyboard.press("Meta+k");
+      // Close palette by pressing shortcut again
+      await page.keyboard.press("Control+k");
       await expect(palette).not.toBeVisible();
     });
 
     // AC: @web-dashboard ac-23
     test("shows placeholder text in search input", async ({ page }) => {
-      // Open palette
-      await page.keyboard.press("Meta+k");
+      await openPalette(page);
 
-      // Check for placeholder
       const input = page.getByTestId("command-palette-input");
       await expect(input).toHaveAttribute("placeholder", /search/i);
     });
@@ -62,221 +79,169 @@ test.describe("Command Palette / Search", () => {
   test.describe("Search Functionality", () => {
     // AC: @web-dashboard ac-24
     test("debounces search by 300ms", async ({ page }) => {
-      // Open palette
-      await page.keyboard.press("Meta+k");
+      // Track when the search API request fires
+      let searchRequestTimestamp = 0;
+      await page.route("**/api/search*", async (route) => {
+        searchRequestTimestamp = Date.now();
+        await route.continue();
+      });
+
+      await openPalette(page);
 
       const input = page.getByTestId("command-palette-input");
       await expect(input).toBeVisible();
 
-      // Type search query
-      await input.fill("task");
+      const fillTimestamp = Date.now();
+      await input.fill("test");
 
-      // Results should NOT appear immediately (within 200ms)
-      await page.waitForTimeout(200);
-      const _resultsBefore = page.getByTestId("command-palette-results");
-      // May or may not be visible yet, just wait
+      // Wait for actual search results to appear — this proves the debounce
+      // timer fired and the API returned results
+      await expect(page.getByTestId("search-result-item").first()).toBeVisible({
+        timeout: 5000,
+      });
 
-      // Wait for debounce (100ms more = 300ms total)
-      await page.waitForTimeout(150);
-
-      // Now results should be processed
-      // (actual results depend on test data available)
+      // Verify the search request was delayed by at least ~250ms (debounce is 300ms,
+      // allow some tolerance for timing)
+      expect(searchRequestTimestamp).toBeGreaterThan(0);
+      expect(searchRequestTimestamp - fillTimestamp).toBeGreaterThanOrEqual(250);
     });
 
     // AC: @web-dashboard ac-24
     test("shows loading state during search", async ({ page }) => {
-      // Open palette
-      await page.keyboard.press("Meta+k");
+      // Delay the search API response to ensure the loading state is visible
+      await page.route("**/api/search*", async (route) => {
+        await new Promise((r) => setTimeout(r, 500));
+        await route.continue();
+      });
+
+      await openPalette(page);
 
       const input = page.getByTestId("command-palette-input");
-      await input.fill("test query");
+      await input.fill("test");
 
-      // Should show loading or results container
-      const results = page.getByTestId("command-palette-results");
-      await expect(results).toBeVisible({ timeout: 1000 });
+      // The CommandPalette sets loading=true immediately on input, then renders
+      // <Command.Loading>Searching...</Command.Loading> — verify it appears
+      await expect(page.getByText("Searching...")).toBeVisible({ timeout: 2000 });
     });
 
     // AC: @web-dashboard ac-24
     test("shows no results message for non-matching query", async ({ page }) => {
-      // Open palette
-      await page.keyboard.press("Meta+k");
+      await openPalette(page);
 
       const input = page.getByTestId("command-palette-input");
-      // Use a query extremely unlikely to match anything
       await input.fill("xyzabc123nonexistent987");
 
-      // Wait for debounce + search
-      await page.waitForTimeout(500);
-
-      // Should show empty state or "No results found"
-      const emptyMessage = page.getByText(/no results/i);
-      await expect(emptyMessage).toBeVisible({ timeout: 2000 });
+      // Wait for debounce + API response, then Command.Empty renders "No results found."
+      await expect(page.getByText("No results found.")).toBeVisible({
+        timeout: 5000,
+      });
     });
 
     // AC: @web-dashboard ac-24
     test("groups results by type (tasks, items, inbox)", async ({ page }) => {
-      // Open palette
-      await page.keyboard.press("Meta+k");
+      // Search for "test" — matches tasks (test-task-*), items (test-feature, etc.),
+      // and inbox items (tagged "test") in the fixture data
+      await searchAndWaitForResults(page, "test");
 
-      const input = page.getByTestId("command-palette-input");
-      // Search for something likely to have results
-      // (this depends on test data being available)
-      await input.fill("test");
-
-      // Wait for results
-      await page.waitForTimeout(500);
-
-      // Check for group headers
-      // Groups are dynamically created based on results
-      // So we check if any groups exist
-      const _taskGroup = page.getByTestId("search-group-task");
-      const _itemGroup = page.getByTestId("search-group-item");
-      const _inboxGroup = page.getByTestId("search-group-inbox");
-
-      // At least one group should be visible if results exist
-      // (we can't guarantee specific results without seeding data)
-      const results = page.getByTestId("command-palette-results");
-      await expect(results).toBeVisible();
+      // Verify results are grouped — fixture data has both tasks and spec items
+      // matching "test", so both group headings should be visible.
+      await expect(page.getByTestId("search-group-task")).toBeVisible();
+      await expect(page.getByTestId("search-group-item")).toBeVisible();
     });
 
     // AC: @web-dashboard ac-24
     test("clears results when search input is cleared", async ({ page }) => {
-      // Open palette
-      await page.keyboard.press("Meta+k");
+      // First get results
+      await searchAndWaitForResults(page, "test");
 
       const input = page.getByTestId("command-palette-input");
-      await input.fill("test");
-      await page.waitForTimeout(500);
-
-      // Clear input
       await input.clear();
 
-      // Results should disappear or show empty state
-      await page.waitForTimeout(100);
-      // Empty state handling
+      // After clearing, result items should disappear (query is empty → results=[])
+      await expect(page.getByTestId("search-result-item")).toHaveCount(0, {
+        timeout: 2000,
+      });
     });
   });
 
   test.describe("Navigation", () => {
     // AC: @web-dashboard ac-25
     test("clicking result navigates to detail view", async ({ page }) => {
-      // Open palette
-      await page.keyboard.press("Meta+k");
+      await searchAndWaitForResults(page, "test");
 
-      const input = page.getByTestId("command-palette-input");
-      // Search for tasks (most likely to exist)
-      await input.fill("task");
-
-      // Wait for results
-      await page.waitForTimeout(500);
-
-      // Find first result item
       const firstResult = page.getByTestId("search-result-item").first();
+      await firstResult.click();
 
-      // Click if visible
-      const count = await page.getByTestId("search-result-item").count();
-      if (count > 0) {
-        await firstResult.click();
+      // Palette should close after selection
+      const palette = page.getByTestId("command-palette");
+      await expect(palette).not.toBeVisible({ timeout: 2000 });
 
-        // Palette should close
-        const palette = page.getByTestId("command-palette");
-        await expect(palette).not.toBeVisible({ timeout: 2000 });
-
-        // URL should have changed to detail view
-        // (could be /tasks, /items, /inbox depending on result type)
-        await page.waitForURL(/\/(tasks|items|inbox|observations|meta)/);
-      }
+      // URL should have changed to a detail view route.
+      // /items redirects to /specs, so include both in the pattern.
+      await page.waitForURL(/\/(tasks|items|specs|inbox|observations|meta)/);
     });
 
     // AC: @web-dashboard ac-25
-    test("navigation includes query parameter for selected item", async ({ page }) => {
-      // Open palette
-      await page.keyboard.press("Meta+k");
-
-      const input = page.getByTestId("command-palette-input");
-      await input.fill("task");
-      await page.waitForTimeout(500);
+    test("navigation includes query parameter for selected item", async ({
+      page,
+    }) => {
+      await searchAndWaitForResults(page, "test");
 
       const firstResult = page.getByTestId("search-result-item").first();
-      const count = await page.getByTestId("search-result-item").count();
+      await firstResult.click();
 
-      if (count > 0) {
-        await firstResult.click();
-
-        // Wait for navigation
-        await page.waitForTimeout(500);
-
-        // URL should contain selected parameter
-        expect(page.url()).toContain("selected=");
-      }
+      // Wait for navigation to complete — URL should contain selected= query param
+      await page.waitForURL(/selected=/);
+      expect(page.url()).toContain("selected=");
     });
 
     // AC: @web-dashboard ac-25
     test("palette resets state after navigation", async ({ page }) => {
-      // Open palette
-      await page.keyboard.press("Meta+k");
-
-      const input = page.getByTestId("command-palette-input");
-      await input.fill("task");
-      await page.waitForTimeout(500);
+      await searchAndWaitForResults(page, "test");
 
       const firstResult = page.getByTestId("search-result-item").first();
-      const count = await page.getByTestId("search-result-item").count();
+      await firstResult.click();
 
-      if (count > 0) {
-        await firstResult.click();
+      // Wait for palette to close
+      const palette = page.getByTestId("command-palette");
+      await expect(palette).not.toBeVisible();
 
-        // Wait for palette to close
-        await page.waitForTimeout(500);
+      // Open palette again
+      await page.keyboard.press("Control+k");
+      await expect(palette).toBeVisible();
 
-        // Open palette again
-        await page.keyboard.press("Meta+k");
-
-        // Input should be cleared
-        const inputValue = await page.getByTestId("command-palette-input").inputValue();
-        expect(inputValue).toBe("");
-      }
+      // Input should be cleared (handleSelect resets query to '')
+      const inputValue = await page
+        .getByTestId("command-palette-input")
+        .inputValue();
+      expect(inputValue).toBe("");
     });
   });
 
   test.describe("Accessibility", () => {
     // AC: @web-dashboard ac-23
     test("dialog has proper ARIA attributes", async ({ page }) => {
-      // Open palette
-      await page.keyboard.press("Meta+k");
+      await openPalette(page);
 
-      // Dialog should have role="dialog"
       const dialog = page.getByRole("dialog");
       await expect(dialog).toBeVisible();
     });
 
     // AC: @web-dashboard ac-24, ac-25
     test("search results are keyboard navigable", async ({ page }) => {
-      // Open palette
-      await page.keyboard.press("Meta+k");
+      await searchAndWaitForResults(page, "test");
 
-      const input = page.getByTestId("command-palette-input");
-      await input.fill("task");
-      await page.waitForTimeout(500);
+      // Press down arrow to navigate results
+      await page.keyboard.press("ArrowDown");
 
-      const count = await page.getByTestId("search-result-item").count();
-
-      if (count > 0) {
-        // Press down arrow to navigate
-        await page.keyboard.press("ArrowDown");
-
-        // First result should be highlighted/focused
-        // (exact behavior depends on Command component implementation)
-      }
+      // The cmdk component should highlight the first result via aria-selected
+      const selectedItem = page.locator('[data-testid="search-result-item"][aria-selected="true"]');
+      await expect(selectedItem).toBeVisible({ timeout: 2000 });
     });
 
     // AC: @web-dashboard ac-23
     test("Escape key closes palette", async ({ page }) => {
-      // Open palette
-      await page.keyboard.press("Meta+k");
-
-      const palette = page.getByTestId("command-palette");
-      await expect(palette).toBeVisible();
+      const palette = await openPalette(page);
 
       // Press Escape
       await page.keyboard.press("Escape");
