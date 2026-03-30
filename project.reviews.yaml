@@ -91346,6 +91346,16 @@ reviews:
         runner: playwright
         created_at: 2026-03-30T23:46:34.058Z
         completed_at: 2026-03-30T23:46:34.058Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed locally in review snapshot: 2072/2072 suites, 7489/7494 tests, 5 skipped."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-30T23:46:36.049Z
+        completed_at: 2026-03-30T23:46:36.049Z
     events:
       - _ulid: 01KN0HZ3D6XCBRJ492TZV2KJA7
         actor: Test User
@@ -91374,6 +91384,13 @@ reviews:
           status: pass
           name: watcher e2e
         timestamp: 2026-03-30T23:46:34.687Z
+      - _ulid: 01KN0J8RGGM5YC4JFN3FA3PG4G
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-30T23:46:36.688Z
     examined_commit: 92c8540b06de93a5437122aa31c5507387513a7e
     external_links: []
     lifecycle_state: open
@@ -91426,5 +91443,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-30T23:41:20.166Z
-    updated_at: 2026-03-30T23:46:34.058Z
+    updated_at: 2026-03-30T23:46:36.049Z
     notes: []
