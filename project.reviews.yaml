@@ -84090,6 +84090,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMZDNY4JV742QE6SNGM6EWX6
         timestamp: 2026-03-30T13:07:12.382Z
+      - _ulid: 01KMZDP3G3W9RGMPCKK98S24CF
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMZDP2ATR850NF8K4QWSG9QG
+        timestamp: 2026-03-30T13:07:16.611Z
     examined_commit: d0f61c721edf881be8985f4798b1c46667e688df
     external_links: []
     lifecycle_state: open
@@ -84153,7 +84160,26 @@ reviews:
               migration into a coverage regression even though the behavior assertions still pass.
             created_at: 2026-03-30T13:07:11.122Z
         kind: blocker
+      - _ulid: 01KMZDP2ATR850NF8K4QWSG9QG
+        anchor:
+          type: code
+          commit: d0f61c721edf881be8985f4798b1c46667e688df
+          line_end: 6
+          line_start: 1
+          path: tests/daemon-api/reviews-list.test.ts
+          side: head
+        entries:
+          - _ulid: 01KMZDP2AT32JEFD8P9701G8BA
+            author: Test User
+            body: "This file has the same problem for the review list/detail migration: @kspec-review-list and
+              @kspec-review-detail do not resolve, so the deleted Playwright coverage for
+              @review-records-daemon-api ac-1 and ac-2 is gone. I verified both kspec item get
+              lookups fail, and a repo-wide search now finds only ac-10 annotations for
+              @review-records-daemon-api, with no remaining coverage for the GET list/detail
+              contract this task was supposed to preserve."
+            created_at: 2026-03-30T13:07:15.418Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-30T13:03:07.216Z
-    updated_at: 2026-03-30T13:07:11.122Z
+    updated_at: 2026-03-30T13:07:15.418Z
     notes: []
