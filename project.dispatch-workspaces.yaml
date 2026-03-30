@@ -29016,7 +29016,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-30T22:47:28.308Z
+      updated_at: 2026-03-30T22:47:32.473Z
     integration:
       status: pending
       detail: null
@@ -29032,18 +29032,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-30T22:36:03.631Z
-      last_reconciled_at: 2026-03-30T22:47:28.308Z
+      last_reconciled_at: 2026-03-30T22:47:32.473Z
       created_at: 2026-03-30T18:17:31.287Z
-      updated_at: 2026-03-30T22:47:28.308Z
+      updated_at: 2026-03-30T22:47:32.473Z
     workspace_id: dispatch-workspace-01KMZ1BVK6C9F7QKYK9DZD4TFQ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 96979f51ac13f6ca691be360c82899c11de83f96
-        last_seen_at: 2026-03-30T22:35:53.136Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-timing-races-01kmz1bv-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-fix-timing-races/01kmz1bv
