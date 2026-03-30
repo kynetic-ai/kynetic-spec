@@ -90587,6 +90587,17 @@ reviews:
         runner: npm test
         created_at: 2026-03-30T23:01:56.088Z
         completed_at: 2026-03-30T23:01:56.088Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed: npm run test:e2e -- tests/e2e/api-websocket.spec.ts (10 Playwright tests passed,
+          including bundled smoke specs from the script)."
+        name: targeted websocket e2e
+        required: true
+        runner: npm run test:e2e
+        created_at: 2026-03-30T23:02:02.355Z
+        completed_at: 2026-03-30T23:02:02.355Z
     events:
       - _ulid: 01KN0F7HS76P4JS4YKH0HMBTMB
         actor: Test User
@@ -90622,6 +90633,13 @@ reviews:
           status: fail
           name: full npm test
         timestamp: 2026-03-30T23:01:58.066Z
+      - _ulid: 01KN0FQ6ZQ93RYEMW49NX0N661
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted websocket e2e
+        timestamp: 2026-03-30T23:02:04.539Z
     examined_commit: 901eae907a6a3bdc27e2c2956410efb43eadf937
     external_links: []
     lifecycle_state: open
@@ -90655,5 +90673,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-30T22:53:31.303Z
-    updated_at: 2026-03-30T23:01:56.088Z
+    updated_at: 2026-03-30T23:02:02.355Z
     notes: []
