@@ -91162,6 +91162,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN0HWRSF8BK7239NVEMG0MKB
         timestamp: 2026-03-30T23:40:04.558Z
+      - _ulid: 01KN0HX6SNHFQW1T004JZGAA2C
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KN0HX617D4YNRWWHCGYQPRZS
+        timestamp: 2026-03-30T23:40:18.101Z
     examined_commit: fc7d91827cb184171d49d28475980f2269aa4959
     external_links: []
     lifecycle_state: open
@@ -91215,7 +91222,27 @@ reviews:
               status on agents events."
             created_at: 2026-03-30T23:40:03.759Z
         kind: blocker
+      - _ulid: 01KN0HX617D4YNRWWHCGYQPRZS
+        entries:
+          - _ulid: 01KN0HX617PWW2PCMHBS3CA9DQ
+            author: Test User
+            body: "Evidence log: Files read: packages/web-ui/src/lib/query/ws-invalidation.ts;
+              tests/web-ui/ws-cache-invalidation.test.ts; packages/shared/src/websocket.ts;
+              packages/daemon/src/routes/agent-dispatch.ts; src/agent-runtime/dispatch.ts;
+              packages/web-ui/src/routes/automation/+page.svelte;
+              packages/web-ui/src/routes/agents/+page.svelte;
+              packages/web-ui/src/routes/sessions/[id]/+page.svelte;
+              packages/web-ui/src/routes/sessions/+page.svelte;
+              packages/web-ui/src/lib/query/keys.ts. Commands run: git show --stat; git diff
+              merge-base..HEAD; kspec task get; kspec review for-task; kspec review get; kspec
+              validate; rg for AC annotations and sync_state usage; npm test -- --run
+              tests/web-ui/ws-cache-invalidation.test.ts; npm test. Claims verified: the daemon
+              really emits agent_invocation and sync_state on the agents topic, the focused ws
+              invalidation tests pass, and the full suite is red in this snapshot. Categories
+              searched: correctness, integration, edge cases, test quality, error handling."
+            created_at: 2026-03-30T23:40:17.319Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-30T23:32:21.924Z
-    updated_at: 2026-03-30T23:40:03.759Z
+    updated_at: 2026-03-30T23:40:17.319Z
     notes: []
