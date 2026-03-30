@@ -12,3 +12,17 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-30T22:10:54.772Z
+  - _ulid: 01KN0DD9DXYRCRWDVSPQE6YPDG
+    content: "Rewrote tests/e2e/api-websocket.spec.ts to cover browser-visible WebSocket behavior only:
+      connection indicator, live task list mutation, live inbox badge/list updates, and daemon
+      stop/start reconnection via the isolated Playwright daemon fixture. Added
+      tests/daemon-api/websocket-protocol.test.ts for real-daemon protocol coverage (connected
+      event, command ack/nack, subscription+broadcast payloads, graceful close). Extended
+      tests/e2e/fixtures/test-base.ts with start/stop helpers for restart scenarios and updated
+      neighboring N/A annotations to point at the new protocol test location. Verification: npm run
+      build:e2e; npm test -- --fresh tests/daemon-api/websocket-protocol.test.ts; npx playwright
+      test tests/e2e/api-websocket.spec.ts; kspec validate (warnings-only exit 6 from pre-existing
+      repo debt)."
+    supersedes: null
+    author: Test User
+    created_at: 2026-03-30T22:21:42.205Z
