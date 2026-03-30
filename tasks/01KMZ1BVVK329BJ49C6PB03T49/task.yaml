@@ -52,7 +52,7 @@ description: |
 spec_ref: null
 plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
 origin: derived
-status: needs_work
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -65,12 +65,12 @@ review_ref: "@01KMZNDKHEZHH8ZTRC6NM32Z9D"
 submission_linkage:
   review_url: null
   branch: dev
-  captured_at: 2026-03-30T15:19:04.744Z
-  commit: ea39957fa9e7741011d49a456194958410008d6d
+  captured_at: 2026-03-30T16:00:07.959Z
+  commit: 76a99bcf51ef31640b1724d9abb272f16311a624
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: null
+session_id: 01KMZPF0HVMH48AV2PAH5QXTC5
 history:
   - author: "@claude"
     changes:
@@ -129,8 +129,48 @@ history:
         previous: 01KMZH2NNT0GE5H8F00R1W73C1
     command: review-verdict-needs-work
     timestamp: 2026-03-30T15:32:35.953Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KMZPF0HVMH48AV2PAH5QXTC5
+        previous: null
+      started_at:
+        new: 2026-03-30T16:00:07.294Z
+        previous: 2026-03-30T14:07:06.008Z
+    command: task-start
+    timestamp: 2026-03-30T16:00:07.294Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-30T16:00:07.959Z
+          commit: 76a99bcf51ef31640b1724d9abb272f16311a624
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-30T15:19:04.744Z
+          commit: ea39957fa9e7741011d49a456194958410008d6d
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+      submitted_at:
+        new: 2026-03-30T16:00:07.961Z
+        previous: 2026-03-30T15:19:04.746Z
+    command: task-submit
+    timestamp: 2026-03-30T16:00:07.961Z
 created_at: 2026-03-30T09:31:58.195Z
-started_at: 2026-03-30T14:07:06.008Z
-submitted_at: 2026-03-30T15:19:04.746Z
+started_at: 2026-03-30T16:00:07.294Z
+submitted_at: 2026-03-30T16:00:07.961Z
 todos: []
 automation: eligible
