@@ -20,3 +20,13 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-30T23:29:54.463Z
+  - _ulid: 01KN0HQT0P0Z8X9DR25NV06SSS
+    content: "Verification: npm run test:e2e -- tests/e2e/file-watcher.spec.ts passed (includes smoke +
+      new watcher spec, 10 tests total). node dist/cli/index.js validate exited 6 with existing
+      project-wide warnings only. Full npm test still fails outside this task surface in
+      pre-existing suites including agent-dispatch-engine, canonical-task-workspace-contract,
+      claude-plugin-registry, core-skill-install, cross-platform-robustness,
+      dispatch-runtime-bootstrap-contract, dispatch-workspace-registry, and daemon-api/meta."
+    supersedes: null
+    author: Test User
+    created_at: 2026-03-30T23:37:21.174Z
