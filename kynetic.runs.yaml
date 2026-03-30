@@ -18755,7 +18755,7 @@ runs:
     completed_at: 2026-03-30T12:31:08.592Z
   - _ulid: 01KMZCJQ5DFJR3FX5EHNEYB4DD
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -18767,7 +18767,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-30T12:48:17.142Z
-        completed_at: 2026-03-30T12:48:17.142Z
+        completed_at: 2026-03-30T12:48:44.299Z
+        notes: "Searched existing state. Key findings: (1) SUCCESS - The task description's predicted
+          failure breakdown (stale selectors, stale fixtures, timing, envelope mismatch) was
+          accurate for the envelope and fixture categories, but overestimated the scope — agents and
+          automation specs already pass cleanly after the loading fix. Only dashboard had residual
+          failures. (2) FRICTION - E2e API contract tests did not wait for cache warming before
+          asserting on response data, which is a pattern that could recur. However,
+          @task-e2e-cache-warming-transition (needs_work) already covers this exact pattern. No new
+          items to capture — existing tracking covers it."
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-30T12:48:44.299Z
+        completed_at: 2026-03-30T12:48:44.299Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-30T12:47:57.101Z
