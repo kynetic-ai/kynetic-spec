@@ -1,1 +1,40 @@
-notes: []
+notes:
+  - _ulid: 01KMZJ3ZKB8F7DZ91GVWNMMBCH
+    content: >-
+      Approach: Identified 6 categories of issues across e2e tests:
+
+
+      1. Invalid ULID: task test-task-manual-only uses 01KG0RRHCC9N4YGP991WD7XSML (contains 'L', not
+      valid Crockford base32). Fix: replace with 01KG0RRHCC9N4YGP991WD7XSMN across
+      project.tasks.yaml, tasks/ directory, and task.yaml.
+
+
+      2. Stale plan_ref: task test-task-in-progress references @test-plan but the plan slug is
+      test-plan-active. Fix: update plan_ref to @test-plan-active in both index and individual task
+      files.
+
+
+      3. Envelope drift in dashboard.spec.ts: API contract tests use old {items, total} format. Fix:
+      update to {data, meta} envelope. Also update status counts (fixture has 4 pending, not 2).
+
+
+      4. Envelope drift in plans.spec.ts: Plan detail API tests access body fields directly. Fix:
+      access via body.data. Also fix ENOENT in cancelled tasks test (reads from wrong path).
+
+
+      5. Envelope drift in triage.spec.ts: triageListBody.items.find should be
+      triageListBody.data.find.
+
+
+      6. Stale route intercepts in validate.spec.ts: Page now uses /api/aggregation/validation
+      instead of /api/items + /api/tasks. Fix: update route intercepts to match new API endpoints.
+
+
+      7. session-context.spec.ts: 1 failure for spec-detail-sessions UI test - need to investigate
+      separately.
+
+
+      Test plan: Fix all 6 categories, run full e2e suite.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-30T14:24:45.676Z
