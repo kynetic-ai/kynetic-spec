@@ -29194,12 +29194,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-30T23:39:32.697Z
+      updated_at: 2026-03-30T23:39:49.684Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-30T23:39:32.697Z
+      updated_at: 2026-03-30T23:39:49.684Z
     integration:
       status: pending
       detail: null
@@ -29207,24 +29207,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 4549f2d161aa008e0832187456202af82c3357ad
-      updated_at: 2026-03-30T23:39:32.697Z
-    lifecycle_state: ready
+      updated_at: 2026-03-30T23:39:49.684Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KMZ1BWCJNCQ1AWDQE6XMY2EK"
     task_slug: task-add-filewatcher-e2e
     timestamps:
       closed_at: null
       last_active_at: 2026-03-30T23:18:06.175Z
-      last_reconciled_at: 2026-03-30T23:39:32.697Z
+      last_reconciled_at: 2026-03-30T23:39:49.684Z
       created_at: 2026-03-30T23:17:44.851Z
-      updated_at: 2026-03-30T23:39:32.697Z
+      updated_at: 2026-03-30T23:39:49.684Z
     workspace_id: dispatch-workspace-01KMZ1BWCJNCQ1AWDQE6XMY2EK
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 92c8540b06de93a5437122aa31c5507387513a7e
+        last_seen_at: 2026-03-30T23:39:49.684Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-filewatcher-e2e-01kmz1bw-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-add-filewatcher-e2e/01kmz1bw
-        head: 4549f2d161aa008e0832187456202af82c3357ad
-        last_seen_at: 2026-03-30T23:17:44.851Z
+        head: 92c8540b06de93a5437122aa31c5507387513a7e
+        last_seen_at: 2026-03-30T23:39:49.684Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-filewatcher-e2e-01kmz1bw
