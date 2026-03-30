@@ -90069,6 +90069,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN0DSKXBRD2C39QNX3S4NMZ9
         timestamp: 2026-03-30T22:28:26.902Z
+      - _ulid: 01KN0DSPRB5P0SXEZNDREA5JX0
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN0DSP22HV7PN5A44HH9BWG8
+        timestamp: 2026-03-30T22:28:29.067Z
     examined_commit: 3782c10f7bc15ce25b597a0454bd90326ffb2dad
     external_links: []
     lifecycle_state: open
@@ -90117,7 +90124,25 @@ reviews:
               heartbeat coverage or stop claiming this file covers ac-4.
             created_at: 2026-03-30T22:28:26.156Z
         kind: blocker
+      - _ulid: 01KN0DSP22HV7PN5A44HH9BWG8
+        anchor:
+          type: code
+          commit: 3782c10f7bc15ce25b597a0454bd90326ffb2dad
+          line_end: 377
+          line_start: 358
+          path: tests/daemon-api/websocket-protocol.test.ts
+          side: head
+        entries:
+          - _ulid: 01KN0DSP222WA82P8ZXZ0M7VKZ
+            author: Test User
+            body: " says malformed commands must return , but this test encodes the opposite contract by
+              asserting . The daemon currently behaves that way too ( always emits ), so preserving
+              this assertion would approve a spec violation instead of catching it. Please either
+              update the implementation to satisfy the spec and assert , or change the spec first;
+              as written this test does not prove the documented contract."
+            created_at: 2026-03-30T22:28:28.354Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-30T22:25:33.827Z
-    updated_at: 2026-03-30T22:28:26.156Z
+    updated_at: 2026-03-30T22:28:28.354Z
     notes: []
