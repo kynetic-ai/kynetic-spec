@@ -18916,7 +18916,7 @@ runs:
     completed_at: 2026-03-30T14:05:56.240Z
   - _ulid: 01KMZN85NGV31FKXMWWJ0A4EA8
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -18929,7 +18929,39 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-30T15:19:45.619Z
-        completed_at: 2026-03-30T15:19:45.619Z
+        completed_at: 2026-03-30T15:20:31.766Z
+        notes: >-
+          High-confidence findings from this session:
+
+
+          FRICTION 1: E2E tests that dynamically mutate fixture YAML files cannot rely on daemon
+          file watchers to invalidate the entity cache in ephemeral temp directories. The plans
+          cancelled-tasks test was broken for this reason — fs.watch doesn't reliably detect changes
+          in /tmp dirs. This is systemic: any E2E test that writes to fixture files at runtime and
+          expects the daemon cache to reload will be flaky or broken.
+
+
+          FRICTION 2: The split storage backend reads task details from individual task files
+          (tasks/<ulid>/task.yaml), but the project.tasks.yaml index is what many tests and tools
+          modify. Tests that only modify the index file won't affect daemon responses that use
+          loadAllTasks(). This dual-storage creates a mismatch trap for test authors.
+
+
+          FRICTION 3: The daemon plans route returns 500 instead of 404 for non-existent plans. This
+          is a pre-existing bug — the Elysia errorResponse(404, ...) call doesn't produce the
+          expected status code.
+
+
+          SUCCESS: The previous agent's analysis in the task notes was accurate and
+          well-categorized, making it easy to resume work. The 6-category breakdown with specific
+          fixes was actionable.
+
+
+          Checked against existing observations — no duplicates found for these specific patterns.
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-30T15:20:31.766Z
+        completed_at: 2026-03-30T15:20:31.766Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-30T15:19:28.688Z
