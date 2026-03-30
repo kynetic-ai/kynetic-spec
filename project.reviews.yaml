@@ -88975,9 +88975,16 @@ reviews:
           status: pass
           name: validation
         timestamp: 2026-03-30T21:02:37.998Z
+      - _ulid: 01KN08XA4EM8J04CHAENY993VZ
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-30T21:03:04.334Z
     examined_commit: fc7d91827cb184171d49d28475980f2269aa4959
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -89718,5 +89725,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-30T20:51:43.461Z
-    updated_at: 2026-03-30T21:02:37.089Z
+    updated_at: 2026-03-30T21:03:03.488Z
     notes: []
