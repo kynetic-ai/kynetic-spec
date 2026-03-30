@@ -85240,6 +85240,19 @@ reviews:
         runner: playwright
         created_at: 2026-03-30T15:31:44.351Z
         completed_at: 2026-03-30T15:31:44.351Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: The requested e2e command failed in this snapshot. Deterministic reruns showed
+          tests/e2e/plans.spec.ts:614 expected one /api/items/batch request and got none,
+          tests/e2e/plans.spec.ts:775 expected 404 and got 500, and tests/e2e/triage.spec.ts:409
+          kept the submit button disabled.
+        name: targeted e2e (review rerun)
+        required: true
+        runner: playwright
+        created_at: 2026-03-30T15:32:15.890Z
+        completed_at: 2026-03-30T15:32:15.890Z
     events:
       - _ulid: 01KMZNDKHD4JX075XS686347DH
         actor: Test User
@@ -85275,6 +85288,13 @@ reviews:
           status: fail
           name: targeted e2e
         timestamp: 2026-03-30T15:31:45.008Z
+      - _ulid: 01KMZNZKP51GY66RHEEFK0CSBA
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: targeted e2e (review rerun)
+        timestamp: 2026-03-30T15:32:16.709Z
     examined_commit: 56eb7f9f66ff1b04997879c45758c4455183b965
     external_links: []
     lifecycle_state: open
@@ -85380,5 +85400,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-30T15:22:26.734Z
-    updated_at: 2026-03-30T15:31:44.351Z
+    updated_at: 2026-03-30T15:32:15.890Z
     notes: []
