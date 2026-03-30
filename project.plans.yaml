@@ -30647,6 +30647,62 @@ plans:
         priority: 3
         tags: [test, e2e, web-ui]
 
+      - title: "Add e2e tests for batch item fetch UI behavior"
+        slug: task-e2e-batch-item-fetch
+        depends_on: ["@task-fix-stale-selectors"]
+        description: |
+          The batch item fetch API (@batch-item-fetch-api ac-1 through ac-5) has
+          zero UI-level e2e coverage. The API tests verify the endpoint works, but
+          no test exercises the UI flows that use batch fetch (e.g. linked item
+          resolution in task detail, trait chip rendering in item views).
+
+          Write e2e tests that exercise batch fetch through the UI:
+          - Task detail view resolves and displays linked spec items
+          - Item detail view resolves and displays trait references
+          - Graceful handling when a batch ref fails to resolve (shows ref
+            without crashing)
+          - Large item lists that trigger batch fetching render correctly
+
+          These tests belong in the existing items.spec.ts or tasks.spec.ts
+          depending on which UI flow exercises the batch endpoint.
+        priority: 3
+        tags: [test, e2e, web-ui]
+
+      - title: "Add e2e tests for session full-text search"
+        slug: task-e2e-session-search
+        depends_on: ["@task-fix-timing-races"]
+        description: |
+          Session full-text search (@session-text-search ac-api-search,
+          ac-performance) has zero UI-level e2e coverage. The API spec tested
+          search queries and result structure, but no test verifies the user
+          can search sessions through the sessions page.
+
+          Write e2e tests in sessions.spec.ts that:
+          - Enter a search query in the sessions search input
+          - Verify matching sessions appear in results
+          - Verify non-matching query shows empty state
+          - Verify search works with session filter combinations
+          - Verify search debounce behavior (typing doesn't fire on every key)
+        priority: 3
+        tags: [test, e2e, web-ui]
+
+      - title: "Add e2e tests for triage export flow"
+        slug: task-e2e-triage-export
+        depends_on: ["@task-fix-fixtures-envelope"]
+        description: |
+          Triage export (@triage-daemon-api ac-6) has zero UI-level e2e coverage.
+          The API spec tested GET /api/triage/export returns context markdown or
+          JSON, but no test verifies the user can trigger and receive an export
+          through the triage UI.
+
+          Write e2e tests in triage.spec.ts that:
+          - Click the export action in the triage view
+          - Verify export content is rendered or downloaded
+          - Verify export includes expected triage record data
+          - Verify export format selection (markdown vs JSON) if the UI supports it
+        priority: 3
+        tags: [test, e2e, web-ui]
+
       - title: "Address excessive WebSocket query invalidation during dispatch"
         slug: task-fix-ws-invalidation-storm
         description: |
@@ -30761,7 +30817,14 @@ plans:
 
       - File watcher propagation to UI: zero behavioral e2e coverage
 
-      - These features were only "tested" at the API protocol level
+      - Batch item fetch (@batch-item-fetch-api ac-1..5): used internally by task
+        detail and item views, no UI test exercises the batch resolution path
+      - Session full-text search (@session-text-search ac-api-search, ac-performance):
+        no UI test for the sessions search flow
+      - Triage export (@triage-daemon-api ac-6): no UI test for export action
+
+      - Most other API-only ACs (56 total) ARE exercised through existing UI e2e
+        tests that are currently broken — fixing those tests restores coverage
     status: draft
     approved_at: null
     derived_specs: []
@@ -30776,3 +30839,7 @@ plans:
           coverage gap analysis"
         author: "@claude"
         created_at: 2026-03-30T08:53:42.523Z
+      - _ulid: 01KMYZQ7B7YSPKWHCXD3X68EGH
+        content: "Added 3 tasks for UI e2e coverage gaps: batch item fetch, session search, triage export"
+        author: "@claude"
+        created_at: 2026-03-30T09:03:13.256Z
