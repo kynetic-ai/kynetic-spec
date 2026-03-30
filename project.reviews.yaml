@@ -90864,6 +90864,18 @@ reviews:
         runner: test.cjs
         created_at: 2026-03-30T23:25:15.283Z
         completed_at: 2026-03-30T23:25:15.283Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm run test:e2e -- tests/e2e/search.spec.ts tests/e2e/connection.spec.ts
+          tests/e2e/cache-warming-views.spec.ts tests/e2e/plans.spec.ts tests/e2e/validate.spec.ts
+          tests/daemon-api/meta.test.ts passed: 83/83 in 38.7s"
+        name: targeted e2e
+        required: true
+        runner: playwright
+        created_at: 2026-03-30T23:25:17.834Z
+        completed_at: 2026-03-30T23:25:17.834Z
     events:
       - _ulid: 01KN0G80FMTW9ZBH6B83HH5RTV
         actor: Test User
@@ -90906,6 +90918,13 @@ reviews:
           status: fail
           name: full suite
         timestamp: 2026-03-30T23:25:16.103Z
+      - _ulid: 01KN0H1RET79663289N5A5XG5Q
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted e2e
+        timestamp: 2026-03-30T23:25:18.682Z
     examined_commit: 8339fac0f1f334a288a20705073571eeae3d7350
     external_links: []
     lifecycle_state: open
@@ -90943,5 +90962,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-30T23:11:14.932Z
-    updated_at: 2026-03-30T23:25:15.283Z
+    updated_at: 2026-03-30T23:25:17.834Z
     notes: []
