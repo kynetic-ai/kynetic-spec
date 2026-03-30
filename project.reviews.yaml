@@ -91003,6 +91003,17 @@ reviews:
         runner: kspec
         created_at: 2026-03-30T23:26:30.044Z
         completed_at: 2026-03-30T23:26:30.044Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/daemon-heartbeat.test.ts
+          tests/daemon-api/websocket-protocol.test.ts passed: 4 suites, 10 tests."
+        name: targeted websocket vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-30T23:26:35.927Z
+        completed_at: 2026-03-30T23:26:35.927Z
     events:
       - _ulid: 01KN0H2YDJ2T0KPSGFFTTWNCEC
         actor: Test User
@@ -91031,6 +91042,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-30T23:26:30.845Z
+      - _ulid: 01KN0H44QF80TDPZY24W88WG98
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted websocket vitest
+        timestamp: 2026-03-30T23:26:36.783Z
     examined_commit: 440b2b1be819db3056711692c58c92874f7d65ec
     external_links: []
     lifecycle_state: open
@@ -91060,5 +91078,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-30T23:25:57.555Z
-    updated_at: 2026-03-30T23:26:30.044Z
+    updated_at: 2026-03-30T23:26:35.927Z
     notes: []
