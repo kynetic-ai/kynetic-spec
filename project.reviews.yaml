@@ -88191,7 +88191,18 @@ reviews:
     slugs: []
     title: Review task-fix-ws-invalidation-storm
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm test -- --run tests/web-ui/ws-cache-invalidation.test.ts -> 10 suites passed, 29 tests
+          passed
+        name: targeted-web-ui-test
+        required: true
+        runner: npm
+        created_at: 2026-03-30T18:29:48.379Z
+        completed_at: 2026-03-30T18:29:48.379Z
     events:
       - _ulid: 01KMZZ65AZNH844CX91K8X2603
         actor: Test User
@@ -88206,6 +88217,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-30T18:13:32.527Z
+      - _ulid: 01KN004PBNWZKJT8V64BEMZP4Z
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted-web-ui-test
+        timestamp: 2026-03-30T18:29:49.045Z
     examined_commit: 8305fc76efd2c40e026e5aee15fca3c500b5d462
     external_links: []
     lifecycle_state: open
@@ -88218,7 +88236,7 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-30T18:13:08.575Z
-    updated_at: 2026-03-30T18:13:31.902Z
+    updated_at: 2026-03-30T18:29:48.379Z
     notes: []
   - _ulid: 01KMZZF5GMNQRBVECT9B9ASPZ9
     slugs: []
