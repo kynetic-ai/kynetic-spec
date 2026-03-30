@@ -1,1 +1,44 @@
-notes: []
+notes:
+  - _ulid: 01KMZQTFPWMVHQAZ2QKDDBGEKR
+    content: >-
+      Approach: Fix excessive query invalidation in ws-invalidation.ts agents case.
+
+
+      Current behavior (bug): message_complete, thinking_complete, tool_call_complete events on the
+      'agents' topic trigger queryKeys.agents.all + queryKeys.sessions.all invalidation, causing
+      agent/status API to refetch on every message completion.
+
+
+      Fix: For these completion events, only invalidate queryKeys.sessions.all (relevant for session
+      detail views) and NOT queryKeys.agents.all (agent status/definitions don't change when a
+      message completes).
+
+
+      Keep existing behavior for agent lifecycle events (started, completed, failed) - these
+      represent actual dispatch state changes.
+
+
+      Implementation:
+
+      1. In the agents case, after the streaming progress filter, check for completion events
+
+      2. For completion events, return only [queryKeys.sessions.all] instead of
+      [queryKeys.sessions.all, queryKeys.agents.all]  
+
+      3. The fallback (agent lifecycle events) keeps returning both
+
+
+      Test plan:
+
+      - message_complete with session_id → only sessions.all invalidated
+
+      - thinking_complete with session_id → only sessions.all invalidated  
+
+      - tool_call_complete with session_id → only sessions.all invalidated
+
+      - agent_invocation started/completed/failed → agents.all + sessions.all (unchanged)
+
+      - Streaming events → no invalidation (unchanged)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-30T16:04:25.948Z
