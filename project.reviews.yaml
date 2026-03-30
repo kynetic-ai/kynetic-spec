@@ -83420,9 +83420,25 @@ reviews:
           status: pass
           name: build:web-ui
         timestamp: 2026-03-30T12:19:59.818Z
+      - _ulid: 01KMZAZK2V9GDVG41ZX13SW31M
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-03-30T12:20:01.755Z
+      - _ulid: 01KMZAZK2VY8M09P2T7RB69TGY
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-30T12:20:01.755Z
     examined_commit: d067edacfbd8463a6aca643244557866358819d6
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -83430,7 +83446,14 @@ reviews:
       ref: "@01KMZ1BTJJ3FR82N0R76DDWR09"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-30T12:20:01.755Z
     created_at: 2026-03-30T12:12:06.684Z
-    updated_at: 2026-03-30T12:19:59.192Z
+    updated_at: 2026-03-30T12:20:01.755Z
     notes: []
