@@ -91238,6 +91238,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-30T23:40:50.508Z
+      - _ulid: 01KN0HZ7WKXEHR5NYV8GT629DX
+        actor: Test User
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KN0HWG2DQ81R3FW0QJ47S702
+        timestamp: 2026-03-30T23:41:24.755Z
     examined_commit: fc7d91827cb184171d49d28475980f2269aa4959
     external_links: []
     lifecycle_state: closed
@@ -91268,6 +91274,8 @@ reviews:
               on  events."
             created_at: 2026-03-30T23:39:54.830Z
         kind: blocker
+        resolved_at: 2026-03-30T23:41:24.141Z
+        resolved_by: Test User
       - _ulid: 01KN0HWRSF8BK7239NVEMG0MKB
         anchor:
           type: code
@@ -91320,7 +91328,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T23:40:50.507Z
     created_at: 2026-03-30T23:32:21.924Z
-    updated_at: 2026-03-30T23:40:50.508Z
+    updated_at: 2026-03-30T23:41:24.141Z
     notes: []
   - _ulid: 01KN0HZ3D6NBTVB6SNSCN79TWW
     slugs: []
