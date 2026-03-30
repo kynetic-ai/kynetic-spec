@@ -9993,6 +9993,30 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-30T11:18:39.547Z
+  - _ulid: 01KMZAE8NP342GYCWGGD50AGH9
+    type: success
+    content: "Fix cycle for TanStack Query loading bug: systematic E2E-driven debugging (debug spec with
+      DOM inspection + console capture) enabled precise diagnosis of each iteration failure. Three
+      attempts, each informed by the previous: Proxy get traps invisible to Svelte compiler →
+      reactive loop from $state writes in $effect.pre → correct fix using plain $state + untrack().
+      Pattern: when debugging Svelte 5 reactivity issues, the E2E test with page.evaluate() DOM
+      inspection is the fastest feedback loop."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-30T12:10:34.039Z
+  - _ulid: 01KMZAE8V3D1SEGMQAM5J78SF3
+    type: friction
+    content: "Svelte 5 reactivity limitation not documented in project conventions: $state reads inside
+      Proxy get handlers, eval, or dynamically constructed functions are invisible to the Svelte
+      compiler and will NOT establish reactive tracking. This caused 2 failed fix attempts for the
+      TanStack Query loading bug. The /svelte-5 skill should document this as a gotcha: when
+      bridging external reactive systems into Svelte, use plain $state objects with direct property
+      access — never Proxy indirection."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-30T12:10:34.211Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
