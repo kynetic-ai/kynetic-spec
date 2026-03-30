@@ -91244,6 +91244,12 @@ reviews:
         payload:
           thread_ulid: 01KN0HWG2DQ81R3FW0QJ47S702
         timestamp: 2026-03-30T23:41:24.755Z
+      - _ulid: 01KN0JS1SZQW8805YMXEG0QT2V
+        actor: Test User
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN0HWRSF8BK7239NVEMG0MKB
+        timestamp: 2026-03-30T23:55:30.495Z
     examined_commit: fc7d91827cb184171d49d28475980f2269aa4959
     external_links: []
     lifecycle_state: closed
@@ -91298,6 +91304,14 @@ reviews:
               packages/web-ui/src/routes/automation/+page.svelte does not manually invalidate agent
               status on agents events."
             created_at: 2026-03-30T23:40:03.759Z
+          - _ulid: 01KN0JS17JVGK5J6T7ZD5C70KR
+            author: Test User
+            body: Fixed in 5bc377fbb. The agents-topic handler now treats non-session status broadcasts like
+              sync_state as agents-cache invalidations, while keeping
+              message_complete/thinking_complete/tool_call_complete scoped to sessions-only
+              invalidation. I also added focused tests proving sync_state refreshes agents.all
+              without touching sessions.all.
+            created_at: 2026-03-30T23:55:29.906Z
         kind: blocker
       - _ulid: 01KN0HX617D4YNRWWHCGYQPRZS
         entries:
@@ -91328,7 +91342,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T23:40:50.507Z
     created_at: 2026-03-30T23:32:21.924Z
-    updated_at: 2026-03-30T23:41:24.141Z
+    updated_at: 2026-03-30T23:55:29.906Z
     notes: []
   - _ulid: 01KN0HZ3D6NBTVB6SNSCN79TWW
     slugs: []
