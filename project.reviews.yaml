@@ -90052,6 +90052,17 @@ reviews:
         runner: playwright
         created_at: 2026-03-30T22:28:54.768Z
         completed_at: 2026-03-30T22:28:54.768Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/daemon-api/websocket-protocol.test.ts: 2 suites passed, 5 tests
+          passed."
+        name: targeted websocket vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-30T22:28:56.827Z
+        completed_at: 2026-03-30T22:28:56.827Z
     events:
       - _ulid: 01KN0DMBM34Q6M1P1R339JJEEZ
         actor: Test User
@@ -90094,6 +90105,13 @@ reviews:
           status: pass
           name: targeted websocket e2e
         timestamp: 2026-03-30T22:28:55.447Z
+      - _ulid: 01KN0DTJFCKDEQBNZ30SE15J1C
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted websocket vitest
+        timestamp: 2026-03-30T22:28:57.453Z
     examined_commit: 3782c10f7bc15ce25b597a0454bd90326ffb2dad
     external_links: []
     lifecycle_state: open
@@ -90162,5 +90180,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-30T22:25:33.827Z
-    updated_at: 2026-03-30T22:28:54.768Z
+    updated_at: 2026-03-30T22:28:56.827Z
     notes: []
