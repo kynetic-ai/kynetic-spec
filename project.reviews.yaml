@@ -88892,6 +88892,13 @@ reviews:
           status: pass
           name: targeted-web-ui-test
         timestamp: 2026-03-30T21:02:16.331Z
+      - _ulid: 01KN08VXTZ0RF65AERNMB490DZ
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN08VX1NFW2V0T9ZSR96ZWTD
+        timestamp: 2026-03-30T21:02:18.975Z
     examined_commit: fc7d91827cb184171d49d28475980f2269aa4959
     external_links: []
     lifecycle_state: open
@@ -88901,8 +88908,24 @@ reviews:
       content_hash: ""
       ref: "@01KMZ1BXDQRXEGC4DAS1F8T9H5"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KN08VX1NFW2V0T9ZSR96ZWTD
+        entries:
+          - _ulid: 01KN08VX1NEEJ8H199Q2G9FZ30
+            author: Test User
+            body: >-
+              Required merge gate still fails on this snapshot: 
+
+              > @kynetic-ai/spec@0.12.0 test
+
+              > node scripts/test.cjs exits 1 with 32 failing suites / 48 failing tests. I verified
+              the submitted Web UI change separately (: 29/29 pass) and confirmed two suites from
+              the failing full run ( and ) both pass in isolation, so this looks like broader
+              full-run instability rather than a defect in the touched files. I still cannot approve
+              a snapshot that does not satisfy the repo's required full-suite gate.
+            created_at: 2026-03-30T21:02:18.165Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-30T20:51:43.461Z
-    updated_at: 2026-03-30T21:02:15.421Z
+    updated_at: 2026-03-30T21:02:18.165Z
     notes: []
