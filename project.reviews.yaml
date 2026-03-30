@@ -90306,6 +90306,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-30T22:36:55.345Z
+      - _ulid: 01KN0EEY4GX2Y6NDMYPP9P8VSD
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN0EEVXGK98AWKK3KMJPMT96
+        timestamp: 2026-03-30T22:40:04.752Z
     examined_commit: 96979f51ac13f6ca691be360c82899c11de83f96
     external_links: []
     lifecycle_state: open
@@ -90315,8 +90322,27 @@ reviews:
       content_hash: ""
       ref: "@01KMZ1BVK6C9F7QKYK9DZD4TFQ"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KN0EEVXGK98AWKK3KMJPMT96
+        anchor:
+          type: code
+          commit: 96979f51ac13f6ca691be360c82899c11de83f96
+          line_end: 771
+          line_start: 761
+          path: tests/e2e/plans.spec.ts
+          side: head
+        entries:
+          - _ulid: 01KN0EEVXGETX9B69FX8V7RVRS
+            author: Test User
+            body: This change disables the only test that exercises the  endpoint behavior for excluding
+              cancelled tasks while still counting plan_ref-linked tasks. Replacing it with  removes
+              endpoint-level coverage instead of making the test reliable; the remaining references
+              I found (, , ) only cover helper/CLI/export logic, not the daemon route. That is a
+              coverage regression in a review whose goal is to stabilize flaky tests, not delete
+              them.
+            created_at: 2026-03-30T22:40:02.480Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-30T22:36:45.668Z
-    updated_at: 2026-03-30T22:36:54.584Z
+    updated_at: 2026-03-30T22:40:02.480Z
     notes: []
