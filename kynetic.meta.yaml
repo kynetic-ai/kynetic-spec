@@ -10260,6 +10260,14 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-30T22:08:22.864Z
+  - _ulid: 01KN0DG5F33D530EHYME1XR115
+    type: success
+    content: Adding start/stop controls to the isolated Playwright daemon fixture made reconnect and
+      daemon-restart behavior testable without bespoke per-spec process management.
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-30T22:23:16.452Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
