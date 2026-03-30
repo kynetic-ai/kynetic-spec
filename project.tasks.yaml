@@ -23289,7 +23289,7 @@
   slugs: []
   title: Consolidate all tests under root tests/ directory
   type: task
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 2
@@ -23303,3 +23303,4 @@
   created_at: 2026-03-29T21:17:46.273Z
   started_at: 2026-03-29T21:28:50.416Z
   submitted_at: 2026-03-30T06:40:46.960Z
+  completed_at: 2026-03-30T06:40:50.186Z

@@ -114,8 +114,12 @@ description: >-
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Merged to dev. All tests consolidated under tests/ (e2e/ and web-ui/). npm link
+  removed, CLI_PATH used instead. Hardcoded port 3456 fixed in agents spec. Parallel e2e execution
+  enabled. 242 API-only tests skipped pending migration to vitest. Follow-up plan:
+  @plan-e2e-test-suite-audit-and-restructure-2"
 depends_on: []
 context: []
 priority: 2
@@ -175,7 +179,24 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-03-30T06:40:46.960Z
+  - author: "@claude"
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Merged to dev. All tests consolidated under tests/ (e2e/ and web-ui/). npm link removed,
+          CLI_PATH used instead. Hardcoded port 3456 fixed in agents spec. Parallel e2e execution
+          enabled. 242 API-only tests skipped pending migration to vitest. Follow-up plan:
+          @plan-e2e-test-suite-audit-and-restructure-2"
+        previous: null
+      completed_at:
+        new: 2026-03-30T06:40:50.186Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-03-30T06:40:50.191Z
 created_at: 2026-03-29T21:17:46.273Z
 started_at: 2026-03-29T21:28:50.416Z
 submitted_at: 2026-03-30T06:40:46.960Z
+completed_at: 2026-03-30T06:40:50.186Z
 todos: []
