@@ -83642,6 +83642,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-30T12:35:58.396Z
+      - _ulid: 01KMZBZM9473KXR8WHPEJW5Q74
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMZBZKQA4F3EN2PCQNYFFXYH
+        timestamp: 2026-03-30T12:37:31.556Z
     examined_commit: 1b14f9251d210312870ad8acab4d20393f1c18c4
     external_links: []
     lifecycle_state: open
@@ -83651,8 +83658,28 @@ reviews:
       content_hash: ""
       ref: "@01KMZ1BV3H7S2SQ91TX8B80J1Y"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMZBZKQA4F3EN2PCQNYFFXYH
+        anchor:
+          type: code
+          commit: 1b14f9251d210312870ad8acab4d20393f1c18c4
+          line_end: 307
+          line_start: 270
+          path: tests/daemon-api/reviews-list.test.ts
+          side: head
+        entries:
+          - _ulid: 01KMZBZKQAH934S9AW9RMYNH51
+            author: Test User
+            body: The detail migration also dropped part of the existing response-contract coverage. The
+              previous API spec verified that GET /api/reviews/:id included checks, verdicts,
+              events, and the full empty-review shape; the new tests only assert the ULID,
+              lifecycle_state, subject ref, threads, and disposition. Because
+              packages/daemon/src/routes/reviews.ts still exposes checks/verdicts/events, the
+              migrated suite no longer guards those fields against regression, so this rewrite
+              reduces coverage instead of preserving it.
+            created_at: 2026-03-30T12:37:30.986Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-30T12:35:22.878Z
-    updated_at: 2026-03-30T12:35:57.863Z
+    updated_at: 2026-03-30T12:37:30.986Z
     notes: []
