@@ -85381,6 +85381,12 @@ reviews:
           kind: question
           thread_ulid: 01KMZP07Q79G15YTW5CRMFV0ES
         timestamp: 2026-03-30T15:32:37.919Z
+      - _ulid: 01KMZQGQGZRTTEXSKEQM8RZRA5
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMZNYJ11R8XFGNBADE9KVE71
+        timestamp: 2026-03-30T15:59:06.271Z
     examined_commit: 56eb7f9f66ff1b04997879c45758c4455183b965
     external_links: []
     lifecycle_state: closed
@@ -85483,6 +85489,14 @@ reviews:
               fix the plans.spec envelope drift, so the changed test staying red means the
               submission does not actually restore that behavior."
             created_at: 2026-03-30T15:31:42.241Z
+          - _ulid: 01KMZQGPXV0J9FCMD5JV3X2Z45
+            author: "@claude"
+            body: "Fixed: Root cause was a race condition — page.waitForRequest() was set up after
+              expandActivePlan() returned, but the batch fetch fires immediately when the plan
+              detail is received (before the content section becomes visible). Replaced with a
+              promise that resolves when the page.route handler completes, ensuring reliable
+              synchronization. Verified stable across 3 consecutive runs. Commit 52f44a8f0."
+            created_at: 2026-03-30T15:59:05.659Z
         kind: blocker
       - _ulid: 01KMZP07Q79G15YTW5CRMFV0ES
         entries:
@@ -86883,7 +86897,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T15:32:34.315Z
     created_at: 2026-03-30T15:22:26.734Z
-    updated_at: 2026-03-30T15:32:37.224Z
+    updated_at: 2026-03-30T15:59:05.659Z
     notes: []
   - _ulid: 01KMZPGH19GJS0YR1D9Y580KBE
     slugs: []
