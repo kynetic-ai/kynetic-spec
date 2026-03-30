@@ -29045,7 +29045,7 @@ workspaces:
         head: 96979f51ac13f6ca691be360c82899c11de83f96
         last_seen_at: 2026-03-30T22:35:53.136Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-timing-races-01kmz1bv
-  - active_role: worker
+  - active_role: null
     base_branch_point: 829e357cac08ffc55e8071e21d6b28e3d34050ec
     bootstrap:
       status: succeeded
@@ -29110,12 +29110,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-30T22:49:43.493Z
+      updated_at: 2026-03-30T22:52:30.548Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-30T22:49:43.493Z
+      updated_at: 2026-03-30T22:52:30.548Z
     integration:
       status: pending
       detail: null
@@ -29123,17 +29123,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 829e357cac08ffc55e8071e21d6b28e3d34050ec
-      updated_at: 2026-03-30T22:49:43.493Z
-    lifecycle_state: active
+      updated_at: 2026-03-30T22:52:30.548Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMZ1BW4NHEGFXEDJ6WBRBQQ7"
     task_slug: task-rewrite-websocket-e2e
     timestamps:
       closed_at: null
       last_active_at: 2026-03-30T22:35:40.007Z
-      last_reconciled_at: 2026-03-30T22:49:43.493Z
+      last_reconciled_at: 2026-03-30T22:52:30.548Z
       created_at: 2026-03-30T22:09:01.297Z
-      updated_at: 2026-03-30T22:49:43.493Z
+      updated_at: 2026-03-30T22:52:30.548Z
     workspace_id: dispatch-workspace-01KMZ1BW4NHEGFXEDJ6WBRBQQ7
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
