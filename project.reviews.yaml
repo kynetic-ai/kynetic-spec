@@ -90349,6 +90349,13 @@ reviews:
           status: fail
           name: targeted e2e
         timestamp: 2026-03-30T22:42:35.011Z
+      - _ulid: 01KN0EKKEA3NEQ7P321X5RZKK8
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KN0EKJKGSTM8PVMVWTVS4PDR
+        timestamp: 2026-03-30T22:42:37.642Z
     examined_commit: 96979f51ac13f6ca691be360c82899c11de83f96
     external_links: []
     lifecycle_state: open
@@ -90418,7 +90425,29 @@ reviews:
               tests, but the plans suite is still red in the submitted snapshot.
             created_at: 2026-03-30T22:41:25.009Z
         kind: blocker
+      - _ulid: 01KN0EKJKGSTM8PVMVWTVS4PDR
+        entries:
+          - _ulid: 01KN0EKJKGVNZR72XPMMZPN22X
+            author: Test User
+            body: "Files read: packages/web-ui/src/lib/components/CommandPalette.svelte;
+              packages/web-ui/src/lib/components/ui/command/command-dialog.svelte;
+              packages/web-ui/src/lib/components/ui/command/command-input.svelte;
+              packages/web-ui/src/lib/websocket/manager.ts;
+              packages/web-ui/src/lib/query/ws-invalidation.ts;
+              packages/web-ui/src/routes/validate/+page.svelte;
+              packages/web-ui/src/routes/plans/+page.svelte; tests/e2e/search.spec.ts;
+              tests/e2e/connection.spec.ts; tests/e2e/cache-warming-views.spec.ts;
+              tests/e2e/plans.spec.ts; tests/e2e/validate.spec.ts; tests/e2e/triage.spec.ts;
+              tests/daemon-api/meta.test.ts; fixture task files. Commands run: git diff/stat against
+              dev; kspec task get; kspec review get prior cycle; kspec validate; AC annotation
+              search via rg; npm run test:e2e on the changed-spec subset. Claims verified: the
+              command-palette binding bug is genuinely fixed by moving search text to Command.Input;
+              the remaining connection tests now assert browser-visible refetch behavior; the plans
+              API path is still not clean and one endpoint test was disabled. Categories searched:
+              correctness, edge cases, error handling, test quality, integration."
+            created_at: 2026-03-30T22:42:36.784Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-30T22:36:45.668Z
-    updated_at: 2026-03-30T22:42:34.150Z
+    updated_at: 2026-03-30T22:42:36.784Z
     notes: []
