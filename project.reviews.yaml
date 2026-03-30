@@ -90598,6 +90598,17 @@ reviews:
         runner: npm run test:e2e
         created_at: 2026-03-30T23:02:02.355Z
         completed_at: 2026-03-30T23:02:02.355Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate exited 6 with repository-wide warnings only (orphaned skill dir, orphaned
+          specs, existing AC annotation debt); no new schema/reference errors in this change.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-30T23:02:08.968Z
+        completed_at: 2026-03-30T23:02:08.968Z
     events:
       - _ulid: 01KN0F7HS76P4JS4YKH0HMBTMB
         actor: Test User
@@ -90640,9 +90651,32 @@ reviews:
           status: pass
           name: targeted websocket e2e
         timestamp: 2026-03-30T23:02:04.539Z
+      - _ulid: 01KN0FQD1VJ23MNZCXM8X7R28V
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-30T23:02:10.747Z
+      - _ulid: 01KN0FQRRE3CJTYV2ZPEXCWDWV
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-30T23:02:22.734Z
+      - _ulid: 01KN0FQRREC6B23AG4N7S2XNN6
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-30T23:02:22.734Z
     examined_commit: 901eae907a6a3bdc27e2c2956410efb43eadf937
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -90671,7 +90705,14 @@ reviews:
               violation and the rewrite no longer proves the full malformed-command behavior."
             created_at: 2026-03-30T23:01:44.747Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-30T23:02:22.734Z
     created_at: 2026-03-30T22:53:31.303Z
-    updated_at: 2026-03-30T23:02:02.355Z
+    updated_at: 2026-03-30T23:02:22.734Z
     notes: []
