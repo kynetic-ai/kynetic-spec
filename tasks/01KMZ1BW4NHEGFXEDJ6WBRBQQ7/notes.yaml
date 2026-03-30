@@ -40,3 +40,17 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-30T22:37:43.600Z
+  - _ulid: 01KN0EZ3GSPKRKZPKRCXM9238W
+    content: "Fix cycle 1: addressed all websocket review blockers. Updated the daemon handler so
+      malformed commands now return ack:false validation_error responses per @api-contract ac-30,
+      fixed the heartbeat manager so a missing pong no longer resets the timeout window, added
+      daemon-heartbeat coverage for the 30s ping and 1001 timeout close, and narrowed the
+      triage/watcher N/A annotations to point at daemon-heartbeat.test.ts versus
+      daemon-api/websocket-protocol.test.ts by behavior. Verification: npm test -- --fresh
+      tests/daemon-heartbeat.test.ts tests/daemon-api/websocket-protocol.test.ts; npm run test:e2e
+      -- tests/e2e/api-websocket.spec.ts; kspec validate (warnings-only exit 6 from pre-existing
+      repo debt). Full npm test remains red in unrelated dispatch/serve/reviews suites outside this
+      change set."
+    supersedes: null
+    author: Test User
+    created_at: 2026-03-30T22:48:54.553Z
