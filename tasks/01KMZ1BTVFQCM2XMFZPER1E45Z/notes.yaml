@@ -32,3 +32,32 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-30T13:21:54.986Z
+  - _ulid: 01KMZGX6NSB9F2TED3T95G5WTR
+    content: >-
+      Fix cycle 2: addressed blocker — daemon startup timeouts under parallel execution.
+
+
+      Root cause: CLI serve start --detach uses a 5-second PID-file polling timeout. Under 10
+      parallel Playwright workers, bun processes don't write PID files within 5s, causing 19
+      failures.
+
+
+      Fix:
+
+      1. Spawn bun directly (bypass CLI PID-file mechanism entirely)
+
+      2. Keep daemon as child process for reliable SIGTERM cleanup
+
+      3. Add cache readiness polling (cache_status: ready) before tests run
+
+      4. Fix timing issues: visibility waits before clicks, auto-retrying assertions
+
+      5. Health check timeout increased from 3s to 15s
+
+
+      Verification: 20+ consecutive runs of targeted suite (69 tests) pass cleanly. Pre-existing
+      unit test failure (dispatch-workspace-registry) unrelated to this branch — no diff vs
+      origin/dev.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-30T14:03:34.969Z
