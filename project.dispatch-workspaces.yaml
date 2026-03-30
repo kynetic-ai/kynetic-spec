@@ -29148,7 +29148,7 @@ workspaces:
         head: 901eae907a6a3bdc27e2c2956410efb43eadf937
         last_seen_at: 2026-03-30T23:09:18.233Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-rewrite-websocket-e2e-01kmz1bw
-  - active_role: worker
+  - active_role: null
     base_branch_point: 4549f2d161aa008e0832187456202af82c3357ad
     bootstrap:
       status: succeeded
@@ -29232,12 +29232,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-30T23:38:00.224Z
+      updated_at: 2026-03-30T23:39:32.697Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-30T23:38:00.224Z
+      updated_at: 2026-03-30T23:39:32.697Z
     integration:
       status: pending
       detail: null
@@ -29245,17 +29245,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 4549f2d161aa008e0832187456202af82c3357ad
-      updated_at: 2026-03-30T23:38:00.224Z
-    lifecycle_state: active
+      updated_at: 2026-03-30T23:39:32.697Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMZ1BWCJNCQ1AWDQE6XMY2EK"
     task_slug: task-add-filewatcher-e2e
     timestamps:
       closed_at: null
       last_active_at: 2026-03-30T23:18:06.175Z
-      last_reconciled_at: 2026-03-30T23:38:00.224Z
+      last_reconciled_at: 2026-03-30T23:39:32.697Z
       created_at: 2026-03-30T23:17:44.851Z
-      updated_at: 2026-03-30T23:38:00.224Z
+      updated_at: 2026-03-30T23:39:32.697Z
     workspace_id: dispatch-workspace-01KMZ1BWCJNCQ1AWDQE6XMY2EK
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
