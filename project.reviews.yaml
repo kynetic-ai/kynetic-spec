@@ -85196,6 +85196,50 @@ reviews:
         runner: npm
         created_at: 2026-03-30T15:31:38.126Z
         completed_at: 2026-03-30T15:31:38.126Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: >-
+          > @kynetic-ai/spec@0.12.0 test:e2e
+
+          > npm run build:e2e && npx playwright test tests/e2e/smoke.spec.ts
+          tests/e2e/api-server.spec.ts tests/e2e/dashboard.spec.ts tests/e2e/plans.spec.ts
+          tests/e2e/triage.spec.ts tests/e2e/validate.spec.ts
+
+
+
+          > @kynetic-ai/spec@0.12.0 build:e2e
+
+          > tsc && chmod +x dist/cli/index.js && npm run build:shared && npm run build:daemon && npm
+          run build:web-ui
+
+
+
+          > @kynetic-ai/spec@0.12.0 build:shared
+
+          > cd packages/shared && npm run build
+
+
+
+          > @kynetic-ai/shared@0.1.0 build
+
+          > tsc
+
+
+
+          > @kynetic-ai/spec@0.12.0 build:daemon
+
+          > shx rm -rf dist/daemon && shx mkdir -p dist/daemon && shx cp -r packages/daemon/src/*
+          dist/daemon/ && shx cp src/daemon/entity-cache.ts dist/daemon/ finished with 6 failed / 88
+          passed / 1 skipped. Deterministic failures included plans live batch fetch ( expected
+          one  request, got none), plans non-existent ref ( expected 404, got 500), and triage
+          submit flow ( submit button stayed disabled).
+        name: targeted e2e
+        required: true
+        runner: playwright
+        created_at: 2026-03-30T15:31:44.351Z
+        completed_at: 2026-03-30T15:31:44.351Z
     events:
       - _ulid: 01KMZNDKHD4JX075XS686347DH
         actor: Test User
@@ -85224,6 +85268,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMZNYJ11R8XFGNBADE9KVE71
         timestamp: 2026-03-30T15:31:42.883Z
+      - _ulid: 01KMZNYMQGV6K9PJECCYMWDJBF
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: targeted e2e
+        timestamp: 2026-03-30T15:31:45.008Z
     examined_commit: 56eb7f9f66ff1b04997879c45758c4455183b965
     external_links: []
     lifecycle_state: open
@@ -85329,5 +85380,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-30T15:22:26.734Z
-    updated_at: 2026-03-30T15:31:42.241Z
+    updated_at: 2026-03-30T15:31:44.351Z
     notes: []
