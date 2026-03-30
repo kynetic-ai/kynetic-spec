@@ -84054,7 +84054,19 @@ reviews:
     slugs: []
     title: Review task-migrate-api-tests-vitest (cycle 3)
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Exited 6 with warnings only: schema and references OK; no validation errors. Warnings
+          were repo-wide pre-existing completeness/alignment issues, plus the new unresolved AC refs
+          found in this review."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-30T13:07:47.445Z
+        completed_at: 2026-03-30T13:07:47.445Z
     events:
       - _ulid: 01KMZDEFYGDAY2GWNZG61EWXTW
         actor: Test User
@@ -84097,6 +84109,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMZDP2ATR850NF8K4QWSG9QG
         timestamp: 2026-03-30T13:07:16.611Z
+      - _ulid: 01KMZDQ2DFCRCW4NZE2A9T5Y0Q
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-30T13:07:48.271Z
     examined_commit: d0f61c721edf881be8985f4798b1c46667e688df
     external_links: []
     lifecycle_state: open
@@ -84181,5 +84200,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-30T13:03:07.216Z
-    updated_at: 2026-03-30T13:07:15.418Z
+    updated_at: 2026-03-30T13:07:47.445Z
     notes: []
