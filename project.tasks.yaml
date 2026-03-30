@@ -23462,7 +23462,7 @@
   title: Add file watcher e2e behavioral tests
   type: task
   plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-fix-query-loading-state"
@@ -23477,6 +23477,7 @@
   created_at: 2026-03-30T09:31:58.738Z
   started_at: 2026-03-30T23:18:57.342Z
   submitted_at: 2026-03-30T23:37:39.239Z
+  completed_at: 2026-03-30T23:48:05.659Z
   automation: eligible
 - _ulid: 01KMZ1BWMQGPZRECVEQCT2GS48
   slugs:

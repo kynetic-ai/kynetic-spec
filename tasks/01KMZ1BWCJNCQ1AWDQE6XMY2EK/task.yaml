@@ -48,8 +48,12 @@ description: |
 spec_ref: null
 plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev as 8143717e7051664d87b28bf4dace112d99041ff1 after approved review
+  01KN0HZ3D6NBTVB6SNSCN79TWW. Added file-watcher Playwright coverage for tasks, inbox badge, items,
+  and multi-project isolation, plus the ws-invalidation file-update mapping needed to refresh active
+  views after direct on-disk edits.
 depends_on:
   - "@task-fix-query-loading-state"
 context: []
@@ -117,8 +121,25 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-03-30T23:41:22.245Z
+  - author: Test User
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev as 8143717e7051664d87b28bf4dace112d99041ff1 after approved review
+          01KN0HZ3D6NBTVB6SNSCN79TWW. Added file-watcher Playwright coverage for tasks, inbox badge,
+          items, and multi-project isolation, plus the ws-invalidation file-update mapping needed to
+          refresh active views after direct on-disk edits.
+        previous: null
+      completed_at:
+        new: 2026-03-30T23:48:05.659Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-03-30T23:48:05.667Z
 created_at: 2026-03-30T09:31:58.738Z
 started_at: 2026-03-30T23:18:57.342Z
 submitted_at: 2026-03-30T23:37:39.239Z
+completed_at: 2026-03-30T23:48:05.659Z
 todos: []
 automation: eligible
