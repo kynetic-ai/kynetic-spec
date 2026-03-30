@@ -30415,57 +30415,284 @@ plans:
       # E2E Test Suite Audit and Restructure
 
 
-      ## Context
+      ## Specs
 
 
-      786 e2e tests exist: 469 pass, 316 fail. The suite was never run as a whole — individual specs
-      were written incrementally but accumulated structural debt. Three problems need solving:
+      ```yaml
 
+      []
 
-      1. 242 API-only tests run in Playwright (spawning Chromium + daemon per test) but never touch
-      a browser — they belong in vitest daemon integration tests
-
-      2. 316 UI tests are stale, primarily broken by the response envelope migration that changed
-      API response structure
-
-      3. API-only tests mask UI coverage gaps — we have tests proving the API works but the actual
-      UI tests for those features are broken or missing
+      ```
 
 
       ## Tasks
 
 
+      derive_from_specs: false
+
+
       ```yaml
 
-      - title: Investigate daemon integration test harness
-        slug: task-investigate-daemon-harness
+      - title: "Fix TanStack Query reactivity bug: loading state never resolves"
+        slug: task-fix-query-loading-state
         description: |
-          Determine the right approach for running API contract tests against a
-          real daemon from vitest. Options: spawn daemon subprocess in beforeAll,
-          use Bun directly, or use Playwright's APIRequestContext without browser.
-          Produce a working proof-of-concept with one migrated spec.
-        priority: 1
-        tags: [infra, test, e2e]
+          Dashboard, Agents, and Automation pages show a loading skeleton forever on
+          fresh page load. All API requests complete successfully (confirmed via HAR)
+          but the UI never transitions out of loading state. Navigating away and back
+          works because the component remounts with cached data.
 
-      - title: Categorize all failing e2e UI tests by root cause
-        slug: task-categorize-e2e-failures
-        description: |
-          Read error-context.md files from test-results/ and git history to
-          categorize each of the 316 failing tests. Group by: response envelope
-          drift, missing testid, timing, stale fixtures, removed feature,
-          redesigned UI. Produce a triage table with fix/rewrite/purge
-          decisions per spec.
-        priority: 1
-        tags: [test, e2e, audit]
+          Root cause hypothesis: TanStack Query Svelte v6 createRawRef proxy state
+          updates don't propagate to Svelte $derived tracking. The query observer
+          transitions from isLoading:true to isLoading:false internally, but the
+          component's $derived never re-evaluates.
 
-      - title: Expand CI e2e gate to full suite
-        slug: task-ci-full-e2e
-        depends_on: ["@task-investigate-daemon-harness", "@task-categorize-e2e-failures"]
+          IMPORTANT: This bug has survived multiple previous fix attempts where a
+          plausible root cause was identified and a fix applied, but the issue
+          remained. Do NOT write fix code until the break point is proven with
+          runtime evidence.
+
+          Approach:
+          1. Add console.log instrumentation in node_modules/@tanstack/svelte-query
+             createBaseQuery.svelte.ts — log when observer.subscribe callback fires,
+             log when update(createResult()) is called, log the isLoading value
+          2. Add console.log in the automation page $derived(loading) to see if it
+             re-evaluates and what values it reads
+          3. Do a fresh page load and capture the console output
+          4. Identify the exact point where the chain breaks
+          5. Only then write a fix targeting the confirmed break point
+          6. Verify fix works on fresh page load (not navigate-back) for all three
+             affected pages: /, /agents, /automation
+          7. Remove instrumentation
+
+          Files likely involved:
+          - node_modules/@tanstack/svelte-query/src/createBaseQuery.svelte.ts
+          - node_modules/@tanstack/svelte-query/src/containers.svelte.ts
+          - packages/web-ui/src/routes/+page.svelte (dashboard)
+          - packages/web-ui/src/routes/agents/+page.svelte
+          - packages/web-ui/src/routes/automation/+page.svelte
+
+          If the fix requires patching TanStack internals, use pnpm patch or a
+          local wrapper (createQueryWithSync) rather than forking the package.
+        priority: 1
+        tags: [bug, web-ui, e2e]
+
+      - title: "Fix e2e tests for dashboard, agents, and automation pages"
+        slug: task-fix-loading-page-e2e
+        depends_on: ["@task-fix-query-loading-state"]
         description: |
-          After API tests are migrated and UI tests are triaged, update CI to run
-          the full e2e suite (not just smoke). Configure parallel workers and
-          appropriate timeouts.
+          After the loading state bug is fixed, the e2e tests for these three pages
+          will get past the loading skeleton. They will likely still have additional
+          failures (stale selectors, stale fixtures, timing issues). This task is to
+          fix those remaining failures so these specs pass cleanly.
+
+          Affected specs and approximate failure counts:
+          - dashboard.spec.ts: 18 failures (stale selectors for count cards, nav
+            links, attention cards; 2 envelope-drift in aggregation)
+          - agents.spec.ts: 24 failures (stale selectors for dispatch status,
+            agent cards, edit dialog; timing on dispatch start/stop)
+          - automation.spec.ts: 17 failures (stale selectors for trigger rows,
+            tag chips, priority filter; timing on dialog close; stale fixtures
+            for eligibility and filter schemas)
+
+          Approach: Run each spec, categorize remaining failures by root cause,
+          fix in batches by cause type (selectors first, then fixtures, then timing).
+        priority: 1
+        tags: [test, e2e, web-ui]
+
+      - title: "Migrate API-only e2e specs to vitest using app.handle()"
+        slug: task-migrate-api-tests-vitest
+        description: |
+          15 Playwright specs (279 tests) are skipped because they test HTTP API
+          contracts without any browser interaction. Migrate them to vitest using
+          the existing app.handle(Request) pattern from
+          tests/daemon-api-input-validation.test.ts.
+
+          This eliminates Chromium overhead for pure API contract testing and
+          puts these tests into the fast vitest shard pipeline.
+
+          Specs to migrate (with test counts):
+          - api-tasks.spec.ts (35)
+          - api-items.spec.ts (26)
+          - api-sessions-pagination.spec.ts (23)
+          - api-meta.spec.ts (23)
+          - api-inbox.spec.ts (18)
+          - api-reviews-list.spec.ts (18)
+          - api-reviews-threads.spec.ts (17)
+          - api-errors.spec.ts (14)
+          - api-aggregation.spec.ts (11)
+          - api-projects.spec.ts (10)
+          - api-agent-dispatch.spec.ts (9)
+          - api-server.spec.ts (8)
+          - api-sessions-legacy.spec.ts (7)
+          - api-sessions-search.spec.ts (3)
+          - api-triage.spec.ts (37)
+
+          Pattern: Import createServer from packages/daemon/src/server.ts, call
+          app.handle(new Request(...)) with required headers (Host: localhost,
+          X-Kspec-Dir, Content-Type). No actual server startup needed.
+
+          Each migrated spec becomes a vitest test file under tests/daemon-api/.
+          After migration, delete the skipped Playwright spec. Each spec can be
+          migrated independently — well-suited for parallel subagent execution.
         priority: 2
+        tags: [test, infra, e2e]
+
+      - title: "Fix stale-selector e2e failures across UI specs"
+        slug: task-fix-stale-selectors
+        depends_on: ["@task-fix-loading-page-e2e"]
+        description: |
+          ~35 e2e test failures are caused by stale data-testid attributes or CSS
+          selectors that no longer match the current UI markup. These span multiple
+          specs outside the loading-affected pages.
+
+          Affected specs include: items.spec.ts (12), search.spec.ts (subset),
+          tasks.spec.ts (4), task-board.spec.ts (subset), validate.spec.ts (subset),
+          reviews-detail.spec.ts (subset), triage.spec.ts, navigation.spec.ts,
+          inbox.spec.ts.
+
+          Approach: For each failing test, inspect the current component markup
+          to find the correct selector. Prefer updating the test to match the
+          component rather than adding testids to components — only add testids
+          when the existing markup has no stable hook.
+
+          Can be parallelized by spec file.
+        priority: 2
+        tags: [test, e2e]
+
+      - title: "Fix timing and race condition e2e failures"
+        slug: task-fix-timing-races
+        depends_on: ["@task-fix-loading-page-e2e"]
+        description: |
+          ~38 e2e failures are caused by timing issues: WebSocket subscription
+          not established before assertions, dialog animations still running,
+          keyboard handlers not yet registered, debounce timers pending, or
+          scroll/navigation state not yet settled.
+
+          Key patterns to fix:
+          - WebSocket: Wait for connection indicator to show "Connected" before
+            testing WS-dependent features
+          - Dialogs: Use waitFor on dialog close state, not fixed delays
+          - Keyboard: Ensure page.keyboard actions wait for handler registration
+          - Search debounce: Account for 300ms debounce in assertions
+          - Navigation: Wait for URL change or page content, not setTimeout
+
+          Affected specs: search.spec.ts (~10), agents.spec.ts (subset),
+          automation-session-idle.spec.ts (9), task-board.spec.ts (subset),
+          cache-warming-views.spec.ts (subset), connection.spec.ts (2),
+          sessions.spec.ts (subset).
+
+          Can be parallelized by spec file.
+        priority: 2
+        tags: [test, e2e]
+
+      - title: "Fix stale fixture and envelope drift e2e failures"
+        slug: task-fix-fixtures-envelope
+        depends_on: ["@task-fix-loading-page-e2e"]
+        description: |
+          ~15 e2e failures caused by:
+          - Stale fixtures (10): Test data in tests/e2e/fixtures/ doesn't match
+            current schema expectations. Fixtures for plans, reviews, items,
+            session-context, and triage need updating.
+          - Envelope drift (5): A few tests expect unwrapped API responses where
+            the endpoint now wraps in {data, meta} envelope, or vice versa.
+            Primarily affects dashboard aggregation tests and static-mode tests.
+
+          Approach: Compare fixture data against current Zod schemas, update to
+          match. For envelope drift, check whether the daemon endpoint uses
+          wrapResponse and whether the client uses unwrapEnvelope — fix whichever
+          side is inconsistent.
+        priority: 2
+        tags: [test, e2e]
+
+      - title: "Rewrite api-websocket spec as behavioral UI e2e tests"
+        slug: task-rewrite-websocket-e2e
+        depends_on: ["@task-fix-query-loading-state"]
+        description: |
+          api-websocket.spec.ts (14 tests) tests the WebSocket protocol at the
+          API level using page.evaluate() to open raw WS connections. These should
+          be rewritten as behavioral UI tests that verify WebSocket-driven features
+          from the user's perspective:
+
+          - Connection indicator shows Connected/Disconnected state
+          - Real-time task status updates appear without page refresh
+          - Real-time inbox count updates in sidebar
+          - Agent invocation streaming output appears on dashboard
+          - Cache invalidation on file changes (items/tasks update)
+
+          The raw protocol tests (message format, ack/nack, close codes,
+          heartbeat) should move to vitest daemon integration tests since they
+          don't need a browser.
+        priority: 3
+        tags: [test, e2e, web-ui]
+
+      - title: "Add file watcher e2e behavioral tests"
+        slug: task-add-filewatcher-e2e
+        depends_on: ["@task-fix-query-loading-state"]
+        description: |
+          File watcher behavior currently has no UI-level e2e coverage. The
+          api-watcher.spec.ts tested the daemon's file change detection at the
+          API level, but no tests verify that file changes propagate through
+          WebSocket to the UI.
+
+          Write behavioral e2e tests that:
+          - Modify a task YAML file in the fixture dir and verify the tasks view
+            updates without manual refresh
+          - Modify an inbox YAML file and verify inbox count updates in sidebar
+          - Verify that changes to one project don't affect another project's view
+            (multi-project isolation)
+
+          Note: File watcher tests skip in CI (GitHub Actions doesn't support
+          recursive fs.watch). These will be local-only tests marked with
+          appropriate skip conditions.
+        priority: 3
+        tags: [test, e2e, web-ui]
+
+      - title: "Address excessive WebSocket query invalidation during dispatch"
+        slug: task-fix-ws-invalidation-storm
+        description: |
+          When dispatch is running with active invocations, the centralized
+          ws-invalidation handler fires queryKeys.agents.all invalidation for
+          every message_complete, thinking_complete, and tool_call_complete event.
+          During active agent work this creates a continuous refetch storm on
+          agent/status (~400-800ms per call, repeating every 1-2 seconds).
+
+          HAR evidence: 22 rounds of agent/status fetches over 45 seconds on
+          the automation page with one active invocation.
+
+          The ws-invalidation.ts already filters out streaming *_progress events
+          but not *_complete events. Fix: only invalidate agents.all on
+          agent_invocation lifecycle events (started, completed, failed), not
+          on individual message/thinking completion events. The completion
+          events should only invalidate session-scoped queries, not the
+          entire agents domain.
+
+          File: packages/web-ui/src/lib/query/ws-invalidation.ts lines 65-91
+        priority: 2
+        tags: [bug, web-ui, perf]
+
+      - title: "Validate and expand CI e2e gate to full suite"
+        slug: task-ci-full-e2e
+        depends_on:
+          - "@task-fix-loading-page-e2e"
+          - "@task-fix-stale-selectors"
+          - "@task-fix-timing-races"
+          - "@task-fix-fixtures-envelope"
+        description: |
+          CI currently runs only 2 e2e specs (smoke.spec.ts and the skipped
+          api-server.spec.ts). After the test suite is healthy, expand CI to
+          run the full e2e suite.
+
+          Steps:
+          1. Run full suite locally, confirm pass rate
+          2. Time the full suite in CI-like conditions (2 workers, retries)
+          3. If total time is acceptable (<5 min), switch test:e2e to run full
+             suite. If too slow, identify a meaningful subset beyond smoke.
+          4. Update .github/workflows/test.yml
+          5. Consider parallel CI jobs or sharding if needed
+
+          The vitest-migrated API tests will already run in the test shards,
+          so CI coverage will be broader even before this task.
+        priority: 3
         tags: [ci, e2e, infra]
       ```
 
@@ -30473,83 +30700,68 @@ plans:
       ## Implementation Notes
 
 
-      ### API-only spec inventory (13 files, 242 tests)
+      ### Investigation findings (2026-03-30)
 
 
-      | Spec | Tests | Endpoints | Daemon unit test overlap |
+      **Failure categorization (155 test failures across 30 UI specs):**
 
-      |------|-------|-----------|------------------------|
+      - loading-never-resolves: 46 (30%) — dashboard, agents, automation, workflows, validate,
+      sessions
 
-      | api-tasks | 35 | GET/POST tasks, start, note | None |
+      - timing-race: 38 (25%) — WebSocket, dialog animation, keyboard, debounce, scroll
 
-      | api-items | 26 | GET items, batch | None |
+      - stale-selector: 35 (23%) — testid/CSS selectors outdated after UI refactors
 
-      | api-sessions-pagination | 23 | GET sessions (7 filter types) | None |
+      - stale-fixture: 10 (7%) — test data schemas out of sync
 
-      | api-meta | 23 | GET meta, search, validate, alignment | None |
+      - envelope-drift: 5 (3%) — response wrapping inconsistencies
 
-      | api-inbox | 18 | GET/POST/DELETE inbox | None |
-
-      | api-reviews-list | 18 | GET reviews (filters, sort) | None |
-
-      | api-reviews-threads | 17 | POST/PATCH review threads | None |
-
-      | api-errors | 14 | Cross-endpoint error format | None |
-
-      | api-aggregation | 11 | GET aggregation stats | None |
-
-      | api-projects | 10 | GET/POST/DELETE projects | None |
-
-      | api-agent-dispatch | 9 | GET/POST dispatch | Complementary (dispatch engine state) |
-
-      | api-server | 8 | Health, CORS, localhost security | Complementary (middleware logic) |
-
-      | api-sessions-legacy | 7 | GET sessions (legacy warnings) | None |
-
-      | api-sessions-search | 3 | GET sessions/search | None |
+      - removed-feature: 1 (<1%) — agent trigger editing moved to automation view
 
 
-      Only 2 of 14 specs have any daemon unit test overlap, and it's complementary (different test
-      angles), not duplicative.
+      **Loading state bug — confirmed behavior via HAR capture:**
+
+      - All API requests fire and complete with 200 OK and valid data
+
+      - No CacheWarmingError, no retry loops (in clean project without dispatch)
+
+      - UI stays in loading skeleton forever
+
+      - Navigating away and back renders correctly (cached data)
+
+      - Bug has existed since these pages were built; no previous fix attempt has ever succeeded
+
+      - Hypothesis: TanStack Query Svelte v6 createRawRef proxy $state.raw updates
+        don't trigger Svelte $derived re-evaluation. MUST be proven with runtime
+        instrumentation before writing any fix code.
+
+      **WebSocket invalidation storm (separate from loading bug):**
+
+      - With dispatch running, message_complete/thinking_complete events fire
+        continuously, each invalidating queryKeys.agents.all
+      - Creates perpetual refetch cycle (~20 rounds of agent/status over 45s)
+
+      - Compounds loading bug and will cause perf issues even after loading is fixed
 
 
-      ### E2E test breakdown by type
+      **API-only test migration:**
+
+      - 15 specs, 279 tests already skipped with migration notes
+
+      - Existing app.handle() pattern in tests/daemon-api-input-validation.test.ts
+
+      - No daemon startup needed — direct Elysia app invocation
+
+      - api-websocket.spec.ts stays in Playwright but rewrites as behavioral UI tests
 
 
-      | Category | Specs | Tests | Status |
+      **Coverage gaps exposed by API test migration:**
 
-      |----------|-------|-------|--------|
+      - WebSocket-driven UI updates: zero behavioral e2e coverage
 
-      | API-only (no browser) | 13 | 242 | Mostly passing |
+      - File watcher propagation to UI: zero behavioral e2e coverage
 
-      | Mixed (API + UI) | 8 | ~164 | Partially failing |
-
-      | UI-only | 23 | ~380 | Mostly failing |
-
-
-      ### Failure root causes (from agent analysis)
-
-
-      - **Response envelope migration** — biggest cause. API responses wrapped in `{ data, meta }`
-      envelope but UI queries and e2e mocks expect unwrapped format
-
-      - **Project store initialization** — queries gated on `isProjectInitialized()` that don't fire
-      in test context, causing empty page renders
-
-      - **Timing/race conditions** — WebSocket reconnection, siblings queries, content loading
-
-      - **Platform limitations** — file watcher tests unreliable outside Linux with inotify
-
-
-      ### Open questions
-
-
-      - What's the right test layer for HTTP contract testing? Vitest with a real daemon subprocess?
-      Or keep in Playwright but without browser?
-
-      - Should API contract tests use response snapshots or structural assertions?
-
-      - How do we prevent this drift from happening again? CI enforcement of full e2e suite?
+      - These features were only "tested" at the API protocol level
     status: draft
     approved_at: null
     derived_specs: []
@@ -30558,4 +30770,9 @@ plans:
     source_path: /tmp/e2e-audit-plan.md
     created_at: 2026-03-29T23:24:45.359Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KMYZ5SZVN95FBCB7JKE8YR73
+        content: "Fleshed out with investigation findings: failure categorization, loading state root cause,
+          coverage gap analysis"
+        author: "@claude"
+        created_at: 2026-03-30T08:53:42.523Z
