@@ -84386,9 +84386,25 @@ reviews:
           status: fail
           name: targeted e2e
         timestamp: 2026-03-30T13:21:42.197Z
+      - _ulid: 01KMZEGVW5SKBSHEFZQRP1J49Y
+        actor: codex@openai.com
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-30T13:21:53.541Z
+      - _ulid: 01KMZEGVW68B40DSXHDM7ZTTGR
+        actor: codex@openai.com
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-30T13:21:53.542Z
     examined_commit: ae1dae3c9ac99a8260273c50fdb4154d15b594ae
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -84796,7 +84812,14 @@ reviews:
               correctness, edge cases, error handling, test quality, and integration."
             created_at: 2026-03-30T13:21:37.358Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai.com
+        role: reviewer
+        created_at: 2026-03-30T13:21:53.541Z
     created_at: 2026-03-30T13:20:24.136Z
-    updated_at: 2026-03-30T13:21:41.573Z
+    updated_at: 2026-03-30T13:21:53.542Z
     notes: []
