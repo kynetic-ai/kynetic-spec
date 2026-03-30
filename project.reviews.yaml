@@ -90461,6 +90461,12 @@ reviews:
         payload:
           thread_ulid: 01KN0EEVXGK98AWKK3KMJPMT96
         timestamp: 2026-03-30T23:07:14.903Z
+      - _ulid: 01KN0G0RHYKWH58YE0GHGR1H9T
+        actor: Test User
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN0EF2YZRWMQCDA76804GFTV
+        timestamp: 2026-03-30T23:07:17.438Z
     examined_commit: 96979f51ac13f6ca691be360c82899c11de83f96
     external_links: []
     lifecycle_state: closed
@@ -90517,6 +90523,12 @@ reviews:
               That is a coverage regression in a review whose goal is to stabilize flaky tests, not
               delete them.
             created_at: 2026-03-30T22:40:09.696Z
+          - _ulid: 01KN0G0QQDV3EHN2YSDQF2XJ3S
+            author: Test User
+            body: Fixed in 8339fac0f. The cancelled-task plan_ref scenario now has dedicated daemon-route
+              coverage in tests/daemon-api/plans.test.ts, so the route behavior stays covered
+              without relying on cache invalidation inside the Playwright daemon.
+            created_at: 2026-03-30T23:07:16.589Z
         kind: blocker
       - _ulid: 01KN0EHCGH08SEKJ6W9Q4CAVRF
         anchor:
@@ -90569,7 +90581,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T22:42:51.771Z
     created_at: 2026-03-30T22:36:45.668Z
-    updated_at: 2026-03-30T23:07:14.090Z
+    updated_at: 2026-03-30T23:07:16.589Z
     notes: []
   - _ulid: 01KN0F7HS7KDC8NKD5B0EWPYPB
     slugs: []
