@@ -10148,6 +10148,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-30T15:59:21.244Z
+  - _ulid: 01KMZQP1GG0FNTWNQY4TA62WFR
+    type: friction
+    content: "Playwright page.waitForRequest() has a race condition when called after an awaited action
+      that triggers the request. The request fires during the action's execution, before
+      waitForRequest starts listening. Fix pattern: create a promise inside the page.route handler
+      that resolves on handler completion, then await that promise instead of waitForRequest.
+      Affected test: plans.spec.ts:595 batch fetch test. Any e2e test using this pattern is
+      potentially flaky."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-30T16:02:00.336Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
