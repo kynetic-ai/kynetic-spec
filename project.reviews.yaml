@@ -90485,6 +90485,12 @@ reviews:
         payload:
           thread_ulid: 01KN0EF2YZRWMQCDA76804GFTV
         timestamp: 2026-03-30T23:07:23.854Z
+      - _ulid: 01KN0G118V5V3A2VE3BP8VH46C
+        actor: Test User
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN0EKJKGSTM8PVMVWTVS4PDR
+        timestamp: 2026-03-30T23:07:26.363Z
     examined_commit: 96979f51ac13f6ca691be360c82899c11de83f96
     external_links: []
     lifecycle_state: closed
@@ -90602,6 +90608,13 @@ reviews:
               API path is still not clean and one endpoint test was disabled. Categories searched:
               correctness, edge cases, error handling, test quality, integration."
             created_at: 2026-03-30T22:42:36.784Z
+          - _ulid: 01KN0G10FB97F6F39QZQ1ZTADD
+            author: Test User
+            body: "Addressed. The plans-route edge cases now live in tests/daemon-api/plans.test.ts, while the
+              browser suite keeps UI/expand coverage only. Relevant verification after the change:
+              plans Playwright file passes (40/40), the reviewer subset passes (83/83), and kspec
+              validate is unchanged at warnings-only."
+            created_at: 2026-03-30T23:07:25.543Z
         kind: nit
     verdicts:
       - applies_to_version:
@@ -90612,7 +90625,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T22:42:51.771Z
     created_at: 2026-03-30T22:36:45.668Z
-    updated_at: 2026-03-30T23:07:21.775Z
+    updated_at: 2026-03-30T23:07:25.543Z
     notes: []
   - _ulid: 01KN0F7HS7KDC8NKD5B0EWPYPB
     slugs: []
