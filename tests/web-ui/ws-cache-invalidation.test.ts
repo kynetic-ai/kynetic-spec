@@ -388,16 +388,18 @@ describe("ws-invalidation agents topic scoping", () => {
   });
 
   describe("agent lifecycle events still invalidate agents.all", () => {
-    for (const eventName of [
-      "agent_invocation_started",
-      "agent_invocation_completed",
-      "agent_invocation_failed",
-    ]) {
-      it(`${eventName} invalidates both agents.all and sessions.all`, () => {
+    // The daemon broadcasts a single "agent_invocation" event with data.status
+    // carrying "started", "completed", or "failed" — not separate event names.
+    for (const status of ["started", "completed", "failed"]) {
+      it(`agent_invocation with status="${status}" invalidates both agents.all and sessions.all`, () => {
         setupWsInvalidation(mockQueryClient);
-        const event = makeBroadcastEvent("agents", eventName, {
-          invocation_id: "01TEST_INVOCATION",
+        const event = makeBroadcastEvent("agents", "agent_invocation", {
+          session_id: "01TEST_SESSION_ID",
           agent_id: "task-worker",
+          task_id: "@task-auth",
+          task_title: "Implement authentication",
+          status,
+          timestamp: Date.now(),
         });
 
         dispatchEvent("agents", event);
@@ -410,5 +412,18 @@ describe("ws-invalidation agents topic scoping", () => {
         });
       });
     }
+  });
+
+  describe("unknown agent events produce no invalidation", () => {
+    it("unrecognized event name does not invalidate any queries", () => {
+      setupWsInvalidation(mockQueryClient);
+      const event = makeBroadcastEvent("agents", "some_unknown_event", {
+        session_id: "01TEST_SESSION_ID",
+      });
+
+      dispatchEvent("agents", event);
+
+      expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalled();
+    });
   });
 });

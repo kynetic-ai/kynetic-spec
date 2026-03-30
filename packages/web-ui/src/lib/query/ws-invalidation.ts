@@ -91,9 +91,15 @@ function getInvalidationKeys(
         }
         return [];
       }
-      // Agent lifecycle events (started, completed, failed) represent actual
-      // dispatch state changes — invalidate both agents and sessions.
-      return [queryKeys.agents.all, queryKeys.sessions.all];
+      // Agent lifecycle events: the daemon broadcasts a single "agent_invocation"
+      // event with data.status = "started" | "completed" | "failed".
+      // These represent actual dispatch state changes — invalidate both agents
+      // and sessions.
+      if (event.event === "agent_invocation") {
+        return [queryKeys.agents.all, queryKeys.sessions.all];
+      }
+      // Unknown agent events — no invalidation needed.
+      return [];
     }
 
     case "sessions":
