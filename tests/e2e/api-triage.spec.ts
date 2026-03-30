@@ -159,7 +159,8 @@ async function waitForTriageBroadcast(
   }>;
 }
 
-test.describe("Triage API", () => {
+// SKIPPED: API-only tests — no browser interaction. Migrating to vitest daemon integration tests.
+test.describe.skip("Triage API", () => {
   test.describe("GET /api/triage", () => {
     // AC: @triage-daemon-api ac-1
     test("returns triage records array with total, sorted by created_at desc", async ({
