@@ -154,3 +154,26 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-30T13:07:53.372Z
+  - _ulid: 01KMZEF95QX3YTAYDVQH2Z11RH
+    content: >-
+      Fix cycle 3: addressed both unresolved blocker threads from review
+      @01KMZDEFYGJB5EZP7S5GN7DB0G.
+
+
+      Changes:
+
+      1. reviews-list.test.ts: Replaced non-existent @kspec-review-list/@kspec-review-detail refs
+      with correct @review-records-daemon-api ac-1 (list), ac-2 (detail), ac-10 (error handling).
+      Added N/A annotations for all inherited traits.
+
+      2. projects.test.ts: Replaced non-existent @spec-daemon-projects refs with correct
+      @multi-directory-daemon ac-28 (GET), ac-29 (POST), ac-30 (DELETE). Added N/A annotations for
+      @trait-localhost-security and @trait-websocket-protocol inherited traits, matching original
+      Playwright test coverage.
+
+
+      All 283 daemon-api tests pass. 30 failures in full suite are pre-existing flaky timeouts
+      (STACK_TRACE_ERROR in dispatch/workspace tests).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-30T13:21:01.623Z
