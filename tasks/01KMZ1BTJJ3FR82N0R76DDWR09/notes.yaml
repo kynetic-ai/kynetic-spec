@@ -1,1 +1,43 @@
-notes: []
+notes:
+  - _ulid: 01KMZ291RMMZMEWCV54YW29KQC
+    content: >-
+      Investigation complete. Root cause identified:
+
+
+      In @tanstack/svelte-query 6.1.0, `createBaseQuery.svelte.ts` subscribes to the query observer
+      inside a `$effect()` callback (line 74). In Svelte 5, `$effect` callbacks are deferred — they
+      don't run until the component's rendering phase completes. This creates a timing issue:
+
+
+      1. Component renders with initial `isLoading: true` state
+
+      2. Query observer starts fetching data (via observer construction, not subscription)
+
+      3. Data returns from API (confirmed by HAR evidence: all return 200 OK within 2s)
+
+      4. Observer tries to notify subscribers, but `$effect` hasn't run yet
+
+      5. `$effect` eventually runs and subscribes, but the observer doesn't re-notify for
+      already-delivered results
+
+      6. The `update(createResult())` call never fires, so `isLoading` stays `true` in the proxy
+
+
+      This is confirmed by TanStack/query PR #9810 (open, not yet merged) which fixes exactly this
+      bug with the description: "If you do await someQuery.promise, the $effect for the subscription
+      will never run, and therefore the await will never resolve."
+
+
+      Navigation-then-return works because on re-mount, the cache already has data, so
+      `createResult()` returns `isLoading: false` from the initial `createRawRef(createResult())`
+      call.
+
+
+      Fix approach: Create a local `createQuery` wrapper in
+      `packages/web-ui/src/lib/query/createQuery.svelte.ts` that re-exports a fixed version
+      subscribing eagerly (synchronously during init) instead of inside `$effect`. This avoids
+      patching node_modules and can be removed when upstream merges PR #9810. All page imports will
+      be updated from `@tanstack/svelte-query` to the local wrapper.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-30T09:47:54.516Z
