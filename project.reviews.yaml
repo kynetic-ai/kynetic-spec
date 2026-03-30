@@ -83318,6 +83318,12 @@ reviews:
         payload:
           thread_ulid: 01KMZ7ZBB5ZKS62QCH9PQY8WHW
         timestamp: 2026-03-30T12:28:09.725Z
+      - _ulid: 01KMZBEW87FT8VECX12P82ZP4M
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMZ7ZD2HCB8CBW6VY6SJ2MJ9
+        timestamp: 2026-03-30T12:28:22.663Z
     examined_commit: 48e6b79299b8817d4c06a0ba814a34aa9bac6128
     external_links: []
     lifecycle_state: closed
@@ -83459,6 +83465,14 @@ reviews:
               of the removed coverage, leaving this skipped means the migration no longer
               proves  ac-17 or the existing non-API-route regression guard.
             created_at: 2026-03-30T11:27:29.873Z
+          - _ulid: 01KMZBEVN0JR3VAFJ70BZRSDB1
+            author: "@claude"
+            body: "Fixed: Restored the SPA fallback regression test. The test now uses projectContextMiddleware
+              with a real project and verifies that GET / returns 200 with text/html (via a simple
+              handler simulating static plugin behavior). This proves the derive middleware
+              correctly skips non-API routes, which was the original regression being guarded
+              against. Also added test that /api/health works without X-Kspec-Dir header."
+            created_at: 2026-03-30T12:28:22.048Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -83469,7 +83483,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T11:27:41.637Z
     created_at: 2026-03-30T11:20:16.563Z
-    updated_at: 2026-03-30T12:28:09.112Z
+    updated_at: 2026-03-30T12:28:22.048Z
     notes: []
   - _ulid: 01KMZAH34WBGQ6AAAZE76CWTC8
     slugs: []
