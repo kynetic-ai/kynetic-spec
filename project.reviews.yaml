@@ -88213,6 +88213,18 @@ reviews:
         runner: kspec
         created_at: 2026-03-30T18:29:52.479Z
         completed_at: 2026-03-30T18:29:52.479Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test from commit 8305fc76efd2c40e026e5aee15fca3c500b5d462 failed: 16 suites failed,
+          10 tests failed, 7494 passed, 5 skipped; included tests/agent-dispatch-engine.test.ts
+          assertion at line 5721 plus multiple STACK_TRACE_ERROR suite failures"
+        name: full-test-suite
+        required: true
+        runner: npm
+        created_at: 2026-03-30T18:29:54.707Z
+        completed_at: 2026-03-30T18:29:54.707Z
     events:
       - _ulid: 01KMZZ65AZNH844CX91K8X2603
         actor: Test User
@@ -88248,6 +88260,13 @@ reviews:
           status: pass
           name: validation
         timestamp: 2026-03-30T18:29:53.179Z
+      - _ulid: 01KN004WN01TYTW7GXCPVEEXZC
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: full-test-suite
+        timestamp: 2026-03-30T18:29:55.488Z
     examined_commit: 8305fc76efd2c40e026e5aee15fca3c500b5d462
     external_links: []
     lifecycle_state: open
@@ -88282,7 +88301,7 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-30T18:13:08.575Z
-    updated_at: 2026-03-30T18:29:52.479Z
+    updated_at: 2026-03-30T18:29:54.707Z
     notes: []
   - _ulid: 01KMZZF5GMNQRBVECT9B9ASPZ9
     slugs: []
