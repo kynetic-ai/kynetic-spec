@@ -10092,8 +10092,11 @@ observations:
       first-class helper or documented command path that merges via the canonical worktree without
       requiring branch checkout inside the reviewer snapshot.
     author: Test User
-    resolution: null
-    resolved: false
+    resolution: Friction duplicate of existing detached-reviewer merge path observations; keeping the
+      success observation from this session, but this friction is already tracked.
+    resolved: true
+    resolved_at: 2026-03-30T13:35:04.841Z
+    resolved_by: Test User
     created_at: 2026-03-30T13:34:32.790Z
   - _ulid: 01KMZF81JHG8328WZR6CJKPHWD
     type: success
