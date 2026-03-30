@@ -10082,6 +10082,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-30T13:33:58.463Z
+  - _ulid: 01KMZF81AN22EGHHBTXY4BPHQ7
+    type: friction
+    content: Detached reviewer snapshots cannot switch to the integration branch when that branch is
+      already checked out in the canonical worktree, so the manual-merge review flow needs a
+      first-class helper or documented command path that merges via the canonical worktree without
+      requiring branch checkout inside the reviewer snapshot.
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-30T13:34:32.790Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
