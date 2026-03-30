@@ -84850,6 +84850,18 @@ reviews:
         runner: npm-test
         created_at: 2026-03-30T13:31:10.478Z
         completed_at: 2026-03-30T13:31:10.478Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm test hit one unrelated timeout in tests/dispatch-workspace-registry.test.ts (1 failed,
+          7488 passed, 5 skipped); isolated rerun of the failing test passed, so this does not
+          indicate a regression in the reviewed files.
+        name: npm-test-full
+        required: false
+        runner: npm-test
+        created_at: 2026-03-30T13:31:12.438Z
+        completed_at: 2026-03-30T13:31:12.438Z
     events:
       - _ulid: 01KMZEKKBPX4MTHK88S0TGWMR1
         actor: Test User
@@ -84885,6 +84897,13 @@ reviews:
           status: pass
           name: daemon-api-targeted
         timestamp: 2026-03-30T13:31:11.123Z
+      - _ulid: 01KMZF1YB1FKNNSB0F4J45XZ4X
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm-test-full
+        timestamp: 2026-03-30T13:31:13.121Z
     examined_commit: 853e55343524ba07ed3c232180e3c1b037623b00
     external_links: []
     lifecycle_state: open
@@ -84924,5 +84943,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-30T13:23:23.127Z
-    updated_at: 2026-03-30T13:31:10.478Z
+    updated_at: 2026-03-30T13:31:12.438Z
     notes: []
