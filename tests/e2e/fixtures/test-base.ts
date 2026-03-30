@@ -1,6 +1,6 @@
 import { test as base, expect } from "@playwright/test";
 import { execSync, spawnSync } from "child_process";
-import { mkdirSync, cpSync, rmSync, existsSync, writeFileSync } from "fs";
+import { mkdirSync, mkdtempSync, cpSync, rmSync, existsSync, writeFileSync } from "fs";
 import { join, dirname } from "path";
 import { tmpdir } from "os";
 import { fileURLToPath } from "url";
@@ -87,7 +87,8 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
       const wsUrl = `ws://localhost:${port}`;
 
       // Create temp directory with .kspec subdirectory
-      const tempDir = join(tmpdir(), `kspec-e2e-${Date.now()}`);
+      // Use mkdtempSync for atomic unique path — safe under parallel Playwright workers
+      const tempDir = mkdtempSync(join(tmpdir(), "kspec-e2e-"));
       const kspecDir = join(tempDir, ".kspec");
       mkdirSync(kspecDir, { recursive: true });
 
