@@ -30,6 +30,67 @@ const INVALIDATION_TOPICS = [
   "cache:status",
 ] as const;
 
+const FILE_WATCHER_INVALIDATION_DELAYS_MS = [650, 1_500] as const;
+
+function getFileUpdateInvalidationKeys(
+  event: BroadcastEvent,
+): readonly (readonly unknown[])[] {
+  const ref = (event.data as { ref?: string } | undefined)?.ref;
+  if (!ref) {
+    return [];
+  }
+
+  if (
+    ref.endsWith(".tasks.yaml") ||
+    ref === "project.tasks.yaml" ||
+    ref === "tasks.yaml" ||
+    ref.startsWith("tasks/")
+  ) {
+    return [queryKeys.tasks.all, queryKeys.validation.all, queryKeys.sessionContext.all];
+  }
+
+  if (ref === "project.inbox.yaml") {
+    return [queryKeys.inbox.all];
+  }
+
+  if (ref === "project.triage.yaml") {
+    return [queryKeys.inbox.all];
+  }
+
+  if (ref === "project.reviews.yaml") {
+    return [queryKeys.reviews.all, queryKeys.tasks.all];
+  }
+
+  if (ref === "project.plans.yaml") {
+    return [queryKeys.plans.all];
+  }
+
+  if (ref.startsWith("modules/") || ref.endsWith(".spec.yaml")) {
+    return [queryKeys.items.all, queryKeys.validation.all];
+  }
+
+  if (ref === "kynetic.yaml" || ref.endsWith(".meta.yaml")) {
+    return [
+      queryKeys.items.all,
+      queryKeys.settings.all,
+      queryKeys.workflows.all,
+      queryKeys.observations.all,
+      queryKeys.validation.all,
+      queryKeys.automation.all,
+      queryKeys.sessionContext.all,
+    ];
+  }
+
+  return [
+    queryKeys.settings.all,
+    queryKeys.workflows.all,
+    queryKeys.observations.all,
+    queryKeys.validation.all,
+    queryKeys.automation.all,
+    queryKeys.sessionContext.all,
+  ];
+}
+
 /**
  * Map a broadcast event to the query keys that should be invalidated.
  *
@@ -95,17 +156,10 @@ function getInvalidationKeys(
       return [queryKeys.sessions.all];
 
     case "files:updates":
-      // File changes (e.g., settings save, meta edits) affect multiple caches
-      // Observations and session context live in meta files
-      // Automation config (hooks, schedules, compositions) lives in meta files
-      return [
-        queryKeys.settings.all,
-        queryKeys.workflows.all,
-        queryKeys.observations.all,
-        queryKeys.validation.all,
-        queryKeys.automation.all,
-        queryKeys.sessionContext.all,
-      ];
+      // File watcher broadcasts are the fallback path for direct on-disk edits.
+      // Map the changed file to the same query families the UI would invalidate
+      // for route-driven entity updates so active views stay fresh without reload.
+      return getFileUpdateInvalidationKeys(event);
 
     case "cache:status":
       // AC: @ui-data-freshness ac-warming-auto-transition
@@ -165,9 +219,21 @@ function handleBroadcastEvent(topic: string) {
     if (!queryClientRef) return;
 
     const keys = getInvalidationKeys(topic, event);
-    for (const key of keys) {
-      queryClientRef.invalidateQueries({ queryKey: key as unknown[] });
+    const invalidate = () => {
+      if (!queryClientRef) return;
+      for (const key of keys) {
+        queryClientRef.invalidateQueries({ queryKey: key as unknown[] });
+      }
+    };
+
+    if (topic === "files:updates") {
+      for (const delayMs of FILE_WATCHER_INVALIDATION_DELAYS_MS) {
+        setTimeout(invalidate, delayMs);
+      }
+      return;
     }
+
+    invalidate();
   };
 }
 
