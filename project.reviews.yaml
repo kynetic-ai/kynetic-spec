@@ -85011,3 +85011,29 @@ reviews:
     created_at: 2026-03-30T13:23:23.127Z
     updated_at: 2026-03-30T13:31:23.937Z
     notes: []
+  - _ulid: 01KMZH7EQRA9MV25WEHHQ91662
+    slugs: []
+    title: Review task-fix-loading-page-e2e (cycle 3)
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KMZH7EQQSTZ8VFCC22FAGFDM
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-30T14:09:10.903Z
+    examined_commit: 22f19ef9bd1b10a5abe58111af3cb6d390bc49a3
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMZ1BTVFQCM2XMFZPER1E45Z"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-30T14:09:10.904Z
+    updated_at: null
+    notes: []
