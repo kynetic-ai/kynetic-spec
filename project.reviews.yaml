@@ -83165,6 +83165,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMZ7Z4BV8KSRZEGJZYF4WHF0
         timestamp: 2026-03-30T11:27:21.512Z
+      - _ulid: 01KMZ7Z6MW37ZTBBX0ATA43F3N
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMZ7Z61RPKY2BN43MCHFKCX0
+        timestamp: 2026-03-30T11:27:23.292Z
     examined_commit: 48e6b79299b8817d4c06a0ba814a34aa9bac6128
     external_links: []
     lifecycle_state: open
@@ -83198,7 +83205,24 @@ reviews:
               gate and makes the replacement suite unreliable as part of the real pipeline.
             created_at: 2026-03-30T11:27:20.955Z
         kind: blocker
+      - _ulid: 01KMZ7Z61RPKY2BN43MCHFKCX0
+        anchor:
+          type: code
+          commit: 48e6b79299b8817d4c06a0ba814a34aa9bac6128
+          line_end: 163
+          line_start: 160
+          path: tests/daemon-api/sessions-search.test.ts
+          side: head
+        entries:
+          - _ulid: 01KMZ7Z61RRPQ62XVYXS7ZRPA8
+            author: Test User
+            body: This file claims  is covered, but the only x-request-id assertion is now skipped. The deleted
+              Playwright migration source had that test enabled. A skipped test is not AC coverage,
+              so the vitest replacement leaves the session-search endpoint with less verified
+              contract coverage than before.
+            created_at: 2026-03-30T11:27:22.680Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-30T11:20:16.563Z
-    updated_at: 2026-03-30T11:27:20.955Z
+    updated_at: 2026-03-30T11:27:22.680Z
     notes: []
