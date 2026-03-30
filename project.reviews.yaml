@@ -88203,6 +88203,16 @@ reviews:
         runner: npm
         created_at: 2026-03-30T18:29:48.379Z
         completed_at: 2026-03-30T18:29:48.379Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate exited 6 with existing repo warnings only; no validation errors
+        name: validation
+        required: false
+        runner: kspec
+        created_at: 2026-03-30T18:29:52.479Z
+        completed_at: 2026-03-30T18:29:52.479Z
     events:
       - _ulid: 01KMZZ65AZNH844CX91K8X2603
         actor: Test User
@@ -88231,6 +88241,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN004QQQM9F05588Y89AJ0YK
         timestamp: 2026-03-30T18:29:51.092Z
+      - _ulid: 01KN004TCV8CF7Y44GG5FYZH2V
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: validation
+        timestamp: 2026-03-30T18:29:53.179Z
     examined_commit: 8305fc76efd2c40e026e5aee15fca3c500b5d462
     external_links: []
     lifecycle_state: open
@@ -88265,7 +88282,7 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-30T18:13:08.575Z
-    updated_at: 2026-03-30T18:29:50.455Z
+    updated_at: 2026-03-30T18:29:52.479Z
     notes: []
   - _ulid: 01KMZZF5GMNQRBVECT9B9ASPZ9
     slugs: []
