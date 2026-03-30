@@ -91,3 +91,54 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-30T20:29:32.152Z
+  - _ulid: 01KN0CGKP2D801GG2VR7VMQ0VV
+    content: >-
+      Fix cycle 1: Addressed all 4 blocker threads from review @01KN06EX.
+
+
+      Root cause: CommandPalette.svelte had a binding bug — bind:value={query} on Command.Dialog was
+      binding to cmdk's selected-item value (the highlighted item), NOT the search input text. The
+      $effect watching query never fired, so the search API was never called. This is why the
+      original tests used if (count > 0) guards — search results never appeared.
+
+
+      Fix in CommandPalette.svelte:
+
+      - Introduced searchText state variable bound to Command.Input's value (the actual text)
+
+      - Changed $effect to watch searchText instead of query
+
+      - Added shouldFilter={false} to disable cmdk's client-side filtering (we use server-side
+      search)
+
+      - Updated empty-state check and handleSelect to use searchText
+
+
+      Fix in search.spec.ts (AC-24/25):
+
+      - All tests now exercise real search behavior — no more if (count > 0) guards
+
+      - Debounce test verifies API call timing via page.route interception
+
+      - Loading test delays API response to verify 'Searching...' text
+
+      - No-results test asserts message unconditionally
+
+      - Grouping test verifies both task and item groups visible
+
+      - Navigation tests include /items→/specs redirect in URL pattern
+
+
+      Fix in connection.spec.ts (AC-30/31/32):
+
+      - AC-30: Injects duplicate BroadcastEvent via routeWebSocket, verifies task count unchanged
+
+      - AC-31/32: Tracks connection count, subscribe commands after reconnect, injects
+      post-reconnect event with seq=0 to prove lastSeqProcessed was reset
+
+
+      All 29 E2E tests in search.spec.ts, connection.spec.ts, and cache-warming-views.spec.ts pass.
+      Unit test failures (4 in dispatch-engine/bootstrap/workspace) are pre-existing on base branch.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-30T22:06:02.435Z
