@@ -52,7 +52,7 @@ tags:
   - web-ui
   - perf
 vcs_refs: []
-review_ref: "@01KN088H7579YMR3D7V36WWJVA"
+review_ref: "@01KN0HENS4KRC3FGTJX4A25SQN"
 submission_linkage:
   review_url: null
   branch: dev
@@ -263,6 +263,13 @@ history:
         previous: pending_review
     command: task-unblock
     timestamp: 2026-03-30T23:27:23.102Z
+  - author: Test User
+    changes:
+      review_ref:
+        new: "@01KN0HENS4KRC3FGTJX4A25SQN"
+        previous: "@01KN088H7579YMR3D7V36WWJVA"
+    command: review-link
+    timestamp: 2026-03-30T23:32:35.980Z
 prior_status: null
 created_at: 2026-03-30T09:31:59.799Z
 started_at: 2026-03-30T20:38:40.945Z
