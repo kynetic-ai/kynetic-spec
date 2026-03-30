@@ -23332,7 +23332,7 @@
   title: Fix e2e tests for dashboard, agents, and automation pages
   type: task
   plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-fix-query-loading-state"
@@ -23346,7 +23346,7 @@
   todos_count: 0
   created_at: 2026-03-30T09:31:57.167Z
   started_at: 2026-03-30T13:11:30.999Z
-  submitted_at: 2026-03-30T12:47:27.061Z
+  submitted_at: 2026-03-30T13:11:37.464Z
   automation: eligible
 - _ulid: 01KMZ1BV3H7S2SQ91TX8B80J1Y
   slugs:
