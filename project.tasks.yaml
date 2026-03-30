@@ -23533,8 +23533,13 @@
   title: Address excessive WebSocket query invalidation during dispatch
   type: task
   plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
-  status: pending_review
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - Required full-suite gate is still red on this snapshot. The submitted Web UI change passes its
+      targeted tests and matches the shared agent_invocation WebSocket contract, but npm test exits
+      1 with widespread backend/daemon failures, and selected failing suites pass in isolation.
+      Merge cannot proceed until the integration branch is green or the full suite reruns
+      successfully.
   depends_on: []
   priority: 2
   tags:
