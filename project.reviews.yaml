@@ -83384,3 +83384,29 @@ reviews:
     created_at: 2026-03-30T11:20:16.563Z
     updated_at: 2026-03-30T11:27:41.637Z
     notes: []
+  - _ulid: 01KMZAH34WBGQ6AAAZE76CWTC8
+    slugs: []
+    title: Review task-fix-query-loading-state (cycle 2)
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KMZAH34V0466VA2BA0X7RXWA
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-30T12:12:06.684Z
+    examined_commit: d067edacfbd8463a6aca643244557866358819d6
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMZ1BTJJ3FR82N0R76DDWR09"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-30T12:12:06.684Z
+    updated_at: null
+    notes: []
