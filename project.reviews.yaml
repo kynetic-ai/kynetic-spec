@@ -88871,6 +88871,17 @@ reviews:
         runner: npm
         created_at: 2026-03-30T21:02:15.421Z
         completed_at: 2026-03-30T21:02:15.421Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test exited 1: 32 suites failed / 48 tests failed / 2042 suites passed / 7448 tests
+          passed / 6 skipped"
+        name: full-test-suite
+        required: true
+        runner: npm
+        created_at: 2026-03-30T21:02:20.695Z
+        completed_at: 2026-03-30T21:02:20.695Z
     events:
       - _ulid: 01KN088H7576TEQ4J7TWC2FNHN
         actor: Test User
@@ -88899,6 +88910,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN08VX1NFW2V0T9ZSR96ZWTD
         timestamp: 2026-03-30T21:02:18.975Z
+      - _ulid: 01KN08W0BB97QT7B040NG7AH04
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: full-test-suite
+        timestamp: 2026-03-30T21:02:21.547Z
     examined_commit: fc7d91827cb184171d49d28475980f2269aa4959
     external_links: []
     lifecycle_state: open
@@ -88927,5 +88945,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-30T20:51:43.461Z
-    updated_at: 2026-03-30T21:02:18.165Z
+    updated_at: 2026-03-30T21:02:20.695Z
     notes: []
