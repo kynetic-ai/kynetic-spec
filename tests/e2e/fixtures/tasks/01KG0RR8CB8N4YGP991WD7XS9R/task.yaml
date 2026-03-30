@@ -21,7 +21,7 @@ vcs_refs:
   - ref: "feat/test-task-in-progress"
     type: branch
   - ref: "https://github.com/test/repo/pull/42"
-plan_ref: "@test-plan"
+plan_ref: "@test-plan-active"
 session_id: "session-abc123"
 automation: eligible
 todos:

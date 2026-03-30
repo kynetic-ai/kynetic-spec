@@ -229,7 +229,7 @@ test.describe("Interactive Triage UI", () => {
     const triageListResponse = await request.get(`${daemon.baseUrl}/api/triage`);
     expect(triageListResponse.ok()).toBe(true);
     const triageListBody = await triageListResponse.json();
-    const existingAction = triageListBody.items.find(
+    const existingAction = triageListBody.data.find(
       (item: { action?: string | null }) => item.action,
     )?.action;
 

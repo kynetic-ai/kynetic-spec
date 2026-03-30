@@ -44,7 +44,7 @@
     - "@test-task-ready"
   blocked_by:
     - "@test-task-blocked"
-  plan_ref: "@test-plan"
+  plan_ref: "@test-plan-active"
   session_id: "session-abc123"
   automation: eligible
   created_at: "2026-01-01T00:00:00Z"
@@ -101,7 +101,7 @@
   notes_count: 0
   todos_count: 0
 
-- _ulid: 01KG0RRHCC9N4YGP991WD7XSML
+- _ulid: 01KG0RRHCC9N4YGP991WD7XSMN
   slugs:
     - test-task-manual-only
   title: Manual only task

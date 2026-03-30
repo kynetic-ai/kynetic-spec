@@ -293,18 +293,13 @@ describe("Validation API", () => {
     expect(Array.isArray(body.data.orphans)).toBe(true);
   });
 
-  it("fixture validation returns known errors from test fixture data", async () => {
+  it("fixture validation returns no schema or ref errors from clean fixture data", async () => {
     const response = await request("/api/validate");
     expect(response.status).toBe(200);
     const body = await response.json();
-    // The e2e fixture has known issues:
-    // - tasks[6]._ulid has an invalid ULID format
-    // - @test-plan plan_ref reference not found
-    // These are pre-existing fixture data issues, not production bugs.
-    expect(body.data.schemaErrors.length).toBe(1);
-    expect(body.data.schemaErrors[0].message).toBe("Invalid ULID format");
-    expect(body.data.refErrors.length).toBe(1);
-    expect(body.data.refErrors[0].ref).toBe("@test-plan");
+    // Fixture data has been corrected: valid ULIDs and proper plan_ref values.
+    expect(body.data.schemaErrors.length).toBe(0);
+    expect(body.data.refErrors.length).toBe(0);
   });
 
   it("GET /api/alignment returns status 200", async () => {

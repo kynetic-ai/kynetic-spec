@@ -96,8 +96,8 @@ function mockValidationClean() {
   };
 }
 
-/** Mock alignment response. */
-function mockAlignment() {
+/** Mock aggregation response (replaces separate alignment/items/tasks mocks). */
+function mockAggregation() {
   return {
     stats: {
       totalSpecs: 10,
@@ -119,70 +119,12 @@ function mockAlignment() {
         message: 'Spec "Misaligned Feature" status is "not_started" but should be "in_progress"',
       },
     ],
-  };
-}
-
-/** Mock items response (with acceptance_criteria_count for AC coverage calculation). */
-function mockItems() {
-  // Total ACs: 3+2+1+2+3+1+2+1+3+2 = 20 ACs across 10 items
-  return {
-    items: [
-      { _ulid: "01KTEST000000000000ITEM001", title: "Item 1", acceptance_criteria_count: 3 },
-      { _ulid: "01KTEST000000000000ITEM002", title: "Item 2", acceptance_criteria_count: 2 },
-      { _ulid: "01KTEST000000000000ITEM003", title: "Item 3", acceptance_criteria_count: 1 },
-      { _ulid: "01KTEST000000000000ITEM004", title: "Item 4", acceptance_criteria_count: 2 },
-      { _ulid: "01KTEST000000000000ITEM005", title: "Item 5", acceptance_criteria_count: 3 },
-      { _ulid: "01KTEST000000000000ITEM006", title: "Item 6", acceptance_criteria_count: 1 },
-      { _ulid: "01KTEST000000000000ITEM007", title: "Item 7", acceptance_criteria_count: 2 },
-      { _ulid: "01KTEST000000000000ITEM008", title: "Item 8", acceptance_criteria_count: 1 },
-      { _ulid: "01KTEST000000000000ITEM009", title: "Item 9", acceptance_criteria_count: 3 },
-      { _ulid: "01KTEST000000000000ITEM010", title: "Item 10", acceptance_criteria_count: 2 },
-    ],
-    total: 10,
-    offset: 0,
-    limit: 50,
-  };
-}
-
-/** Mock tasks response (for orphaned task count). */
-function mockTasks() {
-  return {
-    items: [
-      {
-        _ulid: "01KTEST000000000000TASK001",
-        title: "Task with spec",
-        status: "pending",
-        priority: 2,
-        spec_ref: "@test-feature",
-        tags: [],
-        depends_on: [],
-        created_at: "2026-01-01T00:00:00Z",
-        notes_count: 0,
-      },
-      {
-        _ulid: "01KTEST000000000000TASK002",
-        title: "Task without spec",
-        status: "in_progress",
-        priority: 3,
-        tags: [],
-        depends_on: [],
-        created_at: "2026-01-01T00:00:00Z",
-        notes_count: 0,
-      },
-      {
-        _ulid: "01KTEST000000000000TASK003",
-        title: "Another orphan task",
-        status: "pending",
-        priority: 1,
-        tags: [],
-        depends_on: [],
-        created_at: "2026-01-01T00:00:00Z",
-        notes_count: 0,
-      },
-    ],
-    total: 3,
-    offset: 0,
-    limit: 50,
+    entity_counts: { items: 10, tasks: 3, traits: 0 },
+    ac_counts: { total: 20, covered: 17, uncovered: 3 },
+    orphan_count: 2,
+    valid: false,
+    error_count: 2,
+    warning_count: 5,
   };
 }
 
@@ -191,15 +133,11 @@ async function setupValidateRoutes(
   page: import("@playwright/test").Page,
   options?: {
     validation?: ReturnType<typeof mockValidationWithIssues>;
-    alignment?: ReturnType<typeof mockAlignment>;
-    items?: ReturnType<typeof mockItems>;
-    tasks?: ReturnType<typeof mockTasks>;
+    aggregation?: ReturnType<typeof mockAggregation>;
   },
 ) {
   const validationData = options?.validation ?? mockValidationWithIssues();
-  const alignmentData = options?.alignment ?? mockAlignment();
-  const itemsData = options?.items ?? mockItems();
-  const tasksData = options?.tasks ?? mockTasks();
+  const aggregationData = options?.aggregation ?? mockAggregation();
 
   await page.route("**/api/validate", (route) => {
     route.fulfill({
@@ -209,27 +147,11 @@ async function setupValidateRoutes(
     });
   });
 
-  await page.route("**/api/alignment", (route) => {
+  await page.route("**/api/aggregation/validation", (route) => {
     route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify(envelope(alignmentData)),
-    });
-  });
-
-  await page.route("**/api/items?*", (route) => {
-    route.fulfill({
-      status: 200,
-      contentType: "application/json",
-      body: JSON.stringify(envelope(itemsData.items, { total: itemsData.total, offset: itemsData.offset, limit: itemsData.limit })),
-    });
-  });
-
-  await page.route("**/api/tasks?*", (route) => {
-    route.fulfill({
-      status: 200,
-      contentType: "application/json",
-      body: JSON.stringify(envelope(tasksData.items, { total: tasksData.total, offset: tasksData.offset, limit: tasksData.limit })),
+      body: JSON.stringify(envelope(aggregationData)),
     });
   });
 }
@@ -425,7 +347,7 @@ test.describe("Validation and Alignment View", () => {
     test("shows no issues message when validation is clean", async ({ page, daemon: _daemon }) => {
       await setupValidateRoutes(page, {
         validation: mockValidationClean(),
-        alignment: { stats: mockAlignment().stats, warnings: [] },
+        aggregation: { ...mockAggregation(), warnings: [] },
       });
       await page.goto("/validate");
 
@@ -446,27 +368,11 @@ test.describe("Validation and Alignment View", () => {
           body: JSON.stringify(envelope(mockValidationClean())),
         });
       });
-      await page.route("**/api/alignment", (route) => {
+      await page.route("**/api/aggregation/validation", (route) => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify(envelope(mockAlignment())),
-        });
-      });
-      await page.route("**/api/items?*", (route) => {
-        const d = mockItems();
-        route.fulfill({
-          status: 200,
-          contentType: "application/json",
-          body: JSON.stringify(envelope(d.items, { total: d.total, offset: d.offset, limit: d.limit })),
-        });
-      });
-      await page.route("**/api/tasks?*", (route) => {
-        const d = mockTasks();
-        route.fulfill({
-          status: 200,
-          contentType: "application/json",
-          body: JSON.stringify(envelope(d.items, { total: d.total, offset: d.offset, limit: d.limit })),
+          body: JSON.stringify(envelope(mockAggregation())),
         });
       });
 
@@ -490,21 +396,7 @@ test.describe("Validation and Alignment View", () => {
           body: JSON.stringify({ error: "internal_error" }),
         });
       });
-      await page.route("**/api/alignment", (route) => {
-        route.fulfill({
-          status: 500,
-          contentType: "application/json",
-          body: JSON.stringify({ error: "internal_error" }),
-        });
-      });
-      await page.route("**/api/items?*", (route) => {
-        route.fulfill({
-          status: 500,
-          contentType: "application/json",
-          body: JSON.stringify({ error: "internal_error" }),
-        });
-      });
-      await page.route("**/api/tasks?*", (route) => {
+      await page.route("**/api/aggregation/validation", (route) => {
         route.fulfill({
           status: 500,
           contentType: "application/json",
