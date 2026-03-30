@@ -10069,8 +10069,11 @@ observations:
       immediately after the suite run gave enough evidence to distinguish flake from regression and
       allowed a confident approve/merge decision without weakening required targeted checks.
     author: Test User
-    resolution: null
-    resolved: false
+    resolution: Duplicate of existing detached-reviewer merge friction observations from 2026-03-27/28;
+      no new signal beyond prior tracking.
+    resolved: true
+    resolved_at: 2026-03-30T13:35:02.253Z
+    resolved_by: Test User
     created_at: 2026-03-30T13:33:58.160Z
   - _ulid: 01KMZF6ZSYX8VB518TAV8P7532
     type: friction
