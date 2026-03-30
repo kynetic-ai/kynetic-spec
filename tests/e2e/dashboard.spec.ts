@@ -307,7 +307,9 @@ test.describe("Dashboard Overview", () => {
       await interceptDashboardAPIs(page);
       await page.goto("/");
 
-      await page.getByTestId("task-count-ready").click();
+      const readyCard = page.getByTestId("task-count-ready");
+      await expect(readyCard).toBeVisible();
+      await readyCard.click();
       await page.waitForURL(/\/tasks\?status=pending/);
       expect(page.url()).toContain("status=pending");
     });
@@ -316,7 +318,9 @@ test.describe("Dashboard Overview", () => {
       await interceptDashboardAPIs(page);
       await page.goto("/");
 
-      await page.getByTestId("task-count-in_progress").click();
+      const inProgressCard = page.getByTestId("task-count-in_progress");
+      await expect(inProgressCard).toBeVisible();
+      await inProgressCard.click();
       await page.waitForURL(/\/tasks\?status=in_progress/);
       expect(page.url()).toContain("status=in_progress");
     });
@@ -325,7 +329,9 @@ test.describe("Dashboard Overview", () => {
       await interceptDashboardAPIs(page);
       await page.goto("/");
 
-      await page.getByTestId("task-count-pending_review").click();
+      const pendingReviewCard = page.getByTestId("task-count-pending_review");
+      await expect(pendingReviewCard).toBeVisible();
+      await pendingReviewCard.click();
       await page.waitForURL(/\/tasks\?status=pending_review/);
       expect(page.url()).toContain("status=pending_review");
     });
@@ -334,7 +340,9 @@ test.describe("Dashboard Overview", () => {
       await interceptDashboardAPIs(page);
       await page.goto("/");
 
-      await page.getByTestId("task-count-blocked").click();
+      const blockedCard = page.getByTestId("task-count-blocked");
+      await expect(blockedCard).toBeVisible();
+      await blockedCard.click();
       await page.waitForURL(/\/tasks\?status=blocked/);
       expect(page.url()).toContain("status=blocked");
     });
@@ -343,7 +351,9 @@ test.describe("Dashboard Overview", () => {
       await interceptDashboardAPIs(page);
       await page.goto("/");
 
-      await page.getByTestId("task-count-completed").click();
+      const completedCard = page.getByTestId("task-count-completed");
+      await expect(completedCard).toBeVisible();
+      await completedCard.click();
       await page.waitForURL(/\/tasks\?status=completed/);
       expect(page.url()).toContain("status=completed");
     });
@@ -446,17 +456,24 @@ test.describe("Dashboard Overview", () => {
       await interceptDashboardAPIs(page);
       await page.goto("/");
 
+      // Wait for attention section to render
+      const inboxCard = page.getByTestId("attention-inbox");
+      await expect(inboxCard).toBeVisible();
+
       // Inbox card links to /inbox
-      const inboxHref = await page.getByTestId("attention-inbox").getAttribute("href");
-      expect(inboxHref).toContain("/inbox");
+      await expect(inboxCard).toHaveAttribute("href", /\/inbox/);
 
       // Observations card links to /observations
-      const obsHref = await page.getByTestId("attention-observations").getAttribute("href");
-      expect(obsHref).toContain("/observations");
+      await expect(page.getByTestId("attention-observations")).toHaveAttribute(
+        "href",
+        /\/observations/,
+      );
 
       // Validation card links to /validate
-      const valHref = await page.getByTestId("attention-validation").getAttribute("href");
-      expect(valHref).toContain("/validate");
+      await expect(page.getByTestId("attention-validation")).toHaveAttribute(
+        "href",
+        /\/validate/,
+      );
     });
   });
 

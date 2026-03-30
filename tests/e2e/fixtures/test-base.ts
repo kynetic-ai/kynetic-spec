@@ -1,5 +1,5 @@
 import { test as base, expect } from "@playwright/test";
-import { execSync, spawnSync } from "child_process";
+import { execSync, type ChildProcess, spawn } from "child_process";
 import { mkdirSync, mkdtempSync, cpSync, rmSync, existsSync, writeFileSync } from "fs";
 import { join, dirname } from "path";
 import { tmpdir } from "os";
@@ -9,8 +9,8 @@ import { createServer } from "net";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Built CLI path — resolved locally to avoid importing vitest-only helpers
-const CLI_PATH = join(__dirname, "../../../dist/cli/index.js");
+// Daemon entry point — spawned directly via bun to avoid CLI PID-file timeout
+const DAEMON_ENTRY = join(__dirname, "../../../dist/daemon/index.ts");
 
 // E2E fixtures live alongside this file
 const E2E_FIXTURES = __dirname;
@@ -144,25 +144,35 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
         );
       }
 
-      // Start daemon on ephemeral port with isolated HOME (use built CLI directly, no npm link)
-      const startResult = spawnSync(
-        "node",
-        [CLI_PATH, "serve", "start", "--detach", "--port", String(port), "--kspec-dir", tempDir],
+      // Start daemon directly via bun (bypasses CLI PID-file timeout which is
+      // unreliable under parallel load). Keep as a child process for direct cleanup.
+      const daemonProcess: ChildProcess = spawn(
+        "bun",
+        [DAEMON_ENTRY, "--port", String(port), "--kspec-dir", tempDir],
         {
           cwd: tempDir,
-          encoding: "utf-8",
-          env: isolatedEnv,
+          stdio: "pipe",
+          env: { ...isolatedEnv, BUN_ENV: "production" },
         },
       );
 
-      if (startResult.status !== 0) {
-        throw new Error(`Failed to start daemon: ${startResult.stderr}`);
-      }
+      // Capture stderr for diagnostics if startup fails
+      let daemonStderr = "";
+      daemonProcess.stderr?.on("data", (chunk: Buffer) => {
+        daemonStderr += chunk.toString();
+      });
 
       // Wait for daemon to be ready by polling health endpoint
-      const maxAttempts = 30;
+      // Use generous timeout (15s) to handle parallel worker load
+      const maxAttempts = 150;
       const pollInterval = 100;
       for (let i = 0; i < maxAttempts; i++) {
+        // Check if daemon process exited unexpectedly
+        if (daemonProcess.exitCode !== null) {
+          throw new Error(
+            `Daemon process exited with code ${daemonProcess.exitCode} before becoming ready.\n${daemonStderr}`,
+          );
+        }
         try {
           const response = await fetch(`${baseUrl}/api/health`);
           if (response.ok) break;
@@ -170,7 +180,30 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
           // Daemon not ready yet
         }
         if (i === maxAttempts - 1) {
-          throw new Error(`Daemon failed to become ready after ${maxAttempts * pollInterval}ms`);
+          throw new Error(
+            `Daemon failed to become ready after ${maxAttempts * pollInterval}ms.\n${daemonStderr}`,
+          );
+        }
+        await new Promise((r) => setTimeout(r, pollInterval));
+      }
+
+      // Wait for entity cache to finish loading (cache_status: "ready")
+      // Without this, the daemon serves "loading" responses with empty data,
+      // causing intermittent test failures when pages render before data arrives
+      for (let i = 0; i < maxAttempts; i++) {
+        try {
+          const response = await fetch(`${baseUrl}/api/tasks`);
+          if (response.ok) {
+            const body = await response.json();
+            if (body?.meta?.cache_status === "ready") break;
+          }
+        } catch {
+          // Not ready yet
+        }
+        if (i === maxAttempts - 1) {
+          throw new Error(
+            `Daemon cache failed to become ready after ${maxAttempts * pollInterval}ms.\n${daemonStderr}`,
+          );
         }
         await new Promise((r) => setTimeout(r, pollInterval));
       }
@@ -231,13 +264,21 @@ tasks: []
       // AC: @e2e-test-daemon-isolation ac-5 — propagate port/URLs to all tests
       await use({ tempDir, kspecDir, port, baseUrl, wsUrl, createSecondProject });
 
-      // AC: @e2e-test-daemon-isolation ac-4 — scoped cleanup via serve stop, not process killing
-      spawnSync("node", [CLI_PATH, "serve", "stop", "--kspec-dir", tempDir], {
-        cwd: tempDir,
-        encoding: "utf-8",
-        env: isolatedEnv,
-      });
-      await new Promise((r) => setTimeout(r, 500));
+      // AC: @e2e-test-daemon-isolation ac-4 — scoped cleanup by terminating daemon child process
+      if (daemonProcess.pid && daemonProcess.exitCode === null) {
+        daemonProcess.kill("SIGTERM");
+        // Wait briefly for graceful shutdown
+        await new Promise<void>((resolve) => {
+          const timeout = setTimeout(() => {
+            daemonProcess.kill("SIGKILL");
+            resolve();
+          }, 2000);
+          daemonProcess.on("exit", () => {
+            clearTimeout(timeout);
+            resolve();
+          });
+        });
+      }
 
       // Remove temp directories
       try {

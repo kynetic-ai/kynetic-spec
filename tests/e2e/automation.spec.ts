@@ -54,7 +54,9 @@ test.describe("Automation View — Dispatch Triggers", () => {
       await page.goto("/automation");
       await expect(page.getByTestId("automation-loading")).toHaveCount(0);
 
-      await page.getByTestId("edit-triggers-task-worker").click();
+      const editButton = page.getByTestId("edit-triggers-task-worker");
+      await expect(editButton).toBeVisible();
+      await editButton.click();
       const dialog = page.getByTestId("trigger-edit-dialog");
       await expect(dialog).toBeVisible();
 
