@@ -54,7 +54,7 @@ description: |
 spec_ref: null
 plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on: []
 context: []
@@ -73,7 +73,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: 01KMZAFN8941R62EYMCEK1YJEM
+session_id: null
 history:
   - author: "@claude"
     changes:
@@ -179,6 +179,16 @@ history:
         previous: "@01KMZ7J5XKPEZZHF55RS94EJGJ"
     command: review-link
     timestamp: 2026-03-30T12:35:24.969Z
+  - author: Test User
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KMZAFN8941R62EYMCEK1YJEM
+    command: review-verdict-needs-work
+    timestamp: 2026-03-30T12:38:08.797Z
 created_at: 2026-03-30T09:31:57.425Z
 started_at: 2026-03-30T12:29:10.110Z
 submitted_at: 2026-03-30T12:29:18.000Z

@@ -83727,9 +83727,25 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-03-30T12:37:59.114Z
+      - _ulid: 01KMZC0QCT7HWG6JMJ6V5C4F39
+        actor: codex@local
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-30T12:38:07.515Z
+      - _ulid: 01KMZC0QCV2HFE96AGE3AXB3XN
+        actor: codex@local
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-30T12:38:07.515Z
     examined_commit: 1b14f9251d210312870ad8acab4d20393f1c18c4
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -83798,7 +83814,14 @@ reviews:
               superset of the skipped API coverage.
             created_at: 2026-03-30T12:37:34.802Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@local
+        role: reviewer
+        created_at: 2026-03-30T12:38:07.514Z
     created_at: 2026-03-30T12:35:22.878Z
-    updated_at: 2026-03-30T12:37:58.511Z
+    updated_at: 2026-03-30T12:38:07.515Z
     notes: []
