@@ -88224,6 +88224,13 @@ reviews:
           status: pass
           name: targeted-web-ui-test
         timestamp: 2026-03-30T18:29:49.045Z
+      - _ulid: 01KN004RBMCN7NER04R2A3TD03
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN004QQQM9F05588Y89AJ0YK
+        timestamp: 2026-03-30T18:29:51.092Z
     examined_commit: 8305fc76efd2c40e026e5aee15fca3c500b5d462
     external_links: []
     lifecycle_state: open
@@ -88233,10 +88240,32 @@ reviews:
       content_hash: ""
       ref: "@01KMZ1BXDQRXEGC4DAS1F8T9H5"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KN004QQQM9F05588Y89AJ0YK
+        anchor:
+          type: code
+          commit: 8305fc76efd2c40e026e5aee15fca3c500b5d462
+          line_end: 5721
+          line_start: 5721
+          path: tests/agent-dispatch-engine.test.ts
+          side: head
+        entries:
+          - _ulid: 01KN004QQQGDG80DHKEZJYMTKB
+            author: Test User
+            body: >-
+              > @kynetic-ai/spec@0.12.0 test
+
+              > node scripts/test.cjs does not pass on this snapshot, so the task is not
+              merge-ready. In my run from commit 8305fc76efd2c40e026e5aee15fca3c500b5d462, the full
+              suite ended with 16 failed suites / 10 failed tests, including this concrete assertion
+              failure () and multiple additional  suite failures. The Web UI invalidation tests for
+              this task pass in isolation, but the submitted snapshot still fails the required
+              full-suite verification that the task notes claim was clean.
+            created_at: 2026-03-30T18:29:50.455Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-30T18:13:08.575Z
-    updated_at: 2026-03-30T18:29:48.379Z
+    updated_at: 2026-03-30T18:29:50.455Z
     notes: []
   - _ulid: 01KMZZF5GMNQRBVECT9B9ASPZ9
     slugs: []
