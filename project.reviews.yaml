@@ -91155,6 +91155,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN0HWG2DQ81R3FW0QJ47S702
         timestamp: 2026-03-30T23:39:55.659Z
+      - _ulid: 01KN0HWSJE7JSRKCP88PFFC0RS
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN0HWRSF8BK7239NVEMG0MKB
+        timestamp: 2026-03-30T23:40:04.558Z
     examined_commit: fc7d91827cb184171d49d28475980f2269aa4959
     external_links: []
     lifecycle_state: open
@@ -91185,7 +91192,30 @@ reviews:
               on  events."
             created_at: 2026-03-30T23:39:54.830Z
         kind: blocker
+      - _ulid: 01KN0HWRSF8BK7239NVEMG0MKB
+        anchor:
+          type: code
+          commit: fc7d91827cb184171d49d28475980f2269aa4959
+          line_end: 102
+          line_start: 98
+          path: packages/web-ui/src/lib/query/ws-invalidation.ts
+          side: head
+        entries:
+          - _ulid: 01KN0HWRSFF60NE5Y5113ZD1A2
+            author: Test User
+            body: "This narrows the agents topic too far: the daemon also broadcasts sync_state on that topic
+              when dispatch enters or exits degraded mode, but this new fallback returns no
+              invalidation for anything except agent_invocation. The automation page reads
+              queryKeys.agents.status() and relies on centralized queryKeys.agents.all invalidation
+              for those status changes, so degraded or recovered state will stop appearing until
+              some unrelated agent lifecycle event happens. Evidence:
+              packages/daemon/src/routes/agent-dispatch.ts broadcasts event.type on the agents
+              topic, src/agent-runtime/dispatch.ts defines that type as sync_state, and
+              packages/web-ui/src/routes/automation/+page.svelte does not manually invalidate agent
+              status on agents events."
+            created_at: 2026-03-30T23:40:03.759Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-30T23:32:21.924Z
-    updated_at: 2026-03-30T23:39:54.830Z
+    updated_at: 2026-03-30T23:40:03.759Z
     notes: []
