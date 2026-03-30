@@ -31,3 +31,12 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-30T22:29:50.344Z
+  - _ulid: 01KN0EAM9FADMEC84YFK4WF264
+    content: "Fix cycle 1 plan: correct malformed-command protocol behavior to match @api-contract
+      ac-30, replace the 2s idle placeholder with real heartbeat coverage, and restore close-code
+      coverage so annotations only point at behavior the tests actually prove. Re-verifying
+      @api-contract ac-25..31 plus @trait-websocket-protocol ac-1..5/@daemon-server ac-4 after the
+      protocol test rewrite."
+    supersedes: null
+    author: Test User
+    created_at: 2026-03-30T22:37:43.600Z
