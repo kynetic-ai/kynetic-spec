@@ -374,6 +374,50 @@ describe("daemon websocket protocol", () => {
     await waitForClose(ws);
   });
 
+  // AC: @api-contract ac-30
+  it("returns a validation_error nack for subscribe commands with invalid topics", async () => {
+    const { ws } = await connectClient();
+
+    const ack = await sendCommandAndWaitForAck(ws, {
+      action: "subscribe",
+      request_id: "bad-subscribe-topics",
+      payload: {},
+    });
+
+    expect(ack).toMatchObject({
+      ack: false,
+      request_id: "bad-subscribe-topics",
+      success: false,
+      error: "validation_error",
+      details: "Missing or invalid topics array",
+    });
+
+    ws.close(1000, "test complete");
+    await waitForClose(ws);
+  });
+
+  // AC: @api-contract ac-30
+  it("returns a validation_error nack for unsubscribe commands with invalid topics", async () => {
+    const { ws } = await connectClient();
+
+    const ack = await sendCommandAndWaitForAck(ws, {
+      action: "unsubscribe",
+      request_id: "bad-unsubscribe-topics",
+      payload: {},
+    });
+
+    expect(ack).toMatchObject({
+      ack: false,
+      request_id: "bad-unsubscribe-topics",
+      success: false,
+      error: "validation_error",
+      details: "Missing or invalid topics array",
+    });
+
+    ws.close(1000, "test complete");
+    await waitForClose(ws);
+  });
+
   // AC: @api-contract ac-28
   // AC: @api-contract ac-29
   // AC: @trait-websocket-protocol ac-2

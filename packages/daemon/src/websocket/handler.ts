@@ -130,14 +130,7 @@ export class WebSocketHandler {
     const topics = command.payload?.topics;
 
     if (!topics || !Array.isArray(topics) || topics.length === 0) {
-      this.sendAck(
-        ws,
-        true,
-        command.request_id,
-        false,
-        "validation_error",
-        "Missing or invalid topics array",
-      );
+      this.sendValidationError(ws, command.request_id, "Missing or invalid topics array");
       return;
     }
 
@@ -159,14 +152,7 @@ export class WebSocketHandler {
     const topics = command.payload?.topics;
 
     if (!topics || !Array.isArray(topics) || topics.length === 0) {
-      this.sendAck(
-        ws,
-        true,
-        command.request_id,
-        false,
-        "validation_error",
-        "Missing or invalid topics array",
-      );
+      this.sendValidationError(ws, command.request_id, "Missing or invalid topics array");
       return;
     }
 
@@ -186,6 +172,14 @@ export class WebSocketHandler {
    */
   private handlePing(ws: ServerWebSocket<ConnectionData>, command: WebSocketCommand) {
     this.sendAck(ws, true, command.request_id, true);
+  }
+
+  private sendValidationError(
+    ws: ServerWebSocket<ConnectionData>,
+    request_id: string | undefined,
+    details: string,
+  ) {
+    this.sendAck(ws, false, request_id, false, "validation_error", details);
   }
 
   private resolveSessionId(ws: ServerWebSocket<ConnectionData>): string | undefined {
