@@ -88428,6 +88428,20 @@ reviews:
         runner: npm-test
         created_at: 2026-03-30T18:31:49.787Z
         completed_at: 2026-03-30T18:31:49.787Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test failed broadly outside the task surface: 79 suites / 125 tests failed across
+          dispatch/bootstrap, cli-serve, daemon-read-path, and daemon API areas. A representative
+          unrelated suite still passed standalone (npm test -- tests/daemon-api/items.test.ts => 7/7
+          suites, 27/27 tests), indicating snapshot-wide interference rather than a regression from
+          these fixture/envelope changes."
+        name: full npm test
+        required: false
+        runner: npm-test
+        created_at: 2026-03-30T18:31:56.754Z
+        completed_at: 2026-03-30T18:31:56.754Z
     events:
       - _ulid: 01KMZZF5GKTV03SFEM5Z1TTJ0F
         actor: Test User
@@ -88463,6 +88477,13 @@ reviews:
           kind: nit
           thread_ulid: 01KN008E9FCY5BYP95FNF86QEG
         timestamp: 2026-03-30T18:31:52.541Z
+      - _ulid: 01KN008KS48TZKGQY35N1PWAWM
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: full npm test
+        timestamp: 2026-03-30T18:31:57.476Z
     examined_commit: 9270ac10690307f1121562922ae5408c81bc5b57
     external_links: []
     lifecycle_state: open
@@ -88508,5 +88529,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-30T18:18:03.668Z
-    updated_at: 2026-03-30T18:31:51.855Z
+    updated_at: 2026-03-30T18:31:56.754Z
     notes: []
