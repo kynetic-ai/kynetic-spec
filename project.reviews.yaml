@@ -83205,6 +83205,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMZ7ZBB5ZKS62QCH9PQY8WHW
         timestamp: 2026-03-30T11:27:28.684Z
+      - _ulid: 01KMZ7ZDKQ9MDHQXNARPC8ACZ7
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMZ7ZD2HCB8CBW6VY6SJ2MJ9
+        timestamp: 2026-03-30T11:27:30.423Z
     examined_commit: 48e6b79299b8817d4c06a0ba814a34aa9bac6128
     external_links: []
     lifecycle_state: open
@@ -83290,7 +83297,25 @@ reviews:
               Playwright spec hit the real running daemon, which is what  ac-1/ac-2/ac-15 require.
             created_at: 2026-03-30T11:27:28.101Z
         kind: blocker
+      - _ulid: 01KMZ7ZD2HCB8CBW6VY6SJ2MJ9
+        anchor:
+          type: code
+          commit: 48e6b79299b8817d4c06a0ba814a34aa9bac6128
+          line_end: 223
+          line_start: 217
+          path: tests/daemon-api/server.test.ts
+          side: head
+        entries:
+          - _ulid: 01KMZ7ZD2HWX1SYFXT8DGZE8TP
+            author: Test User
+            body: The migration dropped the root-route regression coverage instead of replacing it. The old spec
+              asserted that  served the SPA HTML and did not trip the project-context middleware
+              bug; the new suite just skips that case. Because replacement tests must be a superset
+              of the removed coverage, leaving this skipped means the migration no longer
+              proves  ac-17 or the existing non-API-route regression guard.
+            created_at: 2026-03-30T11:27:29.873Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-30T11:20:16.563Z
-    updated_at: 2026-03-30T11:27:28.101Z
+    updated_at: 2026-03-30T11:27:29.873Z
     notes: []
