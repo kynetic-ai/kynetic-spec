@@ -82,6 +82,10 @@
 			lastProcessedRef = urlRef;
 			handleSelectTask(urlRef);
 		}
+		// When URL no longer has ?ref= (after goto in close effect), reset tracking
+		if (!urlRef && lastProcessedRef) {
+			lastProcessedRef = '';
+		}
 	});
 
 	async function handleSelectTask(taskId: string) {
@@ -122,7 +126,9 @@
 		if (!dialogOpen) {
 			panelTask = null;
 			panelError = '';
-			lastProcessedRef = '';
+			// Do NOT clear lastProcessedRef here — keep it set so the open effect
+			// doesn't see the stale ?ref= as "new" while goto() is in flight.
+			// lastProcessedRef gets cleared by the open effect when urlRef becomes null.
 			const url = new URL($page.url);
 			if (url.searchParams.has('ref')) {
 				url.searchParams.delete('ref');

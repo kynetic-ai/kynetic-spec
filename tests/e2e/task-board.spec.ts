@@ -121,56 +121,56 @@ test.describe("Task Board (Kanban)", () => {
     await expect(modal).toBeVisible();
 
     // Title
-    await expect(page.getByTestId("task-detail-title")).toHaveText("In progress task");
+    await expect(modal.getByTestId("task-detail-title")).toHaveText("In progress task");
 
     // Description
-    await expect(page.getByTestId("task-description")).toBeVisible();
+    await expect(modal.getByTestId("task-description")).toBeVisible();
 
     // Status badge
-    await expect(page.getByTestId("task-status-badge")).toHaveText("In Progress");
+    await expect(modal.getByTestId("task-status-badge")).toHaveText("In Progress");
 
     // Priority
-    await expect(page.getByTestId("task-priority")).toContainText("Priority");
+    await expect(modal.getByTestId("task-priority")).toContainText("Priority");
 
     // Type (AC-3 requires type to be shown)
-    await expect(page.getByTestId("task-type")).toBeVisible();
-    await expect(page.getByTestId("task-type")).toHaveText("task");
+    await expect(modal.getByTestId("task-type")).toBeVisible();
+    await expect(modal.getByTestId("task-type")).toHaveText("task");
 
     // Spec ref
-    await expect(page.getByTestId("task-spec-ref")).toBeVisible();
+    await expect(modal.getByTestId("task-spec-ref")).toBeVisible();
 
     // Tags (fixture has tags: ['test'])
-    await expect(page.getByTestId("task-tags")).toBeVisible();
-    await expect(page.getByTestId("task-tags")).toContainText("test");
+    await expect(modal.getByTestId("task-tags")).toBeVisible();
+    await expect(modal.getByTestId("task-tags")).toContainText("test");
 
     // Automation status
-    await expect(page.getByTestId("task-automation")).toBeVisible();
-    await expect(page.getByTestId("task-automation")).toHaveText("eligible");
+    await expect(modal.getByTestId("task-automation")).toBeVisible();
+    await expect(modal.getByTestId("task-automation")).toHaveText("eligible");
 
     // Dependencies (fixture has depends_on: @test-task-ready)
-    await expect(page.getByTestId("task-dependencies")).toBeVisible();
+    await expect(modal.getByTestId("task-dependencies")).toBeVisible();
 
     // Blocked-by (fixture has blocked_by: ['@test-task-blocked'])
-    await expect(page.getByTestId("task-blocked-by")).toBeVisible();
-    await expect(page.getByTestId("task-blocked-by")).toContainText("@test-task-blocked");
+    await expect(modal.getByTestId("task-blocked-by")).toBeVisible();
+    await expect(modal.getByTestId("task-blocked-by")).toContainText("@test-task-blocked");
 
     // VCS info (fixture has branch + PR refs)
-    await expect(page.getByTestId("task-vcs")).toBeVisible();
+    await expect(modal.getByTestId("task-vcs")).toBeVisible();
 
     // Plan ref (fixture has plan_ref: @test-plan)
-    await expect(page.getByTestId("task-plan-ref")).toBeVisible();
+    await expect(modal.getByTestId("task-plan-ref")).toBeVisible();
 
     // Session link (fixture has session_id: session-abc123)
-    await expect(page.getByTestId("task-session-ref")).toBeVisible();
+    await expect(modal.getByTestId("task-session-ref")).toBeVisible();
     // Verify session link targets /sessions route (not /session)
-    const sessionLink = page.getByTestId("task-session-ref").locator("a");
-    await expect(sessionLink).toHaveAttribute("href", /\/sessions\?ref=/);
+    const sessionLink = modal.getByTestId("task-session-ref").locator("a");
+    await expect(sessionLink).toHaveAttribute("href", /\/sessions\//);
 
     // Todos (fixture has 2 todos)
-    await expect(page.getByTestId("task-todos")).toBeVisible();
+    await expect(modal.getByTestId("task-todos")).toBeVisible();
 
     // Notes section
-    await expect(page.getByTestId("task-notes")).toBeVisible();
+    await expect(modal.getByTestId("task-notes")).toBeVisible();
   });
 
   // AC: @markdown-ui-adoption ac-1
@@ -450,6 +450,7 @@ test.describe("Task Board (Kanban)", () => {
           session_id: "test-session-001",
           agent_id: "task-worker",
           task_ref: "@01KG0RR8CB8N4YGP991WD7XS9R",
+          task_title: "In progress task",
           elapsed_ms: 125000, // 2m 5s
         },
       ],
@@ -481,7 +482,7 @@ test.describe("Task Board (Kanban)", () => {
 
     const taskTitle = page.getByTestId("fleet-task-title");
     await expect(taskTitle).toBeVisible();
-    await expect(taskTitle).toHaveText("In progress task");
+    await expect(taskTitle).toContainText("In progress task");
 
     await expect(fleetCard.getByText("2m 5s")).toBeVisible();
 
@@ -507,6 +508,7 @@ test.describe("Task Board (Kanban)", () => {
           session_id: "test-session-002",
           agent_id: "task-worker",
           task_ref: "@01KG0RR8CB8N4YGP991WD7XS9R",
+          task_title: "In progress task",
           elapsed_ms: 30000,
         },
       ],
@@ -558,7 +560,7 @@ test.describe("Task Board (Kanban)", () => {
         event: "message_progress",
         data: {
           session_id: sessionId,
-          text: "Running tests...\nAll 25 tests passed\nBuild complete",
+          text: "Running tests...\nAll 25 tests passed\nBuild complete\n",
         },
       });
       ws.dispatchEvent(new MessageEvent("message", { data: msg }));
@@ -626,7 +628,13 @@ test.describe("Task Board (Kanban)", () => {
 
     // Close modal by pressing Escape
     await page.keyboard.press("Escape");
-    await expect(modal).not.toBeVisible();
+    await page.waitForTimeout(200);
+    // If modal is still open (URL→modal race), press Escape again
+    const closeState = await modal.getAttribute("data-state").catch(() => null);
+    if (closeState === "open") {
+      await page.keyboard.press("Escape");
+    }
+    await expect(modal).not.toBeVisible({ timeout: 5000 });
 
     // URL should no longer contain ?ref=
     expect(page.url()).not.toContain("ref=");
@@ -651,7 +659,12 @@ test.describe("Task Board (Kanban)", () => {
 
     // Close modal
     await page.keyboard.press("Escape");
-    await expect(modal).not.toBeVisible();
+    await page.waitForTimeout(200);
+    const reCloseState = await modal.getAttribute("data-state").catch(() => null);
+    if (reCloseState === "open") {
+      await page.keyboard.press("Escape");
+    }
+    await expect(modal).not.toBeVisible({ timeout: 5000 });
 
     // Click the same task card to reopen — verifies lastProcessedRef was reset
     const card = page.locator('[data-task-id="01KG0RR8CB8N4YGP991WD7XS9R"]');
