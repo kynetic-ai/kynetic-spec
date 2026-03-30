@@ -82393,6 +82393,13 @@ reviews:
           status: pass
           name: build:web-ui
         timestamp: 2026-03-30T10:14:19.645Z
+      - _ulid: 01KMZ3SV0BH05S3SEBJBM6P0BB
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMZ3STEPT56VBDJSYKGA90A1
+        timestamp: 2026-03-30T10:14:33.227Z
     examined_commit: 137b046abd8a2482f82be089329a4075aab9bccc
     external_links: []
     lifecycle_state: open
@@ -82422,7 +82429,31 @@ reviews:
               reactivity bug for those routes."
             created_at: 2026-03-30T10:14:04.049Z
         kind: blocker
+      - _ulid: 01KMZ3STEPT56VBDJSYKGA90A1
+        entries:
+          - _ulid: 01KMZ3STEPC60AWPR51F96TSEG
+            author: Test User
+            body: "Files read: packages/web-ui/src/lib/query/createQuery.svelte.ts;
+              node_modules/@tanstack/svelte-query/src/createBaseQuery.svelte.ts;
+              node_modules/@tanstack/svelte-query/src/containers.svelte.ts;
+              packages/web-ui/src/routes/+page.svelte;
+              packages/web-ui/src/routes/agents/+page.svelte;
+              packages/web-ui/src/routes/automation/+page.svelte;
+              packages/web-ui/src/lib/components/Sidebar.svelte;
+              packages/web-ui/src/lib/components/agents/DispatchStatus.svelte;
+              packages/web-ui/src/lib/components/automation/DispatchTriggersSection.svelte; targeted
+              Playwright failure snapshots under test-results/. Commands run: git diff; kspec task
+              get --json; kspec review for-task; kspec validate; npm test; npm run build:web-ui;
+              targeted Playwright runs for smoke/agents/automation. Claims verified: the web UI
+              build can succeed after workspace artifacts are rebuilt; full npm test passes; the
+              loading bug still reproduces in Playwright on /agents and /automation. Categories
+              searched: correctness (blocker found), edge cases (fresh page load with delayed
+              responses), error handling (no new issue found), test quality (existing E2E coverage
+              exercised), integration (wrapper imported across createQuery/createInfiniteQuery call
+              sites)."
+            created_at: 2026-03-30T10:14:32.663Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-30T10:04:21.132Z
-    updated_at: 2026-03-30T10:14:19.081Z
+    updated_at: 2026-03-30T10:14:32.663Z
     notes: []
