@@ -89952,6 +89952,12 @@ reviews:
         payload:
           thread_ulid: 01KN0CZJB44VFS7H9ZCGJJ3WAP
         timestamp: 2026-03-30T22:33:50.706Z
+      - _ulid: 01KN0E3JM7EA0XN4WRCVMDMET8
+        actor: Test User
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KN0CVYZ8E563MVB89C2FQBZ3
+        timestamp: 2026-03-30T22:33:52.519Z
     examined_commit: cf37063d1bdb0f467d1257680859d0acbafab22c
     external_links: []
     lifecycle_state: closed
@@ -90023,6 +90029,8 @@ reviews:
               re-subscribe path completes.
             created_at: 2026-03-30T22:33:35.132Z
         kind: blocker
+        resolved_at: 2026-03-30T22:33:51.918Z
+        resolved_by: Test User
       - _ulid: 01KN0CZJB44VFS7H9ZCGJJ3WAP
         anchor:
           type: code
@@ -90091,7 +90099,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T22:14:48.833Z
     created_at: 2026-03-30T22:09:32.061Z
-    updated_at: 2026-03-30T22:33:50.084Z
+    updated_at: 2026-03-30T22:33:51.918Z
     notes: []
   - _ulid: 01KN0DMBM3BK14076PF2NNA390
     slugs: []
