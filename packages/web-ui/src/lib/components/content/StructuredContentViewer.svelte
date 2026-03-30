@@ -5,7 +5,8 @@
   AC: @review-structured-content-viewer ac-4 — Existing threads shown inline at anchored section positions
 -->
 <script lang="ts">
-	import { createQuery, createMutation, useQueryClient } from '@tanstack/svelte-query';
+	import { createMutation, useQueryClient } from '@tanstack/svelte-query';
+	import { createQuery } from '$lib/query/createQuery.svelte.js';
 	import type { ReviewThread, ReviewDetail } from '@kynetic-ai/shared';
 	import {
 		fetchReviewContent,

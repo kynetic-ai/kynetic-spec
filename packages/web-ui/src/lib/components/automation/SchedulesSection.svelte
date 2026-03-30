@@ -5,7 +5,8 @@
   AC: @ui-automation-view ac-4 — Schedule runtime state (next tick, last tick, run count, overlap state)
 -->
 <script lang="ts">
-	import { createQuery, createMutation, useQueryClient } from '@tanstack/svelte-query';
+	import { createMutation, useQueryClient } from '@tanstack/svelte-query';
+	import { createQuery } from '$lib/query/createQuery.svelte.js';
 	import {
 		fetchScheduleStatus,
 		triggerSchedule,

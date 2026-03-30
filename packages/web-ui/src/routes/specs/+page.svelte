@@ -10,7 +10,7 @@
 	import { base } from '$app/paths';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { createQuery } from '@tanstack/svelte-query';
+	import { createQuery } from '$lib/query/createQuery.svelte.js';
 	import { fetchItems, isCacheWarmingError } from '$lib/api';
 	import ItemTree from '$lib/components/ItemTree.svelte';
 	import ItemDetail from '$lib/components/ItemDetail.svelte';

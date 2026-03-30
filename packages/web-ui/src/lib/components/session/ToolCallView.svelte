@@ -8,7 +8,7 @@
 	import type { ToolCallBlock } from './session-utils';
 	import { getToolIcon, getToolInputPreview, formatDuration, formatTime } from './session-utils';
 	import { ansiToHtml, containsAnsi, safeTruncateAnsi } from '$lib/utils/ansi';
-	import { createQuery } from '@tanstack/svelte-query';
+	import { createQuery } from '$lib/query/createQuery.svelte.js';
 	import { fetchSessionEventDetail } from '$lib/api';
 	import { queryKeys } from '$lib/query/keys.js';
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';

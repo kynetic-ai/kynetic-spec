@@ -25,7 +25,8 @@
 	import { goto } from '$app/navigation';
 	import { onMount, onDestroy } from 'svelte';
 	import type { ReviewDetail, ReviewSummary, ReviewThread, BroadcastEvent } from '@kynetic-ai/shared';
-	import { createQuery, createMutation, useQueryClient } from '@tanstack/svelte-query';
+	import { createMutation, useQueryClient } from '@tanstack/svelte-query';
+	import { createQuery } from '$lib/query/createQuery.svelte.js';
 	import { Badge } from '$lib/components/ui/badge';
 	import {
 		fetchReview,

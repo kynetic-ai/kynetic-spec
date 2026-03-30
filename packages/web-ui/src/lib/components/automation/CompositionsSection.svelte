@@ -3,7 +3,7 @@
   member action runs, and timeout status
 -->
 <script lang="ts">
-	import { createQuery } from '@tanstack/svelte-query';
+	import { createQuery } from '$lib/query/createQuery.svelte.js';
 	import {
 		fetchCompositionConfigs,
 		fetchCompositionActivations,

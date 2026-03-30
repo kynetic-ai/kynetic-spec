@@ -8,7 +8,8 @@
 	// AC: @ui-agent-dispatch ac-2 — Dispatch running: status, stop button, active invocations
 	// AC: @ui-agent-dispatch ac-3 — Dispatch stopped: status shown, no active invocations
 	import { onMount, onDestroy } from 'svelte';
-	import { createQuery, createMutation, useQueryClient } from '@tanstack/svelte-query';
+	import { createMutation, useQueryClient } from '@tanstack/svelte-query';
+	import { createQuery } from '$lib/query/createQuery.svelte.js';
 	import {
 		fetchAgentStatus,
 		fetchAgentDefinitions,

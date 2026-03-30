@@ -12,7 +12,8 @@
 		type CompletenessWarning
 	} from '$lib/api';
 	import type { ValidationAggregation } from '@kynetic-ai/shared';
-	import { createQuery, useQueryClient } from '@tanstack/svelte-query';
+	import { useQueryClient } from '@tanstack/svelte-query';
+	import { createQuery } from '$lib/query/createQuery.svelte.js';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
 	import {
