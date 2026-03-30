@@ -11,6 +11,8 @@ const __dirname = dirname(__filename);
 
 // Daemon entry point — spawned directly via bun to avoid CLI PID-file timeout
 const DAEMON_ENTRY = join(__dirname, "../../../dist/daemon/index.ts");
+// CLI entry point — used for scoped `kspec serve stop` teardown (ac-4)
+const KSPEC_CLI = join(__dirname, "../../../dist/cli/index.js");
 
 // E2E fixtures live alongside this file
 const E2E_FIXTURES = __dirname;
@@ -264,15 +266,34 @@ tasks: []
       // AC: @e2e-test-daemon-isolation ac-5 — propagate port/URLs to all tests
       await use({ tempDir, kspecDir, port, baseUrl, wsUrl, createSecondProject });
 
-      // AC: @e2e-test-daemon-isolation ac-4 — scoped cleanup by terminating daemon child process
-      if (daemonProcess.pid && daemonProcess.exitCode === null) {
-        daemonProcess.kill("SIGTERM");
-        // Wait briefly for graceful shutdown
+      // AC: @e2e-test-daemon-isolation ac-4 — stop daemon via scoped `kspec serve stop`
+      // The daemon writes its PID file to the isolated HOME's config dir during startup.
+      // Using `kspec serve stop` reads that PID file and sends SIGTERM (with SIGKILL fallback),
+      // matching the spec requirement for CLI-based teardown rather than direct process killing.
+      try {
+        execSync(`node ${KSPEC_CLI} serve stop`, {
+          cwd: tempDir,
+          stdio: "ignore",
+          timeout: 10000,
+          env: isolatedEnv,
+        });
+      } catch {
+        // Fallback: if CLI stop fails (e.g. PID file missing), terminate the child process directly
+        if (daemonProcess.pid && daemonProcess.exitCode === null) {
+          daemonProcess.kill("SIGTERM");
+        }
+      }
+
+      // Wait for the daemon child process to exit (whether stopped by CLI or fallback SIGTERM)
+      if (daemonProcess.exitCode === null) {
         await new Promise<void>((resolve) => {
           const timeout = setTimeout(() => {
-            daemonProcess.kill("SIGKILL");
+            // Force kill if process hasn't exited after graceful attempts
+            if (daemonProcess.exitCode === null) {
+              daemonProcess.kill("SIGKILL");
+            }
             resolve();
-          }, 2000);
+          }, 5000);
           daemonProcess.on("exit", () => {
             clearTimeout(timeout);
             resolve();
