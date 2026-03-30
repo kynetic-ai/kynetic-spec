@@ -85217,6 +85217,13 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-03-30T15:31:38.921Z
+      - _ulid: 01KMZNYJN3BYEK075R5ZNSM9Y7
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMZNYJ11R8XFGNBADE9KVE71
+        timestamp: 2026-03-30T15:31:42.883Z
     examined_commit: 56eb7f9f66ff1b04997879c45758c4455183b965
     external_links: []
     lifecycle_state: open
@@ -85226,8 +85233,101 @@ reviews:
       content_hash: ""
       ref: "@01KMZ1BVVK329BJ49C6PB03T49"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMZNYJ11R8XFGNBADE9KVE71
+        anchor:
+          type: code
+          commit: 56eb7f9f66ff1b04997879c45758c4455183b965
+          line_end: 614
+          line_start: 598
+          path: tests/e2e/plans.spec.ts
+          side: head
+        entries:
+          - _ulid: 01KMZNYJ11KCKD4P6SV9YSEK7X
+            author: Test User
+            body: "The plans envelope fix is still incomplete: rerunning\ 
+
+              Running 1 test using 1 worker
+
+
+
+
+
+
+              \e[1A\e[2K[1/1] [chromium] › tests/e2e/plans.spec.ts:595:3 › Plans View › issues the
+              live batch fetch and renders title-derived specs plus full derive_from_specs tasks
+
+              \e[1A\e[2K  1) [chromium] › tests/e2e/plans.spec.ts:595:3 › Plans View › issues the
+              live batch fetch and renders title-derived specs plus full derive_from_specs tasks\ 
+
+
+              \    Error:
+              \e[2mexpect(\e[22m\e[31mreceived\e[39m\e[2m).\e[22mtoHaveLength\e[2m(\e[22m\e[32mexpe\
+              cted\e[39m\e[2m)\e[22m
+
+
+              \    Expected length: \e[32m1\e[39m
+
+              \    Received length: \e[31m0\e[39m
+
+              \    Received array:  \e[31m[]\e[39m
+
+
+              \      612 |     await page.waitForRequest(\"**/api/items/batch\");
+
+              \      613 |
+
+              \    > 614 |     expect(batchRequests).toHaveLength(1);
+
+              \          |                           ^
+
+              \      615 |     expect(batchRequests[0]).toEqual(
+
+              \      616 |       expect.arrayContaining([
+
+              \      617 |         \"@test-feature\",
+
+              \        at
+              /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-fixtures-envelo\
+              pe-01kmz1bv-review/tests/e2e/plans.spec.ts:614:27
+
+
+              \    attachment #1: screenshot (image/png)
+              ──────────────────────────────────────────────────────────
+
+              \    test-results/plans-Plans-View-issues-th-6780d-ull-derive-from-specs-tasks-chromi\
+              um/test-failed-1.png
+
+              \    ────────────────────────────────────────────────────────────────────────────────\
+              ────────────────
+
+
+              \    attachment #2: video (video/webm)
+              ──────────────────────────────────────────────────────────────
+
+              \    test-results/plans-Plans-View-issues-th-6780d-ull-derive-from-specs-tasks-chromi\
+              um/video.webm
+
+              \    ────────────────────────────────────────────────────────────────────────────────\
+              ────────────────
+
+
+              \    Error Context:
+              test-results/plans-Plans-View-issues-th-6780d-ull-derive-from-specs-tasks-chromium/er\
+              ror-context.md
+
+
+
+              \e[1A\e[2K  1 failed
+
+              \    [chromium] › tests/e2e/plans.spec.ts:595:3 › Plans View › issues the live batch
+              fetch and renders title-derived specs plus full derive_from_specs tasks  leaves  empty
+              and fails at line 614 because  is never requested. This task specifically claims to
+              fix the plans.spec envelope drift, so the changed test staying red means the
+              submission does not actually restore that behavior."
+            created_at: 2026-03-30T15:31:42.241Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-30T15:22:26.734Z
-    updated_at: 2026-03-30T15:31:38.126Z
+    updated_at: 2026-03-30T15:31:42.241Z
     notes: []
