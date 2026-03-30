@@ -71,6 +71,7 @@ function getInvalidationKeys(
         "thinking_start",
         "thinking_progress",
         "tool_call_start",
+        "tool_call_input",
       ]);
       if (streamingEvents.has(event.event)) {
         return [];
@@ -98,8 +99,9 @@ function getInvalidationKeys(
       if (event.event === "agent_invocation") {
         return [queryKeys.agents.all, queryKeys.sessions.all];
       }
-      // Unknown agent events — no invalidation needed.
-      return [];
+      // Other agent-topic events (for example sync_state degraded/recovered
+      // broadcasts) affect dispatch status but not per-session detail views.
+      return [queryKeys.agents.all];
     }
 
     case "sessions":

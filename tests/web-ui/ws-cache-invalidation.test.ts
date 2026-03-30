@@ -310,8 +310,8 @@ describe("ws-invalidation cache:status handling", () => {
   });
 });
 
-// AC: @task-fix-ws-invalidation-storm ac-1 (scoped invalidation for completion events)
-// AC: @task-fix-ws-invalidation-storm ac-2 (lifecycle events still invalidate agents.all)
+// AC: @ui-data-freshness ac-3 — WebSocket events invalidate affected cached data
+// AC: @ui-data-freshness ac-4 — Agent status stays fresh via event-driven invalidation
 describe("ws-invalidation agents topic scoping", () => {
   let mockQueryClient: ReturnType<typeof createMockQueryClient>;
 
@@ -373,6 +373,7 @@ describe("ws-invalidation agents topic scoping", () => {
       "thinking_start",
       "thinking_progress",
       "tool_call_start",
+      "tool_call_input",
     ]) {
       it(`${eventName} does not invalidate any queries`, () => {
         setupWsInvalidation(mockQueryClient);
@@ -385,6 +386,42 @@ describe("ws-invalidation agents topic scoping", () => {
         expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalled();
       });
     }
+  });
+
+  describe("dispatch status events invalidate agent queries without touching sessions", () => {
+    it("sync_state invalidates agents.all but not sessions.all", () => {
+      setupWsInvalidation(mockQueryClient);
+      const event = makeBroadcastEvent("agents", "sync_state", {
+        degraded: true,
+        reason: "integration target diverged",
+        enteredAt: new Date().toISOString(),
+      });
+
+      dispatchEvent("agents", event);
+
+      expect(mockQueryClient.invalidateQueries).toHaveBeenCalledWith({
+        queryKey: queryKeys.agents.all,
+      });
+      expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
+        queryKey: queryKeys.sessions.all,
+      });
+    });
+
+    it("unknown non-stream agents events conservatively invalidate agents.all only", () => {
+      setupWsInvalidation(mockQueryClient);
+      const event = makeBroadcastEvent("agents", "some_future_status_event", {
+        dispatch_enabled: false,
+      });
+
+      dispatchEvent("agents", event);
+
+      expect(mockQueryClient.invalidateQueries).toHaveBeenCalledWith({
+        queryKey: queryKeys.agents.all,
+      });
+      expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
+        queryKey: queryKeys.sessions.all,
+      });
+    });
   });
 
   describe("agent lifecycle events still invalidate agents.all", () => {
@@ -414,16 +451,4 @@ describe("ws-invalidation agents topic scoping", () => {
     }
   });
 
-  describe("unknown agent events produce no invalidation", () => {
-    it("unrecognized event name does not invalidate any queries", () => {
-      setupWsInvalidation(mockQueryClient);
-      const event = makeBroadcastEvent("agents", "some_unknown_event", {
-        session_id: "01TEST_SESSION_ID",
-      });
-
-      dispatchEvent("agents", event);
-
-      expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalled();
-    });
-  });
 });
