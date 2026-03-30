@@ -81812,13 +81812,20 @@ reviews:
           kind: blocker
           thread_ulid: 01KMYZB9EA1CMF73J35Q7KYPES
         timestamp: 2026-03-30T08:56:42.815Z
-      - _ulid: 01KMYZBB2CBENGPFKNQPS6WX2Y
+      - _ulid: 01KMYZBB1J388SQ30WJZ03P7SJ
         actor: Jacob Chapel
         event_type: thread_created
         payload:
           kind: blocker
-          thread_ulid: 01KMYZB9J989JRJKXMSFX8S15B
-        timestamp: 2026-03-30T08:56:43.852Z
+          thread_ulid: 01KMYZB9GHTPN5KNMJJTPK98NR
+        timestamp: 2026-03-30T08:56:43.826Z
+      - _ulid: 01KMYZBC0YXX2DQVR1225NH200
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMYZB9HBRZ9QG1M2M2DMCYPS
+        timestamp: 2026-03-30T08:56:44.830Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -81846,22 +81853,37 @@ reviews:
               prerequisite outside the plan.
             created_at: 2026-03-30T08:56:42.187Z
         kind: blocker
-      - _ulid: 01KMYZB9J989JRJKXMSFX8S15B
+      - _ulid: 01KMYZB9GHTPN5KNMJJTPK98NR
         anchor:
           type: structured
-          ref: "@task-fix-ws-invalidation-storm"
+          ref: "@task-rewrite-websocket-e2e"
           section: tasks
         entries:
-          - _ulid: 01KMYZB9J9Q1DAQ6N6MS7W0GJG
+          - _ulid: 01KMYZB9GJPS5PDHYTT7PNECNW
             author: Jacob Chapel
-            body: This task is a web-ui performance bug fix, not e2e test cleanup. It changes product
-              invalidation behavior and may be worthwhile work, but it does not belong in a plan
-              whose stated purpose is cleaning up the e2e suite. Remove it from this plan or move it
-              into a separate bug/perf plan so the e2e cleanup backlog stays scoped to test fixes
-              and test architecture changes only.
-            created_at: 2026-03-30T08:56:42.313Z
+            body: "This goes beyond cleanup into net-new behavioral coverage design. Rewriting protocol-level
+              coverage into new UI behavioral tests is a legitimate follow-on effort, but it is not
+              cleanup of the existing failing suite. Keeping expansion work in the same plan
+              obscures the real exit condition for the cleanup effort. Split cleanup from coverage
+              expansion: this plan should stop at restoring and restructuring the current suite,
+              while new behavioral coverage should live in a later plan."
+            created_at: 2026-03-30T08:56:42.258Z
+        kind: blocker
+      - _ulid: 01KMYZB9HBRZ9QG1M2M2DMCYPS
+        anchor:
+          type: structured
+          ref: "@task-add-filewatcher-e2e"
+          section: tasks
+        entries:
+          - _ulid: 01KMYZB9HBZVA595723CKCYGBA
+            author: Jacob Chapel
+            body: This is also net-new coverage, not cleanup. Adding missing file-watcher UI tests enlarges the
+              scope from 'make the existing e2e suite healthy' to 'design new e2e coverage areas'.
+              That should be proposed after the cleanup effort is complete, not mixed into the same
+              derivation set.
+            created_at: 2026-03-30T08:56:42.283Z
         kind: blocker
     verdicts: []
     created_at: 2026-03-30T08:55:58.278Z
-    updated_at: 2026-03-30T08:56:42.313Z
+    updated_at: 2026-03-30T08:56:42.283Z
     notes: []
