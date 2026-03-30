@@ -90307,6 +90307,18 @@ reviews:
         runner: playwright
         created_at: 2026-03-30T22:42:34.150Z
         completed_at: 2026-03-30T22:42:34.150Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate exited 6 with repo-wide warnings only: schema/references OK, warnings
+          include existing orphaned specs and uncovered AC annotations. No new validation errors
+          introduced by this snapshot."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-30T22:42:39.469Z
+        completed_at: 2026-03-30T22:42:39.469Z
     events:
       - _ulid: 01KN0E8VQ3NGRTGH6NNXA8R9N1
         actor: Test User
@@ -90356,6 +90368,13 @@ reviews:
           kind: nit
           thread_ulid: 01KN0EKJKGSTM8PVMVWTVS4PDR
         timestamp: 2026-03-30T22:42:37.642Z
+      - _ulid: 01KN0EKP2R9HDBB0Z227RW364V
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-03-30T22:42:40.344Z
     examined_commit: 96979f51ac13f6ca691be360c82899c11de83f96
     external_links: []
     lifecycle_state: open
@@ -90449,5 +90468,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-30T22:36:45.668Z
-    updated_at: 2026-03-30T22:42:36.784Z
+    updated_at: 2026-03-30T22:42:39.469Z
     notes: []
