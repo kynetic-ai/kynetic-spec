@@ -15,3 +15,15 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-30T12:55:42.150Z
+  - _ulid: 01KMZDXC54XBD47MP7JR3ZKFMC
+    content: "Fix cycle 1: addressed blocker — parallel temp directory collision. Replaced
+      Date.now()-based path with mkdtempSync for atomic unique directory creation. Root cause: when
+      Playwright runs multiple workers simultaneously, Date.now() can return the same ms value,
+      causing ENOENT when two workers race to populate the same /tmp/kspec-e2e-* path. Verified all
+      75 targeted E2E tests (dashboard + agents + automation) pass cleanly under parallel execution.
+      Unit test failures (44 in setup-pipeline-unification, session-note-limit,
+      setup-guard-migration) are pre-existing on dev — no diff between this branch and origin/dev
+      for those files."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-30T13:11:14.853Z
