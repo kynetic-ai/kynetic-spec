@@ -19416,7 +19416,7 @@ runs:
     started_at: 2026-03-30T23:14:02.687Z
     completed_at: 2026-03-30T23:16:26.349Z
   - _ulid: 01KN0JTGGB5BKMECEEWWNFZFKE
-    status: active
+    status: completed
     current_step: 3
     initiated_by: Test User
     step_results:
@@ -19441,7 +19441,10 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-03-30T23:57:33.159Z
-        completed_at: 2026-03-30T23:57:33.159Z
+        completed_at: 2026-03-30T23:57:35.726Z
+        notes: Captured one high-confidence friction observation and skipped lower-confidence suite-flake
+          reflections because they are already being worked through elsewhere.
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-30T23:56:18.315Z
+    completed_at: 2026-03-30T23:57:35.726Z
