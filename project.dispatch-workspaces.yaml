@@ -28989,12 +28989,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-30T22:08:46.099Z
+      updated_at: 2026-03-30T22:08:52.242Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-30T22:08:46.099Z
+      updated_at: 2026-03-30T22:08:52.242Z
     integration:
       status: pending
       detail: null
@@ -29002,24 +29002,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 76a99bcf51ef31640b1724d9abb272f16311a624
-      updated_at: 2026-03-30T22:08:46.099Z
-    lifecycle_state: ready
+      updated_at: 2026-03-30T22:08:52.242Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KMZ1BVK6C9F7QKYK9DZD4TFQ"
     task_slug: task-fix-timing-races
     timestamps:
       closed_at: null
       last_active_at: 2026-03-30T21:25:48.410Z
-      last_reconciled_at: 2026-03-30T22:08:46.099Z
+      last_reconciled_at: 2026-03-30T22:08:52.242Z
       created_at: 2026-03-30T18:17:31.287Z
-      updated_at: 2026-03-30T22:08:46.099Z
+      updated_at: 2026-03-30T22:08:52.242Z
     workspace_id: dispatch-workspace-01KMZ1BVK6C9F7QKYK9DZD4TFQ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: cf37063d1bdb0f467d1257680859d0acbafab22c
+        last_seen_at: 2026-03-30T22:08:52.242Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-timing-races-01kmz1bv-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-fix-timing-races/01kmz1bv
-        head: 77629f2658f65d7f26b1e18b79819b6e8c20f747
-        last_seen_at: 2026-03-30T21:25:43.082Z
+        head: cf37063d1bdb0f467d1257680859d0acbafab22c
+        last_seen_at: 2026-03-30T22:08:52.242Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-timing-races-01kmz1bv
