@@ -41,3 +41,35 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-30T09:47:54.516Z
+  - _ulid: 01KMZ33S74WZAGM8R9ANWTAK7J
+    content: >-
+      Implementation complete. Created packages/web-ui/src/lib/query/createQuery.svelte.ts — a local
+      wrapper around @tanstack/svelte-query's createQuery and createInfiniteQuery.
+
+
+      Key change: observer.subscribe() is called eagerly (synchronously during component init)
+      instead of inside a deferred $effect. This ensures the subscription is active before any async
+      fetch completes, preventing the race where updateResult() sees no diff because the observer
+      already transitioned while no subscribers were attached.
+
+
+      The wrapper inlines createRawRef and watchChanges from TanStack internals (not publicly
+      exported) and can be removed once upstream merges PR #9810 or equivalent.
+
+
+      Verification:
+
+      - Build succeeds (109 modules transformed, adapter-static output written)
+
+      - All web UI tests pass (119/119)
+
+      - All unit test shards pass for web-ui-related tests
+
+      - Pre-existing failures in dispatch-workspace-config/cleanup tests are unrelated (timeout
+      flakes)
+
+
+      22 component files updated to import from the local wrapper.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-30T10:02:30.500Z
