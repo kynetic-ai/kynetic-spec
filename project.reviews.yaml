@@ -88601,6 +88601,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN06NR1MKR9MYRA3BMJ4149H
         timestamp: 2026-03-30T20:24:00.922Z
+      - _ulid: 01KN06ZASRN08YEKA897D29JP6
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KN06ZA6ZFBQGRRFQ7EMK782R
+        timestamp: 2026-03-30T20:29:13.400Z
     examined_commit: 77629f2658f65d7f26b1e18b79819b6e8c20f747
     external_links: []
     lifecycle_state: open
@@ -88695,7 +88702,35 @@ reviews:
               is supposed to stabilize.
             created_at: 2026-03-30T20:23:59.284Z
         kind: blocker
+      - _ulid: 01KN06ZA6ZFBQGRRFQ7EMK782R
+        entries:
+          - _ulid: 01KN06ZA70NCZA36QTRZR9REH3
+            author: Test User
+            body: >-
+              Files read: tests/e2e/search.spec.ts; tests/e2e/connection.spec.ts;
+              tests/e2e/cache-warming-views.spec.ts;
+              packages/web-ui/src/lib/components/CommandPalette.svelte;
+              packages/web-ui/src/lib/websocket/manager.ts.
+
+              Commands run: kspec task get @01KMZ1BVK6C9F7QKYK9DZD4TFQ; kspec item get
+              @web-dashboard; kspec review for-task @01KMZ1BVK6C9F7QKYK9DZD4TFQ; git show --stat
+              77629f2658f65d7f26b1e18b79819b6e8c20f747; git diff
+              76a99bcf51ef31640b1724d9abb272f16311a624...77629f2658f65d7f26b1e18b79819b6e8c20f747 --
+              tests/e2e/search.spec.ts tests/e2e/connection.spec.ts
+              tests/e2e/cache-warming-views.spec.ts; grep for AC annotations; kspec validate; npm
+              test.
+
+              Claims verified: checked the worker claim that the touched E2E files are now stable by
+              reading the rewritten assertions against the actual component/manager behavior and by
+              running npm test on the snapshot.
+
+              Categories searched: correctness (found coverage regressions in search and reconnect
+              tests), edge cases (looked at no-results and reconnect paths), error handling (checked
+              connection lost / retry coverage), test quality (found tests that now pass without
+              proving the AC), integration (reviewed component and websocket manager interactions).
+            created_at: 2026-03-30T20:29:12.800Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-30T20:20:15.252Z
-    updated_at: 2026-03-30T20:23:59.284Z
+    updated_at: 2026-03-30T20:29:12.800Z
     notes: []
