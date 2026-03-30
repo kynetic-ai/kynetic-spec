@@ -87846,9 +87846,25 @@ reviews:
           status: pass
           name: validation
         timestamp: 2026-03-30T16:18:35.676Z
+      - _ulid: 01KMZRVAFVDNT6V53BYRD0PS4M
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-30T16:22:21.947Z
+      - _ulid: 01KMZRVAFVZ9RAV44ZR54VT9N8
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-30T16:22:21.947Z
     examined_commit: c0eda9fb8b4060959805bfb589bccfdb19a22a0b
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -87897,7 +87913,14 @@ reviews:
               AC 2 is actually proven.
             created_at: 2026-03-30T16:18:21.557Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-30T16:22:21.947Z
     created_at: 2026-03-30T16:14:10.380Z
-    updated_at: 2026-03-30T16:18:34.572Z
+    updated_at: 2026-03-30T16:22:21.947Z
     notes: []
