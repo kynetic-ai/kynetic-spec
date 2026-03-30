@@ -90313,6 +90313,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN0EEVXGK98AWKK3KMJPMT96
         timestamp: 2026-03-30T22:40:04.752Z
+      - _ulid: 01KN0EF4FZRM43HTX3W8EQBTVZ
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN0EF2YZRWMQCDA76804GFTV
+        timestamp: 2026-03-30T22:40:11.263Z
     examined_commit: 96979f51ac13f6ca691be360c82899c11de83f96
     external_links: []
     lifecycle_state: open
@@ -90342,7 +90349,27 @@ reviews:
               them.
             created_at: 2026-03-30T22:40:02.480Z
         kind: blocker
+      - _ulid: 01KN0EF2YZRWMQCDA76804GFTV
+        anchor:
+          type: code
+          commit: 96979f51ac13f6ca691be360c82899c11de83f96
+          line_end: 771
+          line_start: 761
+          path: tests/e2e/plans.spec.ts
+          side: head
+        entries:
+          - _ulid: 01KN0EF2Z06KBSEMEE2H4H8MDQ
+            author: Test User
+            body: This change disables the only test that exercises the /api/plans/:ref endpoint behavior for
+              excluding cancelled tasks while still counting plan_ref-linked tasks. Replacing it
+              with test.fixme removes endpoint-level coverage instead of making the test reliable;
+              the remaining references I found (tests/plan-summary.test.ts, tests/cli-plan.test.ts,
+              tests/export/json.test.ts) only cover helper/CLI/export logic, not the daemon route.
+              That is a coverage regression in a review whose goal is to stabilize flaky tests, not
+              delete them.
+            created_at: 2026-03-30T22:40:09.696Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-30T22:36:45.668Z
-    updated_at: 2026-03-30T22:40:02.480Z
+    updated_at: 2026-03-30T22:40:09.696Z
     notes: []
