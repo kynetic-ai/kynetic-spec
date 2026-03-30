@@ -88220,3 +88220,29 @@ reviews:
     created_at: 2026-03-30T18:13:08.575Z
     updated_at: 2026-03-30T18:13:31.902Z
     notes: []
+  - _ulid: 01KMZZF5GMNQRBVECT9B9ASPZ9
+    slugs: []
+    title: Review task-fix-fixtures-envelope (cycle 3)
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KMZZF5GKTV03SFEM5Z1TTJ0F
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-30T18:18:03.667Z
+    examined_commit: 9270ac10690307f1121562922ae5408c81bc5b57
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMZ1BVVK329BJ49C6PB03T49"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-30T18:18:03.668Z
+    updated_at: null
+    notes: []
