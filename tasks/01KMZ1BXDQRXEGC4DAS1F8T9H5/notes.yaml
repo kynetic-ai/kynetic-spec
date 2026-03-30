@@ -95,3 +95,30 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-30T18:30:24.280Z
+  - _ulid: 01KN07ER4YC5D91WRWB0FXBJ7D
+    content: >-
+      Fix cycle 2: investigated full test suite failures flagged in review
+      @01KMZZ65AZ3BERCPCM5VBS1MQ4.
+
+
+      Findings:
+
+      1. Rebased onto latest origin/dev (829e357ca, includes fixture-envelope fixes)
+
+      2. This branch changes ONLY 2 files: packages/web-ui/src/lib/query/ws-invalidation.ts and
+      tests/web-ui/ws-cache-invalidation.test.ts
+
+      3. All 29 ws-cache-invalidation tests pass in isolation and in all 3 shards
+
+      4. The 34-47 failing suites are in unrelated backend tests (agent-dispatch-engine, cli-serve,
+      daemon-api, dispatch-workspace-*, etc.) — all pass when run individually but fail under
+      parallel suite contention
+
+      5. No failing suite involves any web-ui file — my changes cannot cause backend test failures
+      since web-ui is a separate SvelteKit package with no cross-imports into backend code
+
+      6. These are pre-existing test infrastructure flakiness issues (port contention, timing) in
+      the parallel full suite run, not regressions from this change
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-30T20:37:38.590Z
