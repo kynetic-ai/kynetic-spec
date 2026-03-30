@@ -83198,6 +83198,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMZ7Z9GMRXAPHDXCX3ZF0SK0
         timestamp: 2026-03-30T11:27:26.867Z
+      - _ulid: 01KMZ7ZBXB2DRAKY15CM9SXQ6S
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMZ7ZBB5ZKS62QCH9PQY8WHW
+        timestamp: 2026-03-30T11:27:28.684Z
     examined_commit: 48e6b79299b8817d4c06a0ba814a34aa9bac6128
     external_links: []
     lifecycle_state: open
@@ -83266,7 +83273,24 @@ reviews:
               pass.
             created_at: 2026-03-30T11:27:26.229Z
         kind: blocker
+      - _ulid: 01KMZ7ZBB5ZKS62QCH9PQY8WHW
+        anchor:
+          type: code
+          commit: 48e6b79299b8817d4c06a0ba814a34aa9bac6128
+          line_end: 43
+          line_start: 15
+          path: tests/daemon-api/server.test.ts
+          side: head
+        entries:
+          - _ulid: 01KMZ7ZBB5N9KKVPRVSHAKBZE6
+            author: Test User
+            body: This replacement no longer exercises the production daemon server at all. It builds a
+              handwritten  stub with only a local CORS hook and , so it can pass even if  regresses
+              in startup wiring, localhost enforcement, or plugin registration. The deleted
+              Playwright spec hit the real running daemon, which is what  ac-1/ac-2/ac-15 require.
+            created_at: 2026-03-30T11:27:28.101Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-30T11:20:16.563Z
-    updated_at: 2026-03-30T11:27:26.229Z
+    updated_at: 2026-03-30T11:27:28.101Z
     notes: []
