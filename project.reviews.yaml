@@ -90479,6 +90479,12 @@ reviews:
         payload:
           thread_ulid: 01KN0EHCGH08SEKJ6W9Q4CAVRF
         timestamp: 2026-03-30T23:07:22.551Z
+      - _ulid: 01KN0G0YTEYN4E4C803TZSD6ZX
+        actor: Test User
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KN0EF2YZRWMQCDA76804GFTV
+        timestamp: 2026-03-30T23:07:23.854Z
     examined_commit: 96979f51ac13f6ca691be360c82899c11de83f96
     external_links: []
     lifecycle_state: closed
@@ -90544,6 +90550,8 @@ reviews:
               without relying on cache invalidation inside the Playwright daemon.
             created_at: 2026-03-30T23:07:16.589Z
         kind: blocker
+        resolved_at: 2026-03-30T23:07:21.775Z
+        resolved_by: Test User
       - _ulid: 01KN0EHCGH08SEKJ6W9Q4CAVRF
         anchor:
           type: code
@@ -90604,7 +90612,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T22:42:51.771Z
     created_at: 2026-03-30T22:36:45.668Z
-    updated_at: 2026-03-30T23:07:21.720Z
+    updated_at: 2026-03-30T23:07:21.775Z
     notes: []
   - _ulid: 01KN0F7HS7KDC8NKD5B0EWPYPB
     slugs: []
