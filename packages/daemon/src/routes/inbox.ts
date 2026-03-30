@@ -20,9 +20,6 @@ import {
   saveInboxItem,
   deleteInboxItem,
   findInboxItemByRef,
-  ReferenceIndex,
-  loadAllItems,
-  resolveTaskDataManager,
   type InboxItemInput,
 } from "../../parser/index.js";
 import { commitIfShadow } from "../../parser/shadow.js";
@@ -150,13 +147,11 @@ export function createInboxRoutes(options: InboxRouteOptions) {
           // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
           const ctx = await initContext(projectContext.path);
           const inboxItems = await loadInboxItems(ctx);
-          const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
-          const specItems = await loadAllItems(ctx);
-          const index = new ReferenceIndex(tasks, specItems);
 
-          // Resolve ref
-          const result = index.resolve(params.ref);
-          if (!result.ok) {
+          // Resolve ref directly against inbox items (inbox items are not in
+          // the general ReferenceIndex which only covers tasks/specs/plans/reviews)
+          const item = findInboxItemByRef(inboxItems, params.ref);
+          if (!item) {
             return errorResponse(404, {
               error: "not_found",
               message: `Inbox item reference "${params.ref}" not found`,
@@ -164,17 +159,8 @@ export function createInboxRoutes(options: InboxRouteOptions) {
             });
           }
 
-          // Verify it's an inbox item
-          const item = findInboxItemByRef(inboxItems, result.ulid);
-          if (!item) {
-            return errorResponse(404, {
-              error: "not_found",
-              message: `Reference "${params.ref}" is not an inbox item`,
-            });
-          }
-
           // AC: @api-contract ac-14 - Delete item
-          await deleteInboxItem(ctx, result.ulid);
+          await deleteInboxItem(ctx, item._ulid);
           await commitIfShadow(ctx.shadow, `inbox: delete ${params.ref}`);
 
           // AC: @daemon-entity-cache ac-write-through — update cache before response
@@ -190,7 +176,7 @@ export function createInboxRoutes(options: InboxRouteOptions) {
             "inbox_item_deleted",
             {
               ref: params.ref,
-              ulid: result.ulid,
+              ulid: item._ulid,
             },
             projectContext.path,
           );
@@ -198,7 +184,7 @@ export function createInboxRoutes(options: InboxRouteOptions) {
           // AC: @api-contract ac-14 - Return success confirmation
           return {
             success: true,
-            deleted: result.ulid,
+            deleted: item._ulid,
           };
         },
         {

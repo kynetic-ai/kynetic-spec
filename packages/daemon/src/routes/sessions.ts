@@ -635,10 +635,14 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
         }
 
         // Detect legacy sessions and include warning in response.
-        // AC: @daemon-entity-cache ac-serve-from-memory — only scan legacy dir if ctx
-        // was already initialized (disk fallback path). Skip when serving from cache.
+        // AC: @daemon-entity-cache ac-serve-from-memory — skip initContext when serving
+        // entirely from cache (sessionsDomainReady). Otherwise, initialize context to
+        // get specDir for legacy session detection.
         let legacyCount = 0;
-        if (_ctx) {
+        if (!sessionsDomainReady) {
+          const ctx = await getCtx();
+          legacyCount = await countLegacySessions(ctx.specDir);
+        } else if (_ctx) {
           legacyCount = await countLegacySessions(_ctx.specDir);
         }
 
