@@ -83658,6 +83658,19 @@ reviews:
         required: false
         created_at: 2026-03-30T12:37:56.751Z
         completed_at: 2026-03-30T12:37:56.751Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Cached full-suite run failed in this snapshot: 4 suites failed, 2 tests failed, 7487
+          passed, 5 skipped. Failures included tests/dispatch-runtime-bootstrap-contract.test.ts and
+          tests/dispatch-workspace-registry.test.ts. Full log:
+          /tmp/kspec-test-cache/01KMZBHWYEMYRZ34HDEY9Q4Y95/4d5c4b10035bcebc.log"
+        name: npm test
+        required: true
+        runner: test-runner
+        created_at: 2026-03-30T12:37:58.511Z
+        completed_at: 2026-03-30T12:37:58.511Z
     events:
       - _ulid: 01KMZBVPKYDFZZK6PVYQBAHESV
         actor: Test User
@@ -83707,6 +83720,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-30T12:37:57.303Z
+      - _ulid: 01KMZC0F6A62F746FF7H7EG0K7
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-30T12:37:59.114Z
     examined_commit: 1b14f9251d210312870ad8acab4d20393f1c18c4
     external_links: []
     lifecycle_state: open
@@ -83780,5 +83800,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-30T12:35:22.878Z
-    updated_at: 2026-03-30T12:37:56.751Z
+    updated_at: 2026-03-30T12:37:58.511Z
     notes: []
