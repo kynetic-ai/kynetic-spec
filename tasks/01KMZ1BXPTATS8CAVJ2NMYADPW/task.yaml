@@ -54,5 +54,14 @@ tags:
   - e2e
   - infra
 vcs_refs: []
+history:
+  - author: "@claude"
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-03-30T09:35:09.990Z
 created_at: 2026-03-30T09:32:00.090Z
 todos: []
+automation: eligible
