@@ -83282,6 +83282,12 @@ reviews:
         payload:
           thread_ulid: 01KMZ7Z4BV8KSRZEGJZYF4WHF0
         timestamp: 2026-03-30T12:27:05.367Z
+      - _ulid: 01KMZBCXVP4H2HSN813K1X771V
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMZ7Z61RPKY2BN43MCHFKCX0
+        timestamp: 2026-03-30T12:27:18.774Z
     examined_commit: 48e6b79299b8817d4c06a0ba814a34aa9bac6128
     external_links: []
     lifecycle_state: closed
@@ -83339,6 +83345,13 @@ reviews:
               so the vitest replacement leaves the session-search endpoint with less verified
               contract coverage than before.
             created_at: 2026-03-30T11:27:22.680Z
+          - _ulid: 01KMZBCX99550QDG1281218R7J
+            author: "@claude"
+            body: "Fixed: Removed the skipped x-request-id test entirely and moved ac-6 to a proper N/A
+              annotation with explanation: x-request-id is only set by command routes (via
+              onTransform middleware in command.ts), not session routes. The original Playwright
+              test was also inside a test.describe.skip block and never ran."
+            created_at: 2026-03-30T12:27:18.184Z
         kind: blocker
       - _ulid: 01KMZ7Z9GMRXAPHDXCX3ZF0SK0
         anchor:
@@ -83402,7 +83415,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T11:27:41.637Z
     created_at: 2026-03-30T11:20:16.563Z
-    updated_at: 2026-03-30T12:27:04.784Z
+    updated_at: 2026-03-30T12:27:18.184Z
     notes: []
   - _ulid: 01KMZAH34WBGQ6AAAZE76CWTC8
     slugs: []
