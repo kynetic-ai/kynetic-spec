@@ -501,12 +501,27 @@ test.describe("Dashboard Overview", () => {
   // AC: @ui-dashboard-overview ac-1 — API contract verification
   // These verify the daemon API returns expected fixture data, independent of UI rendering.
   test.describe("API Contract Verification", () => {
-    test("daemon returns task counts matching fixture data", async ({ daemon }) => {
-      const response = await fetch(`${daemon.baseUrl}/api/tasks`);
-      expect(response.ok).toBe(true);
-      const data = await response.json();
+    /** Poll an endpoint until its cache_status is "ready", then return the envelope. */
+    async function fetchWhenReady(
+      baseUrl: string,
+      path: string,
+      timeoutMs = 5000,
+    ): Promise<{ data: unknown; meta: { cache_status: string; total?: number } }> {
+      const deadline = Date.now() + timeoutMs;
+      while (Date.now() < deadline) {
+        const response = await fetch(`${baseUrl}${path}`);
+        expect(response.ok).toBe(true);
+        const envelope = await response.json();
+        if (envelope.meta?.cache_status === "ready") return envelope;
+        await new Promise((r) => setTimeout(r, 200));
+      }
+      throw new Error(`Cache not ready for ${path} after ${timeoutMs}ms`);
+    }
 
-      const tasks = data.items;
+    test("daemon returns task counts matching fixture data", async ({ daemon }) => {
+      const envelope = await fetchWhenReady(daemon.baseUrl, "/api/tasks");
+
+      const tasks = envelope.data as Array<{ status: string }>;
       expect(tasks).toBeDefined();
 
       const statusCounts: Record<string, number> = {};
@@ -514,31 +529,30 @@ test.describe("Dashboard Overview", () => {
         statusCounts[task.status] = (statusCounts[task.status] || 0) + 1;
       }
 
-      // Fixture has: 2 pending (1 ready, 1 dep-blocked), 1 in_progress, 1 pending_review, 1 completed
-      expect(statusCounts["pending"]).toBe(2);
+      // Fixture has: 4 pending (ready, dep-blocked, needs-review, manual-only),
+      // 1 in_progress, 1 pending_review, 1 completed
+      expect(statusCounts["pending"]).toBe(4);
       expect(statusCounts["in_progress"]).toBe(1);
       expect(statusCounts["pending_review"]).toBe(1);
       expect(statusCounts["completed"]).toBe(1);
     });
 
     test("daemon returns inbox items", async ({ daemon }) => {
-      const response = await fetch(`${daemon.baseUrl}/api/inbox`);
-      expect(response.ok).toBe(true);
-      const data = await response.json();
-      expect(data.total).toBe(3);
+      const envelope = await fetchWhenReady(daemon.baseUrl, "/api/inbox");
+      expect(envelope.meta.total).toBe(3);
     });
 
     test("daemon returns observations", async ({ daemon }) => {
-      const response = await fetch(`${daemon.baseUrl}/api/meta/observations?resolved=false`);
-      expect(response.ok).toBe(true);
-      const data = await response.json();
-      expect(data.total).toBe(2);
+      const envelope = await fetchWhenReady(
+        daemon.baseUrl,
+        "/api/meta/observations?resolved=false",
+      );
+      expect(envelope.meta.total).toBe(2);
     });
 
     test("daemon returns validation results", async ({ daemon }) => {
-      const response = await fetch(`${daemon.baseUrl}/api/validate`);
-      expect(response.ok).toBe(true);
-      const data = await response.json();
+      const envelope = await fetchWhenReady(daemon.baseUrl, "/api/validate");
+      const data = envelope.data as Record<string, unknown>;
       expect(data).toHaveProperty("valid");
       expect(data).toHaveProperty("schemaErrors");
       expect(data).toHaveProperty("refErrors");
