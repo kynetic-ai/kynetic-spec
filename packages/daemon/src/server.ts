@@ -158,7 +158,7 @@ function stopSessionSyncForProject(projectPath: string): void {
  * Middleware to enforce localhost-only connections.
  * AC-3: Reject non-localhost connections with 403 Forbidden
  */
-function localhostOnly() {
+export function localhostOnly() {
   return (context: { request: Request }) => {
     const host = context.request.headers.get("host");
     if (!host) {
