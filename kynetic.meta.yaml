@@ -10369,6 +10369,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-30T23:38:44.827Z
+  - _ulid: 01KN0J9WGQ0M97QQF5T5SS97YG
+    type: friction
+    content: Interrupted git operations in dispatch worktrees can leave a stale .git/index.lock that
+      blocks later commit/stash steps. The failure mode is opaque during automation because
+      subsequent git commands only report that another git process may be running, and recovery
+      currently requires manual lock cleanup instead of a guided or automatic retry path.
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-30T23:47:13.559Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
