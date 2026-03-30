@@ -83656,6 +83656,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMZBZNE5G63F7WGVPAVW0824
         timestamp: 2026-03-30T12:37:33.410Z
+      - _ulid: 01KMZBZR5D6MDP631NTMAMRJ50
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMZBZQEJ7DN8VVB6T13MJAM0
+        timestamp: 2026-03-30T12:37:35.533Z
     examined_commit: 1b14f9251d210312870ad8acab4d20393f1c18c4
     external_links: []
     lifecycle_state: open
@@ -83707,7 +83714,27 @@ reviews:
               suite is not."
             created_at: 2026-03-30T12:37:32.742Z
         kind: blocker
+      - _ulid: 01KMZBZQEJ7DN8VVB6T13MJAM0
+        anchor:
+          type: code
+          commit: 1b14f9251d210312870ad8acab4d20393f1c18c4
+          line_end: 73
+          line_start: 62
+          path: tests/daemon-api/reviews-list.test.ts
+          side: head
+        entries:
+          - _ulid: 01KMZBZQEJ8FZSH06AZ407XATN
+            author: Test User
+            body: The review-list migration weakened the summary contract coverage instead of preserving it. The
+              deleted Playwright spec asserted fields like title and author/reviewer on each summary
+              row, but the replacement test only checks _ulid, lifecycle_state, disposition,
+              subject_type, and created_at. Since the route still returns title/author today, this
+              suite would now pass even if a future refactor dropped fields the /reviews UI depends
+              on, which violates the migration task's requirement that the vitest replacement be a
+              superset of the skipped API coverage.
+            created_at: 2026-03-30T12:37:34.802Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-30T12:35:22.878Z
-    updated_at: 2026-03-30T12:37:32.742Z
+    updated_at: 2026-03-30T12:37:34.802Z
     notes: []
