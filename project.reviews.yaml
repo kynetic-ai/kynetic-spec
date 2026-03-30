@@ -83411,6 +83411,19 @@ reviews:
         runner: playwright
         created_at: 2026-03-30T12:20:04.044Z
         completed_at: 2026-03-30T12:20:04.044Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Full npm test finished with an unrelated failure in
+          tests/dispatch-workspace-registry.test.ts (dispatch workspace registry lock
+          reconciliation). The patch only touches packages/web-ui query code; no touched paths
+          overlap the failing suite.
+        name: npm test
+        required: false
+        runner: npm
+        created_at: 2026-03-30T12:20:08.068Z
+        completed_at: 2026-03-30T12:20:08.068Z
     events:
       - _ulid: 01KMZAH34V0466VA2BA0X7RXWA
         actor: Test User
@@ -83455,6 +83468,13 @@ reviews:
           status: pass
           name: playwright fresh-load pages
         timestamp: 2026-03-30T12:20:04.764Z
+      - _ulid: 01KMZAZST06XAHW66Z75W6TNQS
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-30T12:20:08.640Z
     examined_commit: d067edacfbd8463a6aca643244557866358819d6
     external_links: []
     lifecycle_state: closed
@@ -83474,5 +83494,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T12:20:01.755Z
     created_at: 2026-03-30T12:12:06.684Z
-    updated_at: 2026-03-30T12:20:04.044Z
+    updated_at: 2026-03-30T12:20:08.068Z
     notes: []
