@@ -10182,6 +10182,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-30T18:11:33.937Z
+  - _ulid: 01KN007HT3WNKSE5K5R5HCFVCV
+    type: success
+    content: "Targeted isolation worked well in review: after reading the diff and shared websocket
+      types, rerunning the touched Web UI test file and representative failing suites in isolation
+      made it clear the agent_invocation event-shape fix was correct even though the full suite
+      remained red."
+    author: codex
+    resolution: null
+    resolved: false
+    created_at: 2026-03-30T18:31:22.692Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
