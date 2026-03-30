@@ -85399,6 +85399,12 @@ reviews:
         payload:
           thread_ulid: 01KMZP07Q79G15YTW5CRMFV0ES
         timestamp: 2026-03-30T15:59:29.061Z
+      - _ulid: 01KMZQHNEFVSHM4YG7NTASPYY9
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMZP07Q79G15YTW5CRMFV0ES
+        timestamp: 2026-03-30T15:59:36.911Z
     examined_commit: 56eb7f9f66ff1b04997879c45758c4455183b965
     external_links: []
     lifecycle_state: closed
@@ -86910,6 +86916,8 @@ reviews:
               test-base.ts issues also present on dev."
             created_at: 2026-03-30T15:59:28.449Z
         kind: question
+        resolved_at: 2026-03-30T15:59:36.304Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -86919,7 +86927,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T15:32:34.315Z
     created_at: 2026-03-30T15:22:26.734Z
-    updated_at: 2026-03-30T15:59:28.449Z
+    updated_at: 2026-03-30T15:59:36.304Z
     notes: []
   - _ulid: 01KMZPGH19GJS0YR1D9Y580KBE
     slugs: []
