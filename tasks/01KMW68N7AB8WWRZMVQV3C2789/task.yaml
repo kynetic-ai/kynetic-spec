@@ -41,8 +41,8 @@ origin: derived
 status: needs_work
 blocked_by: []
 depends_on:
-  - "@task-ui-warming-skeletons"
-  - "@task-ui-cache-domain-ready-subscription"
+  - "@task-fix-loading-page-e2e"
+  - "@task-fix-timing-races"
 context: []
 priority: 5
 tags:
@@ -117,6 +117,17 @@ history:
         previous: 01KMWWZFV5CXFMYFPDFXE0D9TV
     command: review-verdict-needs-work
     timestamp: 2026-03-29T22:09:47.318Z
+  - author: "@claude"
+    changes:
+      depends_on:
+        new:
+          - "@task-fix-loading-page-e2e"
+          - "@task-fix-timing-races"
+        previous:
+          - "@task-ui-warming-skeletons"
+          - "@task-ui-cache-domain-ready-subscription"
+    command: task-set
+    timestamp: 2026-03-30T09:34:28.766Z
 created_at: 2026-03-29T06:59:52.682Z
 started_at: 2026-03-29T13:37:08.311Z
 submitted_at: 2026-03-29T14:15:56.028Z

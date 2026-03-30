@@ -23242,14 +23242,14 @@
   status: needs_work
   blocked_by: []
   depends_on:
-    - "@task-ui-warming-skeletons"
-    - "@task-ui-cache-domain-ready-subscription"
+    - "@task-fix-loading-page-e2e"
+    - "@task-fix-timing-races"
   priority: 5
   tags:
     - test
     - e2e
   review_ref: "@01KMXT0K2NT3F15Q1Q4AZ4BZ03"
-  notes_count: 3
+  notes_count: 4
   todos_count: 0
   created_at: 2026-03-29T06:59:52.682Z
   started_at: 2026-03-29T13:37:08.311Z

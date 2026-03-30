@@ -23,3 +23,16 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-29T22:17:09.594Z
+  - _ulid: 01KMZ1GFHNAV0G6XYXV7EGMGHQ
+    content: "Added dependency on @task-fix-loading-page-e2e and @task-fix-timing-races from
+      @plan-e2e-test-suite-audit-and-restructure-2. The e2e test files were consolidated from
+      packages/web-ui/tests/e2e/ into tests/e2e/ (commits on dev branch 2026-03-29). The work branch
+      for this task (dispatch/task/task-e2e-cache-warming-transition/*) predates that move, so it
+      will need a rebase or merge against dev that resolves the path changes. The existing
+      cache-warming-views.spec.ts is now at tests/e2e/cache-warming-views.spec.ts and the test
+      fixture (test-base.ts) is at tests/e2e/fixtures/test-base.ts. The fixture also changed:
+      ephemeral ports replaced hardcoded 3456, npm link removed in favor of CLI_PATH, and
+      KSPEC_SESSION_ID is stripped from the environment."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-30T09:34:29.430Z
