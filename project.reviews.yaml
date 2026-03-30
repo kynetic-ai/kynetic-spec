@@ -91148,6 +91148,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-30T23:33:01.212Z
+      - _ulid: 01KN0HWGWB3B2B6SJWA5T1JCYK
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN0HWG2DQ81R3FW0QJ47S702
+        timestamp: 2026-03-30T23:39:55.659Z
     examined_commit: fc7d91827cb184171d49d28475980f2269aa4959
     external_links: []
     lifecycle_state: open
@@ -91157,8 +91164,28 @@ reviews:
       content_hash: ""
       ref: "@01KMZ1BXDQRXEGC4DAS1F8T9H5"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KN0HWG2DQ81R3FW0QJ47S702
+        anchor:
+          type: code
+          commit: fc7d91827cb184171d49d28475980f2269aa4959
+          line_end: 102
+          line_start: 98
+          path: packages/web-ui/src/lib/query/ws-invalidation.ts
+          side: head
+        entries:
+          - _ulid: 01KN0HWG2DBV6D7V3VG508E4XY
+            author: Test User
+            body: "This narrows the  topic too far: the daemon also broadcasts  on that topic when dispatch
+              enters or exits degraded mode, but this new fallback returns no invalidation for
+              anything except . The automation page reads  and relies on centralized  invalidation
+              for those status changes, so degraded/recovered state will stop appearing until some
+              unrelated agent lifecycle event happens. Evidence:  broadcasts  on
+              the  topic,  defines that type as , and  does not manually invalidate agent status
+              on  events."
+            created_at: 2026-03-30T23:39:54.830Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-30T23:32:21.924Z
-    updated_at: 2026-03-30T23:33:00.126Z
+    updated_at: 2026-03-30T23:39:54.830Z
     notes: []
