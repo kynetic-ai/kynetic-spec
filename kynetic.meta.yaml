@@ -10321,6 +10321,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-30T22:51:19.228Z
+  - _ulid: 01KN0GFKJYEM6PE7Q5FVAERCCR
+    type: success
+    content: "Splitting websocket coverage into Playwright UI behavior plus daemon-side protocol vitest
+      kept the fix-cycle scope tight: review reduced to one contract edge case, and targeted reruns
+      were enough to verify the repair quickly."
+    author: Test User
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-03-30T23:15:23.870Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
