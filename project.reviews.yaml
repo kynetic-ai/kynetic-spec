@@ -90830,7 +90830,17 @@ reviews:
     slugs: []
     title: Review task-fix-timing-races (cycle 4)
     author: Test User
-    checks: []
+    checks:
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate exited 6 with existing repo-wide warnings only; schema and references OK
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-30T23:25:10.212Z
+        completed_at: 2026-03-30T23:25:10.212Z
     events:
       - _ulid: 01KN0G80FMTW9ZBH6B83HH5RTV
         actor: Test User
@@ -90852,6 +90862,13 @@ reviews:
           kind: nit
           thread_ulid: 01KN0H1DQR37W79DZQNTC2H3CS
         timestamp: 2026-03-30T23:25:08.546Z
+      - _ulid: 01KN0H1GZ4B35AGZ2DA62AYGTZ
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-03-30T23:25:11.012Z
     examined_commit: 8339fac0f1f334a288a20705073571eeae3d7350
     external_links: []
     lifecycle_state: open
@@ -90889,5 +90906,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-30T23:11:14.932Z
-    updated_at: 2026-03-30T23:25:07.704Z
+    updated_at: 2026-03-30T23:25:10.212Z
     notes: []
