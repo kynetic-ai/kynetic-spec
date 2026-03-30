@@ -19417,7 +19417,7 @@ runs:
     completed_at: 2026-03-30T23:16:26.349Z
   - _ulid: 01KN0JTGGB5BKMECEEWWNFZFKE
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Test User
     step_results:
       - status: completed
@@ -19435,7 +19435,13 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-03-30T23:57:30.468Z
-        completed_at: 2026-03-30T23:57:30.468Z
+        completed_at: 2026-03-30T23:57:33.159Z
+        notes: "Friction: prepared worker worktree lacked kspec on PATH, so the session had to fall back to
+          node dist/cli/index.js for all CLI operations."
+      - status: completed
+        step_index: 3
+        started_at: 2026-03-30T23:57:33.159Z
+        completed_at: 2026-03-30T23:57:33.159Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-30T23:56:18.315Z
