@@ -89839,6 +89839,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-30T22:11:11.973Z
+      - _ulid: 01KN0CVP3E9CMA5TVV80RG8QF7
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN0CVMQ56TEMQSW8S2XKK6QT
+        timestamp: 2026-03-30T22:12:05.358Z
     examined_commit: cf37063d1bdb0f467d1257680859d0acbafab22c
     external_links: []
     lifecycle_state: open
@@ -89848,8 +89855,30 @@ reviews:
       content_hash: ""
       ref: "@01KMZ1BVK6C9F7QKYK9DZD4TFQ"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KN0CVMQ56TEMQSW8S2XKK6QT
+        anchor:
+          type: code
+          commit: cf37063d1bdb0f467d1257680859d0acbafab22c
+          line_end: 312
+          line_start: 302
+          path: tests/e2e/connection.spec.ts
+          side: head
+        entries:
+          - _ulid: 01KN0CVMQ54S45MDSEM7A2CZXG
+            author: Test User
+            body: AC-31 is still not covered behaviorally here. After injecting the seq=0 post-reconnect event,
+              the test claims to verify that the event was processed, but the only decisive
+              assertion is , which returns true regardless of the WebSocket manager state. If  were
+              never reset on reconnect, this test would still pass as long as the page kept
+              rendering its existing task list, so the regression that previously triggered review
+              feedback would slip through again. Replace this placeholder assertion with an
+              observable proof that the seq=0 event was accepted after reconnect, such as asserting
+              on the manager state or on a DOM/network effect that only occurs when the event
+              handler runs.
+            created_at: 2026-03-30T22:12:03.941Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-30T22:09:32.061Z
-    updated_at: 2026-03-30T22:11:10.638Z
+    updated_at: 2026-03-30T22:12:03.941Z
     notes: []
