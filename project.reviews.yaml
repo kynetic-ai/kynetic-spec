@@ -84839,6 +84839,17 @@ reviews:
         runner: kspec
         created_at: 2026-03-30T13:31:06.751Z
         completed_at: 2026-03-30T13:31:06.751Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- tests/daemon-api/reviews-list.test.ts tests/daemon-api/projects.test.ts: 7
+          suites passed, 42 tests passed."
+        name: daemon-api-targeted
+        required: true
+        runner: npm-test
+        created_at: 2026-03-30T13:31:10.478Z
+        completed_at: 2026-03-30T13:31:10.478Z
     events:
       - _ulid: 01KMZEKKBPX4MTHK88S0TGWMR1
         actor: Test User
@@ -84867,6 +84878,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMZF1SXN3M6M7CWGKPVQJYZR
         timestamp: 2026-03-30T13:31:09.211Z
+      - _ulid: 01KMZF1WCK5PX44CBVXYAXK129
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: daemon-api-targeted
+        timestamp: 2026-03-30T13:31:11.123Z
     examined_commit: 853e55343524ba07ed3c232180e3c1b037623b00
     external_links: []
     lifecycle_state: open
@@ -84906,5 +84924,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-30T13:23:23.127Z
-    updated_at: 2026-03-30T13:31:08.597Z
+    updated_at: 2026-03-30T13:31:10.478Z
     notes: []
