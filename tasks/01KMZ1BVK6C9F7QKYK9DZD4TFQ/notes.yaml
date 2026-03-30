@@ -157,3 +157,14 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-30T22:25:20.622Z
+  - _ulid: 01KN0E2D49X2B0795K8C8X3S8V
+    content: "Fix cycle 2: replaced the remaining connection E2E placeholders with behavioral /api/tasks
+      refetch assertions. AC-30 now proves the first seq delivery refetches the tasks query and
+      replaying the same seq does not; AC-31 now proves a post-reconnect seq=0 event triggers a
+      refetch after resubscribe. Verification: npx playwright test tests/e2e/connection.spec.ts
+      passed (7/7). kspec validate still exits 6 on existing repo-wide warnings only. npm test still
+      exits 1 on the pre-existing dispatch workspace registry failure already noted in review
+      evidence (tests/dispatch-workspace-registry.test.ts timeout), unrelated to this file change."
+    supersedes: null
+    author: Test User
+    created_at: 2026-03-30T22:33:14.122Z
