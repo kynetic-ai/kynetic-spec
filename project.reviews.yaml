@@ -89940,6 +89940,12 @@ reviews:
         payload:
           thread_ulid: 01KN0CVMQ56TEMQSW8S2XKK6QT
         timestamp: 2026-03-30T22:33:37.543Z
+      - _ulid: 01KN0E3F1S1FTQ4FMW7HTSQ6SC
+        actor: Test User
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KN0CVMQ56TEMQSW8S2XKK6QT
+        timestamp: 2026-03-30T22:33:48.858Z
     examined_commit: cf37063d1bdb0f467d1257680859d0acbafab22c
     external_links: []
     lifecycle_state: closed
@@ -89980,6 +89986,8 @@ reviews:
               accepted, which proves lastSeqProcessed was reset on reconnect.
             created_at: 2026-03-30T22:33:36.967Z
         kind: blocker
+        resolved_at: 2026-03-30T22:33:48.287Z
+        resolved_by: Test User
       - _ulid: 01KN0CVYZ8E563MVB89C2FQBZ3
         anchor:
           type: code
@@ -90075,7 +90083,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T22:14:48.833Z
     created_at: 2026-03-30T22:09:32.061Z
-    updated_at: 2026-03-30T22:33:36.967Z
+    updated_at: 2026-03-30T22:33:48.287Z
     notes: []
   - _ulid: 01KN0DMBM3BK14076PF2NNA390
     slugs: []
