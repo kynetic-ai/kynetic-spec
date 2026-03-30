@@ -10092,6 +10092,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-30T13:34:32.790Z
+  - _ulid: 01KMZF81JHG8328WZR6CJKPHWD
+    type: success
+    content: "When a full-suite failure looks unrelated to the reviewed diff, immediately rerunning the
+      failing test in isolation is an effective review pattern: it distinguishes flake from
+      regression quickly while preserving the requirement for targeted checks on the changed area."
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-30T13:34:33.042Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
