@@ -54,7 +54,7 @@ description: |
 spec_ref: null
 plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -68,7 +68,7 @@ review_ref: "@01KMZDEFYGJB5EZP7S5GN7DB0G"
 submission_linkage:
   review_url: null
   branch: dev
-  captured_at: 2026-03-30T13:00:22.362Z
+  captured_at: 2026-03-30T13:21:22.516Z
   commit: 4696b19c2dbf188613c651e9d1698e5203f9ccfc
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
@@ -259,8 +259,35 @@ history:
         previous: 2026-03-30T13:00:21.046Z
     command: task-start
     timestamp: 2026-03-30T13:21:15.768Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-30T13:21:22.516Z
+          commit: 4696b19c2dbf188613c651e9d1698e5203f9ccfc
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-30T13:00:22.362Z
+          commit: 4696b19c2dbf188613c651e9d1698e5203f9ccfc
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+      submitted_at:
+        new: 2026-03-30T13:21:22.521Z
+        previous: 2026-03-30T13:00:22.365Z
+    command: task-submit
+    timestamp: 2026-03-30T13:21:22.521Z
 created_at: 2026-03-30T09:31:57.425Z
 started_at: 2026-03-30T13:21:15.768Z
-submitted_at: 2026-03-30T13:00:22.365Z
+submitted_at: 2026-03-30T13:21:22.521Z
 todos: []
 automation: eligible

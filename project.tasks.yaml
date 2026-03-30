@@ -23354,7 +23354,7 @@
   title: Migrate API-only e2e specs to vitest using app.handle()
   type: task
   plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 2
@@ -23367,7 +23367,7 @@
   todos_count: 0
   created_at: 2026-03-30T09:31:57.425Z
   started_at: 2026-03-30T13:21:15.768Z
-  submitted_at: 2026-03-30T13:00:22.365Z
+  submitted_at: 2026-03-30T13:21:22.521Z
   automation: eligible
 - _ulid: 01KMZ1BVBBDPGQMSK3C8GDK3HP
   slugs:
