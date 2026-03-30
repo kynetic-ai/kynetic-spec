@@ -90491,6 +90491,12 @@ reviews:
         payload:
           thread_ulid: 01KN0EKJKGSTM8PVMVWTVS4PDR
         timestamp: 2026-03-30T23:07:26.363Z
+      - _ulid: 01KN0G13R1WGWJVNV148147YV5
+        actor: Test User
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KN0EHCGH08SEKJ6W9Q4CAVRF
+        timestamp: 2026-03-30T23:07:28.897Z
     examined_commit: 96979f51ac13f6ca691be360c82899c11de83f96
     external_links: []
     lifecycle_state: closed
@@ -90587,6 +90593,8 @@ reviews:
               passed (83/83), and npm test -- tests/daemon-api/plans.test.ts --fresh passed (2/2)."
             created_at: 2026-03-30T23:07:21.720Z
         kind: blocker
+        resolved_at: 2026-03-30T23:07:28.061Z
+        resolved_by: Test User
       - _ulid: 01KN0EKJKGSTM8PVMVWTVS4PDR
         entries:
           - _ulid: 01KN0EKJKGVNZR72XPMMZPN22X
@@ -90625,7 +90633,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T22:42:51.771Z
     created_at: 2026-03-30T22:36:45.668Z
-    updated_at: 2026-03-30T23:07:25.543Z
+    updated_at: 2026-03-30T23:07:28.061Z
     notes: []
   - _ulid: 01KN0F7HS7KDC8NKD5B0EWPYPB
     slugs: []
