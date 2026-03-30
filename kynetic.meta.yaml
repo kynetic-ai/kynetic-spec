@@ -10202,6 +10202,30 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-30T18:31:23.030Z
+  - _ulid: 01KN00BEK6RQJRKFN9N86R9DMX
+    type: friction
+    content: "Manual-merge review snapshots cannot switch to the integration branch when that branch is
+      already checked out in another worktree (for example: fatal: 'dev' is already used by worktree
+      ...). Reviewer guidance should document the expected fallback for dispatch/manual_merge
+      reviews, such as merging into the primary worktree with git -C <repo-root> merge --no-ff
+      <task-branch>, instead of assuming git checkout <target> will work inside the detached review
+      snapshot."
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-30T18:33:30.471Z
+  - _ulid: 01KN00BERWQWNV2PQ6HX7MT4ZG
+    type: success
+    content: "When full npm test fails broadly during review, running focused changed-file coverage plus
+      one representative unrelated suite in isolation is an effective way to separate task-local
+      regressions from snapshot-wide or cross-suite interference. This prevented a false blocker in
+      the fixture/envelope review: changed coverage passed, a representative unrelated suite passed
+      standalone, and the task could be approved and merged with the broad failure recorded as
+      non-required evidence."
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-30T18:33:30.652Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
