@@ -83276,6 +83276,12 @@ reviews:
         payload:
           thread_ulid: 01KMZ7Z4BV8KSRZEGJZYF4WHF0
         timestamp: 2026-03-30T12:26:57.137Z
+      - _ulid: 01KMZBCGRPCVVJCWC5KG850723
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMZ7Z4BV8KSRZEGJZYF4WHF0
+        timestamp: 2026-03-30T12:27:05.367Z
     examined_commit: 48e6b79299b8817d4c06a0ba814a34aa9bac6128
     external_links: []
     lifecycle_state: closed
@@ -83315,6 +83321,8 @@ reviews:
               now pass reliably in the full pipeline."
             created_at: 2026-03-30T12:26:56.544Z
         kind: blocker
+        resolved_at: 2026-03-30T12:27:04.784Z
+        resolved_by: "@claude"
       - _ulid: 01KMZ7Z61RPKY2BN43MCHFKCX0
         anchor:
           type: code
@@ -83394,7 +83402,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T11:27:41.637Z
     created_at: 2026-03-30T11:20:16.563Z
-    updated_at: 2026-03-30T12:26:56.544Z
+    updated_at: 2026-03-30T12:27:04.784Z
     notes: []
   - _ulid: 01KMZAH34WBGQ6AAAZE76CWTC8
     slugs: []
