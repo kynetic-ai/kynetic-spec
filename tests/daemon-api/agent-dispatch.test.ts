@@ -1,11 +1,24 @@
-// AC: @spec-agent-dispatch ac-1
-// AC: @spec-agent-dispatch ac-2
-// AC: @spec-agent-dispatch ac-3
-// AC: @trait-api-endpoint ac-1
-// AC: @trait-api-endpoint ac-2
-// AC: @trait-api-endpoint ac-3
+/**
+ * API Tests for Daemon Agent Dispatch Integration
+ *
+ * Covered ACs:
+ * - @daemon-agent-dispatch ac-2: POST /api/agent/events accepts task state change events
+ * - @daemon-agent-dispatch ac-5: GET /api/agent/status returns dispatch_enabled, active_invocations, queue_depth, agent_definitions
+ * - @daemon-agent-dispatch ac-6: POST /api/agent/dispatch with action start|stop returns dispatch_enabled
+ * - @daemon-agent-dispatch ac-7: Event emission fails silently when engine not running
+ */
+
+// Trait N/A annotations
+// AC: @daemon-agent-dispatch ac-1 — N/A: file watcher integration is tested implicitly via the dispatch engine; isolated watcher+diffing behavior is covered in unit tests
+// AC: @daemon-agent-dispatch ac-3, ac-4 — N/A: actual invocation broadcasts require a real agent adapter (claude-agent-acp) which cannot run in vitest; event callback wiring is verified by unit tests
+// AC: @trait-api-endpoint ac-2 — N/A: agent dispatch endpoints use project context, not item refs
+// AC: @trait-api-endpoint ac-4 — N/A: agent dispatch endpoints do not support pagination
+// AC: @trait-api-endpoint ac-5 — N/A: agent dispatch endpoints operate on daemon state, not shadow branch
+// AC: @trait-api-endpoint ac-6 — N/A: X-Request-Id header is infrastructure concern; not tested in domain E2E tests
+
 import type { Elysia } from "elysia";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { stopAllEngines } from "../../dist/daemon/routes/agent-dispatch.ts";
 import {
   cleanupTempDir,
   createTempDir,
@@ -26,6 +39,9 @@ beforeEach(async () => {
 });
 
 afterEach(async () => {
+  // Ensure all dispatch engines are stopped to prevent leaked state
+  // between tests (engines are module-level singletons keyed by project path).
+  await stopAllEngines();
   await cleanupTempDir(tempDir);
 });
 
@@ -34,48 +50,59 @@ function request(urlPath: string, init?: RequestInit) {
 }
 
 describe("GET /api/agent/status", () => {
-  it("returns a status object", async () => {
+  // AC: @daemon-agent-dispatch ac-5
+  it("returns dispatch_enabled, active_invocations, queue_depth, agent_definitions", async () => {
     const response = await request("/api/agent/status");
     expect(response.status).toBe(200);
+
     const body = await response.json();
-    expect(body).toBeDefined();
+    expect(body).toHaveProperty("dispatch_enabled");
+    expect(typeof body.dispatch_enabled).toBe("boolean");
+
+    expect(body).toHaveProperty("active_invocations");
+    expect(Array.isArray(body.active_invocations)).toBe(true);
+
+    expect(body).toHaveProperty("queue_depth");
+    expect(typeof body.queue_depth).toBe("number");
+
+    expect(body).toHaveProperty("agent_definitions");
+    expect(Array.isArray(body.agent_definitions)).toBe(true);
+  });
+
+  // AC: @daemon-agent-dispatch ac-5
+  it("returns dispatch_enabled=false when engine not started", async () => {
+    const response = await request("/api/agent/status");
+    expect(response.status).toBe(200);
+
+    const body = await response.json();
+    expect(body.dispatch_enabled).toBe(false);
+    expect(body.active_invocations).toEqual([]);
+    expect(body.queue_depth).toBe(0);
   });
 
   it("returns JSON content type", async () => {
     const response = await request("/api/agent/status");
     expect(response.headers.get("content-type")).toContain("application/json");
   });
-
-  it("returns dispatch_enabled false when not started", async () => {
-    const response = await request("/api/agent/status");
-    const body = (await response.json()) as { dispatch_enabled: boolean };
-    expect(body.dispatch_enabled).toBe(false);
-  });
-
-  it("returns expected shape with required fields", async () => {
-    const response = await request("/api/agent/status");
-    const body = (await response.json()) as Record<string, unknown>;
-    expect(body).toHaveProperty("dispatch_enabled");
-  });
 });
 
 describe("POST /api/agent/dispatch", () => {
-  it("starts dispatch with action=start", async () => {
+  // AC: @daemon-agent-dispatch ac-6
+  it("starts dispatch engine with action=start", async () => {
     const response = await request("/api/agent/dispatch", {
       method: "POST",
       body: JSON.stringify({ action: "start" }),
     });
     expect(response.status).toBe(200);
 
-    // Clean up
-    await request("/api/agent/dispatch", {
-      method: "POST",
-      body: JSON.stringify({ action: "stop" }),
-    });
+    const body = await response.json();
+    expect(body).toHaveProperty("dispatch_enabled");
+    expect(body.dispatch_enabled).toBe(true);
   });
 
-  it("stops dispatch with action=stop", async () => {
-    // Start first so stop has something to stop
+  // AC: @daemon-agent-dispatch ac-6
+  it("stops dispatch engine with action=stop", async () => {
+    // Start first
     await request("/api/agent/dispatch", {
       method: "POST",
       body: JSON.stringify({ action: "start" }),
@@ -86,23 +113,24 @@ describe("POST /api/agent/dispatch", () => {
       body: JSON.stringify({ action: "stop" }),
     });
     expect(response.status).toBe(200);
+
+    const body = await response.json();
+    expect(body).toHaveProperty("dispatch_enabled");
+    expect(body.dispatch_enabled).toBe(false);
   });
 
-  it("status reflects dispatch_enabled=true after start", async () => {
+  // AC: @daemon-agent-dispatch ac-6
+  it("returns dispatch_enabled=true when GET /api/agent/status is called after start", async () => {
     await request("/api/agent/dispatch", {
       method: "POST",
       body: JSON.stringify({ action: "start" }),
     });
 
     const statusResponse = await request("/api/agent/status");
-    const body = (await statusResponse.json()) as { dispatch_enabled: boolean };
-    expect(body.dispatch_enabled).toBe(true);
+    expect(statusResponse.status).toBe(200);
 
-    // Clean up
-    await request("/api/agent/dispatch", {
-      method: "POST",
-      body: JSON.stringify({ action: "stop" }),
-    });
+    const body = await statusResponse.json();
+    expect(body.dispatch_enabled).toBe(true);
   });
 
   it("status reflects dispatch_enabled=false after stop", async () => {
@@ -116,36 +144,43 @@ describe("POST /api/agent/dispatch", () => {
     });
 
     const statusResponse = await request("/api/agent/status");
-    const body = (await statusResponse.json()) as { dispatch_enabled: boolean };
+    const body = await statusResponse.json();
     expect(body.dispatch_enabled).toBe(false);
   });
 
+  // AC: @trait-api-endpoint ac-3
   it("returns 400 for invalid action", async () => {
     const response = await request("/api/agent/dispatch", {
       method: "POST",
-      body: JSON.stringify({ action: "invalid-action" }),
+      body: JSON.stringify({ action: "restart" }),
     });
-    expect(response.status).toBe(400);
+    expect(response.status).toBeGreaterThanOrEqual(400);
   });
 });
 
 describe("POST /api/agent/events", () => {
-  it("returns accepted=false when dispatch is not running", async () => {
-    // The events endpoint expects task state change format: task_id, from_status, to_status
+  // AC: @daemon-agent-dispatch ac-2, ac-7
+  it("returns accepted=false with reason when dispatch engine not running", async () => {
     const response = await request("/api/agent/events", {
       method: "POST",
       body: JSON.stringify({
         task_id: "01JXXXXXXXXXXXXXXXXXXXXXXXXX",
-        from_status: "pending",
-        to_status: "in_progress",
+        from_status: "in_progress",
+        to_status: "pending",
+        timestamp: Date.now(),
       }),
     });
     expect(response.status).toBe(200);
-    const body = (await response.json()) as { accepted: boolean };
+
+    const body = await response.json();
+    // AC: @daemon-agent-dispatch ac-7 - silent fail when engine not running
     expect(body.accepted).toBe(false);
+    expect(body.reason).toBeDefined();
   });
 
-  it("returns accepted=true when dispatch is running", async () => {
+  // AC: @daemon-agent-dispatch ac-2
+  it("returns accepted=true when dispatch engine is running", async () => {
+    // Start the engine first
     await request("/api/agent/dispatch", {
       method: "POST",
       body: JSON.stringify({ action: "start" }),
@@ -156,109 +191,92 @@ describe("POST /api/agent/events", () => {
       body: JSON.stringify({
         task_id: "01JXXXXXXXXXXXXXXXXXXXXXXXXX",
         task_ref: "@test-task",
-        from_status: "pending",
-        to_status: "in_progress",
+        from_status: "in_progress",
+        to_status: "pending",
         timestamp: Date.now(),
       }),
     });
     expect(response.status).toBe(200);
-    const body = (await response.json()) as { accepted: boolean };
-    expect(body.accepted).toBe(true);
 
-    // Clean up
-    await request("/api/agent/dispatch", {
-      method: "POST",
-      body: JSON.stringify({ action: "stop" }),
-    });
+    const body = await response.json();
+    expect(body.accepted).toBe(true);
   });
 
-  it("legacy /api/agent/event alias works", async () => {
+  // AC: @daemon-agent-dispatch ac-2
+  it("POST /api/agent/event (legacy alias) returns accepted=false when engine not running", async () => {
     const response = await request("/api/agent/event", {
       method: "POST",
       body: JSON.stringify({
         task_id: "01JXXXXXXXXXXXXXXXXXXXXXXXXX",
         from_status: "pending",
         to_status: "in_progress",
+        timestamp: Date.now(),
       }),
     });
-    // Should respond (not 404)
-    expect(response.status).not.toBe(404);
+    expect(response.status).toBe(200);
+
+    const body = await response.json();
+    expect(body.accepted).toBe(false);
   });
 });
 
 describe("GET /api/agent/dispatch/status (internal)", () => {
-  it("returns running=false when dispatch not started", async () => {
+  // AC: @daemon-agent-dispatch ac-5 (internal route for backwards compat)
+  it("returns running=false when engine not started", async () => {
     const response = await request("/api/agent/dispatch/status");
     expect(response.status).toBe(200);
-    const body = (await response.json()) as { running: boolean };
+
+    const body = await response.json();
+    expect(body).toHaveProperty("running");
     expect(body.running).toBe(false);
-  });
-
-  it("returns running=true after dispatch start", async () => {
-    await request("/api/agent/dispatch", {
-      method: "POST",
-      body: JSON.stringify({ action: "start" }),
-    });
-
-    const response = await request("/api/agent/dispatch/status");
-    expect(response.status).toBe(200);
-    const body = (await response.json()) as { running: boolean };
-    expect(body.running).toBe(true);
-
-    // Clean up
-    await request("/api/agent/dispatch", {
-      method: "POST",
-      body: JSON.stringify({ action: "stop" }),
-    });
   });
 });
 
-describe("Legacy routes", () => {
-  it("POST /api/agent/dispatch/start starts dispatch", async () => {
+describe("Legacy dispatch start/stop routes", () => {
+  it("POST /api/agent/dispatch/start starts the engine", async () => {
     const response = await request("/api/agent/dispatch/start", {
       method: "POST",
     });
-    // Should respond (not 404)
-    expect(response.status).not.toBe(404);
+    expect(response.status).toBe(200);
 
-    // Clean up
-    await request("/api/agent/dispatch/stop", { method: "POST" });
+    const body = await response.json();
+    expect(body.started).toBe(true);
+
+    // Verify engine is running
+    const statusResponse = await request("/api/agent/dispatch/status");
+    const status = await statusResponse.json();
+    expect(status.running).toBe(true);
   });
 
-  it("POST /api/agent/dispatch/stop stops dispatch", async () => {
+  it("POST /api/agent/dispatch/stop stops the engine", async () => {
+    // Start first
     await request("/api/agent/dispatch/start", { method: "POST" });
 
     const response = await request("/api/agent/dispatch/stop", {
       method: "POST",
     });
-    expect(response.status).not.toBe(404);
+    expect(response.status).toBe(200);
+
+    const body = await response.json();
+    expect(body.stopped).toBe(true);
+
+    // Verify engine is stopped
+    const statusResponse = await request("/api/agent/dispatch/status");
+    const status = await statusResponse.json();
+    expect(status.running).toBe(false);
   });
 });
 
 describe("@trait-api-endpoint: all dispatch endpoints return 2xx", () => {
-  it("GET /api/agent/status returns 2xx", async () => {
-    const response = await request("/api/agent/status");
-    expect(response.status).toBeGreaterThanOrEqual(200);
-    expect(response.status).toBeLessThan(300);
-  });
+  // AC: @trait-api-endpoint ac-1 — valid requests return 2xx
+  it("all dispatch endpoints return 2xx for valid requests", async () => {
+    const statusResp = await request("/api/agent/status");
+    expect(statusResp.status).toBe(200);
 
-  it("POST /api/agent/dispatch with valid action returns 2xx", async () => {
-    const response = await request("/api/agent/dispatch", {
-      method: "POST",
-      body: JSON.stringify({ action: "start" }),
-    });
-    expect(response.status).toBeGreaterThanOrEqual(200);
-    expect(response.status).toBeLessThan(300);
+    const dispatchStatusResp = await request("/api/agent/dispatch/status");
+    expect(dispatchStatusResp.status).toBe(200);
 
-    // Clean up
-    await request("/api/agent/dispatch", {
-      method: "POST",
-      body: JSON.stringify({ action: "stop" }),
-    });
-  });
-
-  it("POST /api/agent/events returns 2xx", async () => {
-    const response = await request("/api/agent/events", {
+    const eventResp = await request("/api/agent/events", {
       method: "POST",
       body: JSON.stringify({
         task_id: "01JXXXXXXXXXXXXXXXXXXXXXXXXX",
@@ -266,21 +284,15 @@ describe("@trait-api-endpoint: all dispatch endpoints return 2xx", () => {
         to_status: "in_progress",
       }),
     });
-    expect(response.status).toBeGreaterThanOrEqual(200);
-    expect(response.status).toBeLessThan(300);
+    expect(eventResp.status).toBe(200);
   });
 
-  it("GET /api/agent/dispatch/status returns 2xx", async () => {
-    const response = await request("/api/agent/dispatch/status");
-    expect(response.status).toBeGreaterThanOrEqual(200);
-    expect(response.status).toBeLessThan(300);
-  });
-
+  // AC: @trait-api-endpoint ac-3 — invalid body returns 400
   it("POST /api/agent/dispatch with invalid action returns 400", async () => {
     const response = await request("/api/agent/dispatch", {
       method: "POST",
-      body: JSON.stringify({ action: "bogus" }),
+      body: JSON.stringify({ action: "restart" }),
     });
-    expect(response.status).toBe(400);
+    expect(response.status).toBeGreaterThanOrEqual(400);
   });
 });

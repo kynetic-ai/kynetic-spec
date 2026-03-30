@@ -7,12 +7,12 @@
  * - @session-text-search ac-scope-narrowing
  * - @trait-api-endpoint ac-1
  * - @trait-api-endpoint ac-2
- * - @trait-api-endpoint ac-6
  */
 
 // AC: @trait-api-endpoint ac-3 — N/A: GET /api/sessions/search does not accept a request body.
 // AC: @trait-api-endpoint ac-4 — N/A: search results are bounded by limit, not offset/limit pagination.
 // AC: @trait-api-endpoint ac-5 — N/A: the search endpoint is read-only and does not mutate shadow state.
+// AC: @trait-api-endpoint ac-6 — N/A: x-request-id is set only by command routes (via onTransform middleware in command.ts), not session routes.
 
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -154,12 +154,4 @@ describe("Session Search API", () => {
     expect(body.suggestion).toContain("/api/tasks");
   });
 
-  // AC: @trait-api-endpoint ac-6 — N/A: x-request-id is only set by command routes
-  // (via .onTransform middleware), not session routes. Session search endpoint
-  // does not currently include this header.
-  it.skip("includes x-request-id on search responses", async () => {
-    const response = await request("/api/sessions/search?q=error");
-    expect(response.status).toBe(200);
-    expect(response.headers.get("x-request-id")).toBeTruthy();
-  });
 });
