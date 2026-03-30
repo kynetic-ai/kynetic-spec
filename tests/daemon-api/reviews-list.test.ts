@@ -59,16 +59,22 @@ describe("Review List API (GET /api/reviews)", () => {
     expect(body.meta).toHaveProperty("limit");
   });
 
-  it("returns required fields on each review", async () => {
+  it("review summary includes all required fields", async () => {
     const response = await request("/api/reviews");
     expect(response.status).toBe(200);
     const { data } = await response.json();
     expect(data.length).toBeGreaterThan(0);
     const review = data[0];
     expect(review).toHaveProperty("_ulid");
+    expect(review).toHaveProperty("title");
     expect(review).toHaveProperty("lifecycle_state");
     expect(review).toHaveProperty("disposition");
     expect(review).toHaveProperty("subject_type");
+    expect(review).toHaveProperty("author");
+    expect(review).toHaveProperty("thread_count");
+    expect(review).toHaveProperty("unresolved_blocker_count");
+    expect(review).toHaveProperty("check_count");
+    expect(review).toHaveProperty("verdict_count");
     expect(review).toHaveProperty("created_at");
   });
 
@@ -267,28 +273,47 @@ describe("Review List API (GET /api/reviews)", () => {
 });
 
 describe("Review Detail API (GET /api/reviews/:id)", () => {
-  it("returns full detail by ULID", async () => {
+  it("returns full detail by ULID with all contract fields", async () => {
     const response = await request(`/api/reviews/${OPEN_REVIEW_ULID}`);
     expect(response.status).toBe(200);
     const body = await response.json();
     expect(body).toHaveProperty("data");
     const review = body.data;
     expect(review._ulid).toBe(OPEN_REVIEW_ULID);
+    expect(review.title).toBe("Review of test task");
     expect(review.lifecycle_state).toBe("open");
-    expect(review.subject.ref).toBe("@test-task-pending-review");
+    expect(review).toHaveProperty("disposition");
+    expect(review).toHaveProperty("threads");
+    expect(review).toHaveProperty("checks");
+    expect(review).toHaveProperty("verdicts");
+    expect(review).toHaveProperty("events");
+    expect(review).toHaveProperty("subject");
   });
 
-  it("includes threads with entries and resolution", async () => {
+  it("includes threads with entries and resolution state", async () => {
     const response = await request(`/api/reviews/${OPEN_REVIEW_ULID}`);
     expect(response.status).toBe(200);
     const { data: review } = await response.json();
     expect(Array.isArray(review.threads)).toBe(true);
-    expect(review.threads.length).toBeGreaterThan(0);
-    const thread = review.threads[0];
-    expect(thread).toHaveProperty("_ulid");
-    expect(thread).toHaveProperty("kind");
-    expect(thread).toHaveProperty("entries");
-    expect(Array.isArray(thread.entries)).toBe(true);
+    expect(review.threads.length).toBe(4);
+
+    // First blocker thread
+    const blockerThread = review.threads.find(
+      (t: { _ulid: string }) => t._ulid === "01KKTX1CA45ZT43W2T6HJMVA02",
+    );
+    expect(blockerThread).toBeDefined();
+    expect(blockerThread.kind).toBe("blocker");
+    expect(blockerThread.entries.length).toBeGreaterThan(0);
+    expect(blockerThread.entries[0].body).toBe("Missing error handling for edge case");
+
+    // Resolved question thread
+    const resolvedThread = review.threads.find(
+      (t: { kind: string; resolved_at: string | null }) =>
+        t.kind === "question" && t.resolved_at !== null,
+    );
+    expect(resolvedThread).toBeDefined();
+    expect(resolvedThread.resolved_by).toBe("worker@test.com");
+    expect(resolvedThread.entries.length).toBe(2);
   });
 
   it("includes computed disposition", async () => {
@@ -298,20 +323,25 @@ describe("Review Detail API (GET /api/reviews/:id)", () => {
     expect(review.disposition).toBe("changes_requested");
   });
 
-  it("returns detail for an empty review (draft)", async () => {
+  it("returns detail for an empty review (draft) with empty arrays", async () => {
     const response = await request(`/api/reviews/${DRAFT_REVIEW_ULID}`);
     expect(response.status).toBe(200);
     const { data: review } = await response.json();
     expect(review._ulid).toBe(DRAFT_REVIEW_ULID);
     expect(review.lifecycle_state).toBe("draft");
     expect(review.threads).toEqual([]);
+    expect(review.checks).toEqual([]);
+    expect(review.verdicts).toEqual([]);
   });
 
-  it("returns 404 for unknown review", async () => {
+  it("returns 404 for unknown review with error shape", async () => {
     const response = await request(
       "/api/reviews/01AAAAAAAAAAAAAAAAAAAAAA99",
     );
     expect(response.status).toBe(404);
+    const body = await response.json();
+    expect(body.error).toBe("not_found");
+    expect(body).toHaveProperty("suggestion");
   });
 
   it("includes subject info", async () => {

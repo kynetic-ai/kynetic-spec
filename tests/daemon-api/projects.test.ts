@@ -81,11 +81,15 @@ function request(urlPath: string, init?: RequestInit) {
 }
 
 describe("GET /api/projects", () => {
-  it("returns a list shape with projects array", async () => {
+  it("returns list shape with projects array and total", async () => {
     const response = await request("/api/projects");
     expect(response.status).toBe(200);
-    const body = (await response.json()) as { projects: unknown[] };
+    const body = (await response.json()) as { projects: unknown[]; total: number };
+    expect(body).toHaveProperty("projects");
+    expect(body).toHaveProperty("total");
     expect(Array.isArray(body.projects)).toBe(true);
+    expect(body.projects.length).toBeGreaterThan(0);
+    expect(body.total).toBe(body.projects.length);
   });
 
   it("returns JSON content type", async () => {
@@ -93,7 +97,7 @@ describe("GET /api/projects", () => {
     expect(response.headers.get("content-type")).toContain("application/json");
   });
 
-  it("each project has required fields", async () => {
+  it("each project has required fields: path, registeredAt, watcherStatus", async () => {
     // tempDir is already registered via startupProject
     const response = await request("/api/projects");
     const body = (await response.json()) as {
@@ -102,6 +106,15 @@ describe("GET /api/projects", () => {
     expect(body.projects.length).toBeGreaterThan(0);
     const project = body.projects[0];
     expect(project).toHaveProperty("path");
+    expect(typeof project.path).toBe("string");
+
+    expect(project).toHaveProperty("registeredAt");
+    expect(typeof project.registeredAt).toBe("string");
+    // registeredAt should be a valid ISO 8601 date
+    expect(new Date(project.registeredAt as string).getTime()).not.toBeNaN();
+
+    expect(project).toHaveProperty("watcherStatus");
+    expect(["active", "stopped"]).toContain(project.watcherStatus);
   });
 
   it("project paths are absolute", async () => {
@@ -114,7 +127,7 @@ describe("GET /api/projects", () => {
     }
   });
 
-  it("second registered project appears in list", async () => {
+  it("second registered project appears in list with full fields", async () => {
     const secondDir = createProjectDir(tempDir, "second-project");
 
     await request("/api/projects", {
@@ -123,22 +136,40 @@ describe("GET /api/projects", () => {
     });
 
     const response = await request("/api/projects");
-    const body = (await response.json()) as { projects: Array<{ path: string }> };
-    const paths = body.projects.map((p) => p.path);
-    expect(paths).toContain(secondDir);
+    const body = (await response.json()) as {
+      projects: Array<{ path: string; registeredAt: string; watcherStatus: string }>;
+    };
+    expect(body.projects.length).toBeGreaterThanOrEqual(2);
+    const found = body.projects.find((p) => p.path === secondDir);
+    expect(found).toBeDefined();
+    expect(found!.registeredAt).toBeTruthy();
+    expect(["active", "stopped"]).toContain(found!.watcherStatus);
   });
 });
 
 describe("POST /api/projects", () => {
-  it("returns project object on success", async () => {
+  it("returns success and project with path, registeredAt, watcherStatus", async () => {
     const newDir = createProjectDir(tempDir, "new-project");
     const response = await request("/api/projects", {
       method: "POST",
       body: JSON.stringify({ path: newDir }),
     });
     expect(response.status).toBe(200);
-    const body = (await response.json()) as Record<string, unknown>;
+    const body = (await response.json()) as {
+      success: boolean;
+      project: { path: string; registeredAt: string; watcherStatus: string };
+    };
+    expect(body).toHaveProperty("success");
+    expect(body.success).toBe(true);
     expect(body).toHaveProperty("project");
+
+    const project = body.project;
+    expect(project).toHaveProperty("path");
+    expect(project.path).toBe(newDir);
+    expect(project).toHaveProperty("registeredAt");
+    expect(typeof project.registeredAt).toBe("string");
+    expect(project).toHaveProperty("watcherStatus");
+    expect(["active", "stopped"]).toContain(project.watcherStatus);
   });
 
   it("returns 400 for non-absolute path", async () => {
@@ -194,7 +225,7 @@ describe("POST /api/projects", () => {
 });
 
 describe("DELETE /api/projects/:encodedPath", () => {
-  it("returns success on unregistering a known project", async () => {
+  it("unregisters project and returns success payload", async () => {
     // Register a secondary project to delete (keep tempDir as default)
     const targetDir = createProjectDir(tempDir, "delete-target");
     await request("/api/projects", {
@@ -207,6 +238,9 @@ describe("DELETE /api/projects/:encodedPath", () => {
       method: "DELETE",
     });
     expect(response.status).toBe(200);
+    const body = (await response.json()) as { success: boolean };
+    expect(body).toHaveProperty("success");
+    expect(body.success).toBe(true);
   });
 
   it("project is gone from list after deletion", async () => {
