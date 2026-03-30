@@ -24,3 +24,14 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-30T21:25:19.124Z
+  - _ulid: 01KN0HXZRWYXDWR3SWP29BYKSG
+    content: "Approach: preserve the in-flight selector fixes in reviews-detail.spec.ts and
+      validate.spec.ts, rebase the dispatch branch onto origin/dev, then verify remaining stale
+      selectors against current Svelte markup before changing tests. Edge cases: resolved review
+      threads hidden inside collapsed details, validate page now sourcing summary/alignment stats
+      from the aggregation endpoint, and counts that combine validation warnings with orphan
+      metrics. Test plan: focused Playwright runs for reviews-detail and validate first, then
+      broader e2e shards/full suite once these selectors are green."
+    supersedes: null
+    author: Test User
+    created_at: 2026-03-30T23:40:43.677Z
