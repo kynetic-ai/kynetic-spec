@@ -19070,9 +19070,22 @@ runs:
     completed_at: 2026-03-30T16:02:08.715Z
   - _ulid: 01KN00AMJNGCFNW2GNR42EAN96
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Test User
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-03-30T18:33:03.829Z
+        completed_at: 2026-03-30T18:33:41.235Z
+        notes: "Meaningful session confirmed: reviewed, approved, merged, and completed
+          @01KMZ1BVVK329BJ49C6PB03T49. Captured one friction about manual_merge from detached review
+          snapshots when the target branch is already attached in another worktree, and one success
+          about using focused changed coverage plus a representative isolated suite to avoid false
+          blockers when full npm test fails broadly."
+      - status: completed
+        step_index: 1
+        started_at: 2026-03-30T18:33:41.235Z
+        completed_at: 2026-03-30T18:33:41.235Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-30T18:33:03.829Z
