@@ -28204,7 +28204,7 @@ workspaces:
         head: 16bf033f141f9de2e878c93802f2979933dacc09
         last_seen_at: 2026-03-29T22:11:28.460Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-e2e-cache-warming-transition-01kmw68n
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: e88742597606645ff8fa6bc3c611037140664b71
     bootstrap:
       status: succeeded
@@ -28286,34 +28286,34 @@ workspaces:
     canonical_branch: dispatch/task/task-fix-query-loading-state/01kmz1bt
     canonical_branch_head: d067edacfbd8463a6aca643244557866358819d6
     cleanup:
-      status: not_scheduled
-      detail: null
-      eligible: false
-      reason: null
-      updated_at: 2026-03-30T12:11:20.052Z
+      status: scheduled
+      detail: integrated-into-base-branch
+      eligible: true
+      reason: integrated-into-base-branch
+      updated_at: 2026-03-30T12:21:10.972Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-30T12:11:28.737Z
+      updated_at: 2026-03-30T12:21:10.972Z
     integration:
-      status: pending
-      detail: null
-      outcome: manual_merge
+      status: merged
+      detail: integration:merged
+      outcome: merged
       publication_mode: manual_merge
       target_branch: dev
       target_commit: e88742597606645ff8fa6bc3c611037140664b71
-      updated_at: 2026-03-30T12:11:20.052Z
-    lifecycle_state: integrating
+      updated_at: 2026-03-30T12:21:10.972Z
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KMZ1BTJJ3FR82N0R76DDWR09"
     task_slug: task-fix-query-loading-state
     timestamps:
       closed_at: null
       last_active_at: 2026-03-30T12:11:28.737Z
-      last_reconciled_at: 2026-03-30T12:11:28.737Z
+      last_reconciled_at: 2026-03-30T12:21:10.972Z
       created_at: 2026-03-30T09:37:22.727Z
-      updated_at: 2026-03-30T12:11:28.737Z
+      updated_at: 2026-03-30T12:21:10.972Z
     workspace_id: dispatch-workspace-01KMZ1BTJJ3FR82N0R76DDWR09
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
