@@ -48,7 +48,7 @@ description: |
 spec_ref: null
 plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-fix-query-loading-state"
@@ -59,6 +59,7 @@ tags:
   - e2e
   - web-ui
 vcs_refs: []
+session_id: 01KN0GM5DF88A526TNC8N6P3Y4
 history:
   - author: "@claude"
     changes:
@@ -67,6 +68,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-03-30T09:35:06.209Z
+  - author: Test User
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KN0GM5DF88A526TNC8N6P3Y4
+        previous: null
+      started_at:
+        new: 2026-03-30T23:18:57.342Z
+        previous: null
+    command: task-start
+    timestamp: 2026-03-30T23:18:57.343Z
 created_at: 2026-03-30T09:31:58.738Z
+started_at: 2026-03-30T23:18:57.342Z
 todos: []
 automation: eligible
