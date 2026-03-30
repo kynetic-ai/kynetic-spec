@@ -173,3 +173,17 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-30T22:43:05.819Z
+  - _ulid: 01KN0FZQCB0BGERFQJ9MX333SV
+    content: "Fix cycle 3: restored plan route coverage without reintroducing the flaky watcher path.
+      Moved the missing-plan and cancelled-task /api/plans/:ref assertions into
+      tests/daemon-api/plans.test.ts so they still exercise the real daemon route via app.handle(),
+      and trimmed those cache-sensitive edge cases from tests/e2e/plans.spec.ts. Verification: npm
+      run test:e2e -- tests/e2e/search.spec.ts tests/e2e/connection.spec.ts
+      tests/e2e/cache-warming-views.spec.ts tests/e2e/plans.spec.ts tests/e2e/validate.spec.ts
+      tests/daemon-api/meta.test.ts passed (83/83); npm test -- tests/daemon-api/plans.test.ts
+      --fresh passed (2/2); kspec validate still exits 6 on existing repo-wide warnings only; npm
+      test --fresh still fails in unrelated pre-existing dispatch/bootstrap/workspace suites, first
+      at tests/agent-dispatch-engine.test.ts:5659."
+    supersedes: null
+    author: Test User
+    created_at: 2026-03-30T23:06:43.467Z
