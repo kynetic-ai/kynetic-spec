@@ -90216,6 +90216,12 @@ reviews:
         payload:
           thread_ulid: 01KN0DSKXBRD2C39QNX3S4NMZ9
         timestamp: 2026-03-30T22:49:11.416Z
+      - _ulid: 01KN0EZPC0FPSCCY0N5Z2D3PRB
+        actor: Test User
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN0DSP22HV7PN5A44HH9BWG8
+        timestamp: 2026-03-30T22:49:13.856Z
     examined_commit: 3782c10f7bc15ce25b597a0454bd90326ffb2dad
     external_links: []
     lifecycle_state: closed
@@ -90288,6 +90294,13 @@ reviews:
               update the implementation to satisfy the spec and assert , or change the spec first;
               as written this test does not prove the documented contract."
             created_at: 2026-03-30T22:28:28.354Z
+          - _ulid: 01KN0EZNKETPF0EZBAPSQA1FPB
+            author: Test User
+            body: "Fixed in 901eae907: malformed websocket commands now return ack:false validation_error
+              responses from packages/daemon/src/websocket/handler.ts, and
+              tests/daemon-api/websocket-protocol.test.ts now asserts the spec contract instead of
+              the old implementation bug."
+            created_at: 2026-03-30T22:49:13.070Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -90298,7 +90311,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T22:29:43.404Z
     created_at: 2026-03-30T22:25:33.827Z
-    updated_at: 2026-03-30T22:49:10.642Z
+    updated_at: 2026-03-30T22:49:13.070Z
     notes: []
   - _ulid: 01KN0E8VQ4QJW918F0657DQ7YT
     slugs: []
