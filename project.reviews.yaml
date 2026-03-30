@@ -81968,7 +81968,17 @@ reviews:
     slugs: []
     title: Review task-fix-query-loading-state
     author: Test User
-    checks: []
+    checks:
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Exited 6 with repo-wide pre-existing warnings only (orphaned skill directory, orphaned
+          specs, AC coverage warnings); no task-specific validation error surfaced.
+        name: kspec validate
+        required: false
+        created_at: 2026-03-30T10:14:05.803Z
+        completed_at: 2026-03-30T10:14:05.803Z
     events:
       - _ulid: 01KMZ3758BVNH957MYQ15YWXJD
         actor: Test User
@@ -81990,6 +82000,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMZ3RYGHW5V7CVFYRGP36FWN
         timestamp: 2026-03-30T10:14:04.636Z
+      - _ulid: 01KMZ3S0SFF0BXWANCNGR183C7
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-03-30T10:14:06.383Z
     examined_commit: 137b046abd8a2482f82be089329a4075aab9bccc
     external_links: []
     lifecycle_state: open
@@ -82021,5 +82038,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-30T10:04:21.132Z
-    updated_at: 2026-03-30T10:14:04.049Z
+    updated_at: 2026-03-30T10:14:05.803Z
     notes: []
