@@ -10226,6 +10226,28 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-30T18:33:30.652Z
+  - _ulid: 01KN06G33TG86EA3XA3ZEGEXCH
+    type: success
+    content: page.routeWebSocket() is the correct Playwright API for controlling WebSocket connections
+      in E2E tests. It intercepts WS connections at the network level and allows proxying to the
+      real server or blocking reconnections cleanly. Much more reliable than addInitScript-based
+      WebSocket proxying with Proxy/BlockedWebSocket classes, which suffer from event handler issues
+      and Svelte reactivity timing problems.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-30T20:20:54.010Z
+  - _ulid: 01KN06G392DJF23502QY3YN2YJ
+    type: friction
+    content: page.clock.install() fake timers interfere with TanStack Query retry mechanism and Svelte 5
+      reactivity updates. When testing retry exhaustion (e.g., CacheWarmingBanner after 15 retries),
+      real-time waits with increased test.setTimeout() are more reliable than fake timer
+      advancement. This is a recurring pattern — also seen in dispatch watch WebSocket mock timing
+      (task-fix-dispatch-watch-timing).
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-30T20:20:54.178Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:

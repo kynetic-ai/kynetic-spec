@@ -2080,3 +2080,18 @@ inbox:
       - plans
     added_by: "@claude"
     created_at: 2026-03-30T15:21:12.091Z
+  - _ulid: 01KN06G31WRSZ50DQQVWJZH5F4
+    text: ~18 pre-existing broken E2E tests across items.spec.ts, task-board.spec.ts, sessions.spec.ts,
+      tasks.spec.ts, plans.spec.ts, validate.spec.ts, review-detail-page.spec.ts,
+      review-interaction.spec.ts, navigation.spec.ts, observations.spec.ts, session-context.spec.ts,
+      triage.spec.ts, workflows.spec.ts. These are deterministic failures on the dev branch
+      (verified against commit 76a99bcf5). NOT timing issues — they are broken detail panel/dialog
+      assertions where spec-detail-panel, spec-title, or similar test IDs are missing from the DOM.
+      Creates noise when running the full E2E suite, making it hard to distinguish real regressions
+      from known broken tests.
+    tags:
+      - e2e
+      - bug
+      - test
+    added_by: "@claude"
+    created_at: 2026-03-30T20:20:53.949Z
