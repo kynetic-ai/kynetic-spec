@@ -91534,6 +91534,13 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-03-30T23:55:04.985Z
+      - _ulid: 01KN0JSBN733SW0D28V0SYVFQX
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN0JSB1KD3BC3ZW7A2F1SMK2
+        timestamp: 2026-03-30T23:55:40.583Z
     examined_commit: d752fb33fe963e0fca963315bcc5c95881ba076c
     external_links: []
     lifecycle_state: draft
@@ -91543,8 +91550,30 @@ reviews:
       content_hash: ""
       ref: "@01KMZ1BVBBDPGQMSK3C8GDK3HP"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KN0JSB1KD3BC3ZW7A2F1SMK2
+        anchor:
+          type: code
+          commit: d752fb33fe963e0fca963315bcc5c95881ba076c
+          line_end: 303
+          line_start: 276
+          path: packages/daemon/src/routes/reviews.ts
+          side: head
+        entries:
+          - _ulid: 01KN0JSB1MW8ABPSVBNJWGB84W
+            author: Test User
+            body: >-
+              The new task-filter resolution changes GET /api/reviews?task= semantics and leaves the
+              required suite red. 
+
+              > @kynetic-ai/spec@0.12.0 test
+
+              > node scripts/test.cjs now fails in  because querying with a raw task ULID returns
+              linked reviews instead of the previously empty result, so this snapshot is not
+              mergeable as submitted.
+            created_at: 2026-03-30T23:55:39.956Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-30T23:55:04.985Z
-    updated_at: null
+    updated_at: 2026-03-30T23:55:39.956Z
     notes: []
