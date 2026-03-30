@@ -83743,6 +83743,42 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-30T12:38:07.515Z
+      - _ulid: 01KMZD86GBHPMCCBG2A5WZXB6X
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMZBZKQA4F3EN2PCQNYFFXYH
+        timestamp: 2026-03-30T12:59:40.939Z
+      - _ulid: 01KMZD87Z28ASYDRHXZ903JEBX
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMZBZKQA4F3EN2PCQNYFFXYH
+        timestamp: 2026-03-30T12:59:42.434Z
+      - _ulid: 01KMZD89CJ3SD2ZMTY7030X32M
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMZBZNE5G63F7WGVPAVW0824
+        timestamp: 2026-03-30T12:59:43.890Z
+      - _ulid: 01KMZD8AS8YJZ0DGBQ27SA49F0
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMZBZNE5G63F7WGVPAVW0824
+        timestamp: 2026-03-30T12:59:45.320Z
+      - _ulid: 01KMZD8C6A1YVEE7RHWYRW2YK5
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMZBZQEJ7DN8VVB6T13MJAM0
+        timestamp: 2026-03-30T12:59:46.762Z
+      - _ulid: 01KMZD8DJAJP1E4QEBA87R3E3Y
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMZBZQEJ7DN8VVB6T13MJAM0
+        timestamp: 2026-03-30T12:59:48.170Z
     examined_commit: 1b14f9251d210312870ad8acab4d20393f1c18c4
     external_links: []
     lifecycle_state: closed
@@ -83772,7 +83808,16 @@ reviews:
               migrated suite no longer guards those fields against regression, so this rewrite
               reduces coverage instead of preserving it.
             created_at: 2026-03-30T12:37:30.986Z
+          - _ulid: 01KMZD85YMM1P5GPY0JN5VQ8WX
+            author: "@claude"
+            body: "Fixed: Detail test now asserts title, checks, verdicts, events, and subject fields (matching
+              original Playwright coverage). Empty-review test verifies checks:[], verdicts:[].
+              Thread test strengthened with specific blocker thread entry body and resolved question
+              thread checks. 404 test now verifies error shape (error, suggestion)."
+            created_at: 2026-03-30T12:59:40.372Z
         kind: blocker
+        resolved_at: 2026-03-30T12:59:41.875Z
+        resolved_by: "@claude"
       - _ulid: 01KMZBZNE5G63F7WGVPAVW0824
         anchor:
           type: code
@@ -83793,7 +83838,17 @@ reviews:
               gates, replacement tests must be a superset of the old behavioral coverage, and this
               suite is not."
             created_at: 2026-03-30T12:37:32.742Z
+          - _ulid: 01KMZD88VAMNWM157BXBBMK8WK
+            author: "@claude"
+            body: "Fixed: GET now asserts total field and total===projects.length. Each project checked for
+              registeredAt (valid ISO date) and watcherStatus (active|stopped). POST response checks
+              success:true plus full project shape (path, registeredAt, watcherStatus). DELETE
+              checks success:true payload. Second-project test verifies registeredAt and
+              watcherStatus on newly registered project."
+            created_at: 2026-03-30T12:59:43.338Z
         kind: blocker
+        resolved_at: 2026-03-30T12:59:44.792Z
+        resolved_by: "@claude"
       - _ulid: 01KMZBZQEJ7DN8VVB6T13MJAM0
         anchor:
           type: code
@@ -83813,7 +83868,15 @@ reviews:
               on, which violates the migration task's requirement that the vitest replacement be a
               superset of the skipped API coverage.
             created_at: 2026-03-30T12:37:34.802Z
+          - _ulid: 01KMZD8BM3ZE22506H1CVRHH0F
+            author: "@claude"
+            body: "Fixed: Summary test now asserts title, author, thread_count, unresolved_blocker_count,
+              check_count, and verdict_count in addition to the existing _ulid, lifecycle_state,
+              disposition, subject_type, created_at — matching the full toReviewSummary contract."
+            created_at: 2026-03-30T12:59:46.179Z
         kind: blocker
+        resolved_at: 2026-03-30T12:59:47.637Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -83823,7 +83886,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T12:38:07.514Z
     created_at: 2026-03-30T12:35:22.878Z
-    updated_at: 2026-03-30T12:38:07.515Z
+    updated_at: 2026-03-30T12:59:47.637Z
     notes: []
   - _ulid: 01KMZCPZVEYHGYGBAY3KMP2HP8
     slugs: []
