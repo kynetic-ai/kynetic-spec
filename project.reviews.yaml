@@ -83388,7 +83388,17 @@ reviews:
     slugs: []
     title: Review task-fix-query-loading-state (cycle 2)
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm run build:web-ui passed in the review snapshot.
+        name: build:web-ui
+        required: true
+        runner: npm
+        created_at: 2026-03-30T12:19:59.192Z
+        completed_at: 2026-03-30T12:19:59.192Z
     events:
       - _ulid: 01KMZAH34V0466VA2BA0X7RXWA
         actor: Test User
@@ -83403,6 +83413,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-30T12:12:26.775Z
+      - _ulid: 01KMZAZH6A2VK8RE8TS7X6HV35
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: build:web-ui
+        timestamp: 2026-03-30T12:19:59.818Z
     examined_commit: d067edacfbd8463a6aca643244557866358819d6
     external_links: []
     lifecycle_state: open
@@ -83415,5 +83432,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-30T12:12:06.684Z
-    updated_at: 2026-03-30T12:12:26.195Z
+    updated_at: 2026-03-30T12:19:59.192Z
     notes: []
