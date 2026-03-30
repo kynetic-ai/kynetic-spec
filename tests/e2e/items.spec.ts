@@ -18,7 +18,7 @@ test.describe("Items View", () => {
   test.describe("Spec Tree (AC-11)", () => {
     // AC: @web-dashboard ac-11
     test("displays hierarchical spec tree with modules", async ({ page, daemon: _daemon }) => {
-      await page.goto("/items");
+      await page.goto("/specs");
 
       // Wait for spec tree to load
       const specTree = page.getByTestId("spec-tree").first();
@@ -35,7 +35,7 @@ test.describe("Items View", () => {
     });
 
     test("expands module to show nested features", async ({ page, daemon: _daemon }) => {
-      await page.goto("/items");
+      await page.goto("/specs");
 
       const specTree = page.getByTestId("spec-tree").first();
       const moduleNode = specTree.locator('[data-testid*="tree-node-module"]').first();
@@ -58,7 +58,7 @@ test.describe("Items View", () => {
     });
 
     test("expands feature to show nested requirements", async ({ page, daemon: _daemon }) => {
-      await page.goto("/items");
+      await page.goto("/specs");
 
       const specTree = page.getByTestId("spec-tree").first();
 
@@ -86,7 +86,7 @@ test.describe("Items View", () => {
     });
 
     test("collapses expanded node to hide children", async ({ page, daemon: _daemon }) => {
-      await page.goto("/items");
+      await page.goto("/specs");
 
       const specTree = page.getByTestId("spec-tree").first();
       const moduleNode = specTree.locator('[data-testid*="tree-node-module"]').first();
@@ -108,7 +108,7 @@ test.describe("Items View", () => {
       page,
       daemon: _daemon,
     }) => {
-      await page.goto("/items");
+      await page.goto("/specs");
 
       const specTree = page.getByTestId("spec-tree").first();
       const moduleNode = specTree.locator('[data-testid*="tree-node-module"]').first();
@@ -133,7 +133,7 @@ test.describe("Items View", () => {
       page,
       daemon: _daemon,
     }) => {
-      await page.goto("/items");
+      await page.goto("/specs");
 
       // Expand module, then click on feature
       const specTree = page.getByTestId("spec-tree").first();
@@ -161,7 +161,7 @@ test.describe("Items View", () => {
       page,
       daemon: _daemon,
     }) => {
-      await page.goto("/items");
+      await page.goto("/specs");
 
       const specTree = page.getByTestId("spec-tree").first();
       const moduleNode = specTree.locator('[data-testid*="tree-node-module"]').first();
@@ -177,7 +177,7 @@ test.describe("Items View", () => {
     });
 
     test("displays item type badge", async ({ page, daemon: _daemon }) => {
-      await page.goto("/items");
+      await page.goto("/specs");
 
       // Click on module to open detail
       const specTree = page.getByTestId("spec-tree").first();
@@ -191,7 +191,7 @@ test.describe("Items View", () => {
     });
 
     test("displays acceptance criteria when item has them", async ({ page, daemon: _daemon }) => {
-      await page.goto("/items");
+      await page.goto("/specs");
 
       // Navigate to feature which has ACs
       const specTree = page.getByTestId("spec-tree").first();
@@ -223,7 +223,7 @@ test.describe("Items View", () => {
   test.describe("Linked Tasks (AC-13)", () => {
     // AC: @web-dashboard ac-13
     test("shows implementation section with linked task", async ({ page, daemon: _daemon }) => {
-      await page.goto("/items");
+      await page.goto("/specs");
 
       // Navigate to test-feature which has a linked task
       const specTree = page.getByTestId("spec-tree").first();
@@ -254,7 +254,7 @@ test.describe("Items View", () => {
     });
 
     test("clicking linked task navigates to tasks view", async ({ page, daemon: _daemon }) => {
-      await page.goto("/items");
+      await page.goto("/specs");
 
       // Navigate to test-feature
       const specTree = page.getByTestId("spec-tree").first();
@@ -282,7 +282,7 @@ test.describe("Items View", () => {
       page,
       daemon: _daemon,
     }) => {
-      await page.goto("/items");
+      await page.goto("/specs");
 
       // Click on module (which has no linked tasks)
       const specTree = page.getByTestId("spec-tree").first();
@@ -301,7 +301,7 @@ test.describe("Items View", () => {
   test.describe("Traits (AC-14)", () => {
     // AC: @web-dashboard ac-14
     test("displays traits section with trait chips", async ({ page, daemon: _daemon }) => {
-      await page.goto("/items");
+      await page.goto("/specs");
 
       // Navigate to test-feature which has traits
       const specTree = page.getByTestId("spec-tree").first();
@@ -323,14 +323,14 @@ test.describe("Items View", () => {
       const traitChip = traitsSection.getByTestId("trait-chip").first();
       await expect(traitChip).toBeVisible();
 
-      // Trait should show actual trait name
-      const traitTitle = traitChip.getByTestId("trait-title");
+      // Trait should show actual trait name (ReferenceLink renders with reference-link testid)
+      const traitTitle = traitChip.getByTestId("reference-link");
       await expect(traitTitle).toContainText("test-trait");
     });
 
     // AC: @ui-url-panel-state ac-3 — navigates with ?ref= in URL, detail panel opens correctly
     test("clicking trait chip navigates to trait detail", async ({ page, daemon: _daemon }) => {
-      await page.goto("/items");
+      await page.goto("/specs");
 
       // Navigate to test-feature
       const specTree = page.getByTestId("spec-tree").first();
@@ -342,12 +342,13 @@ test.describe("Items View", () => {
       await featureNode.locator("> div").first().getByTestId("node-title").click();
 
       const detailPanel = page.getByTestId("spec-detail-panel");
-      const traitChip = detailPanel.getByTestId("trait-chip").first();
-      await traitChip.click();
+      await expect(detailPanel).toBeVisible();
+      const traitLink = detailPanel.getByTestId("trait-chip").first().getByTestId("reference-link");
+      await traitLink.click();
 
-      // Should navigate to items view with ref param
-      await page.waitForURL(/\/items\?ref=/);
-      expect(page.url()).toContain("/items?ref=");
+      // Should navigate to specs view with ref param pointing to trait
+      await page.waitForURL(/\/specs\?ref=.*test-trait/);
+      expect(page.url()).toContain("/specs?ref=");
       expect(page.url()).toContain("test-trait");
 
       // Spec detail panel should show trait info
@@ -363,7 +364,7 @@ test.describe("Items View", () => {
       page,
       daemon: _daemon,
     }) => {
-      await page.goto("/items");
+      await page.goto("/specs");
 
       // Navigate to test-requirement which has no traits
       const specTree = page.getByTestId("spec-tree").first();
@@ -392,7 +393,7 @@ test.describe("Items View", () => {
   test.describe("Acceptance Criteria Expansion (AC-15)", () => {
     // AC: @plan-embedded-views ac-7
     test("expands AC to show full Given/When/Then text", async ({ page, daemon: _daemon }) => {
-      await page.goto("/items");
+      await page.goto("/specs");
 
       // Navigate to test-feature which has ACs
       const specTree = page.getByTestId("spec-tree").first();
@@ -425,11 +426,11 @@ test.describe("Items View", () => {
       await expect(whenFull).toContainText("they check the status");
 
       await expect(thenFull).toBeVisible();
-      await expect(thenFull).toContainText("the feature shows as in progress");
+      await expect(thenFull).toContainText("the feature shows as in_progress");
     });
 
     test("collapses AC to hide full text", async ({ page, daemon: _daemon }) => {
-      await page.goto("/items");
+      await page.goto("/specs");
 
       // Navigate to test-feature
       const specTree = page.getByTestId("spec-tree").first();
@@ -460,7 +461,7 @@ test.describe("Items View", () => {
       page,
       daemon: _daemon,
     }) => {
-      await page.goto("/items");
+      await page.goto("/specs");
 
       // Navigate to test-feature
       const specTree = page.getByTestId("spec-tree").first();
@@ -489,7 +490,7 @@ test.describe("Items View", () => {
     });
 
     test("shows not covered indicator for uncovered ACs", async ({ page, daemon: _daemon }) => {
-      await page.goto("/items");
+      await page.goto("/specs");
 
       // Navigate to test-feature
       const specTree = page.getByTestId("spec-tree").first();
@@ -520,7 +521,7 @@ test.describe("Items View", () => {
     // AC: @web-dashboard ac-26
     test("adapts to mobile viewport", async ({ page, daemon: _daemon }) => {
       await page.setViewportSize({ width: 375, height: 667 });
-      await page.goto("/items");
+      await page.goto("/specs");
 
       // Spec tree should be visible
       const specTree = page.getByTestId("spec-tree").first();
@@ -534,7 +535,7 @@ test.describe("Items View", () => {
     // AC: @web-dashboard ac-27
     test("shows detail panel as slide-over on desktop", async ({ page, daemon: _daemon }) => {
       await page.setViewportSize({ width: 1280, height: 720 });
-      await page.goto("/items");
+      await page.goto("/specs");
 
       // Click spec item to open detail
       const specTree = page.getByTestId("spec-tree").first();
@@ -549,8 +550,8 @@ test.describe("Items View", () => {
       await expect(specTree).toBeVisible();
 
       // URL should not change to a detail route
-      expect(page.url()).toContain("/items");
-      expect(page.url()).not.toContain("/items/");
+      expect(page.url()).toContain("/specs");
+      expect(page.url()).not.toContain("/specs/");
     });
   });
 });

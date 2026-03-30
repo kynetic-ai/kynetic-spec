@@ -1,4 +1,5 @@
 import { marked } from "marked";
+import { sanitize as purify } from "isomorphic-dompurify";
 import { highlightCode, INLINE_CODE_CLASS_NAMES, normalizeLanguage } from "./highlight";
 import { isExternalHref, sanitizeHtml } from "./sanitize";
 
@@ -68,7 +69,7 @@ function escapeInlineCode(value: string): string {
 export function renderInlineMarkdown(content: string): string {
   if (!content) return "";
   const rawHtml = marked.parseInline(content) as string;
-  return DOMPurify.sanitize(rawHtml, {
+  return purify(rawHtml, {
     ADD_ATTR: ["target"],
     ALLOWED_TAGS: ["strong", "em", "del", "code", "a", "span", "br"],
     ALLOWED_ATTR: ["href", "target", "rel", "title", "class"],

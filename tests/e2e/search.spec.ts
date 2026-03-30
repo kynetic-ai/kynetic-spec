@@ -3,9 +3,8 @@ import { test, expect } from "./fixtures/test-base";
 test.describe("Command Palette / Search", () => {
   test.beforeEach(async ({ page, daemon: _daemon }) => {
     await page.goto("/");
-    // Wait for SvelteKit hydration — sidebar nav links only render after onMount completes,
-    // which means the CommandPalette keyboard handler is also registered
-    await expect(page.getByTestId("nav-link-dashboard")).toBeVisible();
+    // Wait for SvelteKit hydration — sidebar links become interactive once JS executes
+    await expect(page.getByRole("link", { name: "Tasks" })).toBeVisible({ timeout: 10000 });
   });
 
   /** Helper: open the command palette using the platform-appropriate shortcut */
