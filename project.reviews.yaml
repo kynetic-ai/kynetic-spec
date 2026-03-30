@@ -91563,6 +91563,12 @@ reviews:
           kind: blocker
           thread_ulid: 01KN0JSEQQZC09PNYS6VEW50C9
         timestamp: 2026-03-30T23:55:44.379Z
+      - _ulid: 01KN0JT8QSX6J6PBEBSSNNV8QA
+        actor: Test User
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN0JSB1KD3BC3ZW7A2F1SMK2
+        timestamp: 2026-03-30T23:56:10.361Z
     examined_commit: d752fb33fe963e0fca963315bcc5c95881ba076c
     external_links: []
     lifecycle_state: open
@@ -91594,6 +91600,12 @@ reviews:
               linked reviews instead of the previously empty result, so this snapshot is not
               mergeable as submitted.
             created_at: 2026-03-30T23:55:39.956Z
+          - _ulid: 01KN0JT84XH9EV02Y9X9SFR2P5
+            author: Test User
+            body: "Clarification: the failing assertion is tests/daemon-api/reviews-list.test.ts:261. In the
+              submitted snapshot, querying GET /api/reviews with task=<raw task ULID> now returns
+              two linked reviews instead of an empty list."
+            created_at: 2026-03-30T23:56:09.757Z
         kind: blocker
       - _ulid: 01KN0JSEQQZC09PNYS6VEW50C9
         anchor:
@@ -91614,5 +91626,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-30T23:55:04.985Z
-    updated_at: 2026-03-30T23:55:43.735Z
+    updated_at: 2026-03-30T23:56:09.757Z
     notes: []
