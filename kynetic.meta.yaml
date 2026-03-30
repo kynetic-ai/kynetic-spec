@@ -10017,6 +10017,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-30T12:10:34.211Z
+  - _ulid: 01KMZB3QNQB9VRRJWNPPCD581S
+    type: friction
+    content: Delegated review agents can fail with 'Prompt is too long' on fix-cycle reviews when the
+      task context, prior review record, and embedded skill content are all passed through at once.
+      This makes review automation brittle for exactly the kind of multi-cycle task that most needs
+      it.
+    author: codex
+    resolution: null
+    resolved: false
+    created_at: 2026-03-30T12:22:17.527Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
