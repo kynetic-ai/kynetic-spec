@@ -84076,6 +84076,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMZDNC16NNQYJN7AEFKDGVPC
         timestamp: 2026-03-30T13:06:54.122Z
+      - _ulid: 01KMZDNV1F637GW9XCZP70TQ78
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMZDNS78SJSBFQJN2T5086QP
+        timestamp: 2026-03-30T13:07:07.951Z
     examined_commit: d0f61c721edf881be8985f4798b1c46667e688df
     external_links: []
     lifecycle_state: open
@@ -84103,7 +84110,26 @@ reviews:
               the GET list/detail contract this task was supposed to preserve."
             created_at: 2026-03-30T13:06:52.582Z
         kind: blocker
+      - _ulid: 01KMZDNS78SJSBFQJN2T5086QP
+        anchor:
+          type: code
+          commit: d0f61c721edf881be8985f4798b1c46667e688df
+          line_end: 4
+          line_start: 1
+          path: tests/daemon-api/projects.test.ts
+          side: head
+        entries:
+          - _ulid: 01KMZDNS783CB13BGVDXHGG54S
+            author: Test User
+            body: These AC annotations point at a non-existent spec (@spec-daemon-projects), so the replacement
+              suite no longer covers the tasks original projects API criteria. I verified kspec item
+              get @spec-daemon-projects fails, and there are no remaining @multi-directory-daemon
+              ac-28, ac-29, or ac-30 annotations anywhere under tests/ after deleting
+              tests/e2e/api-projects.spec.ts. That turns this migration into a coverage regression
+              even though the behavior assertions still pass.
+            created_at: 2026-03-30T13:07:06.088Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-30T13:03:07.216Z
-    updated_at: 2026-03-30T13:06:52.582Z
+    updated_at: 2026-03-30T13:07:06.088Z
     notes: []
