@@ -1,1 +1,46 @@
-notes: []
+notes:
+  - _ulid: 01KN00QB7JZ2S1MKNBEW25XQPD
+    content: >-
+      Analysis complete. 99 E2E test failures found across multiple files. Key timing patterns
+      identified:
+
+
+      1. search.spec.ts (15 failures): All tests fail because beforeEach only waits for
+      domcontentloaded. The CommandPalette keyboard handler is registered in onMount() and SvelteKit
+      hydration hasn't completed. Need to wait for app readiness (sidebar visible or similar) before
+      sending keyboard events.
+
+
+      2. connection.spec.ts (2 failures): Tests use fixed waitForTimeout(500) which is unreliable
+      for WebSocket state changes. Need to wait for UI state changes instead. The offline test
+      doesn't properly handle the reconnection race.
+
+
+      3. cache-warming-views.spec.ts (4 failures): Tests using page.clock.install() for fake timers.
+      The clock-based retry exhaustion tests fail because the CacheWarmingBanner never appears —
+      likely because the fake timer approach doesn't properly advance through TanStack Query's retry
+      mechanism.
+
+
+      4. sessions.spec.ts (8 failures), items.spec.ts (12 failures), plans.spec.ts (7 failures),
+      validate.spec.ts (7 failures), task-board.spec.ts (5 failures), tasks.spec.ts (4 failures),
+      and others: Mix of timing issues from waitForTimeout, page readiness, and WebSocket
+      subscription timing.
+
+
+      Non-task scope failures: api-triage.spec.ts (13 failures) appears to be API-level failures,
+      not timing issues — different task scope.
+
+
+      Approach: Fix timing issues file by file starting with highest impact. Core fix patterns:
+
+      - Replace waitForLoadState('domcontentloaded') with waiting for a visible interactive element
+
+      - Replace fixed waitForTimeout with proper Playwright wait assertions
+
+      - Fix clock-based tests for cache warming
+
+      - Add proper wait-for-element patterns for WebSocket-dependent tests
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-30T18:40:00.242Z
