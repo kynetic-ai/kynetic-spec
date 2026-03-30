@@ -89880,6 +89880,13 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-03-30T22:14:34.223Z
+      - _ulid: 01KN0D09DE4QPT69KKBG49RBC5
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KN0D08RHTXJ8QKP8DQQSZX7F
+        timestamp: 2026-03-30T22:14:36.206Z
     examined_commit: cf37063d1bdb0f467d1257680859d0acbafab22c
     external_links: []
     lifecycle_state: open
@@ -89956,7 +89963,34 @@ reviews:
               highlighted update occurs for the duplicate event.
             created_at: 2026-03-30T22:14:12.581Z
         kind: blocker
+      - _ulid: 01KN0D08RHTXJ8QKP8DQQSZX7F
+        entries:
+          - _ulid: 01KN0D08RHX0WEHN66QA0D6AK4
+            author: Test User
+            body: >-
+              Files read: packages/web-ui/src/lib/components/CommandPalette.svelte;
+              packages/web-ui/src/lib/websocket/manager.ts;
+              packages/web-ui/src/routes/tasks/+page.svelte; tests/e2e/search.spec.ts;
+              tests/e2e/connection.spec.ts; tests/e2e/cache-warming-views.spec.ts;
+              tests/e2e/fixtures/test-base.ts; scripts/test.cjs.
+
+              Commands run: kspec task get @01KMZ1BVK6C9F7QKYK9DZD4TFQ; kspec review for-task
+              @01KMZ1BVK6C9F7QKYK9DZD4TFQ; kspec review get @01KN06EX8M9BKVP47YV9BD9SBK; kspec item
+              get @web-dashboard; git diff/stat/show against dev..cf37063d1bdb; grep for AC
+              annotations; npm test; kspec validate.
+
+              Claims verified: the command palette bug is actually fixed in CommandPalette.svelte
+              via input-bound searchText + shouldFilter={false}; search E2Es now exercise real
+              debounce/results/navigation; connection AC-30 and AC-31 coverage is still insufficient
+              because one test only checks stable row count and the other ends with page.evaluate(()
+              => true).
+
+              Categories searched: correctness, edge cases, error handling, test quality,
+              integration. Findings: two blocker-level coverage regressions remain in
+              tests/e2e/connection.spec.ts.
+            created_at: 2026-03-30T22:14:35.537Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-30T22:09:32.061Z
-    updated_at: 2026-03-30T22:14:33.567Z
+    updated_at: 2026-03-30T22:14:35.537Z
     notes: []
