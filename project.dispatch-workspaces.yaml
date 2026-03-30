@@ -28984,18 +28984,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-fix-timing-races/01kmz1bv
-    canonical_branch_head: cf852d1a5176e87a3f979a876ab6a6c994bde6fc
+    canonical_branch_head: 96979f51ac13f6ca691be360c82899c11de83f96
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-30T22:25:19.095Z
+      updated_at: 2026-03-30T22:33:19.598Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-30T22:25:19.095Z
+      updated_at: 2026-03-30T22:33:19.598Z
     integration:
       status: pending
       detail: null
@@ -29003,7 +29003,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 76a99bcf51ef31640b1724d9abb272f16311a624
-      updated_at: 2026-03-30T22:25:19.095Z
+      updated_at: 2026-03-30T22:33:19.598Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KMZ1BVK6C9F7QKYK9DZD4TFQ"
@@ -29011,9 +29011,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-30T22:24:31.486Z
-      last_reconciled_at: 2026-03-30T22:25:19.095Z
+      last_reconciled_at: 2026-03-30T22:33:19.598Z
       created_at: 2026-03-30T18:17:31.287Z
-      updated_at: 2026-03-30T22:25:19.095Z
+      updated_at: 2026-03-30T22:33:19.598Z
     workspace_id: dispatch-workspace-01KMZ1BVK6C9F7QKYK9DZD4TFQ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
