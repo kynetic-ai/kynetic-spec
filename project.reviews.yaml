@@ -85253,6 +85253,18 @@ reviews:
         runner: playwright
         created_at: 2026-03-30T15:32:15.890Z
         completed_at: 2026-03-30T15:32:15.890Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm test failed in this snapshot. Condensed runner output reported 2 failing suites and
+          named tests/dispatch-workspace-registry.test.ts, including the test "reconciliation
+          acquires the lock per dirty record, not once for the entire batch".
+        name: npm test (review rerun)
+        required: true
+        runner: npm
+        created_at: 2026-03-30T15:32:18.659Z
+        completed_at: 2026-03-30T15:32:18.659Z
     events:
       - _ulid: 01KMZNDKHD4JX075XS686347DH
         actor: Test User
@@ -85295,6 +85307,13 @@ reviews:
           status: fail
           name: targeted e2e (review rerun)
         timestamp: 2026-03-30T15:32:16.709Z
+      - _ulid: 01KMZNZPGCP1AJB91WZSAY3DV7
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test (review rerun)
+        timestamp: 2026-03-30T15:32:19.597Z
     examined_commit: 56eb7f9f66ff1b04997879c45758c4455183b965
     external_links: []
     lifecycle_state: open
@@ -85400,5 +85419,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-30T15:22:26.734Z
-    updated_at: 2026-03-30T15:32:15.890Z
+    updated_at: 2026-03-30T15:32:18.659Z
     notes: []
