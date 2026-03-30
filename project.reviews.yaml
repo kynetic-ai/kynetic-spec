@@ -83191,6 +83191,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-30T11:27:25.027Z
+      - _ulid: 01KMZ7ZA4K6SZSNS3E0WD83JCZ
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMZ7Z9GMRXAPHDXCX3ZF0SK0
+        timestamp: 2026-03-30T11:27:26.867Z
     examined_commit: 48e6b79299b8817d4c06a0ba814a34aa9bac6128
     external_links: []
     lifecycle_state: open
@@ -83241,7 +83248,25 @@ reviews:
               contract coverage than before.
             created_at: 2026-03-30T11:27:22.680Z
         kind: blocker
+      - _ulid: 01KMZ7Z9GMRXAPHDXCX3ZF0SK0
+        anchor:
+          type: code
+          commit: 48e6b79299b8817d4c06a0ba814a34aa9bac6128
+          line_end: 58
+          line_start: 55
+          path: tests/daemon-api/agent-dispatch.test.ts
+          side: head
+        entries:
+          - _ulid: 01KMZ7Z9GM5J7Y6NN0C658QBQB
+            author: Test User
+            body: The agent-dispatch migration weakened the response-contract assertions instead of preserving
+              them. For example,  now only checks that  exists, and the legacy start/stop routes
+              only assert 'not 404'. The deleted spec verified , , , , , , and  semantics. With the
+              new assertions, these endpoints could return incomplete or wrong payloads and still
+              pass.
+            created_at: 2026-03-30T11:27:26.229Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-30T11:20:16.563Z
-    updated_at: 2026-03-30T11:27:24.462Z
+    updated_at: 2026-03-30T11:27:26.229Z
     notes: []
