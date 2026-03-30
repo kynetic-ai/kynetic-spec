@@ -87,3 +87,25 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-30T15:32:35.953Z
+  - _ulid: 01KMZQJ5J7YVMN810NGZ0Q60QC
+    content: >-
+      Fix cycle 1: Addressed blocker — plans.spec.ts:595 batch fetch test had a race condition.
+      page.waitForRequest() was set up after expandActivePlan() returned, but the batch request
+      fires immediately when plan detail resolves (before content section is visible). Replaced with
+      a promise-based synchronization pattern that waits for the route handler to complete. Test now
+      passes consistently across 3 runs.
+
+
+      E2E results: 92 passed, 2 failed (pre-existing), 1 skipped.
+
+      - plans 404→500: pre-existing daemon errorResponse bug (same test/assertion on dev)
+
+      - triage submit disabled: pre-existing UI state issue
+
+      Unit tests: 7488 passed, 1 failed (pre-existing dispatch-workspace-registry flaky test).
+
+
+      Replied to and resolved both review threads.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-30T15:59:53.415Z
