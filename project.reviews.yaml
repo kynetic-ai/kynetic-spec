@@ -85038,6 +85038,21 @@ reviews:
         runner: playwright
         created_at: 2026-03-30T14:10:48.521Z
         completed_at: 2026-03-30T14:10:48.521Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test exited 1 after auto-building. Summary: 15 suites failed, 1981 passed; 9 tests
+          failed, 7197 passed, 5 skipped. Sample failures included
+          tests/agent-dispatch-engine.test.ts, tests/cli-schedule-commands.test.ts,
+          tests/cli-serve.test.ts, tests/dispatch-runtime-bootstrap-contract.test.ts,
+          tests/dispatch-workspace-config.test.ts, tests/dispatch-workspace-registry.test.ts, and
+          tests/enhanced-setup.test.ts."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-30T14:13:11.734Z
+        completed_at: 2026-03-30T14:13:11.734Z
     events:
       - _ulid: 01KMZH7EQQSTZ8VFCC22FAGFDM
         actor: Test User
@@ -85080,6 +85095,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMZHB64SB6RVAK5YM9MGW05R
         timestamp: 2026-03-30T14:11:13.843Z
+      - _ulid: 01KMZHETFQ0Y0M02XYKFQH6ZM4
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-30T14:13:12.312Z
     examined_commit: 22f19ef9bd1b10a5abe58111af3cb6d390bc49a3
     external_links: []
     lifecycle_state: open
@@ -85129,5 +85151,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-30T14:09:10.904Z
-    updated_at: 2026-03-30T14:11:13.177Z
+    updated_at: 2026-03-30T14:13:11.734Z
     notes: []
