@@ -19417,7 +19417,7 @@ runs:
     completed_at: 2026-03-30T23:16:26.349Z
   - _ulid: 01KN0JTGGB5BKMECEEWWNFZFKE
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Test User
     step_results:
       - status: completed
@@ -19429,7 +19429,13 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-30T23:57:27.644Z
-        completed_at: 2026-03-30T23:57:27.644Z
+        completed_at: 2026-03-30T23:57:30.468Z
+        notes: "What worked: focused invalidation tests plus reading shared websocket event definitions
+          exposed the real sync_state gap quickly and prevented another narrow fix cycle."
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-30T23:57:30.468Z
+        completed_at: 2026-03-30T23:57:30.468Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-30T23:56:18.315Z
