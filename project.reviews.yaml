@@ -83123,7 +83123,20 @@ reviews:
     slugs: []
     title: Review task-migrate-api-tests-vitest
     author: Test User
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Ran npm test from reviewer snapshot. Result: 5 failing tests / 6 failing suites.
+          Task-specific failures: tests/daemon-api/agent-dispatch.test.ts timed out in four dispatch
+          start/stop cases during the full suite; full log
+          /tmp/kspec-test-cache/01KMZ7GT2RBRNBGEPG2TZ1GPND/f2ee380d6d27c398.log."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-30T11:27:19.282Z
+        completed_at: 2026-03-30T11:27:19.282Z
     events:
       - _ulid: 01KMZ7J5XKP9FEE922JGPBQ8DA
         actor: Test User
@@ -83138,6 +83151,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-30T11:20:46.302Z
+      - _ulid: 01KMZ7Z390J5W9FC0HB7DXCB35
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-30T11:27:19.841Z
     examined_commit: 48e6b79299b8817d4c06a0ba814a34aa9bac6128
     external_links: []
     lifecycle_state: open
@@ -83150,5 +83170,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-30T11:20:16.563Z
-    updated_at: 2026-03-30T11:20:45.710Z
+    updated_at: 2026-03-30T11:27:19.282Z
     notes: []
