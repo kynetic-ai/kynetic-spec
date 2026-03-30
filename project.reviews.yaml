@@ -89946,6 +89946,12 @@ reviews:
         payload:
           thread_ulid: 01KN0CVMQ56TEMQSW8S2XKK6QT
         timestamp: 2026-03-30T22:33:48.858Z
+      - _ulid: 01KN0E3GVJNN5Z8DHFX8AMAPAB
+        actor: Test User
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KN0CZJB44VFS7H9ZCGJJ3WAP
+        timestamp: 2026-03-30T22:33:50.706Z
     examined_commit: cf37063d1bdb0f467d1257680859d0acbafab22c
     external_links: []
     lifecycle_state: closed
@@ -90047,6 +90053,8 @@ reviews:
               handled-vs-skipped behavior directly in the browser-observable data flow."
             created_at: 2026-03-30T22:33:33.392Z
         kind: blocker
+        resolved_at: 2026-03-30T22:33:50.084Z
+        resolved_by: Test User
       - _ulid: 01KN0D08RHTXJ8QKP8DQQSZX7F
         entries:
           - _ulid: 01KN0D08RHX0WEHN66QA0D6AK4
@@ -90083,7 +90091,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T22:14:48.833Z
     created_at: 2026-03-30T22:09:32.061Z
-    updated_at: 2026-03-30T22:33:48.287Z
+    updated_at: 2026-03-30T22:33:50.084Z
     notes: []
   - _ulid: 01KN0DMBM3BK14076PF2NNA390
     slugs: []
