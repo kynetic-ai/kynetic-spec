@@ -91256,6 +91256,12 @@ reviews:
         payload:
           thread_ulid: 01KN0HWRSF8BK7239NVEMG0MKB
         timestamp: 2026-03-30T23:55:34.743Z
+      - _ulid: 01KN0JS9VY2GYRQXCRZ71BAJ2K
+        actor: Test User
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN0HX617D4YNRWWHCGYQPRZS
+        timestamp: 2026-03-30T23:55:38.750Z
     examined_commit: fc7d91827cb184171d49d28475980f2269aa4959
     external_links: []
     lifecycle_state: closed
@@ -91340,6 +91346,14 @@ reviews:
               invalidation tests pass, and the full suite is red in this snapshot. Categories
               searched: correctness, integration, edge cases, test quality, error handling."
             created_at: 2026-03-30T23:40:17.319Z
+          - _ulid: 01KN0JS999AG41HD4PKRG47V9H
+            author: Test User
+            body: "Follow-up verification after the fix: npm test -- --run
+              tests/web-ui/ws-cache-invalidation.test.ts passed (10 suites, 31 tests). node
+              dist/cli/index.js validate remains at repository-wide warnings only. npm test still
+              fails outside this change in tests/dispatch-workspace-registry.test.ts; the focused ws
+              invalidation test file is green and not part of the failing suite set."
+            created_at: 2026-03-30T23:55:38.153Z
         kind: nit
     verdicts:
       - applies_to_version:
@@ -91350,7 +91364,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T23:40:50.507Z
     created_at: 2026-03-30T23:32:21.924Z
-    updated_at: 2026-03-30T23:55:34.136Z
+    updated_at: 2026-03-30T23:55:38.153Z
     notes: []
   - _ulid: 01KN0HZ3D6NBTVB6SNSCN79TWW
     slugs: []
