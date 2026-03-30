@@ -90320,6 +90320,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN0EF2YZRWMQCDA76804GFTV
         timestamp: 2026-03-30T22:40:11.263Z
+      - _ulid: 01KN0EHDM7KZK3BVTXRCYR50MF
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN0EHCGH08SEKJ6W9Q4CAVRF
+        timestamp: 2026-03-30T22:41:26.151Z
     examined_commit: 96979f51ac13f6ca691be360c82899c11de83f96
     external_links: []
     lifecycle_state: open
@@ -90369,7 +90376,27 @@ reviews:
               delete them.
             created_at: 2026-03-30T22:40:09.696Z
         kind: blocker
+      - _ulid: 01KN0EHCGH08SEKJ6W9Q4CAVRF
+        anchor:
+          type: code
+          commit: 96979f51ac13f6ca691be360c82899c11de83f96
+          line_end: 783
+          line_start: 775
+          path: tests/e2e/plans.spec.ts
+          side: head
+        entries:
+          - _ulid: 01KN0EHCGHM1E5D0P5R6ZJRCJA
+            author: Test User
+            body: The changed-spec verification run is still failing here. I ran `npm run test:e2e --
+              tests/e2e/search.spec.ts tests/e2e/connection.spec.ts
+              tests/e2e/cache-warming-views.spec.ts tests/e2e/plans.spec.ts
+              tests/e2e/validate.spec.ts tests/daemon-api/meta.test.ts`, and Playwright reported
+              `tests/e2e/plans.spec.ts:775` failing because GET /api/plans/non-existent-plan
+              returned 500 instead of the expected 404. This task is supposed to stabilize these
+              tests, but the plans suite is still red in the submitted snapshot.
+            created_at: 2026-03-30T22:41:25.009Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-30T22:36:45.668Z
-    updated_at: 2026-03-30T22:40:09.696Z
+    updated_at: 2026-03-30T22:41:25.009Z
     notes: []
