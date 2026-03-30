@@ -90455,6 +90455,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-30T22:42:51.771Z
+      - _ulid: 01KN0G0P2Q8Y9ZCM07EQQJB0V9
+        actor: Test User
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN0EEVXGK98AWKK3KMJPMT96
+        timestamp: 2026-03-30T23:07:14.903Z
     examined_commit: 96979f51ac13f6ca691be360c82899c11de83f96
     external_links: []
     lifecycle_state: closed
@@ -90483,6 +90489,14 @@ reviews:
               coverage regression in a review whose goal is to stabilize flaky tests, not delete
               them.
             created_at: 2026-03-30T22:40:02.480Z
+          - _ulid: 01KN0G0N9AMVQKVZVNX8E4QY1D
+            author: Test User
+            body: Fixed in 8339fac0f. Restored real /api/plans/:ref coverage by adding
+              tests/daemon-api/plans.test.ts, which exercises the daemon route through app.handle()
+              instead of leaving the cancelled-task case disabled behind test.fixme. This keeps
+              endpoint-level coverage while removing the flaky fs.watch dependency from the
+              Playwright fixture.
+            created_at: 2026-03-30T23:07:14.090Z
         kind: blocker
       - _ulid: 01KN0EF2YZRWMQCDA76804GFTV
         anchor:
@@ -90555,7 +90569,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T22:42:51.771Z
     created_at: 2026-03-30T22:36:45.668Z
-    updated_at: 2026-03-30T22:42:51.771Z
+    updated_at: 2026-03-30T23:07:14.090Z
     notes: []
   - _ulid: 01KN0F7HS7KDC8NKD5B0EWPYPB
     slugs: []
