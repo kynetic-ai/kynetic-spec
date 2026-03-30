@@ -82429,6 +82429,12 @@ reviews:
         payload:
           thread_ulid: 01KMZ3RYGHW5V7CVFYRGP36FWN
         timestamp: 2026-03-30T12:07:58.983Z
+      - _ulid: 01KMZA9X0K4DZC4PS6EABQC61J
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMZ3RYGHW5V7CVFYRGP36FWN
+        timestamp: 2026-03-30T12:08:11.027Z
     examined_commit: 137b046abd8a2482f82be089329a4075aab9bccc
     external_links: []
     lifecycle_state: closed
@@ -82470,6 +82476,8 @@ reviews:
               pass (agents, automation, dashboard loading states)."
             created_at: 2026-03-30T12:07:58.347Z
         kind: blocker
+        resolved_at: 2026-03-30T12:08:10.390Z
+        resolved_by: "@claude"
       - _ulid: 01KMZ3STEPT56VBDJSYKGA90A1
         entries:
           - _ulid: 01KMZ3STEPC60AWPR51F96TSEG
@@ -83135,7 +83143,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T10:14:56.521Z
     created_at: 2026-03-30T10:04:21.132Z
-    updated_at: 2026-03-30T12:07:58.347Z
+    updated_at: 2026-03-30T12:08:10.390Z
     notes: []
   - _ulid: 01KMZ7J5XKPEZZHF55RS94EJGJ
     slugs: []
