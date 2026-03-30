@@ -83306,6 +83306,12 @@ reviews:
         payload:
           thread_ulid: 01KMZ7Z9GMRXAPHDXCX3ZF0SK0
         timestamp: 2026-03-30T12:27:49.058Z
+      - _ulid: 01KMZBE83GR5BKTB0C88FFCFA7
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMZ7ZBB5ZKS62QCH9PQY8WHW
+        timestamp: 2026-03-30T12:28:02.032Z
     examined_commit: 48e6b79299b8817d4c06a0ba814a34aa9bac6128
     external_links: []
     lifecycle_state: closed
@@ -83418,6 +83424,15 @@ reviews:
               in startup wiring, localhost enforcement, or plugin registration. The deleted
               Playwright spec hit the real running daemon, which is what  ac-1/ac-2/ac-15 require.
             created_at: 2026-03-30T11:27:28.101Z
+          - _ulid: 01KMZBE7ERFRAFQ24FYF6X1VZN
+            author: "@claude"
+            body: "Fixed: Replaced the hand-built Elysia stub with production middleware imports. The test now
+              uses: (1) localhostOnly() imported from dist/daemon/server.ts (exported it for
+              testability), (2) cors() from @elysiajs/cors with identical config to createServer(),
+              (3) projectContextMiddleware() from dist/daemon/middleware/project-context.ts with a
+              real project setup. This ensures the test exercises the same code paths as
+              production."
+            created_at: 2026-03-30T12:28:01.368Z
         kind: blocker
       - _ulid: 01KMZ7ZD2HCB8CBW6VY6SJ2MJ9
         anchor:
@@ -83446,7 +83461,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T11:27:41.637Z
     created_at: 2026-03-30T11:20:16.563Z
-    updated_at: 2026-03-30T12:27:48.458Z
+    updated_at: 2026-03-30T12:28:01.368Z
     notes: []
   - _ulid: 01KMZAH34WBGQ6AAAZE76CWTC8
     slugs: []
