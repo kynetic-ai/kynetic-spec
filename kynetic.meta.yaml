@@ -10169,6 +10169,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-30T16:12:47.263Z
+  - _ulid: 01KMZZ38XHMEPWR0CXDM78PMZ4
+    type: success
+    content: "Fix cycle for @task-fix-ws-invalidation-storm was efficient: reviewer correctly identified
+      that tests used synthetic event names (agent_invocation_started) instead of the real
+      production shape (agent_invocation with data.status). The fix also improved the handler —
+      making agent_invocation matching explicit and defaulting unknown events to no-invalidation
+      instead of invalidating everything. Investigating the real event shape via daemon broadcast
+      code (packages/daemon/src/routes/agent-dispatch.ts) and shared types
+      (packages/shared/src/websocket.ts) was the right approach."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-30T18:11:33.937Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
