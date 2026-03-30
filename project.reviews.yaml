@@ -85180,7 +85180,22 @@ reviews:
     slugs: []
     title: Review task-fix-fixtures-envelope
     author: Test User
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: >-
+          > @kynetic-ai/spec@0.12.0 test
+
+          > node scripts/test.cjs failed: 2 suites failed, 1 test failed. The condensed output
+          names  and the test "reconciliation acquires the lock per dirty record, not once for the
+          entire batch".
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-30T15:31:38.126Z
+        completed_at: 2026-03-30T15:31:38.126Z
     events:
       - _ulid: 01KMZNDKHD4JX075XS686347DH
         actor: Test User
@@ -85195,6 +85210,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-30T15:22:54.586Z
+      - _ulid: 01KMZNYES9KYG6G19WZ9MB99M5
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-30T15:31:38.921Z
     examined_commit: 56eb7f9f66ff1b04997879c45758c4455183b965
     external_links: []
     lifecycle_state: open
@@ -85207,5 +85229,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-30T15:22:26.734Z
-    updated_at: 2026-03-30T15:22:54.007Z
+    updated_at: 2026-03-30T15:31:38.126Z
     notes: []
