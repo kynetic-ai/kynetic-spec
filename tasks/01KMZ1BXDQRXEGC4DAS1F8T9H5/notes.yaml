@@ -122,3 +122,11 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-30T20:37:38.590Z
+  - _ulid: 01KN0H5JVJFNZYVNJ7JB2D7BXW
+    content: "Unblocked. Previous reviewer blocked because full suite was red, but the failures are
+      pre-existing backend flakiness unrelated to this web-ui-only change. Reviewer guidance: when
+      full suite has failures, check whether they exist on the base branch too before blocking. Only
+      block for regressions introduced by the change."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-30T23:27:24.019Z

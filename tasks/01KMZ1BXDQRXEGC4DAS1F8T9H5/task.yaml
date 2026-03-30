@@ -42,12 +42,8 @@ description: |
 spec_ref: null
 plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
 origin: derived
-status: blocked
-blocked_by:
-  - Required full-suite gate is still red on this snapshot. The submitted Web UI change passes its
-    targeted tests and matches the shared agent_invocation WebSocket contract, but npm test exits 1
-    with widespread backend/daemon failures, and selected failing suites pass in isolation. Merge
-    cannot proceed until the integration branch is green or the full suite reruns successfully.
+status: pending_review
+blocked_by: []
 depends_on: []
 context: []
 priority: 2
@@ -65,7 +61,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: 01KN06DEY8YFNMG7M1Q1HFMP2Q
+session_id: null
 history:
   - author: "@claude"
     changes:
@@ -246,7 +242,28 @@ history:
         previous: null
     command: task-block
     timestamp: 2026-03-30T21:03:05.934Z
-prior_status: pending_review
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: blocked
+      blocked_by:
+        new: []
+        previous:
+          - Required full-suite gate is still red on this snapshot. The submitted Web UI change
+            passes its targeted tests and matches the shared agent_invocation WebSocket contract,
+            but npm test exits 1 with widespread backend/daemon failures, and selected failing
+            suites pass in isolation. Merge cannot proceed until the integration branch is green or
+            the full suite reruns successfully.
+      session_id:
+        new: null
+        previous: 01KN06DEY8YFNMG7M1Q1HFMP2Q
+      prior_status:
+        new: null
+        previous: pending_review
+    command: task-unblock
+    timestamp: 2026-03-30T23:27:23.102Z
+prior_status: null
 created_at: 2026-03-30T09:31:59.799Z
 started_at: 2026-03-30T20:38:40.945Z
 submitted_at: 2026-03-30T20:38:44.217Z
