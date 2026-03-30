@@ -91334,7 +91334,18 @@ reviews:
     slugs: []
     title: Review task-add-filewatcher-e2e
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed locally in review snapshot: npm run test:e2e -- tests/e2e/file-watcher.spec.ts
+          finished with 10 passed in 12.1s."
+        name: watcher e2e
+        required: true
+        runner: playwright
+        created_at: 2026-03-30T23:46:34.058Z
+        completed_at: 2026-03-30T23:46:34.058Z
     events:
       - _ulid: 01KN0HZ3D6XCBRJ492TZV2KJA7
         actor: Test User
@@ -91356,6 +91367,13 @@ reviews:
           kind: nit
           thread_ulid: 01KN0J8M2CK9E1V58N80GF0FR1
         timestamp: 2026-03-30T23:46:32.780Z
+      - _ulid: 01KN0J8PHYZXQ9MHGGMH1J456G
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: watcher e2e
+        timestamp: 2026-03-30T23:46:34.687Z
     examined_commit: 92c8540b06de93a5437122aa31c5507387513a7e
     external_links: []
     lifecycle_state: open
@@ -91408,5 +91426,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-30T23:41:20.166Z
-    updated_at: 2026-03-30T23:46:32.140Z
+    updated_at: 2026-03-30T23:46:34.058Z
     notes: []
