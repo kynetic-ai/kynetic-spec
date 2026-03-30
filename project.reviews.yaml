@@ -83844,6 +83844,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-30T12:50:29.864Z
+      - _ulid: 01KMZD0354KDQF90FEGGBBBVST
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMZD02KJKYR0XG4NCM8VV0MF
+        timestamp: 2026-03-30T12:55:15.364Z
     examined_commit: aa6f91a5b64674ee3d23ba8c9587d58046d6d64c
     external_links: []
     lifecycle_state: open
@@ -83853,8 +83860,28 @@ reviews:
       content_hash: ""
       ref: "@01KMZ1BTVFQCM2XMFZPER1E45Z"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMZD02KJKYR0XG4NCM8VV0MF
+        anchor:
+          type: code
+          commit: aa6f91a5b64674ee3d23ba8c9587d58046d6d64c
+          line_end: 112
+          line_start: 90
+          path: tests/e2e/fixtures/test-base.ts
+          side: head
+        entries:
+          - _ulid: 01KMZD02KJMX7VXP3030XCDBCT
+            author: Test User
+            body: Shared E2E setup still derives its temp project path from Date.now() alone. When the
+              dashboard/agents/automation specs run in parallel, multiple workers can collide on the
+              same /tmp/kspec-e2e-* directory; my run of 'npm run test:e2e --
+              tests/e2e/dashboard.spec.ts tests/e2e/agents.spec.ts tests/e2e/automation.spec.ts'
+              failed with ENOENT while cpSync/chmod was populating .kspec under a reused temp path.
+              That means these specs still do not pass cleanly under normal parallel execution, so
+              the task goal is not met.
+            created_at: 2026-03-30T12:55:14.802Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-30T12:50:17.070Z
-    updated_at: 2026-03-30T12:50:29.295Z
+    updated_at: 2026-03-30T12:55:14.802Z
     notes: []
