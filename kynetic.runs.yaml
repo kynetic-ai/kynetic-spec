@@ -19238,7 +19238,7 @@ runs:
     completed_at: 2026-03-30T20:41:16.539Z
   - _ulid: 01KN0CJJJ5AYXJNTTBFR5AX82E
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -19252,7 +19252,33 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-30T22:07:31.920Z
-        completed_at: 2026-03-30T22:07:31.920Z
+        completed_at: 2026-03-30T22:07:59.409Z
+        notes: >-
+          Identified items:
+
+
+          1. FRICTION (high confidence): bits-ui Command component bind:value binds to selected-item
+          value, not search input text. This caused CommandPalette search to silently never fire.
+          The original search implementation task (01KFP850) was marked completed but search was
+          never actually working — E2E tests passed via if-guards. This is a systemic pattern:
+          component library binding semantics can silently break functionality when the property
+          name (value) means different things in different contexts. Already fixed in this session —
+          no new tracking needed.
+
+
+          2. SUCCESS (high confidence): Using Playwright's routeWebSocket() to inject controlled
+          WebSocket events for testing deduplication and reconnect behavior worked cleanly. This is
+          a reusable pattern for WebSocket E2E testing. Not tracked elsewhere.
+
+
+          3. FRICTION (high confidence): The original search tests used if (count > 0) guards that
+          made them vacuous — they always passed regardless of whether search worked. This went
+          through initial review undetected. Pattern: conditional guards in E2E tests that silently
+          skip the core assertion are a testing anti-pattern that should be caught in review.
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-30T22:07:59.409Z
+        completed_at: 2026-03-30T22:07:59.409Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-30T22:07:06.822Z
