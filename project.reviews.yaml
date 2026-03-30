@@ -85027,6 +85027,17 @@ reviews:
         runner: kspec
         created_at: 2026-03-30T14:10:44.972Z
         completed_at: 2026-03-30T14:10:44.972Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm run test:e2e completed after fresh build with 75 passed, 11 skipped, 0 failed across
+          smoke/api-server/dashboard/agents/automation specs.
+        name: targeted e2e
+        required: true
+        runner: playwright
+        created_at: 2026-03-30T14:10:48.521Z
+        completed_at: 2026-03-30T14:10:48.521Z
     events:
       - _ulid: 01KMZH7EQQSTZ8VFCC22FAGFDM
         actor: Test User
@@ -85055,6 +85066,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-30T14:10:46.107Z
+      - _ulid: 01KMZHAF0QB9RV1M3GNF7N10WF
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted e2e
+        timestamp: 2026-03-30T14:10:49.496Z
     examined_commit: 22f19ef9bd1b10a5abe58111af3cb6d390bc49a3
     external_links: []
     lifecycle_state: open
@@ -85086,5 +85104,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-30T14:09:10.904Z
-    updated_at: 2026-03-30T14:10:44.972Z
+    updated_at: 2026-03-30T14:10:48.521Z
     notes: []
