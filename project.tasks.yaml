@@ -23377,8 +23377,9 @@
   title: Fix stale-selector e2e failures across UI specs
   type: task
   plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
-  status: in_progress
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - "Agent task-worker failed 3 consecutive times: Internal error: Prompt is too long"
   depends_on:
     - "@task-fix-loading-page-e2e"
   priority: 2
