@@ -85330,6 +85330,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-30T15:32:34.315Z
+      - _ulid: 01KMZP08CZWGPNNGK85EGX2RC1
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KMZP07Q79G15YTW5CRMFV0ES
+        timestamp: 2026-03-30T15:32:37.919Z
     examined_commit: 56eb7f9f66ff1b04997879c45758c4455183b965
     external_links: []
     lifecycle_state: closed
@@ -85433,6 +85440,1396 @@ reviews:
               submission does not actually restore that behavior."
             created_at: 2026-03-30T15:31:42.241Z
         kind: blocker
+      - _ulid: 01KMZP07Q79G15YTW5CRMFV0ES
+        entries:
+          - _ulid: 01KMZP07Q8YF6694SDDB4Y0WMT
+            author: Test User
+            body: "Review evidence log: files read: tests/e2e/plans.spec.ts, tests/e2e/validate.spec.ts,
+              tests/e2e/dashboard.spec.ts, tests/e2e/triage.spec.ts, tests/daemon-api/meta.test.ts,
+              packages/web-ui/src/routes/validate/+page.svelte,
+              packages/daemon/src/routes/aggregation.ts, packages/daemon/src/routes/plans.ts,
+              packages/daemon/src/routes/triage.ts, tests/dispatch-workspace-registry.test.ts.
+              Commands run: git diff/stat, kspec task get, kspec plan get, kspec validate, AC
+              annotation scan with rg,\ 
+
+              > @kynetic-ai/spec@0.12.0 test
+
+              > node scripts/test.cjs,\ 
+
+              > @kynetic-ai/spec@0.12.0 test:e2e
+
+              > npm run build:e2e && npx playwright test tests/e2e/smoke.spec.ts
+              tests/e2e/api-server.spec.ts tests/e2e/dashboard.spec.ts tests/e2e/plans.spec.ts
+              tests/e2e/triage.spec.ts tests/e2e/validate.spec.ts
+
+
+
+              > @kynetic-ai/spec@0.12.0 build:e2e
+
+              > tsc && chmod +x dist/cli/index.js && npm run build:shared && npm run build:daemon &&
+              npm run build:web-ui
+
+
+
+              > @kynetic-ai/spec@0.12.0 build:shared
+
+              > cd packages/shared && npm run build
+
+
+
+              > @kynetic-ai/shared@0.1.0 build
+
+              > tsc
+
+
+
+              > @kynetic-ai/spec@0.12.0 build:daemon
+
+              > shx rm -rf dist/daemon && shx mkdir -p dist/daemon && shx cp -r
+              packages/daemon/src/* dist/daemon/ && shx cp src/daemon/entity-cache.ts dist/daemon/
+
+
+
+              > @kynetic-ai/spec@0.12.0 build:web-ui
+
+              > shx rm -rf dist/web-ui && cd packages/web-ui && npm run build && shx cp -r build
+              ../../dist/web-ui
+
+
+
+              > @kynetic-ai/web-ui@0.1.0 build
+
+              > vite build
+
+
+              vite v7.3.1 building ssr environment for production...
+
+              transforming...
+
+              ✓ 4651 modules transformed.
+
+              rendering chunks...
+
+              vite v7.3.1 building client environment for production...
+
+              transforming...
+
+              ✓ 4797 modules transformed.
+
+              rendering chunks...
+
+              computing gzip size...
+
+              .svelte-kit/output/client/_app/version.json                                    0.03 kB
+              │ gzip:  0.05 kB
+
+              .svelte-kit/output/client/.vite/manifest.json                                 32.07 kB
+              │ gzip:  3.49 kB
+
+              .svelte-kit/output/client/_app/immutable/assets/select-trigger.CV-KWLNP.css    0.29 kB
+              │ gzip:  0.15 kB
+
+              .svelte-kit/output/client/_app/immutable/assets/12.BwwJybWx.css                1.26 kB
+              │ gzip:  0.41 kB
+
+              .svelte-kit/output/client/_app/immutable/assets/0.BbVe25hb.css               115.50 kB
+              │ gzip: 18.53 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/C5yCgjJl.js                    0.04 kB
+              │ gzip:  0.06 kB
+
+              .svelte-kit/output/client/_app/immutable/entry/start.B95tUQth.js               0.08 kB
+              │ gzip:  0.09 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/CKFxjpBU.js                    0.11 kB
+              │ gzip:  0.10 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/9M9HeMBQ.js                    0.18 kB
+              │ gzip:  0.14 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/De-iW0Bz.js                    0.20 kB
+              │ gzip:  0.18 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/BfGBbEk3.js                    0.23 kB
+              │ gzip:  0.16 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/BKYw_69c.js                    0.30 kB
+              │ gzip:  0.23 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/BJYCcmhv.js                    0.46 kB
+              │ gzip:  0.32 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/OgSXmw7d.js                    0.48 kB
+              │ gzip:  0.34 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/pqrOn-9H.js                    0.48 kB
+              │ gzip:  0.29 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/D2AwV6qY.js                    0.48 kB
+              │ gzip:  0.34 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/ydnrVjKP.js                    0.48 kB
+              │ gzip:  0.34 kB
+
+              .svelte-kit/output/client/_app/immutable/nodes/1.38TbrTWJ.js                   0.49 kB
+              │ gzip:  0.31 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/CFrou6B9.js                    0.49 kB
+              │ gzip:  0.34 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/S_eh7Jfi.js                    0.50 kB
+              │ gzip:  0.36 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/CIsQcp_g.js                    0.50 kB
+              │ gzip:  0.35 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/DvV8Q-oK.js                    0.50 kB
+              │ gzip:  0.35 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/D77Eacee.js                    0.51 kB
+              │ gzip:  0.35 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/DViOfSdp.js                    0.51 kB
+              │ gzip:  0.36 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/DzD-vTBS.js                    0.52 kB
+              │ gzip:  0.33 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/BcNF625I.js                    0.53 kB
+              │ gzip:  0.37 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/DegEmdCx.js                    0.53 kB
+              │ gzip:  0.36 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/Be3h4ubc.js                    0.54 kB
+              │ gzip:  0.39 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/DWSxrjRZ.js                    0.55 kB
+              │ gzip:  0.38 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/3n8pHWPW.js                    0.56 kB
+              │ gzip:  0.39 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/DzKkLmv6.js                    0.56 kB
+              │ gzip:  0.38 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/BDhIgyFM.js                    0.57 kB
+              │ gzip:  0.39 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/XkMyaEZn.js                    0.58 kB
+              │ gzip:  0.40 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/DC3aI5ox.js                    0.58 kB
+              │ gzip:  0.40 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/CYk1yGjC.js                    0.59 kB
+              │ gzip:  0.40 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/CbNpnkEt.js                    0.59 kB
+              │ gzip:  0.41 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/BiSCSMB_.js                    0.59 kB
+              │ gzip:  0.40 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/DwZ9dZbN.js                    0.59 kB
+              │ gzip:  0.40 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/oSxm0J_L.js                    0.60 kB
+              │ gzip:  0.38 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/BnBpB33H.js                    0.61 kB
+              │ gzip:  0.39 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/_yZbdNEB.js                    0.62 kB
+              │ gzip:  0.42 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/BZODDe-x.js                    0.62 kB
+              │ gzip:  0.42 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/BThaPpaO.js                    0.63 kB
+              │ gzip:  0.43 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/BHCxWSPb.js                    0.64 kB
+              │ gzip:  0.41 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/CIKnt1FQ.js                    0.66 kB
+              │ gzip:  0.44 kB
+
+              .svelte-kit/output/client/_app/immutable/nodes/6.C8nGoHN4.js                   0.67 kB
+              │ gzip:  0.41 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/mAvu3eK_.js                    0.68 kB
+              │ gzip:  0.42 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/DbROoFDp.js                    0.76 kB
+              │ gzip:  0.49 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/7vxn2OcZ.js                    1.00 kB
+              │ gzip:  0.58 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/CUKXFMGd.js                    1.05 kB
+              │ gzip:  0.52 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/BNphJ28q.js                    1.10 kB
+              │ gzip:  0.55 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/BObMsIr6.js                    1.15 kB
+              │ gzip:  0.68 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/BFfsvxJE.js                    1.40 kB
+              │ gzip:  0.86 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/CoMeV_Wq.js                    1.50 kB
+              │ gzip:  0.78 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/BejyJnk0.js                    1.68 kB
+              │ gzip:  0.97 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/Bvs4yuzs.js                    1.90 kB
+              │ gzip:  0.75 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/B56G5Alx.js                    1.96 kB
+              │ gzip:  0.94 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/BnrNaovz.js                    2.40 kB
+              │ gzip:  0.99 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/CHwlN357.js                    2.46 kB
+              │ gzip:  1.03 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/CrxpDYP8.js                    2.48 kB
+              │ gzip:  0.77 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/azITa48D.js                    2.49 kB
+              │ gzip:  1.07 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/D2dhIOJU.js                    3.16 kB
+              │ gzip:  1.43 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/Ch07Z5js.js                    3.17 kB
+              │ gzip:  1.29 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/DhR35Q9e.js                    3.38 kB
+              │ gzip:  1.13 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/DWiNafpd.js                    4.26 kB
+              │ gzip:  1.62 kB
+
+              .svelte-kit/output/client/_app/immutable/nodes/7.Dp3WrB2i.js                   4.31 kB
+              │ gzip:  1.92 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/CI7t5dqu.js                    4.34 kB
+              │ gzip:  1.60 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/tFJiLkLE.js                    5.02 kB
+              │ gzip:  2.00 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/BTlGV15j.js                    5.96 kB
+              │ gzip:  1.87 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/tKxweOUm.js                    7.17 kB
+              │ gzip:  3.17 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/Dr8TCKNv.js                    8.08 kB
+              │ gzip:  3.24 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/BSgug1xw.js                    8.27 kB
+              │ gzip:  2.58 kB
+
+              .svelte-kit/output/client/_app/immutable/nodes/19.3kaytBQs.js                  9.69 kB
+              │ gzip:  3.58 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/CXRc-3lM.js                   10.24 kB
+              │ gzip:  2.81 kB
+
+              .svelte-kit/output/client/_app/immutable/entry/app.Dl7vGvkQ.js                10.38 kB
+              │ gzip:  4.08 kB
+
+              .svelte-kit/output/client/_app/immutable/nodes/9.Jfc2VIaX.js                  11.88 kB
+              │ gzip:  4.28 kB
+
+              .svelte-kit/output/client/_app/immutable/nodes/5.DYj541uy.js                  12.86 kB
+              │ gzip:  4.77 kB
+
+              .svelte-kit/output/client/_app/immutable/nodes/2.BYudVX7t.js                  13.46 kB
+              │ gzip:  4.82 kB
+
+              .svelte-kit/output/client/_app/immutable/nodes/17.UeEsbGeF.js                 15.05 kB
+              │ gzip:  5.70 kB
+
+              .svelte-kit/output/client/_app/immutable/nodes/15.Jtd7WaLF.js                 16.06 kB
+              │ gzip:  5.57 kB
+
+              .svelte-kit/output/client/_app/immutable/nodes/13.BSBgIqgQ.js                 17.16 kB
+              │ gzip:  4.67 kB
+
+              .svelte-kit/output/client/_app/immutable/nodes/16.NHy2uxpI.js                 17.31 kB
+              │ gzip:  6.38 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/DtH0qgyS.js                   17.52 kB
+              │ gzip:  5.46 kB
+
+              .svelte-kit/output/client/_app/immutable/nodes/18.C4AfnKs3.js                 18.43 kB
+              │ gzip:  5.05 kB
+
+              .svelte-kit/output/client/_app/immutable/nodes/11.DydQUDlm.js                 23.39 kB
+              │ gzip:  7.75 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/4erPDTNt.js                   24.08 kB
+              │ gzip:  9.55 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/DfyrIQlR.js                   24.43 kB
+              │ gzip:  7.46 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/gtTgpfcY.js                   25.71 kB
+              │ gzip: 10.11 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/DOyOHJq5.js                   25.89 kB
+              │ gzip:  9.06 kB
+
+              .svelte-kit/output/client/_app/immutable/nodes/3.BiLT1Czc.js                  26.39 kB
+              │ gzip:  8.30 kB
+
+              .svelte-kit/output/client/_app/immutable/nodes/14.DVqrmfAt.js                 27.91 kB
+              │ gzip:  9.20 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/DCymAC27.js                   36.62 kB
+              │ gzip:  9.61 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/DglbzXd_.js                   39.85 kB
+              │ gzip: 12.60 kB
+
+              .svelte-kit/output/client/_app/immutable/nodes/12.BMKwiaQL.js                 47.61 kB
+              │ gzip: 14.53 kB
+
+              .svelte-kit/output/client/_app/immutable/nodes/10.Be368bmz.js                 68.16 kB
+              │ gzip: 17.27 kB
+
+              .svelte-kit/output/client/_app/immutable/nodes/0.Boxacvl3.js                  77.48 kB
+              │ gzip: 22.19 kB
+
+              .svelte-kit/output/client/_app/immutable/nodes/4.DWNjt_Ll.js                  89.05 kB
+              │ gzip: 22.96 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/fF8gTClG.js                   92.05 kB
+              │ gzip: 28.64 kB
+
+              .svelte-kit/output/client/_app/immutable/nodes/8.De59o6IC.js                 124.09 kB
+              │ gzip: 39.38 kB
+
+              .svelte-kit/output/client/_app/immutable/chunks/0-NrsdCP.js                  151.80 kB
+              │ gzip: 48.69 kB
+
+              ✓ built in 8.27s
+
+              .svelte-kit/output/server/.vite/manifest.json                                 24.86 kB
+
+              .svelte-kit/output/server/_app/immutable/assets/select-trigger.CV-KWLNP.css    0.29 kB
+
+              .svelte-kit/output/server/_app/immutable/assets/_page.SzGLxi4x.css             0.88 kB
+
+              .svelte-kit/output/server/_app/immutable/assets/_layout.BrA8Ay3Y.css         115.20 kB
+
+              .svelte-kit/output/server/entries/pages/_layout.ts.js                          0.04 kB
+
+              .svelte-kit/output/server/entries/pages/automation/_page.ts.js                 0.04 kB
+
+              .svelte-kit/output/server/entries/pages/plans/_page.ts.js                      0.04 kB
+
+              .svelte-kit/output/server/entries/pages/reviews/_page.ts.js                    0.04 kB
+
+              .svelte-kit/output/server/entries/pages/reviews/_id_/_page.ts.js               0.04 kB
+
+              .svelte-kit/output/server/entries/pages/settings/_page.ts.js                   0.04 kB
+
+              .svelte-kit/output/server/entries/pages/tasks/_page.ts.js                      0.04 kB
+
+              .svelte-kit/output/server/entries/pages/tasks/board/_page.ts.js                0.04 kB
+
+              .svelte-kit/output/server/entries/pages/workflows/_page.ts.js                  0.04 kB
+
+              .svelte-kit/output/server/chunks/false.js                                      0.05 kB
+
+              .svelte-kit/output/server/chunks/html.js                                       0.14 kB
+
+              .svelte-kit/output/server/chunks/environment.js                                0.19 kB
+
+              .svelte-kit/output/server/chunks/mode.svelte.js                                0.29 kB
+
+              .svelte-kit/output/server/entries/fallbacks/error.svelte.js                    0.35 kB
+
+              .svelte-kit/output/server/internal.js                                          0.38 kB
+
+              .svelte-kit/output/server/chunks/state.svelte.js                               0.38 kB
+
+              .svelte-kit/output/server/chunks/index-server.js                               0.39 kB
+
+              .svelte-kit/output/server/chunks/server.js                                     0.45 kB
+
+              .svelte-kit/output/server/chunks/index3.js                                     0.45 kB
+
+              .svelte-kit/output/server/entries/pages/items/_page.svelte.js                  0.47 kB
+
+              .svelte-kit/output/server/chunks/skeleton.js                                   0.57 kB
+
+              .svelte-kit/output/server/chunks/card-content.js                               0.63 kB
+
+              .svelte-kit/output/server/chunks/client.js                                     0.64 kB
+
+              .svelte-kit/output/server/chunks/card-title.js                                 0.64 kB
+
+              .svelte-kit/output/server/chunks/card.js                                       0.68 kB
+
+              .svelte-kit/output/server/chunks/dialog-footer.js                              0.68 kB
+
+              .svelte-kit/output/server/chunks/stores.js                                     0.69 kB
+
+              .svelte-kit/output/server/chunks/createMutation.svelte.js                      0.77 kB
+
+              .svelte-kit/output/server/chunks/card-header.js                                0.77 kB
+
+              .svelte-kit/output/server/chunks/reference.js                                  0.84 kB
+
+              .svelte-kit/output/server/chunks/utils.js                                      1.15 kB
+
+              .svelte-kit/output/server/chunks/utils2.js                                     1.16 kB
+
+              .svelte-kit/output/server/chunks/textarea.js                                   1.24 kB
+
+              .svelte-kit/output/server/chunks/session-utils.js                              1.46 kB
+
+              .svelte-kit/output/server/chunks/index.js                                      1.46 kB
+
+              .svelte-kit/output/server/chunks/chevron-down.js                               1.46 kB
+
+              .svelte-kit/output/server/chunks/chevron-right.js                              1.47 kB
+
+              .svelte-kit/output/server/chunks/loader-circle.js                              1.50 kB
+
+              .svelte-kit/output/server/chunks/Icon2.js                                      1.53 kB
+
+              .svelte-kit/output/server/chunks/search.js                                     1.56 kB
+
+              .svelte-kit/output/server/chunks/ban.js                                        1.57 kB
+
+              .svelte-kit/output/server/chunks/play.js                                       1.64 kB
+
+              .svelte-kit/output/server/chunks/folder.js                                     1.73 kB
+
+              .svelte-kit/output/server/chunks/external-link.js                              1.77 kB
+
+              .svelte-kit/output/server/chunks/git-branch.js                                 1.80 kB
+
+              .svelte-kit/output/server/chunks/triangle-alert.js                             1.81 kB
+
+              .svelte-kit/output/server/chunks/zap2.js                                       1.81 kB
+
+              .svelte-kit/output/server/chunks/triangle-alert2.js                            1.81 kB
+
+              .svelte-kit/output/server/chunks/zap.js                                        1.82 kB
+
+              .svelte-kit/output/server/chunks/bot.js                                        1.87 kB
+
+              .svelte-kit/output/server/chunks/inbox.js                                      1.88 kB
+
+              .svelte-kit/output/server/chunks/shield-check.js                               1.96 kB
+
+              .svelte-kit/output/server/chunks/createQuery.svelte.js                         2.08 kB
+
+              .svelte-kit/output/server/chunks/input.js                                      2.20 kB
+
+              .svelte-kit/output/server/chunks/context.js                                    2.20 kB
+
+              .svelte-kit/output/server/chunks/Icon.js                                       2.65 kB
+
+              .svelte-kit/output/server/chunks/ReferenceLink.js                              2.92 kB
+
+              .svelte-kit/output/server/chunks/button.js                                     2.94 kB
+
+              .svelte-kit/output/server/chunks/terminal.js                                   3.18 kB
+
+              .svelte-kit/output/server/chunks/separator.js                                  3.27 kB
+
+              .svelte-kit/output/server/chunks/clock.js                                      3.27 kB
+
+              .svelte-kit/output/server/chunks/table-row.js                                  3.53 kB
+
+              .svelte-kit/output/server/chunks/CacheWarmingBanner.js                         3.66 kB
+
+              .svelte-kit/output/server/chunks/events.js                                     3.93 kB
+
+              .svelte-kit/output/server/chunks/dialog-description.js                         4.82 kB
+
+              .svelte-kit/output/server/chunks/dialog-content.js                             5.41 kB
+
+              .svelte-kit/output/server/chunks/sheet-content.js                              5.55 kB
+
+              .svelte-kit/output/server/chunks/exports.js                                    5.59 kB
+
+              .svelte-kit/output/server/chunks/markdown.js                                   6.41 kB
+
+              .svelte-kit/output/server/entries/pages/sessions/_id_/_page.svelte.js          7.06 kB
+
+              .svelte-kit/output/server/entries/pages/observations/_page.svelte.js           9.31 kB
+
+              .svelte-kit/output/server/entries/pages/specs/_page.svelte.js                 10.77 kB
+
+              .svelte-kit/output/server/chunks/create-id.js                                 11.93 kB
+
+              .svelte-kit/output/server/chunks/dialog-content2.js                           15.29 kB
+
+              .svelte-kit/output/server/remote-entry.js                                     18.33 kB
+
+              .svelte-kit/output/server/chunks/shared.js                                    18.45 kB
+
+              .svelte-kit/output/server/entries/pages/reviews/_page.svelte.js               20.22 kB
+
+              .svelte-kit/output/server/entries/pages/_page.svelte.js                       22.17 kB
+
+              .svelte-kit/output/server/entries/pages/workflows/_page.svelte.js             23.62 kB
+
+              .svelte-kit/output/server/entries/pages/tasks/board/_page.svelte.js           24.25 kB
+
+              .svelte-kit/output/server/entries/pages/inbox/_page.svelte.js                 24.55 kB
+
+              .svelte-kit/output/server/chunks/internal.js                                  26.37 kB
+
+              .svelte-kit/output/server/entries/pages/triage/_page.svelte.js                27.36 kB
+
+              .svelte-kit/output/server/entries/pages/settings/_page.svelte.js              27.64 kB
+
+              .svelte-kit/output/server/entries/pages/tasks/_page.svelte.js                 29.20 kB
+
+              .svelte-kit/output/server/chunks/keys.js                                      30.62 kB
+
+              .svelte-kit/output/server/entries/pages/sessions/_page.svelte.js              33.30 kB
+
+              .svelte-kit/output/server/entries/pages/validate/_page.svelte.js              37.80 kB
+
+              .svelte-kit/output/server/chunks/x.js                                         39.75 kB
+
+              .svelte-kit/output/server/chunks/list.js                                      39.93 kB
+
+              .svelte-kit/output/server/entries/pages/agents/_page.svelte.js                44.24 kB
+
+              .svelte-kit/output/server/entries/pages/plans/_page.svelte.js                 52.17 kB
+
+              .svelte-kit/output/server/entries/pages/automation/_page.svelte.js            63.69 kB
+
+              .svelte-kit/output/server/chunks/index2.js                                    82.18 kB
+
+              .svelte-kit/output/server/entries/pages/reviews/_id_/_page.svelte.js          94.23 kB
+
+              .svelte-kit/output/server/chunks/select-trigger.js                            95.66 kB
+
+              .svelte-kit/output/server/index.js                                           126.93 kB
+
+              .svelte-kit/output/server/entries/pages/_layout.svelte.js                    172.64 kB
+
+              ✓ built in 15.25s
+
+
+              Run npm run preview to preview your production build locally.
+
+
+              > Using @sveltejs/adapter-static
+
+              \  Wrote site to \"build\"
+
+              \  ✔ done
+
+
+              Running 95 tests using 10 workers
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              \e[1A\e[2K[1/95] [chromium] › tests/e2e/dashboard.spec.ts:306:5 › Dashboard Overview ›
+              Status Summary › clicking ready count navigates to pending tasks
+
+              \e[1A\e[2K[2/95] [chromium] › tests/e2e/dashboard.spec.ts:186:5 › Dashboard Overview ›
+              Active Work Section › shows active fleet when agents are running
+
+              \e[1A\e[2K[3/95] [chromium] › tests/e2e/dashboard.spec.ts:171:5 › Dashboard Overview ›
+              Active Work Section › renders active work section
+
+              \e[1A\e[2K[4/95] [chromium] › tests/e2e/dashboard.spec.ts:324:5 › Dashboard Overview ›
+              Status Summary › clicking pending_review count navigates to tasks
+
+              \e[1A\e[2K[5/95] [chromium] › tests/e2e/dashboard.spec.ts:248:5 › Dashboard Overview ›
+              Status Summary › displays status summary section with heading
+
+              \e[1A\e[2K[6/95] [chromium] › tests/e2e/dashboard.spec.ts:289:5 › Dashboard Overview ›
+              Status Summary › renders correct aggregated counts from task data
+
+              \e[1A\e[2K[7/95] [chromium] › tests/e2e/dashboard.spec.ts:272:5 › Dashboard Overview ›
+              Status Summary › count cards have status labels as text
+
+              \e[1A\e[2K[8/95] [chromium] › tests/e2e/dashboard.spec.ts:256:5 › Dashboard Overview ›
+              Status Summary › displays all 7 status count cards
+
+              \e[1A\e[2K[9/95] [chromium] › tests/e2e/dashboard.spec.ts:315:5 › Dashboard Overview ›
+              Status Summary › clicking in_progress count navigates to tasks
+
+              \e[1A\e[2K[10/95] [chromium] › tests/e2e/dashboard.spec.ts:178:5 › Dashboard Overview
+              › Active Work Section › shows no-active-work empty state when no agents running
+
+              \e[1A\e[2K  1) [chromium] › tests/e2e/dashboard.spec.ts:289:5 › Dashboard Overview ›
+              Status Summary › renders correct aggregated counts from task data\ 
+
+
+              \    Error: Command failed: git init
+
+
+              \       at fixtures/test-base.ts:127
+
+
+              \      125 |
+
+              \      126 |       // Initialize git repo in project root (required for kspec)
+
+              \    > 127 |       execSync(\"git init\", { cwd: tempDir, stdio: \"ignore\" });
+
+              \          |       ^
+
+              \      128 |       execSync('git config user.email \"test@test.com\"', { cwd: tempDir,
+              stdio: \"ignore\" });
+
+              \      129 |       execSync('git config user.name \"Test\"', { cwd: tempDir, stdio:
+              \"ignore\" });
+
+              \      130 |
+
+              \        at Object.base.extend.daemon.scope
+              (/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-fixtures-envel\
+              ope-01kmz1bv-review/tests/e2e/fixtures/test-base.ts:127:7)
+
+
+
+
+
+
+
+              \e[1A\e[2K[11/95] [chromium] › tests/e2e/dashboard.spec.ts:333:5 › Dashboard Overview
+              › Status Summary › clicking blocked count navigates to tasks
+
+              \e[1A\e[2K[12/95] [chromium] › tests/e2e/dashboard.spec.ts:342:5 › Dashboard Overview
+              › Status Summary › clicking completed count navigates to tasks
+
+              \e[1A\e[2K[13/95] [chromium] › tests/e2e/dashboard.spec.ts:354:5 › Dashboard Overview
+              › Needs Attention Section › renders needs-attention section with heading
+
+              \e[1A\e[2K[14/95] [chromium] › tests/e2e/dashboard.spec.ts:364:5 › Dashboard Overview
+              › Needs Attention Section › shows correct needs-attention counts from aggregated data
+
+              \e[1A\e[2K[15/95] [chromium] › tests/e2e/dashboard.spec.ts:395:5 › Dashboard Overview
+              › Needs Attention Section › shows no-attention empty state when all counts are zero
+
+              \e[1A\e[2K[16/95] [chromium] › tests/e2e/dashboard.spec.ts:445:5 › Dashboard Overview
+              › Needs Attention Section › attention cards link to correct pages
+
+              \e[1A\e[2K[17/95] [chromium] › tests/e2e/dashboard.spec.ts:464:5 › Dashboard Overview
+              › Loading and Error States › renders dashboard container
+
+              \e[1A\e[2K  2) [chromium] › tests/e2e/dashboard.spec.ts:445:5 › Dashboard Overview ›
+              Needs Attention Section › attention cards link to correct pages\ 
+
+
+              \    Error: EEXIST: file already exists, mkdir
+              '/tmp/kspec-e2e-1774884727798/.kspec/tasks/01KG0RR8CB8N4YGP991WD7XS9R'
+
+
+              \       at fixtures/test-base.ts:112
+
+
+              \      110 |       // Copy E2E test fixtures to .kspec subdirectory (simulating shadow
+              worktree mode)
+
+              \      111 |       if (existsSync(E2E_FIXTURES)) {
+
+              \    > 112 |         cpSync(E2E_FIXTURES, kspecDir, {
+
+              \          |         ^
+
+              \      113 |           recursive: true,
+
+              \      114 |           filter: (src) => !src.includes(\"test-base\") &&
+              !src.includes(\"project-tests\"),
+
+              \      115 |         });
+
+              \        at Object.base.extend.daemon.scope
+              (/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-fixtures-envel\
+              ope-01kmz1bv-review/tests/e2e/fixtures/test-base.ts:112:9)
+
+
+
+              \e[1A\e[2K[18/95] [chromium] › tests/e2e/dashboard.spec.ts:479:5 › Dashboard Overview
+              › Responsive Layout › dashboard adapts to mobile viewport
+
+              \e[1A\e[2K[19/95] [chromium] › tests/e2e/dashboard.spec.ts:489:5 › Dashboard Overview
+              › Responsive Layout › dashboard shows full grid on desktop
+
+              \e[1A\e[2K[20/95] [chromium] › tests/e2e/dashboard.spec.ts:518:5 › Dashboard Overview
+              › API Contract Verification › daemon returns task counts matching fixture data
+
+
+
+              \e[1A\e[2K[21/95] [chromium] › tests/e2e/dashboard.spec.ts:539:5 › Dashboard Overview
+              › API Contract Verification › daemon returns inbox items
+
+
+
+              \e[1A\e[2K[22/95] [chromium] › tests/e2e/dashboard.spec.ts:470:5 › Dashboard Overview
+              › Loading and Error States › shows either skeleton or loaded content
+
+              \e[1A\e[2K[23/95] [chromium] › tests/e2e/dashboard.spec.ts:546:5 › Dashboard Overview
+              › API Contract Verification › daemon returns observations
+
+              \e[1A\e[2K[24/95] [chromium] › tests/e2e/dashboard.spec.ts:555:5 › Dashboard Overview
+              › API Contract Verification › daemon returns validation results
+
+              \e[1A\e[2K[25/95] [chromium] › tests/e2e/plans.spec.ts:131:3 › Plans View › displays
+              plan cards with title and status badge
+
+              \e[1A\e[2K[26/95] [chromium] › tests/e2e/plans.spec.ts:148:3 › Plans View › shows
+              creation date for each plan
+
+              \e[1A\e[2K[27/95] [chromium] › tests/e2e/plans.spec.ts:163:3 › Plans View › shows
+              linked spec and task counts
+
+              \e[1A\e[2K[28/95] [chromium] › tests/e2e/plans.spec.ts:179:3 › Plans View › shows
+              progress bar based on task completion status
+
+              \e[1A\e[2K[29/95] [chromium] › tests/e2e/plans.spec.ts:200:3 › Plans View › shows task
+              status breakdown for plans with tasks
+
+              \e[1A\e[2K[30/95] [chromium] › tests/e2e/plans.spec.ts:219:3 › Plans View › displays
+              plan status with correct labels
+
+              \e[1A\e[2K[31/95] [chromium] › tests/e2e/plans.spec.ts:239:3 › Plans View › shows plan
+              slug for each plan
+
+              \e[1A\e[2K[32/95] [chromium] › tests/e2e/plans.spec.ts:252:3 › Plans View › shows
+              plans summary with total count and status breakdown
+
+              \e[1A\e[2K[33/95] [chromium] › tests/e2e/plans.spec.ts:262:3 › Plans View › filters
+              plans by status
+
+              \e[1A\e[2K[34/95] [chromium] › tests/e2e/plans.spec.ts:290:3 › Plans View › shows
+              filtered count in summary when filter active
+
+              \e[1A\e[2K[35/95] [chromium] › tests/e2e/plans.spec.ts:301:3 › Plans View › shows
+              empty state when filter matches nothing
+
+              \e[1A\e[2K[36/95] [chromium] › tests/e2e/plans.spec.ts:312:3 › Plans View › status
+              filter has an accessible label
+
+              \e[1A\e[2K[37/95] [chromium] › tests/e2e/plans.spec.ts:324:3 › Plans View › shows View
+              Specs and View Tasks links with plan filter hrefs
+
+              \e[1A\e[2K[38/95] [chromium] › tests/e2e/plans.spec.ts:353:3 › Plans View › View Tasks
+              link navigates to tasks page filtered by plan
+
+              \e[1A\e[2K[39/95] [chromium] › tests/e2e/plans.spec.ts:370:3 › Plans View › View Specs
+              link navigates to specs page filtered by plan
+
+              \e[1A\e[2K[40/95] [chromium] › tests/e2e/plans.spec.ts:389:3 › Plans View › shows
+              expand toggle button on each plan card
+
+              \e[1A\e[2K[41/95] [chromium] › tests/e2e/plans.spec.ts:407:3 › Plans View › clicking
+              expand toggle loads and renders plan content as markdown
+
+              \e[1A\e[2K[42/95] [chromium] › tests/e2e/plans.spec.ts:434:3 › Plans View › toggle
+              button text changes to Hide Content when expanded
+
+              \e[1A\e[2K[43/95] [chromium] › tests/e2e/plans.spec.ts:456:3 › Plans View › clicking
+              Hide Content collapses the content section
+
+              \e[1A\e[2K[44/95] [chromium] › tests/e2e/plans.spec.ts:478:3 › Plans View › expand
+              toggle has correct aria attributes
+
+              \e[1A\e[2K[45/95] [chromium] › tests/e2e/plans.spec.ts:497:3 › Plans View › content is
+              cached after first load — re-expand does not show loading state
+
+              \e[1A\e[2K[46/95] [chromium] › tests/e2e/plans.spec.ts:526:3 › Plans View › shows
+              error state when plan content API fails
+
+              \e[1A\e[2K[47/95] [chromium] › tests/e2e/plans.spec.ts:554:3 › Plans View › renders
+              embedded spec cards alongside surrounding markdown prose
+
+              \e[1A\e[2K[48/95] [chromium] › tests/e2e/plans.spec.ts:576:3 › Plans View › renders
+              derived task cards from fenced derive_from_specs content with task metadata
+
+              \e[1A\e[2K[49/95] [chromium] › tests/e2e/plans.spec.ts:595:3 › Plans View › issues the
+              live batch fetch and renders title-derived specs plus full derive_from_specs tasks
+
+              \e[1A\e[2K[50/95] [chromium] › tests/e2e/plans.spec.ts:634:3 › Plans View › clicking
+              an embedded spec card navigates to the spec detail route
+
+              \e[1A\e[2K  3) [chromium] › tests/e2e/plans.spec.ts:576:3 › Plans View › renders
+              derived task cards from fenced derive_from_specs content with task metadata\ 
+
+
+              \    Error: ENOENT: no such file or directory, chmod
+              '/tmp/kspec-e2e-1774884736212/.kspec/.kspec-session'
+
+
+              \       at fixtures/test-base.ts:112
+
+
+              \      110 |       // Copy E2E test fixtures to .kspec subdirectory (simulating shadow
+              worktree mode)
+
+              \      111 |       if (existsSync(E2E_FIXTURES)) {
+
+              \    > 112 |         cpSync(E2E_FIXTURES, kspecDir, {
+
+              \          |         ^
+
+              \      113 |           recursive: true,
+
+              \      114 |           filter: (src) => !src.includes(\"test-base\") &&
+              !src.includes(\"project-tests\"),
+
+              \      115 |         });
+
+              \        at Object.base.extend.daemon.scope
+              (/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-fixtures-envel\
+              ope-01kmz1bv-review/tests/e2e/fixtures/test-base.ts:112:9)
+
+
+
+              \e[1A\e[2K[51/95] [chromium] › tests/e2e/plans.spec.ts:669:3 › Plans View › falls back
+              to rendered yaml code blocks when embedded refs do not match derived refs
+
+
+
+
+
+              \e[1A\e[2K[52/95] [chromium] › tests/e2e/plans.spec.ts:682:3 › Plans View › shows
+              embedded loading skeletons while batch item summaries are still loading
+
+              \e[1A\e[2K[53/95] [chromium] › tests/e2e/plans.spec.ts:651:3 › Plans View › clicking
+              an embedded task card opens the task detail view
+
+              \e[1A\e[2K[54/95] [chromium] › tests/e2e/plans.spec.ts:709:3 › Plans View › shows
+              embedded error UI and raw yaml fallback when batch item loading fails
+
+              \e[1A\e[2K  4) [chromium] › tests/e2e/plans.spec.ts:434:3 › Plans View › toggle button
+              text changes to Hide Content when expanded\ 
+
+
+              \    Error: Daemon failed to become ready after 3000ms
+
+
+              \       at fixtures/test-base.ts:172
+
+
+              \      170 |         }
+
+              \      171 |         if (i === maxAttempts - 1) {
+
+              \    > 172 |           throw new Error(`Daemon failed to become ready after
+              ${maxAttempts * pollInterval}ms`);
+
+              \          |                 ^
+
+              \      173 |         }
+
+              \      174 |         await new Promise((r) => setTimeout(r, pollInterval));
+
+              \      175 |       }
+
+              \        at Object.base.extend.daemon.scope
+              (/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-fixtures-envel\
+              ope-01kmz1bv-review/tests/e2e/fixtures/test-base.ts:172:17)
+
+
+
+
+
+              \e[1A\e[2K[55/95] [chromium] › tests/e2e/plans.spec.ts:763:8 › Plans View › GET
+              /api/plans/:ref excludes cancelled tasks while preserving plan_ref links
+
+              \e[1A\e[2K[56/95] [chromium] › tests/e2e/plans.spec.ts:770:3 › Plans View › GET
+              /api/plans/:ref returns 404 for non-existent plan
+
+              \e[1A\e[2K[57/95] [chromium] › tests/e2e/plans.spec.ts:782:3 › Plans View › GET
+              /api/plans/:ref works with ULID reference
+
+              \e[1A\e[2K[58/95] [chromium] › tests/e2e/plans.spec.ts:796:3 › Plans View › shows
+              loading skeletons while fetching data
+
+              \e[1A\e[2K  5) [chromium] › tests/e2e/plans.spec.ts:595:3 › Plans View › issues the
+              live batch fetch and renders title-derived specs plus full derive_from_specs tasks\ 
+
+
+              \    Error:
+              \e[2mexpect(\e[22m\e[31mreceived\e[39m\e[2m).\e[22mtoHaveLength\e[2m(\e[22m\e[32mexpe\
+              cted\e[39m\e[2m)\e[22m
+
+
+              \    Expected length: \e[32m1\e[39m
+
+              \    Received length: \e[31m0\e[39m
+
+              \    Received array:  \e[31m[]\e[39m
+
+
+              \      612 |     await page.waitForRequest(\"**/api/items/batch\");
+
+              \      613 |
+
+              \    > 614 |     expect(batchRequests).toHaveLength(1);
+
+              \          |                           ^
+
+              \      615 |     expect(batchRequests[0]).toEqual(
+
+              \      616 |       expect.arrayContaining([
+
+              \      617 |         \"@test-feature\",
+
+              \        at
+              /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-fixtures-envelo\
+              pe-01kmz1bv-review/tests/e2e/plans.spec.ts:614:27
+
+
+              \    attachment #1: screenshot (image/png)
+              ──────────────────────────────────────────────────────────
+
+              \    test-results/plans-Plans-View-issues-th-6780d-ull-derive-from-specs-tasks-chromi\
+              um/test-failed-1.png
+
+              \    ────────────────────────────────────────────────────────────────────────────────\
+              ────────────────
+
+
+              \    attachment #2: video (video/webm)
+              ──────────────────────────────────────────────────────────────
+
+              \    test-results/plans-Plans-View-issues-th-6780d-ull-derive-from-specs-tasks-chromi\
+              um/video.webm
+
+              \    ────────────────────────────────────────────────────────────────────────────────\
+              ────────────────
+
+
+              \    Error Context:
+              test-results/plans-Plans-View-issues-th-6780d-ull-derive-from-specs-tasks-chromium/er\
+              ror-context.md
+
+
+
+
+
+              \e[1A\e[2K[59/95] [chromium] › tests/e2e/smoke.spec.ts:4:3 › Smoke Tests › page loads
+              and shows sidebar
+
+              \e[1A\e[2K[60/95] [chromium] › tests/e2e/plans.spec.ts:731:3 › Plans View › GET
+              /api/plans/:ref returns plan detail with content
+
+              \e[1A\e[2K[61/95] [chromium] › tests/e2e/smoke.spec.ts:16:3 › Smoke Tests › dashboard
+              page loads with navigation
+
+
+
+              \e[1A\e[2K[62/95] [chromium] › tests/e2e/smoke.spec.ts:26:3 › Smoke Tests › can load
+              tasks page
+
+
+
+              \e[1A\e[2K[63/95] [chromium] › tests/e2e/plans.spec.ts:805:3 › Plans View › shows
+              error state on API failure
+
+              \e[1A\e[2K[64/95] [chromium] › tests/e2e/smoke.spec.ts:37:3 › Smoke Tests › can load
+              items page
+
+              \e[1A\e[2K[65/95] [chromium] › tests/e2e/smoke.spec.ts:44:3 › Smoke Tests › can load
+              inbox page
+
+              \e[1A\e[2K  6) [chromium] › tests/e2e/plans.spec.ts:770:3 › Plans View › GET
+              /api/plans/:ref returns 404 for non-existent plan\ 
+
+
+              \    Error:
+              \e[2mexpect(\e[22m\e[31mreceived\e[39m\e[2m).\e[22mtoBe\e[2m(\e[22m\e[32mexpected\e[3\
+              9m\e[2m) // Object.is equality\e[22m
+
+
+              \    Expected: \e[32m404\e[39m
+
+              \    Received: \e[31m500\e[39m
+
+
+              \      773 |     });
+
+              \      774 |
+
+              \    > 775 |     expect(response.status()).toBe(404);
+
+              \          |                               ^
+
+              \      776 |
+
+              \      777 |     const body = await response.json();
+
+              \      778 |     expect(body).toHaveProperty(\"error\", \"not_found\");
+
+              \        at
+              /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-fixtures-envelo\
+              pe-01kmz1bv-review/tests/e2e/plans.spec.ts:775:31
+
+
+              \    attachment #1: screenshot (image/png)
+              ──────────────────────────────────────────────────────────
+
+              \    test-results/plans-Plans-View-GET-api-p-7b3eb-s-404-for-non-existent-plan-chromi\
+              um/test-failed-1.png
+
+              \    ────────────────────────────────────────────────────────────────────────────────\
+              ────────────────
+
+
+              \    attachment #2: video (video/webm)
+              ──────────────────────────────────────────────────────────────
+
+              \    test-results/plans-Plans-View-GET-api-p-7b3eb-s-404-for-non-existent-plan-chromi\
+              um/video.webm
+
+              \    ────────────────────────────────────────────────────────────────────────────────\
+              ────────────────
+
+
+              \    Error Context:
+              test-results/plans-Plans-View-GET-api-p-7b3eb-s-404-for-non-existent-plan-chromium/er\
+              ror-context.md
+
+
+
+              \e[1A\e[2K[66/95] [chromium] › tests/e2e/triage.spec.ts:64:3 › Interactive Triage UI ›
+              displays card view with item text, tags, age, and added_by when items exist
+
+
+
+              \e[1A\e[2K[67/95] [chromium] › tests/e2e/triage.spec.ts:82:3 › Interactive Triage UI ›
+              renders markdown formatting in triage card text
+
+              \e[1A\e[2K[68/95] [chromium] › tests/e2e/triage.spec.ts:94:3 › Interactive Triage UI ›
+              shows agent recommendation section for triaged items
+
+
+
+              \e[1A\e[2K[69/95] [chromium] › tests/e2e/smoke.spec.ts:54:3 › Smoke Tests › live
+              session output renders markdown with the blinking streaming cursor
+
+              \e[1A\e[2K[70/95] [chromium] › tests/e2e/triage.spec.ts:115:3 › Interactive Triage UI
+              › supports next/previous navigation between items
+
+              \e[1A\e[2K[71/95] [chromium] › tests/e2e/triage.spec.ts:131:3 › Interactive Triage UI
+              › shows decision state indicator on already-triaged cards
+
+              \e[1A\e[2K[72/95] [chromium] › tests/e2e/triage.spec.ts:161:3 › Interactive Triage UI
+              › displays filter controls and progress count
+
+              \e[1A\e[2K[73/95] [chromium] › tests/e2e/triage.spec.ts:171:3 › Interactive Triage UI
+              › tag filter controls are visible
+
+              \e[1A\e[2K[74/95] [chromium] › tests/e2e/triage.spec.ts:177:3 › Interactive Triage UI
+              › filter selections update URL query params
+
+              \e[1A\e[2K[75/95] [chromium] › tests/e2e/triage.spec.ts:201:3 › Interactive Triage UI
+              › restores filter selections from URL and supports back-forward history
+
+              \e[1A\e[2K[76/95] [chromium] › tests/e2e/triage.spec.ts:223:3 › Interactive Triage UI
+              › action filter narrows cards by triage action and resets card index
+
+              \e[1A\e[2K[77/95] [chromium] › tests/e2e/triage.spec.ts:271:3 › Interactive Triage UI
+              › in daemon mode (non-static), action form is visible on triage card
+
+              \e[1A\e[2K[78/95] [chromium] › tests/e2e/triage.spec.ts:290:3 › Interactive Triage UI
+              › submit button is present and enabled for action selection
+
+              \e[1A\e[2K[79/95] [chromium] › tests/e2e/triage.spec.ts:311:3 › Interactive Triage UI
+              › override button appears for already-triaged items
+
+              \e[1A\e[2K[80/95] [chromium] › tests/e2e/triage.spec.ts:341:3 › Triage real-time
+              updates via WebSocket › triage page updates progress count in real-time when another
+              client submits a triage decision
+
+              \e[1A\e[2K[81/95] [chromium] › tests/e2e/triage.spec.ts:384:3 › Triage API operations
+              via UI › submitting a triage decision calls the API and updates state
+
+              \e[1A\e[2K[82/95] [chromium] › tests/e2e/validate.spec.ts:162:5 › Validation and
+              Alignment View › Summary Cards (AC-1) › displays error count, warning count, and valid
+              item count
+
+              \e[1A\e[2K[83/95] [chromium] › tests/e2e/validate.spec.ts:198:5 › Validation and
+              Alignment View › Summary Cards (AC-1) › shows \"Issues Found\" badge when validation
+              has errors
+
+              \e[1A\e[2K[84/95] [chromium] › tests/e2e/validate.spec.ts:210:5 › Validation and
+              Alignment View › Summary Cards (AC-1) › shows \"Valid\" badge when all checks pass
+
+              \e[1A\e[2K[85/95] [chromium] › tests/e2e/validate.spec.ts:221:5 › Validation and
+              Alignment View › Alignment Section (AC-1) › shows spec coverage percentage
+
+              \e[1A\e[2K[86/95] [chromium] › tests/e2e/validate.spec.ts:233:5 › Validation and
+              Alignment View › Alignment Section (AC-1) › shows AC coverage percentage
+
+              \e[1A\e[2K[87/95] [chromium] › tests/e2e/validate.spec.ts:249:5 › Validation and
+              Alignment View › Alignment Section (AC-1) › AC coverage includes uncovered trait ACs
+
+              \e[1A\e[2K[88/95] [chromium] › tests/e2e/validate.spec.ts:276:5 › Validation and
+              Alignment View › Alignment Section (AC-1) › shows orphaned tasks count
+
+              \e[1A\e[2K[89/95] [chromium] › tests/e2e/validate.spec.ts:288:5 › Validation and
+              Alignment View › Alignment Section (AC-1) › shows orphaned specs count
+
+              \e[1A\e[2K[90/95] [chromium] › tests/e2e/validate.spec.ts:302:5 › Validation and
+              Alignment View › Issues List (AC-1) › shows issues grouped by severity
+
+              \e[1A\e[2K[91/95] [chromium] › tests/e2e/validate.spec.ts:328:5 › Validation and
+              Alignment View › Issues List (AC-1) › error issues show category badge and message
+
+              \e[1A\e[2K[92/95] [chromium] › tests/e2e/validate.spec.ts:347:5 › Validation and
+              Alignment View › Issues List (AC-1) › shows no issues message when validation is clean
+
+              \e[1A\e[2K[93/95] [chromium] › tests/e2e/validate.spec.ts:361:5 › Validation and
+              Alignment View › Loading State › shows loading skeleton while fetching
+
+              \e[1A\e[2K[94/95] [chromium] › tests/e2e/validate.spec.ts:390:5 › Validation and
+              Alignment View › Empty State › shows empty state when no data returned
+
+              \e[1A\e[2K[95/95] [chromium] › tests/e2e/validate.spec.ts:416:5 › Validation and
+              Alignment View › Navigation › validate page is accessible from sidebar
+
+              \e[1A\e[2K  7) [chromium] › tests/e2e/triage.spec.ts:384:3 › Triage API operations via
+              UI › submitting a triage decision calls the API and updates state\ 
+
+
+              \    Error:
+              \e[2mexpect(\e[22m\e[31mlocator\e[39m\e[2m).\e[22mtoBeEnabled\e[2m(\e[22m\e[2m)\e[22m
+              failed
+
+
+              \    Locator:  getByTestId('triage-card').getByTestId('triage-action-form').getByTest\
+              Id('triage-submit')
+
+              \    Expected: enabled
+
+              \    Received: disabled
+
+              \    Timeout:  2000ms
+
+
+              \    Call log:
+
+              \    \e[2m  - Expect \"toBeEnabled\" with timeout 2000ms\e[22m
+
+              \    \e[2m  - waiting for
+              getByTestId('triage-card').getByTestId('triage-action-form').getByTestId('triage-subm\
+              it')\e[22m
+
+              \    \e[2m    6 × locator resolved to <button disabled type=\"button\"
+              data-slot=\"button\" data-testid=\"triage-submit\" class=\"focus-visible:border-ring
+              focus-visible:ring-ring/50 aria-invalid:ring-destructive/20
+              dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive inline-flex
+              shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium
+              whitespace-nowrap transition-all outline-none focus-visible:ring-[3px]
+              disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none
+              aria-disabled:opacity-50 …>…</button>\e[22m
+
+              \    \e[2m      - unexpected value \"disabled\"\e[22m
+
+
+
+              \      407 |           await actionButtons.first().click();
+
+              \      408 |           const submitBtn = actionForm.getByTestId(\"triage-submit\");
+
+              \    > 409 |           await expect(submitBtn).toBeEnabled({ timeout: 2000 });
+
+              \          |                                   ^
+
+              \      410 |           await submitBtn.click();
+
+              \      411 |
+
+              \      412 |           // After submit, position should advance or form should update
+
+              \        at
+              /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-fixtures-envelo\
+              pe-01kmz1bv-review/tests/e2e/triage.spec.ts:409:35
+
+
+              \    attachment #1: screenshot (image/png)
+              ──────────────────────────────────────────────────────────
+
+              \    test-results/triage-Triage-API-operatio-fc728-s-the-API-and-updates-state-chromi\
+              um/test-failed-1.png
+
+              \    ────────────────────────────────────────────────────────────────────────────────\
+              ────────────────
+
+
+              \    attachment #2: video (video/webm)
+              ──────────────────────────────────────────────────────────────
+
+              \    test-results/triage-Triage-API-operatio-fc728-s-the-API-and-updates-state-chromi\
+              um/video.webm
+
+              \    ────────────────────────────────────────────────────────────────────────────────\
+              ────────────────
+
+
+              \    Error Context:
+              test-results/triage-Triage-API-operatio-fc728-s-the-API-and-updates-state-chromium/er\
+              ror-context.md
+
+
+
+              \e[1A\e[2K  8) [chromium] › tests/e2e/plans.spec.ts:796:3 › Plans View › shows loading
+              skeletons while fetching data\ 
+
+
+              \    Error:
+              \e[2mexpect(\e[22m\e[31mlocator\e[39m\e[2m).\e[22mtoBeVisible\e[2m(\e[22m\e[2m)\e[22m
+              failed
+
+
+              \    Locator: getByRole('heading', { name: 'Plans', exact: true })
+
+              \    Expected: visible
+
+              \    Timeout: 10000ms
+
+              \    Error: element(s) not found
+
+
+              \    Call log:
+
+              \    \e[2m  - Expect \"toBeVisible\" with timeout 10000ms\e[22m
+
+              \    \e[2m  - waiting for getByRole('heading', { name: 'Plans', exact: true })\e[22m
+
+
+
+              \       6 |   test.beforeEach(async ({ page, daemon: _daemon }) => {
+
+              \       7 |     await page.goto(\"/plans\");
+
+              \    >  8 |     await expect(page.getByRole(\"heading\", { name: \"Plans\", exact:
+              true })).toBeVisible();
+
+              \         |                                                                             \
+              ^
+
+              \       9 |   });
+
+              \      10 |
+
+              \      11 |   const MISMATCHED_EMBEDDED_PLAN_CONTENT = `# Active Plan
+
+              \        at
+              /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-fixtures-envelo\
+              pe-01kmz1bv-review/tests/e2e/plans.spec.ts:8:77
+
+
+              \    attachment #1: screenshot (image/png)
+              ──────────────────────────────────────────────────────────
+
+              \    test-results/plans-Plans-View-shows-loading-skeletons-while-fetching-data-chromi\
+              um/test-failed-1.png
+
+              \    ────────────────────────────────────────────────────────────────────────────────\
+              ────────────────
+
+
+              \    attachment #2: video (video/webm)
+              ──────────────────────────────────────────────────────────────
+
+              \    test-results/plans-Plans-View-shows-loading-skeletons-while-fetching-data-chromi\
+              um/video.webm
+
+              \    ────────────────────────────────────────────────────────────────────────────────\
+              ────────────────
+
+
+
+              \e[1A\e[2K  8 failed
+
+              \    [chromium] › tests/e2e/dashboard.spec.ts:289:5 › Dashboard Overview › Status
+              Summary › renders correct aggregated counts from task data\ 
+
+              \    [chromium] › tests/e2e/dashboard.spec.ts:445:5 › Dashboard Overview › Needs
+              Attention Section › attention cards link to correct pages\ 
+
+              \    [chromium] › tests/e2e/plans.spec.ts:434:3 › Plans View › toggle button text
+              changes to Hide Content when expanded\ 
+
+              \    [chromium] › tests/e2e/plans.spec.ts:576:3 › Plans View › renders derived task
+              cards from fenced derive_from_specs content with task metadata\ 
+
+              \    [chromium] › tests/e2e/plans.spec.ts:595:3 › Plans View › issues the live batch
+              fetch and renders title-derived specs plus full derive_from_specs tasks\ 
+
+              \    [chromium] › tests/e2e/plans.spec.ts:770:3 › Plans View › GET /api/plans/:ref
+              returns 404 for non-existent plan\ 
+
+              \    [chromium] › tests/e2e/plans.spec.ts:796:3 › Plans View › shows loading skeletons
+              while fetching data\ 
+
+              \    [chromium] › tests/e2e/triage.spec.ts:384:3 › Triage API operations via UI ›
+              submitting a triage decision calls the API and updates state\ 
+
+              \  1 skipped
+
+              \  86 passed (33.3s), and focused Playwright reruns for the failing plans/triage
+              cases. Claims verified: the submission note claimed only pre-existing e2e failures
+              remained, but the changed plans live-batch-fetch test still fails on rerun. Categories
+              checked: correctness, edge cases, error handling, test quality, integration."
+            created_at: 2026-03-30T15:32:37.224Z
+        kind: question
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -85442,5 +86839,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T15:32:34.315Z
     created_at: 2026-03-30T15:22:26.734Z
-    updated_at: 2026-03-30T15:32:34.315Z
+    updated_at: 2026-03-30T15:32:37.224Z
     notes: []
