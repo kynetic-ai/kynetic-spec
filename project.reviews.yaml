@@ -88580,6 +88580,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN06MP2NX3B2RWW1HG52BYAD
         timestamp: 2026-03-30T20:23:26.016Z
+      - _ulid: 01KN06MWEFZ4B2WMA80JG4CGW2
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN06MV52W7DYXQHQG9R5JBQ2
+        timestamp: 2026-03-30T20:23:31.023Z
     examined_commit: 77629f2658f65d7f26b1e18b79819b6e8c20f747
     external_links: []
     lifecycle_state: open
@@ -88610,7 +88617,27 @@ reviews:
               checks instead of proof that search groups results and clicking one navigates.
             created_at: 2026-03-30T20:23:24.502Z
         kind: blocker
+      - _ulid: 01KN06MV52W7DYXQHQG9R5JBQ2
+        anchor:
+          type: code
+          commit: 77629f2658f65d7f26b1e18b79819b6e8c20f747
+          line_end: 169
+          line_start: 129
+          path: tests/e2e/connection.spec.ts
+          side: head
+        entries:
+          - _ulid: 01KN06MV52QZ46XSHE6ZBDCJ12
+            author: Test User
+            body: These rewritten AC-30/31/32 tests no longer exercise the behaviors they claim to cover.  never
+              injects a duplicate ; it just compares the task count before/after 500ms, so it would
+              pass even if deduplication in  were removed.  only checks that the initially loaded
+              task row is still visible after reconnect, which does not verify the
+              reset/re-subscribe logic in [packages/web-ui/src/lib/websocket/manager.ts] lines
+              323-334 because no post-reconnect event is observed. This is a coverage regression on
+              the reconnect guarantees this task is supposed to stabilize.
+            created_at: 2026-03-30T20:23:29.698Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-30T20:20:15.252Z
-    updated_at: 2026-03-30T20:23:24.502Z
+    updated_at: 2026-03-30T20:23:29.698Z
     notes: []
