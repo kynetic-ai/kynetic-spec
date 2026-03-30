@@ -90766,6 +90766,12 @@ reviews:
         payload:
           thread_ulid: 01KN0FPKNA1SFRNMM3FEQNJNSK
         timestamp: 2026-03-30T23:13:12.207Z
+      - _ulid: 01KN0GBNRR1KC8G93Y17H7DN2B
+        actor: Test User
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN0FPKNA1SFRNMM3FEQNJNSK
+        timestamp: 2026-03-30T23:13:15.032Z
     examined_commit: 901eae907a6a3bdc27e2c2956410efb43eadf937
     external_links: []
     lifecycle_state: closed
@@ -90796,6 +90802,16 @@ reviews:
               return ack:false validation_error responses, so this edge case remains a spec
               violation and the rewrite no longer proves the full malformed-command behavior."
             created_at: 2026-03-30T23:01:44.747Z
+          - _ulid: 01KN0GBMW9Y9DJW3K588YBKWF0
+            author: Test User
+            body: "Fixed in 440b2b1be819db3056711692c58c92874f7d65ec: subscribe/unsubscribe payload validation
+              now routes through the same ack:false validation_error path as other malformed
+              commands, so parsed-but-invalid topic payloads no longer return ack:true. Added
+              explicit daemon websocket protocol coverage for invalid subscribe and invalid
+              unsubscribe payloads, and re-ran npm test -- --fresh tests/daemon-heartbeat.test.ts
+              tests/daemon-api/websocket-protocol.test.ts plus npm run test:e2e --
+              tests/e2e/api-websocket.spec.ts."
+            created_at: 2026-03-30T23:13:14.120Z
         kind: blocker
         resolved_at: 2026-03-30T23:13:11.171Z
         resolved_by: Test User
@@ -90808,7 +90824,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T23:02:22.734Z
     created_at: 2026-03-30T22:53:31.303Z
-    updated_at: 2026-03-30T23:13:11.171Z
+    updated_at: 2026-03-30T23:13:14.120Z
     notes: []
   - _ulid: 01KN0G80FM1PGDHWW0VCV71RSN
     slugs: []
