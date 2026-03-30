@@ -85314,9 +85314,25 @@ reviews:
           status: fail
           name: npm test (review rerun)
         timestamp: 2026-03-30T15:32:19.597Z
+      - _ulid: 01KMZP04WB0VVJZ07XY6FX1JER
+        actor: Test User
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-30T15:32:34.315Z
+      - _ulid: 01KMZP04WBV9PHDQAH4NGA70NC
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-30T15:32:34.315Z
     examined_commit: 56eb7f9f66ff1b04997879c45758c4455183b965
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -85417,7 +85433,14 @@ reviews:
               submission does not actually restore that behavior."
             created_at: 2026-03-30T15:31:42.241Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: Test User
+        role: reviewer
+        created_at: 2026-03-30T15:32:34.315Z
     created_at: 2026-03-30T15:22:26.734Z
-    updated_at: 2026-03-30T15:32:18.659Z
+    updated_at: 2026-03-30T15:32:34.315Z
     notes: []
