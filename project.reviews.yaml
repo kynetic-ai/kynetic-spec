@@ -88573,6 +88573,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-30T20:21:20.157Z
+      - _ulid: 01KN06MQJ0GGVMQKR4AJWGCAWG
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN06MP2NX3B2RWW1HG52BYAD
+        timestamp: 2026-03-30T20:23:26.016Z
     examined_commit: 77629f2658f65d7f26b1e18b79819b6e8c20f747
     external_links: []
     lifecycle_state: open
@@ -88582,8 +88589,28 @@ reviews:
       content_hash: ""
       ref: "@01KMZ1BVK6C9F7QKYK9DZD4TFQ"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KN06MP2NX3B2RWW1HG52BYAD
+        anchor:
+          type: code
+          commit: 77629f2658f65d7f26b1e18b79819b6e8c20f747
+          line_end: 231
+          line_start: 61
+          path: tests/e2e/search.spec.ts
+          side: head
+        entries:
+          - _ulid: 01KN06MP2PVR268EVH49GPSFN3
+            author: Test User
+            body: This rewrite drops behavioral coverage for AC-24 and AC-25. The debounce/loading tests only
+              assert the input value plus  being attached, but  is always rendered in the component
+              ([packages/web-ui/src/lib/components/CommandPalette.svelte] lines 120-145), so those
+              assertions still pass if the 300ms debounce, loading state, or search request never
+              happen. The no-results/grouping/navigation cases are also guarded by  / , which means
+              they silently pass when search returns nothing. That turns these E2Es into structure
+              checks instead of proof that search groups results and clicking one navigates.
+            created_at: 2026-03-30T20:23:24.502Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-30T20:20:15.252Z
-    updated_at: 2026-03-30T20:21:18.988Z
+    updated_at: 2026-03-30T20:23:24.502Z
     notes: []
