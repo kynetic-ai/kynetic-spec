@@ -88554,3 +88554,29 @@ reviews:
     created_at: 2026-03-30T18:18:03.668Z
     updated_at: 2026-03-30T18:32:05.662Z
     notes: []
+  - _ulid: 01KN06EX8M9BKVP47YV9BD9SBK
+    slugs: []
+    title: Review task-fix-timing-races
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KN06EX8KQJTSQ837J4Z95SBR
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-30T20:20:15.251Z
+    examined_commit: 77629f2658f65d7f26b1e18b79819b6e8c20f747
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMZ1BVK6C9F7QKYK9DZD4TFQ"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-30T20:20:15.252Z
+    updated_at: null
+    notes: []
