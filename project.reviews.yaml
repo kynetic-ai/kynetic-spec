@@ -86904,6 +86904,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-30T15:41:39.875Z
+      - _ulid: 01KMZQCY61QE34Y2QSH095BR98
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMZQCXHVYXFVWPQTGV22SFTC
+        timestamp: 2026-03-30T15:57:02.017Z
     examined_commit: 436d68efcd40fabede0ac9afaf82a2af427a931f
     external_links: []
     lifecycle_state: open
@@ -86913,8 +86920,33 @@ reviews:
       content_hash: ""
       ref: "@01KMZ1BTVFQCM2XMFZPER1E45Z"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMZQCXHVYXFVWPQTGV22SFTC
+        entries:
+          - _ulid: 01KMZQCXHW62NEC85MQBNXV97Q
+            author: Test User
+            body: >-
+              Evidence log:
+
+              Files read: AGENTS.md, kspec-agents.md, tests/e2e/agents.spec.ts,
+              tests/e2e/automation.spec.ts, tests/e2e/dashboard.spec.ts,
+              tests/e2e/fixtures/test-base.ts, packages/daemon/src/index.ts,
+              packages/daemon/src/server.ts, packages/daemon/src/pid.ts, src/cli/commands/serve.ts,
+              tests/dispatch-workspace-registry.test.ts.
+
+              Commands run: git diff/stat, kspec task get, kspec review for-task/get, kspec item get
+              @e2e-test-daemon-isolation, kspec validate, targeted E2E run, full npm test twice,
+              focused dispatch reruns on head, focused dispatch rerun on dev.
+
+              Claims verified: the standalone daemon entry writes the isolated PID file used by
+              scoped `kspec serve stop`; the dashboard/agents/automation E2E specs pass behaviorally
+              after these changes.
+
+              Categories searched: correctness, integration, test quality, teardown semantics,
+              timing/readiness behavior, unrelated full-suite regressions.
+            created_at: 2026-03-30T15:57:01.372Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-30T15:41:31.049Z
-    updated_at: 2026-03-30T15:41:39.311Z
+    updated_at: 2026-03-30T15:57:01.372Z
     notes: []
