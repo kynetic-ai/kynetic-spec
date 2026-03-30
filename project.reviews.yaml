@@ -87110,6 +87110,20 @@ reviews:
         runner: kspec
         created_at: 2026-03-30T17:09:49.336Z
         completed_at: 2026-03-30T17:09:49.336Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm run test:e2e -- tests/e2e/plans.spec.ts tests/e2e/dashboard.spec.ts
+          tests/e2e/triage.spec.ts tests/e2e/validate.spec.ts => 92 passed, 2 failed, 1 skipped. The
+          two failures are on unchanged tests: plans.spec.ts:775 (404 expected, got 500) and
+          triage.spec.ts:384 (submit button disabled). The newly changed assertions in
+          dashboard/plans/validate/triage paths otherwise passed."
+        name: targeted e2e tests
+        required: false
+        runner: playwright
+        created_at: 2026-03-30T17:10:20.499Z
+        completed_at: 2026-03-30T17:10:20.499Z
     events:
       - _ulid: 01KMZQR8C775T43RFR6DD21HHQ
         actor: Test User
@@ -87131,6 +87145,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-30T17:09:49.962Z
+      - _ulid: 01KMZVK64NC5P19YZ7D5M37KMJ
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: targeted e2e tests
+        timestamp: 2026-03-30T17:10:21.077Z
     examined_commit: 52f44a8f02730a045cf586638e4c93a76e06d2f9
     external_links: []
     lifecycle_state: open
@@ -87143,7 +87164,7 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-30T16:03:12.903Z
-    updated_at: 2026-03-30T17:09:49.336Z
+    updated_at: 2026-03-30T17:10:20.499Z
     notes: []
   - _ulid: 01KMZRCAEC7SWKD6BN7VP96XSM
     slugs: []
