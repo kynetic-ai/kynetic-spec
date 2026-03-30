@@ -55,6 +55,7 @@ tags:
   - e2e
   - web-ui
 vcs_refs: []
+review_ref: "@01KMZCPZVEYHGYGBAY3KMP2HP8"
 submission_linkage:
   review_url: null
   branch: dev
@@ -105,6 +106,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-03-30T12:47:27.061Z
+  - author: Test User
+    changes:
+      review_ref:
+        new: "@01KMZCPZVEYHGYGBAY3KMP2HP8"
+        previous: null
+    command: review-link
+    timestamp: 2026-03-30T12:50:19.211Z
 created_at: 2026-03-30T09:31:57.167Z
 started_at: 2026-03-30T12:30:48.115Z
 submitted_at: 2026-03-30T12:47:27.061Z
