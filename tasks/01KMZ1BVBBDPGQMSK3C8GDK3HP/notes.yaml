@@ -35,3 +35,13 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-30T23:40:43.677Z
+  - _ulid: 01KN0J6BPRYR6JPKKBB07CFNA5
+    content: "Rebased onto origin/dev and resolved overlap with the command palette selector work from
+      the timing-races branch. Restored the in-flight validate/reviews-detail fixes, updated the
+      validate mocks to match the current aggregation-backed page contract, and verified selector
+      expectations for resolved review threads/kind badges. Verification: npm run test:e2e --
+      tests/e2e/search.spec.ts tests/e2e/validate.spec.ts tests/e2e/reviews-detail.spec.ts passed
+      (55 tests including smoke/api-server selection from the script)."
+    supersedes: null
+    author: Test User
+    created_at: 2026-03-30T23:45:18.040Z
