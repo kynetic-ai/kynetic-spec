@@ -28924,7 +28924,7 @@ workspaces:
         head: 76a99bcf51ef31640b1724d9abb272f16311a624
         last_seen_at: 2026-03-30T20:50:04.485Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-stale-selectors-01kmz1bv
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 76a99bcf51ef31640b1724d9abb272f16311a624
     bootstrap:
       status: succeeded
@@ -28995,7 +28995,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-30T22:35:37.969Z
+      updated_at: 2026-03-30T22:35:43.093Z
     integration:
       status: pending
       detail: null
@@ -29010,10 +29010,10 @@ workspaces:
     task_slug: task-fix-timing-races
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-30T22:24:31.486Z
-      last_reconciled_at: 2026-03-30T22:35:37.969Z
+      last_active_at: 2026-03-30T22:35:43.093Z
+      last_reconciled_at: 2026-03-30T22:35:43.093Z
       created_at: 2026-03-30T18:17:31.287Z
-      updated_at: 2026-03-30T22:35:37.969Z
+      updated_at: 2026-03-30T22:35:43.093Z
     workspace_id: dispatch-workspace-01KMZ1BVK6C9F7QKYK9DZD4TFQ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
