@@ -81800,6 +81800,16 @@ reviews:
         required: true
         created_at: 2026-03-30T08:57:03.706Z
         completed_at: 2026-03-30T08:57:03.706Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Task set includes product bug-fix/perf work and net-new coverage expansion tasks, so the
+          plan does not stay scoped to e2e cleanup/restructure.
+        name: Scope alignment
+        required: true
+        created_at: 2026-03-30T08:57:03.727Z
+        completed_at: 2026-03-30T08:57:03.727Z
     events:
       - _ulid: 01KMYZ9YJ5W4T531GH48VWGK1N
         actor: Jacob Chapel
@@ -81849,9 +81859,32 @@ reviews:
           status: pass
           name: Task-only structure
         timestamp: 2026-03-30T08:57:04.350Z
+      - _ulid: 01KMYZC02NVBRRCWX5X34WBMAB
+        actor: Jacob Chapel
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-30T08:57:05.366Z
+      - _ulid: 01KMYZC02PY98FXVQKJZRCXVAH
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-30T08:57:05.366Z
+      - _ulid: 01KMYZC12CR4X92D97YNSNWQCC
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: Scope alignment
+        timestamp: 2026-03-30T08:57:06.380Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -81920,7 +81953,14 @@ reviews:
               runtime budget. Otherwise consider moving CI rollout into a separate follow-up plan."
             created_at: 2026-03-30T08:56:42.314Z
         kind: question
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: Jacob Chapel
+        role: reviewer
+        created_at: 2026-03-30T08:57:05.363Z
     created_at: 2026-03-30T08:55:58.278Z
-    updated_at: 2026-03-30T08:57:03.706Z
+    updated_at: 2026-03-30T08:57:03.727Z
     notes: []
