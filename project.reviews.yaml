@@ -87726,6 +87726,77 @@ reviews:
         runner: npm
         created_at: 2026-03-30T16:18:28.427Z
         completed_at: 2026-03-30T16:18:28.427Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: >-
+          ✓ Validation passed
+
+          ────────────────────────────────────────
+
+          Files checked: 10
+
+          Items checked: 567
+
+          Tasks checked: 0
+
+          Meta: 10 agents, 11 workflows, 10 conventions
+
+
+          Schema: OK
+
+          References: OK
+
+
+          Reference warnings: 1
+            ⚠ @skills
+              Orphaned skill directory 'skills' has no corresponding meta entry
+              in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+          Alignment warnings: 31
+            Orphaned specs (no tasks): 30
+              ○ Test Trait
+              ○ Filterable List Commands
+              ○ Dry Run Preview Mode
+              ... and 27 more
+            Status mismatches: 1
+              ! Task Set Batch Support
+                Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+
+          Alignment stats: 404/567 specs have tasks, 403 aligned
+
+
+          Completeness warnings: 519
+            Missing acceptance criteria: 1
+              ○ @01KJN1WT - Test Trait
+            Missing own AC coverage: 229
+              ! @spec-item - Spec Item
+                Uncovered: ac-item-1, ac-item-2
+              ! @ulid-system - ULID Identifier System
+                Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+              ! @slug-system - Slug Alias System
+                Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+              ... and 226 more
+            Invalid AC annotations: 289
+              ! AC annotation references '@slug' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-ws-invalidation-storm-01kmz1bx-review/tests/ac-annotation-validation.test.ts:6
+              ! AC annotation references '@my-spec' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-ws-invalidation-storm-01kmz1bx-review/tests/ac-annotation-validation.test.ts:84
+              ! AC annotation references '@my-spec' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-ws-invalidation-storm-01kmz1bx-review/tests/ac-annotation-validation.test.ts:87
+              ! AC annotation references '@spec-a' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-ws-invalidation-storm-01kmz1bx-review/tests/ac-annotation-validation.test.ts:114
+              ! AC annotation references '@spec-b' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-ws-invalidation-storm-01kmz1bx-review/tests/ac-annotation-validation.test.ts:118
+              ... and 284 more
+          Skills: OK (10 files checked) returned the repo's existing warning baseline; no new errors
+          from this task.
+        name: validation
+        required: false
+        runner: kspec
+        created_at: 2026-03-30T16:18:34.572Z
+        completed_at: 2026-03-30T16:18:34.572Z
     events:
       - _ulid: 01KMZRCAEC2NP37RJ116TK03G1
         actor: Test User
@@ -87768,6 +87839,13 @@ reviews:
           status: pass
           name: build
         timestamp: 2026-03-30T16:18:29.479Z
+      - _ulid: 01KMZRMDGW9H9ZAMNNHWRF1QH4
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: validation
+        timestamp: 2026-03-30T16:18:35.676Z
     examined_commit: c0eda9fb8b4060959805bfb589bccfdb19a22a0b
     external_links: []
     lifecycle_state: open
@@ -87821,5 +87899,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-30T16:14:10.380Z
-    updated_at: 2026-03-30T16:18:28.427Z
+    updated_at: 2026-03-30T16:18:34.572Z
     notes: []
