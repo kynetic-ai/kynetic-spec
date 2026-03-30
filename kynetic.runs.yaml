@@ -19340,7 +19340,7 @@ runs:
     completed_at: 2026-03-30T22:23:52.595Z
   - _ulid: 01KN0F1MKPNVN22RJ99255Z0B1
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Test User
     step_results:
       - status: completed
@@ -19353,7 +19353,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-30T22:51:35.479Z
-        completed_at: 2026-03-30T22:51:35.479Z
+        completed_at: 2026-03-30T22:51:43.137Z
+        notes: "High-confidence items identified after duplicate search: friction around concurrent
+          build/test writes to shared dist outputs; friction around unrelated repo-wide npm test
+          failures obscuring task-local verification; success from splitting UI websocket behavior
+          and protocol semantics across Playwright and daemon vitest, which exposed a real
+          spec/implementation mismatch."
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-30T22:51:43.137Z
+        completed_at: 2026-03-30T22:51:43.137Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-30T22:50:17.590Z
