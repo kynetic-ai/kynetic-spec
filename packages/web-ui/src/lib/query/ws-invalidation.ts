@@ -76,7 +76,10 @@ function getInvalidationKeys(
         return [];
       }
       // Completion events (message_complete, thinking_complete, tool_call_complete)
-      // and invocation lifecycle events invalidate session event caches.
+      // only invalidate session queries — they signal that a message/thought
+      // finished, which is relevant for session detail views but NOT for
+      // agent status or definitions. Avoids excessive agent/status refetches
+      // during active dispatch work.
       if (
         event.event === "message_complete" ||
         event.event === "thinking_complete" ||
@@ -84,10 +87,12 @@ function getInvalidationKeys(
       ) {
         const sessionId = (event.data as { session_id?: string })?.session_id;
         if (sessionId) {
-          return [queryKeys.sessions.all, queryKeys.agents.all];
+          return [queryKeys.sessions.all];
         }
+        return [];
       }
-      // Agent lifecycle events (agent_invocation) also affect session lists
+      // Agent lifecycle events (started, completed, failed) represent actual
+      // dispatch state changes — invalidate both agents and sessions.
       return [queryKeys.agents.all, queryKeys.sessions.all];
     }
 

@@ -309,3 +309,106 @@ describe("ws-invalidation cache:status handling", () => {
     });
   });
 });
+
+// AC: @task-fix-ws-invalidation-storm ac-1 (scoped invalidation for completion events)
+// AC: @task-fix-ws-invalidation-storm ac-2 (lifecycle events still invalidate agents.all)
+describe("ws-invalidation agents topic scoping", () => {
+  let mockQueryClient: ReturnType<typeof createMockQueryClient>;
+
+  beforeEach(() => {
+    connectionHandlers.clear();
+    subscribedTopics.clear();
+    mockQueryClient = createMockQueryClient();
+  });
+
+  afterEach(() => {
+    teardownWsInvalidation();
+  });
+
+  describe("completion events only invalidate sessions, not agents", () => {
+    for (const eventName of [
+      "message_complete",
+      "thinking_complete",
+      "tool_call_complete",
+    ]) {
+      it(`${eventName} with session_id invalidates sessions.all but NOT agents.all`, () => {
+        setupWsInvalidation(mockQueryClient);
+        const event = makeBroadcastEvent("agents", eventName, {
+          session_id: "01TEST_SESSION_ID",
+          invocation_id: "01TEST_INVOCATION",
+        });
+
+        dispatchEvent("agents", event);
+
+        // Should invalidate sessions
+        expect(mockQueryClient.invalidateQueries).toHaveBeenCalledWith({
+          queryKey: queryKeys.sessions.all,
+        });
+        // Should NOT invalidate agents
+        expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
+          queryKey: queryKeys.agents.all,
+        });
+      });
+
+      it(`${eventName} without session_id does not invalidate agents.all`, () => {
+        setupWsInvalidation(mockQueryClient);
+        const event = makeBroadcastEvent("agents", eventName, {
+          invocation_id: "01TEST_INVOCATION",
+        });
+
+        dispatchEvent("agents", event);
+
+        // Without session_id, should still not invalidate agents.all
+        expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
+          queryKey: queryKeys.agents.all,
+        });
+      });
+    }
+  });
+
+  describe("streaming progress events produce no invalidation", () => {
+    for (const eventName of [
+      "message_start",
+      "message_progress",
+      "thinking_start",
+      "thinking_progress",
+      "tool_call_start",
+    ]) {
+      it(`${eventName} does not invalidate any queries`, () => {
+        setupWsInvalidation(mockQueryClient);
+        const event = makeBroadcastEvent("agents", eventName, {
+          session_id: "01TEST_SESSION_ID",
+        });
+
+        dispatchEvent("agents", event);
+
+        expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalled();
+      });
+    }
+  });
+
+  describe("agent lifecycle events still invalidate agents.all", () => {
+    for (const eventName of [
+      "agent_invocation_started",
+      "agent_invocation_completed",
+      "agent_invocation_failed",
+    ]) {
+      it(`${eventName} invalidates both agents.all and sessions.all`, () => {
+        setupWsInvalidation(mockQueryClient);
+        const event = makeBroadcastEvent("agents", eventName, {
+          invocation_id: "01TEST_INVOCATION",
+          agent_id: "task-worker",
+        });
+
+        dispatchEvent("agents", event);
+
+        expect(mockQueryClient.invalidateQueries).toHaveBeenCalledWith({
+          queryKey: queryKeys.agents.all,
+        });
+        expect(mockQueryClient.invalidateQueries).toHaveBeenCalledWith({
+          queryKey: queryKeys.sessions.all,
+        });
+      });
+    }
+  });
+});
