@@ -87119,3 +87119,29 @@ reviews:
     created_at: 2026-03-30T16:03:12.903Z
     updated_at: null
     notes: []
+  - _ulid: 01KMZRCAEC7SWKD6BN7VP96XSM
+    slugs: []
+    title: Review task-fix-ws-invalidation-storm
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KMZRCAEC2NP37RJ116TK03G1
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-30T16:14:10.380Z
+    examined_commit: c0eda9fb8b4060959805bfb589bccfdb19a22a0b
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMZ1BXDQRXEGC4DAS1F8T9H5"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-30T16:14:10.380Z
+    updated_at: null
+    notes: []
