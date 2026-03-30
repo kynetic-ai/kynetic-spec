@@ -85015,7 +85015,18 @@ reviews:
     slugs: []
     title: Review task-fix-loading-page-e2e (cycle 3)
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Exited 6 with known repo-wide warnings only; schema and references OK, no new validation
+          errors in this snapshot.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-30T14:10:44.972Z
+        completed_at: 2026-03-30T14:10:44.972Z
     events:
       - _ulid: 01KMZH7EQQSTZ8VFCC22FAGFDM
         actor: Test User
@@ -85037,6 +85048,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMZH9H5NMX2KSWA8S670QZ9T
         timestamp: 2026-03-30T14:10:20.045Z
+      - _ulid: 01KMZHABPVY34AATRWT2NM111Z
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-30T14:10:46.107Z
     examined_commit: 22f19ef9bd1b10a5abe58111af3cb6d390bc49a3
     external_links: []
     lifecycle_state: open
@@ -85068,5 +85086,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-30T14:09:10.904Z
-    updated_at: 2026-03-30T14:10:18.933Z
+    updated_at: 2026-03-30T14:10:44.972Z
     notes: []
