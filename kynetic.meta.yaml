@@ -9951,6 +9951,28 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-29T14:07:34.536Z
+  - _ulid: 01KMZ368M6QQPF8FFC7AAPMPDE
+    type: friction
+    content: "Task descriptions that mandate browser-based instrumentation (console.log + fresh page
+      load + visual inspection) cannot be executed in automated dispatch mode which has no browser.
+      Agents must adapt by using code analysis, upstream issue research, and E2E test results as
+      proxy verification. Consider adding a convention or task description guideline: when a task
+      may be dispatched to automated agents, include a non-browser verification path (e.g., E2E test
+      expectations) alongside manual browser instructions."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-30T10:03:51.814Z
+  - _ulid: 01KMZ368SN1M82VQ2YH3HGA5TP
+    type: success
+    content: "Searching GitHub issues/PRs for the exact library + symptom (TanStack svelte-query
+      isLoading stuck) surfaced PR #9810 which confirmed the root cause and provided a proven fix
+      approach. This saved significant time vs. trying to reproduce and instrument locally. Upstream
+      issue research should be an early step in any third-party library bug investigation."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-30T10:03:51.989Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
