@@ -28626,23 +28626,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-fix-fixtures-envelope/01kmz1bv
-    canonical_branch_head: 52f44a8f02730a045cf586638e4c93a76e06d2f9
+    canonical_branch_head: 9270ac10690307f1121562922ae5408c81bc5b57
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-30T18:13:14.858Z
+      updated_at: 2026-03-30T18:15:03.040Z
     health:
-      status: stale
-      issues:
-        - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-fixtures-envelope-01kmz1bv"
-            is missing or no longer registered.
-          suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      summary: Workspace registry record is stale and needs reconciliation.
-      updated_at: 2026-03-30T18:13:14.858Z
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-03-30T18:15:03.040Z
     integration:
       status: pending
       detail: null
@@ -28650,17 +28645,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: ea39957fa9e7741011d49a456194958410008d6d
-      updated_at: 2026-03-30T18:13:14.858Z
-    lifecycle_state: stale
+      updated_at: 2026-03-30T18:15:03.040Z
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KMZ1BVVK329BJ49C6PB03T49"
     task_slug: task-fix-fixtures-envelope
     timestamps:
       closed_at: null
       last_active_at: 2026-03-30T18:12:21.542Z
-      last_reconciled_at: 2026-03-30T18:13:14.858Z
+      last_reconciled_at: 2026-03-30T18:15:03.040Z
       created_at: 2026-03-30T14:06:27.457Z
-      updated_at: 2026-03-30T18:13:14.858Z
+      updated_at: 2026-03-30T18:15:03.040Z
     workspace_id: dispatch-workspace-01KMZ1BVVK329BJ49C6PB03T49
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
