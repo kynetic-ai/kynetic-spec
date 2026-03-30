@@ -82423,6 +82423,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-30T10:14:56.521Z
+      - _ulid: 01KMZA9H878156QEXD1PJ33973
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMZ3RYGHW5V7CVFYRGP36FWN
+        timestamp: 2026-03-30T12:07:58.983Z
     examined_commit: 137b046abd8a2482f82be089329a4075aab9bccc
     external_links: []
     lifecycle_state: closed
@@ -82451,6 +82457,18 @@ reviews:
               eager-subscribe wrapper is not sufficient to resolve the underlying TanStack/Svelte
               reactivity bug for those routes."
             created_at: 2026-03-30T10:14:04.049Z
+          - _ulid: 01KMZA9GMB1409BX0T377TRJMJ
+            author: "@claude"
+            body: "Fixed: Rewrote the createQuery wrapper to use QueryObserver directly with synchronous
+              subscription and $state-based result storage. The previous approach (polling + Proxy
+              indirection) failed because Svelte's compiler-based reactivity cannot track $state
+              reads inside Proxy get traps. The new approach: (1) creates QueryObserver directly
+              from @tanstack/query-core, (2) subscribes synchronously during component init (not in
+              deferred $effect), (3) stores results in a plain $state object updated
+              property-by-property via syncResult(), (4) uses untrack() to prevent reactive loops in
+              the subscription callback and option-update effect. All 3 affected page E2E tests now
+              pass (agents, automation, dashboard loading states)."
+            created_at: 2026-03-30T12:07:58.347Z
         kind: blocker
       - _ulid: 01KMZ3STEPT56VBDJSYKGA90A1
         entries:
@@ -83117,7 +83135,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T10:14:56.521Z
     created_at: 2026-03-30T10:04:21.132Z
-    updated_at: 2026-03-30T10:14:56.521Z
+    updated_at: 2026-03-30T12:07:58.347Z
     notes: []
   - _ulid: 01KMZ7J5XKPEZZHF55RS94EJGJ
     slugs: []
