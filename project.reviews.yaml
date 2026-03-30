@@ -85073,6 +85073,13 @@ reviews:
           status: pass
           name: targeted e2e
         timestamp: 2026-03-30T14:10:49.496Z
+      - _ulid: 01KMZHB6SKH7PJWWDGZ7JEX1FN
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMZHB64SB6RVAK5YM9MGW05R
+        timestamp: 2026-03-30T14:11:13.843Z
     examined_commit: 22f19ef9bd1b10a5abe58111af3cb6d390bc49a3
     external_links: []
     lifecycle_state: open
@@ -85102,7 +85109,25 @@ reviews:
               the startup timeout.
             created_at: 2026-03-30T14:10:18.933Z
         kind: blocker
+      - _ulid: 01KMZHB64SB6RVAK5YM9MGW05R
+        entries:
+          - _ulid: 01KMZHB64SZ42SJSJ9169PA4XC
+            author: Test User
+            body: "Evidence log: Files read: AGENTS.md, kspec-agents.md, tests/e2e/fixtures/test-base.ts,
+              tests/e2e/dashboard.spec.ts, tests/e2e/agents.spec.ts, tests/e2e/automation.spec.ts,
+              src/cli/commands/serve.ts, tests/test-runner.test.ts. Commands run: kspec task get
+              --json, kspec review for-task, kspec review get prior cycle, git diff/stat/log, grep
+              AC annotations, kspec item get
+              @e2e-test-daemon-isolation/@ui-dashboard-overview/@ui-agent-dispatch/@ui-automation-v\
+              iew, kspec validate, npm run test:e2e, npm test. Claims verified: targeted E2E
+              stability improved (confirmed by passing Playwright run); teardown contract changed
+              from scoped serve stop to SIGTERM/SIGKILL (confirmed in test-base.ts against
+              @e2e-test-daemon-isolation ac-4). Categories searched: correctness, spec alignment,
+              test quality, error handling, integration. Findings: 1 blocker (spec regression in
+              daemon cleanup path)."
+            created_at: 2026-03-30T14:11:13.177Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-30T14:09:10.904Z
-    updated_at: 2026-03-30T14:10:48.521Z
+    updated_at: 2026-03-30T14:11:13.177Z
     notes: []
