@@ -88302,9 +88302,25 @@ reviews:
           status: fail
           name: full-test-suite
         timestamp: 2026-03-30T18:30:20.061Z
+      - _ulid: 01KN005PTY476THS91RGF6HZRF
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-30T18:30:22.302Z
+      - _ulid: 01KN005PTYY0HDEHTNFK6QXCSB
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-30T18:30:22.302Z
     examined_commit: 8305fc76efd2c40e026e5aee15fca3c500b5d462
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -88374,9 +88390,16 @@ reviews:
               correctness, edge cases, error handling, test quality, integration.'
             created_at: 2026-03-30T18:30:17.636Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-30T18:30:22.301Z
     created_at: 2026-03-30T18:13:08.575Z
-    updated_at: 2026-03-30T18:30:19.457Z
+    updated_at: 2026-03-30T18:30:22.302Z
     notes: []
   - _ulid: 01KMZZF5GMNQRBVECT9B9ASPZ9
     slugs: []
