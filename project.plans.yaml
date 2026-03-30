@@ -31070,6 +31070,44 @@ plans:
       ## Implementation Notes
 
 
+      ### Reviewer guidance: expected e2e test state during plan execution
+
+
+      The e2e suite has 155 known failures and 15 skipped API-only specs (279
+
+      tests) at the start of this plan. During execution, reviewers should
+
+      expect e2e failures and skips outside the scope of the task under review:
+
+
+      - **@task-fix-query-loading-state**: The full e2e suite will still have
+        ~109 non-loading failures (selectors, timing, fixtures). Only the
+        loading-affected pages (/, /agents, /automation) should be verified
+        as rendering content on fresh load. Running the full suite is not a
+        gate for this task.
+      - **@task-fix-loading-page-e2e**: Only dashboard.spec.ts, agents.spec.ts,
+        and automation.spec.ts should pass. Other specs will still fail.
+      - **@task-migrate-api-tests-vitest**: The 15 skipped Playwright specs
+        are being replaced by vitest tests. Verify the new vitest tests pass;
+        the skipped Playwright specs will be deleted as part of this task.
+        Other e2e failures are unrelated.
+      - **@task-fix-stale-selectors, @task-fix-timing-races, @task-fix-fixtures-envelope**:
+        Each fixes a category of failure across multiple specs. Verify that
+        the specific category is resolved in the affected specs listed in the
+        task description. Other failure categories in those same specs may
+        still be present if the other fix tasks haven't completed yet.
+      - **@task-rewrite-websocket-e2e, @task-add-filewatcher-e2e, @task-e2e-batch-item-fetch,
+        @task-e2e-session-search, @task-e2e-triage-export**: These add new
+        tests. Verify the new tests pass. Existing failures elsewhere are
+        unrelated.
+      - **@task-fix-ws-invalidation-storm**: This is a code fix, not a test
+        fix. Verify via manual observation (or HAR capture) that agent/status
+        is not re-fetched on every message completion event. E2e test state
+        is unrelated.
+      - **@task-ci-full-e2e**: This is the final gate. By this point all
+        dependent tasks should be complete and the full suite should pass.
+        If it doesn't, the remaining failures are blockers for this task.
+
       ### Investigation findings (2026-03-30)
 
 
@@ -31162,3 +31200,7 @@ plans:
           assumed context
         author: "@claude"
         created_at: 2026-03-30T09:07:52.616Z
+      - _ulid: 01KMZ18JKMTWT94FVDX886RK7J
+        content: "Added reviewer guidance section: expected e2e failures/skips per task scope"
+        author: "@claude"
+        created_at: 2026-03-30T09:30:10.420Z
