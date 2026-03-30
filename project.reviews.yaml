@@ -90802,3 +90802,29 @@ reviews:
     created_at: 2026-03-30T22:53:31.303Z
     updated_at: 2026-03-30T23:02:22.734Z
     notes: []
+  - _ulid: 01KN0G80FM1PGDHWW0VCV71RSN
+    slugs: []
+    title: Review task-fix-timing-races (cycle 4)
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KN0G80FMTW9ZBH6B83HH5RTV
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-30T23:11:14.932Z
+    examined_commit: 8339fac0f1f334a288a20705073571eeae3d7350
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMZ1BVK6C9F7QKYK9DZD4TFQ"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-30T23:11:14.932Z
+    updated_at: null
+    notes: []
