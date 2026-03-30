@@ -85387,6 +85387,12 @@ reviews:
         payload:
           thread_ulid: 01KMZNYJ11R8XFGNBADE9KVE71
         timestamp: 2026-03-30T15:59:06.271Z
+      - _ulid: 01KMZQGZF68B2TB0VDH6Y44CJ3
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMZNYJ11R8XFGNBADE9KVE71
+        timestamp: 2026-03-30T15:59:14.406Z
     examined_commit: 56eb7f9f66ff1b04997879c45758c4455183b965
     external_links: []
     lifecycle_state: closed
@@ -85498,6 +85504,8 @@ reviews:
               synchronization. Verified stable across 3 consecutive runs. Commit 52f44a8f0."
             created_at: 2026-03-30T15:59:05.659Z
         kind: blocker
+        resolved_at: 2026-03-30T15:59:13.697Z
+        resolved_by: "@claude"
       - _ulid: 01KMZP07Q79G15YTW5CRMFV0ES
         entries:
           - _ulid: 01KMZP07Q8YF6694SDDB4Y0WMT
@@ -86897,7 +86905,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T15:32:34.315Z
     created_at: 2026-03-30T15:22:26.734Z
-    updated_at: 2026-03-30T15:59:05.659Z
+    updated_at: 2026-03-30T15:59:13.697Z
     notes: []
   - _ulid: 01KMZPGH19GJS0YR1D9Y580KBE
     slugs: []
