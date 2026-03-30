@@ -84318,7 +84318,19 @@ reviews:
     slugs: []
     title: Review task-fix-loading-page-e2e (cycle 2)
     author: Test User
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test failed: 25 suites failed, 1971 passed; 30 tests failed, 7176 passed, 5 skipped.
+          Condensed output included cli-serve daemon startup failures and related stack-trace
+          failures. Full log: /tmp/kspec-test-cache/01KMZDZQGWB5DR9WWVREVD18DH/080f40a195153c48.log"
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-30T13:21:39.448Z
+        completed_at: 2026-03-30T13:21:39.448Z
     events:
       - _ulid: 01KMZEE4J7RE6NNV54W9KWG9GX
         actor: Test User
@@ -84347,6 +84359,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMZEGC2ENZEA9WDYFZM4ARP9
         timestamp: 2026-03-30T13:21:38.021Z
+      - _ulid: 01KMZEGER7A6G90CYMZV519PGM
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-30T13:21:40.103Z
     examined_commit: ae1dae3c9ac99a8260273c50fdb4154d15b594ae
     external_links: []
     lifecycle_state: open
@@ -84759,5 +84778,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-30T13:20:24.136Z
-    updated_at: 2026-03-30T13:21:37.358Z
+    updated_at: 2026-03-30T13:21:39.448Z
     notes: []
