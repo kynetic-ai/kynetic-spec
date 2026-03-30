@@ -146,3 +146,14 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-30T23:49:28.359Z
+  - _ulid: 01KN0JSMQ6T4W05QGYX04AA24Y
+    content: "Fix cycle 3: addressed review @01KN0HENS4KRC3FGTJX4A25SQN by restoring agents-cache
+      invalidation for sync_state and other non-session agents-topic status broadcasts while keeping
+      message/thinking/tool completion events sessions-only. Also marked tool_call_input as a
+      streaming no-op to avoid status-query churn. Verification: npm test -- --run
+      tests/web-ui/ws-cache-invalidation.test.ts passed (31/31); validate unchanged at
+      repository-wide warnings; npm test still fails only in unrelated dispatch-workspace-registry
+      timeout, and ws-cache-invalidation is green."
+    supersedes: null
+    author: Test User
+    created_at: 2026-03-30T23:55:49.862Z
