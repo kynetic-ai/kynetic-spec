@@ -88225,6 +88225,20 @@ reviews:
         runner: npm
         created_at: 2026-03-30T18:29:54.707Z
         completed_at: 2026-03-30T18:29:54.707Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test from commit 8305fc76efd2c40e026e5aee15fca3c500b5d462 failed twice in this review
+          snapshot. Initial run: 16 suites failed, 10 tests failed, 7494 passed, 5 skipped. Fresh
+          rerun: 71 suites failed, 88 tests failed, 7416 passed, 5 skipped. Changed Web UI
+          invalidation tests passed in isolation, but the submission did not produce a clean
+          full-suite pass."
+        name: full-test-suite
+        required: true
+        runner: npm
+        created_at: 2026-03-30T18:30:19.457Z
+        completed_at: 2026-03-30T18:30:19.457Z
     events:
       - _ulid: 01KMZZ65AZNH844CX91K8X2603
         actor: Test User
@@ -88281,6 +88295,13 @@ reviews:
           kind: nit
           thread_ulid: 01KN005J93SAR5F3M8H99XX9RR
         timestamp: 2026-03-30T18:30:18.243Z
+      - _ulid: 01KN005MMWY6P0G2800P6G33B1
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: full-test-suite
+        timestamp: 2026-03-30T18:30:20.061Z
     examined_commit: 8305fc76efd2c40e026e5aee15fca3c500b5d462
     external_links: []
     lifecycle_state: open
@@ -88355,7 +88376,7 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-30T18:13:08.575Z
-    updated_at: 2026-03-30T18:30:17.636Z
+    updated_at: 2026-03-30T18:30:19.457Z
     notes: []
   - _ulid: 01KMZZF5GMNQRBVECT9B9ASPZ9
     slugs: []
