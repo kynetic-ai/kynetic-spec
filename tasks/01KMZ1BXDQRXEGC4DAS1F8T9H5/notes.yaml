@@ -135,3 +135,14 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-30T23:40:52.284Z
+  - _ulid: 01KN0JE056MJP2QWB08NRPF52M
+    content: "Fix cycle 3 plan after review @01KN0HENS4KRC3FGTJX4A25SQN: preserve sessions-only
+      invalidation for message_complete/thinking_complete/tool_call_complete, but restore
+      agents-cache invalidation for non-session dispatch status events on the agents topic
+      (specifically sync_state degraded/recovered broadcasts). I’m also rechecking other
+      stream-phase agent events so the handler does not reintroduce status refetch thrash via
+      streaming-only payloads. Focused verification: ws-cache-invalidation tests for completion
+      events, sync_state, agent_invocation, and streaming no-op behavior; then kspec validate."
+    supersedes: null
+    author: Test User
+    created_at: 2026-03-30T23:49:28.359Z
