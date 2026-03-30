@@ -18,7 +18,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { onMount, onDestroy } from 'svelte';
-	import { createQuery } from '@tanstack/svelte-query';
+	import { createQuery } from '$lib/query/createQuery.svelte.js';
 	import type { SessionDetail, SessionEvent as SessionEventType } from '$lib/api';
 	import { fetchSession, fetchSessionEvents } from '$lib/api';
 	import { subscribe, unsubscribe, on, off, onStateChange, offStateChange } from '$lib/stores/connection.svelte';

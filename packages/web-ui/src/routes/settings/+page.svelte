@@ -7,7 +7,7 @@
 -->
 <script lang="ts">
 	import type { Convention } from '@kynetic-ai/shared';
-	import { createQuery } from '@tanstack/svelte-query';
+	import { createQuery } from '$lib/query/createQuery.svelte.js';
 	import {
 		fetchHealth,
 		fetchProjectConfig,

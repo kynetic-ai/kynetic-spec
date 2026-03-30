@@ -37,7 +37,7 @@
 	import SessionFilters from '$lib/components/session/SessionFilters.svelte';
 	import { Badge } from '$lib/components/ui/badge';
 	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
-	import { createInfiniteQuery, createQuery } from '@tanstack/svelte-query';
+	import { createInfiniteQuery, createQuery } from '$lib/query/createQuery.svelte.js';
 	import { queryKeys } from '$lib/query/keys.js';
 	import Activity from '@lucide/svelte/icons/activity';
 	import Zap from '@lucide/svelte/icons/zap';

@@ -8,7 +8,8 @@
 	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
 	import { page } from '$app/state';
-	import { createQuery, useQueryClient } from '@tanstack/svelte-query';
+	import { useQueryClient } from '@tanstack/svelte-query';
+	import { createQuery } from '$lib/query/createQuery.svelte.js';
 	import type { InboxItemWithTriage } from '@kynetic-ai/shared';
 	import type { TriageRecord, TriageAction } from '$lib/types/triage';
 	import {
