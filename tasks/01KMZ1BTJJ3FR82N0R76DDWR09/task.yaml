@@ -73,8 +73,12 @@ description: |
 spec_ref: null
 plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged dispatch/task/task-fix-query-loading-state/01kmz1bt into dev after approved
+  review. Verified npm run build:web-ui, targeted fresh-load Playwright coverage for /, /agents, and
+  /automation, and ran npm test with one unrelated existing failure in
+  tests/dispatch-workspace-registry.test.ts outside touched web-ui query code.
 depends_on: []
 context: []
 priority: 1
@@ -198,8 +202,25 @@ history:
         previous: "@01KMZ3758C1AQBSYX7FSC0YVQD"
     command: review-link
     timestamp: 2026-03-30T12:12:09.013Z
+  - author: Test User
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged dispatch/task/task-fix-query-loading-state/01kmz1bt into dev after approved review.
+          Verified npm run build:web-ui, targeted fresh-load Playwright coverage for /, /agents, and
+          /automation, and ran npm test with one unrelated existing failure in
+          tests/dispatch-workspace-registry.test.ts outside touched web-ui query code.
+        previous: null
+      completed_at:
+        new: 2026-03-30T12:21:03.183Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-03-30T12:21:03.191Z
 created_at: 2026-03-30T09:31:56.882Z
 started_at: 2026-03-30T12:09:25.009Z
 submitted_at: 2026-03-30T12:09:28.262Z
+completed_at: 2026-03-30T12:21:03.183Z
 todos: []
 automation: eligible
