@@ -10036,6 +10036,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-30T12:22:17.835Z
+  - _ulid: 01KMZDBFBM0T5E7PN5X41PQT7B
+    type: friction
+    content: kspec review get lacks --verbose/--threads flag to show full thread bodies inline. During
+      fix cycles, must use --json and pipe through node to extract thread content. Minor but
+      recurring friction across multiple review cycles.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-30T13:01:28.308Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
