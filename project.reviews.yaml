@@ -85124,6 +85124,12 @@ reviews:
         payload:
           thread_ulid: 01KMZH9H5NMX2KSWA8S670QZ9T
         timestamp: 2026-03-30T15:38:16.596Z
+      - _ulid: 01KMZPAW01TGXXJMQ59RAASMPF
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMZH9H5NMX2KSWA8S670QZ9T
+        timestamp: 2026-03-30T15:38:25.665Z
     examined_commit: 22f19ef9bd1b10a5abe58111af3cb6d390bc49a3
     external_links: []
     lifecycle_state: closed
@@ -85163,6 +85169,8 @@ reviews:
               396 full E2E tests pass."
             created_at: 2026-03-30T15:38:16.029Z
         kind: blocker
+        resolved_at: 2026-03-30T15:38:25.095Z
+        resolved_by: "@claude"
       - _ulid: 01KMZHB64SB6RVAK5YM9MGW05R
         entries:
           - _ulid: 01KMZHB64SZ42SJSJ9169PA4XC
@@ -85190,7 +85198,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T14:13:22.860Z
     created_at: 2026-03-30T14:09:10.904Z
-    updated_at: 2026-03-30T15:38:16.029Z
+    updated_at: 2026-03-30T15:38:25.095Z
     notes: []
   - _ulid: 01KMZNDKHEZHH8ZTRC6NM32Z9D
     slugs: []
