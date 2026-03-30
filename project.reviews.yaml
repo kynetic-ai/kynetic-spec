@@ -85030,6 +85030,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-30T14:09:48.925Z
+      - _ulid: 01KMZH9J8DNYMSMBD73NCEPFHH
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMZH9H5NMX2KSWA8S670QZ9T
+        timestamp: 2026-03-30T14:10:20.045Z
     examined_commit: 22f19ef9bd1b10a5abe58111af3cb6d390bc49a3
     external_links: []
     lifecycle_state: open
@@ -85039,8 +85046,27 @@ reviews:
       content_hash: ""
       ref: "@01KMZ1BTVFQCM2XMFZPER1E45Z"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMZH9H5NMX2KSWA8S670QZ9T
+        anchor:
+          type: code
+          commit: 22f19ef9bd1b10a5abe58111af3cb6d390bc49a3
+          line_end: 280
+          line_start: 267
+          path: tests/e2e/fixtures/test-base.ts
+          side: head
+        entries:
+          - _ulid: 01KMZH9H5NFWRP91BCAHW2HR3C
+            author: Test User
+            body: The new daemon fixture no longer satisfies @e2e-test-daemon-isolation ac-4. That requirement
+              still says teardown must stop the daemon via scoped 'kspec serve stop' rather than
+              process killing, but this change replaces the old CLI-based stop path with direct
+              SIGTERM/SIGKILL on the spawned Bun process. Even if the tests now pass, approving this
+              would merge a spec regression in the isolation harness instead of a compliant fix for
+              the startup timeout.
+            created_at: 2026-03-30T14:10:18.933Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-30T14:09:10.904Z
-    updated_at: 2026-03-30T14:09:47.561Z
+    updated_at: 2026-03-30T14:10:18.933Z
     notes: []
