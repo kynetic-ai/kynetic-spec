@@ -88080,6 +88080,12 @@ reviews:
           status: skipped
           name: validation
         timestamp: 2026-03-30T16:22:27.274Z
+      - _ulid: 01KMZZ0XTMFFGXRJ5FP8Z7XRGG
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMZRK8ZMKQBWAQATTQCNEKVF
+        timestamp: 2026-03-30T18:10:17.044Z
     examined_commit: c0eda9fb8b4060959805bfb589bccfdb19a22a0b
     external_links: []
     lifecycle_state: closed
@@ -88108,6 +88114,16 @@ reviews:
               even if the real  path regressed. Replace this coverage with tests that dispatch  plus
               the corresponding status values so AC 2 is actually proven.
             created_at: 2026-03-30T16:17:58.261Z
+          - _ulid: 01KMZZ0X8BGGM7M3C926PBQ245
+            author: "@claude"
+            body: "Fixed: Tests now dispatch the real event shape — event.event='agent_invocation' with
+              data.status='started'/'completed'/'failed' and full AgentInvocationEventData payload
+              (session_id, agent_id, task_id, task_title, status, timestamp). Also made the handler
+              explicitly check event.event === 'agent_invocation' instead of relying on fallthrough,
+              and changed the default for unknown agent events to return [] (no invalidation)
+              instead of invalidating both caches. Added a test for unknown event names. See commit
+              8305fc76e."
+            created_at: 2026-03-30T18:10:16.459Z
         kind: blocker
       - _ulid: 01KMZRKZQN7KHJE1G5A0W2RCVN
         anchor:
@@ -88140,5 +88156,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T16:22:21.947Z
     created_at: 2026-03-30T16:14:10.380Z
-    updated_at: 2026-03-30T16:22:26.683Z
+    updated_at: 2026-03-30T18:10:16.459Z
     notes: []
