@@ -10045,6 +10045,24 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-30T13:01:28.308Z
+  - _ulid: 01KMZDTGXH2BR8P1AESVHB7XPA
+    type: friction
+    content: Review comments added via shell command bodies are easy to corrupt when the text contains
+      shell-sensitive formatting like backticks, which can create malformed duplicate threads before
+      the intended comment is retried.
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-30T13:09:41.425Z
+  - _ulid: 01KMZDTH3QB1PW9200DXHS1W0R
+    type: success
+    content: For review work, checking spec refs with kspec item get and then grep-searching AC
+      annotations catches coverage regressions that a green or still-running test suite would not
+      prove.
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-30T13:09:41.623Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
