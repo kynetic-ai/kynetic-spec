@@ -18837,7 +18837,7 @@ runs:
     completed_at: 2026-03-30T13:13:06.589Z
   - _ulid: 01KMZGYH1EG5BR4YJM9AGPTZZA
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -18854,7 +18854,40 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-30T14:04:39.026Z
-        completed_at: 2026-03-30T14:04:39.026Z
+        completed_at: 2026-03-30T14:05:11.406Z
+        notes: >-
+          Friction points identified (high confidence):
+
+
+          1. SYSTEMIC: E2E daemon fixture uses CLI serve start --detach which introduces a PID-file
+          polling bottleneck under parallel execution. The health endpoint returning OK doesn't mean
+          the daemon is ready to serve data — entity cache loadAll() is fire-and-forget (not awaited
+          before app.listen). This caused the daemon to report healthy while still loading data.
+          ALREADY ADDRESSED in this fix cycle — not a new capture.
+
+
+          2. SYSTEMIC: The daemon health endpoint (/api/health) has no readiness check. It returns
+          OK as soon as the server starts listening, before cache is loaded, before watchers are
+          started. This means any client polling health for readiness gets a false positive. The E2E
+          fixture now works around this by also polling /api/tasks for cache_status:ready, but the
+          health endpoint itself should have a readiness flag. Searching existing:
+          @task-fix-loading-page-e2e partially covers the E2E workaround but not the daemon-side
+          fix.
+
+
+          3. SUCCESS: The direct bun spawn approach (bypassing CLI for test daemons) is a pattern
+          worth noting. It eliminates PID file contention, avoids the CLI timeout, and gives tests
+          direct control over the daemon lifecycle via child process signals. This pattern should be
+          documented for future E2E fixture work.
+
+
+          No other high-confidence friction points. The remaining ~5% flakiness under 10 parallel
+          workers is inherent to running 10 daemon processes on a single machine — not a systemic
+          issue to capture.
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-30T14:05:11.406Z
+        completed_at: 2026-03-30T14:05:11.406Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-30T14:04:18.350Z
