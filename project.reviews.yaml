@@ -90467,6 +90467,12 @@ reviews:
         payload:
           thread_ulid: 01KN0EF2YZRWMQCDA76804GFTV
         timestamp: 2026-03-30T23:07:17.438Z
+      - _ulid: 01KN0G0V24ZJPCPSNMBHZ90KF7
+        actor: Test User
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KN0EEVXGK98AWKK3KMJPMT96
+        timestamp: 2026-03-30T23:07:20.004Z
     examined_commit: 96979f51ac13f6ca691be360c82899c11de83f96
     external_links: []
     lifecycle_state: closed
@@ -90504,6 +90510,8 @@ reviews:
               Playwright fixture.
             created_at: 2026-03-30T23:07:14.090Z
         kind: blocker
+        resolved_at: 2026-03-30T23:07:19.174Z
+        resolved_by: Test User
       - _ulid: 01KN0EF2YZRWMQCDA76804GFTV
         anchor:
           type: code
@@ -90581,7 +90589,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T22:42:51.771Z
     created_at: 2026-03-30T22:36:45.668Z
-    updated_at: 2026-03-30T23:07:16.589Z
+    updated_at: 2026-03-30T23:07:19.174Z
     notes: []
   - _ulid: 01KN0F7HS7KDC8NKD5B0EWPYPB
     slugs: []
