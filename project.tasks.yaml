@@ -23412,7 +23412,7 @@
   title: Fix stale fixture and envelope drift e2e failures
   type: task
   plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 2
@@ -23422,6 +23422,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-30T09:31:58.195Z
+  started_at: 2026-03-30T14:07:06.008Z
   automation: eligible
 - _ulid: 01KMZ1BW4NHEGFXEDJ6WBRBQQ7
   slugs:
