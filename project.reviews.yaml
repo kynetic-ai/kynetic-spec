@@ -88882,6 +88882,16 @@ reviews:
         runner: npm
         created_at: 2026-03-30T21:02:20.695Z
         completed_at: 2026-03-30T21:02:20.695Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --run tests/cli-serve.test.ts: 5 suites / 29 tests passed"
+        name: isolated-cli-serve
+        required: false
+        runner: npm
+        created_at: 2026-03-30T21:02:25.728Z
+        completed_at: 2026-03-30T21:02:25.728Z
     events:
       - _ulid: 01KN088H7576TEQ4J7TWC2FNHN
         actor: Test User
@@ -88917,6 +88927,13 @@ reviews:
           status: fail
           name: full-test-suite
         timestamp: 2026-03-30T21:02:21.547Z
+      - _ulid: 01KN08W584NMBG67KSDD8J8P5S
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: isolated-cli-serve
+        timestamp: 2026-03-30T21:02:26.564Z
     examined_commit: fc7d91827cb184171d49d28475980f2269aa4959
     external_links: []
     lifecycle_state: open
@@ -88945,5 +88962,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-30T20:51:43.461Z
-    updated_at: 2026-03-30T21:02:20.695Z
+    updated_at: 2026-03-30T21:02:25.728Z
     notes: []
