@@ -90291,7 +90291,22 @@ reviews:
     slugs: []
     title: Review task-fix-timing-races (cycle 3)
     author: Test User
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Ran npm run test:e2e -- tests/e2e/search.spec.ts tests/e2e/connection.spec.ts
+          tests/e2e/cache-warming-views.spec.ts tests/e2e/plans.spec.ts tests/e2e/validate.spec.ts
+          tests/daemon-api/meta.test.ts; result: 83 passed, 1 skipped, 1 failed. Failing test:
+          tests/e2e/plans.spec.ts GET /api/plans/:ref returns 404 for non-existent plan (received
+          500 instead of 404). Also note the submitted diff disables the adjacent cancelled-task
+          endpoint test with test.fixme."
+        name: targeted e2e
+        required: true
+        runner: playwright
+        created_at: 2026-03-30T22:42:34.150Z
+        completed_at: 2026-03-30T22:42:34.150Z
     events:
       - _ulid: 01KN0E8VQ3NGRTGH6NNXA8R9N1
         actor: Test User
@@ -90327,6 +90342,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN0EHCGH08SEKJ6W9Q4CAVRF
         timestamp: 2026-03-30T22:41:26.151Z
+      - _ulid: 01KN0EKGW3QZQZ340RYVSDJGZ0
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: targeted e2e
+        timestamp: 2026-03-30T22:42:35.011Z
     examined_commit: 96979f51ac13f6ca691be360c82899c11de83f96
     external_links: []
     lifecycle_state: open
@@ -90398,5 +90420,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-30T22:36:45.668Z
-    updated_at: 2026-03-30T22:41:25.009Z
+    updated_at: 2026-03-30T22:42:34.150Z
     notes: []
