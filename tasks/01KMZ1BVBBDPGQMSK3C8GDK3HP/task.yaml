@@ -50,9 +50,8 @@ description: |
 spec_ref: null
 plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
 origin: derived
-status: blocked
-blocked_by:
-  - "Agent task-worker failed 3 consecutive times: Internal error: Prompt is too long"
+status: in_progress
+blocked_by: []
 depends_on:
   - "@task-fix-loading-page-e2e"
 context: []
@@ -61,7 +60,7 @@ tags:
   - test
   - e2e
 vcs_refs: []
-session_id: 01KMZRB8A067Q8Z6NF7SGYDGD8
+session_id: null
 history:
   - author: "@claude"
     changes:
@@ -97,7 +96,24 @@ history:
         previous: null
     command: task-block
     timestamp: 2026-03-30T18:02:04.595Z
-prior_status: in_progress
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: blocked
+      blocked_by:
+        new: []
+        previous:
+          - "Agent task-worker failed 3 consecutive times: Internal error: Prompt is too long"
+      session_id:
+        new: null
+        previous: 01KMZRB8A067Q8Z6NF7SGYDGD8
+      prior_status:
+        new: null
+        previous: in_progress
+    command: task-unblock
+    timestamp: 2026-03-30T20:25:25.549Z
+prior_status: null
 created_at: 2026-03-30T09:31:57.675Z
 started_at: 2026-03-30T16:14:00.025Z
 todos: []
