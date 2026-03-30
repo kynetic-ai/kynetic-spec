@@ -23439,7 +23439,7 @@
   title: Rewrite api-websocket spec as behavioral UI e2e tests
   type: task
   plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-fix-query-loading-state"
@@ -23452,6 +23452,7 @@
   todos_count: 0
   created_at: 2026-03-30T09:31:58.485Z
   started_at: 2026-03-30T22:10:02.367Z
+  submitted_at: 2026-03-30T22:22:04.806Z
   automation: eligible
 - _ulid: 01KMZ1BWCJNCQ1AWDQE6XMY2EK
   slugs:
