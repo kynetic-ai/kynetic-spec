@@ -132,3 +132,12 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-30T17:11:35.881Z
+  - _ulid: 01KMZZBJZGQG94JM3DRH61J56D
+    content: "Fix cycle 2: Resolved merge conflict in tests/e2e/dashboard.spec.ts by rebasing onto
+      latest dev. The upstream (dev) already had a cleaner fetchWhenReady helper that returns parsed
+      envelope directly — our branch's version was an older approach returning raw Response. Took
+      the dev version which was already correct with envelope-aware assertions. E2E results: 86
+      passed, 1 skipped, 2 failed (both pre-existing: plans 404→500, triage submit disabled)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-30T18:16:06.384Z
