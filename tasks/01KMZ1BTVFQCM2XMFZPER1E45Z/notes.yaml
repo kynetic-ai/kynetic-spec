@@ -66,3 +66,24 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-30T14:13:24.140Z
+  - _ulid: 01KMZPC3CTZSFPJBM90NAFKDT6
+    content: >-
+      Fix cycle 3: addressed blocker — daemon teardown spec regression.
+
+
+      Root cause: Cycle 2's fix spawned bun directly and used SIGTERM/SIGKILL for cleanup, violating
+      @e2e-test-daemon-isolation ac-4 which requires teardown via scoped `kspec serve stop`.
+
+
+      Fix: Teardown now calls `kspec serve stop` via execSync with the isolated env. The daemon
+      writes its PID file to the isolated HOME config dir (HOME=isolatedHome) during startup, so
+      `kspec serve stop` finds and stops it via the standard PID-file mechanism. Direct process
+      killing is retained as a fallback only if CLI stop fails.
+
+
+      Verification: 69 targeted E2E tests (dashboard/agents/automation) pass, 396 full E2E tests
+      pass. Unit test failures (9 of 7211) are all pre-existing on dev — confirmed by testing with
+      dev's source files.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-30T15:39:06.011Z
