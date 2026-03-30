@@ -2050,3 +2050,12 @@ inbox:
       - reflection
     added_by: "@claude"
     created_at: 2026-03-29T08:36:17.130Z
+  - _ulid: 01KMYR0EGS1Y0ZK26N2WBE3T6H
+    text: Add guidance on writing good task descriptions — agents don't know what belongs in description
+      vs notes. Description should be the complete context needed to pick up the task (what, why,
+      implementation plan). Notes are for in-progress work audit trail.
+    tags:
+      - cli
+      - docs
+    added_by: "@claude"
+    created_at: 2026-03-30T06:48:26.905Z
