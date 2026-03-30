@@ -28566,7 +28566,7 @@ workspaces:
         head: 436d68efcd40fabede0ac9afaf82a2af427a931f
         last_seen_at: 2026-03-30T15:40:42.066Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-loading-page-e2e-01kmz1bt
-  - active_role: worker
+  - active_role: null
     base_branch_point: ea39957fa9e7741011d49a456194958410008d6d
     bootstrap:
       status: succeeded
@@ -28631,12 +28631,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-30T15:59:16.142Z
+      updated_at: 2026-03-30T16:02:35.949Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-30T15:59:16.142Z
+      updated_at: 2026-03-30T16:02:35.949Z
     integration:
       status: pending
       detail: null
@@ -28644,17 +28644,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: ea39957fa9e7741011d49a456194958410008d6d
-      updated_at: 2026-03-30T15:59:16.142Z
-    lifecycle_state: active
+      updated_at: 2026-03-30T16:02:35.949Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMZ1BVVK329BJ49C6PB03T49"
     task_slug: task-fix-fixtures-envelope
     timestamps:
       closed_at: null
       last_active_at: 2026-03-30T15:40:41.837Z
-      last_reconciled_at: 2026-03-30T15:59:16.142Z
+      last_reconciled_at: 2026-03-30T16:02:35.949Z
       created_at: 2026-03-30T14:06:27.457Z
-      updated_at: 2026-03-30T15:59:16.142Z
+      updated_at: 2026-03-30T16:02:35.949Z
     workspace_id: dispatch-workspace-01KMZ1BVVK329BJ49C6PB03T49
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
