@@ -83649,6 +83649,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMZBZKQA4F3EN2PCQNYFFXYH
         timestamp: 2026-03-30T12:37:31.556Z
+      - _ulid: 01KMZBZP32PA135DX08T4GTN9W
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMZBZNE5G63F7WGVPAVW0824
+        timestamp: 2026-03-30T12:37:33.410Z
     examined_commit: 1b14f9251d210312870ad8acab4d20393f1c18c4
     external_links: []
     lifecycle_state: open
@@ -83679,7 +83686,28 @@ reviews:
               reduces coverage instead of preserving it.
             created_at: 2026-03-30T12:37:30.986Z
         kind: blocker
+      - _ulid: 01KMZBZNE5G63F7WGVPAVW0824
+        anchor:
+          type: code
+          commit: 1b14f9251d210312870ad8acab4d20393f1c18c4
+          line_end: 209
+          line_start: 96
+          path: tests/daemon-api/projects.test.ts
+          side: head
+        entries:
+          - _ulid: 01KMZBZNE6J1Y0GPA05K6G8BAN
+            author: Test User
+            body: "This projects rewrite dropped several assertions that the skipped Playwright suite covered
+              and that the route still promises: GET /api/projects no longer checks total,
+              registeredAt, or watcherStatus, POST no longer checks success plus the returned
+              registeredAt/watcherStatus fields, and DELETE only checks HTTP 200 instead of the
+              success payload. createProjectsRoutes still returns those fields, so the new tests
+              would miss regressions in the multi-project API contract. Under this repo's work
+              gates, replacement tests must be a superset of the old behavioral coverage, and this
+              suite is not."
+            created_at: 2026-03-30T12:37:32.742Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-30T12:35:22.878Z
-    updated_at: 2026-03-30T12:37:30.986Z
+    updated_at: 2026-03-30T12:37:32.742Z
     notes: []
