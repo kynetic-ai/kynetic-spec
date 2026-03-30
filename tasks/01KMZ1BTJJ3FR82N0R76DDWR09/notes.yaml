@@ -90,3 +90,17 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-30T11:50:25.947Z
+  - _ulid: 01KMZABS2MH524HC06Z7TCGKVF
+    content: "Fix cycle 1: Rewrote createQuery wrapper entirely. The previous approach (inlined
+      createRawRef proxy + eager subscription) failed because Svelte's compiler-based reactivity
+      cannot track $state reads through Proxy get traps. The new approach uses QueryObserver
+      directly from @tanstack/query-core with synchronous subscription and stores results in a plain
+      $state object updated property-by-property. Key insight: untrack() is needed in both the
+      subscription callback and the option-update $effect.pre to prevent reactive loops while still
+      allowing Svelte to track reads from the $state result object in component $derived
+      expressions. All 3 affected page E2E tests pass (agents, automation, dashboard). Full unit
+      test suite passes (7206/7206). 4 pre-existing dashboard API contract test failures remain
+      (unrelated - they test raw daemon API envelope shape, not loading state)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-30T12:09:12.532Z
