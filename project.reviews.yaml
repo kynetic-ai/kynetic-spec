@@ -84138,6 +84138,12 @@ reviews:
         payload:
           thread_ulid: 01KMZDNY4JV742QE6SNGM6EWX6
         timestamp: 2026-03-30T13:08:44.951Z
+      - _ulid: 01KMZDRVPVVJFX7MH25SD4HBPT
+        actor: Test User
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMZDNC16NNQYJN7AEFKDGVPC
+        timestamp: 2026-03-30T13:08:46.940Z
     examined_commit: d0f61c721edf881be8985f4798b1c46667e688df
     external_links: []
     lifecycle_state: closed
@@ -84165,6 +84171,8 @@ reviews:
               the GET list/detail contract this task was supposed to preserve."
             created_at: 2026-03-30T13:06:52.582Z
         kind: blocker
+        resolved_at: 2026-03-30T13:08:46.319Z
+        resolved_by: Test User
       - _ulid: 01KMZDNS78SJSBFQJN2T5086QP
         anchor:
           type: code
@@ -84231,5 +84239,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T13:07:50.817Z
     created_at: 2026-03-30T13:03:07.216Z
-    updated_at: 2026-03-30T13:08:44.303Z
+    updated_at: 2026-03-30T13:08:46.319Z
     notes: []
