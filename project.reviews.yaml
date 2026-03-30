@@ -85118,6 +85118,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-30T14:13:22.860Z
+      - _ulid: 01KMZPAK4MNCAZPMKXDJSDFQ1J
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMZH9H5NMX2KSWA8S670QZ9T
+        timestamp: 2026-03-30T15:38:16.596Z
     examined_commit: 22f19ef9bd1b10a5abe58111af3cb6d390bc49a3
     external_links: []
     lifecycle_state: closed
@@ -85146,6 +85152,16 @@ reviews:
               would merge a spec regression in the isolation harness instead of a compliant fix for
               the startup timeout.
             created_at: 2026-03-30T14:10:18.933Z
+          - _ulid: 01KMZPAJJX6874F6228QR9TYHQ
+            author: "@claude"
+            body: "Fixed: teardown now uses `kspec serve stop` via `execSync(node ${KSPEC_CLI} serve stop, {
+              env: isolatedEnv })`. The daemon writes its PID file to the isolated HOME's config dir
+              during startup (`isDaemon: true` triggers `pidManager.writePid()`), so `kspec serve
+              stop` (which reads `~/.config/kspec/daemon.pid` relative to HOME) finds and stops it
+              via the standard PID-file/SIGTERM mechanism. Direct process killing is now only a
+              fallback if the CLI stop fails (e.g., PID file missing). All 69 targeted E2E tests and
+              396 full E2E tests pass."
+            created_at: 2026-03-30T15:38:16.029Z
         kind: blocker
       - _ulid: 01KMZHB64SB6RVAK5YM9MGW05R
         entries:
@@ -85174,7 +85190,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T14:13:22.860Z
     created_at: 2026-03-30T14:09:10.904Z
-    updated_at: 2026-03-30T14:13:22.860Z
+    updated_at: 2026-03-30T15:38:16.029Z
     notes: []
   - _ulid: 01KMZNDKHEZHH8ZTRC6NM32Z9D
     slugs: []
