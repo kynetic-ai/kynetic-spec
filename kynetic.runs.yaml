@@ -19000,7 +19000,7 @@ runs:
     completed_at: 2026-03-30T15:21:21.798Z
   - _ulid: 01KMZQKEM8CHW4WHX8WSBEGNCJ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -19013,7 +19013,30 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-30T16:00:51.886Z
-        completed_at: 2026-03-30T16:00:51.886Z
+        completed_at: 2026-03-30T16:01:40.460Z
+        notes: >-
+          High-confidence observations:
+
+
+          FRICTION: Playwright page.waitForRequest() has a well-known race condition when called
+          after the action that triggers the request. The batch fetch test failed because
+          waitForRequest was set up after expandActivePlan() returned, but the request fired during
+          expandActivePlan's execution. This is a systemic pattern — any test using waitForRequest
+          after an await on a triggering action is vulnerable. Fix pattern: use a promise that
+          resolves inside the page.route handler instead.
+
+
+          SUCCESS: Debugging by adding diagnostic logging (page.on('request') listener + console.log
+          in route handler + waitForTimeout) quickly pinpointed the root cause. The batch request
+          WAS being intercepted by the route handler — the issue was purely timing of waitForRequest
+          vs the actual request firing.
+
+
+          Already tracked: Daemon plans 404→500 bug is inbox item 01KMZNBA. No duplicate needed.
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-30T16:01:40.460Z
+        completed_at: 2026-03-30T16:01:40.460Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-30T16:00:35.464Z
