@@ -122,3 +122,30 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-30T12:38:08.797Z
+  - _ulid: 01KMZD9EACVYQFCW98VF7B39GN
+    content: >-
+      Fix cycle 2: addressed all 3 blocker threads from review @01KMZBVPKYY30V318FQ7GQB793.
+
+
+      Changes:
+
+      1. reviews-list.test.ts summary test: Added title, author, thread_count,
+      unresolved_blocker_count, check_count, verdict_count assertions to match full
+      toReviewSummary() contract.
+
+      2. reviews-list.test.ts detail tests: Added title, checks, verdicts, events, subject
+      assertions to detail test. Strengthened thread test with specific blocker entry body and
+      resolved question thread checks. Empty-review test now checks checks:[], verdicts:[]. 404 test
+      verifies error shape.
+
+      3. projects.test.ts: GET asserts total field and total===length. Each project checks
+      registeredAt (valid ISO date) and watcherStatus. POST response checks success:true plus full
+      project shape. DELETE checks success:true payload. Second-project test verifies
+      registeredAt/watcherStatus on new registration.
+
+
+      All 3 review threads addressed and resolved. Full test suite: 2070 suites pass, 7488 tests
+      pass (1 pre-existing flaky timeout in dispatch-workspace-registry.test.ts, unrelated).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-30T13:00:21.709Z
