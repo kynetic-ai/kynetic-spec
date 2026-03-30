@@ -83623,3 +83623,29 @@ reviews:
     created_at: 2026-03-30T12:12:06.684Z
     updated_at: 2026-03-30T12:20:12.229Z
     notes: []
+  - _ulid: 01KMZBVPKYY30V318FQ7GQB793
+    slugs: []
+    title: Review task-migrate-api-tests-vitest (cycle 2)
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KMZBVPKYDFZZK6PVYQBAHESV
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-30T12:35:22.878Z
+    examined_commit: 1b14f9251d210312870ad8acab4d20393f1c18c4
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMZ1BV3H7S2SQ91TX8B80J1Y"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-30T12:35:22.878Z
+    updated_at: null
+    notes: []
