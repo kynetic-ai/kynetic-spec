@@ -89922,6 +89922,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-30T22:14:48.833Z
+      - _ulid: 01KN0E30G26NKF0F9QX2FMX3M7
+        actor: Test User
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN0CZJB44VFS7H9ZCGJJ3WAP
+        timestamp: 2026-03-30T22:33:33.954Z
     examined_commit: cf37063d1bdb0f467d1257680859d0acbafab22c
     external_links: []
     lifecycle_state: closed
@@ -89997,6 +90003,14 @@ reviews:
               “event skipped” and “event handled”, such as verifying that no refetch or no
               highlighted update occurs for the duplicate event.
             created_at: 2026-03-30T22:14:12.581Z
+          - _ulid: 01KN0E2ZYGZJAQBRV6MF32VCSY
+            author: Test User
+            body: "Fixed in 96979f51ac13f6ca691be360c82899c11de83f96. AC-30 now proves deduplication
+              behaviorally: the first injected tasks:updates event with seq=500 triggers a
+              /api/tasks refetch, the test waits for that traffic to settle, then replaying the same
+              seq is asserted to produce no second /api/tasks request. This distinguishes
+              handled-vs-skipped behavior directly in the browser-observable data flow."
+            created_at: 2026-03-30T22:33:33.392Z
         kind: blocker
       - _ulid: 01KN0D08RHTXJ8QKP8DQQSZX7F
         entries:
@@ -90034,7 +90048,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T22:14:48.833Z
     created_at: 2026-03-30T22:09:32.061Z
-    updated_at: 2026-03-30T22:14:48.833Z
+    updated_at: 2026-03-30T22:33:33.392Z
     notes: []
   - _ulid: 01KN0DMBM3BK14076PF2NNA390
     slugs: []
