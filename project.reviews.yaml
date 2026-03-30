@@ -83647,6 +83647,17 @@ reviews:
         required: false
         created_at: 2026-03-30T12:37:54.953Z
         completed_at: 2026-03-30T12:37:54.953Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Validation passed with warnings only (exit 6): schema and references OK; repo-wide
+          warnings remain for orphaned skills/specs and invalid AC annotations unrelated to this
+          change."
+        name: kspec validate
+        required: false
+        created_at: 2026-03-30T12:37:56.751Z
+        completed_at: 2026-03-30T12:37:56.751Z
     events:
       - _ulid: 01KMZBVPKYDFZZK6PVYQBAHESV
         actor: Test User
@@ -83689,6 +83700,13 @@ reviews:
           status: pass
           name: review-evidence
         timestamp: 2026-03-30T12:37:55.505Z
+      - _ulid: 01KMZC0DDQ9ZEYAYVJ776WB065
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-30T12:37:57.303Z
     examined_commit: 1b14f9251d210312870ad8acab4d20393f1c18c4
     external_links: []
     lifecycle_state: open
@@ -83762,5 +83780,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-30T12:35:22.878Z
-    updated_at: 2026-03-30T12:37:54.953Z
+    updated_at: 2026-03-30T12:37:56.751Z
     notes: []
