@@ -90991,7 +90991,18 @@ reviews:
     slugs: []
     title: Review task-rewrite-websocket-e2e (cycle 3)
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Exit 6 warnings only: schema/references OK, no new validation errors; repo still has
+          pre-existing orphaned spec/annotation warnings."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-30T23:26:30.044Z
+        completed_at: 2026-03-30T23:26:30.044Z
     events:
       - _ulid: 01KN0H2YDJ2T0KPSGFFTTWNCEC
         actor: Test User
@@ -91013,6 +91024,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN0H3SM0Z1FPYMHX8E7BDZ1Z
         timestamp: 2026-03-30T23:26:26.225Z
+      - _ulid: 01KN0H3YXXMP46DNFP02B3BG10
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-30T23:26:30.845Z
     examined_commit: 440b2b1be819db3056711692c58c92874f7d65ec
     external_links: []
     lifecycle_state: open
@@ -91042,5 +91060,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-30T23:25:57.555Z
-    updated_at: 2026-03-30T23:26:25.408Z
+    updated_at: 2026-03-30T23:26:30.044Z
     notes: []
