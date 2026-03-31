@@ -92438,9 +92438,16 @@ reviews:
           status: fail
           name: branch-delta-vs-scope
         timestamp: 2026-03-31T01:03:32.179Z
+      - _ulid: 01KN0PNNM87NYRBGR4AQJY47K2
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-03-31T01:03:34.024Z
     examined_commit: acfdd273fba96aceb7269b0e0caab910d3f47895
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: open
     related_refs: []
     subject:
       type: task
@@ -92469,5 +92476,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-31T01:03:07.044Z
-    updated_at: 2026-03-31T01:03:31.539Z
+    updated_at: 2026-03-31T01:03:33.415Z
     notes: []
