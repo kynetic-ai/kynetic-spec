@@ -35,3 +35,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-03-31T20:03:23.883Z
+  - _ulid: 01KN2RC7KRF3AY43EHVNEAMX38
+    content: "Fix cycle 1: replaced mocked /api/items/batch coverage in plans e2e with live daemon
+      request/response assertions for the happy path, and changed the unresolved case to patch only
+      the plan detail payload so the real batch handler returns unresolved refs. Re-verified tests
+      with npm run build:e2e and npx playwright test tests/e2e/plans.spec.ts (35 passed). kspec
+      validate still exits 6 from pre-existing project warnings; full npm test still fails outside
+      this diff in claude-plugin-registry, core-skill-install, cross-platform-robustness, and
+      dispatch-workspace-registry suites."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-31T20:11:50.776Z
