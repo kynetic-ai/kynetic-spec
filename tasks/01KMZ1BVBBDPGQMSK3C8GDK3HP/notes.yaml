@@ -142,3 +142,11 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-03-31T17:43:24.551Z
+  - _ulid: 01KN2G2EDGRA2GBEZC66B233PV
+    content: Confirmed the working-tree delta only reverts the out-of-scope review task-filter change
+      that remained in HEAD after merging origin/dispatch. Committing that revert now so the branch
+      matches origin/dev for packages/daemon/src/routes/reviews.ts before rebase and selector
+      verification.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-31T17:46:41.457Z
