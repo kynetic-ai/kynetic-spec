@@ -10447,6 +10447,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-31T00:19:07.356Z
+  - _ulid: 01KN0M9GAE0D38JA4P0CR2WM2K
+    type: friction
+    content: "Detached review snapshots required a local build before reviewer commands were usable:
+      source-mode CLI commands for task/review/validate failed with 'No storage backend registered
+      for format split' until dist/cli was built. Review flow should provide a runnable CLI without
+      a manual build step."
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-31T00:21:58.222Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
