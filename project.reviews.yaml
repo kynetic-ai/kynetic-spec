@@ -92480,6 +92480,12 @@ reviews:
         payload:
           thread_ulid: 01KN0PP50KPG96CBKNZ4RRM8AC
         timestamp: 2026-03-31T01:20:27.608Z
+      - _ulid: 01KN0QMPFSBBDF3V9BMB24DW67
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KN0PNFFCXNHB1XBHZPN98XRA
+        timestamp: 2026-03-31T01:20:30.713Z
     examined_commit: acfdd273fba96aceb7269b0e0caab910d3f47895
     external_links: []
     lifecycle_state: closed
@@ -92517,6 +92523,8 @@ reviews:
               @triage-daemon-api ac-6 behaviorally from the UI."
             created_at: 2026-03-31T01:20:24.897Z
         kind: blocker
+        resolved_at: 2026-03-31T01:20:30.007Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KN0PP50KPG96CBKNZ4RRM8AC
         entries:
           - _ulid: 01KN0PP50KY5YV7ZNCV01KTA3C
@@ -92555,7 +92563,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-31T01:04:02.567Z
     created_at: 2026-03-31T01:03:07.044Z
-    updated_at: 2026-03-31T01:20:26.932Z
+    updated_at: 2026-03-31T01:20:30.007Z
     notes: []
   - _ulid: 01KN0PQ82TNSPKP5TKA6X80T6E
     slugs: []
