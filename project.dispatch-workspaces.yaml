@@ -29824,7 +29824,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-31T20:13:31.046Z
+      updated_at: 2026-03-31T20:14:33.305Z
     integration:
       status: merged
       detail: integration:merged
@@ -29840,18 +29840,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-31T20:01:54.962Z
-      last_reconciled_at: 2026-03-31T20:14:30.714Z
+      last_reconciled_at: 2026-03-31T20:14:33.305Z
       created_at: 2026-03-31T19:41:57.456Z
-      updated_at: 2026-03-31T20:14:30.714Z
+      updated_at: 2026-03-31T20:14:33.305Z
     workspace_id: dispatch-workspace-01KN2FWE8F8R03JWB1FTJ2ZE1W
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: a1e8232e6c4c544557f98b3223a10c3a544639c5
-        last_seen_at: 2026-03-31T20:01:47.256Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-investigate-flaky-full-suite-dispatch-and-daemon-api-tests-01kn2fwe-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-investigate-flaky-full-suite-dispatch-and-daemon-api-tests/01kn2fwe
