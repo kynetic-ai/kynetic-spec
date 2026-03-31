@@ -24,31 +24,6 @@ This plan is actively being implemented.
 Fallback should keep this YAML visible.
 `;
 
-  const LIVE_EMBEDDED_PLAN_CONTENT = `# Active Plan
-This plan is actively being implemented.
-
-## Specs
-
-\`\`\`yaml
-- title: Test Feature
-  type: feature
-\`\`\`
-
-## Tasks
-
-derive_from_specs: true
-
-\`\`\`yaml
-- title: Add markdown rendering trait to existing specs
-  slug: test-task-ready
-  priority: 2
-\`\`\`
-
-## Implementation Notes
-
-Runtime fetch coverage should observe the real batch request.
-`;
-
   const EMBEDDED_BATCH_ITEMS = [
     {
       kind: "item",
@@ -592,37 +567,49 @@ Runtime fetch coverage should observe the real batch request.
   // AC: @plan-embedded-views ac-1
   // AC: @plan-embedded-views ac-2
   // AC: @plan-embedded-views ac-9
+  // AC: @batch-item-fetch-api ac-1
+  // AC: @batch-item-fetch-api ac-3
+  // AC: @trait-api-endpoint ac-1
   test("issues the live batch fetch and renders title-derived specs plus full derive_from_specs tasks", async ({
     page,
   }) => {
-    await stubActivePlanContent(page, LIVE_EMBEDDED_PLAN_CONTENT);
-
-    const batchRequests: string[][] = [];
-    let batchRouteResolve: () => void;
-    const batchRouteCalled = new Promise<void>((resolve) => {
-      batchRouteResolve = resolve;
-    });
-    await page.route("**/api/items/batch", async (route) => {
-      const body = route.request().postDataJSON() as { refs?: string[] };
-      batchRequests.push(body.refs ?? []);
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({ items: EMBEDDED_BATCH_ITEMS, unresolved: [] }),
-      });
-      batchRouteResolve();
-    });
+    const batchRequestPromise = page.waitForRequest(
+      (request) => request.url().includes("/api/items/batch") && request.method() === "POST",
+    );
+    const batchResponsePromise = page.waitForResponse(
+      (response) =>
+        response.url().includes("/api/items/batch")
+        && response.request().method() === "POST"
+        && response.status() === 200,
+    );
 
     const activePlan = await expandActivePlan(page);
-    await batchRouteCalled;
+    const [batchRequest, batchResponse] = await Promise.all([
+      batchRequestPromise,
+      batchResponsePromise,
+    ]);
+    const batchBody = batchRequest.postDataJSON() as { refs?: string[] };
+    const batchPayload = (await batchResponse.json()) as {
+      items: Array<{ kind: "item" | "task"; slugs: string[] }>;
+      unresolved: string[];
+    };
 
-    expect(batchRequests).toHaveLength(1);
-    expect(batchRequests[0]).toEqual(
+    expect(batchBody.refs).toEqual(
       expect.arrayContaining([
         "@test-feature",
         "@test-task-in-progress",
         "@test-task-completed",
         "@test-task-ready",
+      ]),
+    );
+    expect(batchPayload.unresolved).toEqual([]);
+    expect(batchPayload.items).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ kind: "item", slugs: expect.arrayContaining(["test-feature"]) }),
+        expect.objectContaining({
+          kind: "task",
+          slugs: expect.arrayContaining(["test-task-ready"]),
+        }),
       ]),
     );
 
@@ -634,6 +621,76 @@ Runtime fetch coverage should observe the real batch request.
     const taskCards = activePlan.getByTestId("plan-embedded-task-card");
     await expect(taskCards).toHaveCount(3, { timeout: 10000 });
   });
+
+  // AC: @batch-item-fetch-api ac-2
+  test("falls back to raw embedded yaml when the batch response leaves derived refs unresolved", async ({
+    page,
+  }) => {
+    await page.route("**/api/plans/test-plan-active", async (route) => {
+      const response = await route.fetch();
+      const body = await response.json();
+      await route.fulfill({
+        status: response.status(),
+        contentType: "application/json",
+        body: JSON.stringify({
+          ...body,
+          data: {
+            ...body.data,
+            derived_tasks: [...body.data.derived_tasks, "@missing-task-ref"],
+          },
+        }),
+      });
+    });
+    const batchRequestPromise = page.waitForRequest(
+      (request) => request.url().includes("/api/items/batch") && request.method() === "POST",
+    );
+    const batchResponsePromise = page.waitForResponse(
+      (response) =>
+        response.url().includes("/api/items/batch")
+        && response.request().method() === "POST"
+        && response.status() === 200,
+    );
+
+    const activePlan = await expandActivePlan(page);
+    const [batchRequest, batchResponse] = await Promise.all([
+      batchRequestPromise,
+      batchResponsePromise,
+    ]);
+    const batchBody = batchRequest.postDataJSON() as { refs?: string[] };
+    const batchPayload = (await batchResponse.json()) as {
+      items: Array<{ kind: "item" | "task"; slugs: string[] }>;
+      unresolved: string[];
+    };
+
+    await expect(activePlan.getByTestId("plan-embedded-spec-card")).toHaveCount(1, { timeout: 10000 });
+    await expect(activePlan.getByTestId("plan-embedded-task-card")).toHaveCount(0);
+
+    const renderedBlocks = activePlan.getByTestId("plan-content-rendered");
+    await expect(renderedBlocks.filter({ hasText: "derive_from_specs: true" }).first()).toBeVisible();
+
+    expect(batchBody.refs).toEqual(
+      expect.arrayContaining([
+        "@test-feature",
+        "@test-task-in-progress",
+        "@test-task-completed",
+        "@test-task-ready",
+        "@missing-task-ref",
+      ]),
+    );
+    expect(batchPayload.items).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ kind: "item", slugs: expect.arrayContaining(["test-feature"]) }),
+        expect.objectContaining({
+          kind: "task",
+          slugs: expect.arrayContaining(["test-task-ready"]),
+        }),
+      ]),
+    );
+    expect(batchPayload.unresolved).toEqual(["@missing-task-ref"]);
+  });
+
+  // AC: @batch-item-fetch-api ac-4 — N/A: embedded-plan UI only calls batch fetch when one or more derived refs exist
+  // AC: @batch-item-fetch-api ac-5 — N/A: batch-size limit is API-contract coverage; current E2E fixtures do not expose a >100-ref UI path
 
   // AC: @plan-embedded-views ac-3
   test("clicking an embedded spec card navigates to the spec detail route", async ({ page }) => {
