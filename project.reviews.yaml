@@ -93032,7 +93032,19 @@ reviews:
     slugs: []
     title: Review stale-selector e2e failures
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm run test:e2e -- tests/e2e/search.spec.ts tests/e2e/tasks.spec.ts
+          tests/e2e/task-board.spec.ts tests/e2e/items.spec.ts tests/e2e/reviews-detail.spec.ts
+          tests/e2e/validate.spec.ts => 122 passed, 1 skipped.
+        name: selector e2e
+        required: false
+        runner: playwright
+        created_at: 2026-03-31T18:32:59.941Z
+        completed_at: 2026-03-31T18:32:59.941Z
     events:
       - _ulid: 01KN2J3CZA73M11J1JDGW17M0P
         actor: Jacob Chapel
@@ -93054,6 +93066,13 @@ reviews:
           kind: nit
           thread_ulid: 01KN2JQ60YWQ3G9BJ1SY3GEVP8
         timestamp: 2026-03-31T18:32:58.718Z
+      - _ulid: 01KN2JQ8CXNAZWP54D04E9T5QP
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: selector e2e
+        timestamp: 2026-03-31T18:33:00.573Z
     examined_commit: 602c1f7779fd52717fb79d8cc3c66595f4d66a1d
     external_links: []
     lifecycle_state: open
@@ -93100,5 +93119,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-31T18:22:09.899Z
-    updated_at: 2026-03-31T18:32:58.142Z
+    updated_at: 2026-03-31T18:32:59.941Z
     notes: []
