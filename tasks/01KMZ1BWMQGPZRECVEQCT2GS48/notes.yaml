@@ -11,3 +11,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-03-31T19:37:50.575Z
+  - _ulid: 01KN2PJ7BQ1RN0BMFN7S723JE9
+    content: Added batch-fetch UI coverage in tests/e2e/plans.spec.ts, which is the current live
+      consumer of POST /api/items/batch after the older tasks/items reference flow moved to
+      ReferenceLink-only rendering. Added one test that asserts the batch request fires with derived
+      spec/task refs and renders embedded cards, plus one test that returns unresolved refs and
+      verifies the UI falls back to raw embedded YAML instead of crashing. Verified with npm run
+      build:e2e && npx playwright test tests/e2e/plans.spec.ts (35 passed). kspec validate still
+      exits 6 from pre-existing project warnings unrelated to this task.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-31T19:40:09.975Z
