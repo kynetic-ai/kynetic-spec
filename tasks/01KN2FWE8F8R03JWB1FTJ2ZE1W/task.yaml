@@ -21,8 +21,12 @@ description: "What: Investigate and fix the remaining full-suite test instabilit
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved review @01KN2QVNKASRHT3G0GCF5F4Y6W and merged
+  dispatch/task/task-investigate-flaky-full-suite-dispatch-and-daemon-api-tests/01kn2fwe into dev.
+  Verified npm test -- --fresh passed (2082/2082 suites, 7520/7525 tests, 5 skipped) and kspec
+  validate produced only pre-existing warnings.
 depends_on:
   - "@task-fix-stale-selectors"
 context: []
@@ -90,8 +94,25 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-03-31T20:02:50.100Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved review @01KN2QVNKASRHT3G0GCF5F4Y6W and merged
+          dispatch/task/task-investigate-flaky-full-suite-dispatch-and-daemon-api-tests/01kn2fwe
+          into dev. Verified npm test -- --fresh passed (2082/2082 suites, 7520/7525 tests, 5
+          skipped) and kspec validate produced only pre-existing warnings.
+        previous: null
+      completed_at:
+        new: 2026-03-31T20:13:07.631Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-03-31T20:13:07.639Z
 created_at: 2026-03-31T17:43:24.687Z
 started_at: 2026-03-31T19:42:30.519Z
 submitted_at: 2026-03-31T20:00:30.113Z
+completed_at: 2026-03-31T20:13:07.631Z
 todos: []
 automation: eligible
