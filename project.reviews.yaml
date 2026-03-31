@@ -91687,6 +91687,16 @@ reviews:
         runner: kspec
         created_at: 2026-03-31T00:08:54.030Z
         completed_at: 2026-03-31T00:08:54.030Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --run tests/web-ui/ws-cache-invalidation.test.ts: 10 suites, 31 tests passed."
+        name: targeted-web-ui-test
+        required: true
+        runner: npm
+        created_at: 2026-03-31T00:08:56.082Z
+        completed_at: 2026-03-31T00:08:56.082Z
     events:
       - _ulid: 01KN0K11CW3EQ6T8WCT9YAVGQ6
         actor: Test User
@@ -91715,6 +91725,13 @@ reviews:
           status: pass
           name: validation
         timestamp: 2026-03-31T00:08:54.686Z
+      - _ulid: 01KN0KHN9TN72SFS008DRXC909
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted-web-ui-test
+        timestamp: 2026-03-31T00:08:56.890Z
     examined_commit: 5bc377fbb83935a722989cc4f22a3ebb4dfcbae5
     external_links: []
     lifecycle_state: open
@@ -91747,5 +91764,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-30T23:59:52.221Z
-    updated_at: 2026-03-31T00:08:54.030Z
+    updated_at: 2026-03-31T00:08:56.082Z
     notes: []
