@@ -20,3 +20,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-03-31T19:52:30.479Z
+  - _ulid: 01KN2QPWRTERWKXY62Q2Y1FVPF
+    content: "Verification: isolated reruns of the heavy dispatch workspace suites passed, and a fresh
+      full npm test gate is now green. Final fix was to move the git/shadow/bootstrap-heavy dispatch
+      suites into a serial Vitest project so they no longer contend with the default pool, plus
+      updating the daemon agent-dispatch route fixture to use split task storage with explicit
+      backend registration to stop exercising removed monolithic paths during dispatch startup
+      tests."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-31T20:00:11.546Z
