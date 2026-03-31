@@ -111,10 +111,12 @@ test.describe("Items View", () => {
       await page.goto("/specs");
 
       const specTree = page.getByTestId("spec-tree").first();
+      await expect(specTree).toBeVisible();
       const moduleNode = specTree.locator('[data-testid*="tree-node-module"]').first();
 
       // Click on the title button (separate from expand toggle)
       const nodeTitle = moduleNode.locator("> div").first().getByTestId("node-title");
+      await expect(nodeTitle).toBeVisible();
       await nodeTitle.click();
 
       // Detail panel should open

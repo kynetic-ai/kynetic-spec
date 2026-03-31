@@ -666,8 +666,8 @@ test.describe("Tasks View", () => {
       page,
       daemon: _daemon,
     }) => {
-      // Navigate directly with ?ref= to open the modal
-      await page.goto("/tasks?ref=01KG0RR8CB8N4YGP991WD7XS9R");
+      // Navigate directly with ?ref= using the stable task slug fixture
+      await page.goto("/tasks?ref=test-task-pending-review");
 
       // Dialog should open — wait for task data to load inside the modal
       const detailPanel = page.getByTestId("task-detail-panel");
