@@ -92871,6 +92871,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-31T18:02:26.033Z
+      - _ulid: 01KN2H418YSS5SX9VCTGPXH9A1
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN2H3ZKEDSKMR9E54GJQRJJ4
+        timestamp: 2026-03-31T18:05:02.110Z
     examined_commit: e552a65400cb5a5076e7eba8248ec298541df14d
     external_links: []
     lifecycle_state: open
@@ -92880,8 +92887,28 @@ reviews:
       content_hash: ""
       ref: "@01KMZ1BVBBDPGQMSK3C8GDK3HP"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KN2H3ZKEDSKMR9E54GJQRJJ4
+        anchor:
+          type: code
+          commit: e552a65400cb5a5076e7eba8248ec298541df14d
+          line_end: 474
+          line_start: 418
+          path: packages/web-ui/src/routes/triage/+page.svelte
+          side: head
+        entries:
+          - _ulid: 01KN2H3ZKF1NWXSRG9TW9CKDHZ
+            author: Jacob Chapel
+            body: This snapshot no longer matches the selector-only task scope. The task description is limited
+              to updating stale Playwright locators against existing UI markup, but this diff also
+              adds new daemon test-hook routes, cache-delay infrastructure, triage export API/UI
+              behavior, and file-watcher/cache-warming coverage. Merging those unrelated changes
+              under this task would ship behavior that is not attributable to
+              @01KMZ1BVBBDPGQMSK3C8GDK3HP and makes regression review impossible. Please
+              rebase/cherry-pick this branch down to the selector fixes only before resubmitting.
+            created_at: 2026-03-31T18:05:00.399Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-31T18:01:42.741Z
-    updated_at: 2026-03-31T18:02:24.374Z
+    updated_at: 2026-03-31T18:05:00.399Z
     notes: []
