@@ -91605,6 +91605,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-30T23:56:14.040Z
+      - _ulid: 01KN0KJMJJ4KWE8TNJ4AJ9KG6P
+        actor: Test User
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN0JSEQQZC09PNYS6VEW50C9
+        timestamp: 2026-03-31T00:09:28.914Z
     examined_commit: d752fb33fe963e0fca963315bcc5c95881ba076c
     external_links: []
     lifecycle_state: closed
@@ -91659,6 +91665,12 @@ reviews:
               broadcast assertions, which is a coverage regression unrelated to stale-selector
               fixes.
             created_at: 2026-03-30T23:55:43.735Z
+          - _ulid: 01KN0KJKWC45J613MYZWEKS8RD
+            author: Test User
+            body: Addressed by removing the unrelated drift from this branch. Current diff vs origin/dev is
+              empty for tests/e2e/api-triage.spec.ts, so the selector task no longer carries the
+              behavioral-suite skip that triggered this blocker.
+            created_at: 2026-03-31T00:09:28.204Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -91669,7 +91681,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T23:56:14.039Z
     created_at: 2026-03-30T23:55:04.985Z
-    updated_at: 2026-03-30T23:56:14.040Z
+    updated_at: 2026-03-31T00:09:28.204Z
     notes: []
   - _ulid: 01KN0K11CXBPZ7AXRZC8DY8A7N
     slugs: []
