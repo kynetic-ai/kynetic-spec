@@ -93599,6 +93599,12 @@ reviews:
           status: fail
           name: npm-test
         timestamp: 2026-03-31T19:51:35.325Z
+      - _ulid: 01KN2Q76FTS9T0QPWQB50WCNZ8
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN2Q5ZFG86H766TB1B2G1RHR
+        timestamp: 2026-03-31T19:51:37.210Z
     examined_commit: 922d82d4709a521bba65ef2e842ced72f675720e
     external_links: []
     lifecycle_state: open
@@ -93626,8 +93632,16 @@ reviews:
               issue the mocked request. Keep the UI assertions, but remove these API-spec
               annotations or replace them with real endpoint coverage."
             created_at: 2026-03-31T19:50:57.264Z
+          - _ulid: 01KN2Q75VKVY1DKKWGFNARFC9M
+            author: Jacob Chapel
+            body: "These tests stub /api/items/batch with page.route(...), so they never execute the real daemon
+              endpoint. That makes the @batch-item-fetch-api and @trait-api-endpoint annotations
+              incorrect: the tests can still pass if the actual handler breaks, as long as the UI
+              continues to issue the mocked request. Keep the UI assertions, but remove these
+              API-spec annotations or replace them with real endpoint-level coverage."
+            created_at: 2026-03-31T19:51:36.563Z
         kind: blocker
     verdicts: []
     created_at: 2026-03-31T19:42:40.217Z
-    updated_at: 2026-03-31T19:51:34.701Z
+    updated_at: 2026-03-31T19:51:36.563Z
     notes: []
