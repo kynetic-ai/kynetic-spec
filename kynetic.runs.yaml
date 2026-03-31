@@ -19450,9 +19450,19 @@ runs:
     completed_at: 2026-03-30T23:57:35.726Z
   - _ulid: 01KN0M29AX3P03ERWRYM6Q7G9Z
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Test User
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-03-31T00:18:01.693Z
+        completed_at: 2026-03-31T00:19:07.058Z
+        notes: "What worked: the review thread anchor plus the existing targeted websocket protocol suite
+          made the final fix cycle narrow and fast to verify."
+      - status: completed
+        step_index: 1
+        started_at: 2026-03-31T00:19:07.058Z
+        completed_at: 2026-03-31T00:19:07.058Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-31T00:18:01.693Z
