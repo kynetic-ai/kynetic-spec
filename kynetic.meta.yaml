@@ -10457,6 +10457,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-31T00:21:58.222Z
+  - _ulid: 01KN0M9GJMGCYGPWJJ65Y0S3YW
+    type: friction
+    content: Review sessions can be blocked by unrelated full-suite failures even when task-focused
+      verification is green. In this session the selector-focused Playwright run passed, but the
+      required npm test gate failed on unrelated dist CLI import/export errors and an unrelated
+      timeout, which forced a needs_work verdict on a selector-only task.
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-31T00:21:58.484Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
