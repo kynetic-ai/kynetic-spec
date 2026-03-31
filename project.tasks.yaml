@@ -23378,7 +23378,7 @@
   title: Fix stale-selector e2e failures across UI specs
   type: task
   plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-fix-loading-page-e2e"
@@ -23387,7 +23387,7 @@
     - test
     - e2e
   review_ref: "@01KN2J3CZBR83W2EKRRTMKDVPS"
-  notes_count: 22
+  notes_count: 23
   todos_count: 0
   created_at: 2026-03-30T09:31:57.675Z
   started_at: 2026-03-31T18:11:38.924Z
