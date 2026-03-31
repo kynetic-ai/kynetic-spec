@@ -92726,6 +92726,20 @@ reviews:
         runner: kspec
         created_at: 2026-03-31T01:28:28.705Z
         completed_at: 2026-03-31T01:28:28.705Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm test reported 8 failed suites / 3 failed tests outside this branch delta. The touched
+          files for this task are limited to packages/web-ui/src/lib/api.ts,
+          packages/web-ui/src/routes/triage/+page.svelte, tests/e2e/fixtures/project.triage.yaml,
+          and tests/e2e/triage.spec.ts; the failing files (for example src/cli/commands/skill.ts,
+          scripts/test.cjs, tests/test-runner.test.ts) are unchanged from dev.
+        name: npm-test-full
+        required: false
+        runner: npm
+        created_at: 2026-03-31T01:28:30.896Z
+        completed_at: 2026-03-31T01:28:30.896Z
     events:
       - _ulid: 01KN0QT12H1S9A0WRGG9ENVB2A
         actor: Jacob Chapel
@@ -92768,6 +92782,13 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-03-31T01:28:29.408Z
+      - _ulid: 01KN0R3C3MC8MRH0JP53PCPH35
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm-test-full
+        timestamp: 2026-03-31T01:28:31.605Z
     examined_commit: 14c3400e81417539ab56a73a984b6f22afb5e8a0
     external_links: []
     lifecycle_state: open
@@ -92806,5 +92827,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-31T01:23:25.393Z
-    updated_at: 2026-03-31T01:28:28.705Z
+    updated_at: 2026-03-31T01:28:30.896Z
     notes: []
