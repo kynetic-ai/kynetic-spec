@@ -775,6 +775,44 @@ export async function fetchTriageRecords(params?: {
   return unwrapPaginatedEnvelope(await response.json());
 }
 
+export type TriageExportFormat = "context" | "json";
+
+/**
+ * Fetch triage export content for preview in the UI.
+ * AC: @triage-daemon-api ac-6
+ */
+export async function fetchTriageExport(format: TriageExportFormat): Promise<{
+  format: TriageExportFormat;
+  content: string;
+}> {
+  if (isStaticMode()) {
+    throw new Error("Triage export is unavailable in static mode.");
+  }
+
+  const url = new URL(`${API_BASE}/api/triage/export`);
+  url.searchParams.set("format", format);
+
+  const response = await fetch(url.toString(), {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
+
+  const body = await response.json();
+  if (format === "context") {
+    return {
+      format,
+      content: typeof body.content === "string" ? body.content : "",
+    };
+  }
+
+  return {
+    format,
+    content: JSON.stringify(body, null, 2),
+  };
+}
+
 /**
  * Create or update a triage record
  * AC: @interactive-triage-ui ac-3

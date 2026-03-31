@@ -381,6 +381,54 @@ test.describe("Triage real-time updates via WebSocket", () => {
 });
 
 test.describe("Triage API operations via UI", () => {
+  // AC: @triage-daemon-api ac-6
+  test("exports triage decisions as markdown context from the triage page", async ({ page }) => {
+    await page.goto("/triage");
+    await page.waitForLoadState("networkidle");
+
+    const exportResponse = page.waitForResponse(
+      (response) =>
+        response.url().includes("/api/triage/export?format=context") && response.request().method() === "GET",
+    );
+
+    await page.getByTestId("triage-export-context").click();
+
+    const response = await exportResponse;
+    expect(response.ok()).toBe(true);
+
+    const preview = page.getByTestId("triage-export-preview");
+    await expect(page.getByTestId("triage-export-format")).toContainText("Markdown context");
+    await expect(preview).toContainText("# Triage Decisions");
+    await expect(preview).toContainText("First inbox item for testing");
+    await expect(preview).toContainText("Action:** defer");
+    await expect(preview).toContainText("Second inbox item with different tags");
+    await expect(preview).toContainText("Result:** @test-task-ready");
+  });
+
+  // AC: @triage-daemon-api ac-6
+  test("exports triage decisions as JSON from the triage page", async ({ page }) => {
+    await page.goto("/triage");
+    await page.waitForLoadState("networkidle");
+
+    const exportResponse = page.waitForResponse(
+      (response) =>
+        response.url().includes("/api/triage/export?format=json") && response.request().method() === "GET",
+    );
+
+    await page.getByTestId("triage-export-json").click();
+
+    const response = await exportResponse;
+    expect(response.ok()).toBe(true);
+
+    const preview = page.getByTestId("triage-export-preview");
+    await expect(page.getByTestId("triage-export-format")).toContainText("JSON");
+    await expect(preview).toContainText('"format": "json"');
+    await expect(preview).toContainText('"total": 3');
+    await expect(preview).toContainText('"item_snapshot": "First inbox item for testing"');
+    await expect(preview).toContainText('"action": "promote"');
+    await expect(preview).toContainText('"result_ref": "@test-task-ready"');
+  });
+
   // AC: @interactive-triage-ui ac-3
   test("submitting a triage decision calls the API and updates state", async ({
     page,
@@ -406,6 +454,7 @@ test.describe("Triage API operations via UI", () => {
           const _initialPositionText = await page.getByTestId("triage-position").textContent();
 
           await actionButtons.first().click();
+          await actionForm.getByTestId("triage-reasoning").fill("E2E submit flow coverage");
           const submitBtn = actionForm.getByTestId("triage-submit");
           await expect(submitBtn).toBeEnabled({ timeout: 2000 });
           await submitBtn.click();

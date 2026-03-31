@@ -27,8 +27,5 @@ triage:
     inbox_ref: 01KJNBX2CB8N4YGP991WD7XS9R
     item_snapshot: Third inbox item - oldest
     status: pending
-    action: ~
-    reasoning: ~
-    decided_by: ~
     evidence_refs: []
     created_at: "2026-01-02T08:00:00Z"

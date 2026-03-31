@@ -14,6 +14,7 @@
 	import type { TriageRecord, TriageAction } from '$lib/types/triage';
 	import {
 		fetchMergedInbox,
+		fetchTriageExport,
 		fetchTriageRecords,
 		createTriageRecord,
 		overrideTriageRecord,
@@ -47,6 +48,10 @@
 
 	// Write operation error (separate from query error)
 	let writeError = $state('');
+	let exportLoading = $state(false);
+	let exportError = $state('');
+	let exportFormat = $state<'context' | 'json'>('context');
+	let exportContent = $state('');
 
 	// Action labels
 	const ACTION_LABELS: Record<TriageAction, string> = {
@@ -310,6 +315,21 @@
 		}
 	}
 
+	// AC: @triage-daemon-api ac-6 - Export triage records for preview from /triage
+	async function handleExport(format: 'context' | 'json') {
+		try {
+			exportLoading = true;
+			exportError = '';
+			const result = await fetchTriageExport(format);
+			exportFormat = result.format;
+			exportContent = result.content;
+		} catch (err) {
+			exportError = err instanceof Error ? err.message : 'Failed to export triage records';
+		} finally {
+			exportLoading = false;
+		}
+	}
+
 	function formatDate(dateString: string): string {
 		const date = new Date(dateString);
 		const now = new Date();
@@ -394,6 +414,64 @@
 			{/if}
 		</div>
 	</div>
+
+	{#if !isStaticMode()}
+		<Card data-testid="triage-export-panel">
+			<CardHeader class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+				<div class="space-y-1">
+					<h2 class="text-lg font-semibold">Export Decisions</h2>
+					<p class="text-sm text-muted-foreground">
+						Load the current triage export in Markdown context or JSON format.
+					</p>
+				</div>
+				<div class="flex gap-2" data-testid="triage-export-controls">
+					<Button
+						variant={exportFormat === 'context' && exportContent ? 'default' : 'outline'}
+						size="sm"
+						onclick={() => handleExport('context')}
+						disabled={exportLoading}
+						data-testid="triage-export-context"
+					>
+						{exportLoading && exportFormat === 'context' ? 'Loading…' : 'Export Markdown'}
+					</Button>
+					<Button
+						variant={exportFormat === 'json' && exportContent ? 'default' : 'outline'}
+						size="sm"
+						onclick={() => handleExport('json')}
+						disabled={exportLoading}
+						data-testid="triage-export-json"
+					>
+						{exportLoading && exportFormat === 'json' ? 'Loading…' : 'Export JSON'}
+					</Button>
+				</div>
+			</CardHeader>
+			<CardContent class="space-y-3">
+				{#if exportError}
+					<div
+						class="rounded-md bg-red-50 p-3 text-sm text-red-800 dark:bg-red-900/20 dark:text-red-200"
+						role="alert"
+						data-testid="triage-export-error"
+					>
+						{exportError}
+					</div>
+				{:else if exportContent}
+					<div class="space-y-2">
+						<p class="text-sm font-medium" data-testid="triage-export-format">
+							Showing {exportFormat === 'context' ? 'Markdown context' : 'JSON'} export
+						</p>
+						<pre
+							class="max-h-80 overflow-auto rounded-md border bg-muted/40 p-4 text-xs leading-5 whitespace-pre-wrap"
+							data-testid="triage-export-preview"
+						>{exportContent}</pre>
+					</div>
+				{:else}
+					<p class="text-sm text-muted-foreground" data-testid="triage-export-empty">
+						Choose a format to preview the triage export.
+					</p>
+				{/if}
+			</CardContent>
+		</Card>
+	{/if}
 
 	<!-- Progress bar -->
 	{#if totalCount > 0}
