@@ -92715,6 +92715,17 @@ reviews:
         runner: git
         created_at: 2026-03-31T01:28:24.631Z
         completed_at: 2026-03-31T01:28:24.631Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate produced only the repository's existing warning set (exit 6), with schema
+          and references OK and no task-specific validation errors.
+        name: kspec-validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-31T01:28:28.705Z
+        completed_at: 2026-03-31T01:28:28.705Z
     events:
       - _ulid: 01KN0QT12H1S9A0WRGG9ENVB2A
         actor: Jacob Chapel
@@ -92750,6 +92761,13 @@ reviews:
           kind: nit
           thread_ulid: 01KN0R37BMJQHBZ3J0Z2XJYRH2
         timestamp: 2026-03-31T01:28:27.378Z
+      - _ulid: 01KN0R39Z0NVSN1QYBQKS5Y3RC
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec-validate
+        timestamp: 2026-03-31T01:28:29.408Z
     examined_commit: 14c3400e81417539ab56a73a984b6f22afb5e8a0
     external_links: []
     lifecycle_state: open
@@ -92788,5 +92806,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-31T01:23:25.393Z
-    updated_at: 2026-03-31T01:28:26.741Z
+    updated_at: 2026-03-31T01:28:28.705Z
     notes: []
