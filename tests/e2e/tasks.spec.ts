@@ -679,8 +679,10 @@ test.describe("Tasks View", () => {
       // Brief wait for effects to settle
       await page.waitForTimeout(200);
 
-      // Debug: check if dialog state was toggled
-      const dialogState = await detailPanel.getAttribute("data-state");
+      // The dialog may already be detached after close; only retry if it's still visible/open.
+      const dialogState = (await detailPanel.isVisible().catch(() => false))
+        ? await detailPanel.getAttribute("data-state")
+        : null;
       // If dialog is still open, the open effect is re-triggering — try closing again
       if (dialogState === "open") {
         await page.keyboard.press("Escape");

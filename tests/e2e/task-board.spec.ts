@@ -20,9 +20,9 @@ test.describe("Task Board (Kanban)", () => {
   test("renders board with five columns", async ({ page, daemon: _daemon }) => {
     await page.goto("/tasks/board");
 
-    // Wait for board to load
+    // Wait for the board container to render before asserting individual columns.
+    await expect(page.getByTestId("board-columns")).toBeVisible();
     const columns = page.getByTestId("board-column");
-    await expect(columns.first()).toBeVisible();
 
     // Should have 5 columns: Backlog, Ready, In Progress, Review, Done
     await expect(columns).toHaveCount(5);
