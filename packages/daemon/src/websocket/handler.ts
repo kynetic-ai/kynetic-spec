@@ -92,6 +92,8 @@ export class WebSocketHandler {
 
     // Process command
     try {
+      this.injectTestFailure(command);
+
       switch (command.action) {
         case "subscribe":
           this.handleSubscribe(ws, command);
@@ -114,11 +116,12 @@ export class WebSocketHandler {
             false,
             "unknown_action",
             `Unknown action: ${command.action}`,
-          );
+        );
       }
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : "Internal error";
       this.sendAck(ws, true, command.request_id, false, "error", errorMsg);
+      ws.close(1011, "Internal error");
     }
   }
 
@@ -186,6 +189,13 @@ export class WebSocketHandler {
     const data = ws.data as { id?: unknown } | undefined;
     const contextId = typeof data?.id === "string" ? data.id : undefined;
     return this.pubsub.getSessionIdBySocket(ws, contextId);
+  }
+
+  private injectTestFailure(command: WebSocketCommand) {
+    const injectedRequestId = process.env.KSPEC_TEST_WS_FORCE_INTERNAL_ERROR_REQUEST_ID;
+    if (injectedRequestId && command.request_id === injectedRequestId) {
+      throw new Error(`Injected websocket failure for ${injectedRequestId}`);
+    }
   }
 
   /**

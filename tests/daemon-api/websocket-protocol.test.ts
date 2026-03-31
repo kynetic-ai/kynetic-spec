@@ -479,4 +479,35 @@ describe("daemon websocket protocol", () => {
 
     expect(close.code).toBe(1000);
   });
+
+  // AC: @api-contract ac-31
+  // AC: @trait-websocket-protocol ac-7
+  it("uses close code 1011 when command handling hits an internal server error", async () => {
+    await runtime.stop();
+    isolatedEnv.KSPEC_TEST_WS_FORCE_INTERNAL_ERROR_REQUEST_ID = "trigger-1011";
+    await runtime.start();
+
+    const { ws } = await connectClient();
+    const closePromise = waitForClose(ws);
+
+    const ack = await sendCommandAndWaitForAck(ws, {
+      action: "ping",
+      request_id: "trigger-1011",
+      payload: {},
+    });
+
+    expect(ack).toMatchObject({
+      ack: true,
+      request_id: "trigger-1011",
+      success: false,
+      error: "error",
+      details: "Injected websocket failure for trigger-1011",
+    });
+
+    const close = await closePromise;
+    expect(close.code).toBe(1011);
+    expect(close.reason).toBe("Internal error");
+
+    delete isolatedEnv.KSPEC_TEST_WS_FORCE_INTERNAL_ERROR_REQUEST_ID;
+  });
 });
