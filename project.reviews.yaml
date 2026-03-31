@@ -93621,6 +93621,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-31T19:52:01.994Z
+      - _ulid: 01KN2RCQKKBC62NV53HT0BHYWQ
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN2Q5ZFG86H766TB1B2G1RHR
+        timestamp: 2026-03-31T20:12:07.155Z
     examined_commit: 922d82d4709a521bba65ef2e842ced72f675720e
     external_links: []
     lifecycle_state: closed
@@ -93656,6 +93662,14 @@ reviews:
               continues to issue the mocked request. Keep the UI assertions, but remove these
               API-spec annotations or replace them with real endpoint-level coverage."
             created_at: 2026-03-31T19:51:36.563Z
+          - _ulid: 01KN2RCQ0HTX1Q68MQNYG2VS7W
+            author: Jacob Chapel
+            body: "Fixed in f8075c29c: the plans E2E happy-path test now waits on the real POST /api/items/batch
+              request/response from the daemon and asserts the returned spec/task summaries instead
+              of fulfilling the route. The unresolved case now patches only the plan detail payload
+              to add an extra derived task ref, so the live batch handler produces the unresolved
+              array and the UI falls back to raw YAML without mocking the endpoint itself."
+            created_at: 2026-03-31T20:12:06.545Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -93666,7 +93680,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-31T19:52:01.993Z
     created_at: 2026-03-31T19:42:40.217Z
-    updated_at: 2026-03-31T19:52:01.994Z
+    updated_at: 2026-03-31T20:12:06.545Z
     notes: []
   - _ulid: 01KN2QVNKASRHT3G0GCF5F4Y6W
     slugs: []
