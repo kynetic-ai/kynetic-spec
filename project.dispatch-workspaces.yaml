@@ -29310,7 +29310,7 @@ workspaces:
         head: 92c8540b06de93a5437122aa31c5507387513a7e
         last_seen_at: 2026-03-30T23:39:49.684Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-filewatcher-e2e-01kmz1bw
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 15577d79d589233666a0de375a8011f8089942ab
     bootstrap:
       status: succeeded
@@ -29416,9 +29416,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-31T01:22:44.973Z
-      last_reconciled_at: 2026-03-31T01:30:25.244Z
+      last_reconciled_at: 2026-03-31T01:32:04.642Z
       created_at: 2026-03-31T00:48:38.052Z
-      updated_at: 2026-03-31T01:30:25.244Z
+      updated_at: 2026-03-31T01:32:04.642Z
     workspace_id: dispatch-workspace-01KMZ1BX5RN093G0MZASASRJ43
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
