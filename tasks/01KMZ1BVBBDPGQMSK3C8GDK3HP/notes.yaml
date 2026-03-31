@@ -213,3 +213,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-03-31T18:51:30.836Z
+  - _ulid: 01KN2MJKDRWWHE5XTPQ9XJC8ZD
+    content: "Fix cycle 6: stabilized spec tree interactions in tests/e2e/items.spec.ts with
+      helper-backed forced clicks after the /specs route transition exposed actionability flake on
+      tree controls. Verification: npm run test:e2e -- tests/e2e/items.spec.ts => 27 passed; npm run
+      test:e2e -- tests/e2e/items.spec.ts tests/e2e/search.spec.ts tests/e2e/tasks.spec.ts
+      tests/e2e/task-board.spec.ts tests/e2e/reviews-detail.spec.ts tests/e2e/validate.spec.ts =>
+      122 passed, 1 skipped; kspec validate exits 6 with repo-wide pre-existing warnings only; npm
+      test -- --fresh now narrows to a single unrelated failure in
+      tests/dispatch-workspace-registry.test.ts 'reconciliation acquires the lock per dirty record,
+      not once for the entire batch' (log
+      /tmp/kspec-test-cache/01KN2KXMRN1G4VQC487YAF725K/736a0c514b7215bc.log)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-31T19:05:25.176Z
