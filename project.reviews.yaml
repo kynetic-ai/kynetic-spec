@@ -92688,3 +92688,29 @@ reviews:
     created_at: 2026-03-31T01:04:25.690Z
     updated_at: 2026-03-31T01:11:04.021Z
     notes: []
+  - _ulid: 01KN0QT12HHW2FCY0FYBGJVT2Q
+    slugs: []
+    title: Review task-e2e-triage-export cycle 2
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KN0QT12H1S9A0WRGG9ENVB2A
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-31T01:23:25.393Z
+    examined_commit: 14c3400e81417539ab56a73a984b6f22afb5e8a0
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMZ1BX5RN093G0MZASASRJ43"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-31T01:23:25.393Z
+    updated_at: null
+    notes: []
