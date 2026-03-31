@@ -42,7 +42,7 @@ description: |
 spec_ref: null
 plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-fix-timing-races"
@@ -53,6 +53,14 @@ tags:
   - e2e
   - web-ui
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-31T01:00:57.257Z
+  commit: 15577d79d589233666a0de375a8011f8089942ab
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
 session_id: 01KN0P1ANCJ9S99VB4NPQCCH8T
 history:
   - author: "@claude"
@@ -75,7 +83,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-03-31T00:53:07.675Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-31T01:00:57.257Z
+          commit: 15577d79d589233666a0de375a8011f8089942ab
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-03-31T01:00:57.262Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-03-31T01:00:57.263Z
 created_at: 2026-03-30T09:31:59.267Z
 started_at: 2026-03-31T00:53:07.674Z
+submitted_at: 2026-03-31T01:00:57.262Z
 todos: []
 automation: eligible
