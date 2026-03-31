@@ -93207,7 +93207,20 @@ reviews:
     slugs: []
     title: Review @01KMZ1BVBBDPGQMSK3C8GDK3HP
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Failed in this review workspace: 29 failed suites / 34 failed tests. Representative
+          failures: tests/agent-dispatch-engine.test.ts assertions at lines 5659/5721 and multiple
+          STACK_TRACE_ERROR failures across dispatch/daemon suites. Full log:
+          /tmp/kspec-test-cache/01KN2K74010166N5C0CC3WJQR2/6fd0d2bb34986d54.log"
+        name: npm test -- --fresh
+        required: true
+        runner: npm test
+        created_at: 2026-03-31T18:50:48.673Z
+        completed_at: 2026-03-31T18:50:48.673Z
     events:
       - _ulid: 01KN2K845XJRDWFFB1CKHTM4BF
         actor: Jacob Chapel
@@ -93222,6 +93235,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-31T18:43:21.440Z
+      - _ulid: 01KN2KQWV50RFKKAQQD9Y2348Q
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test -- --fresh
+        timestamp: 2026-03-31T18:50:50.085Z
     examined_commit: 602c1f7779fd52717fb79d8cc3c66595f4d66a1d
     external_links: []
     lifecycle_state: open
@@ -93234,5 +93254,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-31T18:42:13.310Z
-    updated_at: 2026-03-31T18:43:20.291Z
+    updated_at: 2026-03-31T18:50:48.673Z
     notes: []
