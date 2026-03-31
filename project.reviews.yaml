@@ -93854,6 +93854,23 @@ reviews:
         required: false
         created_at: 2026-03-31T20:20:47.031Z
         completed_at: 2026-03-31T20:20:47.031Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: tests/e2e/plans.spec.ts, packages/web-ui/src/routes/plans/+page.svelte,
+          packages/web-ui/src/lib/api.ts, packages/web-ui/src/lib/utils/plan-embedded-content.ts,
+          tests/e2e/fixtures/test-base.ts. Commands run: git diff --stat/name-only, git diff
+          base..head -- tests/e2e/plans.spec.ts, kspec task get, kspec item get
+          @batch-item-fetch-api, kspec review for-task/get, kspec validate, grep AC annotations, npm
+          run build:e2e, npx playwright test tests/e2e/plans.spec.ts, npm test. Claim verified: live
+          batch-fetch coverage now waits on the real POST /api/items/batch request/response and
+          asserts rendered fallback behavior for unresolved refs. Categories searched: correctness,
+          edge cases, error handling, test quality, integration; no task-scoped findings remained."
+        name: review-evidence-log
+        required: false
+        created_at: 2026-03-31T20:21:10.331Z
+        completed_at: 2026-03-31T20:21:10.331Z
     events:
       - _ulid: 01KN2RG403843BZ889EPH3DZHK
         actor: Jacob Chapel
@@ -93905,6 +93922,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-31T20:21:08.054Z
+      - _ulid: 01KN2RXAPD6XM56XZ3QWQCD18Q
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence-log
+        timestamp: 2026-03-31T20:21:10.990Z
     examined_commit: f8075c29c4003fca5a5c141fc6448885b6e7956c
     external_links: []
     lifecycle_state: closed
@@ -93924,5 +93948,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-31T20:21:08.054Z
     created_at: 2026-03-31T20:13:58.147Z
-    updated_at: 2026-03-31T20:21:08.054Z
+    updated_at: 2026-03-31T20:21:10.331Z
     notes: []
