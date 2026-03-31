@@ -93605,9 +93605,25 @@ reviews:
         payload:
           thread_ulid: 01KN2Q5ZFG86H766TB1B2G1RHR
         timestamp: 2026-03-31T19:51:37.210Z
+      - _ulid: 01KN2Q7YPADX88PRYG15MH1QGQ
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-31T19:52:01.994Z
+      - _ulid: 01KN2Q7YPAXNXN77FXEPF9TCPZ
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-31T19:52:01.994Z
     examined_commit: 922d82d4709a521bba65ef2e842ced72f675720e
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -93641,7 +93657,14 @@ reviews:
               API-spec annotations or replace them with real endpoint-level coverage."
             created_at: 2026-03-31T19:51:36.563Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-31T19:52:01.993Z
     created_at: 2026-03-31T19:42:40.217Z
-    updated_at: 2026-03-31T19:51:36.563Z
+    updated_at: 2026-03-31T19:52:01.994Z
     notes: []
