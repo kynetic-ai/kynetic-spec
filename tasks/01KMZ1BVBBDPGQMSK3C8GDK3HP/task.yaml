@@ -50,13 +50,8 @@ description: |
 spec_ref: null
 plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
 origin: derived
-status: blocked
-blocked_by:
-  - "Required verification gate remains red on the rebased branch due to an unrelated dispatch-suite
-    failure: tests/dispatch-workspace-registry.test.ts times out in 'reconciliation acquires the
-    lock per dirty record, not once for the entire batch'. The branch diff against origin/dev is
-    limited to selector-related web UI and e2e files, so this task cannot be safely resubmitted
-    until the broader npm test gate is green."
+status: in_progress
+blocked_by: []
 depends_on:
   - "@task-fix-loading-page-e2e"
 context: []
@@ -74,7 +69,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: 01KN0N6ETTPYVHWSAS1KT4DJ8H
+session_id: null
 history:
   - author: "@claude"
     changes:
@@ -277,7 +272,28 @@ history:
         previous: null
     command: task-block
     timestamp: 2026-03-31T00:47:23.543Z
-prior_status: in_progress
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: blocked
+      blocked_by:
+        new: []
+        previous:
+          - "Required verification gate remains red on the rebased branch due to an unrelated
+            dispatch-suite failure: tests/dispatch-workspace-registry.test.ts times out in
+            'reconciliation acquires the lock per dirty record, not once for the entire batch'. The
+            branch diff against origin/dev is limited to selector-related web UI and e2e files, so
+            this task cannot be safely resubmitted until the broader npm test gate is green."
+      session_id:
+        new: null
+        previous: 01KN0N6ETTPYVHWSAS1KT4DJ8H
+      prior_status:
+        new: null
+        previous: in_progress
+    command: task-unblock
+    timestamp: 2026-03-31T16:12:18.021Z
+prior_status: null
 created_at: 2026-03-30T09:31:57.675Z
 started_at: 2026-03-31T00:39:00.108Z
 submitted_at: 2026-03-31T00:10:00.361Z
