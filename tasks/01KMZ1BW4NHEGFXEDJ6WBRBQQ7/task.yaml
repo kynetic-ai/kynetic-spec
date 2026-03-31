@@ -53,8 +53,12 @@ description: |
 spec_ref: null
 plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev after cycle-4 approval. Rewrote api-websocket coverage into behavioral
+  Playwright UI tests plus daemon-side websocket protocol/heartbeat tests; verified targeted
+  websocket vitest and Playwright coverage, with unrelated full-suite dispatch registry failure left
+  as existing debt.
 depends_on:
   - "@task-fix-query-loading-state"
 context: []
@@ -293,8 +297,25 @@ history:
         previous: "@01KN0H2YDKH2M17NVEQ12PDV3S"
     command: review-link
     timestamp: 2026-03-31T00:22:17.952Z
+  - author: Test User
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev after cycle-4 approval. Rewrote api-websocket coverage into behavioral Playwright
+          UI tests plus daemon-side websocket protocol/heartbeat tests; verified targeted websocket
+          vitest and Playwright coverage, with unrelated full-suite dispatch registry failure left
+          as existing debt.
+        previous: null
+      completed_at:
+        new: 2026-03-31T00:28:42.390Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-03-31T00:28:42.422Z
 created_at: 2026-03-30T09:31:58.485Z
 started_at: 2026-03-31T00:16:32.507Z
 submitted_at: 2026-03-31T00:17:22.765Z
+completed_at: 2026-03-31T00:28:42.390Z
 todos: []
 automation: eligible
