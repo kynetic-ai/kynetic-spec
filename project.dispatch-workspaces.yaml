@@ -29771,12 +29771,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-31T20:01:39.978Z
+      updated_at: 2026-03-31T20:01:47.256Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-31T20:01:39.978Z
+      updated_at: 2026-03-31T20:01:47.256Z
     integration:
       status: pending
       detail: null
@@ -29784,24 +29784,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: bb9c6193f3f3c4f8a20c55c8bda4d87da90746cc
-      updated_at: 2026-03-31T20:01:39.978Z
-    lifecycle_state: ready
+      updated_at: 2026-03-31T20:01:47.256Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KN2FWE8F8R03JWB1FTJ2ZE1W"
     task_slug: task-investigate-flaky-full-suite-dispatch-and-daemon-api-tests
     timestamps:
       closed_at: null
       last_active_at: 2026-03-31T19:42:03.819Z
-      last_reconciled_at: 2026-03-31T20:01:39.978Z
+      last_reconciled_at: 2026-03-31T20:01:47.256Z
       created_at: 2026-03-31T19:41:57.456Z
-      updated_at: 2026-03-31T20:01:39.978Z
+      updated_at: 2026-03-31T20:01:47.256Z
     workspace_id: dispatch-workspace-01KN2FWE8F8R03JWB1FTJ2ZE1W
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: a1e8232e6c4c544557f98b3223a10c3a544639c5
+        last_seen_at: 2026-03-31T20:01:47.256Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-investigate-flaky-full-suite-dispatch-and-daemon-api-tests-01kn2fwe-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-investigate-flaky-full-suite-dispatch-and-daemon-api-tests/01kn2fwe
-        head: bb9c6193f3f3c4f8a20c55c8bda4d87da90746cc
-        last_seen_at: 2026-03-31T19:41:57.456Z
+        head: a1e8232e6c4c544557f98b3223a10c3a544639c5
+        last_seen_at: 2026-03-31T20:01:47.256Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-investigate-flaky-full-suite-dispatch-and-daemon-api-tests-01kn2fwe
