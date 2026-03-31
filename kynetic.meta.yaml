@@ -10574,6 +10574,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-31T17:56:52.477Z
+  - _ulid: 01KN2HB1J5DVCFQP9308KAJBHB
+    type: friction
+    content: Review snapshots can accumulate unrelated commits from upstream task-branch merges, making
+      a selector-only review fail on scope rather than behavior. We need a lightweight way to
+      verify/crop dispatch task branches to task-attributable files or commits before resubmission.
+    author: codex
+    resolution: null
+    resolved: false
+    created_at: 2026-03-31T18:08:51.781Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
