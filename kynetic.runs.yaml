@@ -19567,9 +19567,22 @@ runs:
     completed_at: 2026-03-31T00:37:03.406Z
   - _ulid: 01KN0NYSJGS4RVRVYPS07YE61Z
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-03-31T00:51:04.400Z
+        completed_at: 2026-03-31T00:51:41.147Z
+        notes: "Reflection summary: one high-confidence success captured. Success: verify user-visible
+          affordance exists before adding E2E coverage for an API capability; this prevented fake
+          tests on triage export and led to clean follow-up tracking via inbox item @01KN0NX6.
+          Friction: workflow show without run-ref failed even though docs suggest active-run
+          inference; not captured because similar workflow-show friction is already tracked."
+      - status: completed
+        step_index: 1
+        started_at: 2026-03-31T00:51:41.147Z
+        completed_at: 2026-03-31T00:51:41.147Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-31T00:51:04.400Z
