@@ -118,3 +118,18 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-03-31T17:11:26.820Z
+  - _ulid: 01KN2EAWDGGV5RG3CH053PEH9S
+    content: "Merged origin/dispatch/task/task-fix-stale-selectors/01kmz1bv into the dispatch branch as
+      80ac23243, resolving the only conflict by keeping the local tests/e2e/search.spec.ts version.
+      Verification after merge: npm run test:e2e -- tests/e2e/items.spec.ts tests/e2e/search.spec.ts
+      tests/e2e/tasks.spec.ts tests/e2e/task-board.spec.ts tests/e2e/reviews-detail.spec.ts
+      tests/e2e/validate.spec.ts passed (122 passed, 1 skipped). Broad gate npm test -- --fresh
+      remains red, but the post-merge scope is now clearer: the existing dispatch failures still
+      reproduce (dispatch-workspace-registry shadow durability / daemon-api agent-dispatch
+      STACK_TRACE_ERROR cases), and the upstream merge also changes review task-filter semantics via
+      packages/daemon/src/routes/reviews.ts, causing tests/daemon-api/reviews-list.test.ts 'task
+      filter with raw ULID returns empty (no ULID resolution)' to fail because raw ULIDs now resolve
+      and return linked reviews."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-31T17:16:20.785Z
