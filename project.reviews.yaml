@@ -93819,7 +93819,18 @@ reviews:
     slugs: []
     title: Review task-e2e-batch-item-fetch (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm run build:e2e succeeded; npx playwright test tests/e2e/plans.spec.ts passed (35/35)
+          against the live /api/items/batch path.
+        name: playwright-plans-spec
+        required: true
+        runner: playwright
+        created_at: 2026-03-31T20:20:43.136Z
+        completed_at: 2026-03-31T20:20:43.136Z
     events:
       - _ulid: 01KN2RG403843BZ889EPH3DZHK
         actor: Jacob Chapel
@@ -93834,6 +93845,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-31T20:14:24.027Z
+      - _ulid: 01KN2RWG41AJE5W16X75NCX28J
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: playwright-plans-spec
+        timestamp: 2026-03-31T20:20:43.777Z
     examined_commit: f8075c29c4003fca5a5c141fc6448885b6e7956c
     external_links: []
     lifecycle_state: open
@@ -93846,5 +93864,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-31T20:13:58.147Z
-    updated_at: 2026-03-31T20:14:23.411Z
+    updated_at: 2026-03-31T20:20:43.136Z
     notes: []
