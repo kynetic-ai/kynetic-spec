@@ -93537,6 +93537,19 @@ reviews:
         runner: review
         created_at: 2026-03-31T19:51:02.961Z
         completed_at: 2026-03-31T19:51:02.961Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test failed on this snapshot with 16 failing suites / 14 failing tests, concentrated
+          in pre-existing dispatch/runtime and daemon task API areas outside the diff; changed files
+          in this review are limited to tests/e2e/plans.spec.ts. Full log:
+          /tmp/kspec-test-cache/01KN2PNFCC0A45SBRSY7F1CEDY/da52637427d0d492.log"
+        name: npm-test
+        required: false
+        runner: npm
+        created_at: 2026-03-31T19:51:34.701Z
+        completed_at: 2026-03-31T19:51:34.701Z
     events:
       - _ulid: 01KN2PPT2R1SG7030REW7QBN9D
         actor: Jacob Chapel
@@ -93579,6 +93592,13 @@ reviews:
           status: pass
           name: review-evidence-log
         timestamp: 2026-03-31T19:51:03.595Z
+      - _ulid: 01KN2Q74MWCT4GWN9H1GRQSAPZ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm-test
+        timestamp: 2026-03-31T19:51:35.325Z
     examined_commit: 922d82d4709a521bba65ef2e842ced72f675720e
     external_links: []
     lifecycle_state: open
@@ -93609,5 +93629,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-31T19:42:40.217Z
-    updated_at: 2026-03-31T19:51:02.961Z
+    updated_at: 2026-03-31T19:51:34.701Z
     notes: []
