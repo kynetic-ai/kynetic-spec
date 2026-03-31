@@ -1,1 +1,13 @@
-notes: []
+notes:
+  - _ulid: 01KN2PDZ7FB30CVV8WRTHQRP5Y
+    content: "Approach: cover the live UI consumer of POST /api/items/batch in plans view rather than
+      tasks/items, because current web UI wiring uses batch fetch for embedded plan content while
+      task/item reference rendering now goes through ReferenceLink without a visible batch call
+      site. Edge cases: unresolved refs should fall back to raw embedded YAML/error UI without
+      crashing; successful batch fetch must still render spec/task summaries and issue a single
+      request with the derived refs. Test plan: extend tests/e2e/plans.spec.ts with behavioral
+      Playwright coverage for the live batch request plus unresolved-ref handling, and keep
+      selectors aligned with current embedded card UI."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-31T19:37:50.575Z
