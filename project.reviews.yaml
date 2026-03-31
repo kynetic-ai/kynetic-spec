@@ -92060,6 +92060,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-31T00:20:04.657Z
+      - _ulid: 01KN0NQM6AB99WSQGSTPH62KA1
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN0M5HR1Q8EW0G77CHSABRAC
+        timestamp: 2026-03-31T00:47:09.514Z
     examined_commit: 6af239cd6fa544629b0fe4ec47cb2d8976d0390e
     external_links: []
     lifecycle_state: closed
@@ -92103,6 +92109,16 @@ reviews:
               To see a list of supported npm commands, run:
                 npm help exits 1. I verified the selector-focused suites pass, but the full run still reports three blockers: tests/dispatch-workspace-registry.test.ts times out in 'reconciliation acquires the lock per dirty record, not once for the entire batch', tests/integration.test.ts fails because dist/cli/commands/session/commands.js imports a missing sessionStaleCloseAction export, and tests/triage-cli.test.ts fails because dist/cli/commands/derive.js imports a missing AlignmentIndex export. The task cannot advance while the required suite is red.
             created_at: 2026-03-31T00:19:48.610Z
+          - _ulid: 01KN0NQKK9EJ2HJGJ03QDZX28G
+            author: Jacob Chapel
+            body: Re-verified on the rebased branch. The prior missing-export failures no longer reproduce, but
+              the required npm test gate is still red due to an unrelated timeout in
+              tests/dispatch-workspace-registry.test.ts ('reconciliation acquires the lock per dirty
+              record, not once for the entire batch'). I re-ran the failing cluster fresh and only
+              that dispatch-workspace-registry test remained reproducible. This branch diff against
+              origin/dev is limited to selector-related web UI and tests/e2e files, so the remaining
+              blocker is outside this task's code delta.
+            created_at: 2026-03-31T00:47:08.905Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -92113,7 +92129,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-31T00:20:04.656Z
     created_at: 2026-03-31T00:18:48.880Z
-    updated_at: 2026-03-31T00:20:04.657Z
+    updated_at: 2026-03-31T00:47:08.905Z
     notes: []
   - _ulid: 01KN0MA1E8R63PA5G5QFD6ZV83
     slugs: []
