@@ -10499,6 +10499,16 @@ observations:
     resolved_at: 2026-03-31T00:48:17.864Z
     resolved_by: Jacob Chapel
     created_at: 2026-03-31T00:47:11.094Z
+  - _ulid: 01KN0NZWSQHTXDF1P0JNRHNRTM
+    type: success
+    content: Checking the real /triage UI for an export action before writing Playwright tests prevented
+      fake coverage. When a task includes an API-only fallback branch, verifying the user-visible
+      affordance first lets the worker close the gap cleanly by documenting the missing UI and
+      creating follow-up tracking instead of inventing unreachable E2E assertions.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-03-31T00:51:40.471Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
