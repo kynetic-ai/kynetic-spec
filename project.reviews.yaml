@@ -92856,7 +92856,18 @@ reviews:
     slugs: []
     title: Review stale-selector e2e failures
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Exited 6 with repo warnings: orphaned skill dir, 31 alignment warnings, and 517
+          completeness warnings in this snapshot."
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-03-31T18:05:05.644Z
+        completed_at: 2026-03-31T18:05:05.644Z
     events:
       - _ulid: 01KN2GXYJESVMFCJK97S2PBN97
         actor: Jacob Chapel
@@ -92878,6 +92889,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN2H3ZKEDSKMR9E54GJQRJJ4
         timestamp: 2026-03-31T18:05:02.110Z
+      - _ulid: 01KN2H46C9YEVN1M3XYMMR1QGA
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-03-31T18:05:07.337Z
     examined_commit: e552a65400cb5a5076e7eba8248ec298541df14d
     external_links: []
     lifecycle_state: open
@@ -92910,5 +92928,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-31T18:01:42.741Z
-    updated_at: 2026-03-31T18:05:00.399Z
+    updated_at: 2026-03-31T18:05:05.644Z
     notes: []
