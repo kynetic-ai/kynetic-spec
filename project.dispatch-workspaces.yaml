@@ -29714,7 +29714,7 @@ workspaces:
         head: f8075c29c4003fca5a5c141fc6448885b6e7956c
         last_seen_at: 2026-03-31T20:12:55.607Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-e2e-batch-item-fetch-01kmz1bw
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: bb9c6193f3f3c4f8a20c55c8bda4d87da90746cc
     bootstrap:
       status: succeeded
@@ -29840,9 +29840,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-31T20:01:54.962Z
-      last_reconciled_at: 2026-03-31T20:13:31.046Z
+      last_reconciled_at: 2026-03-31T20:14:30.714Z
       created_at: 2026-03-31T19:41:57.456Z
-      updated_at: 2026-03-31T20:13:31.046Z
+      updated_at: 2026-03-31T20:14:30.714Z
     workspace_id: dispatch-workspace-01KN2FWE8F8R03JWB1FTJ2ZE1W
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
