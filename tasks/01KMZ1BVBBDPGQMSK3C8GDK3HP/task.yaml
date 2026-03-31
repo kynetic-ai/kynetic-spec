@@ -50,13 +50,8 @@ description: |
 spec_ref: null
 plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
 origin: derived
-status: blocked
-blocked_by:
-  - Selector-targeted UI/e2e fixes are complete, but the required verification gate is still red
-    because two task-review E2E failures reproduce unchanged on origin/dev (tests/e2e/tasks.spec.ts
-    Task Reviews Section cannot find task-review-row) and prior full-suite verification still hits
-    the unrelated dispatch-workspace-registry timeout. This selector-only branch cannot clear the
-    gate without expanding scope into separate pre-existing failures.
+status: in_progress
+blocked_by: []
 depends_on:
   - "@task-fix-loading-page-e2e"
 context: []
@@ -317,7 +312,26 @@ history:
         previous: null
     command: task-block
     timestamp: 2026-03-31T16:25:35.251Z
-prior_status: in_progress
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: blocked
+      blocked_by:
+        new: []
+        previous:
+          - Selector-targeted UI/e2e fixes are complete, but the required verification gate is still
+            red because two task-review E2E failures reproduce unchanged on origin/dev
+            (tests/e2e/tasks.spec.ts Task Reviews Section cannot find task-review-row) and prior
+            full-suite verification still hits the unrelated dispatch-workspace-registry timeout.
+            This selector-only branch cannot clear the gate without expanding scope into separate
+            pre-existing failures.
+      prior_status:
+        new: null
+        previous: in_progress
+    command: task-unblock
+    timestamp: 2026-03-31T17:45:08.677Z
+prior_status: null
 created_at: 2026-03-30T09:31:57.675Z
 started_at: 2026-03-31T00:39:00.108Z
 submitted_at: 2026-03-31T00:10:00.361Z
