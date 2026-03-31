@@ -93056,6 +93056,19 @@ reviews:
         runner: kspec
         created_at: 2026-03-31T18:33:01.839Z
         completed_at: 2026-03-31T18:33:01.839Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Fresh full-suite rerun still fails on tests/dispatch-workspace-registry.test.ts: dispatch
+          workspace registry shadow durability > reconciliation acquires the lock per dirty record,
+          not once for the entire batch (timeout 15000ms). Summary: 2 failed suites, 1 failed test,
+          2080 passed, 5 skipped."
+        name: npm test --fresh
+        required: true
+        runner: npm
+        created_at: 2026-03-31T18:33:03.709Z
+        completed_at: 2026-03-31T18:33:03.709Z
     events:
       - _ulid: 01KN2J3CZA73M11J1JDGW17M0P
         actor: Jacob Chapel
@@ -93091,6 +93104,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-31T18:33:02.442Z
+      - _ulid: 01KN2JQC2FS9W8T6VTEBFZ10CN
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test --fresh
+        timestamp: 2026-03-31T18:33:04.335Z
     examined_commit: 602c1f7779fd52717fb79d8cc3c66595f4d66a1d
     external_links: []
     lifecycle_state: open
@@ -93137,5 +93157,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-31T18:22:09.899Z
-    updated_at: 2026-03-31T18:33:01.839Z
+    updated_at: 2026-03-31T18:33:03.709Z
     notes: []
