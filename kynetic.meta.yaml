@@ -10639,6 +10639,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-31T18:53:18.673Z
+  - _ulid: 01KN2MJHCM1NNADTT9Z6N0JRC4
+    type: friction
+    content: Task-scoped UI/E2E fix cycles are getting blocked by the required full-suite gate even when
+      the remaining red state is a single unrelated dispatch-workspace-registry timeout. This task's
+      selector-focused bundle is green, but submit is still blocked on
+      tests/dispatch-workspace-registry.test.ts 'reconciliation acquires the lock per dirty record,
+      not once for the entire batch' (fresh log
+      /tmp/kspec-test-cache/01KN2KXMRN1G4VQC487YAF725K/736a0c514b7215bc.log).
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-03-31T19:05:23.092Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
