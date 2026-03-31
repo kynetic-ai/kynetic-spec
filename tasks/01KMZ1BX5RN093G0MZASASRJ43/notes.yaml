@@ -23,3 +23,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-03-31T01:04:03.890Z
+  - _ulid: 01KN0PY8VVNHT1NTAEE2PCDMSG
+    content: "Approach: implement the missing /triage export surface instead of re-documenting the gap.
+      Reuse the existing daemon export endpoint with a small web-ui fetch helper and in-page preview
+      for Markdown/JSON. Edge cases: static mode stays read-only with no export controls, export
+      request loading/error states do not interfere with submit/act flows, and fixture-backed
+      assertions must be deterministic for both formats. Test plan: add Playwright coverage in
+      tests/e2e/triage.spec.ts that triggers both export formats from /triage, waits for
+      /api/triage/export responses, and verifies preview content includes known triage fixture
+      data."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-31T01:08:15.867Z
