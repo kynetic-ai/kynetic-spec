@@ -81710,6 +81710,30 @@ reviews:
         payload:
           thread_ulid: 01KMXTC4GX1XSZDD9ZDHY65PNA
         timestamp: 2026-03-31T00:33:49.743Z
+      - _ulid: 01KN0MZSPGBZSPGZADH6G7CYVX
+        actor: Test User
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMXT9TMXP60W9K29S6YS3ZXK
+        timestamp: 2026-03-31T00:34:08.720Z
+      - _ulid: 01KN0MZV88GKKAGWM9JABVJ3N6
+        actor: Test User
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMXT9TMXP60W9K29S6YS3ZXK
+        timestamp: 2026-03-31T00:34:10.313Z
+      - _ulid: 01KN0MZWRC07HHT0RDD73JRYBJ
+        actor: Test User
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMXTC2TM1RX7D43X6F41G2ZZ
+        timestamp: 2026-03-31T00:34:11.852Z
+      - _ulid: 01KN0MZYAYZ72BYJRPEC007FK6
+        actor: Test User
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMXTC2TM1RX7D43X6F41G2ZZ
+        timestamp: 2026-03-31T00:34:13.470Z
     examined_commit: 16bf033f141f9de2e878c93802f2979933dacc09
     external_links: []
     lifecycle_state: closed
@@ -81737,7 +81761,16 @@ reviews:
               retry-ceiling -> banner path this task set out to cover can still regress without any
               full-stack test failing."
             created_at: 2026-03-29T22:09:16.957Z
+          - _ulid: 01KN0MZS305WB543K1WHA6DTCY
+            author: Test User
+            body: "Fixed in commits e25be6f61 and 5ec099509. The timeout scenario is no longer checked in as a
+              skipped test: it now waits through the real 30s retry ceiling, asserts the timeout
+              banner and Retry button, clicks Retry while the cache gate is still held, and then
+              proves recovery after the gate is released."
+            created_at: 2026-03-31T00:34:08.096Z
         kind: blocker
+        resolved_at: 2026-03-31T00:34:09.708Z
+        resolved_by: Test User
       - _ulid: 01KMXT9WANBQ8RGBTMJCX49C1H
         anchor:
           type: code
@@ -81782,7 +81815,16 @@ reviews:
               elsewhere does not satisfy this task's missing full-stack scenario; as submitted, the
               third scenario is explicitly skipped.
             created_at: 2026-03-29T22:10:30.868Z
+          - _ulid: 01KN0MZW5V5APYB8D6K136NMDB
+            author: Test User
+            body: Fixed in commits e25be6f61 and 5ec099509. This task now includes the missing full-stack
+              timeout coverage for @ui-data-freshness ac-warming-timeout instead of relying only on
+              route-mocked view tests. The new E2E covers banner display after the retry ceiling and
+              successful recovery through the manual retry path.
+            created_at: 2026-03-31T00:34:11.259Z
         kind: blocker
+        resolved_at: 2026-03-31T00:34:12.855Z
+        resolved_by: Test User
       - _ulid: 01KMXTC4GX1XSZDD9ZDHY65PNA
         anchor:
           type: code
@@ -81846,7 +81888,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T22:09:45.971Z
     created_at: 2026-03-29T22:04:14.293Z
-    updated_at: 2026-03-31T00:33:49.144Z
+    updated_at: 2026-03-31T00:34:12.855Z
     notes: []
   - _ulid: 01KMYZ9YJ6JJA2885K48QQ698W
     slugs: []
