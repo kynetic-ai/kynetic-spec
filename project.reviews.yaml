@@ -91873,7 +91873,20 @@ reviews:
     slugs: []
     title: Review task-fix-stale-selectors (cycle 2)
     author: Test User
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite failed on this snapshot. Failing tests: dispatch-workspace-registry shadow
+          durability reconciliation timeout/cleanup, integration task note CLI import error (missing
+          sessionStaleCloseAction export), triage list CLI import error (missing AlignmentIndex
+          export). Log: /tmp/kspec-test-cache/01KN0KPYNJF3RVYXKGE503Q4XZ/a838395fb1204825.log"
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-31T00:19:46.748Z
+        completed_at: 2026-03-31T00:19:46.748Z
     events:
       - _ulid: 01KN0M3QDFZZX231Q77QEEB9V5
         actor: Test User
@@ -91895,6 +91908,13 @@ reviews:
           kind: nit
           thread_ulid: 01KN0M5BN9V633TA1GZQEGRKP1
         timestamp: 2026-03-31T00:19:42.981Z
+      - _ulid: 01KN0M5GGRDQ5ZK6W4HS4VDV8S
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-31T00:19:47.353Z
     examined_commit: 6af239cd6fa544629b0fe4ec47cb2d8976d0390e
     external_links: []
     lifecycle_state: open
@@ -91926,5 +91946,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-31T00:18:48.880Z
-    updated_at: 2026-03-31T00:19:42.378Z
+    updated_at: 2026-03-31T00:19:46.748Z
     notes: []
