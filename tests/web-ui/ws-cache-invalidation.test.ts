@@ -309,3 +309,146 @@ describe("ws-invalidation cache:status handling", () => {
     });
   });
 });
+
+// AC: @ui-data-freshness ac-3 — WebSocket events invalidate affected cached data
+// AC: @ui-data-freshness ac-4 — Agent status stays fresh via event-driven invalidation
+describe("ws-invalidation agents topic scoping", () => {
+  let mockQueryClient: ReturnType<typeof createMockQueryClient>;
+
+  beforeEach(() => {
+    connectionHandlers.clear();
+    subscribedTopics.clear();
+    mockQueryClient = createMockQueryClient();
+  });
+
+  afterEach(() => {
+    teardownWsInvalidation();
+  });
+
+  describe("completion events only invalidate sessions, not agents", () => {
+    for (const eventName of [
+      "message_complete",
+      "thinking_complete",
+      "tool_call_complete",
+    ]) {
+      it(`${eventName} with session_id invalidates sessions.all but NOT agents.all`, () => {
+        setupWsInvalidation(mockQueryClient);
+        const event = makeBroadcastEvent("agents", eventName, {
+          session_id: "01TEST_SESSION_ID",
+          invocation_id: "01TEST_INVOCATION",
+        });
+
+        dispatchEvent("agents", event);
+
+        // Should invalidate sessions
+        expect(mockQueryClient.invalidateQueries).toHaveBeenCalledWith({
+          queryKey: queryKeys.sessions.all,
+        });
+        // Should NOT invalidate agents
+        expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
+          queryKey: queryKeys.agents.all,
+        });
+      });
+
+      it(`${eventName} without session_id does not invalidate agents.all`, () => {
+        setupWsInvalidation(mockQueryClient);
+        const event = makeBroadcastEvent("agents", eventName, {
+          invocation_id: "01TEST_INVOCATION",
+        });
+
+        dispatchEvent("agents", event);
+
+        // Without session_id, should still not invalidate agents.all
+        expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
+          queryKey: queryKeys.agents.all,
+        });
+      });
+    }
+  });
+
+  describe("streaming progress events produce no invalidation", () => {
+    for (const eventName of [
+      "message_start",
+      "message_progress",
+      "thinking_start",
+      "thinking_progress",
+      "tool_call_start",
+      "tool_call_input",
+    ]) {
+      it(`${eventName} does not invalidate any queries`, () => {
+        setupWsInvalidation(mockQueryClient);
+        const event = makeBroadcastEvent("agents", eventName, {
+          session_id: "01TEST_SESSION_ID",
+        });
+
+        dispatchEvent("agents", event);
+
+        expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalled();
+      });
+    }
+  });
+
+  describe("dispatch status events invalidate agent queries without touching sessions", () => {
+    it("sync_state invalidates agents.all but not sessions.all", () => {
+      setupWsInvalidation(mockQueryClient);
+      const event = makeBroadcastEvent("agents", "sync_state", {
+        degraded: true,
+        reason: "integration target diverged",
+        enteredAt: new Date().toISOString(),
+      });
+
+      dispatchEvent("agents", event);
+
+      expect(mockQueryClient.invalidateQueries).toHaveBeenCalledWith({
+        queryKey: queryKeys.agents.all,
+      });
+      expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
+        queryKey: queryKeys.sessions.all,
+      });
+    });
+
+    it("unknown non-stream agents events conservatively invalidate agents.all only", () => {
+      setupWsInvalidation(mockQueryClient);
+      const event = makeBroadcastEvent("agents", "some_future_status_event", {
+        dispatch_enabled: false,
+      });
+
+      dispatchEvent("agents", event);
+
+      expect(mockQueryClient.invalidateQueries).toHaveBeenCalledWith({
+        queryKey: queryKeys.agents.all,
+      });
+      expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
+        queryKey: queryKeys.sessions.all,
+      });
+    });
+  });
+
+  describe("agent lifecycle events still invalidate agents.all", () => {
+    // The daemon broadcasts a single "agent_invocation" event with data.status
+    // carrying "started", "completed", or "failed" — not separate event names.
+    for (const status of ["started", "completed", "failed"]) {
+      it(`agent_invocation with status="${status}" invalidates both agents.all and sessions.all`, () => {
+        setupWsInvalidation(mockQueryClient);
+        const event = makeBroadcastEvent("agents", "agent_invocation", {
+          session_id: "01TEST_SESSION_ID",
+          agent_id: "task-worker",
+          task_id: "@task-auth",
+          task_title: "Implement authentication",
+          status,
+          timestamp: Date.now(),
+        });
+
+        dispatchEvent("agents", event);
+
+        expect(mockQueryClient.invalidateQueries).toHaveBeenCalledWith({
+          queryKey: queryKeys.agents.all,
+        });
+        expect(mockQueryClient.invalidateQueries).toHaveBeenCalledWith({
+          queryKey: queryKeys.sessions.all,
+        });
+      });
+    }
+  });
+
+});
