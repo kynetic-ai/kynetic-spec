@@ -10400,6 +10400,17 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-03-30T23:57:12.959Z
+  - _ulid: 01KN0KHQV0XMZ1SNB788QNCJ12
+    type: friction
+    content: npm test full-suite run on dispatch/task/task-fix-stale-selectors/01kmz1bv produced broad
+      timeout/STACK_TRACE_ERROR failures across daemon/dispatch suites even though sampled failing
+      files (reviews-list, tasks, daemon-read-path, agent-dispatch-engine, cli-serve) all pass in
+      isolation; review gates are being blocked by suite-level instability rather than task-local
+      regressions.
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-31T00:08:59.488Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
