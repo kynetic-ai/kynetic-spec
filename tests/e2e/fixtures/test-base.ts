@@ -28,6 +28,10 @@ interface DaemonFixture {
   baseUrl: string;
   /** Base URL for WebSocket connections (ws://localhost:<port>) */
   wsUrl: string;
+  /** Stop the isolated daemon while keeping fixture data intact */
+  stop: () => Promise<void>;
+  /** Start or restart the isolated daemon on the same port */
+  start: () => Promise<void>;
   /** Create a valid second project for multi-project tests */
   createSecondProject: () => Promise<string>;
 }
@@ -146,69 +150,108 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
         );
       }
 
-      // Start daemon directly via bun (bypasses CLI PID-file timeout which is
-      // unreliable under parallel load). Keep as a child process for direct cleanup.
-      const daemonProcess: ChildProcess = spawn(
-        "bun",
-        [DAEMON_ENTRY, "--port", String(port), "--kspec-dir", tempDir],
-        {
+      let daemonProcess: ChildProcess | null = null;
+      let daemonStderr = "";
+      const maxAttempts = 150;
+      const pollInterval = 100;
+
+      async function waitForDaemonReady(): Promise<void> {
+        for (let i = 0; i < maxAttempts; i++) {
+          if (daemonProcess?.exitCode !== null) {
+            throw new Error(
+              `Daemon process exited with code ${daemonProcess.exitCode} before becoming ready.\n${daemonStderr}`,
+            );
+          }
+          try {
+            const response = await fetch(`${baseUrl}/api/health`);
+            if (response.ok) break;
+          } catch {
+            // Daemon not ready yet
+          }
+          if (i === maxAttempts - 1) {
+            throw new Error(
+              `Daemon failed to become ready after ${maxAttempts * pollInterval}ms.\n${daemonStderr}`,
+            );
+          }
+          await new Promise((r) => setTimeout(r, pollInterval));
+        }
+
+        // Wait for entity cache to finish loading (cache_status: "ready")
+        for (let i = 0; i < maxAttempts; i++) {
+          try {
+            const response = await fetch(`${baseUrl}/api/tasks`);
+            if (response.ok) {
+              const body = await response.json();
+              if (body?.meta?.cache_status === "ready") break;
+            }
+          } catch {
+            // Not ready yet
+          }
+          if (i === maxAttempts - 1) {
+            throw new Error(
+              `Daemon cache failed to become ready after ${maxAttempts * pollInterval}ms.\n${daemonStderr}`,
+            );
+          }
+          await new Promise((r) => setTimeout(r, pollInterval));
+        }
+      }
+
+      async function startDaemon(): Promise<void> {
+        if (daemonProcess && daemonProcess.exitCode === null) {
+          return;
+        }
+
+        daemonStderr = "";
+        daemonProcess = spawn("bun", [DAEMON_ENTRY, "--port", String(port), "--kspec-dir", tempDir], {
           cwd: tempDir,
           stdio: "pipe",
           env: { ...isolatedEnv, BUN_ENV: "production" },
-        },
-      );
+        });
 
-      // Capture stderr for diagnostics if startup fails
-      let daemonStderr = "";
-      daemonProcess.stderr?.on("data", (chunk: Buffer) => {
-        daemonStderr += chunk.toString();
-      });
+        daemonProcess.stderr?.on("data", (chunk: Buffer) => {
+          daemonStderr += chunk.toString();
+        });
 
-      // Wait for daemon to be ready by polling health endpoint
-      // Use generous timeout (15s) to handle parallel worker load
-      const maxAttempts = 150;
-      const pollInterval = 100;
-      for (let i = 0; i < maxAttempts; i++) {
-        // Check if daemon process exited unexpectedly
-        if (daemonProcess.exitCode !== null) {
-          throw new Error(
-            `Daemon process exited with code ${daemonProcess.exitCode} before becoming ready.\n${daemonStderr}`,
-          );
-        }
-        try {
-          const response = await fetch(`${baseUrl}/api/health`);
-          if (response.ok) break;
-        } catch {
-          // Daemon not ready yet
-        }
-        if (i === maxAttempts - 1) {
-          throw new Error(
-            `Daemon failed to become ready after ${maxAttempts * pollInterval}ms.\n${daemonStderr}`,
-          );
-        }
-        await new Promise((r) => setTimeout(r, pollInterval));
+        await waitForDaemonReady();
       }
 
-      // Wait for entity cache to finish loading (cache_status: "ready")
-      // Without this, the daemon serves "loading" responses with empty data,
-      // causing intermittent test failures when pages render before data arrives
-      for (let i = 0; i < maxAttempts; i++) {
+      async function stopDaemon(): Promise<void> {
+        if (!daemonProcess || daemonProcess.exitCode !== null) {
+          return;
+        }
+
         try {
-          const response = await fetch(`${baseUrl}/api/tasks`);
-          if (response.ok) {
-            const body = await response.json();
-            if (body?.meta?.cache_status === "ready") break;
+          execSync(`node ${KSPEC_CLI} serve stop`, {
+            cwd: tempDir,
+            stdio: "ignore",
+            timeout: 10000,
+            env: isolatedEnv,
+          });
+        } catch {
+          if (daemonProcess.pid && daemonProcess.exitCode === null) {
+            daemonProcess.kill("SIGTERM");
           }
-        } catch {
-          // Not ready yet
         }
-        if (i === maxAttempts - 1) {
-          throw new Error(
-            `Daemon cache failed to become ready after ${maxAttempts * pollInterval}ms.\n${daemonStderr}`,
-          );
+
+        if (daemonProcess.exitCode === null) {
+          await new Promise<void>((resolve) => {
+            const timeout = setTimeout(() => {
+              if (daemonProcess?.exitCode === null) {
+                daemonProcess.kill("SIGKILL");
+              }
+              resolve();
+            }, 5000);
+            daemonProcess?.once("exit", () => {
+              clearTimeout(timeout);
+              resolve();
+            });
+          });
         }
-        await new Promise((r) => setTimeout(r, pollInterval));
+
+        daemonProcess = null;
       }
+
+      await startDaemon();
 
       // Helper to create a valid second project for multi-project tests
       // AC: @multi-directory-daemon ac-25 - Tests need multiple valid projects
@@ -264,42 +307,19 @@ tasks: []
       }
 
       // AC: @e2e-test-daemon-isolation ac-5 — propagate port/URLs to all tests
-      await use({ tempDir, kspecDir, port, baseUrl, wsUrl, createSecondProject });
+      await use({
+        tempDir,
+        kspecDir,
+        port,
+        baseUrl,
+        wsUrl,
+        stop: stopDaemon,
+        start: startDaemon,
+        createSecondProject,
+      });
 
       // AC: @e2e-test-daemon-isolation ac-4 — stop daemon via scoped `kspec serve stop`
-      // The daemon writes its PID file to the isolated HOME's config dir during startup.
-      // Using `kspec serve stop` reads that PID file and sends SIGTERM (with SIGKILL fallback),
-      // matching the spec requirement for CLI-based teardown rather than direct process killing.
-      try {
-        execSync(`node ${KSPEC_CLI} serve stop`, {
-          cwd: tempDir,
-          stdio: "ignore",
-          timeout: 10000,
-          env: isolatedEnv,
-        });
-      } catch {
-        // Fallback: if CLI stop fails (e.g. PID file missing), terminate the child process directly
-        if (daemonProcess.pid && daemonProcess.exitCode === null) {
-          daemonProcess.kill("SIGTERM");
-        }
-      }
-
-      // Wait for the daemon child process to exit (whether stopped by CLI or fallback SIGTERM)
-      if (daemonProcess.exitCode === null) {
-        await new Promise<void>((resolve) => {
-          const timeout = setTimeout(() => {
-            // Force kill if process hasn't exited after graceful attempts
-            if (daemonProcess.exitCode === null) {
-              daemonProcess.kill("SIGKILL");
-            }
-            resolve();
-          }, 5000);
-          daemonProcess.on("exit", () => {
-            clearTimeout(timeout);
-            resolve();
-          });
-        });
-      }
+      await stopDaemon();
 
       // Remove temp directories
       try {

@@ -43,13 +43,13 @@
 // AC: @trait-localhost-security ac-1 — N/A: localhost security tested in api-server.spec.ts
 // AC: @trait-localhost-security ac-2 — N/A: non-localhost rejection tested in api-server.spec.ts
 // AC: @trait-localhost-security ac-3 — N/A: daemon does not support external binding configuration
-// AC: @trait-websocket-protocol ac-1 — N/A: WebSocket connection lifecycle tested in api-websocket.spec.ts
-// AC: @trait-websocket-protocol ac-2 — N/A: subscribe ack tested in api-websocket.spec.ts
-// AC: @trait-websocket-protocol ac-3 — N/A: broadcast format tested in api-websocket.spec.ts
-// AC: @trait-websocket-protocol ac-4 — N/A: heartbeat tested in api-websocket.spec.ts
-// AC: @trait-websocket-protocol ac-5 — N/A: ping/pong timeout tested in api-websocket.spec.ts
-// AC: @trait-websocket-protocol ac-6 — N/A: backpressure tested in api-websocket.spec.ts
-// AC: @trait-websocket-protocol ac-7 — N/A: close codes tested in api-websocket.spec.ts
+// AC: @trait-websocket-protocol ac-1 — N/A: server connection lifecycle tested in daemon-api/websocket-protocol.test.ts
+// AC: @trait-websocket-protocol ac-2 — N/A: subscribe ack tested in daemon-api/websocket-protocol.test.ts
+// AC: @trait-websocket-protocol ac-3 — N/A: broadcast format tested in daemon-api/websocket-protocol.test.ts
+// AC: @trait-websocket-protocol ac-4 — N/A: heartbeat timing tested in daemon-heartbeat.test.ts
+// AC: @trait-websocket-protocol ac-5 — N/A: pong-timeout handling tested in daemon-heartbeat.test.ts
+// AC: @trait-websocket-protocol ac-6 — N/A: backpressure handling is outside this watcher-focused spec
+// AC: @trait-websocket-protocol ac-7 — N/A: clean shutdown code tested in daemon-api/websocket-protocol.test.ts; timeout close code tested in daemon-heartbeat.test.ts
 // AC: @trait-websocket-protocol ac-8 — N/A: client reconnection sequence reset tested in connection.spec.ts
 
 import { mkdirSync, writeFileSync } from "fs";

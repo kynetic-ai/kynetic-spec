@@ -20,14 +20,14 @@
 // Trait N/A annotations — @triage-daemon-api inherits from @trait-api-endpoint and @trait-websocket-protocol:
 // AC: @trait-api-endpoint ac-5 — covered: shadow commits triggered by POST /api/triage, POST /:ref/override, POST /:ref/act mutations; commitIfShadow called in each handler and verified implicitly by mutation persistence tests
 // AC: @trait-api-endpoint ac-6 — N/A: X-Request-Id header is infrastructure concern; not tested in domain E2E tests
-// AC: @trait-websocket-protocol ac-1 — N/A: WebSocket connection lifecycle; tested in api-websocket.spec.ts
-// AC: @trait-websocket-protocol ac-2 — N/A: WebSocket subscribe command; tested in api-websocket.spec.ts
+// AC: @trait-websocket-protocol ac-1 — N/A: server connection lifecycle; tested in daemon-api/websocket-protocol.test.ts
+// AC: @trait-websocket-protocol ac-2 — N/A: WebSocket subscribe command; tested in daemon-api/websocket-protocol.test.ts
 // AC: @trait-websocket-protocol ac-3 — covered: triage mutation routes broadcast triage:updates events with protocol payload fields (see tests below)
-// AC: @trait-websocket-protocol ac-4 — N/A: WebSocket heartbeat timing; tested in future api-websocket E2E tests
-// AC: @trait-websocket-protocol ac-5 — N/A: WebSocket ping/pong timeout; tested in future api-websocket E2E tests
-// AC: @trait-websocket-protocol ac-6 — N/A: WebSocket backpressure handling; tested in future api-websocket E2E tests
-// AC: @trait-websocket-protocol ac-7 — N/A: WebSocket close codes; tested in future api-websocket E2E tests
-// AC: @trait-websocket-protocol ac-8 — N/A: WebSocket reconnection; tested in future api-websocket E2E tests
+// AC: @trait-websocket-protocol ac-4 — N/A: heartbeat timing tested in daemon-heartbeat.test.ts
+// AC: @trait-websocket-protocol ac-5 — N/A: pong-timeout handling tested in daemon-heartbeat.test.ts
+// AC: @trait-websocket-protocol ac-6 — N/A: backpressure handling is outside this triage-focused spec
+// AC: @trait-websocket-protocol ac-7 — N/A: clean shutdown code tested in daemon-api/websocket-protocol.test.ts; timeout close code tested in daemon-heartbeat.test.ts
+// AC: @trait-websocket-protocol ac-8 — N/A: reconnection behavior tested in connection.spec.ts
 
 import { test, expect } from "./fixtures/test-base";
 
