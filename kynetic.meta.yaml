@@ -10686,6 +10686,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-31T19:41:16.316Z
+  - _ulid: 01KN2PM8EA7KVT233B8RXK9W2N
+    type: friction
+    content: "Task descriptions for UI test gaps can drift after refactors: this batch-fetch task still
+      pointed at tasks/items flows after the real batch consumer moved to plans embedded content,
+      which required extra investigation before implementation."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-03-31T19:41:16.618Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
