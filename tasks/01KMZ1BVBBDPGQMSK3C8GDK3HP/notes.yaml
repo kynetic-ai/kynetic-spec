@@ -150,3 +150,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-03-31T17:46:41.457Z
+  - _ulid: 01KN2GK6D4Y8QW1FWD6S8RJJQ6
+    content: "Selector-fix checkpoint after rebase: items.spec.ts now waits for the /specs tree and node
+      title button before clicking, and the task modal deep-link cleanup test now uses the stable
+      pending-review task slug. Verification: npm run test:e2e -- tests/e2e/items.spec.ts
+      tests/e2e/tasks.spec.ts => 49 passed, 3 failed, 1 skipped; all remaining failures are
+      task-review section integration cases. Root cause is not stale selectors: TaskDetailContent
+      fetches /api/reviews?task=<task ULID> while current fixtures/backend semantics only link the
+      pending-review reviews by task slug/review_ref, so task-review rows never materialize on dev
+      semantics. kspec validate exits 6 with pre-existing repo warnings only."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-31T17:55:50.308Z
