@@ -10485,6 +10485,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-31T00:36:12.094Z
+  - _ulid: 01KN0NQNQPDP5BE59NH0STAQVV
+    type: friction
+    content: "Selector-task resubmission blocked by unrelated required npm test failure after rebase:
+      dispatch-workspace-registry shadow durability test times out even though branch diff only
+      touches selector-related web-ui/e2e files. This makes fix-cycle verification depend on broader
+      dispatch-suite stability rather than task-local behavior."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-03-31T00:47:11.094Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
