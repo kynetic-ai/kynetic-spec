@@ -92903,9 +92903,25 @@ reviews:
           kind: nit
           thread_ulid: 01KN2H4A2KHDSZP936EBA1G9MC
         timestamp: 2026-03-31T18:05:13.296Z
+      - _ulid: 01KN2H89PTPT90FKPQDN97TZNT
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-31T18:07:21.818Z
+      - _ulid: 01KN2H89PTD33YFE9DWNA247GX
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-31T18:07:21.818Z
     examined_commit: e552a65400cb5a5076e7eba8248ec298541df14d
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -92955,7 +92971,14 @@ reviews:
               paths reviewed), security (no new finding)."
             created_at: 2026-03-31T18:05:11.123Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-31T18:07:21.818Z
     created_at: 2026-03-31T18:01:42.741Z
-    updated_at: 2026-03-31T18:05:11.123Z
+    updated_at: 2026-03-31T18:07:21.818Z
     notes: []
