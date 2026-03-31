@@ -60,7 +60,7 @@ tags:
   - test
   - e2e
 vcs_refs: []
-review_ref: "@01KN2GXYJNHPN04BTKGAZJXC9C"
+review_ref: "@01KN2J3CZBR83W2EKRRTMKDVPS"
 submission_linkage:
   review_url: null
   branch: dev
@@ -446,6 +446,13 @@ history:
         previous: 2026-03-31T18:00:48.405Z
     command: task-submit
     timestamp: 2026-03-31T18:19:40.904Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KN2J3CZBR83W2EKRRTMKDVPS"
+        previous: "@01KN2GXYJNHPN04BTKGAZJXC9C"
+    command: review-link
+    timestamp: 2026-03-31T18:22:12.437Z
 prior_status: null
 created_at: 2026-03-30T09:31:57.675Z
 started_at: 2026-03-31T18:11:38.924Z
