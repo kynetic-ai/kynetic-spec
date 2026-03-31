@@ -81674,6 +81674,42 @@ reviews:
           kind: blocker
           thread_ulid: 01KMXTC67SFRCBN48KE8B67HHZ
         timestamp: 2026-03-29T22:10:34.952Z
+      - _ulid: 01KN0MYZEY6CQVPSKD6E33N759
+        actor: Test User
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMXT9WANBQ8RGBTMJCX49C1H
+        timestamp: 2026-03-31T00:33:41.854Z
+      - _ulid: 01KN0MZ117S9FV2XFEYXYKKJDC
+        actor: Test User
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMXT9WANBQ8RGBTMJCX49C1H
+        timestamp: 2026-03-31T00:33:43.463Z
+      - _ulid: 01KN0MZ2JGE936PQFHQ9B601GR
+        actor: Test User
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMXTC67SFRCBN48KE8B67HHZ
+        timestamp: 2026-03-31T00:33:45.040Z
+      - _ulid: 01KN0MZ43GSJS1KVZRVKK79TVP
+        actor: Test User
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMXTC67SFRCBN48KE8B67HHZ
+        timestamp: 2026-03-31T00:33:46.608Z
+      - _ulid: 01KN0MZ5N0JK8V24NZYF9B8B91
+        actor: Test User
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMXTC4GX1XSZDD9ZDHY65PNA
+        timestamp: 2026-03-31T00:33:48.192Z
+      - _ulid: 01KN0MZ75FWF2FVWMNM56T1TPP
+        actor: Test User
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMXTC4GX1XSZDD9ZDHY65PNA
+        timestamp: 2026-03-31T00:33:49.743Z
     examined_commit: 16bf033f141f9de2e878c93802f2979933dacc09
     external_links: []
     lifecycle_state: closed
@@ -81719,7 +81755,16 @@ reviews:
               data. The task exists to catch exactly that cross-system regression, so this needs an
               assertion that distinguishes the push-driven path from the polling fallback.
             created_at: 2026-03-29T22:09:18.677Z
+          - _ulid: 01KN0MYYVNYVV5F1793RMYCR62
+            author: Test User
+            body: Fixed in commits e25be6f61 and 5ec099509. The auto-transition scenario now records real
+              browser WebSocket frames, waits for cache:status/domain_ready for the delayed second
+              project, and asserts an immediate post-broadcast /api/tasks refetch arrives before the
+              2s retry fallback window.
+            created_at: 2026-03-31T00:33:41.237Z
         kind: blocker
+        resolved_at: 2026-03-31T00:33:42.850Z
+        resolved_by: Test User
       - _ulid: 01KMXTC2TM1RX7D43X6F41G2ZZ
         anchor:
           type: code
@@ -81755,7 +81800,15 @@ reviews:
               for loaded content (), but the test never asserts that the list or empty-state content
               for the second project actually rendered.
             created_at: 2026-03-29T22:10:32.605Z
+          - _ulid: 01KN0MZ51923DT34YV4WES74W4
+            author: Test User
+            body: Fixed in commits e25be6f61 and 5ec099509. The loaded-state assertion now waits for the real
+              task list container and the second project's empty-state content (No tasks found),
+              rather than only checking the always-present page heading and skeleton disappearance.
+            created_at: 2026-03-31T00:33:47.561Z
         kind: blocker
+        resolved_at: 2026-03-31T00:33:49.144Z
+        resolved_by: Test User
       - _ulid: 01KMXTC67SFRCBN48KE8B67HHZ
         anchor:
           type: code
@@ -81774,7 +81827,16 @@ reviews:
               means a regression in the real-time domain_ready subscription can still pass this
               test, so the primary integration path this task was meant to cover remains unverified.
             created_at: 2026-03-29T22:10:34.361Z
+          - _ulid: 01KN0MZ1Z4BMYF1RG7P1APJCE1
+            author: Test User
+            body: "Fixed in commits e25be6f61 and 5ec099509. This no longer accepts retry fallback as a
+              sufficient proof: the test requires the real domain_ready broadcast plus a refetch
+              that lands before the retry delay, so a broken WebSocket/query-key mapping now fails
+              the test."
+            created_at: 2026-03-31T00:33:44.420Z
         kind: blocker
+        resolved_at: 2026-03-31T00:33:45.992Z
+        resolved_by: Test User
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -81784,7 +81846,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T22:09:45.971Z
     created_at: 2026-03-29T22:04:14.293Z
-    updated_at: 2026-03-29T22:10:34.361Z
+    updated_at: 2026-03-31T00:33:49.144Z
     notes: []
   - _ulid: 01KMYZ9YJ6JJA2885K48QQ698W
     slugs: []
