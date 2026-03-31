@@ -93704,6 +93704,13 @@ reviews:
           status: pass
           name: npm test -- --fresh
         timestamp: 2026-03-31T20:11:47.681Z
+      - _ulid: 01KN2RC6EDQN4VD5QBC97FMVQ1
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KN2RC5TW581PB6VX3N40SAHK
+        timestamp: 2026-03-31T20:11:49.581Z
     examined_commit: a1e8232e6c4c544557f98b3223a10c3a544639c5
     external_links: []
     lifecycle_state: open
@@ -93713,8 +93720,35 @@ reviews:
       content_hash: ""
       ref: "@01KN2FWE8F8R03JWB1FTJ2ZE1W"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KN2RC5TW581PB6VX3N40SAHK
+        entries:
+          - _ulid: 01KN2RC5TX9E8JYDK2HZTTVY43
+            author: Jacob Chapel
+            body: >-
+              Evidence log:
+
+              Files read: vitest.config.ts, tests/daemon-agent-dispatch-routes.test.ts,
+              scripts/test.cjs, tests/daemon-api/helpers.ts,
+              packages/daemon/src/routes/agent-dispatch.ts, src/parser/task-data-manager.ts,
+              src/parser/split-backend.ts, dist/parser/task-data-manager.js,
+              dist/parser/split-backend.js, dist/daemon/routes/agent-dispatch.ts.
+
+              Commands run: git diff --stat, git diff --name-only, git diff --unified=80, git log --
+              tests/daemon-agent-dispatch-routes.test.ts vitest.config.ts, kspec task get --json,
+              kspec review for-task, kspec validate, grep AC annotations, npm test -- --fresh.
+
+              Claims verified: verified the new Vitest projects config still executes the four
+              dispatch-heavy suites under npm test; verified the src split-backend registration in
+              daemon-agent-dispatch-routes is redundant rather than behavior-changing for the
+              exercised dist route paths; verified the full project gate is green on this snapshot.
+
+              Categories searched: correctness (no findings), edge cases/config semantics (no
+              findings), error handling (no findings), test quality/coverage annotations (no
+              findings), integration/full-suite execution (no findings).$
+            created_at: 2026-03-31T20:11:48.957Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-31T20:02:48.042Z
-    updated_at: 2026-03-31T20:11:47.086Z
+    updated_at: 2026-03-31T20:11:48.957Z
     notes: []
