@@ -10408,8 +10408,12 @@ observations:
       isolation; review gates are being blocked by suite-level instability rather than task-local
       regressions.
     author: Test User
-    resolution: null
-    resolved: false
+    resolution: "Duplicate of existing full-suite instability tracking: friction @01KN007J plus
+      completed task @01KMNY3N already cover noisy STACK_TRACE_ERROR/timeout failures and the need
+      to confirm reported failures with isolated reruns."
+    resolved: true
+    resolved_at: 2026-03-31T00:11:07.520Z
+    resolved_by: Test User
     created_at: 2026-03-31T00:08:59.488Z
   - _ulid: 01KN0KN0NZ6RCVR2SGQYJFXFG8
     type: friction
