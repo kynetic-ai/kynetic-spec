@@ -92937,6 +92937,12 @@ reviews:
         payload:
           thread_ulid: 01KN2H3ZKEDSKMR9E54GJQRJJ4
         timestamp: 2026-03-31T18:19:19.425Z
+      - _ulid: 01KN2HYASATS94XKTBM2STMJF0
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KN2H4A2KHDSZP936EBA1G9MC
+        timestamp: 2026-03-31T18:19:23.820Z
     examined_commit: e552a65400cb5a5076e7eba8248ec298541df14d
     external_links: []
     lifecycle_state: closed
@@ -93009,6 +93015,8 @@ reviews:
               skill dir, alignment/completeness debt), not because of this task's changes."
             created_at: 2026-03-31T18:19:11.591Z
         kind: nit
+        resolved_at: 2026-03-31T18:19:23.127Z
+        resolved_by: Jacob Chapel
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -93018,5 +93026,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-31T18:07:21.818Z
     created_at: 2026-03-31T18:01:42.741Z
-    updated_at: 2026-03-31T18:19:18.737Z
+    updated_at: 2026-03-31T18:19:23.127Z
     notes: []
