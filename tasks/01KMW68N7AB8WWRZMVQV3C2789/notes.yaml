@@ -36,3 +36,15 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-30T09:34:29.430Z
+  - _ulid: 01KN0M96Z5BF9KV0AZHP7HZNCW
+    content: "Fix cycle approach: rebase onto current dev E2E layout, keep the KSPEC_TEST cache-delay
+      hook, and rewrite the transition spec to prove the real cache:status/domain_ready WebSocket
+      path instead of accepting retry fallback. Edge cases: second-project selection must bind both
+      HTTP and WebSocket traffic to the delayed project, timeout must cover the full 30s retry
+      ceiling, and loaded assertions must prove real task content or empty-state rendering rather
+      than the static page shell. Test plan: targeted Playwright coverage for warming skeleton,
+      WebSocket-driven auto-transition, and timeout plus Retry recovery; then full npm test for
+      regression coverage."
+    supersedes: null
+    author: Test User
+    created_at: 2026-03-31T00:21:48.645Z
