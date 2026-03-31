@@ -92298,6 +92298,13 @@ reviews:
           status: pass
           name: targeted-playwright
         timestamp: 2026-03-31T00:47:48.678Z
+      - _ulid: 01KN0NRWACDXEXNKXN2PJ10XHB
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KN0NRVNSJP4B03KFQ6W5HBX1
+        timestamp: 2026-03-31T00:47:50.604Z
     examined_commit: 5ec099509c88161093415d76f9a3d632f525e3e1
     external_links: []
     lifecycle_state: open
@@ -92307,8 +92314,25 @@ reviews:
       content_hash: ""
       ref: "@01KMW68N7AB8WWRZMVQV3C2789"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KN0NRVNSJP4B03KFQ6W5HBX1
+        entries:
+          - _ulid: 01KN0NRVNT4SM9VAHB1ZJ72XAB
+            author: Jacob Chapel
+            body: "Evidence log: Files read: tests/e2e/cache-warming-transition.spec.ts,
+              tests/e2e/cache-warming-views.spec.ts, tests/e2e/fixtures/test-base.ts,
+              packages/daemon/src/routes/test-hooks.ts, src/daemon/entity-cache.ts,
+              packages/daemon/src/server.ts, packages/web-ui/src/lib/query/ws-invalidation.ts,
+              packages/web-ui/src/lib/query/client.ts. Commands run: git diff/stat/log/show, kspec
+              task get, kspec item get, kspec validate, rg for AC coverage, npm run test:e2e --
+              tests/e2e/cache-warming-transition.spec.ts, npm test. Claims verified:
+              domain_ready-driven refetch is asserted before the 2s retry window; timeout path
+              matches the 15x2s retry policy; KSPEC_TEST test-hook routes are registered only under
+              test env. Categories searched: correctness, edge cases, error handling, test quality,
+              integration; no blocking issues found."
+            created_at: 2026-03-31T00:47:49.946Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-31T00:39:51.837Z
-    updated_at: 2026-03-31T00:47:48.066Z
+    updated_at: 2026-03-31T00:47:49.946Z
     notes: []
