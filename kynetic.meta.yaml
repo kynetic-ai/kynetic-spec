@@ -10695,6 +10695,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-31T19:41:16.618Z
+  - _ulid: 01KN2QS4R59337EP2RZS6SHC91
+    type: success
+    content: When dispatch/workspace integration tests pass in isolation but fail in the full gate,
+      moving the git/shadow/bootstrap-heavy files into a dedicated serial Vitest project can
+      stabilize npm test without weakening coverage or globally raising timeouts.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-03-31T20:01:25.254Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
