@@ -23531,7 +23531,7 @@
   title: Add e2e tests for triage export flow
   type: task
   plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-fix-fixtures-envelope"
@@ -23543,6 +23543,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-30T09:31:59.544Z
+  started_at: 2026-03-31T00:49:18.827Z
   automation: eligible
 - _ulid: 01KMZ1BXDQRXEGC4DAS1F8T9H5
   slugs:
