@@ -48,3 +48,17 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-31T00:21:48.645Z
+  - _ulid: 01KN0N0VAB0SFVZDVY0GPNH85W
+    content: "Fix cycle 1: rebased onto the consolidated tests/e2e layout, kept the KSPEC_TEST
+      cache-delay hook, and rewrote cache-warming-transition.spec.ts to prove the real
+      cache:status/domain_ready path. The test now records real browser WebSocket frames, asserts an
+      immediate post-broadcast /api/tasks refetch before the 2s retry fallback window, verifies real
+      loaded content for the delayed second project, and covers the full 30s timeout plus manual
+      Retry recovery path. Verification: npm run test:e2e --
+      tests/e2e/cache-warming-transition.spec.ts passed (9 passed). Full npm test on the rebased
+      branch still reports unrelated pre-existing timeouts outside this task's diff:
+      tests/dispatch-workspace-registry.test.ts (reconciliation acquires the lock per dirty record)
+      and tests/daemon-api/agent-dispatch.test.ts legacy start/stop route tests."
+    supersedes: null
+    author: Test User
+    created_at: 2026-03-31T00:34:43.147Z
