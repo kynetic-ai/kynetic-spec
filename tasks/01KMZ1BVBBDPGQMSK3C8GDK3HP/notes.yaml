@@ -108,3 +108,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-03-31T16:25:34.162Z
+  - _ulid: 01KN2E1XB4PE0XH9YPADQ0HREK
+    content: "Resumed blocked selector task to validate local-vs-remote divergence against latest
+      upstream state. Plan: merge origin/dispatch/task/task-fix-stale-selectors/01kmz1bv into the
+      dispatch branch, keep the local search.spec.ts conflict resolution because local already
+      includes the component-level bits-ui/hydration fixes, then rerun targeted and broader test
+      gates including E2E to confirm whether any remaining failures are still pre-existing blockers
+      rather than selector regressions."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-31T17:11:26.820Z
