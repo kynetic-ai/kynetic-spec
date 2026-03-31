@@ -92015,7 +92015,18 @@ reviews:
     slugs: []
     title: Review task-rewrite-websocket-e2e (cycle 4)
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: node dist/cli/index.js validate exited 6 with warnings only; no errors. Warnings are
+          pre-existing repo debt (1 ref warning, 31 alignment warnings, 517 completeness warnings).
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-31T00:27:24.367Z
+        completed_at: 2026-03-31T00:27:24.367Z
     events:
       - _ulid: 01KN0MA1E7YS573FVPY3TNM8YX
         actor: Test User
@@ -92030,6 +92041,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-31T00:24:20.592Z
+      - _ulid: 01KN0MKFEMYRKDCR3QRJEBETD2
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-31T00:27:25.012Z
     examined_commit: 84409099de6619935f711e6870d3dbb00d8929f4
     external_links: []
     lifecycle_state: open
@@ -92042,5 +92060,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-31T00:22:15.752Z
-    updated_at: 2026-03-31T00:24:19.445Z
+    updated_at: 2026-03-31T00:27:24.367Z
     notes: []
