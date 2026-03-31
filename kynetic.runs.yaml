@@ -19729,7 +19729,7 @@ runs:
     completed_at: 2026-03-31T17:57:13.433Z
   - _ulid: 01KN2JRFZBG95N09BAYFRZ4Q5Y
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -19743,7 +19743,14 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-31T18:34:22.556Z
-        completed_at: 2026-03-31T18:34:22.556Z
+        completed_at: 2026-03-31T18:34:38.618Z
+        notes: "High-confidence friction identified and captured as observation @01KN2JT0: review required
+          full-suite gate can remain red from unrelated repo failures after task-scoped validation
+          is green, which forces changes_requested even when changed-scope checks pass."
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-31T18:34:38.618Z
+        completed_at: 2026-03-31T18:34:38.618Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-31T18:33:41.099Z
