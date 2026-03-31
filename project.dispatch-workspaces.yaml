@@ -28895,12 +28895,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-31T17:57:26.672Z
+      updated_at: 2026-03-31T18:01:02.114Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-31T17:57:26.672Z
+      updated_at: 2026-03-31T18:01:02.114Z
     integration:
       status: pending
       detail: null
@@ -28908,26 +28908,31 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 76a99bcf51ef31640b1724d9abb272f16311a624
-      updated_at: 2026-03-31T17:57:26.672Z
-    lifecycle_state: ready
+      updated_at: 2026-03-31T18:01:02.114Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KMZ1BVBBDPGQMSK3C8GDK3HP"
     task_slug: task-fix-stale-selectors
     timestamps:
       closed_at: null
       last_active_at: 2026-03-31T17:45:33.555Z
-      last_reconciled_at: 2026-03-31T17:57:26.672Z
+      last_reconciled_at: 2026-03-31T18:01:02.114Z
       created_at: 2026-03-30T16:13:27.997Z
-      updated_at: 2026-03-31T17:57:26.672Z
+      updated_at: 2026-03-31T18:01:02.114Z
     workspace_id: dispatch-workspace-01KMZ1BVBBDPGQMSK3C8GDK3HP
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: e552a65400cb5a5076e7eba8248ec298541df14d
+        last_seen_at: 2026-03-31T18:01:02.114Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-stale-selectors-01kmz1bv-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-fix-stale-selectors/01kmz1bv
-        head: 80ac23243a13dab53156ca3852f7b2e4fda180fb
-        last_seen_at: 2026-03-31T17:45:21.256Z
+        head: e552a65400cb5a5076e7eba8248ec298541df14d
+        last_seen_at: 2026-03-31T18:01:02.114Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-stale-selectors-01kmz1bv
   - active_role: null
     base_branch_point: 76a99bcf51ef31640b1724d9abb272f16311a624
