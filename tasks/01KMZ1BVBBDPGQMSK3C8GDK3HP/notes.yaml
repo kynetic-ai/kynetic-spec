@@ -179,3 +179,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-03-31T18:11:40.344Z
+  - _ulid: 01KN2HYMNB37N3SQ0NZKXWD2P7
+    content: "Fix cycle 4: addressed all review threads and revalidated the remaining red E2E specs on
+      the current snapshot. Changes: TaskDetailContent now looks up linked reviews by stable task
+      slug when available so pending-review fixtures render review rows again; the E2E daemon now
+      serves dist/web-ui to avoid workspace-specific build path drift; search/task/task-board
+      assertions now wait on stable app-shell or board container signals and tolerate the current
+      modal detach timing. Verification: npm run test:e2e -- tests/e2e/task-board.spec.ts
+      tests/e2e/tasks.spec.ts (52 passed, 1 skipped), npm run test:e2e -- tests/e2e/search.spec.ts
+      (21 passed), earlier selector-suite rerun after these fixes was 121 passed / 1 failed with the
+      lone failure isolated to search hydration, and the targeted search rerun is now green. kspec
+      validate still exits 6 with pre-existing repo warnings only."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-31T18:19:33.931Z
