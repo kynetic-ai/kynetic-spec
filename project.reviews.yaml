@@ -92277,6 +92277,17 @@ reviews:
         runner: playwright
         created_at: 2026-03-31T00:47:48.066Z
         completed_at: 2026-03-31T00:47:48.066Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test passed: 2079/2079 suites, 7508 passed, 5 skipped, no cache-hit note reported by
+          runner."
+        name: npm-test
+        required: true
+        runner: scripts/test.cjs
+        created_at: 2026-03-31T00:47:51.896Z
+        completed_at: 2026-03-31T00:47:51.896Z
     events:
       - _ulid: 01KN0NA8RW82NS7SC6QEF5AVMC
         actor: Test User
@@ -92305,6 +92316,13 @@ reviews:
           kind: nit
           thread_ulid: 01KN0NRVNSJP4B03KFQ6W5HBX1
         timestamp: 2026-03-31T00:47:50.604Z
+      - _ulid: 01KN0NRY6QK006HWG554H6EME4
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm-test
+        timestamp: 2026-03-31T00:47:52.536Z
     examined_commit: 5ec099509c88161093415d76f9a3d632f525e3e1
     external_links: []
     lifecycle_state: open
@@ -92334,5 +92352,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-31T00:39:51.837Z
-    updated_at: 2026-03-31T00:47:49.946Z
+    updated_at: 2026-03-31T00:47:51.896Z
     notes: []
