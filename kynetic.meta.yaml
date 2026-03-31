@@ -10605,6 +10605,17 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-03-31T18:20:35.466Z
+  - _ulid: 01KN2JT0VX2V3WSSE8Z2WBAJCW
+    type: friction
+    content: "Review friction: selector-focused changes can validate cleanly while the required full npm
+      test gate remains red from unrelated dispatch-suite failures. In this session, targeted E2E
+      reruns passed but fresh full-suite reruns still failed in dispatch-workspace-registry, forcing
+      a request_changes verdict without a task-scoped regression. This makes review disposition
+      depend on repo-wide flakiness instead of changed-scope evidence."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-03-31T18:34:31.165Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
