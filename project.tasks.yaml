@@ -23378,8 +23378,12 @@
   title: Fix stale-selector e2e failures across UI specs
   type: task
   plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
-  status: in_progress
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - Remaining focused E2E failures are not stale selectors. Task review rows never populate
+      because the current task detail UI requests /api/reviews?task=<task ULID> while the dev
+      fixture/backend contract links the pending-review reviews by task slug/review_ref semantics,
+      so the review section integration is red even after selector fixes.
   depends_on:
     - "@task-fix-loading-page-e2e"
   priority: 2

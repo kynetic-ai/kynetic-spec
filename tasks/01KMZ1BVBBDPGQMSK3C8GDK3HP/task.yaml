@@ -50,8 +50,12 @@ description: |
 spec_ref: null
 plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
 origin: derived
-status: in_progress
-blocked_by: []
+status: blocked
+blocked_by:
+  - Remaining focused E2E failures are not stale selectors. Task review rows never populate because
+    the current task detail UI requests /api/reviews?task=<task ULID> while the dev fixture/backend
+    contract links the pending-review reviews by task slug/review_ref semantics, so the review
+    section integration is red even after selector fixes.
 depends_on:
   - "@task-fix-loading-page-e2e"
 context: []
@@ -331,7 +335,24 @@ history:
         previous: in_progress
     command: task-unblock
     timestamp: 2026-03-31T17:45:08.677Z
-prior_status: null
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: blocked
+        previous: in_progress
+      blocked_by:
+        new:
+          - Remaining focused E2E failures are not stale selectors. Task review rows never populate
+            because the current task detail UI requests /api/reviews?task=<task ULID> while the dev
+            fixture/backend contract links the pending-review reviews by task slug/review_ref
+            semantics, so the review section integration is red even after selector fixes.
+        previous: []
+      prior_status:
+        new: in_progress
+        previous: null
+    command: task-block
+    timestamp: 2026-03-31T17:55:58.545Z
+prior_status: in_progress
 created_at: 2026-03-30T09:31:57.675Z
 started_at: 2026-03-31T00:39:00.108Z
 submitted_at: 2026-03-31T00:10:00.361Z
