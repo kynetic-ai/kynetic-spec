@@ -10438,6 +10438,15 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-03-31T00:10:47.102Z
+  - _ulid: 01KN0M49EWSS6HD2DN2RNCN936
+    type: success
+    content: "Anchored review blocker with exact file, lines, and missing AC branch made the websocket
+      fix cycle surgical: it exposed the missing 1011 close path immediately and kept the follow-up
+      limited to one daemon behavior change plus one behavioral protocol test."
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-31T00:19:07.356Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
