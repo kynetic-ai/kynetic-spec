@@ -10648,8 +10648,12 @@ observations:
       not once for the entire batch' (fresh log
       /tmp/kspec-test-cache/01KN2KXMRN1G4VQC487YAF725K/736a0c514b7215bc.log).
     author: Jacob Chapel
-    resolution: null
-    resolved: false
+    resolution: Duplicate of existing gate-friction observation @01KN2KWD; this session added fresher
+      evidence (single remaining dispatch-workspace-registry timeout) but does not represent a new
+      systemic pattern.
+    resolved: true
+    resolved_at: 2026-03-31T19:06:27.550Z
+    resolved_by: Jacob Chapel
     created_at: 2026-03-31T19:05:23.092Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
