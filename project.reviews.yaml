@@ -92852,3 +92852,29 @@ reviews:
     created_at: 2026-03-31T01:23:25.393Z
     updated_at: 2026-03-31T01:28:47.513Z
     notes: []
+  - _ulid: 01KN2GXYJNHPN04BTKGAZJXC9C
+    slugs: []
+    title: Review stale-selector e2e failures
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KN2GXYJESVMFCJK97S2PBN97
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-31T18:01:42.734Z
+    examined_commit: e552a65400cb5a5076e7eba8248ec298541df14d
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMZ1BVBBDPGQMSK3C8GDK3HP"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-31T18:01:42.741Z
+    updated_at: null
+    notes: []
