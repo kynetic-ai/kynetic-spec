@@ -9,3 +9,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-03-31T20:13:57.525Z
+  - _ulid: 01KN2SD0DRQ4AFX5HHNBVKH1NC
+    content: "Validation result: full Playwright gate is not ready. npm run test:e2e:full finished with
+      450 passed, 22 failed, 38 skipped and also leaves the HTML report server running locally after
+      completion. CI-like run npx playwright test --workers=2 --retries=2 took about 10m45s and
+      still ended 449 passed, 19 failed, 4 flaky, 38 skipped. Persistent failures cluster in
+      api-watcher, observations, review detail/interaction, sessions, and workflows; additional
+      flake remains in navigation, plans, and session-context. Conclusion: do not switch CI off
+      smoke lane yet."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-31T20:29:44.760Z
