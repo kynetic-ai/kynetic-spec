@@ -10,3 +10,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-03-31T19:43:09.057Z
+  - _ulid: 01KN2Q8TGFTM0HS3G4M1FRXXHV
+    content: "Investigation update: full-suite failure cluster is shared-resource contention, not
+      isolated assertion regressions. The dispatch workspace integration files pass in isolation but
+      time out under concurrent full-suite load, so I isolated those suites into a serial Vitest
+      project. Also updated daemon agent-dispatch route fixtures to use split task storage and
+      explicitly register the split backend so dispatch startup stops exercising removed monolithic
+      storage paths during API coverage."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-31T19:52:30.479Z
