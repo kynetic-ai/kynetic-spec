@@ -10704,6 +10704,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-31T20:01:25.254Z
+  - _ulid: 01KN2QS50BNY2WY5WD2A1X8W1K
+    type: friction
+    content: Daemon agent-dispatch test fixtures can silently exercise removed task-storage paths unless
+      they both declare split task storage and register the split backend, which turns one fixture
+      drift into a broad dispatch/bootstrap failure cluster during full-suite runs.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-03-31T20:01:25.515Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
