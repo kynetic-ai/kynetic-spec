@@ -28889,18 +28889,23 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-fix-stale-selectors/01kmz1bv
-    canonical_branch_head: 80ac23243a13dab53156ca3852f7b2e4fda180fb
+    canonical_branch_head: 2ce3cd422f89490a610d64f6c59437085106caa3
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-31T17:45:21.256Z
+      updated_at: 2026-03-31T17:47:28.529Z
     health:
-      status: healthy
-      issues: []
-      summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-31T17:45:33.555Z
+      status: stale
+      issues:
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-stale-selectors-01kmz1bv"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+      summary: Workspace registry record is stale and needs reconciliation.
+      updated_at: 2026-03-31T17:47:28.529Z
     integration:
       status: pending
       detail: null
@@ -28908,17 +28913,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 76a99bcf51ef31640b1724d9abb272f16311a624
-      updated_at: 2026-03-31T17:45:21.256Z
-    lifecycle_state: active
+      updated_at: 2026-03-31T17:47:28.529Z
+    lifecycle_state: stale
     resolved_base_branch: dev
     task_ref: "@01KMZ1BVBBDPGQMSK3C8GDK3HP"
     task_slug: task-fix-stale-selectors
     timestamps:
       closed_at: null
       last_active_at: 2026-03-31T17:45:33.555Z
-      last_reconciled_at: 2026-03-31T17:45:33.555Z
+      last_reconciled_at: 2026-03-31T17:47:28.529Z
       created_at: 2026-03-30T16:13:27.997Z
-      updated_at: 2026-03-31T17:45:33.555Z
+      updated_at: 2026-03-31T17:47:28.529Z
     workspace_id: dispatch-workspace-01KMZ1BVBBDPGQMSK3C8GDK3HP
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
