@@ -29593,7 +29593,7 @@ workspaces:
         head: 1309666de79c1f799a7573f839864a7f13b126b0
         last_seen_at: 2026-03-31T01:03:45.367Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-e2e-session-search-01kmz1bw
-  - active_role: null
+  - active_role: worker
     base_branch_point: bb9c6193f3f3c4f8a20c55c8bda4d87da90746cc
     bootstrap:
       status: succeeded
@@ -29682,7 +29682,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-31T19:35:35.680Z
+      updated_at: 2026-03-31T19:35:42.013Z
     integration:
       status: pending
       detail: null
@@ -29691,16 +29691,16 @@ workspaces:
       target_branch: dev
       target_commit: bb9c6193f3f3c4f8a20c55c8bda4d87da90746cc
       updated_at: 2026-03-31T19:35:35.680Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KMZ1BWMQGPZRECVEQCT2GS48"
     task_slug: task-e2e-batch-item-fetch
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-03-31T19:35:35.680Z
+      last_active_at: 2026-03-31T19:35:42.013Z
+      last_reconciled_at: 2026-03-31T19:35:42.013Z
       created_at: 2026-03-31T19:35:35.680Z
-      updated_at: 2026-03-31T19:35:40.297Z
+      updated_at: 2026-03-31T19:35:42.013Z
     workspace_id: dispatch-workspace-01KMZ1BWMQGPZRECVEQCT2GS48
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
