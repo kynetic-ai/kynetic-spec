@@ -92468,6 +92468,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-31T01:04:02.567Z
+      - _ulid: 01KN0QMHF35JKC9F0M408VKBHT
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN0PNFFCXNHB1XBHZPN98XRA
+        timestamp: 2026-03-31T01:20:25.571Z
     examined_commit: acfdd273fba96aceb7269b0e0caab910d3f47895
     external_links: []
     lifecycle_state: closed
@@ -92496,6 +92502,14 @@ reviews:
               the missing /triage export UI and make no code/test changes, so this branch state
               cannot be accepted as the submission for this task.
             created_at: 2026-03-31T01:03:27.724Z
+          - _ulid: 01KN0QMGT2XF9EEDWV9RYFE7R0
+            author: Jacob Chapel
+            body: "Fixed in commit 14c3400e8. Rebased onto origin/dev and replaced the prior unrelated branch
+              state with a scoped task delta only: packages/web-ui/src/routes/triage/+page.svelte,
+              packages/web-ui/src/lib/api.ts, tests/e2e/triage.spec.ts, and the triage E2E fixture.
+              The branch now implements the missing /triage export surface and covers
+              @triage-daemon-api ac-6 behaviorally from the UI."
+            created_at: 2026-03-31T01:20:24.897Z
         kind: blocker
       - _ulid: 01KN0PP50KPG96CBKNZ4RRM8AC
         entries:
@@ -92527,7 +92541,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-31T01:04:02.567Z
     created_at: 2026-03-31T01:03:07.044Z
-    updated_at: 2026-03-31T01:04:02.567Z
+    updated_at: 2026-03-31T01:20:24.897Z
     notes: []
   - _ulid: 01KN0PQ82TNSPKP5TKA6X80T6E
     slugs: []
