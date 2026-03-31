@@ -198,3 +198,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-03-31T18:33:12.898Z
+  - _ulid: 01KN2K2X2VE8F7AZ33ZTD6ESE2
+    content: "Fix cycle 5: no additional code changes were required on top of 602c1f7779fd. Re-ran the
+      previously failing required gate with npm test -- --fresh on this exact snapshot; it now
+      passes cleanly (2082/2082 suites, 7520 passed, 5 skipped; log
+      /tmp/kspec-test-cache/01KN2JV66V0M7Q0YT2NJS2FR70/6fd0d2bb34986d54.log). Existing
+      selector-focused E2E and validate checks remain green, so the prior review failure was stale
+      rather than a remaining defect in this branch."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-31T18:39:22.203Z
