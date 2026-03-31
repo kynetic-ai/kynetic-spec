@@ -92789,9 +92789,25 @@ reviews:
           status: fail
           name: npm-test-full
         timestamp: 2026-03-31T01:28:31.605Z
+      - _ulid: 01KN0R3VMSWZK0KPJK3FEC4Q2R
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-03-31T01:28:47.513Z
+      - _ulid: 01KN0R3VMS9Q0W483HHGJJT3NX
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-31T01:28:47.513Z
     examined_commit: 14c3400e81417539ab56a73a984b6f22afb5e8a0
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -92825,7 +92841,14 @@ reviews:
               quality, integration, mergeability. No task-scoped blockers found.
             created_at: 2026-03-31T01:28:26.741Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-31T01:28:47.512Z
     created_at: 2026-03-31T01:23:25.393Z
-    updated_at: 2026-03-31T01:28:30.896Z
+    updated_at: 2026-03-31T01:28:47.513Z
     notes: []
