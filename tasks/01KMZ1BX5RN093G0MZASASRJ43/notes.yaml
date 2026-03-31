@@ -35,3 +35,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-03-31T01:08:15.867Z
+  - _ulid: 01KN0QKV2YDWJJENXCVVM79ZNH
+    content: "Fix cycle 1: replaced the prior document-only outcome with a real /triage export surface
+      and behavioral Playwright coverage. Added Markdown/JSON export preview controls to the triage
+      page, added a web-ui export helper, fixed the triage fixture so the pending record is
+      schema-valid and included in export results, and corrected the existing submit-flow E2E to
+      enter required reasoning before asserting button enablement. Re-verified @triage-daemon-api
+      ac-6 with focused Playwright coverage; npm test passed; kspec validate still reports the
+      repository’s existing warning set only."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-31T01:20:02.655Z
