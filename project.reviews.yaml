@@ -92245,3 +92245,29 @@ reviews:
     created_at: 2026-03-31T00:22:15.752Z
     updated_at: 2026-03-31T00:27:47.274Z
     notes: []
+  - _ulid: 01KN0NA8RXBTAVY0TBYXSPXRMS
+    slugs: []
+    title: Review task-e2e-cache-warming-transition (cycle 2)
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KN0NA8RW82NS7SC6QEF5AVMC
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-31T00:39:51.837Z
+    examined_commit: 5ec099509c88161093415d76f9a3d632f525e3e1
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMW68N7AB8WWRZMVQV3C2789"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-31T00:39:51.837Z
+    updated_at: null
+    notes: []
