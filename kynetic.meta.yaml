@@ -10492,8 +10492,12 @@ observations:
       touches selector-related web-ui/e2e files. This makes fix-cycle verification depend on broader
       dispatch-suite stability rather than task-local behavior."
     author: Jacob Chapel
-    resolution: null
-    resolved: false
+    resolution: "Duplicate of existing tracking: @01KMZR9S covers the dispatch-workspace-registry flake,
+      and @01KN0M9G/@01KN0N3J already cover review/task verification being blocked by unrelated
+      full-suite failures."
+    resolved: true
+    resolved_at: 2026-03-31T00:48:17.864Z
+    resolved_by: Jacob Chapel
     created_at: 2026-03-31T00:47:11.094Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
