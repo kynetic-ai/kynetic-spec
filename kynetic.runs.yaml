@@ -19486,7 +19486,7 @@ runs:
     completed_at: 2026-03-31T00:19:15.087Z
   - _ulid: 01KN0M7J66NSNJDEPRSGCWJS6R
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Test User
     step_results:
       - status: completed
@@ -19499,7 +19499,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-31T00:21:59.134Z
-        completed_at: 2026-03-31T00:21:59.134Z
+        completed_at: 2026-03-31T00:21:59.868Z
+        notes: "Friction points: detached review snapshots did not have a runnable reviewer CLI in source
+          mode, and the required full-suite gate remained red from unrelated failures, forcing a
+          review rejection despite green selector-focused suites. Existing coverage check: found
+          related observation @01KMWT80 for detached review snapshots generally, but no existing
+          item for the split-backend/manual-build failure mode or for unrelated full-suite failures
+          blocking review."
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-31T00:21:59.868Z
+        completed_at: 2026-03-31T00:21:59.868Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-31T00:20:54.598Z
