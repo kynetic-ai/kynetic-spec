@@ -50,3 +50,16 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-30T23:56:15.419Z
+  - _ulid: 01KN0KK3Q9EKBACP9KT6NWD10X
+    content: "Fix cycle 1: addressed both review blockers. Removed the unrelated reviews route
+      ULID-resolution change from this branch in 6af239cd6 so GET /api/reviews?task matches dev
+      semantics again, and confirmed tests/e2e/api-triage.spec.ts no longer differs from origin/dev.
+      Verification: npm test -- tests/daemon-api/reviews-list.test.ts,
+      tests/daemon-api/tasks.test.ts, tests/daemon-read-path.test.ts,
+      tests/agent-dispatch-engine.test.ts, and tests/cli-serve.test.ts all pass in isolation. Full
+      npm test still shows broad timeout/STACK_TRACE_ERROR failures across unrelated daemon/dispatch
+      suites; captured as observation @01KN0KHQ because the sampled previously failing files are
+      green on this snapshot."
+    supersedes: null
+    author: Test User
+    created_at: 2026-03-31T00:09:44.425Z
