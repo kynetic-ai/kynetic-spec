@@ -42,8 +42,11 @@ description: |
 spec_ref: null
 plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev. Scoped agents-topic completion invalidation to sessions-only,
+  preserved agent/status invalidation for agent_invocation and sync_state, and added focused ws
+  invalidation coverage.
 depends_on: []
 context: []
 priority: 2
@@ -324,9 +327,25 @@ history:
         previous: "@01KN0HENS4KRC3FGTJX4A25SQN"
     command: review-link
     timestamp: 2026-03-30T23:59:54.411Z
+  - author: Test User
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev. Scoped agents-topic completion invalidation to sessions-only, preserved
+          agent/status invalidation for agent_invocation and sync_state, and added focused ws
+          invalidation coverage.
+        previous: null
+      completed_at:
+        new: 2026-03-31T00:09:49.426Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-03-31T00:09:49.439Z
 prior_status: null
 created_at: 2026-03-30T09:31:59.799Z
 started_at: 2026-03-30T23:48:31.520Z
 submitted_at: 2026-03-30T23:55:56.438Z
+completed_at: 2026-03-31T00:09:49.426Z
 todos: []
 automation: eligible
