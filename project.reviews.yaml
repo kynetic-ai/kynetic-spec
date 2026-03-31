@@ -92692,7 +92692,18 @@ reviews:
     slugs: []
     title: Review task-e2e-triage-export cycle 2
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm run test:e2e -- triage.spec.ts passed: 23 passed, 37 skipped. Included the new
+          /triage export Markdown and JSON UI flows plus existing triage/API smoke coverage."
+        name: triage-e2e
+        required: true
+        runner: playwright
+        created_at: 2026-03-31T01:28:22.735Z
+        completed_at: 2026-03-31T01:28:22.735Z
     events:
       - _ulid: 01KN0QT12H1S9A0WRGG9ENVB2A
         actor: Jacob Chapel
@@ -92707,6 +92718,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-31T01:23:37.969Z
+      - _ulid: 01KN0R341HBSZD9A5F7J714P3P
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: triage-e2e
+        timestamp: 2026-03-31T01:28:23.345Z
     examined_commit: 14c3400e81417539ab56a73a984b6f22afb5e8a0
     external_links: []
     lifecycle_state: open
@@ -92719,5 +92737,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-31T01:23:25.393Z
-    updated_at: 2026-03-31T01:23:37.231Z
+    updated_at: 2026-03-31T01:28:22.735Z
     notes: []
