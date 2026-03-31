@@ -29388,7 +29388,7 @@ workspaces:
         head: acfdd273fba96aceb7269b0e0caab910d3f47895
         last_seen_at: 2026-03-31T01:06:14.065Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-e2e-triage-export-01kmz1bx
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 15577d79d589233666a0de375a8011f8089942ab
     bootstrap:
       status: succeeded
@@ -29514,9 +29514,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-31T01:03:53.762Z
-      last_reconciled_at: 2026-03-31T01:12:24.234Z
+      last_reconciled_at: 2026-03-31T01:12:29.268Z
       created_at: 2026-03-31T00:52:22.000Z
-      updated_at: 2026-03-31T01:12:24.234Z
+      updated_at: 2026-03-31T01:12:29.268Z
     workspace_id: dispatch-workspace-01KMZ1BWX3KMC7GMD6H90F6SM3
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
