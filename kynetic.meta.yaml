@@ -10626,6 +10626,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-31T18:40:48.294Z
+  - _ulid: 01KN2KWDYH1BBRTD92J9X99EFE
+    type: friction
+    content: "Review friction: required 'npm test -- --fresh' gate can fail with broad dispatch/daemon
+      STACK_TRACE_ERROR and assertion failures unrelated to the reviewed task diff, forcing long
+      review cycles with low signal. Session example: stale-selector review spent several minutes
+      waiting for the required gate only to fail in unrelated suites after selector-focused checks
+      were green. Consider a way to distinguish task-scoped verification from known repo-wide gate
+      instability, or at minimum surface whether the same failing suites are already known/open so
+      reviewers do not have to rediscover them each cycle."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-03-31T18:53:18.673Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
