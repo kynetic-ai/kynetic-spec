@@ -29693,12 +29693,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-31T19:52:53.491Z
+      updated_at: 2026-03-31T20:01:44.399Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-31T19:52:55.591Z
+      updated_at: 2026-03-31T20:01:44.399Z
     integration:
       status: pending
       detail: null
@@ -29706,7 +29706,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: bb9c6193f3f3c4f8a20c55c8bda4d87da90746cc
-      updated_at: 2026-03-31T19:52:53.491Z
+      updated_at: 2026-03-31T20:01:44.399Z
     lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMZ1BWMQGPZRECVEQCT2GS48"
@@ -29714,9 +29714,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-31T19:41:57.083Z
-      last_reconciled_at: 2026-03-31T19:52:55.591Z
+      last_reconciled_at: 2026-03-31T20:01:44.399Z
       created_at: 2026-03-31T19:35:35.680Z
-      updated_at: 2026-03-31T19:52:55.591Z
+      updated_at: 2026-03-31T20:01:44.399Z
     workspace_id: dispatch-workspace-01KMZ1BWMQGPZRECVEQCT2GS48
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -29725,7 +29725,7 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-e2e-batch-item-fetch/01kmz1bw
         head: 922d82d4709a521bba65ef2e842ced72f675720e
-        last_seen_at: 2026-03-31T19:41:50.158Z
+        last_seen_at: 2026-03-31T20:01:44.399Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-e2e-batch-item-fetch-01kmz1bw
   - active_role: null
     base_branch_point: bb9c6193f3f3c4f8a20c55c8bda4d87da90746cc
