@@ -5,6 +5,7 @@ import * as YAML from "yaml";
 import { Elysia } from "elysia";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { initGitRepo, createTempDir, cleanupTempDir } from "./helpers/cli.js";
+import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
 import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.ts";
 import {
   createAgentDispatchRoutes,
@@ -12,6 +13,8 @@ import {
   getSessionRegistry,
   resolveDispatchCwd,
 } from "../dist/daemon/routes/agent-dispatch.ts";
+
+ensureSplitBackendRegistered();
 
 async function setupProjectWithWorktree(prefix: string) {
   const rootDir = await createTempDir(prefix);
@@ -21,7 +24,11 @@ async function setupProjectWithWorktree(prefix: string) {
 
   writeFileSync(
     join(rootDir, "kynetic.yaml"),
-    YAML.stringify({ kynetic: "1", project: { name: "Test Project" } }),
+    YAML.stringify({
+      kynetic: "1.1",
+      title: "Test Project",
+      task_storage: { format: "split" },
+    }),
   );
   writeFileSync(
     join(rootDir, "kynetic.meta.yaml"),
