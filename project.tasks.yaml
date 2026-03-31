@@ -23540,7 +23540,7 @@
     - test
     - e2e
     - web-ui
-  notes_count: 1
+  notes_count: 2
   todos_count: 0
   created_at: 2026-03-30T09:31:59.544Z
   started_at: 2026-03-31T00:49:18.827Z

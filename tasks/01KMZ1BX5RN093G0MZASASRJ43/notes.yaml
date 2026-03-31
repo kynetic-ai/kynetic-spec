@@ -10,3 +10,11 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-03-31T00:50:02.186Z
+  - _ulid: 01KN0NXHKND1SDDVYXZTJW2NWE
+    content: Captured follow-up inbox item @01KN0NX6 to add an export action to /triage. This task
+      intentionally makes no code/test changes because the current web UI has no affordance to
+      trigger or display /api/triage/export, so behavioral Playwright coverage from the user
+      perspective is not yet possible.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-31T00:50:23.477Z
