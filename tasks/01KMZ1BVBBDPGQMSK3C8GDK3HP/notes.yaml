@@ -78,3 +78,14 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-31T00:39:01.209Z
+  - _ulid: 01KN0NQNA0BMMWYGXWKMEM3NQG
+    content: "Fix cycle 2 verification on rebased branch: npm test is still red, but the reviewed
+      missing-export failures no longer reproduce. Fresh targeted rerun narrows the persistent
+      blocker to tests/dispatch-workspace-registry.test.ts timing out in 'reconciliation acquires
+      the lock per dirty record, not once for the entire batch' (log:
+      /tmp/kspec-test-cache/01KN0N6ETTPYVHWSAS1KT4DJ8H/34c490edec4a6810.log). Branch diff vs
+      origin/dev only touches selector-related web UI and e2e files, so the remaining gate failure
+      appears unrelated to this task's changes."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-31T00:47:10.656Z
