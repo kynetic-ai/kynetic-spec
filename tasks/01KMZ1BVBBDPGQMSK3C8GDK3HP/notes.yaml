@@ -97,3 +97,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-03-31T16:14:09.242Z
+  - _ulid: 01KN2BDX6JC4FPX9F8DAA2NMKK
+    content: "Selector verification after rebase: npm run test:e2e -- tests/e2e/items.spec.ts
+      tests/e2e/search.spec.ts tests/e2e/tasks.spec.ts tests/e2e/task-board.spec.ts
+      tests/e2e/reviews-detail.spec.ts tests/e2e/validate.spec.ts finished 120 passed, 2 failed, 1
+      skipped. The only failures left are Tasks View > Task Reviews Section tests that cannot find
+      task-review-row. I verified those same two failures reproduce unchanged on origin/dev, so they
+      are a pre-existing task-review integration issue rather than selector regressions from this
+      branch. Current branch diff remains limited to selector-related web UI and e2e files."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-31T16:25:34.162Z
