@@ -91690,6 +91690,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-31T00:00:08.967Z
+      - _ulid: 01KN0KHH73XX001DF2HXQYANSP
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KN0KHGJW34WWKB1QXC97JE0S
+        timestamp: 2026-03-31T00:08:52.707Z
     examined_commit: 5bc377fbb83935a722989cc4f22a3ebb4dfcbae5
     external_links: []
     lifecycle_state: open
@@ -91699,8 +91706,28 @@ reviews:
       content_hash: ""
       ref: "@01KMZ1BXDQRXEGC4DAS1F8T9H5"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KN0KHGJW34WWKB1QXC97JE0S
+        entries:
+          - _ulid: 01KN0KHGJWJ5GJ0CGP1NKXEFTW
+            author: Test User
+            body: "Evidence log: Files read: packages/web-ui/src/lib/query/ws-invalidation.ts;
+              tests/web-ui/ws-cache-invalidation.test.ts; packages/shared/src/websocket.ts;
+              packages/web-ui/src/routes/agents/+page.svelte;
+              packages/web-ui/src/routes/sessions/[id]/+page.svelte; task metadata and prior review
+              @01KN0HEN. Commands run: git diff dev..HEAD; git diff 76a99bcf..HEAD; git log
+              --left-right dev...HEAD; ./dist/cli/index.js item get @ui-data-freshness;
+              ./dist/cli/index.js validate; grep -Rni AC annotations; npm test -- --run
+              tests/web-ui/ws-cache-invalidation.test.ts; npm test; npm test -- --run
+              tests/dispatch-workspace-registry.test.ts. Claims verified: completion events now
+              scope invalidation to sessions-only; agent_invocation still invalidates agents and
+              sessions; non-session agent status events still invalidate agents; full-suite failures
+              are not in changed files and at least one representative failing suite passes in
+              isolation. Categories searched: correctness, edge cases, test quality, integration,
+              error handling."
+            created_at: 2026-03-31T00:08:52.060Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-30T23:59:52.221Z
-    updated_at: 2026-03-31T00:00:08.282Z
+    updated_at: 2026-03-31T00:08:52.060Z
     notes: []
