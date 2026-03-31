@@ -23378,8 +23378,14 @@
   title: Fix stale-selector e2e failures across UI specs
   type: task
   plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
-  status: in_progress
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - Selector-targeted UI/e2e fixes are complete, but the required verification gate is still red
+      because two task-review E2E failures reproduce unchanged on origin/dev
+      (tests/e2e/tasks.spec.ts Task Reviews Section cannot find task-review-row) and prior
+      full-suite verification still hits the unrelated dispatch-workspace-registry timeout. This
+      selector-only branch cannot clear the gate without expanding scope into separate pre-existing
+      failures.
   depends_on:
     - "@task-fix-loading-page-e2e"
   priority: 2
