@@ -23378,14 +23378,8 @@
   title: Fix stale-selector e2e failures across UI specs
   type: task
   plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
-  status: blocked
-  blocked_by:
-    - "Required verification gate remains red after in-scope stale-selector fixes. Current tree
-      passes the selector-focused Playwright bundle
-      (items/search/tasks/task-board/reviews-detail/validate), but npm test -- --fresh still fails
-      on the unrelated dispatch suite timeout: tests/dispatch-workspace-registry.test.ts
-      'reconciliation acquires the lock per dirty record, not once for the entire batch' (log
-      /tmp/kspec-test-cache/01KN2KXMRN1G4VQC487YAF725K/736a0c514b7215bc.log)."
+  status: pending_review
+  blocked_by: []
   depends_on:
     - "@task-fix-loading-page-e2e"
   priority: 2
@@ -23393,11 +23387,11 @@
     - test
     - e2e
   review_ref: "@01KN2K845Y5JBKGWAW7RS2CJ1B"
-  notes_count: 27
+  notes_count: 26
   todos_count: 0
   created_at: 2026-03-30T09:31:57.675Z
   started_at: 2026-03-31T18:54:44.552Z
-  submitted_at: 2026-03-31T18:39:32.045Z
+  submitted_at: 2026-03-31T19:27:50.124Z
   automation: eligible
 - _ulid: 01KMZ1BVK6C9F7QKYK9DZD4TFQ
   slugs:
