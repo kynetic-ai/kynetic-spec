@@ -2095,3 +2095,17 @@ inbox:
       - test
     added_by: "@claude"
     created_at: 2026-03-30T20:20:53.949Z
+  - _ulid: 01KN0NX6P9GESD8F3EW3AAGGAZ
+    text: "Add triage export action to /triage UI so users can trigger /api/triage/export from the web
+      interface. Evidence: packages/web-ui/src/routes/triage/+page.svelte has no export button,
+      format selector, export viewer, or download flow, while packages/daemon/src/routes/triage.ts
+      exposes GET /api/triage/export and tests/e2e/api-triage.spec.ts covers the API only. Add a
+      visible UI surface and then write behavioral Playwright coverage for markdown/json export as
+      appropriate."
+    tags:
+      - web-ui
+      - triage
+      - e2e
+      - export
+    added_by: Jacob Chapel
+    created_at: 2026-03-31T00:50:12.297Z
