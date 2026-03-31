@@ -92474,6 +92474,12 @@ reviews:
         payload:
           thread_ulid: 01KN0PNFFCXNHB1XBHZPN98XRA
         timestamp: 2026-03-31T01:20:25.571Z
+      - _ulid: 01KN0QMKERYK2Z4RPE0YYZ2VFF
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN0PP50KPG96CBKNZ4RRM8AC
+        timestamp: 2026-03-31T01:20:27.608Z
     examined_commit: acfdd273fba96aceb7269b0e0caab910d3f47895
     external_links: []
     lifecycle_state: closed
@@ -92531,6 +92537,14 @@ reviews:
               changes. Categories searched: scope alignment, review linkage, branch delta, evidence
               consistency."
             created_at: 2026-03-31T01:03:49.780Z
+          - _ulid: 01KN0QMJSMX40XH5PJA4730GXH
+            author: Jacob Chapel
+            body: "Fixed in commit 14c3400e8 and updated task notes. The submission now matches the branch
+              contents: real code/test changes were required to provide a user-visible export flow
+              from /triage, and the new fix-cycle note records the UI changes, fixture
+              normalization, focused Playwright verification, npm test pass, and existing validate
+              warnings."
+            created_at: 2026-03-31T01:20:26.932Z
         kind: nit
     verdicts:
       - applies_to_version:
@@ -92541,7 +92555,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-31T01:04:02.567Z
     created_at: 2026-03-31T01:03:07.044Z
-    updated_at: 2026-03-31T01:20:24.897Z
+    updated_at: 2026-03-31T01:20:26.932Z
     notes: []
   - _ulid: 01KN0PQ82TNSPKP5TKA6X80T6E
     slugs: []
