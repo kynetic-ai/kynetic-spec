@@ -91611,6 +91611,12 @@ reviews:
         payload:
           thread_ulid: 01KN0JSEQQZC09PNYS6VEW50C9
         timestamp: 2026-03-31T00:09:28.914Z
+      - _ulid: 01KN0KJPK4TXRYJVE3PCEMBEGA
+        actor: Test User
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN0JSB1KD3BC3ZW7A2F1SMK2
+        timestamp: 2026-03-31T00:09:30.980Z
     examined_commit: d752fb33fe963e0fca963315bcc5c95881ba076c
     external_links: []
     lifecycle_state: closed
@@ -91648,6 +91654,12 @@ reviews:
               submitted snapshot, querying GET /api/reviews with task=<raw task ULID> now returns
               two linked reviews instead of an empty list."
             created_at: 2026-03-30T23:56:09.757Z
+          - _ulid: 01KN0KJNVV2TDNDCAM4GNK7RMF
+            author: Test User
+            body: "Fixed in 6af239cd6 by restoring GET /api/reviews?task to the current dev semantics.
+              Verification: npm test -- tests/daemon-api/reviews-list.test.ts passes again,
+              including the raw task ULID case remaining empty as expected."
+            created_at: 2026-03-31T00:09:30.235Z
         kind: blocker
       - _ulid: 01KN0JSEQQZC09PNYS6VEW50C9
         anchor:
@@ -91681,7 +91693,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T23:56:14.039Z
     created_at: 2026-03-30T23:55:04.985Z
-    updated_at: 2026-03-31T00:09:28.204Z
+    updated_at: 2026-03-31T00:09:30.235Z
     notes: []
   - _ulid: 01KN0K11CXBPZ7AXRZC8DY8A7N
     slugs: []
