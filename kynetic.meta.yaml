@@ -10655,6 +10655,28 @@ observations:
     resolved_at: 2026-03-31T19:06:27.550Z
     resolved_by: Jacob Chapel
     created_at: 2026-03-31T19:05:23.092Z
+  - _ulid: 01KN2PACDCWK2SEBHZJHGBQS8Q
+    type: friction
+    content: Detached review worktrees cannot check out the integration branch when that branch is
+      already active in another worktree. In this session the approved merge could not run as git
+      checkout dev inside the review worktree because dev was already checked out in the main repo
+      worktree, so the merge had to be executed indirectly with git -C <main-worktree> merge ....
+      This is a repeatable dispatch-review workflow gap; merge tooling should handle
+      integration-branch worktree collisions explicitly.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-03-31T19:35:53.004Z
+  - _ulid: 01KN2PACKBATKRWPQ3PA4T3EPE
+    type: success
+    content: When the dispatch prompt's recorded integration base is older than current origin/dev,
+      recomputing the diff against current origin/dev quickly separates the task's real delta from
+      upstream noise. In this review it reduced the apparent scope from a 43-file recorded-base diff
+      to the actual 13-file task delta, which made the approval decision much more reliable.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-03-31T19:35:53.195Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
