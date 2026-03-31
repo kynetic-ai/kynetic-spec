@@ -10563,6 +10563,17 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-03-31T01:31:19.258Z
+  - _ulid: 01KN2GN33X8HHVFFXQBFZYKG1T
+    type: friction
+    content: "Task-review linkage semantics are unclear across the web UI, daemon review filter, and E2E
+      fixtures: the task detail reviews section fetches /api/reviews?task=<task ULID> but the
+      current dev fixture/backend behavior links pending-review reviews by task slug/review_ref
+      semantics, which leaves review rows empty and makes selector-only repair tasks look
+      incomplete."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-03-31T17:56:52.477Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
