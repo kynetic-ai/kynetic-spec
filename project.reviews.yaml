@@ -91623,6 +91623,12 @@ reviews:
         payload:
           thread_ulid: 01KN0JSEQQZC09PNYS6VEW50C9
         timestamp: 2026-03-31T00:09:46.261Z
+      - _ulid: 01KN0KK7CRZ1TBNMACRZYEMQHV
+        actor: Test User
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KN0JSB1KD3BC3ZW7A2F1SMK2
+        timestamp: 2026-03-31T00:09:48.185Z
     examined_commit: d752fb33fe963e0fca963315bcc5c95881ba076c
     external_links: []
     lifecycle_state: closed
@@ -91667,6 +91673,8 @@ reviews:
               including the raw task ULID case remaining empty as expected."
             created_at: 2026-03-31T00:09:30.235Z
         kind: blocker
+        resolved_at: 2026-03-31T00:09:47.543Z
+        resolved_by: Test User
       - _ulid: 01KN0JSEQQZC09PNYS6VEW50C9
         anchor:
           type: code
@@ -91701,7 +91709,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T23:56:14.039Z
     created_at: 2026-03-30T23:55:04.985Z
-    updated_at: 2026-03-31T00:09:45.669Z
+    updated_at: 2026-03-31T00:09:47.543Z
     notes: []
   - _ulid: 01KN0K11CXBPZ7AXRZC8DY8A7N
     slugs: []
