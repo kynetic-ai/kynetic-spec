@@ -1,1 +1,11 @@
-notes: []
+notes:
+  - _ulid: 01KN2RG3CNFAZ7GZVX9R56W83V
+    content: "Approach: validate current full Playwright suite viability before changing the gate, then
+      update package.json and the CI workflow only if the full suite is green and runtime is
+      acceptable. Edge cases: intentionally skipped specs, CI worker/retry behavior, and any
+      Playwright job timeout drift. Test plan: run npm run test:e2e:full, run npx playwright test
+      --workers=2 --retries=2 for CI-like timing, then run npm test and kspec validate after the
+      workflow change."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-31T20:13:57.525Z
