@@ -19450,7 +19450,7 @@ runs:
     completed_at: 2026-03-30T23:57:35.726Z
   - _ulid: 01KN0M29AX3P03ERWRYM6Q7G9Z
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Test User
     step_results:
       - status: completed
@@ -19462,7 +19462,14 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-31T00:19:07.058Z
-        completed_at: 2026-03-31T00:19:07.058Z
+        completed_at: 2026-03-31T00:19:09.783Z
+        notes: "Friction: local shell did not have kspec on PATH, but search confirmed bootstrap/CLI
+          availability is already tracked; workflow show also required an explicit run ref, which is
+          already tracked in @01KN0DG5Q, so no duplicate capture."
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-31T00:19:09.783Z
+        completed_at: 2026-03-31T00:19:09.783Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-31T00:18:01.693Z
