@@ -92896,6 +92896,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-03-31T18:05:07.337Z
+      - _ulid: 01KN2H4C6GQJXMCKN618K8PRS6
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KN2H4A2KHDSZP936EBA1G9MC
+        timestamp: 2026-03-31T18:05:13.296Z
     examined_commit: e552a65400cb5a5076e7eba8248ec298541df14d
     external_links: []
     lifecycle_state: open
@@ -92926,7 +92933,29 @@ reviews:
               rebase/cherry-pick this branch down to the selector fixes only before resubmitting.
             created_at: 2026-03-31T18:05:00.399Z
         kind: blocker
+      - _ulid: 01KN2H4A2KHDSZP936EBA1G9MC
+        entries:
+          - _ulid: 01KN2H4A2KSMQ07FMF57W4EXE2
+            author: Jacob Chapel
+            body: "Review evidence log\\nFiles read: kspec-agents.md; .agents/skills/review-gates/SKILL.md;
+              packages/daemon/src/websocket/handler.ts;
+              packages/web-ui/src/lib/query/ws-invalidation.ts;
+              packages/web-ui/src/routes/triage/+page.svelte;
+              packages/web-ui/src/lib/components/board/TaskDetailContent.svelte;
+              packages/web-ui/src/lib/api.ts; tests/e2e/file-watcher.spec.ts;
+              tests/e2e/tasks.spec.ts; tests/web-ui/ws-cache-invalidation.test.ts.\\nCommands run:
+              git diff/stat/log against dev..HEAD; kspec task get; kspec item get; kspec review
+              for-task/get; kspec validate; git diff --check; rg searches for
+              review/task/export/websocket selectors; npm test (running).\\nClaims verified: branch
+              history and diff include unrelated
+              daemon/web-ui/file-watcher/cache-warming/triage-export work beyond the selector-only
+              task description.\\nCategories searched: correctness (scope drift found), test quality
+              (selector tests and new watcher/cache tests reviewed), integration (task review
+              fetching and ws invalidation reviewed), edge cases/error handling (websocket ack/close
+              paths reviewed), security (no new finding)."
+            created_at: 2026-03-31T18:05:11.123Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-31T18:01:42.741Z
-    updated_at: 2026-03-31T18:05:05.644Z
+    updated_at: 2026-03-31T18:05:11.123Z
     notes: []
