@@ -10519,6 +10519,26 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-31T01:00:31.164Z
+  - _ulid: 01KN0QQAHS041GQJGGGG2114QG
+    type: friction
+    content: E2E fixture records can look valid in YAML but be silently skipped at runtime when optional
+      triage fields are encoded as null instead of omitted. This created false expectations in
+      export coverage until the fixture was normalized.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-03-31T01:21:56.794Z
+  - _ulid: 01KN0QQAQ99QW2SK4XAJMN6PF4
+    type: success
+    content: Running a focused Playwright spec before the full npm test gate caught stale test
+      assumptions quickly and kept the fix cycle tight. The targeted rerun surfaced missing page
+      navigation and required-form-input assumptions before the expensive full suite.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-03-31T01:21:56.970Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
