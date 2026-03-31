@@ -92533,7 +92533,19 @@ reviews:
     slugs: []
     title: Review task-e2e-session-search
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test failed in unchanged areas only: tests/agent-dispatch-engine.test.ts and
+          tests/dispatch-workspace-registry.test.ts. Reviewed diff changes only
+          tests/e2e/sessions.spec.ts, so these failures are not attributable to this task snapshot."
+        name: npm-test
+        required: false
+        runner: npm
+        created_at: 2026-03-31T01:10:49.689Z
+        completed_at: 2026-03-31T01:10:49.689Z
     events:
       - _ulid: 01KN0PQ82TP2DE6RK67STXTGYE
         actor: Jacob Chapel
@@ -92548,6 +92560,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-31T01:04:45.334Z
+      - _ulid: 01KN0Q2ZNS7V4HFVTSNTYV9MKJ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm-test
+        timestamp: 2026-03-31T01:10:50.298Z
     examined_commit: 1309666de79c1f799a7573f839864a7f13b126b0
     external_links: []
     lifecycle_state: open
@@ -92560,5 +92579,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-31T01:04:25.690Z
-    updated_at: 2026-03-31T01:04:44.704Z
+    updated_at: 2026-03-31T01:10:49.689Z
     notes: []
