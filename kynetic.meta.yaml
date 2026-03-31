@@ -10422,6 +10422,18 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-03-31T00:10:46.847Z
+  - _ulid: 01KN0KN0XYDHKEBPCS4P67R5YM
+    type: friction
+    content: "In detached reviewer worktrees, merging approved work into the integration branch can fail
+      with 'branch is already used by worktree' when the target branch is checked out in the main
+      worktree. Session workaround: run git against the main repo with 'git -C <repo> merge --no-ff
+      <task-branch>' from the reviewer workspace. Improvement opportunity: bake this fallback into
+      the merge skill or dispatch merge automation."
+    author: codex
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-03-31T00:10:47.102Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
