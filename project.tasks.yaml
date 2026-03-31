@@ -23377,8 +23377,13 @@
   title: Fix stale-selector e2e failures across UI specs
   type: task
   plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
-  status: in_progress
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - "Required verification gate remains red on the rebased branch due to an unrelated
+      dispatch-suite failure: tests/dispatch-workspace-registry.test.ts times out in 'reconciliation
+      acquires the lock per dirty record, not once for the entire batch'. The branch diff against
+      origin/dev is limited to selector-related web UI and e2e files, so this task cannot be safely
+      resubmitted until the broader npm test gate is green."
   depends_on:
     - "@task-fix-loading-page-e2e"
   priority: 2
