@@ -91617,6 +91617,12 @@ reviews:
         payload:
           thread_ulid: 01KN0JSB1KD3BC3ZW7A2F1SMK2
         timestamp: 2026-03-31T00:09:30.980Z
+      - _ulid: 01KN0KK5GNJFCMQQHWYG3KPNYH
+        actor: Test User
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KN0JSEQQZC09PNYS6VEW50C9
+        timestamp: 2026-03-31T00:09:46.261Z
     examined_commit: d752fb33fe963e0fca963315bcc5c95881ba076c
     external_links: []
     lifecycle_state: closed
@@ -91684,6 +91690,8 @@ reviews:
               behavioral-suite skip that triggered this blocker.
             created_at: 2026-03-31T00:09:28.204Z
         kind: blocker
+        resolved_at: 2026-03-31T00:09:45.669Z
+        resolved_by: Test User
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -91693,7 +91701,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-30T23:56:14.039Z
     created_at: 2026-03-30T23:55:04.985Z
-    updated_at: 2026-03-31T00:09:30.235Z
+    updated_at: 2026-03-31T00:09:45.669Z
     notes: []
   - _ulid: 01KN0K11CXBPZ7AXRZC8DY8A7N
     slugs: []
