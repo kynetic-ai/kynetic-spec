@@ -10467,6 +10467,24 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-31T00:21:58.484Z
+  - _ulid: 01KN0N3J09Q3HSG7SBK8WSG0D4
+    type: success
+    content: Recording browser-side WebSocket frames in Playwright made it possible to prove
+      cache:status/domain_ready invalidation separately from the 2s retry fallback in cache-warming
+      E2E coverage.
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-31T00:36:11.914Z
+  - _ulid: 01KN0N3J5YPMQ4BPMJBVV19V3Q
+    type: friction
+    content: Task-level verification can still end with a failing npm test due to unrelated long-running
+      timeout debt in daemon dispatch and workspace-registry tests, which weakens fix-cycle
+      confidence for isolated E2E tasks.
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-31T00:36:12.094Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
