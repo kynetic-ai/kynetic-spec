@@ -93267,6 +93267,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN2KR3N2CH9R2CSD679ZX7F6
         timestamp: 2026-03-31T18:50:58.471Z
+      - _ulid: 01KN2KR92DYKDMAS44DNRT73N3
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KN2KR7QG4DNK4WX25TE51EW0
+        timestamp: 2026-03-31T18:51:02.605Z
     examined_commit: 602c1f7779fd52717fb79d8cc3c66595f4d66a1d
     external_links: []
     lifecycle_state: open
@@ -93291,7 +93298,19 @@ reviews:
               /tmp/kspec-test-cache/01KN2K74010166N5C0CC3WJQR2/6fd0d2bb34986d54.log"
             created_at: 2026-03-31T18:50:57.059Z
         kind: blocker
+      - _ulid: 01KN2KR7QG4DNK4WX25TE51EW0
+        entries:
+          - _ulid: 01KN2KR7QGPF598X7Y9CHDM51N
+            author: Jacob Chapel
+            body: |-
+              Review evidence log
+              Files read: packages/web-ui/src/lib/query/ws-invalidation.ts, packages/web-ui/src/lib/api.ts, packages/web-ui/src/lib/components/CommandPalette.svelte, packages/web-ui/src/lib/components/board/TaskDetailContent.svelte, packages/web-ui/src/routes/tasks/+page.svelte, packages/web-ui/src/routes/tasks/board/+page.svelte, packages/daemon/src/websocket/handler.ts, packages/daemon/src/websocket/heartbeat.ts, packages/daemon/src/routes/test-hooks.ts, src/daemon/entity-cache.ts, tests/daemon-api/websocket-protocol.test.ts, tests/daemon-heartbeat.test.ts, tests/web-ui/ws-cache-invalidation.test.ts, tests/e2e/cache-warming-transition.spec.ts, tests/e2e/file-watcher.spec.ts, tests/e2e/connection.spec.ts, tests/e2e/triage.spec.ts, tests/e2e/validate.spec.ts, tests/e2e/fixtures/test-base.ts
+              Commands run: git diff --stat, git diff --name-only, git diff --check, kspec task get, kspec review for-task, kspec item get for ui-data-freshness/review-records-web-ui/trait-websocket-protocol/interactive-triage-ui/triage-daemon-api/e2e-test-daemon-isolation/ui-validation-view/multi-directory-daemon/bootstrap-script, kspec validate, rg for AC annotations, npm test -- --fresh
+              Claims verified: task-detail review lookup now matches current slug-based /api/reviews?task= semantics; prior request_changes verdict was stale only if npm test -- --fresh passed, which it did not on this snapshot
+              Categories searched: correctness (no new blocker beyond gate failure found in inspected runtime paths), edge cases (WS nack/1011/heartbeat/cache-warming paths inspected), error handling (WebSocket 1011 + cache warming), test quality (behavioral coverage present, no source-scanning found in touched files), integration (required full-suite gate failed), security (no specific issues found in touched paths)
+            created_at: 2026-03-31T18:51:01.232Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-31T18:42:13.310Z
-    updated_at: 2026-03-31T18:50:57.059Z
+    updated_at: 2026-03-31T18:51:01.232Z
     notes: []
