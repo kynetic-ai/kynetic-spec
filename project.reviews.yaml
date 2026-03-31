@@ -93518,6 +93518,25 @@ reviews:
         runner: kspec
         created_at: 2026-03-31T19:51:01.013Z
         completed_at: 2026-03-31T19:51:01.013Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: tests/e2e/plans.spec.ts, tests/e2e/items.spec.ts, tests/e2e/tasks.spec.ts,
+          packages/web-ui/src/lib/api.ts, packages/web-ui/src/lib/components/ReferenceLink.svelte,
+          packages/web-ui/src/lib/components/board/TaskDetailContent.svelte,
+          packages/web-ui/src/lib/utils/plan-embedded-content.ts, package.json, scripts/test.cjs.
+          Commands run: kspec task get, kspec item get @batch-item-fetch-api, kspec item get
+          @trait-api-endpoint, git diff/stat, rg searches, kspec validate, npm test, npm run
+          build:e2e && npx playwright test tests/e2e/plans.spec.ts. Claims verified: current
+          task/item UIs use ReferenceLink rather than fetchBatchItems; plan embedded content is the
+          live fetchBatchItems consumer. Categories searched: correctness, test quality,
+          integration, error handling, edge cases."
+        name: review-evidence-log
+        required: false
+        runner: review
+        created_at: 2026-03-31T19:51:02.961Z
+        completed_at: 2026-03-31T19:51:02.961Z
     events:
       - _ulid: 01KN2PPT2R1SG7030REW7QBN9D
         actor: Jacob Chapel
@@ -93553,6 +93572,13 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-03-31T19:51:01.655Z
+      - _ulid: 01KN2Q65NB3NEVA66191FSDGXQ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence-log
+        timestamp: 2026-03-31T19:51:03.595Z
     examined_commit: 922d82d4709a521bba65ef2e842ced72f675720e
     external_links: []
     lifecycle_state: open
@@ -93583,5 +93609,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-31T19:42:40.217Z
-    updated_at: 2026-03-31T19:51:01.013Z
+    updated_at: 2026-03-31T19:51:02.961Z
     notes: []
