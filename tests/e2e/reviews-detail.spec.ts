@@ -298,10 +298,9 @@ test.describe("Review Detail Page", () => {
 
       await expect(page.getByTestId("threads-section")).toBeVisible();
 
-      // Unresolved threads shown directly (3: 2 blockers + 1 nit)
+      // All 4 threads exist in the DOM (3 unresolved + 1 resolved in collapsed <details>)
       const threadItems = page.getByTestId("thread-item");
-      // 3 unresolved directly visible + 1 resolved in details (but details collapsed)
-      await expect(threadItems).toHaveCount(3);
+      await expect(threadItems).toHaveCount(4);
     });
 
     // AC: @review-records-web-ui ac-2 — Kind badges with correct labels
@@ -314,15 +313,17 @@ test.describe("Review Detail Page", () => {
       await page.route("**/api/reviews?*", routeSiblingsMock(mockSiblingReviews()));
       await page.goto(`/reviews/${REVIEW_ULID}`);
 
-      const kindBadges = page.getByTestId("thread-kind-badge");
-      // 3 unresolved visible: 2 Blocker + 1 Nit
-      const badgeTexts: string[] = [];
-      const count = await kindBadges.count();
-      for (let i = 0; i < count; i++) {
-        badgeTexts.push((await kindBadges.nth(i).textContent()) ?? "");
-      }
-      expect(badgeTexts.filter((t) => t.includes("Blocker")).length).toBe(2);
-      expect(badgeTexts.filter((t) => t.includes("Nit")).length).toBe(1);
+      // Wait for threads section to render
+      await expect(page.getByTestId("threads-section")).toBeVisible();
+
+      // Verify badge content by checking individual thread items
+      const threadItems = page.getByTestId("thread-item");
+      const count = await threadItems.count();
+      // Each thread-item contains a kind badge; check visible ones
+      const blockerCount = await page.locator('[data-testid="thread-kind-badge"]:visible').filter({ hasText: "Blocker" }).count();
+      const nitCount = await page.locator('[data-testid="thread-kind-badge"]:visible').filter({ hasText: "Nit" }).count();
+      expect(blockerCount).toBe(2);
+      expect(nitCount).toBe(1);
     });
 
     // AC: @review-records-web-ui ac-2 — Resolution state shown

@@ -90,13 +90,19 @@
 			selectedTaskRef = urlRef;
 			modalOpen = true;
 		}
+		// When URL no longer has ?ref= (after goto in close effect), reset tracking
+		if (!urlRef && lastProcessedRef) {
+			lastProcessedRef = '';
+		}
 	});
 
 	// AC: @ui-task-board ac-7, @ui-url-panel-state ac-2 — Clear component state and URL param when modal closes
 	$effect(() => {
 		if (!modalOpen) {
 			selectedTaskRef = null;
-			lastProcessedRef = '';
+			// Do NOT clear lastProcessedRef here — keep it set so the open effect
+			// doesn't see the stale ?ref= as "new" while goto() is in flight.
+			// lastProcessedRef gets cleared by the open effect when urlRef becomes null.
 			const url = new URL($page.url);
 			if (url.searchParams.has('ref')) {
 				url.searchParams.delete('ref');

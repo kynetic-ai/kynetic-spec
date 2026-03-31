@@ -124,7 +124,8 @@
 		reviewsLoading = true;
 		reviewsError = '';
 
-		fetchReviewsForTask(task._ulid)
+		const reviewTaskRef = task.slugs?.[0] ?? task._ulid;
+		fetchReviewsForTask(reviewTaskRef)
 			.then((response) => {
 				if (cancelled) return;
 				linkedReviews = response.items;

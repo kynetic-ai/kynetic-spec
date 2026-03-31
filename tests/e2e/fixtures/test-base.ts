@@ -16,8 +16,9 @@ const KSPEC_CLI = join(__dirname, "../../../dist/cli/index.js");
 
 // E2E fixtures live alongside this file
 const E2E_FIXTURES = __dirname;
-// Path to built web UI (daemon serves this for E2E tests)
-const WEB_UI_BUILD = join(__dirname, "../../../packages/web-ui/build");
+// Path to built web UI bundle copied by build:e2e. Using dist/web-ui avoids
+// worktree-specific package build paths leaking into isolated daemon fixtures.
+const WEB_UI_BUILD = join(__dirname, "../../../dist/web-ui");
 
 interface DaemonFixture {
   tempDir: string;

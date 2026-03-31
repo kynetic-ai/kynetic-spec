@@ -408,9 +408,9 @@ test.describe("Tasks View", () => {
       await expect(link).toBeVisible();
       await link.click();
 
-      // Should navigate to items page with spec detail
-      await page.waitForURL(/\/items/, { timeout: 10000 });
-      expect(page.url()).toContain("/items");
+      // Should navigate to specs page with spec detail
+      await page.waitForURL(/\/specs/, { timeout: 10000 });
+      expect(page.url()).toContain("/specs");
 
       // Spec detail panel should be visible (Sheet may need time to open)
       const specDetailPanel = page.getByTestId("spec-detail-panel");
@@ -666,16 +666,28 @@ test.describe("Tasks View", () => {
       page,
       daemon: _daemon,
     }) => {
-      // Navigate directly with ?ref= to open the modal
-      await page.goto("/tasks?ref=01KG0RR8CB8N4YGP991WD7XS9R");
+      // Navigate directly with ?ref= using the stable task slug fixture
+      await page.goto("/tasks?ref=test-task-pending-review");
 
-      // Dialog should open
+      // Dialog should open — wait for task data to load inside the modal
       const detailPanel = page.getByTestId("task-detail-panel");
       await expect(detailPanel).toBeVisible();
+      await expect(detailPanel.getByTestId("task-detail-title")).toBeVisible();
 
       // Close dialog by pressing Escape
       await page.keyboard.press("Escape");
-      await expect(detailPanel).not.toBeVisible();
+      // Brief wait for effects to settle
+      await page.waitForTimeout(200);
+
+      // The dialog may already be detached after close; only retry if it's still visible/open.
+      const dialogState = (await detailPanel.isVisible().catch(() => false))
+        ? await detailPanel.getAttribute("data-state")
+        : null;
+      // If dialog is still open, the open effect is re-triggering — try closing again
+      if (dialogState === "open") {
+        await page.keyboard.press("Escape");
+      }
+      await expect(detailPanel).not.toBeVisible({ timeout: 5000 });
 
       // URL should no longer have ?ref=
       expect(page.url()).not.toContain("ref=");

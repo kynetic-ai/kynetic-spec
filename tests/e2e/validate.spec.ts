@@ -128,6 +128,20 @@ function mockAggregation() {
   };
 }
 
+/** Clean aggregation with no issues. */
+function mockAggregationClean() {
+  return {
+    stats: { totalSpecs: 5, specsWithTasks: 5, alignedSpecs: 5, orphanedSpecs: 0 },
+    warnings: [],
+    entity_counts: { items: 5, tasks: 5, traits: 0 },
+    ac_counts: { total: 10, covered: 10, uncovered: 0 },
+    orphan_count: 0,
+    valid: true,
+    error_count: 0,
+    warning_count: 0,
+  };
+}
+
 /** Register all route mocks for the validate page. */
 async function setupValidateRoutes(
   page: import("@playwright/test").Page,
@@ -208,7 +222,10 @@ test.describe("Validation and Alignment View", () => {
 
     // AC: @ui-validation-view ac-1
     test('shows "Valid" badge when all checks pass', async ({ page, daemon: _daemon }) => {
-      await setupValidateRoutes(page, { validation: mockValidationClean() });
+      await setupValidateRoutes(page, {
+        validation: mockValidationClean(),
+        aggregation: mockAggregationClean(),
+      });
       await page.goto("/validate");
 
       await expect(page.getByTestId("status-valid")).toBeVisible();
@@ -347,7 +364,7 @@ test.describe("Validation and Alignment View", () => {
     test("shows no issues message when validation is clean", async ({ page, daemon: _daemon }) => {
       await setupValidateRoutes(page, {
         validation: mockValidationClean(),
-        aggregation: { ...mockAggregation(), warnings: [] },
+        aggregation: mockAggregationClean(),
       });
       await page.goto("/validate");
 
@@ -372,7 +389,7 @@ test.describe("Validation and Alignment View", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify(envelope(mockAggregation())),
+          body: JSON.stringify(envelope(mockAggregationClean())),
         });
       });
 

@@ -8,12 +8,20 @@
 
 	// AC: @web-dashboard ac-23
 	let open = $state(false);
-	// searchText tracks the input field value (what the user types).
-	// This is separate from cmdk's `value` prop which tracks the selected item.
-	let searchText = $state('');
+	let query = $state('');
+	let selectedValue = $state('');
 	let results = $state<SearchResult[]>([]);
 	let loading = $state(false);
 	let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+
+	// Track the Command component's internal search text via onStateChange.
+	// bits-ui Command's `value` prop represents the selected item, not the search text.
+	// The search text lives in the internal `search` state field.
+	function handleStateChange(state: { search: string; value: string }) {
+		if (state.search !== query) {
+			query = state.search;
+		}
+	}
 
 	// AC: @web-dashboard ac-23 - Open command palette on Cmd+K / Ctrl+K
 	onMount(() => {
@@ -32,7 +40,7 @@
 
 	// AC: @web-dashboard ac-24 - Debounced search (300ms)
 	$effect(() => {
-		if (searchText.trim() === '') {
+		if (query.trim() === '') {
 			results = [];
 			loading = false;
 			return;
@@ -45,7 +53,7 @@
 
 		debounceTimer = setTimeout(async () => {
 			try {
-				const response = await search(searchText);
+				const response = await search(query);
 				results = response.results;
 			} catch (error) {
 				console.error('Search failed:', error);
@@ -79,7 +87,8 @@
 	// AC: @web-dashboard ac-25 - Navigate to detail view on click
 	function handleSelect(result: SearchResult) {
 		open = false;
-		searchText = '';
+		query = '';
+		selectedValue = '';
 		results = [];
 
 		// Map type to route
@@ -112,17 +121,17 @@
 </script>
 
 <!-- AC: @web-dashboard ac-23 -->
-<Command.Dialog data-testid="command-palette" bind:open shouldFilter={false} title="Search" description="Search across all entities">
+<Command.Dialog data-testid="command-palette" bind:open bind:value={selectedValue} shouldFilter={false} onStateChange={handleStateChange} title="Search" description="Search across all entities">
 	{@render children()}
 </Command.Dialog>
 
 {#snippet children()}
 	<!-- AC: @web-dashboard ac-23, ac-24 -->
-	<Command.Input data-testid="command-palette-input" placeholder="Search tasks, items, inbox..." bind:value={searchText} />
+	<Command.Input data-testid="command-palette-input" placeholder="Search tasks, items, inbox..." />
 	<Command.List data-testid="command-palette-results">
 		{#if loading}
 			<Command.Loading>Searching...</Command.Loading>
-		{:else if searchText.trim() && results.length === 0}
+		{:else if query.trim() && results.length === 0}
 			<Command.Empty>No results found.</Command.Empty>
 		{:else}
 			<!-- AC: @web-dashboard ac-24 - Group results by type -->
