@@ -92925,6 +92925,12 @@ reviews:
         payload:
           thread_ulid: 01KN2H4A2KHDSZP936EBA1G9MC
         timestamp: 2026-03-31T18:19:12.193Z
+      - _ulid: 01KN2HY18VBJQGTZPCFMX2V6A1
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN2H3ZKEDSKMR9E54GJQRJJ4
+        timestamp: 2026-03-31T18:19:14.075Z
     examined_commit: e552a65400cb5a5076e7eba8248ec298541df14d
     external_links: []
     lifecycle_state: closed
@@ -92954,6 +92960,16 @@ reviews:
               @01KMZ1BVBBDPGQMSK3C8GDK3HP and makes regression review impossible. Please
               rebase/cherry-pick this branch down to the selector fixes only before resubmitting.
             created_at: 2026-03-31T18:05:00.399Z
+          - _ulid: 01KN2HY0NA2DP2JCDW7DNNF02C
+            author: Jacob Chapel
+            body: "Fixed in 602c1f777. The current tree no longer contains the out-of-scope
+              triage/cache/test-hook drift cited in the blocker: git diff origin/dev...HEAD is now
+              limited to selector-task files, and the remaining code change is the in-scope
+              task-review lookup fix in TaskDetailContent.svelte plus E2E harness/test
+              stabilizations. Verification on this snapshot: npm run test:e2e --
+              tests/e2e/task-board.spec.ts tests/e2e/tasks.spec.ts (52 passed, 1 skipped) and npm
+              run test:e2e -- tests/e2e/search.spec.ts (21 passed)."
+            created_at: 2026-03-31T18:19:13.450Z
         kind: blocker
       - _ulid: 01KN2H4A2KHDSZP936EBA1G9MC
         entries:
@@ -92994,5 +93010,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-31T18:07:21.818Z
     created_at: 2026-03-31T18:01:42.741Z
-    updated_at: 2026-03-31T18:19:11.591Z
+    updated_at: 2026-03-31T18:19:13.450Z
     notes: []
