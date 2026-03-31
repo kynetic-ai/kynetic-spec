@@ -23580,8 +23580,14 @@
   title: Validate and expand CI e2e gate to full suite
   type: task
   plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
-  status: in_progress
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - "Full Playwright suite is not yet CI-ready. Validation on 2026-03-31: npm run test:e2e:full =>
+      450 passed, 22 failed, 38 skipped; CI-like npx playwright test --workers=2 --retries=2 => 449
+      passed, 19 failed, 4 flaky, 38 skipped in about 10m45s. Persistent failures remain in
+      api-watcher, observations, review detail/interaction, sessions, and workflows, with extra
+      flake in navigation, plans, and session-context. Do not switch CI from smoke to full gate
+      until those failures are resolved and runtime is back within budget."
   depends_on:
     - "@task-fix-loading-page-e2e"
     - "@task-fix-stale-selectors"
