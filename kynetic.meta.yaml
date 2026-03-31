@@ -10509,6 +10509,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-31T00:51:40.471Z
+  - _ulid: 01KN0PG31VWTKJ58MVJN6B10Y9
+    type: friction
+    content: "Full npm test remains red outside task scope while working @task-e2e-session-search: first
+      failure is tests/claude-plugin-registry.test.ts and the run also reports missing bundled web
+      UI assets and daemon STACK_TRACE_ERROR failures. This makes the canonical repo-wide gate noisy
+      for isolated E2E coverage tasks."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-03-31T01:00:31.164Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
