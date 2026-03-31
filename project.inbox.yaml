@@ -2110,7 +2110,20 @@ inbox:
     added_by: Jacob Chapel
     created_at: 2026-03-31T00:50:12.297Z
   - _ulid: 01KN2AK5TG7SD3W5QANHMMRFXX
-    text: Extend GET /api/reviews?task= to resolve raw task ULIDs alongside slugs/@refs
+    text: >-
+      Extend GET /api/reviews?task= to resolve raw task ULIDs alongside slugs/@refs
+
+
+      ---
+
+
+      Context from investigation on 2026-03-31: @task-fix-stale-selectors branch contained an
+      out-of-scope daemon change in packages/daemon/src/routes/reviews.ts to resolve raw ULID task
+      filters alongside slug/@ref forms. This appears product-useful, but it changes the current
+      tested contract: tests/daemon-api/reviews-list.test.ts currently expects task=<raw ULID> to
+      return an empty list. Follow-up should decide intended API semantics, update spec coverage for
+      @review-records-web-ui ac-7 if needed, then implement daemon and test changes intentionally in
+      a separate task.
     tags:
       - api
       - review
