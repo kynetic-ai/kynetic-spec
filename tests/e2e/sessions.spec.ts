@@ -165,9 +165,13 @@ function mockSessionsRoute(sessions: ReturnType<typeof mockSessions>) {
   };
 }
 
-function mockSearchRoute() {
-  return (route: any) => {
+function mockSearchRoute(options?: {
+  delayMs?: number;
+  onRequest?: (url: URL) => void;
+}) {
+  return async (route: any) => {
     const url = new URL(route.request().url());
+    options?.onRequest?.(url);
     const query = url.searchParams.get("q") ?? "";
     const statusParam = url.searchParams.getAll("status");
     const agentIdParam = url.searchParams.get("agent_id");
@@ -178,6 +182,8 @@ function mockSearchRoute() {
               session_id: "01JTEST0000000000000000001",
               agent_type: "task-worker",
               started_at: "2026-03-04T10:00:00.000Z",
+              status: "completed",
+              agent_id: "worker",
               matches: [
                 {
                   session_id: "01JTEST0000000000000000001",
@@ -188,14 +194,34 @@ function mockSearchRoute() {
                 },
               ],
             },
+            {
+              session_id: "01JTEST0000000000000000003",
+              agent_type: "task-worker",
+              started_at: "2026-03-03T14:00:00.000Z",
+              status: "failed",
+              agent_id: "worker",
+              matches: [
+                {
+                  session_id: "01JTEST0000000000000000003",
+                  event_seq: 2,
+                  timestamp: Date.parse("2026-03-03T14:02:00.000Z"),
+                  event_type: "session.error",
+                  content_excerpt: "Error handling failed after a timeout retry",
+                },
+              ],
+            },
           ]
         : [];
 
     if (statusParam.length > 0) {
-      items = statusParam.includes("completed") ? items : [];
+      items = items.filter((item: any) => statusParam.includes(item.status));
     }
     if (agentIdParam) {
-      items = agentIdParam === "worker" ? items : [];
+      items = items.filter((item: any) => item.agent_id === agentIdParam);
+    }
+
+    if (options?.delayMs) {
+      await new Promise((resolve) => setTimeout(resolve, options.delayMs));
     }
 
     const totalMatches = items.reduce((sum: number, item: any) => sum + item.matches.length, 0);
@@ -551,8 +577,10 @@ test.describe("Session History View", () => {
 
       await expect(page).toHaveURL(/q=error(\+|%20)handling/);
       await expect(page.getByTestId("session-search-results")).toBeVisible();
-      await expect(page.getByTestId("session-search-session")).toHaveCount(1);
-      await expect(page.getByTestId("session-search-match")).toContainText("Error handling added");
+      await expect(page.getByTestId("session-search-session")).toHaveCount(2);
+      await expect(page.getByTestId("session-search-match").first()).toContainText(
+        "Error handling added",
+      );
     });
 
     // AC: @session-text-search ac-empty-query
@@ -571,6 +599,122 @@ test.describe("Session History View", () => {
       await expect(page).not.toHaveURL(/[?&]q=/);
       await expect(page.getByTestId("sessions-list")).toBeVisible();
       await expect(page.getByTestId("session-row")).toHaveCount(3);
+    });
+
+    // AC: @session-text-search ac-api-search
+    test("search results group matching excerpts by session and preserve the search query in the URL", async ({
+      page,
+      daemon: _daemon,
+    }) => {
+      await page.route("**/api/sessions/search*", mockSearchRoute());
+      await page.route("**/api/sessions*", mockSessionsRoute(mockSessions()));
+      await page.goto("/sessions");
+      await expect(page.getByTestId("sessions-list")).toBeVisible();
+
+      await page.getByTestId("session-search-input").fill("error handling");
+      await page.getByTestId("session-search-submit").click();
+
+      await expect(page).toHaveURL(/q=error(\+|%20)handling/);
+      await expect(page.getByTestId("session-search-results")).toBeVisible();
+      await expect(page.getByTestId("session-search-count")).toContainText("2 matches across 2 sessions");
+      await expect(page.getByTestId("session-search-session")).toHaveCount(2);
+      await expect(page.getByTestId("session-search-match").nth(0)).toContainText(
+        "Error handling added to the worker session",
+      );
+      await expect(page.getByTestId("session-search-match").nth(1)).toContainText(
+        "Error handling failed after a timeout retry",
+      );
+    });
+
+    // AC: @session-text-search ac-api-search
+    test("search with no matching excerpts shows the filtered empty state", async ({
+      page,
+      daemon: _daemon,
+    }) => {
+      await page.route("**/api/sessions/search*", mockSearchRoute());
+      await page.route("**/api/sessions*", mockSessionsRoute(mockSessions()));
+      await page.goto("/sessions");
+      await expect(page.getByTestId("sessions-list")).toBeVisible();
+
+      await page.getByTestId("session-search-input").fill("missing phrase");
+      await page.getByTestId("session-search-submit").click();
+
+      await expect(page).toHaveURL(/q=missing(\+|%20)phrase/);
+      await expect(page.getByTestId("sessions-empty")).toBeVisible();
+      await expect(page.getByTestId("sessions-empty")).toContainText("No matching sessions");
+      await expect(page.getByTestId("sessions-empty")).toContainText(
+        "Try adjusting your search or filters.",
+      );
+    });
+
+    // AC: @session-text-search ac-performance
+    test("search requests include active metadata filters and the UI shows only narrowed results", async ({
+      page,
+      daemon: _daemon,
+    }) => {
+      const searchRequests: string[] = [];
+
+      await page.route(
+        "**/api/sessions/search*",
+        mockSearchRoute({
+          onRequest: (url) => searchRequests.push(url.search),
+        }),
+      );
+      await page.route("**/api/sessions*", mockSessionsRoute(mockSessions()));
+      await page.goto("/sessions");
+      await expect(page.getByTestId("sessions-list")).toBeVisible();
+
+      await page.getByTestId("session-search-input").fill("error handling");
+      await page.getByTestId("session-search-submit").click();
+      await expect(page.getByTestId("session-search-session")).toHaveCount(2);
+
+      await page.getByTestId("session-filter-status-completed").click();
+
+      await expect(page).toHaveURL(/q=error(\+|%20)handling/);
+      await expect(page).toHaveURL(/status=completed/);
+      await expect(page.getByTestId("session-search-count")).toContainText("1 match across 1 session");
+      await expect(page.getByTestId("session-search-session")).toHaveCount(1);
+      await expect(page.getByTestId("session-search-session").first()).toHaveAttribute(
+        "data-session-id",
+        "01JTEST0000000000000000001",
+      );
+      expect(searchRequests.some((search) => search.includes("status=completed"))).toBe(true);
+    });
+
+    // AC: @session-text-search ac-performance
+    test("typing quickly does not fire a search request per keystroke before submit", async ({
+      page,
+      daemon: _daemon,
+    }) => {
+      const searchRequests: string[] = [];
+
+      await page.route(
+        "**/api/sessions/search*",
+        mockSearchRoute({
+          delayMs: 25,
+          onRequest: (url) => searchRequests.push(url.search),
+        }),
+      );
+      await page.route("**/api/sessions*", mockSessionsRoute(mockSessions()));
+      await page.goto("/sessions");
+      await expect(page.getByTestId("sessions-list")).toBeVisible();
+
+      const input = page.getByTestId("session-search-input");
+      await input.click();
+      await input.pressSequentially("error handling", { delay: 10 });
+
+      await page.waitForTimeout(200);
+      expect(searchRequests).toHaveLength(0);
+
+      const responsePromise = page.waitForResponse((response) =>
+        response.url().includes("/api/sessions/search") && response.request().method() === "GET",
+      );
+      await page.getByTestId("session-search-submit").click();
+      await responsePromise;
+
+      await expect(page.getByTestId("session-search-results")).toBeVisible();
+      expect(searchRequests).toHaveLength(1);
+      expect(searchRequests[0]).toContain("q=error+handling");
     });
   });
 
