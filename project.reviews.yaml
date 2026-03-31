@@ -91887,6 +91887,17 @@ reviews:
         runner: npm
         created_at: 2026-03-31T00:19:46.748Z
         completed_at: 2026-03-31T00:19:46.748Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm run test:e2e -- tests/e2e/search.spec.ts tests/e2e/validate.spec.ts
+          tests/e2e/reviews-detail.spec.ts passed; 55 Playwright tests green on this snapshot.
+        name: focused e2e selectors
+        required: false
+        runner: playwright
+        created_at: 2026-03-31T00:19:50.549Z
+        completed_at: 2026-03-31T00:19:50.549Z
     events:
       - _ulid: 01KN0M3QDFZZX231Q77QEEB9V5
         actor: Test User
@@ -91922,6 +91933,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN0M5HR1Q8EW0G77CHSABRAC
         timestamp: 2026-03-31T00:19:49.214Z
+      - _ulid: 01KN0M5M7CJ77B22N602N3AA0Y
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: focused e2e selectors
+        timestamp: 2026-03-31T00:19:51.148Z
     examined_commit: 6af239cd6fa544629b0fe4ec47cb2d8976d0390e
     external_links: []
     lifecycle_state: open
@@ -91968,5 +91986,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-31T00:18:48.880Z
-    updated_at: 2026-03-31T00:19:48.610Z
+    updated_at: 2026-03-31T00:19:50.549Z
     notes: []
