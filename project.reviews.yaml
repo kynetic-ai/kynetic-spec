@@ -92040,6 +92040,17 @@ reviews:
         runner: npm
         created_at: 2026-03-31T00:27:26.295Z
         completed_at: 2026-03-31T00:27:26.295Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm run test:e2e:full -- tests/e2e/api-websocket.spec.ts passed: 4 tests passed in 12.0s
+          after build:e2e."
+        name: websocket UI Playwright
+        required: true
+        runner: playwright
+        created_at: 2026-03-31T00:27:28.302Z
+        completed_at: 2026-03-31T00:27:28.302Z
     events:
       - _ulid: 01KN0MA1E7YS573FVPY3TNM8YX
         actor: Test User
@@ -92068,6 +92079,13 @@ reviews:
           status: fail
           name: full npm test
         timestamp: 2026-03-31T00:27:26.915Z
+      - _ulid: 01KN0MKK8W131M4HHDF8W7VN9X
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: websocket UI Playwright
+        timestamp: 2026-03-31T00:27:28.924Z
     examined_commit: 84409099de6619935f711e6870d3dbb00d8929f4
     external_links: []
     lifecycle_state: open
@@ -92080,5 +92098,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-31T00:22:15.752Z
-    updated_at: 2026-03-31T00:27:26.295Z
+    updated_at: 2026-03-31T00:27:28.302Z
     notes: []
