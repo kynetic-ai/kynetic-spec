@@ -272,34 +272,18 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
 
           // AC: @review-records-web-ui ac-7 — Task filter for task detail page integration
           // Task filter (matches subject ref for task reviews, or related_refs)
-          // Uses ReferenceIndex to resolve ULID↔slug so both forms match
           if (query.task) {
             const taskFilter = query.task;
-            const resolved = index.resolve(taskFilter);
-            // Build set of all known identifiers for this task (ULID + slugs, with/without @)
-            const candidates = new Set<string>();
-            candidates.add(taskFilter);
-            candidates.add(taskFilter.replace(/^@/, ""));
-            candidates.add(`@${taskFilter.replace(/^@/, "")}`);
-            if (resolved.ok) {
-              candidates.add(resolved.ulid);
-              candidates.add(`@${resolved.ulid}`);
-              const item = resolved.item as { slugs?: string[] };
-              if (item.slugs) {
-                for (const slug of item.slugs) {
-                  candidates.add(slug);
-                  candidates.add(`@${slug}`);
-                }
-              }
-            }
-            const matchesRef = (ref: string) =>
-              candidates.has(ref) || candidates.has(ref.replace(/^@/, "")) || candidates.has(`@${ref.replace(/^@/, "")}`);
-
             filtered = filtered.filter((r) => {
               if (r.subject.type === "task" && "ref" in r.subject) {
-                if (matchesRef(r.subject.ref)) return true;
+                const ref = r.subject.ref;
+                if (ref === taskFilter || ref === `@${taskFilter}` || `@${ref}` === taskFilter) {
+                  return true;
+                }
               }
-              return r.related_refs.some((rr) => matchesRef(rr));
+              return r.related_refs.some(
+                (rr) => rr === taskFilter || rr === `@${taskFilter}` || `@${rr}` === taskFilter,
+              );
             });
           }
 
