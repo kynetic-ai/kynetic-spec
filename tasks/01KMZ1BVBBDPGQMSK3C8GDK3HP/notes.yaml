@@ -133,3 +133,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-03-31T17:16:20.785Z
+  - _ulid: 01KN2FWE4613ZKKE235J5KTXER
+    content: Removed the merged reviews-route task-filter change from
+      packages/daemon/src/routes/reviews.ts because it is out of scope for this selector-only
+      ticket. Follow-up flaky full-suite investigation has been split to a separate dependent task
+      so the remaining dispatch-workspace-registry and daemon-api agent-dispatch failures can be
+      handled out of band from @task-fix-stale-selectors.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-31T17:43:24.551Z
