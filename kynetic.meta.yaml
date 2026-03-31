@@ -10713,6 +10713,26 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-31T20:01:25.515Z
+  - _ulid: 01KN2S0FZ4KRT65VZYBKZ7WQPM
+    type: friction
+    content: Concurrent verification runs can churn dist/web-ui and cause misleading Playwright failures
+      from tests/e2e/fixtures/test-base.ts ("Web UI not built") even after build:e2e succeeded.
+      Consider isolating or locking the shared E2E web-ui artifact.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-03-31T20:22:54.692Z
+  - _ulid: 01KN2S0G4MN2EX9EY3RQC5V00K
+    type: success
+    content: "The review/fix-cycle flow worked well here: blocking mocked /api/items/batch coverage
+      forced the test to wait on the real request/response path, which produced stronger evidence
+      before merge."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-03-31T20:22:54.868Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
