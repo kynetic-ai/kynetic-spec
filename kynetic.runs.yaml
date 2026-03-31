@@ -19567,7 +19567,7 @@ runs:
     completed_at: 2026-03-31T00:37:03.406Z
   - _ulid: 01KN0NYSJGS4RVRVYPS07YE61Z
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -19582,7 +19582,13 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-31T00:51:41.147Z
-        completed_at: 2026-03-31T00:51:41.147Z
+        completed_at: 2026-03-31T00:51:53.355Z
+        notes: "High-confidence items: success captured as observation @01KN0NZW. Existing tracking found
+          for workflow-show active-run friction, so no duplicate capture."
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-31T00:51:53.355Z
+        completed_at: 2026-03-31T00:51:53.355Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-31T00:51:04.400Z
