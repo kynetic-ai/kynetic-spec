@@ -1,0 +1,36 @@
+_ulid: 01KN2FWE8F8R03JWB1FTJ2ZE1W
+slugs:
+  - task-investigate-flaky-full-suite-dispatch-and-daemon-api-tests
+title: Investigate flaky full-suite dispatch and daemon API test failures
+type: bug
+description: "What: Investigate and fix the remaining full-suite test instability affecting dispatch
+  workspace registry and daemon API dispatch coverage. Current symptoms observed during full npm
+  test runs include STACK_TRACE_ERROR failures in dispatch-workspace-registry shadow durability
+  coverage and daemon-api agent-dispatch lifecycle coverage, while targeted reruns may pass. Why:
+  These failures keep the main verification gate red and are outside the selector-only scope of
+  @task-fix-stale-selectors. They need an explicit follow-up so the selector task can stay focused
+  while the broader test stability problem is addressed separately. How: 1. Reproduce the failures
+  from a clean branch snapshot using the project test runner and capture exact failing cases plus
+  full logs. 2. Determine whether each failure is deterministic, order-dependent, timeout-related,
+  shared-state related, or environment-specific by comparing full-suite and isolated reruns. 3.
+  Narrow the failing path to the responsible subsystem and identify whether the issue lives in
+  dispatch workspace registry logic, daemon API lifecycle handling, test harness/build
+  orchestration, or test isolation. 4. Implement the minimal fix with behavioral coverage that
+  proves the flaky path is stabilized without weakening the test gate. 5. Re-run the relevant
+  targeted tests and the broader project gate to confirm the failures are resolved."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-fix-stale-selectors"
+context: []
+priority: 2
+tags:
+  - test
+  - infra
+  - daemon
+vcs_refs: []
+created_at: 2026-03-31T17:43:24.687Z
+todos: []
