@@ -10594,6 +10594,17 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-03-31T18:20:35.156Z
+  - _ulid: 01KN2J0GRA59PBFNYC7GQPPZTF
+    type: success
+    content: Checking git diff origin/dev...HEAD against the current tree before accepting a scope-drift
+      review blocker prevented another wrong fix cycle. It quickly separated superseded branch
+      history from the real submission snapshot and narrowed the remaining work to the actual
+      failing selectors/tests.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-03-31T18:20:35.466Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
