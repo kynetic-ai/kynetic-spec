@@ -19686,7 +19686,7 @@ runs:
     completed_at: 2026-03-31T16:27:19.006Z
   - _ulid: 01KN2GM533JZ143HAPSYEQZ9C0
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -19703,7 +19703,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-31T17:56:53.163Z
-        completed_at: 2026-03-31T17:56:53.163Z
+        completed_at: 2026-03-31T17:57:02.350Z
+        notes: "High-confidence friction identified and checked against the searches: task-review linkage
+          semantics differ between UI fetches, backend review filtering, and fixtures. Captured as
+          observation @01KN2GN3. No additional high-confidence success or task/inbox capture stood
+          above the bar for loop mode."
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-31T17:57:02.350Z
+        completed_at: 2026-03-31T17:57:02.350Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-31T17:56:21.732Z
