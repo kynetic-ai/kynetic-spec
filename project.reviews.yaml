@@ -92546,6 +92546,18 @@ reviews:
         runner: npm
         created_at: 2026-03-31T01:10:49.689Z
         completed_at: 2026-03-31T01:10:49.689Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Targeted run: npm run build:e2e && npx playwright test tests/e2e/sessions.spec.ts. All
+          six Session Search tests passed; the file's remaining failures were outside the Session
+          Search block."
+        name: session-search-e2e
+        required: true
+        runner: playwright
+        created_at: 2026-03-31T01:10:51.623Z
+        completed_at: 2026-03-31T01:10:51.623Z
     events:
       - _ulid: 01KN0PQ82TP2DE6RK67STXTGYE
         actor: Jacob Chapel
@@ -92567,6 +92579,13 @@ reviews:
           status: fail
           name: npm-test
         timestamp: 2026-03-31T01:10:50.298Z
+      - _ulid: 01KN0Q31JQ4DC75E07GTMYWW1A
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: session-search-e2e
+        timestamp: 2026-03-31T01:10:52.247Z
     examined_commit: 1309666de79c1f799a7573f839864a7f13b126b0
     external_links: []
     lifecycle_state: open
@@ -92579,5 +92598,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-31T01:04:25.690Z
-    updated_at: 2026-03-31T01:10:49.689Z
+    updated_at: 2026-03-31T01:10:51.623Z
     notes: []
