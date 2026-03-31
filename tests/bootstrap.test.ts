@@ -2,6 +2,7 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 
 const {
+  checkDispatchGuard,
   checkKspecCliWithDeps,
   checkNodeModulesWithDeps,
   loadShadowBootstrapConfigWithDeps,
@@ -262,5 +263,18 @@ describe("bootstrap dependency checks", () => {
       installed: false,
       reason: expect.stringContaining("croner"),
     });
+  });
+});
+
+describe("bootstrap dispatch guard", () => {
+  it("blocks when KSPEC_SESSION_ID is set", () => {
+    const result = checkDispatchGuard({ KSPEC_SESSION_ID: "01ABC123" });
+    expect(result.allowed).toBe(false);
+    expect(result.reason).toContain("dispatch session");
+  });
+
+  it("allows when KSPEC_SESSION_ID is not set", () => {
+    const result = checkDispatchGuard({});
+    expect(result).toEqual({ allowed: true, reason: "" });
   });
 });
