@@ -36,7 +36,7 @@ description: |
 spec_ref: null
 plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-fix-fixtures-envelope"
@@ -51,8 +51,8 @@ review_ref: "@01KN0PMV94YMYPBQSV9G8T4B8R"
 submission_linkage:
   review_url: null
   branch: dev
-  captured_at: 2026-03-31T00:50:36.685Z
-  commit: 15577d79d589233666a0de375a8011f8089942ab
+  captured_at: 2026-03-31T01:20:28.798Z
+  commit: 77031f22e50e706025ef1d4a8acb0e47d5db13ed
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
   upstream_ref: refs/heads/dev
@@ -128,8 +128,35 @@ history:
         previous: 2026-03-31T00:49:18.827Z
     command: task-start
     timestamp: 2026-03-31T01:06:56.756Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-31T01:20:28.798Z
+          commit: 77031f22e50e706025ef1d4a8acb0e47d5db13ed
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-31T00:50:36.685Z
+          commit: 15577d79d589233666a0de375a8011f8089942ab
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+      submitted_at:
+        new: 2026-03-31T01:20:28.807Z
+        previous: 2026-03-31T00:50:36.691Z
+    command: task-submit
+    timestamp: 2026-03-31T01:20:28.807Z
 created_at: 2026-03-30T09:31:59.544Z
 started_at: 2026-03-31T01:06:56.755Z
-submitted_at: 2026-03-31T00:50:36.691Z
+submitted_at: 2026-03-31T01:20:28.807Z
 todos: []
 automation: eligible
