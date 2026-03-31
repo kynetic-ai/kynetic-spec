@@ -222,17 +222,18 @@ test.describe("Cache Warming Full-Stack Integration", () => {
 
       await expect
         .poll(
-          () => taskRequestTimes.find((timestamp) => timestamp >= releaseStartedAt) ?? null,
+          () => {
+            const timestamp = taskRequestTimes.find(
+              (candidate) => candidate >= releaseStartedAt,
+            );
+            return timestamp ? timestamp - releaseStartedAt : Number.POSITIVE_INFINITY;
+          },
           {
             timeout: 10000,
             message: "expected an immediate tasks refetch after the domain_ready event",
           },
         )
-        .toSatisfy(
-          (timestamp) =>
-            typeof timestamp === "number" &&
-            timestamp - releaseStartedAt < CACHE_WARMING_RETRY_DELAY_MS,
-        );
+        .toBeLessThan(CACHE_WARMING_RETRY_DELAY_MS);
 
       const taskList = page.getByTestId("task-list");
       await expect(taskList).toBeVisible({ timeout: 15000 });
@@ -275,8 +276,12 @@ test.describe("Cache Warming Full-Stack Integration", () => {
       await expect(retryButton).toBeVisible();
       await expect(retryButton).toBeEnabled();
 
+      await Promise.all([
+        expect(page.getByTestId("tasks-loading")).toBeVisible({ timeout: 10000 }),
+        retryButton.click(),
+      ]);
+
       await releaseDelay(daemon.baseUrl, projectPath);
-      await retryButton.click();
 
       const taskList = page.getByTestId("task-list");
       await expect(taskList).toBeVisible({ timeout: 15000 });
