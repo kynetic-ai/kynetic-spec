@@ -1,1 +1,12 @@
-notes: []
+notes:
+  - _ulid: 01KN0P39AXSNDX713758H2G79F
+    content: "Approach: extend the existing /sessions Playwright spec and reuse its route interception
+      helpers instead of adding new fixture plumbing. Edge cases: search mode only activates from
+      URL q state, empty-result search should render the shared filtered empty state, and metadata
+      filters must scope search responses without reintroducing timing flakes. Test plan: cover
+      search results with grouped matches, no-match empty state, status-filtered search results, and
+      debounced typing/request count with AC annotations for @session-text-search ac-api-search and
+      ac-performance."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-31T00:53:31.613Z
