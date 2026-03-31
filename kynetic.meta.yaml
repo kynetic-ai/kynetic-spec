@@ -10616,6 +10616,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-31T18:34:31.165Z
+  - _ulid: 01KN2K5H56QG1ZTVWAN5W2E0Z6
+    type: success
+    content: In a fix cycle, re-running the previously failing required gate on the exact reviewed head
+      before editing code can expose stale request_changes verdicts and avoid unnecessary churn.
+      This session's full npm test gate flipped from failing to 2082/2082 passing on the same
+      selector-task snapshot.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-03-31T18:40:48.294Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
