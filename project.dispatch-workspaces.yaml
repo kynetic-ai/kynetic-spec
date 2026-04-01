@@ -31374,12 +31374,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-01T23:12:45.863Z
+      updated_at: 2026-04-01T23:12:53.827Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-01T23:12:48.602Z
+      updated_at: 2026-04-01T23:12:53.827Z
     integration:
       status: pending
       detail: null
@@ -31387,7 +31387,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: a1d256e141a1c2ff1b2b3a3f844f0cc1801a921a
-      updated_at: 2026-04-01T23:12:45.863Z
+      updated_at: 2026-04-01T23:12:53.827Z
     lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KN5J2ETHQMPQGA334D827YWG"
@@ -31395,9 +31395,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-01T22:59:21.342Z
-      last_reconciled_at: 2026-04-01T23:12:48.602Z
+      last_reconciled_at: 2026-04-01T23:12:53.827Z
       created_at: 2026-04-01T22:21:50.208Z
-      updated_at: 2026-04-01T23:12:48.602Z
+      updated_at: 2026-04-01T23:12:53.827Z
     workspace_id: dispatch-workspace-01KN5J2ETHQMPQGA334D827YWG
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -31406,5 +31406,5 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-consolidate-session-cache/01kn5j2e
         head: 613afcce6db17299caa79077049326cc975e460e
-        last_seen_at: 2026-04-01T22:59:13.886Z
+        last_seen_at: 2026-04-01T23:12:53.827Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-consolidate-session-cache-01kn5j2e
