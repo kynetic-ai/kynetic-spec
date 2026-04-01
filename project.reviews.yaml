@@ -96915,6 +96915,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN3Z11MB4SQV1KBV23CVG4S8
         timestamp: 2026-04-01T07:27:19.282Z
+      - _ulid: 01KN3Z1447E0WR39CA1H3DNABT
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN3Z13FEJ2X0DW6VK02RV4DW
+        timestamp: 2026-04-01T07:27:21.223Z
     examined_commit: 63964c9bea35e190d14514a60e0348a8ca468137
     external_links: []
     lifecycle_state: open
@@ -96947,7 +96954,28 @@ reviews:
               review detail page."
             created_at: 2026-04-01T07:27:18.667Z
         kind: blocker
+      - _ulid: 01KN3Z13FEJ2X0DW6VK02RV4DW
+        anchor:
+          type: code
+          commit: 63964c9bea35e190d14514a60e0348a8ca468137
+          line_end: 13
+          line_start: 13
+          path: dist/schema/composition.js
+          side: head
+        entries:
+          - _ulid: 01KN3Z13FETYS4BX2VNC576YPV
+            author: Jacob Chapel
+            body: "MUST-FIX: the full gate is still red in this snapshot. My npm test run exited 1 with 10
+              failing suites / 4 failing tests, including hard runtime import failures from the
+              built CLI artifacts: dist/schema/composition.js:13 imports missing ActionSchema,
+              dist/agent-runtime/prompts.js:13 imports missing
+              resolveSkillReferenceTokensForPlatform, and dist/parser/skill-render.js:48 imports
+              missing loadMetaContext. There is also a failing cli-serve SIGTERM shutdown test.
+              Since this cycle claims to unblock the full CI gate and the task note says npm test
+              passed cleanly, the submitted state is not reproducible and cannot advance."
+            created_at: 2026-04-01T07:27:20.558Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-01T07:17:49.822Z
-    updated_at: 2026-04-01T07:27:18.667Z
+    updated_at: 2026-04-01T07:27:20.558Z
     notes: []
