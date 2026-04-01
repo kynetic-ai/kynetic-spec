@@ -19,3 +19,11 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-01T05:36:03.291Z
+  - _ulid: 01KN3RRQ3K6FYCTK2T0YC0RKBS
+    content: "Final targeted failure was a false negative in the row-navigation test: Playwright's
+      generic row click landed on the nested inline task reference, which intentionally routes to
+      the task board. Updated the test to click the row's session-id content instead so it verifies
+      session-row navigation rather than nested reference-link behavior."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T05:37:54.291Z
