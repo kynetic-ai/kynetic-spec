@@ -23736,7 +23736,7 @@
   title: Fix sessions live-update E2E failures blocking the full CI gate
   type: bug
   plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 1
@@ -23750,7 +23750,7 @@
   todos_count: 0
   created_at: 2026-04-01T05:07:08.848Z
   started_at: 2026-04-01T08:07:48.818Z
-  submitted_at: 2026-04-01T07:46:16.800Z
+  submitted_at: 2026-04-01T08:21:32.916Z
   automation: eligible
 - _ulid: 01KN3Q0DXHXAR5FZHTDZVCBYA3
   slugs:
