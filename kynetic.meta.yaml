@@ -10920,6 +10920,22 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-01T07:47:49.431Z
+  - _ulid: 01KN426EFG10S0732Y3G1DCC5B
+    type: success
+    content: Keeping one real daemon-backed end-to-end assertion in a mostly deterministic E2E test
+      exposed a genuine sessions live-refresh race that synthetic browser MessageEvents had masked.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-01T08:22:41.392Z
+  - _ulid: 01KN426EN0ZP02YWQ7KFHW99MK
+    type: friction
+    content: Repo-wide npm test failures in unrelated suites make task-level verification noisy;
+      targeted work can be green while the required full-suite gate still reports unrelated red.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-01T08:22:41.568Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
