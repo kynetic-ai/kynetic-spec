@@ -20036,7 +20036,7 @@ runs:
     started_at: 2026-04-01T08:21:41.361Z
   - _ulid: 01KN432NB3WVA1AVK1G1EHTXV4
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -20050,7 +20050,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-01T08:38:44.013Z
-        completed_at: 2026-04-01T08:38:44.013Z
+        completed_at: 2026-04-01T08:39:01.104Z
+        notes: "Completed the required baseline search across observations, inbox, and ready tasks.
+          Confirmed one related pre-existing item exists for stale workflow runs (@01KHVCPEXG), so I
+          did not duplicate that friction. The two new captures remain distinct: one success about
+          focused failing-spec reproduction, and one friction about E2E specs drifting from daemon
+          fixture/API contracts."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-01T08:39:01.104Z
+        completed_at: 2026-04-01T08:39:01.104Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-01T08:38:05.923Z
