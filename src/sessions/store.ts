@@ -420,7 +420,7 @@ export async function closeSession(
     return null;
   }
 
-  // AC: @session-summary-cache ac-persist-on-close — compute stats from events.jsonl
+  // AC: @daemon-entity-cache ac-session-stats-persist — compute stats from events.jsonl
   // and persist in session metadata so list endpoints never need to scan event data.
   const [eventCount, iterationCount, tasksCompleted] = await Promise.all([
     countEventLines(sessionsDir, sessionId),
@@ -1856,7 +1856,7 @@ export async function getSessionLogSummary(
  *
  * AC: @session-list-pagination-api ac-metadata-only — List endpoint reads only
  * session.yaml metadata.
- * AC: @session-summary-cache ac-persist-on-close — Closed sessions have stats
+ * AC: @daemon-entity-cache ac-session-stats-persist — Closed sessions have stats
  * persisted in metadata; read them instead of hardcoding 0.
  */
 export async function getSessionMetadataOnly(

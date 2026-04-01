@@ -113,6 +113,8 @@ function createWarmCache(
     getItemDetail: (ulid: string) => itemDetails.get(ulid) ?? null,
     setItemDetail: (ulid, item) => itemDetails.set(ulid, item),
     getSessionIndex: () => sessions,
+    getSessionLiveEventCount: (sessionId: string) =>
+      sessions.find((summary) => summary.id === sessionId)?.event_count,
     getSessionDetail: (id: string) => sessionDetails.get(id) ?? null,
     setSessionDetail: (id, summary) => sessionDetails.set(id, summary),
     getPlansIndex: () => null,
@@ -135,6 +137,40 @@ function createWarmCache(
     getAllItemDetails: () => null,
     writeThrough: async () => {},
     markWriteThrough: () => {},
+  };
+}
+
+function createLoadingSessionsCache(
+  tasks: TaskSummary[],
+  items: ItemSummary[],
+  sessions: SessionLogSummary[],
+): RouteEntityCache {
+  const base = createWarmCache(tasks, items, sessions);
+  return {
+    ...base,
+    getDomainState: (domain: string) => {
+      if (domain === "tasks" || domain === "items") return "ready";
+      if (domain === "sessions") return "loading";
+      return "unloaded";
+    },
+    getSessionIndex: () => null,
+  };
+}
+
+function createDegradedSessionsCache(
+  tasks: TaskSummary[],
+  items: ItemSummary[],
+  sessions: SessionLogSummary[],
+): RouteEntityCache {
+  const base = createWarmCache(tasks, items, sessions);
+  return {
+    ...base,
+    getDomainState: (domain: string) => {
+      if (domain === "tasks" || domain === "items") return "ready";
+      if (domain === "sessions") return "degraded";
+      return "unloaded";
+    },
+    getSessionIndex: () => null,
   };
 }
 
@@ -269,6 +305,34 @@ describe("Route-level cache coverage for related-sessions and filtered sessions"
     });
   });
 
+  // AC: @daemon-entity-cache ac-graceful-degradation — related sessions fall back
+  // to disk-backed metadata reads while the sessions domain is still warming.
+  it("GET /api/tasks/:ref/sessions falls back to disk when sessions cache is not ready", async () => {
+    const taskSummaries = [makeTaskSummary()];
+    const itemSummaries = [makeItemSummary()];
+    const loadingCache = createLoadingSessionsCache(taskSummaries, itemSummaries, []);
+    const getEntityCache: EntityCacheAccessor = () => loadingCache;
+    const pubsub = new PubSubManager();
+    const { middleware } = projectContextMiddleware();
+
+    app = new Elysia()
+      .use(middleware)
+      .use(createTasksRoutes({ pubsub, getEntityCache }))
+      .use(createItemsRoutes({ getEntityCache }))
+      .use(createSessionRoutes({ getEntityCache }));
+
+    const res = await makeRequest(`/api/tasks/@cache-test-task/sessions`);
+    expect(res.status).toBe(200);
+
+    const body = (await res.json()) as { data: SessionLogSummary[]; meta: { total: number; cache_status: string } };
+    expect(body.meta.total).toBe(1);
+    expect(body.data[0]).toMatchObject({
+      id: SESSION_ID,
+      task_id: "@cache-test-task",
+      status: "completed",
+    });
+  });
+
   // ─── Blocker 1: GET /api/items/:ref/sessions ──────────────────────────
 
   // AC: @daemon-entity-cache ac-serve-from-memory — related sessions for item served from cache
@@ -309,6 +373,61 @@ describe("Route-level cache coverage for related-sessions and filtered sessions"
     expect(body.meta.total).toBe(1);
     expect(body.data.items[0]).toMatchObject({
       id: SESSION_ID,
+    });
+  });
+
+  // AC: @daemon-entity-cache ac-session-live-counter
+  // AC: @daemon-entity-cache ac-session-event-tracking
+  it("GET /api/sessions?task_id=... preserves live event counts while sessions cache is loading", async () => {
+    const activeSessionId = "cache-test-session-active";
+    const activeSessionDir = path.join(tempDir, ".kspec-sessions", activeSessionId);
+    mkdirSync(activeSessionDir, { recursive: true });
+    writeFileSync(
+      path.join(activeSessionDir, "session.yaml"),
+      `id: "${activeSessionId}"
+task_id: "@cache-test-task"
+agent_type: "claude-agent-acp"
+agent_id: "worker"
+trigger: "task.ready"
+status: "active"
+started_at: "2026-03-01T10:00:00Z"
+`,
+    );
+    writeFileSync(path.join(activeSessionDir, "events.jsonl"), "", "utf-8");
+
+    const taskSummaries = [makeTaskSummary()];
+    const itemSummaries = [makeItemSummary()];
+    const loadingCache = createDegradedSessionsCache(taskSummaries, itemSummaries, [
+      makeSessionSummary({
+        id: activeSessionId,
+        status: "active",
+        ended_at: undefined,
+        duration_ms: 0,
+        event_count: 3,
+      }),
+    ]);
+    const getEntityCache: EntityCacheAccessor = () => loadingCache;
+    const pubsub = new PubSubManager();
+    const { middleware } = projectContextMiddleware();
+
+    app = new Elysia()
+      .use(middleware)
+      .use(createTasksRoutes({ pubsub, getEntityCache }))
+      .use(createItemsRoutes({ getEntityCache }))
+      .use(createSessionRoutes({ getEntityCache }));
+
+    const res = await makeRequest(`/api/sessions?task_id=@cache-test-task`);
+    expect(res.status).toBe(200);
+
+    const body = (await res.json()) as {
+      data: { items: SessionLogSummary[] };
+      meta: { total: number; cache_status: string };
+    };
+    const activeSession = body.data.items.find((summary) => summary.id === activeSessionId);
+    expect(activeSession).toMatchObject({
+      id: activeSessionId,
+      status: "active",
+      event_count: 3,
     });
   });
 

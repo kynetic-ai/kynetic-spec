@@ -120,7 +120,7 @@ export const SessionMetadataSchema = z.object({
   /**
    * Persisted summary stats — written on session close so list endpoints
    * can display counts without scanning events.jsonl.
-   * AC: @session-summary-cache ac-persist-on-close
+   * AC: @daemon-entity-cache ac-session-stats-persist
    */
   event_count: z.number().int().nonnegative().optional(),
   iteration_count: z.number().int().nonnegative().optional(),

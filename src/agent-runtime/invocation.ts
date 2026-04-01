@@ -231,8 +231,8 @@ export interface InvocationOptions {
   onUpdate?: (update: SessionUpdate) => void;
   /**
    * Called after each event is appended to events.jsonl.
-   * Used by the daemon to increment live event counters in the session cache.
-   * AC: @session-summary-cache ac-live-counter
+   * Used by the daemon to increment live event counters in the entity cache.
+   * AC: @daemon-entity-cache ac-session-event-tracking
    */
   onEventAppended?: (sessionId: string) => void;
   /** Path to kspec CLI (defaults to the package CLI entrypoint under cli/) */
@@ -585,7 +585,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       }),
     );
     nextEventSeq = event.seq + 1;
-    // AC: @session-summary-cache ac-live-counter — notify cache of new event
+    // AC: @daemon-entity-cache ac-session-event-tracking — notify cache of new event
     onEventAppended?.(sessionId);
   };
 

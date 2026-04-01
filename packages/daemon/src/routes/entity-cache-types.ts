@@ -33,6 +33,7 @@ export interface RouteEntityCache {
   setItemDetail(ulid: string, item: LoadedSpecItem): void;
   getAllItemDetails(): LoadedSpecItem[] | null;
   getSessionIndex(): SessionLogSummary[] | null;
+  getSessionLiveEventCount(sessionId: string): number | undefined;
   getSessionDetail(sessionId: string): SessionLogSummary | null;
   setSessionDetail(sessionId: string, summary: SessionLogSummary): void;
   getPlansIndex(): PlanIndexSummary[] | null;
