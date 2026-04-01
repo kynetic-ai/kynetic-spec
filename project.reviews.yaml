@@ -96376,6 +96376,17 @@ reviews:
         runner: playwright
         created_at: 2026-04-01T06:23:43.807Z
         completed_at: 2026-04-01T06:23:43.807Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate exited 6 with warnings only and no schema/reference errors. Existing repo
+          warnings remain: 1 reference warning, 31 alignment warnings, 516 completeness warnings."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-01T06:23:48.959Z
+        completed_at: 2026-04-01T06:23:48.959Z
     events:
       - _ulid: 01KN3TTZTDTJ6R6KR9S0VP0Q34
         actor: Jacob Chapel
@@ -96404,6 +96415,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN3VCPMJ23BMC63A9SQJRPSG
         timestamp: 2026-04-01T06:23:47.182Z
+      - _ulid: 01KN3VCT17JJKNV78KRWAWHGVZ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-04-01T06:23:49.803Z
     examined_commit: 38587b6ed0cad0767346ec970b677d1fa870db77
     external_links: []
     lifecycle_state: open
@@ -96436,5 +96454,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-01T06:14:05.902Z
-    updated_at: 2026-04-01T06:23:46.322Z
+    updated_at: 2026-04-01T06:23:48.959Z
     notes: []
