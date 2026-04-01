@@ -52,6 +52,10 @@ export interface ServerOptions {
   webUiDir?: string; // Path to web UI build directory (default: auto-detect)
 }
 
+function hasWebUiIndex(dir: string | undefined): dir is string {
+  return Boolean(dir && existsSync(join(dir, "index.html")));
+}
+
 /**
  * Resolves the path to the web UI build directory.
  * Tries multiple locations in order:
@@ -64,13 +68,13 @@ export interface ServerOptions {
  */
 export function resolveWebUiPath(webUiDir?: string): string | null {
   // 1. Explicit option
-  if (webUiDir && existsSync(webUiDir)) {
+  if (hasWebUiIndex(webUiDir)) {
     return webUiDir;
   }
 
   // 2. Environment variable
   const envPath = process.env.WEB_UI_DIR;
-  if (envPath && existsSync(envPath)) {
+  if (hasWebUiIndex(envPath)) {
     return envPath;
   }
 
@@ -79,7 +83,7 @@ export function resolveWebUiPath(webUiDir?: string): string | null {
   // import.meta.url resolves to dist/daemon/server.js → sibling is dist/web-ui/
   const selfDir = dirname(fileURLToPath(import.meta.url));
   const bundledPath = join(selfDir, "..", "web-ui");
-  if (existsSync(bundledPath)) {
+  if (hasWebUiIndex(bundledPath)) {
     return bundledPath;
   }
 

@@ -412,6 +412,17 @@ async function waitForInvocationCount(
   );
 }
 
+async function waitForCondition(
+  predicate: () => boolean,
+  timeoutMs = 5_000,
+  pollIntervalMs = 10,
+): Promise<void> {
+  const deadline = Date.now() + timeoutMs;
+  while (!predicate() && Date.now() < deadline) {
+    await new Promise((resolve) => setTimeout(resolve, pollIntervalMs));
+  }
+}
+
 /**
  * Write tasks to the project in split storage format.
  * Clears existing tasks directory and index, then seeds each task.
@@ -2226,29 +2237,29 @@ describe("Active fleet cleanup on invocation completion", () => {
       coalesceWindowMs: 0,
     });
 
-    await engine.start();
+    try {
+      await engine.start();
 
-    const taskId = testUlid("TASK", 50);
-    await engine.handleStateChange({
-      taskId,
-      taskRef: `@${taskId}`,
-      fromStatus: "in_progress",
-      toStatus: "pending",
-      timestamp: Date.now(),
-      task: { automation: "eligible", tags: [] } as any,
-    });
+      const taskId = testUlid("TASK", 50);
+      await engine.handleStateChange({
+        taskId,
+        taskRef: `@${taskId}`,
+        fromStatus: "in_progress",
+        toStatus: "pending",
+        timestamp: Date.now(),
+        task: { automation: "eligible", tags: [] } as any,
+      });
 
-    // Wait for the terminal failure event after the started event
-    for (let i = 0; i < 50 && events.at(-1)?.type !== "failed"; i++) {
-      await new Promise((resolve) => setTimeout(resolve, 10));
+      await waitForCondition(() => events.at(-1)?.type === "failed");
+      await waitForCondition(() => engine.getStatus().invocations.length === 0);
+
+      // After failure, getStatus should show no active invocations
+      const status = engine.getStatus();
+      expect(status.invocations).toHaveLength(0);
+      expect(status.activeInvocations).toBe(0);
+    } finally {
+      await engine.stop();
     }
-
-    // After failure, getStatus should show no active invocations
-    const status = engine.getStatus();
-    expect(status.invocations).toHaveLength(0);
-    expect(status.activeInvocations).toBe(0);
-
-    await engine.stop();
   });
 
   it("emits started before terminal invocation events even for quiet success and early failure", async () => {
@@ -5655,35 +5666,37 @@ describe("Post-invocation re-evaluation", () => {
       coalesceWindowMs: 0,
     });
 
-    await engine.start();
+    try {
+      await engine.start();
 
-    // Wait for first invocation (worker picks up taskA via bootstrap)
-    // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
-    await waitForInvocationCount(
-      () => invocationCount,
-      1,
-      "first worker invocation should start after bootstrap",
-    );
-    expect(invocationCount).toBe(1);
-    expect(spawned[0].agentId).toBe("task-worker");
+      // Wait for first invocation (worker picks up taskA via bootstrap)
+      // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
+      await waitForInvocationCount(
+        () => invocationCount,
+        1,
+        "first worker invocation should start after bootstrap",
+      );
+      expect(invocationCount).toBe(1);
+      expect(spawned[0].agentId).toBe("task-worker");
 
-    // Release worker — post-invocation re-evaluation should discover pending_review tasks
-    resolveFirst();
+      // Release worker — post-invocation re-evaluation should discover pending_review tasks
+      resolveFirst();
 
-    // Wait for reviewer to be spawned
-    // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
-    await waitForInvocationCount(
-      () => invocationCount,
-      2,
-      "reviewer invocation should spawn after post-invocation re-evaluation",
-    );
+      // Wait for reviewer to be spawned
+      // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
+      await waitForInvocationCount(
+        () => invocationCount,
+        2,
+        "reviewer invocation should spawn after post-invocation re-evaluation",
+      );
 
-    // The second spawn should be the reviewer, discovering the pending_review tasks
-    // that appeared on disk during the worker's execution.
-    expect(invocationCount).toBeGreaterThanOrEqual(2);
-    expect(spawned[1].agentId).toBe("pr-reviewer");
-
-    await engine.stop();
+      // The second spawn should be the reviewer, discovering the pending_review tasks
+      // that appeared on disk during the worker's execution.
+      expect(invocationCount).toBeGreaterThanOrEqual(2);
+      expect(spawned[1].agentId).toBe("pr-reviewer");
+    } finally {
+      await engine.stop();
+    }
   });
 
   // AC: @agent-dispatch-engine ac-24
@@ -5872,51 +5885,53 @@ describe("Post-invocation re-evaluation", () => {
       coalesceWindowMs: 0,
     });
 
-    await engine.start();
-
-    // Wait for first invocation to start
-    // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
-    await waitForInvocationCount(
-      () => invocationCount,
-      1,
-      "first failure-path invocation should start",
-    );
-    expect(invocationCount).toBe(1);
-
-    // Sabotage _evaluateAllTasks so it throws on the next call (post-invocation re-eval).
-    // The already-queued taskB should still drain.
-    const evaluateSpy = vi.spyOn(
-      engine as unknown as {
-        _evaluateAllTasks: (opts: { skipIfActive: boolean }) => Promise<number>;
-      },
-      "_evaluateAllTasks",
-    );
-    evaluateSpy.mockRejectedValueOnce(new Error("simulated disk failure"));
-
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
-    // Release first invocation
-    resolveFirst();
+    try {
+      await engine.start();
 
-    // Wait for second invocation (from pre-existing queue, not re-evaluation)
-    // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
-    await waitForInvocationCount(
-      () => invocationCount,
-      2,
-      "existing queue should still drain after re-evaluation failure",
-    );
+      // Wait for first invocation to start
+      // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
+      await waitForInvocationCount(
+        () => invocationCount,
+        1,
+        "first failure-path invocation should start",
+      );
+      expect(invocationCount).toBe(1);
 
-    // taskB should still have been drained from the existing queue
-    expect(invocationCount).toBe(2);
+      // Sabotage _evaluateAllTasks so it throws on the next call (post-invocation re-eval).
+      // The already-queued taskB should still drain.
+      const evaluateSpy = vi.spyOn(
+        engine as unknown as {
+          _evaluateAllTasks: (opts: { skipIfActive: boolean }) => Promise<number>;
+        },
+        "_evaluateAllTasks",
+      );
+      evaluateSpy.mockRejectedValueOnce(new Error("simulated disk failure"));
 
-    // Verify warning was logged
-    expect(warnSpy).toHaveBeenCalledWith(
-      expect.stringContaining("Post-invocation re-evaluation failed"),
-      expect.any(Error),
-    );
+      // Release first invocation
+      resolveFirst();
 
-    warnSpy.mockRestore();
-    await engine.stop();
+      // Wait for second invocation (from pre-existing queue, not re-evaluation)
+      // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
+      await waitForInvocationCount(
+        () => invocationCount,
+        2,
+        "existing queue should still drain after re-evaluation failure",
+      );
+
+      // taskB should still have been drained from the existing queue
+      expect(invocationCount).toBe(2);
+
+      // Verify warning was logged
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.stringContaining("Post-invocation re-evaluation failed"),
+        expect.any(Error),
+      );
+    } finally {
+      warnSpy.mockRestore();
+      await engine.stop();
+    }
   });
 });
 

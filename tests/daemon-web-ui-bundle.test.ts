@@ -12,7 +12,7 @@
 // the daemon returns HTTP 200 from / when a web UI build is present.
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { existsSync, mkdirSync, rmSync } from "fs";
+import { existsSync, mkdirSync, rmSync, writeFileSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 
@@ -34,22 +34,23 @@ function resolveWebUiPath(
   envOverride?: Record<string, string | undefined>,
 ): string | null {
   const env = envOverride ?? process.env;
+  const hasWebUiIndex = (dir?: string): dir is string => Boolean(dir && existsSync(join(dir, "index.html")));
 
   // 1. Explicit option
-  if (webUiDir && existsSync(webUiDir)) {
+  if (hasWebUiIndex(webUiDir)) {
     return webUiDir;
   }
 
   // 2. Environment variable
   const envPath = env.WEB_UI_DIR;
-  if (envPath && existsSync(envPath)) {
+  if (hasWebUiIndex(envPath)) {
     return envPath;
   }
 
   // 3. Bundled assets: dist/web-ui/ relative to daemon module (dist/daemon/server.js)
   const daemonModuleDir = join(PROJECT_ROOT, "dist", "daemon");
   const bundledPath = join(daemonModuleDir, "..", "web-ui");
-  if (existsSync(bundledPath)) {
+  if (hasWebUiIndex(bundledPath)) {
     return bundledPath;
   }
 
@@ -70,6 +71,7 @@ describe("Web UI asset bundling (@daemon-web-ui-bundle)", () => {
     beforeEach(() => {
       tempDir = join(PROJECT_ROOT, `.tmp-web-ui-test-${Date.now()}`);
       mkdirSync(tempDir, { recursive: true });
+      writeFileSync(join(tempDir, "index.html"), "<!doctype html><title>test</title>");
     });
 
     afterEach(() => {
@@ -101,6 +103,15 @@ describe("Web UI asset bundling (@daemon-web-ui-bundle)", () => {
     it("non-existent explicit webUiDir is skipped and falls through to bundled", () => {
       const result = resolveWebUiPath("/non/existent/path", {});
       expect(result).toBe(DIST_WEB_UI);
+    });
+
+    // AC: @daemon-web-ui-bundle ac-5
+    it("skips explicit and env directories that exist but are missing index.html", () => {
+      const invalidDir = join(tempDir, "missing-index");
+      mkdirSync(invalidDir, { recursive: true });
+
+      expect(resolveWebUiPath(invalidDir, {})).toBe(DIST_WEB_UI);
+      expect(resolveWebUiPath(undefined, { WEB_UI_DIR: invalidDir })).toBe(DIST_WEB_UI);
     });
 
     // AC: @daemon-web-ui-bundle ac-5
