@@ -10747,8 +10747,11 @@ observations:
     content: npm test can hang after the vitest suite has already produced passing output, which forced
       manual process termination during review-detail E2E verification.
     author: Jacob Chapel
-    resolution: null
-    resolved: false
+    resolution: Covered by @task-investigate-npm-test-teardown-hang-after-green-suite-run; observed
+      again while verifying review-detail fixes.
+    resolved: true
+    resolved_at: 2026-04-01T05:19:39.724Z
+    resolved_by: Jacob Chapel
     created_at: 2026-04-01T05:17:50.039Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
