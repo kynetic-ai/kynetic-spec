@@ -20036,9 +20036,21 @@ runs:
     started_at: 2026-04-01T08:21:41.361Z
   - _ulid: 01KN432NB3WVA1AVK1G1EHTXV4
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-01T08:38:05.923Z
+        completed_at: 2026-04-01T08:38:44.013Z
+        notes: "Captured one success and one friction observation after searching for existing coverage.
+          Success: focused failing-spec reproduction isolated contract drift quickly. Friction: E2E
+          specs duplicated daemon fixture/API assumptions and drifted from current
+          envelope/topic/path contracts."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-01T08:38:44.013Z
+        completed_at: 2026-04-01T08:38:44.013Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-01T08:38:05.923Z
