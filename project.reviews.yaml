@@ -99772,6 +99772,17 @@ reviews:
         runner: npm
         created_at: 2026-04-01T20:06:22.385Z
         completed_at: 2026-04-01T20:06:22.385Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Exited 6 with warnings only; references OK, no errors. Warnings are pre-existing
+          project-level orphan/completeness/alignment items unrelated to this diff.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-01T20:06:26.406Z
+        completed_at: 2026-04-01T20:06:26.406Z
     events:
       - _ulid: 01KN5ACAZ9TT9SGAR3M4523VGX
         actor: Jacob Chapel
@@ -99800,6 +99811,13 @@ reviews:
           kind: nit
           thread_ulid: 01KN5AEZVEGTSKSWPDJ2RE9BWC
         timestamp: 2026-04-01T20:06:25.013Z
+      - _ulid: 01KN5AF2FJSCWT5PX1BC06SA3W
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-01T20:06:27.058Z
     examined_commit: b5b74b777d84ad59b520de064b8b74711cebe7bc
     external_links: []
     lifecycle_state: open
@@ -99841,5 +99859,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-01T20:04:57.450Z
-    updated_at: 2026-04-01T20:06:24.367Z
+    updated_at: 2026-04-01T20:06:26.406Z
     notes: []
