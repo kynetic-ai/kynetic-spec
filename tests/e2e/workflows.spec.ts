@@ -133,16 +133,16 @@ test.describe("Workflows View", () => {
 
       // After loading completes, skeleton should be gone and content visible
       await expect(page.getByTestId("workflows-loading")).toHaveCount(0);
-      // Verify content actually rendered (list or empty state)
-      const hasList = await page
-        .getByTestId("workflows-list")
-        .isVisible()
-        .catch(() => false);
-      const hasEmpty = await page
-        .getByTestId("workflows-empty")
-        .isVisible()
-        .catch(() => false);
-      expect(hasList || hasEmpty).toBe(true);
+      await expect(page.getByTestId("workflows-error")).toHaveCount(0);
+
+      // Wait for the post-loading branch to settle. The list/empty branch can
+      // render a tick after the loading skeleton unmounts, so avoid an
+      // immediate isVisible() probe that races the final DOM update.
+      const loadedContent = page.locator(
+        '[data-testid="workflows-list"], [data-testid="workflows-empty"]',
+      );
+      await expect(loadedContent).toHaveCount(1);
+      await expect(loadedContent.first()).toBeVisible();
     });
 
     test("shows summary count after loading", async ({ page, daemon: _daemon }) => {
