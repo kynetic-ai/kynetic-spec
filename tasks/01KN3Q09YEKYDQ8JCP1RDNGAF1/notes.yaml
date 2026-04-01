@@ -28,3 +28,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-01T05:34:09.143Z
+  - _ulid: 01KN3T2P4HZ2WH4EPR4KBZN9VV
+    content: 'Fix cycle 1: replaced the resolved-thread <details> disclosure with controlled button
+      state on /reviews/[id], reset that state on review changes, and updated the review-detail E2E
+      coverage to assert the new lazy-rendered resolved section plus keyboard activation for flaky
+      navigation/toggle interactions. Verification: npm run test:e2e --
+      tests/e2e/reviews-detail.spec.ts --grep "shows resolved threads in collapsible section"
+      --repeat-each 10 => 10/10 passed; npm run test:e2e -- tests/e2e/review-detail-page.spec.ts
+      tests/e2e/reviews-detail.spec.ts => 29/29 passed; kspec validate returned the existing project
+      warning set only. npm test was attempted twice but remained in the known non-reporting hang
+      state after starting scripts/test.cjs, so it is inconclusive rather than a fresh failure.'
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T06:00:49.554Z
