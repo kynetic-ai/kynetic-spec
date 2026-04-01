@@ -1004,13 +1004,11 @@ features:
           - session-summary-cache
         title: Session Summary Cache
         type: requirement
-        description: |
-          Cache session metadata and summary stats to avoid reading 700+ YAML files
-          and scanning events.jsonl on every list request. The cache should be
-          filesystem-aware (invalidate when sessions dir changes) and build
-          incrementally (new sessions appended, not full rebuild).
+        description: Deprecated legacy session summary cache. Session list and live counter behavior is now
+          served by @daemon-entity-cache, which owns session index loading, live event tracking, and
+          watcher-driven reloads.
         status:
-          maturity: draft
+          maturity: deprecated
           implementation: implemented
         depends_on: []
         implements: []
