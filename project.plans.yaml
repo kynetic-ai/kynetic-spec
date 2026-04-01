@@ -31177,7 +31177,7 @@ plans:
 
       - Most other API-only ACs (56 total) ARE exercised through existing UI e2e
         tests that are currently broken — fixing those tests restores coverage
-    status: active
+    status: completed
     approved_at: 2026-03-30T09:31:48.352Z
     derived_specs: []
     derived_tasks:
