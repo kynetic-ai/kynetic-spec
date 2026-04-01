@@ -99198,6 +99198,17 @@ reviews:
         runner: kspec
         created_at: 2026-04-01T09:32:00.639Z
         completed_at: 2026-04-01T09:32:00.639Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: node scripts/test.cjs --fresh tests/daemon-api/sessions-pagination.test.ts
+          tests/session-context.test.ts => 20 suites passed, 41 tests passed.
+        name: targeted daemon tests
+        required: true
+        runner: vitest
+        created_at: 2026-04-01T09:32:04.706Z
+        completed_at: 2026-04-01T09:32:04.706Z
     events:
       - _ulid: 01KN45CVJ6TB17JHDEZ6XWR70E
         actor: Jacob Chapel
@@ -99272,6 +99283,13 @@ reviews:
           kind: nit
           thread_ulid: 01KN465E5EA6WXJXCH091N6135
         timestamp: 2026-04-01T09:32:03.317Z
+      - _ulid: 01KN465GVAK7A0D2YDHZNSX94C
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted daemon tests
+        timestamp: 2026-04-01T09:32:05.354Z
     examined_commit: d60e51a41636746468122c111be5de0af4ee2a13
     external_links: []
     lifecycle_state: closed
@@ -99325,5 +99343,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-01T09:31:58.396Z
     created_at: 2026-04-01T09:18:37.126Z
-    updated_at: 2026-04-01T09:32:02.606Z
+    updated_at: 2026-04-01T09:32:04.706Z
     notes: []
