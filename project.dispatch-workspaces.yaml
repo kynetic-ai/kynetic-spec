@@ -30450,7 +30450,7 @@ workspaces:
         head: 0ad631f6283837fdd78304944156bc7667d20366
         last_seen_at: 2026-04-01T08:23:25.746Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-sessions-live-update-e2e-full-gate-01kn3q0c
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: cdf2261f7da7fe3e9936c4c3160f852b2099eeb4
     bootstrap:
       status: succeeded
@@ -30555,12 +30555,12 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-04-01T08:48:08.590Z
+      updated_at: 2026-04-01T08:48:40.884Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-01T08:48:08.590Z
+      updated_at: 2026-04-01T08:48:40.884Z
     integration:
       status: merged
       detail: integration:merged
@@ -30568,7 +30568,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: cdf2261f7da7fe3e9936c4c3160f852b2099eeb4
-      updated_at: 2026-04-01T08:48:08.590Z
+      updated_at: 2026-04-01T08:48:40.884Z
     lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KN3Q07XKYC6TDSNHJ48TA2V6"
@@ -30576,9 +30576,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-01T08:39:54.548Z
-      last_reconciled_at: 2026-04-01T08:48:08.590Z
+      last_reconciled_at: 2026-04-01T08:48:40.884Z
       created_at: 2026-04-01T08:23:32.923Z
-      updated_at: 2026-04-01T08:48:08.590Z
+      updated_at: 2026-04-01T08:48:40.884Z
     workspace_id: dispatch-workspace-01KN3Q07XKYC6TDSNHJ48TA2V6
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
