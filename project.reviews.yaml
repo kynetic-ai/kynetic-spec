@@ -99899,6 +99899,17 @@ reviews:
         runner: npm
         created_at: 2026-04-01T20:48:59.346Z
         completed_at: 2026-04-01T20:48:59.346Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: No remaining references to removed git activity helpers, git_fallback source, or
+          @task-activity-git-query found via ripgrep.
+        name: legacy reference scan
+        required: true
+        runner: rg
+        created_at: 2026-04-01T20:49:03.399Z
+        completed_at: 2026-04-01T20:49:03.399Z
     events:
       - _ulid: 01KN5CHEPN825MFHK8SFK9W1HQ
         actor: Jacob Chapel
@@ -99927,6 +99938,13 @@ reviews:
           kind: nit
           thread_ulid: 01KN5CX0WSA4X1TXM4S0FJ80QP
         timestamp: 2026-04-01T20:49:01.994Z
+      - _ulid: 01KN5CX3J4XZ5X4TG9NZDNQ5HB
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: legacy reference scan
+        timestamp: 2026-04-01T20:49:04.068Z
     examined_commit: d09d903b4cfa719edbd4f4ba1d049c9c482b0605
     external_links: []
     lifecycle_state: open
@@ -99952,5 +99970,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-01T20:42:42.262Z
-    updated_at: 2026-04-01T20:49:01.337Z
+    updated_at: 2026-04-01T20:49:03.399Z
     notes: []
