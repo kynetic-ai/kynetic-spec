@@ -23862,7 +23862,7 @@
     - task-investigate-file-lock-flake
   title: Investigate and fix flaky file-lock concurrency test
   type: bug
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 2
@@ -23873,4 +23873,5 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-01T23:51:33.817Z
+  started_at: 2026-04-01T23:52:41.607Z
   automation: eligible
