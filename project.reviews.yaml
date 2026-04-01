@@ -97265,7 +97265,19 @@ reviews:
     slugs: []
     title: Review task-fix-review-interaction-e2e-full-gate (cycle 3)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate exited 6 with warnings only; schema and references were OK. Warning set
+          matches existing repo baseline (1 reference warning, 31 alignment warnings, 516
+          completeness warnings).
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-01T07:44:06.249Z
+        completed_at: 2026-04-01T07:44:06.249Z
     events:
       - _ulid: 01KN3ZAM296MKZ2VNQYNEX2YRY
         actor: Jacob Chapel
@@ -97280,6 +97292,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-01T07:32:43.789Z
+      - _ulid: 01KN3ZZT6EZEKN6HS2C9CSS7N5
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-04-01T07:44:06.863Z
     examined_commit: e49d0c4bd4b675faecf68024f1602c26d74f6638
     external_links: []
     lifecycle_state: open
@@ -97292,5 +97311,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-01T07:32:32.457Z
-    updated_at: 2026-04-01T07:32:43.196Z
+    updated_at: 2026-04-01T07:44:06.249Z
     notes: []
