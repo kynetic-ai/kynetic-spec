@@ -1,1 +1,13 @@
-notes: []
+notes:
+  - _ulid: 01KN3Q3YWBTA6S27JRCZY6B381
+    content: "Approach: reproduce the two failing Playwright cases in
+      tests/e2e/review-detail-page.spec.ts with focused runs and trace artifacts, then compare the
+      review detail route, sibling-review query, and fixture records to isolate whether the
+      regression is in filtering, loader state, or test assumptions. Edge cases: revision selector
+      should appear only for same-subject reviews, code-review grouping must stay scoped to the
+      current head branch, and markdown thread bodies must still render rich content blocks. Test
+      plan: focused reruns of the two failing tests until stable, then adjacent review UI coverage
+      to confirm no regression."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T05:09:05.547Z
