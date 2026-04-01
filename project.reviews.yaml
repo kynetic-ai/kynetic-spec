@@ -96012,7 +96012,19 @@ reviews:
     slugs: []
     title: Review task-fix-sessions-detail-filter-e2e-full-gate
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite at commit 3e730be57272 failed with 2 assertion failures in
+          tests/agent-dispatch-engine.test.ts (lines 5659 and 5878): 2 failed, 2080 passed, 5
+          skipped, duration 5582.6s."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-01T06:04:50.530Z
+        completed_at: 2026-04-01T06:04:50.530Z
     events:
       - _ulid: 01KN3T8DZTRG0P98GFMD81KBJ2
         actor: Jacob Chapel
@@ -96041,6 +96053,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN3T9YWAV3CWPHRRKHGHZTX2
         timestamp: 2026-04-01T06:04:48.750Z
+      - _ulid: 01KN3TA2DMKJ23EWFCJP47NHDF
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-04-01T06:04:51.508Z
     examined_commit: 3e730be572726b11aad0cf6011c8f3e967ec9eed
     external_links: []
     lifecycle_state: open
@@ -96090,7 +96109,7 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-01T06:03:57.818Z
-    updated_at: 2026-04-01T06:04:47.883Z
+    updated_at: 2026-04-01T06:04:50.530Z
     notes: []
   - _ulid: 01KN3T98YRTG0PJK0NN75DD7KB
     slugs: []
