@@ -9,3 +9,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-01T05:21:32.590Z
+  - _ulid: 01KN3RBTFZQG9SF1FWJZP6F145
+    content: "Stabilized tests/e2e/review-interaction.spec.ts against the current review detail DOM.
+      Replaced brittle fixture-ULID/thread-entry assertions with stable behavioral checks, updated
+      the verdict options coverage to exercise the native select, and verified the focused spec with
+      direct Playwright execution: npx playwright test tests/e2e/review-interaction.spec.ts => 18
+      passed. Neighboring review-detail-page coverage still fails on missing revision selector
+      expectations, which aligns with separate task @task-fix-review-detail-e2e-full-gate already in
+      pending_review rather than this interaction cluster."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T05:30:51.775Z
