@@ -430,12 +430,10 @@ test.describe("Review Detail Page", () => {
       page,
       daemon: _daemon,
     }) => {
-      const detail = mockReviewDetail();
-      await page.route(`**/api/reviews/${REVIEW_ULID}`, routeDetailMock(detail));
-      await page.route("**/api/reviews?*", routeSiblingsMock(mockSiblingReviews()));
       await page.goto(`/reviews/${REVIEW_ULID}`);
 
-      // Third check (coverage) has content_hash "stale-hash" but subject has "hash123"
+      // Use the seeded fixture instead of a route-mocked variant so the staleness
+      // assertion tracks the current review-detail response shape end-to-end.
       const staleBadges = page.getByTestId("check-stale-badge");
       await expect(staleBadges).toHaveCount(1);
       await expect(staleBadges.first()).toContainText("Stale");
