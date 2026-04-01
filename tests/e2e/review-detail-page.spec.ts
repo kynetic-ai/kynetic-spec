@@ -32,7 +32,7 @@ test.describe("Review Detail Page", () => {
     await expect(markdownThread.locator('[data-testid="entry-body"] strong')).toContainText(
       "critical bug",
     );
-    await expect(markdownThread.locator('[data-testid="entry-body"] code')).toContainText(
+    await expect(markdownThread.locator('[data-testid="entry-body"] p code').first()).toContainText(
       "validateInput()",
     );
     await expect(markdownThread.locator('[data-testid="entry-body"] pre code')).toContainText(
@@ -51,7 +51,9 @@ test.describe("Review Detail Page", () => {
     await expect(page.getByTestId("check-stale-badge")).toContainText("Stale");
     await expect(page.getByTestId("verdict-item")).toHaveCount(1);
 
-    await page.getByTestId("back-to-reviews").click();
+    const backLink = page.getByTestId("back-to-reviews");
+    await backLink.focus();
+    await page.keyboard.press("Enter");
     await page.waitForURL("**/reviews");
     await expect(page.getByRole("heading", { name: "Reviews" })).toBeVisible();
   });

@@ -298,9 +298,10 @@ test.describe("Review Detail Page", () => {
 
       await expect(page.getByTestId("threads-section")).toBeVisible();
 
-      // All 4 threads exist in the DOM (3 unresolved + 1 resolved in collapsed <details>)
+      // Only the unresolved threads render before the resolved section is expanded.
       const threadItems = page.getByTestId("thread-item");
-      await expect(threadItems).toHaveCount(4);
+      await expect(threadItems).toHaveCount(3);
+      await expect(page.getByTestId("resolved-threads-toggle")).toContainText("1 resolved thread");
     });
 
     // AC: @review-records-web-ui ac-2 — Kind badges with correct labels
@@ -337,13 +338,21 @@ test.describe("Review Detail Page", () => {
       const toggle = page.getByTestId("resolved-threads-toggle");
       await expect(toggle).toBeVisible();
       await expect(toggle).toContainText("1 resolved thread");
+      await expect(toggle).toHaveAttribute("aria-expanded", "false");
 
-      // Click to expand
-      await toggle.click();
+      // Toggle via keyboard to avoid pointer actionability races while still
+      // exercising the real button-driven disclosure state change.
+      await toggle.focus();
+      await page.keyboard.press("Enter");
+      await expect(toggle).toHaveAttribute("aria-expanded", "true");
 
-      // Now the resolved thread should be visible
-      const allThreads = page.getByTestId("thread-item");
-      await expect(allThreads).toHaveCount(4);
+      // Now the resolved thread content should be rendered and visible
+      const resolvedSection = page.getByTestId("resolved-threads-section");
+      await expect(resolvedSection).toBeVisible();
+
+      const resolvedThread = page.locator('[data-thread-id="01KKTX5CA45ZT43W2T6HJMVA06"]');
+      await expect(resolvedThread).toBeVisible();
+      await expect(resolvedThread.getByTestId("thread-status")).toContainText("Resolved");
     });
 
     // AC: @review-records-web-ui ac-9 — Author and timestamp on thread entries
@@ -421,12 +430,10 @@ test.describe("Review Detail Page", () => {
       page,
       daemon: _daemon,
     }) => {
-      const detail = mockReviewDetail();
-      await page.route(`**/api/reviews/${REVIEW_ULID}`, routeDetailMock(detail));
-      await page.route("**/api/reviews?*", routeSiblingsMock(mockSiblingReviews()));
       await page.goto(`/reviews/${REVIEW_ULID}`);
 
-      // Third check (coverage) has content_hash "stale-hash" but subject has "hash123"
+      // Use the seeded fixture instead of a route-mocked variant so the staleness
+      // assertion tracks the current review-detail response shape end-to-end.
       const staleBadges = page.getByTestId("check-stale-badge");
       await expect(staleBadges).toHaveCount(1);
       await expect(staleBadges.first()).toContainText("Stale");
