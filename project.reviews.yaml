@@ -97439,6 +97439,13 @@ reviews:
           status: pass
           name: validate
         timestamp: 2026-04-01T07:58:34.263Z
+      - _ulid: 01KN40TBBDTM4F9ZE0DTRYADMJ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN40TAPANTF6C3QR8TY753JZ
+        timestamp: 2026-04-01T07:58:36.397Z
     examined_commit: 41065c1dcbdd93c41af1bab154eda20dd474edab
     external_links: []
     lifecycle_state: open
@@ -97448,8 +97455,31 @@ reviews:
       content_hash: ""
       ref: "@01KN3Q0CXG130QGTF0W840KK4M"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KN40TAPANTF6C3QR8TY753JZ
+        anchor:
+          type: code
+          commit: 41065c1dcbdd93c41af1bab154eda20dd474edab
+          line_end: 1297
+          line_start: 1185
+          path: tests/e2e/sessions.spec.ts
+          side: head
+        entries:
+          - _ulid: 01KN40TAPANWC3Q00BX88YZQCZ
+            author: Jacob Chapel
+            body: This rewrite removes the end-to-end assertion that a new session fixture causes the daemon to
+              broadcast a live-update event. The previous version wrote a second fixture and waited
+              for the page to refresh from that real event path; this version first polls
+              /api/sessions until the new row already exists, then manually dispatches synthetic
+              WebSocket MessageEvents from the browser to force the refresh. As a result the test
+              still passes if the daemon stops emitting either the sessions-topic or agent-origin
+              broadcast, which is exactly the behavior this task is supposed to keep gated in CI.
+              Please keep the deterministic indexing wait if needed, but restore coverage of the
+              actual daemon -> WebSocket -> UI fanout path instead of injecting the browser event
+              directly.
+            created_at: 2026-04-01T07:58:35.722Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-01T07:49:35.242Z
-    updated_at: 2026-04-01T07:58:33.624Z
+    updated_at: 2026-04-01T07:58:35.722Z
     notes: []
