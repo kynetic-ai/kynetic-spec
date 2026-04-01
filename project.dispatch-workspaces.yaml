@@ -31148,7 +31148,7 @@ workspaces:
         head: b5b74b777d84ad59b520de064b8b74711cebe7bc
         last_seen_at: 2026-04-01T20:04:11.158Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-purge-old-storage-refs-01km6yez
-  - active_role: null
+  - active_role: worker
     base_branch_point: 0c1440e5c29913753624279ee2943550c0cb4291
     bootstrap:
       status: succeeded
@@ -31237,7 +31237,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-01T20:26:49.249Z
+      updated_at: 2026-04-01T20:26:55.484Z
     integration:
       status: pending
       detail: null
@@ -31246,16 +31246,16 @@ workspaces:
       target_branch: dev
       target_commit: 0c1440e5c29913753624279ee2943550c0cb4291
       updated_at: 2026-04-01T20:26:49.249Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KN5ARMWCVEP8XTA6DS515RK8"
     task_slug: task-remove-legacy-activity-fallback
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-04-01T20:26:49.249Z
+      last_active_at: 2026-04-01T20:26:55.484Z
+      last_reconciled_at: 2026-04-01T20:26:55.484Z
       created_at: 2026-04-01T20:26:49.249Z
-      updated_at: 2026-04-01T20:26:53.749Z
+      updated_at: 2026-04-01T20:26:55.484Z
     workspace_id: dispatch-workspace-01KN5ARMWCVEP8XTA6DS515RK8
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
