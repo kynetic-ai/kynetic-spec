@@ -99005,7 +99005,19 @@ reviews:
     slugs: []
     title: Review task-fix-workflows-loading-e2e-full-gate
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm run build:e2e succeeded; npx playwright test tests/e2e/workflows.spec.ts --retries 2
+          passed with 12/12 tests green, including 'shows loading skeleton that transitions to
+          content'.
+        name: playwright workflows
+        required: true
+        runner: playwright
+        created_at: 2026-04-01T09:04:45.172Z
+        completed_at: 2026-04-01T09:04:45.172Z
     events:
       - _ulid: 01KN447AFMYTW76NDV1TGV0AB8
         actor: Jacob Chapel
@@ -99020,6 +99032,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-01T08:58:25.565Z
+      - _ulid: 01KN44KFV1WAXWH9YPGJ26FD92
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: playwright workflows
+        timestamp: 2026-04-01T09:04:45.922Z
     examined_commit: cfa62d694c16460d95a198b80e11f09b98497234
     external_links: []
     lifecycle_state: open
@@ -99032,5 +99051,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-01T08:58:07.220Z
-    updated_at: 2026-04-01T08:58:24.919Z
+    updated_at: 2026-04-01T09:04:45.172Z
     notes: []
