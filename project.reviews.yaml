@@ -99209,6 +99209,17 @@ reviews:
         runner: vitest
         created_at: 2026-04-01T09:32:04.706Z
         completed_at: 2026-04-01T09:32:04.706Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npx playwright test tests/e2e/navigation.spec.ts tests/e2e/session-context.spec.ts with
+          task-specific grep => 5 passed.
+        name: targeted e2e
+        required: true
+        runner: playwright
+        created_at: 2026-04-01T09:32:08.838Z
+        completed_at: 2026-04-01T09:32:08.838Z
     events:
       - _ulid: 01KN45CVJ6TB17JHDEZ6XWR70E
         actor: Jacob Chapel
@@ -99290,6 +99301,13 @@ reviews:
           status: pass
           name: targeted daemon tests
         timestamp: 2026-04-01T09:32:05.354Z
+      - _ulid: 01KN465MXYYAYXZT48M4PQQ31P
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted e2e
+        timestamp: 2026-04-01T09:32:09.534Z
     examined_commit: d60e51a41636746468122c111be5de0af4ee2a13
     external_links: []
     lifecycle_state: closed
@@ -99343,5 +99361,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-01T09:31:58.396Z
     created_at: 2026-04-01T09:18:37.126Z
-    updated_at: 2026-04-01T09:32:04.706Z
+    updated_at: 2026-04-01T09:32:08.838Z
     notes: []
