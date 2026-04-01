@@ -245,7 +245,7 @@ features:
           high-priority data is available before the full cache is ready.
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
