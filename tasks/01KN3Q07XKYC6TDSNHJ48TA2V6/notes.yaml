@@ -9,3 +9,18 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-01T08:24:42.882Z
+  - _ulid: 01KN4313Z3C9NTE764NY9AAR06
+    content: "Root cause: both failing watcher tests had drifted from the current harness. The HTTP
+      mutation case still expected the old /api/tasks response shape and asserted a files:updates
+      broadcast, but task-note mutations now broadcast tasks:updates directly while files:updates is
+      reserved for direct on-disk edits. The sessions case referenced a nonexistent
+      daemon.projectDir fixture field and installed its listener after writing the file, creating a
+      race against the session watcher debounce. Fix: updated the HTTP mutation test to assert the
+      real tasks:updates note_added broadcast and persisted notes.yaml write, and updated the
+      sessions test to use daemon.tempDir with the listener armed before the session file write.
+      Verification: focused watcher pair passed; full tests/e2e/api-watcher.spec.ts passed (7/7).
+      npm test still reports 9 unrelated failures in
+      claude-plugin-registry/core-skill-install/cross-platform-robustness."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T08:37:15.364Z
