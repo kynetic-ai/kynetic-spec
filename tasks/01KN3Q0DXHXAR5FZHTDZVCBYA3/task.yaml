@@ -41,7 +41,7 @@ description: >-
 spec_ref: null
 meta_ref: null
 plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -52,6 +52,7 @@ tags:
   - ci
   - web-ui
 vcs_refs: []
+session_id: 01KN43QBWBXN46TXD66C0PDBC0
 history:
   - author: Jacob Chapel
     changes:
@@ -122,6 +123,20 @@ history:
           with retries enabled.
     command: task-set
     timestamp: 2026-04-01T06:59:15.450Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KN43QBWBXN46TXD66C0PDBC0
+        previous: null
+      started_at:
+        new: 2026-04-01T08:50:07.600Z
+        previous: null
+    command: task-start
+    timestamp: 2026-04-01T08:50:07.601Z
 created_at: 2026-04-01T05:07:09.873Z
+started_at: 2026-04-01T08:50:07.600Z
 todos: []
 automation: eligible
