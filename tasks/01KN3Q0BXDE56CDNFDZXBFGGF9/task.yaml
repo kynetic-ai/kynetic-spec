@@ -32,6 +32,15 @@ description: >-
 
   5. Re-run the focused sessions cases until they pass consistently with retries, then run the
   relevant neighboring sessions coverage to ensure detail/filter behavior is stable.
+
+
+  Reviewer scope note: Reviewers should focus approval on the affected tests and the code needed to
+  make those tests pass. Other known full-suite failures are intentionally split into sibling tasks
+  and should not block approval for this task unless the changes here materially affect them.
+  Sibling tasks covering the rest of the known failure set are: @task-fix-api-watcher-e2e-full-gate,
+  @task-fix-observations-e2e-full-gate, @task-fix-review-detail-e2e-full-gate,
+  @task-fix-review-interaction-e2e-full-gate, @task-fix-sessions-live-update-e2e-full-gate,
+  @task-fix-workflows-loading-e2e-full-gate, and @task-stabilize-full-gate-e2e-flakes.
 spec_ref: null
 meta_ref: null
 plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
@@ -154,6 +163,83 @@ history:
         previous: "@01KN3T8DZTKY6MZ4FA3NGH6ENW"
     command: review-link
     timestamp: 2026-04-01T06:46:04.005Z
+  - author: Jacob Chapel
+    changes:
+      description:
+        new: >-
+          What: Fix the remaining sessions detail/filter Playwright failures that still reproduce
+          through all retries in the full E2E run. The currently failing tests are in
+          tests/e2e/sessions.spec.ts: 'clicking a session navigates to /sessions/:id and shows
+          stream view', 'session detail shows read-only message in static mode', 'session detail
+          does not attempt API calls in static mode', and 'date filter updates URL with since
+          param'.
+
+
+          Why: These failures block the full CI gate and cover core session-detail navigation,
+          static-mode behavior, and URL-backed filtering. Until they pass, the sessions area remains
+          one of the largest persistent failure clusters in the suite.
+
+
+          How:
+
+          1. Reproduce just these failing cases with focused Playwright runs against
+          tests/e2e/sessions.spec.ts.
+
+          2. Inspect traces and snapshots to determine whether the root cause is route loading,
+          detail-view hydration, static-mode initialization, incorrect API suppression in static
+          mode, or URL state synchronization for the since filter.
+
+          3. Compare the tests with the current sessions page implementation and fixture setup to
+          identify any contract drift.
+
+          4. Fix the root cause in the sessions detail page, static-mode path, filter wiring, or
+          fixtures.
+
+          5. Re-run the focused sessions cases until they pass consistently with retries, then run
+          the relevant neighboring sessions coverage to ensure detail/filter behavior is stable.
+
+
+          Reviewer scope note: Reviewers should focus approval on the affected tests and the code
+          needed to make those tests pass. Other known full-suite failures are intentionally split
+          into sibling tasks and should not block approval for this task unless the changes here
+          materially affect them. Sibling tasks covering the rest of the known failure set are:
+          @task-fix-api-watcher-e2e-full-gate, @task-fix-observations-e2e-full-gate,
+          @task-fix-review-detail-e2e-full-gate, @task-fix-review-interaction-e2e-full-gate,
+          @task-fix-sessions-live-update-e2e-full-gate, @task-fix-workflows-loading-e2e-full-gate,
+          and @task-stabilize-full-gate-e2e-flakes.
+        previous: >-
+          What: Fix the remaining sessions detail/filter Playwright failures that still reproduce
+          through all retries in the full E2E run. The currently failing tests are in
+          tests/e2e/sessions.spec.ts: 'clicking a session navigates to /sessions/:id and shows
+          stream view', 'session detail shows read-only message in static mode', 'session detail
+          does not attempt API calls in static mode', and 'date filter updates URL with since
+          param'.
+
+
+          Why: These failures block the full CI gate and cover core session-detail navigation,
+          static-mode behavior, and URL-backed filtering. Until they pass, the sessions area remains
+          one of the largest persistent failure clusters in the suite.
+
+
+          How:
+
+          1. Reproduce just these failing cases with focused Playwright runs against
+          tests/e2e/sessions.spec.ts.
+
+          2. Inspect traces and snapshots to determine whether the root cause is route loading,
+          detail-view hydration, static-mode initialization, incorrect API suppression in static
+          mode, or URL state synchronization for the since filter.
+
+          3. Compare the tests with the current sessions page implementation and fixture setup to
+          identify any contract drift.
+
+          4. Fix the root cause in the sessions detail page, static-mode path, filter wiring, or
+          fixtures.
+
+          5. Re-run the focused sessions cases until they pass consistently with retries, then run
+          the relevant neighboring sessions coverage to ensure detail/filter behavior is stable.
+    command: task-set
+    timestamp: 2026-04-01T06:59:14.204Z
 created_at: 2026-04-01T05:07:07.821Z
 started_at: 2026-04-01T06:13:45.150Z
 submitted_at: 2026-04-01T06:41:35.807Z

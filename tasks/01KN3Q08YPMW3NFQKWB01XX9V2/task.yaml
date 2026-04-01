@@ -30,6 +30,15 @@ description: >-
 
   5. Run any nearby observations/session sidebar coverage needed to confirm the fix does not
   introduce regressions.
+
+
+  Reviewer scope note: Reviewers should focus approval on the affected tests and the code needed to
+  make those tests pass. Other known full-suite failures are intentionally split into sibling tasks
+  and should not block approval for this task unless the changes here materially affect them.
+  Sibling tasks covering the rest of the known failure set are: @task-fix-api-watcher-e2e-full-gate,
+  @task-fix-review-detail-e2e-full-gate, @task-fix-review-interaction-e2e-full-gate,
+  @task-fix-sessions-detail-filter-e2e-full-gate, @task-fix-sessions-live-update-e2e-full-gate,
+  @task-fix-workflows-loading-e2e-full-gate, and @task-stabilize-full-gate-e2e-flakes.
 spec_ref: null
 meta_ref: null
 plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
@@ -44,6 +53,81 @@ tags:
   - ci
   - web-ui
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      description:
+        new: >-
+          What: Fix the remaining observations Playwright failures that still reproduce through all
+          retries in the full E2E run. The currently failing tests are
+          tests/e2e/observations.spec.ts: 'renders observation markdown content and context' and
+          'shows empty state when no unresolved observations'.
+
+
+          Why: The observations page is still part of the persistent red set in the full suite.
+          Until these cases pass, the suite does not provide a reliable CI gate for markdown
+          rendering, empty-state handling, and observation listing behavior.
+
+
+          How:
+
+          1. Reproduce the failing observations cases with focused Playwright runs against
+          tests/e2e/observations.spec.ts.
+
+          2. Inspect trace and page snapshots to determine whether the problem is in fixture data,
+          markdown rendering, list filtering, unresolved-count logic, API response shape, or
+          client-side loading behavior.
+
+          3. Compare the test expectations with the current page implementation and fixture
+          contract, then fix the root cause in the app, fixtures, or test only where appropriate.
+
+          4. Re-run the focused observations spec until both cases pass reliably with retries
+          enabled.
+
+          5. Run any nearby observations/session sidebar coverage needed to confirm the fix does not
+          introduce regressions.
+
+
+          Reviewer scope note: Reviewers should focus approval on the affected tests and the code
+          needed to make those tests pass. Other known full-suite failures are intentionally split
+          into sibling tasks and should not block approval for this task unless the changes here
+          materially affect them. Sibling tasks covering the rest of the known failure set are:
+          @task-fix-api-watcher-e2e-full-gate, @task-fix-review-detail-e2e-full-gate,
+          @task-fix-review-interaction-e2e-full-gate,
+          @task-fix-sessions-detail-filter-e2e-full-gate,
+          @task-fix-sessions-live-update-e2e-full-gate, @task-fix-workflows-loading-e2e-full-gate,
+          and @task-stabilize-full-gate-e2e-flakes.
+        previous: >-
+          What: Fix the remaining observations Playwright failures that still reproduce through all
+          retries in the full E2E run. The currently failing tests are
+          tests/e2e/observations.spec.ts: 'renders observation markdown content and context' and
+          'shows empty state when no unresolved observations'.
+
+
+          Why: The observations page is still part of the persistent red set in the full suite.
+          Until these cases pass, the suite does not provide a reliable CI gate for markdown
+          rendering, empty-state handling, and observation listing behavior.
+
+
+          How:
+
+          1. Reproduce the failing observations cases with focused Playwright runs against
+          tests/e2e/observations.spec.ts.
+
+          2. Inspect trace and page snapshots to determine whether the problem is in fixture data,
+          markdown rendering, list filtering, unresolved-count logic, API response shape, or
+          client-side loading behavior.
+
+          3. Compare the test expectations with the current page implementation and fixture
+          contract, then fix the root cause in the app, fixtures, or test only where appropriate.
+
+          4. Re-run the focused observations spec until both cases pass reliably with retries
+          enabled.
+
+          5. Run any nearby observations/session sidebar coverage needed to confirm the fix does not
+          introduce regressions.
+    command: task-set
+    timestamp: 2026-04-01T06:59:12.323Z
 created_at: 2026-04-01T05:07:04.790Z
 todos: []
 automation: eligible

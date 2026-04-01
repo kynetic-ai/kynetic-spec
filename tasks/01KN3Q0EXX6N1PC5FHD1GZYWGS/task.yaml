@@ -33,6 +33,15 @@ description: >-
 
   5. Feed the stabilized cases back into a broader full-suite rerun to confirm they no longer
   contribute intermittent gate noise.
+
+
+  Reviewer scope note: Reviewers should focus approval on the affected tests and the code needed to
+  make those tests pass. Other known full-suite failures are intentionally split into sibling tasks
+  and should not block approval for this task unless the changes here materially affect them.
+  Sibling tasks covering the rest of the known failure set are: @task-fix-api-watcher-e2e-full-gate,
+  @task-fix-observations-e2e-full-gate, @task-fix-review-detail-e2e-full-gate,
+  @task-fix-review-interaction-e2e-full-gate, @task-fix-sessions-detail-filter-e2e-full-gate,
+  @task-fix-sessions-live-update-e2e-full-gate, and @task-fix-workflows-loading-e2e-full-gate.
 spec_ref: null
 meta_ref: null
 plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
@@ -47,6 +56,85 @@ tags:
   - ci
   - infra
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      description:
+        new: >-
+          What: Stabilize the remaining non-persistent but still gate-blocking E2E failures seen
+          during the CI-like full suite run. The currently identified cases are
+          tests/e2e/navigation.spec.ts: 'forward button works after back', tests/e2e/plans.spec.ts:
+          'shows embedded error UI and raw yaml fallback when batch item loading fails', and the
+          session-context cases in tests/e2e/session-context.spec.ts: 'GET /api/tasks/:ref/sessions
+          returns task-linked session summaries' and 'GET /api/items/:ref/sessions returns sessions
+          for tasks aligned to the spec'.
+
+
+          Why: The full suite still reported additional flake beyond the 19 persistent failures.
+          Even if the persistent cases are fixed, these intermittent failures would still make the
+          full E2E gate noisy and unsuitable for CI.
+
+
+          How:
+
+          1. Reproduce the flaky cases with focused reruns, including retry-enabled runs where
+          useful, to determine whether each case is a true product race, harness instability,
+          fixture drift, or an assertion timing problem.
+
+          2. For each case, inspect traces and snapshots from both failing and passing runs to
+          identify the smallest stable signal for the tested behavior.
+
+          3. Fix the root cause in app code, fixture/event timing, or the tests. Avoid simply
+          inflating global timeouts.
+
+          4. Re-run the targeted flaky cases enough times to demonstrate they are actually stable.
+
+          5. Feed the stabilized cases back into a broader full-suite rerun to confirm they no
+          longer contribute intermittent gate noise.
+
+
+          Reviewer scope note: Reviewers should focus approval on the affected tests and the code
+          needed to make those tests pass. Other known full-suite failures are intentionally split
+          into sibling tasks and should not block approval for this task unless the changes here
+          materially affect them. Sibling tasks covering the rest of the known failure set are:
+          @task-fix-api-watcher-e2e-full-gate, @task-fix-observations-e2e-full-gate,
+          @task-fix-review-detail-e2e-full-gate, @task-fix-review-interaction-e2e-full-gate,
+          @task-fix-sessions-detail-filter-e2e-full-gate,
+          @task-fix-sessions-live-update-e2e-full-gate, and
+          @task-fix-workflows-loading-e2e-full-gate.
+        previous: >-
+          What: Stabilize the remaining non-persistent but still gate-blocking E2E failures seen
+          during the CI-like full suite run. The currently identified cases are
+          tests/e2e/navigation.spec.ts: 'forward button works after back', tests/e2e/plans.spec.ts:
+          'shows embedded error UI and raw yaml fallback when batch item loading fails', and the
+          session-context cases in tests/e2e/session-context.spec.ts: 'GET /api/tasks/:ref/sessions
+          returns task-linked session summaries' and 'GET /api/items/:ref/sessions returns sessions
+          for tasks aligned to the spec'.
+
+
+          Why: The full suite still reported additional flake beyond the 19 persistent failures.
+          Even if the persistent cases are fixed, these intermittent failures would still make the
+          full E2E gate noisy and unsuitable for CI.
+
+
+          How:
+
+          1. Reproduce the flaky cases with focused reruns, including retry-enabled runs where
+          useful, to determine whether each case is a true product race, harness instability,
+          fixture drift, or an assertion timing problem.
+
+          2. For each case, inspect traces and snapshots from both failing and passing runs to
+          identify the smallest stable signal for the tested behavior.
+
+          3. Fix the root cause in app code, fixture/event timing, or the tests. Avoid simply
+          inflating global timeouts.
+
+          4. Re-run the targeted flaky cases enough times to demonstrate they are actually stable.
+
+          5. Feed the stabilized cases back into a broader full-suite rerun to confirm they no
+          longer contribute intermittent gate noise.
+    command: task-set
+    timestamp: 2026-04-01T06:59:16.043Z
 created_at: 2026-04-01T05:07:10.909Z
 todos: []
 automation: eligible

@@ -30,6 +30,15 @@ description: >-
 
   5. Re-run the focused review detail spec until both cases pass consistently, then run the adjacent
   review UI coverage needed to confirm no regression.
+
+
+  Reviewer scope note: Reviewers should focus approval on the affected tests and the code needed to
+  make those tests pass. Other known full-suite failures are intentionally split into sibling tasks
+  and should not block approval for this task unless the changes here materially affect them.
+  Sibling tasks covering the rest of the known failure set are: @task-fix-api-watcher-e2e-full-gate,
+  @task-fix-observations-e2e-full-gate, @task-fix-review-interaction-e2e-full-gate,
+  @task-fix-sessions-detail-filter-e2e-full-gate, @task-fix-sessions-live-update-e2e-full-gate,
+  @task-fix-workflows-loading-e2e-full-gate, and @task-stabilize-full-gate-e2e-flakes.
 spec_ref: null
 meta_ref: null
 plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
@@ -175,6 +184,80 @@ history:
         previous: 2026-04-01T05:51:54.042Z
     command: task-start
     timestamp: 2026-04-01T06:44:05.496Z
+  - author: Jacob Chapel
+    changes:
+      description:
+        new: >-
+          What: Fix the remaining review detail page Playwright failures that still reproduce
+          through all retries in the full E2E run. The currently failing tests are
+          tests/e2e/review-detail-page.spec.ts: 'renders review details, markdown thread bodies, and
+          revision selector' and 'limits code review revisions to the same head branch'.
+
+
+          Why: Review detail coverage remains a persistent blocker for moving CI to the full suite.
+          These tests exercise revision selection, thread body rendering, and review-branch
+          filtering behavior that should remain protected by CI.
+
+
+          How:
+
+          1. Reproduce only the failing review detail cases with focused Playwright runs against
+          tests/e2e/review-detail-page.spec.ts.
+
+          2. Use trace artifacts and snapshots to identify whether the breakage is caused by
+          revision-list filtering, route data loading, markdown rendering, fixture drift, or a
+          review detail component regression.
+
+          3. Compare current API responses and fixture records with the UI assumptions in the
+          failing tests.
+
+          4. Fix the root cause in the detail page, data loader, fixture data, or tests as
+          appropriate.
+
+          5. Re-run the focused review detail spec until both cases pass consistently, then run the
+          adjacent review UI coverage needed to confirm no regression.
+
+
+          Reviewer scope note: Reviewers should focus approval on the affected tests and the code
+          needed to make those tests pass. Other known full-suite failures are intentionally split
+          into sibling tasks and should not block approval for this task unless the changes here
+          materially affect them. Sibling tasks covering the rest of the known failure set are:
+          @task-fix-api-watcher-e2e-full-gate, @task-fix-observations-e2e-full-gate,
+          @task-fix-review-interaction-e2e-full-gate,
+          @task-fix-sessions-detail-filter-e2e-full-gate,
+          @task-fix-sessions-live-update-e2e-full-gate, @task-fix-workflows-loading-e2e-full-gate,
+          and @task-stabilize-full-gate-e2e-flakes.
+        previous: >-
+          What: Fix the remaining review detail page Playwright failures that still reproduce
+          through all retries in the full E2E run. The currently failing tests are
+          tests/e2e/review-detail-page.spec.ts: 'renders review details, markdown thread bodies, and
+          revision selector' and 'limits code review revisions to the same head branch'.
+
+
+          Why: Review detail coverage remains a persistent blocker for moving CI to the full suite.
+          These tests exercise revision selection, thread body rendering, and review-branch
+          filtering behavior that should remain protected by CI.
+
+
+          How:
+
+          1. Reproduce only the failing review detail cases with focused Playwright runs against
+          tests/e2e/review-detail-page.spec.ts.
+
+          2. Use trace artifacts and snapshots to identify whether the breakage is caused by
+          revision-list filtering, route data loading, markdown rendering, fixture drift, or a
+          review detail component regression.
+
+          3. Compare current API responses and fixture records with the UI assumptions in the
+          failing tests.
+
+          4. Fix the root cause in the detail page, data loader, fixture data, or tests as
+          appropriate.
+
+          5. Re-run the focused review detail spec until both cases pass consistently, then run the
+          adjacent review UI coverage needed to confirm no regression.
+    command: task-set
+    timestamp: 2026-04-01T06:59:12.933Z
 created_at: 2026-04-01T05:07:05.806Z
 started_at: 2026-04-01T06:44:05.495Z
 submitted_at: 2026-04-01T06:01:19.202Z

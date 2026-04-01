@@ -33,6 +33,15 @@ description: >-
 
   5. Re-run the focused live-update cases until they pass reliably under retries, then run the
   broader sessions spec or adjacent live-update coverage to confirm stability.
+
+
+  Reviewer scope note: Reviewers should focus approval on the affected tests and the code needed to
+  make those tests pass. Other known full-suite failures are intentionally split into sibling tasks
+  and should not block approval for this task unless the changes here materially affect them.
+  Sibling tasks covering the rest of the known failure set are: @task-fix-api-watcher-e2e-full-gate,
+  @task-fix-observations-e2e-full-gate, @task-fix-review-detail-e2e-full-gate,
+  @task-fix-review-interaction-e2e-full-gate, @task-fix-sessions-detail-filter-e2e-full-gate,
+  @task-fix-workflows-loading-e2e-full-gate, and @task-stabilize-full-gate-e2e-flakes.
 spec_ref: null
 meta_ref: null
 plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
@@ -47,6 +56,86 @@ tags:
   - ci
   - sessions
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      description:
+        new: >-
+          What: Fix the remaining sessions live-update Playwright failures that still reproduce
+          through all retries in the full E2E run. The currently failing tests are in
+          tests/e2e/sessions.spec.ts: 'refreshes from sessions-topic updates as well as agent-origin
+          updates', 'total count increments when WebSocket event arrives', 'shows indicator when an
+          in-list update arrives while the user is scrolled down', and 'clicking new sessions
+          indicator refreshes the list'.
+
+
+          Why: This is the biggest remaining persistent failure cluster in the full suite. These
+          tests protect real-time session-list behavior, WebSocket fanout handling, update
+          indicators, and list refresh logic that CI should enforce before the full E2E suite can
+          become the gate.
+
+
+          How:
+
+          1. Reproduce only the failing live-update cases with focused Playwright runs against
+          tests/e2e/sessions.spec.ts.
+
+          2. Inspect trace artifacts, network events, and WebSocket update handling to identify
+          whether failures come from missing broadcasts, stale query invalidation, race conditions
+          in scrolling/update indicators, or event ordering issues between server and client.
+
+          3. Compare current sessions live-update logic with the test expectations and fixture/event
+          setup used by the spec.
+
+          4. Fix the root cause in the sessions data layer, WebSocket handling, indicator logic, or
+          E2E harness as needed.
+
+          5. Re-run the focused live-update cases until they pass reliably under retries, then run
+          the broader sessions spec or adjacent live-update coverage to confirm stability.
+
+
+          Reviewer scope note: Reviewers should focus approval on the affected tests and the code
+          needed to make those tests pass. Other known full-suite failures are intentionally split
+          into sibling tasks and should not block approval for this task unless the changes here
+          materially affect them. Sibling tasks covering the rest of the known failure set are:
+          @task-fix-api-watcher-e2e-full-gate, @task-fix-observations-e2e-full-gate,
+          @task-fix-review-detail-e2e-full-gate, @task-fix-review-interaction-e2e-full-gate,
+          @task-fix-sessions-detail-filter-e2e-full-gate, @task-fix-workflows-loading-e2e-full-gate,
+          and @task-stabilize-full-gate-e2e-flakes.
+        previous: >-
+          What: Fix the remaining sessions live-update Playwright failures that still reproduce
+          through all retries in the full E2E run. The currently failing tests are in
+          tests/e2e/sessions.spec.ts: 'refreshes from sessions-topic updates as well as agent-origin
+          updates', 'total count increments when WebSocket event arrives', 'shows indicator when an
+          in-list update arrives while the user is scrolled down', and 'clicking new sessions
+          indicator refreshes the list'.
+
+
+          Why: This is the biggest remaining persistent failure cluster in the full suite. These
+          tests protect real-time session-list behavior, WebSocket fanout handling, update
+          indicators, and list refresh logic that CI should enforce before the full E2E suite can
+          become the gate.
+
+
+          How:
+
+          1. Reproduce only the failing live-update cases with focused Playwright runs against
+          tests/e2e/sessions.spec.ts.
+
+          2. Inspect trace artifacts, network events, and WebSocket update handling to identify
+          whether failures come from missing broadcasts, stale query invalidation, race conditions
+          in scrolling/update indicators, or event ordering issues between server and client.
+
+          3. Compare current sessions live-update logic with the test expectations and fixture/event
+          setup used by the spec.
+
+          4. Fix the root cause in the sessions data layer, WebSocket handling, indicator logic, or
+          E2E harness as needed.
+
+          5. Re-run the focused live-update cases until they pass reliably under retries, then run
+          the broader sessions spec or adjacent live-update coverage to confirm stability.
+    command: task-set
+    timestamp: 2026-04-01T06:59:14.813Z
 created_at: 2026-04-01T05:07:08.848Z
 todos: []
 automation: eligible
