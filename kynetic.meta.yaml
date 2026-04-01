@@ -10811,6 +10811,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-01T06:02:31.498Z
+  - _ulid: 01KN3T5T3KJ3GCAQJ50R3X06PF
+    type: success
+    content: For flaky Playwright slices, running a single spec with --grep plus --repeat-each and then
+      reading Playwright error-context snapshots isolated the real failure mode much faster than
+      rerunning the whole bundle. That pattern turned an intermittent review-detail flake into a
+      reproducible actionability issue and gave a clean verification loop once fixed.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-01T06:02:31.923Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
