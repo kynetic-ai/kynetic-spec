@@ -99760,7 +99760,18 @@ reviews:
     slugs: []
     title: Review task-purge-old-storage-refs
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Targeted suite passed: 4 suites, 12 tests, duration 9.7s after rebuilding
+          dist/cli/index.js"
+        name: npm test task-system-ac-backfill
+        required: true
+        runner: npm
+        created_at: 2026-04-01T20:06:22.385Z
+        completed_at: 2026-04-01T20:06:22.385Z
     events:
       - _ulid: 01KN5ACAZ9TT9SGAR3M4523VGX
         actor: Jacob Chapel
@@ -99775,6 +99786,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-01T20:05:10.285Z
+      - _ulid: 01KN5AEYHS06G75PAQ314YPJ6Y
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test task-system-ac-backfill
+        timestamp: 2026-04-01T20:06:23.033Z
     examined_commit: b5b74b777d84ad59b520de064b8b74711cebe7bc
     external_links: []
     lifecycle_state: open
@@ -99787,5 +99805,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-01T20:04:57.450Z
-    updated_at: 2026-04-01T20:05:09.609Z
+    updated_at: 2026-04-01T20:06:22.385Z
     notes: []
