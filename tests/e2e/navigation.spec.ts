@@ -92,8 +92,13 @@ test.describe("Navigation and URL State", () => {
     test("forward button works after back", async ({ page }) => {
       await page.goto("/");
       await page.goto("/tasks");
-      await page.goBack();
-      await page.goForward();
+      await page.goBack({ waitUntil: "domcontentloaded" });
+      await expect(page).toHaveURL("/");
+
+      await Promise.all([
+        page.waitForURL("**/tasks"),
+        page.goForward({ waitUntil: "commit" }),
+      ]);
 
       // Should be back on tasks page
       await expect(page).toHaveURL("/tasks");

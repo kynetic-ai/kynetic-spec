@@ -102,7 +102,7 @@ function filterSessionsByTaskRefs(
 async function filterSessionSummaries(
   getCtx: (() => Promise<KspecContext>) | KspecContext,
   query: SessionListQuery,
-  options?: { getEntityCache?: EntityCacheAccessor; projectPath?: string },
+  options?: { getEntityCache?: EntityCacheAccessor; projectPath?: string; preferDisk?: boolean },
 ): Promise<
   | { summaries: SessionLogSummary[]; unfilteredTotal: number }
   | {
@@ -144,7 +144,8 @@ async function filterSessionSummaries(
 
   // AC: @daemon-entity-cache ac-serve-from-memory — use unified cache session index when available
   const entityCache = options?.projectPath ? options.getEntityCache?.(options.projectPath) : null;
-  const sessionsDomainReady = entityCache && entityCache.getDomainState("sessions") === "ready";
+  const sessionsDomainReady =
+    !options?.preferDisk && entityCache && entityCache.getDomainState("sessions") === "ready";
 
   let allSummaries: SessionLogSummary[];
   if (sessionsDomainReady) {
@@ -293,6 +294,21 @@ async function filterSessionSummaries(
     filtered = filtered.filter(
       (summary) => new Date(summary.started_at).getTime() >= sinceDate.getTime(),
     );
+  }
+
+  if (
+    !options?.preferDisk &&
+    sessionsDomainReady &&
+    filtered.length === 0 &&
+    (query.task_id || query.spec_ref)
+  ) {
+    const diskResult = await filterSessionSummaries(getCtx, query, {
+      ...options,
+      preferDisk: true,
+    });
+    if ("error" in diskResult || diskResult.summaries.length > 0) {
+      return diskResult;
+    }
   }
 
   return { summaries: filtered, unfilteredTotal };

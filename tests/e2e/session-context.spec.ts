@@ -1,5 +1,6 @@
 import { mkdir, writeFile } from "fs/promises";
 import { join } from "path";
+import type { APIRequestContext } from "@playwright/test";
 import { test, expect } from "./fixtures/test-base";
 
 async function writeSessionFixture(
@@ -50,6 +51,30 @@ async function seedRelatedSessions(projectRoot: string) {
   });
 }
 
+async function waitForRelatedSessionCount(
+  request: APIRequestContext,
+  url: string,
+  expectedTotal: number,
+) {
+  await expect
+    .poll(
+      async () => {
+        const response = await request.get(url);
+        if (!response.ok()) {
+          return -1;
+        }
+
+        const body = await response.json();
+        return body.meta?.total ?? -1;
+      },
+      {
+        timeout: 5000,
+        message: `wait for ${url} to report ${expectedTotal} related session(s)`,
+      },
+    )
+    .toBe(expectedTotal);
+}
+
 test.describe("Task and Spec Session Context", () => {
   // AC: @task-spec-session-context ac-api-task-sessions
   test("GET /api/tasks/:ref/sessions returns task-linked session summaries", async ({
@@ -57,8 +82,10 @@ test.describe("Task and Spec Session Context", () => {
     daemon,
   }) => {
     await seedRelatedSessions(daemon.tempDir);
+    const url = `${daemon.baseUrl}/api/tasks/@test-task-ready/sessions`;
+    await waitForRelatedSessionCount(request, url, 1);
 
-    const response = await request.get(`${daemon.baseUrl}/api/tasks/@test-task-ready/sessions`);
+    const response = await request.get(url);
     expect(response.status()).toBe(200);
 
     const body = await response.json();
@@ -79,8 +106,10 @@ test.describe("Task and Spec Session Context", () => {
     daemon,
   }) => {
     await seedRelatedSessions(daemon.tempDir);
+    const url = `${daemon.baseUrl}/api/items/@test-feature/sessions`;
+    await waitForRelatedSessionCount(request, url, 2);
 
-    const response = await request.get(`${daemon.baseUrl}/api/items/@test-feature/sessions`);
+    const response = await request.get(url);
     expect(response.status()).toBe(200);
 
     const body = await response.json();
@@ -102,6 +131,11 @@ test.describe("Task and Spec Session Context", () => {
     daemon,
   }) => {
     await seedRelatedSessions(daemon.tempDir);
+    await waitForRelatedSessionCount(
+      page.request,
+      `${daemon.baseUrl}/api/tasks/@test-task-ready/sessions`,
+      1,
+    );
 
     await page.goto("/tasks");
 
@@ -137,6 +171,7 @@ test.describe("Task and Spec Session Context", () => {
     daemon,
   }) => {
     await seedRelatedSessions(daemon.tempDir);
+    await waitForRelatedSessionCount(page.request, `${daemon.baseUrl}/api/items/@test-feature/sessions`, 2);
 
     await page.goto("/items");
 

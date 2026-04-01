@@ -58,6 +58,30 @@ async function getAllSessionSummaries(
   return sessionCache.getAll(sessionsDir);
 }
 
+async function filterSessionsWithDiskFallback(
+  sessions: SessionLogSummary[],
+  taskRefs: Set<string>,
+  sessionsDir: string,
+  options?: { getEntityCache?: EntityCacheAccessor; projectPath?: string },
+): Promise<SessionLogSummary[]> {
+  const filtered = filterSessionsByTaskRefs(sessions, taskRefs);
+  if (filtered.length > 0) {
+    return filtered;
+  }
+
+  const entityCache = options?.projectPath ? options.getEntityCache?.(options.projectPath) : null;
+  const sessionsDomainReady = entityCache?.getDomainState("sessions") === "ready";
+  if (!sessionsDomainReady) {
+    return filtered;
+  }
+
+  // Related-session routes must not return false negatives when a warm session
+  // index is momentarily stale after filesystem writes. Fall back to a fresh
+  // disk-backed summary read before concluding there are no related sessions.
+  const freshSessions = await getSessionCache(sessionsDir).getAll(sessionsDir);
+  return filterSessionsByTaskRefs(freshSessions, taskRefs);
+}
+
 export async function getRelatedSessionsForTask(params: {
   items: LoadedSpecItem[];
   tasks: LoadedTask[];
@@ -97,7 +121,15 @@ export async function getRelatedSessionsForTask(params: {
     getEntityCache: params.getEntityCache,
     projectPath: params.projectPath,
   });
-  const filtered = filterSessionsByTaskRefs(sessions, buildTaskRefSet(task));
+  const filtered = await filterSessionsWithDiskFallback(
+    sessions,
+    buildTaskRefSet(task),
+    sessionsDir,
+    {
+      getEntityCache: params.getEntityCache,
+      projectPath: params.projectPath,
+    },
+  );
 
   return {
     task,
@@ -154,7 +186,10 @@ export async function getRelatedSessionsForItem(params: {
     getEntityCache: params.getEntityCache,
     projectPath: params.projectPath,
   });
-  const filtered = filterSessionsByTaskRefs(sessions, taskRefs);
+  const filtered = await filterSessionsWithDiskFallback(sessions, taskRefs, sessionsDir, {
+    getEntityCache: params.getEntityCache,
+    projectPath: params.projectPath,
+  });
 
   return {
     item,
