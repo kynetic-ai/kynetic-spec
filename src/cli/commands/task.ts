@@ -915,49 +915,13 @@ export function registerTaskCommands(program: Command): void {
         // AC: @task-activity-timeline ac-1, ac-2, ac-3 — load activity timeline
         let activity: import("../../utils/activity.js").ActivityEntry[] = [];
         try {
-          const {
-            assembleActivityFromFiles,
-            getPreMigrationActivity,
-            getRawTaskCommits,
-            normalizeTaskActivity,
-          } = await import("../../utils/activity.js");
+          const { assembleActivityFromFiles } = await import("../../utils/activity.js");
 
           // Primary: read history entries from task.yaml and notes from task record.
           // AC: @task-activity-in-file ac-1 — assembled from persisted data, no VCS queries
           const resolvedManager = resolveTaskDataManager(ctx);
           const historyEntries = await resolvedManager.getTaskHistory(ctx, foundTask._ulid);
           activity = assembleActivityFromFiles(historyEntries, foundTask.notes);
-
-          // AC: @task-activity-in-file ac-3 — fallback for pre-migration tasks
-          // If no history entries exist, the task predates the storage migration.
-          // Try per-directory git log first (fast, for split format without history),
-          // then fall back to git log -L (slower, for legacy format tasks).
-          if (historyEntries.length === 0 && activity.length === 0) {
-            const fallbackEntries = getPreMigrationActivity(ctx.specDir, foundTask._ulid);
-            if (fallbackEntries.length > 0) {
-              activity = [...activity, ...fallbackEntries];
-            } else {
-              // Ultimate fallback: git log -L for legacy format tasks
-              // that have no per-task directory at all.
-              const rawCommits = getRawTaskCommits(ctx.specDir, foundTask._ulid);
-              const legacyEntries = normalizeTaskActivity(rawCommits);
-              for (const entry of legacyEntries) {
-                entry.source = "git_fallback";
-              }
-              activity = [...activity, ...legacyEntries];
-            }
-          } else if (historyEntries.length === 0) {
-            // Have note entries but no history — try per-directory git log
-            // to recover field-change history for migrated tasks.
-            // Filter out note_added entries from fallback since notes are
-            // already represented from notes.yaml (prevents duplication).
-            const fallbackEntries = getPreMigrationActivity(ctx.specDir, foundTask._ulid).filter(
-              (e) => e.type !== "note_added",
-            );
-            if (fallbackEntries.length > 0) {
-              activity = [...activity, ...fallbackEntries];
-            }
-          }
 
           // AC: @task-activity-timeline ac-3 — merge review events into timeline
           const taskRef = `@${foundTask.slugs[0] || foundTask._ulid}`;

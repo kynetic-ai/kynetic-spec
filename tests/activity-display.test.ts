@@ -149,6 +149,9 @@ describe("task get --json — ac-4: structured activity in JSON output", () => {
     kspec('task add --title "ISO timestamps" --slug task-iso-ts', tmpDir, {
       env: { KSPEC_AUTHOR: "@test" },
     });
+    kspec("task start @task-iso-ts", tmpDir, {
+      env: { KSPEC_AUTHOR: "@test" },
+    });
 
     const output = kspecJson<{
       activity?: Array<{ timestamp: string }>;
