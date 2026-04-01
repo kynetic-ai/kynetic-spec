@@ -10984,6 +10984,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-01T08:55:48.112Z
+  - _ulid: 01KN44CR08T49XR8A2RWZKW2BV
+    type: friction
+    content: "Detached review snapshots cannot perform the final manual merge in their assigned
+      workspace when the integration branch is already checked out in another worktree. In this
+      review cycle, git checkout dev failed with: 'dev is already used by worktree at
+      /home/chapel/Projects/kynetic-spec-dispatch', so the approved merge had to be executed against
+      the primary worktree path instead of the review workspace. This adds reviewer friction and
+      weakens the 'run all commands from the assigned workspace' contract."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-01T09:01:04.904Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
