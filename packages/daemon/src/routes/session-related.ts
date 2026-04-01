@@ -4,8 +4,9 @@ import {
   type LoadedSpecItem,
   type LoadedTask,
 } from "../../parser/index.js";
-import { getSessionMetadataOnly, listSessions, type SessionLogSummary } from "../../sessions/store.js";
+import type { SessionLogSummary } from "../../sessions/store.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
+import { listSessionSummariesFromDisk } from "./session-summary-utils.js";
 
 interface RelatedSessionsNotFound {
   error: "not_found";
@@ -52,9 +53,7 @@ async function getAllSessionSummaries(
   if (sessionsDomainReady) {
     return entityCache!.getSessionIndex() ?? [];
   }
-  const sessionIds = await listSessions(sessionsDir);
-  const summaries = await Promise.all(sessionIds.map((id) => getSessionMetadataOnly(sessionsDir, id)));
-  return summaries.filter((summary): summary is SessionLogSummary => summary !== null);
+  return listSessionSummariesFromDisk(sessionsDir, entityCache);
 }
 
 async function filterSessionsWithDiskFallback(

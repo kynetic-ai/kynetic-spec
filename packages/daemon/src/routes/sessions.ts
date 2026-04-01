@@ -50,6 +50,7 @@ import { parseTimeSpec } from "../../utils/time.js";
 import { enumArrayUnion } from "./enum-utils.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
 import { wrapResponse } from "./response-envelope.js";
+import { listSessionSummariesFromDisk } from "./session-summary-utils.js";
 
 interface SessionRouteOptions {
   getEntityCache?: EntityCacheAccessor;
@@ -96,12 +97,6 @@ function filterSessionsByTaskRefs(
     const normalized = summary.task_id.startsWith("@") ? summary.task_id.slice(1) : summary.task_id;
     return refs.has(summary.task_id) || refs.has(normalized);
   });
-}
-
-async function listSessionSummariesFromDisk(sessionsDir: string): Promise<SessionLogSummary[]> {
-  const sessionIds = await listSessions(sessionsDir);
-  const summaries = await Promise.all(sessionIds.map((id) => getSessionMetadataOnly(sessionsDir, id)));
-  return summaries.filter((summary): summary is SessionLogSummary => summary !== null);
 }
 
 async function filterSessionSummaries(
@@ -159,7 +154,7 @@ async function filterSessionSummaries(
     // AC: @daemon-entity-cache ac-graceful-degradation — fall back to disk-backed
     // metadata summaries while the unified cache is warming or degraded.
     const ctx = await resolveCtx();
-    allSummaries = await listSessionSummariesFromDisk(ctx.sessionsDir);
+    allSummaries = await listSessionSummariesFromDisk(ctx.sessionsDir, entityCache);
   }
 
   let filtered = sortSessionSummaries(allSummaries);

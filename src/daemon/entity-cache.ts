@@ -759,12 +759,16 @@ export class ProjectEntityCache {
   getSessionIndex(): SessionLogSummary[] | null {
     if (!this.sessions.index) return null;
     return this.sessions.index.map((s) => {
-      const liveCount = this.liveEventCounts.get(s.id);
+      const liveCount = this.getSessionLiveEventCount(s.id);
       if (s.status === "active" && liveCount !== undefined) {
         return { ...s, event_count: liveCount };
       }
       return s;
     });
+  }
+
+  getSessionLiveEventCount(sessionId: string): number | undefined {
+    return this.liveEventCounts.get(sessionId);
   }
 
   /**
