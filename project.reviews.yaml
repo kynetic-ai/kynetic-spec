@@ -99793,6 +99793,13 @@ reviews:
           status: pass
           name: npm test task-system-ac-backfill
         timestamp: 2026-04-01T20:06:23.033Z
+      - _ulid: 01KN5AF0FNVWF9QD33J0JGNH3H
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KN5AEZVEGTSKSWPDJ2RE9BWC
+        timestamp: 2026-04-01T20:06:25.013Z
     examined_commit: b5b74b777d84ad59b520de064b8b74711cebe7bc
     external_links: []
     lifecycle_state: open
@@ -99802,8 +99809,37 @@ reviews:
       content_hash: ""
       ref: "@01KM6YEZ0E4QE1E37DAA4T1X7F"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KN5AEZVEGTSKSWPDJ2RE9BWC
+        entries:
+          - _ulid: 01KN5AEZVFPC4MVMSTFD3KWMW5
+            author: Jacob Chapel
+            body: >-
+              Files read: tests/task-system-ac-backfill.test.ts,
+              tests/fixtures/task-system-ac-backfill.snapshot.json
+
+              Commands run: git diff --unified=80
+              b21970e7807885567bfcfd956798cd3fb979a338...b5b74b777d84ad59b520de064b8b74711cebe7bc --
+              tests/task-system-ac-backfill.test.ts
+              tests/__snapshots__/fixtures/task-system-ac-backfill.snapshot.json; kspec task get
+              @01KM6YEZ0E4QE1E37DAA4T1X7F; kspec item get @task-data-manager; kspec item get
+              @tasks-ac-backfill; rg -n
+              "@task-storage$|@task-storage-alongside$|@task-storage-separate$|@task-storage
+              ac-1|@task-storage-alongside ac-1|@task-storage-separate
+              ac-1|\"@task-storage\"|\"@task-storage-alongside\"|\"@task-storage-separate\"" tests
+              src; npm test task-system-ac-backfill; kspec validate
+
+              Claims verified: worker note that npm test task-system-ac-backfill passes; worker note
+              that exact deprecated refs are removed; worker note that kspec validate returns only
+              pre-existing warnings
+
+              Categories searched: correctness (annotation targets and snapshot alignment), test
+              quality (behavioral coverage still maps to active spec), integration (backfill fixture
+              stays aligned with spec-quality test), edge cases/error handling/security (no new
+              surface in this cleanup)
+            created_at: 2026-04-01T20:06:24.367Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-01T20:04:57.450Z
-    updated_at: 2026-04-01T20:06:22.385Z
+    updated_at: 2026-04-01T20:06:24.367Z
     notes: []
