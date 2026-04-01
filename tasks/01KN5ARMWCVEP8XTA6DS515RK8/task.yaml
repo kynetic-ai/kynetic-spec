@@ -39,7 +39,9 @@ description: >-
      - normalizeTaskActivity() — orchestrates RawTaskCommit[] → ActivityEntry[] conversion pipeline
      - getPreMigrationActivity() — per-directory git log fallback for migrated tasks without history entries
      - DiffChange interface and any related types used exclusively by the above
-     Keep: assembleActivityFromFiles(), historyToActivity(), notesToActivity(), ActivityEntry, ActivityType, ActivitySource, HistoryEntry, Note types — these are the active in-file path.
+     - Remove the "git_fallback" variant from the ActivitySource type union (~line 208) and its JSDoc (~lines 228-230) — it becomes dead after removing the functions that set it
+     - Remove the import { execSync } from "node:child_process" (~line 16) — only used by the removed functions
+     Keep: assembleActivityFromFiles(), historyToActivity(), notesToActivity(), ActivityEntry, ActivityType, ActivitySource (minus git_fallback), HistoryEntry, Note types — these are the active in-file path.
 
   2. src/utils/index.ts — Remove re-exports:
      - findTaskBlockLines, getRawTaskCommits, getPreMigrationActivity, normalizeTaskActivity, parseCommitMessage, parseDiffChanges, RawTaskCommit
@@ -114,5 +116,200 @@ history:
         previous: []
     command: task-set
     timestamp: 2026-04-01T20:12:03.359Z
+  - author: "@claude"
+    changes:
+      description:
+        new: >-
+          Remove the legacy git-based activity query code that reconstructs task activity timelines
+          from shadow branch git history. This code exists as a pre-migration fallback in the task
+          get command but is no longer needed — all projects have been migrated to per-task
+          directory storage with in-file history, and monolithic task storage support has already
+          been removed.
+
+
+          Why: The git-based activity code is dead weight. It depends on shadow branch commit
+          archaeology (git log -L, diff parsing, commit message parsing) to reconstruct activity
+          that is now recorded directly in per-task files. The monolithic storage format it was
+          primarily designed for has been removed (@task-remove-monolithic is completed). The
+          remaining fallback (per-directory git log for migrated tasks without history entries)
+          provides marginal value for historical data at the cost of maintenance burden, test
+          surface, and code complexity. The deprecated spec @task-activity-git-query has zero future
+          utility.
+
+
+          Behavioral impact: Pre-migration tasks (created before the in-file history feature) will
+          show no activity timeline instead of a git-derived best-effort reconstruction. This
+          affects only historical data on tasks created before the storage migration. All new tasks
+          record history in-file and are unaffected.
+
+
+          What to remove:
+
+
+          1. src/utils/activity.ts — Remove these functions and types:
+             - RawTaskCommit interface (raw git commit data structure)
+             - findTaskBlockLines() — locates task block in monolithic YAML for git log -L range queries
+             - getRawTaskCommits() — runs git log -L against monolithic task file
+             - parseGitLogLOutput() — parses git log -L output into RawTaskCommit[]
+             - parseCommitMessage() — extracts operation type (start, submit, complete, note, block, etc.) from shadow branch auto-commit messages
+             - parseDiffChanges() — parses YAML diffs into typed DiffChange[] field changes
+             - diffChangesToEntries() — (private) converts DiffChange[] into ActivityEntry[]
+             - normalizeTaskActivity() — orchestrates RawTaskCommit[] → ActivityEntry[] conversion pipeline
+             - getPreMigrationActivity() — per-directory git log fallback for migrated tasks without history entries
+             - DiffChange interface and any related types used exclusively by the above
+             - Remove the "git_fallback" variant from the ActivitySource type union (~line 208) and its JSDoc (~lines 228-230) — it becomes dead after removing the functions that set it
+             - Remove the import { execSync } from "node:child_process" (~line 16) — only used by the removed functions
+             Keep: assembleActivityFromFiles(), historyToActivity(), notesToActivity(), ActivityEntry, ActivityType, ActivitySource (minus git_fallback), HistoryEntry, Note types — these are the active in-file path.
+
+          2. src/utils/index.ts — Remove re-exports:
+             - findTaskBlockLines, getRawTaskCommits, getPreMigrationActivity, normalizeTaskActivity, parseCommitMessage, parseDiffChanges, RawTaskCommit
+
+          3. src/cli/commands/task.ts (~lines 918-960) — Remove the entire fallback chain in the
+          task get activity section:
+             - Fallback 1: getPreMigrationActivity() call (per-directory git log for migrated tasks without history)
+             - Fallback 2: getRawTaskCommits() → normalizeTaskActivity() call (git log -L for legacy monolithic format)
+             - The activity section should become just assembleActivityFromFiles(historyEntries, foundTask.notes) with no fallback paths.
+             - Remove the dynamic imports of getPreMigrationActivity, getRawTaskCommits, normalizeTaskActivity from the import block (~lines 920-922).
+
+          4. tests/activity-git-query.test.ts — Delete entire file. Tests getRawTaskCommits,
+          findTaskBlockLines, parseGitLogLOutput — all removed code.
+
+
+          5. tests/activity-normalize.test.ts — Delete entire file. Tests parseCommitMessage,
+          parseDiffChanges, normalizeTaskActivity — all removed code.
+
+
+          6. tests/activity-in-file.test.ts — Remove the describe block for getPreMigrationActivity
+          (~line 341 onward). Keep the rest of the file which tests assembleActivityFromFiles (the
+          active in-file path).
+
+
+          7. AC annotation cleanup — All AC annotations referencing @task-activity-git-query in
+          src/utils/activity.ts (13 annotations) are removed with the code they annotate. Any
+          remaining references to @task-activity-git-query across the codebase should be grepped and
+          removed.
+
+
+          Spec changes:
+
+
+          8. @task-activity-in-file ac-3 — Currently says "Pre-migration activity may be incomplete;
+          the timeline indicates which entries are from stored history versus best-effort recovery."
+          Update to reflect that pre-migration activity is no longer recovered — tasks without
+          in-file history entries will show an empty activity timeline.
+
+
+          9. @task-activity-git-query — Already deprecated. After code removal, this spec has zero
+          implementation. It can be left as deprecated historical record or fully removed.
+
+
+          Verification:
+
+          - Run npm test to confirm no test failures from removed exports/functions
+
+          - Grep for getRawTaskCommits, getPreMigrationActivity, normalizeTaskActivity,
+          parseCommitMessage, parseDiffChanges, findTaskBlockLines, parseGitLogLOutput,
+          RawTaskCommit, @task-activity-git-query across the entire codebase to confirm zero
+          remaining references
+
+          - Run kspec validate to confirm no broken spec references
+        previous: >-
+          Remove the legacy git-based activity query code that reconstructs task activity timelines
+          from shadow branch git history. This code exists as a pre-migration fallback in the task
+          get command but is no longer needed — all projects have been migrated to per-task
+          directory storage with in-file history, and monolithic task storage support has already
+          been removed.
+
+
+          Why: The git-based activity code is dead weight. It depends on shadow branch commit
+          archaeology (git log -L, diff parsing, commit message parsing) to reconstruct activity
+          that is now recorded directly in per-task files. The monolithic storage format it was
+          primarily designed for has been removed (@task-remove-monolithic is completed). The
+          remaining fallback (per-directory git log for migrated tasks without history entries)
+          provides marginal value for historical data at the cost of maintenance burden, test
+          surface, and code complexity. The deprecated spec @task-activity-git-query has zero future
+          utility.
+
+
+          Behavioral impact: Pre-migration tasks (created before the in-file history feature) will
+          show no activity timeline instead of a git-derived best-effort reconstruction. This
+          affects only historical data on tasks created before the storage migration. All new tasks
+          record history in-file and are unaffected.
+
+
+          What to remove:
+
+
+          1. src/utils/activity.ts — Remove these functions and types:
+             - RawTaskCommit interface (raw git commit data structure)
+             - findTaskBlockLines() — locates task block in monolithic YAML for git log -L range queries
+             - getRawTaskCommits() — runs git log -L against monolithic task file
+             - parseGitLogLOutput() — parses git log -L output into RawTaskCommit[]
+             - parseCommitMessage() — extracts operation type (start, submit, complete, note, block, etc.) from shadow branch auto-commit messages
+             - parseDiffChanges() — parses YAML diffs into typed DiffChange[] field changes
+             - diffChangesToEntries() — (private) converts DiffChange[] into ActivityEntry[]
+             - normalizeTaskActivity() — orchestrates RawTaskCommit[] → ActivityEntry[] conversion pipeline
+             - getPreMigrationActivity() — per-directory git log fallback for migrated tasks without history entries
+             - DiffChange interface and any related types used exclusively by the above
+             Keep: assembleActivityFromFiles(), historyToActivity(), notesToActivity(), ActivityEntry, ActivityType, ActivitySource, HistoryEntry, Note types — these are the active in-file path.
+
+          2. src/utils/index.ts — Remove re-exports:
+             - findTaskBlockLines, getRawTaskCommits, getPreMigrationActivity, normalizeTaskActivity, parseCommitMessage, parseDiffChanges, RawTaskCommit
+
+          3. src/cli/commands/task.ts (~lines 918-960) — Remove the entire fallback chain in the
+          task get activity section:
+             - Fallback 1: getPreMigrationActivity() call (per-directory git log for migrated tasks without history)
+             - Fallback 2: getRawTaskCommits() → normalizeTaskActivity() call (git log -L for legacy monolithic format)
+             - The activity section should become just assembleActivityFromFiles(historyEntries, foundTask.notes) with no fallback paths.
+             - Remove the dynamic imports of getPreMigrationActivity, getRawTaskCommits, normalizeTaskActivity from the import block (~lines 920-922).
+
+          4. tests/activity-git-query.test.ts — Delete entire file. Tests getRawTaskCommits,
+          findTaskBlockLines, parseGitLogLOutput — all removed code.
+
+
+          5. tests/activity-normalize.test.ts — Delete entire file. Tests parseCommitMessage,
+          parseDiffChanges, normalizeTaskActivity — all removed code.
+
+
+          6. tests/activity-in-file.test.ts — Remove the describe block for getPreMigrationActivity
+          (~line 341 onward). Keep the rest of the file which tests assembleActivityFromFiles (the
+          active in-file path).
+
+
+          7. AC annotation cleanup — All AC annotations referencing @task-activity-git-query in
+          src/utils/activity.ts (13 annotations) are removed with the code they annotate. Any
+          remaining references to @task-activity-git-query across the codebase should be grepped and
+          removed.
+
+
+          Spec changes:
+
+
+          8. @task-activity-in-file ac-3 — Currently says "Pre-migration activity may be incomplete;
+          the timeline indicates which entries are from stored history versus best-effort recovery."
+          Update to reflect that pre-migration activity is no longer recovered — tasks without
+          in-file history entries will show an empty activity timeline.
+
+
+          9. @task-activity-git-query — Already deprecated. After code removal, this spec has zero
+          implementation. It can be left as deprecated historical record or fully removed.
+
+
+          Verification:
+
+          - Run npm test to confirm no test failures from removed exports/functions
+
+          - Grep for getRawTaskCommits, getPreMigrationActivity, normalizeTaskActivity,
+          parseCommitMessage, parseDiffChanges, findTaskBlockLines, parseGitLogLOutput,
+          RawTaskCommit, @task-activity-git-query across the entire codebase to confirm zero
+          remaining references
+
+          - Run kspec validate to confirm no broken spec references
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-04-01T20:25:56.782Z
 created_at: 2026-04-01T20:11:40.812Z
 todos: []
+automation: eligible
