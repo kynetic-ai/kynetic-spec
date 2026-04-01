@@ -20,3 +20,19 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-03-31T20:29:44.760Z
+  - _ulid: 01KN47QM95TGFRC2YW8EGRSJFD
+    content: "Rebased onto origin/dev after dependent e2e-fix tasks merged, then revalidated the gate.
+      Full local Playwright run initially surfaced 4 failures plus the HTML reporter hang, but the
+      four cases passed together on targeted rerun and a CI-mode full run completed cleanly at about
+      6.7 minutes with 458 passed, 0 failed, 4 flaky, 49 skipped. Because single-job runtime
+      exceeded the task target, switched the CI workflow to a 2-shard full Playwright matrix,
+      promoted test:e2e to the full suite, kept the old smoke lane as test:e2e:smoke, and set the
+      non-CI HTML reporter to open: never so failed local runs do not hang on the report server.
+      Verification: shard 1 passed in ~3m58s (206 passed, 0 failed, 2 flaky, 48 skipped), shard 2
+      passed in ~2m53s (254 passed, 0 failed, 0 flaky, 1 skipped), and kspec validate returned
+      warnings only. Residual unrelated regression check: npm test is red on this rebased HEAD in
+      tests/claude-plugin-registry.test.ts, tests/core-skill-install.test.ts, and
+      tests/cross-platform-robustness.test.ts, which are outside the e2e gate change surface."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T09:59:27.269Z
