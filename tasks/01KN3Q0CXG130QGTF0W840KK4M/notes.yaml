@@ -35,3 +35,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-01T08:10:13.454Z
+  - _ulid: 01KN41MCDH95JYT4JHA5W2H9GD
+    content: "Unexpected finding during fix cycle: the restored real watcher-backed assertion exposed a
+      real sessions-page freshness race. On live session events the page could refetch before the
+      daemon/index reflected the new session, so the update was dropped. Fixing by adding a short
+      bounded retry in packages/web-ui/src/routes/sessions/+page.svelte before deciding a live
+      refresh produced no change."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T08:12:49.457Z
