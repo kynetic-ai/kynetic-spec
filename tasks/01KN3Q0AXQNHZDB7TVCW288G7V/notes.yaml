@@ -1,1 +1,11 @@
-notes: []
+notes:
+  - _ulid: 01KN3QTRDDV7HS0EE7JME5M30H
+    content: "Approach: reproduce the failing review-interaction Playwright cases first, then compare
+      the failing UI flows against the review API and fixture setup before changing code. Edge
+      cases: thread state transitions not reflected after mutation, select option drift, stale
+      review fixtures, and lifecycle-state filtering hiding newly changed threads. Test plan:
+      stabilize the targeted review-interaction cases under retries, then run neighboring review
+      coverage to confirm no regressions."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T05:21:32.590Z
