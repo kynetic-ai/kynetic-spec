@@ -32,7 +32,7 @@ test.describe("Review Detail Page", () => {
     await expect(markdownThread.locator('[data-testid="entry-body"] strong')).toContainText(
       "critical bug",
     );
-    await expect(markdownThread.locator('[data-testid="entry-body"] code')).toContainText(
+    await expect(markdownThread.locator('[data-testid="entry-body"] p code').first()).toContainText(
       "validateInput()",
     );
     await expect(markdownThread.locator('[data-testid="entry-body"] pre code')).toContainText(

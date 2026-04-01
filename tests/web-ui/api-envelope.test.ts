@@ -65,6 +65,7 @@ import {
   fetchWorkflows,
   fetchObservations,
   fetchReviews,
+  fetchReviewSiblings,
   fetchReview,
   fetchSession,
   fetchSessions,
@@ -269,6 +270,50 @@ describe("live fetch envelope unwrapping", () => {
 
       const result = await fetchReviews();
       expect(result.items).toEqual([review]);
+    });
+
+    it("fetchReviewSiblings requests all lifecycle states for revision history", async () => {
+      const review = {
+        _ulid: "01REV0000000000000000001",
+        slugs: ["review-one"],
+        title: "Review One",
+        lifecycle_state: "open",
+        disposition: "pending",
+        subject_type: "task",
+        subject_ref: "@task-one",
+        author: "user",
+        related_refs: [],
+        thread_count: 0,
+        unresolved_blocker_count: 0,
+        check_count: 0,
+        verdict_count: 0,
+        created_at: "2026-03-01T00:00:00.000Z",
+      };
+      const fetchMock = vi.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: () => Promise.resolve(paginatedEnvelope([review], { total: 1, offset: 0, limit: 1 })),
+      } as unknown as Response);
+      globalThis.fetch = fetchMock;
+
+      const result = await fetchReviewSiblings({
+        subject_type: "task",
+        subject_ref: "@task-one",
+      });
+
+      expect(result).toEqual([review]);
+
+      const requestUrl = new URL(fetchMock.mock.calls[0][0] as string);
+      expect(requestUrl.searchParams.getAll("status")).toEqual([
+        "draft",
+        "open",
+        "closed",
+        "archived",
+      ]);
+      expect(requestUrl.searchParams.get("subject_type")).toBe("task");
+      expect(requestUrl.searchParams.get("subject_ref")).toBe("@task-one");
+      expect(requestUrl.searchParams.get("sort")).toBe("created_at");
+      expect(requestUrl.searchParams.get("sort_dir")).toBe("asc");
     });
 
     it("fetchTriageRecords unwraps paginated envelope", async () => {

@@ -1403,7 +1403,7 @@ export async function fetchReviewSiblings(params: {
   }
 
   const data = await fetchReviews({
-    status: "all",
+    status: ["draft", "open", "closed", "archived"],
     sort: "created_at",
     sort_dir: "asc",
     subject_type: params.subject_type,
