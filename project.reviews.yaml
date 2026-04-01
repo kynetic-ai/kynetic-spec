@@ -95702,9 +95702,25 @@ reviews:
           kind: blocker
           thread_ulid: 01KN3S2DY1JVR4W42YXB6RGZMX
         timestamp: 2026-04-01T05:43:13.488Z
+      - _ulid: 01KN3S3067NGPFWE17X9MAZANF
+        actor: agent:pr-reviewer
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-01T05:43:31.271Z
+      - _ulid: 01KN3S3067T8S0X327BA0Y0TG9
+        actor: agent:pr-reviewer
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-01T05:43:31.271Z
     examined_commit: 244194ef5451c0f34b5bb94623f5688842ae0588
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -95899,7 +95915,14 @@ reviews:
               still fails.
             created_at: 2026-04-01T05:43:12.577Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: agent:pr-reviewer
+        role: reviewer
+        created_at: 2026-04-01T05:43:31.271Z
     created_at: 2026-04-01T05:33:59.899Z
-    updated_at: 2026-04-01T05:43:12.577Z
+    updated_at: 2026-04-01T05:43:31.271Z
     notes: []
