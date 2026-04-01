@@ -95695,6 +95695,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN3S25JEZCQT48JAF2ZHC60Y
         timestamp: 2026-04-01T05:43:04.989Z
+      - _ulid: 01KN3S2ETGWAZBY36M38Q0QMK1
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN3S2DY1JVR4W42YXB6RGZMX
+        timestamp: 2026-04-01T05:43:13.488Z
     examined_commit: 244194ef5451c0f34b5bb94623f5688842ae0588
     external_links: []
     lifecycle_state: open
@@ -95873,7 +95880,26 @@ reviews:
               rather than a valid fix for the interactive failure.
             created_at: 2026-04-01T05:43:04.014Z
         kind: blocker
+      - _ulid: 01KN3S2DY1JVR4W42YXB6RGZMX
+        anchor:
+          type: code
+          commit: 244194ef5451c0f34b5bb94623f5688842ae0588
+          line_end: 174
+          line_start: 26
+          path: tests/e2e/review-interaction.spec.ts
+          side: head
+        entries:
+          - _ulid: 01KN3S2DY1E8E73CKWKYK9J4YF
+            author: Jacob Chapel
+            body: Focused Playwright coverage for AC-3 and AC-4 is still red in this snapshot. Running npx
+              playwright test tests/e2e/review-interaction.spec.ts from the review workspace fails 9
+              of 18 tests, including every Add Comment and Reply interaction, with click timeouts on
+              visible add-comment-button and thread-reply-button locators. This task exists to
+              restore those interactive review checks, so it cannot advance while the targeted spec
+              still fails.
+            created_at: 2026-04-01T05:43:12.577Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-01T05:33:59.899Z
-    updated_at: 2026-04-01T05:43:04.014Z
+    updated_at: 2026-04-01T05:43:12.577Z
     notes: []
