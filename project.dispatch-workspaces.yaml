@@ -31119,7 +31119,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-01T20:07:44.891Z
+      updated_at: 2026-04-01T20:09:47.234Z
     integration:
       status: merged
       detail: integration:merged
@@ -31135,18 +31135,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-01T20:04:17.846Z
-      last_reconciled_at: 2026-04-01T20:09:44.747Z
+      last_reconciled_at: 2026-04-01T20:09:47.234Z
       created_at: 2026-04-01T19:59:49.181Z
-      updated_at: 2026-04-01T20:09:44.747Z
+      updated_at: 2026-04-01T20:09:47.234Z
     workspace_id: dispatch-workspace-01KM6YEZ0E4QE1E37DAA4T1X7F
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: b5b74b777d84ad59b520de064b8b74711cebe7bc
-        last_seen_at: 2026-04-01T20:04:11.158Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-purge-old-storage-refs-01km6yez-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-purge-old-storage-refs/01km6yez
