@@ -97102,6 +97102,22 @@ reviews:
         runner: playwright
         created_at: 2026-04-01T07:41:52.935Z
         completed_at: 2026-04-01T07:41:52.935Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test exited 1 in this snapshot. Summary: 2058/2082 suites passed, 20 failed; 7482
+          passed, 37 failed, 6 skipped. Failures included tests/cli-serve.test.ts (daemon failed to
+          start within 5 seconds), tests/native-guard-setup.test.ts,
+          tests/setup-pipeline-unification.test.ts, tests/cli/session-note-limit.test.ts,
+          tests/daemon-api/agent-dispatch.test.ts, tests/daemon-api/inbox.test.ts, and
+          tests/daemon-api/items.test.ts. Full log:
+          /tmp/kspec-test-cache/01KN3Z6H3JSDQ6KMGDWFQPT644/bc8a7b38f1c434f7.log"
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-01T07:41:54.842Z
+        completed_at: 2026-04-01T07:41:54.842Z
     events:
       - _ulid: 01KN3Z8C1AMTCJ1NN1VXBTP4KK
         actor: Jacob Chapel
@@ -97123,6 +97139,13 @@ reviews:
           status: pass
           name: review-detail e2e
         timestamp: 2026-04-01T07:41:53.566Z
+      - _ulid: 01KN3ZVSW4N8B1X69BTWVMHMD7
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-04-01T07:41:55.461Z
     examined_commit: 63964c9bea35e190d14514a60e0348a8ca468137
     external_links: []
     lifecycle_state: open
@@ -97135,7 +97158,7 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-01T07:31:18.698Z
-    updated_at: 2026-04-01T07:41:52.935Z
+    updated_at: 2026-04-01T07:41:54.842Z
     notes: []
   - _ulid: 01KN3ZAM29H2HD6A3EX851F2XV
     slugs: []
