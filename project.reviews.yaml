@@ -96383,6 +96383,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-01T06:14:47.026Z
+      - _ulid: 01KN3Y6K91DXSQ49YPQJBJK5RR
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KN3TVGA2757YTT7PQCG4K5QA
+        timestamp: 2026-04-01T07:12:52.001Z
     examined_commit: 4eed9f6cc2f321ae17abc46f1a25766b8f489b78
     external_links: []
     lifecycle_state: closed
@@ -96411,6 +96417,8 @@ reviews:
               red cannot advance even though the review-detail E2Es now pass."
             created_at: 2026-04-01T06:14:22.786Z
         kind: blocker
+        resolved_at: 2026-04-01T07:12:51.383Z
+        resolved_by: Jacob Chapel
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -96420,7 +96428,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-01T06:14:47.026Z
     created_at: 2026-04-01T06:04:25.432Z
-    updated_at: 2026-04-01T06:14:47.026Z
+    updated_at: 2026-04-01T07:12:51.383Z
     notes: []
   - _ulid: 01KN3TTZTEK2YN7DCCGH5RBNXE
     slugs: []
