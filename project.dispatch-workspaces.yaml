@@ -30110,3 +30110,79 @@ workspaces:
         head: 81dd34e0197fe65ec7da87a5a5bc1615d96be4fb
         last_seen_at: 2026-04-01T05:20:00.770Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-review-detail-e2e-full-gate-01kn3q09
+  - active_role: null
+    base_branch_point: c33b26b5e198e2e8e13c92a35d1b6935217e335f
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-fix-review-interaction-e2e-full-gate/01kn3q0a
+    canonical_branch_head: c33b26b5e198e2e8e13c92a35d1b6935217e335f
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-04-01T05:20:10.673Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-04-01T05:20:10.673Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: c33b26b5e198e2e8e13c92a35d1b6935217e335f
+      updated_at: 2026-04-01T05:20:10.673Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KN3Q0AXQNHZDB7TVCW288G7V"
+    task_slug: task-fix-review-interaction-e2e-full-gate
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-04-01T05:20:10.673Z
+      created_at: 2026-04-01T05:20:10.673Z
+      updated_at: 2026-04-01T05:20:10.673Z
+    workspace_id: dispatch-workspace-01KN3Q0AXQNHZDB7TVCW288G7V
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-fix-review-interaction-e2e-full-gate/01kn3q0a
+        head: c33b26b5e198e2e8e13c92a35d1b6935217e335f
+        last_seen_at: 2026-04-01T05:20:10.673Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-review-interaction-e2e-full-gate-01kn3q0a
