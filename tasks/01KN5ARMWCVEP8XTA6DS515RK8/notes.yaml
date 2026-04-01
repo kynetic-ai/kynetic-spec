@@ -1,1 +1,13 @@
-notes: []
+notes:
+  - _ulid: 01KN5BPDRMB51VNF41CCXKANBV
+    content: "Approach: remove legacy git-derived activity helpers and task-get fallback wiring so
+      activity comes only from persisted task history and notes. Edge cases: tasks with notes but no
+      history should still show note activity only; pre-migration tasks with no in-file history
+      should now return an empty timeline; review events still merge onto the in-file timeline. Test
+      plan: keep behavioral coverage for
+      assembleActivityFromFiles/historyToActivity/notesToActivity, delete legacy git-query tests,
+      and update the in-file suite to assert empty output for no-history tasks instead of git
+      recovery."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T20:27:56.564Z
