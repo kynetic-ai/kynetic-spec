@@ -20036,7 +20036,7 @@ runs:
     started_at: 2026-04-01T08:21:41.361Z
   - _ulid: 01KN432NB3WVA1AVK1G1EHTXV4
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -20059,7 +20059,14 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-04-01T08:39:01.104Z
-        completed_at: 2026-04-01T08:39:01.104Z
+        completed_at: 2026-04-01T08:39:11.177Z
+        notes: "Decision: keep the new success observation about focused single-spec reproduction and the
+          new friction observation about E2E fixture/API contract drift. Skip workflow-run friction
+          because it is already tracked as inbox item @01KHVCPEXG (stale workflow runs accumulate)."
+      - status: completed
+        step_index: 3
+        started_at: 2026-04-01T08:39:11.177Z
+        completed_at: 2026-04-01T08:39:11.177Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-01T08:38:05.923Z
