@@ -11082,6 +11082,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-01T10:23:03.965Z
+  - _ulid: 01KN5AJGH2VC3FG1MA150WZKVN
+    type: friction
+    content: "Reviewer merge flow in detached review snapshots is underspecified when the integration
+      branch is already checked out in another worktree. This session required creating a temporary
+      merge branch/worktree, merging there, then fast-forwarding the main dev worktree because
+      direct 'git checkout dev' failed with: 'dev is already used by worktree'."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-01T20:08:19.746Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
