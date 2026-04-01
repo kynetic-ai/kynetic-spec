@@ -20095,7 +20095,7 @@ runs:
     started_at: 2026-04-01T08:48:35.665Z
   - _ulid: 01KN441MJXJSKG13ZK1FZ89JKW
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -20108,7 +20108,14 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-01T08:56:01.141Z
-        completed_at: 2026-04-01T08:56:01.141Z
+        completed_at: 2026-04-01T08:56:25.506Z
+        notes: "Coverage check: searched existing state before capture. The exact success pattern and the
+          build-cost friction were not already tracked, so both were worth recording as observations
+          rather than tasks."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-01T08:56:25.506Z
+        completed_at: 2026-04-01T08:56:25.506Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-01T08:55:00.957Z
