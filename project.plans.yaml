@@ -28930,7 +28930,7 @@ plans:
       The command API's mutation serialization handles re-entrant calls the same
 
       as any other client.
-    status: active
+    status: completed
     approved_at: 2026-03-26T05:47:07.259Z
     derived_specs:
       - "@daemon-entity-cache"
@@ -29955,7 +29955,7 @@ plans:
       event (P1, can run in parallel since independent). Then route handler migration (P2). Then
       client unwrapping + interceptor (P3). Then WS subscription + skeleton views (P4). Finally E2E
       test (P5).
-    status: active
+    status: completed
     approved_at: 2026-03-29T06:59:34.916Z
     derived_specs: []
     derived_tasks:
