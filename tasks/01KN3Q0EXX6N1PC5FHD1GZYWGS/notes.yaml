@@ -11,3 +11,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-01T08:58:30.786Z
+  - _ulid: 01KN44J42HXFQ9MZG4MPBCJP3V
+    content: "Reproduced two distinct flakes. The navigation forward/back case was a Playwright history
+      wait race ( aborting while the app swapped documents) and was stabilized by waiting on the URL
+      transition explicitly. A second rerun surfaced the session-context API cases as cache/watch
+      timing issues: the tests seed  after daemon startup, so the assertions need to wait for the
+      daemon-backed related-session endpoints to observe the new directories before expecting
+      non-zero totals."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T09:04:01.105Z
