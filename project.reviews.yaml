@@ -95800,6 +95800,12 @@ reviews:
         payload:
           thread_ulid: 01KN3S25JEZCQT48JAF2ZHC60Y
         timestamp: 2026-04-01T06:11:10.558Z
+      - _ulid: 01KN3TNRS9Z12417AWBE2XFM8J
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN3S25JEZCQT48JAF2ZHC60Y
+        timestamp: 2026-04-01T06:11:14.857Z
     examined_commit: 244194ef5451c0f34b5bb94623f5688842ae0588
     external_links: []
     lifecycle_state: closed
@@ -95981,6 +95987,12 @@ reviews:
               broken and only a full refresh reflects the change, so this is a coverage regression
               rather than a valid fix for the interactive failure.
             created_at: 2026-04-01T05:43:04.014Z
+          - _ulid: 01KN3TNQY29H5GQQWRD3TQRC5Y
+            author: Jacob Chapel
+            body: Fixed in 38587b6ed. The AC-5 reopen case now asserts the live page state after clicking Reopen
+              instead of reloading, so it proves the in-page mutation/invalidation path updates from
+              resolved to open immediately.
+            created_at: 2026-04-01T06:11:13.986Z
         kind: blocker
         resolved_at: 2026-04-01T06:11:09.639Z
         resolved_by: Jacob Chapel
@@ -96014,7 +96026,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-01T05:43:31.271Z
     created_at: 2026-04-01T05:33:59.899Z
-    updated_at: 2026-04-01T06:11:09.639Z
+    updated_at: 2026-04-01T06:11:13.986Z
     notes: []
   - _ulid: 01KN3T8DZTKY6MZ4FA3NGH6ENW
     slugs: []
