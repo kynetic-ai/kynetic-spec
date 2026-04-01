@@ -20228,7 +20228,7 @@ runs:
     completed_at: 2026-04-01T20:03:56.898Z
   - _ulid: 01KN5AHQQRX0A5REJFAP85W4DG
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -20240,7 +20240,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-01T20:08:29.396Z
-        completed_at: 2026-04-01T20:08:29.396Z
+        completed_at: 2026-04-01T20:09:03.682Z
+        notes: "Baseline search completed across observations, inbox, and tasks. High-confidence friction
+          identified: detached review merge flow when integration branch is already checked out in
+          another worktree, but this is already tracked by existing observation @01KN0JCT. New
+          duplicate observation @01KN5AJG was resolved as duplicate after confirming overlap."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-01T20:09:03.682Z
+        completed_at: 2026-04-01T20:09:03.682Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-01T20:07:54.360Z
