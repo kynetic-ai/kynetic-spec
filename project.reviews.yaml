@@ -97345,9 +97345,25 @@ reviews:
           kind: nit
           thread_ulid: 01KN3ZZZ4A6SBPSJGEFSW12F1C
         timestamp: 2026-04-01T07:44:12.563Z
+      - _ulid: 01KN400KNFVMH7VEKQ9R10S01S
+        actor: agent:pr-reviewer
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-04-01T07:44:32.943Z
+      - _ulid: 01KN400KNFENQG0QDAXRQ7F3Q0
+        actor: agent:pr-reviewer
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-01T07:44:32.943Z
     examined_commit: e49d0c4bd4b675faecf68024f1602c26d74f6638
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -97374,7 +97390,14 @@ reviews:
               reviewer-scope note."
             created_at: 2026-04-01T07:44:11.914Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: agent:pr-reviewer
+        role: reviewer
+        created_at: 2026-04-01T07:44:32.943Z
     created_at: 2026-04-01T07:32:32.457Z
-    updated_at: 2026-04-01T07:44:11.914Z
+    updated_at: 2026-04-01T07:44:32.943Z
     notes: []
