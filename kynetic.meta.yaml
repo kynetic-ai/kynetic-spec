@@ -11063,6 +11063,16 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-04-01T10:19:07.244Z
+  - _ulid: 01KN492VFTYS2XMMWXD1KNE62R
+    type: friction
+    content: CI workflow path filters can silently weaken a test gate when config files are omitted. In
+      this session, the full Playwright gate was correctly sharded and green, but
+      playwright.config.ts was missing from pull_request.paths, so config-only PRs could bypass the
+      E2E workflow entirely.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-01T10:23:03.674Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
