@@ -9,3 +9,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-01T08:40:45.714Z
+  - _ulid: 01KN43JV6CZ305P01JQXTFBAE2
+    content: "Root cause: observation context was present in the E2E fixture and consumed by the
+      observations page, but ObservationSchema did not define context so the parser dropped it
+      before the daemon/API response. Also fixed the observations Playwright spec to target the
+      markdown-backed fixture item by content instead of list order and to mock an explicit empty
+      unresolved response for the empty-state path."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T08:46:56.204Z
