@@ -1167,36 +1167,139 @@ test.describe("Session History View", () => {
     test("refreshes from sessions-topic updates as well as agent-origin updates", async ({
       page,
       daemon,
+      request,
     }) => {
       const agentType = "source-agnostic-worker";
+      const firstSessionId = "01JTESTSOURCEAGNTSESSION000001";
+      const secondSessionId = "01JTESTSOURCEAGNTSESSION000002";
+      const thirdSessionId = "01JTESTSOURCEAGNTSESSION000003";
+
       await writeSessionFixture(daemon.tempDir, {
-        id: "01JTESTSOURCEAGNTSESSION000001",
+        id: firstSessionId,
         status: "completed",
         startedAt: "2026-03-20T10:00:00.000Z",
         endedAt: "2026-03-20T10:05:00.000Z",
         agentType,
       });
 
+      await page.addInitScript(() => {
+        const instances: WebSocket[] = [];
+        const OriginalWebSocket = window.WebSocket;
+        (window as any).__test_ws_instances = instances;
+        window.WebSocket = new Proxy(OriginalWebSocket, {
+          construct(target, args) {
+            const ws = new target(...(args as [string, ...any[]]));
+            instances.push(ws);
+            return ws;
+          },
+        });
+      });
+
+      await expect
+        .poll(async () => {
+          const response = await request.get(`${daemon.baseUrl}/api/sessions?agent_type=${agentType}`);
+          const body = await response.json();
+          return body.meta?.total ?? 0;
+        })
+        .toBe(1);
+
       await page.goto(`/sessions?agent_type=${agentType}`);
       await expect(page.getByTestId("sessions-list")).toBeVisible();
-      await expect(page.getByTestId("sessions-count")).toContainText("1 of 1 session");
-      await expect(page.getByTestId("session-row").first()).toContainText(
-        "01JTESTSOURCEAGNTSESSION000001",
-      );
+      await expect(page.getByTestId("session-row")).toHaveCount(1);
+      await expect(page.getByTestId("session-row").first()).toHaveAttribute("data-session-id", firstSessionId);
 
       await writeSessionFixture(daemon.tempDir, {
-        id: "01JTESTSOURCEAGNTSESSION000002",
+        id: secondSessionId,
         status: "active",
-        startedAt: "2026-03-20T10:10:00.000Z",
+        startedAt: "2026-04-01T00:10:00.000Z",
         agentType,
       });
 
-      await expect(page.getByTestId("sessions-count")).toContainText("2 of 2 sessions", {
-        timeout: 3000,
+      await expect
+        .poll(async () => {
+          const response = await request.get(`${daemon.baseUrl}/api/sessions?agent_type=${agentType}`);
+          const body = await response.json();
+          return body.meta?.total ?? 0;
+        })
+        .toBe(2);
+
+      const sessionsTopicInjected = await page.evaluate((sessionId: string) => {
+        const instances = (window as any).__test_ws_instances as WebSocket[];
+        const ws = instances?.find((s) => s.readyState === WebSocket.OPEN);
+        if (!ws) return false;
+
+        ws.dispatchEvent(
+          new MessageEvent("message", {
+            data: JSON.stringify({
+              msg_id: "test-source-agnostic-sessions",
+              seq: 9995,
+              timestamp: new Date().toISOString(),
+              topic: "sessions",
+              event: "session_changed",
+              data: {
+                session_id: sessionId,
+                path: `.kspec-sessions/${sessionId}/session.yaml`,
+              },
+            }),
+          }),
+        );
+        return true;
+      }, secondSessionId);
+      expect(sessionsTopicInjected).toBe(true);
+
+      await expect(page.getByTestId("session-row")).toHaveCount(2, { timeout: 3000 });
+      await expect(page.getByTestId("session-row").first()).toHaveAttribute(
+        "data-session-id",
+        secondSessionId,
+      );
+      await expect(page.getByTestId("session-row").first()).toContainText("active");
+
+      await writeSessionFixture(daemon.tempDir, {
+        id: thirdSessionId,
+        status: "active",
+        startedAt: "2026-04-01T00:20:00.000Z",
+        agentType,
       });
-      await expect(page.getByTestId("session-row").first()).toContainText(
-        "01JTESTSOURCEAGNTSESSION000002",
-        { timeout: 3000 },
+
+      await expect
+        .poll(async () => {
+          const response = await request.get(`${daemon.baseUrl}/api/sessions?agent_type=${agentType}`);
+          const body = await response.json();
+          return body.meta?.total ?? 0;
+        })
+        .toBe(3);
+
+      const agentsTopicInjected = await page.evaluate((sessionId: string) => {
+        const instances = (window as any).__test_ws_instances as WebSocket[];
+        const ws = instances?.find((s) => s.readyState === WebSocket.OPEN);
+        if (!ws) return false;
+
+        ws.dispatchEvent(
+          new MessageEvent("message", {
+            data: JSON.stringify({
+              msg_id: "test-source-agnostic-agents",
+              seq: 9996,
+              timestamp: new Date().toISOString(),
+              topic: "agents",
+              event: "agent_invocation",
+              data: {
+                session_id: sessionId,
+                agent_id: "task-worker",
+                task_id: null,
+                status: "started",
+                timestamp: Date.now(),
+              },
+            }),
+          }),
+        );
+        return true;
+      }, thirdSessionId);
+      expect(agentsTopicInjected).toBe(true);
+
+      await expect(page.getByTestId("session-row")).toHaveCount(3, { timeout: 3000 });
+      await expect(page.getByTestId("session-row").first()).toHaveAttribute(
+        "data-session-id",
+        thirdSessionId,
       );
       await expect(page.getByTestId("session-row").first()).toContainText("active");
     });
@@ -1207,14 +1310,22 @@ test.describe("Session History View", () => {
       daemon: _daemon,
     }) => {
       const sessions = Array.from({ length: 5 }, (_, i) => makeSession(i + 1));
+      const newSession = makeSession(6, {
+        status: "active",
+        started_at: "2026-03-29T10:00:00.000Z",
+        ended_at: undefined,
+      });
+      let callCount = 0;
 
       await page.route("**/api/sessions*", (route) => {
+        callCount++;
+        const currentSessions = callCount > 1 ? [newSession, ...sessions] : sessions;
         route.fulfill({
           status: 200,
           contentType: "application/json",
           body: JSON.stringify(envelope(
-            { items: sessions, unfiltered_total: sessions.length },
-            { total: sessions.length, offset: 0, limit: 25 },
+            { items: currentSessions, unfiltered_total: currentSessions.length },
+            { total: currentSessions.length, offset: 0, limit: 25 },
           )),
         });
       });
@@ -1266,6 +1377,7 @@ test.describe("Session History View", () => {
       await expect(page.getByTestId("sessions-count")).toContainText("of 6 sessions", {
         timeout: 3000,
       });
+      await expect(page.getByTestId("session-row").first()).toContainText(newSession.id.slice(0, 8));
     });
 
     // AC: @session-list-infinite-scroll ac-live-update — At-top prepend behavior
@@ -1344,6 +1456,8 @@ test.describe("Session History View", () => {
       page,
       daemon: _daemon,
     }) => {
+      await page.setViewportSize({ width: 1280, height: 480 });
+
       // Need enough sessions to enable scrolling
       const sessions = Array.from({ length: 25 }, (_, i) => makeSession(i + 1));
       let requestCount = 0;
@@ -1385,15 +1499,21 @@ test.describe("Session History View", () => {
 
       // Scroll down past the top threshold — the real scroll container is
       // the layout's <main class="overflow-auto">, not the page div
-      await page.evaluate(() => {
-        const main = document.querySelector("main.overflow-auto") as HTMLElement | null;
-        if (main) main.scrollTop = 500;
+      const scrollTop = await page.locator("main.overflow-auto").evaluate((main) => {
+        const element = main as HTMLElement;
+        Object.defineProperty(element, "scrollTop", {
+          configurable: true,
+          value: 500,
+        });
+        element.dispatchEvent(new Event("scroll"));
+        return element.scrollTop;
       });
-      await page.waitForTimeout(200); // Let scroll handler fire
+      expect(scrollTop).toBeGreaterThan(80);
 
       // Inject a sessions update while scrolled down. The total count and first
       // row stay the same, so this only surfaces if the page detects in-list changes.
-      const injected = await page.evaluate(() => {
+      const targetSessionId = sessions[10].id;
+      const injected = await page.evaluate((sessionId: string) => {
         const instances = (window as any).__test_ws_instances as WebSocket[];
         const ws = instances?.find((s) => s.readyState === WebSocket.OPEN);
         if (!ws) return false;
@@ -1405,13 +1525,13 @@ test.describe("Session History View", () => {
           topic: "sessions",
           event: "session_changed",
           data: {
-            session_id: sessions[10].id,
-            path: `.kspec-sessions/${sessions[10].id}/session.yaml`,
+            session_id: sessionId,
+            path: `.kspec-sessions/${sessionId}/session.yaml`,
           },
         });
         ws.dispatchEvent(new MessageEvent("message", { data: msg }));
         return true;
-      });
+      }, targetSessionId);
       expect(injected).toBe(true);
 
       // Indicator should appear when scrolled down
@@ -1427,17 +1547,26 @@ test.describe("Session History View", () => {
       page,
       daemon: _daemon,
     }) => {
+      await page.setViewportSize({ width: 1280, height: 480 });
+
       let callCount = 0;
       const sessions = Array.from({ length: 25 }, (_, i) => makeSession(i + 1));
+      const newSession = makeSession(26, {
+        status: "active",
+        started_at: "2026-03-30T10:00:00.000Z",
+        ended_at: undefined,
+      });
 
       await page.route("**/api/sessions*", (route) => {
         callCount++;
+        const currentSessions =
+          callCount > 1 ? [newSession, ...sessions.slice(0, 24)] : sessions;
         route.fulfill({
           status: 200,
           contentType: "application/json",
           body: JSON.stringify(envelope(
-            { items: sessions, unfiltered_total: 50 },
-            { total: 50, offset: 0, limit: 25 },
+            { items: currentSessions, unfiltered_total: 51 },
+            { total: 51, offset: 0, limit: 25 },
           )),
         });
       });
@@ -1460,11 +1589,16 @@ test.describe("Session History View", () => {
       await expect(page.getByTestId("sessions-list")).toBeVisible();
 
       // Scroll down to trigger indicator behavior — layout's <main> is the scroll container
-      await page.evaluate(() => {
-        const main = document.querySelector("main.overflow-auto") as HTMLElement | null;
-        if (main) main.scrollTop = 500;
+      const scrollTop = await page.locator("main.overflow-auto").evaluate((main) => {
+        const element = main as HTMLElement;
+        Object.defineProperty(element, "scrollTop", {
+          configurable: true,
+          value: 500,
+        });
+        element.dispatchEvent(new Event("scroll"));
+        return element.scrollTop;
       });
-      await page.waitForTimeout(200);
+      expect(scrollTop).toBeGreaterThan(80);
 
       // Inject event while scrolled
       await page.evaluate(() => {
@@ -1500,6 +1634,7 @@ test.describe("Session History View", () => {
       // Should trigger a new fetch
       await page.waitForTimeout(500);
       expect(callCount).toBeGreaterThan(callsBeforeClick);
+      await expect(page.getByTestId("session-row").first()).toContainText(newSession.id.slice(0, 8));
 
       // Indicator should disappear after refresh
       await expect(page.getByTestId("new-sessions-indicator")).not.toBeVisible();
