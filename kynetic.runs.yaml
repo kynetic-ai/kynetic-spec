@@ -19936,9 +19936,20 @@ runs:
     started_at: 2026-04-01T07:14:05.112Z
   - _ulid: 01KN3Z1CM05FFY3F16C9SM2J15
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-01T07:27:29.920Z
+        completed_at: 2026-04-01T07:28:28.378Z
+        notes: "What worked well: rebasing the dispatch branch onto origin/dev before further edits, then
+          re-running only the previously blocked subset plus the focused review-interaction E2E
+          spec, quickly separated stale review blockers from real regressions."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-01T07:28:28.378Z
+        completed_at: 2026-04-01T07:28:28.378Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-01T07:27:29.920Z
