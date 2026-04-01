@@ -67,3 +67,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-01T07:28:24.990Z
+  - _ulid: 01KN415NCRCRGDQXNRST7Q3K6Z
+    content: "Fix cycle 3: rebased onto origin/dev and resolved the dispatch-engine test conflict by
+      keeping the invocation-count waits plus try/finally cleanup. Also replaced the diverged
+      route-mocked stale-check assertion in tests/e2e/reviews-detail.spec.ts with the seeded review
+      fixture so the adjacent review-detail regression check stays behavioral and matches the live
+      page. Verification: npm test -- --fresh => 2082/2082 suites passed, 7522/7527 tests passed, 5
+      skipped; npm run test:e2e -- tests/e2e/review-detail-page.spec.ts
+      tests/e2e/reviews-detail.spec.ts => 29/29 passed; kspec validate returned only the existing
+      project warning set (exit 6)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T08:04:47.128Z
