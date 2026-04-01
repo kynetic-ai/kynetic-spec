@@ -11,3 +11,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-01T05:09:05.547Z
+  - _ulid: 01KN3QKYMP4BGSSSB1QFRDE67Y
+    content: "Fixed review-detail revision history loading by making fetchReviewSiblings request all
+      lifecycle states with repeated status params instead of the literal status=all value. Also
+      tightened the markdown assertion in tests/e2e/review-detail-page.spec.ts to target the
+      intended inline code element now that the revision selector renders and the full markdown body
+      is exercised. Verification: tests/web-ui/api-envelope.test.ts passed; npm run test:e2e --
+      tests/e2e/review-detail-page.spec.ts passed (9/9); npm run test:e2e --
+      tests/e2e/reviews-detail.spec.ts passed (26/26). npm test reached the known teardown hang
+      after advancing its vitest log; no failure output was emitted before termination."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T05:17:49.590Z
