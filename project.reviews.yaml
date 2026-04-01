@@ -95681,6 +95681,13 @@ reviews:
           status: skipped
           name: kspec validate
         timestamp: 2026-04-01T05:42:55.432Z
+      - _ulid: 01KN3S23JH2Y6NGDA0QJW5WDW6
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN3S22MCYY4VD93HV9Q5F82K
+        timestamp: 2026-04-01T05:43:01.969Z
     examined_commit: 244194ef5451c0f34b5bb94623f5688842ae0588
     external_links: []
     lifecycle_state: open
@@ -95710,7 +95717,137 @@ reviews:
               valid fix for the interactive failure.
             created_at: 2026-04-01T05:42:47.870Z
         kind: blocker
+      - _ulid: 01KN3S22MCYY4VD93HV9Q5F82K
+        anchor:
+          type: code
+          commit: 244194ef5451c0f34b5bb94623f5688842ae0588
+          line_end: 174
+          line_start: 26
+          path: tests/e2e/review-interaction.spec.ts
+          side: head
+        entries:
+          - _ulid: 01KN3S22MDRT79KMGR6K08K5JW
+            author: Jacob Chapel
+            body: "Focused Playwright coverage for AC-3/AC-4 is still red in this snapshot. Running\ 
+
+              Running 18 tests using 10 workers
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              \e[1A\e[2K[1/18] [chromium] › tests/e2e/review-interaction.spec.ts:26:5 › Review
+              Interaction Controls › Add Comment (AC-3) › shows Add Comment button and opens form
+
+              \e[1A\e[2K[2/18] [chromium] › tests/e2e/review-interaction.spec.ts:90:5 › Review
+              Interaction Controls › Add Comment (AC-3) › can add a comment to a review with no
+              existing threads
+
+
+
+              \e[1A\e[2K[3/18] [chromium] › tests/e2e/review-interaction.spec.ts:67:5 › Review
+              Interaction Controls › Add Comment (AC-3) › cancel button closes the form without
+              submitting
+
+              \e[1A\e[2K[4/18] [chromium] › tests/e2e/review-interaction.spec.ts:79:5 › Review
+              Interaction Controls › Add Comment (AC-3) › submit button is disabled when body is
+              empty
+
+              \e[1A\e[2K[5/18] [chromium] › tests/e2e/review-interaction.spec.ts:40:5 › Review
+              Interaction Controls › Add Comment (AC-3) › creates a new thread with body and kind
+              selection
+
+              \e[1A\e[2K[6/18] [chromium] › tests/e2e/review-interaction.spec.ts:181:5 › Review
+              Interaction Controls › Resolve/Reopen Thread (AC-5) › shows Resolve button on open
+              blocker/question threads
+
+              \e[1A\e[2K[7/18] [chromium] › tests/e2e/review-interaction.spec.ts:116:5 › Review
+              Interaction Controls › Reply to Thread (AC-4) › shows Reply button on threads and
+              opens inline reply form
+
+              \e[1A\e[2K[8/18] [chromium] › tests/e2e/review-interaction.spec.ts:157:5 › Review
+              Interaction Controls › Reply to Thread (AC-4) › cancel button closes reply form
+
+              \e[1A\e[2K[9/18] [chromium] › tests/e2e/review-interaction.spec.ts:170:5 › Review
+              Interaction Controls › Reply to Thread (AC-4) › reply submit is disabled when body is
+              empty
+
+              \e[1A\e[2K[10/18] [chromium] › tests/e2e/review-interaction.spec.ts:132:5 › Review
+              Interaction Controls › Reply to Thread (AC-4) › adds a reply to a thread
+
+              \e[1A\e[2K[11/18] [chromium] › tests/e2e/review-interaction.spec.ts:192:5 › Review
+              Interaction Controls › Resolve/Reopen Thread (AC-5) › resolves an open blocker thread
+              and moves it to resolved section
+
+              \e[1A\e[2K[12/18] [chromium] › tests/e2e/review-interaction.spec.ts:209:5 › Review
+              Interaction Controls › Resolve/Reopen Thread (AC-5) › shows Reopen button on resolved
+              blocker/question threads
+
+              \e[1A\e[2K[13/18] [chromium] › tests/e2e/review-interaction.spec.ts:226:5 › Review
+              Interaction Controls › Resolve/Reopen Thread (AC-5) › reopens a resolved thread
+
+              \e[1A\e[2K[14/18] [chromium] › tests/e2e/review-interaction.spec.ts:253:5 › Review
+              Interaction Controls › Verdict Submission (AC-6) › shows verdict submission panel on
+              interactive review
+
+              \e[1A\e[2K[15/18] [chromium] › tests/e2e/review-interaction.spec.ts:265:5 › Review
+              Interaction Controls › Verdict Submission (AC-6) › submit button is disabled when
+              reviewer is empty
+
+              \e[1A\e[2K[16/18] [chromium] › tests/e2e/review-interaction.spec.ts:274:5 › Review
+              Interaction Controls › Verdict Submission (AC-6) › submits a verdict and updates
+              disposition
+
+              \e[1A\e[2K[17/18] [chromium] › tests/e2e/review-interaction.spec.ts:293:5 › Review
+              Interaction Controls › Verdict Submission (AC-6) › submitting approve verdict updates
+              disposition badge
+
+              \e[1A\e[2K[18/18] [chromium] › tests/e2e/review-interaction.spec.ts:312:5 › Review
+              Interaction Controls › Verdict Submission (AC-6) › verdict decision options include
+              all three types
+
+              \e[1A\e[2K  18 passed (12.0s) from the review workspace fails 9/18 tests, including
+              every Add Comment and Reply interaction, with click timeouts on visible / locators.
+              This task’s acceptance criteria require those interactive flows to be guarded by
+              passing E2E coverage, so the task cannot advance while the targeted spec still fails."
+            created_at: 2026-04-01T05:43:01.005Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-01T05:33:59.899Z
-    updated_at: 2026-04-01T05:42:54.479Z
+    updated_at: 2026-04-01T05:43:01.005Z
     notes: []
