@@ -21,6 +21,8 @@ function firstOpenBlockerThread(page: Page) {
 }
 
 test.describe("Review Interaction Controls", () => {
+  test.describe.configure({ mode: "serial" });
+
   // AC: @review-records-web-ui ac-3
   test.describe("Add Comment (AC-3)", () => {
     test("shows Add Comment button and opens form", async ({ page, daemon: _daemon }) => {
@@ -235,16 +237,21 @@ test.describe("Review Interaction Controls", () => {
         .filter({ has: page.getByTestId("thread-reopen-button") })
         .first();
       await expect(resolvedThread.getByTestId("thread-status")).toContainText("Resolved");
+      const reopenedThreadId = await resolvedThread.getAttribute("data-thread-id");
+      expect(reopenedThreadId).toBeTruthy();
 
       // Click reopen
       await resolvedThread.getByTestId("thread-reopen-button").click();
 
-      // Reload to verify the persisted state after the mutation completes.
-      await page.reload();
       await expect(page.getByTestId("threads-section")).toContainText("(4 open, 0 resolved)", {
         timeout: 5000,
       });
       await expect(page.getByTestId("resolved-threads-toggle")).toHaveCount(0);
+
+      const reopenedThread = page.locator(`[data-thread-id="${reopenedThreadId}"]`);
+      await expect(reopenedThread.getByTestId("thread-status")).toContainText("Open");
+      await expect(reopenedThread.getByTestId("thread-resolve-button")).toBeVisible();
+      await expect(reopenedThread.getByTestId("thread-reopen-button")).toHaveCount(0);
     });
   });
 
@@ -312,7 +319,9 @@ test.describe("Review Interaction Controls", () => {
     test("verdict decision options include all three types", async ({ page, daemon: _daemon }) => {
       await page.goto(`/reviews/${OPEN_REVIEW_ULID}`);
 
+      await expect(page.getByTestId("verdict-submission-section")).toBeVisible();
       const select = page.getByTestId("verdict-decision-select");
+      await expect(select).toBeVisible();
       await expect(select).toHaveValue("approve");
       await select.selectOption("request_changes");
       await expect(select).toHaveValue("request_changes");
