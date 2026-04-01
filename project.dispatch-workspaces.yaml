@@ -30187,7 +30187,7 @@ workspaces:
         head: 38587b6ed0cad0767346ec970b677d1fa870db77
         last_seen_at: 2026-04-01T06:13:06.344Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-review-interaction-e2e-full-gate-01kn3q0a
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: c33b26b5e198e2e8e13c92a35d1b6935217e335f
     bootstrap:
       status: succeeded
@@ -30295,9 +30295,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-01T06:43:50.823Z
-      last_reconciled_at: 2026-04-01T07:04:44.016Z
+      last_reconciled_at: 2026-04-01T07:04:55.268Z
       created_at: 2026-04-01T05:33:09.915Z
-      updated_at: 2026-04-01T07:04:44.016Z
+      updated_at: 2026-04-01T07:04:55.268Z
     workspace_id: dispatch-workspace-01KN3Q0BXDE56CDNFDZXBFGGF9
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
