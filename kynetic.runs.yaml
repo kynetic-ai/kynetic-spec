@@ -20142,7 +20142,7 @@ runs:
     completed_at: 2026-04-01T10:01:56.596Z
   - _ulid: 01KN48SJFFZD3D26TA4H9GQNC9
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -20154,7 +20154,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-01T10:19:06.924Z
-        completed_at: 2026-04-01T10:19:06.924Z
+        completed_at: 2026-04-01T10:19:52.798Z
+        notes: "Coverage check: searched existing observations/inbox/tasks plus targeted searches for stale
+          integration-base and review-diff-base mismatch. Existing detached-reviewer observations
+          cover merge/worktree limitations, but none covered stale prompt-provided base/head
+          metadata causing an oversized initial diff."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-01T10:19:52.798Z
+        completed_at: 2026-04-01T10:19:52.798Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-01T10:17:59.535Z
