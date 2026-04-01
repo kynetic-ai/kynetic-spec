@@ -1,0 +1,60 @@
+_ulid: 01KN5QB8NSQNT9FTD701GK387V
+slugs:
+  - task-investigate-file-lock-flake
+title: Investigate and fix flaky file-lock concurrency test
+type: bug
+description: >-
+  ## What
+
+  Create a follow-up to identify why the full-gate blocker centered on `tests/file-lock.test.ts:191`
+  is not reliably reproducible and to fix the flake if a defect is found.
+
+
+  Observed evidence from this session:
+
+  - `npm test -- --fresh tests/file-lock.test.ts` passed 10/10 times in a row
+
+  - a fresh full-suite run, `npm test -- --fresh`, also passed in this snapshot
+
+  - the blocked session-cache task was held only because an earlier fresh full-suite run had
+  reported `tests/file-lock.test.ts:191` with `expected count: 5, got count: 4`
+
+
+  ## Why
+
+  The current evidence is inconsistent across runs. That makes the file-lock concurrency test a gate
+  risk even when unrelated task work is correct. The repository needs a dedicated investigation
+  record so the flaky behavior can be reproduced intentionally, attributed to a concrete cause, and
+  fixed without conflating it with unrelated feature work.
+
+
+  ## How
+
+  1. Reproduce the failure under controlled conditions using the project test runner with fresh runs
+  and targeted repetition.
+
+  2. Determine whether the instability comes from the test, the file-lock implementation, or
+  cross-suite interference.
+
+  3. Add or adjust behavioral coverage that proves the real failure mode.
+
+  4. Implement the minimal fix needed to remove the flake and verify with repeated fresh targeted
+  runs plus a fresh full-suite run.
+
+  5. Record the root cause and verification evidence in task notes before resubmission.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - test
+  - infra
+  - cli
+vcs_refs: []
+created_at: 2026-04-01T23:51:33.817Z
+todos: []
+automation: eligible
