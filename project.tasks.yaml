@@ -23787,7 +23787,7 @@
   title: Stabilize the remaining flaky full-gate E2E cases
   type: bug
   plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 2
@@ -23799,4 +23799,5 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-01T05:07:10.909Z
+  started_at: 2026-04-01T08:57:50.530Z
   automation: eligible
