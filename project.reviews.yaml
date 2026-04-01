@@ -99461,6 +99461,13 @@ reviews:
           status: pass
           name: npm run test:e2e:ci -- --shard=2/2
         timestamp: 2026-04-01T10:17:21.229Z
+      - _ulid: 01KN48RF11NB0KZZ0ST2FX2876
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KN48RECZPZWPZ8YBRYHQQX7N
+        timestamp: 2026-04-01T10:17:23.233Z
     examined_commit: abee02938cb6766756ca3c93240afb6ed1710184
     external_links: []
     lifecycle_state: open
@@ -99489,7 +99496,24 @@ reviews:
               pull_request.paths so configuration-only changes are covered.
             created_at: 2026-04-01T10:17:14.543Z
         kind: blocker
+      - _ulid: 01KN48RECZPZWPZ8YBRYHQQX7N
+        entries:
+          - _ulid: 01KN48RECZFYZF6G1GGB3XZADS
+            author: Jacob Chapel
+            body: "Review evidence log:\\nFiles read: .github/workflows/test.yml, package.json,
+              playwright.config.ts, tests/cli-serve.test.ts.\\nCommands run: git diff
+              origin/dev...HEAD, kspec validate, npm test, npm test -- --fresh, npm run test:e2e:ci
+              -- --shard=1/2, npm run test:e2e:ci -- --shard=2/2, targeted cli-serve test
+              rerun.\\nClaims verified: the branch delta against origin/dev is limited to the CI
+              workflow/scripts/reporter; both CI shards pass within budget; non-CI reporter no
+              longer hangs; the earlier npm test failure was not reproducible on a fresh
+              rerun.\\nCategories searched: correctness (found blocker in trigger coverage), edge
+              cases (config-only PRs), test quality (verified real command execution), integration
+              (workflow/script/config interplay), error handling/security (no additional findings in
+              changed files)."
+            created_at: 2026-04-01T10:17:22.591Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-01T10:02:42.776Z
-    updated_at: 2026-04-01T10:17:20.522Z
+    updated_at: 2026-04-01T10:17:22.591Z
     notes: []
