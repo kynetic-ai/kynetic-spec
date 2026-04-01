@@ -98555,7 +98555,17 @@ reviews:
     slugs: []
     title: Review @01KN3Q0CXG130QGTF0W840KK4M (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npx playwright test tests/e2e/sessions.spec.ts passed (50/50) after a completed build:e2e.
+        name: sessions-spec
+        required: true
+        runner: playwright
+        created_at: 2026-04-01T08:27:15.945Z
+        completed_at: 2026-04-01T08:27:15.945Z
     events:
       - _ulid: 01KN429W7290NVH31K78NHZPZ6
         actor: Jacob Chapel
@@ -98577,6 +98587,13 @@ reviews:
           kind: nit
           thread_ulid: 01KN42ERQJXE4B4GZCXAM49821
         timestamp: 2026-04-01T08:27:14.667Z
+      - _ulid: 01KN42EV7GRZ2T5GRG7PJNPS7Y
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: sessions-spec
+        timestamp: 2026-04-01T08:27:16.592Z
     examined_commit: 0ad631f6283837fdd78304944156bc7667d20366
     external_links: []
     lifecycle_state: open
@@ -98606,5 +98623,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-01T08:24:33.763Z
-    updated_at: 2026-04-01T08:27:14.034Z
+    updated_at: 2026-04-01T08:27:15.945Z
     notes: []
