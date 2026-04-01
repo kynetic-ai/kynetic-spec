@@ -46,3 +46,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-01T06:14:48.502Z
+  - _ulid: 01KN3Y6HJ2JMN1HN678KE1BPA3
+    content: "Fix cycle 2: addressed the full-gate blocker by stabilizing the post-invocation dispatch
+      tests that were flaking only under full-suite load and by hardening daemon web UI path
+      resolution to require a real index.html bundle before honoring explicit/env paths. This
+      prevents stale worktree build directories from breaking review-detail E2E runs. Verification:
+      npm test => 2082/2082 suites passed, 7522/7527 tests passed, 5 skipped; npm run test:e2e --
+      tests/e2e/review-detail-page.spec.ts tests/e2e/reviews-detail.spec.ts => 29/29 passed; kspec
+      validate returned the existing project warning set only."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T07:12:50.242Z
