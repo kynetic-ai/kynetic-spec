@@ -23580,7 +23580,7 @@
   title: Validate and expand CI e2e gate to full suite
   type: task
   plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-fix-api-watcher-e2e-full-gate"
@@ -23600,6 +23600,7 @@
   todos_count: 0
   created_at: 2026-03-30T09:32:00.090Z
   started_at: 2026-03-31T20:13:41.550Z
+  submitted_at: 2026-04-01T09:59:48.063Z
   automation: eligible
 - _ulid: 01KN2FWE8F8R03JWB1FTJ2ZE1W
   slugs:
