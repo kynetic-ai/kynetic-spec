@@ -98912,6 +98912,16 @@ reviews:
         runner: reviewer
         created_at: 2026-04-01T08:58:26.957Z
         completed_at: 2026-04-01T08:58:26.957Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm run build:e2e completed successfully, including packages/web-ui static build.
+        name: build:e2e
+        required: true
+        runner: npm
+        created_at: 2026-04-01T08:58:28.902Z
+        completed_at: 2026-04-01T08:58:28.902Z
     events:
       - _ulid: 01KN43RF2GDN53MWGYG5J84A96
         actor: Jacob Chapel
@@ -98947,6 +98957,13 @@ reviews:
           status: pass
           name: review evidence
         timestamp: 2026-04-01T08:58:27.611Z
+      - _ulid: 01KN44808PW1DG6FANS01YXAHR
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: build:e2e
+        timestamp: 2026-04-01T08:58:29.526Z
     examined_commit: 37e60220bea429eabfccfa1d3cf783112201a3d7
     external_links: []
     lifecycle_state: open
@@ -98959,7 +98976,7 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-01T08:50:00.401Z
-    updated_at: 2026-04-01T08:58:26.957Z
+    updated_at: 2026-04-01T08:58:28.902Z
     notes: []
   - _ulid: 01KN447AFM2N1H539GRT7B9679
     slugs: []
