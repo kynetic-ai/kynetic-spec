@@ -11053,6 +11053,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-01T10:01:20.634Z
+  - _ulid: 01KN48VMKCWG1H3Z2WQ12SFJHH
+    type: friction
+    content: Detached reviewer prompts can carry a stale integration-base/head snapshot, which makes the
+      initial diff appear much larger than the real merge delta until the reviewer re-derives it
+      from origin/<target>...HEAD.
+    author: codex
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-04-01T10:19:07.244Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
