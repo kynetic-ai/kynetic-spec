@@ -40,7 +40,7 @@ description: |
 spec_ref: null
 plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-fix-api-watcher-e2e-full-gate"
@@ -67,7 +67,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: null
+session_id: 01KN48XVXHRC9CJMWY8TA8AMT0
 history:
   - author: "@claude"
     changes:
@@ -185,9 +185,22 @@ history:
         previous: pending_review
     command: review-verdict-needs-work
     timestamp: 2026-04-01T10:17:35.104Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KN48XVXHRC9CJMWY8TA8AMT0
+        previous: null
+      started_at:
+        new: 2026-04-01T10:20:48.957Z
+        previous: 2026-03-31T20:13:41.550Z
+    command: task-start
+    timestamp: 2026-04-01T10:20:48.958Z
 prior_status: null
 created_at: 2026-03-30T09:32:00.090Z
-started_at: 2026-03-31T20:13:41.550Z
+started_at: 2026-04-01T10:20:48.957Z
 submitted_at: 2026-04-01T09:59:48.063Z
 todos: []
 automation: eligible
