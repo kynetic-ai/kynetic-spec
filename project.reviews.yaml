@@ -96925,6 +96925,17 @@ reviews:
         required: false
         created_at: 2026-04-01T07:27:57.008Z
         completed_at: 2026-04-01T07:27:57.008Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Exited 6 with the existing project warning set only: orphan skill directory plus known
+          alignment/completeness warnings. No new validation errors in this snapshot."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-01T07:27:58.951Z
+        completed_at: 2026-04-01T07:27:58.951Z
     events:
       - _ulid: 01KN3YFP3Y3ZSYTVNE11PZN0M8
         actor: Jacob Chapel
@@ -96967,6 +96978,13 @@ reviews:
           status: pass
           name: review evidence log
         timestamp: 2026-04-01T07:27:57.639Z
+      - _ulid: 01KN3Z29K0NXAP8HHF11XYZ8QA
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-01T07:27:59.584Z
     examined_commit: 63964c9bea35e190d14514a60e0348a8ca468137
     external_links: []
     lifecycle_state: open
@@ -97022,5 +97040,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-01T07:17:49.822Z
-    updated_at: 2026-04-01T07:27:57.008Z
+    updated_at: 2026-04-01T07:27:58.951Z
     notes: []
