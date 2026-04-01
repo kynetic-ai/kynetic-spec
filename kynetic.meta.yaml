@@ -11117,6 +11117,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-01T22:45:47.402Z
+  - _ulid: 01KN5KJV1RP5Q1GPPD1Q1DSPHG
+    type: friction
+    content: Review-record CLI payloads are fragile when passed as multiline shell strings. During this
+      review, a kspec review comment command with special characters and backticks was mangled by
+      shell interpolation and created a malformed duplicate blocker thread before cleanup. Prefer a
+      file-based body option or another quoting-safe path for review comments/check evidence.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-01T22:45:47.704Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
