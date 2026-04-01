@@ -20179,7 +20179,7 @@ runs:
     completed_at: 2026-04-01T10:19:54.183Z
   - _ulid: 01KN5A7ZRMBQ5HB402KYBG4CSC
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -20199,7 +20199,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-01T20:03:17.877Z
-        completed_at: 2026-04-01T20:03:17.877Z
+        completed_at: 2026-04-01T20:03:38.159Z
+        notes: "High-confidence results: Success: exact-match grep against the deprecated refs avoided false
+          positives from newer specs with similar prefixes, which made the cleanup verification
+          reliable. Success: treating the snapshot fixture and touched-ref list as one surface
+          prevented a subtle test regression. Friction: kspec validate is noisy for narrow cleanup
+          tasks because global warning debt obscures task-local signal, but this is already tracked
+          by @task-plan-completeness-warning-debt-reduction. No untracked high-confidence friction
+          discovered."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-01T20:03:38.159Z
+        completed_at: 2026-04-01T20:03:38.159Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-01T20:02:34.900Z
