@@ -96139,6 +96139,12 @@ reviews:
         payload:
           thread_ulid: 01KN3T9WA6BK08CYHH5TBS3HD9
         timestamp: 2026-04-01T06:40:56.409Z
+      - _ulid: 01KN3WCH8PX55Y1KS7HHAN9P75
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KN3T9WA6BK08CYHH5TBS3HD9
+        timestamp: 2026-04-01T06:41:09.398Z
     examined_commit: 3e730be572726b11aad0cf6011c8f3e967ec9eed
     external_links: []
     lifecycle_state: closed
@@ -96170,6 +96176,8 @@ reviews:
               coverage plus the full required npm test gate on the updated branch.
             created_at: 2026-04-01T06:40:55.569Z
         kind: nit
+        resolved_at: 2026-04-01T06:41:08.577Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KN3T9YWAV3CWPHRRKHGHZTX2
         anchor:
           type: code
@@ -96235,7 +96243,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-01T06:05:22.394Z
     created_at: 2026-04-01T06:03:57.818Z
-    updated_at: 2026-04-01T06:40:55.569Z
+    updated_at: 2026-04-01T06:41:08.577Z
     notes: []
   - _ulid: 01KN3T98YRTG0PJK0NN75DD7KB
     slugs: []
