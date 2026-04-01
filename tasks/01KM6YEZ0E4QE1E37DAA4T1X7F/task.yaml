@@ -35,7 +35,7 @@ description: >-
 spec_ref: null
 plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-remove-monolithic"
@@ -46,6 +46,14 @@ tags:
   - cleanup
   - manual
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-04-01T20:02:14.430Z
+  commit: b21970e7807885567bfcfd956798cd3fb979a338
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
 session_id: 01KN5A346PM35GVN0GYJH921FQ
 history:
   - author: "@claude"
@@ -122,7 +130,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-01T20:00:28.246Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-04-01T20:02:14.430Z
+          commit: b21970e7807885567bfcfd956798cd3fb979a338
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-04-01T20:02:14.435Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-01T20:02:14.436Z
 created_at: 2026-03-21T00:59:27.630Z
 started_at: 2026-04-01T20:00:28.246Z
+submitted_at: 2026-04-01T20:02:14.435Z
 todos: []
 automation: eligible
