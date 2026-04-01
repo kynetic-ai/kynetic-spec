@@ -23820,7 +23820,7 @@
   title: Remove legacy git-based activity fallback code
   type: task
   spec_ref: "@task-activity-in-file"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-purge-old-storage-refs"
@@ -23835,4 +23835,5 @@
   created_at: 2026-04-01T20:11:40.812Z
   started_at: 2026-04-01T20:27:27.255Z
   submitted_at: 2026-04-01T20:41:01.913Z
+  completed_at: 2026-04-01T20:50:07.922Z
   automation: eligible
