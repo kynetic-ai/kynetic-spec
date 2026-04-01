@@ -52,7 +52,7 @@
 // AC: @trait-websocket-protocol ac-7 — N/A: clean shutdown code tested in daemon-api/websocket-protocol.test.ts; timeout close code tested in daemon-heartbeat.test.ts
 // AC: @trait-websocket-protocol ac-8 — N/A: client reconnection sequence reset tested in connection.spec.ts
 
-import { mkdirSync, writeFileSync } from "fs";
+import { mkdirSync, readFileSync, writeFileSync } from "fs";
 import { join } from "path";
 import { test, expect } from "./fixtures/test-base";
 
@@ -401,36 +401,52 @@ test.describe("File Watcher API", () => {
     expect(broadcast).toHaveProperty("data");
   });
 
-  // AC: @daemon-server ac-4
-  test("file change via HTTP API mutation triggers watcher broadcast", async ({
+  // AC: @api-contract ac-7
+  test("task note API mutation broadcasts tasks:updates and persists the note", async ({
     page,
     daemon,
     request,
   }) => {
-    await subscribeTopic(page, "files:updates");
+    await subscribeTopic(page, "tasks:updates");
 
     // Get a task from the fixture
     const tasksResponse = await request.get(`${daemon.baseUrl}/api/tasks`);
     const tasksBody = await tasksResponse.json();
-    expect(tasksBody.items.length).toBeGreaterThan(0);
-    const taskRef = tasksBody.items[0]._ulid;
+    expect(Array.isArray(tasksBody.data)).toBe(true);
+    expect(tasksBody.data.length).toBeGreaterThan(0);
+    const taskRef = tasksBody.data[0]._ulid;
 
     // Set up listener before triggering mutation
-    const broadcastPromise = waitForBroadcast(page, "files:updates");
+    const broadcastPromise = waitForBroadcast(page, "tasks:updates");
+    const noteContent = "E2E file watcher detection test note";
 
-    // Add a note via HTTP API — daemon writes to project.tasks.yaml, watcher detects it
+    // Add a note via HTTP API — the route broadcasts tasks:updates immediately
+    // and persists the note into the split-storage notes.yaml file.
     const noteResponse = await request.post(`${daemon.baseUrl}/api/tasks/${taskRef}/note`, {
       data: {
-        content: "E2E file watcher detection test note",
+        content: noteContent,
         author: "@test",
       },
     });
     expect(noteResponse.status()).toBe(200);
+    const noteBody = await noteResponse.json();
+    expect(noteBody.success).toBe(true);
+    expect(noteBody.note._ulid).toBeTruthy();
 
-    // AC: @daemon-server ac-4 — broadcast received after API-triggered file change
+    // AC: @api-contract ac-7 — task note mutation broadcasts task_updated
     const broadcast = await broadcastPromise;
-    expect(broadcast.topic).toBe("files:updates");
+    expect(broadcast.topic).toBe("tasks:updates");
+    expect(broadcast.event).toBe("task_updated");
     expect(broadcast).toHaveProperty("msg_id");
+    expect(broadcast.data).toMatchObject({
+      ref: taskRef,
+      ulid: taskRef,
+      action: "note_added",
+      note_ulid: noteBody.note._ulid,
+    });
+
+    const notesPath = join(daemon.kspecDir, "tasks", taskRef, "notes.yaml");
+    expect(readFileSync(notesPath, "utf8")).toContain(noteContent);
   });
 
   // AC: @daemon-server ac-5
@@ -606,7 +622,9 @@ test.describe("File Watcher API", () => {
   test("broadcasts sessions updates when a session file changes", async ({ page, daemon }) => {
     await subscribeTopic(page, "sessions");
 
-    const sessionDir = join(daemon.projectDir, ".kspec-sessions", "01JTESTWATCHERSESSION00000001");
+    const broadcastPromise = waitForBroadcast(page, "sessions");
+
+    const sessionDir = join(daemon.tempDir, ".kspec-sessions", "01JTESTWATCHERSESSION00000001");
     const metadataPath = join(sessionDir, "session.yaml");
     mkdirSync(sessionDir, { recursive: true });
     writeFileSync(
@@ -621,7 +639,7 @@ test.describe("File Watcher API", () => {
       ].join("\n"),
     );
 
-    const broadcast = await waitForBroadcast(page, "sessions");
+    const broadcast = await broadcastPromise;
 
     expect(broadcast.topic).toBe("sessions");
     expect(broadcast.event).toBe("session_changed");
