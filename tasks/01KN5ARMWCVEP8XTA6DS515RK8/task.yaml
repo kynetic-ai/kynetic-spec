@@ -1,5 +1,6 @@
 _ulid: 01KN5ARMWCVEP8XTA6DS515RK8
-slugs: []
+slugs:
+  - task-remove-legacy-activity-fallback
 title: Remove legacy git-based activity fallback code
 type: task
 description: >-
@@ -104,5 +105,14 @@ tags:
   - tasks
   - activity
 vcs_refs: []
+history:
+  - author: "@claude"
+    changes:
+      slugs:
+        new:
+          - task-remove-legacy-activity-fallback
+        previous: []
+    command: task-set
+    timestamp: 2026-04-01T20:12:03.359Z
 created_at: 2026-04-01T20:11:40.812Z
 todos: []

@@ -23815,7 +23815,8 @@
   completed_at: 2026-04-01T09:30:01.392Z
   automation: eligible
 - _ulid: 01KN5ARMWCVEP8XTA6DS515RK8
-  slugs: []
+  slugs:
+    - task-remove-legacy-activity-fallback
   title: Remove legacy git-based activity fallback code
   type: task
   spec_ref: "@task-activity-in-file"
