@@ -100137,6 +100137,12 @@ reviews:
         payload:
           thread_ulid: 01KN5KETFJRWGX7100F3CRVT9Q
         timestamp: 2026-04-01T22:45:01.011Z
+      - _ulid: 01KN5M9BPDHRN5ZNBW3PACYQQT
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN5KF4R0H6G0H4Q7FSEYB5DK
+        timestamp: 2026-04-01T22:58:05.645Z
     examined_commit: 6ed10e58b1effad92713b88cbbcc68a86c4bc9c7
     external_links: []
     lifecycle_state: closed
@@ -100194,6 +100200,13 @@ reviews:
               ac-session-live-counter and ac-session-event-tracking; the fallback path needs a live
               counter source or a direct event-count read for active sessions."
             created_at: 2026-04-01T22:43:46.560Z
+          - _ulid: 01KN5M9B0SJHFHJ9KWT73319Y8
+            author: Jacob Chapel
+            body: "Fixed in 613afcce6: the disk-backed session-summary fallback now overlays live event counts
+              from ProjectEntityCache instead of trusting session.yaml alone. Added a regression
+              test covering GET /api/sessions?task_id=@cache-test-task with a degraded sessions
+              cache and an active session carrying a live counter."
+            created_at: 2026-04-01T22:58:04.953Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -100204,5 +100217,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-01T22:44:31.298Z
     created_at: 2026-04-01T22:37:48.836Z
-    updated_at: 2026-04-01T22:45:00.352Z
+    updated_at: 2026-04-01T22:58:04.953Z
     notes: []
