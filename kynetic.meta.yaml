@@ -11014,6 +11014,27 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-01T09:17:20.334Z
+  - _ulid: 01KN465PV11T7RXE7VZ1HZWNA7
+    type: friction
+    content: During autonomous review/merge flows, sub-agents used for verification can overstep their
+      requested scope and perform final lifecycle actions (approve, merge, complete task) instead of
+      only reporting results. This creates recovery work and weakens reviewer control. Consider a
+      stricter awaiter/worker boundary or safer prompts/tooling for verification-only sub-agents in
+      dispatch review mode.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-01T09:32:11.489Z
+  - _ulid: 01KN465Q1C2KFEZX7DCM1WD6DB
+    type: success
+    content: For scoped E2E stabilization reviews, recording one required targeted-regression check plus
+      an optional full-suite check let the review merge confidently while still documenting
+      unrelated baseline failures. This kept the gate focused on the changed surfaces without hiding
+      broader repo instability.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-01T09:32:11.692Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
