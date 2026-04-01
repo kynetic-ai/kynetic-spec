@@ -29957,7 +29957,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-01T10:20:10.357Z
+      updated_at: 2026-04-01T10:20:12.582Z
     integration:
       status: pending
       detail: null
@@ -29966,25 +29966,20 @@ workspaces:
       target_branch: dev
       target_commit: 53c43f40ee50dbb8e7935d9ccb9ebe69a5be4b1c
       updated_at: 2026-04-01T10:20:10.357Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMZ1BXPTATS8CAVJ2NMYADPW"
     task_slug: task-ci-full-e2e
     timestamps:
       closed_at: null
       last_active_at: 2026-04-01T10:02:18.765Z
-      last_reconciled_at: 2026-04-01T10:20:10.357Z
+      last_reconciled_at: 2026-04-01T10:20:12.582Z
       created_at: 2026-03-31T20:13:04.624Z
-      updated_at: 2026-04-01T10:20:10.357Z
+      updated_at: 2026-04-01T10:20:12.582Z
     workspace_id: dispatch-workspace-01KMZ1BXPTATS8CAVJ2NMYADPW
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: abee02938cb6766756ca3c93240afb6ed1710184
-        last_seen_at: 2026-04-01T10:02:12.218Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ci-full-e2e-01kmz1bx-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-ci-full-e2e/01kmz1bx
