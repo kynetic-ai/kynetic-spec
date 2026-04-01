@@ -100048,6 +100048,18 @@ reviews:
         runner: manual
         created_at: 2026-04-01T22:44:17.558Z
         completed_at: 2026-04-01T22:44:17.558Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Exited 6 with repository-wide warnings only (1 orphaned skill directory, orphaned
+          specs/status mismatches, existing completeness warnings). No task-specific validation
+          errors.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-01T22:44:19.675Z
+        completed_at: 2026-04-01T22:44:19.675Z
     events:
       - _ulid: 01KN5K47D3X0PWC97XPGVYJ9Y3
         actor: Jacob Chapel
@@ -100090,6 +100102,13 @@ reviews:
           status: pass
           name: review-evidence
         timestamp: 2026-04-01T22:44:18.268Z
+      - _ulid: 01KN5KG5QXZ0CNHJYSDS5DBG7B
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-04-01T22:44:20.349Z
     examined_commit: 6ed10e58b1effad92713b88cbbcc68a86c4bc9c7
     external_links: []
     lifecycle_state: open
@@ -100143,5 +100162,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-01T22:37:48.836Z
-    updated_at: 2026-04-01T22:44:17.558Z
+    updated_at: 2026-04-01T22:44:19.675Z
     notes: []
