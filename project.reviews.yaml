@@ -100730,9 +100730,34 @@ reviews:
           status: pass
           name: targeted file-lock repetition
         timestamp: 2026-04-01T23:52:42.777Z
+      - _ulid: 01KN5QDD2MS9DKAZBV81F78ZQN
+        actor: Jacob Chapel
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-04-01T23:52:43.861Z
+      - _ulid: 01KN5QDD2N8ZVZR6RJH6N7K7D0
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-01T23:52:43.861Z
+      - _ulid: 01KN5QDE49VWTPCJ6DDMCYC6G9
+        actor: Jacob Chapel
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-04-01T23:52:44.937Z
     examined_commit: f9baca4826d02c234e43bf65412a92c426fd50fb
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -100740,7 +100765,21 @@ reviews:
       ref: "@task-consolidate-session-cache"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: Jacob Chapel
+        role: reviewer
+        created_at: 2026-04-01T23:52:43.860Z
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: Jacob Chapel
+        role: reviewer
+        created_at: 2026-04-01T23:52:44.937Z
     created_at: 2026-04-01T23:52:13.389Z
-    updated_at: 2026-04-01T23:52:40.989Z
+    updated_at: 2026-04-01T23:52:44.937Z
     notes: []
