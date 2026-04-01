@@ -100039,6 +100039,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN5KETFJRWGX7100F3CRVT9Q
         timestamp: 2026-04-01T22:43:36.708Z
+      - _ulid: 01KN5KF5DKPE77FKXZ4DX3JCDD
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN5KF4R0H6G0H4Q7FSEYB5DK
+        timestamp: 2026-04-01T22:43:47.252Z
     examined_commit: 6ed10e58b1effad92713b88cbbcc68a86c4bc9c7
     external_links: []
     lifecycle_state: open
@@ -100068,7 +100075,29 @@ reviews:
               counter source or a direct event-count read for active sessions."
             created_at: 2026-04-01T22:43:36.050Z
         kind: blocker
+      - _ulid: 01KN5KF4R0H6G0H4Q7FSEYB5DK
+        anchor:
+          type: code
+          commit: 6ed10e58b1effad92713b88cbbcc68a86c4bc9c7
+          line_end: 104
+          line_start: 101
+          path: packages/daemon/src/routes/sessions.ts
+          side: head
+        entries:
+          - _ulid: 01KN5KF4R0GWC4T2F02DAHYP7P
+            author: Jacob Chapel
+            body: "The new disk fallback drops live event counts for active sessions.
+              listSessionSummariesFromDisk() reads only session.yaml via getSessionMetadataOnly(),
+              so when the sessions domain is warming or degraded the filtered list routes return
+              event_count 0 for active sessions until close-time stats are persisted. I reproduced
+              this against the current route code with an active session that had three appended
+              events: GET /api/sessions?task_id=@cache-test-task returned event_count 0 under a
+              non-ready sessions cache. This regresses @daemon-entity-cache AC
+              ac-session-live-counter and ac-session-event-tracking; the fallback path needs a live
+              counter source or a direct event-count read for active sessions."
+            created_at: 2026-04-01T22:43:46.560Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-01T22:37:48.836Z
-    updated_at: 2026-04-01T22:43:36.050Z
+    updated_at: 2026-04-01T22:43:46.560Z
     notes: []
