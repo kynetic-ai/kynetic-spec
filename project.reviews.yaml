@@ -96444,6 +96444,13 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-04-01T06:23:52.344Z
+      - _ulid: 01KN3VCZ14765VHVN7FK7A6Z6N
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN3VCY6TFABPK057ZGP43S80
+        timestamp: 2026-04-01T06:23:54.916Z
     examined_commit: 38587b6ed0cad0767346ec970b677d1fa870db77
     external_links: []
     lifecycle_state: open
@@ -96474,7 +96481,27 @@ reviews:
               even though the focused review-interaction Playwright run is green.
             created_at: 2026-04-01T06:23:46.322Z
         kind: blocker
+      - _ulid: 01KN3VCY6TFABPK057ZGP43S80
+        anchor:
+          type: code
+          commit: 38587b6ed0cad0767346ec970b677d1fa870db77
+          line_end: 188
+          line_start: 188
+          path: tests/enhanced-setup.test.ts
+          side: head
+        entries:
+          - _ulid: 01KN3VCY6TEK73YGS9ZCY1NHCC
+            author: Jacob Chapel
+            body: >-
+              > @kynetic-ai/spec@0.12.0 test
+
+              > node scripts/test.cjs has an additional failure in  at this dry-run assertion, so
+              the snapshot still leaves the repository in a failing state. Until the full project
+              gate passes from this workspace, this task cannot advance as a fix for the full CI
+              blocker.
+            created_at: 2026-04-01T06:23:54.074Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-01T06:14:05.902Z
-    updated_at: 2026-04-01T06:23:51.529Z
+    updated_at: 2026-04-01T06:23:54.074Z
     notes: []
