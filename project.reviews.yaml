@@ -96145,6 +96145,12 @@ reviews:
         payload:
           thread_ulid: 01KN3T9WA6BK08CYHH5TBS3HD9
         timestamp: 2026-04-01T06:41:09.398Z
+      - _ulid: 01KN3WCKPZ2B24R5J3G5TFNYAJ
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KN3T9YWAV3CWPHRRKHGHZTX2
+        timestamp: 2026-04-01T06:41:11.904Z
     examined_commit: 3e730be572726b11aad0cf6011c8f3e967ec9eed
     external_links: []
     lifecycle_state: closed
@@ -96207,6 +96213,8 @@ reviews:
               and a full non-cached npm test pass.
             created_at: 2026-04-01T06:40:50.549Z
         kind: blocker
+        resolved_at: 2026-04-01T06:41:11.078Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KN3TA9D5T2AQ4V5SZ9V18FWQ
         anchor:
           type: code
@@ -96243,7 +96251,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-01T06:05:22.394Z
     created_at: 2026-04-01T06:03:57.818Z
-    updated_at: 2026-04-01T06:41:08.577Z
+    updated_at: 2026-04-01T06:41:11.078Z
     notes: []
   - _ulid: 01KN3T98YRTG0PJK0NN75DD7KB
     slugs: []
