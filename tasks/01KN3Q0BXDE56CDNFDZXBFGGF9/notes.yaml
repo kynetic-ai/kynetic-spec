@@ -1,1 +1,12 @@
-notes: []
+notes:
+  - _ulid: 01KN3RJFVT7FVBZPF63J278HXK
+    content: "Approach: reproduce the four failing sessions Playwright cases in
+      tests/e2e/sessions.spec.ts, compare them to the current sessions route/detail/static-mode
+      implementation, and fix the underlying contract drift instead of loosening assertions. Edge
+      cases: static mode must suppress detail/event API fetches entirely, navigation must hydrate
+      detail view after list click, and date filters must keep URL/query state in sync. Test plan:
+      rerun the targeted failing cases with retries, then rerun neighboring sessions coverage and
+      validate the broader suite impact."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T05:34:30.267Z
