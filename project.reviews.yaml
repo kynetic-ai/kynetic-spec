@@ -98405,6 +98405,29 @@ reviews:
         runner: npm
         created_at: 2026-04-01T08:20:02.158Z
         completed_at: 2026-04-01T08:20:02.158Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: packages/daemon/src/server.ts; packages/web-ui/src/lib/api.ts;
+          packages/web-ui/src/routes/reviews/[id]/+page.svelte;
+          packages/web-ui/src/routes/sessions/[id]/+page.svelte;
+          packages/web-ui/src/lib/components/session/SessionFilters.svelte;
+          tests/web-ui/api-envelope.test.ts; tests/daemon-web-ui-bundle.test.ts;
+          tests/e2e/review-detail-page.spec.ts; tests/e2e/reviews-detail.spec.ts;
+          tests/e2e/review-interaction.spec.ts; tests/e2e/sessions.spec.ts;
+          tests/agent-dispatch-engine.test.ts. Commands run: git diff/stat/log; kspec task get;
+          kspec review for-task/get; kspec validate; rg AC annotations; npm test -- --fresh; npm run
+          test:e2e -- tests/e2e/review-detail-page.spec.ts tests/e2e/reviews-detail.spec.ts. Claims
+          verified: full suite passes in this snapshot; review-detail E2E coverage passes; sibling
+          review fetch sends repeated lifecycle status params; daemon web UI path rejects
+          directories without index.html. Categories searched: correctness, edge cases, test
+          quality, integration, error handling; no blockers found."
+        name: review evidence log
+        required: false
+        runner: reviewer
+        created_at: 2026-04-01T08:20:04.169Z
+        completed_at: 2026-04-01T08:20:04.169Z
     events:
       - _ulid: 01KN41BX2QY9JR9ZR909J8WKXH
         actor: Jacob Chapel
@@ -98440,6 +98463,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-01T08:20:02.785Z
+      - _ulid: 01KN421NKYEXV7PKVDJ51T85E2
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-04-01T08:20:04.862Z
     examined_commit: 2de35d0f247d754e8481447ac3bec7ed2a4c523e
     external_links: []
     lifecycle_state: open
@@ -98452,5 +98482,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-01T08:08:11.608Z
-    updated_at: 2026-04-01T08:20:02.158Z
+    updated_at: 2026-04-01T08:20:04.169Z
     notes: []
