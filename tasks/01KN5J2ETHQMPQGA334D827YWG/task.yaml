@@ -6,7 +6,7 @@ type: bug
 spec_ref: "@daemon-entity-cache"
 meta_ref: null
 plan_ref: null
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -24,7 +24,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: null
+session_id: 01KN5N4JC54AA9VDHSRSJQPG13
 history:
   - author: "@claude"
     changes:
@@ -140,8 +140,21 @@ history:
         previous: 01KN5KKHZKNV1J9FJ275EY0Y7P
     command: review-verdict-needs-work
     timestamp: 2026-04-01T23:11:33.566Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KN5N4JC54AA9VDHSRSJQPG13
+        previous: null
+      started_at:
+        new: 2026-04-01T23:17:06.940Z
+        previous: 2026-04-01T22:46:40.974Z
+    command: task-start
+    timestamp: 2026-04-01T23:17:06.940Z
 created_at: 2026-04-01T22:19:22.321Z
-started_at: 2026-04-01T22:46:40.974Z
+started_at: 2026-04-01T23:17:06.940Z
 submitted_at: 2026-04-01T22:58:03.694Z
 todos: []
 automation: eligible
