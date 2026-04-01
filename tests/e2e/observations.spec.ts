@@ -107,27 +107,39 @@ test.describe("Observations", () => {
     test("renders observation markdown content and context", async ({ page }) => {
       await page.goto("/observations");
 
-      const firstItem = page.getByTestId("observation-item").first();
-      await expect(firstItem).toBeVisible();
-      await expect(firstItem.getByTestId("observation-content").locator("code")).toContainText(
+      const markdownItem = page
+        .getByTestId("observation-item")
+        .filter({ hasText: "Test friction observation with kspec validate" });
+      await expect(markdownItem).toHaveCount(1);
+      await expect(markdownItem).toBeVisible();
+      await expect(markdownItem.getByTestId("observation-content").locator("code")).toContainText(
         "kspec validate",
       );
-      await expect(firstItem.getByTestId("observation-context").locator("strong")).toContainText(
+      await expect(markdownItem.getByTestId("observation-context").locator("strong")).toContainText(
         "test setup",
       );
     });
 
     // AC: @web-dashboard ac-22
     test("shows empty state when no unresolved observations", async ({ page }) => {
+      await page.route("**/api/meta/observations**", async (route) => {
+        await route.fulfill({
+          json: {
+            data: [],
+            meta: {
+              total: 0,
+              offset: 0,
+              limit: 0,
+            },
+          },
+        });
+      });
+
       await page.goto("/observations");
 
-      // Either has observations or shows empty state
-      const items = page.getByTestId("observation-item");
-      const itemCount = await items.count();
-
-      if (itemCount === 0) {
-        await expect(page.getByTestId("observations-empty")).toBeVisible();
-      }
+      await expect(page.getByTestId("observations-empty")).toBeVisible();
+      await expect(page.getByTestId("observation-item")).toHaveCount(0);
+      await expect(page.getByTestId("observations-count")).toContainText("0 unresolved");
     });
 
     // AC: @web-dashboard ac-22

@@ -818,10 +818,13 @@ describe("round-trip stability — saveObservation path", () => {
     const ctx = makeMetaCtx(kspecDir);
 
     const obsUlid = testUlid("0BS1");
-    const obs = createObservation("friction", "Test observation content", {
-      author: "test-author",
-    });
-    (obs as Record<string, unknown>)._ulid = obsUlid;
+    const obs = {
+      ...createObservation("friction", "Test observation content", {
+        author: "test-author",
+      }),
+      _ulid: obsUlid,
+      context: "During **test setup**",
+    };
 
     // Save observation initially
     await saveObservation(ctx, { ...obs });
@@ -831,6 +834,7 @@ describe("round-trip stability — saveObservation path", () => {
     // Load and save back with no modifications
     const meta = await loadMetaContext(ctx);
     expect(meta.observations).toHaveLength(1);
+    expect(meta.observations[0].context).toBe("During **test setup**");
     await saveObservation(ctx, meta.observations[0]);
     const afterContent = await readTestOutput(manifestPath);
 
