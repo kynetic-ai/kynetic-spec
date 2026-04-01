@@ -31287,7 +31287,7 @@ workspaces:
         head: d09d903b4cfa719edbd4f4ba1d049c9c482b0605
         last_seen_at: 2026-04-01T20:41:57.003Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-remove-legacy-activity-fallback-01kn5arm
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: a1d256e141a1c2ff1b2b3a3f844f0cc1801a921a
     bootstrap:
       status: succeeded
@@ -31393,9 +31393,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-01T23:52:00.753Z
-      last_reconciled_at: 2026-04-01T23:55:02.762Z
+      last_reconciled_at: 2026-04-01T23:58:18.114Z
       created_at: 2026-04-01T22:21:50.208Z
-      updated_at: 2026-04-01T23:55:02.762Z
+      updated_at: 2026-04-01T23:58:18.114Z
     workspace_id: dispatch-workspace-01KN5J2ETHQMPQGA334D827YWG
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
