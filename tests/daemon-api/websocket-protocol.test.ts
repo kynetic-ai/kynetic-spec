@@ -484,6 +484,9 @@ describe("daemon websocket protocol", () => {
   // AC: @trait-websocket-protocol ac-7
   it("uses close code 1011 when command handling hits an internal server error", async () => {
     await runtime.stop();
+    rmSync(runtime.tempDir, { recursive: true, force: true });
+
+    runtime = await createRuntime();
     isolatedEnv.KSPEC_TEST_WS_FORCE_INTERNAL_ERROR_REQUEST_ID = "trigger-1011";
     await runtime.start();
 
