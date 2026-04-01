@@ -308,9 +308,31 @@
 		return nextTotal !== previousTotal || nextFingerprint !== previousFingerprint;
 	}
 
+	function delay(ms: number): Promise<void> {
+		return new Promise((resolve) => setTimeout(resolve, ms));
+	}
+
+	async function refetchForFreshnessWithRetry(): Promise<boolean> {
+		const retryDelaysMs = [150, 300];
+		let changed = await refetchForFreshness();
+		if (changed || searchMode) {
+			return changed;
+		}
+
+		for (const delayMs of retryDelaysMs) {
+			await delay(delayMs);
+			changed = await refetchForFreshness();
+			if (changed) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	async function processLiveRefresh(): Promise<void> {
 		const snapshot = frozenSessions ?? sessions.slice();
-		const changed = await refetchForFreshness();
+		const changed = await refetchForFreshnessWithRetry();
 		if (!changed || isNearTop || searchMode) {
 			if (isNearTop) {
 				pendingFreshCount = 0;
