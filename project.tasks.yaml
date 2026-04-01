@@ -23589,10 +23589,14 @@
       flake in navigation, plans, and session-context. Do not switch CI from smoke to full gate
       until those failures are resolved and runtime is back within budget."
   depends_on:
-    - "@task-fix-loading-page-e2e"
-    - "@task-fix-stale-selectors"
-    - "@task-fix-timing-races"
-    - "@task-fix-fixtures-envelope"
+    - "@task-fix-api-watcher-e2e-full-gate"
+    - "@task-fix-observations-e2e-full-gate"
+    - "@task-fix-review-detail-e2e-full-gate"
+    - "@task-fix-review-interaction-e2e-full-gate"
+    - "@task-fix-sessions-detail-filter-e2e-full-gate"
+    - "@task-fix-sessions-live-update-e2e-full-gate"
+    - "@task-fix-workflows-loading-e2e-full-gate"
+    - "@task-stabilize-full-gate-e2e-flakes"
   priority: 3
   tags:
     - ci
@@ -23624,4 +23628,156 @@
   started_at: 2026-03-31T19:42:30.519Z
   submitted_at: 2026-03-31T20:00:30.113Z
   completed_at: 2026-03-31T20:13:07.631Z
+  automation: eligible
+- _ulid: 01KN3Q07XKYC6TDSNHJ48TA2V6
+  slugs:
+    - task-fix-api-watcher-e2e-full-gate
+  title: Fix API watcher E2E failures blocking the full CI gate
+  type: bug
+  plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - test
+    - e2e
+    - ci
+    - daemon
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-01T05:07:03.731Z
+  automation: eligible
+- _ulid: 01KN3Q08YPMW3NFQKWB01XX9V2
+  slugs:
+    - task-fix-observations-e2e-full-gate
+  title: Fix observations E2E failures blocking the full CI gate
+  type: bug
+  plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - test
+    - e2e
+    - ci
+    - web-ui
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-01T05:07:04.790Z
+  automation: eligible
+- _ulid: 01KN3Q09YEKYDQ8JCP1RDNGAF1
+  slugs:
+    - task-fix-review-detail-e2e-full-gate
+  title: Fix review detail page E2E failures blocking the full CI gate
+  type: bug
+  plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - test
+    - e2e
+    - ci
+    - reviews
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-01T05:07:05.806Z
+  automation: eligible
+- _ulid: 01KN3Q0AXQNHZDB7TVCW288G7V
+  slugs:
+    - task-fix-review-interaction-e2e-full-gate
+  title: Fix review interaction E2E failures blocking the full CI gate
+  type: bug
+  plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - test
+    - e2e
+    - ci
+    - reviews
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-01T05:07:06.807Z
+  automation: eligible
+- _ulid: 01KN3Q0BXDE56CDNFDZXBFGGF9
+  slugs:
+    - task-fix-sessions-detail-filter-e2e-full-gate
+  title: Fix sessions detail and filter E2E failures blocking the full CI gate
+  type: bug
+  plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - test
+    - e2e
+    - ci
+    - sessions
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-01T05:07:07.821Z
+  automation: eligible
+- _ulid: 01KN3Q0CXG130QGTF0W840KK4M
+  slugs:
+    - task-fix-sessions-live-update-e2e-full-gate
+  title: Fix sessions live-update E2E failures blocking the full CI gate
+  type: bug
+  plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - test
+    - e2e
+    - ci
+    - sessions
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-01T05:07:08.848Z
+  automation: eligible
+- _ulid: 01KN3Q0DXHXAR5FZHTDZVCBYA3
+  slugs:
+    - task-fix-workflows-loading-e2e-full-gate
+  title: Fix workflows loading-state E2E failure blocking the full CI gate
+  type: bug
+  plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - test
+    - e2e
+    - ci
+    - web-ui
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-01T05:07:09.873Z
+  automation: eligible
+- _ulid: 01KN3Q0EXX6N1PC5FHD1GZYWGS
+  slugs:
+    - task-stabilize-full-gate-e2e-flakes
+  title: Stabilize the remaining flaky full-gate E2E cases
+  type: bug
+  plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - test
+    - e2e
+    - ci
+    - infra
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-01T05:07:10.909Z
   automation: eligible

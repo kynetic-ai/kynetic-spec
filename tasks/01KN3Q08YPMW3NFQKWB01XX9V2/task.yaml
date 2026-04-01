@@ -1,0 +1,49 @@
+_ulid: 01KN3Q08YPMW3NFQKWB01XX9V2
+slugs:
+  - task-fix-observations-e2e-full-gate
+title: Fix observations E2E failures blocking the full CI gate
+type: bug
+description: >-
+  What: Fix the remaining observations Playwright failures that still reproduce through all retries
+  in the full E2E run. The currently failing tests are tests/e2e/observations.spec.ts: 'renders
+  observation markdown content and context' and 'shows empty state when no unresolved observations'.
+
+
+  Why: The observations page is still part of the persistent red set in the full suite. Until these
+  cases pass, the suite does not provide a reliable CI gate for markdown rendering, empty-state
+  handling, and observation listing behavior.
+
+
+  How:
+
+  1. Reproduce the failing observations cases with focused Playwright runs against
+  tests/e2e/observations.spec.ts.
+
+  2. Inspect trace and page snapshots to determine whether the problem is in fixture data, markdown
+  rendering, list filtering, unresolved-count logic, API response shape, or client-side loading
+  behavior.
+
+  3. Compare the test expectations with the current page implementation and fixture contract, then
+  fix the root cause in the app, fixtures, or test only where appropriate.
+
+  4. Re-run the focused observations spec until both cases pass reliably with retries enabled.
+
+  5. Run any nearby observations/session sidebar coverage needed to confirm the fix does not
+  introduce regressions.
+spec_ref: null
+meta_ref: null
+plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - test
+  - e2e
+  - ci
+  - web-ui
+vcs_refs: []
+created_at: 2026-04-01T05:07:04.790Z
+todos: []
+automation: eligible

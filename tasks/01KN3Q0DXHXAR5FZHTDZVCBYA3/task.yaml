@@ -1,0 +1,48 @@
+_ulid: 01KN3Q0DXHXAR5FZHTDZVCBYA3
+slugs:
+  - task-fix-workflows-loading-e2e-full-gate
+title: Fix workflows loading-state E2E failure blocking the full CI gate
+type: bug
+description: >-
+  What: Fix the remaining workflows Playwright failure that still reproduces through all retries in
+  the full E2E run. The currently failing test is tests/e2e/workflows.spec.ts: 'shows loading
+  skeleton that transitions to content'.
+
+
+  Why: Even a single persistent failure blocks promotion of the full E2E suite into CI. This
+  workflows loading-state case guards the page's initial loading transition and needs to be green
+  for the suite to be a trustworthy gate.
+
+
+  How:
+
+  1. Reproduce the failing case with a focused Playwright run against tests/e2e/workflows.spec.ts.
+
+  2. Inspect trace and snapshots to determine whether the breakage is caused by the loading skeleton
+  never appearing, disappearing too early, content failing to replace it, or the test waiting on the
+  wrong signal.
+
+  3. Compare current workflows page loading behavior with fixture timing and API responses.
+
+  4. Fix the root cause in the page, data loading path, fixture timing, or the test expectation as
+  appropriate.
+
+  5. Re-run the focused workflows spec until the loading transition case passes consistently with
+  retries enabled.
+spec_ref: null
+meta_ref: null
+plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - test
+  - e2e
+  - ci
+  - web-ui
+vcs_refs: []
+created_at: 2026-04-01T05:07:09.873Z
+todos: []
+automation: eligible

@@ -49,10 +49,14 @@ blocked_by:
     in navigation, plans, and session-context. Do not switch CI from smoke to full gate until those
     failures are resolved and runtime is back within budget."
 depends_on:
-  - "@task-fix-loading-page-e2e"
-  - "@task-fix-stale-selectors"
-  - "@task-fix-timing-races"
-  - "@task-fix-fixtures-envelope"
+  - "@task-fix-api-watcher-e2e-full-gate"
+  - "@task-fix-observations-e2e-full-gate"
+  - "@task-fix-review-detail-e2e-full-gate"
+  - "@task-fix-review-interaction-e2e-full-gate"
+  - "@task-fix-sessions-detail-filter-e2e-full-gate"
+  - "@task-fix-sessions-live-update-e2e-full-gate"
+  - "@task-fix-workflows-loading-e2e-full-gate"
+  - "@task-stabilize-full-gate-e2e-flakes"
 context: []
 priority: 3
 tags:
@@ -102,6 +106,25 @@ history:
         previous: null
     command: task-block
     timestamp: 2026-03-31T20:30:00.130Z
+  - author: Jacob Chapel
+    changes:
+      depends_on:
+        new:
+          - "@task-fix-api-watcher-e2e-full-gate"
+          - "@task-fix-observations-e2e-full-gate"
+          - "@task-fix-review-detail-e2e-full-gate"
+          - "@task-fix-review-interaction-e2e-full-gate"
+          - "@task-fix-sessions-detail-filter-e2e-full-gate"
+          - "@task-fix-sessions-live-update-e2e-full-gate"
+          - "@task-fix-workflows-loading-e2e-full-gate"
+          - "@task-stabilize-full-gate-e2e-flakes"
+        previous:
+          - "@task-fix-loading-page-e2e"
+          - "@task-fix-stale-selectors"
+          - "@task-fix-timing-races"
+          - "@task-fix-fixtures-envelope"
+    command: task-set
+    timestamp: 2026-04-01T05:07:11.934Z
 prior_status: in_progress
 created_at: 2026-03-30T09:32:00.090Z
 started_at: 2026-03-31T20:13:41.550Z

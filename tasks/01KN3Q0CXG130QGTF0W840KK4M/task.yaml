@@ -1,0 +1,52 @@
+_ulid: 01KN3Q0CXG130QGTF0W840KK4M
+slugs:
+  - task-fix-sessions-live-update-e2e-full-gate
+title: Fix sessions live-update E2E failures blocking the full CI gate
+type: bug
+description: >-
+  What: Fix the remaining sessions live-update Playwright failures that still reproduce through all
+  retries in the full E2E run. The currently failing tests are in tests/e2e/sessions.spec.ts:
+  'refreshes from sessions-topic updates as well as agent-origin updates', 'total count increments
+  when WebSocket event arrives', 'shows indicator when an in-list update arrives while the user is
+  scrolled down', and 'clicking new sessions indicator refreshes the list'.
+
+
+  Why: This is the biggest remaining persistent failure cluster in the full suite. These tests
+  protect real-time session-list behavior, WebSocket fanout handling, update indicators, and list
+  refresh logic that CI should enforce before the full E2E suite can become the gate.
+
+
+  How:
+
+  1. Reproduce only the failing live-update cases with focused Playwright runs against
+  tests/e2e/sessions.spec.ts.
+
+  2. Inspect trace artifacts, network events, and WebSocket update handling to identify whether
+  failures come from missing broadcasts, stale query invalidation, race conditions in
+  scrolling/update indicators, or event ordering issues between server and client.
+
+  3. Compare current sessions live-update logic with the test expectations and fixture/event setup
+  used by the spec.
+
+  4. Fix the root cause in the sessions data layer, WebSocket handling, indicator logic, or E2E
+  harness as needed.
+
+  5. Re-run the focused live-update cases until they pass reliably under retries, then run the
+  broader sessions spec or adjacent live-update coverage to confirm stability.
+spec_ref: null
+meta_ref: null
+plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - test
+  - e2e
+  - ci
+  - sessions
+vcs_refs: []
+created_at: 2026-04-01T05:07:08.848Z
+todos: []
+automation: eligible

@@ -1,0 +1,51 @@
+_ulid: 01KN3Q07XKYC6TDSNHJ48TA2V6
+slugs:
+  - task-fix-api-watcher-e2e-full-gate
+title: Fix API watcher E2E failures blocking the full CI gate
+type: bug
+description: >-
+  What: Fix the remaining API watcher Playwright failures that still reproduce through all retries
+  in the full E2E run. The currently failing tests are tests/e2e/api-watcher.spec.ts: 'file change
+  via HTTP API mutation triggers watcher broadcast' and 'broadcasts sessions updates when a session
+  file changes'.
+
+
+  Why: The full Playwright gate cannot replace the current smoke-only CI gate while these watcher
+  coverage tests remain persistently red. These tests validate daemon file watching, API mutation
+  fanout, and session-update broadcasts, so leaving them red would keep a real regression hole in
+  the CI signal.
+
+
+  How:
+
+  1. Reproduce only the failing watcher cases with focused Playwright runs against
+  tests/e2e/api-watcher.spec.ts.
+
+  2. Inspect the generated trace.zip, video.webm, and error-context.md artifacts to determine
+  whether the failure is caused by missing broadcasts, wrong event payloads, debounce timing,
+  fixture setup, or the E2E harness not observing the event stream.
+
+  3. Check the daemon watcher implementation and the E2E fixture wiring used by this spec, then fix
+  the root cause rather than widening waits blindly.
+
+  4. Re-run the focused spec until both failing cases pass consistently under retries.
+
+  5. Run the relevant broader E2E slice or full suite segment needed to prove the fix does not
+  regress related watcher coverage.
+spec_ref: null
+meta_ref: null
+plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - test
+  - e2e
+  - ci
+  - daemon
+vcs_refs: []
+created_at: 2026-04-01T05:07:03.731Z
+todos: []
+automation: eligible

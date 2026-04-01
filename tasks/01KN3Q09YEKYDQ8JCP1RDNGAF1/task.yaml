@@ -1,0 +1,49 @@
+_ulid: 01KN3Q09YEKYDQ8JCP1RDNGAF1
+slugs:
+  - task-fix-review-detail-e2e-full-gate
+title: Fix review detail page E2E failures blocking the full CI gate
+type: bug
+description: >-
+  What: Fix the remaining review detail page Playwright failures that still reproduce through all
+  retries in the full E2E run. The currently failing tests are tests/e2e/review-detail-page.spec.ts:
+  'renders review details, markdown thread bodies, and revision selector' and 'limits code review
+  revisions to the same head branch'.
+
+
+  Why: Review detail coverage remains a persistent blocker for moving CI to the full suite. These
+  tests exercise revision selection, thread body rendering, and review-branch filtering behavior
+  that should remain protected by CI.
+
+
+  How:
+
+  1. Reproduce only the failing review detail cases with focused Playwright runs against
+  tests/e2e/review-detail-page.spec.ts.
+
+  2. Use trace artifacts and snapshots to identify whether the breakage is caused by revision-list
+  filtering, route data loading, markdown rendering, fixture drift, or a review detail component
+  regression.
+
+  3. Compare current API responses and fixture records with the UI assumptions in the failing tests.
+
+  4. Fix the root cause in the detail page, data loader, fixture data, or tests as appropriate.
+
+  5. Re-run the focused review detail spec until both cases pass consistently, then run the adjacent
+  review UI coverage needed to confirm no regression.
+spec_ref: null
+meta_ref: null
+plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - test
+  - e2e
+  - ci
+  - reviews
+vcs_refs: []
+created_at: 2026-04-01T05:07:05.806Z
+todos: []
+automation: eligible
