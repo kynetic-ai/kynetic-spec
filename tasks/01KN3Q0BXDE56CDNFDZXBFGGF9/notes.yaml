@@ -27,3 +27,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-01T05:37:54.291Z
+  - _ulid: 01KN3SCKZJZKWQFW23K9601HWP
+    content: "Verification summary: the four blocking cases from this task now pass together in focused
+      Playwright runs after fixing static-mode session detail loading, normalizing date-filter
+      select values, and aligning the navigation test with current request/interaction behavior.
+      Broader checks: kspec validate returned only the repo's existing warning debt; npm test still
+      has unrelated failing suites outside sessions; a widened sessions rerun still shows separate
+      infinite-scroll/live-update failures (loading/indicator/count/update cases) that are outside
+      this task's detail/filter scope."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T05:48:46.450Z
