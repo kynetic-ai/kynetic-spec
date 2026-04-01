@@ -1,1 +1,13 @@
-notes: []
+notes:
+  - _ulid: 01KN4481G2DKXD42WQCRMHGAQQ
+    content: "Approach: reproduce the named navigation/plans/session-context flakes with focused
+      Playwright reruns against the current dev-aligned branch, inspect the affected test helpers
+      and route handlers, and keep fixes scoped to stable behavioral signals rather than timeout
+      inflation. Edge cases: browser-history state settling after goBack/goForward, embedded plan
+      batch failures racing against plan expansion/render fallback, and session-index/cache timing
+      after writing fixture sessions during a live daemon test. Test plan: repeated targeted reruns
+      for each named case, then a combined broader rerun of the affected specs and final npm test
+      plus targeted e2e verification before submit."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T08:58:30.786Z
