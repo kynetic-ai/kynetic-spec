@@ -35,7 +35,7 @@ description: >-
 spec_ref: null
 meta_ref: null
 plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -55,7 +55,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: null
+session_id: 01KN3TS4KTKT0GYWH0MA6722PV
 history:
   - author: Jacob Chapel
     changes:
@@ -107,8 +107,21 @@ history:
         previous: 01KN3RGCJXCK5XVAJ8M8WQ687B
     command: review-verdict-needs-work
     timestamp: 2026-04-01T06:05:24.643Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KN3TS4KTKT0GYWH0MA6722PV
+        previous: null
+      started_at:
+        new: 2026-04-01T06:13:45.150Z
+        previous: 2026-04-01T05:34:13.838Z
+    command: task-start
+    timestamp: 2026-04-01T06:13:45.150Z
 created_at: 2026-04-01T05:07:07.821Z
-started_at: 2026-04-01T05:34:13.838Z
+started_at: 2026-04-01T06:13:45.150Z
 submitted_at: 2026-04-01T05:48:56.187Z
 todos: []
 automation: eligible
