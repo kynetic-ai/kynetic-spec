@@ -23843,8 +23843,11 @@
   title: Consolidate session caching into entity cache and fix live session list updates
   type: bug
   spec_ref: "@daemon-entity-cache"
-  status: pending_review
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - Fresh npm test -- --fresh is not green in this snapshot. The only reproduced failure is
+      tests/file-lock.test.ts:191 (concurrent write expected count 5, got 4), which appears
+      unrelated to the session-cache consolidation diff but blocks merge under review gates.
   depends_on: []
   priority: 2
   tags:
