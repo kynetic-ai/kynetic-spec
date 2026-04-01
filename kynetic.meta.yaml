@@ -10966,6 +10966,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-01T08:48:14.820Z
+  - _ulid: 01KN4432C6MTBQHN124GGVQTQT
+    type: friction
+    content: Focused Playwright debugging still has to pay the full npm run build:e2e cost because the
+      supported e2e entrypoint always rebuilds before running a narrow spec. For retrying one
+      loading-state case, most session time was spent rebuilding rather than reproducing.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-01T08:55:47.846Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
