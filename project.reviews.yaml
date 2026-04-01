@@ -100017,7 +100017,17 @@ reviews:
     slugs: []
     title: Review task-consolidate-session-cache
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Test Suites: 2061 passed of 2061. Tests: 7438 passed, 5 skipped. Duration: 5023.1s."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-01T22:44:15.461Z
+        completed_at: 2026-04-01T22:44:15.461Z
     events:
       - _ulid: 01KN5K47D3X0PWC97XPGVYJ9Y3
         actor: Jacob Chapel
@@ -100046,6 +100056,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN5KF4R0H6G0H4Q7FSEYB5DK
         timestamp: 2026-04-01T22:43:47.252Z
+      - _ulid: 01KN5KG1KDN4BBYJ9Z7183DT8P
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-01T22:44:16.109Z
     examined_commit: 6ed10e58b1effad92713b88cbbcc68a86c4bc9c7
     external_links: []
     lifecycle_state: open
@@ -100099,5 +100116,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-01T22:37:48.836Z
-    updated_at: 2026-04-01T22:43:46.560Z
+    updated_at: 2026-04-01T22:44:15.461Z
     notes: []
