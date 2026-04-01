@@ -10832,6 +10832,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-01T06:12:33.609Z
+  - _ulid: 01KN3VH4XQT7KQXF4MBTP3WWSG
+    type: friction
+    content: "Review-gate verification for review-interaction E2E was inconsistent across commands:
+      worker notes reported 'npm run test:e2e -- tests/e2e/review-interaction.spec.ts' passing,
+      while reviewer reruns and the required npm test gate still produced contradictory failures. We
+      should make the canonical gate command and its argument-forwarding semantics harder to misread
+      so task notes and reviews cite comparable evidence."
+    author: agent:codex
+    resolution: null
+    resolved: false
+    created_at: 2026-04-01T06:26:12.023Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
