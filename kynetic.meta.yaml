@@ -11095,6 +11095,18 @@ observations:
     resolved_at: 2026-04-01T20:09:05.465Z
     resolved_by: Jacob Chapel
     created_at: 2026-04-01T20:08:19.746Z
+  - _ulid: 01KN5D0X3YZEHRCQ0Z96F0717S
+    type: friction
+    content: Detached reviewer snapshots cannot check out the integration branch for manual merge when
+      that branch is already active in another worktree. This session hit git's 'already used by
+      worktree' failure and had to merge into the primary worktree with git -C. Dispatch review
+      instructions should either direct reviewers to merge in the canonical worktree explicitly or
+      provide a merge helper that handles worktree-aware target selection.
+    author: codex@openai
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-04-01T20:51:08.542Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
