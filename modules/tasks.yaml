@@ -1595,9 +1595,8 @@ features:
           - given: |
               A task created before the storage migration has no history entries
             id: ac-3
-            then: |
-              Pre-migration activity may be incomplete; the timeline indicates
-              which entries are from stored history versus best-effort recovery
+            then: the activity timeline is empty until in-file history or notes exist; no best-effort recovery
+              from version control history is attempted
             when: |
               The activity timeline is requested
         tags: []
