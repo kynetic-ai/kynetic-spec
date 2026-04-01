@@ -93972,6 +93972,78 @@ reviews:
         runner: npm
         created_at: 2026-04-01T05:32:41.316Z
         completed_at: 2026-04-01T05:32:41.316Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: >-
+          ✓ Validation passed
+
+          ────────────────────────────────────────
+
+          Files checked: 10
+
+          Items checked: 567
+
+          Tasks checked: 0
+
+          Meta: 10 agents, 11 workflows, 10 conventions
+
+
+          Schema: OK
+
+          References: OK
+
+
+          Reference warnings: 1
+            ⚠ @skills
+              Orphaned skill directory 'skills' has no corresponding meta entry
+              in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+          Alignment warnings: 31
+            Orphaned specs (no tasks): 30
+              ○ Test Trait
+              ○ Filterable List Commands
+              ○ Dry Run Preview Mode
+              ... and 27 more
+            Status mismatches: 1
+              ! Task Set Batch Support
+                Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+
+          Alignment stats: 404/567 specs have tasks, 403 aligned
+
+
+          Completeness warnings: 516
+            Missing acceptance criteria: 1
+              ○ @01KJN1WT - Test Trait
+            Missing own AC coverage: 228
+              ! @spec-item - Spec Item
+                Uncovered: ac-item-1, ac-item-2
+              ! @ulid-system - ULID Identifier System
+                Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+              ! @slug-system - Slug Alias System
+                Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+              ... and 225 more
+            Invalid AC annotations: 287
+              ! AC annotation references '@slug' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-review-detail-e2e-full-gate-01kn3q09-review/tests/ac-annotation-validation.test.ts:6
+              ! AC annotation references '@my-spec' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-review-detail-e2e-full-gate-01kn3q09-review/tests/ac-annotation-validation.test.ts:84
+              ! AC annotation references '@my-spec' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-review-detail-e2e-full-gate-01kn3q09-review/tests/ac-annotation-validation.test.ts:87
+              ! AC annotation references '@spec-a' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-review-detail-e2e-full-gate-01kn3q09-review/tests/ac-annotation-validation.test.ts:114
+              ! AC annotation references '@spec-b' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-review-detail-e2e-full-gate-01kn3q09-review/tests/ac-annotation-validation.test.ts:118
+              ... and 282 more
+          Skills: OK (10 files checked) reported no schema/reference errors. It exited 6 because of
+          existing repo-wide warnings (orphaned skill dir, orphaned specs, uncovered ACs, invalid AC
+          annotations), but nothing new in this snapshot blocked validation.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-01T05:32:45.786Z
+        completed_at: 2026-04-01T05:32:45.786Z
     events:
       - _ulid: 01KN3QSEE3FYXA21KMRCAQRQP5
         actor: Jacob Chapel
@@ -93993,6 +94065,13 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-04-01T05:32:42.078Z
+      - _ulid: 01KN3RFAH737YEAE76CA0FYCM8
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-01T05:32:46.503Z
     examined_commit: 81dd34e0197fe65ec7da87a5a5bc1615d96be4fb
     external_links: []
     lifecycle_state: open
@@ -94005,5 +94084,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-01T05:20:49.603Z
-    updated_at: 2026-04-01T05:32:41.316Z
+    updated_at: 2026-04-01T05:32:45.786Z
     notes: []
