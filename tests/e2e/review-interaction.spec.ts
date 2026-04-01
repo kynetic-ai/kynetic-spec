@@ -10,14 +10,19 @@
  * AC: @review-records-web-ui ac-6 — Verdict submission with disposition update
  */
 
+import type { Page } from "@playwright/test";
 import { test, expect } from "./fixtures/test-base";
 
 const OPEN_REVIEW_ULID = "01KKTX0CA45ZT43W2T6HJMVA01";
 const DRAFT_REVIEW_ULID = "01KKTX9CA45ZT43W2T6HJMVA10";
-const BLOCKER_THREAD_ULID = "01KKTX1CA45ZT43W2T6HJMVA02";
-const RESOLVED_QUESTION_ULID = "01KKTX5CA45ZT43W2T6HJMVA06";
+
+function firstOpenBlockerThread(page: Page) {
+  return page.getByTestId("thread-item").filter({ has: page.getByTestId("thread-resolve-button") }).first();
+}
 
 test.describe("Review Interaction Controls", () => {
+  test.describe.configure({ mode: "serial" });
+
   // AC: @review-records-web-ui ac-3
   test.describe("Add Comment (AC-3)", () => {
     test("shows Add Comment button and opens form", async ({ page, daemon: _daemon }) => {
@@ -36,6 +41,7 @@ test.describe("Review Interaction Controls", () => {
 
     test("creates a new thread with body and kind selection", async ({ page, daemon: _daemon }) => {
       await page.goto(`/reviews/${OPEN_REVIEW_ULID}`);
+      await expect(page.getByTestId("add-comment-button")).toBeVisible();
 
       // Open form
       await page.getByTestId("add-comment-button").click();
@@ -55,9 +61,7 @@ test.describe("Review Interaction Controls", () => {
       await expect(page.getByTestId("add-comment-form")).not.toBeVisible({ timeout: 5000 });
 
       // New thread should appear in the threads section
-      const threadItems = page.getByTestId("thread-item");
-      const lastThread = threadItems.last();
-      await expect(lastThread.getByTestId("entry-body")).toContainText(
+      await expect(page.getByTestId("threads-section")).toContainText(
         "This is a new blocker comment from E2E test",
       );
     });
@@ -77,6 +81,7 @@ test.describe("Review Interaction Controls", () => {
     test("submit button is disabled when body is empty", async ({ page, daemon: _daemon }) => {
       await page.goto(`/reviews/${OPEN_REVIEW_ULID}`);
 
+      await expect(page.getByTestId("add-comment-button")).toBeVisible();
       await page.getByTestId("add-comment-button").click();
       await expect(page.getByTestId("comment-submit-button")).toBeDisabled();
 
@@ -129,7 +134,7 @@ test.describe("Review Interaction Controls", () => {
     test("adds a reply to a thread", async ({ page, daemon: _daemon }) => {
       await page.goto(`/reviews/${OPEN_REVIEW_ULID}`);
 
-      const targetThread = page.locator(`[data-thread-id="${BLOCKER_THREAD_ULID}"]`);
+      const targetThread = firstOpenBlockerThread(page);
       await expect(targetThread).toBeVisible();
 
       // Count entries before
@@ -154,14 +159,14 @@ test.describe("Review Interaction Controls", () => {
     test("cancel button closes reply form", async ({ page, daemon: _daemon }) => {
       await page.goto(`/reviews/${OPEN_REVIEW_ULID}`);
 
-      const firstThread = page.getByTestId("thread-item").first();
-      await firstThread.getByTestId("thread-reply-button").click();
-      await expect(firstThread.getByTestId("reply-form")).toBeVisible();
+      const blockerThread = firstOpenBlockerThread(page);
+      await blockerThread.getByTestId("thread-reply-button").click();
+      await expect(blockerThread.getByTestId("reply-form")).toBeVisible();
 
-      await firstThread.getByTestId("reply-cancel-button").click();
-      await expect(firstThread.getByTestId("reply-form")).not.toBeVisible();
+      await blockerThread.getByTestId("reply-cancel-button").click();
+      await expect(blockerThread.getByTestId("reply-form")).not.toBeVisible();
       // Reply button should reappear
-      await expect(firstThread.getByTestId("thread-reply-button")).toBeVisible();
+      await expect(blockerThread.getByTestId("thread-reply-button")).toBeVisible();
     });
 
     test("reply submit is disabled when body is empty", async ({ page, daemon: _daemon }) => {
@@ -182,7 +187,7 @@ test.describe("Review Interaction Controls", () => {
       await page.goto(`/reviews/${OPEN_REVIEW_ULID}`);
 
       // Blocker thread should have a Resolve button
-      const blockerThread = page.locator(`[data-thread-id="${BLOCKER_THREAD_ULID}"]`);
+      const blockerThread = firstOpenBlockerThread(page);
       await expect(blockerThread.getByTestId("thread-resolve-button")).toBeVisible();
     });
 
@@ -192,17 +197,15 @@ test.describe("Review Interaction Controls", () => {
     }) => {
       await page.goto(`/reviews/${OPEN_REVIEW_ULID}`);
 
-      const blockerThread = page.locator(`[data-thread-id="${BLOCKER_THREAD_ULID}"]`);
+      const blockerThread = firstOpenBlockerThread(page);
       await expect(blockerThread.getByTestId("thread-status")).toContainText("Open");
 
       // Click resolve
       await blockerThread.getByTestId("thread-resolve-button").click();
 
       // After query invalidation, the thread should move to resolved
-      // Wait for the thread to show "Resolved" status
-      await expect(
-        page.locator(`[data-thread-id="${BLOCKER_THREAD_ULID}"]`).getByTestId("thread-status"),
-      ).toContainText("Resolved", { timeout: 5000 });
+      const resolvedToggle = page.getByTestId("resolved-threads-toggle");
+      await expect(resolvedToggle).toContainText("2 resolved thread", { timeout: 5000 });
     });
 
     test("shows Reopen button on resolved blocker/question threads", async ({
@@ -211,36 +214,44 @@ test.describe("Review Interaction Controls", () => {
     }) => {
       await page.goto(`/reviews/${OPEN_REVIEW_ULID}`);
 
-      // Open the resolved threads section
       const resolvedToggle = page.getByTestId("resolved-threads-toggle");
-      if (await resolvedToggle.isVisible()) {
-        await resolvedToggle.click();
-      }
+      await expect(resolvedToggle).toBeVisible();
+      await resolvedToggle.click();
 
-      // The resolved question thread should have a Reopen button
-      const resolvedThread = page.locator(`[data-thread-id="${RESOLVED_QUESTION_ULID}"]`);
+      const resolvedThread = page
+        .getByTestId("thread-item")
+        .filter({ has: page.getByTestId("thread-reopen-button") })
+        .first();
       await expect(resolvedThread.getByTestId("thread-reopen-button")).toBeVisible();
     });
 
     test("reopens a resolved thread", async ({ page, daemon: _daemon }) => {
       await page.goto(`/reviews/${OPEN_REVIEW_ULID}`);
 
-      // Open resolved section
       const resolvedToggle = page.getByTestId("resolved-threads-toggle");
-      if (await resolvedToggle.isVisible()) {
-        await resolvedToggle.click();
-      }
+      await expect(resolvedToggle).toBeVisible();
+      await resolvedToggle.click();
 
-      const resolvedThread = page.locator(`[data-thread-id="${RESOLVED_QUESTION_ULID}"]`);
+      const resolvedThread = page
+        .getByTestId("thread-item")
+        .filter({ has: page.getByTestId("thread-reopen-button") })
+        .first();
       await expect(resolvedThread.getByTestId("thread-status")).toContainText("Resolved");
+      const reopenedThreadId = await resolvedThread.getAttribute("data-thread-id");
+      expect(reopenedThreadId).toBeTruthy();
 
       // Click reopen
       await resolvedThread.getByTestId("thread-reopen-button").click();
 
-      // Thread should now show Open status
-      await expect(
-        page.locator(`[data-thread-id="${RESOLVED_QUESTION_ULID}"]`).getByTestId("thread-status"),
-      ).toContainText("Open", { timeout: 5000 });
+      await expect(page.getByTestId("threads-section")).toContainText("(4 open, 0 resolved)", {
+        timeout: 5000,
+      });
+      await expect(page.getByTestId("resolved-threads-toggle")).toHaveCount(0);
+
+      const reopenedThread = page.locator(`[data-thread-id="${reopenedThreadId}"]`);
+      await expect(reopenedThread.getByTestId("thread-status")).toContainText("Open");
+      await expect(reopenedThread.getByTestId("thread-resolve-button")).toBeVisible();
+      await expect(reopenedThread.getByTestId("thread-reopen-button")).toHaveCount(0);
     });
   });
 
@@ -308,12 +319,14 @@ test.describe("Review Interaction Controls", () => {
     test("verdict decision options include all three types", async ({ page, daemon: _daemon }) => {
       await page.goto(`/reviews/${OPEN_REVIEW_ULID}`);
 
+      await expect(page.getByTestId("verdict-submission-section")).toBeVisible();
       const select = page.getByTestId("verdict-decision-select");
-      const options = select.locator("option");
-      await expect(options).toHaveCount(3);
-      await expect(options.nth(0)).toHaveValue("approve");
-      await expect(options.nth(1)).toHaveValue("request_changes");
-      await expect(options.nth(2)).toHaveValue("comment");
+      await expect(select).toBeVisible();
+      await expect(select).toHaveValue("approve");
+      await select.selectOption("request_changes");
+      await expect(select).toHaveValue("request_changes");
+      await select.selectOption("comment");
+      await expect(select).toHaveValue("comment");
     });
   });
 });
