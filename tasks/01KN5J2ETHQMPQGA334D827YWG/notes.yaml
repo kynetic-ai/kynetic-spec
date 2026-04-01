@@ -150,3 +150,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-01T22:23:46.107Z
+  - _ulid: 01KN5JZ3R4JHGE873GRHTBT759
+    content: "Implemented the session cache consolidation. Dispatch now writes live event counts into
+      ProjectEntityCache, session list and related-session fallback paths read metadata directly
+      from disk when the sessions domain is not ready, and sessions-topic broadcasts now fire from
+      entity-cache reload completion instead of before reload. Removed the legacy
+      SessionSummaryCache module/tests, deprecated @session-summary-cache, added regression coverage
+      for live counter handoff, reload-complete broadcast ordering, and unready-session route
+      fallback. Verification: npm run build; npm test (7438 passed, 5 skipped); kspec validate shows
+      only pre-existing repository warnings."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T22:35:01.253Z
