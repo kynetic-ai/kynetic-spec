@@ -3,29 +3,35 @@ slugs:
   - task-purge-old-storage-refs
 title: Purge deprecated spec references
 type: task
-description: |
-  Remove all remaining references to the deprecated specs from the
-  codebase: @task-storage, @task-storage-alongside,
-  @task-storage-separate, and @task-activity-git-query.
+description: >-
+  Remove all references to deprecated specs @task-storage, @task-storage-alongside, and
+  @task-storage-separate from tests and fixtures.
 
-  Why: After the monolithic code is removed, any AC annotation comments,
-  test references, documentation links, or spec cross-references
-  pointing to the old specs are stale and misleading.
 
-  What: Search the entire codebase for references to the four
-  deprecated spec slugs. Remove AC annotation comments in tests,
-  delete tests that only existed to verify old storage or git-based
-  activity behavior, update any documentation or other specs that
-  reference them.
+  Why: These specs are deprecated (superseded by @task-directory-storage and @task-data-manager).
+  Stale AC annotations pointing to them are misleading and break traceability.
 
-  How: Grep for task-storage-alongside, task-storage-separate,
-  task-storage (exact, not the new task-directory-storage), and
-  task-activity-git-query across all source, test, doc, and spec files.
-  Remove or update each reference. Verify no broken links remain via
-  kspec validate.
 
-  MANUAL ONLY: Final cleanup after confirming the old code and format
-  are fully retired.
+  What to do for each location:
+
+
+  1. tests/task-system-ac-backfill.test.ts
+     - Lines 46-48: Spec ref list includes @task-storage, @task-storage-alongside, @task-storage-separate. Remove these three entries from the array.
+     - Line 418: AC annotation @task-storage ac-1. This test ("loads tasks from project.tasks.yaml alongside the spec manifest") verifies legacy format backward compatibility. The behavior is covered by @task-data-manager ac-1 (callers do not know or care about the underlying storage format). Re-point to @task-data-manager ac-1.
+     - Line 419: AC annotation @task-storage-alongside ac-1. Same test. Re-point to @task-data-manager ac-1.
+     - Line 457: AC annotation @task-storage-separate ac-1. Test ("loads tasks from separate backlog and active task files") also exercises legacy format. Re-point to @task-data-manager ac-1.
+
+  2. tests/fixtures/task-system-ac-backfill.snapshot.json
+     Entries referencing @task-storage-alongside and @task-storage-separate should be removed from the snapshot to match the updated spec ref list from step 1.
+
+  Verification: After all changes, run the affected test files (npm test task-system-ac-backfill) to
+  confirm no test failures. Grep for @task-storage, @task-storage-alongside, and
+  @task-storage-separate to confirm zero remaining references.
+
+
+  Note: The @task-activity-git-query references in src/utils/activity.ts and its tests are tracked
+  separately — that code is still actively used as a pre-migration fallback and requires its own
+  investigation.
 spec_ref: null
 plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
 origin: derived
@@ -40,6 +46,68 @@ tags:
   - cleanup
   - manual
 vcs_refs: []
+history:
+  - author: "@claude"
+    changes:
+      description:
+        new: >-
+          Remove all references to deprecated specs @task-storage, @task-storage-alongside, and
+          @task-storage-separate from tests and fixtures.
+
+
+          Why: These specs are deprecated (superseded by @task-directory-storage and
+          @task-data-manager). Stale AC annotations pointing to them are misleading and break
+          traceability.
+
+
+          What to do for each location:
+
+
+          1. tests/task-system-ac-backfill.test.ts
+             - Lines 46-48: Spec ref list includes @task-storage, @task-storage-alongside, @task-storage-separate. Remove these three entries from the array.
+             - Line 418: AC annotation @task-storage ac-1. This test ("loads tasks from project.tasks.yaml alongside the spec manifest") verifies legacy format backward compatibility. The behavior is covered by @task-data-manager ac-1 (callers do not know or care about the underlying storage format). Re-point to @task-data-manager ac-1.
+             - Line 419: AC annotation @task-storage-alongside ac-1. Same test. Re-point to @task-data-manager ac-1.
+             - Line 457: AC annotation @task-storage-separate ac-1. Test ("loads tasks from separate backlog and active task files") also exercises legacy format. Re-point to @task-data-manager ac-1.
+
+          2. tests/fixtures/task-system-ac-backfill.snapshot.json
+             Entries referencing @task-storage-alongside and @task-storage-separate should be removed from the snapshot to match the updated spec ref list from step 1.
+
+          Verification: After all changes, run the affected test files (npm test
+          task-system-ac-backfill) to confirm no test failures. Grep for @task-storage,
+          @task-storage-alongside, and @task-storage-separate to confirm zero remaining references.
+
+
+          Note: The @task-activity-git-query references in src/utils/activity.ts and its tests are
+          tracked separately — that code is still actively used as a pre-migration fallback and
+          requires its own investigation.
+        previous: |
+          Remove all remaining references to the deprecated specs from the
+          codebase: @task-storage, @task-storage-alongside,
+          @task-storage-separate, and @task-activity-git-query.
+
+          Why: After the monolithic code is removed, any AC annotation comments,
+          test references, documentation links, or spec cross-references
+          pointing to the old specs are stale and misleading.
+
+          What: Search the entire codebase for references to the four
+          deprecated spec slugs. Remove AC annotation comments in tests,
+          delete tests that only existed to verify old storage or git-based
+          activity behavior, update any documentation or other specs that
+          reference them.
+
+          How: Grep for task-storage-alongside, task-storage-separate,
+          task-storage (exact, not the new task-directory-storage), and
+          task-activity-git-query across all source, test, doc, and spec files.
+          Remove or update each reference. Verify no broken links remain via
+          kspec validate.
+
+          MANUAL ONLY: Final cleanup after confirming the old code and format
+          are fully retired.
+      automation:
+        new: eligible
+        previous: manual_only
+    command: task-set
+    timestamp: 2026-04-01T19:58:36.292Z
 created_at: 2026-03-21T00:59:27.630Z
 todos: []
-automation: manual_only
+automation: eligible
