@@ -99036,6 +99036,18 @@ reviews:
         runner: codex
         created_at: 2026-04-01T09:04:47.399Z
         completed_at: 2026-04-01T09:04:47.399Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Exit code 6 due to pre-existing repository-wide warnings (orphaned skills/spec
+          alignment/completeness examples), with no new warning tied to this task or its AC
+          annotations.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-01T09:04:49.778Z
+        completed_at: 2026-04-01T09:04:49.778Z
     events:
       - _ulid: 01KN447AFMYTW76NDV1TGV0AB8
         actor: Jacob Chapel
@@ -99064,6 +99076,13 @@ reviews:
           status: pass
           name: review evidence log
         timestamp: 2026-04-01T09:04:48.177Z
+      - _ulid: 01KN44KM789DSAV5YS0Z6HG4QG
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-04-01T09:04:50.408Z
     examined_commit: cfa62d694c16460d95a198b80e11f09b98497234
     external_links: []
     lifecycle_state: open
@@ -99076,5 +99095,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-01T08:58:07.220Z
-    updated_at: 2026-04-01T09:04:47.399Z
+    updated_at: 2026-04-01T09:04:49.778Z
     notes: []
