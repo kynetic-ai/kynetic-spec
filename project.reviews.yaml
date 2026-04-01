@@ -97214,6 +97214,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-01T07:42:17.340Z
+      - _ulid: 01KN415M86A812NFZZK9EETYS2
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN3ZVX3ZHCBYG7DG8NGVG1V8
+        timestamp: 2026-04-01T08:04:45.958Z
     examined_commit: 63964c9bea35e190d14514a60e0348a8ca468137
     external_links: []
     lifecycle_state: closed
@@ -97249,6 +97255,16 @@ reviews:
 
               > node scripts/test.cjs is green on the submitted snapshot, this cannot be approved.
             created_at: 2026-04-01T07:41:58.784Z
+          - _ulid: 01KN415KN2F8YNAHKMW68K3YKM
+            author: Jacob Chapel
+            body: "Fixed in commits 291a7e66e and 2de35d0f2. Rebased onto origin/dev, preserved the
+              dispatch-engine test hardening through the rebase conflict, and replaced the
+              stale-badge route mock with the seeded review fixture so adjacent review-detail
+              coverage matches the live page behavior. Verification on the current snapshot: npm
+              test -- --fresh => 2082/2082 suites passed, 7522/7527 tests passed, 5 skipped; npm run
+              test:e2e -- tests/e2e/review-detail-page.spec.ts tests/e2e/reviews-detail.spec.ts =>
+              29/29 passed."
+            created_at: 2026-04-01T08:04:45.345Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -97259,7 +97275,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-01T07:42:17.339Z
     created_at: 2026-04-01T07:31:18.698Z
-    updated_at: 2026-04-01T07:42:17.340Z
+    updated_at: 2026-04-01T08:04:45.345Z
     notes: []
   - _ulid: 01KN3ZAM29H2HD6A3EX851F2XV
     slugs: []
