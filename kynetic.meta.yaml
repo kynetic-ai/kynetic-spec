@@ -10881,6 +10881,26 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-01T07:28:29.028Z
+  - _ulid: 01KN3Z5TBGWSXC4J25T3KWK5KJ
+    type: friction
+    content: "Review verification can report a clean rerun while the detached review snapshot still
+      fails because the daemon serves a stale WEB_UI_DIR/index.html from a deleted worktree path.
+      Reflection from review of @01KN3Q09YEKYDQ8JCP1RDNGAF1: focused Playwright rerun still hit
+      ENOENT on .kspec-worktrees/.../dist/web-ui/index.html after a note claimed the path-hardening
+      fix was complete."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-01T07:29:55.056Z
+  - _ulid: 01KN3Z5TH9MY92JVAASGMG95FA
+    type: success
+    content: Focused reruns plus immediate artifact inspection worked well in review. Re-running the
+      exact Playwright subset and opening the failure screenshot exposed the stale deleted-worktree
+      bundle path quickly, which made the blocker concrete and anchorable instead of speculative.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-01T07:29:55.241Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
