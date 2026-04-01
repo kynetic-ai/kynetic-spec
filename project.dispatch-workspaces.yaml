@@ -31226,18 +31226,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-remove-legacy-activity-fallback/01kn5arm
-    canonical_branch_head: 0c1440e5c29913753624279ee2943550c0cb4291
+    canonical_branch_head: d09d903b4cfa719edbd4f4ba1d049c9c482b0605
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-01T20:26:49.249Z
+      updated_at: 2026-04-01T20:41:44.999Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-01T20:26:55.484Z
+      updated_at: 2026-04-01T20:41:44.999Z
     integration:
       status: pending
       detail: null
@@ -31245,7 +31245,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 0c1440e5c29913753624279ee2943550c0cb4291
-      updated_at: 2026-04-01T20:26:49.249Z
+      updated_at: 2026-04-01T20:41:44.999Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KN5ARMWCVEP8XTA6DS515RK8"
@@ -31253,9 +31253,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-01T20:26:55.484Z
-      last_reconciled_at: 2026-04-01T20:26:55.484Z
+      last_reconciled_at: 2026-04-01T20:41:44.999Z
       created_at: 2026-04-01T20:26:49.249Z
-      updated_at: 2026-04-01T20:26:55.484Z
+      updated_at: 2026-04-01T20:41:44.999Z
     workspace_id: dispatch-workspace-01KN5ARMWCVEP8XTA6DS515RK8
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
