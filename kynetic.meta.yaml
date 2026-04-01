@@ -10863,6 +10863,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-01T06:42:45.637Z
+  - _ulid: 01KN3Z361BA55AMREW4Z1QJDK1
+    type: success
+    content: Rebasing a needs_work dispatch branch onto the current integration target before chasing
+      reviewer-reported gate failures made it easy to distinguish stale blockers from real
+      regressions by re-running the focused failing subset first.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-01T07:28:28.715Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
