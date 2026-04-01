@@ -99910,6 +99910,17 @@ reviews:
         runner: rg
         created_at: 2026-04-01T20:49:03.399Z
         completed_at: 2026-04-01T20:49:03.399Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation returned warning-only exit 6 from pre-existing repo-wide alignment/completeness
+          issues; no schema or reference errors related to this task.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-01T20:49:05.413Z
+        completed_at: 2026-04-01T20:49:05.413Z
     events:
       - _ulid: 01KN5CHEPN825MFHK8SFK9W1HQ
         actor: Jacob Chapel
@@ -99945,6 +99956,13 @@ reviews:
           status: pass
           name: legacy reference scan
         timestamp: 2026-04-01T20:49:04.068Z
+      - _ulid: 01KN5CX5HENHFK9SXYE2EJVF14
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-04-01T20:49:06.094Z
     examined_commit: d09d903b4cfa719edbd4f4ba1d049c9c482b0605
     external_links: []
     lifecycle_state: open
@@ -99970,5 +99988,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-01T20:42:42.262Z
-    updated_at: 2026-04-01T20:49:03.399Z
+    updated_at: 2026-04-01T20:49:05.413Z
     notes: []
