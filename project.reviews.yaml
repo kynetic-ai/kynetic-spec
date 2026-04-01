@@ -96364,7 +96364,18 @@ reviews:
     slugs: []
     title: Review task-fix-review-interaction-e2e-full-gate (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm run test:e2e -- tests/e2e/review-interaction.spec.ts => 24 passed (2.0m), covering
+          smoke + review-interaction cases in this workspace.
+        name: playwright review-interaction
+        required: true
+        runner: playwright
+        created_at: 2026-04-01T06:23:43.807Z
+        completed_at: 2026-04-01T06:23:43.807Z
     events:
       - _ulid: 01KN3TTZTDTJ6R6KR9S0VP0Q34
         actor: Jacob Chapel
@@ -96379,6 +96390,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-01T06:14:55.163Z
+      - _ulid: 01KN3VCN02GAH29RYJ4X53GEV6
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: playwright review-interaction
+        timestamp: 2026-04-01T06:23:44.643Z
     examined_commit: 38587b6ed0cad0767346ec970b677d1fa870db77
     external_links: []
     lifecycle_state: open
@@ -96391,5 +96409,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-01T06:14:05.902Z
-    updated_at: 2026-04-01T06:14:53.843Z
+    updated_at: 2026-04-01T06:23:43.807Z
     notes: []
