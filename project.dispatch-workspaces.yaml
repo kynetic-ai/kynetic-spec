@@ -30418,7 +30418,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-01T08:00:18.898Z
+      updated_at: 2026-04-01T08:00:24.300Z
     integration:
       status: pending
       detail: null
@@ -30427,25 +30427,20 @@ workspaces:
       target_branch: dev
       target_commit: ba2271a6ea2603e84f9d067a330468bb9e08dd74
       updated_at: 2026-04-01T08:00:18.898Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KN3Q0CXG130QGTF0W840KK4M"
     task_slug: task-fix-sessions-live-update-e2e-full-gate
     timestamps:
       closed_at: null
       last_active_at: 2026-04-01T07:49:11.185Z
-      last_reconciled_at: 2026-04-01T08:00:18.898Z
+      last_reconciled_at: 2026-04-01T08:00:24.300Z
       created_at: 2026-04-01T07:30:00.528Z
-      updated_at: 2026-04-01T08:00:18.898Z
+      updated_at: 2026-04-01T08:00:24.300Z
     workspace_id: dispatch-workspace-01KN3Q0CXG130QGTF0W840KK4M
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 41065c1dcbdd93c41af1bab154eda20dd474edab
-        last_seen_at: 2026-04-01T07:49:03.654Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-sessions-live-update-e2e-full-gate-01kn3q0c-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-fix-sessions-live-update-e2e-full-gate/01kn3q0c
