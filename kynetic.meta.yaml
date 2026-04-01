@@ -10872,6 +10872,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-01T07:28:28.715Z
+  - _ulid: 01KN3Z36B42J0EFWAZ1GCCFHJ1
+    type: friction
+    content: A review can stay anchored to an examined commit whose blocker failures no longer reproduce
+      after the task branch is rebased onto a newer integration target, creating avoidable fix-cycle
+      churn for dispatch tasks.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-01T07:28:29.028Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
