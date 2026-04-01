@@ -9,3 +9,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-01T20:00:46.313Z
+  - _ulid: 01KN5A70EE0FDXRWY3VGWMHFRS
+    content: "Removed deprecated storage spec refs from the AC backfill test and fixture snapshot.
+      Re-pointed the two legacy storage discovery tests to @task-data-manager ac-1 because they
+      verify storage-format transparency through the task data manager. Verification: npm test
+      task-system-ac-backfill passed; exact-match grep found no remaining references to
+      @task-storage, @task-storage-alongside, or @task-storage-separate; kspec validate completed
+      with pre-existing project warnings only."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T20:02:02.830Z
