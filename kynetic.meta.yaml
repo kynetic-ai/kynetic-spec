@@ -10772,6 +10772,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-01T05:36:08.562Z
+  - _ulid: 01KN3RNGKX9371NEQWYGK8ZSAY
+    type: friction
+    content: For CI-flake fix tasks, a single passing rerun is not strong enough evidence. In this
+      review, one combined Playwright run failed, two later reruns passed, and only repeating the
+      exact command three times exposed the residual flake in tests/e2e/reviews-detail.spec.ts.
+      Review and task workflows should explicitly require multi-run stability checks when the goal
+      is to unblock a flaky gate.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-01T05:36:09.341Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
