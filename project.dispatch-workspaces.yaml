@@ -31397,7 +31397,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-01T22:45:59.770Z
+      updated_at: 2026-04-01T22:46:02.193Z
     integration:
       status: pending
       detail: null
@@ -31406,25 +31406,20 @@ workspaces:
       target_branch: dev
       target_commit: a1d256e141a1c2ff1b2b3a3f844f0cc1801a921a
       updated_at: 2026-04-01T22:45:59.770Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KN5J2ETHQMPQGA334D827YWG"
     task_slug: task-consolidate-session-cache
     timestamps:
       closed_at: null
       last_active_at: 2026-04-01T22:37:13.971Z
-      last_reconciled_at: 2026-04-01T22:45:59.770Z
+      last_reconciled_at: 2026-04-01T22:46:02.193Z
       created_at: 2026-04-01T22:21:50.208Z
-      updated_at: 2026-04-01T22:45:59.770Z
+      updated_at: 2026-04-01T22:46:02.193Z
     workspace_id: dispatch-workspace-01KN5J2ETHQMPQGA334D827YWG
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 6ed10e58b1effad92713b88cbbcc68a86c4bc9c7
-        last_seen_at: 2026-04-01T22:37:02.561Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-consolidate-session-cache-01kn5j2e-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-consolidate-session-cache/01kn5j2e
