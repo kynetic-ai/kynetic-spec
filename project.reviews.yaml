@@ -100400,6 +100400,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-01T23:11:32.153Z
+      - _ulid: 01KN5NBS449MT2N8EDBPQ6YBRR
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN5N0ZS3APCZAGB26NRP9GZ4
+        timestamp: 2026-04-01T23:16:53.508Z
     examined_commit: 613afcce6db17299caa79077049326cc975e460e
     external_links: []
     lifecycle_state: closed
@@ -100429,6 +100435,17 @@ reviews:
               was empty and ; the returned session still had . This means  and  still regress to
               stale counters on the exact stale-index path this helper is meant to cover.
             created_at: 2026-04-01T23:10:59.876Z
+          - _ulid: 01KN5NBRF1VMX79EAVHJCC28D3
+            author: Jacob Chapel
+            body: "Fixed in f9baca482: the ready-but-stale related-session fallback no longer re-enters
+              getAllSessionSummaries() and reuses the empty ready-cache index. It now forces a
+              disk-backed session summary read with the current ProjectEntityCache instance so
+              active-session live event counters are preserved on the stale-index path as well.
+              Added regression coverage in tests/session-related-routes.test.ts for
+              getRelatedSessionsForTask() with a ready sessions domain, empty cached index, and live
+              counter overlay. Verification: npm test -- --run tests/session-related-routes.test.ts
+              tests/daemon-cache-route-coverage.test.ts passed."
+            created_at: 2026-04-01T23:16:52.833Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -100439,5 +100456,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-01T23:11:32.153Z
     created_at: 2026-04-01T23:00:15.158Z
-    updated_at: 2026-04-01T23:11:32.153Z
+    updated_at: 2026-04-01T23:16:52.833Z
     notes: []
