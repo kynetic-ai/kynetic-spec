@@ -100520,6 +100520,18 @@ reviews:
         runner: npm
         created_at: 2026-04-01T23:34:42.850Z
         completed_at: 2026-04-01T23:34:42.850Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm test -- --run tests/daemon-entity-cache.test.ts
+          tests/daemon-cache-route-coverage.test.ts tests/session-related-routes.test.ts passed (35
+          suites, 111 tests).
+        name: targeted session-cache regressions
+        required: false
+        runner: npm
+        created_at: 2026-04-01T23:34:44.957Z
+        completed_at: 2026-04-01T23:34:44.957Z
     events:
       - _ulid: 01KN5NGQGHPMRHB8DW9R3XM5XJ
         actor: Jacob Chapel
@@ -100555,6 +100567,13 @@ reviews:
           status: pass
           name: build
         timestamp: 2026-04-01T23:34:43.566Z
+      - _ulid: 01KN5PCG3KY1E8845DEZV61495
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted session-cache regressions
+        timestamp: 2026-04-01T23:34:45.619Z
     examined_commit: f9baca4826d02c234e43bf65412a92c426fd50fb
     external_links: []
     lifecycle_state: open
@@ -100567,5 +100586,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-01T23:19:35.698Z
-    updated_at: 2026-04-01T23:34:42.850Z
+    updated_at: 2026-04-01T23:34:44.957Z
     notes: []
