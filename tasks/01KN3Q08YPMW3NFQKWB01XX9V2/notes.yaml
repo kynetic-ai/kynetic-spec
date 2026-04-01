@@ -1,1 +1,11 @@
-notes: []
+notes:
+  - _ulid: 01KN437HCJ7WV72G2TC3TTY9GM
+    content: "Approach: reproduce the two failing observations Playwright cases with trace output,
+      compare test expectations against the observations page/API contract, then fix the root cause
+      in the page, fixtures, or test. Edge cases: markdown rendering without a context object,
+      unresolved-only filtering, and true empty unresolved state when resolved observations still
+      exist. Test plan: focused coverage for the two failing observations cases first, then nearby
+      observations/session-sidebar checks to guard regressions."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T08:40:45.714Z
