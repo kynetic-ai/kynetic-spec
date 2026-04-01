@@ -41,3 +41,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-01T10:17:35.104Z
+  - _ulid: 01KN4905QN76TZ5D92SET36336
+    content: "Fix cycle 1: added playwright.config.ts to pull_request.paths in
+      .github/workflows/test.yml so config-only Playwright changes still run the E2E gate.
+      Re-verified the task has no linked spec/AC surface; this is a trigger-coverage correction
+      only. Validation after edit: git diff --check clean, and no runtime command/test entries
+      changed beyond the previously reviewed green shard/test evidence on this branch."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T10:21:35.861Z
