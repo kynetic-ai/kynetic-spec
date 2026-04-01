@@ -23843,7 +23843,7 @@
   title: Consolidate session caching into entity cache and fix live session list updates
   type: bug
   spec_ref: "@daemon-entity-cache"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 2
@@ -23856,6 +23856,7 @@
   created_at: 2026-04-01T22:19:22.321Z
   started_at: 2026-04-01T23:17:06.940Z
   submitted_at: 2026-04-01T23:17:16.045Z
+  completed_at: 2026-04-01T23:53:32.300Z
   automation: eligible
 - _ulid: 01KN5QB8NSQNT9FTD701GK387V
   slugs:
