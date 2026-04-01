@@ -23717,7 +23717,7 @@
   title: Fix sessions detail and filter E2E failures blocking the full CI gate
   type: bug
   plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 1
@@ -23730,6 +23730,7 @@
   todos_count: 0
   created_at: 2026-04-01T05:07:07.821Z
   started_at: 2026-04-01T05:34:13.838Z
+  submitted_at: 2026-04-01T05:48:56.187Z
   automation: eligible
 - _ulid: 01KN3Q0CXG130QGTF0W840KK4M
   slugs:
