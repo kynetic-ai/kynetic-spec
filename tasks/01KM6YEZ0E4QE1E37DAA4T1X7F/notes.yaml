@@ -1,1 +1,11 @@
-notes: []
+notes:
+  - _ulid: 01KN5A4NQ9DP46A2YJ04WTCKAF
+    content: "Approach: update the task-system AC backfill test and its snapshot fixture to remove
+      deprecated storage spec refs, and re-point the legacy storage compatibility tests to
+      @task-data-manager ac-1. Edge cases: preserve fixture/test alignment so the spec quality check
+      still passes and avoid touching unrelated deprecated refs called out as separate work. Test
+      plan: run npm test task-system-ac-backfill, grep for @task-storage / @task-storage-alongside /
+      @task-storage-separate to confirm zero remaining references, then run kspec validate."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T20:00:46.313Z
