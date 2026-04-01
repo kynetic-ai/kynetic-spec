@@ -99502,6 +99502,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-01T10:17:33.760Z
+      - _ulid: 01KN490SJYC7JNDEEBMD4KR9GM
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN48R6HFWCF1DTP3HFAWGMNV
+        timestamp: 2026-04-01T10:21:56.191Z
     examined_commit: abee02938cb6766756ca3c93240afb6ed1710184
     external_links: []
     lifecycle_state: closed
@@ -99529,6 +99535,12 @@ reviews:
               weakened or broken without any E2E job running. Please add playwright.config.ts to
               pull_request.paths so configuration-only changes are covered.
             created_at: 2026-04-01T10:17:14.543Z
+          - _ulid: 01KN490RZ8JTM7S31JM638AJYK
+            author: Jacob Chapel
+            body: "Fixed in commit 0235550eb: added playwright.config.ts to pull_request.paths in
+              .github/workflows/test.yml, so PRs that only adjust Playwright workers/retries/test
+              selection still trigger the full E2E workflow."
+            created_at: 2026-04-01T10:21:55.560Z
         kind: blocker
       - _ulid: 01KN48RECZPZWPZ8YBRYHQQX7N
         entries:
@@ -99556,5 +99568,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-01T10:17:33.760Z
     created_at: 2026-04-01T10:02:42.776Z
-    updated_at: 2026-04-01T10:17:33.760Z
+    updated_at: 2026-04-01T10:21:55.560Z
     notes: []
