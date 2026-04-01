@@ -100032,6 +100032,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-01T22:38:12.022Z
+      - _ulid: 01KN5KEV4420Z1MEVD1ATWZGP0
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN5KETFJRWGX7100F3CRVT9Q
+        timestamp: 2026-04-01T22:43:36.708Z
     examined_commit: 6ed10e58b1effad92713b88cbbcc68a86c4bc9c7
     external_links: []
     lifecycle_state: open
@@ -100041,8 +100048,27 @@ reviews:
       content_hash: ""
       ref: "@01KN5J2ETHQMPQGA334D827YWG"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KN5KETFJRWGX7100F3CRVT9Q
+        anchor:
+          type: code
+          commit: 6ed10e58b1effad92713b88cbbcc68a86c4bc9c7
+          line_end: 104
+          line_start: 101
+          path: packages/daemon/src/routes/sessions.ts
+          side: head
+        entries:
+          - _ulid: 01KN5KETFJA92YBCTGRANDM219
+            author: Jacob Chapel
+            body: "The new disk fallback drops live event counts for active sessions.  reads only  via , so when
+              the sessions domain is warming or degraded the filtered list routes return  for active
+              sessions until close-time stats are persisted. I reproduced this against the current
+              route code with an active session that had three appended events:  returned  under a
+              non-ready sessions cache. This regresses  AC  / ; the fallback path needs a live
+              counter source or a direct event-count read for active sessions."
+            created_at: 2026-04-01T22:43:36.050Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-01T22:37:48.836Z
-    updated_at: 2026-04-01T22:38:11.095Z
+    updated_at: 2026-04-01T22:43:36.050Z
     notes: []
