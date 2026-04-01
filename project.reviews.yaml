@@ -100246,6 +100246,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-01T23:00:41.562Z
+      - _ulid: 01KN5N10EQ8RGMVRM66B6DQK0Y
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN5N0ZS3APCZAGB26NRP9GZ4
+        timestamp: 2026-04-01T23:11:00.567Z
     examined_commit: 613afcce6db17299caa79077049326cc975e460e
     external_links: []
     lifecycle_state: open
@@ -100255,8 +100262,28 @@ reviews:
       content_hash: ""
       ref: "@01KN5J2ETHQMPQGA334D827YWG"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KN5N0ZS3APCZAGB26NRP9GZ4
+        anchor:
+          type: code
+          commit: 613afcce6db17299caa79077049326cc975e460e
+          line_end: 80
+          line_start: 76
+          path: packages/daemon/src/routes/session-related.ts
+          side: head
+        entries:
+          - _ulid: 01KN5N0ZS43H3QX9AN2ZEPVWYE
+            author: Jacob Chapel
+            body: The related-sessions stale-index fallback still drops live event counts for active
+              sessions.  correctly decides to re-read from disk when the ready cache index returns
+              no matching sessions, but it calls  without the cache accessor. That path
+              reaches  with no , so active sessions come back with  from  (often 0) instead of the
+              live counter. I reproduced this by calling  with a ready sessions cache whose index
+              was empty and ; the returned session still had . This means  and  still regress to
+              stale counters on the exact stale-index path this helper is meant to cover.
+            created_at: 2026-04-01T23:10:59.876Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-01T23:00:15.158Z
-    updated_at: 2026-04-01T23:00:40.870Z
+    updated_at: 2026-04-01T23:10:59.876Z
     notes: []
