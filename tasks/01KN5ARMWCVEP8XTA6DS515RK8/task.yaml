@@ -96,7 +96,7 @@ description: >-
 spec_ref: "@task-activity-in-file"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-purge-old-storage-refs"
@@ -107,6 +107,14 @@ tags:
   - tasks
   - activity
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-04-01T20:41:01.908Z
+  commit: 0c1440e5c29913753624279ee2943550c0cb4291
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
 session_id: 01KN5BMHQTF9D0B4WVY6505A2R
 history:
   - author: "@claude"
@@ -324,7 +332,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-01T20:27:27.256Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-04-01T20:41:01.908Z
+          commit: 0c1440e5c29913753624279ee2943550c0cb4291
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-04-01T20:41:01.913Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-01T20:41:01.913Z
 created_at: 2026-04-01T20:11:40.812Z
 started_at: 2026-04-01T20:27:27.255Z
+submitted_at: 2026-04-01T20:41:01.913Z
 todos: []
 automation: eligible
