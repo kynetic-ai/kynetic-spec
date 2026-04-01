@@ -10753,6 +10753,15 @@ observations:
     resolved_at: 2026-04-01T05:19:39.724Z
     resolved_by: Jacob Chapel
     created_at: 2026-04-01T05:17:50.039Z
+  - _ulid: 01KN3RBTY0J2KEZDGSNSG8ZTDG
+    type: friction
+    content: Focused e2e reproduction is obscured because npm run test:e2e -- <spec> still pulls in
+      smoke/api-server specs. Direct npx playwright test is required to isolate a single failing UI
+      spec.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-01T05:30:52.225Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
