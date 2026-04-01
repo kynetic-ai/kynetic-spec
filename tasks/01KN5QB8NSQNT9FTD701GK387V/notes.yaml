@@ -1,1 +1,11 @@
-notes: []
+notes:
+  - _ulid: 01KN5QE6D110DMWX4CTS7KD5Q0
+    content: "Approach: inspect tests/file-lock.test.ts and src/parser/file-lock.ts together, then
+      reproduce with fresh repeated runs and targeted subsets. Edge cases: same-process contention,
+      duration-based live-lock reclamation, env var leakage across tests, and stale cleanup racing a
+      successor lock. Test plan: repeated fresh runs of the file-lock suite and focused stress on
+      the concurrent increment case, then behavioral regression coverage for the confirmed failure
+      mode."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T23:53:09.793Z
