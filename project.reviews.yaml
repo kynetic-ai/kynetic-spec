@@ -99220,6 +99220,19 @@ reviews:
         runner: playwright
         created_at: 2026-04-01T09:32:08.838Z
         completed_at: 2026-04-01T09:32:08.838Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm test -- --fresh reported failures in tests/cli-serve.test.ts,
+          tests/dispatch-workspace-config.test.ts, tests/native-guard-setup.test.ts. Control run on
+          base dd1b3eb and isolated rerun on HEAD both passed for those suites, indicating unrelated
+          nondeterministic gate noise outside this diff.
+        name: full npm test
+        required: false
+        runner: test.cjs
+        created_at: 2026-04-01T09:32:13.179Z
+        completed_at: 2026-04-01T09:32:13.179Z
     events:
       - _ulid: 01KN45CVJ6TB17JHDEZ6XWR70E
         actor: Jacob Chapel
@@ -99308,6 +99321,13 @@ reviews:
           status: pass
           name: targeted e2e
         timestamp: 2026-04-01T09:32:09.534Z
+      - _ulid: 01KN465S3434FMD6NBXHM38QF4
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: full npm test
+        timestamp: 2026-04-01T09:32:13.796Z
     examined_commit: d60e51a41636746468122c111be5de0af4ee2a13
     external_links: []
     lifecycle_state: closed
@@ -99361,5 +99381,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-01T09:31:58.396Z
     created_at: 2026-04-01T09:18:37.126Z
-    updated_at: 2026-04-01T09:32:08.838Z
+    updated_at: 2026-04-01T09:32:13.179Z
     notes: []
