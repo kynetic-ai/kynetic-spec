@@ -98872,7 +98872,17 @@ reviews:
     slugs: []
     title: Review task-fix-observations-e2e-full-gate
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 2082/2082 suites passed; 7522/7527 tests passed, 5 skipped, 0 failed.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-01T08:58:20.780Z
+        completed_at: 2026-04-01T08:58:20.780Z
     events:
       - _ulid: 01KN43RF2GDN53MWGYG5J84A96
         actor: Jacob Chapel
@@ -98887,6 +98897,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-01T08:50:25.463Z
+      - _ulid: 01KN447RAWYBXMS0Y98KNNATSV
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-01T08:58:21.405Z
     examined_commit: 37e60220bea429eabfccfa1d3cf783112201a3d7
     external_links: []
     lifecycle_state: open
@@ -98899,7 +98916,7 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-01T08:50:00.401Z
-    updated_at: 2026-04-01T08:50:24.810Z
+    updated_at: 2026-04-01T08:58:20.780Z
     notes: []
   - _ulid: 01KN447AFM2N1H539GRT7B9679
     slugs: []
