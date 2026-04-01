@@ -98883,6 +98883,16 @@ reviews:
         runner: npm
         created_at: 2026-04-01T08:58:20.780Z
         completed_at: 2026-04-01T08:58:20.780Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npx playwright test tests/e2e/observations.spec.ts passed: 13 tests, 0 failures."
+        name: playwright observations
+        required: true
+        runner: playwright
+        created_at: 2026-04-01T08:58:22.841Z
+        completed_at: 2026-04-01T08:58:22.841Z
     events:
       - _ulid: 01KN43RF2GDN53MWGYG5J84A96
         actor: Jacob Chapel
@@ -98904,6 +98914,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-01T08:58:21.405Z
+      - _ulid: 01KN447TD483EA07D3YBRTM08G
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: playwright observations
+        timestamp: 2026-04-01T08:58:23.525Z
     examined_commit: 37e60220bea429eabfccfa1d3cf783112201a3d7
     external_links: []
     lifecycle_state: open
@@ -98916,7 +98933,7 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-01T08:50:00.401Z
-    updated_at: 2026-04-01T08:58:20.780Z
+    updated_at: 2026-04-01T08:58:22.841Z
     notes: []
   - _ulid: 01KN447AFM2N1H539GRT7B9679
     slugs: []
