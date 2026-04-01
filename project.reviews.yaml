@@ -96008,3 +96008,29 @@ reviews:
     created_at: 2026-04-01T05:33:59.899Z
     updated_at: 2026-04-01T05:51:13.750Z
     notes: []
+  - _ulid: 01KN3T8DZTKY6MZ4FA3NGH6ENW
+    slugs: []
+    title: Review task-fix-sessions-detail-filter-e2e-full-gate
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KN3T8DZTRG0P98GFMD81KBJ2
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-01T06:03:57.818Z
+    examined_commit: 3e730be572726b11aad0cf6011c8f3e967ec9eed
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KN3Q0BXDE56CDNFDZXBFGGF9"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-01T06:03:57.818Z
+    updated_at: null
+    notes: []
