@@ -98893,6 +98893,25 @@ reviews:
         runner: playwright
         created_at: 2026-04-01T08:58:22.841Z
         completed_at: 2026-04-01T08:58:22.841Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/schema/meta.ts, src/parser/meta.ts,
+          packages/web-ui/src/routes/observations/+page.svelte, packages/web-ui/src/lib/api.ts,
+          tests/e2e/observations.spec.ts, tests/yaml-round-trip-stability.test.ts,
+          tests/daemon-api/meta.test.ts, packages/shared/src/api.ts. Commands run: git diff --stat,
+          git diff, kspec task get, kspec review for-task, kspec item get @web-dashboard, kspec item
+          get @markdown-ui-adoption, grep AC annotations, kspec validate, npm test, npm run
+          build:e2e, npx playwright test tests/e2e/observations.spec.ts. Claims verified:
+          observation context survives schema validation/load path and renders on the observations
+          page; focused observations E2E suite passes. Categories searched: correctness, test
+          quality, integration, edge cases, error handling."
+        name: review evidence
+        required: false
+        runner: reviewer
+        created_at: 2026-04-01T08:58:26.957Z
+        completed_at: 2026-04-01T08:58:26.957Z
     events:
       - _ulid: 01KN43RF2GDN53MWGYG5J84A96
         actor: Jacob Chapel
@@ -98921,6 +98940,13 @@ reviews:
           status: pass
           name: playwright observations
         timestamp: 2026-04-01T08:58:23.525Z
+      - _ulid: 01KN447YCVKMDXR0Y2WE69AJH7
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence
+        timestamp: 2026-04-01T08:58:27.611Z
     examined_commit: 37e60220bea429eabfccfa1d3cf783112201a3d7
     external_links: []
     lifecycle_state: open
@@ -98933,7 +98959,7 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-01T08:50:00.401Z
-    updated_at: 2026-04-01T08:58:22.841Z
+    updated_at: 2026-04-01T08:58:26.957Z
     notes: []
   - _ulid: 01KN447AFM2N1H539GRT7B9679
     slugs: []
