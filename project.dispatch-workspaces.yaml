@@ -30534,12 +30534,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-01T08:39:40.692Z
+      updated_at: 2026-04-01T08:39:47.875Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-01T08:39:40.692Z
+      updated_at: 2026-04-01T08:39:47.875Z
     integration:
       status: pending
       detail: null
@@ -30547,24 +30547,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: cdf2261f7da7fe3e9936c4c3160f852b2099eeb4
-      updated_at: 2026-04-01T08:39:40.692Z
-    lifecycle_state: ready
+      updated_at: 2026-04-01T08:39:47.875Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KN3Q07XKYC6TDSNHJ48TA2V6"
     task_slug: task-fix-api-watcher-e2e-full-gate
     timestamps:
       closed_at: null
       last_active_at: 2026-04-01T08:23:50.876Z
-      last_reconciled_at: 2026-04-01T08:39:40.692Z
+      last_reconciled_at: 2026-04-01T08:39:47.875Z
       created_at: 2026-04-01T08:23:32.923Z
-      updated_at: 2026-04-01T08:39:40.692Z
+      updated_at: 2026-04-01T08:39:47.875Z
     workspace_id: dispatch-workspace-01KN3Q07XKYC6TDSNHJ48TA2V6
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: f306711ef63835d215ddfddfa6f194416214372a
+        last_seen_at: 2026-04-01T08:39:47.875Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-api-watcher-e2e-full-gate-01kn3q07-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-fix-api-watcher-e2e-full-gate/01kn3q07
-        head: cdf2261f7da7fe3e9936c4c3160f852b2099eeb4
-        last_seen_at: 2026-04-01T08:23:32.923Z
+        head: f306711ef63835d215ddfddfa6f194416214372a
+        last_seen_at: 2026-04-01T08:39:47.875Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-api-watcher-e2e-full-gate-01kn3q07
