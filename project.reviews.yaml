@@ -97418,6 +97418,797 @@ reviews:
         runner: kspec
         created_at: 2026-04-01T07:58:33.624Z
         completed_at: 2026-04-01T07:58:33.624Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Attempted\ 
+
+          > @kynetic-ai/spec@0.12.0 build:e2e
+
+          > tsc && chmod +x dist/cli/index.js && npm run build:shared && npm run build:daemon && npm
+          run build:web-ui
+
+
+
+          > @kynetic-ai/spec@0.12.0 build:shared
+
+          > cd packages/shared && npm run build
+
+
+
+          > @kynetic-ai/shared@0.1.0 build
+
+          > tsc
+
+
+
+          > @kynetic-ai/spec@0.12.0 build:daemon
+
+          > shx rm -rf dist/daemon && shx mkdir -p dist/daemon && shx cp -r packages/daemon/src/*
+          dist/daemon/ && shx cp src/daemon/entity-cache.ts dist/daemon/
+
+
+
+          > @kynetic-ai/spec@0.12.0 build:web-ui
+
+          > shx rm -rf dist/web-ui && cd packages/web-ui && npm run build && shx cp -r build
+          ../../dist/web-ui
+
+
+
+          > @kynetic-ai/web-ui@0.1.0 build
+
+          > vite build
+
+
+          vite v7.3.1 building ssr environment for production...
+
+          transforming...
+
+          ✓ 4651 modules transformed.
+
+          rendering chunks...
+
+          vite v7.3.1 building client environment for production...
+
+          transforming...
+
+          ✓ 4797 modules transformed.
+
+          rendering chunks...
+
+          computing gzip size...
+
+          .svelte-kit/output/client/_app/version.json                                    0.03 kB │
+          gzip:  0.05 kB
+
+          .svelte-kit/output/client/.vite/manifest.json                                 32.07 kB │
+          gzip:  3.48 kB
+
+          .svelte-kit/output/client/_app/immutable/assets/select-trigger.CV-KWLNP.css    0.29 kB │
+          gzip:  0.15 kB
+
+          .svelte-kit/output/client/_app/immutable/assets/12.BwwJybWx.css                1.26 kB │
+          gzip:  0.41 kB
+
+          .svelte-kit/output/client/_app/immutable/assets/0.BzSixdzL.css               115.67 kB │
+          gzip: 18.58 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/C5yCgjJl.js                    0.04 kB │
+          gzip:  0.06 kB
+
+          .svelte-kit/output/client/_app/immutable/entry/start.VjTkf2F0.js               0.08 kB │
+          gzip:  0.09 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/5TNBaFGB.js                    0.11 kB │
+          gzip:  0.10 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/CETLGLyu.js                    0.18 kB │
+          gzip:  0.15 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/De-iW0Bz.js                    0.20 kB │
+          gzip:  0.18 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/Dy_1c1kC.js                    0.23 kB │
+          gzip:  0.16 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/BKYw_69c.js                    0.30 kB │
+          gzip:  0.23 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/COy4YZKC.js                    0.46 kB │
+          gzip:  0.33 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/Doie5yQ0.js                    0.48 kB │
+          gzip:  0.34 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/pqrOn-9H.js                    0.48 kB │
+          gzip:  0.29 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/DJxT0H6D.js                    0.48 kB │
+          gzip:  0.34 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/B71I6152.js                    0.48 kB │
+          gzip:  0.34 kB
+
+          .svelte-kit/output/client/_app/immutable/nodes/1.B-C3Oowo.js                   0.49 kB │
+          gzip:  0.31 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/CaGJLVQK.js                    0.49 kB │
+          gzip:  0.34 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/BynAru6I.js                    0.50 kB │
+          gzip:  0.35 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/BIptzVYI.js                    0.50 kB │
+          gzip:  0.35 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/B1FoEG-8.js                    0.50 kB │
+          gzip:  0.35 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/BstPOu80.js                    0.51 kB │
+          gzip:  0.35 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/C7htF5kd.js                    0.51 kB │
+          gzip:  0.36 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/DzD-vTBS.js                    0.52 kB │
+          gzip:  0.33 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/BK79h3Cx.js                    0.53 kB │
+          gzip:  0.37 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/CD4P4O45.js                    0.53 kB │
+          gzip:  0.36 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/BJD27D5q.js                    0.54 kB │
+          gzip:  0.39 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/DhwXxTBx.js                    0.55 kB │
+          gzip:  0.38 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/BWZmuYiB.js                    0.56 kB │
+          gzip:  0.38 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/B_ZD1Zrc.js                    0.56 kB │
+          gzip:  0.38 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/qxpEQAvf.js                    0.57 kB │
+          gzip:  0.38 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/Dily27QJ.js                    0.58 kB │
+          gzip:  0.39 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/D4O-avMq.js                    0.58 kB │
+          gzip:  0.40 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/BHyGaoHZ.js                    0.59 kB │
+          gzip:  0.40 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/BUZuLXok.js                    0.59 kB │
+          gzip:  0.41 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/DSC6sHwa.js                    0.59 kB │
+          gzip:  0.40 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/B_PAmHAE.js                    0.59 kB │
+          gzip:  0.40 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/oSxm0J_L.js                    0.60 kB │
+          gzip:  0.38 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/D_NU3YcJ.js                    0.61 kB │
+          gzip:  0.39 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/CcHDGoIF.js                    0.62 kB │
+          gzip:  0.42 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/B-QetJ-N.js                    0.62 kB │
+          gzip:  0.42 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/45NofnZb.js                    0.63 kB │
+          gzip:  0.43 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/DlZ7QkV1.js                    0.64 kB │
+          gzip:  0.41 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/nH2KdxPZ.js                    0.66 kB │
+          gzip:  0.44 kB
+
+          .svelte-kit/output/client/_app/immutable/nodes/6.BRdFJDJE.js                   0.67 kB │
+          gzip:  0.41 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/DuWwpTlf.js                    0.68 kB │
+          gzip:  0.42 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/C1HaEXoQ.js                    0.76 kB │
+          gzip:  0.49 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/CUaXwBnu.js                    1.00 kB │
+          gzip:  0.58 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/DjHCB-dF.js                    1.05 kB │
+          gzip:  0.52 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/BNphJ28q.js                    1.10 kB │
+          gzip:  0.55 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/BkI2EQca.js                    1.15 kB │
+          gzip:  0.68 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/C3RHSl-c.js                    1.40 kB │
+          gzip:  0.86 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/CoMeV_Wq.js                    1.50 kB │
+          gzip:  0.78 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/DNXJ8Jav.js                    1.68 kB │
+          gzip:  0.97 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/BU-niYe9.js                    1.90 kB │
+          gzip:  0.75 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/Bzs0lLp7.js                    1.96 kB │
+          gzip:  0.94 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/pTeMu05P.js                    2.40 kB │
+          gzip:  0.99 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/BlFF0Zd_.js                    2.46 kB │
+          gzip:  1.03 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/Bc9kkLI8.js                    2.48 kB │
+          gzip:  0.77 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/B3HRY9eC.js                    2.49 kB │
+          gzip:  1.07 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/DXA4Z-T3.js                    3.16 kB │
+          gzip:  1.43 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/D49T6mR5.js                    3.18 kB │
+          gzip:  1.30 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/lCYlmeFG.js                    3.38 kB │
+          gzip:  1.13 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/D4gt9-xa.js                    4.26 kB │
+          gzip:  1.62 kB
+
+          .svelte-kit/output/client/_app/immutable/nodes/7.CLNR83sw.js                   4.31 kB │
+          gzip:  1.92 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/DgMZrRa8.js                    4.34 kB │
+          gzip:  1.60 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/tFJiLkLE.js                    5.02 kB │
+          gzip:  2.00 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/BOqdojAR.js                    5.96 kB │
+          gzip:  1.87 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/tKxweOUm.js                    7.17 kB │
+          gzip:  3.17 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/C1B6lHB3.js                    8.08 kB │
+          gzip:  3.24 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/BSgug1xw.js                    8.27 kB │
+          gzip:  2.58 kB
+
+          .svelte-kit/output/client/_app/immutable/nodes/19.Dj4IZpVm.js                  9.69 kB │
+          gzip:  3.58 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/N2wX_8jr.js                   10.24 kB │
+          gzip:  2.81 kB
+
+          .svelte-kit/output/client/_app/immutable/entry/app.UvI6wphy.js                10.38 kB │
+          gzip:  4.09 kB
+
+          .svelte-kit/output/client/_app/immutable/nodes/9.COJ22s6A.js                  11.88 kB │
+          gzip:  4.28 kB
+
+          .svelte-kit/output/client/_app/immutable/nodes/5.G56Ud6yt.js                  12.86 kB │
+          gzip:  4.77 kB
+
+          .svelte-kit/output/client/_app/immutable/nodes/2.DgVJWHfq.js                  13.46 kB │
+          gzip:  4.83 kB
+
+          .svelte-kit/output/client/_app/immutable/nodes/15.Wr6q5Jm-.js                 16.07 kB │
+          gzip:  5.58 kB
+
+          .svelte-kit/output/client/_app/immutable/nodes/13.Bn_uqUjG.js                 17.16 kB │
+          gzip:  4.67 kB
+
+          .svelte-kit/output/client/_app/immutable/nodes/16.CuXkOtYt.js                 17.32 kB │
+          gzip:  6.38 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/kz5mBjyA.js                   17.52 kB │
+          gzip:  5.46 kB
+
+          .svelte-kit/output/client/_app/immutable/nodes/17.B0bNVvst.js                 17.62 kB │
+          gzip:  6.43 kB
+
+          .svelte-kit/output/client/_app/immutable/nodes/18.CNo3jPgR.js                 18.43 kB │
+          gzip:  5.05 kB
+
+          .svelte-kit/output/client/_app/immutable/nodes/11.DQHI8yHr.js                 23.42 kB │
+          gzip:  7.77 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/4erPDTNt.js                   24.08 kB │
+          gzip:  9.55 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/BvRKUkfN.js                   24.46 kB │
+          gzip:  7.48 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/BktZYdzL.js                   25.71 kB │
+          gzip: 10.11 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/BZ7wA_H4.js                   25.89 kB │
+          gzip:  9.06 kB
+
+          .svelte-kit/output/client/_app/immutable/nodes/3.CaLoUAlO.js                  26.39 kB │
+          gzip:  8.29 kB
+
+          .svelte-kit/output/client/_app/immutable/nodes/14.CM47JOZV.js                 27.91 kB │
+          gzip:  9.19 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/BoAX3t8U.js                   36.62 kB │
+          gzip:  9.61 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/Bt03r734.js                   39.85 kB │
+          gzip: 12.60 kB
+
+          .svelte-kit/output/client/_app/immutable/nodes/12.wI5yZfxk.js                 47.62 kB │
+          gzip: 14.54 kB
+
+          .svelte-kit/output/client/_app/immutable/nodes/10.CsGAfTT9.js                 68.16 kB │
+          gzip: 17.27 kB
+
+          .svelte-kit/output/client/_app/immutable/nodes/0.CqSsdUCG.js                  78.41 kB │
+          gzip: 22.45 kB
+
+          .svelte-kit/output/client/_app/immutable/nodes/4.ByHDGvk6.js                  89.05 kB │
+          gzip: 22.96 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/BBpH5xXq.js                   92.43 kB │
+          gzip: 28.73 kB
+
+          .svelte-kit/output/client/_app/immutable/nodes/8.BzNl6BRk.js                 124.09 kB │
+          gzip: 39.38 kB
+
+          .svelte-kit/output/client/_app/immutable/chunks/sh5ZcVu2.js                  151.78 kB │
+          gzip: 48.85 kB
+
+          ✓ built in 6.81s
+
+          .svelte-kit/output/server/.vite/manifest.json                                 24.86 kB
+
+          .svelte-kit/output/server/_app/immutable/assets/select-trigger.CV-KWLNP.css    0.29 kB
+
+          .svelte-kit/output/server/_app/immutable/assets/_page.SzGLxi4x.css             0.88 kB
+
+          .svelte-kit/output/server/_app/immutable/assets/_layout.CYH3EmY5.css         115.37 kB
+
+          .svelte-kit/output/server/entries/pages/_layout.ts.js                          0.04 kB
+
+          .svelte-kit/output/server/entries/pages/automation/_page.ts.js                 0.04 kB
+
+          .svelte-kit/output/server/entries/pages/plans/_page.ts.js                      0.04 kB
+
+          .svelte-kit/output/server/entries/pages/reviews/_page.ts.js                    0.04 kB
+
+          .svelte-kit/output/server/entries/pages/reviews/_id_/_page.ts.js               0.04 kB
+
+          .svelte-kit/output/server/entries/pages/settings/_page.ts.js                   0.04 kB
+
+          .svelte-kit/output/server/entries/pages/tasks/_page.ts.js                      0.04 kB
+
+          .svelte-kit/output/server/entries/pages/tasks/board/_page.ts.js                0.04 kB
+
+          .svelte-kit/output/server/entries/pages/workflows/_page.ts.js                  0.04 kB
+
+          .svelte-kit/output/server/chunks/false.js                                      0.05 kB
+
+          .svelte-kit/output/server/chunks/html.js                                       0.14 kB
+
+          .svelte-kit/output/server/chunks/environment.js                                0.19 kB
+
+          .svelte-kit/output/server/chunks/mode.svelte.js                                0.29 kB
+
+          .svelte-kit/output/server/entries/fallbacks/error.svelte.js                    0.35 kB
+
+          .svelte-kit/output/server/internal.js                                          0.38 kB
+
+          .svelte-kit/output/server/chunks/state.svelte.js                               0.38 kB
+
+          .svelte-kit/output/server/chunks/index-server.js                               0.39 kB
+
+          .svelte-kit/output/server/chunks/server.js                                     0.45 kB
+
+          .svelte-kit/output/server/chunks/index3.js                                     0.45 kB
+
+          .svelte-kit/output/server/entries/pages/items/_page.svelte.js                  0.47 kB
+
+          .svelte-kit/output/server/chunks/skeleton.js                                   0.57 kB
+
+          .svelte-kit/output/server/chunks/card-content.js                               0.63 kB
+
+          .svelte-kit/output/server/chunks/client.js                                     0.64 kB
+
+          .svelte-kit/output/server/chunks/card-title.js                                 0.64 kB
+
+          .svelte-kit/output/server/chunks/card.js                                       0.68 kB
+
+          .svelte-kit/output/server/chunks/dialog-footer.js                              0.68 kB
+
+          .svelte-kit/output/server/chunks/stores.js                                     0.69 kB
+
+          .svelte-kit/output/server/chunks/createMutation.svelte.js                      0.77 kB
+
+          .svelte-kit/output/server/chunks/card-header.js                                0.77 kB
+
+          .svelte-kit/output/server/chunks/reference.js                                  0.84 kB
+
+          .svelte-kit/output/server/chunks/utils.js                                      1.15 kB
+
+          .svelte-kit/output/server/chunks/utils2.js                                     1.16 kB
+
+          .svelte-kit/output/server/chunks/textarea.js                                   1.24 kB
+
+          .svelte-kit/output/server/chunks/session-utils.js                              1.46 kB
+
+          .svelte-kit/output/server/chunks/index.js                                      1.46 kB
+
+          .svelte-kit/output/server/chunks/chevron-down.js                               1.46 kB
+
+          .svelte-kit/output/server/chunks/chevron-right.js                              1.47 kB
+
+          .svelte-kit/output/server/chunks/loader-circle.js                              1.50 kB
+
+          .svelte-kit/output/server/chunks/Icon2.js                                      1.53 kB
+
+          .svelte-kit/output/server/chunks/search.js                                     1.56 kB
+
+          .svelte-kit/output/server/chunks/ban.js                                        1.57 kB
+
+          .svelte-kit/output/server/chunks/play.js                                       1.64 kB
+
+          .svelte-kit/output/server/chunks/folder.js                                     1.73 kB
+
+          .svelte-kit/output/server/chunks/external-link.js                              1.77 kB
+
+          .svelte-kit/output/server/chunks/git-branch.js                                 1.80 kB
+
+          .svelte-kit/output/server/chunks/triangle-alert.js                             1.81 kB
+
+          .svelte-kit/output/server/chunks/zap2.js                                       1.81 kB
+
+          .svelte-kit/output/server/chunks/triangle-alert2.js                            1.81 kB
+
+          .svelte-kit/output/server/chunks/zap.js                                        1.82 kB
+
+          .svelte-kit/output/server/chunks/bot.js                                        1.87 kB
+
+          .svelte-kit/output/server/chunks/inbox.js                                      1.88 kB
+
+          .svelte-kit/output/server/chunks/shield-check.js                               1.96 kB
+
+          .svelte-kit/output/server/chunks/createQuery.svelte.js                         2.08 kB
+
+          .svelte-kit/output/server/chunks/input.js                                      2.20 kB
+
+          .svelte-kit/output/server/chunks/context.js                                    2.20 kB
+
+          .svelte-kit/output/server/chunks/Icon.js                                       2.65 kB
+
+          .svelte-kit/output/server/chunks/ReferenceLink.js                              2.92 kB
+
+          .svelte-kit/output/server/chunks/button.js                                     2.94 kB
+
+          .svelte-kit/output/server/chunks/terminal.js                                   3.18 kB
+
+          .svelte-kit/output/server/chunks/separator.js                                  3.27 kB
+
+          .svelte-kit/output/server/chunks/clock.js                                      3.27 kB
+
+          .svelte-kit/output/server/chunks/table-row.js                                  3.53 kB
+
+          .svelte-kit/output/server/chunks/CacheWarmingBanner.js                         3.66 kB
+
+          .svelte-kit/output/server/chunks/events.js                                     3.93 kB
+
+          .svelte-kit/output/server/chunks/dialog-description.js                         4.82 kB
+
+          .svelte-kit/output/server/chunks/dialog-content.js                             5.41 kB
+
+          .svelte-kit/output/server/chunks/sheet-content.js                              5.55 kB
+
+          .svelte-kit/output/server/chunks/exports.js                                    5.59 kB
+
+          .svelte-kit/output/server/chunks/markdown.js                                   6.41 kB
+
+          .svelte-kit/output/server/entries/pages/sessions/_id_/_page.svelte.js          7.06 kB
+
+          .svelte-kit/output/server/entries/pages/observations/_page.svelte.js           9.31 kB
+
+          .svelte-kit/output/server/entries/pages/specs/_page.svelte.js                 10.77 kB
+
+          .svelte-kit/output/server/chunks/create-id.js                                 11.93 kB
+
+          .svelte-kit/output/server/chunks/dialog-content2.js                           15.29 kB
+
+          .svelte-kit/output/server/remote-entry.js                                     18.33 kB
+
+          .svelte-kit/output/server/chunks/shared.js                                    18.45 kB
+
+          .svelte-kit/output/server/entries/pages/reviews/_page.svelte.js               20.22 kB
+
+          .svelte-kit/output/server/entries/pages/_page.svelte.js                       22.17 kB
+
+          .svelte-kit/output/server/entries/pages/workflows/_page.svelte.js             23.62 kB
+
+          .svelte-kit/output/server/entries/pages/tasks/board/_page.svelte.js           24.25 kB
+
+          .svelte-kit/output/server/entries/pages/inbox/_page.svelte.js                 24.55 kB
+
+          .svelte-kit/output/server/chunks/internal.js                                  26.37 kB
+
+          .svelte-kit/output/server/entries/pages/settings/_page.svelte.js              27.64 kB
+
+          .svelte-kit/output/server/entries/pages/tasks/_page.svelte.js                 29.20 kB
+
+          .svelte-kit/output/server/chunks/keys.js                                      31.19 kB
+
+          .svelte-kit/output/server/entries/pages/triage/_page.svelte.js                31.54 kB
+
+          .svelte-kit/output/server/entries/pages/sessions/_page.svelte.js              33.36 kB
+
+          .svelte-kit/output/server/entries/pages/validate/_page.svelte.js              37.80 kB
+
+          .svelte-kit/output/server/chunks/x.js                                         39.75 kB
+
+          .svelte-kit/output/server/chunks/list.js                                      39.93 kB
+
+          .svelte-kit/output/server/entries/pages/agents/_page.svelte.js                44.24 kB
+
+          .svelte-kit/output/server/entries/pages/plans/_page.svelte.js                 52.17 kB
+
+          .svelte-kit/output/server/entries/pages/automation/_page.svelte.js            63.69 kB
+
+          .svelte-kit/output/server/chunks/index2.js                                    82.18 kB
+
+          .svelte-kit/output/server/entries/pages/reviews/_id_/_page.svelte.js          94.23 kB
+
+          .svelte-kit/output/server/chunks/select-trigger.js                            95.66 kB
+
+          .svelte-kit/output/server/index.js                                           126.93 kB
+
+          .svelte-kit/output/server/entries/pages/_layout.svelte.js                    172.97 kB
+
+          ✓ built in 12.85s
+
+
+          Run npm run preview to preview your production build locally.
+
+
+          > Using @sveltejs/adapter-static
+
+          \  Wrote site to \"build\"
+
+          \  ✔ done
+
+
+          Running 50 tests using 10 workers
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          \e[1A\e[2K[1/50] [chromium] › tests/e2e/sessions.spec.ts:378:5 › Session History View ›
+          Session Navigation (AC-2) › clicking a session navigates to /sessions/:id and shows stream
+          view
+
+          \e[1A\e[2K[2/50] [chromium] › tests/e2e/sessions.spec.ts:326:5 › Session History View ›
+          Session List (AC-1) › shows task ref when session has a task_id
+
+          \e[1A\e[2K[3/50] [chromium] › tests/e2e/sessions.spec.ts:413:5 › Session History View ›
+          Session Navigation (AC-2) › session row links point to correct detail URL
+
+          \e[1A\e[2K[4/50] [chromium] › tests/e2e/sessions.spec.ts:280:5 › Session History View ›
+          Session List (AC-1) › shows session list with required metadata fields
+
+          \e[1A\e[2K[5/50] [chromium] › tests/e2e/sessions.spec.ts:348:5 › Session History View ›
+          Session List (AC-1) › shows age for each row
+
+          \e[1A\e[2K[6/50] [chromium] › tests/e2e/sessions.spec.ts:292:5 › Session History View ›
+          Session List (AC-1) › shows status badge for each session
+
+          \e[1A\e[2K[7/50] [chromium] › tests/e2e/sessions.spec.ts:361:5 › Session History View ›
+          Session List (AC-1) › sessions are sorted by most recent first
+
+          \e[1A\e[2K[8/50] [chromium] › tests/e2e/sessions.spec.ts:315:5 › Session History View ›
+          Session List (AC-1) › shows agent type for each row
+
+          \e[1A\e[2K[9/50] [chromium] › tests/e2e/sessions.spec.ts:304:5 › Session History View ›
+          Session List (AC-1) › shows session ID for each row
+
+          \e[1A\e[2K[10/50] [chromium] › tests/e2e/sessions.spec.ts:337:5 › Session History View ›
+          Session List (AC-1) › shows duration for each row
+
+          \e[1A\e[2K[11/50] [chromium] › tests/e2e/sessions.spec.ts:425:5 › Session History View ›
+          Empty State › shows empty state when no sessions exist
+
+          \e[1A\e[2K[12/50] [chromium] › tests/e2e/sessions.spec.ts:443:5 › Session History View ›
+          Loading State › shows loading skeleton while fetching
+
+          \e[1A\e[2K[13/50] [chromium] › tests/e2e/sessions.spec.ts:467:5 › Session History View ›
+          Error State › shows error message on API failure
+
+          \e[1A\e[2K[14/50] [chromium] › tests/e2e/sessions.spec.ts:485:5 › Session History View ›
+          Session Type Indicators › shows trigger label for each session
+
+          \e[1A\e[2K[15/50] [chromium] › tests/e2e/sessions.spec.ts:497:5 › Session History View ›
+          Session Type Indicators › shows trigger icon for each session
+
+          \e[1A\e[2K[16/50] [chromium] › tests/e2e/sessions.spec.ts:509:5 › Session History View ›
+          Trigger Filter › filter controls are visible when sessions exist
+
+          \e[1A\e[2K[17/50] [chromium] › tests/e2e/sessions.spec.ts:520:5 › Session History View ›
+          Trigger Filter › dispatched filter shows only dispatched sessions
+
+          \e[1A\e[2K[18/50] [chromium] › tests/e2e/sessions.spec.ts:547:5 › Session History View ›
+          Trigger Filter › manual filter shows only manual sessions
+
+          \e[1A\e[2K[19/50] [chromium] › tests/e2e/sessions.spec.ts:566:5 › Session History View ›
+          Session Search › submitting search persists q in the URL and shows grouped matches
+
+          \e[1A\e[2K[20/50] [chromium] › tests/e2e/sessions.spec.ts:587:5 › Session History View ›
+          Session Search › submitting an empty search clears q and keeps the unfiltered session list
+
+          \e[1A\e[2K[21/50] [chromium] › tests/e2e/sessions.spec.ts:605:5 › Session History View ›
+          Session Search › search results group matching excerpts by session and preserve the search
+          query in the URL
+
+          \e[1A\e[2K[22/50] [chromium] › tests/e2e/sessions.spec.ts:630:5 › Session History View ›
+          Session Search › search with no matching excerpts shows the filtered empty state
+
+          \e[1A\e[2K[23/50] [chromium] › tests/e2e/sessions.spec.ts:651:5 › Session History View ›
+          Session Search › search requests include active metadata filters and the UI shows only
+          narrowed results
+
+          \e[1A\e[2K[24/50] [chromium] › tests/e2e/sessions.spec.ts:685:5 › Session History View ›
+          Session Search › typing quickly does not fire a search request per keystroke before submit
+
+          \e[1A\e[2K[25/50] [chromium] › tests/e2e/sessions.spec.ts:722:5 › Session History View ›
+          Navigation › sessions page is accessible from sidebar
+
+          \e[1A\e[2K[26/50] [chromium] › tests/e2e/sessions.spec.ts:735:5 › Session History View ›
+          Static Mode (@gh-pages-export ac-22) › session detail shows read-only message in static
+          mode
+
+          \e[1A\e[2K[27/50] [chromium] › tests/e2e/sessions.spec.ts:774:5 › Session History View ›
+          Static Mode (@gh-pages-export ac-22) › session detail does not attempt API calls in static
+          mode
+
+          \e[1A\e[2K[28/50] [chromium] › tests/e2e/sessions.spec.ts:832:5 › Session History View ›
+          Infinite Scroll › initial load fetches only first page of sessions
+
+          \e[1A\e[2K[29/50] [chromium] › tests/e2e/sessions.spec.ts:865:5 › Session History View ›
+          Infinite Scroll › shows loading skeleton during initial fetch
+
+          \e[1A\e[2K[30/50] [chromium] › tests/e2e/sessions.spec.ts:889:5 › Session History View ›
+          Infinite Scroll › scrolling near bottom triggers next page load
+
+          \e[1A\e[2K[31/50] [chromium] › tests/e2e/sessions.spec.ts:924:5 › Session History View ›
+          Infinite Scroll › previously loaded sessions remain when next page loads
+
+          \e[1A\e[2K[32/50] [chromium] › tests/e2e/sessions.spec.ts:962:5 › Session History View ›
+          Infinite Scroll › shows end of list indicator when all sessions loaded
+
+          \e[1A\e[2K[33/50] [chromium] › tests/e2e/sessions.spec.ts:1000:5 › Session History View ›
+          Infinite Scroll › does not make additional requests after all sessions loaded
+
+          \e[1A\e[2K[34/50] [chromium] › tests/e2e/sessions.spec.ts:1039:5 › Session History View ›
+          Infinite Scroll › changing filter resets list to page 1
+
+          \e[1A\e[2K[35/50] [chromium] › tests/e2e/sessions.spec.ts:1091:5 › Session History View ›
+          Infinite Scroll › filter change clears previously loaded items
+
+          \e[1A\e[2K[36/50] [chromium] › tests/e2e/sessions.spec.ts:1142:5 › Session History View ›
+          Infinite Scroll › new sessions indicator is hidden when no new sessions arrive
+
+          \e[1A\e[2K[37/50] [chromium] › tests/e2e/sessions.spec.ts:1167:5 › Session History View ›
+          Infinite Scroll › refreshes from sessions-topic updates as well as agent-origin updates
+
+          \e[1A\e[2K[38/50] [chromium] › tests/e2e/sessions.spec.ts:1308:5 › Session History View ›
+          Infinite Scroll › total count increments when WebSocket event arrives
+
+          \e[1A\e[2K[39/50] [chromium] › tests/e2e/sessions.spec.ts:1384:5 › Session History View ›
+          Infinite Scroll › re-fetches page when user is at top and new session arrives
+
+          \e[1A\e[2K[40/50] [chromium] › tests/e2e/sessions.spec.ts:1455:5 › Session History View ›
+          Infinite Scroll › shows indicator when an in-list update arrives while the user is
+          scrolled down
+
+          \e[1A\e[2K[41/50] [chromium] › tests/e2e/sessions.spec.ts:1546:5 › Session History View ›
+          Infinite Scroll › clicking new sessions indicator refreshes the list
+
+          \e[1A\e[2K[42/50] [chromium] › tests/e2e/sessions.spec.ts:1648:5 › Session History View ›
+          Session Filter Controls › status filter appends repeated status params and filters
+          sessions
+
+          \e[1A\e[2K[43/50] [chromium] › tests/e2e/sessions.spec.ts:1672:5 › Session History View ›
+          Session Filter Controls › agent filter updates URL with agent_id and filters sessions
+
+          \e[1A\e[2K[44/50] [chromium] › tests/e2e/sessions.spec.ts:1689:5 › Session History View ›
+          Session Filter Controls › agent type filter updates URL with agent_type and filters
+          sessions
+
+          \e[1A\e[2K[45/50] [chromium] › tests/e2e/sessions.spec.ts:1706:5 › Session History View ›
+          Session Filter Controls › date filter updates URL with since param
+
+          \e[1A\e[2K[46/50] [chromium] › tests/e2e/sessions.spec.ts:1719:5 › Session History View ›
+          Session Filter Controls › clear filters button removes all filter params from URL
+
+          \e[1A\e[2K[47/50] [chromium] › tests/e2e/sessions.spec.ts:1740:5 › Session History View ›
+          Session Filter Controls › shows filtered vs total count when filters active
+
+          \e[1A\e[2K[48/50] [chromium] › tests/e2e/sessions.spec.ts:1755:5 › Session History View ›
+          Session Filter Controls › does not fetch the full session dataset to seed filter controls
+
+          \e[1A\e[2K[49/50] [chromium] › tests/e2e/sessions.spec.ts:1788:5 › Session History View ›
+          Session Filter Controls › does not show filter count when no filters active
+
+          \e[1A\e[2K[50/50] [chromium] › tests/e2e/sessions.spec.ts:1798:5 › Session History View ›
+          Session Filter Controls › filters load from URL params on page navigation
+
+          \e[1A\e[2K  50 passed (11.7s) from the review snapshot. Build did not reach test
+          execution: packages/web-ui vite build failed with ENOENT opening
+          packages/web-ui/.svelte-kit/output/server/manifest-full.js. I could not independently
+          verify the worker's focused E2E pass claim from this snapshot."
+        name: sessions-live-update-focused
+        required: false
+        runner: playwright
+        created_at: 2026-04-01T07:59:04.789Z
+        completed_at: 2026-04-01T07:59:04.789Z
     events:
       - _ulid: 01KN409TWAP4ATK19HBBR8NDCQ
         actor: Jacob Chapel
@@ -97446,6 +98237,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN40TAPANTF6C3QR8TY753JZ
         timestamp: 2026-04-01T07:58:36.397Z
+      - _ulid: 01KN40V7QJNX4T846RFQKEH1DM
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: sessions-live-update-focused
+        timestamp: 2026-04-01T07:59:05.459Z
     examined_commit: 41065c1dcbdd93c41af1bab154eda20dd474edab
     external_links: []
     lifecycle_state: open
@@ -97481,5 +98279,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-01T07:49:35.242Z
-    updated_at: 2026-04-01T07:58:35.722Z
+    updated_at: 2026-04-01T07:59:04.789Z
     notes: []
