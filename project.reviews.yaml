@@ -100574,6 +100574,13 @@ reviews:
           status: pass
           name: targeted session-cache regressions
         timestamp: 2026-04-01T23:34:45.619Z
+      - _ulid: 01KN5PD20FR6B6Q61J8GBM4YNK
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN5PD1BBE85M8EBG7BRFE4WR
+        timestamp: 2026-04-01T23:35:03.951Z
     examined_commit: f9baca4826d02c234e43bf65412a92c426fd50fb
     external_links: []
     lifecycle_state: open
@@ -100583,8 +100590,26 @@ reviews:
       content_hash: ""
       ref: "@01KN5J2ETHQMPQGA334D827YWG"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KN5PD1BBE85M8EBG7BRFE4WR
+        anchor:
+          type: code
+          commit: f9baca4826d02c234e43bf65412a92c426fd50fb
+          line_end: 191
+          line_start: 191
+          path: tests/file-lock.test.ts
+          side: head
+        entries:
+          - _ulid: 01KN5PD1BB4XDDF2QX9FWEEABH
+            author: Jacob Chapel
+            body: "Fresh required verification is still red: npm test -- --fresh failed at
+              tests/file-lock.test.ts:191 (expected count: 5, got count: 4). I did not find a code
+              defect in this session-cache consolidation diff, and the task-specific session/cache
+              regressions plus build pass in isolation, but merge remains blocked until the
+              repository-wide suite is green."
+            created_at: 2026-04-01T23:35:03.275Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-01T23:19:35.698Z
-    updated_at: 2026-04-01T23:34:44.957Z
+    updated_at: 2026-04-01T23:35:03.275Z
     notes: []
