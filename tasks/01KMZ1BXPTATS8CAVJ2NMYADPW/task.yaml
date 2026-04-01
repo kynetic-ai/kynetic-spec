@@ -40,14 +40,8 @@ description: |
 spec_ref: null
 plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
 origin: derived
-status: blocked
-blocked_by:
-  - "Full Playwright suite is not yet CI-ready. Validation on 2026-03-31: npm run test:e2e:full =>
-    450 passed, 22 failed, 38 skipped; CI-like npx playwright test --workers=2 --retries=2 => 449
-    passed, 19 failed, 4 flaky, 38 skipped in about 10m45s. Persistent failures remain in
-    api-watcher, observations, review detail/interaction, sessions, and workflows, with extra flake
-    in navigation, plans, and session-context. Do not switch CI from smoke to full gate until those
-    failures are resolved and runtime is back within budget."
+status: in_progress
+blocked_by: []
 depends_on:
   - "@task-fix-api-watcher-e2e-full-gate"
   - "@task-fix-observations-e2e-full-gate"
@@ -64,7 +58,7 @@ tags:
   - e2e
   - infra
 vcs_refs: []
-session_id: 01KN2REQ03046EBFA9TBB7NT9K
+session_id: null
 history:
   - author: "@claude"
     changes:
@@ -125,7 +119,30 @@ history:
           - "@task-fix-fixtures-envelope"
     command: task-set
     timestamp: 2026-04-01T05:07:11.934Z
-prior_status: in_progress
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: blocked
+      blocked_by:
+        new: []
+        previous:
+          - "Full Playwright suite is not yet CI-ready. Validation on 2026-03-31: npm run
+            test:e2e:full => 450 passed, 22 failed, 38 skipped; CI-like npx playwright test
+            --workers=2 --retries=2 => 449 passed, 19 failed, 4 flaky, 38 skipped in about 10m45s.
+            Persistent failures remain in api-watcher, observations, review detail/interaction,
+            sessions, and workflows, with extra flake in navigation, plans, and session-context. Do
+            not switch CI from smoke to full gate until those failures are resolved and runtime is
+            back within budget."
+      session_id:
+        new: null
+        previous: 01KN2REQ03046EBFA9TBB7NT9K
+      prior_status:
+        new: null
+        previous: in_progress
+    command: task-unblock
+    timestamp: 2026-04-01T06:08:15.984Z
+prior_status: null
 created_at: 2026-03-30T09:32:00.090Z
 started_at: 2026-03-31T20:13:41.550Z
 todos: []
