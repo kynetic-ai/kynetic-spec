@@ -11,9 +11,6 @@
  * - @ui-session-stream ac-1: Session events as structured blocks
  * - @ui-session-stream ac-4: Session metadata, spec context, budget for context panel
  * - @session-legacy-migration ac-read-fallback: Detect-and-warn on all session read endpoints
- * - @session-summary-cache ac-cache-build: Cache built on first list request
- * - @session-summary-cache ac-cache-invalidate: Cache refreshed via directory listing diff
- * - @session-summary-cache ac-active-refresh: Active sessions recomputed on each request
  * - @session-event-detail-endpoint ac-single-event-fetch: Single event by seq with blob resolution
  * - @session-event-detail-endpoint ac-blob-resolution: Blob pointers resolved to full content
  * - @session-event-detail-endpoint ac-not-found: 404 for missing session or seq
@@ -30,6 +27,9 @@ import {
   resolveSessionBlobPointers,
   getBudget,
   searchSessionEvents,
+  listSessions,
+  getSessionMetadataOnly,
+  getSessionLogSummary,
   type SessionLogSummary,
   type SessionIdResolution,
 } from "../../sessions/store.js";
@@ -45,7 +45,6 @@ import {
   type LoadedSpecItem,
 } from "../../parser/index.js";
 import { resolveRefTitle } from "./ref-resolution.js";
-import { getSessionCache } from "../../sessions/cache.js";
 import { SessionStatusSchema, SessionTriggerSchema } from "../../sessions/types.js";
 import { parseTimeSpec } from "../../utils/time.js";
 import { enumArrayUnion } from "./enum-utils.js";
@@ -97,6 +96,12 @@ function filterSessionsByTaskRefs(
     const normalized = summary.task_id.startsWith("@") ? summary.task_id.slice(1) : summary.task_id;
     return refs.has(summary.task_id) || refs.has(normalized);
   });
+}
+
+async function listSessionSummariesFromDisk(sessionsDir: string): Promise<SessionLogSummary[]> {
+  const sessionIds = await listSessions(sessionsDir);
+  const summaries = await Promise.all(sessionIds.map((id) => getSessionMetadataOnly(sessionsDir, id)));
+  return summaries.filter((summary): summary is SessionLogSummary => summary !== null);
 }
 
 async function filterSessionSummaries(
@@ -151,10 +156,10 @@ async function filterSessionSummaries(
   if (sessionsDomainReady) {
     allSummaries = entityCache!.getSessionIndex() ?? [];
   } else {
-    // Fallback to standalone SessionSummaryCache — needs ctx for sessionsDir
+    // AC: @daemon-entity-cache ac-graceful-degradation — fall back to disk-backed
+    // metadata summaries while the unified cache is warming or degraded.
     const ctx = await resolveCtx();
-    const sessionCache = getSessionCache(ctx.sessionsDir);
-    allSummaries = await sessionCache.getAll(ctx.sessionsDir);
+    allSummaries = await listSessionSummariesFromDisk(ctx.sessionsDir);
   }
 
   let filtered = sortSessionSummaries(allSummaries);
@@ -322,7 +327,6 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
 
       // List all sessions with summaries, pagination, and filtering
       // AC: @session-legacy-migration ac-read-fallback ac-list-merge — detect-and-warn for legacy sessions
-      // AC: @session-summary-cache ac-cache-build — Uses cached summaries instead of re-reading all files
       // AC: @daemon-entity-cache ac-serve-from-memory — Uses unified cache session index when available
       // AC: @session-list-pagination-api ac-pagination — offset/limit pagination with total
       // AC: @session-list-pagination-api ac-metadata-only — Only reads session.yaml, uses cache
@@ -566,9 +570,7 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
         }
 
         if (!detail) {
-          // Fall back to standalone session cache (disk read)
-          const sessionCache = getSessionCache(sessionsDir);
-          detail = await sessionCache.get(sessionsDir, resolution.id);
+          detail = await getSessionLogSummary(sessionsDir, resolution.id);
         }
 
         if (!detail) {

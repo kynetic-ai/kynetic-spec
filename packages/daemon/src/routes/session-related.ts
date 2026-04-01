@@ -4,8 +4,7 @@ import {
   type LoadedSpecItem,
   type LoadedTask,
 } from "../../parser/index.js";
-import { getSessionCache } from "../../sessions/cache.js";
-import type { SessionLogSummary } from "../../sessions/store.js";
+import { getSessionMetadataOnly, listSessions, type SessionLogSummary } from "../../sessions/store.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
 
 interface RelatedSessionsNotFound {
@@ -53,9 +52,9 @@ async function getAllSessionSummaries(
   if (sessionsDomainReady) {
     return entityCache!.getSessionIndex() ?? [];
   }
-  // Fallback to standalone SessionSummaryCache
-  const sessionCache = getSessionCache(sessionsDir);
-  return sessionCache.getAll(sessionsDir);
+  const sessionIds = await listSessions(sessionsDir);
+  const summaries = await Promise.all(sessionIds.map((id) => getSessionMetadataOnly(sessionsDir, id)));
+  return summaries.filter((summary): summary is SessionLogSummary => summary !== null);
 }
 
 async function filterSessionsWithDiskFallback(
@@ -78,7 +77,7 @@ async function filterSessionsWithDiskFallback(
   // Related-session routes must not return false negatives when a warm session
   // index is momentarily stale after filesystem writes. Fall back to a fresh
   // disk-backed summary read before concluding there are no related sessions.
-  const freshSessions = await getSessionCache(sessionsDir).getAll(sessionsDir);
+  const freshSessions = await getAllSessionSummaries(sessionsDir);
   return filterSessionsByTaskRefs(freshSessions, taskRefs);
 }
 

@@ -31,6 +31,7 @@ import {
   type CacheDomain,
   type DomainState,
   type DomainReadyCallback,
+  type DomainReloadedCallback,
   DOMAIN_LOAD_ORDER,
 } from "../src/daemon/entity-cache";
 import { ensureSplitBackendRegistered } from "../src/parser/split-backend";
@@ -1292,9 +1293,10 @@ describe("ProjectEntityCache", () => {
     });
   });
 
-  // ─── Session live counters (migrated from SessionSummaryCache) ─────────
+  // ─── Session live counters ─────────────────────────────────────────────
 
   describe("session live event counters", () => {
+    // AC: @daemon-entity-cache ac-session-event-tracking
     it("should increment and serve live event counts for active sessions", async () => {
       const sessionsDir = join(projectA, ".kspec-sessions");
       await fs.mkdir(sessionsDir, { recursive: true });
@@ -1327,19 +1329,91 @@ describe("ProjectEntityCache", () => {
       expect(session!.event_count).toBe(3);
     });
 
-    it("should discard live counter on session close", async () => {
+    // AC: @daemon-entity-cache ac-session-event-tracking
+    it("should seed live counts from persisted metadata before incrementing", async () => {
+      const sessionsDir = join(projectA, ".kspec-sessions");
+      await fs.mkdir(sessionsDir, { recursive: true });
+
+      const id = "session-seeded";
+      const sessionDir = join(sessionsDir, id);
+      await fs.mkdir(sessionDir, { recursive: true });
+      await fs.writeFile(
+        join(sessionDir, "session.yaml"),
+        yamlStringify({
+          id,
+          agent_type: "claude-agent-acp",
+          status: "active",
+          started_at: new Date().toISOString(),
+          event_count: 2,
+        }),
+        "utf-8",
+      );
+
       const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("sessions");
 
-      cache.incrementSessionEventCount("test-session");
-      cache.incrementSessionEventCount("test-session");
-      cache.discardSessionLiveCounter("test-session");
+      cache.incrementSessionEventCount(id);
+      cache.incrementSessionEventCount(id);
 
-      // After discard, the session detail should not have a live counter
-      // (this tests the counter management, not index serving)
-      cache.incrementSessionEventCount("test-session");
-      // Counter was discarded then re-incremented — should be 1
-      const sessionIndex = cache.getSessionIndex();
-      // No session loaded in index, so this just tests the counter mechanism
+      const session = cache.getSessionIndex()!.find((entry) => entry.id === id);
+      expect(session).toBeDefined();
+      expect(session!.event_count).toBe(4);
+    });
+
+    // AC: @daemon-entity-cache ac-session-stats-handoff
+    it("should hand off from live counters to persisted metadata after reload", async () => {
+      const sessionsDir = join(projectA, ".kspec-sessions");
+      await fs.mkdir(sessionsDir, { recursive: true });
+
+      const id = "session-handoff";
+      const sessionDir = join(sessionsDir, id);
+      await fs.mkdir(sessionDir, { recursive: true });
+      const metadataPath = join(sessionDir, "session.yaml");
+      await fs.writeFile(
+        metadataPath,
+        yamlStringify({
+          id,
+          agent_type: "claude-agent-acp",
+          status: "active",
+          started_at: "2026-04-01T00:00:00.000Z",
+          event_count: 1,
+        }),
+        "utf-8",
+      );
+
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("sessions");
+
+      cache.incrementSessionEventCount(id);
+      expect(cache.getSessionIndex()!.find((entry) => entry.id === id)?.event_count).toBe(2);
+
+      cache.discardSessionLiveCounter(id);
+      await fs.writeFile(
+        metadataPath,
+        yamlStringify({
+          id,
+          agent_type: "claude-agent-acp",
+          status: "completed",
+          started_at: "2026-04-01T00:00:00.000Z",
+          ended_at: "2026-04-01T00:05:00.000Z",
+          event_count: 7,
+          iteration_count: 3,
+          tasks_completed: 1,
+        }),
+        "utf-8",
+      );
+
+      await cache.invalidateDomain("sessions");
+
+      const session = cache.getSessionIndex()!.find((entry) => entry.id === id);
+      expect(session).toBeDefined();
+      expect(session).toMatchObject({
+        id,
+        status: "completed",
+        event_count: 7,
+        iteration_count: 3,
+        tasks_completed: 1,
+      });
     });
   });
 
@@ -1859,6 +1933,145 @@ describe("ProjectEntityCache", () => {
       await cache.invalidateDomain("tasks");
       expect(cache.getDomainState("tasks")).toBe("ready");
       expect(readyEvents).toHaveLength(1); // Still just the initial one
+    });
+
+    // AC: @daemon-entity-cache ac-broadcast-after-reload
+    it("should notify after a watcher-driven reload completes with fresh sessions data", async () => {
+      const reloadEvents: Array<{ domain: CacheDomain; projectPath: string }> = [];
+      const onDomainReloaded: DomainReloadedCallback = (domain, projectPath) => {
+        reloadEvents.push({ domain, projectPath });
+      };
+
+      const sessionsDir = join(projectA, ".kspec-sessions");
+      const sessionId = "session-reload";
+      const sessionDir = join(sessionsDir, sessionId);
+      const metadataPath = join(sessionDir, "session.yaml");
+      await fs.mkdir(sessionDir, { recursive: true });
+      await fs.writeFile(
+        metadataPath,
+        yamlStringify({
+          id: sessionId,
+          agent_type: "claude-agent-acp",
+          status: "active",
+          started_at: "2026-04-01T00:00:00.000Z",
+          event_count: 1,
+        }),
+        "utf-8",
+      );
+
+      const cache = new ProjectEntityCache(projectA, undefined, undefined, onDomainReloaded);
+      await cache.loadDomain("sessions");
+
+      await fs.writeFile(
+        metadataPath,
+        yamlStringify({
+          id: sessionId,
+          agent_type: "claude-agent-acp",
+          status: "completed",
+          started_at: "2026-04-01T00:00:00.000Z",
+          ended_at: "2026-04-01T00:05:00.000Z",
+          event_count: 9,
+        }),
+        "utf-8",
+      );
+
+      await cache.handleFileChange(sessionsDir, metadataPath);
+
+      expect(reloadEvents).toEqual([{ domain: "sessions", projectPath: projectA }]);
+      expect(cache.getSessionIndex()!.find((entry) => entry.id === sessionId)).toMatchObject({
+        id: sessionId,
+        status: "completed",
+        event_count: 9,
+      });
+    });
+
+    // AC: @daemon-entity-cache ac-broadcast-after-reload
+    it("should broadcast the sessions topic only after the sessions reload finishes", async () => {
+      const { PubSubManager } = await import("../packages/daemon/src/websocket/pubsub");
+
+      const pubsub = new PubSubManager();
+      const sentMessages: string[] = [];
+      const mockWs = {
+        data: {
+          sessionId: "test-conn",
+          topics: new Set(["sessions"]),
+          seq: 0,
+          lastPong: Date.now(),
+          projectPath: projectA,
+        },
+        send: vi.fn((msg: string) => sentMessages.push(msg)),
+        close: vi.fn(),
+        subscribe: vi.fn(),
+        unsubscribe: vi.fn(),
+      } as any;
+      pubsub.addConnection("test-conn", mockWs);
+
+      const sessionsDir = join(projectA, ".kspec-sessions");
+      const sessionId = "session-pubsub";
+      const sessionDir = join(sessionsDir, sessionId);
+      const metadataPath = join(sessionDir, "session.yaml");
+      await fs.mkdir(sessionDir, { recursive: true });
+      await fs.writeFile(
+        metadataPath,
+        yamlStringify({
+          id: sessionId,
+          agent_type: "claude-agent-acp",
+          status: "active",
+          started_at: "2026-04-01T00:00:00.000Z",
+          event_count: 1,
+        }),
+        "utf-8",
+      );
+
+      const cache = new ProjectEntityCache(
+        projectA,
+        undefined,
+        undefined,
+        (domain, cachePath) => {
+          if (domain !== "sessions") return;
+          pubsub.broadcast(
+            "sessions",
+            "session_changed",
+            {
+              domain,
+              projectPath: cachePath,
+              action: "modified",
+              timestamp: new Date().toISOString(),
+            },
+            cachePath,
+          );
+        },
+      );
+      await cache.loadDomain("sessions");
+      sentMessages.length = 0;
+
+      await fs.writeFile(
+        metadataPath,
+        yamlStringify({
+          id: sessionId,
+          agent_type: "claude-agent-acp",
+          status: "completed",
+          started_at: "2026-04-01T00:00:00.000Z",
+          ended_at: "2026-04-01T00:05:00.000Z",
+          event_count: 4,
+        }),
+        "utf-8",
+      );
+
+      await cache.handleFileChange(sessionsDir, metadataPath);
+
+      expect(sentMessages).toHaveLength(1);
+      const broadcast = JSON.parse(sentMessages[0]);
+      expect(broadcast.topic).toBe("sessions");
+      expect(broadcast.event).toBe("session_changed");
+      expect(broadcast.data).toMatchObject({
+        domain: "sessions",
+        projectPath: projectA,
+        action: "modified",
+      });
+      expect(cache.getSessionIndex()!.find((entry) => entry.id === sessionId)?.event_count).toBe(4);
+
+      pubsub.removeConnection("test-conn");
     });
 
     // AC: @daemon-entity-cache ac-domain-ready-event

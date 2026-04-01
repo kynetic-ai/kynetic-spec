@@ -293,6 +293,17 @@ export async function createServer(options: ServerOptions) {
           cachePath,
         );
       },
+      (domain, cachePath) => {
+        if (domain !== "sessions") {
+          return;
+        }
+        pubsubManager.broadcast(
+          "sessions",
+          "session_changed",
+          { domain, projectPath: cachePath, action: "modified", timestamp: new Date().toISOString() },
+          cachePath,
+        );
+      },
     );
     entityCache.loadAll().catch((err: unknown) => {
       console.error(`[entity-cache] Error during initial load for ${projectPath}:`, err);

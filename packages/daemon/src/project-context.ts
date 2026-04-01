@@ -193,18 +193,6 @@ export class ProjectContextManager {
       sessionWatcher = new SessionWatcher({
         sessionsDir,
         onSessionChange: (file) => {
-          if (this.pubsub) {
-            const relativePath = relative(sessionsDir, file);
-            this.pubsub.broadcast(
-              "sessions",
-              "session_changed",
-              {
-                ref: relativePath,
-                action: "modified",
-              },
-              normalizedPath,
-            );
-          }
           // AC: @daemon-entity-cache ac-watcher-invalidation — invalidate session cache domain
           if (this.cacheInvalidationCallback) {
             // Session changes invalidate the sessions domain; pass sessionsDir as kspecDir

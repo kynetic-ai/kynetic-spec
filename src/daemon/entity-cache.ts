@@ -322,6 +322,12 @@ export type DomainReadyCallback = (
   previousState: DomainState,
 ) => void;
 
+/**
+ * Callback invoked after a watcher-driven reload completes with fresh data.
+ * AC: @daemon-entity-cache ac-broadcast-after-reload
+ */
+export type DomainReloadedCallback = (domain: CacheDomain, projectPath: string) => void;
+
 const DEFAULT_SESSION_CACHE_CONFIG: SessionCacheConfig = {
   maxIndexSize: 100,
 };
@@ -515,7 +521,7 @@ export class ProjectEntityCache {
    */
   private writeThroughSkip = new Set<CacheDomain>();
 
-  /** Live event counters for active sessions (migrated from SessionSummaryCache). */
+  /** Live event counters for active sessions served from the cached session index. */
   private liveEventCounts = new Map<string, number>();
 
   /**
@@ -544,14 +550,22 @@ export class ProjectEntityCache {
    */
   private onDomainReady?: DomainReadyCallback;
 
+  /**
+   * Optional callback for watcher-driven reload completion.
+   * AC: @daemon-entity-cache ac-broadcast-after-reload
+   */
+  private onDomainReloaded?: DomainReloadedCallback;
+
   constructor(
     projectPath: string,
     sessionConfig?: Partial<SessionCacheConfig>,
     onDomainReady?: DomainReadyCallback,
+    onDomainReloaded?: DomainReloadedCallback,
   ) {
     this.projectPath = projectPath;
     this.sessionConfig = { ...DEFAULT_SESSION_CACHE_CONFIG, ...sessionConfig };
     this.onDomainReady = onDomainReady;
+    this.onDomainReloaded = onDomainReloaded;
   }
 
   // ─── Public Query API ────────────────────────────────────────────────────
@@ -771,7 +785,7 @@ export class ProjectEntityCache {
    * On first call, seeds the counter from the persisted event_count in the
    * session index so that subsequent getSessionIndex() calls add to the
    * baseline rather than overwriting it with a counter that started at zero.
-   * Migrated from SessionSummaryCache.
+   * AC: @daemon-entity-cache ac-session-event-tracking
    */
   incrementSessionEventCount(sessionId: string): void {
     let current = this.liveEventCounts.get(sessionId);
@@ -785,7 +799,7 @@ export class ProjectEntityCache {
 
   /**
    * Discard live event counter for a session (on close).
-   * Migrated from SessionSummaryCache.
+   * AC: @daemon-entity-cache ac-session-stats-handoff
    */
   discardSessionLiveCounter(sessionId: string): void {
     this.liveEventCounts.delete(sessionId);
@@ -1229,6 +1243,9 @@ export class ProjectEntityCache {
         // AC: @daemon-server ac-18 — track last invalidation timestamp
         this.getStore(domain).lastInvalidatedAt = new Date().toISOString();
         await this.loadDomain(domain);
+        if (!this.disposed && this.getStore(domain).state === "ready") {
+          this.onDomainReloaded?.(domain, this.projectPath);
+        }
       } finally {
         d?.resolve();
       }
@@ -1379,6 +1396,7 @@ export function registerEntityCache(
   projectPath: string,
   sessionConfig?: Partial<SessionCacheConfig>,
   onDomainReady?: DomainReadyCallback,
+  onDomainReloaded?: DomainReloadedCallback,
 ): ProjectEntityCache {
   // Reuse existing cache if already registered
   const existing = cacheRegistry.get(projectPath);
@@ -1386,7 +1404,7 @@ export function registerEntityCache(
     return existing;
   }
 
-  const cache = new ProjectEntityCache(projectPath, sessionConfig, onDomainReady);
+  const cache = new ProjectEntityCache(projectPath, sessionConfig, onDomainReady, onDomainReloaded);
   cacheRegistry.set(projectPath, cache);
   return cache;
 }

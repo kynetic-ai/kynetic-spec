@@ -138,6 +138,22 @@ function createWarmCache(
   };
 }
 
+function createLoadingSessionsCache(
+  tasks: TaskSummary[],
+  items: ItemSummary[],
+): RouteEntityCache {
+  const base = createWarmCache(tasks, items, []);
+  return {
+    ...base,
+    getDomainState: (domain: string) => {
+      if (domain === "tasks" || domain === "items") return "ready";
+      if (domain === "sessions") return "loading";
+      return "unloaded";
+    },
+    getSessionIndex: () => null,
+  };
+}
+
 function makeRequest(urlPath: string, init: RequestInit = {}) {
   return app.handle(
     new Request(`http://localhost${urlPath}`, {
@@ -257,6 +273,34 @@ describe("Route-level cache coverage for related-sessions and filtered sessions"
 
   // AC: @daemon-entity-cache ac-serve-from-memory — related sessions for task served from cache
   it("GET /api/tasks/:ref/sessions resolves from warm cache", async () => {
+    const res = await makeRequest(`/api/tasks/@cache-test-task/sessions`);
+    expect(res.status).toBe(200);
+
+    const body = (await res.json()) as { data: SessionLogSummary[]; meta: { total: number; cache_status: string } };
+    expect(body.meta.total).toBe(1);
+    expect(body.data[0]).toMatchObject({
+      id: SESSION_ID,
+      task_id: "@cache-test-task",
+      status: "completed",
+    });
+  });
+
+  // AC: @daemon-entity-cache ac-graceful-degradation — related sessions fall back
+  // to disk-backed metadata reads while the sessions domain is still warming.
+  it("GET /api/tasks/:ref/sessions falls back to disk when sessions cache is not ready", async () => {
+    const taskSummaries = [makeTaskSummary()];
+    const itemSummaries = [makeItemSummary()];
+    const loadingCache = createLoadingSessionsCache(taskSummaries, itemSummaries);
+    const getEntityCache: EntityCacheAccessor = () => loadingCache;
+    const pubsub = new PubSubManager();
+    const { middleware } = projectContextMiddleware();
+
+    app = new Elysia()
+      .use(middleware)
+      .use(createTasksRoutes({ pubsub, getEntityCache }))
+      .use(createItemsRoutes({ getEntityCache }))
+      .use(createSessionRoutes({ getEntityCache }));
+
     const res = await makeRequest(`/api/tasks/@cache-test-task/sessions`);
     expect(res.status).toBe(200);
 
