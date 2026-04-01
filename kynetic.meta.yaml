@@ -10843,6 +10843,26 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-01T06:26:12.023Z
+  - _ulid: 01KN3WFF0CEX2F7VXPBGTKZYTD
+    type: friction
+    content: "Focused reproduction can give a false sense of completion for fix-cycle work: this
+      session's original sessions failures were fixed, but the task still could not clear review
+      until a full non-cached npm test run exposed unrelated full-gate flakes in dispatch and
+      websocket tests. The practical lesson is that required-gate reruns need to happen before
+      resubmission, not after review records are created."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-01T06:42:45.389Z
+  - _ulid: 01KN3WFF85A9Z06GXQPAX0ARC6
+    type: success
+    content: Using the shared waitForStartup polling helper to replace ad hoc 1s spin loops made the
+      post-invocation dispatch assertions hold under full-suite load. Reusing an existing bounded
+      readiness helper was a better stabilization pattern than inflating arbitrary sleep counts.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-01T06:42:45.637Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
