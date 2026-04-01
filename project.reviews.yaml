@@ -99514,6 +99514,12 @@ reviews:
         payload:
           thread_ulid: 01KN48RECZPZWPZ8YBRYHQQX7N
         timestamp: 2026-04-01T10:21:58.127Z
+      - _ulid: 01KN490XT6B89JFW3E9BKD93NE
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KN48R6HFWCF1DTP3HFAWGMNV
+        timestamp: 2026-04-01T10:22:00.518Z
     examined_commit: abee02938cb6766756ca3c93240afb6ed1710184
     external_links: []
     lifecycle_state: closed
@@ -99548,6 +99554,8 @@ reviews:
               selection still trigger the full E2E workflow."
             created_at: 2026-04-01T10:21:55.560Z
         kind: blocker
+        resolved_at: 2026-04-01T10:21:59.878Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KN48RECZPZWPZ8YBRYHQQX7N
         entries:
           - _ulid: 01KN48RECZFYZF6G1GGB3XZADS
@@ -99579,5 +99587,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-01T10:17:33.760Z
     created_at: 2026-04-01T10:02:42.776Z
-    updated_at: 2026-04-01T10:21:57.515Z
+    updated_at: 2026-04-01T10:21:59.878Z
     notes: []
