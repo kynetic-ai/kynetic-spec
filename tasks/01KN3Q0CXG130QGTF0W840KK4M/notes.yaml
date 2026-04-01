@@ -1,1 +1,12 @@
-notes: []
+notes:
+  - _ulid: 01KN3ZA75EBC1HMV8FE83G5M69
+    content: "Approach: reproduce only the four sessions live-update failures, compare the sessions page
+      refresh/indicator logic with centralized WS invalidation, and fix whichever side is actually
+      broken. Edge cases: browser-side WS event injection must cross the Playwright/browser boundary
+      correctly; scrolled state uses the layout main element rather than the page div;
+      fixture-backed live updates must use the daemon's real session file schema/path. Test plan:
+      targeted Playwright coverage for the four failing cases first, then rerun the live-update
+      block and broader sessions spec if needed."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T07:32:19.246Z
