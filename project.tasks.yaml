@@ -23629,7 +23629,7 @@
   title: Fix API watcher E2E failures blocking the full CI gate
   type: bug
   plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 2
@@ -23644,6 +23644,7 @@
   created_at: 2026-04-01T05:07:03.731Z
   started_at: 2026-04-01T08:24:17.952Z
   submitted_at: 2026-04-01T08:37:37.056Z
+  completed_at: 2026-04-01T08:48:06.112Z
   automation: eligible
 - _ulid: 01KN3Q08YPMW3NFQKWB01XX9V2
   slugs:
