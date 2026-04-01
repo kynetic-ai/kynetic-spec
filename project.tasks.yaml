@@ -21403,7 +21403,7 @@
   title: Purge deprecated spec references
   type: task
   plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-remove-monolithic"
@@ -21415,6 +21415,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-21T00:59:27.630Z
+  started_at: 2026-04-01T20:00:28.246Z
   automation: eligible
 - _ulid: 01KM7VFN51BP74TG8RMECCCQEB
   slugs:
