@@ -96389,6 +96389,12 @@ reviews:
         payload:
           thread_ulid: 01KN3TVGA2757YTT7PQCG4K5QA
         timestamp: 2026-04-01T07:12:52.001Z
+      - _ulid: 01KN3Y6N4SVJMX18D3HMCNTYD3
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN3TVGA2757YTT7PQCG4K5QA
+        timestamp: 2026-04-01T07:12:53.913Z
     examined_commit: 4eed9f6cc2f321ae17abc46f1a25766b8f489b78
     external_links: []
     lifecycle_state: closed
@@ -96416,6 +96422,18 @@ reviews:
               Because the task goal is to clear the full gate, a snapshot that still leaves npm test
               red cannot advance even though the review-detail E2Es now pass."
             created_at: 2026-04-01T06:14:22.786Z
+          - _ulid: 01KN3Y6MHMZ4766W2KXT9N8SF2
+            author: Jacob Chapel
+            body: "Addressed. The full-gate failure was caused by two issues: (1) three post-invocation dispatch
+              assertions were timing out under full-suite load before cleanup finished, which left
+              cascading suite failures; those tests now use bounded condition waits and always stop
+              the engine in finally blocks, and (2) the daemon accepted stale WEB_UI_DIR directories
+              that existed without index.html, so review-detail E2E could boot against a deleted
+              worktree build path. The daemon now requires index.html before selecting
+              explicit/env/bundled UI paths, with coverage in daemon-web-ui-bundle tests.
+              Verification on this branch: npm test passed (2082/2082 suites, 7522/7527 tests, 5
+              skipped) and review-detail Playwright coverage passed (29/29)."
+            created_at: 2026-04-01T07:12:53.300Z
         kind: blocker
         resolved_at: 2026-04-01T07:12:51.383Z
         resolved_by: Jacob Chapel
@@ -96428,7 +96446,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-01T06:14:47.026Z
     created_at: 2026-04-01T06:04:25.432Z
-    updated_at: 2026-04-01T07:12:51.383Z
+    updated_at: 2026-04-01T07:12:53.300Z
     notes: []
   - _ulid: 01KN3TTZTEK2YN7DCCGH5RBNXE
     slugs: []
