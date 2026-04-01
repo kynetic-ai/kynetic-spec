@@ -94842,9 +94842,25 @@ reviews:
           status: pass
           name: review evidence log
         timestamp: 2026-04-01T05:34:05.402Z
+      - _ulid: 01KN3RHSNH00KYVX6HXA5ETXFH
+        actor: codex@openai
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-01T05:34:07.537Z
+      - _ulid: 01KN3RHSNH6QT3M2SRWFT8PMW0
+        actor: codex@openai
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-01T05:34:07.537Z
     examined_commit: 81dd34e0197fe65ec7da87a5a5bc1615d96be4fb
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -95590,9 +95606,16 @@ reviews:
               though the original two named cases improved."
             created_at: 2026-04-01T05:33:21.987Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai
+        role: reviewer
+        created_at: 2026-04-01T05:34:07.537Z
     created_at: 2026-04-01T05:20:49.603Z
-    updated_at: 2026-04-01T05:34:04.666Z
+    updated_at: 2026-04-01T05:34:07.537Z
     notes: []
   - _ulid: 01KN3RHJ6V99DSSS7JP2NRN2YD
     slugs: []
