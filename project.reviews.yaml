@@ -95621,7 +95621,19 @@ reviews:
     slugs: []
     title: Review task-fix-review-interaction-e2e-full-gate
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Command: npx playwright test tests/e2e/review-interaction.spec.ts. Result: 9 failed, 9
+          passed in 30.5s. Failures are AC-3/AC-4 interaction tests timing out while clicking
+          visible add-comment and reply controls."
+        name: playwright review-interaction
+        required: true
+        runner: playwright
+        created_at: 2026-04-01T05:42:51.532Z
+        completed_at: 2026-04-01T05:42:51.532Z
     events:
       - _ulid: 01KN3RHJ6T28YGET7SK8CVXJVJ
         actor: Jacob Chapel
@@ -95643,6 +95655,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN3S1NSYG145FN5ZPXY7YD53
         timestamp: 2026-04-01T05:42:49.000Z
+      - _ulid: 01KN3S1TBEP2Q1EYM4PY55NJDH
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: playwright review-interaction
+        timestamp: 2026-04-01T05:42:52.526Z
     examined_commit: 244194ef5451c0f34b5bb94623f5688842ae0588
     external_links: []
     lifecycle_state: open
@@ -95674,5 +95693,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-01T05:33:59.899Z
-    updated_at: 2026-04-01T05:42:47.870Z
+    updated_at: 2026-04-01T05:42:51.532Z
     notes: []
