@@ -97405,7 +97405,19 @@ reviews:
     slugs: []
     title: Review @01KN3Q0CXG130QGTF0W840KK4M
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate reached Schema OK and References OK, then exited 6 on repository-wide
+          pre-existing warnings (orphaned skill dir, orphaned specs, uncovered ACs, invalid AC
+          annotations). No task-specific validation regression surfaced.
+        name: validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-01T07:58:33.624Z
+        completed_at: 2026-04-01T07:58:33.624Z
     events:
       - _ulid: 01KN409TWAP4ATK19HBBR8NDCQ
         actor: Jacob Chapel
@@ -97420,6 +97432,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-01T07:50:01.932Z
+      - _ulid: 01KN40T98QHAPRZ706PQ3Y7CEG
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: validate
+        timestamp: 2026-04-01T07:58:34.263Z
     examined_commit: 41065c1dcbdd93c41af1bab154eda20dd474edab
     external_links: []
     lifecycle_state: open
@@ -97432,5 +97451,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-01T07:49:35.242Z
-    updated_at: 2026-04-01T07:50:01.246Z
+    updated_at: 2026-04-01T07:58:33.624Z
     notes: []
