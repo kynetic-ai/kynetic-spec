@@ -98327,6 +98327,12 @@ reviews:
         payload:
           thread_ulid: 01KN40TAPANTF6C3QR8TY753JZ
         timestamp: 2026-04-01T08:21:21.848Z
+      - _ulid: 01KN4242PQ34CGJ3KM9NRP71F4
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KN40VMZ6D4QX2KH3A98333SF
+        timestamp: 2026-04-01T08:21:23.799Z
     examined_commit: 41065c1dcbdd93c41af1bab154eda20dd474edab
     external_links: []
     lifecycle_state: closed
@@ -98393,6 +98399,8 @@ reviews:
               the touched files; the sessions E2E coverage relevant to this task is green.
             created_at: 2026-04-01T08:21:07.228Z
         kind: nit
+        resolved_at: 2026-04-01T08:21:23.168Z
+        resolved_by: Jacob Chapel
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -98402,7 +98410,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-01T07:59:34.986Z
     created_at: 2026-04-01T07:49:35.242Z
-    updated_at: 2026-04-01T08:21:21.239Z
+    updated_at: 2026-04-01T08:21:23.168Z
     notes: []
   - _ulid: 01KN41BX2R2GACZ5M6R9PBMAPF
     slugs: []
