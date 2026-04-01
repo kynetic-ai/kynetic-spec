@@ -44,8 +44,11 @@ description: >-
 spec_ref: null
 meta_ref: null
 plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved in review @01KN3WN3RTA63T8K1GEPQRVSSB and merged to dev as
+  ba2271a6ea2603e84f9d067a330468bb9e08dd74. Sessions detail static-mode loading, date filter URL
+  sync, and the full-gate regression tests are green; fresh npm test passed 2082/2082 suites.
 depends_on: []
 context: []
 priority: 1
@@ -240,8 +243,25 @@ history:
           the relevant neighboring sessions coverage to ensure detail/filter behavior is stable.
     command: task-set
     timestamp: 2026-04-01T06:59:14.204Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved in review @01KN3WN3RTA63T8K1GEPQRVSSB and merged to dev as
+          ba2271a6ea2603e84f9d067a330468bb9e08dd74. Sessions detail static-mode loading, date filter
+          URL sync, and the full-gate regression tests are green; fresh npm test passed 2082/2082
+          suites.
+        previous: null
+      completed_at:
+        new: 2026-04-01T07:03:56.343Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-01T07:03:56.352Z
 created_at: 2026-04-01T05:07:07.821Z
 started_at: 2026-04-01T06:13:45.150Z
 submitted_at: 2026-04-01T06:41:35.807Z
+completed_at: 2026-04-01T07:03:56.343Z
 todos: []
 automation: eligible
