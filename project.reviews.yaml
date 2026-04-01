@@ -97198,9 +97198,25 @@ reviews:
           status: pass
           name: review evidence log
         timestamp: 2026-04-01T07:42:01.339Z
+      - _ulid: 01KN3ZWF7WEP5QJ135JXZ3NAXZ
+        actor: codex@openai
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-01T07:42:17.340Z
+      - _ulid: 01KN3ZWF7WZDVTZZTBHK86KATA
+        actor: codex@openai
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-01T07:42:17.340Z
     examined_commit: 63964c9bea35e190d14514a60e0348a8ca468137
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -97234,9 +97250,16 @@ reviews:
               > node scripts/test.cjs is green on the submitted snapshot, this cannot be approved.
             created_at: 2026-04-01T07:41:58.784Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai
+        role: reviewer
+        created_at: 2026-04-01T07:42:17.339Z
     created_at: 2026-04-01T07:31:18.698Z
-    updated_at: 2026-04-01T07:42:00.693Z
+    updated_at: 2026-04-01T07:42:17.340Z
     notes: []
   - _ulid: 01KN3ZAM29H2HD6A3EX851F2XV
     slugs: []
