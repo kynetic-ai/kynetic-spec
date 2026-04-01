@@ -1,14 +1,5 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { execSync } from "node:child_process";
-import * as fs from "node:fs";
-import * as path from "node:path";
-import { createTempDir, initGitRepo, testUlids } from "./helpers/cli";
-import {
-  assembleActivityFromFiles,
-  historyToActivity,
-  notesToActivity,
-  getPreMigrationActivity,
-} from "../src/utils/activity";
+import { describe, it, expect } from "vitest";
+import { assembleActivityFromFiles, historyToActivity, notesToActivity } from "../src/utils/activity";
 import type { HistoryEntry } from "../src/parser/task-data-manager";
 import type { Note } from "../src/schema/task";
 
@@ -338,138 +329,16 @@ describe("assembleActivityFromFiles — ac-1, ac-2: assembled timeline from pers
 });
 
 // AC: @task-activity-in-file ac-3
-describe("getPreMigrationActivity — ac-3: pre-migration fallback", () => {
-  let tmpDir: string;
-  const [ULID_A, ULID_B] = testUlids("ACTVTY", 2);
-
-  beforeEach(async () => {
-    tmpDir = await createTempDir("activity-fallback-");
-    initGitRepo(tmpDir);
+describe("assembleActivityFromFiles — ac-3: no best-effort recovery for pre-migration tasks", () => {
+  it("returns an empty timeline when no in-file history or notes exist", () => {
+    expect(assembleActivityFromFiles([], [])).toEqual([]);
   });
 
-  afterEach(async () => {
-    await fs.promises.rm(tmpDir, { recursive: true, force: true });
-  });
-
-  it("returns entries from per-directory git log", () => {
-    // Create task directory with files
-    const taskDir = path.join(tmpDir, "tasks", ULID_A);
-    fs.mkdirSync(taskDir, { recursive: true });
-    fs.writeFileSync(
-      path.join(taskDir, "task.yaml"),
-      `_ulid: ${ULID_A}\ntitle: Test Task\nstatus: pending\n`,
-    );
-    execSync('git add tasks/ && git commit -m "Add task @test-task"', {
-      cwd: tmpDir,
-      stdio: "pipe",
-    });
-
-    // Mutate and commit
-    fs.writeFileSync(
-      path.join(taskDir, "task.yaml"),
-      `_ulid: ${ULID_A}\ntitle: Test Task\nstatus: in_progress\n`,
-    );
-    execSync('git add tasks/ && git commit -m "Start @test-task"', {
-      cwd: tmpDir,
-      stdio: "pipe",
-    });
-
-    const entries = getPreMigrationActivity(tmpDir, ULID_A);
-    expect(entries.length).toBe(2);
-    // Chronological order (oldest first)
-    expect(entries[0].type).toBe("created");
-    expect(entries[0].summary).toBe("Task created");
-    expect(entries[0].source).toBe("git_fallback");
-    expect(entries[1].type).toBe("started");
-    expect(entries[1].summary).toBe("Task started");
-    expect(entries[1].source).toBe("git_fallback");
-  });
-
-  it("returns empty for non-existent task directory", () => {
-    const entries = getPreMigrationActivity(tmpDir, ULID_B);
-    expect(entries).toEqual([]);
-  });
-
-  it("returns entries with commit hashes", () => {
-    const taskDir = path.join(tmpDir, "tasks", ULID_A);
-    fs.mkdirSync(taskDir, { recursive: true });
-    fs.writeFileSync(
-      path.join(taskDir, "task.yaml"),
-      `_ulid: ${ULID_A}\ntitle: Test\nstatus: pending\n`,
-    );
-    execSync('git add tasks/ && git commit -m "Add task @test"', {
-      cwd: tmpDir,
-      stdio: "pipe",
-    });
-
-    const entries = getPreMigrationActivity(tmpDir, ULID_A);
-    expect(entries[0].commitHash).toMatch(/^[a-f0-9]{7}$/);
-  });
-
-  it("git fallback note entries are filterable to prevent duplication with notes.yaml", () => {
-    // AC: @task-activity-in-file ac-3 — when a migrated task has notes in notes.yaml
-    // but no stored history, the consumer filters note_added entries from the
-    // git fallback to avoid duplicating notes already present from notes.yaml.
-    const taskDir = path.join(tmpDir, "tasks", ULID_A);
-    fs.mkdirSync(taskDir, { recursive: true });
-    fs.writeFileSync(
-      path.join(taskDir, "task.yaml"),
-      `_ulid: ${ULID_A}\ntitle: Test Task\nstatus: pending\n`,
-    );
-    execSync('git add tasks/ && git commit -m "Add task @test-task"', {
-      cwd: tmpDir,
-      stdio: "pipe",
-    });
-
-    // Add a note commit (git log will classify this as note_added)
-    fs.writeFileSync(
-      path.join(taskDir, "notes.yaml"),
-      `- _ulid: 01ACTVTY00000000000000NOTE\n  content: A note\n`,
-    );
-    execSync('git add tasks/ && git commit -m "Note on @test-task"', {
-      cwd: tmpDir,
-      stdio: "pipe",
-    });
-
-    const fallbackEntries = getPreMigrationActivity(tmpDir, ULID_A);
-    expect(fallbackEntries.length).toBe(2);
-    expect(fallbackEntries.some((e) => e.type === "note_added")).toBe(true);
-
-    // The consumer filters out note_added from fallback when notes already
-    // exist from notes.yaml (this is the fix for the duplication bug).
-    const filtered = fallbackEntries.filter((e) => e.type !== "note_added");
-    expect(filtered.length).toBe(1);
-    expect(filtered[0].type).toBe("created");
-
-    // Combine with notes from notes.yaml — no duplication
-    const noteEntries = notesToActivity([
-      makeNote({ created_at: "2026-03-20T11:00:00.000Z", author: "alice" }),
-    ]);
-    const combined = [...noteEntries, ...filtered].toSorted(
-      (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
-    );
-    const noteCount = combined.filter((e) => e.type === "note_added").length;
-    expect(noteCount).toBe(1); // exactly one note, not duplicated
-  });
-
-  it("does not use git log -L (uses per-directory git log)", () => {
-    // AC: @task-activity-in-file ac-3 — fast per-directory git log, not line-range
-    // Create two tasks and verify querying one doesn't return the other
-    const dirA = path.join(tmpDir, "tasks", ULID_A);
-    const dirB = path.join(tmpDir, "tasks", ULID_B);
-    fs.mkdirSync(dirA, { recursive: true });
-    fs.mkdirSync(dirB, { recursive: true });
-    fs.writeFileSync(path.join(dirA, "task.yaml"), `_ulid: ${ULID_A}\ntitle: A\n`);
-    fs.writeFileSync(path.join(dirB, "task.yaml"), `_ulid: ${ULID_B}\ntitle: B\n`);
-    execSync('git add tasks/ && git commit -m "Add tasks"', { cwd: tmpDir, stdio: "pipe" });
-
-    // Mutate only task A
-    fs.writeFileSync(path.join(dirA, "task.yaml"), `_ulid: ${ULID_A}\ntitle: A updated\n`);
-    execSync('git add tasks/ && git commit -m "Update @task-a"', { cwd: tmpDir, stdio: "pipe" });
-
-    const entriesA = getPreMigrationActivity(tmpDir, ULID_A);
-    const entriesB = getPreMigrationActivity(tmpDir, ULID_B);
-    expect(entriesA.length).toBe(2); // initial + update
-    expect(entriesB.length).toBe(1); // only initial
+  it("still returns note activity when notes exist without history", () => {
+    const entries = assembleActivityFromFiles([], [makeNote({ author: "alice" })]);
+    expect(entries).toHaveLength(1);
+    expect(entries[0].type).toBe("note_added");
+    expect(entries[0].source).toBe("note");
+    expect(entries[0].author).toBe("alice");
   });
 });

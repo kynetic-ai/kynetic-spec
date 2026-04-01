@@ -1,16 +1,10 @@
 // Re-export utilities
 
-export type { ActivityEntry, ActivitySource, ActivityType, RawTaskCommit } from "./activity.js";
+export type { ActivityEntry, ActivitySource, ActivityType } from "./activity.js";
 export {
   assembleActivityFromFiles,
-  findTaskBlockLines,
-  getPreMigrationActivity,
-  getRawTaskCommits,
   historyToActivity,
-  normalizeTaskActivity,
   notesToActivity,
-  parseCommitMessage,
-  parseDiffChanges,
 } from "./activity.js";
 export type { CommitGuidance } from "./commit.js";
 export { formatCommitGuidance, printCommitGuidance } from "./commit.js";
