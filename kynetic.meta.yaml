@@ -11156,6 +11156,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-01T23:36:36.115Z
+  - _ulid: 01KN5QQ7TXF4V97F9K1ZB3QHRC
+    type: friction
+    content: Detached reviewer snapshots can become stale mid-review when another actor approves,
+      merges, or completes the task before the reviewer finishes. In this session the snapshot at
+      f9baca482 remained under review while the linked review was approved, the task was marked
+      completed, and dev already contained merge commit a836bb9ef. This creates wasted verification
+      work and risks duplicate merge/task-complete actions. Consider a reviewer-facing stale-state
+      guard or workflow step that rechecks task/review/git merge state before merge/completion
+      actions in detached review workspaces.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-01T23:58:06.173Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
