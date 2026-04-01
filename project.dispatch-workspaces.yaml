@@ -30252,12 +30252,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-01T06:43:02.704Z
+      updated_at: 2026-04-01T06:43:18.473Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-01T06:43:02.704Z
+      updated_at: 2026-04-01T06:43:18.473Z
     integration:
       status: pending
       detail: null
@@ -30265,24 +30265,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: c33b26b5e198e2e8e13c92a35d1b6935217e335f
-      updated_at: 2026-04-01T06:43:02.704Z
-    lifecycle_state: ready
+      updated_at: 2026-04-01T06:43:18.473Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KN3Q0BXDE56CDNFDZXBFGGF9"
     task_slug: task-fix-sessions-detail-filter-e2e-full-gate
     timestamps:
       closed_at: null
       last_active_at: 2026-04-01T06:13:06.110Z
-      last_reconciled_at: 2026-04-01T06:43:02.704Z
+      last_reconciled_at: 2026-04-01T06:43:18.473Z
       created_at: 2026-04-01T05:33:09.915Z
-      updated_at: 2026-04-01T06:43:02.704Z
+      updated_at: 2026-04-01T06:43:18.473Z
     workspace_id: dispatch-workspace-01KN3Q0BXDE56CDNFDZXBFGGF9
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 13f962998b7bf1c94d456bbc5b963f7f25b468a9
+        last_seen_at: 2026-04-01T06:43:18.473Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-sessions-detail-filter-e2e-full-gate-01kn3q0b-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-fix-sessions-detail-filter-e2e-full-gate/01kn3q0b
-        head: 3e730be572726b11aad0cf6011c8f3e967ec9eed
-        last_seen_at: 2026-04-01T06:13:00.365Z
+        head: 13f962998b7bf1c94d456bbc5b963f7f25b468a9
+        last_seen_at: 2026-04-01T06:43:18.473Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-sessions-detail-filter-e2e-full-gate-01kn3q0b
