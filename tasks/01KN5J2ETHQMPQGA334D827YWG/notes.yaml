@@ -1,1 +1,131 @@
-notes: []
+notes:
+  - _ulid: 01KN5J2ZKT6S2EHAHX0C0MGB66
+    content: >-
+      ## What
+
+
+      The session list view in the web UI does not reliably update when sessions start, progress, or
+      complete during dispatch. Active sessions show 0 for event count. The root cause is a split
+      between two caching layers: the legacy SessionSummaryCache (src/sessions/cache.ts) and the
+      newer EntityCache (src/daemon/entity-cache.ts). Dispatch writes live event counters to the
+      legacy cache, but the daemon serves session data from the entity cache — so the counters are
+      written to one place and read from another.
+
+
+      Additionally, the WebSocket broadcast that tells the UI "sessions changed" fires before the
+      entity cache has finished reloading, so the UI refetches and gets stale data. A retry
+      workaround exists (refetchForFreshnessWithRetry with 150ms/300ms delays) but is unreliable.
+
+
+      ## Why
+
+
+      This is a regression from the entity cache migration. The legacy SessionSummaryCache was the
+      original session caching layer. When EntityCache was introduced as the primary serving path,
+      the dispatch engine was not updated to write to it. The legacy cache became a dead-code path
+      for live counters — it still gets incremented but nobody reads from it when entity cache is
+      ready.
+
+
+      The broadcast-before-reload race is architectural: project-context.ts onSessionChange fires
+      the WebSocket broadcast and cache invalidation callback in parallel. The broadcast is instant;
+      the cache reload is debounced (100ms) + async I/O. The UI's refetch arrives before fresh data
+      is available. The watcher callbacks are typed as void, so the Promise from
+      cacheInvalidationCallback is silently dropped.
+
+
+      ## How
+
+
+      ### 1. Remove SessionSummaryCache (src/sessions/cache.ts)
+
+      - Delete the SessionSummaryCache class and getSessionCache registry
+
+      - Remove tests/session-summary-cache.test.ts (or rewrite against entity cache)
+
+      - Update imports in dispatch.ts, invocation.ts, sessions.ts, session-related.ts
+
+
+      ### 2. Wire dispatch to entity cache live counter
+
+      - dispatch.ts has no access to EntityCache today — add an entity cache accessor to the
+      dispatch engine's dependencies (similar to how getEntityCache is passed to session routes via
+      route options)
+
+      - In dispatch.ts onEventAppended callback: call the entity cache's session event count
+      increment instead of old cache
+
+      - In dispatch.ts session close handler: call the entity cache's discard live counter instead
+      of old cache methods
+
+      - In invocation.ts: update the onEventAppended wiring similarly
+
+      - The entity cache already has the increment and discard methods — they just need callers
+
+
+      ### 3. Update daemon route fallback paths
+
+      - sessions.ts lines 154-157: When entity cache isn't ready, read disk directly. There is no
+      drop-in replacement for SessionSummaryCache.getAll() — write a small helper that iterates
+      listSessions + getSessionMetadataOnly (not getAllSessionLogSummaries, which scans events.jsonl
+      and would be slow during warming)
+
+      - sessions.ts line 570: Direct disk read for detail fallback via getSessionLogSummary (single
+      session, events scan acceptable)
+
+      - session-related.ts lines 57, 81: Same listSessions + getSessionMetadataOnly pattern
+
+      - During warming the UI already shows skeleton states so this fallback is brief
+
+
+      ### 4. Move WebSocket broadcast to entity cache completion path
+
+      - The watcher callbacks in project-context.ts are typed as void — cannot await
+      cacheInvalidationCallback. Instead of making callbacks async, move the broadcast emission into
+      the entity cache's domain reload completion handler
+
+      - Entity cache needs a broadcast callback (set during server setup) that it calls after a
+      domain reload completes, passing the domain name
+
+      - Remove the immediate pubsub.broadcast calls from project-context.ts onSessionChange (line
+      195-206) and onFileChange (line 140-152) — the entity cache path handles it
+
+      - Keep broadcast for errors (onError) as-is since those don't need cache coherence
+
+
+      ### 5. Retire @session-summary-cache spec
+
+      - Mark as superseded by @daemon-entity-cache
+
+      - Move AC annotations in code to reference @daemon-entity-cache:
+        - ac-cache-build → ac-load-on-register
+        - ac-cache-invalidate → ac-watcher-invalidation
+        - ac-cache-graceful → ac-graceful-degradation
+        - ac-live-counter → ac-session-live-counter
+        - ac-active-refresh → ac-session-live-counter
+        - ac-persist-on-close → ac-session-stats-persist
+      - Update annotations in dispatch.ts, invocation.ts, store.ts, types.ts, sessions.ts
+
+
+      ### 6. Update AC annotations for broadcast ordering
+
+      - New AC on @daemon-entity-cache: ac-broadcast-after-reload
+
+      - Annotate the broadcast-after-invalidation pattern in entity-cache.ts and project-context.ts
+
+
+      ## Scope boundaries
+
+      - iteration_count and tasks_completed are being reworked separately — do not add live tracking
+      for those
+
+      - The refetchForFreshnessWithRetry pattern in the web UI can remain as defense-in-depth but
+      should no longer be needed for normal operation
+
+      - Static mode / GitHub Pages export is unaffected (no live sessions)
+
+      - Completed tasks/plans that reference @session-summary-cache in notes are historical records
+      — no updates needed
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-01T22:19:39.514Z
