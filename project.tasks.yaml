@@ -23667,7 +23667,7 @@
   title: Fix review detail page E2E failures blocking the full CI gate
   type: bug
   plan_ref: "@plan-e2e-test-suite-audit-and-restructure-2"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 1
@@ -23682,6 +23682,7 @@
   created_at: 2026-04-01T05:07:05.806Z
   started_at: 2026-04-01T07:49:39.252Z
   submitted_at: 2026-04-01T08:04:56.028Z
+  completed_at: 2026-04-01T08:20:47.622Z
   automation: eligible
 - _ulid: 01KN3Q0AXQNHZDB7TVCW288G7V
   slugs:
