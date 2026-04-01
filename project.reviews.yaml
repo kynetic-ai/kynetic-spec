@@ -93954,7 +93954,24 @@ reviews:
     slugs: []
     title: Review task-fix-review-detail-e2e-full-gate
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: >-
+          > @kynetic-ai/spec@0.12.0 test
+
+          > node scripts/test.cjs completed with failures in this snapshot: 8 suites failed, 2074
+          passed; 3 tests failed, 7518 passed, 5 skipped. Condensed output included
+          tests/agents-instruction-gen.test.ts, tests/review-cli.test.ts, and
+          tests/session-model-evolution.test.ts among the failing suites. The full gate is therefore
+          still red.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-01T05:32:41.316Z
+        completed_at: 2026-04-01T05:32:41.316Z
     events:
       - _ulid: 01KN3QSEE3FYXA21KMRCAQRQP5
         actor: Jacob Chapel
@@ -93969,6 +93986,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-01T05:21:04.438Z
+      - _ulid: 01KN3RF66Y57NSVCBFHWPFP53Q
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-04-01T05:32:42.078Z
     examined_commit: 81dd34e0197fe65ec7da87a5a5bc1615d96be4fb
     external_links: []
     lifecycle_state: open
@@ -93981,5 +94005,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-01T05:20:49.603Z
-    updated_at: 2026-04-01T05:21:03.700Z
+    updated_at: 2026-04-01T05:32:41.316Z
     notes: []
