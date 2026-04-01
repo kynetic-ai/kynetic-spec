@@ -10,3 +10,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-01T05:34:30.267Z
+  - _ulid: 01KN3RNAPVTZ810V8KS9C9SPRF
+    content: Diagnosed the failure cluster into one real app bug and two contract-drift cases. Fixed
+      sessions detail to bypass daemon session fetches in static mode so the static banner renders
+      without spurious errors, normalized bits-ui select values before computing the since preset,
+      and updated the stale list-route interception in the navigation test to match the current
+      query-string request shape.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T05:36:03.291Z
