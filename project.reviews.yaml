@@ -95724,6 +95724,12 @@ reviews:
         payload:
           thread_ulid: 01KN3S1NSYG145FN5ZPXY7YD53
         timestamp: 2026-04-01T05:45:09.237Z
+      - _ulid: 01KN3S6517TF6P88S5K5N2SG22
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KN3S22MCYY4VD93HV9Q5F82K
+        timestamp: 2026-04-01T05:45:14.536Z
     examined_commit: 244194ef5451c0f34b5bb94623f5688842ae0588
     external_links: []
     lifecycle_state: closed
@@ -95885,6 +95891,8 @@ reviews:
               passing E2E coverage, so the task cannot advance while the targeted spec still fails."
             created_at: 2026-04-01T05:43:01.005Z
         kind: blocker
+        resolved_at: 2026-04-01T05:45:12.652Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KN3S25JEZCQT48JAF2ZHC60Y
         anchor:
           type: code
@@ -95932,5 +95940,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-01T05:43:31.271Z
     created_at: 2026-04-01T05:33:59.899Z
-    updated_at: 2026-04-01T05:45:07.090Z
+    updated_at: 2026-04-01T05:45:12.652Z
     notes: []
