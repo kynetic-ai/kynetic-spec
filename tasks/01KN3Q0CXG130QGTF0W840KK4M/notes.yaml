@@ -44,3 +44,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-01T08:12:49.457Z
+  - _ulid: 01KN423FA6HQ0DGR32PQ729A23
+    content: "Fix cycle 1: addressed the review blocker by restoring an end-to-end assertion for the
+      real daemon sessions-topic path in the source-agnostic live-update case, while keeping
+      deterministic explicit topic coverage for the later synthetic sessions/agents branches. Also
+      fixed the underlying UI race in packages/web-ui/src/routes/sessions/+page.svelte by retrying
+      live-refresh refetches briefly when a broadcast arrives before the updated session index is
+      observable. Verification: npm run build:e2e passed; focused 4-test live-update block passed;
+      full tests/e2e/sessions.spec.ts passed on rerun (50/50). kspec validate still exits 6 on
+      pre-existing repository warnings. npm test still fails in unrelated pre-existing suites
+      outside this task’s files (claude-plugin-registry, cli-serve, core-skill-install,
+      dispatch-workspace-config)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T08:21:03.942Z
