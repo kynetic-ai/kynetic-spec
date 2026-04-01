@@ -10,3 +10,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-01T07:32:19.246Z
+  - _ulid: 01KN403D6GTETVHRRA89D3XZFK
+    content: "Fixed the sessions live-update E2E cluster in tests/e2e/sessions.spec.ts. Changes: aligned
+      mocked live-update responses with the UI's refetch-driven behavior, made the source-agnostic
+      test wait for daemon session indexing before asserting, exercised both sessions-topic and
+      agent-origin refresh paths with deterministic synthetic broadcasts, and forced the
+      scrolled-state branch explicitly so indicator tests no longer depend on headless layout scroll
+      behavior. Verification: targeted 4-test live-update block passes, then full
+      tests/e2e/sessions.spec.ts passes (50/50). kspec validate still exits with pre-existing
+      repository warnings unrelated to this task."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T07:46:04.625Z
