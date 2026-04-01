@@ -100255,6 +100255,21 @@ reviews:
         runner: codex
         created_at: 2026-04-01T23:11:01.907Z
         completed_at: 2026-04-01T23:11:01.907Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: >-
+          > @kynetic-ai/spec@0.12.0 test
+
+          > node scripts/test.cjs --run tests/daemon-cache-route-coverage.test.ts passed (3 suites /
+          10 tests). The existing focused route coverage still passes, which confirms it does not
+          exercise the ready-but-stale related-sessions fallback that I reproduced separately.
+        name: daemon-cache-route-coverage
+        required: false
+        runner: npm
+        created_at: 2026-04-01T23:11:03.947Z
+        completed_at: 2026-04-01T23:11:03.947Z
     events:
       - _ulid: 01KN5MDA5NMX9K1JN3NR42TTHC
         actor: Jacob Chapel
@@ -100283,6 +100298,13 @@ reviews:
           status: pass
           name: review-evidence
         timestamp: 2026-04-01T23:11:02.598Z
+      - _ulid: 01KN5N14CYV6D9F2DN5APTZGKM
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: daemon-cache-route-coverage
+        timestamp: 2026-04-01T23:11:04.606Z
     examined_commit: 613afcce6db17299caa79077049326cc975e460e
     external_links: []
     lifecycle_state: open
@@ -100315,5 +100337,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-01T23:00:15.158Z
-    updated_at: 2026-04-01T23:11:01.907Z
+    updated_at: 2026-04-01T23:11:03.947Z
     notes: []
