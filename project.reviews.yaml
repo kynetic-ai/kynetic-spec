@@ -99409,6 +99409,16 @@ reviews:
         runner: npm
         created_at: 2026-04-01T10:17:18.518Z
         completed_at: 2026-04-01T10:17:18.518Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 253 passed, 0 failed, 1 flaky, 1 skipped in ~4.0m.
+        name: npm run test:e2e:ci -- --shard=2/2
+        required: true
+        runner: playwright
+        created_at: 2026-04-01T10:17:20.522Z
+        completed_at: 2026-04-01T10:17:20.522Z
     events:
       - _ulid: 01KN47XK6QVEP2FR6FBPQ2ZFK7
         actor: Jacob Chapel
@@ -99444,6 +99454,13 @@ reviews:
           status: pass
           name: npm test --fresh
         timestamp: 2026-04-01T10:17:19.174Z
+      - _ulid: 01KN48RD2CCZ971JMGY1GTT988
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm run test:e2e:ci -- --shard=2/2
+        timestamp: 2026-04-01T10:17:21.229Z
     examined_commit: abee02938cb6766756ca3c93240afb6ed1710184
     external_links: []
     lifecycle_state: open
@@ -99474,5 +99491,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-01T10:02:42.776Z
-    updated_at: 2026-04-01T10:17:18.518Z
+    updated_at: 2026-04-01T10:17:20.522Z
     notes: []
