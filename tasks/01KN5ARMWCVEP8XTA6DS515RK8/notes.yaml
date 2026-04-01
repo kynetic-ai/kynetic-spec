@@ -11,3 +11,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-01T20:27:56.564Z
+  - _ulid: 01KN5CDZHG8RNG4D0G5BWZ1ZZF
+    content: Removed legacy git-derived task activity reconstruction from the CLI and utils layer.
+      Activity now comes only from persisted task history plus notes, with pre-migration no-history
+      tasks returning an empty timeline. Updated @task-activity-in-file ac-3, deleted the legacy git
+      query/normalize test suites, replaced fallback coverage with in-file behavioral assertions,
+      and updated the JSON activity display test to exercise persisted activity.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T20:40:48.432Z
