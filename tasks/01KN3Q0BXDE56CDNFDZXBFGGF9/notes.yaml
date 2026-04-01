@@ -43,3 +43,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-01T06:05:24.643Z
+  - _ulid: 01KN3WB4Q9A6DQ5C3BA9KAHZ78
+    content: "Fix cycle 1: addressed the review blockers by making the required suite green, not just
+      the focused sessions cases. Changes: rebuilt the websocket 1011 protocol test on a fresh
+      daemon runtime instead of restarting the same instance mid-test, and replaced the brittle 1s
+      polling loops in the post-invocation dispatch tests with waitForStartup-backed bounded waits
+      so they stay reliable under full-suite load. Re-verified the original four sessions Playwright
+      cases and reran full npm test successfully (2082/2082 suites, 7520 passed, 5 skipped)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T06:40:23.785Z
