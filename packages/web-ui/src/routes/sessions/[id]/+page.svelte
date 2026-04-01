@@ -47,7 +47,7 @@
 	const sessionQuery = createQuery(() => ({
 		queryKey: queryKeys.sessions.detail(sessionId),
 		queryFn: () => fetchSession(sessionId),
-		enabled: isProjectInitialized(),
+		enabled: isProjectInitialized() && !isStaticMode(),
 	}));
 
 	// Events are fetched once on load (for catch-up/historical), then updated incrementally via WS.
@@ -64,7 +64,7 @@
 	let taskTitle = $derived<string | null>(sessionQuery.data?.task_title ?? null);
 	let session = $derived<SessionDetail | null>(sessionQuery.data ?? null);
 
-	let loading = $derived(sessionQuery.isLoading || eventsLoading);
+	let loading = $derived(isStaticMode() ? false : sessionQuery.isLoading || eventsLoading);
 
 	// Track whether initial events load has been triggered
 	let eventsLoadTriggered = $state(false);
@@ -73,7 +73,7 @@
 	let wasConnected = $state(false);
 
 	// Reset events state when sessionId changes (SvelteKit may reuse component)
-	let prevSessionId = $state(sessionId);
+	let prevSessionId = $state('');
 	$effect(() => {
 		if (sessionId !== prevSessionId) {
 			prevSessionId = sessionId;

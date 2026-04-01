@@ -30,6 +30,7 @@ import {
   readTestOutput,
   readTestOutputSync,
   seedSplitTask,
+  waitForStartup,
 } from "./helpers/cli.js";
 import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
 
@@ -390,6 +391,25 @@ async function waitForMockCall(
   while (spy.mock.calls.length === 0 && Date.now() < deadline) {
     await new Promise((resolve) => setTimeout(resolve, 10));
   }
+}
+
+async function waitForInvocationCount(
+  getCount: () => number,
+  expectedCount: number,
+  description: string,
+  timeoutMs = 5_000,
+): Promise<void> {
+  await waitForStartup(
+    description,
+    () => {
+      const count = getCount();
+      return {
+        ok: count >= expectedCount,
+        details: `invocationCount=${count}, expected>=${expectedCount}`,
+      };
+    },
+    { timeoutMs, intervalMs: 10 },
+  );
 }
 
 /**
@@ -5639,9 +5659,11 @@ describe("Post-invocation re-evaluation", () => {
 
     // Wait for first invocation (worker picks up taskA via bootstrap)
     // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
-    for (let i = 0; i < 100 && invocationCount === 0; i++) {
-      await new Promise((r) => setTimeout(r, 10));
-    }
+    await waitForInvocationCount(
+      () => invocationCount,
+      1,
+      "first worker invocation should start after bootstrap",
+    );
     expect(invocationCount).toBe(1);
     expect(spawned[0].agentId).toBe("task-worker");
 
@@ -5650,9 +5672,11 @@ describe("Post-invocation re-evaluation", () => {
 
     // Wait for reviewer to be spawned
     // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
-    for (let i = 0; i < 100 && invocationCount < 2; i++) {
-      await new Promise((r) => setTimeout(r, 10));
-    }
+    await waitForInvocationCount(
+      () => invocationCount,
+      2,
+      "reviewer invocation should spawn after post-invocation re-evaluation",
+    );
 
     // The second spawn should be the reviewer, discovering the pending_review tasks
     // that appeared on disk during the worker's execution.
@@ -5703,9 +5727,11 @@ describe("Post-invocation re-evaluation", () => {
 
     // Wait for first invocation to start
     // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
-    for (let i = 0; i < 100 && invocationCount === 0; i++) {
-      await new Promise((r) => setTimeout(r, 10));
-    }
+    await waitForInvocationCount(
+      () => invocationCount,
+      1,
+      "first dedup test invocation should start",
+    );
     expect(invocationCount).toBe(1);
 
     // Release first invocation — re-evaluation runs, but should NOT double-enqueue taskB
@@ -5713,9 +5739,11 @@ describe("Post-invocation re-evaluation", () => {
 
     // Wait for second invocation
     // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
-    for (let i = 0; i < 100 && invocationCount < 2; i++) {
-      await new Promise((r) => setTimeout(r, 10));
-    }
+    await waitForInvocationCount(
+      () => invocationCount,
+      2,
+      "queued task should drain exactly once after re-evaluation",
+    );
 
     // Exactly 2 invocations (one per task), not 3+ from double-enqueue
     expect(invocationCount).toBe(2);
@@ -5848,9 +5876,11 @@ describe("Post-invocation re-evaluation", () => {
 
     // Wait for first invocation to start
     // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
-    for (let i = 0; i < 100 && invocationCount === 0; i++) {
-      await new Promise((r) => setTimeout(r, 10));
-    }
+    await waitForInvocationCount(
+      () => invocationCount,
+      1,
+      "first failure-path invocation should start",
+    );
     expect(invocationCount).toBe(1);
 
     // Sabotage _evaluateAllTasks so it throws on the next call (post-invocation re-eval).
@@ -5870,9 +5900,11 @@ describe("Post-invocation re-evaluation", () => {
 
     // Wait for second invocation (from pre-existing queue, not re-evaluation)
     // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
-    for (let i = 0; i < 100 && invocationCount < 2; i++) {
-      await new Promise((r) => setTimeout(r, 10));
-    }
+    await waitForInvocationCount(
+      () => invocationCount,
+      2,
+      "existing queue should still drain after re-evaluation failure",
+    );
 
     // taskB should still have been drained from the existing queue
     expect(invocationCount).toBe(2);
