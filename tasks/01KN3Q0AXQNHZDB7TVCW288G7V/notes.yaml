@@ -25,3 +25,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-01T05:43:33.512Z
+  - _ulid: 01KN3TBCDGHGH9GDQJGBNW743C
+    content: "Fix cycle 1 plan: restore AC-5 coverage by asserting reopen updates the live page state
+      without reload, and harden the AC-6 verdict-options case by waiting for the interactive
+      verdict panel/select before checking option values. Reproduced current failure under npm run
+      test:e2e -- tests/e2e/review-interaction.spec.ts: the verdict-options case intermittently
+      loses the selector during page load, while direct targeted npx runs pass."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T06:05:34.512Z
