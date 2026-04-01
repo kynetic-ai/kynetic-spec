@@ -1,1 +1,12 @@
-notes: []
+notes:
+  - _ulid: 01KN43T32BZB5XW4JTR814DX3P
+    content: "Approach: reproduce the focused workflows loading-state failure in Playwright, inspect the
+      /workflows query state and route behavior, and fix the root cause in the page or test
+      depending on whether the skeleton never appears, disappears too early, or content fails to
+      replace it. Edge cases: fast cached loads where the skeleton may never paint, empty-state
+      responses, and query transitions where loading state differs from fetch status. Test plan:
+      re-run tests/e2e/workflows.spec.ts with retries enabled, keeping coverage aligned with
+      @ui-workflows-view ac-1 and @markdown-ui-adoption ac-4 on the affected page."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T08:50:53.643Z
