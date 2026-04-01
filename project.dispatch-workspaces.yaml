@@ -30450,7 +30450,7 @@ workspaces:
         head: 0ad631f6283837fdd78304944156bc7667d20366
         last_seen_at: 2026-04-01T08:23:25.746Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-sessions-live-update-e2e-full-gate-01kn3q0c
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: cdf2261f7da7fe3e9936c4c3160f852b2099eeb4
     bootstrap:
       status: succeeded
@@ -30576,9 +30576,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-01T08:39:54.548Z
-      last_reconciled_at: 2026-04-01T08:48:40.884Z
+      last_reconciled_at: 2026-04-01T08:49:13.395Z
       created_at: 2026-04-01T08:23:32.923Z
-      updated_at: 2026-04-01T08:48:40.884Z
+      updated_at: 2026-04-01T08:49:13.395Z
     workspace_id: dispatch-workspace-01KN3Q07XKYC6TDSNHJ48TA2V6
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
