@@ -99168,6 +99168,25 @@ reviews:
         runner: scripts/test.cjs
         created_at: 2026-04-01T09:28:43.192Z
         completed_at: 2026-04-01T09:28:43.192Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: packages/daemon/src/routes/session-related.ts,
+          packages/daemon/src/routes/sessions.ts, tests/e2e/navigation.spec.ts,
+          tests/e2e/session-context.spec.ts, tests/daemon-api/sessions-pagination.test.ts,
+          tests/session-context.test.ts, tests/e2e/fixtures/test-base.ts. Commands run: git
+          diff/stat, kspec task get, kspec validate, rg AC annotations, node scripts/test.cjs
+          --fresh tests/daemon-api/sessions-pagination.test.ts tests/session-context.test.ts, npm
+          run build:e2e, targeted Playwright run, npm test -- --fresh. Claims verified:
+          related-session/session-list fallback behaves under regression tests; browser forward/back
+          test now passes; task/item session-context tests pass. Categories searched: correctness,
+          edge cases, error handling, test quality, integration."
+        name: review-evidence
+        required: false
+        runner: reviewer
+        created_at: 2026-04-01T09:28:45.457Z
+        completed_at: 2026-04-01T09:28:45.457Z
     events:
       - _ulid: 01KN45CVJ6TB17JHDEZ6XWR70E
         actor: Jacob Chapel
@@ -99196,6 +99215,13 @@ reviews:
           status: fail
           name: full-npm-test
         timestamp: 2026-04-01T09:28:43.962Z
+      - _ulid: 01KN45ZEDHZ7NV7KZV5T6Y70KV
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-04-01T09:28:46.257Z
     examined_commit: d60e51a41636746468122c111be5de0af4ee2a13
     external_links: []
     lifecycle_state: open
@@ -99208,5 +99234,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-01T09:18:37.126Z
-    updated_at: 2026-04-01T09:28:43.192Z
+    updated_at: 2026-04-01T09:28:45.457Z
     notes: []
