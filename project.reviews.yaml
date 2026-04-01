@@ -95565,3 +95565,29 @@ reviews:
     created_at: 2026-04-01T05:20:49.603Z
     updated_at: 2026-04-01T05:33:24.137Z
     notes: []
+  - _ulid: 01KN3RHJ6V99DSSS7JP2NRN2YD
+    slugs: []
+    title: Review task-fix-review-interaction-e2e-full-gate
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KN3RHJ6T28YGET7SK8CVXJVJ
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-01T05:33:59.899Z
+    examined_commit: 244194ef5451c0f34b5bb94623f5688842ae0588
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KN3Q0AXQNHZDB7TVCW288G7V"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-01T05:33:59.899Z
+    updated_at: null
+    notes: []
