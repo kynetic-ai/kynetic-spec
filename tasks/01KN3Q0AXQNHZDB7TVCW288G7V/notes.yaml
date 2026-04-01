@@ -34,3 +34,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-01T06:05:34.512Z
+  - _ulid: 01KN3TNP8JA3CR5DNKK8M89WH8
+    content: "Fix cycle 1: addressed the remaining blocker thread by restoring live AC-5 reopen coverage
+      and stabilizing the interaction spec under Playwright fullyParallel. Changes: removed the page
+      reload from the reopen assertion, verified the reopened thread returns to the open section
+      immediately, added an explicit verdict-panel/select readiness check, and marked
+      tests/e2e/review-interaction.spec.ts serial because each case boots an isolated daemon/web-ui
+      fixture and the fullyParallel worker fanout reproduced click-instability flake. Verification:
+      npx playwright test tests/e2e/review-interaction.spec.ts --workers=1 => 18/18 passed; npm run
+      test:e2e -- tests/e2e/review-interaction.spec.ts => 24/24 passed; kspec validate returned the
+      repo’s existing warning set only (exit 6, no new schema/reference errors)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T06:11:12.274Z
