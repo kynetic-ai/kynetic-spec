@@ -100,6 +100,13 @@
 		}
 	}
 
+	function getSelectValue(value: string | string[] | undefined): string | undefined {
+		if (Array.isArray(value)) {
+			return value.length > 0 ? value[value.length - 1] : undefined;
+		}
+		return value;
+	}
+
 	function getDateRangeDisplay(value: string): string {
 		if (!value) return 'all';
 
@@ -121,12 +128,7 @@
 
 	// AC: @ui-url-panel-state ac-4 — All URL mutations use goto()
 	function updateFilter(key: string, value: string | string[] | undefined) {
-		let actualValue: string | undefined;
-		if (Array.isArray(value)) {
-			actualValue = value.length > 0 ? value[value.length - 1] : undefined;
-		} else {
-			actualValue = value;
-		}
+		const actualValue = getSelectValue(value);
 
 		const params = new URLSearchParams($page.url.searchParams);
 
@@ -266,7 +268,7 @@
 		<label for="session-date-filter" class="text-xs font-medium text-muted-foreground mb-1 block">Time Range</label>
 		<Select
 			value={dateRangeDisplay}
-			onValueChange={(v) => updateFilter('since', getPresetSince(v))}
+			onValueChange={(v) => updateFilter('since', getPresetSince(getSelectValue(v) ?? 'all'))}
 		>
 			<SelectTrigger id="session-date-filter" data-testid="session-filter-date" class="h-8 text-xs">
 				{dateRangeLabels[dateRangeDisplay] || 'All Time'}

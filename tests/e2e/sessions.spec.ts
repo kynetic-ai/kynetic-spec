@@ -381,7 +381,7 @@ test.describe("Session History View", () => {
     }) => {
       const sessionDetail = mockSessions().items[0];
 
-      await page.route("**/api/sessions", mockSessionsRoute(mockSessions()));
+      await page.route("**/api/sessions*", mockSessionsRoute(mockSessions()));
 
       await page.route("**/api/sessions/01JTEST0000000000000000001", (route) => {
         route.fulfill({
@@ -403,7 +403,7 @@ test.describe("Session History View", () => {
       await expect(page.getByTestId("sessions-list")).toBeVisible();
 
       const firstRow = page.getByTestId("session-row").first();
-      await firstRow.click();
+      await firstRow.getByTestId("session-id").click();
 
       await expect(page).toHaveURL(/\/sessions\/01JTEST0000000000000000001/);
       await expect(page.getByTestId("session-stream")).toBeVisible({ timeout: 5000 });
