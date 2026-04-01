@@ -21,3 +21,21 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-01T09:04:01.105Z
+  - _ulid: 01KN452KDS878R5WK7KXZDHQQV
+    content: "Root causes and verification: (1) tests/e2e/navigation.spec.ts forward/back was a
+      Playwright browser-history race, stabilized by waiting on the back URL and using an explicit
+      forward URL wait instead of relying on the default goForward load wait. (2) The
+      session-context API and sessions-list cases exposed a stale-empty daemon read path when newly
+      written .kspec-sessions data had not yet propagated into the warm session index. Fixed by
+      adding disk-backed fallback reads for related-session and filtered session-list routes when
+      cache-backed task/spec filtering returns zero results, and by making the E2E session-context
+      tests wait for the daemon-backed related-session endpoints before asserting on downstream UI
+      state. Verification: navigation target passed 30 repeat runs, plans embedded-batch-error
+      target passed 20 repeat runs, session-context API targets passed 40 repeat runs after the
+      route/test fixes, and the combined navigation/plans/session-context spec run passed 62/62.
+      Full npm test still reports unrelated existing failures in claude-plugin-registry,
+      core-skill-install, cross-platform-robustness, and daemon-api/agent-dispatch; no failures were
+      introduced by this task."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T09:13:01.113Z
