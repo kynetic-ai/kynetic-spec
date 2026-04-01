@@ -99623,6 +99623,17 @@ reviews:
         runner: playwright
         created_at: 2026-04-01T10:32:01.533Z
         completed_at: 2026-04-01T10:32:01.533Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Validation returned warnings only (exit 6): no schema/reference errors, no task-specific
+          blockers for this infra task."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-01T10:32:03.603Z
+        completed_at: 2026-04-01T10:32:03.603Z
     events:
       - _ulid: 01KN4963X4BC4JBJAF1J9ZXS7J
         actor: Jacob Chapel
@@ -99651,6 +99662,13 @@ reviews:
           status: pass
           name: npm run test:e2e:ci -- --shard=2/2
         timestamp: 2026-04-01T10:32:02.245Z
+      - _ulid: 01KN49KBDAFHEFHFV94F6R3YWW
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-01T10:32:04.266Z
     examined_commit: 0235550eb614d651ed4c968d4eace64cded4a0ab
     external_links: []
     lifecycle_state: open
@@ -99663,5 +99681,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-01T10:24:50.596Z
-    updated_at: 2026-04-01T10:32:01.533Z
+    updated_at: 2026-04-01T10:32:03.603Z
     notes: []
