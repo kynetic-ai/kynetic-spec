@@ -11089,8 +11089,11 @@ observations:
       merge branch/worktree, merging there, then fast-forwarding the main dev worktree because
       direct 'git checkout dev' failed with: 'dev is already used by worktree'."
     author: Jacob Chapel
-    resolution: null
-    resolved: false
+    resolution: Duplicate of existing observation @01KN0JCT; this session reproduced the same
+      detached-review merge friction with the concrete failure 'dev is already used by worktree'.
+    resolved: true
+    resolved_at: 2026-04-01T20:09:05.465Z
+    resolved_by: Jacob Chapel
     created_at: 2026-04-01T20:08:19.746Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
