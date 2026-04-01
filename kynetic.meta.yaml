@@ -10802,6 +10802,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-01T05:49:57.403Z
+  - _ulid: 01KN3T5SPA4ETMC40Z3QY6DFN4
+    type: friction
+    content: npm test can enter a non-reporting hang after scripts/test.cjs starts, which makes
+      full-suite verification inconclusive even when targeted suites pass. This session hit the same
+      stall twice and had to rely on narrower evidence instead of a definitive full run.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-01T06:02:31.498Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
