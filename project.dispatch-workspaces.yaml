@@ -29970,31 +29970,30 @@ workspaces:
     base_branch_point: c33b26b5e198e2e8e13c92a35d1b6935217e335f
     bootstrap:
       status: succeeded
-      canonicalBranchHead: 63964c9bea35e190d14514a60e0348a8ca468137
+      canonicalBranchHead: 4eed9f6cc2f321ae17abc46f1a25766b8f489b78
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
       failureMessage: null
       invalidationReasons:
         - canonical-branch-head-changed
-        - workspace-dependencies-missing
-      lastRole: reviewer
-      lastRunAt: 2026-04-01T07:14:34.668Z
+      lastRole: worker
+      lastRunAt: 2026-04-01T06:43:14.707Z
       roleStates:
         reviewer:
           status: succeeded
-          canonicalBranchHead: 63964c9bea35e190d14514a60e0348a8ca468137
+          canonicalBranchHead: 4eed9f6cc2f321ae17abc46f1a25766b8f489b78
           configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
           failureMessage: null
           invalidationReasons:
             - canonical-branch-head-changed
             - workspace-dependencies-missing
-          lastRunAt: 2026-04-01T07:14:34.668Z
+          lastRunAt: 2026-04-01T06:03:13.995Z
           steps:
             - status: succeeded
               allowTrackedChanges: false
               idempotent: true
               name: install-workspace-dependencies
               output: |-
-                added 287 packages, and audited 292 packages in 3s
+                added 287 packages, and audited 292 packages in 4s
 
                 67 packages are looking for funding
                   run `npm fund` for details
@@ -30018,27 +30017,7 @@ workspaces:
             - canonical-branch-head-changed
           lastRunAt: 2026-04-01T06:43:14.707Z
           steps: []
-      steps:
-        - status: succeeded
-          allowTrackedChanges: false
-          idempotent: true
-          name: install-workspace-dependencies
-          output: |-
-            added 287 packages, and audited 292 packages in 3s
-
-            67 packages are looking for funding
-              run `npm fund` for details
-
-            12 vulnerabilities (1 low, 7 moderate, 4 high)
-
-            To address all issues, run:
-              npm audit fix
-
-            Run `npm audit` for details.
-          reviewerRerunAllowed: true
-          role: reviewer
-          run: npm ci
-          source: dispatch
+      steps: []
     branch_provenance:
       adopted_at: null
       adopted_from: null
@@ -30053,12 +30032,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-01T07:14:30.157Z
+      updated_at: 2026-04-01T07:14:48.175Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-01T07:14:30.157Z
+      updated_at: 2026-04-01T07:14:48.175Z
     integration:
       status: pending
       detail: null
@@ -30066,7 +30045,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: c33b26b5e198e2e8e13c92a35d1b6935217e335f
-      updated_at: 2026-04-01T07:14:30.157Z
+      updated_at: 2026-04-01T07:14:48.175Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KN3Q09YEKYDQ8JCP1RDNGAF1"
@@ -30074,23 +30053,18 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-01T06:43:18.252Z
-      last_reconciled_at: 2026-04-01T07:14:30.157Z
+      last_reconciled_at: 2026-04-01T07:14:48.175Z
       created_at: 2026-04-01T05:07:48.265Z
-      updated_at: 2026-04-01T07:14:34.668Z
+      updated_at: 2026-04-01T07:14:48.175Z
     workspace_id: dispatch-workspace-01KN3Q09YEKYDQ8JCP1RDNGAF1
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 63964c9bea35e190d14514a60e0348a8ca468137
-        last_seen_at: 2026-04-01T07:14:30.157Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-review-detail-e2e-full-gate-01kn3q09-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-fix-review-detail-e2e-full-gate/01kn3q09
-        head: 63964c9bea35e190d14514a60e0348a8ca468137
-        last_seen_at: 2026-04-01T07:14:30.157Z
+        head: 4eed9f6cc2f321ae17abc46f1a25766b8f489b78
+        last_seen_at: 2026-04-01T06:43:13.221Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-review-detail-e2e-full-gate-01kn3q09
   - active_role: worker
     base_branch_point: c33b26b5e198e2e8e13c92a35d1b6935217e335f
