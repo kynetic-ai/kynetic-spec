@@ -96034,6 +96034,13 @@ reviews:
           kind: nit
           thread_ulid: 01KN3T9WA6BK08CYHH5TBS3HD9
         timestamp: 2026-04-01T06:04:46.101Z
+      - _ulid: 01KN3T9ZQEZMXHQJQ46V5KPCSV
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN3T9YWAV3CWPHRRKHGHZTX2
+        timestamp: 2026-04-01T06:04:48.750Z
     examined_commit: 3e730be572726b11aad0cf6011c8f3e967ec9eed
     external_links: []
     lifecycle_state: open
@@ -96060,9 +96067,30 @@ reviews:
               integration."
             created_at: 2026-04-01T06:04:45.254Z
         kind: nit
+      - _ulid: 01KN3T9YWAV3CWPHRRKHGHZTX2
+        anchor:
+          type: code
+          commit: 3e730be572726b11aad0cf6011c8f3e967ec9eed
+          line_end: 5659
+          line_start: 5659
+          path: tests/agent-dispatch-engine.test.ts
+          side: head
+        entries:
+          - _ulid: 01KN3T9YWB58P9G6ZY16QCVAXV
+            author: Jacob Chapel
+            body: >-
+              Required merge gate remains red at this snapshot: 
+
+              > @kynetic-ai/spec@0.12.0 test
+
+              > node scripts/test.cjs still fails in  at the post-invocation re-evaluation
+              assertions, so this task cannot be approved for merge yet even though the targeted
+              sessions cases now pass.
+            created_at: 2026-04-01T06:04:47.883Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-01T06:03:57.818Z
-    updated_at: 2026-04-01T06:04:45.254Z
+    updated_at: 2026-04-01T06:04:47.883Z
     notes: []
   - _ulid: 01KN3T98YRTG0PJK0NN75DD7KB
     slugs: []
