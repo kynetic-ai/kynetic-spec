@@ -30050,12 +30050,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-01T05:19:53.750Z
+      updated_at: 2026-04-01T05:20:00.770Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-01T05:19:53.750Z
+      updated_at: 2026-04-01T05:20:00.770Z
     integration:
       status: pending
       detail: null
@@ -30063,24 +30063,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: c33b26b5e198e2e8e13c92a35d1b6935217e335f
-      updated_at: 2026-04-01T05:19:53.750Z
-    lifecycle_state: ready
+      updated_at: 2026-04-01T05:20:00.770Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KN3Q09YEKYDQ8JCP1RDNGAF1"
     task_slug: task-fix-review-detail-e2e-full-gate
     timestamps:
       closed_at: null
       last_active_at: 2026-04-01T05:07:56.846Z
-      last_reconciled_at: 2026-04-01T05:19:53.750Z
+      last_reconciled_at: 2026-04-01T05:20:00.770Z
       created_at: 2026-04-01T05:07:48.265Z
-      updated_at: 2026-04-01T05:19:53.750Z
+      updated_at: 2026-04-01T05:20:00.770Z
     workspace_id: dispatch-workspace-01KN3Q09YEKYDQ8JCP1RDNGAF1
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 81dd34e0197fe65ec7da87a5a5bc1615d96be4fb
+        last_seen_at: 2026-04-01T05:20:00.770Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-review-detail-e2e-full-gate-01kn3q09-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-fix-review-detail-e2e-full-gate/01kn3q09
-        head: c33b26b5e198e2e8e13c92a35d1b6935217e335f
-        last_seen_at: 2026-04-01T05:07:48.265Z
+        head: 81dd34e0197fe65ec7da87a5a5bc1615d96be4fb
+        last_seen_at: 2026-04-01T05:20:00.770Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-review-detail-e2e-full-gate-01kn3q09
