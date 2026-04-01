@@ -94771,6 +94771,28 @@ reviews:
         runner: playwright
         created_at: 2026-04-01T05:33:24.137Z
         completed_at: 2026-04-01T05:33:24.137Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: packages/web-ui/src/lib/api.ts;
+          packages/web-ui/src/routes/reviews/[id]/+page.svelte;
+          packages/daemon/src/routes/reviews.ts; tests/e2e/review-detail-page.spec.ts;
+          tests/e2e/reviews-detail.spec.ts; tests/web-ui/api-envelope.test.ts;
+          tests/daemon-api/reviews-list.test.ts. Commands run: git diff --stat/name-only and
+          per-file diffs; kspec task get; kspec item get @review-records-web-ui; kspec item get
+          @api-contract; kspec validate; rg for AC annotations and review-detail code paths; npm run
+          test:e2e repeated; npm test. Claims verified: fetchReviewSiblings now sends repeated
+          lifecycle states instead of status=all; backend review route defaults to open unless
+          explicit statuses are listed; review-detail E2E remains flaky; full npm test still fails.
+          Categories searched: correctness (revision filtering), edge cases
+          (same-subject/head-branch sibling selection), test quality (behavioral coverage and
+          flake), integration (review UI with daemon review filters)."
+        name: review evidence log
+        required: false
+        runner: manual
+        created_at: 2026-04-01T05:34:04.666Z
+        completed_at: 2026-04-01T05:34:04.666Z
     events:
       - _ulid: 01KN3QSEE3FYXA21KMRCAQRQP5
         actor: Jacob Chapel
@@ -94813,6 +94835,13 @@ reviews:
           status: fail
           name: review-detail e2e stability
         timestamp: 2026-04-01T05:33:24.866Z
+      - _ulid: 01KN3RHQJSVYT31HEEP1V14N63
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-04-01T05:34:05.402Z
     examined_commit: 81dd34e0197fe65ec7da87a5a5bc1615d96be4fb
     external_links: []
     lifecycle_state: open
@@ -95563,7 +95592,7 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-01T05:20:49.603Z
-    updated_at: 2026-04-01T05:33:24.137Z
+    updated_at: 2026-04-01T05:34:04.666Z
     notes: []
   - _ulid: 01KN3RHJ6V99DSSS7JP2NRN2YD
     slugs: []
