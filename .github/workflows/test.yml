@@ -12,6 +12,7 @@ on:
       - "templates/**"
       - "package.json"
       - "package-lock.json"
+      - "playwright.config.ts"
       - "tsconfig.json"
       - "vitest.config.ts"
       - ".oxlintrc.json"
