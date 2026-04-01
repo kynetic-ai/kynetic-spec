@@ -100231,7 +100231,30 @@ reviews:
     slugs: []
     title: Review task-consolidate-session-cache (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: packages/daemon/src/routes/session-related.ts,
+          packages/daemon/src/routes/session-summary-utils.ts,
+          packages/daemon/src/routes/sessions.ts, packages/daemon/src/project-context.ts,
+          packages/daemon/src/server.ts, src/daemon/entity-cache.ts,
+          tests/daemon-cache-route-coverage.test.ts, tests/daemon-entity-cache.test.ts, AGENTS.md,
+          kspec-agents.md. Commands run: kspec task get, kspec item get, kspec review
+          for-task/get/add/open, git diff/name-only/stat, kspec validate, rg AC annotation search,
+          npm test -- --run tests/daemon-cache-route-coverage.test.ts, direct node reproduction of
+          getRelatedSessionsForTask(), log inspection for npm test. Claims verified: prior blocker
+          fix for degraded /api/sessions?task_id path is covered and passes; related-session
+          stale-index path still returns event_count 0 despite live counter 3. Categories searched:
+          correctness (1 blocker), tests/coverage (gap found), integration (session routes +
+          broadcast path checked), edge cases (ready-but-stale cache fallback), error
+          handling/security (no additional findings)."
+        name: review-evidence
+        required: false
+        runner: codex
+        created_at: 2026-04-01T23:11:01.907Z
+        completed_at: 2026-04-01T23:11:01.907Z
     events:
       - _ulid: 01KN5MDA5NMX9K1JN3NR42TTHC
         actor: Jacob Chapel
@@ -100253,6 +100276,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN5N0ZS3APCZAGB26NRP9GZ4
         timestamp: 2026-04-01T23:11:00.567Z
+      - _ulid: 01KN5N12E641F59V808EDMXAXZ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-04-01T23:11:02.598Z
     examined_commit: 613afcce6db17299caa79077049326cc975e460e
     external_links: []
     lifecycle_state: open
@@ -100285,5 +100315,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-01T23:00:15.158Z
-    updated_at: 2026-04-01T23:10:59.876Z
+    updated_at: 2026-04-01T23:11:01.907Z
     notes: []
