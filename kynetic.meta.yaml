@@ -10792,6 +10792,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-01T05:49:57.029Z
+  - _ulid: 01KN3SES8V8FHTM2G5HN6RRBZE
+    type: friction
+    content: Sessions E2E stabilization still requires expensive build-and-rerun cycles before
+      neighboring out-of-scope failures become visible. Focused cases passed quickly, but
+      discovering adjacent infinite-scroll/live-update failures required a much slower widened
+      rerun.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-01T05:49:57.403Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
