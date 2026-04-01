@@ -52,3 +52,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-01T06:24:21.427Z
+  - _ulid: 01KN3YXY8NBZ8ADSZAYC4QFVVN
+    content: "Fix cycle 2 follow-up: rebased
+      dispatch/task/task-fix-review-interaction-e2e-full-gate/01kn3q0a onto origin/dev (now based on
+      ba2271a6e, head e49d0c4bd). Re-verified the interaction scope without additional code edits:
+      npm run test:e2e -- tests/e2e/review-interaction.spec.ts => 24/24 passed. Reproduced the prior
+      full-gate blocker files directly with npm test -- tests/agent-dispatch-engine.test.ts
+      tests/enhanced-setup.test.ts tests/dispatch-workspace-config.test.ts => 52 suites / 193 tests
+      passed, so the old review blockers from examined commit 38587b6 no longer reproduce on the
+      rebased head. Full npm test is still red in unrelated baseline suites (claude-plugin-registry,
+      cli-serve, core-skill-install, cross-platform-robustness) outside this branch diff; this
+      branch still changes only tests/e2e/review-interaction.spec.ts relative to origin/dev."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T07:25:36.917Z
