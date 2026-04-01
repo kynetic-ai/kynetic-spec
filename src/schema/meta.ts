@@ -263,6 +263,7 @@ export const ObservationSchema = z.object({
   type: ObservationTypeSchema,
   workflow_ref: RefSchema.optional(),
   content: z.string().min(1, "Observation content is required"),
+  context: z.string().optional(),
   created_at: DateTimeSchema,
   author: z.string().optional(),
   resolved: z.boolean().default(false),
