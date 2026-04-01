@@ -96218,6 +96218,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-01T06:04:54.205Z
+      - _ulid: 01KN3TVH5EG6GDMZECAKZE2C9N
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN3TVGA2757YTT7PQCG4K5QA
+        timestamp: 2026-04-01T06:14:23.662Z
     examined_commit: 4eed9f6cc2f321ae17abc46f1a25766b8f489b78
     external_links: []
     lifecycle_state: open
@@ -96227,10 +96234,28 @@ reviews:
       content_hash: ""
       ref: "@01KN3Q09YEKYDQ8JCP1RDNGAF1"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KN3TVGA2757YTT7PQCG4K5QA
+        anchor:
+          type: code
+          commit: 4eed9f6cc2f321ae17abc46f1a25766b8f489b78
+          line_end: 5659
+          line_start: 5659
+          path: tests/agent-dispatch-engine.test.ts
+          side: head
+        entries:
+          - _ulid: 01KN3TVGA2CCWFXQCFTRY69FBC
+            author: Jacob Chapel
+            body: "MUST-FIX: this snapshot still does not unblock the full CI gate. I ran npm test against
+              4eed9f6cc2f321ae17abc46f1a25766b8f489b78 and the suite completed with 3 failing
+              assertions in tests/agent-dispatch-engine.test.ts (around lines 5659, 5721, and 5878).
+              Because the task goal is to clear the full gate, a snapshot that still leaves npm test
+              red cannot advance even though the review-detail E2Es now pass."
+            created_at: 2026-04-01T06:14:22.786Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-01T06:04:25.432Z
-    updated_at: 2026-04-01T06:04:53.312Z
+    updated_at: 2026-04-01T06:14:22.786Z
     notes: []
   - _ulid: 01KN3TTZTEK2YN7DCCGH5RBNXE
     slugs: []
