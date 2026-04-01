@@ -19936,7 +19936,7 @@ runs:
     started_at: 2026-04-01T07:14:05.112Z
   - _ulid: 01KN3Z1CM05FFY3F16C9SM2J15
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -19949,7 +19949,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-01T07:28:28.378Z
-        completed_at: 2026-04-01T07:28:28.378Z
+        completed_at: 2026-04-01T07:29:13.359Z
+        notes: "Coverage check: no existing matches found before capture for the rebase-sensitive
+          review-blocker churn pattern or the rebase-then-focused-subset verification success
+          pattern. The session produced two high-confidence captures: @01KN3Z36 (success) and
+          @01KN3Z36 (friction), each tied directly to this fix-cycle session."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-01T07:29:13.359Z
+        completed_at: 2026-04-01T07:29:13.359Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-01T07:27:29.920Z
