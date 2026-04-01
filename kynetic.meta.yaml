@@ -10901,6 +10901,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-01T07:29:55.241Z
+  - _ulid: 01KN406K85J2E85N0GGH639P43
+    type: success
+    content: For isolated E2E CI blockers, reproducing only the named failing cases first and then
+      rerunning the whole affected spec after each fix closed the issue quickly without guessing
+      across unrelated failures.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-01T07:47:49.126Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
