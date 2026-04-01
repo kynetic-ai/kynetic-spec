@@ -30151,18 +30151,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-fix-review-interaction-e2e-full-gate/01kn3q0a
-    canonical_branch_head: 244194ef5451c0f34b5bb94623f5688842ae0588
+    canonical_branch_head: 38587b6ed0cad0767346ec970b677d1fa870db77
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-01T06:02:58.911Z
+      updated_at: 2026-04-01T06:11:50.623Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-01T06:03:04.613Z
+      updated_at: 2026-04-01T06:11:50.623Z
     integration:
       status: pending
       detail: null
@@ -30170,7 +30170,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: c33b26b5e198e2e8e13c92a35d1b6935217e335f
-      updated_at: 2026-04-01T06:02:58.911Z
+      updated_at: 2026-04-01T06:11:50.623Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KN3Q0AXQNHZDB7TVCW288G7V"
@@ -30178,9 +30178,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-01T06:03:04.613Z
-      last_reconciled_at: 2026-04-01T06:03:04.613Z
+      last_reconciled_at: 2026-04-01T06:11:50.623Z
       created_at: 2026-04-01T05:20:10.673Z
-      updated_at: 2026-04-01T06:03:04.613Z
+      updated_at: 2026-04-01T06:11:50.623Z
     workspace_id: dispatch-workspace-01KN3Q0AXQNHZDB7TVCW288G7V
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
