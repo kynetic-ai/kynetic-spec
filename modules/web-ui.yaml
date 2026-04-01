@@ -382,6 +382,28 @@ features:
             then: a real-time event is broadcast to all connected clients identifying the domain and project
               that became ready
             when: the transition completes
+          - given: a session is active and events are being recorded
+            id: ac-session-live-counter
+            then: the event count reflects the current number of events recorded so far, without requiring a
+              scan of stored event data
+            when: the session list is served
+          - given: the dispatch engine appends an event to an active session
+            id: ac-session-event-tracking
+            then: the cached event count for that session is incremented and available to subsequent list
+              requests
+            when: the event is successfully recorded
+          - given: a session reaches a terminal status
+            id: ac-session-stats-persist
+            then: session statistics are persisted in the session metadata
+            when: the session is closed
+          - given: a session transitions from active to a terminal status
+            id: ac-session-stats-handoff
+            then: stats are read from persisted metadata rather than any live tracking state
+            when: the session list is subsequently served
+          - given: a file watcher detects a change that triggers a cache domain reload
+            id: ac-broadcast-after-reload
+            then: the WebSocket broadcast for the change is emitted after the cache reload finishes
+            when: the reload completes and fresh data is available in cache
         tags: []
         requirements:
           - _ulid: 01KMMB3S7MJZ9ZJKZT31QPM572
