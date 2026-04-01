@@ -95688,6 +95688,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN3S22MCYY4VD93HV9Q5F82K
         timestamp: 2026-04-01T05:43:01.969Z
+      - _ulid: 01KN3S26GX0Z1JG7F8NRZG640N
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN3S25JEZCQT48JAF2ZHC60Y
+        timestamp: 2026-04-01T05:43:04.989Z
     examined_commit: 244194ef5451c0f34b5bb94623f5688842ae0588
     external_links: []
     lifecycle_state: open
@@ -95847,7 +95854,26 @@ reviews:
               passing E2E coverage, so the task cannot advance while the targeted spec still fails."
             created_at: 2026-04-01T05:43:01.005Z
         kind: blocker
+      - _ulid: 01KN3S25JEZCQT48JAF2ZHC60Y
+        anchor:
+          type: code
+          commit: 244194ef5451c0f34b5bb94623f5688842ae0588
+          line_end: 247
+          line_start: 226
+          path: tests/e2e/review-interaction.spec.ts
+          side: head
+        entries:
+          - _ulid: 01KN3S25JE9XCWNPZ4WF5JEW4F
+            author: Jacob Chapel
+            body: The rewritten reopen assertion no longer proves the behavior required by
+              @review-records-web-ui ac-5. The spec says clicking Reopen must toggle resolution
+              state and update the UI immediately, but this test now calls page.reload() before
+              checking the state. That can pass even if the in-page mutation or invalidation path is
+              broken and only a full refresh reflects the change, so this is a coverage regression
+              rather than a valid fix for the interactive failure.
+            created_at: 2026-04-01T05:43:04.014Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-01T05:33:59.899Z
-    updated_at: 2026-04-01T05:43:01.005Z
+    updated_at: 2026-04-01T05:43:04.014Z
     notes: []
