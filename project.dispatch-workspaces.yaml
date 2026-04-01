@@ -30179,7 +30179,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-01T07:46:42.298Z
+      updated_at: 2026-04-01T07:47:45.087Z
     integration:
       status: merged
       detail: integration:merged
@@ -30195,18 +30195,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-01T07:30:00.027Z
-      last_reconciled_at: 2026-04-01T07:47:42.333Z
+      last_reconciled_at: 2026-04-01T07:47:45.087Z
       created_at: 2026-04-01T05:20:10.673Z
-      updated_at: 2026-04-01T07:47:42.333Z
+      updated_at: 2026-04-01T07:47:45.087Z
     workspace_id: dispatch-workspace-01KN3Q0AXQNHZDB7TVCW288G7V
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: e49d0c4bd4b675faecf68024f1602c26d74f6638
-        last_seen_at: 2026-04-01T07:29:51.461Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-review-interaction-e2e-full-gate-01kn3q0a-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-fix-review-interaction-e2e-full-gate/01kn3q0a
