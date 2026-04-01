@@ -29966,7 +29966,7 @@ workspaces:
         head: 53c43f40ee50dbb8e7935d9ccb9ebe69a5be4b1c
         last_seen_at: 2026-03-31T20:13:04.624Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ci-full-e2e-01kmz1bx
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: c33b26b5e198e2e8e13c92a35d1b6935217e335f
     bootstrap:
       status: succeeded
@@ -30074,9 +30074,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-01T08:07:18.920Z
-      last_reconciled_at: 2026-04-01T08:21:44.834Z
+      last_reconciled_at: 2026-04-01T08:23:17.437Z
       created_at: 2026-04-01T05:07:48.265Z
-      updated_at: 2026-04-01T08:21:44.834Z
+      updated_at: 2026-04-01T08:23:17.437Z
     workspace_id: dispatch-workspace-01KN3Q09YEKYDQ8JCP1RDNGAF1
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
