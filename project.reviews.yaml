@@ -100470,7 +100470,19 @@ reviews:
     slugs: []
     title: Review task-consolidate-session-cache (cycle 3)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Fresh full suite run failed in tests/file-lock.test.ts:191 (expected count: 5, got count:
+          4). This appears unrelated to the session-cache consolidation diff but blocks merge
+          because the required suite is not green."
+        name: npm test -- --fresh
+        required: true
+        runner: npm
+        created_at: 2026-04-01T23:34:38.750Z
+        completed_at: 2026-04-01T23:34:38.750Z
     events:
       - _ulid: 01KN5NGQGHPMRHB8DW9R3XM5XJ
         actor: Jacob Chapel
@@ -100485,6 +100497,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-01T23:20:02.011Z
+      - _ulid: 01KN5PCA2F8PZV6CHBPNMH2WHX
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test -- --fresh
+        timestamp: 2026-04-01T23:34:39.439Z
     examined_commit: f9baca4826d02c234e43bf65412a92c426fd50fb
     external_links: []
     lifecycle_state: open
@@ -100497,5 +100516,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-01T23:19:35.698Z
-    updated_at: 2026-04-01T23:20:01.354Z
+    updated_at: 2026-04-01T23:34:38.750Z
     notes: []
