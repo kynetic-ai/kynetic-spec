@@ -27,3 +27,11 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-01T07:59:36.565Z
+  - _ulid: 01KN41FM2D1AMWCRV38KW6H3XE
+    content: "Fix cycle 1 plan: restore the real daemon -> WebSocket -> UI assertion for the
+      sessions-topic leg in the source-agnostic live-update test, keep deterministic synthetic
+      coverage for the explicit topic branches, then rerun focused Playwright coverage plus the
+      broader sessions spec before resubmitting."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T08:10:13.454Z
