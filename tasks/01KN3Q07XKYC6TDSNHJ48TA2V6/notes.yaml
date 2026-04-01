@@ -1,1 +1,11 @@
-notes: []
+notes:
+  - _ulid: 01KN42A5427MN40VKV0MYXTNSM
+    content: "Approach: reproduce the two failing tests in tests/e2e/api-watcher.spec.ts, inspect
+      Playwright artifacts plus watcher/topic wiring, then fix the root cause in either daemon
+      broadcasts or the E2E harness. Edge cases: fs.watch debounce timing, watcher startup races,
+      session-file mutations vs HTTP API mutations, and event observation gaps in the browser-side
+      subscriber. Test plan: focused Playwright runs for the two failures until stable, then rerun
+      the full api-watcher spec or the relevant watcher slice to confirm no regression."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T08:24:42.882Z
