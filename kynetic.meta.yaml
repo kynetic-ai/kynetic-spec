@@ -11073,6 +11073,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-01T10:23:03.674Z
+  - _ulid: 01KN492VRX7D9EAEK56JD0ZNTG
+    type: success
+    content: "Anchored review threads kept the fix cycle tight: the blocker pointed to
+      .github/workflows/test.yml with a precise path-filter gap, which made the follow-up a
+      single-line workflow fix plus explicit thread resolution instead of a broad re-review."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-01T10:23:03.965Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
