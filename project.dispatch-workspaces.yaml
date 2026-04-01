@@ -30733,7 +30733,7 @@ workspaces:
         head: 37e60220bea429eabfccfa1d3cf783112201a3d7
         last_seen_at: 2026-04-01T08:49:09.044Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-observations-e2e-full-gate-01kn3q08
-  - active_role: worker
+  - active_role: null
     base_branch_point: dd1b3eb6762c4be1499d598719ff3bc7d9482214
     bootstrap:
       status: succeeded
@@ -30817,12 +30817,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-01T08:54:41.537Z
+      updated_at: 2026-04-01T08:56:46.616Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-01T08:54:41.537Z
+      updated_at: 2026-04-01T08:56:46.616Z
     integration:
       status: pending
       detail: null
@@ -30830,17 +30830,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: dd1b3eb6762c4be1499d598719ff3bc7d9482214
-      updated_at: 2026-04-01T08:54:41.537Z
-    lifecycle_state: active
+      updated_at: 2026-04-01T08:56:46.616Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KN3Q0DXHXAR5FZHTDZVCBYA3"
     task_slug: task-fix-workflows-loading-e2e-full-gate
     timestamps:
       closed_at: null
       last_active_at: 2026-04-01T08:49:24.933Z
-      last_reconciled_at: 2026-04-01T08:54:41.537Z
+      last_reconciled_at: 2026-04-01T08:56:46.616Z
       created_at: 2026-04-01T08:49:18.148Z
-      updated_at: 2026-04-01T08:54:41.537Z
+      updated_at: 2026-04-01T08:56:46.616Z
     workspace_id: dispatch-workspace-01KN3Q0DXHXAR5FZHTDZVCBYA3
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
