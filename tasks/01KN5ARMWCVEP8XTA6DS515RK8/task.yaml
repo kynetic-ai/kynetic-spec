@@ -96,7 +96,7 @@ description: >-
 spec_ref: "@task-activity-in-file"
 meta_ref: null
 plan_ref: null
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-purge-old-storage-refs"
@@ -107,6 +107,7 @@ tags:
   - tasks
   - activity
 vcs_refs: []
+session_id: 01KN5BMHQTF9D0B4WVY6505A2R
 history:
   - author: "@claude"
     changes:
@@ -310,6 +311,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-04-01T20:25:56.782Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KN5BMHQTF9D0B4WVY6505A2R
+        previous: null
+      started_at:
+        new: 2026-04-01T20:27:27.255Z
+        previous: null
+    command: task-start
+    timestamp: 2026-04-01T20:27:27.256Z
 created_at: 2026-04-01T20:11:40.812Z
+started_at: 2026-04-01T20:27:27.255Z
 todos: []
 automation: eligible
