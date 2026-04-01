@@ -20265,7 +20265,7 @@ runs:
     completed_at: 2026-04-01T20:09:11.521Z
   - _ulid: 01KN5ND9PPV1B9WE4S154EVEYK
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -20277,7 +20277,14 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-01T23:18:07.258Z
-        completed_at: 2026-04-01T23:18:07.258Z
+        completed_at: 2026-04-01T23:18:15.956Z
+        notes: "Capture decision: no new items added during reflection because the only high-confidence
+          issue from this session was already recorded before reflection as friction observation
+          @01KN5NAP."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-01T23:18:15.956Z
+        completed_at: 2026-04-01T23:18:15.956Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-01T23:17:43.255Z
