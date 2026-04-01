@@ -100227,3 +100227,29 @@ reviews:
     created_at: 2026-04-01T22:37:48.836Z
     updated_at: 2026-04-01T22:58:09.252Z
     notes: []
+  - _ulid: 01KN5MDA5PM7ZXGK059W61PJFV
+    slugs: []
+    title: Review task-consolidate-session-cache (cycle 2)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KN5MDA5NMX9K1JN3NR42TTHC
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-01T23:00:15.157Z
+    examined_commit: 613afcce6db17299caa79077049326cc975e460e
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KN5J2ETHQMPQGA334D827YWG"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-01T23:00:15.158Z
+    updated_at: null
+    notes: []
