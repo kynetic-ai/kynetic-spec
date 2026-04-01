@@ -95718,6 +95718,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-01T05:43:31.271Z
+      - _ulid: 01KN3S5ZVN25MTMARGAZCGMC1K
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KN3S1NSYG145FN5ZPXY7YD53
+        timestamp: 2026-04-01T05:45:09.237Z
     examined_commit: 244194ef5451c0f34b5bb94623f5688842ae0588
     external_links: []
     lifecycle_state: closed
@@ -95747,6 +95753,8 @@ reviews:
               valid fix for the interactive failure.
             created_at: 2026-04-01T05:42:47.870Z
         kind: blocker
+        resolved_at: 2026-04-01T05:45:07.090Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KN3S22MCYY4VD93HV9Q5F82K
         anchor:
           type: code
@@ -95924,5 +95932,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-01T05:43:31.271Z
     created_at: 2026-04-01T05:33:59.899Z
-    updated_at: 2026-04-01T05:43:31.271Z
+    updated_at: 2026-04-01T05:45:07.090Z
     notes: []
