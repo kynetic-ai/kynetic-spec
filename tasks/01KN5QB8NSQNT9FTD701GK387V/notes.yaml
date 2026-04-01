@@ -9,3 +9,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-01T23:53:09.793Z
+  - _ulid: 01KN5QK5MKR1GM80PF7EG8XCZ4
+    content: "Root cause: duration-based stale-lock reclamation treated a lock held by the current Node
+      process as reclaimable once maxHoldMs elapsed. That allows same-process waiters to steal the
+      lock and overlap the critical section, which reproduces lost updates in the concurrent
+      increment test under an artificially low maxHoldMs. Fix: never duration-reclaim same-process
+      locks; keep serialization within a process. Test updates: add a same-process regression case
+      and move alive-holder reclaim coverage to a real child PID so those tests still verify
+      cross-process force reclaim behavior."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T23:55:52.851Z
