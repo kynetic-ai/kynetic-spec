@@ -1207,6 +1207,48 @@ test.describe("Session History View", () => {
       await expect(page.getByTestId("sessions-list")).toBeVisible();
       await expect(page.getByTestId("session-row")).toHaveCount(1);
       await expect(page.getByTestId("session-row").first()).toHaveAttribute("data-session-id", firstSessionId);
+      await page.evaluate(async () => {
+        const ws = ((window as any).__test_ws_instances as WebSocket[] | undefined)?.find(
+          (socket) => socket.readyState === WebSocket.OPEN,
+        );
+        if (!ws) {
+          throw new Error("WebSocket not connected");
+        }
+
+        const subscribeToTopic = (topicName: string) =>
+          new Promise<void>((resolve, reject) => {
+            const requestId = `sub-${topicName}-${Date.now()}-${Math.random()}`;
+            const timeout = window.setTimeout(() => {
+              ws.removeEventListener("message", handleMessage);
+              reject(new Error(`Timed out waiting for subscribe ack for ${topicName}`));
+            }, 5000);
+
+            const handleMessage = (event: MessageEvent) => {
+              try {
+                const data = JSON.parse(String(event.data));
+                if (data.ack === true && data.request_id === requestId && data.success) {
+                  window.clearTimeout(timeout);
+                  ws.removeEventListener("message", handleMessage);
+                  resolve();
+                }
+              } catch {
+                // Ignore non-JSON frames.
+              }
+            };
+
+            ws.addEventListener("message", handleMessage);
+            ws.send(
+              JSON.stringify({
+                action: "subscribe",
+                request_id: requestId,
+                payload: { topics: [topicName] },
+              }),
+            );
+          });
+
+        await subscribeToTopic("sessions");
+        await subscribeToTopic("agents");
+      });
 
       await writeSessionFixture(daemon.tempDir, {
         id: secondSessionId,
@@ -1215,39 +1257,9 @@ test.describe("Session History View", () => {
         agentType,
       });
 
-      await expect
-        .poll(async () => {
-          const response = await request.get(`${daemon.baseUrl}/api/sessions?agent_type=${agentType}`);
-          const body = await response.json();
-          return body.meta?.total ?? 0;
-        })
-        .toBe(2);
-
-      const sessionsTopicInjected = await page.evaluate((sessionId: string) => {
-        const instances = (window as any).__test_ws_instances as WebSocket[];
-        const ws = instances?.find((s) => s.readyState === WebSocket.OPEN);
-        if (!ws) return false;
-
-        ws.dispatchEvent(
-          new MessageEvent("message", {
-            data: JSON.stringify({
-              msg_id: "test-source-agnostic-sessions",
-              seq: 9995,
-              timestamp: new Date().toISOString(),
-              topic: "sessions",
-              event: "session_changed",
-              data: {
-                session_id: sessionId,
-                path: `.kspec-sessions/${sessionId}/session.yaml`,
-              },
-            }),
-          }),
-        );
-        return true;
-      }, secondSessionId);
-      expect(sessionsTopicInjected).toBe(true);
-
-      await expect(page.getByTestId("session-row")).toHaveCount(2, { timeout: 3000 });
+      // Keep one assertion on the real daemon -> WebSocket -> UI path so the
+      // watcher-backed sessions-topic fanout remains covered end-to-end.
+      await expect(page.getByTestId("session-row")).toHaveCount(2, { timeout: 5000 });
       await expect(page.getByTestId("session-row").first()).toHaveAttribute(
         "data-session-id",
         secondSessionId,
