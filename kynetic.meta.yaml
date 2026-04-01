@@ -10783,6 +10783,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-01T05:36:09.341Z
+  - _ulid: 01KN3SERX5FR7D0B4ZQM1SXZAH
+    type: success
+    content: "For CI-oriented Playwright failures, reproducing only the named failing cases first made
+      root-cause isolation much faster: it separated one real app bug (static-mode session detail)
+      from adjacent test drift before widening scope."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-01T05:49:57.029Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
