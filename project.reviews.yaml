@@ -100125,6 +100125,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-01T22:44:31.299Z
+      - _ulid: 01KN5KHBDZQ5KSA9FDMPSCJ27F
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN5KETFJRWGX7100F3CRVT9Q
+        timestamp: 2026-04-01T22:44:58.943Z
     examined_commit: 6ed10e58b1effad92713b88cbbcc68a86c4bc9c7
     external_links: []
     lifecycle_state: closed
@@ -100153,6 +100159,11 @@ reviews:
               non-ready sessions cache. This regresses  AC  / ; the fallback path needs a live
               counter source or a direct event-count read for active sessions."
             created_at: 2026-04-01T22:43:36.050Z
+          - _ulid: 01KN5KHASC1HDT66V0JSC3KS8S
+            author: Jacob Chapel
+            body: Duplicate of thread 01KN5KF4R0H6G0H4Q7FSEYB5DK created while recording the finding; ignore
+              this malformed copy.
+            created_at: 2026-04-01T22:44:58.283Z
         kind: blocker
       - _ulid: 01KN5KF4R0H6G0H4Q7FSEYB5DK
         anchor:
@@ -100185,5 +100196,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-01T22:44:31.298Z
     created_at: 2026-04-01T22:37:48.836Z
-    updated_at: 2026-04-01T22:44:31.299Z
+    updated_at: 2026-04-01T22:44:58.283Z
     notes: []
