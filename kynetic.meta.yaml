@@ -10957,6 +10957,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-01T08:38:31.545Z
+  - _ulid: 01KN43N7Z4S43ERVHJ6NKS9MDA
+    type: friction
+    content: "Meta/schema drift can silently drop observation fields: this session found tests/e2e
+      fixtures and the web UI both using observation context, but ObservationSchema omitted the
+      field so daemon responses lost it until an E2E failure exposed the mismatch."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-01T08:48:14.820Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
