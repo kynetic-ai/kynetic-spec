@@ -129,3 +129,24 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-01T22:19:39.514Z
+  - _ulid: 01KN5JAGDVCJPYBK83TK8RFRJ0
+    content: >-
+      Approach: route live session counters through ProjectEntityCache and remove
+      SessionSummaryCache reads/writes from dispatch and daemon session routes. Reuse existing
+      entity-cache session index, incrementSessionEventCount(), discardSessionLiveCounter(), and
+      onDomainReady callback instead of maintaining parallel cache state.
+
+
+      Edge cases: bounded session index means detail lookups and related-session filters still need
+      disk fallback for older sessions; warming paths must stay metadata-only and avoid events.jsonl
+      scans; broadcasts must not fire early during debounced reloads; completed sessions must hand
+      off from live counters to persisted metadata without stale counts.
+
+
+      Test plan: add behavioral coverage for daemon entity-cache live counter increment/discard,
+      session route metadata-only fallback during warming, and session watcher broadcasts occurring
+      after sessions-domain reload completion. Remove obsolete SessionSummaryCache coverage once
+      callers are migrated.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T22:23:46.107Z
