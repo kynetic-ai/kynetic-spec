@@ -30867,7 +30867,7 @@ workspaces:
         head: cfa62d694c16460d95a198b80e11f09b98497234
         last_seen_at: 2026-04-01T08:56:52.318Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-workflows-loading-e2e-full-gate-01kn3q0d
-  - active_role: worker
+  - active_role: null
     base_branch_point: dd1b3eb6762c4be1499d598719ff3bc7d9482214
     bootstrap:
       status: succeeded
@@ -30951,12 +30951,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-01T09:13:43.004Z
+      updated_at: 2026-04-01T09:17:44.417Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-01T09:13:43.004Z
+      updated_at: 2026-04-01T09:17:44.417Z
     integration:
       status: pending
       detail: null
@@ -30964,17 +30964,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: dd1b3eb6762c4be1499d598719ff3bc7d9482214
-      updated_at: 2026-04-01T09:13:43.004Z
-    lifecycle_state: active
+      updated_at: 2026-04-01T09:17:44.417Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KN3Q0EXX6N1PC5FHD1GZYWGS"
     task_slug: task-stabilize-full-gate-e2e-flakes
     timestamps:
       closed_at: null
       last_active_at: 2026-04-01T08:57:07.470Z
-      last_reconciled_at: 2026-04-01T09:13:43.004Z
+      last_reconciled_at: 2026-04-01T09:17:44.417Z
       created_at: 2026-04-01T08:56:59.590Z
-      updated_at: 2026-04-01T09:13:43.004Z
+      updated_at: 2026-04-01T09:17:44.417Z
     workspace_id: dispatch-workspace-01KN3Q0EXX6N1PC5FHD1GZYWGS
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
