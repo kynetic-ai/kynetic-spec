@@ -99398,6 +99398,17 @@ reviews:
         runner: playwright
         created_at: 2026-04-01T10:17:16.556Z
         completed_at: 2026-04-01T10:17:16.556Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 7522 passed, 5 skipped in ~55m57s. A prior single failure in unchanged
+          tests/cli-serve.test.ts did not reproduce on fresh rerun.
+        name: npm test --fresh
+        required: true
+        runner: npm
+        created_at: 2026-04-01T10:17:18.518Z
+        completed_at: 2026-04-01T10:17:18.518Z
     events:
       - _ulid: 01KN47XK6QVEP2FR6FBPQ2ZFK7
         actor: Jacob Chapel
@@ -99426,6 +99437,13 @@ reviews:
           status: pass
           name: npm run test:e2e:ci -- --shard=1/2
         timestamp: 2026-04-01T10:17:17.177Z
+      - _ulid: 01KN48RB26FFY159EAS9MJTE26
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test --fresh
+        timestamp: 2026-04-01T10:17:19.174Z
     examined_commit: abee02938cb6766756ca3c93240afb6ed1710184
     external_links: []
     lifecycle_state: open
@@ -99456,5 +99474,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-01T10:02:42.776Z
-    updated_at: 2026-04-01T10:17:16.556Z
+    updated_at: 2026-04-01T10:17:18.518Z
     notes: []
