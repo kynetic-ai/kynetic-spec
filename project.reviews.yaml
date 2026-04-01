@@ -96387,6 +96387,21 @@ reviews:
         runner: kspec
         created_at: 2026-04-01T06:23:48.959Z
         completed_at: 2026-04-01T06:23:48.959Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test exited 1 in this workspace. Result: 8 failed suites, 2074 passed of 2082; 6
+          failed tests, 7514 passed of 7525. Failures included
+          tests/agent-dispatch-engine.test.ts:5659 and :5878,
+          tests/dispatch-workspace-config.test.ts (cases at lines 159, 623, 723), and
+          tests/enhanced-setup.test.ts:188. Full log:
+          /tmp/kspec-test-cache/01KN3TSHJZPQ9S5M05HYDVY28T/d0c68e8322da5d56.log"
+        name: npm test
+        required: true
+        runner: test-runner
+        created_at: 2026-04-01T06:23:51.529Z
+        completed_at: 2026-04-01T06:23:51.529Z
     events:
       - _ulid: 01KN3TTZTDTJ6R6KR9S0VP0Q34
         actor: Jacob Chapel
@@ -96422,6 +96437,13 @@ reviews:
           status: skipped
           name: kspec validate
         timestamp: 2026-04-01T06:23:49.803Z
+      - _ulid: 01KN3VCWGREQZ45SV5M6SN8XEQ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-04-01T06:23:52.344Z
     examined_commit: 38587b6ed0cad0767346ec970b677d1fa870db77
     external_links: []
     lifecycle_state: open
@@ -96454,5 +96476,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-01T06:14:05.902Z
-    updated_at: 2026-04-01T06:23:48.959Z
+    updated_at: 2026-04-01T06:23:51.529Z
     notes: []
