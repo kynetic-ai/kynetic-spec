@@ -10,3 +10,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-01T08:50:53.643Z
+  - _ulid: 01KN440105Q18BG70GCFY81QMN
+    content: "Root cause: the failing workflows loading-state case was a Playwright race in the test,
+      not a page data bug. Reproduction showed the loading skeleton disappeared and the failure
+      snapshot already contained rendered workflow cards; the test used immediate isVisible() probes
+      for the list/empty branch before the post-loading DOM branch had settled. Fix: wait for
+      exactly one loaded branch ([data-testid=workflows-list] or [data-testid=workflows-empty]) and
+      assert no workflows error banner before checking visibility. Verification: focused retrying
+      run for the loading-state case passed, then the full tests/e2e/workflows.spec.ts file passed
+      with --retries 2."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T08:54:08.133Z
