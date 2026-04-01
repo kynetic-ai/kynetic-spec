@@ -195,3 +195,11 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-01T23:16:38.683Z
+  - _ulid: 01KN5QBNNEMYHASPWW9FN78Q5M
+    content: "Verification update: reran `npm test -- --fresh tests/file-lock.test.ts` 10 times and all
+      10 passed. Reran `npm test -- --fresh` and the full suite also passed in this snapshot. The
+      previous file-lock failure is not reproducible here, so I created follow-up @01KN5QB8 to
+      investigate and fix the flaky test independently of this session-cache change."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-01T23:51:47.118Z
