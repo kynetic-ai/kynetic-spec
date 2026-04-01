@@ -10996,6 +10996,24 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-01T09:01:04.904Z
+  - _ulid: 01KN45AGCPSVJAC7AG15YXH5SE
+    type: success
+    content: Focused Playwright reruns with --grep plus --repeat-each quickly separated a real
+      browser-history race from non-repro full-gate flakes, which kept the fix scoped and prevented
+      churn in unrelated E2E cases.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-01T09:17:20.150Z
+  - _ulid: 01KN45AGJE3X7JTHJF08535Q9K
+    type: friction
+    content: Task-level verification is noisy when npm test has an unrelated failing baseline; workers
+      can stabilize and verify their target scope but still cannot produce a clean full-suite signal
+      at session end.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-01T09:17:20.334Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
