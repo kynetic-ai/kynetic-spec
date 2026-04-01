@@ -3,6 +3,7 @@ import * as path from "node:path";
 import * as os from "node:os";
 import { afterEach, describe, expect, it } from "vitest";
 import { initContext, loadAllItems, loadAllTasks } from "../src/parser/index.js";
+import type { RouteEntityCache } from "../dist/daemon/routes/entity-cache-types.ts";
 import {
   getRelatedSessionsForItem,
   getRelatedSessionsForTask,
@@ -95,7 +96,8 @@ async function writeSession(
     id: string;
     taskId: string;
     startedAt: string;
-    endedAt: string;
+    status?: "active" | "completed";
+    endedAt?: string;
   },
 ) {
   const sessionDir = path.join(projectRoot, ".kspec-sessions", options.id);
@@ -107,13 +109,59 @@ task_id: "${options.taskId}"
 agent_type: "claude-agent-acp"
 agent_id: "worker"
 trigger: "task.ready"
-status: "completed"
+status: "${options.status ?? "completed"}"
 started_at: "${options.startedAt}"
-ended_at: "${options.endedAt}"
+${options.endedAt ? `ended_at: "${options.endedAt}"` : ""}
 `,
     "utf-8",
   );
   await fs.writeFile(path.join(sessionDir, "events.jsonl"), "", "utf-8");
+}
+
+function createReadySessionsCacheWithLiveCounter(
+  liveEventCounts: Record<string, number>,
+): RouteEntityCache {
+  return {
+    getDomainState: (domain: string) => (domain === "sessions" ? "ready" : "unloaded"),
+    getTaskIndex: () => null,
+    getTaskDetail: () => null,
+    setTaskDetail: () => {},
+    getAllTaskDetails: () => null,
+    getItemIndex: () => null,
+    getItemDetail: () => null,
+    setItemDetail: () => {},
+    getAllItemDetails: () => null,
+    getSessionIndex: () => [],
+    getSessionLiveEventCount: (sessionId: string) => liveEventCounts[sessionId],
+    getSessionDetail: () => null,
+    setSessionDetail: () => {},
+    getPlansIndex: () => null,
+    getPlanDetail: () => null,
+    setPlanDetail: () => {},
+    getInboxIndex: () => null,
+    getTriageIndex: () => null,
+    getTriageDetail: () => null,
+    setTriageDetail: () => {},
+    getReviewsIndex: () => null,
+    getReviewDetail: () => null,
+    setReviewDetail: () => {},
+    getMetaIndex: () => null,
+    getMetaDetail: () => null,
+    setMetaDetail: () => {},
+    getShadowInfo: () => null,
+    getProjectConfig: () => null,
+    getSessionContext: () => null,
+    writeThrough: async () => {},
+    markWriteThrough: () => {},
+    getCacheDiagnostics: () =>
+      ({
+        projectPath: "",
+        domains: {},
+        watcherActive: false,
+        lastInvalidationAt: null,
+        entryCounts: {},
+      }) as ReturnType<RouteEntityCache["getCacheDiagnostics"]>,
+  };
 }
 
 afterEach(async () => {
@@ -188,5 +236,41 @@ describe("session-related route helpers", () => {
       "session-task-progress",
       "session-task-ready",
     ]);
+  });
+
+  // AC: @daemon-entity-cache ac-session-live-counter
+  it("preserves live event counts when related-session fallback refreshes from disk", async () => {
+    const projectRoot = await createFixtureProject();
+    await writeSession(projectRoot, {
+      id: "session-task-active",
+      taskId: "@test-task-ready",
+      startedAt: "2026-03-01T12:00:00Z",
+      status: "active",
+    });
+
+    const ctx = await initContext(projectRoot);
+    const tasks = await loadAllTasks(ctx);
+    const items = await loadAllItems(ctx);
+    const entityCache = createReadySessionsCacheWithLiveCounter({
+      "session-task-active": 3,
+    });
+    const result = await getRelatedSessionsForTask({
+      taskRef: "@test-task-ready",
+      tasks,
+      items,
+      sessionsDir: ctx.sessionsDir,
+      projectPath: projectRoot,
+      getEntityCache: () => entityCache,
+    });
+
+    expect("error" in result).toBe(false);
+    if ("error" in result) return;
+
+    expect(result.sessions).toHaveLength(1);
+    expect(result.sessions[0]).toMatchObject({
+      id: "session-task-active",
+      status: "active",
+      event_count: 3,
+    });
   });
 });

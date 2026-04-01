@@ -76,7 +76,7 @@ async function filterSessionsWithDiskFallback(
   // Related-session routes must not return false negatives when a warm session
   // index is momentarily stale after filesystem writes. Fall back to a fresh
   // disk-backed summary read before concluding there are no related sessions.
-  const freshSessions = await getAllSessionSummaries(sessionsDir);
+  const freshSessions = await listSessionSummariesFromDisk(sessionsDir, entityCache);
   return filterSessionsByTaskRefs(freshSessions, taskRefs);
 }
 
