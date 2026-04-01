@@ -31009,7 +31009,7 @@ workspaces:
         head: d60e51a41636746468122c111be5de0af4ee2a13
         last_seen_at: 2026-04-01T09:17:49.298Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-full-gate-e2e-flakes-01kn3q0e
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: b21970e7807885567bfcfd956798cd3fb979a338
     bootstrap:
       status: succeeded
@@ -31119,7 +31119,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-01T20:04:11.158Z
+      updated_at: 2026-04-01T20:04:17.846Z
     integration:
       status: pending
       detail: null
@@ -31134,10 +31134,10 @@ workspaces:
     task_slug: task-purge-old-storage-refs
     timestamps:
       closed_at: null
-      last_active_at: 2026-04-01T19:59:55.987Z
-      last_reconciled_at: 2026-04-01T20:04:11.158Z
+      last_active_at: 2026-04-01T20:04:17.846Z
+      last_reconciled_at: 2026-04-01T20:04:17.846Z
       created_at: 2026-04-01T19:59:49.181Z
-      updated_at: 2026-04-01T20:04:15.637Z
+      updated_at: 2026-04-01T20:04:17.846Z
     workspace_id: dispatch-workspace-01KM6YEZ0E4QE1E37DAA4T1X7F
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
