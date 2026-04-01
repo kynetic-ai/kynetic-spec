@@ -100483,6 +100483,32 @@ reviews:
         runner: npm
         created_at: 2026-04-01T23:34:38.750Z
         completed_at: 2026-04-01T23:34:38.750Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: packages/daemon/src/project-context.ts,
+          packages/daemon/src/routes/entity-cache-types.ts,
+          packages/daemon/src/routes/session-related.ts,
+          packages/daemon/src/routes/session-summary-utils.ts,
+          packages/daemon/src/routes/sessions.ts, packages/daemon/src/server.ts,
+          src/agent-runtime/dispatch.ts, src/agent-runtime/invocation.ts,
+          src/daemon/entity-cache.ts, src/sessions/index.ts, src/sessions/store.ts,
+          src/sessions/types.ts, tests/daemon-cache-route-coverage.test.ts,
+          tests/daemon-entity-cache.test.ts, tests/session-related-routes.test.ts. Commands run:
+          kspec task get, kspec item get, kspec review for-task/get/open, kspec validate, grep for
+          AC annotations, git diff/stat, npm run build, npm test -- --run targeted suites, npm test,
+          npm test -- --fresh, isolated reruns for daemon-web-ui-bundle, cli-serve, integration.
+          Claims verified: live event counters now read/write through ProjectEntityCache;
+          related-session and degraded list fallbacks preserve live counters; sessions-topic
+          broadcast moved to post-reload callback. Categories searched: correctness, edge cases,
+          error handling, test quality, integration; no code findings in the submitted diff, but the
+          required full-suite gate remains red on an unrelated file-lock concurrency test."
+        name: review-evidence
+        required: false
+        runner: codex
+        created_at: 2026-04-01T23:34:40.803Z
+        completed_at: 2026-04-01T23:34:40.803Z
     events:
       - _ulid: 01KN5NGQGHPMRHB8DW9R3XM5XJ
         actor: Jacob Chapel
@@ -100504,6 +100530,13 @@ reviews:
           status: fail
           name: npm test -- --fresh
         timestamp: 2026-04-01T23:34:39.439Z
+      - _ulid: 01KN5PCC1RT9XMRXHQYK8MP45P
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-04-01T23:34:41.464Z
     examined_commit: f9baca4826d02c234e43bf65412a92c426fd50fb
     external_links: []
     lifecycle_state: open
@@ -100516,5 +100549,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-01T23:19:35.698Z
-    updated_at: 2026-04-01T23:34:38.750Z
+    updated_at: 2026-04-01T23:34:40.803Z
     notes: []
