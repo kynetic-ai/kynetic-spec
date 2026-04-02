@@ -102228,7 +102228,17 @@ reviews:
     slugs: []
     title: Review task-dispatch-plan-branch-resolution
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test passed in this snapshot: 7454 passed, 5 skipped."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-02T04:23:48.874Z
+        completed_at: 2026-04-02T04:23:48.874Z
     events:
       - _ulid: 01KN66G92N760Y33EJ8WEF0W5W
         actor: Jacob Chapel
@@ -102257,6 +102267,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN66XKQ1T8C1GB47YV0TE654
         timestamp: 2026-04-02T04:23:44.853Z
+      - _ulid: 01KN66XT3VDG22JC6FR7C32MSB
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-02T04:23:50.141Z
     examined_commit: 41800715e1029b33695a14d9d6dff509bd4a6622
     external_links: []
     lifecycle_state: open
@@ -102312,7 +102329,7 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-02T04:16:26.709Z
-    updated_at: 2026-04-02T04:23:43.585Z
+    updated_at: 2026-04-02T04:23:48.874Z
     notes: []
   - _ulid: 01KN66TW87P2MVE015MFFC8WCG
     slugs: []
