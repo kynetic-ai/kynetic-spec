@@ -11220,6 +11220,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-02T00:19:37.396Z
+  - _ulid: 01KN5YV8TG95MAWECX1S6DVXP3
+    type: friction
+    content: Full-suite verification can be blocked by unrelated reproducible regressions with no
+      obvious existing tracker. In this session npm test failed in tests/daemon-entity-cache.test.ts
+      ('session live event counters should hand off from live counters to persisted metadata after
+      reload'), forcing manual isolation before task submission.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-02T02:02:38.288Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
