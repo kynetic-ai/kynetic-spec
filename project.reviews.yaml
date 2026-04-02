@@ -105425,7 +105425,20 @@ reviews:
     slugs: []
     title: Review task-update-multi-dir-ac19 (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Ran npm test -- --fresh tests/daemon-watcher-multi-project.test.ts
+          tests/daemon-session-sync-multi-project.test.ts tests/daemon-context-manager.test.ts.
+          Result: 25 passed test suites, 74 passed tests, duration 14.4s. This covers the existing
+          ac-19 watcher-start failure behavior and registration rollback expectations."
+        name: daemon AC tests
+        required: true
+        runner: npm
+        created_at: 2026-04-02T19:39:57.471Z
+        completed_at: 2026-04-02T19:39:57.471Z
     events:
       - _ulid: 01KN7V3GHVS2Z54G8PBVQKECY1
         actor: Jacob Chapel
@@ -105440,6 +105453,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-02T19:37:13.178Z
+      - _ulid: 01KN7VBAR95V3HNJA6E22ZRH61
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: daemon AC tests
+        timestamp: 2026-04-02T19:39:59.113Z
     examined_commit: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
     external_links: []
     lifecycle_state: open
@@ -105452,5 +105472,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-02T19:35:42.908Z
-    updated_at: 2026-04-02T19:37:11.326Z
+    updated_at: 2026-04-02T19:39:57.471Z
     notes: []
