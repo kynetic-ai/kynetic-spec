@@ -10417,8 +10417,12 @@ observations:
       git update-ref because git switch dev was blocked by the other worktree. Consider a documented
       reviewer-safe merge command or explicit workflow guidance for this case.
     author: Test User
-    resolution: null
-    resolved: false
+    resolution: "Duplicate of older detached-review manual_merge tracking @01KMGXRB. The underlying
+      workflow gap is still open: reviewer merge guidance still assumes checking out the integration
+      branch inside the detached review snapshot."
+    resolved: true
+    resolved_at: 2026-04-02T07:45:26.485Z
+    resolved_by: Test User
     created_at: 2026-03-30T23:48:50.198Z
   - _ulid: 01KN0JW5VZXGMM22WYGEFS35BJ
     type: friction
