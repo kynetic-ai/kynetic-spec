@@ -11140,7 +11140,7 @@ plans:
 
       9. Trait attachment to existing specs (update @ui-session-stream, @ui-plans-view,
       @web-dashboard)
-    status: active
+    status: completed
     approved_at: null
     derived_specs:
       - "@trait-markdown-rendering"
