@@ -104534,6 +104534,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-02T18:10:48.086Z
+      - _ulid: 01KN7P826S4P21TAKT5APN0QR4
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN7P7ZEZCDEJ4YZXA1B53RE9
+        timestamp: 2026-04-02T18:10:49.177Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -104561,7 +104568,22 @@ reviews:
               implementation notes or tasks."
             created_at: 2026-04-02T18:10:46.260Z
         kind: blocker
+      - _ulid: 01KN7P7ZEZCDEJ4YZXA1B53RE9
+        anchor:
+          type: structured
+          section: dependencies
+        entries:
+          - _ulid: 01KN7P7ZEZMF5KT9GTAWDWX6ZJ
+            author: "@claude"
+            body: "The task graph puts spec-change work after implementation work: Phase 1 changes watcher
+              behavior first, while Phase 2 later updates @daemon-server ac-8 and
+              @multi-directory-daemon ac-19 to match. That violates the project's spec-first
+              workflow and leaves at least task-chokidar-standardize operating against stale
+              existing specs. Move the spec-update tasks ahead of the behavior-changing
+              implementation tasks, or fold those spec updates into an earlier prerequisite step."
+            created_at: 2026-04-02T18:10:46.367Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-02T18:10:16.914Z
-    updated_at: 2026-04-02T18:10:46.311Z
+    updated_at: 2026-04-02T18:10:46.367Z
     notes: []
