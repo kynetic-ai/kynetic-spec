@@ -5,8 +5,14 @@ type: bug
 spec_ref: "@dispatch-schedule-entities"
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved review @01KN6N7C and merged
+  dispatch/task/fix-schedule-engine-race-condition-eager-state-updates-before-action-execution/01kn6ge5
+  into dev. Verified AC coverage for @dispatch-schedule-entities ac-1 through ac-8 in
+  tests/schedule-engine.test.ts, confirmed eager next_tick/executing state updates in
+  ScheduleEngine, and passed npm test -- --fresh tests/schedule-engine.test.ts plus full npm test --
+  --fresh.
 depends_on: []
 context: []
 priority: 3
@@ -73,8 +79,27 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-02T08:33:52.170Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved review @01KN6N7C and merged
+          dispatch/task/fix-schedule-engine-race-condition-eager-state-updates-before-action-execution/01kn6ge5
+          into dev. Verified AC coverage for @dispatch-schedule-entities ac-1 through ac-8 in
+          tests/schedule-engine.test.ts, confirmed eager next_tick/executing state updates in
+          ScheduleEngine, and passed npm test -- --fresh tests/schedule-engine.test.ts plus full npm
+          test -- --fresh.
+        previous: null
+      completed_at:
+        new: 2026-04-02T08:41:43.210Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-02T08:41:43.219Z
 created_at: 2026-04-02T07:10:03.214Z
 started_at: 2026-04-02T08:14:57.317Z
 submitted_at: 2026-04-02T08:29:17.391Z
+completed_at: 2026-04-02T08:41:43.210Z
 todos: []
 automation: eligible
