@@ -100941,6 +100941,17 @@ reviews:
         required: true
         created_at: 2026-04-02T00:56:20.681Z
         completed_at: 2026-04-02T00:56:20.681Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All 4 tasks have detailed What/Why/How sections, specific file references, testing
+          guidance, and explicit Covers lines. No implicit references to plan discussion context. An
+          agent could pick up any task in a fresh session.
+        name: Task standalone-ness
+        required: true
+        created_at: 2026-04-02T00:56:25.009Z
+        completed_at: 2026-04-02T00:56:25.009Z
     events:
       - _ulid: 01KN5TYR7TTV16M9J8EQRTRGCR
         actor: "@claude"
@@ -101039,6 +101050,13 @@ reviews:
           status: pass
           name: Dependency ordering
         timestamp: 2026-04-02T00:56:21.324Z
+      - _ulid: 01KN5V21AE5JHMN61VPKFR0X1Y
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Task standalone-ness
+        timestamp: 2026-04-02T00:56:25.678Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -101216,5 +101234,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-02T00:54:38.074Z
-    updated_at: 2026-04-02T00:56:20.681Z
+    updated_at: 2026-04-02T00:56:25.009Z
     notes: []
