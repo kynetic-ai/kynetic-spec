@@ -34412,7 +34412,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T22:57:16.201Z
+      updated_at: 2026-04-02T22:58:04.214Z
     integration:
       status: merged
       detail: integration:merged
@@ -34428,18 +34428,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-02T22:45:18.139Z
-      last_reconciled_at: 2026-04-02T22:58:01.401Z
+      last_reconciled_at: 2026-04-02T22:58:04.214Z
       created_at: 2026-04-02T21:37:33.759Z
-      updated_at: 2026-04-02T22:58:01.401Z
+      updated_at: 2026-04-02T22:58:04.214Z
     workspace_id: dispatch-workspace-01KN813JEHA7251DWGYDGZYMXZ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 5e24ded90b046cac44f5568969374937df61bd84
-        last_seen_at: 2026-04-02T22:45:10.286Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-flaky-full-suite-tests-for-cli-serve-and-agent-dispatch-engine-01kn813j-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/stabilize-flaky-full-suite-tests-for-cli-serve-and-agent-dispatch-engine/01kn813j
