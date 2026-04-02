@@ -1,4 +1,4 @@
-import { execSync } from "node:child_process";
+import { spawnSync } from "node:child_process";
 import { info, isJsonMode, output, success } from "./output.js";
 
 export type BranchAction = "created" | "switched" | "rehydrated" | "already_on_branch";
@@ -49,9 +49,36 @@ export function computePlanBranchName(
   return `plan/${normalizeBranchSlug(preferred, "plan")}/${shortBranchRef(planRef)}`;
 }
 
+function runGit(
+  args: string[],
+  options: { allowFailure?: boolean; captureStdout?: boolean } = {},
+): string | void {
+  const result = spawnSync("git", args, {
+    encoding: "utf-8",
+    stdio: options.captureStdout ? "pipe" : ["ignore", "pipe", "pipe"],
+  });
+
+  if (result.error) {
+    throw result.error;
+  }
+
+  if ((result.status ?? 1) !== 0) {
+    if (options.allowFailure) {
+      return;
+    }
+
+    const stderr = result.stderr?.trim();
+    throw new Error(stderr || `git ${args.join(" ")} failed with exit code ${result.status ?? 1}`);
+  }
+
+  if (options.captureStdout) {
+    return result.stdout.trim();
+  }
+}
+
 export function gitRefExists(ref: string): boolean {
   try {
-    execSync(`git show-ref --verify --quiet ${ref}`, { stdio: "pipe" });
+    runGit(["show-ref", "--verify", "--quiet", ref]);
     return true;
   } catch {
     return false;
@@ -60,7 +87,7 @@ export function gitRefExists(ref: string): boolean {
 
 function listRemotes(): string[] {
   try {
-    const output = execSync("git remote", { encoding: "utf-8", stdio: "pipe" }).trim();
+    const output = runGit(["remote"], { captureStdout: true });
     if (!output) return [];
     const remotes = output
       .split(/\r?\n/)
@@ -77,11 +104,7 @@ function listRemotes(): string[] {
 
 export function findBranchOnRemote(branch: string): string | null {
   for (const remote of listRemotes()) {
-    try {
-      execSync(`git fetch ${remote} ${branch}`, { stdio: "pipe" });
-    } catch {
-      // Branch may not exist on this remote.
-    }
+    runGit(["fetch", remote, branch], { allowFailure: true });
     if (gitRefExists(`refs/remotes/${remote}/${branch}`)) {
       return `${remote}/${branch}`;
     }
@@ -90,16 +113,19 @@ export function findBranchOnRemote(branch: string): string | null {
 }
 
 export function gitCreateBranchFrom(branch: string, startPoint: string): void {
-  execSync(`git branch --track ${branch} ${startPoint}`, { stdio: "pipe" });
+  runGit(["branch", "--track", branch, startPoint]);
 }
 
 export function gitCheckout(branch: string): void {
-  execSync(`git checkout ${branch}`, { stdio: "pipe" });
+  runGit(["checkout", branch]);
 }
 
 export function gitCheckoutNew(branch: string, startPoint?: string): void {
-  const startPointArg = startPoint ? ` ${startPoint}` : "";
-  execSync(`git checkout -b ${branch}${startPointArg}`, { stdio: "pipe" });
+  const args = ["checkout", "-b", branch];
+  if (startPoint) {
+    args.push(startPoint);
+  }
+  runGit(args);
 }
 
 export function reportBranchResult(result: BranchResultReport): void {

@@ -12,7 +12,7 @@ import { execSync } from "node:child_process";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { computePlanBranchName } from "../src/cli/branch-helper.js";
+import { computePlanBranchName, gitCheckoutNew } from "../src/cli/branch-helper.js";
 import {
   cleanupTempDir,
   git,
@@ -150,6 +150,14 @@ describe("plan branch helper", () => {
 
     const storedPlan = kspecJson<{ branch: string | null }>("plan get @named-plan", tempDir);
     expect(storedPlan.branch).toBe("feature/shared-plan-stack");
+  });
+
+  it("treats custom branch names as literal git argv values instead of shell input", async () => {
+    const markerPath = path.join(tempDir, "branch-helper-shell-marker");
+
+    expect(() => gitCheckoutNew(`invalid; touch ${markerPath}`)).toThrow();
+
+    await expect(fs.access(markerPath)).rejects.toThrow();
   });
 
   // AC: @trait-json-output ac-1, ac-2, ac-4
