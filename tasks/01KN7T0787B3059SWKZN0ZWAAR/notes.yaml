@@ -1,1 +1,10 @@
-notes: []
+notes:
+  - _ulid: 01KN7V2KHZ3F9V9MDSJ7753VV0
+    content: "Approach: inspect file-lock same-process contention handling before changing behavior,
+      then stabilize either the implementation or the test based on reproduced evidence. Edge cases:
+      same-process nested waiters, very small maxHoldMs values, timer jitter, and timeout
+      interactions. Test plan: reproduce the failing same-process contention case, add coverage for
+      the intended non-reclamation behavior, and run the full suite before submission."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T19:35:13.215Z
