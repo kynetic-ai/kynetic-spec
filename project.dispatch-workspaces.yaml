@@ -34102,12 +34102,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-02T22:54:37.496Z
+      updated_at: 2026-04-02T22:54:46.671Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T22:54:37.496Z
+      updated_at: 2026-04-02T22:54:46.671Z
     integration:
       status: pending
       detail: null
@@ -34115,26 +34115,31 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-daemon-file-monitoring-reliability/01kn7nw3
       target_commit: f7f761c1213499dbe6ddf4da662d2d18bf5d38bf
-      updated_at: 2026-04-02T22:54:37.496Z
-    lifecycle_state: ready
+      updated_at: 2026-04-02T22:54:46.671Z
+    lifecycle_state: integrating
     resolved_base_branch: plan/plan-daemon-file-monitoring-reliability/01kn7nw3
     task_ref: "@01KN7Q6BHCW3EXFA9SCBQAT05K"
     task_slug: task-test-chokidar-watcher
     timestamps:
       closed_at: null
       last_active_at: 2026-04-02T22:45:07.792Z
-      last_reconciled_at: 2026-04-02T22:54:37.496Z
+      last_reconciled_at: 2026-04-02T22:54:46.671Z
       created_at: 2026-04-02T20:49:44.615Z
-      updated_at: 2026-04-02T22:54:37.496Z
+      updated_at: 2026-04-02T22:54:46.671Z
     workspace_id: dispatch-workspace-01KN7Q6BHCW3EXFA9SCBQAT05K
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 434f865fbb1943442d34d70862da38b547d35a33
+        last_seen_at: 2026-04-02T22:54:46.671Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-test-chokidar-watcher-01kn7q6b-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-test-chokidar-watcher/01kn7q6b
-        head: b850d3f95ceaea076bcf2d2c62e469f4f6fcd3b3
-        last_seen_at: 2026-04-02T22:45:01.899Z
+        head: 434f865fbb1943442d34d70862da38b547d35a33
+        last_seen_at: 2026-04-02T22:54:46.671Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-test-chokidar-watcher-01kn7q6b
   - active_role: null
     base_branch_point: e50f96eea866b76de686e0a78c42ba94cac2d2a6
