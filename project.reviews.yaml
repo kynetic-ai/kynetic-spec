@@ -104739,6 +104739,17 @@ reviews:
         required: true
         created_at: 2026-04-02T18:18:18.061Z
         completed_at: 2026-04-02T18:18:18.061Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "The new watcher specs align with @daemon-server, @daemon-entity-cache, and
+          @multi-directory-daemon: cross-project isolation and unregister-on-persistent-failure
+          match existing daemon guarantees rather than contradicting them."
+        name: Existing spec alignment
+        required: true
+        created_at: 2026-04-02T18:18:18.132Z
+        completed_at: 2026-04-02T18:18:18.132Z
     events:
       - _ulid: 01KN7PM81S6QSR1ZES98HQKCQV
         actor: "@claude"
@@ -104788,6 +104799,13 @@ reviews:
           status: pass
           name: Task standalone-ness
         timestamp: 2026-04-02T18:18:20.917Z
+      - _ulid: 01KN7PNWDKG7EBQQGJEK9H5N48
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Existing spec alignment
+        timestamp: 2026-04-02T18:18:22.004Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -104830,5 +104848,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-02T18:17:28.377Z
-    updated_at: 2026-04-02T18:18:18.061Z
+    updated_at: 2026-04-02T18:18:18.132Z
     notes: []
