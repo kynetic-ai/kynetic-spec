@@ -104840,9 +104840,25 @@ reviews:
           status: fail
           name: Task coverage mapping
         timestamp: 2026-04-02T18:18:29.775Z
+      - _ulid: 01KN7PPESE7K8GPKAWWABZ36PA
+        actor: "@codex"
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-02T18:18:40.815Z
+      - _ulid: 01KN7PPESFV9N75QQFZJ55QMVR
+        actor: "@codex"
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-02T18:18:40.815Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -104880,7 +104896,14 @@ reviews:
               specs."
             created_at: 2026-04-02T18:17:58.982Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: "@codex"
+        role: reviewer
+        created_at: 2026-04-02T18:18:40.814Z
     created_at: 2026-04-02T18:17:28.377Z
-    updated_at: 2026-04-02T18:18:29.085Z
+    updated_at: 2026-04-02T18:18:40.815Z
     notes: []
