@@ -104714,9 +104714,16 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-04-02T18:17:28.377Z
+      - _ulid: 01KN7PMQ4TQT2ZG35E04T2A32Q
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-04-02T18:17:43.834Z
     examined_commit: null
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: open
     related_refs: []
     subject:
       type: plan
@@ -104726,5 +104733,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-02T18:17:28.377Z
-    updated_at: null
+    updated_at: 2026-04-02T18:17:43.123Z
     notes: []
