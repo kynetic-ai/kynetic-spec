@@ -106705,6 +106705,12 @@ reviews:
           status: skipped
           name: full-suite
         timestamp: 2026-04-02T21:43:33.196Z
+      - _ulid: 01KN86C553FE5GFYRQ71S2XVT1
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN82BFZ0RCNT7TKFCBW3GEYN
+        timestamp: 2026-04-02T22:52:40.483Z
     examined_commit: b850d3f95ceaea076bcf2d2c62e469f4f6fcd3b3
     external_links: []
     lifecycle_state: closed
@@ -106734,6 +106740,13 @@ reviews:
               stops at unregister/stop assertions. Because `@daemon-file-monitoring ac-8` explicitly
               includes the logging requirement, these annotations currently overclaim coverage.
             created_at: 2026-04-02T21:42:24.481Z
+          - _ulid: 01KN86C4DXR8XN4NYFA79RVFVH
+            author: Jacob Chapel
+            body: Fixed in fix cycle 2. The permanent-failure path now logs the missing watched root path in
+              packages/daemon/src/watcher.ts before invoking onPermanentFailure, and
+              tests/daemon-watcher-error-handling.test.ts now asserts that exhausted retries emit a
+              warning containing the affected .kspec path.
+            created_at: 2026-04-02T22:52:39.741Z
         kind: blocker
       - _ulid: 01KN82BP6KCKCE3QMJERC6K0WP
         entries:
@@ -106770,7 +106783,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-02T21:43:06.450Z
     created_at: 2026-04-02T21:41:15.655Z
-    updated_at: 2026-04-02T21:43:30.974Z
+    updated_at: 2026-04-02T22:52:39.741Z
     notes: []
   - _ulid: 01KN85ZVYCRQCCNARG3R3HPCGX
     slugs: []
