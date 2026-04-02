@@ -10233,8 +10233,12 @@ observations:
       <task-branch>, instead of assuming git checkout <target> will work inside the detached review
       snapshot."
     author: Test User
-    resolution: null
-    resolved: false
+    resolution: "Duplicate of older detached-review manual_merge tracking @01KMGXRB. The underlying
+      workflow gap is still open: reviewer merge guidance still assumes checking out the integration
+      branch inside the detached review snapshot."
+    resolved: true
+    resolved_at: 2026-04-02T07:45:26.106Z
+    resolved_by: Test User
     created_at: 2026-03-30T18:33:30.471Z
   - _ulid: 01KN00BERWQWNV2PQ6HX7MT4ZG
     type: success
