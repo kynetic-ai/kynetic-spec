@@ -105914,6 +105914,18 @@ reviews:
         required: false
         created_at: 2026-04-02T20:10:29.041Z
         completed_at: 2026-04-02T20:10:29.041Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Validation exited 6 with repo-wide pre-existing warnings only: orphaned skill directory,
+          orphaned specs, uncovered AC debt, invalid fixture annotations. No schema or reference
+          errors introduced by this task."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-02T20:10:31.323Z
+        completed_at: 2026-04-02T20:10:31.323Z
     events:
       - _ulid: 01KN7WNN61ZAV80AN5BYEQS62Y
         actor: Jacob Chapel
@@ -105942,6 +105954,13 @@ reviews:
           status: pass
           name: review evidence log
         timestamp: 2026-04-02T20:10:29.870Z
+      - _ulid: 01KN7X38RE38E8VR6DSKX4GKEM
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-02T20:10:32.078Z
     examined_commit: 987509e18bdfa9d85e25c3a98d5230ca04fb1198
     external_links: []
     lifecycle_state: open
@@ -105954,5 +105973,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-02T20:03:06.049Z
-    updated_at: 2026-04-02T20:10:29.041Z
+    updated_at: 2026-04-02T20:10:31.323Z
     notes: []
