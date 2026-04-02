@@ -21066,9 +21066,23 @@ runs:
     completed_at: 2026-04-02T19:33:39.711Z
   - _ulid: 01KN7VDV4T88ZGJF0VHWXCTQ5Y
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-02T19:41:21.434Z
+        completed_at: 2026-04-02T19:42:23.134Z
+        notes: "What worked: targeted daemon tests gave fast, relevant evidence for the narrowed ac-19
+          behavior after the full npm test run stalled. Friction: detached reviewer snapshot showed
+          no code diff because the actual task change was shadow-branch-only; I had to inspect the
+          live .kspec worktree and shadow git history manually. Search coverage: no existing matches
+          found for this shadow-review visibility gap. Captured one high-confidence friction
+          observation about surfacing linked shadow-branch mutations in review context."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-02T19:42:23.134Z
+        completed_at: 2026-04-02T19:42:23.134Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-02T19:41:21.434Z
