@@ -1,1 +1,12 @@
-notes: []
+notes:
+  - _ulid: 01KN6HWG40SK3MQXE51E74WJNX
+    content: "Approach: treat this as suite-scheduling flakiness unless code inspection reveals a
+      tighter bottleneck. dispatch-workspace-config exercises real git worktree + shadow registry
+      writes like the existing dispatch-heavy suites but still runs in the default parallel Vitest
+      pool. Edge cases: keep non-heavy config-only tests covered, avoid reducing overall coverage,
+      and verify the moved suite still runs with the longer serial timeout. Test plan: update Vitest
+      project routing, run the target suite and the dispatch-heavy project via npm test, then run
+      kspec validate."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T07:35:21.472Z
