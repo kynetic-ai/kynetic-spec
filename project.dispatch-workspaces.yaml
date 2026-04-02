@@ -32678,7 +32678,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T07:38:32.570Z
+      updated_at: 2026-04-02T07:38:37.097Z
     integration:
       status: merged
       detail: integration:merged
@@ -32694,18 +32694,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-02T07:12:33.634Z
-      last_reconciled_at: 2026-04-02T07:38:32.570Z
+      last_reconciled_at: 2026-04-02T07:38:37.097Z
       created_at: 2026-04-02T06:01:16.057Z
-      updated_at: 2026-04-02T07:38:32.570Z
+      updated_at: 2026-04-02T07:38:37.097Z
     workspace_id: dispatch-workspace-01KN6CFCMZJRBS1529D0NXJB50
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 8d178dfefb4fd68c9824de23346c9064214c99aa
-        last_seen_at: 2026-04-02T07:12:21.750Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/default-plan-derive-to-include-tasks-01kn6cfc-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/default-plan-derive-to-include-tasks/01kn6cfc
