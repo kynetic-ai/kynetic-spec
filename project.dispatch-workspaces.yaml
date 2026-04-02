@@ -33629,7 +33629,7 @@ workspaces:
         head: db7f01d365a123d47dd9e5f3e694f34fb7686367
         last_seen_at: 2026-04-02T19:32:26.044Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-chokidar-standardize-01kn7q6a
-  - active_role: null
+  - active_role: worker
     base_branch_point: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
     bootstrap:
       status: succeeded
@@ -33718,7 +33718,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T19:34:13.988Z
+      updated_at: 2026-04-02T19:34:23.374Z
     integration:
       status: pending
       detail: null
@@ -33727,16 +33727,16 @@ workspaces:
       target_branch: dev
       target_commit: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
       updated_at: 2026-04-02T19:34:13.988Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KN7T0787B3059SWKZN0ZWAAR"
     task_slug: task-stabilize-file-lock-maxhold-contention
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-04-02T19:34:13.988Z
+      last_active_at: 2026-04-02T19:34:23.374Z
+      last_reconciled_at: 2026-04-02T19:34:23.374Z
       created_at: 2026-04-02T19:34:13.988Z
-      updated_at: 2026-04-02T19:34:21.050Z
+      updated_at: 2026-04-02T19:34:23.374Z
     workspace_id: dispatch-workspace-01KN7T0787B3059SWKZN0ZWAAR
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
