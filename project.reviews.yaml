@@ -104721,6 +104721,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-02T18:17:43.834Z
+      - _ulid: 01KN7PN6KYYP3VP8ARJ9XQH3BW
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN7PN5Y0N53VFQ3SF7R14ZQV
+        timestamp: 2026-04-02T18:17:59.678Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -104730,8 +104737,23 @@ reviews:
       content_hash: ""
       ref: "@plan-daemon-file-monitoring-reliability"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KN7PN5Y0N53VFQ3SF7R14ZQV
+        anchor:
+          type: structured
+          ref: "@task-update-daemon-server-ac8"
+          section: description
+        entries:
+          - _ulid: 01KN7PN5Y046CWDWBGP3A85121
+            author: "@claude"
+            body: The prescribed replacement text for @daemon-server ac-8 still leaks implementation. Its Then
+              clause says 'using a single proven monitoring backend', which constrains the mechanism
+              instead of describing only the observable guarantee. That means the prior spec-quality
+              blocker is not fully resolved; rewrite this task so the replacement AC stops at
+              reliable cross-platform change detection.
+            created_at: 2026-04-02T18:17:58.976Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-02T18:17:28.377Z
-    updated_at: 2026-04-02T18:17:43.123Z
+    updated_at: 2026-04-02T18:17:58.976Z
     notes: []
