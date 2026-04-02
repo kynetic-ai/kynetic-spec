@@ -104924,6 +104924,18 @@ reviews:
         required: true
         created_at: 2026-04-02T18:20:47.680Z
         completed_at: 2026-04-02T18:20:47.680Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Spec-update tasks remain priority 1 and precede implementation work. Chokidar
+          standardization depends on the daemon-server spec update, session blob exclusion depends
+          on standardization plus the multi-directory spec update, and health/test/cleanup tasks
+          follow in executable order without circular dependencies.
+        name: Dependency ordering
+        required: true
+        created_at: 2026-04-02T18:20:47.712Z
+        completed_at: 2026-04-02T18:20:47.712Z
     events:
       - _ulid: 01KN7PSQAPFD374WMQPM4BKY00
         actor: "@claude"
@@ -104938,6 +104950,13 @@ reviews:
           status: pass
           name: Spec quality
         timestamp: 2026-04-02T18:20:48.374Z
+      - _ulid: 01KN7PTCE3HAF5KNRGXR94N5P8
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Dependency ordering
+        timestamp: 2026-04-02T18:20:49.476Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -104950,5 +104969,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-02T18:20:27.863Z
-    updated_at: 2026-04-02T18:20:47.680Z
+    updated_at: 2026-04-02T18:20:47.712Z
     notes: []
