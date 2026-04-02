@@ -103503,6 +103503,21 @@ reviews:
         runner: npm
         created_at: 2026-04-02T07:07:19.023Z
         completed_at: 2026-04-02T07:07:19.023Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm test -- --fresh on reviewed snapshot 66aa4da1c1099858a6a8de88488d1d7388f9d52f hit an
+          unrelated timeout in tests/dispatch-runtime-bootstrap-contract.test.ts:507 after 4387.7s,
+          but that suite passed in isolation (4/4 suites, 18/18 tests, 123.6s). Integration base
+          190827af3c1fb918d3235cf9159a67047fae3590 also failed npm test -- --fresh in unrelated
+          tests/daemon-api/meta.test.ts timeouts after 5768.2s. Per review-gates, treated as
+          pre-existing/flaky full-suite instability; follow-up bug @01KN6G6C opened.
+        name: full npm test triage
+        required: true
+        runner: npm
+        created_at: 2026-04-02T07:07:21.729Z
+        completed_at: 2026-04-02T07:07:21.729Z
     events:
       - _ulid: 01KN6EPC96TVSQR6H21W0BTBFT
         actor: Jacob Chapel
@@ -103524,6 +103539,13 @@ reviews:
           status: pass
           name: targeted dispatch/setup verification
         timestamp: 2026-04-02T07:07:19.951Z
+      - _ulid: 01KN6G98QP9Y9WEJ37X7YRVT3M
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: full npm test triage
+        timestamp: 2026-04-02T07:07:22.742Z
     examined_commit: 66aa4da1c1099858a6a8de88488d1d7388f9d52f
     external_links: []
     lifecycle_state: open
@@ -103536,5 +103558,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-02T06:39:35.207Z
-    updated_at: 2026-04-02T07:07:19.023Z
+    updated_at: 2026-04-02T07:07:21.729Z
     notes: []
