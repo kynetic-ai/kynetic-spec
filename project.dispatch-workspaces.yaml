@@ -33426,12 +33426,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-02T19:19:20.352Z
+      updated_at: 2026-04-02T19:19:48.136Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T19:19:20.352Z
+      updated_at: 2026-04-02T19:19:48.136Z
     integration:
       status: pending
       detail: null
@@ -33439,17 +33439,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-daemon-file-monitoring-reliability/01kn7nw3
       target_commit: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
-      updated_at: 2026-04-02T19:19:20.352Z
-    lifecycle_state: integrating
+      updated_at: 2026-04-02T19:19:48.136Z
+    lifecycle_state: ready
     resolved_base_branch: plan/plan-daemon-file-monitoring-reliability/01kn7nw3
     task_ref: "@01KN7Q6AG9CHKD29KFY6ZY4YKD"
     task_slug: task-update-multi-dir-ac19
     timestamps:
       closed_at: null
       last_active_at: 2026-04-02T19:06:10.480Z
-      last_reconciled_at: 2026-04-02T19:19:20.352Z
+      last_reconciled_at: 2026-04-02T19:19:48.136Z
       created_at: 2026-04-02T19:01:07.427Z
-      updated_at: 2026-04-02T19:19:20.352Z
+      updated_at: 2026-04-02T19:19:48.136Z
     workspace_id: dispatch-workspace-01KN7Q6AG9CHKD29KFY6ZY4YKD
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
