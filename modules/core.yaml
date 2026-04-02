@@ -1152,6 +1152,9 @@ features:
               belongs to a plan with an associated branch, the plan branch is
               used as the task's integration target instead of the project's
               default integration branch.
+            status:
+              maturity: draft
+              implementation: in_progress
             depends_on: []
             implements: []
             relates_to: []
