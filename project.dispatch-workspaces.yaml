@@ -33977,18 +33977,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-watcher-health-check/01kn7q6b
-    canonical_branch_head: f7f761c1213499dbe6ddf4da662d2d18bf5d38bf
+    canonical_branch_head: 637beb279c7a9611e23131bc22a97055865f4666
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-02T20:35:03.733Z
+      updated_at: 2026-04-02T20:35:52.065Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T20:35:10.743Z
+      updated_at: 2026-04-02T20:35:52.065Z
     integration:
       status: pending
       detail: null
@@ -33996,7 +33996,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-daemon-file-monitoring-reliability/01kn7nw3
       target_commit: f7f761c1213499dbe6ddf4da662d2d18bf5d38bf
-      updated_at: 2026-04-02T20:35:03.733Z
+      updated_at: 2026-04-02T20:35:52.065Z
     lifecycle_state: active
     resolved_base_branch: plan/plan-daemon-file-monitoring-reliability/01kn7nw3
     task_ref: "@01KN7Q6B9D51K6Z7NPA4M8FG4B"
@@ -34004,9 +34004,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-02T20:35:10.743Z
-      last_reconciled_at: 2026-04-02T20:35:10.743Z
+      last_reconciled_at: 2026-04-02T20:35:52.065Z
       created_at: 2026-04-02T20:35:03.733Z
-      updated_at: 2026-04-02T20:35:10.743Z
+      updated_at: 2026-04-02T20:35:52.065Z
     workspace_id: dispatch-workspace-01KN7Q6B9D51K6Z7NPA4M8FG4B
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
