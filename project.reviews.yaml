@@ -104541,6 +104541,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN7P7ZEZCDEJ4YZXA1B53RE9
         timestamp: 2026-04-02T18:10:49.177Z
+      - _ulid: 01KN7P83A640FSG1PWSFHMTTMP
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN7P7ZEZPKGN6WDT4Y6K19YS
+        timestamp: 2026-04-02T18:10:50.310Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -104583,7 +104590,23 @@ reviews:
               implementation tasks, or fold those spec updates into an earlier prerequisite step."
             created_at: 2026-04-02T18:10:46.367Z
         kind: blocker
+      - _ulid: 01KN7P7ZEZPKGN6WDT4Y6K19YS
+        anchor:
+          type: structured
+          ref: "@task-test-chokidar-watcher"
+          section: tasks
+        entries:
+          - _ulid: 01KN7P7ZF0C2B5YVQT8JSEQJR4
+            author: "@claude"
+            body: The coverage map is incomplete for @daemon-file-monitoring. This task is a test task, but it
+              is the only task that claims coverage for ac-6 and ac-8. No implementation task
+              currently owns the work for cross-project event isolation or unregistering a project
+              after persistent monitoring failure. Add implementation ownership for those ACs (or
+              explicitly point to existing implementation work if those behaviors are already
+              satisfied), then keep this task focused on verification.
+            created_at: 2026-04-02T18:10:46.368Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-02T18:10:16.914Z
-    updated_at: 2026-04-02T18:10:46.367Z
+    updated_at: 2026-04-02T18:10:46.368Z
     notes: []
