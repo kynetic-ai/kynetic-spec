@@ -1,0 +1,50 @@
+_ulid: 01KN69W9VECFXR84BR9FMTG4B1
+slugs:
+  - task-stabilize-fresh-shard-test-runs
+title: Stabilize fresh shard test runs with STACK_TRACE_ERROR failures
+type: bug
+description: |-
+  Fresh shard runs are unstable and fail across unrelated domains, which makes reviewer regression triage noisy.
+
+  Observed during review of @01KN5XW04JM5261ZFYV1HCQVJK on 2026-04-01 from /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-dispatch-plan-branch-resolution-01kn5xw0.
+
+  Commands run:
+  - npm run test:shard1 -- --fresh
+  - npm run test:shard2 -- --fresh
+  - npm run test:shard3 -- --fresh
+
+  Results:
+  - shard1: 31 failed / 629 passed of 660 suites, dominated by STACK_TRACE_ERROR plus native/setup timeouts
+  - shard2: 16 failed / 726 passed of 742 suites, dominated by STACK_TRACE_ERROR plus setup dry-run timeouts
+  - shard3: 24 failed / 635 passed of 659 suites, dominated by STACK_TRACE_ERROR plus daemon start failures
+
+  Representative failing suites:
+  - tests/activity-display.test.ts
+  - tests/cli-filter-input-validation.test.ts
+  - tests/dispatch-workspace-config.test.ts
+  - tests/enhanced-setup.test.ts
+  - tests/native-guard-setup.test.ts
+  - tests/cli-serve.test.ts
+  - tests/review-per-cycle-lifecycle.test.ts
+  - tests/daemon-api/inbox.test.ts
+
+  Important contrast: targeted fresh runs for the task-under-review areas passed cleanly:
+  - npm test -- tests/dispatch-workspace-config.test.ts --fresh
+  - npm test -- tests/agent-dispatch-engine.test.ts --fresh
+
+  Investigate whether shard-level parallelism, shared temp resources, daemon/bootstrap global state, or the test runner cache/session isolation is causing cross-suite contamination.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - testing
+  - infra
+vcs_refs: []
+created_at: 2026-04-02T05:15:26.446Z
+todos: []
+automation: needs_review
