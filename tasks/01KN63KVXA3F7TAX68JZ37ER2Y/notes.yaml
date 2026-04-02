@@ -1,1 +1,12 @@
-notes: []
+notes:
+  - _ulid: 01KN63QT97H3KH1XPHB12450Q7
+    content: "Approach: reproduce the session cache reload regression with the existing daemon entity
+      cache test, then trace the sessions domain reload path and live-counter handoff logic in
+      ProjectEntityCache. Edge cases: active session counters seeded from persisted metadata,
+      discard-on-close before metadata rewrite, and domain invalidation reloading completed-session
+      metadata without stale live values. Test plan: keep the existing handoff regression test
+      green, verify the seeded live-counter test still passes, then run the full suite to catch
+      cache regressions."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T03:28:07.975Z
