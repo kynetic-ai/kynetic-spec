@@ -89,6 +89,7 @@ tags:
   - cli
   - plans
 vcs_refs: []
+review_ref: "@01KN6DH22F5CJGYVXM7QA7Q3XF"
 submission_linkage:
   review_url: null
   branch: dev
@@ -132,6 +133,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-04-02T06:16:33.026Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KN6DH22F5CJGYVXM7QA7Q3XF"
+        previous: null
+    command: review-link
+    timestamp: 2026-04-02T06:19:14.697Z
 created_at: 2026-04-02T06:00:49.055Z
 started_at: 2026-04-02T06:01:48.316Z
 submitted_at: 2026-04-02T06:16:33.026Z
