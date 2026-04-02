@@ -104760,6 +104760,16 @@ reviews:
         required: true
         created_at: 2026-04-02T18:18:18.142Z
         completed_at: 2026-04-02T18:18:18.142Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "@daemon-file-monitoring ac-6 and ac-8 are only mentioned in explanatory prose under
+          @task-test-chokidar-watcher, not in any task's Covers: mapping. They remain orphan ACs."
+        name: Task coverage mapping
+        required: true
+        created_at: 2026-04-02T18:18:29.085Z
+        completed_at: 2026-04-02T18:18:29.085Z
     events:
       - _ulid: 01KN7PM81S6QSR1ZES98HQKCQV
         actor: "@claude"
@@ -104823,6 +104833,13 @@ reviews:
           status: pass
           name: Cross-reference validation
         timestamp: 2026-04-02T18:18:23.078Z
+      - _ulid: 01KN7PP40F7FXTPXSFR76MP9QG
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: Task coverage mapping
+        timestamp: 2026-04-02T18:18:29.775Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -104865,5 +104882,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-02T18:17:28.377Z
-    updated_at: 2026-04-02T18:18:18.142Z
+    updated_at: 2026-04-02T18:18:29.085Z
     notes: []
