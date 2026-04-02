@@ -20940,9 +20940,21 @@ runs:
     completed_at: 2026-04-02T19:04:28.791Z
   - _ulid: 01KN7T2SB75R46PN1Z4N7XQ0V3
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-02T19:17:50.567Z
+        completed_at: 2026-04-02T19:18:14.100Z
+        notes: "What worked well: the review flow forced a full evidence trail instead of a superficial
+          approval. Reading the shadow-branch AC diff before notes avoided anchoring. Recording
+          checks and a pre-existing test follow-up task kept the verdict scoped to the actual
+          submission defect."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-02T19:18:14.100Z
+        completed_at: 2026-04-02T19:18:14.100Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-02T19:17:50.567Z
