@@ -11735,6 +11735,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-02T23:32:34.890Z
+  - _ulid: 01KN88NFTB1CGS29758XG2MP7B
+    type: success
+    content: "Empirical FD diagnosis workflow: /proc/PID/fd/ counting + categorization → standalone
+      reproduction scripts → fix validation. This identified the root cause (blob FD leak) in under
+      10 minutes and validated the Chokidar+exclusion fix before any code changes. Pattern: always
+      measure the actual system state before theorizing about runtime behavior."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-02T23:32:43.467Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
