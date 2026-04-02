@@ -23993,7 +23993,7 @@
     - daemon-entity-cache-live-counter-reload-redux
   title: Reinvestigate daemon entity cache live counter reload failure on dev
   type: bug
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 1
@@ -24004,4 +24004,5 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-02T04:10:13.909Z
+  started_at: 2026-04-02T04:22:23.953Z
   automation: eligible
