@@ -1,1 +1,14 @@
-notes: []
+notes:
+  - _ulid: 01KN7ZDW04BB7PPZDYHQSQHRTG
+    content: "Approach: keep the existing chokidar error-handling coverage, rewrite the old fallback
+      test into chokidar-only behavior checks, and add spec-level tests around session blob
+      exclusion, atomic rename delivery, project isolation, late-created session directories, and
+      project unregistration on permanent watcher failure. Edge cases: nested .kspec loop paths,
+      blob subtree writes, rename-based atomic writes, multiple projects receiving isolated
+      callbacks, and permanent ENOENT exhaustion unregistering exactly the affected project. Test
+      plan: annotate @daemon-file-monitoring ac-1..ac-8 across watcher/session
+      watcher/project-context tests; inherited @trait-error-guidance ACs are N/A because this is
+      internal daemon behavior, not a user-facing command."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T20:51:16.612Z
