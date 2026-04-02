@@ -84,3 +84,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T08:15:57.123Z
+  - _ulid: 01KN6MYM7X8HBF1NCT4V727E84
+    content: "Implemented eager schedule state updates in ScheduleEngine: accepted ticks now advance
+      next_tick and increment an executing counter before awaiting action execution, buffered ticks
+      flush when the real execute-to-complete path finishes, and status/overlap checks include the
+      pre-await execution window. Verification: npm test -- --fresh tests/schedule-engine.test.ts,
+      npm test -- --fresh, and kspec validate (warnings-only baseline unrelated to this task)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T08:28:56.958Z
