@@ -31516,7 +31516,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T00:19:45.889Z
+      updated_at: 2026-04-02T00:19:57.316Z
     integration:
       status: merged
       detail: integration:merged
@@ -31532,18 +31532,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-02T00:10:16.862Z
-      last_reconciled_at: 2026-04-02T00:19:55.216Z
+      last_reconciled_at: 2026-04-02T00:19:57.316Z
       created_at: 2026-04-01T23:52:01.127Z
-      updated_at: 2026-04-02T00:19:55.216Z
+      updated_at: 2026-04-02T00:19:57.316Z
     workspace_id: dispatch-workspace-01KN5QB8NSQNT9FTD701GK387V
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: f0d0a409ede748ea7eec2171748d99178f1ac35a
-        last_seen_at: 2026-04-02T00:10:08.346Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-investigate-file-lock-flake-01kn5qb8-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-investigate-file-lock-flake/01kn5qb8
