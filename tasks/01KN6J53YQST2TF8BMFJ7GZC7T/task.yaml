@@ -1,0 +1,66 @@
+_ulid: 01KN6J53YQST2TF8BMFJ7GZC7T
+slugs: []
+title: Implement pre-invocation workspace executability validation for dispatch handoff
+type: task
+description: >-
+  Add a final dispatch handoff validation step that runs after workspace selection or reuse and
+  before agent invocation starts. The dispatcher must verify that the selected invocation workspace
+  exists and can launch a minimal side-effect-free executability probe in that directory. If
+  validation fails, dispatch must not launch the agent. It must attempt safe repair or recreation
+  when possible, otherwise mark the workspace unhealthy or block the task with actionable
+  diagnostics.
+
+
+  Why: A recorded workspace path is not sufficient proof that the runtime can launch there. The
+  directory may be missing, inaccessible, or otherwise unrunnable by the time the invocation starts.
+  Without a final validation gate, dispatch can start broken sessions that fail before meaningful
+  work begins and consume retries without advancing the task.
+
+
+  What:
+
+  1. Add a pre-invocation validation helper in the dispatch runtime or workspace layer.
+
+  2. Run it after workspace selection and bootstrap reuse decisions and before adapter handoff.
+
+  3. Validate that the selected workspace path exists, is accessible, and passes a minimal
+  side-effect-free executability probe.
+
+  4. If validation fails and a trustworthy canonical workspace record exists, attempt safe repair or
+  recreation of the selected workspace and re-run validation before launch.
+
+  5. If recovery fails or no trustworthy recovery path exists, do not launch the agent, mark the
+  workspace unhealthy or block the task, and emit actionable task-linked diagnostics with the
+  workspace path, failure type, recovery attempt, and next action.
+
+  6. Ensure retries do not relaunch against the same known-bad workspace without revalidation.
+
+
+  Testing:
+
+  - Newly provisioned workspace passes validation before launch.
+
+  - Reused workspace passes through the same validation gate.
+
+  - Recorded workspace deleted before invocation startup.
+
+  - Workspace present but executability probe fails.
+
+  - Successful automatic repair or recreation followed by successful launch.
+
+  - Failed recovery produces unhealthy or blocked state instead of agent startup.
+spec_ref: "@dispatch-runtime-bootstrap-contract"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - dispatch
+  - runtime
+vcs_refs: []
+created_at: 2026-04-02T07:40:03.927Z
+todos: []
+automation: eligible

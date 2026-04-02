@@ -7862,6 +7862,28 @@ features:
               agent an unexplained broken environment
             when: |
               The invocation would otherwise start
+          - given: The dispatcher has selected a workspace for an invocation, whether newly provisioned or
+              reused
+            id: ac-7
+            then: The dispatcher verifies that the selected workspace path exists, is accessible, and is
+              runnable through a minimal side-effect-free executability probe
+            when: Pre-invocation validation runs after workspace selection and before adapter handoff
+          - given: Pre-invocation validation determines that the selected workspace is missing, inaccessible, or
+              not runnable
+            id: ac-8
+            then: The dispatcher does not launch the agent against that workspace
+            when: The invocation would otherwise be handed off to the adapter
+          - given: Pre-invocation validation fails because the selected workspace state is not runnable and a
+              trustworthy canonical workspace record exists
+            id: ac-9
+            then: The dispatcher attempts recovery and re-validates the workspace before launch
+            when: The dispatcher can safely repair or recreate the selected workspace from that record
+          - given: Pre-invocation validation fails and the dispatcher cannot produce a runnable workspace,
+              either because recovery fails or because no trustworthy recovery path exists
+            id: ac-10
+            then: The dispatcher marks the workspace unhealthy or blocks the task with actionable task-linked
+              diagnostics instead of delivering a broken environment to the agent
+            when: The invocation cannot be prepared safely
         tags: []
         created: 2026-03-12T02:33:44.269Z
         notes: []

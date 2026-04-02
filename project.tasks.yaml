@@ -24146,3 +24146,19 @@
   created_at: 2026-04-02T07:30:57.063Z
   started_at: 2026-04-02T07:32:25.854Z
   automation: eligible
+- _ulid: 01KN6J53YQST2TF8BMFJ7GZC7T
+  slugs: []
+  title: Implement pre-invocation workspace executability validation for dispatch handoff
+  type: task
+  spec_ref: "@dispatch-runtime-bootstrap-contract"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - dispatch
+    - runtime
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-02T07:40:03.927Z
+  automation: eligible
