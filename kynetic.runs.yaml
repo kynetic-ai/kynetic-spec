@@ -20301,7 +20301,7 @@ runs:
     completed_at: 2026-04-01T23:18:24.620Z
   - _ulid: 01KN5RA5BSMBC8JC986BV0C00D
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -20316,7 +20316,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-02T00:09:31.781Z
-        completed_at: 2026-04-02T00:09:31.781Z
+        completed_at: 2026-04-02T00:09:39.800Z
+        notes: "High-confidence items identified after search: success = a minimal direct repro against the
+          built artifact is effective for lock/concurrency flakes before rerunning the full suite;
+          friction = concurrency fixtures should not use process.pid when the behavior under test is
+          supposed to model a different live process. Both were untracked in the targeted searches
+          run for this reflection."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-02T00:09:39.800Z
+        completed_at: 2026-04-02T00:09:39.800Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-02T00:08:26.233Z
