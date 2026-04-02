@@ -23986,3 +23986,20 @@
   submitted_at: 2026-04-02T03:35:26.551Z
   completed_at: 2026-04-02T03:46:28.092Z
   automation: eligible
+- _ulid: 01KN664X0NXW8HVZMMDRPGWZHP
+  slugs:
+    - daemon-entity-cache-live-counter-reload-redux
+  title: Reinvestigate daemon entity cache live counter reload failure on dev
+  type: bug
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - daemon
+    - cache
+    - bug
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-02T04:10:13.909Z
+  automation: eligible

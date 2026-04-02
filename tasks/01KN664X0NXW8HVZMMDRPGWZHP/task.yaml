@@ -1,0 +1,30 @@
+_ulid: 01KN664X0NXW8HVZMMDRPGWZHP
+slugs:
+  - daemon-entity-cache-live-counter-reload-redux
+title: Reinvestigate daemon entity cache live counter reload failure on dev
+type: bug
+description: "Pre-existing failing test on dev and this review snapshot: npm test --
+  tests/daemon-entity-cache.test.ts --fresh fails at tests/daemon-entity-cache.test.ts:1388 in
+  'ProjectEntityCache session live event counters should hand off from live counters to persisted
+  metadata after reload' with AssertionError expected 1 to be 2. Reproduced on integration target
+  dev commit d2cc1ac2d2f04fac79023cb0cc54e9eb5da70835 from a sibling review worktree and again on
+  snapshot 5a18c4b8db9d4040d54190517d62935411b00342. An earlier completed task
+  @daemon-entity-cache-live-counter-reload claimed to fix this, so investigate why the failure still
+  reproduces on current dev, determine whether the prior fix regressed or never landed effectively,
+  and restore a passing daemon entity cache handoff path without masking the assertion."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - daemon
+  - cache
+  - bug
+vcs_refs: []
+created_at: 2026-04-02T04:10:13.909Z
+todos: []
+automation: eligible
