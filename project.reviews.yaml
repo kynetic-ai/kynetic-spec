@@ -101694,6 +101694,13 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-04-02T02:11:19.105Z
+      - _ulid: 01KN5ZBXBFN3GMYYG3424J9R9C
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN5ZBWPFMTHHPD3GJE83V92N
+        timestamp: 2026-04-02T02:11:43.599Z
     examined_commit: a3cfd4b63f3ee5741688da13f275855670e721b5
     external_links: []
     lifecycle_state: open
@@ -101703,8 +101710,30 @@ reviews:
       content_hash: ""
       ref: "@01KN5XVZJRED6WJT9PPD26YWG7"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KN5ZBWPFMTHHPD3GJE83V92N
+        anchor:
+          type: code
+          commit: a3cfd4b63f3ee5741688da13f275855670e721b5
+          line_end: 1388
+          line_start: 1388
+          path: tests/daemon-entity-cache.test.ts
+          side: head
+        entries:
+          - _ulid: 01KN5ZBWPF7VKGE26AM2V6SHKZ
+            author: Jacob Chapel
+            body: >-
+              Merge gate is still red in this snapshot: full 
+
+              > @kynetic-ai/spec@0.12.0 test
+
+              > node scripts/test.cjs fails at tests/daemon-entity-cache.test.ts:1388 with 'expected
+              2, got 1' in the ProjectEntityCache reload handoff test. This task only changes plan
+              schema/parser/CLI files, so the branch-field implementation reviewed cleanly, but
+              approval cannot proceed while the repository-level test gate is failing.
+            created_at: 2026-04-02T02:11:42.928Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-02T02:04:00.550Z
-    updated_at: 2026-04-02T02:11:18.333Z
+    updated_at: 2026-04-02T02:11:42.928Z
     notes: []
