@@ -11262,6 +11262,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-02T03:35:06.334Z
+  - _ulid: 01KN64V8GPV8DMZS58WWMMV8ZB
+    type: friction
+    content: Detached reviewer snapshots cannot directly check out or add the integration branch when
+      that branch is already checked out in another worktree. In this review, 'git checkout dev' and
+      'git worktree add ... dev' both failed, and the merge had to be executed against the existing
+      /home/chapel/Projects/kynetic-spec-dispatch dev worktree with git -C. Consider first-class
+      merge workflow support for detached review snapshots so approved manual_merge tasks do not
+      require cross-worktree git commands.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-02T03:47:29.430Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
