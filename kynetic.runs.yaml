@@ -21258,7 +21258,7 @@ runs:
     completed_at: 2026-04-02T20:22:35.805Z
   - _ulid: 01KN82ZSGGYSAWD4SWKR0K1HTM
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -21273,7 +21273,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-02T21:54:03.830Z
-        completed_at: 2026-04-02T21:54:03.830Z
+        completed_at: 2026-04-02T21:54:29.812Z
+        notes: "Baseline search complete. Existing tracking already covers the main friction class around
+          unrelated full-suite failures blocking verification, so I did not add a new friction item.
+          High-confidence success identified and already captured as @01KN830V: for flaky-test
+          investigations, use fresh targeted runs first, then a fresh combined run of the implicated
+          suites, then one full fresh suite to separate stale flakes from new unrelated failures."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-02T21:54:29.812Z
+        completed_at: 2026-04-02T21:54:29.812Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-02T21:53:29.616Z
