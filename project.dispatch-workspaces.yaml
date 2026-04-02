@@ -33021,18 +33021,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/implement-pre-invocation-workspace-executability-validation-for-dispatch-handoff/01kn6j53
-    canonical_branch_head: 97615415a87f8458a20728d4acfb8e8b635015bd
+    canonical_branch_head: 9723239855abc52d12a71705ec232f73606cc264
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-02T07:44:57.865Z
+      updated_at: 2026-04-02T08:13:03.305Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T07:45:25.607Z
+      updated_at: 2026-04-02T08:13:03.305Z
     integration:
       status: pending
       detail: null
@@ -33040,7 +33040,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 97615415a87f8458a20728d4acfb8e8b635015bd
-      updated_at: 2026-04-02T07:44:57.865Z
+      updated_at: 2026-04-02T08:13:03.305Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KN6J53YQST2TF8BMFJ7GZC7T"
@@ -33048,9 +33048,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-02T07:45:25.607Z
-      last_reconciled_at: 2026-04-02T07:45:25.607Z
+      last_reconciled_at: 2026-04-02T08:13:03.305Z
       created_at: 2026-04-02T07:44:57.865Z
-      updated_at: 2026-04-02T07:45:25.607Z
+      updated_at: 2026-04-02T08:13:03.305Z
     workspace_id: dispatch-workspace-01KN6J53YQST2TF8BMFJ7GZC7T
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
