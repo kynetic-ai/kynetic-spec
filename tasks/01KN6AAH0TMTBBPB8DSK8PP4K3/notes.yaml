@@ -30,3 +30,8 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T06:31:32.718Z
+  - _ulid: 01KN6GDJ8K19JM7E0TDB93M03E
+    content: "[AGENT-FAIL] Invocation failed: Internal error"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T07:09:43.571Z
