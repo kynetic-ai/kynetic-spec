@@ -1,1 +1,12 @@
-notes: []
+notes:
+  - _ulid: 01KN66W94C8R0AC9ED38ZK7AWX
+    content: "Approach: reproduce the sessions reload handoff failure on current dev, then compare the
+      recent live-counter fixes in dispatch/entity-cache code against the spec ACs
+      @daemon-entity-cache ac-session-event-tracking and ac-session-stats-handoff. Edge cases:
+      reload after live counter discard, terminal-session metadata replacing in-memory counters,
+      interaction between fallback/live index mutation and watcher/invalidate reload. Test plan:
+      confirm targeted failing daemon cache test first, patch behavior, then rerun targeted daemon
+      cache coverage and full npm test before submit."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T04:22:59.980Z
