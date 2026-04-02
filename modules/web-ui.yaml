@@ -94,10 +94,10 @@ features:
         id: ac-7
         then: daemon logs error and attempts recovery with exponential backoff
         when: watcher encounters error
-      - given: Bun fs.watch fails or misses events
+      - given: the daemon needs to detect file changes
         id: ac-8
-        then: automatically fall back to Chokidar file watcher
-        when: reliability issue detected
+        then: changes are detected reliably across all supported platforms without manual configuration
+        when: file monitoring is initialized
       - given: daemon is running
         id: ac-9
         then: process detaches to background, writes PID to .kspec/.daemon.pid, CLI returns immediately
