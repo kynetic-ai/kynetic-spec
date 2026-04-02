@@ -28,3 +28,11 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T19:51:25.114Z
+  - _ulid: 01KN7WE1Q3S2NPA3HGTGQQNBGK
+    content: "Fix cycle 1 in progress: removed watcher/session-watcher informational stdout logging
+      after review reproduced JSON parse regressions in daemon command parity. Also captured a
+      workflow observation about concurrent build-triggering test runs racing in shared dist
+      output."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T19:58:56.739Z
