@@ -100973,6 +100973,18 @@ reviews:
         required: true
         created_at: 2026-04-02T00:56:34.113Z
         completed_at: 2026-04-02T00:56:34.113Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: ACs describe observable behavior (branch created, output shown, work targets branch). No
+          code-level terms (function names, variable names, protocol details) in AC given/when/then.
+          Implementation details are correctly confined to task descriptions. Minor nits on
+          descriptions noted separately.
+        name: Behavioral language purity
+        required: true
+        created_at: 2026-04-02T00:56:38.528Z
+        completed_at: 2026-04-02T00:56:38.528Z
     events:
       - _ulid: 01KN5TYR7TTV16M9J8EQRTRGCR
         actor: "@claude"
@@ -101092,6 +101104,13 @@ reviews:
           status: pass
           name: No duplicate specs
         timestamp: 2026-04-02T00:56:34.765Z
+      - _ulid: 01KN5V2EGVCSKA55Z89W76MTQZ
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Behavioral language purity
+        timestamp: 2026-04-02T00:56:39.196Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -101269,5 +101288,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-02T00:54:38.074Z
-    updated_at: 2026-04-02T00:56:34.113Z
+    updated_at: 2026-04-02T00:56:38.528Z
     notes: []
