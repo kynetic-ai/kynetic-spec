@@ -83,6 +83,7 @@ describe("KspecWatcher error handling", () => {
     const errorHandler = vi.fn();
     const permanentFailureHandler = vi.fn();
     const chokidarWatcher = new MockChokidarWatcher();
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
     mockState.chokidarWatch.mockImplementation(() => {
       queueMicrotask(() => chokidarWatcher.emit("ready"));
@@ -113,5 +114,8 @@ describe("KspecWatcher error handling", () => {
 
     expect(errorHandler).toHaveBeenCalledTimes(6);
     expect(chokidarWatcher.close).toHaveBeenCalled();
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringContaining("/tmp/kspec-missing/.kspec"),
+    );
   });
 });
