@@ -20,7 +20,7 @@ description: "Full-suite review verification on April 2, 2026 still found unrela
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -31,6 +31,14 @@ tags:
   - dispatch
   - daemon
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-04-02T07:29:22.351Z
+  commit: 992283da72ca96efd7ebcc1c5558c086e27f3a71
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
 session_id: 01KN6G7JBWRWJ8GD1WH8J8W1PD
 history:
   - author: Jacob Chapel
@@ -46,7 +54,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-02T07:07:11.322Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-04-02T07:29:22.351Z
+          commit: 992283da72ca96efd7ebcc1c5558c086e27f3a71
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-04-02T07:29:22.357Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-02T07:29:22.357Z
 created_at: 2026-04-02T07:05:48.119Z
 started_at: 2026-04-02T07:07:11.322Z
+submitted_at: 2026-04-02T07:29:22.357Z
 todos: []
 automation: eligible
