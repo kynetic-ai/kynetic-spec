@@ -59,6 +59,7 @@ import {
   resolveDispatchRemote,
   resolveDispatchWorkspaceConfig,
   purgeDispatchWorkspaceRecord,
+  validateDispatchWorkspaceForInvocation,
 } from "./workspace.js";
 import { ensureWorkspaceBootstrap, DispatchBootstrapError } from "./bootstrap.js";
 import type { AgentDispatchRule, AgentDispatchFilter } from "../schema/meta.js";
@@ -2382,7 +2383,7 @@ export class DispatchEngine {
         return false;
       }
 
-      const dispatchEnv = {
+      let dispatchEnv = {
         KSPEC_DISPATCH_BASE_BRANCH: workspace.metadata.baseBranch,
         KSPEC_DISPATCH_MERGE_TARGET: workspace.metadata.mergeTargetBranch,
         KSPEC_DISPATCH_CANONICAL_BRANCH: workspace.metadata.canonicalBranch,
@@ -2428,6 +2429,86 @@ export class DispatchEngine {
             // Best-effort — block may fail if task already blocked
           }
         }
+        return false;
+      }
+
+      try {
+        const validation = await validateDispatchWorkspaceForInvocation({
+          projectDir: this.projectDir,
+          taskRef: entry.change.taskRef,
+          workspace,
+          role,
+          task: entry.change.task
+            ? {
+                title: entry.change.task.title,
+                slugs: entry.change.task.slugs,
+              }
+            : undefined,
+          submissionLinkage: entry.change.task?.submission_linkage ?? undefined,
+          taskStatus: entry.change.task?.status ?? entry.change.toStatus,
+        });
+        workspace = validation.workspace;
+
+        if (validation.repaired) {
+          dispatchEnv = {
+            KSPEC_DISPATCH_BASE_BRANCH: workspace.metadata.baseBranch,
+            KSPEC_DISPATCH_MERGE_TARGET: workspace.metadata.mergeTargetBranch,
+            KSPEC_DISPATCH_CANONICAL_BRANCH: workspace.metadata.canonicalBranch,
+            KSPEC_DISPATCH_WORKTREE_ROOT: workspace.metadata.worktreeRoot,
+            KSPEC_DISPATCH_WORKSPACE_FILE: workspace.metadataPath,
+          };
+          const rebootstrap = await ensureWorkspaceBootstrap({
+            projectDir: this.projectDir,
+            workspaceDir: workspace.cwd,
+            metadataPath: workspace.metadataPath,
+            metadata: workspace.metadata,
+            role,
+            agent,
+            env: dispatchEnv,
+          });
+          workspace = {
+            ...workspace,
+            metadata: rebootstrap.metadata,
+          };
+          workspace = (
+            await validateDispatchWorkspaceForInvocation({
+              projectDir: this.projectDir,
+              taskRef: entry.change.taskRef,
+              workspace,
+              role,
+              task: entry.change.task
+                ? {
+                    title: entry.change.task.title,
+                    slugs: entry.change.task.slugs,
+                  }
+                : undefined,
+              submissionLinkage: entry.change.task?.submission_linkage ?? undefined,
+              taskStatus: entry.change.task?.status ?? entry.change.toStatus,
+              allowRecovery: false,
+            })
+          ).workspace;
+        }
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        const guidance =
+          err instanceof DispatchWorkspaceError
+            ? err.suggestion
+            : "Inspect dispatch workspace validation diagnostics, git worktree state, and filesystem permissions.";
+        console.error(
+          `[dispatch] Failed pre-invocation workspace validation for ${entry.change.taskRef}: ${message}`,
+        );
+        await this._runRecoveryTaskCommand(entry.change.taskRef, "add task note", () =>
+          this._addTaskNote(
+            entry.change.taskRef,
+            `[DISPATCH-WORKSPACE] ${message} Suggested action: ${guidance}`,
+          ),
+        );
+        await this._runRecoveryTaskCommand(entry.change.taskRef, "block task", () =>
+          this._blockTask(
+            entry.change.taskRef,
+            `Dispatch workspace validation failed: ${message}. Suggested action: ${guidance}`,
+          ),
+        );
         return false;
       }
 
