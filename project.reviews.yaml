@@ -105884,7 +105884,18 @@ reviews:
     slugs: []
     title: Review task-chokidar-standardize (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed full suite: 2067/2067 suites, 7481 tests passed, 5 skipped, exit 0. Duration
+          3475.5s. Runner rebuilt missing dist/cli/index.js before execution."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-02T20:10:26.687Z
+        completed_at: 2026-04-02T20:10:26.687Z
     events:
       - _ulid: 01KN7WNN61ZAV80AN5BYEQS62Y
         actor: Jacob Chapel
@@ -105899,6 +105910,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-02T20:03:18.314Z
+      - _ulid: 01KN7X346ZECQZGJ1E07NZ1WHA
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-02T20:10:27.423Z
     examined_commit: 987509e18bdfa9d85e25c3a98d5230ca04fb1198
     external_links: []
     lifecycle_state: open
@@ -105911,5 +105929,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-02T20:03:06.049Z
-    updated_at: 2026-04-02T20:03:17.592Z
+    updated_at: 2026-04-02T20:10:26.687Z
     notes: []
