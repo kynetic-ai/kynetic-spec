@@ -33899,7 +33899,7 @@ workspaces:
         head: 637beb279c7a9611e23131bc22a97055865f4666
         last_seen_at: 2026-04-02T20:23:00.027Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-blob-exclusion-01kn7q6b
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: f7f761c1213499dbe6ddf4da662d2d18bf5d38bf
     bootstrap:
       status: succeeded
@@ -34004,12 +34004,12 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-04-02T20:58:02.616Z
+      updated_at: 2026-04-02T20:58:05.660Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T20:58:02.616Z
+      updated_at: 2026-04-02T20:58:05.660Z
     integration:
       status: merged
       detail: integration:merged
@@ -34017,7 +34017,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-daemon-file-monitoring-reliability/01kn7nw3
       target_commit: f7f761c1213499dbe6ddf4da662d2d18bf5d38bf
-      updated_at: 2026-04-02T20:58:02.616Z
+      updated_at: 2026-04-02T20:58:05.660Z
     lifecycle_state: closing
     resolved_base_branch: plan/plan-daemon-file-monitoring-reliability/01kn7nw3
     task_ref: "@01KN7Q6B9D51K6Z7NPA4M8FG4B"
@@ -34025,9 +34025,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-02T20:50:20.884Z
-      last_reconciled_at: 2026-04-02T20:58:02.616Z
+      last_reconciled_at: 2026-04-02T20:58:05.660Z
       created_at: 2026-04-02T20:35:03.733Z
-      updated_at: 2026-04-02T20:58:02.616Z
+      updated_at: 2026-04-02T20:58:05.660Z
     workspace_id: dispatch-workspace-01KN7Q6B9D51K6Z7NPA4M8FG4B
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
