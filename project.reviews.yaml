@@ -101761,6 +101761,22 @@ reviews:
         runner: kspec
         created_at: 2026-04-02T03:26:24.061Z
         completed_at: 2026-04-02T03:26:24.061Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Targeted verification passed: npm test -- tests/parser-plans.test.ts
+          tests/cli-plan.test.ts --fresh => 65/65. Full npm test -- --fresh on review snapshot hit
+          one pre-existing failure at tests/daemon-entity-cache.test.ts:1388. Regression triage: npm
+          test -- tests/daemon-entity-cache.test.ts --fresh fails the same way on both review
+          snapshot a3cfd4b63f3ee5741688da13f275855670e721b5 and dev
+          a3ad408f969b1b18330158d475b0faa18c47832b, so this branch did not introduce the failure.
+          Follow-up task: @01KN63KV."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-02T03:26:26.270Z
+        completed_at: 2026-04-02T03:26:26.270Z
     events:
       - _ulid: 01KN635ZK425B7P9TNM9NZ5JVS
         actor: Jacob Chapel
@@ -101782,6 +101798,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-04-02T03:26:24.798Z
+      - _ulid: 01KN63MQP1S8ZRT4F0J0MWW29S
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-02T03:26:27.009Z
     examined_commit: a3cfd4b63f3ee5741688da13f275855670e721b5
     external_links: []
     lifecycle_state: open
@@ -101794,5 +101817,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-02T03:18:23.589Z
-    updated_at: 2026-04-02T03:26:24.061Z
+    updated_at: 2026-04-02T03:26:26.270Z
     notes: []
