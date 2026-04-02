@@ -24381,7 +24381,7 @@
   slugs: []
   title: Stabilize flaky full-suite tests for cli-serve and agent-dispatch-engine
   type: bug
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 2
@@ -24395,4 +24395,5 @@
   created_at: 2026-04-02T21:20:36.305Z
   started_at: 2026-04-02T21:38:36.420Z
   submitted_at: 2026-04-02T21:52:50.731Z
+  completed_at: 2026-04-02T22:55:37.654Z
   automation: eligible
