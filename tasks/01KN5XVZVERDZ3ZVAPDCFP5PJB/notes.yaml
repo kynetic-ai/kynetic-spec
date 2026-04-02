@@ -1,1 +1,17 @@
-notes: []
+notes:
+  - _ulid: 01KN64AWTT5GS4ZXN6G4T8VX6W
+    content: >-
+      Approach: extract task branch git/name helpers into a shared CLI module, add plan branch
+      command in plan.ts using existing dispatch base-branch resolution, then persist the resolved
+      branch with mutatePlanAtomically + shadow commit.
+
+      Edge cases: local branch already checked out, local exists but not current, remote-only branch
+      rehydration, custom --name override, plan ref not found, git/runtime failures, JSON error
+      shape/guidance.
+
+      Test plan: unit coverage for deterministic plan branch naming plus CLI integration coverage
+      for create/fork-from-base, resume local, rehydrate remote, custom name, plan record update,
+      human/JSON output, and trait error/exit-code behaviors.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T03:38:33.178Z
