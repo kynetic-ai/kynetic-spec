@@ -11407,6 +11407,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-02T06:35:23.165Z
+  - _ulid: 01KN6FGKESX88J9H5A05EMGTXJ
+    type: friction
+    content: kspec validate is currently blocked by unrelated schema errors in .kspec/kynetic.meta.yaml
+      (session.idle hooks with unsupported action types), which prevents task-level validation from
+      cleanly distinguishing repo-wide failures from branch regressions.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-02T06:53:54.521Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
