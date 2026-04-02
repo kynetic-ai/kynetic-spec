@@ -75,6 +75,11 @@ kspec workflow start @spec-plan-import
 kspec workflow start @spec-plan-manual
 ```
 
+Before deriving, ask the user: **should this plan use a shared branch
+for task stacking?** If yes, run `kspec plan branch @ref` after approval
+and before derive. This is a planning decision — dispatch handles the
+rest automatically.
+
 ### Phase 3: Validate
 
 After import and derive:
@@ -329,12 +334,33 @@ draft → approved → active → completed
 - **Import** stores the full document as a plan record and defaults to `draft`
 - **Import** may optionally store `module_ref` for later derive
 - **Manual** creates plan as `approved`
-- **Derive** materializes an approved plan into specs and optional tasks, then transitions it to `active`
+- **Branch** (optional) — after approval but before derive, ask the user
+  whether tasks should target a shared plan branch or the default
+  integration branch. If the user wants task stacking:
+
+```bash
+kspec plan branch @plan-ref          # Deterministic: plan/<slug>/<short-ref>
+kspec plan branch @plan-ref --name feat/custom-name  # Custom name
+```
+
+Dispatch automatically targets the plan branch for all derived tasks.
+Without a plan branch, tasks target the default integration branch as
+usual.
+
+- **Derive** materializes an approved plan into specs and tasks, then transitions it to `active`
 - Mark completed when all derived work is done:
 
 ```bash
 kspec plan set @plan --status completed
 ```
+
+> **Plan branch lifecycle:** When a plan has a branch, all derived tasks
+> fork from and merge back into that branch. Task work accumulates on the
+> plan branch as tasks are completed. Once all tasks are done and the plan
+> is marked completed, the plan branch requires manual merging into the
+> project's integration branch (e.g., `git merge --no-ff plan/... into dev`).
+> A future `kspec plan merge` command may automate this, but for now it is
+> a manual step.
 
 ## Programmatic Alternative: Batch
 
@@ -370,6 +396,12 @@ kspec plan get <ref>
 kspec plan set <ref> --status <status>
 kspec plan note <ref> "..."
 kspec plan list
+
+# Plan branch (opt-in task stacking)
+kspec plan branch <ref>                              # Create/resume deterministic branch
+kspec plan branch <ref> --name <branch>              # Custom branch name
+kspec plan set <ref> --branch <name>                 # Set branch manually
+kspec plan set <ref> --branch ""                     # Clear branch (revert to default)
 
 # Validation
 kspec validate
