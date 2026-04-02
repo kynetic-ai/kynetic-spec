@@ -1,0 +1,94 @@
+_ulid: 01KN6CFCMZJRBS1529D0NXJB50
+slugs: []
+title: Default plan derive to include tasks
+type: task
+description: |-
+  Change kspec plan derive to derive tasks by default instead of
+  requiring the --tasks flag.
+
+  Why: Plans almost always define tasks alongside specs. The current
+  default (specs only) causes a common mistake where users run derive,
+  see 0 tasks created, then must delete the derived specs and re-run
+  with --tasks.
+
+  What:
+
+  1. CLI flag change (src/cli/commands/plan.ts):
+     - Use Commander.js --no- negation pattern: replace the current
+       .option('--tasks', 'Also derive tasks') with
+       .option('--no-tasks', 'Skip task derivation'). Commander.js
+       automatically sets options.tasks = true by default and
+       options.tasks = false when --no-tasks is passed. The --tasks
+       flag continues to be accepted (Commander handles this) as a
+       no-op for backward compatibility.
+     - Update the command description from "Materialize plan content
+       into specs and optional tasks" to "Materialize plan content
+       into specs and tasks".
+     - Update examples in help text: remove --tasks from examples,
+       add an example showing --no-tasks for spec-only derivation.
+
+  2. Error/guidance messages (src/cli/commands/plan.ts):
+     - The no-derivable-work guard (~line 1179) references "--tasks"
+       in its guidance message. Update to: "Plan does not define
+       derivable work. Add specs in a ## Specs section or tasks in
+       a ## Tasks section."
+     - Search for any other user-facing strings that mention --tasks
+       as required and update to mention --no-tasks as the opt-out.
+
+  3. Dry-run output:
+     - Update dry-run to indicate task derivation state: "Tasks:
+       included (default)" or "Tasks: skipped (--no-tasks)" so
+       the user can confirm what will happen.
+
+  4. Skill template update:
+     - templates/skills/plan/SKILL.md: Update examples that show
+       --tasks as required (remove --tasks from command examples),
+       add --no-tasks to the command signature, update any prose
+       that says "pass --tasks to derive tasks". Search for all
+       occurrences of "--tasks" in the file.
+     - Run kspec skill render after changes to regenerate
+       .agents/skills/ output.
+
+  5. Batch command schema:
+     - Verify kspec batch commands "plan derive" reflects the new
+       default. The schema is auto-generated from the CLI definition
+       so this should update automatically, but verify.
+
+  How: The core change is a single line in the option definition —
+  Commander.js --no- negation handles the flag inversion. The bulk
+  of the work is updating error messages, skill templates, and help
+  text to reflect the new default. The derivation logic itself
+  (parsePlanDocument, task creation, plan_ref linking, topological
+  ordering) does not change at all.
+
+  Testing:
+  - Existing derive tests that pass --tasks should still pass.
+  - New test: derive without any flag creates both specs and tasks.
+  - New test: derive with --no-tasks creates only specs.
+  - Verify dry-run output reflects the default.
+  - Verify error message for empty plans no longer references --tasks.
+  - Verify --tasks is accepted without error (backward compat).
+
+  Note: This is a breaking change for scripts that run
+  kspec plan derive without --tasks and expect 0 tasks. Document
+  in release notes.
+
+  Covers: @plan-derive-enhanced ac-tasks-default, ac-no-tasks-opt-out,
+  ac-tasks-flag-back-compat, ac-task-refs, ac-additional-tasks,
+  ac-tasks-manual-only, ac-priority-inheritance, ac-impl-notes-global,
+  ac-impl-notes-per-spec.
+spec_ref: "@plan-derive-enhanced"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - cli
+  - plans
+vcs_refs: []
+created_at: 2026-04-02T06:00:49.055Z
+todos: []
+automation: eligible

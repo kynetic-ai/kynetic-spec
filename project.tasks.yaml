@@ -24073,3 +24073,19 @@
   started_at: 2026-04-02T05:31:47.581Z
   submitted_at: 2026-04-02T05:47:50.679Z
   automation: eligible
+- _ulid: 01KN6CFCMZJRBS1529D0NXJB50
+  slugs: []
+  title: Default plan derive to include tasks
+  type: task
+  spec_ref: "@plan-derive-enhanced"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - cli
+    - plans
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-02T06:00:49.055Z
+  automation: eligible
