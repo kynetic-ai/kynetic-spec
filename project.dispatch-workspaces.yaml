@@ -32595,31 +32595,29 @@ workspaces:
     base_branch_point: ed8d1259edd96190c6233c7b2edfb658aeed57a2
     bootstrap:
       status: succeeded
-      canonicalBranchHead: 8d178dfefb4fd68c9824de23346c9064214c99aa
+      canonicalBranchHead: 432d716a4805d82b05eaa89afb4764270e331005
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
       failureMessage: null
       invalidationReasons:
         - canonical-branch-head-changed
-        - workspace-dependencies-missing
-      lastRole: reviewer
-      lastRunAt: 2026-04-02T07:02:43.173Z
+      lastRole: worker
+      lastRunAt: 2026-04-02T06:42:20.212Z
       roleStates:
         reviewer:
           status: succeeded
-          canonicalBranchHead: 8d178dfefb4fd68c9824de23346c9064214c99aa
+          canonicalBranchHead: 432d716a4805d82b05eaa89afb4764270e331005
           configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
           failureMessage: null
           invalidationReasons:
-            - canonical-branch-head-changed
             - workspace-dependencies-missing
-          lastRunAt: 2026-04-02T07:02:43.173Z
+          lastRunAt: 2026-04-02T06:18:17.149Z
           steps:
             - status: succeeded
               allowTrackedChanges: false
               idempotent: true
               name: install-workspace-dependencies
               output: |-
-                added 287 packages, and audited 292 packages in 4s
+                added 287 packages, and audited 292 packages in 3s
 
                 67 packages are looking for funding
                   run `npm fund` for details
@@ -32643,27 +32641,7 @@ workspaces:
             - canonical-branch-head-changed
           lastRunAt: 2026-04-02T06:42:20.212Z
           steps: []
-      steps:
-        - status: succeeded
-          allowTrackedChanges: false
-          idempotent: true
-          name: install-workspace-dependencies
-          output: |-
-            added 287 packages, and audited 292 packages in 4s
-
-            67 packages are looking for funding
-              run `npm fund` for details
-
-            12 vulnerabilities (1 low, 7 moderate, 4 high)
-
-            To address all issues, run:
-              npm audit fix
-
-            Run `npm audit` for details.
-          reviewerRerunAllowed: true
-          role: reviewer
-          run: npm ci
-          source: dispatch
+      steps: []
     branch_provenance:
       adopted_at: null
       adopted_from: null
@@ -32678,12 +32656,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-02T07:02:35.035Z
+      updated_at: 2026-04-02T07:03:15.436Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T07:02:35.035Z
+      updated_at: 2026-04-02T07:03:15.436Z
     integration:
       status: pending
       detail: null
@@ -32691,7 +32669,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: ed8d1259edd96190c6233c7b2edfb658aeed57a2
-      updated_at: 2026-04-02T07:02:35.035Z
+      updated_at: 2026-04-02T07:03:15.436Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KN6CFCMZJRBS1529D0NXJB50"
@@ -32699,21 +32677,16 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-02T07:01:04.168Z
-      last_reconciled_at: 2026-04-02T07:02:35.035Z
+      last_reconciled_at: 2026-04-02T07:03:15.436Z
       created_at: 2026-04-02T06:01:16.057Z
-      updated_at: 2026-04-02T07:02:43.173Z
+      updated_at: 2026-04-02T07:03:15.436Z
     workspace_id: dispatch-workspace-01KN6CFCMZJRBS1529D0NXJB50
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 8d178dfefb4fd68c9824de23346c9064214c99aa
-        last_seen_at: 2026-04-02T07:02:35.035Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/default-plan-derive-to-include-tasks-01kn6cfc-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/default-plan-derive-to-include-tasks/01kn6cfc
-        head: 8d178dfefb4fd68c9824de23346c9064214c99aa
-        last_seen_at: 2026-04-02T07:02:35.035Z
+        head: 432d716a4805d82b05eaa89afb4764270e331005
+        last_seen_at: 2026-04-02T06:42:18.653Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/default-plan-derive-to-include-tasks-01kn6cfc
