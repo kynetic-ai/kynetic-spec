@@ -107101,6 +107101,17 @@ reviews:
         runner: kspec
         created_at: 2026-04-02T23:15:07.223Z
         completed_at: 2026-04-02T23:15:07.223Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Targeted verification passed: tests/daemon-watcher-chokidar.test.ts ran 2/2 tests after
+          build bootstrap."
+        name: watcher-targeted
+        required: false
+        runner: npm
+        created_at: 2026-04-02T23:15:11.483Z
+        completed_at: 2026-04-02T23:15:11.483Z
     events:
       - _ulid: 01KN87CXGWR1R6EC2HAHE7DFTQ
         actor: Jacob Chapel
@@ -107129,6 +107140,13 @@ reviews:
           kind: nit
           thread_ulid: 01KN87NACYCZ8MXF0NQ8X0227X
         timestamp: 2026-04-02T23:15:10.064Z
+      - _ulid: 01KN87ND6ZTHV1P6E5BJ26W1FS
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: watcher-targeted
+        timestamp: 2026-04-02T23:15:12.223Z
     examined_commit: 353b459743ec06cb1d5f0525b2578038a221aa9a
     external_links: []
     lifecycle_state: open
@@ -107165,5 +107183,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-02T23:10:34.012Z
-    updated_at: 2026-04-02T23:15:09.342Z
+    updated_at: 2026-04-02T23:15:11.483Z
     notes: []
