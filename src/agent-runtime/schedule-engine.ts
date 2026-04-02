@@ -35,6 +35,8 @@ export interface ScheduleRuntimeState {
   next_tick: Date | null;
   /** Number of accepted runs (ticks not skipped by overlap policy). */
   run_count: number;
+  /** Accepted ticks currently awaiting actionExecutor.execute() completion. */
+  executing_count: number;
   /** Action run IDs currently running (multiple possible with allow policy). */
   active_run_ids: string[];
   /** One pending tick when overlap_policy = buffer_one. Null if no buffered tick. */
@@ -261,7 +263,7 @@ export class ScheduleEngine {
         last_tick: record.state.last_tick?.toISOString() ?? null,
         next_tick: record.state.next_tick?.toISOString() ?? null,
         run_count: record.state.run_count,
-        active_run_count: record.state.active_run_ids.length,
+        active_run_count: this._getActiveRunCount(record),
         buffered: record.state.buffered_tick !== null,
       });
     }
@@ -287,7 +289,7 @@ export class ScheduleEngine {
       last_tick: record.state.last_tick?.toISOString() ?? null,
       next_tick: record.state.next_tick?.toISOString() ?? null,
       run_count: record.state.run_count,
-      active_run_count: record.state.active_run_ids.length,
+      active_run_count: this._getActiveRunCount(record),
       buffered: record.state.buffered_tick !== null,
       active_run_ids: [...record.state.active_run_ids],
     };
@@ -368,7 +370,7 @@ export class ScheduleEngine {
     tickTime: Date,
   ): Promise<{ accepted: boolean; reason?: string }> {
     const { schedule, state } = record;
-    const hasActiveRuns = state.active_run_ids.length > 0;
+    const hasActiveRuns = this._getActiveRunCount(record) > 0;
 
     // Apply overlap policy
     // AC: @dispatch-schedule-entities ac-2, ac-3, ac-5
@@ -437,6 +439,14 @@ export class ScheduleEngine {
       return { accepted: false, reason: `Event rejected: ${emitResult.reason}` };
     }
 
+    // Advance immediately so concurrent evaluations do not re-match the same tick.
+    // AC: @dispatch-schedule-entities ac-8
+    this._advanceNextTick(record);
+
+    // Mark execution as active before awaiting so overlap policies see it immediately.
+    // AC: @dispatch-schedule-entities ac-7
+    state.executing_count++;
+
     // Build event context for the action executor
     const eventContext: ActionEventContext = {
       event_id: emitResult.event!.event_id,
@@ -451,21 +461,23 @@ export class ScheduleEngine {
       run_count: state.run_count,
     };
 
-    // Execute the action
-    const actionRun = await this.actionExecutor.execute(
-      schedule.action as Action,
-      eventContext,
-      schedule.name,
-    );
+    try {
+      // Execute the action
+      const actionRun = await this.actionExecutor.execute(
+        schedule.action as Action,
+        eventContext,
+        schedule.name,
+      );
 
-    // Track the active run
-    if (actionRun.status === "running") {
-      state.active_run_ids.push(actionRun.action_run_id);
+      // Preserve compatibility with tests or executors that resolve while the
+      // action is still running and require later completion events for cleanup.
+      if (actionRun.status === "running") {
+        state.active_run_ids.push(actionRun.action_run_id);
+      }
+    } finally {
+      state.executing_count = Math.max(0, state.executing_count - 1);
+      await this._flushBufferedTickIfReady(record);
     }
-    // For immediately completed/failed actions (e.g. notify), don't track as active
-
-    // Advance to next tick
-    this._advanceNextTick(record);
 
     return { accepted: true };
   }
@@ -485,17 +497,7 @@ export class ScheduleEngine {
       const idx = record.state.active_run_ids.indexOf(actionRunId);
       if (idx !== -1) {
         record.state.active_run_ids.splice(idx, 1);
-
-        // AC: @dispatch-schedule-entities ac-3 — fire buffered tick when active run completes
-        if (
-          record.schedule.overlap_policy === "buffer_one" &&
-          record.state.buffered_tick !== null &&
-          record.state.active_run_ids.length === 0
-        ) {
-          const bufferedTime = record.state.buffered_tick;
-          record.state.buffered_tick = null;
-          await this._executeTick(record, bufferedTime);
-        }
+        await this._flushBufferedTickIfReady(record);
 
         break;
       }
@@ -605,9 +607,28 @@ export class ScheduleEngine {
       last_tick: null,
       next_tick: this._computeNextTick(schedule),
       run_count: 0,
+      executing_count: 0,
       active_run_ids: [],
       buffered_tick: null,
     };
+  }
+
+  private _getActiveRunCount(record: ScheduleRecord): number {
+    return record.state.executing_count + record.state.active_run_ids.length;
+  }
+
+  private async _flushBufferedTickIfReady(record: ScheduleRecord): Promise<void> {
+    if (
+      record.schedule.overlap_policy !== "buffer_one" ||
+      record.state.buffered_tick === null ||
+      this._getActiveRunCount(record) > 0
+    ) {
+      return;
+    }
+
+    const bufferedTime = record.state.buffered_tick;
+    record.state.buffered_tick = null;
+    await this._executeTick(record, bufferedTime);
   }
 
   /**
