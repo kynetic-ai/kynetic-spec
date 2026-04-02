@@ -27,3 +27,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T04:24:10.238Z
+  - _ulid: 01KN67CNXX5X7DJZRESQPV1AEW
+    content: "Fix cycle 1 implementation plan: preserve existing base_branch_point only when the
+      workspace is still rooted on the same resolved base branch. If reprovisioning retargets from
+      one integration branch to another, recompute the fork point from the new base instead of
+      reusing stale registry state. Test plan: extend the stale plan retarget scenario to assert
+      both base_branch_point and integration.target_commit move to the new branch tip."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T04:31:57.374Z
