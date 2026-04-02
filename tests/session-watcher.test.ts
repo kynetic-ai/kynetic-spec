@@ -7,7 +7,7 @@
 
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { mkdir, rm, writeFile } from "fs/promises";
-import { join } from "path";
+import { join, sep } from "path";
 import { setupMultiDirFixtures, cleanupTempDir } from "./helpers/cli";
 import { SessionWatcher } from "../packages/daemon/src/session-watcher";
 
@@ -23,6 +23,14 @@ const describeOrSkip = process.env.CI ? describe.skip : describe;
 
 async function waitForDebounce(): Promise<void> {
   await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_WAIT));
+}
+
+function getWatchedEntries(watcher: SessionWatcher): Record<string, string[]> {
+  return (
+    (watcher as unknown as {
+      watcher: { getWatched(): Record<string, string[]> } | null;
+    }).watcher?.getWatched() ?? {}
+  );
 }
 
 describeOrSkip("SessionWatcher", () => {
@@ -164,6 +172,44 @@ describeOrSkip("SessionWatcher", () => {
     await waitForDebounce();
 
     expect(onSessionChange).not.toHaveBeenCalled();
+
+    await watcher.stop();
+  });
+
+  // AC: @daemon-file-monitoring ac-3
+  it("keeps the watched entry set proportional to session directories and metadata files", async () => {
+    const sessionsDir = join(projectDir, ".kspec-sessions");
+    const sessionDir = join(sessionsDir, "01JTESTSESSIONWATCHER0000008");
+    const blobDir = join(sessionDir, "blobs");
+    await mkdir(blobDir, { recursive: true });
+    await writeFile(join(sessionDir, "session.yaml"), "status: active\n");
+    await writeFile(join(sessionDir, "events.jsonl"), '{"type":"session.started"}\n');
+
+    for (let index = 0; index < 25; index++) {
+      await writeFile(join(blobDir, `payload-${index}.blob`), `blob ${index}\n`);
+    }
+
+    const watcher = new SessionWatcher({
+      sessionsDir,
+      onSessionChange: vi.fn(),
+      onError: vi.fn(),
+    });
+
+    await watcher.start();
+    await waitForDebounce();
+
+    const watchedEntries = getWatchedEntries(watcher);
+    const watchedPaths = Object.entries(watchedEntries).flatMap(([directory, names]) => [
+      directory,
+      ...names.map((name) => join(directory, name)),
+    ]);
+
+    expect(watchedPaths).toContain(sessionDir);
+    expect(watchedPaths).toContain(join(sessionDir, "session.yaml"));
+    expect(watchedPaths).toContain(join(sessionDir, "events.jsonl"));
+    expect(watchedPaths).not.toContain(blobDir);
+    expect(watchedPaths).not.toContain(join(blobDir, "payload-0.blob"));
+    expect(watchedPaths.filter((entry) => entry.includes(`${sep}blobs`)).length).toBe(0);
 
     await watcher.stop();
   });

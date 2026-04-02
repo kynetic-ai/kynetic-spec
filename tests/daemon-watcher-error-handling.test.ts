@@ -77,6 +77,7 @@ describe("KspecWatcher error handling", () => {
     await watcher.stop();
   });
 
+  // AC: @daemon-file-monitoring ac-8
   // AC: @multi-directory-daemon ac-34
   it("invokes permanent failure callback after ENOENT exhausts retries and the watched root is gone", async () => {
     const errorHandler = vi.fn();

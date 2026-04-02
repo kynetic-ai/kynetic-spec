@@ -130,6 +130,7 @@ describe("ProjectContextManager", () => {
       expect(sessionWatcherStop).toHaveBeenCalledOnce();
     });
 
+    // AC: @daemon-file-monitoring ac-8
     // AC: @multi-directory-daemon ac-34
     it("unregisters a project when the watcher reports permanent directory removal", async () => {
       manager.registerProject(projectA);
