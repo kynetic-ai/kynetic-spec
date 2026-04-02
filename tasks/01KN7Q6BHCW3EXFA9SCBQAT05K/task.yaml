@@ -51,6 +51,7 @@ tags:
   - watcher
   - test
 vcs_refs: []
+review_ref: "@01KN804T5VPQYZ02QBQ4PNF48J"
 submission_linkage:
   review_url: null
   branch: dev
@@ -101,6 +102,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-04-02T21:01:57.760Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KN804T5VPQYZ02QBQ4PNF48J"
+        previous: null
+    command: review-link
+    timestamp: 2026-04-02T21:03:50.878Z
 created_at: 2026-04-02T18:27:21.772Z
 started_at: 2026-04-02T20:50:31.369Z
 submitted_at: 2026-04-02T21:01:57.760Z
