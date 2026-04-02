@@ -105564,6 +105564,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-02T19:51:23.623Z
+      - _ulid: 01KN7WG5ZMFCAK6C8QHYT44XMS
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN7VZQ0A89724ZSN608P1JSV
+        timestamp: 2026-04-02T20:00:06.644Z
     examined_commit: db7f01d365a123d47dd9e5f3e694f34fb7686367
     external_links: []
     lifecycle_state: closed
@@ -105596,6 +105602,13 @@ reviews:
               test passes on the integration base commit , so this is a regression introduced by
               this branch.
             created_at: 2026-04-02T19:51:07.019Z
+          - _ulid: 01KN7WG55B5H0DP0FKKJGYTYVE
+            author: Jacob Chapel
+            body: "Fixed in 987509e18bdfa9d85e25c3a98d5230ca04fb1198: removed watcher and session-watcher
+              informational stdout logging so daemon command responses remain parseable JSON.
+              Reproduced and verified with npm test -- --fresh tests/daemon-command-api.test.ts
+              (24/24 passing) plus the watcher-focused regression suite."
+            created_at: 2026-04-02T20:00:05.803Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -105606,7 +105619,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-02T19:51:23.622Z
     created_at: 2026-04-02T19:34:10.578Z
-    updated_at: 2026-04-02T19:51:23.623Z
+    updated_at: 2026-04-02T20:00:05.803Z
     notes: []
   - _ulid: 01KN7V3GHW32YS3FHC0GNZQ565
     slugs: []
