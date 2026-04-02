@@ -105474,6 +105474,23 @@ reviews:
         runner: reviewer
         created_at: 2026-04-02T19:51:09.217Z
         completed_at: 2026-04-02T19:51:09.217Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: >-
+          Fresh rerun on the review snapshot failed: 
+
+          > @kynetic-ai/spec@0.12.0 test
+
+          > node scripts/test.cjs --fresh tests/daemon-command-api.test.ts via the broader
+          eight-suite parity check reproduced  with . The same eight-suite command passed cleanly on
+          base commit  (61/61 suites, 212/212 tests).
+        name: daemon command api parity
+        required: true
+        runner: npm
+        created_at: 2026-04-02T19:51:11.603Z
+        completed_at: 2026-04-02T19:51:11.603Z
     events:
       - _ulid: 01KN7V0PCHY1GRE8V4T35GMF9C
         actor: Jacob Chapel
@@ -105502,6 +105519,13 @@ reviews:
           status: pass
           name: review evidence log
         timestamp: 2026-04-02T19:51:09.923Z
+      - _ulid: 01KN7VZW6WE9T2R683XPR4KSFD
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: daemon command api parity
+        timestamp: 2026-04-02T19:51:12.348Z
     examined_commit: db7f01d365a123d47dd9e5f3e694f34fb7686367
     external_links: []
     lifecycle_state: open
@@ -105537,7 +105561,7 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-02T19:34:10.578Z
-    updated_at: 2026-04-02T19:51:09.217Z
+    updated_at: 2026-04-02T19:51:11.603Z
     notes: []
   - _ulid: 01KN7V3GHW32YS3FHC0GNZQ565
     slugs: []
