@@ -100783,3 +100783,29 @@ reviews:
     created_at: 2026-04-01T23:52:13.389Z
     updated_at: 2026-04-01T23:52:44.937Z
     notes: []
+  - _ulid: 01KN5RE73CZBHVKK10JETFJMRF
+    slugs: []
+    title: Review investigate-file-lock concurrency test
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KN5RE73CTD77SAZWA20D86FV
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-02T00:10:39.084Z
+    examined_commit: f0d0a409ede748ea7eec2171748d99178f1ac35a
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KN5QB8NSQNT9FTD701GK387V"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-02T00:10:39.084Z
+    updated_at: null
+    notes: []
