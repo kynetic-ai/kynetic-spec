@@ -79,7 +79,7 @@ tags:
   - plans
   - git
 vcs_refs: []
-review_ref: "@01KN65G86RV8RYZE3FWBXXKH5R"
+review_ref: "@01KN66TW87P2MVE015MFFC8WCG"
 submission_linkage:
   review_url: null
   branch: dev
@@ -187,6 +187,13 @@ history:
         previous: 2026-04-02T03:54:49.883Z
     command: task-submit
     timestamp: 2026-04-02T04:20:09.991Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KN66TW87P2MVE015MFFC8WCG"
+        previous: "@01KN65G86RV8RYZE3FWBXXKH5R"
+    command: review-link
+    timestamp: 2026-04-02T04:22:16.428Z
 created_at: 2026-04-02T01:45:33.294Z
 started_at: 2026-04-02T04:15:49.014Z
 submitted_at: 2026-04-02T04:20:09.991Z

@@ -102257,3 +102257,29 @@ reviews:
     created_at: 2026-04-02T04:16:26.709Z
     updated_at: 2026-04-02T04:16:34.731Z
     notes: []
+  - _ulid: 01KN66TW87P2MVE015MFFC8WCG
+    slugs: []
+    title: Review task-plan-branch-command (cycle 2)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KN66TW87SD6M0FM63X0Q62G4
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-02T04:22:14.023Z
+    examined_commit: f6f6ba57d52ae7011992339721f4873f4105c62a
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KN5XVZVERDZ3ZVAPDCFP5PJB"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-02T04:22:14.023Z
+    updated_at: null
+    notes: []
