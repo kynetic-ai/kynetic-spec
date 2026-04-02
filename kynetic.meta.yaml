@@ -11561,6 +11561,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-02T08:30:48.873Z
+  - _ulid: 01KN6NRHJV1NRTTCS53XKR294B
+    type: friction
+    content: Detached reviewer snapshots cannot check out the integration branch when that branch is
+      already mounted in another worktree; review/merge guidance should document the supported
+      manual-merge path for this case (for example using git -C on the primary worktree or an
+      equivalent kspec helper).
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-02T08:43:06.203Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
