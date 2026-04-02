@@ -6444,6 +6444,9 @@ features:
         description: |
           The plan derive command surfaces branch awareness so users know
           when and how to use plan branches for task stacking.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
