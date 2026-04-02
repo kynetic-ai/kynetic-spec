@@ -13,6 +13,7 @@ const baseExclude = [
 // They pass in isolation but can time out when competing with the rest of the
 // full suite, so run them in a dedicated serial project after the default pool.
 const dispatchHeavySuites = [
+  "tests/dispatch-workspace-config.test.ts",
   "tests/dispatch-workspace-registry.test.ts",
   "tests/dispatch-workspace-cleanup.test.ts",
   "tests/canonical-task-workspace-contract.test.ts",
