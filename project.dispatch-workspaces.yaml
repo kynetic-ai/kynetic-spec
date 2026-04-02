@@ -32470,7 +32470,7 @@ workspaces:
         head: 4f39f67f8ada86dcca9d75681a2d9f44a8379d36
         last_seen_at: 2026-04-02T05:30:18.030Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-stale-worktree-removal-in-safelyremovedispatchworktree-01kn69s1
-  - active_role: null
+  - active_role: worker
     base_branch_point: 190827af3c1fb918d3235cf9159a67047fae3590
     bootstrap:
       status: succeeded
@@ -32559,7 +32559,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T05:30:29.808Z
+      updated_at: 2026-04-02T05:31:18.014Z
     integration:
       status: pending
       detail: null
@@ -32568,16 +32568,16 @@ workspaces:
       target_branch: dev
       target_commit: 190827af3c1fb918d3235cf9159a67047fae3590
       updated_at: 2026-04-02T05:30:29.808Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KN6AAH0TMTBBPB8DSK8PP4K3"
     task_slug: stabilize-flaky-full-suite-failures-in-dispatch-workspace-config-and-enhanced-setup-tests
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-04-02T05:30:29.808Z
+      last_active_at: 2026-04-02T05:31:18.014Z
+      last_reconciled_at: 2026-04-02T05:31:18.014Z
       created_at: 2026-04-02T05:30:29.808Z
-      updated_at: 2026-04-02T05:30:39.261Z
+      updated_at: 2026-04-02T05:31:18.014Z
     workspace_id: dispatch-workspace-01KN6AAH0TMTBBPB8DSK8PP4K3
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
