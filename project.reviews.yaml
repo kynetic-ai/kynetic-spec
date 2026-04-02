@@ -104523,6 +104523,17 @@ reviews:
         required: true
         created_at: 2026-04-02T18:11:00.865Z
         completed_at: 2026-04-02T18:11:00.865Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Phase 1 behavior-changing tasks run before Phase 2 tasks that update @daemon-server ac-8
+          and @multi-directory-daemon ac-19, leaving implementation ordered ahead of the
+          corresponding spec updates.
+        name: Dependency ordering
+        required: true
+        created_at: 2026-04-02T18:11:00.883Z
+        completed_at: 2026-04-02T18:11:00.883Z
     events:
       - _ulid: 01KN7P72PJ3FHGSVCDCCGRT06F
         actor: "@claude"
@@ -104565,6 +104576,13 @@ reviews:
           status: fail
           name: Spec quality
         timestamp: 2026-04-02T18:11:01.548Z
+      - _ulid: 01KN7P8FBN6KCZ5NM828J275RV
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: Dependency ordering
+        timestamp: 2026-04-02T18:11:02.645Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -104625,5 +104643,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-02T18:10:16.914Z
-    updated_at: 2026-04-02T18:11:00.865Z
+    updated_at: 2026-04-02T18:11:00.883Z
     notes: []
