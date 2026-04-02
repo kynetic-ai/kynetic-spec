@@ -106840,6 +106840,17 @@ reviews:
         runner: kspec
         created_at: 2026-04-02T22:55:12.790Z
         completed_at: 2026-04-02T22:55:12.790Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Second independent npm test -- --fresh exited 0. No failing tests. Both historically flaky
+          tests passed again.
+        name: npm test fresh run 2
+        required: true
+        runner: npm
+        created_at: 2026-04-02T22:55:14.900Z
+        completed_at: 2026-04-02T22:55:14.900Z
     events:
       - _ulid: 01KN85ZVYCM7VWVZ0RT3W9N4SE
         actor: Jacob Chapel
@@ -106875,6 +106886,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-04-02T22:55:13.509Z
+      - _ulid: 01KN86GWRD080QJ0WZMFVY5E5Q
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test fresh run 2
+        timestamp: 2026-04-02T22:55:15.726Z
     examined_commit: 5e24ded90b046cac44f5568969374937df61bd84
     external_links: []
     lifecycle_state: open
@@ -106903,5 +106921,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-02T22:45:57.836Z
-    updated_at: 2026-04-02T22:55:12.790Z
+    updated_at: 2026-04-02T22:55:14.900Z
     notes: []
