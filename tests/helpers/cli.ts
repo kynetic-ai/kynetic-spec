@@ -125,13 +125,56 @@ export function kspec(args: string, cwd: string, options: KspecOptions = {}): Ks
     }
   }
 
+  // Strip ambient agent-detection vars so CLI subprocess tests don't inherit
+  // whichever editor/runtime markers a prior Vitest file left behind.
+  const AGENT_ENV_VARS = [
+    "CLAUDECODE",
+    "CLAUDE_CODE",
+    "CLAUDE_CODE_ENTRYPOINT",
+    "CLAUDE_PROJECT_DIR",
+    "CLAUDE_CODE_SESSION",
+    "CLINE_ACTIVE",
+    "CURSOR_TRACE_ID",
+    "WINDSURF_SESSION",
+    "AIDER_MODEL",
+    "AIDER_DARK_MODE",
+    "OPENCODE_CONFIG_DIR",
+    "OPENCODE_CONFIG",
+    "GEMINI_CLI",
+    "CODEX_THREAD_ID",
+    "CODEX_SANDBOX",
+    "CODEX_CI",
+    "CODEX_MANAGED_BY_NPM",
+    "FACTORY_PROJECT_DIR",
+    "COPILOT_MODEL",
+    "GH_TOKEN",
+    "AMP_API_KEY",
+    "AMP_TOOLBOX",
+  ];
+  for (const key of AGENT_ENV_VARS) {
+    if (!(key in env)) {
+      delete cleanEnv[key];
+    }
+  }
+
+  // Give each CLI subprocess an isolated home/config root by default so global
+  // plugin marketplace, daemon PID/port, and agent home-directory probes are
+  // scoped to the test project instead of the parent Vitest process.
+  const isolatedHome = path.join(cwd, ".test-home");
+  mkdirSync(path.join(isolatedHome, ".config", "kspec"), { recursive: true });
+  const defaultEnv = {
+    HOME: isolatedHome,
+    USERPROFILE: isolatedHome,
+    KSPEC_CLAUDE_HOME: path.join(isolatedHome, ".claude"),
+  };
+
   // Use spawnSync with shell to capture both stdout and stderr
   // Always use shell mode to properly handle argument parsing and quoting
   const result = spawnSync("/bin/sh", ["-c", `node ${CLI_PATH} ${args}`], {
     cwd,
     encoding: "utf-8",
     timeout: 30_000,
-    env: { ...cleanEnv, KSPEC_AUTHOR: "@test", ...env },
+    env: { ...cleanEnv, ...defaultEnv, KSPEC_AUTHOR: "@test", ...env },
     input: stdin !== undefined ? (stdin.endsWith("\n") ? stdin : `${stdin}\n`) : undefined,
   });
 
