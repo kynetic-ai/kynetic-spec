@@ -25,3 +25,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T21:22:07.753Z
+  - _ulid: 01KN820EPMRK2T8H8RQCVA0NXP
+    content: "Fix cycle 1: replaced the AC-3 watcher-footprint proxy in tests/session-watcher.test.ts
+      with a runtime /proc/self/fd measurement comparing low vs high blob-file volume under
+      identical metadata layout. Re-ran fresh watcher-targeted suites and a fresh full npm test run;
+      both passed. Re-verified @daemon-file-monitoring ac-1..ac-8 coverage on the updated watcher
+      tests. Validation still reports pre-existing project warnings only."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T21:36:22.740Z
