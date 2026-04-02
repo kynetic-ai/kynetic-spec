@@ -100802,6 +100802,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-02T00:11:00.525Z
+      - _ulid: 01KN5RTVEYBBFDMQG4MM2A6SF4
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KN5RTTTPJWSX2FNDTET6FZZF
+        timestamp: 2026-04-02T00:17:33.150Z
     examined_commit: f0d0a409ede748ea7eec2171748d99178f1ac35a
     external_links: []
     lifecycle_state: open
@@ -100811,8 +100818,35 @@ reviews:
       content_hash: ""
       ref: "@01KN5QB8NSQNT9FTD701GK387V"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KN5RTTTPJWSX2FNDTET6FZZF
+        entries:
+          - _ulid: 01KN5RTTTQEYMZ0FFV7XB99ZY0
+            author: Jacob Chapel
+            body: >-
+              Evidence log
+
+
+              Files read: src/parser/file-lock.ts; tests/file-lock.test.ts;
+              tests/dispatch-workspace-registry.test.ts; src/agent-runtime/workspace.ts
+
+              Commands run: git diff/stat; git show; kspec task get @01KN5QB8NSQNT9FTD701GK387V;
+              kspec item get @scoped-dispatch-shadow-serialization; kspec validate; grep -Rni "AC:
+              @scoped-dispatch-shadow-serialization" tests/; rg -n
+              "acquireFileLock\(|withFileLock\(|KSPEC_SHADOW_MUTATION_LOCK_MAX_HOLD_MS|maxHoldMs"
+              src tests; npm test -- --fresh tests/file-lock.test.ts; npm test -- --fresh
+              tests/dispatch-workspace-registry.test.ts; npm test -- --fresh
+
+              Claims verified: same-process duration reclaim was the flake mechanism, confirmed by
+              the new guard in checkStaleLock plus fresh passing targeted/full test runs;
+              cross-process duration reclaim still works because stale-holder tests now use real
+              child PIDs
+
+              Categories searched: correctness, edge cases, error handling, test quality,
+              integration. No blocking findings in this snapshot.
+            created_at: 2026-04-02T00:17:32.503Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-02T00:10:39.084Z
-    updated_at: 2026-04-02T00:10:59.834Z
+    updated_at: 2026-04-02T00:17:32.503Z
     notes: []
