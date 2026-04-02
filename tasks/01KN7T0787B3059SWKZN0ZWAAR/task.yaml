@@ -20,7 +20,7 @@ description: >-
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -29,6 +29,14 @@ tags:
   - test
   - locking
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-04-02T19:46:04.099Z
+  commit: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
 session_id: 01KN7V125PEJBPKRQSMHM9PAKS
 history:
   - author: Jacob Chapel
@@ -44,7 +52,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-02T19:34:53.546Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-04-02T19:46:04.099Z
+          commit: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-04-02T19:46:04.106Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-02T19:46:04.106Z
 created_at: 2026-04-02T19:16:26.503Z
 started_at: 2026-04-02T19:34:53.545Z
+submitted_at: 2026-04-02T19:46:04.106Z
 todos: []
 automation: eligible
