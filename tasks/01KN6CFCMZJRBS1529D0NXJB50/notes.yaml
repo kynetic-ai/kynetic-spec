@@ -10,3 +10,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T06:01:59.401Z
+  - _ulid: 01KN6DBK7YDYZ8DP4BVDRHVX7V
+    content: Implemented default task derivation for plan derive by switching the CLI to an opt-out
+      --no-tasks flow while preserving --tasks as a hidden backward-compatible alias. Updated
+      dry-run/help/guidance text, refreshed the plan skill template and rendered skill output, added
+      coverage for default derive, --no-tasks, dry-run task status, and legacy --tasks, and verified
+      with npm test (full suite pass) plus targeted help/batch command checks. Validation with the
+      installed kspec binary passes with existing project warnings; npm run dev -- validate
+      currently fails in this workspace because the local dev CLI does not register the split task
+      backend.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T06:16:13.310Z
