@@ -11646,8 +11646,11 @@ observations:
       worktree and run git -C <repo> merge there. A dedicated kspec merge path for detached review
       snapshots would remove this manual worktree routing.
     author: Jacob Chapel
-    resolution: null
-    resolved: false
+    resolution: Duplicate of existing detached-reviewer merge friction observations (already tracked
+      before this session).
+    resolved: true
+    resolved_at: 2026-04-02T20:03:12.465Z
+    resolved_by: Jacob Chapel
     created_at: 2026-04-02T20:02:27.096Z
   - _ulid: 01KN7WMFEH93NV18Q3HAH9103F
     type: success
