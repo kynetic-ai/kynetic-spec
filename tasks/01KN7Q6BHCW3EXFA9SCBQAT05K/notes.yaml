@@ -64,3 +64,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T22:47:51.498Z
+  - _ulid: 01KN86CQT1C8CB47X3GJZHABPR
+    content: "Fix cycle 2: completed AC-8 coverage by updating the permanent-failure warning to include
+      the missing watched root path and asserting that warning in watcher error-handling tests.
+      Re-ran npm test -- --fresh tests/daemon-watcher-error-handling.test.ts and a fresh full npm
+      test run (2068/2068 suites, 7491 passed, 5 skipped). kspec validate still reports pre-existing
+      repository warnings only."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T22:52:59.585Z
