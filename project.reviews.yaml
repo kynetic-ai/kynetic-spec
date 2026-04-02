@@ -102850,7 +102850,17 @@ reviews:
     slugs: []
     title: Review task-plan-branch-activation
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- tests/cli-plan-derive.test.ts passed: 2 suites, 17 tests, 51.1s."
+        name: plan-derive tests
+        required: true
+        runner: npm
+        created_at: 2026-04-02T05:22:46.697Z
+        completed_at: 2026-04-02T05:22:46.697Z
     events:
       - _ulid: 01KN69QVHXKCG9D9J5JHQQ7MGP
         actor: Jacob Chapel
@@ -102865,6 +102875,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-02T05:13:23.652Z
+      - _ulid: 01KN6A9SV61D3Q4AGYXH5TG07X
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: plan-derive tests
+        timestamp: 2026-04-02T05:22:48.806Z
     examined_commit: 3010d95d48890de17b93615d91614626639b9250
     external_links: []
     lifecycle_state: open
@@ -102877,5 +102894,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-02T05:13:00.736Z
-    updated_at: 2026-04-02T05:13:22.519Z
+    updated_at: 2026-04-02T05:22:46.697Z
     notes: []
