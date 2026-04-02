@@ -11639,6 +11639,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-02T20:01:19.402Z
+  - _ulid: 01KN7WMF4R5V8KBJ7WYR81QRAB
+    type: friction
+    content: Detached reviewer snapshots cannot check out the integration branch when that branch is
+      already active in another worktree. During merge, the reviewer had to discover the primary
+      worktree and run git -C <repo> merge there. A dedicated kspec merge path for detached review
+      snapshots would remove this manual worktree routing.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-02T20:02:27.096Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
