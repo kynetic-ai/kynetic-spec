@@ -11253,6 +11253,15 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-04-02T03:28:53.436Z
+  - _ulid: 01KN644JTYF658VYK6H0MP8Q3V
+    type: friction
+    content: Full npm test -- --fresh still has an unrelated failure in tests/cli-serve.test.ts (SIGTERM
+      shutdown assertion) while working the daemon entity cache live-counter regression, so the
+      repo-wide verification gate is not currently reliable for isolated daemon cache fixes.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-02T03:35:06.334Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
