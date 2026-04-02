@@ -206,21 +206,49 @@ describe("File Lock", () => {
     tempDir = await createTempDir();
     const targetFile = path.join(tempDir, "data.yaml");
     await fs.writeFile(targetFile, "count: 0\n");
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    let activeCriticalSections = 0;
+    let maxConcurrentCriticalSections = 0;
 
-    const promises = Array.from({ length: 5 }, () =>
-      withFileLock(targetFile, async () => {
-        const content = await readTestOutput(targetFile);
-        const match = content.match(/count: (\d+)/);
-        const current = parseInt(match![1], 10);
-        await new Promise((r) => setTimeout(r, 25));
-        await fs.writeFile(targetFile, `count: ${current + 1}\n`);
-      }, { timeoutMs: 1000, maxHoldMs: 5 }),
-    );
+    try {
+      const promises = Array.from({ length: 8 }, () =>
+        withFileLock(
+          targetFile,
+          async () => {
+            activeCriticalSections += 1;
+            maxConcurrentCriticalSections = Math.max(
+              maxConcurrentCriticalSections,
+              activeCriticalSections,
+            );
 
-    await Promise.all(promises);
+            try {
+              const content = await readTestOutput(targetFile);
+              const match = content.match(/count: (\d+)/);
+              const current = parseInt(match![1], 10);
 
-    const finalContent = await readTestOutput(targetFile);
-    expect(finalContent).toBe("count: 5\n");
+              // Hold the critical section well beyond maxHoldMs so any
+              // same-process force-reclaim would overlap and be observable.
+              await new Promise((r) => setTimeout(r, 25));
+              expect(activeCriticalSections).toBe(1);
+
+              await fs.writeFile(targetFile, `count: ${current + 1}\n`);
+            } finally {
+              activeCriticalSections -= 1;
+            }
+          },
+          { timeoutMs: 3000, maxHoldMs: 5 },
+        ),
+      );
+
+      await Promise.all(promises);
+
+      const finalContent = await readTestOutput(targetFile);
+      expect(finalContent).toBe("count: 8\n");
+      expect(maxConcurrentCriticalSections).toBe(1);
+      expect(warnSpy).not.toHaveBeenCalled();
+    } finally {
+      warnSpy.mockRestore();
+    }
   });
 
   it("should not remove a successor lock when an old releaser runs late", async () => {
