@@ -104121,6 +104121,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-02T08:25:16.733Z
+      - _ulid: 01KN6P6HJC1X1692H99ZRD1NDE
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN6MQ9THTQT9FQCZ41S3DSNE
+        timestamp: 2026-04-02T08:50:44.940Z
     examined_commit: 9723239855abc52d12a71705ec232f73606cc264
     external_links: []
     lifecycle_state: closed
@@ -104172,6 +104178,14 @@ reviews:
               There are no tests or N/A annotations anywhere for inherited ac-3 through ac-6, so the
               task is missing required trait AC coverage and should not advance yet.
             created_at: 2026-04-02T08:24:56.913Z
+          - _ulid: 01KN6P6GWSC4YM6B33EM03JPTG
+            author: Jacob Chapel
+            body: "Fixed in fix cycle 1: added explicit standalone N/A annotations for @trait-error-guidance
+              ac-3 through ac-6 in tests/dispatch-runtime-bootstrap-contract.test.ts because this
+              runtime helper does not resolve refs, report invalid state transitions, perform schema
+              validation, or expose JSON-mode errors. Re-verified focused bootstrap-contract
+              coverage and reran the full suite successfully."
+            created_at: 2026-04-02T08:50:44.249Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -104182,7 +104196,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-02T08:25:16.733Z
     created_at: 2026-04-02T08:23:31.919Z
-    updated_at: 2026-04-02T08:25:16.733Z
+    updated_at: 2026-04-02T08:50:44.249Z
     notes: []
   - _ulid: 01KN6N7CPYXHJXYS4BV1EFB02E
     slugs: []
