@@ -104728,6 +104728,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN7PN5Y0N53VFQ3SF7R14ZQV
         timestamp: 2026-04-02T18:17:59.678Z
+      - _ulid: 01KN7PN7PX0GRJ6PAZJC8BA3YR
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN7PN5Y6M9FP7PYWNHJGRSPD
+        timestamp: 2026-04-02T18:18:00.797Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -104753,7 +104760,22 @@ reviews:
               reliable cross-platform change detection.
             created_at: 2026-04-02T18:17:58.976Z
         kind: blocker
+      - _ulid: 01KN7PN5Y6M9FP7PYWNHJGRSPD
+        anchor:
+          type: structured
+          ref: "@task-test-chokidar-watcher"
+          section: tasks
+        entries:
+          - _ulid: 01KN7PN5Y60F8J890HCX93FDKD
+            author: "@claude"
+            body: "The added 'Verifies' prose does not actually claim coverage for @daemon-file-monitoring ac-6
+              or ac-8. Those ACs still do not appear in any task's Covers: mapping, so the plan
+              still has orphan acceptance criteria. Add explicit task ownership for those ACs, even
+              if the work is only verification of behavior already implemented under existing
+              specs."
+            created_at: 2026-04-02T18:17:58.982Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-02T18:17:28.377Z
-    updated_at: 2026-04-02T18:17:58.976Z
+    updated_at: 2026-04-02T18:17:58.982Z
     notes: []
