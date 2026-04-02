@@ -103631,3 +103631,36 @@ reviews:
     created_at: 2026-04-02T06:39:35.207Z
     updated_at: 2026-04-02T07:07:43.787Z
     notes: []
+  - _ulid: 01KN6GKPSKPWKYHH94HMGHSHZC
+    slugs: []
+    title: Review default plan derive to include tasks
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KN6GKPSKMYGQXCM02QNA7VTJ
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-02T07:13:04.819Z
+      - _ulid: 01KN6GMBHYHS9TVHNNE1M5MAMM
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-04-02T07:13:26.078Z
+    examined_commit: 8d178dfefb4fd68c9824de23346c9064214c99aa
+    external_links: []
+    lifecycle_state: open
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KN6CFCMZJRBS1529D0NXJB50"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-02T07:13:04.819Z
+    updated_at: 2026-04-02T07:13:25.130Z
+    notes: []
