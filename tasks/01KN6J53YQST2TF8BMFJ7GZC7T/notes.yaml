@@ -14,3 +14,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T07:49:21.801Z
+  - _ulid: 01KN6JPQCZW0QC532WN7JX01F5
+    content: "Approach: add a pre-invocation workspace validation gate in dispatch _spawnInvocation
+      after workspace selection/bootstrap and before adapter handoff/runInvocation, reusing
+      workspace registry persistence and existing repair/discovery helpers instead of creating a
+      parallel recovery flow. Edge cases: newly provisioned worker workspace, reused workspace,
+      missing workspace dir before launch, existing dir that fails a minimal cwd executability
+      probe, successful safe reprovision/revalidation, and unrecoverable failure that must record
+      diagnostics and avoid retrying the same bad workspace without revalidation. Test plan: extend
+      dispatch runtime bootstrap contract coverage for ac-7..ac-10 with behavioral dispatch tests
+      plus trait-error-guidance assertions on recorded diagnostics/error text."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T07:49:40.895Z
