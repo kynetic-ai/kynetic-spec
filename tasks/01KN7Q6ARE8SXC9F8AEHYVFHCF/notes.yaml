@@ -1,1 +1,13 @@
-notes: []
+notes:
+  - _ulid: 01KN7ST69H83GGQ4VP3XJQXZDB
+    content: "Approach: promote the existing Chokidar paths in KspecWatcher and SessionWatcher to the
+      only backend, removing Bun fs.watch startup and close branching while preserving debounce,
+      YAML validation, nested .kspec filtering, bootstrap polling, and exponential-backoff recovery.
+      Edge cases: atomic write rename events must still surface through add/change handling, missing
+      watched roots must still stop cleanly after retry exhaustion, and multi-project isolation must
+      continue to rely on per-project watcher instances without cross-delivery. Test plan: update
+      fallback-specific unit coverage to assert direct Chokidar startup, keep error-handling
+      coverage, and run the full suite to catch regressions in watcher integration."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T19:13:08.914Z
