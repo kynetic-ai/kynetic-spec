@@ -11230,6 +11230,29 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-02T02:02:38.288Z
+  - _ulid: 01KN63S6FEC858SWASVDY2YFBV
+    type: friction
+    content: 'Reviewer merge friction: in detached review snapshots, the documented local merge flow can
+      fail because git cannot check out the integration branch when that branch is already owned by
+      another worktree (observed: switching to dev failed with "already used by worktree").
+      Review/merge guidance should document the supported path for completing an approved manual
+      merge from a reviewer snapshot without escaping into ad hoc git -C workarounds.'
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-04-02T03:28:53.231Z
+  - _ulid: 01KN63S6NV7HAK8E3BH6CV37XK
+    type: success
+    content: "Review regression triage worked well: rerunning the failing test on both the review
+      snapshot and the integration base branch prevented a false blocker, allowed the plan-branch
+      task to merge cleanly, and produced a separate bug task for the pre-existing daemon cache
+      failure."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-04-02T03:28:53.436Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
