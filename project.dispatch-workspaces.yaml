@@ -33899,7 +33899,7 @@ workspaces:
         head: 637beb279c7a9611e23131bc22a97055865f4666
         last_seen_at: 2026-04-02T20:23:00.027Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-blob-exclusion-01kn7q6b
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: f7f761c1213499dbe6ddf4da662d2d18bf5d38bf
     bootstrap:
       status: succeeded
@@ -34009,7 +34009,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T20:50:12.836Z
+      updated_at: 2026-04-02T20:50:20.884Z
     integration:
       status: pending
       detail: null
@@ -34024,10 +34024,10 @@ workspaces:
     task_slug: task-watcher-health-check
     timestamps:
       closed_at: null
-      last_active_at: 2026-04-02T20:50:01.102Z
-      last_reconciled_at: 2026-04-02T20:50:12.836Z
+      last_active_at: 2026-04-02T20:50:20.884Z
+      last_reconciled_at: 2026-04-02T20:50:20.884Z
       created_at: 2026-04-02T20:35:03.733Z
-      updated_at: 2026-04-02T20:50:17.707Z
+      updated_at: 2026-04-02T20:50:20.884Z
     workspace_id: dispatch-workspace-01KN7Q6B9D51K6Z7NPA4M8FG4B
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
