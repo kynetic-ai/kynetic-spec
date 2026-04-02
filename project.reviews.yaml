@@ -105896,6 +105896,24 @@ reviews:
         runner: npm
         created_at: 2026-04-02T20:10:26.687Z
         completed_at: 2026-04-02T20:10:26.687Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: packages/daemon/src/watcher.ts, packages/daemon/src/session-watcher.ts,
+          packages/daemon/src/project-context.ts, tests/daemon-watcher-fallback.test.ts,
+          tests/daemon-watcher-error-handling.test.ts, tests/daemon-watcher-multi-project.test.ts,
+          tests/session-watcher.test.ts, tests/e2e/api-watcher.spec.ts,
+          tests/e2e/file-watcher.spec.ts. Commands run: kspec task get, kspec item get, kspec review
+          get, git diff/base show, kspec validate, rg AC annotations, npm test, targeted npm test.
+          Claims verified: watcher stdout regression fixed by code removal and daemon-command-api
+          passing; Chokidar-only startup and ready wait covered by changed code plus tests.
+          Categories searched: correctness, edge cases, error handling, test quality, integration;
+          no blocking findings found."
+        name: review evidence log
+        required: false
+        created_at: 2026-04-02T20:10:29.041Z
+        completed_at: 2026-04-02T20:10:29.041Z
     events:
       - _ulid: 01KN7WNN61ZAV80AN5BYEQS62Y
         actor: Jacob Chapel
@@ -105917,6 +105935,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-02T20:10:27.423Z
+      - _ulid: 01KN7X36KENFNW88P1J43AA41Q
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-04-02T20:10:29.870Z
     examined_commit: 987509e18bdfa9d85e25c3a98d5230ca04fb1198
     external_links: []
     lifecycle_state: open
@@ -105929,5 +105954,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-02T20:03:06.049Z
-    updated_at: 2026-04-02T20:10:26.687Z
+    updated_at: 2026-04-02T20:10:29.041Z
     notes: []
