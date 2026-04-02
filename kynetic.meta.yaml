@@ -321,6 +321,27 @@ agents:
       - kspec
       - git
       - npm
+  - _ulid: 01KN5TNDAEJ1R1EB6SP2EPMBWT
+    description: Reviews draft plans for spec quality, task completeness, and readiness
+    auto_approve: false
+    budget:
+      timeout_minutes: 60
+    capabilities:
+      - review
+      - specs
+    concurrency:
+      max_concurrent: 1
+    conventions: []
+    dispatch: []
+    id: plan-reviewer
+    name: Plan Reviewer
+    skills:
+      - review-plan
+      - review
+      - writing-specs
+      - plan
+    tools:
+      - kspec
 conventions:
   - _ulid: 01KF782ZSJCXRCGV0QJ8Y9AKN2
     domain: commits
