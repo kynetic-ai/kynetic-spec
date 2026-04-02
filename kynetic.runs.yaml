@@ -20714,9 +20714,20 @@ runs:
     completed_at: 2026-04-02T06:36:26.961Z
   - _ulid: 01KN6FKV090CRK53KG3TWVX4TF
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-02T06:55:40.553Z
+        completed_at: 2026-04-02T06:57:25.259Z
+        notes: "Friction: verification included an unrelated repository-wide validate failure in
+          .kspec/kynetic.meta.yaml, which makes task-level validation noisier. Captured separately
+          as friction observation @01KN6FGK."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-02T06:57:25.259Z
+        completed_at: 2026-04-02T06:57:25.259Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-02T06:55:40.553Z
