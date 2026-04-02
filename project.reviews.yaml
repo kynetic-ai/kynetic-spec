@@ -104947,6 +104947,20 @@ reviews:
         required: true
         created_at: 2026-04-02T18:20:47.745Z
         completed_at: 2026-04-02T18:20:47.745Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "The new daemon-file-monitoring feature fits under @web-ui alongside @daemon-server and
+          @multi-directory-daemon: it narrows file-monitoring behavior instead of duplicating server
+          lifecycle or multi-project registration scope. The plan correctly treats daemon-server
+          ac-8 and multi-directory-daemon ac-19 as spec updates in tasks rather than new spec
+          declarations, and the new ac-8 language no longer conflicts with the existing spec
+          hierarchy."
+        name: Existing spec alignment
+        required: true
+        created_at: 2026-04-02T18:21:10.692Z
+        completed_at: 2026-04-02T18:21:10.692Z
     events:
       - _ulid: 01KN7PSQAPFD374WMQPM4BKY00
         actor: "@claude"
@@ -104982,6 +104996,13 @@ reviews:
           status: pass
           name: Task standalone-ness
         timestamp: 2026-04-02T18:20:51.726Z
+      - _ulid: 01KN7PV1T0EPE4TB3VEBTEDVMF
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Existing spec alignment
+        timestamp: 2026-04-02T18:21:11.360Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -104994,5 +105015,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-02T18:20:27.863Z
-    updated_at: 2026-04-02T18:20:47.745Z
+    updated_at: 2026-04-02T18:21:10.692Z
     notes: []
