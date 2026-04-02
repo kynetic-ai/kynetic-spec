@@ -11620,6 +11620,15 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-04-02T19:47:40.959Z
+  - _ulid: 01KN7WCCN1SB75WPTX6G41SRBR
+    type: friction
+    content: Parallel npm test invocations can race in the shared build output and fail with cp
+      copyFileSync EISDIR under dist/daemon; dispatch agents should avoid concurrent
+      build-triggering test runs in one workspace.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-02T19:58:02.401Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
