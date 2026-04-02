@@ -10500,8 +10500,12 @@ observations:
       for format split' until dist/cli was built. Review flow should provide a runnable CLI without
       a manual build step."
     author: Test User
-    resolution: null
-    resolved: false
+    resolution: "Duplicate of reviewer snapshot CLI/bootstrap tracking @01KMWT80. The systemic issue
+      remains open: detached review worktrees are not consistently provisioned with a ready kspec
+      CLI path and built dist CLI."
+    resolved: true
+    resolved_at: 2026-04-02T07:45:27.306Z
+    resolved_by: Test User
     created_at: 2026-03-31T00:21:58.222Z
   - _ulid: 01KN0M9GJMGCYGPWJJ65Y0S3YW
     type: friction
