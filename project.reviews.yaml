@@ -103920,6 +103920,19 @@ reviews:
         runner: npm
         created_at: 2026-04-02T07:59:17.397Z
         completed_at: 2026-04-02T07:59:17.397Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Validation fails due to pre-existing repo-wide reference/completeness debt unrelated to
+          this change: missing refs @cmd-derive, @session-remove-shadow-commits,
+          @session-branch-worktree; 523 completeness warnings including automation-without-spec for
+          this task."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-02T07:59:19.657Z
+        completed_at: 2026-04-02T07:59:19.657Z
     events:
       - _ulid: 01KN6K1AVAY1SCCFMPB7WPNXS6
         actor: Jacob Chapel
@@ -103941,6 +103954,13 @@ reviews:
           status: pass
           name: npm test --fresh
         timestamp: 2026-04-02T07:59:18.106Z
+      - _ulid: 01KN6K8D95C49TJ5FGHYTKZ2PT
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-02T07:59:20.357Z
     examined_commit: 434b3c31f6f6ff0edca0e2e284ea0a82469b98b7
     external_links: []
     lifecycle_state: open
@@ -103953,5 +103973,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-02T07:55:28.491Z
-    updated_at: 2026-04-02T07:59:17.397Z
+    updated_at: 2026-04-02T07:59:19.657Z
     notes: []
