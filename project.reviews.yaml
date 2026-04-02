@@ -103315,6 +103315,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-02T06:19:31.590Z
+      - _ulid: 01KN6EQ8NQP3YHRMFKDY95DBHN
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN6EQ7XKH0EMD43MHCAX5TMA
+        timestamp: 2026-04-02T06:40:04.279Z
     examined_commit: 432d716a4805d82b05eaa89afb4764270e331005
     external_links: []
     lifecycle_state: open
@@ -103324,10 +103331,32 @@ reviews:
       content_hash: ""
       ref: "@01KN6CFCMZJRBS1529D0NXJB50"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KN6EQ7XKH0EMD43MHCAX5TMA
+        anchor:
+          type: code
+          commit: 432d716a4805d82b05eaa89afb4764270e331005
+          line_end: 255
+          line_start: 253
+          path: src/cli/commands/plan.ts
+          side: head
+        entries:
+          - _ulid: 01KN6EQ7XKVJQXRNFJCFZ1VK5H
+            author: Jacob Chapel
+            body: "Human output now exposes whether derive will include tasks (for example, 'Tasks: included
+              (default)' or 'Tasks: skipped (--no-tasks)'), but the JSON payload emitted from the
+              same code path still has no equivalent field. Repro in a temp fixture: 'plan derive
+              @plan-dry-run-task-mode --dry-run' prints that line, while the same command with
+              '--json' returns only
+              plan_ref/module_ref/plan_branch/created_specs/created_tasks/skipped/errors. Because
+              this command inherits @trait-json-output ac-2, adding new human-readable state without
+              adding it to JSON is a correctness regression for JSON consumers and leaves the new
+              dry-run confirmation unavailable in structured output."
+            created_at: 2026-04-02T06:40:03.507Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-02T06:19:12.335Z
-    updated_at: 2026-04-02T06:19:30.891Z
+    updated_at: 2026-04-02T06:40:03.507Z
     notes: []
   - _ulid: 01KN6EPC97A6JH0QZVVSG9PHHM
     slugs: []
