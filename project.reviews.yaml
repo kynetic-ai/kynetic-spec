@@ -106274,7 +106274,18 @@ reviews:
     slugs: []
     title: Review task-test-chokidar-watcher
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Fresh targeted run passed: 67 suites / 218 tests across the changed watcher suites plus
+          tests/cli-serve.test.ts and tests/agent-dispatch-engine.test.ts."
+        name: watcher-targeted-suite
+        required: true
+        runner: npm
+        created_at: 2026-04-02T21:21:34.405Z
+        completed_at: 2026-04-02T21:21:34.405Z
     events:
       - _ulid: 01KN804T5VE744J7S9XF304KDP
         actor: Jacob Chapel
@@ -106296,6 +106307,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN813G2W7T9BN5CH1Q135DTR
         timestamp: 2026-04-02T21:20:34.736Z
+      - _ulid: 01KN815CG1X6TJ93JFB0DJ4P1N
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: watcher-targeted-suite
+        timestamp: 2026-04-02T21:21:35.746Z
     examined_commit: a72d50e8ca41f0625f005c2c94e8183d22378a7c
     external_links: []
     lifecycle_state: open
@@ -106329,5 +106347,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-02T21:03:48.411Z
-    updated_at: 2026-04-02T21:20:33.884Z
+    updated_at: 2026-04-02T21:21:34.405Z
     notes: []
