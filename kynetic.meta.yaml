@@ -11599,6 +11599,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-02T19:33:14.197Z
+  - _ulid: 01KN7VFQS5ZQVTCV7ESFV66BFN
+    type: friction
+    content: Detached review snapshots can hide shadow-branch-only task changes. In this session, git
+      diff against the integration branch showed no code delta while the actual reviewed change
+      lived in kspec-meta, forcing manual inspection of the .kspec worktree and shadow git history
+      to find the real spec diff. Review tooling should surface linked shadow-branch mutations
+      directly for spec-only tasks.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-02T19:42:23.525Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
