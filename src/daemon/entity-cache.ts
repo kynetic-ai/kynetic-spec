@@ -760,7 +760,7 @@ export class ProjectEntityCache {
     if (!this.sessions.index) return null;
     return this.sessions.index.map((s) => {
       const liveCount = this.getSessionLiveEventCount(s.id);
-      if (s.status === "active" && liveCount !== undefined) {
+      if ((s.status === "active" || s.status === "stalled") && liveCount !== undefined) {
         return { ...s, event_count: liveCount };
       }
       return s;
