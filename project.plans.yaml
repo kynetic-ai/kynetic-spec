@@ -33165,8 +33165,8 @@ plans:
       Validated empirically: Chokidar with blob exclusion uses 7,281 FDs,
       detects session.yaml modifications, and detects new session directory
       creation. Without exclusion, both Bun and Chokidar use 185k+ FDs.
-    status: draft
-    approved_at: null
+    status: approved
+    approved_at: 2026-04-02T18:26:48.202Z
     derived_specs: []
     derived_tasks: []
     module_ref: "@web-ui"
