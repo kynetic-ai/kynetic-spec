@@ -103322,6 +103322,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN6EQ7XKH0EMD43MHCAX5TMA
         timestamp: 2026-04-02T06:40:04.279Z
+      - _ulid: 01KN6EQB3WHVACHTQKGHK3KBXS
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KN6EQA8GNYGX9JFAJRX0ZHJF
+        timestamp: 2026-04-02T06:40:06.780Z
     examined_commit: 432d716a4805d82b05eaa89afb4764270e331005
     external_links: []
     lifecycle_state: open
@@ -103354,9 +103361,27 @@ reviews:
               dry-run confirmation unavailable in structured output."
             created_at: 2026-04-02T06:40:03.507Z
         kind: blocker
+      - _ulid: 01KN6EQA8GNYGX9JFAJRX0ZHJF
+        entries:
+          - _ulid: 01KN6EQA8GXH5VTY042135559A
+            author: Jacob Chapel
+            body: "Evidence log:\\nFiles read: src/cli/commands/plan.ts, tests/cli-plan-derive.test.ts,
+              templates/skills/plan/SKILL.md, .agents/skills/kspec-plan/SKILL.md,
+              tests/helpers/cli.ts, tests/cli-serve.test.ts, package.json.\\nCommands run: git
+              diff/stat against base, kspec task get, kspec item get @plan-derive-enhanced, kspec
+              review for-task, kspec validate, grep/rg for AC annotations and --tasks/--no-tasks
+              references, npm run dev -- plan derive --help, direct temp-fixture CLI repro for human
+              vs JSON output, npm test, npm test -- tests/cli-serve.test.ts, npm test --
+              --fresh.\\nClaims verified: help text/default option surface, backward-compatible
+              hidden --tasks flag presence in code, full-suite status after fresh rerun, and
+              human/JSON output mismatch for the new task-mode summary.\\nCategories searched:
+              correctness, test quality, JSON/output parity, error guidance,
+              integration/regression."
+            created_at: 2026-04-02T06:40:05.904Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-02T06:19:12.335Z
-    updated_at: 2026-04-02T06:40:03.507Z
+    updated_at: 2026-04-02T06:40:05.904Z
     notes: []
   - _ulid: 01KN6EPC97A6JH0QZVVSG9PHHM
     slugs: []
