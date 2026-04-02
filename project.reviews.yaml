@@ -105249,6 +105249,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-02T19:15:56.609Z
+      - _ulid: 01KN7T0JPR6GXFB1TMPWZF1EA3
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN7T0J0AP4F8ZPA743ZHNYHP
+        timestamp: 2026-04-02T19:16:38.232Z
     examined_commit: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
     external_links: []
     lifecycle_state: open
@@ -105258,8 +105265,28 @@ reviews:
       content_hash: ""
       ref: "@01KN7Q6AG"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KN7T0J0AP4F8ZPA743ZHNYHP
+        anchor:
+          type: structured
+          field: ac-19
+          ref: "@multi-directory-daemon"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KN7T0J0AS7Q69PB9VKEB8T2J
+            author: Jacob Chapel
+            body: The new ac-19 text now promises detection during health monitoring and containment so one
+              project's monitoring cannot degrade other registered projects, but the existing
+              annotated coverage still only proves startup-time watcher failures. The three ac-19
+              tests in tests/daemon-watcher-multi-project.test.ts:249-313 only mock EMFILE/ENFILE or
+              a generic start() failure, and the ac-19 test in
+              tests/daemon-session-sync-multi-project.test.ts:550-579 only proves WebSocket
+              registration rejects when startWatcher() fails. None of those tests exercises the new
+              health-monitoring path or verifies that other registered projects remain unaffected,
+              so ac-19 now has false coverage.
+            created_at: 2026-04-02T19:16:37.514Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-02T19:07:54.851Z
-    updated_at: 2026-04-02T19:15:55.846Z
+    updated_at: 2026-04-02T19:16:37.514Z
     notes: []
