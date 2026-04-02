@@ -9,3 +9,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T04:46:57.466Z
+  - _ulid: 01KN68Z8GS88ZT1HK4R8HVE1KD
+    content: "Implemented derive branch guidance. Added plan_branch to derive JSON output, appended
+      post-summary branch messaging in human-readable output, and covered both branch/no-branch
+      paths in tests/cli-plan-derive.test.ts. Verification: npm test --
+      tests/cli-plan-derive.test.ts passed. Full npm test still has unrelated timeout failures in
+      activity/setup/review validation suites; the full-run log shows cli-plan-derive passing."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T04:59:34.809Z
