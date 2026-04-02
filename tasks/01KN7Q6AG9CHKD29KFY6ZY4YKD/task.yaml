@@ -33,7 +33,7 @@ description: |
 spec_ref: "@multi-directory-daemon"
 plan_ref: "@plan-daemon-file-monitoring-reliability"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -45,7 +45,7 @@ review_ref: "@01KN7SGKK3F69RRYHA7WAQZZ0R"
 submission_linkage:
   review_url: null
   branch: dev
-  captured_at: 2026-04-02T19:03:11.680Z
+  captured_at: 2026-04-02T19:31:55.518Z
   commit: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
@@ -167,9 +167,36 @@ history:
         previous: 2026-04-02T19:02:00.306Z
     command: task-start
     timestamp: 2026-04-02T19:28:03.561Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-04-02T19:31:55.518Z
+          commit: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous:
+          review_url: null
+          branch: dev
+          captured_at: 2026-04-02T19:03:11.680Z
+          commit: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+      submitted_at:
+        new: 2026-04-02T19:31:55.525Z
+        previous: 2026-04-02T19:03:11.685Z
+    command: task-submit
+    timestamp: 2026-04-02T19:31:55.525Z
 prior_status: null
 created_at: 2026-04-02T18:27:20.713Z
 started_at: 2026-04-02T19:28:03.561Z
-submitted_at: 2026-04-02T19:03:11.685Z
+submitted_at: 2026-04-02T19:31:55.525Z
 todos: []
 automation: eligible

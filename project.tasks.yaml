@@ -24203,7 +24203,7 @@
   type: task
   spec_ref: "@multi-directory-daemon"
   plan_ref: "@plan-daemon-file-monitoring-reliability"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 1
@@ -24214,7 +24214,7 @@
   todos_count: 0
   created_at: 2026-04-02T18:27:20.713Z
   started_at: 2026-04-02T19:28:03.561Z
-  submitted_at: 2026-04-02T19:03:11.685Z
+  submitted_at: 2026-04-02T19:31:55.525Z
   automation: eligible
 - _ulid: 01KN7Q6ARE8SXC9F8AEHYVFHCF
   slugs:
