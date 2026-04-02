@@ -11629,6 +11629,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-02T19:58:02.401Z
+  - _ulid: 01KN7WJD1ATBMH74PTRS4W401J
+    type: success
+    content: "Fix-cycle reviews that include the exact failing suite and symptom make recovery fast: I
+      reproduced the daemon command JSON regression directly, expanded the fix from KspecWatcher to
+      SessionWatcher when the same parity test exposed the second stdout leak, then validated with
+      the targeted parity suite before the broader watcher regression suite."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-02T20:01:19.402Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
