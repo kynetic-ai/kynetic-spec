@@ -106628,6 +106628,18 @@ reviews:
         runner: npm-test
         created_at: 2026-04-02T21:43:23.094Z
         completed_at: 2026-04-02T21:43:23.094Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm test -- --fresh was started in the review snapshot but did not complete promptly;
+          targeted watcher coverage was re-run and passed. No full-suite result recorded for this
+          cycle.
+        name: full-suite
+        required: false
+        runner: npm-test
+        created_at: 2026-04-02T21:43:30.974Z
+        completed_at: 2026-04-02T21:43:30.974Z
     events:
       - _ulid: 01KN829CR7T8H9EX9K76CCJ03H
         actor: Jacob Chapel
@@ -106686,6 +106698,13 @@ reviews:
           status: pass
           name: watcher-targeted-suite
         timestamp: 2026-04-02T21:43:26.085Z
+      - _ulid: 01KN82DK2CAV8G116FFAD2BR79
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: full-suite
+        timestamp: 2026-04-02T21:43:33.196Z
     examined_commit: b850d3f95ceaea076bcf2d2c62e469f4f6fcd3b3
     external_links: []
     lifecycle_state: closed
@@ -106751,5 +106770,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-02T21:43:06.450Z
     created_at: 2026-04-02T21:41:15.655Z
-    updated_at: 2026-04-02T21:43:23.094Z
+    updated_at: 2026-04-02T21:43:30.974Z
     notes: []
