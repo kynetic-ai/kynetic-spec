@@ -1,0 +1,38 @@
+_ulid: 01KN69S1WZC46EK5MG7Z5Y971P
+slugs: []
+title: Fix stale worktree removal in safelyRemoveDispatchWorktree
+type: task
+description: >-
+  **What:** `safelyRemoveDispatchWorktree` in `src/agent-runtime/workspace.ts` fails when cleaning
+  up a dispatch worktree whose directory has already been removed from disk but whose git
+  registration still exists.
+
+
+  **Why:** The function calls `findWorktreeByPath` which finds the stale registration, then
+  unconditionally runs `git worktree remove --force` on the path. Git requires the `.git` file to
+  exist on disk for `worktree remove` to succeed. When the directory is already gone (e.g., partial
+  prior cleanup, manual deletion, or race condition), git fails with: `fatal: validation failed,
+  cannot remove working tree: '...' does not exist`. This causes `DispatchWorkspaceError` during
+  reconciliation, blocking the dispatch loop.
+
+
+  **How:** Before calling `git worktree remove --force`, check whether the worktree directory still
+  exists on disk using the existing `pathExists` helper (line 906). If the registration exists but
+  the directory does not, use `git worktree prune` instead to clean the stale registration. The fix
+  is localized to the `if (registration)` branch at lines 2340-2347.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - fix
+  - dispatch
+  - agent-runtime
+vcs_refs: []
+created_at: 2026-04-02T05:13:39.999Z
+todos: []
+automation: eligible
