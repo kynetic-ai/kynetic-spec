@@ -103197,6 +103197,12 @@ reviews:
         payload:
           thread_ulid: 01KN6CDQFKNMX1TYMPSVQQ8S00
         timestamp: 2026-04-02T06:31:57.271Z
+      - _ulid: 01KN6E8FADSYR1P63SG8E8SYS3
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN6CDFSD1WEF35F7PN4TS5S7
+        timestamp: 2026-04-02T06:31:59.565Z
     examined_commit: cda3fa8053f55b86d64a76eb05aa00ab1e7ed5db
     external_links: []
     lifecycle_state: closed
@@ -103225,6 +103231,13 @@ reviews:
               regresses runtime-error-path coverage outside the flaky suites it was meant to
               stabilize.
             created_at: 2026-04-02T05:59:46.734Z
+          - _ulid: 01KN6E8EGZ2GEV5K05FRJTT5ZB
+            author: Jacob Chapel
+            body: "Fixed in tests/helpers/cli.ts: isolated-home bootstrap now only runs when the helper can stat
+              a real directory root. Invalid cwd values are left intact so runtime-error-path tests
+              still execute the CLI and assert its non-zero exit behavior. Repro now passes with npm
+              test -- --fresh tests/session-create.test.ts."
+            created_at: 2026-04-02T06:31:58.751Z
         kind: blocker
       - _ulid: 01KN6CDQFKNMX1TYMPSVQQ8S00
         anchor:
@@ -103265,7 +103278,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-02T06:00:11.718Z
     created_at: 2026-04-02T05:51:11.551Z
-    updated_at: 2026-04-02T06:31:56.570Z
+    updated_at: 2026-04-02T06:31:58.751Z
     notes: []
   - _ulid: 01KN6DH22F5CJGYVXM7QA7Q3XF
     slugs: []
