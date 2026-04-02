@@ -33983,12 +33983,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-02T20:49:26.888Z
+      updated_at: 2026-04-02T20:49:34.767Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T20:49:26.888Z
+      updated_at: 2026-04-02T20:49:34.767Z
     integration:
       status: pending
       detail: null
@@ -33996,24 +33996,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-daemon-file-monitoring-reliability/01kn7nw3
       target_commit: f7f761c1213499dbe6ddf4da662d2d18bf5d38bf
-      updated_at: 2026-04-02T20:49:26.888Z
-    lifecycle_state: ready
+      updated_at: 2026-04-02T20:49:34.767Z
+    lifecycle_state: integrating
     resolved_base_branch: plan/plan-daemon-file-monitoring-reliability/01kn7nw3
     task_ref: "@01KN7Q6B9D51K6Z7NPA4M8FG4B"
     task_slug: task-watcher-health-check
     timestamps:
       closed_at: null
       last_active_at: 2026-04-02T20:35:10.743Z
-      last_reconciled_at: 2026-04-02T20:49:26.888Z
+      last_reconciled_at: 2026-04-02T20:49:34.767Z
       created_at: 2026-04-02T20:35:03.733Z
-      updated_at: 2026-04-02T20:49:26.888Z
+      updated_at: 2026-04-02T20:49:34.767Z
     workspace_id: dispatch-workspace-01KN7Q6B9D51K6Z7NPA4M8FG4B
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 7f87428b0db747f8423cb184ee8d6a68cb182a59
+        last_seen_at: 2026-04-02T20:49:34.767Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-watcher-health-check-01kn7q6b-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-watcher-health-check/01kn7q6b
-        head: f7f761c1213499dbe6ddf4da662d2d18bf5d38bf
-        last_seen_at: 2026-04-02T20:35:03.733Z
+        head: 7f87428b0db747f8423cb184ee8d6a68cb182a59
+        last_seen_at: 2026-04-02T20:49:34.767Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-watcher-health-check-01kn7q6b
