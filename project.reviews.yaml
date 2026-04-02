@@ -101534,6 +101534,19 @@ reviews:
         required: true
         created_at: 2026-04-02T01:39:33.046Z
         completed_at: 2026-04-02T01:39:33.046Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Verified v1 and v2 findings are resolved: plan-branch-creation now declares command
+          traits; stale-target behavior split into ac-stale-target-detected and
+          ac-stale-target-updated; derive guidance narrowed to derive output;
+          plan-branch-association ACs now cover only branch persistence/default/clear behavior;
+          task-plan-branch-activation dependency reduced to @task-plan-branch-schema."
+        name: Previous requested changes
+        required: true
+        created_at: 2026-04-02T01:39:33.002Z
+        completed_at: 2026-04-02T01:39:33.002Z
     events:
       - _ulid: 01KN5XG48161ABMSCXMFQZK741
         actor: "@claude"
@@ -101562,6 +101575,13 @@ reviews:
           status: pass
           name: Dependency ordering
         timestamp: 2026-04-02T01:39:34.823Z
+      - _ulid: 01KN5XH2WZE2JV0H5YHVWSHFXH
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Previous requested changes
+        timestamp: 2026-04-02T01:39:35.967Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -101574,5 +101594,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-02T01:39:04.578Z
-    updated_at: 2026-04-02T01:39:33.046Z
+    updated_at: 2026-04-02T01:39:33.002Z
     notes: []
