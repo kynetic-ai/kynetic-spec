@@ -100979,6 +100979,13 @@ reviews:
           kind: question
           thread_ulid: 01KN5V0VZBMTJDYP08T2X0WJKN
         timestamp: 2026-04-02T00:55:48.095Z
+      - _ulid: 01KN5V10ZCXX759W3F17MQX02Z
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KN5V10A6RGCQEMKPJB0TWZCD
+        timestamp: 2026-04-02T00:55:52.556Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -101108,7 +101115,23 @@ reviews:
               should match — e.g., 'Plan Branch Derive Guidance' instead of 'Lifecycle.'
             created_at: 2026-04-02T00:55:47.435Z
         kind: question
+      - _ulid: 01KN5V10A6RGCQEMKPJB0TWZCD
+        anchor:
+          type: structured
+          ref: "@plan-branch-dispatch-target"
+          section: specs
+        entries:
+          - _ulid: 01KN5V10A64KY781E52ZBFZJZS
+            author: "@claude"
+            body: "Parent placement: plan-branch-dispatch-target is under @dispatch-workspace-configuration,
+              while the other three specs are under @plan-support. This makes sense conceptually
+              (dispatch behavior lives under dispatch config), but it means a single plan's specs
+              span two module subtrees. Verify this is intentional — it creates a cross-module
+              dependency where dispatch specs reference plan data. The alternative would be placing
+              all four under @plan-support with a depends_on to @dispatch-workspace-configuration."
+            created_at: 2026-04-02T00:55:51.878Z
+        kind: question
     verdicts: []
     created_at: 2026-04-02T00:54:38.074Z
-    updated_at: 2026-04-02T00:55:47.435Z
+    updated_at: 2026-04-02T00:55:51.878Z
     notes: []
