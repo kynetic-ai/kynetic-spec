@@ -11389,6 +11389,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-02T06:01:19.514Z
+  - _ulid: 01KN6D0JFKFP2DFM638JYCV1F3
+    type: friction
+    content: Dispatch workspaces can have a stale external kspec binary path and skill render may report
+      kspec-plan as in-sync even when the rendered file text is outdated, forcing
+      local-runner/manual verification.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-02T06:10:12.083Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
