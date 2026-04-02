@@ -101748,7 +101748,19 @@ reviews:
     slugs: []
     title: Review task-plan-branch-schema (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Ran kspec validate. Exit 6 was warning-only repo debt (orphaned skill dir, orphaned specs,
+          existing AC coverage warnings); schema and references were OK and this task introduced no
+          new validation failures.
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-04-02T03:26:24.061Z
+        completed_at: 2026-04-02T03:26:24.061Z
     events:
       - _ulid: 01KN635ZK425B7P9TNM9NZ5JVS
         actor: Jacob Chapel
@@ -101763,6 +101775,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-02T03:18:46.213Z
+      - _ulid: 01KN63MNGW04F4ZQBGYR5QWQWB
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-02T03:26:24.798Z
     examined_commit: a3cfd4b63f3ee5741688da13f275855670e721b5
     external_links: []
     lifecycle_state: open
@@ -101775,5 +101794,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-02T03:18:23.589Z
-    updated_at: 2026-04-02T03:18:45.448Z
+    updated_at: 2026-04-02T03:26:24.061Z
     notes: []
