@@ -54,3 +54,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T08:37:13.392Z
+  - _ulid: 01KN6P6JWS59QR8HEXS95JRD1A
+    content: "Fix cycle 1: addressed the review blocker by completing inherited @trait-error-guidance
+      disposition in tests/dispatch-runtime-bootstrap-contract.test.ts with explicit N/A annotations
+      for ac-3 through ac-6. Why: this pre-invocation runtime helper surfaces actionable diagnostics
+      but does not perform ref lookup, invalid state transition reporting, schema validation, or
+      JSON-mode error output. Verification: npm test -- --run
+      tests/dispatch-runtime-bootstrap-contract.test.ts passed (16 tests); npm test -- --run
+      tests/cli-serve.test.ts passed (29 tests) while checking an unrelated transient failure from
+      an earlier full run; npm test -- --fresh passed (2065 suites, 7478 tests, 5 skipped); kspec
+      validate still reports only the repository’s existing warning backlog (exit 6)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T08:50:46.297Z
