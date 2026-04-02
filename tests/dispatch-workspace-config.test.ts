@@ -857,6 +857,7 @@ describe("stale integration target detection", () => {
     await seedRepo(tempDir);
     await setupProjectWithAgent(tempDir);
     git(tempDir, "checkout -b dev");
+    const devHead = git(tempDir, "rev-parse dev");
     await fs.writeFile(
       path.join(tempDir, "kspec.config.yaml"),
       "dispatch:\n  base_branch: main\n",
@@ -909,7 +910,11 @@ describe("stale integration target detection", () => {
 
     expect(secondRecord.integration?.target_branch).toBe("dev");
     expect(secondRecord.resolved_base_branch).toBe("dev");
+    expect(secondRecord.base_branch_point).toBe(devHead);
+    expect(secondRecord.integration?.target_commit).toBe(devHead);
     expect(second.metadata.integrationTargetBranch).toBe("dev");
+    expect(second.metadata.baseBranchPoint).toBe(devHead);
+    expect(second.metadata.integrationTargetCommit).toBe(devHead);
   });
 
   // AC: @dispatch-workspace-configuration ac-6

@@ -2204,10 +2204,14 @@ export function resolveDispatchWorkspaceCleanupState(
 async function resolveBaseBranchPoint(
   projectDir: string,
   canonicalBranch: string,
+  resolvedBaseBranch: string,
   resolvedBaseStartPoint: string,
   existingRecord: LoadedDispatchWorkspaceRecord | undefined,
 ): Promise<string> {
-  if (existingRecord?.base_branch_point) {
+  if (
+    existingRecord?.base_branch_point &&
+    existingRecord.resolved_base_branch === resolvedBaseBranch
+  ) {
     return existingRecord.base_branch_point;
   }
 
@@ -3222,6 +3226,7 @@ export async function provisionDispatchWorkspace(
   const baseBranchPoint = await resolveBaseBranchPoint(
     projectDir,
     canonicalBranch,
+    baseBranch,
     resolvedConfig.baseBranchStartPoint,
     existingRecord,
   );
