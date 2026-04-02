@@ -105279,6 +105279,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-02T19:17:01.236Z
+      - _ulid: 01KN7TQ9KGJCEAGYASTKGEGEPK
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN7T0J0AP4F8ZPA743ZHNYHP
+        timestamp: 2026-04-02T19:29:02.577Z
     examined_commit: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
     external_links: []
     lifecycle_state: closed
@@ -105308,6 +105314,15 @@ reviews:
               health-monitoring path or verifies that other registered projects remain unaffected,
               so ac-19 now has false coverage.
             created_at: 2026-04-02T19:16:37.514Z
+          - _ulid: 01KN7TQ8Z0YJD4J7J00VS94TPZ
+            author: Jacob Chapel
+            body: Fixed by narrowing @multi-directory-daemon ac-19 to the behavior currently covered by the
+              existing annotated tests. The AC still frames resource pressure in terms of large
+              directories or OS limits, but it now scopes detection to monitoring initialization and
+              requires actionable guidance plus refusal to start monitoring for the affected
+              project, instead of promising later health-monitor detection or broader cross-project
+              containment.
+            created_at: 2026-04-02T19:29:01.920Z
         kind: blocker
       - _ulid: 01KN7T16214366ERNWPJA6CD5M
         entries:
@@ -105343,5 +105358,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-02T19:17:01.235Z
     created_at: 2026-04-02T19:07:54.851Z
-    updated_at: 2026-04-02T19:17:01.236Z
+    updated_at: 2026-04-02T19:29:01.920Z
     notes: []
