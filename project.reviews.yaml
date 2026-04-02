@@ -100958,6 +100958,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN5V017XHVDXK1BS4ZYDDYJD
         timestamp: 2026-04-02T00:55:20.718Z
+      - _ulid: 01KN5V0D61XV8HZXT64NCV15QQ
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KN5V0CHE05GEE4A6E7HD1EQZ
+        timestamp: 2026-04-02T00:55:32.289Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -101037,7 +101044,24 @@ reviews:
               @dispatch-workspace-configuration ac-6 as a foundation?"
             created_at: 2026-04-02T00:55:20.062Z
         kind: blocker
+      - _ulid: 01KN5V0CHE05GEE4A6E7HD1EQZ
+        anchor:
+          type: structured
+          field: ac-plan-branch-missing
+          ref: "@plan-branch-dispatch-target"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KN5V0CHEACX97CT6T9K025XW
+            author: "@claude"
+            body: ac-plan-branch-missing says the dispatcher 'attempts to fetch the branch from configured
+              remotes before failing.' What happens after failing? The AC doesn't describe the
+              failure behavior. Should the task be blocked? Should it fall through to the default
+              integration branch? Should it surface an error to the operator? Compare with
+              @dispatch-workspace-configuration ac-4 which specifies 'fails with actionable
+              guidance.' The then-clause needs the observable outcome.
+            created_at: 2026-04-02T00:55:31.630Z
+        kind: question
     verdicts: []
     created_at: 2026-04-02T00:54:38.074Z
-    updated_at: 2026-04-02T00:55:20.062Z
+    updated_at: 2026-04-02T00:55:31.630Z
     notes: []
