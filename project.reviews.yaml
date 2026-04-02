@@ -102090,6 +102090,21 @@ reviews:
         runner: npm
         created_at: 2026-04-02T04:12:02.440Z
         completed_at: 2026-04-02T04:12:02.440Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "`npm test -- tests/daemon-entity-cache.test.ts --fresh` fails at
+          `tests/daemon-entity-cache.test.ts:1388` on snapshot
+          `5a18c4b8db9d4040d54190517d62935411b00342` and also on integration target `dev` commit
+          `d2cc1ac2d2f04fac79023cb0cc54e9eb5da70835`, both with `AssertionError: expected 1 to be
+          2`. This is deterministic pre-existing failure debt rather than a regression from the
+          submitted branch. Follow-up task created: @01KN664X."
+        name: full suite triage baseline
+        required: false
+        runner: npm
+        created_at: 2026-04-02T04:12:31.156Z
+        completed_at: 2026-04-02T04:12:31.156Z
     events:
       - _ulid: 01KN65G86QVQN68S0WDHQV2RQ7
         actor: Jacob Chapel
@@ -102125,6 +102140,13 @@ reviews:
           status: pass
           name: targeted plan/task branch tests
         timestamp: 2026-04-02T04:12:03.933Z
+      - _ulid: 01KN6695DR5GFCAP14ND0BDWJ3
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: full suite triage baseline
+        timestamp: 2026-04-02T04:12:33.592Z
     examined_commit: 5a18c4b8db9d4040d54190517d62935411b00342
     external_links: []
     lifecycle_state: open
@@ -102156,5 +102178,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-02T03:58:57.240Z
-    updated_at: 2026-04-02T04:12:02.440Z
+    updated_at: 2026-04-02T04:12:31.156Z
     notes: []
