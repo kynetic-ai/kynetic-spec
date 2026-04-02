@@ -8,3 +8,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T05:40:52.184Z
+  - _ulid: 01KN6BNAP9Q624959SKD1928CT
+    content: Implemented test-infrastructure hardening instead of product-code changes. kspec() test
+      subprocesses now drop ambient agent-detection env markers and default to an isolated
+      HOME/KSPEC_CLAUDE_HOME per cwd so setup status no longer depends on prior test files. Dispatch
+      worktree tool-path helpers now resolve the real git binary from a clean system PATH, and
+      enhanced-setup has a regression test that simulates leaked parent agent env.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T05:46:35.081Z
