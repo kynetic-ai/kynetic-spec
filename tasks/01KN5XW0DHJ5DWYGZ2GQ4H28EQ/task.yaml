@@ -41,8 +41,11 @@ description: |
 spec_ref: "@plan-branch-derive-guidance"
 plan_ref: "@plan-plan-scoped-branch-targeting"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged dispatch/task/task-plan-branch-activation/01kn5xw0 into dev. Added derive
+  output guidance for plan branches, exposed plan_branch in JSON, and verified with targeted derive
+  tests. Full-suite unrelated flakiness was triaged and captured in follow-up task @01KN6AAH.
 depends_on:
   - "@task-plan-branch-schema"
 context: []
@@ -116,8 +119,25 @@ history:
         previous: "@01KN69EF6BYSDTN0GNBMT5PGW9"
     command: review-link
     timestamp: 2026-04-02T05:13:06.954Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged dispatch/task/task-plan-branch-activation/01kn5xw0 into dev. Added derive output
+          guidance for plan branches, exposed plan_branch in JSON, and verified with targeted derive
+          tests. Full-suite unrelated flakiness was triaged and captured in follow-up task
+          @01KN6AAH.
+        previous: null
+      completed_at:
+        new: 2026-04-02T05:24:22.341Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-02T05:24:22.356Z
 created_at: 2026-04-02T01:45:33.873Z
 started_at: 2026-04-02T04:46:32.995Z
 submitted_at: 2026-04-02T04:59:36.236Z
+completed_at: 2026-04-02T05:24:22.341Z
 todos: []
 automation: eligible
