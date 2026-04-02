@@ -105421,3 +105421,29 @@ reviews:
     created_at: 2026-04-02T19:34:10.578Z
     updated_at: 2026-04-02T19:34:28.591Z
     notes: []
+  - _ulid: 01KN7V3GHW32YS3FHC0GNZQ565
+    slugs: []
+    title: Review task-update-multi-dir-ac19 (cycle 2)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KN7V3GHVS2Z54G8PBVQKECY1
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-02T19:35:42.907Z
+    examined_commit: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KN7Q6AG9CHKD29KFY6ZY4YKD"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-02T19:35:42.908Z
+    updated_at: null
+    notes: []
