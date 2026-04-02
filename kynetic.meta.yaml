@@ -11338,6 +11338,16 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-04-02T05:01:19.178Z
+  - _ulid: 01KN6A2JR7CGX1JC840GWSPWWD
+    type: success
+    content: "Reviewers can avoid false blockers by separating task-local verification from repo-wide
+      test instability: targeted fresh runs for changed-area suites passed, the reviewed task
+      merged, and the unrelated shard failures were captured as follow-up task
+      @01KN69W9VECFXR84BR9FMTG4B1 instead of blocking the change."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-02T05:18:52.170Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
