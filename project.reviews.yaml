@@ -102169,6 +102169,12 @@ reviews:
         payload:
           thread_ulid: 01KN665WYK7Q163P12258CY6E0
         timestamp: 2026-04-02T04:19:54.090Z
+      - _ulid: 01KN66PR12SDMJDHRD7NBQA0JT
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KN665WYK7Q163P12258CY6E0
+        timestamp: 2026-04-02T04:19:58.626Z
     examined_commit: 5a18c4b8db9d4040d54190517d62935411b00342
     external_links: []
     lifecycle_state: closed
@@ -102205,6 +102211,8 @@ reviews:
               that passes a metacharacter branch name and verifies no side-effect file is created."
             created_at: 2026-04-02T04:19:53.376Z
         kind: blocker
+        resolved_at: 2026-04-02T04:19:57.917Z
+        resolved_by: Jacob Chapel
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -102214,7 +102222,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-02T04:12:39.495Z
     created_at: 2026-04-02T03:58:57.240Z
-    updated_at: 2026-04-02T04:19:53.376Z
+    updated_at: 2026-04-02T04:19:57.917Z
     notes: []
   - _ulid: 01KN66G92NPF305JR5FHPHFNK0
     slugs: []
