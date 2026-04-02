@@ -20940,7 +20940,7 @@ runs:
     completed_at: 2026-04-02T19:04:28.791Z
   - _ulid: 01KN7T2SB75R46PN1Z4N7XQ0V3
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -20954,7 +20954,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-02T19:18:14.100Z
-        completed_at: 2026-04-02T19:18:14.100Z
+        completed_at: 2026-04-02T19:19:02.646Z
+        notes: "High-confidence results: (1) Success: reading the shadow AC diff first and using anchored
+          review threads made the real blocker easy to verify and record. (2) Friction: dispatch
+          review context still pointed at a nonexistent review workspace path, forcing fallback to
+          the live task worktree before review could start. Existing coverage already appears in
+          recent friction observations about detached/nonexistent review snapshots and dispatch
+          review prompts referencing unavailable workspaces. (3) Friction: workflow show still
+          required an explicit run ref instead of inferring the active run; this is already covered
+          by inbox item 01KGGPJ6."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-02T19:19:02.646Z
+        completed_at: 2026-04-02T19:19:02.646Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-02T19:17:50.567Z
