@@ -1,1 +1,11 @@
-notes: []
+notes:
+  - _ulid: 01KN6884XSC32E2SGFK5ZP7678
+    content: "Approach: reuse the existing derive result emitter in src/cli/commands/plan.ts and the
+      dedicated integration coverage in tests/cli-plan-derive.test.ts. Edge cases: no branch set
+      should append a post-summary hint without disturbing existing success output; existing branch
+      should confirm the resolved branch; --json should expose plan_branch as null or string. Test
+      plan: cover @plan-branch-derive-guidance ac-derive-hint and ac-derive-existing with behavioral
+      derive CLI tests, plus JSON output assertion for plan_branch."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T04:46:57.466Z
