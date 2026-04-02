@@ -101366,6 +101366,18 @@ reviews:
         required: true
         created_at: 2026-04-02T01:28:04.790Z
         completed_at: 2026-04-02T01:28:04.790Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Previously requested fixes are present in the revised draft: @plan-branch-creation now
+          declares CLI traits, stale-target behavior is split into detect/update ACs, missing
+          plan-branch failure behavior is specified, and the derive guidance spec title/scope is
+          narrowed."
+        name: Previous requested changes
+        required: true
+        created_at: 2026-04-02T01:28:04.825Z
+        completed_at: 2026-04-02T01:28:04.825Z
     events:
       - _ulid: 01KN5WVAXRQ4GHEHNW85YCC66B
         actor: "@claude"
@@ -101394,6 +101406,13 @@ reviews:
           status: pass
           name: Dependency ordering
         timestamp: 2026-04-02T01:28:07.494Z
+      - _ulid: 01KN5WW3KJ7HJPH40SZA7W5Y0P
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Previous requested changes
+        timestamp: 2026-04-02T01:28:08.562Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -101422,5 +101441,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-02T01:27:43.289Z
-    updated_at: 2026-04-02T01:28:04.790Z
+    updated_at: 2026-04-02T01:28:04.825Z
     notes: []
