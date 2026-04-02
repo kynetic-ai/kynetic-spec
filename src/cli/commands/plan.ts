@@ -198,6 +198,7 @@ interface DeriveResult {
   dry_run: boolean;
   plan_ref: string;
   module_ref: string;
+  plan_branch: string | null;
   created_specs: string[];
   created_tasks: string[];
   skipped: DeriveSkipped[];
@@ -257,6 +258,14 @@ function emitDeriveResult(result: DeriveResult): void {
     console.log(`Created tasks: ${result.created_tasks.length}`);
     for (const ref of result.created_tasks) {
       console.log(`  - ${ref}`);
+    }
+
+    if (result.plan_branch) {
+      console.log(`Tasks will target plan branch: ${result.plan_branch}`);
+    } else {
+      console.log(
+        `Tip: Run kspec plan branch ${result.plan_ref} to create a shared branch for task stacking. Without it, tasks target the default integration branch.`,
+      );
     }
 
     if (result.skipped.length > 0) {
@@ -1423,6 +1432,7 @@ Examples:
           dry_run: Boolean(options.dryRun),
           plan_ref: planRef,
           module_ref: moduleRef,
+          plan_branch: foundPlan.branch ?? null,
           created_specs: createdSpecRefs,
           created_tasks: createdTaskRefs,
           skipped,
