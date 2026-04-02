@@ -1,0 +1,36 @@
+_ulid: 01KN6G6CARF7D7JDR8X7XDM5B6
+slugs: []
+title: Investigate residual full-suite timeout flakes in dispatch bootstrap and daemon meta tests
+type: bug
+description: "Full-suite review verification on April 2, 2026 still found unrelated npm test --
+  --fresh instability after @01KN6AAH0TMTBBPB8DSK8PP4K3 fixed its target suites. On reviewed
+  snapshot 66aa4da1c1099858a6a8de88488d1d7388f9d52f, targeted dispatch/enhanced-setup suites passed
+  (19/19 suites, 87/87 tests, 130.8s) and tests/dispatch-runtime-bootstrap-contract.test.ts also
+  passed in isolation (4/4 suites, 18/18 tests, 123.6s), but the full suite timed out in dispatch
+  runtime bootstrap contract at tests/dispatch-runtime-bootstrap-contract.test.ts:507 after 4387.7s.
+  On integration base 190827af3c1fb918d3235cf9159a67047fae3590, npm test -- --fresh also failed, but
+  in tests/daemon-api/meta.test.ts with eight 15000ms timeouts plus an afterEach timeout after
+  5768.2s. This indicates broader pre-existing/flaky full-suite timeout behavior rather than a
+  regression in the reviewed task. Reproduce, identify shared-state/resource contention, and make
+  the full suite deterministic across these remaining suites. Logs:
+  /tmp/kspec-test-cache/01KN6EJY9AD2PW2B7H1BV1JP1Q/0f745ff5dfd08eb7.log,
+  /tmp/kspec-test-cache/01KN6EJY9AD2PW2B7H1BV1JP1Q/e1031a09dacc7b06.log,
+  /tmp/kspec-test-cache/01KN6EJY9AD2PW2B7H1BV1JP1Q/31d837d6ffefaa8c.log,
+  /tmp/kspec-test-cache/01KN6EJY9AD2PW2B7H1BV1JP1Q/e835935e20bf52a3.log"
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - test
+  - flaky
+  - dispatch
+  - daemon
+vcs_refs: []
+created_at: 2026-04-02T07:05:48.119Z
+todos: []
+automation: eligible

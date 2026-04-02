@@ -24092,3 +24092,20 @@
   started_at: 2026-04-02T06:43:05.321Z
   submitted_at: 2026-04-02T06:54:54.615Z
   automation: eligible
+- _ulid: 01KN6G6CARF7D7JDR8X7XDM5B6
+  slugs: []
+  title: Investigate residual full-suite timeout flakes in dispatch bootstrap and daemon meta tests
+  type: bug
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - test
+    - flaky
+    - dispatch
+    - daemon
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-02T07:05:48.119Z
+  automation: eligible
