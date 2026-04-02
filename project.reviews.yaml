@@ -104702,3 +104702,29 @@ reviews:
     created_at: 2026-04-02T18:10:16.914Z
     updated_at: 2026-04-02T18:11:13.500Z
     notes: []
+  - _ulid: 01KN7PM81SSNCY8JMEKA8TSX45
+    slugs: []
+    title: "Plan review: Daemon File Monitoring Reliability (revision 3)"
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KN7PM81S6QSR1ZES98HQKCQV
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-02T18:17:28.377Z
+    examined_commit: null
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-daemon-file-monitoring-reliability"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-02T18:17:28.377Z
+    updated_at: null
+    notes: []
