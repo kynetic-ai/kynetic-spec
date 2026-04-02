@@ -32712,7 +32712,7 @@ workspaces:
         head: 8d178dfefb4fd68c9824de23346c9064214c99aa
         last_seen_at: 2026-04-02T07:12:21.750Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/default-plan-derive-to-include-tasks-01kn6cfc
-  - active_role: worker
+  - active_role: null
     base_branch_point: 47fe1963c255211d8f8295fb6763f1d232a9a876
     bootstrap:
       status: succeeded
@@ -32796,12 +32796,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-02T07:29:20.601Z
+      updated_at: 2026-04-02T07:30:58.502Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T07:29:20.601Z
+      updated_at: 2026-04-02T07:30:58.502Z
     integration:
       status: pending
       detail: null
@@ -32809,17 +32809,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 47fe1963c255211d8f8295fb6763f1d232a9a876
-      updated_at: 2026-04-02T07:29:20.601Z
-    lifecycle_state: active
+      updated_at: 2026-04-02T07:30:58.502Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KN6G6CARF7D7JDR8X7XDM5B6"
     task_slug: investigate-residual-full-suite-timeout-flakes-in-dispatch-bootstrap-and-daemon-meta-tests
     timestamps:
       closed_at: null
       last_active_at: 2026-04-02T07:06:28.053Z
-      last_reconciled_at: 2026-04-02T07:29:20.601Z
+      last_reconciled_at: 2026-04-02T07:30:58.502Z
       created_at: 2026-04-02T07:06:18.554Z
-      updated_at: 2026-04-02T07:29:20.601Z
+      updated_at: 2026-04-02T07:30:58.502Z
     workspace_id: dispatch-workspace-01KN6G6CARF7D7JDR8X7XDM5B6
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
