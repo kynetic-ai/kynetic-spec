@@ -20676,9 +20676,19 @@ runs:
     started_at: 2026-04-02T06:16:58.811Z
   - _ulid: 01KN6ECF5BH1SDAE1GNEB252BF
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-02T06:34:10.475Z
+        completed_at: 2026-04-02T06:35:22.392Z
+        notes: "Worked well: pairing targeted repro runs with a final full uncached suite kept the fix cycle
+          focused and caught the helper regression before resubmission."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-02T06:35:22.392Z
+        completed_at: 2026-04-02T06:35:22.392Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-02T06:34:10.475Z
