@@ -24132,7 +24132,7 @@
   slugs: []
   title: Stabilize dispatch workspace config timeout
   type: bug
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 3
@@ -24142,4 +24142,5 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-02T07:30:57.063Z
+  started_at: 2026-04-02T07:32:25.854Z
   automation: eligible
