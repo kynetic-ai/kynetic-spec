@@ -105743,7 +105743,21 @@ reviews:
     slugs: []
     title: Review task-stabilize-file-lock-maxhold-contention
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Reviewed snapshot 48a4800bbfca53ff5425eba5a7c0c9ed7ae96ec0: npm test -- --fresh passed
+          (2067/2067 suites, 7481/7486 tests, 5 skipped, exit 0). Base commit
+          d72162fe5d9b9ec0bab4b67f47e626491a6c32ec failed with 4 suites failing, including
+          tests/file-lock.test.ts and tests/agent-dispatch-engine.test.ts, so the reviewed snapshot
+          introduces no test regressions and improves the lock-test state."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-02T20:00:01.301Z
+        completed_at: 2026-04-02T20:00:01.301Z
     events:
       - _ulid: 01KN7VXDR9H2PVMDWMQCGZ75SW
         actor: Jacob Chapel
@@ -105758,6 +105772,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-02T19:50:04.290Z
+      - _ulid: 01KN7WG1F50F927FSN9K1DP92S
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-02T20:00:02.021Z
     examined_commit: 48a4800bbfca53ff5425eba5a7c0c9ed7ae96ec0
     external_links: []
     lifecycle_state: open
@@ -105770,5 +105791,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-02T19:49:52.010Z
-    updated_at: 2026-04-02T19:50:03.604Z
+    updated_at: 2026-04-02T20:00:01.301Z
     notes: []
