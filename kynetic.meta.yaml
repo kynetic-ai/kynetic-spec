@@ -10430,8 +10430,12 @@ observations:
       executable on PATH, forcing manual fallback to 'node dist/cli/index.js' before task, review,
       and workflow commands can run.
     author: Test User
-    resolution: null
-    resolved: false
+    resolution: "Duplicate of reviewer snapshot CLI/bootstrap tracking @01KMWT80. The systemic issue
+      remains open: detached review worktrees are not consistently provisioned with a ready kspec
+      CLI path and built dist CLI."
+    resolved: true
+    resolved_at: 2026-04-02T07:45:26.690Z
+    resolved_by: Test User
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-03-30T23:57:12.959Z
   - _ulid: 01KN0KHQV0XMZ1SNB788QNCJ12
