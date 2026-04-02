@@ -106422,7 +106422,17 @@ reviews:
     slugs: []
     title: Review task-test-watcher-health
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- tests/daemon-context-manager.test.ts passed: 12 suites, 38 tests."
+        name: watcher-health-targeted
+        required: true
+        runner: npm
+        created_at: 2026-04-02T21:35:52.501Z
+        completed_at: 2026-04-02T21:35:52.501Z
     events:
       - _ulid: 01KN81FFCSMCER4J0R0C1BZJCK
         actor: Jacob Chapel
@@ -106437,6 +106447,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-02T21:27:17.180Z
+      - _ulid: 01KN81ZHXNR2Z3N5K63W3DWZ31
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: watcher-health-targeted
+        timestamp: 2026-04-02T21:35:53.269Z
     examined_commit: 7765c1faa388439fe11ceb0076e98fd958a04f3c
     external_links: []
     lifecycle_state: open
@@ -106449,5 +106466,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-02T21:27:06.393Z
-    updated_at: 2026-04-02T21:27:16.485Z
+    updated_at: 2026-04-02T21:35:52.501Z
     notes: []
