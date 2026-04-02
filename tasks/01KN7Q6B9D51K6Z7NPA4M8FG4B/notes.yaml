@@ -1,1 +1,12 @@
-notes: []
+notes:
+  - _ulid: 01KN7YJANWSGT1C9BSDS1SR9MJ
+    content: "Approach: extend ProjectContextManager with per-project watcher health state and explicit
+      probe hooks, then add a WatcherHealthMonitor wired from daemon server startup/shutdown and
+      surface the fields on /api/debug/cache-status. Edge cases: ignore stopped watchers, keep probe
+      restarts project-scoped, avoid self-induced loops from sentinel writes, and reset failure
+      counters only on successful probes. Test plan: manager tests for success/failure/restart
+      isolation, debug-route tests for exposed timestamps/counters, plus watcher-aware coverage for
+      synthetic probe callbacks within the debounce window."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T20:36:14.140Z
