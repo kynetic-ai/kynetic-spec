@@ -105495,6 +105495,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-02T19:40:11.464Z
+      - _ulid: 01KN7VC5N44EDBNVJ7XWK2GVKS
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KN7VC4AS6BJYC7MBHEJZEBQD
+        timestamp: 2026-04-02T19:40:26.660Z
     examined_commit: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
     external_links: []
     lifecycle_state: closed
@@ -105504,7 +105511,36 @@ reviews:
       content_hash: ""
       ref: "@01KN7Q6AG9CHKD29KFY6ZY4YKD"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KN7VC4AS6BJYC7MBHEJZEBQD
+        entries:
+          - _ulid: 01KN7VC4AS7APJEV90DZ6G6QGN
+            author: Jacob Chapel
+            body: >-
+              Review evidence log:
+
+              Files read: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/modules/web-ui.yaml,
+              tests/daemon-watcher-multi-project.test.ts,
+              tests/daemon-session-sync-multi-project.test.ts, tests/daemon-context-manager.test.ts,
+              packages/daemon/src/watcher.ts, packages/daemon/src/project-context.ts,
+              packages/daemon/src/middleware/project-context.ts,
+              packages/daemon/src/routes/projects.ts.
+
+              Commands run: kspec task get @01KN7Q6AG9CHKD29KFY6ZY4YKD; kspec review for-task
+              @01KN7Q6AG9CHKD29KFY6ZY4YKD; kspec item get @multi-directory-daemon; kspec validate;
+              rg for ac-19 annotations; shadow git diff/show for e5d116c3b..870be52e7; npm test --
+              --fresh tests/daemon-watcher-multi-project.test.ts
+              tests/daemon-session-sync-multi-project.test.ts tests/daemon-context-manager.test.ts.
+
+              Claims verified: prior blocker fixed by narrowing ac-19 from health-monitor
+              detection/cross-project containment to initialization-time refusal to start
+              monitoring; existing daemon code and annotated tests still prove the narrowed
+              behavior.
+
+              Categories searched: correctness, AC alignment, test quality, integration, error
+              handling; no additional findings.
+            created_at: 2026-04-02T19:40:25.305Z
+        kind: nit
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -105514,5 +105550,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-02T19:40:11.463Z
     created_at: 2026-04-02T19:35:42.908Z
-    updated_at: 2026-04-02T19:40:11.464Z
+    updated_at: 2026-04-02T19:40:25.305Z
     notes: []
