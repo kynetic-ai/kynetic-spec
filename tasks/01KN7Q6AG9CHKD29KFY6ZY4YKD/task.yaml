@@ -33,7 +33,7 @@ description: |
 spec_ref: "@multi-directory-daemon"
 plan_ref: "@plan-daemon-file-monitoring-reliability"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -50,7 +50,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: null
+session_id: 01KN7TM8KH8YTTPPCA0FXCWAEA
 history:
   - author: "@claude"
     changes:
@@ -154,9 +154,22 @@ history:
         previous: 01KN7S4C0B0KAFSFQW2PMSRW0Z
     command: review-verdict-needs-work
     timestamp: 2026-04-02T19:17:02.880Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KN7TM8KH8YTTPPCA0FXCWAEA
+        previous: null
+      started_at:
+        new: 2026-04-02T19:28:03.561Z
+        previous: 2026-04-02T19:02:00.306Z
+    command: task-start
+    timestamp: 2026-04-02T19:28:03.561Z
 prior_status: null
 created_at: 2026-04-02T18:27:20.713Z
-started_at: 2026-04-02T19:02:00.306Z
+started_at: 2026-04-02T19:28:03.561Z
 submitted_at: 2026-04-02T19:03:11.685Z
 todos: []
 automation: eligible
