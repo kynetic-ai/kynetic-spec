@@ -80,8 +80,13 @@ description: |-
 spec_ref: "@plan-derive-enhanced"
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Reviewed and approved via @01KN6GKPSKPWKYHH94HMGHSHZC, then merged
+  dispatch/task/default-plan-derive-to-include-tasks/01kn6cfc into dev as 530cec85e. Verified plan
+  derive now includes tasks by default, preserves --no-tasks opt-out and --tasks backward
+  compatibility, and updates skill guidance plus JSON/human output parity. Follow-up flaky test
+  task: @01KN6HMDX76CP904YS0DCBBXGV."
 depends_on: []
 context: []
 priority: 2
@@ -197,8 +202,26 @@ history:
         previous: "@01KN6DH22F5CJGYVXM7QA7Q3XF"
     command: review-link
     timestamp: 2026-04-02T07:13:08.153Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Reviewed and approved via @01KN6GKPSKPWKYHH94HMGHSHZC, then merged
+          dispatch/task/default-plan-derive-to-include-tasks/01kn6cfc into dev as 530cec85e.
+          Verified plan derive now includes tasks by default, preserves --no-tasks opt-out and
+          --tasks backward compatibility, and updates skill guidance plus JSON/human output parity.
+          Follow-up flaky test task: @01KN6HMDX76CP904YS0DCBBXGV."
+        previous: null
+      completed_at:
+        new: 2026-04-02T07:34:01.919Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-02T07:34:01.935Z
 created_at: 2026-04-02T06:00:49.055Z
 started_at: 2026-04-02T06:43:05.321Z
 submitted_at: 2026-04-02T06:54:54.615Z
+completed_at: 2026-04-02T07:34:01.919Z
 todos: []
 automation: eligible
