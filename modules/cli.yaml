@@ -6362,6 +6362,9 @@ features:
           A dedicated command creates or resumes a branch for a plan
           using a deterministic naming convention, paralleling task
           branch creation.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
