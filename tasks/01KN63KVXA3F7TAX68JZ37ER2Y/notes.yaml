@@ -10,3 +10,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T03:28:07.975Z
+  - _ulid: 01KN644KWXC3AA5WSZAQT3X3MP
+    content: "Fixed ProjectEntityCache session live-counter overlay so cached session summaries continue
+      showing live event_count while a session is marked stalled by stale-session heuristics, then
+      hand off cleanly to persisted metadata after discard + reload. Verification: npm test --
+      tests/daemon-entity-cache.test.ts --fresh passed (30/30 suites, 98/98 tests). Full npm test --
+      --fresh still fails outside this change in tests/cli-serve.test.ts :: should send SIGTERM and
+      wait for shutdown."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T03:35:07.421Z
