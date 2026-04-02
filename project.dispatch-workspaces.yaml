@@ -31941,7 +31941,7 @@ workspaces:
         head: d2cc1ac2d2f04fac79023cb0cc54e9eb5da70835
         last_seen_at: 2026-04-02T03:37:14.158Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-plan-branch-command-01kn5xvz
-  - active_role: null
+  - active_role: worker
     base_branch_point: 03bf2acf6537bedb38f04c61c6cc010c747bbd9b
     bootstrap:
       status: succeeded
@@ -32030,7 +32030,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T03:57:45.769Z
+      updated_at: 2026-04-02T03:58:09.119Z
     integration:
       status: pending
       detail: null
@@ -32039,16 +32039,16 @@ workspaces:
       target_branch: dev
       target_commit: 03bf2acf6537bedb38f04c61c6cc010c747bbd9b
       updated_at: 2026-04-02T03:57:45.769Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KN5XW04JM5261ZFYV1HCQVJK"
     task_slug: task-dispatch-plan-branch-resolution
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-04-02T03:57:45.769Z
+      last_active_at: 2026-04-02T03:58:09.119Z
+      last_reconciled_at: 2026-04-02T03:58:09.119Z
       created_at: 2026-04-02T03:57:45.769Z
-      updated_at: 2026-04-02T03:57:51.052Z
+      updated_at: 2026-04-02T03:58:09.119Z
     workspace_id: dispatch-workspace-01KN5XW04JM5261ZFYV1HCQVJK
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
