@@ -56,3 +56,11 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T22:44:53.100Z
+  - _ulid: 01KN863AYA839F03BJVH8XEJ4W
+    content: "Fix cycle 2 in progress: review exposed that the permanent-failure log omitted the
+      affected watched root path, so AC-8 was not fully satisfied. Updating watcher logging plus the
+      AC-8 test to assert the exhausted-retry warning includes the missing .kspec path before
+      unregistration."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T22:47:51.498Z
