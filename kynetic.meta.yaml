@@ -11581,6 +11581,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-02T18:59:45.868Z
+  - _ulid: 01KN7TG2K0V2TQM39KCFWM0ZTJ
+    type: friction
+    content: Full npm test did not terminate cleanly after watcher changes verification; multiple vitest
+      worker processes remained resident with no result JSON written, matching the existing
+      teardown-hang investigation task.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-02T19:25:06.017Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
