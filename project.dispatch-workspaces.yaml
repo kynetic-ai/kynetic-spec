@@ -31545,7 +31545,7 @@ workspaces:
         head: f0d0a409ede748ea7eec2171748d99178f1ac35a
         last_seen_at: 2026-04-02T00:10:08.346Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-investigate-file-lock-flake-01kn5qb8
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: a3ad408f969b1b18330158d475b0faa18c47832b
     bootstrap:
       status: succeeded
@@ -31671,9 +31671,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-02T03:17:26.442Z
-      last_reconciled_at: 2026-04-02T03:28:52.317Z
+      last_reconciled_at: 2026-04-02T03:30:21.846Z
       created_at: 2026-04-02T01:50:55.337Z
-      updated_at: 2026-04-02T03:28:52.317Z
+      updated_at: 2026-04-02T03:30:21.846Z
     workspace_id: dispatch-workspace-01KN5XVZJRED6WJT9PPD26YWG7
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
