@@ -32436,7 +32436,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T05:44:32.435Z
+      updated_at: 2026-04-02T05:44:36.551Z
     integration:
       status: merged
       detail: integration:merged
@@ -32452,18 +32452,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-02T05:30:28.975Z
-      last_reconciled_at: 2026-04-02T05:44:32.435Z
+      last_reconciled_at: 2026-04-02T05:44:36.551Z
       created_at: 2026-04-02T05:14:40.681Z
-      updated_at: 2026-04-02T05:44:32.435Z
+      updated_at: 2026-04-02T05:44:36.551Z
     workspace_id: dispatch-workspace-01KN69S1WZC46EK5MG7Z5Y971P
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 4f39f67f8ada86dcca9d75681a2d9f44a8379d36
-        last_seen_at: 2026-04-02T05:30:18.030Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-stale-worktree-removal-in-safelyremovedispatchworktree-01kn69s1-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/fix-stale-worktree-removal-in-safelyremovedispatchworktree/01kn69s1
