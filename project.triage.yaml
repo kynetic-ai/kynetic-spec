@@ -2866,7 +2866,7 @@ triage:
     created_at: 2026-03-20T03:11:14.423Z
     updated_at: 2026-03-20T03:12:01.778Z
   - _ulid: 01KN86MW4X73T12Y2APWSAP460
-    status: triaged
+    status: acted_on
     action: duplicate
     decided_by: Jacob Chapel
     evidence_refs:
@@ -2880,4 +2880,5 @@ triage:
     reasoning: Duplicate of existing inbox item @01KN82YA, which already tracks the same websocket
       unsubscribe ack-vs-validation_error nack failure observed during full-suite reproduction.
     created_at: 2026-04-02T22:57:26.173Z
-    updated_at: 2026-04-02T22:57:26.219Z
+    updated_at: 2026-04-02T22:57:33.781Z
+    acted_at: 2026-04-02T22:57:33.727Z

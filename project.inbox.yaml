@@ -2139,16 +2139,3 @@ inbox:
     tags: []
     added_by: Jacob Chapel
     created_at: 2026-04-02T21:52:41.214Z
-  - _ulid: 01KN86KNDT8N9AWGP9BGM3M9Z1
-    text: Investigate tests/daemon-api/websocket-protocol.test.ts unsubscribe invalid topics path.
-      During full npm test -- --fresh reproduction for @01KN813JEHA7251DWGYDGZYMXZ, the suite
-      observed ack instead of the expected validation_error nack for invalid unsubscribe topics.
-      Determine whether the implementation or the test expectation is wrong, and stabilize the
-      behavior.
-    tags:
-      - reflection
-      - test
-      - flake
-      - websocket
-    added_by: Jacob Chapel
-    created_at: 2026-04-02T22:56:46.522Z
