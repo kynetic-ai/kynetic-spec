@@ -30,8 +30,11 @@ description: |
 spec_ref: null
 plan_ref: "@plan-daemon-file-monitoring-reliability"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved and merged dispatch/task/task-cleanup-bun-watcher/01kn7q6c into
+  plan/plan-daemon-file-monitoring-reliability/01kn7nw3. Verified kspec validate (warnings-only
+  backlog), targeted watcher test pass, and full npm test pass before merge.
 depends_on:
   - "@task-test-chokidar-watcher"
 context: []
@@ -98,8 +101,24 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-02T23:10:36.320Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved and merged dispatch/task/task-cleanup-bun-watcher/01kn7q6c into
+          plan/plan-daemon-file-monitoring-reliability/01kn7nw3. Verified kspec validate
+          (warnings-only backlog), targeted watcher test pass, and full npm test pass before merge.
+        previous: null
+      completed_at:
+        new: 2026-04-02T23:15:44.225Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-02T23:15:44.233Z
 created_at: 2026-04-02T18:27:22.294Z
 started_at: 2026-04-02T23:01:25.111Z
 submitted_at: 2026-04-02T23:07:53.671Z
+completed_at: 2026-04-02T23:15:44.225Z
 todos: []
 automation: eligible
