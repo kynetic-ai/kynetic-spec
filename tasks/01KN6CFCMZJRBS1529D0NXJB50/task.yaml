@@ -80,7 +80,7 @@ description: |-
 spec_ref: "@plan-derive-enhanced"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -89,6 +89,14 @@ tags:
   - cli
   - plans
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-04-02T06:16:33.020Z
+  commit: ed8d1259edd96190c6233c7b2edfb658aeed57a2
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
 session_id: 01KN6CGFFJBSNJ3ZZ6GN54QZ40
 history:
   - author: Jacob Chapel
@@ -104,7 +112,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-02T06:01:48.316Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-04-02T06:16:33.020Z
+          commit: ed8d1259edd96190c6233c7b2edfb658aeed57a2
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-04-02T06:16:33.026Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-02T06:16:33.026Z
 created_at: 2026-04-02T06:00:49.055Z
 started_at: 2026-04-02T06:01:48.316Z
+submitted_at: 2026-04-02T06:16:33.026Z
 todos: []
 automation: eligible

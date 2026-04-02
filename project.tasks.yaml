@@ -24078,7 +24078,7 @@
   title: Default plan derive to include tasks
   type: task
   spec_ref: "@plan-derive-enhanced"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 2
@@ -24089,4 +24089,5 @@
   todos_count: 0
   created_at: 2026-04-02T06:00:49.055Z
   started_at: 2026-04-02T06:01:48.316Z
+  submitted_at: 2026-04-02T06:16:33.026Z
   automation: eligible
