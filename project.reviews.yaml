@@ -106964,6 +106964,16 @@ reviews:
         runner: npm
         created_at: 2026-04-02T22:59:25.479Z
         completed_at: 2026-04-02T22:59:25.479Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh passed: 2068/2068 suites, 7491 passed, 5 skipped."
+        name: npm-test
+        required: true
+        runner: npm
+        created_at: 2026-04-02T22:59:27.575Z
+        completed_at: 2026-04-02T22:59:27.575Z
     events:
       - _ulid: 01KN86HJKMBG2DRRZMHSX3CBSR
         actor: Jacob Chapel
@@ -106985,6 +106995,13 @@ reviews:
           status: pass
           name: targeted-watcher-tests
         timestamp: 2026-04-02T22:59:26.187Z
+      - _ulid: 01KN86RKDST0QWSEKW8RC02RB9
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm-test
+        timestamp: 2026-04-02T22:59:28.313Z
     examined_commit: 434f865fbb1943442d34d70862da38b547d35a33
     external_links: []
     lifecycle_state: open
@@ -106997,5 +107014,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-02T22:55:38.101Z
-    updated_at: 2026-04-02T22:59:25.479Z
+    updated_at: 2026-04-02T22:59:27.575Z
     notes: []
