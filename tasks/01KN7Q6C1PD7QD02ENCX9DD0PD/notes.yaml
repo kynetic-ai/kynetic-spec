@@ -8,3 +8,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T23:01:52.620Z
+  - _ulid: 01KN877FFJ781HBTZQG8WYH4YK
+    content: "Cleanup complete: watcher.ts and session-watcher.ts are already Chokidar-only with no
+      residual Bun/fs.watch code paths. Renamed the stale daemon-watcher-fallback test artifact to
+      daemon-watcher-chokidar, updated its fixture naming/text, and regenerated kspec-agents.md
+      after correcting the CI watcher convention to describe hosted-runner Chokidar/inotify event
+      unreliability. Verification: kspec validate (repo has pre-existing warning backlog only),
+      targeted watcher test passed, full npm test -- --fresh passed (2068/2068 suites, 7491/7496
+      tests, 5 skipped)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T23:07:35.794Z
