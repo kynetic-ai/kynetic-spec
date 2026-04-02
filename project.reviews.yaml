@@ -105109,6 +105109,17 @@ reviews:
         runner: kspec
         created_at: 2026-04-02T19:10:20.459Z
         completed_at: 2026-04-02T19:10:20.459Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed in review workspace after test runner repaired missing dist/cli/index.js. Results:
+          2067 suites passed, 7481 tests passed, 5 skipped."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-02T19:10:24.431Z
+        completed_at: 2026-04-02T19:10:24.431Z
     events:
       - _ulid: 01KN7S5AWW40Q3CPMY64F54VC6
         actor: Jacob Chapel
@@ -105137,6 +105148,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-04-02T19:10:21.729Z
+      - _ulid: 01KN7SN70DB9DFY7KDQQC57T1E
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-02T19:10:25.805Z
     examined_commit: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
     external_links: []
     lifecycle_state: open
@@ -105149,7 +105167,7 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-02T19:01:45.500Z
-    updated_at: 2026-04-02T19:10:20.459Z
+    updated_at: 2026-04-02T19:10:24.431Z
     notes: []
   - _ulid: 01KN7SGKK3F69RRYHA7WAQZZ0R
     slugs: []
