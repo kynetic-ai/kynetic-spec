@@ -21108,7 +21108,7 @@ runs:
     completed_at: 2026-04-02T19:42:39.582Z
   - _ulid: 01KN7VQJDQG6Z2Z5D3V3N4TS0W
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -21123,7 +21123,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-02T19:47:09.089Z
-        completed_at: 2026-04-02T19:47:09.089Z
+        completed_at: 2026-04-02T19:47:41.651Z
+        notes: "High-confidence reflection: one success worth keeping. The session stabilized a same-process
+          file-lock regression by asserting direct exclusion properties (no overlapping critical
+          sections, no force-reclaim warning) instead of relying only on a timing-sensitive final
+          counter. Existing coverage already tracks unrelated full-suite hang/failure friction, so
+          no new friction capture."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-02T19:47:41.651Z
+        completed_at: 2026-04-02T19:47:41.651Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-02T19:46:40.183Z
