@@ -24258,7 +24258,7 @@
     - daemon
     - watcher
     - performance
-  notes_count: 0
+  notes_count: 1
   todos_count: 0
   created_at: 2026-04-02T18:27:21.237Z
   started_at: 2026-04-02T20:12:35.220Z

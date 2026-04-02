@@ -1,1 +1,12 @@
-notes: []
+notes:
+  - _ulid: 01KN7X7PM755RMQXX1X91NYS6Z
+    content: "Approach: extend SessionWatcher chokidar setup with an ignored filter that skips blobs/
+      subtrees and non-metadata files while preserving traversal into session roots. Edge cases:
+      root/session directories must remain watchable, blob paths nested under sessions must be
+      ignored, non-metadata files must not trigger broadcasts, and new session directories created
+      after startup must still be detected. Test plan: add behavioral watcher tests for session.yaml
+      and events.jsonl changes, verify blob-file writes are ignored, verify unrelated file types are
+      ignored, and verify a newly created session directory is still detected."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T20:12:57.351Z
