@@ -102873,6 +102873,20 @@ reviews:
         runner: kspec
         created_at: 2026-04-02T05:23:14.590Z
         completed_at: 2026-04-02T05:23:14.590Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Full npm test on snapshot 3010d95d48890de17b93615d91614626639b9250 reported unrelated
+          STACK_TRACE_ERROR failures in tests/dispatch-workspace-config.test.ts and
+          tests/enhanced-setup.test.ts after 6993.3s. Triage reruns of those files passed on base
+          4f626c918bc5b120e8be2c7894f5f7c5335d28d7 and on this snapshot, indicating full-run
+          flakiness rather than a regression from this branch.
+        name: full npm test triage
+        required: false
+        runner: npm
+        created_at: 2026-04-02T05:23:18.295Z
+        completed_at: 2026-04-02T05:23:18.295Z
     events:
       - _ulid: 01KN69QVHXKCG9D9J5JHQQ7MGP
         actor: Jacob Chapel
@@ -102901,6 +102915,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-04-02T05:23:15.813Z
+      - _ulid: 01KN6AAQQH0XRQ8P542554PARZ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: full npm test triage
+        timestamp: 2026-04-02T05:23:19.409Z
     examined_commit: 3010d95d48890de17b93615d91614626639b9250
     external_links: []
     lifecycle_state: open
@@ -102913,5 +102934,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-02T05:13:00.736Z
-    updated_at: 2026-04-02T05:23:14.590Z
+    updated_at: 2026-04-02T05:23:18.295Z
     notes: []
