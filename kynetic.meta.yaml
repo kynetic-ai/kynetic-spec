@@ -10537,8 +10537,13 @@ observations:
       timeout debt in daemon dispatch and workspace-registry tests, which weakens fix-cycle
       confidence for isolated E2E tasks.
     author: Test User
-    resolution: null
-    resolved: false
+    resolution: Duplicate of existing full-suite instability tracking @01KN007J and related
+      dispatch-workspace-registry flake tracking @01KMZR9S. Earlier cleanup landed in completed task
+      @01KMNY3N, but baseline-red suite noise is still tracked separately from these task-specific
+      review observations.
+    resolved: true
+    resolved_at: 2026-04-02T07:45:42.935Z
+    resolved_by: Test User
     created_at: 2026-03-31T00:36:12.094Z
   - _ulid: 01KN0NQNQPDP5BE59NH0STAQVV
     type: friction
