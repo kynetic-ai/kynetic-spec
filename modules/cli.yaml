@@ -6107,51 +6107,26 @@ features:
               When deriving tasks, spec depends_on maps to task depends_on.
             when: |
               kspec plan derive @plan-ref --module @mod is run
-          - given: A plan has specs in its content and derive_from_specs is true or omitted
-            id: ac-tasks-flag
-            then: After creating specs, a task is derived from each spec with title "Implement <spec title>"
-            when: kspec plan derive @plan-ref --module @mod --tasks is run
-          - given: |
-              Tasks are derived from plan specs via --tasks
+          - given: A script or agent passes the --tasks flag
+            id: ac-tasks-flag-back-compat
+            then: Tasks are derived and the flag is accepted without error or warning
+            when: derive runs
+          - given: Tasks are derived from plan specs
             id: ac-task-refs
-            then: |
-              Each derived task has spec_ref pointing to the source spec
-              and plan_ref pointing to the plan
-            when: |
-              Derivation completes
-          - given: |
-              A plan has specs in its content
-            id: ac-no-tasks-default
-            then: |
-              Only specs are created. Tasks are not derived.
-              This is the default behavior.
-            when: |
-              kspec plan derive @plan-ref --module @mod is run
-              (no --tasks flag)
-          - given: |
-              A plan document has additional_tasks in ## Tasks section
+            then: Each derived task has spec_ref pointing to the source spec and plan_ref pointing to the plan
+            when: Derivation completes
+          - given: "A plan document has additional_tasks in ## Tasks section"
             id: ac-additional-tasks
-            then: |
-              Additional tasks are created with plan_ref, spec_ref
-              (if specified), and depends_on mappings
-            when: |
-              kspec plan derive @plan-ref --module @mod --tasks is run
-          - given: |
-              A plan document has ## Implementation Notes section
+            then: Additional tasks are created with plan_ref, spec_ref (if specified), and depends_on mappings
+            when: kspec plan derive runs with task derivation enabled (default)
+          - given: "A plan document has ## Implementation Notes section"
             id: ac-impl-notes-global
-            then: |
-              Global implementation notes are stored as a note on the
-              plan record
-            when: |
-              kspec plan derive @plan-ref --module @mod --tasks is run
-          - given: |
-              A plan spec has an implementation_notes field
+            then: Global implementation notes are stored as a note on the plan record
+            when: kspec plan derive runs
+          - given: A plan spec has an implementation_notes field
             id: ac-impl-notes-per-spec
-            then: |
-              Per-spec implementation notes are stored as a note on
-              the derived task for that spec
-            when: |
-              kspec plan derive @plan-ref --module @mod --tasks is run
+            then: Per-spec implementation notes are stored as a note on the derived task for that spec
+            when: tasks are derived for that spec
           - given: |
               A plan in approved status is successfully derived
             id: ac-status-transition
@@ -6241,14 +6216,11 @@ features:
               derived_specs and derived_tasks arrays listing created refs.
             when: |
               kspec task get @derived-task or kspec plan get @plan is run
-          - given: |
-              A plan spec has a priority field (1-5) and --tasks is used
+          - given: A plan spec has a priority field (1-5) and task derivation is enabled (default)
             id: ac-priority-inheritance
-            then: |
-              Derived tasks inherit priority from their source spec.
-              Specs without a priority field default to priority 3.
-            when: |
-              kspec plan derive @plan-ref --module @mod --tasks is run
+            then: Derived tasks inherit priority from their source spec. Specs without a priority field default
+              to priority 3.
+            when: kspec plan derive is run
           - given: |
               A plan is successfully derived
             id: ac-commit
@@ -6260,9 +6232,9 @@ features:
           - given: "A plan document sets derive_from_specs: false and defines additional_tasks in its ## Tasks
               section"
             id: ac-tasks-manual-only
-            then: No auto per-spec "Implement <spec title>" tasks are created. Only the additional tasks are
-              materialized, with plan_ref, spec_ref, and depends_on mappings preserved.
-            when: kspec plan derive @plan-ref --module @mod --tasks is run
+            then: No auto per-spec tasks are created. Only the additional tasks are materialized, with plan_ref,
+              spec_ref, and depends_on mappings preserved.
+            when: kspec plan derive runs with task derivation enabled (default)
           - given: An approved plan defines implementation tasks in its Tasks section and does not define new
               specs
             id: ac-task-only-derive
@@ -6276,6 +6248,14 @@ features:
             id: ac-task-only-derive-plan-linkage
             then: the created tasks are linked back to the plan and the plan records those derived tasks
             when: derivation completes
+          - given: A plan has derivable work (specs, tasks, or both)
+            id: ac-tasks-default
+            then: Both specs and tasks are derived by default
+            when: kspec plan derive is run without --no-tasks
+          - given: A user wants to derive only specs
+            id: ac-no-tasks-opt-out
+            then: Only specs are created, tasks are skipped
+            when: kspec plan derive --no-tasks is run
         tags: []
         created: 2026-03-10T22:42:09.670Z
         notes: []
