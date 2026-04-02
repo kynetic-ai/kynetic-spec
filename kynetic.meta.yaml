@@ -11308,6 +11308,16 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-04-02T04:14:34.615Z
+  - _ulid: 01KN6732TG5X48E5WDPPV3FMMR
+    type: friction
+    content: Bug task @01KN664X was created from a stale reproduction snapshot after the live-counter
+      fix had already merged to dev. Re-ran npm test -- tests/daemon-entity-cache.test.ts --fresh on
+      dev 03bf2acf6537 and it passed; triage should confirm against current integration head before
+      creating reinvestigation tasks for transient test failures.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-02T04:26:42.896Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
