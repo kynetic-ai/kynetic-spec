@@ -6312,6 +6312,9 @@ features:
           Plans support an optional branch field that stores a git branch
           name. The field is nullable, persists across sessions, and is
           backward-compatible with existing plans that predate the feature.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
