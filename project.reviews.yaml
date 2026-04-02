@@ -106619,6 +106619,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-02T21:41:56.320Z
+      - _ulid: 01KN82BJDSB4QRW0DAHBNB05RG
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN82BFZ0RCNT7TKFCBW3GEYN
+        timestamp: 2026-04-02T21:42:27.006Z
     examined_commit: b850d3f95ceaea076bcf2d2c62e469f4f6fcd3b3
     external_links: []
     lifecycle_state: open
@@ -106628,8 +106635,28 @@ reviews:
       content_hash: ""
       ref: "@01KN7Q6BHCW3EXFA9SCBQAT05K"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KN82BFZ0RCNT7TKFCBW3GEYN
+        anchor:
+          type: code
+          commit: b850d3f95ceaea076bcf2d2c62e469f4f6fcd3b3
+          line_end: 156
+          line_start: 129
+          path: tests/daemon-context-manager.test.ts
+          side: head
+        entries:
+          - _ulid: 01KN82BFZ1DREBMJKJTY625G5M
+            author: Jacob Chapel
+            body: AC-8 coverage is still incomplete. Both newly annotated tests prove the permanent-failure
+              callback and project cleanup, but neither asserts the spec-required logged error that
+              identifies the affected project after retries are exhausted. In
+              `tests/daemon-watcher-error-handling.test.ts`, the test stops at
+              `onPermanentFailure`/`onError` counts; in `tests/daemon-context-manager.test.ts`, it
+              stops at unregister/stop assertions. Because `@daemon-file-monitoring ac-8` explicitly
+              includes the logging requirement, these annotations currently overclaim coverage.
+            created_at: 2026-04-02T21:42:24.481Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-02T21:41:15.655Z
-    updated_at: 2026-04-02T21:41:54.696Z
+    updated_at: 2026-04-02T21:42:24.481Z
     notes: []
