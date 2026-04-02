@@ -5119,6 +5119,17 @@ modules:
               actions complete normally
             when: |
               The next evaluation cycle runs
+          - given: A schedule tick is accepted and its action begins executing
+            id: ac-7
+            then: The run is recognized as active from the moment the tick is accepted, not from when the action
+              completes
+            when: A concurrent evaluation cycle checks whether the schedule has an active run (for overlap
+              policy enforcement)
+          - given: A schedule tick is accepted and its action begins executing
+            id: ac-8
+            then: The schedule's next occurrence has already advanced past the fired tick, preventing duplicate
+              cron matches during execution
+            when: A concurrent evaluation cycle checks the schedule's cron match
         tags: []
         requirements:
           - _ulid: 01KKZPVCY2DN1T9NNSEVZ6HDK5
