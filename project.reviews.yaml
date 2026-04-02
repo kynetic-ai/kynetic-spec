@@ -104188,7 +104188,17 @@ reviews:
     slugs: []
     title: Review fix-schedule-engine-race-condition-eager-state-updates-before-action-execution
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/schedule-engine.test.ts passed: 16/16 suites, 25/25 tests."
+        name: npm test (targeted schedule-engine)
+        required: false
+        runner: npm
+        created_at: 2026-04-02T08:40:28.176Z
+        completed_at: 2026-04-02T08:40:28.176Z
     events:
       - _ulid: 01KN6N7CPXKFDZNHW39RN27343
         actor: Jacob Chapel
@@ -104210,6 +104220,13 @@ reviews:
           kind: nit
           thread_ulid: 01KN6NBJJ24KQBZ62AW9K23JRE
         timestamp: 2026-04-02T08:36:01.975Z
+      - _ulid: 01KN6NKR348C69C2JMMJHHZJH7
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test (targeted schedule-engine)
+        timestamp: 2026-04-02T08:40:29.028Z
     examined_commit: 4ee25eab2779ebc9b8ade2f89cb7a7115c26a07f
     external_links: []
     lifecycle_state: open
@@ -104237,5 +104254,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-02T08:33:44.158Z
-    updated_at: 2026-04-02T08:36:01.218Z
+    updated_at: 2026-04-02T08:40:28.176Z
     notes: []
