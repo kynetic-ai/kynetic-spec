@@ -11452,6 +11452,26 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-02T07:43:32.312Z
+  - _ulid: 01KN6JCG3P2A7FSHJVGTNNS36M
+    type: friction
+    content: Dispatch review metadata can point at a detached reviewer worktree path that no longer
+      exists even though the reviewed snapshot commit is still present in the task worktree. That
+      forces the reviewer to rediscover the actual reviewable worktree via git worktree inspection
+      before any review steps can begin.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-02T07:44:05.751Z
+  - _ulid: 01KN6JCGAPKB501FQRDFTYF4FY
+    type: success
+    content: For daemon API app.handle() integration tests, disabling unused project watcher startup in
+      the shared helper and adding one focused behavioral regression test removed a full-suite
+      timeout cluster without widening production behavior. The fix held under both targeted fresh
+      suites and a fresh full npm test run.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-02T07:44:05.974Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
