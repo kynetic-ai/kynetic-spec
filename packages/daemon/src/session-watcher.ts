@@ -51,7 +51,6 @@ export class SessionWatcher {
       this.bootstrapPollTimer.unref();
     }
 
-    console.log("[session-watcher] Waiting for .kspec-sessions directory");
   }
 
   private async startChokidarWatcher(): Promise<void> {
@@ -77,7 +76,6 @@ export class SessionWatcher {
       this.watcher?.once("ready", () => resolve());
     });
 
-    console.log("[session-watcher] Watching .kspec-sessions directory with Chokidar");
   }
 
   private async promoteBootstrapPoll(): Promise<void> {
@@ -161,7 +159,6 @@ export class SessionWatcher {
         await this.stop();
         this.stopped = false;
         await this.start();
-        console.log("[session-watcher] Recovery successful");
       } catch (retryError) {
         console.error("[session-watcher] Recovery failed:", retryError);
         await this.handleWatcherError(retryError as Error);

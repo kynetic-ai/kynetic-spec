@@ -91,7 +91,6 @@ export class KspecWatcher {
       this.watcher?.once("ready", () => resolve());
     });
 
-    console.log("[watcher] Watching .kspec directory with Chokidar");
   }
 
   private isWatchedYamlPath(filePath: string): boolean {
@@ -217,10 +216,6 @@ export class KspecWatcher {
     this.retryCount++;
     const backoffMs = this.baseBackoffMs * Math.pow(2, this.retryCount - 1);
 
-    console.log(
-      `[watcher] Attempting recovery in ${backoffMs}ms (attempt ${this.retryCount}/${this.maxRetries})`,
-    );
-
     this.recoveryTimer = setTimeout(async () => {
       this.recoveryTimer = null;
       try {
@@ -228,7 +223,6 @@ export class KspecWatcher {
         await this.stop();
         this.stopped = false;
         await this.start();
-        console.log("[watcher] Recovery successful");
       } catch (retryError) {
         console.error("[watcher] Recovery failed:", retryError);
         // Will retry again if under max retries
