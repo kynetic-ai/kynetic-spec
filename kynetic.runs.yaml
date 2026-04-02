@@ -20984,9 +20984,21 @@ runs:
     completed_at: 2026-04-02T19:19:04.194Z
   - _ulid: 01KN7THZGVXHB4PSXFK7VEPHCQ
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-02T19:26:08.412Z
+        completed_at: 2026-04-02T19:26:47.631Z
+        notes: "Friction: full npm test again exhibited the already-tracked teardown-hang pattern; search
+          confirmed existing task @task-investigate-npm-test-teardown-hang-after-green-suite-run and
+          I also recorded a session observation during task work. No additional high-confidence
+          reflection capture needed."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-02T19:26:47.631Z
+        completed_at: 2026-04-02T19:26:47.631Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-02T19:26:08.412Z
