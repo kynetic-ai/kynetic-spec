@@ -101744,3 +101744,29 @@ reviews:
     created_at: 2026-04-02T02:04:00.550Z
     updated_at: 2026-04-02T02:11:54.197Z
     notes: []
+  - _ulid: 01KN635ZK5W1X8DXD146QW5AWY
+    slugs: []
+    title: Review task-plan-branch-schema (cycle 2)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KN635ZK425B7P9TNM9NZ5JVS
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-02T03:18:23.588Z
+    examined_commit: a3cfd4b63f3ee5741688da13f275855670e721b5
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KN5XVZJRED6WJT9PPD26YWG7"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-02T03:18:23.589Z
+    updated_at: null
+    notes: []
