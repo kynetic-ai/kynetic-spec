@@ -23960,3 +23960,20 @@
   todos_count: 0
   created_at: 2026-04-02T01:45:33.873Z
   automation: eligible
+- _ulid: 01KN63KVXA3F7TAX68JZ37ER2Y
+  slugs:
+    - daemon-entity-cache-live-counter-reload
+  title: Fix daemon entity cache live counter reload regression
+  type: bug
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - daemon
+    - cache
+    - bug
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-02T03:25:58.570Z
+  automation: eligible
