@@ -105980,9 +105980,25 @@ reviews:
           status: pass
           name: targeted watcher and daemon command tests
         timestamp: 2026-04-02T20:10:34.404Z
+      - _ulid: 01KN7X3MZF7DXGCCNAJR4FJW9C
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-04-02T20:10:44.592Z
+      - _ulid: 01KN7X3MZGJKH2GSCK1HP8K99D
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-02T20:10:44.592Z
     examined_commit: 987509e18bdfa9d85e25c3a98d5230ca04fb1198
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -105990,7 +106006,14 @@ reviews:
       ref: "@01KN7Q6ARE8SXC9F8AEHYVFHCF"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-02T20:10:44.591Z
     created_at: 2026-04-02T20:03:06.049Z
-    updated_at: 2026-04-02T20:10:33.606Z
+    updated_at: 2026-04-02T20:10:44.592Z
     notes: []
