@@ -10,3 +10,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T04:22:59.980Z
+  - _ulid: 01KN6734WCAE6PV4522BQ5P6R1
+    content: "Investigation result: the reported reproduction no longer fails on current integration
+      target dev (03bf2acf6537). Verified with npm test -- tests/daemon-entity-cache.test.ts
+      --fresh: 30/30 suites, 98/98 tests passed, including the handoff case. The previously
+      completed fix is merged as e049a2b (preserve live counters for stalled sessions), which covers
+      the stale-session status transition that caused the old failure. Attempted full npm test --
+      --fresh for regression verification; the suite continued producing passing results but hung in
+      the known teardown phase, so no new daemon-cache failure was observed."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T04:26:45.006Z
