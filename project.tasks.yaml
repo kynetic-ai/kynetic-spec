@@ -24022,7 +24022,7 @@
   slugs: []
   title: Fix stale worktree removal in safelyRemoveDispatchWorktree
   type: task
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 3
@@ -24034,6 +24034,7 @@
   todos_count: 0
   created_at: 2026-04-02T05:13:39.999Z
   started_at: 2026-04-02T05:17:46.943Z
+  submitted_at: 2026-04-02T05:28:41.385Z
   automation: eligible
 - _ulid: 01KN69W9VECFXR84BR9FMTG4B1
   slugs:
