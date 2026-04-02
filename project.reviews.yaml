@@ -104973,6 +104973,17 @@ reviews:
         required: true
         created_at: 2026-04-02T18:21:10.739Z
         completed_at: 2026-04-02T18:21:10.739Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All 12 ACs introduced by the plan are claimed by tasks. Revision 4 fixes the prior gap by
+          explicitly mapping the watcher test task to @daemon-file-monitoring ac-6 and ac-8, while
+          the health-check task and its tests fully cover @daemon-watcher-health ac-1 through ac-4.
+        name: Task coverage mapping
+        required: true
+        created_at: 2026-04-02T18:21:10.704Z
+        completed_at: 2026-04-02T18:21:10.704Z
     events:
       - _ulid: 01KN7PSQAPFD374WMQPM4BKY00
         actor: "@claude"
@@ -105022,9 +105033,32 @@ reviews:
           status: pass
           name: Cross-reference validation
         timestamp: 2026-04-02T18:21:12.453Z
+      - _ulid: 01KN7PV3Z5SFBW3A734SBV7335
+        actor: "@codex"
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-04-02T18:21:13.573Z
+      - _ulid: 01KN7PV3Z523T1A9ZEGGV81G41
+        actor: "@codex"
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-02T18:21:13.573Z
+      - _ulid: 01KN7PV52XEWKKCGE0X9GE1049
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Task coverage mapping
+        timestamp: 2026-04-02T18:21:14.717Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -105032,7 +105066,14 @@ reviews:
       ref: "@plan-daemon-file-monitoring-reliability"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: "@codex"
+        role: reviewer
+        created_at: 2026-04-02T18:21:13.573Z
     created_at: 2026-04-02T18:20:27.863Z
-    updated_at: 2026-04-02T18:21:10.739Z
+    updated_at: 2026-04-02T18:21:10.704Z
     notes: []
