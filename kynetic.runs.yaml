@@ -20751,7 +20751,7 @@ runs:
     completed_at: 2026-04-02T06:57:43.871Z
   - _ulid: 01KN6J9A12V4SBHE39A1B1PBS1
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -20764,7 +20764,14 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-02T07:43:33.137Z
-        completed_at: 2026-04-02T07:43:33.137Z
+        completed_at: 2026-04-02T07:43:45.570Z
+        notes: "Friction: running multiple npm test invocations concurrently in the same worktree exposed a
+          separate packages/web-ui build race, producing ENOENT copyfile failures during vite build.
+          That was captured as observation @01KN6J78."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-02T07:43:45.570Z
+        completed_at: 2026-04-02T07:43:45.570Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-02T07:42:21.218Z
