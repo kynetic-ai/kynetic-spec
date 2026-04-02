@@ -75,8 +75,15 @@ description: |
 spec_ref: "@plan-branch-dispatch-target"
 plan_ref: "@plan-plan-scoped-branch-targeting"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Merged to dev after approved review @01KN68AJ5NB4WMS3DNNDNNKGQP. Workspace
+  provisioning now resolves plan.branch before dispatch.base_branch, missing plan branches fail with
+  plan-specific guidance, and stale integration retargeting recomputes base_branch_point and
+  target_commit when the resolved base changes. Verification: npm test --
+  tests/dispatch-workspace-config.test.ts --fresh; npm test -- tests/agent-dispatch-engine.test.ts
+  --fresh; kspec validate (warnings only). Broad shard instability was observed during fresh shard
+  runs and tracked separately in @01KN69W9VECFXR84BR9FMTG4B1."
 depends_on:
   - "@task-plan-branch-schema"
 context: []
@@ -201,8 +208,29 @@ history:
         previous: "@01KN66G92NPF305JR5FHPHFNK0"
     command: review-link
     timestamp: 2026-04-02T04:48:18.801Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Merged to dev after approved review @01KN68AJ5NB4WMS3DNNDNNKGQP. Workspace provisioning now
+          resolves plan.branch before dispatch.base_branch, missing plan branches fail with
+          plan-specific guidance, and stale integration retargeting recomputes base_branch_point and
+          target_commit when the resolved base changes. Verification: npm test --
+          tests/dispatch-workspace-config.test.ts --fresh; npm test --
+          tests/agent-dispatch-engine.test.ts --fresh; kspec validate (warnings only). Broad shard
+          instability was observed during fresh shard runs and tracked separately in
+          @01KN69W9VECFXR84BR9FMTG4B1."
+        previous: null
+      completed_at:
+        new: 2026-04-02T05:17:29.034Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-02T05:17:29.043Z
 created_at: 2026-04-02T01:45:33.586Z
 started_at: 2026-04-02T04:31:17.086Z
 submitted_at: 2026-04-02T04:44:00.622Z
+completed_at: 2026-04-02T05:17:29.034Z
 todos: []
 automation: eligible
