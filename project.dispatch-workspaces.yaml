@@ -33203,7 +33203,7 @@ workspaces:
         head: 4ee25eab2779ebc9b8ade2f89cb7a7115c26a07f
         last_seen_at: 2026-04-02T08:32:11.992Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-schedule-engine-race-condition-eager-state-updates-before-action-execution-01kn6ge5
-  - active_role: worker
+  - active_role: null
     base_branch_point: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
     bootstrap:
       status: succeeded
@@ -33287,12 +33287,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-02T18:56:11.089Z
+      updated_at: 2026-04-02T19:00:46.718Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T18:56:18.090Z
+      updated_at: 2026-04-02T19:00:46.718Z
     integration:
       status: pending
       detail: null
@@ -33300,17 +33300,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-daemon-file-monitoring-reliability/01kn7nw3
       target_commit: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
-      updated_at: 2026-04-02T18:56:11.089Z
-    lifecycle_state: active
+      updated_at: 2026-04-02T19:00:46.718Z
+    lifecycle_state: ready
     resolved_base_branch: plan/plan-daemon-file-monitoring-reliability/01kn7nw3
     task_ref: "@01KN7Q6A7SGAZGZC9M5N7DNZK3"
     task_slug: task-update-daemon-server-ac8
     timestamps:
       closed_at: null
       last_active_at: 2026-04-02T18:56:18.090Z
-      last_reconciled_at: 2026-04-02T18:56:18.090Z
+      last_reconciled_at: 2026-04-02T19:00:46.718Z
       created_at: 2026-04-02T18:56:11.089Z
-      updated_at: 2026-04-02T18:56:18.090Z
+      updated_at: 2026-04-02T19:00:46.718Z
     workspace_id: dispatch-workspace-01KN7Q6A7SGAZGZC9M5N7DNZK3
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
