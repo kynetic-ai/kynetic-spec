@@ -18,3 +18,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T07:16:45.792Z
+  - _ulid: 01KN6HGGXN2FZZ2WAM1SFDATGQ
+    content: "Verification: tests/daemon-api/meta.test.ts passed fresh (36/36),
+      tests/dispatch-runtime-bootstrap-contract.test.ts passed fresh (9/9), and a fresh full-suite
+      run showed both originally affected suites passing in-suite. Residual full-suite failures
+      remain, but they moved to unrelated clusters (serve/setup/dispatch cleanup/activity/review
+      tests) rather than the original daemon meta or dispatch bootstrap timeout sites."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T07:28:49.078Z
