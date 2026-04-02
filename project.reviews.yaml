@@ -102987,7 +102987,19 @@ reviews:
     slugs: []
     title: Review fix-stale-worktree-removal-in-safelyremovedispatchworktree
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test passed: 2063/2063 suites, 7464 passed, 5 skipped, 0 failed. Reviewed live merge
+          delta against dev (merge-base 59c6689e502795c5833491c1e929ba53cb4e787e):
+          src/agent-runtime/workspace.ts and tests/dispatch-workspace-cleanup.test.ts only."
+        name: npm-test
+        required: true
+        runner: npm
+        created_at: 2026-04-02T05:40:14.932Z
+        completed_at: 2026-04-02T05:40:14.932Z
     events:
       - _ulid: 01KN6ARHMC045WBQZY9H29CRBQ
         actor: Jacob Chapel
@@ -103002,6 +103014,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-02T05:31:11.248Z
+      - _ulid: 01KN6B9R6CJV7ZY20ZSV9YK0J1
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm-test
+        timestamp: 2026-04-02T05:40:15.692Z
     examined_commit: 4f39f67f8ada86dcca9d75681a2d9f44a8379d36
     external_links: []
     lifecycle_state: open
@@ -103014,5 +103033,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-02T05:30:51.916Z
-    updated_at: 2026-04-02T05:31:10.311Z
+    updated_at: 2026-04-02T05:40:14.932Z
     notes: []
