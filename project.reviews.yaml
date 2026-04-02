@@ -101149,9 +101149,25 @@ reviews:
           status: fail
           name: Trait selection
         timestamp: 2026-04-02T00:56:48.235Z
+      - _ulid: 01KN5V2YJR8NKXN0X0HDDH3HA0
+        actor: "@claude"
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-02T00:56:55.640Z
+      - _ulid: 01KN5V2YJRAV64YVHQR5B9V0JT
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-02T00:56:55.640Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -101324,7 +101340,14 @@ reviews:
               ac-null-branch-passthrough."
             created_at: 2026-04-02T00:56:05.996Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: "@claude"
+        role: reviewer
+        created_at: 2026-04-02T00:56:55.640Z
     created_at: 2026-04-02T00:54:38.074Z
-    updated_at: 2026-04-02T00:56:47.559Z
+    updated_at: 2026-04-02T00:56:55.640Z
     notes: []
