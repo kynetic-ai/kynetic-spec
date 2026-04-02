@@ -34436,7 +34436,7 @@ workspaces:
         head: 5e24ded90b046cac44f5568969374937df61bd84
         last_seen_at: 2026-04-02T22:45:10.286Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-flaky-full-suite-tests-for-cli-serve-and-agent-dispatch-engine-01kn813j
-  - active_role: null
+  - active_role: worker
     base_branch_point: 134abf420c0c665f67f111160baf9c03ce154828
     bootstrap:
       status: succeeded
@@ -34525,7 +34525,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T23:00:45.112Z
+      updated_at: 2026-04-02T23:00:54.480Z
     integration:
       status: pending
       detail: null
@@ -34534,16 +34534,16 @@ workspaces:
       target_branch: plan/plan-daemon-file-monitoring-reliability/01kn7nw3
       target_commit: 134abf420c0c665f67f111160baf9c03ce154828
       updated_at: 2026-04-02T23:00:45.112Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: plan/plan-daemon-file-monitoring-reliability/01kn7nw3
     task_ref: "@01KN7Q6C1PD7QD02ENCX9DD0PD"
     task_slug: task-cleanup-bun-watcher
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-04-02T23:00:45.112Z
+      last_active_at: 2026-04-02T23:00:54.480Z
+      last_reconciled_at: 2026-04-02T23:00:54.480Z
       created_at: 2026-04-02T23:00:45.112Z
-      updated_at: 2026-04-02T23:00:50.566Z
+      updated_at: 2026-04-02T23:00:54.480Z
     workspace_id: dispatch-workspace-01KN7Q6C1PD7QD02ENCX9DD0PD
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
