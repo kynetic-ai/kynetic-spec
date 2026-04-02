@@ -15,5 +15,14 @@ tags:
   - dispatch
   - schedule
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-04-02T07:42:22.930Z
 created_at: 2026-04-02T07:10:03.214Z
 todos: []
+automation: eligible
