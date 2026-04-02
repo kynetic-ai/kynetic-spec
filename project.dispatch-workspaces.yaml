@@ -33152,7 +33152,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T08:42:59.615Z
+      updated_at: 2026-04-02T08:43:33.011Z
     integration:
       status: merged
       detail: integration:merged
@@ -33168,18 +33168,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-02T08:32:21.792Z
-      last_reconciled_at: 2026-04-02T08:43:30.378Z
+      last_reconciled_at: 2026-04-02T08:43:33.011Z
       created_at: 2026-04-02T08:14:15.889Z
-      updated_at: 2026-04-02T08:43:30.378Z
+      updated_at: 2026-04-02T08:43:33.011Z
     workspace_id: dispatch-workspace-01KN6GE5EFHVY2JXZNK3J7090S
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 4ee25eab2779ebc9b8ade2f89cb7a7115c26a07f
-        last_seen_at: 2026-04-02T08:32:11.992Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-schedule-engine-race-condition-eager-state-updates-before-action-execution-01kn6ge5-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/fix-schedule-engine-race-condition-eager-state-updates-before-action-execution/01kn6ge5
