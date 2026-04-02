@@ -102243,6 +102243,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-02T04:16:35.418Z
+      - _ulid: 01KN66XH7G1KDS1RTJPX85CDH6
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KN66XFZXR5CDNH9RPXPTD5F7
+        timestamp: 2026-04-02T04:23:41.040Z
     examined_commit: 41800715e1029b33695a14d9d6dff509bd4a6622
     external_links: []
     lifecycle_state: open
@@ -102252,10 +102259,31 @@ reviews:
       content_hash: ""
       ref: "@01KN5XW04JM5261ZFYV1HCQVJK"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KN66XFZXR5CDNH9RPXPTD5F7
+        entries:
+          - _ulid: 01KN66XFZX81Z2XWGB0A72HB8D
+            author: Jacob Chapel
+            body: 'Evidence log: Files read: src/agent-runtime/workspace.ts, src/agent-runtime/dispatch.ts,
+              src/parser/plans.ts, src/parser/task-data-manager.ts,
+              tests/dispatch-workspace-config.test.ts. Commands run: kspec task get
+              @01KN5XW04JM5261ZFYV1HCQVJK, kspec item get @plan-branch-dispatch-target, kspec
+              validate, grep -Rni "AC: @plan-branch-dispatch-target" tests, grep -Rni "AC: @trait-"
+              tests, git diff
+              03bf2acf6537bedb38f04c61c6cc010c747bbd9b..41800715e1029b33695a14d9d6dff509bd4a6622,
+              npm test, and a direct node repro against dist/agent-runtime/workspace.js to confirm
+              stale base_branch_point after retargeting. Claims verified: full test suite passes;
+              spec AC annotations exist; plan-branch retargeting updates target_branch/target_commit
+              but leaves base_branch_point stale. Categories searched: correctness (found stale
+              registry state on retarget), edge cases (missing plan/branch handling reviewed), error
+              handling (plan-specific DispatchWorkspaceError paths reviewed), test quality (new
+              tests cover happy path and missing branch, but not the stale base_branch_point
+              regression), integration (other resolveDispatchWorkspaceConfig call sites inspected).'
+            created_at: 2026-04-02T04:23:39.773Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-02T04:16:26.709Z
-    updated_at: 2026-04-02T04:16:34.731Z
+    updated_at: 2026-04-02T04:23:39.773Z
     notes: []
   - _ulid: 01KN66TW87P2MVE015MFFC8WCG
     slugs: []
