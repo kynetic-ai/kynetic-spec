@@ -5,6 +5,8 @@ import { promisify } from "node:util";
 
 const execFileAsync = promisify(execFile);
 import { initContext } from "../parser/index.js";
+import { findPlanByRef } from "../parser/plans.js";
+import { resolveTaskDataManager } from "../parser/task-data-manager.js";
 import { acquireFileLock, type FileLockAcquireInfo } from "../parser/file-lock.js";
 import {
   deleteDispatchWorkspaceRecord,
@@ -83,7 +85,9 @@ const DISPATCH_GIT_ENV_OVERRIDES: Record<string, string> = {
 export interface ResolvedDispatchWorkspaceConfig {
   baseBranch: string;
   baseBranchStartPoint: string;
-  baseBranchSource: "configured" | "remote-head" | "current-branch" | "default";
+  baseBranchSource: "plan" | "configured" | "remote-head" | "current-branch" | "default";
+  baseBranchPlanRef?: string;
+  baseBranchPlanTitle?: string;
   worktreeRoot: string;
   publicationMode: "pull_request" | "manual_merge" | "auto";
 }
@@ -224,6 +228,7 @@ export interface ProvisionDispatchWorkspaceOptions {
   task?: {
     title?: string;
     slugs?: string[];
+    plan_ref?: string | null;
   };
   /** Submission linkage from the task, used to adopt an existing branch when no workspace record exists. */
   submissionLinkage?: {
@@ -704,18 +709,93 @@ async function resolveWorkspacePublicationMode(
   }
 }
 
+async function resolveTaskPlanRef(
+  projectDir: string,
+  taskRef: string | undefined,
+  task: ProvisionDispatchWorkspaceOptions["task"] | undefined,
+): Promise<string | null> {
+  const inlinePlanRef = typeof task?.plan_ref === "string" ? task.plan_ref.trim() : "";
+  if (inlinePlanRef) {
+    return inlinePlanRef;
+  }
+  if (!taskRef) {
+    return null;
+  }
+
+  try {
+    const ctx = await initContext(projectDir);
+    const loadedTask = await resolveTaskDataManager(ctx).getTask(ctx, taskRef);
+    return typeof loadedTask.plan_ref === "string" && loadedTask.plan_ref.trim()
+      ? loadedTask.plan_ref.trim()
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+async function resolvePlanScopedBaseBranch(
+  projectDir: string,
+  taskRef: string | undefined,
+  task: ProvisionDispatchWorkspaceOptions["task"] | undefined,
+): Promise<
+  | {
+      baseBranch: string;
+      baseBranchStartPoint: string;
+      planRef: string;
+      planTitle: string;
+    }
+  | null
+> {
+  const planRef = await resolveTaskPlanRef(projectDir, taskRef, task);
+  if (!planRef) {
+    return null;
+  }
+
+  const ctx = await initContext(projectDir);
+  const plan = await findPlanByRef(ctx, planRef);
+  if (!plan) {
+    console.warn(
+      `[dispatch] Task ${taskRef ?? "<unknown-task>"} references plan ${planRef}, but that plan could not be found. Falling back to standard base-branch resolution.`,
+    );
+    return null;
+  }
+
+  const planBranch = typeof plan.branch === "string" ? plan.branch.trim() : "";
+  if (!planBranch) {
+    return null;
+  }
+
+  let resolved = await resolveBranchStartPoint(projectDir, planBranch);
+  if (!resolved && await ensureLocalDispatchIntegrationBranchExists(projectDir, planBranch)) {
+    resolved = await resolveBranchStartPoint(projectDir, planBranch);
+  }
+  if (!resolved) {
+    throw new DispatchWorkspaceError(
+      `Task ${taskRef ?? "<unknown-task>"} references plan ${planRef} (${plan.title}) with branch "${planBranch}", but that branch could not be found locally or on any configured remote.`,
+      `Create or fetch branch "${planBranch}" for plan ${planRef}, or update ${planRef} to a valid branch before provisioning the workspace.`,
+    );
+  }
+
+  return {
+    baseBranch: planBranch,
+    baseBranchStartPoint: resolved.startPoint,
+    planRef,
+    planTitle: plan.title,
+  };
+}
+
 // AC: @dispatch-workspace-configuration ac-6 — detect and handle stale integration target
 // When an existing workspace record's integration.target_branch differs from an
-// explicitly configured dispatch.base_branch, either auto-update (if integration is
-// still pending) or surface the conflict as an error (if integration is active).
-// Only triggers for explicitly configured base branches — auto-detected values
-// (remote-head, current-branch, default) are inherently unstable and should not
-// cause retargeting.
+// explicitly resolved plan/config integration target, either auto-update (if
+// integration is still pending) or surface the conflict as an error (if
+// integration is active). Auto-detected values (remote-head, current-branch,
+// default) are inherently unstable and should not cause retargeting.
 function resolveStaleIntegrationTarget(
   existingRecord: LoadedDispatchWorkspaceRecord | undefined,
   configuredBaseBranch: string,
   baseBranchSource: ResolvedDispatchWorkspaceConfig["baseBranchSource"],
   resolvedBaseBranch: string,
+  planContext?: Pick<ResolvedDispatchWorkspaceConfig, "baseBranchPlanRef" | "baseBranchPlanTitle">,
 ): string {
   if (!existingRecord) {
     return resolvedBaseBranch;
@@ -723,28 +803,41 @@ function resolveStaleIntegrationTarget(
 
   const recordedTarget = existingRecord.integration.target_branch;
 
-  // Only detect staleness when base_branch is explicitly configured.
-  // Auto-detected sources (remote-head, current-branch, default) are unstable
-  // and should not override a previously recorded target.
-  if (baseBranchSource !== "configured") {
+  const expectedTarget = baseBranchSource === "plan" ? resolvedBaseBranch : configuredBaseBranch;
+  if (baseBranchSource !== "configured" && baseBranchSource !== "plan") {
     return recordedTarget;
   }
 
-  // No mismatch — the workspace already targets the configured branch
-  if (recordedTarget === configuredBaseBranch) {
+  if (recordedTarget === expectedTarget) {
     return recordedTarget;
   }
 
-  // Mismatch detected: config changed since workspace was provisioned.
-  // When integration is still pending, auto-update to the current config.
   if (existingRecord.integration.status === "pending") {
-    return configuredBaseBranch;
+    return expectedTarget;
   }
 
-  // Active integration state — cannot silently retarget. Surface the conflict.
+  if (baseBranchSource === "plan") {
+    const planLabel = planContext?.baseBranchPlanRef
+      ? `${planContext.baseBranchPlanRef}${planContext.baseBranchPlanTitle ? ` (${planContext.baseBranchPlanTitle})` : ""}`
+      : "the linked plan";
+    throw new DispatchWorkspaceError(
+      `Workspace for ${existingRecord.task_ref} targets integration branch "${recordedTarget}" ` +
+        `but ${planLabel} now targets "${expectedTarget}". ` +
+        `The workspace has active integration state (${existingRecord.integration.status}) ` +
+        `and cannot be silently retargeted.`,
+      planContext?.baseBranchPlanRef
+        ? `Either update ${planContext.baseBranchPlanRef} back to "${recordedTarget}" with ` +
+            `kspec plan set ${planContext.baseBranchPlanRef} --branch "${recordedTarget}", ` +
+            `or reset the workspace integration state before re-provisioning ` +
+            `(kspec dispatch workspace reset ${existingRecord.task_ref}).`
+        : `Either restore the plan branch to "${recordedTarget}", or reset the workspace integration ` +
+            `state before re-provisioning (kspec dispatch workspace reset ${existingRecord.task_ref}).`,
+    );
+  }
+
   throw new DispatchWorkspaceError(
     `Workspace for ${existingRecord.task_ref} targets integration branch "${recordedTarget}" ` +
-      `but dispatch.base_branch is now "${configuredBaseBranch}". ` +
+      `but dispatch.base_branch is now "${expectedTarget}". ` +
       `The workspace has active integration state (${existingRecord.integration.status}) ` +
       `and cannot be silently retargeted.`,
     `Either revert dispatch.base_branch to "${recordedTarget}" to match the existing workspace, ` +
@@ -1886,12 +1979,29 @@ async function assertPathSafeForWorktree(
 
 export async function resolveDispatchWorkspaceConfig(
   projectDir: string,
+  options?: {
+    taskRef?: string;
+    task?: ProvisionDispatchWorkspaceOptions["task"];
+  },
 ): Promise<ResolvedDispatchWorkspaceConfig> {
   const { config } = await loadProjectConfig(projectDir, projectDir);
   const configuredBaseBranch = config.dispatch.base_branch?.trim() || null;
   const publicationMode = config.dispatch.publication_mode;
   const rawRoot = config.dispatch.worktree_root?.trim() || ".kspec-worktrees";
   const worktreeRoot = path.isAbsolute(rawRoot) ? rawRoot : path.resolve(projectDir, rawRoot);
+  const planScoped = await resolvePlanScopedBaseBranch(projectDir, options?.taskRef, options?.task);
+
+  if (planScoped) {
+    return {
+      baseBranch: planScoped.baseBranch,
+      baseBranchStartPoint: planScoped.baseBranchStartPoint,
+      baseBranchSource: "plan",
+      baseBranchPlanRef: planScoped.planRef,
+      baseBranchPlanTitle: planScoped.planTitle,
+      worktreeRoot,
+      publicationMode,
+    };
+  }
 
   if (configuredBaseBranch) {
     let resolved = await resolveBranchStartPoint(projectDir, configuredBaseBranch);
@@ -2094,10 +2204,14 @@ export function resolveDispatchWorkspaceCleanupState(
 async function resolveBaseBranchPoint(
   projectDir: string,
   canonicalBranch: string,
+  resolvedBaseBranch: string,
   resolvedBaseStartPoint: string,
   existingRecord: LoadedDispatchWorkspaceRecord | undefined,
 ): Promise<string> {
-  if (existingRecord?.base_branch_point) {
+  if (
+    existingRecord?.base_branch_point &&
+    existingRecord.resolved_base_branch === resolvedBaseBranch
+  ) {
     return existingRecord.base_branch_point;
   }
 
@@ -3002,7 +3116,7 @@ export async function provisionDispatchWorkspace(
     submissionLinkage,
     taskStatus,
   } = options;
-  const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
+  const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir, { taskRef, task });
   await ensureUsableWorktreeRoot(projectDir, resolvedConfig.worktreeRoot);
 
   const existingRecord = await loadWorkspaceRecordForWorktreeRoot(
@@ -3101,7 +3215,8 @@ export async function provisionDispatchWorkspace(
     existingRecord,
     resolvedConfig.baseBranch,
     resolvedConfig.baseBranchSource,
-    existingRecord?.resolved_base_branch ?? resolvedConfig.baseBranch,
+    resolvedConfig.baseBranch,
+    resolvedConfig,
   );
   // When the integration target was updated to match config, also update resolved_base_branch.
   const baseBranch =
@@ -3111,6 +3226,7 @@ export async function provisionDispatchWorkspace(
   const baseBranchPoint = await resolveBaseBranchPoint(
     projectDir,
     canonicalBranch,
+    baseBranch,
     resolvedConfig.baseBranchStartPoint,
     existingRecord,
   );

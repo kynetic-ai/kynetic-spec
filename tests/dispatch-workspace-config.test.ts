@@ -97,6 +97,35 @@ async function setupProjectWithAgent(dir: string): Promise<void> {
   await fs.writeFile(path.join(dir, "project.tasks.yaml"), "tasks: []\n", "utf-8");
 }
 
+async function writePlansFile(
+  dir: string,
+  plans: Array<{ _ulid: string; slug: string; title: string; branch: string | null }>,
+): Promise<void> {
+  await fs.writeFile(
+    path.join(dir, "project.plans.yaml"),
+    YAML.stringify({
+      kynetic_plans: "1.0",
+      plans: plans.map((plan) => ({
+        _ulid: plan._ulid,
+        slugs: [plan.slug],
+        title: plan.title,
+        content: "",
+        status: "active",
+        derived_tasks: [],
+        derived_specs: [],
+        source_path: null,
+        module_ref: null,
+        branch: plan.branch,
+        created_at: "2026-04-01T00:00:00.000Z",
+        approved_at: null,
+        completed_at: null,
+        notes: [],
+      })),
+    }),
+    "utf-8",
+  );
+}
+
 describe("dispatch workspace configuration", () => {
   let tempDir: string;
 
@@ -151,6 +180,159 @@ describe("dispatch workspace configuration", () => {
     } finally {
       await cleanupTempDir(remoteDir);
     }
+  });
+
+  // AC: @plan-branch-dispatch-target ac-plan-branch-priority
+  // AC: @plan-branch-dispatch-target ac-integration-target
+  it("prefers a task plan branch over dispatch.base_branch during provisioning", async () => {
+    await seedRepo(tempDir);
+    await setupProjectWithAgent(tempDir);
+    git(tempDir, "checkout -b dev");
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      "dispatch:\n  base_branch: main\n  worktree_root: .dispatch-root\n",
+      "utf-8",
+    );
+    await writePlansFile(tempDir, [
+      {
+        _ulid: testUlid("PNAA", 1),
+        slug: "test-plan",
+        title: "Test Plan",
+        branch: "dev",
+      },
+    ]);
+
+    const taskRef = `@${testUlid("TASK", 2)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Plan Branch Target",
+        slugs: ["task-plan-branch-target"],
+        plan_ref: "@test-plan",
+      },
+    });
+
+    const record = await readWorkspaceRecord(workspace.metadataPath, taskRef);
+    expect(record.resolved_base_branch).toBe("dev");
+    expect(record.integration?.target_branch).toBe("dev");
+    expect(workspace.metadata.baseBranch).toBe("dev");
+    expect(workspace.metadata.integrationTargetBranch).toBe("dev");
+  });
+
+  // AC: @plan-branch-dispatch-target ac-no-plan-ref-passthrough
+  it("keeps existing fallback behavior when the task has no plan reference", async () => {
+    await seedRepo(tempDir);
+    await setupProjectWithAgent(tempDir);
+    git(tempDir, "checkout -b dev");
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      "dispatch:\n  base_branch: main\n",
+      "utf-8",
+    );
+
+    const resolved = await resolveDispatchWorkspaceConfig(tempDir, {
+      taskRef: `@${testUlid("TASK", 3)}`,
+      task: { title: "No Plan Ref", slugs: ["task-no-plan-ref"] },
+    });
+
+    expect(resolved.baseBranch).toBe("main");
+    expect(resolved.baseBranchSource).toBe("configured");
+  });
+
+  // AC: @plan-branch-dispatch-target ac-null-branch-passthrough
+  it("falls through to standard resolution when the linked plan branch is null", async () => {
+    await seedRepo(tempDir);
+    await setupProjectWithAgent(tempDir);
+    git(tempDir, "checkout -b dev");
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      "dispatch:\n  base_branch: main\n",
+      "utf-8",
+    );
+    await writePlansFile(tempDir, [
+      {
+        _ulid: testUlid("PNAA", 2),
+        slug: "null-branch-plan",
+        title: "Null Branch Plan",
+        branch: null,
+      },
+    ]);
+
+    const resolved = await resolveDispatchWorkspaceConfig(tempDir, {
+      taskRef: `@${testUlid("TASK", 4)}`,
+      task: {
+        title: "Null Branch",
+        slugs: ["task-null-branch"],
+        plan_ref: "@null-branch-plan",
+      },
+    });
+
+    expect(resolved.baseBranch).toBe("main");
+    expect(resolved.baseBranchSource).toBe("configured");
+  });
+
+  // AC: @plan-branch-dispatch-target ac-plan-branch-not-found
+  // AC: @trait-error-guidance ac-1
+  // AC: @trait-error-guidance ac-2
+  it("fails with plan-specific guidance when a linked plan branch cannot be found", async () => {
+    await seedRepo(tempDir);
+    await setupProjectWithAgent(tempDir);
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      "dispatch:\n  base_branch: main\n",
+      "utf-8",
+    );
+    await writePlansFile(tempDir, [
+      {
+        _ulid: testUlid("PNAA", 3),
+        slug: "missing-branch-plan",
+        title: "Missing Branch Plan",
+        branch: "missing-branch",
+      },
+    ]);
+
+    await expect(
+      resolveDispatchWorkspaceConfig(tempDir, {
+        taskRef: `@${testUlid("TASK", 5)}`,
+        task: {
+          title: "Missing Branch",
+          slugs: ["task-missing-branch"],
+          plan_ref: "@missing-branch-plan",
+        },
+      }),
+    ).rejects.toMatchObject({
+      name: "DispatchWorkspaceError",
+      message: expect.stringContaining("@missing-branch-plan"),
+      suggestion: expect.stringContaining('Create or fetch branch "missing-branch"'),
+    } satisfies Partial<DispatchWorkspaceError>);
+  });
+
+  // AC: @plan-branch-dispatch-target ac-no-plan-ref-passthrough
+  it("warns and falls back to standard resolution when the linked plan cannot be found", async () => {
+    await seedRepo(tempDir);
+    await setupProjectWithAgent(tempDir);
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      "dispatch:\n  base_branch: main\n",
+      "utf-8",
+    );
+
+    const resolved = await resolveDispatchWorkspaceConfig(tempDir, {
+      taskRef: `@${testUlid("TASK", 6)}`,
+      task: {
+        title: "Missing Plan",
+        slugs: ["task-missing-plan"],
+        plan_ref: "@missing-plan",
+      },
+    });
+
+    expect(resolved.baseBranch).toBe("main");
+    expect(resolved.baseBranchSource).toBe("configured");
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringContaining("references plan @missing-plan"),
+    );
   });
 
   // AC: @dispatch-workspace-configuration ac-1
@@ -667,6 +849,72 @@ describe("stale integration target detection", () => {
     // target_commit must also update to the new branch's tip, not stay stale
     expect(secondRecord.integration?.target_commit).not.toBe(mainCommit);
     expect(secondRecord.integration?.target_commit).toBe(devHead);
+  });
+
+  // AC: @plan-branch-dispatch-target ac-stale-target-detected
+  // AC: @plan-branch-dispatch-target ac-stale-target-updated
+  it("retargets an existing workspace when the linked plan later gains a branch", async () => {
+    await seedRepo(tempDir);
+    await setupProjectWithAgent(tempDir);
+    git(tempDir, "checkout -b dev");
+    const devHead = git(tempDir, "rev-parse dev");
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      "dispatch:\n  base_branch: main\n",
+      "utf-8",
+    );
+    await writePlansFile(tempDir, [
+      {
+        _ulid: testUlid("PNAA", 4),
+        slug: "stale-plan",
+        title: "Stale Plan",
+        branch: null,
+      },
+    ]);
+
+    const taskRef = `@${testUlid("TASK", 65)}`;
+    await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Plan Retarget Test",
+        slugs: ["task-plan-retarget"],
+        plan_ref: "@stale-plan",
+      },
+    });
+    const initialRecord = await readWorkspaceRecord(
+      getDispatchWorkspaceRegistryPath(await initContext(tempDir)),
+      taskRef,
+    );
+    expect(initialRecord.integration?.target_branch).toBe("main");
+
+    await writePlansFile(tempDir, [
+      {
+        _ulid: testUlid("PNAA", 4),
+        slug: "stale-plan",
+        title: "Stale Plan",
+        branch: "dev",
+      },
+    ]);
+
+    const second = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Plan Retarget Test",
+        slugs: ["task-plan-retarget"],
+        plan_ref: "@stale-plan",
+      },
+    });
+    const secondRecord = await readWorkspaceRecord(second.metadataPath, taskRef);
+
+    expect(secondRecord.integration?.target_branch).toBe("dev");
+    expect(secondRecord.resolved_base_branch).toBe("dev");
+    expect(secondRecord.base_branch_point).toBe(devHead);
+    expect(secondRecord.integration?.target_commit).toBe(devHead);
+    expect(second.metadata.integrationTargetBranch).toBe("dev");
+    expect(second.metadata.baseBranchPoint).toBe(devHead);
+    expect(second.metadata.integrationTargetCommit).toBe(devHead);
   });
 
   // AC: @dispatch-workspace-configuration ac-6
