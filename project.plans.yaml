@@ -32695,8 +32695,7 @@ plans:
           for changes. File monitoring must be resource-proportional — the
           daemon's resource consumption scales with the number of directories
           and metadata files that need monitoring, not with the total volume
-          of data stored in those directories. Monitoring uses a single
-          cross-platform backend rather than a tiered fallback strategy.
+          of data stored in those directories.
 
           The daemon monitors two directory trees per project: the shadow
           branch worktree for spec/task state, and the sessions directory
@@ -32741,8 +32740,8 @@ plans:
             when: |
               File monitoring is initialized
             then: |
-              The same monitoring backend is used regardless of platform,
-              with no runtime fallback between different backends
+              File changes are detected reliably regardless of the
+              operating system's native filesystem event mechanism
           - id: ac-5
             given: |
               A monitored file is modified through an atomic write operation
@@ -32832,13 +32831,79 @@ plans:
       derive_from_specs: false
 
       ```yaml
-      # ─── Phase 1: Foundation — Standardize on Chokidar ───
+      # ─── Phase 1: Spec Updates (spec-first) ───
+
+      - title: Update daemon-server ac-8 spec language
+        slug: task-update-daemon-server-ac8
+        priority: 1
+        tags: [spec-update]
+        spec_ref: "@daemon-server"
+        description: |
+          Replace the implementation-prescriptive ac-8 on @daemon-server
+          with behavioral language that specifies reliable cross-platform
+          monitoring without naming specific backends.
+
+          Why: The current ac-8 says "fall back to Chokidar file watcher"
+          which is an implementation detail, not a behavioral contract. The
+          spec should describe the observable behavior: file changes are
+          detected reliably on all supported platforms. This must happen
+          before the implementation tasks so work proceeds against correct
+          specs.
+
+          What: Run kspec item ac set @daemon-server ac-8 to replace the
+          given/when/then with behavioral language. Remove any references
+          to specific runtime APIs or library names from the AC text.
+
+          How: kspec item ac set @daemon-server ac-8
+            --given "the daemon needs to detect file changes"
+            --when "file monitoring is initialized"
+            --then "changes are detected reliably across all supported
+                    platforms using a single proven monitoring backend"
+
+          Covers: @daemon-server ac-8 (replacement).
+
+      - title: Update multi-directory-daemon ac-19 for resource bounding
+        slug: task-update-multi-dir-ac19
+        priority: 1
+        tags: [spec-update]
+        spec_ref: "@multi-directory-daemon"
+        description: |
+          Extend ac-19 on @multi-directory-daemon to cover runtime resource
+          exhaustion from monitoring large directories, not just creation-time
+          EMFILE/ENFILE errors.
+
+          Why: The original ac-19 only covers the case where watcher creation
+          fails due to OS ulimits. The real-world failure mode is subtler —
+          the watcher succeeds but consumes so many file descriptors that
+          subsequent watchers for other projects silently fail. The spec
+          should cover resource proportionality, not just hard OS errors.
+          This must happen before implementation so the new behavior is
+          specified before it's built.
+
+          What: Run kspec item ac set @multi-directory-daemon ac-19 to
+          replace the narrow EMFILE/ENFILE language with the broader resource
+          constraint language.
+
+          How: kspec item ac set @multi-directory-daemon ac-19
+            --given "project file monitoring would consume excessive system
+                    resources due to directory size or OS limits"
+            --when "the resource impact is detected during initialization
+                    or health monitoring"
+            --then "the daemon reports the resource constraint with
+                    actionable guidance and does not allow the project's
+                    monitoring to degrade other registered projects"
+
+          Covers: @multi-directory-daemon ac-19 (replacement).
+
+      # ─── Phase 2: Implementation — Standardize on Chokidar ───
 
       - title: Replace dual-backend watcher with Chokidar-only implementation
         slug: task-chokidar-standardize
         priority: 1
         tags: [daemon, watcher, foundation]
         spec_ref: "@daemon-file-monitoring"
+        depends_on:
+          - "@task-update-daemon-server-ac8"
         description: |
           Replace the Bun fs.watch primary / Chokidar fallback dual-backend
           strategy in both KspecWatcher and SessionWatcher with Chokidar as
@@ -32872,7 +32937,6 @@ plans:
           is task-session-blob-exclusion.
 
           Covers: @daemon-file-monitoring ac-1, ac-4, ac-5.
-          Modifies: @daemon-server ac-8 (removes Bun fallback language).
 
       - title: Exclude session content storage from file monitoring
         slug: task-session-blob-exclusion
@@ -32881,6 +32945,7 @@ plans:
         spec_ref: "@daemon-file-monitoring"
         depends_on:
           - "@task-chokidar-standardize"
+          - "@task-update-multi-dir-ac19"
         description: |
           Configure the session watcher to exclude content storage
           directories (blobs/) from monitoring, reducing FD consumption
@@ -32913,72 +32978,6 @@ plans:
           modifications and new session directory creation.
 
           Covers: @daemon-file-monitoring ac-2, ac-3, ac-7.
-
-      # ─── Phase 2: Spec Updates ───
-
-      - title: Update daemon-server ac-8 spec language
-        slug: task-update-daemon-server-ac8
-        priority: 2
-        tags: [spec-update]
-        spec_ref: "@daemon-server"
-        depends_on:
-          - "@task-chokidar-standardize"
-        description: |
-          Replace the implementation-prescriptive ac-8 on @daemon-server
-          with behavioral language that specifies reliable cross-platform
-          monitoring without naming specific backends.
-
-          Why: The current ac-8 says "fall back to Chokidar file watcher"
-          which is an implementation detail, not a behavioral contract. After
-          standardizing on a single backend, the fallback concept is moot.
-          The spec should describe the observable behavior: file changes are
-          detected reliably on all supported platforms.
-
-          What: Run kspec item ac set @daemon-server ac-8 to replace the
-          given/when/then with the behavioral version from this plan's spec
-          section. Remove any references to specific runtime APIs or library
-          names from the AC text.
-
-          How: kspec item ac set @daemon-server ac-8
-            --given "the daemon needs to detect file changes"
-            --when "file monitoring is initialized"
-            --then "changes are detected reliably across all supported
-                    platforms using a single proven monitoring backend"
-
-          Covers: @daemon-server ac-8 (replacement).
-
-      - title: Update multi-directory-daemon ac-19 for resource bounding
-        slug: task-update-multi-dir-ac19
-        priority: 2
-        tags: [spec-update]
-        spec_ref: "@multi-directory-daemon"
-        depends_on:
-          - "@task-session-blob-exclusion"
-        description: |
-          Extend ac-19 on @multi-directory-daemon to cover runtime resource
-          exhaustion from monitoring large directories, not just creation-time
-          EMFILE/ENFILE errors.
-
-          Why: The original ac-19 only covers the case where watcher creation
-          fails due to OS ulimits. The real-world failure mode is subtler —
-          the watcher succeeds but consumes so many file descriptors that
-          subsequent watchers for other projects silently fail. The spec
-          should cover resource proportionality, not just hard OS errors.
-
-          What: Run kspec item ac set @multi-directory-daemon ac-19 to
-          replace the narrow EMFILE/ENFILE language with the broader resource
-          constraint language from this plan's spec section.
-
-          How: kspec item ac set @multi-directory-daemon ac-19
-            --given "project file monitoring would consume excessive system
-                    resources due to directory size or OS limits"
-            --when "the resource impact is detected during initialization
-                    or health monitoring"
-            --then "the daemon reports the resource constraint with
-                    actionable guidance and does not allow the project's
-                    monitoring to degrade other registered projects"
-
-          Covers: @multi-directory-daemon ac-19 (replacement).
 
       # ─── Phase 3: Health Monitoring ───
 
@@ -33061,7 +33060,10 @@ plans:
           cross. Tests that depend on real fs.watch behavior continue to
           skip in CI (GitHub Actions limitation).
 
-          Covers: @daemon-file-monitoring ac-1 through ac-8.
+          Covers: @daemon-file-monitoring ac-1 through ac-5, ac-7.
+          Verifies (already implemented by existing specs):
+          ac-6 — cross-project isolation, implemented per @multi-directory-daemon ac-18.
+          ac-8 — persistent failure unregistration, implemented per @multi-directory-daemon ac-34.
 
       - title: Integration test for watcher health verification
         slug: task-test-watcher-health
@@ -33176,3 +33178,8 @@ plans:
           declarations
         author: "@claude"
         created_at: 2026-04-02T18:06:43.327Z
+      - _ulid: 01KN7PD3ZCPZHA2WJHCY3KVV4M
+        content: "Address review findings: fix ac-4 implementation leakage, reorder spec-updates before
+          implementation (spec-first), clarify ac-6/ac-8 coverage ownership"
+        author: "@claude"
+        created_at: 2026-04-02T18:13:34.828Z
