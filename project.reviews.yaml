@@ -106356,6 +106356,12 @@ reviews:
           status: fail
           name: full-suite
         timestamp: 2026-04-02T21:22:11.653Z
+      - _ulid: 01KN81ZWD5R1PRJ5ZJAGQNJ9HJ
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN813G2W7T9BN5CH1Q135DTR
+        timestamp: 2026-04-02T21:36:04.005Z
     examined_commit: a72d50e8ca41f0625f005c2c94e8183d22378a7c
     external_links: []
     lifecycle_state: closed
@@ -106386,6 +106392,14 @@ reviews:
               promised by AC-3, or otherwise add coverage that proves the FD/resource bound
               directly."
             created_at: 2026-04-02T21:20:33.884Z
+          - _ulid: 01KN81ZVPGCVRB5W3QAGWXH7EM
+            author: Jacob Chapel
+            body: Replaced the AC-3 proxy assertion in tests/session-watcher.test.ts with a behavioral runtime
+              measurement against /proc/self/fd. The test now starts SessionWatcher twice with
+              identical metadata layout but 1 vs 250 blob files and asserts the open-FD delta stays
+              flat, which directly exercises the resource-bound promised by @daemon-file-monitoring
+              ac-3.
+            created_at: 2026-04-02T21:36:03.279Z
         kind: blocker
       - _ulid: 01KN815JP9TX783N2TKQQ91P0A
         entries:
@@ -106416,7 +106430,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-02T21:21:59.060Z
     created_at: 2026-04-02T21:03:48.411Z
-    updated_at: 2026-04-02T21:22:10.344Z
+    updated_at: 2026-04-02T21:36:03.279Z
     notes: []
   - _ulid: 01KN81FFCSBK598AYC013DXRT7
     slugs: []
