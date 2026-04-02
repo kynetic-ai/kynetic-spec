@@ -11444,6 +11444,14 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-02T07:41:14.399Z
+  - _ulid: 01KN6JBFERQCMY22N93CDCMKJ8
+    type: success
+    content: Moving real git/worktree/shadow I/O suites into the serial dispatch-heavy Vitest project is
+      an effective way to stabilize dispatch timeouts without loosening global test timeouts.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-02T07:43:32.312Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
