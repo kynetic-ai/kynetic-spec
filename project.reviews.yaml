@@ -106289,6 +106289,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-02T21:04:03.575Z
+      - _ulid: 01KN813GXG37QZ3G7J9NVXSZSS
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN813G2W7T9BN5CH1Q135DTR
+        timestamp: 2026-04-02T21:20:34.736Z
     examined_commit: a72d50e8ca41f0625f005c2c94e8183d22378a7c
     external_links: []
     lifecycle_state: open
@@ -106298,8 +106305,29 @@ reviews:
       content_hash: ""
       ref: "@01KN7Q6BHCW3EXFA9SCBQAT05K"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KN813G2W7T9BN5CH1Q135DTR
+        anchor:
+          type: code
+          commit: a72d50e8ca41f0625f005c2c94e8183d22378a7c
+          line_end: 212
+          line_start: 179
+          path: tests/session-watcher.test.ts
+          side: head
+        entries:
+          - _ulid: 01KN813G2WMNT0VZJNQ0TDT8SW
+            author: Jacob Chapel
+            body: "AC-3 says the daemon's resource usage is measured and that file descriptor count stays
+              proportional to monitored directories and metadata files. This test only inspects  and
+              asserts that chokidar's internal watched-entry map excludes . That is a weaker proxy:
+              it would still pass if the watcher opened extra descriptors elsewhere or if descriptor
+              usage scaled with blob files despite the same  output. Please replace this with a
+              behavioral/resource-level assertion that actually measures the watcher footprint
+              promised by AC-3, or otherwise add coverage that proves the FD/resource bound
+              directly."
+            created_at: 2026-04-02T21:20:33.884Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-02T21:03:48.411Z
-    updated_at: 2026-04-02T21:04:02.816Z
+    updated_at: 2026-04-02T21:20:33.884Z
     notes: []
