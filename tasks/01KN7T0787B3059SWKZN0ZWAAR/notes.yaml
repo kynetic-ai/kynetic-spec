@@ -8,3 +8,11 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T19:35:13.215Z
+  - _ulid: 01KN7V6Z9P13DCNTD5QBSH0Z7H
+    content: Stabilized the same-process contention regression by rewriting the test to assert the
+      critical section never overlaps and that no force-reclaim diagnostic is emitted. This removes
+      reliance on a single final counter value while still proving same-process waiters serialize
+      even when each holder exceeds maxHoldMs.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T19:37:36.311Z
