@@ -1,1 +1,11 @@
-notes: []
+notes:
+  - _ulid: 01KN5Y7G1H39G3NGXSQQT4JP97
+    content: "Approach: update PlanSchema/createPlan plus parser round-trip merge to carry optional
+      nullable branch without emitting branch: null for untouched plans. Reuse task set
+      nullable-field semantics for plan set --branch, then extend plan get output and JSON coverage.
+      Edge cases: existing YAML without branch, clearing with null/empty string, preserving raw
+      shape on save. Test plan: parser coverage for default/set/clear/backward-compatible load plus
+      CLI coverage for set/get and clear behavior."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T01:51:50.321Z
