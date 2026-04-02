@@ -101547,6 +101547,17 @@ reviews:
         required: true
         created_at: 2026-04-02T01:39:33.002Z
         completed_at: 2026-04-02T01:39:33.002Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Parent refs resolve to existing specs (@plan-support, @dispatch-workspace-configuration).
+          All Covers refs map to defined AC IDs, and the plan imports successfully in dry-run form
+          from exported content.
+        name: Cross-reference validity
+        required: true
+        created_at: 2026-04-02T01:39:33.068Z
+        completed_at: 2026-04-02T01:39:33.068Z
     events:
       - _ulid: 01KN5XG48161ABMSCXMFQZK741
         actor: "@claude"
@@ -101582,6 +101593,13 @@ reviews:
           status: pass
           name: Previous requested changes
         timestamp: 2026-04-02T01:39:35.967Z
+      - _ulid: 01KN5XH41HMXJ840C3GYBHCNHV
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Cross-reference validity
+        timestamp: 2026-04-02T01:39:37.137Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -101594,5 +101612,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-02T01:39:04.578Z
-    updated_at: 2026-04-02T01:39:33.002Z
+    updated_at: 2026-04-02T01:39:33.068Z
     notes: []
