@@ -27,3 +27,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T07:49:40.895Z
+  - _ulid: 01KN6M0AZ9VB840E1DNT07N9F1
+    content: "Implemented pre-invocation workspace executability validation in the dispatch handoff
+      path. The runtime now probes the selected workspace after bootstrap and before adapter launch,
+      repairs missing or unrunnable worktrees by reprovisioning when the canonical record remains
+      trustworthy, and blocks with task-linked diagnostics when recovery would be unsafe.
+      Verification: npm test -- --run tests/dispatch-runtime-bootstrap-contract.test.ts passed (16
+      tests). Full npm test passed (2065 suites, 7478 tests, 5 skipped). kspec validate reported the
+      repo’s existing warning backlog only (exit 6: completeness/alignment/reference warnings), with
+      no new schema/reference failure for this task."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T08:12:24.425Z
