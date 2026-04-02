@@ -39,7 +39,7 @@ description: |
 spec_ref: "@daemon-file-monitoring"
 plan_ref: "@plan-daemon-file-monitoring-reliability"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-chokidar-standardize"
@@ -60,7 +60,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: 01KN7ZB869E2YMPMW7CTM0TG6T
+session_id: null
 history:
   - author: "@claude"
     changes:
@@ -109,6 +109,16 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-02T21:03:50.878Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KN7ZB869E2YMPMW7CTM0TG6T
+    command: review-verdict-needs-work
+    timestamp: 2026-04-02T21:22:07.754Z
 created_at: 2026-04-02T18:27:21.772Z
 started_at: 2026-04-02T20:50:31.369Z
 submitted_at: 2026-04-02T21:01:57.760Z
