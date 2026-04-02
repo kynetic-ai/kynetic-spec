@@ -1,0 +1,34 @@
+_ulid: 01KN7T0787B3059SWKZN0ZWAAR
+slugs:
+  - task-stabilize-file-lock-maxhold-contention
+title: Stabilize file-lock same-process maxHoldMs contention test
+type: bug
+description: >-
+  Pre-existing test failure observed during review of @01KN7Q6AG on commit
+  d72162fe5d9b9ec0bab4b67f47e626491a6c32ec.
+
+
+  `npm test` fails in `tests/file-lock.test.ts:223` for "should not reclaim a lock from the same
+  process when waiters exceed max hold duration": expected `count: 5\n`, received `count: 4\n`. The
+  failure reproduces on the exact integration-head tree because the task branch currently matches
+  `origin/plan/plan-daemon-file-monitoring-reliability/01kn7nw3` / `origin/dev` at the same commit.
+
+
+  Investigate whether the test is flaky or the file-lock implementation regressed under same-process
+  contention with `maxHoldMs: 5`, then fix or stabilize it with coverage that proves the intended
+  lock behavior.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - test
+  - locking
+vcs_refs: []
+created_at: 2026-04-02T19:16:26.503Z
+todos: []
+automation: eligible
