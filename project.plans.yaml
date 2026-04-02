@@ -32858,7 +32858,7 @@ plans:
             --given "the daemon needs to detect file changes"
             --when "file monitoring is initialized"
             --then "changes are detected reliably across all supported
-                    platforms using a single proven monitoring backend"
+                    platforms without manual configuration"
 
           Covers: @daemon-server ac-8 (replacement).
 
@@ -33060,10 +33060,11 @@ plans:
           cross. Tests that depend on real fs.watch behavior continue to
           skip in CI (GitHub Actions limitation).
 
-          Covers: @daemon-file-monitoring ac-1 through ac-5, ac-7.
-          Verifies (already implemented by existing specs):
-          ac-6 — cross-project isolation, implemented per @multi-directory-daemon ac-18.
-          ac-8 — persistent failure unregistration, implemented per @multi-directory-daemon ac-34.
+          Covers: @daemon-file-monitoring ac-1 through ac-8.
+          Note: ac-6 (cross-project isolation) and ac-8 (persistent failure
+          unregistration) are already implemented per @multi-directory-daemon
+          ac-18 and ac-34 respectively — this task adds test coverage for
+          those behaviors under the new monitoring spec.
 
       - title: Integration test for watcher health verification
         slug: task-test-watcher-health
@@ -33183,3 +33184,8 @@ plans:
           implementation (spec-first), clarify ac-6/ac-8 coverage ownership"
         author: "@claude"
         created_at: 2026-04-02T18:13:34.828Z
+      - _ulid: 01KN7PQXZNSZNR5SSHG9CTNVGM
+        content: "Fix review round 2: remove 'single proven monitoring backend' from ac-8 replacement
+          (implementation leakage), add ac-6 and ac-8 to test task Covers mapping"
+        author: "@claude"
+        created_at: 2026-04-02T18:19:29.141Z
