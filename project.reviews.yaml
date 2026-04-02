@@ -101355,7 +101355,17 @@ reviews:
     slugs: []
     title: "Plan re-review: Plan-Scoped Branch Targeting (v2)"
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Core execution order is sound: schema precedes command and dispatch work, and the new
+          dispatch behavior does not depend on the plan branch command."
+        name: Dependency ordering
+        required: true
+        created_at: 2026-04-02T01:28:04.790Z
+        completed_at: 2026-04-02T01:28:04.790Z
     events:
       - _ulid: 01KN5WVAXRQ4GHEHNW85YCC66B
         actor: "@claude"
@@ -101377,6 +101387,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN5WVZWB7FDGPJS9K5JRW69R
         timestamp: 2026-04-02T01:28:06.428Z
+      - _ulid: 01KN5WW2J6G31HJ6ZYNF58AK88
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Dependency ordering
+        timestamp: 2026-04-02T01:28:07.494Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -101405,5 +101422,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-02T01:27:43.289Z
-    updated_at: 2026-04-02T01:28:04.747Z
+    updated_at: 2026-04-02T01:28:04.790Z
     notes: []
