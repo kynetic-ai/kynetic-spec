@@ -20342,7 +20342,7 @@ runs:
     completed_at: 2026-04-02T00:09:49.405Z
   - _ulid: 01KN5YSTKB6DVFPQSTC27WWQ8A
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -20359,7 +20359,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-02T02:02:48.024Z
-        completed_at: 2026-04-02T02:02:48.024Z
+        completed_at: 2026-04-02T02:02:59.473Z
+        notes: "High-confidence items: one friction only. Full-suite verification can be blocked by an
+          unrelated reproducible regression, which forced targeted reruns and manual isolation
+          before submission. No success pattern rose to the same confidence threshold beyond normal
+          good practice, so nothing else is being captured."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-02T02:02:59.473Z
+        completed_at: 2026-04-02T02:02:59.473Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-02T02:01:50.955Z
