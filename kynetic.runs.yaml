@@ -20301,7 +20301,7 @@ runs:
     completed_at: 2026-04-01T23:18:24.620Z
   - _ulid: 01KN5RA5BSMBC8JC986BV0C00D
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -20325,7 +20325,14 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-04-02T00:09:39.800Z
-        completed_at: 2026-04-02T00:09:39.800Z
+        completed_at: 2026-04-02T00:09:44.547Z
+        notes: "Decision: both identified items were unique in targeted searches and high confidence, so
+          both were captured. No duplicate refs were found for the same-process PID fixture issue or
+          the built-artifact reproduction pattern."
+      - status: completed
+        step_index: 3
+        started_at: 2026-04-02T00:09:44.547Z
+        completed_at: 2026-04-02T00:09:44.547Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-02T00:08:26.233Z
