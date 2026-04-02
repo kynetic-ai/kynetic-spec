@@ -103300,7 +103300,18 @@ reviews:
     slugs: []
     title: Review default plan derive to include tasks
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Fresh full-suite run passed after environment bootstrap: 2063 suites passed, 7469 tests
+          passed, 5 skipped."
+        name: npm test -- --fresh
+        required: true
+        runner: npm
+        created_at: 2026-04-02T06:40:10.828Z
+        completed_at: 2026-04-02T06:40:10.828Z
     events:
       - _ulid: 01KN6DH22FH7KWV3W1PNGZD412
         actor: Jacob Chapel
@@ -103329,6 +103340,13 @@ reviews:
           kind: nit
           thread_ulid: 01KN6EQA8GNYGX9JFAJRX0ZHJF
         timestamp: 2026-04-02T06:40:06.780Z
+      - _ulid: 01KN6EQFX4TV6D87A44YHV7D4A
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test -- --fresh
+        timestamp: 2026-04-02T06:40:11.684Z
     examined_commit: 432d716a4805d82b05eaa89afb4764270e331005
     external_links: []
     lifecycle_state: open
@@ -103381,7 +103399,7 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-02T06:19:12.335Z
-    updated_at: 2026-04-02T06:40:05.904Z
+    updated_at: 2026-04-02T06:40:10.828Z
     notes: []
   - _ulid: 01KN6EPC97A6JH0QZVVSG9PHHM
     slugs: []
