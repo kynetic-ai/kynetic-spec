@@ -103540,6 +103540,18 @@ reviews:
         runner: manual
         created_at: 2026-04-02T07:07:24.599Z
         completed_at: 2026-04-02T07:07:24.599Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate currently fails due to unrelated shadow metadata schema errors in
+          kynetic.meta.yaml (invalid session.idle hook entries) plus longstanding
+          completeness/alignment warnings. The reviewed code diff does not touch .kspec metadata.
+        name: kspec validate baseline
+        required: false
+        runner: kspec
+        created_at: 2026-04-02T07:07:27.516Z
+        completed_at: 2026-04-02T07:07:27.516Z
     events:
       - _ulid: 01KN6EPC96TVSQR6H21W0BTBFT
         actor: Jacob Chapel
@@ -103575,6 +103587,13 @@ reviews:
           status: pass
           name: review evidence log
         timestamp: 2026-04-02T07:07:25.585Z
+      - _ulid: 01KN6G9E9MJ8YKEW3404N5ND4B
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate baseline
+        timestamp: 2026-04-02T07:07:28.437Z
     examined_commit: 66aa4da1c1099858a6a8de88488d1d7388f9d52f
     external_links: []
     lifecycle_state: open
@@ -103587,5 +103606,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-02T06:39:35.207Z
-    updated_at: 2026-04-02T07:07:24.599Z
+    updated_at: 2026-04-02T07:07:27.516Z
     notes: []
