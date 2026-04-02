@@ -195,6 +195,10 @@ async function updateWorkspaceRecord(
 }
 
 describe("dispatch runtime bootstrap contract", { timeout: 60_000 }, () => {
+  // AC: @trait-error-guidance ac-3 — N/A: pre-invocation workspace validation does not resolve user-supplied refs.
+  // AC: @trait-error-guidance ac-4 — N/A: the validation path does not perform or report invalid task state transitions.
+  // AC: @trait-error-guidance ac-5 — N/A: workspace validation failures are runtime diagnostics, not schema validation errors.
+  // AC: @trait-error-guidance ac-6 — N/A: validateDispatchWorkspaceForInvocation is a runtime helper and has no JSON output mode.
   let tempDir: string;
   let originalCaptureFile: string | undefined;
 
