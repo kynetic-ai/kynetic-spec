@@ -2865,3 +2865,19 @@ triage:
       subcommands.
     created_at: 2026-03-20T03:11:14.423Z
     updated_at: 2026-03-20T03:12:01.778Z
+  - _ulid: 01KN86MW4X73T12Y2APWSAP460
+    status: triaged
+    action: duplicate
+    decided_by: Jacob Chapel
+    evidence_refs:
+      - "@01KN82YA"
+    inbox_ref: 01KN86KNDT8N9AWGP9BGM3M9Z1
+    item_snapshot: Investigate tests/daemon-api/websocket-protocol.test.ts unsubscribe invalid topics
+      path. During full npm test -- --fresh reproduction for @01KN813JEHA7251DWGYDGZYMXZ, the suite
+      observed ack instead of the expected validation_error nack for invalid unsubscribe topics.
+      Determine whether the implementation or the test expectation is wrong, and stabilize the
+      behavior.
+    reasoning: Duplicate of existing inbox item @01KN82YA, which already tracks the same websocket
+      unsubscribe ack-vs-validation_error nack failure observed during full-suite reproduction.
+    created_at: 2026-04-02T22:57:26.173Z
+    updated_at: 2026-04-02T22:57:26.219Z
