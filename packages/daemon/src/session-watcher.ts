@@ -5,9 +5,9 @@
  * source-agnostic session freshness notifications to WebSocket clients.
  */
 
-import { existsSync, readdirSync } from "fs";
+import { existsSync, readdirSync, type Stats } from "fs";
 import { watch as chokidarWatch, type FSWatcher as ChokidarWatcher } from "chokidar";
-import { join, relative, sep } from "path";
+import { extname, join, relative, sep } from "path";
 
 export interface SessionWatcherOptions {
   sessionsDir: string;
@@ -56,6 +56,7 @@ export class SessionWatcher {
   private async startChokidarWatcher(): Promise<void> {
     this.watcher = chokidarWatch(this.options.sessionsDir, {
       ignoreInitial: true,
+      ignored: (filePath: string, stats?: Stats) => this.shouldIgnorePath(filePath, stats),
       awaitWriteFinish: {
         stabilityThreshold: 100,
         pollInterval: 50,
@@ -130,6 +131,29 @@ export class SessionWatcher {
 
     const [sessionId] = relativePath.split(sep).filter(Boolean);
     return sessionId ? join(this.options.sessionsDir, sessionId) : null;
+  }
+
+  private shouldIgnorePath(filePath: string, stats?: Stats): boolean {
+    const relativePath = relative(this.options.sessionsDir, filePath);
+    if (!relativePath || relativePath === "." || relativePath.startsWith("..")) {
+      return false;
+    }
+
+    const segments = relativePath.split(sep).filter(Boolean);
+    if (segments.includes("blobs")) {
+      return true;
+    }
+
+    if (stats?.isDirectory()) {
+      return false;
+    }
+
+    const extension = extname(segments.at(-1) ?? "").toLowerCase();
+    if (!extension) {
+      return false;
+    }
+
+    return extension !== ".yaml" && extension !== ".jsonl";
   }
 
   private async handleWatcherError(error: Error): Promise<void> {

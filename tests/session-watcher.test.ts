@@ -14,6 +14,17 @@ import { SessionWatcher } from "../packages/daemon/src/session-watcher";
 const DEBOUNCE_WAIT = process.env.CI ? 2000 : 600;
 const describeOrSkip = process.env.CI ? describe.skip : describe;
 
+// AC: @trait-error-guidance ac-1 — N/A: SessionWatcher is an internal daemon component, not a user-facing command.
+// AC: @trait-error-guidance ac-2 — N/A: SessionWatcher reports errors to callbacks/logging, not command guidance.
+// AC: @trait-error-guidance ac-3 — N/A: SessionWatcher does not resolve user-facing refs.
+// AC: @trait-error-guidance ac-4 — N/A: SessionWatcher does not perform task/item state transitions.
+// AC: @trait-error-guidance ac-5 — N/A: SessionWatcher does not surface field validation errors to users.
+// AC: @trait-error-guidance ac-6 — N/A: SessionWatcher has no JSON error mode.
+
+async function waitForDebounce(): Promise<void> {
+  await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_WAIT));
+}
+
 describeOrSkip("SessionWatcher", () => {
   let fixturesRoot: string;
   let projectDir: string;
@@ -27,6 +38,7 @@ describeOrSkip("SessionWatcher", () => {
     await cleanupTempDir(fixturesRoot);
   });
 
+  // AC: @daemon-file-monitoring ac-2
   it("fires when session metadata changes under .kspec-sessions", async () => {
     const onSessionChange = vi.fn();
     const sessionDir = join(projectDir, ".kspec-sessions", "01JTESTSESSIONWATCHER0000001");
@@ -62,13 +74,14 @@ describeOrSkip("SessionWatcher", () => {
       ].join("\n"),
     );
 
-    await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_WAIT));
+    await waitForDebounce();
 
     expect(onSessionChange).toHaveBeenCalled();
 
     await watcher.stop();
   });
 
+  // AC: @daemon-file-monitoring ac-7
   it("starts before .kspec-sessions exists and emits after the directory is created", async () => {
     const onSessionChange = vi.fn();
     const sessionsDir = join(projectDir, ".kspec-sessions");
@@ -95,10 +108,86 @@ describeOrSkip("SessionWatcher", () => {
       ].join("\n"),
     );
 
-    await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_WAIT));
+    await waitForDebounce();
 
     expect(onSessionChange).toHaveBeenCalledTimes(1);
     expect(onSessionChange).toHaveBeenCalledWith(sessionDir);
+
+    await watcher.stop();
+  });
+
+  // AC: @daemon-file-monitoring ac-2
+  it("fires when session event logs change", async () => {
+    const onSessionChange = vi.fn();
+    const sessionDir = join(projectDir, ".kspec-sessions", "01JTESTSESSIONWATCHER0000005");
+    await mkdir(sessionDir, { recursive: true });
+    const eventsPath = join(sessionDir, "events.jsonl");
+    await writeFile(eventsPath, '{"type":"session.started"}\n');
+
+    const watcher = new SessionWatcher({
+      sessionsDir: join(projectDir, ".kspec-sessions"),
+      onSessionChange,
+      onError: vi.fn(),
+    });
+
+    await watcher.start();
+
+    await writeFile(eventsPath, '{"type":"session.updated"}\n', { flag: "a" });
+    await waitForDebounce();
+
+    expect(onSessionChange).toHaveBeenCalledTimes(1);
+    expect(onSessionChange).toHaveBeenCalledWith(sessionDir);
+
+    await watcher.stop();
+  });
+
+  // AC: @daemon-file-monitoring ac-2
+  // AC: @daemon-file-monitoring ac-3
+  it("ignores blob subtree writes so content storage does not trigger monitoring", async () => {
+    const onSessionChange = vi.fn();
+    const sessionDir = join(projectDir, ".kspec-sessions", "01JTESTSESSIONWATCHER0000006");
+    await mkdir(sessionDir, { recursive: true });
+    await writeFile(join(sessionDir, "session.yaml"), "status: active\n");
+
+    const watcher = new SessionWatcher({
+      sessionsDir: join(projectDir, ".kspec-sessions"),
+      onSessionChange,
+      onError: vi.fn(),
+    });
+
+    await watcher.start();
+    onSessionChange.mockClear();
+
+    const blobDir = join(sessionDir, "blobs");
+    await mkdir(blobDir, { recursive: true });
+    await writeFile(join(blobDir, "payload.blob"), "externalized content\n");
+    await waitForDebounce();
+
+    expect(onSessionChange).not.toHaveBeenCalled();
+
+    await watcher.stop();
+  });
+
+  // AC: @daemon-file-monitoring ac-2
+  it("ignores non-metadata file types in session directories", async () => {
+    const onSessionChange = vi.fn();
+    const sessionDir = join(projectDir, ".kspec-sessions", "01JTESTSESSIONWATCHER0000007");
+    await mkdir(sessionDir, { recursive: true });
+    await writeFile(join(sessionDir, "session.yaml"), "status: active\n");
+
+    const watcher = new SessionWatcher({
+      sessionsDir: join(projectDir, ".kspec-sessions"),
+      onSessionChange,
+      onError: vi.fn(),
+    });
+
+    await watcher.start();
+    onSessionChange.mockClear();
+
+    await writeFile(join(sessionDir, "notes.txt"), "ignored\n");
+    await waitForDebounce();
+
+    expect(onSessionChange).not.toHaveBeenCalled();
 
     await watcher.stop();
   });
@@ -129,7 +218,7 @@ describeOrSkip("SessionWatcher", () => {
       ].join("\n"),
     );
 
-    await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_WAIT));
+    await waitForDebounce();
 
     expect(onSessionChange).toHaveBeenCalledTimes(1);
     expect(onSessionChange).toHaveBeenCalledWith(sessionDir);
@@ -162,7 +251,7 @@ describeOrSkip("SessionWatcher", () => {
       ].join("\n"),
     );
 
-    await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_WAIT));
+    await waitForDebounce();
 
     expect(onSessionChange).not.toHaveBeenCalled();
   });
