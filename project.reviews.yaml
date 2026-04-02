@@ -104139,6 +104139,12 @@ reviews:
         payload:
           thread_ulid: 01KN6MQ9THTQT9FQCZ41S3DSNE
         timestamp: 2026-04-02T08:51:16.695Z
+      - _ulid: 01KN6P7JK9PZ148J6CJ8ABX1Y3
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KN6MPEWKAYX7DD6K96P1WHQ5
+        timestamp: 2026-04-02T08:51:18.762Z
     examined_commit: 9723239855abc52d12a71705ec232f73606cc264
     external_links: []
     lifecycle_state: closed
@@ -104183,6 +104189,8 @@ reviews:
               because of the pre-existing repository warning backlog."
             created_at: 2026-04-02T08:50:47.835Z
         kind: nit
+        resolved_at: 2026-04-02T08:51:18.089Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KN6MQ9THTQT9FQCZ41S3DSNE
         anchor:
           type: code
@@ -104218,7 +104226,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-02T08:25:16.733Z
     created_at: 2026-04-02T08:23:31.919Z
-    updated_at: 2026-04-02T08:51:15.982Z
+    updated_at: 2026-04-02T08:51:18.089Z
     notes: []
   - _ulid: 01KN6N7CPYXHJXYS4BV1EFB02E
     slugs: []
