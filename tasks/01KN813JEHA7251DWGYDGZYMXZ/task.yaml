@@ -2,18 +2,16 @@ _ulid: 01KN813JEHA7251DWGYDGZYMXZ
 slugs: []
 title: Stabilize flaky full-suite tests for cli-serve and agent-dispatch-engine
 type: bug
-description: >-
-  Full \
-
-  > @kynetic-ai/spec@0.12.0 test
-
-  > node scripts/test.cjs --fresh\ on commit a72d50e8ca41f0625f005c2c94e8183d22378a7c intermittently
-  failed outside the watcher diff with two tests: \ (\) and \ (\). Both pass in targeted fresh runs,
-  and they also pass when run together with the watcher-related suites changed by
-  @01KN7Q6BHCW3EXFA9SCBQAT05K, so the current evidence points to pre-existing/flaky full-suite
-  instability rather than a deterministic regression from the watcher test changes. Investigate
-  order dependence, timing sensitivity, or leaked process/runtime state in the full suite; reproduce
-  with fresh uncached runs and make the failures deterministic or eliminate them.
+description: "Full `npm test -- --fresh` on commit a72d50e8ca41f0625f005c2c94e8183d22378a7c
+  intermittently failed outside the watcher diff with two tests: `tests/cli-serve.test.ts:353`
+  (`kspec serve commands should send SIGTERM and wait for shutdown`) and
+  `tests/agent-dispatch-engine.test.ts:5845` (`Post-invocation re-evaluation should not re-enqueue a
+  task while provisioning is still in flight`). Both pass in targeted fresh runs, and they also pass
+  when run together with the watcher-related suites changed by @01KN7Q6BHCW3EXFA9SCBQAT05K, so the
+  current evidence points to pre-existing or flaky full-suite instability rather than a
+  deterministic regression from the watcher test changes. Investigate order dependence, timing
+  sensitivity, or leaked process/runtime state in the full suite; reproduce with fresh uncached runs
+  and make the failures deterministic or eliminate them."
 spec_ref: null
 meta_ref: null
 plan_ref: null
@@ -27,6 +25,36 @@ tags:
   - flake
   - ci
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      description:
+        new: "Full `npm test -- --fresh` on commit a72d50e8ca41f0625f005c2c94e8183d22378a7c intermittently
+          failed outside the watcher diff with two tests: `tests/cli-serve.test.ts:353` (`kspec
+          serve commands should send SIGTERM and wait for shutdown`) and
+          `tests/agent-dispatch-engine.test.ts:5845` (`Post-invocation re-evaluation should not
+          re-enqueue a task while provisioning is still in flight`). Both pass in targeted fresh
+          runs, and they also pass when run together with the watcher-related suites changed by
+          @01KN7Q6BHCW3EXFA9SCBQAT05K, so the current evidence points to pre-existing or flaky
+          full-suite instability rather than a deterministic regression from the watcher test
+          changes. Investigate order dependence, timing sensitivity, or leaked process/runtime state
+          in the full suite; reproduce with fresh uncached runs and make the failures deterministic
+          or eliminate them."
+        previous: >-
+          Full \
+
+          > @kynetic-ai/spec@0.12.0 test
+
+          > node scripts/test.cjs --fresh\ on commit a72d50e8ca41f0625f005c2c94e8183d22378a7c
+          intermittently failed outside the watcher diff with two tests: \ (\) and \ (\). Both pass
+          in targeted fresh runs, and they also pass when run together with the watcher-related
+          suites changed by @01KN7Q6BHCW3EXFA9SCBQAT05K, so the current evidence points to
+          pre-existing/flaky full-suite instability rather than a deterministic regression from the
+          watcher test changes. Investigate order dependence, timing sensitivity, or leaked
+          process/runtime state in the full suite; reproduce with fresh uncached runs and make the
+          failures deterministic or eliminate them.
+    command: task-set
+    timestamp: 2026-04-02T21:21:40.141Z
 created_at: 2026-04-02T21:20:36.305Z
 todos: []
 automation: eligible
