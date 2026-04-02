@@ -31637,327 +31637,456 @@ plans:
       ## Specs
 
       ```yaml
-      - title: Plan Branch Field
-        slug: plan-branch-field
+      - title: Plan Branch Association
+        slug: plan-branch-association
         type: requirement
         parent: "@plan-support"
         description: |
-          Plans support an optional branch field that, when set, becomes the
-          base and integration target for all derived tasks. This enables
-          cohesive feature development where task work accumulates on a shared
-          plan branch before merging to the project integration branch.
+          Plans may be associated with a git branch that serves as the
+          shared integration target for all work derived from the plan.
+          When no branch is associated, plan-derived work targets the
+          project's default integration branch.
         acceptance_criteria:
-          - id: ac-1
+          - id: ac-branch-optional
             given: |
-              A plan exists without a branch field set
+              A plan exists without a branch association
             when: |
-              Derived tasks are dispatched
+              Work derived from the plan is dispatched
             then: |
-              Tasks target the global dispatch.base_branch as today
-              (passthrough behavior, full backward compatibility)
-          - id: ac-2
+              The work targets the project's default integration branch
+          - id: ac-branch-set
             given: |
-              A plan has a branch field set to a valid branch name
+              A plan has a branch association
             when: |
-              A derived task workspace is provisioned by the dispatcher
+              Work derived from the plan is dispatched
             then: |
-              The task's resolved_base_branch and integration.target_branch
-              are set to the plan's branch value instead of the global
-              dispatch.base_branch
-          - id: ac-3
+              The work targets the plan's associated branch
+          - id: ac-branch-persisted
             given: |
-              A plan has a branch field set
+              A plan's branch is set via the CLI
             when: |
-              Multiple derived tasks are dispatched sequentially
+              The plan is loaded in a subsequent session
             then: |
-              Each task forks from the current HEAD of the plan branch,
-              and completed tasks merge back to the plan branch, so later
-              tasks build on earlier task work
-          - id: ac-4
+              The branch value is preserved
+          - id: ac-branch-nullable
             given: |
-              A plan's branch field is null or absent
+              A plan's branch is cleared
             when: |
-              The plan schema is validated
+              Work derived from the plan is dispatched
             then: |
-              The field defaults to null and has no effect on dispatch
-              behavior
+              The work reverts to targeting the project's default
+              integration branch
+          - id: ac-existing-plans-unaffected
+            given: |
+              Plans created before this feature exist without a branch
+              field
+            when: |
+              Those plans are loaded
+            then: |
+              They parse successfully with branch defaulting to null
 
-      - title: Deterministic Plan Branch Helper
-        slug: deterministic-plan-branch-helper
+      - title: Plan Branch Creation
+        slug: plan-branch-creation
         type: requirement
         parent: "@plan-support"
         description: |
-          A CLI command creates or resumes a deterministic branch for a plan,
-          paralleling kspec task branch for tasks. The branch name follows a
-          predictable format derived from the plan's identity.
+          A dedicated command creates or resumes a branch for a plan using
+          a deterministic naming convention, paralleling how task branches
+          are created for tasks.
         acceptance_criteria:
-          - id: ac-1
+          - id: ac-deterministic-name
             given: |
-              A user or agent runs the plan branch helper for a plan
-              that has no branch set
+              A plan has no branch set
             when: |
-              The helper executes
+              The plan branch command is run without a custom name
             then: |
-              A branch is created using the deterministic naming format
-              plan/<normalized-plan-slug>/<short-plan-ref>, forking from
-              the current HEAD of the global dispatch.base_branch, and
-              the plan's branch field is updated to the created branch name
-          - id: ac-2
+              A branch is created using the naming convention
+              plan/<normalized-slug>/<short-ref>
+          - id: ac-forks-from-base
             given: |
-              A plan already has a branch field set
+              A plan has no branch set
             when: |
-              The plan branch helper runs for that plan
+              The plan branch command creates a new branch
             then: |
-              The helper resumes or rehydrates the existing branch
-              (checking local then remote) without creating a duplicate,
-              matching kspec task branch behavior
-          - id: ac-3
+              The branch forks from the current HEAD of the project's
+              configured integration branch
+          - id: ac-updates-plan-record
             given: |
-              A user wants a custom branch name instead of the
-              deterministic default
+              The plan branch command creates or resumes a branch
             when: |
-              The plan branch helper is run with an explicit branch name
-              argument
+              The command completes
             then: |
-              The specified branch name is used and stored in the plan's
-              branch field, creating it if it does not exist
-          - id: ac-4
+              The plan's branch field is updated to the resolved branch
+              name
+          - id: ac-resume-local
             given: |
-              The plan branch helper successfully creates or resumes a
-              branch
+              A plan already has a branch set and the branch exists
+              locally
+            when: |
+              The plan branch command runs
+            then: |
+              The existing branch is checked out without creating a
+              duplicate
+          - id: ac-rehydrate-remote
+            given: |
+              A plan has a branch set but the branch only exists on a
+              remote
+            when: |
+              The plan branch command runs
+            then: |
+              The branch is fetched from the remote and checked out
+              locally
+          - id: ac-custom-name
+            given: |
+              A user provides an explicit branch name argument
+            when: |
+              The plan branch command runs
+            then: |
+              The specified name is used instead of the deterministic
+              default
+          - id: ac-reports-result
+            given: |
+              The plan branch command completes
             when: |
               Output is displayed
             then: |
-              The result includes the resolved branch name, the action
-              taken (created, switched, rehydrated), and confirms the
-              plan record was updated
+              The output includes the branch name and the action taken
+              (created, switched, or rehydrated)
 
-      - title: Dispatch Plan Branch Resolution
-        slug: dispatch-plan-branch-resolution
+      - title: Plan Branch as Dispatch Integration Target
+        slug: plan-branch-dispatch-target
         type: requirement
         parent: "@dispatch-workspace-configuration"
         description: |
-          The dispatch workspace provisioning pipeline resolves a task's
-          base branch by checking whether the task belongs to a plan with
-          a branch set, inserting plan-level branch resolution into the
-          existing base branch fallback chain.
+          When the dispatch engine provisions a workspace for a task that
+          belongs to a plan with an associated branch, the plan branch is
+          used as the task's integration target instead of the project's
+          default integration branch.
         acceptance_criteria:
-          - id: ac-1
+          - id: ac-plan-branch-priority
             given: |
-              A task has plan_ref set to a plan that has a branch field
+              A task references a plan that has a branch set
             when: |
               The dispatcher provisions a workspace for that task
             then: |
-              The plan's branch is used as resolved_base_branch and
-              integration.target_branch, taking priority over the global
-              dispatch.base_branch
-          - id: ac-2
+              The task's base branch is the plan's branch
+          - id: ac-integration-target
             given: |
-              A task has plan_ref set to a plan that has no branch field
-              (null)
+              A task references a plan that has a branch set
             when: |
-              The dispatcher provisions a workspace for that task
+              The task's workspace integration record is created
             then: |
-              The global dispatch.base_branch resolution proceeds as
-              today with no change in behavior
-          - id: ac-3
+              The integration target branch is the plan's branch
+          - id: ac-no-plan-ref-passthrough
             given: |
-              A task has no plan_ref
+              A task has no plan reference
             when: |
-              The dispatcher provisions a workspace for that task
+              The dispatcher provisions a workspace
             then: |
-              The global dispatch.base_branch resolution proceeds as
-              today with no change in behavior
-          - id: ac-4
+              The base branch is resolved using the existing fallback
+              chain with no change in behavior
+          - id: ac-null-branch-passthrough
             given: |
-              A task references a plan whose branch field points to a
-              branch that does not exist locally
+              A task references a plan whose branch is null
+            when: |
+              The dispatcher provisions a workspace
+            then: |
+              The base branch is resolved using the existing fallback
+              chain with no change in behavior
+          - id: ac-plan-branch-missing
+            given: |
+              A task references a plan whose branch does not exist
+              locally
             when: |
               The dispatcher provisions a workspace
             then: |
               The dispatcher attempts to fetch the branch from configured
-              remotes before failing, consistent with existing branch
-              rehydration behavior
-          - id: ac-5
+              remotes before failing
+          - id: ac-stale-target-detection
             given: |
-              A plan's branch is set and the plan has derived tasks with
-              existing workspace records targeting the old base branch
+              A task has an existing workspace targeting the old default
+              integration branch and its plan subsequently gains a branch
             when: |
-              A workspace is re-provisioned for one of those tasks
+              The workspace is re-provisioned
             then: |
-              Stale integration target detection identifies the change
-              and updates the workspace record to target the plan branch
+              The stale integration target is detected and the workspace
+              record is updated to target the plan branch
 
-      - title: Plan Branch Activation Hook
-        slug: plan-branch-activation-hook
+      - title: Plan Branch Lifecycle Guidance
+        slug: plan-branch-lifecycle-guidance
         type: requirement
         parent: "@plan-support"
         description: |
-          When a plan transitions to active status (via derive), the system
-          offers to create the plan branch if one is not already set. This
-          makes plan branch creation a natural part of the plan lifecycle.
+          The plan lifecycle surfaces plan branch awareness at key
+          transition points so users know when and how to use plan
+          branches.
         acceptance_criteria:
-          - id: ac-1
+          - id: ac-derive-hint
             given: |
               A plan is transitioning to active status via the derive
-              command
+              command and has no branch set
             when: |
-              The plan has no branch field set
+              The derive output is displayed
             then: |
-              The derive output includes guidance that a plan branch can
-              be created with kspec plan branch to enable task stacking
-          - id: ac-2
+              The output includes guidance that a plan branch can be
+              created to enable task stacking
+          - id: ac-derive-existing
             given: |
-              A plan already has a branch field set before activation
+              A plan already has a branch set before activation
             when: |
-              The plan transitions to active
+              The plan transitions to active via derive
             then: |
-              The existing branch is preserved and no new branch is
-              created
+              The output confirms that derived tasks will target the
+              plan branch
       ```
 
       ## Tasks
 
       ```yaml
-      - title: Add branch field to plan schema
+      - title: Add branch field to plan schema and CLI
         slug: task-plan-branch-schema
         priority: 1
-        tags: [schema, plans]
-        spec_ref: "@plan-branch-field"
+        tags: [schema, plans, cli]
+        spec_ref: "@plan-branch-association"
         description: |
-          Add the optional branch field to the plan schema and ensure it
-          round-trips through load/save without corruption.
+          Add an optional nullable branch field to the plan data model and
+          expose it via the plan CLI.
 
-          Why: This is the data model foundation — every other task depends
-          on the branch field existing on plans.
+          Why: The branch field is the data foundation — every other task
+          in this plan depends on plans being able to store a branch name.
+          Without it, the dispatch engine has nothing to look up.
 
-          What: Add branch as z.string().nullable().optional() to PlanSchema
-          in src/schema/plan.ts. Update savePlan() in src/parser/plans.ts to
-          preserve the field. Add plan set --branch flag to the CLI. Ensure
-          existing plans without the field parse correctly (null default).
+          What:
+          - Add branch as an optional nullable string to the plan schema
+            (src/schema/plan.ts), following the same pattern as plan_ref
+            on tasks — z.string().nullable().optional()
+          - Update the plan save logic (src/parser/plans.ts) to preserve
+            the branch field through load/save round-trips. The existing
+            save logic only writes non-default fields, so branch: null
+            should not appear in YAML output for plans that don't use it.
+          - Add --branch flag to kspec plan set so users can manually set
+            or clear the branch. Clearing should accept null or empty
+            string to unset. Follow the pattern of --plan-ref on task set.
+          - Add branch to plan get output (both human-readable and JSON).
+          - Verify that existing plans without the field parse correctly
+            by running the test suite — the optional() + nullable() pattern
+            should handle this, but confirm no fixture breakage.
 
-          How: Follow the pattern of plan_ref on tasks — optional nullable
-          string field with CLI setter. The save logic already preserves
-          non-default fields.
+          How: The schema change is in src/schema/plan.ts PlanSchema. The
+          CLI change is in src/cli/commands/plan.ts under the set
+          subcommand. Save/load is in src/parser/plans.ts. Check the
+          existing task set --plan-ref implementation for the exact
+          nullable string flag pattern to replicate.
 
-          Covers: @plan-branch-field ac-1, ac-4.
+          Testing: Unit tests for schema round-trip (null, set, clear).
+          CLI test for plan set --branch and plan get showing the value.
+
+          Covers: @plan-branch-association ac-branch-optional,
+          ac-branch-set, ac-branch-persisted, ac-branch-nullable,
+          ac-existing-plans-unaffected.
 
       - title: Implement kspec plan branch command
         slug: task-plan-branch-command
         priority: 1
         tags: [cli, plans, git]
-        spec_ref: "@deterministic-plan-branch-helper"
+        spec_ref: "@plan-branch-creation"
         depends_on:
           - "@task-plan-branch-schema"
         description: |
-          Create the kspec plan branch command that creates or resumes a
-          deterministic branch for a plan, paralleling kspec task branch.
+          Create the kspec plan branch subcommand that creates or resumes
+          a deterministic branch for a plan, then updates the plan's branch
+          field.
 
-          Why: Plans need a first-class way to create their branch, just
-          like tasks have kspec task branch. The deterministic naming
-          (plan/<slug>/<short-ref>) makes branches predictable for both
-          humans and automation.
+          Why: Plans need a dedicated command to create their branch, just
+          like kspec task branch exists for tasks. The deterministic naming
+          convention (plan/<slug>/<short-ref>) makes branches predictable
+          and avoids naming collisions.
 
-          What: Add a plan branch subcommand that resolves the plan ref,
-          computes the deterministic branch name (or uses a custom name if
-          provided), checks local/remote for existing branch, creates or
-          switches to it, and updates the plan's branch field via the
-          shadow branch. Support --name flag for custom branch names.
-          Output the branch name, action taken, and confirmation.
+          What:
+          - Add a plan branch <ref> subcommand to src/cli/commands/plan.ts.
+          - Accept an optional --name <branch-name> flag that overrides the
+            deterministic naming with a custom branch name.
+          - Deterministic name computation: normalize the plan's first slug
+            to lowercase alphanumeric with hyphens, take the first 8 chars
+            of the plan ULID as short-ref, produce plan/<slug>/<short-ref>.
+            Reuse the normalization logic from computeDispatchBranchName()
+            in src/cli/commands/task.ts (the normalizeSlug and shortId
+            helpers).
+          - Branch resolution priority (same as kspec task branch):
+            1. Check if branch exists locally — if current, report
+               already_on_branch; if not current, checkout and report
+               switched.
+            2. Check remotes — if found, fetch and create local tracking
+               branch, report rehydrated.
+            3. Create new — fork from HEAD of the project's configured
+               dispatch.base_branch (resolve using the same logic as
+               resolveDispatchWorkspaceConfig in workspace.ts, or simpler:
+               read kspec.config.yaml dispatch.base_branch, fall back to
+               default branch detection). Report created.
+          - After branch resolution, update the plan's branch field via
+            mutatePlanAtomically() (src/parser/plans.ts) so the shadow
+            branch records the association.
+          - Output: branch name, action (created/switched/rehydrated),
+            confirmation that plan record was updated. Support --json flag
+            for structured output.
+          - Reuse the existing branch helper functions from task.ts:
+            findBranchOnRemote(), gitCreateBranchFrom(),
+            reportBranchResult(). These may need to be extracted to a
+            shared module if they're currently private to the task command.
 
-          How: Reuse the branch resolution helpers from task branch
-          (findBranchOnRemote, gitCreateBranchFrom, reportBranchResult).
-          The plan branch forks from the resolved dispatch.base_branch
-          HEAD. Update plan record atomically via mutatePlanAtomically().
+          How: Model the command implementation after the task branch
+          command (src/cli/commands/task.ts lines ~3034-3108). The main
+          difference is: (a) resolves a plan ref instead of a task ref,
+          (b) uses plan/<slug>/<short-ref> instead of
+          dispatch/task/<slug>/<short-ref>, (c) updates the plan record
+          instead of being purely git-side.
 
-          Covers: @deterministic-plan-branch-helper ac-1 through ac-4.
+          Testing: Unit tests for deterministic name computation. CLI
+          integration tests for create, resume, and rehydrate flows. Test
+          custom --name flag. Verify plan record updated after each flow.
+
+          Covers: @plan-branch-creation ac-deterministic-name,
+          ac-forks-from-base, ac-updates-plan-record, ac-resume-local,
+          ac-rehydrate-remote, ac-custom-name, ac-reports-result.
 
       - title: Wire plan branch into dispatch workspace provisioning
         slug: task-dispatch-plan-branch-resolution
         priority: 1
         tags: [dispatch, workspace, plans]
-        spec_ref: "@dispatch-plan-branch-resolution"
+        spec_ref: "@plan-branch-dispatch-target"
         depends_on:
           - "@task-plan-branch-schema"
         description: |
-          Modify the dispatch workspace provisioning pipeline to check a
-          task's plan_ref for a branch override before falling back to the
-          global dispatch.base_branch.
+          Modify the dispatch workspace provisioning pipeline to resolve a
+          task's base branch from its plan's branch field before falling
+          back to the global dispatch.base_branch.
 
-          Why: This is the core behavioral change — tasks belonging to a
-          plan with a branch automatically target that branch instead of
-          the global integration branch.
+          Why: This is the core runtime behavior — when a plan has a
+          branch, all its derived tasks should automatically target that
+          branch. Without this, users would have to manually configure
+          each task's base branch.
 
-          What: In resolveDispatchWorkspaceConfig() (workspace.ts), after
-          loading the task, check if task.plan_ref is set. If so, load
-          the plan and check plan.branch. If non-null, use it as the
-          resolved base branch and integration target. If the plan branch
-          doesn't exist locally, attempt remote fetch. Fall through to
-          existing logic if plan_ref is absent or plan.branch is null.
-          Ensure stale integration target detection works when a plan
-          gains or changes its branch.
+          What:
+          - In resolveDispatchWorkspaceConfig() (src/agent-runtime/
+            workspace.ts, around line 1887), add a plan branch resolution
+            step early in the base branch fallback chain.
+          - The resolution logic:
+            1. Load the task being provisioned.
+            2. If task.plan_ref is set, load the referenced plan via
+               findPlanByRef() (from src/parser/plans.ts).
+            3. If plan.branch is non-null, validate the branch exists
+               (locally or via remote fetch) and use it as the resolved
+               base branch.
+            4. If plan.branch is null, or task.plan_ref is not set, fall
+               through to the existing resolution chain (config file →
+               remote HEAD → current branch → "main" default).
+          - The plan branch check should be the FIRST check in the chain,
+            before the dispatch.base_branch config check. This means a
+            plan branch always wins over the global config for plan-scoped
+            tasks.
+          - For stale integration target detection
+            (resolveStaleIntegrationTarget, workspace.ts ~line 708): when
+            an existing workspace record's integration.target_branch
+            differs from the newly resolved plan branch, treat it as a
+            stale target and update. This handles the case where a plan
+            gains a branch after tasks already have workspaces.
+          - The plan branch must be fetchable from remotes if not local,
+            using the same remote fetch logic as existing branch
+            rehydration.
+          - No changes needed to worktree creation, branch provenance,
+            integration records, or the merge skill — they all operate on
+            the resolved base branch which this task changes at the source.
 
-          How: Insert the plan branch check early in the base branch
-          resolution chain, before the config-file check. Load plans
-          via findPlanByRef() which is already available. The rest of
-          the provisioning pipeline (worktree creation, branch provenance,
-          integration record) works unchanged since it operates on the
-          resolved base branch.
+          How: The insertion point is narrow. resolveDispatchWorkspaceConfig
+          returns a config object with baseBranch. Add the plan lookup
+          before the existing if-blocks. findPlanByRef() is synchronous
+          (loads from YAML). Branch existence validation uses the same
+          helpers already in workspace.ts. The KSPEC_DISPATCH_MERGE_TARGET
+          env var and integration.target_branch are set from the resolved
+          base branch downstream — no changes needed there.
 
-          Covers: @dispatch-plan-branch-resolution ac-1 through ac-5.
+          Edge cases to handle:
+          - Plan exists but has status completed/rejected — still honor
+            the branch field (tasks may still be in progress).
+          - Plan ref is invalid/not found — log warning, fall through to
+            default resolution.
+          - Plan branch was deleted — attempt remote fetch, fail with
+            clear error if not recoverable.
 
-      - title: Add plan branch activation guidance
+          Testing: Unit tests for each resolution path: plan with branch,
+          plan without branch, no plan_ref, missing plan, missing branch
+          with remote recovery. Integration test for stale target
+          detection when plan gains a branch.
+
+          Covers: @plan-branch-dispatch-target ac-plan-branch-priority,
+          ac-integration-target, ac-no-plan-ref-passthrough,
+          ac-null-branch-passthrough, ac-plan-branch-missing,
+          ac-stale-target-detection.
+
+      - title: Add plan branch guidance to derive output
         slug: task-plan-branch-activation
         priority: 2
         tags: [cli, plans]
-        spec_ref: "@plan-branch-activation-hook"
+        spec_ref: "@plan-branch-lifecycle-guidance"
         depends_on:
           - "@task-plan-branch-command"
         description: |
-          When a plan transitions to active via derive, include guidance
-          about creating a plan branch for task stacking.
+          When a plan transitions to active via the derive command, include
+          contextual guidance about plan branches in the output.
 
-          Why: Users should know the option exists at the natural moment
-          they'd want it — when derived tasks are about to be dispatched.
+          Why: The derive step is the natural moment users think about how
+          tasks will be dispatched. Surfacing the plan branch option here
+          prevents the "I didn't know I could do that" problem.
 
-          What: In the plan derive command output, if the plan has no
-          branch set, add a line suggesting kspec plan branch @ref to
-          enable task stacking. If a branch is already set, note that
-          derived tasks will target it.
+          What:
+          - In the plan derive command (src/cli/commands/plan.ts), after
+            the derive summary output, add a conditional message:
+            - If plan.branch is null: print a hint like
+              "Tip: Run kspec plan branch @<ref> to create a shared
+              branch for task stacking. Without it, tasks target the
+              default integration branch."
+            - If plan.branch is set: print a confirmation like
+              "Tasks will target plan branch: <branch-name>"
+          - The guidance should appear after the derived specs/tasks
+            summary, not before.
+          - In --json mode, include plan_branch in the output object
+            (null or the branch name) so programmatic consumers can
+            inspect it.
 
-          How: Add a conditional message after the derive summary in
-          src/cli/commands/plan.ts. Check plan.branch and emit the
-          appropriate guidance text.
+          How: Find the derive command output section in
+          src/cli/commands/plan.ts (search for the derive subcommand
+          handler). Add the conditional after the success summary. Read
+          plan.branch from the plan record that's already loaded in the
+          derive flow.
 
-          Covers: @plan-branch-activation-hook ac-1, ac-2.
+          Testing: CLI test that derive without branch shows the hint.
+          CLI test that derive with branch shows the confirmation.
+          JSON output test for plan_branch field.
+
+          Covers: @plan-branch-lifecycle-guidance ac-derive-hint,
+          ac-derive-existing.
       ```
 
       ## Implementation Notes
 
-      This plan adds plan-scoped branch targeting as an opt-in feature. The
-      design is minimal: one new field on plans (branch), one new CLI command
-      (plan branch), and one insertion point in the dispatch provisioning
-      pipeline.
+      This plan adds plan-scoped branch targeting as opt-in behavior.
+      Plans without a branch behave identically to today — no migration,
+      no breaking changes.
 
-      Key design decisions:
-      1. Passthrough by default — plans without a branch behave exactly as
-         today. No migration, no breaking changes.
-      2. branch field is both the flag and the value — no separate mode enum.
-         If set, tasks target it. If null, passthrough.
-      3. Deterministic naming follows plan/<slug>/<short-ref>, parallel to
+      Design decisions:
+      1. The branch field is both the flag and the value — no separate
+         mode enum. If set, tasks target it. If null, passthrough.
+      2. Deterministic naming: plan/<slug>/<short-ref>, parallel to
          dispatch/task/<slug>/<short-ref> for tasks.
-      4. Custom branch names supported via --name flag on plan branch command.
-      5. No base_branch_point on plans — task workspaces already track their
-         own fork points, and git can compute merge-base on demand.
-      6. Plan branch merging to the integration branch (dev/main) is a manual
-         step for now. A future kspec plan merge command could automate this
-         but is out of scope.
-
-      The insertion point in dispatch is narrow: resolveDispatchWorkspaceConfig
-      gains a plan-branch check before the existing base_branch config check.
-      Everything downstream (worktree creation, branch provenance, integration
-      records, merge skill) already operates on the resolved base branch and
-      needs no changes.
+      3. Custom branch names supported via --name flag.
+      4. No base_branch_point stored on plans — task workspaces track
+         their own fork points, and git computes merge-base on demand.
+      5. Merging the plan branch to the project integration branch is a
+         manual step for now. A future plan merge command could automate
+         this but is out of scope.
+      6. The dispatch insertion point is narrow: one new check at the top
+         of the base branch resolution chain. Everything downstream
+         operates on the resolved base branch and needs no changes.
     status: draft
     approved_at: null
     derived_specs: []
@@ -31966,4 +32095,9 @@ plans:
     source_path: /tmp/plan-scoped-branches.md
     created_at: 2026-04-01T23:50:25.081Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KN5S1HXGYFBSF0YXP5C5ZTFE
+        content: "Revised: specs are now behavioral-only (no file paths or impl details), granular ACs with
+          single conditions per then-clause, tasks are detailed and standalone"
+        author: "@claude"
+        created_at: 2026-04-02T00:21:12.752Z
