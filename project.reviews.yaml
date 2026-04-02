@@ -106600,3 +106600,29 @@ reviews:
     created_at: 2026-04-02T21:27:06.393Z
     updated_at: 2026-04-02T21:36:09.095Z
     notes: []
+  - _ulid: 01KN829CR7JEXD24Q02D8DN2X0
+    slugs: []
+    title: Review task-test-chokidar-watcher (cycle 2)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KN829CR7T8H9EX9K76CCJ03H
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-02T21:41:15.655Z
+    examined_commit: b850d3f95ceaea076bcf2d2c62e469f4f6fcd3b3
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KN7Q6BHCW3EXFA9SCBQAT05K"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-02T21:41:15.655Z
+    updated_at: null
+    notes: []
