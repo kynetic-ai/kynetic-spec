@@ -597,6 +597,110 @@ derive_from_specs: false
     expect(planAfter.derived_tasks).toEqual([]);
   });
 
+  it("shows a post-summary hint when deriving a plan that has no branch", async () => {
+    // AC: @plan-branch-derive-guidance ac-derive-hint
+    const planPath = await writePlanFile(
+      tempDir,
+      "derive-no-branch.md",
+      `# Derive No Branch
+
+## Specs
+
+\`\`\`yaml
+- title: No Branch Feature
+  slug: no-branch-feature
+\`\`\`
+`,
+    );
+
+    kspec(`plan import "${planPath}" --module @test-core --status approved`, tempDir);
+
+    const output = kspec("plan derive @plan-derive-no-branch", tempDir);
+    const summaryIndex = output.indexOf("Created tasks: 0");
+    const hint = [
+      "Tip: Run kspec plan branch @plan-derive-no-branch to create a shared branch for task stacking.",
+      "Without it, tasks target the default integration branch.",
+    ].join(" ");
+    const hintIndex = output.indexOf(hint);
+
+    expect(summaryIndex).toBeGreaterThanOrEqual(0);
+    expect(hintIndex).toBeGreaterThan(summaryIndex);
+  });
+
+  it("confirms the configured plan branch after derive and includes it in JSON output", async () => {
+    // AC: @plan-branch-derive-guidance ac-derive-existing
+    // AC: @trait-json-output ac-2
+    const textPlanPath = await writePlanFile(
+      tempDir,
+      "derive-existing-branch-text.md",
+      `# Derive Existing Branch
+
+## Specs
+
+\`\`\`yaml
+- title: Existing Branch Feature
+  slug: existing-branch-feature
+\`\`\`
+`,
+    );
+
+    kspec(`plan import "${textPlanPath}" --module @test-core --status approved`, tempDir);
+    kspec('plan set @plan-derive-existing-branch --branch "plan/shared/01abc123"', tempDir);
+
+    const textOutput = kspec("plan derive @plan-derive-existing-branch", tempDir);
+    expect(textOutput).toContain("Tasks will target plan branch: plan/shared/01abc123");
+
+    const jsonPlanPath = await writePlanFile(
+      tempDir,
+      "derive-existing-branch-json.md",
+      `# Derive Existing Branch Json
+
+## Specs
+
+\`\`\`yaml
+- title: Existing Branch Json Feature
+  slug: existing-branch-json-feature
+\`\`\`
+`,
+    );
+
+    kspec(`plan import "${jsonPlanPath}" --module @test-core --status approved`, tempDir);
+    kspec('plan set @plan-derive-existing-branch-json --branch "plan/shared/01abc123"', tempDir);
+
+    const jsonOutput = kspecJson<{ plan_branch: string | null; created_specs: string[] }>(
+      "plan derive @plan-derive-existing-branch-json",
+      tempDir,
+    );
+    expect(jsonOutput.plan_branch).toBe("plan/shared/01abc123");
+    expect(jsonOutput.created_specs).toEqual(["@existing-branch-json-feature"]);
+  });
+
+  it("emits null plan_branch in JSON when the plan has no branch", async () => {
+    // AC: @trait-json-output ac-2
+    const planPath = await writePlanFile(
+      tempDir,
+      "derive-null-branch-json.md",
+      `# Derive Null Branch JSON
+
+## Specs
+
+\`\`\`yaml
+- title: Null Branch JSON Feature
+  slug: null-branch-json-feature
+\`\`\`
+`,
+    );
+
+    kspec(`plan import "${planPath}" --module @test-core --status approved`, tempDir);
+
+    const result = kspecJson<{ plan_branch: string | null }>(
+      "plan derive @plan-derive-null-branch-json --json",
+      tempDir,
+    );
+
+    expect(result.plan_branch).toBeNull();
+  });
+
   it("surfaces parse validation errors, skips unresolved parents, and preserves unresolved dependencies for later resolution", async () => {
     // AC: @plan-derive-enhanced ac-validation-errors, ac-parent-unresolved, ac-depends-on-unresolved
     const planPath = await writePlanFile(
