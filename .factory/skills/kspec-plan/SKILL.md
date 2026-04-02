@@ -350,9 +350,10 @@ kspec plan branch @plan-ref          # Deterministic: plan/<slug>/<short-ref>
 kspec plan branch @plan-ref --name feat/custom-name  # Custom name
 ```
 
-  Dispatch automatically targets the plan branch for all derived tasks.
-  Without a plan branch, tasks target the default integration branch as
-  usual.
+Dispatch automatically targets the plan branch for all derived tasks.
+Without a plan branch, tasks target the default integration branch as
+usual.
+
 - **Derive** materializes an approved plan into specs and tasks, then transitions it to `active`
 - Mark completed when all derived work is done:
 
