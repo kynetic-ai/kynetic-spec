@@ -32524,18 +32524,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/stabilize-flaky-full-suite-failures-in-dispatch-workspace-config-and-enhanced-setup-tests/01kn6aah
-    canonical_branch_head: cda3fa8053f55b86d64a76eb05aa00ab1e7ed5db
+    canonical_branch_head: 10154c6c9071f97a8a48a263da48f9f88037b267
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-02T06:02:06.889Z
+      updated_at: 2026-04-02T06:19:55.262Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T06:18:09.671Z
+      updated_at: 2026-04-02T06:19:55.262Z
     integration:
       status: pending
       detail: null
@@ -32543,7 +32543,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 190827af3c1fb918d3235cf9159a67047fae3590
-      updated_at: 2026-04-02T06:02:06.889Z
+      updated_at: 2026-04-02T06:19:55.262Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KN6AAH0TMTBBPB8DSK8PP4K3"
@@ -32551,9 +32551,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-02T06:18:09.671Z
-      last_reconciled_at: 2026-04-02T06:18:09.671Z
+      last_reconciled_at: 2026-04-02T06:19:55.262Z
       created_at: 2026-04-02T05:30:29.808Z
-      updated_at: 2026-04-02T06:18:09.671Z
+      updated_at: 2026-04-02T06:19:55.262Z
     workspace_id: dispatch-workspace-01KN6AAH0TMTBBPB8DSK8PP4K3
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
