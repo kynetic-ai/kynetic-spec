@@ -106286,6 +106286,18 @@ reviews:
         runner: npm
         created_at: 2026-04-02T21:21:34.405Z
         completed_at: 2026-04-02T21:21:34.405Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Fresh full-suite run failed outside the watcher diff: tests/cli-serve.test.ts:353 and
+          tests/agent-dispatch-engine.test.ts:5845. Both passed in targeted reruns and a follow-up
+          stabilization task was created as @01KN813J."
+        name: full-suite
+        required: false
+        runner: npm
+        created_at: 2026-04-02T21:22:10.344Z
+        completed_at: 2026-04-02T21:22:10.344Z
     events:
       - _ulid: 01KN804T5VE744J7S9XF304KDP
         actor: Jacob Chapel
@@ -106337,6 +106349,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-02T21:21:59.060Z
+      - _ulid: 01KN816FJ53NE1TTAE3XD4AV98
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: full-suite
+        timestamp: 2026-04-02T21:22:11.653Z
     examined_commit: a72d50e8ca41f0625f005c2c94e8183d22378a7c
     external_links: []
     lifecycle_state: closed
@@ -106397,5 +106416,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-02T21:21:59.060Z
     created_at: 2026-04-02T21:03:48.411Z
-    updated_at: 2026-04-02T21:21:59.060Z
+    updated_at: 2026-04-02T21:22:10.344Z
     notes: []
