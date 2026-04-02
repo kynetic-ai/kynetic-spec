@@ -52,6 +52,8 @@ describe("Plan Parser", () => {
     expect(plan.derived_tasks).toEqual([]);
     expect(plan.derived_specs).toEqual([]);
     expect(plan.slugs).toEqual([]);
+    // AC: @plan-branch-association ac-field-default
+    expect(plan.branch).toBeNull();
     expect(plan.notes).toEqual([]);
     expect(plan.created_at).toBeDefined();
   });
@@ -86,6 +88,63 @@ describe("Plan Parser", () => {
     expect(loaded[0].title).toBe("Test Plan");
     expect(loaded[0].content).toBe("Plan content here");
     expect(loaded[0].slugs).toEqual(["test-plan"]);
+    expect(loaded[0].branch).toBeNull();
+  });
+
+  // AC: @plan-branch-association ac-field-set
+  it("should persist branch when explicitly set", async () => {
+    const ctx = { specDir: kspecDir };
+    const plan = createPlan({
+      title: "Branch Plan",
+      branch: "plan/feature/01abc123",
+    });
+
+    await savePlan(ctx as any, plan);
+
+    const loaded = await loadPlans(ctx as any);
+    expect(loaded[0].branch).toBe("plan/feature/01abc123");
+  });
+
+  // AC: @plan-branch-association ac-field-clear
+  it("should clear branch to null without writing branch null to yaml", async () => {
+    const ctx = { specDir: kspecDir };
+    const plan = createPlan({
+      title: "Branch Clear Plan",
+      branch: "plan/feature/01abc123",
+    });
+
+    await savePlan(ctx as any, plan);
+    plan.branch = null;
+    await savePlan(ctx as any, plan);
+
+    const loaded = await loadPlans(ctx as any);
+    expect(loaded[0].branch).toBeNull();
+
+    const fileContents = await fs.readFile(getPlansFilePath(ctx as any), "utf-8");
+    expect(fileContents).not.toContain("branch: null");
+  });
+
+  // AC: @plan-branch-association ac-existing-plans-unaffected
+  it("should load existing plans without branch field as null", async () => {
+    const ctx = { specDir: kspecDir };
+    await fs.writeFile(
+      getPlansFilePath(ctx as any),
+      `kynetic_plans: "1.0"
+plans:
+  - _ulid: 01ARZ3NDEKTSV4RRFFQ69G5FAV
+    slugs:
+      - legacy-plan
+    title: Legacy Plan
+    content: Existing content
+    status: draft
+    created_at: 2026-04-01T00:00:00.000Z
+`,
+    );
+
+    const loaded = await loadPlans(ctx as any);
+    expect(loaded).toHaveLength(1);
+    expect(loaded[0].title).toBe("Legacy Plan");
+    expect(loaded[0].branch).toBeNull();
   });
 
   // AC: @plan-crud ac-1

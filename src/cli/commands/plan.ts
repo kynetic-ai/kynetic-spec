@@ -768,6 +768,10 @@ Examples:
             console.log(`Module:   ${foundPlan.module_ref}`);
           }
 
+          if (foundPlan.branch) {
+            console.log(`Branch:   ${foundPlan.branch}`);
+          }
+
           if (foundPlan.source_path) {
             console.log(`Source:   ${foundPlan.source_path}`);
           }
@@ -882,6 +886,7 @@ Examples:
     .option("--title <title>", "Update title")
     .option("--status <status>", "Update status")
     .option("--slug <slug>", "Add a slug")
+    .option("--branch <name>", "Set or clear the plan branch (use null or empty string to clear)")
     .action(async (ref: string, options) => {
       try {
         const ctx = await initContext();
@@ -903,7 +908,7 @@ Examples:
           }
         }
 
-        if (!options.title && !options.status && !options.slug) {
+        if (!options.title && !options.status && !options.slug && options.branch === undefined) {
           info("No changes specified");
           return;
         }
@@ -960,6 +965,17 @@ Examples:
             if (options.slug && !nextPlan.slugs.includes(options.slug)) {
               nextPlan.slugs.push(options.slug);
               changes.push(`slug: +${options.slug}`);
+            }
+
+            if (options.branch !== undefined) {
+              const normalizedBranch =
+                options.branch === "null" || options.branch.trim() === "" ? null : options.branch;
+              if (normalizedBranch !== latestPlan.branch) {
+                nextPlan.branch = normalizedBranch;
+                changes.push(
+                  `branch: ${latestPlan.branch ?? "null"} → ${normalizedBranch ?? "null"}`,
+                );
+              }
             }
 
             return nextPlan;
