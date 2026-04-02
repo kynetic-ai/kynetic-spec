@@ -105926,6 +105926,18 @@ reviews:
         runner: kspec
         created_at: 2026-04-02T20:10:31.323Z
         completed_at: 2026-04-02T20:10:31.323Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed targeted coverage: 16/16 suites, 48/48 tests, exit 0. Included
+          tests/daemon-command-api.test.ts, daemon-watcher-fallback/error-handling/multi-project,
+          and session-watcher."
+        name: targeted watcher and daemon command tests
+        required: true
+        runner: npm
+        created_at: 2026-04-02T20:10:33.606Z
+        completed_at: 2026-04-02T20:10:33.606Z
     events:
       - _ulid: 01KN7WNN61ZAV80AN5BYEQS62Y
         actor: Jacob Chapel
@@ -105961,6 +105973,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-04-02T20:10:32.078Z
+      - _ulid: 01KN7X3B14RWAFYR2HV1QJM0TT
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted watcher and daemon command tests
+        timestamp: 2026-04-02T20:10:34.404Z
     examined_commit: 987509e18bdfa9d85e25c3a98d5230ca04fb1198
     external_links: []
     lifecycle_state: open
@@ -105973,5 +105992,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-02T20:03:06.049Z
-    updated_at: 2026-04-02T20:10:31.323Z
+    updated_at: 2026-04-02T20:10:33.606Z
     notes: []
