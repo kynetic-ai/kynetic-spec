@@ -41,12 +41,8 @@ description: |
 spec_ref: "@plan-branch-association"
 plan_ref: "@plan-plan-scoped-branch-targeting"
 origin: derived
-status: blocked
-blocked_by:
-  - "Review blocked: full npm test fails in this snapshot on tests/daemon-entity-cache.test.ts
-    (ProjectEntityCache reload handoff expected 2, got 1 at line 1388). The submitted diff only
-    touches plan schema/parser/CLI files, and the branch-field implementation itself reviewed
-    cleanly, but merge cannot proceed until the repository-level test gate is green."
+status: pending_review
+blocked_by: []
 depends_on: []
 context: []
 priority: 1
@@ -64,7 +60,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: 01KN5Y61Q6F04P38NASQWWF4WG
+session_id: null
 history:
   - author: "@claude"
     changes:
@@ -131,7 +127,28 @@ history:
         previous: null
     command: task-block
     timestamp: 2026-04-02T02:11:41.724Z
-prior_status: pending_review
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: blocked
+      blocked_by:
+        new: []
+        previous:
+          - "Review blocked: full npm test fails in this snapshot on
+            tests/daemon-entity-cache.test.ts (ProjectEntityCache reload handoff expected 2, got 1
+            at line 1388). The submitted diff only touches plan schema/parser/CLI files, and the
+            branch-field implementation itself reviewed cleanly, but merge cannot proceed until the
+            repository-level test gate is green."
+      session_id:
+        new: null
+        previous: 01KN5Y61Q6F04P38NASQWWF4WG
+      prior_status:
+        new: null
+        previous: pending_review
+    command: task-unblock
+    timestamp: 2026-04-02T03:16:33.081Z
+prior_status: null
 created_at: 2026-04-02T01:45:33.016Z
 started_at: 2026-04-02T01:51:35.179Z
 submitted_at: 2026-04-02T02:01:26.945Z

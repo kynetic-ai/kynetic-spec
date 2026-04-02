@@ -23886,12 +23886,8 @@
   type: task
   spec_ref: "@plan-branch-association"
   plan_ref: "@plan-plan-scoped-branch-targeting"
-  status: blocked
-  blocked_by:
-    - "Review blocked: full npm test fails in this snapshot on tests/daemon-entity-cache.test.ts
-      (ProjectEntityCache reload handoff expected 2, got 1 at line 1388). The submitted diff only
-      touches plan schema/parser/CLI files, and the branch-field implementation itself reviewed
-      cleanly, but merge cannot proceed until the repository-level test gate is green."
+  status: pending_review
+  blocked_by: []
   depends_on: []
   priority: 1
   tags:
