@@ -11672,6 +11672,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-02T21:23:13.550Z
+  - _ulid: 01KN82F7WA42G833V9P6117QS2
+    type: friction
+    content: AC annotations can overclaim coverage when a test is tagged to a spec AC but only proves
+      one sub-behavior. In this review, @daemon-file-monitoring ac-8 was annotated on tests that
+      proved permanent-failure callback and project cleanup, but not the spec's logged-error clause
+      identifying the affected project. Reviewers had to re-read the full AC text and compare it
+      against assertions to catch the gap. Consider adding validation or review guidance that flags
+      annotations on multi-part ACs unless the test asserts each observable clause or explicitly
+      scopes which clause is covered.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-02T21:44:27.274Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
