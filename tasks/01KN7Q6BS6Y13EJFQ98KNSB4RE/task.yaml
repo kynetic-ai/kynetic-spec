@@ -1,0 +1,47 @@
+_ulid: 01KN7Q6BS6Y13EJFQ98KNSB4RE
+slugs:
+  - task-test-watcher-health
+title: Integration test for watcher health verification
+type: task
+description: |
+  Integration tests verifying the health check detects and recovers
+  from silent watcher failures, and that the diagnostic endpoint
+  exposes health data.
+
+  Why: The health check is the regression safety net for the exact
+  failure mode this plan addresses — silent watcher death in
+  multi-project setups. Without tests, the health check itself
+  could silently fail.
+
+  What: Test that a healthy watcher passes the health check
+  (sentinel write → callback fires → success recorded). Test that
+  a simulated silent failure (watcher stopped but watcherActive
+  still true) triggers restart and logs the incident. Test that
+  the /api/debug/cache-status endpoint includes health check
+  timestamps and failure counts. Test that a single-project health
+  failure doesn't affect other projects' monitoring.
+
+  How: Use the existing daemon test infrastructure with temp
+  directories. Simulate silent failure by directly closing the
+  underlying Chokidar watcher without going through the normal
+  stop path, leaving the watcherActive flag true. Verify the
+  health monitor detects the dead watcher within the check
+  interval + timeout window.
+
+  Covers: @daemon-watcher-health ac-1 through ac-4.
+spec_ref: "@daemon-watcher-health"
+plan_ref: "@plan-daemon-file-monitoring-reliability"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-watcher-health-check"
+context: []
+priority: 3
+tags:
+  - daemon
+  - watcher
+  - test
+vcs_refs: []
+created_at: 2026-04-02T18:27:22.022Z
+todos: []

@@ -1,0 +1,55 @@
+_ulid: 01KN7Q6BHCW3EXFA9SCBQAT05K
+slugs:
+  - task-test-chokidar-watcher
+title: Unit tests for Chokidar-only watcher
+type: task
+description: |
+  Update existing watcher tests and add new coverage for the
+  Chokidar-only implementation and session blob exclusion.
+
+  Why: The existing test files (daemon-watcher-fallback.test.ts,
+  daemon-watcher-error-handling.test.ts, daemon-watcher-multi-project.test.ts,
+  session-watcher.test.ts) test the dual-backend strategy including
+  Bun-specific behavior and fallback paths that no longer exist.
+  Tests must be updated to reflect the single-backend reality and
+  new blob exclusion behavior.
+
+  What: Remove or rewrite tests in daemon-watcher-fallback.test.ts
+  that assert Bun→Chokidar fallback — the fallback concept is gone.
+  Keep error handling tests (exponential backoff, permanent failure,
+  max retries) since those behaviors are unchanged. Add tests for:
+  session blob exclusion (verify blobs/ directories are not watched),
+  resource proportionality (FD count scales with directories not
+  files), cross-platform file detection (atomic writes via rename),
+  and multi-project watcher isolation (no cross-project events).
+  Add a test for new session directory detection to verify ac-7.
+
+  How: Tests use temp directories with controlled file counts.
+  The FD count test creates a sessions directory with synthetic
+  blob files and verifies the watcher's FD footprint. The isolation
+  test creates two watched directories and verifies events don't
+  cross. Tests that depend on real fs.watch behavior continue to
+  skip in CI (GitHub Actions limitation).
+
+  Covers: @daemon-file-monitoring ac-1 through ac-8.
+  Note: ac-6 (cross-project isolation) and ac-8 (persistent failure
+  unregistration) are already implemented per @multi-directory-daemon
+  ac-18 and ac-34 respectively — this task adds test coverage for
+  those behaviors under the new monitoring spec.
+spec_ref: "@daemon-file-monitoring"
+plan_ref: "@plan-daemon-file-monitoring-reliability"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-chokidar-standardize"
+  - "@task-session-blob-exclusion"
+context: []
+priority: 2
+tags:
+  - daemon
+  - watcher
+  - test
+vcs_refs: []
+created_at: 2026-04-02T18:27:21.772Z
+todos: []

@@ -1,0 +1,45 @@
+_ulid: 01KN7Q6AG9CHKD29KFY6ZY4YKD
+slugs:
+  - task-update-multi-dir-ac19
+title: Update multi-directory-daemon ac-19 for resource bounding
+type: task
+description: |
+  Extend ac-19 on @multi-directory-daemon to cover runtime resource
+  exhaustion from monitoring large directories, not just creation-time
+  EMFILE/ENFILE errors.
+
+  Why: The original ac-19 only covers the case where watcher creation
+  fails due to OS ulimits. The real-world failure mode is subtler —
+  the watcher succeeds but consumes so many file descriptors that
+  subsequent watchers for other projects silently fail. The spec
+  should cover resource proportionality, not just hard OS errors.
+  This must happen before implementation so the new behavior is
+  specified before it's built.
+
+  What: Run kspec item ac set @multi-directory-daemon ac-19 to
+  replace the narrow EMFILE/ENFILE language with the broader resource
+  constraint language.
+
+  How: kspec item ac set @multi-directory-daemon ac-19
+    --given "project file monitoring would consume excessive system
+            resources due to directory size or OS limits"
+    --when "the resource impact is detected during initialization
+            or health monitoring"
+    --then "the daemon reports the resource constraint with
+            actionable guidance and does not allow the project's
+            monitoring to degrade other registered projects"
+
+  Covers: @multi-directory-daemon ac-19 (replacement).
+spec_ref: "@multi-directory-daemon"
+plan_ref: "@plan-daemon-file-monitoring-reliability"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - spec-update
+vcs_refs: []
+created_at: 2026-04-02T18:27:20.713Z
+todos: []

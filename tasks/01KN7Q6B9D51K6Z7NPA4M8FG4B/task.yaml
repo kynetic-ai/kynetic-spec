@@ -1,0 +1,54 @@
+_ulid: 01KN7Q6B9D51K6Z7NPA4M8FG4B
+slugs:
+  - task-watcher-health-check
+title: Implement watcher health verification
+type: task
+description: |
+  Add a periodic health check that verifies file monitoring is
+  actively delivering events, detecting silent watcher failures
+  that report as active but stop delivering events.
+
+  Why: The investigation that prompted this plan found a secondary
+  project with watcherActive=true but lastInvalidatedAt=null on
+  most domains — the watcher was structurally present but functionally
+  dead. No existing mechanism detects this. The health check writes
+  a sentinel file, waits for the watcher callback, and restarts
+  monitoring if the callback never fires.
+
+  What: A WatcherHealthMonitor that runs at a configurable interval
+  (default 60 seconds). For each project with active monitoring, it
+  writes a sentinel YAML file into the watched directory, waits for
+  the watcher's change callback to fire within a timeout window
+  (debounce time + margin), and records success or failure. On
+  failure, it stops and restarts the watcher for that project,
+  logging the incident. The sentinel file is cleaned up after each
+  check. The health check results are exposed through the existing
+  cache diagnostic endpoint.
+
+  How: The health monitor lives in ProjectContextManager or as a
+  standalone class wired in server.ts. It uses a .kspec/.health-check
+  sentinel file (gitignored, cleaned up after each probe). The
+  timeout is debounce_ms + 2000ms margin. On failure, call
+  stopWatcher() then startWatcher() for the affected project.
+  Track last_health_check_at and consecutive_failures per project
+  in the ProjectContext. Extend the /api/debug/cache-status response
+  to include these fields.
+
+  Covers: @daemon-watcher-health ac-1, ac-2, ac-3, ac-4.
+spec_ref: "@daemon-watcher-health"
+plan_ref: "@plan-daemon-file-monitoring-reliability"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-chokidar-standardize"
+  - "@task-session-blob-exclusion"
+context: []
+priority: 2
+tags:
+  - daemon
+  - watcher
+  - reliability
+vcs_refs: []
+created_at: 2026-04-02T18:27:21.517Z
+todos: []

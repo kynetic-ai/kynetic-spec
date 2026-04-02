@@ -1,0 +1,41 @@
+_ulid: 01KN7Q6A7SGAZGZC9M5N7DNZK3
+slugs:
+  - task-update-daemon-server-ac8
+title: Update daemon-server ac-8 spec language
+type: task
+description: |
+  Replace the implementation-prescriptive ac-8 on @daemon-server
+  with behavioral language that specifies reliable cross-platform
+  monitoring without naming specific backends.
+
+  Why: The current ac-8 says "fall back to Chokidar file watcher"
+  which is an implementation detail, not a behavioral contract. The
+  spec should describe the observable behavior: file changes are
+  detected reliably on all supported platforms. This must happen
+  before the implementation tasks so work proceeds against correct
+  specs.
+
+  What: Run kspec item ac set @daemon-server ac-8 to replace the
+  given/when/then with behavioral language. Remove any references
+  to specific runtime APIs or library names from the AC text.
+
+  How: kspec item ac set @daemon-server ac-8
+    --given "the daemon needs to detect file changes"
+    --when "file monitoring is initialized"
+    --then "changes are detected reliably across all supported
+            platforms without manual configuration"
+
+  Covers: @daemon-server ac-8 (replacement).
+spec_ref: "@daemon-server"
+plan_ref: "@plan-daemon-file-monitoring-reliability"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - spec-update
+vcs_refs: []
+created_at: 2026-04-02T18:27:20.441Z
+todos: []

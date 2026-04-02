@@ -1,0 +1,54 @@
+_ulid: 01KN7Q6B0NWYDQT5JKY7YXFM12
+slugs:
+  - task-session-blob-exclusion
+title: Exclude session content storage from file monitoring
+type: task
+description: |
+  Configure the session watcher to exclude content storage
+  directories (blobs/) from monitoring, reducing FD consumption
+  from ~185k to ~7k for large projects.
+
+  Why: The daemon monitors .kspec-sessions/ for session lifecycle
+  changes (creation, status updates, event recording). The sessions
+  directory also contains a blobs/ subdirectory per session holding
+  externalized content data — these are written during session
+  recording and read on demand, but changes to blob files never
+  drive cache invalidation. With Chokidar watching the full tree,
+  it opens an inotify watch per directory. On a project with 1500+
+  sessions and 180k+ blob files, this consumes ~185k file
+  descriptors. With blob exclusion, only session metadata directories
+  are watched (~7k FDs for the same project).
+
+  What: In the SessionWatcher's Chokidar configuration, add an
+  ignored function that returns true for paths matching blobs/
+  directories and their contents. The function must allow directory
+  traversal (return false for session root directories) while
+  blocking descent into blobs/ subdirectories. Also exclude
+  non-metadata file types — only .yaml and .jsonl files need
+  monitoring in the sessions tree.
+
+  How: The ignored function receives the path and optional stats.
+  Check for /blobs at end of path or /blobs/ within path. For files
+  (paths with extensions), only allow .yaml and .jsonl through.
+  Validated via standalone test: Chokidar with this filter uses
+  ~7k FDs vs 185k without, and correctly detects session.yaml
+  modifications and new session directory creation.
+
+  Covers: @daemon-file-monitoring ac-2, ac-3, ac-7.
+spec_ref: "@daemon-file-monitoring"
+plan_ref: "@plan-daemon-file-monitoring-reliability"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-chokidar-standardize"
+  - "@task-update-multi-dir-ac19"
+context: []
+priority: 1
+tags:
+  - daemon
+  - watcher
+  - performance
+vcs_refs: []
+created_at: 2026-04-02T18:27:21.237Z
+todos: []

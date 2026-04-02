@@ -24175,3 +24175,150 @@
   submitted_at: 2026-04-02T08:51:28.888Z
   completed_at: 2026-04-02T09:05:10.614Z
   automation: eligible
+- _ulid: 01KN7Q6A7SGAZGZC9M5N7DNZK3
+  slugs:
+    - task-update-daemon-server-ac8
+  title: Update daemon-server ac-8 spec language
+  type: task
+  spec_ref: "@daemon-server"
+  plan_ref: "@plan-daemon-file-monitoring-reliability"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - spec-update
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-02T18:27:20.441Z
+- _ulid: 01KN7Q6AG9CHKD29KFY6ZY4YKD
+  slugs:
+    - task-update-multi-dir-ac19
+  title: Update multi-directory-daemon ac-19 for resource bounding
+  type: task
+  spec_ref: "@multi-directory-daemon"
+  plan_ref: "@plan-daemon-file-monitoring-reliability"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - spec-update
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-02T18:27:20.713Z
+- _ulid: 01KN7Q6ARE8SXC9F8AEHYVFHCF
+  slugs:
+    - task-chokidar-standardize
+  title: Replace dual-backend watcher with Chokidar-only implementation
+  type: task
+  spec_ref: "@daemon-file-monitoring"
+  plan_ref: "@plan-daemon-file-monitoring-reliability"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-update-daemon-server-ac8"
+  priority: 1
+  tags:
+    - daemon
+    - watcher
+    - foundation
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-02T18:27:20.974Z
+- _ulid: 01KN7Q6B0NWYDQT5JKY7YXFM12
+  slugs:
+    - task-session-blob-exclusion
+  title: Exclude session content storage from file monitoring
+  type: task
+  spec_ref: "@daemon-file-monitoring"
+  plan_ref: "@plan-daemon-file-monitoring-reliability"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-chokidar-standardize"
+    - "@task-update-multi-dir-ac19"
+  priority: 1
+  tags:
+    - daemon
+    - watcher
+    - performance
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-02T18:27:21.237Z
+- _ulid: 01KN7Q6B9D51K6Z7NPA4M8FG4B
+  slugs:
+    - task-watcher-health-check
+  title: Implement watcher health verification
+  type: task
+  spec_ref: "@daemon-watcher-health"
+  plan_ref: "@plan-daemon-file-monitoring-reliability"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-chokidar-standardize"
+    - "@task-session-blob-exclusion"
+  priority: 2
+  tags:
+    - daemon
+    - watcher
+    - reliability
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-02T18:27:21.517Z
+- _ulid: 01KN7Q6BHCW3EXFA9SCBQAT05K
+  slugs:
+    - task-test-chokidar-watcher
+  title: Unit tests for Chokidar-only watcher
+  type: task
+  spec_ref: "@daemon-file-monitoring"
+  plan_ref: "@plan-daemon-file-monitoring-reliability"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-chokidar-standardize"
+    - "@task-session-blob-exclusion"
+  priority: 2
+  tags:
+    - daemon
+    - watcher
+    - test
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-02T18:27:21.772Z
+- _ulid: 01KN7Q6BS6Y13EJFQ98KNSB4RE
+  slugs:
+    - task-test-watcher-health
+  title: Integration test for watcher health verification
+  type: task
+  spec_ref: "@daemon-watcher-health"
+  plan_ref: "@plan-daemon-file-monitoring-reliability"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-watcher-health-check"
+  priority: 3
+  tags:
+    - daemon
+    - watcher
+    - test
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-02T18:27:22.022Z
+- _ulid: 01KN7Q6C1PD7QD02ENCX9DD0PD
+  slugs:
+    - task-cleanup-bun-watcher
+  title: Remove Bun fs.watch code paths and unused fallback tests
+  type: task
+  plan_ref: "@plan-daemon-file-monitoring-reliability"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-test-chokidar-watcher"
+  priority: 3
+  tags:
+    - daemon
+    - cleanup
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-02T18:27:22.294Z

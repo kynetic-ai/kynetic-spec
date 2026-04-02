@@ -3642,6 +3642,158 @@ features:
     tags: []
     created: 2026-03-20T15:52:01.376Z
     notes: []
+  - _ulid: 01KN7Q6A4ZKJZJRH9Q2BR480ZD
+    slugs:
+      - daemon-file-monitoring
+    title: Resource-Bounded File Monitoring
+    type: feature
+    description: |
+      Defines the contract for how the daemon monitors project directories
+      for changes. File monitoring must be resource-proportional — the
+      daemon's resource consumption scales with the number of directories
+      and metadata files that need monitoring, not with the total volume
+      of data stored in those directories.
+
+      The daemon monitors two directory trees per project: the shadow
+      branch worktree for spec/task state, and the sessions directory
+      for session lifecycle. Each tree has distinct monitoring needs —
+      the shadow branch contains structured YAML that drives cache
+      invalidation, while the sessions directory contains metadata files
+      alongside large volumes of content data (blobs) that are irrelevant
+      to cache freshness.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits:
+      - "@trait-error-guidance"
+    acceptance_criteria:
+      - given: |
+          A project is registered with the daemon
+        id: ac-1
+        then: |
+          Changes to structured data files in the shadow branch directory
+          are detected and reported within the debounce window
+        when: |
+          File monitoring starts for that project
+      - given: |
+          The sessions directory contains large volumes of content data
+          alongside session metadata files
+        id: ac-2
+        then: |
+          Only session metadata and event files are monitored; content
+          storage directories are excluded from monitoring
+        when: |
+          File monitoring starts for the sessions directory
+      - given: |
+          A project's sessions directory has thousands of sessions with
+          accumulated content data
+        id: ac-3
+        then: |
+          File descriptor count is proportional to the number of
+          monitored directories and metadata files, not to the total
+          number of stored content files
+        when: |
+          The daemon process resource usage is measured
+      - given: |
+          The daemon is running on any supported platform
+        id: ac-4
+        then: |
+          File changes are detected reliably regardless of the
+          operating system's native filesystem event mechanism
+        when: |
+          File monitoring is initialized
+      - given: |
+          A monitored file is modified through an atomic write operation
+          (write to temporary file, then rename)
+        id: ac-5
+        then: |
+          The change is detected and reported as a modification to the
+          target path
+        when: |
+          The monitoring system processes the filesystem event
+      - given: |
+          Multiple projects are registered with the daemon
+        id: ac-6
+        then: |
+          Only that project's change handler is invoked; no cross-project
+          event delivery occurs
+        when: |
+          A file changes in one project's monitored directory
+      - given: |
+          A new session directory is created after monitoring started
+        id: ac-7
+        then: |
+          The new session's metadata changes are detected without
+          requiring a monitoring restart
+        when: |
+          Metadata files are written into the new session directory
+      - given: |
+          The monitoring system encounters a persistent error for a
+          project directory
+        id: ac-8
+        then: |
+          The project is unregistered and resources are released, with
+          a logged error identifying the affected project
+        when: |
+          Recovery attempts are exhausted
+    tags: []
+    requirements:
+      - _ulid: 01KN7Q6A6JQEKA3ZG43BTVX0E7
+        slugs:
+          - daemon-watcher-health
+        title: Watcher Health Verification
+        type: requirement
+        description: |
+          Provides runtime verification that file monitoring is actively
+          delivering events, not just that a watcher object exists. Silent
+          watcher failures — where the watcher reports as active but stops
+          delivering events — are detected and recovered from automatically.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              File monitoring is active for a project
+            id: ac-1
+            then: |
+              The daemon verifies that the monitoring system can detect
+              a synthetic file change within the expected debounce window
+            when: |
+              A periodic health check runs
+          - given: |
+              The health check detects that a synthetic change was not
+              reported within the expected window
+            id: ac-2
+            then: |
+              The monitoring system is restarted for the affected project
+              and the incident is logged with the project path and failure
+              duration
+            when: |
+              The verification timeout elapses
+          - given: |
+              Multiple projects are registered
+            id: ac-3
+            then: |
+              Only that project's monitoring is restarted; other projects
+              are unaffected
+            when: |
+              One project's watcher health check fails
+          - given: |
+              The daemon's cache diagnostic endpoint is queried
+            id: ac-4
+            then: |
+              The response includes the last successful health check
+              timestamp and consecutive failure count per project
+            when: |
+              Watcher health data is available
+        tags: []
+        created: 2026-04-02T18:27:20.402Z
+        notes: []
+    created: 2026-04-02T18:27:20.351Z
+    notes: []
 requirements:
   - _ulid: 01KJZH33ZQ6DS7KTNFCRBBBBVX
     slugs:

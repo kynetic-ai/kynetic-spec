@@ -1,0 +1,54 @@
+_ulid: 01KN7Q6ARE8SXC9F8AEHYVFHCF
+slugs:
+  - task-chokidar-standardize
+title: Replace dual-backend watcher with Chokidar-only implementation
+type: task
+description: |
+  Replace the Bun fs.watch primary / Chokidar fallback dual-backend
+  strategy in both KspecWatcher and SessionWatcher with Chokidar as
+  the sole monitoring backend.
+
+  Why: Bun's fs.watch with recursive:true has three confirmed bugs on
+  Linux — it opens a file descriptor for every file in the watched tree
+  (not just directories as inotify should), it leaks FDs on .close()
+  (count increases rather than decreasing), and it can deliver events
+  from one watcher's directory to another watcher's callback. These
+  bugs cause the daemon to accumulate 190k+ FDs within minutes on
+  projects with large session directories, which in turn causes
+  secondary project watchers to silently fail. Chokidar uses native
+  platform APIs correctly (inotify on Linux, FSEvents on macOS,
+  ReadDirectoryChangesW on Windows) and is battle-tested in webpack,
+  vite, and similar long-running tools.
+
+  What: In packages/daemon/src/watcher.ts — remove startBunWatcher(),
+  remove the try/catch fallback in start(), remove the usingChokidar
+  flag and conditional close() logic. Make start() call Chokidar
+  directly. Keep the existing debounce (500ms), YAML parse validation,
+  nested .kspec path filtering, and error recovery with exponential
+  backoff. In packages/daemon/src/session-watcher.ts — same removal
+  of dual-backend, same Chokidar-only approach. Keep the bootstrap
+  polling for lazy directory creation and the 250ms debounce.
+
+  How: The Chokidar initialization in both files already exists as
+  the fallback path. Promote it to the only path, remove the Bun
+  path, and simplify. Keep chokidar v4.0.3+ (already a dependency).
+  The ignored function for SessionWatcher does not change yet — that
+  is task-session-blob-exclusion.
+
+  Covers: @daemon-file-monitoring ac-1, ac-4, ac-5.
+spec_ref: "@daemon-file-monitoring"
+plan_ref: "@plan-daemon-file-monitoring-reliability"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-update-daemon-server-ac8"
+context: []
+priority: 1
+tags:
+  - daemon
+  - watcher
+  - foundation
+vcs_refs: []
+created_at: 2026-04-02T18:27:20.974Z
+todos: []

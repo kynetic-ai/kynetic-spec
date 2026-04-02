@@ -1,0 +1,44 @@
+_ulid: 01KN7Q6C1PD7QD02ENCX9DD0PD
+slugs:
+  - task-cleanup-bun-watcher
+title: Remove Bun fs.watch code paths and unused fallback tests
+type: task
+description: |
+  Final cleanup pass to remove any residual Bun fs.watch references,
+  dead code, and obsolete test infrastructure.
+
+  Why: After the Chokidar-only implementation is tested and the
+  fallback tests are rewritten, any remaining Bun-specific code is
+  dead weight. This includes console.log messages referencing "Bun
+  fs.watch", the usingChokidar boolean checks in stop() methods,
+  and any test mocks for the Bun watcher.
+
+  What: Audit watcher.ts and session-watcher.ts for any remaining
+  references to "Bun", "fs.watch", or conditional Chokidar paths.
+  Remove the startBunWatcher methods if not already removed in
+  task-chokidar-standardize (they should be, but verify). Remove
+  the usingChokidar flag and simplify stop() to always call
+  Chokidar's close(). Update the testing convention in AGENTS.md
+  if it references the watcher CI skip reason ("GitHub Actions
+  does not support recursive fs.watch") — update to clarify it's
+  a Chokidar/inotify CI limitation. Remove daemon-watcher-fallback
+  test file if fully subsumed by new tests.
+
+  How: grep -r for "Bun", "fs.watch", "startBun", "usingChokidar"
+  in packages/daemon/src/ and tests/. Remove hits. Run full test
+  suite to verify nothing breaks.
+spec_ref: null
+plan_ref: "@plan-daemon-file-monitoring-reliability"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-test-chokidar-watcher"
+context: []
+priority: 3
+tags:
+  - daemon
+  - cleanup
+vcs_refs: []
+created_at: 2026-04-02T18:27:22.294Z
+todos: []
