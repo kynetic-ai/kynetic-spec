@@ -3753,6 +3753,9 @@ features:
           delivering events, not just that a watcher object exists. Silent
           watcher failures — where the watcher reports as active but stops
           delivering events — are detected and recovered from automatically.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
