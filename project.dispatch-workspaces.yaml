@@ -32682,18 +32682,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/default-plan-derive-to-include-tasks/01kn6cfc
-    canonical_branch_head: ed8d1259edd96190c6233c7b2edfb658aeed57a2
+    canonical_branch_head: 432d716a4805d82b05eaa89afb4764270e331005
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-02T06:01:16.057Z
+      updated_at: 2026-04-02T06:17:01.506Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T06:01:25.711Z
+      updated_at: 2026-04-02T06:17:01.506Z
     integration:
       status: pending
       detail: null
@@ -32701,7 +32701,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: ed8d1259edd96190c6233c7b2edfb658aeed57a2
-      updated_at: 2026-04-02T06:01:16.057Z
+      updated_at: 2026-04-02T06:17:01.506Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KN6CFCMZJRBS1529D0NXJB50"
@@ -32709,9 +32709,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-02T06:01:25.711Z
-      last_reconciled_at: 2026-04-02T06:01:25.711Z
+      last_reconciled_at: 2026-04-02T06:17:01.506Z
       created_at: 2026-04-02T06:01:16.057Z
-      updated_at: 2026-04-02T06:01:25.711Z
+      updated_at: 2026-04-02T06:17:01.506Z
     workspace_id: dispatch-workspace-01KN6CFCMZJRBS1529D0NXJB50
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
