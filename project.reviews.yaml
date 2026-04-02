@@ -105196,7 +105196,19 @@ reviews:
     slugs: []
     title: Review task-update-multi-dir-ac19
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate exited 6 with only repository warning baseline: 1 orphaned skill dir, 31
+          alignment warnings, 521 completeness warnings; no new validation errors introduced by this
+          task."
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-04-02T19:15:53.500Z
+        completed_at: 2026-04-02T19:15:53.500Z
     events:
       - _ulid: 01KN7SGKK2CHR62Z6BGQFK03HB
         actor: Jacob Chapel
@@ -105211,6 +105223,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-02T19:08:18.693Z
+      - _ulid: 01KN7SZ7QPZQ6P5XCRH3E2GJMS
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-02T19:15:54.230Z
     examined_commit: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
     external_links: []
     lifecycle_state: open
@@ -105223,5 +105242,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-02T19:07:54.851Z
-    updated_at: 2026-04-02T19:08:17.986Z
+    updated_at: 2026-04-02T19:15:53.500Z
     notes: []
