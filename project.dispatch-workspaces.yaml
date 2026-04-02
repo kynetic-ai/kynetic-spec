@@ -33626,7 +33626,7 @@ workspaces:
         head: 987509e18bdfa9d85e25c3a98d5230ca04fb1198
         last_seen_at: 2026-04-02T20:02:04.738Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-chokidar-standardize-01kn7q6a
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
     bootstrap:
       status: succeeded
@@ -33752,9 +33752,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-02T19:49:16.169Z
-      last_reconciled_at: 2026-04-02T20:01:52.497Z
+      last_reconciled_at: 2026-04-02T20:03:59.432Z
       created_at: 2026-04-02T19:34:13.988Z
-      updated_at: 2026-04-02T20:01:52.497Z
+      updated_at: 2026-04-02T20:03:59.432Z
     workspace_id: dispatch-workspace-01KN7T0787B3059SWKZN0ZWAAR
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
