@@ -10,3 +10,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T18:33:53.809Z
+  - _ulid: 01KN7RXGTS4ZSA33P62KEYTM7G
+    content: "Approach: update only @daemon-server ac-8 via kspec CLI so the spec describes observable
+      cross-platform monitoring behavior rather than naming a backend. Edge cases: avoid
+      implementation/API/library names and keep the AC aligned with the plan's cross-platform
+      reliability intent. Verification: re-read @daemon-server ac-8 after the change and run kspec
+      validate to confirm the spec state remains valid."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T18:57:29.433Z
