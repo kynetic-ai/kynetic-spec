@@ -20,3 +20,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-01T23:55:52.851Z
+  - _ulid: 01KN5R8DAJRFF08NJDHXXA6B7M
+    content: "Verification: reproduced the defect directly against dist/parser/file-lock.js by setting
+      maxHoldMs=5ms, which let same-process waiters force-reclaim the lock and collapse 5 increments
+      to 2. After the fix, npm test -- --fresh tests/file-lock.test.ts passed, the file-lock suite
+      passed 10/10 fresh repetitions, npm test -- --fresh tests/dispatch-workspace-registry.test.ts
+      passed after updating its alive-holder fixture to a real child PID, and the final npm test --
+      --fresh full suite passed (2073/2073 suites, 7472 passed, 5 skipped)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T00:07:28.850Z
