@@ -40,5 +40,14 @@ tags:
   - daemon
   - cleanup
 vcs_refs: []
+history:
+  - author: "@claude"
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-04-02T18:32:10.438Z
 created_at: 2026-04-02T18:27:22.294Z
 todos: []
+automation: eligible

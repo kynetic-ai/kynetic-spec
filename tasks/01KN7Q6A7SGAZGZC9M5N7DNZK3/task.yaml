@@ -37,5 +37,14 @@ priority: 1
 tags:
   - spec-update
 vcs_refs: []
+history:
+  - author: "@claude"
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-04-02T18:32:04.380Z
 created_at: 2026-04-02T18:27:20.441Z
 todos: []
+automation: eligible

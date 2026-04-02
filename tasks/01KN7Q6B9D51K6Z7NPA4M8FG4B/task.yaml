@@ -50,5 +50,14 @@ tags:
   - watcher
   - reliability
 vcs_refs: []
+history:
+  - author: "@claude"
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-04-02T18:32:07.884Z
 created_at: 2026-04-02T18:27:21.517Z
 todos: []
+automation: eligible

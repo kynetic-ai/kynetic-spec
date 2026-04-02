@@ -24191,6 +24191,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-02T18:27:20.441Z
+  automation: eligible
 - _ulid: 01KN7Q6AG9CHKD29KFY6ZY4YKD
   slugs:
     - task-update-multi-dir-ac19
@@ -24207,6 +24208,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-02T18:27:20.713Z
+  automation: eligible
 - _ulid: 01KN7Q6ARE8SXC9F8AEHYVFHCF
   slugs:
     - task-chokidar-standardize
@@ -24226,6 +24228,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-02T18:27:20.974Z
+  automation: eligible
 - _ulid: 01KN7Q6B0NWYDQT5JKY7YXFM12
   slugs:
     - task-session-blob-exclusion
@@ -24246,6 +24249,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-02T18:27:21.237Z
+  automation: eligible
 - _ulid: 01KN7Q6B9D51K6Z7NPA4M8FG4B
   slugs:
     - task-watcher-health-check
@@ -24266,6 +24270,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-02T18:27:21.517Z
+  automation: eligible
 - _ulid: 01KN7Q6BHCW3EXFA9SCBQAT05K
   slugs:
     - task-test-chokidar-watcher
@@ -24286,6 +24291,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-02T18:27:21.772Z
+  automation: eligible
 - _ulid: 01KN7Q6BS6Y13EJFQ98KNSB4RE
   slugs:
     - task-test-watcher-health
@@ -24305,6 +24311,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-02T18:27:22.022Z
+  automation: eligible
 - _ulid: 01KN7Q6C1PD7QD02ENCX9DD0PD
   slugs:
     - task-cleanup-bun-watcher
@@ -24322,3 +24329,4 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-02T18:27:22.294Z
+  automation: eligible
