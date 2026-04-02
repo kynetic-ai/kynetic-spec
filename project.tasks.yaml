@@ -24345,7 +24345,7 @@
     - task-stabilize-file-lock-maxhold-contention
   title: Stabilize file-lock same-process maxHoldMs contention test
   type: bug
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 2
@@ -24355,4 +24355,5 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-02T19:16:26.503Z
+  started_at: 2026-04-02T19:34:53.545Z
   automation: eligible
