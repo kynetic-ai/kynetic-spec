@@ -51,7 +51,7 @@ vi.mock("chokidar", () => ({
   watch: mockState.chokidarWatch,
 }));
 
-describe("KspecWatcher Chokidar monitoring", () => {
+describe("KspecWatcher Chokidar-only monitoring", () => {
   let tempDir: string;
   let kspecDir: string;
   let rootYamlPath: string;
@@ -60,12 +60,12 @@ describe("KspecWatcher Chokidar monitoring", () => {
     vi.resetModules();
     vi.clearAllMocks();
 
-    tempDir = await createTempDir("kspec-daemon-watcher-fallback-");
+    tempDir = await createTempDir("kspec-daemon-watcher-chokidar-");
     kspecDir = join(tempDir, ".kspec");
     rootYamlPath = join(kspecDir, "kynetic.yaml");
 
     await mkdir(kspecDir, { recursive: true });
-    await writeFile(rootYamlPath, 'kynetic: "1.0"\nproject: Fallback Delivery\n');
+    await writeFile(rootYamlPath, 'kynetic: "1.0"\nproject: Chokidar Delivery\n');
     await symlink(kspecDir, join(kspecDir, ".kspec"), "dir");
 
     mockState.chokidarWatch.mockImplementation(
@@ -126,7 +126,7 @@ describe("KspecWatcher Chokidar monitoring", () => {
     await vi.waitFor(() => {
       expect(changeHandler).toHaveBeenCalledWith(
         rootYamlPath,
-        expect.stringContaining("project: Fallback Delivery"),
+        expect.stringContaining("project: Chokidar Delivery"),
       );
     });
     expect(errorHandler).not.toHaveBeenCalled();
