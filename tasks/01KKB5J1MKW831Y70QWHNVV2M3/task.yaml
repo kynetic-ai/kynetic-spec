@@ -4,8 +4,9 @@ slugs:
 title: Add markdown rendering trait to existing specs
 type: task
 plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
-status: in_progress
+status: completed
 blocked_by: []
+closed_reason: Trait attached to all three specs. All ACs verified covered by existing tests.
 depends_on:
   - "@implement-markdown-rendering-trait"
 context: []
@@ -14,6 +15,14 @@ tags:
   - spec
   - web-ui
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-04-02T05:03:08.059Z
+  commit: a3ad408f969b1b18330158d475b0faa18c47832b
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
 session_id: 01KM0XRFH87T3QWPVXDQZCA2XK
 history:
   - author: "@claude"
@@ -29,7 +38,42 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-02T05:02:26.023Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-04-02T05:03:08.059Z
+          commit: a3ad408f969b1b18330158d475b0faa18c47832b
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-04-02T05:03:08.065Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-02T05:03:08.065Z
+  - author: "@claude"
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Trait attached to all three specs. All ACs verified covered by existing tests.
+        previous: null
+      completed_at:
+        new: 2026-04-02T05:03:09.106Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-02T05:03:09.112Z
 created_at: 2026-03-10T06:04:44.563Z
 started_at: 2026-04-02T05:02:26.022Z
+submitted_at: 2026-04-02T05:03:08.065Z
+completed_at: 2026-04-02T05:03:09.106Z
 todos: []
 automation: needs_review

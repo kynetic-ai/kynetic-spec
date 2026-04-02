@@ -1095,6 +1095,7 @@ features:
       - "@trait-filterable-list"
       - "@trait-websocket-protocol"
       - "@ui-url-panel-state"
+      - "@trait-markdown-rendering"
     acceptance_criteria:
       - given: daemon is running on configured port (default 3456)
         id: ac-1
@@ -1974,7 +1975,8 @@ features:
     implements: []
     relates_to: []
     tests: []
-    traits: []
+    traits:
+      - "@trait-markdown-rendering"
     acceptance_criteria:
       - given: |
           A completed session with events.jsonl
@@ -2536,7 +2538,8 @@ features:
     implements: []
     relates_to: []
     tests: []
-    traits: []
+    traits:
+      - "@trait-markdown-rendering"
     acceptance_criteria:
       - given: |
           Plan records exist

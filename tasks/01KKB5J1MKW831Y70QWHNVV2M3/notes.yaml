@@ -26,3 +26,9 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-11T05:58:35.346Z
+  - _ulid: 01KN695QQ77JWT75CBS1PA4TC2
+    content: Added @trait-markdown-rendering to @ui-session-stream, @ui-plans-view, and @web-dashboard.
+      All 9 trait ACs already have implementation and test coverage.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-02T05:03:06.983Z
