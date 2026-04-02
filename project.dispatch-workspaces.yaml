@@ -33590,7 +33590,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T19:55:10.181Z
+      updated_at: 2026-04-02T19:55:15.172Z
     integration:
       status: pending
       detail: null
@@ -33599,25 +33599,20 @@ workspaces:
       target_branch: plan/plan-daemon-file-monitoring-reliability/01kn7nw3
       target_commit: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
       updated_at: 2026-04-02T19:55:10.181Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: plan/plan-daemon-file-monitoring-reliability/01kn7nw3
     task_ref: "@01KN7Q6ARE8SXC9F8AEHYVFHCF"
     task_slug: task-chokidar-standardize
     timestamps:
       closed_at: null
       last_active_at: 2026-04-02T19:32:55.575Z
-      last_reconciled_at: 2026-04-02T19:55:10.181Z
+      last_reconciled_at: 2026-04-02T19:55:15.172Z
       created_at: 2026-04-02T19:11:47.681Z
-      updated_at: 2026-04-02T19:55:10.181Z
+      updated_at: 2026-04-02T19:55:15.172Z
     workspace_id: dispatch-workspace-01KN7Q6ARE8SXC9F8AEHYVFHCF
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: db7f01d365a123d47dd9e5f3e694f34fb7686367
-        last_seen_at: 2026-04-02T19:32:26.044Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-chokidar-standardize-01kn7q6a-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-chokidar-standardize/01kn7q6a
