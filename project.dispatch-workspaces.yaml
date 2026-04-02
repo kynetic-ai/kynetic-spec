@@ -33035,7 +33035,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T09:05:58.713Z
+      updated_at: 2026-04-02T09:06:07.190Z
     integration:
       status: merged
       detail: integration:merged
@@ -33051,18 +33051,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-02T08:54:04.601Z
-      last_reconciled_at: 2026-04-02T09:06:05.015Z
+      last_reconciled_at: 2026-04-02T09:06:07.190Z
       created_at: 2026-04-02T07:44:57.865Z
-      updated_at: 2026-04-02T09:06:05.015Z
+      updated_at: 2026-04-02T09:06:07.190Z
     workspace_id: dispatch-workspace-01KN6J53YQST2TF8BMFJ7GZC7T
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 4d39d320fa3721dbe60c8b003ff225d92d9e8a3f
-        last_seen_at: 2026-04-02T08:53:38.700Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-pre-invocation-workspace-executability-validation-for-dispatch-handoff-01kn6j53-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/implement-pre-invocation-workspace-executability-validation-for-dispatch-handoff/01kn6j53
