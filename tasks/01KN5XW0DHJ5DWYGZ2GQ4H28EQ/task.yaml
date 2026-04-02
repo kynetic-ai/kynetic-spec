@@ -51,5 +51,14 @@ tags:
   - cli
   - plans
 vcs_refs: []
+history:
+  - author: "@claude"
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-04-02T01:49:26.720Z
 created_at: 2026-04-02T01:45:33.873Z
 todos: []
+automation: eligible

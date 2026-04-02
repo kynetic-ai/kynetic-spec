@@ -23897,6 +23897,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-02T01:45:33.016Z
+  automation: eligible
 - _ulid: 01KN5XVZVERDZ3ZVAPDCFP5PJB
   slugs:
     - task-plan-branch-command
@@ -23916,6 +23917,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-02T01:45:33.294Z
+  automation: eligible
 - _ulid: 01KN5XW04JM5261ZFYV1HCQVJK
   slugs:
     - task-dispatch-plan-branch-resolution
@@ -23935,6 +23937,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-02T01:45:33.586Z
+  automation: eligible
 - _ulid: 01KN5XW0DHJ5DWYGZ2GQ4H28EQ
   slugs:
     - task-plan-branch-activation
@@ -23953,3 +23956,4 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-02T01:45:33.873Z
+  automation: eligible
