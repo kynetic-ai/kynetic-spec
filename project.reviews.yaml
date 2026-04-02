@@ -106817,7 +106817,18 @@ reviews:
     slugs: []
     title: Review stabilize flaky full-suite tests for cli-serve and agent-dispatch-engine
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm test -- --fresh exited 0. No failing tests. Both historically flaky tests passed in
+          the full suite.
+        name: npm test fresh run 1
+        required: true
+        runner: npm
+        created_at: 2026-04-02T22:55:10.671Z
+        completed_at: 2026-04-02T22:55:10.671Z
     events:
       - _ulid: 01KN85ZVYCM7VWVZ0RT3W9N4SE
         actor: Jacob Chapel
@@ -106839,6 +106850,13 @@ reviews:
           kind: nit
           thread_ulid: 01KN86GNSB0P5BYXST61JJT8A8
         timestamp: 2026-04-02T22:55:09.276Z
+      - _ulid: 01KN86GRHNPSQZW320PQTEDK5B
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test fresh run 1
+        timestamp: 2026-04-02T22:55:11.413Z
     examined_commit: 5e24ded90b046cac44f5568969374937df61bd84
     external_links: []
     lifecycle_state: open
@@ -106867,5 +106885,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-02T22:45:57.836Z
-    updated_at: 2026-04-02T22:55:08.587Z
+    updated_at: 2026-04-02T22:55:10.671Z
     notes: []
