@@ -105491,6 +105491,21 @@ reviews:
         runner: npm
         created_at: 2026-04-02T19:51:11.603Z
         completed_at: 2026-04-02T19:51:11.603Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: >-
+          > @kynetic-ai/spec@0.12.0 test
+
+          > node scripts/test.cjs tests/daemon-watcher-error-handling.test.ts
+          tests/daemon-watcher-fallback.test.ts tests/daemon-watcher-multi-project.test.ts
+          tests/session-watcher.test.ts passed: 14/14 suites, 24/24 tests.
+        name: targeted watcher suite
+        required: true
+        runner: npm
+        created_at: 2026-04-02T19:51:15.446Z
+        completed_at: 2026-04-02T19:51:15.446Z
     events:
       - _ulid: 01KN7V0PCHY1GRE8V4T35GMF9C
         actor: Jacob Chapel
@@ -105526,6 +105541,13 @@ reviews:
           status: fail
           name: daemon command api parity
         timestamp: 2026-04-02T19:51:12.348Z
+      - _ulid: 01KN7VZZYG7XNNGCRV6NCJYKX3
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted watcher suite
+        timestamp: 2026-04-02T19:51:16.176Z
     examined_commit: db7f01d365a123d47dd9e5f3e694f34fb7686367
     external_links: []
     lifecycle_state: open
@@ -105561,7 +105583,7 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-02T19:34:10.578Z
-    updated_at: 2026-04-02T19:51:11.603Z
+    updated_at: 2026-04-02T19:51:15.446Z
     notes: []
   - _ulid: 01KN7V3GHW32YS3FHC0GNZQ565
     slugs: []
