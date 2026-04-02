@@ -101641,7 +101641,17 @@ reviews:
     slugs: []
     title: Review task-plan-branch-schema
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Ran kspec validate. Schema OK, references OK; warnings are existing repo-wide debt only.
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-04-02T02:11:16.222Z
+        completed_at: 2026-04-02T02:11:16.222Z
     events:
       - _ulid: 01KN5YXS5581H3RNF8D7CYPVDS
         actor: Jacob Chapel
@@ -101656,6 +101666,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-02T02:04:19.580Z
+      - _ulid: 01KN5ZB38GVJ5YC5950AHG1FW5
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-02T02:11:16.880Z
     examined_commit: a3cfd4b63f3ee5741688da13f275855670e721b5
     external_links: []
     lifecycle_state: open
@@ -101668,5 +101685,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-02T02:04:00.550Z
-    updated_at: 2026-04-02T02:04:18.912Z
+    updated_at: 2026-04-02T02:11:16.222Z
     notes: []
