@@ -24098,7 +24098,7 @@
   slugs: []
   title: Investigate residual full-suite timeout flakes in dispatch bootstrap and daemon meta tests
   type: bug
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 2
@@ -24113,6 +24113,7 @@
   created_at: 2026-04-02T07:05:48.119Z
   started_at: 2026-04-02T07:07:11.322Z
   submitted_at: 2026-04-02T07:29:22.357Z
+  completed_at: 2026-04-02T07:42:55.492Z
   automation: eligible
 - _ulid: 01KN6GE5EFHVY2JXZNK3J7090S
   slugs: []
