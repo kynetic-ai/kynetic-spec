@@ -8,6 +8,15 @@ import * as path from "node:path";
 import type { Command } from "commander";
 import { markMutating } from "../command-annotations.js";
 import {
+  computePlanBranchName,
+  findBranchOnRemote,
+  gitCheckout,
+  gitCheckoutNew,
+  gitCreateBranchFrom,
+  gitRefExists,
+  reportBranchResult,
+} from "../branch-helper.js";
+import {
   addChildItem,
   addProjectLevelTraitItem,
   buildIndexes,
@@ -37,6 +46,7 @@ import type { Note, PlanInput, SpecItemInput, TaskInput } from "../../schema/ind
 import { PlanStatusSchema } from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
 import { fieldLabels } from "../../strings/labels.js";
+import { getCurrentBranch, isGitRepo } from "../../utils/git.js";
 import { formatRelativeTime as formatRelativeTimeUtil } from "../../utils/time.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, isJsonMode, output, success, warn } from "../output.js";
@@ -44,6 +54,7 @@ import { validateEnumOption } from "../validators.js";
 import { ulid } from "ulid";
 import { registerPlanImportCommand } from "./plan-import.js";
 import { getLinkedPlanSummaryTasks, isCountedInPlanSummary } from "../../lib/plan-summary.js";
+import { resolveDispatchWorkspaceConfig } from "../../agent-runtime/workspace.js";
 
 /**
  * Format relative time for display
@@ -826,8 +837,103 @@ Examples:
       }
     });
 
-  // kspec plan export <ref>
-  // AC: @plan-export ac-stdout, ac-output-file, ac-empty, ac-not-found, ac-json
+  // kspec plan branch <ref>
+  // AC: @plan-branch-creation ac-deterministic-name, ac-forks-from-base, ac-updates-plan-record,
+  // ac-resume-local, ac-rehydrate-remote, ac-custom-name, ac-reports-result
+  markMutating(plan.command("branch <ref>"))
+    .description("Create or resume the deterministic branch for a plan")
+    .option("--name <branch-name>", "Override the deterministic branch name")
+    .action(async (ref: string, options: { name?: string }) => {
+      try {
+        const ctx = await initContext();
+
+        if (!isGitRepo()) {
+          error("Not a git repository. Run this command from inside a git repo.");
+          process.exit(EXIT_CODES.VALIDATION_FAILED);
+        }
+
+        const plans = await loadPlans(ctx);
+        const foundPlan = resolvePlanRef(ref, plans);
+        const planRef = canonicalRef(foundPlan);
+        const requestedName = options.name?.trim() || null;
+        const branchName =
+          requestedName ?? foundPlan.branch ?? computePlanBranchName(foundPlan._ulid, foundPlan);
+
+        const localExists = gitRefExists(`refs/heads/${branchName}`);
+        let action: "created" | "switched" | "rehydrated" | "already_on_branch";
+        let source: string | undefined;
+
+        if (localExists) {
+          if (getCurrentBranch() === branchName) {
+            action = "already_on_branch";
+          } else {
+            gitCheckout(branchName);
+            action = "switched";
+          }
+        } else {
+          const remoteSource = findBranchOnRemote(branchName);
+          if (remoteSource) {
+            gitCreateBranchFrom(branchName, remoteSource);
+            gitCheckout(branchName);
+            action = "rehydrated";
+            source = remoteSource;
+          } else {
+            const resolvedConfig = await resolveDispatchWorkspaceConfig(ctx.projectRoot);
+            gitCheckoutNew(branchName, resolvedConfig.baseBranchStartPoint);
+            action = "created";
+          }
+        }
+
+        const changeDetail = `branch: ${foundPlan.branch ?? "null"} → ${branchName}`;
+        const planRecordUpdated = foundPlan.branch !== branchName;
+        if (planRecordUpdated) {
+          const updatedPlan = await mutatePlanAtomically(ctx, foundPlan, (latestPlan) => ({
+            ...latestPlan,
+            branch: branchName,
+          }));
+          await commitIfShadow(
+            ctx.shadow,
+            "plan-branch",
+            updatedPlan.slugs[0] || updatedPlan._ulid.slice(0, 8),
+            changeDetail,
+          );
+        }
+
+        reportBranchResult({
+          branch: branchName,
+          action,
+          source,
+          guidance:
+            "The plan record now points dispatch-aware follow-up work at this shared branch.",
+          subject: {
+            label: "Plan",
+            ref: planRef,
+            jsonKey: "plan_ref",
+          },
+          extraJson: {
+            plan_record_updated: planRecordUpdated,
+          },
+          extraInfo: [
+            `Plan record ${planRecordUpdated ? "updated" : "already matched"}: ${branchName}`,
+          ],
+        });
+      } catch (err) {
+        const details =
+          err instanceof Error
+            ? {
+                message: err.message,
+                suggestion:
+                  'Check the plan ref with "kspec plan list", verify the target branch exists or the dispatch base branch is configured, then retry.',
+              }
+            : {
+                suggestion:
+                  'Check the plan ref with "kspec plan list", verify the target branch exists or the dispatch base branch is configured, then retry.',
+              };
+        error("Failed to create or resume plan branch", details);
+        process.exit(EXIT_CODES.ERROR);
+      }
+    });
+
   plan
     .command("export <ref>")
     .description("Export stored plan content to stdout or a file")
