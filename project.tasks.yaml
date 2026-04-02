@@ -23909,7 +23909,7 @@
   type: task
   spec_ref: "@plan-branch-creation"
   plan_ref: "@plan-plan-scoped-branch-targeting"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-plan-branch-schema"
@@ -23921,6 +23921,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-02T01:45:33.294Z
+  started_at: 2026-04-02T03:37:58.589Z
   automation: eligible
 - _ulid: 01KN5XW04JM5261ZFYV1HCQVJK
   slugs:
