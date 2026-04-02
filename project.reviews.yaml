@@ -100951,6 +100951,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN5TZWWS08CH6X1Y46WE6Y5M
         timestamp: 2026-04-02T00:55:16.252Z
+      - _ulid: 01KN5V01WE62N65VMJKJ02DB9J
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN5V017XHVDXK1BS4ZYDDYJD
+        timestamp: 2026-04-02T00:55:20.718Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -101012,7 +101019,25 @@ reviews:
               existing AC."
             created_at: 2026-04-02T00:55:15.610Z
         kind: blocker
+      - _ulid: 01KN5V017XHVDXK1BS4ZYDDYJD
+        anchor:
+          type: structured
+          ref: "@plan-branch-dispatch-target"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KN5V017XS6SHDF848NY68S0A
+            author: "@claude"
+            body: "Overlap with @dispatch-workspace-configuration: ac-6 on that existing spec already describes
+              'when the operator changes dispatch.base_branch, the dispatcher detects the mismatch
+              and updates or surfaces the conflict.' This plan's ac-stale-target-detection describes
+              the same pattern but for plan branches. Both specs describe stale integration target
+              behavior in the same function (resolveDispatchWorkspaceConfig). The plan needs to
+              clarify how these interact — does plan-branch override config-change detection? Do
+              they compose? Should ac-stale-target-detection reference
+              @dispatch-workspace-configuration ac-6 as a foundation?"
+            created_at: 2026-04-02T00:55:20.062Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-02T00:54:38.074Z
-    updated_at: 2026-04-02T00:55:15.610Z
+    updated_at: 2026-04-02T00:55:20.062Z
     notes: []
