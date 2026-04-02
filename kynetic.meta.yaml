@@ -10472,8 +10472,12 @@ observations:
       <task-branch>' from the reviewer workspace. Improvement opportunity: bake this fallback into
       the merge skill or dispatch merge automation."
     author: codex
-    resolution: null
-    resolved: false
+    resolution: "Duplicate of older detached-review manual_merge tracking @01KMGXRB. The underlying
+      workflow gap is still open: reviewer merge guidance still assumes checking out the integration
+      branch inside the detached review snapshot."
+    resolved: true
+    resolved_at: 2026-04-02T07:45:26.842Z
+    resolved_by: codex
     workflow_ref: "@session-reflect"
     created_at: 2026-03-31T00:10:47.102Z
   - _ulid: 01KN0M49EWSS6HD2DN2RNCN936
