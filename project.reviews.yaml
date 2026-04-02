@@ -101432,6 +101432,13 @@ reviews:
           status: fail
           name: Spec boundary separation
         timestamp: 2026-04-02T01:28:09.643Z
+      - _ulid: 01KN5WWDZF2XVWB3WQP0WCNPBP
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KN5WWD9FW5E7G2XKCP93CQY3
+        timestamp: 2026-04-02T01:28:19.184Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -101458,7 +101465,22 @@ reviews:
               behavior on plans.
             created_at: 2026-04-02T01:28:04.747Z
         kind: blocker
+      - _ulid: 01KN5WWD9FW5E7G2XKCP93CQY3
+        anchor:
+          type: structured
+          ref: "@task-plan-branch-activation"
+          section: dependencies
+        entries:
+          - _ulid: 01KN5WWD9G9R9CE2H68BAXAJ6A
+            author: "@claude"
+            body: "@task-plan-branch-activation depends on @task-plan-branch-command, but the derive guidance
+              only needs plan.branch to exist. A branch set via kspec plan set --branch should
+              already drive the same output, so this looks over-constrained; depending only on
+              @task-plan-branch-schema appears sufficient unless the branch command is intentionally
+              required for another reason."
+            created_at: 2026-04-02T01:28:18.480Z
+        kind: question
     verdicts: []
     created_at: 2026-04-02T01:27:43.289Z
-    updated_at: 2026-04-02T01:28:04.773Z
+    updated_at: 2026-04-02T01:28:18.480Z
     notes: []
