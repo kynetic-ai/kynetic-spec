@@ -100787,7 +100787,19 @@ reviews:
     slugs: []
     title: Review investigate-file-lock concurrency test
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate exited with warnings only (code 6); warnings are repo-wide pre-existing
+          completeness/alignment issues unrelated to this task. No schema or reference errors in the
+          reviewed change.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-02T00:17:37.553Z
+        completed_at: 2026-04-02T00:17:37.553Z
     events:
       - _ulid: 01KN5RE73CTD77SAZWA20D86FV
         actor: Jacob Chapel
@@ -100825,6 +100837,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-02T00:17:35.171Z
+      - _ulid: 01KN5RV0CXNAF4QZ4NVZTEQKY2
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-02T00:17:38.205Z
     examined_commit: f0d0a409ede748ea7eec2171748d99178f1ac35a
     external_links: []
     lifecycle_state: closed
@@ -100871,5 +100890,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-02T00:17:35.171Z
     created_at: 2026-04-02T00:10:39.084Z
-    updated_at: 2026-04-02T00:17:35.171Z
+    updated_at: 2026-04-02T00:17:37.553Z
     notes: []
