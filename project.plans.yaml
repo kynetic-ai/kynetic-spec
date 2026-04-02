@@ -32120,7 +32120,7 @@ plans:
       - @plan-branch-dispatch-target and @plan-branch-derive-guidance are
         internal behavioral specs with no direct CLI surface requiring
         additional traits.
-    status: active
+    status: approved
     approved_at: 2026-04-02T01:42:41.646Z
     derived_specs:
       - "@plan-branch-association"
