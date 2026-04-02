@@ -32530,12 +32530,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-02T06:37:24.135Z
+      updated_at: 2026-04-02T06:37:33.093Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T06:37:24.135Z
+      updated_at: 2026-04-02T06:37:33.093Z
     integration:
       status: pending
       detail: null
@@ -32543,26 +32543,31 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 190827af3c1fb918d3235cf9159a67047fae3590
-      updated_at: 2026-04-02T06:37:24.135Z
-    lifecycle_state: ready
+      updated_at: 2026-04-02T06:37:33.093Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KN6AAH0TMTBBPB8DSK8PP4K3"
     task_slug: stabilize-flaky-full-suite-failures-in-dispatch-workspace-config-and-enhanced-setup-tests
     timestamps:
       closed_at: null
       last_active_at: 2026-04-02T06:18:09.671Z
-      last_reconciled_at: 2026-04-02T06:37:24.135Z
+      last_reconciled_at: 2026-04-02T06:37:33.093Z
       created_at: 2026-04-02T05:30:29.808Z
-      updated_at: 2026-04-02T06:37:24.135Z
+      updated_at: 2026-04-02T06:37:33.093Z
     workspace_id: dispatch-workspace-01KN6AAH0TMTBBPB8DSK8PP4K3
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 66aa4da1c1099858a6a8de88488d1d7388f9d52f
+        last_seen_at: 2026-04-02T06:37:33.093Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-flaky-full-suite-failures-in-dispatch-workspace-config-and-enhanced-setup-tests-01kn6aah-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/stabilize-flaky-full-suite-failures-in-dispatch-workspace-config-and-enhanced-setup-tests/01kn6aah
-        head: cda3fa8053f55b86d64a76eb05aa00ab1e7ed5db
-        last_seen_at: 2026-04-02T05:50:09.664Z
+        head: 66aa4da1c1099858a6a8de88488d1d7388f9d52f
+        last_seen_at: 2026-04-02T06:37:33.093Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-flaky-full-suite-failures-in-dispatch-workspace-config-and-enhanced-setup-tests-01kn6aah
   - active_role: reviewer
     base_branch_point: ed8d1259edd96190c6233c7b2edfb658aeed57a2
