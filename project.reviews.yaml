@@ -103489,7 +103489,20 @@ reviews:
     title: Review stabilize flaky full-suite failures in dispatch workspace config and enhanced setup
       tests (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/dispatch-workspace-config.test.ts tests/enhanced-setup.test.ts
+          tests/dispatch-workspace-cleanup.test.ts
+          tests/dispatch-branch-integration-contract.test.ts passed: 19/19 suites, 87/87 tests,
+          130.8s."
+        name: targeted dispatch/setup verification
+        required: true
+        runner: npm
+        created_at: 2026-04-02T07:07:19.023Z
+        completed_at: 2026-04-02T07:07:19.023Z
     events:
       - _ulid: 01KN6EPC96TVSQR6H21W0BTBFT
         actor: Jacob Chapel
@@ -103504,6 +103517,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-02T06:40:09.199Z
+      - _ulid: 01KN6G960F76Z6YC5DC1HZVA55
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted dispatch/setup verification
+        timestamp: 2026-04-02T07:07:19.951Z
     examined_commit: 66aa4da1c1099858a6a8de88488d1d7388f9d52f
     external_links: []
     lifecycle_state: open
@@ -103516,5 +103536,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-02T06:39:35.207Z
-    updated_at: 2026-04-02T06:40:08.381Z
+    updated_at: 2026-04-02T07:07:19.023Z
     notes: []
