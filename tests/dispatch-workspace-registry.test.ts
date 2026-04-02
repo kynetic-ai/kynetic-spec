@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { existsSync } from "node:fs";
 import * as fs from "node:fs/promises";
-import { execSync } from "node:child_process";
+import { execSync, spawn, type ChildProcess } from "node:child_process";
 import * as path from "node:path";
 import * as YAML from "yaml";
 import * as invocationModule from "../src/agent-runtime/invocation.js";
@@ -59,6 +59,12 @@ function git(cwd: string, command: string): string {
     stdio: "pipe",
     encoding: "utf-8",
   }).trim();
+}
+
+function spawnKeepAliveProcess(): ChildProcess {
+  return spawn(process.execPath, ["-e", "setInterval(() => {}, 1000)"], {
+    stdio: "ignore",
+  });
 }
 
 async function seedRepo(dir: string): Promise<void> {
@@ -208,6 +214,7 @@ describe("dispatch workspace registry", () => {
   let tempDir: string;
   let specDir: string;
   let originalSpecDir: string | undefined;
+  const childProcesses: ChildProcess[] = [];
 
   beforeEach(async () => {
     tempDir = await createTempDir("kspec-dispatch-workspace-registry-");
@@ -218,6 +225,9 @@ describe("dispatch workspace registry", () => {
 
   afterEach(async () => {
     vi.restoreAllMocks();
+    for (const child of childProcesses.splice(0)) {
+      child.kill("SIGKILL");
+    }
     if (originalSpecDir === undefined) {
       delete process.env.KSPEC_SPEC_DIR;
     } else {
@@ -998,6 +1008,7 @@ describe("dispatch workspace registry", () => {
 
 describe("dispatch workspace registry shadow durability", () => {
   let tempDir: string;
+  const childProcesses: ChildProcess[] = [];
 
   beforeEach(async () => {
     tempDir = await createTempDir("kspec-dispatch-workspace-shadow-");
@@ -1005,6 +1016,9 @@ describe("dispatch workspace registry shadow durability", () => {
 
   afterEach(async () => {
     vi.restoreAllMocks();
+    for (const child of childProcesses.splice(0)) {
+      child.kill("SIGKILL");
+    }
     if (tempDir) {
       await cleanupTempDir(tempDir);
     }
@@ -1481,11 +1495,13 @@ describe("dispatch workspace registry shadow durability", () => {
       // Phase 2: Plant a force-reclaimable lock (alive PID, old timestamp).
       const lockPath = getDispatchShadowMutationLockPath(tempDir);
       const lockDir = `${lockPath}.lock`;
+      const holder = spawnKeepAliveProcess();
+      childProcesses.push(holder);
       await fs.mkdir(lockDir, { recursive: true });
       const oldTimestamp = Date.now() - 60_000; // 60 seconds ago
       await fs.writeFile(
         path.join(lockDir, "pid"),
-        `${process.pid}\n${oldTimestamp}\nfake-uuid`,
+        `${holder.pid}\n${oldTimestamp}\nfake-uuid`,
         "utf-8",
       );
 
