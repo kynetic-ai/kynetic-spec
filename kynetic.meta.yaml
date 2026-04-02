@@ -11398,6 +11398,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-02T06:10:12.083Z
+  - _ulid: 01KN6EEP4WT7A1ZYT98HXAAXEC
+    type: friction
+    content: Parallel npm test invocations can race in scripts/test.cjs build self-healing and fail
+      before tests start (observed rm ENOENT on dist/daemon/index.ts when two --fresh runs started
+      together). A build lock or serialized readiness fix would make multi-agent verification safer.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-02T06:35:23.165Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
