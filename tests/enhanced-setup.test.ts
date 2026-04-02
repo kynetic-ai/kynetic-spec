@@ -58,6 +58,51 @@ describe("kspec setup (enhanced)", () => {
       expect(result.stdout).toContain("Agent:");
     });
 
+    it("ignores leaked parent agent markers when status runs without overrides", async () => {
+      const previousEnv = {
+        HOME: process.env.HOME,
+        USERPROFILE: process.env.USERPROFILE,
+        FACTORY_PROJECT_DIR: process.env.FACTORY_PROJECT_DIR,
+        CODEX_THREAD_ID: process.env.CODEX_THREAD_ID,
+      };
+      const leakedHome = await createTempDir("kspec-leaked-agent-home-");
+
+      try {
+        process.env.HOME = leakedHome;
+        process.env.USERPROFILE = leakedHome;
+        process.env.FACTORY_PROJECT_DIR = leakedHome;
+        process.env.CODEX_THREAD_ID = "leaked-thread";
+        await fs.mkdir(path.join(leakedHome, ".claude"), { recursive: true });
+        await fs.mkdir(path.join(leakedHome, ".factory"), { recursive: true });
+
+        const result = kspecJson<{ agent: { detected: string } }>("setup --status", tempDir);
+
+        expect(result.agent.detected).toBe("unknown");
+      } finally {
+        await cleanupTempDir(leakedHome);
+        if (previousEnv.HOME === undefined) {
+          delete process.env.HOME;
+        } else {
+          process.env.HOME = previousEnv.HOME;
+        }
+        if (previousEnv.USERPROFILE === undefined) {
+          delete process.env.USERPROFILE;
+        } else {
+          process.env.USERPROFILE = previousEnv.USERPROFILE;
+        }
+        if (previousEnv.FACTORY_PROJECT_DIR === undefined) {
+          delete process.env.FACTORY_PROJECT_DIR;
+        } else {
+          process.env.FACTORY_PROJECT_DIR = previousEnv.FACTORY_PROJECT_DIR;
+        }
+        if (previousEnv.CODEX_THREAD_ID === undefined) {
+          delete process.env.CODEX_THREAD_ID;
+        } else {
+          process.env.CODEX_THREAD_ID = previousEnv.CODEX_THREAD_ID;
+        }
+      }
+    });
+
     // AC: @enhanced-setup ac-8 - hooks status shown
     it("should report hooks status", async () => {
       const result = kspec("setup --status", tempDir, {

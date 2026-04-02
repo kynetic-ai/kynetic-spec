@@ -28,7 +28,7 @@
  */
 import { execSync, spawnSync } from "node:child_process";
 import * as fs from "node:fs/promises";
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, statSync } from "node:fs";
 import * as path from "node:path";
 import { parse as yamlParse, stringify as yamlStringify } from "yaml";
 import * as os from "node:os";
@@ -105,7 +105,7 @@ export interface WaitForStartupOptions {
  * const result = kspec('task set @ref --priority 99', tempDir, { expectFail: true });
  * expect(result.exitCode).toBe(1);
  */
-export function kspec(args: string, cwd: string, options: KspecOptions = {}): KspecResult {
+export function kspec(args: string, cwd?: string, options: KspecOptions = {}): KspecResult {
   const { stdin, expectFail = false, env = {} } = options;
 
   // Build clean env: strip dispatch/session vars that pollute tests when running
@@ -125,13 +125,63 @@ export function kspec(args: string, cwd: string, options: KspecOptions = {}): Ks
     }
   }
 
+  // Strip ambient agent-detection vars so CLI subprocess tests don't inherit
+  // whichever editor/runtime markers a prior Vitest file left behind.
+  const AGENT_ENV_VARS = [
+    "CLAUDECODE",
+    "CLAUDE_CODE",
+    "CLAUDE_CODE_ENTRYPOINT",
+    "CLAUDE_PROJECT_DIR",
+    "CLAUDE_CODE_SESSION",
+    "CLINE_ACTIVE",
+    "CURSOR_TRACE_ID",
+    "WINDSURF_SESSION",
+    "AIDER_MODEL",
+    "AIDER_DARK_MODE",
+    "OPENCODE_CONFIG_DIR",
+    "OPENCODE_CONFIG",
+    "GEMINI_CLI",
+    "CODEX_THREAD_ID",
+    "CODEX_SANDBOX",
+    "CODEX_CI",
+    "CODEX_MANAGED_BY_NPM",
+    "FACTORY_PROJECT_DIR",
+    "COPILOT_MODEL",
+    "GH_TOKEN",
+    "AMP_API_KEY",
+    "AMP_TOOLBOX",
+  ];
+  for (const key of AGENT_ENV_VARS) {
+    if (!(key in env)) {
+      delete cleanEnv[key];
+    }
+  }
+
+  // Give each CLI subprocess an isolated home/config root by default so global
+  // plugin marketplace, daemon PID/port, and agent home-directory probes are
+  // scoped to the test project instead of the parent Vitest process.
+  const defaultEnv: Record<string, string> = {};
+  const isolatedHomeRoot = cwd ?? process.cwd();
+  try {
+    if (statSync(isolatedHomeRoot).isDirectory()) {
+      const isolatedHome = path.join(isolatedHomeRoot, ".test-home");
+      mkdirSync(path.join(isolatedHome, ".config", "kspec"), { recursive: true });
+      defaultEnv.HOME = isolatedHome;
+      defaultEnv.USERPROFILE = isolatedHome;
+      defaultEnv.KSPEC_CLAUDE_HOME = path.join(isolatedHome, ".claude");
+    }
+  } catch {
+    // Preserve caller-provided invalid cwd so runtime-error-path tests still
+    // exercise the CLI instead of failing inside the helper bootstrap.
+  }
+
   // Use spawnSync with shell to capture both stdout and stderr
   // Always use shell mode to properly handle argument parsing and quoting
   const result = spawnSync("/bin/sh", ["-c", `node ${CLI_PATH} ${args}`], {
     cwd,
     encoding: "utf-8",
     timeout: 30_000,
-    env: { ...cleanEnv, KSPEC_AUTHOR: "@test", ...env },
+    env: { ...cleanEnv, ...defaultEnv, KSPEC_AUTHOR: "@test", ...env },
     input: stdin !== undefined ? (stdin.endsWith("\n") ? stdin : `${stdin}\n`) : undefined,
   });
 
