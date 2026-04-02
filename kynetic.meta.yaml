@@ -11545,6 +11545,22 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-02T08:26:49.041Z
+  - _ulid: 01KN6N21BBH8W2ZAAK0QWPXHNX
+    type: success
+    content: Running the focused regression suite before the full test suite caught a schedule-engine
+      test timing issue cheaply and kept the final full run as confirmation instead of discovery.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-02T08:30:48.683Z
+  - _ulid: 01KN6N21H9ZGTKF8V9K4D1R6T8
+    type: friction
+    content: Long full-suite test runs have weak progress visibility; distinguishing normal progress
+      from a hang required manual log tailing and process polling during dispatch work.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-02T08:30:48.873Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
