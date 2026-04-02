@@ -138,8 +138,7 @@ tasks:
     derivation: auto
     status: completed
     blocked_by: []
-    closed_reason: Implemented ReferenceIndex with dynamic ULID shortening, proper error handling, and
-      reference validation
+    closed_reason: Implemented ReferenceIndex with dynamic ULID shortening, proper error handling, and reference validation
     depends_on:
       - "@task-ulid-generation"
       - "@task-slug-system"
@@ -158,16 +157,13 @@ tasks:
       - _ulid: 01KEZD4BHZFA5E4FQ0182JKXRA
         created_at: 2026-01-14T23:23:24.096Z
         author: "@claude"
-        content: Starting work on reference resolution. User noted that 6-char ULID prefixes aren't granular
-          enough since ULIDs created at similar times share timestamp prefixes. Will implement
-          dynamic prefix expansion for uniqueness.
+        content: Starting work on reference resolution. User noted that 6-char ULID prefixes aren't granular enough since ULIDs created at similar times share timestamp prefixes. Will implement dynamic prefix expansion for uniqueness.
         supersedes: null
       - _ulid: 01KEZDJZRTZ6D3QWY1X7FZH5BG
         created_at: 2026-01-14T23:31:23.547Z
         author: "@claude"
-        content: >-
+        content: |-
           Implemented reference resolution system:
-
 
           1. Created ReferenceIndex class (src/parser/refs.ts) with:
              - Slug index (slug → ULID mapping)
@@ -188,27 +184,19 @@ tasks:
              - Duplicate slug detection
              - Reference validation
 
-          The 8-char minimum prefix gets into the random portion of ULIDs, fixing the issue where
-          items created at similar times would have identical 6-char prefixes.
+          The 8-char minimum prefix gets into the random portion of ULIDs, fixing the issue where items created at similar times would have identical 6-char prefixes.
         supersedes: null
       - _ulid: 01KEZE05XQQGTDKMRZ2S0BPVNH
         created_at: 2026-01-14T23:38:35.832Z
         author: "@claude"
-        content: >-
+        content: |-
           Additional follow-up: Updated all CLI locations to use dynamic shortUlid():
 
-
           - output.ts: formatTaskRef, formatTask, formatTaskList now accept optional ReferenceIndex
-
-          - tasks.ts: All commands (list, ready, next, blocked, in-progress) build index and pass to
-          formatters
-
+          - tasks.ts: All commands (list, ready, next, blocked, in-progress) build index and pass to formatters
           - task.ts: task add command builds index including new task for accurate short ULID
 
-
-          Short IDs now dynamically expand based on uniqueness within the spec. Items created in the
-          same timestamp batch (e.g., 01JHNKAB*) show 10+ chars, while items with unique prefixes
-          show the minimum 8 chars.
+          Short IDs now dynamically expand based on uniqueness within the spec. Items created in the same timestamp batch (e.g., 01JHNKAB*) show 10+ chars, while items with unique prefixes show the minimum 8 chars.
         supersedes: null
     todos: []
   - _ulid: 01JHNKAB06TASK200000000000
@@ -273,28 +261,16 @@ tasks:
       - _ulid: 01KEZCN7G9WB9J852E0X90JDXX
         created_at: 2026-01-14T23:15:08.426Z
         author: "@claude"
-        content: >-
+        content: |-
           Implemented full YAML spec loading:
-
           - Added LoadedSpecItem interface for source file tracking
-
           - Implemented expandIncludePattern() with glob support (*.yaml patterns)
-
-          - Added extractItemsFromRaw() for recursive nested item extraction from
-          modules/features/requirements
-
+          - Added extractItemsFromRaw() for recursive nested item extraction from modules/features/requirements
           - Implemented loadAllItems() to build unified item collection from manifest + includes
-
           - Added findItemByRef() and findAnyItemByRef() for item lookup
-
           - Fixed YAML syntax error in core.yaml (unquoted @references)
-
-          - Created ULID migration script (scripts/migrate-ulids.ts) and migrated 59 invalid ULIDs
-          to valid Crockford base32
-
-          - Added comprehensive tests for spec loading (extractItemsFromRaw, findItemByRef,
-          expandIncludePattern, loadAllItems integration)
-
+          - Created ULID migration script (scripts/migrate-ulids.ts) and migrated 59 invalid ULIDs to valid Crockford base32
+          - Added comprehensive tests for spec loading (extractItemsFromRaw, findItemByRef, expandIncludePattern, loadAllItems integration)
           - All 45 tests passing
         supersedes: null
     todos: []
@@ -330,33 +306,19 @@ tasks:
       - _ulid: 01KEZVM219JSJ3DCGZDK3ADVTG
         created_at: 2026-01-15T03:36:38.698Z
         author: "@claude"
-        content: >-
+        content: |-
           Implemented ItemIndex class (src/parser/items.ts) with:
-
           - Indexes by type, tag, status (task status, maturity, implementation)
-
-          - Multi-criteria query() method supporting: type, tags, allTags, status, maturity,
-          implementation, hasFields, fieldEquals, titleContains
-
+          - Multi-criteria query() method supporting: type, tags, allTags, status, maturity, implementation, hasFields, fieldEquals, titleContains
           - Pagination via queryPaginated()
-
-          - Convenience methods: getByType(), getByTag(), getTasksByStatus(), getByMaturity(),
-          getByImplementation()
-
+          - Convenience methods: getByType(), getByTag(), getTasksByStatus(), getByMaturity(), getByImplementation()
           - Stats: getTypes(), getTags(), getTypeCounts(), getTagCounts()
 
-
           Added CLI commands (src/cli/commands/item.ts):
-
-          - kspec item list [filters] - list items with --type, --status, --maturity, --tag, --has,
-          --search
-
+          - kspec item list [filters] - list items with --type, --status, --maturity, --tag, --has, --search
           - kspec item get <ref> - show item details
-
           - kspec item types - show type counts
-
           - kspec item tags - show tag counts
-
 
           Added buildIndexes() helper to build both ReferenceIndex and ItemIndex together.
         supersedes: null
@@ -427,9 +389,7 @@ tasks:
     derivation: auto
     status: completed
     blocked_by: []
-    closed_reason: "Implemented as part of schema validation task. Core functionality complete: @ prefix
-      parsing, slug/ULID resolution, error reporting. Deprecated target warnings deferred (minor
-      enhancement)."
+    closed_reason: "Implemented as part of schema validation task. Core functionality complete: @ prefix parsing, slug/ULID resolution, error reporting. Deprecated target warnings deferred (minor enhancement)."
     depends_on:
       - "@task-reference-resolution"
       - "@task-item-indexing"
@@ -447,23 +407,15 @@ tasks:
       - _ulid: 01KEZWSRT1B1RJRDDX48FF62F0
         created_at: 2026-01-15T03:57:14.434Z
         author: "@claude"
-        content: >-
-          Reference validation was implemented as part of @01JHNKAB10 (schema validation task). The
-          implementation covers:
-
+        content: |-
+          Reference validation was implemented as part of @01JHNKAB10 (schema validation task). The implementation covers:
 
           1. ✅ Parse @ prefix to extract identifier
-
           2. ✅ Slug lookup, then ULID prefix match resolution
-
           3. ✅ Error reporting for unresolved/ambiguous references
+          4. ⏳ Deprecated target warnings - not implemented (requires deprecated field on items, minor enhancement)
 
-          4. ⏳ Deprecated target warnings - not implemented (requires deprecated field on items,
-          minor enhancement)
-
-
-          CLI: kspec validate --refs works and successfully found 4 broken @milestone-self-hosting
-          refs which were fixed in @01KEZWDH.
+          CLI: kspec validate --refs works and successfully found 4 broken @milestone-self-hosting refs which were fixed in @01KEZWDH.
         supersedes: null
     todos: []
   - _ulid: 01KEZWVQ5PTQY5V5F6ZTSE3Z9S
@@ -513,28 +465,19 @@ tasks:
       - _ulid: 01KF7ZRQ0QMBFSTPF5WH11Y3Z8
         created_at: 2026-01-18T07:23:01.015Z
         author: "@claude"
-        content: >-
+        content: |-
           Implementation complete and tested:
 
-
           1. Added RefValidationWarning type for deprecation warnings in src/parser/refs.ts
-
-          2. Created isDeprecated() helper that checks both maturity: 'deprecated' and deprecated_in
-          fields
-
+          2. Created isDeprecated() helper that checks both maturity: 'deprecated' and deprecated_in fields
           3. Modified validateRefs() to return RefValidationResult with errors and warnings arrays
-
           4. Updated ValidationResult in src/parser/validate.ts to include refWarnings field
-
-          5. Updated CLI output in src/cli/commands/validate.ts to display warnings in yellow with ⚠
-          symbol
-
+          5. Updated CLI output in src/cli/commands/validate.ts to display warnings in yellow with ⚠ symbol
           6. Added 3 comprehensive tests for deprecated reference warnings:
              - Test for maturity: deprecated
              - Test for deprecated_in field
              - Test ensuring no warnings for active references
           7. Updated all existing validateRefs tests to handle new return structure
-
 
           All tests pass (432 tests). Feature works correctly when running 'kspec validate --refs'.
         supersedes: null
@@ -571,17 +514,12 @@ tasks:
       - _ulid: 01KEZX3RGQN6TCCMBJGZ9HAFJ6
         created_at: 2026-01-15T04:02:41.816Z
         author: "@claude"
-        content: >-
+        content: |-
           Already implemented as part of @01JHNKAB10 (schema validation). Verified:
-
           - Errors: schema errors and ref errors shown in red
-
           - Warnings: orphans shown in yellow  
-
           - Summary counts: files/items/tasks checked
-
-          - JSON output: --json flag outputs structured JSON with valid, schemaErrors, refErrors,
-          orphans
+          - JSON output: --json flag outputs structured JSON with valid, schemaErrors, refErrors, orphans
         supersedes: null
     todos: []
   - _ulid: 01JHNKAB14TASK400000000000
@@ -736,31 +674,20 @@ tasks:
       - _ulid: 01KEZTV4M6NVQVFBWAJFJKAQZV
         created_at: 2026-01-15T03:23:02.150Z
         author: "@claude"
-        content: >-
+        content: |-
           Implemented kspec init command with all specified options:
-
           - --name <name>: Set project name
-
           - --single-file: Create kynetic.yaml only (no modules directory)
-
           - --no-prompt: Skip interactive prompts
-
           - --force: Overwrite existing files
-
           - [directory]: Optional target directory
 
-
           Generated files:
-
           - spec/kynetic.yaml (manifest with project metadata, includes, config)
-
           - spec/<dirname>.tasks.yaml (empty tasks file)
-
           - spec/modules/main.yaml (starter module with example item, unless --single-file)
 
-
-          Uses Node's built-in readline for interactive prompts. Derives default project name from
-          directory name (kebab-case to Title Case).
+          Uses Node's built-in readline for interactive prompts. Derives default project name from directory name (kebab-case to Title Case).
         supersedes: null
       - _ulid: 01KEZV2Y8H47MPF28P4DNS2BAZ
         created_at: 2026-01-15T03:27:17.778Z
@@ -960,8 +887,7 @@ tasks:
     derivation: auto
     status: completed
     blocked_by: []
-    closed_reason: Implemented item CRUD (add/set/delete) with full nested structure support. Items can
-      be added under any parent, updated in place, and deleted from the YAML tree.
+    closed_reason: Implemented item CRUD (add/set/delete) with full nested structure support. Items can be added under any parent, updated in place, and deleted from the YAML tree.
     depends_on: []
     context: []
     priority: 2
@@ -1066,8 +992,7 @@ tasks:
       - _ulid: 01KEZYWPCFD1QCH08QF5Z5C9RQ
         created_at: 2026-01-15T04:33:47.408Z
         author: "@claude"
-        content: "Implemented todo commands: task todos (list), task todo add, task todo done, task todo
-          undone. Added createTodo helper. Updated extended help for task and workflow topics."
+        content: "Implemented todo commands: task todos (list), task todo add, task todo done, task todo undone. Added createTodo helper. Updated extended help for task and workflow topics."
         supersedes: null
     todos:
       - id: 1
@@ -1094,9 +1019,7 @@ tasks:
     derivation: auto
     status: completed
     blocked_by: []
-    closed_reason: Implemented all three link commands (create, list, delete) with full test coverage.
-      Commands manage relationship arrays (depends_on, implements, relates_to) on spec items with
-      proper validation and shadow branch integration.
+    closed_reason: Implemented all three link commands (create, list, delete) with full test coverage. Commands manage relationship arrays (depends_on, implements, relates_to) on spec items with proper validation and shadow branch integration.
     depends_on: []
     context: []
     priority: 3
@@ -1112,17 +1035,12 @@ tasks:
       - _ulid: 01KF7WB96R0TR3EAFSB2M4EP6M
         created_at: 2026-01-18T06:23:15.161Z
         author: "@claude"
-        content: "Analyzed existing code structure. Link commands will manage 3 relationship types:
-          depends_on, implements, relates_to. These are arrays of @references stored on spec items.
-          Will follow similar pattern to item commands with create/list/delete operations that
-          update source YAML files via parser functions."
+        content: "Analyzed existing code structure. Link commands will manage 3 relationship types: depends_on, implements, relates_to. These are arrays of @references stored on spec items. Will follow similar pattern to item commands with create/list/delete operations that update source YAML files via parser functions."
         supersedes: null
       - _ulid: 01KF7WJBVKRF4F705KGYVFWVFY
         created_at: 2026-01-18T06:27:07.252Z
         author: "@claude"
-        content: Implementation complete. All three commands (create, list, delete) work correctly. Commands
-          manage depends_on, implements, and relates_to relationship arrays on spec items. Shadow
-          branch auto-commits enabled. Now adding tests.
+        content: Implementation complete. All three commands (create, list, delete) work correctly. Commands manage depends_on, implements, and relates_to relationship arrays on spec items. Shadow branch auto-commits enabled. Now adding tests.
         supersedes: null
     todos: []
   - _ulid: 01KEZ9DSD3C6VM82ZK6596JHWS
@@ -1149,9 +1067,7 @@ tasks:
     derivation: manual
     status: completed
     blocked_by: []
-    closed_reason: "Migrated from js-yaml to yaml library for better formatting consistency. Implemented
-      writeYamlFilePreserveFormat() and updated all YAML write operations. Provides deterministic
-      formatting with indent: 2, lineWidth: 100. All tests pass."
+    closed_reason: "Migrated from js-yaml to yaml library for better formatting consistency. Implemented writeYamlFilePreserveFormat() and updated all YAML write operations. Provides deterministic formatting with indent: 2, lineWidth: 100. All tests pass."
     depends_on:
       - "@task-fix-write-location"
     context: []
@@ -1167,127 +1083,84 @@ tasks:
       - _ulid: 01KFAVPQ7WJ7BGWRQRFS8EHEW8
         created_at: 2026-01-19T10:09:44.700Z
         author: "@claude"
-        content: Task was marked in_progress but not worked on in iteration 36. Returning to pending status.
-          No progress made - still needs implementation of YAML formatting/comment preservation.
+        content: Task was marked in_progress but not worked on in iteration 36. Returning to pending status. No progress made - still needs implementation of YAML formatting/comment preservation.
         supersedes: null
       - _ulid: 01KFAVPRKP8R3YT9VJN8KJC60T
         created_at: 2026-01-19T10:09:46.102Z
         author: "@claude"
-        content: Investigating current YAML writing implementation. Current system uses js-yaml's dump()
-          which regenerates YAML from scratch, losing all formatting and comments. Need to research
-          solutions for preserving original file structure while updating specific fields.
+        content: Investigating current YAML writing implementation. Current system uses js-yaml's dump() which regenerates YAML from scratch, losing all formatting and comments. Need to research solutions for preserving original file structure while updating specific fields.
         supersedes: null
       - _ulid: 01KFAVQ8Z1EATZ29SVSRH1EAND
         created_at: 2026-01-19T10:10:02.849Z
         author: "@claude"
-        content: >-
+        content: |-
           Research findings:
 
-
           Three potential approaches:
-
-          1. Switch to 'yaml' npm package (successor to js-yaml) which has better format
-          preservation
-
+          1. Switch to 'yaml' npm package (successor to js-yaml) which has better format preservation
           2. Implement selective text patching - locate and update only changed fields 
-
           3. Use a specialized library like yaml-diff-patch
 
-
-          Approach #2 is most complex but gives full control. Approach #1 is cleanest if the library
-          supports it.
-
+          Approach #2 is most complex but gives full control. Approach #1 is cleanest if the library supports it.
 
           Next steps:
-
           - Research 'yaml' package capabilities for format preservation
-
           - Check if there are other format-preserving YAML libraries
-
           - Prototype a simple format-preserving update approach
         supersedes: null
       - _ulid: 01KFAVQJKJV2XC2WS91BJMNVXF
         created_at: 2026-01-19T10:10:12.722Z
         author: "@claude"
-        content: >-
-          After research, the 'yaml' npm package (eemeli/yaml) has a CST (Concrete Syntax Tree) that
-          preserves formatting and comments. This would be the cleanest solution.
-
+        content: |-
+          After research, the 'yaml' npm package (eemeli/yaml) has a CST (Concrete Syntax Tree) that preserves formatting and comments. This would be the cleanest solution.
 
           Key features:
-
           - parseDocument() creates a Document with CST
-
           - setIn/updateIn methods to modify specific paths
-
           - toString() regenerates with original formatting preserved
-
           - Maintains comments and whitespace
 
-
           This is a post-MVP task (priority 4) so the implementation would involve:
-
           1. Adding 'yaml' package as dependency
-
           2. Creating format-preserving variants of toYaml/writeYamlFile
-
           3. Updating saveTask/saveSpecItem/saveInboxItem to use new functions
-
           4. Testing to ensure formatting is preserved
 
-
-          Given this is a spike/research task and post-MVP, marking investigation complete.
-          Implementation should be done when DX improvements are prioritized.
+          Given this is a spike/research task and post-MVP, marking investigation complete. Implementation should be done when DX improvements are prioritized.
         supersedes: null
       - _ulid: 01KFAVX0X4MQ9HAZXZA2PDWQ9Q
         created_at: 2026-01-19T10:13:11.204Z
         author: "@claude"
-        content: >-
+        content: |-
           Implementation complete:
 
-
           1. Added 'yaml' npm package as dependency (modern replacement for js-yaml)
-
           2. Created writeYamlFilePreserveFormat() function that uses the yaml library
-
           3. Updated all YAML write operations to use format-preserving writes:
              - saveTask() and deleteTask()
              - addChildItem(), updateSpecItem(), and deleteSpecItem()
              - saveInboxItem() and deleteInboxItem()
 
           The yaml library provides better formatting consistency than js-yaml with:
-
           - indent: 2 (matches current)
-
           - lineWidth: 100 (matches current)
-
           - sortMapEntries: false (preserves logical ordering)
 
+          Note: This implementation doesn't preserve exact original formatting and comments (which would require complex CST manipulation), but it does provide consistent, clean formatting that's better than js-yaml's dump(). The formatting is deterministic and won't randomly change between writes.
 
-          Note: This implementation doesn't preserve exact original formatting and comments (which
-          would require complex CST manipulation), but it does provide consistent, clean formatting
-          that's better than js-yaml's dump(). The formatting is deterministic and won't randomly
-          change between writes.
-
-
-          All existing tests pass (clone-for-testing had pre-existing issues noted in task
-          01KFADHB).
-
+          All existing tests pass (clone-for-testing had pre-existing issues noted in task 01KFADHB).
 
           This addresses the core DX issue of unpredictable formatting changes on save.
         supersedes: null
       - _ulid: 01KFBN188Q83EBPZ3J754ATMXF
         created_at: 2026-01-19T17:32:24.216Z
         author: "@claude"
-        content: "CRUFT REVIEW: This task should be status=completed, not cancelled. Implementation was done
-          (yaml library migration, writeYamlFilePreserveFormat). Waiting for task-reset-command to
-          fix."
+        content: "CRUFT REVIEW: This task should be status=completed, not cancelled. Implementation was done (yaml library migration, writeYamlFilePreserveFormat). Waiting for task-reset-command to fix."
         supersedes: null
       - _ulid: 01KFG1BEPKW8Q0VD82RNBSCJK9
         created_at: 2026-01-21T10:24:39.123Z
         author: "@claude"
-        content: "Reset from cancelled to pending (was cancelled: Not worked on in this iteration, returning
-          to ready queue)"
+        content: "Reset from cancelled to pending (was cancelled: Not worked on in this iteration, returning to ready queue)"
         supersedes: null
     todos: []
     completed_at: 2026-01-21T10:24:57.037Z
@@ -1331,8 +1204,7 @@ tasks:
     derivation: manual
     status: completed
     blocked_by: []
-    closed_reason: Spec design complete with 8 features, 32 requirements. Ready for implementation tasks
-      to be derived.
+    closed_reason: Spec design complete with 8 features, 32 requirements. Ready for implementation tasks to be derived.
     depends_on: []
     context:
       - "@task-session-start"
@@ -1359,12 +1231,7 @@ tasks:
       - _ulid: 01KF1EX3D9T6M55FDMX5PM1BZ8
         created_at: 2026-01-15T18:32:52.393Z
         author: "@claude"
-        content: "Completed spec design for meta-spec system. Created spec/modules/meta.yaml with 8 features
-          and 32 requirements covering: meta manifest, agent definitions, workflow definitions,
-          conventions, observations (feedback loop), session context, meta CLI commands, and
-          meta-ref integration. Key decisions: separate manifest (kynetic.meta.yaml) that
-          complements prose docs, ephemeral session context in .kspec-session, observations
-          promotable to tasks, unified validation."
+        content: "Completed spec design for meta-spec system. Created spec/modules/meta.yaml with 8 features and 32 requirements covering: meta manifest, agent definitions, workflow definitions, conventions, observations (feedback loop), session context, meta CLI commands, and meta-ref integration. Key decisions: separate manifest (kynetic.meta.yaml) that complements prose docs, ephemeral session context in .kspec-session, observations promotable to tasks, unified validation."
         supersedes: null
     todos: []
   - _ulid: 01KEZAT35YG043XQMCH0GXPJZD
@@ -1411,8 +1278,7 @@ tasks:
     derivation: manual
     status: completed
     blocked_by: []
-    closed_reason: "Implemented session start command with all planned features: time utilities, git
-      integration, formatted output with brief/full modes, JSON support, and aliases"
+    closed_reason: "Implemented session start command with all planned features: time utilities, git integration, formatted output with brief/full modes, JSON support, and aliases"
     depends_on:
       - "@task-task-loading"
     context:
@@ -1431,23 +1297,14 @@ tasks:
       - _ulid: 01KEZPN0SZAFZV6915NSW9Q40C
         created_at: 2026-01-15T02:09:47.328Z
         author: "@claude"
-        content: >-
+        content: |-
           Implemented session start command with:
 
-
-          - New utilities: src/utils/time.ts (parseTimeSpec, formatRelativeTime), src/utils/git.ts
-          (getRecentCommits, isGitRepo, getCurrentBranch)
-
-          - Main command: src/cli/commands/session.ts with full SessionContext type, data gathering,
-          and formatted output
-
+          - New utilities: src/utils/time.ts (parseTimeSpec, formatRelativeTime), src/utils/git.ts (getRecentCommits, isGitRepo, getCurrentBranch)
+          - Main command: src/cli/commands/session.ts with full SessionContext type, data gathering, and formatted output
           - Commands: `kspec session start`, `kspec session resume`, `kspec context` (alias)
-
           - Options: --brief (default), --full, --since <time>, --no-git, -n/--limit, --json
-
-          - Output shows: active tasks, recent notes, ready tasks, blocked tasks, git commits, stats
-          summary
-
+          - Output shows: active tasks, recent notes, ready tasks, blocked tasks, git commits, stats summary
           - All tests pass, TypeScript compiles clean
         supersedes: null
       - _ulid: 01KEZQV3G3R8B5JSEPH4TYZMKR
@@ -1536,14 +1393,10 @@ tasks:
       - _ulid: 01KEZMS39EM9F7BR8KTG2N5SR1
         created_at: 2026-01-15T01:37:03.791Z
         author: "@claude"
-        content: >-
-          Related to @task-setup-cmd: The skill can include manual setup instructions as fallback if
-          kspec setup auto-detection fails. Skill should mention:
-
+        content: |-
+          Related to @task-setup-cmd: The skill can include manual setup instructions as fallback if kspec setup auto-detection fails. Skill should mention:
           - KSPEC_AUTHOR env var for author attribution
-
           - How to add to ~/.claude/settings.json manually
-
           - Or just run 'kspec setup' if available
         supersedes: null
       - _ulid: 01KEZVZWP2S6JVHXP68T2VSSC7
@@ -1566,34 +1419,25 @@ tasks:
       - _ulid: 01KEZYGZ4ECJXCPS5CKX5CBHE0
         created_at: 2026-01-15T04:27:23.151Z
         author: "@claude"
-        content: >-
+        content: |-
           Related: @task-bulk-import
 
-
           If bulk import is implemented, the skill should teach agents about:
-
           - Using 'kspec import' for rapid spec capture during design discussions
-
           - The simplified YAML format for quick item authoring
-
           - When to use import vs individual 'item add' commands
 
-
-          If skill is implemented first, bulk import should update the skill file with new
-          capabilities.
+          If skill is implemented first, bulk import should update the skill file with new capabilities.
         supersedes: null
       - _ulid: 01KF15CKYEGXA9Y4AMBD43ARX1
         created_at: 2026-01-15T15:46:35.087Z
         author: "@claude"
-        content: Starting work. Will create a Claude Code skill file that teaches Claude how to use kspec
-          commands effectively. Need to research skill format and determine best location/structure.
+        content: Starting work. Will create a Claude Code skill file that teaches Claude how to use kspec commands effectively. Need to research skill format and determine best location/structure.
         supersedes: null
       - _ulid: 01KF15F5KQBZ1JTKPRN4VF8F5A
         created_at: 2026-01-15T15:47:58.712Z
         author: "@claude"
-        content: Created .claude/skills/kspec/SKILL.md with frontmatter (name, description), core workflows
-          (session start, task lifecycle, inbox, spec-first), command reference table, and key
-          principles. Skill will auto-invoke when Claude detects kspec-related requests.
+        content: Created .claude/skills/kspec/SKILL.md with frontmatter (name, description), core workflows (session start, task lifecycle, inbox, spec-first), command reference table, and key principles. Skill will auto-invoke when Claude detects kspec-related requests.
         supersedes: null
     todos: []
   - _ulid: 01KEZ9DSD9W7JY4HP92JPY6WAN
@@ -1621,8 +1465,7 @@ tasks:
     derivation: manual
     status: completed
     blocked_by: []
-    closed_reason: Added integration test suite with fixtures covering validate, tasks, items, derive,
-      and session commands
+    closed_reason: Added integration test suite with fixtures covering validate, tasks, items, derive, and session commands
     depends_on: []
     context: []
     priority: 2
@@ -1638,18 +1481,11 @@ tasks:
       - _ulid: 01KF161NRT90NT32JZJASGXAGM
         created_at: 2026-01-15T15:58:05.083Z
         author: "@claude"
-        content: Starting work. Will set up integration test infrastructure with fixtures for testing CLI
-          commands end-to-end.
+        content: Starting work. Will set up integration test infrastructure with fixtures for testing CLI commands end-to-end.
         supersedes: null
       - _ulid: 01KF168J8D809S1EVBBSVSYE30
         created_at: 2026-01-15T16:01:50.862Z
         author: "@claude"
-        content: "Implemented integration testing: created fixtures directory with sample manifest, tasks,
-          and module files. Added integration.test.ts with 19 tests covering validate, task
-          lifecycle, task add, items, derive, and session commands. All 82 tests pass."
+        content: "Implemented integration testing: created fixtures directory with sample manifest, tasks, and module files. Added integration.test.ts with 19 tests covering validate, task lifecycle, task add, items, derive, and session commands. All 82 tests pass."
         supersedes: null
     todos: []
-
-
-
-
