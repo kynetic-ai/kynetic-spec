@@ -11723,6 +11723,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-02T23:08:51.121Z
+  - _ulid: 01KN88N7EAV5EKW1WEV0T3857P
+    type: friction
+    content: "Bun fs.watch({recursive: true}) on Linux has three confirmed bugs: (1) opens an FD per
+      file in the watched tree, not per directory as inotify should, (2) closing the watcher
+      increases FD count rather than decreasing it, (3) cross-talk between watchers watching
+      different directories with same-named files. These caused 191k+ leaked FDs and silent
+      secondary project watcher failure. Resolved by standardizing on Chokidar in plan
+      @plan-daemon-file-monitoring-reliability."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-02T23:32:34.890Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
