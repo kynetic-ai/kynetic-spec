@@ -105297,6 +105297,12 @@ reviews:
         payload:
           thread_ulid: 01KN7T16214366ERNWPJA6CD5M
         timestamp: 2026-04-02T19:29:19.599Z
+      - _ulid: 01KN7TQW8XC5186RVXHD2QW1YY
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KN7T16214366ERNWPJA6CD5M
+        timestamp: 2026-04-02T19:29:21.693Z
     examined_commit: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
     external_links: []
     lifecycle_state: closed
@@ -105369,6 +105375,8 @@ reviews:
               watcher-start failure coverage and avoids false coverage for health-monitor behavior.
             created_at: 2026-04-02T19:29:18.947Z
         kind: nit
+        resolved_at: 2026-04-02T19:29:20.949Z
+        resolved_by: Jacob Chapel
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -105378,5 +105386,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-02T19:17:01.235Z
     created_at: 2026-04-02T19:07:54.851Z
-    updated_at: 2026-04-02T19:29:18.947Z
+    updated_at: 2026-04-02T19:29:20.949Z
     notes: []
