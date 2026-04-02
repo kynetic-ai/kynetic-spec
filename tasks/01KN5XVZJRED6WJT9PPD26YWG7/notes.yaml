@@ -9,3 +9,11 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T01:51:50.321Z
+  - _ulid: 01KN5YASMWCSVG8Y2TA70MEH3D
+    content: "Implemented branch field end-to-end in the plan model, parser defaults, and plan get/set
+      CLI surface. Reused nullable-string field semantics from task set: set any non-empty string,
+      clear with null or empty string, and rely on raw-shape merge so absent legacy fields stay
+      absent in YAML."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T01:53:38.460Z
