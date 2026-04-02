@@ -106626,6 +106626,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN82BFZ0RCNT7TKFCBW3GEYN
         timestamp: 2026-04-02T21:42:27.006Z
+      - _ulid: 01KN82BRBVHYJE50900BDTM9R2
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KN82BP6KCKCE3QMJERC6K0WP
+        timestamp: 2026-04-02T21:42:33.083Z
     examined_commit: b850d3f95ceaea076bcf2d2c62e469f4f6fcd3b3
     external_links: []
     lifecycle_state: open
@@ -106656,7 +106663,33 @@ reviews:
               includes the logging requirement, these annotations currently overclaim coverage.
             created_at: 2026-04-02T21:42:24.481Z
         kind: blocker
+      - _ulid: 01KN82BP6KCKCE3QMJERC6K0WP
+        entries:
+          - _ulid: 01KN82BP6M9HTHG76BC0ED9C97
+            author: Jacob Chapel
+            body: >-
+              Evidence log:
+
+              Files read: tests/daemon-context-manager.test.ts,
+              tests/daemon-watcher-error-handling.test.ts, tests/daemon-watcher-fallback.test.ts,
+              tests/daemon-watcher-multi-project.test.ts, tests/session-watcher.test.ts,
+              packages/daemon/src/watcher.ts, packages/daemon/src/session-watcher.ts,
+              packages/daemon/src/project-context.ts.
+
+              Commands run: git diff, kspec task get, kspec item get @daemon-file-monitoring, kspec
+              item get @trait-error-guidance, kspec review get @01KN804T5VPQYZ02QBQ4PNF48J, kspec
+              validate, rg for AC annotations and logging assertions, npm test -- --fresh, timeout
+              180s npm test -- --fresh <watcher tests>.
+
+              Claims verified: previous fix-cycle claim that AC-3 no longer uses source scanning;
+              current tests measure runtime FDs via /proc/self/fd.
+
+              Categories searched: correctness (found missing AC-8 logging coverage), test quality
+              (found overclaimed annotation), edge cases/error handling/integration (checked watcher
+              retry, atomic rename, session bootstrap, project isolation).
+            created_at: 2026-04-02T21:42:30.868Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-02T21:41:15.655Z
-    updated_at: 2026-04-02T21:42:24.481Z
+    updated_at: 2026-04-02T21:42:30.868Z
     notes: []
