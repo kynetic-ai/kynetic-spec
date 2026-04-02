@@ -11297,6 +11297,17 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-04-02T04:14:07.877Z
+  - _ulid: 01KN66CVKQP7GQV9X270QWV9RG
+    type: success
+    content: Re-running a failing test on a sibling worktree pinned to the integration-target commit is
+      an effective review pattern for separating pre-existing suite debt from regressions introduced
+      by the submitted branch. It kept this review focused on the real blocker while still creating
+      a follow-up task for the unrelated daemon cache failure.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-04-02T04:14:34.615Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
