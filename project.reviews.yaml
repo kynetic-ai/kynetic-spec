@@ -103000,6 +103000,24 @@ reviews:
         runner: npm
         created_at: 2026-04-02T05:40:14.932Z
         completed_at: 2026-04-02T05:40:14.932Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/agent-runtime/workspace.ts, tests/dispatch-workspace-cleanup.test.ts,
+          tests/dispatch-workspace-config.test.ts, vitest.config.ts, kspec-agents.md. Commands run:
+          git diff dev...HEAD, git show --stat 4f39f67, kspec task get, kspec item get
+          @dispatch-workspace-cleanup-policy, kspec item get @dispatch-workspace-configuration,
+          kspec item get @plan-branch-dispatch-target, grep for AC annotations, kspec validate, npm
+          test. Claims verified: stale on-disk-missing worktree now prunes git registration instead
+          of calling worktree remove; regression test covers orphaned registration cleanup.
+          Categories searched: correctness, edge cases, error handling, test quality, integration;
+          no findings."
+        name: review-evidence
+        required: false
+        runner: manual
+        created_at: 2026-04-02T05:40:17.247Z
+        completed_at: 2026-04-02T05:40:17.247Z
     events:
       - _ulid: 01KN6ARHMC045WBQZY9H29CRBQ
         actor: Jacob Chapel
@@ -103021,6 +103039,13 @@ reviews:
           status: pass
           name: npm-test
         timestamp: 2026-04-02T05:40:15.692Z
+      - _ulid: 01KN6B9TFHR2E43QD2G2TQGSZ4
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-04-02T05:40:18.033Z
     examined_commit: 4f39f67f8ada86dcca9d75681a2d9f44a8379d36
     external_links: []
     lifecycle_state: open
@@ -103033,5 +103058,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-02T05:30:51.916Z
-    updated_at: 2026-04-02T05:40:14.932Z
+    updated_at: 2026-04-02T05:40:17.247Z
     notes: []
