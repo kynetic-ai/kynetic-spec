@@ -20630,7 +20630,7 @@ runs:
     completed_at: 2026-04-02T05:25:35.392Z
   - _ulid: 01KN6BRG2FV05MNA9X9172HM3E
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -20651,7 +20651,14 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-04-02T05:49:25.798Z
-        completed_at: 2026-04-02T05:49:25.798Z
+        completed_at: 2026-04-02T05:49:36.855Z
+        notes: "Decision applied: captured only the unique, high-confidence success observation @01KN6BSK.
+          Skipped broader full-suite flake restatements because existing observations already cover
+          those themes."
+      - status: completed
+        step_index: 3
+        started_at: 2026-04-02T05:49:36.855Z
+        completed_at: 2026-04-02T05:49:36.855Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-02T05:48:18.895Z
