@@ -104911,7 +104911,19 @@ reviews:
     slugs: []
     title: "Plan review: Daemon File Monitoring Reliability (revision 4)"
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: The revision 4 plan removes the remaining implementation leakage in the daemon-server ac-8
+          replacement text. The replacement now specifies reliable cross-platform detection 'without
+          manual configuration', and the new daemon-file-monitoring / daemon-watcher-health specs
+          use behavioral, independently testable ACs with sequential numbering.
+        name: Spec quality
+        required: true
+        created_at: 2026-04-02T18:20:47.680Z
+        completed_at: 2026-04-02T18:20:47.680Z
     events:
       - _ulid: 01KN7PSQAPFD374WMQPM4BKY00
         actor: "@claude"
@@ -104919,6 +104931,13 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-04-02T18:20:27.863Z
+      - _ulid: 01KN7PTBBPWZ75KA4TK5P64Y3B
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Spec quality
+        timestamp: 2026-04-02T18:20:48.374Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -104931,5 +104950,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-02T18:20:27.863Z
-    updated_at: null
+    updated_at: 2026-04-02T18:20:47.680Z
     notes: []
