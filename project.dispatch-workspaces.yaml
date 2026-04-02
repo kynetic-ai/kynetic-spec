@@ -32048,7 +32048,7 @@ workspaces:
         head: 41800715e1029b33695a14d9d6dff509bd4a6622
         last_seen_at: 2026-04-02T04:30:01.617Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-dispatch-plan-branch-resolution-01kn5xw0
-  - active_role: null
+  - active_role: worker
     base_branch_point: 03bf2acf6537bedb38f04c61c6cc010c747bbd9b
     bootstrap:
       status: succeeded
@@ -32057,38 +32057,17 @@ workspaces:
       failureMessage: null
       invalidationReasons:
         - workspace-dependencies-missing
-      lastRole: reviewer
-      lastRunAt: 2026-04-02T04:30:12.007Z
+      lastRole: worker
+      lastRunAt: 2026-04-02T04:21:32.418Z
       roleStates:
         reviewer:
-          status: succeeded
-          canonicalBranchHead: 03bf2acf6537bedb38f04c61c6cc010c747bbd9b
-          configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
           failureMessage: null
-          invalidationReasons:
-            - workspace-dependencies-missing
-          lastRunAt: 2026-04-02T04:30:12.007Z
-          steps:
-            - status: succeeded
-              allowTrackedChanges: false
-              idempotent: true
-              name: install-workspace-dependencies
-              output: |-
-                added 287 packages, and audited 292 packages in 3s
-
-                67 packages are looking for funding
-                  run `npm fund` for details
-
-                12 vulnerabilities (1 low, 7 moderate, 4 high)
-
-                To address all issues, run:
-                  npm audit fix
-
-                Run `npm audit` for details.
-              reviewerRerunAllowed: true
-              role: reviewer
-              run: npm ci
-              source: dispatch
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
         worker:
           status: succeeded
           canonicalBranchHead: 03bf2acf6537bedb38f04c61c6cc010c747bbd9b
@@ -32136,7 +32115,7 @@ workspaces:
 
             Run `npm audit` for details.
           reviewerRerunAllowed: true
-          role: reviewer
+          role: worker
           run: npm ci
           source: dispatch
     branch_provenance:
@@ -32153,12 +32132,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-02T04:30:05.734Z
+      updated_at: 2026-04-02T04:30:27.689Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T04:30:05.734Z
+      updated_at: 2026-04-02T04:30:27.689Z
     integration:
       status: pending
       detail: null
@@ -32166,29 +32145,24 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 03bf2acf6537bedb38f04c61c6cc010c747bbd9b
-      updated_at: 2026-04-02T04:30:05.734Z
-    lifecycle_state: integrating
+      updated_at: 2026-04-02T04:30:27.689Z
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KN664X0NXW8HVZMMDRPGWZHP"
     task_slug: daemon-entity-cache-live-counter-reload-redux
     timestamps:
       closed_at: null
       last_active_at: 2026-04-02T04:21:55.909Z
-      last_reconciled_at: 2026-04-02T04:30:05.734Z
+      last_reconciled_at: 2026-04-02T04:30:27.689Z
       created_at: 2026-04-02T04:21:25.993Z
-      updated_at: 2026-04-02T04:30:12.007Z
+      updated_at: 2026-04-02T04:30:27.689Z
     workspace_id: dispatch-workspace-01KN664X0NXW8HVZMMDRPGWZHP
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 03bf2acf6537bedb38f04c61c6cc010c747bbd9b
-        last_seen_at: 2026-04-02T04:30:05.734Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/daemon-entity-cache-live-counter-reload-redux-01kn664x-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/daemon-entity-cache-live-counter-reload-redux/01kn664x
         head: 03bf2acf6537bedb38f04c61c6cc010c747bbd9b
-        last_seen_at: 2026-04-02T04:30:05.734Z
+        last_seen_at: 2026-04-02T04:21:25.993Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/daemon-entity-cache-live-counter-reload-redux-01kn664x
