@@ -27,6 +27,7 @@ import { createAggregationRoutes } from "../../dist/daemon/routes/aggregation.ts
 import { createAgentDispatchRoutes } from "../../dist/daemon/routes/agent-dispatch.ts";
 import { PubSubManager } from "../../dist/daemon/websocket/pubsub.ts";
 import { ensureSplitBackendRegistered } from "../../dist/parser/split-backend.js";
+import type { ProjectContextManager } from "../../dist/daemon/project-context.ts";
 
 // Register the split storage backend so task routes can handle the split format
 // used by e2e fixtures. In production this happens lazily via createRequire(),
@@ -104,9 +105,19 @@ export function setupFixtures(tempDir: string): void {
  * not available when using app.handle() (WebStandard adapter, Node.js).
  * The polyfill uses `set.status` to achieve the same effect.
  */
-export function createTestApp(): { app: Elysia; pubsub: PubSubManager } {
+export function createTestApp(): {
+  app: Elysia;
+  pubsub: PubSubManager;
+  manager: ProjectContextManager;
+} {
   const pubsub = new PubSubManager();
-  const { middleware } = projectContextMiddleware();
+  const { middleware, manager } = projectContextMiddleware();
+
+  // app.handle() integration tests assert request/response behavior only. Starting
+  // filesystem watchers for every temp project leaks resources across the suite
+  // and causes unrelated timeout flakes under full-suite load.
+  manager.startWatcher = async () => {};
+
   const app = new Elysia()
     // Polyfill Elysia's `error` function for app.handle() in Node.js.
     // In Bun with .listen(), Elysia provides `error` natively. In Node.js
@@ -131,7 +142,7 @@ export function createTestApp(): { app: Elysia; pubsub: PubSubManager } {
     .use(createAggregationRoutes())
     .use(createAgentDispatchRoutes());
 
-  return { app, pubsub };
+  return { app, pubsub, manager };
 }
 
 /**
