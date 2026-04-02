@@ -105570,6 +105570,12 @@ reviews:
         payload:
           thread_ulid: 01KN7VZQ0A89724ZSN608P1JSV
         timestamp: 2026-04-02T20:00:06.644Z
+      - _ulid: 01KN7WGBBMA9DW2JYWWV534QF7
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KN7VZQ0A89724ZSN608P1JSV
+        timestamp: 2026-04-02T20:00:12.148Z
     examined_commit: db7f01d365a123d47dd9e5f3e694f34fb7686367
     external_links: []
     lifecycle_state: closed
@@ -105610,6 +105616,8 @@ reviews:
               (24/24 passing) plus the watcher-focused regression suite."
             created_at: 2026-04-02T20:00:05.803Z
         kind: blocker
+        resolved_at: 2026-04-02T20:00:11.458Z
+        resolved_by: Jacob Chapel
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -105619,7 +105627,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-02T19:51:23.622Z
     created_at: 2026-04-02T19:34:10.578Z
-    updated_at: 2026-04-02T20:00:05.803Z
+    updated_at: 2026-04-02T20:00:11.458Z
     notes: []
   - _ulid: 01KN7V3GHW32YS3FHC0GNZQ565
     slugs: []
