@@ -24120,7 +24120,7 @@
   title: "Fix schedule engine race condition: eager state updates before action execution"
   type: bug
   spec_ref: "@dispatch-schedule-entities"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 3
@@ -24132,6 +24132,7 @@
   todos_count: 0
   created_at: 2026-04-02T07:10:03.214Z
   started_at: 2026-04-02T08:14:57.317Z
+  submitted_at: 2026-04-02T08:29:17.391Z
   automation: eligible
 - _ulid: 01KN6HMDX76CP904YS0DCBBXGV
   slugs: []
