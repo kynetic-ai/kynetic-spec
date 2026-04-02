@@ -1721,11 +1721,12 @@ features:
         id: ac-18
         then: only Project A's WebSocket subscribers receive updates
         when: Project A changes
-      - given: project watcher creation fails due to OS limits (ulimit)
+      - given: project file monitoring would consume excessive system resources due to directory size or OS
+          limits
         id: ac-19
-        then: project registration fails with 503 and error "Unable to watch project - resource limit
-          reached"
-        when: error occurs
+        then: the daemon reports the resource constraint with actionable guidance and does not allow the
+          project's monitoring to degrade other registered projects
+        when: the resource impact is detected during initialization or health monitoring
       - given: registered project's .kspec/ directory is deleted
         id: ac-20
         then: return 404 and unregister project automatically
