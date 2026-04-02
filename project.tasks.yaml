@@ -23879,3 +23879,77 @@
   submitted_at: 2026-04-02T00:07:41.381Z
   completed_at: 2026-04-02T00:18:32.959Z
   automation: eligible
+- _ulid: 01KN5XVZJRED6WJT9PPD26YWG7
+  slugs:
+    - task-plan-branch-schema
+  title: Add branch field to plan schema and CLI
+  type: task
+  spec_ref: "@plan-branch-association"
+  plan_ref: "@plan-plan-scoped-branch-targeting"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - schema
+    - plans
+    - cli
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-02T01:45:33.016Z
+- _ulid: 01KN5XVZVERDZ3ZVAPDCFP5PJB
+  slugs:
+    - task-plan-branch-command
+  title: Implement kspec plan branch command
+  type: task
+  spec_ref: "@plan-branch-creation"
+  plan_ref: "@plan-plan-scoped-branch-targeting"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-plan-branch-schema"
+  priority: 1
+  tags:
+    - cli
+    - plans
+    - git
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-02T01:45:33.294Z
+- _ulid: 01KN5XW04JM5261ZFYV1HCQVJK
+  slugs:
+    - task-dispatch-plan-branch-resolution
+  title: Wire plan branch into dispatch workspace provisioning
+  type: task
+  spec_ref: "@plan-branch-dispatch-target"
+  plan_ref: "@plan-plan-scoped-branch-targeting"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-plan-branch-schema"
+  priority: 1
+  tags:
+    - dispatch
+    - workspace
+    - plans
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-02T01:45:33.586Z
+- _ulid: 01KN5XW0DHJ5DWYGZ2GQ4H28EQ
+  slugs:
+    - task-plan-branch-activation
+  title: Add plan branch guidance to derive output
+  type: task
+  spec_ref: "@plan-branch-derive-guidance"
+  plan_ref: "@plan-plan-scoped-branch-targeting"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-plan-branch-schema"
+  priority: 2
+  tags:
+    - cli
+    - plans
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-02T01:45:33.873Z

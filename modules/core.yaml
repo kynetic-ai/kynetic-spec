@@ -1142,6 +1142,82 @@ features:
             tags: []
             created: 2026-03-18T07:07:44.145Z
             notes: []
+          - _ulid: 01KN5XVZEBHDJ285NRERPVTWN5
+            slugs:
+              - plan-branch-dispatch-target
+            title: Plan Branch as Dispatch Integration Target
+            type: requirement
+            description: |
+              When the dispatch engine provisions a workspace for a task that
+              belongs to a plan with an associated branch, the plan branch is
+              used as the task's integration target instead of the project's
+              default integration branch.
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            acceptance_criteria:
+              - given: |
+                  A task references a plan that has a branch set
+                id: ac-plan-branch-priority
+                then: |
+                  The task's base branch is the plan's branch
+                when: |
+                  The dispatcher provisions a workspace for that task
+              - given: |
+                  A task references a plan that has a branch set
+                id: ac-integration-target
+                then: |
+                  The integration target branch is the plan's branch
+                when: |
+                  The task's workspace integration record is created
+              - given: |
+                  A task has no plan reference
+                id: ac-no-plan-ref-passthrough
+                then: |
+                  The base branch is resolved using the existing fallback
+                  chain with no change in behavior
+                when: |
+                  The dispatcher provisions a workspace
+              - given: |
+                  A task references a plan whose branch is null
+                id: ac-null-branch-passthrough
+                then: |
+                  The base branch is resolved using the existing fallback
+                  chain with no change in behavior
+                when: |
+                  The dispatcher provisions a workspace
+              - given: |
+                  A task references a plan whose branch does not exist
+                  locally or on any configured remote
+                id: ac-plan-branch-not-found
+                then: |
+                  Workspace provisioning fails with an error identifying the
+                  missing plan branch and the plan it belongs to
+                when: |
+                  The dispatcher provisions a workspace
+              - given: |
+                  A task has an existing workspace targeting the default
+                  integration branch and its plan subsequently gains a branch
+                id: ac-stale-target-detected
+                then: |
+                  The mismatch between the workspace's current integration
+                  target and the plan's branch is detected
+                when: |
+                  The workspace is re-provisioned
+              - given: |
+                  A stale integration target mismatch is detected for a task
+                  whose plan now has a branch
+                id: ac-stale-target-updated
+                then: |
+                  The workspace record's integration target is updated to
+                  the plan's branch
+                when: |
+                  The workspace record is reconciled
+            tags: []
+            created: 2026-04-02T01:45:32.875Z
+            notes: []
         created: 2026-03-12T02:33:43.875Z
         notes: []
     requirements:

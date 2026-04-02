@@ -1,0 +1,90 @@
+_ulid: 01KN5XW04JM5261ZFYV1HCQVJK
+slugs:
+  - task-dispatch-plan-branch-resolution
+title: Wire plan branch into dispatch workspace provisioning
+type: task
+description: |
+  Modify the dispatch workspace provisioning pipeline to resolve a
+  task's base branch from its plan's branch field before falling
+  back to the global dispatch.base_branch.
+
+  Why: This is the core runtime behavior — when a plan has a
+  branch, all its derived tasks should automatically target that
+  branch. Without this, users would have to manually configure
+  each task's base branch.
+
+  What:
+  - In resolveDispatchWorkspaceConfig() (src/agent-runtime/
+    workspace.ts, around line 1887), add a plan branch resolution
+    step as the FIRST check in the base branch fallback chain,
+    before the dispatch.base_branch config check.
+  - The resolution logic:
+    1. Load the task being provisioned.
+    2. If task.plan_ref is set, load the referenced plan via
+       findPlanByRef() (from src/parser/plans.ts).
+    3. If plan.branch is non-null, validate the branch exists
+       (locally or via remote fetch) and use it as the resolved
+       base branch.
+    4. If plan.branch is non-null but the branch cannot be found
+       locally or on any remote, fail workspace provisioning with
+       a clear error identifying the missing branch and the plan
+       it belongs to. Do NOT fall through to the default base.
+    5. If plan.branch is null, or task.plan_ref is not set, fall
+       through to the existing resolution chain (config file →
+       remote HEAD → current branch → "main" default).
+  - For stale integration target detection
+    (resolveStaleIntegrationTarget, workspace.ts ~line 708): this
+    extends the existing detection in @dispatch-workspace-configuration
+    ac-6 which handles config-level base_branch changes. Plan branch
+    changes are an additional source of target staleness — when a
+    plan gains a branch, existing workspaces targeting the old
+    default base become stale. The detection logic should check
+    plan branch first (since it takes priority), then fall through
+    to the existing config-change detection. The update behavior
+    is the same: update the workspace record's integration target.
+  - No changes needed to worktree creation, branch provenance,
+    integration records, or the merge skill — they all operate on
+    the resolved base branch which this task changes at the source.
+
+  How: The insertion point is narrow. resolveDispatchWorkspaceConfig
+  returns a config object with baseBranch. Add the plan lookup
+  before the existing if-blocks. findPlanByRef() is synchronous
+  (loads from YAML). Branch existence validation uses the same
+  helpers already in workspace.ts. The KSPEC_DISPATCH_MERGE_TARGET
+  env var and integration.target_branch are set from the resolved
+  base branch downstream — no changes needed there.
+
+  Edge cases to handle:
+  - Plan exists but has status completed/rejected — still honor
+    the branch field (tasks may still be in progress).
+  - Plan ref is invalid/not found — log warning, fall through to
+    default resolution (the plan may have been deleted).
+  - Plan branch was deleted — fail with clear error per
+    ac-plan-branch-not-found.
+
+  Testing: Unit tests for each resolution path: plan with branch,
+  plan without branch, no plan_ref, missing plan (warning + fall
+  through), missing branch (error). Integration test for stale
+  target detection when plan gains a branch. Verify stale detection
+  composes with existing config-change detection.
+
+  Covers: @plan-branch-dispatch-target ac-plan-branch-priority,
+  ac-integration-target, ac-no-plan-ref-passthrough,
+  ac-null-branch-passthrough, ac-plan-branch-not-found,
+  ac-stale-target-detected, ac-stale-target-updated.
+spec_ref: "@plan-branch-dispatch-target"
+plan_ref: "@plan-plan-scoped-branch-targeting"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-plan-branch-schema"
+context: []
+priority: 1
+tags:
+  - dispatch
+  - workspace
+  - plans
+vcs_refs: []
+created_at: 2026-04-02T01:45:33.586Z
+todos: []

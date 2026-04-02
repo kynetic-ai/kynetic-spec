@@ -1,0 +1,55 @@
+_ulid: 01KN5XW0DHJ5DWYGZ2GQ4H28EQ
+slugs:
+  - task-plan-branch-activation
+title: Add plan branch guidance to derive output
+type: task
+description: |
+  When a plan transitions to active via the derive command, include
+  contextual guidance about plan branches in the output.
+
+  Why: The derive step is the natural moment users think about how
+  tasks will be dispatched. Surfacing the plan branch option here
+  prevents the "I didn't know I could do that" problem.
+
+  What:
+  - In the plan derive command (src/cli/commands/plan.ts), after
+    the derive summary output, add a conditional message:
+    - If plan.branch is null: print a hint like
+      "Tip: Run kspec plan branch @<ref> to create a shared
+      branch for task stacking. Without it, tasks target the
+      default integration branch."
+    - If plan.branch is set: print a confirmation like
+      "Tasks will target plan branch: <branch-name>"
+  - The guidance should appear after the derived specs/tasks
+    summary, not before.
+  - In --json mode, include plan_branch in the output object
+    (null or the branch name) so programmatic consumers can
+    inspect it.
+
+  How: Find the derive command output section in
+  src/cli/commands/plan.ts (search for the derive subcommand
+  handler). Add the conditional after the success summary. Read
+  plan.branch from the plan record that's already loaded in the
+  derive flow.
+
+  Testing: CLI test that derive without branch shows the hint.
+  CLI test that derive with branch shows the confirmation.
+  JSON output test for plan_branch field.
+
+  Covers: @plan-branch-derive-guidance ac-derive-hint,
+  ac-derive-existing.
+spec_ref: "@plan-branch-derive-guidance"
+plan_ref: "@plan-plan-scoped-branch-targeting"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-plan-branch-schema"
+context: []
+priority: 2
+tags:
+  - cli
+  - plans
+vcs_refs: []
+created_at: 2026-04-02T01:45:33.873Z
+todos: []

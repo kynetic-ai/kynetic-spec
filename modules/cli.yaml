@@ -6303,6 +6303,167 @@ features:
         tags: []
         created: 2026-03-19T23:22:02.637Z
         notes: []
+      - _ulid: 01KN5XVZ6WSRP4F8JRYYYEPYMR
+        slugs:
+          - plan-branch-association
+        title: Plan Branch Association
+        type: requirement
+        description: |
+          Plans support an optional branch field that stores a git branch
+          name. The field is nullable, persists across sessions, and is
+          backward-compatible with existing plans that predate the feature.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              A plan is created without specifying a branch
+            id: ac-field-default
+            then: |
+              The branch field is null
+            when: |
+              The plan is loaded
+          - given: |
+              A user sets a plan's branch to a valid branch name
+            id: ac-field-set
+            then: |
+              The branch field contains the value that was set
+            when: |
+              The plan is loaded in a subsequent session
+          - given: |
+              A user clears a plan's branch
+            id: ac-field-clear
+            then: |
+              The branch field is null
+            when: |
+              The plan is loaded
+          - given: |
+              Plans created before this feature exist without a branch
+              field in their stored YAML
+            id: ac-existing-plans-unaffected
+            then: |
+              They parse successfully with branch defaulting to null
+            when: |
+              Those plans are loaded
+        tags: []
+        created: 2026-04-02T01:45:32.636Z
+        notes: []
+      - _ulid: 01KN5XVZAX5REQG1C0931265YR
+        slugs:
+          - plan-branch-creation
+        title: Plan Branch Creation
+        type: requirement
+        description: |
+          A dedicated command creates or resumes a branch for a plan
+          using a deterministic naming convention, paralleling task
+          branch creation.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-json-output"
+          - "@trait-semantic-exit-codes"
+          - "@trait-error-guidance"
+          - "@trait-shadow-commit"
+        acceptance_criteria:
+          - given: |
+              A plan has no branch set
+            id: ac-deterministic-name
+            then: |
+              A branch is created using the naming convention
+              plan/<normalized-slug>/<short-ref>
+            when: |
+              The plan branch command is run without a custom name
+          - given: |
+              A plan has no branch set
+            id: ac-forks-from-base
+            then: |
+              The branch forks from the current HEAD of the project's
+              configured integration branch
+            when: |
+              The plan branch command creates a new branch
+          - given: |
+              The plan branch command creates or resumes a branch
+            id: ac-updates-plan-record
+            then: |
+              The plan's branch field is updated to the resolved branch
+              name
+            when: |
+              The command completes
+          - given: |
+              A plan already has a branch set and the branch exists
+              locally
+            id: ac-resume-local
+            then: |
+              The existing branch is checked out without creating a
+              duplicate
+            when: |
+              The plan branch command runs
+          - given: |
+              A plan has a branch set but the branch only exists on a
+              remote
+            id: ac-rehydrate-remote
+            then: |
+              The branch is fetched from the remote and checked out
+              locally
+            when: |
+              The plan branch command runs
+          - given: |
+              A user provides an explicit branch name argument
+            id: ac-custom-name
+            then: |
+              The specified name is used instead of the deterministic
+              default
+            when: |
+              The plan branch command runs
+          - given: |
+              The plan branch command completes
+            id: ac-reports-result
+            then: |
+              The output includes the branch name and the action taken
+              (created, switched, or rehydrated)
+            when: |
+              Output is displayed
+        tags: []
+        created: 2026-04-02T01:45:32.765Z
+        notes: []
+      - _ulid: 01KN5XVZEZCB4YAJ1YHD7E5ACH
+        slugs:
+          - plan-branch-derive-guidance
+        title: Plan Branch Derive Guidance
+        type: requirement
+        description: |
+          The plan derive command surfaces branch awareness so users know
+          when and how to use plan branches for task stacking.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              A plan is transitioning to active status via the derive
+              command and has no branch set
+            id: ac-derive-hint
+            then: |
+              The output includes guidance that a plan branch can be
+              created to enable task stacking
+            when: |
+              The derive output is displayed
+          - given: |
+              A plan already has a branch set before activation
+            id: ac-derive-existing
+            then: |
+              The output confirms that derived tasks will target the
+              plan branch
+            when: |
+              The plan transitions to active via derive
+        tags: []
+        created: 2026-04-02T01:45:32.895Z
+        notes: []
     created: 2026-02-04T07:43:15.186Z
     notes: []
   - _ulid: 01KHA83NNJVB9F830HM0K7VBTC

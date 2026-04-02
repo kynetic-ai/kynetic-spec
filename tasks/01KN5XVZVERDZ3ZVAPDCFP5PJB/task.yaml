@@ -1,0 +1,83 @@
+_ulid: 01KN5XVZVERDZ3ZVAPDCFP5PJB
+slugs:
+  - task-plan-branch-command
+title: Implement kspec plan branch command
+type: task
+description: |
+  Create the kspec plan branch subcommand that creates or resumes
+  a deterministic branch for a plan, then updates the plan's branch
+  field.
+
+  Why: Plans need a dedicated command to create their branch, just
+  like kspec task branch exists for tasks. The deterministic naming
+  convention (plan/<slug>/<short-ref>) makes branches predictable
+  and avoids naming collisions.
+
+  What:
+  - Add a plan branch <ref> subcommand to src/cli/commands/plan.ts.
+  - Accept an optional --name <branch-name> flag that overrides the
+    deterministic naming with a custom branch name.
+  - Deterministic name computation: normalize the plan's first slug
+    to lowercase alphanumeric with hyphens, take the first 8 chars
+    of the plan ULID as short-ref, produce plan/<slug>/<short-ref>.
+    Reuse the normalization logic from computeDispatchBranchName()
+    in src/cli/commands/task.ts (the normalizeSlug and shortId
+    helpers).
+  - Branch resolution priority (same as kspec task branch):
+    1. Check if branch exists locally — if current, report
+       already_on_branch; if not current, checkout and report
+       switched.
+    2. Check remotes — if found, fetch and create local tracking
+       branch, report rehydrated.
+    3. Create new — fork from HEAD of the project's configured
+       dispatch.base_branch (resolve using the same logic as
+       resolveDispatchWorkspaceConfig in workspace.ts, or simpler:
+       read kspec.config.yaml dispatch.base_branch, fall back to
+       default branch detection). Report created.
+  - After branch resolution, update the plan's branch field via
+    mutatePlanAtomically() (src/parser/plans.ts) so the shadow
+    branch records the association.
+  - Output: branch name, action (created/switched/rehydrated),
+    confirmation that plan record was updated. Support --json flag
+    for structured output.
+  - Reuse the existing branch helper functions from task.ts:
+    findBranchOnRemote(), gitCreateBranchFrom(),
+    reportBranchResult(). These may need to be extracted to a
+    shared module if they're currently private to the task command.
+  - The command mutates shadow branch state (plan record update),
+    so it must auto-commit per trait-shadow-commit.
+  - Errors (invalid ref, git failures) must include recovery
+    guidance per trait-error-guidance.
+  - Exit codes must follow trait-semantic-exit-codes.
+
+  How: Model the command implementation after the task branch
+  command (src/cli/commands/task.ts lines ~3034-3108). The main
+  difference is: (a) resolves a plan ref instead of a task ref,
+  (b) uses plan/<slug>/<short-ref> instead of
+  dispatch/task/<slug>/<short-ref>, (c) updates the plan record
+  instead of being purely git-side.
+
+  Testing: Unit tests for deterministic name computation. CLI
+  integration tests for create, resume, and rehydrate flows. Test
+  custom --name flag. Verify plan record updated after each flow.
+  Verify JSON output mode. Verify error messages include guidance.
+
+  Covers: @plan-branch-creation ac-deterministic-name,
+  ac-forks-from-base, ac-updates-plan-record, ac-resume-local,
+  ac-rehydrate-remote, ac-custom-name, ac-reports-result.
+spec_ref: "@plan-branch-creation"
+plan_ref: "@plan-plan-scoped-branch-targeting"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-plan-branch-schema"
+context: []
+priority: 1
+tags:
+  - cli
+  - plans
+  - git
+vcs_refs: []
+created_at: 2026-04-02T01:45:33.294Z
+todos: []

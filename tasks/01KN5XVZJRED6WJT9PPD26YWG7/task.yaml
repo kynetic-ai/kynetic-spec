@@ -1,0 +1,55 @@
+_ulid: 01KN5XVZJRED6WJT9PPD26YWG7
+slugs:
+  - task-plan-branch-schema
+title: Add branch field to plan schema and CLI
+type: task
+description: |
+  Add an optional nullable branch field to the plan data model and
+  expose it via the plan CLI.
+
+  Why: The branch field is the data foundation — every other task
+  in this plan depends on plans being able to store a branch name.
+  Without it, the dispatch engine has nothing to look up.
+
+  What:
+  - Add branch as an optional nullable string to the plan schema
+    (src/schema/plan.ts), following the same pattern as plan_ref
+    on tasks — z.string().nullable().optional()
+  - Update the plan save logic (src/parser/plans.ts) to preserve
+    the branch field through load/save round-trips. The existing
+    save logic only writes non-default fields, so branch: null
+    should not appear in YAML output for plans that don't use it.
+  - Add --branch flag to kspec plan set so users can manually set
+    or clear the branch. Clearing should accept null or empty
+    string to unset. Follow the pattern of --plan-ref on task set.
+  - Add branch to plan get output (both human-readable and JSON).
+  - Verify that existing plans without the field parse correctly
+    by running the test suite — the optional() + nullable() pattern
+    should handle this, but confirm no fixture breakage.
+
+  How: The schema change is in src/schema/plan.ts PlanSchema. The
+  CLI change is in src/cli/commands/plan.ts under the set
+  subcommand. Save/load is in src/parser/plans.ts. Check the
+  existing task set --plan-ref implementation for the exact
+  nullable string flag pattern to replicate.
+
+  Testing: Unit tests for schema round-trip (null, set, clear).
+  CLI test for plan set --branch and plan get showing the value.
+
+  Covers: @plan-branch-association ac-field-default, ac-field-set,
+  ac-field-clear, ac-existing-plans-unaffected.
+spec_ref: "@plan-branch-association"
+plan_ref: "@plan-plan-scoped-branch-targeting"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - schema
+  - plans
+  - cli
+vcs_refs: []
+created_at: 2026-04-02T01:45:33.016Z
+todos: []
