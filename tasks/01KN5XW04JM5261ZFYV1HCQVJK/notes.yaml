@@ -1,1 +1,13 @@
-notes: []
+notes:
+  - _ulid: 01KN65G266V2XWZW19530NKC6Y
+    content: "Approach: update dispatch workspace base-branch resolution to read task.plan_ref, load the
+      plan, and prefer a validated plan.branch before existing config/default fallback logic. Edge
+      cases: missing plan ref falls through with warning, null branch falls through unchanged,
+      deleted plan branch errors instead of silently defaulting, stale integration targets must
+      prefer the resolved plan branch over config-level base branch changes. Test plan: add
+      behavioral coverage for plan branch hit, null branch passthrough, no plan passthrough, missing
+      plan warning fallback, missing branch failure, and stale target detection/update when a plan
+      gains a branch."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T03:58:51.078Z
