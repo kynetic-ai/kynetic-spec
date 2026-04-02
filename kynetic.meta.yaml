@@ -11571,6 +11571,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-02T08:43:06.203Z
+  - _ulid: 01KN7S1P2BAA7XKTJWR0THW011
+    type: friction
+    content: Dispatch workspace setup reported plan branch
+      plan/plan-daemon-file-monitoring-reliability/01kn7nw3 as missing, but git fetch immediately
+      resolved origin/plan/plan-daemon-file-monitoring-reliability/01kn7nw3. Branch availability
+      checks appear to rely on stale refs and can create false blocker context during task startup.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-02T18:59:45.868Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
