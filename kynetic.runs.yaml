@@ -20806,7 +20806,7 @@ runs:
     started_at: 2026-04-02T07:59:49.051Z
   - _ulid: 01KN6N0NX40QZMC6PEP2213SNH
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -20818,7 +20818,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-02T08:30:49.086Z
-        completed_at: 2026-04-02T08:30:49.086Z
+        completed_at: 2026-04-02T08:31:35.266Z
+        notes: "High-confidence items: success = focused regression run before full suite caught a timing
+          issue cheaply; friction = long full-suite runs required manual log tailing/process polling
+          to distinguish progress from hangs. Checked existing coverage with kspec search plus
+          observations/inbox/tasks baseline; no prior match found."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-02T08:31:35.266Z
+        completed_at: 2026-04-02T08:31:35.266Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-02T08:30:04.196Z
