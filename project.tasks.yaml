@@ -24298,8 +24298,13 @@
   type: task
   spec_ref: "@daemon-file-monitoring"
   plan_ref: "@plan-daemon-file-monitoring-reliability"
-  status: needs_work
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - "Dispatch workspace provisioning failed: Dispatch canonical branch \"dev\" is already attached
+      to foreign worktree \"/home/chapel/Projects/kynetic-spec-dispatch\" outside this checkout's
+      worktree root \"/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees\".. Suggested
+      action: Remove or relocate the foreign worktree in the other checkout, then retry dispatch
+      from \"/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees\"."
   depends_on:
     - "@task-chokidar-standardize"
     - "@task-session-blob-exclusion"
