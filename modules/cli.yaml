@@ -6021,7 +6021,7 @@ features:
           ac-6). Bidirectional link display is preserved via ac-bidirectional-links.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on:
           - "@plan-import-content-only"
         implements: []
