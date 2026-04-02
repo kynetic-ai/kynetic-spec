@@ -100944,6 +100944,13 @@ reviews:
           kind: question
           thread_ulid: 01KN5TZHE113CSFPZVKDK45SVP
         timestamp: 2026-04-02T00:55:04.548Z
+      - _ulid: 01KN5TZXGWJWYP1BYBCQ4YB0G7
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN5TZWWS08CH6X1Y46WE6Y5M
+        timestamp: 2026-04-02T00:55:16.252Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -100987,7 +100994,25 @@ reviews:
               schema.
             created_at: 2026-04-02T00:55:03.873Z
         kind: question
+      - _ulid: 01KN5TZWWS08CH6X1Y46WE6Y5M
+        anchor:
+          type: structured
+          field: ac-stale-target-detection
+          ref: "@plan-branch-dispatch-target"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KN5TZWWTK2M30TJDK9KYEZX0
+            author: "@claude"
+            body: "ac-stale-target-detection has a compound then-clause: 'the stale integration target is
+              detected AND the workspace record is updated.' These are two distinct verifiable
+              behaviors — detection and remediation. Split into two ACs: one for detecting the
+              mismatch, one for updating the target. This also mirrors
+              @dispatch-workspace-configuration ac-6 which already covers config-change-driven stale
+              detection — clarify how plan-branch stale detection interacts with or supersedes that
+              existing AC."
+            created_at: 2026-04-02T00:55:15.610Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-02T00:54:38.074Z
-    updated_at: 2026-04-02T00:55:03.873Z
+    updated_at: 2026-04-02T00:55:15.610Z
     notes: []
