@@ -24050,3 +24050,19 @@
   todos_count: 0
   created_at: 2026-04-02T05:15:26.446Z
   automation: needs_review
+- _ulid: 01KN6AAH0TMTBBPB8DSK8PP4K3
+  slugs: []
+  title: Stabilize flaky full-suite failures in dispatch workspace config and enhanced setup tests
+  type: task
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - test
+    - flaky
+    - dispatch
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-02T05:23:12.538Z
+  automation: eligible

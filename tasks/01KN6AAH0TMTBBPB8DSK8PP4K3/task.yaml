@@ -1,0 +1,29 @@
+_ulid: 01KN6AAH0TMTBBPB8DSK8PP4K3
+slugs: []
+title: Stabilize flaky full-suite failures in dispatch workspace config and enhanced setup tests
+type: task
+description: "Full npm test on snapshot 3010d95d48890de17b93615d91614626639b9250 failed after
+  6993.3s with STACK_TRACE_ERROR in tests/dispatch-workspace-config.test.ts and
+  tests/enhanced-setup.test.ts. The reviewed branch only changes src/cli/commands/plan.ts and
+  tests/cli-plan-derive.test.ts. Regression triage: npm test --
+  tests/dispatch-workspace-config.test.ts tests/enhanced-setup.test.ts passes on integration base
+  4f626c918bc5b120e8be2c7894f5f7c5335d28d7 (15 suites, 67 tests, 117.1s) and also passes on snapshot
+  3010d95d48890de17b93615d91614626639b9250 (15 suites, 67 tests, 206.7s). Investigate why these
+  suites fail only within the large full-suite run, identify whether this is
+  ordering/shared-state/resource flakiness, and make the full npm test deterministic again."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - test
+  - flaky
+  - dispatch
+vcs_refs: []
+created_at: 2026-04-02T05:23:12.538Z
+todos: []
+automation: eligible
