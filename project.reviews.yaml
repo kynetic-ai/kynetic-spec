@@ -102704,6 +102704,16 @@ reviews:
         runner: npm
         created_at: 2026-04-02T05:16:13.721Z
         completed_at: 2026-04-02T05:16:13.721Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm test -- tests/agent-dispatch-engine.test.ts --fresh passed (37 suites, 126 tests).
+        name: agent-dispatch-engine targeted
+        required: true
+        runner: npm
+        created_at: 2026-04-02T05:16:16.633Z
+        completed_at: 2026-04-02T05:16:16.633Z
     events:
       - _ulid: 01KN68AJ5NCSHSW64Y2H8DZA1M
         actor: Jacob Chapel
@@ -102739,6 +102749,13 @@ reviews:
           status: pass
           name: dispatch-workspace-config targeted
         timestamp: 2026-04-02T05:16:14.682Z
+      - _ulid: 01KN69XVSB1PD5G2NHFBSDTHF7
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: agent-dispatch-engine targeted
+        timestamp: 2026-04-02T05:16:17.579Z
     examined_commit: 8cbe9da1f07cbc1ea7b2955e703d5ff22cb7e2a4
     external_links: []
     lifecycle_state: open
@@ -102785,7 +102802,7 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-02T04:48:16.565Z
-    updated_at: 2026-04-02T05:16:13.721Z
+    updated_at: 2026-04-02T05:16:16.633Z
     notes: []
   - _ulid: 01KN69QVJ00AAMR58DS0TNK7V4
     slugs: []
