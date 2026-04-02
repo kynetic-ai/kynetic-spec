@@ -80,7 +80,7 @@ description: |-
 spec_ref: "@plan-derive-enhanced"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -93,7 +93,7 @@ review_ref: "@01KN6DH22F5CJGYVXM7QA7Q3XF"
 submission_linkage:
   review_url: null
   branch: dev
-  captured_at: 2026-04-02T06:16:33.020Z
+  captured_at: 2026-04-02T06:54:54.603Z
   commit: ed8d1259edd96190c6233c7b2edfb658aeed57a2
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
@@ -163,8 +163,35 @@ history:
         previous: 2026-04-02T06:01:48.316Z
     command: task-start
     timestamp: 2026-04-02T06:43:05.322Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-04-02T06:54:54.603Z
+          commit: ed8d1259edd96190c6233c7b2edfb658aeed57a2
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous:
+          review_url: null
+          branch: dev
+          captured_at: 2026-04-02T06:16:33.020Z
+          commit: ed8d1259edd96190c6233c7b2edfb658aeed57a2
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+      submitted_at:
+        new: 2026-04-02T06:54:54.615Z
+        previous: 2026-04-02T06:16:33.026Z
+    command: task-submit
+    timestamp: 2026-04-02T06:54:54.616Z
 created_at: 2026-04-02T06:00:49.055Z
 started_at: 2026-04-02T06:43:05.321Z
-submitted_at: 2026-04-02T06:16:33.026Z
+submitted_at: 2026-04-02T06:54:54.615Z
 todos: []
 automation: eligible
