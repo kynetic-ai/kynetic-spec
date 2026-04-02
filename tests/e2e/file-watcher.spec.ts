@@ -22,13 +22,14 @@ function projectNameFromPath(projectPath: string): string {
 }
 
 test.describe("File Watcher UI", () => {
-  // Skip all file watcher tests in CI — GitHub Actions does not support recursive fs.watch.
+  // Skip all file watcher tests in CI because the hosted environment does not
+  // deliver these watcher events reliably enough for the UI assertions.
   // oxlint-disable-next-line no-empty-pattern
   test.beforeEach(async ({}, testInfo) => {
     if (process.env.CI) {
       testInfo.skip(
         true,
-        "File watcher tests skip in CI — GitHub Actions does not support recursive fs.watch",
+        "File watcher tests skip in CI — hosted runners do not deliver watcher events reliably",
       );
     }
   });

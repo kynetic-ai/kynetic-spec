@@ -5,7 +5,7 @@
  * source-agnostic session freshness notifications to WebSocket clients.
  */
 
-import { existsSync, readdirSync, watch, type FSWatcher } from "fs";
+import { existsSync, readdirSync } from "fs";
 import { watch as chokidarWatch, type FSWatcher as ChokidarWatcher } from "chokidar";
 import { join, relative, sep } from "path";
 
@@ -16,10 +16,9 @@ export interface SessionWatcherOptions {
 }
 
 export class SessionWatcher {
-  private watcher: FSWatcher | ChokidarWatcher | null = null;
+  private watcher: ChokidarWatcher | null = null;
   private debounceTimers = new Map<string, NodeJS.Timeout>();
   private debounceMs = 250;
-  private usingChokidar = false;
   private retryCount = 0;
   private maxRetries = 5;
   private baseBackoffMs = 1000;
@@ -37,13 +36,7 @@ export class SessionWatcher {
       return;
     }
 
-    try {
-      await this.startBunWatcher();
-    } catch (error) {
-      console.warn("[session-watcher] Bun fs.watch failed, falling back to Chokidar", error);
-      this.usingChokidar = true;
-      await this.startChokidarWatcher();
-    }
+    await this.startChokidarWatcher();
   }
 
   private scheduleBootstrapPoll(): void {
@@ -61,17 +54,6 @@ export class SessionWatcher {
     console.log("[session-watcher] Waiting for .kspec-sessions directory");
   }
 
-  private async startBunWatcher(): Promise<void> {
-    this.watcher = watch(this.options.sessionsDir, { recursive: true }, (_eventType, filename) => {
-      if (!filename) return;
-      this.handleFileChange(join(this.options.sessionsDir, filename));
-    });
-    (this.watcher as FSWatcher).on("error", (error) => {
-      void this.handleWatcherError(error);
-    });
-    console.log("[session-watcher] Watching .kspec-sessions directory with Bun fs.watch");
-  }
-
   private async startChokidarWatcher(): Promise<void> {
     this.watcher = chokidarWatch(this.options.sessionsDir, {
       ignoreInitial: true,
@@ -81,7 +63,7 @@ export class SessionWatcher {
       },
     });
 
-    (this.watcher as ChokidarWatcher)
+    this.watcher
       .on("add", (file: string) => this.handleFileChange(file))
       .on("change", (file: string) => this.handleFileChange(file))
       .on("unlink", (file: string) => this.handleFileChange(file))
@@ -90,6 +72,10 @@ export class SessionWatcher {
       .on("error", (error: unknown) => {
         void this.handleWatcherError(error instanceof Error ? error : new Error(String(error)));
       });
+
+    await new Promise<void>((resolve) => {
+      this.watcher?.once("ready", () => resolve());
+    });
 
     console.log("[session-watcher] Watching .kspec-sessions directory with Chokidar");
   }
@@ -205,11 +191,7 @@ export class SessionWatcher {
     }
 
     if (this.watcher) {
-      if (this.usingChokidar) {
-        await (this.watcher as ChokidarWatcher).close();
-      } else {
-        (this.watcher as FSWatcher).close();
-      }
+      await this.watcher.close();
       this.watcher = null;
     }
   }
