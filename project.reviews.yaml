@@ -105097,6 +105097,18 @@ reviews:
         runner: manual
         created_at: 2026-04-02T19:10:16.418Z
         completed_at: 2026-04-02T19:10:16.418Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Validation completed with warnings only (exit 6): schema and references OK; warnings are
+          repo-wide orphan/completeness noise unrelated to @daemon-server ac-8. No task-specific
+          validation errors found."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-02T19:10:20.459Z
+        completed_at: 2026-04-02T19:10:20.459Z
     events:
       - _ulid: 01KN7S5AWW40Q3CPMY64F54VC6
         actor: Jacob Chapel
@@ -105118,6 +105130,13 @@ reviews:
           status: pass
           name: evidence log
         timestamp: 2026-04-02T19:10:17.729Z
+      - _ulid: 01KN7SN311Q0D0M2SCZRKSMYXE
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-02T19:10:21.729Z
     examined_commit: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
     external_links: []
     lifecycle_state: open
@@ -105130,7 +105149,7 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-02T19:01:45.500Z
-    updated_at: 2026-04-02T19:10:16.418Z
+    updated_at: 2026-04-02T19:10:20.459Z
     notes: []
   - _ulid: 01KN7SGKK3F69RRYHA7WAQZZ0R
     slugs: []
