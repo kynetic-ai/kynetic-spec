@@ -102320,6 +102320,12 @@ reviews:
         payload:
           thread_ulid: 01KN66XKQ1T8C1GB47YV0TE654
         timestamp: 2026-04-02T04:43:19.622Z
+      - _ulid: 01KN6821CG4AKNM3ME5J6HKY9D
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN66XFZXR5CDNH9RPXPTD5F7
+        timestamp: 2026-04-02T04:43:37.232Z
     examined_commit: 41800715e1029b33695a14d9d6dff509bd4a6622
     external_links: []
     lifecycle_state: closed
@@ -102350,6 +102356,12 @@ reviews:
               tests cover happy path and missing branch, but not the stale base_branch_point
               regression), integration (other resolveDispatchWorkspaceConfig call sites inspected).'
             created_at: 2026-04-02T04:23:39.773Z
+          - _ulid: 01KN6820PWZWP06XMMW7D5HWHF
+            author: Jacob Chapel
+            body: Reviewed. The blocker repro is now covered by the expanded stale-plan retarget assertions,
+              which verify base_branch_point and integration.target_commit move with the new plan
+              branch. No separate code change was needed beyond the blocker fix.
+            created_at: 2026-04-02T04:43:36.539Z
         kind: nit
       - _ulid: 01KN66XKQ1T8C1GB47YV0TE654
         anchor:
@@ -102393,7 +102405,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-02T04:24:02.272Z
     created_at: 2026-04-02T04:16:26.709Z
-    updated_at: 2026-04-02T04:43:18.937Z
+    updated_at: 2026-04-02T04:43:36.539Z
     notes: []
   - _ulid: 01KN66TW87P2MVE015MFFC8WCG
     slugs: []
