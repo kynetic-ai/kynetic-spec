@@ -13,7 +13,16 @@ class MockChokidarWatcher {
     return this;
   }
 
+  once(event: string, handler: (value?: unknown) => void): this {
+    this.handlers.set(event, handler);
+    return this;
+  }
+
   async close(): Promise<void> {}
+
+  emitReady(): void {
+    this.handlers.get("ready")?.(undefined);
+  }
 
   emitChange(filePath: string): void {
     const ignored = this.options.ignored;
@@ -32,17 +41,8 @@ class MockChokidarWatcher {
 
 const mockState = vi.hoisted(() => ({
   chokidarWatch: vi.fn(),
-  fsWatch: vi.fn(),
   latestWatcher: null as MockChokidarWatcher | null,
 }));
-
-vi.mock("fs", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("fs")>();
-  return {
-    ...actual,
-    watch: mockState.fsWatch,
-  };
-});
 
 vi.mock("chokidar", () => ({
   default: {
@@ -51,7 +51,7 @@ vi.mock("chokidar", () => ({
   watch: mockState.chokidarWatch,
 }));
 
-describe("KspecWatcher Chokidar fallback", () => {
+describe("KspecWatcher Chokidar monitoring", () => {
   let tempDir: string;
   let kspecDir: string;
   let rootYamlPath: string;
@@ -68,14 +68,11 @@ describe("KspecWatcher Chokidar fallback", () => {
     await writeFile(rootYamlPath, 'kynetic: "1.0"\nproject: Fallback Delivery\n');
     await symlink(kspecDir, join(kspecDir, ".kspec"), "dir");
 
-    mockState.fsWatch.mockImplementation(() => {
-      throw new Error("Bun watcher unavailable");
-    });
-
     mockState.chokidarWatch.mockImplementation(
       (_glob: string, options: Record<string, unknown>) => {
         const watcher = new MockChokidarWatcher(options);
         mockState.latestWatcher = watcher;
+        queueMicrotask(() => watcher.emitReady());
         return watcher;
       },
     );
@@ -86,8 +83,10 @@ describe("KspecWatcher Chokidar fallback", () => {
     mockState.latestWatcher = null;
   });
 
-  // AC: @daemon-server ac-8
-  it("ignores nested .kspec loop paths while still delivering fallback YAML changes", async () => {
+  // AC: @daemon-file-monitoring ac-1
+  // AC: @daemon-file-monitoring ac-4
+  // AC: @daemon-file-monitoring ac-5
+  it("starts with Chokidar, ignores nested .kspec loop paths, and delivers YAML changes", async () => {
     const changeHandler = vi.fn();
     const errorHandler = vi.fn();
 
@@ -103,6 +102,13 @@ describe("KspecWatcher Chokidar fallback", () => {
     await watcher.start();
 
     expect(mockState.chokidarWatch).toHaveBeenCalledTimes(1);
+    expect(mockState.chokidarWatch).toHaveBeenCalledWith(
+      kspecDir,
+      expect.objectContaining({
+        ignoreInitial: true,
+        followSymlinks: false,
+      }),
+    );
     const options = mockState.latestWatcher?.options;
     expect(options?.followSymlinks).toBe(false);
 

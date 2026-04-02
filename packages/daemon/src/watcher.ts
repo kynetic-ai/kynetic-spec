@@ -6,10 +6,9 @@
  * - ac-5: Debounce rapid changes (500ms)
  * - ac-6: Handle YAML parse errors gracefully
  * - ac-7: Recovery with exponential backoff for directory access errors
- * - ac-8: Fallback to Chokidar if Bun fs.watch fails
  */
 
-import { existsSync, watch, type FSWatcher } from "fs";
+import { existsSync } from "fs";
 import { readFile, lstat } from "fs/promises";
 import { parse as parseYaml } from "yaml";
 import { watch as chokidarWatch, type FSWatcher as ChokidarWatcher } from "chokidar";
@@ -35,10 +34,9 @@ export interface WatcherEvent {
  * File watcher with debouncing and error handling
  */
 export class KspecWatcher {
-  private watcher: FSWatcher | ChokidarWatcher | null = null;
+  private watcher: ChokidarWatcher | null = null;
   private debounceTimers = new Map<string, NodeJS.Timeout>();
   private debounceMs = 500;
-  private usingChokidar = false;
   private retryCount = 0;
   private maxRetries = 5;
   private baseBackoffMs = 1000;
@@ -48,45 +46,15 @@ export class KspecWatcher {
   constructor(private options: WatcherOptions) {}
 
   /**
-   * AC-4, AC-8: Start watching .kspec directory (with Chokidar fallback)
+   * AC-4: Start watching .kspec directory.
    */
   async start(): Promise<void> {
     this.stopped = false;
-    try {
-      // Try Bun's native fs.watch first
-      await this.startBunWatcher();
-    } catch (error) {
-      console.warn("[watcher] Bun fs.watch failed, falling back to Chokidar", error);
-      // AC-8: Fallback to Chokidar
-      this.usingChokidar = true;
-      await this.startChokidarWatcher();
-    }
+    await this.startChokidarWatcher();
   }
 
-  /**
-   * Start Bun's native file watcher
-   */
-  private async startBunWatcher(): Promise<void> {
-    this.watcher = watch(this.options.kspecDir, { recursive: true }, (eventType, filename) => {
-      if (!filename || !filename.endsWith(".yaml")) return;
-
-      const fullPath = join(this.options.kspecDir, filename);
-      // Guard against nested .kspec symlink loops (e.g. .kspec/.kspec -> .kspec)
-      if (this.isNestedKspecPath(fullPath)) return;
-      this.handleFileChange(fullPath);
-    });
-    (this.watcher as FSWatcher).on("error", (error) => {
-      void this.handleWatcherError(error);
-    });
-
-    console.log("[watcher] Watching .kspec directory with Bun fs.watch");
-  }
-
-  /**
-   * AC-8: Start Chokidar watcher as fallback
-   */
   private async startChokidarWatcher(): Promise<void> {
-    this.watcher = chokidarWatch(join(this.options.kspecDir, "**/*.yaml"), {
+    this.watcher = chokidarWatch(this.options.kspecDir, {
       ignoreInitial: true,
       followSymlinks: false,
       ignored: (filePath: string) => this.isNestedKspecPath(filePath),
@@ -98,22 +66,35 @@ export class KspecWatcher {
 
     // AC: @daemon-entity-cache ac-watcher-invalidation — listen for add/change/unlink
     // so that new, modified, and deleted files all trigger cache invalidation.
-    (this.watcher as ChokidarWatcher).on("change", (path: string) => {
-      this.handleFileChange(path);
+    this.watcher.on("change", (path: string) => {
+      if (this.isWatchedYamlPath(path)) {
+        this.handleFileChange(path);
+      }
     });
-    (this.watcher as ChokidarWatcher).on("add", (path: string) => {
-      this.handleFileChange(path);
+    this.watcher.on("add", (path: string) => {
+      if (this.isWatchedYamlPath(path)) {
+        this.handleFileChange(path);
+      }
     });
-    (this.watcher as ChokidarWatcher).on("unlink", (path: string) => {
-      this.handleFileRemoved(path);
+    this.watcher.on("unlink", (path: string) => {
+      if (this.isWatchedYamlPath(path)) {
+        this.handleFileRemoved(path);
+      }
     });
 
-    (this.watcher as ChokidarWatcher).on("error", (err: unknown) => {
+    this.watcher.on("error", (err: unknown) => {
       // AC-7: Recovery with exponential backoff
       this.handleWatcherError(err instanceof Error ? err : new Error(String(err)));
     });
 
-    console.log("[watcher] Watching .kspec directory with Chokidar");
+    await new Promise<void>((resolve) => {
+      this.watcher?.once("ready", () => resolve());
+    });
+
+  }
+
+  private isWatchedYamlPath(filePath: string): boolean {
+    return filePath.endsWith(".yaml") && !this.isNestedKspecPath(filePath);
   }
 
   /**
@@ -235,10 +216,6 @@ export class KspecWatcher {
     this.retryCount++;
     const backoffMs = this.baseBackoffMs * Math.pow(2, this.retryCount - 1);
 
-    console.log(
-      `[watcher] Attempting recovery in ${backoffMs}ms (attempt ${this.retryCount}/${this.maxRetries})`,
-    );
-
     this.recoveryTimer = setTimeout(async () => {
       this.recoveryTimer = null;
       try {
@@ -246,7 +223,6 @@ export class KspecWatcher {
         await this.stop();
         this.stopped = false;
         await this.start();
-        console.log("[watcher] Recovery successful");
       } catch (retryError) {
         console.error("[watcher] Recovery failed:", retryError);
         // Will retry again if under max retries
@@ -277,11 +253,7 @@ export class KspecWatcher {
 
     // Close watcher
     if (this.watcher) {
-      if (this.usingChokidar) {
-        await (this.watcher as ChokidarWatcher).close();
-      } else {
-        (this.watcher as FSWatcher).close();
-      }
+      await this.watcher.close();
       this.watcher = null;
     }
   }
