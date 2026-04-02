@@ -32409,18 +32409,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/fix-stale-worktree-removal-in-safelyremovedispatchworktree/01kn69s1
-    canonical_branch_head: 4f626c918bc5b120e8be2c7894f5f7c5335d28d7
+    canonical_branch_head: 59c6689e502795c5833491c1e929ba53cb4e787e
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-02T05:15:47.378Z
+      updated_at: 2026-04-02T05:18:30.118Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T05:17:12.747Z
+      updated_at: 2026-04-02T05:18:30.118Z
     integration:
       status: pending
       detail: null
@@ -32428,7 +32428,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 4f626c918bc5b120e8be2c7894f5f7c5335d28d7
-      updated_at: 2026-04-02T05:15:47.378Z
+      updated_at: 2026-04-02T05:18:30.118Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KN69S1WZC46EK5MG7Z5Y971P"
@@ -32436,9 +32436,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-02T05:17:12.747Z
-      last_reconciled_at: 2026-04-02T05:17:12.747Z
+      last_reconciled_at: 2026-04-02T05:18:30.118Z
       created_at: 2026-04-02T05:14:40.681Z
-      updated_at: 2026-04-02T05:17:12.747Z
+      updated_at: 2026-04-02T05:18:30.118Z
     workspace_id: dispatch-workspace-01KN69S1WZC46EK5MG7Z5Y971P
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
