@@ -102775,9 +102775,25 @@ reviews:
           status: fail
           name: fresh shard suite
         timestamp: 2026-04-02T05:16:20.372Z
+      - _ulid: 01KN69Y8K735G5KXBNP5Q1038N
+        actor: codex@openai
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-04-02T05:16:30.695Z
+      - _ulid: 01KN69Y8K7RZV6CW38E0TQEHNM
+        actor: codex@openai
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-02T05:16:30.695Z
     examined_commit: 8cbe9da1f07cbc1ea7b2955e703d5ff22cb7e2a4
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -102819,9 +102835,16 @@ reviews:
               workspace registry retarget flow checked).
             created_at: 2026-04-02T05:16:08.098Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex@openai
+        role: reviewer
+        created_at: 2026-04-02T05:16:30.695Z
     created_at: 2026-04-02T04:48:16.565Z
-    updated_at: 2026-04-02T05:16:19.438Z
+    updated_at: 2026-04-02T05:16:30.695Z
     notes: []
   - _ulid: 01KN69QVJ00AAMR58DS0TNK7V4
     slugs: []
