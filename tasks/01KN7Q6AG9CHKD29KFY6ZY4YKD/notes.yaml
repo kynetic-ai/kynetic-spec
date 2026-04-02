@@ -38,3 +38,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T19:17:02.879Z
+  - _ulid: 01KN7TPHRH2716D9N0KKE7NVSV
+    content: "Fix cycle 1 approach: narrow @multi-directory-daemon ac-19 back to the behavior proven
+      today. Keep the broader resource-bounding framing (large directories or OS limits) but scope
+      detection to monitoring initialization, require actionable error reporting, and require the
+      affected project's monitoring/registration attempt to fail without promising later
+      health-check detection or cross-project containment that belongs to @daemon-file-monitoring
+      and @daemon-watcher-health. Re-verified existing ac-19 annotations in daemon watcher and
+      session-sync tests before changing the spec."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T19:28:38.161Z
