@@ -103689,6 +103689,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-04-02T07:31:41.187Z
+      - _ulid: 01KN6HPEZ8ARCMG6ATVQYK29RE
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KN6HPE767GXA6KDDB2QGFVNQ
+        timestamp: 2026-04-02T07:32:03.688Z
     examined_commit: 8d178dfefb4fd68c9824de23346c9064214c99aa
     external_links: []
     lifecycle_state: open
@@ -103698,8 +103705,34 @@ reviews:
       content_hash: ""
       ref: "@01KN6CFCMZJRBS1529D0NXJB50"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KN6HPE767GXA6KDDB2QGFVNQ
+        entries:
+          - _ulid: 01KN6HPE76W5G1WP985RFDGJAT
+            author: Jacob Chapel
+            body: >-
+              Evidence log:
+
+              Files read: src/cli/commands/plan.ts, tests/cli-plan-derive.test.ts,
+              templates/skills/plan/SKILL.md, tests/dispatch-workspace-config.test.ts.
+
+              Commands run: git diff --stat, git diff, kspec task get, kspec item get (via task
+              context), kspec review for-task/get, kspec validate, rg AC annotation scan,
+              ./dist/cli/index.js plan derive --help, ./dist/cli/index.js batch commands, npm test
+              -- --fresh tests/cli-plan-derive.test.ts, npm test -- --fresh, isolated reruns of the
+              single failing full-suite test on head and base ed8d1259edd9.
+
+              Claims verified: JSON output now includes task-inclusion state; human output includes
+              included/skipped task mode; --tasks remains accepted; --no-tasks opt-out works;
+              batch/CLI help reflects the new default.
+
+              Categories searched: correctness, test quality, AC coverage, error guidance, backward
+              compatibility, integration, dry-run/JSON parity. No task-specific blockers found.
+              Full-suite timeout was isolated to unrelated flaky test task
+              @01KN6HMDX76CP904YS0DCBBXGV.
+            created_at: 2026-04-02T07:32:02.918Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-02T07:13:04.819Z
-    updated_at: 2026-04-02T07:31:40.411Z
+    updated_at: 2026-04-02T07:32:02.918Z
     notes: []
