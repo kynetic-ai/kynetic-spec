@@ -36,3 +36,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T04:31:57.374Z
+  - _ulid: 01KN681C7V4T8PQXFHT51NT2P8
+    content: "Fix cycle 1: addressed the stale retarget blocker by recomputing base_branch_point
+      whenever reprovisioning changes the resolved base branch. This keeps the workspace registry
+      consistent with the new integration target and target commit instead of reusing the old branch
+      fork point. Verification: npm test -- tests/dispatch-workspace-config.test.ts --fresh, npm
+      test -- tests/agent-dispatch-engine.test.ts --fresh, npm test -- tests/cli-serve.test.ts
+      --fresh. Full npm test reported unrelated suite instability (23 suites / 25 tests, including
+      STACK_TRACE_ERROR teardown-style failures); representative reruns of those failures passed
+      cleanly."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T04:43:15.579Z
