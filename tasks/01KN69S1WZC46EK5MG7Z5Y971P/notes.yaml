@@ -9,3 +9,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T05:18:14.440Z
+  - _ulid: 01KN6AKXP7JB8Q35D73M7Y9057
+    content: "Implemented stale dispatch worktree cleanup fix in safelyRemoveDispatchWorktree. When git
+      still reports a registered worktree but the directory is already gone, cleanup now runs git
+      worktree prune instead of git worktree remove --force. Added a behavioral reconciliation
+      regression test covering a missing on-disk dispatch worktree with a stale git registration.
+      Verification: npm test -- tests/dispatch-workspace-cleanup.test.ts passed; npm test --
+      tests/daemon-api/meta.test.ts passed. Full npm test hit unrelated timeout failures in
+      tests/daemon-api/meta.test.ts during one run before the isolated rerun passed."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T05:28:20.424Z
