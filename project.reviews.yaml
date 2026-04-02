@@ -101511,7 +101511,18 @@ reviews:
     slugs: []
     title: "Plan re-review: Plan-Scoped Branch Targeting (v3)"
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "@plan-branch-association is now limited to plan branch storage semantics, while
+          @plan-branch-dispatch-target owns dispatch base-branch selection and stale-target
+          reconciliation."
+        name: Spec boundary separation
+        required: true
+        created_at: 2026-04-02T01:39:33.002Z
+        completed_at: 2026-04-02T01:39:33.002Z
     events:
       - _ulid: 01KN5XG48161ABMSCXMFQZK741
         actor: "@claude"
@@ -101526,6 +101537,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-02T01:39:14.993Z
+      - _ulid: 01KN5XH0P9BHDCZF6EEDKFY4KD
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Spec boundary separation
+        timestamp: 2026-04-02T01:39:33.705Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -101538,5 +101556,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-02T01:39:04.578Z
-    updated_at: 2026-04-02T01:39:14.263Z
+    updated_at: 2026-04-02T01:39:33.002Z
     notes: []
