@@ -100915,7 +100915,19 @@ reviews:
     slugs: []
     title: "Plan review: Plan-Scoped Branch Targeting"
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All ACs across 4 specs are claimed by tasks. task-plan-branch-schema covers all 5
+          plan-branch-association ACs. task-plan-branch-command covers all 7 plan-branch-creation
+          ACs. task-dispatch-plan-branch-resolution covers all 6 plan-branch-dispatch-target ACs.
+          task-plan-branch-activation covers both plan-branch-lifecycle-guidance ACs. No orphan ACs.
+        name: AC coverage mapping
+        required: true
+        created_at: 2026-04-02T00:56:16.150Z
+        completed_at: 2026-04-02T00:56:16.150Z
     events:
       - _ulid: 01KN5TYR7TTV16M9J8EQRTRGCR
         actor: "@claude"
@@ -101000,6 +101012,13 @@ reviews:
           kind: nit
           thread_ulid: 01KN5V1E3C8S2TMVDM6NH30TRH
         timestamp: 2026-04-02T00:56:06.667Z
+      - _ulid: 01KN5V1RNG90NR027W39VSDGYC
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: AC coverage mapping
+        timestamp: 2026-04-02T00:56:16.817Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -101177,5 +101196,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-02T00:54:38.074Z
-    updated_at: 2026-04-02T00:56:05.996Z
+    updated_at: 2026-04-02T00:56:16.150Z
     notes: []
