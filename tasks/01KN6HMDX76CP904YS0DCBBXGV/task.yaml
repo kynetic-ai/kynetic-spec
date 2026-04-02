@@ -1,0 +1,31 @@
+_ulid: 01KN6HMDX76CP904YS0DCBBXGV
+slugs: []
+title: Stabilize dispatch workspace config timeout
+type: bug
+description: >-
+  Investigate the intermittent timeout in tests/dispatch-workspace-config.test.ts for 'provisions a
+  task worktree and records the resolved merge target without drift'. Evidence from review on April
+  2, 2026: a full \
+
+  > @kynetic-ai/spec@0.12.0 test
+
+  > node scripts/test.cjs --fresh\ run on commit 8d178dfefb4f reported this single timeout while
+  7468 other tests passed; rerunning the exact test in isolation passed on both the reviewed head
+  (8d178dfefb4f) and the dev base commit (ed8d1259edd9), which indicates flakiness rather than a
+  regression from the plan-derive change. Reproduce with full-suite load, identify why the test
+  times out under contention, and make the test or underlying code deterministic.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - tests
+  - dispatch
+vcs_refs: []
+created_at: 2026-04-02T07:30:57.063Z
+todos: []
+automation: eligible
