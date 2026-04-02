@@ -10,3 +10,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T20:12:57.351Z
+  - _ulid: 01KN7XPE045Q9WRVJK9H639STC
+    content: "Implemented SessionWatcher path filtering for the sessions tree: blobs/ subdirectories are
+      ignored entirely, and only .yaml/.jsonl files are monitored outside that subtree. Verified
+      with targeted watcher tests plus full npm test; new coverage exercises session metadata/event
+      monitoring, blob write exclusion, unrelated file exclusion, and new-session detection after
+      startup."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T20:21:00.037Z
