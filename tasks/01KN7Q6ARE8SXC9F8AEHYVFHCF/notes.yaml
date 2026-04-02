@@ -11,3 +11,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T19:13:08.914Z
+  - _ulid: 01KN7TG24P63E3E3Y75RBD9VJ1
+    content: "Implemented Chokidar-only monitoring in both KspecWatcher and SessionWatcher. Also fixed
+      the Chokidar v4 path contract by watching the .kspec root directly instead of passing a glob,
+      and made watcher start await Chokidar readiness so first writes are not missed. Verification:
+      watcher-focused suite passed (daemon watcher fallback/error handling, session watcher,
+      multi-project watcher). kspec validate returned only pre-existing repo warnings. Full npm test
+      appears to hit the known teardown-hang issue under investigation: vitest worker processes
+      remained resident and the runner did not emit a final result file, so full-suite completion
+      could not be confirmed in this session."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T19:25:05.558Z
