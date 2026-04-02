@@ -19,3 +19,10 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T18:57:29.433Z
+  - _ulid: 01KN7RYMQBYH60QB4XYYN0EQ4B
+    content: "Updated @daemon-server ac-8 to behavioral language: it now specifies reliable
+      cross-platform file change detection without naming Bun fs.watch, Chokidar, or any other
+      backend. Verified the updated AC via kspec item get and ran kspec validate after the change."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T18:58:06.188Z
