@@ -102376,7 +102376,18 @@ reviews:
     slugs: []
     title: Review task-plan-branch-command (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate exited 6 with pre-existing repo warnings only; no new plan-branch-specific
+          validation errors or missing AC annotations were introduced.
+        name: repo validation
+        required: false
+        runner: kspec
+        created_at: 2026-04-02T04:32:01.112Z
+        completed_at: 2026-04-02T04:32:01.112Z
     events:
       - _ulid: 01KN66TW87SD6M0FM63X0Q62G4
         actor: Jacob Chapel
@@ -102391,6 +102402,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-02T04:22:22.645Z
+      - _ulid: 01KN67CT8JK48FRX8R4RXFHXN5
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: repo validation
+        timestamp: 2026-04-02T04:32:01.810Z
     examined_commit: f6f6ba57d52ae7011992339721f4873f4105c62a
     external_links: []
     lifecycle_state: open
@@ -102403,5 +102421,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-02T04:22:14.023Z
-    updated_at: 2026-04-02T04:22:21.971Z
+    updated_at: 2026-04-02T04:32:01.112Z
     notes: []
