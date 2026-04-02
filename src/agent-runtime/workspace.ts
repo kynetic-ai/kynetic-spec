@@ -2452,12 +2452,21 @@ async function safelyRemoveDispatchWorktree(
 
   const registration = await findWorktreeByPath(projectDir, worktreeDir);
   if (registration) {
-    await runGitOrThrow(
-      projectDir,
-      ["worktree", "remove", "--force", worktreeDir],
-      `Failed to remove dispatch worktree "${worktreeDir}"`,
-      "Inspect git worktree state and remove stale registrations before retrying cleanup.",
-    );
+    if (await pathExists(worktreeDir)) {
+      await runGitOrThrow(
+        projectDir,
+        ["worktree", "remove", "--force", worktreeDir],
+        `Failed to remove dispatch worktree "${worktreeDir}"`,
+        "Inspect git worktree state and remove stale registrations before retrying cleanup.",
+      );
+    } else {
+      await runGitOrThrow(
+        projectDir,
+        ["worktree", "prune"],
+        `Failed to prune stale dispatch worktree registration "${worktreeDir}"`,
+        "Inspect git worktree state and remove stale registrations before retrying cleanup.",
+      );
+    }
     return;
   }
 

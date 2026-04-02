@@ -301,6 +301,35 @@ describe("dispatch workspace cleanup", () => {
     expect(git(tempDir, "branch --list dispatch/task/orphaned/no-metadata")).toBe("");
   });
 
+  // AC: @dispatch-workspace-cleanup-policy ac-5
+  it("prunes stale git worktree registrations when the dispatch directory is already gone", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+
+    const taskRef = `@${testUlid("TASK", 27)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Stale Registration Cleanup Workspace",
+        slugs: ["task-stale-registration-cleanup-workspace"],
+      },
+    });
+
+    await fs.rm(workspace.cwd, { recursive: true, force: true });
+    expect(git(tempDir, "worktree list --porcelain")).toContain(`worktree ${workspace.cwd}`);
+
+    await reconcileDispatchWorkspaceArtifacts(tempDir);
+
+    expect(git(tempDir, "worktree list --porcelain")).not.toContain(`worktree ${workspace.cwd}`);
+    expect(
+      git(
+        tempDir,
+        "branch --list dispatch/task/task-stale-registration-cleanup-workspace/01task00",
+      ),
+    ).toBe("");
+  });
+
   // AC: @dispatch-workspace-cleanup-policy ac-6
   // AC: @dispatch-workspace-cleanup-policy ac-7
   it("reconstructs a missing registry record and normalizes legacy branch layouts from metadata-backed worktrees", async () => {
