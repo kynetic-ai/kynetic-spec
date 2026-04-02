@@ -100996,6 +100996,19 @@ reviews:
         required: true
         created_at: 2026-04-02T00:56:43.053Z
         completed_at: 2026-04-02T00:56:43.053Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: plan-branch-creation defines a CLI command with JSON output (ac-reports-result), shadow
+          state mutation (ac-updates-plan-record), and error paths (ac-rehydrate-remote failure) but
+          declares no traits. Should have trait-json-output, trait-semantic-exit-codes,
+          trait-error-guidance, and trait-shadow-commit. plan-branch-association and
+          plan-branch-lifecycle-guidance trait selections need clarification.
+        name: Trait selection
+        required: true
+        created_at: 2026-04-02T00:56:47.559Z
+        completed_at: 2026-04-02T00:56:47.559Z
     events:
       - _ulid: 01KN5TYR7TTV16M9J8EQRTRGCR
         actor: "@claude"
@@ -101129,6 +101142,13 @@ reviews:
           status: fail
           name: AC atomicity
         timestamp: 2026-04-02T00:56:43.726Z
+      - _ulid: 01KN5V2QBBFG04SM3ZSZFMV2SZ
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: Trait selection
+        timestamp: 2026-04-02T00:56:48.235Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -101306,5 +101326,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-02T00:54:38.074Z
-    updated_at: 2026-04-02T00:56:43.053Z
+    updated_at: 2026-04-02T00:56:47.559Z
     notes: []
