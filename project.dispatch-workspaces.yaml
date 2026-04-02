@@ -31823,7 +31823,7 @@ workspaces:
         head: e049a2b9d74b43dec3b65466b7e226ebff36b3ac
         last_seen_at: 2026-04-02T03:37:04.349Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/daemon-entity-cache-live-counter-reload-01kn63kv
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: d2cc1ac2d2f04fac79023cb0cc54e9eb5da70835
     bootstrap:
       status: succeeded
@@ -31910,7 +31910,7 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-04-02T04:38:34.451Z
+      updated_at: 2026-04-02T04:39:44.613Z
     health:
       status: healthy
       issues: []
@@ -31923,7 +31923,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: d2cc1ac2d2f04fac79023cb0cc54e9eb5da70835
-      updated_at: 2026-04-02T04:38:34.451Z
+      updated_at: 2026-04-02T04:39:44.613Z
     lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KN5XVZVERDZ3ZVAPDCFP5PJB"
@@ -31931,9 +31931,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-02T04:21:25.589Z
-      last_reconciled_at: 2026-04-02T04:38:34.451Z
+      last_reconciled_at: 2026-04-02T04:39:44.613Z
       created_at: 2026-04-02T03:37:14.158Z
-      updated_at: 2026-04-02T04:38:34.451Z
+      updated_at: 2026-04-02T04:39:44.613Z
     workspace_id: dispatch-workspace-01KN5XVZVERDZ3ZVAPDCFP5PJB
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
