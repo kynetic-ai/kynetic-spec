@@ -49,3 +49,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T19:28:38.161Z
+  - _ulid: 01KN7TWHC86ASX9PEM1TEQ0WPQ
+    content: "Fix cycle 1: narrowed @multi-directory-daemon ac-19 so it matches the existing annotated
+      coverage. The AC still covers resource pressure from large directories or OS limits, but now
+      limits detection to monitoring initialization and requires actionable guidance plus refusal to
+      start monitoring for the affected project; it no longer promises health-monitor detection or
+      broader cross-project containment that belongs to follow-on specs. Replied to and resolved
+      both review threads. Re-ran kspec validate and got the unchanged repository warning baseline
+      only (exit 6, no new errors). Attempted npm test from this workspace; it launched node
+      scripts/test.cjs and npm exec vitest run but hung without producing the expected result JSON,
+      matching the existing test-runner hang tracked separately in the repo."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T19:31:54.376Z
