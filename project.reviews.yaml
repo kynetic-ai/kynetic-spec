@@ -104199,6 +104199,17 @@ reviews:
         runner: npm
         created_at: 2026-04-02T08:40:28.176Z
         completed_at: 2026-04-02T08:40:28.176Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate exited 6 with existing repository-wide warnings only; no
+          schedule-engine-specific errors or uncovered ACs in this task.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-02T08:40:30.407Z
+        completed_at: 2026-04-02T08:40:30.407Z
     events:
       - _ulid: 01KN6N7CPXKFDZNHW39RN27343
         actor: Jacob Chapel
@@ -104227,6 +104238,13 @@ reviews:
           status: pass
           name: npm test (targeted schedule-engine)
         timestamp: 2026-04-02T08:40:29.028Z
+      - _ulid: 01KN6NKT4HQKCD7E8GEFQXVSR0
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-04-02T08:40:31.121Z
     examined_commit: 4ee25eab2779ebc9b8ade2f89cb7a7115c26a07f
     external_links: []
     lifecycle_state: open
@@ -104254,5 +104272,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-02T08:33:44.158Z
-    updated_at: 2026-04-02T08:40:28.176Z
+    updated_at: 2026-04-02T08:40:30.407Z
     notes: []
