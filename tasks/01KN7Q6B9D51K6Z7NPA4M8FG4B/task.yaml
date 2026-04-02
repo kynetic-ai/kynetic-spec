@@ -38,8 +38,13 @@ description: |
 spec_ref: "@daemon-watcher-health"
 plan_ref: "@plan-daemon-file-monitoring-reliability"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged dispatch/task/task-watcher-health-check/01kn7q6b into
+  plan/plan-daemon-file-monitoring-reliability/01kn7nw3 after approved review. Verified spec
+  coverage and wiring for per-project watcher health probes, automatic watcher restart on timeout,
+  and debug endpoint health fields. kspec validate showed only the repository's standing warnings;
+  npm test was attempted but blocked by existing build/bootstrap issues outside this daemon diff.
 depends_on:
   - "@task-chokidar-standardize"
   - "@task-session-blob-exclusion"
@@ -108,8 +113,27 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-02T20:51:11.625Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged dispatch/task/task-watcher-health-check/01kn7q6b into
+          plan/plan-daemon-file-monitoring-reliability/01kn7nw3 after approved review. Verified spec
+          coverage and wiring for per-project watcher health probes, automatic watcher restart on
+          timeout, and debug endpoint health fields. kspec validate showed only the repository's
+          standing warnings; npm test was attempted but blocked by existing build/bootstrap issues
+          outside this daemon diff.
+        previous: null
+      completed_at:
+        new: 2026-04-02T20:56:28.484Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-02T20:56:28.523Z
 created_at: 2026-04-02T18:27:21.517Z
 started_at: 2026-04-02T20:35:38.660Z
 submitted_at: 2026-04-02T20:48:31.004Z
+completed_at: 2026-04-02T20:56:28.484Z
 todos: []
 automation: eligible
