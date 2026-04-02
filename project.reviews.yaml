@@ -102682,7 +102682,18 @@ reviews:
     slugs: []
     title: Review task-dispatch-plan-branch-resolution (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate exited 6 with project-wide warnings only; no errors and no task-specific
+          blockers.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-02T05:16:10.900Z
+        completed_at: 2026-04-02T05:16:10.900Z
     events:
       - _ulid: 01KN68AJ5NCSHSW64Y2H8DZA1M
         actor: Jacob Chapel
@@ -102704,6 +102715,13 @@ reviews:
           kind: nit
           thread_ulid: 01KN69XJH18P12RNPV56177P16
         timestamp: 2026-04-02T05:16:09.021Z
+      - _ulid: 01KN69XP6XT834R4MTCJ1SQM75
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-02T05:16:11.869Z
     examined_commit: 8cbe9da1f07cbc1ea7b2955e703d5ff22cb7e2a4
     external_links: []
     lifecycle_state: open
@@ -102750,7 +102768,7 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-02T04:48:16.565Z
-    updated_at: 2026-04-02T05:16:08.098Z
+    updated_at: 2026-04-02T05:16:10.900Z
     notes: []
   - _ulid: 01KN69QVJ00AAMR58DS0TNK7V4
     slugs: []
