@@ -106017,3 +106017,29 @@ reviews:
     created_at: 2026-04-02T20:03:06.049Z
     updated_at: 2026-04-02T20:10:44.592Z
     notes: []
+  - _ulid: 01KN7YCJ2TCQ9P78ZB3GC6HYGE
+    slugs: []
+    title: Review task-session-blob-exclusion
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KN7YCJ2TKQ2GKYD8D7C17NBE
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-02T20:33:05.114Z
+    examined_commit: 637beb279c7a9611e23131bc22a97055865f4666
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KN7Q6B0NWYDQT5JKY7YXFM12"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-02T20:33:05.114Z
+    updated_at: null
+    notes: []
