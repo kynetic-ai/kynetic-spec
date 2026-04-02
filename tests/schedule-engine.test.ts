@@ -162,6 +162,33 @@ beforeEach(() => {
   eventBus = new EventBus();
 });
 
+function createDeferredRun(actionType: ActionRun["action_type"], sourceName?: string): {
+  promise: Promise<ActionRun>;
+  resolve: () => void;
+} {
+  let resolvePromise!: () => void;
+  const actionRunId = `run-${Math.random().toString(36).slice(2, 10)}`;
+  const startedAt = new Date().toISOString();
+  return {
+    promise: new Promise<ActionRun>((resolve) => {
+      resolvePromise = () => {
+        const completedAt = new Date().toISOString();
+        resolve({
+          action_run_id: actionRunId,
+          action_type: actionType,
+          status: "completed",
+          started_at: startedAt,
+          completed_at: completedAt,
+          duration_ms: Math.max(0, Date.now() - new Date(startedAt).getTime()),
+          source_name: sourceName,
+          source_event_type: "schedule.tick",
+        });
+      };
+    }),
+    resolve: resolvePromise,
+  };
+}
+
 // ─── AC: @dispatch-schedule-entities ac-1 ───────────────────────────────────
 // Given: A schedule is configured with a cron expression and an action
 // When: The cron expression matches the current time
@@ -326,6 +353,63 @@ describe("AC: @dispatch-schedule-entities ac-3 — buffer_one overlap policy", (
 
     await engine.stop();
   });
+
+  // AC: @dispatch-schedule-entities ac-3
+  it("should run a buffered tick after a delayed execution completes", async () => {
+    const schedule = makeSchedule({ overlap_policy: "buffer_one" });
+    const executeCalls: ActionEventContext[] = [];
+    let callCount = 0;
+    const firstRun = createDeferredRun("command", schedule.name);
+
+    const executor = {
+      execute: vi.fn(async (action: any, eventContext: ActionEventContext, sourceName?: string) => {
+        callCount++;
+        executeCalls.push(eventContext);
+        if (callCount === 1) {
+          return firstRun.promise;
+        }
+
+        const now = new Date().toISOString();
+        return {
+          action_run_id: `run-${String(callCount).padStart(3, "0")}`,
+          action_type: action.type,
+          status: "completed" as const,
+          started_at: now,
+          completed_at: now,
+          duration_ms: 0,
+          source_name: sourceName,
+          source_event_type: eventContext.event_type,
+        };
+      }),
+    } as unknown as ActionExecutor;
+
+    const engine = new ScheduleEngine({
+      projectDir: "/tmp/test-project",
+      eventBus,
+      actionExecutor: executor,
+      evaluationIntervalMs: 100_000,
+      scheduleLoader: async () => [schedule],
+    });
+
+    await engine.start();
+
+    const first = engine.triggerSchedule("test-schedule");
+    expect(engine.getStatus()[0].active_run_count).toBe(1);
+
+    const second = await engine.triggerSchedule("test-schedule");
+    expect(second.accepted).toBe(false);
+    expect(second.reason).toContain("Buffered");
+    expect(engine.getStatus()[0].buffered).toBe(true);
+
+    firstRun.resolve();
+    await first;
+
+    expect(executeCalls).toHaveLength(2);
+    expect(engine.getStatus()[0].buffered).toBe(false);
+    expect(engine.getStatus()[0].active_run_count).toBe(0);
+
+    await engine.stop();
+  });
 });
 
 // ─── AC: @dispatch-schedule-entities ac-4 ───────────────────────────────────
@@ -387,6 +471,99 @@ describe("AC: @dispatch-schedule-entities ac-5 — allow overlap policy", () => 
 
     expect(tickEvents.filter((e) => e.payload.schedule_id === "test-schedule").length).toBe(3);
     expect(engine.getStatus().find((s) => s.id === "test-schedule")?.active_run_count).toBe(3);
+
+    await engine.stop();
+  });
+});
+
+// ─── AC: @dispatch-schedule-entities ac-7 ───────────────────────────────────
+
+describe("AC: @dispatch-schedule-entities ac-7 — eager active-run state", () => {
+  // AC: @dispatch-schedule-entities ac-7
+  it("should treat an accepted tick as active before execute() resolves", async () => {
+    const schedule = makeSchedule({ overlap_policy: "skip" });
+    const firstRun = createDeferredRun("command", schedule.name);
+    const executor = {
+      execute: vi.fn(async (action: any, _eventContext: ActionEventContext, sourceName?: string) => {
+        return firstRun.promise.then((run) => ({ ...run, action_type: action.type, source_name: sourceName }));
+      }),
+    } as unknown as ActionExecutor;
+
+    const engine = new ScheduleEngine({
+      projectDir: "/tmp/test-project",
+      eventBus,
+      actionExecutor: executor,
+      evaluationIntervalMs: 100_000,
+      scheduleLoader: async () => [schedule],
+    });
+
+    await engine.start();
+
+    const first = engine.triggerSchedule("test-schedule");
+    expect(engine.getStatus()[0].active_run_count).toBe(1);
+
+    const second = await engine.triggerSchedule("test-schedule");
+    expect(second.accepted).toBe(false);
+    expect(second.reason).toContain("skip");
+    expect(engine.getStatus()[0].run_count).toBe(1);
+
+    firstRun.resolve();
+    await first;
+
+    expect(engine.getStatus()[0].active_run_count).toBe(0);
+
+    await engine.stop();
+  });
+});
+
+// ─── AC: @dispatch-schedule-entities ac-8 ───────────────────────────────────
+
+describe("AC: @dispatch-schedule-entities ac-8 — eager next_tick advancement", () => {
+  // AC: @dispatch-schedule-entities ac-8
+  it("should advance next_tick before a concurrent evaluation can match the same cron tick again", async () => {
+    const schedule = makeSchedule({ cron: "* * * * *" });
+    const executeCalls: ActionEventContext[] = [];
+    const firstRun = createDeferredRun("command", schedule.name);
+
+    const executor = {
+      execute: vi.fn(async (_action: any, eventContext: ActionEventContext) => {
+        executeCalls.push(eventContext);
+        return firstRun.promise;
+      }),
+    } as unknown as ActionExecutor;
+
+    const engine = new ScheduleEngine({
+      projectDir: "/tmp/test-project",
+      eventBus,
+      actionExecutor: executor,
+      evaluationIntervalMs: 100_000,
+      scheduleLoader: async () => [schedule],
+    });
+
+    await engine.start();
+
+    const schedules = (engine as any).schedules as Map<string, { state: { next_tick: Date | null } }>;
+    const record = schedules.get("test-schedule");
+    expect(record).toBeDefined();
+    const dueTick = new Date(Date.now() - 1_000);
+    record!.state.next_tick = dueTick;
+
+    const firstEval = (engine as any)._executeTick(record, dueTick) as Promise<void>;
+    expect(executeCalls).toHaveLength(1);
+
+    const nextTickAfterAccept = record!.state.next_tick;
+    expect(nextTickAfterAccept).not.toBeNull();
+    expect(nextTickAfterAccept!.getTime()).toBeGreaterThan(dueTick.getTime());
+    expect((engine as any)._shouldTick(record, new Date())).toBe(false);
+
+    const secondEval = (engine as any)._evaluate() as Promise<void>;
+    await Promise.resolve();
+    expect(executeCalls).toHaveLength(1);
+
+    firstRun.resolve();
+    await Promise.all([firstEval, secondEval]);
+
+    expect(executeCalls).toHaveLength(1);
 
     await engine.stop();
   });
