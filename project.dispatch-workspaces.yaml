@@ -33342,7 +33342,7 @@ workspaces:
         head: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
         last_seen_at: 2026-04-02T19:00:55.421Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-update-daemon-server-ac8-01kn7q6a
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
     bootstrap:
       status: succeeded
@@ -33446,12 +33446,12 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-04-02T19:43:37.023Z
+      updated_at: 2026-04-02T19:44:38.303Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T19:43:37.023Z
+      updated_at: 2026-04-02T19:44:38.303Z
     integration:
       status: merged
       detail: integration:merged
@@ -33459,7 +33459,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-daemon-file-monitoring-reliability/01kn7nw3
       target_commit: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
-      updated_at: 2026-04-02T19:43:37.023Z
+      updated_at: 2026-04-02T19:44:38.303Z
     lifecycle_state: closing
     resolved_base_branch: plan/plan-daemon-file-monitoring-reliability/01kn7nw3
     task_ref: "@01KN7Q6AG9CHKD29KFY6ZY4YKD"
@@ -33467,9 +33467,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-02T19:34:09.529Z
-      last_reconciled_at: 2026-04-02T19:44:08.757Z
+      last_reconciled_at: 2026-04-02T19:44:38.303Z
       created_at: 2026-04-02T19:01:07.427Z
-      updated_at: 2026-04-02T19:44:08.757Z
+      updated_at: 2026-04-02T19:44:38.303Z
     workspace_id: dispatch-workspace-01KN7Q6AG9CHKD29KFY6ZY4YKD
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
