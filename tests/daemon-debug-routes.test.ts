@@ -137,6 +137,8 @@ describe("Debug API routes", () => {
     expect(project.path).toBe(tempDir);
     expect(project.watcherStatus).toBe("stopped"); // No watcher started in test
     expect(project.registeredAt).toBeTruthy();
+    expect(project.lastHealthCheckAt).toBeNull();
+    expect(project.consecutiveFailures).toBe(0);
     expect(project.domains).toBeTruthy();
 
     // Verify domain shape
@@ -186,6 +188,35 @@ describe("Debug API routes", () => {
     expect(tasksDomain.state).toBe("degraded");
     expect(tasksDomain.lastError).toBe("YAML parse error in project.tasks.yaml");
     expect(tasksDomain.lastInvalidatedAt).toBe("2026-03-28T10:00:00.000Z");
+  });
+
+  // AC: @daemon-watcher-health ac-4
+  it("GET /api/debug/cache-status exposes watcher health fields per project", async () => {
+    tempDir = await createTempDir("kspec-debug-health-");
+    await initGitRepo(tempDir);
+    setupProjectFixture(tempDir);
+
+    const { manager: projectManager, middleware } = projectContextMiddleware({
+      startupProject: tempDir,
+    });
+    const project = projectManager.getProject(tempDir);
+    project.lastHealthCheckAt = new Date("2026-04-02T18:30:00.000Z");
+    project.consecutiveFailures = 2;
+
+    const mockCache = createMockCache(tempDir);
+    const getEntityCache: EntityCacheAccessor = (p: string) =>
+      p === tempDir ? mockCache : null;
+
+    app = new Elysia()
+      .use(middleware)
+      .use(createDebugRoutes({ projectManager, getEntityCache }));
+
+    const res = await makeRequest("/api/debug/cache-status");
+    expect(res.status).toBe(200);
+
+    const body = await res.json();
+    expect(body.projects[0].lastHealthCheckAt).toBe("2026-04-02T18:30:00.000Z");
+    expect(body.projects[0].consecutiveFailures).toBe(2);
   });
 
   // AC: @daemon-server ac-18 — no registered projects

@@ -33,6 +33,8 @@ export function createDebugRoutes(options: DebugRouteOptions) {
           path: project.path,
           watcherStatus: project.watcherActive ? "active" : "stopped",
           registeredAt: project.registeredAt.toISOString(),
+          lastHealthCheckAt: project.lastHealthCheckAt?.toISOString() ?? null,
+          consecutiveFailures: project.consecutiveFailures,
           domains: cache?.getCacheDiagnostics().domains ?? null,
         };
       });

@@ -8,6 +8,7 @@
  */
 
 import { existsSync } from "fs";
+import { mkdir, rm, writeFile } from "fs/promises";
 import { isAbsolute, join, normalize, relative } from "path";
 import { KspecWatcher } from "./watcher";
 import { SessionWatcher } from "./session-watcher";
@@ -34,6 +35,13 @@ export interface ProjectContext {
   path: string;
   registeredAt: Date;
   watcherActive: boolean;
+  lastHealthCheckAt: Date | null;
+  consecutiveFailures: number;
+}
+
+interface PendingHealthProbe {
+  filePath: string;
+  resolve: () => void;
 }
 
 /**
@@ -49,6 +57,7 @@ export interface ProjectContext {
 export class ProjectContextManager {
   private projects: Map<string, ProjectContext> = new Map();
   private watchers: Map<string, { kspec: KspecWatcher; sessions: SessionWatcher }> = new Map();
+  private pendingHealthProbes: Map<string, PendingHealthProbe> = new Map();
   private defaultProjectPath: string | null = null;
   private pubsub: PubSubManager | null = null;
   /** Optional callback for file changes (used by dispatch engine). AC: @agent-dispatch-engine ac-5 */
@@ -129,6 +138,11 @@ export class ProjectContextManager {
       kspecWatcher = new KspecWatcher({
         kspecDir,
         onFileChange: (file, content) => {
+          if (this.isHealthProbePath(normalizedPath, file)) {
+            this.resolveHealthProbe(normalizedPath, file);
+            return;
+          }
+
           // AC: @multi-directory-daemon ac-17 - File changes trigger events scoped to project
           if (this.pubsub) {
             const relativePath = relative(kspecDir, file);
@@ -153,6 +167,10 @@ export class ProjectContextManager {
         },
         // AC: @daemon-entity-cache ac-watcher-invalidation — file deletion/rename invalidates cache
         onFileRemoved: (file) => {
+          if (this.isHealthProbePath(normalizedPath, file)) {
+            return;
+          }
+
           if (this.pubsub) {
             const relativePath = relative(kspecDir, file);
             this.pubsub.broadcast(
@@ -279,6 +297,84 @@ export class ProjectContextManager {
     await Promise.all(stopPromises);
   }
 
+  async verifyWatcherHealth(
+    projectPath: string,
+    options: { timeoutMs?: number } = {},
+  ): Promise<{ healthy: boolean; durationMs: number }> {
+    const normalizedPath = this.normalizePath(projectPath);
+    const context = this.getProject(normalizedPath);
+    const watcher = this.watchers.get(normalizedPath);
+
+    if (!context.watcherActive || !watcher) {
+      return { healthy: false, durationMs: 0 };
+    }
+
+    if (this.pendingHealthProbes.has(normalizedPath)) {
+      throw new Error(`Watcher health probe already in progress for ${normalizedPath}`);
+    }
+
+    const timeoutMs = options.timeoutMs ?? watcher.kspec.getDebounceMs() + 2000;
+    const startedAt = Date.now();
+    const probeDir = join(normalizedPath, ".kspec", ".health-check");
+    const probeFile = join(probeDir, `probe-${startedAt}.yaml`);
+    let timeoutHandle: NodeJS.Timeout | null = null;
+
+    try {
+      await mkdir(probeDir, { recursive: true });
+
+      const probeDetected = new Promise<boolean>((resolve) => {
+        this.pendingHealthProbes.set(normalizedPath, {
+          filePath: probeFile,
+          resolve: () => {
+            if (timeoutHandle) {
+              clearTimeout(timeoutHandle);
+              timeoutHandle = null;
+            }
+            this.pendingHealthProbes.delete(normalizedPath);
+            resolve(true);
+          },
+        });
+
+        timeoutHandle = setTimeout(() => {
+          this.pendingHealthProbes.delete(normalizedPath);
+          timeoutHandle = null;
+          resolve(false);
+        }, timeoutMs);
+        timeoutHandle.unref?.();
+      });
+
+      await writeFile(
+        probeFile,
+        `watcher_health_probe: true\ncreated_at: "${new Date(startedAt).toISOString()}"\n`,
+        "utf-8",
+      );
+
+      const healthy = await probeDetected;
+      const durationMs = Date.now() - startedAt;
+
+      if (healthy) {
+        context.lastHealthCheckAt = new Date();
+        context.consecutiveFailures = 0;
+        return { healthy: true, durationMs };
+      }
+
+      context.consecutiveFailures += 1;
+      console.warn(
+        `[watcher-health] Watcher health check failed for ${normalizedPath} after ${durationMs}ms; restarting watcher`,
+      );
+      await this.stopWatcher(normalizedPath);
+      await this.startWatcher(normalizedPath);
+
+      return { healthy: false, durationMs };
+    } finally {
+      if (timeoutHandle) {
+        clearTimeout(timeoutHandle);
+      }
+      this.pendingHealthProbes.delete(normalizedPath);
+      await rm(probeFile, { force: true }).catch(() => undefined);
+    }
+  }
+
   /**
    * Register a project for multi-directory daemon support.
    *
@@ -325,6 +421,8 @@ export class ProjectContextManager {
       path: normalizedPath,
       registeredAt: new Date(),
       watcherActive: false, // Set to true when watcher is started
+      lastHealthCheckAt: null,
+      consecutiveFailures: 0,
     };
 
     this.projects.set(normalizedPath, context);
@@ -492,5 +590,21 @@ export class ProjectContextManager {
    */
   private isAbsolutePath(projectPath: string): boolean {
     return isAbsolute(projectPath);
+  }
+
+  private resolveHealthProbe(projectPath: string, filePath: string): void {
+    const pending = this.pendingHealthProbes.get(projectPath);
+    if (!pending) return;
+    if (this.normalizePath(pending.filePath) !== this.normalizePath(filePath)) return;
+    pending.resolve();
+  }
+
+  private isHealthProbePath(projectPath: string, filePath: string): boolean {
+    const relativePath = relative(join(projectPath, ".kspec"), filePath);
+    return (
+      !relativePath.startsWith("..") &&
+      relativePath.split(/[\\/]+/)[0] === ".health-check" &&
+      relativePath.endsWith(".yaml")
+    );
   }
 }

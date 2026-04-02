@@ -45,6 +45,10 @@ export class KspecWatcher {
 
   constructor(private options: WatcherOptions) {}
 
+  getDebounceMs(): number {
+    return this.debounceMs;
+  }
+
   /**
    * AC-4: Start watching .kspec directory.
    */
