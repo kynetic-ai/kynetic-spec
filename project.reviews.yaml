@@ -103908,7 +103908,18 @@ reviews:
     slugs: []
     title: Review stabilize dispatch workspace config timeout
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite passed in review workspace at 434b3c31f6f6ff0edca0e2e284ea0a82469b98b7:
+          2063/2063 suites passed, 7468 passed / 5 skipped tests."
+        name: npm test --fresh
+        required: true
+        runner: npm
+        created_at: 2026-04-02T07:59:17.397Z
+        completed_at: 2026-04-02T07:59:17.397Z
     events:
       - _ulid: 01KN6K1AVAY1SCCFMPB7WPNXS6
         actor: Jacob Chapel
@@ -103923,6 +103934,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-02T07:55:49.115Z
+      - _ulid: 01KN6K8B2SH09GF020KFEXFKHM
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test --fresh
+        timestamp: 2026-04-02T07:59:18.106Z
     examined_commit: 434b3c31f6f6ff0edca0e2e284ea0a82469b98b7
     external_links: []
     lifecycle_state: open
@@ -103935,5 +103953,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-02T07:55:28.491Z
-    updated_at: 2026-04-02T07:55:47.831Z
+    updated_at: 2026-04-02T07:59:17.397Z
     notes: []
