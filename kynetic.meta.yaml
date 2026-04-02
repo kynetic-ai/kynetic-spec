@@ -11285,6 +11285,18 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-04-02T04:14:07.479Z
+  - _ulid: 01KN66C1G5JZSTVYGMH9J28PJW
+    type: friction
+    content: Review CLI follow-up commands are still shell-fragile when comment bodies or check evidence
+      contain backticks, semicolons, or multi-line content. In this session an inline  command
+      accidentally triggered shell substitution and had to be retried with heredoc-safe payload
+      construction. Consider adding first-class  /  options (or stdin support) for review
+      comments/checks to reduce quoting mistakes during automated review work.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-04-02T04:14:07.877Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
