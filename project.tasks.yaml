@@ -24298,12 +24298,8 @@
   type: task
   spec_ref: "@daemon-file-monitoring"
   plan_ref: "@plan-daemon-file-monitoring-reliability"
-  status: blocked
-  blocked_by:
-    - "Dispatch workspace provisioning failed: Dispatch workspace registry write succeeded but could
-      not be durably committed on the shadow branch for @01KN7Q6BHCW3EXFA9SCBQAT05K.. Suggested
-      action: Resolve the shadow branch commit issue, then rerun dispatch reconciliation or
-      workspace provisioning so the registry state becomes durable."
+  status: needs_work
+  blocked_by: []
   depends_on:
     - "@task-chokidar-standardize"
     - "@task-session-blob-exclusion"
