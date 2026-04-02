@@ -21333,7 +21333,7 @@ runs:
     started_at: 2026-04-02T22:55:55.965Z
   - _ulid: 01KN878NYV12W4P8NN8EP601H8
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -21346,7 +21346,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-02T23:09:07.573Z
-        completed_at: 2026-04-02T23:09:07.573Z
+        completed_at: 2026-04-02T23:09:08.322Z
+        notes: "Friction point: after updating the @ci convention, kspec agents generate initially reported
+          kspec-agents.md as current while stale output was still visible; status plus --dry-run
+          exposed the mismatch. Existing coverage search found no tracked item for this
+          generator/status inconsistency."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-02T23:09:08.322Z
+        completed_at: 2026-04-02T23:09:08.322Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-02T23:08:15.195Z
