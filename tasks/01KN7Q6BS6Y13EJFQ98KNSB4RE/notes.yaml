@@ -10,3 +10,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T21:05:14.207Z
+  - _ulid: 01KN81A4CVJJCWBH3PZK4AATQE
+    content: "Implemented live watcher-health integration coverage in
+      tests/daemon-context-manager.test.ts. Replaced mocked probe delivery with real watcher
+      verification, added silent Chokidar-close recovery coverage, verified project-local restart
+      isolation, and added watcher cleanup in afterEach to keep the suite stable. Verification: npm
+      test -- tests/daemon-context-manager.test.ts, kspec validate (warning baseline only), npm test
+      -- --fresh."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T21:24:11.291Z
