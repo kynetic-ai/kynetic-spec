@@ -100965,6 +100965,13 @@ reviews:
           kind: question
           thread_ulid: 01KN5V0CHE05GEE4A6E7HD1EQZ
         timestamp: 2026-04-02T00:55:32.289Z
+      - _ulid: 01KN5V0HEDZ13QRQMNDTNX80C8
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KN5V0GS530568K37ZTA4TH4W
+        timestamp: 2026-04-02T00:55:36.653Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -101061,7 +101068,24 @@ reviews:
               guidance.' The then-clause needs the observable outcome.
             created_at: 2026-04-02T00:55:31.630Z
         kind: question
+      - _ulid: 01KN5V0GS530568K37ZTA4TH4W
+        anchor:
+          type: structured
+          field: ac-deterministic-name
+          ref: "@plan-branch-creation"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KN5V0GS54MDCJKRV4X9ZBF0V
+            author: "@claude"
+            body: ac-deterministic-name includes 'plan/<normalized-slug>/<short-ref>' — this is the naming
+              convention, which is fine for a spec. But the task description goes further and
+              specifies the exact normalization algorithm. That's task-level detail and belongs only
+              there, which it does. The AC is borderline — consider whether 'a branch is created
+              using a deterministic naming convention derived from the plan identity' is cleaner,
+              leaving the exact pattern to implementation. Minor — the current form is acceptable.
+            created_at: 2026-04-02T00:55:35.973Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-02T00:54:38.074Z
-    updated_at: 2026-04-02T00:55:31.630Z
+    updated_at: 2026-04-02T00:55:35.973Z
     notes: []
