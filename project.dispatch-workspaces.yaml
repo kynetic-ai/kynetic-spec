@@ -34038,7 +34038,7 @@ workspaces:
         head: 7f87428b0db747f8423cb184ee8d6a68cb182a59
         last_seen_at: 2026-04-02T20:50:12.836Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-watcher-health-check-01kn7q6b
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: f7f761c1213499dbe6ddf4da662d2d18bf5d38bf
     bootstrap:
       status: succeeded
@@ -34129,7 +34129,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T22:54:46.671Z
+      updated_at: 2026-04-02T22:54:55.150Z
     integration:
       status: pending
       detail: null
@@ -34144,10 +34144,10 @@ workspaces:
     task_slug: task-test-chokidar-watcher
     timestamps:
       closed_at: null
-      last_active_at: 2026-04-02T22:45:07.792Z
-      last_reconciled_at: 2026-04-02T22:54:46.671Z
+      last_active_at: 2026-04-02T22:54:55.150Z
+      last_reconciled_at: 2026-04-02T22:54:55.150Z
       created_at: 2026-04-02T20:49:44.615Z
-      updated_at: 2026-04-02T22:54:51.872Z
+      updated_at: 2026-04-02T22:54:55.150Z
     workspace_id: dispatch-workspace-01KN7Q6BHCW3EXFA9SCBQAT05K
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
