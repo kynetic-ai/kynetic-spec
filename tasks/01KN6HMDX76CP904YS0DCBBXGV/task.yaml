@@ -17,8 +17,12 @@ description: >-
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged dispatch/task/stabilize-dispatch-workspace-config-timeout/01kn6hmd into dev
+  after approved review 01KN6K1A. Change isolates tests/dispatch-workspace-config.test.ts in the
+  serial dispatch-heavy Vitest project; full npm test -- --fresh passed in the review workspace
+  (2063 suites, 7468 tests).
 depends_on: []
 context: []
 priority: 3
@@ -77,8 +81,25 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-02T07:55:38.011Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged dispatch/task/stabilize-dispatch-workspace-config-timeout/01kn6hmd into dev after
+          approved review 01KN6K1A. Change isolates tests/dispatch-workspace-config.test.ts in the
+          serial dispatch-heavy Vitest project; full npm test -- --fresh passed in the review
+          workspace (2063 suites, 7468 tests).
+        previous: null
+      completed_at:
+        new: 2026-04-02T08:00:42.578Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-02T08:00:42.606Z
 created_at: 2026-04-02T07:30:57.063Z
 started_at: 2026-04-02T07:32:25.854Z
 submitted_at: 2026-04-02T07:42:01.655Z
+completed_at: 2026-04-02T08:00:42.578Z
 todos: []
 automation: eligible
