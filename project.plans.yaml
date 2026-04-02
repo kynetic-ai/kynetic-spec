@@ -32120,9 +32120,13 @@ plans:
       - @plan-branch-dispatch-target and @plan-branch-derive-guidance are
         internal behavioral specs with no direct CLI surface requiring
         additional traits.
-    status: approved
+    status: active
     approved_at: 2026-04-02T01:42:41.646Z
-    derived_specs: []
+    derived_specs:
+      - "@plan-branch-association"
+      - "@plan-branch-creation"
+      - "@plan-branch-dispatch-target"
+      - "@plan-branch-derive-guidance"
     derived_tasks: []
     module_ref: "@agent-integration"
     source_path: /tmp/plan-scoped-branches.md
@@ -32148,3 +32152,44 @@ plans:
           task-plan-branch-schema, added derive_from_specs: false"
         author: "@claude"
         created_at: 2026-04-02T01:36:35.170Z
+      - _ulid: 01KN5XQCXK8E49K281SSCTD5V8
+        content: |-
+          This plan adds plan-scoped branch targeting as opt-in behavior.
+          Plans without a branch behave identically to today — no migration,
+          no breaking changes.
+
+          Design decisions:
+          1. The branch field is both the flag and the value — no separate
+             mode enum. If set, tasks target it. If null, passthrough.
+          2. Deterministic naming: plan/<slug>/<short-ref>, parallel to
+             dispatch/task/<slug>/<short-ref> for tasks.
+          3. Custom branch names supported via --name flag.
+          4. No base_branch_point stored on plans — task workspaces track
+             their own fork points, and git computes merge-base on demand.
+          5. Merging the plan branch to the project integration branch is a
+             manual step for now. A future plan merge command could automate
+             this but is out of scope.
+          6. The dispatch insertion point is narrow: one new check at the top
+             of the base branch resolution chain. Everything downstream
+             operates on the resolved base branch and needs no changes.
+          7. Plan branch stale target detection composes with the existing
+             config-change detection in @dispatch-workspace-configuration ac-6.
+             Plan branch takes priority (checked first); config-change
+             detection is the fallback for non-plan tasks.
+          8. When a plan branch cannot be found, provisioning fails with an
+             error rather than silently falling through to the default base.
+             This prevents tasks from accidentally landing on the wrong branch.
+
+          Trait coverage:
+          - @plan-branch-association inherits traits from parent @plan-support
+            (json-output, semantic-exit-codes, error-guidance, shadow-commit,
+            filterable-list, priority-parameter, dry-run) via existing plan
+            set/get commands.
+          - @plan-branch-creation declares its own traits (json-output,
+            semantic-exit-codes, error-guidance, shadow-commit) since it is a
+            new standalone command.
+          - @plan-branch-dispatch-target and @plan-branch-derive-guidance are
+            internal behavioral specs with no direct CLI surface requiring
+            additional traits.
+        author: "@claude"
+        created_at: 2026-04-02T01:43:02.835Z
