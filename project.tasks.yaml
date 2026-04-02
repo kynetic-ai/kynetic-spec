@@ -24058,7 +24058,7 @@
   slugs: []
   title: Stabilize flaky full-suite failures in dispatch workspace config and enhanced setup tests
   type: task
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 2
@@ -24070,4 +24070,5 @@
   todos_count: 0
   created_at: 2026-04-02T05:23:12.538Z
   started_at: 2026-04-02T05:31:47.581Z
+  submitted_at: 2026-04-02T05:47:50.679Z
   automation: eligible
