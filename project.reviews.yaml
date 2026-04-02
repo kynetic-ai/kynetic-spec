@@ -104961,6 +104961,18 @@ reviews:
         required: true
         created_at: 2026-04-02T18:21:10.692Z
         completed_at: 2026-04-02T18:21:10.692Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Task spec_ref, depends_on, and parent references resolve consistently between existing
+          refs (@daemon-server, @multi-directory-daemon, @web-ui) and local plan slugs
+          (@daemon-file-monitoring, @daemon-watcher-health, @task-...). AC numbering is sequential
+          on both new specs, and the task Covers references match existing or newly declared AC ids.
+        name: Cross-reference validation
+        required: true
+        created_at: 2026-04-02T18:21:10.739Z
+        completed_at: 2026-04-02T18:21:10.739Z
     events:
       - _ulid: 01KN7PSQAPFD374WMQPM4BKY00
         actor: "@claude"
@@ -105003,6 +105015,13 @@ reviews:
           status: pass
           name: Existing spec alignment
         timestamp: 2026-04-02T18:21:11.360Z
+      - _ulid: 01KN7PV2W50W4X7HX0EWRC54QG
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Cross-reference validation
+        timestamp: 2026-04-02T18:21:12.453Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -105015,5 +105034,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-02T18:20:27.863Z
-    updated_at: 2026-04-02T18:21:10.692Z
+    updated_at: 2026-04-02T18:21:10.739Z
     notes: []
