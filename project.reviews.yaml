@@ -106615,6 +106615,19 @@ reviews:
         required: false
         created_at: 2026-04-02T21:42:36.831Z
         completed_at: 2026-04-02T21:42:36.831Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: timeout 180s npm test -- --fresh tests/daemon-context-manager.test.ts
+          tests/daemon-watcher-error-handling.test.ts tests/daemon-watcher-fallback.test.ts
+          tests/daemon-watcher-multi-project.test.ts tests/session-watcher.test.ts => 25/25 suites,
+          63/63 tests passed in 27.5s.
+        name: watcher-targeted-suite
+        required: true
+        runner: npm-test
+        created_at: 2026-04-02T21:43:23.094Z
+        completed_at: 2026-04-02T21:43:23.094Z
     events:
       - _ulid: 01KN829CR7T8H9EX9K76CCJ03H
         actor: Jacob Chapel
@@ -106666,6 +106679,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-02T21:43:06.451Z
+      - _ulid: 01KN82DC45CSNT4TZRYN7EBQAR
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: watcher-targeted-suite
+        timestamp: 2026-04-02T21:43:26.085Z
     examined_commit: b850d3f95ceaea076bcf2d2c62e469f4f6fcd3b3
     external_links: []
     lifecycle_state: closed
@@ -106731,5 +106751,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-02T21:43:06.450Z
     created_at: 2026-04-02T21:41:15.655Z
-    updated_at: 2026-04-02T21:43:06.451Z
+    updated_at: 2026-04-02T21:43:23.094Z
     notes: []
