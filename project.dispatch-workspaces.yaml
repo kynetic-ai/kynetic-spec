@@ -33460,7 +33460,7 @@ workspaces:
         head: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
         last_seen_at: 2026-04-02T19:01:07.427Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-update-multi-dir-ac19-01kn7q6a
-  - active_role: worker
+  - active_role: null
     base_branch_point: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
     bootstrap:
       status: succeeded
@@ -33544,12 +33544,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-02T19:25:49.807Z
+      updated_at: 2026-04-02T19:27:12.593Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T19:25:49.807Z
+      updated_at: 2026-04-02T19:27:12.593Z
     integration:
       status: pending
       detail: null
@@ -33557,17 +33557,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-daemon-file-monitoring-reliability/01kn7nw3
       target_commit: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
-      updated_at: 2026-04-02T19:25:49.807Z
-    lifecycle_state: active
+      updated_at: 2026-04-02T19:27:12.593Z
+    lifecycle_state: ready
     resolved_base_branch: plan/plan-daemon-file-monitoring-reliability/01kn7nw3
     task_ref: "@01KN7Q6ARE8SXC9F8AEHYVFHCF"
     task_slug: task-chokidar-standardize
     timestamps:
       closed_at: null
       last_active_at: 2026-04-02T19:12:16.699Z
-      last_reconciled_at: 2026-04-02T19:25:49.807Z
+      last_reconciled_at: 2026-04-02T19:27:12.593Z
       created_at: 2026-04-02T19:11:47.681Z
-      updated_at: 2026-04-02T19:25:49.807Z
+      updated_at: 2026-04-02T19:27:12.593Z
     workspace_id: dispatch-workspace-01KN7Q6ARE8SXC9F8AEHYVFHCF
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
