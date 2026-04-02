@@ -102308,6 +102308,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-02T04:24:02.272Z
+      - _ulid: 01KN681E4Y0NRNTYPZG6RDM0EC
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN66XKQ1T8C1GB47YV0TE654
+        timestamp: 2026-04-02T04:43:17.534Z
     examined_commit: 41800715e1029b33695a14d9d6dff509bd4a6622
     external_links: []
     lifecycle_state: closed
@@ -102360,6 +102366,15 @@ reviews:
               inconsistent and later recovery code still trusts metadata.baseBranchPoint when
               reconstructing records."
             created_at: 2026-04-02T04:23:43.585Z
+          - _ulid: 01KN681DF3B9H625F2XDJ6BX3R
+            author: Jacob Chapel
+            body: "Fixed: resolveBaseBranchPoint now reuses the persisted base_branch_point only when the
+              workspace stays on the same resolved_base_branch. When reprovisioning retargets the
+              workspace to a different plan/config branch, it recomputes the fork point from the new
+              base so base_branch_point, resolved_base_branch, and integration.target_commit stay
+              aligned. Added regression assertions in tests/dispatch-workspace-config.test.ts for
+              the plan-retarget scenario."
+            created_at: 2026-04-02T04:43:16.835Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -102370,7 +102385,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-02T04:24:02.272Z
     created_at: 2026-04-02T04:16:26.709Z
-    updated_at: 2026-04-02T04:24:02.272Z
+    updated_at: 2026-04-02T04:43:16.835Z
     notes: []
   - _ulid: 01KN66TW87P2MVE015MFFC8WCG
     slugs: []
