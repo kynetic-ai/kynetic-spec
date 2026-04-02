@@ -72,3 +72,15 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-02T07:10:32.539Z
+  - _ulid: 01KN6M6TP3ZYM3KYZV9XZKR86Z
+    content: "Approach: update ScheduleEngine to mark accepted ticks as executing before awaiting action
+      execution, advance next_tick before the await, and keep status/overlap checks aware of the
+      pre-await execution window while preserving active_run_ids cleanup for completed events. Edge
+      cases: concurrent evaluation cycles during long-running execute() awaits,
+      skip/buffer_one/allow semantics while a run is in-flight, and event timing where
+      action.completed may fire before execute() resolves. Test plan: add delayed-executor
+      behavioral regressions for concurrent evaluation and overlap enforcement, then re-run the full
+      suite."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T08:15:57.123Z
