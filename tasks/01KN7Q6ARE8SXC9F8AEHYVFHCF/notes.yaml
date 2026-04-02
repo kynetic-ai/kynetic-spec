@@ -36,3 +36,11 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T19:58:56.739Z
+  - _ulid: 01KN7WFPJF4T4YCT9F6Z1XQ64Y
+    content: "Fix cycle 1: removed watcher and session-watcher informational stdout logging that
+      regressed daemon command JSON/stdout parity. Re-ran tests/daemon-command-api.test.ts (24/24
+      passing), the watcher-focused regression suite (24/24 passing across 14 suites), and rechecked
+      kspec validate (warnings only, unchanged repo-wide debt)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T19:59:50.864Z
