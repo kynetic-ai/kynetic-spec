@@ -103518,6 +103518,28 @@ reviews:
         runner: npm
         created_at: 2026-04-02T07:07:21.729Z
         completed_at: 2026-04-02T07:07:21.729Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/agent-runtime/workspace.ts; tests/helpers/cli.ts;
+          tests/enhanced-setup.test.ts; tests/dispatch-workspace-cleanup.test.ts;
+          tests/dispatch-workspace-config.test.ts;
+          tests/dispatch-branch-integration-contract.test.ts;
+          tests/dispatch-runtime-bootstrap-contract.test.ts. Commands run: kspec task get; kspec
+          review for-task/get/add/open; git diff/stat/status; rg AC annotations; kspec item get
+          @dispatch-workspace-cleanup-policy and @enhanced-setup; kspec validate; npm test targeted
+          suites; npm test isolated bootstrap suite; npm test -- --fresh on snapshot and integration
+          base. Claims verified: helper fix preserves omitted cwd coverage and invalid cwd
+          passthrough; stale worktree registrations are pruned when directory is absent; leaked
+          parent agent markers no longer affect setup status detection. Categories searched:
+          correctness, edge cases, error handling, test quality, integration. No branch-introduced
+          findings found."
+        name: review evidence log
+        required: false
+        runner: manual
+        created_at: 2026-04-02T07:07:24.599Z
+        completed_at: 2026-04-02T07:07:24.599Z
     events:
       - _ulid: 01KN6EPC96TVSQR6H21W0BTBFT
         actor: Jacob Chapel
@@ -103546,6 +103568,13 @@ reviews:
           status: pass
           name: full npm test triage
         timestamp: 2026-04-02T07:07:22.742Z
+      - _ulid: 01KN6G9BGHNBW1WE26KVEMZ8EG
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-04-02T07:07:25.585Z
     examined_commit: 66aa4da1c1099858a6a8de88488d1d7388f9d52f
     external_links: []
     lifecycle_state: open
@@ -103558,5 +103587,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-02T06:39:35.207Z
-    updated_at: 2026-04-02T07:07:21.729Z
+    updated_at: 2026-04-02T07:07:24.599Z
     notes: []
