@@ -22,3 +22,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T19:02:36.121Z
+  - _ulid: 01KN7S7XS3XHX5ZAKYXF8DJMFT
+    content: "Updated @multi-directory-daemon ac-19 to describe resource-bounded monitoring: it now
+      covers excessive resource consumption caused by large directories or OS limits, allows
+      detection during initialization or health monitoring, and requires the daemon to contain the
+      impact to the affected project with actionable guidance. Verified the persisted AC text with
+      'kspec item ac list @multi-directory-daemon'. Ran 'kspec validate'; it returned the
+      repository's existing warning baseline only (exit 6, no new validation errors introduced by
+      this task)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T19:03:10.371Z
