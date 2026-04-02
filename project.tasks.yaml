@@ -24386,12 +24386,8 @@
   slugs: []
   title: Stabilize flaky full-suite tests for cli-serve and agent-dispatch-engine
   type: bug
-  status: blocked
-  blocked_by:
-    - "Dispatch workspace provisioning failed: Dispatch workspace registry write succeeded but could
-      not be durably committed on the shadow branch for @01KN813JEHA7251DWGYDGZYMXZ.. Suggested
-      action: Resolve the shadow branch commit issue, then rerun dispatch reconciliation or
-      workspace provisioning so the registry state becomes durable."
+  status: pending_review
+  blocked_by: []
   depends_on: []
   priority: 2
   tags:

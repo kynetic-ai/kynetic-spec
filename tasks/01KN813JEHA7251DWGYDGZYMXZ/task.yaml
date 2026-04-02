@@ -15,12 +15,8 @@ description: "Full `npm test -- --fresh` on commit a72d50e8ca41f0625f005c2c94e81
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: blocked
-blocked_by:
-  - "Dispatch workspace provisioning failed: Dispatch workspace registry write succeeded but could
-    not be durably committed on the shadow branch for @01KN813JEHA7251DWGYDGZYMXZ.. Suggested
-    action: Resolve the shadow branch commit issue, then rerun dispatch reconciliation or workspace
-    provisioning so the registry state becomes durable."
+status: pending_review
+blocked_by: []
 depends_on: []
 context: []
 priority: 2
@@ -37,7 +33,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: 01KN822TC8GAK25BT71TKGQX4H
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -118,7 +114,27 @@ history:
         previous: null
     command: task-block
     timestamp: 2026-04-02T22:06:19.016Z
-prior_status: pending_review
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: blocked
+      blocked_by:
+        new: []
+        previous:
+          - "Dispatch workspace provisioning failed: Dispatch workspace registry write succeeded but
+            could not be durably committed on the shadow branch for @01KN813JEHA7251DWGYDGZYMXZ..
+            Suggested action: Resolve the shadow branch commit issue, then rerun dispatch
+            reconciliation or workspace provisioning so the registry state becomes durable."
+      session_id:
+        new: null
+        previous: 01KN822TC8GAK25BT71TKGQX4H
+      prior_status:
+        new: null
+        previous: pending_review
+    command: task-unblock
+    timestamp: 2026-04-02T22:45:00.634Z
+prior_status: null
 created_at: 2026-04-02T21:20:36.305Z
 started_at: 2026-04-02T21:38:36.420Z
 submitted_at: 2026-04-02T21:52:50.731Z
