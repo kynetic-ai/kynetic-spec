@@ -34009,7 +34009,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T20:59:07.103Z
+      updated_at: 2026-04-02T20:59:10.769Z
     integration:
       status: merged
       detail: integration:merged
@@ -34025,18 +34025,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-02T20:50:20.884Z
-      last_reconciled_at: 2026-04-02T20:59:07.103Z
+      last_reconciled_at: 2026-04-02T20:59:10.769Z
       created_at: 2026-04-02T20:35:03.733Z
-      updated_at: 2026-04-02T20:59:07.103Z
+      updated_at: 2026-04-02T20:59:10.769Z
     workspace_id: dispatch-workspace-01KN7Q6B9D51K6Z7NPA4M8FG4B
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 7f87428b0db747f8423cb184ee8d6a68cb182a59
-        last_seen_at: 2026-04-02T20:50:12.836Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-watcher-health-check-01kn7q6b-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-watcher-health-check/01kn7q6b
