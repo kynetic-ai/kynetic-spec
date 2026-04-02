@@ -199,6 +199,7 @@ interface DeriveResult {
   plan_ref: string;
   module_ref: string;
   plan_branch: string | null;
+  tasks_included: boolean;
   created_specs: string[];
   created_tasks: string[];
   skipped: DeriveSkipped[];
@@ -1439,6 +1440,7 @@ Examples:
             plan_ref: planRef,
             module_ref: moduleRef,
             plan_branch: foundPlan.branch ?? null,
+            tasks_included: deriveTasks,
             created_specs: createdSpecRefs,
             created_tasks: createdTaskRefs,
             skipped,

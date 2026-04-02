@@ -140,6 +140,7 @@ describe("Integration: enhanced plan derive", () => {
     const result = kspecJson<{
       plan_ref: string;
       module_ref: string;
+      tasks_included: boolean;
       created_specs: string[];
       created_tasks: string[];
       skipped: Array<{ ref: string }>;
@@ -147,6 +148,7 @@ describe("Integration: enhanced plan derive", () => {
     }>("plan derive @plan-derive-specs --no-tasks", tempDir);
 
     expect(result.module_ref).toBe("@test-core");
+    expect(result.tasks_included).toBe(false);
     expect(result.created_specs).toEqual([
       "@parent-feature",
       "@child-requirement",
@@ -386,10 +388,12 @@ Global implementation note for the plan.
     kspec(`plan import "${planPath}" --module @test-core --status approved`, tempDir);
 
     const result = kspecJson<{
+      tasks_included: boolean;
       created_specs: string[];
       created_tasks: string[];
     }>("plan derive @plan-derive-tasks --module @test-core", tempDir);
 
+    expect(result.tasks_included).toBe(true);
     expect(result.created_specs).toEqual(["@alpha-feature", "@beta-feature"]);
     expect(result.created_tasks).toEqual([
       "@implement-alpha-feature",
@@ -473,10 +477,12 @@ derive_from_specs: false
     kspec(`plan import "${planPath}" --module @test-core --status approved`, tempDir);
 
     const result = kspecJson<{
+      tasks_included: boolean;
       created_specs: string[];
       created_tasks: string[];
     }>("plan derive @plan-manual-tasks-only --module @test-core", tempDir);
 
+    expect(result.tasks_included).toBe(true);
     expect(result.created_specs).toEqual(["@alpha-feature", "@beta-feature"]);
     expect(result.created_tasks).toEqual(["@migration-guide"]);
 
@@ -526,11 +532,13 @@ derive_from_specs: false
 
     const result = kspecJson<{
       module_ref: string;
+      tasks_included: boolean;
       created_specs: string[];
       created_tasks: string[];
     }>("plan derive @plan-task-only-plan", tempDir);
 
     expect(result.module_ref).toBe("");
+    expect(result.tasks_included).toBe(true);
     expect(result.created_specs).toEqual([]);
     expect(result.created_tasks).toEqual(["@update-review-version-linkage"]);
 
@@ -576,6 +584,7 @@ derive_from_specs: false
     const result = kspecJson<{
       dry_run: boolean;
       plan_ref: string;
+      tasks_included: boolean;
       created_specs: string[];
       created_tasks: string[];
       skipped: unknown[];
@@ -584,6 +593,7 @@ derive_from_specs: false
 
     expect(result.dry_run).toBe(true);
     expect(result.plan_ref).toBe("@plan-dry-run");
+    expect(result.tasks_included).toBe(true);
     expect(result.created_specs).toEqual(["@dry-run-feature"]);
     expect(result.created_tasks).toEqual(["@implement-dry-run-feature"]);
     expect(result.skipped).toEqual([]);
@@ -602,6 +612,7 @@ derive_from_specs: false
   it("shows whether dry-run will include or skip tasks", async () => {
     // AC: @plan-derive-enhanced ac-dry-run, ac-no-tasks-opt-out
     // AC: @trait-dry-run ac-1, ac-3
+    // AC: @trait-json-output ac-2
     const planPath = await writePlanFile(
       tempDir,
       "dry-run-task-mode.md",
@@ -621,11 +632,25 @@ derive_from_specs: false
     const includedOutput = kspec("plan derive @plan-dry-run-task-mode --dry-run", tempDir);
     expect(includedOutput).toContain("Tasks: included (default)");
 
+    const includedJson = kspecJson<{ dry_run: boolean; tasks_included: boolean }>(
+      "plan derive @plan-dry-run-task-mode --dry-run --json",
+      tempDir,
+    );
+    expect(includedJson.dry_run).toBe(true);
+    expect(includedJson.tasks_included).toBe(true);
+
     const skippedOutput = kspec(
       "plan derive @plan-dry-run-task-mode --module @test-core --no-tasks --dry-run",
       tempDir,
     );
     expect(skippedOutput).toContain("Tasks: skipped (--no-tasks)");
+
+    const skippedJson = kspecJson<{ dry_run: boolean; tasks_included: boolean }>(
+      "plan derive @plan-dry-run-task-mode --module @test-core --no-tasks --dry-run --json",
+      tempDir,
+    );
+    expect(skippedJson.dry_run).toBe(true);
+    expect(skippedJson.tasks_included).toBe(false);
   });
 
   it("shows a post-summary hint when deriving a plan that has no branch", async () => {
@@ -823,11 +848,16 @@ Just prose, no structured specs section.
 
     kspec(`plan import "${planPath}" --module @test-core --status approved`, tempDir);
 
-    const result = kspecJson<{ created_specs: string[]; created_tasks: string[] }>(
+    const result = kspecJson<{
+      tasks_included: boolean;
+      created_specs: string[];
+      created_tasks: string[];
+    }>(
       "plan derive @plan-tasks-flag-back-compat --module @test-core --tasks",
       tempDir,
     );
 
+    expect(result.tasks_included).toBe(true);
     expect(result.created_specs).toEqual(["@back-compat-feature"]);
     expect(result.created_tasks).toEqual(["@implement-back-compat-feature"]);
   });
