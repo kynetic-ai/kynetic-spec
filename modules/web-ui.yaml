@@ -3662,6 +3662,9 @@ features:
       invalidation, while the sessions directory contains metadata files
       alongside large volumes of content data (blobs) that are irrelevant
       to cache freshness.
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
