@@ -11369,6 +11369,15 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-04-02T05:29:30.267Z
+  - _ulid: 01KN6BSKV0V7SRYGHDMCMMAVH9
+    type: success
+    content: Shared CLI test helpers should isolate HOME and strip ambient agent-detection env by
+      default; doing that stabilized full-suite-only setup and dispatch flakes without product-code
+      changes.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-02T05:48:55.520Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
