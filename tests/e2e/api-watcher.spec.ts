@@ -6,8 +6,9 @@
  * analysis tests in tests/daemon-watcher.test.ts which only read source files
  * and checked string patterns.
  *
- * Note: File watcher tests are SKIPPED in CI because GitHub Actions does not
- * support recursive fs.watch. Tests pass locally where fs.watch works correctly.
+ * Note: File watcher tests are SKIPPED in CI because the GitHub Actions
+ * environment does not deliver these daemon watcher events reliably enough.
+ * Tests pass locally where the watcher can receive native filesystem events.
  *
  * Covered ACs:
  * - @daemon-server ac-4: File changes broadcast via WebSocket to subscribed clients
@@ -17,7 +18,7 @@
 
 // Spec own AC N/A annotations (ACs not covered in E2E — require infrastructure beyond E2E scope)
 // AC: @daemon-server ac-7 — N/A: directory inaccessibility + exponential backoff recovery cannot be reliably triggered in E2E without OS-level access control manipulation; implementation verified in watcher.ts (retryCount, maxRetries, baseBackoffMs, handleWatcherError)
-// AC: @daemon-server ac-8 — N/A: forcing Bun fs.watch to fail (to trigger Chokidar fallback) requires process-level interception not available in E2E; implementation verified in watcher.ts (startBunWatcher, startChokidarWatcher, 'falling back to Chokidar')
+// AC: @daemon-server ac-8 — N/A: watcher recovery/backoff behavior is exercised in unit tests; E2E covers event delivery rather than backend initialization internals
 
 // Trait N/A annotations
 // AC: @trait-json-output ac-1 — N/A: daemon file watcher is not a CLI command
@@ -334,15 +335,15 @@ async function waitForErrorBroadcast(
 }
 
 test.describe("File Watcher API", () => {
-  // Skip all file watcher tests in CI — GitHub Actions does not support recursive fs.watch.
-  // The CI environment's Chokidar fallback doesn't reliably emit events, causing flaky tests.
+  // Skip all file watcher tests in CI because the hosted environment does not
+  // deliver these watcher events reliably, causing flaky integration results.
   // Tests pass locally where native fs.watch with recursive mode works correctly.
   // oxlint-disable-next-line no-empty-pattern
   test.beforeEach(async ({}, testInfo) => {
     if (process.env.CI) {
       testInfo.skip(
         true,
-        "File watcher tests skip in CI — GitHub Actions does not support recursive fs.watch",
+        "File watcher tests skip in CI — hosted runners do not deliver watcher events reliably",
       );
     }
   });

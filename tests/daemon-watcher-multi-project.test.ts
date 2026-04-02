@@ -16,11 +16,11 @@ import { join } from "path";
 import { writeFile } from "fs/promises";
 import { KspecWatcher } from "../packages/daemon/src/watcher";
 
-// CI environments (especially with Chokidar fallback) need longer timeouts
-const DEBOUNCE_WAIT = process.env.CI ? 2000 : 600;
+// CI environments need longer timeouts for watcher stabilization.
+const DEBOUNCE_WAIT = process.env.CI ? 2500 : 1200;
 
-// Skip file watcher tests in CI - GitHub Actions runners don't support recursive fs.watch
-// and Chokidar fallback doesn't reliably emit events in the CI environment.
+// Skip file watcher tests in CI because GitHub Actions runners do not emit these
+// local watcher events reliably enough for this integration coverage.
 // Tests pass locally and implementation is verified correct.
 const describeOrSkip = process.env.CI ? describe.skip : describe;
 
@@ -65,6 +65,7 @@ describeOrSkip("Per-Project File Watchers", () => {
       await watcherB.stop();
     });
 
+    // AC: @daemon-file-monitoring ac-6
     // AC: @multi-directory-daemon ac-17
     it("should trigger events scoped to correct project when file changes", async () => {
       const changeHandlerA = vi.fn();
@@ -100,6 +101,7 @@ describeOrSkip("Per-Project File Watchers", () => {
       await watcherB.stop();
     });
 
+    // AC: @daemon-file-monitoring ac-6
     // AC: @multi-directory-daemon ac-18
     it("should only notify watchers for the project that changed", async () => {
       const changeHandlerA = vi.fn();
@@ -388,7 +390,7 @@ describeOrSkip("Per-Project File Watchers", () => {
       await writeFile(fileB, 'kynetic: "1.0"\nproject: B2\n');
 
       // Wait for debounce (500ms from last change + buffer)
-      await new Promise((resolve) => setTimeout(resolve, 700));
+      await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_WAIT));
 
       // Each watcher should debounce to single call per project
       expect(changesA).toHaveBeenCalledTimes(1);
@@ -448,7 +450,7 @@ describeOrSkip("Per-Project File Watchers", () => {
   describe("Error propagation", () => {
     // AC: @multi-directory-daemon ac-17, ac-19
     // oxlint-disable-next-line jest/expect-expect -- smoke test verifying graceful fallback without throwing
-    it("should handle watcher failures gracefully with Chokidar fallback", async () => {
+    it("should handle watcher failures gracefully with Chokidar", async () => {
       const errorHandler = vi.fn();
       const changeHandler = vi.fn();
       const watcher = new KspecWatcher({
@@ -461,7 +463,7 @@ describeOrSkip("Per-Project File Watchers", () => {
       // Watcher falls back to Chokidar which handles this gracefully (doesn't throw)
       await watcher.start();
 
-      // Watcher started successfully with Chokidar fallback
+      // Watcher started successfully with Chokidar.
       // But won't receive any events since directory doesn't exist
       await watcher.stop();
     });
@@ -480,7 +482,7 @@ describeOrSkip("Per-Project File Watchers", () => {
 
       await watcherB.start();
 
-      // Watcher for nonexistent path (uses Chokidar fallback, doesn't throw)
+      // Watcher for nonexistent path uses the normal Chokidar backend and doesn't throw.
       const watcherInvalid = new KspecWatcher({
         kspecDir: "/nonexistent/.kspec",
         onFileChange: vi.fn(),

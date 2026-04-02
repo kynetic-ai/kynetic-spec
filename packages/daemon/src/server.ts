@@ -43,6 +43,7 @@ import { createDiffRoutes } from "./routes/diff";
 import { createReviewsRoutes } from "./routes/reviews";
 import { ShadowSyncScheduler } from "./shadow-sync";
 import { SessionSyncScheduler } from "./session-sync";
+import { WatcherHealthMonitor } from "./watcher-health-monitor";
 import { join } from "path";
 
 export interface ServerOptions {
@@ -96,6 +97,7 @@ let heartbeatManager: HeartbeatManager;
 let wsHandler: WebSocketHandler;
 let _projectManager: import("./project-context").ProjectContextManager | undefined;
 let shadowSyncScheduler: ShadowSyncScheduler | undefined;
+let watcherHealthMonitor: WatcherHealthMonitor | undefined;
 const sessionSyncSchedulers: Map<string, SessionSyncScheduler> = new Map();
 
 /**
@@ -605,6 +607,11 @@ export async function createServer(options: ServerOptions) {
     }
   }
 
+  watcherHealthMonitor = new WatcherHealthMonitor(projectContextManager, {
+    intervalMs: parseInt(process.env.KSPEC_WATCHER_HEALTH_INTERVAL_MS ?? "60000", 10) || 60000,
+  });
+  watcherHealthMonitor.start();
+
   // AC: @config-shadow ac-12 - Start periodic shadow sync if remote tracking configured
   if (startupProjectPath) {
     try {
@@ -664,6 +671,7 @@ export async function createServer(options: ServerOptions) {
 
       // AC: @config-shadow ac-12 - Stop shadow sync scheduler
       shadowSyncScheduler?.stop();
+      watcherHealthMonitor?.stop();
 
       // AC: @session-branch-worktree ac-sync - Stop all session sync schedulers
       for (const scheduler of sessionSyncSchedulers.values()) {
