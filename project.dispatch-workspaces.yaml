@@ -33585,12 +33585,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-02T20:01:54.245Z
+      updated_at: 2026-04-02T20:02:04.738Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T20:01:54.245Z
+      updated_at: 2026-04-02T20:02:04.738Z
     integration:
       status: pending
       detail: null
@@ -33598,26 +33598,31 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-daemon-file-monitoring-reliability/01kn7nw3
       target_commit: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
-      updated_at: 2026-04-02T20:01:54.245Z
-    lifecycle_state: ready
+      updated_at: 2026-04-02T20:02:04.738Z
+    lifecycle_state: integrating
     resolved_base_branch: plan/plan-daemon-file-monitoring-reliability/01kn7nw3
     task_ref: "@01KN7Q6ARE8SXC9F8AEHYVFHCF"
     task_slug: task-chokidar-standardize
     timestamps:
       closed_at: null
       last_active_at: 2026-04-02T19:56:28.515Z
-      last_reconciled_at: 2026-04-02T20:01:54.245Z
+      last_reconciled_at: 2026-04-02T20:02:04.738Z
       created_at: 2026-04-02T19:11:47.681Z
-      updated_at: 2026-04-02T20:01:54.245Z
+      updated_at: 2026-04-02T20:02:04.738Z
     workspace_id: dispatch-workspace-01KN7Q6ARE8SXC9F8AEHYVFHCF
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 987509e18bdfa9d85e25c3a98d5230ca04fb1198
+        last_seen_at: 2026-04-02T20:02:04.738Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-chokidar-standardize-01kn7q6a-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-chokidar-standardize/01kn7q6a
-        head: db7f01d365a123d47dd9e5f3e694f34fb7686367
-        last_seen_at: 2026-04-02T19:32:26.044Z
+        head: 987509e18bdfa9d85e25c3a98d5230ca04fb1198
+        last_seen_at: 2026-04-02T20:02:04.738Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-chokidar-standardize-01kn7q6a
   - active_role: reviewer
     base_branch_point: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
