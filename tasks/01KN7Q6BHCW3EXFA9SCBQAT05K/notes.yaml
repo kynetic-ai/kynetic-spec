@@ -12,3 +12,11 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T20:51:16.612Z
+  - _ulid: 01KN7ZK7VM7ZAAFYHJFZNXFRCX
+    content: Updated watcher tests to reflect the chokidar-only implementation. Added coverage for
+      atomic rename delivery, watched-entry proportionality with blob exclusion, spec-level
+      multi-project isolation annotations, and permanent failure unregistration coverage using
+      existing ProjectContextManager patterns.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T20:54:12.597Z
