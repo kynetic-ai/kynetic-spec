@@ -11610,6 +11610,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-02T19:42:23.525Z
+  - _ulid: 01KN7VSDRZMAAV9SX34P080TXB
+    type: success
+    content: For concurrency regressions, replacing a timing-sensitive final-state assertion with direct
+      critical-section exclusion checks and negative warning assertions made the test stable without
+      weakening behavior coverage.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-04-02T19:47:40.959Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
