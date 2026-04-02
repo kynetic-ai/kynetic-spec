@@ -10392,8 +10392,12 @@ observations:
       metadata/search/task command had to fall back to node dist/cli/index.js. This adds avoidable
       command churn during autonomous task work and reflection.
     author: Test User
-    resolution: null
-    resolved: false
+    resolution: "Duplicate of reviewer snapshot CLI/bootstrap tracking @01KMWT80. The systemic issue
+      remains open: detached review worktrees are not consistently provisioned with a ready kspec
+      CLI path and built dist CLI."
+    resolved: true
+    resolved_at: 2026-04-02T07:45:26.115Z
+    resolved_by: Test User
     created_at: 2026-03-30T23:38:44.827Z
   - _ulid: 01KN0J9WGQ0M97QQF5T5SS97YG
     type: friction
