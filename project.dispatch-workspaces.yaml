@@ -32465,7 +32465,7 @@ workspaces:
         head: 4f39f67f8ada86dcca9d75681a2d9f44a8379d36
         last_seen_at: 2026-04-02T05:30:18.030Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-stale-worktree-removal-in-safelyremovedispatchworktree-01kn69s1
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 190827af3c1fb918d3235cf9159a67047fae3590
     bootstrap:
       status: succeeded
@@ -32573,9 +32573,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-02T06:38:06.614Z
-      last_reconciled_at: 2026-04-02T07:10:08.449Z
+      last_reconciled_at: 2026-04-02T07:10:16.416Z
       created_at: 2026-04-02T05:30:29.808Z
-      updated_at: 2026-04-02T07:10:08.449Z
+      updated_at: 2026-04-02T07:10:16.416Z
     workspace_id: dispatch-workspace-01KN6AAH0TMTBBPB8DSK8PP4K3
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
