@@ -101351,3 +101351,29 @@ reviews:
     created_at: 2026-04-02T00:54:38.074Z
     updated_at: 2026-04-02T00:56:55.640Z
     notes: []
+  - _ulid: 01KN5WVAXSHAK7MZMPY11BNVF2
+    slugs: []
+    title: "Plan re-review: Plan-Scoped Branch Targeting (v2)"
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KN5WVAXRQ4GHEHNW85YCC66B
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-02T01:27:43.288Z
+    examined_commit: null
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-plan-scoped-branch-targeting"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-02T01:27:43.289Z
+    updated_at: null
+    notes: []
