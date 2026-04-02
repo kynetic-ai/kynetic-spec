@@ -31490,12 +31490,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-02T00:10:02.524Z
+      updated_at: 2026-04-02T00:10:08.346Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T00:10:02.524Z
+      updated_at: 2026-04-02T00:10:08.346Z
     integration:
       status: pending
       detail: null
@@ -31503,24 +31503,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: a1d256e141a1c2ff1b2b3a3f844f0cc1801a921a
-      updated_at: 2026-04-02T00:10:02.524Z
-    lifecycle_state: ready
+      updated_at: 2026-04-02T00:10:08.346Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KN5QB8NSQNT9FTD701GK387V"
     task_slug: task-investigate-file-lock-flake
     timestamps:
       closed_at: null
       last_active_at: 2026-04-01T23:52:09.057Z
-      last_reconciled_at: 2026-04-02T00:10:02.524Z
+      last_reconciled_at: 2026-04-02T00:10:08.346Z
       created_at: 2026-04-01T23:52:01.127Z
-      updated_at: 2026-04-02T00:10:02.524Z
+      updated_at: 2026-04-02T00:10:08.346Z
     workspace_id: dispatch-workspace-01KN5QB8NSQNT9FTD701GK387V
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: f0d0a409ede748ea7eec2171748d99178f1ac35a
+        last_seen_at: 2026-04-02T00:10:08.346Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-investigate-file-lock-flake-01kn5qb8-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-investigate-file-lock-flake/01kn5qb8
-        head: a1d256e141a1c2ff1b2b3a3f844f0cc1801a921a
-        last_seen_at: 2026-04-01T23:52:01.127Z
+        head: f0d0a409ede748ea7eec2171748d99178f1ac35a
+        last_seen_at: 2026-04-02T00:10:08.346Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-investigate-file-lock-flake-01kn5qb8
