@@ -38,7 +38,7 @@ description: |
 spec_ref: "@daemon-file-monitoring"
 plan_ref: "@plan-daemon-file-monitoring-reliability"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-chokidar-standardize"
@@ -50,6 +50,14 @@ tags:
   - watcher
   - performance
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-04-02T20:21:08.956Z
+  commit: 5e24ded90b046cac44f5568969374937df61bd84
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
 session_id: 01KN7X64MG27EEX8E2Z8SA9M0J
 history:
   - author: "@claude"
@@ -72,7 +80,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-02T20:12:35.221Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-04-02T20:21:08.956Z
+          commit: 5e24ded90b046cac44f5568969374937df61bd84
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-04-02T20:21:08.962Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-02T20:21:08.962Z
 created_at: 2026-04-02T18:27:21.237Z
 started_at: 2026-04-02T20:12:35.220Z
+submitted_at: 2026-04-02T20:21:08.962Z
 todos: []
 automation: eligible
