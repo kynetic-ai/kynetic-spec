@@ -24374,3 +24374,19 @@
   submitted_at: 2026-04-02T19:46:04.106Z
   completed_at: 2026-04-02T20:01:21.637Z
   automation: eligible
+- _ulid: 01KN813JEHA7251DWGYDGZYMXZ
+  slugs: []
+  title: Stabilize flaky full-suite tests for cli-serve and agent-dispatch-engine
+  type: bug
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - test
+    - flake
+    - ci
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-02T21:20:36.305Z
+  automation: eligible
