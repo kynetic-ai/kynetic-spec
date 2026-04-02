@@ -189,9 +189,9 @@ export async function acquireFileLock(
 export async function withFileLock<T>(
   filePath: string,
   fn: () => Promise<T>,
-  timeoutMs?: number,
+  timeoutMsOrOptions?: number | AcquireFileLockOptions,
 ): Promise<T> {
-  const release = await acquireFileLock(filePath, timeoutMs);
+  const release = await acquireFileLock(filePath, timeoutMsOrOptions);
   try {
     return await fn();
   } finally {
@@ -235,6 +235,12 @@ async function checkStaleLock(pidFile: string, maxHoldMs: number): Promise<Stale
           holderPid: pid,
           holdDurationMs: !isNaN(timestamp) ? Date.now() - timestamp : null,
         };
+      }
+
+      // Never reclaim a lock from the current process. Same-process callers
+      // must serialize rather than overlap critical sections.
+      if (pid === process.pid) {
+        return notStale;
       }
 
       // PID is alive — check duration ceiling

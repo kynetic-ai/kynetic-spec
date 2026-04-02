@@ -1,13 +1,24 @@
 import { describe, it, expect, afterEach, vi } from "vitest";
+import { spawn, type ChildProcess } from "node:child_process";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { acquireFileLock, withFileLock } from "../src/parser/file-lock.js";
 import { createTempDir, cleanupTempDir, readTestOutput } from "./helpers/cli.js";
 
+function spawnKeepAliveProcess(): ChildProcess {
+  return spawn(process.execPath, ["-e", "setInterval(() => {}, 1000)"], {
+    stdio: "ignore",
+  });
+}
+
 describe("File Lock", () => {
   let tempDir: string;
+  const childProcesses: ChildProcess[] = [];
 
   afterEach(async () => {
+    for (const child of childProcesses.splice(0)) {
+      child.kill("SIGKILL");
+    }
     if (tempDir) {
       await cleanupTempDir(tempDir);
     }
@@ -191,6 +202,27 @@ describe("File Lock", () => {
     expect(finalContent).toBe("count: 5\n");
   });
 
+  it("should not reclaim a lock from the same process when waiters exceed max hold duration", async () => {
+    tempDir = await createTempDir();
+    const targetFile = path.join(tempDir, "data.yaml");
+    await fs.writeFile(targetFile, "count: 0\n");
+
+    const promises = Array.from({ length: 5 }, () =>
+      withFileLock(targetFile, async () => {
+        const content = await readTestOutput(targetFile);
+        const match = content.match(/count: (\d+)/);
+        const current = parseInt(match![1], 10);
+        await new Promise((r) => setTimeout(r, 25));
+        await fs.writeFile(targetFile, `count: ${current + 1}\n`);
+      }, { timeoutMs: 1000, maxHoldMs: 5 }),
+    );
+
+    await Promise.all(promises);
+
+    const finalContent = await readTestOutput(targetFile);
+    expect(finalContent).toBe("count: 5\n");
+  });
+
   it("should not remove a successor lock when an old releaser runs late", async () => {
     tempDir = await createTempDir();
     const lockTarget = path.join(tempDir, "test.yaml");
@@ -318,11 +350,13 @@ describe("File Lock", () => {
     tempDir = await createTempDir();
     const lockTarget = path.join(tempDir, "test.yaml");
     const lockDir = `${lockTarget}.lock`;
+    const holder = spawnKeepAliveProcess();
+    childProcesses.push(holder);
 
-    // Create a lock with our own (alive) PID but a timestamp far in the past
+    // Create a lock with another alive PID but a timestamp far in the past
     await fs.mkdir(lockDir);
     const oldTimestamp = Date.now() - 60_000; // 60 seconds ago
-    await fs.writeFile(path.join(lockDir, "pid"), `${process.pid}\n${oldTimestamp}\nfake-uuid`);
+    await fs.writeFile(path.join(lockDir, "pid"), `${holder.pid}\n${oldTimestamp}\nfake-uuid`);
 
     // With maxHoldMs=5000 (5s), the 60s-old lock exceeds the ceiling
     const release = await acquireFileLock(lockTarget, {
@@ -336,7 +370,7 @@ describe("File Lock", () => {
 
     // Verify the acquire info indicates force reclaim
     expect(release.info.forceReclaimed).toBe(true);
-    expect(release.info.previousHolderPid).toBe(process.pid);
+    expect(release.info.previousHolderPid).toBe(holder.pid);
     expect(release.info.previousHoldDurationMs).toBeGreaterThan(50_000);
 
     await release();
@@ -366,11 +400,13 @@ describe("File Lock", () => {
     tempDir = await createTempDir();
     const lockTarget = path.join(tempDir, "test.yaml");
     const lockDir = `${lockTarget}.lock`;
+    const holder = spawnKeepAliveProcess();
+    childProcesses.push(holder);
 
-    // Create a lock with our own PID, 10 seconds old
+    // Create a lock with another alive PID, 10 seconds old
     await fs.mkdir(lockDir);
     const tenSecondsAgo = Date.now() - 10_000;
-    await fs.writeFile(path.join(lockDir, "pid"), `${process.pid}\n${tenSecondsAgo}\nfake-uuid`);
+    await fs.writeFile(path.join(lockDir, "pid"), `${holder.pid}\n${tenSecondsAgo}\nfake-uuid`);
 
     // Set env var to 5 seconds — the 10s lock should be reclaimable
     const original = process.env.KSPEC_SHADOW_MUTATION_LOCK_MAX_HOLD_MS;
@@ -395,11 +431,13 @@ describe("File Lock", () => {
     tempDir = await createTempDir();
     const lockTarget = path.join(tempDir, "test.yaml");
     const lockDir = `${lockTarget}.lock`;
+    const holder = spawnKeepAliveProcess();
+    childProcesses.push(holder);
 
-    // Create a lock with our own (alive) PID, far in the past
+    // Create a lock with another alive PID, far in the past
     await fs.mkdir(lockDir);
     const oldTimestamp = Date.now() - 60_000;
-    await fs.writeFile(path.join(lockDir, "pid"), `${process.pid}\n${oldTimestamp}\nfake-uuid`);
+    await fs.writeFile(path.join(lockDir, "pid"), `${holder.pid}\n${oldTimestamp}\nfake-uuid`);
 
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
@@ -413,7 +451,7 @@ describe("File Lock", () => {
       expect(warnSpy).toHaveBeenCalledOnce();
       const message = warnSpy.mock.calls[0][0] as string;
       expect(message).toContain("[file-lock] Reclaiming lock");
-      expect(message).toContain(`PID ${process.pid}`);
+      expect(message).toContain(`PID ${holder.pid}`);
       expect(message).toContain("ceiling 5000ms");
 
       await release();
