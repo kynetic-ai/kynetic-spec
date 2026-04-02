@@ -34285,7 +34285,7 @@ workspaces:
       invalidationReasons:
         - workspace-dependencies-missing
       lastRole: reviewer
-      lastRunAt: 2026-04-02T21:55:14.498Z
+      lastRunAt: 2026-04-02T22:45:15.304Z
       roleStates:
         reviewer:
           status: succeeded
@@ -34294,7 +34294,7 @@ workspaces:
           failureMessage: null
           invalidationReasons:
             - workspace-dependencies-missing
-          lastRunAt: 2026-04-02T21:55:14.498Z
+          lastRunAt: 2026-04-02T22:45:15.304Z
           steps:
             - status: succeeded
               allowTrackedChanges: false
@@ -34403,7 +34403,7 @@ workspaces:
       last_active_at: 2026-04-02T21:55:17.842Z
       last_reconciled_at: 2026-04-02T22:45:10.286Z
       created_at: 2026-04-02T21:37:33.759Z
-      updated_at: 2026-04-02T22:45:10.286Z
+      updated_at: 2026-04-02T22:45:15.304Z
     workspace_id: dispatch-workspace-01KN813JEHA7251DWGYDGZYMXZ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
