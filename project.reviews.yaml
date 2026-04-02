@@ -103329,3 +103329,30 @@ reviews:
     created_at: 2026-04-02T06:19:12.335Z
     updated_at: 2026-04-02T06:19:30.891Z
     notes: []
+  - _ulid: 01KN6EPC97A6JH0QZVVSG9PHHM
+    slugs: []
+    title: Review stabilize flaky full-suite failures in dispatch workspace config and enhanced setup
+      tests (cycle 2)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KN6EPC96TVSQR6H21W0BTBFT
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-02T06:39:35.207Z
+    examined_commit: 66aa4da1c1099858a6a8de88488d1d7388f9d52f
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KN6AAH0TMTBBPB8DSK8PP4K3"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-02T06:39:35.207Z
+    updated_at: null
+    notes: []
