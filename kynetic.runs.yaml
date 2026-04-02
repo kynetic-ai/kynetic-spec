@@ -20460,7 +20460,7 @@ runs:
     completed_at: 2026-04-02T03:36:36.955Z
   - _ulid: 01KN6754CQD1DAP4FHA265BPDV
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -20478,7 +20478,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-02T04:28:42.047Z
-        completed_at: 2026-04-02T04:28:42.047Z
+        completed_at: 2026-04-02T04:28:56.635Z
+        notes: "High-confidence reflection items: 1) Friction: reinvestigation tasks can be spawned from
+          stale failure snapshots even after the underlying fix has merged to the integration
+          branch. This was concrete in this session and already captured as observation @01KN6732.
+          2) Success: reproducing the exact failing command on current integration head before
+          editing code prevented unnecessary code churn and let the task move straight to
+          pending_review with evidence. I am not capturing the success separately because the value
+          is local practice rather than a new systemic project record."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-02T04:28:56.635Z
+        completed_at: 2026-04-02T04:28:56.635Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-02T04:27:50.039Z
