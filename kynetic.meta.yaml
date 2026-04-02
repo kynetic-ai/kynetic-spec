@@ -11533,6 +11533,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-02T08:02:49.597Z
+  - _ulid: 01KN6MTQAG9TB9G3MF86AW01ZA
+    type: friction
+    content: "Review friction: inherited trait AC coverage can remain incomplete even when task-specific
+      implementation and full test runs pass. In this session, @dispatch-runtime-bootstrap-contract
+      inherited @trait-error-guidance, but tests/dispatch-runtime-bootstrap-contract.test.ts only
+      annotated ac-1 and ac-2, leaving ac-3..ac-6 unaddressed. Consider a reviewer-facing check or
+      focused coverage command that reports missing/N-A inherited AC annotations for the current
+      spec under review."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-02T08:26:49.041Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
