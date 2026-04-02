@@ -39,8 +39,12 @@ description: |
 spec_ref: "@daemon-file-monitoring"
 plan_ref: "@plan-daemon-file-monitoring-reliability"
 origin: derived
-status: needs_work
-blocked_by: []
+status: blocked
+blocked_by:
+  - "Dispatch workspace provisioning failed: Dispatch workspace registry write succeeded but could
+    not be durably committed on the shadow branch for @01KN7Q6BHCW3EXFA9SCBQAT05K.. Suggested
+    action: Resolve the shadow branch commit issue, then rerun dispatch reconciliation or workspace
+    provisioning so the registry state becomes durable."
 depends_on:
   - "@task-chokidar-standardize"
   - "@task-session-blob-exclusion"
@@ -176,6 +180,24 @@ history:
         previous: 01KN81DGEGE95HTV8CRVCWXW74
     command: review-verdict-needs-work
     timestamp: 2026-04-02T21:43:19.158Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: blocked
+        previous: needs_work
+      blocked_by:
+        new:
+          - "Dispatch workspace provisioning failed: Dispatch workspace registry write succeeded but
+            could not be durably committed on the shadow branch for @01KN7Q6BHCW3EXFA9SCBQAT05K..
+            Suggested action: Resolve the shadow branch commit issue, then rerun dispatch
+            reconciliation or workspace provisioning so the registry state becomes durable."
+        previous: []
+      prior_status:
+        new: needs_work
+        previous: null
+    command: task-block
+    timestamp: 2026-04-02T22:05:52.853Z
+prior_status: needs_work
 created_at: 2026-04-02T18:27:21.772Z
 started_at: 2026-04-02T21:26:36.880Z
 submitted_at: 2026-04-02T21:36:27.231Z

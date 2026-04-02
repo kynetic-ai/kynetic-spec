@@ -24298,8 +24298,12 @@
   type: task
   spec_ref: "@daemon-file-monitoring"
   plan_ref: "@plan-daemon-file-monitoring-reliability"
-  status: needs_work
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - "Dispatch workspace provisioning failed: Dispatch workspace registry write succeeded but could
+      not be durably committed on the shadow branch for @01KN7Q6BHCW3EXFA9SCBQAT05K.. Suggested
+      action: Resolve the shadow branch commit issue, then rerun dispatch reconciliation or
+      workspace provisioning so the registry state becomes durable."
   depends_on:
     - "@task-chokidar-standardize"
     - "@task-session-blob-exclusion"
@@ -24309,7 +24313,7 @@
     - watcher
     - test
   review_ref: "@01KN829CR7JEXD24Q02D8DN2X0"
-  notes_count: 5
+  notes_count: 6
   todos_count: 0
   created_at: 2026-04-02T18:27:21.772Z
   started_at: 2026-04-02T21:26:36.880Z
@@ -24381,15 +24385,19 @@
   slugs: []
   title: Stabilize flaky full-suite tests for cli-serve and agent-dispatch-engine
   type: bug
-  status: pending_review
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - "Dispatch workspace provisioning failed: Dispatch workspace registry write succeeded but could
+      not be durably committed on the shadow branch for @01KN813JEHA7251DWGYDGZYMXZ.. Suggested
+      action: Resolve the shadow branch commit issue, then rerun dispatch reconciliation or
+      workspace provisioning so the registry state becomes durable."
   depends_on: []
   priority: 2
   tags:
     - test
     - flake
     - ci
-  notes_count: 2
+  notes_count: 3
   todos_count: 0
   created_at: 2026-04-02T21:20:36.305Z
   started_at: 2026-04-02T21:38:36.420Z
