@@ -34298,7 +34298,7 @@ workspaces:
         head: 7765c1faa388439fe11ceb0076e98fd958a04f3c
         last_seen_at: 2026-04-02T21:26:07.359Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-test-watcher-health-01kn7q6b
-  - active_role: worker
+  - active_role: null
     base_branch_point: 5e24ded90b046cac44f5568969374937df61bd84
     bootstrap:
       status: succeeded
@@ -34382,12 +34382,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-02T21:37:33.759Z
+      updated_at: 2026-04-02T21:54:54.322Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T21:38:03.946Z
+      updated_at: 2026-04-02T21:54:54.322Z
     integration:
       status: pending
       detail: null
@@ -34395,17 +34395,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 5e24ded90b046cac44f5568969374937df61bd84
-      updated_at: 2026-04-02T21:37:33.759Z
-    lifecycle_state: active
+      updated_at: 2026-04-02T21:54:54.322Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KN813JEHA7251DWGYDGZYMXZ"
     task_slug: stabilize-flaky-full-suite-tests-for-cli-serve-and-agent-dispatch-engine
     timestamps:
       closed_at: null
       last_active_at: 2026-04-02T21:38:03.946Z
-      last_reconciled_at: 2026-04-02T21:38:03.946Z
+      last_reconciled_at: 2026-04-02T21:54:54.322Z
       created_at: 2026-04-02T21:37:33.759Z
-      updated_at: 2026-04-02T21:38:03.946Z
+      updated_at: 2026-04-02T21:54:54.322Z
     workspace_id: dispatch-workspace-01KN813JEHA7251DWGYDGZYMXZ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
