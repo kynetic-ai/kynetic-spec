@@ -32241,9 +32241,9 @@ plans:
   - _ulid: 01KN6K9B7PG57HVWQ8X016MSMP
     slugs:
       - plan-review-workflow-friction-reduction
-    title: Review Workflow Friction Reduction
+    title: Reviewer Workflow and Workflow UX Hardening
     content: |
-      # Review Workflow Friction Reduction
+      # Reviewer Workflow and Workflow UX Hardening
 
       ## Specs
 
@@ -32288,6 +32288,44 @@ plans:
             then: |
               The workflow identifies the no-op merge case and lets the review
               complete without asking the reviewer to perform a redundant merge
+
+      - title: Detached Reviewer Workspace Integrity
+        slug: detached-reviewer-workspace-integrity
+        type: requirement
+        parent: "@dispatch-workspace-orientation-prompt"
+        description: |
+          Detached reviewer handoff should point at a real, usable review
+          workspace. Reviewer metadata and prompts should not send the reviewer
+          to a nonexistent snapshot path when the actual reviewable worktree
+          exists elsewhere.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A reviewer invocation is prepared for a detached review snapshot
+            when: |
+              Workspace metadata is rendered into the reviewer handoff
+            then: |
+              The referenced workspace path exists and identifies the reviewable
+              worktree the reviewer is expected to use
+          - id: ac-2
+            given: |
+              Stored reviewer workspace metadata no longer points to an existing
+              worktree path
+            when: |
+              A reviewer invocation is prepared
+            then: |
+              The system repairs or replaces the stale path before handoff, or
+              fails with explicit recovery guidance instead of emitting a broken
+              workspace path
+          - id: ac-3
+            given: |
+              Reviewer workspace metadata and the canonical reviewable snapshot
+              disagree
+            when: |
+              The reviewer handoff is generated
+            then: |
+              The handoff uses the canonical existing workspace path and does
+              not require manual worktree discovery before review can begin
 
       - title: Detached Reviewer CLI Readiness
         slug: detached-reviewer-cli-readiness
@@ -32394,15 +32432,32 @@ plans:
             then: |
               the command does not guess; it explains that the run reference is
               ambiguous and tells the user how to choose one
-          - id: ac-3
+
+      - title: Workflow Run Guidance Alignment
+        slug: workflow-run-guidance-alignment
+        type: requirement
+        parent: "@workflow-run-foundation"
+        description: |
+          Workflow skills, examples, and help text should match the supported
+          commands for inspecting workflow runs so users are not taught a
+          follow-up command path that the product does not support.
+        acceptance_criteria:
+          - id: ac-1
             given: |
-              Workflow skills or help text show a follow-up command after
-              starting a workflow
+              A workflow start example or skill shows the next step after
+              creating a run
             when: |
-              that guidance is presented to the user
+              the guidance is presented to the user
             then: |
-              the guidance matches the supported command behavior for showing the
-              current run
+              the follow-up command matches supported workflow-run behavior
+          - id: ac-2
+            given: |
+              Workflow-run behavior changes
+            when: |
+              shipped skills or help examples are updated
+            then: |
+              the user-visible guidance stays aligned with the implemented
+              command path for inspecting the current run
       ```
 
       ## Tasks
@@ -32422,6 +32477,11 @@ plans:
           Update the reviewer merge workflow so detached review snapshots have a
           first-class, supported completion path in manual_merge mode.
 
+          Covers:
+          - @detached-reviewer-merge-path ac-1
+          - @detached-reviewer-merge-path ac-2
+          - @detached-reviewer-merge-path ac-3
+
           Scope:
           - Identify the canonical merge path the product should support when
             the integration branch is already checked out in another worktree.
@@ -32437,6 +32497,35 @@ plans:
           - Add tests for the selected merge path or for the command/guidance
             generator that produces reviewer instructions.
 
+      - title: Repair detached reviewer workspace metadata and prompt paths
+        slug: task-detached-reviewer-workspace-integrity
+        priority: 1
+        tags:
+          - dispatch
+          - review
+          - metadata
+        spec_ref: "@detached-reviewer-workspace-integrity"
+        description: |
+          Ensure reviewer handoff metadata and prompts always reference a real,
+          reviewable detached worktree path.
+
+          Covers:
+          - @detached-reviewer-workspace-integrity ac-1
+          - @detached-reviewer-workspace-integrity ac-2
+          - @detached-reviewer-workspace-integrity ac-3
+
+          Scope:
+          - Trace how reviewer snapshot paths are stored, refreshed, and emitted
+            into dispatch prompts.
+          - Detect and repair stale reviewer worktree paths before reviewer
+            handoff.
+          - Ensure the prompt and workspace metadata agree on the same existing
+            reviewable worktree so reviewers do not need manual discovery.
+
+          Verification:
+          - Add tests for stale-path repair and prompt rendering with detached
+            reviewer worktrees.
+
       - title: Make detached reviewer snapshots CLI-ready
         slug: task-detached-reviewer-cli-readiness
         priority: 1
@@ -32448,6 +32537,11 @@ plans:
         description: |
           Ensure detached reviewer snapshots can run normal reviewer commands
           immediately, without manual build or PATH repair steps.
+
+          Covers:
+          - @detached-reviewer-cli-readiness ac-1
+          - @detached-reviewer-cli-readiness ac-2
+          - @detached-reviewer-cli-readiness ac-3
 
           Scope:
           - Decide the supported CLI entry path for detached reviewer workspaces.
@@ -32474,6 +32568,11 @@ plans:
           Add deduplication or thread reuse behavior for repeated blocker
           findings on the same anchor when they represent the same issue.
 
+          Covers:
+          - @review-thread-deduplication-and-reuse ac-1
+          - @review-thread-deduplication-and-reuse ac-2
+          - @review-thread-deduplication-and-reuse ac-3
+
           Scope:
           - Define the matching rule for "same issue" so the system can reuse
             a thread without collapsing distinct findings.
@@ -32497,6 +32596,10 @@ plans:
           Improve the workflow CLI so users can inspect the current active run
           without having to capture a fresh run ref from the previous command.
 
+          Covers:
+          - @workflow-current-run-resolution ac-1
+          - @workflow-current-run-resolution ac-2
+
           Scope:
           - Add a supported current-run path for showing a workflow run when
             exactly one active run is in scope.
@@ -32509,19 +32612,23 @@ plans:
           - Add CLI tests for the single-active-run, ambiguous, and explicit-ref
             paths.
 
-      - title: Align workflow skills and docs with supported current-run behavior
+      - title: Align workflow skills and help text with workflow-run behavior
         slug: task-workflow-guidance-alignment
         priority: 3
         tags:
           - workflow
           - docs
           - skills
-        spec_ref: "@workflow-current-run-resolution"
+        spec_ref: "@workflow-run-guidance-alignment"
         depends_on:
           - "@task-workflow-current-run-resolution"
         description: |
           Update shipped workflow skills and examples so they match the actual
-          supported workflow-show behavior.
+          supported workflow-run behavior.
+
+          Covers:
+          - @workflow-run-guidance-alignment ac-1
+          - @workflow-run-guidance-alignment ac-2
 
           Scope:
           - Fix the reflect and create-workflow skill text that currently shows
@@ -32537,28 +32644,33 @@ plans:
 
       ## Implementation Notes
 
-      This plan focuses on high-signal workflow friction that has already shown
-      up repeatedly in observations:
+      This plan addresses two adjacent clusters of friction that repeatedly
+      showed up in recent observations:
 
-      1. Detached reviewer merge instructions conflict with the current
-         worktree model in manual_merge mode.
-      2. Detached reviewer snapshots are not consistently ready to run normal
-         kspec commands.
-      3. Review records can accumulate duplicate blocker threads for the same
-         anchored issue.
-      4. Workflow guidance in shipped skills currently drifts from supported
-         `workflow show` behavior.
+      1. Reviewer handoff and review execution in detached-review workflows:
+         merge mechanics, stale reviewer workspace metadata, and reviewer CLI
+         readiness.
+      2. Workflow-run UX alignment: current-run inspection and the user-facing
+         guidance that teaches that command path.
+
+      The broadened scope reflects that this is no longer only a reviewer-flow
+      cleanup plan. It now includes one small workflow UX track with explicit
+      separation between product behavior and docs/skills alignment.
 
       The specs are intentionally behavioral. They describe the user-facing
       contract we want the system to provide and leave implementation strategy
       to the tasks.
     status: draft
     approved_at: null
-    branch: null
     derived_specs: []
     derived_tasks: []
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec/plans/review-workflow-friction-reduction.md
     created_at: 2026-04-02T07:59:51.030Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KN7FZTRRYJ6JXF6JSJTW80K7
+        content: "Address plan-review findings: explicit Covers ownership, split workflow guidance spec,
+          broaden scope, add detached reviewer workspace integrity track"
+        author: Jacob Chapel
+        created_at: 2026-04-02T16:21:27.960Z
