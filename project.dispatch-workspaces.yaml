@@ -34182,3 +34182,79 @@ workspaces:
         head: a72d50e8ca41f0625f005c2c94e8183d22378a7c
         last_seen_at: 2026-04-02T21:03:08.201Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-test-chokidar-watcher-01kn7q6b
+  - active_role: null
+    base_branch_point: e50f96eea866b76de686e0a78c42ba94cac2d2a6
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-test-watcher-health/01kn7q6b
+    canonical_branch_head: e50f96eea866b76de686e0a78c42ba94cac2d2a6
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-04-02T21:03:19.102Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-04-02T21:03:19.102Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: plan/plan-daemon-file-monitoring-reliability/01kn7nw3
+      target_commit: e50f96eea866b76de686e0a78c42ba94cac2d2a6
+      updated_at: 2026-04-02T21:03:19.102Z
+    lifecycle_state: ready
+    resolved_base_branch: plan/plan-daemon-file-monitoring-reliability/01kn7nw3
+    task_ref: "@01KN7Q6BS6Y13EJFQ98KNSB4RE"
+    task_slug: task-test-watcher-health
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-04-02T21:03:19.102Z
+      created_at: 2026-04-02T21:03:19.102Z
+      updated_at: 2026-04-02T21:03:19.102Z
+    workspace_id: dispatch-workspace-01KN7Q6BS6Y13EJFQ98KNSB4RE
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-test-watcher-health/01kn7q6b
+        head: e50f96eea866b76de686e0a78c42ba94cac2d2a6
+        last_seen_at: 2026-04-02T21:03:19.102Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-test-watcher-health-01kn7q6b
