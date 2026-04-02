@@ -105256,6 +105256,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN7T0J0AP4F8ZPA743ZHNYHP
         timestamp: 2026-04-02T19:16:38.232Z
+      - _ulid: 01KN7T16V0G2CR48PTD7VFBVPP
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KN7T16214366ERNWPJA6CD5M
+        timestamp: 2026-04-02T19:16:58.848Z
     examined_commit: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
     external_links: []
     lifecycle_state: open
@@ -105286,7 +105293,32 @@ reviews:
               so ac-19 now has false coverage.
             created_at: 2026-04-02T19:16:37.514Z
         kind: blocker
+      - _ulid: 01KN7T16214366ERNWPJA6CD5M
+        entries:
+          - _ulid: 01KN7T16219K5F9BTKTACBF9WY
+            author: Jacob Chapel
+            body: >-
+              Review evidence log:
+
+              Files read: modules/web-ui.yaml (via shadow diff for commit e5d116c3b),
+              tests/daemon-watcher-multi-project.test.ts,
+              tests/daemon-session-sync-multi-project.test.ts, tests/file-lock.test.ts.
+
+              Commands run: kspec task get @01KN7Q6AG; kspec item get @multi-directory-daemon; kspec
+              validate; rg -n "AC: @multi-directory-daemon ac-19|AC: @trait-" tests; git show/log on
+              the kspec-meta branch; kspec review for-task @01KN7Q6AG; npm test (plus cached rerun);
+              rg on the test log.
+
+              Claims verified: ac-19 was changed from startup EMFILE/ENFILE wording to broader
+              resource-bounding language in shadow commit e5d116c3b; existing ac-19 annotations
+              still cover only watcher-start failure paths; npm test failure is pre-existing on the
+              exact integration-head tree, not introduced by this task.
+
+              Categories searched: correctness/spec alignment, test quality, edge cases,
+              integration, validation baseline.
+            created_at: 2026-04-02T19:16:58.049Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-02T19:07:54.851Z
-    updated_at: 2026-04-02T19:16:37.514Z
+    updated_at: 2026-04-02T19:16:58.049Z
     notes: []
