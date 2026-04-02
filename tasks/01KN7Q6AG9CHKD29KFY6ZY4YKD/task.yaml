@@ -33,8 +33,15 @@ description: |
 spec_ref: "@multi-directory-daemon"
 plan_ref: "@plan-daemon-file-monitoring-reliability"
 origin: derived
-status: pending
-blocked_by: []
+status: blocked
+blocked_by:
+  - 'Dispatch workspace provisioning failed: Task @01KN7Q6AG9CHKD29KFY6ZY4YKD references plan
+    @plan-daemon-file-monitoring-reliability (Daemon File Monitoring Reliability) with branch
+    "plan/plan-daemon-file-monitoring-reliability/01kn7nw3", but that branch could not be found
+    locally or on any configured remote.. Suggested action: Create or fetch branch
+    "plan/plan-daemon-file-monitoring-reliability/01kn7nw3" for plan
+    @plan-daemon-file-monitoring-reliability, or update @plan-daemon-file-monitoring-reliability to
+    a valid branch before provisioning the workspace.'
 depends_on: []
 context: []
 priority: 1
@@ -49,6 +56,28 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-04-02T18:32:05.246Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: blocked
+        previous: pending
+      blocked_by:
+        new:
+          - 'Dispatch workspace provisioning failed: Task @01KN7Q6AG9CHKD29KFY6ZY4YKD references
+            plan @plan-daemon-file-monitoring-reliability (Daemon File Monitoring Reliability) with
+            branch "plan/plan-daemon-file-monitoring-reliability/01kn7nw3", but that branch could
+            not be found locally or on any configured remote.. Suggested action: Create or fetch
+            branch "plan/plan-daemon-file-monitoring-reliability/01kn7nw3" for plan
+            @plan-daemon-file-monitoring-reliability, or update
+            @plan-daemon-file-monitoring-reliability to a valid branch before provisioning the
+            workspace.'
+        previous: []
+      prior_status:
+        new: pending
+        previous: null
+    command: task-block
+    timestamp: 2026-04-02T18:34:05.346Z
+prior_status: pending
 created_at: 2026-04-02T18:27:20.713Z
 todos: []
 automation: eligible
