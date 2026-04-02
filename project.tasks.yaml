@@ -24298,7 +24298,7 @@
   type: task
   spec_ref: "@daemon-file-monitoring"
   plan_ref: "@plan-daemon-file-monitoring-reliability"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-chokidar-standardize"
@@ -24309,7 +24309,7 @@
     - watcher
     - test
   review_ref: "@01KN829CR7JEXD24Q02D8DN2X0"
-  notes_count: 4
+  notes_count: 5
   todos_count: 0
   created_at: 2026-04-02T18:27:21.772Z
   started_at: 2026-04-02T21:26:36.880Z
