@@ -28,7 +28,7 @@
  */
 import { execSync, spawnSync } from "node:child_process";
 import * as fs from "node:fs/promises";
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, statSync } from "node:fs";
 import * as path from "node:path";
 import { parse as yamlParse, stringify as yamlStringify } from "yaml";
 import * as os from "node:os";
@@ -105,7 +105,7 @@ export interface WaitForStartupOptions {
  * const result = kspec('task set @ref --priority 99', tempDir, { expectFail: true });
  * expect(result.exitCode).toBe(1);
  */
-export function kspec(args: string, cwd: string, options: KspecOptions = {}): KspecResult {
+export function kspec(args: string, cwd?: string, options: KspecOptions = {}): KspecResult {
   const { stdin, expectFail = false, env = {} } = options;
 
   // Build clean env: strip dispatch/session vars that pollute tests when running
@@ -160,13 +160,20 @@ export function kspec(args: string, cwd: string, options: KspecOptions = {}): Ks
   // Give each CLI subprocess an isolated home/config root by default so global
   // plugin marketplace, daemon PID/port, and agent home-directory probes are
   // scoped to the test project instead of the parent Vitest process.
-  const isolatedHome = path.join(cwd, ".test-home");
-  mkdirSync(path.join(isolatedHome, ".config", "kspec"), { recursive: true });
-  const defaultEnv = {
-    HOME: isolatedHome,
-    USERPROFILE: isolatedHome,
-    KSPEC_CLAUDE_HOME: path.join(isolatedHome, ".claude"),
-  };
+  const defaultEnv: Record<string, string> = {};
+  const isolatedHomeRoot = cwd ?? process.cwd();
+  try {
+    if (statSync(isolatedHomeRoot).isDirectory()) {
+      const isolatedHome = path.join(isolatedHomeRoot, ".test-home");
+      mkdirSync(path.join(isolatedHome, ".config", "kspec"), { recursive: true });
+      defaultEnv.HOME = isolatedHome;
+      defaultEnv.USERPROFILE = isolatedHome;
+      defaultEnv.KSPEC_CLAUDE_HOME = path.join(isolatedHome, ".claude");
+    }
+  } catch {
+    // Preserve caller-provided invalid cwd so runtime-error-path tests still
+    // exercise the CLI instead of failing inside the helper bootstrap.
+  }
 
   // Use spawnSync with shell to capture both stdout and stderr
   // Always use shell mode to properly handle argument parsing and quoting
