@@ -15,7 +15,7 @@ description: "Full `npm test -- --fresh` on commit a72d50e8ca41f0625f005c2c94e81
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -25,6 +25,14 @@ tags:
   - flake
   - ci
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-04-02T21:52:50.725Z
+  commit: 5e24ded90b046cac44f5568969374937df61bd84
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
 session_id: 01KN822TC8GAK25BT71TKGQX4H
 history:
   - author: Jacob Chapel
@@ -69,7 +77,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-02T21:38:36.420Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-04-02T21:52:50.725Z
+          commit: 5e24ded90b046cac44f5568969374937df61bd84
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-04-02T21:52:50.731Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-02T21:52:50.731Z
 created_at: 2026-04-02T21:20:36.305Z
 started_at: 2026-04-02T21:38:36.420Z
+submitted_at: 2026-04-02T21:52:50.731Z
 todos: []
 automation: eligible
