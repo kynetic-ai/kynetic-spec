@@ -1,1 +1,74 @@
-notes: []
+notes:
+  - _ulid: 01KN6GF22VECES5K0REE2CJT5K
+    content: >-
+      The schedule engine has a race condition where concurrent evaluation cycles fire the same
+      schedule repeatedly because both guards against duplicate ticks update state after awaiting
+      action completion.
+
+
+      What's broken:
+
+
+      A */20 schedule fires every minute instead of every 20 minutes. The setInterval-based
+      evaluation loop fires concurrent _evaluate() calls (it does not await). When eval N is blocked
+      inside await actionExecutor.execute() in _executeTick, eval N+1 sees stale state because both
+      state updates happen after the await (lines 462-468 of schedule-engine.ts):
+
+
+      1. Cron guard fails: next_tick is advanced after the await, so _shouldTick still matches the
+      already-fired time.
+
+      2. Overlap guard fails: active_run_ids is populated after the await, and only conditionally on
+      actionRun.status === 'running'. Since actionExecutor.execute() blocks until completion, it
+      always returns 'completed' or 'failed', never 'running'. So active_run_ids is never populated
+      for any action type, making overlap policy enforcement permanently non-functional.
+
+
+      The existing overlap policy tests pass because they use mock executors that return { status:
+      'running' } synchronously — a status that never occurs in production.
+
+
+      Why it matters:
+
+
+      Any schedule whose action takes longer than 60 seconds spawns duplicate actions every minute
+      indefinitely. For agent actions, this means unbounded concurrent Claude Code invocations from
+      a single schedule.
+
+
+      How to fix (in _executeTick, schedule-engine.ts):
+
+
+      1. Advance next_tick before executing — Move _advanceNextTick(record) to before the await
+      actionExecutor.execute() call so concurrent evaluations see the next cron occurrence.
+
+
+      2. Track active execution eagerly — Since the action_run_id is generated inside
+      actionExecutor.execute(), use a schedule-level is_executing boolean flag (or similar
+      per-schedule mutex) rather than trying to pre-register a run ID. Set the flag before the
+      await, clear it after. The existing active_run_ids tracking and _handleActionComplete event
+      listener remain for the action.completed/action.failed cleanup path.
+
+
+      3. Note on event timing — action.completed is emitted inside execute() before the promise
+      resolves. After the fix, _handleActionComplete will remove the run from active_run_ids before
+      _executeTick returns. This is correct (the run IS complete), but means overlap protection
+      relies on the pre-await flag/registration surviving during the await window, not on
+      active_run_ids.
+
+
+      4. Handle failure cleanup — Use try/finally around the await to ensure the active-execution
+      flag is cleared even if execute() throws unexpectedly.
+
+
+      5. Add concurrent evaluation test — Existing overlap tests use synchronous mock executors. Add
+      a test with a delayed executor where eval N+1 fires while eval N is still awaiting, verifying
+      that the schedule does not produce duplicate ticks.
+
+
+      6. Supplement existing overlap tests — Note that current ac-2/ac-3/ac-5 tests use { status:
+      'running' } mocks that don't reflect production behavior. Add tests that exercise the real
+      execute-to-complete flow to verify overlap guards work end-to-end.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-02T07:10:32.539Z
