@@ -100937,6 +100937,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN5TZCZ7RC0RD0EEWVCWDNET
         timestamp: 2026-04-02T00:54:59.987Z
+      - _ulid: 01KN5TZJ34CNKM8GEDXAPDNZN3
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KN5TZHE113CSFPZVKDK45SVP
+        timestamp: 2026-04-02T00:55:04.548Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -100963,7 +100970,24 @@ reviews:
               json-output, semantic-exit-codes, and error-guidance."
             created_at: 2026-04-02T00:54:59.303Z
         kind: blocker
+      - _ulid: 01KN5TZHE113CSFPZVKDK45SVP
+        anchor:
+          type: structured
+          ref: "@plan-branch-association"
+          section: traits
+        entries:
+          - _ulid: 01KN5TZHE1BG15MZWDS55F01NG
+            author: "@claude"
+            body: plan-branch-association is a data model spec for plan set --branch, which mutates shadow
+              state. Should it carry trait-shadow-commit? The parent @plan-support already has it,
+              but the child requirement doesn't inherit parent traits — each spec must declare its
+              own. The plan set command for status already exists under @plan-crud, so if --branch
+              is just another plan set flag, the trait coverage may come from @plan-crud's existing
+              trait bindings. Clarify whether this spec describes new command behavior or just
+              schema.
+            created_at: 2026-04-02T00:55:03.873Z
+        kind: question
     verdicts: []
     created_at: 2026-04-02T00:54:38.074Z
-    updated_at: 2026-04-02T00:54:59.303Z
+    updated_at: 2026-04-02T00:55:03.873Z
     notes: []
