@@ -100985,6 +100985,17 @@ reviews:
         required: true
         created_at: 2026-04-02T00:56:38.528Z
         completed_at: 2026-04-02T00:56:38.528Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "ac-stale-target-detection on plan-branch-dispatch-target has compound then-clause:
+          detection AND update. Should be two ACs. All other ACs across all 4 specs are atomic with
+          single verifiable outcomes."
+        name: AC atomicity
+        required: true
+        created_at: 2026-04-02T00:56:43.053Z
+        completed_at: 2026-04-02T00:56:43.053Z
     events:
       - _ulid: 01KN5TYR7TTV16M9J8EQRTRGCR
         actor: "@claude"
@@ -101111,6 +101122,13 @@ reviews:
           status: pass
           name: Behavioral language purity
         timestamp: 2026-04-02T00:56:39.196Z
+      - _ulid: 01KN5V2JYE9PZHAWK1TBPRSPVF
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: AC atomicity
+        timestamp: 2026-04-02T00:56:43.726Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -101288,5 +101306,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-02T00:54:38.074Z
-    updated_at: 2026-04-02T00:56:38.528Z
+    updated_at: 2026-04-02T00:56:43.053Z
     notes: []
