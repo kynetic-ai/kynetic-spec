@@ -106711,6 +106711,12 @@ reviews:
         payload:
           thread_ulid: 01KN82BFZ0RCNT7TKFCBW3GEYN
         timestamp: 2026-04-02T22:52:40.483Z
+      - _ulid: 01KN86C7CH23JJMGV4VM8Z0NYV
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN82BP6KCKCE3QMJERC6K0WP
+        timestamp: 2026-04-02T22:52:42.769Z
     examined_commit: b850d3f95ceaea076bcf2d2c62e469f4f6fcd3b3
     external_links: []
     lifecycle_state: closed
@@ -106773,6 +106779,12 @@ reviews:
               (found overclaimed annotation), edge cases/error handling/integration (checked watcher
               retry, atomic rename, session bootstrap, project isolation).
             created_at: 2026-04-02T21:42:30.868Z
+          - _ulid: 01KN86C6MS43RZ2YAAKED6ERJ5
+            author: Jacob Chapel
+            body: Addressed. Re-verified the corrected AC-8 coverage with npm test -- --fresh
+              tests/daemon-watcher-error-handling.test.ts and a fresh full npm test run (2068/2068
+              suites, 7491 passed, 5 skipped).
+            created_at: 2026-04-02T22:52:42.009Z
         kind: nit
     verdicts:
       - applies_to_version:
@@ -106783,7 +106795,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-02T21:43:06.450Z
     created_at: 2026-04-02T21:41:15.655Z
-    updated_at: 2026-04-02T22:52:39.741Z
+    updated_at: 2026-04-02T22:52:42.009Z
     notes: []
   - _ulid: 01KN85ZVYCRQCCNARG3R3HPCGX
     slugs: []
