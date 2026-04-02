@@ -23966,7 +23966,7 @@
     - daemon-entity-cache-live-counter-reload
   title: Fix daemon entity cache live counter reload regression
   type: bug
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 1
@@ -23978,4 +23978,5 @@
   todos_count: 0
   created_at: 2026-04-02T03:25:58.570Z
   started_at: 2026-04-02T03:27:50.578Z
+  submitted_at: 2026-04-02T03:35:26.551Z
   automation: eligible
