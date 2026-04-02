@@ -31484,18 +31484,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-investigate-file-lock-flake/01kn5qb8
-    canonical_branch_head: a1d256e141a1c2ff1b2b3a3f844f0cc1801a921a
+    canonical_branch_head: f0d0a409ede748ea7eec2171748d99178f1ac35a
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-01T23:52:01.127Z
+      updated_at: 2026-04-02T00:08:19.105Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-01T23:52:09.057Z
+      updated_at: 2026-04-02T00:08:19.105Z
     integration:
       status: pending
       detail: null
@@ -31503,7 +31503,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: a1d256e141a1c2ff1b2b3a3f844f0cc1801a921a
-      updated_at: 2026-04-01T23:52:01.127Z
+      updated_at: 2026-04-02T00:08:19.105Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KN5QB8NSQNT9FTD701GK387V"
@@ -31511,9 +31511,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-01T23:52:09.057Z
-      last_reconciled_at: 2026-04-01T23:52:09.057Z
+      last_reconciled_at: 2026-04-02T00:08:19.105Z
       created_at: 2026-04-01T23:52:01.127Z
-      updated_at: 2026-04-01T23:52:09.057Z
+      updated_at: 2026-04-02T00:08:19.105Z
     workspace_id: dispatch-workspace-01KN5QB8NSQNT9FTD701GK387V
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
