@@ -102163,6 +102163,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-02T04:12:39.498Z
+      - _ulid: 01KN66PKKA1T3WN57NX11C9K8A
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN665WYK7Q163P12258CY6E0
+        timestamp: 2026-04-02T04:19:54.090Z
     examined_commit: 5a18c4b8db9d4040d54190517d62935411b00342
     external_links: []
     lifecycle_state: closed
@@ -102191,6 +102197,13 @@ reviews:
               user-controlled input path. These helper calls need to switch to argv-safe process
               APIs (or equivalent escaping/validation) before the command can ship.
             created_at: 2026-04-02T04:10:46.611Z
+          - _ulid: 01KN66PJX08HYXN8FPZ39G7FRD
+            author: Jacob Chapel
+            body: "Fixed: src/cli/branch-helper.ts now runs git via argv-safe spawnSync calls instead of
+              shell-interpreted execSync strings, so custom plan/task branch names are treated as
+              literal git ref arguments. Added a regression test in tests/plan-branch-helper.test.ts
+              that passes a metacharacter branch name and verifies no side-effect file is created."
+            created_at: 2026-04-02T04:19:53.376Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -102201,7 +102214,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-02T04:12:39.495Z
     created_at: 2026-04-02T03:58:57.240Z
-    updated_at: 2026-04-02T04:12:39.498Z
+    updated_at: 2026-04-02T04:19:53.376Z
     notes: []
   - _ulid: 01KN66G92NPF305JR5FHPHFNK0
     slugs: []
