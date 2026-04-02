@@ -9,3 +9,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T07:08:08.539Z
+  - _ulid: 01KN6GTEJNKNRC6FP162WN2TQ2
+    content: "Identified the full-suite flake as resource leakage from daemon API app.handle() tests:
+      createTestApp auto-registered each temp project and started .kspec/.kspec-sessions watchers
+      that those tests never used, accumulating watchers/timers across the suite. Mitigation:
+      disable watcher startup in the shared daemon API helper and add a regression test asserting
+      the helper keeps watcherActive false for these request/response-only tests."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T07:16:45.792Z
