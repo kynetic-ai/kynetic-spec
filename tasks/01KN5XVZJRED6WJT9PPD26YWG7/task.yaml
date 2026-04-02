@@ -41,8 +41,11 @@ description: |
 spec_ref: "@plan-branch-association"
 plan_ref: "@plan-plan-scoped-branch-targeting"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged dispatch/task/task-plan-branch-schema/01kn5xvz into dev after approved review
+  @01KN635Z. Verified schema/parser/CLI branch field behavior with targeted plan/parser tests. Full
+  suite failure was pre-existing on dev and tracked separately in @01KN63KV.
 depends_on: []
 context: []
 priority: 1
@@ -155,9 +158,25 @@ history:
         previous: "@01KN5YXS568W8XA7VN7VPKB2GP"
     command: review-link
     timestamp: 2026-04-02T03:18:25.933Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged dispatch/task/task-plan-branch-schema/01kn5xvz into dev after approved review @01KN635Z.
+          Verified schema/parser/CLI branch field behavior with targeted plan/parser tests. Full
+          suite failure was pre-existing on dev and tracked separately in @01KN63KV.
+        previous: null
+      completed_at:
+        new: 2026-04-02T03:27:40.655Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-02T03:27:40.663Z
 prior_status: null
 created_at: 2026-04-02T01:45:33.016Z
 started_at: 2026-04-02T01:51:35.179Z
 submitted_at: 2026-04-02T02:01:26.945Z
+completed_at: 2026-04-02T03:27:40.655Z
 todos: []
 automation: eligible
