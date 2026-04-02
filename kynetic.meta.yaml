@@ -11436,6 +11436,14 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-02T07:28:49.544Z
+  - _ulid: 01KN6J78RZCNV3X2XQJRY2RAVD
+    type: friction
+    content: Running multiple npm test invocations concurrently in one worktree can race on
+      packages/web-ui build output and fail with ENOENT copyfile errors during vite build.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-02T07:41:14.399Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
