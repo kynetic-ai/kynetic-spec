@@ -6003,22 +6003,22 @@ features:
           - plan-derive-enhanced
         title: Enhanced Plan Derivation
         type: requirement
-        description: |
-          Enhanced plan derive command that parses plan content and creates
-          specs and tasks. This is the materialization step — it takes a
-          plan document stored as content and creates the corresponding
-          spec items and (optionally) tasks.
+        description: >-
+          Enhanced plan derive command that parses plan content and creates specs and tasks. This is
+          the materialization step — it takes a plan document stored as content and creates the
+          corresponding spec items and tasks.
 
-          Absorbs all spec/task creation logic previously in plan import
-          (topological ordering, slug dedup, parent resolution, trait
-          mapping, dependency mapping, implementation notes, etc.).
 
-          Derive is a one-shot operation — once a plan is derived, it
-          transitions to active and its specs/tasks are managed directly.
+          Absorbs all spec/task creation logic previously in plan import (topological ordering, slug
+          dedup, parent resolution, trait mapping, dependency mapping, implementation notes, etc.).
 
-          Replaces the current simple single-task derive behavior.
-          Supersedes @plan-derive (ac-5, ac-6). Bidirectional link
-          display is preserved via ac-bidirectional-links.
+
+          Derive is a one-shot operation — once a plan is derived, it transitions to active and its
+          specs/tasks are managed directly.
+
+
+          Replaces the current simple single-task derive behavior. Supersedes @plan-derive (ac-5,
+          ac-6). Bidirectional link display is preserved via ac-bidirectional-links.
         status:
           maturity: draft
           implementation: implemented
