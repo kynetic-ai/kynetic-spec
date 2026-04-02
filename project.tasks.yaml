@@ -24154,7 +24154,7 @@
   title: Implement pre-invocation workspace executability validation for dispatch handoff
   type: task
   spec_ref: "@dispatch-runtime-bootstrap-contract"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 2
@@ -24164,4 +24164,5 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-02T07:40:03.927Z
+  started_at: 2026-04-02T07:46:14.728Z
   automation: eligible

@@ -52,7 +52,7 @@ description: >-
 spec_ref: "@dispatch-runtime-bootstrap-contract"
 meta_ref: null
 plan_ref: null
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -61,6 +61,22 @@ tags:
   - dispatch
   - runtime
 vcs_refs: []
+session_id: 01KN6JEA82FQD2JQ7SEMJ7KAQ2
+history:
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KN6JEA82FQD2JQ7SEMJ7KAQ2
+        previous: null
+      started_at:
+        new: 2026-04-02T07:46:14.728Z
+        previous: null
+    command: task-start
+    timestamp: 2026-04-02T07:46:14.728Z
 created_at: 2026-04-02T07:40:03.927Z
+started_at: 2026-04-02T07:46:14.728Z
 todos: []
 automation: eligible
