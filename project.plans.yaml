@@ -31642,44 +31642,35 @@ plans:
         type: requirement
         parent: "@plan-support"
         description: |
-          Plans may be associated with a git branch that serves as the
-          shared integration target for all work derived from the plan.
-          When no branch is associated, plan-derived work targets the
-          project's default integration branch.
+          Plans support an optional branch field that stores a git branch
+          name. The field is nullable, persists across sessions, and is
+          backward-compatible with existing plans that predate the feature.
         acceptance_criteria:
-          - id: ac-branch-optional
+          - id: ac-field-default
             given: |
-              A plan exists without a branch association
+              A plan is created without specifying a branch
             when: |
-              Work derived from the plan is dispatched
+              The plan is loaded
             then: |
-              The work targets the project's default integration branch
-          - id: ac-branch-set
+              The branch field is null
+          - id: ac-field-set
             given: |
-              A plan has a branch association
-            when: |
-              Work derived from the plan is dispatched
-            then: |
-              The work targets the plan's associated branch
-          - id: ac-branch-persisted
-            given: |
-              A plan's branch is set via the CLI
+              A user sets a plan's branch to a valid branch name
             when: |
               The plan is loaded in a subsequent session
             then: |
-              The branch value is preserved
-          - id: ac-branch-nullable
+              The branch field contains the value that was set
+          - id: ac-field-clear
             given: |
-              A plan's branch is cleared
+              A user clears a plan's branch
             when: |
-              Work derived from the plan is dispatched
+              The plan is loaded
             then: |
-              The work reverts to targeting the project's default
-              integration branch
+              The branch field is null
           - id: ac-existing-plans-unaffected
             given: |
               Plans created before this feature exist without a branch
-              field
+              field in their stored YAML
             when: |
               Those plans are loaded
             then: |
@@ -31855,6 +31846,8 @@ plans:
 
       ## Tasks
 
+      derive_from_specs: false
+
       ```yaml
       - title: Add branch field to plan schema and CLI
         slug: task-plan-branch-schema
@@ -31894,9 +31887,8 @@ plans:
           Testing: Unit tests for schema round-trip (null, set, clear).
           CLI test for plan set --branch and plan get showing the value.
 
-          Covers: @plan-branch-association ac-branch-optional,
-          ac-branch-set, ac-branch-persisted, ac-branch-nullable,
-          ac-existing-plans-unaffected.
+          Covers: @plan-branch-association ac-field-default, ac-field-set,
+          ac-field-clear, ac-existing-plans-unaffected.
 
       - title: Implement kspec plan branch command
         slug: task-plan-branch-command
@@ -32031,7 +32023,8 @@ plans:
             the branch field (tasks may still be in progress).
           - Plan ref is invalid/not found — log warning, fall through to
             default resolution (the plan may have been deleted).
-          - Plan branch was deleted — fail with clear error per ac-5.
+          - Plan branch was deleted — fail with clear error per
+            ac-plan-branch-not-found.
 
           Testing: Unit tests for each resolution path: plan with branch,
           plan without branch, no plan_ref, missing plan (warning + fall
@@ -32050,7 +32043,7 @@ plans:
         tags: [cli, plans]
         spec_ref: "@plan-branch-derive-guidance"
         depends_on:
-          - "@task-plan-branch-command"
+          - "@task-plan-branch-schema"
         description: |
           When a plan transitions to active via the derive command, include
           contextual guidance about plan branches in the output.
@@ -32149,3 +32142,9 @@ plans:
           inheritance rationale"
         author: "@claude"
         created_at: 2026-04-02T01:14:13.799Z
+      - _ulid: 01KN5XBJB1T97Z8H46FG6FG19N
+        content: "Second review fixes: plan-branch-association ACs now purely about persistence (no dispatch
+          behavior leakage), task-plan-branch-activation dependency narrowed to
+          task-plan-branch-schema, added derive_from_specs: false"
+        author: "@claude"
+        created_at: 2026-04-02T01:36:35.170Z
