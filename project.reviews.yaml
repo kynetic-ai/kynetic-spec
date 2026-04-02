@@ -102514,6 +102514,19 @@ reviews:
         runner: kspec
         created_at: 2026-04-02T04:39:04.414Z
         completed_at: 2026-04-02T04:39:04.414Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: timeout 240s npm test -- --fresh did not complete before timeout and produced no failure
+          output beyond cache clear. This matches the non-task-specific full-suite execution issue
+          already noted on prior task @01KN63KVXA3F7TAX68JZ37ER2Y rather than a daemon-cache
+          regression in this snapshot.
+        name: full test suite
+        required: false
+        runner: npm
+        created_at: 2026-04-02T04:39:13.042Z
+        completed_at: 2026-04-02T04:39:13.042Z
     events:
       - _ulid: 01KN67DAD777HVA2DHXJZ5BNKT
         actor: Jacob Chapel
@@ -102549,6 +102562,13 @@ reviews:
           kind: nit
           thread_ulid: 01KN67SV521PC67P8SKMRQ4QFD
         timestamp: 2026-04-02T04:39:10.045Z
+      - _ulid: 01KN67T0QEYZN3NMMAZCZXPDFN
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: full test suite
+        timestamp: 2026-04-02T04:39:14.415Z
     examined_commit: 03bf2acf6537bedb38f04c61c6cc010c747bbd9b
     external_links: []
     lifecycle_state: open
@@ -102590,5 +102610,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-02T04:32:18.344Z
-    updated_at: 2026-04-02T04:39:08.706Z
+    updated_at: 2026-04-02T04:39:13.042Z
     notes: []
