@@ -10,3 +10,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T18:34:02.220Z
+  - _ulid: 01KN7S6WASG6CHE53TQ36CGFMV
+    content: "Approach: update @multi-directory-daemon ac-19 via CLI to cover resource-bounded
+      monitoring instead of only EMFILE/ENFILE watcher creation failures. Edge cases: detection
+      during initialization and later health monitoring; failure must stay scoped to the affected
+      project so other registered projects are not degraded. Test impact: no new behavioral tests in
+      this task because this is a spec-first change; existing ac-19 annotations document current
+      narrower behavior and follow-on implementation tasks in
+      @plan-daemon-file-monitoring-reliability will bring runtime behavior and coverage into
+      alignment."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T19:02:36.121Z
