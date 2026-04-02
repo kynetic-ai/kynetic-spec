@@ -102250,6 +102250,13 @@ reviews:
           kind: nit
           thread_ulid: 01KN66XFZXR5CDNH9RPXPTD5F7
         timestamp: 2026-04-02T04:23:41.040Z
+      - _ulid: 01KN66XMYNNVZAN3XCYZBAD4JS
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN66XKQ1T8C1GB47YV0TE654
+        timestamp: 2026-04-02T04:23:44.853Z
     examined_commit: 41800715e1029b33695a14d9d6dff509bd4a6622
     external_links: []
     lifecycle_state: open
@@ -102281,9 +102288,31 @@ reviews:
               regression), integration (other resolveDispatchWorkspaceConfig call sites inspected).'
             created_at: 2026-04-02T04:23:39.773Z
         kind: nit
+      - _ulid: 01KN66XKQ1T8C1GB47YV0TE654
+        anchor:
+          type: code
+          commit: 41800715e1029b33695a14d9d6dff509bd4a6622
+          line_end: 2211
+          line_start: 2210
+          path: src/agent-runtime/workspace.ts
+          side: head
+        entries:
+          - _ulid: 01KN66XKQ1VGF630W1CDHHDYNQ
+            author: Jacob Chapel
+            body: "When a workspace is retargeted from one integration branch to another, this helper still
+              returns the old persisted base_branch_point unconditionally. In the current code path,
+              provisioning can then persist resolved_base_branch=dev and
+              integration.target_commit=<dev tip> while base_branch_point remains the old main
+              commit. I reproduced that with a temp repo by provisioning once against main, updating
+              the linked plan to branch=dev, and reprovisioning: target_branch/dev tip changed but
+              base_branch_point stayed on the original main SHA. That leaves the registry internally
+              inconsistent and later recovery code still trusts metadata.baseBranchPoint when
+              reconstructing records."
+            created_at: 2026-04-02T04:23:43.585Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-02T04:16:26.709Z
-    updated_at: 2026-04-02T04:23:39.773Z
+    updated_at: 2026-04-02T04:23:43.585Z
     notes: []
   - _ulid: 01KN66TW87P2MVE015MFFC8WCG
     slugs: []
