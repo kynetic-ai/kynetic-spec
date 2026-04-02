@@ -15,3 +15,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T03:38:33.178Z
+  - _ulid: 01KN6583F3CRPR0QZD3SX5B8YH
+    content: >-
+      Implemented plan-scoped branch creation by extracting shared branch helpers from task.ts,
+      adding kspec plan branch <ref> [--name ...], resolving new branches from the dispatch base
+      branch, and persisting the resolved branch onto the plan record.
+
+      Verification: npm test -- tests/plan-branch-helper.test.ts tests/task-branch-helper.test.ts
+      tests/cli-plan.test.ts --fresh passed after rebuild. kspec validate still reports the repo's
+      pre-existing warning debt. Full npm test -- --fresh still fails outside this task in
+      tests/daemon-entity-cache.test.ts (session live counter reload assertion at line 1388);
+      targeted rerun reproduces that unrelated failure.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T03:54:30.243Z
