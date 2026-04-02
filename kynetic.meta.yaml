@@ -11685,6 +11685,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-02T21:44:27.274Z
+  - _ulid: 01KN830V978D7N9W009H1XDKE6
+    type: success
+    content: For flaky-test investigation, escalating from fresh targeted runs to a fresh combined run
+      of the implicated suites and then one full fresh suite quickly distinguished a
+      stale/non-reproducible task from a new unrelated suite failure without patching blindly.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-02T21:54:04.200Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
