@@ -20509,9 +20509,21 @@ runs:
     completed_at: 2026-04-02T04:29:05.979Z
   - _ulid: 01KN683JDQXAY4FM6CSABGB58A
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-02T04:44:27.447Z
+        completed_at: 2026-04-02T04:45:06.589Z
+        notes: "Friction: full npm test produced unrelated failures and opaque STACK_TRACE_ERROR noise after
+          the task-specific regression passed. Search confirmed this is an existing pattern and this
+          session's specific instance is already captured as observation @01KN681B, so no duplicate
+          capture is needed."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-02T04:45:06.589Z
+        completed_at: 2026-04-02T04:45:06.589Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-02T04:44:27.447Z
