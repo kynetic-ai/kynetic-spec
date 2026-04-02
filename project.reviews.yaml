@@ -106772,3 +106772,29 @@ reviews:
     created_at: 2026-04-02T21:41:15.655Z
     updated_at: 2026-04-02T21:43:30.974Z
     notes: []
+  - _ulid: 01KN85ZVYCRQCCNARG3R3HPCGX
+    slugs: []
+    title: Review stabilize flaky full-suite tests for cli-serve and agent-dispatch-engine
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KN85ZVYCM7VWVZ0RT3W9N4SE
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-02T22:45:57.836Z
+    examined_commit: 5e24ded90b046cac44f5568969374937df61bd84
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KN813JEHA7251DWGYDGZYMXZ"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-02T22:45:57.836Z
+    updated_at: null
+    notes: []
