@@ -103191,6 +103191,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-02T06:00:11.719Z
+      - _ulid: 01KN6E8D2QZVP9G47NMA8957S6
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN6CDQFKNMX1TYMPSVQQ8S00
+        timestamp: 2026-04-02T06:31:57.271Z
     examined_commit: cda3fa8053f55b86d64a76eb05aa00ab1e7ed5db
     external_links: []
     lifecycle_state: closed
@@ -103241,6 +103247,14 @@ reviews:
               helper hardening therefore introduced a regression in unrelated clone-for-testing
               coverage.
             created_at: 2026-04-02T05:59:54.611Z
+          - _ulid: 01KN6E8CCTPEWT0SF56W5Q7A4P
+            author: Jacob Chapel
+            body: "Fixed in tests/helpers/cli.ts: kspec() accepts omitted cwd again and falls back to
+              process.cwd() when choosing an isolation root, so clone-for-testing coverage still
+              runs from the current repo while the isolation hardening stays in place. Repro now
+              passes with npm test -- --fresh tests/clone-for-testing.test.ts
+              tests/session-create.test.ts."
+            created_at: 2026-04-02T06:31:56.570Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -103251,7 +103265,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-02T06:00:11.718Z
     created_at: 2026-04-02T05:51:11.551Z
-    updated_at: 2026-04-02T06:00:11.719Z
+    updated_at: 2026-04-02T06:31:56.570Z
     notes: []
   - _ulid: 01KN6DH22F5CJGYVXM7QA7Q3XF
     slugs: []
