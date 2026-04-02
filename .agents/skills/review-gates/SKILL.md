@@ -13,7 +13,9 @@ Project-specific review criteria for kspec. Supplements the core `$kspec-review`
 
 **You own the merge.** When you approve, you are vouching that the code is correct, complete, and ready. If something bad gets through, the review failed — not just the implementation.
 
-**When in doubt, block.** A false positive costs one fix cycle. A false negative costs trust and debugging time. Default to MUST-FIX.
+**When in doubt, MUST-FIX.** A false positive costs one fix cycle. A false negative costs trust and debugging time. Default to the higher severity.
+
+**Terminology:** "blocker" in reviews means a MUST-FIX finding thread that prevents approval. It does NOT mean transitioning the task to `blocked` status. Reviewers issue `request_changes` verdicts (which transition tasks to `needs_work`). Do not `kspec task block` unless the agent genuinely cannot proceed or fix the issue — blocking is reserved for external dependencies requiring human intervention (see AGENTS.md blocking rules).
 
 **Reproduce, don't just read.** Run `npm test`. Run the CLI commands. If the spec says "exit 0 on success," run it. If a test claims to cover an AC, verify it would fail if the feature broke.
 
@@ -29,7 +31,7 @@ Project-specific review criteria for kspec. Supplements the core `$kspec-review`
 - Tests that don't prove their AC
 - Build/config changes that suppress errors
 - Test rewrites reducing coverage
-- Regressions (existing tests broken)
+- Regressions introduced by this branch (tests that pass on the base branch but fail on the task branch)
 
 ### SHOULD-FIX (strong recommendation)
 - `kspec validate` warnings (especially trait AC coverage)
@@ -86,10 +88,26 @@ When running as an automated reviewer agent:
 
 Beyond core disposition gate (from `$kspec-merge`):
 
-- All tests pass (`npm test`) — no regressions
+- No test regressions introduced by the reviewed branch (pre-existing failures are not blockers — see Test Failure Triage)
 - No MUST-FIX or SHOULD-FIX items remaining
 - Severity consistency maintained across reviews
 - Evidence log present in review record
+
+## Test Failure Triage
+
+When `npm test` fails during review, determine the cause before recording findings:
+
+1. **Run tests at least twice** to identify flaky tests vs deterministic failures.
+2. **Check the base branch.** Run `npm test` on the integration target branch (before the task's changes). If the same tests fail there, they are pre-existing — not regressions introduced by this work.
+3. **Classify each failure:**
+
+| Failure type | Action |
+|---|---|
+| **Introduced by this branch** | Record as MUST-FIX blocker thread, submit `request_changes` verdict. The worker fixes it. |
+| **Pre-existing on base branch** | Not a regression. Create a new task (`kspec task add`) with detailed description (what fails, why it fails, how to fix — no assumptions), set `--automation eligible`, then proceed with the review as if the test passed. |
+| **Flaky (intermittent)** | Same as pre-existing: create a task to stabilize the test, proceed with review. Note flakiness in the task description. |
+
+**Never block a task for pre-existing or flaky test failures.** The task under review didn't cause them. Merge the work if it's otherwise approved, and let the new task handle the test fix independently.
 
 ## Categories to Cover
 
