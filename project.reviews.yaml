@@ -104750,6 +104750,16 @@ reviews:
         required: true
         created_at: 2026-04-02T18:18:18.132Z
         completed_at: 2026-04-02T18:18:18.132Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Referenced specs and task dependencies resolve, and the new specs' AC numbering is
+          sequential with no broken internal references observed.
+        name: Cross-reference validation
+        required: true
+        created_at: 2026-04-02T18:18:18.142Z
+        completed_at: 2026-04-02T18:18:18.142Z
     events:
       - _ulid: 01KN7PM81S6QSR1ZES98HQKCQV
         actor: "@claude"
@@ -104806,6 +104816,13 @@ reviews:
           status: pass
           name: Existing spec alignment
         timestamp: 2026-04-02T18:18:22.004Z
+      - _ulid: 01KN7PNXF6HEB60EFSFP5H6HZ0
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Cross-reference validation
+        timestamp: 2026-04-02T18:18:23.078Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -104848,5 +104865,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-02T18:17:28.377Z
-    updated_at: 2026-04-02T18:18:18.132Z
+    updated_at: 2026-04-02T18:18:18.142Z
     notes: []
