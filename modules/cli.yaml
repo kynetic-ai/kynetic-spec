@@ -6314,7 +6314,7 @@ features:
           backward-compatible with existing plans that predate the feature.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
