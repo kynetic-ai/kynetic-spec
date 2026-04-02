@@ -32825,75 +32825,6 @@ plans:
               The response includes the last successful health check
               timestamp and consecutive failure count per project
 
-      # ─── Modifications to @daemon-server ───
-
-      - title: "Daemon Server Mode [MODIFY: ac-8]"
-        slug: daemon-server
-        type: feature
-        parent: "@web-ui"
-        description: |
-          MODIFICATION: Replace ac-8 to remove implementation-prescriptive
-          language about specific monitoring backends. The behavioral intent
-          is reliable cross-platform file change detection, not a particular
-          fallback strategy.
-
-          Current ac-8:
-            Given: Bun fs.watch fails or misses events
-            When: reliability issue detected
-            Then: automatically fall back to Chokidar file watcher
-
-          Replacement ac-8:
-            Given: the daemon needs to detect file changes
-            When: file monitoring is initialized
-            Then: changes are detected reliably across all supported
-                  platforms using a single proven monitoring backend
-        acceptance_criteria:
-          - id: ac-8
-            given: |
-              The daemon needs to detect file changes
-            when: |
-              File monitoring is initialized
-            then: |
-              Changes are detected reliably across all supported platforms
-              using a single proven monitoring backend
-
-      # ─── Modifications to @multi-directory-daemon ───
-
-      - title: "Multi-Directory Daemon Architecture [MODIFY: ac-19]"
-        slug: multi-directory-daemon
-        type: feature
-        parent: "@web-ui"
-        description: |
-          MODIFICATION: Extend ac-19 to cover resource exhaustion from
-          monitoring large directories, not just creation-time OS limits.
-
-          Current ac-19:
-            Given: project watcher creation fails due to OS limits (ulimit)
-            When: error occurs
-            Then: project registration fails with 503 and error
-                  "Unable to watch project - resource limit reached"
-
-          Replacement ac-19:
-            Given: project file monitoring would consume excessive system
-                   resources (file descriptors, memory) due to directory
-                   size or OS limits
-            When: the resource impact is detected during initialization
-                  or health monitoring
-            Then: the daemon reports the resource constraint with
-                  actionable guidance and does not allow the project's
-                  monitoring to degrade other registered projects
-        acceptance_criteria:
-          - id: ac-19
-            given: |
-              Project file monitoring would consume excessive system
-              resources due to directory size or OS limits
-            when: |
-              The resource impact is detected during initialization or
-              health monitoring
-            then: |
-              The daemon reports the resource constraint with actionable
-              guidance and does not allow the project's monitoring to
-              degrade other registered projects
       ```
 
       ## Tasks
@@ -33233,11 +33164,15 @@ plans:
       creation. Without exclusion, both Bun and Chokidar use 185k+ FDs.
     status: draft
     approved_at: null
-    branch: null
     derived_specs: []
     derived_tasks: []
     module_ref: "@web-ui"
     source_path: /home/chapel/Projects/kynetic-spec/plans/daemon-watcher-reliability.md
     created_at: 2026-04-02T18:04:17.651Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KN7P0J3YRAQ4FKC4Y7HC0PNJ
+        content: Remove MODIFY spec entries — existing spec updates belong in tasks, not plan spec
+          declarations
+        author: "@claude"
+        created_at: 2026-04-02T18:06:43.327Z
