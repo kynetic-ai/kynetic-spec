@@ -27,3 +27,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T06:40:29.342Z
+  - _ulid: 01KN6FHPJVFYWCFHYAF498GBEG
+    content: "Fix cycle 1: resolved JSON/output parity for plan derive by adding tasks_included to the
+      structured result and extending CLI integration coverage for default, --no-tasks, dry-run, and
+      legacy --tasks paths. Verification: npm test -- tests/cli-plan-derive.test.ts passed; npm test
+      passed. kspec validate is currently blocked by unrelated schema errors in
+      .kspec/kynetic.meta.yaml (captured as observation @01KN6FGK)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T06:54:30.491Z
