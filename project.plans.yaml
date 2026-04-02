@@ -31689,10 +31689,15 @@ plans:
         slug: plan-branch-creation
         type: requirement
         parent: "@plan-support"
+        traits:
+          - "@trait-json-output"
+          - "@trait-semantic-exit-codes"
+          - "@trait-error-guidance"
+          - "@trait-shadow-commit"
         description: |
-          A dedicated command creates or resumes a branch for a plan using
-          a deterministic naming convention, paralleling how task branches
-          are created for tasks.
+          A dedicated command creates or resumes a branch for a plan
+          using a deterministic naming convention, paralleling task
+          branch creation.
         acceptance_criteria:
           - id: ac-deterministic-name
             given: |
@@ -31793,33 +31798,41 @@ plans:
             then: |
               The base branch is resolved using the existing fallback
               chain with no change in behavior
-          - id: ac-plan-branch-missing
+          - id: ac-plan-branch-not-found
             given: |
               A task references a plan whose branch does not exist
-              locally
+              locally or on any configured remote
             when: |
               The dispatcher provisions a workspace
             then: |
-              The dispatcher attempts to fetch the branch from configured
-              remotes before failing
-          - id: ac-stale-target-detection
+              Workspace provisioning fails with an error identifying the
+              missing plan branch and the plan it belongs to
+          - id: ac-stale-target-detected
             given: |
-              A task has an existing workspace targeting the old default
+              A task has an existing workspace targeting the default
               integration branch and its plan subsequently gains a branch
             when: |
               The workspace is re-provisioned
             then: |
-              The stale integration target is detected and the workspace
-              record is updated to target the plan branch
+              The mismatch between the workspace's current integration
+              target and the plan's branch is detected
+          - id: ac-stale-target-updated
+            given: |
+              A stale integration target mismatch is detected for a task
+              whose plan now has a branch
+            when: |
+              The workspace record is reconciled
+            then: |
+              The workspace record's integration target is updated to
+              the plan's branch
 
-      - title: Plan Branch Lifecycle Guidance
-        slug: plan-branch-lifecycle-guidance
+      - title: Plan Branch Derive Guidance
+        slug: plan-branch-derive-guidance
         type: requirement
         parent: "@plan-support"
         description: |
-          The plan lifecycle surfaces plan branch awareness at key
-          transition points so users know when and how to use plan
-          branches.
+          The plan derive command surfaces branch awareness so users know
+          when and how to use plan branches for task stacking.
         acceptance_criteria:
           - id: ac-derive-hint
             given: |
@@ -31933,6 +31946,11 @@ plans:
             findBranchOnRemote(), gitCreateBranchFrom(),
             reportBranchResult(). These may need to be extracted to a
             shared module if they're currently private to the task command.
+          - The command mutates shadow branch state (plan record update),
+            so it must auto-commit per trait-shadow-commit.
+          - Errors (invalid ref, git failures) must include recovery
+            guidance per trait-error-guidance.
+          - Exit codes must follow trait-semantic-exit-codes.
 
           How: Model the command implementation after the task branch
           command (src/cli/commands/task.ts lines ~3034-3108). The main
@@ -31944,6 +31962,7 @@ plans:
           Testing: Unit tests for deterministic name computation. CLI
           integration tests for create, resume, and rehydrate flows. Test
           custom --name flag. Verify plan record updated after each flow.
+          Verify JSON output mode. Verify error messages include guidance.
 
           Covers: @plan-branch-creation ac-deterministic-name,
           ac-forks-from-base, ac-updates-plan-record, ac-resume-local,
@@ -31969,7 +31988,8 @@ plans:
           What:
           - In resolveDispatchWorkspaceConfig() (src/agent-runtime/
             workspace.ts, around line 1887), add a plan branch resolution
-            step early in the base branch fallback chain.
+            step as the FIRST check in the base branch fallback chain,
+            before the dispatch.base_branch config check.
           - The resolution logic:
             1. Load the task being provisioned.
             2. If task.plan_ref is set, load the referenced plan via
@@ -31977,22 +31997,23 @@ plans:
             3. If plan.branch is non-null, validate the branch exists
                (locally or via remote fetch) and use it as the resolved
                base branch.
-            4. If plan.branch is null, or task.plan_ref is not set, fall
+            4. If plan.branch is non-null but the branch cannot be found
+               locally or on any remote, fail workspace provisioning with
+               a clear error identifying the missing branch and the plan
+               it belongs to. Do NOT fall through to the default base.
+            5. If plan.branch is null, or task.plan_ref is not set, fall
                through to the existing resolution chain (config file →
                remote HEAD → current branch → "main" default).
-          - The plan branch check should be the FIRST check in the chain,
-            before the dispatch.base_branch config check. This means a
-            plan branch always wins over the global config for plan-scoped
-            tasks.
           - For stale integration target detection
-            (resolveStaleIntegrationTarget, workspace.ts ~line 708): when
-            an existing workspace record's integration.target_branch
-            differs from the newly resolved plan branch, treat it as a
-            stale target and update. This handles the case where a plan
-            gains a branch after tasks already have workspaces.
-          - The plan branch must be fetchable from remotes if not local,
-            using the same remote fetch logic as existing branch
-            rehydration.
+            (resolveStaleIntegrationTarget, workspace.ts ~line 708): this
+            extends the existing detection in @dispatch-workspace-configuration
+            ac-6 which handles config-level base_branch changes. Plan branch
+            changes are an additional source of target staleness — when a
+            plan gains a branch, existing workspaces targeting the old
+            default base become stale. The detection logic should check
+            plan branch first (since it takes priority), then fall through
+            to the existing config-change detection. The update behavior
+            is the same: update the workspace record's integration target.
           - No changes needed to worktree creation, branch provenance,
             integration records, or the merge skill — they all operate on
             the resolved base branch which this task changes at the source.
@@ -32009,25 +32030,25 @@ plans:
           - Plan exists but has status completed/rejected — still honor
             the branch field (tasks may still be in progress).
           - Plan ref is invalid/not found — log warning, fall through to
-            default resolution.
-          - Plan branch was deleted — attempt remote fetch, fail with
-            clear error if not recoverable.
+            default resolution (the plan may have been deleted).
+          - Plan branch was deleted — fail with clear error per ac-5.
 
           Testing: Unit tests for each resolution path: plan with branch,
-          plan without branch, no plan_ref, missing plan, missing branch
-          with remote recovery. Integration test for stale target
-          detection when plan gains a branch.
+          plan without branch, no plan_ref, missing plan (warning + fall
+          through), missing branch (error). Integration test for stale
+          target detection when plan gains a branch. Verify stale detection
+          composes with existing config-change detection.
 
           Covers: @plan-branch-dispatch-target ac-plan-branch-priority,
           ac-integration-target, ac-no-plan-ref-passthrough,
-          ac-null-branch-passthrough, ac-plan-branch-missing,
-          ac-stale-target-detection.
+          ac-null-branch-passthrough, ac-plan-branch-not-found,
+          ac-stale-target-detected, ac-stale-target-updated.
 
       - title: Add plan branch guidance to derive output
         slug: task-plan-branch-activation
         priority: 2
         tags: [cli, plans]
-        spec_ref: "@plan-branch-lifecycle-guidance"
+        spec_ref: "@plan-branch-derive-guidance"
         depends_on:
           - "@task-plan-branch-command"
         description: |
@@ -32063,7 +32084,7 @@ plans:
           CLI test that derive with branch shows the confirmation.
           JSON output test for plan_branch field.
 
-          Covers: @plan-branch-lifecycle-guidance ac-derive-hint,
+          Covers: @plan-branch-derive-guidance ac-derive-hint,
           ac-derive-existing.
       ```
 
@@ -32087,6 +32108,25 @@ plans:
       6. The dispatch insertion point is narrow: one new check at the top
          of the base branch resolution chain. Everything downstream
          operates on the resolved base branch and needs no changes.
+      7. Plan branch stale target detection composes with the existing
+         config-change detection in @dispatch-workspace-configuration ac-6.
+         Plan branch takes priority (checked first); config-change
+         detection is the fallback for non-plan tasks.
+      8. When a plan branch cannot be found, provisioning fails with an
+         error rather than silently falling through to the default base.
+         This prevents tasks from accidentally landing on the wrong branch.
+
+      Trait coverage:
+      - @plan-branch-association inherits traits from parent @plan-support
+        (json-output, semantic-exit-codes, error-guidance, shadow-commit,
+        filterable-list, priority-parameter, dry-run) via existing plan
+        set/get commands.
+      - @plan-branch-creation declares its own traits (json-output,
+        semantic-exit-codes, error-guidance, shadow-commit) since it is a
+        new standalone command.
+      - @plan-branch-dispatch-target and @plan-branch-derive-guidance are
+        internal behavioral specs with no direct CLI surface requiring
+        additional traits.
     status: draft
     approved_at: null
     derived_specs: []
@@ -32101,3 +32141,11 @@ plans:
           single conditions per then-clause, tasks are detailed and standalone"
         author: "@claude"
         created_at: 2026-04-02T00:21:12.752Z
+      - _ulid: 01KN5W2MD7GDHTZC3KYNZ4A6JP
+        content: "Addressed review findings: added traits to plan-branch-creation, split compound
+          stale-target AC into detected+updated, clarified overlap with
+          dispatch-workspace-configuration ac-6, specified failure behavior for missing plan
+          branches, narrowed lifecycle guidance title to derive-specific scope, documented trait
+          inheritance rationale"
+        author: "@claude"
+        created_at: 2026-04-02T01:14:13.799Z
