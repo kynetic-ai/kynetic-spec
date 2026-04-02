@@ -100952,6 +100952,17 @@ reviews:
         required: true
         created_at: 2026-04-02T00:56:25.009Z
         completed_at: 2026-04-02T00:56:25.009Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "@plan-support exists (01KGKSNZ, feature, implemented). @dispatch-workspace-configuration
+          exists (01KKFY93P2, feature, implemented). Both are valid parents for requirement-type
+          specs."
+        name: Parent ref validity
+        required: true
+        created_at: 2026-04-02T00:56:29.555Z
+        completed_at: 2026-04-02T00:56:29.555Z
     events:
       - _ulid: 01KN5TYR7TTV16M9J8EQRTRGCR
         actor: "@claude"
@@ -101057,6 +101068,13 @@ reviews:
           status: pass
           name: Task standalone-ness
         timestamp: 2026-04-02T00:56:25.678Z
+      - _ulid: 01KN5V25REG4TN18PHNPHHMPYW
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Parent ref validity
+        timestamp: 2026-04-02T00:56:30.222Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -101234,5 +101252,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-02T00:54:38.074Z
-    updated_at: 2026-04-02T00:56:25.009Z
+    updated_at: 2026-04-02T00:56:29.555Z
     notes: []
