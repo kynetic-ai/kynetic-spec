@@ -101439,9 +101439,25 @@ reviews:
           kind: question
           thread_ulid: 01KN5WWD9FW5E7G2XKCP93CQY3
         timestamp: 2026-04-02T01:28:19.184Z
+      - _ulid: 01KN5WWF19GCFC4S6SK6J6JJV3
+        actor: codex@openai.com
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-02T01:28:20.265Z
+      - _ulid: 01KN5WWF198D4RY3WTDYSJC4VE
+        actor: codex@openai.com
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-02T01:28:20.265Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -101480,7 +101496,14 @@ reviews:
               required for another reason."
             created_at: 2026-04-02T01:28:18.480Z
         kind: question
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai.com
+        role: reviewer
+        created_at: 2026-04-02T01:28:20.265Z
     created_at: 2026-04-02T01:27:43.289Z
-    updated_at: 2026-04-02T01:28:18.480Z
+    updated_at: 2026-04-02T01:28:20.265Z
     notes: []
