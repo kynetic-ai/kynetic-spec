@@ -105392,7 +105392,88 @@ reviews:
     slugs: []
     title: Review task-chokidar-standardize
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: >-
+          Files read: packages/daemon/src/watcher.ts, packages/daemon/src/session-watcher.ts,
+          packages/daemon/src/project-context.ts, tests/daemon-watcher-error-handling.test.ts,
+          tests/daemon-watcher-fallback.test.ts, tests/daemon-watcher-multi-project.test.ts,
+          tests/session-watcher.test.ts, tests/daemon-command-api.test.ts. Commands run: , , ✓
+          Validation passed
+
+          ────────────────────────────────────────
+
+          Files checked: 10
+
+          Items checked: 573
+
+          Tasks checked: 0
+
+          Meta: 11 agents, 11 workflows, 10 conventions
+
+
+          Schema: OK
+
+          References: OK
+
+
+          Reference warnings: 1
+            ⚠ @skills
+              Orphaned skill directory 'skills' has no corresponding meta entry
+              in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+          Alignment warnings: 31
+            Orphaned specs (no tasks): 30
+              ○ Test Trait
+              ○ Filterable List Commands
+              ○ Dry Run Preview Mode
+              ... and 27 more
+            Status mismatches: 1
+              ! Task Set Batch Support
+                Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+
+          Alignment stats: 410/573 specs have tasks, 409 aligned
+
+
+          Completeness warnings: 521
+            Missing acceptance criteria: 1
+              ○ @01KJN1WT - Test Trait
+            Missing own AC coverage: 234
+              ! @spec-item - Spec Item
+                Uncovered: ac-item-1, ac-item-2
+              ! @ulid-system - ULID Identifier System
+                Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+              ! @slug-system - Slug Alias System
+                Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+              ... and 231 more
+            Invalid AC annotations: 286
+              ! AC annotation references '@slug' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-chokidar-standardize-01kn7q6a-review/tests/ac-annotation-validation.test.ts:6
+              ! AC annotation references '@my-spec' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-chokidar-standardize-01kn7q6a-review/tests/ac-annotation-validation.test.ts:84
+              ! AC annotation references '@my-spec' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-chokidar-standardize-01kn7q6a-review/tests/ac-annotation-validation.test.ts:87
+              ! AC annotation references '@spec-a' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-chokidar-standardize-01kn7q6a-review/tests/ac-annotation-validation.test.ts:114
+              ! AC annotation references '@spec-b' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-chokidar-standardize-01kn7q6a-review/tests/ac-annotation-validation.test.ts:118
+              ... and 281 more
+          Skills: OK (10 files checked), , targeted watcher suite, fresh rerun of previously failing
+          suites on head, matching suite rerun on base commit, direct chokidar behavior probes.
+          Claims verified: watcher suite passes on this snapshot; command-api parity failure
+          reproduces on this snapshot and not on base. Categories searched: correctness (found
+          stdout regression), edge cases (checked missing-root and atomic-write chokidar behavior),
+          error handling (reviewed retry paths, tests pass), integration (command API regression
+          found), test quality (changed watcher tests are behavioral enough; no source scanning
+          found).
+        name: review evidence log
+        required: false
+        runner: reviewer
+        created_at: 2026-04-02T19:51:09.217Z
+        completed_at: 2026-04-02T19:51:09.217Z
     events:
       - _ulid: 01KN7V0PCHY1GRE8V4T35GMF9C
         actor: Jacob Chapel
@@ -105414,6 +105495,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN7VZQ0A89724ZSN608P1JSV
         timestamp: 2026-04-02T19:51:07.688Z
+      - _ulid: 01KN7VZSV34RYT9WXDQJ58KXWC
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-04-02T19:51:09.923Z
     examined_commit: db7f01d365a123d47dd9e5f3e694f34fb7686367
     external_links: []
     lifecycle_state: open
@@ -105449,7 +105537,7 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-02T19:34:10.578Z
-    updated_at: 2026-04-02T19:51:07.019Z
+    updated_at: 2026-04-02T19:51:09.217Z
     notes: []
   - _ulid: 01KN7V3GHW32YS3FHC0GNZQ565
     slugs: []
