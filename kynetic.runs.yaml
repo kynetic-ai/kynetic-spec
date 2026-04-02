@@ -20587,9 +20587,24 @@ runs:
     completed_at: 2026-04-02T05:01:42.449Z
   - _ulid: 01KN6ADEYGHN6W6578EX4D144N
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-02T05:24:48.720Z
+        completed_at: 2026-04-02T05:25:18.390Z
+        notes: "What worked well: targeted regression triage prevented a false-negative review outcome;
+          rerunning the changed derive suite plus rerunning the unrelated failing suites on both
+          base and snapshot gave enough evidence to approve safely. Friction: review CLI visibility
+          was confusing because an initial review add result was not immediately queryable via
+          review get/for-task in the way I expected, but this appears already tracked by existing
+          observation coverage. Capture decision: no new reflection capture needed; unrelated
+          full-suite flake was already captured as follow-up task @01KN6AAH during the review flow."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-02T05:25:18.390Z
+        completed_at: 2026-04-02T05:25:18.390Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-02T05:24:48.720Z
