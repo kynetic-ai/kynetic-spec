@@ -32187,7 +32187,7 @@ workspaces:
         head: 03bf2acf6537bedb38f04c61c6cc010c747bbd9b
         last_seen_at: 2026-04-02T04:30:40.410Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/daemon-entity-cache-live-counter-reload-redux-01kn664x
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 4f626c918bc5b120e8be2c7894f5f7c5335d28d7
     bootstrap:
       status: succeeded
@@ -32271,12 +32271,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-02T05:04:56.793Z
+      updated_at: 2026-04-02T05:05:38.070Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T05:04:58.890Z
+      updated_at: 2026-04-02T05:05:38.070Z
     integration:
       status: pending
       detail: null
@@ -32284,7 +32284,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 4f626c918bc5b120e8be2c7894f5f7c5335d28d7
-      updated_at: 2026-04-02T05:04:56.793Z
+      updated_at: 2026-04-02T05:05:38.070Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KN5XW0DHJ5DWYGZ2GQ4H28EQ"
@@ -32292,9 +32292,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-02T05:04:58.890Z
-      last_reconciled_at: 2026-04-02T05:04:58.890Z
+      last_reconciled_at: 2026-04-02T05:05:38.070Z
       created_at: 2026-04-02T04:45:43.544Z
-      updated_at: 2026-04-02T05:04:58.890Z
+      updated_at: 2026-04-02T05:05:38.070Z
     workspace_id: dispatch-workspace-01KN5XW0DHJ5DWYGZ2GQ4H28EQ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
