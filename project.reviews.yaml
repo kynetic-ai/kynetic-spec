@@ -105209,6 +105209,18 @@ reviews:
         runner: kspec
         created_at: 2026-04-02T19:15:53.500Z
         completed_at: 2026-04-02T19:15:53.500Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test on commit d72162fe5 reproduced a pre-existing file-lock failure on the same tree
+          (tests/file-lock.test.ts:223 expected count: 5, got count: 4). Since the task branch
+          matches the integration head, this task did not introduce the failure."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-02T19:15:55.846Z
+        completed_at: 2026-04-02T19:15:55.846Z
     events:
       - _ulid: 01KN7SGKK2CHR62Z6BGQFK03HB
         actor: Jacob Chapel
@@ -105230,6 +105242,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-04-02T19:15:54.230Z
+      - _ulid: 01KN7SZA21PZFYPRFNMF57F4G6
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-02T19:15:56.609Z
     examined_commit: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
     external_links: []
     lifecycle_state: open
@@ -105242,5 +105261,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-02T19:07:54.851Z
-    updated_at: 2026-04-02T19:15:53.500Z
+    updated_at: 2026-04-02T19:15:55.846Z
     notes: []
