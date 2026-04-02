@@ -21258,7 +21258,7 @@ runs:
     completed_at: 2026-04-02T20:22:35.805Z
   - _ulid: 01KN82ZSGGYSAWD4SWKR0K1HTM
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -21282,7 +21282,15 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-04-02T21:54:29.812Z
-        completed_at: 2026-04-02T21:54:29.812Z
+        completed_at: 2026-04-02T21:54:36.064Z
+        notes: "Decision pass: skipped new friction capture because existing observations already cover
+          unrelated full-suite failures interfering with verification (for example @01KN5YV8,
+          @01KN644J, @01KN681B, @01KN692E, @01KN6AP1). Unique high-confidence item was the success
+          pattern already captured as @01KN830V. No vague/uncertain items promoted."
+      - status: completed
+        step_index: 3
+        started_at: 2026-04-02T21:54:36.064Z
+        completed_at: 2026-04-02T21:54:36.064Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-02T21:53:29.616Z
