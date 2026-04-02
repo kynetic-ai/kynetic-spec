@@ -25,6 +25,7 @@ tags:
   - cache
   - bug
 vcs_refs: []
+review_ref: "@01KN67DAD89CJTBTDNXAM0EFPH"
 submission_linkage:
   review_url: null
   branch: dev
@@ -68,6 +69,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-04-02T04:27:14.197Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KN67DAD89CJTBTDNXAM0EFPH"
+        previous: null
+    command: review-link
+    timestamp: 2026-04-02T04:32:20.704Z
 created_at: 2026-04-02T04:10:13.909Z
 started_at: 2026-04-02T04:22:23.953Z
 submitted_at: 2026-04-02T04:27:14.197Z
