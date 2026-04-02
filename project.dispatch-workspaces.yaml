@@ -31949,7 +31949,7 @@ workspaces:
         head: f6f6ba57d52ae7011992339721f4873f4105c62a
         last_seen_at: 2026-04-02T04:21:16.827Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-plan-branch-command-01kn5xvz
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 03bf2acf6537bedb38f04c61c6cc010c747bbd9b
     bootstrap:
       status: succeeded
@@ -32035,9 +32035,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-02T04:46:01.749Z
-      last_reconciled_at: 2026-04-02T05:19:12.092Z
+      last_reconciled_at: 2026-04-02T05:19:51.524Z
       created_at: 2026-04-02T03:57:45.769Z
-      updated_at: 2026-04-02T05:19:12.092Z
+      updated_at: 2026-04-02T05:19:51.524Z
     workspace_id: dispatch-workspace-01KN5XW04JM5261ZFYV1HCQVJK
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
