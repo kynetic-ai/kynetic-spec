@@ -10,11 +10,13 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { setupMultiDirFixtures, cleanupTempDir } from "./helpers/cli";
 import { join } from "path";
-import { access, readdir, symlink } from "fs/promises";
+import { access, readdir, symlink, writeFile } from "fs/promises";
 import { ProjectContextManager } from "../packages/daemon/src/project-context";
 import { KspecWatcher } from "../packages/daemon/src/watcher";
 import { SessionWatcher } from "../packages/daemon/src/session-watcher";
 import { WatcherHealthMonitor } from "../packages/daemon/src/watcher-health-monitor";
+
+const WATCHER_WAIT_MS = process.env.CI ? 2500 : 1500;
 
 describe("ProjectContextManager", () => {
   let fixturesRoot: string;
@@ -33,6 +35,7 @@ describe("ProjectContextManager", () => {
 
   afterEach(async () => {
     vi.restoreAllMocks();
+    await manager.stopAllWatchers().catch(() => undefined);
     await cleanupTempDir(fixturesRoot);
   });
 
@@ -165,16 +168,10 @@ describe("ProjectContextManager", () => {
     // AC: @daemon-watcher-health ac-1
     it("verifies a synthetic watcher change within the expected window", async () => {
       manager.registerProject(projectA);
-
-      const watcherInstances: KspecWatcher[] = [];
-      vi.spyOn(KspecWatcher.prototype, "start").mockImplementation(async function () {
-        watcherInstances.push(this as KspecWatcher);
-      });
-      vi.spyOn(SessionWatcher.prototype, "start").mockResolvedValue();
-
       await manager.startWatcher(projectA);
-
-      const verification = manager.verifyWatcherHealth(projectA, { timeoutMs: 200 });
+      const verification = manager.verifyWatcherHealth(projectA, {
+        timeoutMs: WATCHER_WAIT_MS,
+      });
       const probeDir = join(projectA, ".kspec", ".health-check");
 
       await vi.waitFor(async () => {
@@ -185,10 +182,6 @@ describe("ProjectContextManager", () => {
 
       const [probeName] = await readdir(probeDir);
       const probePath = join(probeDir, probeName);
-      const watcher = watcherInstances[0] as KspecWatcher & {
-        options: { onFileChange: (file: string, content: string) => void };
-      };
-      watcher.options.onFileChange(probePath, "watcher_health_probe: true\n");
 
       const result = await verification;
       const context = manager.getProject(projectA);
@@ -201,12 +194,16 @@ describe("ProjectContextManager", () => {
     });
 
     // AC: @daemon-watcher-health ac-2
-    it("restarts the affected watcher and records failure count when probe delivery times out", async () => {
+    it("restarts the affected watcher and recovers event delivery when probe delivery times out", async () => {
       manager.registerProject(projectA);
 
-      vi.spyOn(KspecWatcher.prototype, "start").mockResolvedValue();
-      vi.spyOn(SessionWatcher.prototype, "start").mockResolvedValue();
       const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+      const deliveredFiles: string[] = [];
+      manager.setCacheInvalidationCallback((projectPath, _kspecDir, file) => {
+        if (projectPath === projectA) {
+          deliveredFiles.push(file);
+        }
+      });
 
       await manager.startWatcher(projectA);
 
@@ -215,7 +212,15 @@ describe("ProjectContextManager", () => {
       stopSpy.mockClear();
       startSpy.mockClear();
 
-      const result = await manager.verifyWatcherHealth(projectA, { timeoutMs: 20 });
+      const internalManager = manager as ProjectContextManager & {
+        watchers: Map<string, { kspec: KspecWatcher; sessions: SessionWatcher }>;
+      };
+      const closedWatcher = internalManager.watchers.get(projectA)?.kspec as KspecWatcher & {
+        watcher: { close(): Promise<void> } | null;
+      };
+      await closedWatcher.watcher?.close();
+
+      const result = await manager.verifyWatcherHealth(projectA, { timeoutMs: 50 });
       const context = manager.getProject(projectA);
 
       expect(result.healthy).toBe(false);
@@ -226,15 +231,27 @@ describe("ProjectContextManager", () => {
       expect(warnSpy).toHaveBeenCalledWith(
         expect.stringContaining(`[watcher-health] Watcher health check failed for ${projectA}`),
       );
+
+      const recoveredFile = join(projectA, ".kspec", "modules", "watcher-health-recovered.yaml");
+      await writeFile(recoveredFile, "recovered: true\n", "utf-8");
+
+      await vi.waitFor(() => {
+        expect(deliveredFiles).toContain(recoveredFile);
+      }, { timeout: WATCHER_WAIT_MS });
     });
 
     // AC: @daemon-watcher-health ac-3
-    it("restarts only the failed project's watcher", async () => {
+    it("restarts only the failed project's watcher while other projects remain monitored", async () => {
       manager.registerProject(projectA);
       manager.registerProject(projectB);
 
-      vi.spyOn(KspecWatcher.prototype, "start").mockResolvedValue();
-      vi.spyOn(SessionWatcher.prototype, "start").mockResolvedValue();
+      const deliveredByProject = new Map<string, string[]>([
+        [projectA, []],
+        [projectB, []],
+      ]);
+      manager.setCacheInvalidationCallback((projectPath, _kspecDir, file) => {
+        deliveredByProject.get(projectPath)?.push(file);
+      });
 
       await manager.startWatcher(projectA);
       await manager.startWatcher(projectB);
@@ -244,12 +261,28 @@ describe("ProjectContextManager", () => {
       stopSpy.mockClear();
       startSpy.mockClear();
 
-      await manager.verifyWatcherHealth(projectA, { timeoutMs: 20 });
+      const internalManager = manager as ProjectContextManager & {
+        watchers: Map<string, { kspec: KspecWatcher; sessions: SessionWatcher }>;
+      };
+      const failedWatcher = internalManager.watchers.get(projectA)?.kspec as KspecWatcher & {
+        watcher: { close(): Promise<void> } | null;
+      };
+      await failedWatcher.watcher?.close();
+
+      await manager.verifyWatcherHealth(projectA, { timeoutMs: 50 });
 
       expect(stopSpy.mock.calls).toEqual([[projectA]]);
       expect(startSpy.mock.calls).toEqual([[projectA]]);
       expect(manager.getProject(projectB).watcherActive).toBe(true);
       expect(manager.getProject(projectB).consecutiveFailures).toBe(0);
+
+      const healthyProjectFile = join(projectB, ".kspec", "modules", "watcher-health-project-b.yaml");
+      await writeFile(healthyProjectFile, "healthy: true\n", "utf-8");
+
+      await vi.waitFor(() => {
+        expect(deliveredByProject.get(projectB)).toContain(healthyProjectFile);
+      }, { timeout: WATCHER_WAIT_MS });
+      expect(deliveredByProject.get(projectA)).not.toContain(healthyProjectFile);
     });
 
     // AC: @daemon-watcher-health ac-1
