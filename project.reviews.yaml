@@ -101777,6 +101777,23 @@ reviews:
         runner: npm
         created_at: 2026-04-02T03:26:26.270Z
         completed_at: 2026-04-02T03:26:26.270Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/schema/plan.ts, src/parser/plans.ts, src/cli/commands/plan.ts,
+          tests/parser-plans.test.ts, tests/cli-plan.test.ts, src/cli/commands/task.ts. Commands
+          run: kspec task get, kspec item get, kspec validate, grep for AC annotations, git
+          diff/stat/name-only, npm test targeted/full, npm test daemon file on snapshot and dev.
+          Claims verified: branch defaults to null in schema/parser, branch persists/clears through
+          save path, plan get/set surfaces branch in JSON and human-readable when set, daemon test
+          failure is pre-existing. Categories searched: correctness, edge cases, error handling,
+          test quality, integration; no task-specific defects found."
+        name: review-evidence
+        required: false
+        runner: manual
+        created_at: 2026-04-02T03:26:28.424Z
+        completed_at: 2026-04-02T03:26:28.424Z
     events:
       - _ulid: 01KN635ZK425B7P9TNM9NZ5JVS
         actor: Jacob Chapel
@@ -101805,6 +101822,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-02T03:26:27.009Z
+      - _ulid: 01KN63MSR7QJSD5WXH95MSYA0R
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-04-02T03:26:29.127Z
     examined_commit: a3cfd4b63f3ee5741688da13f275855670e721b5
     external_links: []
     lifecycle_state: open
@@ -101817,5 +101841,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-02T03:18:23.589Z
-    updated_at: 2026-04-02T03:26:26.270Z
+    updated_at: 2026-04-02T03:26:28.424Z
     notes: []
