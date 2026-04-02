@@ -105548,9 +105548,25 @@ reviews:
           status: pass
           name: targeted watcher suite
         timestamp: 2026-04-02T19:51:16.176Z
+      - _ulid: 01KN7W0776VYZFQBB8KJ99HZD9
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-02T19:51:23.623Z
+      - _ulid: 01KN7W0777GSDQ19FSY0J8GV7N
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-02T19:51:23.623Z
     examined_commit: db7f01d365a123d47dd9e5f3e694f34fb7686367
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -105581,9 +105597,16 @@ reviews:
               this branch.
             created_at: 2026-04-02T19:51:07.019Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-02T19:51:23.622Z
     created_at: 2026-04-02T19:34:10.578Z
-    updated_at: 2026-04-02T19:51:15.446Z
+    updated_at: 2026-04-02T19:51:23.623Z
     notes: []
   - _ulid: 01KN7V3GHW32YS3FHC0GNZQ565
     slugs: []
