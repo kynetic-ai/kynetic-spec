@@ -11590,6 +11590,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-02T19:25:06.017Z
+  - _ulid: 01KN7TYZAM5TWW0HTKX3WEXSGR
+    type: success
+    content: "Anchored review threads on specific acceptance criteria made this fix cycle fast and
+      precise: the blocker pointed directly at @multi-directory-daemon ac-19, so the worker could
+      narrow the spec to restore test/spec alignment without re-litigating the whole feature."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-02T19:33:14.197Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
