@@ -20342,9 +20342,24 @@ runs:
     completed_at: 2026-04-02T00:09:49.405Z
   - _ulid: 01KN5YSTKB6DVFPQSTC27WWQ8A
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-02T02:01:50.955Z
+        completed_at: 2026-04-02T02:02:48.024Z
+        notes: "What worked well: reusing the existing raw-shape plan serialization logic made the
+          branch-field change local and backward-compatible, and targeted plan/parser tests caught
+          serializer edge cases before the full suite. Friction: full npm test was noisy because an
+          unrelated daemon cache regression is still failing. Coverage check: searched
+          daemon-entity-cache/live event counters/ProjectEntityCache and did not find a
+          clearly-tracked item for this exact failure. Captured one high-confidence friction
+          observation; no additional reflection items met the confidence bar."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-02T02:02:48.024Z
+        completed_at: 2026-04-02T02:02:48.024Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-02T02:01:50.955Z
