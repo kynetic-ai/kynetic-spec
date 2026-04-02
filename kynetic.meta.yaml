@@ -11169,6 +11169,24 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-01T23:58:06.173Z
+  - _ulid: 01KN5RBGEM3T16P91B840TCHYR
+    type: success
+    content: When a concurrency flake is hard to reproduce through the full runner, a minimal direct
+      repro against the built artifact can isolate the lock semantics quickly before spending
+      another hour on a fresh full-suite run.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-02T00:09:10.356Z
+  - _ulid: 01KN5RBGTMSH3XX0YPJNZVC6Y8
+    type: friction
+    content: Lock tests that model an "alive other process" by writing the current process PID create
+      the wrong semantics once same-process locking behavior matters. Those fixtures should use a
+      real child PID to avoid masking or misclassifying concurrency bugs.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-02T00:09:10.740Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
