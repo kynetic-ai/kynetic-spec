@@ -17,3 +17,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T01:53:38.460Z
+  - _ulid: 01KN5YRA0QXN7A68MFETXT3EDJ
+    content: "Verification: targeted plan/parser coverage passed (npm test -- tests/parser-plans.test.ts
+      tests/cli-plan.test.ts, 65/65). kspec validate returned warning-only repo debt with no new
+      schema/reference failures from this task. Full npm test still fails on pre-existing daemon
+      cache regression: tests/daemon-entity-cache.test.ts :: ProjectEntityCache session live event
+      counters should hand off from live counters to persisted metadata after reload (expected 2,
+      got 1). Isolated rerun reproduces the same failure outside this change surface."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T02:01:01.207Z
