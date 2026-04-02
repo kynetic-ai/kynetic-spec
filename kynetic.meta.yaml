@@ -10460,8 +10460,12 @@ observations:
       call ./dist/cli/index.js explicitly. Improvement opportunity: ensure review snapshots expose a
       ready kspec binary or document the exact fallback in reviewer workflow bootstrap."
     author: codex
-    resolution: null
-    resolved: false
+    resolution: "Duplicate of reviewer snapshot CLI/bootstrap tracking @01KMWT80. The systemic issue
+      remains open: detached review worktrees are not consistently provisioned with a ready kspec
+      CLI path and built dist CLI."
+    resolved: true
+    resolved_at: 2026-04-02T07:45:26.995Z
+    resolved_by: codex
     workflow_ref: "@session-reflect"
     created_at: 2026-03-31T00:10:46.847Z
   - _ulid: 01KN0KN0XYDHKEBPCS4P67R5YM
