@@ -1,1 +1,11 @@
-notes: []
+notes:
+  - _ulid: 01KN825CXAHW60A8WFDTB8J6ZN
+    content: "Approach: inspect the two historically flaky tests plus shared helpers for leaked
+      process/runtime state, timer sensitivity, and order dependence before changing code. Edge
+      cases: suite-level daemon/process teardown overlap, unresolved async work between tests, and
+      stale dispatch/provisioning state across runs. Test plan: reproduce each failure in targeted
+      fresh runs, then exercise combined/full-suite fresh runs until the flake is explained and
+      fixed; finish with npm test -- --fresh."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T21:39:04.746Z
