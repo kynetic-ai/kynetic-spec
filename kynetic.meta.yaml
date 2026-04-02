@@ -10514,8 +10514,13 @@ observations:
       required npm test gate failed on unrelated dist CLI import/export errors and an unrelated
       timeout, which forced a needs_work verdict on a selector-only task.
     author: Test User
-    resolution: null
-    resolved: false
+    resolution: Duplicate of existing full-suite instability tracking @01KN007J and related
+      dispatch-workspace-registry flake tracking @01KMZR9S. Earlier cleanup landed in completed task
+      @01KMNY3N, but baseline-red suite noise is still tracked separately from these task-specific
+      review observations.
+    resolved: true
+    resolved_at: 2026-04-02T07:45:42.684Z
+    resolved_by: Test User
     created_at: 2026-03-31T00:21:58.484Z
   - _ulid: 01KN0N3J09Q3HSG7SBK8WSG0D4
     type: success
