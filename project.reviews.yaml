@@ -100972,6 +100972,13 @@ reviews:
           kind: nit
           thread_ulid: 01KN5V0GS530568K37ZTA4TH4W
         timestamp: 2026-04-02T00:55:36.653Z
+      - _ulid: 01KN5V0WKZ46QADVHBE2B98SM4
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KN5V0VZBMTJDYP08T2X0WJKN
+        timestamp: 2026-04-02T00:55:48.095Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -101085,7 +101092,23 @@ reviews:
               leaving the exact pattern to implementation. Minor — the current form is acceptable.
             created_at: 2026-04-02T00:55:35.973Z
         kind: nit
+      - _ulid: 01KN5V0VZBMTJDYP08T2X0WJKN
+        anchor:
+          type: structured
+          ref: "@plan-branch-lifecycle-guidance"
+          section: specs
+        entries:
+          - _ulid: 01KN5V0VZBA3MH2FYS1098JWRS
+            author: "@claude"
+            body: plan-branch-lifecycle-guidance has only 2 ACs (derive-hint and derive-existing), both about
+              derive output. The spec title says 'Lifecycle Guidance' which implies broader
+              awareness — what about plan completion? When a plan completes, should the user be
+              informed the plan branch can be merged/deleted? What about plan get showing branch
+              status? If the scope is intentionally narrow (derive-only), the title/description
+              should match — e.g., 'Plan Branch Derive Guidance' instead of 'Lifecycle.'
+            created_at: 2026-04-02T00:55:47.435Z
+        kind: question
     verdicts: []
     created_at: 2026-04-02T00:54:38.074Z
-    updated_at: 2026-04-02T00:55:35.973Z
+    updated_at: 2026-04-02T00:55:47.435Z
     notes: []
