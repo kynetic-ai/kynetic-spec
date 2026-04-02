@@ -102697,6 +102697,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-02T04:48:34.140Z
+      - _ulid: 01KN69XKDXQGZ2E3Q7DJ97PZG1
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KN69XJH18P12RNPV56177P16
+        timestamp: 2026-04-02T05:16:09.021Z
     examined_commit: 8cbe9da1f07cbc1ea7b2955e703d5ff22cb7e2a4
     external_links: []
     lifecycle_state: open
@@ -102706,10 +102713,44 @@ reviews:
       content_hash: ""
       ref: "@01KN5XW04JM5261ZFYV1HCQVJK"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KN69XJH18P12RNPV56177P16
+        entries:
+          - _ulid: 01KN69XJH255HQ39KZWR72R5GW
+            author: Jacob Chapel
+            body: >-
+              Evidence log:
+
+              Files read: src/agent-runtime/workspace.ts, src/agent-runtime/dispatch.ts,
+              tests/dispatch-workspace-config.test.ts.
+
+              Commands run: git diff --stat
+              03bf2acf6537bedb38f04c61c6cc010c747bbd9b...8cbe9da1f07cbc1ea7b2955e703d5ff22cb7e2a4;
+              git diff --unified=120
+              03bf2acf6537bedb38f04c61c6cc010c747bbd9b...8cbe9da1f07cbc1ea7b2955e703d5ff22cb7e2a4 --
+              src/agent-runtime/workspace.ts tests/dispatch-workspace-config.test.ts; kspec item get
+              @plan-branch-dispatch-target; kspec validate; rg -n "AC:
+              @(plan-branch-dispatch-target|trait-)" tests; npm test --
+              tests/dispatch-workspace-config.test.ts --fresh; npm test --
+              tests/agent-dispatch-engine.test.ts --fresh; npm run test:shard1 -- --fresh; npm run
+              test:shard2 -- --fresh; npm run test:shard3 -- --fresh.
+
+              Claims verified: plan.branch is resolved ahead of dispatch.base_branch in workspace
+              provisioning; stale integration target retargeting now recomputes base_branch_point
+              and target_commit when the resolved base changes; dispatch engine provisioning still
+              reaches the new logic even though it passes only partial task shape because
+              workspace.ts falls back to loading task.plan_ref by ref.
+
+              Categories searched: correctness (no task-local defects found), edge cases (missing
+              plan, null branch, deleted branch, stale target retarget), error handling
+              (plan-specific guidance path verified in tests), test quality (behavioral coverage
+              present for all spec ACs; no source scanning), integration (dispatch engine path and
+              workspace registry retarget flow checked).
+            created_at: 2026-04-02T05:16:08.098Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-02T04:48:16.565Z
-    updated_at: 2026-04-02T04:48:33.384Z
+    updated_at: 2026-04-02T05:16:08.098Z
     notes: []
   - _ulid: 01KN69QVJ00AAMR58DS0TNK7V4
     slugs: []
