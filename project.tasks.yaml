@@ -24223,7 +24223,7 @@
   type: task
   spec_ref: "@daemon-file-monitoring"
   plan_ref: "@plan-daemon-file-monitoring-reliability"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-update-daemon-server-ac8"
@@ -24236,6 +24236,7 @@
   todos_count: 0
   created_at: 2026-04-02T18:27:20.974Z
   started_at: 2026-04-02T19:13:07.605Z
+  submitted_at: 2026-04-02T19:25:35.051Z
   automation: eligible
 - _ulid: 01KN7Q6B0NWYDQT5JKY7YXFM12
   slugs:
