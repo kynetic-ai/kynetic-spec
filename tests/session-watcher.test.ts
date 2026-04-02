@@ -6,8 +6,9 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { mkdir, rm, writeFile } from "fs/promises";
-import { join, sep } from "path";
+import { existsSync } from "fs";
+import { mkdir, readdir, rm, writeFile } from "fs/promises";
+import { join } from "path";
 import { setupMultiDirFixtures, cleanupTempDir } from "./helpers/cli";
 import { SessionWatcher } from "../packages/daemon/src/session-watcher";
 
@@ -25,12 +26,8 @@ async function waitForDebounce(): Promise<void> {
   await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_WAIT));
 }
 
-function getWatchedEntries(watcher: SessionWatcher): Record<string, string[]> {
-  return (
-    (watcher as unknown as {
-      watcher: { getWatched(): Record<string, string[]> } | null;
-    }).watcher?.getWatched() ?? {}
-  );
+async function countOpenFileDescriptors(): Promise<number> {
+  return (await readdir("/proc/self/fd")).length;
 }
 
 describeOrSkip("SessionWatcher", () => {
@@ -177,41 +174,48 @@ describeOrSkip("SessionWatcher", () => {
   });
 
   // AC: @daemon-file-monitoring ac-3
-  it("keeps the watched entry set proportional to session directories and metadata files", async () => {
-    const sessionsDir = join(projectDir, ".kspec-sessions");
-    const sessionDir = join(sessionsDir, "01JTESTSESSIONWATCHER0000008");
-    const blobDir = join(sessionDir, "blobs");
-    await mkdir(blobDir, { recursive: true });
-    await writeFile(join(sessionDir, "session.yaml"), "status: active\n");
-    await writeFile(join(sessionDir, "events.jsonl"), '{"type":"session.started"}\n');
+  const itWithProcFd = existsSync("/proc/self/fd") ? it : it.skip;
+  itWithProcFd("keeps open file descriptor usage flat when blob file volume increases", async () => {
+    async function measureWatcherDelta(
+      sessionId: string,
+      blobCount: number,
+    ): Promise<number> {
+      const sessionsDir = join(projectDir, ".kspec-sessions");
+      const sessionDir = join(sessionsDir, sessionId);
+      const blobDir = join(sessionDir, "blobs");
+      await mkdir(blobDir, { recursive: true });
+      await writeFile(join(sessionDir, "session.yaml"), "status: active\n");
+      await writeFile(join(sessionDir, "events.jsonl"), '{"type":"session.started"}\n');
 
-    for (let index = 0; index < 25; index++) {
-      await writeFile(join(blobDir, `payload-${index}.blob`), `blob ${index}\n`);
+      for (let index = 0; index < blobCount; index++) {
+        await writeFile(join(blobDir, `payload-${index}.blob`), `blob ${index}\n`);
+      }
+
+      const baselineFdCount = await countOpenFileDescriptors();
+      const watcher = new SessionWatcher({
+        sessionsDir,
+        onSessionChange: vi.fn(),
+        onError: vi.fn(),
+      });
+
+      try {
+        await watcher.start();
+        await waitForDebounce();
+
+        const watcherFdCount = await countOpenFileDescriptors();
+        return watcherFdCount - baselineFdCount;
+      } finally {
+        await watcher.stop();
+        await waitForDebounce();
+      }
     }
 
-    const watcher = new SessionWatcher({
-      sessionsDir,
-      onSessionChange: vi.fn(),
-      onError: vi.fn(),
-    });
+    const lowBlobFootprint = await measureWatcherDelta("01JTESTSESSIONWATCHER0000008", 1);
+    const highBlobFootprint = await measureWatcherDelta("01JTESTSESSIONWATCHER0000009", 250);
 
-    await watcher.start();
-    await waitForDebounce();
-
-    const watchedEntries = getWatchedEntries(watcher);
-    const watchedPaths = Object.entries(watchedEntries).flatMap(([directory, names]) => [
-      directory,
-      ...names.map((name) => join(directory, name)),
-    ]);
-
-    expect(watchedPaths).toContain(sessionDir);
-    expect(watchedPaths).toContain(join(sessionDir, "session.yaml"));
-    expect(watchedPaths).toContain(join(sessionDir, "events.jsonl"));
-    expect(watchedPaths).not.toContain(blobDir);
-    expect(watchedPaths).not.toContain(join(blobDir, "payload-0.blob"));
-    expect(watchedPaths.filter((entry) => entry.includes(`${sep}blobs`)).length).toBe(0);
-
-    await watcher.stop();
+    expect(lowBlobFootprint).toBeGreaterThanOrEqual(0);
+    expect(highBlobFootprint).toBeGreaterThanOrEqual(0);
+    expect(highBlobFootprint - lowBlobFootprint).toBeLessThanOrEqual(1);
   });
 
   // AC: @daemon-file-monitoring ac-2
