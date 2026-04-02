@@ -1,1 +1,10 @@
-notes: []
+notes:
+  - _ulid: 01KN86X0BC5WCXCR0AD3RDKMNY
+    content: "Approach: verify watcher/session-watcher are already Chokidar-only, then remove residual
+      Bun/fallback naming and stale test artifacts. Edge cases: keep real-watcher CI skips intact
+      while updating wording to reflect Chokidar/inotify behavior; avoid touching unrelated Bun
+      runtime references outside watcher scope. Test plan: targeted watcher tests plus full npm test
+      and kspec validate before submit."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T23:01:52.620Z
