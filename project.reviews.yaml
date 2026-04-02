@@ -104706,7 +104706,18 @@ reviews:
     slugs: []
     title: "Plan review: Daemon File Monitoring Reliability (revision 3)"
     author: "@claude"
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "New spec ac-4 is fixed, but task @task-update-daemon-server-ac8 still prescribes
+          replacement AC text with implementation leakage: 'using a single proven monitoring
+          backend'."
+        name: Spec quality
+        required: true
+        created_at: 2026-04-02T18:18:18.061Z
+        completed_at: 2026-04-02T18:18:18.061Z
     events:
       - _ulid: 01KN7PM81S6QSR1ZES98HQKCQV
         actor: "@claude"
@@ -104735,6 +104746,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN7PN5Y6M9FP7PYWNHJGRSPD
         timestamp: 2026-04-02T18:18:00.797Z
+      - _ulid: 01KN7PNS87TGDJ4BJVCTKT59CD
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: Spec quality
+        timestamp: 2026-04-02T18:18:18.759Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -104777,5 +104795,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-02T18:17:28.377Z
-    updated_at: 2026-04-02T18:17:58.982Z
+    updated_at: 2026-04-02T18:18:18.061Z
     notes: []
