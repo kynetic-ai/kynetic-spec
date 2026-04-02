@@ -45,8 +45,11 @@ description: >-
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Reviewed and approved via @01KN5RE7. Merged
+  dispatch/task/task-investigate-file-lock-flake/01kn5qb8 into dev after fresh targeted runs for
+  file-lock and dispatch-workspace-registry plus a fresh full npm test all passed.
 depends_on: []
 context: []
 priority: 2
@@ -106,8 +109,24 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-02T00:10:41.292Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Reviewed and approved via @01KN5RE7. Merged
+          dispatch/task/task-investigate-file-lock-flake/01kn5qb8 into dev after fresh targeted runs
+          for file-lock and dispatch-workspace-registry plus a fresh full npm test all passed.
+        previous: null
+      completed_at:
+        new: 2026-04-02T00:18:32.959Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-02T00:18:32.967Z
 created_at: 2026-04-01T23:51:33.817Z
 started_at: 2026-04-01T23:52:41.607Z
 submitted_at: 2026-04-02T00:07:41.381Z
+completed_at: 2026-04-02T00:18:32.959Z
 todos: []
 automation: eligible
