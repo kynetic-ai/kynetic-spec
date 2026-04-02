@@ -9,3 +9,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T21:39:04.746Z
+  - _ulid: 01KN82YB04JSF27YGX5TQX8G3X
+    content: "Verification on current dev-integrated branch: fresh targeted run of
+      tests/cli-serve.test.ts::should send SIGTERM and wait for shutdown passed; fresh targeted run
+      of tests/agent-dispatch-engine.test.ts::should not re-enqueue a task while provisioning is
+      still in flight passed; fresh combined run of both suites passed (42 suites / 155 tests,
+      95.7s). Full npm test -- --fresh also did not reproduce either named failure; both target
+      tests passed in the full log. The only reproduced full-suite failure was unrelated:
+      tests/daemon-api/websocket-protocol.test.ts::returns a validation_error nack for unsubscribe
+      commands with invalid topics (ack observed instead of nack)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T21:52:41.988Z
