@@ -33167,6 +33167,7 @@ plans:
       creation. Without exclusion, both Bun and Chokidar use 185k+ FDs.
     status: approved
     approved_at: 2026-04-02T18:26:48.202Z
+    branch: plan/plan-daemon-file-monitoring-reliability/01kn7nw3
     derived_specs: []
     derived_tasks: []
     module_ref: "@web-ui"
