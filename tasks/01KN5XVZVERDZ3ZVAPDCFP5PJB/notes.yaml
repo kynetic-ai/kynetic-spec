@@ -34,3 +34,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T04:12:51.346Z
+  - _ulid: 01KN66PMWNTC2MAGYS13ZAPFM2
+    content: "Fix cycle 1: replaced shell-interpreted git helper calls in src/cli/branch-helper.ts with
+      argv-safe spawnSync execution so plan/task branch names are treated as literal refs, not shell
+      input. Added a regression test that passes a metacharacter branch name to the helper and
+      verifies no side-effect file is created. Re-verified targeted plan/task branch coverage after
+      rebuild: npm test -- tests/plan-branch-helper.test.ts tests/task-branch-helper.test.ts
+      tests/cli-plan.test.ts --fresh passed (13 suites, 69 tests)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T04:19:55.413Z
