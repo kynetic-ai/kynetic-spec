@@ -11318,6 +11318,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-02T04:26:42.896Z
+  - _ulid: 01KN681BB4XK854Y3P5SGFKGGS
+    type: friction
+    content: Full npm test produced unrelated failures and STACK_TRACE_ERROR teardown noise while
+      task-specific suites passed in isolation; representative reruns for agent-dispatch-engine and
+      cli-serve were green. Investigate full-suite isolation or teardown interference in the test
+      runner.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-02T04:43:14.660Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
