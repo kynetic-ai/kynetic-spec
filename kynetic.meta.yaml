@@ -11348,6 +11348,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-02T05:18:52.170Z
+  - _ulid: 01KN6A2K5F44E2PP6Q8NMQ38MY
+    type: friction
+    content: Reviewer manual_merge flow is brittle in multi-worktree dispatch sessions. Attempting to
+      checkout dev from the review worktree failed because dev was already checked out in the
+      primary worktree, and git merge --no-ff then stalled for an editor because the merge path is
+      not fully non-interactive. The merge workflow should provide a deterministic non-interactive
+      path when the integration branch is already attached elsewhere.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-02T05:18:52.591Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
