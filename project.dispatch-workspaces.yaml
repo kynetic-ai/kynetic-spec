@@ -33458,7 +33458,7 @@ workspaces:
         head: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
         last_seen_at: 2026-04-02T19:27:19.735Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-update-multi-dir-ac19-01kn7q6a
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
     bootstrap:
       status: succeeded
@@ -33547,7 +33547,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T19:27:54.391Z
+      updated_at: 2026-04-02T19:27:55.959Z
     integration:
       status: pending
       detail: null
@@ -33562,10 +33562,10 @@ workspaces:
     task_slug: task-chokidar-standardize
     timestamps:
       closed_at: null
-      last_active_at: 2026-04-02T19:12:16.699Z
-      last_reconciled_at: 2026-04-02T19:27:54.391Z
+      last_active_at: 2026-04-02T19:27:55.959Z
+      last_reconciled_at: 2026-04-02T19:27:55.959Z
       created_at: 2026-04-02T19:11:47.681Z
-      updated_at: 2026-04-02T19:27:54.391Z
+      updated_at: 2026-04-02T19:27:55.959Z
     workspace_id: dispatch-workspace-01KN7Q6ARE8SXC9F8AEHYVFHCF
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
