@@ -5,7 +5,7 @@
 
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import type { Command } from "commander";
+import { Option, type Command } from "commander";
 import { markMutating } from "../command-annotations.js";
 import {
   computePlanBranchName,
@@ -242,7 +242,7 @@ function exitDeriveWithGuidance(
   process.exit(exitCode);
 }
 
-function emitDeriveResult(result: DeriveResult): void {
+function emitDeriveResult(result: DeriveResult, options?: { tasksIncluded?: boolean }): void {
   output(result, () => {
     if (result.dry_run) {
       console.log("Dry run - no changes made\n");
@@ -250,6 +250,9 @@ function emitDeriveResult(result: DeriveResult): void {
 
     console.log(`Plan: ${result.plan_ref}`);
     console.log(`Module: ${result.module_ref}`);
+    console.log(
+      `Tasks: ${options?.tasksIncluded === false ? "skipped (--no-tasks)" : "included (default)"}`,
+    );
     console.log(`Created specs: ${result.created_specs.length}`);
     for (const ref of result.created_specs) {
       console.log(`  - ${ref}`);
@@ -1232,20 +1235,22 @@ Examples:
   // kspec plan derive <ref>
   // AC: @plan-derive-enhanced ac-parse-content through ac-commit
   markMutating(plan.command("derive <ref>"))
-    .description("Materialize plan content into specs and optional tasks")
+    .description("Materialize plan content into specs and tasks")
     .option("--module <ref>", "Module context for derivation (overrides stored plan module)")
-    .option("--tasks", "Also derive implementation tasks after creating specs")
+    .addOption(new Option("--tasks", "Derive tasks (default; accepted for backward compatibility)").hideHelp())
+    .option("--no-tasks", "Skip task derivation")
     .option("--dry-run", "Preview derived specs/tasks without saving changes")
     .addHelpText(
       "after",
       `
 Examples:
   $ kspec plan derive @plan-ref --module @core
-  $ kspec plan derive @plan-ref --tasks
-  $ kspec plan derive @plan-ref --module @core --tasks --dry-run`,
+  $ kspec plan derive @plan-ref
+  $ kspec plan derive @plan-ref --module @core --no-tasks --dry-run`,
     )
     .action(async (ref: string, options: DeriveOptions) => {
       try {
+        const deriveTasks = options.tasks !== false;
         const ctx = await initContext();
         const plans = await loadPlans(ctx);
         const foundPlan = resolvePlanRef(ref, plans);
@@ -1300,16 +1305,16 @@ Examples:
 
         const hasSpecsToMaterialize = parsedPlan.specs.length > 0;
         const hasManualTasksToMaterialize = Boolean(
-          options.tasks &&
+          deriveTasks &&
           parsedPlan.tasks.additional_tasks &&
           parsedPlan.tasks.additional_tasks.length > 0,
         );
 
         if (!hasSpecsToMaterialize && !hasManualTasksToMaterialize) {
           exitDeriveWithGuidance(
-            "Plan does not define derivable work. Add specs or run with --tasks when the plan defines manual tasks.",
+            "Plan does not define derivable work. Add specs in a ## Specs section or tasks in a ## Tasks section.",
             EXIT_CODES.USAGE_ERROR,
-            "Add a ## Specs section with a ```yaml fenced block, or define tasks in ## Tasks and re-run with --tasks.",
+            "Add specs in a ## Specs section or tasks in a ## Tasks section.",
           );
         }
 
@@ -1362,7 +1367,7 @@ Examples:
         const createdSpecRefs = materializedSpecs.map((item) => item.ref);
 
         let taskPlans: PendingTaskPlan[] = [];
-        if (options.tasks) {
+        if (deriveTasks) {
           taskPlans = buildTaskPlans(
             planRef,
             materializedSpecs,
@@ -1417,7 +1422,7 @@ Examples:
             ctx.shadow,
             "plan-derive",
             updatedPlan.slugs[0] || updatedPlan._ulid.slice(0, 8),
-            `${createdSpecRefs.length} specs${options.tasks ? `, ${createdTaskRefs.length} tasks` : ""}`,
+            `${createdSpecRefs.length} specs${deriveTasks ? `, ${createdTaskRefs.length} tasks` : ""}`,
           );
         } else if (parsedPlan.implementationNotes?.trim()) {
           warnings.push({
@@ -1428,16 +1433,21 @@ Examples:
         }
 
         reportWarnings(warnings);
-        emitDeriveResult({
-          dry_run: Boolean(options.dryRun),
-          plan_ref: planRef,
-          module_ref: moduleRef,
-          plan_branch: foundPlan.branch ?? null,
-          created_specs: createdSpecRefs,
-          created_tasks: createdTaskRefs,
-          skipped,
-          errors: errorsList,
-        });
+        emitDeriveResult(
+          {
+            dry_run: Boolean(options.dryRun),
+            plan_ref: planRef,
+            module_ref: moduleRef,
+            plan_branch: foundPlan.branch ?? null,
+            created_specs: createdSpecRefs,
+            created_tasks: createdTaskRefs,
+            skipped,
+            errors: errorsList,
+          },
+          {
+            tasksIncluded: deriveTasks,
+          },
+        );
       } catch (err) {
         error("Failed to derive plan content", err);
         process.exit(EXIT_CODES.ERROR);

@@ -105,8 +105,8 @@ describe("Integration: enhanced plan derive", () => {
     await cleanupTempDir(tempDir);
   });
 
-  it("derives specs from plan content, honors stored module, creates root traits, and leaves tasks disabled by default", async () => {
-    // AC: @plan-derive-enhanced ac-parse-content, ac-module-from-import, ac-topo-sort, ac-traits, ac-no-tasks-default, ac-root-trait, ac-status-transition, ac-bidirectional-links
+  it("derives specs from plan content, honors stored module, creates root traits, and skips tasks with --no-tasks", async () => {
+    // AC: @plan-derive-enhanced ac-parse-content, ac-module-from-import, ac-topo-sort, ac-traits, ac-no-tasks-opt-out, ac-root-trait, ac-status-transition, ac-bidirectional-links
     // AC: @trait-json-output ac-2
     // AC: @trait-semantic-exit-codes ac-1
     const planPath = await writePlanFile(
@@ -144,7 +144,7 @@ describe("Integration: enhanced plan derive", () => {
       created_tasks: string[];
       skipped: Array<{ ref: string }>;
       errors: Array<{ message: string }>;
-    }>("plan derive @plan-derive-specs", tempDir);
+    }>("plan derive @plan-derive-specs --no-tasks", tempDir);
 
     expect(result.module_ref).toBe("@test-core");
     expect(result.created_specs).toEqual([
@@ -333,15 +333,17 @@ describe("Integration: enhanced plan derive", () => {
 
         expect(commitsAfter).toBe(commitsBefore + 1);
         expect(getShadowStatus(shadowDir)).toBe("");
-        expect(getShadowHeadSubject(shadowDir)).toBe("Derive Plan: @plan-shadow-derive - 1 specs");
+        expect(getShadowHeadSubject(shadowDir)).toBe(
+          "Derive Plan: @plan-shadow-derive - 1 specs, 1 tasks",
+        );
       } finally {
         await cleanupTempDir(shadowDir);
       }
     },
   );
 
-  it("derives tasks, maps refs, carries priorities, and stores global plus per-spec implementation notes", async () => {
-    // AC: @plan-derive-enhanced ac-depends-on, ac-tasks-flag, ac-task-refs, ac-additional-tasks, ac-impl-notes-global, ac-impl-notes-per-spec, ac-priority-inheritance
+  it("derives tasks by default, maps refs, carries priorities, and stores global plus per-spec implementation notes", async () => {
+    // AC: @plan-derive-enhanced ac-depends-on, ac-task-refs, ac-additional-tasks, ac-impl-notes-global, ac-impl-notes-per-spec, ac-priority-inheritance, ac-tasks-default
     const planPath = await writePlanFile(
       tempDir,
       "derive-tasks.md",
@@ -386,7 +388,7 @@ Global implementation note for the plan.
     const result = kspecJson<{
       created_specs: string[];
       created_tasks: string[];
-    }>("plan derive @plan-derive-tasks --module @test-core --tasks", tempDir);
+    }>("plan derive @plan-derive-tasks --module @test-core", tempDir);
 
     expect(result.created_specs).toEqual(["@alpha-feature", "@beta-feature"]);
     expect(result.created_tasks).toEqual([
@@ -436,7 +438,7 @@ Global implementation note for the plan.
     ).toBe(true);
   });
 
-  it("honors derive_from_specs false while still creating manual tasks", async () => {
+  it("honors derive_from_specs false while still creating manual tasks by default", async () => {
     // AC: @plan-derive-enhanced ac-tasks-manual-only
     const planPath = await writePlanFile(
       tempDir,
@@ -473,7 +475,7 @@ derive_from_specs: false
     const result = kspecJson<{
       created_specs: string[];
       created_tasks: string[];
-    }>("plan derive @plan-manual-tasks-only --module @test-core --tasks", tempDir);
+    }>("plan derive @plan-manual-tasks-only --module @test-core", tempDir);
 
     expect(result.created_specs).toEqual(["@alpha-feature", "@beta-feature"]);
     expect(result.created_tasks).toEqual(["@migration-guide"]);
@@ -526,7 +528,7 @@ derive_from_specs: false
       module_ref: string;
       created_specs: string[];
       created_tasks: string[];
-    }>("plan derive @plan-task-only-plan --tasks", tempDir);
+    }>("plan derive @plan-task-only-plan", tempDir);
 
     expect(result.module_ref).toBe("");
     expect(result.created_specs).toEqual([]);
@@ -552,7 +554,7 @@ derive_from_specs: false
   });
 
   it("supports dry-run and structured JSON output without mutating plan state", async () => {
-    // AC: @plan-derive-enhanced ac-dry-run, ac-json-output
+    // AC: @plan-derive-enhanced ac-dry-run, ac-json-output, ac-tasks-default
     // AC: @trait-dry-run ac-1, ac-2, ac-3, ac-6
     // AC: @trait-json-output ac-1, ac-4
     const planPath = await writePlanFile(
@@ -578,7 +580,7 @@ derive_from_specs: false
       created_tasks: string[];
       skipped: unknown[];
       errors: unknown[];
-    }>("plan derive @plan-dry-run --tasks --dry-run", tempDir);
+    }>("plan derive @plan-dry-run --dry-run", tempDir);
 
     expect(result.dry_run).toBe(true);
     expect(result.plan_ref).toBe("@plan-dry-run");
@@ -595,6 +597,35 @@ derive_from_specs: false
     expect(planAfter.status).toBe("approved");
     expect(planAfter.derived_specs).toEqual([]);
     expect(planAfter.derived_tasks).toEqual([]);
+  });
+
+  it("shows whether dry-run will include or skip tasks", async () => {
+    // AC: @plan-derive-enhanced ac-dry-run, ac-no-tasks-opt-out
+    // AC: @trait-dry-run ac-1, ac-3
+    const planPath = await writePlanFile(
+      tempDir,
+      "dry-run-task-mode.md",
+      `# Dry Run Task Mode
+
+## Specs
+
+\`\`\`yaml
+- title: Dry Run Task Mode Feature
+  slug: dry-run-task-mode-feature
+\`\`\`
+`,
+    );
+
+    kspec(`plan import "${planPath}" --module @test-core --status approved`, tempDir);
+
+    const includedOutput = kspec("plan derive @plan-dry-run-task-mode --dry-run", tempDir);
+    expect(includedOutput).toContain("Tasks: included (default)");
+
+    const skippedOutput = kspec(
+      "plan derive @plan-dry-run-task-mode --module @test-core --no-tasks --dry-run",
+      tempDir,
+    );
+    expect(skippedOutput).toContain("Tasks: skipped (--no-tasks)");
   });
 
   it("shows a post-summary hint when deriving a plan that has no branch", async () => {
@@ -616,7 +647,7 @@ derive_from_specs: false
     kspec(`plan import "${planPath}" --module @test-core --status approved`, tempDir);
 
     const output = kspec("plan derive @plan-derive-no-branch", tempDir);
-    const summaryIndex = output.indexOf("Created tasks: 0");
+    const summaryIndex = output.indexOf("Created tasks: 1");
     const hint = [
       "Tip: Run kspec plan branch @plan-derive-no-branch to create a shared branch for task stacking.",
       "Without it, tasks target the default integration branch.",
@@ -769,7 +800,36 @@ Just prose, no structured specs section.
 
     expect(result.exitCode).toBe(2);
     expect(result.stderr).toContain("Plan does not define derivable work");
-    expect(result.stderr).toContain("re-run with --tasks");
+    expect(result.stderr).toContain(
+      "Add specs in a ## Specs section or tasks in a ## Tasks section.",
+    );
+  });
+
+  it("accepts --tasks as a backward-compatible no-op", async () => {
+    // AC: @plan-derive-enhanced ac-tasks-flag-back-compat
+    const planPath = await writePlanFile(
+      tempDir,
+      "tasks-flag-back-compat.md",
+      `# Tasks Flag Back Compat
+
+## Specs
+
+\`\`\`yaml
+- title: Back Compat Feature
+  slug: back-compat-feature
+\`\`\`
+`,
+    );
+
+    kspec(`plan import "${planPath}" --module @test-core --status approved`, tempDir);
+
+    const result = kspecJson<{ created_specs: string[]; created_tasks: string[] }>(
+      "plan derive @plan-tasks-flag-back-compat --module @test-core --tasks",
+      tempDir,
+    );
+
+    expect(result.created_specs).toEqual(["@back-compat-feature"]);
+    expect(result.created_tasks).toEqual(["@implement-back-compat-feature"]);
   });
 
   it("includes actionable ref guidance in text and JSON errors when the plan ref does not resolve", () => {
