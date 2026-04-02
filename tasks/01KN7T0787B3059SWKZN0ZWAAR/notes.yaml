@@ -16,3 +16,11 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T19:37:36.311Z
+  - _ulid: 01KN7VP0R8D4VXMMX30VFR3CKJ
+    content: "Verification: the targeted same-process contention regression passes in isolation after
+      the rewrite. Full npm test does not pass in this workspace due to unrelated failures in
+      tests/agent-dispatch-engine.test.ts, tests/cli-serve.test.ts, tests/enhanced-setup.test.ts,
+      and tests/grep.test.ts; none touch src/parser/file-lock.ts or tests/file-lock.test.ts."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T19:45:49.320Z
