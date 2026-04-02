@@ -20,8 +20,13 @@ description: >-
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved review @01KN7VXDRAYSXDCJ1MG24EC9ZS and merged
+  dispatch/task/task-stabilize-file-lock-maxhold-contention/01kn7t07 into dev as
+  5e24ded90b046cac44f5568969374937df61bd84. The rewritten same-process contention regression test
+  now proves serialized critical sections without spurious force-reclaim warnings, and the reviewed
+  snapshot passed full npm test.
 depends_on: []
 context: []
 priority: 2
@@ -80,8 +85,26 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-02T19:49:54.487Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved review @01KN7VXDRAYSXDCJ1MG24EC9ZS and merged
+          dispatch/task/task-stabilize-file-lock-maxhold-contention/01kn7t07 into dev as
+          5e24ded90b046cac44f5568969374937df61bd84. The rewritten same-process contention regression
+          test now proves serialized critical sections without spurious force-reclaim warnings, and
+          the reviewed snapshot passed full npm test.
+        previous: null
+      completed_at:
+        new: 2026-04-02T20:01:21.637Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-02T20:01:21.646Z
 created_at: 2026-04-02T19:16:26.503Z
 started_at: 2026-04-02T19:34:53.545Z
 submitted_at: 2026-04-02T19:46:04.106Z
+completed_at: 2026-04-02T20:01:21.637Z
 todos: []
 automation: eligible
