@@ -104957,9 +104957,16 @@ reviews:
           status: pass
           name: Dependency ordering
         timestamp: 2026-04-02T18:20:49.476Z
+      - _ulid: 01KN7PTDHEP07AGCJF4DJ2EM90
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-04-02T18:20:50.606Z
     examined_commit: null
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: open
     related_refs: []
     subject:
       type: plan
@@ -104969,5 +104976,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-02T18:20:27.863Z
-    updated_at: 2026-04-02T18:20:47.712Z
+    updated_at: 2026-04-02T18:20:47.686Z
     notes: []
