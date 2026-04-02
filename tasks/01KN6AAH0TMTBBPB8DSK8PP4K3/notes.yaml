@@ -22,3 +22,11 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T06:00:13.553Z
+  - _ulid: 01KN6E7N3DDHKQT8H5DZKDS998
+    content: "Fix cycle 1: tightened tests/helpers/cli.ts so isolated HOME/KSPEC_CLAUDE_HOME is only
+      created when the helper has a real directory root. Omitted cwd now falls back to process.cwd()
+      for clone-for-testing coverage, while intentionally invalid cwd values still reach the CLI and
+      fail in the runtime-error path. Re-verified both review repros plus full npm test -- --fresh."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T06:31:32.718Z
