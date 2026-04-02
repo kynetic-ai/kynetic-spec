@@ -75,7 +75,7 @@ description: |
 spec_ref: "@plan-branch-dispatch-target"
 plan_ref: "@plan-plan-scoped-branch-targeting"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-plan-branch-schema"
@@ -90,8 +90,8 @@ review_ref: "@01KN66G92NPF305JR5FHPHFNK0"
 submission_linkage:
   review_url: null
   branch: dev
-  captured_at: 2026-04-02T04:14:24.043Z
-  commit: 03bf2acf6537bedb38f04c61c6cc010c747bbd9b
+  captured_at: 2026-04-02T04:44:00.615Z
+  commit: 4f626c918bc5b120e8be2c7894f5f7c5335d28d7
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
   upstream_ref: refs/heads/dev
@@ -167,8 +167,35 @@ history:
         previous: 2026-04-02T03:58:40.474Z
     command: task-start
     timestamp: 2026-04-02T04:31:17.086Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-04-02T04:44:00.615Z
+          commit: 4f626c918bc5b120e8be2c7894f5f7c5335d28d7
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous:
+          review_url: null
+          branch: dev
+          captured_at: 2026-04-02T04:14:24.043Z
+          commit: 03bf2acf6537bedb38f04c61c6cc010c747bbd9b
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+      submitted_at:
+        new: 2026-04-02T04:44:00.622Z
+        previous: 2026-04-02T04:14:24.048Z
+    command: task-submit
+    timestamp: 2026-04-02T04:44:00.622Z
 created_at: 2026-04-02T01:45:33.586Z
 started_at: 2026-04-02T04:31:17.086Z
-submitted_at: 2026-04-02T04:14:24.048Z
+submitted_at: 2026-04-02T04:44:00.622Z
 todos: []
 automation: eligible
