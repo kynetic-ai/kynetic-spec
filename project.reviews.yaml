@@ -101378,6 +101378,18 @@ reviews:
         required: true
         created_at: 2026-04-02T01:28:04.825Z
         completed_at: 2026-04-02T01:28:04.825Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "@plan-branch-association still includes dispatch-target outcomes in
+          ac-branch-optional/ac-branch-set/ac-branch-nullable, while @plan-branch-dispatch-target
+          already owns branch selection during workspace provisioning. The schema task claims
+          coverage for behavior it does not implement."
+        name: Spec boundary separation
+        required: true
+        created_at: 2026-04-02T01:28:04.773Z
+        completed_at: 2026-04-02T01:28:04.773Z
     events:
       - _ulid: 01KN5WVAXRQ4GHEHNW85YCC66B
         actor: "@claude"
@@ -101413,6 +101425,13 @@ reviews:
           status: pass
           name: Previous requested changes
         timestamp: 2026-04-02T01:28:08.562Z
+      - _ulid: 01KN5WW4NASDAWZFXC3H9DXQYS
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: Spec boundary separation
+        timestamp: 2026-04-02T01:28:09.643Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -101441,5 +101460,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-02T01:27:43.289Z
-    updated_at: 2026-04-02T01:28:04.825Z
+    updated_at: 2026-04-02T01:28:04.773Z
     notes: []
