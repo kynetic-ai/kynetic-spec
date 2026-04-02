@@ -10,3 +10,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-02T20:36:14.140Z
+  - _ulid: 01KN7Z8AFZY0SFNCYYQDW7MQ30
+    content: "Implemented watcher health verification in the daemon. Added a periodic
+      WatcherHealthMonitor, per-project health state on ProjectContextManager, synthetic
+      .kspec/.health-check probes that are ignored by normal invalidation/broadcast paths, automatic
+      per-project watcher restart on timeout, and cache-status diagnostics for
+      lastHealthCheckAt/consecutiveFailures. Verification: targeted daemon-context-manager +
+      daemon-debug-routes tests passed, full npm test passed (2068 suites / 7489 tests), and kspec
+      validate reported only the repository's existing warning set."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T20:48:14.848Z
