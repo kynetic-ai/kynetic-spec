@@ -33462,43 +33462,22 @@ workspaces:
     base_branch_point: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
     bootstrap:
       status: succeeded
-      canonicalBranchHead: db7f01d365a123d47dd9e5f3e694f34fb7686367
+      canonicalBranchHead: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
       failureMessage: null
       invalidationReasons:
         - workspace-dependencies-missing
-      lastRole: reviewer
-      lastRunAt: 2026-04-02T19:27:32.350Z
+      lastRole: worker
+      lastRunAt: 2026-04-02T19:11:53.557Z
       roleStates:
         reviewer:
-          status: succeeded
-          canonicalBranchHead: db7f01d365a123d47dd9e5f3e694f34fb7686367
-          configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
           failureMessage: null
-          invalidationReasons:
-            - workspace-dependencies-missing
-          lastRunAt: 2026-04-02T19:27:32.350Z
-          steps:
-            - status: succeeded
-              allowTrackedChanges: false
-              idempotent: true
-              name: install-workspace-dependencies
-              output: |-
-                added 287 packages, and audited 292 packages in 3s
-
-                67 packages are looking for funding
-                  run `npm fund` for details
-
-                12 vulnerabilities (1 low, 7 moderate, 4 high)
-
-                To address all issues, run:
-                  npm audit fix
-
-                Run `npm audit` for details.
-              reviewerRerunAllowed: true
-              role: reviewer
-              run: npm ci
-              source: dispatch
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
         worker:
           status: succeeded
           canonicalBranchHead: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
@@ -33534,7 +33513,7 @@ workspaces:
           idempotent: true
           name: install-workspace-dependencies
           output: |-
-            added 287 packages, and audited 292 packages in 3s
+            added 287 packages, and audited 292 packages in 4s
 
             67 packages are looking for funding
               run `npm fund` for details
@@ -33546,7 +33525,7 @@ workspaces:
 
             Run `npm audit` for details.
           reviewerRerunAllowed: true
-          role: reviewer
+          role: worker
           run: npm ci
           source: dispatch
     branch_provenance:
@@ -33563,12 +33542,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-02T19:27:26.894Z
+      updated_at: 2026-04-02T19:27:54.391Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T19:27:26.894Z
+      updated_at: 2026-04-02T19:27:54.391Z
     integration:
       status: pending
       detail: null
@@ -33576,7 +33555,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-daemon-file-monitoring-reliability/01kn7nw3
       target_commit: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
-      updated_at: 2026-04-02T19:27:26.894Z
+      updated_at: 2026-04-02T19:27:54.391Z
     lifecycle_state: integrating
     resolved_base_branch: plan/plan-daemon-file-monitoring-reliability/01kn7nw3
     task_ref: "@01KN7Q6ARE8SXC9F8AEHYVFHCF"
@@ -33584,21 +33563,16 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-02T19:12:16.699Z
-      last_reconciled_at: 2026-04-02T19:27:26.894Z
+      last_reconciled_at: 2026-04-02T19:27:54.391Z
       created_at: 2026-04-02T19:11:47.681Z
-      updated_at: 2026-04-02T19:27:32.350Z
+      updated_at: 2026-04-02T19:27:54.391Z
     workspace_id: dispatch-workspace-01KN7Q6ARE8SXC9F8AEHYVFHCF
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: db7f01d365a123d47dd9e5f3e694f34fb7686367
-        last_seen_at: 2026-04-02T19:27:26.894Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-chokidar-standardize-01kn7q6a-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-chokidar-standardize/01kn7q6a
-        head: db7f01d365a123d47dd9e5f3e694f34fb7686367
-        last_seen_at: 2026-04-02T19:27:26.894Z
+        head: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
+        last_seen_at: 2026-04-02T19:11:47.681Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-chokidar-standardize-01kn7q6a
