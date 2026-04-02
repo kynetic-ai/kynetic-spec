@@ -106314,6 +106314,13 @@ reviews:
           status: pass
           name: watcher-targeted-suite
         timestamp: 2026-04-02T21:21:35.746Z
+      - _ulid: 01KN815M0QNT7143VEJXAN2H8N
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KN815JP9TX783N2TKQQ91P0A
+        timestamp: 2026-04-02T21:21:43.447Z
     examined_commit: a72d50e8ca41f0625f005c2c94e8183d22378a7c
     external_links: []
     lifecycle_state: open
@@ -106345,7 +106352,27 @@ reviews:
               directly."
             created_at: 2026-04-02T21:20:33.884Z
         kind: blocker
+      - _ulid: 01KN815JP9TX783N2TKQQ91P0A
+        entries:
+          - _ulid: 01KN815JP9WQ034KBSN4WNN7A0
+            author: Jacob Chapel
+            body: "Evidence log: files read: tests/daemon-watcher-fallback.test.ts,
+              tests/session-watcher.test.ts, tests/daemon-watcher-multi-project.test.ts,
+              tests/daemon-watcher-error-handling.test.ts, tests/daemon-context-manager.test.ts,
+              packages/daemon/src/watcher.ts, packages/daemon/src/session-watcher.ts,
+              packages/daemon/src/project-context.ts, tests/cli-serve.test.ts. Commands run: `git
+              diff`, `kspec task get`, `kspec item get`, `kspec validate`, AC annotation grep,
+              targeted watcher suites (`npm test -- --fresh ...`), full suite (`npm test --
+              --fresh`), targeted flaky-file rerun, base-branch targeted rerun, combined
+              changed-plus-failing suite rerun. Claims verified: changed tests are behavioral rather
+              than source-scanning; the unrelated full-suite failures are non-deterministic and not
+              reproduced in targeted fresh runs or when combined with the changed watcher suites;
+              AC-3 coverage relies on internal watcher state rather than the spec's stated resource
+              metric. Categories searched: correctness, edge cases, error handling, test quality,
+              integration."
+            created_at: 2026-04-02T21:21:42.089Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-02T21:03:48.411Z
-    updated_at: 2026-04-02T21:21:34.405Z
+    updated_at: 2026-04-02T21:21:42.089Z
     notes: []
