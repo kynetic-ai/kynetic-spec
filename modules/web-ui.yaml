@@ -1724,9 +1724,9 @@ features:
       - given: project file monitoring would consume excessive system resources due to directory size or OS
           limits
         id: ac-19
-        then: the daemon reports the resource constraint with actionable guidance and does not allow the
-          project's monitoring to degrade other registered projects
-        when: the resource impact is detected during initialization or health monitoring
+        then: the daemon reports the resource constraint with actionable guidance and does not start
+          monitoring for that project
+        when: the daemon initializes monitoring for that project
       - given: registered project's .kspec/ directory is deleted
         id: ac-20
         then: return 404 and unregister project automatically
