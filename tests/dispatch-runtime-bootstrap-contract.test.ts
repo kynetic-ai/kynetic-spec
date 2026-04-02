@@ -4,12 +4,18 @@ import { execSync } from "node:child_process";
 import * as path from "node:path";
 import * as YAML from "yaml";
 import * as invocationModule from "../src/agent-runtime/invocation.js";
+import * as workspaceModule from "../src/agent-runtime/workspace.js";
 import { DispatchEngine } from "../src/agent-runtime/dispatch.js";
 import {
   ensureWorkspaceBootstrap,
   DispatchBootstrapError,
 } from "../src/agent-runtime/bootstrap.js";
-import { provisionDispatchWorkspace } from "../src/agent-runtime/workspace.js";
+import {
+  provisionDispatchWorkspace,
+  purgeDispatchWorkspaceRecord,
+  validateDispatchWorkspaceForInvocation,
+  DispatchWorkspaceError,
+} from "../src/agent-runtime/workspace.js";
 import type { Agent } from "../src/schema/meta.js";
 import {
   cleanupTempDir,
@@ -189,6 +195,10 @@ async function updateWorkspaceRecord(
 }
 
 describe("dispatch runtime bootstrap contract", { timeout: 60_000 }, () => {
+  // AC: @trait-error-guidance ac-3 — N/A: pre-invocation workspace validation does not resolve user-supplied refs.
+  // AC: @trait-error-guidance ac-4 — N/A: the validation path does not perform or report invalid task state transitions.
+  // AC: @trait-error-guidance ac-5 — N/A: workspace validation failures are runtime diagnostics, not schema validation errors.
+  // AC: @trait-error-guidance ac-6 — N/A: validateDispatchWorkspaceForInvocation is a runtime helper and has no JSON output mode.
   let tempDir: string;
   let originalCaptureFile: string | undefined;
 
@@ -676,6 +686,240 @@ describe("dispatch runtime bootstrap contract", { timeout: 60_000 }, () => {
     ).resolves.toBe("1\n");
   });
 
+  // AC: @dispatch-runtime-bootstrap-contract ac-7
+  it("validates a newly provisioned workspace as executable before launch handoff", async () => {
+    await seedRepo(tempDir);
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      ["dispatch:", "  base_branch: agent-dev"].join("\n"),
+      "utf-8",
+    );
+
+    const taskRef = `@${testUlid("TASK", 31)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: { title: "Pre Invocation Validation Fresh", slugs: ["pre-invocation-validation-fresh"] },
+    });
+
+    const validated = await validateDispatchWorkspaceForInvocation({
+      projectDir: tempDir,
+      taskRef,
+      workspace,
+      task: { title: "Pre Invocation Validation Fresh", slugs: ["pre-invocation-validation-fresh"] },
+      taskStatus: "pending",
+    });
+
+    expect(validated.repaired).toBe(false);
+    expect(validated.workspace.cwd).toBe(workspace.cwd);
+  });
+
+  // AC: @dispatch-runtime-bootstrap-contract ac-7
+  it("runs the same pre-invocation validation gate for a reused workspace", async () => {
+    await seedRepo(tempDir);
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      ["dispatch:", "  base_branch: agent-dev"].join("\n"),
+      "utf-8",
+    );
+
+    const taskRef = `@${testUlid("TASK", 32)}`;
+    const firstWorkspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: { title: "Pre Invocation Validation Reuse", slugs: ["pre-invocation-validation-reuse"] },
+    });
+    await validateDispatchWorkspaceForInvocation({
+      projectDir: tempDir,
+      taskRef,
+      workspace: firstWorkspace,
+      task: { title: "Pre Invocation Validation Reuse", slugs: ["pre-invocation-validation-reuse"] },
+      taskStatus: "pending",
+    });
+
+    const reusedWorkspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: { title: "Pre Invocation Validation Reuse", slugs: ["pre-invocation-validation-reuse"] },
+    });
+    const validated = await validateDispatchWorkspaceForInvocation({
+      projectDir: tempDir,
+      taskRef,
+      workspace: reusedWorkspace,
+      task: { title: "Pre Invocation Validation Reuse", slugs: ["pre-invocation-validation-reuse"] },
+      taskStatus: "pending",
+    });
+
+    expect(validated.repaired).toBe(false);
+    expect(validated.workspace.cwd).toBe(reusedWorkspace.cwd);
+  });
+
+  // AC: @dispatch-runtime-bootstrap-contract ac-8
+  // AC: @dispatch-runtime-bootstrap-contract ac-9
+  it("repairs a worker workspace deleted before invocation and revalidates it", async () => {
+    await seedRepo(tempDir);
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      ["dispatch:", "  base_branch: agent-dev"].join("\n"),
+      "utf-8",
+    );
+
+    const taskRef = `@${testUlid("TASK", 33)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Pre Invocation Validation Repair",
+        slugs: ["pre-invocation-validation-repair"],
+      },
+    });
+
+    git(tempDir, `worktree remove --force "${workspace.cwd}"`);
+
+    const validated = await validateDispatchWorkspaceForInvocation({
+      projectDir: tempDir,
+      taskRef,
+      workspace,
+      task: {
+        title: "Pre Invocation Validation Repair",
+        slugs: ["pre-invocation-validation-repair"],
+      },
+      taskStatus: "pending",
+    });
+
+    expect(validated.repaired).toBe(true);
+    expect(validated.workspace.cwd).toBe(workspace.cwd);
+    await expect(fs.stat(validated.workspace.cwd)).resolves.toBeTruthy();
+  });
+
+  // AC: @dispatch-runtime-bootstrap-contract ac-8
+  // AC: @dispatch-runtime-bootstrap-contract ac-9
+  it("repairs a workspace that exists but fails the executability probe", async () => {
+    await seedRepo(tempDir);
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      ["dispatch:", "  base_branch: agent-dev"].join("\n"),
+      "utf-8",
+    );
+
+    const taskRef = `@${testUlid("TASK", 36)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Pre Invocation Validation Probe Repair",
+        slugs: ["pre-invocation-validation-probe-repair"],
+      },
+    });
+
+    await fs.chmod(workspace.cwd, 0o000);
+    try {
+      const validated = await validateDispatchWorkspaceForInvocation({
+        projectDir: tempDir,
+        taskRef,
+        workspace,
+        task: {
+          title: "Pre Invocation Validation Probe Repair",
+          slugs: ["pre-invocation-validation-probe-repair"],
+        },
+        taskStatus: "pending",
+      });
+
+      expect(validated.repaired).toBe(true);
+      expect(validated.workspace.cwd).toBe(workspace.cwd);
+      await expect(fs.stat(validated.workspace.cwd)).resolves.toBeTruthy();
+    } finally {
+      await fs.chmod(workspace.cwd, 0o755).catch(() => undefined);
+    }
+  });
+
+  // AC: @dispatch-runtime-bootstrap-contract ac-8
+  // AC: @dispatch-runtime-bootstrap-contract ac-10
+  // AC: @trait-error-guidance ac-1
+  // AC: @trait-error-guidance ac-2
+  it("fails validation with actionable diagnostics when no trustworthy recovery path exists", async () => {
+    await seedRepo(tempDir);
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      ["dispatch:", "  base_branch: agent-dev"].join("\n"),
+      "utf-8",
+    );
+
+    const taskRef = `@${testUlid("TASK", 34)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Pre Invocation Validation Unrecoverable",
+        slugs: ["pre-invocation-validation-unrecoverable"],
+      },
+    });
+    const record = await readWorkspaceRecord(workspace.metadataPath, taskRef);
+
+    git(tempDir, `worktree remove --force "${workspace.cwd}"`);
+    await purgeDispatchWorkspaceRecord(tempDir, taskRef, record.workspace_id as string);
+
+    await expect(
+      validateDispatchWorkspaceForInvocation({
+        projectDir: tempDir,
+        taskRef,
+        workspace,
+        task: {
+          title: "Pre Invocation Validation Unrecoverable",
+          slugs: ["pre-invocation-validation-unrecoverable"],
+        },
+        taskStatus: "pending",
+      }),
+    ).rejects.toMatchObject({
+      name: "DispatchWorkspaceError",
+      message: expect.stringContaining("failure: missing"),
+      suggestion: expect.stringContaining("retry dispatch"),
+    } satisfies Partial<DispatchWorkspaceError>);
+  });
+
+  // AC: @dispatch-runtime-bootstrap-contract ac-8
+  // AC: @dispatch-runtime-bootstrap-contract ac-10
+  // AC: @trait-error-guidance ac-1
+  // AC: @trait-error-guidance ac-2
+  it("does not attempt recovery from an invalid canonical workspace record", async () => {
+    await seedRepo(tempDir);
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      ["dispatch:", "  base_branch: agent-dev"].join("\n"),
+      "utf-8",
+    );
+
+    const taskRef = `@${testUlid("TASK", 37)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Pre Invocation Validation Invalid Record",
+        slugs: ["pre-invocation-validation-invalid-record"],
+      },
+    });
+
+    git(tempDir, `worktree remove --force "${workspace.cwd}"`);
+    git(tempDir, `branch -D ${workspace.metadata.canonicalBranch}`);
+
+    await expect(
+      validateDispatchWorkspaceForInvocation({
+        projectDir: tempDir,
+        taskRef,
+        workspace,
+        task: {
+          title: "Pre Invocation Validation Invalid Record",
+          slugs: ["pre-invocation-validation-invalid-record"],
+        },
+        taskStatus: "pending",
+      }),
+    ).rejects.toMatchObject({
+      name: "DispatchWorkspaceError",
+      message: expect.stringContaining("no trustworthy canonical workspace record exists"),
+      suggestion: expect.stringContaining("branch lineage"),
+    } satisfies Partial<DispatchWorkspaceError>);
+  });
+
   it(
     "repairs missing direct dependencies before reusing a previously successful bootstrap",
     { timeout: 30_000 },
@@ -849,6 +1093,85 @@ describe("dispatch runtime bootstrap contract", { timeout: 60_000 }, () => {
     const record = await readWorkspaceRecord(registryPath, taskRef);
     expect(record.bootstrap.roleStates.worker.status).toBe("failed");
     expect(record.bootstrap.roleStates.worker.failureMessage).toContain("exit code 7");
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-runtime-bootstrap-contract ac-8
+  // AC: @dispatch-runtime-bootstrap-contract ac-10
+  // AC: @trait-error-guidance ac-1
+  // AC: @trait-error-guidance ac-2
+  it("blocks the task instead of launching the agent when pre-invocation validation fails", async () => {
+    await seedRepo(tempDir);
+    const captureFile = path.join(tempDir, "captured-cli-validation.json");
+    process.env.KSPEC_CAPTURE_FILE = captureFile;
+    await setupProject(tempDir, {
+      dispatchConfig: ["dispatch:", "  base_branch: agent-dev"].join("\n"),
+    });
+
+    const validationSpy = vi.spyOn(workspaceModule, "validateDispatchWorkspaceForInvocation");
+    validationSpy.mockRejectedValue(
+      new DispatchWorkspaceError(
+        'Pre-invocation workspace validation failed for @task at "/tmp/bad" (failure: not-runnable). Recovery attempt: none. Next action: inspect the workspace path before retrying.',
+        "Inspect the workspace path before retrying dispatch.",
+      ),
+    );
+    const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
+      session: {} as never,
+      outcome: "success",
+      durationMs: 1,
+    });
+
+    const engine = new DispatchEngine({
+      projectDir: tempDir,
+      specDir: tempDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
+
+    await engine.start();
+    const taskId = testUlid("TASK", 35);
+    await engine.handleStateChange({
+      taskId,
+      taskRef: `@${taskId}`,
+      fromStatus: "in_progress",
+      toStatus: "pending",
+      timestamp: Date.now(),
+      task: {
+        _ulid: taskId,
+        title: "Validation Failure Blocks Task",
+        slugs: ["validation-failure-blocks-task"],
+        status: "pending",
+        type: "task",
+        priority: 1,
+        blocked_by: [],
+        depends_on: [],
+        context: [],
+        tags: [],
+        vcs_refs: [],
+        notes: [],
+        todos: [],
+        created_at: new Date().toISOString(),
+        automation: "eligible",
+      } as never,
+    });
+
+    for (let i = 0; i < 30; i++) {
+      if ((await fs.stat(captureFile).catch(() => null)) !== null) break;
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    }
+
+    expect(runSpy).not.toHaveBeenCalled();
+    const calls = await readJson<Array<{ args: string[] }>>(captureFile);
+    expect(
+      calls.some(
+        (call) =>
+          call.args[0] === "task" &&
+          call.args[1] === "note" &&
+          call.args[3].includes("Pre-invocation workspace validation failed"),
+      ),
+    ).toBe(true);
+    expect(calls.some((call) => call.args[0] === "task" && call.args[1] === "block")).toBe(true);
 
     await engine.stop();
   });

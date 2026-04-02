@@ -1,4 +1,5 @@
 import * as fs from "node:fs/promises";
+import { constants as fsConstants } from "node:fs";
 import * as path from "node:path";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
@@ -287,6 +288,25 @@ export interface ReconcileDispatchWorkspaceLifecycleOptions {
   };
 }
 
+export interface ValidateDispatchWorkspaceForInvocationOptions {
+  projectDir: string;
+  taskRef: string;
+  workspace: ProvisionedDispatchWorkspace;
+  role?: DispatchWorkspaceRole;
+  task?: {
+    title?: string;
+    slugs?: string[];
+  };
+  submissionLinkage?: ProvisionDispatchWorkspaceOptions["submissionLinkage"];
+  taskStatus?: ResolveDispatchWorkspaceCleanupStateOptions["taskStatus"];
+  allowRecovery?: boolean;
+}
+
+export interface ValidateDispatchWorkspaceForInvocationResult {
+  workspace: ProvisionedDispatchWorkspace;
+  repaired: boolean;
+}
+
 export class DispatchWorkspaceError extends Error {
   suggestion: string;
 
@@ -321,6 +341,77 @@ async function runGit(cwd: string, args: string[], options: RunGitOptions = {}):
   }
 }
 
+async function probeWorkspaceExecutability(
+  workspaceDir: string,
+): Promise<WorkspaceExecutabilityProbeResult> {
+  const stat = await fs.stat(workspaceDir).catch((error: unknown) => {
+    const fsError = error as { code?: string; message?: string };
+    return fsError.code === "ENOENT" ? null : { message: fsError.message ?? String(error) };
+  });
+  if (stat === null) {
+    return {
+      ok: false,
+      failureType: "missing",
+      detail: `Workspace path "${workspaceDir}" does not exist.`,
+    };
+  }
+  if ("message" in stat) {
+    return {
+      ok: false,
+      failureType: "inaccessible",
+      detail: `Workspace path "${workspaceDir}" could not be inspected: ${stat.message}`,
+    };
+  }
+  if (!stat.isDirectory()) {
+    return {
+      ok: false,
+      failureType: "not-directory",
+      detail: `Workspace path "${workspaceDir}" is not a directory.`,
+    };
+  }
+
+  try {
+    await fs.access(workspaceDir, fsConstants.R_OK | fsConstants.X_OK);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    return {
+      ok: false,
+      failureType: "inaccessible",
+      detail: `Workspace path "${workspaceDir}" is not accessible: ${message}`,
+    };
+  }
+
+  try {
+    await execFileAsync(process.execPath, ["-e", "process.exit(0)"], {
+      cwd: workspaceDir,
+      encoding: "utf-8",
+      timeout: 5_000,
+      windowsHide: true,
+    });
+  } catch (error: unknown) {
+    const execError = error as {
+      stderr?: string;
+      stdout?: string;
+      message?: string;
+      code?: number | string;
+    };
+    const stderr = typeof execError.stderr === "string" ? execError.stderr.trim() : "";
+    const stdout = typeof execError.stdout === "string" ? execError.stdout.trim() : "";
+    const suffix = [stderr, stdout, execError.message].filter((value) => value).join(" | ");
+    return {
+      ok: false,
+      failureType: "not-runnable",
+      detail: `Executability probe failed in "${workspaceDir}"${suffix ? `: ${suffix}` : "."}`,
+    };
+  }
+
+  return {
+    ok: true,
+    failureType: null,
+    detail: null,
+  };
+}
+
 export function buildDispatchGitEnv(baseEnv: NodeJS.ProcessEnv = process.env): NodeJS.ProcessEnv {
   const env: NodeJS.ProcessEnv = { ...baseEnv };
   for (const key of DISPATCH_GIT_ENV_KEYS) {
@@ -328,6 +419,18 @@ export function buildDispatchGitEnv(baseEnv: NodeJS.ProcessEnv = process.env): N
   }
   Object.assign(env, DISPATCH_GIT_ENV_OVERRIDES);
   return env;
+}
+
+type WorkspaceExecutabilityFailureType =
+  | "missing"
+  | "not-directory"
+  | "inaccessible"
+  | "not-runnable";
+
+interface WorkspaceExecutabilityProbeResult {
+  ok: boolean;
+  failureType: WorkspaceExecutabilityFailureType | null;
+  detail: string | null;
 }
 
 function resolveDispatchMutationLockTimeoutMs(): number {
@@ -3621,6 +3724,119 @@ export async function getDispatchWorkspaceHealth(
     healthy,
     reason,
     metadata,
+  };
+}
+
+export async function validateDispatchWorkspaceForInvocation(
+  options: ValidateDispatchWorkspaceForInvocationOptions,
+): Promise<ValidateDispatchWorkspaceForInvocationResult> {
+  const {
+    projectDir,
+    taskRef,
+    workspace,
+    role = "worker",
+    task,
+    submissionLinkage,
+    taskStatus,
+    allowRecovery = true,
+  } = options;
+
+  const probe = await probeWorkspaceExecutability(workspace.cwd);
+  if (probe.ok) {
+    return {
+      workspace,
+      repaired: false,
+    };
+  }
+
+  const workspacePath = workspace.cwd;
+  const failureType = probe.failureType ?? "unknown";
+  const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir, { taskRef, task });
+  const existingRecord = await loadWorkspaceRecordForWorktreeRoot(
+    projectDir,
+    taskRef,
+    resolvedConfig.worktreeRoot,
+  );
+  const currentHealth = existingRecord
+    ? await reconcileWorkspaceHealth(projectDir, existingRecord, new Date().toISOString(), taskStatus)
+    : null;
+
+  if (!allowRecovery || !existingRecord || currentHealth?.status === "invalid") {
+    const recoveryAttempt = !allowRecovery
+      ? "none"
+      : !existingRecord
+        ? "none"
+        : "skipped because no trustworthy canonical workspace record exists";
+    const nextAction =
+      currentHealth?.status === "invalid"
+        ? "repair the canonical workspace record or branch lineage before retrying"
+        : "inspect the workspace path and recorded dispatch workspace state before retrying";
+    throw new DispatchWorkspaceError(
+      `Pre-invocation workspace validation failed for ${taskRef} at "${workspacePath}" (failure: ${failureType}). ${probe.detail ?? "Workspace is not runnable."} Recovery attempt: ${recoveryAttempt}. Next action: ${nextAction}.`,
+      currentHealth?.status === "invalid"
+        ? "Repair the canonical workspace record or branch lineage, then retry dispatch."
+        : "Inspect the dispatch workspace path, registry record, and git worktree state, then retry dispatch.",
+    );
+  }
+
+  const recoveryTargetPath =
+    role === "reviewer" && existingRecord.worktrees.reviewer
+      ? existingRecord.worktrees.reviewer.path
+      : existingRecord.worktrees.worker.path;
+  const recoveryLabel =
+    role === "reviewer"
+      ? "recreate reviewer worktree from canonical workspace record"
+      : "recreate worker worktree from canonical workspace record";
+
+  try {
+    if (failureType === "inaccessible" || failureType === "not-runnable") {
+      await fs.chmod(recoveryTargetPath, 0o755).catch(() => undefined);
+    }
+    await safelyRemoveDispatchWorktree(
+      projectDir,
+      existingRecord.worktree_root,
+      recoveryTargetPath,
+    );
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new DispatchWorkspaceError(
+      `Pre-invocation workspace validation failed for ${taskRef} at "${workspacePath}" (failure: ${failureType}). ${probe.detail ?? "Workspace is not runnable."} Recovery attempt: ${recoveryLabel} failed before reprovisioning: ${message}. Next action: inspect the recorded worktree path and git worktree registrations before retrying.`,
+      "Inspect the recorded worktree path and git worktree registrations, then repair or remove the broken workspace before retrying.",
+    );
+  }
+
+  let repairedWorkspace: ProvisionedDispatchWorkspace;
+  try {
+    repairedWorkspace = await provisionDispatchWorkspace({
+      projectDir,
+      taskRef,
+      role,
+      task,
+      submissionLinkage,
+      taskStatus: taskStatus ?? undefined,
+      cleanupState: {
+        taskStatus: taskStatus ?? null,
+      },
+    });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new DispatchWorkspaceError(
+      `Pre-invocation workspace validation failed for ${taskRef} at "${workspacePath}" (failure: ${failureType}). ${probe.detail ?? "Workspace is not runnable."} Recovery attempt: ${recoveryLabel} failed during reprovisioning: ${message}. Next action: repair the canonical workspace record or branch lineage before retrying.`,
+      "Repair the canonical workspace record or branch lineage, then retry dispatch.",
+    );
+  }
+
+  const repairedProbe = await probeWorkspaceExecutability(repairedWorkspace.cwd);
+  if (!repairedProbe.ok) {
+    throw new DispatchWorkspaceError(
+      `Pre-invocation workspace validation failed for ${taskRef} at "${workspacePath}" (failure: ${failureType}). ${probe.detail ?? "Workspace is not runnable."} Recovery attempt: ${recoveryLabel}. Revalidation failed for "${repairedWorkspace.cwd}" with ${repairedProbe.failureType ?? "unknown"}: ${repairedProbe.detail ?? "Workspace is still not runnable."} Next action: inspect the regenerated workspace and canonical branch state before retrying.`,
+      "Inspect the regenerated workspace, canonical branch, and filesystem permissions before retrying dispatch.",
+    );
+  }
+
+  return {
+    workspace: repairedWorkspace,
+    repaired: true,
   };
 }
 
