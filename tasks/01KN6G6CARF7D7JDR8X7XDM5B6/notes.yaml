@@ -1,1 +1,11 @@
-notes: []
+notes:
+  - _ulid: 01KN6GANEVGGM6PXJSMEPR3RGE
+    content: "Approach: inspect prior full-suite failure logs plus dispatch bootstrap and daemon meta
+      test helpers to identify shared-state or resource contention before rerunning expensive
+      suites. Edge cases: leaked daemon/worktree state across suites, cross-test HOME/cache
+      collisions, lingering timers/watchers, and teardown ordering under full-suite load. Test plan:
+      reproduce with npm test -- --fresh if needed, add focused regression coverage around the
+      identified leak/teardown path, then rerun the full suite and kspec validate before submit."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T07:08:08.539Z
