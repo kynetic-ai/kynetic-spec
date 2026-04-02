@@ -34520,12 +34520,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-02T23:09:36.952Z
+      updated_at: 2026-04-02T23:09:44.215Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T23:09:36.952Z
+      updated_at: 2026-04-02T23:09:44.215Z
     integration:
       status: pending
       detail: null
@@ -34533,24 +34533,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-daemon-file-monitoring-reliability/01kn7nw3
       target_commit: 134abf420c0c665f67f111160baf9c03ce154828
-      updated_at: 2026-04-02T23:09:36.952Z
-    lifecycle_state: ready
+      updated_at: 2026-04-02T23:09:44.215Z
+    lifecycle_state: integrating
     resolved_base_branch: plan/plan-daemon-file-monitoring-reliability/01kn7nw3
     task_ref: "@01KN7Q6C1PD7QD02ENCX9DD0PD"
     task_slug: task-cleanup-bun-watcher
     timestamps:
       closed_at: null
       last_active_at: 2026-04-02T23:00:54.480Z
-      last_reconciled_at: 2026-04-02T23:09:36.952Z
+      last_reconciled_at: 2026-04-02T23:09:44.215Z
       created_at: 2026-04-02T23:00:45.112Z
-      updated_at: 2026-04-02T23:09:36.952Z
+      updated_at: 2026-04-02T23:09:44.215Z
     workspace_id: dispatch-workspace-01KN7Q6C1PD7QD02ENCX9DD0PD
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 353b459743ec06cb1d5f0525b2578038a221aa9a
+        last_seen_at: 2026-04-02T23:09:44.215Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cleanup-bun-watcher-01kn7q6c-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-cleanup-bun-watcher/01kn7q6c
-        head: 134abf420c0c665f67f111160baf9c03ce154828
-        last_seen_at: 2026-04-02T23:00:45.112Z
+        head: 353b459743ec06cb1d5f0525b2578038a221aa9a
+        last_seen_at: 2026-04-02T23:09:44.215Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cleanup-bun-watcher-01kn7q6c
