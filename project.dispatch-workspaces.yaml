@@ -33844,12 +33844,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-02T20:22:51.561Z
+      updated_at: 2026-04-02T20:23:00.027Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-02T20:22:51.561Z
+      updated_at: 2026-04-02T20:23:00.027Z
     integration:
       status: pending
       detail: null
@@ -33857,24 +33857,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-daemon-file-monitoring-reliability/01kn7nw3
       target_commit: fcaee999ee6bfa5f17c0fe17ba89072b5c3039a4
-      updated_at: 2026-04-02T20:22:51.561Z
-    lifecycle_state: ready
+      updated_at: 2026-04-02T20:23:00.027Z
+    lifecycle_state: integrating
     resolved_base_branch: plan/plan-daemon-file-monitoring-reliability/01kn7nw3
     task_ref: "@01KN7Q6B0NWYDQT5JKY7YXFM12"
     task_slug: task-session-blob-exclusion
     timestamps:
       closed_at: null
       last_active_at: 2026-04-02T20:12:07.888Z
-      last_reconciled_at: 2026-04-02T20:22:51.561Z
+      last_reconciled_at: 2026-04-02T20:23:00.027Z
       created_at: 2026-04-02T20:11:58.714Z
-      updated_at: 2026-04-02T20:22:51.561Z
+      updated_at: 2026-04-02T20:23:00.027Z
     workspace_id: dispatch-workspace-01KN7Q6B0NWYDQT5JKY7YXFM12
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 637beb279c7a9611e23131bc22a97055865f4666
+        last_seen_at: 2026-04-02T20:23:00.027Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-blob-exclusion-01kn7q6b-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-session-blob-exclusion/01kn7q6b
-        head: fcaee999ee6bfa5f17c0fe17ba89072b5c3039a4
-        last_seen_at: 2026-04-02T20:11:58.714Z
+        head: 637beb279c7a9611e23131bc22a97055865f4666
+        last_seen_at: 2026-04-02T20:23:00.027Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-blob-exclusion-01kn7q6b
