@@ -77,11 +77,13 @@ describe("KspecWatcher error handling", () => {
     await watcher.stop();
   });
 
+  // AC: @daemon-file-monitoring ac-8
   // AC: @multi-directory-daemon ac-34
   it("invokes permanent failure callback after ENOENT exhausts retries and the watched root is gone", async () => {
     const errorHandler = vi.fn();
     const permanentFailureHandler = vi.fn();
     const chokidarWatcher = new MockChokidarWatcher();
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
     mockState.chokidarWatch.mockImplementation(() => {
       queueMicrotask(() => chokidarWatcher.emit("ready"));
@@ -112,5 +114,8 @@ describe("KspecWatcher error handling", () => {
 
     expect(errorHandler).toHaveBeenCalledTimes(6);
     expect(chokidarWatcher.close).toHaveBeenCalled();
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringContaining("/tmp/kspec-missing/.kspec"),
+    );
   });
 });

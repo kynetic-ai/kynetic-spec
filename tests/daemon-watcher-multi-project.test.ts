@@ -65,6 +65,7 @@ describeOrSkip("Per-Project File Watchers", () => {
       await watcherB.stop();
     });
 
+    // AC: @daemon-file-monitoring ac-6
     // AC: @multi-directory-daemon ac-17
     it("should trigger events scoped to correct project when file changes", async () => {
       const changeHandlerA = vi.fn();
@@ -100,6 +101,7 @@ describeOrSkip("Per-Project File Watchers", () => {
       await watcherB.stop();
     });
 
+    // AC: @daemon-file-monitoring ac-6
     // AC: @multi-directory-daemon ac-18
     it("should only notify watchers for the project that changed", async () => {
       const changeHandlerA = vi.fn();

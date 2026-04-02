@@ -6,7 +6,8 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { mkdir, rm, writeFile } from "fs/promises";
+import { existsSync } from "fs";
+import { mkdir, readdir, rm, writeFile } from "fs/promises";
 import { join } from "path";
 import { setupMultiDirFixtures, cleanupTempDir } from "./helpers/cli";
 import { SessionWatcher } from "../packages/daemon/src/session-watcher";
@@ -23,6 +24,10 @@ const describeOrSkip = process.env.CI ? describe.skip : describe;
 
 async function waitForDebounce(): Promise<void> {
   await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_WAIT));
+}
+
+async function countOpenFileDescriptors(): Promise<number> {
+  return (await readdir("/proc/self/fd")).length;
 }
 
 describeOrSkip("SessionWatcher", () => {
@@ -166,6 +171,51 @@ describeOrSkip("SessionWatcher", () => {
     expect(onSessionChange).not.toHaveBeenCalled();
 
     await watcher.stop();
+  });
+
+  // AC: @daemon-file-monitoring ac-3
+  const itWithProcFd = existsSync("/proc/self/fd") ? it : it.skip;
+  itWithProcFd("keeps open file descriptor usage flat when blob file volume increases", async () => {
+    async function measureWatcherDelta(
+      sessionId: string,
+      blobCount: number,
+    ): Promise<number> {
+      const sessionsDir = join(projectDir, ".kspec-sessions");
+      const sessionDir = join(sessionsDir, sessionId);
+      const blobDir = join(sessionDir, "blobs");
+      await mkdir(blobDir, { recursive: true });
+      await writeFile(join(sessionDir, "session.yaml"), "status: active\n");
+      await writeFile(join(sessionDir, "events.jsonl"), '{"type":"session.started"}\n');
+
+      for (let index = 0; index < blobCount; index++) {
+        await writeFile(join(blobDir, `payload-${index}.blob`), `blob ${index}\n`);
+      }
+
+      const baselineFdCount = await countOpenFileDescriptors();
+      const watcher = new SessionWatcher({
+        sessionsDir,
+        onSessionChange: vi.fn(),
+        onError: vi.fn(),
+      });
+
+      try {
+        await watcher.start();
+        await waitForDebounce();
+
+        const watcherFdCount = await countOpenFileDescriptors();
+        return watcherFdCount - baselineFdCount;
+      } finally {
+        await watcher.stop();
+        await waitForDebounce();
+      }
+    }
+
+    const lowBlobFootprint = await measureWatcherDelta("01JTESTSESSIONWATCHER0000008", 1);
+    const highBlobFootprint = await measureWatcherDelta("01JTESTSESSIONWATCHER0000009", 250);
+
+    expect(lowBlobFootprint).toBeGreaterThanOrEqual(0);
+    expect(highBlobFootprint).toBeGreaterThanOrEqual(0);
+    expect(highBlobFootprint - lowBlobFootprint).toBeLessThanOrEqual(1);
   });
 
   // AC: @daemon-file-monitoring ac-2

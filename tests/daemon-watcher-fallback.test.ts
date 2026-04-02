@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { mkdir, symlink, writeFile } from "fs/promises";
+import { mkdir, rename, symlink, writeFile } from "fs/promises";
 import { join } from "path";
 import { cleanupTempDir, createTempDir } from "./helpers/cli";
 
@@ -130,6 +130,44 @@ describe("KspecWatcher Chokidar monitoring", () => {
       );
     });
     expect(errorHandler).not.toHaveBeenCalled();
+
+    await watcher.stop();
+  });
+
+  const itWithRealWatcher = process.env.CI ? it.skip : it;
+
+  // AC: @daemon-file-monitoring ac-5
+  itWithRealWatcher("detects atomic rename writes as a change to the destination YAML path", async () => {
+    vi.resetModules();
+    vi.doUnmock("chokidar");
+
+    const { KspecWatcher } = await import("../packages/daemon/src/watcher");
+
+    const changeHandler = vi.fn();
+    const watcher = new KspecWatcher({
+      kspecDir,
+      onFileChange: changeHandler,
+      onError: vi.fn(),
+    });
+
+    await watcher.start();
+
+    const targetPath = join(kspecDir, "project.tasks.yaml");
+    const tempPath = join(kspecDir, "project.tasks.yaml.tmp");
+    await writeFile(targetPath, "tasks: []\n");
+
+    await writeFile(tempPath, "tasks:\n  - title: atomic rename\n");
+    await rename(tempPath, targetPath);
+
+    await vi.waitFor(
+      () => {
+        expect(changeHandler).toHaveBeenCalledWith(
+          targetPath,
+          expect.stringContaining("atomic rename"),
+        );
+      },
+      { timeout: 3000 },
+    );
 
     await watcher.stop();
   });
