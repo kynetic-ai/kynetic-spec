@@ -32238,3 +32238,327 @@ plans:
             additional traits.
         author: "@claude"
         created_at: 2026-04-02T01:45:34.174Z
+  - _ulid: 01KN6K9B7PG57HVWQ8X016MSMP
+    slugs:
+      - plan-review-workflow-friction-reduction
+    title: Review Workflow Friction Reduction
+    content: |
+      # Review Workflow Friction Reduction
+
+      ## Specs
+
+      ```yaml
+      - title: Detached Reviewer Merge Path
+        slug: detached-reviewer-merge-path
+        type: feature
+        parent: "@dispatch-branch-integration-contract"
+        description: |
+          Reviewers working from detached review snapshots need a supported way
+          to complete manual_merge publication when the integration branch is
+          already checked out in another worktree.
+
+          The system should provide one clear, supported merge path for this
+          situation instead of requiring reviewers to rediscover ad hoc git
+          workarounds.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A review is approved in manual_merge publication mode
+            when: |
+              The reviewer is working from a detached review snapshot and the
+              integration branch is already checked out in another worktree
+            then: |
+              The reviewer workflow provides an explicit merge path that does
+              not require checking out the integration branch inside the
+              detached snapshot
+          - id: ac-2
+            given: |
+              The supported merge path encounters merge conflicts
+            when: |
+              The reviewer attempts the merge
+            then: |
+              The workflow tells the reviewer how to stop safely and return the
+              work for follow-up without leaving the integration branch in an
+              ambiguous state
+          - id: ac-3
+            given: |
+              The reviewed change is already integrated at the target tip
+            when: |
+              The reviewer completes the review workflow
+            then: |
+              The workflow identifies the no-op merge case and lets the review
+              complete without asking the reviewer to perform a redundant merge
+
+      - title: Detached Reviewer CLI Readiness
+        slug: detached-reviewer-cli-readiness
+        type: requirement
+        parent: "@dispatch-workspace-orientation-prompt"
+        description: |
+          Detached review snapshots should be ready for standard reviewer
+          commands without local bootstrap work. Reviewers should not have to
+          discover whether they need a built dist CLI, a PATH fix, or a source
+          mode workaround before they can inspect, validate, or update review
+          state.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A detached reviewer snapshot is provisioned
+            when: |
+              The reviewer runs standard kspec read commands such as task get,
+              review get, or validate
+            then: |
+              The commands run successfully without requiring the reviewer to
+              build the project or switch to an alternate CLI entrypoint first
+          - id: ac-2
+            given: |
+              Reviewer workflow instructions are rendered for a detached review
+              snapshot
+            when: |
+              The reviewer starts the review
+            then: |
+              The instructions use the supported kspec command path for that
+              workspace and do not assume an unavailable executable on PATH
+          - id: ac-3
+            given: |
+              A detached reviewer snapshot cannot satisfy CLI readiness
+            when: |
+              The reviewer invocation begins
+            then: |
+              The reviewer receives an explicit, deterministic recovery path
+              instead of a generic command failure
+
+      - title: Review Thread Deduplication and Reuse
+        slug: review-thread-deduplication-and-reuse
+        type: feature
+        parent: "@review-comment-threads-and-anchors"
+        description: |
+          Review records should avoid accumulating duplicate blocker threads for
+          the same anchored issue. Repeated attempts to report the same finding
+          should preserve a single review conversation whenever the issue is
+          materially the same.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A reviewer creates a blocker comment on an anchor that already has
+              an unresolved blocker thread describing the same issue
+            when: |
+              The new comment is submitted
+            then: |
+              The system reuses or updates the existing thread instead of
+              creating a second independent blocker thread for the same issue
+          - id: ac-2
+            given: |
+              A reviewer creates a comment on the same anchor but it describes a
+              distinct issue
+            when: |
+              The new comment is submitted
+            then: |
+              The system preserves it as a separate thread so distinct findings
+              are still tracked independently
+          - id: ac-3
+            given: |
+              A review contains reused and distinct threads on the same anchor
+            when: |
+              The review is displayed or its disposition is computed
+            then: |
+              Open issues remain visible without redundant blocker inflation and
+              approval logic still reflects the true set of unresolved blockers
+
+      - title: Workflow Current Run Resolution
+        slug: workflow-current-run-resolution
+        type: feature
+        parent: "@workflow-run-foundation"
+        description: |
+          Users following a workflow should have a clear, low-friction way to
+          inspect the current run after starting it. The workflow UX should not
+          depend on remembering a newly created run reference before the next
+          command.
+        traits:
+          - trait-json-output
+          - trait-error-guidance
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              Exactly one active run exists for the current user context
+            when: |
+              the user asks to show the current workflow run without providing a
+              run reference
+            then: |
+              the current active run is shown
+          - id: ac-2
+            given: |
+              Multiple active workflow runs exist
+            when: |
+              the user asks to show the current workflow run without providing a
+              run reference
+            then: |
+              the command does not guess; it explains that the run reference is
+              ambiguous and tells the user how to choose one
+          - id: ac-3
+            given: |
+              Workflow skills or help text show a follow-up command after
+              starting a workflow
+            when: |
+              that guidance is presented to the user
+            then: |
+              the guidance matches the supported command behavior for showing the
+              current run
+      ```
+
+      ## Tasks
+
+      derive_from_specs: false
+
+      ```yaml
+      - title: Implement detached reviewer merge path for manual_merge workflows
+        slug: task-detached-reviewer-merge-path
+        priority: 1
+        tags:
+          - dispatch
+          - review
+          - merge
+        spec_ref: "@detached-reviewer-merge-path"
+        description: |
+          Update the reviewer merge workflow so detached review snapshots have a
+          first-class, supported completion path in manual_merge mode.
+
+          Scope:
+          - Identify the canonical merge path the product should support when
+            the integration branch is already checked out in another worktree.
+          - Update the merge skill, rendered skill output, and any dispatch
+            reviewer guidance that currently instructs reviewers to check out
+            the integration branch inside the detached snapshot.
+          - Cover no-op merge detection and conflict escalation so reviewers can
+            finish or safely stop without improvising git mechanics.
+
+          Verification:
+          - Validate the updated guidance against the current detached-review
+            workspace model.
+          - Add tests for the selected merge path or for the command/guidance
+            generator that produces reviewer instructions.
+
+      - title: Make detached reviewer snapshots CLI-ready
+        slug: task-detached-reviewer-cli-readiness
+        priority: 1
+        tags:
+          - dispatch
+          - review
+          - cli
+        spec_ref: "@detached-reviewer-cli-readiness"
+        description: |
+          Ensure detached reviewer snapshots can run normal reviewer commands
+          immediately, without manual build or PATH repair steps.
+
+          Scope:
+          - Decide the supported CLI entry path for detached reviewer workspaces.
+          - Remove the current split between "works through daemon route" and
+            "may fail directly in source mode" for reviewer-critical commands.
+          - Update reviewer startup guidance so it points at the supported path
+            and provides deterministic fallback behavior when readiness cannot
+            be met automatically.
+
+          Verification:
+          - Add focused tests covering detached reviewer command execution.
+          - Confirm task get, review get, and validate work in the provisioned
+            reviewer environment.
+
+      - title: Prevent duplicate blocker threads for the same anchored issue
+        slug: task-review-thread-deduplication
+        priority: 2
+        tags:
+          - review
+          - daemon
+          - cli
+        spec_ref: "@review-thread-deduplication-and-reuse"
+        description: |
+          Add deduplication or thread reuse behavior for repeated blocker
+          findings on the same anchor when they represent the same issue.
+
+          Scope:
+          - Define the matching rule for "same issue" so the system can reuse
+            a thread without collapsing distinct findings.
+          - Apply the rule consistently in the parser/API/CLI write path used to
+            create review comments.
+          - Preserve review disposition correctness and UI rendering clarity.
+
+          Verification:
+          - Add tests for duplicate blocker attempts, distinct blockers on one
+            anchor, and disposition outcomes after reuse.
+
+      - title: Add current-run resolution for workflow show
+        slug: task-workflow-current-run-resolution
+        priority: 2
+        tags:
+          - workflow
+          - cli
+          - ux
+        spec_ref: "@workflow-current-run-resolution"
+        description: |
+          Improve the workflow CLI so users can inspect the current active run
+          without having to capture a fresh run ref from the previous command.
+
+          Scope:
+          - Add a supported current-run path for showing a workflow run when
+            exactly one active run is in scope.
+          - Preserve explicit-ref behavior and return a clear ambiguity error
+            when multiple active runs exist.
+          - Keep JSON and human-readable output aligned with existing workflow
+            run display contracts.
+
+          Verification:
+          - Add CLI tests for the single-active-run, ambiguous, and explicit-ref
+            paths.
+
+      - title: Align workflow skills and docs with supported current-run behavior
+        slug: task-workflow-guidance-alignment
+        priority: 3
+        tags:
+          - workflow
+          - docs
+          - skills
+        spec_ref: "@workflow-current-run-resolution"
+        depends_on:
+          - "@task-workflow-current-run-resolution"
+        description: |
+          Update shipped workflow skills and examples so they match the actual
+          supported workflow-show behavior.
+
+          Scope:
+          - Fix the reflect and create-workflow skill text that currently shows
+            `kspec workflow show` without a run ref.
+          - Regenerate rendered skill output after updating the source files.
+          - Confirm help text and examples are consistent with the implemented
+            current-run UX.
+
+          Verification:
+          - Run the required skill render step and validate the regenerated
+            output.
+      ```
+
+      ## Implementation Notes
+
+      This plan focuses on high-signal workflow friction that has already shown
+      up repeatedly in observations:
+
+      1. Detached reviewer merge instructions conflict with the current
+         worktree model in manual_merge mode.
+      2. Detached reviewer snapshots are not consistently ready to run normal
+         kspec commands.
+      3. Review records can accumulate duplicate blocker threads for the same
+         anchored issue.
+      4. Workflow guidance in shipped skills currently drifts from supported
+         `workflow show` behavior.
+
+      The specs are intentionally behavioral. They describe the user-facing
+      contract we want the system to provide and leave implementation strategy
+      to the tasks.
+    status: draft
+    approved_at: null
+    branch: null
+    derived_specs: []
+    derived_tasks: []
+    module_ref: null
+    source_path: /home/chapel/Projects/kynetic-spec/plans/review-workflow-friction-reduction.md
+    created_at: 2026-04-02T07:59:51.030Z
+    completed_at: null
+    notes: []
