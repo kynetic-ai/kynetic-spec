@@ -1,1 +1,16 @@
-notes: []
+notes:
+  - _ulid: 01KN6JP4R9CNM85YPSKHPRJ8Z7
+    content: "Approach: add a pre-invocation workspace validation helper in the dispatch
+      workspace/runtime layer and call it from dispatch _spawnInvocation after provision/bootstrap
+      and before mark-active/runInvocation. Reuse existing workspace health and recovery helpers
+      rather than creating a parallel registry flow. Edge cases: newly provisioned workspace deleted
+      before launch, reused workspace path inaccessible or unrunnable, recovery via existing
+      canonical record, and retries against a previously validated workspace that becomes bad before
+      launch. Test plan: extend dispatch runtime bootstrap contract coverage with behavioral tests
+      for pass-through on fresh and reused workspaces, deleted workspace recovery,
+      executability-probe failure with successful recreation, and unrecoverable failure that blocks
+      instead of launching. Trait ACs: rely on actionable diagnostics emitted through existing
+      dispatch workspace/bootstrap error reporting paths."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T07:49:21.801Z
