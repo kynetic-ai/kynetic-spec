@@ -33629,3 +33629,79 @@ workspaces:
         head: db7f01d365a123d47dd9e5f3e694f34fb7686367
         last_seen_at: 2026-04-02T19:32:26.044Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-chokidar-standardize-01kn7q6a
+  - active_role: null
+    base_branch_point: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-stabilize-file-lock-maxhold-contention/01kn7t07
+    canonical_branch_head: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-04-02T19:34:13.988Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-04-02T19:34:13.988Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
+      updated_at: 2026-04-02T19:34:13.988Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KN7T0787B3059SWKZN0ZWAAR"
+    task_slug: task-stabilize-file-lock-maxhold-contention
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-04-02T19:34:13.988Z
+      created_at: 2026-04-02T19:34:13.988Z
+      updated_at: 2026-04-02T19:34:13.988Z
+    workspace_id: dispatch-workspace-01KN7T0787B3059SWKZN0ZWAAR
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-stabilize-file-lock-maxhold-contention/01kn7t07
+        head: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
+        last_seen_at: 2026-04-02T19:34:13.988Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-file-lock-maxhold-contention-01kn7t07
