@@ -1,1 +1,11 @@
-notes: []
+notes:
+  - _ulid: 01KN6A1DX7MP1E324R0T0T8ZA0
+    content: "Approach: keep the fix localized to safelyRemoveDispatchWorktree by reusing existing
+      findWorktreeByPath and pathExists helpers. Edge cases: registered worktree path already
+      deleted from disk, normal registered worktree removal, and unregistered directories still
+      removed via fs.rm. Test plan: add a behavioral dispatch workspace cleanup regression that
+      deletes the worktree directory before artifact reconciliation and verifies reconciliation
+      prunes the stale registration instead of failing."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-02T05:18:14.440Z
