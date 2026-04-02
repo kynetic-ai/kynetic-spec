@@ -103168,6 +103168,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-04-02T05:59:52.973Z
+      - _ulid: 01KN6CDR9ZP9YMG96SYPRDFAWA
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN6CDQFKNMX1TYMPSVQQ8S00
+        timestamp: 2026-04-02T05:59:55.455Z
     examined_commit: cda3fa8053f55b86d64a76eb05aa00ab1e7ed5db
     external_links: []
     lifecycle_state: open
@@ -103197,7 +103204,30 @@ reviews:
               stabilize.
             created_at: 2026-04-02T05:59:46.734Z
         kind: blocker
+      - _ulid: 01KN6CDQFKNMX1TYMPSVQQ8S00
+        anchor:
+          type: code
+          commit: cda3fa8053f55b86d64a76eb05aa00ab1e7ed5db
+          line_end: 164
+          line_start: 163
+          path: tests/helpers/cli.ts
+          side: head
+        entries:
+          - _ulid: 01KN6CDQFK8YV187HHBBFJCDS8
+            author: Jacob Chapel
+            body: >2-
+               now assumes  is always a valid string and immediately does . That breaks existing
+              callers that intentionally omit :  now throws  before the CLI runs. I reproduced the
+              failure with 
+              > @kynetic-ai/spec@0.12.0 test
+
+              > node scripts/test.cjs --fresh tests/clone-for-testing.test.ts
+              tests/session-create.test.ts, and the same targeted run passes on base commit . This
+              helper hardening therefore introduced a regression in unrelated clone-for-testing
+              coverage.
+            created_at: 2026-04-02T05:59:54.611Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-02T05:51:11.551Z
-    updated_at: 2026-04-02T05:59:52.151Z
+    updated_at: 2026-04-02T05:59:54.611Z
     notes: []
