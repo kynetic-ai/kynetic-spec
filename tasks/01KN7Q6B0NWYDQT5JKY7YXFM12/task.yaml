@@ -38,8 +38,12 @@ description: |
 spec_ref: "@daemon-file-monitoring"
 plan_ref: "@plan-daemon-file-monitoring-reliability"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to plan/plan-daemon-file-monitoring-reliability/01kn7nw3 after approved review
+  01KN7YCJ. Session watcher now ignores blobs/ subtrees and non-metadata files, with watcher tests
+  covering metadata/event detection, blob exclusion, unrelated-file exclusion, and new-session
+  detection. Full npm test passed (7484 passed, 0 failed, 5 pending).
 depends_on:
   - "@task-chokidar-standardize"
   - "@task-update-multi-dir-ac19"
@@ -108,8 +112,25 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-02T20:33:07.565Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to plan/plan-daemon-file-monitoring-reliability/01kn7nw3 after approved review 01KN7YCJ.
+          Session watcher now ignores blobs/ subtrees and non-metadata files, with watcher tests
+          covering metadata/event detection, blob exclusion, unrelated-file exclusion, and
+          new-session detection. Full npm test passed (7484 passed, 0 failed, 5 pending).
+        previous: null
+      completed_at:
+        new: 2026-04-02T20:34:08.234Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-02T20:34:08.241Z
 created_at: 2026-04-02T18:27:21.237Z
 started_at: 2026-04-02T20:12:35.220Z
 submitted_at: 2026-04-02T20:21:08.962Z
+completed_at: 2026-04-02T20:34:08.234Z
 todos: []
 automation: eligible
