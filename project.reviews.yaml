@@ -104358,3 +104358,29 @@ reviews:
     created_at: 2026-04-02T08:33:44.158Z
     updated_at: 2026-04-02T08:40:35.803Z
     notes: []
+  - _ulid: 01KN6PDWG78BXYGFHH4JKTMTVZ
+    slugs: []
+    title: Review pre-invocation workspace executability validation (cycle 2)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KN6PDWG6RXFP5Z4W5J8YJZSA
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-02T08:54:45.510Z
+    examined_commit: 4d39d320fa3721dbe60c8b003ff225d92d9e8a3f
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KN6J53YQST2TF8BMFJ7GZC7T"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-02T08:54:45.511Z
+    updated_at: null
+    notes: []
