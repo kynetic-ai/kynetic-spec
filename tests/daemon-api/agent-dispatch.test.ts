@@ -18,7 +18,10 @@
 
 import type { Elysia } from "elysia";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { stopAllEngines } from "../../dist/daemon/routes/agent-dispatch.ts";
+import {
+  getDispatchEngine,
+  stopAllEngines,
+} from "../../dist/daemon/routes/agent-dispatch.ts";
 import {
   cleanupTempDir,
   createTempDir,
@@ -83,6 +86,37 @@ describe("GET /api/agent/status", () => {
   it("returns JSON content type", async () => {
     const response = await request("/api/agent/status");
     expect(response.headers.get("content-type")).toContain("application/json");
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-degraded-status-api
+  // AC: @dispatch-remote-branch-sync ac-degraded-status-api-reason
+  // AC: @dispatch-remote-branch-sync ac-degraded-status-api-timestamp
+  it("returns per-target degraded targets alongside the compatibility summary", async () => {
+    await request("/api/agent/dispatch", {
+      method: "POST",
+      body: JSON.stringify({ action: "start" }),
+    });
+
+    const engine = getDispatchEngine(tempDir);
+    expect(engine).toBeDefined();
+    (engine as any)._enterDegradedState("plan/alpha", "integration target \"plan/alpha\" diverged");
+
+    const response = await request("/api/agent/status");
+    expect(response.status).toBe(200);
+
+    const body = await response.json();
+    expect(body.degraded).toEqual({
+      active: true,
+      reason: 'integration target "plan/alpha" diverged',
+      enteredAt: expect.any(String),
+    });
+    expect(body.degraded_targets).toEqual([
+      {
+        branch: "plan/alpha",
+        reason: 'integration target "plan/alpha" diverged',
+        enteredAt: expect.any(String),
+      },
+    ]);
   });
 });
 
@@ -229,6 +263,34 @@ describe("GET /api/agent/dispatch/status (internal)", () => {
     const body = await response.json();
     expect(body).toHaveProperty("running");
     expect(body.running).toBe(false);
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-degraded-status-api
+  // AC: @dispatch-remote-branch-sync ac-degraded-status-api-reason
+  // AC: @dispatch-remote-branch-sync ac-degraded-status-api-timestamp
+  it("returns per-target degraded targets on the internal status route", async () => {
+    await request("/api/agent/dispatch/start", { method: "POST" });
+
+    const engine = getDispatchEngine(tempDir);
+    expect(engine).toBeDefined();
+    (engine as any)._enterDegradedState("plan/alpha", "integration target \"plan/alpha\" diverged");
+
+    const response = await request("/api/agent/dispatch/status");
+    expect(response.status).toBe(200);
+
+    const body = await response.json();
+    expect(body.degraded).toEqual({
+      active: true,
+      reason: 'integration target "plan/alpha" diverged',
+      enteredAt: expect.any(String),
+    });
+    expect(body.degradedTargets).toEqual([
+      {
+        branch: "plan/alpha",
+        reason: 'integration target "plan/alpha" diverged',
+        enteredAt: expect.any(String),
+      },
+    ]);
   });
 });
 

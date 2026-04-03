@@ -114,6 +114,36 @@ function createEngine(projectDir: string, cwd?: string, pubsub?: PubSubManager):
   });
 }
 
+function serializeDegradedTargets(engine: DispatchEngine): Array<{
+  branch: string;
+  reason: string;
+  enteredAt: string;
+}> {
+  return engine.getDegradedState().map((target) => ({
+    branch: target.branch,
+    reason: target.reason,
+    enteredAt: target.enteredAt.toISOString(),
+  }));
+}
+
+function serializeDegradedSummary(
+  degradedTargets: Array<{ branch: string; reason: string; enteredAt: string }>,
+): {
+  active: boolean;
+  reason: string;
+  enteredAt: string | null;
+} {
+  const firstTarget = degradedTargets[0];
+  if (!firstTarget) {
+    return { active: false, reason: "", enteredAt: null };
+  }
+  return {
+    active: true,
+    reason: firstTarget.reason,
+    enteredAt: firstTarget.enteredAt,
+  };
+}
+
 /**
  * Create an AgentSpawner callback for automation subsystem action executors.
  *
@@ -604,18 +634,16 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
             queuedInvocations: 0,
             invocations: [],
             degraded: { active: false, reason: "", enteredAt: null },
+            degradedTargets: [],
           };
         }
 
         const status = engine.getStatus();
-        const degraded = engine.getDegradedState();
+        const degradedTargets = serializeDegradedTargets(engine);
         return {
           ...status,
-          degraded: {
-            active: degraded.active,
-            reason: degraded.reason,
-            enteredAt: degraded.enteredAt?.toISOString() ?? null,
-          },
+          degraded: serializeDegradedSummary(degradedTargets),
+          degradedTargets,
         };
       })
 
@@ -655,7 +683,7 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
           // Agent definitions unavailable — return empty array
         }
 
-        const degradedState = engine?.getDegradedState();
+        const degradedTargets = engine ? serializeDegradedTargets(engine) : [];
         return {
           dispatch_enabled: engineStatus?.running ?? false,
           active_invocations:
@@ -678,13 +706,8 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
           queue_depth: engineStatus?.queuedInvocations ?? 0,
           agent_definitions: agentDefinitions,
           // AC: @dispatch-remote-branch-sync ac-degraded-status-api
-          degraded: degradedState
-            ? {
-                active: degradedState.active,
-                reason: degradedState.reason,
-                enteredAt: degradedState.enteredAt?.toISOString() ?? null,
-              }
-            : { active: false, reason: "", enteredAt: null },
+          degraded: serializeDegradedSummary(degradedTargets),
+          degraded_targets: degradedTargets,
         };
       })
   );
