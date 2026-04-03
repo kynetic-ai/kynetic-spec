@@ -112194,6 +112194,24 @@ reviews:
         runner: npm
         created_at: 2026-04-03T19:51:35.298Z
         completed_at: 2026-04-03T19:51:35.298Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: AGENTS.md, kspec-agents.md, src/agent-runtime/dispatch.ts,
+          src/agent-runtime/workspace.ts, tests/dispatch-target-sync.test.ts, prior review
+          @01KNAD56Y7JH3HNH8M7Q2GHMY0. Commands run: kspec task get, kspec review for-task/get, git
+          diff, git log, grep AC annotations, kspec validate, npm test. Claims verified: duplicate
+          startup sync regression fixed by current _initTargetSync implementation and by regression
+          test asserting _syncTarget calls [dev, plan/alpha] exactly once; periodic target pushes
+          now short-circuit clean branches before mutation-scope checks; full suite passes.
+          Categories searched: correctness, edge cases, error handling/degraded-state behavior, test
+          quality, integration."
+        name: review-evidence
+        required: false
+        runner: manual
+        created_at: 2026-04-03T19:51:37.537Z
+        completed_at: 2026-04-03T19:51:37.537Z
     events:
       - _ulid: 01KNAE5CNFM3TMZATFY29JTRWG
         actor: Jacob Chapel
@@ -112222,6 +112240,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-03T19:51:36.061Z
+      - _ulid: 01KNAEDCJ7TWHPJ5G8V5Z294AN
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-04-03T19:51:38.311Z
     examined_commit: 734d424d229e0f2f5118bbca66af94c33700f2e5
     external_links: []
     lifecycle_state: open
@@ -112234,5 +112259,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-03T19:47:16.272Z
-    updated_at: 2026-04-03T19:51:35.298Z
+    updated_at: 2026-04-03T19:51:37.537Z
     notes: []
