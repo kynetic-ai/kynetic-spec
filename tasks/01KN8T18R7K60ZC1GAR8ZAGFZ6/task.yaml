@@ -48,8 +48,13 @@ description: |
 spec_ref: "@dispatch-remote-branch-sync"
 plan_ref: "@plan-workspace-scoped-integration-target-sync"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Approved via review @01KN8V1B. Verified that @dispatch-remote-branch-sync now
+  includes the three requested active-target lifecycle ACs exactly as specified. Checks: npm test
+  passed (331 files, 7491 tests), kspec validate reported only pre-existing repository-wide
+  warnings. No code-branch merge was required because this task's change was a shadow-branch spec
+  mutation."
 depends_on:
   - "@task-sync-description-rewrite"
 context: []
@@ -117,8 +122,26 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-03T04:53:49.559Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Approved via review @01KN8V1B. Verified that @dispatch-remote-branch-sync now includes the
+          three requested active-target lifecycle ACs exactly as specified. Checks: npm test passed
+          (331 files, 7491 tests), kspec validate reported only pre-existing repository-wide
+          warnings. No code-branch merge was required because this task's change was a shadow-branch
+          spec mutation."
+        previous: null
+      completed_at:
+        new: 2026-04-03T05:02:00.513Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-03T05:02:00.525Z
 created_at: 2026-04-03T04:36:15.239Z
 started_at: 2026-04-03T04:49:49.380Z
 submitted_at: 2026-04-03T04:50:56.999Z
+completed_at: 2026-04-03T05:02:00.513Z
 todos: []
 automation: eligible
