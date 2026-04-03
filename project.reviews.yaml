@@ -110041,6 +110041,12 @@ reviews:
         payload:
           thread_ulid: 01KNA62CWA4BXW2257M8DJZV1J
         timestamp: 2026-04-03T17:41:47.651Z
+      - _ulid: 01KNA6ZPW2KR0M6FQ28G5XDEMB
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNA62CWA4BXW2257M8DJZV1J
+        timestamp: 2026-04-03T17:41:50.083Z
     examined_commit: 1f9061b986b4a033947fa754c8ec72ba7e678bba
     external_links: []
     lifecycle_state: closed
@@ -110085,6 +110091,12 @@ reviews:
               that array, so the API no longer returns the per-target degraded data required by , ,
               and . The branch-scoped status added in  /  never reaches API callers.
             created_at: 2026-04-03T17:25:49.578Z
+          - _ulid: 01KNA6ZP214XGXFJBA19MET51P
+            author: Jacob Chapel
+            body: Fixed the public /api/agent/status route as well. It no longer reads getDegradedState() like
+              the old singleton object; instead it returns degraded_targets with per-target branch
+              metadata while keeping the existing degraded summary field.
+            created_at: 2026-04-03T17:41:49.249Z
         kind: blocker
         resolved_at: 2026-04-03T17:41:46.858Z
         resolved_by: Jacob Chapel
@@ -110114,7 +110126,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-03T17:26:22.370Z
     created_at: 2026-04-03T17:20:48.239Z
-    updated_at: 2026-04-03T17:41:46.858Z
+    updated_at: 2026-04-03T17:41:49.249Z
     notes: []
   - _ulid: 01KNA6G4GMNMBA7JK63WEP26MV
     slugs: []
