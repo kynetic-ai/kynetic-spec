@@ -109044,7 +109044,18 @@ reviews:
     slugs: []
     title: Review task-sync-degraded-ac-updates (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed on snapshot d16345c7dec204b337a727fdf77cc81c59c19fe2: 2068/2068 suites passed,
+          7491 tests passed, 5 skipped."
+        name: npm test
+        required: true
+        runner: test-runner
+        created_at: 2026-04-03T05:54:42.063Z
+        completed_at: 2026-04-03T05:54:42.063Z
     events:
       - _ulid: 01KN8Y9X18DVX4C4MZ4W163MV0
         actor: Jacob Chapel
@@ -109059,6 +109070,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-03T05:51:05.849Z
+      - _ulid: 01KN8YGXY3PDPSR05ECGHHXYZT
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-03T05:54:42.755Z
     examined_commit: d16345c7dec204b337a727fdf77cc81c59c19fe2
     external_links: []
     lifecycle_state: open
@@ -109071,5 +109089,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-03T05:50:52.456Z
-    updated_at: 2026-04-03T05:51:05.118Z
+    updated_at: 2026-04-03T05:54:42.063Z
     notes: []
