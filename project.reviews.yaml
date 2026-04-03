@@ -112870,6 +112870,12 @@ reviews:
         payload:
           thread_ulid: 01KNAS0QN0H3FJGBQX2DS9R25P
         timestamp: 2026-04-03T22:57:39.031Z
+      - _ulid: 01KNASVD0RGVR266RQKWXTYBYW
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNAS0YZ7R6V7RS8PK215S7KX
+        timestamp: 2026-04-03T23:11:31.865Z
     examined_commit: f2ad95bd4af80211df842526f4da0ba97d08820b
     external_links: []
     lifecycle_state: closed
@@ -112937,6 +112943,8 @@ reviews:
               can hide regressions in the real concurrent-merge recovery path.
             created_at: 2026-04-03T22:57:05.512Z
         kind: blocker
+        resolved_at: 2026-04-03T23:11:31.091Z
+        resolved_by: Jacob Chapel
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -112946,5 +112954,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-03T22:57:16.451Z
     created_at: 2026-04-03T22:52:32.862Z
-    updated_at: 2026-04-03T22:57:38.241Z
+    updated_at: 2026-04-03T23:11:31.091Z
     notes: []
