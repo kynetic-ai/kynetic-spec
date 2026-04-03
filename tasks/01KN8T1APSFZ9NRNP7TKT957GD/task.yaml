@@ -94,7 +94,7 @@ description: |
 spec_ref: "@dispatch-remote-branch-sync"
 plan_ref: "@plan-workspace-scoped-integration-target-sync"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-impl-pull-path"
@@ -115,7 +115,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: 01KNA8F4NPQZSZZMV0EEAFNF4P
+session_id: null
 history:
   - author: "@claude"
     changes:
@@ -335,6 +335,16 @@ history:
         previous: "@01KNA81KDYQHDZZPRWREDK1XRZ"
     command: review-link
     timestamp: 2026-04-03T18:11:38.184Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KNA8F4NPQZSZZMV0EEAFNF4P
+    command: review-verdict-needs-work
+    timestamp: 2026-04-03T18:16:41.460Z
 created_at: 2026-04-03T04:36:17.241Z
 started_at: 2026-04-03T18:08:41.389Z
 submitted_at: 2026-04-03T18:09:06.516Z
