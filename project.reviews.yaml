@@ -107241,6 +107241,17 @@ reviews:
         required: true
         created_at: 2026-04-03T00:32:37.572Z
         completed_at: 2026-04-03T00:32:37.572Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: The plan rewrites pull/degraded behavior to be per-target but leaves impacted existing ACs
+          such as ac-pull-target-periodic-deferred and ac-divergence-log-guidance outside the update
+          tasks and Covers lines, leaving the post-derive spec incomplete.
+        name: AC coverage mapping
+        required: true
+        created_at: 2026-04-03T00:32:37.590Z
+        completed_at: 2026-04-03T00:32:37.590Z
     events:
       - _ulid: 01KN8C1BDDPAYA8KM298G13H1B
         actor: "@claude"
@@ -107290,6 +107301,13 @@ reviews:
           status: pass
           name: Task standalone-ness
         timestamp: 2026-04-03T00:32:38.302Z
+      - _ulid: 01KN8C37FHGJGT7W9J9TMDF1JR
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: AC coverage mapping
+        timestamp: 2026-04-03T00:32:39.410Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -107366,5 +107384,5 @@ reviews:
         kind: question
     verdicts: []
     created_at: 2026-04-03T00:31:37.901Z
-    updated_at: 2026-04-03T00:32:37.572Z
+    updated_at: 2026-04-03T00:32:37.590Z
     notes: []
