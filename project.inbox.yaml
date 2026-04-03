@@ -2139,3 +2139,14 @@ inbox:
     tags: []
     added_by: Jacob Chapel
     created_at: 2026-04-02T21:52:41.214Z
+  - _ulid: 01KN8Y721G6H5RV3EF8MAC2FTV
+    text: Plan skill needs example plan documents showing ideal AC patterns. Current guidance says split
+      compound ACs but does not demonstrate what compound vs atomic looks like. Include before/after
+      examples for common plan types (spec-update plans, implementation plans, mixed). Would reduce
+      review round-trips by catching compound ACs during authoring.
+    tags:
+      - skills
+      - plan
+      - docs
+    added_by: "@claude"
+    created_at: 2026-04-03T05:49:19.280Z

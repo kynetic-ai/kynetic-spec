@@ -11822,6 +11822,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-03T05:23:09.076Z
+  - _ulid: 01KN8Y723FFT4VMEP263D8K6G6
+    type: success
+    content: Plan reviewer agent caught compound ACs, orphaned coverage, and implementation-detail ACs
+      across 5 review rounds. Each round improved the plan substantively. The review-plan skill
+      guidance was correct — friction was in applying it during authoring, not in the review process
+      itself.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-03T05:49:19.343Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
