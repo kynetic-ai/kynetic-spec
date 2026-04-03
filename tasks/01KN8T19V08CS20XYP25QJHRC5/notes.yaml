@@ -12,3 +12,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-03T05:25:10.487Z
+  - _ulid: 01KN8XDTREW4VRKFFERK3VEQ1W
+    content: "Implemented unified active target state in DispatchEngine. Replaced split push/pull branch
+      bookkeeping with _configuredBaseBranch + _activeTargets, rebuilt the set from open workspace
+      registry records during sync initialization, added incremental add/remove helpers for
+      provisioning and cleanup, and exposed activeTargets through getTargetSyncStatus(). Added
+      AC-annotated dispatch sync tests for base-branch inclusion, registry rebuild dedupe/exclusion
+      of closed workspaces, orphan cleanup removal, and shared source-of-truth resolution.
+      Verification: npm test -- --fresh passed (2068 suites, 7495 tests, 5 skipped). kspec validate
+      reports only pre-existing project warnings (orphaned skills/alignment/completeness debt), no
+      new validation errors from this task."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-03T05:35:32.622Z
