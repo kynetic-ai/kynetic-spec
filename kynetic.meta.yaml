@@ -11844,6 +11844,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-03T06:04:56.587Z
+  - _ulid: 01KNA2BAF2XF9F078BSTH47C8H
+    type: friction
+    content: Prepared dispatch workspaces can still start from a canonical head that lags the current
+      integration target, forcing workers to replay already-merged dependency commits during the
+      mandatory pre-work rebase. This adds avoidable conflict resolution and makes task-local
+      changes harder to isolate.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-04-03T16:20:47.714Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
