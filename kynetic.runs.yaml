@@ -21491,7 +21491,7 @@ runs:
     started_at: 2026-04-03T05:11:44.819Z
   - _ulid: 01KN8XFPZCA9ZW6WZ9BECMJ978
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -21509,7 +21509,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-03T05:37:37.594Z
-        completed_at: 2026-04-03T05:37:37.594Z
+        completed_at: 2026-04-03T05:37:45.646Z
+        notes: "High-confidence review: one real friction surfaced during verification — npm test can stay
+          alive or race temp git repo teardown after green output — but that is already tracked by
+          @task-investigate-npm-test-teardown-hang-after-green-suite-run. A second friction around
+          reflection/workflow discoverability is already tracked as unresolved observation
+          @01KN8WQ4. Success pattern observed: focused dispatch-sync tests before full-suite
+          verification improved iteration speed, but this is a useful local tactic rather than a
+          strong enough systemic success to capture as a standalone artifact."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-03T05:37:45.646Z
+        completed_at: 2026-04-03T05:37:45.646Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-03T05:36:34.284Z
