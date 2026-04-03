@@ -111121,6 +111121,13 @@ reviews:
           kind: nit
           thread_ulid: 01KNA9T65QH172WN9A4SBM2EG7
         timestamp: 2026-04-03T18:31:16.170Z
+      - _ulid: 01KNA9TA5WEE09QFPRZR76V2BQ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNA9T99SJ0HPHEQPTQP0ZAGA
+        timestamp: 2026-04-03T18:31:18.972Z
     examined_commit: 16d33b86826b3e73d168c92bd320eaf0f959da65
     external_links: []
     lifecycle_state: open
@@ -111145,7 +111152,36 @@ reviews:
               integration/merge readiness."
             created_at: 2026-04-03T18:31:14.872Z
         kind: nit
+      - _ulid: 01KNA9T99SJ0HPHEQPTQP0ZAGA
+        anchor:
+          type: code
+          commit: 16d33b86826b3e73d168c92bd320eaf0f959da65
+          line_end: 3426
+          line_start: 3270
+          path: src/agent-runtime/dispatch.ts
+          side: head
+        entries:
+          - _ulid: 01KNA9T99TNXTEF8YW6649RXDD
+            author: Jacob Chapel
+            body: >-
+              Manual merge into plan/plan-workspace-scoped-integration-target-sync/01kn8bx4 still
+              conflicts in the per-target degraded-state implementation. Auto-merging
+              src/agent-runtime/dispatch.ts
+
+              CONFLICT (content): Merge conflict in src/agent-runtime/dispatch.ts
+
+              Auto-merging tests/dispatch-target-sync.test.ts
+
+              CONFLICT (content): Merge conflict in tests/dispatch-target-sync.test.ts
+
+              Automatic merge failed; fix conflicts and then commit the result. from the integration
+              branch conflicted in src/agent-runtime/dispatch.ts and
+              tests/dispatch-target-sync.test.ts, so this snapshot cannot be published as required.
+              Rebase the task branch onto the current integration target and reconcile those
+              semantic overlaps before resubmitting.
+            created_at: 2026-04-03T18:31:18.074Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-03T18:28:29.205Z
-    updated_at: 2026-04-03T18:31:14.872Z
+    updated_at: 2026-04-03T18:31:18.074Z
     notes: []
