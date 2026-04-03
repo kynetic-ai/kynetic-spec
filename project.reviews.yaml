@@ -109979,9 +109979,25 @@ reviews:
           status: skipped
           name: kspec validate
         timestamp: 2026-04-03T17:26:02.959Z
+      - _ulid: 01KNA63CX3CKTGR63HFSX62YBF
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-03T17:26:22.371Z
+      - _ulid: 01KNA63CX3FCKBAFP1TWNPQ05T
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-03T17:26:22.371Z
     examined_commit: 1f9061b986b4a033947fa754c8ec72ba7e678bba
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -110039,7 +110055,14 @@ reviews:
               integration, AC coverage annotations, error handling, regression risk, test coverage.'
             created_at: 2026-04-03T17:25:52.015Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-03T17:26:22.370Z
     created_at: 2026-04-03T17:20:48.239Z
-    updated_at: 2026-04-03T17:26:02.090Z
+    updated_at: 2026-04-03T17:26:22.371Z
     notes: []
