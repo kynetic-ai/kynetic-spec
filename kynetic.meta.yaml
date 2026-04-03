@@ -12180,6 +12180,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-03T20:27:31.410Z
+  - _ulid: 01KNARQ0C751STSSFHT18M1Q3K
+    type: success
+    content: Extending tests/dispatch-target-sync.test.ts with the existing bare-remote, tracked-branch,
+      and direct git helpers made it straightforward to add new workspace-scoped sync regressions
+      without building a second dispatch harness.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-03T22:51:39.271Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
