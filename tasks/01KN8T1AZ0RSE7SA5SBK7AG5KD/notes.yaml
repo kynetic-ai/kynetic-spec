@@ -1,1 +1,11 @@
-notes: []
+notes:
+  - _ulid: 01KNACKWTDWWEVH3AGZS2V41CE
+    content: "Approach: build on tests/dispatch-target-sync.test.ts and reuse the existing
+      bare-remote/workspace-registry helpers already added by the sync implementation tasks. Edge
+      cases: multi-target startup sync, per-target staleness isolation, degraded target scoping, and
+      concurrent operations that must isolate by branch. Test plan: add behavioral integration
+      coverage for the remaining workspace-scoped lifecycle scenarios, with AC annotations on each
+      new test and full npm test verification before submit."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-03T19:20:14.414Z
