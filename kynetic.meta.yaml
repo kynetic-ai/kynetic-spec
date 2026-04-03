@@ -12046,6 +12046,17 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-04-03T19:00:28.630Z
+  - _ulid: 01KNABFQKXHX9F2Y23W5B2YY8P
+    type: success
+    content: Using merge-base ancestry plus a real no-commit merge against the current integration
+      target gave a decisive signal for review-cycle mergeability. That combination was enough to
+      distinguish stale reviewer findings from real semantic conflicts and guided the eventual
+      branch reconciliation cleanly.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-04-03T19:00:29.437Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
