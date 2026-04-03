@@ -11764,6 +11764,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-03T04:49:44.822Z
+  - _ulid: 01KN8TSZPQ57JX1N691EGQ15PQ
+    type: friction
+    content: Detached reviewer snapshots for spec-only/shadow-state tasks can show no git diff in the
+      worktree even when the submitted kspec state changed. Reviewers have to infer that the change
+      lives in shadow metadata and reconstruct evidence from kspec CLI output instead of getting a
+      direct submitted-state diff.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-03T04:49:45.176Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
