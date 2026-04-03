@@ -12120,6 +12120,16 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-04-03T19:28:26.933Z
+  - _ulid: 01KNAE1RJ8A12H4RCHKHFZS414
+    type: success
+    content: When startup-sync behavior regressed from one pass to two, a behavioral regression test
+      that asserted per-target sync call counts on engine start caught the issue immediately;
+      final-state-only assertions would not have. For dispatch sync integration work, asserting
+      execution count at the behavior boundary is worth keeping when duplicate work is itself a bug.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-03T19:45:17.384Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
