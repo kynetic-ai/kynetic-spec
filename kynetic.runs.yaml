@@ -22110,9 +22110,21 @@ runs:
     completed_at: 2026-04-03T19:00:55.047Z
   - _ulid: 01KNAC14690KE4TF7VPE6GMWH2
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-03T19:09:59.369Z
+        completed_at: 2026-04-03T19:10:39.495Z
+        notes: "What worked well: narrowing the issue from production code to a scheduler-sensitive test
+          assumption prevented an unnecessary file-lock change. Rewriting the test around direct
+          waiter blocking and post-release acquisition kept the behavioral guarantee while removing
+          timing noise."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-03T19:10:39.495Z
+        completed_at: 2026-04-03T19:10:39.495Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-03T19:09:59.369Z
