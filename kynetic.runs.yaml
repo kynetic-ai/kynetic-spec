@@ -21370,9 +21370,22 @@ runs:
     completed_at: 2026-04-02T23:09:09.780Z
   - _ulid: 01KN8TS1SHK8V1GTBERSP0FVSK
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-03T04:49:14.545Z
+        completed_at: 2026-04-03T04:49:59.581Z
+        notes: "What worked well: review/task integration handled approval and no-op merge completion
+          cleanly. Friction: detached reviewer snapshots for shadow-only changes lacked an obvious
+          git diff, so evidence had to be reconstructed from kspec CLI output. Search coverage: no
+          existing matches found for that reviewer friction. Capture: recorded one friction
+          observation and one success observation."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-03T04:49:59.581Z
+        completed_at: 2026-04-03T04:49:59.581Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-03T04:49:14.545Z
