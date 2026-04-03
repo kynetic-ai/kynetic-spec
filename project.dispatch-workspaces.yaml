@@ -35461,12 +35461,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-03T17:32:31.198Z
+      updated_at: 2026-04-03T17:32:39.751Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-03T17:32:31.198Z
+      updated_at: 2026-04-03T17:32:39.751Z
     integration:
       status: pending
       detail: null
@@ -35474,26 +35474,31 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-workspace-scoped-integration-target-sync/01kn8bx4
       target_commit: e7837c1aa3fe7726d651cbf99c9d3b54d64df4ed
-      updated_at: 2026-04-03T17:32:31.198Z
-    lifecycle_state: ready
+      updated_at: 2026-04-03T17:32:39.751Z
+    lifecycle_state: integrating
     resolved_base_branch: plan/plan-workspace-scoped-integration-target-sync/01kn8bx4
     task_ref: "@01KN8T1A51JFRMW4F8W31KJ907"
     task_slug: task-impl-push-path
     timestamps:
       closed_at: null
       last_active_at: 2026-04-03T17:21:28.277Z
-      last_reconciled_at: 2026-04-03T17:32:31.198Z
+      last_reconciled_at: 2026-04-03T17:32:39.751Z
       created_at: 2026-04-03T16:08:45.898Z
-      updated_at: 2026-04-03T17:32:31.198Z
+      updated_at: 2026-04-03T17:32:39.751Z
     workspace_id: dispatch-workspace-01KN8T1A51JFRMW4F8W31KJ907
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: e54dfdb82cbd4c4d80d3c1826555d2f75d26a764
+        last_seen_at: 2026-04-03T17:32:39.751Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-push-path-01kn8t1a-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-impl-push-path/01kn8t1a
-        head: 1559b85cddca6b2ae2f8851c81f5efd3e429ec67
-        last_seen_at: 2026-04-03T17:21:24.748Z
+        head: e54dfdb82cbd4c4d80d3c1826555d2f75d26a764
+        last_seen_at: 2026-04-03T17:32:39.751Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-push-path-01kn8t1a
   - active_role: null
     base_branch_point: e7837c1aa3fe7726d651cbf99c9d3b54d64df4ed
