@@ -21573,9 +21573,28 @@ runs:
     started_at: 2026-04-03T05:48:24.748Z
   - _ulid: 01KN8Z1S8WCEG2BKHVGEE52CJQ
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-03T06:03:55.036Z
+        completed_at: 2026-04-03T06:04:30.456Z
+        notes: "Meaningful session: resumed a needs_work fix cycle, confirmed the review blockers were real
+          by reading runtime call sites, patched the dispatch engine so active integration targets
+          drive runtime push/pull behavior, added regression coverage for non-base startup pull and
+          periodic push, committed fcf063252, resolved both blocker threads, and resubmitted
+          @task-impl-active-target-set. Success: the review-thread anchors made it fast to jump
+          straight to the real broken paths. Friction: the initial implementation unified
+          bookkeeping/status exposure but left the actual runtime call sites single-branch, which
+          was only obvious after tracing every caller of
+          _syncTargetBranch/_pushIntegrationTargetAsync. Search found no existing observation or
+          inbox item covering this exact runtime-vs-bookkeeping gap, so capture one high-confidence
+          friction observation."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-03T06:04:30.456Z
+        completed_at: 2026-04-03T06:04:30.456Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-03T06:03:55.036Z
