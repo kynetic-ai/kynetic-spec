@@ -108796,6 +108796,12 @@ reviews:
         payload:
           thread_ulid: 01KN8X5G8VHND0C4KPEFBX4X8M
         timestamp: 2026-04-03T05:47:24.581Z
+      - _ulid: 01KN8Y3Q6M2TK36EE0H1HWXV24
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN8X5G8VHND0C4KPEFBX4X8M
+        timestamp: 2026-04-03T05:47:29.876Z
     examined_commit: fb3342db29d0f52d03646cc5ec095e7d9bd0c310
     external_links: []
     lifecycle_state: closed
@@ -108849,6 +108855,12 @@ reviews:
               spec rewrite, so the rename is incomplete. Update the affected annotations to the new
               AC id as part of this spec change.
             created_at: 2026-04-03T05:30:59.739Z
+          - _ulid: 01KN8Y3NRY4WTV1RFK6P4DJP2Z
+            author: Jacob Chapel
+            body: Updated all stale traceability references from ac-divergence-log-guidance to
+              ac-divergence-log-classification in both the behavioral tests and the dispatch runtime
+              annotations. Verified with rg that only the new AC id remains in the affected files.
+            created_at: 2026-04-03T05:47:28.414Z
         kind: blocker
         resolved_at: 2026-04-03T05:47:22.815Z
         resolved_by: Jacob Chapel
@@ -108861,7 +108873,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-03T05:31:10.682Z
     created_at: 2026-04-03T05:25:15.950Z
-    updated_at: 2026-04-03T05:47:22.815Z
+    updated_at: 2026-04-03T05:47:28.414Z
     notes: []
   - _ulid: 01KN8XKYK88RHXCEA3GJJMYM9F
     slugs: []
