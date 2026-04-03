@@ -109333,6 +109333,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-03T16:22:12.157Z
+      - _ulid: 01KNA2MYAS6M5SMGFSNNEGBV9R
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNA2MXM95KQKPQJPTPGQ3YX1
+        timestamp: 2026-04-03T16:26:02.969Z
     examined_commit: 1559b85cddca6b2ae2f8851c81f5efd3e429ec67
     external_links: []
     lifecycle_state: open
@@ -109342,8 +109349,29 @@ reviews:
       content_hash: ""
       ref: "@01KN8T1A51JFRMW4F8W31KJ907"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNA2MXM95KQKPQJPTPGQ3YX1
+        anchor:
+          type: code
+          commit: 1559b85cddca6b2ae2f8851c81f5efd3e429ec67
+          line_end: 1436
+          line_start: 1427
+          path: src/agent-runtime/dispatch.ts
+          side: head
+        entries:
+          - _ulid: 01KNA2MXM9N44WS1V16TATH7CV
+            author: Jacob Chapel
+            body: "Periodic target fanout now resolves the mutation scope before checking whether the branch
+              actually has anything to push.  already skips branches that are not ahead of upstream,
+              but this wrapper calls  first and enters degraded state on failure. I reproduced this
+              on the submitted snapshot with a clean  branch: after checking  out in a separate
+              worktree and calling , the engine logged DEGRADED and marked the branch unhealthy even
+              though there were no local commits to push. That violates , which says periodic sync
+              should push active targets with unpushed commits, not degrade idle targets just
+              because another worktree owns the branch checkout."
+            created_at: 2026-04-03T16:26:02.249Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-03T16:21:52.198Z
-    updated_at: 2026-04-03T16:22:11.441Z
+    updated_at: 2026-04-03T16:26:02.249Z
     notes: []
