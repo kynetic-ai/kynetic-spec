@@ -52,3 +52,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-03T19:52:26.411Z
+  - _ulid: 01KNAEKJR32AK7TRJ2NCT7142A
+    content: "Fix cycle 2: verified the worker branch is already rebased onto
+      plan/plan-workspace-scoped-integration-target-sync/01kn8bx4 and contains the resolved dispatch
+      runtime call shape from fec66d4/734d424. Rebase against
+      origin/plan/plan-workspace-scoped-integration-target-sync/01kn8bx4 was a no-op, merge-base
+      confirms the integration target is an ancestor of HEAD, and targeted verification still passes
+      (npm test -- dispatch-target-sync.test.ts: 39/39; kspec validate: existing repo-wide warnings
+      only). No additional code changes were required in this cycle because the earlier manual-merge
+      conflict note was stale relative to the current branch tip."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-03T19:55:01.251Z
