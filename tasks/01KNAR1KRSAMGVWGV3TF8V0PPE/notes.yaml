@@ -31,3 +31,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-03T22:57:18.016Z
+  - _ulid: 01KNASVAXVHSY6VX8JX54E1X3E
+    content: "Fix cycle 1: replaced the concurrent merge fix-cycle regression with real
+      reviewer-invocation coverage. The test now creates a plan-scoped task targeting plan/alpha,
+      provisions the canonical worker branch, advances the remote with a competing reviewer merge,
+      leaves the local target on a stale second merge, then runs DispatchEngine._spawnInvocation()
+      with a reviewer verdict to prove the same task enters needs_work while the post-merge push is
+      rejected non-fast-forward. Re-verified the AC annotations, targeted dispatch sync suite, full
+      npm test, and existing kspec validate warning-only baseline."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-03T23:11:29.724Z
