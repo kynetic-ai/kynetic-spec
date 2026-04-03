@@ -111980,6 +111980,18 @@ reviews:
         runner: npm
         created_at: 2026-04-03T19:35:26.002Z
         completed_at: 2026-04-03T19:35:26.002Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Validation completed with repo-wide warnings only (exit 6): orphaned skill directory,
+          existing alignment warnings, existing completeness warnings. No validation errors were
+          reported for this change."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-03T19:35:28.189Z
+        completed_at: 2026-04-03T19:35:28.189Z
     events:
       - _ulid: 01KNAD56Y7T97WK7R1PWGRPMVA
         actor: Jacob Chapel
@@ -112008,6 +112020,13 @@ reviews:
           status: pass
           name: dispatch-target-sync
         timestamp: 2026-04-03T19:35:26.738Z
+      - _ulid: 01KNADFSY412FV661TC8FSN3S5
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-03T19:35:28.964Z
     examined_commit: fec66d40a61f725abef3a3c0107e9383b9a464b2
     external_links: []
     lifecycle_state: open
@@ -112038,5 +112057,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-03T19:29:41.831Z
-    updated_at: 2026-04-03T19:35:26.002Z
+    updated_at: 2026-04-03T19:35:28.189Z
     notes: []
