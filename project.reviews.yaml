@@ -109656,6 +109656,12 @@ reviews:
         payload:
           thread_ulid: 01KNA3GW1F1TGE11QY913YZ3A3
         timestamp: 2026-04-03T16:52:48.231Z
+      - _ulid: 01KNA467601RZX2RADWS81Z0Y2
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNA3GW1F1TGE11QY913YZ3A3
+        timestamp: 2026-04-03T16:52:57.664Z
     examined_commit: 8970bc4822de51d6b080c1c8b0619657196ca47d
     external_links: []
     lifecycle_state: closed
@@ -109717,6 +109723,8 @@ reviews:
               syncs on other active targets no longer mask an unrelated diverged/unsafe branch.
             created_at: 2026-04-03T16:52:47.436Z
         kind: blocker
+        resolved_at: 2026-04-03T16:52:56.924Z
+        resolved_by: Jacob Chapel
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -109726,5 +109734,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-03T16:41:32.395Z
     created_at: 2026-04-03T16:35:55.466Z
-    updated_at: 2026-04-03T16:52:47.436Z
+    updated_at: 2026-04-03T16:52:56.924Z
     notes: []
