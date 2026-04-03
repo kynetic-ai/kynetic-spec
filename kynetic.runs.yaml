@@ -22265,7 +22265,7 @@ runs:
     completed_at: 2026-04-03T20:08:40.365Z
   - _ulid: 01KNASX4JTBQVYPKQ81KHKZY33
     status: active
-    current_step: 4
+    current_step: 5
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -22300,7 +22300,16 @@ runs:
       - status: completed
         step_index: 4
         started_at: 2026-04-03T23:13:13.873Z
-        completed_at: 2026-04-03T23:13:13.873Z
+        completed_at: 2026-04-03T23:13:14.644Z
+        notes: "Friction: proving the fix-cycle AC behaviorally required stitching together multiple layers
+          (plan branch resolution, worker provisioning, remote git state, reviewer invocation, and
+          post-merge push). There is no obvious single helper for this path, so the first
+          implementation drifted toward a generic review-verdict shortcut that the review correctly
+          rejected."
+      - status: completed
+        step_index: 5
+        started_at: 2026-04-03T23:13:14.644Z
+        completed_at: 2026-04-03T23:13:14.644Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-03T23:12:28.762Z
