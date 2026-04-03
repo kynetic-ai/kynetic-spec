@@ -40,3 +40,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-03T05:56:25.295Z
+  - _ulid: 01KN8YZCD6TAT2RDPKP05ZYA9R
+    content: "Fix cycle 1: addressed both review blockers by making the unified active target set drive
+      the runtime paths. Startup/reconcile now sync every active integration target, pre-provision
+      sync resolves the task-specific target branch before provisioning, reviewer-complete push
+      targets the workspace integration branch, and periodic pushes iterate the active set with
+      per-branch serialization instead of one global lock. Added regression tests proving a non-base
+      active target is pulled on start and pushed during periodic reconciliation. Verification: npm
+      test -- --fresh passed (2068 suites, 7502 tests, 5 skipped). kspec validate exited 6 with the
+      same pre-existing project warnings (orphan/alignment/completeness debt), no new
+      schema/reference errors."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-03T06:02:36.326Z
