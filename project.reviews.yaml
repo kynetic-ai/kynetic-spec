@@ -108966,6 +108966,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-03T05:50:17.445Z
+      - _ulid: 01KN8YZECP7S9G9ZX4QPPJM3YV
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KN8Y83WZ537RJHK3HRMP5MKC
+        timestamp: 2026-04-03T06:02:38.358Z
     examined_commit: 0db514f9fe5692c79ae5eff7495a6b1893bc050a
     external_links: []
     lifecycle_state: closed
@@ -109028,6 +109034,14 @@ reviews:
               present in . Evidence:  shows  is only used for logging/status, and the only sync call
               sites (, , ) still invoke  with no branch parameter."
             created_at: 2026-04-03T05:49:53.951Z
+          - _ulid: 01KN8YZDNDCVGFGJFBDAP4NZTR
+            author: Jacob Chapel
+            body: Fixed in fcf063252. _syncTargetBranch now accepts an optional branch, startup and periodic
+              reconciliation iterate the active target set via _syncActiveTargetBranches(), and
+              pre-provision sync resolves the task-specific base branch before provisioning. Added a
+              regression test that proves a non-base active target from the workspace registry is
+              pulled on engine start.
+            created_at: 2026-04-03T06:02:37.613Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -109038,7 +109052,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-03T05:50:17.445Z
     created_at: 2026-04-03T05:38:53.160Z
-    updated_at: 2026-04-03T05:50:17.445Z
+    updated_at: 2026-04-03T06:02:37.613Z
     notes: []
   - _ulid: 01KN8Y9X18FGX4PKG2CEHTA8CP
     slugs: []
