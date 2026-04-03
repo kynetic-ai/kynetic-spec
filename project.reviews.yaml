@@ -107460,6 +107460,17 @@ reviews:
         required: true
         created_at: 2026-04-03T00:37:17.387Z
         completed_at: 2026-04-03T00:37:17.387Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: The prior priority-misalignment issue was removed with the deleted task. Remaining
+          dependencies flow coherently from spec rewrite/foundation work into implementation and
+          then integration testing, with no new ordering blockers found.
+        name: Dependency ordering
+        required: true
+        created_at: 2026-04-03T00:37:17.488Z
+        completed_at: 2026-04-03T00:37:17.488Z
     events:
       - _ulid: 01KN8CAFP8297PY893SSC1XK05
         actor: "@claude"
@@ -107495,6 +107506,13 @@ reviews:
           status: pass
           name: Spec AC quality
         timestamp: 2026-04-03T00:37:18.068Z
+      - _ulid: 01KN8CBRMP1A9T7RJM10QKDT1K
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Dependency ordering
+        timestamp: 2026-04-03T00:37:19.126Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -107546,5 +107564,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-03T00:36:37.193Z
-    updated_at: 2026-04-03T00:37:17.387Z
+    updated_at: 2026-04-03T00:37:17.488Z
     notes: []
