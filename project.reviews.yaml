@@ -109442,6 +109442,12 @@ reviews:
         payload:
           thread_ulid: 01KNA2MXM95KQKPQJPTPGQ3YX1
         timestamp: 2026-04-03T17:30:17.621Z
+      - _ulid: 01KNA6AMT0A5MAN7E9VB6BJPYV
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNA2MXM95KQKPQJPTPGQ3YX1
+        timestamp: 2026-04-03T17:30:19.840Z
     examined_commit: 1559b85cddca6b2ae2f8851c81f5efd3e429ec67
     external_links: []
     lifecycle_state: closed
@@ -109472,6 +109478,14 @@ reviews:
               should push active targets with unpushed commits, not degrade idle targets just
               because another worktree owns the branch checkout."
             created_at: 2026-04-03T16:26:02.249Z
+          - _ulid: 01KNA6AM30S9VZ111QWMW16E3D
+            author: Jacob Chapel
+            body: Fixed in 3a9dd2f. Periodic target fanout now checks whether a branch actually needs a push
+              before resolving mutation scope, so a clean active target no longer enters degraded
+              state just because another worktree owns that branch checkout. Added a regression test
+              for the idle-target worktree case and kept the same-branch serialization/cross-branch
+              concurrency coverage aligned with the new async preflight.
+            created_at: 2026-04-03T17:30:19.103Z
         kind: blocker
         resolved_at: 2026-04-03T17:30:16.832Z
         resolved_by: Jacob Chapel
@@ -109484,7 +109498,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-03T16:26:05.116Z
     created_at: 2026-04-03T16:21:52.198Z
-    updated_at: 2026-04-03T17:30:16.832Z
+    updated_at: 2026-04-03T17:30:19.103Z
     notes: []
   - _ulid: 01KNA370YATWK3ZZ7MCJ8WHX3W
     slugs: []
