@@ -22185,7 +22185,7 @@ runs:
     completed_at: 2026-04-03T19:45:33.928Z
   - _ulid: 01KNAEM7PTRVCAQHBVFBMV81JW
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -22201,7 +22201,13 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-03T19:56:05.630Z
-        completed_at: 2026-04-03T19:56:05.630Z
+        completed_at: 2026-04-03T19:56:17.496Z
+        notes: "High-confidence finding: one real friction item, already captured as observation @01KNAENG.
+          No additional successes or improvement tasks met the loop-mode confidence bar."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-03T19:56:17.496Z
+        completed_at: 2026-04-03T19:56:17.496Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-03T19:55:22.715Z
