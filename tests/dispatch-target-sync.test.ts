@@ -453,6 +453,49 @@ describe("dispatch target branch sync", () => {
 
     await engine.stop();
   });
+
+  // AC: @dispatch-remote-branch-sync ac-pull-target-on-start
+  // AC: @dispatch-remote-branch-sync ac-pull-target-on-start-before-bootstrap
+  it("syncs each active integration target only once during engine start", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    await createTrackedBranch(
+      projectDir,
+      "plan/alpha",
+      "plan-alpha.txt",
+      "alpha\n",
+      "create plan alpha",
+    );
+    await saveWorkspaceRecord(projectDir, {
+      taskRef: "@01TASK00000000000000000011",
+      taskSlug: "task-plan-alpha",
+      targetBranch: "plan/alpha",
+    });
+
+    const remoteTip = await pushRemoteCommit(
+      remoteDir,
+      "plan/alpha",
+      "plan-alpha.txt",
+      "alpha\nremote\n",
+      "remote alpha advance",
+    );
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    const syncTargetSpy = vi.spyOn(engine as any, "_syncTarget");
+
+    await engine.start();
+
+    expect(git(projectDir, "rev-parse plan/alpha")).toBe(remoteTip);
+    const syncedTargets = syncTargetSpy.mock.calls.map(([branch]) => branch);
+    expect(syncedTargets).toEqual(["dev", "plan/alpha"]);
+
+    await engine.stop();
+  });
+
   // AC: @dispatch-remote-branch-sync ac-active-target-includes-base
   it("includes the configured base branch in the active target set even without workspaces", async () => {
     ({ projectDir, remoteDir } = await setupProjectWithRemote());
@@ -569,7 +612,6 @@ describe("dispatch target branch sync", () => {
     );
     expect((engine as any)._resolveBaseBranch()).toBe("dev");
     expect((engine as any)._resolveBaseBranch("plan/shared")).toBe("plan/shared");
-
     await engine.stop();
   });
 
@@ -747,6 +789,70 @@ describe("dispatch target branch sync", () => {
     await firstPush;
 
     expect((engine as any)._targetPushesInProgress.has("dev")).toBe(false);
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-target-push-cross-branch-concurrency
+  it("allows pushes to different integration targets to proceed concurrently", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+
+    git(projectDir, "checkout -b plan/alpha dev");
+    git(projectDir, "push -u origin plan/alpha");
+
+    git(projectDir, "checkout dev");
+    await fs.writeFile(path.join(projectDir, "dev-concurrency.txt"), "dev concurrency\n", "utf-8");
+    git(projectDir, "add dev-concurrency.txt");
+    git(projectDir, 'commit -m "dev concurrency commit"');
+
+    git(projectDir, "checkout plan/alpha");
+    await fs.writeFile(path.join(projectDir, "plan-concurrency.txt"), "plan concurrency\n", "utf-8");
+    git(projectDir, "add plan-concurrency.txt");
+    git(projectDir, 'commit -m "plan concurrency commit"');
+    git(projectDir, "checkout dev");
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    const releaseByBranch = new Map<string, () => void>();
+    const startedBranches: string[] = [];
+    vi.spyOn(workspaceModule, "resolveDispatchIntegrationMutationScope").mockImplementation(
+      async (_projectDir, branch) => ({
+        projectDir,
+        integrationBranch: branch,
+        currentBranch: "dev",
+        targetBranchCheckedOut: false,
+      }),
+    );
+    vi.spyOn(workspaceModule, "pushIntegrationTarget").mockImplementation(
+      async (_projectDir, branch) => {
+        startedBranches.push(branch);
+        await new Promise<void>((resolve) => {
+          releaseByBranch.set(branch, resolve);
+        });
+        return { pushed: true, skipped: false, error: null };
+      },
+    );
+
+    const devPush = (engine as any)._pushIntegrationTargetAsync("dev", "periodic-sync");
+    const planPush = (engine as any)._pushIntegrationTargetAsync("plan/alpha", "periodic-sync");
+    await vi.waitFor(() => {
+      expect(new Set(startedBranches)).toEqual(new Set(["dev", "plan/alpha"]));
+    });
+
+    expect((engine as any)._targetPushesInProgress.has("dev")).toBe(true);
+    expect((engine as any)._targetPushesInProgress.has("plan/alpha")).toBe(true);
+
+    releaseByBranch.get("dev")?.();
+    releaseByBranch.get("plan/alpha")?.();
+    await Promise.all([devPush, planPush]);
+
+    expect((engine as any)._targetPushesInProgress.size).toBe(0);
 
     await engine.stop();
   });

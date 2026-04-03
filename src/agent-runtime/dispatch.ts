@@ -1410,13 +1410,14 @@ export class DispatchEngine {
    *
    * AC: @dispatch-remote-branch-sync ac-push-target-after-merge
    * AC: @dispatch-remote-branch-sync ac-push-target-periodic
-   * AC: @dispatch-remote-branch-sync ac-target-push-serialization
-   * AC: @dispatch-remote-branch-sync ac-push-non-fatal
-   */
+  * AC: @dispatch-remote-branch-sync ac-target-push-serialization
+  * AC: @dispatch-remote-branch-sync ac-push-non-fatal
+  */
   private async _pushIntegrationTargetAsync(
-    targetBranch: string,
+    branch: string | undefined,
     trigger: string,
   ): Promise<void> {
+    const targetBranch = this._resolveBaseBranch(branch);
     if (!targetBranch) {
       return;
     }
@@ -1426,7 +1427,6 @@ export class DispatchEngine {
     ) {
       return;
     }
-
     // AC: @dispatch-remote-branch-sync ac-target-push-serialization
     if (this._targetPushesInProgress.has(targetBranch)) {
       return;
