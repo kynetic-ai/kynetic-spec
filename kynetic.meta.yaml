@@ -12057,6 +12057,17 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-04-03T19:00:29.437Z
+  - _ulid: 01KNABPRPZ53DFXTV55B784M0R
+    type: success
+    content: "The review flow handled unrelated flaky test noise well once it was treated explicitly:
+      rerun the full suite, confirm the failure is not introduced by the reviewed branch, create a
+      dedicated follow-up task, and continue approving the clean change. In this session that
+      avoided blocking a correct test-runner fix on an intermittent tests/file-lock.test.ts
+      failure."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-03T19:04:19.935Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
