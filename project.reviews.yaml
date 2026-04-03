@@ -112312,6 +112312,22 @@ reviews:
         runner: git
         created_at: 2026-04-03T20:03:36.329Z
         completed_at: 2026-04-03T20:03:36.329Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/agent-runtime/dispatch.ts, src/agent-runtime/workspace.ts,
+          tests/dispatch-target-sync.test.ts. Commands run: kspec task get, kspec item get, git
+          diff, grep AC annotations, kspec validate, npm test, git merge-base, git merge-tree, git
+          merge --no-ff, git merge --abort. Claims verified: full suite passes; merge-conflict note
+          is not stale because the task branch is not based on the current integration tip and still
+          conflicts when merged. Categories searched: correctness, edge cases, test quality,
+          integration; blocker found in integration mergeability only."
+        name: review-evidence
+        required: false
+        runner: reviewer
+        created_at: 2026-04-03T20:03:40.925Z
+        completed_at: 2026-04-03T20:03:40.925Z
     events:
       - _ulid: 01KNAEQS517EP82VA7KRJFDDNG
         actor: Jacob Chapel
@@ -112347,6 +112363,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNAF3C0B86GSD1HCZFFSPSM5
         timestamp: 2026-04-03T20:03:39.422Z
+      - _ulid: 01KNAF3F0HJTHSZ9CX1Y07K28H
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-04-03T20:03:41.713Z
     examined_commit: 734d424d229e0f2f5118bbca66af94c33700f2e5
     external_links: []
     lifecycle_state: open
@@ -112387,5 +112410,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-03T19:57:18.881Z
-    updated_at: 2026-04-03T20:03:38.636Z
+    updated_at: 2026-04-03T20:03:40.925Z
     notes: []
