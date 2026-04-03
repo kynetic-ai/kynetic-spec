@@ -108790,6 +108790,12 @@ reviews:
         payload:
           thread_ulid: 01KN8X58R5HP52NAMX2M6JVN7C
         timestamp: 2026-04-03T05:31:35.385Z
+      - _ulid: 01KN8Y3J14MRY2VRD9HAK9MDAW
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KN8X5G8VHND0C4KPEFBX4X8M
+        timestamp: 2026-04-03T05:47:24.581Z
     examined_commit: fb3342db29d0f52d03646cc5ec095e7d9bd0c310
     external_links: []
     lifecycle_state: closed
@@ -108844,6 +108850,8 @@ reviews:
               AC id as part of this spec change.
             created_at: 2026-04-03T05:30:59.739Z
         kind: blocker
+        resolved_at: 2026-04-03T05:47:22.815Z
+        resolved_by: Jacob Chapel
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -108853,7 +108861,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-03T05:31:10.682Z
     created_at: 2026-04-03T05:25:15.950Z
-    updated_at: 2026-04-03T05:31:34.601Z
+    updated_at: 2026-04-03T05:47:22.815Z
     notes: []
   - _ulid: 01KN8XKYK88RHXCEA3GJJMYM9F
     slugs: []
