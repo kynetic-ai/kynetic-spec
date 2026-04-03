@@ -110612,6 +110612,16 @@ reviews:
         runner: test.cjs
         created_at: 2026-04-03T18:05:33.402Z
         completed_at: 2026-04-03T18:05:33.402Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm run typecheck passed.
+        name: typecheck
+        required: true
+        runner: tsc
+        created_at: 2026-04-03T18:05:35.631Z
+        completed_at: 2026-04-03T18:05:35.631Z
     events:
       - _ulid: 01KNA81KDYX660X4EWVEGYANZR
         actor: Jacob Chapel
@@ -110640,6 +110650,13 @@ reviews:
           status: pass
           name: targeted dispatch sync tests
         timestamp: 2026-04-03T18:05:34.175Z
+      - _ulid: 01KNA8B7W4QXXTG3878ZX7GAPN
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: typecheck
+        timestamp: 2026-04-03T18:05:36.516Z
     examined_commit: a1a65a28c894724d0ec94cb72ffefec6c5f32dfd
     external_links: []
     lifecycle_state: open
@@ -110664,5 +110681,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-03T18:00:20.670Z
-    updated_at: 2026-04-03T18:05:33.402Z
+    updated_at: 2026-04-03T18:05:35.631Z
     notes: []
