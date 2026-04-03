@@ -35396,7 +35396,7 @@ workspaces:
         head: fcf063252b2ab61303004bfffb1d6a6e00d042bc
         last_seen_at: 2026-04-03T06:05:27.795Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-active-target-set-01kn8t19
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: e7837c1aa3fe7726d651cbf99c9d3b54d64df4ed
     bootstrap:
       status: succeeded
@@ -35502,9 +35502,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-03T17:51:25.984Z
-      last_reconciled_at: 2026-04-03T17:59:01.179Z
+      last_reconciled_at: 2026-04-03T18:00:47.677Z
       created_at: 2026-04-03T16:08:45.898Z
-      updated_at: 2026-04-03T17:59:01.179Z
+      updated_at: 2026-04-03T18:00:47.677Z
     workspace_id: dispatch-workspace-01KN8T1A51JFRMW4F8W31KJ907
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
