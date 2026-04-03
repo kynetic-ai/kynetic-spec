@@ -9,6 +9,7 @@ import { DispatchEngine } from "../src/agent-runtime/dispatch.js";
 import { initContext } from "../src/parser/index.js";
 import { saveDispatchWorkspaceRecord } from "../src/parser/dispatch-workspaces.js";
 import type { LoadedDispatchWorkspaceRecord } from "../src/parser/dispatch-workspaces.js";
+import { kspecOutput as kspec, kspecJson } from "./helpers/cli.js";
 import { cleanupTempDir, createTempDir, initGitRepo, testUlid } from "./helpers/cli.js";
 import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
 
@@ -34,6 +35,32 @@ function gitSucceeds(cwd: string, command: string): boolean {
     return true;
   } catch {
     return false;
+  }
+}
+
+function gitResult(cwd: string, command: string): { stdout: string; stderr: string; status: number } {
+  try {
+    return {
+      stdout: execSync(`git ${command}`, {
+        cwd,
+        stdio: "pipe",
+        encoding: "utf-8",
+        env: workspaceModule.buildDispatchGitEnv(),
+      }).trim(),
+      stderr: "",
+      status: 0,
+    };
+  } catch (error) {
+    const execError = error as {
+      stdout?: string | Buffer;
+      stderr?: string | Buffer;
+      status?: number;
+    };
+    return {
+      stdout: String(execError.stdout ?? "").trim(),
+      stderr: String(execError.stderr ?? "").trim(),
+      status: execError.status ?? 1,
+    };
   }
 }
 
@@ -89,7 +116,17 @@ async function setupProjectFiles(projectDir: string, baseBranch = "dev"): Promis
   );
   await fs.writeFile(
     path.join(projectDir, "kspec.config.yaml"),
-    `dispatch:\n  base_branch: ${baseBranch}\n  sync_interval: 60\n  remote_sync: true\n`,
+    [
+      "dispatch:",
+      `  base_branch: ${baseBranch}`,
+      "  sync_interval: 60",
+      "  remote_sync: true",
+      "agent:",
+      "  skills:",
+      '    task_work: "$kspec-task-work"',
+      '    pr_review: "$kspec-review"',
+      "",
+    ].join("\n"),
     "utf-8",
   );
   await fs.writeFile(path.join(projectDir, "project.tasks.yaml"), "tasks: []\n", "utf-8");
@@ -337,6 +374,15 @@ async function createTrackedBranch(
     git(projectDir, `checkout ${previousBranch}`);
   }
 }
+
+async function cloneRemote(remoteDir: string): Promise<string> {
+  const cloneDir = await createTempDir("kspec-target-sync-reviewer-");
+  git(cloneDir, `clone "${remoteDir}" .`);
+  git(cloneDir, 'config user.email "test@example.com"');
+  git(cloneDir, 'config user.name "Test User"');
+  return cloneDir;
+}
+
 async function cleanupTempDirWithRetry(dir: string, retries = 3): Promise<void> {
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
@@ -351,6 +397,13 @@ async function cleanupTempDirWithRetry(dir: string, retries = 3): Promise<void> 
     }
   }
 }
+
+// AC: @trait-error-guidance ac-1 — N/A: internal dispatch engine sync, not a user-facing CLI command.
+// AC: @trait-error-guidance ac-2 — N/A: internal dispatch engine sync, not a user-facing CLI command.
+// AC: @trait-error-guidance ac-3 — N/A: internal dispatch engine sync, not a user-facing CLI command.
+// AC: @trait-error-guidance ac-4 — N/A: internal dispatch engine sync, not a user-facing CLI command.
+// AC: @trait-error-guidance ac-5 — N/A: internal dispatch engine sync, not a user-facing CLI command.
+// AC: @trait-error-guidance ac-6 — N/A: internal dispatch engine sync, not a user-facing CLI command.
 
 describe("dispatch target branch sync", () => {
   let projectDir: string;
@@ -652,6 +705,175 @@ describe("dispatch target branch sync", () => {
     expect(git(projectDir, "rev-parse dev")).toBe(localDevHead);
 
     await engine.stop();
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-concurrent-merge-same-target
+  // AC: @dispatch-remote-branch-sync ac-concurrent-merge-fix-cycle
+  it("rejects the stale second reviewer push on the same target and returns that task to fix cycle", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+
+    await createTrackedBranch(
+      projectDir,
+      "plan/alpha",
+      "plan-alpha.txt",
+      "alpha\n",
+      "create plan alpha",
+    );
+    await createTrackedBranch(
+      projectDir,
+      "dispatch/task/concurrent-merge-first/01ws1111111111111111111111",
+      "first-change.txt",
+      "first reviewer change\n",
+      "first reviewer branch",
+    );
+    const taskRef = "@concurrent-merge-second";
+    const reviewRef = "@concurrent-merge-review";
+    const taskTitle = "Concurrent merge stale reviewer";
+
+    kspec('plan add --title "Alpha Plan" --content "Plan alpha content" --slug alpha-plan', projectDir);
+    kspec('plan set @alpha-plan --branch "plan/alpha"', projectDir);
+    kspec(
+      `task add --title "${taskTitle}" --slug concurrent-merge-second --plan-ref @alpha-plan`,
+      projectDir,
+    );
+    kspec("task start @concurrent-merge-second", projectDir);
+
+    const workerWorkspace = await workspaceModule.provisionDispatchWorkspace({
+      projectDir,
+      taskRef,
+      taskStatus: "in_progress",
+      task: {
+        title: taskTitle,
+        slugs: ["concurrent-merge-second"],
+        plan_ref: "@alpha-plan",
+      },
+    });
+    await fs.writeFile(
+      path.join(workerWorkspace.cwd, "second-change.txt"),
+      "second reviewer change\n",
+      "utf-8",
+    );
+    git(workerWorkspace.cwd, "add second-change.txt");
+    git(workerWorkspace.cwd, 'commit -m "second reviewer branch"');
+    git(workerWorkspace.cwd, "push -u origin HEAD");
+
+    kspec("task submit @concurrent-merge-second", projectDir);
+    kspec(
+      'review add --title "Concurrent merge stale reviewer" --slug concurrent-merge-review --subject-type task --subject-ref @concurrent-merge-second',
+      projectDir,
+    );
+
+    const reviewerAgent = {
+      _ulid: testUlid("AGNT"),
+      id: "pr-reviewer",
+      name: "PR Reviewer",
+      capabilities: [],
+      tools: [],
+      conventions: [],
+      skills: [],
+      dispatch: [{ on: "task.pending_review" }],
+      adapter: "mock-acp",
+      auto_approve: false,
+      concurrency: { max_concurrent: 1 },
+    };
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    const originalPushIntegrationTarget = workspaceModule.pushIntegrationTarget;
+    let resolvePushResult!: (value: workspaceModule.PushIntegrationTargetResult) => void;
+    const pushResultPromise = new Promise<workspaceModule.PushIntegrationTargetResult>((resolve) => {
+      resolvePushResult = resolve;
+    });
+    const pushSpy = vi
+      .spyOn(workspaceModule, "pushIntegrationTarget")
+      .mockImplementation(async (...args: Parameters<typeof workspaceModule.pushIntegrationTarget>) => {
+        const result = await originalPushIntegrationTarget(...args);
+        resolvePushResult(result);
+        return result;
+      });
+
+    let reviewerOneDir: string | null = null;
+    try {
+      reviewerOneDir = await cloneRemote(remoteDir);
+
+      git(reviewerOneDir, "checkout -b plan/alpha origin/plan/alpha");
+      git(
+        reviewerOneDir,
+        'merge --no-ff origin/dispatch/task/concurrent-merge-first/01ws1111111111111111111111 -m "Merge first reviewer branch"',
+      );
+      const firstMergedHead = git(reviewerOneDir, "rev-parse HEAD");
+
+      git(reviewerOneDir, "push origin HEAD:plan/alpha");
+      git(projectDir, "checkout plan/alpha");
+      git(
+        projectDir,
+        `merge --no-ff ${workerWorkspace.metadata.canonicalBranch} -m "Merge second reviewer branch"`,
+      );
+      const secondMergedHead = git(projectDir, "rev-parse HEAD");
+
+      git(projectDir, "fetch origin plan/alpha");
+      expect(git(projectDir, "rev-parse origin/plan/alpha")).toBe(firstMergedHead);
+      expect(git(projectDir, "rev-parse origin/plan/alpha")).not.toBe(secondMergedHead);
+
+      vi.spyOn(invocationModule, "runInvocation").mockImplementation(async () => {
+        kspec(
+          "review verdict @concurrent-merge-review --decision request_changes --reviewer stale-reviewer",
+          projectDir,
+        );
+        return {
+          session: {} as any,
+          outcome: "success",
+          durationMs: 1,
+          turnCount: 1,
+        };
+      });
+
+      const task = kspecJson<any>("task get @concurrent-merge-second --json", projectDir);
+      const entry = {
+        agent: reviewerAgent,
+        change: {
+          taskRef,
+          fromStatus: "in_progress",
+          toStatus: "pending_review",
+          task,
+        },
+        retryCount: 0,
+        nextRetryAt: 0,
+        enqueuedAtMs: Date.now(),
+        sequence: 1,
+      };
+
+      await (engine as any)._spawnInvocation(reviewerAgent, entry);
+
+      const pushResult = await pushResultPromise;
+      expect(pushSpy).toHaveBeenCalledWith(projectDir, "plan/alpha", "origin");
+      expect(pushResult.pushed).toBe(false);
+      expect(pushResult.skipped).toBe(false);
+      expect(pushResult.error).toMatch(/non-fast-forward|\[rejected\]|fetch first/i);
+
+      const updatedTask = kspecJson<{ status: string; review_ref: string | null }>(
+        "task get @concurrent-merge-second --json",
+        projectDir,
+      );
+      expect(updatedTask.status).toBe("needs_work");
+      expect(updatedTask.review_ref).toBe(reviewRef);
+
+      const review = kspecJson<{ lifecycle_state: string; disposition: string }>(
+        "review get @concurrent-merge-review --json",
+        projectDir,
+      );
+      expect(review.lifecycle_state).toBe("closed");
+      expect(review.disposition).toBe("changes_requested");
+    } finally {
+      vi.restoreAllMocks();
+      await engine.stop();
+      if (reviewerOneDir) await cleanupTempDir(reviewerOneDir);
+    }
   });
 
   // AC: @dispatch-remote-branch-sync ac-push-target-periodic
@@ -1301,6 +1523,7 @@ describe("dispatch target branch sync", () => {
   });
 
   // AC: @dispatch-remote-branch-sync ac-pull-ff-only
+  // AC: @dispatch-remote-branch-sync ac-pull-no-merge-commits
   it("advances local branch only via fast-forward — no merge commits", async () => {
     ({ projectDir, remoteDir } = await setupProjectWithRemote());
     await setupProjectFiles(projectDir);
