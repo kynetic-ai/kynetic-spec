@@ -109040,3 +109040,29 @@ reviews:
     created_at: 2026-04-03T05:38:53.160Z
     updated_at: 2026-04-03T05:50:17.445Z
     notes: []
+  - _ulid: 01KN8Y9X18FGX4PKG2CEHTA8CP
+    slugs: []
+    title: Review task-sync-degraded-ac-updates (cycle 2)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KN8Y9X18DVX4C4MZ4W163MV0
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-03T05:50:52.456Z
+    examined_commit: d16345c7dec204b337a727fdf77cc81c59c19fe2
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KN8T19J4FBZYJ51306PV3NZA"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-03T05:50:52.456Z
+    updated_at: null
+    notes: []
