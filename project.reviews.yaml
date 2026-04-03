@@ -111983,6 +111983,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-03T19:30:07.072Z
+      - _ulid: 01KNADFNKY8RST3K3R7E2ZXSK8
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNADFMXGHPZVJJHTBV4YP0D2
+        timestamp: 2026-04-03T19:35:24.542Z
     examined_commit: fec66d40a61f725abef3a3c0107e9383b9a464b2
     external_links: []
     lifecycle_state: open
@@ -111992,8 +111999,26 @@ reviews:
       content_hash: ""
       ref: "@01KN8T1AZ0RSE7SA5SBK7AG5KD"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNADFMXGHPZVJJHTBV4YP0D2
+        anchor:
+          type: code
+          commit: fec66d40a61f725abef3a3c0107e9383b9a464b2
+          line_end: 3138
+          line_start: 3137
+          path: src/agent-runtime/dispatch.ts
+          side: head
+        entries:
+          - _ulid: 01KNADFMXGR63BXX5FVMPK1RR3
+            author: Jacob Chapel
+            body: Startup sync now runs twice.  already satisfied the on-start AC with a single , but this diff
+              adds a second unconditional call immediately after it. That means every engine start
+              performs two full remote sync passes for every active target branch, doubling
+              fetch/merge work and duplicate warning/log/degraded-state side effects on startup. The
+              new tests only assert final branch state, so they do not catch this regression.
+            created_at: 2026-04-03T19:35:23.824Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-03T19:29:41.831Z
-    updated_at: 2026-04-03T19:30:06.312Z
+    updated_at: 2026-04-03T19:35:23.824Z
     notes: []
