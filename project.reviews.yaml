@@ -109542,6 +109542,13 @@ reviews:
           status: pass
           name: dispatch sync focused tests
         timestamp: 2026-04-03T16:41:18.898Z
+      - _ulid: 01KNA3GXY3X2T9TGJCY8QHC6PC
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNA3GW1F1TGE11QY913YZ3A3
+        timestamp: 2026-04-03T16:41:20.067Z
     examined_commit: 8970bc4822de51d6b080c1c8b0619657196ca47d
     external_links: []
     lifecycle_state: open
@@ -109570,7 +109577,27 @@ reviews:
               annotation that does not prove the claimed behavior is a must-fix.
             created_at: 2026-04-03T16:41:13.728Z
         kind: blocker
+      - _ulid: 01KNA3GW1F1TGE11QY913YZ3A3
+        anchor:
+          type: code
+          commit: 8970bc4822de51d6b080c1c8b0619657196ca47d
+          line_end: 3215
+          line_start: 3207
+          path: src/agent-runtime/dispatch.ts
+          side: head
+        entries:
+          - _ulid: 01KNA3GW1GX20RRGMHRC8QQ01R
+            author: Jacob Chapel
+            body: The new multi-target sync loop still uses a single global degraded flag, and any successful
+              sync clears it unconditionally. In , a branch that diverges enters degraded state via
+              , but the next successful branch immediately calls  here. That means a failure on one
+              active target can be masked by a later success on another target, re-enabling
+              provisioning even though the original target is still unhealthy. This breaks the
+              task’s per-target partial-failure behavior and the scoped degradation ACs introduced
+              for workspace-scoped targets.
+            created_at: 2026-04-03T16:41:18.128Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-03T16:35:55.466Z
-    updated_at: 2026-04-03T16:41:18.119Z
+    updated_at: 2026-04-03T16:41:18.128Z
     notes: []
