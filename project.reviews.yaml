@@ -110790,6 +110790,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNA8YSR2ZD8JCHKF8MCB87AC
         timestamp: 2026-04-03T18:16:18.115Z
+      - _ulid: 01KNA8YWNMXYD1T8BE7MGJ676N
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNA8YVXN04CG4AFJQ92YMPT3
+        timestamp: 2026-04-03T18:16:20.404Z
     examined_commit: a1a65a28c894724d0ec94cb72ffefec6c5f32dfd
     external_links: []
     lifecycle_state: open
@@ -110824,7 +110831,26 @@ reviews:
               explicit, behavior-proving coverage.
             created_at: 2026-04-03T18:16:17.410Z
         kind: blocker
+      - _ulid: 01KNA8YVXN04CG4AFJQ92YMPT3
+        anchor:
+          type: code
+          commit: a1a65a28c894724d0ec94cb72ffefec6c5f32dfd
+          line_end: 1342
+          line_start: 1291
+          path: tests/dispatch-target-sync.test.ts
+          side: head
+        entries:
+          - _ulid: 01KNA8YVXNH8C25SD6D8129Y68
+            author: Jacob Chapel
+            body: This test is the behavioral proof that degradation remains scoped to the failed target while
+              another target continues syncing, but it is only annotated for
+              ac-partial-sync-scoped-degradation. The spec/task also claims coverage for
+              ac-divergence-scoped-to-target, and there is no AC annotation for that criterion
+              anywhere in the changed tests. Without the explicit annotation, the coverage tooling
+              cannot tell that this branch is intended to prove branch-scoped degradation behavior.
+            created_at: 2026-04-03T18:16:19.637Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-03T18:11:35.783Z
-    updated_at: 2026-04-03T18:16:17.410Z
+    updated_at: 2026-04-03T18:16:19.637Z
     notes: []
