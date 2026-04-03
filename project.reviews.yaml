@@ -110615,6 +110615,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-03T18:01:03.039Z
+      - _ulid: 01KNA8B3CRFBT5XW9J89KQPSK8
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNA8B2NXMND6FHWPF3SJ6SYJ
+        timestamp: 2026-04-03T18:05:31.928Z
     examined_commit: a1a65a28c894724d0ec94cb72ffefec6c5f32dfd
     external_links: []
     lifecycle_state: open
@@ -110624,8 +110631,20 @@ reviews:
       content_hash: ""
       ref: "@01KN8T1APSFZ9NRNP7TKT957GD"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNA8B2NXMND6FHWPF3SJ6SYJ
+        entries:
+          - _ulid: 01KNA8B2NX87YZMEXEVAJ5PB4Q
+            author: Jacob Chapel
+            body: |-
+              Review evidence log:
+              Files read: src/agent-runtime/dispatch.ts; packages/daemon/src/routes/agent-dispatch.ts; tests/dispatch-degraded-state.test.ts; tests/dispatch-target-sync.test.ts; tests/daemon-api/agent-dispatch.test.ts.
+              Commands run: git diff --stat 0f27e912..a1a65a28; git diff 0f27e912..a1a65a28 -- relevant files; kspec task get @01KN8T1APSFZ9NRNP7TKT957GD; kspec item get @dispatch-remote-branch-sync; kspec review for-task @01KN8T1APSFZ9NRNP7TKT957GD; grep -RniE "AC: @(dispatch-remote-branch-sync|trait-)" tests/...; rg -n "getDegradedState\(|_enterDegradedState|_exitDegradedState|degradedTargets|degraded_targets" ...; kspec validate; npm run typecheck; npm test -- dispatch-degraded-state dispatch-target-sync daemon-api/agent-dispatch; npm test.
+              Claims verified: per-target degraded state now gates queue draining by resolved target branch; daemon status routes preserve legacy degraded summary while exposing per-target degraded entries; sync_state events include target branch; public/internal API regression coverage exercises the new serialization.
+              Categories searched: correctness, edge cases, error handling, test quality, integration; no blockers found.
+            created_at: 2026-04-03T18:05:31.198Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-03T18:00:20.670Z
-    updated_at: 2026-04-03T18:01:02.294Z
+    updated_at: 2026-04-03T18:05:31.198Z
     notes: []
