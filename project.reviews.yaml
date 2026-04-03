@@ -112638,7 +112638,19 @@ reviews:
     slugs: []
     title: Review task-impl-sync-integration-tests (cycle 5)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: git checkout plan/plan-workspace-scoped-integration-target-sync/01kn8bx4 && git merge
+          --no-ff --no-commit dispatch/task/task-impl-sync-integration-tests/01kn8t1a completed
+          without conflicts against the actual local integration branch.
+        name: manual-merge-preflight
+        required: true
+        runner: git
+        created_at: 2026-04-03T20:34:42.504Z
+        completed_at: 2026-04-03T20:34:42.504Z
     events:
       - _ulid: 01KNAGJQC4HJ6WCN05HYGDVGY4
         actor: Jacob Chapel
@@ -112653,6 +112665,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-03T20:29:48.512Z
+      - _ulid: 01KNAGW8XTZP2H9GD4DSFSXC8F
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: manual-merge-preflight
+        timestamp: 2026-04-03T20:34:43.259Z
     examined_commit: 19f3e5312bbffda3de2bc2edde6d511f046ad545
     external_links: []
     lifecycle_state: open
@@ -112665,5 +112684,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-03T20:29:30.372Z
-    updated_at: 2026-04-03T20:29:47.772Z
+    updated_at: 2026-04-03T20:34:42.504Z
     notes: []
