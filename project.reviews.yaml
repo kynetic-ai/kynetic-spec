@@ -112074,6 +112074,12 @@ reviews:
         payload:
           thread_ulid: 01KNADFMXGHPZVJJHTBV4YP0D2
         timestamp: 2026-04-03T19:36:10.808Z
+      - _ulid: 01KNADH51TJN4NQXCT1Q42R7K1
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNADFMXGHPZVJJHTBV4YP0D2
+        timestamp: 2026-04-03T19:36:13.114Z
     examined_commit: fec66d40a61f725abef3a3c0107e9383b9a464b2
     external_links: []
     lifecycle_state: closed
@@ -112101,6 +112107,11 @@ reviews:
               fetch/merge work and duplicate warning/log/degraded-state side effects on startup. The
               new tests only assert final branch state, so they do not catch this regression.
             created_at: 2026-04-03T19:35:23.824Z
+          - _ulid: 01KNADH495XB4YNFSHA4EXGVC2
+            author: Jacob Chapel
+            body: Superseded by thread 01KNADG11CKXTTG2XJ5PSV6B9P. This duplicate was created by a shell quoting
+              failure while posting the same finding.
+            created_at: 2026-04-03T19:36:12.325Z
         kind: blocker
         resolved_at: 2026-04-03T19:36:10.042Z
         resolved_by: Jacob Chapel
@@ -112132,5 +112143,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-03T19:35:43.526Z
     created_at: 2026-04-03T19:29:41.831Z
-    updated_at: 2026-04-03T19:36:10.042Z
+    updated_at: 2026-04-03T19:36:12.325Z
     notes: []
