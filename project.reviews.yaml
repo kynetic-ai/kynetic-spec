@@ -111852,7 +111852,18 @@ reviews:
     slugs: []
     title: Review stabilize flaky file-lock same-process reclaim test
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed full suite with --fresh: 2068/2068 suites, 7491/7496 tests, 5 skipped. Targeted
+          tests/file-lock.test.ts also passed 10 fresh reruns with 21/21 tests each."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-03T19:23:01.533Z
+        completed_at: 2026-04-03T19:23:01.533Z
     events:
       - _ulid: 01KNAC4K9AHG020S19VFT3P09Z
         actor: Jacob Chapel
@@ -111867,6 +111878,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-03T19:12:09.957Z
+      - _ulid: 01KNACS1C3WBT69BKT7201VX9E
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-03T19:23:02.915Z
     examined_commit: c36094b173afa341f8e985018648d0c6363db25f
     external_links: []
     lifecycle_state: open
@@ -111879,5 +111897,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-03T19:11:53.131Z
-    updated_at: 2026-04-03T19:12:09.168Z
+    updated_at: 2026-04-03T19:23:01.533Z
     notes: []
