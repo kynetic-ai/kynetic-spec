@@ -79,7 +79,7 @@ tags:
   - sync
   - implementation
 vcs_refs: []
-review_ref: "@01KN8XKYK88RHXCEA3GJJMYM9F"
+review_ref: "@01KN8Z5P04M4J7TXRF0DHR518J"
 submission_linkage:
   review_url: null
   branch: dev
@@ -187,6 +187,13 @@ history:
         previous: 2026-04-03T05:35:49.605Z
     command: task-submit
     timestamp: 2026-04-03T06:03:07.288Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KN8Z5P04M4J7TXRF0DHR518J"
+        previous: "@01KN8XKYK88RHXCEA3GJJMYM9F"
+    command: review-link
+    timestamp: 2026-04-03T06:06:05.111Z
 created_at: 2026-04-03T04:36:16.352Z
 started_at: 2026-04-03T05:54:35.031Z
 submitted_at: 2026-04-03T06:03:07.288Z
