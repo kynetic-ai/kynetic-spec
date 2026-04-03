@@ -9,3 +9,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-03T05:04:07.254Z
+  - _ulid: 01KN8VQ5NV9BVF7N7XWSJD0MA0
+    content: "Updated @dispatch-remote-branch-sync push ACs atomically: rewrote
+      ac-push-target-after-merge, ac-push-target-periodic, and ac-target-push-serialization for
+      workspace-scoped targets; added ac-push-target-periodic-retry,
+      ac-target-push-cross-branch-concurrency, ac-concurrent-merge-same-target, and
+      ac-concurrent-merge-fix-cycle. Verified with kspec item get. kspec validate and kspec validate
+      --alignment both returned only existing repo-wide warnings (orphaned skill dir, longstanding
+      alignment/completeness warnings), with no task-specific validation errors introduced by this
+      update."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-03T05:05:41.564Z
