@@ -109218,6 +109218,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-03T06:06:26.767Z
+      - _ulid: 01KN8ZD29N2GRDDZ3FRESS8WYV
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KN8ZD1M1EH2FGSR5D4HTGSKP
+        timestamp: 2026-04-03T06:10:04.725Z
     examined_commit: fcf063252b2ab61303004bfffb1d6a6e00d042bc
     external_links: []
     lifecycle_state: open
@@ -109227,8 +109234,24 @@ reviews:
       content_hash: ""
       ref: "@01KN8T19V08CS20XYP25QJHRC5"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KN8ZD1M1EH2FGSR5D4HTGSKP
+        entries:
+          - _ulid: 01KN8ZD1M2R6MBNRTTRZV01YQ6
+            author: Jacob Chapel
+            body: "Review evidence log: Files read: src/agent-runtime/dispatch.ts,
+              tests/dispatch-target-sync.test.ts, tests/dispatch-branch-push-lifecycle.test.ts.
+              Commands run: kspec task get @01KN8T19V08CS20XYP25QJHRC5, kspec item get
+              @dispatch-remote-branch-sync, git diff --stat/--name-only/--unified=80
+              fb3342db29d0f52d03646cc5ec095e7d9bd0c310...fcf063252b2ab61303004bfffb1d6a6e00d042bc,
+              rg for active-target call sites and AC annotations, kspec validate, npm test --
+              --fresh. Claims verified: fix-cycle claims that startup sync, periodic push,
+              pre-provision sync, and reviewer push now use the active target set; verified in
+              runtime call sites and AC-annotated tests. Categories searched: correctness, edge
+              cases, error handling, test quality, integration; no new findings."
+            created_at: 2026-04-03T06:10:04.034Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-03T06:06:02.756Z
-    updated_at: 2026-04-03T06:06:26.055Z
+    updated_at: 2026-04-03T06:10:04.034Z
     notes: []
