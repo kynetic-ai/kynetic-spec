@@ -1,1 +1,13 @@
-notes: []
+notes:
+  - _ulid: 01KNA4YW8MDSFZ4E2E2194R6CZ
+    content: "Approach: build on the active-target and per-target sync refactors already merged into the
+      integration branch. Replace the global degraded flag with a per-target map, resolve each
+      queued task's target before degraded checks, and thread branch identity through degraded logs,
+      status, and broadcast payloads. Edge cases: invalid or missing plan refs fall back to
+      configured base branch; mixed healthy/degraded targets in one drain pass; recovery should
+      re-drain queues without interrupting in-flight work. Test plan: extend dispatch sync tests to
+      cover per-target degradation, healthy-target unblock, recovery requeue, API status shape, and
+      broadcast payload branch identity."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-03T17:06:25.684Z
