@@ -25,6 +25,7 @@ import {
   type LoadedTask,
   type LoadedAgent,
 } from "../parser/index.js";
+import { loadDispatchWorkspaceRegistry } from "../parser/dispatch-workspaces.js";
 import { DEFAULT_IDLE_GRACE_MS, DEFAULT_KSPEC_CLI_PATH, runInvocation } from "./invocation.js";
 import { SessionRegistry } from "./session-registry.js";
 import type { SessionIdleContext } from "./invocation.js";
@@ -52,6 +53,7 @@ import {
   reconcileDispatchWorkspaceArtifacts,
   discoverWorkspaceForReviewOrFixCycle,
   fastForwardDispatchIntegrationBranch,
+  integrationTargetNeedsPush,
   pushDispatchBranch,
   pushIntegrationTarget,
   runDispatchIntegrationTargetGit,
@@ -858,16 +860,19 @@ export class DispatchEngine {
   /** Central event bus for structured event emission and subscription. AC: @dispatch-event-envelope ac-1 through ac-6 */
   private _eventBus: EventBus;
   /**
-   * Whether a push to the integration target is currently in progress.
+   * Integration target branches currently being pushed to remote.
    * AC: @dispatch-remote-branch-sync ac-target-push-serialization
+   * AC: @dispatch-remote-branch-sync ac-target-push-cross-branch-concurrency
    */
-  private targetPushInProgress = false;
+  private _targetPushesInProgress = new Set<string>();
   /** Resolved effective remote_sync value (set once at start time). */
   private remoteSyncEnabled = false;
   /** Resolved remote name for push operations (null = no remote). */
   private dispatchRemote: string | null = null;
-  /** Resolved integration target branch for push operations. */
-  private integrationTargetBranch: string | null = null;
+  /** Project-configured base branch. Always included in the active target set. */
+  private _configuredBaseBranch: string | null = null;
+  /** Shared source of truth for active integration targets across push and pull paths. */
+  private _activeTargets = new Set<string>();
 
   // ─── Target Branch Sync State ───────────────────────────────────────────────
   // AC: @dispatch-remote-branch-sync ac-pull-target-on-start through ac-no-remote
@@ -882,8 +887,6 @@ export class DispatchEngine {
   private _remoteSyncEnabled: boolean | null = null;
   /** Resolved remote name for sync operations (cached at start). */
   private _syncRemote: string | null = null;
-  /** Resolved base branch for sync operations (cached at start). */
-  private _syncBaseBranch: string | null = null;
   /** Configured sync interval in milliseconds. */
   private _syncIntervalMs = 0;
   /** Timestamp of first consecutive transient failure (ms since epoch). 0 = no failures. */
@@ -976,12 +979,11 @@ export class DispatchEngine {
       const { config } = await loadProjectConfig(this.projectDir);
       this.dispatchRemote = await resolveDispatchRemote(this.projectDir);
       this.remoteSyncEnabled = resolveDispatchRemoteSync(config, this.dispatchRemote !== null);
-      this.integrationTargetBranch = resolvedConfig.baseBranch;
+      this._configuredBaseBranch ??= resolvedConfig.baseBranch;
     } catch (err) {
       console.warn("[dispatch] Failed to resolve remote sync config, defaulting to disabled:", err);
       this.remoteSyncEnabled = false;
       this.dispatchRemote = null;
-      this.integrationTargetBranch = null;
     }
 
     // AC: @agent-dispatch-engine ac-8 - Bootstrap: evaluate existing task states
@@ -1021,6 +1023,7 @@ export class DispatchEngine {
 
     const cleanupState = resolveCleanupStateForTaskChange(change);
     if (cleanupState) {
+      const cleanupTargetBranch = await this._loadWorkspaceTargetForTask(change.taskRef);
       try {
         await this.shadowMutex.runExclusive(async () => {
           await reconcileDispatchWorkspaceLifecycle({
@@ -1035,6 +1038,9 @@ export class DispatchEngine {
             cleanupState,
           });
         });
+        if (cleanupTargetBranch) {
+          await this._removeActiveTargetIfOrphaned(cleanupTargetBranch);
+        }
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
         console.error(
@@ -1322,7 +1328,7 @@ export class DispatchEngine {
       this._isTargetSyncStale() &&
       !this._hasActiveReviewerInvocation()
     ) {
-      await this._syncTargetBranch();
+      await this._syncActiveTargetBranches();
     }
 
     try {
@@ -1352,7 +1358,7 @@ export class DispatchEngine {
     // AC: @dispatch-remote-branch-sync ac-push-target-periodic
     // Push the integration target if it has unpushed commits (retries failed post-merge pushes).
     if (this.remoteSyncEnabled && this.dispatchRemote) {
-      this._pushIntegrationTargetAsync("periodic-sync");
+      await this._pushActiveTargetsAsync("periodic-sync");
     }
 
     const enqueued = await this._evaluateAllTasks({ skipIfActive: true });
@@ -1405,45 +1411,74 @@ export class DispatchEngine {
    * AC: @dispatch-remote-branch-sync ac-target-push-serialization
    * AC: @dispatch-remote-branch-sync ac-push-non-fatal
    */
-  private async _pushIntegrationTargetAsync(trigger: string): Promise<void> {
-    // AC: @dispatch-remote-branch-sync ac-target-push-serialization
-    if (this.targetPushInProgress) {
+  private async _pushIntegrationTargetAsync(
+    targetBranch: string,
+    trigger: string,
+  ): Promise<void> {
+    if (!targetBranch) {
       return;
     }
-    this.targetPushInProgress = true;
+    if (trigger === "periodic-sync" && !await integrationTargetNeedsPush(this.projectDir, targetBranch)) {
+      return;
+    }
+    // AC: @dispatch-remote-branch-sync ac-target-push-serialization
+    if (this._targetPushesInProgress.has(targetBranch)) {
+      return;
+    }
+    this._targetPushesInProgress.add(targetBranch);
     try {
-      const config = this._resolveBaseBranch();
-      if (!config) {
-        return;
-      }
       try {
-        await resolveDispatchIntegrationMutationScope(this.projectDir, config);
+        await resolveDispatchIntegrationMutationScope(this.projectDir, targetBranch);
       } catch (err) {
-        const reason = this._formatUnsafeMutationScopeReason(err, config);
+        const reason = this._formatUnsafeMutationScopeReason(err, targetBranch);
         this._enterDegradedState(reason);
-        console.warn(`[dispatch] Integration target push skipped (${trigger}): ${reason}`);
+        console.warn(
+          `[dispatch] Integration target push skipped for "${targetBranch}" (${trigger}): ${reason}`,
+        );
         return;
       }
-      const result = await pushIntegrationTarget(this.projectDir, config, this.dispatchRemote!);
+      const result = await pushIntegrationTarget(this.projectDir, targetBranch, this.dispatchRemote!);
       if (result.error) {
         // AC: @dispatch-remote-branch-sync ac-push-non-fatal
-        console.warn(`[dispatch] Integration target push failed (${trigger}): ${result.error}`);
+        console.warn(
+          `[dispatch] Integration target push failed for "${targetBranch}" (${trigger}): ${result.error}`,
+        );
       } else if (result.pushed) {
-        console.log(`[dispatch] Pushed integration target "${config}" (${trigger})`);
+        console.log(`[dispatch] Pushed integration target "${targetBranch}" (${trigger})`);
       }
     } catch (err) {
       // AC: @dispatch-remote-branch-sync ac-push-non-fatal
-      console.warn(`[dispatch] Unexpected error pushing integration target (${trigger}):`, err);
+      console.warn(
+        `[dispatch] Unexpected error pushing integration target "${targetBranch}" (${trigger}):`,
+        err,
+      );
     } finally {
-      this.targetPushInProgress = false;
+      this._targetPushesInProgress.delete(targetBranch);
     }
   }
 
+  private async _pushActiveTargetsAsync(trigger: string): Promise<void> {
+    const activeTargets = this._resolveActiveTargets();
+    if (activeTargets.length === 0) {
+      return;
+    }
+    await Promise.all(
+      activeTargets.map((branch) => this._pushIntegrationTargetAsync(branch, trigger)),
+    );
+  }
+
   /**
-   * Resolve the dispatch base branch from the cached config. Returns null if unavailable.
+   * Resolve a specific integration target branch, defaulting to the configured base branch.
    */
-  private _resolveBaseBranch(): string | null {
-    return this.integrationTargetBranch;
+  private _resolveBaseBranch(branch?: string): string | null {
+    return branch ?? this._configuredBaseBranch;
+  }
+
+  /**
+   * Resolve the current active integration targets as a stable array snapshot.
+   */
+  private _resolveActiveTargets(): string[] {
+    return Array.from(this._activeTargets).toSorted();
   }
 
   /**
@@ -2336,7 +2371,17 @@ export class DispatchEngine {
     try {
       // AC: @dispatch-remote-branch-sync ac-pull-target-before-provision — sync if stale
       if (this._remoteSyncEnabled && this._isTargetSyncStale()) {
-        await this._syncTargetBranch();
+        const resolvedConfig = await resolveDispatchWorkspaceConfig(this.projectDir, {
+          taskRef: entry.change.taskRef,
+          task: entry.change.task
+            ? {
+                title: entry.change.task.title,
+                slugs: entry.change.task.slugs,
+                plan_ref: entry.change.task.plan_ref,
+              }
+            : undefined,
+        });
+        await this._syncTargetBranch(resolvedConfig.baseBranch);
       }
 
       try {
@@ -2382,6 +2427,8 @@ export class DispatchEngine {
         );
         return false;
       }
+
+      await this._addActiveTarget(workspace.metadata.integrationTargetBranch);
 
       let dispatchEnv = {
         KSPEC_DISPATCH_BASE_BRANCH: workspace.metadata.baseBranch,
@@ -2875,7 +2922,10 @@ export class DispatchEngine {
             // When a reviewer invocation completes, push the integration target
             // (the reviewer may have merged into it).
             if (role === "reviewer") {
-              this._pushIntegrationTargetAsync("post-merge");
+              void this._pushIntegrationTargetAsync(
+                workspace.metadata.integrationTargetBranch,
+                "post-merge",
+              );
             }
           }
         })
@@ -3049,20 +3099,21 @@ export class DispatchEngine {
       }
 
       this._syncRemote = remotes[0] ?? null;
-      this._syncBaseBranch = resolvedConfig.baseBranch;
+      this._configuredBaseBranch = resolvedConfig.baseBranch;
+      await this._rebuildActiveTargetSet();
 
-      if (!this._syncBaseBranch || !this._syncRemote) {
+      if (!this._configuredBaseBranch || !this._syncRemote) {
         // Can't sync without a base branch or remote
         this._remoteSyncEnabled = false;
         return;
       }
 
       console.log(
-        `[dispatch] Target sync enabled: ${this._syncRemote}/${this._syncBaseBranch} (interval: ${config.dispatch.sync_interval}s)`,
+        `[dispatch] Target sync enabled for ${this._resolveActiveTargets().join(", ")} via ${this._syncRemote} (interval: ${config.dispatch.sync_interval}s)`,
       );
 
       // AC: @dispatch-remote-branch-sync ac-pull-target-on-start — sync before bootstrap
-      await this._syncTargetBranch();
+      await this._syncActiveTargetBranches();
     } catch (err) {
       console.error("[dispatch] Failed to initialize target sync:", err);
       // Non-fatal: engine continues without sync
@@ -3077,9 +3128,10 @@ export class DispatchEngine {
    * AC: @dispatch-remote-branch-sync ac-transient-no-degrade
    * AC: @dispatch-remote-branch-sync ac-no-remote
    */
-  async _syncTargetBranch(): Promise<TargetSyncResult> {
+  async _syncTargetBranch(branch?: string): Promise<TargetSyncResult> {
+    const baseBranch = this._resolveBaseBranch(branch);
     // AC: @dispatch-remote-branch-sync ac-no-remote — skip when no remote
-    if (!this._remoteSyncEnabled || !this._syncRemote || !this._syncBaseBranch) {
+    if (!this._remoteSyncEnabled || !this._syncRemote || !baseBranch) {
       return "skipped";
     }
 
@@ -3094,10 +3146,10 @@ export class DispatchEngine {
       try {
         mutationScope = await resolveDispatchIntegrationMutationScope(
           this.projectDir,
-          this._syncBaseBranch,
+          baseBranch,
         );
       } catch (err) {
-        const reason = this._formatUnsafeMutationScopeReason(err, this._syncBaseBranch);
+        const reason = this._formatUnsafeMutationScopeReason(err, baseBranch);
         this._enterDegradedState(reason);
         return "unsafe_target";
       }
@@ -3105,8 +3157,8 @@ export class DispatchEngine {
       // Step 1: Fetch the target branch from remote
       const fetchResult = await runDispatchIntegrationTargetGit(
         this.projectDir,
-        this._syncBaseBranch,
-        ["fetch", this._syncRemote, this._syncBaseBranch],
+        baseBranch,
+        ["fetch", this._syncRemote, baseBranch],
         { timeout: 30_000 },
       );
 
@@ -3139,14 +3191,14 @@ export class DispatchEngine {
       const mergeResult = mutationScope.targetBranchCheckedOut
         ? await runDispatchIntegrationTargetGit(
             this.projectDir,
-            this._syncBaseBranch,
-            ["merge", "--ff-only", `${this._syncRemote}/${this._syncBaseBranch}`],
+            baseBranch,
+            ["merge", "--ff-only", `${this._syncRemote}/${baseBranch}`],
             { timeout: 10_000 },
           )
         : await fastForwardDispatchIntegrationBranch(
             this.projectDir,
-            this._syncBaseBranch,
-            `${this._syncRemote}/${this._syncBaseBranch}`,
+            baseBranch,
+            `${this._syncRemote}/${baseBranch}`,
           );
 
       if (mergeResult.status !== 0) {
@@ -3154,8 +3206,8 @@ export class DispatchEngine {
         const stdout = mergeResult.stdout?.trim() ?? "";
 
         // AC: @dispatch-remote-branch-sync ac-divergence-enters-degraded
-        // AC: @dispatch-remote-branch-sync ac-divergence-log-guidance
-        const reason = await this._classifyDivergence(stderr || stdout);
+        // AC: @dispatch-remote-branch-sync ac-divergence-log-classification
+        const reason = await this._classifyDivergence(stderr || stdout, baseBranch);
         this._enterDegradedState(reason);
         return "diverged";
       }
@@ -3175,21 +3227,26 @@ export class DispatchEngine {
         return "up_to_date";
       }
 
-      console.log(`[dispatch] Target branch synced: ${this._syncRemote}/${this._syncBaseBranch}`);
+      console.log(`[dispatch] Target branch synced: ${this._syncRemote}/${baseBranch}`);
       return "synced";
     } finally {
       this._targetSyncRunning = false;
     }
   }
 
+  private async _syncActiveTargetBranches(): Promise<void> {
+    for (const branch of this._resolveActiveTargets()) {
+      await this._syncTargetBranch(branch);
+    }
+  }
+
   /**
    * Classify a divergence based on the git merge --ff-only error output.
    * Distinguishes "local has unpushed merges" from "remote history was rewritten".
-   * AC: @dispatch-remote-branch-sync ac-divergence-log-guidance
+   * AC: @dispatch-remote-branch-sync ac-divergence-log-classification
    */
-  private async _classifyDivergence(_mergeOutput: string): Promise<string> {
+  private async _classifyDivergence(_mergeOutput: string, branch: string): Promise<string> {
     const remote = this._syncRemote;
-    const branch = this._syncBaseBranch;
     if (!remote || !branch) {
       return "Integration target divergence detected, but remote or branch context is unavailable.";
     }
@@ -3241,7 +3298,7 @@ export class DispatchEngine {
   /**
    * Enter degraded state with a descriptive reason.
    * AC: @dispatch-remote-branch-sync ac-divergence-enters-degraded
-   * AC: @dispatch-remote-branch-sync ac-divergence-log-guidance
+   * AC: @dispatch-remote-branch-sync ac-divergence-log-classification
    * AC: @dispatch-remote-branch-sync ac-degraded-status-broadcast
    */
   private _enterDegradedState(reason: string): void {
@@ -3362,6 +3419,7 @@ export class DispatchEngine {
     enabled: boolean;
     remote: string | null;
     baseBranch: string | null;
+    activeTargets: string[];
     lastSyncTimestamp: number;
     consecutiveFailures: number;
     syncRunning: boolean;
@@ -3374,7 +3432,8 @@ export class DispatchEngine {
     return {
       enabled: this._remoteSyncEnabled ?? false,
       remote: this._syncRemote,
-      baseBranch: this._syncBaseBranch,
+      baseBranch: this._configuredBaseBranch,
+      activeTargets: this._resolveActiveTargets(),
       lastSyncTimestamp: this._lastTargetSyncTimestamp,
       consecutiveFailures: this._consecutiveTransientFailures,
       syncRunning: this._targetSyncRunning,
@@ -3396,5 +3455,66 @@ export class DispatchEngine {
       reason: this._degradedReason,
       enteredAt: this._degradedEnteredAt,
     };
+  }
+
+  private async _rebuildActiveTargetSet(): Promise<void> {
+    const nextTargets = new Set<string>();
+    const configuredBaseBranch = this._configuredBaseBranch;
+    if (configuredBaseBranch) {
+      nextTargets.add(configuredBaseBranch);
+    }
+
+    const ctx = await initContext(this.projectDir);
+    const records = await loadDispatchWorkspaceRegistry(ctx);
+    for (const record of records) {
+      if (record.lifecycle_state === "closed") continue;
+      const branch = record.integration.target_branch.trim();
+      if (branch.length > 0) {
+        nextTargets.add(branch);
+      }
+    }
+
+    this._activeTargets = nextTargets;
+  }
+
+  private async _addActiveTarget(branch: string): Promise<void> {
+    if (!branch.trim()) return;
+    this._activeTargets.add(branch);
+    const configuredBaseBranch = this._configuredBaseBranch;
+    if (configuredBaseBranch) {
+      this._activeTargets.add(configuredBaseBranch);
+    }
+  }
+
+  private async _removeActiveTargetIfOrphaned(branch: string): Promise<void> {
+    const trimmedBranch = branch.trim();
+    if (!trimmedBranch) return;
+    if (trimmedBranch === this._configuredBaseBranch) {
+      this._activeTargets.add(trimmedBranch);
+      return;
+    }
+
+    const ctx = await initContext(this.projectDir);
+    const records = await loadDispatchWorkspaceRegistry(ctx);
+    const hasOpenWorkspace = records.some(
+      (record) =>
+        record.lifecycle_state !== "closed" && record.integration.target_branch === trimmedBranch,
+    );
+    if (!hasOpenWorkspace) {
+      this._activeTargets.delete(trimmedBranch);
+    }
+    const configuredBaseBranch = this._configuredBaseBranch;
+    if (configuredBaseBranch) {
+      this._activeTargets.add(configuredBaseBranch);
+    }
+  }
+
+  private async _loadWorkspaceTargetForTask(taskRef: string): Promise<string | null> {
+    const ctx = await initContext(this.projectDir);
+    const records = await loadDispatchWorkspaceRegistry(ctx);
+    const record = records
+      .filter((entry) => entry.task_ref === taskRef && entry.lifecycle_state !== "closed")
+      .toSorted((a, b) => (a.timestamps.updated_at < b.timestamps.updated_at ? 1 : -1))[0];
+    return record?.integration.target_branch ?? null;
   }
 }

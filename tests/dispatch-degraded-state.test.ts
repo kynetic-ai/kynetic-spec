@@ -191,7 +191,7 @@ describe("dispatch engine degraded state", () => {
     await engine.stop();
   });
 
-  // AC: @dispatch-remote-branch-sync ac-divergence-log-guidance
+  // AC: @dispatch-remote-branch-sync ac-divergence-log-classification
   it("distinguishes unpushed merges from remote rewrite in degraded reason", async () => {
     ({ projectDir, remoteDir } = await setupProjectWithRemote());
     await setupProjectFiles(projectDir);
@@ -216,7 +216,7 @@ describe("dispatch engine degraded state", () => {
     await engine.stop();
   });
 
-  // AC: @dispatch-remote-branch-sync ac-divergence-log-guidance (remote rewrite case)
+  // AC: @dispatch-remote-branch-sync ac-divergence-log-classification (remote rewrite case)
   it("identifies remote history rewrite in degraded guidance", async () => {
     ({ projectDir, remoteDir } = await setupProjectWithRemote());
     await setupProjectFiles(projectDir);
