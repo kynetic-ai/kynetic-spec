@@ -107551,9 +107551,25 @@ reviews:
           status: fail
           name: AC coverage mapping
         timestamp: 2026-04-03T00:37:21.350Z
+      - _ulid: 01KN8CBZ8S76EWQP6672HMYDMM
+        actor: codex@openai
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-03T00:37:25.913Z
+      - _ulid: 01KN8CBZ8S70XFWHKK1T4ZEH5C
+        actor: codex@openai
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-03T00:37:25.913Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -107600,7 +107616,14 @@ reviews:
               implementation/testing guidance there.
             created_at: 2026-04-03T00:37:01.497Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai
+        role: reviewer
+        created_at: 2026-04-03T00:37:25.913Z
     created_at: 2026-04-03T00:36:37.193Z
-    updated_at: 2026-04-03T00:37:17.421Z
+    updated_at: 2026-04-03T00:37:25.913Z
     notes: []
