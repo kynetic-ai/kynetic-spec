@@ -1410,13 +1410,14 @@ export class DispatchEngine {
    *
    * AC: @dispatch-remote-branch-sync ac-push-target-after-merge
    * AC: @dispatch-remote-branch-sync ac-push-target-periodic
-   * AC: @dispatch-remote-branch-sync ac-target-push-serialization
-   * AC: @dispatch-remote-branch-sync ac-push-non-fatal
-   */
+  * AC: @dispatch-remote-branch-sync ac-target-push-serialization
+  * AC: @dispatch-remote-branch-sync ac-push-non-fatal
+  */
   private async _pushIntegrationTargetAsync(
-    targetBranch: string,
+    branch: string | undefined,
     trigger: string,
   ): Promise<void> {
+    const targetBranch = this._resolveBaseBranch(branch);
     if (!targetBranch) {
       return;
     }
@@ -3153,7 +3154,6 @@ export class DispatchEngine {
    * AC: @dispatch-remote-branch-sync ac-no-remote
    */
   async _syncTarget(branch?: string): Promise<TargetSyncResult> {
-  async _syncTarget(branch?: string): Promise<TargetSyncResult> {
     const baseBranch = this._resolveBaseBranch(branch);
     // AC: @dispatch-remote-branch-sync ac-no-remote — skip when no remote
     if (!this._remoteSyncEnabled || !this._syncRemote || !baseBranch) {
@@ -3314,12 +3314,6 @@ export class DispatchEngine {
     } catch {
       targetCache.set(planRef, configuredBaseBranch);
       return configuredBaseBranch;
-    }
-  }
-
-  private async _syncActiveTargetBranches(): Promise<void> {
-    for (const branch of this._resolveActiveTargets()) {
-      await this._syncTargetBranch(branch);
     }
   }
 
@@ -3592,67 +3586,6 @@ export class DispatchEngine {
       reason: state.reason,
       enteredAt: state.enteredAt,
     }));
-  }
-
-  private async _rebuildActiveTargetSet(): Promise<void> {
-    const nextTargets = new Set<string>();
-    const configuredBaseBranch = this._configuredBaseBranch;
-    if (configuredBaseBranch) {
-      nextTargets.add(configuredBaseBranch);
-    }
-
-    const ctx = await initContext(this.projectDir);
-    const records = await loadDispatchWorkspaceRegistry(ctx);
-    for (const record of records) {
-      if (record.lifecycle_state === "closed") continue;
-      const branch = record.integration.target_branch.trim();
-      if (branch.length > 0) {
-        nextTargets.add(branch);
-      }
-    }
-
-    this._activeTargets = nextTargets;
-  }
-
-  private async _addActiveTarget(branch: string): Promise<void> {
-    if (!branch.trim()) return;
-    this._activeTargets.add(branch);
-    const configuredBaseBranch = this._configuredBaseBranch;
-    if (configuredBaseBranch) {
-      this._activeTargets.add(configuredBaseBranch);
-    }
-  }
-
-  private async _removeActiveTargetIfOrphaned(branch: string): Promise<void> {
-    const trimmedBranch = branch.trim();
-    if (!trimmedBranch) return;
-    if (trimmedBranch === this._configuredBaseBranch) {
-      this._activeTargets.add(trimmedBranch);
-      return;
-    }
-
-    const ctx = await initContext(this.projectDir);
-    const records = await loadDispatchWorkspaceRegistry(ctx);
-    const hasOpenWorkspace = records.some(
-      (record) =>
-        record.lifecycle_state !== "closed" && record.integration.target_branch === trimmedBranch,
-    );
-    if (!hasOpenWorkspace) {
-      this._activeTargets.delete(trimmedBranch);
-    }
-    const configuredBaseBranch = this._configuredBaseBranch;
-    if (configuredBaseBranch) {
-      this._activeTargets.add(configuredBaseBranch);
-    }
-  }
-
-  private async _loadWorkspaceTargetForTask(taskRef: string): Promise<string | null> {
-    const ctx = await initContext(this.projectDir);
-    const records = await loadDispatchWorkspaceRegistry(ctx);
-    const record = records
-      .filter((entry) => entry.task_ref === taskRef && entry.lifecycle_state !== "closed")
-      .toSorted((a, b) => (a.timestamps.updated_at < b.timestamps.updated_at ? 1 : -1))[0];
-    return record?.integration.target_branch ?? null;
   }
 
   private async _rebuildActiveTargetSet(): Promise<void> {
