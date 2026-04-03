@@ -9046,6 +9046,10 @@ features:
             id: ac-divergence-log-resolution
             then: The log message includes resolution steps appropriate to the type of divergence
             when: The failure is logged
+          - given: A task is not provisioned because its integration target is in degraded state
+            id: ac-degraded-task-queued
+            then: The task remains in the queue for future evaluation
+            when: The dispatch engine skips the task
         tags: []
         decisions:
           - _ulid: 01KM3ZMCXZ5DTWYDPSP8GBKNTD
