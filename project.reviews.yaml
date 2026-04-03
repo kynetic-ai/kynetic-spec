@@ -107471,6 +107471,19 @@ reviews:
         required: true
         created_at: 2026-04-03T00:37:17.488Z
         completed_at: 2026-04-03T00:37:17.488Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "The plan's relevant implementation tasks do not give executable guidance for two
+          rewritten behaviors: per-target periodic-sync deferral while a reviewer is active, and the
+          new divergence-log guidance contract. Those behaviors are present only in spec-rewrite
+          tasks, so a fresh worker could complete the implementation tasks without implementing
+          them."
+        name: Task standalone-ness
+        required: true
+        created_at: 2026-04-03T00:37:17.415Z
+        completed_at: 2026-04-03T00:37:17.415Z
     events:
       - _ulid: 01KN8CAFP8297PY893SSC1XK05
         actor: "@claude"
@@ -107513,6 +107526,13 @@ reviews:
           status: pass
           name: Dependency ordering
         timestamp: 2026-04-03T00:37:19.126Z
+      - _ulid: 01KN8CBSQE1632715JQM22G9HD
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: Task standalone-ness
+        timestamp: 2026-04-03T00:37:20.239Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -107564,5 +107584,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-03T00:36:37.193Z
-    updated_at: 2026-04-03T00:37:17.488Z
+    updated_at: 2026-04-03T00:37:17.415Z
     notes: []
