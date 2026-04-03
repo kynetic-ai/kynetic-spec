@@ -9,3 +9,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-03T18:46:53.030Z
+  - _ulid: 01KNAASAP4EBDH5FEXT33WT58D
+    content: "Root cause: tests/test-runner.test.ts asserted checkBuild() against the mutable repo root,
+      but dispatch worktrees may start without dist/ and full-suite execution can concurrently
+      rebuild/remove dist via runner auto-fix. Updated the positive coverage to use an isolated
+      synthetic built-project fixture so the prerequisite check is deterministic and no longer
+      coupled to ambient workspace state."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-03T18:48:15.300Z
