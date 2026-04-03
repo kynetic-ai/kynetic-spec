@@ -24646,7 +24646,7 @@
   slugs: []
   title: Stabilize flaky test-runner build prerequisite check
   type: bug
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 2
@@ -24659,6 +24659,7 @@
   created_at: 2026-04-03T18:44:31.496Z
   started_at: 2026-04-03T18:45:41.252Z
   submitted_at: 2026-04-03T18:51:21.259Z
+  completed_at: 2026-04-03T19:03:26.915Z
   automation: eligible
 - _ulid: 01KNABHKZG59Z9JS7VDJCKFJ7H
   slugs: []
