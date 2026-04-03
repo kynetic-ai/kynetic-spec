@@ -107782,6 +107782,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN8SDT7K708MT5CK0EG27V33
         timestamp: 2026-04-03T04:25:38.511Z
+      - _ulid: 01KN8SDZPFHX2NRVM338RDMFVF
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN8SDYZ8BC2ZWZ6B269SGRF3
+        timestamp: 2026-04-03T04:25:43.375Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -107807,7 +107814,22 @@ reviews:
               assertions, so this AC still fails that rule and should be split before approval."
             created_at: 2026-04-03T04:25:37.779Z
         kind: blocker
+      - _ulid: 01KN8SDYZ8BC2ZWZ6B269SGRF3
+        anchor:
+          type: structured
+          field: ac-degraded-no-provision
+          ref: "@dispatch-remote-branch-sync"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KN8SDYZ86XS0NA6R20589RP4
+            author: "@claude"
+            body: "ac-degraded-no-provision still asserts two outcomes in one Then clause: the task is not
+              provisioned, and it remains in the queue. Those are separable behaviors with distinct
+              verification surfaces, so this AC has not been fully converted to the round-4
+              single-assertion style."
+            created_at: 2026-04-03T04:25:42.632Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-03T04:25:03.273Z
-    updated_at: 2026-04-03T04:25:37.779Z
+    updated_at: 2026-04-03T04:25:42.632Z
     notes: []
