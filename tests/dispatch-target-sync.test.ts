@@ -569,6 +569,247 @@ describe("dispatch target branch sync", () => {
     );
     expect((engine as any)._resolveBaseBranch()).toBe("dev");
     expect((engine as any)._resolveBaseBranch("plan/shared")).toBe("plan/shared");
+    await engine.stop();
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-push-target-after-merge
+  it("pushes the workspace-specific integration target after merge without pushing the base branch", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+
+    git(projectDir, "checkout -b plan/alpha dev");
+    git(projectDir, "push -u origin plan/alpha");
+
+    await fs.writeFile(path.join(projectDir, "dev-only.txt"), "dev only\n", "utf-8");
+    git(projectDir, "checkout dev");
+    git(projectDir, "add dev-only.txt");
+    git(projectDir, 'commit -m "dev only commit"');
+    const localDevHead = git(projectDir, "rev-parse dev");
+    const remoteDevHeadBefore = git(projectDir, "rev-parse origin/dev");
+
+    git(projectDir, "checkout plan/alpha");
+    await fs.writeFile(path.join(projectDir, "plan-only.txt"), "plan only\n", "utf-8");
+    git(projectDir, "add plan-only.txt");
+    git(projectDir, 'commit -m "plan only commit"');
+    const localPlanHead = git(projectDir, "rev-parse plan/alpha");
+    git(projectDir, "checkout dev");
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    await (engine as any)._pushIntegrationTargetAsync("plan/alpha", "post-merge");
+
+    git(projectDir, "fetch origin");
+    expect(git(projectDir, "rev-parse origin/plan/alpha")).toBe(localPlanHead);
+    expect(git(projectDir, "rev-parse origin/dev")).toBe(remoteDevHeadBefore);
+    expect(git(projectDir, "rev-parse dev")).toBe(localDevHead);
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-push-target-periodic
+  // AC: @dispatch-remote-branch-sync ac-push-target-periodic-retry
+  it("pushes every active integration target with local commits during periodic reconciliation", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+
+    git(projectDir, "checkout -b plan/alpha dev");
+    git(projectDir, "push -u origin plan/alpha");
+
+    await saveWorkspaceRecord(projectDir, {
+      taskRef: "@01TASK00000000000000000006",
+      taskSlug: "task-plan-alpha-push",
+      targetBranch: "plan/alpha",
+    });
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    git(projectDir, "checkout dev");
+    await fs.writeFile(path.join(projectDir, "dev-periodic.txt"), "dev periodic\n", "utf-8");
+    git(projectDir, "add dev-periodic.txt");
+    git(projectDir, 'commit -m "dev periodic commit"');
+    const localDevHead = git(projectDir, "rev-parse dev");
+
+    git(projectDir, "checkout plan/alpha");
+    await fs.writeFile(path.join(projectDir, "plan-periodic.txt"), "plan periodic\n", "utf-8");
+    git(projectDir, "add plan-periodic.txt");
+    git(projectDir, 'commit -m "plan periodic commit"');
+    const localPlanHead = git(projectDir, "rev-parse plan/alpha");
+    git(projectDir, "checkout dev");
+
+    await (engine as any)._reconcile();
+
+    git(projectDir, "fetch origin");
+    expect(git(projectDir, "rev-parse origin/dev")).toBe(localDevHead);
+    expect(git(projectDir, "rev-parse origin/plan/alpha")).toBe(localPlanHead);
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-push-target-periodic
+  it("does not degrade a clean active target during periodic reconciliation when another worktree owns the branch checkout", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+
+    git(projectDir, "checkout -b human-feature dev");
+
+    const occupiedWorktreeDir = await createTempDir("kspec-target-sync-occupied-");
+    execSync(`git worktree add --force "${occupiedWorktreeDir}" dev`, {
+      cwd: projectDir,
+      stdio: "pipe",
+      env: workspaceModule.buildDispatchGitEnv(),
+    });
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    const pushSpy = vi.spyOn(workspaceModule, "pushIntegrationTarget");
+
+    try {
+      pushSpy.mockClear();
+      (engine as any).dispatchRemote = "origin";
+      (engine as any)._activeTargets = new Set(["dev"]);
+
+      await (engine as any)._pushActiveTargetsAsync("periodic-sync");
+
+      expect(pushSpy).not.toHaveBeenCalled();
+      expect(engine.getTargetSyncStatus().degraded.active).toBe(false);
+    } finally {
+      execSync(`git worktree remove --force "${occupiedWorktreeDir}"`, {
+        cwd: projectDir,
+        stdio: "pipe",
+        env: workspaceModule.buildDispatchGitEnv(),
+      });
+      await cleanupTempDir(occupiedWorktreeDir);
+    }
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-target-push-serialization
+  it("skips a second push when the same integration target is already being pushed", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+
+    await fs.writeFile(path.join(projectDir, "dev-serialization.txt"), "serialization\n", "utf-8");
+    git(projectDir, "add dev-serialization.txt");
+    git(projectDir, 'commit -m "dev serialization commit"');
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    let releaseFirstPush: (() => void) | null = null;
+    const startedBranches: string[] = [];
+    vi.spyOn(workspaceModule, "resolveDispatchIntegrationMutationScope").mockImplementation(
+      async (_projectDir, branch) => ({
+        projectDir,
+        integrationBranch: branch,
+        currentBranch: "dev",
+        targetBranchCheckedOut: false,
+      }),
+    );
+    vi.spyOn(workspaceModule, "pushIntegrationTarget").mockImplementation(
+      async (_projectDir, branch) => {
+        startedBranches.push(branch);
+        await new Promise<void>((resolve) => {
+          releaseFirstPush = resolve;
+        });
+        return { pushed: true, skipped: false, error: null };
+      },
+    );
+
+    const firstPush = (engine as any)._pushIntegrationTargetAsync("dev", "post-merge");
+    await vi.waitFor(() => {
+      expect(startedBranches).toEqual(["dev"]);
+    });
+
+    expect((engine as any)._targetPushesInProgress.has("dev")).toBe(true);
+
+    await (engine as any)._pushIntegrationTargetAsync("dev", "periodic-sync");
+
+    expect(startedBranches).toEqual(["dev"]);
+
+    releaseFirstPush?.();
+    await firstPush;
+
+    expect((engine as any)._targetPushesInProgress.has("dev")).toBe(false);
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-target-push-cross-branch-concurrency
+  it("allows pushes to different integration targets to proceed concurrently", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+
+    git(projectDir, "checkout -b plan/alpha dev");
+    git(projectDir, "push -u origin plan/alpha");
+
+    git(projectDir, "checkout dev");
+    await fs.writeFile(path.join(projectDir, "dev-concurrency.txt"), "dev concurrency\n", "utf-8");
+    git(projectDir, "add dev-concurrency.txt");
+    git(projectDir, 'commit -m "dev concurrency commit"');
+
+    git(projectDir, "checkout plan/alpha");
+    await fs.writeFile(path.join(projectDir, "plan-concurrency.txt"), "plan concurrency\n", "utf-8");
+    git(projectDir, "add plan-concurrency.txt");
+    git(projectDir, 'commit -m "plan concurrency commit"');
+    git(projectDir, "checkout dev");
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    const releaseByBranch = new Map<string, () => void>();
+    const startedBranches: string[] = [];
+    vi.spyOn(workspaceModule, "resolveDispatchIntegrationMutationScope").mockImplementation(
+      async (_projectDir, branch) => ({
+        projectDir,
+        integrationBranch: branch,
+        currentBranch: "dev",
+        targetBranchCheckedOut: false,
+      }),
+    );
+    vi.spyOn(workspaceModule, "pushIntegrationTarget").mockImplementation(
+      async (_projectDir, branch) => {
+        startedBranches.push(branch);
+        await new Promise<void>((resolve) => {
+          releaseByBranch.set(branch, resolve);
+        });
+        return { pushed: true, skipped: false, error: null };
+      },
+    );
+
+    const devPush = (engine as any)._pushIntegrationTargetAsync("dev", "periodic-sync");
+    const planPush = (engine as any)._pushIntegrationTargetAsync("plan/alpha", "periodic-sync");
+    await vi.waitFor(() => {
+      expect(new Set(startedBranches)).toEqual(new Set(["dev", "plan/alpha"]));
+    });
+
+    expect((engine as any)._targetPushesInProgress.has("dev")).toBe(true);
+    expect((engine as any)._targetPushesInProgress.has("plan/alpha")).toBe(true);
+
+    releaseByBranch.get("dev")?.();
+    releaseByBranch.get("plan/alpha")?.();
+    await Promise.all([devPush, planPush]);
+
+    expect((engine as any)._targetPushesInProgress.size).toBe(0);
 
     await engine.stop();
   });
