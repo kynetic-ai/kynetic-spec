@@ -22149,9 +22149,20 @@ runs:
     completed_at: 2026-04-03T19:10:48.264Z
   - _ulid: 01KNAE0WSB855CTSDN5GQRR6J2
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-03T19:44:48.940Z
+        completed_at: 2026-04-03T19:45:31.643Z
+        notes: "What worked well: the fix-cycle blocker was isolated quickly by comparing the review anchor
+          to the runtime entry point, then adding a behavioral regression test that asserted startup
+          sync call counts per active target."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-03T19:45:31.643Z
+        completed_at: 2026-04-03T19:45:31.643Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-03T19:44:48.940Z
