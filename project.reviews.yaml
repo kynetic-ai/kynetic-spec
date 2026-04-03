@@ -107462,6 +107462,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-03T00:36:47.160Z
+      - _ulid: 01KN8CB81W0QNGJM5G06XQ1YFG
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN8CB7CBE56D1HTYERM9RC2F
+        timestamp: 2026-04-03T00:37:02.140Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -107471,8 +107478,28 @@ reviews:
       content_hash: ""
       ref: "@plan-workspace-scoped-integration-target-sync"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KN8CB7CBE56D1HTYERM9RC2F
+        anchor:
+          type: structured
+          field: ac-pull-target-periodic-deferred
+          ref: "@dispatch-remote-branch-sync"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KN8CB7CBYY6VD5BG7YATB751
+            author: "@claude"
+            body: The rewrite for ac-pull-target-periodic-deferred is now present, but no implementation task
+              claims or describes that behavior. @task-sync-pull-ac-updates only rewrites the AC
+              text, while @task-impl-pull-path covers
+              ac-pull-target-on-start/ac-pull-target-periodic/ac-pull-target-before-provision/ac-pull-ff-only/ac-per-target-staleness/ac-partial-sync-continues
+              and omits the per-target reviewer deferral rule. That leaves a concrete behavioral
+              requirement without executable implementation guidance or coverage mapping, so a
+              worker could complete the pull-path task and still keep the old global defer behavior.
+              Add this AC to the implementation task's Covers line and spell out the per-target
+              active-reviewer skip/defer logic in What/How/Testing.
+            created_at: 2026-04-03T00:37:01.451Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-03T00:36:37.193Z
-    updated_at: 2026-04-03T00:36:46.449Z
+    updated_at: 2026-04-03T00:37:01.451Z
     notes: []
