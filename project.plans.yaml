@@ -33807,6 +33807,14 @@ plans:
             that target and continue to the next. Replace the direct
             _syncTargetBranch call in periodic reconciliation (line 1325) and
             engine start (line 3065) with _syncAllActiveTargets.
+          - In _syncAllActiveTargets, implement per-target reviewer deferral:
+            before syncing each target, check whether a reviewer invocation is
+            currently active on that target (by checking in-flight workspace
+            metadata). If a reviewer is active on that specific target, skip
+            it and defer to the next interval. Other targets in the same cycle
+            that have no active reviewer are synced normally. This replaces the
+            current global deferral where any active reviewer blocks the entire
+            sync cycle.
           - For pre-provision sync (line 2338): resolve the task's integration
             target first (via plan_ref → plan.branch or default), then sync
             just that specific target if stale. The existing
@@ -33829,12 +33837,14 @@ plans:
           Testing: Test per-target staleness (syncing branch A does not refresh
           branch B's timestamp). Test partial failure (branch A fails, branch B
           still syncs). Test pre-provision syncs the specific target. Test
-          on-start syncs all active targets. Test backward compatibility:
-          single-target case.
+          on-start syncs all active targets. Test per-target reviewer deferral
+          (reviewer active on branch A defers A but not B). Test backward
+          compatibility: single-target case.
 
           Covers: @dispatch-remote-branch-sync ac-pull-target-on-start,
-          ac-pull-target-periodic, ac-pull-target-before-provision,
-          ac-pull-ff-only, ac-per-target-staleness, ac-partial-sync-continues.
+          ac-pull-target-periodic, ac-pull-target-periodic-deferred,
+          ac-pull-target-before-provision, ac-pull-ff-only,
+          ac-per-target-staleness, ac-partial-sync-continues.
 
       # ─── Phase 8: Implementation — Degraded State ───
 
@@ -33892,6 +33902,12 @@ plans:
           - Update the SyncStateEvent (line 3257, 3263) to include the
             target branch name in the broadcast. The WebSocket event payload
             should identify which branch entered/exited degraded state.
+          - Update the divergence log guidance in _enterDegradedState to
+            include the affected target branch name. The existing log message
+            distinguishes between "local has unpushed merges" and "remote
+            history was rewritten" — preserve that distinction but add the
+            branch name so operators know which target diverged. The
+            resolution steps should also reference the specific branch.
           - Update _syncTarget (from task-impl-pull-path) calls to
             _enterDegradedState and _exitDegradedState to pass the branch.
           - Update _drainQueues post-recovery (line 3295) — currently called
@@ -33919,9 +33935,9 @@ plans:
           mixed degraded/healthy targets processes healthy tasks.
 
           Covers: @dispatch-remote-branch-sync ac-divergence-enters-degraded,
-          ac-degraded-no-provision, ac-degraded-auto-recover,
-          ac-degraded-status-api, ac-degraded-status-broadcast,
-          ac-degraded-recovery-logged.
+          ac-divergence-log-guidance, ac-degraded-no-provision,
+          ac-degraded-auto-recover, ac-degraded-status-api,
+          ac-degraded-status-broadcast, ac-degraded-recovery-logged.
 
       # ─── Phase 9: Testing ───
 
@@ -33988,9 +34004,10 @@ plans:
           Covers: @dispatch-remote-branch-sync ac-push-target-after-merge,
           ac-push-target-periodic, ac-target-push-serialization,
           ac-concurrent-merge-same-target, ac-pull-target-on-start,
-          ac-pull-target-periodic, ac-pull-target-before-provision,
-          ac-per-target-staleness, ac-partial-sync-continues,
-          ac-divergence-enters-degraded, ac-degraded-no-provision,
+          ac-pull-target-periodic, ac-pull-target-periodic-deferred,
+          ac-pull-target-before-provision, ac-per-target-staleness,
+          ac-partial-sync-continues, ac-divergence-enters-degraded,
+          ac-divergence-log-guidance, ac-degraded-no-provision,
           ac-degraded-auto-recover, ac-active-target-includes-base,
           ac-active-target-rebuilt-on-start, ac-active-target-removed-on-cleanup.
       ```
@@ -34069,3 +34086,9 @@ plans:
           ac-unified-target-resolution (moved to description design decisions), renumber phases"
         author: "@claude"
         created_at: 2026-04-03T00:35:10.002Z
+      - _ulid: 01KN8CDTANH0ZHG3BSAYV0CM3K
+        content: "Fix review round 2: add ac-pull-target-periodic-deferred to pull impl task (What +
+          Covers), add ac-divergence-log-guidance to degraded state impl task (What + Covers), add
+          both to integration test Covers"
+        author: "@claude"
+        created_at: 2026-04-03T00:38:26.389Z
