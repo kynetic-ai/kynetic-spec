@@ -107230,7 +107230,17 @@ reviews:
     slugs: []
     title: "Plan review: Workspace-Scoped Integration Target Sync"
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Tasks include concrete what/why/how guidance, target refs, and verification notes
+          sufficient for an agent to execute without chat-history context.
+        name: Task standalone-ness
+        required: true
+        created_at: 2026-04-03T00:32:37.572Z
+        completed_at: 2026-04-03T00:32:37.572Z
     events:
       - _ulid: 01KN8C1BDDPAYA8KM298G13H1B
         actor: "@claude"
@@ -107273,6 +107283,13 @@ reviews:
           kind: question
           thread_ulid: 01KN8C2K3G75T4FQRHEK82HG79
         timestamp: 2026-04-03T00:32:22.407Z
+      - _ulid: 01KN8C36CYPHZAWXC84G7833YP
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Task standalone-ness
+        timestamp: 2026-04-03T00:32:38.302Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -107349,5 +107366,5 @@ reviews:
         kind: question
     verdicts: []
     created_at: 2026-04-03T00:31:37.901Z
-    updated_at: 2026-04-03T00:32:18.544Z
+    updated_at: 2026-04-03T00:32:37.572Z
     notes: []
