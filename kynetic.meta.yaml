@@ -11975,6 +11975,28 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-03T17:56:58.523Z
+  - _ulid: 01KNA81AZCQ2828J9G7JHNF22G
+    type: friction
+    content: "Review/test friction: launching two npm test runs in parallel can race in the test-runner
+      build bootstrap and fail with cp EISDIR in dist/daemon while both processes try to repair the
+      missing build output. The runner should serialize or lock its auto-build path so concurrent
+      test invocations fail cleanly or wait instead of corrupting the bootstrap step."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-04-03T18:00:12.012Z
+  - _ulid: 01KNA81B58426VF6X2M940CDF6
+    type: friction
+    content: "Merge workflow friction: a reviewer snapshot can report manual-merge conflicts that
+      disappear after resetting the local integration branch to the current remote tip. The merge
+      flow should refresh the integration target before declaring a conflict so stale local state
+      does not trigger an unnecessary fix cycle."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-04-03T18:00:12.200Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
