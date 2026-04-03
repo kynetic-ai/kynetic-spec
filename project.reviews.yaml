@@ -108693,6 +108693,26 @@ reviews:
         runner: kspec
         created_at: 2026-04-03T05:30:38.341Z
         completed_at: 2026-04-03T05:30:38.341Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: AGENTS.md; kspec-agents.md; .agents/skills/review-gates/SKILL.md;
+          task/spec/plan output for @01KN8T19J4FBZYJ51306PV3NZA, @dispatch-remote-branch-sync, and
+          @plan-workspace-scoped-integration-target-sync; tests/dispatch-degraded-state.test.ts;
+          src/agent-runtime/dispatch.ts. Commands run: git status/log/show/diff/branch; kspec task
+          get; kspec review for-task/get/open; kspec validate; kspec item ac list/get; kspec plan
+          get; kspec search; grep/rg for AC annotations; npm test. Claims verified: the AC rename
+          from log-guidance to log-classification was checked by searching code/tests for both ids;
+          per-target degraded ACs were compared against the approved plan. Categories searched:
+          correctness/spec alignment, test quality/annotation integrity, edge cases around
+          degraded-state scoping, integration with existing implementation annotations; finding
+          recorded on stale deleted-AC references."
+        name: evidence-log
+        required: false
+        runner: reviewer
+        created_at: 2026-04-03T05:30:38.394Z
+        completed_at: 2026-04-03T05:30:38.394Z
     events:
       - _ulid: 01KN8WV0HEQC1BS4V3AD7SW8BC
         actor: Jacob Chapel
@@ -108721,6 +108741,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-04-03T05:30:39.226Z
+      - _ulid: 01KN8X4X9KKF3X0KSKZ6XNC0QV
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: evidence-log
+        timestamp: 2026-04-03T05:30:40.307Z
     examined_commit: fb3342db29d0f52d03646cc5ec095e7d9bd0c310
     external_links: []
     lifecycle_state: open
@@ -108733,5 +108760,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-03T05:25:15.950Z
-    updated_at: 2026-04-03T05:30:38.341Z
+    updated_at: 2026-04-03T05:30:38.394Z
     notes: []
