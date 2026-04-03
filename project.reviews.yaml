@@ -110104,7 +110104,19 @@ reviews:
     slugs: []
     title: Review task-impl-push-path (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate exited 6 with only pre-existing repository warnings: orphaned skill
+          directory, orphaned specs, and invalid AC annotations outside this task; no task-specific
+          validation errors"
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-03T17:34:49.042Z
+        completed_at: 2026-04-03T17:34:49.042Z
     events:
       - _ulid: 01KNA6G4GM6TCBZPWP7WXR59SP
         actor: Jacob Chapel
@@ -110119,6 +110131,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-03T17:33:51.520Z
+      - _ulid: 01KNA6JX2KNJXDP7J6N78GA95W
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-03T17:34:50.451Z
     examined_commit: e54dfdb82cbd4c4d80d3c1826555d2f75d26a764
     external_links: []
     lifecycle_state: open
@@ -110131,5 +110150,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-03T17:33:19.764Z
-    updated_at: 2026-04-03T17:33:50.213Z
+    updated_at: 2026-04-03T17:34:49.042Z
     notes: []
