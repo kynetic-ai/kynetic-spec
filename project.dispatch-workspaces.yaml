@@ -36034,7 +36034,7 @@ workspaces:
         head: c36094b173afa341f8e985018648d0c6363db25f
         last_seen_at: 2026-04-03T19:11:11.136Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-flaky-file-lock-same-process-reclaim-test-01knabhk
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 73efb23bafc862eacc54776458d75d109bdf04cf
     bootstrap:
       status: succeeded
@@ -36126,7 +36126,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-03T19:46:09.239Z
+      updated_at: 2026-04-03T19:46:15.447Z
     integration:
       status: pending
       detail: null
@@ -36141,10 +36141,10 @@ workspaces:
     task_slug: task-impl-sync-integration-tests
     timestamps:
       closed_at: null
-      last_active_at: 2026-04-03T19:37:30.759Z
-      last_reconciled_at: 2026-04-03T19:46:09.239Z
+      last_active_at: 2026-04-03T19:46:15.447Z
+      last_reconciled_at: 2026-04-03T19:46:15.447Z
       created_at: 2026-04-03T19:11:20.190Z
-      updated_at: 2026-04-03T19:46:13.455Z
+      updated_at: 2026-04-03T19:46:15.447Z
     workspace_id: dispatch-workspace-01KN8T1AZ0RSE7SA5SBK7AG5KD
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
