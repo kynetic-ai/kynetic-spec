@@ -111681,6 +111681,17 @@ reviews:
         runner: tsc
         created_at: 2026-04-03T19:08:29.909Z
         completed_at: 2026-04-03T19:08:29.909Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate exited with warnings only; warnings match pre-existing repository
+          validation debt and no new task-specific errors were introduced.
+        name: kspec-validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-03T19:08:32.234Z
+        completed_at: 2026-04-03T19:08:32.234Z
     events:
       - _ulid: 01KNABJ9MAZC0AVBW06PZTGP6D
         actor: Jacob Chapel
@@ -111709,6 +111720,13 @@ reviews:
           status: pass
           name: typecheck
         timestamp: 2026-04-03T19:08:30.755Z
+      - _ulid: 01KNABYFV9K7GRPADNSMK7P469
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec-validate
+        timestamp: 2026-04-03T19:08:33.001Z
     examined_commit: bede094168c08241eafd28456e192e13359a01a6
     external_links: []
     lifecycle_state: open
@@ -111752,5 +111770,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-03T19:01:53.418Z
-    updated_at: 2026-04-03T19:08:29.909Z
+    updated_at: 2026-04-03T19:08:32.234Z
     notes: []
