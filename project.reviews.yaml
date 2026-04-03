@@ -112288,7 +112288,18 @@ reviews:
     slugs: []
     title: Review @01KN8T1AZ0RSE7SA5SBK7AG5KD
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed: 2068/2068 suites, 7510 passed, 5 skipped. The test runner rebuilt missing
+          dist/cli/index.js before execution and then completed successfully."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-03T20:03:34.091Z
+        completed_at: 2026-04-03T20:03:34.091Z
     events:
       - _ulid: 01KNAEQS517EP82VA7KRJFDDNG
         actor: Jacob Chapel
@@ -112303,6 +112314,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-03T19:57:38.442Z
+      - _ulid: 01KNAF38B32ZVD0MK70VK01YYH
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-03T20:03:34.883Z
     examined_commit: 734d424d229e0f2f5118bbca66af94c33700f2e5
     external_links: []
     lifecycle_state: open
@@ -112315,5 +112333,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-03T19:57:18.881Z
-    updated_at: 2026-04-03T19:57:37.691Z
+    updated_at: 2026-04-03T20:03:34.091Z
     notes: []
