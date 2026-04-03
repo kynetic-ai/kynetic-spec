@@ -11,3 +11,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-03T17:06:25.684Z
+  - _ulid: 01KNA5M3RS0GN8WGC7S8SCE6EE
+    content: "Implemented per-target degraded state in dispatch runtime. Replaced the stored global
+      degraded snapshot with branch-scoped degraded entries, updated queue draining to resolve each
+      candidate task's target before provisioning and defer only candidates on degraded branches,
+      and made recovery re-drain queues whenever any target exits degraded state. Verification: npm
+      test -- dispatch-degraded-state dispatch-target-sync passed; full npm test passed (2068 suites
+      / 7501 tests, 5 skipped); kspec validate reported only pre-existing repository warnings."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-03T17:18:01.497Z
