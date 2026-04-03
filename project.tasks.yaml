@@ -24692,7 +24692,7 @@
   type: task
   spec_ref: "@dispatch-remote-branch-sync"
   plan_ref: "@plan-workspace-scoped-integration-target-sync"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 2
@@ -24704,4 +24704,5 @@
   todos_count: 0
   created_at: 2026-04-03T22:39:58.233Z
   started_at: 2026-04-03T22:42:41.747Z
+  submitted_at: 2026-04-03T22:50:36.467Z
   automation: eligible
