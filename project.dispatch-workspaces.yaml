@@ -34963,7 +34963,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-03T05:14:59.127Z
+      updated_at: 2026-04-03T05:15:27.792Z
     integration:
       status: merged
       detail: integration:merged
@@ -34979,18 +34979,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-03T05:07:03.080Z
-      last_reconciled_at: 2026-04-03T05:15:25.429Z
+      last_reconciled_at: 2026-04-03T05:15:27.792Z
       created_at: 2026-04-03T05:03:06.634Z
-      updated_at: 2026-04-03T05:15:25.429Z
+      updated_at: 2026-04-03T05:15:27.792Z
     workspace_id: dispatch-workspace-01KN8T19142F1SJ9T5DG6P8VXA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: fb3342db29d0f52d03646cc5ec095e7d9bd0c310
-        last_seen_at: 2026-04-03T05:06:51.087Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-sync-push-ac-updates-01kn8t19-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-sync-push-ac-updates/01kn8t19
