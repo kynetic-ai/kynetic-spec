@@ -8898,14 +8898,10 @@ features:
             then: The log message distinguishes between "local has unpushed merges" and "remote history was
               rewritten"
             when: The failure is logged
-          - given: |
-              The dispatch engine is in degraded state
+          - given: A task becomes eligible for dispatch and its resolved integration target is in degraded state
             id: ac-degraded-no-provision
-            then: |
-              No new workspaces are provisioned; the task remains in the queue;
-              existing in-flight invocations continue to completion normally
-            when: |
-              A new task becomes eligible for dispatch
+            then: The task is not provisioned
+            when: The dispatch engine evaluates the task for provisioning
           - given: |
               The dispatch engine is in degraded state
             id: ac-degraded-status-api
