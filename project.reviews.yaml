@@ -112520,6 +112520,23 @@ reviews:
         runner: kspec
         created_at: 2026-04-03T20:18:03.619Z
         completed_at: 2026-04-03T20:18:03.619Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/agent-runtime/dispatch.ts, src/agent-runtime/workspace.ts,
+          tests/dispatch-target-sync.test.ts, scripts/build-plugin.cjs, package.json. Commands run:
+          kspec task get, kspec item get, kspec validate, grep AC annotations, git
+          diff/stat/name-only/diff --check, npm test -- dispatch-target-sync.test.ts, npm run build,
+          merge-base checks, merge preflights, git log/status/fetch. Claims verified: startup sync
+          regression stays fixed, periodic push precheck reuses shared helper, current origin plan
+          target merges cleanly. Categories searched: correctness, edge cases, error handling, test
+          quality, integration; no surviving blockers found."
+        name: review-evidence
+        required: false
+        runner: codex
+        created_at: 2026-04-03T20:18:05.859Z
+        completed_at: 2026-04-03T20:18:05.859Z
     events:
       - _ulid: 01KNAFETVWPRS19BWS3WGRS15G
         actor: Jacob Chapel
@@ -112555,6 +112572,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-04-03T20:18:04.375Z
+      - _ulid: 01KNAFXVNJAN4BR94K02X56WME
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-04-03T20:18:06.642Z
     examined_commit: 734d424d229e0f2f5118bbca66af94c33700f2e5
     external_links: []
     lifecycle_state: open
@@ -112567,5 +112591,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-03T20:09:54.300Z
-    updated_at: 2026-04-03T20:18:03.619Z
+    updated_at: 2026-04-03T20:18:05.859Z
     notes: []
