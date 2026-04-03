@@ -1,1 +1,13 @@
-notes: []
+notes:
+  - _ulid: 01KN8T9RSP0KEG9BSWTFGN8FW6
+    content: "Approach: rewrite only the @dispatch-remote-branch-sync description via kspec item set to
+      establish workspace-scoped integration target terminology before AC rewrites. Edge
+      cases/design decisions to preserve: base branch always active, target resolution happens at
+      provisioning, first push occurs after first invocation completion, fast-forward-only sync,
+      staleness resolves at merge time, active target set rebuilds from workspace registry on engine
+      start, per-target degraded/push state isolation, and concurrent same-target merges fail
+      non-fast-forward and follow normal fix-cycle handling. Verification: inspect the updated item
+      text with kspec item get and run kspec validate to ensure the spec state remains consistent."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-03T04:40:53.814Z
