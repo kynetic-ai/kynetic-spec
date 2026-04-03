@@ -21370,7 +21370,7 @@ runs:
     completed_at: 2026-04-02T23:09:09.780Z
   - _ulid: 01KN8TS1SHK8V1GTBERSP0FVSK
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -21385,7 +21385,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-03T04:49:59.581Z
-        completed_at: 2026-04-03T04:49:59.581Z
+        completed_at: 2026-04-03T04:50:10.946Z
+        notes: "High-confidence items identified. Friction: detached reviewer snapshots for
+          shadow-only/spec-only changes can lack an obvious git diff, forcing review evidence
+          reconstruction from kspec CLI state. Success: review/task integration handled approval,
+          no-op merge verification, and completion with a clear audit trail."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-03T04:50:10.946Z
+        completed_at: 2026-04-03T04:50:10.946Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-03T04:49:14.545Z
