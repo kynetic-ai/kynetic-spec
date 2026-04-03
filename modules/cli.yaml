@@ -9046,6 +9046,10 @@ features:
             id: ac-divergence-scoped-to-target
             then: The other targets remain unaffected and continue normal sync operations
             when: Other active integration targets are evaluated
+          - given: An integration target enters degraded state due to branch divergence
+            id: ac-divergence-log-target
+            then: The log message identifies the affected target branch
+            when: The failure is logged
         tags: []
         decisions:
           - _ulid: 01KM3ZMCXZ5DTWYDPSP8GBKNTD
