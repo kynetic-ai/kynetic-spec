@@ -12162,6 +12162,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-03T20:04:39.838Z
+  - _ulid: 01KNAF9TEADX2FWY3P6XP2RQK6
+    type: friction
+    content: Manual merge preflight findings can go stale across fast fix cycles when the integration
+      target advances; a fresh isolated merge check was needed to disprove a reopened conflict on an
+      already-rebased branch.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-03T20:07:10.026Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
