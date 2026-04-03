@@ -21625,7 +21625,7 @@ runs:
     completed_at: 2026-04-03T06:05:10.577Z
   - _ulid: 01KNA30MGD03YJT2N2VATMKY0C
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -21639,7 +21639,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-03T16:33:10.669Z
-        completed_at: 2026-04-03T16:33:10.669Z
+        completed_at: 2026-04-03T16:33:28.981Z
+        notes: "High-confidence items from this session: friction: the mandatory rebase step can produce
+          misleading conflicts on stacked dispatch branches when dependency commits are already
+          merged into the integration lineage; success: the content-hash-cached test runner made
+          focused regression runs plus the required full npm test sweep practical in one session.
+          Both were checked against search results first and were not already tracked."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-03T16:33:28.981Z
+        completed_at: 2026-04-03T16:33:28.981Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-03T16:32:26.125Z
