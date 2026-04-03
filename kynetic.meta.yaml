@@ -11787,6 +11787,16 @@ observations:
     resolved_at: 2026-04-03T04:52:13.443Z
     resolved_by: Jacob Chapel
     created_at: 2026-04-03T04:51:38.436Z
+  - _ulid: 01KN8VK1PPK0Z8027BGFN2X1Q9
+    type: friction
+    content: The condensed npm test runner can stay silent for minutes during long runs, which makes
+      reviewers unable to tell whether the suite is still progressing or hung without manually
+      inspecting processes and /tmp/kspec-test-cache artifacts. Consider emitting periodic
+      heartbeat/progress lines or the active result/log paths while the run is in flight.
+    author: codex
+    resolution: null
+    resolved: false
+    created_at: 2026-04-03T05:03:26.422Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
