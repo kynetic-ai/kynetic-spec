@@ -112634,3 +112634,29 @@ reviews:
     created_at: 2026-04-03T20:09:54.300Z
     updated_at: 2026-04-03T20:18:22.721Z
     notes: []
+  - _ulid: 01KNAGJQC43847FZWHYADK93WK
+    slugs: []
+    title: Review task-impl-sync-integration-tests (cycle 5)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KNAGJQC4HJ6WCN05HYGDVGY4
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-03T20:29:30.372Z
+    examined_commit: 19f3e5312bbffda3de2bc2edde6d511f046ad545
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KN8T1AZ0RSE7SA5SBK7AG5KD"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-03T20:29:30.372Z
+    updated_at: null
+    notes: []
