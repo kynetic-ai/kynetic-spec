@@ -107447,7 +107447,19 @@ reviews:
     slugs: []
     title: "Plan review: Workspace-Scoped Integration Target Sync (re-review)"
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "The prior AC-quality blockers were addressed: the plan now rewrites
+          ac-pull-target-periodic-deferred and ac-divergence-log-guidance, and the former
+          ac-unified-target-resolution implementation-detail AC was removed from acceptance criteria
+          and moved into design decisions."
+        name: Spec AC quality
+        required: true
+        created_at: 2026-04-03T00:37:17.387Z
+        completed_at: 2026-04-03T00:37:17.387Z
     events:
       - _ulid: 01KN8CAFP8297PY893SSC1XK05
         actor: "@claude"
@@ -107476,6 +107488,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN8CB7DSDDADKAXGGZCJ1ENF
         timestamp: 2026-04-03T00:37:03.214Z
+      - _ulid: 01KN8CBQKMF39N54NZGEDAYYSD
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Spec AC quality
+        timestamp: 2026-04-03T00:37:18.068Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -107527,5 +107546,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-03T00:36:37.193Z
-    updated_at: 2026-04-03T00:37:01.497Z
+    updated_at: 2026-04-03T00:37:17.387Z
     notes: []
