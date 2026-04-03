@@ -35726,7 +35726,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-03T18:18:16.156Z
+      updated_at: 2026-04-03T18:18:17.874Z
     integration:
       status: pending
       detail: null
@@ -35735,25 +35735,20 @@ workspaces:
       target_branch: plan/plan-workspace-scoped-integration-target-sync/01kn8bx4
       target_commit: 0f27e912cc2076a5367431add28b09da7fddf3e8
       updated_at: 2026-04-03T18:18:16.156Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: plan/plan-workspace-scoped-integration-target-sync/01kn8bx4
     task_ref: "@01KN8T1APSFZ9NRNP7TKT957GD"
     task_slug: task-impl-degraded-state
     timestamps:
       closed_at: null
       last_active_at: 2026-04-03T18:10:59.345Z
-      last_reconciled_at: 2026-04-03T18:18:16.156Z
+      last_reconciled_at: 2026-04-03T18:18:17.874Z
       created_at: 2026-04-03T17:05:02.283Z
-      updated_at: 2026-04-03T18:18:16.156Z
+      updated_at: 2026-04-03T18:18:17.874Z
     workspace_id: dispatch-workspace-01KN8T1APSFZ9NRNP7TKT957GD
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: a1a65a28c894724d0ec94cb72ffefec6c5f32dfd
-        last_seen_at: 2026-04-03T18:10:52.912Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-degraded-state-01kn8t1a-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-impl-degraded-state/01kn8t1a
