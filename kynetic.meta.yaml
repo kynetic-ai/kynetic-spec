@@ -12130,6 +12130,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-03T19:45:17.384Z
+  - _ulid: 01KNAENGX9FHXX2VS965GCAVRG
+    type: friction
+    content: Manual-merge conflict notes can become stale across quick rebases/fix cycles; this session
+      spent a fix cycle re-verifying a branch that was already rebased. Review/dispatch flow should
+      check merge-base ancestry against the integration target before returning a task for
+      merge-conflict resolution.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-03T19:56:04.905Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
