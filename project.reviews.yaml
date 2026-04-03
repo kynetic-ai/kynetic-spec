@@ -111713,6 +111713,17 @@ reviews:
         runner: npm
         created_at: 2026-04-03T19:08:36.803Z
         completed_at: 2026-04-03T19:08:36.803Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- dispatch-target-sync dispatch-degraded-state daemon-api/agent-dispatch
+          passed: 11/11 suites, 72/72 tests."
+        name: targeted-npm-test
+        required: true
+        runner: npm
+        created_at: 2026-04-03T19:08:39.076Z
+        completed_at: 2026-04-03T19:08:39.076Z
     events:
       - _ulid: 01KNABJ9MAZC0AVBW06PZTGP6D
         actor: Jacob Chapel
@@ -111762,6 +111773,13 @@ reviews:
           status: pass
           name: full-npm-test
         timestamp: 2026-04-03T19:08:37.572Z
+      - _ulid: 01KNABYPJKKST8SNEWJ3CJNZJR
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted-npm-test
+        timestamp: 2026-04-03T19:08:39.892Z
     examined_commit: bede094168c08241eafd28456e192e13359a01a6
     external_links: []
     lifecycle_state: open
@@ -111805,5 +111823,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-03T19:01:53.418Z
-    updated_at: 2026-04-03T19:08:36.803Z
+    updated_at: 2026-04-03T19:08:39.076Z
     notes: []
