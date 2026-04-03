@@ -111557,6 +111557,19 @@ reviews:
         runner: vitest
         created_at: 2026-04-03T19:01:57.959Z
         completed_at: 2026-04-03T19:01:57.959Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Repeated full-suite verification completed. First npm test run failed in unrelated
+          tests/file-lock.test.ts at the same-process reclaim assertion; immediate rerun with npm
+          test -- --fresh passed cleanly (2068/2068 suites, 7490/7495 tests, 5 skipped). Follow-up
+          task @01KNABHK created for that flaky test.
+        name: npm test
+        required: true
+        runner: scripts/test.cjs
+        created_at: 2026-04-03T19:02:00.219Z
+        completed_at: 2026-04-03T19:02:00.219Z
     events:
       - _ulid: 01KNAB3TB8YGWRGYCB20QYC1MW
         actor: Jacob Chapel
@@ -111578,6 +111591,13 @@ reviews:
           status: pass
           name: tests/test-runner.test.ts
         timestamp: 2026-04-03T19:01:58.698Z
+      - _ulid: 01KNABJH0DTKK89F0CVCE04S19
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-03T19:02:00.973Z
     examined_commit: f1d15d8f154cda47049f58190b5c09fcf7482dda
     external_links: []
     lifecycle_state: open
@@ -111590,7 +111610,7 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-03T18:53:59.017Z
-    updated_at: 2026-04-03T19:01:57.959Z
+    updated_at: 2026-04-03T19:02:00.219Z
     notes: []
   - _ulid: 01KNABJ9MAGTAYP7TS1123HD5P
     slugs: []
