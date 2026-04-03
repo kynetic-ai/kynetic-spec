@@ -107266,6 +107266,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN8C2K1BWFJGV3EAYSRAFYTB
         timestamp: 2026-04-03T00:32:21.294Z
+      - _ulid: 01KN8C2PW7FWZGVAY28Y0130QC
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KN8C2K3G75T4FQRHEK82HG79
+        timestamp: 2026-04-03T00:32:22.407Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -107327,7 +107334,20 @@ reviews:
               an observable outcome if you need testable coverage.
             created_at: 2026-04-03T00:32:18.475Z
         kind: blocker
+      - _ulid: 01KN8C2K3G75T4FQRHEK82HG79
+        anchor:
+          type: structured
+          ref: "@task-impl-active-target-set"
+          section: dependencies
+        entries:
+          - _ulid: 01KN8C2K3GRNWWR55F0012Y6J6
+            author: "@claude"
+            body: "Dependency ordering is misaligned here: @task-impl-active-target-set is P1 but depends on
+              @task-sync-unified-state-ac, which is P2. Either raise the spec-update task to P1 or
+              lower the implementation task so the priority order matches the dependency graph."
+            created_at: 2026-04-03T00:32:18.544Z
+        kind: question
     verdicts: []
     created_at: 2026-04-03T00:31:37.901Z
-    updated_at: 2026-04-03T00:32:18.475Z
+    updated_at: 2026-04-03T00:32:18.544Z
     notes: []
