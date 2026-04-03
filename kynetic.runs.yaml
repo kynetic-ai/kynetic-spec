@@ -21539,7 +21539,7 @@ runs:
     completed_at: 2026-04-03T05:37:56.252Z
   - _ulid: 01KN8Y5CSCA22HRAVPHFCXK2H4
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -21552,7 +21552,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-03T05:49:28.660Z
-        completed_at: 2026-04-03T05:49:28.660Z
+        completed_at: 2026-04-03T05:49:29.382Z
+        notes: "Friction: a full npm test rerun took a long time and ended with three unrelated 15s timeout
+          failures in non-dispatch tests; targeted reruns for those files then passed. Existing
+          coverage appears partial via completed task 01KN6G6C on residual full-suite timeout
+          flakes, so no new capture yet."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-03T05:49:29.382Z
+        completed_at: 2026-04-03T05:49:29.382Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-03T05:48:24.748Z
