@@ -112508,6 +112508,18 @@ reviews:
         runner: git
         created_at: 2026-04-03T20:15:53.035Z
         completed_at: 2026-04-03T20:15:53.035Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate returned warnings only (exit 6): orphaned skill dir, orphaned specs,
+          repo-wide AC coverage warnings, and invalid fixture annotations outside this task. No new
+          validation errors in the reviewed changes."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-03T20:18:03.619Z
+        completed_at: 2026-04-03T20:18:03.619Z
     events:
       - _ulid: 01KNAFETVWPRS19BWS3WGRS15G
         actor: Jacob Chapel
@@ -112536,6 +112548,13 @@ reviews:
           status: pass
           name: manual-merge-preflight
         timestamp: 2026-04-03T20:15:54.429Z
+      - _ulid: 01KNAFXSEQ8J3GR7H0NJQ6RRTX
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-03T20:18:04.375Z
     examined_commit: 734d424d229e0f2f5118bbca66af94c33700f2e5
     external_links: []
     lifecycle_state: open
@@ -112548,5 +112567,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-03T20:09:54.300Z
-    updated_at: 2026-04-03T20:15:53.035Z
+    updated_at: 2026-04-03T20:18:03.619Z
     notes: []
