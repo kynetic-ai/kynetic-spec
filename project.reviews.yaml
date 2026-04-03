@@ -108046,7 +108046,54 @@ reviews:
     slugs: []
     title: "Plan review: Workspace-Scoped Integration Target Sync (round 5)"
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Re-checked the six round-4 blockers in the stored plan content.
+          ac-active-target-removed-on-cleanup, ac-pull-ff-only, ac-degraded-no-provision,
+          ac-degraded-status-api, ac-degraded-status-broadcast, and ac-degraded-recovery-logged are
+          now split into single-assertion ACs, and the replacement ACs keep the behavior set intact.
+        name: Spec AC quality
+        required: true
+        created_at: 2026-04-03T04:30:48.516Z
+        completed_at: 2026-04-03T04:30:48.516Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Each task remains executable in a fresh session: the descriptions explain what/why/how,
+          concrete refs and file areas are named, and Covers lines map the intended outcomes. The
+          stale summary-count issue from round 4 is no longer present in the What sections that
+          drive execution."
+        name: Task standalone-ness
+        required: true
+        created_at: 2026-04-03T04:30:50.516Z
+        completed_at: 2026-04-03T04:30:50.516Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: The dependency graph is still coherent after the AC split. Description and active-target
+          foundation work feed the spec-update tasks; active-target infrastructure precedes
+          push/pull implementation; degraded-state work stays downstream of sync-path changes; and
+          integration tests remain after all implementation tasks.
+        name: Dependency ordering
+        required: true
+        created_at: 2026-04-03T04:30:52.395Z
+        completed_at: 2026-04-03T04:30:52.395Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Verified that every planned AC change on @dispatch-remote-branch-sync is claimed by at
+          least one task, with spec-update tasks covering the spec edits and downstream
+          implementation/test tasks covering the resulting behavior surface.
+        name: AC coverage mapping
+        required: true
+        created_at: 2026-04-03T04:30:54.346Z
+        completed_at: 2026-04-03T04:30:54.346Z
     events:
       - _ulid: 01KN8SN1BN2VGJT4DABS0M55J9
         actor: "@claude"
@@ -108061,9 +108108,53 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-03T04:29:47.332Z
+      - _ulid: 01KN8SQADP836P38JVSWVP9R64
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Spec AC quality
+        timestamp: 2026-04-03T04:30:49.270Z
+      - _ulid: 01KN8SQCAXG7GF1J5EZNFSCMXJ
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Task standalone-ness
+        timestamp: 2026-04-03T04:30:51.229Z
+      - _ulid: 01KN8SQE6PYS5NDZAASRXK45M6
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Dependency ordering
+        timestamp: 2026-04-03T04:30:53.142Z
+      - _ulid: 01KN8SQG3JBYN6M02ERSZTAXCV
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: AC coverage mapping
+        timestamp: 2026-04-03T04:30:55.090Z
+      - _ulid: 01KN8SQHXV3JY2DDYXQMVRPNG4
+        actor: codex@openai
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-04-03T04:30:56.955Z
+      - _ulid: 01KN8SQHXVJF60CH2010RJBABC
+        actor: codex@openai
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-03T04:30:56.955Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -108071,7 +108162,14 @@ reviews:
       ref: "@plan-workspace-scoped-integration-target-sync"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex@openai
+        role: reviewer
+        created_at: 2026-04-03T04:30:56.955Z
     created_at: 2026-04-03T04:29:34.453Z
-    updated_at: 2026-04-03T04:29:46.576Z
+    updated_at: 2026-04-03T04:30:56.955Z
     notes: []
