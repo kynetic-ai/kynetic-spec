@@ -107796,6 +107796,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN8SE45105H340BAT6PG8VSK
         timestamp: 2026-04-03T04:25:48.677Z
+      - _ulid: 01KN8SEB315PP77E8ZK954PMY8
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN8SEAC0EHC9CF8V6SG482ZR
+        timestamp: 2026-04-03T04:25:55.041Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -107852,7 +107859,22 @@ reviews:
               Then clause.
             created_at: 2026-04-03T04:25:47.938Z
         kind: blocker
+      - _ulid: 01KN8SEAC0EHC9CF8V6SG482ZR
+        anchor:
+          type: structured
+          field: ac-degraded-status-broadcast
+          ref: "@dispatch-remote-branch-sync"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KN8SEAC0MS4QC91990WMPEY5
+            author: "@claude"
+            body: "ac-degraded-status-broadcast still has a compound Then clause: it requires both that a
+              sync-state event is broadcast and that the payload identifies the target branch and
+              new state. Broadcast occurrence and payload contents are independently testable and
+              should not stay fused if the plan is moving to atomic ACs."
+            created_at: 2026-04-03T04:25:54.304Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-03T04:25:03.273Z
-    updated_at: 2026-04-03T04:25:47.938Z
+    updated_at: 2026-04-03T04:25:54.304Z
     notes: []
