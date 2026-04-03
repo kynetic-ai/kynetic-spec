@@ -8902,14 +8902,10 @@ features:
             id: ac-degraded-no-provision
             then: The task is not provisioned
             when: The dispatch engine evaluates the task for provisioning
-          - given: |
-              The dispatch engine is in degraded state
+          - given: One or more integration targets are in degraded state
             id: ac-degraded-status-api
-            then: |
-              The response includes the degraded flag, the failure reason, and
-              the timestamp when degraded state was entered
-            when: |
-              The dispatch status is queried (CLI or API)
+            then: The response includes the branch name of each degraded target
+            when: The dispatch status is queried via CLI or API
           - given: |
               The dispatch engine enters or exits degraded state
             id: ac-degraded-status-broadcast
