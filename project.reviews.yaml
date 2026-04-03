@@ -107796,6 +107796,17 @@ reviews:
         required: true
         created_at: 2026-04-03T04:26:31.744Z
         completed_at: 2026-04-03T04:26:31.744Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Each task still gives enough what/why/how detail to execute in a fresh session. I noted
+          stale summary counts after the AC split, but the explicit AC lists, dependency links, and
+          Covers sections remain concrete enough to act on.
+        name: Task standalone-ness
+        required: true
+        created_at: 2026-04-03T04:26:31.709Z
+        completed_at: 2026-04-03T04:26:31.709Z
     events:
       - _ulid: 01KN8SCRH996G8E64CWEKQV0Y8
         actor: "@claude"
@@ -107880,6 +107891,13 @@ reviews:
           status: pass
           name: Dependency ordering
         timestamp: 2026-04-03T04:26:34.708Z
+      - _ulid: 01KN8SFJZTFZXTRE2V61WVY3VP
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Task standalone-ness
+        timestamp: 2026-04-03T04:26:35.898Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -107999,5 +108017,5 @@ reviews:
         kind: question
     verdicts: []
     created_at: 2026-04-03T04:25:03.273Z
-    updated_at: 2026-04-03T04:26:31.744Z
+    updated_at: 2026-04-03T04:26:31.709Z
     notes: []
