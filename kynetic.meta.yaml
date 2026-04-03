@@ -12068,6 +12068,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-03T19:04:19.935Z
+  - _ulid: 01KNABPSANM9YTJVNVFDNZDNC9
+    type: friction
+    content: Detached review snapshots cannot check out the integration branch when that branch is
+      already active in another worktree, so the documented reviewer merge flow ('git checkout dev'
+      in the assigned workspace) fails with 'already used by worktree'. In this session the merge
+      had to be performed indirectly with git -C against the main dev worktree. The review/merge
+      guidance should document a worktree-safe merge path for detached reviewer snapshots.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-03T19:04:20.566Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
