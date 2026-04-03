@@ -11966,6 +11966,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-03T17:49:03.102Z
+  - _ulid: 01KNA7VE0TMVNXZMP8BFWAP789
+    type: friction
+    content: Needs-work state after an aborted manual merge can become stale when the task branch
+      already contains the integration target tip; workers have to prove ancestry and rerun checks
+      before they can safely resubmit.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-03T17:56:58.523Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
