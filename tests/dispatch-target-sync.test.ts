@@ -116,7 +116,17 @@ async function setupProjectFiles(projectDir: string, baseBranch = "dev"): Promis
   );
   await fs.writeFile(
     path.join(projectDir, "kspec.config.yaml"),
-    `dispatch:\n  base_branch: ${baseBranch}\n  sync_interval: 60\n  remote_sync: true\n`,
+    [
+      "dispatch:",
+      `  base_branch: ${baseBranch}`,
+      "  sync_interval: 60",
+      "  remote_sync: true",
+      "agent:",
+      "  skills:",
+      '    task_work: "$kspec-task-work"',
+      '    pr_review: "$kspec-review"',
+      "",
+    ].join("\n"),
     "utf-8",
   );
   await fs.writeFile(path.join(projectDir, "project.tasks.yaml"), "tasks: []\n", "utf-8");
@@ -717,19 +727,79 @@ describe("dispatch target branch sync", () => {
       "first reviewer change\n",
       "first reviewer branch",
     );
-    await createTrackedBranch(
+    const taskRef = "@concurrent-merge-second";
+    const reviewRef = "@concurrent-merge-review";
+    const taskTitle = "Concurrent merge stale reviewer";
+
+    kspec('plan add --title "Alpha Plan" --content "Plan alpha content" --slug alpha-plan', projectDir);
+    kspec('plan set @alpha-plan --branch "plan/alpha"', projectDir);
+    kspec(
+      `task add --title "${taskTitle}" --slug concurrent-merge-second --plan-ref @alpha-plan`,
       projectDir,
-      "dispatch/task/concurrent-merge-second/01ws2222222222222222222222",
-      "second-change.txt",
+    );
+    kspec("task start @concurrent-merge-second", projectDir);
+
+    const workerWorkspace = await workspaceModule.provisionDispatchWorkspace({
+      projectDir,
+      taskRef,
+      taskStatus: "in_progress",
+      task: {
+        title: taskTitle,
+        slugs: ["concurrent-merge-second"],
+        plan_ref: "@alpha-plan",
+      },
+    });
+    await fs.writeFile(
+      path.join(workerWorkspace.cwd, "second-change.txt"),
       "second reviewer change\n",
-      "second reviewer branch",
+      "utf-8",
+    );
+    git(workerWorkspace.cwd, "add second-change.txt");
+    git(workerWorkspace.cwd, 'commit -m "second reviewer branch"');
+    git(workerWorkspace.cwd, "push -u origin HEAD");
+
+    kspec("task submit @concurrent-merge-second", projectDir);
+    kspec(
+      'review add --title "Concurrent merge stale reviewer" --slug concurrent-merge-review --subject-type task --subject-ref @concurrent-merge-second',
+      projectDir,
     );
 
+    const reviewerAgent = {
+      _ulid: testUlid("AGNT"),
+      id: "pr-reviewer",
+      name: "PR Reviewer",
+      capabilities: [],
+      tools: [],
+      conventions: [],
+      skills: [],
+      dispatch: [{ on: "task.pending_review" }],
+      adapter: "mock-acp",
+      auto_approve: false,
+      concurrency: { max_concurrent: 1 },
+    };
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    const originalPushIntegrationTarget = workspaceModule.pushIntegrationTarget;
+    let resolvePushResult!: (value: workspaceModule.PushIntegrationTargetResult) => void;
+    const pushResultPromise = new Promise<workspaceModule.PushIntegrationTargetResult>((resolve) => {
+      resolvePushResult = resolve;
+    });
+    const pushSpy = vi
+      .spyOn(workspaceModule, "pushIntegrationTarget")
+      .mockImplementation(async (...args: Parameters<typeof workspaceModule.pushIntegrationTarget>) => {
+        const result = await originalPushIntegrationTarget(...args);
+        resolvePushResult(result);
+        return result;
+      });
+
     let reviewerOneDir: string | null = null;
-    let reviewerTwoDir: string | null = null;
     try {
       reviewerOneDir = await cloneRemote(remoteDir);
-      reviewerTwoDir = await cloneRemote(remoteDir);
 
       git(reviewerOneDir, "checkout -b plan/alpha origin/plan/alpha");
       git(
@@ -738,43 +808,60 @@ describe("dispatch target branch sync", () => {
       );
       const firstMergedHead = git(reviewerOneDir, "rev-parse HEAD");
 
-      git(reviewerTwoDir, "checkout -b plan/alpha origin/plan/alpha");
-      git(
-        reviewerTwoDir,
-        'merge --no-ff origin/dispatch/task/concurrent-merge-second/01ws2222222222222222222222 -m "Merge second reviewer branch"',
-      );
-      const secondMergedHead = git(reviewerTwoDir, "rev-parse HEAD");
-
       git(reviewerOneDir, "push origin HEAD:plan/alpha");
-
-      const stalePush = gitResult(reviewerTwoDir, "push origin HEAD:plan/alpha");
-      expect(stalePush.status).not.toBe(0);
-      expect(`${stalePush.stdout}\n${stalePush.stderr}`).toMatch(
-        /non-fast-forward|\[rejected\]|fetch first/i,
+      git(projectDir, "checkout plan/alpha");
+      git(
+        projectDir,
+        `merge --no-ff ${workerWorkspace.metadata.canonicalBranch} -m "Merge second reviewer branch"`,
       );
+      const secondMergedHead = git(projectDir, "rev-parse HEAD");
 
       git(projectDir, "fetch origin plan/alpha");
       expect(git(projectDir, "rev-parse origin/plan/alpha")).toBe(firstMergedHead);
       expect(git(projectDir, "rev-parse origin/plan/alpha")).not.toBe(secondMergedHead);
 
-      kspec('task add --title "Concurrent merge stale reviewer" --slug concurrent-merge-second', projectDir);
-      kspec("task start @concurrent-merge-second", projectDir);
-      kspec("task submit @concurrent-merge-second", projectDir);
-      kspec(
-        'review add --title "Concurrent merge stale reviewer" --slug concurrent-merge-review --subject-type task --subject-ref @concurrent-merge-second',
-        projectDir,
-      );
-      kspec(
-        'review verdict @concurrent-merge-review --decision request_changes --reviewer stale-reviewer',
-        projectDir,
-      );
+      vi.spyOn(invocationModule, "runInvocation").mockImplementation(async () => {
+        kspec(
+          "review verdict @concurrent-merge-review --decision request_changes --reviewer stale-reviewer",
+          projectDir,
+        );
+        return {
+          session: {} as any,
+          outcome: "success",
+          durationMs: 1,
+          turnCount: 1,
+        };
+      });
 
-      const task = kspecJson<{ status: string; review_ref: string | null }>(
+      const task = kspecJson<any>("task get @concurrent-merge-second --json", projectDir);
+      const entry = {
+        agent: reviewerAgent,
+        change: {
+          taskRef,
+          fromStatus: "in_progress",
+          toStatus: "pending_review",
+          task,
+        },
+        retryCount: 0,
+        nextRetryAt: 0,
+        enqueuedAtMs: Date.now(),
+        sequence: 1,
+      };
+
+      await (engine as any)._spawnInvocation(reviewerAgent, entry);
+
+      const pushResult = await pushResultPromise;
+      expect(pushSpy).toHaveBeenCalledWith(projectDir, "plan/alpha", "origin");
+      expect(pushResult.pushed).toBe(false);
+      expect(pushResult.skipped).toBe(false);
+      expect(pushResult.error).toMatch(/non-fast-forward|\[rejected\]|fetch first/i);
+
+      const updatedTask = kspecJson<{ status: string; review_ref: string | null }>(
         "task get @concurrent-merge-second --json",
         projectDir,
       );
-      expect(task.status).toBe("needs_work");
-      expect(task.review_ref).toBe("@concurrent-merge-review");
+      expect(updatedTask.status).toBe("needs_work");
+      expect(updatedTask.review_ref).toBe(reviewRef);
 
       const review = kspecJson<{ lifecycle_state: string; disposition: string }>(
         "review get @concurrent-merge-review --json",
@@ -783,8 +870,9 @@ describe("dispatch target branch sync", () => {
       expect(review.lifecycle_state).toBe("closed");
       expect(review.disposition).toBe("changes_requested");
     } finally {
+      vi.restoreAllMocks();
+      await engine.stop();
       if (reviewerOneDir) await cleanupTempDir(reviewerOneDir);
-      if (reviewerTwoDir) await cleanupTempDir(reviewerTwoDir);
     }
   });
 
