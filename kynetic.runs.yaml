@@ -21994,9 +21994,22 @@ runs:
     completed_at: 2026-04-03T18:10:29.600Z
   - _ulid: 01KNAA3Y5ZGDD8T9J9SB7A5VH3
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-03T18:36:34.367Z
+        completed_at: 2026-04-03T18:37:20.621Z
+        notes: "Worked well: target-side no-commit merge simulation on a temporary branch gave a fast,
+          decisive answer about publication readiness. Friction: repeated stale manual-merge
+          blockers sent the task through needs_work without requiring code changes. Coverage check:
+          existing observations already track this theme, including @01KNA7CX, @01KNA7VE, and
+          @01KNA9JMR. Capture: none, to avoid duplication."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-03T18:37:20.621Z
+        completed_at: 2026-04-03T18:37:20.621Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-03T18:36:34.367Z
