@@ -108291,7 +108291,17 @@ reviews:
     slugs: []
     title: Review task-sync-active-target-acs
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed full suite: 331 test files passed, 7491 tests passed, 5 skipped; duration 229.65s."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-03T05:01:27.925Z
+        completed_at: 2026-04-03T05:01:27.925Z
     events:
       - _ulid: 01KN8V1BFP1MJHG6SM1GJWPZZY
         actor: Jacob Chapel
@@ -108306,6 +108316,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-03T04:54:05.652Z
+      - _ulid: 01KN8VFEVSJ7NTPZMD3ACXN825
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-03T05:01:28.825Z
     examined_commit: fb3342db29d0f52d03646cc5ec095e7d9bd0c310
     external_links: []
     lifecycle_state: open
@@ -108318,5 +108335,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-03T04:53:46.614Z
-    updated_at: 2026-04-03T04:54:04.703Z
+    updated_at: 2026-04-03T05:01:27.925Z
     notes: []
