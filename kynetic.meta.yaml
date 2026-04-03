@@ -12035,6 +12035,17 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-04-03T18:52:28.301Z
+  - _ulid: 01KNABFPTPM51B32R52A92DZPV
+    type: friction
+    content: Manual-merge review blockers are expensive to triage because mergeability against the live
+      integration target is not captured as a first-class, current-state check. This task went
+      through repeated fix cycles where stale and real merge-conflict claims had to be re-proven
+      manually with merge-base and no-commit merge checks before the branch could be reconciled.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-04-03T19:00:28.630Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
