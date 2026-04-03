@@ -318,6 +318,26 @@ async function pushRemoteCommit(
   }
 }
 
+async function createTrackedBranch(
+  projectDir: string,
+  branch: string,
+  fileName: string,
+  content: string,
+  message: string,
+): Promise<string> {
+  const previousBranch = git(projectDir, "branch --show-current");
+  try {
+    git(projectDir, `checkout -b ${branch} dev`);
+    await fs.writeFile(path.join(projectDir, fileName), content, "utf-8");
+    git(projectDir, `add ${fileName}`);
+    git(projectDir, `commit -m "${message}"`);
+    git(projectDir, `push -u origin ${branch}`);
+    return git(projectDir, `rev-parse ${branch}`);
+  } finally {
+    git(projectDir, `checkout ${previousBranch}`);
+  }
+}
+
 async function cleanupTempDirWithRetry(dir: string, retries = 3): Promise<void> {
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
@@ -388,6 +408,49 @@ describe("dispatch target branch sync", () => {
     const syncStatus = engine.getTargetSyncStatus();
     expect(syncStatus.enabled).toBe(true);
     expect(syncStatus.lastSyncTimestamp).toBeGreaterThan(0);
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-pull-target-on-start
+  // AC: @dispatch-remote-branch-sync ac-active-target-rebuilt-on-start
+  it("syncs non-base active integration targets from the workspace registry on engine start", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    await createTrackedBranch(
+      projectDir,
+      "plan/alpha",
+      "plan-alpha.txt",
+      "alpha\n",
+      "create plan alpha",
+    );
+    await saveWorkspaceRecord(projectDir, {
+      taskRef: "@01TASK00000000000000000011",
+      taskSlug: "task-plan-alpha",
+      targetBranch: "plan/alpha",
+    });
+
+    const localBefore = git(projectDir, "rev-parse plan/alpha");
+    const remoteTip = await pushRemoteCommit(
+      remoteDir,
+      "plan/alpha",
+      "plan-alpha.txt",
+      "alpha\nremote\n",
+      "remote alpha advance",
+    );
+    expect(localBefore).not.toBe(remoteTip);
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    expect(git(projectDir, "rev-parse plan/alpha")).toBe(remoteTip);
+    expect(new Set(engine.getTargetSyncStatus().activeTargets)).toEqual(
+      new Set(["dev", "plan/alpha"]),
+    );
 
     await engine.stop();
   });
@@ -973,6 +1036,45 @@ describe("dispatch target branch sync", () => {
     await (engine as any)._reconcile();
     const tipAfterStaleReconcile = git(projectDir, "rev-parse dev");
     expect(tipAfterStaleReconcile).not.toBe(afterStartTip);
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-push-target-periodic
+  it("pushes non-base active integration targets during periodic reconciliation", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    await createTrackedBranch(
+      projectDir,
+      "plan/alpha",
+      "plan-alpha.txt",
+      "alpha\n",
+      "create plan alpha",
+    );
+    await saveWorkspaceRecord(projectDir, {
+      taskRef: "@01TASK00000000000000000012",
+      taskSlug: "task-plan-alpha-push",
+      targetBranch: "plan/alpha",
+    });
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    git(projectDir, "checkout plan/alpha");
+    await fs.writeFile(path.join(projectDir, "plan-alpha.txt"), "alpha\nlocal\n", "utf-8");
+    git(projectDir, "add plan-alpha.txt");
+    git(projectDir, 'commit -m "local alpha merge result"');
+    const localTip = git(projectDir, "rev-parse plan/alpha");
+    git(projectDir, "checkout dev");
+
+    await (engine as any)._reconcile();
+    git(projectDir, "fetch origin plan/alpha");
+
+    expect(git(projectDir, "rev-parse origin/plan/alpha")).toBe(localTip);
 
     await engine.stop();
   });
