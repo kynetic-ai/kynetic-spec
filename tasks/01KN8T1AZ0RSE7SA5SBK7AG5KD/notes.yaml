@@ -69,3 +69,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-03T20:03:55.312Z
+  - _ulid: 01KNAF9QTWJJNSP6HYJDW5QAGK
+    content: "Fix cycle 3: resolved the stale manual-merge blocker without code changes. Rebased branch
+      was already current; a fresh isolated merge preflight against
+      origin/plan/plan-workspace-scoped-integration-target-sync/01kn8bx4 merged cleanly, confirming
+      src/agent-runtime/dispatch.ts no longer conflicts at _pushIntegrationTargetAsync or the
+      reviewer post-merge call site. Verification: npm test -- dispatch-target-sync.test.ts passed
+      (39/39), kspec validate reported only the existing repo-wide warnings, and git status remains
+      clean."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-03T20:07:07.356Z
