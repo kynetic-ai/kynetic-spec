@@ -108042,3 +108042,29 @@ reviews:
     created_at: 2026-04-03T04:25:03.273Z
     updated_at: 2026-04-03T04:26:42.033Z
     notes: []
+  - _ulid: 01KN8SN1BNR9EW33HSDSSD1BEF
+    slugs: []
+    title: "Plan review: Workspace-Scoped Integration Target Sync (round 5)"
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KN8SN1BN2VGJT4DABS0M55J9
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-03T04:29:34.453Z
+    examined_commit: null
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-workspace-scoped-integration-target-sync"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-03T04:29:34.453Z
+    updated_at: null
+    notes: []
