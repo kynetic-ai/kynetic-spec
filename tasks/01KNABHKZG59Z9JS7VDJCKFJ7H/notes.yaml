@@ -10,3 +10,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-03T19:03:08.491Z
+  - _ulid: 01KNABPHSJG2J8WPAXEJV6GSN8
+    content: Replaced the flaky same-process reclaim assertion with a direct waiter-blocking check. The
+      old test inferred overlap from a 25ms sleep boundary; under full-suite load that
+      scheduler-dependent checkpoint could run after a legitimate release/reacquire. The new test
+      holds the first lock past maxHoldMs, verifies a same-process waiter stays blocked with no
+      reclaim warning, then confirms the waiter acquires only after release.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-03T19:04:12.851Z
