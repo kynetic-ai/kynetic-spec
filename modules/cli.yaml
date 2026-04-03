@@ -8864,50 +8864,31 @@ features:
             id: ac-target-push-serialization
             then: The second operation is skipped for that branch
             when: The second push operation is initiated
-          - given: |
-              The dispatch engine starts and remote sync is enabled
+          - given: The dispatch engine starts and remote sync is enabled
             id: ac-pull-target-on-start
-            then: |
-              The engine syncs the integration target branch from remote;
-              bootstrap task evaluation uses the synced state
-            when: |
-              The engine initializes, before evaluating tasks for bootstrap
-              dispatch
-          - given: |
-              The dispatch engine is running and no reviewer invocation is
-              currently active
+            then: The engine syncs every branch in the active integration target set from remote
+            when: The engine initializes, before evaluating tasks for bootstrap dispatch
+          - given: The dispatch engine is running and no reviewer invocation is currently active on a given
+              integration target
             id: ac-pull-target-periodic
-            then: |
-              The engine syncs the integration target branch from remote
-            when: |
-              The configured sync interval elapses
-          - given: |
-              The configured sync interval elapses while a reviewer invocation
-              is active
+            then: The engine syncs that integration target branch from remote
+            when: The configured sync interval elapses
+          - given: The configured sync interval elapses while a reviewer invocation is active on a specific
+              integration target
             id: ac-pull-target-periodic-deferred
-            then: |
-              The sync is deferred to the next interval; worker invocations
-              do not block sync since they operate on isolated worktrees
-            when: |
-              The sync would normally run
-          - given: |
-              A new task workspace is about to be provisioned and the last
-              successful target sync was more than sync_interval seconds ago
+            then: The sync of that specific target is deferred to the next interval
+            when: The sync evaluates that target
+          - given: A new task workspace is about to be provisioned and the last successful sync of that
+              workspace's resolved integration target was more than sync_interval seconds ago
             id: ac-pull-target-before-provision
-            then: |
-              The engine syncs the integration target branch from remote
-              before creating the task branch
-            when: |
-              The dispatcher prepares the workspace
-          - given: |
-              The integration target branch is being synced from remote
+            then: The engine syncs the specific integration target branch for this workspace from remote before
+              creating the task branch
+            when: The dispatcher prepares the workspace
+          - given: An integration target branch is being synced from remote
             id: ac-pull-ff-only
-            then: |
-              The local branch is advanced to match the remote only if the
-              remote history is a strict superset of local; no merge commits
-              are created
-            when: |
-              The sync completes
+            then: The local branch is advanced to match the remote only if the remote history is a strict
+              superset of local
+            when: The sync completes
           - given: |
               The integration target branch sync detects that local and remote
               have diverged (local has commits not in remote, or remote history
@@ -9043,6 +9024,30 @@ features:
             id: ac-concurrent-merge-fix-cycle
             then: The affected task follows the standard fix cycle path
             when: The dispatch engine processes the failed reviewer invocation
+          - given: The dispatch engine has completed its startup sync of active integration targets
+            id: ac-pull-target-on-start-before-bootstrap
+            then: Bootstrap task evaluation uses the synced state of each target
+            when: The engine evaluates tasks for bootstrap dispatch
+          - given: An integration target branch is being synced from remote
+            id: ac-pull-no-merge-commits
+            then: No merge commits are created on the local branch
+            when: The sync completes
+          - given: The engine tracks sync freshness for integration targets
+            id: ac-per-target-staleness
+            then: Only that target's staleness timestamp is updated
+            when: A sync completes successfully for one target
+          - given: A sync completes successfully for one integration target
+            id: ac-per-target-staleness-isolation
+            then: The other target's staleness state is unaffected by the first target's sync
+            when: Another target's staleness is evaluated
+          - given: The periodic sync is iterating through the active integration target set and one target fails
+            id: ac-partial-sync-continues
+            then: The sync cycle continues to the remaining targets
+            when: The failure is handled for that target
+          - given: A sync failure occurs for one target during a periodic sync cycle
+            id: ac-partial-sync-scoped-degradation
+            then: Only the failed target enters degraded state or logs a warning
+            when: The engine evaluates the failure
         tags: []
         decisions:
           - _ulid: 01KM3ZMCXZ5DTWYDPSP8GBKNTD
