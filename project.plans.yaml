@@ -34195,7 +34195,7 @@ plans:
         provisioning, which is already correct
       - Changes to @dispatch-sync-configuration — the config surface does
         not change; sync_interval and remote_sync apply to all targets
-    status: active
+    status: completed
     approved_at: 2026-04-03T04:34:43.757Z
     branch: plan/plan-workspace-scoped-integration-target-sync/01kn8bx4
     derived_specs: []
