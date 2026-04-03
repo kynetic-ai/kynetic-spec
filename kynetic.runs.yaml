@@ -22265,7 +22265,7 @@ runs:
     completed_at: 2026-04-03T20:08:40.365Z
   - _ulid: 01KNASX4JTBQVYPKQ81KHKZY33
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -22292,7 +22292,15 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-03T23:13:13.128Z
-        completed_at: 2026-04-03T23:13:13.128Z
+        completed_at: 2026-04-03T23:13:13.873Z
+        notes: "Potential improvement: a small test helper for reviewer-invocation scenarios that need a
+          real pending_review task plus plan-scoped target resolution would reduce setup noise and
+          make AC coverage harder to fake. Scope looks medium, but confidence is not high enough to
+          auto-capture without a stronger recurrence signal."
+      - status: completed
+        step_index: 4
+        started_at: 2026-04-03T23:13:13.873Z
+        completed_at: 2026-04-03T23:13:13.873Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-03T23:12:28.762Z
