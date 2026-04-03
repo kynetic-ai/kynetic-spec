@@ -110902,6 +110902,12 @@ reviews:
         payload:
           thread_ulid: 01KNA8YVXN04CG4AFJQ92YMPT3
         timestamp: 2026-04-03T18:26:03.417Z
+      - _ulid: 01KNA9H2R7MG1VGS3G9K4N7W1R
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNA8YSR2ZD8JCHKF8MCB87AC
+        timestamp: 2026-04-03T18:26:16.455Z
     examined_commit: a1a65a28c894724d0ec94cb72ffefec6c5f32dfd
     external_links: []
     lifecycle_state: closed
@@ -110944,6 +110950,8 @@ reviews:
               running while the target enters degraded state.
             created_at: 2026-04-03T18:26:00.393Z
         kind: blocker
+        resolved_at: 2026-04-03T18:26:15.722Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KNA8YVXN04CG4AFJQ92YMPT3
         anchor:
           type: code
@@ -111013,5 +111021,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-03T18:16:39.932Z
     created_at: 2026-04-03T18:11:35.783Z
-    updated_at: 2026-04-03T18:26:02.646Z
+    updated_at: 2026-04-03T18:26:15.722Z
     notes: []
