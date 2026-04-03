@@ -11876,6 +11876,26 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-03T16:32:55.066Z
+  - _ulid: 01KNA3404TXG6JD39R5H359V3M
+    type: friction
+    content: Dispatch task workflow currently instructs a rebase onto the integration target before
+      coding, but on a stacked dispatch branch that can replay already-merged dependency commits and
+      create misleading conflicts. In this session the branch was already at the canonical
+      integration lineage, so the rebase attempt produced a false-positive conflict in
+      src/agent-runtime/dispatch.ts and had to be aborted.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-03T16:34:16.346Z
+  - _ulid: 01KNA340AVXGEFNXZKVKS1VN3Z
+    type: success
+    content: The test runner content-hash cache made it practical to run focused dispatch regressions
+      first and then the required full npm test sweep in the same session. That kept the full-suite
+      quality gate intact without paying repeated cold-run cost after a narrow sync-path refactor.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-03T16:34:16.539Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
