@@ -107772,6 +107772,18 @@ reviews:
         required: true
         created_at: 2026-04-03T04:26:31.706Z
         completed_at: 2026-04-03T04:26:31.706Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Round-4 split is incomplete: ac-active-target-removed-on-cleanup, ac-pull-ff-only,
+          ac-degraded-no-provision, ac-degraded-status-api, ac-degraded-status-broadcast, and
+          ac-degraded-recovery-logged still combine multiple independently testable assertions in a
+          single Then clause."
+        name: Spec AC quality
+        required: true
+        created_at: 2026-04-03T04:26:31.733Z
+        completed_at: 2026-04-03T04:26:31.733Z
     events:
       - _ulid: 01KN8SCRH996G8E64CWEKQV0Y8
         actor: "@claude"
@@ -107842,6 +107854,13 @@ reviews:
           status: pass
           name: AC coverage mapping
         timestamp: 2026-04-03T04:26:32.444Z
+      - _ulid: 01KN8SFGQCF5AC32AZ1JMVQRV4
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: Spec AC quality
+        timestamp: 2026-04-03T04:26:33.580Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -107961,5 +107980,5 @@ reviews:
         kind: question
     verdicts: []
     created_at: 2026-04-03T04:25:03.273Z
-    updated_at: 2026-04-03T04:26:31.706Z
+    updated_at: 2026-04-03T04:26:31.733Z
     notes: []
