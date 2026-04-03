@@ -109341,6 +109341,18 @@ reviews:
         runner: npm
         created_at: 2026-04-03T16:26:12.132Z
         completed_at: 2026-04-03T16:26:12.132Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Schema and references passed. Command exited 6 because of repository-wide warnings
+          (orphaned skill dir, orphaned specs, invalid AC annotation fixtures), with no new
+          task-specific validation errors.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-03T16:26:16.576Z
+        completed_at: 2026-04-03T16:26:16.576Z
     events:
       - _ulid: 01KNA2D9E5RQY34JJRGB8H7XAR
         actor: Jacob Chapel
@@ -109392,6 +109404,13 @@ reviews:
           status: pass
           name: dispatch targeted tests
         timestamp: 2026-04-03T16:26:12.873Z
+      - _ulid: 01KNA2NCAH9DJ9P3KTG6V994A8
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-03T16:26:17.297Z
     examined_commit: 1559b85cddca6b2ae2f8851c81f5efd3e429ec67
     external_links: []
     lifecycle_state: closed
@@ -109432,5 +109451,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-03T16:26:05.116Z
     created_at: 2026-04-03T16:21:52.198Z
-    updated_at: 2026-04-03T16:26:12.132Z
+    updated_at: 2026-04-03T16:26:16.576Z
     notes: []
