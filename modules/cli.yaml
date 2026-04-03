@@ -9059,6 +9059,10 @@ features:
             id: ac-degraded-status-broadcast-target
             then: The event identifies the specific target branch and the new state
             when: The sync state event is broadcast
+          - given: An integration target exits degraded state via successful sync
+            id: ac-degraded-recovery-logged-duration
+            then: The log includes the duration that target was degraded
+            when: The recovery is logged
         tags: []
         decisions:
           - _ulid: 01KM3ZMCXZ5DTWYDPSP8GBKNTD
