@@ -26,6 +26,7 @@ import {
   type LoadedAgent,
 } from "../parser/index.js";
 import { loadDispatchWorkspaceRegistry } from "../parser/dispatch-workspaces.js";
+import { findPlanByRef } from "../parser/plans.js";
 import { DEFAULT_IDLE_GRACE_MS, DEFAULT_KSPEC_CLI_PATH, runInvocation } from "./invocation.js";
 import { SessionRegistry } from "./session-registry.js";
 import type { SessionIdleContext } from "./invocation.js";
@@ -689,18 +690,22 @@ export type TargetSyncResult =
   | "diverged"
   | "unsafe_target";
 
+export interface DegradedTargetState {
+  branch: string;
+  reason: string;
+  enteredAt: Date;
+}
+
 /**
  * Degraded state descriptor for the dispatch engine.
  * AC: @dispatch-remote-branch-sync ac-degraded-status-api
  */
-export interface DegradedState {
+export type DegradedState = DegradedTargetState[];
+
+interface DegradedSnapshot {
   active: boolean;
   reason: string;
   enteredAt: Date | null;
-}
-
-interface DegradedTargetState extends DegradedState {
-  branch: string;
 }
 
 /**
@@ -900,12 +905,6 @@ export class DispatchEngine {
 
   /** Branch-scoped degraded targets. */
   private _degradedTargets = new Map<string, { reason: string; enteredAt: Date }>();
-  /** Whether the engine is in degraded state. */
-  private _degraded = false;
-  /** Human-readable reason for degraded state. */
-  private _degradedReason = "";
-  /** Timestamp when degraded state was entered. */
-  private _degradedEnteredAt: Date | null = null;
 
   constructor(options: DispatchEngineOptions) {
     this.projectDir = options.projectDir;
@@ -2171,13 +2170,6 @@ export class DispatchEngine {
     // Prevent new invocation starts during/after shutdown.
     if (!this.running) return;
 
-    // AC: @dispatch-remote-branch-sync ac-degraded-no-provision
-    // When degraded, skip provisioning new workspaces. Tasks remain queued.
-    // Existing in-flight invocations continue normally.
-    if (this._degraded) {
-      return;
-    }
-
     // AC: @agent-dispatch-engine ac-17 - Load current tasks once for staleness + readiness checks
     let currentTasks: LoadedTask[] | undefined;
     let currentTaskStates: Map<string, TaskStatus> | undefined;
@@ -2191,6 +2183,10 @@ export class DispatchEngine {
 
     await this._pruneIneligibleQueueEntries(agents, currentTasks, currentTaskStates);
 
+    const taskLookup = new Map((currentTasks ?? []).map((task) => [task._ulid, task]));
+    const deferredEntries = new Map<string, QueueEntry[]>();
+    const targetCache = new Map<string, string>();
+
     while (this.running) {
       const candidate = this._selectNextCandidate(agents);
       if (!candidate) {
@@ -2200,10 +2196,29 @@ export class DispatchEngine {
       const [entry] = candidate.queue.splice(candidate.queueIndex, 1);
       this.queues.set(candidate.agent.id, candidate.queue);
 
+      const targetBranch = await this._resolveQueueEntryTargetBranch(entry, taskLookup, targetCache);
+      if (this._degradedTargets.has(targetBranch)) {
+        console.log(
+          `[dispatch] Deferring ${entry.change.taskRef} because integration target "${targetBranch}" is degraded.`,
+        );
+        const deferredQueue = deferredEntries.get(candidate.agent.id) ?? [];
+        deferredQueue.push(entry);
+        deferredEntries.set(candidate.agent.id, deferredQueue);
+        continue;
+      }
+
       const spawned = await this._spawnInvocation(candidate.agent, entry);
       if (!spawned) {
         continue;
       }
+    }
+
+    for (const [agentId, entries] of deferredEntries) {
+      const queue = this.queues.get(agentId) ?? [];
+      for (const entry of entries) {
+        this._insertQueueEntry(queue, entry);
+      }
+      this.queues.set(agentId, queue);
     }
   }
 
@@ -3252,10 +3267,48 @@ export class DispatchEngine {
     }
   }
 
+  private async _resolveQueueEntryTargetBranch(
+    entry: QueueEntry,
+    taskLookup: Map<string, LoadedTask>,
+    targetCache: Map<string, string>,
+  ): Promise<string> {
+    const configuredBaseBranch = this._resolveBaseBranch();
+    if (!configuredBaseBranch) {
+      return "";
+    }
+
+    const inlinePlanRef =
+      typeof entry.change.task?.plan_ref === "string" ? entry.change.task.plan_ref.trim() : "";
+    const task = taskLookup.get(entry.change.taskId) ?? entry.change.task;
+    const taskPlanRef = typeof task?.plan_ref === "string" ? task.plan_ref.trim() : "";
+    const planRef = inlinePlanRef || taskPlanRef;
+    if (!planRef) {
+      return configuredBaseBranch;
+    }
+
+    const cached = targetCache.get(planRef);
+    if (cached) {
+      return cached;
+    }
+
+    try {
+      const ctx = await initContext(this.projectDir);
+      const plan = await findPlanByRef(ctx, planRef);
+      const resolvedBranch = typeof plan?.branch === "string" ? plan.branch.trim() : "";
+      const targetBranch = resolvedBranch || configuredBaseBranch;
+      targetCache.set(planRef, targetBranch);
+      return targetBranch;
+    } catch {
+      targetCache.set(planRef, configuredBaseBranch);
+      return configuredBaseBranch;
+    }
+  }
+
   /**
    * Classify a divergence based on the git merge --ff-only error output.
    * Distinguishes "local has unpushed merges" from "remote history was rewritten".
-   * AC: @dispatch-remote-branch-sync ac-divergence-log-guidance
+   * AC: @dispatch-remote-branch-sync ac-divergence-log-classification
+   * AC: @dispatch-remote-branch-sync ac-divergence-log-resolution
    */
   private async _classifyDivergence(_mergeOutput: string, branch: string): Promise<string> {
     const remote = this._syncRemote;
@@ -3310,7 +3363,9 @@ export class DispatchEngine {
   /**
    * Enter degraded state with a descriptive reason.
    * AC: @dispatch-remote-branch-sync ac-divergence-enters-degraded
-   * AC: @dispatch-remote-branch-sync ac-divergence-log-guidance
+   * AC: @dispatch-remote-branch-sync ac-divergence-log-target
+   * AC: @dispatch-remote-branch-sync ac-divergence-log-classification
+   * AC: @dispatch-remote-branch-sync ac-divergence-log-resolution
    * AC: @dispatch-remote-branch-sync ac-degraded-status-broadcast
    */
   private _enterDegradedState(branch: string, reason: string): void {
@@ -3318,7 +3373,6 @@ export class DispatchEngine {
 
     const enteredAt = new Date();
     this._degradedTargets.set(branch, { reason, enteredAt });
-    this._refreshDegradedSnapshot();
 
     console.warn(`[dispatch] DEGRADED ${branch}: ${reason}`);
 
@@ -3337,6 +3391,7 @@ export class DispatchEngine {
    * Exit degraded state on successful sync (auto-recovery).
    * AC: @dispatch-remote-branch-sync ac-degraded-auto-recover
    * AC: @dispatch-remote-branch-sync ac-degraded-recovery-logged
+   * AC: @dispatch-remote-branch-sync ac-degraded-recovery-logged-duration
    * AC: @dispatch-remote-branch-sync ac-degraded-status-broadcast
    */
   private _exitDegradedState(branch: string): void {
@@ -3352,7 +3407,6 @@ export class DispatchEngine {
     );
 
     this._degradedTargets.delete(branch);
-    this._refreshDegradedSnapshot();
 
     // AC: @dispatch-remote-branch-sync ac-degraded-status-broadcast
     const event: SyncStateEvent = {
@@ -3365,29 +3419,20 @@ export class DispatchEngine {
     };
     this.onSyncStateEvent?.(event);
 
-    if (!this._degraded) {
-      // AC: @dispatch-remote-branch-sync ac-degraded-auto-recover — drain queued tasks
-      this._serializedDrain().catch((err) => {
-        console.error("[dispatch] Post-recovery drain error:", err);
-      });
-    }
+    // AC: @dispatch-remote-branch-sync ac-degraded-auto-recover
+    // AC: @dispatch-remote-branch-sync ac-degraded-recovery-requeues
+    this._serializedDrain().catch((err) => {
+      console.error("[dispatch] Post-recovery drain error:", err);
+    });
   }
 
-  private _refreshDegradedSnapshot(): void {
-    const firstDegraded = this._degradedTargets.entries().next().value as
-      | [string, { reason: string; enteredAt: Date }]
-      | undefined;
-    if (!firstDegraded) {
-      this._degraded = false;
-      this._degradedReason = "";
-      this._degradedEnteredAt = null;
-      return;
-    }
-
-    const [, degradedState] = firstDegraded;
-    this._degraded = true;
-    this._degradedReason = degradedState.reason;
-    this._degradedEnteredAt = degradedState.enteredAt;
+  private _getDegradedSnapshot(): DegradedSnapshot {
+    const firstDegraded = this.getDegradedState()[0];
+    return {
+      active: firstDegraded !== undefined,
+      reason: firstDegraded?.reason ?? "",
+      enteredAt: firstDegraded?.enteredAt ?? null,
+    };
   }
 
   /**
@@ -3490,7 +3535,8 @@ export class DispatchEngine {
       reason: string;
       enteredAt: string;
     }>;
-  } {
+    } {
+    const degraded = this._getDegradedSnapshot();
     const targetSyncTimestamps = Object.fromEntries(this._targetSyncTimestamps);
     const targetConsecutiveFailures = Object.fromEntries(this._consecutiveSyncFailures);
     return {
@@ -3505,9 +3551,9 @@ export class DispatchEngine {
       targetConsecutiveFailures,
       syncRunningTargets: [...this._targetSyncRunning].toSorted(),
       degraded: {
-        active: this._degraded,
-        reason: this._degradedReason,
-        enteredAt: this._degradedEnteredAt?.toISOString() ?? null,
+        active: degraded.active,
+        reason: degraded.reason,
+        enteredAt: degraded.enteredAt?.toISOString() ?? null,
       },
       degradedTargets: [...this._degradedTargets.entries()].map(([branch, state]) => ({
         branch,
@@ -3522,17 +3568,8 @@ export class DispatchEngine {
    * AC: @dispatch-remote-branch-sync ac-degraded-status-api
    */
   getDegradedState(): DegradedState {
-    return {
-      active: this._degraded,
-      reason: this._degradedReason,
-      enteredAt: this._degradedEnteredAt,
-    };
-  }
-
-  getDegradedTargets(): DegradedTargetState[] {
     return [...this._degradedTargets.entries()].map(([branch, state]) => ({
       branch,
-      active: true,
       reason: state.reason,
       enteredAt: state.enteredAt,
     }));

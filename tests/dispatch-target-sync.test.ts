@@ -813,7 +813,7 @@ describe("dispatch target branch sync", () => {
     expect(git(projectDir, "rev-parse human-feature")).toBe(humanHeadBefore);
     expect(git(projectDir, "rev-parse dev")).toBe(remoteTip);
     expect(localDevBefore).not.toBe(remoteTip);
-    expect(engine.getDegradedState().active).toBe(false);
+    expect(engine.getDegradedState()).toEqual([]);
 
     await engine.stop();
   });
@@ -852,7 +852,7 @@ describe("dispatch target branch sync", () => {
     expect(git(projectDir, "branch --show-current")).toBe("human-feature");
     expect(git(projectDir, "rev-parse human-feature")).toBe(humanHeadBefore);
     expect(git(projectDir, "rev-parse dev")).toBe(remoteTip);
-    expect(engine.getDegradedState().active).toBe(false);
+    expect(engine.getDegradedState()).toEqual([]);
 
     await engine.stop();
   });
@@ -892,8 +892,8 @@ describe("dispatch target branch sync", () => {
       });
       await engine.start();
 
-      expect(engine.getDegradedState().active).toBe(true);
-      expect(engine.getDegradedState().reason).toContain("currently checked out");
+      expect(engine.getDegradedState()).toHaveLength(1);
+      expect(engine.getDegradedState()[0].reason).toContain("currently checked out");
       expect(git(projectDir, "branch --show-current")).toBe("human-feature");
       expect(git(projectDir, "rev-parse human-feature")).toBe(humanHeadBefore);
       expect(git(projectDir, "rev-parse dev")).toBe(localDevBefore);
