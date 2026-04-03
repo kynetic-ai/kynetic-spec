@@ -107259,6 +107259,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN8C2K0DBH0JT68R12QHSZSX
         timestamp: 2026-04-03T00:32:20.180Z
+      - _ulid: 01KN8C2NSERTAY02MP3KNK13CM
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN8C2K1BWFJGV3EAYSRAFYTB
+        timestamp: 2026-04-03T00:32:21.294Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -107303,7 +107310,24 @@ reviews:
               task and to the implementation coverage, or the spec change is incomplete.
             created_at: 2026-04-03T00:32:18.445Z
         kind: blocker
+      - _ulid: 01KN8C2K1BWFJGV3EAYSRAFYTB
+        anchor:
+          type: structured
+          field: ac-unified-target-resolution
+          ref: "@dispatch-remote-branch-sync"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KN8C2K1BBVPN1SARZV39NN35
+            author: "@claude"
+            body: The proposed ac-unified-target-resolution is an implementation-structure assertion, not
+              behavioral contract language. 'Push and pull paths resolve targets from the same
+              active integration target set' and 'no independent per-path target state exists'
+              describe internal architecture that a user cannot observe directly. Move this
+              requirement into the spec description or implementation notes, and replace the AC with
+              an observable outcome if you need testable coverage.
+            created_at: 2026-04-03T00:32:18.475Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-03T00:31:37.901Z
-    updated_at: 2026-04-03T00:32:18.445Z
+    updated_at: 2026-04-03T00:32:18.475Z
     notes: []
