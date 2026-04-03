@@ -111546,7 +111546,17 @@ reviews:
     slugs: []
     title: Review stabilize flaky test-runner build prerequisite check
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- tests/test-runner.test.ts --fresh passed: 7/7 suites, 22/22 tests."
+        name: tests/test-runner.test.ts
+        required: true
+        runner: vitest
+        created_at: 2026-04-03T19:01:57.959Z
+        completed_at: 2026-04-03T19:01:57.959Z
     events:
       - _ulid: 01KNAB3TB8YGWRGYCB20QYC1MW
         actor: Jacob Chapel
@@ -111561,6 +111571,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-03T18:54:13.317Z
+      - _ulid: 01KNABJES9A4NCE4THP2QYYMT3
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: tests/test-runner.test.ts
+        timestamp: 2026-04-03T19:01:58.698Z
     examined_commit: f1d15d8f154cda47049f58190b5c09fcf7482dda
     external_links: []
     lifecycle_state: open
@@ -111573,7 +111590,7 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-03T18:53:59.017Z
-    updated_at: 2026-04-03T18:54:12.543Z
+    updated_at: 2026-04-03T19:01:57.959Z
     notes: []
   - _ulid: 01KNABJ9MAGTAYP7TS1123HD5P
     slugs: []
