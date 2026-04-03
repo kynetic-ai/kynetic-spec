@@ -9054,6 +9054,10 @@ features:
             id: ac-degraded-healthy-unblocked
             then: The task is provisioned normally
             when: A task targeting a non-degraded integration target becomes eligible for dispatch
+          - given: An integration target enters degraded state
+            id: ac-degraded-inflight-continues
+            then: The in-flight invocation continues to completion
+            when: An invocation is already in-flight for a workspace targeting that target
         tags: []
         decisions:
           - _ulid: 01KM3ZMCXZ5DTWYDPSP8GBKNTD
