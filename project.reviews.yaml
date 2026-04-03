@@ -110797,6 +110797,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNA8YVXN04CG4AFJQ92YMPT3
         timestamp: 2026-04-03T18:16:20.404Z
+      - _ulid: 01KNA8YYVZ6CG390JYB1RE1KMF
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNA8YY3JN69JYMD3YR4DREVH
+        timestamp: 2026-04-03T18:16:22.655Z
     examined_commit: a1a65a28c894724d0ec94cb72ffefec6c5f32dfd
     external_links: []
     lifecycle_state: open
@@ -110850,7 +110857,35 @@ reviews:
               cannot tell that this branch is intended to prove branch-scoped degradation behavior.
             created_at: 2026-04-03T18:16:19.637Z
         kind: blocker
+      - _ulid: 01KNA8YY3JN69JYMD3YR4DREVH
+        anchor:
+          type: code
+          commit: a1a65a28c894724d0ec94cb72ffefec6c5f32dfd
+          line_end: 3305
+          line_start: 3143
+          path: src/agent-runtime/dispatch.ts
+          side: head
+        entries:
+          - _ulid: 01KNA8YY3J73NNZ8K5W2HHSM33
+            author: Jacob Chapel
+            body: >-
+              This snapshot still does not merge cleanly into the current integration target. I
+              reproduced the manual merge exactly as required with Auto-merging
+              src/agent-runtime/dispatch.ts
+
+              CONFLICT (content): Merge conflict in src/agent-runtime/dispatch.ts
+
+              Auto-merging tests/dispatch-target-sync.test.ts
+
+              CONFLICT (content): Merge conflict in tests/dispatch-target-sync.test.ts
+
+              Automatic merge failed; fix conflicts and then commit the result., and git reported
+              content conflicts in this file and in tests/dispatch-target-sync.test.ts. Because
+              publication mode is manual_merge, the task cannot advance until the branch is rebased
+              or otherwise reconciled against the live integration target.
+            created_at: 2026-04-03T18:16:21.874Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-03T18:11:35.783Z
-    updated_at: 2026-04-03T18:16:19.637Z
+    updated_at: 2026-04-03T18:16:21.874Z
     notes: []
