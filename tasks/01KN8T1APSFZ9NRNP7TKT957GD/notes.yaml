@@ -116,3 +116,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-03T18:25:41.801Z
+  - _ulid: 01KNA9T3PVN9SBSZVB3JANEE3A
+    content: "Review cycle 5: manual merge of dispatch/task/task-impl-degraded-state/01kn8t1a into
+      plan/plan-workspace-scoped-integration-target-sync/01kn8bx4 still conflicts in
+      src/agent-runtime/dispatch.ts and tests/dispatch-target-sync.test.ts. Merge aborted in
+      reviewer mode; targeted dispatch/API tests passed and kspec validate showed only pre-existing
+      warnings, but the task is being returned for rebase/conflict resolution."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-03T18:31:12.348Z
