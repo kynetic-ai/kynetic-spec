@@ -34,3 +34,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-03T19:43:49.049Z
+  - _ulid: 01KNAEERCWHMP594NG76419KGN
+    content: Manual merge into plan/plan-workspace-scoped-integration-target-sync/01kn8bx4 conflicted in
+      src/agent-runtime/dispatch.ts around _pushIntegrationTargetAsync. The integration branch
+      expects the newer signature/call style (including the void fire-and-forget reviewer call),
+      while this task branch edits the same method for periodic push prechecks. Merge was aborted
+      without resolution per reviewer dispatch instructions.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-03T19:52:23.196Z
