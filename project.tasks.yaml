@@ -24642,3 +24642,18 @@
   todos_count: 0
   created_at: 2026-04-03T04:36:17.504Z
   automation: eligible
+- _ulid: 01KNAAJG48CRVH5G5KPNS25DSK
+  slugs: []
+  title: Stabilize flaky test-runner build prerequisite check
+  type: bug
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - test
+    - infra
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-03T18:44:31.496Z
+  automation: eligible
