@@ -110029,6 +110029,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-03T17:26:22.371Z
+      - _ulid: 01KNA6ZJ6KB49E4CKZCFBADZ84
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNA62AHKV1Q2C6NCHMAC4WWM
+        timestamp: 2026-04-03T17:41:45.299Z
     examined_commit: 1f9061b986b4a033947fa754c8ec72ba7e678bba
     external_links: []
     lifecycle_state: closed
@@ -110056,6 +110062,8 @@ reviews:
               still dereferences object fields."
             created_at: 2026-04-03T17:25:47.188Z
         kind: blocker
+        resolved_at: 2026-04-03T17:41:44.512Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KNA62CWA4BXW2257M8DJZV1J
         anchor:
           type: code
@@ -110098,7 +110106,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-03T17:26:22.370Z
     created_at: 2026-04-03T17:20:48.239Z
-    updated_at: 2026-04-03T17:26:22.371Z
+    updated_at: 2026-04-03T17:41:44.512Z
     notes: []
   - _ulid: 01KNA6G4GMNMBA7JK63WEP26MV
     slugs: []
