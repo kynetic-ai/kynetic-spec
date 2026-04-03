@@ -43,3 +43,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-03T19:52:23.196Z
+  - _ulid: 01KNAEEVHAMQ5XMCXDZXKAVNKK
+    content: "[FIX_CYCLE: 2] Review findings: Manual merge into
+      plan/plan-workspace-scoped-integration-target-sync/01kn8bx4 conflicted in
+      src/agent-runtime/dispatch.ts around _pushIntegrationTargetAsync and its reviewer post-merge
+      call site. Rebase the worker branch onto the integration target and resolve the conflict
+      there."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-03T19:52:26.411Z
