@@ -1,1 +1,14 @@
-notes: []
+notes:
+  - _ulid: 01KN8WTV6Q8G7VD8KGR37SBAEC
+    content: "Approach: add coverage around a unified active target set in DispatchEngine, then replace
+      the split push-side integrationTargetBranch and pull-side _syncBaseBranch with
+      _configuredBaseBranch + _activeTargets. Reuse
+      loadDispatchWorkspaceRegistry/resolveDispatchWorkspaceConfig rather than reading raw files.
+      Edge cases: empty registry still includes configured base branch; duplicate workspace targets
+      dedupe; closed workspaces must not count; cleanup must never remove the configured base
+      branch. Test plan: cover @dispatch-remote-branch-sync ac-active-target-includes-base,
+      ac-active-target-rebuilt-on-start, ac-active-target-removed-on-cleanup, plus a regression test
+      that push/pull callers read from the same _activeTargets source of truth."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-03T05:25:10.487Z
