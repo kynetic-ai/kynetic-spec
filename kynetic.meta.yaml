@@ -11745,6 +11745,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-02T23:32:43.467Z
+  - _ulid: 01KN8TCPFDF8A4G1C93TC8962C
+    type: friction
+    content: kspec validate is noisy for small task-level verification because project-wide warning debt
+      (orphaned specs/skills and AC annotation warnings) obscures whether a focused spec-only change
+      introduced any new validation issues.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-03T04:42:29.741Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
