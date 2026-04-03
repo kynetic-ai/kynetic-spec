@@ -12140,6 +12140,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-03T19:56:04.905Z
+  - _ulid: 01KNAF57FD7NR3PYHD9WF2N4RK
+    type: friction
+    content: Reviewer mergeability is still a separate manual preflight step in dispatch review. In this
+      session the task note claimed the integration target was already an ancestor and merge-ready,
+      but git merge-base and an actual git merge against
+      plan/plan-workspace-scoped-integration-target-sync/01kn8bx4 showed a real content conflict in
+      src/agent-runtime/dispatch.ts. Consider adding an explicit worker-side mergeability/preflight
+      check against the recorded integration target before submit so stale rebase claims fail
+      earlier.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-03T20:04:39.533Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
