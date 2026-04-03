@@ -15,3 +15,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-03T05:16:53.743Z
+  - _ulid: 01KN8WNNPR9569DT256FYWBSNZ
+    content: Completed degraded-state AC rewrite on @dispatch-remote-branch-sync. Rewrote degraded ACs
+      for per-target scoping, split status/recovery/logging assertions into separate ACs, and
+      renamed ac-divergence-log-guidance to ac-divergence-log-classification to match the plan/task
+      language. Verified final degraded AC set with kspec item ac list. Ran kspec validate;
+      schema/references passed and exit 6 came from pre-existing repo-wide warnings (orphaned skill
+      dir, orphaned specs, status mismatch, and existing AC coverage debt), not from this spec
+      update.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-03T05:22:21.016Z
