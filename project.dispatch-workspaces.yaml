@@ -35760,3 +35760,79 @@ workspaces:
         head: 16d33b86826b3e73d168c92bd320eaf0f959da65
         last_seen_at: 2026-04-03T18:37:49.434Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-degraded-state-01kn8t1a
+  - active_role: null
+    base_branch_point: fb3342db29d0f52d03646cc5ec095e7d9bd0c310
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/stabilize-flaky-test-runner-build-prerequisite-check/01knaajg
+    canonical_branch_head: fb3342db29d0f52d03646cc5ec095e7d9bd0c310
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-04-03T18:45:06.791Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-04-03T18:45:06.791Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: fb3342db29d0f52d03646cc5ec095e7d9bd0c310
+      updated_at: 2026-04-03T18:45:06.791Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KNAAJG48CRVH5G5KPNS25DSK"
+    task_slug: stabilize-flaky-test-runner-build-prerequisite-check
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-04-03T18:45:06.791Z
+      created_at: 2026-04-03T18:45:06.791Z
+      updated_at: 2026-04-03T18:45:06.791Z
+    workspace_id: dispatch-workspace-01KNAAJG48CRVH5G5KPNS25DSK
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/stabilize-flaky-test-runner-build-prerequisite-check/01knaajg
+        head: fb3342db29d0f52d03646cc5ec095e7d9bd0c310
+        last_seen_at: 2026-04-03T18:45:06.791Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-flaky-test-runner-build-prerequisite-check-01knaajg
