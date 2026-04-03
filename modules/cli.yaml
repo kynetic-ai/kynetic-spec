@@ -8914,13 +8914,10 @@ features:
             id: ac-degraded-auto-recover
             then: That target exits degraded state
             when: A subsequent periodic sync of that specific target succeeds
-          - given: |
-              The engine exits degraded state via successful sync
+          - given: An integration target exits degraded state via successful sync
             id: ac-degraded-recovery-logged
-            then: |
-              The recovery is logged with the duration the engine was degraded
-            when: |
-              The recovery occurs
+            then: The recovery is logged with the target branch name
+            when: The recovery occurs
           - given: |
               A remote fetch fails due to a transient error (network
               unreachable, DNS failure, connection timeout)
