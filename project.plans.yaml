@@ -33340,10 +33340,9 @@ plans:
                    workspace has the same integration target branch
             when: The active target set is re-evaluated
             then: That integration target branch is removed from the
-                  active set and is no longer included in periodic sync
-                  or push operations
+                  active set
 
-          How: Run three kspec item ac add commands against
+          How: Run kspec item ac add commands against
           @dispatch-remote-branch-sync, one per AC. Use the exact id, given,
           when, and then text above. Verify with kspec item get afterward.
 
@@ -33377,7 +33376,7 @@ plans:
           target, the second merge fails at the git ref level. The spec should
           document this expected failure mode.
 
-          What: Rewrite three existing ACs and add three new ACs:
+          What: Rewrite the following existing ACs and add new ACs:
 
           ac-push-target-after-merge (REWRITE):
             given: A reviewer agent merges a task branch into the workspace's
@@ -33465,7 +33464,7 @@ plans:
           targets, a failure on one target must not prevent syncing the
           others — the sync cycle must continue through all active targets.
 
-          What: Rewrite five existing ACs and add two new ACs:
+          What: Rewrite the following existing ACs and add new ACs:
 
           ac-pull-target-on-start (REWRITE):
             given: The dispatch engine starts and remote sync is enabled
@@ -33508,8 +33507,12 @@ plans:
             given: An integration target branch is being synced from remote
             when: The sync completes
             then: The local branch is advanced to match the remote only if
-                  the remote history is a strict superset of local; no merge
-                  commits are created
+                  the remote history is a strict superset of local
+
+          ac-pull-no-merge-commits (NEW):
+            given: An integration target branch is being synced from remote
+            when: The sync completes
+            then: No merge commits are created on the local branch
 
           ac-per-target-staleness (NEW):
             given: The engine tracks sync freshness for integration targets
@@ -33544,7 +33547,8 @@ plans:
           ac-pull-target-periodic (rewrite),
           ac-pull-target-periodic-deferred (rewrite),
           ac-pull-target-before-provision (rewrite), ac-pull-ff-only
-          (rewrite), ac-per-target-staleness (new),
+          (rewrite), ac-pull-no-merge-commits (new),
+          ac-per-target-staleness (new),
           ac-per-target-staleness-isolation (new),
           ac-partial-sync-continues (new),
           ac-partial-sync-scoped-degradation (new).
@@ -33580,7 +33584,7 @@ plans:
           target resolution must happen before the degraded check, not after.
           The spec should capture this ordering requirement.
 
-          What: Rewrite seven existing ACs:
+          What: Rewrite the following existing ACs and add new ACs:
 
           ac-divergence-enters-degraded (REWRITE):
             given: An integration target branch sync detects that local and
@@ -33620,7 +33624,13 @@ plans:
             given: A task becomes eligible for dispatch and its resolved
                    integration target is in degraded state
             when: The dispatch engine evaluates the task for provisioning
-            then: The task is not provisioned and remains in the queue
+            then: The task is not provisioned
+
+          ac-degraded-task-queued (NEW):
+            given: A task is not provisioned because its integration target
+                   is in degraded state
+            when: The dispatch engine skips the task
+            then: The task remains in the queue for future evaluation
 
           ac-degraded-healthy-unblocked (NEW):
             given: One integration target is in degraded state
@@ -33649,23 +33659,44 @@ plans:
           ac-degraded-status-api (REWRITE):
             given: One or more integration targets are in degraded state
             when: The dispatch status is queried via CLI or API
-            then: The response includes per-target degraded information:
-                  each degraded target's branch name, failure reason, and
-                  the timestamp when degraded state was entered
+            then: The response includes the branch name of each degraded
+                  target
+
+          ac-degraded-status-api-reason (NEW):
+            given: One or more integration targets are in degraded state
+            when: The dispatch status is queried via CLI or API
+            then: The response includes the failure reason for each
+                  degraded target
+
+          ac-degraded-status-api-timestamp (NEW):
+            given: One or more integration targets are in degraded state
+            when: The dispatch status is queried via CLI or API
+            then: The response includes the timestamp when each target
+                  entered degraded state
 
           ac-degraded-status-broadcast (REWRITE):
             given: An integration target enters or exits degraded state
             when: The state transition occurs
             then: A sync state event is broadcast on the agents WebSocket
-                  topic, identifying the specific target branch and the
+                  topic
+
+          ac-degraded-status-broadcast-target (NEW):
+            given: An integration target enters or exits degraded state
+            when: The sync state event is broadcast
+            then: The event identifies the specific target branch and the
                   new state
 
           ac-degraded-recovery-logged (REWRITE):
             given: An integration target exits degraded state via successful
                    sync
             when: The recovery occurs
-            then: The recovery is logged with the target branch name and
-                  the duration that target was degraded
+            then: The recovery is logged with the target branch name
+
+          ac-degraded-recovery-logged-duration (NEW):
+            given: An integration target exits degraded state via successful
+                   sync
+            when: The recovery is logged
+            then: The log includes the duration that target was degraded
 
           How: Run kspec item ac set for the rewritten ACs, and kspec item
           ac add for the new ones. Use a kspec batch command to make all
@@ -33683,12 +33714,17 @@ plans:
           (rewrite), ac-divergence-scoped-to-target (new),
           ac-divergence-log-target (new), ac-divergence-log-classification
           (rewrite), ac-divergence-log-resolution (new),
-          ac-degraded-no-provision (rewrite), ac-degraded-healthy-unblocked
-          (new), ac-degraded-inflight-continues (new),
+          ac-degraded-no-provision (rewrite), ac-degraded-task-queued (new),
+          ac-degraded-healthy-unblocked (new),
+          ac-degraded-inflight-continues (new),
           ac-degraded-auto-recover (rewrite), ac-degraded-recovery-requeues
           (new), ac-degraded-status-api (rewrite),
-          ac-degraded-status-broadcast (rewrite), ac-degraded-recovery-logged
-          (rewrite).
+          ac-degraded-status-api-reason (new),
+          ac-degraded-status-api-timestamp (new),
+          ac-degraded-status-broadcast (rewrite),
+          ac-degraded-status-broadcast-target (new),
+          ac-degraded-recovery-logged (rewrite),
+          ac-degraded-recovery-logged-duration (new).
 
       # ─── Phase 5: Implementation — Active Target Set Infrastructure ───
 
@@ -33911,6 +33947,7 @@ plans:
           ac-pull-target-on-start-before-bootstrap,
           ac-pull-target-periodic, ac-pull-target-periodic-deferred,
           ac-pull-target-before-provision, ac-pull-ff-only,
+          ac-pull-no-merge-commits,
           ac-per-target-staleness, ac-per-target-staleness-isolation,
           ac-partial-sync-continues, ac-partial-sync-scoped-degradation.
 
@@ -34005,10 +34042,13 @@ plans:
           Covers: @dispatch-remote-branch-sync ac-divergence-enters-degraded,
           ac-divergence-scoped-to-target, ac-divergence-log-target,
           ac-divergence-log-classification, ac-divergence-log-resolution,
-          ac-degraded-no-provision, ac-degraded-healthy-unblocked,
-          ac-degraded-inflight-continues, ac-degraded-auto-recover,
-          ac-degraded-recovery-requeues, ac-degraded-status-api,
-          ac-degraded-status-broadcast, ac-degraded-recovery-logged.
+          ac-degraded-no-provision, ac-degraded-task-queued,
+          ac-degraded-healthy-unblocked, ac-degraded-inflight-continues,
+          ac-degraded-auto-recover, ac-degraded-recovery-requeues,
+          ac-degraded-status-api, ac-degraded-status-api-reason,
+          ac-degraded-status-api-timestamp, ac-degraded-status-broadcast,
+          ac-degraded-status-broadcast-target, ac-degraded-recovery-logged,
+          ac-degraded-recovery-logged-duration.
 
       # ─── Phase 9: Testing ───
 
@@ -34079,14 +34119,19 @@ plans:
           ac-concurrent-merge-same-target, ac-concurrent-merge-fix-cycle,
           ac-pull-target-on-start, ac-pull-target-on-start-before-bootstrap,
           ac-pull-target-periodic, ac-pull-target-periodic-deferred,
-          ac-pull-target-before-provision, ac-per-target-staleness,
+          ac-pull-target-before-provision, ac-pull-ff-only,
+          ac-pull-no-merge-commits, ac-per-target-staleness,
           ac-per-target-staleness-isolation, ac-partial-sync-continues,
           ac-partial-sync-scoped-degradation,
           ac-divergence-enters-degraded, ac-divergence-scoped-to-target,
           ac-divergence-log-target, ac-divergence-log-classification,
           ac-divergence-log-resolution, ac-degraded-no-provision,
-          ac-degraded-healthy-unblocked, ac-degraded-inflight-continues,
-          ac-degraded-auto-recover, ac-degraded-recovery-requeues,
+          ac-degraded-task-queued, ac-degraded-healthy-unblocked,
+          ac-degraded-inflight-continues, ac-degraded-auto-recover,
+          ac-degraded-recovery-requeues, ac-degraded-status-api,
+          ac-degraded-status-api-reason, ac-degraded-status-api-timestamp,
+          ac-degraded-status-broadcast, ac-degraded-status-broadcast-target,
+          ac-degraded-recovery-logged, ac-degraded-recovery-logged-duration,
           ac-active-target-includes-base, ac-active-target-rebuilt-on-start,
           ac-active-target-removed-on-cleanup.
       ```
@@ -34187,3 +34232,10 @@ plans:
           ac-divergence-log-guidance to ac-divergence-log-classification"
         author: "@claude"
         created_at: 2026-04-03T04:21:11.042Z
+      - _ulid: 01KN8SK993QMGFZ3N3TVKQ678Z
+        content: "Round 4 fixes: split remaining 6 compound ACs (ac-active-target-removed-on-cleanup,
+          ac-pull-ff-only, ac-degraded-no-provision, ac-degraded-status-api,
+          ac-degraded-status-broadcast, ac-degraded-recovery-logged). Added 7 new ACs. Fixed stale
+          summary counts in task What lines."
+        author: "@claude"
+        created_at: 2026-04-03T04:28:37.028Z
