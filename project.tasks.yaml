@@ -24480,7 +24480,7 @@
   type: task
   spec_ref: "@dispatch-remote-branch-sync"
   plan_ref: "@plan-workspace-scoped-integration-target-sync"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-sync-active-target-acs"
@@ -24495,6 +24495,7 @@
   created_at: 2026-04-03T04:36:15.804Z
   started_at: 2026-04-03T05:07:41.990Z
   submitted_at: 2026-04-03T05:10:53.601Z
+  completed_at: 2026-04-03T05:21:50.646Z
   automation: eligible
 - _ulid: 01KN8T19J4FBZYJ51306PV3NZA
   slugs:
