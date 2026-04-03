@@ -112876,6 +112876,12 @@ reviews:
         payload:
           thread_ulid: 01KNAS0YZ7R6V7RS8PK215S7KX
         timestamp: 2026-04-03T23:11:31.865Z
+      - _ulid: 01KNASVF934Z54126G7VXS3A0C
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNAS0YZ7R6V7RS8PK215S7KX
+        timestamp: 2026-04-03T23:11:34.179Z
     examined_commit: f2ad95bd4af80211df842526f4da0ba97d08820b
     external_links: []
     lifecycle_state: closed
@@ -112942,6 +112948,17 @@ reviews:
               concurrent merge back into the normal fix-cycle flow. That leaves the AC unproven and
               can hide regressions in the real concurrent-merge recovery path.
             created_at: 2026-04-03T22:57:05.512Z
+          - _ulid: 01KNASVEGJWPAGDBBNFXGF1382
+            author: Jacob Chapel
+            body: "Fixed in tests/dispatch-target-sync.test.ts. The regression now drives the actual reviewer
+              invocation path: it creates a plan-scoped pending_review task targeting plan/alpha,
+              provisions the canonical worker branch, forces a competing reviewer merge to advance
+              origin/plan/alpha, leaves the local target on the stale second merge, then runs
+              DispatchEngine._spawnInvocation() with a reviewer verdict inside the invocation. The
+              assertion now proves the same task transitions to needs_work while the automatic
+              post-merge push rejects non-fast-forward, so the AC is covered through the dispatch
+              reviewer flow instead of a disconnected follow-up review command."
+            created_at: 2026-04-03T23:11:33.394Z
         kind: blocker
         resolved_at: 2026-04-03T23:11:31.091Z
         resolved_by: Jacob Chapel
@@ -112954,5 +112971,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-03T22:57:16.451Z
     created_at: 2026-04-03T22:52:32.862Z
-    updated_at: 2026-04-03T23:11:31.091Z
+    updated_at: 2026-04-03T23:11:33.394Z
     notes: []
