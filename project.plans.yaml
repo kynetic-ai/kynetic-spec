@@ -33331,9 +33331,9 @@ plans:
             given: The dispatch engine starts with remote sync enabled and
                    the workspace registry contains non-closed workspaces
             when: The engine initializes the active integration target set
-            then: The set is rebuilt by collecting the distinct
-                   integrationTargetBranch values from all non-closed
-                   workspace records, plus the configured base branch
+            then: The set is rebuilt by collecting the distinct integration
+                  target branches from all non-closed workspace records,
+                  plus the configured base branch
 
           ac-active-target-removed-on-cleanup:
             given: A workspace is cleaned up and no other non-closed
@@ -33377,7 +33377,7 @@ plans:
           target, the second merge fails at the git ref level. The spec should
           document this expected failure mode.
 
-          What: Rewrite three existing ACs and add one new AC:
+          What: Rewrite three existing ACs and add three new ACs:
 
           ac-push-target-after-merge (REWRITE):
             given: A reviewer agent merges a task branch into the workspace's
@@ -33385,9 +33385,7 @@ plans:
             when: The dispatch engine processes the reviewer invocation
                   completion
             then: The dispatcher pushes the workspace's integration target
-                  branch to remote (this may be the configured base branch
-                  or a plan-scoped branch, depending on what the workspace
-                  was provisioned against)
+                  branch to remote
 
           ac-push-target-periodic (REWRITE):
             given: The periodic sync runs and at least one active integration
@@ -33399,12 +33397,15 @@ plans:
 
           ac-target-push-serialization (REWRITE):
             given: Two push operations target the same integration target
-                   branch concurrently (e.g. a post-merge push and a periodic
-                   sync push for the same branch)
+                   branch concurrently
             when: The second push operation is initiated
-            then: The second operation is skipped for that branch; pushes
-                  to different integration target branches may proceed
-                  concurrently
+            then: The second operation is skipped for that branch
+
+          ac-target-push-cross-branch-concurrency (NEW):
+            given: Push operations target two different integration target
+                   branches
+            when: Both push operations are initiated
+            then: Both pushes may proceed concurrently
 
           ac-concurrent-merge-same-target (NEW):
             given: Two reviewer invocations attempt to merge their respective
@@ -33412,18 +33413,24 @@ plans:
                    concurrently
             when: The second merge is attempted after the first has updated
                   the target branch ref
-            then: The second merge fails with a non-fast-forward error; the
-                  dispatch engine treats this as a normal reviewer failure
-                  and the affected task follows the standard fix cycle path
+            then: The second merge fails with a non-fast-forward error
+
+          ac-concurrent-merge-fix-cycle (NEW):
+            given: A reviewer merge fails due to a concurrent update to the
+                   same integration target branch
+            when: The dispatch engine processes the failed reviewer invocation
+            then: The affected task follows the standard fix cycle path
 
           How: Run kspec item ac set for the three existing ACs, and
-          kspec item ac add for the new one. Use a kspec batch command to
-          make all four changes atomic. Verify with kspec item get afterward.
+          kspec item ac add for the three new ones. Use a kspec batch command
+          to make all six changes atomic. Verify with kspec item get afterward.
 
           Covers: @dispatch-remote-branch-sync ac-push-target-after-merge
           (rewrite), ac-push-target-periodic (rewrite),
           ac-target-push-serialization (rewrite),
-          ac-concurrent-merge-same-target (new).
+          ac-target-push-cross-branch-concurrency (new),
+          ac-concurrent-merge-same-target (new),
+          ac-concurrent-merge-fix-cycle (new).
 
       # ─── Phase 3: Pull/Sync Path Updates ───
 
@@ -33764,7 +33771,9 @@ plans:
           branches) behaves identically to before.
 
           Covers: @dispatch-remote-branch-sync ac-push-target-after-merge,
-          ac-push-target-periodic, ac-target-push-serialization.
+          ac-push-target-periodic, ac-target-push-serialization,
+          ac-target-push-cross-branch-concurrency,
+          ac-concurrent-merge-same-target, ac-concurrent-merge-fix-cycle.
 
       # ─── Phase 7: Implementation — Pull/Sync Path ───
 
@@ -34003,13 +34012,15 @@ plans:
 
           Covers: @dispatch-remote-branch-sync ac-push-target-after-merge,
           ac-push-target-periodic, ac-target-push-serialization,
-          ac-concurrent-merge-same-target, ac-pull-target-on-start,
-          ac-pull-target-periodic, ac-pull-target-periodic-deferred,
-          ac-pull-target-before-provision, ac-per-target-staleness,
-          ac-partial-sync-continues, ac-divergence-enters-degraded,
-          ac-divergence-log-guidance, ac-degraded-no-provision,
-          ac-degraded-auto-recover, ac-active-target-includes-base,
-          ac-active-target-rebuilt-on-start, ac-active-target-removed-on-cleanup.
+          ac-target-push-cross-branch-concurrency,
+          ac-concurrent-merge-same-target, ac-concurrent-merge-fix-cycle,
+          ac-pull-target-on-start, ac-pull-target-periodic,
+          ac-pull-target-periodic-deferred, ac-pull-target-before-provision,
+          ac-per-target-staleness, ac-partial-sync-continues,
+          ac-divergence-enters-degraded, ac-divergence-log-guidance,
+          ac-degraded-no-provision, ac-degraded-auto-recover,
+          ac-active-target-includes-base, ac-active-target-rebuilt-on-start,
+          ac-active-target-removed-on-cleanup.
       ```
 
       ## Implementation Notes
@@ -34092,3 +34103,10 @@ plans:
           both to integration test Covers"
         author: "@claude"
         created_at: 2026-04-03T00:38:26.389Z
+      - _ulid: 01KN8S0S7HHYZRH9KZSFJFPK8Z
+        content: "Fix user feedback: replace integrationTargetBranch with behavioral language in active
+          target ACs, remove parenthetical aside from ac-push-target-after-merge, split compound ACs
+          (ac-target-push-serialization split into serialization + cross-branch-concurrency,
+          ac-concurrent-merge-same-target split into failure + fix-cycle)"
+        author: "@claude"
+        created_at: 2026-04-03T04:18:30.770Z
