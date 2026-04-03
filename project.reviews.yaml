@@ -107719,9 +107719,25 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-03T00:39:58.404Z
+      - _ulid: 01KN8CGSTRRKQY3KM8NGHK5YVX
+        actor: codex@openai
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-04-03T00:40:04.185Z
+      - _ulid: 01KN8CGSTSXRDRJQ72Y7GXQ5A7
+        actor: codex@openai
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-03T00:40:04.185Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -107729,7 +107745,14 @@ reviews:
       ref: "@plan-workspace-scoped-integration-target-sync"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex@openai
+        role: reviewer
+        created_at: 2026-04-03T00:40:04.184Z
     created_at: 2026-04-03T00:39:38.199Z
-    updated_at: 2026-04-03T00:39:53.350Z
+    updated_at: 2026-04-03T00:40:04.185Z
     notes: []
