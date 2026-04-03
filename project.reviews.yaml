@@ -108748,6 +108748,13 @@ reviews:
           status: pass
           name: evidence-log
         timestamp: 2026-04-03T05:30:40.307Z
+      - _ulid: 01KN8X59DX97B5SMTTG15D9Q10
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN8X58R5HP52NAMX2M6JVN7C
+        timestamp: 2026-04-03T05:30:52.733Z
     examined_commit: fb3342db29d0f52d03646cc5ec095e7d9bd0c310
     external_links: []
     lifecycle_state: open
@@ -108757,8 +108764,26 @@ reviews:
       content_hash: ""
       ref: "@01KN8T19J4FBZYJ51306PV3NZA"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KN8X58R5HP52NAMX2M6JVN7C
+        anchor:
+          type: code
+          commit: fb3342db29d0f52d03646cc5ec095e7d9bd0c310
+          line_end: 220
+          line_start: 194
+          path: tests/dispatch-degraded-state.test.ts
+          side: head
+        entries:
+          - _ulid: 01KN8X58R55M2W9V1RH6QHPH6R
+            author: Jacob Chapel
+            body: Renaming the divergence logging AC to  left the existing traceability annotations pointing at
+              the deleted  id. The stale id is still used here, and also in  at lines 3157, 3188,
+              and 3244. That makes the coverage linkage for this behavior invalid after the spec
+              rewrite, so the rename is incomplete. Update the affected annotations to the new AC id
+              as part of this spec change.
+            created_at: 2026-04-03T05:30:52.037Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-03T05:25:15.950Z
-    updated_at: 2026-04-03T05:30:38.394Z
+    updated_at: 2026-04-03T05:30:52.037Z
     notes: []
