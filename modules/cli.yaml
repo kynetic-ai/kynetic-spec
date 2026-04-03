@@ -8757,27 +8757,52 @@ features:
           - dispatch-remote-branch-sync
         title: Dispatch Remote Branch Sync
         type: feature
-        description: |
-          Automatic remote synchronization for dispatch-managed branches and the
-          configured integration target branch (dispatch.base_branch). Ensures
-          dispatch work is durable (pushed to remote), the integration target
-          stays fresh (pulled from remote), and the engine degrades gracefully
-          when sync operations fail.
+        description: >-
+          Automatic remote synchronization for dispatch-managed branches and the active integration
+          target set. Ensures dispatch work is durable (pushed to remote), each active integration
+          target stays fresh (pulled from remote), and sync failures degrade only the affected
+          target branch.
 
-          The sync remote is determined by convention: the first remote returned
-          by git remote (typically origin). A future dispatch.remote config field
-          can override this if multi-remote setups arise.
+
+          An active integration target is any distinct integration target branch referenced by a
+          non-closed workspace, plus the project's configured base branch, which is always active
+          even when no current workspace targets it. Each workspace resolves its integration target
+          at provisioning time: plan-scoped tasks use the target selected by
+          @plan-branch-dispatch-target, and all other workspaces use dispatch.base_branch.
+
+
+          The sync remote is determined by convention: the first remote returned by git remote
+          (typically origin). A future dispatch.remote config field can override this if
+          multi-remote setups arise.
+
 
           Design decisions:
-          - Dispatch branches are pushed after first invocation completion (not
-            on creation), since an empty branch is noise.
-          - Integration target uses fast-forward only — divergence is a structural
-            problem requiring operator intervention, not auto-merge.
-          - Target branch divergence degrades the engine. Individual task merge
-            conflicts are handled by the reviewer agent via merge skill
-            instructions, not by the dispatcher.
-          - Existing workspaces provisioned from an older target commit are not
-            rebased; staleness resolves naturally at merge time.
+
+          - Dispatch branches are pushed after first invocation completion (not on creation), since
+          an empty branch is noise.
+
+          - Integration targets use fast-forward only during remote sync; divergence is a structural
+          problem requiring operator intervention, not auto-merge.
+
+          - Existing workspaces provisioned from an older target commit are not rebased; staleness
+          resolves naturally at merge time.
+
+          - The active integration target set is rebuilt from the workspace registry on engine start
+          rather than maintained incrementally, avoiding stale-set races between workspace lifecycle
+          changes and sync bookkeeping.
+
+          - Degraded state, staleness tracking, and push serialization are scoped per integration
+          target branch so a diverged or busy target does not block tasks targeting healthy
+          branches.
+
+          - The push and pull paths share a single source of truth for active integration targets.
+          Separate push-side and pull-side target tracking is not allowed because the two views
+          could diverge.
+
+          - When two reviewers merge concurrently into the same integration target, git ref
+          serialization decides the winner: one merge succeeds and the other fails non-fast-forward.
+          The failing task follows the normal needs_work review path. This is expected behavior, not
+          a dispatch bug.
         status:
           maturity: draft
           implementation: in_progress
