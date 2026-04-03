@@ -109072,6 +109072,17 @@ reviews:
         runner: codex
         created_at: 2026-04-03T05:54:44.172Z
         completed_at: 2026-04-03T05:54:44.172Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation exit 6 with pre-existing repo warnings only; schema and references OK, no new
+          warnings attributable to this task.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-03T05:54:46.344Z
+        completed_at: 2026-04-03T05:54:46.344Z
     events:
       - _ulid: 01KN8Y9X18DVX4C4MZ4W163MV0
         actor: Jacob Chapel
@@ -109100,6 +109111,13 @@ reviews:
           status: pass
           name: evidence-log
         timestamp: 2026-04-03T05:54:44.951Z
+      - _ulid: 01KN8YH24XEVMX6ZCAN2B91SQ7
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-03T05:54:47.069Z
     examined_commit: d16345c7dec204b337a727fdf77cc81c59c19fe2
     external_links: []
     lifecycle_state: open
@@ -109112,5 +109130,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-03T05:50:52.456Z
-    updated_at: 2026-04-03T05:54:44.172Z
+    updated_at: 2026-04-03T05:54:46.344Z
     notes: []
