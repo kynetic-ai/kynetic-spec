@@ -112340,6 +112340,13 @@ reviews:
           status: fail
           name: manual-merge-preflight
         timestamp: 2026-04-03T20:03:37.135Z
+      - _ulid: 01KNAF3CRYZ8BBSV9Q3YPN12PE
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNAF3C0B86GSD1HCZFFSPSM5
+        timestamp: 2026-04-03T20:03:39.422Z
     examined_commit: 734d424d229e0f2f5118bbca66af94c33700f2e5
     external_links: []
     lifecycle_state: open
@@ -112349,8 +112356,36 @@ reviews:
       content_hash: ""
       ref: "@01KN8T1AZ0RSE7SA5SBK7AG5KD"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNAF3C0B86GSD1HCZFFSPSM5
+        anchor:
+          type: code
+          commit: 734d424d229e0f2f5118bbca66af94c33700f2e5
+          line_end: 1425
+          line_start: 1416
+          path: src/agent-runtime/dispatch.ts
+          side: head
+        entries:
+          - _ulid: 01KNAF3C0CSC7MM9YRNFMWVVGA
+            author: Jacob Chapel
+            body: >-
+              Manual merge into plan/plan-workspace-scoped-integration-target-sync/01kn8bx4 still
+              conflicts in src/agent-runtime/dispatch.ts. Auto-merging src/agent-runtime/dispatch.ts
+
+              CONFLICT (content): Merge conflict in src/agent-runtime/dispatch.ts
+
+              Auto-merging tests/dispatch-target-sync.test.ts
+
+              Automatic merge failed; fix conflicts and then commit the result. on the integration
+              branch produced a content conflict between this branch's  changes and the target
+              branch's newer / call shape, with a second conflict at the reviewer post-merge call
+              site around lines 2946-2949. Impact: the task cannot advance because the required
+              manual merge is still blocked. Evidence:  is 16d33b86826b3e73d168c92bd320eaf0f959da65
+              rather than the integration tip 73efb23bafc862eacc54776458d75d109bdf04cf,  showed both
+              conflict hunks, and an actual merge attempt reproduced the conflict before .
+            created_at: 2026-04-03T20:03:38.636Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-03T19:57:18.881Z
-    updated_at: 2026-04-03T20:03:36.329Z
+    updated_at: 2026-04-03T20:03:38.636Z
     notes: []
