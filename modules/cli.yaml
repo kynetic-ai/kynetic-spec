@@ -9053,6 +9053,10 @@ features:
             id: ac-degraded-recovery-requeues
             then: Tasks targeting that integration target become eligible for provisioning again
             when: The recovery is processed
+          - given: One or more integration targets are in degraded state
+            id: ac-degraded-status-api-reason
+            then: The response includes the failure reason for each degraded target
+            when: The dispatch status is queried via CLI or API
         tags: []
         decisions:
           - _ulid: 01KM3ZMCXZ5DTWYDPSP8GBKNTD
