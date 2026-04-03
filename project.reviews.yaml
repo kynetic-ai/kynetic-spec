@@ -111303,6 +111303,19 @@ reviews:
         runner: git
         created_at: 2026-04-03T18:44:56.287Z
         completed_at: 2026-04-03T18:44:56.287Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Full npm test hit one flaky/environment-sensitive failure in tests/test-runner.test.ts
+          (checkBuild on real project root). The same file passed when rerun on the task head and on
+          integration target plan/plan-workspace-scoped-integration-target-sync/01kn8bx4; follow-up
+          task @01KNAAJG filed to stabilize it.
+        name: full-npm-test
+        required: false
+        runner: npm
+        created_at: 2026-04-03T18:44:58.593Z
+        completed_at: 2026-04-03T18:44:58.593Z
     events:
       - _ulid: 01KNAA8142E4ZC1P7GFECF21CW
         actor: Jacob Chapel
@@ -111359,6 +111372,13 @@ reviews:
           status: fail
           name: manual-merge
         timestamp: 2026-04-03T18:44:57.063Z
+      - _ulid: 01KNAAKBB05FC5VFJZMNCEVYA5
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: full-npm-test
+        timestamp: 2026-04-03T18:44:59.361Z
     examined_commit: 16d33b86826b3e73d168c92bd320eaf0f959da65
     external_links: []
     lifecycle_state: open
@@ -111406,5 +111426,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-03T18:38:48.450Z
-    updated_at: 2026-04-03T18:44:56.287Z
+    updated_at: 2026-04-03T18:44:58.593Z
     notes: []
