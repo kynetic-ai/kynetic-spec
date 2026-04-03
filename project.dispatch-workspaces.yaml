@@ -35396,7 +35396,7 @@ workspaces:
         head: fcf063252b2ab61303004bfffb1d6a6e00d042bc
         last_seen_at: 2026-04-03T06:05:27.795Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-active-target-set-01kn8t19
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: e7837c1aa3fe7726d651cbf99c9d3b54d64df4ed
     bootstrap:
       status: succeeded
@@ -35488,7 +35488,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-03T17:32:39.751Z
+      updated_at: 2026-04-03T17:32:45.675Z
     integration:
       status: pending
       detail: null
@@ -35503,10 +35503,10 @@ workspaces:
     task_slug: task-impl-push-path
     timestamps:
       closed_at: null
-      last_active_at: 2026-04-03T17:21:28.277Z
-      last_reconciled_at: 2026-04-03T17:32:39.751Z
+      last_active_at: 2026-04-03T17:32:45.675Z
+      last_reconciled_at: 2026-04-03T17:32:45.675Z
       created_at: 2026-04-03T16:08:45.898Z
-      updated_at: 2026-04-03T17:32:43.778Z
+      updated_at: 2026-04-03T17:32:45.675Z
     workspace_id: dispatch-workspace-01KN8T1A51JFRMW4F8W31KJ907
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
