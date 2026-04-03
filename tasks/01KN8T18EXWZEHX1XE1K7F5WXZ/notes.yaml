@@ -11,3 +11,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-03T04:40:53.814Z
+  - _ulid: 01KN8TB1PR6RNMQWMB3RR71PHS
+    content: Rewrote @dispatch-remote-branch-sync description to define the active integration target
+      set, clarify per-workspace target resolution, preserve existing sync semantics, and add the
+      new design decisions for engine-start target-set rebuild, per-target degraded/staleness/push
+      isolation, unified push/pull target sourcing, and expected same-target concurrent merge
+      failure handling. Verified the rendered description with kspec item get. Ran kspec validate;
+      it exited with warnings only from existing project-wide validation debt (orphaned skills/specs
+      and known AC annotation coverage warnings), with no task-specific validation error.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-03T04:41:35.704Z
