@@ -21953,9 +21953,22 @@ runs:
     started_at: 2026-04-03T17:59:29.862Z
   - _ulid: 01KNA8JWGZBHATTD0RP5FXDPBB
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-03T18:09:47.039Z
+        completed_at: 2026-04-03T18:10:08.203Z
+        notes: "What worked well: merge-base ancestry check plus a local --no-commit merge distinguished
+          stale review state from real conflicts quickly. Friction: stale manual-merge conflict
+          findings can leave a task in needs_work after the branch already cleanly contains the
+          target. Coverage search: no existing task/spec/inbox match was found for this failure
+          mode. Capture: recorded a friction observation for stale merge-conflict state drift."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-03T18:10:08.203Z
+        completed_at: 2026-04-03T18:10:08.203Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-03T18:09:47.039Z
