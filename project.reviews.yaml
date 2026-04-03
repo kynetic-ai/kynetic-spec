@@ -109759,6 +109759,17 @@ reviews:
         runner: test.cjs
         created_at: 2026-04-03T17:01:13.509Z
         completed_at: 2026-04-03T17:01:13.509Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Exited 6 with repository-baseline warnings only (orphaned skill directory, existing
+          alignment/completeness warning set); no task-specific validation errors.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-03T17:01:15.801Z
+        completed_at: 2026-04-03T17:01:15.801Z
     events:
       - _ulid: 01KNA4DAJ6SNFD6NWKXAXV666M
         actor: Jacob Chapel
@@ -109787,6 +109798,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-03T17:01:14.305Z
+      - _ulid: 01KNA4NEDPN63PZ0V23CT8M44Q
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-03T17:01:16.599Z
     examined_commit: f9100112530419d0fb2ad70f0e86270352b49336
     external_links: []
     lifecycle_state: open
@@ -109826,5 +109844,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-03T16:56:50.502Z
-    updated_at: 2026-04-03T17:01:13.509Z
+    updated_at: 2026-04-03T17:01:15.801Z
     notes: []
