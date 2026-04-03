@@ -110890,6 +110890,12 @@ reviews:
         payload:
           thread_ulid: 01KNA8YY3JN69JYMD3YR4DREVH
         timestamp: 2026-04-03T18:25:58.937Z
+      - _ulid: 01KNA9GKT7R4W2RQDS4XTTMMEF
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNA8YSR2ZD8JCHKF8MCB87AC
+        timestamp: 2026-04-03T18:26:01.159Z
     examined_commit: a1a65a28c894724d0ec94cb72ffefec6c5f32dfd
     external_links: []
     lifecycle_state: closed
@@ -110923,6 +110929,14 @@ reviews:
               means the branch does not satisfy the project rule that every claimed AC must have
               explicit, behavior-proving coverage.
             created_at: 2026-04-03T18:16:17.410Z
+          - _ulid: 01KNA9GK29PJJ6VBP500W75F01
+            author: Jacob Chapel
+            body: Fixed in 16d33b868. Added explicit AC annotations for ac-divergence-log-target,
+              ac-divergence-log-resolution, ac-degraded-task-queued, ac-degraded-healthy-unblocked,
+              ac-degraded-status-broadcast-target, and ac-degraded-recovery-logged-duration, plus a
+              new behavioral test for ac-degraded-inflight-continues that keeps a real invocation
+              running while the target enters degraded state.
+            created_at: 2026-04-03T18:26:00.393Z
         kind: blocker
       - _ulid: 01KNA8YVXN04CG4AFJQ92YMPT3
         anchor:
@@ -110987,5 +111001,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-03T18:16:39.932Z
     created_at: 2026-04-03T18:11:35.783Z
-    updated_at: 2026-04-03T18:25:58.190Z
+    updated_at: 2026-04-03T18:26:00.393Z
     notes: []
