@@ -1,1 +1,10 @@
-notes: []
+notes:
+  - _ulid: 01KN8W972KXQVVQFB5AQHFKE8C
+    content: "Approach: update only @dispatch-remote-branch-sync degraded-state ACs using a single kspec
+      batch so the rewrite is atomic and auditable. Edge cases: divergence isolated to one target,
+      healthy targets continue provisioning, in-flight work continues, recovery/status surfaces
+      remain per-target. Test plan: spec-only task, so verify by re-reading item output and running
+      kspec validate for spec integrity after the AC rewrite."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-03T05:15:32.819Z
