@@ -107784,6 +107784,18 @@ reviews:
         required: true
         created_at: 2026-04-03T04:26:31.733Z
         completed_at: 2026-04-03T04:26:31.733Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "The dependency graph remains coherent after the AC split: foundation feeds spec-update
+          tasks, active-target infrastructure precedes push/pull implementation, degraded-state
+          implementation correctly depends on pull-path work, and integration tests remain
+          downstream of all implementation tasks."
+        name: Dependency ordering
+        required: true
+        created_at: 2026-04-03T04:26:31.744Z
+        completed_at: 2026-04-03T04:26:31.744Z
     events:
       - _ulid: 01KN8SCRH996G8E64CWEKQV0Y8
         actor: "@claude"
@@ -107861,6 +107873,13 @@ reviews:
           status: fail
           name: Spec AC quality
         timestamp: 2026-04-03T04:26:33.580Z
+      - _ulid: 01KN8SFHTMRXC9XB3XQ4TE5SEA
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Dependency ordering
+        timestamp: 2026-04-03T04:26:34.708Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -107980,5 +107999,5 @@ reviews:
         kind: question
     verdicts: []
     created_at: 2026-04-03T04:25:03.273Z
-    updated_at: 2026-04-03T04:26:31.733Z
+    updated_at: 2026-04-03T04:26:31.744Z
     notes: []
