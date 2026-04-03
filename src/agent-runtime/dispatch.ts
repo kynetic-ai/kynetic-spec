@@ -875,20 +875,20 @@ export class DispatchEngine {
   // ─── Target Branch Sync State ───────────────────────────────────────────────
   // AC: @dispatch-remote-branch-sync ac-pull-target-on-start through ac-no-remote
 
-  /** Whether a target sync is currently in progress (running guard). */
-  private _targetSyncRunning = false;
-  /** Timestamp of last successful target sync (ms since epoch). 0 = never synced. */
-  private _lastTargetSyncTimestamp = 0;
-  /** Counter of consecutive transient sync failures. Reset on any success. */
-  private _consecutiveTransientFailures = 0;
+  /** Target branches currently being synced from remote. */
+  private _targetSyncRunning = new Set<string>();
+  /** Timestamp of last successful sync per target branch (ms since epoch). */
+  private _targetSyncTimestamps = new Map<string, number>();
+  /** Counter of consecutive transient sync failures per target branch. Reset on success. */
+  private _consecutiveSyncFailures = new Map<string, number>();
   /** Resolved remote sync config (cached at start). */
   private _remoteSyncEnabled: boolean | null = null;
   /** Resolved remote name for sync operations (cached at start). */
   private _syncRemote: string | null = null;
   /** Configured sync interval in milliseconds. */
   private _syncIntervalMs = 0;
-  /** Timestamp of first consecutive transient failure (ms since epoch). 0 = no failures. */
-  private _firstTransientFailureTimestamp = 0;
+  /** Timestamp of first consecutive transient failure per target branch (ms since epoch). */
+  private _firstSyncFailureTimestamps = new Map<string, number>();
 
   // ─── Degraded State ──────────────────────────────────────────────────────
   // AC: @dispatch-remote-branch-sync ac-divergence-enters-degraded through ac-degraded-auto-recover
@@ -1321,12 +1321,8 @@ export class DispatchEngine {
   private async _reconcile(): Promise<void> {
     // AC: @dispatch-remote-branch-sync ac-pull-target-periodic — sync target when stale
     // AC: @dispatch-remote-branch-sync ac-pull-target-periodic-deferred — skip if reviewer active
-    if (
-      this._remoteSyncEnabled &&
-      this._isTargetSyncStale() &&
-      !this._hasActiveReviewerInvocation()
-    ) {
-      await this._syncActiveTargetBranches();
+    if (this._remoteSyncEnabled) {
+      await this._syncAllActiveTargets({ staleOnly: true });
     }
 
     try {
@@ -2362,7 +2358,7 @@ export class DispatchEngine {
       entry.change.toStatus === "pending_review" ? "reviewer" : "worker";
     try {
       // AC: @dispatch-remote-branch-sync ac-pull-target-before-provision — sync if stale
-      if (this._remoteSyncEnabled && this._isTargetSyncStale()) {
+      if (this._remoteSyncEnabled) {
         const resolvedConfig = await resolveDispatchWorkspaceConfig(this.projectDir, {
           taskRef: entry.change.taskRef,
           task: entry.change.task
@@ -2373,7 +2369,9 @@ export class DispatchEngine {
               }
             : undefined,
         });
-        await this._syncTargetBranch(resolvedConfig.baseBranch);
+        if (this._isTargetSyncStale(resolvedConfig.baseBranch)) {
+          await this._syncTarget(resolvedConfig.baseBranch);
+        }
       }
 
       try {
@@ -3105,7 +3103,7 @@ export class DispatchEngine {
       );
 
       // AC: @dispatch-remote-branch-sync ac-pull-target-on-start — sync before bootstrap
-      await this._syncActiveTargetBranches();
+      await this._syncAllActiveTargets();
     } catch (err) {
       console.error("[dispatch] Failed to initialize target sync:", err);
       // Non-fatal: engine continues without sync
@@ -3120,7 +3118,7 @@ export class DispatchEngine {
    * AC: @dispatch-remote-branch-sync ac-transient-no-degrade
    * AC: @dispatch-remote-branch-sync ac-no-remote
    */
-  async _syncTargetBranch(branch?: string): Promise<TargetSyncResult> {
+  async _syncTarget(branch?: string): Promise<TargetSyncResult> {
     const baseBranch = this._resolveBaseBranch(branch);
     // AC: @dispatch-remote-branch-sync ac-no-remote — skip when no remote
     if (!this._remoteSyncEnabled || !this._syncRemote || !baseBranch) {
@@ -3128,11 +3126,11 @@ export class DispatchEngine {
     }
 
     // Running guard — if a sync is already in progress, skip
-    if (this._targetSyncRunning) {
+    if (this._targetSyncRunning.has(baseBranch)) {
       return "skipped";
     }
 
-    this._targetSyncRunning = true;
+    this._targetSyncRunning.add(baseBranch);
     try {
       let mutationScope;
       try {
@@ -3156,20 +3154,22 @@ export class DispatchEngine {
 
       if (fetchResult.status !== 0) {
         // AC: @dispatch-remote-branch-sync ac-transient-no-degrade — warn and continue
-        this._consecutiveTransientFailures++;
-        if (this._firstTransientFailureTimestamp === 0) {
-          this._firstTransientFailureTimestamp = Date.now();
+        const nextFailureCount = (this._consecutiveSyncFailures.get(baseBranch) ?? 0) + 1;
+        this._consecutiveSyncFailures.set(baseBranch, nextFailureCount);
+        if (!this._firstSyncFailureTimestamps.has(baseBranch)) {
+          this._firstSyncFailureTimestamps.set(baseBranch, Date.now());
         }
         const stderr = fetchResult.stderr?.trim() ?? "";
         console.warn(
-          `[dispatch] Target sync fetch failed (attempt ${this._consecutiveTransientFailures}): ${stderr}`,
+          `[dispatch] Target sync fetch failed for ${baseBranch} (attempt ${nextFailureCount}): ${stderr}`,
         );
 
         // AC: @dispatch-remote-branch-sync ac-repeated-transient-escalation
-        if (this._consecutiveTransientFailures >= 5) {
-          const failureDurationMs = Date.now() - this._firstTransientFailureTimestamp;
+        if (nextFailureCount >= 5) {
+          const firstFailureAt = this._firstSyncFailureTimestamps.get(baseBranch) ?? Date.now();
+          const failureDurationMs = Date.now() - firstFailureAt;
           console.warn(
-            `[dispatch] Persistent connectivity issues: ${this._consecutiveTransientFailures} consecutive sync failures over ${Math.round(failureDurationMs / 1000)}s`,
+            `[dispatch] Persistent connectivity issues for ${baseBranch}: ${nextFailureCount} consecutive sync failures over ${Math.round(failureDurationMs / 1000)}s`,
           );
         }
 
@@ -3205,9 +3205,9 @@ export class DispatchEngine {
       }
 
       // Success
-      this._consecutiveTransientFailures = 0;
-      this._firstTransientFailureTimestamp = 0;
-      this._lastTargetSyncTimestamp = Date.now();
+      this._consecutiveSyncFailures.set(baseBranch, 0);
+      this._firstSyncFailureTimestamps.delete(baseBranch);
+      this._targetSyncTimestamps.set(baseBranch, Date.now());
 
       // AC: @dispatch-remote-branch-sync ac-degraded-auto-recover
       if (this._degraded) {
@@ -3222,13 +3222,26 @@ export class DispatchEngine {
       console.log(`[dispatch] Target branch synced: ${this._syncRemote}/${baseBranch}`);
       return "synced";
     } finally {
-      this._targetSyncRunning = false;
+      this._targetSyncRunning.delete(baseBranch);
     }
   }
 
-  private async _syncActiveTargetBranches(): Promise<void> {
+  private async _syncAllActiveTargets(options: { staleOnly?: boolean } = {}): Promise<void> {
+    const reviewerTargets = await this._activeReviewerTargets();
     for (const branch of this._resolveActiveTargets()) {
-      await this._syncTargetBranch(branch);
+      if (options.staleOnly && !this._isTargetSyncStale(branch)) {
+        continue;
+      }
+      if (reviewerTargets.has(branch)) {
+        continue;
+      }
+
+      try {
+        await this._syncTarget(branch);
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        console.warn(`[dispatch] Target sync failed for ${branch}; continuing: ${message}`);
+      }
     }
   }
 
@@ -3350,23 +3363,41 @@ export class DispatchEngine {
    * Check whether the last target sync is stale relative to the sync interval.
    * AC: @dispatch-remote-branch-sync ac-pull-target-before-provision
    */
-  private _isTargetSyncStale(): boolean {
+  private _isTargetSyncStale(branch: string): boolean {
     if (this._syncIntervalMs <= 0) return false;
-    if (this._lastTargetSyncTimestamp === 0) return true;
-    return Date.now() - this._lastTargetSyncTimestamp > this._syncIntervalMs;
+    const lastSyncTimestamp = this._targetSyncTimestamps.get(branch) ?? 0;
+    if (lastSyncTimestamp === 0) return true;
+    return Date.now() - lastSyncTimestamp > this._syncIntervalMs;
   }
 
   /**
-   * Check whether a reviewer invocation is currently active.
+   * Resolve active reviewer targets from in-flight invocation/workspace metadata.
    * AC: @dispatch-remote-branch-sync ac-pull-target-periodic-deferred
    */
-  private _hasActiveReviewerInvocation(): boolean {
+  private async _activeReviewerTargets(): Promise<Set<string>> {
+    const reviewerTaskRefs = new Set<string>();
     for (const record of this.activeInvocationDetails.values()) {
-      if (record.role === "reviewer") {
-        return true;
+      if (record.role === "reviewer" && record.taskRef) {
+        reviewerTaskRefs.add(record.taskRef);
       }
     }
-    return false;
+    if (reviewerTaskRefs.size === 0) {
+      return new Set();
+    }
+
+    const ctx = await initContext(this.projectDir);
+    const records = await loadDispatchWorkspaceRegistry(ctx);
+    const targets = new Set<string>();
+    for (const record of records) {
+      if (
+        reviewerTaskRefs.has(record.task_ref) &&
+        record.lifecycle_state !== "closed" &&
+        record.integration.target_branch.trim().length > 0
+      ) {
+        targets.add(record.integration.target_branch.trim());
+      }
+    }
+    return targets;
   }
 
   /**
@@ -3415,20 +3446,28 @@ export class DispatchEngine {
     lastSyncTimestamp: number;
     consecutiveFailures: number;
     syncRunning: boolean;
+    targetSyncTimestamps: Record<string, number>;
+    targetConsecutiveFailures: Record<string, number>;
+    syncRunningTargets: string[];
     degraded: {
       active: boolean;
       reason: string;
       enteredAt: string | null;
     };
   } {
+    const targetSyncTimestamps = Object.fromEntries(this._targetSyncTimestamps);
+    const targetConsecutiveFailures = Object.fromEntries(this._consecutiveSyncFailures);
     return {
       enabled: this._remoteSyncEnabled ?? false,
       remote: this._syncRemote,
       baseBranch: this._configuredBaseBranch,
       activeTargets: this._resolveActiveTargets(),
-      lastSyncTimestamp: this._lastTargetSyncTimestamp,
-      consecutiveFailures: this._consecutiveTransientFailures,
-      syncRunning: this._targetSyncRunning,
+      lastSyncTimestamp: Math.max(0, ...Object.values(targetSyncTimestamps)),
+      consecutiveFailures: Math.max(0, ...Object.values(targetConsecutiveFailures)),
+      syncRunning: this._targetSyncRunning.size > 0,
+      targetSyncTimestamps,
+      targetConsecutiveFailures,
+      syncRunningTargets: [...this._targetSyncRunning].toSorted(),
       degraded: {
         active: this._degraded,
         reason: this._degradedReason,
