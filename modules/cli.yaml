@@ -9058,6 +9058,10 @@ features:
             id: ac-degraded-status-api-timestamp
             then: The response includes the timestamp when each target entered degraded state
             when: The dispatch status is queried via CLI or API
+          - given: An integration target enters or exits degraded state
+            id: ac-degraded-status-broadcast-target
+            then: The event identifies the specific target branch and the new state
+            when: The sync state event is broadcast
         tags: []
         decisions:
           - _ulid: 01KM3ZMCXZ5DTWYDPSP8GBKNTD
