@@ -1,0 +1,32 @@
+_ulid: 01KNABHKZG59Z9JS7VDJCKFJ7H
+slugs: []
+title: Stabilize flaky file-lock same-process reclaim test
+type: bug
+description: >-
+  Full \
+
+  > @kynetic-ai/spec@0.12.0 test
+
+  > node scripts/test.cjs --fresh\ on review snapshot @01KNAAJG48CRVH5G5KPNS25DSK failed once in
+  tests/file-lock.test.ts at 'File Lock should not reclaim a lock from the same process when waiters
+  exceed max hold duration' with AssertionError: expected 2 to be 1 at tests/file-lock.test.ts:232.
+  An immediate second full-suite rerun with --fresh passed completely (2068/2068 suites, 7490/7495
+  tests, 5 skipped), so this appears to be a pre-existing flaky concurrency/timing issue rather than
+  a regression from the test-runner change. Investigate the timing assumptions in the same-process
+  waiter/hold-duration path, reproduce under full-suite load, and make the test deterministic
+  without weakening coverage.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - test
+  - infra
+vcs_refs: []
+created_at: 2026-04-03T19:01:31.248Z
+todos: []
+automation: eligible
