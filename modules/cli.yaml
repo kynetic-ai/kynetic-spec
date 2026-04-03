@@ -9050,6 +9050,10 @@ features:
             id: ac-degraded-task-queued
             then: The task remains in the queue for future evaluation
             when: The dispatch engine skips the task
+          - given: One integration target is in degraded state
+            id: ac-degraded-healthy-unblocked
+            then: The task is provisioned normally
+            when: A task targeting a non-degraded integration target becomes eligible for dispatch
         tags: []
         decisions:
           - _ulid: 01KM3ZMCXZ5DTWYDPSP8GBKNTD
