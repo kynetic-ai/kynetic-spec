@@ -9023,6 +9023,22 @@ features:
               non-fatal and logged as a warning
             when: |
               The workspace cleanup runs
+          - given: The dispatch engine is running with remote sync enabled
+            id: ac-active-target-includes-base
+            then: The project's configured base branch is always included in the active set, regardless of
+              whether any workspace currently targets it
+            when: The active integration target set is evaluated
+          - given: The dispatch engine starts with remote sync enabled and the workspace registry contains
+              non-closed workspaces
+            id: ac-active-target-rebuilt-on-start
+            then: The set is rebuilt by collecting the distinct integration target branches from all non-closed
+              workspace records, plus the configured base branch
+            when: The engine initializes the active integration target set
+          - given: A workspace is cleaned up and no other non-closed workspace has the same integration target
+              branch
+            id: ac-active-target-removed-on-cleanup
+            then: That integration target branch is removed from the active set
+            when: The active target set is re-evaluated
         tags: []
         decisions:
           - _ulid: 01KM3ZMCXZ5DTWYDPSP8GBKNTD
