@@ -1,1 +1,15 @@
-notes: []
+notes:
+  - _ulid: 01KNAR8WV79ZGQ9NN0AQF9VXPY
+    content: "Approach: extend tests/dispatch-target-sync.test.ts using the existing bare-remote +
+      tracked-branch helpers and direct integration-target git helpers instead of inventing a second
+      harness. Edge cases: same-target concurrent reviewer merges must fail only for the stale
+      second updater; successful first merge must still push remote; fix-cycle path should
+      transition only the failed task to needs_work; trait-error-guidance is N/A because this file
+      exercises internal dispatch engine sync rather than a user-facing CLI command. Test plan: add
+      one behavioral concurrent-merge regression covering @dispatch-remote-branch-sync
+      ac-concurrent-merge-same-target and ac-concurrent-merge-fix-cycle, add the missing
+      ac-pull-no-merge-commits annotation to the existing ff-only test, and add standalone N/A
+      annotations for @trait-error-guidance ac-1 through ac-6."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-03T22:43:56.904Z
