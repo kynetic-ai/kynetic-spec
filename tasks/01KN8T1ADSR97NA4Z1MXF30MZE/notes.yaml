@@ -1,1 +1,13 @@
-notes: []
+notes:
+  - _ulid: 01KNA2FM5E2F1NQDXEEVBJ37A1
+    content: "Approach: refactor the pull path onto the unified active target set already introduced by
+      the dependency task, replacing single-target sync fields with per-branch maps/sets and
+      threading the resolved integration target through pre-provision sync. Edge cases: reviewer
+      activity should defer only the matching branch, transient failures should escalate per target
+      without degrading healthy targets, and syncing one target must not refresh another target's
+      staleness. Test plan: update existing dispatch target sync tests to cover per-target staleness
+      isolation, partial-failure iteration, branch-scoped reviewer deferral, startup/all-target
+      sync, and the single-target regression path."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-03T16:23:08.718Z
