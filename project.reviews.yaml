@@ -107817,6 +107817,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN8SENE127QJ8JAAVMJVV7KS
         timestamp: 2026-04-03T04:26:06.356Z
+      - _ulid: 01KN8SEY25589QPD6QYFQNW6RY
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KN8SEXANA3W6WDG0CSTTHWDE
+        timestamp: 2026-04-03T04:26:14.469Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -107918,7 +107925,23 @@ reviews:
               clause, this lifecycle AC still needs to be decomposed."
             created_at: 2026-04-03T04:26:05.633Z
         kind: blocker
+      - _ulid: 01KN8SEXANA3W6WDG0CSTTHWDE
+        anchor:
+          type: structured
+          ref: "@task-sync-push-ac-updates"
+          section: description
+        entries:
+          - _ulid: 01KN8SEXAPM6F3RYHY1C9S9MF2
+            author: "@claude"
+            body: The round-4 AC split updated the explicit AC lists and Covers lines, but the summary count in
+              this task still says 'add three new ACs' even though the task now lists four new ACs.
+              The same stale-count problem also appears in @task-sync-pull-ac-updates and
+              @task-sync-degraded-ac-updates. The concrete lists are usable, so this is not
+              blocking, but the narration should be brought back into sync for fresh-session
+              readability.
+            created_at: 2026-04-03T04:26:13.718Z
+        kind: question
     verdicts: []
     created_at: 2026-04-03T04:25:03.273Z
-    updated_at: 2026-04-03T04:26:05.633Z
+    updated_at: 2026-04-03T04:26:13.718Z
     notes: []
