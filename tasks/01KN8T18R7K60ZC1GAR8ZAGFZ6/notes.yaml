@@ -1,1 +1,10 @@
-notes: []
+notes:
+  - _ulid: 01KN8TTQTEYB1A19Q9GX4HV4QW
+    content: "Approach: update only @dispatch-remote-branch-sync via CLI, using one atomic batch for the
+      three new lifecycle ACs specified by the task and plan. Edge cases: preserve exact AC
+      ids/text, avoid manual YAML edits, and verify the active-target vocabulary matches the
+      rewritten description. Test plan: no runtime code change in this task; verify with kspec item
+      get and kspec validate after the spec mutation."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-03T04:50:09.871Z
