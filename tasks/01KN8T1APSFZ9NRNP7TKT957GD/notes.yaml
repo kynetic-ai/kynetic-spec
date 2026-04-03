@@ -146,3 +146,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-03T18:45:16.553Z
+  - _ulid: 01KNABCXAAAQ0GERND4DV0BJS0
+    content: "Fix cycle 6: merged plan/plan-workspace-scoped-integration-target-sync/01kn8bx4 into the
+      task branch to resolve the real manual-merge conflicts. Reconciled
+      src/agent-runtime/dispatch.ts with the newer integration-target push-path changes while
+      preserving per-target degraded-state behavior, added the missing target-push regression
+      coverage in tests/dispatch-target-sync.test.ts, and re-verified merge ancestry. Verification:
+      npm run typecheck passed; npm test -- dispatch-target-sync dispatch-degraded-state
+      daemon-api/agent-dispatch passed (11 suites / 72 tests); kspec validate reported only the
+      repository's pre-existing warnings."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-03T18:58:56.970Z
