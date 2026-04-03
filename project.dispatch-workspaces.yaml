@@ -35979,12 +35979,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-03T19:11:07.149Z
+      updated_at: 2026-04-03T19:11:11.136Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-03T19:11:07.149Z
+      updated_at: 2026-04-03T19:11:11.136Z
     integration:
       status: pending
       detail: null
@@ -35992,24 +35992,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: fb3342db29d0f52d03646cc5ec095e7d9bd0c310
-      updated_at: 2026-04-03T19:11:07.149Z
-    lifecycle_state: ready
+      updated_at: 2026-04-03T19:11:11.136Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KNABHKZG59Z9JS7VDJCKFJ7H"
     task_slug: stabilize-flaky-file-lock-same-process-reclaim-test
     timestamps:
       closed_at: null
       last_active_at: 2026-04-03T19:02:11.054Z
-      last_reconciled_at: 2026-04-03T19:11:07.149Z
+      last_reconciled_at: 2026-04-03T19:11:11.136Z
       created_at: 2026-04-03T19:02:05.868Z
-      updated_at: 2026-04-03T19:11:07.149Z
+      updated_at: 2026-04-03T19:11:11.136Z
     workspace_id: dispatch-workspace-01KNABHKZG59Z9JS7VDJCKFJ7H
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: c36094b173afa341f8e985018648d0c6363db25f
+        last_seen_at: 2026-04-03T19:11:11.136Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-flaky-file-lock-same-process-reclaim-test-01knabhk-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/stabilize-flaky-file-lock-same-process-reclaim-test/01knabhk
-        head: fb3342db29d0f52d03646cc5ec095e7d9bd0c310
-        last_seen_at: 2026-04-03T19:02:05.868Z
+        head: c36094b173afa341f8e985018648d0c6363db25f
+        last_seen_at: 2026-04-03T19:11:11.136Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-flaky-file-lock-same-process-reclaim-test-01knabhk
