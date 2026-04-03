@@ -11810,6 +11810,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-03T05:15:10.237Z
+  - _ulid: 01KN8WQ4MMV92HGEDFH51RYTY6
+    type: friction
+    content: "Session reflection workflow discoverability is inconsistent: the skill text suggests
+      'kspec workflow show' without a run ref and implies listing workflows, but this CLI exposes
+      'kspec workflow runs' and requires a run-ref for 'show'. In practice that forces
+      trial-and-error before reflection can start. Update the reflection guidance (and any related
+      agent instructions) to use the actual workflow commands or add a friendlier default for
+      showing the active run."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-03T05:23:09.076Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
