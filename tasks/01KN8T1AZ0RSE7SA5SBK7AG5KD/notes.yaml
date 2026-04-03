@@ -80,3 +80,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-03T20:07:07.356Z
+  - _ulid: 01KNAG0292P5BV8W88CNPMBHX4
+    content: "Merge attempt after approved review was aborted due to a real conflict against the
+      dispatch-provided local integration branch
+      plan/plan-workspace-scoped-integration-target-sync/01kn8bx4 at
+      73efb23bafc862eacc54776458d75d109bdf04cf. Conflict file: src/agent-runtime/dispatch.ts around
+      _pushIntegrationTargetAsync and the reviewer post-merge call site. Preflight against
+      origin/plan/plan-workspace-scoped-integration-target-sync/01kn8bx4 at
+      fb3342db29d0f52d03646cc5ec095e7d9bd0c310 merges cleanly, but the actual required merge target
+      in this workspace is 16 commits ahead of origin and still conflicts, so reviewer did not guess
+      at resolution."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-03T20:19:18.946Z
