@@ -25,3 +25,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-03T19:35:45.093Z
+  - _ulid: 01KNADZ29SBE0J7Y19N79YFZXS
+    content: "Fix cycle 1: removed the accidental second startup sync pass in
+      DispatchEngine._initTargetSync() and added regression coverage that asserts engine start syncs
+      each active target exactly once. Verification: npm test -- dispatch-target-sync.test.ts passed
+      (39/39) and full npm test passed (2068/2068 suites, 7510 passed, 5 skipped). kspec validate
+      still reports the existing repo-wide warnings only."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-03T19:43:49.049Z
