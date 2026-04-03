@@ -111864,6 +111864,18 @@ reviews:
         runner: npm
         created_at: 2026-04-03T19:23:01.533Z
         completed_at: 2026-04-03T19:23:01.533Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation produced warnings only (exit 6) with no errors. Warning set is repo-wide and
+          unrelated to this one-file test change; no trait-coverage regression introduced by the
+          snapshot.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-03T19:23:05.623Z
+        completed_at: 2026-04-03T19:23:05.623Z
     events:
       - _ulid: 01KNAC4K9AHG020S19VFT3P09Z
         actor: Jacob Chapel
@@ -111885,6 +111897,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-03T19:23:02.915Z
+      - _ulid: 01KNACS5B0KWN48DA8SVJPFQGB
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-03T19:23:06.977Z
     examined_commit: c36094b173afa341f8e985018648d0c6363db25f
     external_links: []
     lifecycle_state: open
@@ -111897,5 +111916,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-03T19:11:53.131Z
-    updated_at: 2026-04-03T19:23:01.533Z
+    updated_at: 2026-04-03T19:23:05.623Z
     notes: []
