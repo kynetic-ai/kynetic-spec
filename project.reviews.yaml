@@ -112086,6 +112086,12 @@ reviews:
         payload:
           thread_ulid: 01KNADG11CKXTTG2XJ5PSV6B9P
         timestamp: 2026-04-03T19:43:47.790Z
+      - _ulid: 01KNADZ4A04EYZJSFKD1PGE5F1
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNADG11CKXTTG2XJ5PSV6B9P
+        timestamp: 2026-04-03T19:43:51.104Z
     examined_commit: fec66d40a61f725abef3a3c0107e9383b9a464b2
     external_links: []
     lifecycle_state: closed
@@ -112139,6 +112145,13 @@ reviews:
               warning/log/degraded-state side effects on startup. The new tests only assert final
               branch state, so they do not catch this regression.
             created_at: 2026-04-03T19:35:36.236Z
+          - _ulid: 01KNADZ3JBVV03JDBHCYFYN12J
+            author: Jacob Chapel
+            body: "Fixed in current branch: removed the duplicate startup call to _syncAllActiveTargets() in
+              _initTargetSync() and added a regression in tests/dispatch-target-sync.test.ts that
+              asserts engine start syncs each active target exactly once (dev plus plan/alpha).
+              Re-verified with npm test -- dispatch-target-sync.test.ts and full npm test."
+            created_at: 2026-04-03T19:43:50.347Z
         kind: blocker
         resolved_at: 2026-04-03T19:43:47.040Z
         resolved_by: Jacob Chapel
@@ -112151,5 +112164,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-03T19:35:43.526Z
     created_at: 2026-04-03T19:29:41.831Z
-    updated_at: 2026-04-03T19:43:47.040Z
+    updated_at: 2026-04-03T19:43:50.347Z
     notes: []
