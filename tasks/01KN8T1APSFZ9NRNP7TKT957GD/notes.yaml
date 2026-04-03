@@ -58,3 +58,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-03T17:53:31.593Z
+  - _ulid: 01KNA7VDK1WGV8YQ67WE94AXWW
+    content: "Fix cycle 2: verified the canonical task branch already contains
+      origin/plan/plan-workspace-scoped-integration-target-sync/01kn8bx4 in its ancestry, so the
+      earlier manual-merge conflict note is stale relative to the current branch lineage. Re-read
+      @dispatch-remote-branch-sync ACs, confirmed the per-target degraded-state implementation
+      remains present in src/agent-runtime/dispatch.ts and the related dispatch sync tests, and
+      re-verified with focused checks: npm test -- dispatch-degraded-state dispatch-target-sync
+      daemon-api/agent-dispatch passed (11 suites / 66 tests), npm run typecheck passed, and kspec
+      validate reported only the repository's pre-existing warnings."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-03T17:56:58.081Z
