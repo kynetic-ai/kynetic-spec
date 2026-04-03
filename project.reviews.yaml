@@ -110477,6 +110477,17 @@ reviews:
         runner: kspec
         created_at: 2026-04-03T17:57:26.615Z
         completed_at: 2026-04-03T17:57:26.615Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: timeout 120s npm test produced no failing output before timeout; worker notes describe a
+          known teardown hang, and targeted suites covering the changed dispatch paths passed.
+        name: full npm test
+        required: false
+        runner: npm
+        created_at: 2026-04-03T17:57:32.882Z
+        completed_at: 2026-04-03T17:57:32.882Z
     events:
       - _ulid: 01KNA7HWQWJM7Q5GJ1HDWNDM5Q
         actor: Jacob Chapel
@@ -110498,6 +110509,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-04-03T17:57:28.030Z
+      - _ulid: 01KNA7WGXEQ5DXEM9YP2ZQSG1P
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: full npm test
+        timestamp: 2026-04-03T17:57:34.254Z
     examined_commit: e54dfdb82cbd4c4d80d3c1826555d2f75d26a764
     external_links: []
     lifecycle_state: open
@@ -110510,5 +110528,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-03T17:51:45.917Z
-    updated_at: 2026-04-03T17:57:26.615Z
+    updated_at: 2026-04-03T17:57:32.882Z
     notes: []
