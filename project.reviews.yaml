@@ -108984,6 +108984,12 @@ reviews:
         payload:
           thread_ulid: 01KN8Y7ZGCPBYYKEGAATBCF604
         timestamp: 2026-04-03T06:02:54.365Z
+      - _ulid: 01KN8Z002SJMD4XS9XGSWNHW22
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KN8Y83WZ537RJHK3HRMP5MKC
+        timestamp: 2026-04-03T06:02:56.473Z
     examined_commit: 0db514f9fe5692c79ae5eff7495a6b1893bc050a
     external_links: []
     lifecycle_state: closed
@@ -109065,6 +109071,8 @@ reviews:
               pulled on engine start.
             created_at: 2026-04-03T06:02:37.613Z
         kind: blocker
+        resolved_at: 2026-04-03T06:02:55.767Z
+        resolved_by: Jacob Chapel
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -109074,7 +109082,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-03T05:50:17.445Z
     created_at: 2026-04-03T05:38:53.160Z
-    updated_at: 2026-04-03T06:02:53.654Z
+    updated_at: 2026-04-03T06:02:55.767Z
     notes: []
   - _ulid: 01KN8Y9X18FGX4PKG2CEHTA8CP
     slugs: []
