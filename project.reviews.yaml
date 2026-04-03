@@ -108950,9 +108950,25 @@ reviews:
           kind: blocker
           thread_ulid: 01KN8Y83WZ537RJHK3HRMP5MKC
         timestamp: 2026-04-03T05:49:54.684Z
+      - _ulid: 01KN8Y8TV56PBN6SQJ0T357QKZ
+        actor: codex@openai.com
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-03T05:50:17.445Z
+      - _ulid: 01KN8Y8TV56634VQCK91APTJKP
+        actor: codex@openai.com
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-03T05:50:17.445Z
     examined_commit: 0db514f9fe5692c79ae5eff7495a6b1893bc050a
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -109013,7 +109029,14 @@ reviews:
               sites (, , ) still invoke  with no branch parameter."
             created_at: 2026-04-03T05:49:53.951Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai.com
+        role: reviewer
+        created_at: 2026-04-03T05:50:17.445Z
     created_at: 2026-04-03T05:38:53.160Z
-    updated_at: 2026-04-03T05:49:53.951Z
+    updated_at: 2026-04-03T05:50:17.445Z
     notes: []

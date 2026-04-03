@@ -24527,7 +24527,7 @@
   type: task
   spec_ref: "@dispatch-remote-branch-sync"
   plan_ref: "@plan-workspace-scoped-integration-target-sync"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-sync-description-rewrite"
@@ -24538,7 +24538,7 @@
     - sync
     - implementation
   review_ref: "@01KN8XKYK88RHXCEA3GJJMYM9F"
-  notes_count: 2
+  notes_count: 3
   todos_count: 0
   created_at: 2026-04-03T04:36:16.352Z
   started_at: 2026-04-03T05:24:28.300Z
