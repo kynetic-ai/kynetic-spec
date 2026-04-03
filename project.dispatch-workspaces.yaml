@@ -36123,7 +36123,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-03T20:20:20.662Z
+      updated_at: 2026-04-03T20:20:22.311Z
     integration:
       status: pending
       detail: null
@@ -36132,25 +36132,20 @@ workspaces:
       target_branch: plan/plan-workspace-scoped-integration-target-sync/01kn8bx4
       target_commit: 73efb23bafc862eacc54776458d75d109bdf04cf
       updated_at: 2026-04-03T20:20:20.662Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: plan/plan-workspace-scoped-integration-target-sync/01kn8bx4
     task_ref: "@01KN8T1AZ0RSE7SA5SBK7AG5KD"
     task_slug: task-impl-sync-integration-tests
     timestamps:
       closed_at: null
       last_active_at: 2026-04-03T20:09:01.296Z
-      last_reconciled_at: 2026-04-03T20:20:20.662Z
+      last_reconciled_at: 2026-04-03T20:20:22.311Z
       created_at: 2026-04-03T19:11:20.190Z
-      updated_at: 2026-04-03T20:20:20.662Z
+      updated_at: 2026-04-03T20:20:22.311Z
     workspace_id: dispatch-workspace-01KN8T1AZ0RSE7SA5SBK7AG5KD
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 734d424d229e0f2f5118bbca66af94c33700f2e5
-        last_seen_at: 2026-04-03T20:08:55.102Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-sync-integration-tests-01kn8t1a-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-impl-sync-integration-tests/01kn8t1a
