@@ -12079,6 +12079,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-03T19:04:20.566Z
+  - _ulid: 01KNAC1XZJN357F8RPZ0XH8VXE
+    type: friction
+    content: Review workflow should standardize mergeability checks against the live integration target
+      before requesting changes. This task accumulated multiple stale manual-merge conflict review
+      cycles before the branch was actually rebased and merged cleanly, which indicates the current
+      reviewer process can misclassify mergeability and create unnecessary fix cycles.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-03T19:10:25.778Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
