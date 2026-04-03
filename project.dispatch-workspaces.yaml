@@ -35895,7 +35895,7 @@ workspaces:
         head: f1d15d8f154cda47049f58190b5c09fcf7482dda
         last_seen_at: 2026-04-03T18:53:12.761Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-flaky-test-runner-build-prerequisite-check-01knaajg
-  - active_role: worker
+  - active_role: null
     base_branch_point: fb3342db29d0f52d03646cc5ec095e7d9bd0c310
     bootstrap:
       status: succeeded
@@ -35979,12 +35979,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-03T19:09:01.749Z
+      updated_at: 2026-04-03T19:11:07.149Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-03T19:09:01.749Z
+      updated_at: 2026-04-03T19:11:07.149Z
     integration:
       status: pending
       detail: null
@@ -35992,17 +35992,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: fb3342db29d0f52d03646cc5ec095e7d9bd0c310
-      updated_at: 2026-04-03T19:09:01.749Z
-    lifecycle_state: active
+      updated_at: 2026-04-03T19:11:07.149Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KNABHKZG59Z9JS7VDJCKFJ7H"
     task_slug: stabilize-flaky-file-lock-same-process-reclaim-test
     timestamps:
       closed_at: null
       last_active_at: 2026-04-03T19:02:11.054Z
-      last_reconciled_at: 2026-04-03T19:09:01.749Z
+      last_reconciled_at: 2026-04-03T19:11:07.149Z
       created_at: 2026-04-03T19:02:05.868Z
-      updated_at: 2026-04-03T19:09:01.749Z
+      updated_at: 2026-04-03T19:11:07.149Z
     workspace_id: dispatch-workspace-01KNABHKZG59Z9JS7VDJCKFJ7H
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
