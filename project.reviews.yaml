@@ -108918,6 +108918,13 @@ reviews:
           kind: nit
           thread_ulid: 01KN8Y7XBN80EMVX13Y04008T8
         timestamp: 2026-04-03T05:49:47.963Z
+      - _ulid: 01KN8Y80C5NPGSR7WMWY3HXJQC
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN8Y7ZGCPBYYKEGAATBCF604
+        timestamp: 2026-04-03T05:49:50.341Z
     examined_commit: 0db514f9fe5692c79ae5eff7495a6b1893bc050a
     external_links: []
     lifecycle_state: open
@@ -108943,7 +108950,26 @@ reviews:
               searched: correctness, edge cases, test quality, integration, error handling."
             created_at: 2026-04-03T05:49:47.253Z
         kind: nit
+      - _ulid: 01KN8Y7ZGCPBYYKEGAATBCF604
+        anchor:
+          type: code
+          commit: 0db514f9fe5692c79ae5eff7495a6b1893bc050a
+          line_end: 1436
+          line_start: 1412
+          path: src/agent-runtime/dispatch.ts
+          side: head
+        entries:
+          - _ulid: 01KN8Y7ZGCRQQYWFXPSQ5BBKJT
+            author: Jacob Chapel
+            body: "The push path also remains base-branch-only.  serializes one global push and resolves the
+              target with , so periodic retry and post-merge push still operate only on the
+              configured base branch rather than the active integration target that actually
+              received the merge. This breaks the task's stated goal of a shared push/pull source of
+              truth: non-base targets can be added to  but are never pushed. The current tests only
+              assert helper/state exposure, not that a non-base active target is actually pushed."
+            created_at: 2026-04-03T05:49:49.452Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-03T05:38:53.160Z
-    updated_at: 2026-04-03T05:49:47.253Z
+    updated_at: 2026-04-03T05:49:49.452Z
     notes: []
