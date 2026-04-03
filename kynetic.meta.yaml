@@ -11957,6 +11957,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-03T17:45:27.496Z
+  - _ulid: 01KNA7CXQYDMA1K44CWB3S5AMS
+    type: friction
+    content: Manual merge into a plan branch can report conflicts from a stale local branch even when
+      the task branch is already a descendant of origin/plan; the merge workflow should refresh or
+      verify ancestry before escalating worker-side reconciliation.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-03T17:49:03.102Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
