@@ -12171,6 +12171,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-03T20:07:10.026Z
+  - _ulid: 01KNAGF36JW9ARAV1Q29QT1CQK
+    type: friction
+    content: Manual merge preflight against origin can pass while the dispatch-provided local
+      integration branch still conflicts; reviewers/workers need branch-state checks against the
+      actual local target, not only origin/<target>.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-03T20:27:31.410Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
