@@ -109497,6 +109497,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-03T16:36:20.322Z
+      - _ulid: 01KNA3GREFPTXTXHC0MVG7Q03C
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNA3GQR0835HCS933W9ZA56S
+        timestamp: 2026-04-03T16:41:14.448Z
     examined_commit: 8970bc4822de51d6b080c1c8b0619657196ca47d
     external_links: []
     lifecycle_state: open
@@ -109506,8 +109513,26 @@ reviews:
       content_hash: ""
       ref: "@01KN8T1ADSR97NA4Z1MXF30MZE"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNA3GQR0835HCS933W9ZA56S
+        anchor:
+          type: code
+          commit: 8970bc4822de51d6b080c1c8b0619657196ca47d
+          line_end: 1289
+          line_start: 1240
+          path: tests/dispatch-target-sync.test.ts
+          side: head
+        entries:
+          - _ulid: 01KNA3GQR02GFQHTNP038T26TA
+            author: Jacob Chapel
+            body: This test is annotated for , but it never checks degradation scope. It only verifies that the
+              loop continues and logs a warning after a thrown  call. The test would still pass if
+              one target incorrectly degraded the whole engine or if a later successful target
+              cleared another branch’s degraded state. Per this repo’s review gates, an AC
+              annotation that does not prove the claimed behavior is a must-fix.
+            created_at: 2026-04-03T16:41:13.728Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-03T16:35:55.466Z
-    updated_at: 2026-04-03T16:36:19.588Z
+    updated_at: 2026-04-03T16:41:13.728Z
     notes: []
