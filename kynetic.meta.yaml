@@ -12110,6 +12110,16 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-04-03T19:28:26.630Z
+  - _ulid: 01KNAD2XSN63PB9XVRV9W8B777
+    type: success
+    content: Running the task-specific suite first (npm test -- dispatch-target-sync.test.ts) cleanly
+      separated sync-runtime verification from an unrelated full-suite failure, which made
+      submit/no-submit decisions much faster after a heavy rebase.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-04-03T19:28:26.933Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
