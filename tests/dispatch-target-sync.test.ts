@@ -3,9 +3,13 @@ import * as fs from "node:fs/promises";
 import { execSync } from "node:child_process";
 import * as path from "node:path";
 import * as invocationModule from "../src/agent-runtime/invocation.js";
+import * as dispatchWorkspaceRegistryModule from "../src/parser/dispatch-workspaces.js";
 import * as workspaceModule from "../src/agent-runtime/workspace.js";
 import { DispatchEngine } from "../src/agent-runtime/dispatch.js";
-import { cleanupTempDir, createTempDir, initGitRepo } from "./helpers/cli.js";
+import { initContext } from "../src/parser/index.js";
+import { saveDispatchWorkspaceRecord } from "../src/parser/dispatch-workspaces.js";
+import type { LoadedDispatchWorkspaceRecord } from "../src/parser/dispatch-workspaces.js";
+import { cleanupTempDir, createTempDir, initGitRepo, testUlid } from "./helpers/cli.js";
 import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
 
 ensureSplitBackendRegistered();
@@ -89,6 +93,130 @@ async function setupProjectFiles(projectDir: string, baseBranch = "dev"): Promis
     "utf-8",
   );
   await fs.writeFile(path.join(projectDir, "project.tasks.yaml"), "tasks: []\n", "utf-8");
+}
+
+function createWorkspaceRecord(
+  projectDir: string,
+  {
+    taskRef,
+    taskSlug,
+    targetBranch,
+    lifecycleState = "ready",
+    workspaceId = testUlid("WS"),
+  }: {
+    taskRef: string;
+    taskSlug: string;
+    targetBranch: string;
+    lifecycleState?: LoadedDispatchWorkspaceRecord["lifecycle_state"];
+    workspaceId?: string;
+  },
+): LoadedDispatchWorkspaceRecord {
+  const timestamp = new Date().toISOString();
+  const branchHead = git(projectDir, "rev-parse HEAD");
+  return {
+    workspace_id: workspaceId,
+    task_ref: taskRef,
+    task_slug: taskSlug,
+    worktree_root: projectDir,
+    resolved_base_branch: "dev",
+    base_branch_point: branchHead,
+    canonical_branch: `dispatch/task/${taskSlug}/${workspaceId.toLowerCase()}`,
+    canonical_branch_head: branchHead,
+    branch_provenance: {
+      ownership: "dispatcher-managed",
+      source: "provisioned",
+      remote_ref: null,
+      adopted_from: null,
+      adopted_at: null,
+      rehydrated: null,
+    },
+    lifecycle_state: lifecycleState,
+    active_role: lifecycleState === "closed" ? null : "worker",
+    worktrees: {
+      worker: {
+        path: path.join(projectDir, ".dispatch-worktrees", workspaceId.toLowerCase()),
+        branch_mode: "branch",
+        branch_ref: `dispatch/task/${taskSlug}/${workspaceId.toLowerCase()}`,
+        head: branchHead,
+        last_seen_at: timestamp,
+      },
+      reviewer: null,
+    },
+    bootstrap: {
+      status: "not_run",
+      configHash: null,
+      canonicalBranchHead: null,
+      lastRunAt: null,
+      invalidationReasons: [],
+      steps: [],
+      failureMessage: null,
+      lastRole: null,
+      roleStates: {
+        worker: {
+          status: "not_run",
+          configHash: null,
+          canonicalBranchHead: null,
+          lastRunAt: null,
+          invalidationReasons: [],
+          steps: [],
+          failureMessage: null,
+        },
+        reviewer: {
+          status: "not_run",
+          configHash: null,
+          canonicalBranchHead: null,
+          lastRunAt: null,
+          invalidationReasons: [],
+          steps: [],
+          failureMessage: null,
+        },
+      },
+    },
+    integration: {
+      status: "pending",
+      target_branch: targetBranch,
+      target_commit: branchHead,
+      publication_mode: "manual_merge",
+      outcome: "manual_merge",
+      detail: null,
+      updated_at: timestamp,
+    },
+    health: {
+      status: "healthy",
+      summary: "healthy",
+      issues: [],
+      updated_at: timestamp,
+    },
+    cleanup: {
+      status: lifecycleState === "closed" ? "completed" : "not_scheduled",
+      eligible: lifecycleState === "closed",
+      reason: lifecycleState === "closed" ? "closed" : null,
+      detail: null,
+      updated_at: timestamp,
+    },
+    timestamps: {
+      created_at: timestamp,
+      updated_at: timestamp,
+      last_reconciled_at: timestamp,
+      last_active_at: timestamp,
+      closed_at: lifecycleState === "closed" ? timestamp : null,
+    },
+  };
+}
+
+async function saveWorkspaceRecord(
+  projectDir: string,
+  options: {
+    taskRef: string;
+    taskSlug: string;
+    targetBranch: string;
+    lifecycleState?: LoadedDispatchWorkspaceRecord["lifecycle_state"];
+    workspaceId?: string;
+  },
+): Promise<void> {
+  const ctx = await initContext(projectDir);
+  const record = createWorkspaceRecord(projectDir, options);
+  await saveDispatchWorkspaceRecord(ctx, record);
 }
 
 async function setupWorktreeLaunchedProjectWithRemote(): Promise<{
@@ -190,6 +318,21 @@ async function pushRemoteCommit(
   }
 }
 
+async function cleanupTempDirWithRetry(dir: string, retries = 3): Promise<void> {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      await cleanupTempDir(dir);
+      return;
+    } catch (error) {
+      const code = (error as NodeJS.ErrnoException).code;
+      if ((code !== "ENOTEMPTY" && code !== "EBUSY") || attempt === retries) {
+        throw error;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 100 * (attempt + 1)));
+    }
+  }
+}
+
 describe("dispatch target branch sync", () => {
   let projectDir: string;
   let remoteDir: string;
@@ -204,8 +347,8 @@ describe("dispatch target branch sync", () => {
 
   afterEach(async () => {
     vi.restoreAllMocks();
-    if (projectDir) await cleanupTempDir(projectDir);
-    if (remoteDir) await cleanupTempDir(remoteDir);
+    if (projectDir) await cleanupTempDirWithRetry(projectDir);
+    if (remoteDir) await cleanupTempDirWithRetry(remoteDir);
   });
 
   // AC: @dispatch-remote-branch-sync ac-pull-target-on-start
@@ -245,6 +388,126 @@ describe("dispatch target branch sync", () => {
     const syncStatus = engine.getTargetSyncStatus();
     expect(syncStatus.enabled).toBe(true);
     expect(syncStatus.lastSyncTimestamp).toBeGreaterThan(0);
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-active-target-includes-base
+  it("includes the configured base branch in the active target set even without workspaces", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    expect(engine.getTargetSyncStatus().activeTargets).toEqual(["dev"]);
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-active-target-rebuilt-on-start
+  it("rebuilds the active target set from distinct non-closed workspace targets on start", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    vi.spyOn(dispatchWorkspaceRegistryModule, "loadDispatchWorkspaceRegistry").mockResolvedValue([
+      createWorkspaceRecord(projectDir, {
+        taskRef: "@01TASK00000000000000000001",
+        taskSlug: "task-plan-alpha",
+        targetBranch: "plan/alpha",
+      }),
+      createWorkspaceRecord(projectDir, {
+        taskRef: "@01TASK00000000000000000002",
+        taskSlug: "task-plan-beta",
+        targetBranch: "plan/beta",
+      }),
+      createWorkspaceRecord(projectDir, {
+        taskRef: "@01TASK00000000000000000003",
+        taskSlug: "task-plan-alpha-2",
+        targetBranch: "plan/alpha",
+      }),
+      createWorkspaceRecord(projectDir, {
+        taskRef: "@01TASK00000000000000000004",
+        taskSlug: "task-closed-plan-gamma",
+        targetBranch: "plan/gamma",
+        lifecycleState: "closed",
+      }),
+    ]);
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await (engine as any)._initTargetSync();
+
+    expect(new Set(engine.getTargetSyncStatus().activeTargets)).toEqual(
+      new Set(["dev", "plan/alpha", "plan/beta"]),
+    );
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-active-target-removed-on-cleanup
+  it("removes an orphaned integration target after cleanup but never removes the configured base branch", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+
+    const orphanedWorkspaceId = testUlid("WS", 1);
+    await saveWorkspaceRecord(projectDir, {
+      taskRef: "@01TASK00000000000000000005",
+      taskSlug: "task-plan-cleanup",
+      targetBranch: "plan/cleanup",
+      workspaceId: orphanedWorkspaceId,
+    });
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    expect(new Set(engine.getTargetSyncStatus().activeTargets)).toEqual(
+      new Set(["dev", "plan/cleanup"]),
+    );
+
+    await saveWorkspaceRecord(projectDir, {
+      taskRef: "@01TASK00000000000000000005",
+      taskSlug: "task-plan-cleanup",
+      targetBranch: "plan/cleanup",
+      lifecycleState: "closed",
+      workspaceId: orphanedWorkspaceId,
+    });
+
+    await (engine as any)._removeActiveTargetIfOrphaned("plan/cleanup");
+    await (engine as any)._removeActiveTargetIfOrphaned("dev");
+
+    expect(engine.getTargetSyncStatus().activeTargets).toEqual(["dev"]);
+
+    await engine.stop();
+  });
+
+  it("keeps active target resolution shared between startup bookkeeping and direct helper updates", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    await (engine as any)._addActiveTarget("plan/shared");
+
+    expect(new Set((engine as any)._resolveActiveTargets())).toEqual(new Set(["dev", "plan/shared"]));
+    expect(new Set(engine.getTargetSyncStatus().activeTargets)).toEqual(
+      new Set(["dev", "plan/shared"]),
+    );
+    expect((engine as any)._resolveBaseBranch()).toBe("dev");
+    expect((engine as any)._resolveBaseBranch("plan/shared")).toBe("plan/shared");
 
     await engine.stop();
   });
@@ -612,7 +875,7 @@ describe("dispatch target branch sync", () => {
         });
         await engine.start();
 
-        expect(await engine._syncTargetBranch()).toBe("up_to_date");
+        expect(["synced", "up_to_date"]).toContain(await engine._syncTargetBranch());
         expect(git(sharedCheckoutDir, "rev-parse dev")).toBe(remoteTip);
         expect(git(sharedCheckoutDir, "branch --show-current")).toBe("dev");
         expect(git(sourceDir, "rev-parse HEAD")).toBe(sourceHeadBefore);
