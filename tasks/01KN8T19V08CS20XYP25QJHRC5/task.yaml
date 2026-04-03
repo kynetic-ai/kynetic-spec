@@ -1,0 +1,83 @@
+_ulid: 01KN8T19V08CS20XYP25QJHRC5
+slugs:
+  - task-impl-active-target-set
+title: Unify sync state and implement active target set management
+type: task
+description: |
+  Replace the dual push/pull state groups in the dispatch engine with
+  a unified active target set, and add methods to rebuild, query, and
+  update the set.
+
+  Why: The dispatch engine currently maintains two parallel sets of
+  state for integration target tracking. The push side has
+  this.integrationTargetBranch (dispatch.ts line 870, set at line 979)
+  and the pull side has this._syncBaseBranch (dispatch.ts line 886,
+  set at line 3052). Both are initialized independently in start() from
+  the same config value and both store a single branch name. With
+  workspace-scoped targets, both paths need to operate on a shared set
+  of active branches. Unifying these into a single data structure is
+  the foundation that all subsequent implementation tasks depend on.
+
+  What:
+  - Remove the fields: this.integrationTargetBranch (line 870),
+    this._syncBaseBranch (line 886). Replace with a single
+    this._activeTargets: Set<string> that holds all branch names
+    the engine should push to and pull from.
+  - Keep a this._configuredBaseBranch: string field to track the
+    project's configured base branch (always in the active set).
+  - Add method _rebuildActiveTargetSet(): reads all non-closed
+    workspace records from the registry, collects distinct
+    integrationTargetBranch values, unions with _configuredBaseBranch,
+    and replaces _activeTargets. This method is called during engine
+    start (replacing both line 979 and line 3052 initialization).
+  - Add method _addActiveTarget(branch: string): adds a branch to
+    the set. Called after workspace provisioning when a new target
+    appears.
+  - Add method _removeActiveTargetIfOrphaned(branch: string): removes
+    a branch if no non-closed workspace targets it and it is not the
+    configured base branch. Called after workspace cleanup.
+  - Update _resolveBaseBranch() (line 1445) to return the active set
+    or accept a specific branch parameter, depending on caller needs.
+    Some callers need "which branch?" (post-merge push) and others
+    need "all branches" (periodic sync).
+  - Update the two initialization sites: the push-side init at line 979
+    and the pull-side init at line 3052 both call
+    _rebuildActiveTargetSet() instead of caching a single branch.
+
+  How: The workspace registry is already loaded during engine start.
+  Use the registry's list method to get non-closed workspaces, extract
+  integrationTargetBranch from each record's metadata (via toMetadata
+  or directly from record.integration.target_branch), and deduplicate
+  into a Set. The configured base branch comes from the existing config
+  resolution (resolvedConfig.baseBranch). The _addActiveTarget and
+  _removeActiveTargetIfOrphaned methods are simple Set operations — the
+  "rebuild from registry" approach means they only need to handle the
+  incremental case for efficiency, and _rebuildActiveTargetSet is the
+  authoritative fallback.
+
+  Testing: Unit test that _rebuildActiveTargetSet produces the correct
+  set from mock registry data (empty registry = just base branch,
+  multiple workspaces with same target = one entry, multiple targets =
+  all present). Test that _removeActiveTargetIfOrphaned does not remove
+  the configured base branch. Test that the push and pull paths read
+  from the same _activeTargets field.
+
+  Covers: @dispatch-remote-branch-sync ac-active-target-includes-base,
+  ac-active-target-rebuilt-on-start, ac-active-target-removed-on-cleanup.
+spec_ref: "@dispatch-remote-branch-sync"
+plan_ref: "@plan-workspace-scoped-integration-target-sync"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-sync-description-rewrite"
+  - "@task-sync-active-target-acs"
+context: []
+priority: 1
+tags:
+  - dispatch
+  - sync
+  - implementation
+vcs_refs: []
+created_at: 2026-04-03T04:36:16.352Z
+todos: []

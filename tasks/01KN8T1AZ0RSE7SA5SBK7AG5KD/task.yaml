@@ -1,0 +1,96 @@
+_ulid: 01KN8T1AZ0RSE7SA5SBK7AG5KD
+slugs:
+  - task-impl-sync-integration-tests
+title: Integration tests for workspace-scoped sync
+type: task
+description: |
+  End-to-end integration tests verifying the complete workspace-scoped
+  sync lifecycle: provisioning with plan branches, reviewer merge,
+  push to remote, periodic sync, per-target degraded state, and
+  recovery.
+
+  Why: The individual implementation tasks include unit tests for their
+  specific components, but the interactions between push, pull, and
+  degraded state across multiple targets need integration coverage.
+  The most dangerous failure modes are cross-component: a plan branch
+  merge triggers a push to the wrong branch, or degraded state on one
+  target leaks into another target's evaluation. These require tests
+  with a real workspace registry, multiple workspaces, and a git remote.
+
+  What:
+  - Multi-target push test: provision two workspaces — one targeting the
+    base branch, one targeting a plan branch. Complete reviewer
+    invocations on both. Verify each workspace's integration target is
+    pushed to remote (not the global base branch for both). Verify the
+    remote has both branches with the expected merge commits.
+  - Multi-target periodic sync test: set up a remote with commits on
+    both the base branch and a plan branch. Start the engine. Verify
+    both branches are synced on start. Advance the remote on only the
+    plan branch. Verify periodic sync pulls only the plan branch (base
+    branch unchanged).
+  - Per-target staleness test: sync both targets. Advance only the plan
+    branch remote. Verify pre-provision sync for a plan-scoped task
+    pulls the plan branch, not the base branch. Verify the base branch
+    staleness timestamp is unaffected.
+  - Per-target degraded test: force divergence on the plan branch
+    remote. Verify only the plan branch enters degraded state. Provision
+    a task targeting the base branch — should succeed. Provision a task
+    targeting the plan branch — should be deferred. Resolve the
+    divergence. Verify auto-recovery and the deferred task becomes
+    eligible.
+  - Concurrent merge test: provision two tasks targeting the same plan
+    branch. Simulate concurrent reviewer completions. Verify one merge
+    succeeds and the other fails, and the failing task enters fix cycle.
+  - Single-target regression test: run the full lifecycle with no plan
+    branches. Verify behavior is identical to the pre-change baseline
+    (no regressions from the multi-target machinery).
+
+  How: Use the existing dispatch test infrastructure with temp
+  directories, bare git remotes (git init --bare), and the workspace
+  registry. The dispatch engine can be instantiated directly with a
+  mock config. Plan branches are created by writing plan records with
+  branch fields to the shadow branch fixture. Remote manipulation uses
+  direct git commands against the bare remote.
+
+  Testing: This task IS the test task. Run npm test to verify.
+
+  Covers: @dispatch-remote-branch-sync ac-push-target-after-merge,
+  ac-push-target-periodic, ac-push-target-periodic-retry,
+  ac-target-push-serialization,
+  ac-target-push-cross-branch-concurrency,
+  ac-concurrent-merge-same-target, ac-concurrent-merge-fix-cycle,
+  ac-pull-target-on-start, ac-pull-target-on-start-before-bootstrap,
+  ac-pull-target-periodic, ac-pull-target-periodic-deferred,
+  ac-pull-target-before-provision, ac-pull-ff-only,
+  ac-pull-no-merge-commits, ac-per-target-staleness,
+  ac-per-target-staleness-isolation, ac-partial-sync-continues,
+  ac-partial-sync-scoped-degradation,
+  ac-divergence-enters-degraded, ac-divergence-scoped-to-target,
+  ac-divergence-log-target, ac-divergence-log-classification,
+  ac-divergence-log-resolution, ac-degraded-no-provision,
+  ac-degraded-task-queued, ac-degraded-healthy-unblocked,
+  ac-degraded-inflight-continues, ac-degraded-auto-recover,
+  ac-degraded-recovery-requeues, ac-degraded-status-api,
+  ac-degraded-status-api-reason, ac-degraded-status-api-timestamp,
+  ac-degraded-status-broadcast, ac-degraded-status-broadcast-target,
+  ac-degraded-recovery-logged, ac-degraded-recovery-logged-duration,
+  ac-active-target-includes-base, ac-active-target-rebuilt-on-start,
+  ac-active-target-removed-on-cleanup.
+spec_ref: "@dispatch-remote-branch-sync"
+plan_ref: "@plan-workspace-scoped-integration-target-sync"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-impl-push-path"
+  - "@task-impl-pull-path"
+  - "@task-impl-degraded-state"
+context: []
+priority: 2
+tags:
+  - dispatch
+  - sync
+  - test
+vcs_refs: []
+created_at: 2026-04-03T04:36:17.504Z
+todos: []

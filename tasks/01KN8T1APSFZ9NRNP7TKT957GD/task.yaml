@@ -1,0 +1,110 @@
+_ulid: 01KN8T1APSFZ9NRNP7TKT957GD
+slugs:
+  - task-impl-degraded-state
+title: Implement per-target degraded state in dispatch engine
+type: task
+description: |
+  Replace the dispatch engine's global degraded state with per-target
+  degraded state, and update the drain loop to check degraded state
+  per-task after resolving integration targets.
+
+  Why: The global _degraded boolean (dispatch.ts line 896) blocks ALL
+  provisioning when set. With per-target degraded state, a diverged
+  plan branch should only block tasks targeting that plan branch. The
+  drain loop currently checks degraded state as an early return (line
+  2147: if (this._degraded) return) before resolving any task's
+  integration target. This ordering must be inverted: resolve the
+  task's target first, then check if that specific target is degraded.
+
+  What:
+  - Replace these fields on the dispatch engine:
+    this._degraded: boolean (line 896) → removed
+    this._degradedReason: string (line 898) → removed
+    this._degradedEnteredAt: number (line 900) → removed
+    Add: this._degradedTargets: Map<string, { reason: string,
+    enteredAt: number }> keyed by branch name.
+  - Update _enterDegradedState(reason: string) (line 3247) to accept
+    a branch parameter: _enterDegradedState(branch: string,
+    reason: string). Add the branch to the map. Only add if not already
+    degraded for that branch (preserve existing "no re-entry" check at
+    line 3248, but scoped per-branch).
+  - Update _exitDegradedState() (line 3272) to accept a branch
+    parameter: _exitDegradedState(branch: string). Remove from map.
+    Log recovery with branch name and duration.
+  - Update the drain loop. Remove the global degraded early-return at
+    line 2147. Instead, in the per-task evaluation within the drain
+    loop, resolve the task's integration target (using the same
+    plan_ref → plan.branch → fallback chain as workspace provisioning).
+    If the resolved target is in _degradedTargets, skip that task (log
+    it as deferred due to degraded target) and continue to the next
+    task. Tasks targeting healthy branches are provisioned normally.
+  - The target resolution in the drain loop should use a lightweight
+    path — not full workspace provisioning, just plan_ref lookup and
+    branch resolution. If the plan_ref is invalid or the plan cannot
+    be found, fall through to the configured base branch (same as
+    workspace provisioning does).
+  - Update getDegradedState() (line 3393) to return the full map
+    (or an array of per-target degraded info). Callers include the
+    status API endpoint.
+  - Update the SyncStateEvent (line 3257, 3263) to include the
+    target branch name in the broadcast. The WebSocket event payload
+    should identify which branch entered/exited degraded state.
+  - Update the divergence log guidance in _enterDegradedState to
+    include the affected target branch name. The existing log message
+    distinguishes between "local has unpushed merges" and "remote
+    history was rewritten" — preserve that distinction but add the
+    branch name so operators know which target diverged. The
+    resolution steps should also reference the specific branch.
+  - Update _syncTarget (from task-impl-pull-path) calls to
+    _enterDegradedState and _exitDegradedState to pass the branch.
+  - Update _drainQueues post-recovery (line 3295) — currently called
+    when exiting degraded state to evaluate queued tasks. With per-
+    target state, call _drainQueues when any target exits degraded
+    state (some previously-deferred tasks may now be eligible).
+
+  How: The drain loop change is the most complex part. Currently
+  _drainQueues iterates eligible tasks and provisions them. The
+  change adds a pre-provisioning step per task: resolve the
+  integration target using resolveTaskPlanRef (workspace.ts line 815)
+  and findPlanByRef to get plan.branch, then check _degradedTargets.
+  This is a synchronous YAML read (plan files are local), so it adds
+  minimal latency. Tasks without a plan_ref use the configured base
+  branch. Cache the resolution if the same plan_ref appears on
+  multiple tasks.
+
+  Testing: Test that divergence on plan branch A degrades only A.
+  Test that tasks targeting A are deferred while tasks targeting
+  healthy branch B are provisioned. Test that recovery on A re-enables
+  A's tasks. Test that the status API returns per-target degraded info.
+  Test that the WebSocket event includes the target branch. Test
+  backward compatibility: single-target degraded state blocks all
+  tasks (since all target the same branch). Test drain loop with
+  mixed degraded/healthy targets processes healthy tasks.
+
+  Covers: @dispatch-remote-branch-sync ac-divergence-enters-degraded,
+  ac-divergence-scoped-to-target, ac-divergence-log-target,
+  ac-divergence-log-classification, ac-divergence-log-resolution,
+  ac-degraded-no-provision, ac-degraded-task-queued,
+  ac-degraded-healthy-unblocked, ac-degraded-inflight-continues,
+  ac-degraded-auto-recover, ac-degraded-recovery-requeues,
+  ac-degraded-status-api, ac-degraded-status-api-reason,
+  ac-degraded-status-api-timestamp, ac-degraded-status-broadcast,
+  ac-degraded-status-broadcast-target, ac-degraded-recovery-logged,
+  ac-degraded-recovery-logged-duration.
+spec_ref: "@dispatch-remote-branch-sync"
+plan_ref: "@plan-workspace-scoped-integration-target-sync"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-impl-pull-path"
+  - "@task-sync-degraded-ac-updates"
+context: []
+priority: 1
+tags:
+  - dispatch
+  - sync
+  - implementation
+vcs_refs: []
+created_at: 2026-04-03T04:36:17.241Z
+todos: []

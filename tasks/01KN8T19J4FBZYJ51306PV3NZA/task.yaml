@@ -1,0 +1,184 @@
+_ulid: 01KN8T19J4FBZYJ51306PV3NZA
+slugs:
+  - task-sync-degraded-ac-updates
+title: Update degraded state ACs on dispatch-remote-branch-sync for per-target scoping
+type: task
+description: |
+  Rewrite the degraded state ACs on @dispatch-remote-branch-sync so
+  that degraded state is scoped per integration target branch instead
+  of being a single global engine flag.
+
+  Why: The current degraded state is a single boolean on the dispatch
+  engine (this._degraded). When it is set, ALL provisioning stops —
+  even for tasks targeting a completely healthy branch. With plan
+  branches, this creates an unacceptable blast radius: a diverged plan
+  branch blocks tasks targeting the healthy base branch, and vice versa.
+  Per-target degraded state means a diverged plan branch only blocks
+  tasks whose resolved integration target is that plan branch.
+
+  The drain logic change is the hardest part of the eventual
+  implementation. Currently, the drain loop checks this._degraded and
+  returns early if true, skipping all tasks. With per-target degraded
+  state, the drain loop must resolve each candidate task's integration
+  target (via plan_ref → plan.branch → resolved target) before checking
+  degraded state for that specific target. This creates a dependency:
+  target resolution must happen before the degraded check, not after.
+  The spec should capture this ordering requirement.
+
+  What: Rewrite the following existing ACs and add new ACs:
+
+  ac-divergence-enters-degraded (REWRITE):
+    given: An integration target branch sync detects that local and
+           remote have diverged
+    when: The fast-forward sync fails for that target
+    then: That specific integration target enters degraded state
+          with a reason describing the divergence
+
+  ac-divergence-scoped-to-target (NEW):
+    given: One integration target enters degraded state due to
+           divergence
+    when: Other active integration targets are evaluated
+    then: The other targets remain unaffected and continue normal
+          sync operations
+
+  ac-divergence-log-target (NEW):
+    given: An integration target enters degraded state due to branch
+           divergence
+    when: The failure is logged
+    then: The log message identifies the affected target branch
+
+  ac-divergence-log-classification (REWRITE):
+    given: An integration target enters degraded state due to branch
+           divergence
+    when: The failure is logged
+    then: The log message distinguishes between "local has unpushed
+          merges" and "remote history was rewritten"
+
+  ac-divergence-log-resolution (NEW):
+    given: An integration target enters degraded state due to branch
+           divergence
+    when: The failure is logged
+    then: The log message includes resolution steps appropriate to
+          the type of divergence
+
+  ac-degraded-no-provision (REWRITE):
+    given: A task becomes eligible for dispatch and its resolved
+           integration target is in degraded state
+    when: The dispatch engine evaluates the task for provisioning
+    then: The task is not provisioned
+
+  ac-degraded-task-queued (NEW):
+    given: A task is not provisioned because its integration target
+           is in degraded state
+    when: The dispatch engine skips the task
+    then: The task remains in the queue for future evaluation
+
+  ac-degraded-healthy-unblocked (NEW):
+    given: One integration target is in degraded state
+    when: A task targeting a non-degraded integration target becomes
+          eligible for dispatch
+    then: The task is provisioned normally
+
+  ac-degraded-inflight-continues (NEW):
+    given: An integration target enters degraded state
+    when: An invocation is already in-flight for a workspace
+          targeting that target
+    then: The in-flight invocation continues to completion
+
+  ac-degraded-auto-recover (REWRITE):
+    given: An integration target is in degraded state due to branch
+           divergence
+    when: A subsequent periodic sync of that specific target succeeds
+    then: That target exits degraded state
+
+  ac-degraded-recovery-requeues (NEW):
+    given: An integration target exits degraded state
+    when: The recovery is processed
+    then: Tasks targeting that integration target become eligible
+          for provisioning again
+
+  ac-degraded-status-api (REWRITE):
+    given: One or more integration targets are in degraded state
+    when: The dispatch status is queried via CLI or API
+    then: The response includes the branch name of each degraded
+          target
+
+  ac-degraded-status-api-reason (NEW):
+    given: One or more integration targets are in degraded state
+    when: The dispatch status is queried via CLI or API
+    then: The response includes the failure reason for each
+          degraded target
+
+  ac-degraded-status-api-timestamp (NEW):
+    given: One or more integration targets are in degraded state
+    when: The dispatch status is queried via CLI or API
+    then: The response includes the timestamp when each target
+          entered degraded state
+
+  ac-degraded-status-broadcast (REWRITE):
+    given: An integration target enters or exits degraded state
+    when: The state transition occurs
+    then: A sync state event is broadcast on the agents WebSocket
+          topic
+
+  ac-degraded-status-broadcast-target (NEW):
+    given: An integration target enters or exits degraded state
+    when: The sync state event is broadcast
+    then: The event identifies the specific target branch and the
+          new state
+
+  ac-degraded-recovery-logged (REWRITE):
+    given: An integration target exits degraded state via successful
+           sync
+    when: The recovery occurs
+    then: The recovery is logged with the target branch name
+
+  ac-degraded-recovery-logged-duration (NEW):
+    given: An integration target exits degraded state via successful
+           sync
+    when: The recovery is logged
+    then: The log includes the duration that target was degraded
+
+  How: Run kspec item ac set for the rewritten ACs, and kspec item
+  ac add for the new ones. Use a kspec batch command to make all
+  changes atomic. Verify with kspec item get afterward.
+
+  Note on ac-degraded-no-provision ordering: The rewritten AC implies
+  the drain loop resolves the task's integration target BEFORE checking
+  degraded state. The current implementation checks degraded state
+  first (a global early return) and resolves the target later during
+  provisioning. This ordering change is the key architectural shift
+  and should be called out in implementation task descriptions when
+  the implementation plan is created.
+
+  Covers: @dispatch-remote-branch-sync ac-divergence-enters-degraded
+  (rewrite), ac-divergence-scoped-to-target (new),
+  ac-divergence-log-target (new), ac-divergence-log-classification
+  (rewrite), ac-divergence-log-resolution (new),
+  ac-degraded-no-provision (rewrite), ac-degraded-task-queued (new),
+  ac-degraded-healthy-unblocked (new),
+  ac-degraded-inflight-continues (new),
+  ac-degraded-auto-recover (rewrite), ac-degraded-recovery-requeues
+  (new), ac-degraded-status-api (rewrite),
+  ac-degraded-status-api-reason (new),
+  ac-degraded-status-api-timestamp (new),
+  ac-degraded-status-broadcast (rewrite),
+  ac-degraded-status-broadcast-target (new),
+  ac-degraded-recovery-logged (rewrite),
+  ac-degraded-recovery-logged-duration (new).
+spec_ref: "@dispatch-remote-branch-sync"
+plan_ref: "@plan-workspace-scoped-integration-target-sync"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-sync-active-target-acs"
+context: []
+priority: 1
+tags:
+  - spec-update
+  - dispatch
+  - sync
+vcs_refs: []
+created_at: 2026-04-03T04:36:16.068Z
+todos: []

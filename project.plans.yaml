@@ -34195,11 +34195,21 @@ plans:
         provisioning, which is already correct
       - Changes to @dispatch-sync-configuration — the config surface does
         not change; sync_interval and remote_sync apply to all targets
-    status: approved
+    status: active
     approved_at: 2026-04-03T04:34:43.757Z
     branch: plan/plan-workspace-scoped-integration-target-sync/01kn8bx4
     derived_specs: []
-    derived_tasks: []
+    derived_tasks:
+      - "@task-sync-description-rewrite"
+      - "@task-sync-active-target-acs"
+      - "@task-sync-push-ac-updates"
+      - "@task-sync-pull-ac-updates"
+      - "@task-sync-degraded-ac-updates"
+      - "@task-impl-active-target-set"
+      - "@task-impl-push-path"
+      - "@task-impl-pull-path"
+      - "@task-impl-degraded-state"
+      - "@task-impl-sync-integration-tests"
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec/plans/workspace-target-sync.md
     created_at: 2026-04-03T00:29:19.573Z
@@ -34240,3 +34250,64 @@ plans:
           summary counts in task What lines."
         author: "@claude"
         created_at: 2026-04-03T04:28:37.028Z
+      - _ulid: 01KN8T1B8RWEQF3APQ5PGJQN3F
+        content: |-
+          This plan updates @dispatch-remote-branch-sync to support
+          workspace-scoped integration targets and implements the changes.
+          No new specs are created — the existing spec's description and ACs
+          are rewritten to replace the single-global-target assumption with
+          per-workspace-target semantics, then code is updated to match.
+
+          Background: @plan-branch-dispatch-target (implemented in
+          @plan-plan-scoped-branch-targeting) correctly resolves plan branches
+          as per-workspace integration targets during provisioning. The
+          reviewer agent correctly merges into the workspace's integration
+          target via KSPEC_DISPATCH_INTEGRATION_TARGET. However, the dispatch
+          engine's remote sync system was never updated to handle multiple
+          distinct integration targets. It pushes, pulls, and tracks degraded
+          state for a single global branch (dispatch.base_branch), ignoring
+          the per-workspace target stored in workspace metadata. This means
+          plan branches that receive merged work are never pushed to remote,
+          never pulled before provisioning, and never checked for divergence.
+
+          The core terminology shift is from "the integration target branch"
+          (singular, global) to "the workspace's integration target branch"
+          (per-workspace, resolved from plan branch or config). The "active
+          integration target set" is the union of distinct targets across
+          non-closed workspaces plus the configured base branch.
+
+          Key design decisions:
+          1. The active target set is rebuilt from the workspace registry on
+             engine start, not maintained incrementally. Incremental maintenance
+             has TOCTOU races between workspace cleanup and new task queueing.
+          2. Degraded state is per-target-branch. A diverged plan branch blocks
+             only tasks targeting that branch, not all dispatch work.
+          3. Push serialization is per-target-branch. Pushes to different
+             targets may proceed concurrently; pushes to the same target are
+             serialized.
+          4. Staleness tracking is per-target-branch. Syncing the base branch
+             does not make a plan branch appear fresh.
+          5. Concurrent merge to the same target is handled by git ref-level
+             serialization. One merge succeeds, the other fails non-ff. The
+             failing task follows the normal fix cycle. This is documented as
+             expected behavior, not built as new serialization logic.
+          6. The configured base branch is always in the active set, even when
+             no workspace currently targets it. This preserves the existing
+             behavior where the base branch is kept in sync for future use.
+          7. The push and pull paths must share a single source of truth for
+             active targets. The current codebase has two parallel state groups
+             (this.integrationTargetBranch for push, this._syncBaseBranch for
+             pull) initialized independently from the same config. Unifying
+             them into one active target set eliminates a divergence hazard.
+
+          Scope explicitly excluded from this plan:
+          - Plan branch push on creation — existing design decision says empty
+            branches are noise; push happens after first invocation completion
+          - Plan branch deletion/cleanup on remote — plan lifecycle is separate
+            from workspace lifecycle
+          - Changes to @plan-branch-dispatch-target — that spec covers
+            provisioning, which is already correct
+          - Changes to @dispatch-sync-configuration — the config surface does
+            not change; sync_interval and remote_sync apply to all targets
+        author: "@claude"
+        created_at: 2026-04-03T04:36:17.816Z

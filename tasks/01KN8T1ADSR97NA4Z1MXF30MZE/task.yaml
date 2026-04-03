@@ -1,0 +1,94 @@
+_ulid: 01KN8T1ADSR97NA4Z1MXF30MZE
+slugs:
+  - task-impl-pull-path
+title: Update dispatch pull/sync path for workspace-scoped integration targets
+type: task
+description: |
+  Modify the dispatch engine's integration target sync (pull) path to
+  operate on all active targets with per-target staleness tracking and
+  partial failure handling.
+
+  Why: _syncTargetBranch() (dispatch.ts line 3080) currently syncs a
+  single branch stored in this._syncBaseBranch. It uses a single
+  _lastTargetSyncTimestamp (line 3304) for staleness, meaning syncing
+  the base branch makes a plan branch appear fresh. The pre-provision
+  sync at line 2338 checks this single timestamp, so a plan-scoped
+  workspace could be provisioned against a stale plan branch that was
+  never pulled. The sync cycle must iterate all active targets, track
+  staleness independently, and continue past failures.
+
+  What:
+  - Replace this._lastTargetSyncTimestamp (single number) with
+    this._targetSyncTimestamps: Map<string, number> keyed by branch.
+  - Update _isTargetSyncStale() (line 3304) to accept a branch
+    parameter and check that specific branch's timestamp. The method
+    is called from the pre-provision check at line 2338 — the caller
+    must pass the workspace's resolved integration target.
+  - Rename _syncTargetBranch() to _syncTarget(branch: string) — sync
+    a single specified branch. Keep the existing fetch + ff-merge
+    logic, transient failure handling, and divergence detection. Pass
+    the branch to _classifyDivergence() (line 3190) which currently
+    reads this._syncBaseBranch — change it to accept a branch parameter.
+  - Add _syncAllActiveTargets(): iterates this._activeTargets, calls
+    _syncTarget for each. On failure for one target, log/degrade for
+    that target and continue to the next. Replace the direct
+    _syncTargetBranch call in periodic reconciliation (line 1325) and
+    engine start (line 3065) with _syncAllActiveTargets.
+  - In _syncAllActiveTargets, implement per-target reviewer deferral:
+    before syncing each target, check whether a reviewer invocation is
+    currently active on that target (by checking in-flight workspace
+    metadata). If a reviewer is active on that specific target, skip
+    it and defer to the next interval. Other targets in the same cycle
+    that have no active reviewer are synced normally. This replaces the
+    current global deferral where any active reviewer blocks the entire
+    sync cycle.
+  - For pre-provision sync (line 2338): resolve the task's integration
+    target first (via plan_ref → plan.branch or default), then sync
+    just that specific target if stale. The existing
+    resolveDispatchWorkspaceConfig already resolves the target — the
+    pre-provision sync should use that resolved value.
+  - Update the _targetSyncRunning guard (line 3087) to be per-branch
+    (Set<string>) to allow concurrent syncs of different targets while
+    preventing re-entrant sync of the same branch.
+  - Update the consecutive failure counter (this._consecutiveSyncFailures
+    at line 3115) to be per-target: Map<string, number>. Escalation
+    warnings are per-target.
+
+  How: The _syncTarget method is a refactor of _syncTargetBranch with
+  the branch parameter threaded through. The iteration in
+  _syncAllActiveTargets is a simple for-of loop over the Set with
+  try/catch per iteration. The pre-provision path already resolves the
+  workspace config before syncing — the resolved baseBranch is available
+  and should be passed to _isTargetSyncStale and _syncTarget.
+
+  Testing: Test per-target staleness (syncing branch A does not refresh
+  branch B's timestamp). Test partial failure (branch A fails, branch B
+  still syncs). Test pre-provision syncs the specific target. Test
+  on-start syncs all active targets. Test per-target reviewer deferral
+  (reviewer active on branch A defers A but not B). Test backward
+  compatibility: single-target case.
+
+  Covers: @dispatch-remote-branch-sync ac-pull-target-on-start,
+  ac-pull-target-on-start-before-bootstrap,
+  ac-pull-target-periodic, ac-pull-target-periodic-deferred,
+  ac-pull-target-before-provision, ac-pull-ff-only,
+  ac-pull-no-merge-commits,
+  ac-per-target-staleness, ac-per-target-staleness-isolation,
+  ac-partial-sync-continues, ac-partial-sync-scoped-degradation.
+spec_ref: "@dispatch-remote-branch-sync"
+plan_ref: "@plan-workspace-scoped-integration-target-sync"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-impl-active-target-set"
+  - "@task-sync-pull-ac-updates"
+context: []
+priority: 1
+tags:
+  - dispatch
+  - sync
+  - implementation
+vcs_refs: []
+created_at: 2026-04-03T04:36:16.953Z
+todos: []

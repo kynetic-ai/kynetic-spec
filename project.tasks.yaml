@@ -24402,3 +24402,198 @@
   submitted_at: 2026-04-02T21:52:50.731Z
   completed_at: 2026-04-02T22:55:37.654Z
   automation: eligible
+- _ulid: 01KN8T18EXWZEHX1XE1K7F5WXZ
+  slugs:
+    - task-sync-description-rewrite
+  title: Rewrite dispatch-remote-branch-sync description for workspace-scoped targets
+  type: task
+  spec_ref: "@dispatch-remote-branch-sync"
+  plan_ref: "@plan-workspace-scoped-integration-target-sync"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - spec-update
+    - dispatch
+    - sync
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-03T04:36:14.941Z
+- _ulid: 01KN8T18R7K60ZC1GAR8ZAGFZ6
+  slugs:
+    - task-sync-active-target-acs
+  title: Add active target set lifecycle ACs to dispatch-remote-branch-sync
+  type: task
+  spec_ref: "@dispatch-remote-branch-sync"
+  plan_ref: "@plan-workspace-scoped-integration-target-sync"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-sync-description-rewrite"
+  priority: 1
+  tags:
+    - spec-update
+    - dispatch
+    - sync
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-03T04:36:15.239Z
+- _ulid: 01KN8T19142F1SJ9T5DG6P8VXA
+  slugs:
+    - task-sync-push-ac-updates
+  title: Update push ACs on dispatch-remote-branch-sync for workspace-scoped targets
+  type: task
+  spec_ref: "@dispatch-remote-branch-sync"
+  plan_ref: "@plan-workspace-scoped-integration-target-sync"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-sync-active-target-acs"
+  priority: 1
+  tags:
+    - spec-update
+    - dispatch
+    - sync
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-03T04:36:15.524Z
+- _ulid: 01KN8T199W5GC75VERHAPEA62B
+  slugs:
+    - task-sync-pull-ac-updates
+  title: Update pull/sync ACs on dispatch-remote-branch-sync for workspace-scoped targets
+  type: task
+  spec_ref: "@dispatch-remote-branch-sync"
+  plan_ref: "@plan-workspace-scoped-integration-target-sync"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-sync-active-target-acs"
+  priority: 1
+  tags:
+    - spec-update
+    - dispatch
+    - sync
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-03T04:36:15.804Z
+- _ulid: 01KN8T19J4FBZYJ51306PV3NZA
+  slugs:
+    - task-sync-degraded-ac-updates
+  title: Update degraded state ACs on dispatch-remote-branch-sync for per-target scoping
+  type: task
+  spec_ref: "@dispatch-remote-branch-sync"
+  plan_ref: "@plan-workspace-scoped-integration-target-sync"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-sync-active-target-acs"
+  priority: 1
+  tags:
+    - spec-update
+    - dispatch
+    - sync
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-03T04:36:16.068Z
+- _ulid: 01KN8T19V08CS20XYP25QJHRC5
+  slugs:
+    - task-impl-active-target-set
+  title: Unify sync state and implement active target set management
+  type: task
+  spec_ref: "@dispatch-remote-branch-sync"
+  plan_ref: "@plan-workspace-scoped-integration-target-sync"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-sync-description-rewrite"
+    - "@task-sync-active-target-acs"
+  priority: 1
+  tags:
+    - dispatch
+    - sync
+    - implementation
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-03T04:36:16.352Z
+- _ulid: 01KN8T1A51JFRMW4F8W31KJ907
+  slugs:
+    - task-impl-push-path
+  title: Update dispatch push path for workspace-scoped integration targets
+  type: task
+  spec_ref: "@dispatch-remote-branch-sync"
+  plan_ref: "@plan-workspace-scoped-integration-target-sync"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-impl-active-target-set"
+    - "@task-sync-push-ac-updates"
+  priority: 1
+  tags:
+    - dispatch
+    - sync
+    - implementation
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-03T04:36:16.673Z
+- _ulid: 01KN8T1ADSR97NA4Z1MXF30MZE
+  slugs:
+    - task-impl-pull-path
+  title: Update dispatch pull/sync path for workspace-scoped integration targets
+  type: task
+  spec_ref: "@dispatch-remote-branch-sync"
+  plan_ref: "@plan-workspace-scoped-integration-target-sync"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-impl-active-target-set"
+    - "@task-sync-pull-ac-updates"
+  priority: 1
+  tags:
+    - dispatch
+    - sync
+    - implementation
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-03T04:36:16.953Z
+- _ulid: 01KN8T1APSFZ9NRNP7TKT957GD
+  slugs:
+    - task-impl-degraded-state
+  title: Implement per-target degraded state in dispatch engine
+  type: task
+  spec_ref: "@dispatch-remote-branch-sync"
+  plan_ref: "@plan-workspace-scoped-integration-target-sync"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-impl-pull-path"
+    - "@task-sync-degraded-ac-updates"
+  priority: 1
+  tags:
+    - dispatch
+    - sync
+    - implementation
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-03T04:36:17.241Z
+- _ulid: 01KN8T1AZ0RSE7SA5SBK7AG5KD
+  slugs:
+    - task-impl-sync-integration-tests
+  title: Integration tests for workspace-scoped sync
+  type: task
+  spec_ref: "@dispatch-remote-branch-sync"
+  plan_ref: "@plan-workspace-scoped-integration-target-sync"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-impl-push-path"
+    - "@task-impl-pull-path"
+    - "@task-impl-degraded-state"
+  priority: 2
+  tags:
+    - dispatch
+    - sync
+    - test
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-03T04:36:17.504Z

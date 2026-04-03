@@ -1,0 +1,63 @@
+_ulid: 01KN8T18R7K60ZC1GAR8ZAGFZ6
+slugs:
+  - task-sync-active-target-acs
+title: Add active target set lifecycle ACs to dispatch-remote-branch-sync
+type: task
+description: |
+  Add new acceptance criteria to @dispatch-remote-branch-sync that
+  define when integration targets enter and leave the active set, and
+  how the set is rebuilt on engine start.
+
+  Why: The existing spec has no concept of multiple integration targets
+  or their lifecycle. Before updating the push/pull/degraded ACs to
+  reference "active targets," the spec needs ACs that define what
+  makes a target active. Without this foundation, the updated ACs
+  would reference an undefined concept.
+
+  What: Add three new ACs via kspec item ac add:
+
+  ac-active-target-includes-base:
+    given: The dispatch engine is running with remote sync enabled
+    when: The active integration target set is evaluated
+    then: The project's configured base branch is always included
+          in the active set, regardless of whether any workspace
+          currently targets it
+
+  ac-active-target-rebuilt-on-start:
+    given: The dispatch engine starts with remote sync enabled and
+           the workspace registry contains non-closed workspaces
+    when: The engine initializes the active integration target set
+    then: The set is rebuilt by collecting the distinct integration
+          target branches from all non-closed workspace records,
+          plus the configured base branch
+
+  ac-active-target-removed-on-cleanup:
+    given: A workspace is cleaned up and no other non-closed
+           workspace has the same integration target branch
+    when: The active target set is re-evaluated
+    then: That integration target branch is removed from the
+          active set
+
+  How: Run kspec item ac add commands against
+  @dispatch-remote-branch-sync, one per AC. Use the exact id, given,
+  when, and then text above. Verify with kspec item get afterward.
+
+  Covers: @dispatch-remote-branch-sync (new ACs:
+  ac-active-target-includes-base, ac-active-target-rebuilt-on-start,
+  ac-active-target-removed-on-cleanup).
+spec_ref: "@dispatch-remote-branch-sync"
+plan_ref: "@plan-workspace-scoped-integration-target-sync"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-sync-description-rewrite"
+context: []
+priority: 1
+tags:
+  - spec-update
+  - dispatch
+  - sync
+vcs_refs: []
+created_at: 2026-04-03T04:36:15.239Z
+todos: []

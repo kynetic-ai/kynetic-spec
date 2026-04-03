@@ -1,0 +1,67 @@
+_ulid: 01KN8T18EXWZEHX1XE1K7F5WXZ
+slugs:
+  - task-sync-description-rewrite
+title: Rewrite dispatch-remote-branch-sync description for workspace-scoped targets
+type: task
+description: |
+  Rewrite the description of @dispatch-remote-branch-sync to replace
+  the single-global-target assumption with workspace-scoped target
+  terminology.
+
+  Why: The current description says "the configured integration target
+  branch (dispatch.base_branch)" — treating the integration target as
+  a single global value. Since @plan-branch-dispatch-target was
+  implemented, each workspace can have a different integration target
+  (the plan's branch when the task belongs to a plan with a branch set,
+  or the project's configured base branch otherwise). The sync spec's
+  description still reflects the pre-plan-branch world, and every AC
+  inherits this single-target framing. Updating the description first
+  establishes the vocabulary that subsequent AC updates will use.
+
+  What: Replace the current description with text that:
+  - Defines "active integration targets" as the set of distinct
+    integration target branches across all non-closed workspaces, plus
+    the project's configured base branch (which is always active).
+  - States that each workspace's integration target is resolved at
+    provisioning time (by @plan-branch-dispatch-target for plan-scoped
+    tasks, or from dispatch.base_branch for others).
+  - Preserves the existing design decisions (push after first
+    invocation completion not on creation, fast-forward only, staleness
+    resolves at merge time).
+  - Adds a design decision: the active target set is rebuilt from the
+    workspace registry on engine start, not maintained incrementally,
+    to avoid stale-set races.
+  - Adds a design decision: degraded state, staleness tracking, and
+    push serialization are per-target-branch so that one diverged
+    target does not block tasks targeting healthy branches.
+  - Adds a design decision: the push and pull paths must share a
+    single source of truth for active targets. The current codebase
+    has two parallel state groups (push-side and pull-side) that
+    could diverge; the unified active target set eliminates this.
+  - Notes the concurrent merge constraint: when two reviewers merge
+    concurrently into the same integration target, git ref serialization
+    means one merge succeeds and the other fails non-fast-forward. The
+    failing task returns to needs_work via normal review disposition.
+    This is expected behavior, not a bug.
+
+  How: Use kspec item set @dispatch-remote-branch-sync --description
+  with the revised text. The description should be a block of plain
+  text, not YAML. Run kspec item get @dispatch-remote-branch-sync
+  afterward to verify the update.
+
+  Covers: @dispatch-remote-branch-sync description (rewrite).
+spec_ref: "@dispatch-remote-branch-sync"
+plan_ref: "@plan-workspace-scoped-integration-target-sync"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - spec-update
+  - dispatch
+  - sync
+vcs_refs: []
+created_at: 2026-04-03T04:36:14.941Z
+todos: []

@@ -1,0 +1,127 @@
+_ulid: 01KN8T199W5GC75VERHAPEA62B
+slugs:
+  - task-sync-pull-ac-updates
+title: Update pull/sync ACs on dispatch-remote-branch-sync for workspace-scoped targets
+type: task
+description: |
+  Rewrite the pull/sync-related ACs on @dispatch-remote-branch-sync
+  to operate on all active integration targets instead of a single
+  global branch. Add new ACs for per-target staleness tracking and
+  partial sync failure handling.
+
+  Why: The pull/sync ACs (ac-pull-target-on-start,
+  ac-pull-target-periodic, ac-pull-target-before-provision,
+  ac-pull-ff-only) all refer to syncing "the integration target
+  branch" — singular. With multiple active targets, each needs
+  independent sync. The current implementation uses a single
+  _lastTargetSyncTimestamp, which means syncing the base branch
+  makes a plan branch appear fresh even though it was never synced.
+  The before-provision sync must sync the specific target for the
+  workspace being provisioned. Additionally, when syncing multiple
+  targets, a failure on one target must not prevent syncing the
+  others — the sync cycle must continue through all active targets.
+
+  What: Rewrite the following existing ACs and add new ACs:
+
+  ac-pull-target-on-start (REWRITE):
+    given: The dispatch engine starts and remote sync is enabled
+    when: The engine initializes, before evaluating tasks for
+          bootstrap dispatch
+    then: The engine syncs every branch in the active integration
+          target set from remote
+
+  ac-pull-target-on-start-before-bootstrap (NEW):
+    given: The dispatch engine has completed its startup sync of
+           active integration targets
+    when: The engine evaluates tasks for bootstrap dispatch
+    then: Bootstrap task evaluation uses the synced state of each
+          target
+
+  ac-pull-target-periodic (REWRITE):
+    given: The dispatch engine is running and no reviewer invocation
+           is currently active on a given integration target
+    when: The configured sync interval elapses
+    then: The engine syncs that integration target branch from
+          remote
+
+  ac-pull-target-periodic-deferred (REWRITE):
+    given: The configured sync interval elapses while a reviewer
+           invocation is active on a specific integration target
+    when: The sync evaluates that target
+    then: The sync of that specific target is deferred to the next
+          interval
+
+  ac-pull-target-before-provision (REWRITE):
+    given: A new task workspace is about to be provisioned and the
+           last successful sync of that workspace's resolved
+           integration target was more than sync_interval seconds ago
+    when: The dispatcher prepares the workspace
+    then: The engine syncs the specific integration target branch
+          for this workspace from remote before creating the task
+          branch
+
+  ac-pull-ff-only (REWRITE):
+    given: An integration target branch is being synced from remote
+    when: The sync completes
+    then: The local branch is advanced to match the remote only if
+          the remote history is a strict superset of local
+
+  ac-pull-no-merge-commits (NEW):
+    given: An integration target branch is being synced from remote
+    when: The sync completes
+    then: No merge commits are created on the local branch
+
+  ac-per-target-staleness (NEW):
+    given: The engine tracks sync freshness for integration targets
+    when: A sync completes successfully for one target
+    then: Only that target's staleness timestamp is updated
+
+  ac-per-target-staleness-isolation (NEW):
+    given: A sync completes successfully for one integration target
+    when: Another target's staleness is evaluated
+    then: The other target's staleness state is unaffected by the
+          first target's sync
+
+  ac-partial-sync-continues (NEW):
+    given: The periodic sync is iterating through the active
+           integration target set and one target fails
+    when: The failure is handled for that target
+    then: The sync cycle continues to the remaining targets
+
+  ac-partial-sync-scoped-degradation (NEW):
+    given: A sync failure occurs for one target during a periodic
+           sync cycle
+    when: The engine evaluates the failure
+    then: Only the failed target enters degraded state or logs a
+          warning
+
+  How: Run kspec item ac set for the rewritten ACs, and kspec item
+  ac add for the new ones. Use a kspec batch command to make all
+  changes atomic. Verify with kspec item get afterward.
+
+  Covers: @dispatch-remote-branch-sync ac-pull-target-on-start
+  (rewrite), ac-pull-target-on-start-before-bootstrap (new),
+  ac-pull-target-periodic (rewrite),
+  ac-pull-target-periodic-deferred (rewrite),
+  ac-pull-target-before-provision (rewrite), ac-pull-ff-only
+  (rewrite), ac-pull-no-merge-commits (new),
+  ac-per-target-staleness (new),
+  ac-per-target-staleness-isolation (new),
+  ac-partial-sync-continues (new),
+  ac-partial-sync-scoped-degradation (new).
+spec_ref: "@dispatch-remote-branch-sync"
+plan_ref: "@plan-workspace-scoped-integration-target-sync"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-sync-active-target-acs"
+context: []
+priority: 1
+tags:
+  - spec-update
+  - dispatch
+  - sync
+vcs_refs: []
+created_at: 2026-04-03T04:36:15.804Z
+todos: []

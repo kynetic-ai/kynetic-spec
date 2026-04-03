@@ -1,0 +1,98 @@
+_ulid: 01KN8T19142F1SJ9T5DG6P8VXA
+slugs:
+  - task-sync-push-ac-updates
+title: Update push ACs on dispatch-remote-branch-sync for workspace-scoped targets
+type: task
+description: |
+  Rewrite the three push-related ACs on @dispatch-remote-branch-sync
+  to use the workspace's integration target branch instead of a single
+  global target. Add a new AC for concurrent merge failure handling.
+
+  Why: The push ACs (ac-push-target-after-merge, ac-push-target-periodic,
+  ac-target-push-serialization) all say "the integration target branch"
+  as if there is exactly one. Since workspaces can now have different
+  integration targets (plan branches vs the default base), the push
+  path must operate on the correct per-workspace target. The current
+  implementation pushes the global base branch after every reviewer
+  completion, which means plan branches that receive merged work are
+  never pushed to remote — their merged commits exist only locally.
+  Additionally, when two reviewers merge concurrently into the same
+  target, the second merge fails at the git ref level. The spec should
+  document this expected failure mode.
+
+  What: Rewrite the following existing ACs and add new ACs:
+
+  ac-push-target-after-merge (REWRITE):
+    given: A reviewer agent merges a task branch into the workspace's
+           integration target branch locally
+    when: The dispatch engine processes the reviewer invocation
+          completion
+    then: The dispatcher pushes the workspace's integration target
+          branch to remote
+
+  ac-push-target-periodic (REWRITE):
+    given: The periodic sync runs and at least one active integration
+           target branch has local commits not yet on the remote
+    when: The sync cycle evaluates each active target
+    then: The dispatcher pushes each active integration target that
+          has unpushed commits
+
+  ac-push-target-periodic-retry (NEW):
+    given: A previous post-merge push for an active integration
+           target failed
+    when: The periodic sync cycle evaluates that target
+    then: The push is retried for that target
+
+  ac-target-push-serialization (REWRITE):
+    given: Two push operations target the same integration target
+           branch concurrently
+    when: The second push operation is initiated
+    then: The second operation is skipped for that branch
+
+  ac-target-push-cross-branch-concurrency (NEW):
+    given: Push operations target two different integration target
+           branches
+    when: Both push operations are initiated
+    then: Both pushes may proceed concurrently
+
+  ac-concurrent-merge-same-target (NEW):
+    given: Two reviewer invocations attempt to merge their respective
+           task branches into the same integration target branch
+           concurrently
+    when: The second merge is attempted after the first has updated
+          the target branch ref
+    then: The second merge fails with a non-fast-forward error
+
+  ac-concurrent-merge-fix-cycle (NEW):
+    given: A reviewer merge fails due to a concurrent update to the
+           same integration target branch
+    when: The dispatch engine processes the failed reviewer invocation
+    then: The affected task follows the standard fix cycle path
+
+  How: Run kspec item ac set for the rewritten ACs, and kspec item
+  ac add for the new ones. Use a kspec batch command to make all
+  changes atomic. Verify with kspec item get afterward.
+
+  Covers: @dispatch-remote-branch-sync ac-push-target-after-merge
+  (rewrite), ac-push-target-periodic (rewrite),
+  ac-push-target-periodic-retry (new),
+  ac-target-push-serialization (rewrite),
+  ac-target-push-cross-branch-concurrency (new),
+  ac-concurrent-merge-same-target (new),
+  ac-concurrent-merge-fix-cycle (new).
+spec_ref: "@dispatch-remote-branch-sync"
+plan_ref: "@plan-workspace-scoped-integration-target-sync"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-sync-active-target-acs"
+context: []
+priority: 1
+tags:
+  - spec-update
+  - dispatch
+  - sync
+vcs_refs: []
+created_at: 2026-04-03T04:36:15.524Z
+todos: []

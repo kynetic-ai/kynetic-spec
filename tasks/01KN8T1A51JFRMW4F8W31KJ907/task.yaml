@@ -1,0 +1,80 @@
+_ulid: 01KN8T1A51JFRMW4F8W31KJ907
+slugs:
+  - task-impl-push-path
+title: Update dispatch push path for workspace-scoped integration targets
+type: task
+description: |
+  Modify the dispatch engine's integration target push path to push
+  the workspace's specific target after reviewer completion, and to
+  iterate all active targets during periodic push.
+
+  Why: After a reviewer merges a task branch into the integration
+  target, the engine calls _pushIntegrationTargetAsync("post-merge")
+  at dispatch.ts line 2878. This method resolves the branch via
+  _resolveBaseBranch() (line 1415 → line 1446), which returns the
+  global this.integrationTargetBranch — now replaced by the active
+  target set. The post-merge push must use the workspace's specific
+  integration target (available in workspace.metadata.integrationTargetBranch
+  at line 2878's closure scope), not the global default. The periodic
+  push at reconciliation time must iterate all active targets.
+
+  What:
+  - Change _pushIntegrationTargetAsync signature from (trigger: string)
+    to (targetBranch: string, trigger: string). The caller passes the
+    specific branch to push.
+  - At the post-merge call site (dispatch.ts line 2878), pass
+    workspace.metadata.integrationTargetBranch as the targetBranch
+    parameter. The workspace variable is already in scope from the
+    closure at line 2842.
+  - Replace the single this.targetPushInProgress boolean (line 864)
+    with this._targetPushesInProgress: Set<string>. Before pushing,
+    check if the target branch is already in the set. After push
+    completes (or fails), remove it. This allows concurrent pushes
+    to different branches while serializing pushes to the same branch.
+  - For periodic push (triggered from _reconcile at line 1355), iterate
+    this._activeTargets and call _pushIntegrationTargetAsync for each
+    target that has unpushed commits. The existing
+    isLocalBranchAheadOfUpstream check in pushIntegrationTarget()
+    (workspace.ts line 2751) already handles the "has unpushed commits"
+    check per-branch, so no change needed there.
+  - Remove the _resolveBaseBranch() method (line 1445) since callers
+    now pass the branch explicitly.
+
+  How: The pushIntegrationTarget function in workspace.ts (line 2739)
+  already accepts (projectDir, integrationBranch, remote) — it does
+  not hardcode a global branch. The fix is entirely in dispatch.ts:
+  thread the branch through _pushIntegrationTargetAsync and update
+  the serialization gate. The mutation scope check
+  (resolveDispatchIntegrationMutationScope at line 1420) also takes
+  the branch as a parameter — verify it receives the per-workspace
+  branch, not a global value.
+
+  Testing: Test that after reviewer completion on a plan-scoped
+  workspace, the plan branch (not the base branch) is pushed. Test
+  that the per-branch serialization set allows concurrent pushes to
+  different branches. Test that periodic push iterates all active
+  targets. Test backward compatibility: single-target case (no plan
+  branches) behaves identically to before.
+
+  Covers: @dispatch-remote-branch-sync ac-push-target-after-merge,
+  ac-push-target-periodic, ac-push-target-periodic-retry,
+  ac-target-push-serialization,
+  ac-target-push-cross-branch-concurrency,
+  ac-concurrent-merge-same-target, ac-concurrent-merge-fix-cycle.
+spec_ref: "@dispatch-remote-branch-sync"
+plan_ref: "@plan-workspace-scoped-integration-target-sync"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-impl-active-target-set"
+  - "@task-sync-push-ac-updates"
+context: []
+priority: 1
+tags:
+  - dispatch
+  - sync
+  - implementation
+vcs_refs: []
+created_at: 2026-04-03T04:36:16.673Z
+todos: []
