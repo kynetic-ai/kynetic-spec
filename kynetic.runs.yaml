@@ -22149,7 +22149,7 @@ runs:
     completed_at: 2026-04-03T19:10:48.264Z
   - _ulid: 01KNAE0WSB855CTSDN5GQRR6J2
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -22162,7 +22162,13 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-03T19:45:31.643Z
-        completed_at: 2026-04-03T19:45:31.643Z
+        completed_at: 2026-04-03T19:45:32.382Z
+        notes: "Capture complete: recorded success observation @01KNAE1R about asserting behavior-boundary
+          execution counts for dispatch sync regressions where duplicate work is itself the bug."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-03T19:45:32.382Z
+        completed_at: 2026-04-03T19:45:32.382Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-03T19:44:48.940Z
