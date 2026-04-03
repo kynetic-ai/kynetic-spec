@@ -36099,12 +36099,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-03T19:46:04.414Z
+      updated_at: 2026-04-03T19:46:09.239Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-03T19:46:04.414Z
+      updated_at: 2026-04-03T19:46:09.239Z
     integration:
       status: pending
       detail: null
@@ -36112,24 +36112,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-workspace-scoped-integration-target-sync/01kn8bx4
       target_commit: 73efb23bafc862eacc54776458d75d109bdf04cf
-      updated_at: 2026-04-03T19:46:04.414Z
-    lifecycle_state: ready
+      updated_at: 2026-04-03T19:46:09.239Z
+    lifecycle_state: integrating
     resolved_base_branch: plan/plan-workspace-scoped-integration-target-sync/01kn8bx4
     task_ref: "@01KN8T1AZ0RSE7SA5SBK7AG5KD"
     task_slug: task-impl-sync-integration-tests
     timestamps:
       closed_at: null
       last_active_at: 2026-04-03T19:37:30.759Z
-      last_reconciled_at: 2026-04-03T19:46:04.414Z
+      last_reconciled_at: 2026-04-03T19:46:09.239Z
       created_at: 2026-04-03T19:11:20.190Z
-      updated_at: 2026-04-03T19:46:04.414Z
+      updated_at: 2026-04-03T19:46:09.239Z
     workspace_id: dispatch-workspace-01KN8T1AZ0RSE7SA5SBK7AG5KD
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 734d424d229e0f2f5118bbca66af94c33700f2e5
+        last_seen_at: 2026-04-03T19:46:09.239Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-sync-integration-tests-01kn8t1a-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-impl-sync-integration-tests/01kn8t1a
-        head: fec66d40a61f725abef3a3c0107e9383b9a464b2
-        last_seen_at: 2026-04-03T19:37:28.596Z
+        head: 734d424d229e0f2f5118bbca66af94c33700f2e5
+        last_seen_at: 2026-04-03T19:46:09.239Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-sync-integration-tests-01kn8t1a
