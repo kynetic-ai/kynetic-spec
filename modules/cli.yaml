@@ -8851,32 +8851,19 @@ features:
               sync)
             when: |
               The push error is caught
-          - given: |
-              A reviewer agent merges a task branch into the integration target
-              branch locally
+          - given: A reviewer agent merges a task branch into the workspace's integration target branch locally
             id: ac-push-target-after-merge
-            then: |
-              The dispatcher pushes the integration target branch to remote
-            when: |
-              The merge completes successfully
-          - given: |
-              The periodic sync runs and the local integration target branch
-              has commits not yet on the remote
+            then: The dispatcher pushes the workspace's integration target branch to remote
+            when: The dispatch engine processes the reviewer invocation completion
+          - given: The periodic sync runs and at least one active integration target branch has local commits
+              not yet on the remote
             id: ac-push-target-periodic
-            then: |
-              The dispatcher pushes the integration target branch to remote,
-              retrying any previously failed post-merge pushes
-            when: |
-              The sync cycle completes
-          - given: |
-              A post-merge push and a periodic sync push both target the
-              integration target branch concurrently
+            then: The dispatcher pushes each active integration target that has unpushed commits
+            when: The sync cycle evaluates each active target
+          - given: Two push operations target the same integration target branch concurrently
             id: ac-target-push-serialization
-            then: |
-              The second operation is skipped; at most one push to the
-              integration target runs at a time
-            when: |
-              The second push operation is initiated
+            then: The second operation is skipped for that branch
+            when: The second push operation is initiated
           - given: |
               The dispatch engine starts and remote sync is enabled
             id: ac-pull-target-on-start
@@ -9039,6 +9026,23 @@ features:
             id: ac-active-target-removed-on-cleanup
             then: That integration target branch is removed from the active set
             when: The active target set is re-evaluated
+          - given: A previous post-merge push for an active integration target failed
+            id: ac-push-target-periodic-retry
+            then: The push is retried for that target
+            when: The periodic sync cycle evaluates that target
+          - given: Push operations target two different integration target branches
+            id: ac-target-push-cross-branch-concurrency
+            then: Both pushes may proceed concurrently
+            when: Both push operations are initiated
+          - given: Two reviewer invocations attempt to merge their respective task branches into the same
+              integration target branch concurrently
+            id: ac-concurrent-merge-same-target
+            then: The second merge fails with a non-fast-forward error
+            when: The second merge is attempted after the first has updated the target branch ref
+          - given: A reviewer merge fails due to a concurrent update to the same integration target branch
+            id: ac-concurrent-merge-fix-cycle
+            then: The affected task follows the standard fix cycle path
+            when: The dispatch engine processes the failed reviewer invocation
         tags: []
         decisions:
           - _ulid: 01KM3ZMCXZ5DTWYDPSP8GBKNTD
