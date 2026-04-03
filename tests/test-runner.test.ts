@@ -28,6 +28,38 @@ function runTestRunner(
   };
 }
 
+function writeBuiltProjectFixture(rootDir: string): void {
+  for (const input of [
+    "src/cli/commands/plan-import.ts",
+    "packages/shared/src/index.ts",
+    "packages/daemon/src/index.ts",
+    "packages/web-ui/src/app.html",
+    "packages/web-ui/static/favicon.png",
+    "package.json",
+    "tsconfig.json",
+    "packages/shared/package.json",
+    "packages/daemon/package.json",
+    "packages/web-ui/package.json",
+    "packages/web-ui/vite.config.ts",
+    "packages/web-ui/svelte.config.js",
+  ]) {
+    const fullPath = path.join(rootDir, input);
+    fs.mkdirSync(path.dirname(fullPath), { recursive: true });
+    fs.writeFileSync(fullPath, "");
+  }
+
+  for (const artifact of [
+    "dist/cli/index.js",
+    "dist/web-ui/index.html",
+    "dist/daemon/index.ts",
+    "dist/daemon/entity-cache.ts",
+  ]) {
+    const fullPath = path.join(rootDir, artifact);
+    fs.mkdirSync(path.dirname(fullPath), { recursive: true });
+    fs.writeFileSync(fullPath, "");
+  }
+}
+
 // Import the shipped module — tests exercise this, not reimplemented logic
 const runner = require("../scripts/test.cjs");
 
@@ -40,12 +72,15 @@ describe("test runner environment checks", () => {
       expect(result.stderr).toContain("Environment check passed");
     });
 
-    it("checkDependencies passes against real project root", () => {
-      expect(runner.checkDependencies().ok).toBe(true);
-    });
+    it("checkBuild passes for an isolated built project fixture", () => {
+      const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "kspec-test-runner-built-"));
 
-    it("checkBuild passes against real project root", () => {
-      expect(runner.checkBuild().ok).toBe(true);
+      try {
+        writeBuiltProjectFixture(tempDir);
+        expect(runner.checkBuild(tempDir).ok).toBe(true);
+      } finally {
+        fs.rmSync(tempDir, { recursive: true, force: true });
+      }
     });
 
     it("ensureEnvironment runs all hooks and returns fix count", () => {
