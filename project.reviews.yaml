@@ -112767,3 +112767,29 @@ reviews:
     created_at: 2026-04-03T20:29:30.372Z
     updated_at: 2026-04-03T20:35:03.182Z
     notes: []
+  - _ulid: 01KNARRMPY7VCM33C8D6T2GMKR
+    slugs: []
+    title: Review task-sync-concurrent-merge-coverage
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KNARRMPXD38SXXQJK2XGKGNX
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-03T22:52:32.861Z
+    examined_commit: f2ad95bd4af80211df842526f4da0ba97d08820b
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNAR1KRSAMGVWGV3TF8V0PPE"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-03T22:52:32.862Z
+    updated_at: null
+    notes: []
