@@ -35745,12 +35745,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-03T17:19:59.471Z
+      updated_at: 2026-04-03T17:20:03.017Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-03T17:19:59.471Z
+      updated_at: 2026-04-03T17:20:03.017Z
     integration:
       status: pending
       detail: null
@@ -35758,7 +35758,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-workspace-scoped-integration-target-sync/01kn8bx4
       target_commit: 0f27e912cc2076a5367431add28b09da7fddf3e8
-      updated_at: 2026-04-03T17:19:59.471Z
+      updated_at: 2026-04-03T17:20:03.017Z
     lifecycle_state: integrating
     resolved_base_branch: plan/plan-workspace-scoped-integration-target-sync/01kn8bx4
     task_ref: "@01KN8T1APSFZ9NRNP7TKT957GD"
@@ -35766,16 +35766,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-03T17:05:07.617Z
-      last_reconciled_at: 2026-04-03T17:19:59.471Z
+      last_reconciled_at: 2026-04-03T17:20:03.017Z
       created_at: 2026-04-03T17:05:02.283Z
-      updated_at: 2026-04-03T17:19:59.471Z
+      updated_at: 2026-04-03T17:20:03.017Z
     workspace_id: dispatch-workspace-01KN8T1APSFZ9NRNP7TKT957GD
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 1f9061b986b4a033947fa754c8ec72ba7e678bba
+        last_seen_at: 2026-04-03T17:20:03.017Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-degraded-state-01kn8t1a-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-impl-degraded-state/01kn8t1a
-        head: 0f27e912cc2076a5367431add28b09da7fddf3e8
-        last_seen_at: 2026-04-03T17:05:02.283Z
+        head: 1f9061b986b4a033947fa754c8ec72ba7e678bba
+        last_seen_at: 2026-04-03T17:20:03.017Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-degraded-state-01kn8t1a
