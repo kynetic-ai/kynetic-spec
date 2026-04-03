@@ -8889,16 +8889,10 @@ features:
             then: The local branch is advanced to match the remote only if the remote history is a strict
               superset of local
             when: The sync completes
-          - given: |
-              The integration target branch sync detects that local and remote
-              have diverged (local has commits not in remote, or remote history
-              was rewritten)
+          - given: An integration target branch sync detects that local and remote have diverged
             id: ac-divergence-enters-degraded
-            then: |
-              The engine enters degraded state with a reason describing the
-              divergence
-            when: |
-              The fast-forward sync fails
+            then: That specific integration target enters degraded state with a reason describing the divergence
+            when: The fast-forward sync fails for that target
           - given: |
               The engine enters degraded state due to target branch divergence
             id: ac-divergence-log-guidance
