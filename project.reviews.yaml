@@ -109763,6 +109763,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-03T16:57:00.273Z
+      - _ulid: 01KNA4N9YMTW4QV5Q3BFA5CQJF
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNA4N96QEG0PPJ4AFAE9FS8X
+        timestamp: 2026-04-03T17:01:12.020Z
     examined_commit: f9100112530419d0fb2ad70f0e86270352b49336
     external_links: []
     lifecycle_state: open
@@ -109772,8 +109779,35 @@ reviews:
       content_hash: ""
       ref: "@01KN8T1ADSR97NA4Z1MXF30MZE"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNA4N96QEG0PPJ4AFAE9FS8X
+        entries:
+          - _ulid: 01KNA4N96R4ZZT8N1J3TRGQAHS
+            author: Jacob Chapel
+            body: >-
+              Evidence log:
+
+              Files read: src/agent-runtime/dispatch.ts, tests/dispatch-target-sync.test.ts,
+              tests/dispatch-degraded-state.test.ts
+
+              Commands run: kspec task get @01KN8T1ADSR97NA4Z1MXF30MZE; kspec item get
+              @dispatch-remote-branch-sync; kspec review get @01KNA370YATWK3ZZ7MCJ8WHX3W; git diff
+              --stat e7837c1..f910011; git diff e7837c1..f910011 -- src/agent-runtime/dispatch.ts
+              tests/dispatch-target-sync.test.ts tests/dispatch-degraded-state.test.ts; rg -n "AC:
+              @dispatch-remote-branch-sync|AC: @trait-error-guidance"
+              tests/dispatch-target-sync.test.ts tests/dispatch-degraded-state.test.ts; kspec
+              validate; npm test
+
+              Claims verified: prior blocker about global degraded recovery is fixed by
+              branch-scoped degraded target tracking and recovery; startup/periodic/pre-provision
+              sync now use per-target staleness and branch-specific reviewer deferral; added tests
+              behaviorally cover scoped degradation, partial iteration, and staleness isolation
+
+              Categories searched: correctness, edge cases, error handling, test quality,
+              integration; no new blocking issues found in this snapshot.
+            created_at: 2026-04-03T17:01:11.256Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-03T16:56:50.502Z
-    updated_at: 2026-04-03T16:56:59.497Z
+    updated_at: 2026-04-03T17:01:11.256Z
     notes: []
