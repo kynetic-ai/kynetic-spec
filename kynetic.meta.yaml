@@ -11929,6 +11929,16 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-04-03T17:32:08.568Z
+  - _ulid: 01KNA6ZSST5P99216DB9JD4780
+    type: friction
+    content: Reviewer-approved dispatch work can still fall back to needs_work because manual merge
+      conflicts are discovered only at publication time in the detached review snapshot. Consider
+      earlier conflict detection against the integration target before final approval or a clearer
+      pre-merge conflict gate in the review workflow.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-03T17:41:53.082Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
