@@ -110117,6 +110117,18 @@ reviews:
         runner: kspec
         created_at: 2026-04-03T17:34:49.042Z
         completed_at: 2026-04-03T17:34:49.042Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/dispatch-target-sync.test.ts
+          tests/dispatch-branch-push-lifecycle.test.ts tests/dispatch-degraded-state.test.ts: 12/12
+          suites, 69/69 tests passed"
+        name: dispatch targeted tests
+        required: true
+        runner: vitest
+        created_at: 2026-04-03T17:34:53.380Z
+        completed_at: 2026-04-03T17:34:53.380Z
     events:
       - _ulid: 01KNA6G4GM6TCBZPWP7WXR59SP
         actor: Jacob Chapel
@@ -110138,6 +110150,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-04-03T17:34:50.451Z
+      - _ulid: 01KNA6K19XH2DWSHPBXVGPG1KZ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: dispatch targeted tests
+        timestamp: 2026-04-03T17:34:54.782Z
     examined_commit: e54dfdb82cbd4c4d80d3c1826555d2f75d26a764
     external_links: []
     lifecycle_state: open
@@ -110150,5 +110169,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-03T17:33:19.764Z
-    updated_at: 2026-04-03T17:34:49.042Z
+    updated_at: 2026-04-03T17:34:53.380Z
     notes: []
