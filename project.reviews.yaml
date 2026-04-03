@@ -111968,7 +111968,18 @@ reviews:
     slugs: []
     title: Review task-impl-sync-integration-tests
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Targeted verification passed on this snapshot: dispatch-target-sync.test.ts reported 2/2
+          suites and 38/38 tests passing in 34.7s."
+        name: dispatch-target-sync
+        required: false
+        runner: npm
+        created_at: 2026-04-03T19:35:26.002Z
+        completed_at: 2026-04-03T19:35:26.002Z
     events:
       - _ulid: 01KNAD56Y7T97WK7R1PWGRPMVA
         actor: Jacob Chapel
@@ -111990,6 +112001,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNADFMXGHPZVJJHTBV4YP0D2
         timestamp: 2026-04-03T19:35:24.542Z
+      - _ulid: 01KNADFQRJ2YEXM95BZYW4JK21
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: dispatch-target-sync
+        timestamp: 2026-04-03T19:35:26.738Z
     examined_commit: fec66d40a61f725abef3a3c0107e9383b9a464b2
     external_links: []
     lifecycle_state: open
@@ -112020,5 +112038,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-03T19:29:41.831Z
-    updated_at: 2026-04-03T19:35:23.824Z
+    updated_at: 2026-04-03T19:35:26.002Z
     notes: []
