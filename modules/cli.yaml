@@ -8906,13 +8906,10 @@ features:
             id: ac-degraded-status-api
             then: The response includes the branch name of each degraded target
             when: The dispatch status is queried via CLI or API
-          - given: |
-              The dispatch engine enters or exits degraded state
+          - given: An integration target enters or exits degraded state
             id: ac-degraded-status-broadcast
-            then: |
-              A sync state event is broadcast on the agents WebSocket topic
-            when: |
-              The state transition occurs
+            then: A sync state event is broadcast on the agents WebSocket topic
+            when: The state transition occurs
           - given: An integration target is in degraded state due to branch divergence
             id: ac-degraded-auto-recover
             then: That target exits degraded state
