@@ -35236,12 +35236,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-03T05:32:28.180Z
+      updated_at: 2026-04-03T05:38:13.591Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-03T05:32:31.393Z
+      updated_at: 2026-04-03T05:38:13.591Z
     integration:
       status: pending
       detail: null
@@ -35249,7 +35249,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-workspace-scoped-integration-target-sync/01kn8bx4
       target_commit: fb3342db29d0f52d03646cc5ec095e7d9bd0c310
-      updated_at: 2026-04-03T05:32:28.180Z
+      updated_at: 2026-04-03T05:38:13.591Z
     lifecycle_state: ready
     resolved_base_branch: plan/plan-workspace-scoped-integration-target-sync/01kn8bx4
     task_ref: "@01KN8T19J4FBZYJ51306PV3NZA"
@@ -35257,9 +35257,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-03T05:23:45.713Z
-      last_reconciled_at: 2026-04-03T05:32:31.393Z
+      last_reconciled_at: 2026-04-03T05:38:13.591Z
       created_at: 2026-04-03T05:13:56.091Z
-      updated_at: 2026-04-03T05:32:31.393Z
+      updated_at: 2026-04-03T05:38:13.591Z
     workspace_id: dispatch-workspace-01KN8T19J4FBZYJ51306PV3NZA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -35268,7 +35268,7 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-sync-degraded-ac-updates/01kn8t19
         head: fb3342db29d0f52d03646cc5ec095e7d9bd0c310
-        last_seen_at: 2026-04-03T05:23:37.220Z
+        last_seen_at: 2026-04-03T05:38:13.591Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-sync-degraded-ac-updates-01kn8t19
   - active_role: null
     base_branch_point: fb3342db29d0f52d03646cc5ec095e7d9bd0c310
