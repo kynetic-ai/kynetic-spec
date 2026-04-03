@@ -34197,6 +34197,7 @@ plans:
         not change; sync_interval and remote_sync apply to all targets
     status: approved
     approved_at: 2026-04-03T04:34:43.757Z
+    branch: plan/plan-workspace-scoped-integration-target-sync/01kn8bx4
     derived_specs: []
     derived_tasks: []
     module_ref: null
