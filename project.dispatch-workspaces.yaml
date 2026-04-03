@@ -35624,17 +35624,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-03T16:22:00.128Z
+      updated_at: 2026-04-03T16:23:02.982Z
     health:
-      status: stale
-      issues:
-        - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-pull-path-01kn8t1a"
-            is missing or no longer registered.
-          suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      summary: Workspace registry record is stale and needs reconciliation.
-      updated_at: 2026-04-03T16:22:00.128Z
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-04-03T16:23:02.982Z
     integration:
       status: pending
       detail: null
@@ -35642,17 +35637,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-workspace-scoped-integration-target-sync/01kn8bx4
       target_commit: e7837c1aa3fe7726d651cbf99c9d3b54d64df4ed
-      updated_at: 2026-04-03T16:22:00.128Z
-    lifecycle_state: stale
+      updated_at: 2026-04-03T16:23:02.982Z
+    lifecycle_state: active
     resolved_base_branch: plan/plan-workspace-scoped-integration-target-sync/01kn8bx4
     task_ref: "@01KN8T1ADSR97NA4Z1MXF30MZE"
     task_slug: task-impl-pull-path
     timestamps:
       closed_at: null
       last_active_at: 2026-04-03T16:21:19.393Z
-      last_reconciled_at: 2026-04-03T16:22:00.128Z
+      last_reconciled_at: 2026-04-03T16:23:02.982Z
       created_at: 2026-04-03T16:21:14.111Z
-      updated_at: 2026-04-03T16:22:00.128Z
+      updated_at: 2026-04-03T16:23:02.982Z
     workspace_id: dispatch-workspace-01KN8T1ADSR97NA4Z1MXF30MZE
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
