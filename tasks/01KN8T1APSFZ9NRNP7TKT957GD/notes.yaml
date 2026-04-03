@@ -26,3 +26,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-03T17:26:24.148Z
+  - _ulid: 01KNA73B50PAXRH1ZD9WFV2SP3
+    content: "Fix cycle 1: corrected daemon dispatch status serialization after the per-target
+      degraded-state refactor. Both /api/agent/dispatch/status and /api/agent/status now preserve
+      the compatibility degraded summary while also exposing per-target degraded target arrays with
+      branch, reason, and timestamp. Re-verified the review blockers with focused route/API tests.
+      npm run typecheck passed; kspec validate reported only pre-existing repository warnings; full
+      npm test surfaced unrelated failures in several untouched suites, and re-running the reported
+      failing files passed cleanly (62 suites / 203 tests), so the failures appear unrelated or
+      flaky rather than caused by this change."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-03T17:43:49.152Z
