@@ -859,7 +859,7 @@ export class DispatchEngine {
   /** Central event bus for structured event emission and subscription. AC: @dispatch-event-envelope ac-1 through ac-6 */
   private _eventBus: EventBus;
   /**
-   * Integration target branches currently being pushed.
+   * Integration target branches currently being pushed to remote.
    * AC: @dispatch-remote-branch-sync ac-target-push-serialization
    * AC: @dispatch-remote-branch-sync ac-target-push-cross-branch-concurrency
    */
@@ -1327,7 +1327,7 @@ export class DispatchEngine {
       this._isTargetSyncStale() &&
       !this._hasActiveReviewerInvocation()
     ) {
-      await this._syncTargetBranch();
+      await this._syncActiveTargetBranches();
     }
 
     try {
@@ -1357,9 +1357,7 @@ export class DispatchEngine {
     // AC: @dispatch-remote-branch-sync ac-push-target-periodic
     // Push the integration target if it has unpushed commits (retries failed post-merge pushes).
     if (this.remoteSyncEnabled && this.dispatchRemote) {
-      for (const targetBranch of this._resolveActiveTargets()) {
-        void this._pushIntegrationTargetAsync(targetBranch, "periodic-sync");
-      }
+      await this._pushActiveTargetsAsync("periodic-sync");
     }
 
     const enqueued = await this._evaluateAllTasks({ skipIfActive: true });
@@ -1435,11 +1433,7 @@ export class DispatchEngine {
         );
         return;
       }
-      const result = await pushIntegrationTarget(
-        this.projectDir,
-        targetBranch,
-        this.dispatchRemote!,
-      );
+      const result = await pushIntegrationTarget(this.projectDir, targetBranch, this.dispatchRemote!);
       if (result.error) {
         // AC: @dispatch-remote-branch-sync ac-push-non-fatal
         console.warn(
@@ -1457,6 +1451,23 @@ export class DispatchEngine {
     } finally {
       this._targetPushesInProgress.delete(targetBranch);
     }
+  }
+
+  private async _pushActiveTargetsAsync(trigger: string): Promise<void> {
+    const activeTargets = this._resolveActiveTargets();
+    if (activeTargets.length === 0) {
+      return;
+    }
+    await Promise.all(
+      activeTargets.map((branch) => this._pushIntegrationTargetAsync(branch, trigger)),
+    );
+  }
+
+  /**
+   * Resolve a specific integration target branch, defaulting to the configured base branch.
+   */
+  private _resolveBaseBranch(branch?: string): string | null {
+    return branch ?? this._configuredBaseBranch;
   }
 
   /**
@@ -2356,7 +2367,17 @@ export class DispatchEngine {
     try {
       // AC: @dispatch-remote-branch-sync ac-pull-target-before-provision — sync if stale
       if (this._remoteSyncEnabled && this._isTargetSyncStale()) {
-        await this._syncTargetBranch();
+        const resolvedConfig = await resolveDispatchWorkspaceConfig(this.projectDir, {
+          taskRef: entry.change.taskRef,
+          task: entry.change.task
+            ? {
+                title: entry.change.task.title,
+                slugs: entry.change.task.slugs,
+                plan_ref: entry.change.task.plan_ref,
+              }
+            : undefined,
+        });
+        await this._syncTargetBranch(resolvedConfig.baseBranch);
       }
 
       try {
@@ -3088,7 +3109,7 @@ export class DispatchEngine {
       );
 
       // AC: @dispatch-remote-branch-sync ac-pull-target-on-start — sync before bootstrap
-      await this._syncTargetBranch();
+      await this._syncActiveTargetBranches();
     } catch (err) {
       console.error("[dispatch] Failed to initialize target sync:", err);
       // Non-fatal: engine continues without sync
@@ -3103,8 +3124,8 @@ export class DispatchEngine {
    * AC: @dispatch-remote-branch-sync ac-transient-no-degrade
    * AC: @dispatch-remote-branch-sync ac-no-remote
    */
-  async _syncTargetBranch(): Promise<TargetSyncResult> {
-    const baseBranch = this._configuredBaseBranch;
+  async _syncTargetBranch(branch?: string): Promise<TargetSyncResult> {
+    const baseBranch = this._resolveBaseBranch(branch);
     // AC: @dispatch-remote-branch-sync ac-no-remote — skip when no remote
     if (!this._remoteSyncEnabled || !this._syncRemote || !baseBranch) {
       return "skipped";
@@ -3206,6 +3227,12 @@ export class DispatchEngine {
       return "synced";
     } finally {
       this._targetSyncRunning = false;
+    }
+  }
+
+  private async _syncActiveTargetBranches(): Promise<void> {
+    for (const branch of this._resolveActiveTargets()) {
+      await this._syncTargetBranch(branch);
     }
   }
 
