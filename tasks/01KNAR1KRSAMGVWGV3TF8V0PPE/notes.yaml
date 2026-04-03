@@ -13,3 +13,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-03T22:43:56.904Z
+  - _ulid: 01KNARMN38GVF90YMXK81F9QB7
+    content: "Implemented the remaining workspace-scoped sync coverage in
+      tests/dispatch-target-sync.test.ts. Added a concurrent same-target reviewer regression that
+      proves one stale reviewer push is rejected after another reviewer updates the target, then
+      exercised the standard fix-cycle path with a request_changes review verdict to move the
+      affected task to needs_work. Also backfilled the missing ac-pull-no-merge-commits annotation
+      and recorded @trait-error-guidance ac-1 through ac-6 as N/A for this internal engine sync test
+      file. Verification: npm test -- dispatch-target-sync.test.ts passed; full npm test passed
+      (2068 suites, 7512 tests, 5 skipped). kspec validate still reports the repo's existing global
+      warning backlog, but no new blocker surfaced for this task."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-03T22:50:22.184Z
