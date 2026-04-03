@@ -8,3 +8,10 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-03T05:15:32.819Z
+  - _ulid: 01KN8WBP3EGT265MDDWBXJ5YMM
+    content: "Found spec drift while applying the batch: the existing degraded logging AC was still
+      named ac-divergence-log-guidance. Updated the atomic rewrite plan to rename that AC to
+      ac-divergence-log-classification so the spec matches the task and plan language."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-03T05:16:53.743Z
