@@ -8,3 +8,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-03T04:50:09.871Z
+  - _ulid: 01KN8TVY3Y5ZDCQXT6FP8Z2JWZ
+    content: "Added the three active-target lifecycle ACs to @dispatch-remote-branch-sync exactly as
+      planned: base branch always active, active target set rebuilt on engine start from non-closed
+      workspaces plus base, and target removal on cleanup when no workspace still references it.
+      Verification: kspec item get shows all three ACs; kspec validate reported only pre-existing
+      repository warnings unrelated to this task."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-03T04:50:49.086Z
