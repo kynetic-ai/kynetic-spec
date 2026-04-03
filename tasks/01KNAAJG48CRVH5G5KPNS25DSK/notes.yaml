@@ -1,1 +1,11 @@
-notes: []
+notes:
+  - _ulid: 01KNAAPTB6F4MPSJA1H2QYYM7E
+    content: "Approach: make test-runner prerequisite tests deterministic by using isolated temp
+      fixtures instead of asserting against the mutable repo root. Edge cases: missing dist in fresh
+      dispatch worktrees, concurrent build/fix runs recreating dist during full-suite execution, and
+      stale-artifact mtimes in synthetic fixtures. Test plan: cover dependency/build checks with
+      temp-dir fixtures, keep subprocess dry-run coverage for runner wiring, then run the targeted
+      file and full npm test."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-03T18:46:53.030Z
