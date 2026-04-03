@@ -110129,6 +110129,24 @@ reviews:
         runner: vitest
         created_at: 2026-04-03T17:34:53.380Z
         completed_at: 2026-04-03T17:34:53.380Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/agent-runtime/dispatch.ts, src/agent-runtime/workspace.ts,
+          tests/dispatch-target-sync.test.ts, tests/dispatch-branch-push-lifecycle.test.ts. Commands
+          run: kspec task get, kspec review for-task/get, git diff/stat/log, rg AC annotations,
+          kspec validate, npm test -- --fresh targeted dispatch suites. Claims verified: reviewer
+          completion now passes workspace.metadata.integrationTargetBranch into
+          _pushIntegrationTargetAsync; periodic fanout skips clean targets before mutation-scope
+          resolution; per-branch in-progress set allows cross-branch concurrency while serializing
+          same-branch pushes. Categories searched: correctness, edge cases, error handling, test
+          quality, integration. Findings: none."
+        name: review evidence
+        required: false
+        runner: codex
+        created_at: 2026-04-03T17:38:41.638Z
+        completed_at: 2026-04-03T17:38:41.638Z
     events:
       - _ulid: 01KNA6G4GM6TCBZPWP7WXR59SP
         actor: Jacob Chapel
@@ -110157,6 +110175,13 @@ reviews:
           status: pass
           name: dispatch targeted tests
         timestamp: 2026-04-03T17:34:54.782Z
+      - _ulid: 01KNA6T4FN8J1589KRJDVYZ69Q
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence
+        timestamp: 2026-04-03T17:38:47.413Z
     examined_commit: e54dfdb82cbd4c4d80d3c1826555d2f75d26a764
     external_links: []
     lifecycle_state: open
@@ -110169,5 +110194,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-03T17:33:19.764Z
-    updated_at: 2026-04-03T17:34:53.380Z
+    updated_at: 2026-04-03T17:38:41.638Z
     notes: []
