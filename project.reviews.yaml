@@ -109436,6 +109436,12 @@ reviews:
           status: pass
           name: review evidence
         timestamp: 2026-04-03T16:26:21.909Z
+      - _ulid: 01KNA6AJMN6YA7EW5ATE6KTBPE
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNA2MXM95KQKPQJPTPGQ3YX1
+        timestamp: 2026-04-03T17:30:17.621Z
     examined_commit: 1559b85cddca6b2ae2f8851c81f5efd3e429ec67
     external_links: []
     lifecycle_state: closed
@@ -109467,6 +109473,8 @@ reviews:
               because another worktree owns the branch checkout."
             created_at: 2026-04-03T16:26:02.249Z
         kind: blocker
+        resolved_at: 2026-04-03T17:30:16.832Z
+        resolved_by: Jacob Chapel
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -109476,7 +109484,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-03T16:26:05.116Z
     created_at: 2026-04-03T16:21:52.198Z
-    updated_at: 2026-04-03T16:26:21.198Z
+    updated_at: 2026-04-03T17:30:16.832Z
     notes: []
   - _ulid: 01KNA370YATWK3ZZ7MCJ8WHX3W
     slugs: []
