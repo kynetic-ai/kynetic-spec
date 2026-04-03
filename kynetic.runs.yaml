@@ -21406,9 +21406,21 @@ runs:
     started_at: 2026-04-03T04:49:14.545Z
   - _ulid: 01KN8TWS69XE45WWZG6JXNY3QS
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-03T04:51:16.809Z
+        completed_at: 2026-04-03T04:51:49.285Z
+        notes: "Meaningful session: completed task @01KN8T18R7K60ZC1GAR8ZAGFZ6 through spec-only CLI
+          mutations and submitted it for review. What worked: deterministic task workflow, batch AC
+          mutation, and CLI verification. Friction: inline shell quoting for kspec batch broke on
+          apostrophes; captured as observation @01KN8TXE."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-03T04:51:49.285Z
+        completed_at: 2026-04-03T04:51:49.285Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-03T04:51:16.809Z
