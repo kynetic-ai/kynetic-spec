@@ -35833,18 +35833,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/stabilize-flaky-test-runner-build-prerequisite-check/01knaajg
-    canonical_branch_head: fb3342db29d0f52d03646cc5ec095e7d9bd0c310
+    canonical_branch_head: f1d15d8f154cda47049f58190b5c09fcf7482dda
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-03T18:45:06.791Z
+      updated_at: 2026-04-03T18:52:01.239Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-03T18:45:12.100Z
+      updated_at: 2026-04-03T18:52:01.239Z
     integration:
       status: pending
       detail: null
@@ -35852,7 +35852,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: fb3342db29d0f52d03646cc5ec095e7d9bd0c310
-      updated_at: 2026-04-03T18:45:06.791Z
+      updated_at: 2026-04-03T18:52:01.239Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KNAAJG48CRVH5G5KPNS25DSK"
@@ -35860,9 +35860,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-03T18:45:12.100Z
-      last_reconciled_at: 2026-04-03T18:45:12.100Z
+      last_reconciled_at: 2026-04-03T18:52:01.239Z
       created_at: 2026-04-03T18:45:06.791Z
-      updated_at: 2026-04-03T18:45:12.100Z
+      updated_at: 2026-04-03T18:52:01.239Z
     workspace_id: dispatch-workspace-01KNAAJG48CRVH5G5KPNS25DSK
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
