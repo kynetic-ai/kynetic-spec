@@ -30,3 +30,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-03T05:50:18.969Z
+  - _ulid: 01KN8YM22F6K8DHNBK19NAP2JA
+    content: "Fix cycle 1 approach: address both review blockers by turning active target state into
+      runtime behavior, not just bookkeeping. Add regression coverage for non-base active targets on
+      startup/periodic/pre-provision sync and post-merge/periodic push, then update dispatch runtime
+      to iterate or target specific branches from _activeTargets and replace the single global
+      integration-target push lock with per-branch serialization. Re-verified that the existing
+      blockers are real in src/agent-runtime/dispatch.ts before editing."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-03T05:56:25.295Z
