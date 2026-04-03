@@ -111055,6 +111055,17 @@ reviews:
         runner: kspec
         created_at: 2026-04-03T18:29:49.066Z
         completed_at: 2026-04-03T18:29:49.066Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- dispatch-degraded-state dispatch-target-sync daemon-api/agent-dispatch
+          passed: 11 suites, 67 tests."
+        name: targeted-npm-test
+        required: true
+        runner: npm
+        created_at: 2026-04-03T18:30:10.733Z
+        completed_at: 2026-04-03T18:30:10.733Z
     events:
       - _ulid: 01KNA9N4CMY1KSNYKB9D1DJDJX
         actor: Jacob Chapel
@@ -111076,6 +111087,13 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-04-03T18:29:50.411Z
+      - _ulid: 01KNA9R8WTQ4XW8D5M4KKY78A1
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted-npm-test
+        timestamp: 2026-04-03T18:30:12.122Z
     examined_commit: 16d33b86826b3e73d168c92bd320eaf0f959da65
     external_links: []
     lifecycle_state: open
@@ -111088,5 +111106,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-03T18:28:29.205Z
-    updated_at: 2026-04-03T18:29:49.066Z
+    updated_at: 2026-04-03T18:30:10.733Z
     notes: []
