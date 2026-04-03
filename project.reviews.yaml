@@ -107665,6 +107665,18 @@ reviews:
         required: true
         created_at: 2026-04-03T00:39:53.381Z
         completed_at: 2026-04-03T00:39:53.381Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Every rewritten/new AC in the plan is claimed by at least one implementation task. The
+          round-2 gaps are closed: ac-pull-target-periodic-deferred is covered by
+          task-impl-pull-path and integration tests; ac-divergence-log-guidance is covered by
+          task-impl-degraded-state and integration tests."
+        name: AC coverage mapping
+        required: true
+        created_at: 2026-04-03T00:39:53.385Z
+        completed_at: 2026-04-03T00:39:53.385Z
     events:
       - _ulid: 01KN8CG0EPPXD8JHXFWKA9KBJJ
         actor: "@claude"
@@ -107693,6 +107705,13 @@ reviews:
           status: pass
           name: Dependency ordering
         timestamp: 2026-04-03T00:39:56.081Z
+      - _ulid: 01KN8CGK1KRQEFFMY86PFAT54P
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: AC coverage mapping
+        timestamp: 2026-04-03T00:39:57.236Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -107705,5 +107724,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-03T00:39:38.199Z
-    updated_at: 2026-04-03T00:39:53.381Z
+    updated_at: 2026-04-03T00:39:53.385Z
     notes: []
