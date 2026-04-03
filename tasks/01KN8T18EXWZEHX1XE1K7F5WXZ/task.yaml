@@ -53,7 +53,7 @@ description: |
 spec_ref: "@dispatch-remote-branch-sync"
 plan_ref: "@plan-workspace-scoped-integration-target-sync"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -63,6 +63,7 @@ tags:
   - dispatch
   - sync
 vcs_refs: []
+session_id: 01KN8T8E9CKZ2C9031NNAJM75C
 history:
   - author: "@claude"
     changes:
@@ -71,6 +72,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-04-03T04:38:22.351Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KN8T8E9CKZ2C9031NNAJM75C
+        previous: null
+      started_at:
+        new: 2026-04-03T04:40:49.298Z
+        previous: null
+    command: task-start
+    timestamp: 2026-04-03T04:40:49.299Z
 created_at: 2026-04-03T04:36:14.941Z
+started_at: 2026-04-03T04:40:49.298Z
 todos: []
 automation: eligible
