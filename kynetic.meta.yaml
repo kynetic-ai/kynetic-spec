@@ -11774,6 +11774,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-03T04:49:45.176Z
+  - _ulid: 01KN8TXEA38VW1WYT49V5K8STG
+    type: friction
+    content: When a kspec batch payload includes apostrophes in AC text, inline shell quoting is
+      brittle; file-based payloads are safer but still manual. A first-class --commands-file option
+      or stdin support for kspec batch would reduce avoidable command construction failures during
+      spec updates.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-03T04:51:38.436Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
