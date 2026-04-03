@@ -1,0 +1,58 @@
+_ulid: 01KNAR1KRSAMGVWGV3TF8V0PPE
+slugs:
+  - task-sync-concurrent-merge-coverage
+title: Add concurrent merge and missing AC annotation coverage for workspace-scoped sync
+type: task
+description: >-
+  What: Add integration tests for two untested ACs, plus missing AC annotations:
+
+  - ac-concurrent-merge-same-target: Two reviewer invocations merge into the same integration target
+  concurrently — the second push fails with a non-fast-forward error because the remote ref
+  advanced.
+
+  - ac-concurrent-merge-fix-cycle: The task whose push failed returns to needs_work via the standard
+  fix cycle.
+
+  - Add // AC: @dispatch-remote-branch-sync ac-pull-no-merge-commits annotation to the existing
+  ff-only test at tests/dispatch-target-sync.test.ts (currently tested but unannotated).
+
+  - Add @trait-error-guidance N/A annotations (ac-1 through ac-6) to one of the dispatch sync test
+  files — internal engine sync has no user-facing CLI surface.
+
+
+  Why: The concurrent merge ACs document a core design decision — git ref-level serialization
+  handles contention, not custom locking. This is the only failure path where a successful reviewer
+  merge still results in a failed push, and it is completely untested. Without coverage, a future
+  refactor to the push path could silently break the fix-cycle recovery. The annotation gaps are
+  housekeeping but needed for AC traceability.
+
+
+  How: In tests/dispatch-target-sync.test.ts:
+
+  1. Provision two workspaces targeting the same plan branch with real bare git remotes.
+
+  2. Simulate two reviewer invocations completing merges into that target.
+
+  3. Verify the first push succeeds and the second gets a non-fast-forward error.
+
+  4. Verify the failed task transitions to needs_work (fix cycle entry).
+
+  5. Add the ac-pull-no-merge-commits annotation to the existing ff-only test.
+
+  6. Add @trait-error-guidance N/A annotations (ac-1 through ac-6) with reason: "internal dispatch
+  engine sync, not a user-facing CLI command."
+spec_ref: "@dispatch-remote-branch-sync"
+meta_ref: null
+plan_ref: "@plan-workspace-scoped-integration-target-sync"
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - test
+  - dispatch
+  - sync
+vcs_refs: []
+created_at: 2026-04-03T22:39:58.233Z
+todos: []
