@@ -3137,6 +3137,7 @@ export class DispatchEngine {
 
       // AC: @dispatch-remote-branch-sync ac-pull-target-on-start — sync before bootstrap
       await this._syncAllActiveTargets();
+      await this._syncAllActiveTargets();
     } catch (err) {
       console.error("[dispatch] Failed to initialize target sync:", err);
       // Non-fatal: engine continues without sync
@@ -3151,6 +3152,7 @@ export class DispatchEngine {
    * AC: @dispatch-remote-branch-sync ac-transient-no-degrade
    * AC: @dispatch-remote-branch-sync ac-no-remote
    */
+  async _syncTarget(branch?: string): Promise<TargetSyncResult> {
   async _syncTarget(branch?: string): Promise<TargetSyncResult> {
     const baseBranch = this._resolveBaseBranch(branch);
     // AC: @dispatch-remote-branch-sync ac-no-remote — skip when no remote
@@ -3312,6 +3314,12 @@ export class DispatchEngine {
     } catch {
       targetCache.set(planRef, configuredBaseBranch);
       return configuredBaseBranch;
+    }
+  }
+
+  private async _syncActiveTargetBranches(): Promise<void> {
+    for (const branch of this._resolveActiveTargets()) {
+      await this._syncTargetBranch(branch);
     }
   }
 
