@@ -31,3 +31,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-03T05:31:12.253Z
+  - _ulid: 01KN8Y3CVENR8FH1VCZJ42H199
+    content: "Fix cycle 1: updated the stale ac-divergence-log-guidance traceability annotations to
+      ac-divergence-log-classification in tests/dispatch-degraded-state.test.ts and
+      src/agent-runtime/dispatch.ts after the AC rename. Re-verified the rename with rg, ran kspec
+      validate (same pre-existing repo warnings only), ran npm test once (hit unrelated timeout
+      failures in three non-dispatch files), then reran those three files directly and they all
+      passed."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-03T05:47:19.278Z
