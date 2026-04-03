@@ -109662,6 +109662,12 @@ reviews:
         payload:
           thread_ulid: 01KNA3GW1F1TGE11QY913YZ3A3
         timestamp: 2026-04-03T16:52:57.664Z
+      - _ulid: 01KNA468BG6NCNWKN6V9WTZG7D
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNA3GQR0835HCS933W9ZA56S
+        timestamp: 2026-04-03T16:52:58.864Z
     examined_commit: 8970bc4822de51d6b080c1c8b0619657196ca47d
     external_links: []
     lifecycle_state: closed
@@ -109697,6 +109703,8 @@ reviews:
               the degraded target list still contains only dev.
             created_at: 2026-04-03T16:52:45.180Z
         kind: blocker
+        resolved_at: 2026-04-03T16:52:56.927Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KNA3GW1F1TGE11QY913YZ3A3
         anchor:
           type: code
@@ -109734,5 +109742,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-03T16:41:32.395Z
     created_at: 2026-04-03T16:35:55.466Z
-    updated_at: 2026-04-03T16:52:56.924Z
+    updated_at: 2026-04-03T16:52:56.927Z
     notes: []
