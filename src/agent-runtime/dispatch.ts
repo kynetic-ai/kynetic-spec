@@ -53,6 +53,7 @@ import {
   reconcileDispatchWorkspaceArtifacts,
   discoverWorkspaceForReviewOrFixCycle,
   fastForwardDispatchIntegrationBranch,
+  integrationTargetNeedsPush,
   pushDispatchBranch,
   pushIntegrationTarget,
   runDispatchIntegrationTargetGit,
@@ -1415,6 +1416,9 @@ export class DispatchEngine {
     trigger: string,
   ): Promise<void> {
     if (!targetBranch) {
+      return;
+    }
+    if (trigger === "periodic-sync" && !await integrationTargetNeedsPush(this.projectDir, targetBranch)) {
       return;
     }
     // AC: @dispatch-remote-branch-sync ac-target-push-serialization

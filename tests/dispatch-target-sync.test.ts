@@ -657,10 +657,54 @@ describe("dispatch target branch sync", () => {
     await engine.stop();
   });
 
+  // AC: @dispatch-remote-branch-sync ac-push-target-periodic
+  it("does not degrade a clean active target during periodic reconciliation when another worktree owns the branch checkout", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+
+    git(projectDir, "checkout -b human-feature dev");
+
+    const occupiedWorktreeDir = await createTempDir("kspec-target-sync-occupied-");
+    execSync(`git worktree add --force "${occupiedWorktreeDir}" dev`, {
+      cwd: projectDir,
+      stdio: "pipe",
+      env: workspaceModule.buildDispatchGitEnv(),
+    });
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    const pushSpy = vi.spyOn(workspaceModule, "pushIntegrationTarget");
+
+    try {
+      pushSpy.mockClear();
+      (engine as any).dispatchRemote = "origin";
+      (engine as any)._activeTargets = new Set(["dev"]);
+
+      await (engine as any)._pushActiveTargetsAsync("periodic-sync");
+
+      expect(pushSpy).not.toHaveBeenCalled();
+      expect(engine.getTargetSyncStatus().degraded.active).toBe(false);
+    } finally {
+      execSync(`git worktree remove --force "${occupiedWorktreeDir}"`, {
+        cwd: projectDir,
+        stdio: "pipe",
+        env: workspaceModule.buildDispatchGitEnv(),
+      });
+      await cleanupTempDir(occupiedWorktreeDir);
+    }
+  });
+
   // AC: @dispatch-remote-branch-sync ac-target-push-serialization
   it("skips a second push when the same integration target is already being pushed", async () => {
     ({ projectDir, remoteDir } = await setupProjectWithRemote());
     await setupProjectFiles(projectDir);
+
+    await fs.writeFile(path.join(projectDir, "dev-serialization.txt"), "serialization\n", "utf-8");
+    git(projectDir, "add dev-serialization.txt");
+    git(projectDir, 'commit -m "dev serialization commit"');
 
     const engine = new DispatchEngine({
       projectDir,
@@ -690,9 +734,10 @@ describe("dispatch target branch sync", () => {
     );
 
     const firstPush = (engine as any)._pushIntegrationTargetAsync("dev", "post-merge");
-    await Promise.resolve();
+    await vi.waitFor(() => {
+      expect(startedBranches).toEqual(["dev"]);
+    });
 
-    expect(startedBranches).toEqual(["dev"]);
     expect((engine as any)._targetPushesInProgress.has("dev")).toBe(true);
 
     await (engine as any)._pushIntegrationTargetAsync("dev", "periodic-sync");
@@ -711,6 +756,20 @@ describe("dispatch target branch sync", () => {
   it("allows pushes to different integration targets to proceed concurrently", async () => {
     ({ projectDir, remoteDir } = await setupProjectWithRemote());
     await setupProjectFiles(projectDir);
+
+    git(projectDir, "checkout -b plan/alpha dev");
+    git(projectDir, "push -u origin plan/alpha");
+
+    git(projectDir, "checkout dev");
+    await fs.writeFile(path.join(projectDir, "dev-concurrency.txt"), "dev concurrency\n", "utf-8");
+    git(projectDir, "add dev-concurrency.txt");
+    git(projectDir, 'commit -m "dev concurrency commit"');
+
+    git(projectDir, "checkout plan/alpha");
+    await fs.writeFile(path.join(projectDir, "plan-concurrency.txt"), "plan concurrency\n", "utf-8");
+    git(projectDir, "add plan-concurrency.txt");
+    git(projectDir, 'commit -m "plan concurrency commit"');
+    git(projectDir, "checkout dev");
 
     const engine = new DispatchEngine({
       projectDir,
@@ -741,9 +800,10 @@ describe("dispatch target branch sync", () => {
 
     const devPush = (engine as any)._pushIntegrationTargetAsync("dev", "periodic-sync");
     const planPush = (engine as any)._pushIntegrationTargetAsync("plan/alpha", "periodic-sync");
-    await Promise.resolve();
+    await vi.waitFor(() => {
+      expect(new Set(startedBranches)).toEqual(new Set(["dev", "plan/alpha"]));
+    });
 
-    expect(new Set(startedBranches)).toEqual(new Set(["dev", "plan/alpha"]));
     expect((engine as any)._targetPushesInProgress.has("dev")).toBe(true);
     expect((engine as any)._targetPushesInProgress.has("plan/alpha")).toBe(true);
 
