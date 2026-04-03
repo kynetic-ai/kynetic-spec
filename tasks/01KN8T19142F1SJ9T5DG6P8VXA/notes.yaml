@@ -1,1 +1,11 @@
-notes: []
+notes:
+  - _ulid: 01KN8VM9JPNP65A77DXC9W3MKH
+    content: "Approach: update only the dispatch-remote-branch-sync spec via kspec batch, reusing the
+      approved plan wording for the rewritten push ACs and new concurrency/fix-cycle ACs. Edge
+      cases: same-target pushes must serialize while different targets remain concurrent; concurrent
+      same-target reviewer merges fail non-fast-forward and fall into the normal fix cycle. Test
+      plan: spec-only task, so verification is kspec item get plus validation/alignment checks
+      rather than production tests."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-03T05:04:07.254Z
