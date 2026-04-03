@@ -9042,6 +9042,10 @@ features:
             id: ac-partial-sync-scoped-degradation
             then: Only the failed target enters degraded state or logs a warning
             when: The engine evaluates the failure
+          - given: One integration target enters degraded state due to divergence
+            id: ac-divergence-scoped-to-target
+            then: The other targets remain unaffected and continue normal sync operations
+            when: Other active integration targets are evaluated
         tags: []
         decisions:
           - _ulid: 01KM3ZMCXZ5DTWYDPSP8GBKNTD
