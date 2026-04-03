@@ -1,1 +1,12 @@
-notes: []
+notes:
+  - _ulid: 01KN8VVKJDG0W9DTQWSEFV2V3A
+    content: "Approach: update @dispatch-remote-branch-sync pull/sync ACs via one kspec batch, reusing
+      the approved wording from @plan-workspace-scoped-integration-target-sync and matching the
+      adjacent push-side spec style. Edge cases: startup sync must complete before bootstrap
+      evaluation, periodic sync must defer only the busy target, staleness must remain isolated per
+      target, and one target failure must not stop the remaining sync cycle. Test plan: spec-only
+      task, so verification is kspec item get plus kspec validate to confirm the rewritten/new AC
+      surface is present and structurally valid."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-03T05:08:06.861Z
