@@ -112842,9 +112842,25 @@ reviews:
           kind: blocker
           thread_ulid: 01KNAS0YZ7R6V7RS8PK215S7KX
         timestamp: 2026-04-03T22:57:06.297Z
+      - _ulid: 01KNAS19N4V491H2GF6R3BDCFD
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-03T22:57:16.452Z
+      - _ulid: 01KNAS19N4BWD8E40AMVGG4EDD
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-03T22:57:16.452Z
     examined_commit: f2ad95bd4af80211df842526f4da0ba97d08820b
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -112902,7 +112918,14 @@ reviews:
               can hide regressions in the real concurrent-merge recovery path.
             created_at: 2026-04-03T22:57:05.512Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-03T22:57:16.451Z
     created_at: 2026-04-03T22:52:32.862Z
-    updated_at: 2026-04-03T22:57:05.512Z
+    updated_at: 2026-04-03T22:57:16.452Z
     notes: []
