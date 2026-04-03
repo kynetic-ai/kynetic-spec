@@ -12153,6 +12153,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-03T20:04:39.533Z
+  - _ulid: 01KNAF57RYYVCARMGNWQ72S1Z1
+    type: success
+    content: "The current review workflow caught the issue without unnecessary churn: diff-first review,
+      full npm test, and explicit manual-merge preflight cleanly separated code correctness from
+      integration readiness and moved the task back to needs_work with anchored evidence."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-03T20:04:39.838Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
