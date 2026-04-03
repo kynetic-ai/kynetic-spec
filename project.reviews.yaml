@@ -109748,7 +109748,17 @@ reviews:
     slugs: []
     title: Review task-impl-pull-path (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 7500 passed, 5 skipped.
+        name: npm test
+        required: true
+        runner: test.cjs
+        created_at: 2026-04-03T17:01:13.509Z
+        completed_at: 2026-04-03T17:01:13.509Z
     events:
       - _ulid: 01KNA4DAJ6SNFD6NWKXAXV666M
         actor: Jacob Chapel
@@ -109770,6 +109780,13 @@ reviews:
           kind: nit
           thread_ulid: 01KNA4N96QEG0PPJ4AFAE9FS8X
         timestamp: 2026-04-03T17:01:12.020Z
+      - _ulid: 01KNA4NC61S75Z0TNNAGPKC1BN
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-03T17:01:14.305Z
     examined_commit: f9100112530419d0fb2ad70f0e86270352b49336
     external_links: []
     lifecycle_state: open
@@ -109809,5 +109826,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-03T16:56:50.502Z
-    updated_at: 2026-04-03T17:01:11.256Z
+    updated_at: 2026-04-03T17:01:13.509Z
     notes: []
