@@ -107775,6 +107775,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-03T04:25:30.132Z
+      - _ulid: 01KN8SDTYF7MENTD3VWPWK8YZF
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN8SDT7K708MT5CK0EG27V33
+        timestamp: 2026-04-03T04:25:38.511Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -107784,8 +107791,23 @@ reviews:
       content_hash: ""
       ref: "@plan-workspace-scoped-integration-target-sync"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KN8SDT7K708MT5CK0EG27V33
+        anchor:
+          type: structured
+          field: ac-pull-ff-only
+          ref: "@dispatch-remote-branch-sync"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KN8SDT7K0JWFPSQDBVPK3974
+            author: "@claude"
+            body: "ac-pull-ff-only still combines two independently testable assertions in one Then clause: the
+              sync only fast-forwards when remote is a strict superset, and the sync never creates a
+              merge commit. Round 4 was supposed to split compound Then clauses into single
+              assertions, so this AC still fails that rule and should be split before approval."
+            created_at: 2026-04-03T04:25:37.779Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-03T04:25:03.273Z
-    updated_at: 2026-04-03T04:25:29.396Z
+    updated_at: 2026-04-03T04:25:37.779Z
     notes: []
