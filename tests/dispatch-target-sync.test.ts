@@ -1235,7 +1235,6 @@ describe("dispatch target branch sync", () => {
   });
 
   // AC: @dispatch-remote-branch-sync ac-partial-sync-continues
-  // AC: @dispatch-remote-branch-sync ac-partial-sync-scoped-degradation
   it("continues syncing remaining targets when one target sync throws during iteration", async () => {
     ({ projectDir, remoteDir } = await setupProjectWithRemote());
     await setupProjectFiles(projectDir);
@@ -1285,6 +1284,62 @@ describe("dispatch target branch sync", () => {
     expect(warnSpy).toHaveBeenCalledWith(
       expect.stringContaining("Target sync failed for plan/alpha; continuing"),
     );
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-partial-sync-scoped-degradation
+  it("keeps degradation scoped to the failed target when a later target sync succeeds", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    await createTrackedBranch(
+      projectDir,
+      "plan/alpha",
+      "plan-alpha.txt",
+      "alpha\n",
+      "create plan alpha",
+    );
+    await saveWorkspaceRecord(projectDir, {
+      taskRef: "@01TASK00000000000000000019",
+      taskSlug: "task-plan-alpha-degraded-scope",
+      targetBranch: "plan/alpha",
+    });
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    await fs.writeFile(path.join(projectDir, "dev-local.txt"), "local divergence\n", "utf-8");
+    git(projectDir, "add dev-local.txt");
+    git(projectDir, 'commit -m "local divergence on dev"');
+    await pushRemoteCommit(remoteDir, "dev", "dev-remote.txt", "remote divergence\n", "remote divergence on dev");
+
+    const planAlphaBefore = git(projectDir, "rev-parse plan/alpha");
+    const planAlphaRemoteHead = await pushRemoteCommit(
+      remoteDir,
+      "plan/alpha",
+      "plan-alpha-remote.txt",
+      "plan alpha remote\n",
+      "remote update on plan alpha",
+    );
+
+    (engine as any)._targetSyncTimestamps.set("dev", Date.now() - 120_000);
+    (engine as any)._targetSyncTimestamps.set("plan/alpha", Date.now() - 120_000);
+
+    await (engine as any)._syncAllActiveTargets({ staleOnly: true });
+
+    const syncStatus = engine.getTargetSyncStatus();
+    const degradedTargets = syncStatus.degradedTargets.map((target) => target.branch);
+    expect(degradedTargets).toEqual(["dev"]);
+    expect(syncStatus.degraded.active).toBe(true);
+    expect(syncStatus.degraded.reason).toContain("dev");
+    expect(git(projectDir, "rev-parse plan/alpha")).toBe(planAlphaRemoteHead);
+    expect(git(projectDir, "rev-parse plan/alpha")).not.toBe(planAlphaBefore);
+    expect(syncStatus.targetSyncTimestamps["plan/alpha"]).toBeGreaterThan(0);
+    expect(syncStatus.targetSyncTimestamps.dev ?? 0).toBeLessThan(syncStatus.targetSyncTimestamps["plan/alpha"]);
 
     await engine.stop();
   });
