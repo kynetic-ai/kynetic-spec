@@ -12025,6 +12025,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-03T18:27:07.671Z
+  - _ulid: 01KNAB11RDQP0BQ339WJYPDZ1H
+    type: friction
+    content: Tests that assert prerequisite/build state against the live repo root are brittle in
+      dispatch worktrees and full-suite runs; they should prefer isolated temp fixtures when
+      validating environment checks.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-04-03T18:52:28.301Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
