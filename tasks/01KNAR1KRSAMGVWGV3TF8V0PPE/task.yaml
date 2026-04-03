@@ -44,7 +44,7 @@ description: >-
 spec_ref: "@dispatch-remote-branch-sync"
 meta_ref: null
 plan_ref: "@plan-workspace-scoped-integration-target-sync"
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -58,7 +58,7 @@ review_ref: "@01KNARRMPY7VCM33C8D6T2GMKR"
 submission_linkage:
   review_url: null
   branch: plan/plan-workspace-scoped-integration-target-sync/01kn8bx4
-  captured_at: 2026-04-03T22:50:36.461Z
+  captured_at: 2026-04-03T23:11:49.988Z
   commit: 360e3ebab9f1c9449e242475a8cb20d77e6d55e2
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
@@ -135,8 +135,35 @@ history:
         previous: 2026-04-03T22:42:41.747Z
     command: task-start
     timestamp: 2026-04-03T22:59:16.112Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: plan/plan-workspace-scoped-integration-target-sync/01kn8bx4
+          captured_at: 2026-04-03T23:11:49.988Z
+          commit: 360e3ebab9f1c9449e242475a8cb20d77e6d55e2
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/plan/plan-workspace-scoped-integration-target-sync/01kn8bx4
+        previous:
+          review_url: null
+          branch: plan/plan-workspace-scoped-integration-target-sync/01kn8bx4
+          captured_at: 2026-04-03T22:50:36.461Z
+          commit: 360e3ebab9f1c9449e242475a8cb20d77e6d55e2
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/plan/plan-workspace-scoped-integration-target-sync/01kn8bx4
+      submitted_at:
+        new: 2026-04-03T23:11:49.994Z
+        previous: 2026-04-03T22:50:36.467Z
+    command: task-submit
+    timestamp: 2026-04-03T23:11:49.995Z
 created_at: 2026-04-03T22:39:58.233Z
 started_at: 2026-04-03T22:59:16.112Z
-submitted_at: 2026-04-03T22:50:36.467Z
+submitted_at: 2026-04-03T23:11:49.994Z
 todos: []
 automation: eligible
