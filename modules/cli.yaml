@@ -9057,6 +9057,10 @@ features:
             id: ac-degraded-status-api-reason
             then: The response includes the failure reason for each degraded target
             when: The dispatch status is queried via CLI or API
+          - given: One or more integration targets are in degraded state
+            id: ac-degraded-status-api-timestamp
+            then: The response includes the timestamp when each target entered degraded state
+            when: The dispatch status is queried via CLI or API
         tags: []
         decisions:
           - _ulid: 01KM3ZMCXZ5DTWYDPSP8GBKNTD
