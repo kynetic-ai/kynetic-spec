@@ -11873,8 +11873,10 @@ observations:
       integration lineage, so the rebase attempt produced a false-positive conflict in
       src/agent-runtime/dispatch.ts and had to be aborted.
     author: Jacob Chapel
-    resolution: null
-    resolved: false
+    resolution: Duplicate reflection capture from the same session; superseded by @01KNA3404.
+    resolved: true
+    resolved_at: 2026-04-03T16:34:59.515Z
+    resolved_by: Jacob Chapel
     created_at: 2026-04-03T16:32:55.066Z
   - _ulid: 01KNA3404TXG6JD39R5H359V3M
     type: friction
