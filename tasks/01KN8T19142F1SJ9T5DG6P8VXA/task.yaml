@@ -94,5 +94,14 @@ tags:
   - dispatch
   - sync
 vcs_refs: []
+history:
+  - author: "@claude"
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-04-03T04:38:23.990Z
 created_at: 2026-04-03T04:36:15.524Z
 todos: []
+automation: eligible

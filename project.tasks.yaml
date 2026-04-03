@@ -24420,6 +24420,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-03T04:36:14.941Z
+  automation: eligible
 - _ulid: 01KN8T18R7K60ZC1GAR8ZAGFZ6
   slugs:
     - task-sync-active-target-acs
@@ -24439,6 +24440,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-03T04:36:15.239Z
+  automation: eligible
 - _ulid: 01KN8T19142F1SJ9T5DG6P8VXA
   slugs:
     - task-sync-push-ac-updates
@@ -24458,6 +24460,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-03T04:36:15.524Z
+  automation: eligible
 - _ulid: 01KN8T199W5GC75VERHAPEA62B
   slugs:
     - task-sync-pull-ac-updates
@@ -24477,6 +24480,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-03T04:36:15.804Z
+  automation: eligible
 - _ulid: 01KN8T19J4FBZYJ51306PV3NZA
   slugs:
     - task-sync-degraded-ac-updates
@@ -24496,6 +24500,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-03T04:36:16.068Z
+  automation: eligible
 - _ulid: 01KN8T19V08CS20XYP25QJHRC5
   slugs:
     - task-impl-active-target-set
@@ -24516,6 +24521,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-03T04:36:16.352Z
+  automation: eligible
 - _ulid: 01KN8T1A51JFRMW4F8W31KJ907
   slugs:
     - task-impl-push-path
@@ -24536,6 +24542,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-03T04:36:16.673Z
+  automation: eligible
 - _ulid: 01KN8T1ADSR97NA4Z1MXF30MZE
   slugs:
     - task-impl-pull-path
@@ -24556,6 +24563,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-03T04:36:16.953Z
+  automation: eligible
 - _ulid: 01KN8T1APSFZ9NRNP7TKT957GD
   slugs:
     - task-impl-degraded-state
@@ -24576,6 +24584,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-03T04:36:17.241Z
+  automation: eligible
 - _ulid: 01KN8T1AZ0RSE7SA5SBK7AG5KD
   slugs:
     - task-impl-sync-integration-tests
@@ -24597,3 +24606,4 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-03T04:36:17.504Z
+  automation: eligible
