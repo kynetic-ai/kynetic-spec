@@ -108879,7 +108879,17 @@ reviews:
     slugs: []
     title: Review task-impl-active-target-set
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed: 2068 suites, 7495 tests, 5 skipped, 0 failed."
+        name: npm test -- --fresh
+        required: true
+        runner: npm
+        created_at: 2026-04-03T05:49:45.023Z
+        completed_at: 2026-04-03T05:49:45.023Z
     events:
       - _ulid: 01KN8XKYK7FJ2NDRBWMCG7DBF8
         actor: Jacob Chapel
@@ -108894,6 +108904,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-03T05:39:30.168Z
+      - _ulid: 01KN8Y7VWM3Q16YSX7WN7H4Y0Y
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test -- --fresh
+        timestamp: 2026-04-03T05:49:45.748Z
     examined_commit: 0db514f9fe5692c79ae5eff7495a6b1893bc050a
     external_links: []
     lifecycle_state: open
@@ -108906,5 +108923,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-03T05:38:53.160Z
-    updated_at: 2026-04-03T05:39:29.466Z
+    updated_at: 2026-04-03T05:49:45.023Z
     notes: []
