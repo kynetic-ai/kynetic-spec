@@ -8917,15 +8917,10 @@ features:
               A sync state event is broadcast on the agents WebSocket topic
             when: |
               The state transition occurs
-          - given: |
-              The engine is in degraded state due to target branch divergence
+          - given: An integration target is in degraded state due to branch divergence
             id: ac-degraded-auto-recover
-            then: |
-              The engine exits degraded state and resumes normal dispatch
-              operations, including evaluating queued tasks for provisioning
-            when: |
-              A subsequent periodic sync succeeds (the operator resolved the
-              divergence externally)
+            then: That target exits degraded state
+            when: A subsequent periodic sync of that specific target succeeds
           - given: |
               The engine exits degraded state via successful sync
             id: ac-degraded-recovery-logged
