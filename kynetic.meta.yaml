@@ -11797,6 +11797,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-03T05:03:26.422Z
+  - _ulid: 01KN8W8H0XMA5X80H6R9TBBGZD
+    type: friction
+    content: Detached reviewer snapshots can hide the actual review delta when HEAD is already contained
+      by the integration branch. In this session, git diff against the target was empty and manual
+      merge was already-up-to-date even though the task still required a full review. Reviewers had
+      to reconstruct context from kspec task/review/plan metadata and branch containment checks.
+      Consider a reviewer-focused command or review orientation that explicitly shows the examined
+      commit, canonical task branch, integration target, and whether the target already contains the
+      snapshot.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-03T05:15:10.237Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
