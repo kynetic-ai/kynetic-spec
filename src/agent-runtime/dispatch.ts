@@ -54,6 +54,7 @@ import {
   reconcileDispatchWorkspaceArtifacts,
   discoverWorkspaceForReviewOrFixCycle,
   fastForwardDispatchIntegrationBranch,
+  integrationTargetNeedsPush,
   pushDispatchBranch,
   pushIntegrationTarget,
   runDispatchIntegrationTargetGit,
@@ -871,6 +872,7 @@ export class DispatchEngine {
   /**
    * Integration target branches currently being pushed to remote.
    * AC: @dispatch-remote-branch-sync ac-target-push-serialization
+   * AC: @dispatch-remote-branch-sync ac-target-push-cross-branch-concurrency
    */
   private _targetPushesInProgress = new Set<string>();
   /** Resolved effective remote_sync value (set once at start time). */
@@ -1411,9 +1413,17 @@ export class DispatchEngine {
    * AC: @dispatch-remote-branch-sync ac-target-push-serialization
    * AC: @dispatch-remote-branch-sync ac-push-non-fatal
    */
-  private async _pushIntegrationTargetAsync(trigger: string, branch?: string): Promise<void> {
-    const targetBranch = this._resolveBaseBranch(branch);
+  private async _pushIntegrationTargetAsync(
+    targetBranch: string,
+    trigger: string,
+  ): Promise<void> {
     if (!targetBranch) {
+      return;
+    }
+    if (
+      trigger === "periodic-sync" &&
+      !await integrationTargetNeedsPush(this.projectDir, targetBranch)
+    ) {
       return;
     }
 
@@ -1458,7 +1468,9 @@ export class DispatchEngine {
     if (activeTargets.length === 0) {
       return;
     }
-    await Promise.all(activeTargets.map((branch) => this._pushIntegrationTargetAsync(trigger, branch)));
+    await Promise.all(
+      activeTargets.map((branch) => this._pushIntegrationTargetAsync(branch, trigger)),
+    );
   }
 
   /**
@@ -2934,9 +2946,9 @@ export class DispatchEngine {
             // When a reviewer invocation completes, push the integration target
             // (the reviewer may have merged into it).
             if (role === "reviewer") {
-              this._pushIntegrationTargetAsync(
-                "post-merge",
+              void this._pushIntegrationTargetAsync(
                 workspace.metadata.integrationTargetBranch,
+                "post-merge",
               );
             }
           }

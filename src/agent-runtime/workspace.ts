@@ -2646,6 +2646,22 @@ async function isLocalBranchAheadOfUpstream(projectDir: string, branch: string):
   return ahead > 0;
 }
 
+/**
+ * Check whether an integration target branch has local commits that still need
+ * to be pushed to its upstream. Branches without upstream tracking return true
+ * so callers can establish tracking with the first push.
+ */
+export async function integrationTargetNeedsPush(
+  projectDir: string,
+  integrationBranch: string,
+): Promise<boolean> {
+  const hasTracking = await hasUpstreamTracking(projectDir, integrationBranch);
+  if (!hasTracking) {
+    return true;
+  }
+  return await isLocalBranchAheadOfUpstream(projectDir, integrationBranch);
+}
+
 export interface PushDispatchBranchResult {
   pushed: boolean;
   firstPush: boolean;
@@ -2747,8 +2763,7 @@ export async function pushIntegrationTarget(
   }
 
   // Check if the local branch is ahead of remote before pushing
-  const hasTracking = await hasUpstreamTracking(projectDir, integrationBranch);
-  if (hasTracking && !await isLocalBranchAheadOfUpstream(projectDir, integrationBranch)) {
+  if (!await integrationTargetNeedsPush(projectDir, integrationBranch)) {
     return { pushed: false, skipped: true, error: null };
   }
 
