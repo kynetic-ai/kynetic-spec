@@ -109902,6 +109902,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNA62CWA4BXW2257M8DJZV1J
         timestamp: 2026-04-03T17:25:50.429Z
+      - _ulid: 01KNA62G37BQ6WS2PHTCKY2SX4
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNA62F8FK8F32DTD8C2FM0HM
+        timestamp: 2026-04-03T17:25:52.871Z
     examined_commit: 1f9061b986b4a033947fa754c8ec72ba7e678bba
     external_links: []
     lifecycle_state: open
@@ -109945,7 +109952,24 @@ reviews:
               and . The branch-scoped status added in  /  never reaches API callers.
             created_at: 2026-04-03T17:25:49.578Z
         kind: blocker
+      - _ulid: 01KNA62F8FK8F32DTD8C2FM0HM
+        entries:
+          - _ulid: 01KNA62F8F94Z0WREN32S3YRTC
+            author: Jacob Chapel
+            body: 'Review evidence log:\nFiles read: src/agent-runtime/dispatch.ts;
+              tests/dispatch-degraded-state.test.ts; tests/dispatch-target-sync.test.ts;
+              packages/daemon/src/routes/agent-dispatch.ts;
+              tests/daemon-api/agent-dispatch.test.ts.\nCommands run: kspec task get
+              @01KN8T1APSFZ9NRNP7TKT957GD; kspec review for-task @01KN8T1APSFZ9NRNP7TKT957GD; kspec
+              validate; grep -Rni "AC: @dispatch-remote-branch-sync\|AC: @trait-" tests; git diff
+              against 0f27e912...; npm test -- dispatch-degraded-state dispatch-target-sync; npm run
+              typecheck; npm test.\nClaims verified: the queue drain now resolves target branches
+              before degraded checks; the full and targeted test suites pass; degraded-state API
+              serialization is stale in daemon routes.\nCategories searched: correctness, API
+              integration, AC coverage annotations, error handling, regression risk, test coverage.'
+            created_at: 2026-04-03T17:25:52.015Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-03T17:20:48.239Z
-    updated_at: 2026-04-03T17:25:49.578Z
+    updated_at: 2026-04-03T17:25:52.015Z
     notes: []
