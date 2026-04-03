@@ -337,7 +337,6 @@ async function createTrackedBranch(
     git(projectDir, `checkout ${previousBranch}`);
   }
 }
-
 async function cleanupTempDirWithRetry(dir: string, retries = 3): Promise<void> {
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
@@ -454,7 +453,6 @@ describe("dispatch target branch sync", () => {
 
     await engine.stop();
   });
-
   // AC: @dispatch-remote-branch-sync ac-active-target-includes-base
   it("includes the configured base branch in the active target set even without workspaces", async () => {
     ({ projectDir, remoteDir } = await setupProjectWithRemote());
@@ -569,7 +567,8 @@ describe("dispatch target branch sync", () => {
     expect(new Set(engine.getTargetSyncStatus().activeTargets)).toEqual(
       new Set(["dev", "plan/shared"]),
     );
-    expect((engine as any)._configuredBaseBranch).toBe("dev");
+    expect((engine as any)._resolveBaseBranch()).toBe("dev");
+    expect((engine as any)._resolveBaseBranch("plan/shared")).toBe("plan/shared");
 
     await engine.stop();
   });
@@ -897,7 +896,7 @@ describe("dispatch target branch sync", () => {
         "second\n",
         "second sync commit",
       );
-      const result = await engine._syncTargetBranch();
+      const result = await engine._syncTarget();
 
       expect(result).toBe("synced");
       expect(git(projectDir, "branch --show-current")).toBe("dev");
@@ -1049,14 +1048,14 @@ describe("dispatch target branch sync", () => {
     await engine.start();
 
     expect(git(projectDir, "rev-parse dev")).toBe(remoteTip);
-    const result = await engine._syncTargetBranch();
+    const result = await engine._syncTarget();
 
     expect(result).toBe("up_to_date");
     expect(git(projectDir, "branch --show-current")).toBe("human-feature");
     expect(git(projectDir, "rev-parse human-feature")).toBe(humanHeadBefore);
     expect(git(projectDir, "rev-parse dev")).toBe(remoteTip);
     expect(localDevBefore).not.toBe(remoteTip);
-    expect(engine.getDegradedState().active).toBe(false);
+    expect(engine.getDegradedState()).toEqual([]);
 
     await engine.stop();
   });
@@ -1089,13 +1088,13 @@ describe("dispatch target branch sync", () => {
     await engine.start();
 
     expect(git(projectDir, "rev-parse dev")).toBe(remoteTip);
-    const result = await engine._syncTargetBranch();
+    const result = await engine._syncTarget();
 
     expect(result).toBe("up_to_date");
     expect(git(projectDir, "branch --show-current")).toBe("human-feature");
     expect(git(projectDir, "rev-parse human-feature")).toBe(humanHeadBefore);
     expect(git(projectDir, "rev-parse dev")).toBe(remoteTip);
-    expect(engine.getDegradedState().active).toBe(false);
+    expect(engine.getDegradedState()).toEqual([]);
 
     await engine.stop();
   });
@@ -1135,13 +1134,13 @@ describe("dispatch target branch sync", () => {
       });
       await engine.start();
 
-      expect(engine.getDegradedState().active).toBe(true);
-      expect(engine.getDegradedState().reason).toContain("currently checked out");
+      expect(engine.getDegradedState()).toHaveLength(1);
+      expect(engine.getDegradedState()[0].reason).toContain("currently checked out");
       expect(git(projectDir, "branch --show-current")).toBe("human-feature");
       expect(git(projectDir, "rev-parse human-feature")).toBe(humanHeadBefore);
       expect(git(projectDir, "rev-parse dev")).toBe(localDevBefore);
       expect(git(foreignWorktreeDir, "rev-parse HEAD")).toBe(foreignHeadBefore);
-      expect(await engine._syncTargetBranch()).toBe("unsafe_target");
+      expect(await engine._syncTarget()).toBe("unsafe_target");
 
       await engine.stop();
     } finally {
@@ -1179,7 +1178,7 @@ describe("dispatch target branch sync", () => {
         });
         await engine.start();
 
-        expect(["synced", "up_to_date"]).toContain(await engine._syncTargetBranch());
+        expect(["synced", "up_to_date"]).toContain(await engine._syncTarget());
         expect(git(sharedCheckoutDir, "rev-parse dev")).toBe(remoteTip);
         expect(git(sharedCheckoutDir, "branch --show-current")).toBe("dev");
         expect(git(sourceDir, "rev-parse HEAD")).toBe(sourceHeadBefore);
@@ -1265,18 +1264,68 @@ describe("dispatch target branch sync", () => {
     }
 
     // Reconcile when sync is NOT stale — should NOT sync
-    // (engine.start() just synced, so _lastTargetSyncTimestamp is recent)
     await (engine as any)._reconcile();
     const tipAfterFreshReconcile = git(projectDir, "rev-parse dev");
     expect(tipAfterFreshReconcile).toBe(afterStartTip);
 
     // Make sync stale by backdating the timestamp beyond sync_interval
-    (engine as any)._lastTargetSyncTimestamp = Date.now() - 120_000;
+    (engine as any)._targetSyncTimestamps.set("dev", Date.now() - 120_000);
 
     // Reconcile when sync IS stale — should sync
     await (engine as any)._reconcile();
     const tipAfterStaleReconcile = git(projectDir, "rev-parse dev");
     expect(tipAfterStaleReconcile).not.toBe(afterStartTip);
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-per-target-staleness
+  // AC: @dispatch-remote-branch-sync ac-per-target-staleness-isolation
+  it("tracks staleness per target so syncing one branch does not refresh another", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    await createTrackedBranch(
+      projectDir,
+      "plan/alpha",
+      "plan-alpha.txt",
+      "alpha\n",
+      "create plan alpha",
+    );
+    await saveWorkspaceRecord(projectDir, {
+      taskRef: "@01TASK00000000000000000017",
+      taskSlug: "task-plan-alpha-staleness",
+      targetBranch: "plan/alpha",
+    });
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    (engine as any)._targetSyncTimestamps.set("dev", Date.now() - 120_000);
+    (engine as any)._targetSyncTimestamps.set("plan/alpha", 0);
+
+    await pushRemoteCommit(
+      remoteDir,
+      "plan/alpha",
+      "plan-alpha.txt",
+      "alpha\nremote\n",
+      "remote alpha advance",
+    );
+
+    const beforeDevTimestamp = engine.getTargetSyncStatus().targetSyncTimestamps.dev;
+    expect((engine as any)._isTargetSyncStale("dev")).toBe(true);
+    expect((engine as any)._isTargetSyncStale("plan/alpha")).toBe(true);
+
+    await (engine as any)._syncTarget("plan/alpha");
+
+    const syncStatus = engine.getTargetSyncStatus();
+    expect(syncStatus.targetSyncTimestamps["plan/alpha"]).toBeGreaterThan(0);
+    expect(syncStatus.targetSyncTimestamps.dev).toBe(beforeDevTimestamp);
+    expect((engine as any)._isTargetSyncStale("dev")).toBe(true);
+    expect((engine as any)._isTargetSyncStale("plan/alpha")).toBe(false);
 
     await engine.stop();
   });
@@ -1321,9 +1370,21 @@ describe("dispatch target branch sync", () => {
   });
 
   // AC: @dispatch-remote-branch-sync ac-pull-target-periodic-deferred
-  it("defers periodic sync when a reviewer invocation is active", async () => {
+  it("defers periodic sync only for the reviewer target while syncing other stale targets", async () => {
     ({ projectDir, remoteDir } = await setupProjectWithRemote());
     await setupProjectFiles(projectDir);
+    await createTrackedBranch(
+      projectDir,
+      "plan/alpha",
+      "plan-alpha.txt",
+      "alpha\n",
+      "create plan alpha",
+    );
+    await saveWorkspaceRecord(projectDir, {
+      taskRef: "@TASK123",
+      taskSlug: "task-review-alpha",
+      targetBranch: "plan/alpha",
+    });
     git(projectDir, "checkout dev");
 
     const engine = new DispatchEngine({
@@ -1345,51 +1406,53 @@ describe("dispatch target branch sync", () => {
       startedAtMs: Date.now(),
     });
 
-    // Verify reviewer detection
-    expect((engine as any)._hasActiveReviewerInvocation()).toBe(true);
+    expect(await (engine as any)._activeReviewerTargets()).toEqual(new Set(["plan/alpha"]));
 
-    // Push new commit to remote
-    const cloneDir = await createTempDir("kspec-target-sync-clone-");
-    try {
-      git(cloneDir, `clone "${remoteDir}" .`);
-      git(cloneDir, 'config user.email "test@example.com"');
-      git(cloneDir, 'config user.name "Test User"');
-      git(cloneDir, "checkout dev");
-      await fs.writeFile(path.join(cloneDir, "deferred.txt"), "deferred\n", "utf-8");
-      git(cloneDir, "add deferred.txt");
-      git(cloneDir, 'commit -m "deferred commit"');
-      git(cloneDir, "push origin dev");
-    } finally {
-      await cleanupTempDir(cloneDir);
-    }
+    await pushRemoteCommit(remoteDir, "dev", "deferred-dev.txt", "deferred\n", "deferred dev");
+    const deferredPlanTip = await pushRemoteCommit(
+      remoteDir,
+      "plan/alpha",
+      "plan-alpha.txt",
+      "alpha\ndeferred\n",
+      "deferred alpha",
+    );
 
     const tipBefore = git(projectDir, "rev-parse dev");
+    const alphaBefore = git(projectDir, "rev-parse plan/alpha");
 
-    // Make sync stale so the only gate tested is the reviewer check
-    (engine as any)._lastTargetSyncTimestamp = Date.now() - 120_000;
+    // Make both targets stale so the only differentiator is reviewer activity.
+    (engine as any)._targetSyncTimestamps.set("dev", Date.now() - 120_000);
+    (engine as any)._targetSyncTimestamps.set("plan/alpha", Date.now() - 120_000);
 
-    // Trigger reconciliation — sync should be skipped because reviewer is active
     await (engine as any)._reconcile();
 
     const tipAfter = git(projectDir, "rev-parse dev");
-    expect(tipAfter).toBe(tipBefore); // Should NOT have synced
+    const alphaAfter = git(projectDir, "rev-parse plan/alpha");
+    expect(tipAfter).not.toBe(tipBefore);
+    expect(alphaAfter).toBe(alphaBefore);
 
-    // Remove the reviewer and reconcile again — now it should sync (still stale)
     invocationDetails.delete("test-reviewer-session");
-    expect((engine as any)._hasActiveReviewerInvocation()).toBe(false);
+    expect(await (engine as any)._activeReviewerTargets()).toEqual(new Set());
 
     await (engine as any)._reconcile();
 
-    const tipAfterSecondReconcile = git(projectDir, "rev-parse dev");
-    expect(tipAfterSecondReconcile).not.toBe(tipBefore);
+    const alphaAfterSecondReconcile = git(projectDir, "rev-parse plan/alpha");
+    expect(alphaAfterSecondReconcile).toBe(deferredPlanTip);
 
     await engine.stop();
   });
 
   // AC: @dispatch-remote-branch-sync ac-pull-target-before-provision
-  it("syncs target branch before workspace provisioning when stale", async () => {
+  it("evaluates pre-provision sync staleness per target branch", async () => {
     ({ projectDir, remoteDir } = await setupProjectWithRemote());
     await setupProjectFiles(projectDir);
+    await createTrackedBranch(
+      projectDir,
+      "plan/alpha",
+      "plan-alpha.txt",
+      "alpha\n",
+      "create plan alpha",
+    );
     git(projectDir, "checkout dev");
 
     const engine = new DispatchEngine({
@@ -1399,18 +1462,127 @@ describe("dispatch target branch sync", () => {
     });
     await engine.start();
 
-    // Manually set lastSyncTimestamp to 0 to simulate staleness
-    (engine as any)._lastTargetSyncTimestamp = 0;
+    (engine as any)._targetSyncTimestamps.set("dev", 0);
+    (engine as any)._targetSyncTimestamps.set("plan/alpha", Date.now());
 
-    expect((engine as any)._isTargetSyncStale()).toBe(true);
+    expect((engine as any)._isTargetSyncStale("dev")).toBe(true);
+    expect((engine as any)._isTargetSyncStale("plan/alpha")).toBe(false);
 
-    // Set a recent timestamp — should not be stale
-    (engine as any)._lastTargetSyncTimestamp = Date.now();
-    expect((engine as any)._isTargetSyncStale()).toBe(false);
+    (engine as any)._targetSyncTimestamps.set("dev", Date.now());
+    (engine as any)._targetSyncTimestamps.set("plan/alpha", Date.now() - 120_000);
+    expect((engine as any)._isTargetSyncStale("dev")).toBe(false);
+    expect((engine as any)._isTargetSyncStale("plan/alpha")).toBe(true);
 
-    // Set an old timestamp — should be stale
-    (engine as any)._lastTargetSyncTimestamp = Date.now() - 120_000;
-    expect((engine as any)._isTargetSyncStale()).toBe(true);
+    await engine.stop();
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-partial-sync-continues
+  it("continues syncing remaining targets when one target sync throws during iteration", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    await createTrackedBranch(
+      projectDir,
+      "plan/alpha",
+      "plan-alpha.txt",
+      "alpha\n",
+      "create plan alpha",
+    );
+    await saveWorkspaceRecord(projectDir, {
+      taskRef: "@01TASK00000000000000000018",
+      taskSlug: "task-plan-alpha-partial",
+      targetBranch: "plan/alpha",
+    });
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    await pushRemoteCommit(remoteDir, "dev", "partial-dev.txt", "partial\n", "partial dev");
+    (engine as any)._targetSyncTimestamps.set("dev", Date.now() - 120_000);
+    (engine as any)._targetSyncTimestamps.set("plan/alpha", Date.now() - 120_000);
+
+    const originalSyncTarget = (engine as any)._syncTarget.bind(engine);
+    const syncSpy = vi
+      .spyOn(engine as any, "_syncTarget")
+      .mockImplementation(async (branch: string) => {
+        if (branch === "plan/alpha") {
+          throw new Error("simulated target failure");
+        }
+        return await originalSyncTarget(branch);
+      });
+
+    const warnSpy = vi.spyOn(console, "warn");
+    const devBefore = git(projectDir, "rev-parse dev");
+
+    await (engine as any)._syncAllActiveTargets({ staleOnly: true });
+
+    const devAfter = git(projectDir, "rev-parse dev");
+    expect(syncSpy).toHaveBeenCalledWith("dev");
+    expect(syncSpy).toHaveBeenCalledWith("plan/alpha");
+    expect(devAfter).not.toBe(devBefore);
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringContaining("Target sync failed for plan/alpha; continuing"),
+    );
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-partial-sync-scoped-degradation
+  // AC: @dispatch-remote-branch-sync ac-divergence-scoped-to-target
+  it("keeps degradation scoped to the failed target when a later target sync succeeds", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    await createTrackedBranch(
+      projectDir,
+      "plan/alpha",
+      "plan-alpha.txt",
+      "alpha\n",
+      "create plan alpha",
+    );
+    await saveWorkspaceRecord(projectDir, {
+      taskRef: "@01TASK00000000000000000019",
+      taskSlug: "task-plan-alpha-degraded-scope",
+      targetBranch: "plan/alpha",
+    });
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    await fs.writeFile(path.join(projectDir, "dev-local.txt"), "local divergence\n", "utf-8");
+    git(projectDir, "add dev-local.txt");
+    git(projectDir, 'commit -m "local divergence on dev"');
+    await pushRemoteCommit(remoteDir, "dev", "dev-remote.txt", "remote divergence\n", "remote divergence on dev");
+
+    const planAlphaBefore = git(projectDir, "rev-parse plan/alpha");
+    const planAlphaRemoteHead = await pushRemoteCommit(
+      remoteDir,
+      "plan/alpha",
+      "plan-alpha-remote.txt",
+      "plan alpha remote\n",
+      "remote update on plan alpha",
+    );
+
+    (engine as any)._targetSyncTimestamps.set("dev", Date.now() - 120_000);
+    (engine as any)._targetSyncTimestamps.set("plan/alpha", Date.now() - 120_000);
+
+    await (engine as any)._syncAllActiveTargets({ staleOnly: true });
+
+    const syncStatus = engine.getTargetSyncStatus();
+    const degradedTargets = syncStatus.degradedTargets.map((target) => target.branch);
+    expect(degradedTargets).toEqual(["dev"]);
+    expect(syncStatus.degraded.active).toBe(true);
+    expect(syncStatus.degraded.reason).toContain("dev");
+    expect(git(projectDir, "rev-parse plan/alpha")).toBe(planAlphaRemoteHead);
+    expect(git(projectDir, "rev-parse plan/alpha")).not.toBe(planAlphaBefore);
+    expect(syncStatus.targetSyncTimestamps["plan/alpha"]).toBeGreaterThan(0);
+    expect(syncStatus.targetSyncTimestamps.dev ?? 0).toBeLessThan(syncStatus.targetSyncTimestamps["plan/alpha"]);
 
     await engine.stop();
   });
@@ -1432,7 +1604,7 @@ describe("dispatch target branch sync", () => {
     git(projectDir, "remote set-url origin /nonexistent/path");
 
     const warnSpy = vi.spyOn(console, "warn");
-    const result = await engine._syncTargetBranch();
+    const result = await engine._syncTarget();
 
     expect(result).toBe("transient_failure");
     expect(warnSpy).toHaveBeenCalledWith(
@@ -1464,7 +1636,7 @@ describe("dispatch target branch sync", () => {
 
     await pushRemoteCommit(remoteDir, "dev", "timeout-check.txt", "timeout\n", "timeout check");
 
-    const result = await engine._syncTargetBranch();
+    const result = await engine._syncTarget();
 
     expect(result).toBe("synced");
     expect(targetGitSpy).toHaveBeenNthCalledWith(1, projectDir, "dev", ["fetch", "origin", "dev"], {
@@ -1495,7 +1667,7 @@ describe("dispatch target branch sync", () => {
     await engine.start();
 
     // Simulate previous failures
-    (engine as any)._consecutiveTransientFailures = 3;
+    (engine as any)._consecutiveSyncFailures.set("dev", 3);
 
     // Push a new commit and sync successfully
     const cloneDir = await createTempDir("kspec-target-sync-clone-");
@@ -1512,7 +1684,7 @@ describe("dispatch target branch sync", () => {
       await cleanupTempDir(cloneDir);
     }
 
-    const result = await engine._syncTargetBranch();
+    const result = await engine._syncTarget();
     expect(result).toBe("synced");
     expect(engine.getTargetSyncStatus().consecutiveFailures).toBe(0);
 
@@ -1669,7 +1841,7 @@ describe("dispatch target branch sync", () => {
       await cleanupTempDir(cloneDir);
     }
 
-    const result = await engine._syncTargetBranch();
+    const result = await engine._syncTarget();
     expect(result).toBe("diverged");
 
     await engine.stop();
@@ -1688,7 +1860,7 @@ describe("dispatch target branch sync", () => {
     await engine.start();
 
     // Sync again without any changes — should be up_to_date
-    const result = await engine._syncTargetBranch();
+    const result = await engine._syncTarget();
     expect(result === "up_to_date").toBe(true);
 
     await engine.stop();
@@ -1707,12 +1879,12 @@ describe("dispatch target branch sync", () => {
     await engine.start();
 
     // Simulate a sync already running
-    (engine as any)._targetSyncRunning = true;
-    const result = await engine._syncTargetBranch();
+    (engine as any)._targetSyncRunning.add("dev");
+    const result = await engine._syncTarget();
     expect(result).toBe("skipped");
 
     // Clear the guard
-    (engine as any)._targetSyncRunning = false;
+    (engine as any)._targetSyncRunning.delete("dev");
 
     await engine.stop();
   });
@@ -1731,7 +1903,7 @@ describe("dispatch target branch sync", () => {
 
     // Disable sync
     (engine as any)._remoteSyncEnabled = false;
-    const result = await engine._syncTargetBranch();
+    const result = await engine._syncTarget();
     expect(result).toBe("skipped");
 
     await engine.stop();
