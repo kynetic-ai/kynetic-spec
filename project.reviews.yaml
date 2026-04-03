@@ -109905,6 +109905,17 @@ reviews:
         runner: tsc
         created_at: 2026-04-03T17:25:59.596Z
         completed_at: 2026-04-03T17:25:59.596Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation exited with warnings only; no new task-specific errors. Warnings were
+          repository-wide pre-existing coverage/alignment issues.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-03T17:26:02.090Z
+        completed_at: 2026-04-03T17:26:02.090Z
     events:
       - _ulid: 01KNA5S6KESM1CC39XE47D0QJA
         actor: Jacob Chapel
@@ -109961,6 +109972,13 @@ reviews:
           status: pass
           name: typecheck
         timestamp: 2026-04-03T17:26:00.459Z
+      - _ulid: 01KNA62SYFY6G80G43FFF401QY
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-04-03T17:26:02.959Z
     examined_commit: 1f9061b986b4a033947fa754c8ec72ba7e678bba
     external_links: []
     lifecycle_state: open
@@ -110023,5 +110041,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-03T17:20:48.239Z
-    updated_at: 2026-04-03T17:25:59.596Z
+    updated_at: 2026-04-03T17:26:02.090Z
     notes: []
