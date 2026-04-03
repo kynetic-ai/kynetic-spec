@@ -11898,6 +11898,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-03T16:34:16.539Z
+  - _ulid: 01KNA4979W60KAYXXZFQV1EGD1
+    type: friction
+    content: The reflection docs say 'kspec workflow show' without arguments, but the CLI required an
+      explicit workflow run ref (for example @01KNA47V). That mismatch adds avoidable
+      trial-and-error at the end of a session.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-03T16:54:36.092Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
