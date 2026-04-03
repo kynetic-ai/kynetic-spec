@@ -3,9 +3,14 @@ import * as fs from "node:fs/promises";
 import { execSync } from "node:child_process";
 import * as path from "node:path";
 import * as invocationModule from "../src/agent-runtime/invocation.js";
+import * as dispatchWorkspaceRegistryModule from "../src/parser/dispatch-workspaces.js";
 import * as workspaceModule from "../src/agent-runtime/workspace.js";
 import { DispatchEngine } from "../src/agent-runtime/dispatch.js";
-import { cleanupTempDir, createTempDir, initGitRepo } from "./helpers/cli.js";
+import { initContext } from "../src/parser/index.js";
+import { saveDispatchWorkspaceRecord } from "../src/parser/dispatch-workspaces.js";
+import type { LoadedDispatchWorkspaceRecord } from "../src/parser/dispatch-workspaces.js";
+import { kspecOutput as kspec, kspecJson } from "./helpers/cli.js";
+import { cleanupTempDir, createTempDir, initGitRepo, testUlid } from "./helpers/cli.js";
 import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
 
 ensureSplitBackendRegistered();
@@ -30,6 +35,32 @@ function gitSucceeds(cwd: string, command: string): boolean {
     return true;
   } catch {
     return false;
+  }
+}
+
+function gitResult(cwd: string, command: string): { stdout: string; stderr: string; status: number } {
+  try {
+    return {
+      stdout: execSync(`git ${command}`, {
+        cwd,
+        stdio: "pipe",
+        encoding: "utf-8",
+        env: workspaceModule.buildDispatchGitEnv(),
+      }).trim(),
+      stderr: "",
+      status: 0,
+    };
+  } catch (error) {
+    const execError = error as {
+      stdout?: string | Buffer;
+      stderr?: string | Buffer;
+      status?: number;
+    };
+    return {
+      stdout: String(execError.stdout ?? "").trim(),
+      stderr: String(execError.stderr ?? "").trim(),
+      status: execError.status ?? 1,
+    };
   }
 }
 
@@ -85,10 +116,144 @@ async function setupProjectFiles(projectDir: string, baseBranch = "dev"): Promis
   );
   await fs.writeFile(
     path.join(projectDir, "kspec.config.yaml"),
-    `dispatch:\n  base_branch: ${baseBranch}\n  sync_interval: 60\n  remote_sync: true\n`,
+    [
+      "dispatch:",
+      `  base_branch: ${baseBranch}`,
+      "  sync_interval: 60",
+      "  remote_sync: true",
+      "agent:",
+      "  skills:",
+      '    task_work: "$kspec-task-work"',
+      '    pr_review: "$kspec-review"',
+      "",
+    ].join("\n"),
     "utf-8",
   );
   await fs.writeFile(path.join(projectDir, "project.tasks.yaml"), "tasks: []\n", "utf-8");
+}
+
+function createWorkspaceRecord(
+  projectDir: string,
+  {
+    taskRef,
+    taskSlug,
+    targetBranch,
+    lifecycleState = "ready",
+    workspaceId = testUlid("WS"),
+  }: {
+    taskRef: string;
+    taskSlug: string;
+    targetBranch: string;
+    lifecycleState?: LoadedDispatchWorkspaceRecord["lifecycle_state"];
+    workspaceId?: string;
+  },
+): LoadedDispatchWorkspaceRecord {
+  const timestamp = new Date().toISOString();
+  const branchHead = git(projectDir, "rev-parse HEAD");
+  return {
+    workspace_id: workspaceId,
+    task_ref: taskRef,
+    task_slug: taskSlug,
+    worktree_root: projectDir,
+    resolved_base_branch: "dev",
+    base_branch_point: branchHead,
+    canonical_branch: `dispatch/task/${taskSlug}/${workspaceId.toLowerCase()}`,
+    canonical_branch_head: branchHead,
+    branch_provenance: {
+      ownership: "dispatcher-managed",
+      source: "provisioned",
+      remote_ref: null,
+      adopted_from: null,
+      adopted_at: null,
+      rehydrated: null,
+    },
+    lifecycle_state: lifecycleState,
+    active_role: lifecycleState === "closed" ? null : "worker",
+    worktrees: {
+      worker: {
+        path: path.join(projectDir, ".dispatch-worktrees", workspaceId.toLowerCase()),
+        branch_mode: "branch",
+        branch_ref: `dispatch/task/${taskSlug}/${workspaceId.toLowerCase()}`,
+        head: branchHead,
+        last_seen_at: timestamp,
+      },
+      reviewer: null,
+    },
+    bootstrap: {
+      status: "not_run",
+      configHash: null,
+      canonicalBranchHead: null,
+      lastRunAt: null,
+      invalidationReasons: [],
+      steps: [],
+      failureMessage: null,
+      lastRole: null,
+      roleStates: {
+        worker: {
+          status: "not_run",
+          configHash: null,
+          canonicalBranchHead: null,
+          lastRunAt: null,
+          invalidationReasons: [],
+          steps: [],
+          failureMessage: null,
+        },
+        reviewer: {
+          status: "not_run",
+          configHash: null,
+          canonicalBranchHead: null,
+          lastRunAt: null,
+          invalidationReasons: [],
+          steps: [],
+          failureMessage: null,
+        },
+      },
+    },
+    integration: {
+      status: "pending",
+      target_branch: targetBranch,
+      target_commit: branchHead,
+      publication_mode: "manual_merge",
+      outcome: "manual_merge",
+      detail: null,
+      updated_at: timestamp,
+    },
+    health: {
+      status: "healthy",
+      summary: "healthy",
+      issues: [],
+      updated_at: timestamp,
+    },
+    cleanup: {
+      status: lifecycleState === "closed" ? "completed" : "not_scheduled",
+      eligible: lifecycleState === "closed",
+      reason: lifecycleState === "closed" ? "closed" : null,
+      detail: null,
+      updated_at: timestamp,
+    },
+    timestamps: {
+      created_at: timestamp,
+      updated_at: timestamp,
+      last_reconciled_at: timestamp,
+      last_active_at: timestamp,
+      closed_at: lifecycleState === "closed" ? timestamp : null,
+    },
+  };
+}
+
+async function saveWorkspaceRecord(
+  projectDir: string,
+  options: {
+    taskRef: string;
+    taskSlug: string;
+    targetBranch: string;
+    lifecycleState?: LoadedDispatchWorkspaceRecord["lifecycle_state"];
+    workspaceId?: string;
+  },
+): Promise<void> {
+  const ctx = await initContext(projectDir);
+  const record = createWorkspaceRecord(projectDir, options);
+  await saveDispatchWorkspaceRecord(ctx, record);
 }
 
 async function setupWorktreeLaunchedProjectWithRemote(): Promise<{
@@ -190,6 +355,56 @@ async function pushRemoteCommit(
   }
 }
 
+async function createTrackedBranch(
+  projectDir: string,
+  branch: string,
+  fileName: string,
+  content: string,
+  message: string,
+): Promise<string> {
+  const previousBranch = git(projectDir, "branch --show-current");
+  try {
+    git(projectDir, `checkout -b ${branch} dev`);
+    await fs.writeFile(path.join(projectDir, fileName), content, "utf-8");
+    git(projectDir, `add ${fileName}`);
+    git(projectDir, `commit -m "${message}"`);
+    git(projectDir, `push -u origin ${branch}`);
+    return git(projectDir, `rev-parse ${branch}`);
+  } finally {
+    git(projectDir, `checkout ${previousBranch}`);
+  }
+}
+
+async function cloneRemote(remoteDir: string): Promise<string> {
+  const cloneDir = await createTempDir("kspec-target-sync-reviewer-");
+  git(cloneDir, `clone "${remoteDir}" .`);
+  git(cloneDir, 'config user.email "test@example.com"');
+  git(cloneDir, 'config user.name "Test User"');
+  return cloneDir;
+}
+
+async function cleanupTempDirWithRetry(dir: string, retries = 3): Promise<void> {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      await cleanupTempDir(dir);
+      return;
+    } catch (error) {
+      const code = (error as NodeJS.ErrnoException).code;
+      if ((code !== "ENOTEMPTY" && code !== "EBUSY") || attempt === retries) {
+        throw error;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 100 * (attempt + 1)));
+    }
+  }
+}
+
+// AC: @trait-error-guidance ac-1 — N/A: internal dispatch engine sync, not a user-facing CLI command.
+// AC: @trait-error-guidance ac-2 — N/A: internal dispatch engine sync, not a user-facing CLI command.
+// AC: @trait-error-guidance ac-3 — N/A: internal dispatch engine sync, not a user-facing CLI command.
+// AC: @trait-error-guidance ac-4 — N/A: internal dispatch engine sync, not a user-facing CLI command.
+// AC: @trait-error-guidance ac-5 — N/A: internal dispatch engine sync, not a user-facing CLI command.
+// AC: @trait-error-guidance ac-6 — N/A: internal dispatch engine sync, not a user-facing CLI command.
+
 describe("dispatch target branch sync", () => {
   let projectDir: string;
   let remoteDir: string;
@@ -204,8 +419,8 @@ describe("dispatch target branch sync", () => {
 
   afterEach(async () => {
     vi.restoreAllMocks();
-    if (projectDir) await cleanupTempDir(projectDir);
-    if (remoteDir) await cleanupTempDir(remoteDir);
+    if (projectDir) await cleanupTempDirWithRetry(projectDir);
+    if (remoteDir) await cleanupTempDirWithRetry(remoteDir);
   });
 
   // AC: @dispatch-remote-branch-sync ac-pull-target-on-start
@@ -245,6 +460,685 @@ describe("dispatch target branch sync", () => {
     const syncStatus = engine.getTargetSyncStatus();
     expect(syncStatus.enabled).toBe(true);
     expect(syncStatus.lastSyncTimestamp).toBeGreaterThan(0);
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-pull-target-on-start
+  // AC: @dispatch-remote-branch-sync ac-active-target-rebuilt-on-start
+  it("syncs non-base active integration targets from the workspace registry on engine start", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    await createTrackedBranch(
+      projectDir,
+      "plan/alpha",
+      "plan-alpha.txt",
+      "alpha\n",
+      "create plan alpha",
+    );
+    await saveWorkspaceRecord(projectDir, {
+      taskRef: "@01TASK00000000000000000011",
+      taskSlug: "task-plan-alpha",
+      targetBranch: "plan/alpha",
+    });
+
+    const localBefore = git(projectDir, "rev-parse plan/alpha");
+    const remoteTip = await pushRemoteCommit(
+      remoteDir,
+      "plan/alpha",
+      "plan-alpha.txt",
+      "alpha\nremote\n",
+      "remote alpha advance",
+    );
+    expect(localBefore).not.toBe(remoteTip);
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    expect(git(projectDir, "rev-parse plan/alpha")).toBe(remoteTip);
+    expect(new Set(engine.getTargetSyncStatus().activeTargets)).toEqual(
+      new Set(["dev", "plan/alpha"]),
+    );
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-pull-target-on-start
+  // AC: @dispatch-remote-branch-sync ac-pull-target-on-start-before-bootstrap
+  it("syncs each active integration target only once during engine start", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    await createTrackedBranch(
+      projectDir,
+      "plan/alpha",
+      "plan-alpha.txt",
+      "alpha\n",
+      "create plan alpha",
+    );
+    await saveWorkspaceRecord(projectDir, {
+      taskRef: "@01TASK00000000000000000011",
+      taskSlug: "task-plan-alpha",
+      targetBranch: "plan/alpha",
+    });
+
+    const remoteTip = await pushRemoteCommit(
+      remoteDir,
+      "plan/alpha",
+      "plan-alpha.txt",
+      "alpha\nremote\n",
+      "remote alpha advance",
+    );
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    const syncTargetSpy = vi.spyOn(engine as any, "_syncTarget");
+
+    await engine.start();
+
+    expect(git(projectDir, "rev-parse plan/alpha")).toBe(remoteTip);
+    const syncedTargets = syncTargetSpy.mock.calls.map(([branch]) => branch);
+    expect(syncedTargets).toEqual(["dev", "plan/alpha"]);
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-active-target-includes-base
+  it("includes the configured base branch in the active target set even without workspaces", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    expect(engine.getTargetSyncStatus().activeTargets).toEqual(["dev"]);
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-active-target-rebuilt-on-start
+  it("rebuilds the active target set from distinct non-closed workspace targets on start", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    vi.spyOn(dispatchWorkspaceRegistryModule, "loadDispatchWorkspaceRegistry").mockResolvedValue([
+      createWorkspaceRecord(projectDir, {
+        taskRef: "@01TASK00000000000000000001",
+        taskSlug: "task-plan-alpha",
+        targetBranch: "plan/alpha",
+      }),
+      createWorkspaceRecord(projectDir, {
+        taskRef: "@01TASK00000000000000000002",
+        taskSlug: "task-plan-beta",
+        targetBranch: "plan/beta",
+      }),
+      createWorkspaceRecord(projectDir, {
+        taskRef: "@01TASK00000000000000000003",
+        taskSlug: "task-plan-alpha-2",
+        targetBranch: "plan/alpha",
+      }),
+      createWorkspaceRecord(projectDir, {
+        taskRef: "@01TASK00000000000000000004",
+        taskSlug: "task-closed-plan-gamma",
+        targetBranch: "plan/gamma",
+        lifecycleState: "closed",
+      }),
+    ]);
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await (engine as any)._initTargetSync();
+
+    expect(new Set(engine.getTargetSyncStatus().activeTargets)).toEqual(
+      new Set(["dev", "plan/alpha", "plan/beta"]),
+    );
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-active-target-removed-on-cleanup
+  it("removes an orphaned integration target after cleanup but never removes the configured base branch", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+
+    const orphanedWorkspaceId = testUlid("WS", 1);
+    await saveWorkspaceRecord(projectDir, {
+      taskRef: "@01TASK00000000000000000005",
+      taskSlug: "task-plan-cleanup",
+      targetBranch: "plan/cleanup",
+      workspaceId: orphanedWorkspaceId,
+    });
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    expect(new Set(engine.getTargetSyncStatus().activeTargets)).toEqual(
+      new Set(["dev", "plan/cleanup"]),
+    );
+
+    await saveWorkspaceRecord(projectDir, {
+      taskRef: "@01TASK00000000000000000005",
+      taskSlug: "task-plan-cleanup",
+      targetBranch: "plan/cleanup",
+      lifecycleState: "closed",
+      workspaceId: orphanedWorkspaceId,
+    });
+
+    await (engine as any)._removeActiveTargetIfOrphaned("plan/cleanup");
+    await (engine as any)._removeActiveTargetIfOrphaned("dev");
+
+    expect(engine.getTargetSyncStatus().activeTargets).toEqual(["dev"]);
+
+    await engine.stop();
+  });
+
+  it("keeps active target resolution shared between startup bookkeeping and direct helper updates", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    await (engine as any)._addActiveTarget("plan/shared");
+
+    expect(new Set((engine as any)._resolveActiveTargets())).toEqual(new Set(["dev", "plan/shared"]));
+    expect(new Set(engine.getTargetSyncStatus().activeTargets)).toEqual(
+      new Set(["dev", "plan/shared"]),
+    );
+    expect((engine as any)._resolveBaseBranch()).toBe("dev");
+    expect((engine as any)._resolveBaseBranch("plan/shared")).toBe("plan/shared");
+    await engine.stop();
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-push-target-after-merge
+  it("pushes the workspace-specific integration target after merge without pushing the base branch", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+
+    git(projectDir, "checkout -b plan/alpha dev");
+    git(projectDir, "push -u origin plan/alpha");
+
+    await fs.writeFile(path.join(projectDir, "dev-only.txt"), "dev only\n", "utf-8");
+    git(projectDir, "checkout dev");
+    git(projectDir, "add dev-only.txt");
+    git(projectDir, 'commit -m "dev only commit"');
+    const localDevHead = git(projectDir, "rev-parse dev");
+    const remoteDevHeadBefore = git(projectDir, "rev-parse origin/dev");
+
+    git(projectDir, "checkout plan/alpha");
+    await fs.writeFile(path.join(projectDir, "plan-only.txt"), "plan only\n", "utf-8");
+    git(projectDir, "add plan-only.txt");
+    git(projectDir, 'commit -m "plan only commit"');
+    const localPlanHead = git(projectDir, "rev-parse plan/alpha");
+    git(projectDir, "checkout dev");
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    await (engine as any)._pushIntegrationTargetAsync("plan/alpha", "post-merge");
+
+    git(projectDir, "fetch origin");
+    expect(git(projectDir, "rev-parse origin/plan/alpha")).toBe(localPlanHead);
+    expect(git(projectDir, "rev-parse origin/dev")).toBe(remoteDevHeadBefore);
+    expect(git(projectDir, "rev-parse dev")).toBe(localDevHead);
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-concurrent-merge-same-target
+  // AC: @dispatch-remote-branch-sync ac-concurrent-merge-fix-cycle
+  it("rejects the stale second reviewer push on the same target and returns that task to fix cycle", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+
+    await createTrackedBranch(
+      projectDir,
+      "plan/alpha",
+      "plan-alpha.txt",
+      "alpha\n",
+      "create plan alpha",
+    );
+    await createTrackedBranch(
+      projectDir,
+      "dispatch/task/concurrent-merge-first/01ws1111111111111111111111",
+      "first-change.txt",
+      "first reviewer change\n",
+      "first reviewer branch",
+    );
+    const taskRef = "@concurrent-merge-second";
+    const reviewRef = "@concurrent-merge-review";
+    const taskTitle = "Concurrent merge stale reviewer";
+
+    kspec('plan add --title "Alpha Plan" --content "Plan alpha content" --slug alpha-plan', projectDir);
+    kspec('plan set @alpha-plan --branch "plan/alpha"', projectDir);
+    kspec(
+      `task add --title "${taskTitle}" --slug concurrent-merge-second --plan-ref @alpha-plan`,
+      projectDir,
+    );
+    kspec("task start @concurrent-merge-second", projectDir);
+
+    const workerWorkspace = await workspaceModule.provisionDispatchWorkspace({
+      projectDir,
+      taskRef,
+      taskStatus: "in_progress",
+      task: {
+        title: taskTitle,
+        slugs: ["concurrent-merge-second"],
+        plan_ref: "@alpha-plan",
+      },
+    });
+    await fs.writeFile(
+      path.join(workerWorkspace.cwd, "second-change.txt"),
+      "second reviewer change\n",
+      "utf-8",
+    );
+    git(workerWorkspace.cwd, "add second-change.txt");
+    git(workerWorkspace.cwd, 'commit -m "second reviewer branch"');
+    git(workerWorkspace.cwd, "push -u origin HEAD");
+
+    kspec("task submit @concurrent-merge-second", projectDir);
+    kspec(
+      'review add --title "Concurrent merge stale reviewer" --slug concurrent-merge-review --subject-type task --subject-ref @concurrent-merge-second',
+      projectDir,
+    );
+
+    const reviewerAgent = {
+      _ulid: testUlid("AGNT"),
+      id: "pr-reviewer",
+      name: "PR Reviewer",
+      capabilities: [],
+      tools: [],
+      conventions: [],
+      skills: [],
+      dispatch: [{ on: "task.pending_review" }],
+      adapter: "mock-acp",
+      auto_approve: false,
+      concurrency: { max_concurrent: 1 },
+    };
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    const originalPushIntegrationTarget = workspaceModule.pushIntegrationTarget;
+    let resolvePushResult!: (value: workspaceModule.PushIntegrationTargetResult) => void;
+    const pushResultPromise = new Promise<workspaceModule.PushIntegrationTargetResult>((resolve) => {
+      resolvePushResult = resolve;
+    });
+    const pushSpy = vi
+      .spyOn(workspaceModule, "pushIntegrationTarget")
+      .mockImplementation(async (...args: Parameters<typeof workspaceModule.pushIntegrationTarget>) => {
+        const result = await originalPushIntegrationTarget(...args);
+        resolvePushResult(result);
+        return result;
+      });
+
+    let reviewerOneDir: string | null = null;
+    try {
+      reviewerOneDir = await cloneRemote(remoteDir);
+
+      git(reviewerOneDir, "checkout -b plan/alpha origin/plan/alpha");
+      git(
+        reviewerOneDir,
+        'merge --no-ff origin/dispatch/task/concurrent-merge-first/01ws1111111111111111111111 -m "Merge first reviewer branch"',
+      );
+      const firstMergedHead = git(reviewerOneDir, "rev-parse HEAD");
+
+      git(reviewerOneDir, "push origin HEAD:plan/alpha");
+      git(projectDir, "checkout plan/alpha");
+      git(
+        projectDir,
+        `merge --no-ff ${workerWorkspace.metadata.canonicalBranch} -m "Merge second reviewer branch"`,
+      );
+      const secondMergedHead = git(projectDir, "rev-parse HEAD");
+
+      git(projectDir, "fetch origin plan/alpha");
+      expect(git(projectDir, "rev-parse origin/plan/alpha")).toBe(firstMergedHead);
+      expect(git(projectDir, "rev-parse origin/plan/alpha")).not.toBe(secondMergedHead);
+
+      vi.spyOn(invocationModule, "runInvocation").mockImplementation(async () => {
+        kspec(
+          "review verdict @concurrent-merge-review --decision request_changes --reviewer stale-reviewer",
+          projectDir,
+        );
+        return {
+          session: {} as any,
+          outcome: "success",
+          durationMs: 1,
+          turnCount: 1,
+        };
+      });
+
+      const task = kspecJson<any>("task get @concurrent-merge-second --json", projectDir);
+      const entry = {
+        agent: reviewerAgent,
+        change: {
+          taskRef,
+          fromStatus: "in_progress",
+          toStatus: "pending_review",
+          task,
+        },
+        retryCount: 0,
+        nextRetryAt: 0,
+        enqueuedAtMs: Date.now(),
+        sequence: 1,
+      };
+
+      await (engine as any)._spawnInvocation(reviewerAgent, entry);
+
+      const pushResult = await pushResultPromise;
+      expect(pushSpy).toHaveBeenCalledWith(projectDir, "plan/alpha", "origin");
+      expect(pushResult.pushed).toBe(false);
+      expect(pushResult.skipped).toBe(false);
+      expect(pushResult.error).toMatch(/non-fast-forward|\[rejected\]|fetch first/i);
+
+      const updatedTask = kspecJson<{ status: string; review_ref: string | null }>(
+        "task get @concurrent-merge-second --json",
+        projectDir,
+      );
+      expect(updatedTask.status).toBe("needs_work");
+      expect(updatedTask.review_ref).toBe(reviewRef);
+
+      const review = kspecJson<{ lifecycle_state: string; disposition: string }>(
+        "review get @concurrent-merge-review --json",
+        projectDir,
+      );
+      expect(review.lifecycle_state).toBe("closed");
+      expect(review.disposition).toBe("changes_requested");
+    } finally {
+      vi.restoreAllMocks();
+      await engine.stop();
+      if (reviewerOneDir) await cleanupTempDir(reviewerOneDir);
+    }
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-push-target-periodic
+  // AC: @dispatch-remote-branch-sync ac-push-target-periodic-retry
+  it("pushes every active integration target with local commits during periodic reconciliation", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+
+    git(projectDir, "checkout -b plan/alpha dev");
+    git(projectDir, "push -u origin plan/alpha");
+
+    await saveWorkspaceRecord(projectDir, {
+      taskRef: "@01TASK00000000000000000006",
+      taskSlug: "task-plan-alpha-push",
+      targetBranch: "plan/alpha",
+    });
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    git(projectDir, "checkout dev");
+    await fs.writeFile(path.join(projectDir, "dev-periodic.txt"), "dev periodic\n", "utf-8");
+    git(projectDir, "add dev-periodic.txt");
+    git(projectDir, 'commit -m "dev periodic commit"');
+    const localDevHead = git(projectDir, "rev-parse dev");
+
+    git(projectDir, "checkout plan/alpha");
+    await fs.writeFile(path.join(projectDir, "plan-periodic.txt"), "plan periodic\n", "utf-8");
+    git(projectDir, "add plan-periodic.txt");
+    git(projectDir, 'commit -m "plan periodic commit"');
+    const localPlanHead = git(projectDir, "rev-parse plan/alpha");
+    git(projectDir, "checkout dev");
+
+    await (engine as any)._reconcile();
+
+    git(projectDir, "fetch origin");
+    expect(git(projectDir, "rev-parse origin/dev")).toBe(localDevHead);
+    expect(git(projectDir, "rev-parse origin/plan/alpha")).toBe(localPlanHead);
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-push-target-periodic
+  it("does not degrade a clean active target during periodic reconciliation when another worktree owns the branch checkout", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+
+    git(projectDir, "checkout -b human-feature dev");
+
+    const occupiedWorktreeDir = await createTempDir("kspec-target-sync-occupied-");
+    execSync(`git worktree add --force "${occupiedWorktreeDir}" dev`, {
+      cwd: projectDir,
+      stdio: "pipe",
+      env: workspaceModule.buildDispatchGitEnv(),
+    });
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    const pushSpy = vi.spyOn(workspaceModule, "pushIntegrationTarget");
+
+    try {
+      pushSpy.mockClear();
+      (engine as any).dispatchRemote = "origin";
+      (engine as any)._activeTargets = new Set(["dev"]);
+
+      await (engine as any)._pushActiveTargetsAsync("periodic-sync");
+
+      expect(pushSpy).not.toHaveBeenCalled();
+      expect(engine.getTargetSyncStatus().degraded.active).toBe(false);
+    } finally {
+      execSync(`git worktree remove --force "${occupiedWorktreeDir}"`, {
+        cwd: projectDir,
+        stdio: "pipe",
+        env: workspaceModule.buildDispatchGitEnv(),
+      });
+      await cleanupTempDir(occupiedWorktreeDir);
+    }
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-target-push-serialization
+  it("skips a second push when the same integration target is already being pushed", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+
+    await fs.writeFile(path.join(projectDir, "dev-serialization.txt"), "serialization\n", "utf-8");
+    git(projectDir, "add dev-serialization.txt");
+    git(projectDir, 'commit -m "dev serialization commit"');
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    let releaseFirstPush: (() => void) | null = null;
+    const startedBranches: string[] = [];
+    vi.spyOn(workspaceModule, "resolveDispatchIntegrationMutationScope").mockImplementation(
+      async (_projectDir, branch) => ({
+        projectDir,
+        integrationBranch: branch,
+        currentBranch: "dev",
+        targetBranchCheckedOut: false,
+      }),
+    );
+    vi.spyOn(workspaceModule, "pushIntegrationTarget").mockImplementation(
+      async (_projectDir, branch) => {
+        startedBranches.push(branch);
+        await new Promise<void>((resolve) => {
+          releaseFirstPush = resolve;
+        });
+        return { pushed: true, skipped: false, error: null };
+      },
+    );
+
+    const firstPush = (engine as any)._pushIntegrationTargetAsync("dev", "post-merge");
+    await vi.waitFor(() => {
+      expect(startedBranches).toEqual(["dev"]);
+    });
+
+    expect((engine as any)._targetPushesInProgress.has("dev")).toBe(true);
+
+    await (engine as any)._pushIntegrationTargetAsync("dev", "periodic-sync");
+
+    expect(startedBranches).toEqual(["dev"]);
+
+    releaseFirstPush?.();
+    await firstPush;
+
+    expect((engine as any)._targetPushesInProgress.has("dev")).toBe(false);
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-target-push-cross-branch-concurrency
+  it("allows pushes to different integration targets to proceed concurrently", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+
+    git(projectDir, "checkout -b plan/alpha dev");
+    git(projectDir, "push -u origin plan/alpha");
+
+    git(projectDir, "checkout dev");
+    await fs.writeFile(path.join(projectDir, "dev-concurrency.txt"), "dev concurrency\n", "utf-8");
+    git(projectDir, "add dev-concurrency.txt");
+    git(projectDir, 'commit -m "dev concurrency commit"');
+
+    git(projectDir, "checkout plan/alpha");
+    await fs.writeFile(path.join(projectDir, "plan-concurrency.txt"), "plan concurrency\n", "utf-8");
+    git(projectDir, "add plan-concurrency.txt");
+    git(projectDir, 'commit -m "plan concurrency commit"');
+    git(projectDir, "checkout dev");
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    const releaseByBranch = new Map<string, () => void>();
+    const startedBranches: string[] = [];
+    vi.spyOn(workspaceModule, "resolveDispatchIntegrationMutationScope").mockImplementation(
+      async (_projectDir, branch) => ({
+        projectDir,
+        integrationBranch: branch,
+        currentBranch: "dev",
+        targetBranchCheckedOut: false,
+      }),
+    );
+    vi.spyOn(workspaceModule, "pushIntegrationTarget").mockImplementation(
+      async (_projectDir, branch) => {
+        startedBranches.push(branch);
+        await new Promise<void>((resolve) => {
+          releaseByBranch.set(branch, resolve);
+        });
+        return { pushed: true, skipped: false, error: null };
+      },
+    );
+
+    const devPush = (engine as any)._pushIntegrationTargetAsync("dev", "periodic-sync");
+    const planPush = (engine as any)._pushIntegrationTargetAsync("plan/alpha", "periodic-sync");
+    await vi.waitFor(() => {
+      expect(new Set(startedBranches)).toEqual(new Set(["dev", "plan/alpha"]));
+    });
+
+    expect((engine as any)._targetPushesInProgress.has("dev")).toBe(true);
+    expect((engine as any)._targetPushesInProgress.has("plan/alpha")).toBe(true);
+
+    releaseByBranch.get("dev")?.();
+    releaseByBranch.get("plan/alpha")?.();
+    await Promise.all([devPush, planPush]);
+
+    expect((engine as any)._targetPushesInProgress.size).toBe(0);
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-target-push-cross-branch-concurrency
+  it("allows pushes to different integration targets to proceed concurrently", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+
+    git(projectDir, "checkout -b plan/alpha dev");
+    git(projectDir, "push -u origin plan/alpha");
+
+    git(projectDir, "checkout dev");
+    await fs.writeFile(path.join(projectDir, "dev-concurrency.txt"), "dev concurrency\n", "utf-8");
+    git(projectDir, "add dev-concurrency.txt");
+    git(projectDir, 'commit -m "dev concurrency commit"');
+
+    git(projectDir, "checkout plan/alpha");
+    await fs.writeFile(path.join(projectDir, "plan-concurrency.txt"), "plan concurrency\n", "utf-8");
+    git(projectDir, "add plan-concurrency.txt");
+    git(projectDir, 'commit -m "plan concurrency commit"');
+    git(projectDir, "checkout dev");
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    const releaseByBranch = new Map<string, () => void>();
+    const startedBranches: string[] = [];
+    vi.spyOn(workspaceModule, "resolveDispatchIntegrationMutationScope").mockImplementation(
+      async (_projectDir, branch) => ({
+        projectDir,
+        integrationBranch: branch,
+        currentBranch: "dev",
+        targetBranchCheckedOut: false,
+      }),
+    );
+    vi.spyOn(workspaceModule, "pushIntegrationTarget").mockImplementation(
+      async (_projectDir, branch) => {
+        startedBranches.push(branch);
+        await new Promise<void>((resolve) => {
+          releaseByBranch.set(branch, resolve);
+        });
+        return { pushed: true, skipped: false, error: null };
+      },
+    );
+
+    const devPush = (engine as any)._pushIntegrationTargetAsync("dev", "periodic-sync");
+    const planPush = (engine as any)._pushIntegrationTargetAsync("plan/alpha", "periodic-sync");
+    await vi.waitFor(() => {
+      expect(new Set(startedBranches)).toEqual(new Set(["dev", "plan/alpha"]));
+    });
+
+    expect((engine as any)._targetPushesInProgress.has("dev")).toBe(true);
+    expect((engine as any)._targetPushesInProgress.has("plan/alpha")).toBe(true);
+
+    releaseByBranch.get("dev")?.();
+    releaseByBranch.get("plan/alpha")?.();
+    await Promise.all([devPush, planPush]);
+
+    expect((engine as any)._targetPushesInProgress.size).toBe(0);
 
     await engine.stop();
   });
@@ -330,7 +1224,7 @@ describe("dispatch target branch sync", () => {
         "second\n",
         "second sync commit",
       );
-      const result = await engine._syncTargetBranch();
+      const result = await engine._syncTarget();
 
       expect(result).toBe("synced");
       expect(git(projectDir, "branch --show-current")).toBe("dev");
@@ -482,14 +1376,14 @@ describe("dispatch target branch sync", () => {
     await engine.start();
 
     expect(git(projectDir, "rev-parse dev")).toBe(remoteTip);
-    const result = await engine._syncTargetBranch();
+    const result = await engine._syncTarget();
 
     expect(result).toBe("up_to_date");
     expect(git(projectDir, "branch --show-current")).toBe("human-feature");
     expect(git(projectDir, "rev-parse human-feature")).toBe(humanHeadBefore);
     expect(git(projectDir, "rev-parse dev")).toBe(remoteTip);
     expect(localDevBefore).not.toBe(remoteTip);
-    expect(engine.getDegradedState().active).toBe(false);
+    expect(engine.getDegradedState()).toEqual([]);
 
     await engine.stop();
   });
@@ -522,13 +1416,13 @@ describe("dispatch target branch sync", () => {
     await engine.start();
 
     expect(git(projectDir, "rev-parse dev")).toBe(remoteTip);
-    const result = await engine._syncTargetBranch();
+    const result = await engine._syncTarget();
 
     expect(result).toBe("up_to_date");
     expect(git(projectDir, "branch --show-current")).toBe("human-feature");
     expect(git(projectDir, "rev-parse human-feature")).toBe(humanHeadBefore);
     expect(git(projectDir, "rev-parse dev")).toBe(remoteTip);
-    expect(engine.getDegradedState().active).toBe(false);
+    expect(engine.getDegradedState()).toEqual([]);
 
     await engine.stop();
   });
@@ -568,13 +1462,13 @@ describe("dispatch target branch sync", () => {
       });
       await engine.start();
 
-      expect(engine.getDegradedState().active).toBe(true);
-      expect(engine.getDegradedState().reason).toContain("currently checked out");
+      expect(engine.getDegradedState()).toHaveLength(1);
+      expect(engine.getDegradedState()[0].reason).toContain("currently checked out");
       expect(git(projectDir, "branch --show-current")).toBe("human-feature");
       expect(git(projectDir, "rev-parse human-feature")).toBe(humanHeadBefore);
       expect(git(projectDir, "rev-parse dev")).toBe(localDevBefore);
       expect(git(foreignWorktreeDir, "rev-parse HEAD")).toBe(foreignHeadBefore);
-      expect(await engine._syncTargetBranch()).toBe("unsafe_target");
+      expect(await engine._syncTarget()).toBe("unsafe_target");
 
       await engine.stop();
     } finally {
@@ -612,7 +1506,7 @@ describe("dispatch target branch sync", () => {
         });
         await engine.start();
 
-        expect(await engine._syncTargetBranch()).toBe("up_to_date");
+        expect(["synced", "up_to_date"]).toContain(await engine._syncTarget());
         expect(git(sharedCheckoutDir, "rev-parse dev")).toBe(remoteTip);
         expect(git(sharedCheckoutDir, "branch --show-current")).toBe("dev");
         expect(git(sourceDir, "rev-parse HEAD")).toBe(sourceHeadBefore);
@@ -629,6 +1523,7 @@ describe("dispatch target branch sync", () => {
   });
 
   // AC: @dispatch-remote-branch-sync ac-pull-ff-only
+  // AC: @dispatch-remote-branch-sync ac-pull-no-merge-commits
   it("advances local branch only via fast-forward — no merge commits", async () => {
     ({ projectDir, remoteDir } = await setupProjectWithRemote());
     await setupProjectFiles(projectDir);
@@ -698,13 +1593,12 @@ describe("dispatch target branch sync", () => {
     }
 
     // Reconcile when sync is NOT stale — should NOT sync
-    // (engine.start() just synced, so _lastTargetSyncTimestamp is recent)
     await (engine as any)._reconcile();
     const tipAfterFreshReconcile = git(projectDir, "rev-parse dev");
     expect(tipAfterFreshReconcile).toBe(afterStartTip);
 
     // Make sync stale by backdating the timestamp beyond sync_interval
-    (engine as any)._lastTargetSyncTimestamp = Date.now() - 120_000;
+    (engine as any)._targetSyncTimestamps.set("dev", Date.now() - 120_000);
 
     // Reconcile when sync IS stale — should sync
     await (engine as any)._reconcile();
@@ -714,10 +1608,112 @@ describe("dispatch target branch sync", () => {
     await engine.stop();
   });
 
-  // AC: @dispatch-remote-branch-sync ac-pull-target-periodic-deferred
-  it("defers periodic sync when a reviewer invocation is active", async () => {
+  // AC: @dispatch-remote-branch-sync ac-per-target-staleness
+  // AC: @dispatch-remote-branch-sync ac-per-target-staleness-isolation
+  it("tracks staleness per target so syncing one branch does not refresh another", async () => {
     ({ projectDir, remoteDir } = await setupProjectWithRemote());
     await setupProjectFiles(projectDir);
+    await createTrackedBranch(
+      projectDir,
+      "plan/alpha",
+      "plan-alpha.txt",
+      "alpha\n",
+      "create plan alpha",
+    );
+    await saveWorkspaceRecord(projectDir, {
+      taskRef: "@01TASK00000000000000000017",
+      taskSlug: "task-plan-alpha-staleness",
+      targetBranch: "plan/alpha",
+    });
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    (engine as any)._targetSyncTimestamps.set("dev", Date.now() - 120_000);
+    (engine as any)._targetSyncTimestamps.set("plan/alpha", 0);
+
+    await pushRemoteCommit(
+      remoteDir,
+      "plan/alpha",
+      "plan-alpha.txt",
+      "alpha\nremote\n",
+      "remote alpha advance",
+    );
+
+    const beforeDevTimestamp = engine.getTargetSyncStatus().targetSyncTimestamps.dev;
+    expect((engine as any)._isTargetSyncStale("dev")).toBe(true);
+    expect((engine as any)._isTargetSyncStale("plan/alpha")).toBe(true);
+
+    await (engine as any)._syncTarget("plan/alpha");
+
+    const syncStatus = engine.getTargetSyncStatus();
+    expect(syncStatus.targetSyncTimestamps["plan/alpha"]).toBeGreaterThan(0);
+    expect(syncStatus.targetSyncTimestamps.dev).toBe(beforeDevTimestamp);
+    expect((engine as any)._isTargetSyncStale("dev")).toBe(true);
+    expect((engine as any)._isTargetSyncStale("plan/alpha")).toBe(false);
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-push-target-periodic
+  it("pushes non-base active integration targets during periodic reconciliation", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    await createTrackedBranch(
+      projectDir,
+      "plan/alpha",
+      "plan-alpha.txt",
+      "alpha\n",
+      "create plan alpha",
+    );
+    await saveWorkspaceRecord(projectDir, {
+      taskRef: "@01TASK00000000000000000012",
+      taskSlug: "task-plan-alpha-push",
+      targetBranch: "plan/alpha",
+    });
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    git(projectDir, "checkout plan/alpha");
+    await fs.writeFile(path.join(projectDir, "plan-alpha.txt"), "alpha\nlocal\n", "utf-8");
+    git(projectDir, "add plan-alpha.txt");
+    git(projectDir, 'commit -m "local alpha merge result"');
+    const localTip = git(projectDir, "rev-parse plan/alpha");
+    git(projectDir, "checkout dev");
+
+    await (engine as any)._reconcile();
+    git(projectDir, "fetch origin plan/alpha");
+
+    expect(git(projectDir, "rev-parse origin/plan/alpha")).toBe(localTip);
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-pull-target-periodic-deferred
+  it("defers periodic sync only for the reviewer target while syncing other stale targets", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    await createTrackedBranch(
+      projectDir,
+      "plan/alpha",
+      "plan-alpha.txt",
+      "alpha\n",
+      "create plan alpha",
+    );
+    await saveWorkspaceRecord(projectDir, {
+      taskRef: "@TASK123",
+      taskSlug: "task-review-alpha",
+      targetBranch: "plan/alpha",
+    });
     git(projectDir, "checkout dev");
 
     const engine = new DispatchEngine({
@@ -739,51 +1735,53 @@ describe("dispatch target branch sync", () => {
       startedAtMs: Date.now(),
     });
 
-    // Verify reviewer detection
-    expect((engine as any)._hasActiveReviewerInvocation()).toBe(true);
+    expect(await (engine as any)._activeReviewerTargets()).toEqual(new Set(["plan/alpha"]));
 
-    // Push new commit to remote
-    const cloneDir = await createTempDir("kspec-target-sync-clone-");
-    try {
-      git(cloneDir, `clone "${remoteDir}" .`);
-      git(cloneDir, 'config user.email "test@example.com"');
-      git(cloneDir, 'config user.name "Test User"');
-      git(cloneDir, "checkout dev");
-      await fs.writeFile(path.join(cloneDir, "deferred.txt"), "deferred\n", "utf-8");
-      git(cloneDir, "add deferred.txt");
-      git(cloneDir, 'commit -m "deferred commit"');
-      git(cloneDir, "push origin dev");
-    } finally {
-      await cleanupTempDir(cloneDir);
-    }
+    await pushRemoteCommit(remoteDir, "dev", "deferred-dev.txt", "deferred\n", "deferred dev");
+    const deferredPlanTip = await pushRemoteCommit(
+      remoteDir,
+      "plan/alpha",
+      "plan-alpha.txt",
+      "alpha\ndeferred\n",
+      "deferred alpha",
+    );
 
     const tipBefore = git(projectDir, "rev-parse dev");
+    const alphaBefore = git(projectDir, "rev-parse plan/alpha");
 
-    // Make sync stale so the only gate tested is the reviewer check
-    (engine as any)._lastTargetSyncTimestamp = Date.now() - 120_000;
+    // Make both targets stale so the only differentiator is reviewer activity.
+    (engine as any)._targetSyncTimestamps.set("dev", Date.now() - 120_000);
+    (engine as any)._targetSyncTimestamps.set("plan/alpha", Date.now() - 120_000);
 
-    // Trigger reconciliation — sync should be skipped because reviewer is active
     await (engine as any)._reconcile();
 
     const tipAfter = git(projectDir, "rev-parse dev");
-    expect(tipAfter).toBe(tipBefore); // Should NOT have synced
+    const alphaAfter = git(projectDir, "rev-parse plan/alpha");
+    expect(tipAfter).not.toBe(tipBefore);
+    expect(alphaAfter).toBe(alphaBefore);
 
-    // Remove the reviewer and reconcile again — now it should sync (still stale)
     invocationDetails.delete("test-reviewer-session");
-    expect((engine as any)._hasActiveReviewerInvocation()).toBe(false);
+    expect(await (engine as any)._activeReviewerTargets()).toEqual(new Set());
 
     await (engine as any)._reconcile();
 
-    const tipAfterSecondReconcile = git(projectDir, "rev-parse dev");
-    expect(tipAfterSecondReconcile).not.toBe(tipBefore);
+    const alphaAfterSecondReconcile = git(projectDir, "rev-parse plan/alpha");
+    expect(alphaAfterSecondReconcile).toBe(deferredPlanTip);
 
     await engine.stop();
   });
 
   // AC: @dispatch-remote-branch-sync ac-pull-target-before-provision
-  it("syncs target branch before workspace provisioning when stale", async () => {
+  it("evaluates pre-provision sync staleness per target branch", async () => {
     ({ projectDir, remoteDir } = await setupProjectWithRemote());
     await setupProjectFiles(projectDir);
+    await createTrackedBranch(
+      projectDir,
+      "plan/alpha",
+      "plan-alpha.txt",
+      "alpha\n",
+      "create plan alpha",
+    );
     git(projectDir, "checkout dev");
 
     const engine = new DispatchEngine({
@@ -793,18 +1791,127 @@ describe("dispatch target branch sync", () => {
     });
     await engine.start();
 
-    // Manually set lastSyncTimestamp to 0 to simulate staleness
-    (engine as any)._lastTargetSyncTimestamp = 0;
+    (engine as any)._targetSyncTimestamps.set("dev", 0);
+    (engine as any)._targetSyncTimestamps.set("plan/alpha", Date.now());
 
-    expect((engine as any)._isTargetSyncStale()).toBe(true);
+    expect((engine as any)._isTargetSyncStale("dev")).toBe(true);
+    expect((engine as any)._isTargetSyncStale("plan/alpha")).toBe(false);
 
-    // Set a recent timestamp — should not be stale
-    (engine as any)._lastTargetSyncTimestamp = Date.now();
-    expect((engine as any)._isTargetSyncStale()).toBe(false);
+    (engine as any)._targetSyncTimestamps.set("dev", Date.now());
+    (engine as any)._targetSyncTimestamps.set("plan/alpha", Date.now() - 120_000);
+    expect((engine as any)._isTargetSyncStale("dev")).toBe(false);
+    expect((engine as any)._isTargetSyncStale("plan/alpha")).toBe(true);
 
-    // Set an old timestamp — should be stale
-    (engine as any)._lastTargetSyncTimestamp = Date.now() - 120_000;
-    expect((engine as any)._isTargetSyncStale()).toBe(true);
+    await engine.stop();
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-partial-sync-continues
+  it("continues syncing remaining targets when one target sync throws during iteration", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    await createTrackedBranch(
+      projectDir,
+      "plan/alpha",
+      "plan-alpha.txt",
+      "alpha\n",
+      "create plan alpha",
+    );
+    await saveWorkspaceRecord(projectDir, {
+      taskRef: "@01TASK00000000000000000018",
+      taskSlug: "task-plan-alpha-partial",
+      targetBranch: "plan/alpha",
+    });
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    await pushRemoteCommit(remoteDir, "dev", "partial-dev.txt", "partial\n", "partial dev");
+    (engine as any)._targetSyncTimestamps.set("dev", Date.now() - 120_000);
+    (engine as any)._targetSyncTimestamps.set("plan/alpha", Date.now() - 120_000);
+
+    const originalSyncTarget = (engine as any)._syncTarget.bind(engine);
+    const syncSpy = vi
+      .spyOn(engine as any, "_syncTarget")
+      .mockImplementation(async (branch: string) => {
+        if (branch === "plan/alpha") {
+          throw new Error("simulated target failure");
+        }
+        return await originalSyncTarget(branch);
+      });
+
+    const warnSpy = vi.spyOn(console, "warn");
+    const devBefore = git(projectDir, "rev-parse dev");
+
+    await (engine as any)._syncAllActiveTargets({ staleOnly: true });
+
+    const devAfter = git(projectDir, "rev-parse dev");
+    expect(syncSpy).toHaveBeenCalledWith("dev");
+    expect(syncSpy).toHaveBeenCalledWith("plan/alpha");
+    expect(devAfter).not.toBe(devBefore);
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringContaining("Target sync failed for plan/alpha; continuing"),
+    );
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-partial-sync-scoped-degradation
+  // AC: @dispatch-remote-branch-sync ac-divergence-scoped-to-target
+  it("keeps degradation scoped to the failed target when a later target sync succeeds", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    await createTrackedBranch(
+      projectDir,
+      "plan/alpha",
+      "plan-alpha.txt",
+      "alpha\n",
+      "create plan alpha",
+    );
+    await saveWorkspaceRecord(projectDir, {
+      taskRef: "@01TASK00000000000000000019",
+      taskSlug: "task-plan-alpha-degraded-scope",
+      targetBranch: "plan/alpha",
+    });
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    await fs.writeFile(path.join(projectDir, "dev-local.txt"), "local divergence\n", "utf-8");
+    git(projectDir, "add dev-local.txt");
+    git(projectDir, 'commit -m "local divergence on dev"');
+    await pushRemoteCommit(remoteDir, "dev", "dev-remote.txt", "remote divergence\n", "remote divergence on dev");
+
+    const planAlphaBefore = git(projectDir, "rev-parse plan/alpha");
+    const planAlphaRemoteHead = await pushRemoteCommit(
+      remoteDir,
+      "plan/alpha",
+      "plan-alpha-remote.txt",
+      "plan alpha remote\n",
+      "remote update on plan alpha",
+    );
+
+    (engine as any)._targetSyncTimestamps.set("dev", Date.now() - 120_000);
+    (engine as any)._targetSyncTimestamps.set("plan/alpha", Date.now() - 120_000);
+
+    await (engine as any)._syncAllActiveTargets({ staleOnly: true });
+
+    const syncStatus = engine.getTargetSyncStatus();
+    const degradedTargets = syncStatus.degradedTargets.map((target) => target.branch);
+    expect(degradedTargets).toEqual(["dev"]);
+    expect(syncStatus.degraded.active).toBe(true);
+    expect(syncStatus.degraded.reason).toContain("dev");
+    expect(git(projectDir, "rev-parse plan/alpha")).toBe(planAlphaRemoteHead);
+    expect(git(projectDir, "rev-parse plan/alpha")).not.toBe(planAlphaBefore);
+    expect(syncStatus.targetSyncTimestamps["plan/alpha"]).toBeGreaterThan(0);
+    expect(syncStatus.targetSyncTimestamps.dev ?? 0).toBeLessThan(syncStatus.targetSyncTimestamps["plan/alpha"]);
 
     await engine.stop();
   });
@@ -826,7 +1933,7 @@ describe("dispatch target branch sync", () => {
     git(projectDir, "remote set-url origin /nonexistent/path");
 
     const warnSpy = vi.spyOn(console, "warn");
-    const result = await engine._syncTargetBranch();
+    const result = await engine._syncTarget();
 
     expect(result).toBe("transient_failure");
     expect(warnSpy).toHaveBeenCalledWith(
@@ -858,7 +1965,7 @@ describe("dispatch target branch sync", () => {
 
     await pushRemoteCommit(remoteDir, "dev", "timeout-check.txt", "timeout\n", "timeout check");
 
-    const result = await engine._syncTargetBranch();
+    const result = await engine._syncTarget();
 
     expect(result).toBe("synced");
     expect(targetGitSpy).toHaveBeenNthCalledWith(1, projectDir, "dev", ["fetch", "origin", "dev"], {
@@ -889,7 +1996,7 @@ describe("dispatch target branch sync", () => {
     await engine.start();
 
     // Simulate previous failures
-    (engine as any)._consecutiveTransientFailures = 3;
+    (engine as any)._consecutiveSyncFailures.set("dev", 3);
 
     // Push a new commit and sync successfully
     const cloneDir = await createTempDir("kspec-target-sync-clone-");
@@ -906,7 +2013,7 @@ describe("dispatch target branch sync", () => {
       await cleanupTempDir(cloneDir);
     }
 
-    const result = await engine._syncTargetBranch();
+    const result = await engine._syncTarget();
     expect(result).toBe("synced");
     expect(engine.getTargetSyncStatus().consecutiveFailures).toBe(0);
 
@@ -1063,7 +2170,7 @@ describe("dispatch target branch sync", () => {
       await cleanupTempDir(cloneDir);
     }
 
-    const result = await engine._syncTargetBranch();
+    const result = await engine._syncTarget();
     expect(result).toBe("diverged");
 
     await engine.stop();
@@ -1082,7 +2189,7 @@ describe("dispatch target branch sync", () => {
     await engine.start();
 
     // Sync again without any changes — should be up_to_date
-    const result = await engine._syncTargetBranch();
+    const result = await engine._syncTarget();
     expect(result === "up_to_date").toBe(true);
 
     await engine.stop();
@@ -1101,12 +2208,12 @@ describe("dispatch target branch sync", () => {
     await engine.start();
 
     // Simulate a sync already running
-    (engine as any)._targetSyncRunning = true;
-    const result = await engine._syncTargetBranch();
+    (engine as any)._targetSyncRunning.add("dev");
+    const result = await engine._syncTarget();
     expect(result).toBe("skipped");
 
     // Clear the guard
-    (engine as any)._targetSyncRunning = false;
+    (engine as any)._targetSyncRunning.delete("dev");
 
     await engine.stop();
   });
@@ -1125,7 +2232,7 @@ describe("dispatch target branch sync", () => {
 
     // Disable sync
     (engine as any)._remoteSyncEnabled = false;
-    const result = await engine._syncTargetBranch();
+    const result = await engine._syncTarget();
     expect(result).toBe("skipped");
 
     await engine.stop();
