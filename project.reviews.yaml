@@ -108551,3 +108551,29 @@ reviews:
     created_at: 2026-04-03T05:07:26.582Z
     updated_at: 2026-04-03T05:14:00.935Z
     notes: []
+  - _ulid: 01KN8W74NGSZ3BNSR2RZ704CF3
+    slugs: []
+    title: Review task-sync-pull-ac-updates
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KN8W74NFW4NR1BHXXMWTQ7AY
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-03T05:14:24.816Z
+    examined_commit: fb3342db29d0f52d03646cc5ec095e7d9bd0c310
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KN8T199W5GC75VERHAPEA62B"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-03T05:14:24.816Z
+    updated_at: null
+    notes: []

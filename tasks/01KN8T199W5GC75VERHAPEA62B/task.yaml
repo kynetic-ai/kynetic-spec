@@ -123,6 +123,7 @@ tags:
   - dispatch
   - sync
 vcs_refs: []
+review_ref: "@01KN8W74NGSZ3BNSR2RZ704CF3"
 submission_linkage:
   review_url: null
   branch: dev
@@ -173,6 +174,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-04-03T05:10:53.602Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KN8W74NGSZ3BNSR2RZ704CF3"
+        previous: null
+    command: review-link
+    timestamp: 2026-04-03T05:14:27.822Z
 created_at: 2026-04-03T04:36:15.804Z
 started_at: 2026-04-03T05:07:41.990Z
 submitted_at: 2026-04-03T05:10:53.601Z
