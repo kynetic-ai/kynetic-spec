@@ -111408,6 +111408,12 @@ reviews:
         payload:
           thread_ulid: 01KNAAKCRS5TSKZ7M4EPSM11C7
         timestamp: 2026-04-03T18:58:26.939Z
+      - _ulid: 01KNABC47D43REZ7MQ3H5F98KA
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNAAB5AYCJTZDQBQX28W02V0
+        timestamp: 2026-04-03T18:58:31.277Z
     examined_commit: 16d33b86826b3e73d168c92bd320eaf0f959da65
     external_links: []
     lifecycle_state: closed
@@ -111452,6 +111458,14 @@ reviews:
               integration target changed the same coverage area, so the branch cannot be merged as
               submitted without a rebase/reconciliation on the worker branch.
             created_at: 2026-04-03T18:40:31.071Z
+          - _ulid: 01KNABC2VFQ11HHFXVA8W6EKSK
+            author: Jacob Chapel
+            body: Fixed in merge commit bede09416. I reconciled tests/dispatch-target-sync.test.ts against the
+              current integration branch by preserving the per-target degraded-state coverage and
+              bringing forward the newer target-push regression cases. Focused verification now
+              passes with npm test -- dispatch-target-sync dispatch-degraded-state
+              daemon-api/agent-dispatch (11 suites, 72 tests).
+            created_at: 2026-04-03T18:58:29.871Z
         kind: blocker
       - _ulid: 01KNAAKCRS5TSKZ7M4EPSM11C7
         entries:
@@ -111488,7 +111502,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-03T18:45:14.966Z
     created_at: 2026-04-03T18:38:48.450Z
-    updated_at: 2026-04-03T18:58:25.484Z
+    updated_at: 2026-04-03T18:58:29.871Z
     notes: []
   - _ulid: 01KNAB3TB95J1XB2EJJ1DVSNR7
     slugs: []
