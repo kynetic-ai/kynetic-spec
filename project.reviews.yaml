@@ -111670,7 +111670,17 @@ reviews:
     slugs: []
     title: Review task-impl-degraded-state (cycle 7)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm run typecheck passed.
+        name: typecheck
+        required: true
+        runner: tsc
+        created_at: 2026-04-03T19:08:29.909Z
+        completed_at: 2026-04-03T19:08:29.909Z
     events:
       - _ulid: 01KNABJ9MAZC0AVBW06PZTGP6D
         actor: Jacob Chapel
@@ -111692,6 +111702,13 @@ reviews:
           kind: nit
           thread_ulid: 01KNABYAKCV3HPDZAQ8CGSTPA7
         timestamp: 2026-04-03T19:08:28.393Z
+      - _ulid: 01KNABYDN355WV35Q2KMR26C9W
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: typecheck
+        timestamp: 2026-04-03T19:08:30.755Z
     examined_commit: bede094168c08241eafd28456e192e13359a01a6
     external_links: []
     lifecycle_state: open
@@ -111735,5 +111752,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-03T19:01:53.418Z
-    updated_at: 2026-04-03T19:08:27.628Z
+    updated_at: 2026-04-03T19:08:29.909Z
     notes: []
