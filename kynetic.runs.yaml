@@ -21573,7 +21573,7 @@ runs:
     started_at: 2026-04-03T05:48:24.748Z
   - _ulid: 01KN8Z1S8WCEG2BKHVGEE52CJQ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -21594,7 +21594,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-03T06:04:30.456Z
-        completed_at: 2026-04-03T06:04:30.456Z
+        completed_at: 2026-04-03T06:04:57.292Z
+        notes: "High-confidence reflection: success was the anchored fix-cycle review, which let the worker
+          confirm both blockers quickly and patch the exact runtime call sites. Friction was a
+          systemic refactor gap: unified state/bookkeeping can look complete while runtime callers
+          still use the old single-target behavior if tests only assert helper/state exposure.
+          Baseline search across observations/inbox/tasks found adjacent review and workflow items
+          but nothing tracking this specific runtime-vs-bookkeeping verification gap, so I captured
+          one friction observation only."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-03T06:04:57.292Z
+        completed_at: 2026-04-03T06:04:57.292Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-03T06:03:55.036Z
