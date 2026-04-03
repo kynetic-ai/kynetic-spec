@@ -3235,7 +3235,7 @@ export class DispatchEngine {
   /**
    * Classify a divergence based on the git merge --ff-only error output.
    * Distinguishes "local has unpushed merges" from "remote history was rewritten".
-   * AC: @dispatch-remote-branch-sync ac-divergence-log-classification
+   * AC: @dispatch-remote-branch-sync ac-divergence-log-guidance
    */
   private async _classifyDivergence(_mergeOutput: string, branch: string): Promise<string> {
     const remote = this._syncRemote;
@@ -3290,7 +3290,7 @@ export class DispatchEngine {
   /**
    * Enter degraded state with a descriptive reason.
    * AC: @dispatch-remote-branch-sync ac-divergence-enters-degraded
-   * AC: @dispatch-remote-branch-sync ac-divergence-log-classification
+   * AC: @dispatch-remote-branch-sync ac-divergence-log-guidance
    * AC: @dispatch-remote-branch-sync ac-degraded-status-broadcast
    */
   private _enterDegradedState(reason: string): void {

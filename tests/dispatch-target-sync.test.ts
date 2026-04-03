@@ -337,7 +337,6 @@ async function createTrackedBranch(
     git(projectDir, `checkout ${previousBranch}`);
   }
 }
-
 async function cleanupTempDirWithRetry(dir: string, retries = 3): Promise<void> {
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
@@ -454,7 +453,6 @@ describe("dispatch target branch sync", () => {
 
     await engine.stop();
   });
-
   // AC: @dispatch-remote-branch-sync ac-active-target-includes-base
   it("includes the configured base branch in the active target set even without workspaces", async () => {
     ({ projectDir, remoteDir } = await setupProjectWithRemote());
