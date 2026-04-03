@@ -107898,9 +107898,25 @@ reviews:
           status: pass
           name: Task standalone-ness
         timestamp: 2026-04-03T04:26:35.898Z
+      - _ulid: 01KN8SFRZHR700GBH09EY1EG3A
+        actor: codex@openai
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-03T04:26:42.033Z
+      - _ulid: 01KN8SFRZHQV0YFEN1XXMHF66A
+        actor: codex@openai
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-03T04:26:42.033Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -108015,7 +108031,14 @@ reviews:
               readability.
             created_at: 2026-04-03T04:26:13.718Z
         kind: question
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai
+        role: reviewer
+        created_at: 2026-04-03T04:26:42.033Z
     created_at: 2026-04-03T04:25:03.273Z
-    updated_at: 2026-04-03T04:26:31.709Z
+    updated_at: 2026-04-03T04:26:42.033Z
     notes: []
