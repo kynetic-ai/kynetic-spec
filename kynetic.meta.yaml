@@ -11832,6 +11832,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-03T05:49:19.343Z
+  - _ulid: 01KN8Z3NCBX658XC33N4YSHGDR
+    type: friction
+    content: "Unified dispatch state can still ship as bookkeeping-only if the runtime callers are not
+      exercised: this fix cycle added _activeTargets and status exposure, but the actual push/pull
+      call sites remained single-branch until review traced every
+      _syncTargetBranch/_pushIntegrationTargetAsync caller. The repeatable gap is that refactors
+      replacing duplicate state need at least one behavior test per runtime entrypoint, not just
+      helper/state tests."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-03T06:04:56.587Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
