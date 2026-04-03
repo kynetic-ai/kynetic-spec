@@ -18,8 +18,12 @@ description: >-
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Reviewed and merged to dev. Stabilized the same-process lock reclaim regression test
+  by asserting waiter blocking/no warning behavior instead of scheduler-sensitive overlap timing.
+  Verified with kspec review @01KNAC4K, full npm test -- --fresh pass, and 10 fresh reruns of
+  tests/file-lock.test.ts.
 depends_on: []
 context: []
 priority: 2
@@ -78,8 +82,25 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-03T19:11:55.452Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Reviewed and merged to dev. Stabilized the same-process lock reclaim regression test by
+          asserting waiter blocking/no warning behavior instead of scheduler-sensitive overlap
+          timing. Verified with kspec review @01KNAC4K, full npm test -- --fresh pass, and 10 fresh
+          reruns of tests/file-lock.test.ts.
+        previous: null
+      completed_at:
+        new: 2026-04-03T19:24:22.391Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-03T19:24:22.414Z
 created_at: 2026-04-03T19:01:31.248Z
 started_at: 2026-04-03T19:02:39.100Z
 submitted_at: 2026-04-03T19:08:41.959Z
+completed_at: 2026-04-03T19:24:22.391Z
 todos: []
 automation: eligible
