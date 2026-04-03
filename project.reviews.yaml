@@ -111420,6 +111420,12 @@ reviews:
         payload:
           thread_ulid: 01KNAAB16Z07ZMT1Z1R7DB86VN
         timestamp: 2026-04-03T18:58:35.452Z
+      - _ulid: 01KNABCTYT91EC6W09KQG7HP36
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNAAB16Z07ZMT1Z1R7DB86VN
+        timestamp: 2026-04-03T18:58:54.554Z
     examined_commit: 16d33b86826b3e73d168c92bd320eaf0f959da65
     external_links: []
     lifecycle_state: closed
@@ -111456,6 +111462,8 @@ reviews:
               passed), so this branch has a clean lineage back to the manual merge target.
             created_at: 2026-04-03T18:58:34.048Z
         kind: blocker
+        resolved_at: 2026-04-03T18:58:53.165Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KNAAB5AYCJTZDQBQX28W02V0
         anchor:
           type: code
@@ -111516,7 +111524,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-03T18:45:14.966Z
     created_at: 2026-04-03T18:38:48.450Z
-    updated_at: 2026-04-03T18:58:34.048Z
+    updated_at: 2026-04-03T18:58:53.165Z
     notes: []
   - _ulid: 01KNAB3TB95J1XB2EJJ1DVSNR7
     slugs: []
