@@ -112782,6 +112782,17 @@ reviews:
         runner: npm
         created_at: 2026-04-03T22:56:31.867Z
         completed_at: 2026-04-03T22:56:31.867Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Exited with warnings only (code 6) from pre-existing repo backlog; no task-specific
+          validation blockers found.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-03T22:56:42.914Z
+        completed_at: 2026-04-03T22:56:42.914Z
     events:
       - _ulid: 01KNARRMPXD38SXXQJK2XGKGNX
         actor: Jacob Chapel
@@ -112803,6 +112814,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-03T22:56:32.618Z
+      - _ulid: 01KNAS09M41BQB56P26ASGV9RK
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-03T22:56:43.652Z
     examined_commit: f2ad95bd4af80211df842526f4da0ba97d08820b
     external_links: []
     lifecycle_state: open
@@ -112815,5 +112833,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-03T22:52:32.862Z
-    updated_at: 2026-04-03T22:56:31.867Z
+    updated_at: 2026-04-03T22:56:42.914Z
     notes: []
