@@ -111685,6 +111685,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-03T19:02:35.044Z
+      - _ulid: 01KNABYBB9T0Z03E655XE7NB2E
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNABYAKCV3HPDZAQ8CGSTPA7
+        timestamp: 2026-04-03T19:08:28.393Z
     examined_commit: bede094168c08241eafd28456e192e13359a01a6
     external_links: []
     lifecycle_state: open
@@ -111694,8 +111701,39 @@ reviews:
       content_hash: ""
       ref: "@01KN8T1APSFZ9NRNP7TKT957GD"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNABYAKCV3HPDZAQ8CGSTPA7
+        entries:
+          - _ulid: 01KNABYAKCQPJXAF6QZK255F9K
+            author: Jacob Chapel
+            body: >-
+              Review evidence:
+
+              Files read: src/agent-runtime/dispatch.ts, src/agent-runtime/workspace.ts,
+              packages/daemon/src/routes/agent-dispatch.ts, tests/dispatch-degraded-state.test.ts,
+              tests/dispatch-target-sync.test.ts, tests/daemon-api/agent-dispatch.test.ts
+
+              Commands run: kspec task get @01KN8T1APSFZ9NRNP7TKT957GD; kspec item get
+              @dispatch-remote-branch-sync; kspec review get @01KNAA8142F92W0N0WWV185DDW; git diff
+              --stat
+              0f27e912cc2076a5367431add28b09da7fddf3e8...bede094168c08241eafd28456e192e13359a01a6;
+              git diff ... on changed files; rg -n "AC: @dispatch-remote-branch-sync|AC: @trait-"
+              tests/...; kspec validate; npm run typecheck; npm test -- dispatch-target-sync
+              dispatch-degraded-state daemon-api/agent-dispatch; npm test; git merge-tree $(git
+              merge-base plan/plan-workspace-scoped-integration-target-sync/01kn8bx4
+              dispatch/task/task-impl-degraded-state/01kn8t1a)
+              plan/plan-workspace-scoped-integration-target-sync/01kn8bx4
+              dispatch/task/task-impl-degraded-state/01kn8t1a
+
+              Claims verified: per-target degraded gating in the drain loop, branch-scoped
+              sync-state broadcasts, per-target status API serialization, recovery-triggered
+              re-drain, and clean mergeability into the current integration target.
+
+              Categories searched: correctness, edge cases, error handling, test quality,
+              integration. No blocking findings.
+            created_at: 2026-04-03T19:08:27.628Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-03T19:01:53.418Z
-    updated_at: 2026-04-03T19:02:34.308Z
+    updated_at: 2026-04-03T19:08:27.628Z
     notes: []
