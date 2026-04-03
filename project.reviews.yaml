@@ -110896,6 +110896,12 @@ reviews:
         payload:
           thread_ulid: 01KNA8YSR2ZD8JCHKF8MCB87AC
         timestamp: 2026-04-03T18:26:01.159Z
+      - _ulid: 01KNA9GP0SRWA0CE95HS71EGDW
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNA8YVXN04CG4AFJQ92YMPT3
+        timestamp: 2026-04-03T18:26:03.417Z
     examined_commit: a1a65a28c894724d0ec94cb72ffefec6c5f32dfd
     external_links: []
     lifecycle_state: closed
@@ -110956,6 +110962,12 @@ reviews:
               anywhere in the changed tests. Without the explicit annotation, the coverage tooling
               cannot tell that this branch is intended to prove branch-scoped degradation behavior.
             created_at: 2026-04-03T18:16:19.637Z
+          - _ulid: 01KNA9GN8QQZ7ACGJ9798AY1GA
+            author: Jacob Chapel
+            body: Fixed in 16d33b868. The scoped-degradation sync test now carries an explicit
+              ac-divergence-scoped-to-target annotation so the claimed branch-scoped behavior is
+              machine-visible to coverage tooling.
+            created_at: 2026-04-03T18:26:02.646Z
         kind: blocker
       - _ulid: 01KNA8YY3JN69JYMD3YR4DREVH
         anchor:
@@ -111001,5 +111013,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-03T18:16:39.932Z
     created_at: 2026-04-03T18:11:35.783Z
-    updated_at: 2026-04-03T18:26:00.393Z
+    updated_at: 2026-04-03T18:26:02.646Z
     notes: []
