@@ -24603,7 +24603,7 @@
   type: task
   spec_ref: "@dispatch-remote-branch-sync"
   plan_ref: "@plan-workspace-scoped-integration-target-sync"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-impl-pull-path"
@@ -24617,7 +24617,7 @@
   notes_count: 11
   todos_count: 0
   created_at: 2026-04-03T04:36:17.241Z
-  started_at: 2026-04-03T18:08:41.389Z
+  started_at: 2026-04-03T18:19:01.010Z
   submitted_at: 2026-04-03T18:09:06.516Z
   automation: eligible
 - _ulid: 01KN8T1AZ0RSE7SA5SBK7AG5KD
