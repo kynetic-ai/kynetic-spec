@@ -453,6 +453,49 @@ describe("dispatch target branch sync", () => {
 
     await engine.stop();
   });
+
+  // AC: @dispatch-remote-branch-sync ac-pull-target-on-start
+  // AC: @dispatch-remote-branch-sync ac-pull-target-on-start-before-bootstrap
+  it("syncs each active integration target only once during engine start", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    await createTrackedBranch(
+      projectDir,
+      "plan/alpha",
+      "plan-alpha.txt",
+      "alpha\n",
+      "create plan alpha",
+    );
+    await saveWorkspaceRecord(projectDir, {
+      taskRef: "@01TASK00000000000000000011",
+      taskSlug: "task-plan-alpha",
+      targetBranch: "plan/alpha",
+    });
+
+    const remoteTip = await pushRemoteCommit(
+      remoteDir,
+      "plan/alpha",
+      "plan-alpha.txt",
+      "alpha\nremote\n",
+      "remote alpha advance",
+    );
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    const syncTargetSpy = vi.spyOn(engine as any, "_syncTarget");
+
+    await engine.start();
+
+    expect(git(projectDir, "rev-parse plan/alpha")).toBe(remoteTip);
+    const syncedTargets = syncTargetSpy.mock.calls.map(([branch]) => branch);
+    expect(syncedTargets).toEqual(["dev", "plan/alpha"]);
+
+    await engine.stop();
+  });
+
   // AC: @dispatch-remote-branch-sync ac-active-target-includes-base
   it("includes the configured base branch in the active target set even without workspaces", async () => {
     ({ projectDir, remoteDir } = await setupProjectWithRemote());

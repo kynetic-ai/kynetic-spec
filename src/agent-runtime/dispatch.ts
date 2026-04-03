@@ -3138,7 +3138,6 @@ export class DispatchEngine {
 
       // AC: @dispatch-remote-branch-sync ac-pull-target-on-start — sync before bootstrap
       await this._syncAllActiveTargets();
-      await this._syncAllActiveTargets();
     } catch (err) {
       console.error("[dispatch] Failed to initialize target sync:", err);
       // Non-fatal: engine continues without sync
