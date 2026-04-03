@@ -111254,3 +111254,29 @@ reviews:
     created_at: 2026-04-03T18:28:29.205Z
     updated_at: 2026-04-03T18:35:55.306Z
     notes: []
+  - _ulid: 01KNAA8142F92W0N0WWV185DDW
+    slugs: []
+    title: Review task-impl-degraded-state (cycle 6)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KNAA8142E4ZC1P7GFECF21CW
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-03T18:38:48.450Z
+    examined_commit: 16d33b86826b3e73d168c92bd320eaf0f959da65
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KN8T1APSFZ9NRNP7TKT957GD"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-03T18:38:48.450Z
+    updated_at: null
+    notes: []
