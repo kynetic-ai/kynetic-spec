@@ -24528,7 +24528,7 @@
   type: task
   spec_ref: "@dispatch-remote-branch-sync"
   plan_ref: "@plan-workspace-scoped-integration-target-sync"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-sync-description-rewrite"
@@ -24543,7 +24543,7 @@
   todos_count: 0
   created_at: 2026-04-03T04:36:16.352Z
   started_at: 2026-04-03T05:54:35.031Z
-  submitted_at: 2026-04-03T05:35:49.605Z
+  submitted_at: 2026-04-03T06:03:07.288Z
   automation: eligible
 - _ulid: 01KN8T1A51JFRMW4F8W31KJ907
   slugs:
