@@ -1289,6 +1289,7 @@ describe("dispatch target branch sync", () => {
   });
 
   // AC: @dispatch-remote-branch-sync ac-partial-sync-scoped-degradation
+  // AC: @dispatch-remote-branch-sync ac-divergence-scoped-to-target
   it("keeps degradation scoped to the failed target when a later target sync succeeds", async () => {
     ({ projectDir, remoteDir } = await setupProjectWithRemote());
     await setupProjectFiles(projectDir);

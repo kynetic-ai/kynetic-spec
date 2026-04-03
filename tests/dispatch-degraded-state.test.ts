@@ -3,6 +3,8 @@ import * as fs from "node:fs/promises";
 import { execSync } from "node:child_process";
 import * as path from "node:path";
 import * as invocationModule from "../src/agent-runtime/invocation.js";
+import * as bootstrapModule from "../src/agent-runtime/bootstrap.js";
+import * as workspaceModule from "../src/agent-runtime/workspace.js";
 import { DispatchEngine, type SyncStateEvent } from "../src/agent-runtime/dispatch.js";
 import { cleanupTempDir, createTempDir, initGitRepo } from "./helpers/cli.js";
 
@@ -193,6 +195,8 @@ describe("dispatch engine degraded state", () => {
   });
 
   // AC: @dispatch-remote-branch-sync ac-divergence-log-classification
+  // AC: @dispatch-remote-branch-sync ac-divergence-log-target
+  // AC: @dispatch-remote-branch-sync ac-divergence-log-resolution
   it("distinguishes unpushed merges from remote rewrite in degraded reason", async () => {
     ({ projectDir, remoteDir } = await setupProjectWithRemote());
     await setupProjectFiles(projectDir);
@@ -211,6 +215,7 @@ describe("dispatch engine degraded state", () => {
 
     const degraded1 = engine.getDegradedState();
     expect(degraded1).toHaveLength(1);
+    expect(degraded1[0].reason).toContain("dev");
     expect(degraded1[0].reason).toContain("unpushed merges");
     expect(degraded1[0].reason).toContain("git push");
 
@@ -218,6 +223,8 @@ describe("dispatch engine degraded state", () => {
   });
 
   // AC: @dispatch-remote-branch-sync ac-divergence-log-classification (remote rewrite case)
+  // AC: @dispatch-remote-branch-sync ac-divergence-log-target
+  // AC: @dispatch-remote-branch-sync ac-divergence-log-resolution
   it("identifies remote history rewrite in degraded guidance", async () => {
     ({ projectDir, remoteDir } = await setupProjectWithRemote());
     await setupProjectFiles(projectDir);
@@ -238,6 +245,7 @@ describe("dispatch engine degraded state", () => {
 
     const degraded = engine.getDegradedState();
     expect(degraded).toHaveLength(1);
+    expect(degraded[0].reason).toContain("dev");
     // Should contain guidance about resetting to match remote
     expect(degraded[0].reason).toContain("git reset --hard");
     // Should identify the divergence pattern
@@ -279,6 +287,8 @@ describe("dispatch engine degraded state", () => {
   });
 
   // AC: @dispatch-remote-branch-sync ac-degraded-no-provision
+  // AC: @dispatch-remote-branch-sync ac-degraded-task-queued
+  // AC: @dispatch-remote-branch-sync ac-degraded-healthy-unblocked
   it("defers only tasks targeting degraded branches while allowing healthy targets to provision", async () => {
     ({ projectDir, remoteDir } = await setupProjectWithRemote());
     await setupProjectFiles(projectDir);
@@ -341,6 +351,121 @@ describe("dispatch engine degraded state", () => {
     await engine.stop();
   });
 
+  // AC: @dispatch-remote-branch-sync ac-degraded-inflight-continues
+  it("lets an already-started invocation finish after its target enters degraded state", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    git(projectDir, "checkout dev");
+
+    let resolveInvocation!: (result: any) => void;
+    const invocationStarted = new Promise<void>((resolve) => {
+      vi.spyOn(invocationModule, "runInvocation").mockImplementation(async () => {
+        resolve();
+        return await new Promise((innerResolve) => {
+          resolveInvocation = innerResolve;
+        });
+      });
+    });
+
+    vi.spyOn(workspaceModule, "provisionDispatchWorkspace").mockResolvedValue({
+      cwd: projectDir,
+      metadataPath: path.join(projectDir, "dispatch-workspace.yaml"),
+      metadata: {
+        workspaceId: "ws-1",
+        baseBranch: "dev",
+        mergeTargetBranch: "dev",
+        canonicalBranch: "dispatch/task/task-impl-degraded-state/01kn8t1a",
+        canonicalBranchHead: git(projectDir, "rev-parse HEAD"),
+        integrationTargetBranch: "dev",
+        integrationTargetCommit: git(projectDir, "rev-parse HEAD"),
+        publicationMode: "manual_merge",
+        integrationState: "clean",
+        integrationOutcome: "pending",
+        worktreeRoot: projectDir,
+        bootstrap: { status: "prepared", lastRole: "worker" },
+      },
+    } as any);
+    vi.spyOn(bootstrapModule, "ensureWorkspaceBootstrap").mockImplementation(async ({ metadata }) => ({
+      metadata,
+    }));
+    vi.spyOn(workspaceModule, "validateDispatchWorkspaceForInvocation").mockImplementation(
+      async ({ workspace }) =>
+        ({
+          workspace,
+          repaired: false,
+        }) as any,
+    );
+    vi.spyOn(workspaceModule, "markDispatchWorkspaceActive").mockResolvedValue(null);
+    vi.spyOn(workspaceModule, "markDispatchWorkspaceIdle").mockResolvedValue(undefined);
+
+    const events: Array<{ type: string; status: string }> = [];
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+      onInvocationEvent: (event) => events.push({ type: event.type, status: event.status }),
+    });
+    (engine as any).running = true;
+    vi.spyOn(engine as any, "_buildDispatchPrompt").mockResolvedValue("test prompt");
+    vi.spyOn(engine as any, "_evaluateAllTasks").mockResolvedValue(undefined);
+    vi.spyOn(engine as any, "_serializedDrain").mockResolvedValue(undefined);
+
+    const agent = {
+      id: "test-worker",
+      name: "Test Worker",
+      adapter: "mock-acp",
+      concurrency: { max_concurrent: 1 },
+      capabilities: [],
+      tools: [],
+      conventions: [],
+      dispatch: [],
+      skills: [],
+      auto_approve: false,
+    } as any;
+    const entry = {
+      agent,
+      change: {
+        taskId: "task-inflight",
+        taskRef: "@task-inflight",
+        fromStatus: "pending",
+        toStatus: "pending",
+        timestamp: Date.now(),
+        task: {
+          title: "Task Inflight",
+          slugs: ["task-inflight"],
+          status: "pending",
+        },
+      },
+      retryCount: 0,
+      nextRetryAt: 0,
+      enqueuedAtMs: Date.now(),
+      sequence: 0,
+      starvationDeferrals: 0,
+    };
+
+    expect(await (engine as any)._spawnInvocation(agent, entry)).toBe(true);
+    await invocationStarted;
+    expect(engine.getStatus().activeInvocations).toBe(1);
+
+    (engine as any)._enterDegradedState("dev", "dev diverged");
+    expect(engine.getDegradedState().map((state) => state.branch)).toEqual(["dev"]);
+    expect(engine.getStatus().activeInvocations).toBe(1);
+    expect(events.map((event) => event.type)).toEqual(["started"]);
+
+    resolveInvocation({
+      exitCode: 0,
+      stdout: "",
+      stderr: "",
+      outcome: "success",
+      durationMs: 1,
+      turnCount: 1,
+    });
+
+    await Promise.allSettled(Array.from((engine as any).runningInvocations));
+    expect(engine.getStatus().activeInvocations).toBe(0);
+    expect(events.map((event) => event.type)).toEqual(["started", "completed"]);
+  });
+
   // AC: @dispatch-remote-branch-sync ac-degraded-status-api
   it("includes degraded state in status responses", async () => {
     ({ projectDir, remoteDir } = await setupProjectWithRemote());
@@ -386,6 +511,7 @@ describe("dispatch engine degraded state", () => {
   });
 
   // AC: @dispatch-remote-branch-sync ac-degraded-status-broadcast
+  // AC: @dispatch-remote-branch-sync ac-degraded-status-broadcast-target
   it("broadcasts sync_state events on enter and exit degraded state", async () => {
     ({ projectDir, remoteDir } = await setupProjectWithRemote());
     await setupProjectFiles(projectDir);
@@ -459,6 +585,7 @@ describe("dispatch engine degraded state", () => {
   });
 
   // AC: @dispatch-remote-branch-sync ac-degraded-recovery-logged
+  // AC: @dispatch-remote-branch-sync ac-degraded-recovery-logged-duration
   it("logs recovery with the duration the engine was degraded", async () => {
     ({ projectDir, remoteDir } = await setupProjectWithRemote());
     await setupProjectFiles(projectDir);
@@ -488,6 +615,7 @@ describe("dispatch engine degraded state", () => {
       String(call[0]).includes("Recovered from degraded state"),
     );
     expect(recoveryLogs.length).toBeGreaterThanOrEqual(1);
+    expect(String(recoveryLogs[0][0])).toContain("dev");
     expect(String(recoveryLogs[0][0])).toMatch(/after \d+s/);
 
     await engine.stop();
