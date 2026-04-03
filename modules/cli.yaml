@@ -8893,15 +8893,11 @@ features:
             id: ac-divergence-enters-degraded
             then: That specific integration target enters degraded state with a reason describing the divergence
             when: The fast-forward sync fails for that target
-          - given: |
-              The engine enters degraded state due to target branch divergence
-            id: ac-divergence-log-guidance
-            then: |
-              The log message distinguishes between "local has unpushed merges"
-              and "remote history was rewritten" and includes resolution steps
-              for each case
-            when: |
-              The failure is logged
+          - given: An integration target enters degraded state due to branch divergence
+            id: ac-divergence-log-classification
+            then: The log message distinguishes between "local has unpushed merges" and "remote history was
+              rewritten"
+            when: The failure is logged
           - given: |
               The dispatch engine is in degraded state
             id: ac-degraded-no-provision
