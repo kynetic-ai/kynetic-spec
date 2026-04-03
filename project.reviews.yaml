@@ -107803,6 +107803,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KN8SEAC0EHC9CF8V6SG482ZR
         timestamp: 2026-04-03T04:25:55.041Z
+      - _ulid: 01KN8SEFPCBNJMJE9MPZ10JPAP
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KN8SEEZW3JPS58J5B4ZYFFBT
+        timestamp: 2026-04-03T04:25:59.756Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -107874,7 +107881,22 @@ reviews:
               should not stay fused if the plan is moving to atomic ACs."
             created_at: 2026-04-03T04:25:54.304Z
         kind: blocker
+      - _ulid: 01KN8SEEZW3JPS58J5B4ZYFFBT
+        anchor:
+          type: structured
+          field: ac-degraded-recovery-logged
+          ref: "@dispatch-remote-branch-sync"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KN8SEEZXD09NZZD286K9FRJ6
+            author: "@claude"
+            body: ac-degraded-recovery-logged still combines two assertions in one Then clause by requiring the
+              recovery log to include both the target branch name and the degraded duration. Those
+              fields can be verified independently, so this AC remains compound after the round-4
+              split.
+            created_at: 2026-04-03T04:25:59.037Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-03T04:25:03.273Z
-    updated_at: 2026-04-03T04:25:54.304Z
+    updated_at: 2026-04-03T04:25:59.037Z
     notes: []
