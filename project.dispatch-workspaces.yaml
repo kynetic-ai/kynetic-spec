@@ -35334,12 +35334,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-03T06:05:23.239Z
+      updated_at: 2026-04-03T06:05:27.795Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-03T06:05:23.239Z
+      updated_at: 2026-04-03T06:05:27.795Z
     integration:
       status: pending
       detail: null
@@ -35347,24 +35347,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-workspace-scoped-integration-target-sync/01kn8bx4
       target_commit: fb3342db29d0f52d03646cc5ec095e7d9bd0c310
-      updated_at: 2026-04-03T06:05:23.239Z
-    lifecycle_state: ready
+      updated_at: 2026-04-03T06:05:27.795Z
+    lifecycle_state: integrating
     resolved_base_branch: plan/plan-workspace-scoped-integration-target-sync/01kn8bx4
     task_ref: "@01KN8T19V08CS20XYP25QJHRC5"
     task_slug: task-impl-active-target-set
     timestamps:
       closed_at: null
       last_active_at: 2026-04-03T05:54:05.156Z
-      last_reconciled_at: 2026-04-03T06:05:23.239Z
+      last_reconciled_at: 2026-04-03T06:05:27.795Z
       created_at: 2026-04-03T05:23:49.054Z
-      updated_at: 2026-04-03T06:05:23.239Z
+      updated_at: 2026-04-03T06:05:27.795Z
     workspace_id: dispatch-workspace-01KN8T19V08CS20XYP25QJHRC5
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: fcf063252b2ab61303004bfffb1d6a6e00d042bc
+        last_seen_at: 2026-04-03T06:05:27.795Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-active-target-set-01kn8t19-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-impl-active-target-set/01kn8t19
-        head: 0db514f9fe5692c79ae5eff7495a6b1893bc050a
-        last_seen_at: 2026-04-03T05:54:02.472Z
+        head: fcf063252b2ab61303004bfffb1d6a6e00d042bc
+        last_seen_at: 2026-04-03T06:05:27.795Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-active-target-set-01kn8t19
