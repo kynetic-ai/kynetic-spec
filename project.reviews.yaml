@@ -110715,6 +110715,12 @@ reviews:
         payload:
           thread_ulid: 01KNA8B2NXMND6FHWPF3SJ6SYJ
         timestamp: 2026-04-03T18:09:00.280Z
+      - _ulid: 01KNA8HH0YZV6WSYYDFCKQ9FXE
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNA8B2NXMND6FHWPF3SJ6SYJ
+        timestamp: 2026-04-03T18:09:02.494Z
     examined_commit: a1a65a28c894724d0ec94cb72ffefec6c5f32dfd
     external_links: []
     lifecycle_state: closed
@@ -110745,6 +110751,8 @@ reviews:
               dispatch/task/task-impl-degraded-state/01kn8t1a succeeds without conflicts."
             created_at: 2026-04-03T18:08:59.430Z
         kind: nit
+        resolved_at: 2026-04-03T18:09:01.748Z
+        resolved_by: Jacob Chapel
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -110754,5 +110762,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-03T18:05:53.645Z
     created_at: 2026-04-03T18:00:20.670Z
-    updated_at: 2026-04-03T18:08:59.430Z
+    updated_at: 2026-04-03T18:09:01.748Z
     notes: []
