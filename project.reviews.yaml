@@ -110335,6 +110335,17 @@ reviews:
         runner: tsc
         created_at: 2026-04-03T17:52:18.004Z
         completed_at: 2026-04-03T17:52:18.004Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate exited 6 with pre-existing repository warnings only (orphaned skill dir,
+          unrelated alignment/completeness warnings); no errors for this task.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-03T17:52:22.525Z
+        completed_at: 2026-04-03T17:52:22.525Z
     events:
       - _ulid: 01KNA79GDST3E7HA1BWAV1WB5H
         actor: Jacob Chapel
@@ -110377,6 +110388,13 @@ reviews:
           kind: nit
           thread_ulid: 01KNA7JY81BN99G1ZYE870PMSY
         timestamp: 2026-04-03T17:52:21.034Z
+      - _ulid: 01KNA7K18M14PB9RWZF7P65KPF
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-04-03T17:52:23.316Z
     examined_commit: a1a65a28c894724d0ec94cb72ffefec6c5f32dfd
     external_links: []
     lifecycle_state: open
@@ -110418,7 +110436,7 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-03T17:47:11.162Z
-    updated_at: 2026-04-03T17:52:20.226Z
+    updated_at: 2026-04-03T17:52:22.525Z
     notes: []
   - _ulid: 01KNA7HWQXX8H0Y0SNWRY7ZPPT
     slugs: []
