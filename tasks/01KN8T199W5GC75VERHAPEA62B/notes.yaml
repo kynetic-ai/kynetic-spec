@@ -10,3 +10,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-03T05:08:06.861Z
+  - _ulid: 01KN8W0H14X16WCDXWP4ZC79BJ
+    content: "Completed pull/sync AC rewrite on @dispatch-remote-branch-sync. Updated startup, periodic,
+      deferred, before-provision, and fast-forward-only ACs for workspace-scoped targets; confirmed
+      new ACs are present for bootstrap-after-startup-sync, no-merge-commit sync, per-target
+      staleness, staleness isolation, partial-sync continuation, and scoped degradation.
+      Verification: kspec item get reflects the new AC set. kspec validate returned the repository's
+      existing warning set (orphaned skill dir, broad alignment/completeness warnings) but no
+      task-specific validation error."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-03T05:10:48.100Z
