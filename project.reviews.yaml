@@ -110035,6 +110035,12 @@ reviews:
         payload:
           thread_ulid: 01KNA62AHKV1Q2C6NCHMAC4WWM
         timestamp: 2026-04-03T17:41:45.299Z
+      - _ulid: 01KNA6ZMG3APKDYV4B0HKPYJX1
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNA62CWA4BXW2257M8DJZV1J
+        timestamp: 2026-04-03T17:41:47.651Z
     examined_commit: 1f9061b986b4a033947fa754c8ec72ba7e678bba
     external_links: []
     lifecycle_state: closed
@@ -110080,6 +110086,8 @@ reviews:
               and . The branch-scoped status added in  /  never reaches API callers.
             created_at: 2026-04-03T17:25:49.578Z
         kind: blocker
+        resolved_at: 2026-04-03T17:41:46.858Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KNA62F8FK8F32DTD8C2FM0HM
         entries:
           - _ulid: 01KNA62F8F94Z0WREN32S3YRTC
@@ -110106,7 +110114,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-03T17:26:22.370Z
     created_at: 2026-04-03T17:20:48.239Z
-    updated_at: 2026-04-03T17:41:44.512Z
+    updated_at: 2026-04-03T17:41:46.858Z
     notes: []
   - _ulid: 01KNA6G4GMNMBA7JK63WEP26MV
     slugs: []
