@@ -33283,6 +33283,10 @@ plans:
           - Adds a design decision: degraded state, staleness tracking, and
             push serialization are per-target-branch so that one diverged
             target does not block tasks targeting healthy branches.
+          - Adds a design decision: the push and pull paths must share a
+            single source of truth for active targets. The current codebase
+            has two parallel state groups (push-side and pull-side) that
+            could diverge; the unified active target set eliminates this.
           - Notes the concurrent merge constraint: when two reviewers merge
             concurrently into the same integration target, git ref serialization
             means one merge succeeds and the other fails non-fast-forward. The
@@ -33448,7 +33452,7 @@ plans:
           targets, a failure on one target must not prevent syncing the
           others — the sync cycle must continue through all active targets.
 
-          What: Rewrite four existing ACs and add two new ACs:
+          What: Rewrite five existing ACs and add two new ACs:
 
           ac-pull-target-on-start (REWRITE):
             given: The dispatch engine starts and remote sync is enabled
@@ -33465,6 +33469,14 @@ plans:
             then: The engine syncs each active integration target branch
                   from remote, skipping targets that have an active reviewer
                   invocation
+
+          ac-pull-target-periodic-deferred (REWRITE):
+            given: The configured sync interval elapses while a reviewer
+                   invocation is active on a specific integration target
+            when: The sync evaluates that target
+            then: The sync of that specific target is deferred to the next
+                  interval; other active targets without an active reviewer
+                  are synced normally in the same cycle
 
           ac-pull-target-before-provision (REWRITE):
             given: A new task workspace is about to be provisioned and the
@@ -33496,12 +33508,14 @@ plans:
             then: The sync cycle continues to the remaining targets; only
                   the failed target enters degraded state or logs a warning
 
-          How: Run kspec item ac set for the four existing ACs, and
+          How: Run kspec item ac set for the five existing ACs, and
           kspec item ac add for the two new ones. Use a kspec batch command
-          to make all six changes atomic. Verify with kspec item get afterward.
+          to make all seven changes atomic. Verify with kspec item get
+          afterward.
 
           Covers: @dispatch-remote-branch-sync ac-pull-target-on-start
           (rewrite), ac-pull-target-periodic (rewrite),
+          ac-pull-target-periodic-deferred (rewrite),
           ac-pull-target-before-provision (rewrite), ac-pull-ff-only
           (rewrite), ac-per-target-staleness (new),
           ac-partial-sync-continues (new).
@@ -33537,7 +33551,7 @@ plans:
           target resolution must happen before the degraded check, not after.
           The spec should capture this ordering requirement.
 
-          What: Rewrite six existing ACs:
+          What: Rewrite seven existing ACs:
 
           ac-divergence-enters-degraded (REWRITE):
             given: An integration target branch sync detects that local and
@@ -33546,6 +33560,15 @@ plans:
             then: That specific integration target enters degraded state
                   with a reason describing the divergence; other integration
                   targets remain unaffected
+
+          ac-divergence-log-guidance (REWRITE):
+            given: An integration target enters degraded state due to branch
+                   divergence
+            when: The failure is logged
+            then: The log message identifies the affected target branch,
+                  distinguishes between "local has unpushed merges" and
+                  "remote history was rewritten," and includes resolution
+                  steps for each case
 
           ac-degraded-no-provision (REWRITE):
             given: A task becomes eligible for dispatch and its resolved
@@ -33585,8 +33608,8 @@ plans:
             then: The recovery is logged with the target branch name and
                   the duration that target was degraded
 
-          How: Run kspec item ac set for each of the six ACs. Use a kspec
-          batch command to make all six changes atomic. Verify with
+          How: Run kspec item ac set for each of the seven ACs. Use a kspec
+          batch command to make all seven changes atomic. Verify with
           kspec item get afterward.
 
           Note on ac-degraded-no-provision ordering: The rewritten AC implies
@@ -33598,54 +33621,14 @@ plans:
           the implementation plan is created.
 
           Covers: @dispatch-remote-branch-sync ac-divergence-enters-degraded
-          (rewrite), ac-degraded-no-provision (rewrite),
-          ac-degraded-auto-recover (rewrite), ac-degraded-status-api
-          (rewrite), ac-degraded-status-broadcast (rewrite),
-          ac-degraded-recovery-logged (rewrite).
+          (rewrite), ac-divergence-log-guidance (rewrite),
+          ac-degraded-no-provision (rewrite), ac-degraded-auto-recover
+          (rewrite), ac-degraded-status-api (rewrite),
+          ac-degraded-status-broadcast (rewrite), ac-degraded-recovery-logged
+          (rewrite).
 
-      # ─── Phase 5: Dual State Cleanup ───
+      # ─── Phase 5: Implementation — Active Target Set Infrastructure ───
 
-      - title: Add AC for unified sync state initialization on dispatch-remote-branch-sync
-        slug: task-sync-unified-state-ac
-        priority: 2
-        tags: [spec-update, dispatch, sync]
-        spec_ref: "@dispatch-remote-branch-sync"
-        depends_on:
-          - "@task-sync-description-rewrite"
-        description: |
-          Add a new acceptance criterion to @dispatch-remote-branch-sync
-          that requires the push and pull paths to share a single source of
-          truth for active integration targets.
-
-          Why: The current implementation has two parallel sets of state for
-          the same concept: the push side uses this.integrationTargetBranch
-          (dispatch.ts line 870, set at line 979) and the pull side uses
-          this._syncBaseBranch (dispatch.ts line 886, set at line 3052). Both
-          are initialized independently during engine start from the same
-          config value. With workspace-scoped targets, both paths need to
-          operate on the same active target set. If they diverge (e.g. one
-          is updated but the other isn't), pushes and pulls would target
-          different branches — a subtle and dangerous inconsistency. The spec
-          should require that push and pull paths resolve their targets from
-          a single shared source.
-
-          What: Add one new AC:
-
-          ac-unified-target-resolution (NEW):
-            given: The dispatch engine's push and pull paths both need to
-                   determine which integration target branches to operate on
-            when: Either path evaluates its targets
-            then: Both paths resolve targets from the same active integration
-                  target set; no independent per-path target state exists
-                  that could diverge
-
-          How: Run kspec item ac add @dispatch-remote-branch-sync with the
-          AC text above. Verify with kspec item get afterward.
-
-          Covers: @dispatch-remote-branch-sync ac-unified-target-resolution
-          (new).
-
-      # ─── Phase 6: Implementation — Active Target Set Infrastructure ───
 
       - title: Unify sync state and implement active target set management
         slug: task-impl-active-target-set
@@ -33655,7 +33638,6 @@ plans:
         depends_on:
           - "@task-sync-description-rewrite"
           - "@task-sync-active-target-acs"
-          - "@task-sync-unified-state-ac"
         description: |
           Replace the dual push/pull state groups in the dispatch engine with
           a unified active target set, and add methods to rebuild, query, and
@@ -33716,10 +33698,9 @@ plans:
           from the same _activeTargets field.
 
           Covers: @dispatch-remote-branch-sync ac-active-target-includes-base,
-          ac-active-target-rebuilt-on-start, ac-active-target-removed-on-cleanup,
-          ac-unified-target-resolution.
+          ac-active-target-rebuilt-on-start, ac-active-target-removed-on-cleanup.
 
-      # ─── Phase 7: Implementation — Push Path ───
+      # ─── Phase 6: Implementation — Push Path ───
 
       - title: Update dispatch push path for workspace-scoped integration targets
         slug: task-impl-push-path
@@ -33785,7 +33766,7 @@ plans:
           Covers: @dispatch-remote-branch-sync ac-push-target-after-merge,
           ac-push-target-periodic, ac-target-push-serialization.
 
-      # ─── Phase 8: Implementation — Pull/Sync Path ───
+      # ─── Phase 7: Implementation — Pull/Sync Path ───
 
       - title: Update dispatch pull/sync path for workspace-scoped integration targets
         slug: task-impl-pull-path
@@ -33855,7 +33836,7 @@ plans:
           ac-pull-target-periodic, ac-pull-target-before-provision,
           ac-pull-ff-only, ac-per-target-staleness, ac-partial-sync-continues.
 
-      # ─── Phase 9: Implementation — Degraded State ───
+      # ─── Phase 8: Implementation — Degraded State ───
 
       - title: Implement per-target degraded state in dispatch engine
         slug: task-impl-degraded-state
@@ -33942,7 +33923,7 @@ plans:
           ac-degraded-status-api, ac-degraded-status-broadcast,
           ac-degraded-recovery-logged.
 
-      # ─── Phase 10: Testing ───
+      # ─── Phase 9: Testing ───
 
       - title: Integration tests for workspace-scoped sync
         slug: task-impl-sync-integration-tests
@@ -34011,8 +33992,7 @@ plans:
           ac-per-target-staleness, ac-partial-sync-continues,
           ac-divergence-enters-degraded, ac-degraded-no-provision,
           ac-degraded-auto-recover, ac-active-target-includes-base,
-          ac-active-target-rebuilt-on-start, ac-active-target-removed-on-cleanup,
-          ac-unified-target-resolution.
+          ac-active-target-rebuilt-on-start, ac-active-target-removed-on-cleanup.
       ```
 
       ## Implementation Notes
@@ -34059,6 +34039,11 @@ plans:
       6. The configured base branch is always in the active set, even when
          no workspace currently targets it. This preserves the existing
          behavior where the base branch is kept in sync for future use.
+      7. The push and pull paths must share a single source of truth for
+         active targets. The current codebase has two parallel state groups
+         (this.integrationTargetBranch for push, this._syncBaseBranch for
+         pull) initialized independently from the same config. Unifying
+         them into one active target set eliminates a divergence hazard.
 
       Scope explicitly excluded from this plan:
       - Plan branch push on creation — existing design decision says empty
@@ -34071,11 +34056,16 @@ plans:
         not change; sync_interval and remote_sync apply to all targets
     status: draft
     approved_at: null
-    branch: null
     derived_specs: []
     derived_tasks: []
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec/plans/workspace-target-sync.md
     created_at: 2026-04-03T00:29:19.573Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KN8C7THJMHGQJHSDZXVW1TSP
+        content: "Fix review findings: add ac-pull-target-periodic-deferred rewrite, add
+          ac-divergence-log-guidance rewrite, remove implementation-detail
+          ac-unified-target-resolution (moved to description design decisions), renumber phases"
+        author: "@claude"
+        created_at: 2026-04-03T00:35:10.002Z
