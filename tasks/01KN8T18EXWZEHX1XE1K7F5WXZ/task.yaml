@@ -53,8 +53,12 @@ description: |
 spec_ref: "@dispatch-remote-branch-sync"
 plan_ref: "@plan-workspace-scoped-integration-target-sync"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved review 01KN8TEV. Verified the dispatch-remote-branch-sync description now
+  uses workspace-scoped active integration target terminology and preserves the requested design
+  decisions. Manual merge against plan/plan-workspace-scoped-integration-target-sync/01kn8bx4 was a
+  no-op because the task branch was already up to date with the integration branch.
 depends_on: []
 context: []
 priority: 1
@@ -121,8 +125,26 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-03T04:43:43.755Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved review 01KN8TEV. Verified the dispatch-remote-branch-sync description now uses
+          workspace-scoped active integration target terminology and preserves the requested design
+          decisions. Manual merge against
+          plan/plan-workspace-scoped-integration-target-sync/01kn8bx4 was a no-op because the task
+          branch was already up to date with the integration branch.
+        previous: null
+      completed_at:
+        new: 2026-04-03T04:48:43.784Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-03T04:48:43.792Z
 created_at: 2026-04-03T04:36:14.941Z
 started_at: 2026-04-03T04:40:49.298Z
 submitted_at: 2026-04-03T04:41:39.362Z
+completed_at: 2026-04-03T04:48:43.784Z
 todos: []
 automation: eligible
