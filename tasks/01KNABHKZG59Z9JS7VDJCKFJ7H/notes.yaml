@@ -1,1 +1,12 @@
-notes: []
+notes:
+  - _ulid: 01KNABMJYBBGB65DCYHZNV4C5F
+    content: "Approach: inspect file-lock contention behavior and stabilize the same-process regression
+      test without weakening the same-process no-reclaim guarantee. Reuse src/parser/file-lock.ts
+      as-is unless reproduction shows a real logic bug. Edge cases: event-loop delay,
+      release/reacquire races between same-process waiters, warning-path assertions under prolonged
+      contention. Test plan: reproduce the existing regression under repeated runs, then replace
+      timing-sensitive overlap detection with deterministic ownership/serialization assertions and
+      re-run targeted plus full test suite."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-03T19:03:08.491Z
