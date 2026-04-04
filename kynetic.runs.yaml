@@ -22315,7 +22315,7 @@ runs:
     started_at: 2026-04-03T23:12:28.762Z
   - _ulid: 01KNB7Z1S0H47W2WB1E7HDZTX7
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -22336,7 +22336,28 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-04T03:18:33.174Z
-        completed_at: 2026-04-04T03:18:33.174Z
+        completed_at: 2026-04-04T03:18:52.819Z
+        notes: >-
+          1. Lint debt accumulated silently — 112 oxlint errors built up on dev with no local
+          enforcement. CI only catches it on PR to main, which is too late. Need pre-commit hooks.
+
+          2. E2e test fixtures with hardcoded dates — session fixture used "2026-04-01" which
+          becomes stale as time passes, causing entity cache to mark sessions as "stalled". This
+          pattern likely exists in other fixtures too.
+
+          3. Doctor test assumed ambient environment — the hooks test passed locally (Claude Code
+          installed) but failed on CI (no Claude Code). Environment-dependent tests are a recurring
+          pattern.
+
+          4. Massive stale workflow run list — 120+ active workflow runs accumulated, making
+          workflow next require explicit ref. Need cleanup or auto-expiry.
+
+          5. Stop hook repeatedly fires for pre-existing untracked docs/prime-mock.md — no way to
+          tell the checkpoint hook to ignore specific files.
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-04T03:18:52.819Z
+        completed_at: 2026-04-04T03:18:52.819Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-04T03:18:11.489Z
