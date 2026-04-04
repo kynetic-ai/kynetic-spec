@@ -114508,6 +114508,18 @@ reviews:
         required: true
         created_at: 2026-04-04T23:04:49.892Z
         completed_at: 2026-04-04T23:04:49.892Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: No existing specs conflict with the new behavior. daemon-entity-cache ac-granular-reload
+          is being tightened (domain-level to entity-level), not contradicted. daemon-read-path
+          ac-no-per-request-sync is preserved. session-summary-cache is deprecated and relates to
+          daemon-entity-cache already. daemon-file-monitoring is unaffected.
+        name: Spec conflict check
+        required: true
+        created_at: 2026-04-04T23:04:54.271Z
+        completed_at: 2026-04-04T23:04:54.271Z
     events:
       - _ulid: 01KNDBV7S70T7KP378Y3N0MFR3
         actor: "@claude"
@@ -114536,6 +114548,13 @@ reviews:
           status: pass
           name: Codebase alignment
         timestamp: 2026-04-04T23:04:50.644Z
+      - _ulid: 01KNDBW0F30K0HYHDC459W0N0J
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Spec conflict check
+        timestamp: 2026-04-04T23:04:55.012Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -114548,5 +114567,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-04T23:04:29.735Z
-    updated_at: 2026-04-04T23:04:49.892Z
+    updated_at: 2026-04-04T23:04:54.271Z
     notes: []
