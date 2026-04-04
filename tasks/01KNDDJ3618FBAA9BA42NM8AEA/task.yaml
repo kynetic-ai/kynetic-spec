@@ -1,0 +1,52 @@
+_ulid: 01KNDDJ3618FBAA9BA42NM8AEA
+slugs:
+  - task-cache-kspec-context
+title: Cache KspecContext across concurrent domain reloads
+type: task
+description: |
+  Cache the result of initContext() at the project level so that
+  concurrent or sequential domain reloads within the same debounce
+  cycle share a single context initialization.
+
+  Why: Every doLoadDomain() call starts with initContext(projectPath)
+  (entity-cache.ts line 924). initContext reads the project config file,
+  resolves the manifest, and performs shadow branch detection including
+  git operations. When multiple domains are invalidated by a single
+  file change (e.g. kynetic.yaml invalidates both "meta" and "items"),
+  or when several files change within the debounce window, initContext
+  is called redundantly for each domain. The project config, manifest,
+  and shadow branch state do not change between these calls — they are
+  all triggered by the same file system event.
+
+  What: Add a debounce-cycle-scoped context cache to
+  ProjectEntityCache. When doLoadDomain calls initContext, check if
+  a cached context exists for the current debounce cycle. If so,
+  return the cached context. If not, call initContext, cache the
+  result, and return it. The cache entry is invalidated when the
+  debounce cycle completes (after all domain reloads for that cycle
+  finish), ensuring subsequent unrelated changes get fresh context.
+
+  How: Add a cachedContext field to ProjectEntityCache. In
+  doLoadDomain, replace the direct initContext call with a method
+  that checks the cache first. Clear the cached context at the end
+  of each debounce cycle (when the timer fires and processing
+  completes). Test that two concurrent domain reloads triggered by
+  the same file change call initContext only once.
+
+  Covers: @daemon-entity-cache ac-context-reuse.
+spec_ref: "@daemon-entity-cache"
+plan_ref: "@plan-granular-cache-invalidation"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-debounce-path-accumulation"
+context: []
+priority: 2
+tags:
+  - daemon
+  - cache
+  - performance
+vcs_refs: []
+created_at: 2026-04-04T23:34:27.265Z
+todos: []

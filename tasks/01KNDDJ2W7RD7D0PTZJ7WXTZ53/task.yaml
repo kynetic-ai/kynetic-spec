@@ -1,0 +1,56 @@
+_ulid: 01KNDDJ2W7RD7D0PTZJ7WXTZ53
+slugs:
+  - task-debounce-path-accumulation
+title: Accumulate changed file paths during debounce window
+type: task
+description: |
+  Change the domain debounce mechanism to collect the set of changed
+  file paths and their content during the debounce window, instead of
+  just tracking that a domain needs reloading.
+
+  Why: The current invalidateDomain() method (entity-cache.ts line 1215)
+  receives only a domain name. It sets a debounce timer, and when the
+  timer fires, it calls loadDomain() which reloads everything in that
+  domain. To support incremental updates, the debounce mechanism needs
+  to know *which files* changed so it can decide whether to do a full
+  reload or an incremental patch. When multiple files change within
+  the 100ms debounce window, all their paths and content should be
+  collected and processed together in one pass.
+
+  What: Replace the (domain → Timer) debounce map with a structure
+  that also accumulates (filePath, content?) entries per domain.
+  When the debounce timer fires, the accumulated file set is passed
+  to the reload/patch logic. If the set is empty (e.g. invalidation
+  was triggered without a file path, such as write-through), fall
+  back to full domain reload. The debounce timer reset behavior
+  (clear and restart on each new file) is preserved.
+
+  How: Add a pendingChanges map alongside domainDebounceTimers in
+  the ProjectEntityCache class. In handleFileChange, push the file
+  path and optional content into pendingChanges for the mapped
+  domain(s) before calling invalidateDomain. In invalidateDomain,
+  when the timer fires, drain the accumulated changes for that
+  domain and pass them to a new method (processChanges or similar)
+  that will be implemented by subsequent tasks. For now, the new
+  method delegates to full loadDomain(). Add tests that verify
+  multiple file changes within the debounce window are coalesced
+  into a single set.
+
+  Covers: @daemon-incremental-cache ac-batch-coalescing,
+  ac-file-path-preserved.
+spec_ref: "@daemon-incremental-cache"
+plan_ref: "@plan-granular-cache-invalidation"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-watcher-content-passthrough"
+context: []
+priority: 1
+tags:
+  - daemon
+  - cache
+  - refactor
+vcs_refs: []
+created_at: 2026-04-04T23:34:26.951Z
+todos: []

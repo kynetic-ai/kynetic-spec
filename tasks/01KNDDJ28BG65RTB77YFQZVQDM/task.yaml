@@ -1,0 +1,72 @@
+_ulid: 01KNDDJ28BG65RTB77YFQZVQDM
+slugs:
+  - task-add-ac-context-reuse
+title: Add context reuse AC to daemon-entity-cache
+type: task
+description: >
+  Add a new acceptance criterion ac-context-reuse to @daemon-entity-cache
+
+  that requires shared initialization work to be reused across
+
+  concurrent domain reloads.
+
+
+  Why: When multiple domains are invalidated by the same file change
+
+  (e.g. kynetic.yaml invalidating both "meta" and "items"), each
+
+  domain reload currently performs its own initialization including
+
+  manifest resolution and shadow branch detection. This AC ensures
+
+  that shared setup is performed once and reused, reducing redundant
+
+  work during concurrent invalidations.
+
+
+  The existing ac-granular-reload on @daemon-entity-cache is preserved
+
+  as-is — it owns the cross-domain isolation contract ("only the
+
+  affected domain is reloaded, not unrelated domains"). Within-domain
+
+  entity-level granularity is owned by the new @daemon-incremental-cache
+
+  spec via ac-single-entity-patch and ac-fallback-full-reload, which
+
+  are complementary rather than conflicting.
+
+
+  What: Add ac-context-reuse:
+    given: Multiple cache domains are invalidated within the same
+           debounce window
+    when: The cache begins reloading affected data
+    then: Shared initialization work is performed once and reused
+          across all domain reloads in that window
+
+  How: Run:
+    kspec item ac add @daemon-entity-cache \
+      --id ac-context-reuse \
+      --given "Multiple cache domains are invalidated within the same debounce window" \
+      --when "The cache begins reloading affected data" \
+      --then "Shared initialization work is performed once and reused across all domain reloads in that window"
+
+  Verify with: kspec item get @daemon-entity-cache
+
+
+  Covers: @daemon-entity-cache ac-context-reuse (new).
+spec_ref: "@daemon-entity-cache"
+plan_ref: "@plan-granular-cache-invalidation"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - spec-update
+  - daemon
+  - cache
+vcs_refs: []
+created_at: 2026-04-04T23:34:26.315Z
+todos: []

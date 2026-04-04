@@ -24825,3 +24825,175 @@
   submitted_at: 2026-04-04T08:24:12.179Z
   completed_at: 2026-04-04T08:31:34.743Z
   automation: eligible
+- _ulid: 01KNDDJ28BG65RTB77YFQZVQDM
+  slugs:
+    - task-add-ac-context-reuse
+  title: Add context reuse AC to daemon-entity-cache
+  type: task
+  spec_ref: "@daemon-entity-cache"
+  plan_ref: "@plan-granular-cache-invalidation"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - spec-update
+    - daemon
+    - cache
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-04T23:34:26.315Z
+- _ulid: 01KNDDJ2JK36PAG8WA81WMTSD2
+  slugs:
+    - task-watcher-content-passthrough
+  title: Pass file content from watcher through to cache invalidation
+  type: task
+  spec_ref: "@daemon-incremental-cache"
+  plan_ref: "@plan-granular-cache-invalidation"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-add-ac-context-reuse"
+  priority: 1
+  tags:
+    - daemon
+    - cache
+    - refactor
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-04T23:34:26.643Z
+- _ulid: 01KNDDJ2W7RD7D0PTZJ7WXTZ53
+  slugs:
+    - task-debounce-path-accumulation
+  title: Accumulate changed file paths during debounce window
+  type: task
+  spec_ref: "@daemon-incremental-cache"
+  plan_ref: "@plan-granular-cache-invalidation"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-watcher-content-passthrough"
+  priority: 1
+  tags:
+    - daemon
+    - cache
+    - refactor
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-04T23:34:26.951Z
+- _ulid: 01KNDDJ3618FBAA9BA42NM8AEA
+  slugs:
+    - task-cache-kspec-context
+  title: Cache KspecContext across concurrent domain reloads
+  type: task
+  spec_ref: "@daemon-entity-cache"
+  plan_ref: "@plan-granular-cache-invalidation"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-debounce-path-accumulation"
+  priority: 2
+  tags:
+    - daemon
+    - cache
+    - performance
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-04T23:34:27.265Z
+- _ulid: 01KNDDJ3FB6YEAFD22PHK4AAVK
+  slugs:
+    - task-incremental-task-updates
+  title: Implement incremental task updates for split-backend task files
+  type: task
+  spec_ref: "@daemon-incremental-cache"
+  plan_ref: "@plan-granular-cache-invalidation"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-debounce-path-accumulation"
+  priority: 2
+  tags:
+    - daemon
+    - cache
+    - tasks
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-04T23:34:27.563Z
+- _ulid: 01KNDDJ3RK4K2HWH7TVY6F1V66
+  slugs:
+    - task-incremental-item-updates
+  title: Implement incremental item updates for module files
+  type: task
+  spec_ref: "@daemon-incremental-cache"
+  plan_ref: "@plan-granular-cache-invalidation"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-debounce-path-accumulation"
+  priority: 2
+  tags:
+    - daemon
+    - cache
+    - items
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-04T23:34:27.859Z
+- _ulid: 01KNDDJ42341SCDJN6VKDV1518
+  slugs:
+    - task-incremental-session-updates
+  title: Implement incremental session updates for individual sessions
+  type: task
+  spec_ref: "@daemon-incremental-cache"
+  plan_ref: "@plan-granular-cache-invalidation"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-debounce-path-accumulation"
+  priority: 2
+  tags:
+    - daemon
+    - cache
+    - sessions
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-04T23:34:28.163Z
+- _ulid: 01KNDDJ4BXMWVZSC7G6KMDP8BH
+  slugs:
+    - task-meta-subdomain-decomposition
+  title: Decompose meta domain into independently-refreshable sub-domains
+  type: task
+  spec_ref: "@daemon-meta-subdomain"
+  plan_ref: "@plan-granular-cache-invalidation"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-cache-kspec-context"
+  priority: 3
+  tags:
+    - daemon
+    - cache
+    - meta
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-04T23:34:28.477Z
+- _ulid: 01KNDDJ4PD7MDPS1RB53K0QZFG
+  slugs:
+    - task-writethrough-incremental-alignment
+  title: Align write-through with incremental updates for single-file domains
+  type: task
+  spec_ref: "@daemon-incremental-cache"
+  plan_ref: "@plan-granular-cache-invalidation"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-incremental-task-updates"
+    - "@task-incremental-item-updates"
+    - "@task-incremental-session-updates"
+  priority: 3
+  tags:
+    - daemon
+    - cache
+    - refactor
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-04T23:34:28.813Z

@@ -1,0 +1,62 @@
+_ulid: 01KNDDJ4PD7MDPS1RB53K0QZFG
+slugs:
+  - task-writethrough-incremental-alignment
+title: Align write-through with incremental updates for single-file domains
+type: task
+description: |
+  Update the writeThrough method to use the same incremental update
+  paths as watcher-driven invalidation for domains that support it.
+
+  Why: The writeThrough method (entity-cache.ts line 1306) currently
+  calls loadDomain() which performs a full domain reload. After
+  incremental updates are implemented for tasks, items, and sessions,
+  write-through should also use incremental paths — otherwise API
+  mutations still trigger full domain reloads synchronously. This is
+  especially important because write-through happens in the request
+  path (before the response is sent), so its latency directly affects
+  API response time.
+
+  What: When writeThrough is called for a domain that supports
+  incremental updates, and the mutation context provides sufficient
+  information to identify the affected entity (e.g. the task ULID
+  that was modified), use the incremental update path instead of
+  full loadDomain. When the domain doesn't support incremental
+  updates (inbox, plans, triage, reviews — which are single-file
+  domains where reload IS the minimal update), continue using
+  loadDomain.
+
+  The writeThrough skip flag behavior (suppress the next watcher
+  invalidation) must continue to work correctly — incremental
+  write-through should still set the skip flag so the watcher
+  event doesn't trigger a redundant update.
+
+  How: Add an optional entityHint parameter to writeThrough (e.g.
+  { ulid?: string, filePath?: string }) that mutation routes can
+  pass when they know which entity changed. Route handlers in
+  packages/daemon/src/routes/ already know the entity being mutated.
+  When entityHint is present and the domain supports incremental
+  updates, delegate to the incremental path. Write tests covering:
+  write-through with entity hint uses incremental update, write-through
+  without hint falls back to full reload, watcher skip flag works
+  correctly with incremental write-through.
+
+  Covers: @daemon-entity-cache ac-write-through (existing, no change),
+  @daemon-incremental-cache ac-single-entity-patch.
+spec_ref: "@daemon-incremental-cache"
+plan_ref: "@plan-granular-cache-invalidation"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-incremental-task-updates"
+  - "@task-incremental-item-updates"
+  - "@task-incremental-session-updates"
+context: []
+priority: 3
+tags:
+  - daemon
+  - cache
+  - refactor
+vcs_refs: []
+created_at: 2026-04-04T23:34:28.813Z
+todos: []

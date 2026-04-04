@@ -1,0 +1,67 @@
+_ulid: 01KNDDJ4BXMWVZSC7G6KMDP8BH
+slugs:
+  - task-meta-subdomain-decomposition
+title: Decompose meta domain into independently-refreshable sub-domains
+type: task
+description: |
+  Split the meta domain's doLoadDomain into three independent load
+  paths so that each can be triggered and refreshed without forcing
+  a full meta reload.
+
+  Why: The current doLoadDomain("meta") performs four sequential
+  operations: loadMetaContext (file I/O for manifest and includes),
+  getShadowStatus (git subprocess), hasRemoteTracking (git subprocess),
+  and loadSessionContext (single file read). These are completely
+  independent data sources. A change to a meta YAML file should not
+  trigger git subprocess calls for shadow status, and a background
+  sync cycle updating shadow status should not re-read meta files.
+  The git subprocess calls are the most expensive operations in any
+  domain reload.
+
+  What: Restructure the meta DomainStore to track three logical
+  sub-domains internally:
+
+  1. Manifest sub-domain: MetaContext, MetaSummary, CachedProjectConfig.
+     Triggered by meta YAML file changes.
+  2. Shadow sub-domain: CachedShadowInfo (shadow status, remote
+     tracking). Triggered by the background sync scheduler, not by
+     file watcher events.
+  3. Session context sub-domain: CachedSessionContext. Triggered by
+     session context file changes.
+
+  The public API (getMetaIndex, getMetaDetail, getCachedShadowInfo,
+  etc.) is unchanged. The meta domain state is "ready" when all three
+  sub-domains have loaded at least once.
+
+  How: Add internal sub-domain state tracking (e.g. three booleans
+  or a sub-state enum). Split doLoadDomain("meta") into three
+  private methods. In handleFileChange, when a meta YAML file
+  changes, only invoke the manifest sub-load. Wire the background
+  sync scheduler to invoke the shadow sub-load directly instead of
+  invalidating the entire meta domain. Wire session context file
+  changes to invoke only the session context sub-load. The initial
+  loadAll still calls all three sequentially. Write tests covering:
+  meta YAML change does not trigger git operations, shadow sync
+  does not re-read meta files, session context change does not
+  trigger either meta file reads or git operations, all three
+  sub-domains must be loaded before meta domain is "ready".
+
+  Covers: @daemon-meta-subdomain ac-manifest-only-reload,
+  ac-shadow-on-schedule, ac-session-context-independent,
+  ac-initial-load-all.
+spec_ref: "@daemon-meta-subdomain"
+plan_ref: "@plan-granular-cache-invalidation"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-cache-kspec-context"
+context: []
+priority: 3
+tags:
+  - daemon
+  - cache
+  - meta
+vcs_refs: []
+created_at: 2026-04-04T23:34:28.477Z
+todos: []

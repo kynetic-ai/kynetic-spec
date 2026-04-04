@@ -1,0 +1,62 @@
+_ulid: 01KNDDJ42341SCDJN6VKDV1518
+slugs:
+  - task-incremental-session-updates
+title: Implement incremental session updates for individual sessions
+type: task
+description: |
+  When a session's metadata or events file changes, reload only that
+  session's entry in the index instead of enumerating all session
+  directories.
+
+  Why: The current loadSessionIndex enumerates every session directory,
+  reads metadata for each, applies stale checks, sorts, and truncates
+  to the retention window. The session watcher already knows which
+  session directory changed. For active projects with many sessions,
+  re-enumerating all directories on every change is expensive and
+  involves opening and closing a directory handle plus N sequential
+  file reads.
+
+  What: When processChanges receives session-source file paths:
+
+  1. Extract the session ID from the file path (first path segment
+     when source is "sessions").
+  2. Load metadata for only that session using getSessionMetadataOnly.
+  3. Apply stale criteria to the single session if applicable.
+  4. Replace the existing entry in the sorted index (matched by ID)
+     or insert in sorted position if new.
+  5. If the session was deleted, remove it from the index.
+  6. Re-apply the retention window bound (keep only top N).
+
+  When the sessions directory itself is the change source (e.g.
+  a full directory creation or deletion event without a specific
+  session ID), fall back to full loadSessionIndex.
+
+  How: Add tryIncrementalSessionUpdate that processes single-session
+  changes. Clone the existing sorted index array, apply the
+  insert/update/remove to the clone, then swap the reference
+  (this.sessions.index = newIndex). The clone ensures readers
+  holding the old reference see consistent pre-update state.
+  Write tests covering: single session metadata
+  change updates index entry, new session appears in index at correct
+  sort position, deleted session removed from index, session exceeding
+  stale criteria is marked stalled, full directory event triggers
+  full reload.
+
+  Covers: @daemon-incremental-cache ac-single-entity-patch,
+  ac-removal-detection, ac-index-consistency, ac-fallback-full-reload.
+spec_ref: "@daemon-incremental-cache"
+plan_ref: "@plan-granular-cache-invalidation"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-debounce-path-accumulation"
+context: []
+priority: 2
+tags:
+  - daemon
+  - cache
+  - sessions
+vcs_refs: []
+created_at: 2026-04-04T23:34:28.163Z
+todos: []

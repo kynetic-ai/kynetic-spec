@@ -35463,10 +35463,21 @@ plans:
       but not on incremental updates. Phase 6 (write-through alignment)
 
       depends on the incremental paths existing.
-    status: approved
+    status: active
     approved_at: 2026-04-04T23:34:16.951Z
-    derived_specs: []
-    derived_tasks: []
+    derived_specs:
+      - "@daemon-incremental-cache"
+      - "@daemon-meta-subdomain"
+    derived_tasks:
+      - "@task-add-ac-context-reuse"
+      - "@task-watcher-content-passthrough"
+      - "@task-debounce-path-accumulation"
+      - "@task-cache-kspec-context"
+      - "@task-incremental-task-updates"
+      - "@task-incremental-item-updates"
+      - "@task-incremental-session-updates"
+      - "@task-meta-subdomain-decomposition"
+      - "@task-writethrough-incremental-alignment"
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec/plans/granular-cache-invalidation.md
     created_at: 2026-04-04T23:00:52.717Z
@@ -35478,3 +35489,58 @@ plans:
           to debounce cycle"
         author: "@claude"
         created_at: 2026-04-04T23:21:24.997Z
+      - _ulid: 01KNDDJ50GWZ87YHZQYF90CTEM
+        content: |-
+          ### Motivation
+
+          The daemon freezes under load because bun's GeneralPurposeAllocator
+          deadlocks when concurrent I/O operations stress the thread pool. The
+          entity cache's full-domain-reload strategy amplifies single file changes
+          into burst I/O: a single task file change triggers reading ALL task files,
+          re-resolving the project context (including git operations), and
+          rebuilding the entire index. This plan reduces the I/O burst by making
+          invalidation proportional to the change — one file changed, one entity
+          reloaded.
+
+          ### The watcher already has the content
+
+          KspecWatcher.processFileChange() reads the file content and parses YAML
+          before calling onFileChange(filePath, content). The content is then
+          dropped at the project-context → cache boundary. Phase 2 preserves this
+          content through to the cache, eliminating redundant reads.
+
+          ### Domain characteristics
+
+          - **Tasks (split-backend)**: Per-task directories with file paths that
+            contain the task ULID. Best candidate for incremental updates.
+          - **Items**: Module files contain multiple items. Source-file tracking
+            enables file-level granularity (reload all items from one file, not
+            all items from all files).
+          - **Sessions**: Per-session directories, similar to tasks. Session ID
+            extractable from path.
+          - **Meta**: Three unrelated sub-loads sharing one domain. Decomposition
+            eliminates the most expensive cross-contamination (git subprocess
+            calls triggered by unrelated file changes).
+          - **Inbox, Plans, Triage, Reviews**: Single-file domains where full
+            reload is already the minimal update.
+
+          ### Spec changes summary
+
+          - @daemon-entity-cache: Add ac-context-reuse (Phase 1 task). The existing
+            ac-granular-reload is preserved as-is — it owns cross-domain isolation.
+            Within-domain entity-level granularity is owned by @daemon-incremental-cache.
+          - @daemon-incremental-cache: New spec with 8 ACs (derived from plan)
+          - @daemon-meta-subdomain: New spec with 4 ACs (derived from plan)
+
+          ### Phasing rationale
+
+          Phase 1 (spec updates) establishes the target contracts before any code
+          changes. Phase 2 (passthrough + accumulation) is pure plumbing — no
+          behavioral change, zero risk. Phase 3 (context caching) is a standalone
+          optimization independent of incremental updates. Phases 4a-4c
+          (per-domain incremental) are independent of each other and can be
+          parallelized. Phase 5 (meta decomposition) depends on context caching
+          but not on incremental updates. Phase 6 (write-through alignment)
+          depends on the incremental paths existing.
+        author: "@claude"
+        created_at: 2026-04-04T23:34:29.136Z

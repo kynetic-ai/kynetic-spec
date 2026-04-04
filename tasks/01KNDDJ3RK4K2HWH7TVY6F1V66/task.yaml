@@ -1,0 +1,73 @@
+_ulid: 01KNDDJ3RK4K2HWH7TVY6F1V66
+slugs:
+  - task-incremental-item-updates
+title: Implement incremental item updates for module files
+type: task
+description: |
+  When a single module file changes, re-parse only that file and
+  replace its items in the cached index and detail maps instead of
+  reloading all items.
+
+  Why: The loadAllItems function follows the manifest's includes
+  patterns and parses every matching YAML file to collect all spec
+  items. A change to one module file (e.g. modules/daemon.yaml) only
+  affects the items defined in that file. The cache can track which
+  items came from which source file and replace only those entries
+  when that file changes.
+
+  What: When processChanges receives file paths matching
+  modules/*.yaml or *.spec.yaml:
+
+  1. Track item source file: when loading items (both initial load
+     and incremental), record which source file each item came from
+     in a Map<ULID, sourceFile> or by tagging the index entries.
+  2. On file change: parse the changed file to extract its items.
+  3. Remove all existing index and detail entries that were sourced
+     from the changed file.
+  4. Insert the newly parsed items into both index and detail tiers.
+  5. Clone the existing index array and detail map, apply all
+     additions and removals to the clones, then swap both references
+     atomically (single assignment per tier). Readers holding a
+     reference to the old array see consistent pre-update state.
+
+  When the change is to kynetic.yaml (the manifest itself), fall back
+  to full reload because the includes list may have changed, meaning
+  the set of source files is different.
+
+  Trait references (traits: [@trait-slug]) are not resolved during
+  item loading — they are stored as reference strings. Changing a
+  trait definition file does not require re-resolving traits on items
+  that reference it, because trait inheritance is resolved at query
+  time, not at load time. However, if the trait file is also a module
+  file containing inline items, the items from that file are updated
+  via the normal incremental path.
+
+  How: Add a sourceFileMap alongside the items DomainStore. Populate
+  it during loadDomain("items") by recording each item's source file.
+  Add tryIncrementalItemUpdate that re-parses the changed file(s),
+  removes stale entries, and inserts new ones. Fall back to full
+  reload when kynetic.yaml changes or when source file tracking is
+  not available (first load). Write tests covering: single module
+  file change patches items correctly, item added to module file
+  appears in index, item removed from module file disappears from
+  index, kynetic.yaml change triggers full reload.
+
+  Covers: @daemon-incremental-cache ac-single-entity-patch,
+  ac-multi-entity-file, ac-removal-detection, ac-index-consistency,
+  ac-fallback-full-reload.
+spec_ref: "@daemon-incremental-cache"
+plan_ref: "@plan-granular-cache-invalidation"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-debounce-path-accumulation"
+context: []
+priority: 2
+tags:
+  - daemon
+  - cache
+  - items
+vcs_refs: []
+created_at: 2026-04-04T23:34:27.859Z
+todos: []

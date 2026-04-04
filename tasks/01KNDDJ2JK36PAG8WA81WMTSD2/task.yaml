@@ -1,0 +1,68 @@
+_ulid: 01KNDDJ2JK36PAG8WA81WMTSD2
+slugs:
+  - task-watcher-content-passthrough
+title: Pass file content from watcher through to cache invalidation
+type: task
+description: |
+  Change the cache invalidation callback signature to include the
+  file content that the watcher already read and parsed.
+
+  Why: The KspecWatcher (packages/daemon/src/watcher.ts) already reads
+  the changed file's content and parses its YAML at lines 154-158 of
+  processFileChange(). This content is passed through the onFileChange
+  callback as (filePath, content). However, the cache invalidation
+  callback registered in packages/daemon/src/project-context.ts at
+  line 164 only forwards (projectPath, kspecDir, file) — dropping the
+  content. This means every cache reload re-reads files that were
+  already read by the watcher. Passing the content through eliminates
+  redundant disk reads for incremental updates.
+
+  What: Update three connection points:
+
+  1. The cacheInvalidationCallback type in project-context.ts to accept
+     a content parameter alongside projectPath, kspecDir, and file.
+
+  2. The onFileChange handler in project-context.ts (line 164) to
+     forward the content parameter.
+
+  3. The cache.handleFileChange() method signature in entity-cache.ts
+     (line 1270) to accept content.
+
+  handleFileChange has two callers with different content availability:
+
+  - The onFileChange callback always provides content (the watcher
+    reads and validates the file before calling it).
+  - The onFileRemoved callback is a separate code path that calls
+    cacheInvalidationCallback without content. This callback must
+    pass undefined or null for the content parameter.
+
+  The cache must handle both cases: content present (use it for
+  incremental updates in subsequent tasks) and content absent (read
+  from disk or perform full reload).
+
+  How: Edit packages/daemon/src/project-context.ts to add content to
+  the cacheInvalidationCallback call in onFileChange, and pass
+  undefined in onFileRemoved. Edit src/daemon/entity-cache.ts to
+  accept and store optional content on handleFileChange. For this
+  task, the cache receives the content but does not yet use it —
+  subsequent tasks build the incremental update logic that consumes
+  it. Add a test that verifies content reaches handleFileChange when
+  a file change occurs and that removal events pass no content.
+
+  Covers: @daemon-incremental-cache ac-watcher-content-passthrough.
+spec_ref: "@daemon-incremental-cache"
+plan_ref: "@plan-granular-cache-invalidation"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-add-ac-context-reuse"
+context: []
+priority: 1
+tags:
+  - daemon
+  - cache
+  - refactor
+vcs_refs: []
+created_at: 2026-04-04T23:34:26.643Z
+todos: []

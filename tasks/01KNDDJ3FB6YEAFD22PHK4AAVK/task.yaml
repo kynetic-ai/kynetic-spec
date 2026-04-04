@@ -1,0 +1,73 @@
+_ulid: 01KNDDJ3FB6YEAFD22PHK4AAVK
+slugs:
+  - task-incremental-task-updates
+title: Implement incremental task updates for split-backend task files
+type: task
+description: |
+  When a single task file changes in the split-backend storage format,
+  reload only that task and patch it into the cached index and detail
+  maps instead of reloading all tasks.
+
+  Why: The split-backend task storage uses per-task directories
+  (tasks/<ULID>/task.yaml, tasks/<ULID>/notes.yaml). The file path
+  contains the task ULID, so the cache knows exactly which task
+  changed. Currently, any task file change triggers a full
+  listTasks() + loadAllTasks() which re-reads every task file in the
+  project. For projects with many tasks, this is wasteful — only the
+  changed task needs reloading.
+
+  What: When processChanges receives file paths matching the pattern
+  tasks/<ULID>/*.yaml:
+
+  1. Extract the ULID from the file path.
+  2. Load only that task's data from its directory (task.yaml and
+     notes.yaml).
+  3. Convert to a TaskSummary for the index tier.
+  4. Replace the existing entry in the index array (matched by ULID)
+     or append if new.
+  5. Replace the existing entry in the detail map (keyed by ULID)
+     or add if new.
+
+  When processChanges receives a change to project.tasks.yaml (the
+  monolith format), fall back to full domain reload since individual
+  tasks cannot be identified by file path.
+
+  When a task file is deleted (removal event), remove the task from
+  both index and detail tiers.
+
+  Concurrent read safety: clone the existing index array and detail
+  map, apply the patches to the clones, then swap the entire
+  reference (this.tasks.index = newIndex, this.tasks.details =
+  newDetails). This is different from the full-reload pattern which
+  builds from scratch — incremental must clone first because readers
+  may hold a reference to the current array. The swap must be a
+  single assignment per tier so readers see all-old or all-new.
+
+  How: Add a tryIncrementalTaskUpdate method that checks whether the
+  changed files are all split-backend task paths. If so, perform
+  targeted loads using the task data manager's single-task loading
+  capability. If any changed file is project.tasks.yaml or the file
+  set can't be mapped to specific ULIDs, return false to signal
+  fallback to full reload. Write tests covering: single task change
+  patches index correctly, new task file adds to index, deleted task
+  file removes from index, monolith file change triggers full reload,
+  concurrent changes to multiple tasks are batched.
+
+  Covers: @daemon-incremental-cache ac-single-entity-patch,
+  ac-removal-detection, ac-index-consistency, ac-fallback-full-reload.
+spec_ref: "@daemon-incremental-cache"
+plan_ref: "@plan-granular-cache-invalidation"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-debounce-path-accumulation"
+context: []
+priority: 2
+tags:
+  - daemon
+  - cache
+  - tasks
+vcs_refs: []
+created_at: 2026-04-04T23:34:27.563Z
+todos: []

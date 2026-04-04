@@ -3819,6 +3819,91 @@ features:
         notes: []
     created: 2026-04-02T18:27:20.351Z
     notes: []
+  - _ulid: 01KNDDJ250YEWY62T5FW2M14DP
+    slugs:
+      - daemon-incremental-cache
+    title: Incremental Entity Cache Updates
+    type: feature
+    description: |
+      Cache invalidation updates only the entities affected by a change
+      rather than reloading entire data domains. When the system knows
+      which file changed, it uses that information to patch the cached
+      index and detail data in place. Full domain reloads remain as a
+      fallback when the changed file cannot be mapped to specific
+      entities or when callers (such as write-through) do not provide
+      file-level context.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    acceptance_criteria:
+      - given: |
+          The file watcher detects a change to a file in the shadow branch
+        id: ac-file-path-preserved
+        then: |
+          The file path of the changed file is available to the cache
+          update logic, not just the domain name
+        when: |
+          The cache invalidation is triggered
+      - given: |
+          A file change maps to a single identifiable entity within a domain
+        id: ac-single-entity-patch
+        then: |
+          Only that entity is reloaded from disk and its index and detail
+          entries are replaced without reloading other entities in the domain
+        when: |
+          The cache processes the invalidation
+      - given: |
+          A file change maps to a file containing multiple entities
+        id: ac-multi-entity-file
+        then: |
+          The entire file is re-parsed and all entities from that file are
+          replaced in the index and detail tiers
+        when: |
+          The cache processes the invalidation
+      - given: |
+          A file change cannot be mapped to specific entities within a domain
+        id: ac-fallback-full-reload
+        then: |
+          The entire domain is reloaded from disk, matching the current
+          full-reload behavior
+        when: |
+          The cache processes the invalidation
+      - given: |
+          A previously cached entity's source file is deleted
+        id: ac-removal-detection
+        then: |
+          The entity is removed from both the index and detail tiers
+        when: |
+          The cache processes the file removal event
+      - given: |
+          An incremental update replaces or removes an entity
+        id: ac-index-consistency
+        then: |
+          Readers see either the complete pre-update state or the complete
+          post-update state for the affected entity, never a partial mix
+        when: |
+          Concurrent API requests read from the same domain
+      - given: |
+          Multiple files change within the debounce window
+        id: ac-batch-coalescing
+        then: |
+          All changed files are processed in a single update pass rather
+          than triggering separate reloads per file
+        when: |
+          The debounce timer fires
+      - given: |
+          The file watcher reads and validates a changed file's content
+        id: ac-watcher-content-passthrough
+        then: |
+          The already-read content is available to the cache update logic
+          so the file does not need to be read from disk a second time
+        when: |
+          The change event reaches the cache
+    tags: []
+    created: 2026-04-04T23:34:26.208Z
+    notes: []
 requirements:
   - _ulid: 01KJZH33ZQ6DS7KTNFCRBBBBVX
     slugs:
@@ -4154,5 +4239,57 @@ requirements:
         created: 2026-03-16T08:28:59.038Z
         notes: []
     created: 2026-03-16T08:28:58.966Z
+    notes: []
+  - _ulid: 01KNDDJ26TZ8Q55P3GWS1R9G7A
+    slugs:
+      - daemon-meta-subdomain
+    title: Independent Meta Sub-Domains
+    type: requirement
+    description: |
+      The meta cache domain is composed of independently-sourced data:
+      project manifest metadata, shadow branch health, and session
+      context. Each sub-domain has its own invalidation trigger and
+      can be refreshed without affecting the others.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    acceptance_criteria:
+      - given: |
+          A meta YAML file changes in the shadow branch
+        id: ac-manifest-only-reload
+        then: |
+          Only the manifest and project metadata are reloaded; shadow
+          branch health and session context are not re-evaluated
+        when: |
+          The cache processes the invalidation
+      - given: |
+          The background sync scheduler runs its periodic check
+        id: ac-shadow-on-schedule
+        then: |
+          The cached shadow status is updated independently of the
+          manifest metadata and session context
+        when: |
+          Shadow branch health data has changed
+      - given: |
+          The session context file changes
+        id: ac-session-context-independent
+        then: |
+          Only the session context portion of meta is reloaded; manifest
+          metadata and shadow health are not re-evaluated
+        when: |
+          The cache processes the invalidation
+      - given: |
+          A project is registered and the meta domain loads for the first
+          time
+        id: ac-initial-load-all
+        then: |
+          All three sub-domains (manifest, shadow, session context) are
+          loaded before the meta domain transitions to ready state
+        when: |
+          The initial load completes
+    tags: []
+    created: 2026-04-04T23:34:26.266Z
     notes: []
 notes: []
