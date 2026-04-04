@@ -12223,6 +12223,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-04T05:34:18.360Z
+  - _ulid: 01KNBFRBV1YWPVMVKHC1FK8ZH8
+    type: friction
+    content: kspec agent run failed with OAuth token expiry on claude-agent-acp adapter. No fallback or
+      helpful error suggesting to try a different adapter. Had to manually switch to codex-acp.
+      Could suggest available adapters on auth failure.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-04T05:34:21.025Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
