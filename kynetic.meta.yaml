@@ -12486,6 +12486,33 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-04T08:32:25.456Z
+  - _ulid: 01KNCR339917QHB4RMMNEKV5H9
+    type: success
+    content: "Layered FD diagnosis: fix one leak, re-measure, discover the next. Each fix (watcher
+      scoping → readdir closure) was only visible after the previous fix reduced noise. Measuring
+      between fixes prevented conflating causes."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-04T17:19:15.753Z
+  - _ulid: 01KNCR33ERJBY2Y1D0RDVHGPSD
+    type: success
+    content: futex_wait + zero CPU tick delta proved bun runtime deadlock vs FD exhaustion in under 30
+      seconds. /proc/pid/task/*/wchan showing all threads in futex_wait is the definitive signal —
+      no strace needed.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-04T17:19:15.928Z
+  - _ulid: 01KNCR33KVRBKXQC6N89KW3CTN
+    type: friction
+    content: Plan review fix cycle requires manual correlation between review thread findings and plan
+      text locations. No structured way to mark which review thread a plan edit addresses — reviewer
+      has to re-read the full plan and infer.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-04T17:19:16.091Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
