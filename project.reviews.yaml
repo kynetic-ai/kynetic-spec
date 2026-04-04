@@ -113450,6 +113450,17 @@ reviews:
         required: true
         created_at: 2026-04-04T06:31:59.337Z
         completed_at: 2026-04-04T06:31:59.337Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: The text-only simplifications did not change spec refs, task refs, dependencies, or
+          coverage mapping; all existing references and task ordering remain unchanged from the
+          approved v2 review.
+        name: Cross-reference validation
+        required: true
+        created_at: 2026-04-04T06:31:59.381Z
+        completed_at: 2026-04-04T06:31:59.381Z
     events:
       - _ulid: 01KNBK0SZP1334SEQDX0KE8HJ9
         actor: "@claude"
@@ -113485,6 +113496,13 @@ reviews:
           status: pass
           name: Prior approval delta
         timestamp: 2026-04-04T06:32:00.095Z
+      - _ulid: 01KNBK1Z1A3B1B4VTZ46CF3DND
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Cross-reference validation
+        timestamp: 2026-04-04T06:32:01.322Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -113497,5 +113515,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-04T06:31:23.383Z
-    updated_at: 2026-04-04T06:31:59.337Z
+    updated_at: 2026-04-04T06:31:59.381Z
     notes: []
