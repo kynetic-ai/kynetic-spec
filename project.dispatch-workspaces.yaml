@@ -36609,18 +36609,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-refactor-session-watcher-active-scoped/01knbk4t
-    canonical_branch_head: 05ded2db5dfa9bccd0f2fdfaceca427973b1c0bd
+    canonical_branch_head: 6dc8783a76490a9789559ee248aea3d643145f14
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-04T07:35:23.507Z
+      updated_at: 2026-04-04T07:39:29.047Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-04T07:35:25.556Z
+      updated_at: 2026-04-04T07:39:29.047Z
     integration:
       status: pending
       detail: null
@@ -36628,7 +36628,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 0d05e503f03020b11bd11616e265cc09f024f0d3
-      updated_at: 2026-04-04T07:35:23.507Z
+      updated_at: 2026-04-04T07:39:29.047Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KNBK4TTCRCB0XH1VR4YJ3EV0"
@@ -36636,9 +36636,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-04T07:35:25.556Z
-      last_reconciled_at: 2026-04-04T07:35:25.556Z
+      last_reconciled_at: 2026-04-04T07:39:29.047Z
       created_at: 2026-04-04T07:10:30.836Z
-      updated_at: 2026-04-04T07:35:25.556Z
+      updated_at: 2026-04-04T07:39:29.047Z
     workspace_id: dispatch-workspace-01KNBK4TTCRCB0XH1VR4YJ3EV0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
