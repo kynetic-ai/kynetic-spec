@@ -113124,6 +113124,17 @@ reviews:
         required: true
         created_at: 2026-04-04T06:17:59.706Z
         completed_at: 2026-04-04T06:17:59.706Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "The phase ordering is coherent: spec edits precede the watcher refactor, and both the API
+          verification task and FD regression task wait for the refactor task. No cycles or priority
+          inversions were found in the plan-local dependency chain."
+        name: Dependency ordering
+        required: true
+        created_at: 2026-04-04T06:17:59.713Z
+        completed_at: 2026-04-04T06:17:59.713Z
     events:
       - _ulid: 01KNBJ6TA0PYD7PZV172K1N4CZ
         actor: "@claude"
@@ -113173,6 +113184,13 @@ reviews:
           status: pass
           name: Cross-reference validation
         timestamp: 2026-04-04T06:18:01.718Z
+      - _ulid: 01KNBJ8CB73Q9MQYAZTDVWAVQ6
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Dependency ordering
+        timestamp: 2026-04-04T06:18:02.984Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -113237,5 +113255,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-04T06:17:11.744Z
-    updated_at: 2026-04-04T06:17:59.706Z
+    updated_at: 2026-04-04T06:17:59.713Z
     notes: []
