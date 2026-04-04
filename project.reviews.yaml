@@ -113284,7 +113284,53 @@ reviews:
     slugs: []
     title: "Plan re-review: Active-Session-Scoped File Monitoring (v2)"
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Plan keeps active-session watcher behavior under @daemon-file-monitoring, leaves on-demand
+          disk reads with existing specs @daemon-entity-cache (ac-detail-on-demand,
+          ac-graceful-degradation, ac-session-bounded-index) and @session-list-pagination-api, and
+          removes the prior misplaced fallback AC/task scope.
+        name: Spec boundary
+        required: true
+        created_at: 2026-04-04T06:25:16.826Z
+        completed_at: 2026-04-04T06:25:16.826Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Plan references resolve: @daemon-file-monitoring, @daemon-entity-cache, and
+          @session-list-pagination-api exist; cited status enum path src/sessions/types.ts exists
+          and includes active/completed/abandoned/timed_out/failed/stalled."
+        name: Cross-reference validation
+        required: true
+        created_at: 2026-04-04T06:25:18.892Z
+        completed_at: 2026-04-04T06:25:18.892Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Ordering is executable and appropriately staged: P1 spec update ac-3 -> P1 add ACs -> P2
+          SessionWatcher refactor -> P3 FD regression test. No circular or missing prerequisites
+          found."
+        name: Dependency ordering
+        required: true
+        created_at: 2026-04-04T06:25:20.946Z
+        completed_at: 2026-04-04T06:25:20.946Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "All three prior blockers are resolved: stalled is now included in non-active session
+          lists, disk-fallback behavior is moved out of daemon-file-monitoring scope into
+          implementation notes tied to existing read-path/cache specs, and the regression-test task
+          now focuses only on watcher/FD behavior instead of mixing route assertions."
+        name: Prior blocker verification
+        required: true
+        created_at: 2026-04-04T06:25:22.944Z
+        completed_at: 2026-04-04T06:25:22.944Z
     events:
       - _ulid: 01KNBJMT64B81RZA63890G48DY
         actor: "@claude"
@@ -113292,9 +113338,60 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-04-04T06:24:50.372Z
+      - _ulid: 01KNBJNJR0QKT99TDSG8D59RAB
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-04-04T06:25:15.520Z
+      - _ulid: 01KNBJNMS9PAVCFFBY4WBYT3RQ
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Spec boundary
+        timestamp: 2026-04-04T06:25:17.609Z
+      - _ulid: 01KNBJNPT9JNXNC02TDSC93PD5
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Cross-reference validation
+        timestamp: 2026-04-04T06:25:19.689Z
+      - _ulid: 01KNBJNRRMRA2QET76SB1AA30A
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Dependency ordering
+        timestamp: 2026-04-04T06:25:21.684Z
+      - _ulid: 01KNBJNTRTA33XSF7GVEW3RBRA
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Prior blocker verification
+        timestamp: 2026-04-04T06:25:23.738Z
+      - _ulid: 01KNBJNWSGDR16WB5QFPWF883X
+        actor: codex@openai
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-04-04T06:25:25.808Z
+      - _ulid: 01KNBJNWSGA1VHSPHWXFSDQ38C
+        actor: codex@openai
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-04T06:25:25.808Z
     examined_commit: null
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -113302,7 +113399,14 @@ reviews:
       ref: "@plan-active-session-scoped-file-monitoring"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex@openai
+        role: reviewer
+        created_at: 2026-04-04T06:25:25.808Z
     created_at: 2026-04-04T06:24:50.372Z
-    updated_at: null
+    updated_at: 2026-04-04T06:25:25.808Z
     notes: []
