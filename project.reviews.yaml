@@ -115014,6 +115014,17 @@ reviews:
         required: true
         created_at: 2026-04-04T23:25:41.649Z
         completed_at: 2026-04-04T23:25:41.649Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Plan identifies inbox, plans, triage, reviews as single-file domains where full reload IS
+          the minimal update. This is accurate — these are stored in single YAML files, not
+          per-entity directories.
+        name: "Question: single-file domain classification"
+        required: true
+        created_at: 2026-04-04T23:25:49.105Z
+        completed_at: 2026-04-04T23:25:49.105Z
     events:
       - _ulid: 01KNDCZZ3C5J0KS3WC3YWT270M
         actor: "@claude"
@@ -115063,6 +115074,13 @@ reviews:
           status: pass
           name: "Question: trait resolution"
         timestamp: 2026-04-04T23:25:43.246Z
+      - _ulid: 01KNDD2ARVME6FWQB8QJC3YKDY
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: "Question: single-file domain classification"
+        timestamp: 2026-04-04T23:25:50.747Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -115075,5 +115093,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-04T23:24:33.260Z
-    updated_at: 2026-04-04T23:25:41.649Z
+    updated_at: 2026-04-04T23:25:49.105Z
     notes: []
