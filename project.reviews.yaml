@@ -114992,6 +114992,17 @@ reviews:
         required: true
         created_at: 2026-04-04T23:25:26.862Z
         completed_at: 2026-04-04T23:25:26.862Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: task-add-ac-context-reuse is a standalone spec-update task with no code dependencies.
+          task-watcher-content-passthrough depends on it, which is correct ordering — spec contract
+          before implementation.
+        name: "Question: Phase 1 dependency chain"
+        required: true
+        created_at: 2026-04-04T23:25:34.332Z
+        completed_at: 2026-04-04T23:25:34.332Z
     events:
       - _ulid: 01KNDCZZ3C5J0KS3WC3YWT270M
         actor: "@claude"
@@ -115027,6 +115038,13 @@ reviews:
           status: pass
           name: "Question: meta initial-load AC"
         timestamp: 2026-04-04T23:25:28.459Z
+      - _ulid: 01KNDD1WAGHN9X2777VKYG2T4X
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: "Question: Phase 1 dependency chain"
+        timestamp: 2026-04-04T23:25:35.953Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -115039,5 +115057,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-04T23:24:33.260Z
-    updated_at: 2026-04-04T23:25:26.862Z
+    updated_at: 2026-04-04T23:25:34.332Z
     notes: []
