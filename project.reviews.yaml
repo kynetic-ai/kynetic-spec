@@ -113544,7 +113544,26 @@ reviews:
     slugs: []
     title: Review task-monitoring-spec-ac3-active-sessions
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 'Files read: AGENTS.md, kspec-agents.md, task @01KNBK4T85CE6ZWNVNMMV5P8J5, plan
+          @plan-active-session-scoped-file-monitoring, spec @daemon-file-monitoring. Commands run:
+          git status --short --branch; git log --oneline --decorate -n 12; git diff --stat
+          dev...HEAD; kspec review for-task @01KNBK4T85CE6ZWNVNMMV5P8J5; kspec item get
+          @daemon-file-monitoring; kspec plan get @plan-active-session-scoped-file-monitoring; kspec
+          validate; rg -n "AC: @daemon-file-monitoring|AC: @trait-" tests; kspec log
+          @daemon-file-monitoring; npm test twice. Claims verified: ac-3 wording matches approved
+          plan and current spec output; no source diff beyond submitted snapshot; full test suite
+          passed twice. Categories searched: correctness, spec alignment, test quality, integration,
+          error handling; no task-specific findings.'
+        name: npm-test
+        required: true
+        runner: npm
+        created_at: 2026-04-04T06:44:00.100Z
+        completed_at: 2026-04-04T06:44:00.100Z
     events:
       - _ulid: 01KNBKF8EVT316KWB4GP3EAEBM
         actor: Jacob Chapel
@@ -113559,6 +113578,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-04T06:39:40.674Z
+      - _ulid: 01KNBKQXR1BMKTR3CFB3B1M4FW
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm-test
+        timestamp: 2026-04-04T06:44:00.897Z
     examined_commit: 0d05e503f03020b11bd11616e265cc09f024f0d3
     external_links: []
     lifecycle_state: open
@@ -113571,5 +113597,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-04T06:39:16.955Z
-    updated_at: 2026-04-04T06:39:39.870Z
+    updated_at: 2026-04-04T06:44:00.100Z
     notes: []
