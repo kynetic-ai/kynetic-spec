@@ -12239,8 +12239,12 @@ observations:
       Agent reported success but produced no kspec review artifacts. Should fail visibly if write
       operations are blocked.
     author: Jacob Chapel
-    resolution: null
-    resolved: false
+    resolution: "Not a shell/environment issue — the agent's auto_approve was set to false, which
+      blocked all write operations (shadow branch commits for review records). Fix: set
+      --auto-approve on agents that need to write kspec data."
+    resolved: true
+    resolved_at: 2026-04-04T05:37:35.325Z
+    resolved_by: Jacob Chapel
     created_at: 2026-04-04T05:34:23.871Z
   - _ulid: 01KNBFRH0P2W2VNMRWATMWWVGJ
     type: friction
