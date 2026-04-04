@@ -115209,6 +115209,13 @@ reviews:
           kind: nit
           thread_ulid: 01KNDD4B6THHNKRVEQJ2VXD6EP
         timestamp: 2026-04-04T23:26:57.488Z
+      - _ulid: 01KNDD4GHX3NY69VV8ER9MQV9H
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNDD4FTBN4K3CR4B3D9WCTS2
+        timestamp: 2026-04-04T23:27:02.205Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -115233,7 +115240,23 @@ reviews:
               user-facing feature), but worth confirming the intent is deliberate.
             created_at: 2026-04-04T23:26:56.730Z
         kind: nit
+      - _ulid: 01KNDD4FTBN4K3CR4B3D9WCTS2
+        anchor:
+          type: structured
+          ref: "@task-cache-kspec-context"
+        entries:
+          - _ulid: 01KNDD4FTCMZTACVFP9N3H0E1X
+            author: "@claude"
+            body: "The context cache validity description says 'invalidated when the debounce cycle completes'
+              but does not specify what happens if a new debounce cycle starts while a previous
+              one's domain reloads are still in flight. Edge case: fast successive changes could
+              have overlapping cycles. The task's How section says 'Clear the cached context at the
+              end of each debounce cycle (when the timer fires and processing completes)' which
+              implies sequential, but debounce timer firing and reload completion are async. Minor —
+              implementer can handle this, but noting for awareness."
+            created_at: 2026-04-04T23:27:01.452Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-04T23:24:33.260Z
-    updated_at: 2026-04-04T23:26:56.730Z
+    updated_at: 2026-04-04T23:27:01.452Z
     notes: []
