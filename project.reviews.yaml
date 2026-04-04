@@ -114042,6 +114042,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-04T07:34:22.794Z
+      - _ulid: 01KNBPWMAVDEEHNPDVQR2NATAQ
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNBPKENVS0BXR47PH4Y1796S
+        timestamp: 2026-04-04T07:39:00.828Z
     examined_commit: 05ded2db5dfa9bccd0f2fdfaceca427973b1c0bd
     external_links: []
     lifecycle_state: closed
@@ -114085,6 +114091,11 @@ reviews:
               new-session detection fails when session.yaml arrives 500ms after addDir.\\nCategories
               searched: correctness, edge cases/races, error handling, test quality, integration."
             created_at: 2026-04-04T07:34:00.124Z
+          - _ulid: 01KNBPWKF72D2KDXZ9DM3GN3A2
+            author: Jacob Chapel
+            body: Addressed alongside the blocker fix in 6dc8783a7. Re-ran the reviewed daemon/session suites
+              and validate after patching the delayed-metadata race.
+            created_at: 2026-04-04T07:38:59.943Z
         kind: nit
     verdicts:
       - applies_to_version:
@@ -114095,5 +114106,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-04T07:34:22.794Z
     created_at: 2026-04-04T07:28:33.961Z
-    updated_at: 2026-04-04T07:34:22.794Z
+    updated_at: 2026-04-04T07:38:59.943Z
     notes: []
