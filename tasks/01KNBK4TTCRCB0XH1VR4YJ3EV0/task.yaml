@@ -1,0 +1,111 @@
+_ulid: 01KNBK4TTCRCB0XH1VR4YJ3EV0
+slugs:
+  - task-refactor-session-watcher-active-scoped
+title: Refactor SessionWatcher from recursive-all to active-session-scoped watching
+type: task
+description: |
+  Replace the single recursive chokidar watcher on the entire
+  .kspec-sessions/ directory with a two-tier approach that only
+  watches active sessions.
+
+  Why: The current SessionWatcher (packages/daemon/src/session-watcher.ts)
+  creates one chokidar instance watching the entire .kspec-sessions/
+  directory recursively. Every session directory gets file descriptors
+  for its directory entry, session.yaml, and events.jsonl — regardless
+  of whether the session is active or completed. After extended
+  dispatch runs producing 1,600+ sessions, the daemon accumulates
+  ~13,000 open FDs. The bun process stays alive and accepts TCP
+  connections on its listening socket, but the HTTP handler stops
+  responding (zero bytes returned). The blob exclusion fix
+  (shouldIgnorePath filtering out paths containing "blobs") reduced
+  content file FDs but did not address the per-session metadata FDs.
+  Only 1-5 sessions are typically active at any time, so watching all
+  1,600+ is pure waste.
+
+  What: Restructure SessionWatcher into two layers:
+
+  1. A top-level watcher on .kspec-sessions/ with depth 0 that only
+     detects new session directories appearing (addDir events). This
+     watcher does not recurse into session directories.
+
+  2. Per-session chokidar watchers, stored in a Map<string, ChokidarWatcher>,
+     created only for sessions whose session.yaml has status "active".
+     Each per-session watcher monitors that session's directory for
+     session.yaml and events.jsonl changes. The existing
+     shouldIgnorePath logic (blob exclusion, non-yaml/jsonl filtering)
+     applies to per-session watchers.
+
+  The session status enum (defined in src/sessions/types.ts) has six
+  values: active, completed, abandoned, timed_out, failed, stalled.
+  Only status === "active" means the session needs watching. All other
+  statuses are non-active and should not have watchers.
+
+  Startup behavior: scan .kspec-sessions/ for all session directories.
+  For each, read session.yaml and parse the status field. Create
+  per-session watchers only for sessions with status === "active".
+  Skip all other statuses.
+
+  New session detection: when the top-level watcher emits addDir for
+  a new session directory, read its session.yaml. If status is
+  "active", create a per-session watcher. If the session.yaml doesn't
+  exist yet (race with session creation), retry after a short delay
+  (e.g. 200ms). If status is already non-active, skip.
+
+  Session close detection: when a per-session watcher detects a
+  change to session.yaml, re-read the status field. If it has
+  transitioned to any non-active status (completed, abandoned, failed,
+  timed_out, stalled), close that per-session watcher, remove it
+  from the Map, and fire onSessionChange one final time so the
+  entity cache picks up the terminal state.
+
+  The onSessionChange callback contract is unchanged — consumers
+  (entity cache invalidation via project-context.ts, WebSocket
+  broadcast) receive the same session root path they do today.
+
+  The entity cache session index reload
+  (src/daemon/entity-cache.ts loadSessionIndex) already reads all
+  session directories from disk and keeps only the 100 most recent,
+  so no cache changes are needed. The cache reload is triggered by
+  onSessionChange from active session changes, which is sufficient
+  for freshness.
+
+  Determine active status from session.yaml, not from the runtime
+  SessionRegistry (src/agent-runtime/session-registry.ts). Reason:
+  on daemon restart, SessionRegistry is empty but sessions from a
+  previous run may still have status "active" on disk. The watcher
+  must pick those up. The existing stale session detection (24h
+  older-than / 6h inactive-for thresholds in src/sessions/store.ts)
+  handles truly abandoned sessions separately.
+
+  Preserve the existing error handling: per-session watcher errors
+  should trigger the same retry-with-backoff and eventual
+  unregistration behavior. The top-level watcher error path should
+  also retry, since losing it means no new sessions would be detected.
+
+  How: Edit packages/daemon/src/session-watcher.ts. The class
+  interface (constructor options, start(), stop(), public API) stays
+  the same. Internal state changes from a single `watcher` field to
+  a `topLevelWatcher` plus a `sessionWatchers: Map<string, ChokidarWatcher>`.
+  The stop() method must close all per-session watchers in addition
+  to the top-level watcher. Update the existing tests in
+  tests/session-watcher.test.ts to cover the new behavior.
+
+  Covers: @daemon-file-monitoring ac-3 (updated), ac-active-only-watching,
+  ac-session-close-unwatch, ac-new-session-conditional-watch,
+  ac-startup-active-only.
+spec_ref: "@daemon-file-monitoring"
+plan_ref: "@plan-active-session-scoped-file-monitoring"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-monitoring-spec-active-session-acs"
+context: []
+priority: 2
+tags:
+  - daemon
+  - sessions
+  - refactor
+vcs_refs: []
+created_at: 2026-04-04T06:33:35.308Z
+todos: []

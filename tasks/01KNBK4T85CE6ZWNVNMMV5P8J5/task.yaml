@@ -1,0 +1,63 @@
+_ulid: 01KNBK4T85CE6ZWNVNMMV5P8J5
+slugs:
+  - task-monitoring-spec-ac3-active-sessions
+title: Update daemon-file-monitoring ac-3 for active-session FD proportionality
+type: task
+description: >
+  Update acceptance criterion ac-3 on @daemon-file-monitoring to scope
+
+  file descriptor proportionality to active sessions rather than all
+
+  sessions.
+
+
+  Why: The current ac-3 says FD count should be "proportional to the
+
+  number of monitored directories and metadata files, not to the total
+
+  number of stored content files." This was written when the blob
+
+  exclusion fix was the goal. The blob fix shipped, but the daemon
+
+  still opens FDs for every session directory's metadata files
+
+  (session.yaml, events.jsonl) regardless of whether the session is
+
+  active or completed. After extended dispatch runs with 1,600+
+
+  sessions, this exhausts daemon resources (~13,000 FDs) and causes
+
+  the HTTP handler to stop responding even though the process stays
+
+  alive. The spec needs to explicitly require that FD usage scales
+
+  with the number of active sessions, not the total historical count.
+
+
+  What: Update ac-3's "then" clause to:
+    "File descriptor count is proportional to the number of active
+    sessions and monitored spec directories"
+
+  How: Run:
+    kspec item ac set @daemon-file-monitoring ac-3 \
+      --then "File descriptor count is proportional to the number of active sessions and monitored spec directories"
+
+  Verify with:
+    kspec item get @daemon-file-monitoring
+
+  Covers: @daemon-file-monitoring ac-3 (update).
+spec_ref: "@daemon-file-monitoring"
+plan_ref: "@plan-active-session-scoped-file-monitoring"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - spec-update
+  - daemon
+  - sessions
+vcs_refs: []
+created_at: 2026-04-04T06:33:34.725Z
+todos: []

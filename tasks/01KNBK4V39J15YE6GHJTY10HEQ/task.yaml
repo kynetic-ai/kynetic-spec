@@ -1,0 +1,78 @@
+_ulid: 01KNBK4V39J15YE6GHJTY10HEQ
+slugs:
+  - task-fd-regression-test-active-scoping
+title: Add FD budget regression test for active-session-scoped watching
+type: task
+description: |
+  Add a regression test that proves file descriptor count scales with
+  the number of active sessions, not total sessions.
+
+  Why: The original bug was that 1,600+ historical sessions caused
+  ~13,000 open FDs and made the daemon unresponsive. The existing FD
+  measurement test in tests/session-watcher.test.ts (the blob
+  exclusion test at ~line 176) measures FD delta between 1-blob and
+  250-blob sessions, confirming blob content doesn't leak FDs. There
+  is no test that measures FD delta between "many completed sessions"
+  and "few active sessions" — which is the scenario this plan fixes.
+  Without this test, a future change could regress back to watching
+  all sessions.
+
+  What: Create a test that:
+
+  1. Sets up a .kspec-sessions/ fixture directory with N completed
+     sessions (e.g. 50) and M active sessions (e.g. 2). Each session
+     directory contains a session.yaml with the appropriate status
+     field, an empty events.jsonl, and optionally a blobs/ directory.
+     The session status enum has six values (active, completed,
+     abandoned, timed_out, failed, stalled) — use a mix of non-active
+     statuses for the completed fixtures to exercise all paths.
+
+  2. Creates a SessionWatcher on this fixture directory and starts it.
+
+  3. Measures the FD delta (using the same /proc/self/fd counting
+     technique as the existing blob exclusion test, or
+     process.getActiveResourcesInfo if available in the bun runtime).
+
+  4. Asserts that the FD count is proportional to M (active sessions),
+     not N+M (all sessions). Concretely: FD delta should be bounded
+     by a small multiple of M (accounting for the top-level watcher
+     and per-session overhead), and should NOT grow linearly with N.
+
+  5. Optionally: repeat with N=100 and verify FD delta doesn't change
+     significantly, proving independence from completed session count.
+
+  How: Add the test to tests/session-watcher.test.ts alongside the
+  existing FD measurement tests. Use the same fixture creation
+  helpers (writeFileSync for session.yaml with appropriate YAML
+  content, mkdirSync for session directories). The session.yaml
+  content for completed sessions should be:
+    id: <ULID>
+    status: completed
+    started_at: <ISO timestamp>
+    ended_at: <ISO timestamp>
+    agent_type: test
+
+  For active sessions:
+    id: <ULID>
+    status: active
+    started_at: <ISO timestamp>
+    agent_type: test
+
+  Covers: @daemon-file-monitoring ac-3 (updated),
+  ac-active-only-watching, ac-startup-active-only.
+spec_ref: "@daemon-file-monitoring"
+plan_ref: "@plan-active-session-scoped-file-monitoring"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-refactor-session-watcher-active-scoped"
+context: []
+priority: 3
+tags:
+  - daemon
+  - sessions
+  - testing
+vcs_refs: []
+created_at: 2026-04-04T06:33:35.593Z
+todos: []
