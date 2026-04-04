@@ -34374,7 +34374,7 @@ plans:
         depends_on:
           - "@task-monitoring-spec-ac3-active-sessions"
         description: |
-          Add five new acceptance criteria to @daemon-file-monitoring that
+          Add four new acceptance criteria to @daemon-file-monitoring that
           define the active-session-only watching contract.
 
           Why: The existing spec has eight ACs covering blob exclusion,
@@ -34383,23 +34383,30 @@ plans:
           watched. The daemon currently watches all sessions regardless of
           status, which causes resource exhaustion at scale. These new ACs
           establish that the daemon should only maintain file watches for
-          sessions with active status, and that completed/historical sessions
-          are served from disk on demand without watchers.
+          sessions with active status, and that non-active sessions are not
+          watched.
 
-          What: Add these five ACs via kspec item ac add:
+          The session status enum (defined in src/sessions/types.ts) includes
+          six values: active, completed, abandoned, timed_out, failed, and
+          stalled. Only "active" is non-terminal for watching purposes — all
+          other statuses indicate the session is no longer receiving updates
+          and does not need a file watcher.
+
+          What: Add these four ACs via kspec item ac add:
 
           ac-active-only-watching:
-            given: The sessions directory contains both active and completed
-                   sessions
+            given: The sessions directory contains both active and non-active
+                   sessions (completed, abandoned, failed, timed_out, or
+                   stalled)
             when: File monitoring is running for the sessions directory
             then: Only sessions with active status are individually watched
-                  for metadata and event changes; completed, abandoned, failed,
-                  and timed-out sessions are not watched
+                  for metadata and event changes; sessions with any other
+                  status are not watched
 
           ac-session-close-unwatch:
-            given: A watched session transitions to a terminal status
-                   (completed, abandoned, failed, timed_out)
-            when: The session close is detected by the watcher
+            given: A watched session transitions from active to any non-active
+                   status (completed, abandoned, failed, timed_out, or stalled)
+            when: The status change is detected by the watcher
             then: The per-session watch is removed and its file descriptors
                   are released
 
@@ -34414,18 +34421,9 @@ plans:
                    directory
             when: File monitoring is initialized
             then: Only sessions with active status at startup time are
-                  watched; historical sessions are not watched
+                  watched; sessions with any other status are not watched
 
-          ac-unwatched-disk-fallback:
-            given: A client requests data for a session that is not being
-                   watched
-            when: The API route handles the request
-            then: Session data is read from disk on demand; the session is
-                  not added to the watch set
-
-          How: Run five kspec item ac add commands against
-          @daemon-file-monitoring. Use the exact id, given, when, and then
-          text above. Use kspec batch for atomicity:
+          How: Use kspec batch for atomicity:
 
           [
             {
@@ -34433,9 +34431,9 @@ plans:
               "args": {
                 "ref": "@daemon-file-monitoring",
                 "id": "ac-active-only-watching",
-                "given": "The sessions directory contains both active and completed sessions",
+                "given": "The sessions directory contains both active and non-active sessions (completed, abandoned, failed, timed_out, or stalled)",
                 "when": "File monitoring is running for the sessions directory",
-                "then": "Only sessions with active status are individually watched for metadata and event changes; completed, abandoned, failed, and timed-out sessions are not watched"
+                "then": "Only sessions with active status are individually watched for metadata and event changes; sessions with any other status are not watched"
               }
             },
             {
@@ -34443,8 +34441,8 @@ plans:
               "args": {
                 "ref": "@daemon-file-monitoring",
                 "id": "ac-session-close-unwatch",
-                "given": "A watched session transitions to a terminal status (completed, abandoned, failed, timed_out)",
-                "when": "The session close is detected by the watcher",
+                "given": "A watched session transitions from active to any non-active status (completed, abandoned, failed, timed_out, or stalled)",
+                "when": "The status change is detected by the watcher",
                 "then": "The per-session watch is removed and its file descriptors are released"
               }
             },
@@ -34465,17 +34463,7 @@ plans:
                 "id": "ac-startup-active-only",
                 "given": "The daemon starts with existing sessions in the sessions directory",
                 "when": "File monitoring is initialized",
-                "then": "Only sessions with active status at startup time are watched; historical sessions are not watched"
-              }
-            },
-            {
-              "command": "item ac add",
-              "args": {
-                "ref": "@daemon-file-monitoring",
-                "id": "ac-unwatched-disk-fallback",
-                "given": "A client requests data for a session that is not being watched",
-                "when": "The API route handles the request",
-                "then": "Session data is read from disk on demand; the session is not added to the watch set"
+                "then": "Only sessions with active status at startup time are watched; sessions with any other status are not watched"
               }
             }
           ]
@@ -34485,7 +34473,7 @@ plans:
 
           Covers: @daemon-file-monitoring (new ACs: ac-active-only-watching,
           ac-session-close-unwatch, ac-new-session-conditional-watch,
-          ac-startup-active-only, ac-unwatched-disk-fallback).
+          ac-startup-active-only).
 
       # ─── Phase 2: Session Watcher Refactor ───
 
@@ -34522,12 +34510,17 @@ plans:
              detects new session directories appearing (addDir events). This
              watcher does not recurse into session directories.
 
-          2. Per-session chokidar watchers, stored in a Map<string, FSWatcher>,
+          2. Per-session chokidar watchers, stored in a Map<string, ChokidarWatcher>,
              created only for sessions whose session.yaml has status "active".
              Each per-session watcher monitors that session's directory for
              session.yaml and events.jsonl changes. The existing
              shouldIgnorePath logic (blob exclusion, non-yaml/jsonl filtering)
              applies to per-session watchers.
+
+          The session status enum (defined in src/sessions/types.ts) has six
+          values: active, completed, abandoned, timed_out, failed, stalled.
+          Only status === "active" means the session needs watching. All other
+          statuses are non-active and should not have watchers.
 
           Startup behavior: scan .kspec-sessions/ for all session directories.
           For each, read session.yaml and parse the status field. Create
@@ -34538,11 +34531,11 @@ plans:
           a new session directory, read its session.yaml. If status is
           "active", create a per-session watcher. If the session.yaml doesn't
           exist yet (race with session creation), retry after a short delay
-          (e.g. 200ms). If status is already terminal, skip.
+          (e.g. 200ms). If status is already non-active, skip.
 
           Session close detection: when a per-session watcher detects a
           change to session.yaml, re-read the status field. If it has
-          transitioned to a terminal status (completed, abandoned, failed,
+          transitioned to any non-active status (completed, abandoned, failed,
           timed_out, stalled), close that per-session watcher, remove it
           from the Map, and fire onSessionChange one final time so the
           entity cache picks up the terminal state.
@@ -34563,8 +34556,8 @@ plans:
           on daemon restart, SessionRegistry is empty but sessions from a
           previous run may still have status "active" on disk. The watcher
           must pick those up. The existing stale session detection (24h
-          older-than / 6h inactive-for thresholds) handles truly abandoned
-          sessions separately.
+          older-than / 6h inactive-for thresholds in src/sessions/store.ts)
+          handles truly abandoned sessions separately.
 
           Preserve the existing error handling: per-session watcher errors
           should trigger the same retry-with-backoff and eventual
@@ -34574,7 +34567,7 @@ plans:
           How: Edit packages/daemon/src/session-watcher.ts. The class
           interface (constructor options, start(), stop(), public API) stays
           the same. Internal state changes from a single `watcher` field to
-          a `topLevelWatcher` plus a `sessionWatchers: Map<string, FSWatcher>`.
+          a `topLevelWatcher` plus a `sessionWatchers: Map<string, ChokidarWatcher>`.
           The stop() method must close all per-session watchers in addition
           to the top-level watcher. Update the existing tests in
           tests/session-watcher.test.ts to cover the new behavior.
@@ -34582,55 +34575,6 @@ plans:
           Covers: @daemon-file-monitoring ac-3 (updated), ac-active-only-watching,
           ac-session-close-unwatch, ac-new-session-conditional-watch,
           ac-startup-active-only.
-
-      - title: Verify on-demand disk reads for unwatched sessions
-        slug: task-verify-unwatched-session-disk-reads
-        priority: 2
-        tags: [daemon, sessions, api]
-        spec_ref: "@daemon-file-monitoring"
-        depends_on:
-          - "@task-refactor-session-watcher-active-scoped"
-        description: |
-          Verify that API routes serving session data for completed (unwatched)
-          sessions return correct data via disk reads without errors.
-
-          Why: After the SessionWatcher refactor, completed sessions no longer
-          have file watchers and won't trigger entity cache invalidation. The
-          session API routes in packages/daemon/src/routes/sessions.ts already
-          have disk fallback paths (used when the cache domain is not "ready"
-          or when a session isn't in the bounded cache index). This task
-          confirms those paths work correctly in the new regime where most
-          sessions are deliberately unwatched, not just temporarily uncached.
-
-          What: Add or verify integration tests for these scenarios:
-
-          1. GET /api/sessions/:id where :id is a completed session not in
-             the entity cache's top-100 index — should return the session
-             metadata read from .kspec-sessions/:id/session.yaml.
-
-          2. GET /api/sessions/:id/events where :id is a completed session —
-             should stream events from .kspec-sessions/:id/events.jsonl.
-
-          3. GET /api/sessions with a status filter that includes "completed"
-             — should return completed sessions alongside any cached active
-             sessions.
-
-          4. GET /api/sessions/:id for a session that has never been watched
-             (created before daemon started, already completed) — should
-             return data from disk without adding the session to the watch set.
-
-          The tests should use the existing daemon test infrastructure
-          (app-handle helper or equivalent) with a sessions directory
-          containing both active and completed session fixtures.
-
-          How: Add tests in tests/daemon-api/ or tests/session-watcher.test.ts
-          (whichever is more appropriate given existing test organization).
-          Create session fixtures with completed status in session.yaml. Make
-          API requests and assert correct responses. Verify no new file
-          watchers are created for the completed sessions (check the watcher's
-          internal sessionWatchers Map size if exposed, or measure FD delta).
-
-          Covers: @daemon-file-monitoring ac-unwatched-disk-fallback.
 
       # ─── Phase 3: FD Regression Test ───
 
@@ -34662,12 +34606,15 @@ plans:
              sessions (e.g. 50) and M active sessions (e.g. 2). Each session
              directory contains a session.yaml with the appropriate status
              field, an empty events.jsonl, and optionally a blobs/ directory.
+             The session status enum has six values (active, completed,
+             abandoned, timed_out, failed, stalled) — use a mix of non-active
+             statuses for the completed fixtures to exercise all paths.
 
           2. Creates a SessionWatcher on this fixture directory and starts it.
 
           3. Measures the FD delta (using the same /proc/self/fd counting
-             technique as the existing blob exclusion test, or process.getActiveResourcesInfo
-             if available in the bun runtime).
+             technique as the existing blob exclusion test, or
+             process.getActiveResourcesInfo if available in the bun runtime).
 
           4. Asserts that the FD count is proportional to M (active sessions),
              not N+M (all sessions). Concretely: FD delta should be bounded
@@ -34742,13 +34689,34 @@ plans:
       status: active. The watcher needs to pick those up. The stale session
 
       detection (24h/6h thresholds) handles truly abandoned sessions separately.
+
+
+      ### On-demand disk reads for unwatched sessions
+
+
+      API routes for session data (packages/daemon/src/routes/sessions.ts)
+
+      already have disk fallback paths — used when the entity cache domain is
+
+      not "ready" or when a session isn't in the bounded top-100 index. This
+
+      behavior is already covered by existing specs: @daemon-entity-cache
+
+      ac-detail-on-demand, ac-graceful-degradation, and ac-session-bounded-index
+
+      cover on-demand disk reads, while @session-list-pagination-api owns
+
+      GET /api/sessions behavior. No new spec or AC is needed for this path.
     status: draft
     approved_at: null
-    branch: null
     derived_specs: []
     derived_tasks: []
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec/plans/active-session-scoped-watching.md
     created_at: 2026-04-04T06:14:54.219Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KNBJHPFZ8BCYJNDMFVH8QE7J
+        content: Content updated from file
+        author: "@claude"
+        created_at: 2026-04-04T06:23:08.287Z
