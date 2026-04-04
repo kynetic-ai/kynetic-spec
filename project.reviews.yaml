@@ -114468,3 +114468,29 @@ reviews:
     created_at: 2026-04-04T08:26:41.040Z
     updated_at: 2026-04-04T08:30:39.892Z
     notes: []
+  - _ulid: 01KNDBV7S7E5Z4JZCV629JA2VG
+    slugs: []
+    title: "Plan review: Granular Cache Invalidation"
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KNDBV7S70T7KP378Y3N0MFR3
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-04T23:04:29.735Z
+    examined_commit: null
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-granular-cache-invalidation"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-04T23:04:29.735Z
+    updated_at: null
+    notes: []
