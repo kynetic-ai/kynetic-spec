@@ -24,3 +24,11 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-04T06:54:33.444Z
+  - _ulid: 01KNBMHM81M638W0MF4JRTDMDQ
+    content: "Fix cycle 1 plan: narrow @daemon-file-monitoring ac-7 so new-session detection applies
+      only to newly created active sessions. This removes the contradiction with
+      ac-new-session-conditional-watch while preserving the intended behavior that active sessions
+      added after startup are watched without a daemon restart."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-04T06:58:03.137Z

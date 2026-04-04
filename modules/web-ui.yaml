@@ -3722,14 +3722,10 @@ features:
           event delivery occurs
         when: |
           A file changes in one project's monitored directory
-      - given: |
-          A new session directory is created after monitoring started
+      - given: A new session directory for a session with active status is created after monitoring started
         id: ac-7
-        then: |
-          The new session's metadata changes are detected without
-          requiring a monitoring restart
-        when: |
-          Metadata files are written into the new session directory
+        then: The new session's metadata changes are detected without requiring a monitoring restart
+        when: Metadata files are written into the new session directory
       - given: |
           The monitoring system encounters a persistent error for a
           project directory
