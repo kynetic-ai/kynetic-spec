@@ -57,9 +57,37 @@ describe("ProjectEntityCache", () => {
   });
 
   afterEach(async () => {
+    vi.restoreAllMocks();
+    vi.doUnmock("fs/promises");
+    vi.resetModules();
     clearAllEntityCaches();
     await cleanupTempDir(fixturesRoot);
   });
+
+  async function importEntityCacheWithMockedOpendir(
+    directoryHandle: Awaited<ReturnType<typeof fs.opendir>>,
+  ): Promise<{
+    ProjectEntityCacheCtor: typeof ProjectEntityCache;
+    opendirMock: ReturnType<typeof vi.fn>;
+  }> {
+    vi.resetModules();
+
+    let opendirMock!: ReturnType<typeof vi.fn>;
+    vi.doMock("fs/promises", async (importOriginal) => {
+      const actual = await importOriginal<typeof import("fs/promises")>();
+      opendirMock = vi.fn().mockResolvedValue(directoryHandle);
+      return {
+        ...actual,
+        opendir: opendirMock,
+      };
+    });
+
+    const entityCacheModule = await import("../src/daemon/entity-cache");
+    return {
+      ProjectEntityCacheCtor: entityCacheModule.ProjectEntityCache,
+      opendirMock,
+    };
+  }
 
   // ─── fileToDomain mapping ──────────────────────────────────────────────
 
@@ -914,6 +942,67 @@ describe("ProjectEntityCache", () => {
       expect(sessionIndex![0].id).toBe("session-004"); // March 5
       expect(sessionIndex![1].id).toBe("session-003"); // March 4
       expect(sessionIndex![2].id).toBe("session-002"); // March 3
+    });
+  });
+
+  // AC: @daemon-entity-cache ac-deterministic-fd-cleanup
+  describe("ac-deterministic-fd-cleanup: session enumeration closes directory handles", () => {
+    it("closes the session directory handle after a successful enumeration", async () => {
+      const sessionsDir = join(projectA, ".kspec-sessions");
+      const sessionId = "session-close-success";
+      await fs.mkdir(join(sessionsDir, sessionId), { recursive: true });
+      await fs.writeFile(
+        join(sessionsDir, sessionId, "session.yaml"),
+        yamlStringify({
+          id: sessionId,
+          agent_type: "claude-agent-acp",
+          status: "completed",
+          started_at: "2026-03-01T00:00:00.000Z",
+          ended_at: "2026-03-01T01:00:00.000Z",
+        }),
+        "utf-8",
+      );
+
+      const close = vi.fn().mockResolvedValue(undefined);
+      const read = vi
+        .fn()
+        .mockResolvedValueOnce({
+          name: sessionId,
+          isDirectory: () => true,
+        })
+        .mockResolvedValueOnce(null);
+
+      const { ProjectEntityCacheCtor, opendirMock } = await importEntityCacheWithMockedOpendir({
+        read,
+        close,
+      } as unknown as Awaited<ReturnType<typeof fs.opendir>>);
+
+      const cache = new ProjectEntityCacheCtor(projectA);
+      await cache.loadDomain("sessions");
+
+      expect(opendirMock).toHaveBeenCalledWith(sessionsDir);
+      expect(read).toHaveBeenCalledTimes(2);
+      expect(close).toHaveBeenCalledTimes(1);
+      expect(cache.getSessionIndex()?.map((session) => session.id)).toEqual([sessionId]);
+    });
+
+    it("closes the session directory handle when enumeration fails", async () => {
+      const sessionsDir = join(projectA, ".kspec-sessions");
+      const close = vi.fn().mockResolvedValue(undefined);
+      const read = vi.fn().mockRejectedValue(new Error("enumeration failed"));
+
+      const { ProjectEntityCacheCtor, opendirMock } = await importEntityCacheWithMockedOpendir({
+        read,
+        close,
+      } as unknown as Awaited<ReturnType<typeof fs.opendir>>);
+
+      const cache = new ProjectEntityCacheCtor(projectA);
+      await cache.loadDomain("sessions");
+
+      expect(opendirMock).toHaveBeenCalledWith(sessionsDir);
+      expect(read).toHaveBeenCalledTimes(1);
+      expect(close).toHaveBeenCalledTimes(1);
+      expect(cache.getSessionIndex()).toEqual([]);
     });
   });
 

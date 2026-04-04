@@ -55,7 +55,19 @@ import {
   resolveStaleSessionCriteria,
   getSessionActivityForStaleCheck,
 } from "../sessions/store.js";
-import { readdir } from "fs/promises";
+import type { Dir } from "fs";
+import * as fs from "fs/promises";
+
+async function closeDirectoryHandle(dir: Dir): Promise<void> {
+  try {
+    await dir.close();
+  } catch (error) {
+    const errorWithCode = error as NodeJS.ErrnoException;
+    if (errorWithCode.code !== "ERR_DIR_CLOSED") {
+      throw error;
+    }
+  }
+}
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -1100,16 +1112,29 @@ export class ProjectEntityCache {
   private async loadSessionIndex(ctx: KspecContext): Promise<void> {
     const sessionsDir = ctx.sessionsDir;
     let sessionIds: string[];
+    let directory: Dir | null = null;
 
     try {
-      const entries = await readdir(sessionsDir, { withFileTypes: true });
-      if (this.disposed) return;
-      sessionIds = entries.filter((e) => e.isDirectory()).map((e) => e.name);
+      directory = await fs.opendir(sessionsDir);
+      sessionIds = [];
+
+      while (true) {
+        const entry = await directory.read();
+        if (entry === null) break;
+        if (entry.isDirectory()) {
+          sessionIds.push(entry.name);
+        }
+        if (this.disposed) return;
+      }
     } catch {
       // No sessions directory — empty index
       if (this.disposed) return;
       this.sessions.index = [];
       return;
+    } finally {
+      if (directory) {
+        await closeDirectoryHandle(directory);
+      }
     }
 
     // Load metadata-only summaries for all sessions (avoids reading events.jsonl)
