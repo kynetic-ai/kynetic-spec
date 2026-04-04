@@ -9,3 +9,11 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-04T08:18:22.091Z
+  - _ulid: 01KNBSF02XTEXG536J68T05BHE
+    content: Implemented deterministic session-directory cleanup in the daemon entity cache by
+      enumerating with fs.opendir() and closing the directory handle in a finally block. Added AC
+      coverage for both successful enumeration and mid-iteration failure so the handle-close
+      contract is exercised directly.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-04T08:23:59.838Z
