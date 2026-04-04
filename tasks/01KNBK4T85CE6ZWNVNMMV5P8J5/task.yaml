@@ -49,8 +49,12 @@ description: >
 spec_ref: "@daemon-file-monitoring"
 plan_ref: "@plan-active-session-scoped-file-monitoring"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Review approved. ac-3 now scopes file descriptor proportionality to active sessions
+  and monitored spec directories, matching @plan-active-session-scoped-file-monitoring. Manual merge
+  to dev was a no-op because dev and dispatch/task/task-monitoring-spec-ac3-active-sessions/01knbk4t
+  already pointed to 0d05e503f03020b11bd11616e265cc09f024f0d3 in this snapshot.
 depends_on: []
 context: []
 priority: 1
@@ -117,8 +121,26 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-04T06:39:19.472Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Review approved. ac-3 now scopes file descriptor proportionality to active sessions and
+          monitored spec directories, matching @plan-active-session-scoped-file-monitoring. Manual
+          merge to dev was a no-op because dev and
+          dispatch/task/task-monitoring-spec-ac3-active-sessions/01knbk4t already pointed to
+          0d05e503f03020b11bd11616e265cc09f024f0d3 in this snapshot.
+        previous: null
+      completed_at:
+        new: 2026-04-04T06:44:35.361Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-04T06:44:35.369Z
 created_at: 2026-04-04T06:33:34.725Z
 started_at: 2026-04-04T06:37:00.965Z
 submitted_at: 2026-04-04T06:37:42.214Z
+completed_at: 2026-04-04T06:44:35.361Z
 todos: []
 automation: eligible
