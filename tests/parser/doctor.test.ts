@@ -181,17 +181,41 @@ describe("Doctor Command", () => {
     });
 
     // AC: @doctor-command ac-setup-agent-hooks
-    it("shows hooks status in setup section", async () => {
+    it("reports error when claude-code detected but no hooks configured", async () => {
       initGitRepo(tempDir);
       await initializeShadow(tempDir, { projectName: "test-project" });
 
-      const report = await getDoctorReport(tempDir);
+      // Force claude-code detection via env var; HOME points to tempDir
+      // so no real ~/.claude/settings.json is found (no hooks configured).
+      vi.stubEnv("CLAUDECODE", "1");
+      vi.stubEnv("HOME", tempDir);
+      try {
+        const report = await getDoctorReport(tempDir);
+        const hooksCheck = report.setup.checks.find((c) => c.name === "hooks");
+        expect(hooksCheck).toBeDefined();
+        expect(hooksCheck!.severity).toBe("error");
+        expect(hooksCheck!.guidance).toContain("kspec setup");
+      } finally {
+        vi.unstubAllEnvs();
+      }
+    });
 
-      const hooksCheck = report.setup.checks.find((c) => c.name === "hooks");
-      expect(hooksCheck).toBeDefined();
-      // No hooks installed in bare test
-      expect(hooksCheck!.severity).toBe("error");
-      expect(hooksCheck!.guidance).toContain("kspec setup");
+    // AC: @doctor-command ac-setup-agent-hooks
+    it("reports ok when agent does not support hooks", async () => {
+      initGitRepo(tempDir);
+      await initializeShadow(tempDir, { projectName: "test-project" });
+
+      // HOME points to tempDir which has no ~/.claude dir,
+      // so agent detection falls through to "unknown" (hooks not applicable).
+      vi.stubEnv("HOME", tempDir);
+      try {
+        const report = await getDoctorReport(tempDir);
+        const hooksCheck = report.setup.checks.find((c) => c.name === "hooks");
+        expect(hooksCheck).toBeDefined();
+        expect(hooksCheck!.severity).toBe("ok");
+      } finally {
+        vi.unstubAllEnvs();
+      }
     });
 
     // AC: @doctor-command ac-setup-agent-hooks
