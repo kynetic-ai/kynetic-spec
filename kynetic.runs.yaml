@@ -22561,7 +22561,7 @@ runs:
     completed_at: 2026-04-04T07:27:27.607Z
   - _ulid: 01KNBPXXMRVAGYV5QJJZZ8BRAX
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -22576,7 +22576,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-04T07:40:25.731Z
-        completed_at: 2026-04-04T07:40:25.731Z
+        completed_at: 2026-04-04T07:40:48.383Z
+        notes: "Search/coverage result: no existing observation or inbox item matched the task-specific
+          delayed-metadata race itself, but that issue was implementation-specific and is now
+          covered by the new regression test and task notes rather than needing meta capture. The
+          only systemic CLI friction found is already tracked as 01KGGPJ6."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-04T07:40:48.383Z
+        completed_at: 2026-04-04T07:40:48.383Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-04T07:39:43.129Z
