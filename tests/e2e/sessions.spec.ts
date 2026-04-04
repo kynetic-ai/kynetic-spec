@@ -1307,7 +1307,7 @@ test.describe("Session History View", () => {
       await writeSessionFixture(daemon.tempDir, {
         id: secondSessionId,
         status: "active",
-        startedAt: "2026-04-01T00:10:00.000Z",
+        startedAt: new Date(Date.now() - 60_000).toISOString(),
         agentType,
       });
 
@@ -1323,7 +1323,7 @@ test.describe("Session History View", () => {
       await writeSessionFixture(daemon.tempDir, {
         id: thirdSessionId,
         status: "active",
-        startedAt: "2026-04-01T00:20:00.000Z",
+        startedAt: new Date(Date.now() - 30_000).toISOString(),
         agentType,
       });
 
