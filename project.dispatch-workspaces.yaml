@@ -36789,7 +36789,7 @@ workspaces:
         head: d51b5485e0c0f3dc3a03e65d05524397937c0075
         last_seen_at: 2026-04-04T07:49:35.281Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fd-regression-test-active-scoping-01knbk4v
-  - active_role: null
+  - active_role: worker
     base_branch_point: d51b5485e0c0f3dc3a03e65d05524397937c0075
     bootstrap:
       status: succeeded
@@ -36878,7 +36878,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-04T08:17:09.134Z
+      updated_at: 2026-04-04T08:17:14.262Z
     integration:
       status: pending
       detail: null
@@ -36887,16 +36887,16 @@ workspaces:
       target_branch: dev
       target_commit: d51b5485e0c0f3dc3a03e65d05524397937c0075
       updated_at: 2026-04-04T08:17:09.134Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KNBS17JCVH7DPTJJNE3K5GCA"
     task_slug: task-fix-session-dir-fd-leak
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-04-04T08:17:09.134Z
+      last_active_at: 2026-04-04T08:17:14.262Z
+      last_reconciled_at: 2026-04-04T08:17:14.262Z
       created_at: 2026-04-04T08:17:09.134Z
-      updated_at: 2026-04-04T08:17:13.144Z
+      updated_at: 2026-04-04T08:17:14.262Z
     workspace_id: dispatch-workspace-01KNBS17JCVH7DPTJJNE3K5GCA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
