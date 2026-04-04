@@ -114644,6 +114644,13 @@ reviews:
           kind: nit
           thread_ulid: 01KNDBZM98PJ0Z5ACBBJQF672F
         timestamp: 2026-04-04T23:06:55.217Z
+      - _ulid: 01KNDBZXEGXVM9XN22PKT0AS9P
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNDBZVWYQCDSBYGA1H6PX7RN
+        timestamp: 2026-04-04T23:07:02.992Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -114838,7 +114845,21 @@ reviews:
               potential confusion between the two invalidation strategies described.
             created_at: 2026-04-04T23:06:53.608Z
         kind: nit
+      - _ulid: 01KNDBZVWYQCDSBYGA1H6PX7RN
+        anchor:
+          type: structured
+          ref: "@daemon-incremental-cache"
+          section: specs
+        entries:
+          - _ulid: 01KNDBZVWYFFZ0XNH7JWJRSSNN
+            author: "@claude"
+            body: The spec is typed as 'feature' but daemon-meta-subdomain is typed as 'requirement'. Both are
+              new behavioral contracts for the daemon cache system. The type distinction is fine
+              (incremental cache is a new capability, meta sub-domains are a structural
+              requirement), but worth confirming the intent is correct.
+            created_at: 2026-04-04T23:07:01.406Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-04T23:04:29.735Z
-    updated_at: 2026-04-04T23:06:53.608Z
+    updated_at: 2026-04-04T23:07:01.406Z
     notes: []
