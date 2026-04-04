@@ -12385,6 +12385,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-04T07:10:56.517Z
+  - _ulid: 01KNBP2BWN02SBKDZSXSGMXFEK
+    type: friction
+    content: "Full npm test hit an intermittent failure in tests/file-lock.test.ts ('count: 4' vs
+      'count: 5') after the session-watcher refactor passed its focused suites and daemon startup
+      suites; isolated rerun of the file-lock test passed immediately, suggesting unrelated
+      concurrency flake in the full-suite environment."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-04T07:24:40.213Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
