@@ -12437,6 +12437,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-04T07:50:11.302Z
+  - _ulid: 01KNBR04QAH188ETE6AZ1DTEFG
+    type: friction
+    content: Already-implemented task cleanup still required a manual submit -> review -> approve ->
+      complete sequence after verification. A direct verified-already-implemented path would reduce
+      lifecycle overhead when work has already landed on the integration branch.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@task-lifecycle"
+    created_at: 2026-04-04T07:58:24.491Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
