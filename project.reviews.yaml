@@ -114532,6 +114532,18 @@ reviews:
         required: true
         created_at: 2026-04-04T23:04:59.866Z
         completed_at: 2026-04-04T23:04:59.866Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All 10 tasks include what/why/how sections. Each task has specific file paths, method
+          names, and verification steps. No task says 'see above' or references planning
+          conversation context. Tasks include exact kspec CLI commands or describe specific code
+          changes with enough detail for an agent to execute without reading the plan document.
+        name: Task standalone-ness
+        required: true
+        created_at: 2026-04-04T23:07:14.982Z
+        completed_at: 2026-04-04T23:07:14.982Z
     events:
       - _ulid: 01KNDBV7S70T7KP378Y3N0MFR3
         actor: "@claude"
@@ -114651,6 +114663,13 @@ reviews:
           kind: nit
           thread_ulid: 01KNDBZVWYQCDSBYGA1H6PX7RN
         timestamp: 2026-04-04T23:07:02.992Z
+      - _ulid: 01KNDC0AQXK99HD4B3PH6F40QK
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Task standalone-ness
+        timestamp: 2026-04-04T23:07:16.614Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -114861,5 +114880,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-04T23:04:29.735Z
-    updated_at: 2026-04-04T23:07:01.406Z
+    updated_at: 2026-04-04T23:07:14.982Z
     notes: []
