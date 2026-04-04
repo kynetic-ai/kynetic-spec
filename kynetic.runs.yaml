@@ -22404,7 +22404,7 @@ runs:
     completed_at: 2026-04-04T03:21:22.452Z
   - _ulid: 01KNBKYPVXGBDAW5T8SYMTDRJW
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -22417,7 +22417,14 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-04T06:48:15.565Z
-        completed_at: 2026-04-04T06:48:15.565Z
+        completed_at: 2026-04-04T06:48:18.587Z
+        notes: "Friction points: direct inline shell quoting for kspec batch payloads was fragile because
+          the AC text included an apostrophe. The effective workaround was to move the payload into
+          a file and pass that content to kspec batch."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-04T06:48:18.587Z
+        completed_at: 2026-04-04T06:48:18.587Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-04T06:47:43.229Z
