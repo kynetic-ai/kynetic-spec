@@ -12447,6 +12447,24 @@ observations:
     resolved: false
     workflow_ref: "@task-lifecycle"
     created_at: 2026-04-04T07:58:24.491Z
+  - _ulid: 01KNBSH76H7N0DSSWGBDFHQ8ZH
+    type: success
+    content: Reusing the existing /proc/self/fd regression pattern from session-watcher tests made it
+      fast to localize a descriptor-leak fix and choose an appropriate daemon-cache regression
+      shape.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-04T08:25:12.657Z
+  - _ulid: 01KNBSH7CWC9KJQSHZ60QKZN1A
+    type: friction
+    content: Vitest cannot spy on ESM namespace exports like fs/promises.opendir, so verifying
+      handle-close behavior required a heavier vi.doMock()+fresh-import pattern instead of a direct
+      spy.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-04T08:25:12.860Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
