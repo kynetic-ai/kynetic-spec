@@ -37,3 +37,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-04T07:34:24.820Z
+  - _ulid: 01KNBPQTE5E2ATPZBY9AE7DW6B
+    content: "Fix cycle 1 plan: address the delayed-metadata race from review by retrying new-session
+      attachment beyond the initial 200ms window with bounded backoff, then add a behavioral test
+      that creates a session directory first and writes session.yaml/events.jsonl 500ms later to
+      prove the watcher still attaches. Re-verify the reviewed ACs (ac-7,
+      ac-new-session-conditional-watch, ac-active-only-watching, ac-session-close-unwatch,
+      ac-startup-active-only) after the patch."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-04T07:36:23.237Z
