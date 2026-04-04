@@ -114637,6 +114637,13 @@ reviews:
           kind: nit
           thread_ulid: 01KNDBZCW9SYQ32373MNSY1VGA
         timestamp: 2026-04-04T23:06:47.611Z
+      - _ulid: 01KNDBZNVHYDZKV3MV2ECAFR3X
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNDBZM98PJ0Z5ACBBJQF672F
+        timestamp: 2026-04-04T23:06:55.217Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -114813,7 +114820,25 @@ reviews:
               ac-fallback-full-reload AC covers the contract.
             created_at: 2026-04-04T23:06:46.026Z
         kind: nit
+      - _ulid: 01KNDBZM98PJ0Z5ACBBJQF672F
+        anchor:
+          type: structured
+          ref: "@task-cache-kspec-context"
+          section: description
+        entries:
+          - _ulid: 01KNDBZM98H32NE7B9GZEQC0E7
+            author: "@claude"
+            body: Task says 'e.g. 5 seconds' for the context cache validity window. This is implementation
+              detail in a task description, which is fine, but consider whether the specific
+              duration should be configurable or derived from the debounce window rather than
+              hardcoded. A context that lives 5 seconds could serve stale data if the debounce
+              window is 100ms and a second change arrives 3 seconds later. The task already says
+              'cache entry should be invalidated when the debounce cycle completes' which is the
+              correct approach — the 5-second TTL is a secondary safety net. Just noting the
+              potential confusion between the two invalidation strategies described.
+            created_at: 2026-04-04T23:06:53.608Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-04T23:04:29.735Z
-    updated_at: 2026-04-04T23:06:46.026Z
+    updated_at: 2026-04-04T23:06:53.608Z
     notes: []
