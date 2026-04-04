@@ -9,3 +9,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-04T06:46:28.560Z
+  - _ulid: 01KNBKXWR5YC29P8BZM00HCPHN
+    content: "Completed spec update: added ac-active-only-watching, ac-session-close-unwatch,
+      ac-new-session-conditional-watch, and ac-startup-active-only to @daemon-file-monitoring.
+      Verified the spec now states the daemon only watches active sessions at startup and for newly
+      detected sessions, and releases per-session watches when status becomes non-active. Ran kspec
+      validate; only pre-existing repository warnings remain (orphaned skills/alignment/completeness
+      debt), with no new schema or reference errors from this task."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-04T06:47:16.485Z
