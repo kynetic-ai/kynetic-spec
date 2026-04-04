@@ -114960,6 +114960,17 @@ reviews:
         required: true
         created_at: 2026-04-04T23:25:00.153Z
         completed_at: 2026-04-04T23:25:00.153Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: AC uses behavioral language (pre/post state, never partial mix). Tasks describe
+          clone-patch-swap mechanism explicitly for each domain. Incremental path is clearly
+          differentiated from full-reload path.
+        name: "Blocker 2: ac-index-consistency mechanism"
+        required: true
+        created_at: 2026-04-04T23:25:07.633Z
+        completed_at: 2026-04-04T23:25:07.633Z
     events:
       - _ulid: 01KNDCZZ3C5J0KS3WC3YWT270M
         actor: "@claude"
@@ -114974,6 +114985,13 @@ reviews:
           status: pass
           name: "Blocker 1: ac-granular-reload regression"
         timestamp: 2026-04-04T23:25:01.810Z
+      - _ulid: 01KNDD127ETH3A1NKW4X26YC6V
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: "Blocker 2: ac-index-consistency mechanism"
+        timestamp: 2026-04-04T23:25:09.231Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -114986,5 +115004,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-04T23:24:33.260Z
-    updated_at: 2026-04-04T23:25:00.153Z
+    updated_at: 2026-04-04T23:25:07.633Z
     notes: []
