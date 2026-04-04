@@ -74,6 +74,7 @@ tags:
   - sessions
   - testing
 vcs_refs: []
+review_ref: "@01KNBQW62CPS3WFKBRE04EV96V"
 submission_linkage:
   review_url: null
   branch: dev
@@ -124,6 +125,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-04-04T07:56:02.019Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KNBQW62CPS3WFKBRE04EV96V"
+        previous: null
+    command: review-link
+    timestamp: 2026-04-04T07:56:17.910Z
 created_at: 2026-04-04T06:33:35.593Z
 started_at: 2026-04-04T07:50:10.849Z
 submitted_at: 2026-04-04T07:56:02.019Z
