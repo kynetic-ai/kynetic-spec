@@ -12407,6 +12407,17 @@ observations:
     resolved_at: 2026-04-04T07:27:13.445Z
     resolved_by: Jacob Chapel
     created_at: 2026-04-04T07:25:45.526Z
+  - _ulid: 01KNBQGJJ60KT3YVNPXMFZHYQC
+    type: friction
+    content: Detached reviewer snapshots cannot complete the required manual merge with a
+      simple  because the integration branch is already checked out in another worktree. Reviewers
+      have to fall back to repo-targeted git commands () from the detached workspace. Consider
+      first-class dispatch support for completing approved merges from detached review snapshots
+      without manual worktree plumbing.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-04T07:49:54.375Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
