@@ -68,5 +68,14 @@ tags:
   - daemon
   - cache
 vcs_refs: []
+history:
+  - author: "@claude"
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-04-04T23:43:32.348Z
 created_at: 2026-04-04T23:34:26.315Z
 todos: []
+automation: eligible

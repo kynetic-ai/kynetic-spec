@@ -24843,6 +24843,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-04T23:34:26.315Z
+  automation: eligible
 - _ulid: 01KNDDJ2JK36PAG8WA81WMTSD2
   slugs:
     - task-watcher-content-passthrough
