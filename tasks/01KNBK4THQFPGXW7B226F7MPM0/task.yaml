@@ -137,5 +137,14 @@ tags:
   - daemon
   - sessions
 vcs_refs: []
+history:
+  - author: "@claude"
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-04-04T06:34:36.069Z
 created_at: 2026-04-04T06:33:35.031Z
 todos: []
+automation: eligible
