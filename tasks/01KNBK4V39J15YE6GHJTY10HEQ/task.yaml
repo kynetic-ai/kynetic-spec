@@ -63,7 +63,7 @@ description: |
 spec_ref: "@daemon-file-monitoring"
 plan_ref: "@plan-active-session-scoped-file-monitoring"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-refactor-session-watcher-active-scoped"
@@ -74,6 +74,14 @@ tags:
   - sessions
   - testing
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-04-04T07:56:02.010Z
+  commit: d51b5485e0c0f3dc3a03e65d05524397937c0075
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dev
 session_id: 01KNBQG5FM5PJHSPQYNA88TD1Z
 history:
   - author: "@claude"
@@ -96,7 +104,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-04T07:50:10.850Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-04-04T07:56:02.010Z
+          commit: d51b5485e0c0f3dc3a03e65d05524397937c0075
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-04-04T07:56:02.019Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-04T07:56:02.019Z
 created_at: 2026-04-04T06:33:35.593Z
 started_at: 2026-04-04T07:50:10.849Z
+submitted_at: 2026-04-04T07:56:02.019Z
 todos: []
 automation: eligible
