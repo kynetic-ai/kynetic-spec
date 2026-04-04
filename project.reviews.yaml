@@ -113121,6 +113121,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNBJ7Q19HKY7HQXBFQ369621
         timestamp: 2026-04-04T06:17:43.138Z
+      - _ulid: 01KNBJ7T8CJZAPTV39SF08K4AV
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNBJ7Q1KBZB0PTX4J29WN938
+        timestamp: 2026-04-04T06:17:44.460Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -113148,7 +113155,24 @@ reviews:
               observable route behavior.
             created_at: 2026-04-04T06:17:41.162Z
         kind: blocker
+      - _ulid: 01KNBJ7Q1KBZB0PTX4J29WN938
+        anchor:
+          type: structured
+          field: ac-session-close-unwatch
+          ref: "@daemon-file-monitoring"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KNBJ7Q1MK2S35080CQQB0G2G
+            author: "@claude"
+            body: The new terminal-status contract is inconsistent with the runtime model. The plan text and
+              proposed ACs only treat completed, abandoned, failed, and timed_out as terminal, but
+              the current session schema also includes stalled and the refactor task explicitly says
+              stalled sessions should be unwatched. As written, the spec would either leave stalled
+              sessions watched indefinitely or require implementation beyond spec. Add stalled
+              consistently anywhere terminal/non-active session states are enumerated.
+            created_at: 2026-04-04T06:17:41.172Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-04T06:17:11.744Z
-    updated_at: 2026-04-04T06:17:41.162Z
+    updated_at: 2026-04-04T06:17:41.172Z
     notes: []
