@@ -22315,7 +22315,7 @@ runs:
     started_at: 2026-04-03T23:12:28.762Z
   - _ulid: 01KNB7Z1S0H47W2WB1E7HDZTX7
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -22374,7 +22374,24 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-04T03:19:32.807Z
-        completed_at: 2026-04-04T03:19:32.807Z
+        completed_at: 2026-04-04T03:19:44.971Z
+        notes: >-
+          Proposals for untracked friction:
+
+
+          1. Audit e2e fixtures for hardcoded dates
+             What: Scan e2e test fixtures for hardcoded date strings that will become stale. Replace with relative timestamps (Date.now() offsets).
+             How it helps: Prevents time-bomb test failures like the sessions.spec.ts "stalled" issue.
+             Scope: Small — grep for date patterns, fix individually.
+
+          2. Session checkpoint hook should support an ignore list
+             What: Allow .kspec/config or kspec.config.yaml to specify files the checkpoint hook ignores when checking for uncommitted changes.
+             How it helps: Stops repeated false-positive warnings for pre-existing untracked files like docs/prime-mock.md.
+             Scope: Small — add a config field and filter in the checkpoint hook.
+      - status: completed
+        step_index: 4
+        started_at: 2026-04-04T03:19:44.971Z
+        completed_at: 2026-04-04T03:19:44.971Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-04T03:18:11.489Z
