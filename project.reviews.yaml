@@ -113191,9 +113191,25 @@ reviews:
           status: pass
           name: Dependency ordering
         timestamp: 2026-04-04T06:18:02.984Z
+      - _ulid: 01KNBJ8DJNYG7K5Y9NE00508RG
+        actor: codex@openai
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-04T06:18:04.245Z
+      - _ulid: 01KNBJ8DJN33AE9Z11DNVMZ77Y
+        actor: codex@openai
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-04T06:18:04.245Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -113253,7 +113269,14 @@ reviews:
               watcher responsibilities."
             created_at: 2026-04-04T06:17:41.125Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai
+        role: reviewer
+        created_at: 2026-04-04T06:18:04.244Z
     created_at: 2026-04-04T06:17:11.744Z
-    updated_at: 2026-04-04T06:17:59.713Z
+    updated_at: 2026-04-04T06:18:04.245Z
     notes: []
