@@ -34354,12 +34354,11 @@ plans:
 
           What: Update ac-3's "then" clause to:
             "File descriptor count is proportional to the number of active
-            sessions and monitored spec directories, not to the total number
-            of historical sessions or stored content files"
+            sessions and monitored spec directories"
 
           How: Run:
             kspec item ac set @daemon-file-monitoring ac-3 \
-              --then "File descriptor count is proportional to the number of active sessions and monitored spec directories, not to the total number of historical sessions or stored content files"
+              --then "File descriptor count is proportional to the number of active sessions and monitored spec directories"
 
           Verify with:
             kspec item get @daemon-file-monitoring
@@ -34400,8 +34399,7 @@ plans:
                    stalled)
             when: File monitoring is running for the sessions directory
             then: Only sessions with active status are individually watched
-                  for metadata and event changes; sessions with any other
-                  status are not watched
+                  for metadata and event changes
 
           ac-session-close-unwatch:
             given: A watched session transitions from active to any non-active
@@ -34421,7 +34419,7 @@ plans:
                    directory
             when: File monitoring is initialized
             then: Only sessions with active status at startup time are
-                  watched; sessions with any other status are not watched
+                  watched
 
           How: Use kspec batch for atomicity:
 
@@ -34433,7 +34431,7 @@ plans:
                 "id": "ac-active-only-watching",
                 "given": "The sessions directory contains both active and non-active sessions (completed, abandoned, failed, timed_out, or stalled)",
                 "when": "File monitoring is running for the sessions directory",
-                "then": "Only sessions with active status are individually watched for metadata and event changes; sessions with any other status are not watched"
+                "then": "Only sessions with active status are individually watched for metadata and event changes"
               }
             },
             {
@@ -34463,7 +34461,7 @@ plans:
                 "id": "ac-startup-active-only",
                 "given": "The daemon starts with existing sessions in the sessions directory",
                 "when": "File monitoring is initialized",
-                "then": "Only sessions with active status at startup time are watched; sessions with any other status are not watched"
+                "then": "Only sessions with active status at startup time are watched"
               }
             }
           ]
@@ -34720,3 +34718,7 @@ plans:
         content: Content updated from file
         author: "@claude"
         created_at: 2026-04-04T06:23:08.287Z
+      - _ulid: 01KNBJYVJPK2AWMR7NRMJ3RCMA
+        content: Content updated from file
+        author: "@claude"
+        created_at: 2026-04-04T06:30:19.478Z
