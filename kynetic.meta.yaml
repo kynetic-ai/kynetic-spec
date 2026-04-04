@@ -12306,6 +12306,28 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-04T06:43:45.052Z
+  - _ulid: 01KNBKT81N7Q655AWWEPS5FMQ7
+    type: friction
+    content: "Detached reviewer snapshots can hit a dead end on the prescribed manual merge flow: git
+      checkout <integration-branch> fails when that branch is already checked out in another
+      worktree, even when the task branch and integration branch already point to the same commit
+      and the merge is a no-op. Review/merge guidance or tooling should recognize and handle the
+      identical-commit case before instructing checkout/merge."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-04T06:45:16.981Z
+  - _ulid: 01KNBKT885H127C6AMXN8MXJFH
+    type: friction
+    content: Recording review checks/verdicts triggered shadow auto-push warnings (pull-rebase
+      conflicts) even though the local review metadata commits succeeded. Reviewer flow would be
+      smoother if review metadata writes either avoided noisy auto-push conflict warnings in
+      detached snapshots or provided a clearer built-in recovery path than manual kspec shadow
+      resolve.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-04T06:45:17.189Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
