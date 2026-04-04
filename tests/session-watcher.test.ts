@@ -26,6 +26,10 @@ async function waitForDebounce(): Promise<void> {
   await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_WAIT));
 }
 
+async function waitForMs(ms: number): Promise<void> {
+  await new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 async function countOpenFileDescriptors(): Promise<number> {
   return (await readdir("/proc/self/fd")).length;
 }
@@ -117,6 +121,36 @@ describeOrSkip("SessionWatcher", () => {
     await waitForDebounce();
 
     expect(onSessionChange).toHaveBeenCalledTimes(1);
+    expect(onSessionChange).toHaveBeenCalledWith(sessionDir);
+
+    await watcher.stop();
+  });
+
+  // AC: @daemon-file-monitoring ac-7
+  // AC: @daemon-file-monitoring ac-new-session-conditional-watch
+  it("attaches to a new active session when metadata arrives after the directory", async () => {
+    const onSessionChange = vi.fn();
+    const sessionsDir = join(projectDir, ".kspec-sessions");
+    const sessionId = "01JTESTSESSIONWATCHER000000A";
+    const sessionDir = join(sessionsDir, sessionId);
+
+    const watcher = new SessionWatcher({
+      sessionsDir,
+      onSessionChange,
+      onError: vi.fn(),
+    });
+
+    await watcher.start();
+
+    await mkdir(sessionDir, { recursive: true });
+    await waitForMs(500);
+    await writeSessionFixture(projectDir, sessionId, "active");
+    await waitForDebounce();
+
+    await writeFile(join(sessionDir, "events.jsonl"), '{"type":"session.updated"}\n', { flag: "a" });
+    await waitForDebounce();
+
+    expect(onSessionChange).toHaveBeenCalled();
     expect(onSessionChange).toHaveBeenCalledWith(sessionDir);
 
     await watcher.stop();

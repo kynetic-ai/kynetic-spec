@@ -20,9 +20,13 @@ export interface SessionWatcherOptions {
 export class SessionWatcher {
   private topLevelWatcher: ChokidarWatcher | null = null;
   private sessionWatchers = new Map<string, ChokidarWatcher>();
-  private pendingSessionWatchers = new Map<string, Promise<void>>();
+  private pendingSessionWatchers = new Map<string, Promise<SessionWatcherAttachResult>>();
+  private sessionWatcherRetryTimers = new Map<string, NodeJS.Timeout>();
+  private sessionWatcherRetryCounts = new Map<string, number>();
   private debounceTimers = new Map<string, NodeJS.Timeout>();
   private debounceMs = 250;
+  private sessionWatcherRetryDelayMs = 200;
+  private maxSessionWatcherRetries = 15;
   private retryCount = 0;
   private maxRetries = 5;
   private baseBackoffMs = 1000;
@@ -128,6 +132,7 @@ export class SessionWatcher {
     }
 
     if (this.sessionWatchers.has(sessionRoot)) {
+      this.clearSessionWatcherRetry(sessionRoot);
       if (emitInitialChange) {
         this.handleFileChange(sessionRoot);
       }
@@ -143,16 +148,33 @@ export class SessionWatcher {
     const startPromise = this.ensureSessionWatcher(sessionRoot, emitInitialChange);
     this.pendingSessionWatchers.set(sessionRoot, startPromise);
     try {
-      await startPromise;
+      const result = await startPromise;
+      if (result === "missing") {
+        this.scheduleSessionWatcherRetry(sessionRoot, emitInitialChange);
+        return;
+      }
+
+      this.clearSessionWatcherRetry(sessionRoot);
     } finally {
       this.pendingSessionWatchers.delete(sessionRoot);
     }
   }
 
-  private async ensureSessionWatcher(sessionRoot: string, emitInitialChange: boolean): Promise<void> {
-    const status = await this.readSessionStatus(sessionRoot, emitInitialChange ? 1 : 0);
-    if (status !== "active" || this.sessionWatchers.has(sessionRoot) || this.stopped) {
-      return;
+  private async ensureSessionWatcher(
+    sessionRoot: string,
+    emitInitialChange: boolean,
+  ): Promise<SessionWatcherAttachResult> {
+    const status = await this.readSessionStatus(sessionRoot);
+    if (status === null) {
+      return "missing";
+    }
+
+    if (status !== "active" || this.stopped) {
+      return "inactive";
+    }
+
+    if (this.sessionWatchers.has(sessionRoot)) {
+      return "active";
     }
 
     const watcher = chokidarWatch(sessionRoot, {
@@ -190,13 +212,15 @@ export class SessionWatcher {
 
     if (this.stopped) {
       await watcher.close();
-      return;
+      return "inactive";
     }
 
     this.sessionWatchers.set(sessionRoot, watcher);
     if (emitInitialChange) {
       this.handleFileChange(sessionRoot);
     }
+
+    return "active";
   }
 
   private async handleSessionDirRemoved(sessionRoot: string): Promise<void> {
@@ -204,6 +228,7 @@ export class SessionWatcher {
       return;
     }
 
+    this.clearSessionWatcherRetry(sessionRoot);
     await this.closeSessionWatcher(sessionRoot);
     this.handleFileChange(sessionRoot);
   }
@@ -214,7 +239,7 @@ export class SessionWatcher {
     }
 
     if (this.isSessionMetadataPath(filePath)) {
-      const status = await this.readSessionStatus(sessionRoot);
+      const status = await this.readSessionStatus(sessionRoot, 1);
       if (status && status !== "active") {
         await this.closeSessionWatcher(sessionRoot);
         this.handleFileChange(sessionRoot);
@@ -283,11 +308,47 @@ export class SessionWatcher {
   }
 
   private async closeSessionWatcher(sessionRoot: string): Promise<void> {
+    this.clearSessionWatcherRetry(sessionRoot);
     const watcher = this.sessionWatchers.get(sessionRoot);
     this.sessionWatchers.delete(sessionRoot);
     if (watcher) {
       await watcher.close();
     }
+  }
+
+  private scheduleSessionWatcherRetry(sessionRoot: string, emitInitialChange: boolean): void {
+    if (this.stopped || this.sessionWatchers.has(sessionRoot) || this.sessionWatcherRetryTimers.has(sessionRoot)) {
+      return;
+    }
+
+    const retryCount = this.sessionWatcherRetryCounts.get(sessionRoot) ?? 0;
+    if (retryCount >= this.maxSessionWatcherRetries) {
+      this.sessionWatcherRetryCounts.delete(sessionRoot);
+      return;
+    }
+
+    this.sessionWatcherRetryCounts.set(sessionRoot, retryCount + 1);
+
+    const timer = setTimeout(() => {
+      this.sessionWatcherRetryTimers.delete(sessionRoot);
+      void this.handleSessionDirAdded(sessionRoot, emitInitialChange);
+    }, this.sessionWatcherRetryDelayMs);
+
+    if (typeof timer === "object" && "unref" in timer) {
+      timer.unref();
+    }
+
+    this.sessionWatcherRetryTimers.set(sessionRoot, timer);
+  }
+
+  private clearSessionWatcherRetry(sessionRoot: string): void {
+    const timer = this.sessionWatcherRetryTimers.get(sessionRoot);
+    if (timer) {
+      clearTimeout(timer);
+      this.sessionWatcherRetryTimers.delete(sessionRoot);
+    }
+
+    this.sessionWatcherRetryCounts.delete(sessionRoot);
   }
 
   private async delay(ms: number): Promise<void> {
@@ -377,6 +438,12 @@ export class SessionWatcher {
       this.bootstrapPollTimer = null;
     }
 
+    for (const timer of this.sessionWatcherRetryTimers.values()) {
+      clearTimeout(timer);
+    }
+    this.sessionWatcherRetryTimers.clear();
+    this.sessionWatcherRetryCounts.clear();
+
     await Promise.all(
       Array.from(this.sessionWatchers.keys(), (sessionRoot) => this.closeSessionWatcher(sessionRoot)),
     );
@@ -388,3 +455,5 @@ export class SessionWatcher {
     }
   }
 }
+
+type SessionWatcherAttachResult = "active" | "inactive" | "missing";
