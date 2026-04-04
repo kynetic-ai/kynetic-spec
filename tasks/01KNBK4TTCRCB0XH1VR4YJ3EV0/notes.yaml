@@ -23,3 +23,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-04T07:24:41.565Z
+  - _ulid: 01KNBP365B4J3321F1HE998GMT
+    content: "Verification: npm test -- tests/session-watcher.test.ts tests/cli-serve.test.ts
+      tests/daemon-api/websocket-protocol.test.ts passed (46 tests). kspec validate passed with
+      existing repository warning debt only. Full npm test no longer showed daemon/session-watcher
+      regressions, but one unrelated intermittent failure remained in tests/file-lock.test.ts
+      ('count: 4' vs 'count: 5'); isolated rerun of tests/file-lock.test.ts passed immediately."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-04T07:25:07.115Z
