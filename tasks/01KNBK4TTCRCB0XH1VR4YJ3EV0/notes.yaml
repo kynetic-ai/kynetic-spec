@@ -1,1 +1,14 @@
-notes: []
+notes:
+  - _ulid: 01KNBNABT688VCQJ2FW4VWXHK3
+    content: "Approach: refactor SessionWatcher into a depth-0 top-level watcher plus per-session
+      watchers keyed by session root, reusing src/sessions/store.ts getSession() for status
+      detection instead of adding a second YAML parser. Edge cases: sessionsDir missing at startup,
+      addDir before session.yaml exists, daemon restart with pre-existing active sessions,
+      active->terminal transitions needing one final callback plus watcher cleanup, and preserving
+      retry/backoff for both top-level and per-session watcher failures. Test plan: behavioral
+      coverage in tests/session-watcher.test.ts for startup active-only attachment, conditional
+      watching of new sessions, unwatch on terminal status, blob/non-metadata ignores remaining
+      intact, and FD usage staying tied to active session count rather than total sessions."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-04T07:11:33.702Z
