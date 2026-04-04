@@ -114595,6 +114595,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNDBXD7VMVWGMQMVVXQM1M1X
         timestamp: 2026-04-04T23:05:42.440Z
+      - _ulid: 01KNDBXXG9K4M6W2WS6Q3N2WK5
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KNDBXVYBCTSCS8NVD3BAHBEB
+        timestamp: 2026-04-04T23:05:57.513Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -114672,7 +114679,26 @@ reviews:
               cross-domain contract regresses."
             created_at: 2026-04-04T23:05:40.859Z
         kind: blocker
+      - _ulid: 01KNDBXVYBCTSCS8NVD3BAHBEB
+        anchor:
+          type: structured
+          ref: "@task-meta-subdomain-decomposition"
+          section: description
+        entries:
+          - _ulid: 01KNDBXVYB9XKVVA4BPZGEFBDH
+            author: "@claude"
+            body: The task says 'The meta domain state is ready when all three sub-domains have loaded at least
+              once.' This introduces a new concept (sub-domain readiness) that interacts with the
+              existing ac-progressive-loading and ac-warming-availability on daemon-entity-cache.
+              Those ACs describe domain-level progressive loading. If meta has three sub-domains
+              that can load independently, does partial meta readiness (e.g., manifest loaded but
+              shadow not yet) count as 'meta domain ready'? The daemon-meta-subdomain spec should
+              address this — either meta is not ready until all three sub-domains load (as the task
+              states), or partial readiness is supported with a finer-grained state. The current ACs
+              on daemon-entity-cache assume domain as the granularity unit for readiness.
+            created_at: 2026-04-04T23:05:55.915Z
+        kind: question
     verdicts: []
     created_at: 2026-04-04T23:04:29.735Z
-    updated_at: 2026-04-04T23:05:40.859Z
+    updated_at: 2026-04-04T23:05:55.915Z
     notes: []
