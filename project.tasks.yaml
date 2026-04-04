@@ -24863,6 +24863,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-04T23:34:26.643Z
+  automation: eligible
 - _ulid: 01KNDDJ2W7RD7D0PTZJ7WXTZ53
   slugs:
     - task-debounce-path-accumulation

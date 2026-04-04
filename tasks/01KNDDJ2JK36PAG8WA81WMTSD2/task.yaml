@@ -64,5 +64,14 @@ tags:
   - cache
   - refactor
 vcs_refs: []
+history:
+  - author: "@claude"
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-04-04T23:43:32.704Z
 created_at: 2026-04-04T23:34:26.643Z
 todos: []
+automation: eligible
