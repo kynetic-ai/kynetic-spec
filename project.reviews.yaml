@@ -113113,6 +113113,17 @@ reviews:
         required: true
         created_at: 2026-04-04T06:17:59.654Z
         completed_at: 2026-04-04T06:17:59.654Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Plan subject resolves, all task spec_ref values target existing @daemon-file-monitoring,
+          the local depends_on chain is internally consistent, and kspec validate --alignment
+          reported References: OK."
+        name: Cross-reference validation
+        required: true
+        created_at: 2026-04-04T06:17:59.706Z
+        completed_at: 2026-04-04T06:17:59.706Z
     events:
       - _ulid: 01KNBJ6TA0PYD7PZV172K1N4CZ
         actor: "@claude"
@@ -113155,6 +113166,13 @@ reviews:
           status: fail
           name: Spec boundary
         timestamp: 2026-04-04T06:18:00.442Z
+      - _ulid: 01KNBJ8B3PTYRN1BJB7BA3NNQY
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Cross-reference validation
+        timestamp: 2026-04-04T06:18:01.718Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -113219,5 +113237,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-04T06:17:11.744Z
-    updated_at: 2026-04-04T06:17:59.654Z
+    updated_at: 2026-04-04T06:17:59.706Z
     notes: []
