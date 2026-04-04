@@ -3739,6 +3739,25 @@ features:
           a logged error identifying the affected project
         when: |
           Recovery attempts are exhausted
+      - given: The sessions directory contains both active and non-active sessions (completed, abandoned,
+          failed, timed_out, or stalled)
+        id: ac-active-only-watching
+        then: Only sessions with active status are individually watched for metadata and event changes
+        when: File monitoring is running for the sessions directory
+      - given: A watched session transitions from active to any non-active status (completed, abandoned,
+          failed, timed_out, or stalled)
+        id: ac-session-close-unwatch
+        then: The per-session watch is removed and its file descriptors are released
+        when: The status change is detected by the watcher
+      - given: A new session directory appears in the sessions directory
+        id: ac-new-session-conditional-watch
+        then: The new session's metadata is checked and a per-session watch is added only if the session has
+          active status
+        when: The top-level directory watcher detects the new entry
+      - given: The daemon starts with existing sessions in the sessions directory
+        id: ac-startup-active-only
+        then: Only sessions with active status at startup time are watched
+        when: File monitoring is initialized
     tags: []
     requirements:
       - _ulid: 01KN7Q6A6JQEKA3ZG43BTVX0E7
