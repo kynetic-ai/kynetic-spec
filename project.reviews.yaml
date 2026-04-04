@@ -114142,7 +114142,17 @@ reviews:
     slugs: []
     title: Review task-refactor-session-watcher-active-scoped (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite passed: 2068/2068 suites, 7514 passed, 5 skipped, 0 failed."
+        name: npm test
+        required: true
+        runner: test.cjs
+        created_at: 2026-04-04T07:47:29.084Z
+        completed_at: 2026-04-04T07:47:29.084Z
     events:
       - _ulid: 01KNBQ2P6HQRZQ1KX3E6ZN3M4C
         actor: Jacob Chapel
@@ -114157,6 +114167,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-04T07:42:35.668Z
+      - _ulid: 01KNBQC5FV5DDJ1C4RG4WMSAGY
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-04T07:47:29.915Z
     examined_commit: 6dc8783a76490a9789559ee248aea3d643145f14
     external_links: []
     lifecycle_state: open
@@ -114169,5 +114186,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-04T07:42:19.345Z
-    updated_at: 2026-04-04T07:42:34.830Z
+    updated_at: 2026-04-04T07:47:29.084Z
     notes: []
