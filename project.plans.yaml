@@ -34788,7 +34788,9 @@ plans:
           rather than reloading entire data domains. When the system knows
           which file changed, it uses that information to patch the cached
           index and detail data in place. Full domain reloads remain as a
-          fallback when the changed file cannot be mapped to specific entities.
+          fallback when the changed file cannot be mapped to specific
+          entities or when callers (such as write-through) do not provide
+          file-level context.
         acceptance_criteria:
           - id: ac-file-path-preserved
             given: |
@@ -34890,6 +34892,15 @@ plans:
             then: |
               Only the session context portion of meta is reloaded; manifest
               metadata and shadow health are not re-evaluated
+          - id: ac-initial-load-all
+            given: |
+              A project is registered and the meta domain loads for the first
+              time
+            when: |
+              The initial load completes
+            then: |
+              All three sub-domains (manifest, shadow, session context) are
+              loaded before the meta domain transitions to ready state
       ```
 
 
@@ -34904,47 +34915,11 @@ plans:
       # ─── Phase 1: Spec Updates ───
 
 
-      - title: Update ac-granular-reload to specify entity-level granularity
-        slug: task-update-ac-granular-reload
-        priority: 1
-        tags: [spec-update, daemon, cache]
-        spec_ref: "@daemon-entity-cache"
-        description: |
-          Update the existing ac-granular-reload acceptance criterion on
-          @daemon-entity-cache to require entity-level granularity instead
-          of domain-level.
-
-          Why: The current ac-granular-reload says "only the affected domain
-          is reloaded, not unrelated domains." This was the original spec
-          when the cache was first implemented — it defined the boundary
-          between domains (tasks vs items vs meta). With incremental cache
-          updates, the granularity boundary moves inside each domain: if
-          one task file changes, only that task is reloaded, not all tasks.
-          The AC needs to reflect this tighter contract.
-
-          What: Replace ac-granular-reload with:
-            given: A file change affects a single entity within a data domain
-            when: The cache processes the invalidation
-            then: Only the affected entity is reloaded, not the entire domain
-                  or unrelated domains
-
-          How: Run:
-            kspec item ac set @daemon-entity-cache ac-granular-reload \
-              --given "A file change affects a single entity within a data domain" \
-              --when "The cache processes the invalidation" \
-              --then "Only the affected entity is reloaded, not the entire domain or unrelated domains"
-
-          Verify with: kspec item get @daemon-entity-cache
-
-          Covers: @daemon-entity-cache ac-granular-reload (update).
-
       - title: Add context reuse AC to daemon-entity-cache
         slug: task-add-ac-context-reuse
         priority: 1
         tags: [spec-update, daemon, cache]
         spec_ref: "@daemon-entity-cache"
-        depends_on:
-          - "@task-update-ac-granular-reload"
         description: |
           Add a new acceptance criterion ac-context-reuse to @daemon-entity-cache
           that requires shared initialization work to be reused across
@@ -34956,6 +34931,13 @@ plans:
           manifest resolution and shadow branch detection. This AC ensures
           that shared setup is performed once and reused, reducing redundant
           work during concurrent invalidations.
+
+          The existing ac-granular-reload on @daemon-entity-cache is preserved
+          as-is — it owns the cross-domain isolation contract ("only the
+          affected domain is reloaded, not unrelated domains"). Within-domain
+          entity-level granularity is owned by the new @daemon-incremental-cache
+          spec via ac-single-entity-patch and ac-fallback-full-reload, which
+          are complementary rather than conflicting.
 
           What: Add ac-context-reuse:
             given: Multiple cache domains are invalidated within the same
@@ -35002,26 +34984,34 @@ plans:
           What: Update three connection points:
 
           1. The cacheInvalidationCallback type in project-context.ts to accept
-             an optional content parameter alongside projectPath, kspecDir,
-             and file.
+             a content parameter alongside projectPath, kspecDir, and file.
 
           2. The onFileChange handler in project-context.ts (line 164) to
              forward the content parameter.
 
           3. The cache.handleFileChange() method signature in entity-cache.ts
-             (line 1270) to accept optional content.
+             (line 1270) to accept content.
 
-          The content parameter must be optional because file removal events
-          (onFileRemoved callback) have no content to pass. The cache must
-          handle both cases: content present (use it) and content absent
-          (read from disk or perform full reload).
+          handleFileChange has two callers with different content availability:
+
+          - The onFileChange callback always provides content (the watcher
+            reads and validates the file before calling it).
+          - The onFileRemoved callback is a separate code path that calls
+            cacheInvalidationCallback without content. This callback must
+            pass undefined or null for the content parameter.
+
+          The cache must handle both cases: content present (use it for
+          incremental updates in subsequent tasks) and content absent (read
+          from disk or perform full reload).
 
           How: Edit packages/daemon/src/project-context.ts to add content to
-          the cacheInvalidationCallback call. Edit src/daemon/entity-cache.ts
-          to accept and store content on handleFileChange. For this task, the
-          cache receives the content but does not yet use it — subsequent tasks
-          build the incremental update logic that consumes it. Add a test that
-          verifies content reaches handleFileChange when a file change occurs.
+          the cacheInvalidationCallback call in onFileChange, and pass
+          undefined in onFileRemoved. Edit src/daemon/entity-cache.ts to
+          accept and store optional content on handleFileChange. For this
+          task, the cache receives the content but does not yet use it —
+          subsequent tasks build the incremental update logic that consumes
+          it. Add a test that verifies content reaches handleFileChange when
+          a file change occurs and that removal events pass no content.
 
           Covers: @daemon-incremental-cache ac-watcher-content-passthrough.
 
@@ -35093,20 +35083,20 @@ plans:
           and shadow branch state do not change between these calls — they are
           all triggered by the same file system event.
 
-          What: Add a short-lived context cache to ProjectEntityCache. When
-          doLoadDomain calls initContext, check if a cached context exists
-          and is still within its validity window (e.g. 5 seconds). If so,
+          What: Add a debounce-cycle-scoped context cache to
+          ProjectEntityCache. When doLoadDomain calls initContext, check if
+          a cached context exists for the current debounce cycle. If so,
           return the cached context. If not, call initContext, cache the
-          result, and return it. The cache entry should be invalidated when
-          the debounce cycle completes to avoid serving stale context on
-          subsequent unrelated changes.
+          result, and return it. The cache entry is invalidated when the
+          debounce cycle completes (after all domain reloads for that cycle
+          finish), ensuring subsequent unrelated changes get fresh context.
 
-          How: Add a cachedContext field with a timestamp to ProjectEntityCache.
-          In doLoadDomain, replace the direct initContext call with a method
-          that checks the cache first. Clear the cached context at the end of
-          each debounce cycle (when the timer fires and processing completes).
-          Test that two concurrent domain reloads triggered by the same file
-          change call initContext only once.
+          How: Add a cachedContext field to ProjectEntityCache. In
+          doLoadDomain, replace the direct initContext call with a method
+          that checks the cache first. Clear the cached context at the end
+          of each debounce cycle (when the timer fires and processing
+          completes). Test that two concurrent domain reloads triggered by
+          the same file change call initContext only once.
 
           Covers: @daemon-entity-cache ac-context-reuse.
 
@@ -35152,8 +35142,13 @@ plans:
           When a task file is deleted (removal event), remove the task from
           both index and detail tiers.
 
-          Concurrent read safety: build new index/detail references locally
-          and swap atomically, same as the current full-reload pattern.
+          Concurrent read safety: clone the existing index array and detail
+          map, apply the patches to the clones, then swap the entire
+          reference (this.tasks.index = newIndex, this.tasks.details =
+          newDetails). This is different from the full-reload pattern which
+          builds from scratch — incremental must clone first because readers
+          may hold a reference to the current array. The swap must be a
+          single assignment per tier so readers see all-old or all-new.
 
           How: Add a tryIncrementalTaskUpdate method that checks whether the
           changed files are all split-backend task paths. If so, perform
@@ -35197,15 +35192,22 @@ plans:
           3. Remove all existing index and detail entries that were sourced
              from the changed file.
           4. Insert the newly parsed items into both index and detail tiers.
-          5. Build new references locally and swap atomically.
+          5. Clone the existing index array and detail map, apply all
+             additions and removals to the clones, then swap both references
+             atomically (single assignment per tier). Readers holding a
+             reference to the old array see consistent pre-update state.
 
           When the change is to kynetic.yaml (the manifest itself), fall back
           to full reload because the includes list may have changed, meaning
           the set of source files is different.
 
           Trait references (traits: [@trait-slug]) are not resolved during
-          item loading — they are stored as strings. An item change does not
-          require re-resolving traits on other items.
+          item loading — they are stored as reference strings. Changing a
+          trait definition file does not require re-resolving traits on items
+          that reference it, because trait inheritance is resolved at query
+          time, not at load time. However, if the trait file is also a module
+          file containing inline items, the items from that file are updated
+          via the normal incremental path.
 
           How: Add a sourceFileMap alongside the items DomainStore. Populate
           it during loadDomain("items") by recording each item's source file.
@@ -35257,8 +35259,11 @@ plans:
           session ID), fall back to full loadSessionIndex.
 
           How: Add tryIncrementalSessionUpdate that processes single-session
-          changes. The existing sorted index is cloned, patched, and
-          swapped atomically. Write tests covering: single session metadata
+          changes. Clone the existing sorted index array, apply the
+          insert/update/remove to the clone, then swap the reference
+          (this.sessions.index = newIndex). The clone ensures readers
+          holding the old reference see consistent pre-update state.
+          Write tests covering: single session metadata
           change updates index entry, new session appears in index at correct
           sort position, deleted session removed from index, session exceeding
           stale criteria is marked stalled, full directory event triggers
@@ -35321,7 +35326,8 @@ plans:
           sub-domains must be loaded before meta domain is "ready".
 
           Covers: @daemon-meta-subdomain ac-manifest-only-reload,
-          ac-shadow-on-schedule, ac-session-context-independent.
+          ac-shadow-on-schedule, ac-session-context-independent,
+          ac-initial-load-all.
 
       # ─── Phase 6: Write-Through Alignment ───
 
@@ -35431,11 +35437,12 @@ plans:
       ### Spec changes summary
 
 
-      - @daemon-entity-cache: Update ac-granular-reload wording (Phase 1 task),
-        add ac-context-reuse (Phase 1 task)
+      - @daemon-entity-cache: Add ac-context-reuse (Phase 1 task). The existing
+        ac-granular-reload is preserved as-is — it owns cross-domain isolation.
+        Within-domain entity-level granularity is owned by @daemon-incremental-cache.
       - @daemon-incremental-cache: New spec with 8 ACs (derived from plan)
 
-      - @daemon-meta-subdomain: New spec with 3 ACs (derived from plan)
+      - @daemon-meta-subdomain: New spec with 4 ACs (derived from plan)
 
 
       ### Phasing rationale
@@ -35458,11 +35465,16 @@ plans:
       depends on the incremental paths existing.
     status: draft
     approved_at: null
-    branch: null
     derived_specs: []
     derived_tasks: []
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec/plans/granular-cache-invalidation.md
     created_at: 2026-04-04T23:00:52.717Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KNDCT7853FJTHVTR4YJ8NPJC
+        content: "Address review blockers: preserve ac-granular-reload, fix clone-patch-swap atomicity,
+          clarify content passthrough callback paths, add meta initial-load AC, scope context cache
+          to debounce cycle"
+        author: "@claude"
+        created_at: 2026-04-04T23:21:24.997Z
