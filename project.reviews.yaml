@@ -114484,6 +114484,17 @@ reviews:
         required: true
         created_at: 2026-04-04T23:04:40.753Z
         completed_at: 2026-04-04T23:04:40.753Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "All spec_ref values point to specs in this plan or existing specs. All depends_on values
+          point to tasks within this plan. Covers: lines reference AC IDs that exist on the
+          referenced specs."
+        name: Cross-reference validation
+        required: true
+        created_at: 2026-04-04T23:04:45.423Z
+        completed_at: 2026-04-04T23:04:45.423Z
     events:
       - _ulid: 01KNDBV7S70T7KP378Y3N0MFR3
         actor: "@claude"
@@ -114498,6 +114509,13 @@ reviews:
           status: pass
           name: AC coverage
         timestamp: 2026-04-04T23:04:41.508Z
+      - _ulid: 01KNDBVQSVR6N63ZC5XCCAG9GV
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Cross-reference validation
+        timestamp: 2026-04-04T23:04:46.140Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -114510,5 +114528,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-04T23:04:29.735Z
-    updated_at: 2026-04-04T23:04:40.753Z
+    updated_at: 2026-04-04T23:04:45.423Z
     notes: []
