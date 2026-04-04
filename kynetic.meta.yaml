@@ -12189,6 +12189,30 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-03T22:51:39.271Z
+  - _ulid: 01KNB84N87P9RAM7R31PF587YV
+    type: success
+    content: Parallel lint fix agents with non-overlapping file scopes — 112 errors across 3 agents in
+      ~8 min, zero conflicts. Clear scope boundaries are essential for parallel agent work.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-04T03:21:15.272Z
+  - _ulid: 01KNB84NFXJ9NTM736XQ1S4AZW
+    type: success
+    content: vi.stubEnv(HOME, tempDir) for controlling agent detection in tests — lightweight behavioral
+      approach avoids heavy mocks while making tests deterministic across environments.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-04T03:21:15.517Z
+  - _ulid: 01KNB84NP4FJ60G1VGYR1XKGW1
+    type: friction
+    content: E2e test fixtures with hardcoded absolute dates rot as time passes — entity cache stale
+      detection marks old active sessions as stalled. Use relative timestamps.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-04T03:21:15.716Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
