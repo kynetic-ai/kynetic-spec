@@ -114192,6 +114192,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-04-04T07:47:32.458Z
+      - _ulid: 01KNBQCAF2K8M4ZV79HRF1HMX0
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNBQC9KPS6YZNA9GPH7NB7MM
+        timestamp: 2026-04-04T07:47:35.010Z
     examined_commit: 6dc8783a76490a9789559ee248aea3d643145f14
     external_links: []
     lifecycle_state: open
@@ -114201,8 +114208,32 @@ reviews:
       content_hash: ""
       ref: "@01KNBK4TTCRCB0XH1VR4YJ3EV0"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNBQC9KPS6YZNA9GPH7NB7MM
+        entries:
+          - _ulid: 01KNBQC9KP5C64N71EG9Z8VP1N
+            author: Jacob Chapel
+            body: >-
+              Evidence log
+
+              Files read: packages/daemon/src/session-watcher.ts,
+              packages/daemon/src/project-context.ts, packages/daemon/src/watcher.ts,
+              tests/session-watcher.test.ts
+
+              Commands run: git diff --stat, git diff on changed files, kspec task get, kspec item
+              get @daemon-file-monitoring, kspec review get previous/current, rg AC annotation scan,
+              kspec validate, npm test -- tests/session-watcher.test.ts, npm test
+
+              Claims verified: delayed session metadata attach fix verified by reading retry logic
+              in SessionWatcher and by passing behavioral test run; active-only watcher behavior
+              verified in changed tests and code paths; no regression claim verified by full npm
+              test pass
+
+              Categories searched: correctness, edge cases, error handling, test quality,
+              integration; no blocking findings found
+            created_at: 2026-04-04T07:47:34.134Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-04T07:42:19.345Z
-    updated_at: 2026-04-04T07:47:31.573Z
+    updated_at: 2026-04-04T07:47:34.134Z
     notes: []
