@@ -12465,6 +12465,27 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-04T08:25:12.860Z
+  - _ulid: 01KNBSYDNFCBK77H6JC31ZQGZ4
+    type: friction
+    content: Detached reviewer snapshots cannot switch to integration branch when that branch is already
+      checked out in another worktree. In this review cycle, git switch dev failed with "dev is
+      already used by worktree", so the merge had to be completed with explicit git -C operations
+      against the main dev worktree. This is workable but adds avoidable merge-step friction for
+      autonomous review flows.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-04T08:32:25.263Z
+  - _ulid: 01KNBSYDVG6CBXEK8BSN8KRAK8
+    type: success
+    content: For narrow daemon cache fixes, pairing a small production change with AC-annotated tests
+      that exercise both success and failure paths made review straightforward. In this session, the
+      opendir/finally cleanup fix plus explicit tests for successful enumeration and enumeration
+      failure gave clear evidence for approval before merge.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-04T08:32:25.456Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
