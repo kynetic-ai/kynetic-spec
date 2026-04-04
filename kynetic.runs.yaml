@@ -22315,9 +22315,28 @@ runs:
     started_at: 2026-04-03T23:12:28.762Z
   - _ulid: 01KNB7Z1S0H47W2WB1E7HDZTX7
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-04T03:18:11.489Z
+        completed_at: 2026-04-04T03:18:33.174Z
+        notes: >-
+          1. Parallel lint fix agents — splitting 112 errors across 3 agents with non-overlapping
+          file scopes completed in ~8 min total. Clear scope boundaries prevented conflicts.
+
+          2. Agent-assisted plan evaluation — spawning Explore agents for code review and test
+          coverage gave thorough parallel analysis without bloating main context.
+
+          3. Iterative CI fix approach — fixing deterministic failures first (bun, doctor test),
+          then investigating the e2e flake, yielded a clean pipeline in 3 pushes.
+
+          4. Using vi.stubEnv for agent detection control — lightweight, behavioral, no heavy mocks.
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-04T03:18:33.174Z
+        completed_at: 2026-04-04T03:18:33.174Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-04T03:18:11.489Z
