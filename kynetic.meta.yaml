@@ -12282,6 +12282,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-04T05:34:33.688Z
+  - _ulid: 01KNBFRTKEGGX3TP3KRK4JC1SH
+    type: idea
+    content: "Bulk task operations: had to run 9 separate kspec task set commands to mark tasks as
+      automation eligible. User corrected that --refs flag or kspec batch could do this in one
+      command. The CLI help for task set should prominently mention --refs for multi-task
+      operations."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-04T05:34:36.142Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
