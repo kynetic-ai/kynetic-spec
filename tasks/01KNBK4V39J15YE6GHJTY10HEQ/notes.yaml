@@ -1,1 +1,10 @@
-notes: []
+notes:
+  - _ulid: 01KNBQV9P1QF5GGG2HMWQMNNA3
+    content: Verified task scope is already implemented on this branch. The FD regression coverage
+      exists in tests/session-watcher.test.ts via the 'keeps open file descriptor usage tied to
+      active sessions' test added in commit 05ded2d. Verified against spec ACs ac-3,
+      ac-active-only-watching, and ac-startup-active-only. npm test passed (2068/2068 suites, 7514
+      tests, 5 skipped). kspec validate returned only pre-existing repository warnings.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-04T07:55:45.729Z
