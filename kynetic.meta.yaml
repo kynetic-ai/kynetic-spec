@@ -12358,6 +12358,29 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-04T06:59:59.527Z
+  - _ulid: 01KNBN979NVFWJND17RDBCN872
+    type: friction
+    content: "Detached review snapshots cannot execute the documented manual merge step when the
+      integration branch is already checked out in another worktree. In this session, `git checkout
+      dev && git merge --no-ff <task-branch>` failed with `fatal: 'dev' is already used by worktree
+      ...`, even though the review was approved and branch pointers were already identical. The
+      merge workflow should define how reviewer agents handle this worktree-lock case and when
+      branch equality makes merge a no-op."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-04T07:10:56.309Z
+  - _ulid: 01KNBN97G5G9N3MJ8P3W68G637
+    type: success
+    content: Anchoring spec-review feedback to the exact acceptance criterion made the fix cycle fast
+      and low-noise. The first review identified a direct contradiction between
+      @daemon-file-monitoring ac-7 and the new active-session-only ACs; the worker narrowed ac-7,
+      and the follow-up review could verify the specific conflict was resolved without re-litigating
+      the whole spec.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-04T07:10:56.517Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
