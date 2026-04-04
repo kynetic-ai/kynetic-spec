@@ -24883,6 +24883,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-04T23:34:26.951Z
+  automation: eligible
 - _ulid: 01KNDDJ3618FBAA9BA42NM8AEA
   slugs:
     - task-cache-kspec-context
