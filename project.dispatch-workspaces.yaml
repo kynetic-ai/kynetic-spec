@@ -36414,7 +36414,7 @@ workspaces:
         head: 0d05e503f03020b11bd11616e265cc09f024f0d3
         last_seen_at: 2026-04-04T06:38:35.712Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-monitoring-spec-ac3-active-sessions-01knbk4t
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 0d05e503f03020b11bd11616e265cc09f024f0d3
     bootstrap:
       status: succeeded
@@ -36524,7 +36524,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-04T06:48:43.749Z
+      updated_at: 2026-04-04T06:48:50.027Z
     integration:
       status: pending
       detail: null
@@ -36539,10 +36539,10 @@ workspaces:
     task_slug: task-monitoring-spec-active-session-acs
     timestamps:
       closed_at: null
-      last_active_at: 2026-04-04T06:45:32.296Z
-      last_reconciled_at: 2026-04-04T06:48:43.749Z
+      last_active_at: 2026-04-04T06:48:50.027Z
+      last_reconciled_at: 2026-04-04T06:48:50.027Z
       created_at: 2026-04-04T06:45:26.292Z
-      updated_at: 2026-04-04T06:48:47.998Z
+      updated_at: 2026-04-04T06:48:50.027Z
     workspace_id: dispatch-workspace-01KNBK4THQFPGXW7B226F7MPM0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
