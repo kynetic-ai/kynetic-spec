@@ -36550,7 +36550,7 @@ workspaces:
         head: 0d05e503f03020b11bd11616e265cc09f024f0d3
         last_seen_at: 2026-04-04T07:04:17.687Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-monitoring-spec-active-session-acs-01knbk4t
-  - active_role: worker
+  - active_role: null
     base_branch_point: 0d05e503f03020b11bd11616e265cc09f024f0d3
     bootstrap:
       status: succeeded
@@ -36615,12 +36615,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-04T07:39:29.047Z
+      updated_at: 2026-04-04T07:41:07.501Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-04T07:39:29.047Z
+      updated_at: 2026-04-04T07:41:07.501Z
     integration:
       status: pending
       detail: null
@@ -36628,17 +36628,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 0d05e503f03020b11bd11616e265cc09f024f0d3
-      updated_at: 2026-04-04T07:39:29.047Z
-    lifecycle_state: active
+      updated_at: 2026-04-04T07:41:07.501Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KNBK4TTCRCB0XH1VR4YJ3EV0"
     task_slug: task-refactor-session-watcher-active-scoped
     timestamps:
       closed_at: null
       last_active_at: 2026-04-04T07:35:25.556Z
-      last_reconciled_at: 2026-04-04T07:39:29.047Z
+      last_reconciled_at: 2026-04-04T07:41:07.501Z
       created_at: 2026-04-04T07:10:30.836Z
-      updated_at: 2026-04-04T07:39:29.047Z
+      updated_at: 2026-04-04T07:41:07.501Z
     workspace_id: dispatch-workspace-01KNBK4TTCRCB0XH1VR4YJ3EV0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
