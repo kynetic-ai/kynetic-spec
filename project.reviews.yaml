@@ -115079,6 +115079,18 @@ reviews:
         required: true
         created_at: 2026-04-04T23:26:25.449Z
         completed_at: 2026-04-04T23:26:25.449Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All spec_ref values point to valid specs (daemon-entity-cache exists,
+          daemon-incremental-cache and daemon-meta-subdomain defined in plan). All depends_on refs
+          point to tasks defined in plan. AC IDs in Covers lines match AC ids defined in specs. No
+          orphan refs.
+        name: Cross-reference validation
+        required: true
+        created_at: 2026-04-04T23:26:33.128Z
+        completed_at: 2026-04-04T23:26:33.128Z
     events:
       - _ulid: 01KNDCZZ3C5J0KS3WC3YWT270M
         actor: "@claude"
@@ -115163,6 +115175,13 @@ reviews:
           status: pass
           name: Task standalone-ness
         timestamp: 2026-04-04T23:26:27.076Z
+      - _ulid: 01KNDD3NPTECJB14HPB3PVPRH7
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Cross-reference validation
+        timestamp: 2026-04-04T23:26:34.715Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -115175,5 +115194,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-04T23:24:33.260Z
-    updated_at: 2026-04-04T23:26:25.449Z
+    updated_at: 2026-04-04T23:26:33.128Z
     notes: []
