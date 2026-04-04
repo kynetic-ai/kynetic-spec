@@ -12338,6 +12338,26 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-04T06:55:32.282Z
+  - _ulid: 01KNBMN5PN426KF5NYAC228N80
+    type: success
+    content: "Anchored review feedback against a specific acceptance criterion made the spec
+      inconsistency obvious and kept the fix cycle narrow: the blocker pointed directly at
+      @daemon-file-monitoring ac-7, which let the worker update the conflicting AC and resolve the
+      review without re-reading unrelated spec surface."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-04T06:59:59.317Z
+  - _ulid: 01KNBMN5X79R01VNT10GPE63Y5
+    type: friction
+    content: kspec batch mutation commands are easy to misinvoke because their argument names differ
+      from the interactive CLI surface (for example task note expects message and item ac set
+      expects acId). This caused avoidable failed attempts during a small fix cycle even when the
+      intended commands were already known.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-04T06:59:59.527Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
