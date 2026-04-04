@@ -113965,6 +113965,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNBPKBWFYRP3GM5X34T8Z2FG
         timestamp: 2026-04-04T07:33:58.236Z
+      - _ulid: 01KNBPKFKGETEBEX2R3T4YBBR5
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNBPKENVS0BXR47PH4Y1796S
+        timestamp: 2026-04-04T07:34:01.073Z
     examined_commit: 05ded2db5dfa9bccd0f2fdfaceca427973b1c0bd
     external_links: []
     lifecycle_state: open
@@ -113995,7 +114002,21 @@ reviews:
               metadata writes for those active sessions.
             created_at: 2026-04-04T07:33:57.264Z
         kind: blocker
+      - _ulid: 01KNBPKENVS0BXR47PH4Y1796S
+        entries:
+          - _ulid: 01KNBPKENWD0NNA8TNFVB6YB7S
+            author: Jacob Chapel
+            body: "Evidence log\\nFiles read: packages/daemon/src/session-watcher.ts,
+              packages/daemon/src/project-context.ts, src/daemon/entity-cache.ts,
+              src/sessions/store.ts, tests/session-watcher.test.ts.\\nCommands run: git diff against
+              dev base, kspec task get, kspec item get, grep AC annotations, kspec validate, npm
+              test, targeted tsx reproduction for delayed session.yaml creation, line-number
+              inspection with nl -ba.\\nClaims verified: full suite passes on this snapshot;
+              new-session detection fails when session.yaml arrives 500ms after addDir.\\nCategories
+              searched: correctness, edge cases/races, error handling, test quality, integration."
+            created_at: 2026-04-04T07:34:00.124Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-04T07:28:33.961Z
-    updated_at: 2026-04-04T07:33:57.264Z
+    updated_at: 2026-04-04T07:34:00.124Z
     notes: []
