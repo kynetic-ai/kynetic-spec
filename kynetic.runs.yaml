@@ -22680,7 +22680,7 @@ runs:
     started_at: 2026-04-04T07:57:47.337Z
   - _ulid: 01KNBSG3V3YDWMQDV6VJ90BM2T
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -22692,7 +22692,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-04T08:25:13.130Z
-        completed_at: 2026-04-04T08:25:13.130Z
+        completed_at: 2026-04-04T08:25:18.912Z
+        notes: "High-confidence observations from this session: success = an existing behavioral
+          FD-regression pattern in session-watcher tests provided a fast template for investigating
+          daemon descriptor cleanup; friction = Vitest ESM namespace exports prevented direct
+          spyOn(fs/promises.opendir), forcing vi.doMock plus fresh module import for close-contract
+          tests."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-04T08:25:18.912Z
+        completed_at: 2026-04-04T08:25:18.912Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-04T08:24:36.451Z
