@@ -1,1 +1,11 @@
-notes: []
+notes:
+  - _ulid: 01KNBKWDYGDZY60QVEZNTX75B3
+    content: "Approach: update only @daemon-file-monitoring via kspec batch so the four new
+      session-scoping acceptance criteria land atomically on the shadow branch. Edge cases: startup
+      with mixed statuses, new session creation before metadata exists, and transition from active
+      to each terminal/non-active status. Test plan: no production tests in this spec-only task;
+      downstream implementation/refactor and regression-test tasks on the linked plan will add AC
+      annotations for the new criteria."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-04T06:46:28.560Z
