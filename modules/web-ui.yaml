@@ -404,6 +404,11 @@ features:
             id: ac-broadcast-after-reload
             then: the WebSocket broadcast for the change is emitted after the cache reload finishes
             when: the reload completes and fresh data is available in cache
+          - given: A cache domain reload enumerates filesystem directories (e.g. listing session directories to
+              build the session index)
+            id: ac-deterministic-fd-cleanup
+            then: All directory handles opened during enumeration are closed before the reload function returns
+            when: The enumeration completes or fails
         tags: []
         requirements:
           - _ulid: 01KMMB3S7MJZ9ZJKZT31QPM572
