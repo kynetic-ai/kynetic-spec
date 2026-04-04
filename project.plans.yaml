@@ -35465,6 +35465,7 @@ plans:
       depends on the incremental paths existing.
     status: active
     approved_at: 2026-04-04T23:34:16.951Z
+    branch: plan/plan-granular-cache-invalidation/01kndbmk
     derived_specs:
       - "@daemon-incremental-cache"
       - "@daemon-meta-subdomain"
