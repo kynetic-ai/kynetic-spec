@@ -2150,3 +2150,13 @@ inbox:
       - docs
     added_by: "@claude"
     created_at: 2026-04-03T05:49:19.280Z
+  - _ulid: 01KNAZ6SB52KVF1S711QXH3VG8
+    text: Adopt lefthook for pre-commit lint/format enforcement. Currently 112 oxlint errors accumulated
+      on dev before CI caught them. Lefthook preserves existing hooks via .old rename+chain pattern,
+      which would coexist with our shadow branch protection hook. Could also replace our custom hook
+      installation entirely. Evaluate lefthook vs extending our own hook system.
+    tags:
+      - cli
+      - infra
+    added_by: "@claude"
+    created_at: 2026-04-04T00:45:07.814Z
