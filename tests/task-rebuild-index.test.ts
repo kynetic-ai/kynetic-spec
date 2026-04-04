@@ -138,9 +138,7 @@ describe("kspec task rebuild-index", () => {
     expect(result.stdout).toContain("rebuilt");
 
     // Verify the index now contains both tasks
-    const indexContent = await readTestOutput(
-      path.join(tempDir, ".kspec", "project.tasks.yaml"),
-    );
+    const indexContent = await readTestOutput(path.join(tempDir, ".kspec", "project.tasks.yaml"));
     expect(indexContent).toContain(id1);
     expect(indexContent).toContain(id2);
   });
@@ -229,9 +227,7 @@ describe("kspec task rebuild-index", () => {
     expect(result.stdout).toContain("rebuilt");
 
     // Verify index now has both entries
-    const indexContent = await readTestOutput(
-      path.join(tempDir, ".kspec", "project.tasks.yaml"),
-    );
+    const indexContent = await readTestOutput(path.join(tempDir, ".kspec", "project.tasks.yaml"));
     expect(indexContent).toContain(id1);
     expect(indexContent).toContain(id2);
   });
@@ -248,9 +244,7 @@ describe("kspec task rebuild-index", () => {
     expect(result.stdout).toContain("--repair");
 
     // Index should still be empty
-    const indexContent = await readTestOutput(
-      path.join(tempDir, ".kspec", "project.tasks.yaml"),
-    );
+    const indexContent = await readTestOutput(path.join(tempDir, ".kspec", "project.tasks.yaml"));
     expect(indexContent).not.toContain(id);
   });
 

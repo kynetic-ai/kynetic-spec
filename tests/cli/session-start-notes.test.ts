@@ -6,7 +6,14 @@
  * AC: @trait-json-output ac-1 - Valid JSON output purity
  */
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { kspec, kspecJson, setupTempFixtures, cleanupTempDir, testUlids, seedSplitTask } from "../helpers/cli";
+import {
+  kspec,
+  kspecJson,
+  setupTempFixtures,
+  cleanupTempDir,
+  testUlids,
+  seedSplitTask,
+} from "../helpers/cli";
 import type { SessionContext } from "../helpers/session-types";
 
 const SESSION_START_NOTES_TIMEOUT_MS = 20_000;

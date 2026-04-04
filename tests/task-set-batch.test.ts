@@ -160,9 +160,7 @@ describe("Integration: task set batch support", () => {
     // No direct command to pending — suggestedCommand must be null
     expect(jsonError.details.suggestedCommand).toBeNull();
     // Valid transitions should NOT include pending
-    const targets = jsonError.details.validTransitions.map(
-      (t: { status: string }) => t.status,
-    );
+    const targets = jsonError.details.validTransitions.map((t: { status: string }) => t.status);
     expect(targets).not.toContain("pending");
     expect(targets).toContain("in_progress");
   });
@@ -263,9 +261,7 @@ describe("Integration: task set batch support", () => {
     expect(jsonError.details.targetStatus).toBe("pending_review");
     expect(jsonError.details.suggestedCommand).toContain("kspec task unblock @ref");
     // Valid transitions should include pending_review via unblock
-    const prTargets = jsonError.details.validTransitions.map(
-      (t: { status: string }) => t.status,
-    );
+    const prTargets = jsonError.details.validTransitions.map((t: { status: string }) => t.status);
     expect(prTargets).toContain("pending_review");
   });
 
@@ -307,9 +303,7 @@ describe("Integration: task set batch support", () => {
     // Invalid transition — suggestedCommand should be null
     expect(jsonError.details.suggestedCommand).toBeNull();
     // Valid transitions should include in_progress (via unblock) but NOT pending
-    const targets = jsonError.details.validTransitions.map(
-      (t: { status: string }) => t.status,
-    );
+    const targets = jsonError.details.validTransitions.map((t: { status: string }) => t.status);
     expect(targets).toContain("in_progress");
     expect(targets).not.toContain("pending");
     // The unblock entry should be for in_progress

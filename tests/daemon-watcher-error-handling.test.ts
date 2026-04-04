@@ -114,8 +114,6 @@ describe("KspecWatcher error handling", () => {
 
     expect(errorHandler).toHaveBeenCalledTimes(6);
     expect(chokidarWatcher.close).toHaveBeenCalled();
-    expect(warnSpy).toHaveBeenCalledWith(
-      expect.stringContaining("/tmp/kspec-missing/.kspec"),
-    );
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("/tmp/kspec-missing/.kspec"));
   });
 });

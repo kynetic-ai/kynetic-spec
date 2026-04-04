@@ -510,9 +510,9 @@ describe("File Lock", () => {
     );
 
     // maxHoldMs=0 disables duration-based reclamation
-    await expect(
-      acquireFileLock(lockTarget, { timeoutMs: 200, maxHoldMs: 0 }),
-    ).rejects.toThrow(/Timed out waiting for file lock/);
+    await expect(acquireFileLock(lockTarget, { timeoutMs: 200, maxHoldMs: 0 })).rejects.toThrow(
+      /Timed out waiting for file lock/,
+    );
 
     await fs.rm(lockDir, { recursive: true, force: true });
   });

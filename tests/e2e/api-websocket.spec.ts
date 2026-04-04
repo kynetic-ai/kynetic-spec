@@ -1,7 +1,9 @@
 import { test, expect } from "./fixtures/test-base";
 
 async function waitForConnected(page: import("@playwright/test").Page) {
-  await expect(page.getByTestId("connection-status")).toContainText("Connected", { timeout: 10_000 });
+  await expect(page.getByTestId("connection-status")).toContainText("Connected", {
+    timeout: 10_000,
+  });
 }
 
 test.describe("WebSocket UI Behavior", () => {
@@ -58,9 +60,9 @@ test.describe("WebSocket UI Behavior", () => {
     });
     expect(response.ok()).toBe(true);
 
-    await expect.poll(async () => Number((await inboxBadge.textContent())?.trim() ?? "0")).toBe(
-      initialCount + 1,
-    );
+    await expect
+      .poll(async () => Number((await inboxBadge.textContent())?.trim() ?? "0"))
+      .toBe(initialCount + 1);
     await expect(page.getByTestId("inbox-item").first()).toContainText(text);
   });
 

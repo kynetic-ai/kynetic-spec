@@ -478,9 +478,10 @@ describe("Environment Injection", () => {
 
         // Remove — should delete KSPEC_SESSION_ID but preserve everything else
         await removeCodexEnv();
-        content = parseTOML(
-          await readTestOutput(path.join(configDir, "config.toml")),
-        ) as Record<string, unknown>;
+        content = parseTOML(await readTestOutput(path.join(configDir, "config.toml"))) as Record<
+          string,
+          unknown
+        >;
         expect(content.model).toBe("gpt-5.3-codex");
         expect(content.approval_policy).toBe("never");
         const policyAfter = content.shell_environment_policy as Record<string, unknown>;
@@ -961,10 +962,7 @@ describe("Environment Injection", () => {
         expect(result!.method).toBe("codex_config");
 
         const configPath = path.join(testDir, ".codex", "config.toml");
-        const content = parseTOML(await readTestOutput(configPath)) as Record<
-          string,
-          unknown
-        >;
+        const content = parseTOML(await readTestOutput(configPath)) as Record<string, unknown>;
         const policy = content.shell_environment_policy as Record<string, Record<string, string>>;
         expect(policy.set.KSPEC_SESSION_ID).toBe(sessionId);
       } finally {
@@ -1013,10 +1011,7 @@ describe("Environment Injection", () => {
         await removeEnvForAdapter("codex-acp", previousValue);
 
         const configPath = path.join(testDir, ".codex", "config.toml");
-        const content = parseTOML(await readTestOutput(configPath)) as Record<
-          string,
-          unknown
-        >;
+        const content = parseTOML(await readTestOutput(configPath)) as Record<string, unknown>;
         const policy = content.shell_environment_policy as Record<string, Record<string, string>>;
         expect(policy.set.KSPEC_SESSION_ID).toBe(previousValue);
       } finally {
@@ -1051,10 +1046,7 @@ describe("Environment Injection", () => {
         await removeEnvForAdapter("codex-acp", result!.previousValue);
 
         const configPath = path.join(codexDir, "config.toml");
-        const content = parseTOML(await readTestOutput(configPath)) as Record<
-          string,
-          unknown
-        >;
+        const content = parseTOML(await readTestOutput(configPath)) as Record<string, unknown>;
         const policy = content.shell_environment_policy as Record<string, Record<string, string>>;
         expect(policy.set.KSPEC_SESSION_ID).toBe("old-session");
       } finally {

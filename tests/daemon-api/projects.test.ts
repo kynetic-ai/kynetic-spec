@@ -16,12 +16,7 @@ import { Elysia } from "elysia";
 import { mkdirSync, writeFileSync } from "node:fs";
 import * as path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import {
-  cleanupTempDir,
-  createTempDir,
-  initGitRepo,
-  setupFixtures,
-} from "./helpers.js";
+import { cleanupTempDir, createTempDir, initGitRepo, setupFixtures } from "./helpers.js";
 // Import from dist (same as helpers.ts pattern) to match the built output
 import { projectContextMiddleware } from "../../dist/daemon/middleware/project-context.ts";
 import { createProjectsRoutes } from "../../dist/daemon/routes/projects.ts";

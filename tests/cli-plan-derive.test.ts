@@ -852,10 +852,7 @@ Just prose, no structured specs section.
       tasks_included: boolean;
       created_specs: string[];
       created_tasks: string[];
-    }>(
-      "plan derive @plan-tasks-flag-back-compat --module @test-core --tasks",
-      tempDir,
-    );
+    }>("plan derive @plan-tasks-flag-back-compat --module @test-core --tasks", tempDir);
 
     expect(result.tasks_included).toBe(true);
     expect(result.created_specs).toEqual(["@back-compat-feature"]);

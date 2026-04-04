@@ -326,11 +326,7 @@ describe("ws-invalidation agents topic scoping", () => {
   });
 
   describe("completion events only invalidate sessions, not agents", () => {
-    for (const eventName of [
-      "message_complete",
-      "thinking_complete",
-      "tool_call_complete",
-    ]) {
+    for (const eventName of ["message_complete", "thinking_complete", "tool_call_complete"]) {
       it(`${eventName} with session_id invalidates sessions.all but NOT agents.all`, () => {
         setupWsInvalidation(mockQueryClient);
         const event = makeBroadcastEvent("agents", eventName, {
@@ -450,5 +446,4 @@ describe("ws-invalidation agents topic scoping", () => {
       });
     }
   });
-
 });

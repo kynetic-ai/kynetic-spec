@@ -236,9 +236,12 @@ describe("ProjectContextManager", () => {
       const recoveredFile = join(projectA, ".kspec", "modules", "watcher-health-recovered.yaml");
       await writeFile(recoveredFile, "recovered: true\n", "utf-8");
 
-      await vi.waitFor(() => {
-        expect(deliveredFiles).toContain(recoveredFile);
-      }, { timeout: WATCHER_WAIT_MS });
+      await vi.waitFor(
+        () => {
+          expect(deliveredFiles).toContain(recoveredFile);
+        },
+        { timeout: WATCHER_WAIT_MS },
+      );
     });
 
     // AC: @daemon-watcher-health ac-3
@@ -277,12 +280,20 @@ describe("ProjectContextManager", () => {
       expect(manager.getProject(projectB).watcherActive).toBe(true);
       expect(manager.getProject(projectB).consecutiveFailures).toBe(0);
 
-      const healthyProjectFile = join(projectB, ".kspec", "modules", "watcher-health-project-b.yaml");
+      const healthyProjectFile = join(
+        projectB,
+        ".kspec",
+        "modules",
+        "watcher-health-project-b.yaml",
+      );
       await writeFile(healthyProjectFile, "healthy: true\n", "utf-8");
 
-      await vi.waitFor(() => {
-        expect(deliveredByProject.get(projectB)).toContain(healthyProjectFile);
-      }, { timeout: WATCHER_WAIT_MS });
+      await vi.waitFor(
+        () => {
+          expect(deliveredByProject.get(projectB)).toContain(healthyProjectFile);
+        },
+        { timeout: WATCHER_WAIT_MS },
+      );
       expect(deliveredByProject.get(projectA)).not.toContain(healthyProjectFile);
     });
 

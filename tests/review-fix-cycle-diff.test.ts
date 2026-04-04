@@ -145,7 +145,11 @@ describe("computeDiffStat", () => {
     execSync("git add . && git commit -m 'initial'", { cwd: tempDir });
     const commit = execSync("git rev-parse HEAD", { cwd: tempDir, encoding: "utf-8" }).trim();
 
-    const result = await computeDiffStat("0000000000000000000000000000000000000000", commit, tempDir);
+    const result = await computeDiffStat(
+      "0000000000000000000000000000000000000000",
+      commit,
+      tempDir,
+    );
 
     expect(result).toBeNull();
   });

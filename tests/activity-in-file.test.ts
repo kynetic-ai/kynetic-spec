@@ -1,5 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { assembleActivityFromFiles, historyToActivity, notesToActivity } from "../src/utils/activity";
+import {
+  assembleActivityFromFiles,
+  historyToActivity,
+  notesToActivity,
+} from "../src/utils/activity";
 import type { HistoryEntry } from "../src/parser/task-data-manager";
 import type { Note } from "../src/schema/task";
 

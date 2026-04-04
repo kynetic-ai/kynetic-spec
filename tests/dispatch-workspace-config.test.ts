@@ -330,9 +330,7 @@ describe("dispatch workspace configuration", () => {
 
     expect(resolved.baseBranch).toBe("main");
     expect(resolved.baseBranchSource).toBe("configured");
-    expect(warnSpy).toHaveBeenCalledWith(
-      expect.stringContaining("references plan @missing-plan"),
-    );
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("references plan @missing-plan"));
   });
 
   // AC: @dispatch-workspace-configuration ac-1

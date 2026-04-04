@@ -157,18 +157,17 @@ function mockSessionsRoute(sessions: ReturnType<typeof mockSessions>) {
     route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify(envelope(
-        { items: paginated, unfiltered_total: sessions.items.length },
-        { total, offset, limit },
-      )),
+      body: JSON.stringify(
+        envelope(
+          { items: paginated, unfiltered_total: sessions.items.length },
+          { total, offset, limit },
+        ),
+      ),
     });
   };
 }
 
-function mockSearchRoute(options?: {
-  delayMs?: number;
-  onRequest?: (url: URL) => void;
-}) {
+function mockSearchRoute(options?: { delayMs?: number; onRequest?: (url: URL) => void }) {
   return async (route: any) => {
     const url = new URL(route.request().url());
     options?.onRequest?.(url);
@@ -427,7 +426,9 @@ test.describe("Session History View", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify(envelope({ items: [], unfiltered_total: 0 }, { total: 0, offset: 0, limit: 25 })),
+          body: JSON.stringify(
+            envelope({ items: [], unfiltered_total: 0 }, { total: 0, offset: 0, limit: 25 }),
+          ),
         });
       });
 
@@ -447,10 +448,12 @@ test.describe("Session History View", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify(envelope(
-            { items: sessions.items, unfiltered_total: sessions.total },
-            { total: sessions.total, offset: sessions.offset, limit: sessions.limit },
-          )),
+          body: JSON.stringify(
+            envelope(
+              { items: sessions.items, unfiltered_total: sessions.total },
+              { total: sessions.total, offset: sessions.offset, limit: sessions.limit },
+            ),
+          ),
         });
       });
 
@@ -616,7 +619,9 @@ test.describe("Session History View", () => {
 
       await expect(page).toHaveURL(/q=error(\+|%20)handling/);
       await expect(page.getByTestId("session-search-results")).toBeVisible();
-      await expect(page.getByTestId("session-search-count")).toContainText("2 matches across 2 sessions");
+      await expect(page.getByTestId("session-search-count")).toContainText(
+        "2 matches across 2 sessions",
+      );
       await expect(page.getByTestId("session-search-session")).toHaveCount(2);
       await expect(page.getByTestId("session-search-match").nth(0)).toContainText(
         "Error handling added to the worker session",
@@ -672,7 +677,9 @@ test.describe("Session History View", () => {
 
       await expect(page).toHaveURL(/q=error(\+|%20)handling/);
       await expect(page).toHaveURL(/status=completed/);
-      await expect(page.getByTestId("session-search-count")).toContainText("1 match across 1 session");
+      await expect(page.getByTestId("session-search-count")).toContainText(
+        "1 match across 1 session",
+      );
       await expect(page.getByTestId("session-search-session")).toHaveCount(1);
       await expect(page.getByTestId("session-search-session").first()).toHaveAttribute(
         "data-session-id",
@@ -706,8 +713,9 @@ test.describe("Session History View", () => {
       await page.waitForTimeout(200);
       expect(searchRequests).toHaveLength(0);
 
-      const responsePromise = page.waitForResponse((response) =>
-        response.url().includes("/api/sessions/search") && response.request().method() === "GET",
+      const responsePromise = page.waitForResponse(
+        (response) =>
+          response.url().includes("/api/sessions/search") && response.request().method() === "GET",
       );
       await page.getByTestId("session-search-submit").click();
       await responsePromise;
@@ -808,13 +816,15 @@ test.describe("Session History View", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify(envelope({
-            id: "test",
-            status: "completed",
-            agent_type: "worker",
-            events: [],
-            total: 0,
-          })),
+          body: JSON.stringify(
+            envelope({
+              id: "test",
+              status: "completed",
+              agent_type: "worker",
+              events: [],
+              total: 0,
+            }),
+          ),
         });
       });
 
@@ -842,10 +852,15 @@ test.describe("Session History View", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify(envelope(
-            { items: allSessions.slice(offset, offset + limit), unfiltered_total: allSessions.length },
-            { total: allSessions.length, offset, limit },
-          )),
+          body: JSON.stringify(
+            envelope(
+              {
+                items: allSessions.slice(offset, offset + limit),
+                unfiltered_total: allSessions.length,
+              },
+              { total: allSessions.length, offset, limit },
+            ),
+          ),
         });
       });
 
@@ -868,10 +883,12 @@ test.describe("Session History View", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify(envelope(
-            { items: [makeSession(1)], unfiltered_total: 1 },
-            { total: 1, offset: 0, limit: 25 },
-          )),
+          body: JSON.stringify(
+            envelope(
+              { items: [makeSession(1)], unfiltered_total: 1 },
+              { total: 1, offset: 0, limit: 25 },
+            ),
+          ),
         });
       });
 
@@ -899,10 +916,15 @@ test.describe("Session History View", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify(envelope(
-            { items: allSessions.slice(offset, offset + limit), unfiltered_total: allSessions.length },
-            { total: allSessions.length, offset, limit },
-          )),
+          body: JSON.stringify(
+            envelope(
+              {
+                items: allSessions.slice(offset, offset + limit),
+                unfiltered_total: allSessions.length,
+              },
+              { total: allSessions.length, offset, limit },
+            ),
+          ),
         });
       });
 
@@ -935,10 +957,15 @@ test.describe("Session History View", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify(envelope(
-            { items: allSessions.slice(offset, offset + limit), unfiltered_total: allSessions.length },
-            { total: allSessions.length, offset, limit },
-          )),
+          body: JSON.stringify(
+            envelope(
+              {
+                items: allSessions.slice(offset, offset + limit),
+                unfiltered_total: allSessions.length,
+              },
+              { total: allSessions.length, offset, limit },
+            ),
+          ),
         });
       });
 
@@ -973,10 +1000,15 @@ test.describe("Session History View", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify(envelope(
-            { items: allSessions.slice(offset, offset + limit), unfiltered_total: allSessions.length },
-            { total: allSessions.length, offset, limit },
-          )),
+          body: JSON.stringify(
+            envelope(
+              {
+                items: allSessions.slice(offset, offset + limit),
+                unfiltered_total: allSessions.length,
+              },
+              { total: allSessions.length, offset, limit },
+            ),
+          ),
         });
       });
 
@@ -1013,10 +1045,15 @@ test.describe("Session History View", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify(envelope(
-            { items: allSessions.slice(offset, offset + limit), unfiltered_total: allSessions.length },
-            { total: allSessions.length, offset, limit },
-          )),
+          body: JSON.stringify(
+            envelope(
+              {
+                items: allSessions.slice(offset, offset + limit),
+                unfiltered_total: allSessions.length,
+              },
+              { total: allSessions.length, offset, limit },
+            ),
+          ),
         });
       });
 
@@ -1062,7 +1099,12 @@ test.describe("Session History View", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify(envelope({ items: paginated, unfiltered_total: allSessions.length }, { total, offset, limit })),
+          body: JSON.stringify(
+            envelope(
+              { items: paginated, unfiltered_total: allSessions.length },
+              { total, offset, limit },
+            ),
+          ),
         });
       });
 
@@ -1115,7 +1157,12 @@ test.describe("Session History View", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify(envelope({ items: paginated, unfiltered_total: allSessions.length }, { total, offset, limit })),
+          body: JSON.stringify(
+            envelope(
+              { items: paginated, unfiltered_total: allSessions.length },
+              { total, offset, limit },
+            ),
+          ),
         });
       });
 
@@ -1149,10 +1196,12 @@ test.describe("Session History View", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify(envelope(
-            { items: sessions, unfiltered_total: sessions.length },
-            { total: sessions.length, offset: 0, limit: 25 },
-          )),
+          body: JSON.stringify(
+            envelope(
+              { items: sessions, unfiltered_total: sessions.length },
+              { total: sessions.length, offset: 0, limit: 25 },
+            ),
+          ),
         });
       });
 
@@ -1197,7 +1246,9 @@ test.describe("Session History View", () => {
 
       await expect
         .poll(async () => {
-          const response = await request.get(`${daemon.baseUrl}/api/sessions?agent_type=${agentType}`);
+          const response = await request.get(
+            `${daemon.baseUrl}/api/sessions?agent_type=${agentType}`,
+          );
           const body = await response.json();
           return body.meta?.total ?? 0;
         })
@@ -1206,7 +1257,10 @@ test.describe("Session History View", () => {
       await page.goto(`/sessions?agent_type=${agentType}`);
       await expect(page.getByTestId("sessions-list")).toBeVisible();
       await expect(page.getByTestId("session-row")).toHaveCount(1);
-      await expect(page.getByTestId("session-row").first()).toHaveAttribute("data-session-id", firstSessionId);
+      await expect(page.getByTestId("session-row").first()).toHaveAttribute(
+        "data-session-id",
+        firstSessionId,
+      );
       await page.evaluate(async () => {
         const ws = ((window as any).__test_ws_instances as WebSocket[] | undefined)?.find(
           (socket) => socket.readyState === WebSocket.OPEN,
@@ -1275,7 +1329,9 @@ test.describe("Session History View", () => {
 
       await expect
         .poll(async () => {
-          const response = await request.get(`${daemon.baseUrl}/api/sessions?agent_type=${agentType}`);
+          const response = await request.get(
+            `${daemon.baseUrl}/api/sessions?agent_type=${agentType}`,
+          );
           const body = await response.json();
           return body.meta?.total ?? 0;
         })
@@ -1335,10 +1391,12 @@ test.describe("Session History View", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify(envelope(
-            { items: currentSessions, unfiltered_total: currentSessions.length },
-            { total: currentSessions.length, offset: 0, limit: 25 },
-          )),
+          body: JSON.stringify(
+            envelope(
+              { items: currentSessions, unfiltered_total: currentSessions.length },
+              { total: currentSessions.length, offset: 0, limit: 25 },
+            ),
+          ),
         });
       });
 
@@ -1389,7 +1447,9 @@ test.describe("Session History View", () => {
       await expect(page.getByTestId("sessions-count")).toContainText("of 6 sessions", {
         timeout: 3000,
       });
-      await expect(page.getByTestId("session-row").first()).toContainText(newSession.id.slice(0, 8));
+      await expect(page.getByTestId("session-row").first()).toContainText(
+        newSession.id.slice(0, 8),
+      );
     });
 
     // AC: @session-list-infinite-scroll ac-live-update — At-top prepend behavior
@@ -1405,10 +1465,12 @@ test.describe("Session History View", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify(envelope(
-            { items: sessions, unfiltered_total: sessions.length },
-            { total: sessions.length, offset: 0, limit: 25 },
-          )),
+          body: JSON.stringify(
+            envelope(
+              { items: sessions, unfiltered_total: sessions.length },
+              { total: sessions.length, offset: 0, limit: 25 },
+            ),
+          ),
         });
       });
 
@@ -1485,10 +1547,12 @@ test.describe("Session History View", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify(envelope(
-            { items: currentSessions, unfiltered_total: 50 },
-            { total: 50, offset: 0, limit: 25 },
-          )),
+          body: JSON.stringify(
+            envelope(
+              { items: currentSessions, unfiltered_total: 50 },
+              { total: 50, offset: 0, limit: 25 },
+            ),
+          ),
         });
       });
 
@@ -1571,15 +1635,16 @@ test.describe("Session History View", () => {
 
       await page.route("**/api/sessions*", (route) => {
         callCount++;
-        const currentSessions =
-          callCount > 1 ? [newSession, ...sessions.slice(0, 24)] : sessions;
+        const currentSessions = callCount > 1 ? [newSession, ...sessions.slice(0, 24)] : sessions;
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify(envelope(
-            { items: currentSessions, unfiltered_total: 51 },
-            { total: 51, offset: 0, limit: 25 },
-          )),
+          body: JSON.stringify(
+            envelope(
+              { items: currentSessions, unfiltered_total: 51 },
+              { total: 51, offset: 0, limit: 25 },
+            ),
+          ),
         });
       });
 
@@ -1646,7 +1711,9 @@ test.describe("Session History View", () => {
       // Should trigger a new fetch
       await page.waitForTimeout(500);
       expect(callCount).toBeGreaterThan(callsBeforeClick);
-      await expect(page.getByTestId("session-row").first()).toContainText(newSession.id.slice(0, 8));
+      await expect(page.getByTestId("session-row").first()).toContainText(
+        newSession.id.slice(0, 8),
+      );
 
       // Indicator should disappear after refresh
       await expect(page.getByTestId("new-sessions-indicator")).not.toBeVisible();

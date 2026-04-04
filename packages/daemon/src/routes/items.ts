@@ -133,9 +133,10 @@ function toBatchSpecItemSummary(item: LoadedSpecItem | ItemSummary) {
     status: getItemImplementationStatus(item),
     maturity: getItemMaturity(item),
     traits: item.traits ?? [],
-    ac_count: "acceptance_criteria_count" in item
-      ? (item as ItemSummary).acceptance_criteria_count
-      : (item as LoadedSpecItem).acceptance_criteria?.length ?? 0,
+    ac_count:
+      "acceptance_criteria_count" in item
+        ? (item as ItemSummary).acceptance_criteria_count
+        : ((item as LoadedSpecItem).acceptance_criteria?.length ?? 0),
   };
 }
 
@@ -168,7 +169,12 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
 
           // AC: @daemon-entity-cache ac-warming-availability
           if (cache && itemsDomainState === "loading") {
-            return wrapResponse([] as never[], { cacheDomainState: "loading", total: 0, offset: 0, limit: 0 });
+            return wrapResponse([] as never[], {
+              cacheDomainState: "loading",
+              total: 0,
+              offset: 0,
+              limit: 0,
+            });
           }
 
           // AC: @daemon-entity-cache ac-serve-from-memory — defer initContext to avoid
@@ -184,7 +190,7 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
           let items: (LoadedSpecItem | ItemSummary)[];
           if (cache && itemsDomainState === "ready") {
             const cachedItems = cache.getItemIndex();
-            items = cachedItems ?? await loadAllItems(await getCtx());
+            items = cachedItems ?? (await loadAllItems(await getCtx()));
           } else {
             items = await loadAllItems(await getCtx());
           }
@@ -337,19 +343,20 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
           let _batchCtx: Awaited<ReturnType<typeof initContext>> | null = null;
           // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
           const getBatchCtx = async () => {
-            if (!_batchCtx) _batchCtx = await initContext(projectContext.path, { syncMode: "skip" });
+            if (!_batchCtx)
+              _batchCtx = await initContext(projectContext.path, { syncMode: "skip" });
             return _batchCtx;
           };
           // AC: @daemon-entity-cache ac-serve-from-memory — try cache for items and tasks
           const batchCache = getEntityCache?.(projectContext.path);
           const batchItemsDomainState = batchCache?.getDomainState("items");
           const batchItems: (LoadedSpecItem | ItemSummary)[] =
-            (batchCache && batchItemsDomainState === "ready" ? batchCache.getItemIndex() : null)
-            ?? await loadAllItems(await getBatchCtx());
+            (batchCache && batchItemsDomainState === "ready" ? batchCache.getItemIndex() : null) ??
+            (await loadAllItems(await getBatchCtx()));
           const batchTasksDomainState = batchCache?.getDomainState("tasks");
           const tasks =
-            (batchCache && batchTasksDomainState === "ready" ? batchCache.getTaskIndex() : null)
-            ?? (await resolveTaskDataManager(await getBatchCtx()).loadAllTasks(await getBatchCtx()));
+            (batchCache && batchTasksDomainState === "ready" ? batchCache.getTaskIndex() : null) ??
+            (await resolveTaskDataManager(await getBatchCtx()).loadAllTasks(await getBatchCtx()));
 
           const resolvedItems = [];
           const unresolved: string[] = [];
@@ -364,9 +371,10 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
             // Find item by ref — works with both LoadedSpecItem and ItemSummary
             const cleanRef = ref.startsWith("@") ? ref.slice(1) : ref;
             const item = batchItems.find(
-              (i) => i._ulid === cleanRef
-                || i._ulid.toLowerCase().startsWith(cleanRef.toLowerCase())
-                || i.slugs.includes(cleanRef),
+              (i) =>
+                i._ulid === cleanRef ||
+                i._ulid.toLowerCase().startsWith(cleanRef.toLowerCase()) ||
+                i.slugs.includes(cleanRef),
             );
             if (item) {
               resolvedItems.push(toBatchSpecItemSummary(item));
@@ -422,7 +430,10 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
               ? (cache!.getTaskIndex() as unknown as LoadedTask[])
               : await resolveTaskDataManager(await getCtx()).loadAllTasks(await getCtx());
             if (cachedItems) {
-              const index = new ReferenceIndex(tasks ?? [], cachedItems as unknown as LoadedSpecItem[]);
+              const index = new ReferenceIndex(
+                tasks ?? [],
+                cachedItems as unknown as LoadedSpecItem[],
+              );
               const result = index.resolve(params.ref);
               if (result.ok) {
                 resolvedUlid = result.ulid;
@@ -436,7 +447,9 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
             if (cachedDetail) {
               // Serve from detail cache — no initContext() needed on this path
               // Use the full item index for parent map so nested items resolve correctly
-              const parentMapSource = (itemsDomainReady ? cache!.getItemIndex() : null) ?? [cachedDetail];
+              const parentMapSource = (itemsDomainReady ? cache!.getItemIndex() : null) ?? [
+                cachedDetail,
+              ];
               const parentMap = computeParentMap(parentMapSource);
               let acceptanceCriteriaWithCoverage = cachedDetail.acceptance_criteria;
               if (cachedDetail.acceptance_criteria && cachedDetail.acceptance_criteria.length > 0) {
@@ -448,21 +461,24 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
                 }
               }
               // AC: @api-contract ac-envelope - Unified envelope response
-              return wrapResponse({
-                _ulid: cachedDetail._ulid,
-                slugs: cachedDetail.slugs,
-                title: cachedDetail.title,
-                type: cachedDetail.type,
-                status: cachedDetail.status,
-                tags: cachedDetail.tags,
-                parent: parentMap.get(cachedDetail._ulid),
-                description: cachedDetail.description,
-                acceptance_criteria: acceptanceCriteriaWithCoverage,
-                traits: cachedDetail.traits,
-                relationships: cachedDetail.relationships,
-                created_at: cachedDetail.created_at,
-                _sourceFile: cachedDetail._sourceFile,
-              }, { cacheDomainState: itemsDomainState });
+              return wrapResponse(
+                {
+                  _ulid: cachedDetail._ulid,
+                  slugs: cachedDetail.slugs,
+                  title: cachedDetail.title,
+                  type: cachedDetail.type,
+                  status: cachedDetail.status,
+                  tags: cachedDetail.tags,
+                  parent: parentMap.get(cachedDetail._ulid),
+                  description: cachedDetail.description,
+                  acceptance_criteria: acceptanceCriteriaWithCoverage,
+                  traits: cachedDetail.traits,
+                  relationships: cachedDetail.relationships,
+                  created_at: cachedDetail.created_at,
+                  _sourceFile: cachedDetail._sourceFile,
+                },
+                { cacheDomainState: itemsDomainState },
+              );
             }
           }
 
@@ -470,15 +486,17 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
           const items = await loadAllItems(await getCtx());
           // AC: @daemon-entity-cache ac-serve-from-memory — use cached tasks when available
           const tasks =
-            (cache && cache.getDomainState("tasks") === "ready" ? cache.getTaskIndex() : null)
-            ?? (await resolveTaskDataManager(await getCtx()).loadAllTasks(await getCtx()));
+            (cache && cache.getDomainState("tasks") === "ready" ? cache.getTaskIndex() : null) ??
+            (await resolveTaskDataManager(await getCtx()).loadAllTasks(await getCtx()));
           const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
 
           // Compute parent relationships from path structure
           const parentMap = computeParentMap(items);
 
           // Use already-resolved ULID if available, otherwise resolve from disk-loaded index
-          const result = resolvedUlid ? { ok: true as const, ulid: resolvedUlid, item: null } : index.resolve(params.ref);
+          const result = resolvedUlid
+            ? { ok: true as const, ulid: resolvedUlid, item: null }
+            : index.resolve(params.ref);
 
           if (!result.ok) {
             // AC: @trait-api-endpoint ac-2 - Return 404 with error details
@@ -519,21 +537,24 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
 
           // AC: @api-contract ac-10 - Return full item with acceptance_criteria, traits, relationships
           // AC: @api-contract ac-envelope - Unified envelope response
-          return wrapResponse({
-            _ulid: item._ulid,
-            slugs: item.slugs,
-            title: item.title,
-            type: item.type,
-            status: item.status,
-            tags: item.tags,
-            parent: parentMap.get(item._ulid),
-            description: item.description,
-            acceptance_criteria: acceptanceCriteriaWithCoverage,
-            traits: item.traits,
-            relationships: item.relationships,
-            created_at: item.created_at,
-            _sourceFile: item._sourceFile,
-          }, { cacheDomainState: itemsDomainState });
+          return wrapResponse(
+            {
+              _ulid: item._ulid,
+              slugs: item.slugs,
+              title: item.title,
+              type: item.type,
+              status: item.status,
+              tags: item.tags,
+              parent: parentMap.get(item._ulid),
+              description: item.description,
+              acceptance_criteria: acceptanceCriteriaWithCoverage,
+              traits: item.traits,
+              relationships: item.relationships,
+              created_at: item.created_at,
+              _sourceFile: item._sourceFile,
+            },
+            { cacheDomainState: itemsDomainState },
+          );
         },
         {
           params: t.Object({

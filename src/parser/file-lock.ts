@@ -245,12 +245,7 @@ async function checkStaleLock(pidFile: string, maxHoldMs: number): Promise<Stale
 
       // PID is alive — check duration ceiling
       // AC: @scoped-dispatch-shadow-serialization ac-8
-      if (
-        pidAlive &&
-        maxHoldMs > 0 &&
-        maxHoldMs !== Infinity &&
-        !isNaN(timestamp)
-      ) {
+      if (pidAlive && maxHoldMs > 0 && maxHoldMs !== Infinity && !isNaN(timestamp)) {
         const holdDuration = Date.now() - timestamp;
         if (holdDuration > maxHoldMs) {
           // AC: @scoped-dispatch-shadow-serialization ac-10

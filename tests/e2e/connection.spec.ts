@@ -63,7 +63,10 @@ test.describe("WebSocket Connection Handling", () => {
   });
 
   // AC: @web-dashboard ac-28
-  test("reconnects with exponential backoff after connection drop", async ({ page, daemon: _d }) => {
+  test("reconnects with exponential backoff after connection drop", async ({
+    page,
+    daemon: _d,
+  }) => {
     // Intercept WebSocket constructor to track instances before navigating
     await page.addInitScript(() => {
       const instances: WebSocket[] = [];

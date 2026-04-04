@@ -429,15 +429,17 @@ test.describe("Dashboard Overview", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify(envelope({
-            valid: true,
-            schemaErrors: [],
-            refErrors: [],
-            refWarnings: [],
-            orphans: [],
-            completenessWarnings: [],
-            traitCycles: [],
-          })),
+          body: JSON.stringify(
+            envelope({
+              valid: true,
+              schemaErrors: [],
+              refErrors: [],
+              refWarnings: [],
+              orphans: [],
+              completenessWarnings: [],
+              traitCycles: [],
+            }),
+          ),
         });
       });
       await page.route("**/api/agent/status", (route) => {
@@ -470,10 +472,7 @@ test.describe("Dashboard Overview", () => {
       );
 
       // Validation card links to /validate
-      await expect(page.getByTestId("attention-validation")).toHaveAttribute(
-        "href",
-        /\/validate/,
-      );
+      await expect(page.getByTestId("attention-validation")).toHaveAttribute("href", /\/validate/);
     });
   });
 

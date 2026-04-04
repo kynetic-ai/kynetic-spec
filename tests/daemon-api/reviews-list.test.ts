@@ -128,9 +128,7 @@ describe("Review List API (GET /api/reviews)", () => {
   });
 
   it("filters by disposition", async () => {
-    const response = await request(
-      `/api/reviews?${STATUS_ALL}&disposition=changes_requested`,
-    );
+    const response = await request(`/api/reviews?${STATUS_ALL}&disposition=changes_requested`);
     expect(response.status).toBe(200);
     const { data } = await response.json();
     for (const review of data) {
@@ -161,9 +159,7 @@ describe("Review List API (GET /api/reviews)", () => {
     expect(response.status).toBe(200);
     const { data } = await response.json();
     if (data.length >= 2) {
-      const dates = data.map((r: { created_at: string }) =>
-        new Date(r.created_at).getTime(),
-      );
+      const dates = data.map((r: { created_at: string }) => new Date(r.created_at).getTime());
       for (let i = 1; i < dates.length; i++) {
         expect(dates[i - 1]).toBeGreaterThanOrEqual(dates[i]);
       }
@@ -175,9 +171,7 @@ describe("Review List API (GET /api/reviews)", () => {
     expect(response.status).toBe(200);
     const { data } = await response.json();
     if (data.length >= 2) {
-      const dates = data.map((r: { created_at: string }) =>
-        new Date(r.created_at).getTime(),
-      );
+      const dates = data.map((r: { created_at: string }) => new Date(r.created_at).getTime());
       for (let i = 1; i < dates.length; i++) {
         expect(dates[i - 1]).toBeLessThanOrEqual(dates[i]);
       }
@@ -197,9 +191,7 @@ describe("Review List API (GET /api/reviews)", () => {
     const response = await request(`/api/reviews?${STATUS_ALL}`);
     expect(response.status).toBe(200);
     const { data } = await response.json();
-    const openReview = data.find(
-      (r: { _ulid: string }) => r._ulid === OPEN_REVIEW_ULID,
-    );
+    const openReview = data.find((r: { _ulid: string }) => r._ulid === OPEN_REVIEW_ULID);
     expect(openReview).toBeDefined();
     expect(openReview.task_ref).toBe("@test-task-pending-review");
     expect(openReview.task_title).toBe("Pending review task");
@@ -209,9 +201,7 @@ describe("Review List API (GET /api/reviews)", () => {
     const response = await request(`/api/reviews?${STATUS_ALL}`);
     expect(response.status).toBe(200);
     const { data } = await response.json();
-    const openReview = data.find(
-      (r: { _ulid: string }) => r._ulid === OPEN_REVIEW_ULID,
-    );
+    const openReview = data.find((r: { _ulid: string }) => r._ulid === OPEN_REVIEW_ULID);
     expect(openReview).toBeDefined();
     expect(openReview.thread_count).toBe(4);
     expect(openReview.unresolved_blocker_count).toBe(2);
@@ -223,9 +213,7 @@ describe("Review List API (GET /api/reviews)", () => {
     const response = await request(`/api/reviews?${STATUS_ALL}`);
     expect(response.status).toBe(200);
     const { data } = await response.json();
-    const openReview = data.find(
-      (r: { _ulid: string }) => r._ulid === OPEN_REVIEW_ULID,
-    );
+    const openReview = data.find((r: { _ulid: string }) => r._ulid === OPEN_REVIEW_ULID);
     expect(openReview).toBeDefined();
     expect(openReview.disposition).toBe("changes_requested");
   });
@@ -236,9 +224,7 @@ describe("Review List API (GET /api/reviews)", () => {
   });
 
   it("filters by task ref", async () => {
-    const response = await request(
-      `/api/reviews?${STATUS_ALL}&task=@test-task-pending-review`,
-    );
+    const response = await request(`/api/reviews?${STATUS_ALL}&task=@test-task-pending-review`);
     expect(response.status).toBe(200);
     const { data } = await response.json();
     expect(data.length).toBeGreaterThan(0);
@@ -253,18 +239,14 @@ describe("Review List API (GET /api/reviews)", () => {
   // ULID-based task filtering is not currently implemented — this test verifies
   // the filter returns empty when given a raw ULID that doesn't match any ref string.
   it("task filter with raw ULID returns empty (no ULID resolution)", async () => {
-    const response = await request(
-      `/api/reviews?${STATUS_ALL}&task=${PENDING_REVIEW_TASK_ULID}`,
-    );
+    const response = await request(`/api/reviews?${STATUS_ALL}&task=${PENDING_REVIEW_TASK_ULID}`);
     expect(response.status).toBe(200);
     const { data } = await response.json();
     expect(data).toEqual([]);
   });
 
   it("returns empty list for unlinked task", async () => {
-    const response = await request(
-      `/api/reviews?${STATUS_ALL}&task=@test-task-not-in-review`,
-    );
+    const response = await request(`/api/reviews?${STATUS_ALL}&task=@test-task-not-in-review`);
     expect(response.status).toBe(200);
     const { data } = await response.json();
     expect(data).toEqual([]);
@@ -281,9 +263,7 @@ describe("Review List API (GET /api/reviews)", () => {
   });
 
   it("finds sibling reviews by head_branch", async () => {
-    const response = await request(
-      `/api/reviews?${STATUS_ALL}&head_branch=feat/review-detail`,
-    );
+    const response = await request(`/api/reviews?${STATUS_ALL}&head_branch=feat/review-detail`);
     expect(response.status).toBe(200);
     const { data } = await response.json();
     const ulids = data.map((r: { _ulid: string }) => r._ulid);
@@ -355,9 +335,7 @@ describe("Review Detail API (GET /api/reviews/:id)", () => {
   });
 
   it("returns 404 for unknown review with error shape", async () => {
-    const response = await request(
-      "/api/reviews/01AAAAAAAAAAAAAAAAAAAAAA99",
-    );
+    const response = await request("/api/reviews/01AAAAAAAAAAAAAAAAAAAAAA99");
     expect(response.status).toBe(404);
     const body = await response.json();
     expect(body.error).toBe("not_found");

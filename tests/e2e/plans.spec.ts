@@ -577,9 +577,9 @@ Fallback should keep this YAML visible.
     );
     const batchResponsePromise = page.waitForResponse(
       (response) =>
-        response.url().includes("/api/items/batch")
-        && response.request().method() === "POST"
-        && response.status() === 200,
+        response.url().includes("/api/items/batch") &&
+        response.request().method() === "POST" &&
+        response.status() === 200,
     );
 
     const activePlan = await expandActivePlan(page);
@@ -645,9 +645,9 @@ Fallback should keep this YAML visible.
     );
     const batchResponsePromise = page.waitForResponse(
       (response) =>
-        response.url().includes("/api/items/batch")
-        && response.request().method() === "POST"
-        && response.status() === 200,
+        response.url().includes("/api/items/batch") &&
+        response.request().method() === "POST" &&
+        response.status() === 200,
     );
 
     const activePlan = await expandActivePlan(page);
@@ -661,11 +661,15 @@ Fallback should keep this YAML visible.
       unresolved: string[];
     };
 
-    await expect(activePlan.getByTestId("plan-embedded-spec-card")).toHaveCount(1, { timeout: 10000 });
+    await expect(activePlan.getByTestId("plan-embedded-spec-card")).toHaveCount(1, {
+      timeout: 10000,
+    });
     await expect(activePlan.getByTestId("plan-embedded-task-card")).toHaveCount(0);
 
     const renderedBlocks = activePlan.getByTestId("plan-content-rendered");
-    await expect(renderedBlocks.filter({ hasText: "derive_from_specs: true" }).first()).toBeVisible();
+    await expect(
+      renderedBlocks.filter({ hasText: "derive_from_specs: true" }).first(),
+    ).toBeVisible();
 
     expect(batchBody.refs).toEqual(
       expect.arrayContaining([

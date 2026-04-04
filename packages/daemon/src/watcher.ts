@@ -94,7 +94,6 @@ export class KspecWatcher {
     await new Promise<void>((resolve) => {
       this.watcher?.once("ready", () => resolve());
     });
-
   }
 
   private isWatchedYamlPath(filePath: string): boolean {

@@ -12,13 +12,7 @@ import { stringify as toYaml, parse as parseYaml } from "yaml";
 import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
 import { resolveTaskDataManager, TaskDataManager } from "../src/parser/task-data-manager.js";
 import type { KspecContext } from "../src/parser/yaml.js";
-import {
-  cleanupTempDir,
-  createTempDir,
-  initGitRepo,
-  kspec,
-  testUlids,
-} from "./helpers/cli.js";
+import { cleanupTempDir, createTempDir, initGitRepo, kspec, testUlids } from "./helpers/cli.js";
 
 // Register the split backend so TaskDataManager can load split-format data
 ensureSplitBackendRegistered();

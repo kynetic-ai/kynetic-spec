@@ -59,16 +59,16 @@ Do not edit rendered skill files directly in `.agents/skills/`.
 
 ## Test Helpers
 
-| Helper                       | Purpose                                         |
-| ---------------------------- | ----------------------------------------------- |
-| `setupTempFixtures()`        | Copy pre-built fixtures to temp dir             |
-| `createTempDir()`            | Create empty temp dir                           |
-| `initGitRepo(dir)`           | Initialize git with test config                 |
-| `setupShadowDetection(dir)`  | Set up fake shadow worktree for initContext()   |
-| `testUlid(prefix?)`          | Generate valid test ULID                        |
-| `testUlids(prefix, count)`   | Generate multiple unique ULIDs                  |
-| `kspec(args, cwd)`           | Run CLI command, return result                  |
-| `kspecJson<T>(args, cwd)`    | Run CLI with --json, return parsed              |
+| Helper                      | Purpose                                       |
+| --------------------------- | --------------------------------------------- |
+| `setupTempFixtures()`       | Copy pre-built fixtures to temp dir           |
+| `createTempDir()`           | Create empty temp dir                         |
+| `initGitRepo(dir)`          | Initialize git with test config               |
+| `setupShadowDetection(dir)` | Set up fake shadow worktree for initContext() |
+| `testUlid(prefix?)`         | Generate valid test ULID                      |
+| `testUlids(prefix, count)`  | Generate multiple unique ULIDs                |
+| `kspec(args, cwd)`          | Run CLI command, return result                |
+| `kspecJson<T>(args, cwd)`   | Run CLI with --json, return parsed            |
 
 See `tests/helpers/cli.ts` for full documentation.
 

@@ -333,7 +333,10 @@ interface DomainStore<TIndex, TDetail = unknown> {
  *
  * AC: @daemon-entity-cache ac-granular-reload
  */
-export function fileToDomain(relativePath: string, source?: "kspec" | "sessions"): CacheDomain[] | null {
+export function fileToDomain(
+  relativePath: string,
+  source?: "kspec" | "sessions",
+): CacheDomain[] | null {
   const domains: CacheDomain[] = [];
 
   // Task files — both monolith (project.tasks.yaml, *.tasks.yaml, tasks.yaml) and
@@ -513,7 +516,10 @@ export class ProjectEntityCache {
    * Deferred domain invalidation promises for callers awaiting the debounced reload.
    * AC: @daemon-entity-cache ac-reload-dedup
    */
-  private domainDebouncePromises = new Map<CacheDomain, { resolve: () => void; promise: Promise<void> }>();
+  private domainDebouncePromises = new Map<
+    CacheDomain,
+    { resolve: () => void; promise: Promise<void> }
+  >();
 
   /** Whether dispose() has been called. */
   private disposed = false;
@@ -793,11 +799,8 @@ export class ProjectEntityCache {
     const domains = {} as Record<CacheDomain, DomainDiagnostic>;
     for (const domain of DOMAIN_LOAD_ORDER) {
       const store = this.getStore(domain);
-      const indexCount = store.index == null
-        ? 0
-        : Array.isArray(store.index)
-          ? store.index.length
-          : 1; // meta index is a single object
+      const indexCount =
+        store.index == null ? 0 : Array.isArray(store.index) ? store.index.length : 1; // meta index is a single object
       domains[domain] = {
         state: store.state,
         indexCount,
@@ -967,9 +970,8 @@ export class ProjectEntityCache {
           projectName: ctx.manifest?.project?.name,
           version: ctx.manifest?.project?.version,
           status: ctx.manifest?.project?.status,
-          modules: ctx.manifest?.modules?.map(
-            (m: { title?: string; name?: string } | string) =>
-              typeof m === "string" ? m : m.title ?? m.name ?? "unknown",
+          modules: ctx.manifest?.modules?.map((m: { title?: string; name?: string } | string) =>
+            typeof m === "string" ? m : (m.title ?? m.name ?? "unknown"),
           ),
         };
 
@@ -1247,7 +1249,9 @@ export class ProjectEntityCache {
     // Detect whether this change came from the sessions directory (.kspec-sessions/)
     // or the spec directory (.kspec/). Session IDs can be arbitrary strings (not just
     // ULIDs), so we pass a source hint to fileToDomain for correct domain mapping.
-    const source = kspecDir.endsWith(".kspec-sessions") ? "sessions" as const : "kspec" as const;
+    const source = kspecDir.endsWith(".kspec-sessions")
+      ? ("sessions" as const)
+      : ("kspec" as const);
     const domains = fileToDomain(relativePath, source);
     if (domains) {
       await Promise.all(domains.map((d) => this.invalidateDomain(d)));
@@ -1439,7 +1443,9 @@ const testDelayGates = new Map<string, { promise: Promise<void>; resolve: () => 
 export function setTestDelay(projectPath: string): void {
   if (!process.env.KSPEC_TEST) return;
   let resolve: () => void;
-  const promise = new Promise<void>((r) => { resolve = r; });
+  const promise = new Promise<void>((r) => {
+    resolve = r;
+  });
   testDelayGates.set(projectPath, { promise, resolve: resolve! });
 }
 

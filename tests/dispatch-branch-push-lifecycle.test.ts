@@ -487,7 +487,11 @@ describe("dispatch branch push lifecycle", () => {
 
     // AC: @dispatch-remote-branch-sync ac-no-remote
     it("skips deletion silently when remote is empty string", async () => {
-      const result = await deleteRemoteDispatchBranch("/tmp/nonexistent", "dispatch/task/test/01abc", "");
+      const result = await deleteRemoteDispatchBranch(
+        "/tmp/nonexistent",
+        "dispatch/task/test/01abc",
+        "",
+      );
 
       expect(result.deleted).toBe(false);
       expect(result.error).toBeNull();

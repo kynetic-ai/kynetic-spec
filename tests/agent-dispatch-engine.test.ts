@@ -4086,7 +4086,11 @@ describe("Self-trigger suppression", () => {
     const taskId = testUlid("TASK");
     await fs.writeFile(
       path.join(testDir, "kynetic.yaml"),
-      YAML.stringify({ kynetic: "1.1", task_storage: { format: "split" }, project: { name: "Test", version: "0.1.0" } }),
+      YAML.stringify({
+        kynetic: "1.1",
+        task_storage: { format: "split" },
+        project: { name: "Test", version: "0.1.0" },
+      }),
     );
     seedSplitTask(testDir, {
       _ulid: taskId,
@@ -7107,9 +7111,7 @@ describe("AC-11: Idle grace period backward compatibility", () => {
 
     // Add a session.idle hook to the meta YAML and re-commit
     const hookUlid = testUlid("HOOK");
-    const metaContent = YAML.parse(
-      await readTestOutput(path.join(testDir, "kynetic.meta.yaml")),
-    );
+    const metaContent = YAML.parse(await readTestOutput(path.join(testDir, "kynetic.meta.yaml")));
     metaContent.hooks = [
       {
         _ulid: hookUlid,
@@ -7200,9 +7202,7 @@ describe("AC-11: Idle grace period backward compatibility", () => {
 
     // Now add a session.idle hook to meta on disk
     const hookUlid = testUlid("HOOK", 2);
-    const metaContent = YAML.parse(
-      await readTestOutput(path.join(testDir, "kynetic.meta.yaml")),
-    );
+    const metaContent = YAML.parse(await readTestOutput(path.join(testDir, "kynetic.meta.yaml")));
     metaContent.hooks = [
       {
         _ulid: hookUlid,
@@ -7389,10 +7389,10 @@ describe("AC-28: async internal bookkeeping", () => {
 
     // Verify the mock kspec CLI was called for task note (error recovery)
     try {
-      const captured = JSON.parse(
-        await readTestOutput(captureFile),
+      const captured = JSON.parse(await readTestOutput(captureFile));
+      const noteCall = captured.find(
+        (c: { args: string[] }) => c.args[0] === "task" && c.args[1] === "note",
       );
-      const noteCall = captured.find((c: { args: string[] }) => c.args[0] === "task" && c.args[1] === "note");
       expect(noteCall).toBeDefined();
       expect(noteCall.args[3]).toContain("[DISPATCH-WORKSPACE]");
     } catch {

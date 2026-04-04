@@ -13,7 +13,13 @@ import {
   toYaml,
   type KspecContext,
 } from "../src/parser/index.js";
-import { cleanupTempDir, createTempDir, initGitRepo, readTestOutput, testUlid } from "./helpers/cli.js";
+import {
+  cleanupTempDir,
+  createTempDir,
+  initGitRepo,
+  readTestOutput,
+  testUlid,
+} from "./helpers/cli.js";
 
 function makeContext(specDir: string): KspecContext {
   const projectRoot = path.dirname(specDir);
@@ -149,9 +155,7 @@ describe("read-side validation warnings (@read-side-validation-warnings)", () =>
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
     await loadAllTasks(ctx);
-    const rawItems = parseYaml<unknown>(
-      await readTestOutput(path.join(specDir, "modules.yaml")),
-    );
+    const rawItems = parseYaml<unknown>(await readTestOutput(path.join(specDir, "modules.yaml")));
     extractItemsFromRaw(rawItems, "modules.yaml");
     await loadInboxItems(ctx);
     await loadTriageRecords(ctx);
@@ -194,9 +198,7 @@ describe("read-side validation warnings (@read-side-validation-warnings)", () =>
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
     const tasks = await loadAllTasks(ctx);
-    const rawItems = parseYaml<unknown>(
-      await readTestOutput(path.join(specDir, "modules.yaml")),
-    );
+    const rawItems = parseYaml<unknown>(await readTestOutput(path.join(specDir, "modules.yaml")));
     const items = extractItemsFromRaw(rawItems, "modules.yaml");
     const inbox = await loadInboxItems(ctx);
     const triage = await loadTriageRecords(ctx);
@@ -266,9 +268,7 @@ describe("read-side validation warnings (@read-side-validation-warnings)", () =>
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
     await loadAllTasks(ctx);
-    const rawItems = parseYaml<unknown>(
-      await readTestOutput(path.join(specDir, "modules.yaml")),
-    );
+    const rawItems = parseYaml<unknown>(await readTestOutput(path.join(specDir, "modules.yaml")));
     extractItemsFromRaw(rawItems, "modules.yaml");
     await loadInboxItems(ctx);
     await loadTriageRecords(ctx);

@@ -43,13 +43,10 @@ function request(urlPath: string, init?: RequestInit) {
 
 describe("POST /api/reviews/:id/comments", () => {
   it("creates a blocker thread", async () => {
-    const response = await request(
-      `/api/reviews/${OPEN_REVIEW_ULID}/comments`,
-      {
-        method: "POST",
-        body: JSON.stringify({ body: "This is a blocker.", kind: "blocker" }),
-      },
-    );
+    const response = await request(`/api/reviews/${OPEN_REVIEW_ULID}/comments`, {
+      method: "POST",
+      body: JSON.stringify({ body: "This is a blocker.", kind: "blocker" }),
+    });
     expect(response.status).toBe(200);
     const thread = await response.json();
     expect(thread).toHaveProperty("_ulid");
@@ -58,37 +55,31 @@ describe("POST /api/reviews/:id/comments", () => {
   });
 
   it("creates a nit thread (default kind)", async () => {
-    const response = await request(
-      `/api/reviews/${OPEN_REVIEW_ULID}/comments`,
-      {
-        method: "POST",
-        body: JSON.stringify({ body: "Minor nit here." }),
-      },
-    );
+    const response = await request(`/api/reviews/${OPEN_REVIEW_ULID}/comments`, {
+      method: "POST",
+      body: JSON.stringify({ body: "Minor nit here." }),
+    });
     expect(response.status).toBe(200);
     const thread = await response.json();
     expect(thread.kind).toBe("nit");
   });
 
   it("creates a thread with a code anchor", async () => {
-    const response = await request(
-      `/api/reviews/${OPEN_REVIEW_ULID}/comments`,
-      {
-        method: "POST",
-        body: JSON.stringify({
-          body: "Check this line.",
-          kind: "blocker",
-          anchor: {
-            type: "code",
-            path: "src/index.ts",
-            side: "head",
-            line_start: 10,
-            line_end: 12,
-            commit: "abc1234",
-          },
-        }),
-      },
-    );
+    const response = await request(`/api/reviews/${OPEN_REVIEW_ULID}/comments`, {
+      method: "POST",
+      body: JSON.stringify({
+        body: "Check this line.",
+        kind: "blocker",
+        anchor: {
+          type: "code",
+          path: "src/index.ts",
+          side: "head",
+          line_start: 10,
+          line_end: 12,
+          commit: "abc1234",
+        },
+      }),
+    });
     expect(response.status).toBe(200);
     const thread = await response.json();
     expect(thread.anchor).toMatchObject({
@@ -101,20 +92,17 @@ describe("POST /api/reviews/:id/comments", () => {
   });
 
   it("creates a thread with a structured anchor", async () => {
-    const response = await request(
-      `/api/reviews/${OPEN_REVIEW_ULID}/comments`,
-      {
-        method: "POST",
-        body: JSON.stringify({
-          body: "Check this spec item.",
-          kind: "nit",
-          anchor: {
-            type: "structured",
-            ref: "@some-spec-item",
-          },
-        }),
-      },
-    );
+    const response = await request(`/api/reviews/${OPEN_REVIEW_ULID}/comments`, {
+      method: "POST",
+      body: JSON.stringify({
+        body: "Check this spec item.",
+        kind: "nit",
+        anchor: {
+          type: "structured",
+          ref: "@some-spec-item",
+        },
+      }),
+    });
     expect(response.status).toBe(200);
     const thread = await response.json();
     expect(thread.anchor).toMatchObject({
@@ -124,22 +112,17 @@ describe("POST /api/reviews/:id/comments", () => {
   });
 
   it("persists the new thread on the review", async () => {
-    const createResponse = await request(
-      `/api/reviews/${OPEN_REVIEW_ULID}/comments`,
-      {
-        method: "POST",
-        body: JSON.stringify({ body: "Persist check.", kind: "nit" }),
-      },
-    );
+    const createResponse = await request(`/api/reviews/${OPEN_REVIEW_ULID}/comments`, {
+      method: "POST",
+      body: JSON.stringify({ body: "Persist check.", kind: "nit" }),
+    });
     expect(createResponse.status).toBe(200);
     const created = await createResponse.json();
 
     const getResponse = await request(`/api/reviews/${OPEN_REVIEW_ULID}`);
     expect(getResponse.status).toBe(200);
     const { data: review } = await getResponse.json();
-    const found = review.threads.find(
-      (t: { _ulid: string }) => t._ulid === created._ulid,
-    );
+    const found = review.threads.find((t: { _ulid: string }) => t._ulid === created._ulid);
     expect(found).toBeDefined();
     expect(found.entries[0].body).toBe("Persist check.");
   });
@@ -147,177 +130,144 @@ describe("POST /api/reviews/:id/comments", () => {
   it("returns 400 when body is missing", async () => {
     // Elysia schema validation (missing required 'body' field) is
     // normalized to 400 by the onError handler.
-    const response = await request(
-      `/api/reviews/${OPEN_REVIEW_ULID}/comments`,
-      {
-        method: "POST",
-        body: JSON.stringify({}),
-      },
-    );
+    const response = await request(`/api/reviews/${OPEN_REVIEW_ULID}/comments`, {
+      method: "POST",
+      body: JSON.stringify({}),
+    });
     expect(response.status).toBe(400);
   });
 
   it("returns 400 for empty body string", async () => {
-    const response = await request(
-      `/api/reviews/${OPEN_REVIEW_ULID}/comments`,
-      {
-        method: "POST",
-        body: JSON.stringify({ body: "" }),
-      },
-    );
+    const response = await request(`/api/reviews/${OPEN_REVIEW_ULID}/comments`, {
+      method: "POST",
+      body: JSON.stringify({ body: "" }),
+    });
     expect(response.status).toBe(400);
   });
 
   it("returns 400 for whitespace-only body", async () => {
-    const response = await request(
-      `/api/reviews/${OPEN_REVIEW_ULID}/comments`,
-      {
-        method: "POST",
-        body: JSON.stringify({ body: "   " }),
-      },
-    );
+    const response = await request(`/api/reviews/${OPEN_REVIEW_ULID}/comments`, {
+      method: "POST",
+      body: JSON.stringify({ body: "   " }),
+    });
     expect(response.status).toBe(400);
   });
 
   it("returns 400 for invalid kind", async () => {
-    const response = await request(
-      `/api/reviews/${OPEN_REVIEW_ULID}/comments`,
-      {
-        method: "POST",
-        body: JSON.stringify({ body: "Some comment.", kind: "invalid_kind" }),
-      },
-    );
+    const response = await request(`/api/reviews/${OPEN_REVIEW_ULID}/comments`, {
+      method: "POST",
+      body: JSON.stringify({ body: "Some comment.", kind: "invalid_kind" }),
+    });
     expect(response.status).toBe(400);
   });
 
   it("returns 404 for unknown review", async () => {
-    const response = await request(
-      "/api/reviews/01AAAAAAAAAAAAAAAAAAAAAA99/comments",
-      {
-        method: "POST",
-        body: JSON.stringify({ body: "This won't work.", kind: "nit" }),
-      },
-    );
+    const response = await request("/api/reviews/01AAAAAAAAAAAAAAAAAAAAAA99/comments", {
+      method: "POST",
+      body: JSON.stringify({ body: "This won't work.", kind: "nit" }),
+    });
     expect(response.status).toBe(404);
   });
 
   it("returns 400 for invalid anchor type", async () => {
-    const response = await request(
-      `/api/reviews/${OPEN_REVIEW_ULID}/comments`,
-      {
-        method: "POST",
-        body: JSON.stringify({
-          body: "Bad anchor.",
-          kind: "nit",
-          anchor: { type: "unknown_type" },
-        }),
-      },
-    );
+    const response = await request(`/api/reviews/${OPEN_REVIEW_ULID}/comments`, {
+      method: "POST",
+      body: JSON.stringify({
+        body: "Bad anchor.",
+        kind: "nit",
+        anchor: { type: "unknown_type" },
+      }),
+    });
     expect(response.status).toBe(400);
   });
 
   it("returns 400 for invalid code anchor side", async () => {
-    const response = await request(
-      `/api/reviews/${OPEN_REVIEW_ULID}/comments`,
-      {
-        method: "POST",
-        body: JSON.stringify({
-          body: "Bad side.",
-          kind: "nit",
-          anchor: {
-            type: "code",
-            path: "src/index.ts",
-            side: "neither",
-            line_start: 1,
-            line_end: 1,
-            commit: "abc123",
-          },
-        }),
-      },
-    );
+    const response = await request(`/api/reviews/${OPEN_REVIEW_ULID}/comments`, {
+      method: "POST",
+      body: JSON.stringify({
+        body: "Bad side.",
+        kind: "nit",
+        anchor: {
+          type: "code",
+          path: "src/index.ts",
+          side: "neither",
+          line_start: 1,
+          line_end: 1,
+          commit: "abc123",
+        },
+      }),
+    });
     expect(response.status).toBe(400);
   });
 
   it("returns 400 for negative line_start", async () => {
-    const response = await request(
-      `/api/reviews/${OPEN_REVIEW_ULID}/comments`,
-      {
-        method: "POST",
-        body: JSON.stringify({
-          body: "Negative line.",
-          kind: "nit",
-          anchor: {
-            type: "code",
-            path: "src/index.ts",
-            side: "head",
-            line_start: -1,
-            line_end: 5,
-            commit: "abc123",
-          },
-        }),
-      },
-    );
+    const response = await request(`/api/reviews/${OPEN_REVIEW_ULID}/comments`, {
+      method: "POST",
+      body: JSON.stringify({
+        body: "Negative line.",
+        kind: "nit",
+        anchor: {
+          type: "code",
+          path: "src/index.ts",
+          side: "head",
+          line_start: -1,
+          line_end: 5,
+          commit: "abc123",
+        },
+      }),
+    });
     expect(response.status).toBe(400);
   });
 
   it("returns 400 for float line_end", async () => {
-    const response = await request(
-      `/api/reviews/${OPEN_REVIEW_ULID}/comments`,
-      {
-        method: "POST",
-        body: JSON.stringify({
-          body: "Float line end.",
-          kind: "nit",
-          anchor: {
-            type: "code",
-            path: "src/index.ts",
-            side: "head",
-            line_start: 1,
-            line_end: 2.5,
-            commit: "abc123",
-          },
-        }),
-      },
-    );
+    const response = await request(`/api/reviews/${OPEN_REVIEW_ULID}/comments`, {
+      method: "POST",
+      body: JSON.stringify({
+        body: "Float line end.",
+        kind: "nit",
+        anchor: {
+          type: "code",
+          path: "src/index.ts",
+          side: "head",
+          line_start: 1,
+          line_end: 2.5,
+          commit: "abc123",
+        },
+      }),
+    });
     expect(response.status).toBe(400);
   });
 
   it("returns 400 when line_end is less than line_start", async () => {
-    const response = await request(
-      `/api/reviews/${OPEN_REVIEW_ULID}/comments`,
-      {
-        method: "POST",
-        body: JSON.stringify({
-          body: "Bad range.",
-          kind: "nit",
-          anchor: {
-            type: "code",
-            path: "src/index.ts",
-            side: "head",
-            line_start: 10,
-            line_end: 5,
-            commit: "abc123",
-          },
-        }),
-      },
-    );
+    const response = await request(`/api/reviews/${OPEN_REVIEW_ULID}/comments`, {
+      method: "POST",
+      body: JSON.stringify({
+        body: "Bad range.",
+        kind: "nit",
+        anchor: {
+          type: "code",
+          path: "src/index.ts",
+          side: "head",
+          line_start: 10,
+          line_end: 5,
+          commit: "abc123",
+        },
+      }),
+    });
     expect(response.status).toBe(400);
   });
 
   it("returns 400 for empty structured anchor ref", async () => {
     // A structured anchor with only ref="" has no meaningful field,
     // so the route rejects it.
-    const response = await request(
-      `/api/reviews/${OPEN_REVIEW_ULID}/comments`,
-      {
-        method: "POST",
-        body: JSON.stringify({
-          body: "Empty ref.",
-          kind: "nit",
-          anchor: { type: "structured", ref: "" },
-        }),
-      },
-    );
+    const response = await request(`/api/reviews/${OPEN_REVIEW_ULID}/comments`, {
+      method: "POST",
+      body: JSON.stringify({
+        body: "Empty ref.",
+        kind: "nit",
+        anchor: { type: "structured", ref: "" },
+      }),
+    });
     expect(response.status).toBe(400);
   });
 });
@@ -353,9 +303,7 @@ describe("POST /api/reviews/:id/comments/:threadId/replies", () => {
     const getResponse = await request(`/api/reviews/${OPEN_REVIEW_ULID}`);
     expect(getResponse.status).toBe(200);
     const { data: review } = await getResponse.json();
-    const thread = review.threads.find(
-      (t: { _ulid: string }) => t._ulid === BLOCKER_THREAD_ULID,
-    );
+    const thread = review.threads.find((t: { _ulid: string }) => t._ulid === BLOCKER_THREAD_ULID);
     expect(thread).toBeDefined();
     const hasReply = thread.entries.some(
       (e: { body: string }) => e.body === "Persist reply check.",

@@ -60,7 +60,10 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
               inboxDomainState === "loading" ||
               metaDomainState === "loading")
           ) {
-            return wrapResponse({ results: [], total: 0, showing: 0 }, { cacheDomainState: "loading" });
+            return wrapResponse(
+              { results: [], total: 0, showing: 0 },
+              { cacheDomainState: "loading" },
+            );
           }
 
           let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
@@ -231,7 +234,10 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
           const limitedResults = results.slice(0, limit);
 
           // AC: @api-contract ac-19 - Return search results with matched fields
-          return wrapResponse({ results: limitedResults, total: results.length, showing: limitedResults.length }, {});
+          return wrapResponse(
+            { results: limitedResults, total: results.length, showing: limitedResults.length },
+            {},
+          );
         },
         {
           query: t.Object({
@@ -276,7 +282,13 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
 
         // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
         if (cache && (tasksDomainState === "loading" || itemsDomainState === "loading")) {
-          return wrapResponse({ stats: { totalSpecs: 0, specsWithTasks: 0, alignedSpecs: 0, orphanedSpecs: 0 }, warnings: [] }, { cacheDomainState: "loading" });
+          return wrapResponse(
+            {
+              stats: { totalSpecs: 0, specsWithTasks: 0, alignedSpecs: 0, orphanedSpecs: 0 },
+              warnings: [],
+            },
+            { cacheDomainState: "loading" },
+          );
         }
 
         // Resolve tasks and items from cache when available
@@ -308,7 +320,18 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
         const stats = alignIndex.getStats();
         const warnings = alignIndex.findAlignmentWarnings();
 
-        return wrapResponse({ stats: { totalSpecs: stats.totalSpecs, specsWithTasks: stats.specsWithTasks, alignedSpecs: stats.alignedSpecs, orphanedSpecs: stats.orphanedSpecs }, warnings }, {});
+        return wrapResponse(
+          {
+            stats: {
+              totalSpecs: stats.totalSpecs,
+              specsWithTasks: stats.specsWithTasks,
+              alignedSpecs: stats.alignedSpecs,
+              orphanedSpecs: stats.orphanedSpecs,
+            },
+            warnings,
+          },
+          {},
+        );
       })
   );
 }

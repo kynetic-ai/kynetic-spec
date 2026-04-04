@@ -497,9 +497,7 @@ describe("Multi-project session sync", () => {
     it("should await startWatcher for newly registered project via WebSocket", async () => {
       const onRegistered = vi.fn().mockResolvedValue(undefined);
       const manager = new ProjectContextManager();
-      const startWatcherSpy = vi
-        .spyOn(manager, "startWatcher")
-        .mockResolvedValue(undefined);
+      const startWatcherSpy = vi.spyOn(manager, "startWatcher").mockResolvedValue(undefined);
 
       const request = new Request("http://localhost/ws", {
         headers: { Host: "localhost", "X-Kspec-Dir": projectA },
@@ -526,9 +524,7 @@ describe("Multi-project session sync", () => {
     it("should NOT call startWatcher for already-registered project via WebSocket", async () => {
       const manager = new ProjectContextManager();
       manager.registerProject(projectA);
-      const startWatcherSpy = vi
-        .spyOn(manager, "startWatcher")
-        .mockResolvedValue(undefined);
+      const startWatcherSpy = vi.spyOn(manager, "startWatcher").mockResolvedValue(undefined);
 
       const request = new Request("http://localhost/ws", {
         headers: { Host: "localhost", "X-Kspec-Dir": projectA },

@@ -5,7 +5,14 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { kspec, kspecJson, readTestOutput, setupTempFixtures, cleanupTempDir, testUlid } from "./helpers/cli";
+import {
+  kspec,
+  kspecJson,
+  readTestOutput,
+  setupTempFixtures,
+  cleanupTempDir,
+  testUlid,
+} from "./helpers/cli";
 
 describe("kspec meta observations --search", () => {
   let tempDir: string;

@@ -179,11 +179,7 @@ test.describe("Agent and Dispatch View", () => {
     });
 
     // AC: @ui-agent-dispatch ac-2
-    test("shows stop button when dispatch is running", async ({
-      page,
-      daemon,
-      request,
-    }) => {
+    test("shows stop button when dispatch is running", async ({ page, daemon, request }) => {
       await request.post(`${daemon.baseUrl}/api/agent/dispatch`, {
         data: { action: "start" },
         headers: { "Content-Type": "application/json" },

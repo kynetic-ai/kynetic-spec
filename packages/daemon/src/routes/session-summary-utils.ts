@@ -24,7 +24,9 @@ export async function listSessionSummariesFromDisk(
   entityCache?: RouteEntityCache | null,
 ): Promise<SessionLogSummary[]> {
   const sessionIds = await listSessions(sessionsDir);
-  const summaries = await Promise.all(sessionIds.map((id) => getSessionMetadataOnly(sessionsDir, id)));
+  const summaries = await Promise.all(
+    sessionIds.map((id) => getSessionMetadataOnly(sessionsDir, id)),
+  );
   return applySessionLiveCounters(
     summaries.filter((summary): summary is SessionLogSummary => summary !== null),
     entityCache,

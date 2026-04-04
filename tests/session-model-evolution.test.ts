@@ -26,7 +26,14 @@ import {
   EventTypeSchema,
   SessionMetadataSchema,
 } from "../src/sessions/types.js";
-import { setupTempFixtures, cleanupTempDir, kspec, kspecJson, readTestOutput, testUlid } from "./helpers/cli.js";
+import {
+  setupTempFixtures,
+  cleanupTempDir,
+  kspec,
+  kspecJson,
+  readTestOutput,
+  testUlid,
+} from "./helpers/cli.js";
 
 // ─── AC-3: SessionStatusSchema extension ────────────────────────────────────
 

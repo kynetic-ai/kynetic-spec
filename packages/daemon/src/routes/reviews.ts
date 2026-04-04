@@ -159,7 +159,10 @@ function indexSummaryToReviewSummary(review: ReviewIndexSummary, index?: Referen
     disposition: review.disposition,
     subject_type: review.subject.type,
     subject_ref: "ref" in review.subject ? (review.subject as { ref: string }).ref : undefined,
-    head_branch: review.subject.type === "code" ? (review.subject as { head_branch?: string }).head_branch : undefined,
+    head_branch:
+      review.subject.type === "code"
+        ? (review.subject as { head_branch?: string }).head_branch
+        : undefined,
     author: review.author,
     related_refs: review.related_refs,
     task_ref: taskRef,
@@ -190,7 +193,12 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
           const reviewsDomainState = cache?.getDomainState("reviews");
           if (cache && reviewsDomainState === "loading") {
-            return wrapResponse([] as never[], { cacheDomainState: "loading", total: 0, offset: 0, limit: 0 });
+            return wrapResponse([] as never[], {
+              cacheDomainState: "loading",
+              total: 0,
+              offset: 0,
+              limit: 0,
+            });
           }
 
           let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
@@ -201,9 +209,13 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           };
 
           // Try cache for reviews (index tier has ReviewIndexSummary, disk gives full records)
-          const cachedReviews = cache && reviewsDomainState === "ready" ? cache.getReviewsIndex() : null;
+          const cachedReviews =
+            cache && reviewsDomainState === "ready" ? cache.getReviewsIndex() : null;
           const fromCache = !!cachedReviews;
-          let reviews: (ReviewIndexSummary | Awaited<ReturnType<typeof loadReviewRecords>>[number])[];
+          let reviews: (
+            | ReviewIndexSummary
+            | Awaited<ReturnType<typeof loadReviewRecords>>[number]
+          )[];
           if (cachedReviews) {
             reviews = cachedReviews;
           } else {
@@ -214,11 +226,16 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           // Try cache for tasks and items (for ref resolution)
           const tasksDomainState = cache?.getDomainState("tasks");
           const itemsDomainState = cache?.getDomainState("items");
-          const tasks = (cache && tasksDomainState === "ready" ? cache.getTaskIndex() : null)
-            ?? await resolveTaskDataManager(await getCtx()).loadAllTasks(await getCtx());
-          const specItems = (cache && itemsDomainState === "ready" ? cache.getItemIndex() : null)
-            ?? await loadAllItems(await getCtx());
-          const index = new ReferenceIndex(tasks as unknown as LoadedTask[], specItems as unknown as LoadedSpecItem[]);
+          const tasks =
+            (cache && tasksDomainState === "ready" ? cache.getTaskIndex() : null) ??
+            (await resolveTaskDataManager(await getCtx()).loadAllTasks(await getCtx()));
+          const specItems =
+            (cache && itemsDomainState === "ready" ? cache.getItemIndex() : null) ??
+            (await loadAllItems(await getCtx()));
+          const index = new ReferenceIndex(
+            tasks as unknown as LoadedTask[],
+            specItems as unknown as LoadedSpecItem[],
+          );
 
           // Apply filters — both ReviewIndexSummary and LoadedReviewRecord share these fields
           let filtered = reviews;
@@ -328,7 +345,12 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
             ? paginated.map((r) => indexSummaryToReviewSummary(r as ReviewIndexSummary, index))
             : paginated.map((r) => toReviewSummary(r as ReviewRecord, index));
 
-          return wrapResponse(items, { total, offset, limit, cacheDomainState: reviewsDomainState });
+          return wrapResponse(items, {
+            total,
+            offset,
+            limit,
+            cacheDomainState: reviewsDomainState,
+          });
         },
         {
           query: t.Object({
@@ -397,7 +419,10 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
             });
           }
 
-          return wrapResponse({ ...review, disposition: computeDisposition(review) }, { cacheDomainState: reviewsDomainState });
+          return wrapResponse(
+            { ...review, disposition: computeDisposition(review) },
+            { cacheDomainState: reviewsDomainState },
+          );
         },
         {
           params: t.Object({

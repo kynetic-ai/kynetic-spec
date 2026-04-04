@@ -20,7 +20,14 @@ import type { ReviewRecordInput } from "../src/schema/index.js";
 import { resolveTaskDataManager } from "../src/parser/task-data-manager.js";
 import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
 import { toYaml } from "../src/parser/yaml.js";
-import { createTempDir, cleanupTempDir, initGitRepo, testUlid, testUlids, seedSplitTask } from "./helpers/cli.js";
+import {
+  createTempDir,
+  cleanupTempDir,
+  initGitRepo,
+  testUlid,
+  testUlids,
+  seedSplitTask,
+} from "./helpers/cli.js";
 
 // Register the split backend
 ensureSplitBackendRegistered();
@@ -66,7 +73,10 @@ function createAndSaveTask(
   const fullTask = { ...task, ...overrides };
 
   // Delegate file writing to the canonical helper
-  seedSplitTask(ctx.specDir, fullTask as Record<string, unknown> & { _ulid: string; notes?: unknown[] });
+  seedSplitTask(
+    ctx.specDir,
+    fullTask as Record<string, unknown> & { _ulid: string; notes?: unknown[] },
+  );
 
   const taskDir = path.join(ctx.specDir, "tasks", fullTask._ulid);
   return {

@@ -73,7 +73,12 @@ export function createTriageRoutes(options: TriageRouteOptions) {
 
           // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
           if (cache && triageDomainState === "loading") {
-            return wrapResponse([] as never[], { cacheDomainState: "loading", total: 0, offset: 0, limit: 0 });
+            return wrapResponse([] as never[], {
+              cacheDomainState: "loading",
+              total: 0,
+              offset: 0,
+              limit: 0,
+            });
           }
 
           let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
@@ -128,11 +133,16 @@ export function createTriageRoutes(options: TriageRouteOptions) {
               // AC: @daemon-entity-cache ac-serve-from-memory — try cache for tasks and items
               const tasksDomainState = cache?.getDomainState("tasks");
               const itemsDomainState = cache?.getDomainState("items");
-              const tasks = (cache && tasksDomainState === "ready" ? cache.getTaskIndex() : null)
-                ?? await resolveTaskDataManager(await getCtx()).loadAllTasks(await getCtx());
-              const items = (cache && itemsDomainState === "ready" ? cache.getItemIndex() : null)
-                ?? await loadAllItems(await getCtx());
-              refIndex = new ReferenceIndex(tasks as unknown as LoadedTask[], items as unknown as LoadedSpecItem[]);
+              const tasks =
+                (cache && tasksDomainState === "ready" ? cache.getTaskIndex() : null) ??
+                (await resolveTaskDataManager(await getCtx()).loadAllTasks(await getCtx()));
+              const items =
+                (cache && itemsDomainState === "ready" ? cache.getItemIndex() : null) ??
+                (await loadAllItems(await getCtx()));
+              refIndex = new ReferenceIndex(
+                tasks as unknown as LoadedTask[],
+                items as unknown as LoadedSpecItem[],
+              );
             } catch {
               // Non-critical
             }
@@ -144,7 +154,12 @@ export function createTriageRoutes(options: TriageRouteOptions) {
               }))
             : paginated;
 
-          return wrapResponse(enriched, { total, offset, limit, cacheDomainState: triageDomainState });
+          return wrapResponse(enriched, {
+            total,
+            offset,
+            limit,
+            cacheDomainState: triageDomainState,
+          });
         },
         {
           query: t.Object({
@@ -328,8 +343,7 @@ export function createTriageRoutes(options: TriageRouteOptions) {
               const cleanRef = params.ref.startsWith("@") ? params.ref.slice(1) : params.ref;
               const match = cachedIndex.find(
                 (r) =>
-                  r._ulid === cleanRef ||
-                  r._ulid.toLowerCase().startsWith(cleanRef.toLowerCase()),
+                  r._ulid === cleanRef || r._ulid.toLowerCase().startsWith(cleanRef.toLowerCase()),
               );
               if (match) {
                 record = cache.getTriageDetail(match._ulid) ?? undefined;
@@ -363,12 +377,23 @@ export function createTriageRoutes(options: TriageRouteOptions) {
               // AC: @daemon-entity-cache ac-serve-from-memory — try cache for tasks and items
               const tasksDomainState = cache?.getDomainState("tasks");
               const itemsDomainState = cache?.getDomainState("items");
-              const tasks = (cache && tasksDomainState === "ready" ? cache.getTaskIndex() : null)
-                ?? await resolveTaskDataManager(await getCtx()).loadAllTasks(await getCtx());
-              const items = (cache && itemsDomainState === "ready" ? cache.getItemIndex() : null)
-                ?? await loadAllItems(await getCtx());
-              const refIndex = new ReferenceIndex(tasks as unknown as LoadedTask[], items as unknown as LoadedSpecItem[]);
-              return wrapResponse({ ...record, resolved_evidence_refs: resolveRefEntries(refIndex, record.evidence_refs) }, { cacheDomainState: triageDomainState });
+              const tasks =
+                (cache && tasksDomainState === "ready" ? cache.getTaskIndex() : null) ??
+                (await resolveTaskDataManager(await getCtx()).loadAllTasks(await getCtx()));
+              const items =
+                (cache && itemsDomainState === "ready" ? cache.getItemIndex() : null) ??
+                (await loadAllItems(await getCtx()));
+              const refIndex = new ReferenceIndex(
+                tasks as unknown as LoadedTask[],
+                items as unknown as LoadedSpecItem[],
+              );
+              return wrapResponse(
+                {
+                  ...record,
+                  resolved_evidence_refs: resolveRefEntries(refIndex, record.evidence_refs),
+                },
+                { cacheDomainState: triageDomainState },
+              );
             } catch {
               // Non-critical
             }

@@ -68,7 +68,9 @@ function closeServer(server: http.Server): Promise<void> {
 function readBody(req: http.IncomingMessage): Promise<string> {
   return new Promise((resolve) => {
     let data = "";
-    req.on("data", (chunk: Buffer) => { data += chunk.toString(); });
+    req.on("data", (chunk: Buffer) => {
+      data += chunk.toString();
+    });
     req.on("end", () => resolve(data));
   });
 }
@@ -335,9 +337,7 @@ describe("extractCommandPayload", () => {
         parent: { name: () => "kspec", parent: null },
       },
       opts: () => ({}),
-      registeredArguments: [
-        { name: () => "ref", required: true, variadic: false },
-      ],
+      registeredArguments: [{ name: () => "ref", required: true, variadic: false }],
       processedArgs: ["@my-task"],
     };
 
@@ -405,11 +405,13 @@ describe("proxyCommand", () => {
       }
       if (url.pathname === "/api/command") {
         res.writeHead(200, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({
-          stdout: "task list output\n",
-          stderr: "",
-          exitCode: 0,
-        }));
+        res.end(
+          JSON.stringify({
+            stdout: "task list output\n",
+            stderr: "",
+            exitCode: 0,
+          }),
+        );
         return;
       }
       res.writeHead(404);
@@ -444,11 +446,13 @@ describe("proxyCommand", () => {
       }
       if (url.pathname === "/api/command") {
         res.writeHead(422, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({
-          stdout: "",
-          stderr: "error: task not found\n",
-          exitCode: 3,
-        }));
+        res.end(
+          JSON.stringify({
+            stdout: "",
+            stderr: "error: task not found\n",
+            exitCode: 3,
+          }),
+        );
         return;
       }
       res.writeHead(404);
@@ -552,11 +556,13 @@ describe("proxyCommand", () => {
       if (url.pathname === "/api/command" && req.method === "POST") {
         receivedCommand = JSON.parse(await readBody(req)) as Record<string, unknown>;
         res.writeHead(200, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({
-          stdout: "OK Started task\n",
-          stderr: "",
-          exitCode: 0,
-        }));
+        res.end(
+          JSON.stringify({
+            stdout: "OK Started task\n",
+            stderr: "",
+            exitCode: 0,
+          }),
+        );
         return;
       }
       res.writeHead(404);

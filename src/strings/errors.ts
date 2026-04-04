@@ -225,9 +225,7 @@ export const statusErrors = {
         lines.push(`Valid transitions from ${currentStatus}:`);
         for (const target of validTargets) {
           if (currentStatus === "blocked" && target === unblockTarget) {
-            lines.push(
-              `  ${target}: kspec task unblock @ref (restores prior status)`,
-            );
+            lines.push(`  ${target}: kspec task unblock @ref (restores prior status)`);
           } else {
             const cmd = STATUS_TO_COMMAND[target as TaskStatus];
             lines.push(`  ${target}: ${cmd ?? "N/A"}`);

@@ -697,10 +697,11 @@ class SplitBackend implements TaskStorageBackend {
 
     // Read latest state from per-task directory (includes existing history)
     // AC: @task-core-data-file ac-4 — rawCore preserved for unknown field round-trip
-    const { task: latestTask, history: existingHistory, rawCore } = await this.loadTaskFromDirWithHistory(
-      ctx,
-      task._ulid,
-    );
+    const {
+      task: latestTask,
+      history: existingHistory,
+      rawCore,
+    } = await this.loadTaskFromDirWithHistory(ctx, task._ulid);
     if (!latestTask) {
       throw new TaskDataManagerError(`Task not found: ${task._ulid}`, {
         suggestion: `Check the reference with: kspec search "${task._ulid}" or kspec task list`,
@@ -798,7 +799,11 @@ class SplitBackend implements TaskStorageBackend {
 
     // Load latest state for each task (with history for diff tracking)
     // AC: @task-core-data-file ac-4 — rawCore preserved for unknown field round-trip
-    const latestResults: Array<{ task: LoadedTask; history: HistoryEntry[]; rawCore: Record<string, unknown> }> = [];
+    const latestResults: Array<{
+      task: LoadedTask;
+      history: HistoryEntry[];
+      rawCore: Record<string, unknown>;
+    }> = [];
     for (const task of tasks) {
       const result = await this.loadTaskFromDirWithHistory(ctx, task._ulid);
       if (!result.task) {
@@ -970,7 +975,11 @@ class SplitBackend implements TaskStorageBackend {
   private async loadTaskFromDirWithHistory(
     ctx: KspecContext,
     ulid: string,
-  ): Promise<{ task: LoadedTask | undefined; history: HistoryEntry[]; rawCore: Record<string, unknown> }> {
+  ): Promise<{
+    task: LoadedTask | undefined;
+    history: HistoryEntry[];
+    rawCore: Record<string, unknown>;
+  }> {
     const taskFilePath = getTaskFilePath(ctx, ulid);
     const notesFilePath = getNotesFilePath(ctx, ulid);
 

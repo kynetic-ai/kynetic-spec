@@ -72,10 +72,13 @@ describe("git subprocess interactive prompt suppression", () => {
       // Add a remote that requires auth but has no credential helper.
       // With GIT_TERMINAL_PROMPT=0, git should fail immediately rather than
       // prompting for credentials.
-      execSync("git remote add origin https://github.com/nonexistent-org-12345/nonexistent-repo-67890.git", {
-        cwd: tempDir,
-        stdio: "pipe",
-      });
+      execSync(
+        "git remote add origin https://github.com/nonexistent-org-12345/nonexistent-repo-67890.git",
+        {
+          cwd: tempDir,
+          stdio: "pipe",
+        },
+      );
 
       // Use the same env that dispatch/shadow operations use
       const env = buildDispatchGitEnv();
@@ -94,10 +97,13 @@ describe("git subprocess interactive prompt suppression", () => {
     });
 
     it("git push to unreachable HTTPS remote fails fast instead of prompting", async () => {
-      execSync("git remote add origin https://github.com/nonexistent-org-12345/nonexistent-repo-67890.git", {
-        cwd: tempDir,
-        stdio: "pipe",
-      });
+      execSync(
+        "git remote add origin https://github.com/nonexistent-org-12345/nonexistent-repo-67890.git",
+        {
+          cwd: tempDir,
+          stdio: "pipe",
+        },
+      );
 
       const env = buildDispatchGitEnv();
       const result = spawnSync("git", ["push", "origin", "main"], {
@@ -116,7 +122,11 @@ describe("git subprocess interactive prompt suppression", () => {
       const env = buildDispatchGitEnv();
       const result = spawnSync(
         "git",
-        ["ls-remote", "--heads", "https://github.com/nonexistent-org-12345/nonexistent-repo-67890.git"],
+        [
+          "ls-remote",
+          "--heads",
+          "https://github.com/nonexistent-org-12345/nonexistent-repo-67890.git",
+        ],
         {
           cwd: tempDir,
           env,

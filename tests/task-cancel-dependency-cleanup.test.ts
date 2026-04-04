@@ -151,7 +151,6 @@ describe("Integration: task cancel dependency cleanup", () => {
       true,
     );
   });
-
 });
 // AC: @cancelled-task-dependency-cleanup ac-2, ac-3, ac-6 — cross-file monolithic test removed.
 // The monolithic backend (multi-file .tasks.yaml) has been removed. Split format stores tasks in

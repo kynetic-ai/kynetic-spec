@@ -29,9 +29,18 @@ import { createRefsRoutes } from "../dist/daemon/routes/refs.ts";
 import { createPlansRoutes } from "../dist/daemon/routes/plans.ts";
 import { createMetaRoutes } from "../dist/daemon/routes/meta.ts";
 import { PubSubManager } from "../dist/daemon/websocket/pubsub.ts";
-import type { RouteEntityCache, EntityCacheAccessor } from "../dist/daemon/routes/entity-cache-types.ts";
+import type {
+  RouteEntityCache,
+  EntityCacheAccessor,
+} from "../dist/daemon/routes/entity-cache-types.ts";
 import type { TaskSummary } from "../dist/parser/task-data-manager.ts";
-import type { ItemSummary, TriageIndexSummary, PlanIndexSummary, CachedShadowInfo, CachedProjectConfig } from "../dist/daemon/entity-cache.ts";
+import type {
+  ItemSummary,
+  TriageIndexSummary,
+  PlanIndexSummary,
+  CachedShadowInfo,
+  CachedProjectConfig,
+} from "../dist/daemon/entity-cache.ts";
 import type { MetaContext } from "../dist/parser/meta.ts";
 import type { LoadedInboxItem, LoadedSpecItem, LoadedTask } from "../dist/parser/yaml.ts";
 import { ShadowSyncScheduler } from "../src/parser/shadow-sync-scheduler.js";
@@ -148,7 +157,11 @@ function makeFullTask(overrides: Partial<LoadedTask> = {}): LoadedTask {
     created_at: "2026-01-01T00:00:00Z",
     description: "A task with searchable description content about unicorn migration",
     notes: [
-      { content: "Found a needle-in-haystack pattern during investigation", author: "test", created_at: "2026-01-01T00:00:00Z" },
+      {
+        content: "Found a needle-in-haystack pattern during investigation",
+        author: "test",
+        created_at: "2026-01-01T00:00:00Z",
+      },
     ],
     todos: [],
     vcs_refs: [],
@@ -168,7 +181,12 @@ function makeFullItem(overrides: Partial<LoadedSpecItem> = {}): LoadedSpecItem {
     traits: [],
     description: "Spec describing quantum-entanglement search functionality",
     acceptance_criteria: [
-      { id: "ac-1", given: "test setup", when: "read requested", then: "xylophone-harmonics verified from cache" },
+      {
+        id: "ac-1",
+        given: "test setup",
+        when: "read requested",
+        then: "xylophone-harmonics verified from cache",
+      },
       { id: "ac-2", given: "cache warm", when: "index requested", then: "built from cache" },
     ],
     notes: [],
@@ -233,18 +251,20 @@ function makeMetaContext(): MetaContext {
  * All domains report "ready" and return data from in-memory structures.
  * No disk or git access occurs when routes resolve from this cache.
  */
-function createWarmCache(options: {
-  tasks?: TaskSummary[];
-  items?: ItemSummary[];
-  fullTasks?: LoadedTask[];
-  fullItems?: LoadedSpecItem[];
-  plans?: PlanIndexSummary[];
-  inbox?: LoadedInboxItem[];
-  triage?: TriageIndexSummary[];
-  meta?: MetaContext;
-  shadowInfo?: CachedShadowInfo;
-  projectConfig?: CachedProjectConfig;
-} = {}): RouteEntityCache {
+function createWarmCache(
+  options: {
+    tasks?: TaskSummary[];
+    items?: ItemSummary[];
+    fullTasks?: LoadedTask[];
+    fullItems?: LoadedSpecItem[];
+    plans?: PlanIndexSummary[];
+    inbox?: LoadedInboxItem[];
+    triage?: TriageIndexSummary[];
+    meta?: MetaContext;
+    shadowInfo?: CachedShadowInfo;
+    projectConfig?: CachedProjectConfig;
+  } = {},
+): RouteEntityCache {
   const tasks = options.tasks ?? [makeTaskSummary()];
   const items = options.items ?? [makeItemSummary()];
   const fullTasks = options.fullTasks ?? [makeFullTask()];
@@ -307,11 +327,20 @@ function createWarmCache(options: {
     setMetaDetail: () => {},
     getShadowInfo: () => shadowInfo,
     getProjectConfig: () => projectConfig,
-    getSessionContext: () => ({ focus: null, threads: [], questions: [], updated_at: new Date().toISOString() }),
-    writeThrough: async (domain: string) => { writeThroughCalls.push(domain); },
+    getSessionContext: () => ({
+      focus: null,
+      threads: [],
+      questions: [],
+      updated_at: new Date().toISOString(),
+    }),
+    writeThrough: async (domain: string) => {
+      writeThroughCalls.push(domain);
+    },
     markWriteThrough: () => {},
     // Expose for test assertions
-    get _writeThroughCalls() { return writeThroughCalls; },
+    get _writeThroughCalls() {
+      return writeThroughCalls;
+    },
   } as RouteEntityCache & { _writeThroughCalls: string[] };
 }
 
@@ -513,7 +542,10 @@ describe("ac-no-per-request-sync: read routes serve from cache without git opera
     const res = await makeRequest("/api/tasks");
     expect(res.status).toBe(200);
 
-    const body = (await res.json()) as { data: unknown[]; meta: { total: number; cache_status: string } };
+    const body = (await res.json()) as {
+      data: unknown[];
+      meta: { total: number; cache_status: string };
+    };
     expect(body.meta.total).toBe(2);
     expect(body.data).toHaveLength(2);
   });
@@ -523,7 +555,10 @@ describe("ac-no-per-request-sync: read routes serve from cache without git opera
     const res = await makeRequest("/api/items");
     expect(res.status).toBe(200);
 
-    const body = (await res.json()) as { data: unknown[]; meta: { total: number; cache_status: string } };
+    const body = (await res.json()) as {
+      data: unknown[];
+      meta: { total: number; cache_status: string };
+    };
     expect(body.meta.total).toBe(1);
   });
 
@@ -532,7 +567,10 @@ describe("ac-no-per-request-sync: read routes serve from cache without git opera
     const res = await makeRequest("/api/inbox");
     expect(res.status).toBe(200);
 
-    const body = (await res.json()) as { data: unknown[]; meta: { total: number; cache_status: string } };
+    const body = (await res.json()) as {
+      data: unknown[];
+      meta: { total: number; cache_status: string };
+    };
     expect(body.meta.total).toBe(1);
   });
 
@@ -564,7 +602,10 @@ describe("ac-no-per-request-sync: read routes serve from cache without git opera
     const res = await makeRequest("/api/aggregation/inbox");
     expect(res.status).toBe(200);
 
-    const body = (await res.json()) as { data: Array<{ _ulid: string; triage?: { status: string; reasoning?: string } }>; meta: { total: number; cache_status: string } };
+    const body = (await res.json()) as {
+      data: Array<{ _ulid: string; triage?: { status: string; reasoning?: string } }>;
+      meta: { total: number; cache_status: string };
+    };
     expect(body.meta.total).toBe(1);
     expect(body.data[0]._ulid).toBe(INBOX_ULID);
     // Triage record should be merged inline
@@ -578,7 +619,10 @@ describe("ac-no-per-request-sync: read routes serve from cache without git opera
     const res = await makeRequest("/api/search?q=Read+Path");
     expect(res.status).toBe(200);
 
-    const body = (await res.json()) as { data: { results: Array<{ type: string; title: string }>; total: number }; meta: { cache_status: string } };
+    const body = (await res.json()) as {
+      data: { results: Array<{ type: string; title: string }>; total: number };
+      meta: { cache_status: string };
+    };
     expect(body.data.total).toBeGreaterThan(0);
     // Should find items/tasks containing "Read Path" from cache
     const types = body.data.results.map((r) => r.type);
@@ -593,7 +637,13 @@ describe("ac-no-per-request-sync: read routes serve from cache without git opera
     const res = await makeRequest("/api/search?q=unicorn+migration");
     expect(res.status).toBe(200);
 
-    const body = (await res.json()) as { data: { results: Array<{ type: string; ulid: string; matchedFields: string[] }>; total: number }; meta: { cache_status: string } };
+    const body = (await res.json()) as {
+      data: {
+        results: Array<{ type: string; ulid: string; matchedFields: string[] }>;
+        total: number;
+      };
+      meta: { cache_status: string };
+    };
     expect(body.data.total).toBeGreaterThan(0);
     const taskResult = body.data.results.find((r) => r.type === "task" && r.ulid === TASK_ULID_1);
     expect(taskResult).toBeDefined();
@@ -605,7 +655,13 @@ describe("ac-no-per-request-sync: read routes serve from cache without git opera
     const res = await makeRequest("/api/search?q=needle-in-haystack");
     expect(res.status).toBe(200);
 
-    const body = (await res.json()) as { data: { results: Array<{ type: string; ulid: string; matchedFields: string[] }>; total: number }; meta: { cache_status: string } };
+    const body = (await res.json()) as {
+      data: {
+        results: Array<{ type: string; ulid: string; matchedFields: string[] }>;
+        total: number;
+      };
+      meta: { cache_status: string };
+    };
     expect(body.data.total).toBeGreaterThan(0);
     const taskResult = body.data.results.find((r) => r.type === "task" && r.ulid === TASK_ULID_1);
     expect(taskResult).toBeDefined();
@@ -617,7 +673,13 @@ describe("ac-no-per-request-sync: read routes serve from cache without git opera
     // Search for text only in the item description
     const descRes = await makeRequest("/api/search?q=quantum-entanglement");
     expect(descRes.status).toBe(200);
-    const descBody = (await descRes.json()) as { data: { results: Array<{ type: string; ulid: string; matchedFields: string[] }>; total: number }; meta: { cache_status: string } };
+    const descBody = (await descRes.json()) as {
+      data: {
+        results: Array<{ type: string; ulid: string; matchedFields: string[] }>;
+        total: number;
+      };
+      meta: { cache_status: string };
+    };
     expect(descBody.data.total).toBeGreaterThan(0);
     const descItem = descBody.data.results.find((r) => r.type === "item" && r.ulid === SPEC_ULID);
     expect(descItem).toBeDefined();
@@ -626,7 +688,13 @@ describe("ac-no-per-request-sync: read routes serve from cache without git opera
     // Search for text only in an AC's "then" clause
     const acRes = await makeRequest("/api/search?q=xylophone-harmonics");
     expect(acRes.status).toBe(200);
-    const acBody = (await acRes.json()) as { data: { results: Array<{ type: string; ulid: string; matchedFields: string[] }>; total: number }; meta: { cache_status: string } };
+    const acBody = (await acRes.json()) as {
+      data: {
+        results: Array<{ type: string; ulid: string; matchedFields: string[] }>;
+        total: number;
+      };
+      meta: { cache_status: string };
+    };
     expect(acBody.data.total).toBeGreaterThan(0);
     const acItem = acBody.data.results.find((r) => r.type === "item" && r.ulid === SPEC_ULID);
     expect(acItem).toBeDefined();
@@ -638,7 +706,10 @@ describe("ac-no-per-request-sync: read routes serve from cache without git opera
     const res = await makeRequest("/api/meta/agents");
     expect(res.status).toBe(200);
 
-    const body = (await res.json()) as { data: Array<{ id: string }>; meta: { total: number; cache_status: string } };
+    const body = (await res.json()) as {
+      data: Array<{ id: string }>;
+      meta: { total: number; cache_status: string };
+    };
     expect(body.meta.total).toBe(1);
     expect(body.data[0].id).toBe("test-agent");
   });
@@ -648,7 +719,10 @@ describe("ac-no-per-request-sync: read routes serve from cache without git opera
     const res = await makeRequest("/api/meta/workflows");
     expect(res.status).toBe(200);
 
-    const body = (await res.json()) as { data: Array<{ id: string }>; meta: { total: number; cache_status: string } };
+    const body = (await res.json()) as {
+      data: Array<{ id: string }>;
+      meta: { total: number; cache_status: string };
+    };
     expect(body.meta.total).toBe(1);
     expect(body.data[0].id).toBe("test-workflow");
   });
@@ -658,7 +732,10 @@ describe("ac-no-per-request-sync: read routes serve from cache without git opera
     const res = await makeRequest("/api/meta/conventions");
     expect(res.status).toBe(200);
 
-    const body = (await res.json()) as { data: Array<{ domain: string }>; meta: { total: number; cache_status: string } };
+    const body = (await res.json()) as {
+      data: Array<{ domain: string }>;
+      meta: { total: number; cache_status: string };
+    };
     expect(body.meta.total).toBe(1);
     expect(body.data[0].domain).toBe("testing");
   });
@@ -796,7 +873,7 @@ describe("ac-no-per-request-sync: read routes serve from cache without git opera
         );
         // Route should return 200 with cache_status: loading
         expect(res.status).toBe(200);
-        const body = await res.json() as { meta: { cache_status: string } };
+        const body = (await res.json()) as { meta: { cache_status: string } };
         expect(body.meta.cache_status).toBe("loading");
       }
 
@@ -1017,7 +1094,10 @@ describe("ac-index-from-cache: indexes built from cached data", () => {
     const res = await makeRequest("/api/refs");
     expect(res.status).toBe(200);
 
-    const body = (await res.json()) as { data: { refs: Record<string, unknown> }; meta: { cache_status: string } };
+    const body = (await res.json()) as {
+      data: { refs: Record<string, unknown> };
+      meta: { cache_status: string };
+    };
     // The ref index should contain entries built from cached data
     expect(body.data.refs).toBeDefined();
     // Should have entries for the cached task and spec
@@ -1030,7 +1110,10 @@ describe("ac-index-from-cache: indexes built from cached data", () => {
     const res = await makeRequest("/api/tasks");
     expect(res.status).toBe(200);
 
-    const body = (await res.json()) as { data: Array<{ _ulid: string; title: string; spec_title?: string }>; meta: { total: number; cache_status: string } };
+    const body = (await res.json()) as {
+      data: Array<{ _ulid: string; title: string; spec_title?: string }>;
+      meta: { total: number; cache_status: string };
+    };
     expect(body.meta.total).toBe(1);
     // Task index was built from cache, spec title resolved from cached item index
     expect(body.data[0]._ulid).toBe(TASK_ULID_1);
@@ -1042,7 +1125,10 @@ describe("ac-index-from-cache: indexes built from cached data", () => {
     const res = await makeRequest("/api/items");
     expect(res.status).toBe(200);
 
-    const body = (await res.json()) as { data: Array<{ _ulid: string }>; meta: { total: number; cache_status: string } };
+    const body = (await res.json()) as {
+      data: Array<{ _ulid: string }>;
+      meta: { total: number; cache_status: string };
+    };
     expect(body.meta.total).toBe(1);
     expect(body.data[0]._ulid).toBe(SPEC_ULID);
   });
@@ -1054,7 +1140,12 @@ describe("ac-index-from-cache: indexes built from cached data", () => {
 
     const body = (await res.json()) as {
       data: {
-        stats: { totalSpecs: number; specsWithTasks: number; alignedSpecs: number; orphanedSpecs: number };
+        stats: {
+          totalSpecs: number;
+          specsWithTasks: number;
+          alignedSpecs: number;
+          orphanedSpecs: number;
+        };
         entity_counts: { items: number; tasks: number; traits: number };
         ac_counts: { total: number; covered: number; uncovered: number };
       };
@@ -1076,7 +1167,12 @@ describe("ac-index-from-cache: indexes built from cached data", () => {
 
     const body = (await res.json()) as {
       data: {
-        stats: { totalSpecs: number; specsWithTasks: number; alignedSpecs: number; orphanedSpecs: number };
+        stats: {
+          totalSpecs: number;
+          specsWithTasks: number;
+          alignedSpecs: number;
+          orphanedSpecs: number;
+        };
         warnings: unknown[];
       };
       meta: { cache_status: string };

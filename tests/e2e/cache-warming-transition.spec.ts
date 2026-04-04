@@ -139,10 +139,7 @@ async function selectSecondProject(page: Page, projectPath: string) {
 
   const dropdownContent = page.locator('[data-slot="select-content"]');
   await expect(dropdownContent).toBeVisible({ timeout: 5000 });
-  await dropdownContent
-    .locator('[data-slot="select-item"]')
-    .filter({ hasText: "second" })
-    .click();
+  await dropdownContent.locator('[data-slot="select-item"]').filter({ hasText: "second" }).click();
 
   await projectReload;
   await expect(projectSelector).toContainText("second");
@@ -223,9 +220,7 @@ test.describe("Cache Warming Full-Stack Integration", () => {
       await expect
         .poll(
           () => {
-            const timestamp = taskRequestTimes.find(
-              (candidate) => candidate >= releaseStartedAt,
-            );
+            const timestamp = taskRequestTimes.find((candidate) => candidate >= releaseStartedAt);
             return timestamp ? timestamp - releaseStartedAt : Number.POSITIVE_INFINITY;
           },
           {

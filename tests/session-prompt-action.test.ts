@@ -12,11 +12,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import * as path from "node:path";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
-import {
-  ActionSchema,
-  SessionPromptActionSchema,
-  type Action,
-} from "../src/schema/action.js";
+import { ActionSchema, SessionPromptActionSchema, type Action } from "../src/schema/action.js";
 import {
   ActionExecutor,
   extractActionTemplates,

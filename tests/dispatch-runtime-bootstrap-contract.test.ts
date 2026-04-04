@@ -699,14 +699,20 @@ describe("dispatch runtime bootstrap contract", { timeout: 60_000 }, () => {
     const workspace = await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
-      task: { title: "Pre Invocation Validation Fresh", slugs: ["pre-invocation-validation-fresh"] },
+      task: {
+        title: "Pre Invocation Validation Fresh",
+        slugs: ["pre-invocation-validation-fresh"],
+      },
     });
 
     const validated = await validateDispatchWorkspaceForInvocation({
       projectDir: tempDir,
       taskRef,
       workspace,
-      task: { title: "Pre Invocation Validation Fresh", slugs: ["pre-invocation-validation-fresh"] },
+      task: {
+        title: "Pre Invocation Validation Fresh",
+        slugs: ["pre-invocation-validation-fresh"],
+      },
       taskStatus: "pending",
     });
 
@@ -727,26 +733,38 @@ describe("dispatch runtime bootstrap contract", { timeout: 60_000 }, () => {
     const firstWorkspace = await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
-      task: { title: "Pre Invocation Validation Reuse", slugs: ["pre-invocation-validation-reuse"] },
+      task: {
+        title: "Pre Invocation Validation Reuse",
+        slugs: ["pre-invocation-validation-reuse"],
+      },
     });
     await validateDispatchWorkspaceForInvocation({
       projectDir: tempDir,
       taskRef,
       workspace: firstWorkspace,
-      task: { title: "Pre Invocation Validation Reuse", slugs: ["pre-invocation-validation-reuse"] },
+      task: {
+        title: "Pre Invocation Validation Reuse",
+        slugs: ["pre-invocation-validation-reuse"],
+      },
       taskStatus: "pending",
     });
 
     const reusedWorkspace = await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
-      task: { title: "Pre Invocation Validation Reuse", slugs: ["pre-invocation-validation-reuse"] },
+      task: {
+        title: "Pre Invocation Validation Reuse",
+        slugs: ["pre-invocation-validation-reuse"],
+      },
     });
     const validated = await validateDispatchWorkspaceForInvocation({
       projectDir: tempDir,
       taskRef,
       workspace: reusedWorkspace,
-      task: { title: "Pre Invocation Validation Reuse", slugs: ["pre-invocation-validation-reuse"] },
+      task: {
+        title: "Pre Invocation Validation Reuse",
+        slugs: ["pre-invocation-validation-reuse"],
+      },
       taskStatus: "pending",
     });
 

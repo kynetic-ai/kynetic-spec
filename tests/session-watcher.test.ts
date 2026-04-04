@@ -175,51 +175,51 @@ describeOrSkip("SessionWatcher", () => {
 
   // AC: @daemon-file-monitoring ac-3
   const itWithProcFd = existsSync("/proc/self/fd") ? it : it.skip;
-  itWithProcFd("keeps open file descriptor usage flat when blob file volume increases", async () => {
-    async function measureWatcherDelta(
-      sessionId: string,
-      blobCount: number,
-    ): Promise<number> {
-      const sessionsDir = join(projectDir, ".kspec-sessions");
-      const sessionDir = join(sessionsDir, sessionId);
-      const blobDir = join(sessionDir, "blobs");
-      await mkdir(blobDir, { recursive: true });
-      await writeFile(join(sessionDir, "session.yaml"), "status: active\n");
-      await writeFile(join(sessionDir, "events.jsonl"), '{"type":"session.started"}\n');
+  itWithProcFd(
+    "keeps open file descriptor usage flat when blob file volume increases",
+    async () => {
+      async function measureWatcherDelta(sessionId: string, blobCount: number): Promise<number> {
+        const sessionsDir = join(projectDir, ".kspec-sessions");
+        const sessionDir = join(sessionsDir, sessionId);
+        const blobDir = join(sessionDir, "blobs");
+        await mkdir(blobDir, { recursive: true });
+        await writeFile(join(sessionDir, "session.yaml"), "status: active\n");
+        await writeFile(join(sessionDir, "events.jsonl"), '{"type":"session.started"}\n');
 
-      for (let index = 0; index < blobCount; index++) {
-        await writeFile(join(blobDir, `payload-${index}.blob`), `blob ${index}\n`);
+        for (let index = 0; index < blobCount; index++) {
+          await writeFile(join(blobDir, `payload-${index}.blob`), `blob ${index}\n`);
+        }
+
+        const baselineFdCount = await countOpenFileDescriptors();
+        const watcher = new SessionWatcher({
+          sessionsDir,
+          onSessionChange: vi.fn(),
+          onError: vi.fn(),
+        });
+
+        try {
+          await watcher.start();
+          await waitForDebounce();
+
+          const watcherFdCount = await countOpenFileDescriptors();
+          return watcherFdCount - baselineFdCount;
+        } finally {
+          await watcher.stop();
+          await waitForDebounce();
+        }
       }
 
-      const baselineFdCount = await countOpenFileDescriptors();
-      const watcher = new SessionWatcher({
-        sessionsDir,
-        onSessionChange: vi.fn(),
-        onError: vi.fn(),
-      });
+      const lowBlobFootprint = await measureWatcherDelta("01JTESTSESSIONWATCHER0000008", 1);
+      const highBlobFootprint = await measureWatcherDelta("01JTESTSESSIONWATCHER0000009", 250);
 
-      try {
-        await watcher.start();
-        await waitForDebounce();
-
-        const watcherFdCount = await countOpenFileDescriptors();
-        return watcherFdCount - baselineFdCount;
-      } finally {
-        await watcher.stop();
-        await waitForDebounce();
-      }
-    }
-
-    const lowBlobFootprint = await measureWatcherDelta("01JTESTSESSIONWATCHER0000008", 1);
-    const highBlobFootprint = await measureWatcherDelta("01JTESTSESSIONWATCHER0000009", 250);
-
-    // oxlint-disable-next-line no-standalone-expect -- inside itWithProcFd (conditional it/it.skip)
-    expect(lowBlobFootprint).toBeGreaterThanOrEqual(0);
-    // oxlint-disable-next-line no-standalone-expect -- inside itWithProcFd (conditional it/it.skip)
-    expect(highBlobFootprint).toBeGreaterThanOrEqual(0);
-    // oxlint-disable-next-line no-standalone-expect -- inside itWithProcFd (conditional it/it.skip)
-    expect(highBlobFootprint - lowBlobFootprint).toBeLessThanOrEqual(1);
-  });
+      // oxlint-disable-next-line no-standalone-expect -- inside itWithProcFd (conditional it/it.skip)
+      expect(lowBlobFootprint).toBeGreaterThanOrEqual(0);
+      // oxlint-disable-next-line no-standalone-expect -- inside itWithProcFd (conditional it/it.skip)
+      expect(highBlobFootprint).toBeGreaterThanOrEqual(0);
+      // oxlint-disable-next-line no-standalone-expect -- inside itWithProcFd (conditional it/it.skip)
+      expect(highBlobFootprint - lowBlobFootprint).toBeLessThanOrEqual(1);
+    },
+  );
 
   // AC: @daemon-file-monitoring ac-2
   it("ignores non-metadata file types in session directories", async () => {

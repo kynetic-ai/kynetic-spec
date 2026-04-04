@@ -228,7 +228,10 @@ async function createRuntime(): Promise<DaemonRuntime> {
 
 function waitForOpen(ws: WebSocket): Promise<void> {
   return new Promise((resolve, reject) => {
-    const timeout = setTimeout(() => reject(new Error("Timed out waiting for websocket open")), 5_000);
+    const timeout = setTimeout(
+      () => reject(new Error("Timed out waiting for websocket open")),
+      5_000,
+    );
     ws.once("open", () => {
       clearTimeout(timeout);
       resolve();

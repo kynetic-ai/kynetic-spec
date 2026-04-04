@@ -302,7 +302,12 @@ export async function createServer(options: ServerOptions) {
         pubsubManager.broadcast(
           "sessions",
           "session_changed",
-          { domain, projectPath: cachePath, action: "modified", timestamp: new Date().toISOString() },
+          {
+            domain,
+            projectPath: cachePath,
+            action: "modified",
+            timestamp: new Date().toISOString(),
+          },
           cachePath,
         );
       },
@@ -337,7 +342,12 @@ export async function createServer(options: ServerOptions) {
     // AC: @api-contract ac-2 through ac-7 - Task API endpoints
     // AC: @multi-directory-daemon ac-24 - Routes use projectContext from middleware
     // AC: @daemon-entity-cache ac-serve-from-memory, ac-write-through — pass cache accessor
-    .use(createTasksRoutes({ pubsub: pubsubManager, getEntityCache: entityCacheModule.getEntityCache }))
+    .use(
+      createTasksRoutes({
+        pubsub: pubsubManager,
+        getEntityCache: entityCacheModule.getEntityCache,
+      }),
+    )
 
     // AC: @api-contract ac-8 through ac-11 - Spec Item API endpoints
     // AC: @daemon-entity-cache ac-serve-from-memory — pass cache accessor
@@ -345,7 +355,12 @@ export async function createServer(options: ServerOptions) {
 
     // AC: @api-contract ac-12 through ac-14 - Inbox API endpoints
     // AC: @daemon-entity-cache ac-serve-from-memory, ac-write-through — pass cache accessor
-    .use(createInboxRoutes({ pubsub: pubsubManager, getEntityCache: entityCacheModule.getEntityCache }))
+    .use(
+      createInboxRoutes({
+        pubsub: pubsubManager,
+        getEntityCache: entityCacheModule.getEntityCache,
+      }),
+    )
 
     // AC: @api-contract ac-15 through ac-18 - Meta API endpoints
     // AC: @daemon-entity-cache ac-write-through — pass cache accessor for meta write-through
@@ -353,7 +368,12 @@ export async function createServer(options: ServerOptions) {
 
     // AC: @triage-daemon-api ac-1 through ac-9 - Triage API endpoints
     // AC: @daemon-entity-cache ac-serve-from-memory, ac-write-through — pass cache accessor
-    .use(createTriageRoutes({ pubsub: pubsubManager, getEntityCache: entityCacheModule.getEntityCache }))
+    .use(
+      createTriageRoutes({
+        pubsub: pubsubManager,
+        getEntityCache: entityCacheModule.getEntityCache,
+      }),
+    )
 
     // AC: @api-contract ac-19 through ac-21 - Validation and search endpoints
     // AC: @daemon-read-path ac-no-per-request-sync, ac-index-from-cache — pass cache accessor
@@ -390,23 +410,35 @@ export async function createServer(options: ServerOptions) {
 
     // AC: @review-records-daemon-api ac-3, ac-4, ac-5, ac-6, ac-7, ac-8, ac-9, ac-10 - Review endpoints
     // AC: @daemon-entity-cache ac-serve-from-memory, ac-write-through — pass cache accessor
-    .use(createReviewsRoutes({ pubsub: pubsubManager, getEntityCache: entityCacheModule.getEntityCache }))
+    .use(
+      createReviewsRoutes({
+        pubsub: pubsubManager,
+        getEntityCache: entityCacheModule.getEntityCache,
+      }),
+    )
 
     // AC: @agent-dispatch-engine ac-4 - Agent dispatch API endpoints
     // AC: @daemon-agent-dispatch ac-3, ac-4 - Pass pubsub for WebSocket broadcast on invocation events
     .use(createAgentDispatchRoutes({ pubsub: pubsubManager }))
 
     // AC: @daemon-command-api ac-command-endpoint, ac-batch-support - Command execution API
-    .use(createCommandRoutes({ pubsub: pubsubManager, getEntityCache: entityCacheModule.getEntityCache }))
+    .use(
+      createCommandRoutes({
+        pubsub: pubsubManager,
+        getEntityCache: entityCacheModule.getEntityCache,
+      }),
+    )
 
     // AC: @automation-api ac-1 through ac-6 - Automation management endpoints
     .use(createAutomationRoutes())
 
     // AC: @daemon-server ac-18 - Debug/diagnostic endpoints
-    .use(createDebugRoutes({
-      projectManager: projectContextManager,
-      getEntityCache: entityCacheModule.getEntityCache,
-    }));
+    .use(
+      createDebugRoutes({
+        projectManager: projectContextManager,
+        getEntityCache: entityCacheModule.getEntityCache,
+      }),
+    );
 
   // Test-only routes: cache delay injection for E2E tests (KSPEC_TEST guard)
   if (process.env.KSPEC_TEST) {

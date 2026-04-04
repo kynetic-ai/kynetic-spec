@@ -34,7 +34,8 @@ function resolveWebUiPath(
   envOverride?: Record<string, string | undefined>,
 ): string | null {
   const env = envOverride ?? process.env;
-  const hasWebUiIndex = (dir?: string): dir is string => Boolean(dir && existsSync(join(dir, "index.html")));
+  const hasWebUiIndex = (dir?: string): dir is string =>
+    Boolean(dir && existsSync(join(dir, "index.html")));
 
   // 1. Explicit option
   if (hasWebUiIndex(webUiDir)) {

@@ -73,7 +73,12 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           // If cache is warming, return loading indicator
           // AC: @daemon-entity-cache ac-warming-availability
           if (cache && tasksDomainState === "loading") {
-            return wrapResponse([] as never[], { cacheDomainState: "loading", total: 0, offset: 0, limit: 0 });
+            return wrapResponse([] as never[], {
+              cacheDomainState: "loading",
+              total: 0,
+              offset: 0,
+              limit: 0,
+            });
           }
 
           // AC: @daemon-entity-cache ac-serve-from-memory — defer initContext to avoid
@@ -105,7 +110,9 @@ export function createTasksRoutes(options: TasksRouteOptions) {
               const ctx = await getCtx();
               summaries = await resolveTaskDataManager(ctx).listTasks(ctx, {
                 status: query.status
-                  ? Array.isArray(query.status) ? query.status : [query.status]
+                  ? Array.isArray(query.status)
+                    ? query.status
+                    : [query.status]
                   : undefined,
                 automation: query.automation || undefined,
               });
@@ -115,7 +122,9 @@ export function createTasksRoutes(options: TasksRouteOptions) {
             const ctx = await getCtx();
             summaries = await resolveTaskDataManager(ctx).listTasks(ctx, {
               status: query.status
-                ? Array.isArray(query.status) ? query.status : [query.status]
+                ? Array.isArray(query.status)
+                  ? query.status
+                  : [query.status]
                 : undefined,
               automation: query.automation || undefined,
             });
@@ -150,10 +159,15 @@ export function createTasksRoutes(options: TasksRouteOptions) {
               const ctx = await getCtx();
               plans = await loadPlans(ctx);
             }
-            const plan = plans.find((p: { _ulid: string; slugs: string[] }) => p._ulid === query.plan || p.slugs.includes(query.plan!));
+            const plan = plans.find(
+              (p: { _ulid: string; slugs: string[] }) =>
+                p._ulid === query.plan || p.slugs.includes(query.plan!),
+            );
             if (plan) {
               const derivedRefs = new Set(
-                (plan as { derived_tasks: string[] }).derived_tasks.map((r: string) => (r.startsWith("@") ? r.slice(1) : r)),
+                (plan as { derived_tasks: string[] }).derived_tasks.map((r: string) =>
+                  r.startsWith("@") ? r.slice(1) : r,
+                ),
               );
               filtered = filtered.filter(
                 (task) => derivedRefs.has(task._ulid) || task.slugs.some((s) => derivedRefs.has(s)),
@@ -256,7 +270,8 @@ export function createTasksRoutes(options: TasksRouteOptions) {
             if (taskIndex) {
               const ref = params.ref.startsWith("@") ? params.ref.slice(1) : params.ref;
               const matched = taskIndex.find(
-                (t) => t._ulid === ref || t._ulid.startsWith(ref.toUpperCase()) || t.slugs.includes(ref),
+                (t) =>
+                  t._ulid === ref || t._ulid.startsWith(ref.toUpperCase()) || t.slugs.includes(ref),
               );
               if (matched) {
                 task = cache.getTaskDetail(matched._ulid);
@@ -311,49 +326,57 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           } else {
             tasksForIndex = await resolveTaskDataManager(await getCtx()).listTasks(await getCtx());
           }
-          const index = new ReferenceIndex(tasksForIndex as unknown as LoadedTask[], items, [], plans);
+          const index = new ReferenceIndex(
+            tasksForIndex as unknown as LoadedTask[],
+            items,
+            [],
+            plans,
+          );
 
           // AC: @api-contract ac-5 - Return full task with notes, todos, dependencies
           // AC: @ui-task-board ac-3 - Include type, description, blocked_by, vcs_refs, plan_ref, session_ref
           // AC: @ui-api-ref-resolution ac-1, ac-2 - Include resolved titles for refs
           // AC: @review-records-web-ui ac-7 - Include review_ref for task-review integration
           // AC: @api-contract ac-envelope - Unified envelope response
-          return wrapResponse({
-            _ulid: task._ulid,
-            slugs: task.slugs,
-            title: task.title,
-            type: task.type || "task",
-            status: task.status,
-            priority: task.priority,
-            spec_ref: task.spec_ref,
-            spec_title: resolveRefTitle(index, task.spec_ref),
-            meta_ref: task.meta_ref,
-            tags: task.tags,
-            description: task.description,
-            derivation: task.derivation,
-            depends_on: task.depends_on,
-            resolved_depends_on: resolveRefEntries(index, task.depends_on),
-            blocked_by: task.blocked_by || [],
-            resolved_blocked_by: resolveRefEntries(index, task.blocked_by),
-            context: task.context || [],
-            vcs_refs: (task.vcs_refs || []).map((v) =>
-              typeof v === "string" ? v : v.type ? `${v.type}:${v.ref}` : v.ref,
-            ),
-            plan_ref: task.plan_ref,
-            plan_title: resolveRefTitle(index, task.plan_ref),
-            review_ref: task.review_ref ?? null,
-            session_ref: task.session_id,
-            notes: task.notes,
-            notes_count: task.notes?.length || 0,
-            todos: task.todos,
-            todos_count: task.todos?.length || 0,
-            started_at: task.started_at,
-            completed_at: task.completed_at,
-            cancelled_at: task.cancelled_at,
-            closed_reason: task.closed_reason,
-            automation: task.automation,
-            created_at: task.created_at,
-          }, { cacheDomainState: tasksDomainState });
+          return wrapResponse(
+            {
+              _ulid: task._ulid,
+              slugs: task.slugs,
+              title: task.title,
+              type: task.type || "task",
+              status: task.status,
+              priority: task.priority,
+              spec_ref: task.spec_ref,
+              spec_title: resolveRefTitle(index, task.spec_ref),
+              meta_ref: task.meta_ref,
+              tags: task.tags,
+              description: task.description,
+              derivation: task.derivation,
+              depends_on: task.depends_on,
+              resolved_depends_on: resolveRefEntries(index, task.depends_on),
+              blocked_by: task.blocked_by || [],
+              resolved_blocked_by: resolveRefEntries(index, task.blocked_by),
+              context: task.context || [],
+              vcs_refs: (task.vcs_refs || []).map((v) =>
+                typeof v === "string" ? v : v.type ? `${v.type}:${v.ref}` : v.ref,
+              ),
+              plan_ref: task.plan_ref,
+              plan_title: resolveRefTitle(index, task.plan_ref),
+              review_ref: task.review_ref ?? null,
+              session_ref: task.session_id,
+              notes: task.notes,
+              notes_count: task.notes?.length || 0,
+              todos: task.todos,
+              todos_count: task.todos?.length || 0,
+              started_at: task.started_at,
+              completed_at: task.completed_at,
+              cancelled_at: task.cancelled_at,
+              closed_reason: task.closed_reason,
+              automation: task.automation,
+              created_at: task.created_at,
+            },
+            { cacheDomainState: tasksDomainState },
+          );
         },
         {
           params: t.Object({
@@ -481,10 +504,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           // modifies spec items (implementation status) as a side effect of task transitions.
           const startCache = getEntityCache?.(projectContext.path);
           if (startCache) {
-            await Promise.all([
-              startCache.writeThrough("tasks"),
-              startCache.writeThrough("items"),
-            ]);
+            await Promise.all([startCache.writeThrough("tasks"), startCache.writeThrough("items")]);
           }
 
           // AC: @api-contract ac-6, @trait-api-endpoint ac-5 - WebSocket broadcast
@@ -819,10 +839,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           // modifies spec items (implementation status) as a side effect of task transitions.
           const blockCache = getEntityCache?.(projectContext.path);
           if (blockCache) {
-            await Promise.all([
-              blockCache.writeThrough("tasks"),
-              blockCache.writeThrough("items"),
-            ]);
+            await Promise.all([blockCache.writeThrough("tasks"), blockCache.writeThrough("items")]);
           }
 
           // AC: @ui-api-aggregation ac-4 - Include title and old/new status

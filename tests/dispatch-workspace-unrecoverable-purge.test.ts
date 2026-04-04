@@ -171,11 +171,7 @@ async function writeTasks(dir: string, tasks: TaskRecord[]): Promise<void> {
     });
   }
 
-  await fs.writeFile(
-    path.join(dir, "project.tasks.yaml"),
-    YAML.stringify(indexEntries),
-    "utf-8",
-  );
+  await fs.writeFile(path.join(dir, "project.tasks.yaml"), YAML.stringify(indexEntries), "utf-8");
 }
 
 async function waitFor(
@@ -801,11 +797,7 @@ describe("purge unrecoverable workspace records for non-terminal tasks", () => {
 
       try {
         await expect(
-          purgeDispatchWorkspaceRecord(
-            tempDir,
-            `@${testUlid("TASK", 81)}`,
-            "ws-lock-contention",
-          ),
+          purgeDispatchWorkspaceRecord(tempDir, `@${testUlid("TASK", 81)}`, "ws-lock-contention"),
         ).rejects.toThrow(/dispatch shadow mutation lock unavailable/i);
       } finally {
         delete process.env.KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS;

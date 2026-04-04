@@ -424,7 +424,11 @@ describe("live fetch envelope unwrapping", () => {
     });
 
     it("search unwraps detail envelope", async () => {
-      const searchResult = { results: [{ type: "task", ulid: "01TASK", title: "Task", matchedFields: ["title"] }], total: 1, showing: 1 };
+      const searchResult = {
+        results: [{ type: "task", ulid: "01TASK", title: "Task", matchedFields: ["title"] }],
+        total: 1,
+        showing: 1,
+      };
       globalThis.fetch = mockFetchJson(detailEnvelope(searchResult));
 
       const result = await search("Task");
@@ -484,7 +488,13 @@ describe("live fetch envelope unwrapping", () => {
     });
 
     it("fetchShadowStatus unwraps detail envelope", async () => {
-      const shadow = { enabled: true, branch_name: "kspec-meta", worktree_dir: ".kspec", healthy: true, remote_tracking: false };
+      const shadow = {
+        enabled: true,
+        branch_name: "kspec-meta",
+        worktree_dir: ".kspec",
+        healthy: true,
+        remote_tracking: false,
+      };
       globalThis.fetch = mockFetchJson(detailEnvelope(shadow));
 
       const result = await fetchShadowStatus();
@@ -492,7 +502,13 @@ describe("live fetch envelope unwrapping", () => {
     });
 
     it("fetchValidationAggregation unwraps detail envelope", async () => {
-      const agg = { entity_count: 10, ac_count: 20, trait_ac_count: 5, trait_count: 3, coverage_percent: 80 };
+      const agg = {
+        entity_count: 10,
+        ac_count: 20,
+        trait_ac_count: 5,
+        trait_count: 3,
+        coverage_percent: 80,
+      };
       globalThis.fetch = mockFetchJson(detailEnvelope(agg));
 
       const result = await fetchValidationAggregation();
@@ -503,7 +519,18 @@ describe("live fetch envelope unwrapping", () => {
   // AC: @api-contract ac-envelope — list endpoints unwrap correctly
   describe("list endpoints", () => {
     it("fetchPlans unwraps list envelope", async () => {
-      const plan = { _ulid: "01PLAN", slugs: ["plan-one"], title: "Plan", status: "active", created_at: "2026-03-01T00:00:00.000Z", derived_specs: [], derived_tasks: [], spec_count: 0, task_count: 0, task_progress: { total: 0, completed: 0, in_progress: 0, pending: 0, blocked: 0 } };
+      const plan = {
+        _ulid: "01PLAN",
+        slugs: ["plan-one"],
+        title: "Plan",
+        status: "active",
+        created_at: "2026-03-01T00:00:00.000Z",
+        derived_specs: [],
+        derived_tasks: [],
+        spec_count: 0,
+        task_count: 0,
+        task_progress: { total: 0, completed: 0, in_progress: 0, pending: 0, blocked: 0 },
+      };
       globalThis.fetch = mockFetchJson(listEnvelope([plan]));
 
       const result = await fetchPlans();

@@ -18,10 +18,7 @@
 
 import type { Elysia } from "elysia";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import {
-  getDispatchEngine,
-  stopAllEngines,
-} from "../../dist/daemon/routes/agent-dispatch.ts";
+import { getDispatchEngine, stopAllEngines } from "../../dist/daemon/routes/agent-dispatch.ts";
 import {
   cleanupTempDir,
   createTempDir,
@@ -99,7 +96,7 @@ describe("GET /api/agent/status", () => {
 
     const engine = getDispatchEngine(tempDir);
     expect(engine).toBeDefined();
-    (engine as any)._enterDegradedState("plan/alpha", "integration target \"plan/alpha\" diverged");
+    (engine as any)._enterDegradedState("plan/alpha", 'integration target "plan/alpha" diverged');
 
     const response = await request("/api/agent/status");
     expect(response.status).toBe(200);
@@ -273,7 +270,7 @@ describe("GET /api/agent/dispatch/status (internal)", () => {
 
     const engine = getDispatchEngine(tempDir);
     expect(engine).toBeDefined();
-    (engine as any)._enterDegradedState("plan/alpha", "integration target \"plan/alpha\" diverged");
+    (engine as any)._enterDegradedState("plan/alpha", 'integration target "plan/alpha" diverged');
 
     const response = await request("/api/agent/dispatch/status");
     expect(response.status).toBe(200);

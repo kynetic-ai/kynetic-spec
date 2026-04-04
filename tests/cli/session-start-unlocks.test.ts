@@ -6,7 +6,14 @@
  * AC: @session-start-unlocks ac-unlocks-unresolvable
  */
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { kspec, kspecJson, setupTempFixtures, cleanupTempDir, testUlid, seedSplitTask } from "../helpers/cli";
+import {
+  kspec,
+  kspecJson,
+  setupTempFixtures,
+  cleanupTempDir,
+  testUlid,
+  seedSplitTask,
+} from "../helpers/cli";
 import type { SessionContext } from "../helpers/session-types";
 
 describe("session start dependency display", () => {

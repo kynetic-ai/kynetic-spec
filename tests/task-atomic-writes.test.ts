@@ -692,5 +692,4 @@ describe("Atomic Multi-File Task Writes", () => {
       expect(bufferC).not.toBe(bufferD);
     });
   });
-
 });

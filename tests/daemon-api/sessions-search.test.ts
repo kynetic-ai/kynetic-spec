@@ -153,5 +153,4 @@ describe("Session Search API", () => {
     expect(body.message).toContain("@missing-task");
     expect(body.suggestion).toContain("/api/tasks");
   });
-
 });

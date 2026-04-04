@@ -116,7 +116,7 @@ export class WebSocketHandler {
             false,
             "unknown_action",
             `Unknown action: ${command.action}`,
-        );
+          );
       }
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : "Internal error";

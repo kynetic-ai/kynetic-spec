@@ -48,7 +48,7 @@ describe("GET /api/inbox", () => {
     expect(body.data.length).toBeGreaterThanOrEqual(3);
 
     const timestamps = body.data.map((item: { created_at: string }) =>
-      new Date(item.created_at).getTime()
+      new Date(item.created_at).getTime(),
     );
     for (let i = 1; i < timestamps.length; i++) {
       expect(timestamps[i - 1]).toBeGreaterThanOrEqual(timestamps[i]);
@@ -143,9 +143,7 @@ describe("POST /api/inbox", () => {
     expect(listResponse.status).toBe(200);
     const list = await listResponse.json();
 
-    const found = list.data.find(
-      (item: { _ulid: string }) => item._ulid === created.item._ulid
-    );
+    const found = list.data.find((item: { _ulid: string }) => item._ulid === created.item._ulid);
     expect(found).toBeDefined();
   });
 
@@ -243,9 +241,7 @@ describe("DELETE /api/inbox/:ref", () => {
 
     const listResponse = await request("/api/inbox");
     const list = await listResponse.json();
-    const found = list.data.find(
-      (item: { _ulid: string }) => item._ulid === ulid
-    );
+    const found = list.data.find((item: { _ulid: string }) => item._ulid === ulid);
     expect(found).toBeUndefined();
   });
 
@@ -257,17 +253,12 @@ describe("DELETE /api/inbox/:ref", () => {
 
     const listResponse = await request("/api/inbox");
     const list = await listResponse.json();
-    const found = list.data.find(
-      (item: { _ulid: string }) => item._ulid === FIXTURE_ULID_3
-    );
+    const found = list.data.find((item: { _ulid: string }) => item._ulid === FIXTURE_ULID_3);
     expect(found).toBeUndefined();
   });
 
   it("returns 404 for nonexistent item", async () => {
-    const response = await request(
-      "/api/inbox/@01ZZZZZZZZZZZZZZZZZZZZZZZ0",
-      { method: "DELETE" }
-    );
+    const response = await request("/api/inbox/@01ZZZZZZZZZZZZZZZZZZZZZZZ0", { method: "DELETE" });
     expect(response.status).toBe(404);
   });
 
@@ -283,9 +274,7 @@ describe("DELETE /api/inbox/:ref", () => {
 
     const listResponse = await request("/api/inbox");
     const list = await listResponse.json();
-    const found = list.data.find(
-      (item: { _ulid: string }) => item._ulid === FIXTURE_ULID_1
-    );
+    const found = list.data.find((item: { _ulid: string }) => item._ulid === FIXTURE_ULID_1);
     expect(found).toBeUndefined();
   });
 });

@@ -78,7 +78,7 @@ async function runShell(
   } catch (err: unknown) {
     const e = err as { stdout?: string; stderr?: string; code?: number | string; killed?: boolean };
     return {
-      status: typeof e.code === "number" ? e.code : (e.killed ? null : 1),
+      status: typeof e.code === "number" ? e.code : e.killed ? null : 1,
       stdout: e.stdout ?? "",
       stderr: e.stderr ?? "",
     };
@@ -141,8 +141,14 @@ async function checkWorkspaceDependencies(workspaceDir: string): Promise<Depende
   const nodeModulesDir = path.join(workspaceDir, "node_modules");
 
   const [packageJsonExists, lockfileExists] = await Promise.all([
-    fs.access(packageJsonPath).then(() => true, () => false),
-    fs.access(lockfilePath).then(() => true, () => false),
+    fs.access(packageJsonPath).then(
+      () => true,
+      () => false,
+    ),
+    fs.access(lockfilePath).then(
+      () => true,
+      () => false,
+    ),
   ]);
 
   if (!packageJsonExists || !lockfileExists) {
@@ -151,12 +157,18 @@ async function checkWorkspaceDependencies(workspaceDir: string): Promise<Depende
 
   let packageJson: Record<string, unknown>;
   try {
-    packageJson = JSON.parse(await fs.readFile(packageJsonPath, "utf-8")) as Record<string, unknown>;
+    packageJson = JSON.parse(await fs.readFile(packageJsonPath, "utf-8")) as Record<
+      string,
+      unknown
+    >;
   } catch {
     return { ok: true, reason: null, missingPackages: [] };
   }
 
-  const nodeModulesExists = await fs.access(nodeModulesDir).then(() => true, () => false);
+  const nodeModulesExists = await fs.access(nodeModulesDir).then(
+    () => true,
+    () => false,
+  );
   if (!nodeModulesExists) {
     return {
       ok: false,
@@ -168,7 +180,10 @@ async function checkWorkspaceDependencies(workspaceDir: string): Promise<Depende
   const dependencyNames = collectDirectDependencies(packageJson);
   const existResults = await Promise.all(
     dependencyNames.map((packageName) =>
-      fs.access(path.join(nodeModulesDir, ...packageName.split("/"))).then(() => true, () => false),
+      fs.access(path.join(nodeModulesDir, ...packageName.split("/"))).then(
+        () => true,
+        () => false,
+      ),
     ),
   );
   const missingPackages = dependencyNames.filter((_, i) => !existResults[i]);

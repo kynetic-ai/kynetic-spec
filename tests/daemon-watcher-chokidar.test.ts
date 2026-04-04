@@ -137,39 +137,42 @@ describe("KspecWatcher Chokidar-only monitoring", () => {
   const itWithRealWatcher = process.env.CI ? it.skip : it;
 
   // AC: @daemon-file-monitoring ac-5
-  itWithRealWatcher("detects atomic rename writes as a change to the destination YAML path", async () => {
-    vi.resetModules();
-    vi.doUnmock("chokidar");
+  itWithRealWatcher(
+    "detects atomic rename writes as a change to the destination YAML path",
+    async () => {
+      vi.resetModules();
+      vi.doUnmock("chokidar");
 
-    const { KspecWatcher } = await import("../packages/daemon/src/watcher");
+      const { KspecWatcher } = await import("../packages/daemon/src/watcher");
 
-    const changeHandler = vi.fn();
-    const watcher = new KspecWatcher({
-      kspecDir,
-      onFileChange: changeHandler,
-      onError: vi.fn(),
-    });
+      const changeHandler = vi.fn();
+      const watcher = new KspecWatcher({
+        kspecDir,
+        onFileChange: changeHandler,
+        onError: vi.fn(),
+      });
 
-    await watcher.start();
+      await watcher.start();
 
-    const targetPath = join(kspecDir, "project.tasks.yaml");
-    const tempPath = join(kspecDir, "project.tasks.yaml.tmp");
-    await writeFile(targetPath, "tasks: []\n");
+      const targetPath = join(kspecDir, "project.tasks.yaml");
+      const tempPath = join(kspecDir, "project.tasks.yaml.tmp");
+      await writeFile(targetPath, "tasks: []\n");
 
-    await writeFile(tempPath, "tasks:\n  - title: atomic rename\n");
-    await rename(tempPath, targetPath);
+      await writeFile(tempPath, "tasks:\n  - title: atomic rename\n");
+      await rename(tempPath, targetPath);
 
-    await vi.waitFor(
-      () => {
-        // oxlint-disable-next-line jest/no-standalone-expect -- vi.waitFor is a valid test context
-        expect(changeHandler).toHaveBeenCalledWith(
-          targetPath,
-          expect.stringContaining("atomic rename"),
-        );
-      },
-      { timeout: 3000 },
-    );
+      await vi.waitFor(
+        () => {
+          // oxlint-disable-next-line jest/no-standalone-expect -- vi.waitFor is a valid test context
+          expect(changeHandler).toHaveBeenCalledWith(
+            targetPath,
+            expect.stringContaining("atomic rename"),
+          );
+        },
+        { timeout: 3000 },
+      );
 
-    await watcher.stop();
-  });
+      await watcher.stop();
+    },
+  );
 });

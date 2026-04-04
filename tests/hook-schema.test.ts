@@ -25,7 +25,13 @@ import {
   ENVELOPE_FIELDS,
 } from "../src/schema/hooks.js";
 import { ACTION_TYPES } from "../src/schema/action.js";
-import { testUlid, setupTempFixtures, cleanupTempDir, kspec as kspecRun, readTestOutput } from "./helpers/cli.js";
+import {
+  testUlid,
+  setupTempFixtures,
+  cleanupTempDir,
+  kspec as kspecRun,
+  readTestOutput,
+} from "./helpers/cli.js";
 
 // ─── @dispatch-hook-schema Tests ─────────────────────────────────────────────
 

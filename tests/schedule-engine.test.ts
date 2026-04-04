@@ -162,7 +162,10 @@ beforeEach(() => {
   eventBus = new EventBus();
 });
 
-function createDeferredRun(actionType: ActionRun["action_type"], sourceName?: string): {
+function createDeferredRun(
+  actionType: ActionRun["action_type"],
+  sourceName?: string,
+): {
   promise: Promise<ActionRun>;
   resolve: () => void;
 } {
@@ -484,9 +487,15 @@ describe("AC: @dispatch-schedule-entities ac-7 — eager active-run state", () =
     const schedule = makeSchedule({ overlap_policy: "skip" });
     const firstRun = createDeferredRun("command", schedule.name);
     const executor = {
-      execute: vi.fn(async (action: any, _eventContext: ActionEventContext, sourceName?: string) => {
-        return firstRun.promise.then((run) => ({ ...run, action_type: action.type, source_name: sourceName }));
-      }),
+      execute: vi.fn(
+        async (action: any, _eventContext: ActionEventContext, sourceName?: string) => {
+          return firstRun.promise.then((run) => ({
+            ...run,
+            action_type: action.type,
+            source_name: sourceName,
+          }));
+        },
+      ),
     } as unknown as ActionExecutor;
 
     const engine = new ScheduleEngine({
@@ -542,7 +551,10 @@ describe("AC: @dispatch-schedule-entities ac-8 — eager next_tick advancement",
 
     await engine.start();
 
-    const schedules = (engine as any).schedules as Map<string, { state: { next_tick: Date | null } }>;
+    const schedules = (engine as any).schedules as Map<
+      string,
+      { state: { next_tick: Date | null } }
+    >;
     const record = schedules.get("test-schedule");
     expect(record).toBeDefined();
     const dueTick = new Date(Date.now() - 1_000);

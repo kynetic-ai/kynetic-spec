@@ -27,12 +27,7 @@ import { Elysia } from "elysia";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { localhostOnly } from "../../dist/daemon/server.ts";
 import { projectContextMiddleware } from "../../dist/daemon/middleware/project-context.ts";
-import {
-  cleanupTempDir,
-  createTempDir,
-  initGitRepo,
-  setupFixtures,
-} from "./helpers.js";
+import { cleanupTempDir, createTempDir, initGitRepo, setupFixtures } from "./helpers.js";
 
 let app: Elysia;
 let tempDir: string;
@@ -53,33 +48,39 @@ function createServerTestApp(projectDir: string) {
     startupProject: projectDir,
   });
 
-  return new Elysia()
-    // Production CORS configuration (same as createServer)
-    .use(
-      cors({
-        origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
-        credentials: true,
-        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-      }),
-    )
-    // Production localhost enforcement middleware
-    .onRequest(localhostOnly())
-    // Production project context middleware
-    .use(middleware)
-    // Production health endpoint shape
-    .get("/api/health", () => ({
-      status: "ok",
-      uptime: process.uptime(),
-      connections: 0,
-      version: "0.1.0",
-    }))
-    // SPA fallback route (simulates static plugin's index.html serving).
-    // In production, this is handled by the Elysia static plugin + explicit
-    // SPA route registrations. We use a simple handler to test that the
-    // project context middleware correctly skips non-API routes.
-    .get("/", () => new Response("<html><body>SPA</body></html>", {
-      headers: { "Content-Type": "text/html" },
-    }));
+  return (
+    new Elysia()
+      // Production CORS configuration (same as createServer)
+      .use(
+        cors({
+          origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
+          credentials: true,
+          methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        }),
+      )
+      // Production localhost enforcement middleware
+      .onRequest(localhostOnly())
+      // Production project context middleware
+      .use(middleware)
+      // Production health endpoint shape
+      .get("/api/health", () => ({
+        status: "ok",
+        uptime: process.uptime(),
+        connections: 0,
+        version: "0.1.0",
+      }))
+      // SPA fallback route (simulates static plugin's index.html serving).
+      // In production, this is handled by the Elysia static plugin + explicit
+      // SPA route registrations. We use a simple handler to test that the
+      // project context middleware correctly skips non-API routes.
+      .get(
+        "/",
+        () =>
+          new Response("<html><body>SPA</body></html>", {
+            headers: { "Content-Type": "text/html" },
+          }),
+      )
+  );
 }
 
 function makeReq(urlPath: string, init: RequestInit = {}) {
@@ -129,10 +130,10 @@ describe("GET /api/health", () => {
     expect(body.status).toBe("ok");
     expect(body).toHaveProperty("uptime");
     expect(typeof body.uptime).toBe("number");
-    expect((body.uptime as number)).toBeGreaterThanOrEqual(0);
+    expect(body.uptime as number).toBeGreaterThanOrEqual(0);
     expect(body).toHaveProperty("connections");
     expect(typeof body.connections).toBe("number");
-    expect((body.connections as number)).toBeGreaterThanOrEqual(0);
+    expect(body.connections as number).toBeGreaterThanOrEqual(0);
     expect(body).toHaveProperty("version");
     expect(typeof body.version).toBe("string");
     expect((body.version as string).length).toBeGreaterThan(0);
@@ -211,9 +212,7 @@ describe("CORS Headers", () => {
         },
       }),
     );
-    expect(response.headers.get("access-control-allow-credentials")).toBe(
-      "true",
-    );
+    expect(response.headers.get("access-control-allow-credentials")).toBe("true");
   });
 });
 

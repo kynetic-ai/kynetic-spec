@@ -91,9 +91,7 @@ describe("Core Skill Installation", () => {
       const inboxMd = await readTestOutput(path.join(triageDocsDir, "inbox.md"));
       expect(inboxMd).toContain("Inbox Triage");
 
-      const observationsMd = await readTestOutput(
-        path.join(triageDocsDir, "observations.md"),
-      );
+      const observationsMd = await readTestOutput(path.join(triageDocsDir, "observations.md"));
       expect(observationsMd).toContain("Observations Triage");
 
       const automationMd = await readTestOutput(path.join(triageDocsDir, "automation.md"));

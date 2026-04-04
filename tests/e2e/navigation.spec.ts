@@ -95,10 +95,7 @@ test.describe("Navigation and URL State", () => {
       await page.goBack({ waitUntil: "domcontentloaded" });
       await expect(page).toHaveURL("/");
 
-      await Promise.all([
-        page.waitForURL("**/tasks"),
-        page.goForward({ waitUntil: "commit" }),
-      ]);
+      await Promise.all([page.waitForURL("**/tasks"), page.goForward({ waitUntil: "commit" })]);
 
       // Should be back on tasks page
       await expect(page).toHaveURL("/tasks");

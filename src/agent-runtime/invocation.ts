@@ -347,7 +347,7 @@ async function runKspecCli(
     return {
       stdout: e.stdout ?? "",
       stderr: e.stderr ?? "",
-      status: typeof e.code === "number" ? e.code : (e.killed ? null : 1),
+      status: typeof e.code === "number" ? e.code : e.killed ? null : 1,
     };
   }
 }

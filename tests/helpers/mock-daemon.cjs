@@ -24,7 +24,9 @@ const mode = process.argv.includes("--mode")
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, `http://127.0.0.1`);
   let body = "";
-  req.on("data", (chunk) => { body += chunk; });
+  req.on("data", (chunk) => {
+    body += chunk;
+  });
   req.on("end", () => {
     if (url.pathname === "/api/health") {
       res.writeHead(200, { "Content-Type": "application/json" });
@@ -48,21 +50,25 @@ const server = http.createServer((req, res) => {
 
       if (mode === "error") {
         res.writeHead(422, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({
-          stdout: "",
-          stderr: "error: not found\n",
-          exitCode: 3,
-        }));
+        res.end(
+          JSON.stringify({
+            stdout: "",
+            stderr: "error: not found\n",
+            exitCode: 3,
+          }),
+        );
         return;
       }
 
       // normal mode
       res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({
-        stdout: `proxied: ${parsed.command}\n`,
-        stderr: "",
-        exitCode: 0,
-      }));
+      res.end(
+        JSON.stringify({
+          stdout: `proxied: ${parsed.command}\n`,
+          stderr: "",
+          exitCode: 0,
+        }),
+      );
       return;
     }
 

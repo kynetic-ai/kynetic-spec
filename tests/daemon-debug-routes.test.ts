@@ -15,7 +15,10 @@ import * as path from "node:path";
 import { createTempDir, cleanupTempDir, initGitRepo } from "./helpers/cli.js";
 import { createDebugRoutes } from "../dist/daemon/routes/debug.ts";
 import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.ts";
-import type { RouteEntityCache, EntityCacheAccessor } from "../dist/daemon/routes/entity-cache-types.ts";
+import type {
+  RouteEntityCache,
+  EntityCacheAccessor,
+} from "../dist/daemon/routes/entity-cache-types.ts";
 import type { CacheDiagnostic, DomainDiagnostic } from "../dist/daemon/entity-cache.ts";
 
 let tempDir: string;
@@ -44,7 +47,10 @@ function setupProjectFixture(dir: string) {
 }
 
 /** Create a mock RouteEntityCache that includes getCacheDiagnostics(). */
-function createMockCache(projectPath: string, overrides: Partial<Record<string, DomainDiagnostic>> = {}): RouteEntityCache {
+function createMockCache(
+  projectPath: string,
+  overrides: Partial<Record<string, DomainDiagnostic>> = {},
+): RouteEntityCache {
   const defaultDomain: DomainDiagnostic = {
     state: "ready",
     indexCount: 0,
@@ -66,7 +72,8 @@ function createMockCache(projectPath: string, overrides: Partial<Record<string, 
   };
 
   return {
-    getDomainState: (domain: string) => (domains[domain]?.state ?? "unloaded") as "ready" | "unloaded" | "loading" | "degraded",
+    getDomainState: (domain: string) =>
+      (domains[domain]?.state ?? "unloaded") as "ready" | "unloaded" | "loading" | "degraded",
     getTaskIndex: () => null,
     getTaskDetail: () => null,
     setTaskDetail: () => {},
@@ -96,10 +103,11 @@ function createMockCache(projectPath: string, overrides: Partial<Record<string, 
     getSessionContext: () => null,
     writeThrough: async () => {},
     markWriteThrough: () => {},
-    getCacheDiagnostics: () => ({
-      projectPath,
-      domains,
-    }) as CacheDiagnostic,
+    getCacheDiagnostics: () =>
+      ({
+        projectPath,
+        domains,
+      }) as CacheDiagnostic,
   };
 }
 
@@ -119,12 +127,9 @@ describe("Debug API routes", () => {
     });
 
     const mockCache = createMockCache(tempDir);
-    const getEntityCache: EntityCacheAccessor = (p: string) =>
-      p === tempDir ? mockCache : null;
+    const getEntityCache: EntityCacheAccessor = (p: string) => (p === tempDir ? mockCache : null);
 
-    app = new Elysia()
-      .use(middleware)
-      .use(createDebugRoutes({ projectManager, getEntityCache }));
+    app = new Elysia().use(middleware).use(createDebugRoutes({ projectManager, getEntityCache }));
 
     const res = await makeRequest("/api/debug/cache-status");
     expect(res.status).toBe(200);
@@ -173,12 +178,9 @@ describe("Debug API routes", () => {
         lastInvalidatedAt: "2026-03-28T10:00:00.000Z",
       },
     });
-    const getEntityCache: EntityCacheAccessor = (p: string) =>
-      p === tempDir ? mockCache : null;
+    const getEntityCache: EntityCacheAccessor = (p: string) => (p === tempDir ? mockCache : null);
 
-    app = new Elysia()
-      .use(middleware)
-      .use(createDebugRoutes({ projectManager, getEntityCache }));
+    app = new Elysia().use(middleware).use(createDebugRoutes({ projectManager, getEntityCache }));
 
     const res = await makeRequest("/api/debug/cache-status");
     expect(res.status).toBe(200);
@@ -204,12 +206,9 @@ describe("Debug API routes", () => {
     project.consecutiveFailures = 2;
 
     const mockCache = createMockCache(tempDir);
-    const getEntityCache: EntityCacheAccessor = (p: string) =>
-      p === tempDir ? mockCache : null;
+    const getEntityCache: EntityCacheAccessor = (p: string) => (p === tempDir ? mockCache : null);
 
-    app = new Elysia()
-      .use(middleware)
-      .use(createDebugRoutes({ projectManager, getEntityCache }));
+    app = new Elysia().use(middleware).use(createDebugRoutes({ projectManager, getEntityCache }));
 
     const res = await makeRequest("/api/debug/cache-status");
     expect(res.status).toBe(200);
@@ -228,9 +227,7 @@ describe("Debug API routes", () => {
     const { manager: projectManager, middleware } = projectContextMiddleware();
     const getEntityCache: EntityCacheAccessor = () => null;
 
-    app = new Elysia()
-      .use(middleware)
-      .use(createDebugRoutes({ projectManager, getEntityCache }));
+    app = new Elysia().use(middleware).use(createDebugRoutes({ projectManager, getEntityCache }));
 
     const res = await app.handle(
       new Request("http://localhost/api/debug/cache-status", {
@@ -258,9 +255,7 @@ describe("Debug API routes", () => {
     // Cache accessor always returns null — simulates cache not yet registered
     const getEntityCache: EntityCacheAccessor = () => null;
 
-    app = new Elysia()
-      .use(middleware)
-      .use(createDebugRoutes({ projectManager, getEntityCache }));
+    app = new Elysia().use(middleware).use(createDebugRoutes({ projectManager, getEntityCache }));
 
     const res = await makeRequest("/api/debug/cache-status");
     expect(res.status).toBe(200);
@@ -304,12 +299,9 @@ describe("Debug API routes", () => {
         lastInvalidatedAt: null,
       },
     });
-    const getEntityCache: EntityCacheAccessor = (p: string) =>
-      p === tempDir ? mockCache : null;
+    const getEntityCache: EntityCacheAccessor = (p: string) => (p === tempDir ? mockCache : null);
 
-    app = new Elysia()
-      .use(middleware)
-      .use(createDebugRoutes({ projectManager, getEntityCache }));
+    app = new Elysia().use(middleware).use(createDebugRoutes({ projectManager, getEntityCache }));
 
     const res = await makeRequest("/api/debug/cache-status");
     expect(res.status).toBe(200);

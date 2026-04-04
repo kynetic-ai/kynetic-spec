@@ -171,7 +171,11 @@ test.describe("Task and Spec Session Context", () => {
     daemon,
   }) => {
     await seedRelatedSessions(daemon.tempDir);
-    await waitForRelatedSessionCount(page.request, `${daemon.baseUrl}/api/items/@test-feature/sessions`, 2);
+    await waitForRelatedSessionCount(
+      page.request,
+      `${daemon.baseUrl}/api/items/@test-feature/sessions`,
+      2,
+    );
 
     await page.goto("/items");
 

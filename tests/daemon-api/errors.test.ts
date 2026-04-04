@@ -221,10 +221,7 @@ describe("409 State Transition Errors", () => {
 describe("Error response consistency", () => {
   // AC: @api-contract ac-22 — consistent 404 shape across endpoints
   it("all 404 responses have consistent error/message/suggestion shape", async () => {
-    const endpoints = [
-      "/api/tasks/@nonexistent-xyz",
-      "/api/items/@nonexistent-xyz",
-    ];
+    const endpoints = ["/api/tasks/@nonexistent-xyz", "/api/items/@nonexistent-xyz"];
 
     for (const endpoint of endpoints) {
       const response = await request(endpoint);

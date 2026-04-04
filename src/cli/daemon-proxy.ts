@@ -106,9 +106,7 @@ export async function detectDaemon(): Promise<DaemonDetectionResult> {
   } catch (err) {
     // AC: @daemon-proxy-detection ac-fast-detection — connection refused, fail fast
     const message = err instanceof Error ? err.message : String(err);
-    const reason = message.includes("abort")
-      ? "health check timed out"
-      : "connection refused";
+    const reason = message.includes("abort") ? "health check timed out" : "connection refused";
     cachedDetection = { available: false, reason };
     return cachedDetection;
   }
@@ -158,10 +156,7 @@ export async function shouldProxyCommand(opts: {
  *
  * AC: @daemon-proxy-detection ac-project-registered
  */
-async function ensureProjectRegistered(
-  port: number,
-  projectPath: string,
-): Promise<void> {
+async function ensureProjectRegistered(port: number, projectPath: string): Promise<void> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), REGISTRATION_TIMEOUT_MS);
 
@@ -252,7 +247,8 @@ export async function proxyCommand(opts: {
         return {
           ok: false,
           fallbackToDirectMode: false,
-          error: "Daemon command timed out. The daemon may still be processing the mutation — do not retry in direct mode.",
+          error:
+            "Daemon command timed out. The daemon may still be processing the mutation — do not retry in direct mode.",
         };
       }
       // AC: @cli-daemon-proxy ac-timeout-fallback

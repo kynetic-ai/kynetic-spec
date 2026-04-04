@@ -633,7 +633,9 @@ describe("dispatch target branch sync", () => {
 
     await (engine as any)._addActiveTarget("plan/shared");
 
-    expect(new Set((engine as any)._resolveActiveTargets())).toEqual(new Set(["dev", "plan/shared"]));
+    expect(new Set((engine as any)._resolveActiveTargets())).toEqual(
+      new Set(["dev", "plan/shared"]),
+    );
     expect(new Set(engine.getTargetSyncStatus().activeTargets)).toEqual(
       new Set(["dev", "plan/shared"]),
     );
@@ -705,7 +707,10 @@ describe("dispatch target branch sync", () => {
     const reviewRef = "@concurrent-merge-review";
     const taskTitle = "Concurrent merge stale reviewer";
 
-    kspec('plan add --title "Alpha Plan" --content "Plan alpha content" --slug alpha-plan', projectDir);
+    kspec(
+      'plan add --title "Alpha Plan" --content "Plan alpha content" --slug alpha-plan',
+      projectDir,
+    );
     kspec('plan set @alpha-plan --branch "plan/alpha"', projectDir);
     kspec(
       `task add --title "${taskTitle}" --slug concurrent-merge-second --plan-ref @alpha-plan`,
@@ -760,16 +765,20 @@ describe("dispatch target branch sync", () => {
 
     const originalPushIntegrationTarget = workspaceModule.pushIntegrationTarget;
     let resolvePushResult!: (value: workspaceModule.PushIntegrationTargetResult) => void;
-    const pushResultPromise = new Promise<workspaceModule.PushIntegrationTargetResult>((resolve) => {
-      resolvePushResult = resolve;
-    });
+    const pushResultPromise = new Promise<workspaceModule.PushIntegrationTargetResult>(
+      (resolve) => {
+        resolvePushResult = resolve;
+      },
+    );
     const pushSpy = vi
       .spyOn(workspaceModule, "pushIntegrationTarget")
-      .mockImplementation(async (...args: Parameters<typeof workspaceModule.pushIntegrationTarget>) => {
-        const result = await originalPushIntegrationTarget(...args);
-        resolvePushResult(result);
-        return result;
-      });
+      .mockImplementation(
+        async (...args: Parameters<typeof workspaceModule.pushIntegrationTarget>) => {
+          const result = await originalPushIntegrationTarget(...args);
+          resolvePushResult(result);
+          return result;
+        },
+      );
 
     let reviewerOneDir: string | null = null;
     try {
@@ -1003,7 +1012,11 @@ describe("dispatch target branch sync", () => {
     git(projectDir, 'commit -m "dev concurrency commit"');
 
     git(projectDir, "checkout plan/alpha");
-    await fs.writeFile(path.join(projectDir, "plan-concurrency.txt"), "plan concurrency\n", "utf-8");
+    await fs.writeFile(
+      path.join(projectDir, "plan-concurrency.txt"),
+      "plan concurrency\n",
+      "utf-8",
+    );
     git(projectDir, "add plan-concurrency.txt");
     git(projectDir, 'commit -m "plan concurrency commit"');
     git(projectDir, "checkout dev");
@@ -1067,7 +1080,11 @@ describe("dispatch target branch sync", () => {
     git(projectDir, 'commit -m "dev concurrency commit"');
 
     git(projectDir, "checkout plan/alpha");
-    await fs.writeFile(path.join(projectDir, "plan-concurrency.txt"), "plan concurrency\n", "utf-8");
+    await fs.writeFile(
+      path.join(projectDir, "plan-concurrency.txt"),
+      "plan concurrency\n",
+      "utf-8",
+    );
     git(projectDir, "add plan-concurrency.txt");
     git(projectDir, 'commit -m "plan concurrency commit"');
     git(projectDir, "checkout dev");
@@ -1861,7 +1878,13 @@ describe("dispatch target branch sync", () => {
     await fs.writeFile(path.join(projectDir, "dev-local.txt"), "local divergence\n", "utf-8");
     git(projectDir, "add dev-local.txt");
     git(projectDir, 'commit -m "local divergence on dev"');
-    await pushRemoteCommit(remoteDir, "dev", "dev-remote.txt", "remote divergence\n", "remote divergence on dev");
+    await pushRemoteCommit(
+      remoteDir,
+      "dev",
+      "dev-remote.txt",
+      "remote divergence\n",
+      "remote divergence on dev",
+    );
 
     const planAlphaBefore = git(projectDir, "rev-parse plan/alpha");
     const planAlphaRemoteHead = await pushRemoteCommit(
@@ -1885,7 +1908,9 @@ describe("dispatch target branch sync", () => {
     expect(git(projectDir, "rev-parse plan/alpha")).toBe(planAlphaRemoteHead);
     expect(git(projectDir, "rev-parse plan/alpha")).not.toBe(planAlphaBefore);
     expect(syncStatus.targetSyncTimestamps["plan/alpha"]).toBeGreaterThan(0);
-    expect(syncStatus.targetSyncTimestamps.dev ?? 0).toBeLessThan(syncStatus.targetSyncTimestamps["plan/alpha"]);
+    expect(syncStatus.targetSyncTimestamps.dev ?? 0).toBeLessThan(
+      syncStatus.targetSyncTimestamps["plan/alpha"],
+    );
 
     await engine.stop();
   });

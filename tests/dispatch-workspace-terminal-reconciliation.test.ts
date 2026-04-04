@@ -126,10 +126,7 @@ describe("dispatch workspace terminal task reconciliation", () => {
 
     // Now run registry reconciliation with task status = completed
     // The fix should prevent tryRestoreBranchFromRemote from being called
-    await reconcileDispatchWorkspaceRegistry(
-      tempDir,
-      new Map([[taskRef, "completed" as const]]),
-    );
+    await reconcileDispatchWorkspaceRegistry(tempDir, new Map([[taskRef, "completed" as const]]));
 
     // Verify the branch was NOT restored from the remote tracking ref
     const branchExists = git(tempDir, `branch --list ${canonicalBranch}`);
@@ -184,10 +181,7 @@ describe("dispatch workspace terminal task reconciliation", () => {
     // Set up remote tracking ref that would trigger restoration
     git(tempDir, `update-ref refs/remotes/origin/${canonicalBranch} HEAD`);
 
-    await reconcileDispatchWorkspaceRegistry(
-      tempDir,
-      new Map([[taskRef, "cancelled" as const]]),
-    );
+    await reconcileDispatchWorkspaceRegistry(tempDir, new Map([[taskRef, "cancelled" as const]]));
 
     // Branch should not have been restored
     const branchExists = git(tempDir, `branch --list ${canonicalBranch}`);

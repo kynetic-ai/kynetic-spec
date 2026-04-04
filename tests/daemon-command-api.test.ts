@@ -29,7 +29,10 @@ import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
 import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.ts";
 import { createCommandRoutes } from "../dist/daemon/routes/command.ts";
 import { PubSubManager } from "../dist/daemon/websocket/pubsub.ts";
-import type { RouteEntityCache, EntityCacheAccessor } from "../dist/daemon/routes/entity-cache-types.ts";
+import type {
+  RouteEntityCache,
+  EntityCacheAccessor,
+} from "../dist/daemon/routes/entity-cache-types.ts";
 
 ensureSplitBackendRegistered();
 
@@ -211,9 +214,7 @@ describe("Daemon Command API", () => {
       return null;
     };
     const { middleware } = projectContextMiddleware();
-    app = new Elysia()
-      .use(middleware)
-      .use(createCommandRoutes({ pubsub, getEntityCache }));
+    app = new Elysia().use(middleware).use(createCommandRoutes({ pubsub, getEntityCache }));
   });
 
   afterEach(async () => {
@@ -285,9 +286,11 @@ describe("Daemon Command API", () => {
     const apiStderr = stripAnsi(body.stderr);
 
     expect(apiStderr).toContain("error: unknown command 'nonexistent-command'");
-    expect(apiStderr).toContain(cliStderr.includes("Did you mean")
-      ? "Did you mean"
-      : "Run 'kspec help' to see available commands");
+    expect(apiStderr).toContain(
+      cliStderr.includes("Did you mean")
+        ? "Did you mean"
+        : "Run 'kspec help' to see available commands",
+    );
   });
 
   // ───────────────────────────────────────────────────────────────────
@@ -423,7 +426,14 @@ describe("Daemon Command API", () => {
     // cross-domain side effects (e.g., session mutations, task → spec
     // status changes) are always reflected before the response.
     const expectedDomains = [
-      "tasks", "items", "meta", "inbox", "plans", "triage", "reviews", "sessions",
+      "tasks",
+      "items",
+      "meta",
+      "inbox",
+      "plans",
+      "triage",
+      "reviews",
+      "sessions",
     ];
     for (const domain of expectedDomains) {
       expect(writeThroughCalls).toContain(domain);
@@ -798,7 +808,8 @@ describe("Daemon Command API", () => {
     // Verify the output doesn't contain YAML indicators that would signal
     // leaked format. The inbox add output, captured by dispatchCommand(),
     // should be plain text (not YAML-formatted).
-    const output = typeof result.output === "string" ? result.output : JSON.stringify(result.output);
+    const output =
+      typeof result.output === "string" ? result.output : JSON.stringify(result.output);
     expect(output).not.toMatch(/^---\s*$/m);
   });
 

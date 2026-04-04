@@ -50,7 +50,6 @@ export class SessionWatcher {
     if (typeof this.bootstrapPollTimer === "object" && "unref" in this.bootstrapPollTimer) {
       this.bootstrapPollTimer.unref();
     }
-
   }
 
   private async startChokidarWatcher(): Promise<void> {
@@ -76,7 +75,6 @@ export class SessionWatcher {
     await new Promise<void>((resolve) => {
       this.watcher?.once("ready", () => resolve());
     });
-
   }
 
   private async promoteBootstrapPoll(): Promise<void> {

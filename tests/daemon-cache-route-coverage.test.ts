@@ -23,7 +23,10 @@ import { createTasksRoutes } from "../dist/daemon/routes/tasks.ts";
 import { createItemsRoutes } from "../dist/daemon/routes/items.ts";
 import { createSessionRoutes } from "../dist/daemon/routes/sessions.ts";
 import { PubSubManager } from "../dist/daemon/websocket/pubsub.ts";
-import type { RouteEntityCache, EntityCacheAccessor } from "../dist/daemon/routes/entity-cache-types.ts";
+import type {
+  RouteEntityCache,
+  EntityCacheAccessor,
+} from "../dist/daemon/routes/entity-cache-types.ts";
 import type { TaskSummary } from "../dist/parser/task-data-manager.ts";
 import type { ItemSummary } from "../dist/daemon/entity-cache.ts";
 import type { SessionLogSummary } from "../dist/sessions/store.ts";
@@ -296,7 +299,10 @@ describe("Route-level cache coverage for related-sessions and filtered sessions"
     const res = await makeRequest(`/api/tasks/@cache-test-task/sessions`);
     expect(res.status).toBe(200);
 
-    const body = (await res.json()) as { data: SessionLogSummary[]; meta: { total: number; cache_status: string } };
+    const body = (await res.json()) as {
+      data: SessionLogSummary[];
+      meta: { total: number; cache_status: string };
+    };
     expect(body.meta.total).toBe(1);
     expect(body.data[0]).toMatchObject({
       id: SESSION_ID,
@@ -324,7 +330,10 @@ describe("Route-level cache coverage for related-sessions and filtered sessions"
     const res = await makeRequest(`/api/tasks/@cache-test-task/sessions`);
     expect(res.status).toBe(200);
 
-    const body = (await res.json()) as { data: SessionLogSummary[]; meta: { total: number; cache_status: string } };
+    const body = (await res.json()) as {
+      data: SessionLogSummary[];
+      meta: { total: number; cache_status: string };
+    };
     expect(body.meta.total).toBe(1);
     expect(body.data[0]).toMatchObject({
       id: SESSION_ID,
@@ -340,7 +349,10 @@ describe("Route-level cache coverage for related-sessions and filtered sessions"
     const res = await makeRequest(`/api/items/@cache-test-spec/sessions`);
     expect(res.status).toBe(200);
 
-    const body = (await res.json()) as { data: SessionLogSummary[]; meta: { total: number; cache_status: string } };
+    const body = (await res.json()) as {
+      data: SessionLogSummary[];
+      meta: { total: number; cache_status: string };
+    };
     expect(body.meta.total).toBe(1);
     expect(body.data[0]).toMatchObject({
       id: SESSION_ID,
@@ -355,7 +367,10 @@ describe("Route-level cache coverage for related-sessions and filtered sessions"
     const res = await makeRequest(`/api/sessions?task_id=@cache-test-task`);
     expect(res.status).toBe(200);
 
-    const body = (await res.json()) as { data: { items: SessionLogSummary[] }; meta: { total: number; cache_status: string } };
+    const body = (await res.json()) as {
+      data: { items: SessionLogSummary[] };
+      meta: { total: number; cache_status: string };
+    };
     expect(body.meta.total).toBe(1);
     expect(body.data.items[0]).toMatchObject({
       id: SESSION_ID,
@@ -368,7 +383,10 @@ describe("Route-level cache coverage for related-sessions and filtered sessions"
     const res = await makeRequest(`/api/sessions?spec_ref=@cache-test-spec`);
     expect(res.status).toBe(200);
 
-    const body = (await res.json()) as { data: { items: SessionLogSummary[] }; meta: { total: number; cache_status: string } };
+    const body = (await res.json()) as {
+      data: { items: SessionLogSummary[] };
+      meta: { total: number; cache_status: string };
+    };
     // The spec has one task linked, and that task has one session
     expect(body.meta.total).toBe(1);
     expect(body.data.items[0]).toMatchObject({
@@ -437,7 +455,10 @@ started_at: "2026-03-01T10:00:00Z"
     const res = await makeRequest(`/api/sessions`);
     expect(res.status).toBe(200);
 
-    const body = (await res.json()) as { data: { items: SessionLogSummary[] }; meta: { total: number; cache_status: string } };
+    const body = (await res.json()) as {
+      data: { items: SessionLogSummary[] };
+      meta: { total: number; cache_status: string };
+    };
     expect(body.meta.total).toBe(1);
     expect(body.data.items[0]).toMatchObject({ id: SESSION_ID });
   });
@@ -499,7 +520,10 @@ describe("Daemon read routes skip drift-check on cache-miss fallback", () => {
       specDir: noCacheTempDir,
       sessionsDir: path.join(noCacheTempDir, ".kspec-sessions"),
       manifestPath: path.join(noCacheTempDir, "kynetic.yaml"),
-      manifest: { project: { name: "Test", version: "0.1.0", status: "draft" as const }, modules: [] },
+      manifest: {
+        project: { name: "Test", version: "0.1.0", status: "draft" as const },
+        modules: [],
+      },
       shadow: null,
       config: {
         shadow: {

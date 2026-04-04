@@ -152,7 +152,8 @@ test.describe("File Watcher UI", () => {
     const unexpectedFirstProjectRefetch = page
       .waitForRequest(
         (request) =>
-          request.url().includes("/api/tasks") && request.headers()["x-kspec-dir"] === daemon.tempDir,
+          request.url().includes("/api/tasks") &&
+          request.headers()["x-kspec-dir"] === daemon.tempDir,
         { timeout: 2_000 },
       )
       .then(() => true)

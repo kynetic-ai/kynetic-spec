@@ -133,11 +133,7 @@ async function writeTasks(dir: string, tasks: TaskRecord[]): Promise<void> {
     });
   }
 
-  await fs.writeFile(
-    path.join(dir, "project.tasks.yaml"),
-    YAML.stringify(indexEntries),
-    "utf-8",
-  );
+  await fs.writeFile(path.join(dir, "project.tasks.yaml"), YAML.stringify(indexEntries), "utf-8");
 }
 
 async function waitFor(

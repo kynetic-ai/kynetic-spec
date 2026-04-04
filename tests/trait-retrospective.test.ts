@@ -1,5 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { cleanupTempDir, initGitRepo, kspec, readTestOutput, setupTempFixtures } from "./helpers/cli.js";
+import {
+  cleanupTempDir,
+  initGitRepo,
+  kspec,
+  readTestOutput,
+  setupTempFixtures,
+} from "./helpers/cli.js";
 
 describe("Trait Retrospective", () => {
   let tempDir: string;

@@ -17,7 +17,10 @@ const OPEN_REVIEW_ULID = "01KKTX0CA45ZT43W2T6HJMVA01";
 const DRAFT_REVIEW_ULID = "01KKTX9CA45ZT43W2T6HJMVA10";
 
 function firstOpenBlockerThread(page: Page) {
-  return page.getByTestId("thread-item").filter({ has: page.getByTestId("thread-resolve-button") }).first();
+  return page
+    .getByTestId("thread-item")
+    .filter({ has: page.getByTestId("thread-resolve-button") })
+    .first();
 }
 
 test.describe("Review Interaction Controls", () => {

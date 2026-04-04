@@ -40,7 +40,12 @@ const c = {
 };
 
 const projectRoot = path.dirname(__dirname);
-const BUILD_ARTIFACTS = ["dist/cli/index.js", "dist/web-ui/index.html", "dist/daemon/index.ts", "dist/daemon/entity-cache.ts"];
+const BUILD_ARTIFACTS = [
+  "dist/cli/index.js",
+  "dist/web-ui/index.html",
+  "dist/daemon/index.ts",
+  "dist/daemon/entity-cache.ts",
+];
 const BUILD_INPUT_PATHS = [
   "src",
   "packages/shared/src",

@@ -97,14 +97,12 @@ describe("GET /api/items", () => {
     it("type exclusion returns no items of that type", async () => {
       const allResponse = await request("/api/items");
       const allBody = await allResponse.json();
-      const allTypes = new Set(
-        allBody.data.map((i: { type: string }) => i.type)
-      );
+      const allTypes = new Set(allBody.data.map((i: { type: string }) => i.type));
 
       // Pick a type that exists, exclude it, verify it's absent
       const excludeType = [...allTypes][0] as string;
       const response = await request(
-        `/api/items?type=${[...allTypes].filter((t) => t !== excludeType).join("&type=")}`
+        `/api/items?type=${[...allTypes].filter((t) => t !== excludeType).join("&type=")}`,
       );
       expect(response.status).toBe(200);
       const body = await response.json();
@@ -187,9 +185,7 @@ describe("GET /api/items/:ref", () => {
 
   // AC: @spec-api-items ac-6
   it("resolves item by ULID", async () => {
-    const response = await request(
-      "/api/items/@01KF1645CBDJYHWBPYWRN3HYPJ"
-    );
+    const response = await request("/api/items/@01KF1645CBDJYHWBPYWRN3HYPJ");
     expect(response.status).toBe(200);
     const body = await response.json();
     expect(body.data._ulid).toBe("01KF1645CBDJYHWBPYWRN3HYPJ");
@@ -309,10 +305,7 @@ describe("POST /api/items/batch", () => {
     const response = await request("/api/items/batch", {
       method: "POST",
       body: JSON.stringify({
-        refs: [
-          "@01KF1645CBDJYHWBPYWRN3HYPJ",
-          "@01KG0RR6CA45ZT43W2T6HJMVA1",
-        ],
+        refs: ["@01KF1645CBDJYHWBPYWRN3HYPJ", "@01KG0RR6CA45ZT43W2T6HJMVA1"],
       }),
     });
     expect(response.status).toBe(200);
@@ -337,10 +330,7 @@ describe("POST /api/items/batch", () => {
 
   // AC: @spec-api-items ac-13
   it("rejects batch larger than 100 refs", async () => {
-    const refs = Array.from(
-      { length: 101 },
-      (_, i) => `@item-${String(i).padStart(3, "0")}`
-    );
+    const refs = Array.from({ length: 101 }, (_, i) => `@item-${String(i).padStart(3, "0")}`);
     const response = await request("/api/items/batch", {
       method: "POST",
       body: JSON.stringify({ refs }),

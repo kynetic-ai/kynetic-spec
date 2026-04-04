@@ -607,7 +607,8 @@ describe("ProjectEntityCache", () => {
       // infrastructure failure (disk error, shadow branch corruption, etc.).
       // The split backend catches parse errors gracefully, so we need to
       // fail at a higher level to exercise the degradation path.
-      const initContextSpy = vi.spyOn(yamlModule, "initContext")
+      const initContextSpy = vi
+        .spyOn(yamlModule, "initContext")
         .mockRejectedValueOnce(new Error("simulated infrastructure failure"));
 
       try {
@@ -1630,10 +1631,7 @@ describe("ProjectEntityCache", () => {
 
       // Parallel write-through matches the route pattern:
       // await Promise.all([cache.writeThrough("tasks"), cache.writeThrough("items")])
-      await Promise.all([
-        cache.writeThrough("tasks"),
-        cache.writeThrough("items"),
-      ]);
+      await Promise.all([cache.writeThrough("tasks"), cache.writeThrough("items")]);
 
       // Both domains reloaded (new references)
       const tasksAfter = cache.getTaskIndex();
@@ -1798,7 +1796,11 @@ describe("ProjectEntityCache", () => {
   // AC: @daemon-entity-cache ac-domain-ready-event
   describe("ac-domain-ready-event: broadcast when domain transitions to ready", () => {
     it("should broadcast a real-time event when a domain transitions from loading to ready", async () => {
-      const readyEvents: Array<{ domain: CacheDomain; projectPath: string; previousState: DomainState }> = [];
+      const readyEvents: Array<{
+        domain: CacheDomain;
+        projectPath: string;
+        previousState: DomainState;
+      }> = [];
       const onDomainReady: DomainReadyCallback = (domain, projectPath, previousState) => {
         readyEvents.push({ domain, projectPath, previousState });
       };
@@ -1815,7 +1817,11 @@ describe("ProjectEntityCache", () => {
     });
 
     it("should broadcast a real-time event when a domain transitions from degraded to ready", async () => {
-      const readyEvents: Array<{ domain: CacheDomain; projectPath: string; previousState: DomainState }> = [];
+      const readyEvents: Array<{
+        domain: CacheDomain;
+        projectPath: string;
+        previousState: DomainState;
+      }> = [];
       const onDomainReady: DomainReadyCallback = (domain, projectPath, previousState) => {
         readyEvents.push({ domain, projectPath, previousState });
       };
@@ -1823,7 +1829,8 @@ describe("ProjectEntityCache", () => {
       const cache = new ProjectEntityCache(projectA, undefined, onDomainReady);
 
       // Force the domain into degraded state by making initContext fail
-      const initContextSpy = vi.spyOn(yamlModule, "initContext")
+      const initContextSpy = vi
+        .spyOn(yamlModule, "initContext")
         .mockRejectedValueOnce(new Error("simulated failure"));
 
       await cache.loadDomain("tasks");
@@ -1902,7 +1909,11 @@ describe("ProjectEntityCache", () => {
     });
 
     it("should not broadcast when a domain stays in ready state during a reload", async () => {
-      const readyEvents: Array<{ domain: CacheDomain; projectPath: string; previousState: DomainState }> = [];
+      const readyEvents: Array<{
+        domain: CacheDomain;
+        projectPath: string;
+        previousState: DomainState;
+      }> = [];
       const onDomainReady: DomainReadyCallback = (domain, projectPath, previousState) => {
         readyEvents.push({ domain, projectPath, previousState });
       };
@@ -2009,25 +2020,20 @@ describe("ProjectEntityCache", () => {
         "utf-8",
       );
 
-      const cache = new ProjectEntityCache(
-        projectA,
-        undefined,
-        undefined,
-        (domain, cachePath) => {
-          if (domain !== "sessions") return;
-          pubsub.broadcast(
-            "sessions",
-            "session_changed",
-            {
-              domain,
-              projectPath: cachePath,
-              action: "modified",
-              timestamp: new Date().toISOString(),
-            },
-            cachePath,
-          );
-        },
-      );
+      const cache = new ProjectEntityCache(projectA, undefined, undefined, (domain, cachePath) => {
+        if (domain !== "sessions") return;
+        pubsub.broadcast(
+          "sessions",
+          "session_changed",
+          {
+            domain,
+            projectPath: cachePath,
+            action: "modified",
+            timestamp: new Date().toISOString(),
+          },
+          cachePath,
+        );
+      });
       await cache.loadDomain("sessions");
       sentMessages.length = 0;
 
@@ -2062,7 +2068,11 @@ describe("ProjectEntityCache", () => {
 
     // AC: @daemon-entity-cache ac-domain-ready-event
     it("should fire onDomainReady when cache is created via registerEntityCache", async () => {
-      const readyEvents: Array<{ domain: CacheDomain; projectPath: string; previousState: DomainState }> = [];
+      const readyEvents: Array<{
+        domain: CacheDomain;
+        projectPath: string;
+        previousState: DomainState;
+      }> = [];
       const onDomainReady: DomainReadyCallback = (domain, projectPath, previousState) => {
         readyEvents.push({ domain, projectPath, previousState });
       };

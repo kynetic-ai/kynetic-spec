@@ -565,9 +565,7 @@ describe("Doctor Command", () => {
 
       const report = await getDoctorReport(tempDir);
 
-      const storageCheck = report.taskStorage.checks.find(
-        (c) => c.name === "task-storage-format",
-      );
+      const storageCheck = report.taskStorage.checks.find((c) => c.name === "task-storage-format");
       expect(storageCheck).toBeDefined();
       expect(storageCheck!.severity).toBe("ok");
       expect(storageCheck!.message).toContain("split");
@@ -580,16 +578,11 @@ describe("Doctor Command", () => {
 
       // Overwrite manifest: kynetic 1.1 but no task_storage.format
       const manifestPath = path.join(tempDir, ".kspec", "test-project.yaml");
-      await fs.writeFile(
-        manifestPath,
-        'kynetic: "1.1"\nproject:\n  name: test-project\n',
-      );
+      await fs.writeFile(manifestPath, 'kynetic: "1.1"\nproject:\n  name: test-project\n');
 
       const report = await getDoctorReport(tempDir);
 
-      const storageCheck = report.taskStorage.checks.find(
-        (c) => c.name === "task-storage-format",
-      );
+      const storageCheck = report.taskStorage.checks.find((c) => c.name === "task-storage-format");
       expect(storageCheck).toBeDefined();
       expect(storageCheck!.severity).toBe("warning");
       expect(storageCheck!.message).toContain("not explicitly set");
@@ -603,16 +596,11 @@ describe("Doctor Command", () => {
 
       // Overwrite manifest: kynetic 1.0 with no task_storage
       const manifestPath = path.join(tempDir, ".kspec", "test-project.yaml");
-      await fs.writeFile(
-        manifestPath,
-        'kynetic: "1.0"\nproject:\n  name: test-project\n',
-      );
+      await fs.writeFile(manifestPath, 'kynetic: "1.0"\nproject:\n  name: test-project\n');
 
       const report = await getDoctorReport(tempDir);
 
-      const storageCheck = report.taskStorage.checks.find(
-        (c) => c.name === "task-storage-format",
-      );
+      const storageCheck = report.taskStorage.checks.find((c) => c.name === "task-storage-format");
       expect(storageCheck).toBeDefined();
       expect(storageCheck!.severity).toBe("error");
       expect(storageCheck!.message).toContain("Legacy task storage");
@@ -637,10 +625,7 @@ describe("Doctor Command", () => {
 
       // Overwrite manifest to legacy format
       const manifestPath = path.join(tempDir, ".kspec", "test-project.yaml");
-      await fs.writeFile(
-        manifestPath,
-        'kynetic: "1.0"\nproject:\n  name: test-project\n',
-      );
+      await fs.writeFile(manifestPath, 'kynetic: "1.0"\nproject:\n  name: test-project\n');
 
       const report = await getDoctorReport(tempDir);
 

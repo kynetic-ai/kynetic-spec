@@ -64,11 +64,7 @@ import { join } from "path";
 import { existsSync } from "fs";
 import { acquireFileLock, type FileLockAcquireInfo } from "../parser/file-lock.js";
 import { rollbackDirtyShadowWorktree } from "../agent-runtime/workspace.js";
-import {
-  shouldProxyCommand,
-  proxyCommand,
-  extractCommandPayload,
-} from "./daemon-proxy.js";
+import { shouldProxyCommand, proxyCommand, extractCommandPayload } from "./daemon-proxy.js";
 
 const program = new Command();
 
@@ -295,8 +291,16 @@ program
     // Checked against the full command chain — if any ancestor is a skip
     // command, skip proxy (e.g. "serve start" → "serve" is in the skip list).
     const proxySkipCommands = new Set([
-      "init", "serve", "help", "setup", "shadow", "doctor",
-      "clone-for-testing", "batch", "agent", "event",
+      "init",
+      "serve",
+      "help",
+      "setup",
+      "shadow",
+      "doctor",
+      "clone-for-testing",
+      "batch",
+      "agent",
+      "event",
     ]);
 
     // Walk up the Commander parent chain to check all command names.
@@ -356,16 +360,28 @@ program
           // AC: @cli-daemon-proxy ac-timeout-mutation-error, ac-force-proxy error
           console.error(chalk.red(`error: ${result.error}`));
           if (opts.daemon) {
-            console.error(chalk.gray("Suggested action: start the daemon with 'kspec serve start', or remove --daemon to allow direct mode."));
+            console.error(
+              chalk.gray(
+                "Suggested action: start the daemon with 'kspec serve start', or remove --daemon to allow direct mode.",
+              ),
+            );
           } else {
-            console.error(chalk.gray("Suggested action: check daemon status with 'kspec serve status' or restart with 'kspec serve restart'."));
+            console.error(
+              chalk.gray(
+                "Suggested action: check daemon status with 'kspec serve status' or restart with 'kspec serve restart'.",
+              ),
+            );
           }
           process.exit(EXIT_CODES.ERROR);
         }
       } else if (opts.daemon && proxyResult.reason) {
         // AC: @cli-daemon-proxy ac-force-proxy — --daemon flag but daemon unavailable
         console.error(chalk.red(`error: ${proxyResult.reason}`));
-        console.error(chalk.gray("Suggested action: start the daemon with 'kspec serve start', or remove --daemon to allow direct mode."));
+        console.error(
+          chalk.gray(
+            "Suggested action: start the daemon with 'kspec serve start', or remove --daemon to allow direct mode.",
+          ),
+        );
         process.exit(EXIT_CODES.ERROR);
       }
     }

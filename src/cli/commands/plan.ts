@@ -1238,7 +1238,12 @@ Examples:
   markMutating(plan.command("derive <ref>"))
     .description("Materialize plan content into specs and tasks")
     .option("--module <ref>", "Module context for derivation (overrides stored plan module)")
-    .addOption(new Option("--tasks", "Derive tasks (default; accepted for backward compatibility)").hideHelp())
+    .addOption(
+      new Option(
+        "--tasks",
+        "Derive tasks (default; accepted for backward compatibility)",
+      ).hideHelp(),
+    )
     .option("--no-tasks", "Skip task derivation")
     .option("--dry-run", "Preview derived specs/tasks without saving changes")
     .addHelpText(

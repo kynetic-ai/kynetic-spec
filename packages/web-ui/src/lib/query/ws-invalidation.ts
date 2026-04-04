@@ -32,9 +32,7 @@ const INVALIDATION_TOPICS = [
 
 const FILE_WATCHER_INVALIDATION_DELAYS_MS = [650, 1_500] as const;
 
-function getFileUpdateInvalidationKeys(
-  event: BroadcastEvent,
-): readonly (readonly unknown[])[] {
+function getFileUpdateInvalidationKeys(event: BroadcastEvent): readonly (readonly unknown[])[] {
   const ref = (event.data as { ref?: string } | undefined)?.ref;
   if (!ref) {
     return [];
@@ -213,9 +211,7 @@ const DOMAIN_QUERY_KEY_MAP: Record<string, readonly (readonly unknown[])[]> = {
  * Get invalidation keys for a domain_ready event.
  * Only processes "domain_ready" events; other cache:status events are ignored.
  */
-function getDomainReadyInvalidationKeys(
-  event: BroadcastEvent,
-): readonly (readonly unknown[])[] {
+function getDomainReadyInvalidationKeys(event: BroadcastEvent): readonly (readonly unknown[])[] {
   if (event.event !== "domain_ready") return [];
 
   const domain = (event.data as { domain?: string })?.domain;

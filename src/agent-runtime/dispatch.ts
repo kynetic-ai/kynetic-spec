@@ -385,7 +385,11 @@ export function findPriorExaminedCommit(
  *
  * AC: @review-fix-cycle-diff ac-3 — graceful omission on unreachable commits
  */
-export async function computeDiffStat(fromCommit: string, toCommit: string, cwd: string): Promise<string | null> {
+export async function computeDiffStat(
+  fromCommit: string,
+  toCommit: string,
+  cwd: string,
+): Promise<string | null> {
   try {
     const result = await execFileAsync("git", ["diff", "--stat", fromCommit, toCommit], {
       cwd,
@@ -1384,7 +1388,11 @@ export class DispatchEngine {
    */
   private async _pushDispatchBranchAsync(canonicalBranch: string, taskRef: string): Promise<void> {
     try {
-      const result = await pushDispatchBranch(this.projectDir, canonicalBranch, this.dispatchRemote!);
+      const result = await pushDispatchBranch(
+        this.projectDir,
+        canonicalBranch,
+        this.dispatchRemote!,
+      );
       if (result.error) {
         // AC: @dispatch-remote-branch-sync ac-push-non-fatal
         console.warn(
@@ -1410,9 +1418,9 @@ export class DispatchEngine {
    *
    * AC: @dispatch-remote-branch-sync ac-push-target-after-merge
    * AC: @dispatch-remote-branch-sync ac-push-target-periodic
-  * AC: @dispatch-remote-branch-sync ac-target-push-serialization
-  * AC: @dispatch-remote-branch-sync ac-push-non-fatal
-  */
+   * AC: @dispatch-remote-branch-sync ac-target-push-serialization
+   * AC: @dispatch-remote-branch-sync ac-push-non-fatal
+   */
   private async _pushIntegrationTargetAsync(
     branch: string | undefined,
     trigger: string,
@@ -1423,7 +1431,7 @@ export class DispatchEngine {
     }
     if (
       trigger === "periodic-sync" &&
-      !await integrationTargetNeedsPush(this.projectDir, targetBranch)
+      !(await integrationTargetNeedsPush(this.projectDir, targetBranch))
     ) {
       return;
     }
@@ -1443,7 +1451,11 @@ export class DispatchEngine {
         );
         return;
       }
-      const result = await pushIntegrationTarget(this.projectDir, targetBranch, this.dispatchRemote!);
+      const result = await pushIntegrationTarget(
+        this.projectDir,
+        targetBranch,
+        this.dispatchRemote!,
+      );
       if (result.error) {
         // AC: @dispatch-remote-branch-sync ac-push-non-fatal
         console.warn(
@@ -2208,7 +2220,11 @@ export class DispatchEngine {
       const [entry] = candidate.queue.splice(candidate.queueIndex, 1);
       this.queues.set(candidate.agent.id, candidate.queue);
 
-      const targetBranch = await this._resolveQueueEntryTargetBranch(entry, taskLookup, targetCache);
+      const targetBranch = await this._resolveQueueEntryTargetBranch(
+        entry,
+        taskLookup,
+        targetCache,
+      );
       if (this._degradedTargets.has(targetBranch)) {
         console.log(
           `[dispatch] Deferring ${entry.change.taskRef} because integration target "${targetBranch}" is degraded.`,
@@ -2328,9 +2344,14 @@ export class DispatchEngine {
         stderr: result.stderr ?? "",
       };
     } catch (err: unknown) {
-      const e = err as { stdout?: string; stderr?: string; code?: number | string; killed?: boolean };
+      const e = err as {
+        stdout?: string;
+        stderr?: string;
+        code?: number | string;
+        killed?: boolean;
+      };
       return {
-        status: typeof e.code === "number" ? e.code : (e.killed ? null : 1),
+        status: typeof e.code === "number" ? e.code : e.killed ? null : 1,
         stdout: e.stdout ?? "",
         stderr: e.stderr ?? "",
       };
@@ -2364,7 +2385,11 @@ export class DispatchEngine {
     }
   }
 
-  private async _runRecoveryTaskCommand(taskRef: string, action: string, run: () => Promise<void>): Promise<void> {
+  private async _runRecoveryTaskCommand(
+    taskRef: string,
+    action: string,
+    run: () => Promise<void>,
+  ): Promise<void> {
     try {
       await run();
     } catch (err) {
@@ -2492,10 +2517,7 @@ export class DispatchEngine {
             `[DISPATCH-BOOTSTRAP] ${message} Suggested action: ${guidance}`,
           );
           try {
-            await this._blockTask(
-              entry.change.taskRef,
-              `Dispatch bootstrap failed: ${message}`,
-            );
+            await this._blockTask(entry.change.taskRef, `Dispatch bootstrap failed: ${message}`);
           } catch {
             // Best-effort — block may fail if task already blocked
           }
@@ -3168,10 +3190,7 @@ export class DispatchEngine {
     try {
       let mutationScope;
       try {
-        mutationScope = await resolveDispatchIntegrationMutationScope(
-          this.projectDir,
-          baseBranch,
-        );
+        mutationScope = await resolveDispatchIntegrationMutationScope(this.projectDir, baseBranch);
       } catch (err) {
         const reason = this._formatUnsafeMutationScopeReason(err, baseBranch);
         this._enterDegradedState(baseBranch, reason);
@@ -3547,7 +3566,7 @@ export class DispatchEngine {
       reason: string;
       enteredAt: string;
     }>;
-    } {
+  } {
     const degraded = this._getDegradedSnapshot();
     const targetSyncTimestamps = Object.fromEntries(this._targetSyncTimestamps);
     const targetConsecutiveFailures = Object.fromEntries(this._consecutiveSyncFailures);

@@ -611,9 +611,5 @@ export async function setupShadowDetection(projectDir: string): Promise<void> {
   );
 
   // Point .kspec/.git to the worktree entry
-  await fs.writeFile(
-    path.join(projectDir, ".kspec", ".git"),
-    `gitdir: ${worktreeDir}\n`,
-    "utf-8",
-  );
+  await fs.writeFile(path.join(projectDir, ".kspec", ".git"), `gitdir: ${worktreeDir}\n`, "utf-8");
 }

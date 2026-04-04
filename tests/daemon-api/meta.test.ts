@@ -82,9 +82,7 @@ describe("Meta API", () => {
     const response = await request("/api/meta/agents");
     expect(response.status).toBe(200);
     const body = await response.json();
-    const taskWorker = body.data.find(
-      (a: { id: string }) => a.id === "task-worker"
-    );
+    const taskWorker = body.data.find((a: { id: string }) => a.id === "task-worker");
     expect(taskWorker).toBeDefined();
   });
 
@@ -92,9 +90,7 @@ describe("Meta API", () => {
     const response = await request("/api/meta/agents");
     expect(response.status).toBe(200);
     const body = await response.json();
-    const prReviewer = body.data.find(
-      (a: { id: string }) => a.id === "pr-reviewer"
-    );
+    const prReviewer = body.data.find((a: { id: string }) => a.id === "pr-reviewer");
     expect(prReviewer).toBeDefined();
   });
 
@@ -127,9 +123,7 @@ describe("Meta API", () => {
     const response = await request("/api/meta/workflows");
     expect(response.status).toBe(200);
     const body = await response.json();
-    const specFirst = body.data.find(
-      (w: { id: string }) => w.id === "spec-first"
-    );
+    const specFirst = body.data.find((w: { id: string }) => w.id === "spec-first");
     expect(specFirst).toBeDefined();
   });
 
@@ -137,9 +131,7 @@ describe("Meta API", () => {
     const response = await request("/api/meta/workflows");
     expect(response.status).toBe(200);
     const body = await response.json();
-    const sessionStart = body.data.find(
-      (w: { id: string }) => w.id === "session-start"
-    );
+    const sessionStart = body.data.find((w: { id: string }) => w.id === "session-start");
     expect(sessionStart).toBeDefined();
   });
 
@@ -175,9 +167,7 @@ describe("Meta API", () => {
     const response = await request("/api/meta/observations");
     expect(response.status).toBe(200);
     const body = await response.json();
-    const frictionObs = body.data.find(
-      (o: { type: string }) => o.type === "friction"
-    );
+    const frictionObs = body.data.find((o: { type: string }) => o.type === "friction");
     expect(frictionObs).toBeDefined();
   });
 
@@ -185,9 +175,7 @@ describe("Meta API", () => {
     const response = await request("/api/meta/observations");
     expect(response.status).toBe(200);
     const body = await response.json();
-    const frictionObs = body.data.find(
-      (o: { type: string }) => o.type === "friction"
-    );
+    const frictionObs = body.data.find((o: { type: string }) => o.type === "friction");
     expect(frictionObs).toBeDefined();
     expect(frictionObs.content).toContain("Test friction observation");
   });
@@ -196,9 +184,7 @@ describe("Meta API", () => {
     const response = await request("/api/meta/observations");
     expect(response.status).toBe(200);
     const body = await response.json();
-    const successObs = body.data.find(
-      (o: { type: string }) => o.type === "success"
-    );
+    const successObs = body.data.find((o: { type: string }) => o.type === "success");
     expect(successObs).toBeDefined();
   });
 
@@ -207,9 +193,7 @@ describe("Meta API", () => {
     expect(response.status).toBe(200);
     const body = await response.json();
     // All fixture observations are unresolved
-    const resolved = body.data.filter(
-      (o: { resolved?: boolean }) => o.resolved === true
-    );
+    const resolved = body.data.filter((o: { resolved?: boolean }) => o.resolved === true);
     expect(resolved.length).toBe(0);
   });
 });
@@ -249,9 +233,7 @@ describe("Search API", () => {
   });
 
   it("returns empty results for no matches", async () => {
-    const response = await request(
-      "/api/search?q=zzznomatchxxx99999uniquestring"
-    );
+    const response = await request("/api/search?q=zzznomatchxxx99999uniquestring");
     expect(response.status).toBe(200);
     const body = await response.json();
     expect(body.data.results.length).toBe(0);

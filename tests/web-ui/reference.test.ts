@@ -6,7 +6,12 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { normalizeRef, shortRef, isUlid, refHref } from "../../packages/web-ui/src/lib/utils/reference";
+import {
+  normalizeRef,
+  shortRef,
+  isUlid,
+  refHref,
+} from "../../packages/web-ui/src/lib/utils/reference";
 
 describe("normalizeRef", () => {
   // AC: @ui-reference-display ac-1 — normalizes @ prefix (no double @@)

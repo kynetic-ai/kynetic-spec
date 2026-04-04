@@ -20,10 +20,7 @@ test.describe("Command Palette / Search", () => {
    * to appear in the DOM. This ensures the debounce timer has fired, the API
    * request has completed, and results have rendered.
    */
-  async function searchAndWaitForResults(
-    page: import("@playwright/test").Page,
-    query: string,
-  ) {
+  async function searchAndWaitForResults(page: import("@playwright/test").Page, query: string) {
     await openPalette(page);
     const input = page.getByTestId("command-palette-input");
     await input.fill(query);
@@ -181,9 +178,7 @@ test.describe("Command Palette / Search", () => {
     });
 
     // AC: @web-dashboard ac-25
-    test("navigation includes query parameter for selected item", async ({
-      page,
-    }) => {
+    test("navigation includes query parameter for selected item", async ({ page }) => {
       await searchAndWaitForResults(page, "test");
 
       const firstResult = page.getByTestId("search-result-item").first();
@@ -210,9 +205,7 @@ test.describe("Command Palette / Search", () => {
       await expect(palette).toBeVisible();
 
       // Input should be cleared (handleSelect resets query to '')
-      const inputValue = await page
-        .getByTestId("command-palette-input")
-        .inputValue();
+      const inputValue = await page.getByTestId("command-palette-input").inputValue();
       expect(inputValue).toBe("");
     });
   });

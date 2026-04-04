@@ -331,7 +331,12 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
           const warmingCache = getEntityCache?.(projectContext.path);
           const sessionsDomainState = warmingCache?.getDomainState("sessions");
           if (warmingCache && sessionsDomainState === "loading") {
-            return wrapResponse([] as never[], { cacheDomainState: "loading", total: 0, offset: 0, limit: 0 });
+            return wrapResponse([] as never[], {
+              cacheDomainState: "loading",
+              total: 0,
+              offset: 0,
+              limit: 0,
+            });
           }
 
           // AC: @daemon-entity-cache ac-serve-from-memory — defer initContext to avoid
@@ -396,15 +401,18 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
           }
 
           // AC: @session-filter-controls ac-filter-counts — Include unfiltered_total in response
-          return wrapResponse({
-            items: enriched,
-            unfiltered_total: unfilteredTotal,
-            ...(legacyCount > 0
-              ? {
-                  warning: `${legacyCount} legacy session(s) found in .kspec/sessions/. Run \`kspec session migrate\` to move them to .kspec-sessions/.`,
-                }
-              : {}),
-          }, { total, offset, limit, cacheDomainState: sessionsDomainState });
+          return wrapResponse(
+            {
+              items: enriched,
+              unfiltered_total: unfilteredTotal,
+              ...(legacyCount > 0
+                ? {
+                    warning: `${legacyCount} legacy session(s) found in .kspec/sessions/. Run \`kspec session migrate\` to move them to .kspec-sessions/.`,
+                  }
+                : {}),
+            },
+            { total, offset, limit, cacheDomainState: sessionsDomainState },
+          );
         },
         {
           query: t.Object({
@@ -657,20 +665,23 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
           legacyCount = await countLegacySessions(_ctx.specDir);
         }
 
-        return wrapResponse({
-          ...detail,
-          task_id: metadata?.task_id,
-          task_title,
-          agent_id: metadata?.agent_id,
-          trigger: metadata?.trigger ?? "legacy",
-          spec_context,
-          budget,
-          ...(legacyCount > 0
-            ? {
-                warning: `${legacyCount} legacy session(s) found in .kspec/sessions/. Run \`kspec session migrate\` to move them to .kspec-sessions/.`,
-              }
-            : {}),
-        }, { cacheDomainState: sessionsDomainState });
+        return wrapResponse(
+          {
+            ...detail,
+            task_id: metadata?.task_id,
+            task_title,
+            agent_id: metadata?.agent_id,
+            trigger: metadata?.trigger ?? "legacy",
+            spec_context,
+            budget,
+            ...(legacyCount > 0
+              ? {
+                  warning: `${legacyCount} legacy session(s) found in .kspec/sessions/. Run \`kspec session migrate\` to move them to .kspec-sessions/.`,
+                }
+              : {}),
+          },
+          { cacheDomainState: sessionsDomainState },
+        );
       })
 
       // Get session events
@@ -712,14 +723,17 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
           // Detect legacy sessions and include warning in response
           const legacyCount = await countLegacySessions(ctx.specDir);
 
-          return wrapResponse({
-            events,
-            ...(legacyCount > 0
-              ? {
-                  warning: `${legacyCount} legacy session(s) found in .kspec/sessions/. Run \`kspec session migrate\` to move them to .kspec-sessions/.`,
-                }
-              : {}),
-          }, { total: events.length });
+          return wrapResponse(
+            {
+              events,
+              ...(legacyCount > 0
+                ? {
+                    warning: `${legacyCount} legacy session(s) found in .kspec/sessions/. Run \`kspec session migrate\` to move them to .kspec-sessions/.`,
+                  }
+                : {}),
+            },
+            { total: events.length },
+          );
         },
         {
           query: t.Object({

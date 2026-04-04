@@ -22,23 +22,25 @@ interface DebugRouteOptions {
 export function createDebugRoutes(options: DebugRouteOptions) {
   const { projectManager, getEntityCache } = options;
 
-  return new Elysia({ prefix: "/api/debug" })
-    // AC: @daemon-server ac-18 — per-project cache diagnostic
-    .get("/cache-status", () => {
-      const projects = projectManager.listProjects();
+  return (
+    new Elysia({ prefix: "/api/debug" })
+      // AC: @daemon-server ac-18 — per-project cache diagnostic
+      .get("/cache-status", () => {
+        const projects = projectManager.listProjects();
 
-      const result = projects.map((project) => {
-        const cache = getEntityCache(project.path);
-        return {
-          path: project.path,
-          watcherStatus: project.watcherActive ? "active" : "stopped",
-          registeredAt: project.registeredAt.toISOString(),
-          lastHealthCheckAt: project.lastHealthCheckAt?.toISOString() ?? null,
-          consecutiveFailures: project.consecutiveFailures,
-          domains: cache?.getCacheDiagnostics().domains ?? null,
-        };
-      });
+        const result = projects.map((project) => {
+          const cache = getEntityCache(project.path);
+          return {
+            path: project.path,
+            watcherStatus: project.watcherActive ? "active" : "stopped",
+            registeredAt: project.registeredAt.toISOString(),
+            lastHealthCheckAt: project.lastHealthCheckAt?.toISOString() ?? null,
+            consecutiveFailures: project.consecutiveFailures,
+            domains: cache?.getCacheDiagnostics().domains ?? null,
+          };
+        });
 
-      return { projects: result, total: projects.length };
-    });
+        return { projects: result, total: projects.length };
+      })
+  );
 }

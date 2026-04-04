@@ -220,11 +220,13 @@ describe("missing agent capability error", () => {
 
   it("fails with descriptive error when agent spawner rejects with capability error", async () => {
     const events: ActionRunEvent[] = [];
-    const mockSpawner: AgentSpawner = vi.fn().mockRejectedValue(
-      new Error(
-        'Agent "nonexistent-agent" not found in project configuration. Available agents: task-worker, pr-reviewer',
-      ),
-    );
+    const mockSpawner: AgentSpawner = vi
+      .fn()
+      .mockRejectedValue(
+        new Error(
+          'Agent "nonexistent-agent" not found in project configuration. Available agents: task-worker, pr-reviewer',
+        ),
+      );
 
     const executor = new ActionExecutor({
       projectDir: tempDir,
@@ -253,9 +255,7 @@ describe("missing agent capability error", () => {
 describe("action.failed event payload diagnosability", () => {
   it("includes error description in action.failed event", async () => {
     const events: ActionRunEvent[] = [];
-    const mockSpawner: AgentSpawner = vi
-      .fn()
-      .mockRejectedValue(new Error("Agent pool exhausted"));
+    const mockSpawner: AgentSpawner = vi.fn().mockRejectedValue(new Error("Agent pool exhausted"));
 
     const executor = new ActionExecutor({
       projectDir: tempDir,

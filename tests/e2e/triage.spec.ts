@@ -388,7 +388,8 @@ test.describe("Triage API operations via UI", () => {
 
     const exportResponse = page.waitForResponse(
       (response) =>
-        response.url().includes("/api/triage/export?format=context") && response.request().method() === "GET",
+        response.url().includes("/api/triage/export?format=context") &&
+        response.request().method() === "GET",
     );
 
     await page.getByTestId("triage-export-context").click();
@@ -412,7 +413,8 @@ test.describe("Triage API operations via UI", () => {
 
     const exportResponse = page.waitForResponse(
       (response) =>
-        response.url().includes("/api/triage/export?format=json") && response.request().method() === "GET",
+        response.url().includes("/api/triage/export?format=json") &&
+        response.request().method() === "GET",
     );
 
     await page.getByTestId("triage-export-json").click();

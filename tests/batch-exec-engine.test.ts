@@ -771,8 +771,13 @@ No fenced YAML block in this section.
     function runBatchWithFlushFailure(extraArgs: string[]) {
       return spawnSync(
         process.execPath,
-        [wrapperPath, "batch", ...extraArgs,
-         "--commands", '[{"command":"inbox add","args":{"text":"flush-fail-test"}}]'],
+        [
+          wrapperPath,
+          "batch",
+          ...extraArgs,
+          "--commands",
+          '[{"command":"inbox add","args":{"text":"flush-fail-test"}}]',
+        ],
         {
           cwd: tempDir,
           encoding: "utf-8",

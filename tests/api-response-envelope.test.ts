@@ -132,7 +132,7 @@ describe("wrapResponse", () => {
   });
 
   // AC: @api-contract ac-cache-status-field
-  it('returns loading status with empty data for warming cache', () => {
+  it("returns loading status with empty data for warming cache", () => {
     const result = wrapResponse([], {
       total: 0,
       offset: 0,
@@ -147,7 +147,7 @@ describe("wrapResponse", () => {
   });
 
   // AC: @api-contract ac-cache-status-field
-  it('returns ready status for populated cache', () => {
+  it("returns ready status for populated cache", () => {
     const items = [{ id: "1", name: "task" }];
     const result = wrapResponse(items, {
       total: 1,
@@ -185,7 +185,7 @@ describe("wrapResponse", () => {
   });
 
   // AC: @api-contract ac-envelope
-  it('treats degraded cache domain state as ready', () => {
+  it("treats degraded cache domain state as ready", () => {
     const result = wrapResponse(["item"], { cacheDomainState: "degraded" });
     expect(result.meta.cache_status).toBe("ready");
   });
@@ -309,17 +309,13 @@ describe("ApiResponseSchema", () => {
   // AC: @api-contract ac-envelope
   it("rejects response with wrong data type", () => {
     const schema = ApiResponseSchema(z.array(z.string()));
-    expect(() =>
-      schema.parse({ data: "not-an-array", meta: { cache_status: "ready" } }),
-    ).toThrow();
+    expect(() => schema.parse({ data: "not-an-array", meta: { cache_status: "ready" } })).toThrow();
   });
 
   // AC: @api-contract ac-cache-status-field
   it("validates cache status within the envelope", () => {
     const schema = ApiResponseSchema(z.array(z.unknown()));
-    expect(() =>
-      schema.parse({ data: [], meta: { cache_status: "invalid" } }),
-    ).toThrow();
+    expect(() => schema.parse({ data: [], meta: { cache_status: "invalid" } })).toThrow();
   });
 
   // AC: @api-contract ac-envelope

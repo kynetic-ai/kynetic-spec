@@ -336,8 +336,8 @@ describe("dispatch engine degraded state", () => {
     (engine as any).queues.set(worker.id, [degradedEntry, healthyEntry]);
     (engine as any)._enterDegradedState("plan/alpha", "plan/alpha diverged");
 
-    vi.spyOn(engine as any, "_resolveQueueEntryTargetBranch").mockImplementation(async (entry: any) =>
-      entry.change.taskRef === "@task-degraded" ? "plan/alpha" : "dev",
+    vi.spyOn(engine as any, "_resolveQueueEntryTargetBranch").mockImplementation(
+      async (entry: any) => (entry.change.taskRef === "@task-degraded" ? "plan/alpha" : "dev"),
     );
     const spawnSpy = vi.spyOn(engine as any, "_spawnInvocation").mockResolvedValue(true);
 
@@ -385,9 +385,11 @@ describe("dispatch engine degraded state", () => {
         bootstrap: { status: "prepared", lastRole: "worker" },
       },
     } as any);
-    vi.spyOn(bootstrapModule, "ensureWorkspaceBootstrap").mockImplementation(async ({ metadata }) => ({
-      metadata,
-    }));
+    vi.spyOn(bootstrapModule, "ensureWorkspaceBootstrap").mockImplementation(
+      async ({ metadata }) => ({
+        metadata,
+      }),
+    );
     vi.spyOn(workspaceModule, "validateDispatchWorkspaceForInvocation").mockImplementation(
       async ({ workspace }) =>
         ({

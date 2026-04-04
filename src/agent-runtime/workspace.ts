@@ -317,7 +317,11 @@ export class DispatchWorkspaceError extends Error {
   }
 }
 
-async function runGit(cwd: string, args: string[], options: RunGitOptions = {}): Promise<GitResult> {
+async function runGit(
+  cwd: string,
+  args: string[],
+  options: RunGitOptions = {},
+): Promise<GitResult> {
   try {
     const result = await execFileAsync("git", args, {
       cwd,
@@ -336,7 +340,7 @@ async function runGit(cwd: string, args: string[], options: RunGitOptions = {}):
     return {
       stdout: (e.stdout ?? "").trim(),
       stderr: (e.stderr ?? "").trim(),
-      status: typeof e.code === "number" ? e.code : (e.killed ? null : 1),
+      status: typeof e.code === "number" ? e.code : e.killed ? null : 1,
     };
   }
 }
@@ -440,7 +444,12 @@ function resolveDispatchMutationLockTimeoutMs(): number {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
-async function runGitOrThrow(cwd: string, args: string[], message: string, suggestion: string): Promise<string> {
+async function runGitOrThrow(
+  cwd: string,
+  args: string[],
+  message: string,
+  suggestion: string,
+): Promise<string> {
   const result = await runGit(cwd, args);
   if (result.status === 0) {
     return result.stdout;
@@ -496,7 +505,7 @@ async function resolveBranchStartPoint(
 async function tryRestoreBranchFromRemote(projectDir: string, branch: string): Promise<boolean> {
   for (const remote of await listGitRemotes(projectDir)) {
     const remoteRef = `refs/remotes/${remote}/${branch}`;
-    if (!await refExists(projectDir, remoteRef)) continue;
+    if (!(await refExists(projectDir, remoteRef))) continue;
     const result = await runGit(projectDir, ["branch", branch, `${remote}/${branch}`]);
     if (result.status === 0) {
       return true;
@@ -510,7 +519,11 @@ async function tryRestoreBranchFromRemote(projectDir: string, branch: string): P
 
 async function resolveRemoteHeadBranch(projectDir: string): Promise<string | null> {
   for (const remote of await listGitRemotes(projectDir)) {
-    const result = await runGit(projectDir, ["symbolic-ref", "--quiet", `refs/remotes/${remote}/HEAD`]);
+    const result = await runGit(projectDir, [
+      "symbolic-ref",
+      "--quiet",
+      `refs/remotes/${remote}/HEAD`,
+    ]);
     if (result.status !== 0 || !result.stdout) continue;
     const prefix = `refs/remotes/${remote}/`;
     if (result.stdout.startsWith(prefix)) {
@@ -532,7 +545,11 @@ interface DispatchCheckoutCoherenceResult {
 }
 
 async function resolveDispatchCheckoutCoherencePath(projectDir: string): Promise<string | null> {
-  const result = await runGit(projectDir, ["rev-parse", "--git-path", DISPATCH_CHECKOUT_COHERENCE_FILE]);
+  const result = await runGit(projectDir, [
+    "rev-parse",
+    "--git-path",
+    DISPATCH_CHECKOUT_COHERENCE_FILE,
+  ]);
   if (result.status !== 0 || !result.stdout) {
     return null;
   }
@@ -602,7 +619,11 @@ async function resolveIndexTree(projectDir: string): Promise<string | null> {
   return result.status === 0 && result.stdout ? result.stdout : null;
 }
 
-async function listRecentBranchReflogCommits(projectDir: string, branch: string, limit = 20): Promise<string[]> {
+async function listRecentBranchReflogCommits(
+  projectDir: string,
+  branch: string,
+  limit = 20,
+): Promise<string[]> {
   const result = await runGit(projectDir, ["reflog", "show", "--format=%H", `-n${limit}`, branch]);
   if (result.status !== 0 || !result.stdout) {
     return [];
@@ -697,7 +718,7 @@ export async function ensureDispatchIntegrationTargetCheckoutCoherence(
     : await listRecentBranchReflogCommits(projectDir, integrationBranch);
   for (const commit of candidateCommits) {
     if (commit === headCommit) continue;
-    if (await resolveBranchTree(projectDir, commit) !== indexTree) continue;
+    if ((await resolveBranchTree(projectDir, commit)) !== indexTree) continue;
 
     const repair = await runGit(projectDir, ["reset", "--hard", "HEAD"]);
     if (repair.status !== 0) {
@@ -791,7 +812,9 @@ async function resolvePublicationMode(
   if (configuredMode && configuredMode !== "auto") {
     return configuredMode;
   }
-  return await commandAvailable("gh") && await hasGitHubRemote(projectDir) ? "pull_request" : "manual_merge";
+  return (await commandAvailable("gh")) && (await hasGitHubRemote(projectDir))
+    ? "pull_request"
+    : "manual_merge";
 }
 
 async function resolveWorkspacePublicationMode(
@@ -840,15 +863,12 @@ async function resolvePlanScopedBaseBranch(
   projectDir: string,
   taskRef: string | undefined,
   task: ProvisionDispatchWorkspaceOptions["task"] | undefined,
-): Promise<
-  | {
-      baseBranch: string;
-      baseBranchStartPoint: string;
-      planRef: string;
-      planTitle: string;
-    }
-  | null
-> {
+): Promise<{
+  baseBranch: string;
+  baseBranchStartPoint: string;
+  planRef: string;
+  planTitle: string;
+} | null> {
   const planRef = await resolveTaskPlanRef(projectDir, taskRef, task);
   if (!planRef) {
     return null;
@@ -869,7 +889,7 @@ async function resolvePlanScopedBaseBranch(
   }
 
   let resolved = await resolveBranchStartPoint(projectDir, planBranch);
-  if (!resolved && await ensureLocalDispatchIntegrationBranchExists(projectDir, planBranch)) {
+  if (!resolved && (await ensureLocalDispatchIntegrationBranchExists(projectDir, planBranch))) {
     resolved = await resolveBranchStartPoint(projectDir, planBranch);
   }
   if (!resolved) {
@@ -962,7 +982,11 @@ async function rehydrateAdoptedBranch(
     : await listGitRemotes(projectDir);
   for (const remoteName of remotes) {
     // Fetch the specific branch from the remote
-    const fetchResult = await runGit(projectDir, ["fetch", remoteName, `${branchName}:${branchName}`]);
+    const fetchResult = await runGit(projectDir, [
+      "fetch",
+      remoteName,
+      `${branchName}:${branchName}`,
+    ]);
     if (fetchResult.status === 0) {
       return true;
     }
@@ -1033,7 +1057,9 @@ function resolveIntegrationOutcome(
   }
 }
 
-async function parseWorktreeList(projectDir: string): Promise<Array<{ path: string; branch: string | null }>> {
+async function parseWorktreeList(
+  projectDir: string,
+): Promise<Array<{ path: string; branch: string | null }>> {
   const result = await runGit(projectDir, ["worktree", "list", "--porcelain"]);
   if (result.status !== 0 || !result.stdout) {
     return [];
@@ -1058,9 +1084,14 @@ function normalizeBranchRef(branch: string | null | undefined): string | null {
   return branch ? branch.replace(/^refs\/heads\//, "") : null;
 }
 
-async function findExistingWorktreeForBranch(projectDir: string, canonicalBranch: string): Promise<string | null> {
+async function findExistingWorktreeForBranch(
+  projectDir: string,
+  canonicalBranch: string,
+): Promise<string | null> {
   const branchRef = `refs/heads/${canonicalBranch}`;
-  return (await parseWorktreeList(projectDir)).find((entry) => entry.branch === branchRef)?.path ?? null;
+  return (
+    (await parseWorktreeList(projectDir)).find((entry) => entry.branch === branchRef)?.path ?? null
+  );
 }
 
 async function findExistingWorktreeForBranchUnderRoot(
@@ -1095,7 +1126,9 @@ async function findWorktreeByPath(
 ): Promise<{ path: string; branch: string | null } | null> {
   const normalized = path.resolve(worktreeDir);
   return (
-    (await parseWorktreeList(projectDir)).find((entry) => path.resolve(entry.path) === normalized) ?? null
+    (await parseWorktreeList(projectDir)).find(
+      (entry) => path.resolve(entry.path) === normalized,
+    ) ?? null
   );
 }
 
@@ -1587,7 +1620,7 @@ async function saveWorkspaceRecordToRegistry(
   });
 
   const workerDir = record.worktrees.worker.path;
-  if (workerDir && await pathExists(workerDir)) {
+  if (workerDir && (await pathExists(workerDir))) {
     await writeWorkspaceMetadata(workerDir, toMetadata(record));
   }
 
@@ -1921,7 +1954,8 @@ async function recoverWorkspaceRecordFromMetadata(
     metadata.canonicalBranchHead ||
     resolvedConfig.baseBranchStartPoint;
   const publicationMode =
-    metadata.publicationMode ?? await resolvePublicationMode(projectDir, resolvedConfig.publicationMode);
+    metadata.publicationMode ??
+    (await resolvePublicationMode(projectDir, resolvedConfig.publicationMode));
   const integration: RegistryIntegrationRecord = {
     status: metadata.integrationState ?? "pending",
     target_branch:
@@ -1949,13 +1983,13 @@ async function recoverWorkspaceRecordFromMetadata(
         },
         now,
       );
-  const canonicalBranchHead = await refExists(projectDir, `refs/heads/${canonicalBranch}`)
+  const canonicalBranchHead = (await refExists(projectDir, `refs/heads/${canonicalBranch}`))
     ? await resolveCommit(projectDir, canonicalBranch)
     : workerRegistration
       ? await resolveCommit(workerWorktreeDir, "HEAD")
       : metadata.canonicalBranchHead;
   const reviewerWorktree =
-    reviewerWorktreeDir && await pathExists(reviewerWorktreeDir)
+    reviewerWorktreeDir && (await pathExists(reviewerWorktreeDir))
       ? buildWorktreeRecord(
           reviewerWorktreeDir,
           "detached",
@@ -2108,7 +2142,10 @@ export async function resolveDispatchWorkspaceConfig(
 
   if (configuredBaseBranch) {
     let resolved = await resolveBranchStartPoint(projectDir, configuredBaseBranch);
-    if (!resolved && await ensureLocalDispatchIntegrationBranchExists(projectDir, configuredBaseBranch)) {
+    if (
+      !resolved &&
+      (await ensureLocalDispatchIntegrationBranchExists(projectDir, configuredBaseBranch))
+    ) {
       resolved = await resolveBranchStartPoint(projectDir, configuredBaseBranch);
     }
     if (!resolved) {
@@ -2142,7 +2179,7 @@ export async function resolveDispatchWorkspaceConfig(
 
   const currentBranch = await resolveCurrentBranch(projectDir);
   if (currentBranch) {
-    const resolved = await resolveBranchStartPoint(projectDir, currentBranch) ?? {
+    const resolved = (await resolveBranchStartPoint(projectDir, currentBranch)) ?? {
       startPoint: currentBranch,
       branch: currentBranch,
     };
@@ -2215,7 +2252,7 @@ export async function resolveDispatchIntegrationMutationScope(
 ): Promise<DispatchIntegrationMutationScope> {
   const currentBranch = await resolveCurrentBranch(projectDir);
   if (!currentBranch || currentBranch !== integrationBranch) {
-    if (!await ensureLocalDispatchIntegrationBranchExists(projectDir, integrationBranch)) {
+    if (!(await ensureLocalDispatchIntegrationBranchExists(projectDir, integrationBranch))) {
       throw new DispatchWorkspaceError(
         `Dispatch cannot determine a safe mutation surface for integration target "${integrationBranch}" in ${projectDir}.`,
         `Create or fetch "${integrationBranch}" in ${projectDir}, or verify that a remote branch named "${integrationBranch}" exists before retrying.`,
@@ -2258,7 +2295,12 @@ export async function fastForwardDispatchIntegrationBranch(
     };
   }
 
-  const ffCheck = await runGit(projectDir, ["merge-base", "--is-ancestor", integrationBranch, remoteRef]);
+  const ffCheck = await runGit(projectDir, [
+    "merge-base",
+    "--is-ancestor",
+    integrationBranch,
+    remoteRef,
+  ]);
   if (ffCheck.status !== 0) {
     return ffCheck.status === 1
       ? {
@@ -2319,7 +2361,11 @@ async function resolveBaseBranchPoint(
   }
 
   if (await refExists(projectDir, `refs/heads/${canonicalBranch}`)) {
-    const mergeBase = await runGit(projectDir, ["merge-base", canonicalBranch, resolvedBaseStartPoint]);
+    const mergeBase = await runGit(projectDir, [
+      "merge-base",
+      canonicalBranch,
+      resolvedBaseStartPoint,
+    ]);
     if (mergeBase.status === 0 && mergeBase.stdout) {
       return mergeBase.stdout;
     }
@@ -2473,7 +2519,10 @@ export async function reconcileDispatchWorkspaceRegistry(
     const now = new Date().toISOString();
     const currentTaskStatus = taskStatusByRef?.get(record.task_ref) ?? null;
     const health = await reconcileWorkspaceHealth(projectDir, record, now, currentTaskStatus);
-    const canonicalBranchHead = await refExists(projectDir, `refs/heads/${record.canonical_branch}`)
+    const canonicalBranchHead = (await refExists(
+      projectDir,
+      `refs/heads/${record.canonical_branch}`,
+    ))
       ? await resolveCommit(projectDir, record.canonical_branch)
       : record.canonical_branch_head;
     const { cleanup, integration } = resolveRegistryStateForTaskStatus(
@@ -2584,7 +2633,7 @@ async function deleteDispatchBranch(projectDir: string, branch: string): Promise
     );
   }
 
-  if (!await refExists(projectDir, `refs/heads/${branch}`)) {
+  if (!(await refExists(projectDir, `refs/heads/${branch}`))) {
     return;
   }
 
@@ -2603,7 +2652,7 @@ async function deleteDispatchBranch(projectDir: string, branch: string): Promise
 // is the cleanup counterpart: it safely removes the local mirror ref without
 // affecting the externally-owned branch lineage on the remote.
 async function deleteRehydratedAdoptedBranch(projectDir: string, branch: string): Promise<void> {
-  if (!await refExists(projectDir, `refs/heads/${branch}`)) {
+  if (!(await refExists(projectDir, `refs/heads/${branch}`))) {
     return;
   }
   // Safety: never delete protected branch names
@@ -2692,7 +2741,7 @@ export async function pushDispatchBranch(
     return { pushed: false, firstPush: false, error: null };
   }
 
-  const isFirstPush = !await hasUpstreamTracking(projectDir, canonicalBranch);
+  const isFirstPush = !(await hasUpstreamTracking(projectDir, canonicalBranch));
 
   if (isFirstPush) {
     // AC: @dispatch-remote-branch-sync ac-first-push-sets-tracking
@@ -2720,7 +2769,7 @@ export async function pushDispatchBranch(
 
   // AC: @dispatch-remote-branch-sync ac-subsequent-push
   // Check if there are commits to push before attempting
-  if (!await isLocalBranchAheadOfUpstream(projectDir, canonicalBranch)) {
+  if (!(await isLocalBranchAheadOfUpstream(projectDir, canonicalBranch))) {
     return { pushed: false, firstPush: false, error: null };
   }
   const result = await runGit(projectDir, ["push", remote, canonicalBranch]);
@@ -2763,7 +2812,7 @@ export async function pushIntegrationTarget(
   }
 
   // Check if the local branch is ahead of remote before pushing
-  if (!await integrationTargetNeedsPush(projectDir, integrationBranch)) {
+  if (!(await integrationTargetNeedsPush(projectDir, integrationBranch))) {
     return { pushed: false, skipped: true, error: null };
   }
 
@@ -2815,7 +2864,7 @@ export async function deleteRemoteDispatchBranch(
   }
 
   // Only delete if the branch has been pushed (has upstream tracking)
-  if (!await hasUpstreamTracking(projectDir, canonicalBranch)) {
+  if (!(await hasUpstreamTracking(projectDir, canonicalBranch))) {
     return { deleted: false, error: null };
   }
 
@@ -2886,7 +2935,10 @@ export async function reconcileDispatchWorkspaceLifecycle(
     cleanup,
     null,
   );
-  const canonicalBranchHead = await refExists(projectDir, `refs/heads/${existingRecord.canonical_branch}`)
+  const canonicalBranchHead = (await refExists(
+    projectDir,
+    `refs/heads/${existingRecord.canonical_branch}`,
+  ))
     ? await resolveCommit(projectDir, existingRecord.canonical_branch)
     : existingRecord.canonical_branch_head;
   const updatedTaskSlug = normalizeTaskSlug(taskRef, task) || existingRecord.task_slug;
@@ -3106,7 +3158,10 @@ export async function reconcileDispatchWorkspaceArtifacts(
     trackedBranches.add(metadata.canonicalBranch);
     if (metadata.reviewerWorktreeDir) {
       referencedReviewerDirs.add(path.resolve(metadata.reviewerWorktreeDir));
-      const reviewerRegistration = await findWorktreeByPath(projectDir, metadata.reviewerWorktreeDir);
+      const reviewerRegistration = await findWorktreeByPath(
+        projectDir,
+        metadata.reviewerWorktreeDir,
+      );
       if (!reviewerRegistration) {
         const updatedMetadata: DispatchWorkspaceMetadata = {
           ...metadata,
@@ -3160,7 +3215,10 @@ export async function reconcileDispatchWorkspaceArtifacts(
   // worktree on disk) would be invisible to trackedBranches, which is built
   // solely from worktree metadata. Without this check, branches belonging to
   // active registry records get deleted as orphans.
-  let registryBranchMap: Map<string, { lifecycle_state: string; integration_status: string }> | null = null;
+  let registryBranchMap: Map<
+    string,
+    { lifecycle_state: string; integration_status: string }
+  > | null = null;
   try {
     const ctx = await initContext(projectDir);
     const registryRecords = await loadDispatchWorkspaceRegistry(ctx);
@@ -3327,11 +3385,11 @@ export async function provisionDispatchWorkspace(
   const workspaceId = existingRecord?.workspace_id ?? workspaceIdFor(taskRef);
   const workerWorktreeDir =
     existingRecord?.worktrees.worker.path ??
-    await findExistingWorktreeForBranchUnderRoot(
+    (await findExistingWorktreeForBranchUnderRoot(
       projectDir,
       canonicalBranch,
       resolvedConfig.worktreeRoot,
-    ) ??
+    )) ??
     path.join(resolvedConfig.worktreeRoot, `${taskSlug}-${shortId}`);
   const reviewerWorktreeDir =
     existingRecord?.worktrees.reviewer?.path ??
@@ -3571,10 +3629,10 @@ export async function markDispatchWorkspaceActive(options: {
     },
     options.role,
   );
-  const canonicalBranchHead = await refExists(
+  const canonicalBranchHead = (await refExists(
     options.projectDir,
     `refs/heads/${existingRecord.canonical_branch}`,
-  )
+  ))
     ? await resolveCommit(options.projectDir, existingRecord.canonical_branch)
     : existingRecord.canonical_branch_head;
   const record: DispatchWorkspaceRecord = {
@@ -3715,7 +3773,7 @@ export async function getDispatchWorkspaceHealth(
   });
   const reviewerWorktree = existingRecord.worktrees.reviewer;
   const reviewerMissingRecordedWorktree =
-    role === "reviewer" && reviewerWorktree != null && !await pathExists(reviewerWorktree.path);
+    role === "reviewer" && reviewerWorktree != null && !(await pathExists(reviewerWorktree.path));
   const healthy =
     health.status === "healthy" &&
     !cleanup.eligible &&
@@ -3773,7 +3831,12 @@ export async function validateDispatchWorkspaceForInvocation(
     resolvedConfig.worktreeRoot,
   );
   const currentHealth = existingRecord
-    ? await reconcileWorkspaceHealth(projectDir, existingRecord, new Date().toISOString(), taskStatus)
+    ? await reconcileWorkspaceHealth(
+        projectDir,
+        existingRecord,
+        new Date().toISOString(),
+        taskStatus,
+      )
     : null;
 
   if (!allowRecovery || !existingRecord || currentHealth?.status === "invalid") {
@@ -4076,14 +4139,17 @@ export async function discoverWorkspaceForReviewOrFixCycle(options: {
         const shortId = shortTaskId(taskRef);
         const workspaceId = workspaceIdFor(taskRef);
         const workerWorktreeDir =
-          await findExistingWorktreeForBranchUnderRoot(
+          (await findExistingWorktreeForBranchUnderRoot(
             projectDir,
             submissionLinkage.branch,
             resolvedConfig.worktreeRoot,
-          ) ?? path.join(resolvedConfig.worktreeRoot, `${taskSlug}-${shortId}`);
+          )) ?? path.join(resolvedConfig.worktreeRoot, `${taskSlug}-${shortId}`);
         const baseBranch = resolvedConfig.baseBranch;
         const baseBranchPoint = resolvedConfig.baseBranchStartPoint;
-        const publicationMode = await resolvePublicationMode(projectDir, resolvedConfig.publicationMode);
+        const publicationMode = await resolvePublicationMode(
+          projectDir,
+          resolvedConfig.publicationMode,
+        );
 
         const adoptedRecord: DispatchWorkspaceRecord = {
           workspace_id: workspaceId,
@@ -4178,14 +4244,17 @@ export async function discoverWorkspaceForReviewOrFixCycle(options: {
         const now = new Date().toISOString();
         const workspaceId = workspaceIdFor(taskRef);
         const workerWorktreeDir =
-          await findExistingWorktreeForBranchUnderRoot(
+          (await findExistingWorktreeForBranchUnderRoot(
             projectDir,
             syntheticBranch,
             resolvedConfig.worktreeRoot,
-          ) ?? path.join(resolvedConfig.worktreeRoot, `${taskSlug}-${shortId}`);
+          )) ?? path.join(resolvedConfig.worktreeRoot, `${taskSlug}-${shortId}`);
         const baseBranch = resolvedConfig.baseBranch;
         const baseBranchPoint = resolvedConfig.baseBranchStartPoint;
-        const publicationMode = await resolvePublicationMode(projectDir, resolvedConfig.publicationMode);
+        const publicationMode = await resolvePublicationMode(
+          projectDir,
+          resolvedConfig.publicationMode,
+        );
 
         const remoteRecord: DispatchWorkspaceRecord = {
           workspace_id: workspaceId,

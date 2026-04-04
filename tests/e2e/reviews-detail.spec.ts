@@ -235,7 +235,10 @@ function routeSiblingsMock(siblingData: ReturnType<typeof mockSiblingReviews>) {
     route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify({ data: items, meta: { cache_status: "ready", total: items.length, offset: 0, limit: items.length } }),
+      body: JSON.stringify({
+        data: items,
+        meta: { cache_status: "ready", total: items.length, offset: 0, limit: items.length },
+      }),
     });
   };
 }
@@ -321,8 +324,14 @@ test.describe("Review Detail Page", () => {
       const threadItems = page.getByTestId("thread-item");
       const _count = await threadItems.count();
       // Each thread-item contains a kind badge; check visible ones
-      const blockerCount = await page.locator('[data-testid="thread-kind-badge"]:visible').filter({ hasText: "Blocker" }).count();
-      const nitCount = await page.locator('[data-testid="thread-kind-badge"]:visible').filter({ hasText: "Nit" }).count();
+      const blockerCount = await page
+        .locator('[data-testid="thread-kind-badge"]:visible')
+        .filter({ hasText: "Blocker" })
+        .count();
+      const nitCount = await page
+        .locator('[data-testid="thread-kind-badge"]:visible')
+        .filter({ hasText: "Nit" })
+        .count();
       expect(blockerCount).toBe(2);
       expect(nitCount).toBe(1);
     });

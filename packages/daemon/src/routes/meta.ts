@@ -52,12 +52,16 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
 
         // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
         if (cache && metaDomainState === "loading") {
-          return wrapResponse({ focus: null, threads: [], questions: [], updated_at: new Date().toISOString() }, { cacheDomainState: "loading" });
+          return wrapResponse(
+            { focus: null, threads: [], questions: [], updated_at: new Date().toISOString() },
+            { cacheDomainState: "loading" },
+          );
         }
 
         if (cache && metaDomainState === "ready") {
           const cachedSession = cache.getSessionContext();
-          if (cachedSession) return wrapResponse(cachedSession, { cacheDomainState: metaDomainState });
+          if (cachedSession)
+            return wrapResponse(cachedSession, { cacheDomainState: metaDomainState });
         }
 
         // Fallback: cache not ready or no cached session context
@@ -205,7 +209,10 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
         // AC: @api-contract ac-17 - Return all defined workflows
         const workflows = meta.workflows;
 
-        return wrapResponse(workflows, { total: workflows.length, cacheDomainState: metaDomainState });
+        return wrapResponse(workflows, {
+          total: workflows.length,
+          cacheDomainState: metaDomainState,
+        });
       })
 
       // AC: @api-contract ac-18 - List observations with filter
@@ -274,12 +281,22 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
 
         // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
         if (cache && metaDomainState === "loading") {
-          return wrapResponse({ project: null, spec_version: null, root_dir: null, remote_tracking: null, daemon: null }, { cacheDomainState: "loading" });
+          return wrapResponse(
+            {
+              project: null,
+              spec_version: null,
+              root_dir: null,
+              remote_tracking: null,
+              daemon: null,
+            },
+            { cacheDomainState: "loading" },
+          );
         }
 
         if (cache && metaDomainState === "ready") {
           const cachedConfig = cache.getProjectConfig();
-          if (cachedConfig) return wrapResponse(cachedConfig, { cacheDomainState: metaDomainState });
+          if (cachedConfig)
+            return wrapResponse(cachedConfig, { cacheDomainState: metaDomainState });
         }
 
         // Fallback: cache not available at all (no entity cache configured)
@@ -310,12 +327,22 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
 
         // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
         if (cache && metaDomainState === "loading") {
-          return wrapResponse({ enabled: false, branch_name: null, worktree_dir: null, healthy: false, remote_tracking: false }, { cacheDomainState: "loading" });
+          return wrapResponse(
+            {
+              enabled: false,
+              branch_name: null,
+              worktree_dir: null,
+              healthy: false,
+              remote_tracking: false,
+            },
+            { cacheDomainState: "loading" },
+          );
         }
 
         if (cache && metaDomainState === "ready") {
           const cachedShadow = cache.getShadowInfo();
-          if (cachedShadow) return wrapResponse(cachedShadow, { cacheDomainState: metaDomainState });
+          if (cachedShadow)
+            return wrapResponse(cachedShadow, { cacheDomainState: metaDomainState });
         }
 
         // Fallback: cache not available at all (no entity cache configured)
@@ -370,7 +397,10 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
           meta = await loadMetaContext(ctx);
         }
 
-        return wrapResponse(meta.conventions, { total: meta.conventions.length, cacheDomainState: metaDomainState });
+        return wrapResponse(meta.conventions, {
+          total: meta.conventions.length,
+          cacheDomainState: metaDomainState,
+        });
       })
   );
 }

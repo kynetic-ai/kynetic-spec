@@ -1712,9 +1712,7 @@ function validateHookFilters(hooks: LoadedHook[]): {
  * When on a non-session event, an explicit session_id is required for the
  * action to succeed at runtime (AC: @session-prompt-action-schema ac-4).
  */
-function validateSessionPromptActions(
-  hooks: LoadedHook[],
-): {
+function validateSessionPromptActions(hooks: LoadedHook[]): {
   ref: string;
   sourceFile?: string;
   field: string;
@@ -1757,9 +1755,7 @@ function validateSessionPromptActions(
  * AC: @session-prompt-action ac-7
  * AC: @session-prompt-action-schema ac-4
  */
-function validateScheduleSessionPromptActions(
-  schedules: LoadedSchedule[],
-): {
+function validateScheduleSessionPromptActions(schedules: LoadedSchedule[]): {
   ref: string;
   sourceFile?: string;
   field: string;
@@ -1799,9 +1795,7 @@ function validateScheduleSessionPromptActions(
  * AC: @session-prompt-action ac-7
  * AC: @session-prompt-action-schema ac-4
  */
-function validateCompositionSessionPromptActions(
-  compositions: LoadedComposition[],
-): {
+function validateCompositionSessionPromptActions(compositions: LoadedComposition[]): {
   ref: string;
   sourceFile?: string;
   field: string;

@@ -149,9 +149,7 @@ describe("GET /api/aggregation/inbox", () => {
   it("returns triaged items with triage data", async () => {
     const response = await request("/api/aggregation/inbox");
     const body = await response.json();
-    const triaged = body.data.filter(
-      (item: { triage?: unknown }) => item.triage != null,
-    );
+    const triaged = body.data.filter((item: { triage?: unknown }) => item.triage != null);
     for (const item of triaged) {
       // Triage records use "status" field, not "disposition"
       expect(item.triage).toHaveProperty("status");
@@ -162,8 +160,7 @@ describe("GET /api/aggregation/inbox", () => {
     const response = await request("/api/aggregation/inbox");
     const body = await response.json();
     const actedOn = body.data.filter(
-      (item: { triage?: { status?: string } }) =>
-        item.triage?.status === "acted_on",
+      (item: { triage?: { status?: string } }) => item.triage?.status === "acted_on",
     );
     for (const item of actedOn) {
       expect(item.triage.status).toBe("acted_on");
@@ -173,9 +170,7 @@ describe("GET /api/aggregation/inbox", () => {
   it("returns items without triage as null or undefined triage field", async () => {
     const response = await request("/api/aggregation/inbox");
     const body = await response.json();
-    const untriaged = body.data.filter(
-      (item: { triage?: unknown }) => item.triage == null,
-    );
+    const untriaged = body.data.filter((item: { triage?: unknown }) => item.triage == null);
     expect(Array.isArray(untriaged)).toBe(true);
   });
 

@@ -50,7 +50,10 @@ export function createAggregationRoutes(_options: AggregationRouteOptions = {}) 
 
         // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
         if (cache && tasksDomainState === "loading") {
-          return wrapResponse({ counts: {}, ready: 0, blocked_by_dependencies: 0, total: 0 } as TaskStatusSummary, { cacheDomainState: "loading" });
+          return wrapResponse(
+            { counts: {}, ready: 0, blocked_by_dependencies: 0, total: 0 } as TaskStatusSummary,
+            { cacheDomainState: "loading" },
+          );
         }
 
         let tasks: LoadedTask[];
@@ -110,16 +113,19 @@ export function createAggregationRoutes(_options: AggregationRouteOptions = {}) 
 
         // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
         if (cache && (tasksDomainState === "loading" || itemsDomainState === "loading")) {
-          return wrapResponse({
-            stats: { totalSpecs: 0, specsWithTasks: 0, alignedSpecs: 0, orphanedSpecs: 0 },
-            warnings: [],
-            entity_counts: { items: 0, tasks: 0, traits: 0 },
-            ac_counts: { total: 0, covered: 0, uncovered: 0 },
-            orphan_count: 0,
-            valid: true,
-            error_count: 0,
-            warning_count: 0,
-          } as ValidationAggregation, { cacheDomainState: "loading" });
+          return wrapResponse(
+            {
+              stats: { totalSpecs: 0, specsWithTasks: 0, alignedSpecs: 0, orphanedSpecs: 0 },
+              warnings: [],
+              entity_counts: { items: 0, tasks: 0, traits: 0 },
+              ac_counts: { total: 0, covered: 0, uncovered: 0 },
+              orphan_count: 0,
+              valid: true,
+              error_count: 0,
+              warning_count: 0,
+            } as ValidationAggregation,
+            { cacheDomainState: "loading" },
+          );
         }
 
         // Resolve tasks and items from cache when available
@@ -167,9 +173,10 @@ export function createAggregationRoutes(_options: AggregationRouteOptions = {}) 
         for (const item of items) {
           if (item.type !== "trait") {
             const asAny = item as Record<string, unknown>;
-            totalACs += typeof asAny.acceptance_criteria_count === "number"
-              ? asAny.acceptance_criteria_count
-              : (item.acceptance_criteria?.length || 0);
+            totalACs +=
+              typeof asAny.acceptance_criteria_count === "number"
+                ? asAny.acceptance_criteria_count
+                : item.acceptance_criteria?.length || 0;
           }
         }
 
@@ -215,7 +222,10 @@ export function createAggregationRoutes(_options: AggregationRouteOptions = {}) 
         };
 
         // AC: @api-contract ac-envelope - Unified envelope response
-        return wrapResponse(result, { cacheDomainState: tasksDomainState === "ready" && itemsDomainState === "ready" ? "ready" : undefined });
+        return wrapResponse(result, {
+          cacheDomainState:
+            tasksDomainState === "ready" && itemsDomainState === "ready" ? "ready" : undefined,
+        });
       })
 
       // AC: @ui-api-aggregation ac-3 - Inbox items with inline triage status
@@ -227,7 +237,10 @@ export function createAggregationRoutes(_options: AggregationRouteOptions = {}) 
 
         // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
         if (cache && (inboxDomainState === "loading" || triageDomainState === "loading")) {
-          return wrapResponse([] as InboxItemWithTriage[], { cacheDomainState: "loading", total: 0 });
+          return wrapResponse([] as InboxItemWithTriage[], {
+            cacheDomainState: "loading",
+            total: 0,
+          });
         }
 
         let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
@@ -262,9 +275,7 @@ export function createAggregationRoutes(_options: AggregationRouteOptions = {}) 
         // Merge triage status inline
         const items: InboxItemWithTriage[] = sorted.map((item) => {
           // Find matching triage record by inbox_ref (works with both full and index records)
-          const triageRecord = triageRecords!.find(
-            (r) => r.inbox_ref === item._ulid,
-          );
+          const triageRecord = triageRecords!.find((r) => r.inbox_ref === item._ulid);
 
           const result: InboxItemWithTriage = {
             _ulid: item._ulid,

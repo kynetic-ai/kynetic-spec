@@ -122,10 +122,7 @@ async function executeCommand(
   // so Commander's "command:*" handler fires and produces the same stderr
   // output as direct CLI execution (ac-response-parity).
   const argv = cmdMeta
-    ? buildCommandArgv(
-        { command: payload.command, args: payload.args, id: payload.id },
-        cmdMeta,
-      )
+    ? buildCommandArgv({ command: payload.command, args: payload.args, id: payload.id }, cmdMeta)
     : parts;
 
   // Reset Commander state and ALL output mode globals between dispatches.
@@ -167,17 +164,21 @@ async function executeCommand(
   // Intercept process.stdout.write / process.stderr.write so commands that
   // bypass console (e.g., process.stdout.write(...)) are also captured.
   process.stdout.write = (chunk: unknown, ...rest: unknown[]): boolean => {
-    const text = typeof chunk === "string" ? chunk : Buffer.isBuffer(chunk) ? chunk.toString() : String(chunk);
+    const text =
+      typeof chunk === "string" ? chunk : Buffer.isBuffer(chunk) ? chunk.toString() : String(chunk);
     stdoutChunks.push(text);
     // Invoke the callback if provided (Node stream write signature)
-    const cb = typeof rest[0] === "function" ? rest[0] : typeof rest[1] === "function" ? rest[1] : undefined;
+    const cb =
+      typeof rest[0] === "function" ? rest[0] : typeof rest[1] === "function" ? rest[1] : undefined;
     if (cb) (cb as () => void)();
     return true;
   };
   process.stderr.write = (chunk: unknown, ...rest: unknown[]): boolean => {
-    const text = typeof chunk === "string" ? chunk : Buffer.isBuffer(chunk) ? chunk.toString() : String(chunk);
+    const text =
+      typeof chunk === "string" ? chunk : Buffer.isBuffer(chunk) ? chunk.toString() : String(chunk);
     stderrChunks.push(text);
-    const cb = typeof rest[0] === "function" ? rest[0] : typeof rest[1] === "function" ? rest[1] : undefined;
+    const cb =
+      typeof rest[0] === "function" ? rest[0] : typeof rest[1] === "function" ? rest[1] : undefined;
     if (cb) (cb as () => void)();
     return true;
   };
@@ -197,9 +198,7 @@ async function executeCommand(
     // as batch-atomic mode or test fixtures) and resolves the project
     // purely from cwd.  This avoids mutating process.env which is shared
     // across all threads in the process.
-    await runWithoutSpecDirOverride(() =>
-      program.parseAsync(argv, { from: "user" }),
-    );
+    await runWithoutSpecDirOverride(() => program.parseAsync(argv, { from: "user" }));
   } catch (err) {
     if (err instanceof BatchExitError) {
       exitCode = err.code;
@@ -241,10 +240,7 @@ async function executeCommand(
  * Determine if a command payload represents a mutating command.
  * Uses the same introspection mechanism as the batch command filter.
  */
-async function isCommandMutating(
-  payload: CommandPayload,
-  program: Command,
-): Promise<boolean> {
+async function isCommandMutating(payload: CommandPayload, program: Command): Promise<boolean> {
   const { extractCommandTree, findCommand } = await import("../../cli/introspection.js");
   const tree = extractCommandTree(program);
   const parts = payload.command.trim().split(/\s+/);
@@ -300,226 +296,228 @@ export function createCommandRoutes(options: CommandRouteOptions) {
     return _program;
   };
 
-  return new Elysia({ prefix: "/api/command" })
-    // AC: @trait-api-endpoint ac-6 — X-Request-Id header on all responses.
-    // Uses onTransform (not onBeforeHandle) because Elysia runs body validation
-    // between onTransform and onBeforeHandle. Setting the header here ensures it
-    // appears even on validation error responses.
-    .onTransform(({ set }) => {
-      set.headers["X-Request-Id"] = ulid();
-    })
+  return (
+    new Elysia({ prefix: "/api/command" })
+      // AC: @trait-api-endpoint ac-6 — X-Request-Id header on all responses.
+      // Uses onTransform (not onBeforeHandle) because Elysia runs body validation
+      // between onTransform and onBeforeHandle. Setting the header here ensures it
+      // appears even on validation error responses.
+      .onTransform(({ set }) => {
+        set.headers["X-Request-Id"] = ulid();
+      })
 
-    // AC: @daemon-command-api ac-command-endpoint — single command execution
-    // AC: @daemon-command-api ac-response-parity — stdout/stderr/exitCode parity
-    // AC: @daemon-command-api ac-mutation-cache-update — cache + broadcast after mutations
-    // AC: @daemon-command-api ac-concurrent-mutations — dispatch mutex + file lock
-    // AC: @trait-api-endpoint ac-1 — returns 2xx with JSON body
-    // AC: @trait-api-endpoint ac-3 — returns 400 on invalid body
-    .post(
-      "/",
-      async ({ body, projectContext, set }) => {
-        const program = await getProgram();
+      // AC: @daemon-command-api ac-command-endpoint — single command execution
+      // AC: @daemon-command-api ac-response-parity — stdout/stderr/exitCode parity
+      // AC: @daemon-command-api ac-mutation-cache-update — cache + broadcast after mutations
+      // AC: @daemon-command-api ac-concurrent-mutations — dispatch mutex + file lock
+      // AC: @trait-api-endpoint ac-1 — returns 2xx with JSON body
+      // AC: @trait-api-endpoint ac-3 — returns 400 on invalid body
+      .post(
+        "/",
+        async ({ body, projectContext, set }) => {
+          const program = await getProgram();
 
-        // Single command mode
-        const payload: CommandPayload = {
-          command: body.command,
-          args: body.args ?? {},
-          id: body.id,
-        };
+          // Single command mode
+          const payload: CommandPayload = {
+            command: body.command,
+            args: body.args ?? {},
+            id: body.id,
+          };
 
-        const mutating = await isCommandMutating(payload, program);
+          const mutating = await isCommandMutating(payload, program);
 
-        // All command execution goes through the dispatch mutex to serialize
-        // process-global state (cwd, console capture, exit interceptor).
-        // Mutating commands additionally acquire the cross-process file lock.
-        const result = await dispatchMutex.run(async () => {
-          if (mutating) {
-            // AC: @daemon-command-api ac-concurrent-mutations — file lock for cross-process safety
-            // Uses the canonical dispatch shadow mutation lock path so that the command API
-            // coordinates with the CLI and dispatch engine's mutation serialization.
-            const { withFileLock } = await import("../../parser/file-lock.js");
-            const lockPath = getDispatchShadowMutationLockPath(projectContext.path);
-            return withFileLock(lockPath, () =>
-              executeCommand(payload, program, projectContext.path),
+          // All command execution goes through the dispatch mutex to serialize
+          // process-global state (cwd, console capture, exit interceptor).
+          // Mutating commands additionally acquire the cross-process file lock.
+          const result = await dispatchMutex.run(async () => {
+            if (mutating) {
+              // AC: @daemon-command-api ac-concurrent-mutations — file lock for cross-process safety
+              // Uses the canonical dispatch shadow mutation lock path so that the command API
+              // coordinates with the CLI and dispatch engine's mutation serialization.
+              const { withFileLock } = await import("../../parser/file-lock.js");
+              const lockPath = getDispatchShadowMutationLockPath(projectContext.path);
+              return withFileLock(lockPath, () =>
+                executeCommand(payload, program, projectContext.path),
+              );
+            }
+            return executeCommand(payload, program, projectContext.path);
+          });
+
+          // AC: @daemon-command-api ac-mutation-cache-update — update cache before response
+          if (mutating && result.exitCode === 0) {
+            const cache = getEntityCache?.(projectContext.path);
+            if (cache) {
+              await Promise.all(
+                MUTATION_AFFECTED_DOMAINS.map((domain) =>
+                  cache.writeThrough(domain).catch(() => {
+                    // Non-fatal: cache may not have this domain loaded
+                  }),
+                ),
+              );
+            }
+
+            // AC: @daemon-command-api ac-mutation-cache-update — WebSocket broadcast
+            pubsub.broadcast(
+              "command",
+              "command_executed",
+              {
+                command: payload.command,
+                mutating: true,
+                success: true,
+              },
+              projectContext.path,
             );
           }
-          return executeCommand(payload, program, projectContext.path);
-        });
 
-        // AC: @daemon-command-api ac-mutation-cache-update — update cache before response
-        if (mutating && result.exitCode === 0) {
-          const cache = getEntityCache?.(projectContext.path);
-          if (cache) {
-            await Promise.all(
-              MUTATION_AFFECTED_DOMAINS.map((domain) =>
-                cache.writeThrough(domain).catch(() => {
-                  // Non-fatal: cache may not have this domain loaded
-                }),
-              ),
-            );
+          // AC: @trait-api-endpoint ac-1 — success response
+          if (result.exitCode === 0) {
+            return {
+              stdout: result.stdout,
+              stderr: result.stderr,
+              exitCode: result.exitCode,
+            };
           }
 
-          // AC: @daemon-command-api ac-mutation-cache-update — WebSocket broadcast
-          pubsub.broadcast(
-            "command",
-            "command_executed",
-            {
-              command: payload.command,
-              mutating: true,
-              success: true,
-            },
-            projectContext.path,
-          );
-        }
-
-        // AC: @trait-api-endpoint ac-1 — success response
-        if (result.exitCode === 0) {
+          // Non-zero exit: still return structured result but with appropriate status
+          set.status = 422;
           return {
             stdout: result.stdout,
             stderr: result.stderr,
             exitCode: result.exitCode,
           };
-        }
+        },
+        {
+          body: t.Object({
+            command: t.String({ minLength: 1 }),
+            args: t.Optional(t.Record(t.String(), t.Unknown())),
+            id: t.Optional(t.String()),
+          }),
+        },
+      )
 
-        // Non-zero exit: still return structured result but with appropriate status
-        set.status = 422;
-        return {
-          stdout: result.stdout,
-          stderr: result.stderr,
-          exitCode: result.exitCode,
-        };
-      },
-      {
-        body: t.Object({
-          command: t.String({ minLength: 1 }),
-          args: t.Optional(t.Record(t.String(), t.Unknown())),
-          id: t.Optional(t.String()),
-        }),
-      },
-    )
+      // AC: @daemon-command-api ac-batch-support — batch command execution
+      // AC: @daemon-command-api ac-concurrent-mutations — dispatch mutex + file lock
+      // AC: @daemon-command-api ac-mutation-cache-update — cache updated once after batch
+      .post(
+        "/batch",
+        async ({ body, error: errorResponse, projectContext, set }) => {
+          const program = await getProgram();
 
-    // AC: @daemon-command-api ac-batch-support — batch command execution
-    // AC: @daemon-command-api ac-concurrent-mutations — dispatch mutex + file lock
-    // AC: @daemon-command-api ac-mutation-cache-update — cache updated once after batch
-    .post(
-      "/batch",
-      async ({ body, error: errorResponse, projectContext, set }) => {
-        const program = await getProgram();
-
-        // Validate commands array
-        if (!Array.isArray(body.commands) || body.commands.length === 0) {
-          return errorResponse(400, {
-            error: "validation_error",
-            details: [
-              {
-                field: "commands",
-                message: "Commands must be a non-empty array",
-              },
-            ],
-          });
-        }
-
-        // Check if any command in the batch is mutating
-        let hasMutating = false;
-        for (const cmd of body.commands) {
-          if (await isCommandMutating({ command: cmd.command, args: cmd.args ?? {} }, program)) {
-            hasMutating = true;
-            break;
-          }
-        }
-
-        // Use the existing batch execution engine
-        const { executeBatch } = await import("../../cli/batch-exec.js");
-
-        // Build batch input from the request body
-        const batchCommands = body.commands.map((cmd) => ({
-          command: cmd.command,
-          args: cmd.args ?? {},
-          id: cmd.id,
-        }));
-
-        const projectPath = projectContext.path;
-
-        // Batch execution goes through the dispatch mutex (process-global
-        // state protection) and optionally the file lock (cross-process).
-        const batchResult = await dispatchMutex.run(async () => {
-          const runBatch = () => {
-            const originalCwd = process.cwd();
-            process.chdir(projectPath);
-            // Run inside runWithoutSpecDirOverride so initContext() ignores
-            // the ambient KSPEC_SPEC_DIR env var (same rationale as
-            // executeCommand above — avoids process.env mutation races).
-            return runWithoutSpecDirOverride(() =>
-              executeBatch(batchCommands, program, {
-                atomic: body.atomic !== false, // Default atomic
-                continueOnError: body.continue_on_error ?? false,
-                dryRun: false,
-                json: true,
-              }),
-            ).finally(() => {
-              process.chdir(originalCwd);
+          // Validate commands array
+          if (!Array.isArray(body.commands) || body.commands.length === 0) {
+            return errorResponse(400, {
+              error: "validation_error",
+              details: [
+                {
+                  field: "commands",
+                  message: "Commands must be a non-empty array",
+                },
+              ],
             });
-          };
-
-          if (hasMutating) {
-            // AC: @daemon-command-api ac-concurrent-mutations — file lock for cross-process safety
-            // Uses the canonical dispatch shadow mutation lock path so that the command API
-            // coordinates with the CLI and dispatch engine's mutation serialization.
-            const { withFileLock } = await import("../../parser/file-lock.js");
-            const lockPath = getDispatchShadowMutationLockPath(projectPath);
-            return withFileLock(lockPath, runBatch);
           }
-          return runBatch();
-        });
 
-        // AC: @daemon-command-api ac-batch-support, ac-mutation-cache-update
-        // Update cache once after batch completes
-        if (hasMutating && batchResult.success) {
-          const cache = getEntityCache?.(projectPath);
-          if (cache) {
-            await Promise.all(
-              MUTATION_AFFECTED_DOMAINS.map((domain) =>
-                cache.writeThrough(domain).catch(() => {
-                  // Non-fatal
+          // Check if any command in the batch is mutating
+          let hasMutating = false;
+          for (const cmd of body.commands) {
+            if (await isCommandMutating({ command: cmd.command, args: cmd.args ?? {} }, program)) {
+              hasMutating = true;
+              break;
+            }
+          }
+
+          // Use the existing batch execution engine
+          const { executeBatch } = await import("../../cli/batch-exec.js");
+
+          // Build batch input from the request body
+          const batchCommands = body.commands.map((cmd) => ({
+            command: cmd.command,
+            args: cmd.args ?? {},
+            id: cmd.id,
+          }));
+
+          const projectPath = projectContext.path;
+
+          // Batch execution goes through the dispatch mutex (process-global
+          // state protection) and optionally the file lock (cross-process).
+          const batchResult = await dispatchMutex.run(async () => {
+            const runBatch = () => {
+              const originalCwd = process.cwd();
+              process.chdir(projectPath);
+              // Run inside runWithoutSpecDirOverride so initContext() ignores
+              // the ambient KSPEC_SPEC_DIR env var (same rationale as
+              // executeCommand above — avoids process.env mutation races).
+              return runWithoutSpecDirOverride(() =>
+                executeBatch(batchCommands, program, {
+                  atomic: body.atomic !== false, // Default atomic
+                  continueOnError: body.continue_on_error ?? false,
+                  dryRun: false,
+                  json: true,
                 }),
-              ),
+              ).finally(() => {
+                process.chdir(originalCwd);
+              });
+            };
+
+            if (hasMutating) {
+              // AC: @daemon-command-api ac-concurrent-mutations — file lock for cross-process safety
+              // Uses the canonical dispatch shadow mutation lock path so that the command API
+              // coordinates with the CLI and dispatch engine's mutation serialization.
+              const { withFileLock } = await import("../../parser/file-lock.js");
+              const lockPath = getDispatchShadowMutationLockPath(projectPath);
+              return withFileLock(lockPath, runBatch);
+            }
+            return runBatch();
+          });
+
+          // AC: @daemon-command-api ac-batch-support, ac-mutation-cache-update
+          // Update cache once after batch completes
+          if (hasMutating && batchResult.success) {
+            const cache = getEntityCache?.(projectPath);
+            if (cache) {
+              await Promise.all(
+                MUTATION_AFFECTED_DOMAINS.map((domain) =>
+                  cache.writeThrough(domain).catch(() => {
+                    // Non-fatal
+                  }),
+                ),
+              );
+            }
+
+            // WebSocket broadcast for batch completion
+            pubsub.broadcast(
+              "command",
+              "batch_executed",
+              {
+                total: batchResult.summary.total,
+                succeeded: batchResult.summary.succeeded,
+                failed: batchResult.summary.failed,
+                mutating: true,
+                success: batchResult.success,
+              },
+              projectPath,
             );
           }
 
-          // WebSocket broadcast for batch completion
-          pubsub.broadcast(
-            "command",
-            "batch_executed",
-            {
-              total: batchResult.summary.total,
-              succeeded: batchResult.summary.succeeded,
-              failed: batchResult.summary.failed,
-              mutating: true,
-              success: batchResult.success,
-            },
-            projectPath,
-          );
-        }
+          if (!batchResult.success) {
+            set.status = 422;
+          }
 
-        if (!batchResult.success) {
-          set.status = 422;
-        }
-
-        return batchResult;
-      },
-      {
-        body: t.Object({
-          commands: t.Array(
-            t.Object({
-              command: t.String({ minLength: 1 }),
-              args: t.Optional(t.Record(t.String(), t.Unknown())),
-              id: t.Optional(t.String()),
-            }),
-            { minItems: 1 },
-          ),
-          atomic: t.Optional(t.Boolean()),
-          continue_on_error: t.Optional(t.Boolean()),
-        }),
-      },
-    );
+          return batchResult;
+        },
+        {
+          body: t.Object({
+            commands: t.Array(
+              t.Object({
+                command: t.String({ minLength: 1 }),
+                args: t.Optional(t.Record(t.String(), t.Unknown())),
+                id: t.Optional(t.String()),
+              }),
+              { minItems: 1 },
+            ),
+            atomic: t.Optional(t.Boolean()),
+            continue_on_error: t.Optional(t.Boolean()),
+          }),
+        },
+      )
+  );
 }

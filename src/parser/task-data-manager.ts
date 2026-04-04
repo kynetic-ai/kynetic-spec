@@ -16,11 +16,7 @@
 import type { Note, Task, TaskInput } from "../schema/task.js";
 import { TaskSchema } from "../schema/task.js";
 import type { KspecContext, LoadedTask } from "./yaml.js";
-import {
-  createNote,
-  createTask,
-  getAuthor,
-} from "./yaml.js";
+import { createNote, createTask, getAuthor } from "./yaml.js";
 import { createRequire } from "node:module";
 import { commitIfShadow } from "./shadow.js";
 import { getActiveBatchBuffer, runWithBuffer } from "../cli/batch-write-buffer.js";
@@ -467,8 +463,7 @@ export class TaskDataManager {
       throw new TaskDataManagerError(
         `No storage backend registered for format "${storageFormat}".`,
         {
-          suggestion:
-            "Ensure the split storage backend has been registered via registerBackend().",
+          suggestion: "Ensure the split storage backend has been registered via registerBackend().",
           field: "storageFormat",
         },
       );
@@ -872,11 +867,7 @@ export function resolveTaskDataManager(ctx: KspecContext): TaskDataManager {
   // created before the split migration and hasn't been upgraded yet.
   // This is a higher-level gate than ensureMigrated() which stays as a
   // data-integrity safety net in the split backend.
-  if (
-    kyneticVersion !== undefined &&
-    storage !== "split" &&
-    parseFloat(kyneticVersion) < 1.1
-  ) {
+  if (kyneticVersion !== undefined && storage !== "split" && parseFloat(kyneticVersion) < 1.1) {
     throw new TaskDataManagerError(
       `This project uses kynetic version "${kyneticVersion}" without split task storage. ` +
         "The monolithic task storage format has been removed.",

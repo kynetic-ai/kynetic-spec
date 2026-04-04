@@ -278,10 +278,7 @@ test.describe("Cache Warming View States", () => {
   // AC: @ui-data-freshness ac-warming-skeleton — sessions search mode cache warming
   // AC: @ui-data-freshness ac-warming-timeout — sessions search mode timeout banner
   test.describe("sessions search mode cache warming", () => {
-    test("shows skeleton while search query is warming", async ({
-      page,
-      daemon: _daemon,
-    }) => {
+    test("shows skeleton while search query is warming", async ({ page, daemon: _daemon }) => {
       await interceptCommonAPIs(page);
 
       // Sessions list returns ready (won't be fetched in search mode)
@@ -298,7 +295,9 @@ test.describe("Cache Warming View States", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify(warmingEnvelope({ items: [], total_sessions: 0, total_matches: 0, query: "test" })),
+          body: JSON.stringify(
+            warmingEnvelope({ items: [], total_sessions: 0, total_matches: 0, query: "test" }),
+          ),
         });
       });
 
@@ -322,7 +321,9 @@ test.describe("Cache Warming View States", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify(warmingEnvelope({ items: [], total_sessions: 0, total_matches: 0, query: "test" })),
+          body: JSON.stringify(
+            warmingEnvelope({ items: [], total_sessions: 0, total_matches: 0, query: "test" }),
+          ),
         });
       });
 

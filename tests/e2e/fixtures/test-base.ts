@@ -204,11 +204,15 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
         }
 
         daemonStderr = "";
-        daemonProcess = spawn("bun", [DAEMON_ENTRY, "--port", String(port), "--kspec-dir", tempDir], {
-          cwd: tempDir,
-          stdio: "pipe",
-          env: { ...isolatedEnv, BUN_ENV: "production" },
-        });
+        daemonProcess = spawn(
+          "bun",
+          [DAEMON_ENTRY, "--port", String(port), "--kspec-dir", tempDir],
+          {
+            cwd: tempDir,
+            stdio: "pipe",
+            env: { ...isolatedEnv, BUN_ENV: "production" },
+          },
+        );
 
         daemonProcess.stderr?.on("data", (chunk: Buffer) => {
           daemonStderr += chunk.toString();

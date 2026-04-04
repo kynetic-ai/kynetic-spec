@@ -1,11 +1,7 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import {
-  initContext,
-  TaskDataManager,
-  TaskDataManagerError,
-} from "../src/parser/index.js";
+import { initContext, TaskDataManager, TaskDataManagerError } from "../src/parser/index.js";
 import type { TaskStorageBackend } from "../src/parser/task-data-manager.js";
 import {
   registerBackend,

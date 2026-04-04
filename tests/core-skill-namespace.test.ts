@@ -11,7 +11,13 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { kspec as kspecFull, readTestOutput, setupTempFixtures, cleanupTempDir, initGitRepo } from "./helpers/cli";
+import {
+  kspec as kspecFull,
+  readTestOutput,
+  setupTempFixtures,
+  cleanupTempDir,
+  initGitRepo,
+} from "./helpers/cli";
 import { getClaudeCodeSkillSubdir, getSkillSubdir } from "../src/parser/skill-render";
 import type { LoadedSkill } from "../src/parser/meta";
 
