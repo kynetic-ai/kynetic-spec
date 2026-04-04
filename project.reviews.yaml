@@ -114581,6 +114581,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNDBWQ21K28NDDGBR10S048M
         timestamp: 2026-04-04T23:05:19.789Z
+      - _ulid: 01KNDBX03MJNHBDE63VE7KJ2M2
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNDBWYGQ729BB11DYMCP26NZ
+        timestamp: 2026-04-04T23:05:27.412Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -114614,7 +114621,30 @@ reviews:
               each Phase 4 task description.
             created_at: 2026-04-04T23:05:18.145Z
         kind: blocker
+      - _ulid: 01KNDBWYGQ729BB11DYMCP26NZ
+        anchor:
+          type: structured
+          field: ac-watcher-content-passthrough
+          ref: "@daemon-incremental-cache"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KNDBWYGQV10CASDGGFYBFK1C
+            author: "@claude"
+            body: "ac-watcher-content-passthrough says 'the already-read content is available to the cache
+              update logic so the file does not need to be read from disk a second time.' But the
+              watcher's onFileChange callback signature is (file: string, content: string) — content
+              is always a string. The AC and task-watcher-content-passthrough both say the content
+              parameter should be 'optional' for removal events, but removal events use a completely
+              separate callback (onFileRemoved) which does NOT receive content. The content
+              parameter on handleFileChange does not need to be optional for the onFileChange path —
+              it needs to be optional because handleFileChange is also called from the onFileRemoved
+              path (or from other callers like write-through). The task description conflates two
+              separate callbacks. Clarify that onFileChange always has content, and the optional
+              parameter is for handleFileChange which has multiple callers with different
+              signatures."
+            created_at: 2026-04-04T23:05:25.783Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-04T23:04:29.735Z
-    updated_at: 2026-04-04T23:05:18.145Z
+    updated_at: 2026-04-04T23:05:25.783Z
     notes: []
