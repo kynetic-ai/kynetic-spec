@@ -35463,8 +35463,8 @@ plans:
       but not on incremental updates. Phase 6 (write-through alignment)
 
       depends on the incremental paths existing.
-    status: draft
-    approved_at: null
+    status: approved
+    approved_at: 2026-04-04T23:34:16.951Z
     derived_specs: []
     derived_tasks: []
     module_ref: null
