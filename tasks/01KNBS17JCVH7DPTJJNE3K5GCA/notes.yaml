@@ -1,1 +1,11 @@
-notes: []
+notes:
+  - _ulid: 01KNBS4P8B70CFQGA3RNDTJ7JX
+    content: "Approach: inspect session index enumeration in src/daemon/entity-cache.ts and switch
+      directory listing to a path that closes handles deterministically on success and failure. Edge
+      cases: missing sessions dir, enumeration failure mid-iteration, disposed cache during load.
+      Test plan: add an AC-annotated daemon entity cache regression that proves no descriptor growth
+      across repeated session-index reloads, reusing the existing /proc/self/fd pattern when
+      available."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-04T08:18:22.091Z
