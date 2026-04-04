@@ -114574,6 +114574,13 @@ reviews:
           status: pass
           name: Dependency ordering
         timestamp: 2026-04-04T23:05:01.461Z
+      - _ulid: 01KNDBWRNDM02QZM8VCN9310E2
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNDBWQ21K28NDDGBR10S048M
+        timestamp: 2026-04-04T23:05:19.789Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -114583,8 +114590,31 @@ reviews:
       content_hash: ""
       ref: "@plan-granular-cache-invalidation"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNDBWQ21K28NDDGBR10S048M
+        anchor:
+          type: structured
+          field: ac-index-consistency
+          ref: "@daemon-incremental-cache"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KNDBWQ21MQJ2FQ384WKRVN1V
+            author: "@claude"
+            body: ac-index-consistency uses atomicity language ('complete pre-update state or complete
+              post-update state') but the implementation approach across all Phase 4 tasks is 'build
+              locally and swap references' — which is the existing pattern for full reloads but has
+              different semantics for incremental patches. When replacing a single entity in an
+              array (index tier), the swap is not atomic unless the entire array reference is
+              replaced. The AC is correct as a behavioral contract, but tasks should explicitly
+              state they must clone the index array, patch the clone, and swap the entire reference
+              — not mutate in place. Currently task-incremental-task-updates says 'build new
+              index/detail references locally and swap atomically, same as the current full-reload
+              pattern' but the current pattern replaces the entire array (this.tasks.index =
+              summaries), which is different from patching one element. Clarify the mechanism in
+              each Phase 4 task description.
+            created_at: 2026-04-04T23:05:18.145Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-04T23:04:29.735Z
-    updated_at: 2026-04-04T23:04:59.866Z
+    updated_at: 2026-04-04T23:05:18.145Z
     notes: []
