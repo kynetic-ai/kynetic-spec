@@ -12,3 +12,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-04T07:11:33.702Z
+  - _ulid: 01KNBP2D6XBMW2KJ3V3VC8HZVT
+    content: "Implemented active-session-scoped session watching. SessionWatcher now keeps a depth-0
+      top-level watcher on .kspec-sessions plus per-session watchers only for session.yaml files
+      with status: active, retries addDir races where metadata arrives shortly after the directory,
+      and tears down per-session watchers once status becomes non-active while still emitting one
+      final invalidation callback. Updated tests/session-watcher.test.ts to use valid session
+      metadata fixtures and cover startup active-only watching, conditional attach for new sessions,
+      terminal unwatching, and FD usage staying tied to active sessions."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-04T07:24:41.565Z
