@@ -115025,6 +115025,18 @@ reviews:
         required: true
         created_at: 2026-04-04T23:25:49.105Z
         completed_at: 2026-04-04T23:25:49.105Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All ACs use given/when/then format. ACs are behavioral not implementation-prescriptive.
+          Each AC is independently testable. daemon-incremental-cache has 8 ACs covering core paths
+          (single entity, multi-entity, fallback, removal, consistency, batching, passthrough).
+          daemon-meta-subdomain has 4 ACs covering each sub-domain plus initial load.
+        name: Spec quality (behavioral language)
+        required: true
+        created_at: 2026-04-04T23:26:02.420Z
+        completed_at: 2026-04-04T23:26:02.420Z
     events:
       - _ulid: 01KNDCZZ3C5J0KS3WC3YWT270M
         actor: "@claude"
@@ -115081,6 +115093,13 @@ reviews:
           status: pass
           name: "Question: single-file domain classification"
         timestamp: 2026-04-04T23:25:50.747Z
+      - _ulid: 01KNDD2QQWWDV4ZVMQ42YXEPA4
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Spec quality (behavioral language)
+        timestamp: 2026-04-04T23:26:04.028Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -115093,5 +115112,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-04T23:24:33.260Z
-    updated_at: 2026-04-04T23:25:49.105Z
+    updated_at: 2026-04-04T23:26:02.420Z
     notes: []
