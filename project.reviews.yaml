@@ -113439,6 +113439,17 @@ reviews:
         required: true
         created_at: 2026-04-04T06:31:47.657Z
         completed_at: 2026-04-04T06:31:47.657Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Compared against approved review 01KNBJMT dated 2026-04-04, this third pass only removes
+          redundant wording from ac-3 and secondary explanatory clauses from ac-active-only-watching
+          and ac-startup-active-only without changing the contract boundary or lifecycle coverage.
+        name: Prior approval delta
+        required: true
+        created_at: 2026-04-04T06:31:59.337Z
+        completed_at: 2026-04-04T06:31:59.337Z
     events:
       - _ulid: 01KNBK0SZP1334SEQDX0KE8HJ9
         actor: "@claude"
@@ -113467,6 +113478,13 @@ reviews:
           status: pass
           name: AC contract completeness
         timestamp: 2026-04-04T06:31:50.898Z
+      - _ulid: 01KNBK1XTZBAYCSZ005EK252ZT
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Prior approval delta
+        timestamp: 2026-04-04T06:32:00.095Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -113479,5 +113497,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-04T06:31:23.383Z
-    updated_at: 2026-04-04T06:31:47.657Z
+    updated_at: 2026-04-04T06:31:59.337Z
     notes: []
