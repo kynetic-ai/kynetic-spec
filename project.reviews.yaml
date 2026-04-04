@@ -113280,3 +113280,29 @@ reviews:
     created_at: 2026-04-04T06:17:11.744Z
     updated_at: 2026-04-04T06:18:04.245Z
     notes: []
+  - _ulid: 01KNBJMT64QNZSJX3PXXD9V71V
+    slugs: []
+    title: "Plan re-review: Active-Session-Scoped File Monitoring (v2)"
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KNBJMT64B81RZA63890G48DY
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-04T06:24:50.372Z
+    examined_commit: null
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-active-session-scoped-file-monitoring"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-04T06:24:50.372Z
+    updated_at: null
+    notes: []
