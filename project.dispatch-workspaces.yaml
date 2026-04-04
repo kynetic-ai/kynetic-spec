@@ -36519,12 +36519,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-04T06:56:08.948Z
+      updated_at: 2026-04-04T06:56:17.714Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-04T06:56:10.637Z
+      updated_at: 2026-04-04T06:56:17.714Z
     integration:
       status: pending
       detail: null
@@ -36532,7 +36532,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 0d05e503f03020b11bd11616e265cc09f024f0d3
-      updated_at: 2026-04-04T06:56:08.948Z
+      updated_at: 2026-04-04T06:56:17.714Z
     lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KNBK4THQFPGXW7B226F7MPM0"
@@ -36540,9 +36540,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-04T06:48:50.027Z
-      last_reconciled_at: 2026-04-04T06:56:10.637Z
+      last_reconciled_at: 2026-04-04T06:56:17.714Z
       created_at: 2026-04-04T06:45:26.292Z
-      updated_at: 2026-04-04T06:56:10.637Z
+      updated_at: 2026-04-04T06:56:17.714Z
     workspace_id: dispatch-workspace-01KNBK4THQFPGXW7B226F7MPM0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -36551,5 +36551,5 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-monitoring-spec-active-session-acs/01knbk4t
         head: 0d05e503f03020b11bd11616e265cc09f024f0d3
-        last_seen_at: 2026-04-04T06:48:43.749Z
+        last_seen_at: 2026-04-04T06:56:17.714Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-monitoring-spec-active-session-acs-01knbk4t
