@@ -12252,6 +12252,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-04T05:34:26.326Z
+  - _ulid: 01KNBFRKDG5PG78AZ4MZE6XYQH
+    type: idea
+    content: kspec setup could prompt for project-specific conventions (commits, architecture, testing)
+      during initial setup rather than requiring manual kspec meta add convention calls after the
+      fact. A setup wizard step for conventions would reduce post-setup work.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-04T05:34:28.784Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
