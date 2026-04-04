@@ -114602,6 +114602,13 @@ reviews:
           kind: question
           thread_ulid: 01KNDBXVYBCTSCS8NVD3BAHBEB
         timestamp: 2026-04-04T23:05:57.513Z
+      - _ulid: 01KNDBY4ZNQCQA9QR7B7MJ4E1Q
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KNDBY3FM4YGCFB2GBKXGC0NF
+        timestamp: 2026-04-04T23:06:05.173Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -114698,7 +114705,23 @@ reviews:
               on daemon-entity-cache assume domain as the granularity unit for readiness.
             created_at: 2026-04-04T23:05:55.915Z
         kind: question
+      - _ulid: 01KNDBY3FM4YGCFB2GBKXGC0NF
+        anchor:
+          type: structured
+          ref: "@daemon-meta-subdomain"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KNDBY3FNVMY8T45CFB9BEKMC
+            author: "@claude"
+            body: "daemon-meta-subdomain has no AC for the initial load path. The three ACs cover
+              re-invalidation scenarios (file change, schedule, session change), but not: 'Given the
+              daemon starts and a project is registered, when meta is first loaded, then all three
+              sub-domains are populated.' This is implicitly covered by the task description ('The
+              initial loadAll still calls all three sequentially') but there is no spec-level
+              contract. Consider adding an AC for first-load behavior."
+            created_at: 2026-04-04T23:06:03.637Z
+        kind: question
     verdicts: []
     created_at: 2026-04-04T23:04:29.735Z
-    updated_at: 2026-04-04T23:05:55.915Z
+    updated_at: 2026-04-04T23:06:03.637Z
     notes: []
