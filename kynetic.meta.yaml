@@ -12367,8 +12367,12 @@ observations:
       merge workflow should define how reviewer agents handle this worktree-lock case and when
       branch equality makes merge a no-op."
     author: Jacob Chapel
-    resolution: null
-    resolved: false
+    resolution: Duplicate of existing detached-review/manual-merge friction observations (for example
+      @01KN63S6 and @01KN5D0X). This session reproduced the same worktree-lock failure mode rather
+      than surfacing a new issue.
+    resolved: true
+    resolved_at: 2026-04-04T07:11:49.072Z
+    resolved_by: Jacob Chapel
     created_at: 2026-04-04T07:10:56.309Z
   - _ulid: 01KNBN97G5G9N3MJ8P3W68G637
     type: success
