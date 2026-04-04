@@ -12232,6 +12232,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-04T05:34:21.025Z
+  - _ulid: 01KNBFREKZBJ62J1GA6S17WSXA
+    type: friction
+    content: codex-acp agent run for plan-reviewer completed but could not write review records — likely
+      a shell environment or permission issue with shadow branch writes from the adapter context.
+      Agent reported success but produced no kspec review artifacts. Should fail visibly if write
+      operations are blocked.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-04T05:34:23.871Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
