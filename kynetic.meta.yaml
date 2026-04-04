@@ -12296,6 +12296,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-04T05:34:36.142Z
+  - _ulid: 01KNBKQE8W3MJKYEKTSZ4N1WHC
+    type: idea
+    content: "Dispatch filter rules should support tag-based routing — e.g. filter: {tags: [ui]} to
+      match tasks with specific tags, or filter: {tags_exclude: [ui]} for everything but. Would
+      enable agent specialization like a UI worker vs engine worker without manually assigning
+      tasks. Current filters only support automation status."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-04T06:43:45.052Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
