@@ -24809,7 +24809,7 @@
   title: Close directory handles deterministically during session directory enumeration
   type: task
   spec_ref: "@daemon-entity-cache"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 1
@@ -24820,4 +24820,5 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-04T08:16:28.748Z
+  started_at: 2026-04-04T08:17:41.818Z
   automation: eligible
