@@ -114623,6 +114623,13 @@ reviews:
           kind: question
           thread_ulid: 01KNDBYRRF1TTJSZTA65EP5PJH
         timestamp: 2026-04-04T23:06:27.078Z
+      - _ulid: 01KNDBZ1Y12204SYT3VM913WR9
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KNDBZ0CW9RJ5QNMB41RAA9HV
+        timestamp: 2026-04-04T23:06:34.817Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -114768,7 +114775,23 @@ reviews:
               worth confirming."
             created_at: 2026-04-04T23:06:25.424Z
         kind: question
+      - _ulid: 01KNDBZ0CW9RJ5QNMB41RAA9HV
+        anchor:
+          type: structured
+          ref: "@task-writethrough-incremental-alignment"
+          section: description
+        entries:
+          - _ulid: 01KNDBZ0CWK5N6CQWR485WP61K
+            author: "@claude"
+            body: The task claims 'inbox, plans, triage, reviews — which are single-file domains where reload IS
+              the minimal update.' This is true for inbox and triage (single files), but plans can
+              be multi-file (each plan has its own file under plans/). The current plans domain does
+              use loadPlans() which reads all plan files. If the plan count grows, this could become
+              another candidate for incremental updates. Should plans be excluded from incremental
+              or noted as a future candidate?
+            created_at: 2026-04-04T23:06:33.245Z
+        kind: question
     verdicts: []
     created_at: 2026-04-04T23:04:29.735Z
-    updated_at: 2026-04-04T23:06:25.424Z
+    updated_at: 2026-04-04T23:06:33.245Z
     notes: []
