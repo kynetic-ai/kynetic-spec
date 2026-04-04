@@ -12213,6 +12213,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-04T03:21:15.716Z
+  - _ulid: 01KNBFR97QEDK2MDWBWN5NZ6T4
+    type: friction
+    content: kspec init --setup creates task-worker and pr-reviewer agents but not a plan-reviewer agent
+      or primary dev agent. Had to manually add plan-reviewer, claude agent, and conventions after
+      setup. Setup could offer an interactive agent selection or include plan-reviewer as a built-in
+      agent.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-04T05:34:18.360Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
