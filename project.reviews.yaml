@@ -114588,6 +114588,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNDBWYGQ729BB11DYMCP26NZ
         timestamp: 2026-04-04T23:05:27.412Z
+      - _ulid: 01KNDBXES8QVWJQ6V3WYEPQZ3D
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNDBXD7VMVWGMQMVVXQM1M1X
+        timestamp: 2026-04-04T23:05:42.440Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -114644,7 +114651,28 @@ reviews:
               signatures."
             created_at: 2026-04-04T23:05:25.783Z
         kind: blocker
+      - _ulid: 01KNDBXD7VMVWGMQMVVXQM1M1X
+        anchor:
+          type: structured
+          ref: "@task-update-ac-granular-reload"
+          section: description
+        entries:
+          - _ulid: 01KNDBXD7VSCC0SV0TMYGCWR4A
+            author: "@claude"
+            body: "The updated ac-granular-reload wording ('Only the affected entity is reloaded, not the entire
+              domain or unrelated domains') removes the existing guarantee that unrelated domains
+              are not reloaded. The current AC covers two guarantees: (1) cross-domain isolation and
+              (2) within-domain granularity. The new wording replaces both with entity-level
+              language but makes cross-domain isolation implicit. Since the new
+              daemon-incremental-cache spec has ac-fallback-full-reload which explicitly allows full
+              domain reloads, the updated ac-granular-reload should preserve the cross-domain
+              isolation guarantee separately. Suggested: keep ac-granular-reload for cross-domain
+              isolation ('only the affected domain is reloaded, not unrelated domains') and let
+              daemon-incremental-cache handle within-domain granularity. Otherwise the existing
+              cross-domain contract regresses."
+            created_at: 2026-04-04T23:05:40.859Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-04T23:04:29.735Z
-    updated_at: 2026-04-04T23:05:25.783Z
+    updated_at: 2026-04-04T23:05:40.859Z
     notes: []
