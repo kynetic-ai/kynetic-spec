@@ -114948,7 +114948,18 @@ reviews:
     slugs: []
     title: "Plan review: Granular Cache Invalidation (R2)"
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Plan preserves ac-granular-reload as-is on @daemon-entity-cache for cross-domain
+          isolation. Within-domain entity-level granularity owned by @daemon-incremental-cache via
+          ac-single-entity-patch. Clear ownership boundary, no conflict.
+        name: "Blocker 1: ac-granular-reload regression"
+        required: true
+        created_at: 2026-04-04T23:25:00.153Z
+        completed_at: 2026-04-04T23:25:00.153Z
     events:
       - _ulid: 01KNDCZZ3C5J0KS3WC3YWT270M
         actor: "@claude"
@@ -114956,6 +114967,13 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-04-04T23:24:33.260Z
+      - _ulid: 01KNDD0TZH80Z3Y6B0S2Y3RZ4C
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: "Blocker 1: ac-granular-reload regression"
+        timestamp: 2026-04-04T23:25:01.810Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -114968,5 +114986,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-04T23:24:33.260Z
-    updated_at: null
+    updated_at: 2026-04-04T23:25:00.153Z
     notes: []
