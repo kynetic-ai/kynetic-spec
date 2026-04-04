@@ -113414,7 +113414,18 @@ reviews:
     slugs: []
     title: "Plan re-review: Active-Session-Scoped File Monitoring (v3)"
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: The simplified ac-3 remains bounded by @daemon-file-monitoring's scope because ac-2 still
+          owns exclusion of content storage directories, while ac-3 now narrows proportionality to
+          active sessions plus monitored spec directories.
+        name: Spec boundary
+        required: true
+        created_at: 2026-04-04T06:31:47.637Z
+        completed_at: 2026-04-04T06:31:47.637Z
     events:
       - _ulid: 01KNBK0SZP1334SEQDX0KE8HJ9
         actor: "@claude"
@@ -113429,6 +113440,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-04T06:31:48.401Z
+      - _ulid: 01KNBK1KMDP773RKQE27NXHWP9
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Spec boundary
+        timestamp: 2026-04-04T06:31:49.645Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -113441,5 +113459,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-04T06:31:23.383Z
-    updated_at: 2026-04-04T06:31:47.611Z
+    updated_at: 2026-04-04T06:31:47.637Z
     notes: []
