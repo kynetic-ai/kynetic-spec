@@ -22659,9 +22659,22 @@ runs:
     started_at: 2026-04-04T07:50:11.919Z
   - _ulid: 01KNBQZ0E816H6NRF62669EXNS
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-04T07:57:47.337Z
+        completed_at: 2026-04-04T07:58:33.256Z
+        notes: "Reflected on completed session. Success: task/spec/plan lookup plus git history and blame
+          quickly confirmed the regression test already existed on dev, avoiding duplicate code
+          changes. Friction: reconciling an already-implemented task still required a full
+          review-state transition sequence after verification. Captured as friction observation
+          @01KNBR04."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-04T07:58:33.256Z
+        completed_at: 2026-04-04T07:58:33.256Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-04T07:57:47.337Z
