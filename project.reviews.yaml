@@ -113727,6 +113727,30 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-04T06:54:31.836Z
+      - _ulid: 01KNBMK03NJP90BHS3PHFDZ238
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNBMAMRXZEXNY1YBPJVJQFZ8
+        timestamp: 2026-04-04T06:58:48.053Z
+      - _ulid: 01KNBMK24BVCHGW8W0GWK7C99W
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNBMAMRXZEXNY1YBPJVJQFZ8
+        timestamp: 2026-04-04T06:58:50.123Z
+      - _ulid: 01KNBMK44JCAKG2PPP1WAMWBX5
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNBMASE9AEMF548TW063799M
+        timestamp: 2026-04-04T06:58:52.178Z
+      - _ulid: 01KNBMK620J68NKJJ7Y842BJN7
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNBMASE9AEMF548TW063799M
+        timestamp: 2026-04-04T06:58:54.144Z
     examined_commit: 0d05e503f03020b11bd11616e265cc09f024f0d3
     external_links: []
     lifecycle_state: closed
@@ -113756,7 +113780,17 @@ reviews:
               latter, so this task needs to narrow or update ac-7 as part of the spec change instead
               of leaving the conflict in place."
             created_at: 2026-04-04T06:54:14.301Z
+          - _ulid: 01KNBMJZBC7R5DXFDB1PKC39TF
+            author: Jacob Chapel
+            body: 'Fixed: narrowed @daemon-file-monitoring ac-7 to "A new session directory for a session with
+              active status is created after monitoring started". That keeps ac-7 focused on
+              restart-free detection for newly created active sessions and removes the contradiction
+              with ac-new-session-conditional-watch, which now owns the conditional watch-add
+              behavior for any newly detected session.'
+            created_at: 2026-04-04T06:58:47.276Z
         kind: blocker
+        resolved_at: 2026-04-04T06:58:49.343Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KNBMASE9AEMF548TW063799M
         entries:
           - _ulid: 01KNBMASE9R4P1MYQ6TKP8QD44
@@ -113769,7 +113803,15 @@ reviews:
               still pass; current watcher/tests still model broad new-session detection. Categories
               searched: correctness, spec consistency, test quality, integration."
             created_at: 2026-04-04T06:54:19.081Z
+          - _ulid: 01KNBMK3BMMMGAE3V5F44WCEXJ
+            author: Jacob Chapel
+            body: "Addressed. The fix cycle was limited to spec consistency: ac-7 was narrowed, the updated item
+              text was rechecked with kspec item get, and kspec validate still reports only the
+              existing repository-wide warnings noted in the prior review."
+            created_at: 2026-04-04T06:58:51.380Z
         kind: nit
+        resolved_at: 2026-04-04T06:58:53.405Z
+        resolved_by: Jacob Chapel
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -113779,5 +113821,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-04T06:54:31.836Z
     created_at: 2026-04-04T06:49:30.478Z
-    updated_at: 2026-04-04T06:54:31.836Z
+    updated_at: 2026-04-04T06:58:53.405Z
     notes: []
