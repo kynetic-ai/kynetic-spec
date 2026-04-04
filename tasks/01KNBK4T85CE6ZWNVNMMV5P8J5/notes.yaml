@@ -1,1 +1,10 @@
-notes: []
+notes:
+  - _ulid: 01KNBKBCGJAGT2XX5CS17MZ4B1
+    content: "Approach: update @daemon-file-monitoring ac-3 via kspec CLI to align FD proportionality
+      with active sessions and monitored spec directories, matching the approved plan wording. Edge
+      cases: preserve existing blob-exclusion intent while avoiding wording that still scales with
+      historical session metadata files. Test plan: verify the rendered spec text with kspec item
+      get and run kspec validate to ensure the spec state remains consistent before submission."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-04T06:37:10.035Z
