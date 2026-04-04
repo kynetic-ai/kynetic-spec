@@ -3693,10 +3693,8 @@ features:
           A project's sessions directory has thousands of sessions with
           accumulated content data
         id: ac-3
-        then: |
-          File descriptor count is proportional to the number of
-          monitored directories and metadata files, not to the total
-          number of stored content files
+        then: File descriptor count is proportional to the number of active sessions and monitored spec
+          directories
         when: |
           The daemon process resource usage is measured
       - given: |
