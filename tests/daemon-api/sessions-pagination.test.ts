@@ -1,0 +1,716 @@
+/**
+ * API Tests for Session List Pagination and Filtering
+ *
+ * Tests verify the GET /api/sessions endpoint supports offset/limit pagination,
+ * multi-field filtering, and proper validation.
+ *
+ * Covered ACs:
+ * - @session-list-pagination-api ac-pagination: Offset/limit pagination with total count
+ * - @session-list-pagination-api ac-filter-status: Status filter with multi-value OR
+ * - @session-list-pagination-api ac-filter-agent-type: Agent type filter
+ * - @session-list-pagination-api ac-filter-agent-id: Agent ID filter
+ * - @session-list-pagination-api ac-filter-trigger: Trigger filter with dispatched shorthand
+ * - @session-list-pagination-api ac-filter-task: Task ID filter with real fixture tasks
+ * - @session-list-pagination-api ac-filter-spec-ref: Spec ref filter resolving through AlignmentIndex
+ * - @session-list-pagination-api ac-filter-since: Since date filter
+ * - @session-list-pagination-api ac-combined-filters: AND logic for multiple filters
+ * - @session-list-pagination-api ac-invalid-filter: 400 on invalid filter values
+ * - @session-list-pagination-api ac-metadata-only: Uses cache, reads session.yaml only
+ * - @trait-api-endpoint ac-1: Returns 2xx with JSON body
+ * - @trait-api-endpoint ac-2: Returns 404 for unknown task_id/spec_ref refs
+ * - @trait-api-endpoint ac-3: Returns 400 with details array on invalid params
+ * - @session-filter-controls ac-filter-counts: unfiltered_total in paginated response
+ * - @trait-api-endpoint ac-4: Pagination wrapper {data, meta}
+ */
+
+import { mkdirSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import type { Elysia } from "elysia";
+import * as YAML from "yaml";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import {
+  cleanupTempDir,
+  createTempDir,
+  createTestApp,
+  initGitRepo,
+  makeRequest,
+  setupFixtures,
+} from "./helpers.js";
+
+let tempDir: string;
+let app: Elysia;
+
+beforeEach(async () => {
+  tempDir = await createTempDir("kspec-daemon-api-sessions-pagination-");
+  initGitRepo(tempDir);
+  setupFixtures(tempDir);
+  ({ app } = createTestApp());
+});
+
+afterEach(async () => {
+  await cleanupTempDir(tempDir);
+});
+
+function request(urlPath: string, init?: RequestInit) {
+  return makeRequest(app, tempDir, urlPath, init);
+}
+
+/**
+ * Create a session directory with metadata and optional events.
+ */
+function writeSession(
+  dir: string,
+  sessionId: string,
+  opts: {
+    agentType?: string;
+    agentId?: string;
+    status?: string;
+    trigger?: string;
+    taskId?: string;
+    startedAt?: string;
+    endedAt?: string;
+    eventCount?: number;
+  } = {},
+): void {
+  const sessionDir = join(dir, sessionId);
+  mkdirSync(sessionDir, { recursive: true });
+
+  const metadata: Record<string, unknown> = {
+    id: sessionId,
+    agent_type: opts.agentType ?? "claude-agent-acp",
+    status: opts.status ?? "completed",
+    started_at: opts.startedAt ?? "2026-03-01T10:00:00.000Z",
+  };
+
+  if (opts.agentId) metadata.agent_id = opts.agentId;
+  if (opts.trigger) metadata.trigger = opts.trigger;
+  if (opts.taskId) metadata.task_id = opts.taskId;
+  if (opts.endedAt) metadata.ended_at = opts.endedAt;
+
+  writeFileSync(join(sessionDir, "session.yaml"), YAML.stringify(metadata));
+
+  // Write events.jsonl (minimal)
+  const eventCount = opts.eventCount ?? 1;
+  const lines: string[] = [];
+  for (let i = 0; i < eventCount; i++) {
+    lines.push(
+      JSON.stringify({
+        seq: i,
+        ts: Date.now() + i * 1000,
+        type: i === 0 ? "session.start" : "note",
+        session_id: sessionId,
+        data: {},
+      }),
+    );
+  }
+  writeFileSync(join(sessionDir, "events.jsonl"), `${lines.join("\n")}\n`);
+}
+
+/**
+ * Set up a standard set of test sessions covering different statuses,
+ * agent types, triggers, etc.
+ */
+function setupTestSessions(sessionsDir: string): void {
+  mkdirSync(sessionsDir, { recursive: true });
+
+  // Session 1: completed, worker, dispatched task.ready, oldest
+  // Uses @test-task-ready which exists in fixtures (spec_ref: @test-feature)
+  writeSession(sessionsDir, "01KTEST0000000000000000001", {
+    agentType: "claude-agent-acp",
+    agentId: "worker",
+    status: "completed",
+    trigger: "task.ready",
+    taskId: "@test-task-ready",
+    startedAt: "2026-03-01T10:00:00.000Z",
+    endedAt: "2026-03-01T11:00:00.000Z",
+    eventCount: 10,
+  });
+
+  // Session 2: completed, pr-reviewer, dispatched task.pending_review
+  // Uses @test-task-in-progress which exists in fixtures (spec_ref: @test-feature)
+  writeSession(sessionsDir, "01KTEST0000000000000000002", {
+    agentType: "claude-agent-acp",
+    agentId: "pr-reviewer",
+    status: "completed",
+    trigger: "task.pending_review",
+    taskId: "@test-task-in-progress",
+    startedAt: "2026-03-02T10:00:00.000Z",
+    endedAt: "2026-03-02T11:00:00.000Z",
+    eventCount: 5,
+  });
+
+  // Session 3: failed, worker, dispatched task.in_progress
+  // Uses @test-task-ready (same as session 1) for multi-session-per-task testing
+  writeSession(sessionsDir, "01KTEST0000000000000000003", {
+    agentType: "claude-agent-acp",
+    agentId: "worker",
+    status: "failed",
+    trigger: "task.in_progress",
+    taskId: "@test-task-ready",
+    startedAt: "2026-03-03T10:00:00.000Z",
+    endedAt: "2026-03-03T10:05:00.000Z",
+    eventCount: 3,
+  });
+
+  // Session 4: active, worker, manual trigger
+  writeSession(sessionsDir, "01KTEST0000000000000000004", {
+    agentType: "claude-agent-acp",
+    agentId: "worker",
+    status: "active",
+    trigger: "manual",
+    startedAt: "2026-03-04T10:00:00.000Z",
+    eventCount: 2,
+  });
+
+  // Session 5: completed, codex-acp, manual trigger, most recent
+  writeSession(sessionsDir, "01KTEST0000000000000000005", {
+    agentType: "codex-acp",
+    agentId: "worker",
+    status: "completed",
+    trigger: "manual",
+    startedAt: "2026-03-05T10:00:00.000Z",
+    endedAt: "2026-03-05T11:00:00.000Z",
+    eventCount: 20,
+  });
+
+  // Session 6: abandoned, no agent_id, legacy trigger
+  writeSession(sessionsDir, "01KTEST0000000000000000006", {
+    agentType: "claude-agent-acp",
+    status: "abandoned",
+    trigger: "legacy",
+    startedAt: "2026-02-15T10:00:00.000Z",
+    endedAt: "2026-02-15T12:00:00.000Z",
+    eventCount: 1,
+  });
+}
+
+describe("Pagination", () => {
+  // AC: @session-list-pagination-api ac-pagination
+  // AC: @trait-api-endpoint ac-4
+  it("returns paginated results with total, offset, and limit", async () => {
+    const sessionsDir = join(tempDir, ".kspec-sessions");
+    setupTestSessions(sessionsDir);
+
+    const response = await request("/api/sessions?offset=0&limit=2");
+    expect(response.status).toBe(200);
+
+    const body = await response.json();
+    expect(body).toHaveProperty("data");
+    expect(body).toHaveProperty("meta");
+    expect(body).toHaveProperty("meta.offset");
+    expect(body).toHaveProperty("meta.limit");
+    expect(Array.isArray(body.data.items)).toBe(true);
+    expect(body.data.items.length).toBe(2);
+    expect(body.meta.total).toBe(6);
+    expect(body.meta.offset).toBe(0);
+    expect(body.meta.limit).toBe(2);
+  });
+
+  // AC: @session-list-pagination-api ac-pagination
+  it("items sorted by started_at descending (most recent first)", async () => {
+    const sessionsDir = join(tempDir, ".kspec-sessions");
+    setupTestSessions(sessionsDir);
+
+    const response = await request("/api/sessions");
+    expect(response.status).toBe(200);
+
+    const body = await response.json();
+    expect(body.data.items.length).toBe(6);
+
+    // Most recent session is session 5 (Mar 5), then 4 (Mar 4), etc.
+    expect(body.data.items[0].id).toBe("01KTEST0000000000000000005");
+    expect(body.data.items[1].id).toBe("01KTEST0000000000000000004");
+    expect(body.data.items[2].id).toBe("01KTEST0000000000000000003");
+    expect(body.data.items[3].id).toBe("01KTEST0000000000000000002");
+    expect(body.data.items[4].id).toBe("01KTEST0000000000000000001");
+    expect(body.data.items[5].id).toBe("01KTEST0000000000000000006");
+  });
+
+  // AC: @session-list-pagination-api ac-pagination
+  it("offset skips items", async () => {
+    const sessionsDir = join(tempDir, ".kspec-sessions");
+    setupTestSessions(sessionsDir);
+
+    const response = await request("/api/sessions?offset=3&limit=2");
+    expect(response.status).toBe(200);
+
+    const body = await response.json();
+    expect(body.data.items.length).toBe(2);
+    expect(body.meta.total).toBe(6);
+    expect(body.meta.offset).toBe(3);
+    // Items 3 and 4 (0-indexed) from sorted list
+    expect(body.data.items[0].id).toBe("01KTEST0000000000000000002");
+    expect(body.data.items[1].id).toBe("01KTEST0000000000000000001");
+  });
+
+  // AC: @session-list-pagination-api ac-pagination
+  // AC: @trait-api-endpoint ac-1
+  it("returns all items when no pagination params", async () => {
+    const sessionsDir = join(tempDir, ".kspec-sessions");
+    setupTestSessions(sessionsDir);
+
+    const response = await request("/api/sessions");
+    expect(response.status).toBe(200);
+
+    const body = await response.json();
+    expect(body.data.items.length).toBe(6);
+    expect(body.meta.total).toBe(6);
+    expect(body.meta.offset).toBe(0);
+    expect(body.meta.limit).toBe(6);
+  });
+
+  // AC: @session-filter-controls ac-filter-counts
+  it("includes unfiltered_total equal to total when no filters applied", async () => {
+    const sessionsDir = join(tempDir, ".kspec-sessions");
+    setupTestSessions(sessionsDir);
+
+    const response = await request("/api/sessions");
+    expect(response.status).toBe(200);
+
+    const body = await response.json();
+    expect(body).toHaveProperty("data.unfiltered_total");
+    expect(body.data.unfiltered_total).toBe(6);
+    expect(body.data.unfiltered_total).toBe(body.meta.total);
+  });
+
+  // AC: @session-filter-controls ac-filter-counts
+  it("unfiltered_total remains full count when filters reduce results", async () => {
+    const sessionsDir = join(tempDir, ".kspec-sessions");
+    setupTestSessions(sessionsDir);
+
+    const response = await request("/api/sessions?status=completed");
+    expect(response.status).toBe(200);
+
+    const body = await response.json();
+    expect(body.meta.total).toBe(3); // Only completed sessions
+    expect(body.data.unfiltered_total).toBe(6); // All sessions regardless of filter
+  });
+
+  // AC: @session-filter-controls ac-filter-counts
+  it("unfiltered_total is present with pagination", async () => {
+    const sessionsDir = join(tempDir, ".kspec-sessions");
+    setupTestSessions(sessionsDir);
+
+    const response = await request("/api/sessions?offset=0&limit=2&status=completed");
+    expect(response.status).toBe(200);
+
+    const body = await response.json();
+    expect(body.data.items.length).toBe(2);
+    expect(body.meta.total).toBe(3); // Filtered total
+    expect(body.data.unfiltered_total).toBe(6); // Unfiltered total
+  });
+});
+
+describe("Status Filter", () => {
+  // AC: @session-list-pagination-api ac-filter-status
+  it("filters by single status", async () => {
+    const sessionsDir = join(tempDir, ".kspec-sessions");
+    setupTestSessions(sessionsDir);
+
+    const response = await request("/api/sessions?status=completed");
+    expect(response.status).toBe(200);
+
+    const body = await response.json();
+    expect(body.data.items.length).toBe(3); // Sessions 1, 2, 5
+    for (const item of body.data.items) {
+      expect(item.status).toBe("completed");
+    }
+    expect(body.meta.total).toBe(3);
+  });
+
+  // AC: @session-list-pagination-api ac-filter-status
+  it("filters by multiple statuses (OR)", async () => {
+    const sessionsDir = join(tempDir, ".kspec-sessions");
+    setupTestSessions(sessionsDir);
+
+    const response = await request("/api/sessions?status=completed&status=failed");
+    expect(response.status).toBe(200);
+
+    const body = await response.json();
+    expect(body.data.items.length).toBe(4); // Sessions 1, 2, 3, 5
+    for (const item of body.data.items) {
+      expect(["completed", "failed"]).toContain(item.status);
+    }
+  });
+});
+
+describe("Agent Type Filter", () => {
+  // AC: @session-list-pagination-api ac-filter-agent-type
+  it("filters by agent_type", async () => {
+    const sessionsDir = join(tempDir, ".kspec-sessions");
+    setupTestSessions(sessionsDir);
+
+    const response = await request("/api/sessions?agent_type=codex-acp");
+    expect(response.status).toBe(200);
+
+    const body = await response.json();
+    expect(body.data.items.length).toBe(1);
+    expect(body.data.items[0].agent_type).toBe("codex-acp");
+    expect(body.data.items[0].id).toBe("01KTEST0000000000000000005");
+  });
+});
+
+describe("Agent ID Filter", () => {
+  // AC: @session-list-pagination-api ac-filter-agent-id
+  it("filters by agent_id", async () => {
+    const sessionsDir = join(tempDir, ".kspec-sessions");
+    setupTestSessions(sessionsDir);
+
+    const response = await request("/api/sessions?agent_id=pr-reviewer");
+    expect(response.status).toBe(200);
+
+    const body = await response.json();
+    expect(body.data.items.length).toBe(1);
+    expect(body.data.items[0].id).toBe("01KTEST0000000000000000002");
+  });
+
+  // AC: @session-list-pagination-api ac-filter-agent-id
+  it("filters by agent_id=worker returns multiple sessions", async () => {
+    const sessionsDir = join(tempDir, ".kspec-sessions");
+    setupTestSessions(sessionsDir);
+
+    const response = await request("/api/sessions?agent_id=worker");
+    expect(response.status).toBe(200);
+
+    const body = await response.json();
+    // Sessions 1, 3, 4, 5 have agent_id=worker
+    expect(body.data.items.length).toBe(4);
+    for (const item of body.data.items) {
+      expect(item.agent_id).toBe("worker");
+    }
+  });
+});
+
+describe("Trigger Filter", () => {
+  // AC: @session-list-pagination-api ac-filter-trigger
+  it("filters by trigger=manual", async () => {
+    const sessionsDir = join(tempDir, ".kspec-sessions");
+    setupTestSessions(sessionsDir);
+
+    const response = await request("/api/sessions?trigger=manual");
+    expect(response.status).toBe(200);
+
+    const body = await response.json();
+    expect(body.data.items.length).toBe(2); // Sessions 4, 5
+    for (const item of body.data.items) {
+      expect(item.trigger).toBe("manual");
+    }
+  });
+
+  // AC: @session-list-pagination-api ac-filter-trigger
+  it("dispatched shorthand matches all task.* triggers", async () => {
+    const sessionsDir = join(tempDir, ".kspec-sessions");
+    setupTestSessions(sessionsDir);
+
+    const response = await request("/api/sessions?trigger=dispatched");
+    expect(response.status).toBe(200);
+
+    const body = await response.json();
+    // Sessions 1 (task.ready), 2 (task.pending_review), 3 (task.in_progress)
+    expect(body.data.items.length).toBe(3);
+    for (const item of body.data.items) {
+      expect(item.trigger).toMatch(/^task\./);
+    }
+  });
+});
+
+describe("Task Filter", () => {
+  // AC: @session-list-pagination-api ac-filter-task
+  it("filters by task_id with real fixture task", async () => {
+    const sessionsDir = join(tempDir, ".kspec-sessions");
+    setupTestSessions(sessionsDir);
+
+    // @test-task-ready exists in fixtures and is referenced by sessions 1 and 3
+    const response = await request("/api/sessions?task_id=@test-task-ready");
+    expect(response.status).toBe(200);
+
+    const body = await response.json();
+    expect(Array.isArray(body.data.items)).toBe(true);
+    expect(body.data.items.length).toBe(2); // Sessions 1 and 3 reference @test-task-ready
+    expect(body.meta.total).toBe(2);
+    const ids = body.data.items.map((s: { id: string }) => s.id);
+    expect(ids).toContain("01KTEST0000000000000000001");
+    expect(ids).toContain("01KTEST0000000000000000003");
+  });
+
+  // AC: @session-list-pagination-api ac-filter-task
+  it("filters by task_id returns single session for unique task", async () => {
+    const sessionsDir = join(tempDir, ".kspec-sessions");
+    setupTestSessions(sessionsDir);
+
+    // @test-task-in-progress exists in fixtures and is referenced by session 2 only
+    const response = await request("/api/sessions?task_id=@test-task-in-progress");
+    expect(response.status).toBe(200);
+
+    const body = await response.json();
+    expect(body.data.items.length).toBe(1);
+    expect(body.data.items[0].id).toBe("01KTEST0000000000000000002");
+  });
+});
+
+describe("Since Filter", () => {
+  // AC: @session-list-pagination-api ac-filter-since
+  it("filters by since date", async () => {
+    const sessionsDir = join(tempDir, ".kspec-sessions");
+    setupTestSessions(sessionsDir);
+
+    const response = await request("/api/sessions?since=2026-03-03");
+    expect(response.status).toBe(200);
+
+    const body = await response.json();
+    // Sessions started on or after Mar 3: sessions 3, 4, 5
+    expect(body.data.items.length).toBe(3);
+    for (const item of body.data.items) {
+      expect(new Date(item.started_at).getTime()).toBeGreaterThanOrEqual(
+        new Date("2026-03-03").getTime(),
+      );
+    }
+  });
+
+  // AC: @session-list-pagination-api ac-filter-since
+  it("since filter with ISO 8601 datetime", async () => {
+    const sessionsDir = join(tempDir, ".kspec-sessions");
+    setupTestSessions(sessionsDir);
+
+    const response = await request("/api/sessions?since=2026-03-04T10:00:00.000Z");
+    expect(response.status).toBe(200);
+
+    const body = await response.json();
+    // Sessions started at or after Mar 4 10:00: sessions 4 and 5
+    expect(body.data.items.length).toBe(2);
+  });
+});
+
+describe("Spec Ref Filter", () => {
+  // AC: @session-list-pagination-api ac-filter-spec-ref
+  it("filters by spec_ref resolving through AlignmentIndex", async () => {
+    const sessionsDir = join(tempDir, ".kspec-sessions");
+    setupTestSessions(sessionsDir);
+
+    // @test-feature exists in fixtures. Tasks test-task-ready, test-task-in-progress,
+    // test-task-pending-review, and test-task-completed all have spec_ref: "@test-feature".
+    // Sessions 1, 3 reference @test-task-ready; session 2 references @test-task-in-progress.
+    // Sessions 4, 5, 6 have no task_id or reference tasks without spec_ref.
+    const response = await request("/api/sessions?spec_ref=@test-feature");
+    expect(response.status).toBe(200);
+
+    const body = await response.json();
+    expect(Array.isArray(body.data.items)).toBe(true);
+    // Sessions 1, 2, 3 have task_ids that resolve to tasks linked to @test-feature
+    expect(body.data.items.length).toBe(3);
+    expect(body.meta.total).toBe(3);
+    const ids = body.data.items.map((s: { id: string }) => s.id);
+    expect(ids).toContain("01KTEST0000000000000000001");
+    expect(ids).toContain("01KTEST0000000000000000002");
+    expect(ids).toContain("01KTEST0000000000000000003");
+  });
+
+  // AC: @session-list-pagination-api ac-filter-spec-ref
+  it("spec_ref filter combined with status filter", async () => {
+    const sessionsDir = join(tempDir, ".kspec-sessions");
+    setupTestSessions(sessionsDir);
+
+    // spec_ref=@test-feature gives sessions 1,2,3; status=completed narrows to 1,2
+    const response = await request("/api/sessions?spec_ref=@test-feature&status=completed");
+    expect(response.status).toBe(200);
+
+    const body = await response.json();
+    expect(body.data.items.length).toBe(2);
+    for (const item of body.data.items) {
+      expect(item.status).toBe("completed");
+    }
+  });
+});
+
+describe("Unknown Ref Validation", () => {
+  // AC: @trait-api-endpoint ac-2 — 404 for unknown task_id ref
+  it("returns 404 for unknown task_id ref", async () => {
+    const sessionsDir = join(tempDir, ".kspec-sessions");
+    setupTestSessions(sessionsDir);
+
+    const response = await request("/api/sessions?task_id=@nonexistent-task");
+    expect(response.status).toBe(404);
+
+    const body = await response.json();
+    expect(body).toHaveProperty("error", "not_found");
+    expect(body).toHaveProperty("message");
+    expect(body.message).toContain("@nonexistent-task");
+    expect(body).toHaveProperty("suggestion");
+  });
+
+  // AC: @trait-api-endpoint ac-2 — 404 for unknown spec_ref
+  it("returns 404 for unknown spec_ref", async () => {
+    const sessionsDir = join(tempDir, ".kspec-sessions");
+    setupTestSessions(sessionsDir);
+
+    const response = await request("/api/sessions?spec_ref=@nonexistent-spec");
+    expect(response.status).toBe(404);
+
+    const body = await response.json();
+    expect(body).toHaveProperty("error", "not_found");
+    expect(body.message).toContain("@nonexistent-spec");
+    expect(body).toHaveProperty("suggestion");
+  });
+});
+
+describe("Combined Filters", () => {
+  // AC: @session-list-pagination-api ac-combined-filters
+  it("AND logic: status + agent_id + limit", async () => {
+    const sessionsDir = join(tempDir, ".kspec-sessions");
+    setupTestSessions(sessionsDir);
+
+    const response = await request("/api/sessions?status=completed&agent_id=worker&limit=10");
+    expect(response.status).toBe(200);
+
+    const body = await response.json();
+    // Sessions that are both completed AND have agent_id=worker: 1 and 5
+    expect(body.data.items.length).toBe(2);
+    for (const item of body.data.items) {
+      expect(item.status).toBe("completed");
+      expect(item.agent_id).toBe("worker");
+    }
+  });
+
+  // AC: @session-list-pagination-api ac-combined-filters
+  it("pagination applies after filtering", async () => {
+    const sessionsDir = join(tempDir, ".kspec-sessions");
+    setupTestSessions(sessionsDir);
+
+    // Filter to completed (3 results), then paginate to first 1
+    const response = await request("/api/sessions?status=completed&offset=0&limit=1");
+    expect(response.status).toBe(200);
+
+    const body = await response.json();
+    expect(body.data.items.length).toBe(1);
+    expect(body.meta.total).toBe(3); // 3 completed sessions total
+    expect(body.meta.offset).toBe(0);
+    expect(body.meta.limit).toBe(1);
+  });
+});
+
+describe("Invalid Filters", () => {
+  // AC: @session-list-pagination-api ac-invalid-filter
+  // AC: @trait-api-endpoint ac-3
+  it("returns 400 for invalid status value", async () => {
+    const sessionsDir = join(tempDir, ".kspec-sessions");
+    setupTestSessions(sessionsDir);
+
+    const response = await request("/api/sessions?status=bogus");
+    expect(response.status).toBe(400);
+
+    const body = await response.json();
+    expect(body).toHaveProperty("error");
+    expect(body).toHaveProperty("details");
+    expect(Array.isArray(body.details)).toBe(true);
+    // The middleware normalizes the field; it may be an index-based path
+    // Just verify the details array has at least one entry with a message
+    expect(body.details.length).toBeGreaterThan(0);
+    expect(body.details[0]).toHaveProperty("message");
+  });
+
+  // AC: @session-list-pagination-api ac-invalid-filter
+  it("returns 400 for invalid since date", async () => {
+    const sessionsDir = join(tempDir, ".kspec-sessions");
+    setupTestSessions(sessionsDir);
+
+    const response = await request("/api/sessions?since=not-a-date");
+    expect(response.status).toBe(400);
+
+    const body = await response.json();
+    expect(body).toHaveProperty("error");
+    expect(body).toHaveProperty("details");
+    expect(body.details[0].field).toBe("since");
+  });
+});
+
+describe("Metadata Only", () => {
+  // AC: @session-list-pagination-api ac-metadata-only
+  it("session list works without events.jsonl files", async () => {
+    // Create sessions with ONLY session.yaml — no events.jsonl
+    // This proves the list endpoint reads only metadata.
+    // If it tried to read events.jsonl, it would either fail or behave differently.
+    const sessionsDir = join(tempDir, ".kspec-sessions");
+    mkdirSync(sessionsDir, { recursive: true });
+
+    const metadataOnlySession = (id: string, status: string, startedAt: string) => {
+      const sessionDir = join(sessionsDir, id);
+      mkdirSync(sessionDir, { recursive: true });
+      writeFileSync(
+        join(sessionDir, "session.yaml"),
+        YAML.stringify({
+          id,
+          agent_type: "claude-agent-acp",
+          agent_id: "worker",
+          status,
+          started_at: startedAt,
+          ended_at: "2026-03-01T12:00:00.000Z",
+          trigger: "manual",
+        }),
+      );
+      // Deliberately NO events.jsonl
+    };
+
+    metadataOnlySession("01KTEST_NOEVENTS_00000001", "completed", "2026-03-01T10:00:00.000Z");
+    metadataOnlySession("01KTEST_NOEVENTS_00000002", "failed", "2026-03-02T10:00:00.000Z");
+    metadataOnlySession("01KTEST_NOEVENTS_00000003", "completed", "2026-03-03T10:00:00.000Z");
+
+    const response = await request("/api/sessions");
+    expect(response.status).toBe(200);
+
+    const body = await response.json();
+    expect(body.data.items.length).toBe(3);
+    expect(body.meta.total).toBe(3);
+
+    // Metadata fields are present from session.yaml
+    for (const item of body.data.items) {
+      expect(item).toHaveProperty("id");
+      expect(item).toHaveProperty("status");
+      expect(item).toHaveProperty("agent_type");
+      expect(item).toHaveProperty("started_at");
+      expect(item).toHaveProperty("duration_ms");
+    }
+
+    // Summary stats are 0 because events.jsonl is not read in list path
+    for (const item of body.data.items) {
+      expect(item.event_count).toBe(0);
+      expect(item.iteration_count).toBe(0);
+      expect(item.tasks_completed).toBe(0);
+    }
+  });
+
+  // AC: @session-list-pagination-api ac-metadata-only
+  it("session list metadata fields are correct from session.yaml", async () => {
+    const sessionsDir = join(tempDir, ".kspec-sessions");
+    setupTestSessions(sessionsDir);
+
+    const response = await request("/api/sessions");
+    expect(response.status).toBe(200);
+
+    const body = await response.json();
+    expect(body.data.items.length).toBeGreaterThan(0);
+
+    // Verify metadata fields from session.yaml are populated correctly
+    const item = body.data.items[0];
+    expect(item).toHaveProperty("id");
+    expect(item).toHaveProperty("status");
+    expect(item).toHaveProperty("agent_type");
+    expect(item).toHaveProperty("started_at");
+    expect(item).toHaveProperty("duration_ms");
+    expect(typeof item.duration_ms).toBe("number");
+  });
+});
+
+describe("Empty Results", () => {
+  // AC: @trait-filterable-list ac-6
+  it("returns empty items array when no sessions match filter", async () => {
+    const sessionsDir = join(tempDir, ".kspec-sessions");
+    setupTestSessions(sessionsDir);
+
+    const response = await request("/api/sessions?status=timed_out");
+    expect(response.status).toBe(200);
+
+    const body = await response.json();
+    expect(body.data.items).toEqual([]);
+    expect(body.meta.total).toBe(0);
+  });
+});

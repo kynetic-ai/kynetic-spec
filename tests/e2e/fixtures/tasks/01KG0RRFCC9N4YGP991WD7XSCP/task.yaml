@@ -1,0 +1,16 @@
+_ulid: 01KG0RRFCC9N4YGP991WD7XSCP
+slugs:
+  - test-task-completed
+title: Completed task
+type: task
+status: completed
+priority: 3
+tags:
+  - test
+description: A completed task
+spec_ref: "@test-feature"
+depends_on: []
+todos: []
+created_at: "2026-01-01T00:00:00Z"
+started_at: "2026-01-01T01:00:00Z"
+completed_at: "2026-01-01T03:00:00Z"

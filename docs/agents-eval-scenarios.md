@@ -144,10 +144,10 @@ For each scenario, the agent should identify the correct action AND reasoning.
 
 **Expected answer:**
 
-- Tests go in `packages/web-ui/tests/e2e/`
+- Tests go in `tests/e2e/`
 - Import from `../fixtures/test-base` (NOT main `tests/fixtures/`)
 - Do NOT start a daemon manually — test-base handles lifecycle
-- Daemon runs on port 3456 (not 3000)
+- Daemon runs on an ephemeral port (OS-assigned, never hardcoded)
 - Each test gets isolated temp dir with fixtures
 - E2E fixtures are separate from unit test fixtures — never mix them
 
@@ -295,10 +295,10 @@ These are used AFTER the agent has explored 30-50k tokens of real codebase conte
 
 **Expected answer:**
 
-- File goes in `packages/web-ui/tests/e2e/`
+- File goes in `tests/e2e/`
 - Import from `../fixtures/test-base` (NOT main `tests/fixtures/`)
 - Do NOT start a daemon — test-base manages lifecycle automatically
-- Daemon runs on port 3456, each test gets isolated temp dir
+- Daemon runs on an ephemeral port, each test gets isolated temp dir
 
 **Tests rule:** E2E fixture isolation, daemon lifecycle
 **Temptation source:** Exploration Task 8 (reading daemon setup code)

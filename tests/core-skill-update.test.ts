@@ -9,6 +9,7 @@ import * as path from "node:path";
 import {
   kspec as kspecFull,
   kspecJson,
+  readTestOutput,
   setupTempFixtures,
   cleanupTempDir,
   initGitRepo,
@@ -70,7 +71,7 @@ describe("Core Skill Update", () => {
       kspecFull("skill update", tempDir);
 
       // Verify content was restored from templates
-      const content = await fs.readFile(skillMdPath, "utf-8");
+      const content = await readTestOutput(skillMdPath);
       expect(content).toContain("# kspec Help");
       expect(content).not.toContain("Old Content");
     });
@@ -100,7 +101,7 @@ describe("Core Skill Update", () => {
       kspecFull("skill update", tempDir);
 
       // Verify docs were restored
-      const content = await fs.readFile(inboxPath, "utf-8");
+      const content = await readTestOutput(inboxPath);
       expect(content).toContain("Inbox Triage");
     });
   });

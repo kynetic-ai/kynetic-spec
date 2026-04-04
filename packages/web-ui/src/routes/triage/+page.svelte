@@ -8,16 +8,20 @@
 	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
 	import { page } from '$app/state';
-	import { createQuery, useQueryClient } from '@tanstack/svelte-query';
+	import { useQueryClient } from '@tanstack/svelte-query';
+	import { createQuery } from '$lib/query/createQuery.svelte.js';
 	import type { InboxItemWithTriage } from '@kynetic-ai/shared';
 	import type { TriageRecord, TriageAction } from '$lib/types/triage';
 	import {
 		fetchMergedInbox,
+		fetchTriageExport,
 		fetchTriageRecords,
 		createTriageRecord,
 		overrideTriageRecord,
-		actOnTriageRecord
+		actOnTriageRecord,
+		isCacheWarmingError
 	} from '$lib/api';
+	import CacheWarmingBanner from '$lib/components/CacheWarmingBanner.svelte';
 	import { isStaticMode, ReadOnlyModeError } from '$lib/stores/mode.svelte';
 	import { isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 	import { renderMarkdown } from '$lib/utils/markdown';
@@ -44,6 +48,10 @@
 
 	// Write operation error (separate from query error)
 	let writeError = $state('');
+	let exportLoading = $state(false);
+	let exportError = $state('');
+	let exportFormat = $state<'context' | 'json'>('context');
+	let exportContent = $state('');
 
 	// Action labels
 	const ACTION_LABELS: Record<TriageAction, string> = {
@@ -169,11 +177,16 @@
 	// AC: @ui-data-freshness ac-1 — Only show loading on initial fetch (no cache)
 	let loading = $derived(mergedInboxQuery.isLoading || triageRecordsQuery.isLoading);
 
+	// AC: @ui-data-freshness ac-warming-skeleton — Distinguish warming errors from other errors
+	let cacheWarming = $derived(isCacheWarmingError(mergedInboxQuery.error) || isCacheWarmingError(triageRecordsQuery.error));
+
 	// AC: @ui-data-freshness ac-7 — Surface error from query or write operations
 	let error = $derived(
 		writeError ||
-		(mergedInboxQuery.error ? mergedInboxQuery.error.message : '') ||
-		(triageRecordsQuery.error ? triageRecordsQuery.error.message : '')
+		(cacheWarming ? '' : (
+			(mergedInboxQuery.error ? mergedInboxQuery.error.message : '') ||
+			(triageRecordsQuery.error ? triageRecordsQuery.error.message : '')
+		))
 	);
 
 	function updateFilterParam(key: 'status' | 'action' | 'tag', value: string) {
@@ -302,6 +315,21 @@
 		}
 	}
 
+	// AC: @triage-daemon-api ac-6 - Export triage records for preview from /triage
+	async function handleExport(format: 'context' | 'json') {
+		try {
+			exportLoading = true;
+			exportError = '';
+			const result = await fetchTriageExport(format);
+			exportFormat = result.format;
+			exportContent = result.content;
+		} catch (err) {
+			exportError = err instanceof Error ? err.message : 'Failed to export triage records';
+		} finally {
+			exportLoading = false;
+		}
+	}
+
 	function formatDate(dateString: string): string {
 		const date = new Date(dateString);
 		const now = new Date();
@@ -387,6 +415,64 @@
 		</div>
 	</div>
 
+	{#if !isStaticMode()}
+		<Card data-testid="triage-export-panel">
+			<CardHeader class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+				<div class="space-y-1">
+					<h2 class="text-lg font-semibold">Export Decisions</h2>
+					<p class="text-sm text-muted-foreground">
+						Load the current triage export in Markdown context or JSON format.
+					</p>
+				</div>
+				<div class="flex gap-2" data-testid="triage-export-controls">
+					<Button
+						variant={exportFormat === 'context' && exportContent ? 'default' : 'outline'}
+						size="sm"
+						onclick={() => handleExport('context')}
+						disabled={exportLoading}
+						data-testid="triage-export-context"
+					>
+						{exportLoading && exportFormat === 'context' ? 'Loading…' : 'Export Markdown'}
+					</Button>
+					<Button
+						variant={exportFormat === 'json' && exportContent ? 'default' : 'outline'}
+						size="sm"
+						onclick={() => handleExport('json')}
+						disabled={exportLoading}
+						data-testid="triage-export-json"
+					>
+						{exportLoading && exportFormat === 'json' ? 'Loading…' : 'Export JSON'}
+					</Button>
+				</div>
+			</CardHeader>
+			<CardContent class="space-y-3">
+				{#if exportError}
+					<div
+						class="rounded-md bg-red-50 p-3 text-sm text-red-800 dark:bg-red-900/20 dark:text-red-200"
+						role="alert"
+						data-testid="triage-export-error"
+					>
+						{exportError}
+					</div>
+				{:else if exportContent}
+					<div class="space-y-2">
+						<p class="text-sm font-medium" data-testid="triage-export-format">
+							Showing {exportFormat === 'context' ? 'Markdown context' : 'JSON'} export
+						</p>
+						<pre
+							class="max-h-80 overflow-auto rounded-md border bg-muted/40 p-4 text-xs leading-5 whitespace-pre-wrap"
+							data-testid="triage-export-preview"
+						>{exportContent}</pre>
+					</div>
+				{:else}
+					<p class="text-sm text-muted-foreground" data-testid="triage-export-empty">
+						Choose a format to preview the triage export.
+					</p>
+				{/if}
+			</CardContent>
+		</Card>
+	{/if}
+
 	<!-- Progress bar -->
 	{#if totalCount > 0}
 		<div class="w-full bg-muted rounded-full h-2" data-testid="triage-progress-bar">
@@ -410,8 +496,16 @@
 		</div>
 	{/if}
 
-	{#if loading}
-		<div class="text-center text-muted-foreground py-12">Loading triage data...</div>
+	<!-- AC: @ui-data-freshness ac-warming-skeleton — Show skeleton during cache warming -->
+	<!-- AC: @ui-data-freshness ac-warming-timeout — Show error banner after 30s timeout -->
+	{#if cacheWarming}
+		<CacheWarmingBanner entityName="triage data" queryKey={queryKeys.inbox.merged()} extraQueryKeys={[queryKeys.inbox.list({ type: 'triage-records' })]} />
+	{:else if loading}
+		<div class="space-y-2" data-testid="triage-loading">
+			{#each Array(3) as _}
+				<div class="h-20 rounded-lg bg-muted ds-shimmer"></div>
+			{/each}
+		</div>
 	{:else if filteredItems.length === 0}
 		<div class="text-center text-muted-foreground py-12">
 			{#if allItems.length === 0}

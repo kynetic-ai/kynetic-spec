@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { existsSync } from "node:fs";
 import * as fs from "node:fs/promises";
-import { execSync } from "node:child_process";
+import { execSync, spawn, type ChildProcess } from "node:child_process";
 import * as path from "node:path";
 import * as YAML from "yaml";
 import * as invocationModule from "../src/agent-runtime/invocation.js";
@@ -26,6 +26,8 @@ import {
   type DispatchWorkspaceMetadata,
 } from "../src/agent-runtime/workspace.js";
 import { acquireFileLock } from "../src/parser/file-lock.js";
+import * as fileLockModule from "../src/parser/file-lock.js";
+import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
 import {
   cleanupTempDir,
   createTempDir,
@@ -34,6 +36,8 @@ import {
   readTestOutput,
   testUlid,
 } from "./helpers/cli.js";
+
+ensureSplitBackendRegistered();
 
 const MOCK_KSPEC_CLI = path.join(__dirname, "mocks", "kspec-capture-mock.cjs");
 const projectCli = path.resolve(__dirname, "..", "dist", "cli", "index.js");
@@ -55,6 +59,12 @@ function git(cwd: string, command: string): string {
     stdio: "pipe",
     encoding: "utf-8",
   }).trim();
+}
+
+function spawnKeepAliveProcess(): ChildProcess {
+  return spawn(process.execPath, ["-e", "setInterval(() => {}, 1000)"], {
+    stdio: "ignore",
+  });
 }
 
 async function seedRepo(dir: string): Promise<void> {
@@ -204,6 +214,7 @@ describe("dispatch workspace registry", () => {
   let tempDir: string;
   let specDir: string;
   let originalSpecDir: string | undefined;
+  const childProcesses: ChildProcess[] = [];
 
   beforeEach(async () => {
     tempDir = await createTempDir("kspec-dispatch-workspace-registry-");
@@ -214,6 +225,9 @@ describe("dispatch workspace registry", () => {
 
   afterEach(async () => {
     vi.restoreAllMocks();
+    for (const child of childProcesses.splice(0)) {
+      child.kill("SIGKILL");
+    }
     if (originalSpecDir === undefined) {
       delete process.env.KSPEC_SPEC_DIR;
     } else {
@@ -994,6 +1008,7 @@ describe("dispatch workspace registry", () => {
 
 describe("dispatch workspace registry shadow durability", () => {
   let tempDir: string;
+  const childProcesses: ChildProcess[] = [];
 
   beforeEach(async () => {
     tempDir = await createTempDir("kspec-dispatch-workspace-shadow-");
@@ -1001,6 +1016,9 @@ describe("dispatch workspace registry shadow durability", () => {
 
   afterEach(async () => {
     vi.restoreAllMocks();
+    for (const child of childProcesses.splice(0)) {
+      child.kill("SIGKILL");
+    }
     if (tempDir) {
       await cleanupTempDir(tempDir);
     }
@@ -1392,6 +1410,131 @@ describe("dispatch workspace registry shadow durability", () => {
       // Second reconciliation with no change — no new commit expected.
       await reconcileDispatchWorkspaceRegistry(tempDir);
       expect(getShadowCommitCount(tempDir)).toBe(commitCountBefore);
+    },
+  );
+
+  // AC: @scoped-dispatch-shadow-serialization ac-9
+  it("reconciliation acquires the lock per dirty record, not once for the entire batch", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+
+    // Provision 2 workspace records so reconciliation has 2 dirty records to process.
+    const taskRef1 = `@${testUlid("TASK", 35)}`;
+    const taskRef2 = `@${testUlid("TASK", 36)}`;
+
+    await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef: taskRef1,
+      task: {
+        title: "AC-9 Yield Record A",
+        slugs: ["task-ac9-yield-record-a"],
+      },
+    });
+
+    await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef: taskRef2,
+      task: {
+        title: "AC-9 Yield Record B",
+        slugs: ["task-ac9-yield-record-b"],
+      },
+    });
+
+    // Settle initial state so subsequent reconciliation only saves records
+    // that become dirty via a status change.
+    await reconcileDispatchWorkspaceRegistry(tempDir);
+
+    // Spy on acquireFileLock to count how many times reconciliation acquires it.
+    const lockSpy = vi.spyOn(fileLockModule, "acquireFileLock");
+
+    // Reconcile with changed task status for both records — both become dirty,
+    // so reconciliation should acquire the lock once per dirty record.
+    await reconcileDispatchWorkspaceRegistry(
+      tempDir,
+      new Map([
+        [taskRef1, "completed" as const],
+        [taskRef2, "completed" as const],
+      ]),
+    );
+
+    // Per-record yielding means acquireFileLock is called once per dirty record (2 times).
+    // A batch-wide lock would call it exactly once.
+    expect(lockSpy).toHaveBeenCalledTimes(2);
+
+    lockSpy.mockRestore();
+  });
+
+  // AC: @scoped-dispatch-shadow-serialization ac-11
+  it.skipIf(!canRunShadowTests)(
+    "rolls back uncommitted dirty shadow state when force-reclaiming a lock held beyond max duration",
+    async () => {
+      await setupShadowProject(tempDir);
+      git(tempDir, "checkout -b agent-dev");
+
+      const shadowDir = path.join(tempDir, SHADOW_WORKTREE_DIR);
+
+      // Phase 1: Dirty the shadow worktree with staged and untracked changes.
+      // - Staged new file: simulates an interrupted kspec mutation that staged
+      //   a new registry file but never committed it.
+      const stagedFile = path.join(shadowDir, "staged-partial.yaml");
+      await fs.writeFile(stagedFile, "partial: staged-data\n", "utf-8");
+      git(shadowDir, "add staged-partial.yaml");
+
+      // - Untracked file: simulates a partially-interrupted write
+      const untrackedFile = path.join(shadowDir, "partial-write.tmp");
+      await fs.writeFile(untrackedFile, "partial data\n", "utf-8");
+
+      // Verify shadow is dirty (staged + untracked)
+      const dirtyStatus = git(shadowDir, "status --porcelain");
+      expect(dirtyStatus).toContain("staged-partial.yaml");
+      expect(dirtyStatus).toContain("partial-write.tmp");
+
+      // Phase 2: Plant a force-reclaimable lock (alive PID, old timestamp).
+      const lockPath = getDispatchShadowMutationLockPath(tempDir);
+      const lockDir = `${lockPath}.lock`;
+      const holder = spawnKeepAliveProcess();
+      childProcesses.push(holder);
+      await fs.mkdir(lockDir, { recursive: true });
+      const oldTimestamp = Date.now() - 60_000; // 60 seconds ago
+      await fs.writeFile(
+        path.join(lockDir, "pid"),
+        `${holder.pid}\n${oldTimestamp}\nfake-uuid`,
+        "utf-8",
+      );
+
+      // Phase 3: Provision a workspace — this goes through withDispatchShadowMutationLock.
+      // The lock will be force-reclaimed (alive PID + exceeded ceiling),
+      // triggering rollbackDirtyShadowWorktree before the provisioning callback.
+      const original = process.env.KSPEC_SHADOW_MUTATION_LOCK_MAX_HOLD_MS;
+      process.env.KSPEC_SHADOW_MUTATION_LOCK_MAX_HOLD_MS = "5000";
+
+      try {
+        const taskRef = `@${testUlid("TASK", 34)}`;
+        await provisionDispatchWorkspace({
+          projectDir: tempDir,
+          taskRef,
+          task: {
+            title: "AC-11 Dirty Rollback",
+            slugs: ["task-ac-11-dirty-rollback"],
+          },
+        });
+
+        // Phase 4: Verify the shadow worktree was cleaned before provisioning proceeded.
+        // - The staged file must be unstaged and removed (it was new, not previously tracked)
+        expect(existsSync(stagedFile)).toBe(false);
+
+        // - The untracked partial-write.tmp must be removed
+        expect(existsSync(untrackedFile)).toBe(false);
+
+        // - Shadow status must be clean (provisioning committed its own changes only)
+        expect(getShadowStatus(tempDir)).toBe("");
+      } finally {
+        if (original === undefined) {
+          delete process.env.KSPEC_SHADOW_MUTATION_LOCK_MAX_HOLD_MS;
+        } else {
+          process.env.KSPEC_SHADOW_MUTATION_LOCK_MAX_HOLD_MS = original;
+        }
+      }
     },
   );
 });

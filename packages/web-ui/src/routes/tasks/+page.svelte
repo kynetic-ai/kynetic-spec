@@ -12,11 +12,13 @@
 	import { goto } from '$app/navigation';
 	import { onMount, onDestroy } from 'svelte';
 	import type { TaskDetail, BroadcastEvent } from '@kynetic-ai/shared';
-	import { createQuery, useQueryClient } from '@tanstack/svelte-query';
+	import { useQueryClient } from '@tanstack/svelte-query';
+	import { createQuery } from '$lib/query/createQuery.svelte.js';
 	import TaskFilters, { ACTIVE_STATUSES } from '$lib/components/TaskFilters.svelte';
 	import TaskList from '$lib/components/TaskList.svelte';
 	import TaskDetailContent from '$lib/components/board/TaskDetailContent.svelte';
-	import { fetchTasks, fetchTask } from '$lib/api';
+	import { fetchTasks, fetchTask, isCacheWarmingError } from '$lib/api';
+	import CacheWarmingBanner from '$lib/components/CacheWarmingBanner.svelte';
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
 	import { isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 	import { queryKeys } from '$lib/query/keys.js';
@@ -69,7 +71,9 @@
 	let total = $derived(tasksQuery.data?.total ?? 0);
 	// AC: @ui-data-freshness ac-1 — Only show loading on initial fetch (no cache)
 	let loading = $derived(tasksQuery.isLoading);
-	let error = $derived(tasksQuery.error?.message ?? '');
+	// AC: @ui-data-freshness ac-warming-skeleton — Distinguish warming errors from other errors
+	let cacheWarming = $derived(isCacheWarmingError(tasksQuery.error));
+	let error = $derived(cacheWarming ? '' : (tasksQuery.error?.message ?? ''));
 
 	// AC: Open task detail when URL has ref param
 	$effect(() => {
@@ -77,6 +81,10 @@
 		if (urlRef && urlRef !== lastProcessedRef) {
 			lastProcessedRef = urlRef;
 			handleSelectTask(urlRef);
+		}
+		// When URL no longer has ?ref= (after goto in close effect), reset tracking
+		if (!urlRef && lastProcessedRef) {
+			lastProcessedRef = '';
 		}
 	});
 
@@ -118,7 +126,9 @@
 		if (!dialogOpen) {
 			panelTask = null;
 			panelError = '';
-			lastProcessedRef = '';
+			// Do NOT clear lastProcessedRef here — keep it set so the open effect
+			// doesn't see the stale ?ref= as "new" while goto() is in flight.
+			// lastProcessedRef gets cleared by the open effect when urlRef becomes null.
 			const url = new URL($page.url);
 			if (url.searchParams.has('ref')) {
 				url.searchParams.delete('ref');
@@ -213,9 +223,15 @@
 		</div>
 	{/if}
 
-	{#if loading}
-		<div class="flex justify-center items-center py-12">
-			<p class="text-muted-foreground">Loading tasks...</p>
+	<!-- AC: @ui-data-freshness ac-warming-skeleton — Show skeleton during cache warming -->
+	<!-- AC: @ui-data-freshness ac-warming-timeout — Show error banner after 30s timeout -->
+	{#if cacheWarming}
+		<CacheWarmingBanner entityName="tasks" queryKey={queryKeys.tasks.list(filterParams)} />
+	{:else if loading}
+		<div class="space-y-2" data-testid="tasks-loading">
+			{#each Array(5) as _}
+				<div class="h-16 rounded-lg bg-muted ds-shimmer"></div>
+			{/each}
 		</div>
 	{:else}
 		<!-- AC: @web-dashboard ac-33 -->

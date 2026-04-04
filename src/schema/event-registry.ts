@@ -8,7 +8,7 @@
  * Domain grouping:
  * - task.*         — Task lifecycle state changes (existing, unchanged)
  * - invocation.*   — Agent invocation lifecycle (started, completed, failed, stalled)
- * - session.*      — Dispatch session lifecycle (ended, idle_timeout, cancelled)
+ * - session.*      — Dispatch session lifecycle (idle, ended, idle_timeout, cancelled)
  * - schedule.*     — Scheduled triggers (tick)
  * - action.*       — Universal action run tracking (started, completed, failed)
  *
@@ -25,6 +25,7 @@ import {
   INVOCATION_STARTED_PAYLOAD_FIELDS,
   INVOCATION_TERMINAL_PAYLOAD_FIELDS,
   SESSION_PAYLOAD_FIELDS,
+  SESSION_IDLE_PAYLOAD_FIELDS,
   SCHEDULE_TICK_PAYLOAD_FIELDS,
   ACTION_STARTED_PAYLOAD_FIELDS,
   ACTION_TERMINAL_PAYLOAD_FIELDS,
@@ -123,6 +124,14 @@ export const EVENT_REGISTRY: readonly EventRegistryEntry[] = [
   },
 
   // ─── Session domain ───────────────────────────────────────────────────
+  // AC: @session-idle-event ac-1 — session idle event with turn context
+  // AC: @multi-turn-session-lifecycle ac-3
+  {
+    event_type: "session.idle",
+    domain: "session",
+    description: "A multi-turn session transitioned to idle after a turn completed",
+    payload_fields: SESSION_IDLE_PAYLOAD_FIELDS,
+  },
   // AC: @dispatch-event-taxonomy ac-2 — session terminal state events
   // AC: @dispatch-event-payload ac-3 — session payload fields
   {

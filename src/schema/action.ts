@@ -93,19 +93,86 @@ export const NotifyActionSchema = z.object({
 });
 
 /**
- * Discriminated union of all action types.
+ * Session prompt action — delivers a prompt to an active session.
+ * Unlike the agent action (which spawns a new invocation), a session prompt
+ * action targets an existing session that is currently alive and idle.
+ *
+ * AC: @session-prompt-action ac-1 through ac-9
+ * AC: @session-prompt-action-schema ac-1 through ac-5
  */
-export const ActionSchema = z.discriminatedUnion("type", [
+const SessionPromptActionBaseSchema = z.object({
+  type: z.literal("session_prompt"),
+  /**
+   * Optional literal prompt to deliver (takes precedence over prompt_template).
+   * At least one of prompt or prompt_template is required.
+   * AC: @session-prompt-action-schema ac-1
+   */
+  prompt: z.string().optional(),
+  /**
+   * Optional prompt template with {{variable}} placeholders.
+   * Interpolated with event envelope and payload variables at execution time.
+   * AC: @session-prompt-action-schema ac-1
+   * AC: @session-prompt-action ac-6
+   */
+  prompt_template: z.string().optional(),
+  /**
+   * Optional target session identifier. When omitted in a hook on a session
+   * event, defaults to the triggering event's session_id.
+   * Required when configured outside a session event hook context.
+   * AC: @session-prompt-action ac-3, ac-7
+   * AC: @session-prompt-action-schema ac-3, ac-4
+   */
+  session_id: z.string().optional(),
+  /**
+   * Optional skill IDs to resolve and include in the prompt.
+   * Skills are resolved from the skill registry and their content is appended
+   * to the prompt before delivery. Follows the same pattern as agent definition skills.
+   * AC: @session-prompt-action-schema ac-5
+   * AC: @session-prompt-action ac-8
+   */
+  skills: z.array(z.string()).optional(),
+});
+
+/**
+ * Schema for discriminated union (ZodObject required by z.discriminatedUnion).
+ */
+export const SessionPromptActionSchema = SessionPromptActionBaseSchema;
+
+/**
+ * Internal discriminated union before cross-field validation.
+ * Use ActionSchema (which adds superRefine) for all parsing.
+ */
+const ActionSchemaBase = z.discriminatedUnion("type", [
   CommandActionSchema,
   KspecActionSchema,
   AgentActionSchema,
   NotifyActionSchema,
+  SessionPromptActionSchema,
 ]);
+
+/**
+ * Discriminated union of all action types, with cross-field validation.
+ * session_prompt actions require at least one of prompt or prompt_template.
+ * AC: @session-prompt-action-schema ac-1
+ */
+export const ActionSchema = ActionSchemaBase.superRefine((data, ctx) => {
+  if (
+    data.type === "session_prompt" &&
+    data.prompt === undefined &&
+    data.prompt_template === undefined
+  ) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "At least one of 'prompt' or 'prompt_template' is required",
+      path: ["prompt"],
+    });
+  }
+});
 
 /**
  * Valid action type identifiers.
  */
-export const ACTION_TYPES = ["command", "kspec", "agent", "notify"] as const;
+export const ACTION_TYPES = ["command", "kspec", "agent", "notify", "session_prompt"] as const;
 
 // ─── Action Run Schema ───────────────────────────────────────────────────────
 
@@ -122,7 +189,7 @@ export const ActionRunSchema = z.object({
   /** Unique identifier for this action run */
   action_run_id: UlidSchema,
   /** The action type that was executed */
-  action_type: z.enum(["command", "kspec", "agent", "notify"]),
+  action_type: z.enum(["command", "kspec", "agent", "notify", "session_prompt"]),
   /** Current status */
   status: ActionRunStatusSchema,
   /** When the run started */
@@ -160,6 +227,7 @@ export type CommandAction = z.infer<typeof CommandActionSchema>;
 export type KspecAction = z.infer<typeof KspecActionSchema>;
 export type AgentAction = z.infer<typeof AgentActionSchema>;
 export type NotifyAction = z.infer<typeof NotifyActionSchema>;
+export type SessionPromptAction = z.infer<typeof SessionPromptActionSchema>;
 export type Action = z.infer<typeof ActionSchema>;
 export type ActionRunStatus = z.infer<typeof ActionRunStatusSchema>;
 export type ActionRun = z.infer<typeof ActionRunSchema>;

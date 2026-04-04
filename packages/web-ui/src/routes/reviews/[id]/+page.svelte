@@ -25,7 +25,8 @@
 	import { goto } from '$app/navigation';
 	import { onMount, onDestroy } from 'svelte';
 	import type { ReviewDetail, ReviewSummary, ReviewThread, BroadcastEvent } from '@kynetic-ai/shared';
-	import { createQuery, createMutation, useQueryClient } from '@tanstack/svelte-query';
+	import { createMutation, useQueryClient } from '@tanstack/svelte-query';
+	import { createQuery } from '$lib/query/createQuery.svelte.js';
 	import { Badge } from '$lib/components/ui/badge';
 	import {
 		fetchReview,
@@ -259,6 +260,12 @@
 	let resolvedThreads = $derived(
 		review?.threads.filter((t) => t.resolved_at) ?? []
 	);
+	let showResolvedThreads = $state(false);
+
+	$effect(() => {
+		reviewId;
+		showResolvedThreads = false;
+	});
 
 	// --- Anchor display ---
 	function formatAnchor(thread: ReviewThread): string {
@@ -765,11 +772,31 @@
 
 					<!-- Resolved threads -->
 					{#if resolvedThreads.length > 0}
-						<details class="group">
-							<summary class="cursor-pointer text-sm text-muted-foreground hover:text-foreground py-2" data-testid="resolved-threads-toggle">
-								{resolvedThreads.length} resolved thread{resolvedThreads.length === 1 ? '' : 's'}
-							</summary>
-							<div class="flex flex-col gap-4 mt-2">
+						<div class="flex flex-col gap-2">
+							<button
+								type="button"
+								class="inline-flex items-center gap-2 self-start py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+								data-testid="resolved-threads-toggle"
+								aria-expanded={showResolvedThreads}
+								onclick={() => {
+									showResolvedThreads = !showResolvedThreads;
+								}}
+							>
+								<svg
+									class={`h-4 w-4 transition-transform ${showResolvedThreads ? 'rotate-90' : ''}`}
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								>
+									<path d="m9 18 6-6-6-6" />
+								</svg>
+								<span>{resolvedThreads.length} resolved thread{resolvedThreads.length === 1 ? '' : 's'}</span>
+							</button>
+							{#if showResolvedThreads}
+								<div class="flex flex-col gap-4 mt-2" data-testid="resolved-threads-section">
 								{#each resolvedThreads as thread (thread._ulid)}
 									{@const anchorText = formatAnchor(thread)}
 									<div
@@ -875,8 +902,9 @@
 										{/if}
 									</div>
 								{/each}
-							</div>
-						</details>
+								</div>
+							{/if}
+						</div>
 					{/if}
 				</div>
 			{/if}

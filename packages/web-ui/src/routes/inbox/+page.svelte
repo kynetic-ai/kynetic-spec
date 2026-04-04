@@ -11,13 +11,16 @@
 	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
 	import { page } from '$app/state';
-	import { createQuery, useQueryClient } from '@tanstack/svelte-query';
+	import { useQueryClient } from '@tanstack/svelte-query';
+	import { createQuery } from '$lib/query/createQuery.svelte.js';
 	import type { InboxItem, InboxItemWithTriage } from '@kynetic-ai/shared';
 	import {
 		fetchMergedInbox,
 		addInboxItem,
-		deleteInboxItem
+		deleteInboxItem,
+		isCacheWarmingError
 	} from '$lib/api';
+	import CacheWarmingBanner from '$lib/components/CacheWarmingBanner.svelte';
 	import { isStaticMode, ReadOnlyModeError } from '$lib/stores/mode.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
@@ -160,8 +163,11 @@
 	// AC: @ui-data-freshness ac-1 — Only show loading on initial fetch (no cache)
 	let loading = $derived(mergedInboxQuery.isLoading);
 
+	// AC: @ui-data-freshness ac-warming-skeleton — Distinguish warming errors from other errors
+	let cacheWarming = $derived(isCacheWarmingError(mergedInboxQuery.error));
+
 	// AC: @ui-data-freshness ac-7 — Surface error from query or write operations
-	let error = $derived(writeError || (mergedInboxQuery.error ? mergedInboxQuery.error.message : ''));
+	let error = $derived(writeError || (cacheWarming ? '' : (mergedInboxQuery.error ? mergedInboxQuery.error.message : '')));
 
 	// ── Filter URL management ──
 	function updateFilterParam(key: 'status' | 'tag' | 'age', value: string) {
@@ -370,8 +376,11 @@
 		</Card>
 	{/if}
 
-	<!-- Inbox list -->
-	{#if loading}
+	<!-- AC: @ui-data-freshness ac-warming-skeleton — Show skeleton during cache warming -->
+	<!-- AC: @ui-data-freshness ac-warming-timeout — Show error banner after 30s timeout -->
+	{#if cacheWarming}
+		<CacheWarmingBanner entityName="inbox items" queryKey={queryKeys.inbox.merged()} />
+	{:else if loading}
 		<div class="space-y-2" data-testid="inbox-loading">
 			{#each Array(5) as _}
 				<div class="h-20 rounded-lg bg-muted ds-shimmer"></div>

@@ -5,8 +5,8 @@
  * Prevents concurrent kspec processes from corrupting YAML files
  * during overlapping read-modify-write cycles.
  *
- * AC: Fixes race condition where concurrent task add commands could
- * lose data due to non-atomic read-modify-write in saveTask.
+ * AC: Fixes race condition where concurrent task operations could
+ * lose data due to non-atomic read-modify-write cycles.
  */
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
@@ -14,19 +14,81 @@ import { randomUUID } from "node:crypto";
 
 const DEFAULT_TIMEOUT_MS = 5000;
 const RETRY_INTERVAL_MS = 50;
-const _STALE_LOCK_MS = 30000; // Consider locks older than 30s stale (only if PID is dead)
+const DEFAULT_MAX_HOLD_MS = 30_000;
+
+/**
+ * Information about how a lock was acquired, particularly whether
+ * it was force-reclaimed from a holder that exceeded the max hold duration.
+ */
+export interface FileLockAcquireInfo {
+  /** True when the lock was reclaimed from an alive-but-stuck holder via duration ceiling. */
+  forceReclaimed: boolean;
+  /** PID of the previous holder if force-reclaimed, null otherwise. */
+  previousHolderPid: number | null;
+  /** How long the previous holder held the lock (ms) if force-reclaimed, null otherwise. */
+  previousHoldDurationMs: number | null;
+}
+
+export interface AcquireFileLockOptions {
+  /** Maximum time to wait (ms). 0 or Infinity = wait indefinitely. */
+  timeoutMs?: number;
+  /**
+   * Maximum duration a holder may keep the lock before it becomes
+   * eligible for reclamation, regardless of PID liveness.
+   * Set to 0 or Infinity to disable duration-based reclamation.
+   * Defaults to KSPEC_SHADOW_MUTATION_LOCK_MAX_HOLD_MS env var, or 30000ms.
+   *
+   * AC: @scoped-dispatch-shadow-serialization ac-8
+   */
+  maxHoldMs?: number;
+}
+
+/**
+ * Resolve the max-hold-duration ceiling from env or default.
+ */
+function resolveMaxHoldMs(explicit?: number): number {
+  if (explicit !== undefined) return explicit;
+  const raw = process.env.KSPEC_SHADOW_MUTATION_LOCK_MAX_HOLD_MS;
+  if (raw) {
+    const parsed = Number(raw);
+    if (Number.isFinite(parsed) && parsed > 0) return parsed;
+  }
+  return DEFAULT_MAX_HOLD_MS;
+}
+
+/** Result from stale-lock check with richer diagnostics. */
+interface StaleLockResult {
+  stale: boolean;
+  /** True when staleness was determined by duration ceiling, not dead PID. */
+  durationReclaim: boolean;
+  /** PID of the holder, if parseable. */
+  holderPid: number | null;
+  /** How long the lock has been held (ms), if timestamp is parseable. */
+  holdDurationMs: number | null;
+}
 
 /**
  * Acquire an advisory file lock using mkdir (atomic across processes).
- * Returns a release function that must be called when done.
+ * Returns a release function and acquisition info (including whether the
+ * lock was force-reclaimed from an alive-but-stuck holder).
  *
  * Ensures the lock directory's parent exists before attempting mkdir,
  * so callers can place directory creation inside the locked section.
+ *
+ * @overload Backward-compatible: acquireFileLock(path, timeoutMs?)
+ * @overload Extended: acquireFileLock(path, options?)
  */
 export async function acquireFileLock(
   filePath: string,
-  timeoutMs: number = DEFAULT_TIMEOUT_MS,
-): Promise<() => Promise<void>> {
+  timeoutMsOrOptions?: number | AcquireFileLockOptions,
+): Promise<(() => Promise<void>) & { info: FileLockAcquireInfo }> {
+  const opts: AcquireFileLockOptions =
+    typeof timeoutMsOrOptions === "number"
+      ? { timeoutMs: timeoutMsOrOptions }
+      : (timeoutMsOrOptions ?? {});
+  const timeoutMs = opts.timeoutMs ?? DEFAULT_TIMEOUT_MS;
+  const maxHoldMs = resolveMaxHoldMs(opts.maxHoldMs);
+
   const lockDir = `${filePath}.lock`;
   const pidFile = path.join(lockDir, "pid");
   const deadline = timeoutMs === 0 || timeoutMs === Infinity ? Infinity : Date.now() + timeoutMs;
@@ -37,6 +99,12 @@ export async function acquireFileLock(
   const parentDir = path.dirname(lockDir);
   await fs.mkdir(parentDir, { recursive: true });
 
+  let acquireInfo: FileLockAcquireInfo = {
+    forceReclaimed: false,
+    previousHolderPid: null,
+    previousHoldDurationMs: null,
+  };
+
   while (true) {
     try {
       // mkdir with recursive:false is atomic - only one process succeeds
@@ -45,8 +113,8 @@ export async function acquireFileLock(
       // Write our PID for stale lock detection
       await fs.writeFile(pidFile, ownershipMarker, "utf-8");
 
-      // Return release function
-      return async () => {
+      // Return release function with acquire info attached
+      const release = async () => {
         try {
           const currentMarker = await fs.readFile(pidFile, "utf-8");
           if (currentMarker !== ownershipMarker) {
@@ -59,6 +127,8 @@ export async function acquireFileLock(
           // Best effort cleanup
         }
       };
+      release.info = acquireInfo;
+      return release as (() => Promise<void>) & { info: FileLockAcquireInfo };
     } catch (err: unknown) {
       // Lock exists - check if it's stale
       if (
@@ -67,8 +137,23 @@ export async function acquireFileLock(
         "code" in err &&
         (err as { code: string }).code === "EEXIST"
       ) {
-        const isStale = await checkStaleLock(pidFile);
-        if (isStale) {
+        // AC: @scoped-dispatch-shadow-serialization ac-8, ac-10
+        const staleResult = await checkStaleLock(pidFile, maxHoldMs);
+        if (staleResult.stale) {
+          // AC: @scoped-dispatch-shadow-serialization ac-10 — diagnostic for force-reclaim
+          if (staleResult.durationReclaim) {
+            acquireInfo = {
+              forceReclaimed: true,
+              previousHolderPid: staleResult.holderPid,
+              previousHoldDurationMs: staleResult.holdDurationMs,
+            };
+            console.warn(
+              `[file-lock] Reclaiming lock on ${filePath} from alive process ` +
+                `PID ${staleResult.holderPid} (held for ${staleResult.holdDurationMs}ms, ` +
+                `ceiling ${maxHoldMs}ms).`,
+            );
+          }
+
           // Remove stale lock and retry
           try {
             await fs.rm(lockDir, { recursive: true, force: true });
@@ -104,9 +189,9 @@ export async function acquireFileLock(
 export async function withFileLock<T>(
   filePath: string,
   fn: () => Promise<T>,
-  timeoutMs?: number,
+  timeoutMsOrOptions?: number | AcquireFileLockOptions,
 ): Promise<T> {
-  const release = await acquireFileLock(filePath, timeoutMs);
+  const release = await acquireFileLock(filePath, timeoutMsOrOptions);
   try {
     return await fn();
   } finally {
@@ -115,34 +200,73 @@ export async function withFileLock<T>(
 }
 
 /**
- * Check if a lock is stale. A lock is stale only when the holding
- * process is dead (PID check fails). Age is used as a secondary
- * signal: if the PID is alive but the lock is very old, it's NOT
- * considered stale — the process may be running a long operation.
- * Age alone never breaks mutual exclusion.
+ * Check if a lock is stale. A lock is stale when:
+ * 1. The holding process is dead (PID check fails), OR
+ * 2. The lock has been held beyond the max-hold-duration ceiling
+ *    (regardless of PID liveness).
+ *
+ * AC: @scoped-dispatch-shadow-serialization ac-8 — duration ceiling
+ * AC: @scoped-dispatch-shadow-serialization ac-10 — alive-but-stuck reclamation
  */
-async function checkStaleLock(pidFile: string): Promise<boolean> {
+async function checkStaleLock(pidFile: string, maxHoldMs: number): Promise<StaleLockResult> {
+  const notStale: StaleLockResult = {
+    stale: false,
+    durationReclaim: false,
+    holderPid: null,
+    holdDurationMs: null,
+  };
+
   try {
     const content = await fs.readFile(pidFile, "utf-8");
-    const [pidStr] = content.trim().split("\n");
-    const pid = parseInt(pidStr, 10);
+    const lines = content.trim().split("\n");
+    const pid = parseInt(lines[0], 10);
+    const timestamp = parseInt(lines[1], 10);
 
     if (!isNaN(pid)) {
+      let pidAlive = false;
       try {
         process.kill(pid, 0); // Signal 0 = check if process exists
-        return false; // Process exists, lock is valid regardless of age
+        pidAlive = true;
       } catch {
-        return true; // Process doesn't exist, lock is stale
+        // Process doesn't exist, lock is stale via dead-PID path
+        return {
+          stale: true,
+          durationReclaim: false,
+          holderPid: pid,
+          holdDurationMs: !isNaN(timestamp) ? Date.now() - timestamp : null,
+        };
       }
+
+      // Never reclaim a lock from the current process. Same-process callers
+      // must serialize rather than overlap critical sections.
+      if (pid === process.pid) {
+        return notStale;
+      }
+
+      // PID is alive — check duration ceiling
+      // AC: @scoped-dispatch-shadow-serialization ac-8
+      if (pidAlive && maxHoldMs > 0 && maxHoldMs !== Infinity && !isNaN(timestamp)) {
+        const holdDuration = Date.now() - timestamp;
+        if (holdDuration > maxHoldMs) {
+          // AC: @scoped-dispatch-shadow-serialization ac-10
+          return {
+            stale: true,
+            durationReclaim: true,
+            holderPid: pid,
+            holdDurationMs: holdDuration,
+          };
+        }
+      }
+
+      return notStale; // Process alive and within duration ceiling
     }
 
-    // Can't parse PID — check if lock is very old as last resort
-    // This handles corrupt PID files where we can't verify the holder
-    return true;
+    // Can't parse PID — treat as stale (corrupt PID file)
+    return { stale: true, durationReclaim: false, holderPid: null, holdDurationMs: null };
   } catch {
     // Can't read PID file — might be in the process of being written.
     // Don't treat as stale to avoid racing with the lock holder.
-    return false;
+    return notStale;
   }
 }
 

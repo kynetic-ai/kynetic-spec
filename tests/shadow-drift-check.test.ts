@@ -510,4 +510,30 @@ describe("initContext sync behavior", () => {
     expect(pullCalled).toBe(false);
     expect(needsSyncCalled).toBe(false);
   });
+
+  // AC: @shadow-lazy-read-sync ac-daemon-bypass
+  it("initContext skips sync when explicit syncMode override is passed", async () => {
+    // Daemon routes pass { syncMode: "skip" } directly to initContext on
+    // cache-miss fallback, bypassing the module-level consumeSyncMode() state.
+    // This ensures daemon reads never trigger per-request drift-check even
+    // when no CLI command lifecycle has set a sync mode.
+    _resetSyncModeForTesting(); // Ensure no stale CLI sync mode
+
+    await initContext(testDir, { syncMode: "skip" });
+
+    expect(pullCalled).toBe(false);
+    expect(needsSyncCalled).toBe(false);
+  });
+
+  // AC: @shadow-lazy-read-sync ac-daemon-bypass (override takes precedence)
+  it("explicit syncMode override takes precedence over module-level setSyncMode", async () => {
+    // Even if setSyncMode("always") was called (e.g., stale CLI state),
+    // the explicit override from daemon routes should win.
+    setSyncMode("always");
+
+    await initContext(testDir, { syncMode: "skip" });
+
+    expect(pullCalled).toBe(false);
+    expect(needsSyncCalled).toBe(false);
+  });
 });

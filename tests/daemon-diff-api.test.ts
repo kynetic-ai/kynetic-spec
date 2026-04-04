@@ -14,9 +14,12 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { Elysia } from "elysia";
 import { parseUnifiedDiff } from "../src/utils/git-diff-parser";
-import { createTempDir, cleanupTempDir, initGitRepo, testUlid } from "./helpers/cli";
+import { createTempDir, cleanupTempDir, initGitRepo, testUlid, seedSplitTask } from "./helpers/cli";
 import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.ts";
 import { createDiffRoutes } from "../dist/daemon/routes/diff.ts";
+// Register split backend in the dist module space (routes use dist, not src)
+import { ensureSplitBackendRegistered } from "../dist/parser/split-backend.js";
+ensureSplitBackendRegistered();
 
 describe("parseUnifiedDiff", () => {
   // AC: @review-content-diff-api ac-1
@@ -596,14 +599,15 @@ describe("Diff API - Review Content Route", () => {
     // Manifest
     writeFileSync(
       path.join(tempDir, "kynetic.yaml"),
-      `kynetic: "1.0"
+      `kynetic: "1.1"
+task_storage:
+  format: split
 project:
   name: Test Project
   version: "0.1.0"
   status: draft
 includes:
   - modules/test.yaml
-tasks_file: project.tasks.yaml
 `,
     );
 
@@ -630,25 +634,24 @@ tasks_file: project.tasks.yaml
 `,
     );
 
-    // Tasks
-    writeFileSync(
-      path.join(tempDir, "project.tasks.yaml"),
-      `tasks:
-  - _ulid: "${TASK_ULID}"
-    slugs:
-      - task-test
-    title: "Test Task"
-    description: "A test task for review content"
-    status: in_progress
-    spec_ref: "@test-feature"
-    created_at: "2026-01-01T00:00:00Z"
-    notes:
-      - _ulid: "${testUlid("N0TE", 1)}"
-        created_at: "2026-01-02T00:00:00Z"
-        author: "@test"
-        content: "Started working on this task"
-`,
-    );
+    // Tasks (split format)
+    seedSplitTask(tempDir, {
+      _ulid: TASK_ULID,
+      slugs: ["task-test"],
+      title: "Test Task",
+      description: "A test task for review content",
+      status: "in_progress",
+      spec_ref: "@test-feature",
+      created_at: "2026-01-01T00:00:00Z",
+      notes: [
+        {
+          _ulid: testUlid("N0TE", 1),
+          created_at: "2026-01-02T00:00:00Z",
+          author: "@test",
+          content: "Started working on this task",
+        },
+      ],
+    });
 
     // Plans
     writeFileSync(

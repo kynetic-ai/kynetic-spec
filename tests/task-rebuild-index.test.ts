@@ -8,6 +8,7 @@ import {
   initGitRepo,
   kspec,
   kspecJson,
+  readTestOutput,
   testUlid,
   testUlids,
 } from "./helpers/cli.js";
@@ -81,7 +82,7 @@ async function addToIndex(
 ): Promise<void> {
   const indexPath = path.join(tempDir, ".kspec", "project.tasks.yaml");
   const { parse } = await import("yaml");
-  const content = await fs.readFile(indexPath, "utf-8");
+  const content = await readTestOutput(indexPath);
   const existing = parse(content) || [];
   const entries = Array.isArray(existing) ? existing : [];
 
@@ -137,10 +138,7 @@ describe("kspec task rebuild-index", () => {
     expect(result.stdout).toContain("rebuilt");
 
     // Verify the index now contains both tasks
-    const indexContent = await fs.readFile(
-      path.join(tempDir, ".kspec", "project.tasks.yaml"),
-      "utf-8",
-    );
+    const indexContent = await readTestOutput(path.join(tempDir, ".kspec", "project.tasks.yaml"));
     expect(indexContent).toContain(id1);
     expect(indexContent).toContain(id2);
   });
@@ -229,10 +227,7 @@ describe("kspec task rebuild-index", () => {
     expect(result.stdout).toContain("rebuilt");
 
     // Verify index now has both entries
-    const indexContent = await fs.readFile(
-      path.join(tempDir, ".kspec", "project.tasks.yaml"),
-      "utf-8",
-    );
+    const indexContent = await readTestOutput(path.join(tempDir, ".kspec", "project.tasks.yaml"));
     expect(indexContent).toContain(id1);
     expect(indexContent).toContain(id2);
   });
@@ -249,10 +244,7 @@ describe("kspec task rebuild-index", () => {
     expect(result.stdout).toContain("--repair");
 
     // Index should still be empty
-    const indexContent = await fs.readFile(
-      path.join(tempDir, ".kspec", "project.tasks.yaml"),
-      "utf-8",
-    );
+    const indexContent = await readTestOutput(path.join(tempDir, ".kspec", "project.tasks.yaml"));
     expect(indexContent).not.toContain(id);
   });
 
@@ -308,11 +300,11 @@ describe("kspec task rebuild-index", () => {
     const id = testUlid("DRYN");
     await createTaskDir(tempDir, id, "task-dry-nomod");
     const indexPath = path.join(tempDir, ".kspec", "project.tasks.yaml");
-    const indexBefore = await fs.readFile(indexPath, "utf-8");
+    const indexBefore = await readTestOutput(indexPath);
 
     kspec("task rebuild-index --dry-run", tempDir, { env });
 
-    const indexAfter = await fs.readFile(indexPath, "utf-8");
+    const indexAfter = await readTestOutput(indexPath);
     expect(indexAfter).toBe(indexBefore);
   });
 
@@ -355,7 +347,7 @@ describe("kspec task rebuild-index", () => {
     ({ env } = await setupSplitEnv(tempDir));
     // No task dirs — would error
     const indexPath = path.join(tempDir, ".kspec", "project.tasks.yaml");
-    const indexBefore = await fs.readFile(indexPath, "utf-8");
+    const indexBefore = await readTestOutput(indexPath);
 
     const result = kspec("task rebuild-index --dry-run", tempDir, {
       expectFail: true,
@@ -366,7 +358,7 @@ describe("kspec task rebuild-index", () => {
     expect(output).toContain("No per-task directories found");
 
     // Index unchanged
-    const indexAfter = await fs.readFile(indexPath, "utf-8");
+    const indexAfter = await readTestOutput(indexPath);
     expect(indexAfter).toBe(indexBefore);
   });
 
@@ -381,7 +373,7 @@ describe("kspec task rebuild-index", () => {
     const id = testUlid("DRYF");
     await createTaskDir(tempDir, id, "task-dry-force");
     const indexPath = path.join(tempDir, ".kspec", "project.tasks.yaml");
-    const indexBefore = await fs.readFile(indexPath, "utf-8");
+    const indexBefore = await readTestOutput(indexPath);
 
     const result = kspec("task rebuild-index --dry-run --repair --force", tempDir, {
       env,
@@ -390,7 +382,7 @@ describe("kspec task rebuild-index", () => {
     expect(`${result.stdout} ${result.stderr}`).toMatch(/DRY RUN/i);
 
     // Index should not have been modified
-    const indexAfter = await fs.readFile(indexPath, "utf-8");
+    const indexAfter = await readTestOutput(indexPath);
     expect(indexAfter).toBe(indexBefore);
   });
 

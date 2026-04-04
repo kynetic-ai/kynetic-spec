@@ -1,0 +1,14 @@
+_ulid: 01KG0RRGCC9N4YGP991WD7XSNR
+slugs:
+  - test-task-needs-review
+title: Needs review task
+type: task
+status: pending
+priority: 2
+tags:
+  - test
+description: A task with automation needs_review
+depends_on: []
+automation: needs_review
+todos: []
+created_at: "2026-01-01T00:00:00Z"

@@ -6,6 +6,7 @@ import {
   createTempDir,
   initGitRepo,
   kspecWithStatus,
+  seedSplitTask,
   testUlid,
 } from "./helpers/cli";
 
@@ -33,14 +34,14 @@ describe("validate mode selection", () => {
 
     await fs.writeFile(
       path.join(rootDir, "kynetic.yaml"),
-      `kynetic: "1.0"
+      `kynetic: "1.1"
+task_storage:
+  format: split
 project:
   name: validate-mode-test
   version: 0.1.0
 includes:
   - "spec/module.yaml"
-tasks:
-  - "spec/project.tasks.yaml"
 `,
     );
 
@@ -59,17 +60,17 @@ tasks:
 `,
     );
 
-    await fs.writeFile(
-      path.join(specDir, "project.tasks.yaml"),
-      `tasks:
-  - _ulid: ${taskUlid}
-    slugs:
-      - task-mode-spec
-    title: Completed task for mode spec
-    status: completed
-    spec_ref: "@mode-spec"
-`,
-    );
+    seedSplitTask(rootDir, {
+      _ulid: taskUlid,
+      slugs: ["task-mode-spec"],
+      title: "Completed task for mode spec",
+      status: "completed",
+      priority: 3,
+      depends_on: [],
+      spec_ref: "@mode-spec",
+      notes: [],
+      created_at: "2026-01-01T00:00:00Z",
+    });
   }
 
   it("runs only schema checks for --schema", () => {

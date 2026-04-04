@@ -1,0 +1,342 @@
+import { test as base, expect } from "@playwright/test";
+import { execSync, type ChildProcess, spawn } from "child_process";
+import { mkdirSync, mkdtempSync, cpSync, rmSync, existsSync, writeFileSync } from "fs";
+import { join, dirname } from "path";
+import { tmpdir } from "os";
+import { fileURLToPath } from "url";
+import { createServer } from "net";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Daemon entry point — spawned directly via bun to avoid CLI PID-file timeout
+const DAEMON_ENTRY = join(__dirname, "../../../dist/daemon/index.ts");
+// CLI entry point — used for scoped `kspec serve stop` teardown (ac-4)
+const KSPEC_CLI = join(__dirname, "../../../dist/cli/index.js");
+
+// E2E fixtures live alongside this file
+const E2E_FIXTURES = __dirname;
+// Path to built web UI bundle copied by build:e2e. Using dist/web-ui avoids
+// worktree-specific package build paths leaking into isolated daemon fixtures.
+const WEB_UI_BUILD = join(__dirname, "../../../dist/web-ui");
+
+interface DaemonFixture {
+  tempDir: string;
+  kspecDir: string;
+  /** Ephemeral port the test daemon is listening on */
+  port: number;
+  /** Base URL for HTTP requests (http://localhost:<port>) */
+  baseUrl: string;
+  /** Base URL for WebSocket connections (ws://localhost:<port>) */
+  wsUrl: string;
+  /** Stop the isolated daemon while keeping fixture data intact */
+  stop: () => Promise<void>;
+  /** Start or restart the isolated daemon on the same port */
+  start: () => Promise<void>;
+  /** Create a valid second project for multi-project tests */
+  createSecondProject: () => Promise<string>;
+}
+
+// AC: @e2e-test-daemon-isolation ac-1 — ephemeral port allocation
+async function getAvailablePort(): Promise<number> {
+  return new Promise((resolve, reject) => {
+    const server = createServer();
+    server.once("error", reject);
+    server.listen(0, "127.0.0.1", () => {
+      const address = server.address();
+      if (!address || typeof address === "string") {
+        server.close(() => reject(new Error("Failed to allocate ephemeral port")));
+        return;
+      }
+      const { port } = address;
+      server.close((error) => {
+        if (error) {
+          reject(error);
+          return;
+        }
+        resolve(port);
+      });
+    });
+  });
+}
+
+async function checkBunAvailable(): Promise<boolean> {
+  try {
+    // Use 'where' on Windows, 'which' on Unix
+    const cmd = process.platform === "win32" ? "where" : "which";
+    execSync(`${cmd} bun`, { stdio: "ignore" });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export const test = base.extend<{ daemon: DaemonFixture }>({
+  // AC: @e2e-test-daemon-isolation ac-5 — dynamic baseURL from daemon fixture
+  baseURL: async ({ daemon }, use) => {
+    await use(daemon.baseUrl);
+  },
+
+  daemon: [
+    // oxlint-disable-next-line no-empty-pattern
+    async ({}, use) => {
+      // Check Bun is available (daemon requires it)
+      if (!(await checkBunAvailable())) {
+        throw new Error(
+          "Bun runtime required for daemon. Install: curl -fsSL https://bun.sh/install | bash",
+        );
+      }
+
+      // AC: @e2e-test-daemon-isolation ac-1 — use ephemeral port, never hardcoded
+      // AC: @e2e-test-daemon-isolation ac-2 — never kill user daemons
+      const port = await getAvailablePort();
+      const baseUrl = `http://localhost:${port}`;
+      const wsUrl = `ws://localhost:${port}`;
+
+      // Create temp directory with .kspec subdirectory
+      // Use mkdtempSync for atomic unique path — safe under parallel Playwright workers
+      const tempDir = mkdtempSync(join(tmpdir(), "kspec-e2e-"));
+      const kspecDir = join(tempDir, ".kspec");
+      mkdirSync(kspecDir, { recursive: true });
+
+      // AC: @e2e-test-daemon-isolation ac-3 — isolated HOME/config
+      const isolatedHome = join(tempDir, ".home");
+      const configDir = join(isolatedHome, ".config", "kspec");
+      mkdirSync(configDir, { recursive: true });
+      const {
+        KSPEC_NO_DAEMON: _kspecNoDaemon,
+        KSPEC_SESSION_ID: _kspecSessionId,
+        ...baseEnv
+      } = process.env;
+      const isolatedEnv = {
+        ...baseEnv,
+        HOME: isolatedHome,
+        USERPROFILE: isolatedHome,
+        WEB_UI_DIR: WEB_UI_BUILD,
+        KSPEC_TEST: "1",
+      };
+
+      // Copy E2E test fixtures to .kspec subdirectory (simulating shadow worktree mode)
+      if (existsSync(E2E_FIXTURES)) {
+        cpSync(E2E_FIXTURES, kspecDir, {
+          recursive: true,
+          filter: (src) => !src.includes("test-base") && !src.includes("project-tests"),
+        });
+      } else {
+        throw new Error(`E2E test fixtures not found at ${E2E_FIXTURES}`);
+      }
+
+      // Copy project-level tests directory for AC coverage scanning
+      const projectTests = join(E2E_FIXTURES, "project-tests");
+      if (existsSync(projectTests)) {
+        cpSync(projectTests, join(tempDir, "tests"), { recursive: true });
+      }
+
+      // Initialize git repo in project root (required for kspec)
+      execSync("git init", { cwd: tempDir, stdio: "ignore" });
+      execSync('git config user.email "test@test.com"', { cwd: tempDir, stdio: "ignore" });
+      execSync('git config user.name "Test"', { cwd: tempDir, stdio: "ignore" });
+
+      // Set up shadow worktree simulation for kspec to detect .kspec/ as spec directory
+      const gitWorktreesDir = join(tempDir, ".git", "worktrees", "-kspec");
+      mkdirSync(gitWorktreesDir, { recursive: true });
+      writeFileSync(join(kspecDir, ".git"), `gitdir: ${gitWorktreesDir}\n`);
+      writeFileSync(join(gitWorktreesDir, "gitdir"), `${join(tempDir, ".git")}\n`);
+      writeFileSync(join(gitWorktreesDir, "HEAD"), "ref: refs/heads/kspec-meta\n");
+
+      // Verify web UI is built (daemon serves it for E2E tests)
+      if (!existsSync(WEB_UI_BUILD)) {
+        throw new Error(
+          `Web UI not built. Run 'npm run build -w packages/web-ui' first.\n` +
+            `Expected build at: ${WEB_UI_BUILD}`,
+        );
+      }
+
+      let daemonProcess: ChildProcess | null = null;
+      let daemonStderr = "";
+      const maxAttempts = 150;
+      const pollInterval = 100;
+
+      async function waitForDaemonReady(): Promise<void> {
+        for (let i = 0; i < maxAttempts; i++) {
+          if (daemonProcess?.exitCode !== null) {
+            throw new Error(
+              `Daemon process exited with code ${daemonProcess.exitCode} before becoming ready.\n${daemonStderr}`,
+            );
+          }
+          try {
+            const response = await fetch(`${baseUrl}/api/health`);
+            if (response.ok) break;
+          } catch {
+            // Daemon not ready yet
+          }
+          if (i === maxAttempts - 1) {
+            throw new Error(
+              `Daemon failed to become ready after ${maxAttempts * pollInterval}ms.\n${daemonStderr}`,
+            );
+          }
+          await new Promise((r) => setTimeout(r, pollInterval));
+        }
+
+        // Wait for entity cache to finish loading (cache_status: "ready")
+        for (let i = 0; i < maxAttempts; i++) {
+          try {
+            const response = await fetch(`${baseUrl}/api/tasks`);
+            if (response.ok) {
+              const body = await response.json();
+              if (body?.meta?.cache_status === "ready") break;
+            }
+          } catch {
+            // Not ready yet
+          }
+          if (i === maxAttempts - 1) {
+            throw new Error(
+              `Daemon cache failed to become ready after ${maxAttempts * pollInterval}ms.\n${daemonStderr}`,
+            );
+          }
+          await new Promise((r) => setTimeout(r, pollInterval));
+        }
+      }
+
+      async function startDaemon(): Promise<void> {
+        if (daemonProcess && daemonProcess.exitCode === null) {
+          return;
+        }
+
+        daemonStderr = "";
+        daemonProcess = spawn(
+          "bun",
+          [DAEMON_ENTRY, "--port", String(port), "--kspec-dir", tempDir],
+          {
+            cwd: tempDir,
+            stdio: "pipe",
+            env: { ...isolatedEnv, BUN_ENV: "production" },
+          },
+        );
+
+        daemonProcess.stderr?.on("data", (chunk: Buffer) => {
+          daemonStderr += chunk.toString();
+        });
+
+        await waitForDaemonReady();
+      }
+
+      async function stopDaemon(): Promise<void> {
+        if (!daemonProcess || daemonProcess.exitCode !== null) {
+          return;
+        }
+
+        try {
+          execSync(`node ${KSPEC_CLI} serve stop`, {
+            cwd: tempDir,
+            stdio: "ignore",
+            timeout: 10000,
+            env: isolatedEnv,
+          });
+        } catch {
+          if (daemonProcess.pid && daemonProcess.exitCode === null) {
+            daemonProcess.kill("SIGTERM");
+          }
+        }
+
+        if (daemonProcess.exitCode === null) {
+          await new Promise<void>((resolve) => {
+            const timeout = setTimeout(() => {
+              if (daemonProcess?.exitCode === null) {
+                daemonProcess.kill("SIGKILL");
+              }
+              resolve();
+            }, 5000);
+            daemonProcess?.once("exit", () => {
+              clearTimeout(timeout);
+              resolve();
+            });
+          });
+        }
+
+        daemonProcess = null;
+      }
+
+      await startDaemon();
+
+      // Helper to create a valid second project for multi-project tests
+      // AC: @multi-directory-daemon ac-25 - Tests need multiple valid projects
+      async function createSecondProject(): Promise<string> {
+        const secondProjectPath = `${tempDir}-second`;
+        const secondKspecDir = join(secondProjectPath, ".kspec");
+
+        mkdirSync(secondKspecDir, { recursive: true });
+
+        writeFileSync(
+          join(secondKspecDir, "kynetic.yaml"),
+          `kynetic: "1.0"
+project: Second Test Project
+`,
+        );
+
+        writeFileSync(
+          join(secondKspecDir, "project.tasks.yaml"),
+          `# Tasks for second test project
+tasks: []
+`,
+        );
+
+        execSync("git init", { cwd: secondProjectPath, stdio: "ignore" });
+        execSync('git config user.email "test@test.com"', {
+          cwd: secondProjectPath,
+          stdio: "ignore",
+        });
+        execSync('git config user.name "Test"', { cwd: secondProjectPath, stdio: "ignore" });
+
+        const secondGitWorktreesDir = join(secondProjectPath, ".git", "worktrees", "-kspec");
+        mkdirSync(secondGitWorktreesDir, { recursive: true });
+        writeFileSync(join(secondKspecDir, ".git"), `gitdir: ${secondGitWorktreesDir}\n`);
+        writeFileSync(
+          join(secondGitWorktreesDir, "gitdir"),
+          `${join(secondProjectPath, ".git")}\n`,
+        );
+        writeFileSync(join(secondGitWorktreesDir, "HEAD"), "ref: refs/heads/kspec-meta\n");
+
+        // AC: @e2e-test-daemon-isolation ac-5 — use dynamic port
+        const response = await fetch(`${baseUrl}/api/projects`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ path: secondProjectPath }),
+        });
+
+        if (!response.ok) {
+          const error = await response.text();
+          throw new Error(`Failed to register second project: ${error}`);
+        }
+
+        return secondProjectPath;
+      }
+
+      // AC: @e2e-test-daemon-isolation ac-5 — propagate port/URLs to all tests
+      await use({
+        tempDir,
+        kspecDir,
+        port,
+        baseUrl,
+        wsUrl,
+        stop: stopDaemon,
+        start: startDaemon,
+        createSecondProject,
+      });
+
+      // AC: @e2e-test-daemon-isolation ac-4 — stop daemon via scoped `kspec serve stop`
+      await stopDaemon();
+
+      // Remove temp directories
+      try {
+        rmSync(tempDir, { recursive: true, force: true });
+        rmSync(`${tempDir}-second`, { recursive: true, force: true });
+      } catch {
+        // Best effort cleanup
+      }
+    },
+    { scope: "test" },
+  ],
+});
+
+export { expect };

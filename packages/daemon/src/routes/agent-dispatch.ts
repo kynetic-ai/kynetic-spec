@@ -31,8 +31,10 @@ import type {
 import { ScheduleEngine } from "../../agent-runtime/schedule-engine.js";
 import { HookExecutor } from "../../agent-runtime/hook-executor.js";
 import { JoinAccumulator } from "../../agent-runtime/join-accumulator.js";
-import { ActionExecutor } from "../../agent-runtime/action-executor.js";
-import { DEFAULT_KSPEC_CLI_PATH } from "../../agent-runtime/invocation.js";
+import { ActionExecutor, type AgentSpawner } from "../../agent-runtime/action-executor.js";
+import { SessionRegistry } from "../../agent-runtime/session-registry.js";
+import { DEFAULT_KSPEC_CLI_PATH, runInvocation } from "../../agent-runtime/invocation.js";
+import { ulid } from "ulid";
 import {
   initContext,
   loadMetaContext,
@@ -57,12 +59,17 @@ const scheduleEngines: Map<string, ScheduleEngine> = new Map();
 const hookExecutors: Map<string, HookExecutor> = new Map();
 // Singleton join accumulator per project path (started alongside dispatch)
 const joinAccumulators: Map<string, JoinAccumulator> = new Map();
+// Singleton session registry per project path (shared with action executors for session_prompt actions)
+// AC: @session-prompt-action ac-1
+// Session registries are owned by DispatchEngine instances — use engine.sessionRegistry
 
 export interface AgentDispatchRouteOptions {
   defaultProjectPath?: string;
   /** PubSubManager for broadcasting agent invocation events to WebSocket clients */
   pubsub?: PubSubManager;
 }
+
+// Session registry is created by DispatchEngine and accessed via engine.sessionRegistry
 
 /**
  * Create a new dispatch engine with optional WebSocket broadcast wiring.
@@ -107,6 +114,85 @@ function createEngine(projectDir: string, cwd?: string, pubsub?: PubSubManager):
   });
 }
 
+function serializeDegradedTargets(engine: DispatchEngine): Array<{
+  branch: string;
+  reason: string;
+  enteredAt: string;
+}> {
+  return engine.getDegradedState().map((target) => ({
+    branch: target.branch,
+    reason: target.reason,
+    enteredAt: target.enteredAt.toISOString(),
+  }));
+}
+
+function serializeDegradedSummary(
+  degradedTargets: Array<{ branch: string; reason: string; enteredAt: string }>,
+): {
+  active: boolean;
+  reason: string;
+  enteredAt: string | null;
+} {
+  const firstTarget = degradedTargets[0];
+  if (!firstTarget) {
+    return { active: false, reason: "", enteredAt: null };
+  }
+  return {
+    active: true,
+    reason: firstTarget.reason,
+    enteredAt: firstTarget.enteredAt,
+  };
+}
+
+/**
+ * Create an AgentSpawner callback for automation subsystem action executors.
+ *
+ * Resolves agent definitions from meta config, spawns invocations via
+ * runInvocation with the project root as working directory, and returns
+ * a trackable invocation ID.
+ *
+ * AC: @automation-action-type-completeness ac-1, ac-2, ac-3, ac-4
+ */
+export function createAutomationAgentSpawner(projectDir: string): AgentSpawner {
+  return async (options) => {
+    const ctx = await initContext(projectDir);
+    const meta = await loadMetaContext(ctx);
+    const agentDef = meta.agents.find((a) => a.id === options.agent_id);
+
+    if (!agentDef) {
+      throw new Error(
+        `Agent "${options.agent_id}" not found in project configuration. ` +
+          `Available agents: ${meta.agents.map((a) => a.id).join(", ") || "(none)"}`,
+      );
+    }
+
+    // AC: @dispatch-agent-action-input ac-4 — propagate correlation_id and group_id
+    // via env vars so the spawned agent inherits the event correlation chain
+    const env: Record<string, string> = {};
+    if (options.correlation_id) {
+      env.KSPEC_CORRELATION_ID = options.correlation_id;
+    }
+    if (options.group_id) {
+      env.KSPEC_COMPOSITION_GROUP_ID = options.group_id;
+    }
+
+    const sessionId = ulid();
+    const result = await runInvocation({
+      agent: agentDef,
+      specDir: ctx.specDir,
+      cwd: projectDir,
+      taskRef: options.task_ref,
+      prompt: options.prompt ?? `Run as agent "${options.agent_id}".`,
+      trigger: "manual",
+      timeoutMinutes: options.timeout_minutes,
+      sessionId,
+      ...(Object.keys(env).length > 0 && { env }),
+    });
+
+    return { invocation_id: result.session.id };
+  };
+}
+
 /**
  * Start the schedule engine for a project, integrating with the dispatch engine's event bus.
  * AC: @dispatch-schedule-entities ac-1 through ac-6
@@ -116,12 +202,16 @@ async function startScheduleEngine(
   engine: DispatchEngine,
   pubsub?: PubSubManager,
 ): Promise<void> {
-  // Create action executor wired to the event bus
+  // Create action executor wired to the event bus, agent spawner, and engine's session registry
+  // AC: @automation-action-type-completeness ac-1, ac-5
   const actionExecutor = new ActionExecutor({
     projectDir,
     kspecCliPath: DEFAULT_KSPEC_CLI_PATH,
+    sessionRegistry: engine.sessionRegistry,
+    agentSpawner: createAutomationAgentSpawner(projectDir),
     onActionRunEvent: (event) => {
       // Emit action lifecycle events on the shared bus
+      // AC: @automation-action-type-completeness ac-5 — include error and failure_reason for diagnosability
       engine.eventBus.emit({
         event_type: event.type,
         source_type: "schedule_engine",
@@ -135,6 +225,10 @@ async function startScheduleEngine(
             duration_ms: event.action_run.duration_ms,
           }),
           ...(event.action_run.invocation_id && { session_id: event.action_run.invocation_id }),
+          ...(event.action_run.error && { error: event.action_run.error }),
+          ...(event.action_run.failure_reason && {
+            failure_reason: event.action_run.failure_reason,
+          }),
         },
         causation_id: event.event_context.causation_id,
         correlation_id: event.event_context.correlation_id,
@@ -179,10 +273,14 @@ async function startHookExecutor(
   const ctx = await initContext(projectDir);
   const meta = await loadMetaContext(ctx);
 
+  // AC: @automation-action-type-completeness ac-2, ac-5
   const actionExecutor = new ActionExecutor({
     projectDir,
     kspecCliPath: DEFAULT_KSPEC_CLI_PATH,
+    sessionRegistry: engine.sessionRegistry,
+    agentSpawner: createAutomationAgentSpawner(projectDir),
     onActionRunEvent: (event) => {
+      // AC: @automation-action-type-completeness ac-5 — include error and failure_reason for diagnosability
       engine.eventBus.emit({
         event_type: event.type,
         source_type: "api",
@@ -195,6 +293,10 @@ async function startHookExecutor(
             duration_ms: event.action_run.duration_ms,
           }),
           ...(event.action_run.invocation_id && { session_id: event.action_run.invocation_id }),
+          ...(event.action_run.error && { error: event.action_run.error }),
+          ...(event.action_run.failure_reason && {
+            failure_reason: event.action_run.failure_reason,
+          }),
         },
         causation_id: event.event_context.causation_id,
         correlation_id: event.event_context.correlation_id,
@@ -243,10 +345,14 @@ async function startJoinAccumulator(
   const compositions = meta.manifest?.compositions ?? [];
   if (compositions.length === 0) return;
 
+  // AC: @automation-action-type-completeness ac-3, ac-5
   const actionExecutor = new ActionExecutor({
     projectDir,
     kspecCliPath: DEFAULT_KSPEC_CLI_PATH,
+    sessionRegistry: engine.sessionRegistry,
+    agentSpawner: createAutomationAgentSpawner(projectDir),
     onActionRunEvent: (event) => {
+      // AC: @automation-action-type-completeness ac-5 — include error and failure_reason for diagnosability
       engine.eventBus.emit({
         event_type: event.type,
         source_type: "api",
@@ -261,6 +367,10 @@ async function startJoinAccumulator(
             duration_ms: event.action_run.duration_ms,
           }),
           ...(event.action_run.invocation_id && { session_id: event.action_run.invocation_id }),
+          ...(event.action_run.error && { error: event.action_run.error }),
+          ...(event.action_run.failure_reason && {
+            failure_reason: event.action_run.failure_reason,
+          }),
         },
         causation_id: event.event_context.causation_id,
         correlation_id: event.event_context.correlation_id,
@@ -289,6 +399,18 @@ function stopJoinAccumulator(projectDir: string): void {
   if (accumulator) {
     accumulator.stop();
     joinAccumulators.delete(projectDir);
+  }
+}
+
+/**
+ * Stop and clean up the session registry for a project.
+ * Closes all active sessions and removes the registry.
+ * AC: @session-prompt-action ac-1
+ */
+function stopSessionRegistry(projectDir: string): void {
+  const engine = engines.get(projectDir);
+  if (engine) {
+    engine.sessionRegistry.closeAll("Dispatch engine stopping");
   }
 }
 
@@ -493,6 +615,7 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
         stopJoinAccumulator(projectDir);
         stopHookExecutor(projectDir);
         await stopScheduleEngine(projectDir);
+        stopSessionRegistry(projectDir);
         await engine.stop();
         engines.delete(projectDir);
 
@@ -511,18 +634,16 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
             queuedInvocations: 0,
             invocations: [],
             degraded: { active: false, reason: "", enteredAt: null },
+            degradedTargets: [],
           };
         }
 
         const status = engine.getStatus();
-        const degraded = engine.getDegradedState();
+        const degradedTargets = serializeDegradedTargets(engine);
         return {
           ...status,
-          degraded: {
-            active: degraded.active,
-            reason: degraded.reason,
-            enteredAt: degraded.enteredAt?.toISOString() ?? null,
-          },
+          degraded: serializeDegradedSummary(degradedTargets),
+          degradedTargets,
         };
       })
 
@@ -562,7 +683,7 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
           // Agent definitions unavailable — return empty array
         }
 
-        const degradedState = engine?.getDegradedState();
+        const degradedTargets = engine ? serializeDegradedTargets(engine) : [];
         return {
           dispatch_enabled: engineStatus?.running ?? false,
           active_invocations:
@@ -585,13 +706,8 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
           queue_depth: engineStatus?.queuedInvocations ?? 0,
           agent_definitions: agentDefinitions,
           // AC: @dispatch-remote-branch-sync ac-degraded-status-api
-          degraded: degradedState
-            ? {
-                active: degradedState.active,
-                reason: degradedState.reason,
-                enteredAt: degradedState.enteredAt?.toISOString() ?? null,
-              }
-            : { active: false, reason: "", enteredAt: null },
+          degraded: serializeDegradedSummary(degradedTargets),
+          degraded_targets: degradedTargets,
         };
       })
   );
@@ -626,6 +742,15 @@ export function getJoinAccumulator(projectDir: string): JoinAccumulator | undefi
 }
 
 /**
+ * Get the session registry for a project path.
+ * Returns undefined if no dispatch engine is running for the project.
+ * AC: @session-prompt-action ac-1
+ */
+export function getSessionRegistry(projectDir: string): SessionRegistry | undefined {
+  return engines.get(projectDir)?.sessionRegistry;
+}
+
+/**
  * Stop all active dispatch engines. Called on daemon shutdown.
  * AC: @agent-dispatch-engine ac-11 - daemon shutdown stops active engines
  */
@@ -640,6 +765,8 @@ export async function stopAllEngines(): Promise<void> {
     accumulator.stop();
   }
   joinAccumulators.clear();
+
+  // Session registries are owned by dispatch engines and closed during engine.stop()
 
   const stopPromises: Promise<void>[] = [];
   // Stop schedule engines

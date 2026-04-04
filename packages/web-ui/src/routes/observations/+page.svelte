@@ -5,7 +5,7 @@
 <script lang="ts">
 	// AC: @multi-directory-daemon ac-27 - Reload on project change
 	import type { Observation } from '@kynetic-ai/shared';
-	import { createQuery } from '@tanstack/svelte-query';
+	import { createQuery } from '$lib/query/createQuery.svelte.js';
 	import { fetchObservations } from '$lib/api';
 	import { Card, CardHeader } from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';

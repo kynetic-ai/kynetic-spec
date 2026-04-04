@@ -13,8 +13,10 @@
 	import { page } from '$app/stores';
 	import { onMount, onDestroy } from 'svelte';
 	import type { BroadcastEvent } from '@kynetic-ai/shared';
-	import { createQuery, useQueryClient } from '@tanstack/svelte-query';
-	import { fetchTasks, fetchAgentStatus, type AgentDispatchStatus } from '$lib/api';
+	import { useQueryClient } from '@tanstack/svelte-query';
+	import { createQuery } from '$lib/query/createQuery.svelte.js';
+	import { fetchTasks, fetchAgentStatus, isCacheWarmingError, type AgentDispatchStatus } from '$lib/api';
+	import CacheWarmingBanner from '$lib/components/CacheWarmingBanner.svelte';
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
 	import { isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 	import { isStaticMode } from '$lib/stores/mode.svelte';
@@ -54,14 +56,16 @@
 	const agentStatusQuery = createQuery(() => ({
 		queryKey: queryKeys.agents.status(),
 		queryFn: () => fetchAgentStatus(),
-		enabled: isProjectInitialized() && !isStaticMode(),
+		enabled: isProjectInitialized(),
 		staleTime: 10 * 1000,
 	}));
 
 	let tasks = $derived(tasksQuery.data?.items ?? []);
 	let columns = $derived(distributeToColumns(tasks));
 	let loading = $derived(tasksQuery.isLoading);
-	let error = $derived(tasksQuery.error?.message ?? '');
+	// AC: @ui-data-freshness ac-warming-skeleton — Distinguish warming errors from other errors
+	let cacheWarming = $derived(isCacheWarmingError(tasksQuery.error));
+	let error = $derived(cacheWarming ? '' : (tasksQuery.error?.message ?? ''));
 	let agentStatus = $derived<AgentDispatchStatus | null>(agentStatusQuery.data ?? null);
 
 	// Derived: output lines per session (for ActiveFleetRow)
@@ -86,13 +90,19 @@
 			selectedTaskRef = urlRef;
 			modalOpen = true;
 		}
+		// When URL no longer has ?ref= (after goto in close effect), reset tracking
+		if (!urlRef && lastProcessedRef) {
+			lastProcessedRef = '';
+		}
 	});
 
 	// AC: @ui-task-board ac-7, @ui-url-panel-state ac-2 — Clear component state and URL param when modal closes
 	$effect(() => {
 		if (!modalOpen) {
 			selectedTaskRef = null;
-			lastProcessedRef = '';
+			// Do NOT clear lastProcessedRef here — keep it set so the open effect
+			// doesn't see the stale ?ref= as "new" while goto() is in flight.
+			// lastProcessedRef gets cleared by the open effect when urlRef becomes null.
 			const url = new URL($page.url);
 			if (url.searchParams.has('ref')) {
 				url.searchParams.delete('ref');
@@ -197,8 +207,11 @@
 		</div>
 	{/if}
 
-	<!-- Loading skeleton -->
-	{#if loading}
+	<!-- AC: @ui-data-freshness ac-warming-skeleton — Show skeleton during cache warming -->
+	<!-- AC: @ui-data-freshness ac-warming-timeout — Show error banner after 30s timeout -->
+	{#if cacheWarming}
+		<CacheWarmingBanner entityName="tasks" queryKey={queryKeys.tasks.list({})} />
+	{:else if loading}
 		<BoardSkeleton />
 	{:else if tasks.length === 0}
 		<!-- Empty state -->

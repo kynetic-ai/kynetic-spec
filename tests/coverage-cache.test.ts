@@ -92,10 +92,9 @@ test('filters tasks', async () => {});
       expect(coverage.has("@api-contract ac-3")).toBe(true);
     });
 
-    it("should return coverage from E2E spec files in packages/web-ui/tests/e2e/", async () => {
-      // E2E Playwright tests live in packages/web-ui/tests/e2e/ — not in tests/
-      // These should be scanned even though they are outside the main tests/ dir
-      const e2eDir = path.join(tempDir, "packages", "web-ui", "tests", "e2e");
+    it("should return coverage from E2E spec files in tests/e2e/", async () => {
+      // E2E Playwright tests now live under tests/e2e/
+      const e2eDir = path.join(tempDir, "tests", "e2e");
       await fs.mkdir(e2eDir, { recursive: true });
       await fs.writeFile(
         path.join(e2eDir, "api-tasks.spec.ts"),
@@ -113,13 +112,13 @@ test('appends note to task', async () => {});
       expect(coverage.has("@api-contract ac-7")).toBe(true);
     });
 
-    it("should merge coverage from both tests/ and E2E directories", async () => {
-      // Coverage from both directories should be combined
+    it("should merge coverage from unit and E2E directories", async () => {
+      // Coverage from both tests/ subdirectories should be combined
       await fs.writeFile(
         path.join(tempDir, "tests", "unit.test.ts"),
         '// AC: @spec-a ac-1\nit("unit test", () => {});',
       );
-      const e2eDir = path.join(tempDir, "packages", "web-ui", "tests", "e2e");
+      const e2eDir = path.join(tempDir, "tests", "e2e");
       await fs.mkdir(e2eDir, { recursive: true });
       await fs.writeFile(
         path.join(e2eDir, "api.spec.ts"),

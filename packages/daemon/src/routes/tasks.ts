@@ -21,6 +21,7 @@
  * AC: @task-data-manager ac-1 — all task I/O goes through taskDataManager
  */
 
+import { join } from "path";
 import { Elysia, t } from "elysia";
 import {
   initContext,
@@ -33,6 +34,7 @@ import {
   resolveTaskDataManager,
   TaskDataManagerError,
   type LoadedTask,
+  type TaskSummary,
 } from "../../parser/index.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import { TaskStatusSchema, TaskTypeSchema } from "../../schema/common.js";
@@ -42,32 +44,91 @@ import { enumArrayUnion, enumUnion } from "./enum-utils.js";
 import { getRelatedSessionsForTask } from "./session-related.js";
 import { resolveRefTitle, resolveRefEntries } from "./ref-resolution.js";
 
+import type { EntityCacheAccessor } from "./entity-cache-types.js";
+import { wrapResponse } from "./response-envelope.js";
+
 interface TasksRouteOptions {
   pubsub: PubSubManager;
+  getEntityCache?: EntityCacheAccessor;
 }
 
 export function createTasksRoutes(options: TasksRouteOptions) {
-  const { pubsub } = options;
+  const { pubsub, getEntityCache } = options;
 
   return (
     new Elysia({ prefix: "/api/tasks" })
       // AC: @api-contract ac-2, ac-3, ac-4 - List tasks with filters and pagination
       // AC: @task-data-manager ac-2 - Uses resolveTaskDataManager(ctx).listTasks for index-only read
+      // AC: @daemon-entity-cache ac-serve-from-memory — serve from cache when available
+      // AC: @daemon-entity-cache ac-graceful-degradation — fall back to disk on cache miss
+      // AC: @daemon-entity-cache ac-warming-availability — return loading indicator if warming
       .get(
         "/",
         async ({ query, projectContext }) => {
-          // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-          const ctx = await initContext(projectContext.path);
+          // AC: @daemon-entity-cache ac-serve-from-memory, ac-warming-availability
+          // AC: @shadow-lazy-read-sync ac-daemon-bypass — cache-first path bypasses per-request drift-check
+          const cache = getEntityCache?.(projectContext.path);
+          const tasksDomainState = cache?.getDomainState("tasks");
 
-          // AC: @task-data-manager ac-2 — list uses index-only summaries
-          const summaries = await resolveTaskDataManager(ctx).listTasks(ctx, {
-            status: query.status
-              ? Array.isArray(query.status)
-                ? query.status
-                : [query.status]
-              : undefined,
-            automation: query.automation || undefined,
-          });
+          // If cache is warming, return loading indicator
+          // AC: @daemon-entity-cache ac-warming-availability
+          if (cache && tasksDomainState === "loading") {
+            return wrapResponse([] as never[], {
+              cacheDomainState: "loading",
+              total: 0,
+              offset: 0,
+              limit: 0,
+            });
+          }
+
+          // AC: @daemon-entity-cache ac-serve-from-memory — defer initContext to avoid
+          // disk/git work on cache hits. Only initialize when disk fallback is needed.
+          // AC: @shadow-lazy-read-sync ac-daemon-bypass — daemon fallback reads skip
+          // per-request drift-check; freshness is handled by background sync scheduler
+          let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
+          const getCtx = async () => {
+            if (!_ctx) _ctx = await initContext(projectContext.path, { syncMode: "skip" });
+            return _ctx;
+          };
+
+          // AC: @daemon-entity-cache ac-serve-from-memory — use cached index when ready
+          // AC: @daemon-entity-cache ac-graceful-degradation — fall back to disk if degraded
+          let summaries;
+          if (cache && tasksDomainState === "ready") {
+            const cachedTasks = cache.getTaskIndex();
+            if (cachedTasks) {
+              // Apply status and automation filters (matching listTasks contract)
+              summaries = cachedTasks;
+              if (query.status) {
+                const statusFilters = Array.isArray(query.status) ? query.status : [query.status];
+                summaries = summaries.filter((t) => statusFilters.includes(t.status));
+              }
+              if (query.automation) {
+                summaries = summaries.filter((t) => t.automation === query.automation);
+              }
+            } else {
+              const ctx = await getCtx();
+              summaries = await resolveTaskDataManager(ctx).listTasks(ctx, {
+                status: query.status
+                  ? Array.isArray(query.status)
+                    ? query.status
+                    : [query.status]
+                  : undefined,
+                automation: query.automation || undefined,
+              });
+            }
+          } else {
+            // AC: @task-data-manager ac-2 — list uses index-only summaries
+            const ctx = await getCtx();
+            summaries = await resolveTaskDataManager(ctx).listTasks(ctx, {
+              status: query.status
+                ? Array.isArray(query.status)
+                  ? query.status
+                  : [query.status]
+                : undefined,
+              automation: query.automation || undefined,
+            });
+          }
 
           // Apply filters not supported by TaskListFilters
           let filtered = summaries;
@@ -88,11 +149,25 @@ export function createTasksRoutes(options: TasksRouteOptions) {
 
           // Plan filter — show only tasks derived from a given plan
           if (query.plan) {
-            const plans = await loadPlans(ctx);
-            const plan = plans.find((p) => p._ulid === query.plan || p.slugs.includes(query.plan!));
+            // AC: @daemon-entity-cache ac-serve-from-memory — try cache for plans too
+            let plans;
+            const plansDomainState = cache?.getDomainState("plans");
+            if (cache && plansDomainState === "ready") {
+              plans = cache.getPlansIndex();
+            }
+            if (!plans) {
+              const ctx = await getCtx();
+              plans = await loadPlans(ctx);
+            }
+            const plan = plans.find(
+              (p: { _ulid: string; slugs: string[] }) =>
+                p._ulid === query.plan || p.slugs.includes(query.plan!),
+            );
             if (plan) {
               const derivedRefs = new Set(
-                plan.derived_tasks.map((r) => (r.startsWith("@") ? r.slice(1) : r)),
+                (plan as { derived_tasks: string[] }).derived_tasks.map((r: string) =>
+                  r.startsWith("@") ? r.slice(1) : r,
+                ),
               );
               filtered = filtered.filter(
                 (task) => derivedRefs.has(task._ulid) || task.slugs.some((s) => derivedRefs.has(s)),
@@ -110,7 +185,16 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           const paginated = filtered.slice(offset, offset + limit);
 
           // Resolve spec titles via ReferenceIndex (needs spec items)
-          const specItems = await loadAllItems(ctx);
+          // AC: @daemon-entity-cache ac-serve-from-memory — try cache for items
+          let specItems;
+          const itemsDomainState = cache?.getDomainState("items");
+          if (cache && itemsDomainState === "ready") {
+            specItems = cache.getItemIndex();
+          }
+          if (!specItems) {
+            const ctx = await getCtx();
+            specItems = await loadAllItems(ctx);
+          }
           // Build a minimal index from summaries for ref resolution
           // ReferenceIndex accepts LoadedTask[] — summaries have compatible _ulid/slugs
           const index = new ReferenceIndex([], specItems);
@@ -138,12 +222,8 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           }));
 
           // AC: @api-contract ac-4, @trait-api-endpoint ac-4 - Return pagination wrapper
-          return {
-            items,
-            total,
-            offset,
-            limit,
-          };
+          // AC: @api-contract ac-envelope - Unified envelope response
+          return wrapResponse(items, { total, offset, limit, cacheDomainState: tasksDomainState });
         },
         {
           query: t.Object({
@@ -160,73 +240,143 @@ export function createTasksRoutes(options: TasksRouteOptions) {
 
       // AC: @api-contract ac-5 - Get single task by ref
       // AC: @task-data-manager ac-3 - Uses resolveTaskDataManager(ctx).getTask for full detail
+      // AC: @daemon-entity-cache ac-detail-on-demand — load detail from disk, cache result
       .get(
         "/:ref",
         async ({ params, error: errorResponse, projectContext }) => {
-          // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-          const ctx = await initContext(projectContext.path);
+          // AC: @daemon-entity-cache ac-serve-from-memory, ac-detail-on-demand — defer initContext
+          // to avoid disk/git work on cache hits. Only initialize when disk fallback is needed.
+          // AC: @shadow-lazy-read-sync ac-daemon-bypass — daemon fallback reads skip
+          // per-request drift-check; freshness is handled by background sync scheduler
+          let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
+          const getCtx = async () => {
+            if (!_ctx) _ctx = await initContext(projectContext.path, { syncMode: "skip" });
+            return _ctx;
+          };
 
-          // AC: @task-data-manager ac-3 — get full task detail via manager
-          let task: LoadedTask;
-          try {
-            task = await resolveTaskDataManager(ctx).getTask(ctx, params.ref);
-          } catch (err) {
-            if (err instanceof TaskDataManagerError) {
-              return errorResponse(404, {
-                error: "not_found",
-                message: `Task reference "${params.ref}" not found`,
-                suggestion: "Use kspec task list or kspec search to find valid task references",
-              });
+          // AC: @daemon-entity-cache ac-warming-availability — return loading indicator during warmup
+          const cache = getEntityCache?.(projectContext.path);
+          const tasksDomainState = cache?.getDomainState("tasks");
+          if (cache && tasksDomainState === "loading") {
+            return wrapResponse(null, { cacheDomainState: "loading" });
+          }
+
+          // AC: @daemon-entity-cache ac-detail-on-demand — check cache first, fall back to disk
+          let task: LoadedTask | null = null;
+
+          if (cache && tasksDomainState === "ready") {
+            // Resolve ref to ULID via cached task index
+            const taskIndex = cache.getTaskIndex();
+            if (taskIndex) {
+              const ref = params.ref.startsWith("@") ? params.ref.slice(1) : params.ref;
+              const matched = taskIndex.find(
+                (t) =>
+                  t._ulid === ref || t._ulid.startsWith(ref.toUpperCase()) || t.slugs.includes(ref),
+              );
+              if (matched) {
+                task = cache.getTaskDetail(matched._ulid);
+              }
             }
-            throw err;
+          }
+
+          // AC: @task-data-manager ac-3 — fall back to disk if not in detail cache
+          if (!task) {
+            const ctx = await getCtx();
+            try {
+              task = await resolveTaskDataManager(ctx).getTask(ctx, params.ref);
+            } catch (err) {
+              if (err instanceof TaskDataManagerError) {
+                return errorResponse(404, {
+                  error: "not_found",
+                  message: `Task reference "${params.ref}" not found`,
+                  suggestion: "Use kspec task list or kspec search to find valid task references",
+                });
+              }
+              throw err;
+            }
+
+            // AC: @daemon-entity-cache ac-detail-on-demand — cache the loaded detail
+            if (cache) {
+              cache.setTaskDetail(task._ulid, task);
+            }
           }
 
           // Build ReferenceIndex for ref title resolution
-          const items = await loadAllItems(ctx);
-          const plans = await loadPlans(ctx);
-          const tasks = await resolveTaskDataManager(ctx).listTasks(ctx);
-          const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items, [], plans);
+          // AC: @daemon-entity-cache ac-serve-from-memory — try cache for items and plans
+          let items;
+          let plans;
+          const itemsDomainState = cache?.getDomainState("items");
+          const plansDomainState = cache?.getDomainState("plans");
+          if (cache && itemsDomainState === "ready") {
+            items = cache.getItemIndex();
+          }
+          if (!items) {
+            items = await loadAllItems(await getCtx());
+          }
+          if (cache && plansDomainState === "ready") {
+            plans = cache.getPlansIndex();
+          }
+          if (!plans) {
+            plans = await loadPlans(await getCtx());
+          }
+          // AC: @daemon-entity-cache ac-serve-from-memory — use cached tasks for ref index
+          let tasksForIndex: LoadedTask[] | TaskSummary[];
+          if (cache && cache.getDomainState("tasks") === "ready" && cache.getTaskIndex()) {
+            tasksForIndex = cache.getTaskIndex()!;
+          } else {
+            tasksForIndex = await resolveTaskDataManager(await getCtx()).listTasks(await getCtx());
+          }
+          const index = new ReferenceIndex(
+            tasksForIndex as unknown as LoadedTask[],
+            items,
+            [],
+            plans,
+          );
 
           // AC: @api-contract ac-5 - Return full task with notes, todos, dependencies
           // AC: @ui-task-board ac-3 - Include type, description, blocked_by, vcs_refs, plan_ref, session_ref
           // AC: @ui-api-ref-resolution ac-1, ac-2 - Include resolved titles for refs
           // AC: @review-records-web-ui ac-7 - Include review_ref for task-review integration
-          return {
-            _ulid: task._ulid,
-            slugs: task.slugs,
-            title: task.title,
-            type: task.type || "task",
-            status: task.status,
-            priority: task.priority,
-            spec_ref: task.spec_ref,
-            spec_title: resolveRefTitle(index, task.spec_ref),
-            meta_ref: task.meta_ref,
-            tags: task.tags,
-            description: task.description,
-            derivation: task.derivation,
-            depends_on: task.depends_on,
-            resolved_depends_on: resolveRefEntries(index, task.depends_on),
-            blocked_by: task.blocked_by || [],
-            resolved_blocked_by: resolveRefEntries(index, task.blocked_by),
-            context: task.context || [],
-            vcs_refs: (task.vcs_refs || []).map((v) =>
-              typeof v === "string" ? v : v.type ? `${v.type}:${v.ref}` : v.ref,
-            ),
-            plan_ref: task.plan_ref,
-            plan_title: resolveRefTitle(index, task.plan_ref),
-            review_ref: task.review_ref ?? null,
-            session_ref: task.session_id,
-            notes: task.notes,
-            notes_count: task.notes?.length || 0,
-            todos: task.todos,
-            todos_count: task.todos?.length || 0,
-            started_at: task.started_at,
-            completed_at: task.completed_at,
-            cancelled_at: task.cancelled_at,
-            closed_reason: task.closed_reason,
-            automation: task.automation,
-            created_at: task.created_at,
-          };
+          // AC: @api-contract ac-envelope - Unified envelope response
+          return wrapResponse(
+            {
+              _ulid: task._ulid,
+              slugs: task.slugs,
+              title: task.title,
+              type: task.type || "task",
+              status: task.status,
+              priority: task.priority,
+              spec_ref: task.spec_ref,
+              spec_title: resolveRefTitle(index, task.spec_ref),
+              meta_ref: task.meta_ref,
+              tags: task.tags,
+              description: task.description,
+              derivation: task.derivation,
+              depends_on: task.depends_on,
+              resolved_depends_on: resolveRefEntries(index, task.depends_on),
+              blocked_by: task.blocked_by || [],
+              resolved_blocked_by: resolveRefEntries(index, task.blocked_by),
+              context: task.context || [],
+              vcs_refs: (task.vcs_refs || []).map((v) =>
+                typeof v === "string" ? v : v.type ? `${v.type}:${v.ref}` : v.ref,
+              ),
+              plan_ref: task.plan_ref,
+              plan_title: resolveRefTitle(index, task.plan_ref),
+              review_ref: task.review_ref ?? null,
+              session_ref: task.session_id,
+              notes: task.notes,
+              notes_count: task.notes?.length || 0,
+              todos: task.todos,
+              todos_count: task.todos?.length || 0,
+              started_at: task.started_at,
+              completed_at: task.completed_at,
+              cancelled_at: task.cancelled_at,
+              closed_reason: task.closed_reason,
+              automation: task.automation,
+              created_at: task.created_at,
+            },
+            { cacheDomainState: tasksDomainState },
+          );
         },
         {
           params: t.Object({
@@ -235,29 +385,52 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         },
       )
 
+      // AC: @daemon-entity-cache ac-serve-from-memory — use cached task/item indexes for related sessions
       .get(
         "/:ref/sessions",
         async ({ params, error: errorResponse, projectContext }) => {
-          const ctx = await initContext(projectContext.path);
-          const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
-          const items = await loadAllItems(ctx);
+          const cache = getEntityCache?.(projectContext.path);
+          const tasksDomainReady = cache && cache.getDomainState("tasks") === "ready";
+          const itemsDomainReady = cache && cache.getDomainState("items") === "ready";
+
+          let tasks: LoadedTask[];
+          let items: Awaited<ReturnType<typeof loadAllItems>>;
+          let sessionsDir: string;
+
+          if (tasksDomainReady && itemsDomainReady) {
+            // TaskSummary/ItemSummary have _ulid + slugs — sufficient for ReferenceIndex + buildTaskRefSet
+            tasks = (cache!.getTaskIndex() ?? []) as unknown as LoadedTask[];
+            items = (cache!.getItemIndex() ?? []) as unknown as Awaited<
+              ReturnType<typeof loadAllItems>
+            >;
+            sessionsDir = join(projectContext.path, ".kspec-sessions");
+          } else {
+            // AC: @shadow-lazy-read-sync ac-daemon-bypass — daemon fallback reads skip
+            // per-request drift-check; freshness is handled by background sync scheduler
+            const ctx = await initContext(projectContext.path, { syncMode: "skip" });
+            tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+            items = await loadAllItems(ctx);
+            sessionsDir = ctx.sessionsDir;
+          }
+
           const result = await getRelatedSessionsForTask({
             taskRef: params.ref,
             tasks,
             items,
-            sessionsDir: ctx.sessionsDir,
+            sessionsDir,
+            getEntityCache,
+            projectPath: projectContext.path,
           });
 
           if ("error" in result) {
             return errorResponse(404, result.error);
           }
 
-          return {
-            items: result.sessions,
+          return wrapResponse(result.sessions, {
             total: result.sessions.length,
             offset: 0,
             limit: result.sessions.length,
-          };
+          });
         },
         {
           params: t.Object({
@@ -325,6 +498,14 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           const index = new ReferenceIndex(allTasks, items);
           await syncSpecImplementationStatus(ctx, updatedTask, allTasks, items, index);
           await commitIfShadow(ctx.shadow, `task: start ${params.ref}`);
+
+          // AC: @daemon-entity-cache ac-write-through — update cache before response
+          // Write through both tasks and items domains because syncSpecImplementationStatus
+          // modifies spec items (implementation status) as a side effect of task transitions.
+          const startCache = getEntityCache?.(projectContext.path);
+          if (startCache) {
+            await Promise.all([startCache.writeThrough("tasks"), startCache.writeThrough("items")]);
+          }
 
           // AC: @api-contract ac-6, @trait-api-endpoint ac-5 - WebSocket broadcast
           // AC: @ui-api-aggregation ac-4 - Include title and old/new status
@@ -394,6 +575,12 @@ export function createTasksRoutes(options: TasksRouteOptions) {
               });
             }
             throw err;
+          }
+
+          // AC: @daemon-entity-cache ac-write-through — update cache before response
+          const noteCache = getEntityCache?.(projectContext.path);
+          if (noteCache) {
+            await noteCache.writeThrough("tasks");
           }
 
           // AC: @api-contract ac-7 - WebSocket broadcast
@@ -483,6 +670,17 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           await syncSpecImplementationStatus(ctx, updatedTask, allTasks, items, index);
           await commitIfShadow(ctx.shadow, `task: submit ${params.ref}`);
 
+          // AC: @daemon-entity-cache ac-write-through — update cache before response
+          // Write through both tasks and items domains because syncSpecImplementationStatus
+          // modifies spec items (implementation status) as a side effect of task transitions.
+          const submitCache = getEntityCache?.(projectContext.path);
+          if (submitCache) {
+            await Promise.all([
+              submitCache.writeThrough("tasks"),
+              submitCache.writeThrough("items"),
+            ]);
+          }
+
           // AC: @ui-api-aggregation ac-4 - Include title and old/new status
           pubsub.broadcast(
             "tasks:updates",
@@ -551,6 +749,17 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           const index = new ReferenceIndex(allTasks, items);
           await syncSpecImplementationStatus(ctx, updatedTask, allTasks, items, index);
           await commitIfShadow(ctx.shadow, `task: complete ${params.ref}`);
+
+          // AC: @daemon-entity-cache ac-write-through — update cache before response
+          // Write through both tasks and items domains because syncSpecImplementationStatus
+          // modifies spec items (implementation status) as a side effect of task transitions.
+          const completeCache = getEntityCache?.(projectContext.path);
+          if (completeCache) {
+            await Promise.all([
+              completeCache.writeThrough("tasks"),
+              completeCache.writeThrough("items"),
+            ]);
+          }
 
           // AC: @ui-api-aggregation ac-4 - Include title and old/new status
           pubsub.broadcast(
@@ -624,6 +833,14 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           const index = new ReferenceIndex(allTasks, items);
           await syncSpecImplementationStatus(ctx, updatedTask, allTasks, items, index);
           await commitIfShadow(ctx.shadow, `task: block ${params.ref}`);
+
+          // AC: @daemon-entity-cache ac-write-through — update cache before response
+          // Write through both tasks and items domains because syncSpecImplementationStatus
+          // modifies spec items (implementation status) as a side effect of task transitions.
+          const blockCache = getEntityCache?.(projectContext.path);
+          if (blockCache) {
+            await Promise.all([blockCache.writeThrough("tasks"), blockCache.writeThrough("items")]);
+          }
 
           // AC: @ui-api-aggregation ac-4 - Include title and old/new status
           pubsub.broadcast(

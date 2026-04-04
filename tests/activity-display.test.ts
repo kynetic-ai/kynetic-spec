@@ -137,14 +137,19 @@ describe("task get --json — ac-4: structured activity in JSON output", () => {
       expect(entry.summary).toBeTruthy();
     }
 
-    // Should have a state_change entry for start
-    const stateChanges = output.activity!.filter((e) => e.type === "state_change");
+    // Should have a state transition entry for start (type is "started" or "state_change")
+    const stateChanges = output.activity!.filter(
+      (e) => e.type === "state_change" || e.type === "started",
+    );
     expect(stateChanges.length).toBeGreaterThan(0);
   });
 
   // AC: @trait-json-output ac-5 — timestamps use ISO 8601
   it("uses ISO 8601 timestamps in activity entries", () => {
     kspec('task add --title "ISO timestamps" --slug task-iso-ts', tmpDir, {
+      env: { KSPEC_AUTHOR: "@test" },
+    });
+    kspec("task start @task-iso-ts", tmpDir, {
       env: { KSPEC_AUTHOR: "@test" },
     });
 

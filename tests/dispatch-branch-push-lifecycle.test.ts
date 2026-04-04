@@ -116,7 +116,7 @@ describe("dispatch branch push lifecycle", () => {
       // Verify no upstream tracking initially
       expect(hasUpstreamTracking(tempDir, dispatchBranch)).toBe(false);
 
-      const result = pushDispatchBranch(tempDir, dispatchBranch, "origin");
+      const result = await pushDispatchBranch(tempDir, dispatchBranch, "origin");
 
       expect(result.pushed).toBe(true);
       expect(result.firstPush).toBe(true);
@@ -157,7 +157,7 @@ describe("dispatch branch push lifecycle", () => {
       // New branch has no tracking configured
       expect(hasUpstreamTracking(tempDir, dispatchBranch)).toBe(false);
 
-      const result = pushDispatchBranch(tempDir, dispatchBranch, "origin");
+      const result = await pushDispatchBranch(tempDir, dispatchBranch, "origin");
 
       expect(result.pushed).toBe(true);
       expect(result.firstPush).toBe(true);
@@ -191,7 +191,7 @@ describe("dispatch branch push lifecycle", () => {
       git(tempDir, 'commit -m "second work"');
       const localHead = git(tempDir, "rev-parse HEAD");
 
-      const result = pushDispatchBranch(tempDir, dispatchBranch, "origin");
+      const result = await pushDispatchBranch(tempDir, dispatchBranch, "origin");
 
       expect(result.pushed).toBe(true);
       expect(result.firstPush).toBe(false);
@@ -218,7 +218,7 @@ describe("dispatch branch push lifecycle", () => {
       git(tempDir, `push -u origin ${dispatchBranch}`);
 
       // No new commits — should skip
-      const result = pushDispatchBranch(tempDir, dispatchBranch, "origin");
+      const result = await pushDispatchBranch(tempDir, dispatchBranch, "origin");
 
       expect(result.pushed).toBe(false);
       expect(result.firstPush).toBe(false);
@@ -238,7 +238,7 @@ describe("dispatch branch push lifecycle", () => {
       git(tempDir, 'commit -m "work"');
 
       // Push to non-existent remote — should fail non-fatally
-      const result = pushDispatchBranch(tempDir, dispatchBranch, "nonexistent");
+      const result = await pushDispatchBranch(tempDir, dispatchBranch, "nonexistent");
 
       expect(result.pushed).toBe(false);
       expect(result.firstPush).toBe(true);
@@ -246,8 +246,8 @@ describe("dispatch branch push lifecycle", () => {
     });
 
     // AC: @dispatch-remote-branch-sync ac-no-remote
-    it("skips push silently when remote is empty string", () => {
-      const result = pushDispatchBranch("/tmp/nonexistent", "dispatch/task/test/01abc", "");
+    it("skips push silently when remote is empty string", async () => {
+      const result = await pushDispatchBranch("/tmp/nonexistent", "dispatch/task/test/01abc", "");
 
       expect(result.pushed).toBe(false);
       expect(result.error).toBeNull();
@@ -274,7 +274,7 @@ describe("dispatch branch push lifecycle", () => {
       git(tempDir, `merge --no-ff ${featureBranch} -m "Merge ${featureBranch} into dev"`);
       const localHead = git(tempDir, "rev-parse dev");
 
-      const result = pushIntegrationTarget(tempDir, "dev", "origin");
+      const result = await pushIntegrationTarget(tempDir, "dev", "origin");
 
       expect(result.pushed).toBe(true);
       expect(result.skipped).toBe(false);
@@ -300,7 +300,7 @@ describe("dispatch branch push lifecycle", () => {
       git(tempDir, 'commit -m "local merge"');
       const localHead = git(tempDir, "rev-parse dev");
 
-      const result = pushIntegrationTarget(tempDir, "dev", "origin");
+      const result = await pushIntegrationTarget(tempDir, "dev", "origin");
 
       expect(result.pushed).toBe(true);
       expect(result.skipped).toBe(false);
@@ -319,7 +319,7 @@ describe("dispatch branch push lifecycle", () => {
       git(tempDir, "push -u origin dev");
 
       // No local-only commits
-      const result = pushIntegrationTarget(tempDir, "dev", "origin");
+      const result = await pushIntegrationTarget(tempDir, "dev", "origin");
 
       expect(result.pushed).toBe(false);
       expect(result.skipped).toBe(true);
@@ -343,7 +343,7 @@ describe("dispatch branch push lifecycle", () => {
 
       git(tempDir, "checkout -b human-feature");
 
-      const result = pushIntegrationTarget(tempDir, "dev", "origin");
+      const result = await pushIntegrationTarget(tempDir, "dev", "origin");
 
       expect(result.pushed).toBe(true);
       expect(result.skipped).toBe(false);
@@ -361,15 +361,15 @@ describe("dispatch branch push lifecycle", () => {
       git(tempDir, "checkout -b dev");
 
       // No remote configured — push to non-existent remote
-      const result = pushIntegrationTarget(tempDir, "dev", "nonexistent");
+      const result = await pushIntegrationTarget(tempDir, "dev", "nonexistent");
 
       expect(result.pushed).toBe(false);
       expect(result.error).toBeTruthy();
     });
 
     // AC: @dispatch-remote-branch-sync ac-no-remote
-    it("skips push silently when remote is empty string", () => {
-      const result = pushIntegrationTarget("/tmp/nonexistent", "dev", "");
+    it("skips push silently when remote is empty string", async () => {
+      const result = await pushIntegrationTarget("/tmp/nonexistent", "dev", "");
 
       expect(result.pushed).toBe(false);
       expect(result.skipped).toBe(true);
@@ -398,8 +398,8 @@ describe("dispatch branch push lifecycle", () => {
       git(tempDir, "push -u origin dev");
 
       // Both calls should succeed or skip — no error
-      const result1 = pushIntegrationTarget(tempDir, "dev", "origin");
-      const result2 = pushIntegrationTarget(tempDir, "dev", "origin");
+      const result1 = await pushIntegrationTarget(tempDir, "dev", "origin");
+      const result2 = await pushIntegrationTarget(tempDir, "dev", "origin");
 
       // Both should be safe (skipped since up-to-date)
       expect(result1.error).toBeNull();
@@ -430,7 +430,7 @@ describe("dispatch branch push lifecycle", () => {
 
       git(tempDir, "checkout dev");
 
-      const result = deleteRemoteDispatchBranch(tempDir, dispatchBranch, "origin");
+      const result = await deleteRemoteDispatchBranch(tempDir, dispatchBranch, "origin");
 
       expect(result.deleted).toBe(true);
       expect(result.error).toBeNull();
@@ -454,7 +454,7 @@ describe("dispatch branch push lifecycle", () => {
       git(tempDir, "add work.txt");
       git(tempDir, 'commit -m "work"');
 
-      const result = deleteRemoteDispatchBranch(tempDir, dispatchBranch, "origin");
+      const result = await deleteRemoteDispatchBranch(tempDir, dispatchBranch, "origin");
 
       expect(result.deleted).toBe(false);
       expect(result.error).toBeNull();
@@ -479,15 +479,19 @@ describe("dispatch branch push lifecycle", () => {
       // Now point the remote at a nonexistent URL so deletion fails
       git(tempDir, "remote set-url origin /nonexistent/path");
 
-      const result = deleteRemoteDispatchBranch(tempDir, dispatchBranch, "origin");
+      const result = await deleteRemoteDispatchBranch(tempDir, dispatchBranch, "origin");
 
       expect(result.deleted).toBe(false);
       expect(result.error).toBeTruthy();
     });
 
     // AC: @dispatch-remote-branch-sync ac-no-remote
-    it("skips deletion silently when remote is empty string", () => {
-      const result = deleteRemoteDispatchBranch("/tmp/nonexistent", "dispatch/task/test/01abc", "");
+    it("skips deletion silently when remote is empty string", async () => {
+      const result = await deleteRemoteDispatchBranch(
+        "/tmp/nonexistent",
+        "dispatch/task/test/01abc",
+        "",
+      );
 
       expect(result.deleted).toBe(false);
       expect(result.error).toBeNull();
@@ -499,7 +503,7 @@ describe("dispatch branch push lifecycle", () => {
     it("returns null when no remote is configured", async () => {
       await seedRepo(tempDir);
 
-      const remote = resolveDispatchRemote(tempDir);
+      const remote = await resolveDispatchRemote(tempDir);
       expect(remote).toBeNull();
     });
 
@@ -509,7 +513,7 @@ describe("dispatch branch push lifecycle", () => {
       git(remoteDir, "init --bare");
       git(tempDir, `remote add origin "${remoteDir}"`);
 
-      const remote = resolveDispatchRemote(tempDir);
+      const remote = await resolveDispatchRemote(tempDir);
       expect(remote).toBe("origin");
     });
   });

@@ -18,7 +18,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { onMount, onDestroy } from 'svelte';
-	import { createQuery } from '@tanstack/svelte-query';
+	import { createQuery } from '$lib/query/createQuery.svelte.js';
 	import type { SessionDetail, SessionEvent as SessionEventType } from '$lib/api';
 	import { fetchSession, fetchSessionEvents } from '$lib/api';
 	import { subscribe, unsubscribe, on, off, onStateChange, offStateChange } from '$lib/stores/connection.svelte';
@@ -64,7 +64,7 @@
 	let taskTitle = $derived<string | null>(sessionQuery.data?.task_title ?? null);
 	let session = $derived<SessionDetail | null>(sessionQuery.data ?? null);
 
-	let loading = $derived(sessionQuery.isLoading || eventsLoading);
+	let loading = $derived(isStaticMode() ? false : sessionQuery.isLoading || eventsLoading);
 
 	// Track whether initial events load has been triggered
 	let eventsLoadTriggered = $state(false);
@@ -73,7 +73,7 @@
 	let wasConnected = $state(false);
 
 	// Reset events state when sessionId changes (SvelteKit may reuse component)
-	let prevSessionId = $state(sessionId);
+	let prevSessionId = $state('');
 	$effect(() => {
 		if (sessionId !== prevSessionId) {
 			prevSessionId = sessionId;

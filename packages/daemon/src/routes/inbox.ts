@@ -20,38 +20,53 @@ import {
   saveInboxItem,
   deleteInboxItem,
   findInboxItemByRef,
-  ReferenceIndex,
-  loadAllItems,
-  resolveTaskDataManager,
   type InboxItemInput,
 } from "../../parser/index.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import type { PubSubManager } from "../websocket/pubsub";
+import type { EntityCacheAccessor } from "./entity-cache-types.js";
+import { wrapResponse } from "./response-envelope.js";
 
 interface InboxRouteOptions {
   pubsub: PubSubManager;
+  getEntityCache?: EntityCacheAccessor;
 }
 
 export function createInboxRoutes(options: InboxRouteOptions) {
-  const { pubsub } = options;
+  const { pubsub, getEntityCache } = options;
 
   return (
     new Elysia({ prefix: "/api/inbox" })
       // AC: @api-contract ac-12 - List inbox items ordered by created_at desc
+      // AC: @daemon-entity-cache ac-serve-from-memory — serve from cache when available
       .get("/", async ({ projectContext }) => {
-        // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-        const ctx = await initContext(projectContext.path);
-        const items = await loadInboxItems(ctx);
+        // AC: @daemon-entity-cache ac-serve-from-memory — use cached inbox when ready
+        const cache = getEntityCache?.(projectContext.path);
+        const inboxDomainState = cache?.getDomainState("inbox");
+
+        // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
+        if (cache && inboxDomainState === "loading") {
+          return wrapResponse([] as never[], { cacheDomainState: "loading", total: 0 });
+        }
+
+        let items;
+        if (cache && inboxDomainState === "ready") {
+          items = cache.getInboxIndex();
+        }
+        if (!items) {
+          // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+          // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
+          const ctx = await initContext(projectContext.path, { syncMode: "skip" });
+          items = await loadInboxItems(ctx);
+        }
 
         // AC: @api-contract ac-12 - Sort by created_at descending (newest first)
         const sorted = [...items].toSorted(
           (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
         );
 
-        return {
-          items: sorted,
-          total: sorted.length,
-        };
+        // AC: @api-contract ac-envelope - Unified envelope response
+        return wrapResponse(sorted, { total: sorted.length, cacheDomainState: inboxDomainState });
       })
 
       // AC: @api-contract ac-13 - Create inbox item
@@ -87,6 +102,12 @@ export function createInboxRoutes(options: InboxRouteOptions) {
           // Save and commit
           await saveInboxItem(ctx, item);
           await commitIfShadow(ctx.shadow, `inbox: add item ${item._ulid}`);
+
+          // AC: @daemon-entity-cache ac-write-through — update cache before response
+          const createCache = getEntityCache?.(projectContext.path);
+          if (createCache) {
+            await createCache.writeThrough("inbox");
+          }
 
           // Broadcast update
           // AC: @ui-api-aggregation ac-4 - Include full item data for in-place UI updates
@@ -126,13 +147,11 @@ export function createInboxRoutes(options: InboxRouteOptions) {
           // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
           const ctx = await initContext(projectContext.path);
           const inboxItems = await loadInboxItems(ctx);
-          const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
-          const specItems = await loadAllItems(ctx);
-          const index = new ReferenceIndex(tasks, specItems);
 
-          // Resolve ref
-          const result = index.resolve(params.ref);
-          if (!result.ok) {
+          // Resolve ref directly against inbox items (inbox items are not in
+          // the general ReferenceIndex which only covers tasks/specs/plans/reviews)
+          const item = findInboxItemByRef(inboxItems, params.ref);
+          if (!item) {
             return errorResponse(404, {
               error: "not_found",
               message: `Inbox item reference "${params.ref}" not found`,
@@ -140,18 +159,15 @@ export function createInboxRoutes(options: InboxRouteOptions) {
             });
           }
 
-          // Verify it's an inbox item
-          const item = findInboxItemByRef(inboxItems, result.ulid);
-          if (!item) {
-            return errorResponse(404, {
-              error: "not_found",
-              message: `Reference "${params.ref}" is not an inbox item`,
-            });
-          }
-
           // AC: @api-contract ac-14 - Delete item
-          await deleteInboxItem(ctx, result.ulid);
+          await deleteInboxItem(ctx, item._ulid);
           await commitIfShadow(ctx.shadow, `inbox: delete ${params.ref}`);
+
+          // AC: @daemon-entity-cache ac-write-through — update cache before response
+          const deleteCache = getEntityCache?.(projectContext.path);
+          if (deleteCache) {
+            await deleteCache.writeThrough("inbox");
+          }
 
           // Broadcast update
           // AC: @multi-directory-daemon ac-18 - Broadcast scoped to request project
@@ -160,7 +176,7 @@ export function createInboxRoutes(options: InboxRouteOptions) {
             "inbox_item_deleted",
             {
               ref: params.ref,
-              ulid: result.ulid,
+              ulid: item._ulid,
             },
             projectContext.path,
           );
@@ -168,7 +184,7 @@ export function createInboxRoutes(options: InboxRouteOptions) {
           // AC: @api-contract ac-14 - Return success confirmation
           return {
             success: true,
-            deleted: result.ulid,
+            deleted: item._ulid,
           };
         },
         {

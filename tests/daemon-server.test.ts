@@ -3,7 +3,7 @@
  * Spec: @daemon-server ac-3 / @trait-localhost-security
  *
  * Behavioral middleware tests kept here after static analysis tests were
- * replaced with E2E tests in packages/web-ui/tests/e2e/api-server.spec.ts.
+ * replaced with E2E tests in tests/e2e/api-server.spec.ts.
  *
  * These test the middleware logic directly without needing Bun runtime.
  * We recreate the middleware logic to test it as a pure function.

@@ -126,7 +126,7 @@ describe("computeDiffStat", () => {
     execSync("git add . && git commit -m 'add b'", { cwd: tempDir });
     const commit2 = execSync("git rev-parse HEAD", { cwd: tempDir, encoding: "utf-8" }).trim();
 
-    const result = computeDiffStat(commit1, commit2, tempDir);
+    const result = await computeDiffStat(commit1, commit2, tempDir);
 
     expect(result).not.toBeNull();
     expect(result).toContain("Changes since prior review");
@@ -145,7 +145,11 @@ describe("computeDiffStat", () => {
     execSync("git add . && git commit -m 'initial'", { cwd: tempDir });
     const commit = execSync("git rev-parse HEAD", { cwd: tempDir, encoding: "utf-8" }).trim();
 
-    const result = computeDiffStat("0000000000000000000000000000000000000000", commit, tempDir);
+    const result = await computeDiffStat(
+      "0000000000000000000000000000000000000000",
+      commit,
+      tempDir,
+    );
 
     expect(result).toBeNull();
   });
@@ -154,7 +158,7 @@ describe("computeDiffStat", () => {
   it("should return null when cwd is not a git repo", async () => {
     const nonGitDir = await createTempDir("kspec-diff-stat-nogit-");
     try {
-      const result = computeDiffStat("abc123", "def456", nonGitDir);
+      const result = await computeDiffStat("abc123", "def456", nonGitDir);
       expect(result).toBeNull();
     } finally {
       await cleanupTempDir(nonGitDir);
@@ -168,7 +172,7 @@ describe("computeDiffStat", () => {
     execSync("git add . && git commit -m 'initial'", { cwd: tempDir });
     const commit = execSync("git rev-parse HEAD", { cwd: tempDir, encoding: "utf-8" }).trim();
 
-    const result = computeDiffStat(commit, commit, tempDir);
+    const result = await computeDiffStat(commit, commit, tempDir);
 
     // Same commit → empty diff → null
     expect(result).toBeNull();

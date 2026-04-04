@@ -43,9 +43,6 @@ const touchedTaskRefs = [
   "@note-cli",
   "@todo-structure",
   "@todo-cli",
-  "@task-storage",
-  "@task-storage-alongside",
-  "@task-storage-separate",
 ];
 
 interface BackfillCriterionSnapshot {
@@ -415,8 +412,7 @@ describe("Task storage discovery coverage", () => {
     }
   });
 
-  // AC: @task-storage ac-1
-  // AC: @task-storage-alongside ac-1
+  // AC: @task-data-manager ac-1
   it("loads tasks from project.tasks.yaml alongside the spec manifest", async () => {
     tempDir = await createTempDir();
     const specDir = path.join(tempDir, "spec");
@@ -454,7 +450,7 @@ describe("Task storage discovery coverage", () => {
     expect(tasks[0]._sourceFile).toBe(path.join(specDir, "project.tasks.yaml"));
   });
 
-  // AC: @task-storage-separate ac-1
+  // AC: @task-data-manager ac-1
   it("loads tasks from separate backlog and active task files", async () => {
     tempDir = await createTempDir();
     const specDir = path.join(tempDir, "spec");

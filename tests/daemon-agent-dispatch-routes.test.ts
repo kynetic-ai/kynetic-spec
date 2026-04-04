@@ -5,12 +5,16 @@ import * as YAML from "yaml";
 import { Elysia } from "elysia";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { initGitRepo, createTempDir, cleanupTempDir } from "./helpers/cli.js";
+import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
 import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.ts";
 import {
   createAgentDispatchRoutes,
   getDispatchEngine,
+  getSessionRegistry,
   resolveDispatchCwd,
 } from "../dist/daemon/routes/agent-dispatch.ts";
+
+ensureSplitBackendRegistered();
 
 async function setupProjectWithWorktree(prefix: string) {
   const rootDir = await createTempDir(prefix);
@@ -20,7 +24,11 @@ async function setupProjectWithWorktree(prefix: string) {
 
   writeFileSync(
     join(rootDir, "kynetic.yaml"),
-    YAML.stringify({ kynetic: "1", project: { name: "Test Project" } }),
+    YAML.stringify({
+      kynetic: "1.1",
+      title: "Test Project",
+      task_storage: { format: "split" },
+    }),
   );
   writeFileSync(
     join(rootDir, "kynetic.meta.yaml"),
@@ -211,6 +219,59 @@ describe("Agent dispatch routes", () => {
     );
 
     expect(response.status).toBe(400);
+  });
+
+  // AC: @session-prompt-action ac-1
+  it("creates a session registry when dispatch engine starts and removes it on stop", async () => {
+    const { rootDir, worktreeDir } = await setupProjectWithWorktree(
+      "kspec-daemon-dispatch-session-registry-",
+    );
+    tempDirs.push(rootDir, worktreeDir);
+
+    const { middleware } = projectContextMiddleware();
+    const app = new Elysia().use(middleware).use(createAgentDispatchRoutes());
+
+    // Before start: no session registry
+    expect(getSessionRegistry(rootDir)).toBeUndefined();
+
+    // Start the engine
+    const startResponse = await app.handle(
+      new Request("http://localhost/api/agent/dispatch/start", {
+        method: "POST",
+        headers: {
+          Host: "localhost",
+          "X-Kspec-Dir": rootDir,
+          "X-Kspec-Cwd": worktreeDir,
+        },
+      }),
+    );
+    expect(startResponse.status).toBe(200);
+
+    // After start: session registry exists and is functional
+    const registry = getSessionRegistry(rootDir);
+    expect(registry).toBeDefined();
+    expect(registry!.size).toBe(0);
+    expect(registry!.listActive()).toEqual([]);
+
+    // Dispatch engine also exposes the same registry (shared instance)
+    const engine = getDispatchEngine(rootDir);
+    expect(engine).toBeDefined();
+    expect(engine!.sessionRegistry).toBe(registry);
+
+    // Stop the engine
+    const stopResponse = await app.handle(
+      new Request("http://localhost/api/agent/dispatch/stop", {
+        method: "POST",
+        headers: {
+          Host: "localhost",
+          "X-Kspec-Dir": rootDir,
+        },
+      }),
+    );
+    expect(stopResponse.status).toBe(200);
+
+    // After stop: session registry cleaned up
+    expect(getSessionRegistry(rootDir)).toBeUndefined();
   });
 });
 

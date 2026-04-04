@@ -7,7 +7,8 @@
   AC: @review-code-diff-viewer ac-6 — Lazy loading for 20+ files (headers/stats immediate, content on expand)
 -->
 <script lang="ts">
-	import { createQuery, createMutation, useQueryClient } from '@tanstack/svelte-query';
+	import { createMutation, useQueryClient } from '@tanstack/svelte-query';
+	import { createQuery } from '$lib/query/createQuery.svelte.js';
 	import type { ReviewThread, ReviewDetail } from '@kynetic-ai/shared';
 	import {
 		fetchDiff,

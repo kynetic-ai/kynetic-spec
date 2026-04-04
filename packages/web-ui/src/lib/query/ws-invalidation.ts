@@ -6,6 +6,7 @@
  *
  * AC: @ui-data-freshness ac-3 — WS events invalidate cached data
  * AC: @ui-data-freshness ac-4 — Event-driven, not polling
+ * AC: @ui-data-freshness ac-warming-auto-transition — domain_ready events invalidate affected queries
  */
 
 import type { QueryClient } from "@tanstack/svelte-query";
@@ -26,7 +27,67 @@ const INVALIDATION_TOPICS = [
   "agents",
   "sessions",
   "files:updates",
+  "cache:status",
 ] as const;
+
+const FILE_WATCHER_INVALIDATION_DELAYS_MS = [650, 1_500] as const;
+
+function getFileUpdateInvalidationKeys(event: BroadcastEvent): readonly (readonly unknown[])[] {
+  const ref = (event.data as { ref?: string } | undefined)?.ref;
+  if (!ref) {
+    return [];
+  }
+
+  if (
+    ref.endsWith(".tasks.yaml") ||
+    ref === "project.tasks.yaml" ||
+    ref === "tasks.yaml" ||
+    ref.startsWith("tasks/")
+  ) {
+    return [queryKeys.tasks.all, queryKeys.validation.all, queryKeys.sessionContext.all];
+  }
+
+  if (ref === "project.inbox.yaml") {
+    return [queryKeys.inbox.all];
+  }
+
+  if (ref === "project.triage.yaml") {
+    return [queryKeys.inbox.all];
+  }
+
+  if (ref === "project.reviews.yaml") {
+    return [queryKeys.reviews.all, queryKeys.tasks.all];
+  }
+
+  if (ref === "project.plans.yaml") {
+    return [queryKeys.plans.all];
+  }
+
+  if (ref.startsWith("modules/") || ref.endsWith(".spec.yaml")) {
+    return [queryKeys.items.all, queryKeys.validation.all];
+  }
+
+  if (ref === "kynetic.yaml" || ref.endsWith(".meta.yaml")) {
+    return [
+      queryKeys.items.all,
+      queryKeys.settings.all,
+      queryKeys.workflows.all,
+      queryKeys.observations.all,
+      queryKeys.validation.all,
+      queryKeys.automation.all,
+      queryKeys.sessionContext.all,
+    ];
+  }
+
+  return [
+    queryKeys.settings.all,
+    queryKeys.workflows.all,
+    queryKeys.observations.all,
+    queryKeys.validation.all,
+    queryKeys.automation.all,
+    queryKeys.sessionContext.all,
+  ];
+}
 
 /**
  * Map a broadcast event to the query keys that should be invalidated.
@@ -69,12 +130,16 @@ function getInvalidationKeys(
         "thinking_start",
         "thinking_progress",
         "tool_call_start",
+        "tool_call_input",
       ]);
       if (streamingEvents.has(event.event)) {
         return [];
       }
       // Completion events (message_complete, thinking_complete, tool_call_complete)
-      // and invocation lifecycle events invalidate session event caches.
+      // only invalidate session queries — they signal that a message/thought
+      // finished, which is relevant for session detail views but NOT for
+      // agent status or definitions. Avoids excessive agent/status refetches
+      // during active dispatch work.
       if (
         event.event === "message_complete" ||
         event.event === "thinking_complete" ||
@@ -82,32 +147,77 @@ function getInvalidationKeys(
       ) {
         const sessionId = (event.data as { session_id?: string })?.session_id;
         if (sessionId) {
-          return [queryKeys.sessions.all, queryKeys.agents.all];
+          return [queryKeys.sessions.all];
         }
+        return [];
       }
-      // Agent lifecycle events (agent_invocation) also affect session lists
-      return [queryKeys.agents.all, queryKeys.sessions.all];
+      // Agent lifecycle events: the daemon broadcasts a single "agent_invocation"
+      // event with data.status = "started" | "completed" | "failed".
+      // These represent actual dispatch state changes — invalidate both agents
+      // and sessions.
+      if (event.event === "agent_invocation") {
+        return [queryKeys.agents.all, queryKeys.sessions.all];
+      }
+      // Other agent-topic events (for example sync_state degraded/recovered
+      // broadcasts) affect dispatch status but not per-session detail views.
+      return [queryKeys.agents.all];
     }
 
     case "sessions":
       return [queryKeys.sessions.all];
 
     case "files:updates":
-      // File changes (e.g., settings save, meta edits) affect multiple caches
-      // Observations and session context live in meta files
-      // Automation config (hooks, schedules, compositions) lives in meta files
-      return [
-        queryKeys.settings.all,
-        queryKeys.workflows.all,
-        queryKeys.observations.all,
-        queryKeys.validation.all,
-        queryKeys.automation.all,
-        queryKeys.sessionContext.all,
-      ];
+      // File watcher broadcasts are the fallback path for direct on-disk edits.
+      // Map the changed file to the same query families the UI would invalidate
+      // for route-driven entity updates so active views stay fresh without reload.
+      return getFileUpdateInvalidationKeys(event);
+
+    case "cache:status":
+      // AC: @ui-data-freshness ac-warming-auto-transition
+      // When a cache domain finishes loading, invalidate queries for that domain
+      // so they refetch immediately instead of waiting for retry polling.
+      return getDomainReadyInvalidationKeys(event);
 
     default:
       return [];
   }
+}
+
+/**
+ * Map a cache domain name to query keys that should be invalidated when that
+ * domain becomes ready. Matches the daemon's CacheDomain type.
+ *
+ * AC: @ui-data-freshness ac-warming-auto-transition
+ */
+const DOMAIN_QUERY_KEY_MAP: Record<string, readonly (readonly unknown[])[]> = {
+  tasks: [queryKeys.tasks.all, queryKeys.validation.all, queryKeys.sessionContext.all],
+  items: [queryKeys.items.all, queryKeys.validation.all],
+  inbox: [queryKeys.inbox.all],
+  triage: [queryKeys.inbox.all],
+  reviews: [queryKeys.reviews.all],
+  plans: [queryKeys.plans.all],
+  sessions: [queryKeys.sessions.all],
+  // "meta" domain covers settings, workflows, observations, automation, and session context
+  meta: [
+    queryKeys.settings.all,
+    queryKeys.workflows.all,
+    queryKeys.observations.all,
+    queryKeys.automation.all,
+    queryKeys.sessionContext.all,
+  ],
+};
+
+/**
+ * Get invalidation keys for a domain_ready event.
+ * Only processes "domain_ready" events; other cache:status events are ignored.
+ */
+function getDomainReadyInvalidationKeys(event: BroadcastEvent): readonly (readonly unknown[])[] {
+  if (event.event !== "domain_ready") return [];
+
+  const domain = (event.data as { domain?: string })?.domain;
+  if (!domain) return [];
+
+  return DOMAIN_QUERY_KEY_MAP[domain] ?? [];
 }
 
 let queryClientRef: QueryClient | null = null;
@@ -118,9 +228,21 @@ function handleBroadcastEvent(topic: string) {
     if (!queryClientRef) return;
 
     const keys = getInvalidationKeys(topic, event);
-    for (const key of keys) {
-      queryClientRef.invalidateQueries({ queryKey: key as unknown[] });
+    const invalidate = () => {
+      if (!queryClientRef) return;
+      for (const key of keys) {
+        queryClientRef.invalidateQueries({ queryKey: key as unknown[] });
+      }
+    };
+
+    if (topic === "files:updates") {
+      for (const delayMs of FILE_WATCHER_INVALIDATION_DELAYS_MS) {
+        setTimeout(invalidate, delayMs);
+      }
+      return;
     }
+
+    invalidate();
   };
 }
 

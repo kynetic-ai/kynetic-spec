@@ -7,7 +7,14 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { execSync } from "node:child_process";
-import { kspec, kspecJson, createTempDir, cleanupTempDir, initGitRepo } from "./helpers/cli.js";
+import {
+  kspec,
+  kspecJson,
+  createTempDir,
+  cleanupTempDir,
+  initGitRepo,
+  readTestOutput,
+} from "./helpers/cli.js";
 
 describe("kspec setup (enhanced)", () => {
   let tempDir: string;
@@ -49,6 +56,51 @@ describe("kspec setup (enhanced)", () => {
 
       expect(result.exitCode).toBe(0);
       expect(result.stdout).toContain("Agent:");
+    });
+
+    it("ignores leaked parent agent markers when status runs without overrides", async () => {
+      const previousEnv = {
+        HOME: process.env.HOME,
+        USERPROFILE: process.env.USERPROFILE,
+        FACTORY_PROJECT_DIR: process.env.FACTORY_PROJECT_DIR,
+        CODEX_THREAD_ID: process.env.CODEX_THREAD_ID,
+      };
+      const leakedHome = await createTempDir("kspec-leaked-agent-home-");
+
+      try {
+        process.env.HOME = leakedHome;
+        process.env.USERPROFILE = leakedHome;
+        process.env.FACTORY_PROJECT_DIR = leakedHome;
+        process.env.CODEX_THREAD_ID = "leaked-thread";
+        await fs.mkdir(path.join(leakedHome, ".claude"), { recursive: true });
+        await fs.mkdir(path.join(leakedHome, ".factory"), { recursive: true });
+
+        const result = kspecJson<{ agent: { detected: string } }>("setup --status", tempDir);
+
+        expect(result.agent.detected).toBe("unknown");
+      } finally {
+        await cleanupTempDir(leakedHome);
+        if (previousEnv.HOME === undefined) {
+          delete process.env.HOME;
+        } else {
+          process.env.HOME = previousEnv.HOME;
+        }
+        if (previousEnv.USERPROFILE === undefined) {
+          delete process.env.USERPROFILE;
+        } else {
+          process.env.USERPROFILE = previousEnv.USERPROFILE;
+        }
+        if (previousEnv.FACTORY_PROJECT_DIR === undefined) {
+          delete process.env.FACTORY_PROJECT_DIR;
+        } else {
+          process.env.FACTORY_PROJECT_DIR = previousEnv.FACTORY_PROJECT_DIR;
+        }
+        if (previousEnv.CODEX_THREAD_ID === undefined) {
+          delete process.env.CODEX_THREAD_ID;
+        } else {
+          process.env.CODEX_THREAD_ID = previousEnv.CODEX_THREAD_ID;
+        }
+      }
     });
 
     // AC: @enhanced-setup ac-8 - hooks status shown
@@ -214,7 +266,7 @@ describe("kspec setup (enhanced)", () => {
 
       // Remove .kspec-sessions/ and plans/ from root .gitignore
       const rootGitignore = path.join(tempDir, ".gitignore");
-      const rootContent = await fs.readFile(rootGitignore, "utf-8");
+      const rootContent = await readTestOutput(rootGitignore);
       await fs.writeFile(
         rootGitignore,
         rootContent
@@ -226,7 +278,7 @@ describe("kspec setup (enhanced)", () => {
 
       // Remove sessions/ from .kspec/.gitignore
       const shadowGitignore = path.join(tempDir, ".kspec", ".gitignore");
-      const shadowContent = await fs.readFile(shadowGitignore, "utf-8");
+      const shadowContent = await readTestOutput(shadowGitignore);
       await fs.writeFile(
         shadowGitignore,
         shadowContent
@@ -249,10 +301,10 @@ describe("kspec setup (enhanced)", () => {
       expect(result.stdout).toContain(".kspec/.gitignore");
 
       // Verify no actual changes were made
-      const rootAfter = await fs.readFile(rootGitignore, "utf-8");
+      const rootAfter = await readTestOutput(rootGitignore);
       expect(rootAfter).not.toContain(".kspec-sessions");
       expect(rootAfter).not.toContain("plans/");
-      const shadowAfter = await fs.readFile(shadowGitignore, "utf-8");
+      const shadowAfter = await readTestOutput(shadowGitignore);
       expect(shadowAfter).not.toContain("sessions/");
       const sessionsDirExists = await fs
         .access(sessionsDir)
@@ -303,7 +355,7 @@ describe("kspec setup (enhanced)", () => {
 
     it("should add plans/ to .gitignore for existing projects", async () => {
       const rootGitignore = path.join(tempDir, ".gitignore");
-      const rootContent = await fs.readFile(rootGitignore, "utf-8");
+      const rootContent = await readTestOutput(rootGitignore);
       await fs.writeFile(
         rootGitignore,
         rootContent
@@ -318,7 +370,7 @@ describe("kspec setup (enhanced)", () => {
       });
 
       expect(result.exitCode).toBe(0);
-      const updated = await fs.readFile(rootGitignore, "utf-8");
+      const updated = await readTestOutput(rootGitignore);
       expect(updated).toContain("plans/");
     });
 
@@ -368,7 +420,7 @@ hooks:
 
       // Check settings.json
       const settingsPath = path.join(tempDir, ".claude", "settings.json");
-      const settingsContent = await fs.readFile(settingsPath, "utf-8");
+      const settingsContent = await readTestOutput(settingsPath);
       const settings = JSON.parse(settingsContent);
 
       expect(settings.hooks).toBeDefined();
@@ -394,7 +446,7 @@ hooks:
 
       // Check settings.json for native guard command
       const settingsPath = path.join(tempDir, ".claude", "settings.json");
-      const settings = JSON.parse(await fs.readFile(settingsPath, "utf-8"));
+      const settings = JSON.parse(await readTestOutput(settingsPath));
       const preToolUse = settings.hooks?.PreToolUse || [];
 
       const hasNativeGuard = preToolUse.some((entry: { hooks?: Array<{ command?: string }> }) =>
@@ -469,7 +521,7 @@ hooks:
         .catch(() => false);
       expect(exists).toBe(true);
 
-      const content = await fs.readFile(agentsMdPath, "utf-8");
+      const content = await readTestOutput(agentsMdPath);
       expect(content).toContain("Generated by kspec");
       expect(content).toContain("kspec Agent Instructions");
     });
@@ -487,7 +539,7 @@ hooks:
         .catch(() => false);
       expect(exists).toBe(true);
 
-      const content = await fs.readFile(hashPath, "utf-8");
+      const content = await readTestOutput(hashPath);
       const hash = JSON.parse(content);
       expect(hash.metaHash).toBeDefined();
       expect(hash.generatedAt).toBeDefined();
@@ -521,7 +573,7 @@ hooks:
         .catch(() => false);
       expect(exists).toBe(true);
 
-      const content = await fs.readFile(renderedPath, "utf-8");
+      const content = await readTestOutput(renderedPath);
       expect(content).toContain("<!-- kspec-managed -->");
       expect(content).toContain("name: test-skill");
     });
@@ -547,12 +599,12 @@ hooks:
         .catch(() => false);
       expect(codexCoreExists).toBe(true);
 
-      const codexContent = await fs.readFile(codexCorePath, "utf-8");
+      const codexContent = await readTestOutput(codexCorePath);
       expect(codexContent).toContain("<!-- kspec-managed -->");
       expect(codexContent).toContain("name: kspec-help");
 
       const codexConfigPath = path.join(tempDir, ".codex", "config.toml");
-      const codexConfig = await fs.readFile(codexConfigPath, "utf-8");
+      const codexConfig = await readTestOutput(codexConfigPath);
       expect(codexConfig).toContain("project_doc_fallback_filenames");
       expect(codexConfig).toContain("kspec-agents.md");
 
@@ -621,7 +673,7 @@ hooks:
       expect(result.exitCode).toBe(0);
 
       const renderedPath = path.join(tempDir, ".factory", "skills", "droid-setup", "SKILL.md");
-      const rendered = await fs.readFile(renderedPath, "utf-8");
+      const rendered = await readTestOutput(renderedPath);
       expect(rendered).toContain("<!-- kspec-managed -->");
       expect(rendered).toContain("name: droid-setup");
     });
@@ -756,7 +808,7 @@ hooks:
       });
 
       const settingsPath = path.join(tempDir, ".claude", "settings.json");
-      const settings = JSON.parse(await fs.readFile(settingsPath, "utf-8"));
+      const settings = JSON.parse(await readTestOutput(settingsPath));
 
       // UserPromptSubmit should be present (prompt-check default: enabled)
       expect(settings.hooks.UserPromptSubmit).toBeDefined();
@@ -790,7 +842,7 @@ hooks:
       });
 
       const settingsPath = path.join(tempDir, ".claude", "settings.json");
-      const settings = JSON.parse(await fs.readFile(settingsPath, "utf-8"));
+      const settings = JSON.parse(await readTestOutput(settingsPath));
 
       // Both should be installed
       expect(settings.hooks.UserPromptSubmit).toBeDefined();
@@ -819,7 +871,7 @@ hooks:
       });
 
       const settingsPath = path.join(tempDir, ".claude", "settings.json");
-      const settings = JSON.parse(await fs.readFile(settingsPath, "utf-8"));
+      const settings = JSON.parse(await readTestOutput(settingsPath));
 
       // Neither kspec hook should be present
       const hasPromptCheck = settings.hooks?.UserPromptSubmit?.some(
@@ -851,7 +903,7 @@ hooks:
       });
 
       const settingsPath = path.join(tempDir, ".claude", "settings.json");
-      let settings = JSON.parse(await fs.readFile(settingsPath, "utf-8"));
+      let settings = JSON.parse(await readTestOutput(settingsPath));
 
       // Verify checkpoint was installed
       let hasCheckpoint = settings.hooks.Stop?.some(
@@ -873,7 +925,7 @@ hooks:
         env: { CLAUDECODE: "1" },
       });
 
-      settings = JSON.parse(await fs.readFile(settingsPath, "utf-8"));
+      settings = JSON.parse(await readTestOutput(settingsPath));
 
       // Verify checkpoint was removed
       hasCheckpoint = settings.hooks?.Stop?.some((entry: { hooks?: Array<{ command?: string }> }) =>
@@ -931,7 +983,7 @@ hooks:
         env: { CLAUDECODE: "1" },
       });
 
-      const settings = JSON.parse(await fs.readFile(settingsPath, "utf-8"));
+      const settings = JSON.parse(await readTestOutput(settingsPath));
       expect(settings.hooks.Stop).toEqual([
         {
           matcher: "Notebook",
@@ -985,7 +1037,7 @@ hooks:
         env: { CLAUDECODE: "1" },
       });
 
-      const settings = JSON.parse(await fs.readFile(settingsPath, "utf-8"));
+      const settings = JSON.parse(await readTestOutput(settingsPath));
       expect(settings.hooks.Stop).toEqual([
         {
           matcher: "Notebook",
@@ -1016,7 +1068,7 @@ hooks:
       });
 
       const settingsPath = path.join(tempDir, ".claude", "settings.json");
-      let settings = JSON.parse(await fs.readFile(settingsPath, "utf-8"));
+      let settings = JSON.parse(await readTestOutput(settingsPath));
 
       // Verify prompt-check was installed
       let hasPromptCheck = settings.hooks.UserPromptSubmit?.some(
@@ -1038,7 +1090,7 @@ hooks:
         env: { CLAUDECODE: "1" },
       });
 
-      settings = JSON.parse(await fs.readFile(settingsPath, "utf-8"));
+      settings = JSON.parse(await readTestOutput(settingsPath));
 
       // Verify prompt-check was removed
       hasPromptCheck = settings.hooks?.UserPromptSubmit?.some(
@@ -1062,7 +1114,7 @@ hooks: {}
       });
 
       const settingsPath = path.join(tempDir, ".claude", "settings.json");
-      const settings = JSON.parse(await fs.readFile(settingsPath, "utf-8"));
+      const settings = JSON.parse(await readTestOutput(settingsPath));
 
       // prompt-check should be installed (default: true)
       const hasPromptCheck = settings.hooks.UserPromptSubmit?.some(
@@ -1093,11 +1145,11 @@ hooks:
       // First run
       kspec("setup", tempDir, { env: { CLAUDECODE: "1" } });
       const settingsPath = path.join(tempDir, ".claude", "settings.json");
-      const content1 = await fs.readFile(settingsPath, "utf-8");
+      const content1 = await readTestOutput(settingsPath);
 
       // Second run
       kspec("setup", tempDir, { env: { CLAUDECODE: "1" } });
-      const content2 = await fs.readFile(settingsPath, "utf-8");
+      const content2 = await readTestOutput(settingsPath);
 
       expect(content2).toBe(content1);
     });
@@ -1118,7 +1170,7 @@ hooks:
       });
 
       const settingsPath = path.join(tempDir, ".claude", "settings.json");
-      const settings = JSON.parse(await fs.readFile(settingsPath, "utf-8"));
+      const settings = JSON.parse(await readTestOutput(settingsPath));
 
       // PreToolUse should still be present
       expect(settings.hooks.PreToolUse).toBeDefined();
@@ -1151,7 +1203,7 @@ hooks:
 
       // Check hooks are still correct (not duplicated)
       const settingsPath = path.join(tempDir, ".claude", "settings.json");
-      const settings = JSON.parse(await fs.readFile(settingsPath, "utf-8"));
+      const settings = JSON.parse(await readTestOutput(settingsPath));
 
       // Should only have one UserPromptSubmit entry
       const promptHooks = settings.hooks.UserPromptSubmit as Array<unknown>;
@@ -1171,7 +1223,7 @@ hooks:
       });
 
       const settingsPath = path.join(tempDir, ".claude", "settings.json");
-      const settings = JSON.parse(await fs.readFile(settingsPath, "utf-8"));
+      const settings = JSON.parse(await readTestOutput(settingsPath));
       const preToolUse = settings.hooks?.PreToolUse || [];
 
       // Count native guard entries
@@ -1193,14 +1245,14 @@ hooks:
       });
 
       const settingsPath = path.join(tempDir, ".claude", "settings.json");
-      const content1 = await fs.readFile(settingsPath, "utf-8");
+      const content1 = await readTestOutput(settingsPath);
 
       // Second setup
       kspec("setup", tempDir, {
         env: { CLAUDECODE: "1" },
       });
 
-      const content2 = await fs.readFile(settingsPath, "utf-8");
+      const content2 = await readTestOutput(settingsPath);
 
       // Content should be identical (no unnecessary changes)
       expect(content2).toBe(content1);

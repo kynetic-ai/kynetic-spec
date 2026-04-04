@@ -145,6 +145,10 @@ function mergePlanPreservingRawShape(
   const result: Record<string, unknown> = {};
 
   for (const [key, value] of Object.entries(normalizedPlan)) {
+    if (key === "branch" && (value === null || value === undefined)) {
+      continue;
+    }
+
     if (key in rawPlan) {
       // Field existed in raw — always include (even if value changed)
       result[key] = value;
@@ -227,6 +231,7 @@ export function createPlan(input: PlanInput, _author?: string): Plan {
     derived_specs: input.derived_specs ?? [],
     source_path: input.source_path ?? null,
     module_ref: input.module_ref ?? null,
+    branch: input.branch ?? null,
     created_at: input.created_at ?? now,
     approved_at: input.approved_at ?? null,
     completed_at: input.completed_at ?? null,

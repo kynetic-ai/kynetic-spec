@@ -5,9 +5,9 @@
  * source-agnostic session freshness notifications to WebSocket clients.
  */
 
-import { existsSync, readdirSync, watch, type FSWatcher } from "fs";
+import { existsSync, readdirSync, type Stats } from "fs";
 import { watch as chokidarWatch, type FSWatcher as ChokidarWatcher } from "chokidar";
-import { join, relative, sep } from "path";
+import { extname, join, relative, sep } from "path";
 
 export interface SessionWatcherOptions {
   sessionsDir: string;
@@ -16,10 +16,9 @@ export interface SessionWatcherOptions {
 }
 
 export class SessionWatcher {
-  private watcher: FSWatcher | ChokidarWatcher | null = null;
+  private watcher: ChokidarWatcher | null = null;
   private debounceTimers = new Map<string, NodeJS.Timeout>();
   private debounceMs = 250;
-  private usingChokidar = false;
   private retryCount = 0;
   private maxRetries = 5;
   private baseBackoffMs = 1000;
@@ -37,13 +36,7 @@ export class SessionWatcher {
       return;
     }
 
-    try {
-      await this.startBunWatcher();
-    } catch (error) {
-      console.warn("[session-watcher] Bun fs.watch failed, falling back to Chokidar", error);
-      this.usingChokidar = true;
-      await this.startChokidarWatcher();
-    }
+    await this.startChokidarWatcher();
   }
 
   private scheduleBootstrapPoll(): void {
@@ -57,31 +50,19 @@ export class SessionWatcher {
     if (typeof this.bootstrapPollTimer === "object" && "unref" in this.bootstrapPollTimer) {
       this.bootstrapPollTimer.unref();
     }
-
-    console.log("[session-watcher] Waiting for .kspec-sessions directory");
-  }
-
-  private async startBunWatcher(): Promise<void> {
-    this.watcher = watch(this.options.sessionsDir, { recursive: true }, (_eventType, filename) => {
-      if (!filename) return;
-      this.handleFileChange(join(this.options.sessionsDir, filename));
-    });
-    (this.watcher as FSWatcher).on("error", (error) => {
-      void this.handleWatcherError(error);
-    });
-    console.log("[session-watcher] Watching .kspec-sessions directory with Bun fs.watch");
   }
 
   private async startChokidarWatcher(): Promise<void> {
     this.watcher = chokidarWatch(this.options.sessionsDir, {
       ignoreInitial: true,
+      ignored: (filePath: string, stats?: Stats) => this.shouldIgnorePath(filePath, stats),
       awaitWriteFinish: {
         stabilityThreshold: 100,
         pollInterval: 50,
       },
     });
 
-    (this.watcher as ChokidarWatcher)
+    this.watcher
       .on("add", (file: string) => this.handleFileChange(file))
       .on("change", (file: string) => this.handleFileChange(file))
       .on("unlink", (file: string) => this.handleFileChange(file))
@@ -91,7 +72,9 @@ export class SessionWatcher {
         void this.handleWatcherError(error instanceof Error ? error : new Error(String(error)));
       });
 
-    console.log("[session-watcher] Watching .kspec-sessions directory with Chokidar");
+    await new Promise<void>((resolve) => {
+      this.watcher?.once("ready", () => resolve());
+    });
   }
 
   private async promoteBootstrapPoll(): Promise<void> {
@@ -148,6 +131,29 @@ export class SessionWatcher {
     return sessionId ? join(this.options.sessionsDir, sessionId) : null;
   }
 
+  private shouldIgnorePath(filePath: string, stats?: Stats): boolean {
+    const relativePath = relative(this.options.sessionsDir, filePath);
+    if (!relativePath || relativePath === "." || relativePath.startsWith("..")) {
+      return false;
+    }
+
+    const segments = relativePath.split(sep).filter(Boolean);
+    if (segments.includes("blobs")) {
+      return true;
+    }
+
+    if (stats?.isDirectory()) {
+      return false;
+    }
+
+    const extension = extname(segments.at(-1) ?? "").toLowerCase();
+    if (!extension) {
+      return false;
+    }
+
+    return extension !== ".yaml" && extension !== ".jsonl";
+  }
+
   private async handleWatcherError(error: Error): Promise<void> {
     if (this.stopped) {
       return;
@@ -175,7 +181,6 @@ export class SessionWatcher {
         await this.stop();
         this.stopped = false;
         await this.start();
-        console.log("[session-watcher] Recovery successful");
       } catch (retryError) {
         console.error("[session-watcher] Recovery failed:", retryError);
         await this.handleWatcherError(retryError as Error);
@@ -205,11 +210,7 @@ export class SessionWatcher {
     }
 
     if (this.watcher) {
-      if (this.usingChokidar) {
-        await (this.watcher as ChokidarWatcher).close();
-      } else {
-        (this.watcher as FSWatcher).close();
-      }
+      await this.watcher.close();
       this.watcher = null;
     }
   }

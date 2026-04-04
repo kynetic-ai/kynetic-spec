@@ -36,9 +36,8 @@
  * @trait-semantic-exit-codes ac-8 (documentation — exit codes documented in exit-codes.ts)
  */
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { readFileSync, writeFileSync } from "node:fs";
+import { writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { parse as yamlParse, stringify as yamlStringify } from "yaml";
 import {
   kspec,
   kspecJson,
@@ -47,25 +46,23 @@ import {
   initGitRepo,
   git,
   testUlids,
+  seedSplitTask,
 } from "../helpers/cli";
 import type { SessionContext } from "../helpers/session-types";
 
 /**
- * Seed completed tasks directly into fixture YAML instead of using CLI subprocess loops.
+ * Seed completed tasks in split format instead of using CLI subprocess loops.
  * Each task gets a unique ULID and staggered completed_at timestamps so they appear
  * as distinct items in the activity timeline.
  *
  * AC: @test-suite-perf-reliability ac-1
  */
 function seedCompletedTasks(dir: string, count: number): void {
-  const tasksFile = join(dir, "project.tasks.yaml");
-  // oxlint-disable-next-line no-source-scanning/no-source-file-reads -- reading test fixture data, not source code
-  const existing = yamlParse(readFileSync(tasksFile, "utf8")) as { tasks: unknown[] };
   const ulids = testUlids("TMLN", count);
 
   for (let i = 0; i < count; i++) {
     const hour = (i + 1).toString().padStart(2, "0");
-    existing.tasks.push({
+    seedSplitTask(dir, {
       _ulid: ulids[i],
       slugs: [`timeline-task-${i + 1}`],
       title: `Task ${i + 1}`,
@@ -84,27 +81,22 @@ function seedCompletedTasks(dir: string, count: number): void {
       closed_reason: "Done",
     });
   }
-
-  writeFileSync(tasksFile, yamlStringify(existing));
 }
 
 /**
- * Seed tasks with notes directly into fixture YAML for starvation prevention tests.
+ * Seed tasks with notes in split format for starvation prevention tests.
  * Avoids 25+ CLI subprocess calls that cause CI timeouts under load.
  *
  * AC: @test-suite-perf-reliability ac-1
  */
 function seedTasksWithNotes(dir: string): void {
-  const tasksFile = join(dir, "project.tasks.yaml");
-  // oxlint-disable-next-line no-source-scanning/no-source-file-reads -- reading test fixture data, not source code
-  const existing = yamlParse(readFileSync(tasksFile, "utf8")) as { tasks: unknown[] };
   const taskUlids = testUlids("STRV", 7);
   const noteUlids = testUlids("SNOT", 7);
 
   // 5 in_progress tasks with notes
   for (let i = 0; i < 5; i++) {
     const minute = (i + 1).toString().padStart(2, "0");
-    existing.tasks.push({
+    seedSplitTask(dir, {
       _ulid: taskUlids[i],
       slugs: [`active-${i + 1}`],
       title: `Active ${i + 1}`,
@@ -128,7 +120,7 @@ function seedTasksWithNotes(dir: string): void {
   }
 
   // 1 pending_review task with note
-  existing.tasks.push({
+  seedSplitTask(dir, {
     _ulid: taskUlids[5],
     slugs: ["review-task"],
     title: "Review",
@@ -152,7 +144,7 @@ function seedTasksWithNotes(dir: string): void {
   });
 
   // 1 completed task with note
-  existing.tasks.push({
+  seedSplitTask(dir, {
     _ulid: taskUlids[6],
     slugs: ["done-task"],
     title: "Done",
@@ -176,8 +168,6 @@ function seedTasksWithNotes(dir: string): void {
     completed_at: "2026-01-01T01:00:00Z",
     closed_reason: "Finished",
   });
-
-  writeFileSync(tasksFile, yamlStringify(existing));
 }
 
 describe("session start format rewrite", () => {

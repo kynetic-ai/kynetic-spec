@@ -32,7 +32,9 @@ import {
   getDispatchEngine,
   stopAllEngines,
 } from "./routes/agent-dispatch";
+import { createCommandRoutes } from "./routes/command";
 import { createAutomationRoutes } from "./routes/automation";
+import { createDebugRoutes } from "./routes/debug";
 import { createSessionRoutes } from "./routes/sessions";
 import { createPlansRoutes } from "./routes/plans";
 import { createAggregationRoutes } from "./routes/aggregation";
@@ -41,6 +43,7 @@ import { createDiffRoutes } from "./routes/diff";
 import { createReviewsRoutes } from "./routes/reviews";
 import { ShadowSyncScheduler } from "./shadow-sync";
 import { SessionSyncScheduler } from "./session-sync";
+import { WatcherHealthMonitor } from "./watcher-health-monitor";
 import { join } from "path";
 
 export interface ServerOptions {
@@ -48,6 +51,10 @@ export interface ServerOptions {
   isDaemon: boolean;
   kspecDir?: string; // Path to .kspec directory (default: .kspec in cwd)
   webUiDir?: string; // Path to web UI build directory (default: auto-detect)
+}
+
+function hasWebUiIndex(dir: string | undefined): dir is string {
+  return Boolean(dir && existsSync(join(dir, "index.html")));
 }
 
 /**
@@ -62,13 +69,13 @@ export interface ServerOptions {
  */
 export function resolveWebUiPath(webUiDir?: string): string | null {
   // 1. Explicit option
-  if (webUiDir && existsSync(webUiDir)) {
+  if (hasWebUiIndex(webUiDir)) {
     return webUiDir;
   }
 
   // 2. Environment variable
   const envPath = process.env.WEB_UI_DIR;
-  if (envPath && existsSync(envPath)) {
+  if (hasWebUiIndex(envPath)) {
     return envPath;
   }
 
@@ -77,7 +84,7 @@ export function resolveWebUiPath(webUiDir?: string): string | null {
   // import.meta.url resolves to dist/daemon/server.js → sibling is dist/web-ui/
   const selfDir = dirname(fileURLToPath(import.meta.url));
   const bundledPath = join(selfDir, "..", "web-ui");
-  if (existsSync(bundledPath)) {
+  if (hasWebUiIndex(bundledPath)) {
     return bundledPath;
   }
 
@@ -90,6 +97,7 @@ let heartbeatManager: HeartbeatManager;
 let wsHandler: WebSocketHandler;
 let _projectManager: import("./project-context").ProjectContextManager | undefined;
 let shadowSyncScheduler: ShadowSyncScheduler | undefined;
+let watcherHealthMonitor: WatcherHealthMonitor | undefined;
 const sessionSyncSchedulers: Map<string, SessionSyncScheduler> = new Map();
 
 /**
@@ -156,7 +164,7 @@ function stopSessionSyncForProject(projectPath: string): void {
  * Middleware to enforce localhost-only connections.
  * AC-3: Reject non-localhost connections with 403 Forbidden
  */
-function localhostOnly() {
+export function localhostOnly() {
   return (context: { request: Request }) => {
     const host = context.request.headers.get("host");
     if (!host) {
@@ -266,9 +274,47 @@ export async function createServer(options: ServerOptions) {
     // AC-3: Enforce localhost-only connections
     .onRequest(localhostOnly());
 
+  // AC: @daemon-entity-cache ac-load-on-register — lazy import entity cache module
+  // At build time, packages/daemon/src/ is copied to dist/daemon/ where entity-cache.js
+  // (compiled from src/daemon/entity-cache.ts) is a sibling.
+  const entityCacheModule = await import("./entity-cache.js");
+
   // Shared callback for all registration paths (middleware, projects API, WebSocket)
   const onProjectRegistered = async (projectPath: string) => {
     await startSessionSyncForProject(projectPath, pubsubManager);
+    // AC: @daemon-entity-cache ac-load-on-register — create cache and start progressive loading
+    // AC: @daemon-entity-cache ac-domain-ready-event — wire domain-ready transitions to WebSocket broadcast
+    const entityCache = entityCacheModule.registerEntityCache(
+      projectPath,
+      undefined,
+      (domain, cachePath, previousState) => {
+        pubsubManager.broadcast(
+          "cache:status",
+          "domain_ready",
+          { domain, projectPath: cachePath, previousState, timestamp: new Date().toISOString() },
+          cachePath,
+        );
+      },
+      (domain, cachePath) => {
+        if (domain !== "sessions") {
+          return;
+        }
+        pubsubManager.broadcast(
+          "sessions",
+          "session_changed",
+          {
+            domain,
+            projectPath: cachePath,
+            action: "modified",
+            timestamp: new Date().toISOString(),
+          },
+          cachePath,
+        );
+      },
+    );
+    entityCache.loadAll().catch((err: unknown) => {
+      console.error(`[entity-cache] Error during initial load for ${projectPath}:`, err);
+    });
   };
 
   // AC: @multi-directory-daemon ac-1, ac-2, ac-3 - Project context middleware
@@ -295,62 +341,115 @@ export async function createServer(options: ServerOptions) {
 
     // AC: @api-contract ac-2 through ac-7 - Task API endpoints
     // AC: @multi-directory-daemon ac-24 - Routes use projectContext from middleware
-    .use(createTasksRoutes({ pubsub: pubsubManager }))
+    // AC: @daemon-entity-cache ac-serve-from-memory, ac-write-through — pass cache accessor
+    .use(
+      createTasksRoutes({
+        pubsub: pubsubManager,
+        getEntityCache: entityCacheModule.getEntityCache,
+      }),
+    )
 
     // AC: @api-contract ac-8 through ac-11 - Spec Item API endpoints
-    .use(createItemsRoutes())
+    // AC: @daemon-entity-cache ac-serve-from-memory — pass cache accessor
+    .use(createItemsRoutes({ getEntityCache: entityCacheModule.getEntityCache }))
 
     // AC: @api-contract ac-12 through ac-14 - Inbox API endpoints
-    .use(createInboxRoutes({ pubsub: pubsubManager }))
+    // AC: @daemon-entity-cache ac-serve-from-memory, ac-write-through — pass cache accessor
+    .use(
+      createInboxRoutes({
+        pubsub: pubsubManager,
+        getEntityCache: entityCacheModule.getEntityCache,
+      }),
+    )
 
     // AC: @api-contract ac-15 through ac-18 - Meta API endpoints
-    .use(createMetaRoutes())
+    // AC: @daemon-entity-cache ac-write-through — pass cache accessor for meta write-through
+    .use(createMetaRoutes({ getEntityCache: entityCacheModule.getEntityCache }))
 
     // AC: @triage-daemon-api ac-1 through ac-9 - Triage API endpoints
-    .use(createTriageRoutes({ pubsub: pubsubManager }))
+    // AC: @daemon-entity-cache ac-serve-from-memory, ac-write-through — pass cache accessor
+    .use(
+      createTriageRoutes({
+        pubsub: pubsubManager,
+        getEntityCache: entityCacheModule.getEntityCache,
+      }),
+    )
 
     // AC: @api-contract ac-19 through ac-21 - Validation and search endpoints
-    .use(createValidationRoutes())
+    // AC: @daemon-read-path ac-no-per-request-sync, ac-index-from-cache — pass cache accessor
+    .use(createValidationRoutes({ getEntityCache: entityCacheModule.getEntityCache }))
 
     // AC: @multi-directory-daemon ac-28, ac-29, ac-30 - Projects management endpoints
     .use(
       createProjectsRoutes({
         projectManager: projectContextManager,
         onProjectRegistered,
-        onProjectUnregistered: (projectPath) => {
-          stopSessionSyncForProject(projectPath);
-        },
+        // Cleanup now handled centrally by ProjectContextManager.unregisterCallback
+        // (wired below) so all unregister paths (API + watcher permanent failure) are covered.
       }),
     )
 
     // AC: @ui-session-stream ac-1, ac-4 - Session data endpoints
-    .use(createSessionRoutes())
+    // AC: @daemon-entity-cache ac-serve-from-memory — pass cache accessor for session routes
+    .use(createSessionRoutes({ getEntityCache: entityCacheModule.getEntityCache }))
 
     // AC: @ui-plans-view ac-1 - Plans data endpoints
-    .use(createPlansRoutes())
+    // AC: @daemon-entity-cache ac-serve-from-memory — pass cache accessor
+    .use(createPlansRoutes({ getEntityCache: entityCacheModule.getEntityCache }))
 
     // AC: @ui-api-aggregation ac-1, ac-2, ac-3 - Aggregation endpoints
-    .use(createAggregationRoutes())
+    // AC: @daemon-read-path ac-no-per-request-sync, ac-index-from-cache — pass cache accessor
+    .use(createAggregationRoutes({ getEntityCache: entityCacheModule.getEntityCache }))
 
     // AC: @ui-api-ref-resolution ac-4, ac-5 - Lightweight ref index endpoint
-    .use(createRefsRoutes())
+    // AC: @daemon-entity-cache ac-serve-from-memory — pass cache accessor
+    .use(createRefsRoutes({ getEntityCache: entityCacheModule.getEntityCache }))
 
     // AC: @review-content-diff-api ac-1, ac-2, ac-3, ac-4 - Diff and review content endpoints
     .use(createDiffRoutes())
 
     // AC: @review-records-daemon-api ac-3, ac-4, ac-5, ac-6, ac-7, ac-8, ac-9, ac-10 - Review endpoints
-    .use(createReviewsRoutes({ pubsub: pubsubManager }))
+    // AC: @daemon-entity-cache ac-serve-from-memory, ac-write-through — pass cache accessor
+    .use(
+      createReviewsRoutes({
+        pubsub: pubsubManager,
+        getEntityCache: entityCacheModule.getEntityCache,
+      }),
+    )
 
     // AC: @agent-dispatch-engine ac-4 - Agent dispatch API endpoints
     // AC: @daemon-agent-dispatch ac-3, ac-4 - Pass pubsub for WebSocket broadcast on invocation events
     .use(createAgentDispatchRoutes({ pubsub: pubsubManager }))
 
+    // AC: @daemon-command-api ac-command-endpoint, ac-batch-support - Command execution API
+    .use(
+      createCommandRoutes({
+        pubsub: pubsubManager,
+        getEntityCache: entityCacheModule.getEntityCache,
+      }),
+    )
+
     // AC: @automation-api ac-1 through ac-6 - Automation management endpoints
     .use(createAutomationRoutes())
 
+    // AC: @daemon-server ac-18 - Debug/diagnostic endpoints
+    .use(
+      createDebugRoutes({
+        projectManager: projectContextManager,
+        getEntityCache: entityCacheModule.getEntityCache,
+      }),
+    );
+
+  // Test-only routes: cache delay injection for E2E tests (KSPEC_TEST guard)
+  if (process.env.KSPEC_TEST) {
+    const { createTestHookRoutes } = await import("./routes/test-hooks.js");
+    app.use(createTestHookRoutes({ getEntityCache: entityCacheModule.getEntityCache }));
+  }
+
+  app
     // AC-4: WebSocket endpoint for real-time updates
     .ws<ConnectionData>("/ws", {
-      beforeHandle({ request, store }) {
+      async beforeHandle({ request, store }) {
         // IMPORTANT: Do NOT return a value from ws beforeHandle.
         // In Elysia 1.4 with derive middleware, returning a value short-circuits
         // the WebSocket upgrade and sends the value as an HTTP 200 response.
@@ -365,7 +464,8 @@ export async function createServer(options: ServerOptions) {
             return;
           }
 
-          const { resolvedPath } = resolveWebSocketProject({
+          // AC: @multi-directory-daemon ac-35 - Await watcher startup before serving cached data
+          const { resolvedPath } = await resolveWebSocketProject({
             request,
             manager,
             fallbackPath: startupProjectPath,
@@ -496,6 +596,39 @@ export async function createServer(options: ServerOptions) {
     }
   });
 
+  // AC: @daemon-entity-cache ac-watcher-invalidation — wire cache invalidation to file watcher
+  // Both .kspec/ and .kspec-sessions/ changes flow through handleFileChange;
+  // fileToDomain() maps YAML files to their domains and ULID-prefixed session
+  // paths to the sessions domain.
+  projectContextManager.setCacheInvalidationCallback((projectPath, kspecDir, file) => {
+    const cache = entityCacheModule.getEntityCache(projectPath);
+    if (!cache) return;
+
+    cache.handleFileChange(kspecDir, file).catch((err: unknown) => {
+      console.error(`[entity-cache] Error handling file change for ${projectPath}:`, err);
+    });
+  });
+
+  // AC: @daemon-entity-cache ac-unregister-cleanup — dispose cache on any unregister path
+  // (including watcher permanent failure, not just API-driven unregister)
+  projectContextManager.setUnregisterCallback((projectPath) => {
+    stopSessionSyncForProject(projectPath);
+    entityCacheModule.unregisterEntityCache(projectPath);
+  });
+
+  // AC: @daemon-entity-cache ac-load-on-register — create cache for the startup project.
+  // The startup project is registered directly by projectContextMiddleware (not via
+  // getOrRegisterProject), so the onProjectRegistered callback isn't fired for it.
+  // Explicitly trigger it here after all callbacks are wired so the startup project
+  // gets an entity cache instance and progressive loading starts immediately.
+  if (startupProjectPath) {
+    try {
+      await onProjectRegistered(startupProjectPath);
+    } catch (error) {
+      console.error("[daemon] Failed to initialize entity cache for startup project:", error);
+    }
+  }
+
   // AC: @multi-directory-daemon ac-17 - Start file watcher for startup project
   if (startupProjectPath) {
     try {
@@ -505,6 +638,11 @@ export async function createServer(options: ServerOptions) {
       console.error("[daemon] Failed to start file watcher for startup project:", error);
     }
   }
+
+  watcherHealthMonitor = new WatcherHealthMonitor(projectContextManager, {
+    intervalMs: parseInt(process.env.KSPEC_WATCHER_HEALTH_INTERVAL_MS ?? "60000", 10) || 60000,
+  });
+  watcherHealthMonitor.start();
 
   // AC: @config-shadow ac-12 - Start periodic shadow sync if remote tracking configured
   if (startupProjectPath) {
@@ -525,6 +663,14 @@ export async function createServer(options: ServerOptions) {
             remoteType: config.shadow.remote?.type,
           },
           pubsub: pubsubManager,
+          // AC: @daemon-read-path ac-background-sync — invalidate entity cache when background sync pulls new data
+          onPull: async () => {
+            if (!startupProjectPath) return;
+            const cache = entityCacheModule.getEntityCache(startupProjectPath);
+            if (!cache) return;
+            console.log("[daemon] Shadow sync pulled data — reloading entity cache");
+            await cache.loadAll();
+          },
         });
         shadowSyncScheduler.start();
       }
@@ -557,6 +703,7 @@ export async function createServer(options: ServerOptions) {
 
       // AC: @config-shadow ac-12 - Stop shadow sync scheduler
       shadowSyncScheduler?.stop();
+      watcherHealthMonitor?.stop();
 
       // AC: @session-branch-worktree ac-sync - Stop all session sync schedulers
       for (const scheduler of sessionSyncSchedulers.values()) {

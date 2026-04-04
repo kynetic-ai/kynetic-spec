@@ -37,7 +37,9 @@ describe("AC Schema Drift detection", () => {
     // Create manifest
     await fs.writeFile(
       path.join(tmpDir, "kynetic.yaml"),
-      `kynetic: "1.0"
+      `kynetic: "1.1"
+task_storage:
+  format: split
 project:
   name: test-project
   version: 0.1.0
@@ -78,7 +80,9 @@ includes:
     // Create manifest
     await fs.writeFile(
       path.join(tmpDir, "kynetic.yaml"),
-      `kynetic: "1.0"
+      `kynetic: "1.1"
+task_storage:
+  format: split
 project:
   name: test-project
   version: 0.1.0
@@ -119,7 +123,9 @@ includes:
     // Create manifest
     await fs.writeFile(
       path.join(tmpDir, "kynetic.yaml"),
-      `kynetic: "1.0"
+      `kynetic: "1.1"
+task_storage:
+  format: split
 project:
   name: test-project
   version: 0.1.0
@@ -159,7 +165,9 @@ includes:
     // Create manifest
     await fs.writeFile(
       path.join(tmpDir, "kynetic.yaml"),
-      `kynetic: "1.0"
+      `kynetic: "1.1"
+task_storage:
+  format: split
 project:
   name: test-project
   version: 0.1.0
@@ -200,7 +208,9 @@ includes:
     // Create manifest
     await fs.writeFile(
       path.join(tmpDir, "kynetic.yaml"),
-      `kynetic: "1.0"
+      `kynetic: "1.1"
+task_storage:
+  format: split
 project:
   name: test-project
   version: 0.1.0
@@ -238,7 +248,9 @@ includes:
 
     await fs.writeFile(
       path.join(tmpDir, "kynetic.yaml"),
-      `kynetic: "1.0"
+      `kynetic: "1.1"
+task_storage:
+  format: split
 project:
   name: test-project
   version: 0.1.0
@@ -278,7 +290,9 @@ includes:
     // Create manifest
     await fs.writeFile(
       path.join(tmpDir, "kynetic.yaml"),
-      `kynetic: "1.0"
+      `kynetic: "1.1"
+task_storage:
+  format: split
 project:
   name: test-project
   version: 0.1.0
@@ -328,7 +342,9 @@ includes:
     // Create manifest
     await fs.writeFile(
       path.join(tmpDir, "kynetic.yaml"),
-      `kynetic: "1.0"
+      `kynetic: "1.1"
+task_storage:
+  format: split
 project:
   name: test-project
   version: 0.1.0
@@ -369,7 +385,9 @@ includes:
     // Create manifest
     await fs.writeFile(
       path.join(tmpDir, "kynetic.yaml"),
-      `kynetic: "1.0"
+      `kynetic: "1.1"
+task_storage:
+  format: split
 project:
   name: test-project
   version: 0.1.0

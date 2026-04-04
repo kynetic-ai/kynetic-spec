@@ -13,6 +13,7 @@ import {
   setupTempFixtures,
   cleanupTempDir,
   initGitRepo,
+  readTestOutput,
 } from "./helpers/cli";
 
 describe("Multi-Platform Render CLI", () => {
@@ -44,14 +45,14 @@ describe("Multi-Platform Render CLI", () => {
 
       // Check claude-code output
       const claudeCodePath = path.join(tempDir, ".claude", "skills", "multi-plat", "SKILL.md");
-      const claudeCodeContent = await fs.readFile(claudeCodePath, "utf-8");
+      const claudeCodeContent = await readTestOutput(claudeCodePath);
       expect(claudeCodeContent).toContain("name: multi-plat");
       expect(claudeCodeContent).toContain("<!-- kspec-managed -->");
       expect(claudeCodeContent).toContain("# Multi Platform Skill");
 
       // Check codex output
       const codexPath = path.join(tempDir, ".agents", "skills", "multi-plat", "SKILL.md");
-      const codexContent = await fs.readFile(codexPath, "utf-8");
+      const codexContent = await readTestOutput(codexPath);
       expect(codexContent).toContain("name: multi-plat");
       expect(codexContent).toContain("<!-- kspec-managed -->");
       expect(codexContent).toContain("# Multi Platform Skill");
@@ -100,7 +101,7 @@ describe("Multi-Platform Render CLI", () => {
 
       // Check codex output exists
       const codexPath = path.join(tempDir, ".agents", "skills", "codex-only", "SKILL.md");
-      const codexContent = await fs.readFile(codexPath, "utf-8");
+      const codexContent = await readTestOutput(codexPath);
       expect(codexContent).toContain("name: codex-only");
 
       // Check claude-code output does NOT exist
@@ -196,7 +197,7 @@ describe("Multi-Platform Render CLI", () => {
 
       // Check custom location
       const customPath = path.join(tempDir, "custom", "rendered", "custom-out", "SKILL.md");
-      const content = await fs.readFile(customPath, "utf-8");
+      const content = await readTestOutput(customPath);
       expect(content).toContain("name: custom-out");
 
       // Default location should NOT exist
@@ -221,7 +222,7 @@ describe("Multi-Platform Render CLI", () => {
 
       // Since both use the same output dir, only one file exists (last one wins)
       // This is expected behavior - custom output-dir means ALL platforms go there
-      const content = await fs.readFile(claudeCodePath, "utf-8");
+      const content = await readTestOutput(claudeCodePath);
       expect(content).toContain("name: custom-multi");
     });
   });
@@ -398,7 +399,7 @@ describe("Multi-Platform Render CLI", () => {
 
       // Claude-code should be rendered
       const claudeCodePath = path.join(tempDir, ".claude", "skills", "partial-valid", "SKILL.md");
-      const content = await fs.readFile(claudeCodePath, "utf-8");
+      const content = await readTestOutput(claudeCodePath);
       expect(content).toContain("name: partial-valid");
 
       // Bad platform should not create any output (no .bad-platform directory)

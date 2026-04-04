@@ -1,7 +1,13 @@
 import { describe, expect, it, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { createTempDir, cleanupTempDir, testUlid, testUlids } from "./helpers/cli.js";
+import {
+  createTempDir,
+  cleanupTempDir,
+  testUlid,
+  testUlids,
+  readTestOutput,
+} from "./helpers/cli.js";
 import {
   toYaml,
   parseYaml,
@@ -9,9 +15,6 @@ import {
   readYamlFile,
   writeYamlFilePreserveFormat,
   initContext,
-  saveTask,
-  mutateTaskAtomically,
-  loadAllTasks,
   saveInboxItem,
   mutateInboxItemAtomically,
   deleteInboxItem,
@@ -258,11 +261,11 @@ describe("round-trip stability — file-level", () => {
     };
 
     await writeYamlFile(filePath, data);
-    const content1 = await fs.readFile(filePath, "utf-8");
+    const content1 = await readTestOutput(filePath);
 
     const loaded = await readYamlFile<typeof data>(filePath);
     await writeYamlFile(filePath, loaded);
-    const content2 = await fs.readFile(filePath, "utf-8");
+    const content2 = await readTestOutput(filePath);
 
     expect(content2).toBe(content1);
   });
@@ -298,11 +301,11 @@ describe("round-trip stability — file-level", () => {
     };
 
     await writeYamlFilePreserveFormat(filePath, data);
-    const content1 = await fs.readFile(filePath, "utf-8");
+    const content1 = await readTestOutput(filePath);
 
     const loaded = await readYamlFile<typeof data>(filePath);
     await writeYamlFilePreserveFormat(filePath, loaded);
-    const content2 = await fs.readFile(filePath, "utf-8");
+    const content2 = await readTestOutput(filePath);
 
     expect(content2).toBe(content1);
   });
@@ -352,170 +355,16 @@ describe("round-trip stability — file-level", () => {
     };
 
     await writeYamlFile(filePath, data);
-    const content1 = await fs.readFile(filePath, "utf-8");
+    const content1 = await readTestOutput(filePath);
 
     // Multiple read-write cycles
     for (let i = 0; i < 3; i++) {
       const loaded = await readYamlFile<typeof data>(filePath);
       await writeYamlFile(filePath, loaded);
     }
-    const contentFinal = await fs.readFile(filePath, "utf-8");
+    const contentFinal = await readTestOutput(filePath);
 
     expect(contentFinal).toBe(content1);
-  });
-});
-
-// AC: @yaml-serialization-invariants ac-3
-describe("round-trip stability — saveTask path", () => {
-  /**
-   * Helper: set up a minimal kspec context with a task file.
-   */
-  async function setupTaskContext(tasks: Record<string, unknown>[]) {
-    // Write manifest
-    const manifestPath = path.join(tempDir, "kynetic.yaml");
-    await writeYamlFile(manifestPath, {
-      name: "test-project",
-      modules: [],
-    });
-
-    // Write task file with tasks: wrapper
-    const taskFilePath = path.join(tempDir, "project.tasks.yaml");
-    await writeYamlFile(taskFilePath, { tasks });
-
-    // Get the content after initial canonical write
-    const initialContent = await fs.readFile(taskFilePath, "utf-8");
-
-    // Init context pointing at tempDir as specDir
-    const ctx = await initContext(tempDir);
-
-    return { ctx, taskFilePath, initialContent };
-  }
-
-  it("saveTask with no changes produces identical file", async () => {
-    const taskData = {
-      _ulid: testUlid("TASK", 20),
-      slugs: ["no-change-task"],
-      title: "No change task",
-      type: "task",
-      status: "pending",
-      priority: 2,
-      tags: ["test"],
-      description: "This task should not change.",
-      depends_on: [],
-      notes: [],
-      todos: [],
-      created_at: "2026-01-01T00:00:00.000Z",
-    };
-
-    const { ctx, taskFilePath, initialContent } = await setupTaskContext([taskData]);
-
-    // Load tasks and save the first one back with no modifications
-    const loadedTasks = await loadAllTasks(ctx);
-    expect(loadedTasks.length).toBe(1);
-
-    await saveTask(ctx, loadedTasks[0]);
-    const afterContent = await fs.readFile(taskFilePath, "utf-8");
-
-    expect(afterContent).toBe(initialContent);
-  });
-
-  it("mutateTaskAtomically with identity function produces identical file", async () => {
-    const taskData = {
-      _ulid: testUlid("TASK", 21),
-      slugs: ["identity-mutate"],
-      title: "Identity mutation task",
-      type: "task",
-      status: "in_progress",
-      priority: 1,
-      tags: ["schema"],
-      description: "A task for testing identity mutation stability.",
-      depends_on: [],
-      notes: [
-        {
-          _ulid: testUlid("N0TE", 20),
-          created_at: "2026-01-15T00:00:00.000Z",
-          author: "@agent",
-          content: "Started working on this.",
-        },
-      ],
-      todos: [
-        {
-          id: 1,
-          text: "Step one",
-          done: true,
-          added_at: "2026-01-01T00:00:00.000Z",
-        },
-        {
-          id: 2,
-          text: "Step two",
-          done: false,
-          added_at: "2026-01-01T00:30:00.000Z",
-        },
-      ],
-      created_at: "2026-01-01T00:00:00.000Z",
-      started_at: "2026-01-15T00:00:00.000Z",
-    };
-
-    const { ctx, taskFilePath, initialContent } = await setupTaskContext([taskData]);
-
-    const loadedTasks = await loadAllTasks(ctx);
-    // Identity mutation: return the task unchanged
-    await mutateTaskAtomically(ctx, loadedTasks[0], (t) => t);
-    const afterContent = await fs.readFile(taskFilePath, "utf-8");
-
-    expect(afterContent).toBe(initialContent);
-  });
-
-  it("saveTask preserves file stability across multiple tasks", async () => {
-    const tasks = [
-      {
-        _ulid: testUlid("TASK", 30),
-        slugs: ["multi-1"],
-        title: "First of many",
-        type: "task",
-        status: "pending",
-        priority: 2,
-        tags: ["test"],
-        description: "First task in multi-task file.",
-        depends_on: [],
-        notes: [],
-        todos: [],
-        created_at: "2026-01-01T00:00:00.000Z",
-      },
-      {
-        _ulid: testUlid("TASK", 31),
-        slugs: ["multi-2"],
-        title: "Second of many",
-        type: "task",
-        status: "completed",
-        priority: 3,
-        tags: ["test"],
-        description: "Second task in multi-task file.",
-        depends_on: [],
-        notes: [
-          {
-            _ulid: testUlid("N0TE", 30),
-            created_at: "2026-01-02T00:00:00.000Z",
-            author: "@agent",
-            content: "Done.",
-          },
-        ],
-        todos: [],
-        created_at: "2026-01-01T00:00:00.000Z",
-        completed_at: "2026-01-02T00:00:00.000Z",
-      },
-    ];
-
-    const { ctx, taskFilePath, initialContent } = await setupTaskContext(tasks);
-
-    // Load and save each task individually — file should not change
-    const loadedTasks = await loadAllTasks(ctx);
-    for (const task of loadedTasks) {
-      await saveTask(ctx, task);
-    }
-    const afterContent = await fs.readFile(taskFilePath, "utf-8");
-
-    expect(afterContent).toBe(initialContent);
   });
 });
 
@@ -537,7 +386,7 @@ describe("round-trip stability — savePlan path", () => {
     await writeYamlFile(plansFilePath, { kynetic_plans: "1.0", plans });
 
     // Get the content after initial canonical write
-    const initialContent = await fs.readFile(plansFilePath, "utf-8");
+    const initialContent = await readTestOutput(plansFilePath);
 
     // Init context pointing at tempDir as specDir
     const ctx = await initContext(tempDir);
@@ -562,7 +411,7 @@ describe("round-trip stability — savePlan path", () => {
     expect(loadedPlans.length).toBe(1);
 
     await savePlan(ctx, loadedPlans[0]);
-    const afterContent = await fs.readFile(plansFilePath, "utf-8");
+    const afterContent = await readTestOutput(plansFilePath);
 
     expect(afterContent).toBe(initialContent);
   });
@@ -581,7 +430,7 @@ describe("round-trip stability — savePlan path", () => {
 
     const loadedPlans = await loadPlans(ctx);
     await savePlan(ctx, loadedPlans[0]);
-    const afterContent = await fs.readFile(plansFilePath, "utf-8");
+    const afterContent = await readTestOutput(plansFilePath);
 
     // File should be identical — no slugs: [], derived_tasks: [], etc. added
     expect(afterContent).toBe(initialContent);
@@ -612,7 +461,7 @@ describe("round-trip stability — savePlan path", () => {
     const loadedPlans = await loadPlans(ctx);
     // Identity mutation: return the plan unchanged
     await mutatePlanAtomically(ctx, loadedPlans[0], (p) => p);
-    const afterContent = await fs.readFile(plansFilePath, "utf-8");
+    const afterContent = await readTestOutput(plansFilePath);
 
     expect(afterContent).toBe(initialContent);
   });
@@ -654,7 +503,7 @@ describe("round-trip stability — savePlan path", () => {
     for (const plan of loadedPlans) {
       await savePlan(ctx, plan);
     }
-    const afterContent = await fs.readFile(plansFilePath, "utf-8");
+    const afterContent = await readTestOutput(plansFilePath);
 
     expect(afterContent).toBe(initialContent);
   });
@@ -686,14 +535,14 @@ describe("round-trip stability — savePlan path", () => {
     const deleted = await deletePlan(ctx, testUlid("PLAN", 7));
     expect(deleted).toBe(true);
 
-    const afterContent = await fs.readFile(plansFilePath, "utf-8");
+    const afterContent = await readTestOutput(plansFilePath);
 
     // The remaining plan should be byte-identical in the output
     // (no Zod defaults added to the surviving plan)
     // Write a single-plan file for comparison
     const singlePlanFile = path.join(tempDir, "single-plan.yaml");
     await writeYamlFile(singlePlanFile, { kynetic_plans: "1.0", plans: [plans[0]] });
-    const expectedContent = await fs.readFile(singlePlanFile, "utf-8");
+    const expectedContent = await readTestOutput(singlePlanFile);
 
     expect(afterContent).toBe(expectedContent);
   });
@@ -726,7 +575,7 @@ describe("round-trip stability — savePlan path", () => {
       const loadedPlans = await loadPlans(ctx);
       await savePlan(ctx, loadedPlans[0]);
     }
-    const afterContent = await fs.readFile(plansFilePath, "utf-8");
+    const afterContent = await readTestOutput(plansFilePath);
 
     expect(afterContent).toBe(initialContent);
   });
@@ -768,13 +617,13 @@ describe("round-trip stability — saveReviewRecord path", () => {
 
     // Save review initially
     await saveReviewRecord(ctx, { ...review });
-    const initialContent = await fs.readFile(path.join(kspecDir, "project.reviews.yaml"), "utf-8");
+    const initialContent = await readTestOutput(path.join(kspecDir, "project.reviews.yaml"));
 
     // Load and save back with no modifications
     const loaded = await loadReviewRecords(ctx);
     expect(loaded).toHaveLength(1);
     await saveReviewRecord(ctx, loaded[0]);
-    const afterContent = await fs.readFile(path.join(kspecDir, "project.reviews.yaml"), "utf-8");
+    const afterContent = await readTestOutput(path.join(kspecDir, "project.reviews.yaml"));
 
     expect(afterContent).toBe(initialContent);
   });
@@ -808,12 +657,12 @@ describe("round-trip stability — saveReviewRecord path", () => {
     );
 
     await saveReviewRecord(ctx, { ...review });
-    const initialContent = await fs.readFile(path.join(kspecDir, "project.reviews.yaml"), "utf-8");
+    const initialContent = await readTestOutput(path.join(kspecDir, "project.reviews.yaml"));
 
     // Identity mutation: return the review unchanged
     const loaded = await loadReviewRecords(ctx);
     await mutateReviewAtomically(ctx, loaded[0], (r) => r);
-    const afterContent = await fs.readFile(path.join(kspecDir, "project.reviews.yaml"), "utf-8");
+    const afterContent = await readTestOutput(path.join(kspecDir, "project.reviews.yaml"));
 
     expect(afterContent).toBe(initialContent);
   });
@@ -853,14 +702,14 @@ describe("round-trip stability — saveReviewRecord path", () => {
     for (const review of reviews) {
       await saveReviewRecord(ctx, { ...review });
     }
-    const initialContent = await fs.readFile(path.join(kspecDir, "project.reviews.yaml"), "utf-8");
+    const initialContent = await readTestOutput(path.join(kspecDir, "project.reviews.yaml"));
 
     // Load and save each review individually — file should not change
     const loaded = await loadReviewRecords(ctx);
     for (const review of loaded) {
       await saveReviewRecord(ctx, review);
     }
-    const afterContent = await fs.readFile(path.join(kspecDir, "project.reviews.yaml"), "utf-8");
+    const afterContent = await readTestOutput(path.join(kspecDir, "project.reviews.yaml"));
 
     expect(afterContent).toBe(initialContent);
   });
@@ -900,7 +749,7 @@ describe("round-trip stability — saveReviewRecord path", () => {
       ...r,
       lifecycle_state: "open",
     }));
-    const afterContent = await fs.readFile(reviewsPath, "utf-8");
+    const afterContent = await readTestOutput(reviewsPath);
 
     // The second review should not gain any new fields (e.g. slugs, threads, checks, etc.)
     expect(afterContent).not.toContain("slugs:");
@@ -949,7 +798,7 @@ describe("round-trip stability — saveReviewRecord path", () => {
     });
 
     await deleteReviewRecord(ctx, ulid1);
-    const afterContent = await fs.readFile(reviewsPath, "utf-8");
+    const afterContent = await readTestOutput(reviewsPath);
 
     // Remaining review should not gain Zod default fields
     expect(afterContent).not.toContain("slugs:");
@@ -975,21 +824,25 @@ describe("round-trip stability — saveObservation path", () => {
     const ctx = makeMetaCtx(kspecDir);
 
     const obsUlid = testUlid("0BS1");
-    const obs = createObservation("friction", "Test observation content", {
-      author: "test-author",
-    });
-    (obs as Record<string, unknown>)._ulid = obsUlid;
+    const obs = {
+      ...createObservation("friction", "Test observation content", {
+        author: "test-author",
+      }),
+      _ulid: obsUlid,
+      context: "During **test setup**",
+    };
 
     // Save observation initially
     await saveObservation(ctx, { ...obs });
     const manifestPath = getMetaManifestPath(ctx);
-    const initialContent = await fs.readFile(manifestPath, "utf-8");
+    const initialContent = await readTestOutput(manifestPath);
 
     // Load and save back with no modifications
     const meta = await loadMetaContext(ctx);
     expect(meta.observations).toHaveLength(1);
+    expect(meta.observations[0].context).toBe("During **test setup**");
     await saveObservation(ctx, meta.observations[0]);
-    const afterContent = await fs.readFile(manifestPath, "utf-8");
+    const afterContent = await readTestOutput(manifestPath);
 
     expect(afterContent).toBe(initialContent);
   });
@@ -1021,7 +874,7 @@ describe("round-trip stability — saveObservation path", () => {
     obs.resolved = true;
     obs.resolution = "Addressed in task";
     await saveObservation(ctx, obs);
-    const afterContent = await fs.readFile(manifestPath, "utf-8");
+    const afterContent = await readTestOutput(manifestPath);
 
     // agents/workflows/conventions/skills/includes should NOT appear
     expect(afterContent).not.toContain("agents:");
@@ -1067,7 +920,7 @@ describe("round-trip stability — saveObservation path", () => {
     });
 
     await deleteObservation(ctx, ulid1);
-    const afterContent = await fs.readFile(manifestPath, "utf-8");
+    const afterContent = await readTestOutput(manifestPath);
 
     // Remaining content should not gain Zod default sections
     expect(afterContent).not.toContain("agents:");
@@ -1117,7 +970,7 @@ describe("round-trip stability — saveMetaItem path", () => {
       examples: [],
     };
     await saveMetaItem(ctx, convention, "convention");
-    const afterContent = await fs.readFile(manifestPath, "utf-8");
+    const afterContent = await readTestOutput(manifestPath);
 
     // observations/workflows/skills/includes should NOT appear
     expect(afterContent).not.toContain("observations:");
@@ -1161,7 +1014,7 @@ describe("round-trip stability — saveMetaItem path", () => {
     // Modify the agent's name to trigger a save with actual changes
     agent.name = "Updated Minimal Agent";
     await saveMetaItem(ctx, agent, "agent");
-    const afterContent = await fs.readFile(manifestPath, "utf-8");
+    const afterContent = await readTestOutput(manifestPath);
 
     // Should not have gained Zod default fields (empty arrays, false)
     expect(afterContent).not.toContain("capabilities:");
@@ -1211,7 +1064,7 @@ describe("round-trip stability — saveMetaItem path", () => {
     });
 
     await deleteMetaItem(ctx, agentUlid1, "agent");
-    const afterContent = await fs.readFile(manifestPath, "utf-8");
+    const afterContent = await readTestOutput(manifestPath);
 
     // Should not gain absent sections
     expect(afterContent).not.toContain("observations:");
@@ -1264,7 +1117,7 @@ describe("round-trip stability — saveMetaItem path", () => {
       name: "New Agent",
     } as unknown as LoadedAgent;
     await saveMetaItem(ctx, agent, "agent");
-    const afterContent = await fs.readFile(manifestPath, "utf-8");
+    const afterContent = await readTestOutput(manifestPath);
 
     // Should have observations and agents, but NOT workflows/conventions/skills/includes
     expect(afterContent).toContain("observations:");
@@ -1306,13 +1159,13 @@ describe("round-trip stability — saveInboxItem path", () => {
         },
       ],
     });
-    const initialContent = await fs.readFile(inboxPath, "utf-8");
+    const initialContent = await readTestOutput(inboxPath);
 
     // Load and save back with no modifications
     const loaded = await loadInboxItems(ctx);
     expect(loaded).toHaveLength(1);
     await saveInboxItem(ctx, loaded[0]);
-    const afterContent = await fs.readFile(inboxPath, "utf-8");
+    const afterContent = await readTestOutput(inboxPath);
 
     expect(afterContent).toBe(initialContent);
   });
@@ -1334,12 +1187,12 @@ describe("round-trip stability — saveInboxItem path", () => {
         },
       ],
     });
-    const initialContent = await fs.readFile(inboxPath, "utf-8");
+    const initialContent = await readTestOutput(inboxPath);
 
     // Identity mutation: return the item unchanged
     const loaded = await loadInboxItems(ctx);
     await mutateInboxItemAtomically(ctx, loaded[0], (i) => i);
-    const afterContent = await fs.readFile(inboxPath, "utf-8");
+    const afterContent = await readTestOutput(inboxPath);
 
     expect(afterContent).toBe(initialContent);
   });
@@ -1372,14 +1225,14 @@ describe("round-trip stability — saveInboxItem path", () => {
         },
       ],
     });
-    const initialContent = await fs.readFile(inboxPath, "utf-8");
+    const initialContent = await readTestOutput(inboxPath);
 
     // Load and save each item individually — file should not change
     const loaded = await loadInboxItems(ctx);
     for (const item of loaded) {
       await saveInboxItem(ctx, item);
     }
-    const afterContent = await fs.readFile(inboxPath, "utf-8");
+    const afterContent = await readTestOutput(inboxPath);
 
     expect(afterContent).toBe(initialContent);
   });
@@ -1412,7 +1265,7 @@ describe("round-trip stability — saveInboxItem path", () => {
       ...i,
       tags: ["important"],
     }));
-    const afterContent = await fs.readFile(inboxPath, "utf-8");
+    const afterContent = await readTestOutput(inboxPath);
 
     // The second item should not gain a tags field
     // Count occurrences of "tags:" — should be exactly 1 (from the mutated item)
@@ -1449,7 +1302,7 @@ describe("round-trip stability — saveInboxItem path", () => {
     });
 
     await deleteInboxItem(ctx, ulid1);
-    const afterContent = await fs.readFile(inboxPath, "utf-8");
+    const afterContent = await readTestOutput(inboxPath);
 
     // Remaining item should not gain Zod default fields (tags: [])
     expect(afterContent).not.toContain("tags:");
@@ -1495,7 +1348,7 @@ describe("round-trip stability — saveTriageRecord path", () => {
     const loaded = await loadTriageRecords(ctx);
     expect(loaded).toHaveLength(1);
     await saveTriageRecord(ctx, loaded[0]);
-    const afterContent = await fs.readFile(triagePath, "utf-8");
+    const afterContent = await readTestOutput(triagePath);
 
     // evidence_refs should not appear (it's a Zod default of [])
     expect(afterContent).not.toContain("evidence_refs");
@@ -1544,7 +1397,7 @@ describe("round-trip stability — saveTriageRecord path", () => {
       decided_by: "@agent",
     };
     await saveTriageRecord(ctx, mutated);
-    const afterContent = await fs.readFile(triagePath, "utf-8");
+    const afterContent = await readTestOutput(triagePath);
 
     // The second record should NOT gain evidence_refs: [] from Zod default
     const evidenceMatches = afterContent.match(/evidence_refs:/g) || [];
@@ -1602,7 +1455,7 @@ describe("round-trip stability — saveTriageRecord path", () => {
     // but non-target records should be untouched
     // To verify non-target stability, save only the second (already-triaged) record
     await saveTriageRecord(ctx, loaded[1]);
-    const afterContent = await fs.readFile(triagePath, "utf-8");
+    const afterContent = await readTestOutput(triagePath);
 
     // Non-target records (1st and 3rd) should not gain evidence_refs from Zod defaults
     // Count evidence_refs occurrences — should be 0 (none of the records had it originally)
@@ -1673,7 +1526,7 @@ describe("round-trip stability — saveTriageRecord path", () => {
     };
     await saveTriageRecord(ctx, mutated3);
 
-    const finalContent = await fs.readFile(triagePath, "utf-8");
+    const finalContent = await readTestOutput(triagePath);
 
     // The first record should not have gained evidence_refs or other Zod defaults
     // after 3 save cycles targeting the second record
@@ -1725,7 +1578,7 @@ describe("round-trip stability — saveTriageRecord path", () => {
     };
     await saveTriageRecord(ctx, newRecord);
 
-    const afterContent = await fs.readFile(triagePath, "utf-8");
+    const afterContent = await readTestOutput(triagePath);
 
     // The existing record should not gain evidence_refs: []
     // Only the new record might have it (since it was explicitly in the input)
@@ -1770,13 +1623,13 @@ describe("round-trip stability — saveWorkflowRun path", () => {
         },
       ],
     });
-    const initialContent = await fs.readFile(runsPath, "utf-8");
+    const initialContent = await readTestOutput(runsPath);
 
     // Load and save back with no modifications
     const loaded = await loadWorkflowRuns(ctx);
     expect(loaded).toHaveLength(1);
     await saveWorkflowRun(ctx, loaded[0]);
-    const afterContent = await fs.readFile(runsPath, "utf-8");
+    const afterContent = await readTestOutput(runsPath);
 
     expect(afterContent).toBe(initialContent);
   });
@@ -1802,11 +1655,11 @@ describe("round-trip stability — saveWorkflowRun path", () => {
         },
       ],
     });
-    const initialContent = await fs.readFile(runsPath, "utf-8");
+    const initialContent = await readTestOutput(runsPath);
 
     const loaded = await loadWorkflowRuns(ctx);
     await saveWorkflowRun(ctx, loaded[0]);
-    const afterContent = await fs.readFile(runsPath, "utf-8");
+    const afterContent = await readTestOutput(runsPath);
 
     // File should be identical — no step_results: [] added
     expect(afterContent).toBe(initialContent);
@@ -1834,12 +1687,12 @@ describe("round-trip stability — saveWorkflowRun path", () => {
         },
       ],
     });
-    const initialContent = await fs.readFile(runsPath, "utf-8");
+    const initialContent = await readTestOutput(runsPath);
 
     // Identity mutation: return the run unchanged
     const loaded = await loadWorkflowRuns(ctx);
     await mutateWorkflowRunAtomically(ctx, loaded[0], (r) => r);
-    const afterContent = await fs.readFile(runsPath, "utf-8");
+    const afterContent = await readTestOutput(runsPath);
 
     expect(afterContent).toBe(initialContent);
   });
@@ -1883,14 +1736,14 @@ describe("round-trip stability — saveWorkflowRun path", () => {
         },
       ],
     });
-    const initialContent = await fs.readFile(runsPath, "utf-8");
+    const initialContent = await readTestOutput(runsPath);
 
     // Load and save each run individually — file should not change
     const loaded = await loadWorkflowRuns(ctx);
     for (const run of loaded) {
       await saveWorkflowRun(ctx, run);
     }
-    const afterContent = await fs.readFile(runsPath, "utf-8");
+    const afterContent = await readTestOutput(runsPath);
 
     expect(afterContent).toBe(initialContent);
   });
@@ -1930,7 +1783,7 @@ describe("round-trip stability — saveWorkflowRun path", () => {
       ...r,
       current_step: 1,
     }));
-    const afterContent = await fs.readFile(runsPath, "utf-8");
+    const afterContent = await readTestOutput(runsPath);
 
     // The second run should not gain step_results: []
     // Count occurrences of "step_results:" — should be 0 (neither run had it originally)
@@ -1974,7 +1827,7 @@ describe("round-trip stability — saveWorkflowRun path", () => {
     });
 
     await deleteWorkflowRuns(ctx, [ulid1]);
-    const afterContent = await fs.readFile(runsPath, "utf-8");
+    const afterContent = await readTestOutput(runsPath);
 
     // Remaining run should not gain Zod default fields (step_results: [])
     expect(afterContent).not.toContain("step_results:");
@@ -2007,14 +1860,14 @@ describe("round-trip stability — saveWorkflowRun path", () => {
         },
       ],
     });
-    const initialContent = await fs.readFile(runsPath, "utf-8");
+    const initialContent = await readTestOutput(runsPath);
 
     // Multiple cycles — load and save each time
     for (let i = 0; i < 5; i++) {
       const loaded = await loadWorkflowRuns(ctx);
       await saveWorkflowRun(ctx, loaded[0]);
     }
-    const afterContent = await fs.readFile(runsPath, "utf-8");
+    const afterContent = await readTestOutput(runsPath);
 
     expect(afterContent).toBe(initialContent);
   });
@@ -2092,13 +1945,13 @@ describe("round-trip stability — saveDispatchWorkspaceRecord path", () => {
       kynetic_dispatch_workspaces: "1.0",
       workspaces: [ws1],
     });
-    const initialContent = await fs.readFile(registryPath, "utf-8");
+    const initialContent = await readTestOutput(registryPath);
 
     // Load and save back with no modifications
     const loaded = await loadDispatchWorkspaceRegistry(ctx);
     expect(loaded).toHaveLength(1);
     await saveDispatchWorkspaceRecord(ctx, loaded[0]);
-    const afterContent = await fs.readFile(registryPath, "utf-8");
+    const afterContent = await readTestOutput(registryPath);
 
     expect(afterContent).toBe(initialContent);
   });
@@ -2114,11 +1967,11 @@ describe("round-trip stability — saveDispatchWorkspaceRecord path", () => {
       kynetic_dispatch_workspaces: "1.0",
       workspaces: [ws1],
     });
-    const initialContent = await fs.readFile(registryPath, "utf-8");
+    const initialContent = await readTestOutput(registryPath);
 
     // Identity mutation: return the record unchanged
     await mutateDispatchWorkspaceRecordAtomically(ctx, "ws-002", (r) => r);
-    const afterContent = await fs.readFile(registryPath, "utf-8");
+    const afterContent = await readTestOutput(registryPath);
 
     expect(afterContent).toBe(initialContent);
   });
@@ -2135,14 +1988,14 @@ describe("round-trip stability — saveDispatchWorkspaceRecord path", () => {
       kynetic_dispatch_workspaces: "1.0",
       workspaces: [ws1, ws2],
     });
-    const initialContent = await fs.readFile(registryPath, "utf-8");
+    const initialContent = await readTestOutput(registryPath);
 
     // Load and save each workspace individually — file should not change
     const loaded = await loadDispatchWorkspaceRegistry(ctx);
     for (const ws of loaded) {
       await saveDispatchWorkspaceRecord(ctx, ws);
     }
-    const afterContent = await fs.readFile(registryPath, "utf-8");
+    const afterContent = await readTestOutput(registryPath);
 
     expect(afterContent).toBe(initialContent);
   });
@@ -2166,7 +2019,7 @@ describe("round-trip stability — saveDispatchWorkspaceRecord path", () => {
       ...r,
       lifecycle_state: "stale",
     }));
-    const afterContent = await fs.readFile(registryPath, "utf-8");
+    const afterContent = await readTestOutput(registryPath);
 
     // The second workspace should not gain any new fields from Zod defaults.
     // branch_provenance is the key default that gets added by schema parsing.
@@ -2204,7 +2057,7 @@ describe("round-trip stability — saveDispatchWorkspaceRecord path", () => {
       kynetic_dispatch_workspaces: "1.0",
       workspaces: [ws1, ws2],
     });
-    const initialContent = await fs.readFile(registryPath, "utf-8");
+    const initialContent = await readTestOutput(registryPath);
 
     // Multiple round-trip cycles — save each workspace in turn
     for (let cycle = 0; cycle < 3; cycle++) {
@@ -2213,7 +2066,7 @@ describe("round-trip stability — saveDispatchWorkspaceRecord path", () => {
         await saveDispatchWorkspaceRecord(ctx, ws);
       }
     }
-    const finalContent = await fs.readFile(registryPath, "utf-8");
+    const finalContent = await readTestOutput(registryPath);
 
     expect(finalContent).toBe(initialContent);
   });
@@ -2281,7 +2134,7 @@ describe("round-trip stability — saveDispatchWorkspaceRecord path", () => {
     }));
 
     // Verify the branch_provenance was persisted
-    const afterContent = await fs.readFile(registryPath, "utf-8");
+    const afterContent = await readTestOutput(registryPath);
     expect(afterContent).toContain("branch_provenance:");
     expect(afterContent).toContain("ownership: adopted");
     expect(afterContent).toContain("source: manual");

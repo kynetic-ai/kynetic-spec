@@ -85,6 +85,11 @@ export const InvocationTerminalPayloadSchema = z.object({
   task_ref: z.string().nullable().optional(),
   /** Duration of the invocation in milliseconds */
   duration_ms: z.number().nonnegative(),
+  /**
+   * Number of turns completed in this session.
+   * AC: @multi-turn-session-lifecycle ac-14
+   */
+  turn_count: z.number().int().positive(),
 });
 
 export type InvocationStartedPayload = z.infer<typeof InvocationStartedPayloadSchema>;
@@ -147,10 +152,43 @@ export type WorkSummary = z.infer<typeof WorkSummarySchema>;
 export type SessionEventPayload = z.infer<typeof SessionEventPayloadSchema>;
 
 /**
- * Field names guaranteed in session.* event payloads.
+ * Field names guaranteed in session terminal event payloads.
  */
 export const SESSION_PAYLOAD_FIELDS = Object.keys(
   SessionEventPayloadSchema.shape,
+) as readonly string[];
+
+/**
+ * Payload for session.idle events (non-terminal, emitted per-turn).
+ *
+ * Emitted each time a multi-turn session transitions to idle state
+ * after a turn completes. This is the observation point for post-turn
+ * automation (reflection prompts, chained analysis).
+ *
+ * AC: @multi-turn-session-lifecycle ac-3
+ */
+export const SessionIdlePayloadSchema = z.object({
+  /** The session's canonical identifier */
+  session_id: z.string(),
+  /** The agent definition running the session */
+  agent_id: z.string(),
+  /** Task reference if the session is task-scoped */
+  task_ref: z.string().nullable().optional(),
+  /** Number of turns completed so far (including the turn that just ended) */
+  turn_count: z.number().int().positive(),
+  /** Stop reason from the agent's last turn (e.g., "end_turn") */
+  stop_reason: z.string().optional(),
+  /** Duration of the turn that just completed, in milliseconds */
+  turn_duration_ms: z.number().nonnegative(),
+});
+
+export type SessionIdlePayload = z.infer<typeof SessionIdlePayloadSchema>;
+
+/**
+ * Field names guaranteed in session.idle event payloads.
+ */
+export const SESSION_IDLE_PAYLOAD_FIELDS = Object.keys(
+  SessionIdlePayloadSchema.shape,
 ) as readonly string[];
 
 // ─── Schedule Event Payloads ────────────────────────────────────────────────
@@ -191,7 +229,7 @@ export const ActionStartedPayloadSchema = z.object({
   /** Unique identifier for this action run */
   action_run_id: z.string(),
   /** The action type (command, kspec, agent, notify) */
-  action_type: z.enum(["command", "kspec", "agent", "notify"]),
+  action_type: z.enum(["command", "kspec", "agent", "notify", "session_prompt"]),
   /** Hook ID that triggered this action (mutually exclusive with schedule_id) */
   hook_id: z.string().optional(),
   /** Schedule ID that triggered this action (mutually exclusive with hook_id) */
@@ -209,7 +247,7 @@ export const ActionTerminalPayloadSchema = z.object({
   /** Unique identifier for this action run */
   action_run_id: z.string(),
   /** The action type (command, kspec, agent, notify) */
-  action_type: z.enum(["command", "kspec", "agent", "notify"]),
+  action_type: z.enum(["command", "kspec", "agent", "notify", "session_prompt"]),
   /** Hook ID that triggered this action (mutually exclusive with schedule_id) */
   hook_id: z.string().optional(),
   /** Schedule ID that triggered this action (mutually exclusive with hook_id) */
@@ -254,6 +292,7 @@ export const EVENT_PAYLOAD_SCHEMAS: Record<string, z.ZodType> = {
   "invocation.completed": InvocationTerminalPayloadSchema,
   "invocation.failed": InvocationTerminalPayloadSchema,
   "invocation.stalled": InvocationTerminalPayloadSchema,
+  "session.idle": SessionIdlePayloadSchema,
   "session.ended": SessionEventPayloadSchema,
   "session.idle_timeout": SessionEventPayloadSchema,
   "session.cancelled": SessionEventPayloadSchema,

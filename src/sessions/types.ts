@@ -56,6 +56,7 @@ export const SessionTriggerSchema = z.enum([
   "invocation.failed",
   "invocation.stalled",
   // Session lifecycle events
+  "session.idle",
   "session.ended",
   "session.idle_timeout",
   "session.cancelled",
@@ -119,7 +120,7 @@ export const SessionMetadataSchema = z.object({
   /**
    * Persisted summary stats — written on session close so list endpoints
    * can display counts without scanning events.jsonl.
-   * AC: @session-summary-cache ac-persist-on-close
+   * AC: @daemon-entity-cache ac-session-stats-persist
    */
   event_count: z.number().int().nonnegative().optional(),
   iteration_count: z.number().int().nonnegative().optional(),
@@ -172,6 +173,13 @@ export const EventTypeSchema = z.enum([
   "agent.failed",
   "agent.timeout",
   "agent.stalled",
+  // Multi-turn session lifecycle events
+  // AC: @multi-turn-session-lifecycle ac-1
+  "agent.turn_completed",
+  // AC: @multi-turn-session-lifecycle ac-16
+  "session.prompts_discarded",
+  // AC: @multi-turn-session-lifecycle ac-7
+  "session.idle_timeout",
 ]);
 
 export type EventType = z.infer<typeof EventTypeSchema>;

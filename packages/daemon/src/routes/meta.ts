@@ -32,42 +32,80 @@ import type { Agent } from "../../schema/meta.js";
 import { AgentDispatchEventSchema, ObservationTypeSchema } from "../../schema/meta.js";
 import { AgentDispatchAutomationFilterSchema } from "../../schema/task.js";
 import { enumArrayUnion, enumUnion } from "./enum-utils.js";
+import type { EntityCacheAccessor } from "./entity-cache-types.js";
+import { wrapResponse } from "./response-envelope.js";
 
-interface MetaRouteOptions {}
+interface MetaRouteOptions {
+  getEntityCache?: EntityCacheAccessor;
+}
 
 export function createMetaRoutes(_options: MetaRouteOptions = {}) {
-  // No closure-scoped kspecDir needed - comes from middleware
+  const { getEntityCache } = _options;
 
   return (
     new Elysia({ prefix: "/api/meta" })
       // AC: @api-contract ac-15 - Get session context
+      // AC: @daemon-read-path ac-no-per-request-sync — serve from cache when available
       .get("/session", async ({ projectContext }) => {
+        const cache = getEntityCache?.(projectContext.path);
+        const metaDomainState = cache?.getDomainState("meta");
+
+        // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
+        if (cache && metaDomainState === "loading") {
+          return wrapResponse(
+            { focus: null, threads: [], questions: [], updated_at: new Date().toISOString() },
+            { cacheDomainState: "loading" },
+          );
+        }
+
+        if (cache && metaDomainState === "ready") {
+          const cachedSession = cache.getSessionContext();
+          if (cachedSession)
+            return wrapResponse(cachedSession, { cacheDomainState: metaDomainState });
+        }
+
+        // Fallback: cache not ready or no cached session context
         // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-        const ctx = await initContext(projectContext.path);
+        // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
+        const ctx = await initContext(projectContext.path, { syncMode: "skip" });
         const session = await loadSessionContext(ctx);
 
         // AC: @api-contract ac-15 - Return session context (focus, threads, questions)
-        return {
+        return wrapResponse({
           focus: session.focus,
           threads: session.threads || [],
           questions: session.questions || [],
           updated_at: session.updated_at,
-        };
+        });
       })
 
       // AC: @api-contract ac-16 - List agents
+      // AC: @daemon-entity-cache ac-serve-from-memory — serve from cache when available
       .get("/agents", async ({ projectContext }) => {
-        // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-        const ctx = await initContext(projectContext.path);
-        const meta = await loadMetaContext(ctx);
+        // AC: @daemon-entity-cache ac-serve-from-memory — try cached MetaContext first
+        const cache = getEntityCache?.(projectContext.path);
+        const metaDomainState = cache?.getDomainState("meta");
+
+        // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
+        if (cache && metaDomainState === "loading") {
+          return wrapResponse([] as never[], { cacheDomainState: "loading", total: 0 });
+        }
+
+        let meta;
+        if (cache && metaDomainState === "ready") {
+          meta = cache.getMetaDetail();
+        }
+        if (!meta) {
+          // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+          // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
+          const ctx = await initContext(projectContext.path, { syncMode: "skip" });
+          meta = await loadMetaContext(ctx);
+        }
 
         // AC: @api-contract ac-16 - Return all defined agents
         const agents = meta.agents;
 
-        return {
-          items: agents,
-          total: agents.length,
-        };
+        return wrapResponse(agents, { total: agents.length, cacheDomainState: metaDomainState });
       })
 
       // AC: @ui-agent-dispatch ac-4 - Update agent definition
@@ -90,6 +128,12 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
 
           await saveMetaItem(ctx, updated, "agent");
           await commitIfShadow(ctx.shadow, `meta: update agent ${params.id}`);
+
+          // AC: @daemon-entity-cache ac-write-through — update cache before response
+          const agentCache = getEntityCache?.(projectContext.path);
+          if (agentCache) {
+            await agentCache.writeThrough("meta");
+          }
 
           return updated;
         },
@@ -140,27 +184,61 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
       )
 
       // AC: @api-contract ac-17 - List workflows
+      // AC: @daemon-entity-cache ac-serve-from-memory — serve from cache when available
       .get("/workflows", async ({ projectContext }) => {
-        // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-        const ctx = await initContext(projectContext.path);
-        const meta = await loadMetaContext(ctx);
+        // AC: @daemon-entity-cache ac-serve-from-memory — try cached MetaContext first
+        const cache = getEntityCache?.(projectContext.path);
+        const metaDomainState = cache?.getDomainState("meta");
+
+        // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
+        if (cache && metaDomainState === "loading") {
+          return wrapResponse([] as never[], { cacheDomainState: "loading", total: 0 });
+        }
+
+        let meta;
+        if (cache && metaDomainState === "ready") {
+          meta = cache.getMetaDetail();
+        }
+        if (!meta) {
+          // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+          // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
+          const ctx = await initContext(projectContext.path, { syncMode: "skip" });
+          meta = await loadMetaContext(ctx);
+        }
 
         // AC: @api-contract ac-17 - Return all defined workflows
         const workflows = meta.workflows;
 
-        return {
-          items: workflows,
+        return wrapResponse(workflows, {
           total: workflows.length,
-        };
+          cacheDomainState: metaDomainState,
+        });
       })
 
       // AC: @api-contract ac-18 - List observations with filter
+      // AC: @daemon-entity-cache ac-serve-from-memory — serve from cache when available
       .get(
         "/observations",
         async ({ query, projectContext }) => {
-          // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-          const ctx = await initContext(projectContext.path);
-          const meta = await loadMetaContext(ctx);
+          // AC: @daemon-entity-cache ac-serve-from-memory — try cached MetaContext first
+          const cache = getEntityCache?.(projectContext.path);
+          const metaDomainState = cache?.getDomainState("meta");
+
+          // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
+          if (cache && metaDomainState === "loading") {
+            return wrapResponse([] as never[], { cacheDomainState: "loading", total: 0 });
+          }
+
+          let meta;
+          if (cache && metaDomainState === "ready") {
+            meta = cache.getMetaDetail();
+          }
+          if (!meta) {
+            // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+            // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
+            const ctx = await initContext(projectContext.path, { syncMode: "skip" });
+            meta = await loadMetaContext(ctx);
+          }
 
           // Start with all observations
           let filtered = meta.observations || [];
@@ -185,10 +263,7 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
             (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
           );
 
-          return {
-            items: sorted,
-            total: sorted.length,
-          };
+          return wrapResponse(sorted, { total: sorted.length, cacheDomainState: metaDomainState });
         },
         {
           query: t.Object({
@@ -199,12 +274,37 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
       )
 
       // AC: @ui-settings-view ac-1 - Project config from manifest
+      // AC: @daemon-read-path ac-no-per-request-sync — serve from cache when available
       .get("/config", async ({ projectContext }) => {
-        const ctx = await initContext(projectContext.path);
+        const cache = getEntityCache?.(projectContext.path);
+        const metaDomainState = cache?.getDomainState("meta");
+
+        // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
+        if (cache && metaDomainState === "loading") {
+          return wrapResponse(
+            {
+              project: null,
+              spec_version: null,
+              root_dir: null,
+              remote_tracking: null,
+              daemon: null,
+            },
+            { cacheDomainState: "loading" },
+          );
+        }
+
+        if (cache && metaDomainState === "ready") {
+          const cachedConfig = cache.getProjectConfig();
+          if (cachedConfig)
+            return wrapResponse(cachedConfig, { cacheDomainState: metaDomainState });
+        }
+
+        // Fallback: cache not available at all (no entity cache configured)
+        const ctx = await initContext(projectContext.path, { syncMode: "skip" });
         const manifest = ctx.manifest;
         const config = ctx.config;
 
-        return {
+        return wrapResponse({
           project: manifest?.project ?? null,
           spec_version: manifest?.kynetic ?? null,
           root_dir: ctx.projectRoot,
@@ -216,21 +316,46 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
             host: config.daemon.host,
             auto_start: config.daemon.auto_start,
           },
-        };
+        });
       })
 
       // AC: @ui-settings-view ac-1 - Shadow branch status
+      // AC: @daemon-read-path ac-no-per-request-sync — serve from cache when available
       .get("/shadow", async ({ projectContext }) => {
-        const ctx = await initContext(projectContext.path);
+        const cache = getEntityCache?.(projectContext.path);
+        const metaDomainState = cache?.getDomainState("meta");
+
+        // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
+        if (cache && metaDomainState === "loading") {
+          return wrapResponse(
+            {
+              enabled: false,
+              branch_name: null,
+              worktree_dir: null,
+              healthy: false,
+              remote_tracking: false,
+            },
+            { cacheDomainState: "loading" },
+          );
+        }
+
+        if (cache && metaDomainState === "ready") {
+          const cachedShadow = cache.getShadowInfo();
+          if (cachedShadow)
+            return wrapResponse(cachedShadow, { cacheDomainState: metaDomainState });
+        }
+
+        // Fallback: cache not available at all (no entity cache configured)
+        const ctx = await initContext(projectContext.path, { syncMode: "skip" });
 
         if (!ctx.shadow) {
-          return {
+          return wrapResponse({
             enabled: false,
             branch_name: null,
             worktree_dir: null,
             healthy: false,
             remote_tracking: false,
-          };
+          });
         }
 
         const status = await getShadowStatus(ctx.rootDir, {
@@ -241,24 +366,41 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
           branchName: ctx.shadow.branchName,
         });
 
-        return {
+        return wrapResponse({
           enabled: ctx.shadow.enabled,
           branch_name: ctx.shadow.branchName,
           worktree_dir: ctx.shadow.worktreeDir,
           healthy: status.healthy,
           remote_tracking: hasRemote,
-        };
+        });
       })
 
       // AC: @ui-settings-view ac-1 - Convention definitions
+      // AC: @daemon-entity-cache ac-serve-from-memory — serve from cache when available
       .get("/conventions", async ({ projectContext }) => {
-        const ctx = await initContext(projectContext.path);
-        const meta = await loadMetaContext(ctx);
+        // AC: @daemon-entity-cache ac-serve-from-memory — try cached MetaContext first
+        const cache = getEntityCache?.(projectContext.path);
+        const metaDomainState = cache?.getDomainState("meta");
 
-        return {
-          items: meta.conventions,
+        // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
+        if (cache && metaDomainState === "loading") {
+          return wrapResponse([] as never[], { cacheDomainState: "loading", total: 0 });
+        }
+
+        let meta;
+        if (cache && metaDomainState === "ready") {
+          meta = cache.getMetaDetail();
+        }
+        if (!meta) {
+          // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
+          const ctx = await initContext(projectContext.path, { syncMode: "skip" });
+          meta = await loadMetaContext(ctx);
+        }
+
+        return wrapResponse(meta.conventions, {
           total: meta.conventions.length,
-        };
+          cacheDomainState: metaDomainState,
+        });
       })
   );
 }

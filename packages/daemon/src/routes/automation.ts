@@ -34,7 +34,8 @@ export function createAutomationRoutes() {
       .get(
         "/hooks",
         async ({ query, projectContext }) => {
-          const ctx = await initContext(projectContext.path);
+          // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
+          const ctx = await initContext(projectContext.path, { syncMode: "skip" });
           const meta = await loadMetaContext(ctx);
 
           const hooks = meta.hooks.map((hook) => ({
@@ -188,7 +189,8 @@ export function createAutomationRoutes() {
       .get(
         "/schedules",
         async ({ query, projectContext }) => {
-          const ctx = await initContext(projectContext.path);
+          // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
+          const ctx = await initContext(projectContext.path, { syncMode: "skip" });
           const meta = await loadMetaContext(ctx);
           const scheduleEngine = getScheduleEngine(projectContext.path);
 
@@ -380,7 +382,8 @@ export function createAutomationRoutes() {
       .get(
         "/compositions",
         async ({ query, projectContext }) => {
-          const ctx = await initContext(projectContext.path);
+          // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
+          const ctx = await initContext(projectContext.path, { syncMode: "skip" });
           const meta = await loadMetaContext(ctx);
 
           const compositions = meta.compositions.map((comp) => ({

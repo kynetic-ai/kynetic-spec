@@ -11,6 +11,7 @@ import {
   kspecExpectFail,
   setupTempFixtures,
   cleanupTempDir,
+  readTestOutput,
 } from "./helpers/cli";
 
 describe("Integration: module add", () => {
@@ -39,7 +40,7 @@ describe("Integration: module add", () => {
     expect(exists).toBe(true);
 
     // Verify module structure
-    const content = await fs.readFile(modulePath, "utf-8");
+    const content = await readTestOutput(modulePath);
     expect(content).toContain("title: Auth System");
     expect(content).toContain("type: module");
     expect(content).toContain("slugs:");
@@ -52,7 +53,7 @@ describe("Integration: module add", () => {
 
     // Check manifest includes
     const manifestPath = path.join(tempDir, "kynetic.yaml");
-    const manifest = await fs.readFile(manifestPath, "utf-8");
+    const manifest = await readTestOutput(manifestPath);
     expect(manifest).toContain("modules/auth.yaml");
   });
 
@@ -64,7 +65,7 @@ describe("Integration: module add", () => {
     expect(output).toContain("Created module");
 
     const modulePath = path.join(tempDir, "modules", "auth.yaml");
-    const content = await fs.readFile(modulePath, "utf-8");
+    const content = await readTestOutput(modulePath);
     expect(content).toContain("description: Authentication system");
     expect(content).toContain("tags:");
     expect(content).toContain("- security");
@@ -99,7 +100,7 @@ describe("Integration: module add", () => {
     kspec('module add --title "Auth" --slug auth', tempDir);
 
     const modulePath = path.join(tempDir, "modules", "auth.yaml");
-    const content = await fs.readFile(modulePath, "utf-8");
+    const content = await readTestOutput(modulePath);
     expect(content).toContain("maturity: draft");
     expect(content).toContain("implementation: not_started");
   });
@@ -110,7 +111,7 @@ describe("Integration: module add", () => {
     kspec("item set @future-feat --maturity deferred", tempDir);
 
     const modulePath = path.join(tempDir, "modules", "future-feat.yaml");
-    const content = await fs.readFile(modulePath, "utf-8");
+    const content = await readTestOutput(modulePath);
     expect(content).toContain("maturity: deferred");
 
     // Verify it parses correctly

@@ -31,11 +31,14 @@ export class HeartbeatManager {
           const timeSincePing = now - ws.data.lastPing;
 
           // AC: @daemon-server ac-14, @trait-websocket-protocol ac-5, ac-7
-          if (timeSincePing > this.PONG_TIMEOUT) {
+          if (timeSincePing >= this.PONG_TIMEOUT) {
             console.warn(`[heartbeat] Closing ${sessionId} - no pong for ${timeSincePing}ms`);
             ws.close(1001, "Ping timeout"); // AC: @trait-websocket-protocol ac-7
             continue;
           }
+
+          // Keep waiting for the outstanding pong instead of resetting the timeout window.
+          continue;
         }
 
         // Send ping if no recent activity

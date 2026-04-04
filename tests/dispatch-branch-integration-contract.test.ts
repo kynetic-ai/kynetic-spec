@@ -55,7 +55,7 @@ async function readWorkspaceRecord(
 
 async function createToolPath(options: { gh: boolean }): Promise<string> {
   const binDir = await createTempDir("kspec-dispatch-tools-");
-  const gitPath = execSync("command -v git", {
+  const gitPath = execSync("PATH=/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin command -v git", {
     encoding: "utf-8",
     shell: "/bin/bash",
   }).trim();

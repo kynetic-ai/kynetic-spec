@@ -7,7 +7,7 @@
 -->
 <script lang="ts">
 	import type { Convention } from '@kynetic-ai/shared';
-	import { createQuery } from '@tanstack/svelte-query';
+	import { createQuery } from '$lib/query/createQuery.svelte.js';
 	import {
 		fetchHealth,
 		fetchProjectConfig,
@@ -56,16 +56,17 @@
 		enabled: isProjectInitialized(),
 	}));
 
+	// AC: @ui-data-freshness ac-6 — Static mode guards moved to API layer
 	const healthQuery = createQuery(() => ({
 		queryKey: queryKeys.settings.health(),
 		queryFn: () => fetchHealth(),
-		enabled: isProjectInitialized() && !isStaticMode(),
+		enabled: isProjectInitialized(),
 	}));
 
 	const shadowQuery = createQuery(() => ({
 		queryKey: queryKeys.settings.shadow(),
 		queryFn: () => fetchShadowStatus(),
-		enabled: isProjectInitialized() && !isStaticMode(),
+		enabled: isProjectInitialized(),
 	}));
 
 	const conventionsQuery = createQuery(() => ({

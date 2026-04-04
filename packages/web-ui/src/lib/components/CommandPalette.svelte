@@ -9,9 +9,19 @@
 	// AC: @web-dashboard ac-23
 	let open = $state(false);
 	let query = $state('');
+	let selectedValue = $state('');
 	let results = $state<SearchResult[]>([]);
 	let loading = $state(false);
 	let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+
+	// Track the Command component's internal search text via onStateChange.
+	// bits-ui Command's `value` prop represents the selected item, not the search text.
+	// The search text lives in the internal `search` state field.
+	function handleStateChange(state: { search: string; value: string }) {
+		if (state.search !== query) {
+			query = state.search;
+		}
+	}
 
 	// AC: @web-dashboard ac-23 - Open command palette on Cmd+K / Ctrl+K
 	onMount(() => {
@@ -78,6 +88,7 @@
 	function handleSelect(result: SearchResult) {
 		open = false;
 		query = '';
+		selectedValue = '';
 		results = [];
 
 		// Map type to route
@@ -110,7 +121,7 @@
 </script>
 
 <!-- AC: @web-dashboard ac-23 -->
-<Command.Dialog data-testid="command-palette" bind:open bind:value={query} title="Search" description="Search across all entities">
+<Command.Dialog data-testid="command-palette" bind:open bind:value={selectedValue} shouldFilter={false} onStateChange={handleStateChange} title="Search" description="Search across all entities">
 	{@render children()}
 </Command.Dialog>
 

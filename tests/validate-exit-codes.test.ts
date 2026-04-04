@@ -11,7 +11,15 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { kspec, setupTempFixtures, cleanupTempDir, testUlid, createTempDir } from "./helpers/cli";
+import {
+  kspec,
+  setupTempFixtures,
+  cleanupTempDir,
+  testUlid,
+  createTempDir,
+  readTestOutput,
+  seedSplitTask,
+} from "./helpers/cli";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
@@ -43,7 +51,7 @@ items:
 
       // Update manifest to include the invalid file
       const manifestPath = path.join(tempDir, "kynetic.yaml");
-      const manifest = await fs.readFile(manifestPath, "utf-8");
+      const manifest = await readTestOutput(manifestPath);
       const updatedManifest = manifest.replace("includes:", "includes:\n  - modules/invalid.yaml");
       await fs.writeFile(manifestPath, updatedManifest);
 
@@ -54,19 +62,19 @@ items:
 
     it("should exit 4 when reference errors are present", async () => {
       // Add a task with an invalid spec_ref
-      const tasksFile = path.join(tempDir, "project.tasks.yaml");
-      const content = await fs.readFile(tasksFile, "utf-8");
-      const newContent = content.replace(
-        "tasks:",
-        `tasks:
-  - _ulid: ${testUlid("BADREF")}
-    title: "Task with bad ref"
-    status: pending
-    spec_ref: "@nonexistent-spec"
-    priority: 3
-`,
-      );
-      await fs.writeFile(tasksFile, newContent);
+      seedSplitTask(tempDir, {
+        _ulid: testUlid("BADREF"),
+        slugs: ["task-bad-ref"],
+        title: "Task with bad ref",
+        type: "task",
+        status: "pending",
+        priority: 3,
+        spec_ref: "@nonexistent-spec",
+        depends_on: [],
+        notes: [],
+        todos: [],
+        created_at: "2026-01-01T00:00:00Z",
+      });
 
       const result = kspec("validate --refs", tempDir);
       expect(result.exitCode).toBe(4);
@@ -108,7 +116,7 @@ items:
 
       // Update manifest to include the orphan file
       const manifestPath = path.join(tempDir, "kynetic.yaml");
-      const manifest = await fs.readFile(manifestPath, "utf-8");
+      const manifest = await readTestOutput(manifestPath);
       const updatedManifest = manifest.replace("includes:", "includes:\n  - modules/orphan.yaml");
       await fs.writeFile(manifestPath, updatedManifest);
 
@@ -208,15 +216,17 @@ items:
       // Create minimal kspec structure
       await fs.writeFile(
         path.join(cleanDir, "kynetic.yaml"),
-        `kynetic: "1.0"
+        `kynetic: "1.1"
 project:
   name: "Clean Project"
+task_storage:
+  format: split
 `,
       );
 
       await fs.writeFile(
         path.join(cleanDir, "project.tasks.yaml"),
-        `tasks: []
+        `[]
 `,
       );
     });

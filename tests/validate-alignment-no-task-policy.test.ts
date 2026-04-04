@@ -6,6 +6,7 @@ import {
   createTempDir,
   initGitRepo,
   kspecWithStatus,
+  seedSplitTask,
   testUlid,
 } from "./helpers/cli";
 
@@ -33,14 +34,14 @@ describe("validate alignment: no-task spec warning policy", () => {
 
     await fs.writeFile(
       path.join(tmpDir, "kynetic.yaml"),
-      `kynetic: "1.0"
+      `kynetic: "1.1"
+task_storage:
+  format: split
 project:
   name: no-task-policy-test
   version: 0.1.0
 includes:
   - "module.yaml"
-tasks:
-  - "tasks.yaml"
 `,
     );
 
@@ -57,18 +58,19 @@ tasks:
 `,
     );
 
-    const tasksContent = includeTasks
-      ? `tasks:
-  - _ulid: ${taskUlid}
-    slugs:
-      - task-test-spec
-    title: Task for test spec
-    status: ${taskStatus}
-    spec_ref: "@test-spec"
-`
-      : `tasks: []
-`;
-    await fs.writeFile(path.join(tmpDir, "tasks.yaml"), tasksContent);
+    if (includeTasks) {
+      seedSplitTask(tmpDir, {
+        _ulid: taskUlid,
+        slugs: ["task-test-spec"],
+        title: "Task for test spec",
+        status: taskStatus,
+        priority: 3,
+        depends_on: [],
+        spec_ref: "@test-spec",
+        notes: [],
+        created_at: "2026-01-01T00:00:00Z",
+      });
+    }
   }
 
   // AC: @alignment-system ac-2

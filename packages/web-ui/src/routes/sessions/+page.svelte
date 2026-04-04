@@ -29,14 +29,15 @@
 		SessionSearchResult,
 		FetchSessionSearchParams
 	} from '$lib/api';
-	import { fetchSessions, fetchSessionSearch } from '$lib/api';
+	import { fetchSessions, fetchSessionSearch, isCacheWarmingError } from '$lib/api';
+	import CacheWarmingBanner from '$lib/components/CacheWarmingBanner.svelte';
 	import { isStaticMode } from '$lib/stores/mode.svelte';
 	import { isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 	import { formatElapsed, formatAge, getTriggerLabel, isDispatchedSession } from '$lib/components/session/session-utils';
 	import SessionFilters from '$lib/components/session/SessionFilters.svelte';
 	import { Badge } from '$lib/components/ui/badge';
 	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
-	import { createInfiniteQuery, createQuery } from '@tanstack/svelte-query';
+	import { createInfiniteQuery, createQuery } from '$lib/query/createQuery.svelte.js';
 	import { queryKeys } from '$lib/query/keys.js';
 	import Activity from '@lucide/svelte/icons/activity';
 	import Zap from '@lucide/svelte/icons/zap';
@@ -163,7 +164,21 @@
 	let loading = $derived(sessionsQuery.isLoading);
 	let loadingMore = $derived(sessionsQuery.isFetchingNextPage);
 	let allLoaded = $derived(searchMode ? true : !sessionsQuery.hasNextPage);
-	let error = $derived(sessionsQuery.error?.message ?? searchResultsQuery.error?.message ?? '');
+	// AC: @ui-data-freshness ac-warming-skeleton — Distinguish warming errors from other errors
+	// Check the active query (search vs paginated) for cache warming state
+	let cacheWarming = $derived(
+		searchMode
+			? isCacheWarmingError(searchResultsQuery.error)
+			: isCacheWarmingError(sessionsQuery.error)
+	);
+	let error = $derived(
+		cacheWarming
+			? ''
+			: (
+				(isCacheWarmingError(sessionsQuery.error) ? '' : sessionsQuery.error?.message ?? '') ||
+				(isCacheWarmingError(searchResultsQuery.error) ? '' : searchResultsQuery.error?.message ?? '')
+			)
+	);
 
 	let searchResults = $derived<SessionSearchResult[]>(searchResultsQuery.data?.items ?? []);
 	let totalMatches = $derived(searchResultsQuery.data?.total_matches ?? 0);
@@ -293,9 +308,31 @@
 		return nextTotal !== previousTotal || nextFingerprint !== previousFingerprint;
 	}
 
+	function delay(ms: number): Promise<void> {
+		return new Promise((resolve) => setTimeout(resolve, ms));
+	}
+
+	async function refetchForFreshnessWithRetry(): Promise<boolean> {
+		const retryDelaysMs = [150, 300];
+		let changed = await refetchForFreshness();
+		if (changed || searchMode) {
+			return changed;
+		}
+
+		for (const delayMs of retryDelaysMs) {
+			await delay(delayMs);
+			changed = await refetchForFreshness();
+			if (changed) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	async function processLiveRefresh(): Promise<void> {
 		const snapshot = frozenSessions ?? sessions.slice();
-		const changed = await refetchForFreshness();
+		const changed = await refetchForFreshnessWithRetry();
 		if (!changed || isNearTop || searchMode) {
 			if (isNearTop) {
 				pendingFreshCount = 0;
@@ -468,8 +505,17 @@
 		</div>
 	{/if}
 
+	<!-- AC: @ui-data-freshness ac-warming-skeleton — Show skeleton during cache warming -->
+	<!-- AC: @ui-data-freshness ac-warming-timeout — Show error banner after 30s timeout -->
 	<!-- AC: @session-list-infinite-scroll ac-initial-load — Loading skeleton -->
-	{#if loading || (searchMode && searchLoading)}
+	{#if cacheWarming}
+		<CacheWarmingBanner
+			entityName="sessions"
+			queryKey={searchMode
+				? queryKeys.sessions.list({ ...buildFilterKey(), mode: 'search', q: searchQuery })
+				: queryKeys.sessions.list({ ...buildFilterKey(), mode: 'paginated' })}
+		/>
+	{:else if loading || (searchMode && searchLoading)}
 		<div class="space-y-2" data-testid="sessions-loading">
 			{#each Array(5) as _}
 				<div class="h-16 rounded-lg bg-muted ds-shimmer"></div>

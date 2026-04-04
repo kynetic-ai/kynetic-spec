@@ -23,6 +23,7 @@ import type {
   Observation,
   Workflow,
   Convention,
+  CacheStatus,
   PaginatedResponse,
   PlanSummary,
   PlanDetail,
@@ -64,6 +65,136 @@ import {
 import { DAEMON_API_BASE } from "./constants";
 
 const API_BASE = DAEMON_API_BASE;
+
+/**
+ * Error thrown when the daemon returns a response with cache_status "loading".
+ * This prevents TanStack Query from caching empty/default data as if it were a
+ * real result. The query layer treats this as a retryable error, keeping the
+ * previous cached data visible while the cache warms.
+ * AC: @api-contract ac-cache-status-field
+ */
+export class CacheWarmingError extends Error {
+  readonly cacheStatus: CacheStatus;
+
+  constructor() {
+    super("Cache is still warming — data not yet available");
+    this.name = "CacheWarmingError";
+    this.cacheStatus = "loading";
+  }
+}
+
+/**
+ * Type guard for CacheWarmingError. Useful in view components to distinguish
+ * cache warming from other query errors (e.g., to show skeletons vs error states).
+ * AC: @ui-data-freshness ac-warming-skeleton
+ */
+export function isCacheWarmingError(error: unknown): error is CacheWarmingError {
+  return error instanceof CacheWarmingError;
+}
+
+/**
+ * Check envelope meta for cache_status and throw CacheWarmingError if "loading".
+ * Must be called before extracting data so callers never see default/empty payloads
+ * from a warming cache.
+ * AC: @api-contract ac-cache-status-field
+ */
+function checkCacheStatus(meta: { cache_status?: CacheStatus }): void {
+  if (meta.cache_status === "loading") {
+    throw new CacheWarmingError();
+  }
+}
+
+/**
+ * Unwrap a unified API response envelope, returning just the data payload.
+ * Throws CacheWarmingError if cache_status is "loading".
+ * Used for detail/aggregation endpoints that return { data: T, meta: {...} }.
+ * AC: @api-contract ac-envelope
+ * AC: @api-contract ac-cache-status-field
+ */
+function unwrapEnvelope<T>(envelope: { data: T; meta: { cache_status?: CacheStatus } }): T {
+  checkCacheStatus(envelope.meta);
+  return envelope.data;
+}
+
+/**
+ * Unwrap a unified API response envelope into the legacy PaginatedResponse shape.
+ * Throws CacheWarmingError if cache_status is "loading".
+ * Maps { data: T[], meta: { total, offset, limit, cache_status } } → { items: T[], total, offset, limit }.
+ * AC: @api-contract ac-envelope
+ * AC: @api-contract ac-cache-status-field
+ */
+function unwrapPaginatedEnvelope<T>(envelope: {
+  data: T[];
+  meta: { total?: number; offset?: number; limit?: number; cache_status?: CacheStatus };
+}): PaginatedResponse<T> {
+  checkCacheStatus(envelope.meta);
+  return {
+    items: envelope.data,
+    total: envelope.meta.total ?? envelope.data.length,
+    offset: envelope.meta.offset ?? 0,
+    limit: envelope.meta.limit ?? envelope.data.length,
+  };
+}
+
+/**
+ * Unwrap a unified API response envelope for list endpoints that return { items, total }.
+ * Throws CacheWarmingError if cache_status is "loading".
+ * Maps { data: T[], meta: { total } } → { items: T[], total }.
+ * AC: @api-contract ac-envelope
+ * AC: @api-contract ac-cache-status-field
+ */
+function unwrapListEnvelope<T>(envelope: {
+  data: T[];
+  meta: { total?: number; cache_status?: CacheStatus };
+}): { items: T[]; total: number } {
+  checkCacheStatus(envelope.meta);
+  return {
+    items: envelope.data,
+    total: envelope.meta.total ?? envelope.data.length,
+  };
+}
+
+/**
+ * Unwrap a unified API response envelope for the session list pattern.
+ * Throws CacheWarmingError if cache_status is "loading".
+ * Maps { data: { items, unfiltered_total }, meta: { total, offset, limit } } → SessionListResponse.
+ * AC: @api-contract ac-envelope
+ * AC: @api-contract ac-cache-status-field
+ */
+function unwrapSessionListEnvelope(envelope: {
+  data: { items: SessionSummary[]; unfiltered_total?: number };
+  meta: { total?: number; offset?: number; limit?: number; cache_status?: CacheStatus };
+}): SessionListResponse {
+  checkCacheStatus(envelope.meta);
+  return {
+    items: envelope.data.items,
+    total: envelope.meta.total ?? envelope.data.items.length,
+    unfiltered_total: envelope.data.unfiltered_total ?? 0,
+    offset: envelope.meta.offset ?? 0,
+    limit: envelope.meta.limit ?? envelope.data.items.length,
+  };
+}
+
+/**
+ * Unwrap a unified API response envelope for simple session list pattern (no unfiltered_total).
+ * Throws CacheWarmingError if cache_status is "loading".
+ * Maps { data: T[], meta: { total, offset, limit } } → SessionListResponse.
+ * AC: @api-contract ac-envelope
+ * AC: @api-contract ac-cache-status-field
+ */
+function unwrapSimpleSessionListEnvelope(envelope: {
+  data: SessionSummary[];
+  meta: { total?: number; offset?: number; limit?: number; cache_status?: CacheStatus };
+}): SessionListResponse {
+  checkCacheStatus(envelope.meta);
+  return {
+    items: envelope.data,
+    total: envelope.meta.total ?? envelope.data.length,
+    unfiltered_total: envelope.data.length,
+    offset: envelope.meta.offset ?? 0,
+    limit: envelope.meta.limit ?? envelope.data.length,
+  };
+}
 
 /**
  * Get headers for API requests, including X-Kspec-Dir if project is selected
@@ -118,8 +249,9 @@ export async function fetchTasks(params?: {
   offset?: number;
 }): Promise<PaginatedResponse<TaskSummary>> {
   // AC: @gh-pages-export ac-11 - Use static data in static mode
+  // AC: @api-contract ac-envelope — static returns envelope, unwrap identically to live
   if (isStaticMode()) {
-    return fetchTasksStatic(params);
+    return unwrapPaginatedEnvelope(fetchTasksStatic(params));
   }
 
   const url = new URL(`${API_BASE}/api/tasks`);
@@ -143,7 +275,7 @@ export async function fetchTasks(params?: {
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapPaginatedEnvelope(await response.json());
 }
 
 /**
@@ -154,12 +286,13 @@ export async function fetchTasks(params?: {
  */
 export async function fetchTask(ref: string): Promise<TaskDetail> {
   // AC: @gh-pages-export ac-12 - Use static data in static mode
+  // AC: @api-contract ac-envelope — static returns envelope, unwrap identically to live
   if (isStaticMode()) {
-    const task = fetchTaskStatic(ref);
-    if (!task) {
+    const envelope = fetchTaskStatic(ref);
+    if (!envelope) {
       throw new Error(`Task not found: ${ref}`);
     }
-    return task;
+    return unwrapEnvelope(envelope);
   }
 
   const response = await fetch(`${API_BASE}/api/tasks/${ref}`, {
@@ -169,7 +302,7 @@ export async function fetchTask(ref: string): Promise<TaskDetail> {
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapEnvelope(await response.json());
 }
 
 /**
@@ -289,8 +422,9 @@ export async function fetchItems(params?: {
   offset?: number;
 }): Promise<PaginatedResponse<ItemSummary>> {
   // AC: @gh-pages-export ac-11 - Use static data in static mode
+  // AC: @api-contract ac-envelope — static returns envelope, unwrap identically to live
   if (isStaticMode()) {
-    return fetchItemsStatic(params);
+    return unwrapPaginatedEnvelope(fetchItemsStatic(params));
   }
 
   const url = new URL(`${API_BASE}/api/items`);
@@ -314,7 +448,7 @@ export async function fetchItems(params?: {
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapPaginatedEnvelope(await response.json());
 }
 
 /**
@@ -325,12 +459,13 @@ export async function fetchItems(params?: {
  */
 export async function fetchItem(ref: string): Promise<ItemDetail> {
   // AC: @gh-pages-export ac-13 - Use static data in static mode
+  // AC: @api-contract ac-envelope — static returns envelope, unwrap identically to live
   if (isStaticMode()) {
-    const item = fetchItemStatic(ref);
-    if (!item) {
+    const envelope = fetchItemStatic(ref);
+    if (!envelope) {
       throw new Error(`Item not found: ${ref}`);
     }
-    return item;
+    return unwrapEnvelope(envelope);
   }
 
   const response = await fetch(`${API_BASE}/api/items/${ref}`, {
@@ -340,7 +475,7 @@ export async function fetchItem(ref: string): Promise<ItemDetail> {
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapEnvelope(await response.json());
 }
 
 export async function fetchBatchItems(refs: string[]): Promise<BatchItemsResponse> {
@@ -371,8 +506,9 @@ export async function fetchBatchItems(refs: string[]): Promise<BatchItemsRespons
  */
 export async function fetchItemTasks(ref: string): Promise<PaginatedResponse<TaskSummary>> {
   // AC: @gh-pages-export ac-11 - Use static data in static mode
+  // AC: @api-contract ac-envelope — static returns envelope, unwrap identically to live
   if (isStaticMode()) {
-    return fetchItemTasksStatic(ref);
+    return unwrapPaginatedEnvelope(fetchItemTasksStatic(ref));
   }
 
   const response = await fetch(`${API_BASE}/api/items/${ref}/tasks`, {
@@ -382,7 +518,7 @@ export async function fetchItemTasks(ref: string): Promise<PaginatedResponse<Tas
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapPaginatedEnvelope(await response.json());
 }
 
 /**
@@ -396,8 +532,9 @@ export async function fetchInbox(params?: {
   offset?: number;
 }): Promise<PaginatedResponse<InboxItem>> {
   // AC: @gh-pages-export ac-11 - Use static data in static mode
+  // AC: @api-contract ac-envelope — static returns envelope, unwrap identically to live
   if (isStaticMode()) {
-    return fetchInboxStatic(params);
+    return unwrapPaginatedEnvelope(fetchInboxStatic(params));
   }
 
   const url = new URL(`${API_BASE}/api/inbox`);
@@ -417,7 +554,7 @@ export async function fetchInbox(params?: {
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapPaginatedEnvelope(await response.json());
 }
 
 /**
@@ -430,11 +567,12 @@ export async function fetchMergedInbox(): Promise<{
   total: number;
 }> {
   // In static mode, fall back to separate fetches and merge client-side
+  // AC: @api-contract ac-envelope — static returns envelope, unwrap identically
   if (isStaticMode()) {
-    const inboxResponse = await fetchInboxStatic();
-    const triageResponse = await fetchTriageRecordsStatic();
-    const items: InboxItemWithTriage[] = inboxResponse.items.map((item) => {
-      const record = triageResponse.items.find((r) => r.inbox_ref === item._ulid);
+    const inboxData = unwrapEnvelope(fetchInboxStatic());
+    const triageData = unwrapEnvelope(fetchTriageRecordsStatic());
+    const items: InboxItemWithTriage[] = inboxData.map((item) => {
+      const record = triageData.find((r) => r.inbox_ref === item._ulid);
       const result: InboxItemWithTriage = { ...item };
       if (record) {
         result.triage = {
@@ -459,7 +597,7 @@ export async function fetchMergedInbox(): Promise<{
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapListEnvelope(await response.json());
 }
 
 /**
@@ -515,12 +653,13 @@ export async function deleteInboxItem(ref: string): Promise<void> {
  */
 export async function fetchSessionContext(): Promise<SessionContext> {
   // AC: @gh-pages-export ac-11 - Use static data in static mode
+  // AC: @api-contract ac-envelope — static returns envelope, unwrap identically to live
   if (isStaticMode()) {
-    const session = fetchSessionContextStatic();
-    if (!session) {
+    const envelope = fetchSessionContextStatic();
+    if (!envelope) {
       return { focus: null, threads: [], open_questions: [], updated_at: new Date().toISOString() };
     }
-    return session;
+    return unwrapEnvelope(envelope);
   }
 
   const response = await fetch(`${API_BASE}/api/meta/session`, {
@@ -530,7 +669,7 @@ export async function fetchSessionContext(): Promise<SessionContext> {
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapEnvelope(await response.json());
 }
 
 /**
@@ -544,8 +683,9 @@ export async function fetchObservations(params?: {
   resolved?: boolean;
 }): Promise<PaginatedResponse<Observation>> {
   // AC: @gh-pages-export ac-11 - Use static data in static mode
+  // AC: @api-contract ac-envelope — static returns envelope, unwrap identically to live
   if (isStaticMode()) {
-    return fetchObservationsStatic(params);
+    return unwrapPaginatedEnvelope(fetchObservationsStatic(params));
   }
 
   const url = new URL(`${API_BASE}/api/meta/observations`);
@@ -565,7 +705,7 @@ export async function fetchObservations(params?: {
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapPaginatedEnvelope(await response.json());
 }
 
 /**
@@ -576,8 +716,9 @@ export async function fetchObservations(params?: {
  */
 export async function search(query: string): Promise<SearchResponse> {
   // AC: @gh-pages-export ac-11 - Use static data in static mode
+  // AC: @api-contract ac-envelope — static returns envelope, unwrap identically to live
   if (isStaticMode()) {
-    return searchStatic(query);
+    return unwrapEnvelope(searchStatic(query));
   }
 
   const url = new URL(`${API_BASE}/api/search`);
@@ -590,7 +731,7 @@ export async function search(query: string): Promise<SearchResponse> {
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapEnvelope(await response.json());
 }
 
 // ============================================================
@@ -609,8 +750,9 @@ export async function fetchTriageRecords(params?: {
   offset?: number;
 }): Promise<PaginatedResponse<TriageRecord>> {
   // AC: @interactive-triage-ui ac-8 - Static mode: read-only triage data
+  // AC: @api-contract ac-envelope — static returns envelope, unwrap identically to live
   if (isStaticMode()) {
-    return fetchTriageRecordsStatic(params);
+    return unwrapPaginatedEnvelope(fetchTriageRecordsStatic(params));
   }
 
   const url = new URL(`${API_BASE}/api/triage`);
@@ -630,7 +772,45 @@ export async function fetchTriageRecords(params?: {
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapPaginatedEnvelope(await response.json());
+}
+
+export type TriageExportFormat = "context" | "json";
+
+/**
+ * Fetch triage export content for preview in the UI.
+ * AC: @triage-daemon-api ac-6
+ */
+export async function fetchTriageExport(format: TriageExportFormat): Promise<{
+  format: TriageExportFormat;
+  content: string;
+}> {
+  if (isStaticMode()) {
+    throw new Error("Triage export is unavailable in static mode.");
+  }
+
+  const url = new URL(`${API_BASE}/api/triage/export`);
+  url.searchParams.set("format", format);
+
+  const response = await fetch(url.toString(), {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
+
+  const body = await response.json();
+  if (format === "context") {
+    return {
+      format,
+      content: typeof body.content === "string" ? body.content : "",
+    };
+  }
+
+  return {
+    format,
+    content: JSON.stringify(body, null, 2),
+  };
 }
 
 /**
@@ -732,6 +912,14 @@ export interface AgentDispatchStatus {
  * AC: @ui-agent-dispatch ac-1, ac-2, ac-3
  */
 export async function fetchAgentStatus(): Promise<AgentDispatchStatus> {
+  if (isStaticMode()) {
+    return {
+      dispatch_enabled: false,
+      active_invocations: [],
+      queue_depth: 0,
+      agent_definitions: [],
+    };
+  }
   const response = await fetch(`${API_BASE}/api/agent/status`, {
     headers: getProjectHeaders(),
   });
@@ -749,13 +937,16 @@ export async function fetchAgentDefinitions(): Promise<{
   items: AgentDefinition[];
   total: number;
 }> {
+  if (isStaticMode()) {
+    return { items: [], total: 0 };
+  }
   const response = await fetch(`${API_BASE}/api/meta/agents`, {
     headers: getProjectHeaders(),
   });
   if (!response.ok) {
     await handleResponseError(response);
   }
-  return response.json();
+  return unwrapListEnvelope(await response.json());
 }
 
 /**
@@ -903,6 +1094,9 @@ export async function fetchHooks(params?: {
   limit?: number;
   offset?: number;
 }): Promise<PaginatedResponse<HookSummary>> {
+  if (isStaticMode()) {
+    return { items: [], total: 0 };
+  }
   const url = new URL(`${API_BASE}/api/hooks`);
   if (params?.limit !== undefined) url.searchParams.set("limit", String(params.limit));
   if (params?.offset !== undefined) url.searchParams.set("offset", String(params.offset));
@@ -924,6 +1118,9 @@ export async function fetchSchedules(params?: {
   limit?: number;
   offset?: number;
 }): Promise<PaginatedResponse<ScheduleSummary>> {
+  if (isStaticMode()) {
+    return { items: [], total: 0 };
+  }
   const url = new URL(`${API_BASE}/api/schedules`);
   if (params?.limit !== undefined) url.searchParams.set("limit", String(params.limit));
   if (params?.offset !== undefined) url.searchParams.set("offset", String(params.offset));
@@ -942,6 +1139,22 @@ export async function fetchSchedules(params?: {
  * AC: @ui-automation-view ac-4
  */
 export async function fetchScheduleStatus(id: string): Promise<ScheduleRuntimeStatus> {
+  if (isStaticMode()) {
+    return {
+      id,
+      name: "",
+      enabled: false,
+      cron: "",
+      timezone: "UTC",
+      overlap_policy: "skip",
+      next_tick: null,
+      last_tick: null,
+      run_count: 0,
+      active_run_count: 0,
+      active_run_ids: [],
+      overlap_state: "idle",
+    };
+  }
   const response = await fetch(`${API_BASE}/api/schedules/${encodeURIComponent(id)}/status`, {
     headers: getProjectHeaders(),
   });
@@ -981,6 +1194,9 @@ export async function fetchRecentEvents(params?: {
   limit?: number;
   offset?: number;
 }): Promise<PaginatedResponse<EventEnvelopeSummary>> {
+  if (isStaticMode()) {
+    return { items: [], total: 0 };
+  }
   const url = new URL(`${API_BASE}/api/events/recent`);
   if (params?.type) url.searchParams.set("type", params.type);
   if (params?.limit !== undefined) url.searchParams.set("limit", String(params.limit));
@@ -1013,6 +1229,9 @@ export interface CompositionConfigSummary {
 export async function fetchCompositionConfigs(): Promise<
   PaginatedResponse<CompositionConfigSummary>
 > {
+  if (isStaticMode()) {
+    return { items: [], total: 0 };
+  }
   const response = await fetch(`${API_BASE}/api/compositions`, {
     headers: getProjectHeaders(),
   });
@@ -1030,6 +1249,9 @@ export async function fetchCompositionActivations(configId: string): Promise<{
   config_id: string;
   activations: CompositionActivation[];
 }> {
+  if (isStaticMode()) {
+    return { config_id: configId, activations: [] };
+  }
   const response = await fetch(
     `${API_BASE}/api/compositions/${encodeURIComponent(configId)}/activations`,
     { headers: getProjectHeaders() },
@@ -1052,8 +1274,9 @@ export async function fetchCompositionActivations(configId: string): Promise<{
 export async function fetchPlans(params?: {
   status?: string;
 }): Promise<{ items: PlanSummary[]; total: number }> {
+  // AC: @api-contract ac-envelope — static returns envelope, unwrap identically to live
   if (isStaticMode()) {
-    return fetchPlansStatic(params);
+    return unwrapListEnvelope(fetchPlansStatic(params));
   }
 
   const url = new URL(`${API_BASE}/api/plans`);
@@ -1073,7 +1296,7 @@ export async function fetchPlans(params?: {
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapListEnvelope(await response.json());
 }
 
 /**
@@ -1081,8 +1304,9 @@ export async function fetchPlans(params?: {
  * AC: @ui-plans-view ac-2
  */
 export async function fetchPlanContent(ref: string): Promise<PlanDetail> {
+  // AC: @api-contract ac-envelope — static returns envelope, unwrap identically to live
   if (isStaticMode()) {
-    return fetchPlanContentStatic(ref);
+    return unwrapEnvelope(fetchPlanContentStatic(ref));
   }
 
   const response = await fetch(`${API_BASE}/api/plans/${ref}`, {
@@ -1092,7 +1316,7 @@ export async function fetchPlanContent(ref: string): Promise<PlanDetail> {
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapEnvelope(await response.json());
 }
 
 // ============================================================
@@ -1141,7 +1365,7 @@ export async function fetchReviews(params?: {
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapPaginatedEnvelope(await response.json());
 }
 
 /**
@@ -1160,7 +1384,7 @@ export async function fetchReview(id: string): Promise<ReviewDetail> {
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapEnvelope(await response.json());
 }
 
 /**
@@ -1179,7 +1403,7 @@ export async function fetchReviewSiblings(params: {
   }
 
   const data = await fetchReviews({
-    status: "all",
+    status: ["draft", "open", "closed", "archived"],
     sort: "created_at",
     sort_dir: "asc",
     subject_type: params.subject_type,
@@ -1342,8 +1566,9 @@ export async function fetchDiffContext(
  * AC: @ui-workflows-view ac-1
  */
 export async function fetchWorkflows(): Promise<{ items: Workflow[]; total: number }> {
+  // AC: @api-contract ac-envelope — static returns envelope, unwrap identically to live
   if (isStaticMode()) {
-    return fetchWorkflowsStatic();
+    return unwrapListEnvelope(fetchWorkflowsStatic());
   }
 
   const response = await fetch(`${API_BASE}/api/meta/workflows`, {
@@ -1353,7 +1578,7 @@ export async function fetchWorkflows(): Promise<{ items: Workflow[]; total: numb
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapListEnvelope(await response.json());
 }
 
 // ============================================================
@@ -1544,7 +1769,7 @@ export async function fetchSessions(params?: FetchSessionsParams): Promise<Sessi
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapSessionListEnvelope(await response.json());
 }
 
 export async function fetchSessionSearch(
@@ -1590,12 +1815,12 @@ export async function fetchSessionSearch(
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapEnvelope(await response.json());
 }
 
 export async function fetchTaskSessions(ref: string): Promise<SessionListResponse> {
   if (isStaticMode()) {
-    return { items: [], total: 0, offset: 0, limit: 0 };
+    return { items: [], total: 0, unfiltered_total: 0, offset: 0, limit: 0 };
   }
 
   const response = await fetch(`${API_BASE}/api/tasks/${ref}/sessions`, {
@@ -1605,12 +1830,12 @@ export async function fetchTaskSessions(ref: string): Promise<SessionListRespons
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapSimpleSessionListEnvelope(await response.json());
 }
 
 export async function fetchItemSessions(ref: string): Promise<SessionListResponse> {
   if (isStaticMode()) {
-    return { items: [], total: 0, offset: 0, limit: 0 };
+    return { items: [], total: 0, unfiltered_total: 0, offset: 0, limit: 0 };
   }
 
   const response = await fetch(`${API_BASE}/api/items/${ref}/sessions`, {
@@ -1620,7 +1845,7 @@ export async function fetchItemSessions(ref: string): Promise<SessionListRespons
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapSimpleSessionListEnvelope(await response.json());
 }
 
 /**
@@ -1639,7 +1864,7 @@ export async function fetchSession(id: string): Promise<SessionDetail> {
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapEnvelope(await response.json());
 }
 
 /**
@@ -1666,7 +1891,9 @@ export async function fetchSessionEvents(
     await handleResponseError(response);
   }
 
-  return response.json();
+  const json = await response.json();
+  const { events } = unwrapEnvelope<{ events: SessionEvent[] }>(json);
+  return { events, total: json.meta?.total ?? events.length };
 }
 
 /**
@@ -1685,7 +1912,7 @@ export async function fetchSessionEventDetail(id: string, seq: number): Promise<
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapEnvelope(await response.json());
 }
 
 // ============================================================
@@ -1719,7 +1946,7 @@ export async function fetchReviewsForTask(
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapPaginatedEnvelope(await response.json());
 }
 
 // ============================================================
@@ -2072,8 +2299,19 @@ export interface AlignmentResponse {
  * AC: @ui-validation-view ac-1
  */
 export async function fetchValidation(): Promise<ValidationResponse> {
+  // AC: @api-contract ac-envelope — static returns envelope, unwrap identically to live
   if (isStaticMode()) {
-    return fetchValidationStatic();
+    const data = unwrapEnvelope(fetchValidationStatic());
+    // Normalize: ensure all array fields exist even if omitted
+    return {
+      valid: data.valid ?? true,
+      schemaErrors: data.schemaErrors ?? [],
+      refErrors: data.refErrors ?? [],
+      refWarnings: data.refWarnings ?? [],
+      orphans: data.orphans ?? [],
+      completenessWarnings: data.completenessWarnings ?? [],
+      traitCycles: data.traitCycles ?? [],
+    };
   }
 
   const response = await fetch(`${API_BASE}/api/validate`, {
@@ -2083,7 +2321,7 @@ export async function fetchValidation(): Promise<ValidationResponse> {
     await handleResponseError(response);
   }
 
-  const data = await response.json();
+  const data = unwrapEnvelope<Partial<ValidationResponse>>(await response.json());
   // Normalize: ensure all array fields exist even if the API omits them
   return {
     valid: data.valid ?? true,
@@ -2101,8 +2339,9 @@ export async function fetchValidation(): Promise<ValidationResponse> {
  * AC: @ui-validation-view ac-1
  */
 export async function fetchAlignment(): Promise<AlignmentResponse> {
+  // AC: @api-contract ac-envelope — static returns envelope, unwrap identically to live
   if (isStaticMode()) {
-    return fetchAlignmentStatic();
+    return unwrapEnvelope(fetchAlignmentStatic());
   }
 
   const response = await fetch(`${API_BASE}/api/alignment`, {
@@ -2112,7 +2351,7 @@ export async function fetchAlignment(): Promise<AlignmentResponse> {
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapEnvelope(await response.json());
 }
 
 // ============================================================
@@ -2160,6 +2399,9 @@ export interface ShadowStatusResponse {
  * AC: @ui-settings-view ac-1
  */
 export async function fetchHealth(): Promise<HealthResponse> {
+  if (isStaticMode()) {
+    return { status: "static", uptime: 0, connections: 0, version: "" };
+  }
   const response = await fetch(`${API_BASE}/api/health`);
   if (!response.ok) {
     await handleResponseError(response);
@@ -2172,13 +2414,22 @@ export async function fetchHealth(): Promise<HealthResponse> {
  * AC: @ui-settings-view ac-1
  */
 export async function fetchProjectConfig(): Promise<ProjectConfig> {
+  if (isStaticMode()) {
+    return {
+      project: null,
+      spec_version: null,
+      root_dir: "",
+      remote_tracking: null,
+      daemon: { port: 0, host: "", auto_start: false },
+    };
+  }
   const response = await fetch(`${API_BASE}/api/meta/config`, {
     headers: getProjectHeaders(),
   });
   if (!response.ok) {
     await handleResponseError(response);
   }
-  return response.json();
+  return unwrapEnvelope(await response.json());
 }
 
 /**
@@ -2186,13 +2437,22 @@ export async function fetchProjectConfig(): Promise<ProjectConfig> {
  * AC: @ui-settings-view ac-1
  */
 export async function fetchShadowStatus(): Promise<ShadowStatusResponse> {
+  if (isStaticMode()) {
+    return {
+      enabled: false,
+      branch_name: null,
+      worktree_dir: null,
+      healthy: false,
+      remote_tracking: false,
+    };
+  }
   const response = await fetch(`${API_BASE}/api/meta/shadow`, {
     headers: getProjectHeaders(),
   });
   if (!response.ok) {
     await handleResponseError(response);
   }
-  return response.json();
+  return unwrapEnvelope(await response.json());
 }
 
 /**
@@ -2200,13 +2460,16 @@ export async function fetchShadowStatus(): Promise<ShadowStatusResponse> {
  * AC: @ui-settings-view ac-1
  */
 export async function fetchConventions(): Promise<{ items: Convention[]; total: number }> {
+  if (isStaticMode()) {
+    return { items: [], total: 0 };
+  }
   const response = await fetch(`${API_BASE}/api/meta/conventions`, {
     headers: getProjectHeaders(),
   });
   if (!response.ok) {
     await handleResponseError(response);
   }
-  return response.json();
+  return unwrapListEnvelope(await response.json());
 }
 
 /**
@@ -2214,11 +2477,20 @@ export async function fetchConventions(): Promise<{ items: Convention[]; total: 
  * AC: @ui-api-aggregation ac-2
  */
 export async function fetchValidationAggregation(): Promise<ValidationAggregation> {
+  if (isStaticMode()) {
+    return {
+      entity_count: 0,
+      ac_count: 0,
+      trait_ac_count: 0,
+      trait_count: 0,
+      coverage_percent: 0,
+    } as ValidationAggregation;
+  }
   const response = await fetch(`${API_BASE}/api/aggregation/validation`, {
     headers: getProjectHeaders(),
   });
   if (!response.ok) {
     await handleResponseError(response);
   }
-  return response.json();
+  return unwrapEnvelope(await response.json());
 }

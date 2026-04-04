@@ -25,7 +25,13 @@ import {
   ENVELOPE_FIELDS,
 } from "../src/schema/hooks.js";
 import { ACTION_TYPES } from "../src/schema/action.js";
-import { testUlid, setupTempFixtures, cleanupTempDir, kspec as kspecRun } from "./helpers/cli.js";
+import {
+  testUlid,
+  setupTempFixtures,
+  cleanupTempDir,
+  kspec as kspecRun,
+  readTestOutput,
+} from "./helpers/cli.js";
 
 // ─── @dispatch-hook-schema Tests ─────────────────────────────────────────────
 
@@ -173,7 +179,7 @@ describe("HookSchema", () => {
 
     it("should list valid action types in ActionSchema", () => {
       // Verify the action types are as expected
-      expect(ACTION_TYPES).toEqual(["command", "kspec", "agent", "notify"]);
+      expect(ACTION_TYPES).toEqual(["command", "kspec", "agent", "notify", "session_prompt"]);
     });
   });
 
@@ -654,7 +660,7 @@ hooks:
   it("should succeed with non-agent action hooks (no agent ref check needed)", async () => {
     // Read existing meta manifest and add hooks to it (preserve existing agents)
     const metaPath = path.join(tempDir, "kynetic.meta.yaml");
-    const existing = await fs.readFile(metaPath, "utf-8");
+    const existing = await readTestOutput(metaPath);
 
     // Append hooks section to the existing meta manifest
     await fs.writeFile(

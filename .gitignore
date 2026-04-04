@@ -4,6 +4,7 @@ node_modules/
 # Build output
 dist/
 plugin/
+*.tsbuildinfo
 
 # IDE
 .idea/
@@ -24,6 +25,7 @@ coverage/
 
 # Playwright test results
 test-results/
+playwright-report/
 
 # Environment
 .env

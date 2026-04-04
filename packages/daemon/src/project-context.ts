@@ -8,6 +8,7 @@
  */
 
 import { existsSync } from "fs";
+import { mkdir, rm, writeFile } from "fs/promises";
 import { isAbsolute, join, normalize, relative } from "path";
 import { KspecWatcher } from "./watcher";
 import { SessionWatcher } from "./session-watcher";
@@ -20,10 +21,27 @@ import type { PubSubManager } from "./websocket/pubsub";
  */
 export type FileChangeCallback = (projectPath: string, file: string, content: string) => void;
 
+/**
+ * Callback for cache invalidation on file changes.
+ * AC: @daemon-entity-cache ac-watcher-invalidation
+ */
+export type CacheInvalidationCallback = (
+  projectPath: string,
+  kspecDir: string,
+  file: string,
+) => void;
+
 export interface ProjectContext {
   path: string;
   registeredAt: Date;
   watcherActive: boolean;
+  lastHealthCheckAt: Date | null;
+  consecutiveFailures: number;
+}
+
+interface PendingHealthProbe {
+  filePath: string;
+  resolve: () => void;
 }
 
 /**
@@ -39,10 +57,15 @@ export interface ProjectContext {
 export class ProjectContextManager {
   private projects: Map<string, ProjectContext> = new Map();
   private watchers: Map<string, { kspec: KspecWatcher; sessions: SessionWatcher }> = new Map();
+  private pendingHealthProbes: Map<string, PendingHealthProbe> = new Map();
   private defaultProjectPath: string | null = null;
   private pubsub: PubSubManager | null = null;
   /** Optional callback for file changes (used by dispatch engine). AC: @agent-dispatch-engine ac-5 */
   private fileChangeCallback: FileChangeCallback | null = null;
+  /** Optional callback for cache invalidation on file changes. AC: @daemon-entity-cache ac-watcher-invalidation */
+  private cacheInvalidationCallback: CacheInvalidationCallback | null = null;
+  /** Optional callback invoked when a project is unregistered (from any path). AC: @daemon-entity-cache ac-unregister-cleanup */
+  private unregisterCallback: ((projectPath: string) => void) | null = null;
 
   constructor(defaultProjectPath?: string, pubsub?: PubSubManager) {
     if (defaultProjectPath) {
@@ -60,6 +83,23 @@ export class ProjectContextManager {
    */
   setFileChangeCallback(callback: FileChangeCallback | null): void {
     this.fileChangeCallback = callback;
+  }
+
+  /**
+   * Register a callback for cache invalidation on file changes.
+   * AC: @daemon-entity-cache ac-watcher-invalidation
+   */
+  setCacheInvalidationCallback(callback: CacheInvalidationCallback | null): void {
+    this.cacheInvalidationCallback = callback;
+  }
+
+  /**
+   * Register a callback invoked when a project is unregistered (from any code path).
+   * Used to dispose entity cache on watcher permanent failure, not just API-driven unregister.
+   * AC: @daemon-entity-cache ac-unregister-cleanup
+   */
+  setUnregisterCallback(callback: ((projectPath: string) => void) | null): void {
+    this.unregisterCallback = callback;
   }
 
   /**
@@ -98,6 +138,11 @@ export class ProjectContextManager {
       kspecWatcher = new KspecWatcher({
         kspecDir,
         onFileChange: (file, content) => {
+          if (this.isHealthProbePath(normalizedPath, file)) {
+            this.resolveHealthProbe(normalizedPath, file);
+            return;
+          }
+
           // AC: @multi-directory-daemon ac-17 - File changes trigger events scoped to project
           if (this.pubsub) {
             const relativePath = relative(kspecDir, file);
@@ -114,6 +159,33 @@ export class ProjectContextManager {
           // AC: @agent-dispatch-engine ac-5 - Notify dispatch engine of file changes
           if (this.fileChangeCallback) {
             this.fileChangeCallback(normalizedPath, file, content);
+          }
+          // AC: @daemon-entity-cache ac-watcher-invalidation — invalidate affected cache domain
+          if (this.cacheInvalidationCallback) {
+            this.cacheInvalidationCallback(normalizedPath, kspecDir, file);
+          }
+        },
+        // AC: @daemon-entity-cache ac-watcher-invalidation — file deletion/rename invalidates cache
+        onFileRemoved: (file) => {
+          if (this.isHealthProbePath(normalizedPath, file)) {
+            return;
+          }
+
+          if (this.pubsub) {
+            const relativePath = relative(kspecDir, file);
+            this.pubsub.broadcast(
+              "files:updates",
+              "file_changed",
+              {
+                ref: relativePath,
+                action: "removed",
+              },
+              normalizedPath,
+            );
+          }
+          // Cache invalidation for removed files — same path as onFileChange
+          if (this.cacheInvalidationCallback) {
+            this.cacheInvalidationCallback(normalizedPath, kspecDir, file);
           }
         },
         onError: (error, file) => {
@@ -139,17 +211,11 @@ export class ProjectContextManager {
       sessionWatcher = new SessionWatcher({
         sessionsDir,
         onSessionChange: (file) => {
-          if (this.pubsub) {
-            const relativePath = relative(sessionsDir, file);
-            this.pubsub.broadcast(
-              "sessions",
-              "session_changed",
-              {
-                ref: relativePath,
-                action: "modified",
-              },
-              normalizedPath,
-            );
+          // AC: @daemon-entity-cache ac-watcher-invalidation — invalidate session cache domain
+          if (this.cacheInvalidationCallback) {
+            // Session changes invalidate the sessions domain; pass sessionsDir as kspecDir
+            // so the callback can map the file to a domain
+            this.cacheInvalidationCallback(normalizedPath, sessionsDir, file);
           }
         },
         onError: (error, file) => {
@@ -231,6 +297,84 @@ export class ProjectContextManager {
     await Promise.all(stopPromises);
   }
 
+  async verifyWatcherHealth(
+    projectPath: string,
+    options: { timeoutMs?: number } = {},
+  ): Promise<{ healthy: boolean; durationMs: number }> {
+    const normalizedPath = this.normalizePath(projectPath);
+    const context = this.getProject(normalizedPath);
+    const watcher = this.watchers.get(normalizedPath);
+
+    if (!context.watcherActive || !watcher) {
+      return { healthy: false, durationMs: 0 };
+    }
+
+    if (this.pendingHealthProbes.has(normalizedPath)) {
+      throw new Error(`Watcher health probe already in progress for ${normalizedPath}`);
+    }
+
+    const timeoutMs = options.timeoutMs ?? watcher.kspec.getDebounceMs() + 2000;
+    const startedAt = Date.now();
+    const probeDir = join(normalizedPath, ".kspec", ".health-check");
+    const probeFile = join(probeDir, `probe-${startedAt}.yaml`);
+    let timeoutHandle: NodeJS.Timeout | null = null;
+
+    try {
+      await mkdir(probeDir, { recursive: true });
+
+      const probeDetected = new Promise<boolean>((resolve) => {
+        this.pendingHealthProbes.set(normalizedPath, {
+          filePath: probeFile,
+          resolve: () => {
+            if (timeoutHandle) {
+              clearTimeout(timeoutHandle);
+              timeoutHandle = null;
+            }
+            this.pendingHealthProbes.delete(normalizedPath);
+            resolve(true);
+          },
+        });
+
+        timeoutHandle = setTimeout(() => {
+          this.pendingHealthProbes.delete(normalizedPath);
+          timeoutHandle = null;
+          resolve(false);
+        }, timeoutMs);
+        timeoutHandle.unref?.();
+      });
+
+      await writeFile(
+        probeFile,
+        `watcher_health_probe: true\ncreated_at: "${new Date(startedAt).toISOString()}"\n`,
+        "utf-8",
+      );
+
+      const healthy = await probeDetected;
+      const durationMs = Date.now() - startedAt;
+
+      if (healthy) {
+        context.lastHealthCheckAt = new Date();
+        context.consecutiveFailures = 0;
+        return { healthy: true, durationMs };
+      }
+
+      context.consecutiveFailures += 1;
+      console.warn(
+        `[watcher-health] Watcher health check failed for ${normalizedPath} after ${durationMs}ms; restarting watcher`,
+      );
+      await this.stopWatcher(normalizedPath);
+      await this.startWatcher(normalizedPath);
+
+      return { healthy: false, durationMs };
+    } finally {
+      if (timeoutHandle) {
+        clearTimeout(timeoutHandle);
+      }
+      this.pendingHealthProbes.delete(normalizedPath);
+      await rm(probeFile, { force: true }).catch(() => undefined);
+    }
+  }
+
   /**
    * Register a project for multi-directory daemon support.
    *
@@ -277,6 +421,8 @@ export class ProjectContextManager {
       path: normalizedPath,
       registeredAt: new Date(),
       watcherActive: false, // Set to true when watcher is started
+      lastHealthCheckAt: null,
+      consecutiveFailures: 0,
     };
 
     this.projects.set(normalizedPath, context);
@@ -390,6 +536,12 @@ export class ProjectContextManager {
     if (this.defaultProjectPath === normalizedPath) {
       this.defaultProjectPath = null;
     }
+
+    // AC: @daemon-entity-cache ac-unregister-cleanup — notify listeners (e.g. entity cache disposal)
+    // This fires for all unregister paths: API-driven, watcher permanent failure, etc.
+    if (this.unregisterCallback) {
+      this.unregisterCallback(normalizedPath);
+    }
   }
 
   /**
@@ -438,5 +590,21 @@ export class ProjectContextManager {
    */
   private isAbsolutePath(projectPath: string): boolean {
     return isAbsolute(projectPath);
+  }
+
+  private resolveHealthProbe(projectPath: string, filePath: string): void {
+    const pending = this.pendingHealthProbes.get(projectPath);
+    if (!pending) return;
+    if (this.normalizePath(pending.filePath) !== this.normalizePath(filePath)) return;
+    pending.resolve();
+  }
+
+  private isHealthProbePath(projectPath: string, filePath: string): boolean {
+    const relativePath = relative(join(projectPath, ".kspec"), filePath);
+    return (
+      !relativePath.startsWith("..") &&
+      relativePath.split(/[\\/]+/)[0] === ".health-check" &&
+      relativePath.endsWith(".yaml")
+    );
   }
 }

@@ -81,17 +81,19 @@ export class WebSocketHandler {
       // Validate command structure
       if (!command.action) {
         // AC: @api-contract ac-30
-        this.sendAck(ws, undefined, false, "validation_error", "Missing action field");
+        this.sendAck(ws, false, undefined, false, "validation_error", "Missing action field");
         return;
       }
     } catch {
       // AC: @api-contract ac-30
-      this.sendAck(ws, undefined, false, "validation_error", "Invalid JSON");
+      this.sendAck(ws, false, undefined, false, "validation_error", "Invalid JSON");
       return;
     }
 
     // Process command
     try {
+      this.injectTestFailure(command);
+
       switch (command.action) {
         case "subscribe":
           this.handleSubscribe(ws, command);
@@ -109,6 +111,7 @@ export class WebSocketHandler {
           // AC: @api-contract ac-30
           this.sendAck(
             ws,
+            true,
             command.request_id,
             false,
             "unknown_action",
@@ -117,7 +120,8 @@ export class WebSocketHandler {
       }
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : "Internal error";
-      this.sendAck(ws, command.request_id, false, "error", errorMsg);
+      this.sendAck(ws, true, command.request_id, false, "error", errorMsg);
+      ws.close(1011, "Internal error");
     }
   }
 
@@ -129,13 +133,7 @@ export class WebSocketHandler {
     const topics = command.payload?.topics;
 
     if (!topics || !Array.isArray(topics) || topics.length === 0) {
-      this.sendAck(
-        ws,
-        command.request_id,
-        false,
-        "validation_error",
-        "Missing or invalid topics array",
-      );
+      this.sendValidationError(ws, command.request_id, "Missing or invalid topics array");
       return;
     }
 
@@ -143,10 +141,10 @@ export class WebSocketHandler {
     const success = sessionId ? this.pubsub.subscribe(sessionId, topics) : false;
 
     if (success) {
-      this.sendAck(ws, command.request_id, true);
+      this.sendAck(ws, true, command.request_id, true);
       console.log(`[ws] ${sessionId} subscribed to: ${topics.join(", ")}`);
     } else {
-      this.sendAck(ws, command.request_id, false, "not_found", "Session not found");
+      this.sendAck(ws, true, command.request_id, false, "not_found", "Session not found");
     }
   }
 
@@ -157,13 +155,7 @@ export class WebSocketHandler {
     const topics = command.payload?.topics;
 
     if (!topics || !Array.isArray(topics) || topics.length === 0) {
-      this.sendAck(
-        ws,
-        command.request_id,
-        false,
-        "validation_error",
-        "Missing or invalid topics array",
-      );
+      this.sendValidationError(ws, command.request_id, "Missing or invalid topics array");
       return;
     }
 
@@ -171,10 +163,10 @@ export class WebSocketHandler {
     const success = sessionId ? this.pubsub.unsubscribe(sessionId, topics) : false;
 
     if (success) {
-      this.sendAck(ws, command.request_id, true);
+      this.sendAck(ws, true, command.request_id, true);
       console.log(`[ws] ${sessionId} unsubscribed from: ${topics.join(", ")}`);
     } else {
-      this.sendAck(ws, command.request_id, false, "not_found", "Session not found");
+      this.sendAck(ws, true, command.request_id, false, "not_found", "Session not found");
     }
   }
 
@@ -182,7 +174,15 @@ export class WebSocketHandler {
    * Handle ping command (application-level ping, not WebSocket frame)
    */
   private handlePing(ws: ServerWebSocket<ConnectionData>, command: WebSocketCommand) {
-    this.sendAck(ws, command.request_id, true);
+    this.sendAck(ws, true, command.request_id, true);
+  }
+
+  private sendValidationError(
+    ws: ServerWebSocket<ConnectionData>,
+    request_id: string | undefined,
+    details: string,
+  ) {
+    this.sendAck(ws, false, request_id, false, "validation_error", details);
   }
 
   private resolveSessionId(ws: ServerWebSocket<ConnectionData>): string | undefined {
@@ -191,25 +191,33 @@ export class WebSocketHandler {
     return this.pubsub.getSessionIdBySocket(ws, contextId);
   }
 
+  private injectTestFailure(command: WebSocketCommand) {
+    const injectedRequestId = process.env.KSPEC_TEST_WS_FORCE_INTERNAL_ERROR_REQUEST_ID;
+    if (injectedRequestId && command.request_id === injectedRequestId) {
+      throw new Error(`Injected websocket failure for ${injectedRequestId}`);
+    }
+  }
+
   /**
    * Send ack response
    * AC: @api-contract ac-27
    */
   private sendAck(
     ws: ServerWebSocket<ConnectionData>,
+    isAck: boolean,
     request_id: string | undefined,
     success: boolean,
     error?: string,
     details?: string,
   ) {
-    const ack: CommandAck = {
-      ack: true,
+    const ackMessage: CommandAck = {
+      ack: isAck,
       request_id,
       success,
       error,
       details,
     };
 
-    ws.send(JSON.stringify(ack));
+    ws.send(JSON.stringify(ackMessage));
   }
 }

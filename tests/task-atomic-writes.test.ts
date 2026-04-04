@@ -20,11 +20,7 @@ import {
   getNotesFilePath,
   getIndexFilePath,
 } from "../src/parser/split-backend.js";
-import {
-  activateBatchBuffer,
-  deactivateBatchBuffer,
-  getActiveBatchBuffer,
-} from "../src/cli/batch-write-buffer.js";
+import { getActiveBatchBuffer, runWithBatchBuffer } from "../src/cli/batch-write-buffer.js";
 
 // Register the split backend (no longer auto-registered at module scope)
 ensureSplitBackendRegistered();
@@ -149,8 +145,6 @@ describe("Atomic Multi-File Task Writes", () => {
   });
 
   afterEach(async () => {
-    // Always clean up any lingering buffer
-    deactivateBatchBuffer();
     if (tempDir) {
       await cleanupTempDir(tempDir);
     }
@@ -443,28 +437,27 @@ describe("Atomic Multi-File Task Writes", () => {
       const [ulid] = testUlids("ABNST", 1);
       await createSplitTask(ctx, ulid, "no-nest-test");
 
-      // Simulate batch-exec scenario: activate a buffer before the operation
-      const batchBuffer = activateBatchBuffer(ctx.specDir);
+      // Simulate batch-exec scenario: run within a buffer scope
+      await runWithBatchBuffer(ctx.specDir, async (batchBuffer) => {
+        let bufferDuringMutation: ReturnType<typeof getActiveBatchBuffer> = null;
 
-      let bufferDuringMutation: ReturnType<typeof getActiveBatchBuffer> = null;
+        await manager.mutateTask(ctx, `@${ulid}`, (task) => {
+          bufferDuringMutation = getActiveBatchBuffer();
+          return { ...task, title: "Updated in batch" };
+        });
 
-      await manager.mutateTask(ctx, `@${ulid}`, (task) => {
-        bufferDuringMutation = getActiveBatchBuffer();
-        return { ...task, title: "Updated in batch" };
+        // The same batch buffer should have been used (not a new one)
+        expect(bufferDuringMutation).toBe(batchBuffer);
+
+        // The batch buffer should still be active (batch-exec owns it)
+        expect(getActiveBatchBuffer()).toBe(batchBuffer);
+
+        // Writes should be in the buffer, not on disk yet
+        expect(batchBuffer.size).toBeGreaterThan(0);
+
+        // Flush the batch buffer (simulating batch-exec completion)
+        await batchBuffer.flush();
       });
-
-      // The same batch buffer should have been used (not a new one)
-      expect(bufferDuringMutation).toBe(batchBuffer);
-
-      // The batch buffer should still be active (batch-exec owns it)
-      expect(getActiveBatchBuffer()).toBe(batchBuffer);
-
-      // Writes should be in the buffer, not on disk yet
-      expect(batchBuffer.size).toBeGreaterThan(0);
-
-      // Flush the batch buffer (simulating batch-exec completion)
-      await batchBuffer.flush();
-      deactivateBatchBuffer();
 
       // Now verify files are on disk
       const taskContent = await readTestOutput(getTaskFilePath(ctx, ulid), "utf-8");
@@ -480,25 +473,26 @@ describe("Atomic Multi-File Task Writes", () => {
       const shadowModule = await import("../src/parser/shadow.js");
       const commitSpy = vi.spyOn(shadowModule, "commitIfShadow");
 
-      // Simulate batch-exec scenario: activate a parent buffer
-      const batchBuffer = activateBatchBuffer(ctx.specDir);
-
       try {
-        await manager.mutateTask(ctx, `@${ulid}`, (task) => ({ ...task, priority: 1 }), {
-          operation: "test-nested-commit",
-          ref: `@${ulid}`,
+        // Simulate batch-exec scenario: run within a parent buffer scope
+        await runWithBatchBuffer(ctx.specDir, async (batchBuffer) => {
+          await manager.mutateTask(ctx, `@${ulid}`, (task) => ({ ...task, priority: 1 }), {
+            operation: "test-nested-commit",
+            ref: `@${ulid}`,
+          });
+
+          // commitIfShadow must NOT be called — the parent buffer hasn't
+          // flushed yet, so disk state is stale. The parent (batch-exec)
+          // owns the commit lifecycle and will commit after flush.
+          expect(commitSpy).not.toHaveBeenCalled();
+
+          // Writes should still be in the buffer, not on disk
+          expect(batchBuffer.size).toBeGreaterThan(0);
+
+          // Discard instead of flushing — we're just testing the nested behavior
+          batchBuffer.discard();
         });
-
-        // commitIfShadow must NOT be called — the parent buffer hasn't
-        // flushed yet, so disk state is stale. The parent (batch-exec)
-        // owns the commit lifecycle and will commit after flush.
-        expect(commitSpy).not.toHaveBeenCalled();
-
-        // Writes should still be in the buffer, not on disk
-        expect(batchBuffer.size).toBeGreaterThan(0);
       } finally {
-        batchBuffer.discard();
-        deactivateBatchBuffer();
         commitSpy.mockRestore();
       }
     });
@@ -696,45 +690,6 @@ describe("Atomic Multi-File Task Writes", () => {
       expect(bufferC).not.toBeNull();
       expect(bufferD).not.toBeNull();
       expect(bufferC).not.toBe(bufferD);
-    });
-  });
-
-  describe("monolithic format skips buffer management", () => {
-    it("monolithic manager does not activate a write buffer", async () => {
-      const monoManager = new TaskDataManager("monolithic");
-
-      // Set up monolithic fixture (task in project.tasks.yaml)
-      const monoTasksPath = path.join(ctx.specDir, "project.tasks.yaml");
-      const [ulid] = testUlids("AMNO", 1);
-      await fs.writeFile(
-        monoTasksPath,
-        toYaml([
-          {
-            _ulid: ulid,
-            slugs: ["mono-test"],
-            title: "Monolithic test",
-            type: "task",
-            status: "pending",
-            priority: 3,
-            tags: [],
-            depends_on: [],
-            blocked_by: [],
-            created_at: "2026-03-20T00:00:00.000Z",
-            notes: [],
-            todos: [],
-          },
-        ]),
-      );
-
-      let bufferDuringMutation: ReturnType<typeof getActiveBatchBuffer> = null;
-
-      await monoManager.mutateTask(ctx, `@${ulid}`, (task) => {
-        bufferDuringMutation = getActiveBatchBuffer();
-        return { ...task, title: "Updated mono" };
-      });
-
-      // No buffer should be active during monolithic mutations
-      expect(bufferDuringMutation).toBeNull();
     });
   });
 });

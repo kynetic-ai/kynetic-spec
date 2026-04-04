@@ -8,7 +8,7 @@
 	import { goto } from '$app/navigation';
 	import { onMount, onDestroy } from 'svelte';
 	import type { ReviewSummary, BroadcastEvent } from '@kynetic-ai/shared';
-	import { createQuery } from '@tanstack/svelte-query';
+	import { createQuery } from '$lib/query/createQuery.svelte.js';
 	import { Badge } from '$lib/components/ui/badge';
 	import {
 		Table,
@@ -18,7 +18,8 @@
 		TableHeader,
 		TableRow
 	} from '$lib/components/ui/table';
-	import { fetchReviews } from '$lib/api';
+	import { fetchReviews, isCacheWarmingError } from '$lib/api';
+	import CacheWarmingBanner from '$lib/components/CacheWarmingBanner.svelte';
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
 	import { isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 	import { queryKeys } from '$lib/query/keys.js';
@@ -55,7 +56,9 @@
 	let reviews = $derived(reviewsQuery.data?.items ?? []);
 	let total = $derived(reviewsQuery.data?.total ?? 0);
 	let loading = $derived(reviewsQuery.isLoading);
-	let error = $derived(reviewsQuery.error?.message ?? '');
+	// AC: @ui-data-freshness ac-warming-skeleton — Distinguish warming errors from other errors
+	let cacheWarming = $derived(isCacheWarmingError(reviewsQuery.error));
+	let error = $derived(cacheWarming ? '' : (reviewsQuery.error?.message ?? ''));
 
 	// --- Filter helpers ---
 	function updateFilter(key: string, value: string | undefined) {
@@ -249,9 +252,15 @@
 		</div>
 	{/if}
 
-	{#if loading}
-		<div class="flex justify-center items-center py-12">
-			<p class="text-muted-foreground">Loading reviews...</p>
+	<!-- AC: @ui-data-freshness ac-warming-skeleton — Show skeleton during cache warming -->
+	<!-- AC: @ui-data-freshness ac-warming-timeout — Show error banner after 30s timeout -->
+	{#if cacheWarming}
+		<CacheWarmingBanner entityName="reviews" queryKey={queryKeys.reviews.list(filterParams)} />
+	{:else if loading}
+		<div class="space-y-2" data-testid="reviews-loading">
+			{#each Array(5) as _}
+				<div class="h-12 rounded-lg bg-muted ds-shimmer"></div>
+			{/each}
 		</div>
 	{:else}
 		<!-- AC: @review-records-web-ui ac-1 — Sortable columns -->

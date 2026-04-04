@@ -461,7 +461,30 @@ function checkBuild() {
 /**
  * Main bootstrap logic
  */
+/**
+ * Check if running inside a dispatch session where bootstrap should not run.
+ * Dispatch agents run in worktrees — npm link from a worktree overwrites
+ * the global kspec symlink, breaking the host project's linked CLI.
+ */
+function checkDispatchGuard(env = process.env) {
+  if (env.KSPEC_SESSION_ID) {
+    return {
+      allowed: false,
+      reason:
+        "Bootstrap cannot run inside a dispatch session (KSPEC_SESSION_ID is set). " +
+        "The dispatch engine provides a ready environment — bootstrap is not needed.",
+    };
+  }
+  return { allowed: true, reason: "" };
+}
+
 async function bootstrap() {
+  const guard = checkDispatchGuard();
+  if (!guard.allowed) {
+    logError(guard.reason);
+    process.exit(1);
+  }
+
   logHeader("Kspec Bootstrap");
 
   let status = "already_configured";
@@ -578,6 +601,7 @@ if (require.main === module) {
 }
 
 module.exports = {
+  checkDispatchGuard,
   checkKspecCli,
   checkKspecCliWithDeps,
   checkNodeModulesWithDeps,

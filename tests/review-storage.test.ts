@@ -14,7 +14,17 @@ import { ReferenceIndex } from "../src/parser/refs.js";
 import type { ReviewRecordInput } from "../src/schema/index.js";
 import { buildReferenceIndex, buildIndexes } from "../src/parser/yaml.js";
 import type { KspecContext } from "../src/parser/yaml.js";
-import { createTempDir, cleanupTempDir, initGitRepo, testUlid, testUlids } from "./helpers/cli.js";
+import {
+  createTempDir,
+  cleanupTempDir,
+  initGitRepo,
+  readTestOutput,
+  testUlid,
+  testUlids,
+} from "./helpers/cli.js";
+import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
+
+ensureSplitBackendRegistered();
 
 function makeCtx(specDir: string): KspecContext {
   return { specDir } as KspecContext;
@@ -355,7 +365,7 @@ describe("Review Record Storage and Identity", () => {
 
     // Read the raw file to verify structure
     const reviewsPath = getReviewsFilePath(ctx);
-    const content = await fs.readFile(reviewsPath, "utf-8");
+    const content = await readTestOutput(reviewsPath);
 
     // Should have the version wrapper
     expect(content).toContain("kynetic_reviews:");
@@ -374,7 +384,7 @@ describe("Review Record Storage and Identity", () => {
     await saveReviewRecord(ctx, { ...review });
 
     const reviewsPath = getReviewsFilePath(ctx);
-    const content = await fs.readFile(reviewsPath, "utf-8");
+    const content = await readTestOutput(reviewsPath);
 
     // Verify the file structure has the version wrapper
     expect(content).toMatch(/^kynetic_reviews:/m);
@@ -477,7 +487,7 @@ describe("Review Record Storage and Identity", () => {
     await saveReviewRecord(ctx, { ...review, _sourceFile: "/some/path" });
 
     const reviewsPath = getReviewsFilePath(ctx);
-    const content = await fs.readFile(reviewsPath, "utf-8");
+    const content = await readTestOutput(reviewsPath);
     expect(content).not.toContain("_sourceFile");
   });
 

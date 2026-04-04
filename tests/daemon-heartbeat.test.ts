@@ -15,6 +15,50 @@ describe("HeartbeatManager", () => {
     vi.restoreAllMocks();
   });
 
+  // AC: @trait-websocket-protocol ac-4
+  it("sends a websocket ping after 30 seconds of inactivity", () => {
+    const heartbeat = new HeartbeatManager();
+    const pubsub = new PubSubManager();
+
+    const idle = createHeartbeatSocket("idle", Date.now());
+    pubsub.addConnection("idle", idle);
+
+    heartbeat.start(pubsub.getAllConnections());
+
+    vi.advanceTimersByTime(29_000);
+    expect(idle.ping).not.toHaveBeenCalled();
+
+    vi.advanceTimersByTime(1_000);
+    expect(idle.ping).toHaveBeenCalledTimes(1);
+    expect(idle.data.lastPing).toBe(Date.now());
+    expect(idle.data.lastPong).toBeUndefined();
+
+    heartbeat.stop();
+  });
+
+  // AC: @trait-websocket-protocol ac-5
+  // AC: @trait-websocket-protocol ac-7
+  // AC: @api-contract ac-31
+  it("closes the connection with code 1001 after 90 seconds without a pong", () => {
+    const heartbeat = new HeartbeatManager();
+    const pubsub = new PubSubManager();
+
+    const idle = createHeartbeatSocket("idle", Date.now());
+    pubsub.addConnection("idle", idle);
+
+    heartbeat.start(pubsub.getAllConnections());
+
+    vi.advanceTimersByTime(30_000);
+    expect(idle.ping).toHaveBeenCalledTimes(1);
+    expect(idle.close).not.toHaveBeenCalled();
+
+    vi.advanceTimersByTime(90_000);
+    expect(idle.ping).toHaveBeenCalledTimes(1);
+    expect(idle.close).toHaveBeenCalledWith(1001, "Ping timeout");
+
+    heartbeat.stop();
+  });
+
   // AC: @ws-disconnect-lifecycle-cleanup ac-3
   it("does not ping disconnected session after pubsub cleanup", () => {
     const heartbeat = new HeartbeatManager();
@@ -42,14 +86,16 @@ describe("HeartbeatManager", () => {
   });
 });
 
-function createHeartbeatSocket(sessionId: string): ServerWebSocket<ConnectionData> {
-  const thirtyOneSecondsAgo = Date.now() - 31_000;
+function createHeartbeatSocket(
+  sessionId: string,
+  lastPong = Date.now() - 31_000,
+): ServerWebSocket<ConnectionData> {
   const data: ConnectionData = {
     sessionId,
     topics: new Set(),
     seq: 0,
     lastPing: undefined,
-    lastPong: thirtyOneSecondsAgo,
+    lastPong,
     projectPath: "/tmp/project-a",
   };
 

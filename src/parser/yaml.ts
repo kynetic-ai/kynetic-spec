@@ -1,3 +1,4 @@
+import { AsyncLocalStorage } from "node:async_hooks";
 import { execSync } from "node:child_process";
 import type { Dirent } from "node:fs";
 import * as fs from "node:fs/promises";
@@ -6,12 +7,11 @@ import { ulid } from "ulid";
 import * as YAML from "yaml";
 import type { Pair } from "yaml";
 import type { ZodError } from "zod";
-import { acquireFileLock, withFileLock } from "./file-lock.js";
+import { withFileLock } from "./file-lock.js";
 import {
   accessBufferAware,
   getActiveBatchBuffer,
   readdirBufferAware,
-  runWithBuffer,
 } from "../cli/batch-write-buffer.js";
 import {
   InboxFileSchema,
@@ -54,8 +54,28 @@ import {
   ShadowError,
 } from "./shadow.js";
 import { loadProjectConfig, type ResolvedKspecConfig } from "./config.js";
-import { consumeSyncMode } from "../cli/sync-mode.js";
+import { consumeSyncMode, type ShadowSyncMode } from "../cli/sync-mode.js";
 import { TraitIndex } from "./traits.js";
+
+/**
+ * Async-context flag that tells initContext() to ignore the KSPEC_SPEC_DIR
+ * env var and resolve the project from cwd/startDir instead.
+ *
+ * Used by the daemon command executor to prevent ambient KSPEC_SPEC_DIR
+ * (set by concurrent tests or batch-atomic mode) from redirecting project
+ * resolution.  Unlike deleting the env var, this approach is confined to
+ * the current async execution chain and cannot race with other threads.
+ */
+const specDirOverrideStorage = new AsyncLocalStorage<{ ignore: boolean }>();
+
+/**
+ * Run `fn` in an async context where initContext() will skip the
+ * KSPEC_SPEC_DIR env-var override and resolve the project purely
+ * from cwd or startDir.
+ */
+export function runWithoutSpecDirOverride<T>(fn: () => T): T {
+  return specDirOverrideStorage.run({ ignore: true }, fn);
+}
 
 /**
  * Log a debug message (only when KSPEC_DEBUG=1)
@@ -509,7 +529,10 @@ export interface KspecContext {
  *
  * AC: @project-config ac-2 — config loaded before shadow detection
  */
-export async function initContext(startDir?: string): Promise<KspecContext> {
+export async function initContext(
+  startDir?: string,
+  options?: { syncMode?: ShadowSyncMode },
+): Promise<KspecContext> {
   const cwd = startDir || process.cwd();
   const projectRoots = resolveProjectRoots(cwd);
 
@@ -524,8 +547,11 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
 
   const { config } = configResult;
 
-  // KSPEC_SPEC_DIR override: used by batch atomic mode to redirect to temp copy
-  const specDirOverride = process.env.KSPEC_SPEC_DIR;
+  // KSPEC_SPEC_DIR override: used by batch atomic mode to redirect to temp copy.
+  // Suppressed when running inside runWithoutSpecDirOverride() (e.g. daemon
+  // command execution) to avoid process-env races with concurrent threads.
+  const alsContext = specDirOverrideStorage.getStore();
+  const specDirOverride = alsContext?.ignore ? undefined : process.env.KSPEC_SPEC_DIR;
   if (specDirOverride) {
     const specDir = path.resolve(specDirOverride);
     const manifestPath = await findManifestInDir(specDir);
@@ -583,7 +609,9 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
     // AC: @shadow-lazy-read-sync ac-syncmode-consume-once — consume-once prevents double-pull
     // AC: @shadow-lazy-read-sync ac-drift-check — drift check replaces unconditional pull
     if (!process.env.KSPEC_NO_SYNC) {
-      const syncMode = consumeSyncMode();
+      // AC: @shadow-lazy-read-sync ac-daemon-bypass — explicit syncMode override
+      // allows daemon routes to skip per-request drift-check on cache-miss fallback
+      const syncMode = options?.syncMode ?? consumeSyncMode();
 
       // AC: @config-shadow ac-3 ac-7 — pass configured shadow options so sync
       // uses the right branch name and remote instead of hardcoded defaults
@@ -828,7 +856,12 @@ export async function loadAllTasks(ctx: KspecContext): Promise<LoadedTask[]> {
   // When shadow is enabled (or spec dir is explicitly overridden), look only in specDir.
   // KSPEC_SPEC_DIR override is used by batch mode and some integration tests to isolate
   // task state to a temp directory; scanning ctx.rootDir can leak tasks from parent dirs.
-  if (ctx.shadow?.enabled || Boolean(process.env.KSPEC_SPEC_DIR)) {
+  // Respects runWithoutSpecDirOverride() context (same as initContext).
+  const specDirActive = (() => {
+    const als = specDirOverrideStorage.getStore();
+    return als?.ignore ? false : Boolean(process.env.KSPEC_SPEC_DIR);
+  })();
+  if (ctx.shadow?.enabled || specDirActive) {
     const taskFiles = await findTaskFiles(ctx.specDir);
 
     // Also check for standalone files in specDir
@@ -992,33 +1025,6 @@ export async function extractRawTaskArray(filePath: string): Promise<{
 }
 
 /**
- * Write raw task array back to file, preserving the wrapper format.
- */
-export async function writeRawTaskArray(
-  filePath: string,
-  rawTasks: unknown[],
-  useTasksWrapper: boolean,
-  wrapperObj?: Record<string, unknown>,
-): Promise<void> {
-  if (useTasksWrapper) {
-    // Preserve any extra top-level fields (e.g. kynetic_tasks version)
-    const output = wrapperObj ? { ...wrapperObj, tasks: rawTasks } : { tasks: rawTasks };
-    await writeYamlFilePreserveFormat(filePath, output);
-  } else {
-    await writeYamlFilePreserveFormat(filePath, rawTasks);
-  }
-}
-
-/**
- * Find task index in a raw array by ULID match.
- */
-export function findRawTaskIndex(rawTasks: unknown[], ulid: string): number {
-  return rawTasks.findIndex(
-    (t) => t && typeof t === "object" && (t as Record<string, unknown>)._ulid === ulid,
-  );
-}
-
-/**
  * Merge a schema-normalized task onto the original raw task data.
  * Only adds fields that were in the original raw data or that contain
  * non-default values. This prevents Zod defaults from polluting YAML
@@ -1064,301 +1070,6 @@ export function mergeTaskPreservingRawShape(
   }
 
   return result;
-}
-
-/**
- * Save a task to its source file (or default location for new tasks).
- * Preserves file format (tasks: [...] wrapper vs plain array).
- *
- * Non-target tasks are preserved as raw data (no schema parsing) to ensure
- * round-trip stability — fields not present in the original YAML won't be
- * added by Zod defaults.
- */
-export async function saveTask(ctx: KspecContext, task: LoadedTask): Promise<void> {
-  // Determine target file: use _sourceFile if present, otherwise default
-  const taskFilePath = task._sourceFile || getDefaultTaskFilePath(ctx);
-
-  // Lock the file to prevent concurrent read-modify-write races
-  await withFileLock(taskFilePath, async () => {
-    // Ensure directory exists
-    const dir = path.dirname(taskFilePath);
-    await fs.mkdir(dir, { recursive: true });
-
-    // Load raw task data without schema normalization
-    const { rawTasks, useTasksWrapper, wrapperObj } = await extractRawTaskArray(taskFilePath);
-
-    // Strip runtime metadata before saving
-    const cleanTask = stripRuntimeMetadata(task);
-
-    // Update existing or add new — replace only the target task
-    const existingIndex = findRawTaskIndex(rawTasks, task._ulid);
-    if (existingIndex >= 0) {
-      // Merge onto raw data to avoid adding Zod defaults for absent fields
-      const rawTarget = rawTasks[existingIndex] as Record<string, unknown>;
-      rawTasks[existingIndex] = mergeTaskPreservingRawShape(
-        rawTarget,
-        cleanTask as Record<string, unknown>,
-      );
-    } else {
-      rawTasks.push(cleanTask);
-    }
-
-    await writeRawTaskArray(taskFilePath, rawTasks, useTasksWrapper, wrapperObj);
-  });
-}
-
-/**
- * Atomically mutate a task using the latest on-disk state.
- *
- * The callback receives the current task value while holding the task file lock,
- * so concurrent writers cannot clobber unrelated fields (for example status vs notes).
- *
- * Non-target tasks are preserved as raw data (no schema parsing) to ensure
- * round-trip stability.
- */
-export async function mutateTaskAtomically(
-  ctx: KspecContext,
-  task: LoadedTask,
-  mutate: (latestTask: LoadedTask) => Task | LoadedTask | Promise<Task | LoadedTask>,
-): Promise<LoadedTask> {
-  const taskFilePath = task._sourceFile || getDefaultTaskFilePath(ctx);
-  let updatedTask: LoadedTask | undefined;
-
-  await withFileLock(taskFilePath, async () => {
-    // Ensure directory exists (important for default path in new repos)
-    const dir = path.dirname(taskFilePath);
-    await fs.mkdir(dir, { recursive: true });
-
-    // Load raw task data without schema normalization for non-target tasks
-    const { rawTasks, useTasksWrapper, wrapperObj } = await extractRawTaskArray(taskFilePath);
-
-    const taskIndex = findRawTaskIndex(rawTasks, task._ulid);
-    if (taskIndex === -1) {
-      throw new Error(`Task not found in file: ${task._ulid}`);
-    }
-
-    // Schema-parse only the target task for the mutation callback
-    const rawTarget = rawTasks[taskIndex];
-    const parsed = TaskSchema.safeParse(rawTarget);
-    if (!parsed.success) {
-      throw new Error(`Invalid task data for ${task._ulid}: ${parsed.error.message}`);
-    }
-    const latestTask: LoadedTask = { ...parsed.data, _sourceFile: taskFilePath };
-
-    const mutatedTask = await mutate(latestTask);
-    const cleanMutatedTask = stripRuntimeMetadata(mutatedTask as LoadedTask);
-
-    // Merge onto raw data to avoid adding Zod defaults for absent fields
-    rawTasks[taskIndex] = mergeTaskPreservingRawShape(
-      rawTarget as Record<string, unknown>,
-      cleanMutatedTask as Record<string, unknown>,
-    );
-
-    await writeRawTaskArray(taskFilePath, rawTasks, useTasksWrapper, wrapperObj);
-
-    updatedTask = {
-      ...cleanMutatedTask,
-      _sourceFile: taskFilePath,
-    };
-  });
-
-  if (!updatedTask) {
-    throw new Error(`Failed to mutate task atomically: ${task._ulid}`);
-  }
-
-  return updatedTask;
-}
-
-/**
- * Atomically mutate multiple tasks as one write transaction.
- *
- * Acquires all affected task-file locks in sorted order, loads the latest on-disk
- * state for each target task, lets the caller compute the updated records, then
- * writes each touched file once before releasing the locks.
- */
-export async function mutateTasksAtomically(
-  ctx: KspecContext,
-  tasks: LoadedTask[],
-  mutate: (
-    latestTasks: LoadedTask[],
-  ) => Array<Task | LoadedTask> | Promise<Array<Task | LoadedTask>>,
-): Promise<LoadedTask[]> {
-  const uniqueTasks = tasks.filter(
-    (task, index, arr) => arr.findIndex((candidate) => candidate._ulid === task._ulid) === index,
-  );
-
-  if (uniqueTasks.length === 0) {
-    return [];
-  }
-
-  const taskFileByUlid = new Map<string, string>();
-  for (const task of uniqueTasks) {
-    taskFileByUlid.set(task._ulid, task._sourceFile || getDefaultTaskFilePath(ctx));
-  }
-
-  const filePaths = [...new Set(taskFileByUlid.values())].toSorted();
-  const releases: Array<() => Promise<void>> = [];
-  const batchBufferScope =
-    filePaths.length > 1
-      ? filePaths.reduce((commonPath, filePath) => {
-          let candidate = commonPath;
-          while (
-            candidate !== path.dirname(candidate) &&
-            !filePath.startsWith(`${candidate}${path.sep}`) &&
-            filePath !== candidate
-          ) {
-            candidate = path.dirname(candidate);
-          }
-          return candidate;
-        }, path.dirname(filePaths[0]))
-      : null;
-
-  // Core mutation logic — runs inside a buffer scope when multi-file
-  const doMutate = async (): Promise<LoadedTask[]> => {
-    try {
-      for (const filePath of filePaths) {
-        releases.push(await acquireFileLock(filePath));
-      }
-
-      const fileStates = new Map<
-        string,
-        {
-          rawTasks: unknown[];
-          useTasksWrapper: boolean;
-          wrapperObj?: Record<string, unknown>;
-        }
-      >();
-
-      for (const filePath of filePaths) {
-        const dir = path.dirname(filePath);
-        await fs.mkdir(dir, { recursive: true });
-        fileStates.set(filePath, await extractRawTaskArray(filePath));
-      }
-
-      const latestTasks = uniqueTasks.map((task) => {
-        const taskFilePath = taskFileByUlid.get(task._ulid);
-        if (!taskFilePath) {
-          throw new Error(`No task file path found for ${task._ulid}`);
-        }
-
-        const fileState = fileStates.get(taskFilePath);
-        if (!fileState) {
-          throw new Error(`Task file state not loaded for ${taskFilePath}`);
-        }
-
-        const taskIndex = findRawTaskIndex(fileState.rawTasks, task._ulid);
-        if (taskIndex === -1) {
-          throw new Error(`Task not found in file: ${task._ulid}`);
-        }
-
-        const rawTarget = fileState.rawTasks[taskIndex];
-        const parsed = TaskSchema.safeParse(rawTarget);
-        if (!parsed.success) {
-          throw new Error(`Invalid task data for ${task._ulid}: ${parsed.error.message}`);
-        }
-
-        return {
-          ...parsed.data,
-          _sourceFile: taskFilePath,
-        };
-      });
-
-      const mutatedTasks = await mutate(latestTasks);
-      if (mutatedTasks.length !== latestTasks.length) {
-        throw new Error(
-          `Expected ${latestTasks.length} mutated tasks, received ${mutatedTasks.length}`,
-        );
-      }
-
-      const updatedTasks = mutatedTasks.map((mutatedTask, index) => {
-        const latestTask = latestTasks[index];
-        if (mutatedTask._ulid !== latestTask._ulid) {
-          throw new Error(
-            `Mutated task order mismatch: expected ${latestTask._ulid}, received ${mutatedTask._ulid}`,
-          );
-        }
-
-        const cleanMutatedTask = stripRuntimeMetadata(mutatedTask as LoadedTask);
-        const taskFilePath = latestTask._sourceFile || getDefaultTaskFilePath(ctx);
-        const fileState = fileStates.get(taskFilePath);
-        if (!fileState) {
-          throw new Error(`Task file state not loaded for ${taskFilePath}`);
-        }
-
-        const taskIndex = findRawTaskIndex(fileState.rawTasks, latestTask._ulid);
-        if (taskIndex === -1) {
-          throw new Error(`Task not found in file: ${latestTask._ulid}`);
-        }
-
-        fileState.rawTasks[taskIndex] = mergeTaskPreservingRawShape(
-          fileState.rawTasks[taskIndex] as Record<string, unknown>,
-          cleanMutatedTask as Record<string, unknown>,
-        );
-
-        return {
-          ...cleanMutatedTask,
-          _sourceFile: taskFilePath,
-        };
-      });
-
-      for (const filePath of filePaths) {
-        const fileState = fileStates.get(filePath);
-        if (!fileState) {
-          throw new Error(`Task file state not loaded for ${filePath}`);
-        }
-
-        await writeRawTaskArray(
-          filePath,
-          fileState.rawTasks,
-          fileState.useTasksWrapper,
-          fileState.wrapperObj,
-        );
-      }
-
-      return updatedTasks;
-    } finally {
-      await Promise.allSettled(releases.toReversed().map((release) => release()));
-    }
-  };
-
-  // Wrap in a buffer scope when operating across multiple files.
-  // runWithBuffer creates an isolated async-local scope so concurrent
-  // operations don't share the buffer.
-  if (batchBufferScope) {
-    return runWithBuffer(batchBufferScope, async () => doMutate());
-  }
-  return doMutate();
-}
-
-/**
- * Delete a task from its source file.
- * Requires _sourceFile to know which file to modify.
- */
-export async function deleteTask(_ctx: KspecContext, task: LoadedTask): Promise<void> {
-  if (!task._sourceFile) {
-    throw new Error("Cannot delete task without _sourceFile metadata");
-  }
-
-  const taskFilePath = task._sourceFile;
-
-  // Lock the file to prevent concurrent read-modify-write races
-  await withFileLock(taskFilePath, async () => {
-    // Load raw task data without schema normalization for round-trip stability
-    const { rawTasks, useTasksWrapper, wrapperObj } = await extractRawTaskArray(taskFilePath);
-
-    if (rawTasks.length === 0) {
-      throw new Error(`Task file not found: ${taskFilePath}`);
-    }
-
-    // Remove the task by ULID match on raw data
-    const taskIndex = findRawTaskIndex(rawTasks, task._ulid);
-    if (taskIndex === -1) {
-      throw new Error(`Task not found in file: ${task._ulid}`);
-    }
-    rawTasks.splice(taskIndex, 1);
-
-    await writeRawTaskArray(taskFilePath, rawTasks, useTasksWrapper, wrapperObj);
-  });
 }
 
 /**

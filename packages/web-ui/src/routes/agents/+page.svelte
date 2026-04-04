@@ -8,7 +8,8 @@
 	// AC: @ui-agent-dispatch ac-2 — Dispatch running: status, stop button, active invocations
 	// AC: @ui-agent-dispatch ac-3 — Dispatch stopped: status shown, no active invocations
 	import { onMount, onDestroy } from 'svelte';
-	import { createQuery, createMutation, useQueryClient } from '@tanstack/svelte-query';
+	import { createMutation, useQueryClient } from '@tanstack/svelte-query';
+	import { createQuery } from '$lib/query/createQuery.svelte.js';
 	import {
 		fetchAgentStatus,
 		fetchAgentDefinitions,
@@ -34,11 +35,11 @@
 
 	// --- Queries ---
 	// AC: @ui-data-freshness ac-1 — createQuery caches results; revisits render from cache
-	// AC: @ui-data-freshness ac-6 — Skip agent status in static mode
+	// AC: @ui-data-freshness ac-6 — fetchAgentStatus returns empty data in static mode
 	const agentStatusQuery = createQuery(() => ({
 		queryKey: queryKeys.agents.status(),
 		queryFn: () => fetchAgentStatus(),
-		enabled: isProjectInitialized() && !isStaticMode(),
+		enabled: isProjectInitialized(),
 		staleTime: 10 * 1000,
 	}));
 

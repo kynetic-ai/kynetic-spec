@@ -7,7 +7,7 @@
 -->
 <script lang="ts">
 	import type { Workflow } from '@kynetic-ai/shared';
-	import { createQuery } from '@tanstack/svelte-query';
+	import { createQuery } from '$lib/query/createQuery.svelte.js';
 	import { fetchWorkflows } from '$lib/api';
 	import { isStaticMode } from '$lib/stores/mode.svelte';
 	import { isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';

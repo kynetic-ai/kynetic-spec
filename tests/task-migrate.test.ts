@@ -12,6 +12,7 @@ import {
   initGitRepo,
   kspec,
   kspecJson,
+  readTestOutput,
   testUlid,
   testUlids,
 } from "./helpers/cli.js";
@@ -120,7 +121,7 @@ async function addLeanIndexEntry(
   overrides: Record<string, unknown> = {},
 ): Promise<void> {
   const indexPath = path.join(specDir, "project.tasks.yaml");
-  const content = await fs.readFile(indexPath, "utf-8");
+  const content = await readTestOutput(indexPath);
   const existing = parseYaml(content) || [];
   const entries = Array.isArray(existing) ? existing : [];
 
@@ -194,19 +195,19 @@ describe("kspec task migrate", () => {
     expect(stat2.isDirectory()).toBe(true);
 
     // Verify task.yaml
-    const taskYaml1 = parseYaml(await fs.readFile(path.join(taskDir1, "task.yaml"), "utf-8"));
+    const taskYaml1 = parseYaml(await readTestOutput(path.join(taskDir1, "task.yaml")));
     expect(taskYaml1._ulid).toBe(id1);
     expect(taskYaml1.title).toBe("Task task-alpha");
     // Notes should NOT be in task.yaml
     expect(taskYaml1.notes).toBeUndefined();
 
     // Verify notes.yaml
-    const notesYaml1 = parseYaml(await fs.readFile(path.join(taskDir1, "notes.yaml"), "utf-8"));
+    const notesYaml1 = parseYaml(await readTestOutput(path.join(taskDir1, "notes.yaml")));
     expect(notesYaml1.notes).toHaveLength(1);
     expect(notesYaml1.notes[0].content).toBe("Note one");
 
     // Verify empty notes
-    const notesYaml2 = parseYaml(await fs.readFile(path.join(taskDir2, "notes.yaml"), "utf-8"));
+    const notesYaml2 = parseYaml(await readTestOutput(path.join(taskDir2, "notes.yaml")));
     expect(notesYaml2.notes).toHaveLength(0);
   });
 
@@ -241,7 +242,7 @@ describe("kspec task migrate", () => {
 
     // Read index
     const indexPath = path.join(specDir, "project.tasks.yaml");
-    const index = parseYaml(await fs.readFile(indexPath, "utf-8"));
+    const index = parseYaml(await readTestOutput(indexPath));
     expect(Array.isArray(index)).toBe(true);
     expect(index).toHaveLength(1);
 
@@ -281,7 +282,7 @@ describe("kspec task migrate", () => {
     ]);
 
     // Snapshot the original file content
-    const indexBefore = await fs.readFile(path.join(specDir, "project.tasks.yaml"), "utf-8");
+    const indexBefore = await readTestOutput(path.join(specDir, "project.tasks.yaml"));
 
     const result = kspec("task migrate --dry-run", tempDir, { env });
     expect(result.exitCode).toBe(0);
@@ -290,7 +291,7 @@ describe("kspec task migrate", () => {
     expect(result.stdout).toContain("2");
 
     // Verify no files were modified
-    const indexAfter = await fs.readFile(path.join(specDir, "project.tasks.yaml"), "utf-8");
+    const indexAfter = await readTestOutput(path.join(specDir, "project.tasks.yaml"));
     expect(indexAfter).toBe(indexBefore);
 
     // Verify no per-task directories were created
@@ -449,7 +450,7 @@ describe("kspec task migrate", () => {
 
     // Invalid task should have its raw data preserved
     const invalidTaskYaml = parseYaml(
-      await fs.readFile(path.join(specDir, "tasks", idInvalid, "task.yaml"), "utf-8"),
+      await readTestOutput(path.join(specDir, "tasks", idInvalid, "task.yaml")),
     );
     expect(invalidTaskYaml._ulid).toBe(idInvalid);
     expect(invalidTaskYaml.title).toBe("Invalid Schema Task");
@@ -495,7 +496,7 @@ describe("kspec task migrate", () => {
 
     // String-notes task should have warning and empty notes
     const strNotesYaml = parseYaml(
-      await fs.readFile(path.join(specDir, "tasks", idStringNotes, "notes.yaml"), "utf-8"),
+      await readTestOutput(path.join(specDir, "tasks", idStringNotes, "notes.yaml")),
     ) as Record<string, unknown>;
     expect(Array.isArray(strNotesYaml.notes)).toBe(true);
     expect((strNotesYaml.notes as unknown[]).length).toBe(0);
@@ -552,7 +553,7 @@ describe("kspec task migrate", () => {
 
     // Add a new monolithic task (simulating older tooling writing to the file)
     const indexPath = path.join(specDir, "project.tasks.yaml");
-    const existingIndex = parseYaml(await fs.readFile(indexPath, "utf-8"));
+    const existingIndex = parseYaml(await readTestOutput(indexPath));
     existingIndex.push(
       makeMonolithicTask(idNew, "task-new-backfill", {
         title: "New Backfill Task",
@@ -574,16 +575,16 @@ describe("kspec task migrate", () => {
 
     // New task should have a per-task directory
     const newTaskDir = path.join(specDir, "tasks", idNew);
-    const newTaskYaml = parseYaml(await fs.readFile(path.join(newTaskDir, "task.yaml"), "utf-8"));
+    const newTaskYaml = parseYaml(await readTestOutput(path.join(newTaskDir, "task.yaml")));
     expect(newTaskYaml.title).toBe("New Backfill Task");
 
-    const newNotesYaml = parseYaml(await fs.readFile(path.join(newTaskDir, "notes.yaml"), "utf-8"));
+    const newNotesYaml = parseYaml(await readTestOutput(path.join(newTaskDir, "notes.yaml")));
     expect(newNotesYaml.notes).toHaveLength(1);
     expect(newNotesYaml.notes[0].content).toBe("Backfill note");
 
     // Existing task should be untouched
     const existingTaskYaml = parseYaml(
-      await fs.readFile(path.join(specDir, "tasks", idExisting, "task.yaml"), "utf-8"),
+      await readTestOutput(path.join(specDir, "tasks", idExisting, "task.yaml")),
     );
     expect(existingTaskYaml.title).toBe("Existing Split Task");
     expect(existingTaskYaml.description).toBe("This should not be touched");
@@ -620,7 +621,7 @@ describe("kspec task migrate", () => {
 
     // Read the resulting index
     const index = parseYaml(
-      await fs.readFile(path.join(specDir, "project.tasks.yaml"), "utf-8"),
+      await readTestOutput(path.join(specDir, "project.tasks.yaml")),
     ) as Array<Record<string, unknown>>;
 
     // Find the existing task's index entry
@@ -698,7 +699,7 @@ describe("kspec task migrate", () => {
 
     // Verify all three per-task directories were created in that single commit
     for (const id of [id1, id2, id3]) {
-      const taskYaml = await fs.readFile(path.join(shadowDir, "tasks", id, "task.yaml"), "utf-8");
+      const taskYaml = await readTestOutput(path.join(shadowDir, "tasks", id, "task.yaml"));
       expect(taskYaml).toContain(id);
     }
 
@@ -767,7 +768,7 @@ describe("kspec task migrate", () => {
     });
 
     // Snapshot state before dry-run
-    const tasksBefore = await fs.readFile(path.join(shadowDir, "project.tasks.yaml"), "utf-8");
+    const tasksBefore = await readTestOutput(path.join(shadowDir, "project.tasks.yaml"));
     const commitsBefore = Number.parseInt(
       execSync("git rev-list --count HEAD", { cwd: shadowDir, encoding: "utf-8" }).trim(),
       10,
@@ -791,7 +792,7 @@ describe("kspec task migrate", () => {
     await fs.writeFile(path.join(shadowDir, ".git"), `gitdir: ${worktreeLink}`);
 
     // Verify no state was changed
-    const tasksAfter = await fs.readFile(path.join(shadowDir, "project.tasks.yaml"), "utf-8");
+    const tasksAfter = await readTestOutput(path.join(shadowDir, "project.tasks.yaml"));
     expect(tasksAfter).toBe(tasksBefore);
     const commitsAfter = Number.parseInt(
       execSync("git rev-list --count HEAD", { cwd: shadowDir, encoding: "utf-8" }).trim(),
@@ -806,14 +807,14 @@ describe("kspec task migrate", () => {
     const [id1] = testUlids("MGDF", 1);
     await writeMonolithicTasks(specDir, [makeMonolithicTask(id1, "task-dryforce")]);
 
-    const indexBefore = await fs.readFile(path.join(specDir, "project.tasks.yaml"), "utf-8");
+    const indexBefore = await readTestOutput(path.join(specDir, "project.tasks.yaml"));
 
     const result = kspec("task migrate --dry-run --force", tempDir, { env });
     expect(result.exitCode).toBe(0);
     // DRY RUN goes to stderr via warn()
     expect(result.stderr).toContain("DRY RUN");
 
-    const indexAfter = await fs.readFile(path.join(specDir, "project.tasks.yaml"), "utf-8");
+    const indexAfter = await readTestOutput(path.join(specDir, "project.tasks.yaml"));
     expect(indexAfter).toBe(indexBefore);
   });
 
@@ -936,12 +937,12 @@ describe("kspec task migrate", () => {
 
     // New task should have per-task dir
     const newTaskYaml = parseYaml(
-      await fs.readFile(path.join(specDir, "tasks", idMono, "task.yaml"), "utf-8"),
+      await readTestOutput(path.join(specDir, "tasks", idMono, "task.yaml")),
     );
     expect(newTaskYaml._ulid).toBe(idMono);
 
     // Index should be all lean
-    const index = parseYaml(await fs.readFile(path.join(specDir, "project.tasks.yaml"), "utf-8"));
+    const index = parseYaml(await readTestOutput(path.join(specDir, "project.tasks.yaml")));
     expect(index).toHaveLength(2);
     for (const entry of index) {
       expect(entry.notes).toBeUndefined();
@@ -957,7 +958,7 @@ describe("kspec task migrate", () => {
     kspec("task migrate --force", tempDir, { env });
 
     const notesYaml = parseYaml(
-      await fs.readFile(path.join(specDir, "tasks", id1, "notes.yaml"), "utf-8"),
+      await readTestOutput(path.join(specDir, "tasks", id1, "notes.yaml")),
     );
     expect(notesYaml.notes).toEqual([]);
   });
@@ -1016,20 +1017,20 @@ describe("kspec task migrate", () => {
 
     // Verify the task data was preserved
     const noUlidTaskYaml = parseYaml(
-      await fs.readFile(path.join(specDir, "tasks", generatedDir!, "task.yaml"), "utf-8"),
+      await readTestOutput(path.join(specDir, "tasks", generatedDir!, "task.yaml")),
     );
     expect(noUlidTaskYaml.title).toBe("No ULID Task");
 
     // Verify notes were preserved
     const noUlidNotesYaml = parseYaml(
-      await fs.readFile(path.join(specDir, "tasks", generatedDir!, "notes.yaml"), "utf-8"),
+      await readTestOutput(path.join(specDir, "tasks", generatedDir!, "notes.yaml")),
     );
     expect(noUlidNotesYaml.notes).toHaveLength(1);
     expect(noUlidNotesYaml.notes[0].content).toBe("Note on missing-ulid task");
 
     // Verify the index has both entries
     const index = parseYaml(
-      await fs.readFile(path.join(specDir, "project.tasks.yaml"), "utf-8"),
+      await readTestOutput(path.join(specDir, "project.tasks.yaml")),
     ) as Array<Record<string, unknown>>;
     expect(index).toHaveLength(2);
   });
@@ -1095,20 +1096,20 @@ describe("kspec task migrate", () => {
 
     // Verify task data was preserved
     const taskYaml = parseYaml(
-      await fs.readFile(path.join(specDir, "tasks", generatedDir!, "task.yaml"), "utf-8"),
+      await readTestOutput(path.join(specDir, "tasks", generatedDir!, "task.yaml")),
     );
     expect(taskYaml.title).toBe("Malformed ULID Task");
 
     // Verify notes were preserved
     const notesYaml = parseYaml(
-      await fs.readFile(path.join(specDir, "tasks", generatedDir!, "notes.yaml"), "utf-8"),
+      await readTestOutput(path.join(specDir, "tasks", generatedDir!, "notes.yaml")),
     );
     expect(notesYaml.notes).toHaveLength(1);
     expect(notesYaml.notes[0].content).toBe("Note on malformed-ulid task");
 
     // Verify the index has both entries with valid ULIDs
     const index = parseYaml(
-      await fs.readFile(path.join(specDir, "project.tasks.yaml"), "utf-8"),
+      await readTestOutput(path.join(specDir, "project.tasks.yaml")),
     ) as Array<Record<string, unknown>>;
     expect(index).toHaveLength(2);
     // No entry should have the malformed ULID
@@ -1168,7 +1169,7 @@ describe("kspec task migrate", () => {
 
     // Read the resulting index
     const index = parseYaml(
-      await fs.readFile(path.join(specDir, "project.tasks.yaml"), "utf-8"),
+      await readTestOutput(path.join(specDir, "project.tasks.yaml")),
     ) as Array<Record<string, unknown>>;
 
     // Find the existing task's index entry

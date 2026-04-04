@@ -613,3 +613,37 @@ export async function mutateDispatchWorkspaceRecordAtomically(
 
   return updatedRecord;
 }
+
+/**
+ * Delete a dispatch workspace record from the registry by workspace_id.
+ *
+ * Operates within the file lock to ensure atomicity. Non-target workspaces
+ * are preserved as raw data (no schema parsing) to maintain round-trip stability.
+ *
+ * AC: @dispatch-workspace-registry ac-14
+ */
+export async function deleteDispatchWorkspaceRecord(
+  ctx: KspecContext,
+  workspaceId: string,
+): Promise<void> {
+  const registryPath = getDispatchWorkspaceRegistryPath(ctx);
+
+  await withFileLock(registryPath, async () => {
+    const { rawWorkspaces, wrapperObj } = await extractRawWorkspaceArray(registryPath).catch(
+      () => ({
+        rawWorkspaces: [] as unknown[],
+        wrapperObj: undefined,
+      }),
+    );
+
+    const wsIndex = findRawWorkspaceIndex(rawWorkspaces, workspaceId);
+    if (wsIndex === -1) {
+      // Record already absent — nothing to do.
+      return;
+    }
+
+    rawWorkspaces.splice(wsIndex, 1);
+
+    await writeRawWorkspaceArray(registryPath, rawWorkspaces, wrapperObj);
+  });
+}

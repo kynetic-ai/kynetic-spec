@@ -15,6 +15,7 @@ import {
   cleanupTempDir,
   createTempDir,
   initGitRepo,
+  readTestOutput,
 } from "./helpers/cli";
 import { detectImportPlatform } from "../src/cli/commands/skill-crud";
 
@@ -204,7 +205,7 @@ describe("Skill CLI - skill add", () => {
       .catch(() => false);
     expect(exists).toBe(true);
 
-    const content = await fs.readFile(skillMdPath, "utf-8");
+    const content = await readTestOutput(skillMdPath);
     expect(content).toContain("# My Skill");
     expect(content).toContain("Test skill");
   });
@@ -213,7 +214,7 @@ describe("Skill CLI - skill add", () => {
     kspec('skill add --id my-skill --name "My Skill"', tempDir);
 
     const metaPath = path.join(tempDir, "kynetic.meta.yaml");
-    const metaContent = await fs.readFile(metaPath, "utf-8");
+    const metaContent = await readTestOutput(metaPath);
     const meta = yamlParse(metaContent);
 
     expect(meta.skills).toBeDefined();
@@ -323,7 +324,7 @@ Use this skill for custom tasks.
 
     // Verify SKILL.md has the content from the source file
     const skillMdPath = path.join(tempDir, "skills", "custom-skill", "SKILL.md");
-    const content = await fs.readFile(skillMdPath, "utf-8");
+    const content = await readTestOutput(skillMdPath);
     expect(content).toBe(sourceContent);
     expect(content).toContain("Custom Skill Content");
     expect(content).toContain("This content comes from an existing file");
@@ -345,7 +346,7 @@ Use this skill for custom tasks.
 
     // Verify SKILL.md has the content
     const skillMdPath = path.join(tempDir, "skills", "rel-skill", "SKILL.md");
-    const content = await fs.readFile(skillMdPath, "utf-8");
+    const content = await readTestOutput(skillMdPath);
     expect(content).toBe(sourceContent);
   });
 
@@ -604,7 +605,7 @@ describe("Skill CLI - skill set", () => {
 
     // Also verify in manifest
     const metaPath = path.join(tempDir, "kynetic.meta.yaml");
-    const metaContent = await fs.readFile(metaPath, "utf-8");
+    const metaContent = await readTestOutput(metaPath);
     const meta = yamlParse(metaContent);
 
     const skill = meta.skills.find((s: { id: string }) => s.id === "my-skill");
@@ -1044,7 +1045,7 @@ kspec task start @ref
 
     // Verify content was copied
     const copiedPath = path.join(tempDir, "skills", "task-work", "SKILL.md");
-    const copiedContent = await fs.readFile(copiedPath, "utf-8");
+    const copiedContent = await readTestOutput(copiedPath);
     expect(copiedContent).toContain("# Task Work");
     expect(copiedContent).toContain("Use this skill when working on tasks");
     expect(copiedContent).toContain("kspec task start @ref");
@@ -1074,8 +1075,8 @@ description: Work on tasks
 
     // Verify docs were copied
     const copiedDocsDir = path.join(tempDir, "skills", "task-work", "docs");
-    const quickref = await fs.readFile(path.join(copiedDocsDir, "quickref.md"), "utf-8");
-    const advanced = await fs.readFile(path.join(copiedDocsDir, "advanced.md"), "utf-8");
+    const quickref = await readTestOutput(path.join(copiedDocsDir, "quickref.md"));
+    const advanced = await readTestOutput(path.join(copiedDocsDir, "advanced.md"));
     expect(quickref).toContain("Quick Reference");
     expect(advanced).toContain("Advanced Usage");
   });
@@ -1194,7 +1195,7 @@ Use this skill when working on tasks.
 
     // Verify base-directory line was stripped
     const copiedPath = path.join(tempDir, "skills", "task-work", "SKILL.md");
-    const copiedContent = await fs.readFile(copiedPath, "utf-8");
+    const copiedContent = await readTestOutput(copiedPath);
     expect(copiedContent).not.toContain("Base directory for this skill:");
     expect(copiedContent).toContain("# Task Work");
     expect(copiedContent).toContain("Use this skill when working on tasks");
@@ -1324,7 +1325,7 @@ description: Work on tasks
 
     // Verify nested structure was copied
     const copiedPath = path.join(tempDir, "skills", "task-work", "docs", "examples", "usage.md");
-    const content = await fs.readFile(copiedPath, "utf-8");
+    const content = await readTestOutput(copiedPath);
     expect(content).toContain("Example Usage");
   });
 
@@ -1382,7 +1383,7 @@ This is the body content.
 
     // Verify stored content has no frontmatter
     const copiedPath = path.join(tempDir, "skills", "task-work", "SKILL.md");
-    const copiedContent = await fs.readFile(copiedPath, "utf-8");
+    const copiedContent = await readTestOutput(copiedPath);
     expect(copiedContent).not.toContain("---");
     expect(copiedContent).not.toContain("name: Task Work");
     expect(copiedContent).not.toContain("license: MIT");
@@ -1493,8 +1494,8 @@ description: Work on tasks
     // Verify both directories were copied
     const copiedReferencesPath = path.join(tempDir, "skills", "task-work", "references", "api.md");
     const copiedScriptsPath = path.join(tempDir, "skills", "task-work", "scripts", "setup.sh");
-    const referencesContent = await fs.readFile(copiedReferencesPath, "utf-8");
-    const scriptsContent = await fs.readFile(copiedScriptsPath, "utf-8");
+    const referencesContent = await readTestOutput(copiedReferencesPath);
+    const scriptsContent = await readTestOutput(copiedScriptsPath);
     expect(referencesContent).toContain("API Reference");
     expect(scriptsContent).toContain('echo "setup"');
   });
@@ -1522,7 +1523,7 @@ description: Work on tasks
 
     // Verify assets directory was copied
     const copiedAssetsPath = path.join(tempDir, "skills", "task-work", "assets", "config.json");
-    const assetsContent = await fs.readFile(copiedAssetsPath, "utf-8");
+    const assetsContent = await readTestOutput(copiedAssetsPath);
     expect(assetsContent).toContain('"key": "value"');
   });
 
@@ -1550,7 +1551,7 @@ description: Work on tasks
 
     // Verify docs directory was copied
     const copiedDocsPath = path.join(tempDir, "skills", "task-work", "docs", "guide.md");
-    const docsContent = await fs.readFile(copiedDocsPath, "utf-8");
+    const docsContent = await readTestOutput(copiedDocsPath);
     expect(docsContent).toContain("User Guide");
   });
 
@@ -1581,7 +1582,7 @@ Use it like this.
 
     // Verify content was stored as-is (no frontmatter to strip)
     const copiedPath = path.join(tempDir, "skills", "task-work", "SKILL.md");
-    const copiedContent = await fs.readFile(copiedPath, "utf-8");
+    const copiedContent = await readTestOutput(copiedPath);
     expect(copiedContent).toContain("# Task Work");
     expect(copiedContent).toContain("This skill has no frontmatter at all.");
   });
@@ -1643,7 +1644,7 @@ This has every field.
 
     // Stored content has no frontmatter
     const copiedPath = path.join(tempDir, "skills", "task-work", "SKILL.md");
-    const copiedContent = await fs.readFile(copiedPath, "utf-8");
+    const copiedContent = await readTestOutput(copiedPath);
     expect(copiedContent).not.toContain("---");
     expect(copiedContent).toContain("# Complete Skill");
   });

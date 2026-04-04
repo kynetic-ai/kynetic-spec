@@ -15,37 +15,86 @@
 import { Elysia, t } from "elysia";
 import {
   initContext,
-  buildIndexes,
   loadInboxItems,
   loadMetaContext,
   validate,
   AlignmentIndex,
+  ReferenceIndex,
+  resolveTaskDataManager,
 } from "../../parser/index.js";
+import type { LoadedTask, LoadedSpecItem } from "../../parser/index.js";
 import { ItemTypeSchema, TaskStatusSchema } from "../../schema/common.js";
 import { grepItem } from "../../utils/grep.js";
 import { enumUnion } from "./enum-utils.js";
+import type { EntityCacheAccessor } from "./entity-cache-types.js";
+import { wrapResponse } from "./response-envelope.js";
 
-interface ValidationRouteOptions {}
+interface ValidationRouteOptions {
+  getEntityCache?: EntityCacheAccessor;
+}
 
 export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
-  // No closure-scoped kspecDir needed - comes from middleware
+  const { getEntityCache } = _options;
 
   return (
     new Elysia({ prefix: "/api" })
       // AC: @api-contract ac-19 - Search across all entities
+      // AC: @daemon-read-path ac-no-per-request-sync, ac-index-from-cache — serve from cached entity data
       .get(
         "/search",
         async ({ query, projectContext }) => {
-          // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-          const ctx = await initContext(projectContext.path);
-          const { tasks, items } = await buildIndexes(ctx);
+          const cache = getEntityCache?.(projectContext.path);
+          const tasksDomainState = cache?.getDomainState("tasks");
+          const itemsDomainState = cache?.getDomainState("items");
+
+          const inboxDomainState = cache?.getDomainState("inbox");
+          const metaDomainState = cache?.getDomainState("meta");
+
+          // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
+          // Check all domains that search touches: tasks, items, inbox, meta.
+          // Any domain still warming means partial results — return loading instead.
+          if (
+            cache &&
+            (tasksDomainState === "loading" ||
+              itemsDomainState === "loading" ||
+              inboxDomainState === "loading" ||
+              metaDomainState === "loading")
+          ) {
+            return wrapResponse(
+              { results: [], total: 0, showing: 0 },
+              { cacheDomainState: "loading" },
+            );
+          }
+
+          let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
+          const getCtx = async () => {
+            if (!_ctx) _ctx = await initContext(projectContext.path, { syncMode: "skip" });
+            return _ctx;
+          };
+
+          // Search needs full entities (description, notes, AC content) — summaries
+          // strip those fields, breaking grepItem matches. Use detail tier which is
+          // populated alongside the index during domain load.
+          let tasks: LoadedTask[];
+          if (cache && tasksDomainState === "ready") {
+            tasks = cache.getAllTaskDetails() ?? [];
+          } else {
+            const ctx = await getCtx();
+            tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+          }
+
+          let items: LoadedSpecItem[];
+          if (cache && itemsDomainState === "ready") {
+            items = cache.getAllItemDetails() ?? [];
+          } else {
+            const ctx = await getCtx();
+            const { loadAllItems } = await import("../../parser/index.js");
+            items = await loadAllItems(ctx);
+          }
 
           const pattern = query.q;
           if (!pattern) {
-            return {
-              results: [],
-              total: 0,
-            };
+            return wrapResponse({ results: [], total: 0, showing: 0 }, {});
           }
 
           const limit = query.limit ? parseInt(query.limit, 10) : 50;
@@ -97,7 +146,12 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
 
           // AC: @api-contract ac-19 - Search inbox items
           if (!query.itemsOnly && !query.tasksOnly) {
-            const inboxItems = await loadInboxItems(ctx);
+            let inboxItems;
+            if (cache && inboxDomainState === "ready") {
+              inboxItems = cache.getInboxIndex() ?? [];
+            } else {
+              inboxItems = await loadInboxItems(await getCtx());
+            }
             for (const inboxItem of inboxItems) {
               const match = grepItem(inboxItem as unknown as Record<string, unknown>, pattern);
               if (match) {
@@ -113,57 +167,65 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
 
           // AC: @api-contract ac-19 - Search meta entities
           if (!query.itemsOnly && !query.tasksOnly) {
-            const metaCtx = await loadMetaContext(ctx);
-
-            // Search observations
-            for (const observation of metaCtx.observations) {
-              const match = grepItem(observation as unknown as Record<string, unknown>, pattern);
-              if (match) {
-                results.push({
-                  type: "observation",
-                  ulid: observation._ulid,
-                  title: observation.content,
-                  matchedFields: match.matchedFields,
-                });
-              }
+            let metaCtx;
+            if (cache && metaDomainState === "ready") {
+              metaCtx = cache.getMetaDetail();
+            }
+            if (!metaCtx) {
+              metaCtx = await loadMetaContext(await getCtx());
             }
 
-            // Search agents
-            for (const agent of metaCtx.agents) {
-              const match = grepItem(agent as unknown as Record<string, unknown>, pattern);
-              if (match) {
-                results.push({
-                  type: "agent",
-                  ulid: agent._ulid,
-                  title: `${agent.id} - ${agent.name}`,
-                  matchedFields: match.matchedFields,
-                });
+            if (metaCtx) {
+              // Search observations
+              for (const observation of metaCtx.observations) {
+                const match = grepItem(observation as unknown as Record<string, unknown>, pattern);
+                if (match) {
+                  results.push({
+                    type: "observation",
+                    ulid: observation._ulid,
+                    title: observation.content,
+                    matchedFields: match.matchedFields,
+                  });
+                }
               }
-            }
 
-            // Search workflows
-            for (const workflow of metaCtx.workflows) {
-              const match = grepItem(workflow as unknown as Record<string, unknown>, pattern);
-              if (match) {
-                results.push({
-                  type: "workflow",
-                  ulid: workflow._ulid,
-                  title: workflow.id,
-                  matchedFields: match.matchedFields,
-                });
+              // Search agents
+              for (const agent of metaCtx.agents) {
+                const match = grepItem(agent as unknown as Record<string, unknown>, pattern);
+                if (match) {
+                  results.push({
+                    type: "agent",
+                    ulid: agent._ulid,
+                    title: `${agent.id} - ${agent.name}`,
+                    matchedFields: match.matchedFields,
+                  });
+                }
               }
-            }
 
-            // Search conventions
-            for (const convention of metaCtx.conventions) {
-              const match = grepItem(convention as unknown as Record<string, unknown>, pattern);
-              if (match) {
-                results.push({
-                  type: "convention",
-                  ulid: convention._ulid,
-                  title: convention.domain,
-                  matchedFields: match.matchedFields,
-                });
+              // Search workflows
+              for (const workflow of metaCtx.workflows) {
+                const match = grepItem(workflow as unknown as Record<string, unknown>, pattern);
+                if (match) {
+                  results.push({
+                    type: "workflow",
+                    ulid: workflow._ulid,
+                    title: workflow.id,
+                    matchedFields: match.matchedFields,
+                  });
+                }
+              }
+
+              // Search conventions
+              for (const convention of metaCtx.conventions) {
+                const match = grepItem(convention as unknown as Record<string, unknown>, pattern);
+                if (match) {
+                  results.push({
+                    type: "convention",
+                    ulid: convention._ulid,
+                    title: convention.domain,
+                    matchedFields: match.matchedFields,
+                  });
+                }
               }
             }
           }
@@ -172,11 +234,10 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
           const limitedResults = results.slice(0, limit);
 
           // AC: @api-contract ac-19 - Return search results with matched fields
-          return {
-            results: limitedResults,
-            total: results.length,
-            showing: limitedResults.length,
-          };
+          return wrapResponse(
+            { results: limitedResults, total: results.length, showing: limitedResults.length },
+            {},
+          );
         },
         {
           query: t.Object({
@@ -191,14 +252,16 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
       )
 
       // AC: @api-contract ac-20 - Run full validation
+      // Note: validate() requires full context for deep schema/ref/completeness checks.
       .get("/validate", async ({ projectContext }) => {
         // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-        const ctx = await initContext(projectContext.path);
+        // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
+        const ctx = await initContext(projectContext.path, { syncMode: "skip" });
 
         // AC: @api-contract ac-20 - Run validation and return ValidationResult
         const result = await validate(ctx);
 
-        return {
+        return wrapResponse({
           valid: result.valid,
           schemaErrors: result.schemaErrors,
           refErrors: result.refErrors,
@@ -206,14 +269,49 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
           orphans: result.orphans,
           completenessWarnings: result.completenessWarnings,
           traitCycles: result.traitCycleErrors,
-        };
+        });
       })
 
       // AC: @api-contract ac-21 - Get alignment stats and warnings
+      // AC: @daemon-read-path ac-index-from-cache — build alignment/reference indexes from cached entity data
       .get("/alignment", async ({ projectContext }) => {
         // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-        const ctx = await initContext(projectContext.path);
-        const { tasks, items, refIndex } = await buildIndexes(ctx);
+        const cache = getEntityCache?.(projectContext.path);
+        const tasksDomainState = cache?.getDomainState("tasks");
+        const itemsDomainState = cache?.getDomainState("items");
+
+        // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
+        if (cache && (tasksDomainState === "loading" || itemsDomainState === "loading")) {
+          return wrapResponse(
+            {
+              stats: { totalSpecs: 0, specsWithTasks: 0, alignedSpecs: 0, orphanedSpecs: 0 },
+              warnings: [],
+            },
+            { cacheDomainState: "loading" },
+          );
+        }
+
+        // Resolve tasks and items from cache when available
+        // AC: @daemon-read-path ac-index-from-cache — indexes built from cached data
+        let tasks: LoadedTask[];
+        if (cache && tasksDomainState === "ready") {
+          tasks = (cache.getTaskIndex() ?? []) as unknown as LoadedTask[];
+        } else {
+          const ctx = await initContext(projectContext.path, { syncMode: "skip" });
+          tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+        }
+
+        let items: LoadedSpecItem[];
+        if (cache && itemsDomainState === "ready") {
+          items = (cache.getItemIndex() ?? []) as unknown as LoadedSpecItem[];
+        } else {
+          const { loadAllItems } = await import("../../parser/index.js");
+          const ctx = await initContext(projectContext.path, { syncMode: "skip" });
+          items = await loadAllItems(ctx);
+        }
+
+        // Build reference index from cached data
+        const refIndex = new ReferenceIndex(tasks, items);
 
         // AC: @api-contract ac-21 - Create AlignmentIndex and get stats
         const alignIndex = new AlignmentIndex(tasks, items);
@@ -222,15 +320,18 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
         const stats = alignIndex.getStats();
         const warnings = alignIndex.findAlignmentWarnings();
 
-        return {
-          stats: {
-            totalSpecs: stats.totalSpecs,
-            specsWithTasks: stats.specsWithTasks,
-            alignedSpecs: stats.alignedSpecs,
-            orphanedSpecs: stats.orphanedSpecs,
+        return wrapResponse(
+          {
+            stats: {
+              totalSpecs: stats.totalSpecs,
+              specsWithTasks: stats.specsWithTasks,
+              alignedSpecs: stats.alignedSpecs,
+              orphanedSpecs: stats.orphanedSpecs,
+            },
+            warnings,
           },
-          warnings,
-        };
+          {},
+        );
       })
   );
 }

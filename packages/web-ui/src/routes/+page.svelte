@@ -11,7 +11,8 @@
 	import { onMount, onDestroy } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
-	import { createQuery, useQueryClient } from '@tanstack/svelte-query';
+	import { useQueryClient } from '@tanstack/svelte-query';
+	import { createQuery } from '$lib/query/createQuery.svelte.js';
 	import type { BroadcastEvent } from '@kynetic-ai/shared';
 	import {
 		fetchTasks,
@@ -87,11 +88,11 @@
 		enabled: isProjectInitialized(),
 	}));
 
-	// AC: @ui-data-freshness ac-6 — Skip agent status in static mode
+	// AC: @ui-data-freshness ac-6 — fetchAgentStatus returns empty data in static mode
 	const agentStatusQuery = createQuery(() => ({
 		queryKey: queryKeys.agents.status(),
 		queryFn: () => fetchAgentStatus(),
-		enabled: isProjectInitialized() && !isStaticMode(),
+		enabled: isProjectInitialized(),
 		staleTime: 10 * 1000,
 	}));
 

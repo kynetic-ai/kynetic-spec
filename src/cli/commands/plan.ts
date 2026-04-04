@@ -5,8 +5,17 @@
 
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import type { Command } from "commander";
+import { Option, type Command } from "commander";
 import { markMutating } from "../command-annotations.js";
+import {
+  computePlanBranchName,
+  findBranchOnRemote,
+  gitCheckout,
+  gitCheckoutNew,
+  gitCreateBranchFrom,
+  gitRefExists,
+  reportBranchResult,
+} from "../branch-helper.js";
 import {
   addChildItem,
   addProjectLevelTraitItem,
@@ -37,6 +46,7 @@ import type { Note, PlanInput, SpecItemInput, TaskInput } from "../../schema/ind
 import { PlanStatusSchema } from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
 import { fieldLabels } from "../../strings/labels.js";
+import { getCurrentBranch, isGitRepo } from "../../utils/git.js";
 import { formatRelativeTime as formatRelativeTimeUtil } from "../../utils/time.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, isJsonMode, output, success, warn } from "../output.js";
@@ -44,6 +54,7 @@ import { validateEnumOption } from "../validators.js";
 import { ulid } from "ulid";
 import { registerPlanImportCommand } from "./plan-import.js";
 import { getLinkedPlanSummaryTasks, isCountedInPlanSummary } from "../../lib/plan-summary.js";
+import { resolveDispatchWorkspaceConfig } from "../../agent-runtime/workspace.js";
 
 /**
  * Format relative time for display
@@ -187,6 +198,8 @@ interface DeriveResult {
   dry_run: boolean;
   plan_ref: string;
   module_ref: string;
+  plan_branch: string | null;
+  tasks_included: boolean;
   created_specs: string[];
   created_tasks: string[];
   skipped: DeriveSkipped[];
@@ -230,7 +243,7 @@ function exitDeriveWithGuidance(
   process.exit(exitCode);
 }
 
-function emitDeriveResult(result: DeriveResult): void {
+function emitDeriveResult(result: DeriveResult, options?: { tasksIncluded?: boolean }): void {
   output(result, () => {
     if (result.dry_run) {
       console.log("Dry run - no changes made\n");
@@ -238,6 +251,9 @@ function emitDeriveResult(result: DeriveResult): void {
 
     console.log(`Plan: ${result.plan_ref}`);
     console.log(`Module: ${result.module_ref}`);
+    console.log(
+      `Tasks: ${options?.tasksIncluded === false ? "skipped (--no-tasks)" : "included (default)"}`,
+    );
     console.log(`Created specs: ${result.created_specs.length}`);
     for (const ref of result.created_specs) {
       console.log(`  - ${ref}`);
@@ -246,6 +262,14 @@ function emitDeriveResult(result: DeriveResult): void {
     console.log(`Created tasks: ${result.created_tasks.length}`);
     for (const ref of result.created_tasks) {
       console.log(`  - ${ref}`);
+    }
+
+    if (result.plan_branch) {
+      console.log(`Tasks will target plan branch: ${result.plan_branch}`);
+    } else {
+      console.log(
+        `Tip: Run kspec plan branch ${result.plan_ref} to create a shared branch for task stacking. Without it, tasks target the default integration branch.`,
+      );
     }
 
     if (result.skipped.length > 0) {
@@ -768,6 +792,10 @@ Examples:
             console.log(`Module:   ${foundPlan.module_ref}`);
           }
 
+          if (foundPlan.branch) {
+            console.log(`Branch:   ${foundPlan.branch}`);
+          }
+
           if (foundPlan.source_path) {
             console.log(`Source:   ${foundPlan.source_path}`);
           }
@@ -822,8 +850,103 @@ Examples:
       }
     });
 
-  // kspec plan export <ref>
-  // AC: @plan-export ac-stdout, ac-output-file, ac-empty, ac-not-found, ac-json
+  // kspec plan branch <ref>
+  // AC: @plan-branch-creation ac-deterministic-name, ac-forks-from-base, ac-updates-plan-record,
+  // ac-resume-local, ac-rehydrate-remote, ac-custom-name, ac-reports-result
+  markMutating(plan.command("branch <ref>"))
+    .description("Create or resume the deterministic branch for a plan")
+    .option("--name <branch-name>", "Override the deterministic branch name")
+    .action(async (ref: string, options: { name?: string }) => {
+      try {
+        const ctx = await initContext();
+
+        if (!isGitRepo()) {
+          error("Not a git repository. Run this command from inside a git repo.");
+          process.exit(EXIT_CODES.VALIDATION_FAILED);
+        }
+
+        const plans = await loadPlans(ctx);
+        const foundPlan = resolvePlanRef(ref, plans);
+        const planRef = canonicalRef(foundPlan);
+        const requestedName = options.name?.trim() || null;
+        const branchName =
+          requestedName ?? foundPlan.branch ?? computePlanBranchName(foundPlan._ulid, foundPlan);
+
+        const localExists = gitRefExists(`refs/heads/${branchName}`);
+        let action: "created" | "switched" | "rehydrated" | "already_on_branch";
+        let source: string | undefined;
+
+        if (localExists) {
+          if (getCurrentBranch() === branchName) {
+            action = "already_on_branch";
+          } else {
+            gitCheckout(branchName);
+            action = "switched";
+          }
+        } else {
+          const remoteSource = findBranchOnRemote(branchName);
+          if (remoteSource) {
+            gitCreateBranchFrom(branchName, remoteSource);
+            gitCheckout(branchName);
+            action = "rehydrated";
+            source = remoteSource;
+          } else {
+            const resolvedConfig = await resolveDispatchWorkspaceConfig(ctx.projectRoot);
+            gitCheckoutNew(branchName, resolvedConfig.baseBranchStartPoint);
+            action = "created";
+          }
+        }
+
+        const changeDetail = `branch: ${foundPlan.branch ?? "null"} → ${branchName}`;
+        const planRecordUpdated = foundPlan.branch !== branchName;
+        if (planRecordUpdated) {
+          const updatedPlan = await mutatePlanAtomically(ctx, foundPlan, (latestPlan) => ({
+            ...latestPlan,
+            branch: branchName,
+          }));
+          await commitIfShadow(
+            ctx.shadow,
+            "plan-branch",
+            updatedPlan.slugs[0] || updatedPlan._ulid.slice(0, 8),
+            changeDetail,
+          );
+        }
+
+        reportBranchResult({
+          branch: branchName,
+          action,
+          source,
+          guidance:
+            "The plan record now points dispatch-aware follow-up work at this shared branch.",
+          subject: {
+            label: "Plan",
+            ref: planRef,
+            jsonKey: "plan_ref",
+          },
+          extraJson: {
+            plan_record_updated: planRecordUpdated,
+          },
+          extraInfo: [
+            `Plan record ${planRecordUpdated ? "updated" : "already matched"}: ${branchName}`,
+          ],
+        });
+      } catch (err) {
+        const details =
+          err instanceof Error
+            ? {
+                message: err.message,
+                suggestion:
+                  'Check the plan ref with "kspec plan list", verify the target branch exists or the dispatch base branch is configured, then retry.',
+              }
+            : {
+                suggestion:
+                  'Check the plan ref with "kspec plan list", verify the target branch exists or the dispatch base branch is configured, then retry.',
+              };
+        error("Failed to create or resume plan branch", details);
+        process.exit(EXIT_CODES.ERROR);
+      }
+    });
+
   plan
     .command("export <ref>")
     .description("Export stored plan content to stdout or a file")
@@ -882,6 +1005,7 @@ Examples:
     .option("--title <title>", "Update title")
     .option("--status <status>", "Update status")
     .option("--slug <slug>", "Add a slug")
+    .option("--branch <name>", "Set or clear the plan branch (use null or empty string to clear)")
     .action(async (ref: string, options) => {
       try {
         const ctx = await initContext();
@@ -903,7 +1027,7 @@ Examples:
           }
         }
 
-        if (!options.title && !options.status && !options.slug) {
+        if (!options.title && !options.status && !options.slug && options.branch === undefined) {
           info("No changes specified");
           return;
         }
@@ -960,6 +1084,17 @@ Examples:
             if (options.slug && !nextPlan.slugs.includes(options.slug)) {
               nextPlan.slugs.push(options.slug);
               changes.push(`slug: +${options.slug}`);
+            }
+
+            if (options.branch !== undefined) {
+              const normalizedBranch =
+                options.branch === "null" || options.branch.trim() === "" ? null : options.branch;
+              if (normalizedBranch !== latestPlan.branch) {
+                nextPlan.branch = normalizedBranch;
+                changes.push(
+                  `branch: ${latestPlan.branch ?? "null"} → ${normalizedBranch ?? "null"}`,
+                );
+              }
             }
 
             return nextPlan;
@@ -1101,20 +1236,27 @@ Examples:
   // kspec plan derive <ref>
   // AC: @plan-derive-enhanced ac-parse-content through ac-commit
   markMutating(plan.command("derive <ref>"))
-    .description("Materialize plan content into specs and optional tasks")
+    .description("Materialize plan content into specs and tasks")
     .option("--module <ref>", "Module context for derivation (overrides stored plan module)")
-    .option("--tasks", "Also derive implementation tasks after creating specs")
+    .addOption(
+      new Option(
+        "--tasks",
+        "Derive tasks (default; accepted for backward compatibility)",
+      ).hideHelp(),
+    )
+    .option("--no-tasks", "Skip task derivation")
     .option("--dry-run", "Preview derived specs/tasks without saving changes")
     .addHelpText(
       "after",
       `
 Examples:
   $ kspec plan derive @plan-ref --module @core
-  $ kspec plan derive @plan-ref --tasks
-  $ kspec plan derive @plan-ref --module @core --tasks --dry-run`,
+  $ kspec plan derive @plan-ref
+  $ kspec plan derive @plan-ref --module @core --no-tasks --dry-run`,
     )
     .action(async (ref: string, options: DeriveOptions) => {
       try {
+        const deriveTasks = options.tasks !== false;
         const ctx = await initContext();
         const plans = await loadPlans(ctx);
         const foundPlan = resolvePlanRef(ref, plans);
@@ -1169,16 +1311,16 @@ Examples:
 
         const hasSpecsToMaterialize = parsedPlan.specs.length > 0;
         const hasManualTasksToMaterialize = Boolean(
-          options.tasks &&
+          deriveTasks &&
           parsedPlan.tasks.additional_tasks &&
           parsedPlan.tasks.additional_tasks.length > 0,
         );
 
         if (!hasSpecsToMaterialize && !hasManualTasksToMaterialize) {
           exitDeriveWithGuidance(
-            "Plan does not define derivable work. Add specs or run with --tasks when the plan defines manual tasks.",
+            "Plan does not define derivable work. Add specs in a ## Specs section or tasks in a ## Tasks section.",
             EXIT_CODES.USAGE_ERROR,
-            "Add a ## Specs section with a ```yaml fenced block, or define tasks in ## Tasks and re-run with --tasks.",
+            "Add specs in a ## Specs section or tasks in a ## Tasks section.",
           );
         }
 
@@ -1231,7 +1373,7 @@ Examples:
         const createdSpecRefs = materializedSpecs.map((item) => item.ref);
 
         let taskPlans: PendingTaskPlan[] = [];
-        if (options.tasks) {
+        if (deriveTasks) {
           taskPlans = buildTaskPlans(
             planRef,
             materializedSpecs,
@@ -1286,7 +1428,7 @@ Examples:
             ctx.shadow,
             "plan-derive",
             updatedPlan.slugs[0] || updatedPlan._ulid.slice(0, 8),
-            `${createdSpecRefs.length} specs${options.tasks ? `, ${createdTaskRefs.length} tasks` : ""}`,
+            `${createdSpecRefs.length} specs${deriveTasks ? `, ${createdTaskRefs.length} tasks` : ""}`,
           );
         } else if (parsedPlan.implementationNotes?.trim()) {
           warnings.push({
@@ -1297,15 +1439,22 @@ Examples:
         }
 
         reportWarnings(warnings);
-        emitDeriveResult({
-          dry_run: Boolean(options.dryRun),
-          plan_ref: planRef,
-          module_ref: moduleRef,
-          created_specs: createdSpecRefs,
-          created_tasks: createdTaskRefs,
-          skipped,
-          errors: errorsList,
-        });
+        emitDeriveResult(
+          {
+            dry_run: Boolean(options.dryRun),
+            plan_ref: planRef,
+            module_ref: moduleRef,
+            plan_branch: foundPlan.branch ?? null,
+            tasks_included: deriveTasks,
+            created_specs: createdSpecRefs,
+            created_tasks: createdTaskRefs,
+            skipped,
+            errors: errorsList,
+          },
+          {
+            tasksIncluded: deriveTasks,
+          },
+        );
       } catch (err) {
         error("Failed to derive plan content", err);
         process.exit(EXIT_CODES.ERROR);

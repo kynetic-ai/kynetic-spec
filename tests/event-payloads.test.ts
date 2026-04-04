@@ -15,6 +15,7 @@ import {
   InvocationStartedPayloadSchema,
   InvocationTerminalPayloadSchema,
   SessionEventPayloadSchema,
+  SessionIdlePayloadSchema,
   WorkSummarySchema,
   ScheduleTickPayloadSchema,
   ActionStartedPayloadSchema,
@@ -25,6 +26,7 @@ import {
   INVOCATION_STARTED_PAYLOAD_FIELDS,
   INVOCATION_TERMINAL_PAYLOAD_FIELDS,
   SESSION_PAYLOAD_FIELDS,
+  SESSION_IDLE_PAYLOAD_FIELDS,
   SCHEDULE_TICK_PAYLOAD_FIELDS,
   ACTION_STARTED_PAYLOAD_FIELDS,
   ACTION_TERMINAL_PAYLOAD_FIELDS,
@@ -168,6 +170,7 @@ describe("ac-2: invocation.* event payloads include required fields", () => {
   const validTerminalPayload = {
     ...validStartedPayload,
     duration_ms: 120000,
+    turn_count: 1,
   };
 
   it("should accept a valid invocation.started payload", () => {
@@ -224,6 +227,36 @@ describe("ac-2: invocation.* event payloads include required fields", () => {
     expect(INVOCATION_STARTED_PAYLOAD_FIELDS).toContain("agent_id");
     expect(INVOCATION_STARTED_PAYLOAD_FIELDS).toContain("trigger");
     expect(INVOCATION_STARTED_PAYLOAD_FIELDS).toContain("task_ref");
+  });
+
+  // AC: @multi-turn-session-lifecycle ac-14
+  it("should include turn_count in terminal payload fields", () => {
+    expect(INVOCATION_TERMINAL_PAYLOAD_FIELDS).toContain("turn_count");
+  });
+
+  it("should reject invocation terminal payload missing turn_count", () => {
+    const { turn_count: _, ...missing } = validTerminalPayload;
+    const result = InvocationTerminalPayloadSchema.safeParse(missing);
+    expect(result.success).toBe(false);
+  });
+
+  it("should reject invocation terminal payload with turn_count less than 1", () => {
+    const result = InvocationTerminalPayloadSchema.safeParse({
+      ...validTerminalPayload,
+      turn_count: 0,
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("should accept invocation terminal payload with multi-turn count", () => {
+    const result = InvocationTerminalPayloadSchema.safeParse({
+      ...validTerminalPayload,
+      turn_count: 5,
+    });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.turn_count).toBe(5);
+    }
   });
 
   it("should include duration_ms in terminal payload fields", () => {
@@ -384,6 +417,108 @@ describe("ac-3: session.* event payloads include required fields", () => {
     expect(result.accepted).toBe(true);
     const validation = validateEventPayload("session.ended", result.event!.payload);
     expect(validation.success).toBe(true);
+  });
+});
+
+// ─── Session idle event payloads ─────────────────────────────────────────────
+
+// AC: @multi-turn-session-lifecycle ac-3
+describe("session.idle event payloads include per-turn fields", () => {
+  const validIdlePayload = {
+    session_id: "01JSESS000000000000000000",
+    agent_id: "task-worker",
+    task_ref: "@task-my-feature",
+    turn_count: 1,
+    stop_reason: "end_turn",
+    turn_duration_ms: 5000,
+  };
+
+  it("should accept a valid session.idle payload with all fields", () => {
+    const result = SessionIdlePayloadSchema.safeParse(validIdlePayload);
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.session_id).toBe("01JSESS000000000000000000");
+      expect(result.data.agent_id).toBe("task-worker");
+      expect(result.data.task_ref).toBe("@task-my-feature");
+      expect(result.data.turn_count).toBe(1);
+      expect(result.data.stop_reason).toBe("end_turn");
+      expect(result.data.turn_duration_ms).toBe(5000);
+    }
+  });
+
+  it("should accept session.idle payload without task_ref", () => {
+    const { task_ref: _, ...noTaskRef } = validIdlePayload;
+    const result = SessionIdlePayloadSchema.safeParse(noTaskRef);
+    expect(result.success).toBe(true);
+  });
+
+  it("should accept session.idle payload with null task_ref", () => {
+    const result = SessionIdlePayloadSchema.safeParse({
+      ...validIdlePayload,
+      task_ref: null,
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("should accept session.idle payload without stop_reason", () => {
+    const { stop_reason: _, ...noStopReason } = validIdlePayload;
+    const result = SessionIdlePayloadSchema.safeParse(noStopReason);
+    expect(result.success).toBe(true);
+  });
+
+  it("should reject session.idle payload with turn_count less than 1", () => {
+    const result = SessionIdlePayloadSchema.safeParse({
+      ...validIdlePayload,
+      turn_count: 0,
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("should reject session.idle payload missing session_id", () => {
+    const { session_id: _, ...missing } = validIdlePayload;
+    const result = SessionIdlePayloadSchema.safeParse(missing);
+    expect(result.success).toBe(false);
+  });
+
+  it("should include all spec-required fields in SESSION_IDLE_PAYLOAD_FIELDS", () => {
+    const requiredFields = [
+      "session_id",
+      "agent_id",
+      "task_ref",
+      "turn_count",
+      "stop_reason",
+      "turn_duration_ms",
+    ];
+    for (const field of requiredFields) {
+      expect(SESSION_IDLE_PAYLOAD_FIELDS).toContain(field);
+    }
+  });
+
+  it("should register session.idle payload_fields matching the schema", () => {
+    const registryFields = PAYLOAD_FIELDS_BY_EVENT_TYPE["session.idle"];
+    expect(registryFields).toBeDefined();
+    expect([...registryFields]).toEqual([...SESSION_IDLE_PAYLOAD_FIELDS]);
+  });
+
+  it("should validate session.idle payloads emitted through event bus", () => {
+    const bus = new EventBus();
+    const result = bus.emit({
+      event_type: "session.idle",
+      source_type: "invocation_lifecycle",
+      source_id: "01JSESS000000000000000000",
+      payload: validIdlePayload,
+    });
+
+    expect(result.accepted).toBe(true);
+    const validation = validateEventPayload("session.idle", result.event!.payload);
+    expect(validation.success).toBe(true);
+  });
+
+  it("should have a separate payload schema from terminal session events", () => {
+    // session.idle uses SessionIdlePayloadSchema, not SessionEventPayloadSchema
+    expect(EVENT_PAYLOAD_SCHEMAS["session.idle"]).toBe(SessionIdlePayloadSchema);
+    expect(EVENT_PAYLOAD_SCHEMAS["session.ended"]).toBe(SessionEventPayloadSchema);
+    expect(EVENT_PAYLOAD_SCHEMAS["session.idle"]).not.toBe(EVENT_PAYLOAD_SCHEMAS["session.ended"]);
   });
 });
 
@@ -643,6 +778,13 @@ describe("event payload schemas align with registry", () => {
         agent_id: "a1",
         trigger: "task.ready",
         duration_ms: 1000,
+        turn_count: 1,
+      },
+      "session.idle": {
+        session_id: "s1",
+        agent_id: "a1",
+        turn_count: 1,
+        turn_duration_ms: 1000,
       },
       "session.ended": {
         session_id: "s1",
@@ -674,6 +816,13 @@ describe("event payload schemas align with registry", () => {
     samplePayloads["task.pending_review"] = samplePayloads["task.ready"];
     samplePayloads["invocation.failed"] = samplePayloads["invocation.completed"];
     samplePayloads["invocation.stalled"] = samplePayloads["invocation.completed"];
+    samplePayloads["session.idle"] = {
+      session_id: "s1",
+      agent_id: "a1",
+      turn_count: 1,
+      stop_reason: "end_turn",
+      turn_duration_ms: 1000,
+    };
     samplePayloads["session.idle_timeout"] = samplePayloads["session.ended"];
     samplePayloads["session.cancelled"] = samplePayloads["session.ended"];
     samplePayloads["action.failed"] = samplePayloads["action.completed"];

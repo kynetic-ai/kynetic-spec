@@ -1,14 +1,13 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import {
-  initContext,
-  loadAllTasks,
-  TaskDataManager,
-  TaskDataManagerError,
-} from "../src/parser/index.js";
+import { initContext, TaskDataManager, TaskDataManagerError } from "../src/parser/index.js";
 import type { TaskStorageBackend } from "../src/parser/task-data-manager.js";
-import { registerBackend, unregisterBackend } from "../src/parser/task-data-manager.js";
+import {
+  registerBackend,
+  unregisterBackend,
+  resolveTaskDataManager,
+} from "../src/parser/task-data-manager.js";
 import { splitBackend, ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
 
 // Register the split backend (no longer auto-registered at module scope)
@@ -55,8 +54,8 @@ describe("TaskDataManager", () => {
   describe("storage format abstraction (ac-1)", () => {
     it("provides task data without exposing storage internals", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       const tasks = await manager.listTasks(ctx);
       expect(tasks.length).toBeGreaterThan(0);
@@ -70,8 +69,8 @@ describe("TaskDataManager", () => {
 
     it("reads and writes through the same interface regardless of backend", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       // Create via manager
       const created = await manager.createTask(ctx, {
@@ -92,8 +91,8 @@ describe("TaskDataManager", () => {
   describe("list returns only index data (ac-2)", () => {
     it("returns summary records containing only index-level fields", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       const tasks = await manager.listTasks(ctx);
       expect(tasks.length).toBe(4); // fixture has 4 tasks
@@ -114,8 +113,8 @@ describe("TaskDataManager", () => {
 
     it("returns TaskSummary type, not full LoadedTask", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       // Create a task with notes so we can verify they're stripped
       await manager.createTask(ctx, {
@@ -142,8 +141,8 @@ describe("TaskDataManager", () => {
 
     it("applies status filters", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       const pendingTasks = await manager.listTasks(ctx, {
         status: "pending",
@@ -154,8 +153,8 @@ describe("TaskDataManager", () => {
 
     it("applies tag filters (any match)", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       const e2eTasks = await manager.listTasks(ctx, { tags: ["e2e"] });
       expect(e2eTasks.length).toBe(1);
@@ -164,8 +163,8 @@ describe("TaskDataManager", () => {
 
     it("applies automation filter", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       const eligible = await manager.listTasks(ctx, {
         automation: "eligible",
@@ -176,8 +175,8 @@ describe("TaskDataManager", () => {
 
     it("applies multiple filters together", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       const filtered = await manager.listTasks(ctx, {
         status: "pending",
@@ -189,8 +188,8 @@ describe("TaskDataManager", () => {
 
     it("supports array of statuses", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       const tasks = await manager.listTasks(ctx, {
         status: ["pending", "completed"],
@@ -200,65 +199,54 @@ describe("TaskDataManager", () => {
 
     it("discovers task files in subdirectories (recursive discovery)", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
-      // Create a subdirectory with an additional tasks file
-      const subDir = path.join(ctx.specDir, "submodule");
-      await fs.mkdir(subDir, { recursive: true });
-
+      // Add tasks via the split-format helper (per-task dirs + lean index)
+      const { seedSplitTask: seed } = await import("./helpers/cli.js");
       const [nestedUlid1, nestedUlid2] = testUlids("NEST", 2);
-      const nestedTasksYaml = [
-        `- _ulid: ${nestedUlid1}`,
-        '  title: "Nested task one"',
-        "  slugs: [nested-task-one]",
-        "  type: task",
-        "  status: pending",
-        "  priority: 3",
-        "  tags: [nested]",
-        "  depends_on: []",
-        "  blocked_by: []",
-        `  created_at: "2026-03-20T00:00:00.000Z"`,
-        "  notes: []",
-        "  todos: []",
-        `- _ulid: ${nestedUlid2}`,
-        '  title: "Nested task two"',
-        "  slugs: [nested-task-two]",
-        "  type: task",
-        "  status: pending",
-        "  priority: 2",
-        "  tags: [nested]",
-        "  depends_on: []",
-        "  blocked_by: []",
-        `  created_at: "2026-03-20T00:00:00.000Z"`,
-        "  notes: []",
-        "  todos: []",
-      ].join("\n");
+      seed(tempDir, {
+        _ulid: nestedUlid1,
+        slugs: ["nested-task-one"],
+        title: "Nested task one",
+        type: "task",
+        status: "pending",
+        priority: 3,
+        tags: ["nested"],
+        depends_on: [],
+        notes: [],
+        todos: [],
+        created_at: "2026-03-20T00:00:00.000Z",
+      });
+      seed(tempDir, {
+        _ulid: nestedUlid2,
+        slugs: ["nested-task-two"],
+        title: "Nested task two",
+        type: "task",
+        status: "pending",
+        priority: 2,
+        tags: ["nested"],
+        depends_on: [],
+        notes: [],
+        todos: [],
+        created_at: "2026-03-20T00:00:00.000Z",
+      });
 
-      await fs.writeFile(path.join(subDir, "nested.tasks.yaml"), nestedTasksYaml);
-
-      // loadAllTasks (the existing loader) should find the nested tasks
-      const allTasks = await loadAllTasks(ctx);
-      const nestedFromLoader = allTasks.filter((t) =>
-        t.slugs.some((s) => s.startsWith("nested-task-")),
-      );
-      expect(nestedFromLoader.length).toBe(2);
-
-      // listTasks (the manager's summary loader) must find them too
+      // listTasks (the manager's summary loader) must find the added tasks
       const summaries = await manager.listTasks(ctx);
       const nestedFromManager = summaries.filter((t) =>
         t.slugs.some((s) => s.startsWith("nested-task-")),
       );
       expect(nestedFromManager.length).toBe(2);
 
-      // Both loaders must discover the same total count
-      expect(summaries.length).toBe(allTasks.length);
+      // Total should include the 4 fixture tasks + 2 new tasks
+      expect(summaries.length).toBe(6);
     });
 
     it("does not run full TaskSchema validation for listing", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       // Spy on TaskSchema.safeParse to verify it's NOT called during listing
       const originalSafeParse = TaskSchema.safeParse.bind(TaskSchema);
@@ -286,8 +274,8 @@ describe("TaskDataManager", () => {
   describe("full detail loading (ac-3)", () => {
     it("returns complete task by slug reference", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       const task = await manager.getTask(ctx, "@test-task-secondary");
       expect(task.title).toBe("Test secondary task");
@@ -298,8 +286,8 @@ describe("TaskDataManager", () => {
 
     it("returns complete task by ULID reference", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       const task = await manager.getTask(ctx, "01KF1645CA45ZT43W2T6HJMVA1");
       expect(task.slugs).toContain("test-task-pending");
@@ -307,8 +295,8 @@ describe("TaskDataManager", () => {
 
     it("returns complete task by short ULID prefix", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       const task = await manager.getTask(ctx, "01KF1645CA");
       expect(task.slugs).toContain("test-task-pending");
@@ -317,8 +305,8 @@ describe("TaskDataManager", () => {
     // AC: @trait-error-guidance ac-3 — suggests checking ref on not found
     it("throws with suggestion when task not found", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       await expect(manager.getTask(ctx, "@nonexistent-task")).rejects.toThrow(TaskDataManagerError);
 
@@ -339,8 +327,8 @@ describe("TaskDataManager", () => {
   describe("coordinated mutations (ac-4)", () => {
     it("creates a task with file write and returns it", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       const task = await manager.createTask(ctx, {
         title: "New coordinated task",
@@ -360,8 +348,8 @@ describe("TaskDataManager", () => {
 
     it("mutates a task atomically", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       const updated = await manager.mutateTask(ctx, "@test-task-pending", (task) => ({
         ...task,
@@ -379,8 +367,8 @@ describe("TaskDataManager", () => {
 
     it("deletes a task from storage", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       // Create a task then delete it
       await manager.createTask(ctx, {
@@ -405,8 +393,8 @@ describe("TaskDataManager", () => {
   describe("non-overlapping mutations (ac-5)", () => {
     it("allows concurrent mutations on different tasks", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       // Mutate two different tasks concurrently (same file, different tasks)
       const [task1, task2] = await Promise.all([
@@ -433,8 +421,8 @@ describe("TaskDataManager", () => {
 
     it("runs non-overlapping mutation callbacks concurrently, not serially", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       const DELAY_MS = 100;
       const timestamps: {
@@ -488,8 +476,8 @@ describe("TaskDataManager", () => {
   describe("atomic operations (ac-6)", () => {
     it("batch mutation writes all changes atomically", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       const refs = ["@test-task-pending", "@test-task-secondary"];
       const updated = await manager.mutateTasks(ctx, refs, (tasks) =>
@@ -509,8 +497,8 @@ describe("TaskDataManager", () => {
 
     it("addNote is atomic — note appears on reload", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       const { task, note } = await manager.addNote(
         ctx,
@@ -529,20 +517,18 @@ describe("TaskDataManager", () => {
     });
   });
 
-  // AC: @task-data-manager ac-7
-  // Monolithic format is used until split explicitly activated
-  describe("monolithic format by default (ac-7)", () => {
-    it("defaults to monolithic format when no format specified", () => {
+  // Split format is the only supported format
+  describe("split format by default", () => {
+    it("defaults to split format when no format specified", () => {
       const defaultManager = new TaskDataManager();
-      expect(defaultManager.storageFormat).toBe("monolithic");
+      expect(defaultManager.storageFormat).toBe("split");
     });
 
-    it("reads from monolithic tasks file", async () => {
+    it("reads from tasks file via resolved manager", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
-      // The fixture uses project.tasks.yaml (monolithic format)
       const tasks = await manager.listTasks(ctx);
       expect(tasks.length).toBe(4);
 
@@ -553,25 +539,23 @@ describe("TaskDataManager", () => {
       }
     });
 
-    it("writes to monolithic tasks file", async () => {
+    it("writes through resolved manager", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       const created = await manager.createTask(ctx, {
-        title: "Monolithic write test",
-        slugs: ["mono-write"],
+        title: "Manager write test",
+        slugs: ["mgr-write"],
       });
 
-      // Should write to the same monolithic file
+      // Should have a valid _sourceFile from the storage backend
       expect(created._sourceFile).toBeDefined();
-      expect(created._sourceFile!.endsWith("project.tasks.yaml")).toBe(true);
 
-      // Reload from raw to verify it's in the same file
-      const allTasks = await loadAllTasks(ctx);
-      const found = allTasks.find((t) => t.slugs.includes("mono-write"));
+      // Reload from manager to verify it's persisted
+      const found = await manager.getTask(ctx, "@mgr-write");
       expect(found).toBeDefined();
-      expect(found?._sourceFile).toBe(created._sourceFile);
+      expect(found._sourceFile).toBe(created._sourceFile);
     });
   });
 
@@ -645,13 +629,11 @@ describe("TaskDataManager", () => {
         },
         async mutateTask(ctx, task, mutate) {
           calls.push("mutateTask");
-          const { mutateTaskAtomically: mut } = await import("../src/parser/yaml.js");
-          return mut(ctx, task, mutate);
+          return splitBackend.mutateTask(ctx, task, mutate);
         },
         async mutateTasks(ctx, tasks, mutate) {
           calls.push("mutateTasks");
-          const { mutateTasksAtomically: mut } = await import("../src/parser/yaml.js");
-          return mut(ctx, tasks, mutate);
+          return splitBackend.mutateTasks(ctx, tasks, mutate);
         },
         async deleteTask() {
           calls.push("deleteTask");
@@ -707,7 +689,7 @@ describe("TaskDataManager", () => {
 
     // AC: @task-data-manager ac-1 — callers don't know about storage format
     // AC: @task-data-manager ac-8 — split backend owns _sourceFile on create
-    it("createTask returns _sourceFile from the backend, not a monolithic path", async () => {
+    it("createTask returns _sourceFile from the backend, not a default path", async () => {
       tempDir = await setupTempFixtures();
 
       const mockSplitBackend: TaskStorageBackend = {
@@ -739,7 +721,7 @@ describe("TaskDataManager", () => {
         const created = await splitManager.createTask(ctx, { title: "Split-owned task" });
 
         // The returned task should have the split backend's _sourceFile,
-        // not the monolithic getDefaultTaskFilePath(ctx)
+        // not a default project.tasks.yaml path
         expect(created._sourceFile).toContain("/split/tasks/");
         expect(created._sourceFile).toContain("/task.yaml");
         expect(created._sourceFile).not.toContain("project.tasks.yaml");
@@ -751,8 +733,8 @@ describe("TaskDataManager", () => {
     });
 
     it("exposes storageFormat property for inspection", () => {
-      const monoManager = new TaskDataManager();
-      expect(monoManager.storageFormat).toBe("monolithic");
+      const defaultManager = new TaskDataManager();
+      expect(defaultManager.storageFormat).toBe("split");
 
       // Split backend is registered and succeeds at construction
       const splitManager = new TaskDataManager("split");
@@ -765,8 +747,8 @@ describe("TaskDataManager", () => {
   describe("same-task mutation serialization (ac-9)", () => {
     it("serializes concurrent mutations on the same task", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       // Two concurrent mutations on the same task
       const [result1, result2] = await Promise.all([
@@ -805,8 +787,8 @@ describe("TaskDataManager", () => {
 
     it("serializes overlapping mutateTask and mutateTasks on the same task", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       // Run mutateTask on @test-task-pending in parallel with mutateTasks
       // targeting [@test-task-pending, @test-task-secondary]. If mutateTasks
@@ -844,8 +826,8 @@ describe("TaskDataManager", () => {
 
     it("serializes three concurrent mutations on the same task (FIFO queue)", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       // Track the order in which mutations enter and exit the critical section.
       // With a proper FIFO queue, each mutation runs exclusively — no two
@@ -889,10 +871,11 @@ describe("TaskDataManager", () => {
       expect(reloaded.tags).toContain("writer-3");
     });
 
+    // AC: @task-data-manager ac-10
     it("serializes concurrent deleteTask and mutateTask on the same task", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       // Create a task that we'll race delete + mutate on
       const target = await manager.createTask(ctx, {
@@ -905,7 +888,7 @@ describe("TaskDataManager", () => {
       // Run deleteTask and mutateTask concurrently on the same task.
       // Without per-task locking in deleteTask, the mutate can read the
       // task, then delete removes it, then the mutate's write phase fails
-      // with "Task not found in file during write phase" — violating AC-9.
+      // with "Task not found in file during write phase" — violating AC-10.
       // With the per-task lock, one operation completes before the other
       // starts, so we get either:
       //   (a) delete first → mutate throws TaskDataManagerError("Task not found")
@@ -928,7 +911,7 @@ describe("TaskDataManager", () => {
       // mutate ran first and then the delete followed. If one fails, the
       // failure should be TaskDataManagerError (clean "not found"), not
       // an internal "Task not found in file during write phase" error
-      // from the monolithic backend.
+      // from the storage backend.
       expect(fulfilled.length).toBeGreaterThanOrEqual(1);
 
       for (const r of rejected) {
@@ -947,8 +930,8 @@ describe("TaskDataManager", () => {
   describe("mutation output validation", () => {
     it("rejects mutation that produces invalid task (missing title)", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       await expect(
         manager.mutateTask(ctx, "@test-task-pending", (task) => {
@@ -971,8 +954,8 @@ describe("TaskDataManager", () => {
 
     it("rejects mutation that produces invalid priority", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       await expect(
         manager.mutateTask(ctx, "@test-task-pending", (task) => ({
@@ -984,8 +967,8 @@ describe("TaskDataManager", () => {
 
     it("does not persist invalid mutation output", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       // Get the task's original title
       const original = await manager.getTask(ctx, "@test-task-pending");
@@ -1008,8 +991,8 @@ describe("TaskDataManager", () => {
 
     it("rejects invalid output in batch mutations", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       await expect(
         manager.mutateTasks(ctx, ["@test-task-pending", "@test-task-secondary"], (tasks) =>
@@ -1022,8 +1005,8 @@ describe("TaskDataManager", () => {
 
     it("accepts valid mutation output", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       // Valid mutation should succeed
       const updated = await manager.mutateTask(ctx, "@test-task-pending", (task) => ({
@@ -1045,8 +1028,8 @@ describe("TaskDataManager", () => {
     // AC: @trait-error-guidance ac-1
     it("error includes description of what went wrong", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       try {
         await manager.getTask(ctx, "@does-not-exist");
@@ -1060,8 +1043,8 @@ describe("TaskDataManager", () => {
     // AC: @trait-error-guidance ac-2
     it("error includes suggested action to resolve", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       try {
         await manager.getTask(ctx, "@does-not-exist");
@@ -1076,8 +1059,8 @@ describe("TaskDataManager", () => {
     // AC: @trait-error-guidance ac-3
     it("not-found error suggests checking ref with search or list", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       try {
         await manager.getTask(ctx, "@nonexistent");
@@ -1091,8 +1074,8 @@ describe("TaskDataManager", () => {
     // AC: @trait-error-guidance ac-5
     it("validation error indicates which field/value failed", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       try {
         // @ts-expect-error — deliberately invalid input (missing required title)
@@ -1115,8 +1098,8 @@ describe("TaskDataManager", () => {
   describe("addNote convenience method", () => {
     it("appends note with auto-generated ULID and timestamp", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       const { note } = await manager.addNote(ctx, "@test-task-pending", "Auto-generated note test");
 
@@ -1128,8 +1111,8 @@ describe("TaskDataManager", () => {
 
     it("uses provided author", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       const { note } = await manager.addNote(
         ctx,
@@ -1142,20 +1125,12 @@ describe("TaskDataManager", () => {
     });
   });
 
-  describe("singleton export", () => {
-    it("provides a module-level singleton instance with monolithic format", async () => {
-      const { taskDataManager } = await import("../src/parser/task-data-manager.js");
-      expect(taskDataManager).toBeInstanceOf(TaskDataManager);
-      expect(taskDataManager.storageFormat).toBe("monolithic");
-    });
-  });
-
   // Fix cycle 8 — blocker 1: ULID immutability enforcement
   describe("ULID immutability in mutations", () => {
     it("rejects mutateTask callback that changes the task ULID", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       await expect(
         manager.mutateTask(ctx, "@test-task-pending", (task) => ({
@@ -1179,8 +1154,8 @@ describe("TaskDataManager", () => {
 
     it("does not persist ULID change to disk", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       const original = await manager.getTask(ctx, "@test-task-pending");
       const originalUlid = original._ulid;
@@ -1201,8 +1176,8 @@ describe("TaskDataManager", () => {
 
     it("rejects ULID change in batch mutations", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
       await expect(
         manager.mutateTasks(ctx, ["@test-task-pending", "@test-task-secondary"], (tasks) =>
@@ -1216,41 +1191,40 @@ describe("TaskDataManager", () => {
   describe("unknown raw field preservation", () => {
     it("preserves unknown fields through addNote mutation", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
-      // Inject a custom field into the raw YAML by inserting it at the
-      // correct indentation level within the tasks wrapper
-      const tasksFile = path.join(ctx.specDir, "project.tasks.yaml");
-      const content = await readTestOutput(tasksFile);
+      // Inject a custom field into the per-task YAML file (split format)
+      const taskFile = path.join(ctx.specDir, "tasks", "01KF1645CA45ZT43W2T6HJMVA1", "task.yaml");
+      const content = await readTestOutput(taskFile);
       const lines = content.split("\n");
       const ulidLineIdx = lines.findIndex((l) => l.includes("01KF1645CA45ZT43W2T6HJMVA1"));
       expect(ulidLineIdx).toBeGreaterThan(-1);
-      // The task properties use 4-space indent in the tasks wrapper
-      lines.splice(ulidLineIdx + 1, 0, "    custom_backend_field: preserved-value");
-      await fs.writeFile(tasksFile, lines.join("\n"));
+      lines.splice(ulidLineIdx + 1, 0, "custom_backend_field: preserved-value");
+      await fs.writeFile(taskFile, lines.join("\n"));
 
       // Mutate via addNote (should not strip the custom field)
       await manager.addNote(ctx, "@test-task-pending", "Note after custom field");
 
       // Re-read raw file to verify custom field survived
-      const afterContent = await readTestOutput(tasksFile);
+      const afterContent = await readTestOutput(taskFile);
       expect(afterContent).toContain("custom_backend_field: preserved-value");
     });
 
+    // AC: @task-core-data-file ac-4
     it("preserves unknown fields through mutateTask", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
-      // Inject a custom field into the raw YAML
-      const tasksFile = path.join(ctx.specDir, "project.tasks.yaml");
-      const content = await readTestOutput(tasksFile);
+      // Inject a custom field into the per-task YAML file (split format)
+      const taskFile = path.join(ctx.specDir, "tasks", "01KF1645CA45ZT43W2T6HJMVA1", "task.yaml");
+      const content = await readTestOutput(taskFile);
       const lines = content.split("\n");
       const ulidLineIdx = lines.findIndex((l) => l.includes("01KF1645CA45ZT43W2T6HJMVA1"));
       expect(ulidLineIdx).toBeGreaterThan(-1);
-      lines.splice(ulidLineIdx + 1, 0, "    backend_metadata: keep-me");
-      await fs.writeFile(tasksFile, lines.join("\n"));
+      lines.splice(ulidLineIdx + 1, 0, "backend_metadata: keep-me");
+      await fs.writeFile(taskFile, lines.join("\n"));
 
       // Mutate via mutateTask
       await manager.mutateTask(ctx, "@test-task-pending", (task) => ({
@@ -1259,44 +1233,41 @@ describe("TaskDataManager", () => {
       }));
 
       // Re-read raw file to verify custom field survived
-      const afterContent = await readTestOutput(tasksFile);
+      const afterContent = await readTestOutput(taskFile);
       expect(afterContent).toContain("backend_metadata: keep-me");
     });
   });
 
-  // Fix cycle 8 — blocker 3: single-task YAML file mutation
-  describe("single-task YAML file support", () => {
-    it("reads and mutates a bare single-task YAML file", async () => {
+  // Single task added via split format — reads and mutates
+  describe("single-task added to split format", () => {
+    it("reads and mutates a task added to split format", async () => {
       tempDir = await setupTempFixtures();
-      manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
 
-      // Write a bare single-task YAML file (not an array, not {tasks:[...]})
+      // Add a task via the split-format helper (per-task dir + lean index entry)
+      const { seedSplitTask: seed } = await import("./helpers/cli.js");
       const singleUlid = testUlid("SNGL");
-      const singleTaskYaml = [
-        `_ulid: ${singleUlid}`,
-        'title: "Single task"',
-        "slugs:",
-        "  - single-task",
-        "type: task",
-        "status: pending",
-        "priority: 3",
-        "tags: []",
-        "depends_on: []",
-        "blocked_by: []",
-        `created_at: "2026-03-20T00:00:00.000Z"`,
-        "notes: []",
-        "todos: []",
-      ].join("\n");
-
-      await fs.writeFile(path.join(ctx.specDir, "single.tasks.yaml"), singleTaskYaml);
+      seed(tempDir, {
+        _ulid: singleUlid,
+        slugs: ["single-task"],
+        title: "Single task",
+        type: "task",
+        status: "pending",
+        priority: 3,
+        tags: [],
+        depends_on: [],
+        notes: [],
+        todos: [],
+        created_at: "2026-03-20T00:00:00.000Z",
+      });
 
       // getTask should find it
       const task = await manager.getTask(ctx, "@single-task");
       expect(task._ulid).toBe(singleUlid);
       expect(task.title).toBe("Single task");
 
-      // addNote should succeed (the mutation write path must handle this format)
+      // addNote should succeed (the mutation write path handles split format)
       await manager.addNote(ctx, "@single-task", "Note on single-task file");
 
       // Verify persisted

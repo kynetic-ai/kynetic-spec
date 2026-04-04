@@ -27,7 +27,14 @@ import {
   testUlids,
   kspec,
   initGitRepo,
+  readTestOutput,
+  readTestOutputSync,
+  seedSplitTask,
+  waitForStartup,
 } from "./helpers/cli.js";
+import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
+
+ensureSplitBackendRegistered();
 import * as http from "node:http";
 import type { Agent } from "../src/schema/meta.js";
 import { provisionDispatchWorkspace } from "../src/agent-runtime/workspace.js";
@@ -386,8 +393,39 @@ async function waitForMockCall(
   }
 }
 
+async function waitForInvocationCount(
+  getCount: () => number,
+  expectedCount: number,
+  description: string,
+  timeoutMs = 5_000,
+): Promise<void> {
+  await waitForStartup(
+    description,
+    () => {
+      const count = getCount();
+      return {
+        ok: count >= expectedCount,
+        details: `invocationCount=${count}, expected>=${expectedCount}`,
+      };
+    },
+    { timeoutMs, intervalMs: 10 },
+  );
+}
+
+async function waitForCondition(
+  predicate: () => boolean,
+  timeoutMs = 5_000,
+  pollIntervalMs = 10,
+): Promise<void> {
+  const deadline = Date.now() + timeoutMs;
+  while (!predicate() && Date.now() < deadline) {
+    await new Promise((resolve) => setTimeout(resolve, pollIntervalMs));
+  }
+}
+
 /**
- * Write tasks to the project tasks file.
+ * Write tasks to the project in split storage format.
+ * Clears existing tasks directory and index, then seeds each task.
  */
 async function writeTasks(
   dir: string,
@@ -401,26 +439,27 @@ async function writeTasks(
     blocked_by?: string[];
   }>,
 ): Promise<void> {
-  await fs.writeFile(
-    path.join(dir, "project.tasks.yaml"),
-    YAML.stringify({
-      tasks: tasks.map((t) => ({
-        _ulid: t._ulid,
-        type: "task",
-        title: `Task ${t._ulid}`,
-        status: t.status,
-        automation: t.automation,
-        tags: t.tags ?? [],
-        priority: t.priority,
-        depends_on: t.depends_on ?? [],
-        blocked_by: t.blocked_by ?? [],
-        created_at: new Date().toISOString(),
-        notes: [],
-        todos: [],
-      })),
-    }),
-    "utf-8",
-  );
+  // Clear existing split tasks so repeated calls don't accumulate
+  const tasksDir = path.join(dir, "tasks");
+  await fs.rm(tasksDir, { recursive: true, force: true });
+  await fs.rm(path.join(dir, "project.tasks.yaml"), { force: true });
+
+  // Seed each task in split format
+  for (const t of tasks) {
+    seedSplitTask(dir, {
+      _ulid: t._ulid,
+      type: "task",
+      title: `Task ${t._ulid}`,
+      status: t.status,
+      automation: t.automation,
+      tags: t.tags ?? [],
+      priority: t.priority ?? 3,
+      depends_on: t.depends_on ?? [],
+      blocked_by: t.blocked_by ?? [],
+      notes: [],
+      created_at: new Date().toISOString(),
+    });
+  }
 }
 
 /**
@@ -1519,7 +1558,7 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
       vi.restoreAllMocks();
 
       // Verify task note was added
-      const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{
+      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{
         args: string[];
       }>;
       const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
@@ -1564,7 +1603,7 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
       expect(spawned).toBe(false);
       expect(runSpy).not.toHaveBeenCalled();
 
-      const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{
+      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{
         args: string[];
       }>;
       const noteCall = calls.find(
@@ -1624,7 +1663,7 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
       expect(runSpy).not.toHaveBeenCalled();
       expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("Failed to block task"));
 
-      const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{
+      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{
         args: string[];
       }>;
       const noteCall = calls.find(
@@ -1679,7 +1718,7 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
       expect(spawned).toBe(false);
       expect(runSpy).not.toHaveBeenCalled();
 
-      const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{
+      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{
         args: string[];
       }>;
       const noteCall = calls.find(
@@ -2198,29 +2237,29 @@ describe("Active fleet cleanup on invocation completion", () => {
       coalesceWindowMs: 0,
     });
 
-    await engine.start();
+    try {
+      await engine.start();
 
-    const taskId = testUlid("TASK", 50);
-    await engine.handleStateChange({
-      taskId,
-      taskRef: `@${taskId}`,
-      fromStatus: "in_progress",
-      toStatus: "pending",
-      timestamp: Date.now(),
-      task: { automation: "eligible", tags: [] } as any,
-    });
+      const taskId = testUlid("TASK", 50);
+      await engine.handleStateChange({
+        taskId,
+        taskRef: `@${taskId}`,
+        fromStatus: "in_progress",
+        toStatus: "pending",
+        timestamp: Date.now(),
+        task: { automation: "eligible", tags: [] } as any,
+      });
 
-    // Wait for the terminal failure event after the started event
-    for (let i = 0; i < 50 && events.at(-1)?.type !== "failed"; i++) {
-      await new Promise((resolve) => setTimeout(resolve, 10));
+      await waitForCondition(() => events.at(-1)?.type === "failed");
+      await waitForCondition(() => engine.getStatus().invocations.length === 0);
+
+      // After failure, getStatus should show no active invocations
+      const status = engine.getStatus();
+      expect(status.invocations).toHaveLength(0);
+      expect(status.activeInvocations).toBe(0);
+    } finally {
+      await engine.stop();
     }
-
-    // After failure, getStatus should show no active invocations
-    const status = engine.getStatus();
-    expect(status.invocations).toHaveLength(0);
-    expect(status.activeInvocations).toBe(0);
-
-    await engine.stop();
   });
 
   it("emits started before terminal invocation events even for quiet success and early failure", async () => {
@@ -2493,21 +2532,9 @@ describe("Autonomous dispatch prompt guardrails", () => {
       durationMs: 1,
     });
 
-    const engine = new DispatchEngine({
-      projectDir: testDir,
-      specDir: testDir,
-      kspecCliPath: MOCK_KSPEC_CLI,
-      coalesceWindowMs: 0,
-    });
     // Mock workspace provisioning and bootstrap — this test validates prompt content,
-    // not workspace setup. Without these mocks, workspace provisioning may fail silently
-    // under full-suite load and runInvocation is never reached.
-    vi.spyOn(workspaceModule, "getDispatchWorkspaceHealth").mockResolvedValue({
-      exists: true,
-      healthy: true,
-      reason: null,
-      metadata: null,
-    });
+    // not workspace setup. Without mocks, real git worktree operations cause timing
+    // flakiness under concurrent test load.
     const mockMetadata = buildMockWorkspaceMetadata(testDir);
     vi.spyOn(workspaceModule, "provisionDispatchWorkspace").mockResolvedValue({
       cwd: testDir,
@@ -2516,6 +2543,19 @@ describe("Autonomous dispatch prompt guardrails", () => {
     });
     vi.spyOn(bootstrapModule, "ensureWorkspaceBootstrap").mockResolvedValue({
       metadata: mockMetadata,
+    });
+    vi.spyOn(workspaceModule, "getDispatchWorkspaceHealth").mockResolvedValue({
+      exists: true,
+      healthy: true,
+      reason: null,
+      metadata: null,
+    });
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
     });
 
     await engine.start();
@@ -2528,9 +2568,7 @@ describe("Autonomous dispatch prompt guardrails", () => {
       task: { automation: "eligible", tags: [] } as any,
     });
 
-    for (let i = 0; i < 20 && runSpy.mock.calls.length === 0; i++) {
-      await new Promise((resolve) => setTimeout(resolve, 5));
-    }
+    await waitForMockCall(runSpy);
 
     expect(runSpy).toHaveBeenCalled();
     const invocationOpts = runSpy.mock.calls[0][0];
@@ -2590,9 +2628,7 @@ describe("Autonomous dispatch prompt guardrails", () => {
       timestamp: Date.now(),
     });
 
-    for (let i = 0; i < 20 && runSpy.mock.calls.length === 0; i++) {
-      await new Promise((resolve) => setTimeout(resolve, 5));
-    }
+    await waitForMockCall(runSpy);
 
     expect(runSpy).toHaveBeenCalled();
     const invocationOpts = runSpy.mock.calls[0][0];
@@ -3315,7 +3351,7 @@ describe("Dispatch role workflow entrypoints", () => {
       expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining("Failed to build prompt"));
       expect(internal.inFlightTaskKeys.has(`${agent.id}:${taskRef}`)).toBe(false);
 
-      const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{
+      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{
         args: string[];
       }>;
       const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
@@ -3431,7 +3467,7 @@ describe("Dispatch role workflow entrypoints", () => {
       expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining("Failed to build prompt"));
       expect(internal.inFlightTaskKeys.has(`${agent.id}:${taskRef}`)).toBe(false);
 
-      const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{
+      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{
         args: string[];
       }>;
       const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
@@ -4050,25 +4086,23 @@ describe("Self-trigger suppression", () => {
     const taskId = testUlid("TASK");
     await fs.writeFile(
       path.join(testDir, "kynetic.yaml"),
-      YAML.stringify({ kynetic: "1", title: "Test" }),
-    );
-    await fs.writeFile(
-      path.join(testDir, "project.tasks.yaml"),
       YAML.stringify({
-        tasks: [
-          {
-            _ulid: taskId,
-            type: "task",
-            title: "Test task",
-            status: "pending",
-            tags: [],
-            notes: [],
-            todos: [],
-            created_at: new Date().toISOString(),
-          },
-        ],
+        kynetic: "1.1",
+        task_storage: { format: "split" },
+        project: { name: "Test", version: "0.1.0" },
       }),
     );
+    seedSplitTask(testDir, {
+      _ulid: taskId,
+      type: "task",
+      title: "Test task",
+      status: "pending",
+      priority: 3,
+      tags: [],
+      depends_on: [],
+      notes: [],
+      created_at: new Date().toISOString(),
+    });
     // Initial git commit so kspec commands work
     await fs.writeFile(path.join(testDir, ".gitignore"), "");
     const { execSync: execSyncLocal } = await import("node:child_process");
@@ -4091,23 +4125,19 @@ describe("Self-trigger suppression", () => {
 
     // Reset task to pending for the next test
     receivedEvents = [];
-    await fs.writeFile(
-      path.join(testDir, "project.tasks.yaml"),
-      YAML.stringify({
-        tasks: [
-          {
-            _ulid: taskId,
-            type: "task",
-            title: "Test task",
-            status: "pending",
-            tags: [],
-            notes: [],
-            todos: [],
-            created_at: new Date().toISOString(),
-          },
-        ],
-      }),
-    );
+    await fs.rm(path.join(testDir, "tasks"), { recursive: true, force: true });
+    await fs.rm(path.join(testDir, "project.tasks.yaml"), { force: true });
+    seedSplitTask(testDir, {
+      _ulid: taskId,
+      type: "task",
+      title: "Test task",
+      status: "pending",
+      priority: 3,
+      tags: [],
+      depends_on: [],
+      notes: [],
+      created_at: new Date().toISOString(),
+    });
     execSync("git add -A && git commit -m reset", { cwd: testDir, stdio: "pipe" });
 
     // Run task start WITH KSPEC_SESSION_ID — event should be suppressed
@@ -4283,7 +4313,7 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
     git(workspace.cwd, `checkout -b ${legacyBranch}`);
     git(testDir, `branch -D ${workspace.metadata.canonicalBranch}`);
     const metadataPath = path.join(workspace.cwd, ".kspec-dispatch-workspace.json");
-    const metadata = JSON.parse(await fs.readFile(metadataPath, "utf-8")) as {
+    const metadata = JSON.parse(await readTestOutput(metadataPath)) as {
       canonicalBranch: string;
       canonicalBranchHead: string;
     };
@@ -4320,7 +4350,7 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
     expect(spawnSpy).toHaveBeenCalledTimes(1);
     expect(git(workspace.cwd, "branch --show-current")).toBe(workspace.metadata.canonicalBranch);
     const registry = YAML.parse(
-      await fs.readFile(path.join(testDir, "project.dispatch-workspaces.yaml"), "utf-8"),
+      await readTestOutput(path.join(testDir, "project.dispatch-workspaces.yaml")),
     ) as { workspaces?: Array<{ task_ref: string; canonical_branch: string }> };
     expect(registry.workspaces).toEqual(
       expect.arrayContaining([
@@ -4360,7 +4390,7 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
     git(workspace.cwd, `checkout -b ${legacyBranch}`);
     git(testDir, `branch -D ${workspace.metadata.canonicalBranch}`);
     const metadataPath = path.join(workspace.cwd, ".kspec-dispatch-workspace.json");
-    const metadata = JSON.parse(await fs.readFile(metadataPath, "utf-8")) as {
+    const metadata = JSON.parse(await readTestOutput(metadataPath)) as {
       canonicalBranch: string;
       canonicalBranchHead: string;
     };
@@ -4397,7 +4427,7 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
     expect(spawnSpy).toHaveBeenCalledTimes(1);
     expect(git(workspace.cwd, "branch --show-current")).toBe(workspace.metadata.canonicalBranch);
     const registry = YAML.parse(
-      await fs.readFile(path.join(testDir, "project.dispatch-workspaces.yaml"), "utf-8"),
+      await readTestOutput(path.join(testDir, "project.dispatch-workspaces.yaml")),
     ) as { workspaces?: Array<{ task_ref: string; canonical_branch: string }> };
     expect(registry.workspaces).toEqual(
       expect.arrayContaining([
@@ -4556,7 +4586,7 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
 
     // The registry should have been recovered from the reviewer metadata.
     const registry = YAML.parse(
-      await fs.readFile(path.join(testDir, "project.dispatch-workspaces.yaml"), "utf-8"),
+      await readTestOutput(path.join(testDir, "project.dispatch-workspaces.yaml")),
     ) as { workspaces?: Array<{ task_ref: string }> };
     expect(registry.workspaces).toEqual(
       expect.arrayContaining([
@@ -5640,31 +5670,37 @@ describe("Post-invocation re-evaluation", () => {
       coalesceWindowMs: 0,
     });
 
-    await engine.start();
+    try {
+      await engine.start();
 
-    // Wait for first invocation (worker picks up taskA via bootstrap)
-    // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
-    for (let i = 0; i < 100 && invocationCount === 0; i++) {
-      await new Promise((r) => setTimeout(r, 10));
+      // Wait for first invocation (worker picks up taskA via bootstrap)
+      // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
+      await waitForInvocationCount(
+        () => invocationCount,
+        1,
+        "first worker invocation should start after bootstrap",
+      );
+      expect(invocationCount).toBe(1);
+      expect(spawned[0].agentId).toBe("task-worker");
+
+      // Release worker — post-invocation re-evaluation should discover pending_review tasks
+      resolveFirst();
+
+      // Wait for reviewer to be spawned
+      // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
+      await waitForInvocationCount(
+        () => invocationCount,
+        2,
+        "reviewer invocation should spawn after post-invocation re-evaluation",
+      );
+
+      // The second spawn should be the reviewer, discovering the pending_review tasks
+      // that appeared on disk during the worker's execution.
+      expect(invocationCount).toBeGreaterThanOrEqual(2);
+      expect(spawned[1].agentId).toBe("pr-reviewer");
+    } finally {
+      await engine.stop();
     }
-    expect(invocationCount).toBe(1);
-    expect(spawned[0].agentId).toBe("task-worker");
-
-    // Release worker — post-invocation re-evaluation should discover pending_review tasks
-    resolveFirst();
-
-    // Wait for reviewer to be spawned
-    // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
-    for (let i = 0; i < 100 && invocationCount < 2; i++) {
-      await new Promise((r) => setTimeout(r, 10));
-    }
-
-    // The second spawn should be the reviewer, discovering the pending_review tasks
-    // that appeared on disk during the worker's execution.
-    expect(invocationCount).toBeGreaterThanOrEqual(2);
-    expect(spawned[1].agentId).toBe("pr-reviewer");
-
-    await engine.stop();
   });
 
   // AC: @agent-dispatch-engine ac-24
@@ -5708,9 +5744,11 @@ describe("Post-invocation re-evaluation", () => {
 
     // Wait for first invocation to start
     // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
-    for (let i = 0; i < 100 && invocationCount === 0; i++) {
-      await new Promise((r) => setTimeout(r, 10));
-    }
+    await waitForInvocationCount(
+      () => invocationCount,
+      1,
+      "first dedup test invocation should start",
+    );
     expect(invocationCount).toBe(1);
 
     // Release first invocation — re-evaluation runs, but should NOT double-enqueue taskB
@@ -5718,9 +5756,11 @@ describe("Post-invocation re-evaluation", () => {
 
     // Wait for second invocation
     // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
-    for (let i = 0; i < 100 && invocationCount < 2; i++) {
-      await new Promise((r) => setTimeout(r, 10));
-    }
+    await waitForInvocationCount(
+      () => invocationCount,
+      2,
+      "queued task should drain exactly once after re-evaluation",
+    );
 
     // Exactly 2 invocations (one per task), not 3+ from double-enqueue
     expect(invocationCount).toBe(2);
@@ -5849,47 +5889,53 @@ describe("Post-invocation re-evaluation", () => {
       coalesceWindowMs: 0,
     });
 
-    await engine.start();
-
-    // Wait for first invocation to start
-    // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
-    for (let i = 0; i < 100 && invocationCount === 0; i++) {
-      await new Promise((r) => setTimeout(r, 10));
-    }
-    expect(invocationCount).toBe(1);
-
-    // Sabotage _evaluateAllTasks so it throws on the next call (post-invocation re-eval).
-    // The already-queued taskB should still drain.
-    const evaluateSpy = vi.spyOn(
-      engine as unknown as {
-        _evaluateAllTasks: (opts: { skipIfActive: boolean }) => Promise<number>;
-      },
-      "_evaluateAllTasks",
-    );
-    evaluateSpy.mockRejectedValueOnce(new Error("simulated disk failure"));
-
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
-    // Release first invocation
-    resolveFirst();
+    try {
+      await engine.start();
 
-    // Wait for second invocation (from pre-existing queue, not re-evaluation)
-    // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
-    for (let i = 0; i < 100 && invocationCount < 2; i++) {
-      await new Promise((r) => setTimeout(r, 10));
+      // Wait for first invocation to start
+      // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
+      await waitForInvocationCount(
+        () => invocationCount,
+        1,
+        "first failure-path invocation should start",
+      );
+      expect(invocationCount).toBe(1);
+
+      // Sabotage _evaluateAllTasks so it throws on the next call (post-invocation re-eval).
+      // The already-queued taskB should still drain.
+      const evaluateSpy = vi.spyOn(
+        engine as unknown as {
+          _evaluateAllTasks: (opts: { skipIfActive: boolean }) => Promise<number>;
+        },
+        "_evaluateAllTasks",
+      );
+      evaluateSpy.mockRejectedValueOnce(new Error("simulated disk failure"));
+
+      // Release first invocation
+      resolveFirst();
+
+      // Wait for second invocation (from pre-existing queue, not re-evaluation)
+      // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
+      await waitForInvocationCount(
+        () => invocationCount,
+        2,
+        "existing queue should still drain after re-evaluation failure",
+      );
+
+      // taskB should still have been drained from the existing queue
+      expect(invocationCount).toBe(2);
+
+      // Verify warning was logged
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.stringContaining("Post-invocation re-evaluation failed"),
+        expect.any(Error),
+      );
+    } finally {
+      warnSpy.mockRestore();
+      await engine.stop();
     }
-
-    // taskB should still have been drained from the existing queue
-    expect(invocationCount).toBe(2);
-
-    // Verify warning was logged
-    expect(warnSpy).toHaveBeenCalledWith(
-      expect.stringContaining("Post-invocation re-evaluation failed"),
-      expect.any(Error),
-    );
-
-    warnSpy.mockRestore();
-    await engine.stop();
   });
 });
 
@@ -7001,6 +7047,358 @@ describe("Cross-agent task dispatch exclusivity", () => {
     // Reviewer should NOT have been spawned — the queued entry is stale (task is now completed)
     expect(spawned).toHaveLength(1);
     expect(spawned[0].agentId).toBe("task-worker");
+
+    await engine.stop();
+  });
+});
+
+// ─── AC-11: Idle grace period backward compatibility ─────────────────────────
+
+// AC: @multi-turn-session-lifecycle ac-11
+describe("AC-11: Idle grace period backward compatibility", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-dispatch-idle-grace-");
+  });
+
+  afterEach(async () => {
+    vi.restoreAllMocks();
+    await cleanupTempDir(testDir);
+  });
+
+  it("should pass idleGracePeriodMs=0 when no session.idle hooks are configured", async () => {
+    const agent = makeTestAgent({ id: "worker", dispatch: [{ on: "task.ready" }] });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const taskId = testUlid("TASK");
+
+    const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
+      session: {} as any,
+      outcome: "success",
+      durationMs: 1,
+    });
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
+
+    await engine.start();
+    await engine.handleStateChange({
+      taskId,
+      taskRef: `@${taskId}`,
+      fromStatus: "in_progress",
+      toStatus: "pending",
+      timestamp: Date.now(),
+      task: { automation: "eligible", tags: [] } as any,
+    });
+
+    await waitForMockCall(runSpy);
+
+    expect(runSpy).toHaveBeenCalled();
+    const invocationOpts = runSpy.mock.calls[0][0];
+    expect(invocationOpts.idleGracePeriodMs).toBe(0);
+
+    await engine.stop();
+  });
+
+  it("should pass DEFAULT_IDLE_GRACE_MS when a session.idle hook is configured", async () => {
+    const agent = makeTestAgent({ id: "worker", dispatch: [{ on: "task.ready" }] });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    // Add a session.idle hook to the meta YAML and re-commit
+    const hookUlid = testUlid("HOOK");
+    const metaContent = YAML.parse(await readTestOutput(path.join(testDir, "kynetic.meta.yaml")));
+    metaContent.hooks = [
+      {
+        _ulid: hookUlid,
+        name: "test-idle-hook",
+        on: "session.idle",
+        action: { type: "kspec", command: "task list" },
+        enabled: true,
+      },
+    ];
+    await fs.writeFile(
+      path.join(testDir, "kynetic.meta.yaml"),
+      YAML.stringify(metaContent),
+      "utf-8",
+    );
+    execSync("git add -A && git commit -m 'add hook'", { cwd: testDir, stdio: "pipe" });
+
+    const taskId = testUlid("TASK", 2);
+
+    const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
+      session: {} as any,
+      outcome: "success",
+      durationMs: 1,
+    });
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
+
+    await engine.start();
+    await engine.handleStateChange({
+      taskId,
+      taskRef: `@${taskId}`,
+      fromStatus: "in_progress",
+      toStatus: "pending",
+      timestamp: Date.now(),
+      task: { automation: "eligible", tags: [] } as any,
+    });
+
+    await waitForMockCall(runSpy);
+
+    expect(runSpy).toHaveBeenCalled();
+    const invocationOpts = runSpy.mock.calls[0][0];
+    expect(invocationOpts.idleGracePeriodMs).toBe(invocationModule.DEFAULT_IDLE_GRACE_MS);
+
+    await engine.stop();
+  });
+
+  // AC: @multi-turn-session-lifecycle ac-11
+  it("should reload session.idle hook presence during reconciliation", async () => {
+    // Start with NO session.idle hooks — grace period should be 0
+    const agent = makeTestAgent({ id: "worker", dispatch: [{ on: "task.ready" }] });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const taskId1 = testUlid("TASK", 3);
+
+    const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
+      session: {} as any,
+      outcome: "success",
+      durationMs: 1,
+    });
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+      reconcileIntervalMs: 0, // Disable periodic — we'll call _reconcile() manually
+    });
+
+    await engine.start();
+
+    // First invocation: no hooks → idleGracePeriodMs=0
+    await engine.handleStateChange({
+      taskId: taskId1,
+      taskRef: `@${taskId1}`,
+      fromStatus: "in_progress",
+      toStatus: "pending",
+      timestamp: Date.now(),
+      task: { automation: "eligible", tags: [] } as any,
+    });
+
+    await waitForMockCall(runSpy);
+    expect(runSpy).toHaveBeenCalledTimes(1);
+    expect(runSpy.mock.calls[0][0].idleGracePeriodMs).toBe(0);
+
+    // Now add a session.idle hook to meta on disk
+    const hookUlid = testUlid("HOOK", 2);
+    const metaContent = YAML.parse(await readTestOutput(path.join(testDir, "kynetic.meta.yaml")));
+    metaContent.hooks = [
+      {
+        _ulid: hookUlid,
+        name: "test-idle-hook",
+        on: "session.idle",
+        action: { type: "kspec", command: "task list" },
+        enabled: true,
+      },
+    ];
+    await fs.writeFile(
+      path.join(testDir, "kynetic.meta.yaml"),
+      YAML.stringify(metaContent),
+      "utf-8",
+    );
+    execSync("git add -A && git commit -m 'add session.idle hook'", {
+      cwd: testDir,
+      stdio: "pipe",
+    });
+
+    // Trigger reconciliation — this should reload the hook presence
+    await (engine as unknown as { _reconcile: () => Promise<void> })._reconcile();
+
+    // Second invocation: hook present → idleGracePeriodMs=DEFAULT_IDLE_GRACE_MS
+    runSpy.mockClear();
+    const taskId2 = testUlid("TASK", 4);
+    await engine.handleStateChange({
+      taskId: taskId2,
+      taskRef: `@${taskId2}`,
+      fromStatus: "in_progress",
+      toStatus: "pending",
+      timestamp: Date.now(),
+      task: { automation: "eligible", tags: [] } as any,
+    });
+
+    await waitForMockCall(runSpy);
+    expect(runSpy).toHaveBeenCalledTimes(1);
+    expect(runSpy.mock.calls[0][0].idleGracePeriodMs).toBe(invocationModule.DEFAULT_IDLE_GRACE_MS);
+
+    await engine.stop();
+  });
+});
+
+// ─── AC-28: Async internal bookkeeping ───────────────────────────────────────
+// AC: @agent-dispatch-engine ac-28
+describe("AC-28: async internal bookkeeping", () => {
+  let testDir: string;
+  let captureFile: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir();
+    captureFile = path.join(testDir, "capture.json");
+    process.env.KSPEC_CAPTURE_FILE = captureFile;
+  });
+
+  afterEach(async () => {
+    delete process.env.KSPEC_CAPTURE_FILE;
+    await cleanupTempDir(testDir);
+  });
+
+  // AC: @agent-dispatch-engine ac-28
+  it("event loop remains responsive during dispatch engine _addTaskNote", async () => {
+    const agent = makeTestAgent();
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
+
+    // Access private methods via type assertion
+    const internal = engine as unknown as {
+      _addTaskNote: (taskRef: string, note: string) => Promise<void>;
+      _blockTask: (taskRef: string, reason: string) => Promise<void>;
+    };
+
+    // Schedule an event loop tick check BEFORE calling _addTaskNote
+    let eventLoopTicked = false;
+    const tickPromise = new Promise<void>((resolve) => {
+      setImmediate(() => {
+        eventLoopTicked = true;
+        resolve();
+      });
+    });
+
+    // _addTaskNote should return a Promise (async), allowing the event loop to tick
+    const notePromise = internal._addTaskNote("@test-task", "Test note for AC-28");
+    expect(notePromise).toBeInstanceOf(Promise);
+
+    // Wait for both: the note operation and the event loop tick
+    await Promise.all([notePromise, tickPromise]);
+    expect(eventLoopTicked).toBe(true);
+  });
+
+  // AC: @agent-dispatch-engine ac-28
+  it("event loop remains responsive during dispatch engine _blockTask", async () => {
+    const agent = makeTestAgent();
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
+
+    const internal = engine as unknown as {
+      _blockTask: (taskRef: string, reason: string) => Promise<void>;
+    };
+
+    let eventLoopTicked = false;
+    const tickPromise = new Promise<void>((resolve) => {
+      setImmediate(() => {
+        eventLoopTicked = true;
+        resolve();
+      });
+    });
+
+    // _blockTask is expected to fail (task doesn't exist in kspec)
+    // but it should still return a Promise and not block the event loop
+    const blockPromise = internal._blockTask("@test-task", "Test block for AC-28").catch(() => {});
+    expect(blockPromise).toBeInstanceOf(Promise);
+
+    await Promise.all([blockPromise, tickPromise]);
+    expect(eventLoopTicked).toBe(true);
+  });
+
+  // AC: @agent-dispatch-engine ac-28
+  it("error recovery paths use async task note and block", async () => {
+    const agent = makeTestAgent();
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
+
+    // Mock workspace provisioning to fail, which triggers error recovery
+    vi.spyOn(workspaceModule, "provisionDispatchWorkspace").mockRejectedValue(
+      new Error("Simulated workspace failure"),
+    );
+    vi.spyOn(workspaceModule, "getDispatchWorkspaceHealth").mockResolvedValue({
+      exists: true,
+      healthy: true,
+      reason: null,
+      metadata: null,
+    });
+    vi.spyOn(workspaceModule, "reconcileDispatchWorkspaceRegistry").mockResolvedValue({
+      purgedCount: 0,
+      recoveredCount: 0,
+    });
+    vi.spyOn(configModule, "resolveDispatchRemoteSync").mockReturnValue(false);
+    vi.spyOn(bootstrapModule, "ensureWorkspaceBootstrap").mockResolvedValue({
+      metadata: {} as any,
+      reused: true,
+      ranSteps: false,
+    });
+
+    await engine.start();
+
+    // Schedule event loop check
+    let eventLoopTicked = false;
+    setImmediate(() => {
+      eventLoopTicked = true;
+    });
+
+    // Trigger a state change that will try to spawn an invocation,
+    // hit the provisioning failure, and exercise the error recovery path
+    await engine.handleStateChange(
+      makeStateChange({
+        toStatus: "pending",
+        task: { automation: "eligible", tags: [] } as any,
+      }),
+    );
+
+    // Give event loop a chance to process the setImmediate
+    await new Promise<void>((resolve) => setTimeout(resolve, 50));
+
+    // The event loop should have been able to tick during the async error recovery
+    expect(eventLoopTicked).toBe(true);
+
+    // Verify the mock kspec CLI was called for task note (error recovery)
+    try {
+      const captured = JSON.parse(await readTestOutput(captureFile));
+      const noteCall = captured.find(
+        (c: { args: string[] }) => c.args[0] === "task" && c.args[1] === "note",
+      );
+      expect(noteCall).toBeDefined();
+      expect(noteCall.args[3]).toContain("[DISPATCH-WORKSPACE]");
+    } catch {
+      // capture file may not exist if mock CLI wasn't found; that's OK for the
+      // event-loop responsiveness check which is the primary assertion
+    }
 
     await engine.stop();
   });

@@ -13,6 +13,7 @@ import {
   setupTempFixtures,
   cleanupTempDir,
   initGitRepo,
+  readTestOutput,
 } from "./helpers/cli";
 
 describe("Trait CLI - trait add", () => {
@@ -63,7 +64,7 @@ describe("Trait CLI - trait add", () => {
   it("should add trait to kynetic.yaml traits array", async () => {
     kspec('trait add "Test Trait"', tempDir);
 
-    const manifest = await fs.readFile(path.join(tempDir, "kynetic.yaml"), "utf-8");
+    const manifest = await readTestOutput(path.join(tempDir, "kynetic.yaml"));
 
     expect(manifest).toContain("traits:");
     expect(manifest).toContain("title: Test Trait");
@@ -188,7 +189,7 @@ traits:
 `;
     await fs.writeFile(path.join(tempDir, "modules/test.yaml"), specModule);
 
-    const manifest = await fs.readFile(path.join(tempDir, "kynetic.yaml"), "utf-8");
+    const manifest = await readTestOutput(path.join(tempDir, "kynetic.yaml"));
     const updatedManifest = manifest.replace(
       "includes:\n  - modules/core.yaml",
       "includes:\n  - modules/core.yaml\n  - modules/test.yaml",
@@ -252,7 +253,7 @@ features:
 `;
     await fs.writeFile(path.join(tempDir, "modules/test.yaml"), specModule);
 
-    const manifest = await fs.readFile(path.join(tempDir, "kynetic.yaml"), "utf-8");
+    const manifest = await readTestOutput(path.join(tempDir, "kynetic.yaml"));
     const updatedManifest = manifest.replace(
       "includes:\n  - modules/core.yaml",
       "includes:\n  - modules/core.yaml\n  - modules/test.yaml",
@@ -279,7 +280,7 @@ features:
   it("should persist trait in spec file", async () => {
     kspec("item trait add @test-trait-feature @json-output", tempDir);
 
-    const specFile = await fs.readFile(path.join(tempDir, "modules/test.yaml"), "utf-8");
+    const specFile = await readTestOutput(path.join(tempDir, "modules/test.yaml"));
 
     expect(specFile).toContain("traits:");
     expect(specFile).toContain('- "@json-output"');
@@ -299,7 +300,7 @@ features:
     expect(result.added).toBe(false);
 
     // Verify only one entry in file
-    const specFile = await fs.readFile(path.join(tempDir, "modules/test.yaml"), "utf-8");
+    const specFile = await readTestOutput(path.join(tempDir, "modules/test.yaml"));
 
     const traitMatches = specFile.match(/@json-output/g);
     expect(traitMatches).toHaveLength(1);
@@ -386,7 +387,7 @@ features:
 `;
     await fs.writeFile(path.join(tempDir, "modules/test.yaml"), specModule);
 
-    const manifest = await fs.readFile(path.join(tempDir, "kynetic.yaml"), "utf-8");
+    const manifest = await readTestOutput(path.join(tempDir, "kynetic.yaml"));
     const updatedManifest = manifest.replace(
       "includes:\n  - modules/core.yaml",
       "includes:\n  - modules/core.yaml\n  - modules/test.yaml",
@@ -413,7 +414,7 @@ features:
   it("should persist removal in spec file", async () => {
     kspec("item trait remove @test-trait-feature @trait-one", tempDir);
 
-    const specFile = await fs.readFile(path.join(tempDir, "modules/test.yaml"), "utf-8");
+    const specFile = await readTestOutput(path.join(tempDir, "modules/test.yaml"));
 
     expect(specFile).not.toContain("@trait-one");
     expect(specFile).toContain("@trait-two"); // Should still have the other trait
@@ -432,7 +433,7 @@ features:
     kspec("item trait remove @test-trait-feature @trait-one", tempDir);
     kspec("item trait remove @test-trait-feature @trait-two", tempDir);
 
-    const specFile = await fs.readFile(path.join(tempDir, "modules/test.yaml"), "utf-8");
+    const specFile = await readTestOutput(path.join(tempDir, "modules/test.yaml"));
 
     // Traits array should be empty
     expect(specFile).toMatch(/traits:\s*\[\]/);
@@ -487,7 +488,7 @@ describe("Trait CLI - item add --trait", () => {
       tempDir,
     );
 
-    const specFile = await fs.readFile(path.join(tempDir, "modules/core.yaml"), "utf-8");
+    const specFile = await readTestOutput(path.join(tempDir, "modules/core.yaml"));
 
     expect(specFile).toContain("traits:");
     expect(specFile).toContain("@json-output");
@@ -560,7 +561,7 @@ describe("Trait CLI - item add --trait", () => {
     expect(result.type).toBe("trait");
     expect(result.slugs).toContain("root-trait");
 
-    const manifest = await fs.readFile(path.join(tempDir, "kynetic.yaml"), "utf-8");
+    const manifest = await readTestOutput(path.join(tempDir, "kynetic.yaml"));
     expect(manifest).toContain("traits:");
     expect(manifest).toContain("title: Root Trait");
     expect(manifest).toContain("      - root-trait");

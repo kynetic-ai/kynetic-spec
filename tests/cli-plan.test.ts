@@ -12,6 +12,7 @@ import {
   kspec as kspecRun,
   kspecOutput as kspec,
   kspecJson,
+  readTestOutput,
 } from "./helpers/cli";
 
 describe("Integration: plan commands", () => {
@@ -207,6 +208,14 @@ describe("Integration: plan commands", () => {
       expect(output).toContain("Steps...");
     });
 
+    // AC: @plan-branch-association ac-field-set
+    it("should display branch when present", () => {
+      kspec('plan set @test-plan --branch "plan/test-plan/01abc123"', tempDir);
+
+      const output = kspec("plan get @test-plan", tempDir);
+      expect(output).toContain("Branch:   plan/test-plan/01abc123");
+    });
+
     // AC: @plan-crud ac-30
     it("should output valid JSON with --json", () => {
       const plan = kspecJson<{
@@ -222,6 +231,7 @@ describe("Integration: plan commands", () => {
       expect(plan.title).toBe("Test Plan");
       expect(plan.content).toContain("# Implementation");
       expect(plan.status).toBe("draft");
+      expect(plan.branch).toBeNull();
       expect(plan.derived_tasks).toEqual([]);
       expect(plan.created_at).toBeDefined();
     });
@@ -310,6 +320,32 @@ describe("Integration: plan commands", () => {
       expect(output).toContain("Original Title");
     });
 
+    // AC: @plan-branch-association ac-field-set
+    it("should set branch", () => {
+      kspec('plan set @01 --branch "plan/original-title/01abc123"', tempDir);
+
+      const plan = kspecJson<{ branch: string | null }>("plan get @01 --json", tempDir);
+      expect(plan.branch).toBe("plan/original-title/01abc123");
+    });
+
+    // AC: @plan-branch-association ac-field-clear
+    it("should clear branch with null", () => {
+      kspec('plan set @01 --branch "plan/original-title/01abc123"', tempDir);
+      kspec("plan set @01 --branch null", tempDir);
+
+      const plan = kspecJson<{ branch: string | null }>("plan get @01 --json", tempDir);
+      expect(plan.branch).toBeNull();
+    });
+
+    // AC: @plan-branch-association ac-field-clear
+    it("should clear branch with empty string", () => {
+      kspec('plan set @01 --branch "plan/original-title/01abc123"', tempDir);
+      kspec('plan set @01 --branch ""', tempDir);
+
+      const plan = kspecJson<{ branch: string | null }>("plan get @01 --json", tempDir);
+      expect(plan.branch).toBeNull();
+    });
+
     it("should not duplicate slug if already present", () => {
       kspec("plan set @01 --slug existing-slug", tempDir);
       kspec("plan set @01 --slug existing-slug", tempDir);
@@ -367,7 +403,7 @@ describe("Integration: plan commands", () => {
       const output = kspec(`plan export @export-plan --output "${outputPath}"`, tempDir);
 
       expect(output).toContain("Exported plan content");
-      const fileContents = await fs.readFile(outputPath, "utf-8");
+      const fileContents = await readTestOutput(outputPath);
       expect(fileContents).toBe("# Iterative Plan\n\n## Specs\n\n- export me");
     });
 

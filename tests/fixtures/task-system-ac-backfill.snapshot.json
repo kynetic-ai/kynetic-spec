@@ -259,48 +259,6 @@
       ]
     },
     {
-      "ref": "@task-storage",
-      "title": "Task Storage",
-      "type": "feature",
-      "description": "Tasks are stored alongside or separate from specs.\nAuto-adaptive: start alongside, separate when volume grows.\n",
-      "acceptance_criteria": [
-        {
-          "id": "ac-1",
-          "given": "a project uses the task system",
-          "when": "tasks are persisted",
-          "then": "the system supports storing them either alongside module specs or in a dedicated tasks directory without changing task semantics"
-        }
-      ]
-    },
-    {
-      "ref": "@task-storage-alongside",
-      "title": "Storage - Alongside Specs",
-      "type": "requirement",
-      "description": "For smaller projects, tasks next to specs:\n\nspec/\n  auth.yaml           # Spec items\n  auth.tasks.yaml     # Tasks for auth module\n\nSimple, keeps related items together.\n",
-      "acceptance_criteria": [
-        {
-          "id": "ac-1",
-          "given": "a smaller project stores tasks alongside specs",
-          "when": "a module has a companion .tasks.yaml file next to its spec file",
-          "then": "tasks for that module remain colocated with the related spec"
-        }
-      ]
-    },
-    {
-      "ref": "@task-storage-separate",
-      "title": "Storage - Separate Directory",
-      "type": "requirement",
-      "description": "For larger projects, separate tasks directory:\n\nspec/\n  modules/\n    auth.yaml\ntasks/\n  backlog.yaml\n  active.yaml\n  archive/\n    2025-01.yaml\n\nSeparates concerns, enables archiving.\n",
-      "acceptance_criteria": [
-        {
-          "id": "ac-1",
-          "given": "a larger project uses separate task storage",
-          "when": "tasks are persisted under tasks backlog, active, or archive files",
-          "then": "task data is stored separately from module spec files and can be archived independently"
-        }
-      ]
-    },
-    {
       "ref": "@query-ready",
       "title": "Ready Tasks Query",
       "type": "requirement",

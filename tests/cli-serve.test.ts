@@ -268,7 +268,7 @@ describe("kspec serve commands", () => {
     const port = await getAvailablePort();
 
     const result = runKspec(
-      `serve start --daemon --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`,
+      `serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`,
       tempDir,
     );
 
@@ -309,7 +309,7 @@ describe("kspec serve commands", () => {
     const customPort = await getAvailablePort();
 
     const result = runKspec(
-      `serve start --daemon --port ${customPort} --kspec-dir ${join(tempDir, ".kspec")}`,
+      `serve start --detach --port ${customPort} --kspec-dir ${join(tempDir, ".kspec")}`,
       tempDir,
     );
 
@@ -330,7 +330,7 @@ describe("kspec serve commands", () => {
     const port = await getAvailablePort();
 
     // Start daemon
-    runKspec(`serve start --daemon --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
+    runKspec(`serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
 
     const pid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
 
@@ -370,7 +370,7 @@ describe("kspec serve commands", () => {
 
     // Start daemon
     const port = await getAvailablePort();
-    runKspec(`serve start --daemon --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
+    runKspec(`serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
 
     const pid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
 
@@ -399,7 +399,7 @@ describe("kspec serve commands", () => {
     const port = await getAvailablePort();
 
     // Start daemon
-    runKspec(`serve start --daemon --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
+    runKspec(`serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
 
     await waitForDaemonHealth(port);
 
@@ -433,7 +433,7 @@ describe("kspec serve commands", () => {
     const port = await getAvailablePort();
 
     // Start daemon
-    runKspec(`serve start --daemon --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
+    runKspec(`serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
 
     await waitForDaemonHealth(port);
 
@@ -481,7 +481,7 @@ describe("kspec serve commands", () => {
 
     // Start daemon from directory without .kspec/ (AC: @multi-directory-daemon ac-3)
     // This ensures no default project is registered
-    runKspec(`serve start --daemon --port ${port}`, emptyTempDir, { env });
+    runKspec(`serve start --detach --port ${port}`, emptyTempDir, { env });
 
     await waitForDaemonHealth(port);
 
@@ -505,7 +505,7 @@ describe("kspec serve commands", () => {
     const port = await getAvailablePort();
 
     // Start daemon
-    runKspec(`serve start --daemon --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
+    runKspec(`serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
 
     await waitForDaemonHealth(port);
     await waitForDaemonUptime(1);
@@ -539,7 +539,7 @@ describe("kspec serve commands", () => {
     const port = await getAvailablePort();
 
     // Start daemon
-    runKspec(`serve start --daemon --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
+    runKspec(`serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
 
     const originalPid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
 
@@ -590,7 +590,7 @@ describe("kspec serve commands", () => {
     }
 
     // Pack the project, install the tarball, then run the installed CLI's
-    // `kspec serve start --daemon` to verify all runtime dependencies
+    // `kspec serve start --detach` to verify all runtime dependencies
     // (elysia, @elysiajs/cors, @elysiajs/static) resolve at execution time.
     const projectRoot = join(__dirname, "..");
     const installDir = await createTempDir();
@@ -630,7 +630,7 @@ describe("kspec serve commands", () => {
 
       // Run the installed CLI's serve start in daemon mode
       const result = execSync(
-        `"${installedCli}" serve start --daemon --port ${port} --kspec-dir "${kspecDir}"`,
+        `"${installedCli}" serve start --detach --port ${port} --kspec-dir "${kspecDir}"`,
         {
           cwd: installDir,
           encoding: "utf-8",
@@ -836,7 +836,7 @@ describe("kspec serve commands", () => {
 
       // Start daemon
       runKspec(
-        `serve start --daemon --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`,
+        `serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`,
         tempDir,
       );
 

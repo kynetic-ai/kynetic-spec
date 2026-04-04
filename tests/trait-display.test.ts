@@ -12,6 +12,8 @@ import {
   setupTempFixtures,
   cleanupTempDir,
   initGitRepo,
+  readTestOutput,
+  seedSplitTask,
 } from "./helpers/cli";
 
 describe("Trait Display - Item Get", () => {
@@ -75,7 +77,7 @@ features:
     await fs.writeFile(path.join(tempDir, "modules/specs.yaml"), specModule);
 
     // Update manifest to include new modules
-    const manifest = await fs.readFile(path.join(tempDir, "kynetic.yaml"), "utf-8");
+    const manifest = await readTestOutput(path.join(tempDir, "kynetic.yaml"));
     const updatedManifest = manifest.replace(
       "includes:\n  - modules/core.yaml",
       "includes:\n  - modules/core.yaml\n  - modules/traits.yaml\n  - modules/specs.yaml",
@@ -135,7 +137,7 @@ features:
   // AC: @trait-display ac-5
   it("should show each trait AC in separate labeled section for multiple traits", async () => {
     // Add second trait
-    const traitModule = await fs.readFile(path.join(tempDir, "modules/traits.yaml"), "utf-8");
+    const traitModule = await readTestOutput(path.join(tempDir, "modules/traits.yaml"));
 
     const updatedTraits = `${traitModule}
 ---
@@ -158,7 +160,7 @@ acceptance_criteria:
     await fs.writeFile(path.join(tempDir, "modules/traits.yaml"), updatedTraits);
 
     // Update spec to implement both traits
-    const specModule = await fs.readFile(path.join(tempDir, "modules/specs.yaml"), "utf-8");
+    const specModule = await readTestOutput(path.join(tempDir, "modules/specs.yaml"));
 
     const updatedSpec = specModule.replace(
       'traits:\n      - "@trait-json-output"',
@@ -235,35 +237,30 @@ features:
     await fs.writeFile(path.join(tempDir, "modules/specs.yaml"), specModule);
 
     // Update manifest to include new modules
-    const manifest = await fs.readFile(path.join(tempDir, "kynetic.yaml"), "utf-8");
+    const manifest = await readTestOutput(path.join(tempDir, "kynetic.yaml"));
     const updatedManifest = manifest.replace(
       "includes:\n  - modules/core.yaml",
       "includes:\n  - modules/core.yaml\n  - modules/traits.yaml\n  - modules/specs.yaml",
     );
     await fs.writeFile(path.join(tempDir, "kynetic.yaml"), updatedManifest);
 
-    // Create task linked to spec
-    const tasksFile = `_version: "0.1"
-_updated_at: "2026-01-20T00:00:00Z"
-
-tasks:
-  - _ulid: 01KFCVXQDD1122334455667788
-    slugs:
-      - task-with-trait-spec
-    title: Task with Trait Spec
-    type: task
-    status: pending
-    priority: 2
-    spec_ref: "@feature-with-trait"
-    tags: []
-    depends_on: []
-    blocked_by: []
-    notes: []
-    todos: []
-    created_at: "2026-01-20T00:00:00Z"
-`;
-
-    await fs.writeFile(path.join(tempDir, "project.tasks.yaml"), tasksFile);
+    // Create task linked to spec using split format
+    // Clear existing index and write fresh
+    await fs.writeFile(path.join(tempDir, "project.tasks.yaml"), "");
+    seedSplitTask(tempDir, {
+      _ulid: "01KFCVXQDD1122334455667788",
+      slugs: ["task-with-trait-spec"],
+      title: "Task with Trait Spec",
+      type: "task",
+      status: "pending",
+      priority: 2,
+      spec_ref: "@feature-with-trait",
+      tags: [],
+      depends_on: [],
+      notes: [],
+      todos: [],
+      created_at: "2026-01-20T00:00:00Z",
+    });
   });
 
   afterEach(async () => {

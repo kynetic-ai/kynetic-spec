@@ -28,8 +28,9 @@
  */
 import { execSync, spawnSync } from "node:child_process";
 import * as fs from "node:fs/promises";
-import { readFileSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, statSync } from "node:fs";
 import * as path from "node:path";
+import { parse as yamlParse, stringify as yamlStringify } from "yaml";
 import * as os from "node:os";
 
 // Use built CLI for performance - requires `npm run build` before tests
@@ -104,7 +105,7 @@ export interface WaitForStartupOptions {
  * const result = kspec('task set @ref --priority 99', tempDir, { expectFail: true });
  * expect(result.exitCode).toBe(1);
  */
-export function kspec(args: string, cwd: string, options: KspecOptions = {}): KspecResult {
+export function kspec(args: string, cwd?: string, options: KspecOptions = {}): KspecResult {
   const { stdin, expectFail = false, env = {} } = options;
 
   // Build clean env: strip dispatch/session vars that pollute tests when running
@@ -124,13 +125,63 @@ export function kspec(args: string, cwd: string, options: KspecOptions = {}): Ks
     }
   }
 
+  // Strip ambient agent-detection vars so CLI subprocess tests don't inherit
+  // whichever editor/runtime markers a prior Vitest file left behind.
+  const AGENT_ENV_VARS = [
+    "CLAUDECODE",
+    "CLAUDE_CODE",
+    "CLAUDE_CODE_ENTRYPOINT",
+    "CLAUDE_PROJECT_DIR",
+    "CLAUDE_CODE_SESSION",
+    "CLINE_ACTIVE",
+    "CURSOR_TRACE_ID",
+    "WINDSURF_SESSION",
+    "AIDER_MODEL",
+    "AIDER_DARK_MODE",
+    "OPENCODE_CONFIG_DIR",
+    "OPENCODE_CONFIG",
+    "GEMINI_CLI",
+    "CODEX_THREAD_ID",
+    "CODEX_SANDBOX",
+    "CODEX_CI",
+    "CODEX_MANAGED_BY_NPM",
+    "FACTORY_PROJECT_DIR",
+    "COPILOT_MODEL",
+    "GH_TOKEN",
+    "AMP_API_KEY",
+    "AMP_TOOLBOX",
+  ];
+  for (const key of AGENT_ENV_VARS) {
+    if (!(key in env)) {
+      delete cleanEnv[key];
+    }
+  }
+
+  // Give each CLI subprocess an isolated home/config root by default so global
+  // plugin marketplace, daemon PID/port, and agent home-directory probes are
+  // scoped to the test project instead of the parent Vitest process.
+  const defaultEnv: Record<string, string> = {};
+  const isolatedHomeRoot = cwd ?? process.cwd();
+  try {
+    if (statSync(isolatedHomeRoot).isDirectory()) {
+      const isolatedHome = path.join(isolatedHomeRoot, ".test-home");
+      mkdirSync(path.join(isolatedHome, ".config", "kspec"), { recursive: true });
+      defaultEnv.HOME = isolatedHome;
+      defaultEnv.USERPROFILE = isolatedHome;
+      defaultEnv.KSPEC_CLAUDE_HOME = path.join(isolatedHome, ".claude");
+    }
+  } catch {
+    // Preserve caller-provided invalid cwd so runtime-error-path tests still
+    // exercise the CLI instead of failing inside the helper bootstrap.
+  }
+
   // Use spawnSync with shell to capture both stdout and stderr
   // Always use shell mode to properly handle argument parsing and quoting
   const result = spawnSync("/bin/sh", ["-c", `node ${CLI_PATH} ${args}`], {
     cwd,
     encoding: "utf-8",
     timeout: 30_000,
-    env: { ...cleanEnv, KSPEC_AUTHOR: "@test", ...env },
+    env: { ...cleanEnv, ...defaultEnv, KSPEC_AUTHOR: "@test", ...env },
     input: stdin !== undefined ? (stdin.endsWith("\n") ? stdin : `${stdin}\n`) : undefined,
   });
 
@@ -464,4 +515,101 @@ export function testUlid(prefix = "", sequence = 0): string {
  */
 export function testUlids(prefix: string, count: number): string[] {
   return Array.from({ length: count }, (_, i) => testUlid(prefix, i));
+}
+
+/**
+ * Write a task in split storage format.
+ *
+ * Creates:
+ * - tasks/<ULID>/task.yaml with core data (everything except notes)
+ * - tasks/<ULID>/notes.yaml with notes array
+ * - Appends a lean index entry to project.tasks.yaml
+ *
+ * The index entry excludes detail-only fields (description, todos, context,
+ * vcs_refs) and instead includes notes_count and todos_count.
+ *
+ * @param dir - Project root directory (where project.tasks.yaml lives)
+ * @param task - Full task record with _ulid. Notes should be in `notes` array.
+ *
+ * @example
+ * seedSplitTask(tempDir, {
+ *   _ulid: testUlid("TSK1", 1),
+ *   slugs: ["my-task"],
+ *   title: "My task",
+ *   type: "task",
+ *   status: "pending",
+ *   priority: 2,
+ *   depends_on: [],
+ *   notes: [],
+ *   todos: [],
+ *   created_at: "2026-01-01T00:00:00Z",
+ * });
+ */
+export function seedSplitTask(
+  dir: string,
+  task: Record<string, unknown> & { _ulid: string; notes?: unknown[] },
+): void {
+  const { notes = [], ...coreData } = task;
+  const taskDir = path.join(dir, "tasks", task._ulid);
+  mkdirSync(taskDir, { recursive: true });
+
+  writeFileSync(path.join(taskDir, "task.yaml"), yamlStringify(coreData));
+  writeFileSync(path.join(taskDir, "notes.yaml"), yamlStringify({ notes }));
+
+  const indexPath = path.join(dir, "project.tasks.yaml");
+  let entries: unknown[] = [];
+  try {
+    // oxlint-disable-next-line no-source-scanning/no-source-file-reads -- reading test fixture data, not source code
+    const existing = readFileSync(indexPath, "utf8");
+    const parsed = yamlParse(existing);
+    if (Array.isArray(parsed)) entries = parsed;
+  } catch {
+    // File doesn't exist yet, start with empty array
+  }
+
+  const { description: _d, todos: _t, context: _c, vcs_refs: _v, ...indexFields } = coreData;
+  entries.push({
+    ...indexFields,
+    notes_count: (notes as unknown[]).length,
+    todos_count: Array.isArray(task.todos) ? (task.todos as unknown[]).length : 0,
+  });
+  writeFileSync(indexPath, yamlStringify(entries));
+}
+
+/**
+ * Set up a project directory so initContext() detects the .kspec/ shadow worktree.
+ *
+ * Creates a git repo (via initGitRepo) and a fake .kspec/.git worktree pointer
+ * so that isValidWorktree() passes and initContext() resolves specDir to .kspec/
+ * instead of falling through to traditional mode.
+ *
+ * Use this when a test calls initContext() on a project directory that has a
+ * .kspec/ subdirectory (e.g., from setupMultiDirFixtures()). Without shadow
+ * detection setup, initContext() will silently resolve specDir to the project
+ * root, causing loaders to look for data files in the wrong place.
+ *
+ * @param projectDir - Project root directory that contains a .kspec/ subdirectory
+ *
+ * @example
+ * const fixturesRoot = await setupMultiDirFixtures();
+ * const projectA = path.join(fixturesRoot, 'project-a');
+ * await setupShadowDetection(projectA);
+ * // Now initContext(projectA) will correctly resolve specDir to projectA/.kspec/
+ */
+export async function setupShadowDetection(projectDir: string): Promise<void> {
+  // Initialize git repo
+  initGitRepo(projectDir);
+
+  // Create a worktree entry so isValidWorktree() passes
+  const worktreeDir = path.join(projectDir, ".git", "worktrees", "-kspec");
+  await fs.mkdir(worktreeDir, { recursive: true });
+  await fs.writeFile(path.join(worktreeDir, "HEAD"), "0".repeat(40) + "\n", "utf-8");
+  await fs.writeFile(
+    path.join(worktreeDir, "gitdir"),
+    path.join(projectDir, ".kspec", ".git") + "\n",
+    "utf-8",
+  );
+
+  // Point .kspec/.git to the worktree entry
+  await fs.writeFile(path.join(projectDir, ".kspec", ".git"), `gitdir: ${worktreeDir}\n`, "utf-8");
 }

@@ -12,6 +12,7 @@ import { validateSkillFile } from "../src/parser/validate-skills.js";
 import {
   kspec as kspecFull,
   kspecJson,
+  readTestOutput,
   setupTempFixtures,
   cleanupTempDir,
   createTempDir,
@@ -124,7 +125,7 @@ describe("AC-2: CRLF frontmatter stripping", () => {
     // Verify stored content has no frontmatter
     // (body may still contain \r from the original CRLF file — that's expected)
     const copiedPath = path.join(tempDir, "skills", "strip-test", "SKILL.md");
-    const copiedContent = await fs.readFile(copiedPath, "utf-8");
+    const copiedContent = await readTestOutput(copiedPath);
     expect(copiedContent).not.toContain("name: Strip Test");
     expect(copiedContent).not.toContain("description: Test stripping");
     expect(copiedContent).toContain("# Strip Test");
@@ -211,7 +212,7 @@ describe("AC-4: Setup --status detects stale agents.md", () => {
 
     // Tamper with the hash file to simulate meta having changed
     const hashPath = path.join(tempDir, ".kspec", ".kspec-agents-hash");
-    const hashContent = await fs.readFile(hashPath, "utf-8");
+    const hashContent = await readTestOutput(hashPath);
     const hashData = JSON.parse(hashContent);
     hashData.metaHash = "stale-fake-hash-that-does-not-match";
     await fs.writeFile(hashPath, JSON.stringify(hashData));
@@ -277,7 +278,7 @@ describe("AC-5: Case-insensitive base directory matching", () => {
         kspecFull(`skill import "${skillPath}"`, tempDir);
 
         const copiedPath = path.join(tempDir, "skills", "base-dir-test", "SKILL.md");
-        const copiedContent = await fs.readFile(copiedPath, "utf-8");
+        const copiedContent = await readTestOutput(copiedPath);
         expect(copiedContent).not.toContain("/path/to/skill");
         expect(copiedContent).toContain("# Base Dir Test");
       } finally {

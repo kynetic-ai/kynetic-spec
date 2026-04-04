@@ -36,6 +36,8 @@ import {
   getAuthor,
   resolveTaskDataManager,
   type LoadedTriageRecord,
+  type LoadedTask,
+  type LoadedSpecItem,
 } from "../../parser/index.js";
 import { resolveRefEntries } from "./ref-resolution.js";
 import { commitIfShadow } from "../../parser/shadow.js";
@@ -45,15 +47,18 @@ import { exportTriageRecords } from "../../export/triage.js";
 import { executeTriageAction, VALID_ACTIONS } from "../../triage/index.js";
 import type { PubSubManager } from "../websocket/pubsub";
 import { enumArrayUnion, enumUnion } from "./enum-utils.js";
+import type { EntityCacheAccessor } from "./entity-cache-types.js";
+import { wrapResponse } from "./response-envelope.js";
 
 interface TriageRouteOptions {
   pubsub: PubSubManager;
+  getEntityCache?: EntityCacheAccessor;
 }
 
 // VALID_ACTIONS and executeTriageAction imported from shared triage module
 
 export function createTriageRoutes(options: TriageRouteOptions) {
-  const { pubsub } = options;
+  const { pubsub, getEntityCache } = options;
 
   return (
     new Elysia({ prefix: "/api/triage" })
@@ -62,9 +67,36 @@ export function createTriageRoutes(options: TriageRouteOptions) {
       .get(
         "/",
         async ({ query, projectContext }) => {
-          // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-          const ctx = await initContext(projectContext.path);
-          const records = await loadTriageRecords(ctx);
+          // AC: @daemon-entity-cache ac-serve-from-memory — use cached triage records when ready
+          const cache = getEntityCache?.(projectContext.path);
+          const triageDomainState = cache?.getDomainState("triage");
+
+          // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
+          if (cache && triageDomainState === "loading") {
+            return wrapResponse([] as never[], {
+              cacheDomainState: "loading",
+              total: 0,
+              offset: 0,
+              limit: 0,
+            });
+          }
+
+          let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
+          // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
+          const getCtx = async () => {
+            if (!_ctx) _ctx = await initContext(projectContext.path, { syncMode: "skip" });
+            return _ctx;
+          };
+
+          let records;
+          if (cache && triageDomainState === "ready") {
+            records = cache.getTriageIndex();
+          }
+          if (!records) {
+            // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+            const ctx = await getCtx();
+            records = await loadTriageRecords(ctx);
+          }
 
           // Apply filters
           let filtered = records;
@@ -98,9 +130,19 @@ export function createTriageRoutes(options: TriageRouteOptions) {
           let refIndex: ReferenceIndex | null = null;
           if (hasEvidenceRefs) {
             try {
-              const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
-              const items = await loadAllItems(ctx);
-              refIndex = new ReferenceIndex(tasks, items);
+              // AC: @daemon-entity-cache ac-serve-from-memory — try cache for tasks and items
+              const tasksDomainState = cache?.getDomainState("tasks");
+              const itemsDomainState = cache?.getDomainState("items");
+              const tasks =
+                (cache && tasksDomainState === "ready" ? cache.getTaskIndex() : null) ??
+                (await resolveTaskDataManager(await getCtx()).loadAllTasks(await getCtx()));
+              const items =
+                (cache && itemsDomainState === "ready" ? cache.getItemIndex() : null) ??
+                (await loadAllItems(await getCtx()));
+              refIndex = new ReferenceIndex(
+                tasks as unknown as LoadedTask[],
+                items as unknown as LoadedSpecItem[],
+              );
             } catch {
               // Non-critical
             }
@@ -112,12 +154,12 @@ export function createTriageRoutes(options: TriageRouteOptions) {
               }))
             : paginated;
 
-          return {
-            items: enriched,
+          return wrapResponse(enriched, {
             total,
             offset,
             limit,
-          };
+            cacheDomainState: triageDomainState,
+          });
         },
         {
           query: t.Object({
@@ -134,8 +176,19 @@ export function createTriageRoutes(options: TriageRouteOptions) {
       .get(
         "/export",
         async ({ query, projectContext }) => {
+          // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
+          const cache = getEntityCache?.(projectContext.path);
+          const triageDomainState = cache?.getDomainState("triage");
+          if (cache && triageDomainState === "loading") {
+            return wrapResponse([] as never[], { cacheDomainState: "loading" });
+          }
+
+          // Export requires full triage records (item_snapshot, reasoning, etc.)
+          // — the index tier (TriageIndexSummary) strips those fields.
+          // Always load full records from disk for export.
           // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-          const ctx = await initContext(projectContext.path);
+          // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
+          const ctx = await initContext(projectContext.path, { syncMode: "skip" });
           let records = await loadTriageRecords(ctx);
 
           // Optional status filter on export
@@ -224,6 +277,12 @@ export function createTriageRoutes(options: TriageRouteOptions) {
             `triage: record ${savedRecord._ulid.slice(0, 8)} as ${savedRecord.action}`,
           );
 
+          // AC: @daemon-entity-cache ac-write-through — update cache before response
+          const createTriageCache = getEntityCache?.(projectContext.path);
+          if (createTriageCache) {
+            await createTriageCache.writeThrough("triage");
+          }
+
           // AC: @triage-daemon-api ac-3 - Broadcast triage:updates via WebSocket
           // AC: @trait-websocket-protocol ac-3 - Broadcast event
           pubsub.broadcast(
@@ -256,15 +315,53 @@ export function createTriageRoutes(options: TriageRouteOptions) {
 
       // GET single triage record
       // AC: @ui-api-ref-resolution ac-2 - Resolve evidence_refs titles
+      // AC: @daemon-entity-cache ac-detail-on-demand — serve from cache detail tier
       .get(
         "/:ref",
         async ({ params, error: errorResponse, projectContext }) => {
-          // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-          const ctx = await initContext(projectContext.path);
-          const records = await loadTriageRecords(ctx);
+          // AC: @daemon-entity-cache ac-serve-from-memory — defer initContext for cache hits
+          const cache = getEntityCache?.(projectContext.path);
+          let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
+          // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
+          const getCtx = async () => {
+            if (!_ctx) _ctx = await initContext(projectContext.path, { syncMode: "skip" });
+            return _ctx;
+          };
 
-          // AC: @trait-api-endpoint ac-2 - Resolve ref
-          const record = findTriageRecordByRef(records, params.ref);
+          const triageDomainState = cache?.getDomainState("triage");
+
+          // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
+          if (cache && triageDomainState === "loading") {
+            return wrapResponse(null, { cacheDomainState: "loading" });
+          }
+
+          // AC: @daemon-entity-cache ac-detail-on-demand — resolve via index, load from detail tier
+          let record: LoadedTriageRecord | undefined;
+          if (cache && triageDomainState === "ready") {
+            const cachedIndex = cache.getTriageIndex();
+            if (cachedIndex) {
+              const cleanRef = params.ref.startsWith("@") ? params.ref.slice(1) : params.ref;
+              const match = cachedIndex.find(
+                (r) =>
+                  r._ulid === cleanRef || r._ulid.toLowerCase().startsWith(cleanRef.toLowerCase()),
+              );
+              if (match) {
+                record = cache.getTriageDetail(match._ulid) ?? undefined;
+              }
+            }
+          }
+          if (!record) {
+            // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+            const ctx = await getCtx();
+            const records = await loadTriageRecords(ctx);
+            // AC: @trait-api-endpoint ac-2 - Resolve ref
+            record = findTriageRecordByRef(records, params.ref);
+            // Cache the loaded detail for subsequent requests
+            if (record && cache) {
+              cache.setTriageDetail(record._ulid, record);
+            }
+          }
+
           if (!record) {
             return errorResponse(404, {
               error: "not_found",
@@ -277,19 +374,32 @@ export function createTriageRoutes(options: TriageRouteOptions) {
           // AC: @ui-api-ref-resolution ac-2 - Resolve evidence_refs
           if (record.evidence_refs?.length > 0) {
             try {
-              const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
-              const items = await loadAllItems(ctx);
-              const refIndex = new ReferenceIndex(tasks, items);
-              return {
-                ...record,
-                resolved_evidence_refs: resolveRefEntries(refIndex, record.evidence_refs),
-              };
+              // AC: @daemon-entity-cache ac-serve-from-memory — try cache for tasks and items
+              const tasksDomainState = cache?.getDomainState("tasks");
+              const itemsDomainState = cache?.getDomainState("items");
+              const tasks =
+                (cache && tasksDomainState === "ready" ? cache.getTaskIndex() : null) ??
+                (await resolveTaskDataManager(await getCtx()).loadAllTasks(await getCtx()));
+              const items =
+                (cache && itemsDomainState === "ready" ? cache.getItemIndex() : null) ??
+                (await loadAllItems(await getCtx()));
+              const refIndex = new ReferenceIndex(
+                tasks as unknown as LoadedTask[],
+                items as unknown as LoadedSpecItem[],
+              );
+              return wrapResponse(
+                {
+                  ...record,
+                  resolved_evidence_refs: resolveRefEntries(refIndex, record.evidence_refs),
+                },
+                { cacheDomainState: triageDomainState },
+              );
             } catch {
               // Non-critical
             }
           }
 
-          return record;
+          return wrapResponse(record, { cacheDomainState: triageDomainState });
         },
         {
           params: t.Object({
@@ -352,6 +462,12 @@ export function createTriageRoutes(options: TriageRouteOptions) {
 
           // AC: @trait-api-endpoint ac-5 - Shadow commit
           await commitIfShadow(ctx.shadow, `triage: override ${record._ulid.slice(0, 8)}`);
+
+          // AC: @daemon-entity-cache ac-write-through — update cache before response
+          const overrideCache = getEntityCache?.(projectContext.path);
+          if (overrideCache) {
+            await overrideCache.writeThrough("triage");
+          }
 
           // AC: @triage-daemon-api ac-4 - Broadcast triage:updates
           pubsub.broadcast(
@@ -438,6 +554,25 @@ export function createTriageRoutes(options: TriageRouteOptions) {
 
           // AC: @trait-api-endpoint ac-5 - Shadow commit
           await commitIfShadow(ctx.shadow, `triage: act ${record._ulid.slice(0, 8)}`);
+
+          // AC: @daemon-entity-cache ac-write-through — update cache before response
+          // executeTriageAction performs cross-domain mutations depending on action:
+          //   promote → creates task + deletes inbox item
+          //   delete/duplicate → deletes inbox item
+          //   spec-gap → saves observation (meta domain)
+          const actCache = getEntityCache?.(projectContext.path);
+          if (actCache) {
+            await actCache.writeThrough("triage");
+            const action = record.action;
+            if (action === "promote") {
+              await actCache.writeThrough("tasks");
+              await actCache.writeThrough("inbox");
+            } else if (action === "delete" || action === "duplicate") {
+              await actCache.writeThrough("inbox");
+            } else if (action === "spec-gap") {
+              await actCache.writeThrough("meta");
+            }
+          }
 
           // AC: @triage-daemon-api ac-5 - Broadcast triage:updates
           pubsub.broadcast(

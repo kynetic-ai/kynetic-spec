@@ -11,7 +11,10 @@
  */
 
 import * as path from "node:path";
-import { spawnSync } from "node:child_process";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
+
+const execFileAsync = promisify(execFile);
 import { ulid } from "ulid";
 import {
   initContext,
@@ -22,7 +25,11 @@ import {
   type LoadedTask,
   type LoadedAgent,
 } from "../parser/index.js";
-import { DEFAULT_KSPEC_CLI_PATH, runInvocation } from "./invocation.js";
+import { loadDispatchWorkspaceRegistry } from "../parser/dispatch-workspaces.js";
+import { findPlanByRef } from "../parser/plans.js";
+import { DEFAULT_IDLE_GRACE_MS, DEFAULT_KSPEC_CLI_PATH, runInvocation } from "./invocation.js";
+import { SessionRegistry } from "./session-registry.js";
+import type { SessionIdleContext } from "./invocation.js";
 import { loadProjectConfig, resolveDispatchRemoteSync } from "../parser/config.js";
 import type { InvocationOptions, InvocationResult } from "./invocation.js";
 import { SessionEventAccumulator } from "./session-event-accumulator.js";
@@ -47,18 +54,21 @@ import {
   reconcileDispatchWorkspaceArtifacts,
   discoverWorkspaceForReviewOrFixCycle,
   fastForwardDispatchIntegrationBranch,
+  integrationTargetNeedsPush,
   pushDispatchBranch,
   pushIntegrationTarget,
   runDispatchIntegrationTargetGit,
   resolveDispatchIntegrationMutationScope,
   resolveDispatchRemote,
   resolveDispatchWorkspaceConfig,
+  purgeDispatchWorkspaceRecord,
+  validateDispatchWorkspaceForInvocation,
 } from "./workspace.js";
 import { ensureWorkspaceBootstrap, DispatchBootstrapError } from "./bootstrap.js";
 import type { AgentDispatchRule, AgentDispatchFilter } from "../schema/meta.js";
 import { matchesAutomationFilter } from "../schema/task.js";
 import type { SessionTrigger } from "../sessions/types.js";
-import { getSessionCache } from "../sessions/cache.js";
+import { getEntityCache } from "../daemon/entity-cache.js";
 
 // ─── Simple Mutex ─────────────────────────────────────────────────────────────
 
@@ -375,16 +385,18 @@ export function findPriorExaminedCommit(
  *
  * AC: @review-fix-cycle-diff ac-3 — graceful omission on unreachable commits
  */
-export function computeDiffStat(fromCommit: string, toCommit: string, cwd: string): string | null {
+export async function computeDiffStat(
+  fromCommit: string,
+  toCommit: string,
+  cwd: string,
+): Promise<string | null> {
   try {
-    const result = spawnSync("git", ["diff", "--stat", fromCommit, toCommit], {
+    const result = await execFileAsync("git", ["diff", "--stat", fromCommit, toCommit], {
       cwd,
+      env: buildDispatchGitEnv(),
       encoding: "utf-8",
-      stdio: "pipe",
       timeout: 10_000,
     });
-
-    if (result.status !== 0) return null;
 
     const stat = result.stdout?.trim();
     if (!stat) return null;
@@ -683,11 +695,19 @@ export type TargetSyncResult =
   | "diverged"
   | "unsafe_target";
 
+export interface DegradedTargetState {
+  branch: string;
+  reason: string;
+  enteredAt: Date;
+}
+
 /**
  * Degraded state descriptor for the dispatch engine.
  * AC: @dispatch-remote-branch-sync ac-degraded-status-api
  */
-export interface DegradedState {
+export type DegradedState = DegradedTargetState[];
+
+interface DegradedSnapshot {
   active: boolean;
   reason: string;
   enteredAt: Date | null;
@@ -699,6 +719,7 @@ export interface DegradedState {
  */
 export interface SyncStateEvent {
   type: "sync_state";
+  branch: string;
   degraded: boolean;
   reason: string;
   enteredAt: string | null;
@@ -798,6 +819,18 @@ export class DispatchEngine {
   /** AC: @per-task-dispatch-drain-coalescing ac-4 */
   private coalesceWindowMs: number;
   private kspecCliPath?: string;
+  /**
+   * Active session registry for multi-turn prompt delivery.
+   * Shared with the action executor so hooks can deliver prompts to live sessions.
+   * AC: @active-session-registry ac-1, @multi-turn-session-lifecycle ac-2, ac-4
+   */
+  private _sessionRegistry = new SessionRegistry();
+  /**
+   * Whether any hook targets session.idle. Updated on each meta context load.
+   * When false, invocations use idleGracePeriodMs=0 for backward-compat (ac-11).
+   * AC: @multi-turn-session-lifecycle ac-11
+   */
+  private _hasSessionIdleHooks = false;
   private onInvocationEvent?: (event: InvocationEvent) => void;
   private onSessionEvent?: (event: SessionEventData) => void;
   private onSyncStateEvent?: (event: SyncStateEvent) => void;
@@ -841,46 +874,43 @@ export class DispatchEngine {
   /** Central event bus for structured event emission and subscription. AC: @dispatch-event-envelope ac-1 through ac-6 */
   private _eventBus: EventBus;
   /**
-   * Whether a push to the integration target is currently in progress.
+   * Integration target branches currently being pushed to remote.
    * AC: @dispatch-remote-branch-sync ac-target-push-serialization
+   * AC: @dispatch-remote-branch-sync ac-target-push-cross-branch-concurrency
    */
-  private targetPushInProgress = false;
+  private _targetPushesInProgress = new Set<string>();
   /** Resolved effective remote_sync value (set once at start time). */
   private remoteSyncEnabled = false;
   /** Resolved remote name for push operations (null = no remote). */
   private dispatchRemote: string | null = null;
-  /** Resolved integration target branch for push operations. */
-  private integrationTargetBranch: string | null = null;
+  /** Project-configured base branch. Always included in the active target set. */
+  private _configuredBaseBranch: string | null = null;
+  /** Shared source of truth for active integration targets across push and pull paths. */
+  private _activeTargets = new Set<string>();
 
   // ─── Target Branch Sync State ───────────────────────────────────────────────
   // AC: @dispatch-remote-branch-sync ac-pull-target-on-start through ac-no-remote
 
-  /** Whether a target sync is currently in progress (running guard). */
-  private _targetSyncRunning = false;
-  /** Timestamp of last successful target sync (ms since epoch). 0 = never synced. */
-  private _lastTargetSyncTimestamp = 0;
-  /** Counter of consecutive transient sync failures. Reset on any success. */
-  private _consecutiveTransientFailures = 0;
+  /** Target branches currently being synced from remote. */
+  private _targetSyncRunning = new Set<string>();
+  /** Timestamp of last successful sync per target branch (ms since epoch). */
+  private _targetSyncTimestamps = new Map<string, number>();
+  /** Counter of consecutive transient sync failures per target branch. Reset on success. */
+  private _consecutiveSyncFailures = new Map<string, number>();
   /** Resolved remote sync config (cached at start). */
   private _remoteSyncEnabled: boolean | null = null;
   /** Resolved remote name for sync operations (cached at start). */
   private _syncRemote: string | null = null;
-  /** Resolved base branch for sync operations (cached at start). */
-  private _syncBaseBranch: string | null = null;
   /** Configured sync interval in milliseconds. */
   private _syncIntervalMs = 0;
-  /** Timestamp of first consecutive transient failure (ms since epoch). 0 = no failures. */
-  private _firstTransientFailureTimestamp = 0;
+  /** Timestamp of first consecutive transient failure per target branch (ms since epoch). */
+  private _firstSyncFailureTimestamps = new Map<string, number>();
 
   // ─── Degraded State ──────────────────────────────────────────────────────
   // AC: @dispatch-remote-branch-sync ac-divergence-enters-degraded through ac-degraded-auto-recover
 
-  /** Whether the engine is in degraded state. */
-  private _degraded = false;
-  /** Human-readable reason for degraded state. */
-  private _degradedReason = "";
-  /** Timestamp when degraded state was entered. */
-  private _degradedEnteredAt: Date | null = null;
+  /** Branch-scoped degraded targets. */
+  private _degradedTargets = new Map<string, { reason: string; enteredAt: Date }>();
 
   constructor(options: DispatchEngineOptions) {
     this.projectDir = options.projectDir;
@@ -915,6 +945,17 @@ export class DispatchEngine {
   }
 
   /**
+   * Active session registry for multi-turn prompt delivery.
+   * Exposes the registry so the action executor (and other components)
+   * can deliver prompts to live sessions.
+   *
+   * AC: @active-session-registry ac-3
+   */
+  get sessionRegistry(): SessionRegistry {
+    return this._sessionRegistry;
+  }
+
+  /**
    * Start the dispatch engine.
    *
    * Loads current task states and evaluates dispatch rules for bootstrap.
@@ -946,14 +987,13 @@ export class DispatchEngine {
     try {
       const resolvedConfig = await resolveDispatchWorkspaceConfig(this.projectDir);
       const { config } = await loadProjectConfig(this.projectDir);
-      this.dispatchRemote = resolveDispatchRemote(this.projectDir);
+      this.dispatchRemote = await resolveDispatchRemote(this.projectDir);
       this.remoteSyncEnabled = resolveDispatchRemoteSync(config, this.dispatchRemote !== null);
-      this.integrationTargetBranch = resolvedConfig.baseBranch;
+      this._configuredBaseBranch ??= resolvedConfig.baseBranch;
     } catch (err) {
       console.warn("[dispatch] Failed to resolve remote sync config, defaulting to disabled:", err);
       this.remoteSyncEnabled = false;
       this.dispatchRemote = null;
-      this.integrationTargetBranch = null;
     }
 
     // AC: @agent-dispatch-engine ac-8 - Bootstrap: evaluate existing task states
@@ -993,6 +1033,7 @@ export class DispatchEngine {
 
     const cleanupState = resolveCleanupStateForTaskChange(change);
     if (cleanupState) {
+      const cleanupTargetBranch = await this._loadWorkspaceTargetForTask(change.taskRef);
       try {
         await this.shadowMutex.runExclusive(async () => {
           await reconcileDispatchWorkspaceLifecycle({
@@ -1007,6 +1048,9 @@ export class DispatchEngine {
             cleanupState,
           });
         });
+        if (cleanupTargetBranch) {
+          await this._removeActiveTargetIfOrphaned(cleanupTargetBranch);
+        }
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
         console.error(
@@ -1171,10 +1215,17 @@ export class DispatchEngine {
     // risks hanging indefinitely if an invocation never resolves).
     this.queues.clear();
 
-    // AC: @agent-dispatch-engine ac-11 - Send graceful cancel to all active invocations
+    // AC: @agent-dispatch-engine ac-11 - Send graceful cancel to all active invocations.
+    // Abort controllers BEFORE closing sessions so that invocations waiting
+    // in idle observe the abort signal (InvocationAbortedError) rather than
+    // the prompt-queue close (which resolves null and falls through the
+    // normal success path, misreporting interrupted sessions as completed).
     for (const controller of this.invocationAbortControllers) {
       controller.abort();
     }
+
+    // AC: @active-session-registry ac-4 — close all active sessions after abort
+    this._sessionRegistry.closeAll("dispatch engine stopping");
 
     // Wait for all running invocations to complete (or abort).
     // Safe as a single pass: queues are already cleared above, and
@@ -1282,12 +1333,8 @@ export class DispatchEngine {
   private async _reconcile(): Promise<void> {
     // AC: @dispatch-remote-branch-sync ac-pull-target-periodic — sync target when stale
     // AC: @dispatch-remote-branch-sync ac-pull-target-periodic-deferred — skip if reviewer active
-    if (
-      this._remoteSyncEnabled &&
-      this._isTargetSyncStale() &&
-      !this._hasActiveReviewerInvocation()
-    ) {
-      await this._syncTargetBranch();
+    if (this._remoteSyncEnabled) {
+      await this._syncAllActiveTargets({ staleOnly: true });
     }
 
     try {
@@ -1303,16 +1350,21 @@ export class DispatchEngine {
           this._activeRoleByTaskRef(),
         );
       });
+      // AC: @multi-turn-session-lifecycle ac-11 — reload session.idle hook presence
+      // so hooks added while dispatch is running take effect on subsequent invocations.
+      const meta = await loadMetaContext(ctx);
+      this._updateSessionIdleHookPresence(meta);
     } catch (err) {
       console.error("[dispatch] Workspace registry reconciliation error:", err);
     }
     await reconcileDispatchWorkspaceArtifacts(this.projectDir, {
       activeTaskRefs: this._activeTaskRefs(),
     });
+
     // AC: @dispatch-remote-branch-sync ac-push-target-periodic
     // Push the integration target if it has unpushed commits (retries failed post-merge pushes).
     if (this.remoteSyncEnabled && this.dispatchRemote) {
-      this._pushIntegrationTargetAsync("periodic-sync");
+      await this._pushActiveTargetsAsync("periodic-sync");
     }
 
     const enqueued = await this._evaluateAllTasks({ skipIfActive: true });
@@ -1334,9 +1386,13 @@ export class DispatchEngine {
    * AC: @dispatch-remote-branch-sync ac-subsequent-push
    * AC: @dispatch-remote-branch-sync ac-push-non-fatal
    */
-  private _pushDispatchBranchAsync(canonicalBranch: string, taskRef: string): void {
+  private async _pushDispatchBranchAsync(canonicalBranch: string, taskRef: string): Promise<void> {
     try {
-      const result = pushDispatchBranch(this.projectDir, canonicalBranch, this.dispatchRemote!);
+      const result = await pushDispatchBranch(
+        this.projectDir,
+        canonicalBranch,
+        this.dispatchRemote!,
+      );
       if (result.error) {
         // AC: @dispatch-remote-branch-sync ac-push-non-fatal
         console.warn(
@@ -1365,45 +1421,82 @@ export class DispatchEngine {
    * AC: @dispatch-remote-branch-sync ac-target-push-serialization
    * AC: @dispatch-remote-branch-sync ac-push-non-fatal
    */
-  private _pushIntegrationTargetAsync(trigger: string): void {
-    // AC: @dispatch-remote-branch-sync ac-target-push-serialization
-    if (this.targetPushInProgress) {
+  private async _pushIntegrationTargetAsync(
+    branch: string | undefined,
+    trigger: string,
+  ): Promise<void> {
+    const targetBranch = this._resolveBaseBranch(branch);
+    if (!targetBranch) {
       return;
     }
-    this.targetPushInProgress = true;
+    if (
+      trigger === "periodic-sync" &&
+      !(await integrationTargetNeedsPush(this.projectDir, targetBranch))
+    ) {
+      return;
+    }
+    // AC: @dispatch-remote-branch-sync ac-target-push-serialization
+    if (this._targetPushesInProgress.has(targetBranch)) {
+      return;
+    }
+    this._targetPushesInProgress.add(targetBranch);
     try {
-      const config = this._resolveBaseBranch();
-      if (!config) {
-        return;
-      }
       try {
-        resolveDispatchIntegrationMutationScope(this.projectDir, config);
+        await resolveDispatchIntegrationMutationScope(this.projectDir, targetBranch);
       } catch (err) {
-        const reason = this._formatUnsafeMutationScopeReason(err, config);
-        this._enterDegradedState(reason);
-        console.warn(`[dispatch] Integration target push skipped (${trigger}): ${reason}`);
+        const reason = this._formatUnsafeMutationScopeReason(err, targetBranch);
+        this._enterDegradedState(targetBranch, reason);
+        console.warn(
+          `[dispatch] Integration target push skipped for "${targetBranch}" (${trigger}): ${reason}`,
+        );
         return;
       }
-      const result = pushIntegrationTarget(this.projectDir, config, this.dispatchRemote!);
+      const result = await pushIntegrationTarget(
+        this.projectDir,
+        targetBranch,
+        this.dispatchRemote!,
+      );
       if (result.error) {
         // AC: @dispatch-remote-branch-sync ac-push-non-fatal
-        console.warn(`[dispatch] Integration target push failed (${trigger}): ${result.error}`);
+        console.warn(
+          `[dispatch] Integration target push failed for "${targetBranch}" (${trigger}): ${result.error}`,
+        );
       } else if (result.pushed) {
-        console.log(`[dispatch] Pushed integration target "${config}" (${trigger})`);
+        console.log(`[dispatch] Pushed integration target "${targetBranch}" (${trigger})`);
       }
     } catch (err) {
       // AC: @dispatch-remote-branch-sync ac-push-non-fatal
-      console.warn(`[dispatch] Unexpected error pushing integration target (${trigger}):`, err);
+      console.warn(
+        `[dispatch] Unexpected error pushing integration target "${targetBranch}" (${trigger}):`,
+        err,
+      );
     } finally {
-      this.targetPushInProgress = false;
+      this._targetPushesInProgress.delete(targetBranch);
     }
   }
 
+  private async _pushActiveTargetsAsync(trigger: string): Promise<void> {
+    const activeTargets = this._resolveActiveTargets();
+    if (activeTargets.length === 0) {
+      return;
+    }
+    await Promise.all(
+      activeTargets.map((branch) => this._pushIntegrationTargetAsync(branch, trigger)),
+    );
+  }
+
   /**
-   * Resolve the dispatch base branch from the cached config. Returns null if unavailable.
+   * Resolve a specific integration target branch, defaulting to the configured base branch.
    */
-  private _resolveBaseBranch(): string | null {
-    return this.integrationTargetBranch;
+  private _resolveBaseBranch(branch?: string): string | null {
+    return branch ?? this._configuredBaseBranch;
+  }
+
+  /**
+   * Resolve the current active integration targets as a stable array snapshot.
+   */
+  private _resolveActiveTargets(): string[] {
+    return Array.from(this._activeTargets).toSorted();
   }
 
   /**
@@ -1521,12 +1614,26 @@ export class DispatchEngine {
   }
 
   /**
+   * Reload _hasSessionIdleHooks from the current meta context.
+   * Called from both _loadAgents() and _reconcile() so that hooks added
+   * while dispatch is running are picked up without waiting for the next
+   * _loadAgents() cycle.
+   *
+   * AC: @multi-turn-session-lifecycle ac-11
+   */
+  private _updateSessionIdleHookPresence(meta: { hooks: Array<{ on: string }> }): void {
+    this._hasSessionIdleHooks = meta.hooks.some((h) => h.on === "session.idle");
+  }
+
+  /**
    * Load agent definitions from meta context.
    */
   private async _loadAgents(): Promise<LoadedAgent[]> {
     try {
       const ctx = await initContext(this.projectDir);
       const meta = await loadMetaContext(ctx);
+      // AC: @multi-turn-session-lifecycle ac-11 — track whether any hook targets session.idle
+      this._updateSessionIdleHookPresence(meta);
       return meta.agents;
     } catch {
       return [];
@@ -1780,6 +1887,17 @@ export class DispatchEngine {
         hasSubmissionLinkage
       : health.healthy;
 
+    // AC: @dispatch-workspace-registry ac-14 — determine if the workspace record
+    // is unrecoverable (missing canonical branch with no recovery path) for a
+    // non-terminal task. These reasons correspond to health.status === "invalid"
+    // in reconcileWorkspaceHealth.
+    const isNonTerminal =
+      entry.change.toStatus !== "completed" && entry.change.toStatus !== "cancelled";
+    const isUnrecoverable =
+      health.exists &&
+      !health.healthy &&
+      (health.reason === "missing-canonical-branch" || health.reason === "missing-adopted-branch");
+
     // For resumable tasks, attempt workspace discovery before discarding the
     // queue entry as missing or ineligible.
     if (
@@ -1819,6 +1937,19 @@ export class DispatchEngine {
         };
       }
 
+      // AC: @dispatch-workspace-registry ac-14 — after discovery fails for a
+      // resumable task with an unrecoverable workspace, purge the stale record
+      // so the task can be freshly provisioned. The purge acquires the shadow
+      // mutation lock and durably commits (ac-8) before returning eligible.
+      if (isNonTerminal && isUnrecoverable && health.metadata) {
+        await this._purgeUnrecoverableWorkspaceRecord(
+          entry.change.taskRef,
+          health.metadata.workspaceId,
+          health.reason!,
+        );
+        return { eligible: true, exists: false, reason: null };
+      }
+
       // Discovery failed — return ineligible with diagnostic-enriched reason.
       const diagnosticReason =
         discoveryResult.diagnostics[0]?.code ??
@@ -1830,11 +1961,54 @@ export class DispatchEngine {
       };
     }
 
+    // AC: @dispatch-workspace-registry ac-14 — for non-resumable non-terminal tasks
+    // (e.g., pending via task.ready) with an unrecoverable workspace record, purge
+    // the stale record so the task becomes eligible for fresh provisioning. The
+    // purge acquires the shadow mutation lock and durably commits (ac-8) before
+    // returning eligible.
+    if (!eligible && isNonTerminal && isUnrecoverable && health.metadata) {
+      await this._purgeUnrecoverableWorkspaceRecord(
+        entry.change.taskRef,
+        health.metadata.workspaceId,
+        health.reason!,
+      );
+      return { eligible: true, exists: false, reason: null };
+    }
+
     return {
       eligible,
       exists: health.exists,
       reason: health.reason,
     };
+  }
+
+  /**
+   * Purge an unrecoverable workspace record so the task can be freshly
+   * provisioned on the next dispatch cycle.
+   *
+   * Acquires the dispatch shadow mutation lock and durably commits the
+   * deletion to the shadow branch so daemon restart cannot resurrect the
+   * stale record.
+   *
+   * AC: @dispatch-workspace-registry ac-8
+   * AC: @dispatch-workspace-registry ac-14
+   */
+  private async _purgeUnrecoverableWorkspaceRecord(
+    taskRef: string,
+    workspaceId: string,
+    reason: string,
+  ): Promise<void> {
+    console.log(
+      `[dispatch] Purging unrecoverable workspace record ${workspaceId} for ${taskRef} (${reason}). ` +
+        `Task will be eligible for fresh provisioning on the next dispatch cycle.`,
+    );
+    try {
+      await purgeDispatchWorkspaceRecord(this.projectDir, taskRef, workspaceId);
+    } catch (err) {
+      console.log(
+        `[dispatch] Failed to purge workspace record ${workspaceId}: ${err instanceof Error ? err.message : String(err)}`,
+      );
+    }
   }
 
   private async _pruneIneligibleQueueEntries(
@@ -2020,13 +2194,6 @@ export class DispatchEngine {
     // Prevent new invocation starts during/after shutdown.
     if (!this.running) return;
 
-    // AC: @dispatch-remote-branch-sync ac-degraded-no-provision
-    // When degraded, skip provisioning new workspaces. Tasks remain queued.
-    // Existing in-flight invocations continue normally.
-    if (this._degraded) {
-      return;
-    }
-
     // AC: @agent-dispatch-engine ac-17 - Load current tasks once for staleness + readiness checks
     let currentTasks: LoadedTask[] | undefined;
     let currentTaskStates: Map<string, TaskStatus> | undefined;
@@ -2040,6 +2207,10 @@ export class DispatchEngine {
 
     await this._pruneIneligibleQueueEntries(agents, currentTasks, currentTaskStates);
 
+    const taskLookup = new Map((currentTasks ?? []).map((task) => [task._ulid, task]));
+    const deferredEntries = new Map<string, QueueEntry[]>();
+    const targetCache = new Map<string, string>();
+
     while (this.running) {
       const candidate = this._selectNextCandidate(agents);
       if (!candidate) {
@@ -2049,10 +2220,33 @@ export class DispatchEngine {
       const [entry] = candidate.queue.splice(candidate.queueIndex, 1);
       this.queues.set(candidate.agent.id, candidate.queue);
 
+      const targetBranch = await this._resolveQueueEntryTargetBranch(
+        entry,
+        taskLookup,
+        targetCache,
+      );
+      if (this._degradedTargets.has(targetBranch)) {
+        console.log(
+          `[dispatch] Deferring ${entry.change.taskRef} because integration target "${targetBranch}" is degraded.`,
+        );
+        const deferredQueue = deferredEntries.get(candidate.agent.id) ?? [];
+        deferredQueue.push(entry);
+        deferredEntries.set(candidate.agent.id, deferredQueue);
+        continue;
+      }
+
       const spawned = await this._spawnInvocation(candidate.agent, entry);
       if (!spawned) {
         continue;
       }
+    }
+
+    for (const [agentId, entries] of deferredEntries) {
+      const queue = this.queues.get(agentId) ?? [];
+      for (const entry of entries) {
+        this._insertQueueEntry(queue, entry);
+      }
+      this.queues.set(agentId, queue);
     }
   }
 
@@ -2134,22 +2328,34 @@ export class DispatchEngine {
     return `${basePrompt}\n\n${orientation}\n\n${roleEntry}\n\n${autonomousPreamble.join("\n")}\n\n${triggerSpecific.join("\n")}`;
   }
 
-  private _runKspecCommand(args: string[]): KspecCommandResult {
-    const result = spawnSync(
-      process.execPath,
-      [this.kspecCliPath ?? DEFAULT_KSPEC_CLI_PATH, ...args],
-      {
-        cwd: this.cwd,
-        encoding: "utf-8",
-        stdio: "pipe",
-      },
-    );
-
-    return {
-      status: result.status,
-      stdout: result.stdout ?? "",
-      stderr: result.stderr ?? "",
-    };
+  private async _runKspecCommand(args: string[]): Promise<KspecCommandResult> {
+    try {
+      const result = await execFileAsync(
+        process.execPath,
+        [this.kspecCliPath ?? DEFAULT_KSPEC_CLI_PATH, ...args],
+        {
+          cwd: this.cwd,
+          encoding: "utf-8",
+        },
+      );
+      return {
+        status: 0,
+        stdout: result.stdout ?? "",
+        stderr: result.stderr ?? "",
+      };
+    } catch (err: unknown) {
+      const e = err as {
+        stdout?: string;
+        stderr?: string;
+        code?: number | string;
+        killed?: boolean;
+      };
+      return {
+        status: typeof e.code === "number" ? e.code : e.killed ? null : 1,
+        stdout: e.stdout ?? "",
+        stderr: e.stderr ?? "",
+      };
+    }
   }
 
   private _taskCommandError(args: string[], result: KspecCommandResult): Error {
@@ -2161,9 +2367,9 @@ export class DispatchEngine {
     );
   }
 
-  private _addTaskNote(taskRef: string, note: string): void {
+  private async _addTaskNote(taskRef: string, note: string): Promise<void> {
     const args = ["task", "note", taskRef, note];
-    const result = this._runKspecCommand(args);
+    const result = await this._runKspecCommand(args);
     if (result.status !== 0) {
       console.warn(
         `[dispatch] Failed to add task note for ${taskRef}: ${this._taskCommandError(args, result).message}`,
@@ -2171,17 +2377,21 @@ export class DispatchEngine {
     }
   }
 
-  private _blockTask(taskRef: string, reason: string): void {
+  private async _blockTask(taskRef: string, reason: string): Promise<void> {
     const args = ["task", "block", taskRef, "--reason", reason];
-    const result = this._runKspecCommand(args);
+    const result = await this._runKspecCommand(args);
     if (result.status !== 0) {
       throw this._taskCommandError(args, result);
     }
   }
 
-  private _runRecoveryTaskCommand(taskRef: string, action: string, run: () => void): void {
+  private async _runRecoveryTaskCommand(
+    taskRef: string,
+    action: string,
+    run: () => Promise<void>,
+  ): Promise<void> {
     try {
-      run();
+      await run();
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       console.warn(`[dispatch] Failed to ${action} for ${taskRef} during recovery: ${message}`);
@@ -2207,8 +2417,20 @@ export class DispatchEngine {
       entry.change.toStatus === "pending_review" ? "reviewer" : "worker";
     try {
       // AC: @dispatch-remote-branch-sync ac-pull-target-before-provision — sync if stale
-      if (this._remoteSyncEnabled && this._isTargetSyncStale()) {
-        await this._syncTargetBranch();
+      if (this._remoteSyncEnabled) {
+        const resolvedConfig = await resolveDispatchWorkspaceConfig(this.projectDir, {
+          taskRef: entry.change.taskRef,
+          task: entry.change.task
+            ? {
+                title: entry.change.task.title,
+                slugs: entry.change.task.slugs,
+                plan_ref: entry.change.task.plan_ref,
+              }
+            : undefined,
+        });
+        if (this._isTargetSyncStale(resolvedConfig.baseBranch)) {
+          await this._syncTarget(resolvedConfig.baseBranch);
+        }
       }
 
       try {
@@ -2240,13 +2462,13 @@ export class DispatchEngine {
         console.error(
           `[dispatch] Failed to provision workspace for ${entry.change.taskRef}: ${message}`,
         );
-        this._runRecoveryTaskCommand(entry.change.taskRef, "add task note", () =>
+        await this._runRecoveryTaskCommand(entry.change.taskRef, "add task note", () =>
           this._addTaskNote(
             entry.change.taskRef,
             `[DISPATCH-WORKSPACE] ${message} Suggested action: ${guidance}`,
           ),
         );
-        this._runRecoveryTaskCommand(entry.change.taskRef, "block task", () =>
+        await this._runRecoveryTaskCommand(entry.change.taskRef, "block task", () =>
           this._blockTask(
             entry.change.taskRef,
             `Dispatch workspace provisioning failed: ${message}. Suggested action: ${guidance}`,
@@ -2255,7 +2477,9 @@ export class DispatchEngine {
         return false;
       }
 
-      const dispatchEnv = {
+      await this._addActiveTarget(workspace.metadata.integrationTargetBranch);
+
+      let dispatchEnv = {
         KSPEC_DISPATCH_BASE_BRANCH: workspace.metadata.baseBranch,
         KSPEC_DISPATCH_MERGE_TARGET: workspace.metadata.mergeTargetBranch,
         KSPEC_DISPATCH_CANONICAL_BRANCH: workspace.metadata.canonicalBranch,
@@ -2287,30 +2511,97 @@ export class DispatchEngine {
           `[dispatch] Failed to bootstrap workspace for ${entry.change.taskRef}: ${message}`,
         );
         if (this.kspecCliPath) {
-          spawnSync(
-            process.execPath,
-            [
-              this.kspecCliPath,
-              "task",
-              "note",
-              entry.change.taskRef,
-              `[DISPATCH-BOOTSTRAP] ${message} Suggested action: ${guidance}`,
-            ],
-            { cwd: this.cwd },
+          // AC: @agent-dispatch-engine ac-28 — fire-and-forget async error recovery
+          await this._addTaskNote(
+            entry.change.taskRef,
+            `[DISPATCH-BOOTSTRAP] ${message} Suggested action: ${guidance}`,
           );
-          spawnSync(
-            process.execPath,
-            [
-              this.kspecCliPath,
-              "task",
-              "block",
-              entry.change.taskRef,
-              "--reason",
-              `Dispatch bootstrap failed: ${message}`,
-            ],
-            { cwd: this.cwd },
-          );
+          try {
+            await this._blockTask(entry.change.taskRef, `Dispatch bootstrap failed: ${message}`);
+          } catch {
+            // Best-effort — block may fail if task already blocked
+          }
         }
+        return false;
+      }
+
+      try {
+        const validation = await validateDispatchWorkspaceForInvocation({
+          projectDir: this.projectDir,
+          taskRef: entry.change.taskRef,
+          workspace,
+          role,
+          task: entry.change.task
+            ? {
+                title: entry.change.task.title,
+                slugs: entry.change.task.slugs,
+              }
+            : undefined,
+          submissionLinkage: entry.change.task?.submission_linkage ?? undefined,
+          taskStatus: entry.change.task?.status ?? entry.change.toStatus,
+        });
+        workspace = validation.workspace;
+
+        if (validation.repaired) {
+          dispatchEnv = {
+            KSPEC_DISPATCH_BASE_BRANCH: workspace.metadata.baseBranch,
+            KSPEC_DISPATCH_MERGE_TARGET: workspace.metadata.mergeTargetBranch,
+            KSPEC_DISPATCH_CANONICAL_BRANCH: workspace.metadata.canonicalBranch,
+            KSPEC_DISPATCH_WORKTREE_ROOT: workspace.metadata.worktreeRoot,
+            KSPEC_DISPATCH_WORKSPACE_FILE: workspace.metadataPath,
+          };
+          const rebootstrap = await ensureWorkspaceBootstrap({
+            projectDir: this.projectDir,
+            workspaceDir: workspace.cwd,
+            metadataPath: workspace.metadataPath,
+            metadata: workspace.metadata,
+            role,
+            agent,
+            env: dispatchEnv,
+          });
+          workspace = {
+            ...workspace,
+            metadata: rebootstrap.metadata,
+          };
+          workspace = (
+            await validateDispatchWorkspaceForInvocation({
+              projectDir: this.projectDir,
+              taskRef: entry.change.taskRef,
+              workspace,
+              role,
+              task: entry.change.task
+                ? {
+                    title: entry.change.task.title,
+                    slugs: entry.change.task.slugs,
+                  }
+                : undefined,
+              submissionLinkage: entry.change.task?.submission_linkage ?? undefined,
+              taskStatus: entry.change.task?.status ?? entry.change.toStatus,
+              allowRecovery: false,
+            })
+          ).workspace;
+        }
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        const guidance =
+          err instanceof DispatchWorkspaceError
+            ? err.suggestion
+            : "Inspect dispatch workspace validation diagnostics, git worktree state, and filesystem permissions.";
+        console.error(
+          `[dispatch] Failed pre-invocation workspace validation for ${entry.change.taskRef}: ${message}`,
+        );
+        await this._runRecoveryTaskCommand(entry.change.taskRef, "add task note", () =>
+          this._addTaskNote(
+            entry.change.taskRef,
+            `[DISPATCH-WORKSPACE] ${message} Suggested action: ${guidance}`,
+          ),
+        );
+        await this._runRecoveryTaskCommand(entry.change.taskRef, "block task", () =>
+          this._blockTask(
+            entry.change.taskRef,
+            `Dispatch workspace validation failed: ${message}. Suggested action: ${guidance}`,
+          ),
+        );
         return false;
       }
 
@@ -2325,16 +2616,10 @@ export class DispatchEngine {
             : "Inspect dispatch role-entry configuration and workspace metadata.";
         console.error(`[dispatch] Failed to build prompt for ${entry.change.taskRef}: ${message}`);
         if (this.kspecCliPath) {
-          spawnSync(
-            process.execPath,
-            [
-              this.kspecCliPath,
-              "task",
-              "note",
-              entry.change.taskRef,
-              `[DISPATCH-PROMPT] ${message} Suggested action: ${guidance}`,
-            ],
-            { cwd: this.cwd },
+          // AC: @agent-dispatch-engine ac-28 — fire-and-forget async error recovery
+          await this._addTaskNote(
+            entry.change.taskRef,
+            `[DISPATCH-PROMPT] ${message} Suggested action: ${guidance}`,
           );
         }
         return false;
@@ -2354,17 +2639,11 @@ export class DispatchEngine {
         const currentActive = this.activeCount.get(agentId) ?? 1;
         this.activeCount.set(agentId, Math.max(0, currentActive - 1));
         // AC: @agent-dispatch-engine ac-10 - Add task note for unresolvable adapter
+        // AC: @agent-dispatch-engine ac-28 — async fire-and-forget
         if (this.kspecCliPath) {
-          spawnSync(
-            process.execPath,
-            [
-              this.kspecCliPath,
-              "task",
-              "note",
-              entry.change.taskRef,
-              `[AGENT-SKIP] Cannot resolve adapter "${adapterId}" for agent "${agentId}". Invocation skipped.`,
-            ],
-            { cwd: this.cwd },
+          await this._addTaskNote(
+            entry.change.taskRef,
+            `[AGENT-SKIP] Cannot resolve adapter "${adapterId}" for agent "${agentId}". Invocation skipped.`,
           );
         }
         return false;
@@ -2458,11 +2737,38 @@ export class DispatchEngine {
           KSPEC_DISPATCH_BOOTSTRAP_LAST_ROLE: workspace.metadata.bootstrap.lastRole ?? "",
         },
         onUpdate,
-        // AC: @session-summary-cache ac-live-counter — increment cache counter on each event append
+        // AC: @daemon-entity-cache ac-session-event-tracking — increment live counter on each event append
         onEventAppended: (sid: string) => {
-          const sessionsDir = path.join(this.projectDir, ".kspec-sessions");
-          const cache = getSessionCache(sessionsDir);
-          cache.incrementEventCount(sid);
+          const cache = getEntityCache(this.projectDir);
+          cache?.incrementSessionEventCount(sid);
+        },
+        // AC: @active-session-registry ac-1, @multi-turn-session-lifecycle ac-2, ac-4
+        sessionRegistry: this._sessionRegistry,
+        // AC: @multi-turn-session-lifecycle ac-2, ac-5, ac-11 — grace period for async prompt delivery;
+        // Per-agent config overrides the global default. When no hooks exist and no agent config
+        // is set, use 0 for backward compat (AC-11).
+        idleGracePeriodMs:
+          agent.session?.idle_grace_period_ms ??
+          (this._hasSessionIdleHooks ? DEFAULT_IDLE_GRACE_MS : 0),
+        // AC: @multi-turn-session-lifecycle ac-6 — session mode from agent config
+        sessionMode: agent.session?.mode ?? "auto_close",
+        // AC: @multi-turn-session-lifecycle ac-7 — idle timeout from agent config
+        idleTimeoutMs: agent.session?.idle_timeout_ms,
+        // AC: @multi-turn-session-lifecycle ac-3 — emit session.idle event on event bus
+        onIdle: (ctx: SessionIdleContext) => {
+          this._eventBus.emit({
+            event_type: "session.idle",
+            source_type: "invocation_lifecycle",
+            source_id: ctx.sessionId,
+            payload: {
+              session_id: ctx.sessionId,
+              agent_id: ctx.agentId,
+              task_ref: ctx.taskRef ?? undefined,
+              turn_count: ctx.turnCount,
+              stop_reason: ctx.stopReason,
+              turn_duration_ms: ctx.turnDurationMs,
+            },
+          });
         },
       };
 
@@ -2566,13 +2872,11 @@ export class DispatchEngine {
             }
           }
 
-          // AC: @session-summary-cache ac-live-counter — discard live counter after session closes
-          // and invalidate cache entry so next list picks up persisted stats
+          // AC: @daemon-entity-cache ac-session-stats-handoff — discard live
+          // counter after session close so subsequent reads use persisted metadata.
           {
-            const sessionsDir = path.join(this.projectDir, ".kspec-sessions");
-            const cache = getSessionCache(sessionsDir);
-            cache.discardLiveCounter(preSessionId);
-            cache.invalidate(preSessionId);
+            const cache = getEntityCache(this.projectDir);
+            cache?.discardSessionLiveCounter(preSessionId);
           }
 
           try {
@@ -2625,11 +2929,19 @@ export class DispatchEngine {
           if (terminalEvent) {
             this.onInvocationEvent?.(terminalEvent);
             // AC: @dispatch-event-envelope ac-1 - Route invocation lifecycle through bus
+            // AC: @multi-turn-session-lifecycle ac-14 — include turn_count in terminal payload
+            const terminalPayload: Record<string, unknown> = {
+              ...terminalEvent,
+              trigger: STATUS_TO_EVENT[entry.change.toStatus] ?? "task.ready",
+              task_ref: terminalEvent.task_id ?? undefined,
+              duration_ms: invocationResult?.durationMs ?? Date.now() - trackingRecord.startedAtMs,
+              turn_count: invocationResult?.turnCount ?? 1,
+            };
             this._eventBus.emit({
               event_type: `invocation.${terminalEvent.type}`,
               source_type: "invocation_lifecycle",
               source_id: terminalEvent.session_id,
-              payload: { ...terminalEvent },
+              payload: terminalPayload,
             });
 
             // AC: @dispatch-event-taxonomy ac-2 — Emit corresponding session.* event
@@ -2656,7 +2968,10 @@ export class DispatchEngine {
             // When a reviewer invocation completes, push the integration target
             // (the reviewer may have merged into it).
             if (role === "reviewer") {
-              this._pushIntegrationTargetAsync("post-merge");
+              void this._pushIntegrationTargetAsync(
+                workspace.metadata.integrationTargetBranch,
+                "post-merge",
+              );
             }
           }
         })
@@ -2820,7 +3135,7 @@ export class DispatchEngine {
       this._syncIntervalMs = config.dispatch.sync_interval * 1000;
 
       // Detect remote
-      const remotes = this._listGitRemotes();
+      const remotes = await this._listGitRemotes();
       const hasRemote = remotes.length > 0;
       this._remoteSyncEnabled = resolveDispatchRemoteSync(config, hasRemote);
 
@@ -2830,20 +3145,21 @@ export class DispatchEngine {
       }
 
       this._syncRemote = remotes[0] ?? null;
-      this._syncBaseBranch = resolvedConfig.baseBranch;
+      this._configuredBaseBranch = resolvedConfig.baseBranch;
+      await this._rebuildActiveTargetSet();
 
-      if (!this._syncBaseBranch || !this._syncRemote) {
+      if (!this._configuredBaseBranch || !this._syncRemote) {
         // Can't sync without a base branch or remote
         this._remoteSyncEnabled = false;
         return;
       }
 
       console.log(
-        `[dispatch] Target sync enabled: ${this._syncRemote}/${this._syncBaseBranch} (interval: ${config.dispatch.sync_interval}s)`,
+        `[dispatch] Target sync enabled for ${this._resolveActiveTargets().join(", ")} via ${this._syncRemote} (interval: ${config.dispatch.sync_interval}s)`,
       );
 
       // AC: @dispatch-remote-branch-sync ac-pull-target-on-start — sync before bootstrap
-      await this._syncTargetBranch();
+      await this._syncAllActiveTargets();
     } catch (err) {
       console.error("[dispatch] Failed to initialize target sync:", err);
       // Non-fatal: engine continues without sync
@@ -2858,55 +3174,55 @@ export class DispatchEngine {
    * AC: @dispatch-remote-branch-sync ac-transient-no-degrade
    * AC: @dispatch-remote-branch-sync ac-no-remote
    */
-  async _syncTargetBranch(): Promise<TargetSyncResult> {
+  async _syncTarget(branch?: string): Promise<TargetSyncResult> {
+    const baseBranch = this._resolveBaseBranch(branch);
     // AC: @dispatch-remote-branch-sync ac-no-remote — skip when no remote
-    if (!this._remoteSyncEnabled || !this._syncRemote || !this._syncBaseBranch) {
+    if (!this._remoteSyncEnabled || !this._syncRemote || !baseBranch) {
       return "skipped";
     }
 
     // Running guard — if a sync is already in progress, skip
-    if (this._targetSyncRunning) {
+    if (this._targetSyncRunning.has(baseBranch)) {
       return "skipped";
     }
 
-    this._targetSyncRunning = true;
+    this._targetSyncRunning.add(baseBranch);
     try {
       let mutationScope;
       try {
-        mutationScope = resolveDispatchIntegrationMutationScope(
-          this.projectDir,
-          this._syncBaseBranch,
-        );
+        mutationScope = await resolveDispatchIntegrationMutationScope(this.projectDir, baseBranch);
       } catch (err) {
-        const reason = this._formatUnsafeMutationScopeReason(err, this._syncBaseBranch);
-        this._enterDegradedState(reason);
+        const reason = this._formatUnsafeMutationScopeReason(err, baseBranch);
+        this._enterDegradedState(baseBranch, reason);
         return "unsafe_target";
       }
 
       // Step 1: Fetch the target branch from remote
-      const fetchResult = runDispatchIntegrationTargetGit(
+      const fetchResult = await runDispatchIntegrationTargetGit(
         this.projectDir,
-        this._syncBaseBranch,
-        ["fetch", this._syncRemote, this._syncBaseBranch],
+        baseBranch,
+        ["fetch", this._syncRemote, baseBranch],
         { timeout: 30_000 },
       );
 
       if (fetchResult.status !== 0) {
         // AC: @dispatch-remote-branch-sync ac-transient-no-degrade — warn and continue
-        this._consecutiveTransientFailures++;
-        if (this._firstTransientFailureTimestamp === 0) {
-          this._firstTransientFailureTimestamp = Date.now();
+        const nextFailureCount = (this._consecutiveSyncFailures.get(baseBranch) ?? 0) + 1;
+        this._consecutiveSyncFailures.set(baseBranch, nextFailureCount);
+        if (!this._firstSyncFailureTimestamps.has(baseBranch)) {
+          this._firstSyncFailureTimestamps.set(baseBranch, Date.now());
         }
         const stderr = fetchResult.stderr?.trim() ?? "";
         console.warn(
-          `[dispatch] Target sync fetch failed (attempt ${this._consecutiveTransientFailures}): ${stderr}`,
+          `[dispatch] Target sync fetch failed for ${baseBranch} (attempt ${nextFailureCount}): ${stderr}`,
         );
 
         // AC: @dispatch-remote-branch-sync ac-repeated-transient-escalation
-        if (this._consecutiveTransientFailures >= 5) {
-          const failureDurationMs = Date.now() - this._firstTransientFailureTimestamp;
+        if (nextFailureCount >= 5) {
+          const firstFailureAt = this._firstSyncFailureTimestamps.get(baseBranch) ?? Date.now();
+          const failureDurationMs = Date.now() - firstFailureAt;
           console.warn(
-            `[dispatch] Persistent connectivity issues: ${this._consecutiveTransientFailures} consecutive sync failures over ${Math.round(failureDurationMs / 1000)}s`,
+            `[dispatch] Persistent connectivity issues for ${baseBranch}: ${nextFailureCount} consecutive sync failures over ${Math.round(failureDurationMs / 1000)}s`,
           );
         }
 
@@ -2918,16 +3234,16 @@ export class DispatchEngine {
       // Step 2: Fast-forward merge the target branch
       // AC: @dispatch-remote-branch-sync ac-pull-ff-only — no merge commits
       const mergeResult = mutationScope.targetBranchCheckedOut
-        ? runDispatchIntegrationTargetGit(
+        ? await runDispatchIntegrationTargetGit(
             this.projectDir,
-            this._syncBaseBranch,
-            ["merge", "--ff-only", `${this._syncRemote}/${this._syncBaseBranch}`],
+            baseBranch,
+            ["merge", "--ff-only", `${this._syncRemote}/${baseBranch}`],
             { timeout: 10_000 },
           )
-        : fastForwardDispatchIntegrationBranch(
+        : await fastForwardDispatchIntegrationBranch(
             this.projectDir,
-            this._syncBaseBranch,
-            `${this._syncRemote}/${this._syncBaseBranch}`,
+            baseBranch,
+            `${this._syncRemote}/${baseBranch}`,
           );
 
       if (mergeResult.status !== 0) {
@@ -2935,20 +3251,20 @@ export class DispatchEngine {
         const stdout = mergeResult.stdout?.trim() ?? "";
 
         // AC: @dispatch-remote-branch-sync ac-divergence-enters-degraded
-        // AC: @dispatch-remote-branch-sync ac-divergence-log-guidance
-        const reason = this._classifyDivergence(stderr || stdout);
-        this._enterDegradedState(reason);
+        // AC: @dispatch-remote-branch-sync ac-divergence-log-classification
+        const reason = await this._classifyDivergence(stderr || stdout, baseBranch);
+        this._enterDegradedState(baseBranch, reason);
         return "diverged";
       }
 
       // Success
-      this._consecutiveTransientFailures = 0;
-      this._firstTransientFailureTimestamp = 0;
-      this._lastTargetSyncTimestamp = Date.now();
+      this._consecutiveSyncFailures.set(baseBranch, 0);
+      this._firstSyncFailureTimestamps.delete(baseBranch);
+      this._targetSyncTimestamps.set(baseBranch, Date.now());
 
       // AC: @dispatch-remote-branch-sync ac-degraded-auto-recover
-      if (this._degraded) {
-        this._exitDegradedState();
+      if (this._degradedTargets.has(baseBranch)) {
+        this._exitDegradedState(baseBranch);
       }
 
       const stdout = mergeResult.stdout?.trim() ?? "";
@@ -2956,21 +3272,77 @@ export class DispatchEngine {
         return "up_to_date";
       }
 
-      console.log(`[dispatch] Target branch synced: ${this._syncRemote}/${this._syncBaseBranch}`);
+      console.log(`[dispatch] Target branch synced: ${this._syncRemote}/${baseBranch}`);
       return "synced";
     } finally {
-      this._targetSyncRunning = false;
+      this._targetSyncRunning.delete(baseBranch);
+    }
+  }
+
+  private async _syncAllActiveTargets(options: { staleOnly?: boolean } = {}): Promise<void> {
+    const reviewerTargets = await this._activeReviewerTargets();
+    for (const branch of this._resolveActiveTargets()) {
+      if (options.staleOnly && !this._isTargetSyncStale(branch)) {
+        continue;
+      }
+      if (reviewerTargets.has(branch)) {
+        continue;
+      }
+
+      try {
+        await this._syncTarget(branch);
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        console.warn(`[dispatch] Target sync failed for ${branch}; continuing: ${message}`);
+      }
+    }
+  }
+
+  private async _resolveQueueEntryTargetBranch(
+    entry: QueueEntry,
+    taskLookup: Map<string, LoadedTask>,
+    targetCache: Map<string, string>,
+  ): Promise<string> {
+    const configuredBaseBranch = this._resolveBaseBranch();
+    if (!configuredBaseBranch) {
+      return "";
+    }
+
+    const inlinePlanRef =
+      typeof entry.change.task?.plan_ref === "string" ? entry.change.task.plan_ref.trim() : "";
+    const task = taskLookup.get(entry.change.taskId) ?? entry.change.task;
+    const taskPlanRef = typeof task?.plan_ref === "string" ? task.plan_ref.trim() : "";
+    const planRef = inlinePlanRef || taskPlanRef;
+    if (!planRef) {
+      return configuredBaseBranch;
+    }
+
+    const cached = targetCache.get(planRef);
+    if (cached) {
+      return cached;
+    }
+
+    try {
+      const ctx = await initContext(this.projectDir);
+      const plan = await findPlanByRef(ctx, planRef);
+      const resolvedBranch = typeof plan?.branch === "string" ? plan.branch.trim() : "";
+      const targetBranch = resolvedBranch || configuredBaseBranch;
+      targetCache.set(planRef, targetBranch);
+      return targetBranch;
+    } catch {
+      targetCache.set(planRef, configuredBaseBranch);
+      return configuredBaseBranch;
     }
   }
 
   /**
    * Classify a divergence based on the git merge --ff-only error output.
    * Distinguishes "local has unpushed merges" from "remote history was rewritten".
-   * AC: @dispatch-remote-branch-sync ac-divergence-log-guidance
+   * AC: @dispatch-remote-branch-sync ac-divergence-log-classification
+   * AC: @dispatch-remote-branch-sync ac-divergence-log-resolution
    */
-  private _classifyDivergence(_mergeOutput: string): string {
+  private async _classifyDivergence(_mergeOutput: string, branch: string): Promise<string> {
     const remote = this._syncRemote;
-    const branch = this._syncBaseBranch;
     if (!remote || !branch) {
       return "Integration target divergence detected, but remote or branch context is unavailable.";
     }
@@ -2979,14 +3351,14 @@ export class DispatchEngine {
     let localAhead = 0;
     let remoteAhead = 0;
     try {
-      const aheadResult = runDispatchIntegrationTargetGit(this.projectDir, branch, [
+      const aheadResult = await runDispatchIntegrationTargetGit(this.projectDir, branch, [
         "rev-list",
         "--count",
         `${remote}/${branch}..${branch}`,
       ]);
       localAhead = parseInt(aheadResult.stdout?.trim() ?? "0", 10);
 
-      const behindResult = runDispatchIntegrationTargetGit(this.projectDir, branch, [
+      const behindResult = await runDispatchIntegrationTargetGit(this.projectDir, branch, [
         "rev-list",
         "--count",
         `${branch}..${remote}/${branch}`,
@@ -3022,24 +3394,26 @@ export class DispatchEngine {
   /**
    * Enter degraded state with a descriptive reason.
    * AC: @dispatch-remote-branch-sync ac-divergence-enters-degraded
-   * AC: @dispatch-remote-branch-sync ac-divergence-log-guidance
+   * AC: @dispatch-remote-branch-sync ac-divergence-log-target
+   * AC: @dispatch-remote-branch-sync ac-divergence-log-classification
+   * AC: @dispatch-remote-branch-sync ac-divergence-log-resolution
    * AC: @dispatch-remote-branch-sync ac-degraded-status-broadcast
    */
-  private _enterDegradedState(reason: string): void {
-    if (this._degraded) return; // Already degraded — don't re-enter
+  private _enterDegradedState(branch: string, reason: string): void {
+    if (this._degradedTargets.has(branch)) return;
 
-    this._degraded = true;
-    this._degradedReason = reason;
-    this._degradedEnteredAt = new Date();
+    const enteredAt = new Date();
+    this._degradedTargets.set(branch, { reason, enteredAt });
 
-    console.warn(`[dispatch] DEGRADED: ${reason}`);
+    console.warn(`[dispatch] DEGRADED ${branch}: ${reason}`);
 
     // AC: @dispatch-remote-branch-sync ac-degraded-status-broadcast
     const event: SyncStateEvent = {
       type: "sync_state",
+      branch,
       degraded: true,
       reason,
-      enteredAt: this._degradedEnteredAt.toISOString(),
+      enteredAt: enteredAt.toISOString(),
     };
     this.onSyncStateEvent?.(event);
   }
@@ -3048,23 +3422,27 @@ export class DispatchEngine {
    * Exit degraded state on successful sync (auto-recovery).
    * AC: @dispatch-remote-branch-sync ac-degraded-auto-recover
    * AC: @dispatch-remote-branch-sync ac-degraded-recovery-logged
+   * AC: @dispatch-remote-branch-sync ac-degraded-recovery-logged-duration
    * AC: @dispatch-remote-branch-sync ac-degraded-status-broadcast
    */
-  private _exitDegradedState(): void {
-    const durationMs = this._degradedEnteredAt ? Date.now() - this._degradedEnteredAt.getTime() : 0;
+  private _exitDegradedState(branch: string): void {
+    const degradedTarget = this._degradedTargets.get(branch);
+    if (!degradedTarget) {
+      return;
+    }
+    const durationMs = Date.now() - degradedTarget.enteredAt.getTime();
 
     // AC: @dispatch-remote-branch-sync ac-degraded-recovery-logged
     console.log(
-      `[dispatch] Recovered from degraded state after ${Math.round(durationMs / 1000)}s. Resuming normal dispatch operations.`,
+      `[dispatch] Recovered from degraded state for integration target "${branch}" after ${Math.round(durationMs / 1000)}s.`,
     );
 
-    this._degraded = false;
-    this._degradedReason = "";
-    this._degradedEnteredAt = null;
+    this._degradedTargets.delete(branch);
 
     // AC: @dispatch-remote-branch-sync ac-degraded-status-broadcast
     const event: SyncStateEvent = {
       type: "sync_state",
+      branch,
       degraded: false,
       reason: "",
       enteredAt: null,
@@ -3072,56 +3450,87 @@ export class DispatchEngine {
     };
     this.onSyncStateEvent?.(event);
 
-    // AC: @dispatch-remote-branch-sync ac-degraded-auto-recover — drain queued tasks
+    // AC: @dispatch-remote-branch-sync ac-degraded-auto-recover
+    // AC: @dispatch-remote-branch-sync ac-degraded-recovery-requeues
     this._serializedDrain().catch((err) => {
       console.error("[dispatch] Post-recovery drain error:", err);
     });
+  }
+
+  private _getDegradedSnapshot(): DegradedSnapshot {
+    const firstDegraded = this.getDegradedState()[0];
+    return {
+      active: firstDegraded !== undefined,
+      reason: firstDegraded?.reason ?? "",
+      enteredAt: firstDegraded?.enteredAt ?? null,
+    };
   }
 
   /**
    * Check whether the last target sync is stale relative to the sync interval.
    * AC: @dispatch-remote-branch-sync ac-pull-target-before-provision
    */
-  private _isTargetSyncStale(): boolean {
+  private _isTargetSyncStale(branch: string): boolean {
     if (this._syncIntervalMs <= 0) return false;
-    if (this._lastTargetSyncTimestamp === 0) return true;
-    return Date.now() - this._lastTargetSyncTimestamp > this._syncIntervalMs;
+    const lastSyncTimestamp = this._targetSyncTimestamps.get(branch) ?? 0;
+    if (lastSyncTimestamp === 0) return true;
+    return Date.now() - lastSyncTimestamp > this._syncIntervalMs;
   }
 
   /**
-   * Check whether a reviewer invocation is currently active.
+   * Resolve active reviewer targets from in-flight invocation/workspace metadata.
    * AC: @dispatch-remote-branch-sync ac-pull-target-periodic-deferred
    */
-  private _hasActiveReviewerInvocation(): boolean {
+  private async _activeReviewerTargets(): Promise<Set<string>> {
+    const reviewerTaskRefs = new Set<string>();
     for (const record of this.activeInvocationDetails.values()) {
-      if (record.role === "reviewer") {
-        return true;
+      if (record.role === "reviewer" && record.taskRef) {
+        reviewerTaskRefs.add(record.taskRef);
       }
     }
-    return false;
+    if (reviewerTaskRefs.size === 0) {
+      return new Set();
+    }
+
+    const ctx = await initContext(this.projectDir);
+    const records = await loadDispatchWorkspaceRegistry(ctx);
+    const targets = new Set<string>();
+    for (const record of records) {
+      if (
+        reviewerTaskRefs.has(record.task_ref) &&
+        record.lifecycle_state !== "closed" &&
+        record.integration.target_branch.trim().length > 0
+      ) {
+        targets.add(record.integration.target_branch.trim());
+      }
+    }
+    return targets;
   }
 
   /**
    * List git remotes from the project directory, origin first.
    */
-  private _listGitRemotes(): string[] {
-    const result = spawnSync("git", ["remote"], {
-      cwd: this.projectDir,
-      env: buildDispatchGitEnv(),
-      encoding: "utf-8",
-      stdio: "pipe",
-    });
-    if (result.status !== 0 || !result.stdout) {
+  private async _listGitRemotes(): Promise<string[]> {
+    try {
+      const result = await execFileAsync("git", ["remote"], {
+        cwd: this.projectDir,
+        env: buildDispatchGitEnv(),
+        encoding: "utf-8",
+      });
+      if (!result.stdout) {
+        return [];
+      }
+      const remotes = result.stdout
+        .split(/\r?\n/)
+        .map((line) => line.trim())
+        .filter(Boolean)
+        .toSorted();
+      const originFirst = remotes.filter((r) => r === "origin");
+      const rest = remotes.filter((r) => r !== "origin");
+      return [...originFirst, ...rest];
+    } catch {
       return [];
     }
-    const remotes = result.stdout
-      .split(/\r?\n/)
-      .map((line) => line.trim())
-      .filter(Boolean)
-      .toSorted();
-    const originFirst = remotes.filter((r) => r === "origin");
-    const rest = remotes.filter((r) => r !== "origin");
-    return [...originFirst, ...rest];
   }
 
   private _formatUnsafeMutationScopeReason(err: unknown, branch: string): string {
@@ -3140,27 +3549,48 @@ export class DispatchEngine {
     enabled: boolean;
     remote: string | null;
     baseBranch: string | null;
+    activeTargets: string[];
     lastSyncTimestamp: number;
     consecutiveFailures: number;
     syncRunning: boolean;
+    targetSyncTimestamps: Record<string, number>;
+    targetConsecutiveFailures: Record<string, number>;
+    syncRunningTargets: string[];
     degraded: {
       active: boolean;
       reason: string;
       enteredAt: string | null;
     };
+    degradedTargets: Array<{
+      branch: string;
+      reason: string;
+      enteredAt: string;
+    }>;
   } {
+    const degraded = this._getDegradedSnapshot();
+    const targetSyncTimestamps = Object.fromEntries(this._targetSyncTimestamps);
+    const targetConsecutiveFailures = Object.fromEntries(this._consecutiveSyncFailures);
     return {
       enabled: this._remoteSyncEnabled ?? false,
       remote: this._syncRemote,
-      baseBranch: this._syncBaseBranch,
-      lastSyncTimestamp: this._lastTargetSyncTimestamp,
-      consecutiveFailures: this._consecutiveTransientFailures,
-      syncRunning: this._targetSyncRunning,
+      baseBranch: this._configuredBaseBranch,
+      activeTargets: this._resolveActiveTargets(),
+      lastSyncTimestamp: Math.max(0, ...Object.values(targetSyncTimestamps)),
+      consecutiveFailures: Math.max(0, ...Object.values(targetConsecutiveFailures)),
+      syncRunning: this._targetSyncRunning.size > 0,
+      targetSyncTimestamps,
+      targetConsecutiveFailures,
+      syncRunningTargets: [...this._targetSyncRunning].toSorted(),
       degraded: {
-        active: this._degraded,
-        reason: this._degradedReason,
-        enteredAt: this._degradedEnteredAt?.toISOString() ?? null,
+        active: degraded.active,
+        reason: degraded.reason,
+        enteredAt: degraded.enteredAt?.toISOString() ?? null,
       },
+      degradedTargets: [...this._degradedTargets.entries()].map(([branch, state]) => ({
+        branch,
+        reason: state.reason,
+        enteredAt: state.enteredAt.toISOString(),
+      })),
     };
   }
 
@@ -3169,10 +3599,71 @@ export class DispatchEngine {
    * AC: @dispatch-remote-branch-sync ac-degraded-status-api
    */
   getDegradedState(): DegradedState {
-    return {
-      active: this._degraded,
-      reason: this._degradedReason,
-      enteredAt: this._degradedEnteredAt,
-    };
+    return [...this._degradedTargets.entries()].map(([branch, state]) => ({
+      branch,
+      reason: state.reason,
+      enteredAt: state.enteredAt,
+    }));
+  }
+
+  private async _rebuildActiveTargetSet(): Promise<void> {
+    const nextTargets = new Set<string>();
+    const configuredBaseBranch = this._configuredBaseBranch;
+    if (configuredBaseBranch) {
+      nextTargets.add(configuredBaseBranch);
+    }
+
+    const ctx = await initContext(this.projectDir);
+    const records = await loadDispatchWorkspaceRegistry(ctx);
+    for (const record of records) {
+      if (record.lifecycle_state === "closed") continue;
+      const branch = record.integration.target_branch.trim();
+      if (branch.length > 0) {
+        nextTargets.add(branch);
+      }
+    }
+
+    this._activeTargets = nextTargets;
+  }
+
+  private async _addActiveTarget(branch: string): Promise<void> {
+    if (!branch.trim()) return;
+    this._activeTargets.add(branch);
+    const configuredBaseBranch = this._configuredBaseBranch;
+    if (configuredBaseBranch) {
+      this._activeTargets.add(configuredBaseBranch);
+    }
+  }
+
+  private async _removeActiveTargetIfOrphaned(branch: string): Promise<void> {
+    const trimmedBranch = branch.trim();
+    if (!trimmedBranch) return;
+    if (trimmedBranch === this._configuredBaseBranch) {
+      this._activeTargets.add(trimmedBranch);
+      return;
+    }
+
+    const ctx = await initContext(this.projectDir);
+    const records = await loadDispatchWorkspaceRegistry(ctx);
+    const hasOpenWorkspace = records.some(
+      (record) =>
+        record.lifecycle_state !== "closed" && record.integration.target_branch === trimmedBranch,
+    );
+    if (!hasOpenWorkspace) {
+      this._activeTargets.delete(trimmedBranch);
+    }
+    const configuredBaseBranch = this._configuredBaseBranch;
+    if (configuredBaseBranch) {
+      this._activeTargets.add(configuredBaseBranch);
+    }
+  }
+
+  private async _loadWorkspaceTargetForTask(taskRef: string): Promise<string | null> {
+    const ctx = await initContext(this.projectDir);
+    const records = await loadDispatchWorkspaceRegistry(ctx);
+    const record = records
+      .filter((entry) => entry.task_ref === taskRef && entry.lifecycle_state !== "closed")
+      .toSorted((a, b) => (a.timestamps.updated_at < b.timestamps.updated_at ? 1 : -1))[0];
+    return record?.integration.target_branch ?? null;
   }
 }

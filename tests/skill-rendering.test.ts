@@ -13,6 +13,7 @@ import {
   setupTempFixtures,
   cleanupTempDir,
   initGitRepo,
+  readTestOutput,
 } from "./helpers/cli";
 
 describe("Skill Rendering Pipeline", () => {
@@ -48,7 +49,7 @@ describe("Skill Rendering Pipeline", () => {
       kspecFull("skill render", tempDir);
 
       const renderedPath = path.join(tempDir, ".claude", "skills", "test-skill", "SKILL.md");
-      const content = await fs.readFile(renderedPath, "utf-8");
+      const content = await readTestOutput(renderedPath);
 
       // Check frontmatter exists
       expect(content).toMatch(/^---\n/);
@@ -68,7 +69,7 @@ describe("Skill Rendering Pipeline", () => {
       kspecFull("skill render", tempDir);
 
       const renderedPath = path.join(tempDir, ".claude", "skills", "test-skill", "SKILL.md");
-      const content = await fs.readFile(renderedPath, "utf-8");
+      const content = await readTestOutput(renderedPath);
 
       // name should be the skill id, not the skill name
       expect(content).toContain("name: test-skill");
@@ -86,7 +87,7 @@ describe("Skill Rendering Pipeline", () => {
       kspecFull("skill render", tempDir);
 
       const renderedPath = path.join(tempDir, ".claude", "skills", "test-skill", "SKILL.md");
-      const content = await fs.readFile(renderedPath, "utf-8");
+      const content = await readTestOutput(renderedPath);
 
       expect(content).toContain("/kspec:task-work");
       expect(content).not.toContain("{skill:task-work}");
@@ -115,8 +116,8 @@ describe("Skill Rendering Pipeline", () => {
       kspecFull("skill render", tempDir);
 
       const renderedDocsDir = path.join(tempDir, ".claude", "skills", "test-skill", "docs");
-      const quickref = await fs.readFile(path.join(renderedDocsDir, "quickref.md"), "utf-8");
-      const advanced = await fs.readFile(path.join(renderedDocsDir, "advanced.md"), "utf-8");
+      const quickref = await readTestOutput(path.join(renderedDocsDir, "quickref.md"));
+      const advanced = await readTestOutput(path.join(renderedDocsDir, "advanced.md"));
 
       expect(quickref).toContain("# Quick Reference");
       expect(advanced).toContain("# Advanced Guide");
@@ -145,7 +146,7 @@ describe("Skill Rendering Pipeline", () => {
         "docs",
         "quickref.md",
       );
-      const rendered = await fs.readFile(renderedDocsPath, "utf-8");
+      const rendered = await readTestOutput(renderedDocsPath);
 
       expect(rendered).toContain("/kspec:task-work");
       expect(rendered).not.toContain("{skill:task-work}");
@@ -160,7 +161,7 @@ describe("Skill Rendering Pipeline", () => {
 
       // Should still render the skill successfully
       const renderedPath = path.join(tempDir, ".claude", "skills", "test-skill", "SKILL.md");
-      const content = await fs.readFile(renderedPath, "utf-8");
+      const content = await readTestOutput(renderedPath);
       expect(content).toContain("# Test Skill");
     });
   });
@@ -192,7 +193,7 @@ describe("Skill Rendering Pipeline", () => {
       kspecFull("skill render", tempDir);
 
       const renderedPath = path.join(tempDir, ".claude", "skills", "test-skill", "SKILL.md");
-      const firstContent = await fs.readFile(renderedPath, "utf-8");
+      const firstContent = await readTestOutput(renderedPath);
 
       // Modify source
       const skillMdPath = path.join(tempDir, "skills", "test-skill", "SKILL.md");
@@ -203,7 +204,7 @@ describe("Skill Rendering Pipeline", () => {
       expect(result.stdout).toContain("Updated");
 
       // Check file was updated
-      const secondContent = await fs.readFile(renderedPath, "utf-8");
+      const secondContent = await readTestOutput(renderedPath);
       expect(secondContent).toContain("Updated content!");
       expect(secondContent).not.toBe(firstContent);
     });
@@ -260,7 +261,7 @@ describe("Skill Rendering Pipeline", () => {
       expect(result.stdout).toContain("unmanaged");
 
       // Verify directory was NOT removed
-      const content = await fs.readFile(path.join(unmanagedDir, "SKILL.md"), "utf-8");
+      const content = await readTestOutput(path.join(unmanagedDir, "SKILL.md"));
       expect(content).toContain("# Unmanaged");
     });
 
@@ -413,7 +414,7 @@ describe("Skill Rendering Pipeline", () => {
 
       // Should create a placeholder
       const renderedPath = path.join(tempDir, ".claude", "skills", "test-skill", "SKILL.md");
-      const content = await fs.readFile(renderedPath, "utf-8");
+      const content = await readTestOutput(renderedPath);
       expect(content).toContain("name: test-skill");
       expect(content).toContain("<!-- kspec-managed -->");
     });
@@ -430,7 +431,7 @@ describe("Skill Rendering Pipeline", () => {
       kspecFull("skill render", tempDir);
 
       const renderedPath = path.join(tempDir, ".claude", "skills", "test-skill", "SKILL.md");
-      const content = await fs.readFile(renderedPath, "utf-8");
+      const content = await readTestOutput(renderedPath);
 
       // Should have new frontmatter
       expect(content).toContain("name: test-skill");
@@ -526,7 +527,7 @@ describe("Skill Render CLI", () => {
 
       // Modify the rendered file directly
       const renderedPath = path.join(tempDir, ".claude", "skills", "test-skill", "SKILL.md");
-      const content = await fs.readFile(renderedPath, "utf-8");
+      const content = await readTestOutput(renderedPath);
       await fs.writeFile(renderedPath, `${content}\n\n# Added Section\n`, "utf-8");
 
       const result = kspecFull("skill status", tempDir);
@@ -595,7 +596,7 @@ describe("Skill Render CLI", () => {
 
       // Modify the rendered file
       const renderedPath = path.join(tempDir, ".claude", "skills", "test-skill", "SKILL.md");
-      const content = await fs.readFile(renderedPath, "utf-8");
+      const content = await readTestOutput(renderedPath);
       await fs.writeFile(
         renderedPath,
         content.replace("test content", "modified content"),
@@ -629,7 +630,7 @@ describe("Skill Render CLI", () => {
 
       // Modify rendered file
       const renderedPath = path.join(tempDir, ".claude", "skills", "test-skill", "SKILL.md");
-      const content = await fs.readFile(renderedPath, "utf-8");
+      const content = await readTestOutput(renderedPath);
       await fs.writeFile(renderedPath, content.replace("test content", "changed"), "utf-8");
 
       const result = kspecJson<{ id: string; hasDiff: boolean; diff: string[] }>(
@@ -717,7 +718,7 @@ describe("Skill Drift Detection", () => {
 
       // Manually edit the rendered file
       const renderedPath = path.join(tempDir, ".claude", "skills", "test-skill", "SKILL.md");
-      const content = await fs.readFile(renderedPath, "utf-8");
+      const content = await readTestOutput(renderedPath);
       await fs.writeFile(renderedPath, `${content}\n\n# Manually Added Section\n`, "utf-8");
 
       const result = kspecFull("skill status", tempDir);
@@ -731,7 +732,7 @@ describe("Skill Drift Detection", () => {
 
       // Manually edit
       const renderedPath = path.join(tempDir, ".claude", "skills", "test-skill", "SKILL.md");
-      const content = await fs.readFile(renderedPath, "utf-8");
+      const content = await readTestOutput(renderedPath);
       await fs.writeFile(renderedPath, `${content}\nEdited.\n`, "utf-8");
 
       const result = kspecFull("skill status", tempDir);
@@ -748,7 +749,7 @@ describe("Skill Drift Detection", () => {
 
       // Manually edit the rendered file
       const renderedPath = path.join(tempDir, ".claude", "skills", "test-skill", "SKILL.md");
-      const originalContent = await fs.readFile(renderedPath, "utf-8");
+      const originalContent = await readTestOutput(renderedPath);
       const editedContent = `${originalContent}\n\n# Manually Added\n`;
       await fs.writeFile(renderedPath, editedContent, "utf-8");
 
@@ -760,7 +761,7 @@ describe("Skill Drift Detection", () => {
       expect(result.stdout).toContain("--force to overwrite");
 
       // Verify the file was NOT overwritten
-      const afterContent = await fs.readFile(renderedPath, "utf-8");
+      const afterContent = await readTestOutput(renderedPath);
       expect(afterContent).toBe(editedContent);
       expect(afterContent).toContain("# Manually Added");
     });
@@ -770,7 +771,7 @@ describe("Skill Drift Detection", () => {
 
       // Edit the file
       const renderedPath = path.join(tempDir, ".claude", "skills", "test-skill", "SKILL.md");
-      const content = await fs.readFile(renderedPath, "utf-8");
+      const content = await readTestOutput(renderedPath);
       await fs.writeFile(renderedPath, `${content}\nEdited.\n`, "utf-8");
 
       const result = kspecJson<{
@@ -790,7 +791,7 @@ describe("Skill Drift Detection", () => {
 
       // Get the original content
       const renderedPath = path.join(tempDir, ".claude", "skills", "test-skill", "SKILL.md");
-      const originalContent = await fs.readFile(renderedPath, "utf-8");
+      const originalContent = await readTestOutput(renderedPath);
 
       // Manually edit the rendered file
       await fs.writeFile(renderedPath, `${originalContent}\n\n# Manually Added\n`, "utf-8");
@@ -806,7 +807,7 @@ describe("Skill Drift Detection", () => {
       expect(result.stdout).toContain("test-skill");
 
       // Verify the file was overwritten
-      const afterContent = await fs.readFile(renderedPath, "utf-8");
+      const afterContent = await readTestOutput(renderedPath);
       expect(afterContent).not.toContain("# Manually Added");
       expect(afterContent.trim()).toBe(originalContent.trim());
 
@@ -820,7 +821,7 @@ describe("Skill Drift Detection", () => {
 
       // Edit the file
       const renderedPath = path.join(tempDir, ".claude", "skills", "test-skill", "SKILL.md");
-      const content = await fs.readFile(renderedPath, "utf-8");
+      const content = await readTestOutput(renderedPath);
       await fs.writeFile(renderedPath, `${content}\nEdited.\n`, "utf-8");
 
       // Force render
@@ -840,7 +841,7 @@ describe("Skill Drift Detection", () => {
       // Check if hash file exists
       // In test fixtures, skills are stored in tempDir/skills/ not tempDir/.kspec/skills/
       const hashPath = path.join(tempDir, "skills", "test-skill", ".render-hash");
-      const hashContent = await fs.readFile(hashPath, "utf-8");
+      const hashContent = await readTestOutput(hashPath);
 
       expect(hashContent.trim()).toBeTruthy();
       // SHA256 hashes are 64 hex characters
@@ -852,7 +853,7 @@ describe("Skill Drift Detection", () => {
       kspecFull("skill render", tempDir);
 
       const hashPath = path.join(tempDir, "skills", "test-skill", ".render-hash");
-      const firstHash = await fs.readFile(hashPath, "utf-8");
+      const firstHash = await readTestOutput(hashPath);
 
       // Modify source content
       const skillMdPath = path.join(tempDir, "skills", "test-skill", "SKILL.md");
@@ -861,7 +862,7 @@ describe("Skill Drift Detection", () => {
       // Second render
       kspecFull("skill render", tempDir);
 
-      const secondHash = await fs.readFile(hashPath, "utf-8");
+      const secondHash = await readTestOutput(hashPath);
 
       // Hashes should be different
       expect(secondHash.trim()).not.toBe(firstHash.trim());
@@ -880,7 +881,7 @@ describe("Skill Drift Detection", () => {
 
       // Get the rendered content
       const renderedPath = path.join(tempDir, ".claude", "skills", "test-skill", "SKILL.md");
-      const content = await fs.readFile(renderedPath, "utf-8");
+      const content = await readTestOutput(renderedPath);
 
       // Manually edit the rendered file but put back original content after
       await fs.writeFile(renderedPath, `${content}\nTemporary edit.\n`, "utf-8");
@@ -927,7 +928,7 @@ describe("Skill Drift Detection", () => {
 
       // Verify update was applied
       const renderedPath = path.join(tempDir, ".claude", "skills", "test-skill", "SKILL.md");
-      const renderedContent = await fs.readFile(renderedPath, "utf-8");
+      const renderedContent = await readTestOutput(renderedPath);
       expect(renderedContent).toContain("Updated source content");
     });
 
@@ -945,7 +946,7 @@ describe("Skill Drift Detection", () => {
 
       // Edit only the first skill's rendered file
       const renderedPath = path.join(tempDir, ".claude", "skills", "test-skill", "SKILL.md");
-      const content = await fs.readFile(renderedPath, "utf-8");
+      const content = await readTestOutput(renderedPath);
       await fs.writeFile(renderedPath, `${content}\nEdited.\n`, "utf-8");
 
       // Render without --force - should skip test-skill but render another-skill
@@ -1006,7 +1007,7 @@ describe("Claude Code Renderer - Extended Frontmatter", () => {
 
       // Check frontmatter
       const renderedPath = path.join(tempDir, ".claude", "skills", "licensed-skill", "SKILL.md");
-      const renderedContent = await fs.readFile(renderedPath, "utf-8");
+      const renderedContent = await readTestOutput(renderedPath);
       expect(renderedContent).toContain("license: MIT");
     });
 
@@ -1037,7 +1038,7 @@ describe("Claude Code Renderer - Extended Frontmatter", () => {
 
       // Check frontmatter
       const renderedPath = path.join(tempDir, ".claude", "skills", "tools-skill", "SKILL.md");
-      const renderedContent = await fs.readFile(renderedPath, "utf-8");
+      const renderedContent = await readTestOutput(renderedPath);
       expect(renderedContent).toContain("allowed-tools:");
       expect(renderedContent).toContain("- Bash");
       expect(renderedContent).toContain("- Read");
@@ -1067,7 +1068,7 @@ describe("Claude Code Renderer - Extended Frontmatter", () => {
       kspecFull("skill render", tempDir);
 
       const renderedPath = path.join(tempDir, ".claude", "skills", "ui-skill", "SKILL.md");
-      const renderedContent = await fs.readFile(renderedPath, "utf-8");
+      const renderedContent = await readTestOutput(renderedPath);
       expect(renderedContent).toContain("user-invocable: false");
     });
   });
@@ -1094,7 +1095,7 @@ describe("Claude Code Renderer - Extended Frontmatter", () => {
       kspecFull("skill render", tempDir);
 
       const renderedPath = path.join(tempDir, ".claude", "skills", "ctx-skill", "SKILL.md");
-      const renderedContent = await fs.readFile(renderedPath, "utf-8");
+      const renderedContent = await readTestOutput(renderedPath);
       expect(renderedContent).toContain("context: fork");
       expect(renderedContent).toContain("agent: test-agent");
     });
@@ -1122,7 +1123,7 @@ describe("Claude Code Renderer - Extended Frontmatter", () => {
       kspecFull("skill render", tempDir);
 
       const renderedPath = path.join(tempDir, ".claude", "skills", "dmi-skill", "SKILL.md");
-      const renderedContent = await fs.readFile(renderedPath, "utf-8");
+      const renderedContent = await readTestOutput(renderedPath);
       expect(renderedContent).toContain("disable-model-invocation: true");
     });
   });
@@ -1150,7 +1151,7 @@ describe("Claude Code Renderer - Extended Frontmatter", () => {
       kspecFull("skill render", tempDir);
 
       const renderedPath = path.join(tempDir, ".claude", "skills", "simple-skill", "SKILL.md");
-      const renderedContent = await fs.readFile(renderedPath, "utf-8");
+      const renderedContent = await readTestOutput(renderedPath);
 
       // Should have name, description, and license
       expect(renderedContent).toContain("name: simple-skill");
@@ -1189,7 +1190,7 @@ describe("Claude Code Renderer - Extended Frontmatter", () => {
       );
 
       // Verify legacy hash exists
-      const hash = await fs.readFile(legacyHashPath, "utf-8");
+      const hash = await readTestOutput(legacyHashPath);
       expect(hash.trim()).toBeTruthy();
 
       // Import the platform drift check function and run it directly
@@ -1203,7 +1204,7 @@ describe("Claude Code Renderer - Extended Frontmatter", () => {
       );
 
       // After platform drift check, the platform-specific hash should be created from migration
-      const migratedHash = await fs.readFile(platformHashPath, "utf-8");
+      const migratedHash = await readTestOutput(platformHashPath);
       expect(migratedHash.trim()).toBe(hash.trim());
     });
 
@@ -1246,7 +1247,7 @@ describe("Claude Code Renderer - Extended Frontmatter", () => {
 
       // Check references copied
       const renderedRefsDir = path.join(tempDir, ".claude", "skills", "ref-skill", "references");
-      const refContent = await fs.readFile(path.join(renderedRefsDir, "api.md"), "utf-8");
+      const refContent = await readTestOutput(path.join(renderedRefsDir, "api.md"));
       expect(refContent).toContain("# API Reference");
     });
 
@@ -1278,7 +1279,7 @@ describe("Claude Code Renderer - Extended Frontmatter", () => {
         "scripts-skill",
         "scripts",
       );
-      const scriptContent = await fs.readFile(path.join(renderedScriptsDir, "helper.sh"), "utf-8");
+      const scriptContent = await readTestOutput(path.join(renderedScriptsDir, "helper.sh"));
       expect(scriptContent).toContain("#!/bin/bash");
     });
 
@@ -1300,7 +1301,7 @@ describe("Claude Code Renderer - Extended Frontmatter", () => {
 
       // Check assets copied
       const renderedAssetsDir = path.join(tempDir, ".claude", "skills", "assets-skill", "assets");
-      const assetContent = await fs.readFile(path.join(renderedAssetsDir, "data.json"), "utf-8");
+      const assetContent = await readTestOutput(path.join(renderedAssetsDir, "data.json"));
       expect(assetContent).toContain('"key": "value"');
     });
   });
@@ -1327,7 +1328,7 @@ describe("Claude Code Renderer - Extended Frontmatter", () => {
       kspecFull("skill render", tempDir);
 
       const renderedPath = path.join(tempDir, ".claude", "skills", "case-skill", "SKILL.md");
-      const renderedContent = await fs.readFile(renderedPath, "utf-8");
+      const renderedContent = await readTestOutput(renderedPath);
 
       // Should use kebab-case in frontmatter
       expect(renderedContent).toContain("disable-model-invocation: true");
@@ -1358,7 +1359,7 @@ describe("Claude Code Renderer - Extended Frontmatter", () => {
       kspecFull("skill render", tempDir);
 
       const renderedPath = path.join(tempDir, ".claude", "skills", "hint-skill", "SKILL.md");
-      const renderedContent = await fs.readFile(renderedPath, "utf-8");
+      const renderedContent = await readTestOutput(renderedPath);
 
       expect(renderedContent).toContain("argument-hint:");
       expect(renderedContent).not.toContain("argument_hint");
@@ -1417,7 +1418,7 @@ describe("Codex Skill Renderer", () => {
 
       // Check rendered file
       const renderedPath = path.join(tempDir, ".agents", "skills", "codex-skill", "SKILL.md");
-      const content = await fs.readFile(renderedPath, "utf-8");
+      const content = await readTestOutput(renderedPath);
 
       // Frontmatter should ONLY have name and description
       expect(content).toMatch(/^---\n/);
@@ -1449,7 +1450,7 @@ describe("Codex Skill Renderer", () => {
       await codexRenderer.render(ctx, tempDir, skill!);
 
       const renderedPath = path.join(tempDir, ".agents", "skills", "kspec-core-refs", "SKILL.md");
-      const content = await fs.readFile(renderedPath, "utf-8");
+      const content = await readTestOutput(renderedPath);
 
       expect(content).toContain("name: kspec-core-refs");
       expect(content).toContain("$kspec-task-work");
@@ -1476,7 +1477,7 @@ describe("Codex Skill Renderer", () => {
       await codexRenderer.render(ctx, tempDir, skill!);
 
       const renderedPath = path.join(tempDir, ".agents", "skills", "project-refs", "SKILL.md");
-      const content = await fs.readFile(renderedPath, "utf-8");
+      const content = await readTestOutput(renderedPath);
 
       expect(content).toContain("/kspec:task-work");
       expect(content).not.toContain("$kspec-task-work");
@@ -1504,7 +1505,7 @@ describe("Codex Skill Renderer", () => {
       await codexRenderer.render(ctx, tempDir, skill!);
 
       const renderedPath = path.join(tempDir, ".agents", "skills", "helper", "SKILL.md");
-      const content = await fs.readFile(renderedPath, "utf-8");
+      const content = await readTestOutput(renderedPath);
 
       expect(content).toContain("$kspec-task-work");
       expect(content).toContain("$helper");
@@ -1525,7 +1526,7 @@ describe("Codex Skill Renderer", () => {
       await codexRenderer.render(ctx, tempDir, skill!);
 
       const renderedPath = path.join(tempDir, ".agents", "skills", "marker-skill", "SKILL.md");
-      const content = await fs.readFile(renderedPath, "utf-8");
+      const content = await readTestOutput(renderedPath);
 
       // AC: @codex-renderer ac-4
       expect(content).toContain("<!-- kspec-managed -->");
@@ -1570,7 +1571,7 @@ describe("Codex Skill Renderer", () => {
         "agents",
         "openai.yaml",
       );
-      const sidecarContent = await fs.readFile(sidecarPath, "utf-8");
+      const sidecarContent = await readTestOutput(sidecarPath);
 
       expect(sidecarContent).toContain("interface:");
       expect(sidecarContent).toContain("display_name: My Sidecar Skill");
@@ -1621,7 +1622,7 @@ describe("Codex Skill Renderer", () => {
         "agents",
         "openai.yaml",
       );
-      const sidecarContent = await fs.readFile(sidecarPath, "utf-8");
+      const sidecarContent = await readTestOutput(sidecarPath);
 
       expect(sidecarContent).toContain("display_name: Display Name");
       expect(sidecarContent).toContain("short_description: Short desc");
@@ -1682,7 +1683,7 @@ describe("Codex Skill Renderer", () => {
       await codexRenderer.render(ctx, tempDir, skill!);
 
       const renderedPath = path.join(tempDir, ".agents", "skills", "managed-skill", "SKILL.md");
-      const content = await fs.readFile(renderedPath, "utf-8");
+      const content = await readTestOutput(renderedPath);
 
       expect(content).toContain("<!-- kspec-managed -->");
       // Marker should be after frontmatter
@@ -1711,7 +1712,7 @@ describe("Codex Skill Renderer", () => {
 
       // Check references copied
       const renderedRefsDir = path.join(tempDir, ".agents", "skills", "refs-skill", "references");
-      const refContent = await fs.readFile(path.join(renderedRefsDir, "api.md"), "utf-8");
+      const refContent = await readTestOutput(path.join(renderedRefsDir, "api.md"));
       expect(refContent).toContain("# API Reference");
 
       expect(result.supportingDirsAction?.references).toBe("created");
@@ -1749,7 +1750,7 @@ describe("Codex Skill Renderer", () => {
         "docs",
         "guide.md",
       );
-      const content = await fs.readFile(renderedPath, "utf-8");
+      const content = await readTestOutput(renderedPath);
       expect(content).toContain("$kspec-help");
       expect(content).not.toContain("{skill:help}");
     });
@@ -1777,12 +1778,12 @@ describe("Codex Skill Renderer", () => {
 
       // Check scripts copied
       const renderedScriptsDir = path.join(tempDir, ".agents", "skills", "assets-skill", "scripts");
-      const scriptContent = await fs.readFile(path.join(renderedScriptsDir, "run.sh"), "utf-8");
+      const scriptContent = await readTestOutput(path.join(renderedScriptsDir, "run.sh"));
       expect(scriptContent).toContain("#!/bin/bash");
 
       // Check assets copied
       const renderedAssetsDir = path.join(tempDir, ".agents", "skills", "assets-skill", "assets");
-      const assetContent = await fs.readFile(path.join(renderedAssetsDir, "config.json"), "utf-8");
+      const assetContent = await readTestOutput(path.join(renderedAssetsDir, "config.json"));
       expect(assetContent).toContain('"key": "value"');
 
       expect(result.supportingDirsAction?.scripts).toBe("created");
@@ -1806,7 +1807,7 @@ describe("Codex Skill Renderer", () => {
 
       // Check platform-specific hash file
       const hashPath = path.join(tempDir, "skills", "hash-skill", ".render-hash-codex");
-      const hashContent = await fs.readFile(hashPath, "utf-8");
+      const hashContent = await readTestOutput(hashPath);
 
       expect(hashContent.trim()).toBeTruthy();
       expect(hashContent.trim()).toMatch(/^[a-f0-9]{64}$/); // SHA256
@@ -1836,7 +1837,7 @@ describe("Codex Skill Renderer", () => {
 
       // Modify rendered file
       const renderedPath = path.join(tempDir, ".agents", "skills", "drift-skill", "SKILL.md");
-      const content = await fs.readFile(renderedPath, "utf-8");
+      const content = await readTestOutput(renderedPath);
       await fs.writeFile(renderedPath, `${content}\n# Added\n`, "utf-8");
 
       // Check drift - should be drifted
@@ -1884,7 +1885,7 @@ describe("Codex Skill Renderer", () => {
 
       // File should be in custom location
       const renderedPath = path.join(tempDir, "custom", "output", "custom-dir", "SKILL.md");
-      const content = await fs.readFile(renderedPath, "utf-8");
+      const content = await readTestOutput(renderedPath);
       expect(content).toContain("name: custom-dir");
 
       // Default location should NOT exist
@@ -1958,7 +1959,7 @@ describe("Codex Skill Renderer", () => {
         "agents",
         "openai.yaml",
       );
-      const sidecarContent = await fs.readFile(sidecarPath, "utf-8");
+      const sidecarContent = await readTestOutput(sidecarPath);
       await fs.writeFile(sidecarPath, `${sidecarContent}\n# manually edited\n`, "utf-8");
 
       // Should now detect drift
@@ -2026,7 +2027,7 @@ describe("Codex Skill Renderer", () => {
 
       // Modify SKILL.md only (sidecar unchanged)
       const renderedPath = path.join(tempDir, ".agents", "skills", "both-drift", "SKILL.md");
-      const content = await fs.readFile(renderedPath, "utf-8");
+      const content = await readTestOutput(renderedPath);
       await fs.writeFile(renderedPath, `${content}\n# Added\n`, "utf-8");
 
       const specDir = path.join(tempDir, "skills", "..");
@@ -2117,7 +2118,7 @@ describe("Skill Verify Command", () => {
 
     // Manually edit the rendered file
     const renderedPath = path.join(tempDir, ".claude", "skills", "verify-test", "SKILL.md");
-    const content = await fs.readFile(renderedPath, "utf-8");
+    const content = await readTestOutput(renderedPath);
     await fs.writeFile(renderedPath, `${content}\n# Manual edit\n`, "utf-8");
 
     // Run verify and check it reports drift
@@ -2165,7 +2166,7 @@ describe("Skill Verify Command", () => {
 
     // Edit the rendered file
     const renderedPath = path.join(tempDir, ".claude", "skills", "verify-exit", "SKILL.md");
-    const content = await fs.readFile(renderedPath, "utf-8");
+    const content = await readTestOutput(renderedPath);
     await fs.writeFile(renderedPath, `${content}\n# Manual edit\n`, "utf-8");
 
     // kspecFull returns KspecResult with exitCode

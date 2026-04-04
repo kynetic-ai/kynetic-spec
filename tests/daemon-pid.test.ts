@@ -6,7 +6,7 @@
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { PidFileManager } from "../packages/daemon/src/pid";
-import { createTempDir, cleanupTempDir } from "./helpers/cli";
+import { createTempDir, cleanupTempDir, readTestOutputSync } from "./helpers/cli";
 import { writeFileSync, existsSync, mkdirSync } from "fs";
 import { join } from "path";
 
@@ -30,7 +30,7 @@ describe("PID File Management", () => {
     const pidFilePath = join(tempConfigDir, "daemon.pid");
     expect(existsSync(pidFilePath)).toBe(true);
 
-    const content = require("fs").readFileSync(pidFilePath, "utf-8").trim();
+    const content = readTestOutputSync(pidFilePath).trim();
     expect(content).toBe(process.pid.toString());
   });
 

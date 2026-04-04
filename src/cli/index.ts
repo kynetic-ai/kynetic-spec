@@ -62,7 +62,9 @@ import { setSyncMode, clearSyncMode } from "./sync-mode.js";
 import { spawn } from "child_process";
 import { join } from "path";
 import { existsSync } from "fs";
-import { acquireFileLock } from "../parser/file-lock.js";
+import { acquireFileLock, type FileLockAcquireInfo } from "../parser/file-lock.js";
+import { rollbackDirtyShadowWorktree } from "../agent-runtime/workspace.js";
+import { shouldProxyCommand, proxyCommand, extractCommandPayload } from "./daemon-proxy.js";
 
 const program = new Command();
 
@@ -71,7 +73,7 @@ setVerboseModeGetter(getVerboseMode);
 
 // Track if we've already shown the manifest daemon deprecation warning this session
 let manifestDaemonWarningShown = false;
-let heldMutationLockRelease: (() => Promise<void>) | null = null;
+let heldMutationLockRelease: ((() => Promise<void>) & { info: FileLockAcquireInfo }) | null = null;
 let heldMutationLockPath: string | null = null;
 
 function releaseHeldMutationLockSync(): void {
@@ -97,6 +99,14 @@ async function maybeAcquireDispatchMutationLock(isMutating: boolean): Promise<vo
   try {
     heldMutationLockRelease = await acquireFileLock(lockFile, timeoutMs);
     heldMutationLockPath = lockFile;
+
+    // AC: @scoped-dispatch-shadow-serialization ac-11 — when the CLI
+    // force-reclaims the lock from an alive-but-stuck holder, the shadow
+    // worktree may contain uncommitted dirty state from the previous holder's
+    // interrupted write. Roll it back before proceeding with the CLI mutation.
+    if (heldMutationLockRelease.info.forceReclaimed) {
+      await rollbackDirtyShadowWorktree(process.cwd(), "cli", heldMutationLockRelease.info);
+    }
   } catch (err) {
     const reason = err instanceof Error ? err.message : String(err);
     console.error(chalk.red("error: dispatch shadow mutation lock unavailable"));
@@ -224,6 +234,8 @@ program
   .option("--yaml", "Output in YAML format")
   .option("--raw", "Output in raw JSON format (same as --json)")
   .option("--debug-shadow", "Enable debug output for shadow operations")
+  // AC: @cli-daemon-proxy ac-force-proxy — require daemon routing
+  .option("--daemon", "Require daemon routing (fail if daemon is unavailable)")
   .hook("preAction", async (thisCommand, actionCommand) => {
     // Skip all hooks during batch dispatch — the batch handler manages modes itself
     if (isBatchMode()) return;
@@ -273,6 +285,108 @@ program
       setSyncMode("drift-check");
     }
 
+    // AC: @cli-daemon-proxy ac-auto-detect, ac-direct-fallback, ac-force-proxy, ac-force-direct
+    // Daemon proxy routing — attempt to route command through daemon API.
+    // Commands that should never be proxied (infrastructure/lifecycle commands).
+    // Checked against the full command chain — if any ancestor is a skip
+    // command, skip proxy (e.g. "serve start" → "serve" is in the skip list).
+    const proxySkipCommands = new Set([
+      "init",
+      "serve",
+      "help",
+      "setup",
+      "shadow",
+      "doctor",
+      "clone-for-testing",
+      "batch",
+      "agent",
+      "event",
+    ]);
+
+    // Walk up the Commander parent chain to check all command names.
+    // Skip the root program name ("kspec") — only check actual command groups.
+    let shouldSkipProxy = false;
+    {
+      let cmd: typeof actionCommand | null | undefined = actionCommand;
+      while (cmd && typeof cmd.name === "function") {
+        const name = cmd.name();
+        if (name && name !== "kspec" && proxySkipCommands.has(name)) {
+          shouldSkipProxy = true;
+          break;
+        }
+        cmd = cmd.parent as typeof actionCommand | null | undefined;
+      }
+    }
+
+    if (!shouldSkipProxy) {
+      const proxyResult = await shouldProxyCommand({
+        forceDaemon: opts.daemon,
+      });
+
+      if (proxyResult.proxy) {
+        // Route through daemon — extract command payload from Commander state
+        const { command, args: cmdArgs } = extractCommandPayload(actionCommand);
+
+        // Resolve project path for X-Kspec-Dir header
+        let projectPath: string;
+        try {
+          projectPath = path.resolve(process.cwd());
+        } catch {
+          projectPath = process.cwd();
+        }
+
+        const result = await proxyCommand({
+          port: proxyResult.port,
+          command,
+          args: cmdArgs,
+          projectPath,
+          isMutating,
+        });
+
+        if (result.ok) {
+          // AC: @cli-daemon-proxy ac-transparent-output — write stdout/stderr, exit with code
+          if (result.result.stdout) {
+            process.stdout.write(result.result.stdout);
+          }
+          if (result.result.stderr) {
+            process.stderr.write(result.result.stderr);
+          }
+          process.exit(result.result.exitCode);
+        } else if (result.fallbackToDirectMode) {
+          // AC: @cli-daemon-proxy ac-timeout-fallback — fall back to direct mode with warning
+          console.error(chalk.yellow(`⚠ ${result.error}`));
+          // Continue to normal command execution (direct mode)
+        } else {
+          // AC: @cli-daemon-proxy ac-timeout-mutation-error, ac-force-proxy error
+          console.error(chalk.red(`error: ${result.error}`));
+          if (opts.daemon) {
+            console.error(
+              chalk.gray(
+                "Suggested action: start the daemon with 'kspec serve start', or remove --daemon to allow direct mode.",
+              ),
+            );
+          } else {
+            console.error(
+              chalk.gray(
+                "Suggested action: check daemon status with 'kspec serve status' or restart with 'kspec serve restart'.",
+              ),
+            );
+          }
+          process.exit(EXIT_CODES.ERROR);
+        }
+      } else if (opts.daemon && proxyResult.reason) {
+        // AC: @cli-daemon-proxy ac-force-proxy — --daemon flag but daemon unavailable
+        console.error(chalk.red(`error: ${proxyResult.reason}`));
+        console.error(
+          chalk.gray(
+            "Suggested action: start the daemon with 'kspec serve start', or remove --daemon to allow direct mode.",
+          ),
+        );
+        process.exit(EXIT_CODES.ERROR);
+      }
+    }
+
+    // If we reach here, we're in direct mode — proceed with normal execution
     await maybeAcquireDispatchMutationLock(isMutating);
 
     // Auto-start daemon if configured and not running

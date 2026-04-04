@@ -1,5 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { cleanupTempDir, initGitRepo, kspec, setupTempFixtures } from "./helpers/cli.js";
+import {
+  cleanupTempDir,
+  initGitRepo,
+  kspec,
+  readTestOutput,
+  setupTempFixtures,
+} from "./helpers/cli.js";
 
 describe("Trait Retrospective", () => {
   let tempDir: string;
@@ -34,7 +40,7 @@ describe("Trait Retrospective", () => {
     const yaml = await import("yaml");
 
     const corePath = path.join(tempDir, "modules", "core.yaml");
-    const coreContent = await fs.readFile(corePath, "utf-8");
+    const coreContent = await readTestOutput(corePath);
     const coreData = yaml.parse(coreContent);
 
     // Find the feature and add traits array
@@ -74,7 +80,7 @@ describe("Trait Retrospective", () => {
     const yaml = await import("yaml");
 
     const corePath = path.join(tempDir, "modules", "core.yaml");
-    const coreContent = await fs.readFile(corePath, "utf-8");
+    const coreContent = await readTestOutput(corePath);
     const coreData = yaml.parse(coreContent);
 
     // Set status to not_started
@@ -133,7 +139,7 @@ describe("Trait Retrospective", () => {
     const yaml = await import("yaml");
 
     const corePath = path.join(tempDir, "modules", "core.yaml");
-    const coreContent = await fs.readFile(corePath, "utf-8");
+    const coreContent = await readTestOutput(corePath);
     const coreData = yaml.parse(coreContent);
 
     // Add trait, status, and verification metadata

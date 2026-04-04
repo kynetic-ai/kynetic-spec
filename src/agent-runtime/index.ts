@@ -9,8 +9,11 @@
 export {
   runInvocation,
   InvocationTimeoutError,
+  PromptQueue,
+  PromptQueueFullError,
   type InvocationOptions,
   type InvocationResult,
+  type SessionIdleContext,
 } from "./invocation.js";
 
 export {
@@ -76,3 +79,5 @@ export {
   type ScheduleStatus,
   type ScheduleDetailedStatus,
 } from "./schedule-engine.js";
+
+export { SessionRegistry, type SessionHandle, type SessionState } from "./session-registry.js";

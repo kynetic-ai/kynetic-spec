@@ -1,0 +1,31 @@
+kynetic_triage: "1.0"
+
+triage:
+  - _ulid: 01KJC3NZ8Y268B3KFD2NVS6613
+    inbox_ref: 01KJNBX0CA45ZT43W2T6HJMVA1
+    item_snapshot: First inbox item for testing
+    status: triaged
+    action: defer
+    reasoning: Not urgent, defer for later
+    decided_by: "@test-user"
+    evidence_refs: []
+    created_at: "2026-01-02T10:00:00Z"
+
+  - _ulid: 01KJC3NZD5QFP9N0FCKX9D90KR
+    inbox_ref: 01KJNBX1CC9N4YGP991WD7XS8S
+    item_snapshot: Second inbox item with different tags
+    status: acted_on
+    action: promote
+    reasoning: This should become a task
+    decided_by: "@test-user"
+    evidence_refs: []
+    result_ref: "@test-task-ready"
+    acted_at: "2026-01-02T11:00:00Z"
+    created_at: "2026-01-02T09:00:00Z"
+
+  - _ulid: 01KJC3NZHCBKZMDKQNZ28JNRG2
+    inbox_ref: 01KJNBX2CB8N4YGP991WD7XS9R
+    item_snapshot: Third inbox item - oldest
+    status: pending
+    evidence_refs: []
+    created_at: "2026-01-02T08:00:00Z"

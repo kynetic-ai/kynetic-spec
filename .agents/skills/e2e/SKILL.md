@@ -29,24 +29,24 @@ The `test-base.ts` fixture creates a completely isolated environment per test:
 
 ```typescript
 // Key steps performed automatically:
-1. Kill any existing daemon on port 3456
-2. Create temp dir with .kspec/ subdirectory
-3. Copy E2E fixtures from packages/web-ui/tests/fixtures/
-4. Initialize git repo with test user config
-5. Create fake shadow worktree structure:
+1. Create temp dir with .kspec/ subdirectory
+2. Copy E2E fixtures from tests/e2e/fixtures/
+3. Initialize git repo with test user config
+4. Create fake shadow worktree structure:
    - .git/worktrees/-kspec/ directory
    - .kspec/.git file with "gitdir:" pointer
-6. Start daemon: kspec serve start --daemon --port 3456
+5. Allocate ephemeral port (OS-assigned, never hardcoded)
+6. Start daemon via node + CLI_PATH (no npm link needed)
 7. Set WEB_UI_DIR for static serving
-8. Wait 2 seconds for daemon readiness
+8. Poll health endpoint until ready
 9. Provide isolated fixture to test
 10. Cleanup: stop daemon, remove temp directory
 ```
 
 **Key file locations:**
-- `packages/web-ui/tests/fixtures/` - E2E YAML fixtures
-- `packages/web-ui/tests/fixtures/test-base.ts` - Fixture setup
-- `packages/web-ui/tests/e2e/*.spec.ts` - Test files
+- `tests/e2e/fixtures/` - E2E YAML fixtures and test-base.ts
+- `tests/e2e/*.spec.ts` - Test files
+- `playwright.config.ts` - Playwright config (root level)
 
 ### Fixture Isolation is Non-Negotiable
 
@@ -54,7 +54,7 @@ E2E fixtures MUST be separate from unit test fixtures:
 
 ```
 tests/fixtures/           ← Unit test fixtures (shared)
-packages/web-ui/tests/fixtures/  ← E2E fixtures (isolated)
+tests/e2e/fixtures/       ← E2E fixtures (isolated)
 ```
 
 **Why:** E2E daemon mutations affect fixtures. Unit tests need stable data.
@@ -402,7 +402,7 @@ await expect(element).toContainText('value');
 await copyFixtures('../../tests/fixtures/');
 
 // GOOD - isolated E2E fixtures
-await copyFixtures('../fixtures/');  // packages/web-ui/tests/fixtures/
+await copyFixtures('../fixtures/');  // tests/e2e/fixtures/
 ```
 
 ### Don't: Test UI State Only

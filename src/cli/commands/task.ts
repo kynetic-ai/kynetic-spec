@@ -1,4 +1,3 @@
-import { execSync } from "node:child_process";
 import chalk from "chalk";
 import type { Command } from "commander";
 import { markMutating } from "../command-annotations.js";
@@ -30,6 +29,15 @@ import { alignmentCheck, errors } from "../../strings/index.js";
 import { formatCommitGuidance, printCommitGuidance } from "../../utils/commit.js";
 import { captureSubmissionLinkage, getCurrentBranch, isGitRepo } from "../../utils/git.js";
 import { executeBatchOperation, formatBatchOutput } from "../batch.js";
+import {
+  computeDispatchBranchName,
+  findBranchOnRemote,
+  gitCheckout,
+  gitCheckoutNew,
+  gitCreateBranchFrom,
+  gitRefExists,
+  reportBranchResult,
+} from "../branch-helper.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { parseTagsArray } from "../parse-utils.js";
 import {
@@ -37,11 +45,11 @@ import {
   error,
   formatTaskDetails,
   info,
+  showChangeDiff,
+  warn,
   isJsonMode,
   output,
-  showChangeDiff,
   success,
-  warn,
 } from "../output.js";
 import { parsePriority, validateEnumOption, validateSpecRef } from "../validators.js";
 import { describeEnumValues } from "../enum-help.js";
@@ -196,135 +204,6 @@ function resolveTaskRefForBatch(
 
 function getTaskDisplayRef(task: Pick<LoadedTask, "_ulid" | "slugs">): string {
   return `@${task.slugs[0] || task._ulid}`;
-}
-
-/**
- * Compute the deterministic dispatch-compatible branch name for a task.
- * Uses the exact `dispatch/task/<normalized-task-slug>/<short-task-ref>` naming contract.
- * AC: @deterministic-task-branch-helper ac-1
- */
-function computeDispatchBranchName(
-  taskRef: string,
-  task?: { title?: string; slugs?: string[] },
-): string {
-  const preferred = task?.slugs?.[0] ?? task?.title ?? taskRef.replace(/^@/, "task");
-  const slug =
-    preferred
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-+|-+$/g, "")
-      .replace(/--+/g, "-") || "task";
-  const shortId = taskRef.replace(/^@/, "").slice(0, 8).toLowerCase();
-  return `dispatch/task/${slug}/${shortId}`;
-}
-
-/**
- * Check if a git ref exists locally.
- */
-function gitRefExists(ref: string): boolean {
-  try {
-    execSync(`git show-ref --verify --quiet ${ref}`, { stdio: "pipe" });
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-/**
- * List git remotes, with "origin" sorted first.
- */
-function listRemotes(): string[] {
-  try {
-    const output = execSync("git remote", { encoding: "utf-8", stdio: "pipe" }).trim();
-    if (!output) return [];
-    const remotes = output
-      .split(/\r?\n/)
-      .map((l) => l.trim())
-      .filter(Boolean);
-    return [...remotes.filter((r) => r === "origin"), ...remotes.filter((r) => r !== "origin")];
-  } catch {
-    return [];
-  }
-}
-
-/**
- * Find a branch on any configured remote. Returns the remote ref (e.g. "origin/branch")
- * if found, null otherwise. Fetches from the remote to ensure refs are up to date.
- */
-function findBranchOnRemote(branch: string): string | null {
-  for (const remote of listRemotes()) {
-    // Fetch the branch from the remote (it may exist remotely but not be tracked locally)
-    try {
-      execSync(`git fetch ${remote} ${branch}`, { stdio: "pipe" });
-    } catch {
-      // Fetch failed — branch may not exist on this remote
-    }
-    if (gitRefExists(`refs/remotes/${remote}/${branch}`)) {
-      return `${remote}/${branch}`;
-    }
-  }
-  return null;
-}
-
-/**
- * Create a local branch from a remote tracking ref.
- */
-function gitCreateBranchFrom(branch: string, startPoint: string): void {
-  execSync(`git branch ${branch} ${startPoint}`, { stdio: "pipe" });
-}
-
-/**
- * Switch to an existing branch.
- */
-function gitCheckout(branch: string): void {
-  execSync(`git checkout ${branch}`, { stdio: "pipe" });
-}
-
-/**
- * Create and switch to a new branch.
- */
-function gitCheckoutNew(branch: string): void {
-  execSync(`git checkout -b ${branch}`, { stdio: "pipe" });
-}
-
-/**
- * Report the result of the branch helper operation.
- * AC: @deterministic-task-branch-helper ac-3
- * AC: @trait-json-output ac-1, ac-2, ac-4
- */
-function reportBranchResult(result: {
-  branch: string;
-  action: "created" | "switched" | "rehydrated" | "already_on_branch";
-  source?: string;
-  taskRef: string;
-}): void {
-  const actionLabels: Record<string, string> = {
-    created: "Created new branch",
-    switched: "Switched to existing branch",
-    rehydrated: "Rehydrated branch from remote",
-    already_on_branch: "Already on branch",
-  };
-
-  const label = actionLabels[result.action];
-  const guidance =
-    "Using this dispatch-compatible branch preserves reviewer and fix-cycle continuity for manual work.";
-
-  if (isJsonMode()) {
-    output({
-      branch: result.branch,
-      action: result.action,
-      task_ref: result.taskRef,
-      source: result.source ?? null,
-      guidance,
-    });
-  } else {
-    success(`${label}: ${result.branch}`);
-    info(`Task: ${result.taskRef}`);
-    if (result.source) {
-      info(`Source: ${result.source}`);
-    }
-    info(guidance);
-  }
 }
 
 /**
@@ -915,49 +794,13 @@ export function registerTaskCommands(program: Command): void {
         // AC: @task-activity-timeline ac-1, ac-2, ac-3 — load activity timeline
         let activity: import("../../utils/activity.js").ActivityEntry[] = [];
         try {
-          const {
-            assembleActivityFromFiles,
-            getPreMigrationActivity,
-            getRawTaskCommits,
-            normalizeTaskActivity,
-          } = await import("../../utils/activity.js");
+          const { assembleActivityFromFiles } = await import("../../utils/activity.js");
 
           // Primary: read history entries from task.yaml and notes from task record.
           // AC: @task-activity-in-file ac-1 — assembled from persisted data, no VCS queries
           const resolvedManager = resolveTaskDataManager(ctx);
           const historyEntries = await resolvedManager.getTaskHistory(ctx, foundTask._ulid);
           activity = assembleActivityFromFiles(historyEntries, foundTask.notes);
-
-          // AC: @task-activity-in-file ac-3 — fallback for pre-migration tasks
-          // If no history entries exist, the task predates the storage migration.
-          // Try per-directory git log first (fast, for split format without history),
-          // then fall back to git log -L (slower, for monolithic format).
-          if (historyEntries.length === 0 && activity.length === 0) {
-            const fallbackEntries = getPreMigrationActivity(ctx.specDir, foundTask._ulid);
-            if (fallbackEntries.length > 0) {
-              activity = [...activity, ...fallbackEntries];
-            } else {
-              // Ultimate fallback: git log -L for monolithic format tasks
-              // that have no per-task directory at all.
-              const rawCommits = getRawTaskCommits(ctx.specDir, foundTask._ulid);
-              const legacyEntries = normalizeTaskActivity(rawCommits);
-              for (const entry of legacyEntries) {
-                entry.source = "git_fallback";
-              }
-              activity = [...activity, ...legacyEntries];
-            }
-          } else if (historyEntries.length === 0) {
-            // Have note entries but no history — try per-directory git log
-            // to recover field-change history for migrated tasks.
-            // Filter out note_added entries from fallback since notes are
-            // already represented from notes.yaml (prevents duplication).
-            const fallbackEntries = getPreMigrationActivity(ctx.specDir, foundTask._ulid).filter(
-              (e) => e.type !== "note_added",
-            );
-            if (fallbackEntries.length > 0) {
-              activity = [...activity, ...fallbackEntries];
-            }
-          }
 
           // AC: @task-activity-timeline ac-3 — merge review events into timeline
           const taskRef = `@${foundTask.slugs[0] || foundTask._ulid}`;
@@ -1297,12 +1140,6 @@ Examples:
     )
     .action(async (ref: string | undefined, options) => {
       try {
-        // AC: @spec-task-set-batch ac-3 - Reject --status flag
-        if (options.status !== undefined) {
-          error("Use state transition commands (start, complete, block, etc.) to change status");
-          process.exit(EXIT_CODES.USAGE_ERROR);
-        }
-
         // AC: @spec-task-clear-deps ac-3 - Mutual exclusivity check
         if (options.clearDeps && options.dependsOn) {
           error("Cannot use --clear-deps and --depends-on together");
@@ -1324,6 +1161,32 @@ Examples:
         ];
 
         const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items, allMetaItems);
+
+        // AC: @task-set ac-1, @trait-error-guidance ac-1, ac-2, ac-4
+        // Reject --status flag with context-aware error message
+        if (options.status !== undefined) {
+          let currentStatus: import("../../schema/common.js").TaskStatus | undefined;
+          let priorStatus: import("../../schema/common.js").TaskStatus | null | undefined;
+
+          // Try to resolve the task to get current status for a better error message
+          if (ref) {
+            try {
+              const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
+              currentStatus = foundTask.status;
+              priorStatus = foundTask.prior_status;
+            } catch {
+              // Task resolution failed - still show the error, just without current status
+            }
+          }
+
+          const rejection = errors.status.statusSetRejection(
+            options.status as string,
+            currentStatus,
+            priorStatus,
+          );
+          error(rejection.message, isJsonMode() ? rejection.details : rejection.details.guidance);
+          process.exit(EXIT_CODES.USAGE_ERROR);
+        }
 
         // AC: @trait-multi-ref-batch ac-8 - Deduplicate refs
         const refsFlag = options.refs ? [...new Set(options.refs as string[])] : undefined;
@@ -3046,14 +2909,26 @@ Examples:
             reportBranchResult({
               branch: branchName,
               action: "already_on_branch",
-              taskRef: `@${foundTask.slugs[0] || foundTask._ulid}`,
+              subject: {
+                label: "Task",
+                ref: `@${foundTask.slugs[0] || foundTask._ulid}`,
+                jsonKey: "task_ref",
+              },
+              guidance:
+                "Using this dispatch-compatible branch preserves reviewer and fix-cycle continuity for manual work.",
             });
           } else {
             gitCheckout(branchName);
             reportBranchResult({
               branch: branchName,
               action: "switched",
-              taskRef: `@${foundTask.slugs[0] || foundTask._ulid}`,
+              subject: {
+                label: "Task",
+                ref: `@${foundTask.slugs[0] || foundTask._ulid}`,
+                jsonKey: "task_ref",
+              },
+              guidance:
+                "Using this dispatch-compatible branch preserves reviewer and fix-cycle continuity for manual work.",
             });
           }
           return;
@@ -3069,7 +2944,13 @@ Examples:
             branch: branchName,
             action: "rehydrated",
             source: remoteSource,
-            taskRef: `@${foundTask.slugs[0] || foundTask._ulid}`,
+            subject: {
+              label: "Task",
+              ref: `@${foundTask.slugs[0] || foundTask._ulid}`,
+              jsonKey: "task_ref",
+            },
+            guidance:
+              "Using this dispatch-compatible branch preserves reviewer and fix-cycle continuity for manual work.",
           });
           return;
         }
@@ -3079,183 +2960,16 @@ Examples:
         reportBranchResult({
           branch: branchName,
           action: "created",
-          taskRef: `@${foundTask.slugs[0] || foundTask._ulid}`,
+          subject: {
+            label: "Task",
+            ref: `@${foundTask.slugs[0] || foundTask._ulid}`,
+            jsonKey: "task_ref",
+          },
+          guidance:
+            "Using this dispatch-compatible branch preserves reviewer and fix-cycle continuity for manual work.",
         });
       } catch (err) {
         error(errors.failures.taskBranch, err);
-        process.exit(EXIT_CODES.ERROR);
-      }
-    });
-
-  // kspec task storage activate
-  // AC: @task-storage-activation ac-4 — persist split format setting
-  const storage = task.command("storage").description("Manage task storage format");
-
-  markMutating(
-    storage
-      .command("activate")
-      .description("Activate split per-task directory storage format")
-      .option("--force", "Skip confirmation prompt"),
-  ).action(async (options) => {
-    try {
-      const ctx = await initContext();
-
-      if (!ctx.manifestPath) {
-        error(errors.project.noKspecProject);
-        process.exit(EXIT_CODES.ERROR);
-      }
-
-      const { readYamlFile, writeYamlFilePreserveFormat } = await import("../../parser/yaml.js");
-      const { getIndexFilePath, listTaskDirs } = await import("../../parser/split-backend.js");
-
-      // Check if already activated
-      const currentFormat = ctx.manifest?.task_storage?.format;
-      if (currentFormat === "split") {
-        if (isJsonMode()) {
-          output({ success: true, already_active: true, format: "split" });
-        } else {
-          info("Split storage format is already active.");
-        }
-        return;
-      }
-
-      // Validate migration completeness before activating
-      const indexPath = getIndexFilePath(ctx);
-      let rawEntries: unknown[] = [];
-      try {
-        const raw = await readYamlFile<unknown>(indexPath);
-        if (Array.isArray(raw)) {
-          rawEntries = raw;
-        } else if (raw && typeof raw === "object" && "tasks" in raw) {
-          const wrapper = raw as Record<string, unknown>;
-          rawEntries = Array.isArray(wrapper.tasks) ? wrapper.tasks : [];
-        }
-      } catch {
-        // No index file — empty project, activation is fine
-      }
-
-      if (rawEntries.length > 0) {
-        // Check for unmigrated entries (monolithic format: no notes_count as number)
-        const unmigratedEntries = rawEntries.filter((entry) => {
-          if (!entry || typeof entry !== "object") return false;
-          const rec = entry as Record<string, unknown>;
-          return typeof rec.notes_count !== "number";
-        });
-
-        if (unmigratedEntries.length > 0) {
-          // Verify these aren't already migrated (per-task dirs exist)
-          const taskDirs = await listTaskDirs(ctx);
-          const dirSet = new Set(taskDirs);
-          const trulyUnmigrated = unmigratedEntries.filter((entry) => {
-            const rec = entry as Record<string, unknown>;
-            return typeof rec._ulid === "string" && !dirSet.has(rec._ulid);
-          });
-
-          if (trulyUnmigrated.length > 0) {
-            if (isJsonMode()) {
-              output({
-                success: false,
-                error: `${trulyUnmigrated.length} task(s) have not been migrated`,
-                suggestion: "Run 'kspec task migrate' before activating split format.",
-              });
-            } else {
-              error(
-                `Cannot activate split format: ${trulyUnmigrated.length} task(s) have not been migrated to per-task directories.`,
-              );
-              info("Run 'kspec task migrate' first, then retry activation.");
-            }
-            process.exit(EXIT_CODES.ERROR);
-          }
-        }
-      }
-
-      // Confirmation prompt (unless --force)
-      if (!options.force && !isJsonMode()) {
-        const readline = await import("node:readline");
-        const rl = readline.createInterface({
-          input: process.stdin,
-          output: process.stdout,
-        });
-        const answer = await new Promise<string>((resolve) => {
-          rl.question(
-            chalk.yellow(
-              "Activate split storage format? This changes how tasks are read and written. [y/N] ",
-            ),
-            resolve,
-          );
-        });
-        rl.close();
-        if (answer.trim().toLowerCase() !== "y") {
-          info("Activation cancelled.");
-          return;
-        }
-      }
-
-      // Update manifest: set task_storage.format = "split"
-      const manifest = await readYamlFile<Record<string, unknown>>(ctx.manifestPath);
-      if (!manifest) {
-        error("Could not load manifest file.");
-        process.exit(EXIT_CODES.ERROR);
-      }
-
-      if (!manifest.task_storage || typeof manifest.task_storage !== "object") {
-        manifest.task_storage = { format: "split" };
-      } else {
-        (manifest.task_storage as Record<string, unknown>).format = "split";
-      }
-
-      await writeYamlFilePreserveFormat(ctx.manifestPath, manifest);
-
-      // AC: @task-storage-activation ac-4 — commit the setting change
-      await commitIfShadow(ctx.shadow, "feat: activate split task storage format");
-
-      if (isJsonMode()) {
-        output({ success: true, format: "split", already_active: false });
-      } else {
-        success(
-          "Split storage format activated. All subsequent operations will use per-task directories.",
-        );
-      }
-    } catch (err) {
-      if (isJsonMode()) {
-        output({
-          success: false,
-          error: String(err instanceof Error ? err.message : err),
-          suggestion: "Check that .kspec/ directory exists and shadow branch is healthy.",
-        });
-      } else {
-        error("Failed to activate split storage format", err instanceof Error ? err.message : err);
-        info(
-          "Check that .kspec/ directory exists and shadow branch is healthy. Run 'kspec shadow status' for diagnostics.",
-        );
-      }
-      process.exit(EXIT_CODES.ERROR);
-    }
-  });
-
-  // kspec task storage status — show current format
-  storage
-    .command("status")
-    .description("Show current task storage format")
-    .action(async () => {
-      try {
-        const ctx = await initContext();
-
-        const currentFormat = ctx.manifest?.task_storage?.format ?? "monolithic";
-
-        if (isJsonMode()) {
-          output({ format: currentFormat });
-        } else {
-          info(`Task storage format: ${chalk.bold(currentFormat)}`);
-        }
-      } catch (err) {
-        if (isJsonMode()) {
-          output({
-            error: String(err instanceof Error ? err.message : err),
-          });
-        } else {
-          error("Failed to check storage format", err instanceof Error ? err.message : err);
-        }
         process.exit(EXIT_CODES.ERROR);
       }
     });
@@ -3293,11 +3007,35 @@ Examples:
 
       const indexPath = getIndexFilePath(ctx);
 
+      // Helper: upgrade manifest to kynetic 1.1 with task_storage.format: "split".
+      // Called from every success path (including early-returns for already-migrated)
+      // so that the version gate in resolveTaskDataManager() stops blocking.
+      async function upgradeManifestToSplit(): Promise<void> {
+        if (!ctx.manifestPath) return;
+        const { readYamlFile: readManifest, writeYamlFilePreserveFormat } =
+          await import("../../parser/yaml.js");
+        const manifest = await readManifest<Record<string, unknown>>(ctx.manifestPath);
+        if (!manifest) return;
+        // Bump kynetic version to 1.1
+        manifest.kynetic = "1.1";
+        // Set task_storage.format = "split"
+        if (!manifest.task_storage || typeof manifest.task_storage !== "object") {
+          manifest.task_storage = { format: "split" };
+        } else {
+          (manifest.task_storage as Record<string, unknown>).format = "split";
+        }
+        await writeYamlFilePreserveFormat(ctx.manifestPath, manifest);
+      }
+
       // Read the raw task entries from project.tasks.yaml
       const { rawTasks, useTasksWrapper, wrapperObj } = await extractRawTaskArray(indexPath);
 
       if (rawTasks.length === 0) {
         // AC: @task-storage-migration ac-6 — already migrated (no monolithic entries)
+        if (!isDryRun) {
+          await upgradeManifestToSplit();
+          await commitIfShadow(ctx.shadow, "chore: upgrade manifest to split task storage format");
+        }
         const resultData = {
           ...(isDryRun ? { dry_run: true } : {}),
           migrated: 0,
@@ -3361,6 +3099,10 @@ Examples:
 
       if (toMigrate.length === 0 && alreadyMigrated.length === 0) {
         // AC: @task-storage-migration ac-6 — all entries are already lean index entries
+        if (!isDryRun) {
+          await upgradeManifestToSplit();
+          await commitIfShadow(ctx.shadow, "chore: upgrade manifest to split task storage format");
+        }
         const resultData = {
           ...(isDryRun ? { dry_run: true } : {}),
           migrated: 0,
@@ -3667,6 +3409,10 @@ Examples:
         }
       });
 
+      // After successful migration, update manifest: set task_storage.format = "split"
+      // and bump kynetic version to 1.1. This replaces the separate activate command.
+      await upgradeManifestToSplit();
+
       // AC: @task-storage-migration ac-8 — single atomic shadow branch commit
       await commitIfShadow(
         ctx.shadow,
@@ -3747,11 +3493,11 @@ Examples:
           // AC: @trait-error-guidance ac-6 — guidance in structured error object
           error("No per-task directories found in .kspec/tasks/", {
             suggestion:
-              "Run 'kspec task migrate' to convert monolithic task storage to per-task directories.",
+              "Run 'kspec task migrate' to convert legacy task storage to per-task directories.",
           });
           if (!isJsonMode()) {
             info(
-              "Run 'kspec task migrate' to convert monolithic task storage to per-task directories.",
+              "Run 'kspec task migrate' to convert legacy task storage to per-task directories.",
             );
           }
           process.exit(EXIT_CODES.VALIDATION_FAILED);
