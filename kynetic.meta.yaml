@@ -12272,6 +12272,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-04T05:34:31.235Z
+  - _ulid: 01KNBFRR6RA1XCKR0TKKPXKRMJ
+    type: success
+    content: kspec agent run plan-reviewer with codex-acp adapter successfully recorded review findings
+      and verdicts on later runs. The agent followed the review-plan skill accurately — created
+      review records, added anchored comments with blocker/question/nit kinds, ran checks, and
+      submitted verdicts.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-04T05:34:33.688Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
