@@ -113966,6 +113966,17 @@ reviews:
         runner: npm
         created_at: 2026-04-04T07:34:05.872Z
         completed_at: 2026-04-04T07:34:05.872Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Validation returned warnings only (exit 6): existing repository-wide orphaned
+          skill/alignment/coverage warning debt, no schema/reference errors from this change."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-04T07:34:08.735Z
+        completed_at: 2026-04-04T07:34:08.735Z
     events:
       - _ulid: 01KNBP9G58JHR8VBXB5KDEPA0B
         actor: Jacob Chapel
@@ -114008,6 +114019,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-04T07:34:06.816Z
+      - _ulid: 01KNBPKR30MEJ3NCYG981BZXQF
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-04T07:34:09.760Z
     examined_commit: 05ded2db5dfa9bccd0f2fdfaceca427973b1c0bd
     external_links: []
     lifecycle_state: open
@@ -114054,5 +114072,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-04T07:28:33.961Z
-    updated_at: 2026-04-04T07:34:05.872Z
+    updated_at: 2026-04-04T07:34:08.735Z
     notes: []
