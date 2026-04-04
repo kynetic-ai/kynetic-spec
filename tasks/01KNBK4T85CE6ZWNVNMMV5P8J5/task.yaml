@@ -59,6 +59,7 @@ tags:
   - daemon
   - sessions
 vcs_refs: []
+review_ref: "@01KNBKF8EV82XTXH35YDBQZZT9"
 submission_linkage:
   review_url: null
   branch: dev
@@ -109,6 +110,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-04-04T06:37:42.215Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KNBKF8EV82XTXH35YDBQZZT9"
+        previous: null
+    command: review-link
+    timestamp: 2026-04-04T06:39:19.472Z
 created_at: 2026-04-04T06:33:34.725Z
 started_at: 2026-04-04T06:37:00.965Z
 submitted_at: 2026-04-04T06:37:42.214Z
