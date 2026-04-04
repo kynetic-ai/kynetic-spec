@@ -24738,7 +24738,7 @@
   type: task
   spec_ref: "@daemon-file-monitoring"
   plan_ref: "@plan-active-session-scoped-file-monitoring"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-monitoring-spec-ac3-active-sessions"
@@ -24750,6 +24750,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-04T06:33:35.031Z
+  started_at: 2026-04-04T06:46:04.616Z
   automation: eligible
 - _ulid: 01KNBK4TTCRCB0XH1VR4YJ3EV0
   slugs:
