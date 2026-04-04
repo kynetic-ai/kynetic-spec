@@ -12242,6 +12242,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-04T05:34:23.871Z
+  - _ulid: 01KNBFRH0P2W2VNMRWATMWWVGJ
+    type: friction
+    content: "kspec plan derive requires --module but kspec init creates no modules (only an empty
+      main.yaml with items: []). Had to discover kspec module add separately. Either init should
+      create a default module, or derive should offer to create one, or the error message should
+      suggest kspec module add."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-04T05:34:26.326Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
