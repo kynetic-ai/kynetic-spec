@@ -27,8 +27,6 @@ import {
   resolveSessionBlobPointers,
   getBudget,
   searchSessionEvents,
-  listSessions,
-  getSessionMetadataOnly,
   getSessionLogSummary,
   type SessionLogSummary,
   type SessionIdResolution,

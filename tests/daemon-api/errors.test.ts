@@ -228,12 +228,13 @@ describe("Error response consistency", () => {
 
     for (const endpoint of endpoints) {
       const response = await request(endpoint);
-      expect(response.status, `Expected 404 for ${endpoint}`).toBe(404);
+      // Verify 404 with error shape for endpoint
+      expect(response.status).toBe(404);
 
       const body = await response.json();
-      expect(body, `Missing 'error' field for ${endpoint}`).toHaveProperty("error");
-      expect(body, `Missing 'message' field for ${endpoint}`).toHaveProperty("message");
-      expect(body, `Missing 'suggestion' field for ${endpoint}`).toHaveProperty("suggestion");
+      expect(body).toHaveProperty("error");
+      expect(body).toHaveProperty("message");
+      expect(body).toHaveProperty("suggestion");
     }
   });
 

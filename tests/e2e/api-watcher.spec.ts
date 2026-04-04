@@ -447,6 +447,7 @@ test.describe("File Watcher API", () => {
     });
 
     const notesPath = join(daemon.kspecDir, "tasks", taskRef, "notes.yaml");
+    // oxlint-disable-next-line no-source-scanning/no-source-file-reads -- reads test-generated output in temp dir
     expect(readFileSync(notesPath, "utf8")).toContain(noteContent);
   });
 

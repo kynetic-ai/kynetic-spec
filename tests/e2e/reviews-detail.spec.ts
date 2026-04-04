@@ -319,7 +319,7 @@ test.describe("Review Detail Page", () => {
 
       // Verify badge content by checking individual thread items
       const threadItems = page.getByTestId("thread-item");
-      const count = await threadItems.count();
+      const _count = await threadItems.count();
       // Each thread-item contains a kind badge; check visible ones
       const blockerCount = await page.locator('[data-testid="thread-kind-badge"]:visible').filter({ hasText: "Blocker" }).count();
       const nitCount = await page.locator('[data-testid="thread-kind-badge"]:visible').filter({ hasText: "Nit" }).count();

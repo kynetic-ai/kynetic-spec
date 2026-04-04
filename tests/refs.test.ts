@@ -5,7 +5,7 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { kspec, kspecJson, readTestOutput, setupTempFixtures, cleanupTempDir, testUlid, seedSplitTask } from "./helpers/cli";
+import { kspec, kspecJson, setupTempFixtures, cleanupTempDir, testUlid, seedSplitTask } from "./helpers/cli";
 
 describe("kspec refs", () => {
   let tempDir: string;

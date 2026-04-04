@@ -375,7 +375,7 @@ describe("ProjectEntityCache", () => {
 
       // Modify the tasks file — add a second task
       const tasksPath = join(projectA, ".kspec", "project.tasks.yaml");
-      const currentContent = await fs.readFile(tasksPath, "utf-8");
+      const _currentContent = await fs.readFile(tasksPath, "utf-8");
       const newTask = yamlStringify([
         {
           _ulid: "01TASKA0000000000000000000",
@@ -1080,7 +1080,7 @@ describe("ProjectEntityCache", () => {
       // Capture the state during reload by intercepting loadDomain mid-flight.
       // We'll spy on the underlying data loader to pause mid-reload.
       const statesDuringReload: string[] = [];
-      const originalLoadDomain = cache.loadDomain.bind(cache);
+      const _originalLoadDomain = cache.loadDomain.bind(cache);
 
       // Trigger a reload (e.g., via invalidateDomain) and check state mid-flight
       // Use a zero-ms debounce cache for instant reload
@@ -1192,8 +1192,6 @@ describe("ProjectEntityCache", () => {
       await cache.loadDomain("items");
       expect(cache.getDomainState("items")).toBe("ready");
 
-      const originalItems = cache.getItemIndex();
-
       // Invalidate triggers a debounced reload
       const invalidatePromise = cache.invalidateDomain("items");
 
@@ -1224,13 +1222,6 @@ describe("ProjectEntityCache", () => {
       const cache = new ProjectEntityCache(projectA);
       await cache.loadDomain("meta");
       expect(cache.getDomainState("meta")).toBe("ready");
-
-      // Capture all meta artifacts before reload
-      const originalMetaIndex = cache.getMetaIndex();
-      const originalMetaDetail = cache.getMetaDetail();
-      const originalShadowInfo = cache.getShadowInfo();
-      const originalProjectConfig = cache.getProjectConfig();
-      const originalSessionContext = cache.getSessionContext();
 
       // Start a reload — state should remain ready
       const reloadPromise = cache.loadDomain("meta");
@@ -1468,8 +1459,6 @@ describe("ProjectEntityCache", () => {
 
       const before = cache.getTaskIndex();
       expect(before).not.toBeNull();
-      const beforeLength = before!.length;
-
       // Simulate mutation: modify file, then writeThrough
       const tasksPath = join(projectA, ".kspec", "project.tasks.yaml");
       const newTasks = yamlStringify([
@@ -1676,9 +1665,6 @@ describe("ProjectEntityCache", () => {
 
       // During warmup, at least some domains should be "loading"
       const domainsForRefs: CacheDomain[] = ["tasks", "items", "plans"];
-      const anyLoading = domainsForRefs.some(
-        (d) => cache.getDomainState(d) === "loading",
-      );
       // Either some are still loading (warmup in progress) or all ready (fast load)
       // The point is that no domain is "unloaded" — loadAll marks them all loading upfront
       for (const domain of domainsForRefs) {

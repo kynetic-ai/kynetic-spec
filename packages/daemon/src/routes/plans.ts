@@ -17,8 +17,6 @@ import {
   findPlanByRef,
   resolveTaskDataManager,
   type LoadedPlan,
-  type LoadedTask,
-  type TaskSummary,
 } from "../../parser/index.js";
 import { PlanStatusSchema } from "../../schema/plan.js";
 import {

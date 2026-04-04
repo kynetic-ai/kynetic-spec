@@ -17,7 +17,6 @@ import {
   createTempDir,
   initGitRepo,
   kspec,
-  kspecJson,
   testUlids,
 } from "./helpers/cli.js";
 

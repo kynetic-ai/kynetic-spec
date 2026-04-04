@@ -295,7 +295,7 @@ test.describe("WebSocket Connection Handling", () => {
     await expect(page.getByTestId("task-list-item").first()).toBeVisible();
     await expect(page.getByTestId("connection-status")).toContainText("Connected");
 
-    const initialCount = await page.getByTestId("task-list-item").count();
+    const _initialCount = await page.getByTestId("task-list-item").count();
 
     // Simulate disconnect by closing the WebSocket from the route handler
     currentClientWs!.close({ code: 1006, reason: "Test: simulating disconnect" });

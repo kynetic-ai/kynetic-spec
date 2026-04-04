@@ -12,10 +12,8 @@
  * AC: @dispatch-remote-branch-sync ac-transient-no-degrade
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import * as fs from "node:fs/promises";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { execSync, spawnSync } from "node:child_process";
-import * as path from "node:path";
 import { buildDispatchGitEnv } from "../src/agent-runtime/workspace.js";
 import { createTempDir, initGitRepo, cleanupTempDir } from "./helpers/cli.js";
 

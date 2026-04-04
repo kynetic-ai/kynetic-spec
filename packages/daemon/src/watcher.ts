@@ -12,7 +12,7 @@ import { existsSync } from "fs";
 import { readFile, lstat } from "fs/promises";
 import { parse as parseYaml } from "yaml";
 import { watch as chokidarWatch, type FSWatcher as ChokidarWatcher } from "chokidar";
-import { join, relative } from "path";
+import { relative } from "path";
 
 export interface WatcherOptions {
   kspecDir: string;

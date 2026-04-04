@@ -9,10 +9,10 @@
  */
 
 import { Elysia } from "elysia";
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, afterEach } from "vitest";
 import { mkdirSync, writeFileSync } from "node:fs";
 import * as path from "node:path";
-import { createTempDir, cleanupTempDir, initGitRepo, testUlid } from "./helpers/cli.js";
+import { createTempDir, cleanupTempDir, initGitRepo } from "./helpers/cli.js";
 import { createDebugRoutes } from "../dist/daemon/routes/debug.ts";
 import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.ts";
 import type { RouteEntityCache, EntityCacheAccessor } from "../dist/daemon/routes/entity-cache-types.ts";

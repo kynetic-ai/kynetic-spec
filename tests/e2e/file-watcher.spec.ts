@@ -3,13 +3,16 @@ import { join } from "path";
 import { test, expect } from "./fixtures/test-base";
 
 function appendYamlBlock(filePath: string, block: string): void {
+  // oxlint-disable-next-line no-source-scanning/no-source-file-reads -- reads test-generated fixture file in temp dir
   const original = readFileSync(filePath, "utf8").trimEnd();
   const normalizedBlock = block.replace(/^\n+/, "").replace(/\n+$/, "");
   writeFileSync(filePath, `${original}\n\n${normalizedBlock}\n`);
 }
 
 function replaceYamlText(filePath: string, from: string, to: string): void {
+  // oxlint-disable-next-line no-source-scanning/no-source-file-reads -- reads test-generated fixture file in temp dir
   const original = readFileSync(filePath, "utf8");
+  // oxlint-disable-next-line no-source-scanning/no-source-file-reads -- assertion on test-generated fixture content
   if (!original.includes(from)) {
     throw new Error(`Expected fixture text not found in ${filePath}: ${from}`);
   }

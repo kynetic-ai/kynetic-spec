@@ -213,8 +213,11 @@ describeOrSkip("SessionWatcher", () => {
     const lowBlobFootprint = await measureWatcherDelta("01JTESTSESSIONWATCHER0000008", 1);
     const highBlobFootprint = await measureWatcherDelta("01JTESTSESSIONWATCHER0000009", 250);
 
+    // oxlint-disable-next-line no-standalone-expect -- inside itWithProcFd (conditional it/it.skip)
     expect(lowBlobFootprint).toBeGreaterThanOrEqual(0);
+    // oxlint-disable-next-line no-standalone-expect -- inside itWithProcFd (conditional it/it.skip)
     expect(highBlobFootprint).toBeGreaterThanOrEqual(0);
+    // oxlint-disable-next-line no-standalone-expect -- inside itWithProcFd (conditional it/it.skip)
     expect(highBlobFootprint - lowBlobFootprint).toBeLessThanOrEqual(1);
   });
 

@@ -100,7 +100,7 @@ export class SessionRegistry {
    * AC: @active-session-registry ac-4
    */
   closeAll(reason: string): void {
-    for (const [id, handle] of this.sessions) {
+    for (const [_id, handle] of this.sessions) {
       try {
         handle.requestClose(reason);
       } catch {
