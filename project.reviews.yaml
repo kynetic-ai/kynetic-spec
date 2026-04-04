@@ -113426,6 +113426,19 @@ reviews:
         required: true
         created_at: 2026-04-04T06:31:47.637Z
         completed_at: 2026-04-04T06:31:47.637Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Read together, ac-active-only-watching, ac-startup-active-only,
+          ac-new-session-conditional-watch, and ac-session-close-unwatch still define the full
+          active-session watch lifecycle: only active sessions are watched at startup, only newly
+          detected active sessions gain watches, non-active sessions never qualify, and watches are
+          removed on transition out of active."
+        name: AC contract completeness
+        required: true
+        created_at: 2026-04-04T06:31:47.657Z
+        completed_at: 2026-04-04T06:31:47.657Z
     events:
       - _ulid: 01KNBK0SZP1334SEQDX0KE8HJ9
         actor: "@claude"
@@ -113447,6 +113460,13 @@ reviews:
           status: pass
           name: Spec boundary
         timestamp: 2026-04-04T06:31:49.645Z
+      - _ulid: 01KNBK1MVJQEEKB9RZWWEVMSQH
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: AC contract completeness
+        timestamp: 2026-04-04T06:31:50.898Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -113459,5 +113479,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-04T06:31:23.383Z
-    updated_at: 2026-04-04T06:31:47.637Z
+    updated_at: 2026-04-04T06:31:47.657Z
     notes: []
