@@ -114495,6 +114495,19 @@ reviews:
         required: true
         created_at: 2026-04-04T23:04:45.423Z
         completed_at: 2026-04-04T23:04:45.423Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Verified: onFileChange receives (file, content) at watcher.ts:159, but
+          cacheInvalidationCallback at project-context.ts:165 drops content - only passes
+          (normalizedPath, kspecDir, file). Plan's analysis is accurate. Line references
+          (entity-cache.ts:924, 1215, 1270, 1306) match current source. Meta domain doLoadDomain at
+          line 973 does indeed call getShadowStatus and hasRemoteTracking sequentially."
+        name: Codebase alignment
+        required: true
+        created_at: 2026-04-04T23:04:49.892Z
+        completed_at: 2026-04-04T23:04:49.892Z
     events:
       - _ulid: 01KNDBV7S70T7KP378Y3N0MFR3
         actor: "@claude"
@@ -114516,6 +114529,13 @@ reviews:
           status: pass
           name: Cross-reference validation
         timestamp: 2026-04-04T23:04:46.140Z
+      - _ulid: 01KNDBVW6MJX3FWMX3F03AKGCP
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Codebase alignment
+        timestamp: 2026-04-04T23:04:50.644Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -114528,5 +114548,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-04T23:04:29.735Z
-    updated_at: 2026-04-04T23:04:45.423Z
+    updated_at: 2026-04-04T23:04:49.892Z
     notes: []
