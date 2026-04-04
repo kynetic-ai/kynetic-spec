@@ -22680,9 +22680,19 @@ runs:
     started_at: 2026-04-04T07:57:47.337Z
   - _ulid: 01KNBSG3V3YDWMQDV6VJ90BM2T
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-04T08:24:36.451Z
+        completed_at: 2026-04-04T08:25:13.130Z
+        notes: "Worked well: existing /proc/self/fd regression patterns made the FD-leak investigation fast
+          and grounded in behavior."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-04T08:25:13.130Z
+        completed_at: 2026-04-04T08:25:13.130Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-04T08:24:36.451Z
