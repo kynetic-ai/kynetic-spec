@@ -114281,7 +114281,18 @@ reviews:
     slugs: []
     title: Review task-fd-regression-test-active-scoping
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation reported only existing repository warnings; no task-specific schema, reference,
+          or alignment errors for this work.
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-04-04T07:56:51.902Z
+        completed_at: 2026-04-04T07:56:51.902Z
     events:
       - _ulid: 01KNBQW62B0C4G8EG7MG88R6MW
         actor: Jacob Chapel
@@ -114296,6 +114307,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-04T07:56:49.971Z
+      - _ulid: 01KNBQXBAFE22GH7P10BE91FS6
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-04T07:56:52.943Z
     examined_commit: d51b5485e0c0f3dc3a03e65d05524397937c0075
     external_links: []
     lifecycle_state: open
@@ -114308,5 +114326,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-04T07:56:14.796Z
-    updated_at: 2026-04-04T07:56:48.991Z
+    updated_at: 2026-04-04T07:56:51.902Z
     notes: []
