@@ -114373,7 +114373,24 @@ reviews:
     slugs: []
     title: Review task-fix-session-dir-fd-leak
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/daemon/entity-cache.ts, tests/daemon-entity-cache.test.ts. Commands run:
+          git diff --stat, git diff --unified=80, kspec task get @01KNBS17JCVH7DPTJJNE3K5GCA, kspec
+          item get @daemon-entity-cache, kspec validate, rg -n 'AC: @(daemon-entity-cache|trait-)'
+          tests, rg -n 'AC: @daemon-entity-cache' tests/daemon-entity-cache.test.ts, npm test.
+          Claims verified: loadSessionIndex now closes directory handles on success and failure via
+          finally + closeDirectoryHandle; tests exercise both paths; full suite passed. Categories
+          searched: correctness, edge cases, error handling, test quality, integration; no
+          findings."
+        name: npm test
+        required: true
+        runner: test-runner
+        created_at: 2026-04-04T08:30:34.583Z
+        completed_at: 2026-04-04T08:30:34.583Z
     events:
       - _ulid: 01KNBSKXGG4QKY8SS7K7CZ74QB
         actor: Jacob Chapel
@@ -114388,6 +114405,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-04T08:26:58.891Z
+      - _ulid: 01KNBSV2BT6TDFH37KN1TM920C
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-04T08:30:35.386Z
     examined_commit: f0b57ed462924ff708a9c0808453945da3599ec3
     external_links: []
     lifecycle_state: open
@@ -114400,5 +114424,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-04T08:26:41.040Z
-    updated_at: 2026-04-04T08:26:58.072Z
+    updated_at: 2026-04-04T08:30:34.583Z
     notes: []
