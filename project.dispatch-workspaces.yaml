@@ -36414,7 +36414,7 @@ workspaces:
         head: 0d05e503f03020b11bd11616e265cc09f024f0d3
         last_seen_at: 2026-04-04T06:38:35.712Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-monitoring-spec-ac3-active-sessions-01knbk4t
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 0d05e503f03020b11bd11616e265cc09f024f0d3
     bootstrap:
       status: succeeded
@@ -36537,9 +36537,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-04T07:04:21.632Z
-      last_reconciled_at: 2026-04-04T07:10:23.821Z
+      last_reconciled_at: 2026-04-04T07:12:05.646Z
       created_at: 2026-04-04T06:45:26.292Z
-      updated_at: 2026-04-04T07:10:23.821Z
+      updated_at: 2026-04-04T07:12:05.646Z
     workspace_id: dispatch-workspace-01KNBK4THQFPGXW7B226F7MPM0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
