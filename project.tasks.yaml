@@ -24943,6 +24943,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-04T23:34:27.859Z
+  automation: eligible
 - _ulid: 01KNDDJ42341SCDJN6VKDV1518
   slugs:
     - task-incremental-session-updates
