@@ -115202,6 +115202,13 @@ reviews:
           status: pass
           name: Completeness
         timestamp: 2026-04-04T23:26:47.356Z
+      - _ulid: 01KNDD4BYGGN7KNAMMDFZYFSJ4
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNDD4B6THHNKRVEQJ2VXD6EP
+        timestamp: 2026-04-04T23:26:57.488Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -115211,8 +115218,22 @@ reviews:
       content_hash: ""
       ref: "@plan-granular-cache-invalidation"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNDD4B6THHNKRVEQJ2VXD6EP
+        anchor:
+          type: structured
+          ref: "@daemon-meta-subdomain"
+          section: specs
+        entries:
+          - _ulid: 01KNDD4B6TJGPXTKC3QC1FZWMN
+            author: "@claude"
+            body: daemon-meta-subdomain is typed 'requirement' while daemon-incremental-cache is typed
+              'feature'. This inconsistency was noted in the previous review as a nit. The types are
+              arguably correct (meta-subdomain is a structural requirement, incremental-cache is a
+              user-facing feature), but worth confirming the intent is deliberate.
+            created_at: 2026-04-04T23:26:56.730Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-04T23:24:33.260Z
-    updated_at: 2026-04-04T23:26:45.771Z
+    updated_at: 2026-04-04T23:26:56.730Z
     notes: []
