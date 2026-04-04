@@ -7,7 +7,7 @@ description: "-"
 spec_ref: "@daemon-entity-cache"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -17,6 +17,14 @@ tags:
   - sessions
   - bug
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-04-04T08:24:12.175Z
+  commit: d51b5485e0c0f3dc3a03e65d05524397937c0075
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dev
 session_id: 01KNBS2KSAR3A2GN1R1WBGN7BQ
 history:
   - author: Jacob Chapel
@@ -32,7 +40,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-04T08:17:41.818Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-04-04T08:24:12.175Z
+          commit: d51b5485e0c0f3dc3a03e65d05524397937c0075
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-04-04T08:24:12.179Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-04T08:24:12.180Z
 created_at: 2026-04-04T08:16:28.748Z
 started_at: 2026-04-04T08:17:41.818Z
+submitted_at: 2026-04-04T08:24:12.179Z
 todos: []
 automation: eligible
