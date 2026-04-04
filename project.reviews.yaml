@@ -113128,6 +113128,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNBJ7Q1KBZB0PTX4J29WN938
         timestamp: 2026-04-04T06:17:44.460Z
+      - _ulid: 01KNBJ7VFYPZDX7J7AQK3118FG
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNBJ7Q05TTKT88ME851X8CMS
+        timestamp: 2026-04-04T06:17:45.726Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -113172,7 +113179,25 @@ reviews:
               consistently anywhere terminal/non-active session states are enumerated.
             created_at: 2026-04-04T06:17:41.172Z
         kind: blocker
+      - _ulid: 01KNBJ7Q05TTKT88ME851X8CMS
+        anchor:
+          type: structured
+          field: ac-unwatched-disk-fallback
+          ref: "@daemon-file-monitoring"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KNBJ7Q05K2Q0D2SADPGBGK4G
+            author: "@claude"
+            body: "ac-unwatched-disk-fallback is scoped to API/session-read behavior, not file monitoring.
+              Existing specs already own this contract: @daemon-entity-cache ac-detail-on-demand,
+              ac-graceful-degradation, and ac-session-bounded-index cover on-demand disk reads and
+              bounded-index misses, while @session-list-pagination-api owns GET /api/sessions
+              behavior. Move this AC and its verification task under the existing API/cache spec set
+              or split a dedicated requirement instead of expanding @daemon-file-monitoring beyond
+              watcher responsibilities."
+            created_at: 2026-04-04T06:17:41.125Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-04T06:17:11.744Z
-    updated_at: 2026-04-04T06:17:41.172Z
+    updated_at: 2026-04-04T06:17:41.125Z
     notes: []
