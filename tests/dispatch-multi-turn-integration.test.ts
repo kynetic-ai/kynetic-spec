@@ -23,7 +23,7 @@ import {
   type InvocationResult,
   type SessionIdleContext,
 } from "../src/agent-runtime/invocation.js";
-import { SessionRegistry, type SessionHandle } from "../src/agent-runtime/session-registry.js";
+import { SessionRegistry } from "../src/agent-runtime/session-registry.js";
 import { EventBus, type EventEnvelope } from "../src/agent-runtime/event-bus.js";
 import {
   InvocationTerminalPayloadSchema,

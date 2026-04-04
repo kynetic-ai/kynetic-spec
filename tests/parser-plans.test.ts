@@ -12,7 +12,7 @@ import {
   savePlan,
 } from "../src/parser/plans.js";
 import type { PlanInput } from "../src/schema/index.js";
-import { createTempDir, cleanupTempDir, initGitRepo } from "./helpers/cli.js";
+import { createTempDir, cleanupTempDir, initGitRepo, readTestOutput } from "./helpers/cli.js";
 
 describe("Plan Parser", () => {
   let tempDir: string;
@@ -120,7 +120,7 @@ describe("Plan Parser", () => {
     const loaded = await loadPlans(ctx as any);
     expect(loaded[0].branch).toBeNull();
 
-    const fileContents = await fs.readFile(getPlansFilePath(ctx as any), "utf-8");
+    const fileContents = await readTestOutput(getPlansFilePath(ctx as any));
     expect(fileContents).not.toContain("branch: null");
   });
 

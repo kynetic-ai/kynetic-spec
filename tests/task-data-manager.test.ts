@@ -3,7 +3,6 @@ import * as path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import {
   initContext,
-  loadAllTasks,
   TaskDataManager,
   TaskDataManagerError,
 } from "../src/parser/index.js";

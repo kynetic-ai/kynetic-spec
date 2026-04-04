@@ -55,7 +55,7 @@ test.describe("Automation View — Session Idle Event Rendering", () => {
   }
 
   // AC: @session-idle-event ac-1
-  test("session.idle event row shows turn count badge", async ({ page, daemon }) => {
+  test("session.idle event row shows turn count badge", async ({ page, daemon: _daemon }) => {
     await page.route("**/api/events/recent*", (route) => {
       route.fulfill({
         status: 200,
@@ -76,7 +76,7 @@ test.describe("Automation View — Session Idle Event Rendering", () => {
   });
 
   // AC: @session-idle-event ac-1
-  test("session.idle event row shows agent ID", async ({ page, daemon }) => {
+  test("session.idle event row shows agent ID", async ({ page, daemon: _daemon }) => {
     await page.route("**/api/events/recent*", (route) => {
       route.fulfill({
         status: 200,
@@ -94,7 +94,7 @@ test.describe("Automation View — Session Idle Event Rendering", () => {
   });
 
   // AC: @session-idle-event ac-1
-  test("session.idle event row shows formatted duration", async ({ page, daemon }) => {
+  test("session.idle event row shows formatted duration", async ({ page, daemon: _daemon }) => {
     await page.route("**/api/events/recent*", (route) => {
       route.fulfill({
         status: 200,
@@ -113,7 +113,7 @@ test.describe("Automation View — Session Idle Event Rendering", () => {
   });
 
   // AC: @session-idle-event ac-1
-  test("session.idle event shows session domain badge", async ({ page, daemon }) => {
+  test("session.idle event shows session domain badge", async ({ page, daemon: _daemon }) => {
     await page.route("**/api/events/recent*", (route) => {
       route.fulfill({
         status: 200,
@@ -132,7 +132,7 @@ test.describe("Automation View — Session Idle Event Rendering", () => {
   });
 
   // AC: @session-idle-event ac-1
-  test("non-session.idle events still show causation ID in details", async ({ page, daemon }) => {
+  test("non-session.idle events still show causation ID in details", async ({ page, daemon: _daemon }) => {
     await page.route("**/api/events/recent*", (route) => {
       route.fulfill({
         status: 200,
@@ -153,7 +153,7 @@ test.describe("Automation View — Session Idle Event Rendering", () => {
   });
 
   // AC: @session-idle-event ac-1
-  test("session.idle expanded payload shows full event data", async ({ page, daemon }) => {
+  test("session.idle expanded payload shows full event data", async ({ page, daemon: _daemon }) => {
     await page.route("**/api/events/recent*", (route) => {
       route.fulfill({
         status: 200,
@@ -181,7 +181,7 @@ test.describe("Automation View — Session Prompt Action Type Badge", () => {
   // AC: @session-idle-event ac-1 — action type badge recognizes session_prompt
   test("hook card shows Session Prompt label for session_prompt action type", async ({
     page,
-    daemon,
+    daemon: _daemon,
   }) => {
     await page.route("**/api/hooks*", (route) => {
       route.fulfill({
@@ -217,7 +217,7 @@ test.describe("Automation View — Session Prompt Action Type Badge", () => {
     await expect(actionBadge).toContainText("Session Prompt");
   });
 
-  test("hook card shows event badge for session.idle trigger", async ({ page, daemon }) => {
+  test("hook card shows event badge for session.idle trigger", async ({ page, daemon: _daemon }) => {
     await page.route("**/api/hooks*", (route) => {
       route.fulfill({
         status: 200,
@@ -251,7 +251,7 @@ test.describe("Automation View — Session Prompt Action Type Badge", () => {
 
 test.describe("Automation View — Trigger Picker Includes Session Idle", () => {
   // AC: @session-idle-event ac-1 — trigger picker shows session.idle as available event
-  test("trigger picker includes session.idle in available events", async ({ page, daemon }) => {
+  test("trigger picker includes session.idle in available events", async ({ page, daemon: _daemon }) => {
     await page.goto("/automation");
     await expect(page.getByTestId("automation-loading")).toHaveCount(0);
 

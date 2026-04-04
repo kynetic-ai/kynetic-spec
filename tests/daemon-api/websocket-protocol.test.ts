@@ -1,11 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { execSync, spawn, type ChildProcess } from "node:child_process";
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { createServer } from "node:net";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import WebSocket from "ws";
+import { readTestOutputSync } from "../helpers/cli.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -449,7 +450,7 @@ describe("daemon websocket protocol", () => {
     );
 
     const tasksYaml = join(runtime.kspecDir, "project.tasks.yaml");
-    const original = readFileSync(tasksYaml, "utf8");
+    const original = readTestOutputSync(tasksYaml, "utf8");
     writeFileSync(tasksYaml, `${original}\n# websocket-protocol-test ${Date.now()}\n`);
 
     const broadcast = await broadcastPromise;

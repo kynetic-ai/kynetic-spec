@@ -18,7 +18,6 @@ import {
   runInvocation,
   PromptQueue,
   PromptQueueFullError,
-  InvocationIdleTimeoutError,
   DEFAULT_IDLE_GRACE_MS,
   type SessionIdleContext,
 } from "../src/agent-runtime/invocation.js";

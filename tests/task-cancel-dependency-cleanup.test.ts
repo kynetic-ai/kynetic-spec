@@ -1,14 +1,10 @@
 import { execSync } from "node:child_process";
-import * as fs from "node:fs/promises";
-import * as path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import * as YAML from "yaml";
 import {
   cleanupTempDir,
   initGitRepo,
   kspecJson,
   kspecOutput as kspec,
-  readTestOutput,
   setupTempFixtures,
 } from "./helpers/cli";
 

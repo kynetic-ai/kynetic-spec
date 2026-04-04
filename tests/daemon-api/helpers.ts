@@ -9,7 +9,7 @@
  */
 
 import { execSync } from "node:child_process";
-import { cpSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { cpSync, mkdirSync, writeFileSync } from "node:fs";
 import * as path from "node:path";
 import { Elysia } from "elysia";
 import { cleanupTempDir, createTempDir, initGitRepo } from "../helpers/cli.js";

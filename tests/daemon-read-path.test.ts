@@ -31,7 +31,7 @@ import { createMetaRoutes } from "../dist/daemon/routes/meta.ts";
 import { PubSubManager } from "../dist/daemon/websocket/pubsub.ts";
 import type { RouteEntityCache, EntityCacheAccessor } from "../dist/daemon/routes/entity-cache-types.ts";
 import type { TaskSummary } from "../dist/parser/task-data-manager.ts";
-import type { ItemSummary, TriageIndexSummary, PlanIndexSummary, ReviewIndexSummary, CachedShadowInfo, CachedProjectConfig } from "../dist/daemon/entity-cache.ts";
+import type { ItemSummary, TriageIndexSummary, PlanIndexSummary, CachedShadowInfo, CachedProjectConfig } from "../dist/daemon/entity-cache.ts";
 import type { MetaContext } from "../dist/parser/meta.ts";
 import type { LoadedInboxItem, LoadedSpecItem, LoadedTask } from "../dist/parser/yaml.ts";
 import { ShadowSyncScheduler } from "../src/parser/shadow-sync-scheduler.js";
@@ -277,7 +277,7 @@ function createWarmCache(options: {
   const sessionDetails = new Map();
   const reviewDetails = new Map();
 
-  let writeThroughCalls: string[] = [];
+  const writeThroughCalls: string[] = [];
 
   return {
     getDomainState: () => "ready",
@@ -735,7 +735,8 @@ describe("ac-no-per-request-sync: read routes serve from cache without git opera
 
       for (const route of readRoutes) {
         const res = await makeRequest(route);
-        expect(res.status, `${route} should return 200`).toBe(200);
+        // Route should return 200
+        expect(res.status).toBe(200);
       }
 
       // None of the git-backed helpers should have been called
@@ -793,9 +794,10 @@ describe("ac-no-per-request-sync: read routes serve from cache without git opera
             headers: { Host: "localhost", "X-Kspec-Dir": tempDir },
           }),
         );
-        expect(res.status, `${route} should return 200`).toBe(200);
+        // Route should return 200 with cache_status: loading
+        expect(res.status).toBe(200);
         const body = await res.json() as { meta: { cache_status: string } };
-        expect(body.meta.cache_status, `${route} should have cache_status: loading`).toBe("loading");
+        expect(body.meta.cache_status).toBe("loading");
       }
 
       // None of the git-backed helpers should have been called during warmup

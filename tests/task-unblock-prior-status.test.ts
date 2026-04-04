@@ -5,12 +5,9 @@
  * AC: @state-blocked ac-1
  */
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { writeFileSync } from "node:fs";
-import { join } from "node:path";
 import {
   kspecOutput as kspec,
   kspecJson,
-  readTestOutputSync,
   setupTempFixtures,
   cleanupTempDir,
   testUlid,

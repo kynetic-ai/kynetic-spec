@@ -161,6 +161,7 @@ describe("KspecWatcher Chokidar-only monitoring", () => {
 
     await vi.waitFor(
       () => {
+        // oxlint-disable-next-line jest/no-standalone-expect -- vi.waitFor is a valid test context
         expect(changeHandler).toHaveBeenCalledWith(
           targetPath,
           expect.stringContaining("atomic rename"),

@@ -21,7 +21,7 @@
  *   KSPEC_SESSION_ID=...  Session-scoped cache isolation for dispatch agents
  */
 
-const { execSync, spawnSync, spawn } = require("child_process");
+const { execSync, spawn } = require("child_process");
 const crypto = require("crypto");
 const fs = require("fs");
 const os = require("os");

@@ -1,4 +1,3 @@
-import * as fs from "node:fs/promises";
 import type { Page } from "@playwright/test";
 import { test, expect } from "./fixtures/test-base";
 

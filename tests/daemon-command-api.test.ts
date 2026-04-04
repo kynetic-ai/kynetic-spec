@@ -279,6 +279,7 @@ describe("Daemon Command API", () => {
     // CLI stderr contains the Commander "command:*" handler output.
     // The API must produce the same error text — not a custom message.
     // Strip ANSI codes for comparison since chalk may differ between contexts.
+    // oxlint-disable-next-line no-control-regex
     const stripAnsi = (s: string) => s.replace(/\x1b\[[0-9;]*m/g, "");
     const cliStderr = stripAnsi(cliResult.stderr);
     const apiStderr = stripAnsi(body.stderr);

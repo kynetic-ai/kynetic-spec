@@ -6,8 +6,6 @@
  * AC: @session-start-unlocks ac-unlocks-unresolvable
  */
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { readFileSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
 import { kspec, kspecJson, setupTempFixtures, cleanupTempDir, testUlid, seedSplitTask } from "../helpers/cli";
 import type { SessionContext } from "../helpers/session-types";
 

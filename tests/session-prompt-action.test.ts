@@ -16,11 +16,9 @@ import {
   ActionSchema,
   SessionPromptActionSchema,
   type Action,
-  type ActionRun,
 } from "../src/schema/action.js";
 import {
   ActionExecutor,
-  resolveTemplateVars,
   extractActionTemplates,
   validateActionTemplates,
   type ActionEventContext,
@@ -1119,7 +1117,7 @@ describe("InvocationOptions.sessionRegistry — session handle lifecycle", () =>
 
     // Simulate what the invocation runner does: register a handle
     let sessionState: SessionState = "prompting";
-    let pendingResolve: ((p: string) => void) | null = null;
+    const pendingResolve: ((p: string) => void) | null = null;
     const sessionId = "invocation-test-session-001";
     registry.register(sessionId, {
       sendPrompt: async (prompt: string) => {

@@ -38,32 +38,6 @@ function gitSucceeds(cwd: string, command: string): boolean {
   }
 }
 
-function gitResult(cwd: string, command: string): { stdout: string; stderr: string; status: number } {
-  try {
-    return {
-      stdout: execSync(`git ${command}`, {
-        cwd,
-        stdio: "pipe",
-        encoding: "utf-8",
-        env: workspaceModule.buildDispatchGitEnv(),
-      }).trim(),
-      stderr: "",
-      status: 0,
-    };
-  } catch (error) {
-    const execError = error as {
-      stdout?: string | Buffer;
-      stderr?: string | Buffer;
-      status?: number;
-    };
-    return {
-      stdout: String(execError.stdout ?? "").trim(),
-      stderr: String(execError.stderr ?? "").trim(),
-      status: execError.status ?? 1,
-    };
-  }
-}
-
 /**
  * Set up a bare remote repo and a local project repo with origin pointing to it.
  * Returns { projectDir, remoteDir }. Both on "dev" as the base branch.
@@ -1080,7 +1054,7 @@ describe("dispatch target branch sync", () => {
   });
 
   // AC: @dispatch-remote-branch-sync ac-target-push-cross-branch-concurrency
-  it("allows pushes to different integration targets to proceed concurrently", async () => {
+  it("allows concurrent pushes to different integration targets with real branches", async () => {
     ({ projectDir, remoteDir } = await setupProjectWithRemote());
     await setupProjectFiles(projectDir);
 

@@ -535,7 +535,7 @@ describe("Daemon read routes skip drift-check on cache-miss fallback", () => {
 
   // AC: @shadow-lazy-read-sync ac-daemon-bypass — GET /api/tasks without cache passes syncMode "skip"
   it("GET /api/tasks passes syncMode 'skip' to initContext on cache miss", async () => {
-    const res = await makeNoCacheRequest("/api/tasks");
+    await makeNoCacheRequest("/api/tasks");
     // Route may return 200 or encounter downstream errors from mocked context,
     // but the key assertion is that initContext was called with syncMode: "skip"
     expect(initContextSpy).toHaveBeenCalled();
@@ -548,7 +548,7 @@ describe("Daemon read routes skip drift-check on cache-miss fallback", () => {
 
   // AC: @shadow-lazy-read-sync ac-daemon-bypass — GET /api/tasks/:ref without cache passes syncMode "skip"
   it("GET /api/tasks/:ref passes syncMode 'skip' to initContext on cache miss", async () => {
-    const res = await makeNoCacheRequest(`/api/tasks/@cache-test-task`);
+    await makeNoCacheRequest(`/api/tasks/@cache-test-task`);
     expect(initContextSpy).toHaveBeenCalled();
     const calls = initContextSpy.mock.calls;
     const hasSkipMode = calls.some(
@@ -560,7 +560,7 @@ describe("Daemon read routes skip drift-check on cache-miss fallback", () => {
   // AC: @shadow-lazy-read-sync ac-daemon-bypass — POST /api/items/batch without cache passes syncMode "skip"
   it("POST /api/items/batch passes syncMode 'skip' to initContext on cache miss", async () => {
     initContextSpy.mockClear();
-    const res = await makeNoCacheRequest("/api/items/batch", {
+    await makeNoCacheRequest("/api/items/batch", {
       method: "POST",
       body: JSON.stringify({ refs: ["@cache-test-task"] }),
     });

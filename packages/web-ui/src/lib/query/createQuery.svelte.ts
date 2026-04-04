@@ -76,7 +76,7 @@ function createReactiveQuery(
 	// Initialize $state with a snapshot of the initial result.
 	// Svelte tracks reads/writes on $state object properties natively.
 	const initial = getResult();
-	let result = $state<Record<string, unknown>>({ ...initial });
+	const result = $state<Record<string, unknown>>({ ...initial });
 
 	// Sync all properties from a new query result into the $state object.
 	// Uses untrack to prevent triggering reactive effects during the write.

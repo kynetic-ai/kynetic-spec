@@ -101,32 +101,6 @@ export interface ItemSummary {
   acceptance_criteria_count: number;
 }
 
-/** Project a LoadedTask to its index-tier summary (strip notes, todos, description, etc.). */
-function toTaskSummary(task: LoadedTask): TaskSummary {
-  return {
-    _ulid: task._ulid,
-    slugs: task.slugs,
-    title: task.title,
-    type: task.type,
-    status: task.status,
-    priority: task.priority,
-    tags: task.tags,
-    assignee: task.assignee,
-    automation: task.automation,
-    spec_ref: task.spec_ref,
-    plan_ref: task.plan_ref,
-    review_ref: task.review_ref,
-    depends_on: task.depends_on,
-    blocked_by: task.blocked_by,
-    created_at: task.created_at,
-    started_at: task.started_at,
-    submitted_at: task.submitted_at,
-    completed_at: task.completed_at,
-    notes_count: task.notes?.length ?? 0,
-    todos_count: task.todos?.length ?? 0,
-  };
-}
-
 /** Project a LoadedSpecItem to its index-tier summary (strip description, notes, AC content). */
 function toItemSummary(item: LoadedSpecItem): ItemSummary {
   return {

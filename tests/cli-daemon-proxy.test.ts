@@ -24,7 +24,7 @@
  */
 
 import http from "node:http";
-import { mkdirSync, writeFileSync, readFileSync } from "node:fs";
+import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { ChildProcess, spawn } from "node:child_process";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";

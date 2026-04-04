@@ -11,9 +11,7 @@
 
 import { describe, it, expect } from "vitest";
 import {
-  EVENT_REGISTRY,
   EVENTS_BY_DOMAIN,
-  REGISTERED_EVENT_TYPES,
   PAYLOAD_FIELDS_BY_EVENT_TYPE,
   DispatchEventTypeSchema,
   isRegisteredEventType,
@@ -22,7 +20,6 @@ import {
 import {
   SessionIdlePayloadSchema,
   SESSION_IDLE_PAYLOAD_FIELDS,
-  SessionEventPayloadSchema,
   EVENT_PAYLOAD_SCHEMAS,
   validateEventPayload,
 } from "../src/schema/event-payloads.js";
