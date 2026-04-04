@@ -113956,6 +113956,16 @@ reviews:
         runner: tsx
         created_at: 2026-04-04T07:34:02.988Z
         completed_at: 2026-04-04T07:34:02.988Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 7513 passed, 5 skipped, 2068/2068 suites passed in 3977.7s via npm test.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-04T07:34:05.872Z
+        completed_at: 2026-04-04T07:34:05.872Z
     events:
       - _ulid: 01KNBP9G58JHR8VBXB5KDEPA0B
         actor: Jacob Chapel
@@ -113991,6 +114001,13 @@ reviews:
           status: fail
           name: delayed session metadata repro
         timestamp: 2026-04-04T07:34:04.003Z
+      - _ulid: 01KNBPKN6ZMJDPE9CHQNMYJMK5
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-04T07:34:06.816Z
     examined_commit: 05ded2db5dfa9bccd0f2fdfaceca427973b1c0bd
     external_links: []
     lifecycle_state: open
@@ -114037,5 +114054,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-04T07:28:33.961Z
-    updated_at: 2026-04-04T07:34:02.988Z
+    updated_at: 2026-04-04T07:34:05.872Z
     notes: []
