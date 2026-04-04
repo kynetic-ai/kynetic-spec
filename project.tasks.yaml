@@ -24786,7 +24786,7 @@
   type: task
   spec_ref: "@daemon-file-monitoring"
   plan_ref: "@plan-active-session-scoped-file-monitoring"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-refactor-session-watcher-active-scoped"
@@ -24801,4 +24801,5 @@
   created_at: 2026-04-04T06:33:35.593Z
   started_at: 2026-04-04T07:50:10.849Z
   submitted_at: 2026-04-04T07:56:02.019Z
+  completed_at: 2026-04-04T07:57:22.844Z
   automation: eligible

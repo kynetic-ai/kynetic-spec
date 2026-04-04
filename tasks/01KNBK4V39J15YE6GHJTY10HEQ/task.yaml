@@ -63,8 +63,11 @@ description: |
 spec_ref: "@daemon-file-monitoring"
 plan_ref: "@plan-active-session-scoped-file-monitoring"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Already implemented on dev in commit 05ded2d during the active-session watcher
+  refactor; verified by existing AC coverage, approved review @01KNBQW6, and passing full test
+  suite.
 depends_on:
   - "@task-refactor-session-watcher-active-scoped"
 context: []
@@ -132,8 +135,23 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-04T07:56:17.910Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Already implemented on dev in commit 05ded2d during the active-session watcher refactor;
+          verified by existing AC coverage, approved review @01KNBQW6, and passing full test suite.
+        previous: null
+      completed_at:
+        new: 2026-04-04T07:57:22.844Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-04T07:57:22.852Z
 created_at: 2026-04-04T06:33:35.593Z
 started_at: 2026-04-04T07:50:10.849Z
 submitted_at: 2026-04-04T07:56:02.019Z
+completed_at: 2026-04-04T07:57:22.844Z
 todos: []
 automation: eligible
