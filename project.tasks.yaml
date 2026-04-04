@@ -24923,6 +24923,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-04T23:34:27.563Z
+  automation: eligible
 - _ulid: 01KNDDJ3RK4K2HWH7TVY6F1V66
   slugs:
     - task-incremental-item-updates
