@@ -36867,18 +36867,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-fix-session-dir-fd-leak/01knbs17
-    canonical_branch_head: d51b5485e0c0f3dc3a03e65d05524397937c0075
+    canonical_branch_head: f0b57ed462924ff708a9c0808453945da3599ec3
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-04T08:17:09.134Z
+      updated_at: 2026-04-04T08:25:07.433Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-04T08:17:14.262Z
+      updated_at: 2026-04-04T08:25:07.433Z
     integration:
       status: pending
       detail: null
@@ -36886,7 +36886,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: d51b5485e0c0f3dc3a03e65d05524397937c0075
-      updated_at: 2026-04-04T08:17:09.134Z
+      updated_at: 2026-04-04T08:25:07.433Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KNBS17JCVH7DPTJJNE3K5GCA"
@@ -36894,9 +36894,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-04T08:17:14.262Z
-      last_reconciled_at: 2026-04-04T08:17:14.262Z
+      last_reconciled_at: 2026-04-04T08:25:07.433Z
       created_at: 2026-04-04T08:17:09.134Z
-      updated_at: 2026-04-04T08:17:14.262Z
+      updated_at: 2026-04-04T08:25:07.433Z
     workspace_id: dispatch-workspace-01KNBS17JCVH7DPTJJNE3K5GCA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
