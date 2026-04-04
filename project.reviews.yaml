@@ -115037,6 +115037,23 @@ reviews:
         required: true
         created_at: 2026-04-04T23:26:02.420Z
         completed_at: 2026-04-04T23:26:02.420Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "All 12 new ACs (8 on daemon-incremental-cache, 4 on daemon-meta-subdomain) plus 1 new AC
+          on daemon-entity-cache are claimed by at least one task. Coverage:
+          ac-file-path-preserved(debounce),
+          ac-single-entity-patch(tasks+items+sessions+writethrough), ac-multi-entity-file(items),
+          ac-fallback-full-reload(tasks+items+sessions), ac-removal-detection(tasks+items+sessions),
+          ac-index-consistency(tasks+items+sessions), ac-batch-coalescing(debounce),
+          ac-watcher-content-passthrough(passthrough),
+          ac-manifest-only-reload+ac-shadow-on-schedule+ac-session-context-independent+ac-initial-l\
+          oad-all(meta-decomp), ac-context-reuse(context-cache)."
+        name: AC coverage
+        required: true
+        created_at: 2026-04-04T23:26:10.026Z
+        completed_at: 2026-04-04T23:26:10.026Z
     events:
       - _ulid: 01KNDCZZ3C5J0KS3WC3YWT270M
         actor: "@claude"
@@ -115100,6 +115117,13 @@ reviews:
           status: pass
           name: Spec quality (behavioral language)
         timestamp: 2026-04-04T23:26:04.028Z
+      - _ulid: 01KNDD2Z3G03FC2F42QN705T5P
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: AC coverage
+        timestamp: 2026-04-04T23:26:11.568Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -115112,5 +115136,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-04T23:24:33.260Z
-    updated_at: 2026-04-04T23:26:02.420Z
+    updated_at: 2026-04-04T23:26:10.026Z
     notes: []
