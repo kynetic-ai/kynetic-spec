@@ -114609,6 +114609,13 @@ reviews:
           kind: question
           thread_ulid: 01KNDBY3FM4YGCFB2GBKXGC0NF
         timestamp: 2026-04-04T23:06:05.173Z
+      - _ulid: 01KNDBYC7JTWJWR7JCX4HECEC6
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KNDBYAQ3WSAR2ZATQCGTSG65
+        timestamp: 2026-04-04T23:06:12.594Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -114721,7 +114728,22 @@ reviews:
               contract. Consider adding an AC for first-load behavior."
             created_at: 2026-04-04T23:06:03.637Z
         kind: question
+      - _ulid: 01KNDBYAQ3WSAR2ZATQCGTSG65
+        anchor:
+          type: structured
+          section: dependencies
+        entries:
+          - _ulid: 01KNDBYAQ31KNJPBABQXDS2PZA
+            author: "@claude"
+            body: task-add-ac-context-reuse depends on task-update-ac-granular-reload, but these are both
+              spec-update tasks modifying the same spec item (@daemon-entity-cache). Since they
+              modify different ACs (one updates ac-granular-reload, the other adds
+              ac-context-reuse), they could run in parallel. The dependency appears unnecessary — is
+              there a reason for serialization? If both used kspec batch, they could be a single
+              task.
+            created_at: 2026-04-04T23:06:11.043Z
+        kind: question
     verdicts: []
     created_at: 2026-04-04T23:04:29.735Z
-    updated_at: 2026-04-04T23:06:03.637Z
+    updated_at: 2026-04-04T23:06:11.043Z
     notes: []
