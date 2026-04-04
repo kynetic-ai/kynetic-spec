@@ -113503,9 +113503,25 @@ reviews:
           status: pass
           name: Cross-reference validation
         timestamp: 2026-04-04T06:32:01.322Z
+      - _ulid: 01KNBK2098M7E6VXKBF7W0DJG4
+        actor: codex@openai
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-04-04T06:32:02.601Z
+      - _ulid: 01KNBK2099VT4W90EBDM23V8NX
+        actor: codex@openai
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-04T06:32:02.601Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -113513,7 +113529,14 @@ reviews:
       ref: "@plan-active-session-scoped-file-monitoring"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex@openai
+        role: reviewer
+        created_at: 2026-04-04T06:32:02.600Z
     created_at: 2026-04-04T06:31:23.383Z
-    updated_at: 2026-04-04T06:31:59.381Z
+    updated_at: 2026-04-04T06:32:02.601Z
     notes: []
