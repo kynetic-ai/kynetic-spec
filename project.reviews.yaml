@@ -114630,6 +114630,13 @@ reviews:
           kind: question
           thread_ulid: 01KNDBZ0CW9RJ5QNMB41RAA9HV
         timestamp: 2026-04-04T23:06:34.817Z
+      - _ulid: 01KNDBZEDV41RFW85C77TKCTNG
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNDBZCW9SYQ32373MNSY1VGA
+        timestamp: 2026-04-04T23:06:47.611Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -114791,7 +114798,22 @@ reviews:
               or noted as a future candidate?
             created_at: 2026-04-04T23:06:33.245Z
         kind: question
+      - _ulid: 01KNDBZCW9SYQ32373MNSY1VGA
+        anchor:
+          type: structured
+          ref: "@daemon-incremental-cache"
+          section: description
+        entries:
+          - _ulid: 01KNDBZCW9YHHVE99ZR5ZECQPZ
+            author: "@claude"
+            body: The spec description says 'Full domain reloads remain as a fallback when the changed file
+              cannot be mapped to specific entities.' This is good but could also mention
+              write-through as a caller that may or may not use incremental paths, since the plan
+              includes a task specifically for write-through alignment. Not blocking — the
+              ac-fallback-full-reload AC covers the contract.
+            created_at: 2026-04-04T23:06:46.026Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-04T23:04:29.735Z
-    updated_at: 2026-04-04T23:06:33.245Z
+    updated_at: 2026-04-04T23:06:46.026Z
     notes: []
