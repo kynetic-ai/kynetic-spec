@@ -34705,8 +34705,8 @@ plans:
       cover on-demand disk reads, while @session-list-pagination-api owns
 
       GET /api/sessions behavior. No new spec or AC is needed for this path.
-    status: draft
-    approved_at: null
+    status: approved
+    approved_at: 2026-04-04T06:33:17.987Z
     derived_specs: []
     derived_tasks: []
     module_ref: null
