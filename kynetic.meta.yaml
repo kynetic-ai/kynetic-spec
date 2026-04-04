@@ -12395,6 +12395,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-04T07:24:40.213Z
+  - _ulid: 01KNBP4BNNRTJESNEK3G3HD9G6
+    type: friction
+    content: "Full npm test remains intermittently flaky in tests/file-lock.test.ts; the watcher
+      refactor passed targeted and isolated reruns, but the full suite hit a transient count
+      mismatch ('count: 4' vs 'count: 5') that disappeared on immediate rerun."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-04T07:25:45.526Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
