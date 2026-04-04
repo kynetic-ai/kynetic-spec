@@ -114544,6 +114544,18 @@ reviews:
         required: true
         created_at: 2026-04-04T23:07:14.982Z
         completed_at: 2026-04-04T23:07:14.982Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All ACs use given/when/then format. ACs describe observable behavior, not implementation
+          mechanisms (e.g., 'the file path of the changed file is available to the cache update
+          logic' rather than 'a Map tracks file paths'). No compounding conditions — each AC tests
+          one behavior. No technology names in specs.
+        name: Spec quality (behavioral language)
+        required: true
+        created_at: 2026-04-04T23:07:22.520Z
+        completed_at: 2026-04-04T23:07:22.520Z
     events:
       - _ulid: 01KNDBV7S70T7KP378Y3N0MFR3
         actor: "@claude"
@@ -114670,6 +114682,13 @@ reviews:
           status: pass
           name: Task standalone-ness
         timestamp: 2026-04-04T23:07:16.614Z
+      - _ulid: 01KNDC0J1RD9V0TWJPG1992AWB
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Spec quality (behavioral language)
+        timestamp: 2026-04-04T23:07:24.088Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -114880,5 +114899,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-04T23:04:29.735Z
-    updated_at: 2026-04-04T23:07:14.982Z
+    updated_at: 2026-04-04T23:07:22.520Z
     notes: []
