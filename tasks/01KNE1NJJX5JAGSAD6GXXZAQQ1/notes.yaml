@@ -8,3 +8,11 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-05T06:17:57.179Z
+  - _ulid: 01KNE4NH14NXR5CXNK99XY2DP3
+    content: Updated @daemon-server ac-16 given clause to scope the standalone executable guarantee to
+      bun runtime only. Verified via kspec item get. Ran kspec validate; it returned the
+      repository's existing warning backlog (orphaned skill dir, alignment/completeness warnings)
+      with no task-specific validation error.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-05T06:18:16.996Z
