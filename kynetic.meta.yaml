@@ -11216,8 +11216,11 @@ observations:
     content: npm run build currently fails in build:daemon with shx cp reporting EISDIR for dist/daemon/
       while the test runner still repairs daemon build artifacts successfully.
     author: Jacob Chapel
-    resolution: null
-    resolved: false
+    resolution: "Resolved by @01KNE1NJVFTB0TMEYXRVQDFH3M: build:daemon now compiles dist/daemon
+      JavaScript via scripts/build-daemon.cjs instead of shx cp staging."
+    resolved: true
+    resolved_at: 2026-04-05T06:39:01.718Z
+    resolved_by: Jacob Chapel
     created_at: 2026-04-01T23:16:17.988Z
   - _ulid: 01KN5PFW0K3587Z18H5J581534
     type: friction
