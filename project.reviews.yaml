@@ -118705,6 +118705,17 @@ reviews:
         runner: kspec
         created_at: 2026-04-05T18:00:57.851Z
         completed_at: 2026-04-05T18:00:57.851Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm test -- tests/daemon-build.test.ts tests/daemon-websocket-handler.test.ts
+          tests/cli-serve.test.ts --fresh passed (9 suites, 40 tests).
+        name: runtime-focused tests
+        required: false
+        runner: npm
+        created_at: 2026-04-05T18:01:02.823Z
+        completed_at: 2026-04-05T18:01:02.823Z
     events:
       - _ulid: 01KNFCTN1S3JFF2ZHPFYH3F4HP
         actor: "@claude"
@@ -118747,6 +118758,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNFCW84Z70FNX1TNM7VTWGCD
         timestamp: 2026-04-05T18:01:01.204Z
+      - _ulid: 01KNFCWBDJTD151MJDGF7HT1BX
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: runtime-focused tests
+        timestamp: 2026-04-05T18:01:03.666Z
     examined_commit: 22af770c61b5290932226337447042c356ba75b8
     external_links: []
     lifecycle_state: open
@@ -119062,5 +119080,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-05T18:00:07.994Z
-    updated_at: 2026-04-05T18:01:00.320Z
+    updated_at: 2026-04-05T18:01:02.823Z
     notes: []
