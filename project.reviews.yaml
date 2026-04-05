@@ -115344,6 +115344,34 @@ reviews:
           kind: question
           thread_ulid: 01KNDG9TG9NZA4BJX7HF6SP8ZD
         timestamp: 2026-04-05T00:22:22.741Z
+      - _ulid: 01KNDGACP2Q56AERXG3GS99GRY
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNDGABYSQ1AQZ4CYD3G486QS
+        timestamp: 2026-04-05T00:22:40.579Z
+      - _ulid: 01KNDGAEKG086QRC1CTFZ20Z72
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNDGADW3XZ7AN98EJ0FYRNWJ
+        timestamp: 2026-04-05T00:22:42.544Z
+      - _ulid: 01KNDGAGHDN8AMJ6WTRD9HY71W
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNDGAFT6AWHKMVT6AZB0M5PM
+        timestamp: 2026-04-05T00:22:44.525Z
+      - _ulid: 01KNDGAJFQRVG28T7THVRJB7W1
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNDGAHPZG22CBNYT518A4SQQ
+        timestamp: 2026-04-05T00:22:46.519Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -115479,7 +115507,63 @@ reviews:
               task-ws-degradation-node P1."
             created_at: 2026-04-05T00:22:21.962Z
         kind: question
+      - _ulid: 01KNDGABYSQ1AQZ4CYD3G486QS
+        anchor:
+          type: structured
+          field: description
+          ref: "@daemon-runtime-adapter"
+          section: specs
+        entries:
+          - _ulid: 01KNDGABYTEYYXES94A20SCXSB
+            author: "@claude"
+            body: 'Description mentions "runtime adapter for HTTP and WebSocket handling" — this leaks
+              implementation detail (Elysia adapter pattern). Behavioral alternative: "the server
+              uses runtime-appropriate mechanisms for HTTP and WebSocket handling."'
+            created_at: 2026-04-05T00:22:39.834Z
+        kind: nit
+      - _ulid: 01KNDGADW3XZ7AN98EJ0FYRNWJ
+        anchor:
+          type: structured
+          field: ac-node-http
+          ref: "@daemon-runtime-adapter"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KNDGADW33GNAEC0FDEVYYX62
+            author: "@claude"
+            body: ac-node-http says "All routes serve identical responses as when running on bun" — this is a
+              strong claim that may be violated by subtle differences (e.g., response header
+              ordering, content-type casing). Consider "All routes serve functionally equivalent
+              responses" or be explicit about what identical means (status codes, response bodies,
+              content types).
+            created_at: 2026-04-05T00:22:41.795Z
+        kind: nit
+      - _ulid: 01KNDGAFT6AWHKMVT6AZB0M5PM
+        anchor:
+          type: structured
+          ref: "@task-scope-ac16-bun-only"
+          section: tasks
+        entries:
+          - _ulid: 01KNDGAFT61VJTCX75MRE7R6P1
+            author: "@claude"
+            body: Task description includes the literal kspec command to run. This is good for standalone
+              executability but the given-clause text is duplicated — it appears in the Why section
+              and the What section. Minor; no fix needed.
+            created_at: 2026-04-05T00:22:43.783Z
+        kind: nit
+      - _ulid: 01KNDGAHPZG22CBNYT518A4SQQ
+        anchor:
+          type: structured
+          ref: "@task-daemon-runtime-config"
+          section: tasks
+        entries:
+          - _ulid: 01KNDGAHPZX4MS082HCNAX71KB
+            author: "@claude"
+            body: Task says config schema is in "src/schema/config.ts (or wherever DaemonConfigSchema is defined
+              — check src/parser/config.ts)". It is actually in src/parser/config.ts (line 86). The
+              hedging is fine for robustness but the primary guess is wrong.
+            created_at: 2026-04-05T00:22:45.727Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-05T00:21:12.273Z
-    updated_at: 2026-04-05T00:22:21.962Z
+    updated_at: 2026-04-05T00:22:45.727Z
     notes: []
