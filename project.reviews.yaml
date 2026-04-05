@@ -115900,6 +115900,13 @@ reviews:
           kind: question
           thread_ulid: 01KNDH01KV8VDP05ZQ5THFNPKB
         timestamp: 2026-04-05T00:34:30.896Z
+      - _ulid: 01KNDH06XWC4NFRN3EBX1EQ6NZ
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNDH065XJE044QCSMWAD9NQM
+        timestamp: 2026-04-05T00:34:35.581Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -115926,7 +115933,21 @@ reviews:
               cosmetic — the task descriptions are still navigable.
             created_at: 2026-04-05T00:34:30.139Z
         kind: question
+      - _ulid: 01KNDH065XJE044QCSMWAD9NQM
+        anchor:
+          type: structured
+          ref: "@task-daemon-compile-js"
+          section: tasks
+        entries:
+          - _ulid: 01KNDH065Y23WZ8X68H0SDDY7H
+            author: "@claude"
+            body: Step 1 says "Add a conditional type reference or runtime type shim for Bun.file()" — but
+              Bun.file() replacement is handled separately in task-elysia-node-adapter step 3. This
+              could confuse an agent. Clarify that the compile task only needs to remove bun-types
+              from tsconfig and that the Bun.file() call site is addressed by the adapter task.
+            created_at: 2026-04-05T00:34:34.814Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-05T00:33:27.406Z
-    updated_at: 2026-04-05T00:34:30.139Z
+    updated_at: 2026-04-05T00:34:34.814Z
     notes: []
