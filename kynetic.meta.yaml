@@ -12713,6 +12713,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-05T09:57:22.107Z
+  - _ulid: 01KNEH7ASMX1A3QERG6PEFGXFB
+    type: friction
+    content: "Test-runner build readiness was too shallow for detached workspaces: a failed first npm
+      run build could still leave enough artifacts for the next npm test to skip rebuild logic even
+      though packages/web-ui/.svelte-kit/output/server/manifest-full.js or packages/shared/dist were
+      missing."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-05T09:57:43.348Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
