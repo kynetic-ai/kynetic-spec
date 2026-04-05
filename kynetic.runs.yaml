@@ -22754,7 +22754,7 @@ runs:
     completed_at: 2026-04-05T06:19:37.990Z
   - _ulid: 01KNE53PQ8P1Y1JDCSP1AHXHQM
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -22768,7 +22768,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-05T06:26:45.445Z
-        completed_at: 2026-04-05T06:26:45.445Z
+        completed_at: 2026-04-05T06:26:48.227Z
+        notes: "Friction: this detached reviewer snapshot was already at the integration head, so a plain
+          git diff of HEAD showed unrelated ambient branch history instead of the task change.
+          Reviewing a spec-only task required extra manual reconstruction from shadow-branch commits
+          and task/review metadata."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-05T06:26:48.227Z
+        completed_at: 2026-04-05T06:26:48.227Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-05T06:26:01.577Z
