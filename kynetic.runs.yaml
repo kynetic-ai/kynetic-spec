@@ -22793,9 +22793,22 @@ runs:
     completed_at: 2026-04-05T06:26:56.527Z
   - _ulid: 01KNE5SYAZCE34ENG5QF0THPEA
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-05T06:38:10.271Z
+        completed_at: 2026-04-05T06:39:42.112Z
+        notes: "Resolved prior build observation @01KN5NAP after replacing the shx cp daemon build path.
+          Captured new friction @01KNE5VE: daemon-local imports without explicit .js can stay hidden
+          under Bun until compiled JS runs on Node. Captured success @01KNE5VE: running both node
+          and bun directly against dist/daemon/index.js gave a fast shared-artifact smoke check for
+          dual-runtime support."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-05T06:39:42.112Z
+        completed_at: 2026-04-05T06:39:42.112Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-05T06:38:10.271Z
