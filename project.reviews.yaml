@@ -117629,6 +117629,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-05T08:24:32.744Z
+      - _ulid: 01KNEC50D3JG5R8300QJX63P2S
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNEC4ZNTCF3HK6W7X5ZCCZAR
+        timestamp: 2026-04-05T08:29:04.291Z
     examined_commit: 083fa6b5e1c136af7777c3d6989d8a3a51251452
     external_links: []
     lifecycle_state: open
@@ -117638,8 +117645,28 @@ reviews:
       content_hash: ""
       ref: "@01KNE1NKN6KPZD6YT997NW0D93"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNEC4ZNTCF3HK6W7X5ZCCZAR
+        entries:
+          - _ulid: 01KNEC4ZNV4BECNQMT57RC7YCH
+            author: Jacob Chapel
+            body: "Evidence log: files read: AGENTS.md, kspec-agents.md, package.json,
+              packages/daemon/package.json, packages/daemon/src/index.ts,
+              packages/daemon/src/server.ts, src/cli/commands/serve.ts, tests/cli-no-daemon.test.ts,
+              tests/cli-serve.test.ts, tests/daemon-build.test.ts,
+              tests/daemon-runtime-adapter.test.ts. Commands run: kspec task get
+              @01KNE1NKN6KPZD6YT997NW0D93, kspec item get @daemon-runtime-adapter, kspec review
+              for-task @01KNE1NKN6KPZD6YT997NW0D93, kspec review get @01KNEATFSJ5FS8WAH5RWF83TE5,
+              git diff against 8c1308c31, git diff --stat, git diff --name-only, rg for AC
+              annotations, rg for Bun. in packages/daemon/src, rg for createServer call sites, kspec
+              validate, npm test. Claims verified: configured node runtime now flows through serve
+              start with explicit --kspec-dir and can start without Bun in PATH; node adapter is
+              applied only for node runtime; shutdown handles stop() and close(); SPA fallback
+              serves HTML under both runtimes. Categories searched: correctness, edge cases, error
+              handling, test quality, integration. Findings: none."
+            created_at: 2026-04-05T08:29:03.547Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-05T08:24:22.658Z
-    updated_at: 2026-04-05T08:24:31.994Z
+    updated_at: 2026-04-05T08:29:03.547Z
     notes: []
