@@ -12,7 +12,7 @@ description: Investigate intermittent failures in tests/cli-daemon-proxy.test.ts
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -21,6 +21,14 @@ tags:
   - testing
   - daemon
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-04-05T21:49:23.627Z
+  commit: 5528165fcdb8749b84b5e254b4160f29ca4a9675
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dev
 session_id: 01KNFSHPAGB9Y6KCYM1TG7J693
 history:
   - author: Jacob Chapel
@@ -36,7 +44,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-05T21:42:57.379Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-04-05T21:49:23.627Z
+          commit: 5528165fcdb8749b84b5e254b4160f29ca4a9675
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-04-05T21:49:23.635Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-05T21:49:23.635Z
 created_at: 2026-04-05T21:41:49.907Z
 started_at: 2026-04-05T21:42:57.379Z
+submitted_at: 2026-04-05T21:49:23.635Z
 todos: []
 automation: eligible
