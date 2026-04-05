@@ -11,3 +11,19 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-05T09:30:06.922Z
+  - _ulid: 01KNEGGHAKKY4X8VP52RA53WBY
+    content: 'Implemented runtime-aware E2E fixture selection via KSPEC_TEST_RUNTIME with bun default,
+      runtime-specific availability/install guidance, and runtime-specific child env for daemon
+      spawn. Follow-up debugging found node websocket callbacks resolve connection identity through
+      request.wsId rather than ws.data.id under the Elysia node adapter, so I added a shared
+      websocket context-id resolver and a handler regression test for the node adapter shape.
+      Verification: npm test -- daemon-websocket-handler --fresh passed; npm run build:e2e passed;
+      KSPEC_TEST_RUNTIME=node npx playwright test tests/e2e/api-watcher.spec.ts -g "broadcasts
+      files:updates when a YAML file in .kspec is modified" passed; default bun UI websocket smoke
+      also passed. Remaining finding: KSPEC_TEST_RUNTIME=node npx playwright test
+      tests/e2e/api-websocket.spec.ts -g "shows connected status in the sidebar when the
+      daemon-backed UI loads" still fails because the /tasks UI heading never renders, indicating a
+      separate node web-ui parity issue outside this fixture update.'
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-05T09:45:16.371Z
