@@ -37159,7 +37159,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-05T07:16:17.498Z
+      updated_at: 2026-04-05T07:16:57.126Z
     integration:
       status: merged
       detail: integration:merged
@@ -37175,18 +37175,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-05T07:10:06.326Z
-      last_reconciled_at: 2026-04-05T07:16:55.394Z
+      last_reconciled_at: 2026-04-05T07:16:57.126Z
       created_at: 2026-04-05T06:26:20.040Z
-      updated_at: 2026-04-05T07:16:55.394Z
+      updated_at: 2026-04-05T07:16:57.126Z
     workspace_id: dispatch-workspace-01KNE1NJVFTB0TMEYXRVQDFH3M
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: d92ab6074a8328bd67a17b3ab01ed305f5e410c3
-        last_seen_at: 2026-04-05T07:10:00.457Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-compile-js-01kne1nj-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-daemon-compile-js/01kne1nj
