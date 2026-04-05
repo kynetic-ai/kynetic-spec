@@ -117748,6 +117748,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-05T08:53:27.879Z
+      - _ulid: 01KNEDWTTMSZEC54M586NYX3XV
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNEDWT2DBPVM3E819NJBM7E5
+        timestamp: 2026-04-05T08:59:33.588Z
     examined_commit: 3a2a1fa44fccbb2fff87d33daa35c3154f94e598
     external_links: []
     lifecycle_state: open
@@ -117757,8 +117764,28 @@ reviews:
       content_hash: ""
       ref: "@01KNE1NKXMCW3FZTNYK2QK5WFT"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNEDWT2DBPVM3E819NJBM7E5
+        anchor:
+          type: code
+          commit: 3a2a1fa44fccbb2fff87d33daa35c3154f94e598
+          line_end: 93
+          line_start: 83
+          path: tests/cli-no-daemon.test.ts
+          side: head
+        entries:
+          - _ulid: 01KNEDWT2DNCC8K5WHPXV5F46B
+            author: Jacob Chapel
+            body: This test is annotated for @daemon-runtime-adapter ac-auto-start-runtime, but it never
+              exercises auto-start behavior. It only asserts that getDaemonRuntimeCommand() returns
+              its input after mutating process.execPath. If maybeAutoStartDaemon() regressed to
+              spawning process.execPath again in src/cli/index.ts, this test would still pass, so
+              the AC remains unproven. Replace it with a behavioral test that triggers a non-serve
+              CLI command, lets auto-start run, and verifies the spawned daemon process/runtime
+              comes from daemon.runtime config.
+            created_at: 2026-04-05T08:59:32.813Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-05T08:53:06.068Z
-    updated_at: 2026-04-05T08:53:27.053Z
+    updated_at: 2026-04-05T08:59:32.813Z
     notes: []
