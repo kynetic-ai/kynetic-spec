@@ -118344,6 +118344,13 @@ reviews:
           kind: nit
           thread_ulid: 01KNEH3H38Y555X6DEJECK9RSM
         timestamp: 2026-04-05T09:55:39.605Z
+      - _ulid: 01KNEH3Y252100C61D40BKJNJT
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNEH3X85FZNXAXEE6W6YG65K
+        timestamp: 2026-04-05T09:55:52.005Z
     examined_commit: 2dcb662b95ad4a3b36fa2e9717c1d464d99f7ce7
     external_links: []
     lifecycle_state: open
@@ -118377,7 +118384,108 @@ reviews:
               coverage, test quality, runtime-specific integration, error handling.'
             created_at: 2026-04-05T09:55:38.729Z
         kind: nit
+      - _ulid: 01KNEH3X85FZNXAXEE6W6YG65K
+        anchor:
+          type: code
+          commit: 2dcb662b95ad4a3b36fa2e9717c1d464d99f7ce7
+          line_end: 247
+          line_start: 239
+          path: tests/e2e/fixtures/test-base.ts
+          side: head
+        entries:
+          - _ulid: 01KNEH3X85M1SBDAX0WXRCAXRP
+            author: Jacob Chapel
+            body: "This change set regresses node-backed UI startup in the E2E fixture. On the review
+              snapshot,\ 
+
+              Running 1 test using 1 worker
+
+
+
+
+
+
+              \e[1A\e[2K[1/1] [chromium] › tests/e2e/api-websocket.spec.ts:11:3 › WebSocket UI
+              Behavior › shows connected status in the sidebar when the daemon-backed UI loads
+
+              \e[1A\e[2K  1) [chromium] › tests/e2e/api-websocket.spec.ts:11:3 › WebSocket UI
+              Behavior › shows connected status in the sidebar when the daemon-backed UI loads\ 
+
+
+              \    Error:
+              \e[2mexpect(\e[22m\e[31mlocator\e[39m\e[2m).\e[22mtoBeVisible\e[2m(\e[22m\e[2m)\e[22m
+              failed
+
+
+              \    Locator: getByRole('heading', { name: 'Tasks' })
+
+              \    Expected: visible
+
+              \    Timeout: 10000ms
+
+              \    Error: element(s) not found
+
+
+              \    Call log:
+
+              \    \e[2m  - Expect \"toBeVisible\" with timeout 10000ms\e[22m
+
+              \    \e[2m  - waiting for getByRole('heading', { name: 'Tasks' })\e[22m
+
+
+
+              \      14 |   }) => {
+
+              \      15 |     await page.goto(\"/tasks\");
+
+              \    > 16 |     await expect(page.getByRole(\"heading\", { name: \"Tasks\"
+              })).toBeVisible();
+
+              \         |                                                                ^
+
+              \      17 |     await waitForConnected(page);
+
+              \      18 |   });
+
+              \      19 |
+
+              \        at
+              /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-e2e-runtime-aware-0\
+              1kne1nm-review/tests/e2e/api-websocket.spec.ts:16:64
+
+
+              \    attachment #1: screenshot (image/png)
+              ──────────────────────────────────────────────────────────
+
+              \    test-results/api-websocket-WebSocket-UI-e9252--the-daemon-backed-UI-loads-chromi\
+              um/test-failed-1.png
+
+              \    ────────────────────────────────────────────────────────────────────────────────\
+              ────────────────
+
+
+              \    attachment #2: video (video/webm)
+              ──────────────────────────────────────────────────────────────
+
+              \    test-results/api-websocket-WebSocket-UI-e9252--the-daemon-backed-UI-loads-chromi\
+              um/video.webm
+
+              \    ────────────────────────────────────────────────────────────────────────────────\
+              ────────────────
+
+
+
+              \e[1A\e[2K  1 failed
+
+              \    [chromium] › tests/e2e/api-websocket.spec.ts:11:3 › WebSocket UI Behavior › shows
+              connected status in the sidebar when the daemon-backed UI loads  fails because  never
+              renders its heading and the page stays blank, while the same command passes on the
+              integration base commit . Since this task is supposed to make the runtime-configurable
+              fixture usable for node verification, shipping a branch that breaks an existing
+              node-backed UI smoke is a must-fix regression."
+            created_at: 2026-04-05T09:55:51.173Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-05T09:48:15.937Z
-    updated_at: 2026-04-05T09:55:38.729Z
+    updated_at: 2026-04-05T09:55:51.173Z
     notes: []
