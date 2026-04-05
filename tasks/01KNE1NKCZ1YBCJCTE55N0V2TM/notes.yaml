@@ -1,1 +1,14 @@
-notes: []
+notes:
+  - _ulid: 01KNE8FKDBM5S73MCDY0QMJD72
+    content: "Approach: add a websocket connection state manager backed by WeakMap and thread it through
+      server, pubsub, heartbeat, handler, and lifecycle while leaving framework-owned ws.data
+      untouched for transient open/close context. Reuse existing pubsub stable session mapping and
+      only fall back to transport subscriptions/context IDs when mapping is absent. Edge cases:
+      close callbacks after connection state removal, broadcasts for sockets with missing state,
+      heartbeat reads after disconnect, tests that currently assume mutable ws.data. Test plan: add
+      manager unit coverage for init/get/remove and update websocket pubsub/handler/heartbeat/close
+      tests to exercise behavior through connection state instead of ws.data mutation, covering
+      @daemon-runtime-adapter ac-connection-state and ac-websocket-parity."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-05T07:24:57.131Z
