@@ -116254,6 +116254,18 @@ reviews:
         required: true
         created_at: 2026-04-05T04:38:29.046Z
         completed_at: 2026-04-05T04:38:29.046Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Rechecked the three original blockers. ws.data abstraction is still explicitly planned,
+          the missing pong-handler behavior is still covered in the degradation task, and
+          bun-specific tsconfig settings remain called out in the compile task. The round-3 AC
+          cleanup did not regress any prior fix.
+        name: Round-2 blocker regression check
+        required: true
+        created_at: 2026-04-05T04:38:29.087Z
+        completed_at: 2026-04-05T04:38:29.087Z
     events:
       - _ulid: 01KNDYX1GJ3SKC5PFB59KGWM8A
         actor: "@claude"
@@ -116303,6 +116315,13 @@ reviews:
           status: pass
           name: Spec conflicts with existing specs
         timestamp: 2026-04-05T04:38:30.087Z
+      - _ulid: 01KNDYYW1CASSQ81J8JA9DEFQH
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Round-2 blocker regression check
+        timestamp: 2026-04-05T04:38:31.725Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -116315,5 +116334,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-05T04:37:31.794Z
-    updated_at: 2026-04-05T04:38:29.046Z
+    updated_at: 2026-04-05T04:38:29.087Z
     notes: []
