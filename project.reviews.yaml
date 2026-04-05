@@ -115809,6 +115809,20 @@ reviews:
         required: true
         created_at: 2026-04-05T00:34:15.044Z
         completed_at: 2026-04-05T00:34:15.044Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Verified: serve.ts line 322 and 372 both say const runtime = bun (confirmed). serve.ts
+          line 109 is buildDaemonChildEnv (confirmed). index.ts line 169 references
+          dist/daemon/index.js (confirmed). index.ts line 178 uses process.execPath (confirmed, not
+          177 as stated but close). server.ts:487 ws.data access (confirmed). server.ts:524 pong
+          handler (confirmed). server.ts:571 Bun.file (confirmed). server.ts:728 app.server.stop
+          (confirmed). tsconfig bun-types line 17 and moduleResolution line 5 (confirmed)."
+        name: Code location accuracy
+        required: true
+        created_at: 2026-04-05T00:34:19.582Z
+        completed_at: 2026-04-05T00:34:19.582Z
     events:
       - _ulid: 01KNDGY4BEVWK68BV5880QX9NN
         actor: "@claude"
@@ -115872,6 +115886,13 @@ reviews:
           status: pass
           name: Task standalone executability
         timestamp: 2026-04-05T00:34:15.817Z
+      - _ulid: 01KNDGZR26TQKBTQY0P35P1DCG
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Code location accuracy
+        timestamp: 2026-04-05T00:34:20.358Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -115884,5 +115905,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-05T00:33:27.406Z
-    updated_at: 2026-04-05T00:34:15.044Z
+    updated_at: 2026-04-05T00:34:19.582Z
     notes: []
