@@ -37067,7 +37067,7 @@ workspaces:
         head: 7179f7c7f383279482d07f1582205ae1b10534f5
         last_seen_at: 2026-04-05T06:19:56.249Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scope-ac16-bun-only-01kne1nj
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 7179f7c7f383279482d07f1582205ae1b10534f5
     bootstrap:
       status: succeeded
@@ -37175,9 +37175,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-05T07:10:06.326Z
-      last_reconciled_at: 2026-04-05T07:16:17.498Z
+      last_reconciled_at: 2026-04-05T07:16:55.394Z
       created_at: 2026-04-05T06:26:20.040Z
-      updated_at: 2026-04-05T07:16:17.498Z
+      updated_at: 2026-04-05T07:16:55.394Z
     workspace_id: dispatch-workspace-01KNE1NJVFTB0TMEYXRVQDFH3M
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
