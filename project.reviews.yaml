@@ -117051,6 +117051,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-05T07:40:59.186Z
+      - _ulid: 01KNE9MRR2WPN6X9397SS2BVSB
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNE9CSJF6GQCW2EV2VFW2DGZ
+        timestamp: 2026-04-05T07:45:15.010Z
     examined_commit: 778b1b6e671dc0279b83d97486aaf27e574257df
     external_links: []
     lifecycle_state: closed
@@ -117104,6 +117110,17 @@ reviews:
               integration, lifecycle cleanup, edge cases around wrapper sockets and missing
               connection state, test quality/AC annotations."
             created_at: 2026-04-05T07:40:53.711Z
+          - _ulid: 01KNE9MQZYTYWTAPCF4ZV1311B
+            author: Jacob Chapel
+            body: "Addressed. I used the evidence log to reproduce the regression, then patched the
+              compatibility boundary in PubSubManager and added a targeted legacy-registration
+              regression test in tests/daemon-pubsub.test.ts. Current verification: npm run
+              typecheck passes; npm test -- tests/daemon-pubsub.test.ts
+              tests/daemon-connection-state.test.ts tests/daemon-websocket-handler.test.ts
+              tests/daemon-heartbeat.test.ts tests/daemon-websocket-close.test.ts passes 13/13
+              suites, 30/30 tests; npm test -- tests/daemon-entity-cache.test.ts passes 31/31
+              suites, 100/100 tests."
+            created_at: 2026-04-05T07:45:14.238Z
         kind: nit
     verdicts:
       - applies_to_version:
@@ -117114,5 +117131,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-05T07:40:59.185Z
     created_at: 2026-04-05T07:36:09.297Z
-    updated_at: 2026-04-05T07:40:59.186Z
+    updated_at: 2026-04-05T07:45:14.238Z
     notes: []
