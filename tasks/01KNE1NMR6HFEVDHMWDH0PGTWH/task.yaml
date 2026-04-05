@@ -42,7 +42,7 @@ description: |
 spec_ref: "@daemon-runtime-adapter"
 plan_ref: "@plan-configurable-daemon-runtime"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-daemon-spawn-runtime"
@@ -63,7 +63,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: 01KNEFJX8QYSJ8KA3K9DD9X9A2
+session_id: null
 history:
   - author: "@claude"
     changes:
@@ -112,6 +112,16 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-05T09:48:18.659Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KNEFJX8QYSJ8KA3K9DD9X9A2
+    command: review-verdict-needs-work
+    timestamp: 2026-04-05T09:56:09.804Z
 created_at: 2026-04-05T05:25:55.078Z
 started_at: 2026-04-05T09:29:33.736Z
 submitted_at: 2026-04-05T09:45:55.371Z
