@@ -12,8 +12,12 @@ description: Investigate intermittent failures in tests/cli-daemon-proxy.test.ts
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved in review @01KNFT1G and merged
+  dispatch/task/stabilize-flaky-cli-daemon-proxy-cleanup-tests/01knfsgk into dev. Added shared
+  transient cleanup retries for test temp-dir removal and deterministic cleanup coverage; npm test
+  passed (2071 suites, 7520 tests).
 depends_on: []
 context: []
 priority: 3
@@ -72,8 +76,25 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-05T21:51:07.105Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved in review @01KNFT1G and merged
+          dispatch/task/stabilize-flaky-cli-daemon-proxy-cleanup-tests/01knfsgk into dev. Added
+          shared transient cleanup retries for test temp-dir removal and deterministic cleanup
+          coverage; npm test passed (2071 suites, 7520 tests).
+        previous: null
+      completed_at:
+        new: 2026-04-05T21:56:00.723Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-05T21:56:00.754Z
 created_at: 2026-04-05T21:41:49.907Z
 started_at: 2026-04-05T21:42:57.379Z
 submitted_at: 2026-04-05T21:49:23.635Z
+completed_at: 2026-04-05T21:56:00.723Z
 todos: []
 automation: eligible
