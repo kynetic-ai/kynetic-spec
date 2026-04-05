@@ -10,6 +10,7 @@
 
 import type { WebSocketCommand, CommandAck, WebSocketConnection } from "./types.js";
 import type { PubSubManager } from "./pubsub.js";
+import { getWebSocketContextId } from "./context-id.js";
 
 type WebSocketRawMessage =
   | string
@@ -59,10 +60,7 @@ export class WebSocketHandler {
    * Handle incoming WebSocket command
    * AC: @api-contract ac-26, ac-27, ac-28, ac-30
    */
-  handleMessage(
-    ws: WebSocketConnection,
-    rawMessage: WebSocketRawMessage,
-  ): Promise<void> {
+  handleMessage(ws: WebSocketConnection, rawMessage: WebSocketRawMessage): Promise<void> {
     return this.handleMessageInternal(ws, rawMessage);
   }
 
@@ -185,9 +183,7 @@ export class WebSocketHandler {
   }
 
   private resolveSessionId(ws: WebSocketConnection): string | undefined {
-    const data = ws.data as { id?: unknown } | undefined;
-    const contextId = typeof data?.id === "string" ? data.id : undefined;
-    return this.pubsub.getSessionIdBySocket(ws, contextId);
+    return this.pubsub.getSessionIdBySocket(ws, getWebSocketContextId(ws));
   }
 
   private injectTestFailure(command: WebSocketCommand) {

@@ -110,11 +110,20 @@ describe("daemon build pipeline", () => {
   beforeEach(async () => {
     tempDir = await setupTempFixtures();
     initGitRepo(tempDir);
-    fs.mkdirSync(path.join(tempDir, "test-web-ui"), { recursive: true });
+    fs.mkdirSync(path.join(tempDir, "test-web-ui", "_app", "immutable", "entry"), {
+      recursive: true,
+    });
     fs.writeFileSync(
       path.join(tempDir, "test-web-ui", "index.html"),
-      "<!doctype html><html><body>runtime-ui</body></html>",
+      '<!doctype html><html><body>runtime-ui<script type="module" src="/_app/immutable/entry/start.js"></script></body></html>',
     );
+    fs.writeFileSync(
+      path.join(tempDir, "test-web-ui", "_app", "immutable", "entry", "start.js"),
+      'console.log("runtime-ui");\n',
+    );
+    fs.writeFileSync(path.join(tempDir, "test-web-ui", "favicon.ico"), "ico");
+    fs.writeFileSync(path.join(tempDir, "test-web-ui", "favicon-32.png"), "png32");
+    fs.writeFileSync(path.join(tempDir, "test-web-ui", "favicon-192.png"), "png192");
   });
 
   afterEach(async () => {
@@ -180,6 +189,22 @@ describe("daemon build pipeline", () => {
       expect(spaResponse.status).toBe(200);
       expect(spaResponse.headers.get("content-type")).toContain("text/html");
       expect(await spaResponse.text()).toContain("runtime-ui");
+      const assetResponse = await fetch(`http://localhost:${port}/_app/immutable/entry/start.js`);
+      expect(assetResponse.status).toBe(200);
+      expect(assetResponse.headers.get("content-type")).toContain("javascript");
+      expect(await assetResponse.text()).toContain('console.log("runtime-ui")');
+      const faviconResponse = await fetch(`http://localhost:${port}/favicon.ico`);
+      expect(faviconResponse.status).toBe(200);
+      expect(faviconResponse.headers.get("content-type")).toContain("image/");
+      expect(await faviconResponse.text()).toBe("ico");
+      const favicon32Response = await fetch(`http://localhost:${port}/favicon-32.png`);
+      expect(favicon32Response.status).toBe(200);
+      expect(favicon32Response.headers.get("content-type")).toContain("image/png");
+      expect(await favicon32Response.text()).toBe("png32");
+      const favicon192Response = await fetch(`http://localhost:${port}/favicon-192.png`);
+      expect(favicon192Response.status).toBe(200);
+      expect(favicon192Response.headers.get("content-type")).toContain("image/png");
+      expect(await favicon192Response.text()).toBe("png192");
       await stopDaemon(child);
       child = null;
     }

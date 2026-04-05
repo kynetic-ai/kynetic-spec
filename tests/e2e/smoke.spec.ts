@@ -1,6 +1,8 @@
 import { test, expect } from "./fixtures/test-base";
 
 test.describe("Smoke Tests", () => {
+  // AC: @daemon-runtime-adapter ac-http-parity
+  // AC: @daemon-runtime-adapter ac-websocket-parity
   test("page loads and shows sidebar", async ({ page, daemon: _daemon }) => {
     await page.goto("/");
 
@@ -12,7 +14,6 @@ test.describe("Smoke Tests", () => {
     await expect(connectionStatus).toBeVisible();
     await expect(connectionStatus).toContainText(/connected/i);
   });
-
   test("dashboard page loads with navigation", async ({ page, daemon: _daemon }) => {
     await page.goto("/");
 

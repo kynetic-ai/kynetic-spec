@@ -2,7 +2,11 @@ import { describe, it, expect, vi } from "vitest";
 import { ConnectionStateManager } from "../packages/daemon/src/websocket/connection-state";
 import { PubSubManager } from "../packages/daemon/src/websocket/pubsub";
 import { WebSocketHandler } from "../packages/daemon/src/websocket/handler";
-import type { ConnectionData, CommandAck, WebSocketConnection } from "../packages/daemon/src/websocket/types";
+import type {
+  ConnectionData,
+  CommandAck,
+  WebSocketConnection,
+} from "../packages/daemon/src/websocket/types";
 
 function createMockWebSocket(
   connectionState: ConnectionStateManager,
@@ -176,5 +180,40 @@ describe("WebSocketHandler", () => {
     expect(ack.success).toBe(true);
     expect(ack.request_id).toBe("sub-context");
     expect(connectionState.get(registeredWs)?.topics.has("agents")).toBe(true);
+  });
+
+  // AC: @trait-websocket-protocol ac-2
+  it("subscribes successfully when node runtime exposes only request.wsId in websocket context", async () => {
+    const connectionState = new ConnectionStateManager();
+    const pubsub = new PubSubManager(connectionState);
+    const handler = new WebSocketHandler(pubsub);
+    const registeredWs = createMockWebSocket(connectionState, "session-node-context");
+    pubsub.addConnection("session-node-context", registeredWs, "node-ws-id");
+
+    const wrapperWs = {
+      data: {
+        request: {
+          wsId: "node-ws-id",
+        },
+      },
+      send: vi.fn(),
+      close: vi.fn(),
+      ping: vi.fn(),
+      subscriptions: [],
+    };
+
+    await handler.handleMessage(wrapperWs, {
+      action: "subscribe",
+      request_id: "sub-node-context",
+      payload: { topics: ["files:updates"] },
+    });
+
+    const sent = (wrapperWs.send as unknown as ReturnType<typeof vi.fn>).mock.calls.at(-1)?.[0];
+    const ack = JSON.parse(String(sent)) as CommandAck;
+
+    expect(ack.ack).toBe(true);
+    expect(ack.success).toBe(true);
+    expect(ack.request_id).toBe("sub-node-context");
+    expect(connectionState.get(registeredWs)?.topics.has("files:updates")).toBe(true);
   });
 });
