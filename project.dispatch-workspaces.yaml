@@ -37332,3 +37332,79 @@ workspaces:
         head: 3d391eb17292124136d4a9216358106e43a0b462
         last_seen_at: 2026-04-05T07:23:42.133Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-runtime-config-01kne1nk
+  - active_role: null
+    base_branch_point: 671ee155dab31adf5d842d0f482e72d24725e772
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-ws-connection-state-abstraction/01kne1nk
+    canonical_branch_head: 671ee155dab31adf5d842d0f482e72d24725e772
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-04-05T07:23:51.207Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-04-05T07:23:51.207Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: plan/plan-configurable-daemon-runtime/01kndgvz
+      target_commit: 671ee155dab31adf5d842d0f482e72d24725e772
+      updated_at: 2026-04-05T07:23:51.207Z
+    lifecycle_state: ready
+    resolved_base_branch: plan/plan-configurable-daemon-runtime/01kndgvz
+    task_ref: "@01KNE1NKCZ1YBCJCTE55N0V2TM"
+    task_slug: task-ws-connection-state-abstraction
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-04-05T07:23:51.207Z
+      created_at: 2026-04-05T07:23:51.207Z
+      updated_at: 2026-04-05T07:23:51.207Z
+    workspace_id: dispatch-workspace-01KNE1NKCZ1YBCJCTE55N0V2TM
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-ws-connection-state-abstraction/01kne1nk
+        head: 671ee155dab31adf5d842d0f482e72d24725e772
+        last_seen_at: 2026-04-05T07:23:51.207Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ws-connection-state-abstraction-01kne1nk
