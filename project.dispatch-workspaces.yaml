@@ -37448,7 +37448,7 @@ workspaces:
         head: c46ee609a39deee3e464bae212ab0911e04c5fd9
         last_seen_at: 2026-04-05T07:46:21.357Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ws-connection-state-abstraction-01kne1nk
-  - active_role: null
+  - active_role: worker
     base_branch_point: 8c1308c3101400bfa529174fcaa782dde8f8f6ee
     bootstrap:
       status: succeeded
@@ -37537,7 +37537,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-05T07:54:13.793Z
+      updated_at: 2026-04-05T07:54:19.084Z
     integration:
       status: pending
       detail: null
@@ -37546,16 +37546,16 @@ workspaces:
       target_branch: plan/plan-configurable-daemon-runtime/01kndgvz
       target_commit: 8c1308c3101400bfa529174fcaa782dde8f8f6ee
       updated_at: 2026-04-05T07:54:13.793Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: plan/plan-configurable-daemon-runtime/01kndgvz
     task_ref: "@01KNE1NKN6KPZD6YT997NW0D93"
     task_slug: task-elysia-node-adapter
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-04-05T07:54:13.793Z
+      last_active_at: 2026-04-05T07:54:19.084Z
+      last_reconciled_at: 2026-04-05T07:54:19.084Z
       created_at: 2026-04-05T07:54:13.793Z
-      updated_at: 2026-04-05T07:54:18.008Z
+      updated_at: 2026-04-05T07:54:19.084Z
     workspace_id: dispatch-workspace-01KNE1NKN6KPZD6YT997NW0D93
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
