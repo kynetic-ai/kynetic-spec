@@ -12,3 +12,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-05T07:55:36.265Z
+  - _ulid: 01KNEAEJ06TG8NK6KS9NEMVN7N
+    content: "Verified package pairing via npm metadata: @elysiajs/node has no 1.1.x release line;
+      published versions start at 1.2.x, and even 1.2.6 requires elysia >= 1.2.7. Updated the
+      project to elysia ^1.4.28 with @elysiajs/node ^1.4.5 and @elysiajs/cors ^1.4.1 so the adapter
+      peer dependencies are satisfied in both the root workspace and packages/daemon package
+      metadata."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-05T07:59:20.071Z
