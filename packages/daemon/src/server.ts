@@ -111,6 +111,7 @@ function hasWebUiIndex(dir: string | undefined): dir is string {
 const STATIC_ASSET_CONTENT_TYPES: Record<string, string> = {
   ".css": "text/css; charset=utf-8",
   ".html": "text/html; charset=utf-8",
+  ".ico": "image/x-icon",
   ".js": "text/javascript; charset=utf-8",
   ".json": "application/json; charset=utf-8",
   ".map": "application/json; charset=utf-8",
@@ -143,6 +144,11 @@ function serveWebUiStaticAsset(webUiPath: string, requestPath: string): Response
       "Content-Type": getStaticAssetContentType(assetPath),
     },
   });
+}
+
+function isRootWebUiAssetPath(requestPath: string): boolean {
+  const normalizedPath = requestPath.startsWith("/") ? requestPath.slice(1) : requestPath;
+  return normalizedPath.length > 0 && !normalizedPath.includes("/") && normalizedPath.includes(".");
 }
 
 /**
@@ -632,6 +638,14 @@ export async function createServer(options: ServerOptions) {
       app.get("/_app/*", ({ request }) =>
         serveWebUiStaticAsset(resolvedWebUiPath, new URL(request.url).pathname),
       );
+      app.get("/:asset", ({ request }) => {
+        const requestPath = new URL(request.url).pathname;
+        if (!isRootWebUiAssetPath(requestPath)) {
+          return new Response("Not found", { status: 404 });
+        }
+
+        return serveWebUiStaticAsset(resolvedWebUiPath, requestPath);
+      });
     } else {
       // Bun's static plugin serves the bundle with correct MIME metadata.
       app.use(
