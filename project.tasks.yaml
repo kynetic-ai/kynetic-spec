@@ -24832,7 +24832,7 @@
   type: task
   spec_ref: "@daemon-entity-cache"
   plan_ref: "@plan-granular-cache-invalidation"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-e2e-runtime-aware"
@@ -24846,7 +24846,7 @@
   todos_count: 0
   created_at: 2026-04-04T23:34:26.315Z
   started_at: 2026-04-05T22:02:39.659Z
-  submitted_at: 2026-04-05T21:52:12.650Z
+  submitted_at: 2026-04-05T22:09:38.922Z
   automation: eligible
 - _ulid: 01KNDDJ2JK36PAG8WA81WMTSD2
   slugs:
