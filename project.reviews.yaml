@@ -117869,3 +117869,29 @@ reviews:
     created_at: 2026-04-05T08:53:06.068Z
     updated_at: 2026-04-05T08:59:53.619Z
     notes: []
+  - _ulid: 01KNEE231SWR23XV1EH69G14YC
+    slugs: []
+    title: Review task-ws-degradation-node
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KNEE231SXDRCCSYH5XNA31TH
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-05T09:02:25.849Z
+    examined_commit: 1140ea628b9f50f4fc06c09a344ccbbd8513c9ae
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNE1NM5ZEA6RPA7XN1R8ZPEA"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-05T09:02:25.849Z
+    updated_at: null
+    notes: []
