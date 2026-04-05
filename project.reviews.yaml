@@ -117253,6 +117253,13 @@ reviews:
           status: pass
           name: daemon entity-cache regression
         timestamp: 2026-04-05T07:51:58.101Z
+      - _ulid: 01KNEA1GQ48DFEGFKK56RWVHKC
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNEA1FZE0J4V8PQY42CJXPG9
+        timestamp: 2026-04-05T07:52:12.772Z
     examined_commit: c46ee609a39deee3e464bae212ab0911e04c5fd9
     external_links: []
     lifecycle_state: open
@@ -117262,8 +117269,43 @@ reviews:
       content_hash: ""
       ref: "@01KNE1NKCZ1YBCJCTE55N0V2TM"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNEA1FZE0J4V8PQY42CJXPG9
+        entries:
+          - _ulid: 01KNEA1FZEX8A2560YSPRDY22E
+            author: Jacob Chapel
+            body: >-
+              Review evidence log
+
+              Files read: packages/daemon/src/server.ts;
+              packages/daemon/src/websocket/connection-state.ts;
+              packages/daemon/src/websocket/pubsub.ts; packages/daemon/src/websocket/heartbeat.ts;
+              packages/daemon/src/websocket/handler.ts; packages/daemon/src/websocket/lifecycle.ts;
+              packages/daemon/src/websocket/types.ts; src/parser/config.ts;
+              tests/daemon-connection-state.test.ts; tests/daemon-heartbeat.test.ts;
+              tests/daemon-pubsub.test.ts; tests/daemon-websocket-close.test.ts;
+              tests/daemon-websocket-handler.test.ts; tests/parser/daemon-config.test.ts;
+              tests/daemon-entity-cache.test.ts.
+
+              Commands run: kspec task get @01KNE1NKCZ1YBCJCTE55N0V2TM; kspec review for-task
+              @01KNE1NKCZ1YBCJCTE55N0V2TM; kspec review get @01KNE943THTEJGEYC1372H80NG; kspec item
+              get @daemon-runtime-adapter; kspec validate; rg -n "AC: @daemon-runtime-adapter|AC:
+              @trait-" tests; npm test -- --fresh tests/daemon-connection-state.test.ts
+              tests/daemon-heartbeat.test.ts tests/daemon-pubsub.test.ts
+              tests/daemon-websocket-close.test.ts tests/daemon-websocket-handler.test.ts
+              tests/parser/daemon-config.test.ts; npm test -- --fresh
+              tests/daemon-entity-cache.test.ts; npm test -- --fresh.
+
+              Claims verified: legacy ws.data compatibility restored via PubSubManager.addConnection
+              adoption path and confirmed by daemon-entity-cache regression tests; websocket state
+              abstraction preserves subscribe/broadcast/heartbeat/close behavior via targeted daemon
+              tests; config default/runtime parsing behaves as expected via daemon-config tests.
+
+              Categories searched: correctness, compatibility, edge cases, error handling, test
+              quality, integration. No blocking issues found.
+            created_at: 2026-04-05T07:52:12.014Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-05T07:47:22.468Z
-    updated_at: 2026-04-05T07:51:57.291Z
+    updated_at: 2026-04-05T07:52:12.014Z
     notes: []
