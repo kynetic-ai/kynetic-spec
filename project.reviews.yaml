@@ -118787,6 +118787,12 @@ reviews:
         payload:
           thread_ulid: 01KNFCW3EYTKQA78X0T75AQ7PQ
         timestamp: 2026-04-05T18:01:45.365Z
+      - _ulid: 01KNFD4JKMGYQ0FF1MWPGXBPG1
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNFCW84Z70FNX1TNM7VTWGCD
+        timestamp: 2026-04-05T18:05:33.173Z
     examined_commit: 22af770c61b5290932226337447042c356ba75b8
     external_links: []
     lifecycle_state: closed
@@ -119102,6 +119108,8 @@ reviews:
               SPA routes.
             created_at: 2026-04-05T18:01:00.320Z
         kind: blocker
+        resolved_at: 2026-04-05T18:05:32.383Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -119111,5 +119119,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-05T18:01:14.511Z
     created_at: 2026-04-05T18:00:07.994Z
-    updated_at: 2026-04-05T18:01:44.567Z
+    updated_at: 2026-04-05T18:05:32.383Z
     notes: []
