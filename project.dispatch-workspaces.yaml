@@ -37690,7 +37690,7 @@ workspaces:
         head: 0c2c3429c5ebde26f545bb6ea86b82dea8b170e6
         last_seen_at: 2026-04-05T09:10:48.947Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-spawn-runtime-01kne1nk
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: f143b0818864b0b3aa69bafdb281d417e77bedd6
     bootstrap:
       status: succeeded
@@ -37816,9 +37816,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-05T09:01:46.323Z
-      last_reconciled_at: 2026-04-05T09:19:11.802Z
+      last_reconciled_at: 2026-04-05T09:20:58.503Z
       created_at: 2026-04-05T08:52:30.328Z
-      updated_at: 2026-04-05T09:19:11.802Z
+      updated_at: 2026-04-05T09:20:58.503Z
     workspace_id: dispatch-workspace-01KNE1NM5ZEA6RPA7XN1R8ZPEA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
