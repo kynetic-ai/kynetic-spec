@@ -10,3 +10,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-05T09:52:03.847Z
+  - _ulid: 01KNEH5ASWJXXWYXQW65CM8MNA
+    content: "Implemented two reliability fixes for first-run npm test bootstrap: packages/web-ui build
+      now runs svelte-kit sync before vite build so detached workspaces do not depend on leftover
+      .svelte-kit state, and scripts/test.cjs now treats packages/shared/dist/index.js plus
+      packages/web-ui/.svelte-kit/output/server/manifest-full.js as required build artifacts so a
+      partial failed build is not mistaken for a healthy environment on the next run. Verification:
+      packages/web-ui npm run build passed from the updated self-syncing path, npm test --
+      tests/test-runner.test.ts passed (24 tests), and full npm test passed (2069 suites, 7518
+      tests, 5 skipped)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-05T09:56:37.821Z
