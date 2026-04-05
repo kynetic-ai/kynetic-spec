@@ -12513,6 +12513,26 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-04T17:19:16.091Z
+  - _ulid: 01KNE559GCASDHBH5WS1P0YY8W
+    type: friction
+    content: Detached reviewer snapshots can land on an integration-head commit where git diff at HEAD
+      shows unrelated branch history instead of the submitted task change. Reviewers then have to
+      reconstruct evidence from shadow commits and task metadata. Improve dispatch review context or
+      tooling so reviewers can directly see the task-local delta for spec-only and shadow-only
+      submissions.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-05T06:26:53.580Z
+  - _ulid: 01KNE559Q20NYGJ2HYT11Q84FA
+    type: success
+    content: The cached npm test runner made the required second full-suite review run effectively free
+      when repo state was unchanged, which is a good fit for regression triage and anti-flake review
+      practice.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-05T06:26:53.794Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
