@@ -12556,6 +12556,26 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-04-05T06:38:59.895Z
+  - _ulid: 01KNE8V8RXCY3N1THWG03J7D31
+    type: friction
+    content: Review sessions get low-signal output from kspec validate because warnings-only exits
+      include large amounts of existing repo debt (orphaned specs, historical AC coverage issues).
+      In this session the command was still useful for checking errors, but the warning volume made
+      it harder to tell whether the reviewed task introduced anything new.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-05T07:31:19.453Z
+  - _ulid: 01KNE8V95M99TVVVMVMRMSWC4P
+    type: friction
+    content: kspec task complete warned that linked spec @daemon-runtime-adapter has 11 acceptance
+      criteria to verify, even though task @task-daemon-runtime-config intentionally covered only
+      ac-runtime-selection and ac-default-bun. That warning is too coarse for incremental feature
+      delivery and risks training reviewers to ignore it.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-05T07:31:19.860Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
