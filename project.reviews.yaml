@@ -117336,7 +117336,17 @@ reviews:
     slugs: []
     title: Review task-elysia-node-adapter
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test passed: 2077/2077 suites, 7529 tests passed, 5 skipped."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-05T08:10:09.976Z
+        completed_at: 2026-04-05T08:10:09.976Z
     events:
       - _ulid: 01KNEATFSHT8YCJ9W7800C5EZA
         actor: Jacob Chapel
@@ -117351,6 +117361,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-05T08:10:08.469Z
+      - _ulid: 01KNEB2DFC5T0ZJJFEQDH2P2AQ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-05T08:10:10.796Z
     examined_commit: 1481fb7b89bf57138df6ba96e4537dbda6361cfd
     external_links: []
     lifecycle_state: open
@@ -117363,5 +117380,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-05T08:05:51.026Z
-    updated_at: 2026-04-05T08:10:07.702Z
+    updated_at: 2026-04-05T08:10:09.976Z
     notes: []
