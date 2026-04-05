@@ -116830,3 +116830,29 @@ reviews:
     created_at: 2026-04-05T07:10:48.964Z
     updated_at: 2026-04-05T07:15:46.663Z
     notes: []
+  - _ulid: 01KNE8EBP7DAPMZ4ZAQG54MES0
+    slugs: []
+    title: Review task-daemon-runtime-config
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KNE8EBP6D1PY09WSE4DBC6V3
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-05T07:24:16.455Z
+    examined_commit: 3d391eb17292124136d4a9216358106e43a0b462
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNE1NK442TEXM7EYY6CX2KMJ"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-05T07:24:16.455Z
+    updated_at: null
+    notes: []
