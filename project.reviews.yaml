@@ -117733,7 +117733,22 @@ reviews:
     slugs: []
     title: Review task-daemon-spawn-runtime
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/cli/commands/serve.ts, src/cli/index.ts, tests/cli-serve.test.ts,
+          tests/cli-no-daemon.test.ts, tests/helpers/cli.ts. Commands run: git diff/stat, kspec task
+          get, kspec item get, kspec review for-task, kspec validate, rg AC annotations, targeted
+          npm test, full npm test. Claims verified: serve start honors configured runtime and full
+          suite remains green; searched correctness, AC coverage, test quality, integration, error
+          handling."
+        name: review evidence
+        required: false
+        runner: codex
+        created_at: 2026-04-05T08:59:35.120Z
+        completed_at: 2026-04-05T08:59:35.120Z
     events:
       - _ulid: 01KNEDH0CMEWJAVS7VFP4830QH
         actor: Jacob Chapel
@@ -117755,6 +117770,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNEDWT2DBPVM3E819NJBM7E5
         timestamp: 2026-04-05T08:59:33.588Z
+      - _ulid: 01KNEDWX6S6ECRNVAVCKP8JEF4
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence
+        timestamp: 2026-04-05T08:59:36.025Z
     examined_commit: 3a2a1fa44fccbb2fff87d33daa35c3154f94e598
     external_links: []
     lifecycle_state: open
@@ -117787,5 +117809,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-05T08:53:06.068Z
-    updated_at: 2026-04-05T08:59:32.813Z
+    updated_at: 2026-04-05T08:59:35.120Z
     notes: []
