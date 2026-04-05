@@ -115907,6 +115907,13 @@ reviews:
           kind: nit
           thread_ulid: 01KNDH065XJE044QCSMWAD9NQM
         timestamp: 2026-04-05T00:34:35.581Z
+      - _ulid: 01KNDH0B9EZZMWZ5C3RCNS982S
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNDH0AHAEP2PB7R75BJTD0DG
+        timestamp: 2026-04-05T00:34:40.046Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -115947,7 +115954,25 @@ reviews:
               from tsconfig and that the Bun.file() call site is addressed by the adapter task.
             created_at: 2026-04-05T00:34:34.814Z
         kind: nit
+      - _ulid: 01KNDH0AHAEP2PB7R75BJTD0DG
+        anchor:
+          type: structured
+          ref: "@task-ws-connection-state-abstraction"
+          section: tasks
+        entries:
+          - _ulid: 01KNDH0AHB05MN0GH7AMZ5N23T
+            author: "@claude"
+            body: "The task says ws.data is accessed in ~20 call sites across 5 files — verified this is
+              accurate (grep found 20 matches across server.ts, heartbeat.ts, handler.ts, pubsub.ts,
+              lifecycle.ts). The task correctly identifies all 5 files. Note: server.ts:487-497
+              shows an interesting pattern where ws.data is first read (as openContext to get the
+              request for project path resolution via a separate WeakMap), then overwritten with
+              connection state. The ConnectionStateManager needs to handle this two-phase pattern —
+              the WeakMap init should happen after the openContext read, which the current
+              description implies but does not explicitly call out."
+            created_at: 2026-04-05T00:34:39.275Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-05T00:33:27.406Z
-    updated_at: 2026-04-05T00:34:34.814Z
+    updated_at: 2026-04-05T00:34:39.275Z
     notes: []
