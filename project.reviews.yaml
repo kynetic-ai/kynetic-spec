@@ -117393,6 +117393,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNEB3064FKE85SGEN2ZY00XH
         timestamp: 2026-04-05T08:10:30.727Z
+      - _ulid: 01KNEB338M640SZJH35A6D8W1K
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNEB32EDQC4VD7W26GKJY79F
+        timestamp: 2026-04-05T08:10:33.108Z
     examined_commit: 1481fb7b89bf57138df6ba96e4537dbda6361cfd
     external_links: []
     lifecycle_state: open
@@ -117422,7 +117429,25 @@ reviews:
               normal startup path this feature is meant to enable.
             created_at: 2026-04-05T08:10:29.956Z
         kind: blocker
+      - _ulid: 01KNEB32EDQC4VD7W26GKJY79F
+        entries:
+          - _ulid: 01KNEB32ED3MQB01R1SES0KQ5J
+            author: Jacob Chapel
+            body: "Evidence log: files read: AGENTS.md, kspec-agents.md, package.json,
+              packages/daemon/package.json, packages/daemon/src/index.ts,
+              packages/daemon/src/server.ts, src/cli/commands/serve.ts, src/cli/index.ts,
+              tests/daemon-build.test.ts, tests/daemon-runtime-adapter.test.ts,
+              tests/parser/daemon-config.test.ts, tests/helpers/cli.ts. Commands run: kspec task get
+              @01KNE1NKN6KPZD6YT997NW0D93; kspec item get @daemon-runtime-adapter; git diff against
+              8c1308c31014..1481fb7b89bf; rg for Bun/runtime/createServer call sites; grep AC
+              annotations; kspec validate; npm test; reproduced  with daemon.runtime=node and Bun
+              removed from PATH. Claims verified: full test suite passes on this snapshot; daemon
+              entrypoint accepts runtime env/arg; CLI launcher still requires Bun. Categories
+              searched: correctness, integration, shutdown behavior, HTTP parity tests, AC
+              coverage."
+            created_at: 2026-04-05T08:10:32.269Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-05T08:05:51.026Z
-    updated_at: 2026-04-05T08:10:29.956Z
+    updated_at: 2026-04-05T08:10:32.269Z
     notes: []
