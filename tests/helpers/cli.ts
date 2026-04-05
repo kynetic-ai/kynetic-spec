@@ -33,6 +33,9 @@ import * as path from "node:path";
 import { parse as yamlParse, stringify as yamlStringify } from "yaml";
 import * as os from "node:os";
 
+type RemoveDirFn = typeof fs.rm;
+let cleanupRmImpl: RemoveDirFn = (...args) => fs.rm(...args);
+
 // Use built CLI for performance - requires `npm run build` before tests
 export const CLI_PATH = path.join(__dirname, "..", "..", "dist", "cli", "index.js");
 
@@ -338,7 +341,30 @@ export async function setupMultiDirFixtures(): Promise<string> {
  * @param dir - Directory to remove
  */
 export async function cleanupTempDir(dir: string): Promise<void> {
-  await fs.rm(dir, { recursive: true, force: true });
+  const transientCleanupErrors = new Set(["ENOTEMPTY", "EBUSY", "EPERM"]);
+  const maxRetries = 3;
+
+  for (let attempt = 0; ; attempt++) {
+    try {
+      await cleanupRmImpl(dir, { recursive: true, force: true });
+      return;
+    } catch (error) {
+      const code = (error as NodeJS.ErrnoException).code;
+      if (!code || !transientCleanupErrors.has(code) || attempt >= maxRetries) {
+        throw error;
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 100 * (attempt + 1)));
+    }
+  }
+}
+
+export function _setCleanupRmForTesting(fn: RemoveDirFn): void {
+  cleanupRmImpl = fn;
+}
+
+export function _resetCleanupRmForTesting(): void {
+  cleanupRmImpl = (...args) => fs.rm(...args);
 }
 
 /**
