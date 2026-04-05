@@ -11,3 +11,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-05T08:53:36.849Z
+  - _ulid: 01KNEDNNF1NNZKFD2MFZ4P34CK
+    content: Implemented node-runtime websocket degradation handling. Heartbeat now skips sockets
+      without ping() so missing crossws ping/pong support does not arm timeout closure, and daemon
+      startup logs a runtime-specific heartbeat degradation warning on node. Added regression tests
+      for missing ping(), no-timeout idle behavior, missing buffered-amount queries, and the
+      node-only startup warning.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-05T08:55:38.722Z
