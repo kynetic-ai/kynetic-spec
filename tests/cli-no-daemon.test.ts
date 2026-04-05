@@ -2,7 +2,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { PidFileManager } from "../src/cli/pid-utils";
-import { buildDaemonChildEnv } from "../src/cli/commands/serve";
+import { buildDaemonChildEnv, getDaemonRuntimeCommand } from "../src/cli/commands/serve";
 import {
   cleanupTempDir,
   createIsolatedKspecHome,
@@ -78,5 +78,24 @@ describe("KSPEC_NO_DAEMON", () => {
     expect(childEnv.KSPEC_CUSTOM_FLAG).toBe("preserved");
     expect(childEnv.NODE_ENV).toBe("production");
     expect(childEnv.BUN_ENV).toBeUndefined();
+  });
+
+  // AC: @daemon-runtime-adapter ac-auto-start-runtime
+  it("uses the configured runtime command instead of inheriting process.execPath", () => {
+    const originalExecPath = process.execPath;
+    Object.defineProperty(process, "execPath", {
+      value: "/fake/bun",
+      configurable: true,
+    });
+
+    try {
+      expect(getDaemonRuntimeCommand("node")).toBe("node");
+      expect(getDaemonRuntimeCommand("bun")).toBe("bun");
+    } finally {
+      Object.defineProperty(process, "execPath", {
+        value: originalExecPath,
+        configurable: true,
+      });
+    }
   });
 });
