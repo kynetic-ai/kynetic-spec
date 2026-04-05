@@ -119408,6 +119408,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-05T21:54:54.055Z
+      - _ulid: 01KNFTG8PW4RG31MX79GBSMXNG
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNFTG7WXPZ5HYG8WAYWT2PCY
+        timestamp: 2026-04-05T21:59:07.740Z
     examined_commit: 7179f7c7f383279482d07f1582205ae1b10534f5
     external_links: []
     lifecycle_state: open
@@ -119417,8 +119424,27 @@ reviews:
       content_hash: ""
       ref: "@01KNDDJ28BG65RTB77YFQZVQDM"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNFTG7WXPZ5HYG8WAYWT2PCY
+        anchor:
+          type: structured
+          field: ac-context-reuse
+          ref: "@daemon-entity-cache"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KNFTG7WX22F9198WVNNZRN5Y
+            author: Jacob Chapel
+            body: The new AC claims that shared initialization is reused across all domain reloads in a debounce
+              window, but the current implementation still performs initialization per domain. A
+              manifest change already invalidates both "meta" and "items" in the same window (), and
+              each debounced reload independently calls  (), which in turn calls  inside  (). That
+              means the path this AC describes still does the shared setup once per domain, not once
+              per invalidation window. There is also no  annotation in the test suite. Please defer
+              this AC until the reuse behavior exists and is covered, or implement the reuse +
+              coverage in the same change.
+            created_at: 2026-04-05T21:59:06.910Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-05T21:54:28.554Z
-    updated_at: 2026-04-05T21:54:53.228Z
+    updated_at: 2026-04-05T21:59:06.910Z
     notes: []
