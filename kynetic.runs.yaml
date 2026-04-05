@@ -23214,7 +23214,7 @@ runs:
     started_at: 2026-04-05T09:46:23.748Z
     completed_at: 2026-04-05T09:47:30.614Z
   - _ulid: 01KNEH5W0VCASB17MP8JV99CET
-    status: active
+    status: completed
     current_step: 3
     initiated_by: Jacob Chapel
     step_results:
@@ -23238,7 +23238,10 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-05T09:57:28.638Z
-        completed_at: 2026-04-05T09:57:28.638Z
+        completed_at: 2026-04-05T09:57:31.711Z
+        notes: Captured one friction observation about the missing canonical node parity verification
+          target.
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-05T09:56:55.452Z
+    completed_at: 2026-04-05T09:57:31.711Z
