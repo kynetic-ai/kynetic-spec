@@ -37968,7 +37968,7 @@ workspaces:
         head: f47f8983e4524d69aa9ba406cff43c6f3b614418
         last_seen_at: 2026-04-05T09:28:51.683Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-health-runtime-field-01kne1nm
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 5346456fa7d296dd63ece3804ccf6a0d92350463
     bootstrap:
       status: succeeded
@@ -38058,7 +38058,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-05T21:03:27.710Z
+      updated_at: 2026-04-05T21:03:34.015Z
     integration:
       status: pending
       detail: null
@@ -38073,10 +38073,10 @@ workspaces:
     task_slug: task-e2e-runtime-aware
     timestamps:
       closed_at: null
-      last_active_at: 2026-04-05T21:03:20.181Z
-      last_reconciled_at: 2026-04-05T21:03:27.710Z
+      last_active_at: 2026-04-05T21:03:34.015Z
+      last_reconciled_at: 2026-04-05T21:03:34.015Z
       created_at: 2026-04-05T09:29:00.599Z
-      updated_at: 2026-04-05T21:03:31.738Z
+      updated_at: 2026-04-05T21:03:34.015Z
     workspace_id: dispatch-workspace-01KNE1NMR6HFEVDHMWDH0PGTWH
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
