@@ -28,6 +28,8 @@ import {
   getEntityCache,
   getAllRegisteredCaches,
   clearAllEntityCaches,
+  setTestDelay,
+  releaseTestDelay,
   type CacheDomain,
   type DomainState,
   type DomainReadyCallback,
@@ -500,6 +502,44 @@ describe("ProjectEntityCache", () => {
       await cache.handleFileChange(kspecDir, manifestPath);
 
       expect(initContextSpy).toHaveBeenCalledTimes(1);
+    });
+
+    // AC: @daemon-entity-cache ac-context-reuse
+    it("should start a fresh initContext for a later debounce window", async () => {
+      const originalKspecTest = process.env.KSPEC_TEST;
+      process.env.KSPEC_TEST = "1";
+
+      try {
+        const cache = new ProjectEntityCache(projectA);
+        (cache as any).domainDebounceMs = 0;
+        await cache.loadDomain("meta");
+        await cache.loadDomain("items");
+        await cache.loadDomain("tasks");
+
+        const initContextSpy = vi.spyOn(yamlModule, "initContext");
+        const kspecDir = join(projectA, ".kspec");
+        const manifestPath = join(kspecDir, "kynetic.yaml");
+
+        setTestDelay(projectA);
+
+        const firstWindowReload = cache.handleFileChange(kspecDir, manifestPath);
+        await vi.waitFor(() => expect((cache as any).inFlightReloads.size).toBe(2));
+
+        const secondWindowReload = cache.invalidateDomain("tasks");
+        await vi.waitFor(() => expect((cache as any).inFlightReloads.size).toBe(3));
+
+        releaseTestDelay(projectA);
+        await Promise.all([firstWindowReload, secondWindowReload]);
+
+        expect(initContextSpy).toHaveBeenCalledTimes(2);
+      } finally {
+        releaseTestDelay(projectA);
+        if (originalKspecTest === undefined) {
+          delete process.env.KSPEC_TEST;
+        } else {
+          process.env.KSPEC_TEST = originalKspecTest;
+        }
+      }
     });
 
     it("should invalidate sessions domain when session watcher path is received", async () => {

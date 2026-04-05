@@ -317,7 +317,6 @@ export type DomainReloadedCallback = (domain: CacheDomain, projectPath: string) 
 interface ReloadCycle {
   contextPromise?: Promise<KspecContext>;
   pendingDomains: Set<CacheDomain>;
-  activeReloads: number;
 }
 
 const DEFAULT_SESSION_CACHE_CONFIG: SessionCacheConfig = {
@@ -899,10 +898,6 @@ export class ProjectEntityCache {
       store.state = "loading";
     }
 
-    if (cycle) {
-      cycle.activeReloads += 1;
-    }
-
     const promise = this.doLoadDomain(domain, cycle)
       .then(() => {
         if (!this.disposed) {
@@ -926,10 +921,6 @@ export class ProjectEntityCache {
         }
       })
       .finally(() => {
-        if (cycle) {
-          cycle.activeReloads -= 1;
-          this.maybeClearReloadCycle(cycle);
-        }
         this.inFlightReloads.delete(domain);
       });
 
@@ -1269,6 +1260,10 @@ export class ProjectEntityCache {
       this.domainDebounceTimers.delete(domain);
       const reloadCycle = this.domainReloadCycles.get(domain);
       this.domainReloadCycles.delete(domain);
+      if (reloadCycle) {
+        reloadCycle.pendingDomains.delete(domain);
+        this.maybeClearReloadCycle(reloadCycle);
+      }
       const d = this.domainDebouncePromises.get(domain);
       this.domainDebouncePromises.delete(domain);
       try {
@@ -1279,10 +1274,6 @@ export class ProjectEntityCache {
           this.onDomainReloaded?.(domain, this.projectPath);
         }
       } finally {
-        if (reloadCycle) {
-          reloadCycle.pendingDomains.delete(domain);
-          this.maybeClearReloadCycle(reloadCycle);
-        }
         d?.resolve();
       }
     }, this.domainDebounceMs);
@@ -1416,7 +1407,6 @@ export class ProjectEntityCache {
     if (!this.currentReloadCycle) {
       this.currentReloadCycle = {
         pendingDomains: new Set(),
-        activeReloads: 0,
       };
     }
     return this.currentReloadCycle;
@@ -1428,11 +1418,7 @@ export class ProjectEntityCache {
   }
 
   private maybeClearReloadCycle(cycle: ReloadCycle): void {
-    if (
-      this.currentReloadCycle === cycle &&
-      cycle.pendingDomains.size === 0 &&
-      cycle.activeReloads === 0
-    ) {
+    if (this.currentReloadCycle === cycle && cycle.pendingDomains.size === 0) {
       this.currentReloadCycle = null;
     }
   }
