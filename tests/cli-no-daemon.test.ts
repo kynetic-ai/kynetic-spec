@@ -1,15 +1,27 @@
+import { execSync, spawnSync } from "node:child_process";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { PidFileManager } from "../src/cli/pid-utils";
-import { buildDaemonChildEnv, getDaemonRuntimeCommand } from "../src/cli/commands/serve";
+import { buildDaemonChildEnv } from "../src/cli/commands/serve";
 import {
+  CLI_PATH,
   cleanupTempDir,
   createIsolatedKspecHome,
   createTempDir,
   initGitRepo,
   kspec,
+  readTestOutputSync,
+  waitForStartup,
 } from "./helpers/cli";
+
+let bunAvailable = false;
+try {
+  execSync("which bun", { stdio: "pipe" });
+  bunAvailable = true;
+} catch {
+  // Bun-specific runtime tests skip when Bun is unavailable.
+}
 
 describe("KSPEC_NO_DAEMON", () => {
   let tempDir: string;
@@ -81,21 +93,65 @@ describe("KSPEC_NO_DAEMON", () => {
   });
 
   // AC: @daemon-runtime-adapter ac-auto-start-runtime
-  it("uses the configured runtime command instead of inheriting process.execPath", () => {
-    const originalExecPath = process.execPath;
-    Object.defineProperty(process, "execPath", {
-      value: "/fake/bun",
-      configurable: true,
-    });
-
-    try {
-      expect(getDaemonRuntimeCommand("node")).toBe("node");
-      expect(getDaemonRuntimeCommand("bun")).toBe("bun");
-    } finally {
-      Object.defineProperty(process, "execPath", {
-        value: originalExecPath,
-        configurable: true,
-      });
+  it("auto-starts the daemon with the configured node runtime even when the CLI runs under bun", async () => {
+    if (!bunAvailable) {
+      console.log("  ⊘ Skipping test - Bun runtime required");
+      return;
     }
+
+    const isolatedHome = await createIsolatedKspecHome(tempDir);
+    writeFileSync(
+      join(tempDir, "kspec.config.yaml"),
+      ["daemon:", "  runtime: node", ""].join("\n"),
+      "utf-8",
+    );
+    const {
+      KSPEC_NO_DAEMON: _kspecNoDaemon,
+      KSPEC_SESSION_ID: _sessionId,
+      KSPEC_RALPH_SESSION: _legacySession,
+      KSPEC_DISPATCH_CANONICAL_HEAD: _dispatchCanonicalHead,
+      KSPEC_SHADOW_MUTATION_LOCK_FILE: _shadowMutationLockFile,
+      KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS: _shadowMutationLockTimeoutMs,
+      ...cleanEnv
+    } = process.env;
+
+    const result = spawnSync(
+      "bun",
+      [CLI_PATH, "util", "ulid"],
+      {
+        cwd: tempDir,
+        encoding: "utf-8",
+        env: { ...cleanEnv, ...isolatedHome.env, KSPEC_AUTHOR: "@test" },
+      },
+    );
+
+    expect(result.status).toBe(0);
+
+    await waitForStartup(
+      "auto-started daemon pid file",
+      async () => {
+        try {
+          const pid = parseInt(readTestOutputSync(isolatedHome.daemonPidFilePath).trim(), 10);
+          return {
+            ok: Number.isInteger(pid) && pid > 0,
+            details: `pid=${Number.isFinite(pid) ? pid : "invalid"}`,
+          };
+        } catch (error) {
+          const message = error instanceof Error ? error.message : String(error);
+          return { ok: false, details: message };
+        }
+      },
+      { timeoutMs: 10_000 },
+    );
+
+    const pid = parseInt(readTestOutputSync(isolatedHome.daemonPidFilePath).trim(), 10);
+    const processCommand = execSync(`ps -p ${pid} -o command=`, { encoding: "utf-8" }).trim();
+
+    expect(processCommand).toContain("node");
+    expect(processCommand).toContain("dist/daemon/index.js");
+
+    kspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir, {
+      env: isolatedHome.env,
+    });
   });
 });
