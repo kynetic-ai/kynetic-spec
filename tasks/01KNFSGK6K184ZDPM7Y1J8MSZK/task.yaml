@@ -1,0 +1,26 @@
+_ulid: 01KNFSGK6K184ZDPM7Y1J8MSZK
+slugs: []
+title: Stabilize flaky cli-daemon-proxy cleanup tests
+type: bug
+description: Investigate intermittent failures in tests/cli-daemon-proxy.test.ts seen during full
+  npm test on 2026-04-05. In the aggregate run, two cases failed with ENOTEMPTY while removing Bun
+  cache directories under temp HOME paths (/tmp/kspec-test-*/.home/.bun/install...). The same file
+  passed when rerun in isolation on both the review snapshot fc43f60c789e and the integration base
+  5346456fa7d296dd63ece3804ccf6a0d92350463, so treat this as flakiness or cross-test interference
+  rather than a regression from @01KNE1NMR6HFEVDHMWDH0PGTWH. Investigate temp-dir teardown timing
+  and Bun cache cleanup interactions, then add deterministic coverage.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - testing
+  - daemon
+vcs_refs: []
+created_at: 2026-04-05T21:41:49.907Z
+todos: []
+automation: eligible
