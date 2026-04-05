@@ -67,7 +67,7 @@ description: |
 spec_ref: "@daemon-runtime-adapter"
 plan_ref: "@plan-configurable-daemon-runtime"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-daemon-compile-js"
@@ -87,7 +87,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: null
+session_id: 01KNE9F6MS3SG5S6ZXAZ46E268
 history:
   - author: "@claude"
     changes:
@@ -146,8 +146,21 @@ history:
         previous: 01KNE8DQV2JN1RMCPD7QN7SDQK
     command: review-verdict-needs-work
     timestamp: 2026-04-05T07:41:00.754Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KNE9F6MS3SG5S6ZXAZ46E268
+        previous: null
+      started_at:
+        new: 2026-04-05T07:42:40.732Z
+        previous: 2026-04-05T07:24:35.138Z
+    command: task-start
+    timestamp: 2026-04-05T07:42:40.733Z
 created_at: 2026-04-05T05:25:53.695Z
-started_at: 2026-04-05T07:24:35.138Z
+started_at: 2026-04-05T07:42:40.732Z
 submitted_at: 2026-04-05T07:33:39.228Z
 todos: []
 automation: eligible
