@@ -119470,6 +119470,13 @@ reviews:
           status: skipped
           name: kspec validate
         timestamp: 2026-04-05T21:59:15.626Z
+      - _ulid: 01KNFTGKXB5F9R3DHWNBV6KJFB
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNFTGK20G1TK7RP8AQY92DJY
+        timestamp: 2026-04-05T21:59:19.211Z
     examined_commit: 7179f7c7f383279482d07f1582205ae1b10534f5
     external_links: []
     lifecycle_state: open
@@ -119499,7 +119506,95 @@ reviews:
               coverage in the same change.
             created_at: 2026-04-05T21:59:06.910Z
         kind: blocker
+      - _ulid: 01KNFTGK20G1TK7RP8AQY92DJY
+        entries:
+          - _ulid: 01KNFTGK21P184XHTTHB9MTRWX
+            author: Jacob Chapel
+            body: >-
+              Evidence log: Files read: AGENTS.md, kspec-agents.md, src/daemon/entity-cache.ts,
+              tests/daemon-entity-cache.test.ts, package.json, kspec task/review metadata, and the
+              kspec-meta diff commit adding . Commands run: , , ✓ Validation passed
+
+              ────────────────────────────────────────
+
+              Files checked: 10
+
+              Items checked: 576
+
+              Tasks checked: 0
+
+              Meta: 11 agents, 11 workflows, 10 conventions
+
+
+              Schema: OK
+
+              References: OK
+
+
+              Reference warnings: 1
+                ⚠ @skills
+                  Orphaned skill directory 'skills' has no corresponding meta entry
+                  in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+              Alignment warnings: 31
+                Orphaned specs (no tasks): 30
+                  ○ Test Trait
+                  ○ Filterable List Commands
+                  ○ Dry Run Preview Mode
+                  ... and 27 more
+                Status mismatches: 1
+                  ! Task Set Batch Support
+                    Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+
+              Alignment stats: 413/576 specs have tasks, 412 aligned
+
+
+              Completeness warnings: 522
+                Missing acceptance criteria: 1
+                  ○ @01KJN1WT - Test Trait
+                Missing own AC coverage: 235
+                  ! @spec-item - Spec Item
+                    Uncovered: ac-item-1, ac-item-2
+                  ! @ulid-system - ULID Identifier System
+                    Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+                  ! @slug-system - Slug Alias System
+                    Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+                  ... and 232 more
+                Invalid AC annotations: 286
+                  ! AC annotation references '@slug' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-ac-context-reuse-01knddj2-review/tests/ac-annotation-validation.test.ts:6
+                  ! AC annotation references '@my-spec' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-ac-context-reuse-01knddj2-review/tests/ac-annotation-validation.test.ts:84
+                  ! AC annotation references '@my-spec' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-ac-context-reuse-01knddj2-review/tests/ac-annotation-validation.test.ts:87
+                  ! AC annotation references '@spec-a' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-ac-context-reuse-01knddj2-review/tests/ac-annotation-validation.test.ts:114
+                  ! AC annotation references '@spec-b' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-ac-context-reuse-01knddj2-review/tests/ac-annotation-validation.test.ts:118
+                  ... and 281 more
+              Skills: OK (10 files checked),  for AC annotations, commit
+              7179f7c7f383279482d07f1582205ae1b10534f5
+
+              Merge: d51b5485e f0b57ed46
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Sat Apr 4 01:31:25 2026 -0700
+
+                  Merge branch 'dispatch/task/task-fix-session-dir-fd-leak/01knbs17' into dev on the shadow-branch change, 
+              > @kynetic-ai/spec@0.12.0 test
+
+              > node scripts/test.cjs, and a focused 
+
+              > @kynetic-ai/spec@0.12.0 test
+
+              > node scripts/test.cjs --fresh tests/daemon-entity-cache.test.ts. Claims verified:
+              the AC was added on the shadow branch; manifest invalidation reloads both  and ; full
+              and focused tests pass. Categories searched: correctness, test quality, spec
+              alignment, and integration.
+            created_at: 2026-04-05T21:59:18.337Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-05T21:54:28.554Z
-    updated_at: 2026-04-05T21:59:14.657Z
+    updated_at: 2026-04-05T21:59:18.337Z
     notes: []
