@@ -118512,3 +118512,29 @@ reviews:
     created_at: 2026-04-05T09:48:15.937Z
     updated_at: 2026-04-05T09:56:08.117Z
     notes: []
+  - _ulid: 01KNEHA3S8K3WSJPZX8R2XSB88
+    slugs: []
+    title: Review stabilize web UI build prep before npm test
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KNEHA3S7XNMKD1DTM8NKD8HB
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-05T09:59:14.471Z
+    examined_commit: cb909e6edefa9de81d07fd46a6a25c2a5bb1dcd8
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNEFYKWCC21H6618TKB8VE0D"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-05T09:59:14.472Z
+    updated_at: null
+    notes: []
