@@ -116628,6 +116628,12 @@ reviews:
         payload:
           thread_ulid: 01KNE690XMKTPKMRYTFSRPHEB9
         timestamp: 2026-04-05T07:07:42.874Z
+      - _ulid: 01KNE7G3MWV81EVNBGJPG0ATE4
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNE68YQ80SWQ4AN234560BBR
+        timestamp: 2026-04-05T07:07:45.180Z
     examined_commit: dbf76f3cc3fabfb650aed85f5988a5c0c71ef54a
     external_links: []
     lifecycle_state: closed
@@ -116662,6 +116668,8 @@ reviews:
               reach a live health endpoint.
             created_at: 2026-04-05T07:07:25.468Z
         kind: nit
+        resolved_at: 2026-04-05T07:07:44.360Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KNE690XMKTPKMRYTFSRPHEB9
         anchor:
           type: code
@@ -116701,5 +116709,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-05T06:46:37.716Z
     created_at: 2026-04-05T06:41:01.684Z
-    updated_at: 2026-04-05T07:07:42.115Z
+    updated_at: 2026-04-05T07:07:44.360Z
     notes: []
