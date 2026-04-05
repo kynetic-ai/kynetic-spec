@@ -9,7 +9,7 @@ import { Elysia } from "elysia";
 import { cors } from "@elysiajs/cors";
 import { staticPlugin } from "@elysiajs/static";
 import { ulid } from "ulidx";
-import { existsSync } from "fs";
+import { existsSync, readFileSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import { PubSubManager } from "./websocket/pubsub.js";
@@ -51,6 +51,38 @@ export interface ServerOptions {
   isDaemon: boolean;
   kspecDir?: string; // Path to .kspec directory (default: .kspec in cwd)
   webUiDir?: string; // Path to web UI build directory (default: auto-detect)
+}
+
+type ManagedServer = {
+  stop?: () => unknown;
+  close?: (callback: (error?: Error | null) => void) => void;
+};
+
+function detectRuntime(): "bun" | "node" {
+  return typeof process.versions.bun === "string" ? "bun" : "node";
+}
+
+async function stopManagedServer(server: ManagedServer | undefined): Promise<void> {
+  if (!server) {
+    return;
+  }
+
+  if (typeof server.stop === "function") {
+    await server.stop();
+    return;
+  }
+
+  if (typeof server.close === "function") {
+    await new Promise<void>((resolve, reject) => {
+      server.close?.((error?: Error | null) => {
+        if (error) {
+          reject(error);
+          return;
+        }
+        resolve();
+      });
+    });
+  }
 }
 
 function hasWebUiIndex(dir: string | undefined): dir is string {
@@ -220,6 +252,7 @@ export function localhostOnly() {
  */
 export async function createServer(options: ServerOptions) {
   const { port, isDaemon, kspecDir = join(process.cwd(), ".kspec"), webUiDir } = options;
+  const runtime = detectRuntime();
 
   // Determine startup project path (project root, not .kspec/)
   // AC: @multi-directory-daemon ac-2 - daemon uses startup directory as default project
@@ -260,7 +293,15 @@ export async function createServer(options: ServerOptions) {
   // which breaks WebSocket upgrade in Elysia 1.4 when derive middleware is present.
   const wsProjectPaths = new WeakMap<Request, string>();
 
-  const app = new Elysia()
+  const app = new Elysia();
+  if (runtime === "node") {
+    const nodeAdapter = (await import("@elysiajs/node")).node();
+    const adapterTarget = app as Elysia & { "~adapter": unknown };
+    adapterTarget["~adapter"] = nodeAdapter;
+    (app.config as { adapter?: unknown }).adapter = nodeAdapter;
+  }
+
+  app
     // AC-15: Plugin pattern for middleware
     // AC: @api-contract ac-1 - Allow CORS from dev server on localhost:5173
     .use(
@@ -534,6 +575,7 @@ export async function createServer(options: ServerOptions) {
   // Added after API routes so API routes take precedence
   if (resolvedWebUiPath) {
     const indexHtmlPath = join(resolvedWebUiPath, "index.html");
+    const indexHtml = readFileSync(indexHtmlPath);
 
     // Serve static files from web UI build directory
     app.use(
@@ -568,7 +610,15 @@ export async function createServer(options: ServerOptions) {
       "/automation",
     ];
     for (const route of spaRoutes) {
-      app.get(route, () => Bun.file(indexHtmlPath));
+      app.get(
+        route,
+        () =>
+          new Response(indexHtml, {
+            headers: {
+              "Content-Type": "text/html; charset=utf-8",
+            },
+          }),
+      );
     }
 
     console.log("[daemon] Web UI static file serving enabled");
@@ -725,7 +775,7 @@ export async function createServer(options: ServerOptions) {
       }
 
       // Stop the server
-      await app.server?.stop();
+      await stopManagedServer(app.server as ManagedServer | undefined);
 
       // AC: @daemon-server ac-10 - Remove PID file on shutdown
       if (isDaemon) {

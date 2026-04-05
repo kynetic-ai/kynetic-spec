@@ -1,10 +1,26 @@
-import { spawnSync } from "node:child_process";
+import { execSync, spawn, spawnSync, type ChildProcess } from "node:child_process";
 import fs from "node:fs";
+import { createServer } from "node:net";
 import path from "node:path";
-import { describe, expect, it } from "vitest";
+import {
+  cleanupTempDir,
+  createIsolatedKspecHome,
+  initGitRepo,
+  setupTempFixtures,
+  waitForStartup,
+} from "./helpers/cli.js";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 const projectRoot = path.resolve(import.meta.dirname, "..");
 const daemonEntry = path.join(projectRoot, "dist", "daemon", "index.js");
+
+let bunAvailable = false;
+try {
+  execSync("which bun", { stdio: "pipe" });
+  bunAvailable = true;
+} catch {
+  console.log("⊘ Bun runtime not available - skipping bun daemon startup smoke");
+}
 
 function runCommand(command: string, args: string[]) {
   return spawnSync(command, args, {
@@ -14,7 +30,94 @@ function runCommand(command: string, args: string[]) {
   });
 }
 
+async function getAvailablePort(): Promise<number> {
+  return await new Promise((resolve, reject) => {
+    const server = createServer();
+    server.once("error", reject);
+    server.listen(0, "127.0.0.1", () => {
+      const address = server.address();
+      if (!address || typeof address === "string") {
+        server.close(() => reject(new Error("Failed to allocate ephemeral port")));
+        return;
+      }
+
+      server.close((error) => {
+        if (error) {
+          reject(error);
+          return;
+        }
+        resolve(address.port);
+      });
+    });
+  });
+}
+
+async function waitForDaemonHealth(
+  baseUrl: string,
+  child: ChildProcess,
+  stderrBuffer: () => string,
+): Promise<void> {
+  await waitForStartup(
+    `daemon health endpoint at ${baseUrl}`,
+    async () => {
+      if (child.exitCode !== null) {
+        return {
+          ok: false,
+          details: `process exited with code ${child.exitCode}: ${stderrBuffer() || "<no stderr>"}`,
+        };
+      }
+
+      try {
+        const response = await fetch(`${baseUrl}/api/health`);
+        const body = await response.text();
+        return {
+          ok: response.ok && body.includes('"status":"ok"'),
+          details: `status=${response.status} body=${body || "<empty>"}`,
+        };
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        return { ok: false, details: `fetch error=${message}` };
+      }
+    },
+    { timeoutMs: 15_000, intervalMs: 100 },
+  );
+}
+
+async function stopDaemon(child: ChildProcess | null): Promise<void> {
+  if (!child || child.exitCode !== null) {
+    return;
+  }
+
+  child.kill("SIGTERM");
+
+  await Promise.race([
+    new Promise<void>((resolve) => child.once("exit", () => resolve())),
+    new Promise<void>((resolve) =>
+      setTimeout(() => {
+        if (child.exitCode === null) {
+          child.kill("SIGKILL");
+        }
+        resolve();
+      }, 10_000),
+    ),
+  ]);
+}
+
 describe("daemon build pipeline", () => {
+  let tempDir: string;
+  let child: ChildProcess | null = null;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+    initGitRepo(tempDir);
+  });
+
+  afterEach(async () => {
+    await stopDaemon(child);
+    child = null;
+    await cleanupTempDir(tempDir);
+  });
+
   // AC: @daemon-runtime-adapter ac-runtime-selection
   it("build:daemon emits compiled JavaScript artifacts", () => {
     const result = runCommand("npm", ["run", "build:daemon"]);
@@ -25,16 +128,44 @@ describe("daemon build pipeline", () => {
   });
 
   // AC: @daemon-runtime-adapter ac-runtime-selection
-  it("compiled daemon entrypoint runs under node and bun without a TypeScript loader", () => {
+  it("compiled daemon entrypoint starts and serves health checks under node and bun", async () => {
     const buildResult = runCommand("npm", ["run", "build:daemon"]);
     expect(buildResult.status).toBe(0);
 
-    const nodeResult = runCommand("node", [daemonEntry, "--port", "0"]);
-    expect(nodeResult.status).toBe(1);
-    expect(nodeResult.stderr).toContain("Invalid port number");
+    const runtimes = [
+      { command: "node", envVar: "NODE_ENV" },
+      ...(bunAvailable ? [{ command: "bun", envVar: "BUN_ENV" }] : []),
+    ];
 
-    const bunResult = runCommand("bun", [daemonEntry, "--port", "0"]);
-    expect(bunResult.status).toBe(1);
-    expect(bunResult.stderr).toContain("Invalid port number");
+    for (const runtime of runtimes) {
+      const isolatedHome = await createIsolatedKspecHome(tempDir, `.home-${runtime.command}`);
+      const port = await getAvailablePort();
+      let stderr = "";
+
+      child = spawn(
+        runtime.command,
+        [daemonEntry, "--port", String(port), "--kspec-dir", path.join(tempDir, ".kspec")],
+        {
+          cwd: tempDir,
+          stdio: ["ignore", "pipe", "pipe"],
+          env: {
+            ...process.env,
+            ...isolatedHome.env,
+            [runtime.envVar]: "test",
+          },
+        },
+      );
+
+      child.stderr?.on("data", (chunk: Buffer) => {
+        stderr += chunk.toString();
+      });
+
+      await waitForDaemonHealth(`http://localhost:${port}`, child, () => stderr);
+
+      const response = await fetch(`http://localhost:${port}/api/health`);
+      expect(response.status).toBe(200);
+      await stopDaemon(child);
+      child = null;
+    }
   });
 });
