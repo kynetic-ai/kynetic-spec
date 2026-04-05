@@ -28,3 +28,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-05T07:41:00.754Z
+  - _ulid: 01KNE9MC6A1AFYXAMFG6RPFNX7
+    content: "Fix cycle 1: restored compatibility for PubSubManager callers that still register sockets
+      with daemon-owned metadata on ws.data by adopting validated legacy connection data into
+      ConnectionStateManager during addConnection(). Added regression coverage for legacy
+      registration plus reran the reviewer-reported entity-cache broadcast suite. Re-verified
+      @daemon-runtime-adapter ac-connection-state and ac-websocket-parity against the
+      websocket/pubsub path."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-05T07:45:02.154Z
