@@ -17,7 +17,7 @@ import {
 import { spawn, execSync } from "child_process";
 import { once } from "events";
 import { dirname, join } from "path";
-import { existsSync, mkdirSync } from "fs";
+import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { createServer } from "net";
 
 // Check if Bun runtime is available
@@ -735,6 +735,48 @@ describe("kspec serve commands", () => {
     expect(parsed.hint).toContain("bun.sh");
     expect(parsed).toHaveProperty("url");
     expect(parsed.url).toBe("https://bun.sh/docs/installation");
+  });
+
+  // AC: @daemon-runtime-adapter ac-runtime-selection
+  // AC: @daemon-runtime-adapter ac-http-parity
+  it("should start via configured node runtime even when Bun is unavailable", async () => {
+    const nodeDir = dirname(execSync("which node", { encoding: "utf-8" }).trim());
+    const noBunPath = (process.env.PATH || "")
+      .split(":")
+      .filter((p) => {
+        try {
+          return !existsSync(join(p, "bun"));
+        } catch {
+          return true;
+        }
+      })
+      .join(":");
+    const pathWithNode = noBunPath.includes(nodeDir) ? noBunPath : `${nodeDir}:${noBunPath}`;
+    const port = await getAvailablePort();
+
+    writeFileSync(
+      join(tempDir, "kspec.config.yaml"),
+      ["daemon:", "  runtime: node", `  port: ${port}`, ""].join("\n"),
+      "utf-8",
+    );
+
+    const result = runKspec(
+      `serve start --detach --kspec-dir ${join(tempDir, ".kspec")}`,
+      tempDir,
+      { env: { PATH: pathWithNode } },
+    );
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain(`port ${port}`);
+
+    await waitForDaemonHealth(port);
+
+    const healthResponse = await fetch(`http://localhost:${port}/api/health`);
+    expect(healthResponse.ok).toBe(true);
+
+    runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir, {
+      env: { PATH: pathWithNode },
+    });
   });
 
   // AC: @cli-serve-commands ac-11
