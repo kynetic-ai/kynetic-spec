@@ -12703,6 +12703,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-05T09:47:09.532Z
+  - _ulid: 01KNEH6P1VPMMA2W4HACEF6SW3
+    type: friction
+    content: "Node-runtime E2E verification is currently easy to over-credit: a targeted watcher test
+      can pass while the AC-annotated UI smoke path for runtime parity still fails under
+      KSPEC_TEST_RUNTIME=node. Reviewers/workers need a clearer canonical node verification target
+      for @daemon-runtime-adapter parity."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-05T09:57:22.107Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
