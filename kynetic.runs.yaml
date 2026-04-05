@@ -22793,7 +22793,7 @@ runs:
     completed_at: 2026-04-05T06:26:56.527Z
   - _ulid: 01KNE5SYAZCE34ENG5QF0THPEA
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -22816,7 +22816,15 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-04-05T06:39:50.012Z
-        completed_at: 2026-04-05T06:39:50.012Z
+        completed_at: 2026-04-05T06:39:55.362Z
+        notes: "Decision: resolved existing observation @01KN5NAP because this task fixed the broken shx cp
+          daemon build path. Captured the unique Bun-vs-Node import portability friction and the
+          dual-runtime dist/daemon/index.js smoke-test success because searches found no matching
+          existing tracking."
+      - status: completed
+        step_index: 3
+        started_at: 2026-04-05T06:39:55.362Z
+        completed_at: 2026-04-05T06:39:55.362Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-05T06:38:10.271Z
