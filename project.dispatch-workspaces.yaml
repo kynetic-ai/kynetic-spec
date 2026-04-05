@@ -37661,7 +37661,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-05T09:17:14.025Z
+      updated_at: 2026-04-05T09:17:57.928Z
     integration:
       status: merged
       detail: integration:merged
@@ -37677,18 +37677,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-05T09:10:54.838Z
-      last_reconciled_at: 2026-04-05T09:17:55.747Z
+      last_reconciled_at: 2026-04-05T09:17:57.928Z
       created_at: 2026-04-05T08:31:13.313Z
-      updated_at: 2026-04-05T09:17:55.747Z
+      updated_at: 2026-04-05T09:17:57.928Z
     workspace_id: dispatch-workspace-01KNE1NKXMCW3FZTNYK2QK5WFT
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 0c2c3429c5ebde26f545bb6ea86b82dea8b170e6
-        last_seen_at: 2026-04-05T09:10:48.947Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-spawn-runtime-01kne1nk-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-daemon-spawn-runtime/01kne1nk
