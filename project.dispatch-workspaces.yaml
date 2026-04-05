@@ -38229,7 +38229,7 @@ workspaces:
         head: cb909e6edefa9de81d07fd46a6a25c2a5bb1dcd8
         last_seen_at: 2026-04-05T09:58:18.448Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-web-ui-build-prep-before-npm-test-01knefyk
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 5528165fcdb8749b84b5e254b4160f29ca4a9675
     bootstrap:
       status: succeeded
@@ -38355,9 +38355,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-05T21:50:42.799Z
-      last_reconciled_at: 2026-04-05T21:56:27.680Z
+      last_reconciled_at: 2026-04-05T21:57:11.506Z
       created_at: 2026-04-05T21:42:20.850Z
-      updated_at: 2026-04-05T21:56:27.680Z
+      updated_at: 2026-04-05T21:57:11.506Z
     workspace_id: dispatch-workspace-01KNFSGK6K184ZDPM7Y1J8MSZK
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
