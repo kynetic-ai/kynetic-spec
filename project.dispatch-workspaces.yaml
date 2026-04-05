@@ -38229,7 +38229,7 @@ workspaces:
         head: cb909e6edefa9de81d07fd46a6a25c2a5bb1dcd8
         last_seen_at: 2026-04-05T09:58:18.448Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-web-ui-build-prep-before-npm-test-01knefyk
-  - active_role: worker
+  - active_role: null
     base_branch_point: 5528165fcdb8749b84b5e254b4160f29ca4a9675
     bootstrap:
       status: succeeded
@@ -38313,12 +38313,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-05T21:50:17.040Z
+      updated_at: 2026-04-05T21:50:31.050Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-05T21:50:17.040Z
+      updated_at: 2026-04-05T21:50:31.050Z
     integration:
       status: pending
       detail: null
@@ -38326,17 +38326,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 5528165fcdb8749b84b5e254b4160f29ca4a9675
-      updated_at: 2026-04-05T21:50:17.040Z
-    lifecycle_state: active
+      updated_at: 2026-04-05T21:50:31.050Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KNFSGK6K184ZDPM7Y1J8MSZK"
     task_slug: stabilize-flaky-cli-daemon-proxy-cleanup-tests
     timestamps:
       closed_at: null
       last_active_at: 2026-04-05T21:42:26.217Z
-      last_reconciled_at: 2026-04-05T21:50:17.040Z
+      last_reconciled_at: 2026-04-05T21:50:31.050Z
       created_at: 2026-04-05T21:42:20.850Z
-      updated_at: 2026-04-05T21:50:17.040Z
+      updated_at: 2026-04-05T21:50:31.050Z
     workspace_id: dispatch-workspace-01KNFSGK6K184ZDPM7Y1J8MSZK
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
