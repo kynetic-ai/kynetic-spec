@@ -110,10 +110,16 @@ describe("daemon build pipeline", () => {
   beforeEach(async () => {
     tempDir = await setupTempFixtures();
     initGitRepo(tempDir);
-    fs.mkdirSync(path.join(tempDir, "test-web-ui"), { recursive: true });
+    fs.mkdirSync(path.join(tempDir, "test-web-ui", "_app", "immutable", "entry"), {
+      recursive: true,
+    });
     fs.writeFileSync(
       path.join(tempDir, "test-web-ui", "index.html"),
-      "<!doctype html><html><body>runtime-ui</body></html>",
+      '<!doctype html><html><body>runtime-ui<script type="module" src="/_app/immutable/entry/start.js"></script></body></html>',
+    );
+    fs.writeFileSync(
+      path.join(tempDir, "test-web-ui", "_app", "immutable", "entry", "start.js"),
+      'console.log("runtime-ui");\n',
     );
   });
 
@@ -180,6 +186,10 @@ describe("daemon build pipeline", () => {
       expect(spaResponse.status).toBe(200);
       expect(spaResponse.headers.get("content-type")).toContain("text/html");
       expect(await spaResponse.text()).toContain("runtime-ui");
+      const assetResponse = await fetch(`http://localhost:${port}/_app/immutable/entry/start.js`);
+      expect(assetResponse.status).toBe(200);
+      expect(assetResponse.headers.get("content-type")).toContain("javascript");
+      expect(await assetResponse.text()).toContain('console.log("runtime-ui")');
       await stopDaemon(child);
       child = null;
     }

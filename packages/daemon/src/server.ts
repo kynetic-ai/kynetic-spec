@@ -11,7 +11,7 @@ import { staticPlugin } from "@elysiajs/static";
 import { ulid } from "ulidx";
 import { existsSync, readFileSync } from "fs";
 import { fileURLToPath } from "url";
-import { dirname } from "path";
+import { dirname, extname, join, resolve } from "path";
 import { PubSubManager } from "./websocket/pubsub.js";
 import { HeartbeatManager } from "./websocket/heartbeat.js";
 import { WebSocketHandler } from "./websocket/handler.js";
@@ -46,7 +46,6 @@ import { createReviewsRoutes } from "./routes/reviews.js";
 import { ShadowSyncScheduler } from "./shadow-sync.js";
 import { SessionSyncScheduler } from "./session-sync.js";
 import { WatcherHealthMonitor } from "./watcher-health-monitor.js";
-import { join } from "path";
 
 export type DaemonRuntime = "bun" | "node";
 
@@ -107,6 +106,43 @@ export function logHeartbeatDegradationWarning(runtime: DaemonRuntime): void {
 
 function hasWebUiIndex(dir: string | undefined): dir is string {
   return Boolean(dir && existsSync(join(dir, "index.html")));
+}
+
+const STATIC_ASSET_CONTENT_TYPES: Record<string, string> = {
+  ".css": "text/css; charset=utf-8",
+  ".html": "text/html; charset=utf-8",
+  ".js": "text/javascript; charset=utf-8",
+  ".json": "application/json; charset=utf-8",
+  ".map": "application/json; charset=utf-8",
+  ".png": "image/png",
+  ".svg": "image/svg+xml",
+  ".txt": "text/plain; charset=utf-8",
+  ".woff": "font/woff",
+  ".woff2": "font/woff2",
+};
+
+function getStaticAssetContentType(assetPath: string): string {
+  return STATIC_ASSET_CONTENT_TYPES[extname(assetPath).toLowerCase()] ?? "application/octet-stream";
+}
+
+function serveWebUiStaticAsset(webUiPath: string, requestPath: string): Response {
+  const webUiRoot = resolve(webUiPath);
+  const relativePath = requestPath.startsWith("/") ? requestPath.slice(1) : requestPath;
+  const assetPath = resolve(webUiRoot, relativePath);
+  if (assetPath !== webUiRoot && !assetPath.startsWith(`${webUiRoot}/`)) {
+    return new Response("Not found", { status: 404 });
+  }
+
+  if (!existsSync(assetPath)) {
+    return new Response("Not found", { status: 404 });
+  }
+
+  return new Response(readFileSync(assetPath), {
+    headers: {
+      "Cache-Control": "public, max-age=86400",
+      "Content-Type": getStaticAssetContentType(assetPath),
+    },
+  });
 }
 
 /**
@@ -592,14 +628,20 @@ export async function createServer(options: ServerOptions) {
     const indexHtmlPath = join(resolvedWebUiPath, "index.html");
     const indexHtml = readFileSync(indexHtmlPath);
 
-    // Serve static files from web UI build directory
-    app.use(
-      await staticPlugin({
-        assets: resolvedWebUiPath,
-        prefix: "/",
-        noCache: process.env.NODE_ENV === "development", // Disable cache in dev
-      }),
-    );
+    if (runtime === "node") {
+      app.get("/_app/*", ({ request }) =>
+        serveWebUiStaticAsset(resolvedWebUiPath, new URL(request.url).pathname),
+      );
+    } else {
+      // Bun's static plugin serves the bundle with correct MIME metadata.
+      app.use(
+        await staticPlugin({
+          assets: resolvedWebUiPath,
+          prefix: "/",
+          noCache: process.env.NODE_ENV === "development", // Disable cache in dev
+        }),
+      );
+    }
 
     // SPA fallback routes for client-side routing
     // These catch paths like /tasks, /items, /inbox that don't have static files
