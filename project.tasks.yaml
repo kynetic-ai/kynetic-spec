@@ -25133,7 +25133,7 @@
   type: task
   spec_ref: "@daemon-runtime-adapter"
   plan_ref: "@plan-configurable-daemon-runtime"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-elysia-node-adapter"
@@ -25146,7 +25146,7 @@
   notes_count: 3
   todos_count: 0
   created_at: 2026-04-05T05:25:54.228Z
-  started_at: 2026-04-05T08:31:46.754Z
+  started_at: 2026-04-05T09:02:07.750Z
   submitted_at: 2026-04-05T08:50:41.984Z
   automation: eligible
 - _ulid: 01KNE1NM5ZEA6RPA7XN1R8ZPEA
