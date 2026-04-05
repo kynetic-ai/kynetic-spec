@@ -118793,6 +118793,12 @@ reviews:
         payload:
           thread_ulid: 01KNFCW84Z70FNX1TNM7VTWGCD
         timestamp: 2026-04-05T18:05:33.173Z
+      - _ulid: 01KNFD4Q0H5TQ27X3A3AH1ZYP7
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNFCW84Z70FNX1TNM7VTWGCD
+        timestamp: 2026-04-05T18:05:37.681Z
     examined_commit: 22af770c61b5290932226337447042c356ba75b8
     external_links: []
     lifecycle_state: closed
@@ -119107,6 +119113,14 @@ reviews:
               ac-http-parity, and the new tests miss it because they only cover /_app/... assets and
               SPA routes.
             created_at: 2026-04-05T18:01:00.320Z
+          - _ulid: 01KNFD4P7RN8DEG0NY87SKKPQ2
+            author: "@claude"
+            body: "Fixed in fc43f60c7: the node-specific static serving path now handles dotted top-level web UI
+              asset requests (for example /favicon.ico and the PNG favicon variants) in addition to
+              /_app/*, so node matches bun for the root assets referenced by the built layout. I
+              also extended tests/daemon-build.test.ts to prove those assets return 200 under both
+              runtimes."
+            created_at: 2026-04-05T18:05:36.888Z
         kind: blocker
         resolved_at: 2026-04-05T18:05:32.383Z
         resolved_by: "@claude"
@@ -119119,5 +119133,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-05T18:01:14.511Z
     created_at: 2026-04-05T18:00:07.994Z
-    updated_at: 2026-04-05T18:05:32.383Z
+    updated_at: 2026-04-05T18:05:36.888Z
     notes: []
