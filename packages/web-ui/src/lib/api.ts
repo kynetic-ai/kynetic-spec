@@ -2368,6 +2368,7 @@ export interface HealthResponse {
   uptime: number;
   connections: number;
   version: string;
+  runtime: string;
 }
 
 /**
@@ -2400,7 +2401,7 @@ export interface ShadowStatusResponse {
  */
 export async function fetchHealth(): Promise<HealthResponse> {
   if (isStaticMode()) {
-    return { status: "static", uptime: 0, connections: 0, version: "" };
+    return { status: "static", uptime: 0, connections: 0, version: "", runtime: "static" };
   }
   const response = await fetch(`${API_BASE}/api/health`);
   if (!response.ok) {

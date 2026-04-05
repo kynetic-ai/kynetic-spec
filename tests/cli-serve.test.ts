@@ -654,8 +654,9 @@ describe("kspec serve commands", () => {
       const healthResponse = await fetch(`http://localhost:${port}/api/health`);
       // oxlint-disable-next-line jest/valid-expect -- vitest supports custom message as 2nd arg
       expect(healthResponse.ok, "daemon health endpoint should respond").toBe(true);
-      const healthBody = await healthResponse.json();
+      const healthBody = (await healthResponse.json()) as { status: string; runtime: string };
       expect(healthBody).toHaveProperty("status", "ok");
+      expect(healthBody).toHaveProperty("runtime", "bun");
 
       // Cleanup: stop the daemon
       try {

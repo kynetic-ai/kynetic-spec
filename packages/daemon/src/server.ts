@@ -391,6 +391,7 @@ export async function createServer(options: ServerOptions) {
       uptime: process.uptime(),
       connections: pubsubManager.getConnectionCount(),
       version: "0.1.0",
+      runtime,
     }))
 
     // AC: @api-contract ac-2 through ac-7 - Task API endpoints
