@@ -115914,6 +115914,13 @@ reviews:
           kind: nit
           thread_ulid: 01KNDH0AHAEP2PB7R75BJTD0DG
         timestamp: 2026-04-05T00:34:40.046Z
+      - _ulid: 01KNDH0G0BYAKWQ3AW0P0HDVPP
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KNDH0F8NYCKHRYFSC9GDXADW
+        timestamp: 2026-04-05T00:34:44.875Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -115972,7 +115979,25 @@ reviews:
               description implies but does not explicitly call out."
             created_at: 2026-04-05T00:34:39.275Z
         kind: nit
+      - _ulid: 01KNDH0F8NYCKHRYFSC9GDXADW
+        anchor:
+          type: structured
+          ref: "@task-elysia-node-adapter"
+          section: tasks
+        entries:
+          - _ulid: 01KNDH0F8NFZH2KKMBBJC5ESAE
+            author: "@claude"
+            body: Step 3 proposes readFileSync for the Bun.file() replacement — reads once at startup and serves
+              from memory. This works for the index.html SPA fallback but note that the current
+              Bun.file() call is inside the route handler (line 571), meaning it reads on every
+              request (benefiting from Bun's file caching). The readFileSync-at-startup approach is
+              actually better (consistent memory behavior), but the task should note that this
+              changes the caching behavior — if index.html is updated while the daemon runs, the old
+              version is served until restart. This is likely acceptable since the web UI build is a
+              deploy-time artifact, but worth documenting.
+            created_at: 2026-04-05T00:34:44.117Z
+        kind: question
     verdicts: []
     created_at: 2026-04-05T00:33:27.406Z
-    updated_at: 2026-04-05T00:34:39.275Z
+    updated_at: 2026-04-05T00:34:44.117Z
     notes: []
