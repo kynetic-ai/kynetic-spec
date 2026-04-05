@@ -118337,6 +118337,13 @@ reviews:
           status: pass
           name: node watcher e2e
         timestamp: 2026-04-05T09:55:02.806Z
+      - _ulid: 01KNEH3HYM2JKCY3SP8XH29HRX
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNEH3H38Y555X6DEJECK9RSM
+        timestamp: 2026-04-05T09:55:39.605Z
     examined_commit: 2dcb662b95ad4a3b36fa2e9717c1d464d99f7ce7
     external_links: []
     lifecycle_state: open
@@ -118346,8 +118353,31 @@ reviews:
       content_hash: ""
       ref: "@01KNE1NMR6HFEVDHMWDH0PGTWH"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNEH3H38Y555X6DEJECK9RSM
+        entries:
+          - _ulid: 01KNEH3H39DTXHYKY038EVG8PV
+            author: Jacob Chapel
+            body: 'Evidence log: Files read: packages/daemon/src/server.ts,
+              packages/daemon/src/websocket/context-id.ts, packages/daemon/src/websocket/handler.ts,
+              packages/daemon/src/websocket/lifecycle.ts, packages/daemon/src/websocket/pubsub.ts,
+              tests/daemon-websocket-handler.test.ts, tests/e2e/fixtures/test-base.ts,
+              tests/e2e/smoke.spec.ts, tests/e2e/api-websocket.spec.ts. Commands run: kspec task get
+              @01KNE1NMR6HFEVDHMWDH0PGTWH; kspec item get @daemon-runtime-adapter; kspec validate;
+              rg AC annotations in tests; npm test; npm test -- cli-daemon-proxy --fresh; npm run
+              build:e2e; KSPEC_TEST_RUNTIME=node npx playwright test tests/e2e/api-watcher.spec.ts
+              -g "broadcasts files:updates when a YAML file in .kspec is modified";
+              KSPEC_TEST_RUNTIME=node ./node_modules/.bin/playwright test
+              tests/e2e/api-websocket.spec.ts -g "shows connected status in the sidebar when the
+              daemon-backed UI loads"; same cli-daemon-proxy and api-websocket commands on base
+              worktree @5346456fa7d296dd63ece3804ccf6a0d92350463. Claims verified: node watcher path
+              works on this snapshot; the reported remaining node UI issue is reproducible; the
+              full-suite cli-daemon-proxy ENOTEMPTY failure is flaky because the targeted rerun
+              passes on both snapshot and base. Categories searched: correctness, regression, AC
+              coverage, test quality, runtime-specific integration, error handling.'
+            created_at: 2026-04-05T09:55:38.729Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-05T09:48:15.937Z
-    updated_at: 2026-04-05T09:55:01.527Z
+    updated_at: 2026-04-05T09:55:38.729Z
     notes: []
