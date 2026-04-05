@@ -25157,7 +25157,7 @@
   type: task
   spec_ref: "@daemon-runtime-adapter"
   plan_ref: "@plan-configurable-daemon-runtime"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-ws-connection-state-abstraction"
@@ -25173,6 +25173,7 @@
   created_at: 2026-04-05T05:25:54.495Z
   started_at: 2026-04-05T08:53:02.120Z
   submitted_at: 2026-04-05T08:59:51.073Z
+  completed_at: 2026-04-05T09:18:49.383Z
   automation: eligible
 - _ulid: 01KNE1NMEJBSECT0S53TCF1CB9
   slugs:

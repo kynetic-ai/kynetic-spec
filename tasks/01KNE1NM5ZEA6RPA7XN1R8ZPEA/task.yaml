@@ -76,8 +76,11 @@ description: |
 spec_ref: "@daemon-runtime-adapter"
 plan_ref: "@plan-configurable-daemon-runtime"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved and merged into plan/plan-configurable-daemon-runtime/01kndgvz at 5346456fa.
+  Verified node runtime heartbeat degrades safely when ping/pong APIs are unavailable, startup logs
+  the degradation warning, and buffered-amount fallback remains safe.
 depends_on:
   - "@task-ws-connection-state-abstraction"
   - "@task-elysia-node-adapter"
@@ -146,8 +149,24 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-05T09:02:28.299Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved and merged into plan/plan-configurable-daemon-runtime/01kndgvz at 5346456fa. Verified
+          node runtime heartbeat degrades safely when ping/pong APIs are unavailable, startup logs
+          the degradation warning, and buffered-amount fallback remains safe.
+        previous: null
+      completed_at:
+        new: 2026-04-05T09:18:49.383Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-05T09:18:49.392Z
 created_at: 2026-04-05T05:25:54.495Z
 started_at: 2026-04-05T08:53:02.120Z
 submitted_at: 2026-04-05T08:59:51.073Z
+completed_at: 2026-04-05T09:18:49.383Z
 todos: []
 automation: eligible
