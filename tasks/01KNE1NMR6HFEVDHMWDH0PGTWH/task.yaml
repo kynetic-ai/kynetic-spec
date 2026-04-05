@@ -42,8 +42,12 @@ description: |
 spec_ref: "@daemon-runtime-adapter"
 plan_ref: "@plan-configurable-daemon-runtime"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to plan/plan-configurable-daemon-runtime/01kndgvz after approved review.
+  Verified node runtime E2E fixture selection, node HTTP/WebSocket parity checks, runtime health
+  reporting, and node static asset serving for /_app plus root-level favicon assets. Follow-up flaky
+  cleanup coverage tracked in @01KNFSGK6K184ZDPM7Y1J8MSZK.
 depends_on:
   - "@task-daemon-spawn-runtime"
   - "@task-ws-degradation-node"
@@ -226,8 +230,25 @@ history:
         previous: "@01KNFCTN1T4G22338CTA19MFZ2"
     command: review-link
     timestamp: 2026-04-05T18:08:10.619Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to plan/plan-configurable-daemon-runtime/01kndgvz after approved review. Verified node
+          runtime E2E fixture selection, node HTTP/WebSocket parity checks, runtime health
+          reporting, and node static asset serving for /_app plus root-level favicon assets.
+          Follow-up flaky cleanup coverage tracked in @01KNFSGK6K184ZDPM7Y1J8MSZK.
+        previous: null
+      completed_at:
+        new: 2026-04-05T21:43:18.408Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-05T21:43:18.417Z
 created_at: 2026-04-05T05:25:55.078Z
 started_at: 2026-04-05T18:03:36.091Z
 submitted_at: 2026-04-05T18:05:34.430Z
+completed_at: 2026-04-05T21:43:18.408Z
 todos: []
 automation: eligible
