@@ -117442,6 +117442,12 @@ reviews:
         payload:
           thread_ulid: 01KNEB32EDQC4VD7W26GKJY79F
         timestamp: 2026-04-05T08:21:15.385Z
+      - _ulid: 01KNEBPRVXJG18DW6R4MVDHHH2
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNEB3064FKE85SGEN2ZY00XH
+        timestamp: 2026-04-05T08:21:17.821Z
     examined_commit: 1481fb7b89bf57138df6ba96e4537dbda6361cfd
     external_links: []
     lifecycle_state: closed
@@ -117470,6 +117476,13 @@ reviews:
               means the new adapter wiring can only be exercised by manually setting , not via the
               normal startup path this feature is meant to enable.
             created_at: 2026-04-05T08:10:29.956Z
+          - _ulid: 01KNEBPR0X7MY026FKK470C84X
+            author: Jacob Chapel
+            body: "Fixed in 083fa6b5e: serve start now resolves daemon.runtime from the project behind
+              --kspec-dir, only requires Bun when runtime=bun, and launches node with
+              process.execPath so configured node projects start through the normal CLI entrypoint
+              even when Bun is absent from PATH."
+            created_at: 2026-04-05T08:21:16.957Z
         kind: blocker
       - _ulid: 01KNEB32EDQC4VD7W26GKJY79F
         entries:
@@ -117550,5 +117563,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-05T08:10:56.178Z
     created_at: 2026-04-05T08:05:51.026Z
-    updated_at: 2026-04-05T08:21:14.564Z
+    updated_at: 2026-04-05T08:21:16.957Z
     notes: []
