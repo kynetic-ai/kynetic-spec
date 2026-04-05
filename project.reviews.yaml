@@ -115702,7 +115702,18 @@ reviews:
     slugs: []
     title: "Plan review: Configurable Daemon Runtime (re-review)"
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: New task task-ws-connection-state-abstraction introduces WeakMap-based
+          ConnectionStateManager. Covers all ~20 ws.data call sites across 5 files. New
+          ac-connection-state added to spec. Resolved.
+        name: "Blocker 1: ws.data per-connection state"
+        required: true
+        created_at: 2026-04-05T00:33:37.876Z
+        completed_at: 2026-04-05T00:33:37.876Z
     events:
       - _ulid: 01KNDGY4BEVWK68BV5880QX9NN
         actor: "@claude"
@@ -115710,6 +115721,13 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-04-05T00:33:27.406Z
+      - _ulid: 01KNDGYFA4ZE9CW3GMD3KSB7NF
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: "Blocker 1: ws.data per-connection state"
+        timestamp: 2026-04-05T00:33:38.628Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -115722,5 +115740,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-05T00:33:27.406Z
-    updated_at: null
+    updated_at: 2026-04-05T00:33:37.876Z
     notes: []
