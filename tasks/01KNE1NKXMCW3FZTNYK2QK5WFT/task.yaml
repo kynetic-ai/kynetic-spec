@@ -57,8 +57,11 @@ description: |
 spec_ref: "@daemon-runtime-adapter"
 plan_ref: "@plan-configurable-daemon-runtime"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved and merged dispatch/task/task-daemon-spawn-runtime/01kne1nk into
+  plan/plan-configurable-daemon-runtime/01kndgvz after runtime-specific review. Verified with npm
+  test and targeted daemon runtime tests; no blocking findings remained.
 depends_on:
   - "@task-elysia-node-adapter"
 context: []
@@ -183,8 +186,24 @@ history:
         previous: "@01KNEDH0CMPCMNVFDBNFMFMJ9E"
     command: review-link
     timestamp: 2026-04-05T09:15:14.458Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved and merged dispatch/task/task-daemon-spawn-runtime/01kne1nk into
+          plan/plan-configurable-daemon-runtime/01kndgvz after runtime-specific review. Verified
+          with npm test and targeted daemon runtime tests; no blocking findings remained.
+        previous: null
+      completed_at:
+        new: 2026-04-05T09:16:42.084Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-05T09:16:42.092Z
 created_at: 2026-04-05T05:25:54.228Z
 started_at: 2026-04-05T09:02:07.750Z
 submitted_at: 2026-04-05T09:09:49.689Z
+completed_at: 2026-04-05T09:16:42.084Z
 todos: []
 automation: eligible
