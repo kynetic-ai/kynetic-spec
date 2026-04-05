@@ -119279,7 +119279,18 @@ reviews:
     slugs: []
     title: Review @01KNFSGK6K184ZDPM7Y1J8MSZK
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Exit code 6 with pre-existing project warnings only; no new validation errors introduced
+          by this task.
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-04-05T21:54:58.411Z
+        completed_at: 2026-04-05T21:54:58.411Z
     events:
       - _ulid: 01KNFT1GT7VCX9ZAJBWWETKMD8
         actor: Jacob Chapel
@@ -119301,6 +119312,13 @@ reviews:
           kind: nit
           thread_ulid: 01KNFT8JGG3ZAWW2BFRWEQ89JB
         timestamp: 2026-04-05T21:54:56.709Z
+      - _ulid: 01KNFT8P5WCVCNZV3Y7PQE3EA9
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-05T21:54:59.388Z
     examined_commit: 5b9d657237383d5e14a231b6a67a95bf113e5ebc
     external_links: []
     lifecycle_state: open
@@ -119329,7 +119347,7 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-05T21:51:04.520Z
-    updated_at: 2026-04-05T21:54:55.632Z
+    updated_at: 2026-04-05T21:54:58.411Z
     notes: []
   - _ulid: 01KNFT7R2AVD0PF0NH14294WM5
     slugs: []
