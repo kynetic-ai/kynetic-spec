@@ -172,6 +172,10 @@ describe("daemon build pipeline", () => {
 
       const response = await fetch(`http://localhost:${port}/api/health`);
       expect(response.status).toBe(200);
+      const healthBody = (await response.json()) as { runtime: string; status: string };
+      expect(healthBody.status).toBe("ok");
+      // AC: @daemon-runtime-adapter ac-runtime-health
+      expect(healthBody.runtime).toBe(runtime.command);
       const spaResponse = await fetch(`http://localhost:${port}/tasks`);
       expect(spaResponse.status).toBe(200);
       expect(spaResponse.headers.get("content-type")).toContain("text/html");
