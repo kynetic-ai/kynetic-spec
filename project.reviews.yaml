@@ -117009,6 +117009,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-04-05T07:40:30.952Z
+      - _ulid: 01KNE9CTADWSHG0K6H4FJ3XRJ7
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNE9CSJF6GQCW2EV2VFW2DGZ
+        timestamp: 2026-04-05T07:40:54.477Z
     examined_commit: 778b1b6e671dc0279b83d97486aaf27e574257df
     external_links: []
     lifecycle_state: open
@@ -117038,7 +117045,32 @@ reviews:
               base 671ee155dab31adf5d842d0f482e72d24725e772 now fail with zero messages delivered."
             created_at: 2026-04-05T07:40:25.560Z
         kind: blocker
+      - _ulid: 01KNE9CSJF6GQCW2EV2VFW2DGZ
+        entries:
+          - _ulid: 01KNE9CSJFYJSHAG88XB6S4Y4G
+            author: Jacob Chapel
+            body: "Review evidence log\\nFiles read: packages/daemon/src/server.ts;
+              packages/daemon/src/websocket/connection-state.ts;
+              packages/daemon/src/websocket/handler.ts; packages/daemon/src/websocket/heartbeat.ts;
+              packages/daemon/src/websocket/lifecycle.ts; packages/daemon/src/websocket/pubsub.ts;
+              packages/daemon/src/websocket/types.ts; tests/daemon-connection-state.test.ts;
+              tests/daemon-heartbeat.test.ts; tests/daemon-pubsub.test.ts;
+              tests/daemon-websocket-close.test.ts; tests/daemon-websocket-handler.test.ts;
+              tests/daemon-entity-cache.test.ts; tests/daemon-api/helpers.ts;
+              tests/daemon-command-api.test.ts; tests/daemon-read-path.test.ts. Commands run: kspec
+              task get @01KNE1NKCZ1YBCJCTE55N0V2TM; kspec item get @daemon-runtime-adapter; kspec
+              validate; git diff 671ee155...778b1b6e; npm test -- touched daemon websocket tests;
+              npm test -- tests/daemon-entity-cache.test.ts; npm test (twice via awaiter); npm test
+              -- tests/daemon-entity-cache.test.ts on base 671ee155 via temporary worktree. Claims
+              verified: the refactor removes daemon-owned per-connection state from ws.data for the
+              server path, but existing PubSubManager callers outside server still rely on
+              ws.data-backed sockets; verified by reproducing broadcast regressions on head and
+              confirming the same focused suite passes on base. Categories searched: correctness,
+              integration, lifecycle cleanup, edge cases around wrapper sockets and missing
+              connection state, test quality/AC annotations."
+            created_at: 2026-04-05T07:40:53.711Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-05T07:36:09.297Z
-    updated_at: 2026-04-05T07:40:30.162Z
+    updated_at: 2026-04-05T07:40:53.711Z
     notes: []
