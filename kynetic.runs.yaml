@@ -22753,7 +22753,7 @@ runs:
     started_at: 2026-04-05T06:18:39.199Z
     completed_at: 2026-04-05T06:19:37.990Z
   - _ulid: 01KNE53PQ8P1Y1JDCSP1AHXHQM
-    status: active
+    status: completed
     current_step: 3
     initiated_by: Jacob Chapel
     step_results:
@@ -22783,7 +22783,11 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-05T06:26:50.994Z
-        completed_at: 2026-04-05T06:26:50.994Z
+        completed_at: 2026-04-05T06:26:56.527Z
+        notes: Captured one friction observation about detached reviewer snapshots obscuring task-local
+          diffs and one success observation about cached second test runs making review verification
+          cheap.
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-05T06:26:01.577Z
+    completed_at: 2026-04-05T06:26:56.527Z
