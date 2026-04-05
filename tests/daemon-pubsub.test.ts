@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
+import { ConnectionStateManager } from "../packages/daemon/src/websocket/connection-state";
 import { PubSubManager } from "../packages/daemon/src/websocket/pubsub";
-import type { ServerWebSocket } from "bun";
-import type { ConnectionData } from "../packages/daemon/src/websocket/types";
+import type { ConnectionData, WebSocketConnection } from "../packages/daemon/src/websocket/types";
 import type {
   TaskUpdatedEventData,
   InboxItemCreatedEventData,
@@ -11,9 +11,11 @@ import type {
 
 describe("PubSubManager", () => {
   let manager: PubSubManager;
+  let connectionState: ConnectionStateManager;
 
   beforeEach(() => {
-    manager = new PubSubManager();
+    connectionState = new ConnectionStateManager();
+    manager = new PubSubManager(connectionState);
   });
 
   describe("Broadcast Filtering", () => {
@@ -23,9 +25,9 @@ describe("PubSubManager", () => {
       const projectB = "/tmp/project-b";
 
       // Mock WebSocket connections
-      const wsA1 = createMockWebSocket("conn-a1", projectA, ["tasks:updates"]);
-      const wsA2 = createMockWebSocket("conn-a2", projectA, ["tasks:updates"]);
-      const wsB1 = createMockWebSocket("conn-b1", projectB, ["tasks:updates"]);
+      const wsA1 = createMockWebSocket(connectionState, "conn-a1", projectA, ["tasks:updates"]);
+      const wsA2 = createMockWebSocket(connectionState, "conn-a2", projectA, ["tasks:updates"]);
+      const wsB1 = createMockWebSocket(connectionState, "conn-b1", projectB, ["tasks:updates"]);
 
       manager.addConnection("conn-a1", wsA1);
       manager.addConnection("conn-a2", wsA2);
@@ -45,8 +47,8 @@ describe("PubSubManager", () => {
       const projectA = "/tmp/project-a";
       const projectB = "/tmp/project-b";
 
-      const wsA = createMockWebSocket("conn-a", projectA, ["tasks:updates"]);
-      const wsB = createMockWebSocket("conn-b", projectB, ["tasks:updates"]);
+      const wsA = createMockWebSocket(connectionState, "conn-a", projectA, ["tasks:updates"]);
+      const wsB = createMockWebSocket(connectionState, "conn-b", projectB, ["tasks:updates"]);
 
       manager.addConnection("conn-a", wsA);
       manager.addConnection("conn-b", wsB);
@@ -64,8 +66,8 @@ describe("PubSubManager", () => {
       const projectA = "/tmp/project-a";
       const projectB = "/tmp/project-b";
 
-      const wsA = createMockWebSocket("conn-a", projectA, ["tasks:updates"]);
-      const wsB = createMockWebSocket("conn-b", projectB, ["tasks:updates"]);
+      const wsA = createMockWebSocket(connectionState, "conn-a", projectA, ["tasks:updates"]);
+      const wsB = createMockWebSocket(connectionState, "conn-b", projectB, ["tasks:updates"]);
 
       manager.addConnection("conn-a", wsA);
       manager.addConnection("conn-b", wsB);
@@ -81,8 +83,8 @@ describe("PubSubManager", () => {
     it("should respect topic subscription filtering alongside project filtering", () => {
       const projectA = "/tmp/project-a";
 
-      const ws1 = createMockWebSocket("conn-1", projectA, ["tasks:updates"]);
-      const ws2 = createMockWebSocket("conn-2", projectA, ["inbox:updates"]);
+      const ws1 = createMockWebSocket(connectionState, "conn-1", projectA, ["tasks:updates"]);
+      const ws2 = createMockWebSocket(connectionState, "conn-2", projectA, ["inbox:updates"]);
 
       manager.addConnection("conn-1", ws1);
       manager.addConnection("conn-2", ws2);
@@ -98,8 +100,8 @@ describe("PubSubManager", () => {
     it("should handle connections with no projectPath (pre-multi-project)", () => {
       const projectA = "/tmp/project-a";
 
-      const wsLegacy = createMockWebSocket("conn-legacy", undefined, ["tasks:updates"]);
-      const wsNew = createMockWebSocket("conn-new", projectA, ["tasks:updates"]);
+      const wsLegacy = createMockWebSocket(connectionState, "conn-legacy", undefined, ["tasks:updates"]);
+      const wsNew = createMockWebSocket(connectionState, "conn-new", projectA, ["tasks:updates"]);
 
       manager.addConnection("conn-legacy", wsLegacy);
       manager.addConnection("conn-new", wsNew);
@@ -114,7 +116,7 @@ describe("PubSubManager", () => {
 
     it("should include correct message structure with sequence and metadata", () => {
       const projectA = "/tmp/project-a";
-      const ws = createMockWebSocket("conn-1", projectA, ["tasks:updates"]);
+      const ws = createMockWebSocket(connectionState, "conn-1", projectA, ["tasks:updates"]);
 
       manager.addConnection("conn-1", ws);
 
@@ -140,7 +142,7 @@ describe("PubSubManager", () => {
 
     it("should increment sequence number per connection", () => {
       const projectA = "/tmp/project-a";
-      const ws = createMockWebSocket("conn-1", projectA, ["tasks:updates"]);
+      const ws = createMockWebSocket(connectionState, "conn-1", projectA, ["tasks:updates"]);
 
       manager.addConnection("conn-1", ws);
 
@@ -162,7 +164,7 @@ describe("PubSubManager", () => {
   describe("Enriched Broadcast Payloads", () => {
     it("task_updated payload includes title and old/new status for state transitions", () => {
       const projectA = "/tmp/project-a";
-      const ws = createMockWebSocket("conn-1", projectA, ["tasks:updates"]);
+      const ws = createMockWebSocket(connectionState, "conn-1", projectA, ["tasks:updates"]);
       manager.addConnection("conn-1", ws);
 
       const payload: TaskUpdatedEventData = {
@@ -191,7 +193,7 @@ describe("PubSubManager", () => {
 
     it("task_updated note_added payload has null old/new status", () => {
       const projectA = "/tmp/project-a";
-      const ws = createMockWebSocket("conn-1", projectA, ["tasks:updates"]);
+      const ws = createMockWebSocket(connectionState, "conn-1", projectA, ["tasks:updates"]);
       manager.addConnection("conn-1", ws);
 
       const payload: TaskUpdatedEventData = {
@@ -215,7 +217,7 @@ describe("PubSubManager", () => {
 
     it("inbox_item_created payload includes full item data", () => {
       const projectA = "/tmp/project-a";
-      const ws = createMockWebSocket("conn-1", projectA, ["inbox:updates"]);
+      const ws = createMockWebSocket(connectionState, "conn-1", projectA, ["inbox:updates"]);
       manager.addConnection("conn-1", ws);
 
       const payload: InboxItemCreatedEventData = {
@@ -240,7 +242,7 @@ describe("PubSubManager", () => {
 
     it("agent_invocation payload includes task_title", () => {
       const projectA = "/tmp/project-a";
-      const ws = createMockWebSocket("conn-1", projectA, ["agents"]);
+      const ws = createMockWebSocket(connectionState, "conn-1", projectA, ["agents"]);
       manager.addConnection("conn-1", ws);
 
       const payload: AgentInvocationEventData = {
@@ -261,7 +263,7 @@ describe("PubSubManager", () => {
 
     it("agent_invocation payload has null task_title when no task", () => {
       const projectA = "/tmp/project-a";
-      const ws = createMockWebSocket("conn-1", projectA, ["agents"]);
+      const ws = createMockWebSocket(connectionState, "conn-1", projectA, ["agents"]);
       manager.addConnection("conn-1", ws);
 
       const payload: AgentInvocationEventData = {
@@ -282,7 +284,7 @@ describe("PubSubManager", () => {
 
     it("message_progress payload includes task_title", () => {
       const projectA = "/tmp/project-a";
-      const ws = createMockWebSocket("conn-1", projectA, ["agents"]);
+      const ws = createMockWebSocket(connectionState, "conn-1", projectA, ["agents"]);
       manager.addConnection("conn-1", ws);
 
       const payload: MessageProgressEventData = {
@@ -306,8 +308,8 @@ describe("PubSubManager", () => {
   describe("Connection Management", () => {
     // AC: @ws-disconnect-lifecycle-cleanup ac-1
     it("should track connection count", () => {
-      const ws1 = createMockWebSocket("conn-1", "/tmp/project-a", []);
-      const ws2 = createMockWebSocket("conn-2", "/tmp/project-b", []);
+      const ws1 = createMockWebSocket(connectionState, "conn-1", "/tmp/project-a", []);
+      const ws2 = createMockWebSocket(connectionState, "conn-2", "/tmp/project-b", []);
 
       expect(manager.getConnectionCount()).toBe(0);
 
@@ -322,12 +324,12 @@ describe("PubSubManager", () => {
     });
 
     // AC: @ws-disconnect-lifecycle-cleanup ac-2
-    it("removes connection by socket using stable session mapping when ws.data loses sessionId", () => {
-      const ws = createMockWebSocket("conn-1", "/tmp/project-a", ["tasks:updates"]);
+    it("removes connection by socket using stable session mapping when connection state is missing", () => {
+      const ws = createMockWebSocket(connectionState, "conn-1", "/tmp/project-a", ["tasks:updates"]);
       manager.addConnection("conn-1", ws);
 
       // Simulate close callback race where data no longer has sessionId.
-      (ws.data as unknown as { sessionId?: string }).sessionId = undefined;
+      connectionState.remove(ws);
 
       const removedSessionId = manager.removeConnectionBySocket(ws);
 
@@ -337,13 +339,13 @@ describe("PubSubManager", () => {
     });
 
     it("resolves session id from internal subscription topic when close callback socket wrapper differs", () => {
-      const ws = createMockWebSocket("conn-1", "/tmp/project-a", ["tasks:updates"]);
+      const ws = createMockWebSocket(connectionState, "conn-1", "/tmp/project-a", ["tasks:updates"]);
       manager.addConnection("conn-1", ws);
 
       const closeSocketWrapper = {
         data: {},
         subscriptions: ["__kspec_session:conn-1"],
-      } as unknown as ServerWebSocket<ConnectionData>;
+      };
 
       const removedSessionId = manager.removeConnectionBySocket(closeSocketWrapper);
 
@@ -352,13 +354,13 @@ describe("PubSubManager", () => {
     });
 
     it("resolves session id from websocket context id when close callback loses data/subscriptions", () => {
-      const ws = createMockWebSocket("conn-1", "/tmp/project-a", ["tasks:updates"]);
+      const ws = createMockWebSocket(connectionState, "conn-1", "/tmp/project-a", ["tasks:updates"]);
       manager.addConnection("conn-1", ws, "ctx-1");
 
       const closeSocketWrapper = {
         data: {},
         subscriptions: [],
-      } as unknown as ServerWebSocket<ConnectionData>;
+      };
 
       const removedSessionId = manager.removeConnectionBySocket(closeSocketWrapper, "ctx-1");
 
@@ -367,7 +369,7 @@ describe("PubSubManager", () => {
     });
 
     it("should clean up connection when removed", () => {
-      const ws = createMockWebSocket("conn-1", "/tmp/project-a", ["tasks:updates"]);
+      const ws = createMockWebSocket(connectionState, "conn-1", "/tmp/project-a", ["tasks:updates"]);
 
       manager.addConnection("conn-1", ws);
       manager.broadcast("tasks:updates", "event1", {}, "/tmp/project-a");
@@ -382,12 +384,13 @@ describe("PubSubManager", () => {
   });
 });
 
-// Helper to create mock WebSocket with ConnectionData
+// Helper to create mock WebSocket with connection state
 function createMockWebSocket(
+  connectionState: ConnectionStateManager,
   sessionId: string,
   projectPath: string | undefined,
   topics: string[],
-): ServerWebSocket<ConnectionData> {
+): WebSocketConnection {
   const data: ConnectionData = {
     sessionId,
     topics: new Set(topics),
@@ -398,8 +401,7 @@ function createMockWebSocket(
   };
 
   const activeSubscriptions = new Set<string>();
-  const ws = {
-    data,
+  const ws: WebSocketConnection = {
     send: vi.fn(),
     close: vi.fn(),
     subscribe: vi.fn((topic: string) => {
@@ -411,8 +413,8 @@ function createMockWebSocket(
     get subscriptions() {
       return Array.from(activeSubscriptions);
     },
-    // Add minimal required ServerWebSocket properties
   };
 
-  return ws as unknown as ServerWebSocket<ConnectionData>;
+  connectionState.init(ws, data);
+  return ws;
 }
