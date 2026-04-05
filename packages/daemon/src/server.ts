@@ -17,6 +17,7 @@ import { HeartbeatManager } from "./websocket/heartbeat.js";
 import { WebSocketHandler } from "./websocket/handler.js";
 import { handleWebSocketClose } from "./websocket/lifecycle.js";
 import { ConnectionStateManager } from "./websocket/connection-state.js";
+import { getWebSocketContextId } from "./websocket/context-id.js";
 import { resolveWebSocketProject } from "./websocket/project-resolution.js";
 import type { ConnectionData, ConnectedEvent } from "./websocket/types.js";
 import { PidFileManager } from "./pid.js";
@@ -539,8 +540,8 @@ export async function createServer(options: ServerOptions) {
       open(ws) {
         // AC: @api-contract ac-25, @trait-websocket-protocol ac-1
         const sessionId = ulid();
-        const openContext = ws.data as { id?: unknown; request?: unknown } | undefined;
-        const contextId = typeof openContext?.id === "string" ? openContext.id : undefined;
+        const openContext = ws.data as { request?: unknown } | undefined;
+        const contextId = getWebSocketContextId(ws);
 
         // AC: @multi-directory-daemon ac-21 - Get bound project path
         // Retrieve project path from WeakMap via the request object on ws.data

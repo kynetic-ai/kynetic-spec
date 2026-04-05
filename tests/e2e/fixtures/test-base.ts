@@ -9,7 +9,9 @@ import { createServer } from "net";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Daemon entry point — spawned directly via bun to avoid CLI PID-file timeout
+type DaemonRuntime = "bun" | "node";
+
+// Daemon entry point — spawned directly to avoid CLI PID-file timeout
 const DAEMON_ENTRY = join(__dirname, "../../../dist/daemon/index.js");
 // CLI entry point — used for scoped `kspec serve stop` teardown (ac-4)
 const KSPEC_CLI = join(__dirname, "../../../dist/cli/index.js");
@@ -60,15 +62,43 @@ async function getAvailablePort(): Promise<number> {
   });
 }
 
-async function checkBunAvailable(): Promise<boolean> {
+function resolveTestRuntime(env: NodeJS.ProcessEnv = process.env): DaemonRuntime {
+  const runtime = env.KSPEC_TEST_RUNTIME ?? "bun";
+  if (runtime === "bun" || runtime === "node") {
+    return runtime;
+  }
+
+  throw new Error(`Invalid KSPEC_TEST_RUNTIME "${runtime}". Expected "bun" or "node".`);
+}
+
+async function checkRuntimeAvailable(runtime: DaemonRuntime): Promise<boolean> {
   try {
     // Use 'where' on Windows, 'which' on Unix
     const cmd = process.platform === "win32" ? "where" : "which";
-    execSync(`${cmd} bun`, { stdio: "ignore" });
+    execSync(`${cmd} ${runtime}`, { stdio: "ignore" });
     return true;
   } catch {
     return false;
   }
+}
+
+function getRuntimeInstallHint(runtime: DaemonRuntime): string {
+  if (runtime === "node") {
+    return "https://nodejs.org/en/download";
+  }
+
+  return process.platform === "win32"
+    ? 'powershell -c "irm bun.sh/install.ps1 | iex"'
+    : "curl -fsSL https://bun.sh/install | bash";
+}
+
+function buildDaemonChildEnv(runtime: DaemonRuntime, env: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
+  const { BUN_ENV: _bunEnv, NODE_ENV: _nodeEnv, ...childEnv } = env;
+  if (runtime === "node") {
+    return { ...childEnv, NODE_ENV: "production" };
+  }
+
+  return { ...childEnv, BUN_ENV: "production" };
 }
 
 export const test = base.extend<{ daemon: DaemonFixture }>({
@@ -80,10 +110,12 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
   daemon: [
     // oxlint-disable-next-line no-empty-pattern
     async ({}, use) => {
-      // Check Bun is available (daemon requires it)
-      if (!(await checkBunAvailable())) {
+      const runtime = resolveTestRuntime();
+
+      if (!(await checkRuntimeAvailable(runtime))) {
+        const runtimeName = runtime === "bun" ? "Bun" : "Node";
         throw new Error(
-          "Bun runtime required for daemon. Install: curl -fsSL https://bun.sh/install | bash",
+          `${runtimeName} runtime required for E2E daemon tests. Install: ${getRuntimeInstallHint(runtime)}`,
         );
       }
 
@@ -114,6 +146,7 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
         USERPROFILE: isolatedHome,
         WEB_UI_DIR: WEB_UI_BUILD,
         KSPEC_TEST: "1",
+        KSPEC_TEST_RUNTIME: runtime,
       };
 
       // Copy E2E test fixtures to .kspec subdirectory (simulating shadow worktree mode)
@@ -205,12 +238,12 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
 
         daemonStderr = "";
         daemonProcess = spawn(
-          "bun",
-          [DAEMON_ENTRY, "--port", String(port), "--kspec-dir", tempDir],
+          runtime,
+          [DAEMON_ENTRY, "--runtime", runtime, "--port", String(port), "--kspec-dir", tempDir],
           {
             cwd: tempDir,
             stdio: "pipe",
-            env: { ...isolatedEnv, BUN_ENV: "production" },
+            env: buildDaemonChildEnv(runtime, isolatedEnv),
           },
         );
 

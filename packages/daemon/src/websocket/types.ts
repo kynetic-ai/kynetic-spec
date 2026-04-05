@@ -59,6 +59,7 @@ export interface ConnectionData {
 }
 
 export interface WebSocketConnection {
+  id?: string;
   data?: unknown;
   subscriptions?: string[];
   send(data: string): unknown;
