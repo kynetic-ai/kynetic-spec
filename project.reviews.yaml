@@ -117386,6 +117386,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-04-05T08:10:13.309Z
+      - _ulid: 01KNEB30Y7SYBJ4NHD24XAGFJK
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNEB3064FKE85SGEN2ZY00XH
+        timestamp: 2026-04-05T08:10:30.727Z
     examined_commit: 1481fb7b89bf57138df6ba96e4537dbda6361cfd
     external_links: []
     lifecycle_state: open
@@ -117395,8 +117402,27 @@ reviews:
       content_hash: ""
       ref: "@01KNE1NKN6KPZD6YT997NW0D93"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNEB3064FKE85SGEN2ZY00XH
+        anchor:
+          type: code
+          commit: 1481fb7b89bf57138df6ba96e4537dbda6361cfd
+          line_end: 326
+          line_start: 292
+          path: src/cli/commands/serve.ts
+          side: head
+        entries:
+          - _ulid: 01KNEB3064E3JNXSNGGQ20EMEW
+            author: Jacob Chapel
+            body: Configured Node runtime is still unreachable through the supported CLI entrypoint.  checks for
+              Bun unconditionally and then hardcodes , so a project with  still fails unless Bun is
+              installed. I reproduced this against the built CLI with a temp project containing  set
+              to ; running  with Bun removed from  returned  instead of starting under Node. That
+              means the new adapter wiring can only be exercised by manually setting , not via the
+              normal startup path this feature is meant to enable.
+            created_at: 2026-04-05T08:10:29.956Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-05T08:05:51.026Z
-    updated_at: 2026-04-05T08:10:12.473Z
+    updated_at: 2026-04-05T08:10:29.956Z
     notes: []
