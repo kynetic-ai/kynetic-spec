@@ -36280,6 +36280,7 @@ plans:
       Phase 8 (health) and Phase 9 (E2E) are lower priority follow-ups.
     status: approved
     approved_at: 2026-04-05T05:25:34.604Z
+    branch: plan/plan-configurable-daemon-runtime/01kndgvz
     derived_specs: []
     derived_tasks: []
     module_ref: null
