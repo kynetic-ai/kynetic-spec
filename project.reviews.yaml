@@ -117993,9 +117993,25 @@ reviews:
           status: pass
           name: full-suite
         timestamp: 2026-04-05T09:17:07.941Z
+      - _ulid: 01KNEEX8T42YX624NRYEBB849K
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-04-05T09:17:16.484Z
+      - _ulid: 01KNEEX8T4HE9EF7WGPS72PMSK
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-05T09:17:16.484Z
     examined_commit: 1140ea628b9f50f4fc06c09a344ccbbd8513c9ae
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -118003,9 +118019,16 @@ reviews:
       ref: "@01KNE1NM5ZEA6RPA7XN1R8ZPEA"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-05T09:17:16.484Z
     created_at: 2026-04-05T09:02:25.849Z
-    updated_at: 2026-04-05T09:17:07.124Z
+    updated_at: 2026-04-05T09:17:16.484Z
     notes: []
   - _ulid: 01KNEESF0MS8K5BPGM1AASAJ3M
     slugs: []
