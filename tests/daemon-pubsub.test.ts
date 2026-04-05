@@ -306,6 +306,32 @@ describe("PubSubManager", () => {
   });
 
   describe("Connection Management", () => {
+    // AC: @daemon-runtime-adapter ac-connection-state
+    // AC: @daemon-runtime-adapter ac-websocket-parity
+    it("hydrates managed connection state from legacy websocket data during registration", () => {
+      const legacyData: ConnectionData = {
+        sessionId: "legacy-conn",
+        topics: new Set(["tasks:updates"]),
+        seq: 0,
+        lastPing: undefined,
+        lastPong: Date.now(),
+        projectPath: "/tmp/project-a",
+      };
+      const ws: WebSocketConnection = {
+        data: legacyData,
+        send: vi.fn(),
+        close: vi.fn(),
+        subscribe: vi.fn(),
+        unsubscribe: vi.fn(),
+      };
+
+      manager.addConnection("legacy-conn", ws);
+      manager.broadcast("tasks:updates", "task_updated", { ref: "task-1" }, "/tmp/project-a");
+
+      expect(manager.getConnectionState(ws)).toBe(legacyData);
+      expect(ws.send).toHaveBeenCalledOnce();
+    });
+
     // AC: @ws-disconnect-lifecycle-cleanup ac-1
     it("should track connection count", () => {
       const ws1 = createMockWebSocket(connectionState, "conn-1", "/tmp/project-a", []);

@@ -33,6 +33,7 @@ export class PubSubManager {
    * AC: @trait-websocket-protocol ac-1
    */
   addConnection(sessionId: string, ws: WebSocketConnection, contextId?: string) {
+    this.connectionState.get(ws) ?? this.connectionState.adopt(ws);
     this.connections.set(sessionId, ws);
     this.sessionIdsBySocket.set(ws, sessionId);
     if (contextId) {
