@@ -116587,6 +116587,13 @@ reviews:
           kind: nit
           thread_ulid: 01KNE68YQ80SWQ4AN234560BBR
         timestamp: 2026-04-05T06:46:22.957Z
+      - _ulid: 01KNE691PG7KGGA3Z2AMGC0DFJ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNE690XMKTPKMRYTFSRPHEB9
+        timestamp: 2026-04-05T06:46:25.232Z
     examined_commit: dbf76f3cc3fabfb650aed85f5988a5c0c71ef54a
     external_links: []
     lifecycle_state: open
@@ -116615,7 +116622,26 @@ reviews:
               import resolution, test quality, integration."
             created_at: 2026-04-05T06:46:22.185Z
         kind: nit
+      - _ulid: 01KNE690XMKTPKMRYTFSRPHEB9
+        anchor:
+          type: code
+          commit: dbf76f3cc3fabfb650aed85f5988a5c0c71ef54a
+          line_end: 38
+          line_start: 28
+          path: tests/daemon-build.test.ts
+          side: head
+        entries:
+          - _ulid: 01KNE690XMJAVGSXDVZDHWRMCC
+            author: Jacob Chapel
+            body: |-
+              This test only exercises the invalid-port fast-exit path, so it does not verify the task's claim that the compiled daemon actually runs under Node. I reproduced a real startup failure with [daemon] Starting kspec daemon on port 45678...
+              [daemon] Web UI assets found at: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-compile-js-01kne1nj-review/dist/web-ui
+              [daemon] PID file written: 1907896
+              [daemon] Port file written: 45678
+              [daemon] Web UI static file serving enabled: after writing the PID/port files, startup aborts with  from . That means the submission still does not deliver usable Node execution for the daemon, but this AC annotation would let it pass review anyway. The test needs to exercise a real startup path (for example, start the daemon under an isolated HOME and probe ), and the implementation/task scope needs to be corrected so Node can actually start the compiled daemon or the task/spec coverage is narrowed.
+            created_at: 2026-04-05T06:46:24.436Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-05T06:41:01.684Z
-    updated_at: 2026-04-05T06:46:22.185Z
+    updated_at: 2026-04-05T06:46:24.436Z
     notes: []
