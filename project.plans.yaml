@@ -35690,39 +35690,6 @@ plans:
 
           Covers: @daemon-server ac-16 (update).
 
-      - title: Document trait-websocket-protocol heartbeat and runtime adapter relationship
-        slug: task-document-ws-heartbeat-relationship
-        priority: 3
-        tags: [spec-update, daemon, websocket]
-        spec_ref: "@trait-websocket-protocol"
-        description: |
-          Document the complementary relationship between the heartbeat ACs
-          on @trait-websocket-protocol and the degradation ACs on
-          @daemon-runtime-adapter.
-
-          Why: @trait-websocket-protocol ac-4 and ac-5 specify that the
-          server sends ping frames every 30 seconds and closes connections
-          after 90 seconds without pong. These remain the correct behavioral
-          contract when frame-level ping is available. The new
-          @daemon-runtime-adapter spec's ac-heartbeat-degradation covers
-          the case where the runtime does not support frame-level ping.
-          These are complementary — the trait says "do heartbeat when you
-          can" and the adapter says "degrade gracefully when you can't."
-          No AC changes are needed on the trait itself.
-
-          What: No spec mutations. Verify by reading both specs and
-          confirming no conflict exists. Add a task note documenting the
-          relationship for future reference.
-
-          How: Read @trait-websocket-protocol and @daemon-runtime-adapter.
-          Add a note: "@trait-websocket-protocol ac-4/ac-5 define heartbeat
-          behavior. @daemon-runtime-adapter ac-heartbeat-degradation defines
-          the fallback when the runtime lacks frame-level ping. These are
-          non-conflicting." If the trait ACs need given-clause scoping in
-          the future, that can be done as a follow-up.
-
-          Covers: verification only, no spec mutations.
-
       # ─── Phase 2: Daemon Build Pipeline ───
 
       - title: Compile daemon TypeScript to JavaScript for dual-runtime support
@@ -36325,3 +36292,8 @@ plans:
           trim ac-auto-start-runtime, remove implementation-specific ac-compiled-output"
         author: "@claude"
         created_at: 2026-04-05T04:33:12.086Z
+      - _ulid: 01KNDZ3RGTYVQ6J2N71VF8RA2N
+        content: Remove documentation-only task-document-ws-heartbeat-relationship — no value, relationship
+          already confirmed during design
+        author: "@claude"
+        created_at: 2026-04-05T04:41:11.962Z
