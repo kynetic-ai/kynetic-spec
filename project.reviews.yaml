@@ -117928,7 +117928,18 @@ reviews:
     slugs: []
     title: Review task-daemon-spawn-runtime (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- tests/cli-serve.test.ts tests/cli-no-daemon.test.ts
+          tests/parser/daemon-config.test.ts passed: 17/17 suites, 62/62 tests"
+        name: targeted npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-05T09:15:57.932Z
+        completed_at: 2026-04-05T09:15:57.932Z
     events:
       - _ulid: 01KNEESF0KK694QQQT74W9QAC4
         actor: Jacob Chapel
@@ -117943,6 +117954,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-05T09:15:28.169Z
+      - _ulid: 01KNEETWTD7XKHBVF824EX1X12
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted npm test
+        timestamp: 2026-04-05T09:15:58.670Z
     examined_commit: 0c2c3429c5ebde26f545bb6ea86b82dea8b170e6
     external_links: []
     lifecycle_state: open
@@ -117955,5 +117973,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-05T09:15:11.764Z
-    updated_at: 2026-04-05T09:15:27.294Z
+    updated_at: 2026-04-05T09:15:57.932Z
     notes: []
