@@ -67,8 +67,12 @@ description: |
 spec_ref: "@daemon-runtime-adapter"
 plan_ref: "@plan-configurable-daemon-runtime"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to plan/plan-configurable-daemon-runtime/01kndgvz after approved review. Added
+  ConnectionStateManager-backed WebSocket state storage, preserved legacy ws.data adoption during
+  PubSub registration, and verified with daemon websocket/entity-cache regression tests plus full
+  npm test.
 depends_on:
   - "@task-daemon-compile-js"
 context: []
@@ -193,8 +197,25 @@ history:
         previous: "@01KNE943THTEJGEYC1372H80NG"
     command: review-link
     timestamp: 2026-04-05T07:47:24.845Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to plan/plan-configurable-daemon-runtime/01kndgvz after approved review. Added
+          ConnectionStateManager-backed WebSocket state storage, preserved legacy ws.data adoption
+          during PubSub registration, and verified with daemon websocket/entity-cache regression
+          tests plus full npm test.
+        previous: null
+      completed_at:
+        new: 2026-04-05T07:52:46.551Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-05T07:52:46.559Z
 created_at: 2026-04-05T05:25:53.695Z
 started_at: 2026-04-05T07:42:40.732Z
 submitted_at: 2026-04-05T07:45:35.501Z
+completed_at: 2026-04-05T07:52:46.551Z
 todos: []
 automation: eligible
