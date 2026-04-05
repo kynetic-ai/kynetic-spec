@@ -32,3 +32,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-05T09:56:09.804Z
+  - _ulid: 01KNEHCX71R8HKV9APP7JRE4S4
+    content: "Fix cycle 1 plan: preserve the worker worktree’s unrelated edits, then fix the node
+      runtime regression exposed by the E2E fixture. Root cause reproduced: under runtime=node the
+      daemon serves web UI module assets without a Content-Type header, so Chromium rejects module
+      imports and /tasks stays blank. I’m patching static asset serving for node parity, then
+      re-running the node watcher and node UI E2E coverage before replying on the review threads."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-05T10:00:46.050Z
