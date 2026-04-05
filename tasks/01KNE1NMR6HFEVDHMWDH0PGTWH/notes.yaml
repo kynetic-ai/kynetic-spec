@@ -1,1 +1,13 @@
-notes: []
+notes:
+  - _ulid: 01KNEFMS6AZQVXT32H2RGDJC90
+    content: "Approach: reuse the existing E2E daemon fixture and Playwright environment rather than
+      adding a separate runtime-specific harness. I will parameterize runtime selection in
+      tests/e2e/fixtures/test-base.ts, resolve the correct daemon command/entry/env per runtime, and
+      expose KSPEC_TEST_RUNTIME with bun as the default. Edge cases: invalid runtime values, node
+      runs needing dist/daemon/index.js, runtime-specific availability/install guidance, and keeping
+      teardown/health polling unchanged across runtimes. Test plan: cover ac-http-parity and
+      ac-websocket-parity by running an existing smoke E2E against the parameterized fixture with
+      default bun behavior preserved and manual node verification via KSPEC_TEST_RUNTIME=node."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-05T09:30:06.922Z
