@@ -115928,9 +115928,25 @@ reviews:
           kind: nit
           thread_ulid: 01KNDH0KSSCVHN79KQ5F7PQ1GS
         timestamp: 2026-04-05T00:34:49.494Z
+      - _ulid: 01KNDH0V3JPR6NYEYZ4367T7TB
+        actor: "@claude"
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-04-05T00:34:56.242Z
+      - _ulid: 01KNDH0V3J8TX3TWR7H5YVD6CZ
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: closed
+        timestamp: 2026-04-05T00:34:56.242Z
     examined_commit: null
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -116022,7 +116038,14 @@ reviews:
               the current wording works and the enumeration helps implementers.
             created_at: 2026-04-05T00:34:48.762Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: "@claude"
+        role: reviewer
+        created_at: 2026-04-05T00:34:56.242Z
     created_at: 2026-04-05T00:33:27.406Z
-    updated_at: 2026-04-05T00:34:48.762Z
+    updated_at: 2026-04-05T00:34:56.242Z
     notes: []
