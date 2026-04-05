@@ -118279,7 +118279,25 @@ reviews:
     slugs: []
     title: Review @01KNE1NMR6HFEVDHMWDH0PGTWH
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test failed once in review snapshot after rebuild: 2 suites failed / 1 test failed,
+          including cli-daemon-proxy ENOTEMPTY flaky cleanup and daemon runtime regression
+          investigation. Re-run: npm test -- cli-daemon-proxy --fresh passed on review snapshot and
+          integration base, so ENOTEMPTY is flaky/pre-existing noise. Branch-specific check:
+          KSPEC_TEST_RUNTIME=node ./node_modules/.bin/playwright test
+          tests/e2e/api-websocket.spec.ts -g 'shows connected status in the sidebar when the
+          daemon-backed UI loads' fails on review snapshot but passes on integration base
+          5346456fa7d296dd63ece3804ccf6a0d92350463; blank page screenshot indicates a regression
+          introduced by this snapshot."
+        name: npm test
+        required: true
+        runner: test-runner
+        created_at: 2026-04-05T09:54:57.084Z
+        completed_at: 2026-04-05T09:54:57.084Z
     events:
       - _ulid: 01KNEGP0P12NA2V3AEFKY8B81V
         actor: Jacob Chapel
@@ -118294,6 +118312,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-05T09:48:32.026Z
+      - _ulid: 01KNEH29W4484TVVH2JHW4T6QZ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-04-05T09:54:58.564Z
     examined_commit: 2dcb662b95ad4a3b36fa2e9717c1d464d99f7ce7
     external_links: []
     lifecycle_state: open
@@ -118306,5 +118331,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-05T09:48:15.937Z
-    updated_at: 2026-04-05T09:48:31.251Z
+    updated_at: 2026-04-05T09:54:57.084Z
     notes: []
