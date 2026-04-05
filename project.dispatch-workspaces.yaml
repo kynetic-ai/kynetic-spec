@@ -37713,3 +37713,79 @@ workspaces:
         head: 3a2a1fa44fccbb2fff87d33daa35c3154f94e598
         last_seen_at: 2026-04-05T08:52:21.466Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-spawn-runtime-01kne1nk
+  - active_role: null
+    base_branch_point: f143b0818864b0b3aa69bafdb281d417e77bedd6
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-ws-degradation-node/01kne1nm
+    canonical_branch_head: f143b0818864b0b3aa69bafdb281d417e77bedd6
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-04-05T08:52:30.328Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-04-05T08:52:30.328Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: plan/plan-configurable-daemon-runtime/01kndgvz
+      target_commit: f143b0818864b0b3aa69bafdb281d417e77bedd6
+      updated_at: 2026-04-05T08:52:30.328Z
+    lifecycle_state: ready
+    resolved_base_branch: plan/plan-configurable-daemon-runtime/01kndgvz
+    task_ref: "@01KNE1NM5ZEA6RPA7XN1R8ZPEA"
+    task_slug: task-ws-degradation-node
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-04-05T08:52:30.328Z
+      created_at: 2026-04-05T08:52:30.328Z
+      updated_at: 2026-04-05T08:52:30.328Z
+    workspace_id: dispatch-workspace-01KNE1NM5ZEA6RPA7XN1R8ZPEA
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-ws-degradation-node/01kne1nm
+        head: f143b0818864b0b3aa69bafdb281d417e77bedd6
+        last_seen_at: 2026-04-05T08:52:30.328Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ws-degradation-node-01kne1nm
