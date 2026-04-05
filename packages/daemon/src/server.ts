@@ -47,9 +47,12 @@ import { SessionSyncScheduler } from "./session-sync.js";
 import { WatcherHealthMonitor } from "./watcher-health-monitor.js";
 import { join } from "path";
 
+export type DaemonRuntime = "bun" | "node";
+
 export interface ServerOptions {
   port: number;
   isDaemon: boolean;
+  runtime: DaemonRuntime;
   kspecDir?: string; // Path to .kspec directory (default: .kspec in cwd)
   webUiDir?: string; // Path to web UI build directory (default: auto-detect)
 }
@@ -59,11 +62,16 @@ type ManagedServer = {
   close?: (callback: (error?: Error | null) => void) => void;
 };
 
-function detectRuntime(): "bun" | "node" {
-  return typeof process.versions.bun === "string" ? "bun" : "node";
+export async function createServerApp(runtime: DaemonRuntime): Promise<Elysia> {
+  if (runtime === "node") {
+    const { node } = await import("@elysiajs/node");
+    return new Elysia({ adapter: node() });
+  }
+
+  return new Elysia();
 }
 
-async function stopManagedServer(server: ManagedServer | undefined): Promise<void> {
+export async function stopManagedServer(server: ManagedServer | undefined): Promise<void> {
   if (!server) {
     return;
   }
@@ -252,8 +260,7 @@ export function localhostOnly() {
  * - ac-15: Uses plugin pattern for middleware
  */
 export async function createServer(options: ServerOptions) {
-  const { port, isDaemon, kspecDir = join(process.cwd(), ".kspec"), webUiDir } = options;
-  const runtime = detectRuntime();
+  const { port, isDaemon, runtime, kspecDir = join(process.cwd(), ".kspec"), webUiDir } = options;
 
   // Determine startup project path (project root, not .kspec/)
   // AC: @multi-directory-daemon ac-2 - daemon uses startup directory as default project
@@ -295,13 +302,7 @@ export async function createServer(options: ServerOptions) {
   // which breaks WebSocket upgrade in Elysia 1.4 when derive middleware is present.
   const wsProjectPaths = new WeakMap<Request, string>();
 
-  const app = new Elysia();
-  if (runtime === "node") {
-    const nodeAdapter = (await import("@elysiajs/node")).node();
-    const adapterTarget = app as Elysia & { "~adapter": unknown };
-    adapterTarget["~adapter"] = nodeAdapter;
-    (app.config as { adapter?: unknown }).adapter = nodeAdapter;
-  }
+  const app = await createServerApp(runtime);
 
   app
     // AC-15: Plugin pattern for middleware
