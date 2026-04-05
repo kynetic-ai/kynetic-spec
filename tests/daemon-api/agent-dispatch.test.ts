@@ -18,7 +18,7 @@
 
 import type { Elysia } from "elysia";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { getDispatchEngine, stopAllEngines } from "../../dist/daemon/routes/agent-dispatch.ts";
+import { getDispatchEngine, stopAllEngines } from "../../dist/daemon/routes/agent-dispatch.js";
 import {
   cleanupTempDir,
   createTempDir,

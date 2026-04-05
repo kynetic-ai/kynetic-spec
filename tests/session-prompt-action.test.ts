@@ -1685,7 +1685,7 @@ describe("daemon wiring — session registry threaded to ActionExecutor", () => 
    * AC: @session-prompt-action ac-1
    */
   it("getSessionRegistry returns undefined when no engine is running", async () => {
-    const { getSessionRegistry } = await import("../dist/daemon/routes/agent-dispatch.ts");
+    const { getSessionRegistry } = await import("../dist/daemon/routes/agent-dispatch.js");
 
     // Before any engine starts, no registry exists for a random project path
     const fakePath = "/nonexistent/project";

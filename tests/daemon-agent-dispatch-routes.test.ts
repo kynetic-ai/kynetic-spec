@@ -6,13 +6,13 @@ import { Elysia } from "elysia";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { initGitRepo, createTempDir, cleanupTempDir } from "./helpers/cli.js";
 import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
-import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.ts";
+import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.js";
 import {
   createAgentDispatchRoutes,
   getDispatchEngine,
   getSessionRegistry,
   resolveDispatchCwd,
-} from "../dist/daemon/routes/agent-dispatch.ts";
+} from "../dist/daemon/routes/agent-dispatch.js";
 
 ensureSplitBackendRegistered();
 

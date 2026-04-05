@@ -45,7 +45,7 @@ import { normalizeRefInput, TriageActionSchema, TriageStatusSchema } from "../..
 import type { TriageAction } from "../../schema/index.js";
 import { exportTriageRecords } from "../../export/triage.js";
 import { executeTriageAction, VALID_ACTIONS } from "../../triage/index.js";
-import type { PubSubManager } from "../websocket/pubsub";
+import type { PubSubManager } from "../websocket/pubsub.js";
 import { enumArrayUnion, enumUnion } from "./enum-utils.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
 import { wrapResponse } from "./response-envelope.js";

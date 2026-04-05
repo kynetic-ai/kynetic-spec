@@ -56,22 +56,22 @@ function checkDaemonStaleness(): boolean {
   if (!existsSync(sourceDir) || !existsSync(distDir)) return false;
 
   try {
-    const getNewestMtime = (dir: string): number => {
+    const getNewestMtime = (dir: string, extension: ".ts" | ".js"): number => {
       const files = readdirSync(dir, { withFileTypes: true });
       let newest = 0;
       for (const f of files) {
         const fullPath = join(dir, f.name);
         if (f.isDirectory()) {
-          newest = Math.max(newest, getNewestMtime(fullPath));
-        } else if (f.name.endsWith(".ts")) {
+          newest = Math.max(newest, getNewestMtime(fullPath, extension));
+        } else if (f.name.endsWith(extension)) {
           newest = Math.max(newest, statSync(fullPath).mtimeMs);
         }
       }
       return newest;
     };
 
-    const newestSource = getNewestMtime(sourceDir);
-    const newestDist = getNewestMtime(distDir);
+    const newestSource = getNewestMtime(sourceDir, ".ts");
+    const newestDist = getNewestMtime(distDir, ".js");
 
     return newestSource > newestDist;
   } catch {
@@ -272,10 +272,9 @@ async function startServer(opts: {
   }
 
   // Get path to daemon entry point
-  // Daemon source is bundled at dist/daemon/index.ts (relative to package root)
+  // The daemon is compiled to dist/daemon/index.js relative to the package root.
   // __dirname is dist/cli/commands, so go up 2 levels to dist/, then into daemon/
-  // Note: Daemon is TypeScript source - requires Bun runtime
-  const daemonBinary = join(__dirname, "../../daemon/index.ts");
+  const daemonBinary = join(__dirname, "../../daemon/index.js");
 
   if (!existsSync(daemonBinary)) {
     if (isJsonMode()) {

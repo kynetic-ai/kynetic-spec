@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { Elysia } from "elysia";
-import type { ProjectContextManager } from "../../dist/daemon/project-context.ts";
+import type { ProjectContextManager } from "../../dist/daemon/project-context.js";
 import {
   cleanupTempDir,
   createTempDir,

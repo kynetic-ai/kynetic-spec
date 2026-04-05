@@ -10,7 +10,7 @@
  */
 
 import type { ServerWebSocket } from "bun";
-import type { ConnectionData } from "./types";
+import type { ConnectionData } from "./types.js";
 
 export class HeartbeatManager {
   private pingInterval?: NodeJS.Timeout;

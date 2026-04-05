@@ -12,38 +12,38 @@ import { ulid } from "ulidx";
 import { existsSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
-import { PubSubManager } from "./websocket/pubsub";
-import { HeartbeatManager } from "./websocket/heartbeat";
-import { WebSocketHandler } from "./websocket/handler";
-import { handleWebSocketClose } from "./websocket/lifecycle";
-import { resolveWebSocketProject } from "./websocket/project-resolution";
-import type { ConnectionData, ConnectedEvent } from "./websocket/types";
-import { PidFileManager } from "./pid";
-import { projectContextMiddleware } from "./middleware/project-context";
-import { createTasksRoutes } from "./routes/tasks";
-import { createItemsRoutes } from "./routes/items";
-import { createInboxRoutes } from "./routes/inbox";
-import { createMetaRoutes } from "./routes/meta";
-import { createValidationRoutes } from "./routes/validation";
-import { createProjectsRoutes } from "./routes/projects";
-import { createTriageRoutes } from "./routes/triage";
+import { PubSubManager } from "./websocket/pubsub.js";
+import { HeartbeatManager } from "./websocket/heartbeat.js";
+import { WebSocketHandler } from "./websocket/handler.js";
+import { handleWebSocketClose } from "./websocket/lifecycle.js";
+import { resolveWebSocketProject } from "./websocket/project-resolution.js";
+import type { ConnectionData, ConnectedEvent } from "./websocket/types.js";
+import { PidFileManager } from "./pid.js";
+import { projectContextMiddleware } from "./middleware/project-context.js";
+import { createTasksRoutes } from "./routes/tasks.js";
+import { createItemsRoutes } from "./routes/items.js";
+import { createInboxRoutes } from "./routes/inbox.js";
+import { createMetaRoutes } from "./routes/meta.js";
+import { createValidationRoutes } from "./routes/validation.js";
+import { createProjectsRoutes } from "./routes/projects.js";
+import { createTriageRoutes } from "./routes/triage.js";
 import {
   createAgentDispatchRoutes,
   getDispatchEngine,
   stopAllEngines,
-} from "./routes/agent-dispatch";
-import { createCommandRoutes } from "./routes/command";
-import { createAutomationRoutes } from "./routes/automation";
-import { createDebugRoutes } from "./routes/debug";
-import { createSessionRoutes } from "./routes/sessions";
-import { createPlansRoutes } from "./routes/plans";
-import { createAggregationRoutes } from "./routes/aggregation";
-import { createRefsRoutes } from "./routes/refs";
-import { createDiffRoutes } from "./routes/diff";
-import { createReviewsRoutes } from "./routes/reviews";
-import { ShadowSyncScheduler } from "./shadow-sync";
-import { SessionSyncScheduler } from "./session-sync";
-import { WatcherHealthMonitor } from "./watcher-health-monitor";
+} from "./routes/agent-dispatch.js";
+import { createCommandRoutes } from "./routes/command.js";
+import { createAutomationRoutes } from "./routes/automation.js";
+import { createDebugRoutes } from "./routes/debug.js";
+import { createSessionRoutes } from "./routes/sessions.js";
+import { createPlansRoutes } from "./routes/plans.js";
+import { createAggregationRoutes } from "./routes/aggregation.js";
+import { createRefsRoutes } from "./routes/refs.js";
+import { createDiffRoutes } from "./routes/diff.js";
+import { createReviewsRoutes } from "./routes/reviews.js";
+import { ShadowSyncScheduler } from "./shadow-sync.js";
+import { SessionSyncScheduler } from "./session-sync.js";
+import { WatcherHealthMonitor } from "./watcher-health-monitor.js";
 import { join } from "path";
 
 export interface ServerOptions {
@@ -95,7 +95,7 @@ export function resolveWebUiPath(webUiDir?: string): string | null {
 let pubsubManager: PubSubManager;
 let heartbeatManager: HeartbeatManager;
 let wsHandler: WebSocketHandler;
-let _projectManager: import("./project-context").ProjectContextManager | undefined;
+let _projectManager: import("./project-context.js").ProjectContextManager | undefined;
 let shadowSyncScheduler: ShadowSyncScheduler | undefined;
 let watcherHealthMonitor: WatcherHealthMonitor | undefined;
 const sessionSyncSchedulers: Map<string, SessionSyncScheduler> = new Map();
@@ -228,7 +228,7 @@ export async function createServer(options: ServerOptions) {
     : kspecDir;
 
   // Import ProjectContextManager (needed for WebSocket binding)
-  const { ProjectContextManager: _ProjectContextManager } = await import("./project-context");
+  const { ProjectContextManager: _ProjectContextManager } = await import("./project-context.js");
 
   // AC: @daemon-server ac-17 - Resolve web UI path for static file serving
   const resolvedWebUiPath = resolveWebUiPath(webUiDir);
@@ -275,8 +275,8 @@ export async function createServer(options: ServerOptions) {
     .onRequest(localhostOnly());
 
   // AC: @daemon-entity-cache ac-load-on-register — lazy import entity cache module
-  // At build time, packages/daemon/src/ is copied to dist/daemon/ where entity-cache.js
-  // (compiled from src/daemon/entity-cache.ts) is a sibling.
+  // The daemon build compiles packages/daemon/src plus src/daemon/entity-cache.ts
+  // into dist/daemon/, where entity-cache.js is a sibling module.
   const entityCacheModule = await import("./entity-cache.js");
 
   // Shared callback for all registration paths (middleware, projects API, WebSocket)
@@ -456,7 +456,7 @@ export async function createServer(options: ServerOptions) {
         // Use a WeakMap keyed by Request object to pass data to open().
         try {
           const manager = (store as Record<string, unknown>).projectManager as
-            | import("./project-context").ProjectContextManager
+            | import("./project-context.js").ProjectContextManager
             | undefined;
           if (!manager) {
             // Fallback: project manager not initialized yet

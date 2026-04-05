@@ -53,7 +53,7 @@ import { createCheck } from "../../review/checks.js";
 import { evaluateGates } from "../../review/checks.js";
 import { extractSubjectVersion } from "../../review/subject-bindings.js";
 import { commitIfShadow } from "../../parser/shadow.js";
-import type { PubSubManager } from "../websocket/pubsub";
+import type { PubSubManager } from "../websocket/pubsub.js";
 import type {
   ReviewVerdictDecision,
   ReviewLifecycleState,
