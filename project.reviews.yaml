@@ -116085,6 +116085,23 @@ reviews:
         required: true
         created_at: 2026-04-05T04:34:46.335Z
         completed_at: 2026-04-05T04:34:46.335Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "All task Covers: lines use current AC names. task-daemon-compile-js covers
+          ac-runtime-selection. task-daemon-runtime-config covers ac-runtime-selection,
+          ac-default-bun. task-elysia-node-adapter covers ac-http-parity, ac-graceful-shutdown.
+          task-ws-connection-state-abstraction covers ac-connection-state, ac-websocket-parity.
+          task-daemon-spawn-runtime covers ac-runtime-selection, ac-default-bun,
+          ac-auto-start-runtime, ac-runtime-missing. task-ws-degradation-node covers
+          ac-heartbeat-degradation, ac-backpressure-degradation, ac-websocket-parity.
+          task-health-runtime-field covers ac-runtime-health. task-e2e-runtime-aware covers
+          ac-http-parity, ac-websocket-parity."
+        name: Task AC reference consistency
+        required: true
+        created_at: 2026-04-05T04:34:51.862Z
+        completed_at: 2026-04-05T04:34:51.862Z
     events:
       - _ulid: 01KNDYPZASWD8PCDZZ9S2H9994
         actor: "@claude"
@@ -116113,6 +116130,13 @@ reviews:
           status: pass
           name: AC coverage mapping
         timestamp: 2026-04-05T04:34:47.340Z
+      - _ulid: 01KNDYR6AGXMRNWFCSJZAFD0TB
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Task AC reference consistency
+        timestamp: 2026-04-05T04:34:52.880Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -116125,5 +116149,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-05T04:34:12.954Z
-    updated_at: 2026-04-05T04:34:46.335Z
+    updated_at: 2026-04-05T04:34:51.862Z
     notes: []
