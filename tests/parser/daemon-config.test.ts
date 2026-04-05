@@ -136,6 +136,48 @@ daemon:
     });
   });
 
+  describe("daemon.runtime configuration", () => {
+    // AC: @daemon-runtime-adapter ac-default-bun
+    it("defaults runtime to bun when no config", async () => {
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.config.daemon.runtime).toBe("bun");
+    });
+
+    // AC: @daemon-runtime-adapter ac-runtime-selection
+    it("loads runtime: node from config", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+daemon:
+  runtime: node
+`,
+      );
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.config.daemon.runtime).toBe("node");
+    });
+
+    // AC: @daemon-runtime-adapter ac-default-bun
+    it("defaults runtime to bun when daemon config omits runtime", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+daemon:
+  port: 4500
+  auto_start: false
+`,
+      );
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.config.daemon.runtime).toBe("bun");
+      expect(result.config.daemon.port).toBe(4500);
+      expect(result.config.daemon.auto_start).toBe(false);
+    });
+  });
+
   describe("daemon schema validation", () => {
     it("rejects invalid port: too low", () => {
       const result = KspecConfigSchema.safeParse({
@@ -169,11 +211,20 @@ daemon:
       expect(result.success).toBe(false);
     });
 
+    it("rejects invalid runtime", () => {
+      const result = KspecConfigSchema.safeParse({
+        daemon: { runtime: "deno" },
+      });
+
+      expect(result.success).toBe(false);
+    });
+
     it("accepts valid daemon config", () => {
       const result = KspecConfigSchema.safeParse({
         daemon: {
           port: 4000,
           host: "0.0.0.0",
+          runtime: "node",
           auto_start: true,
         },
       });
@@ -198,6 +249,7 @@ daemon:
 
       expect(config.daemon.port).toBe(3456);
       expect(config.daemon.host).toBe("localhost");
+      expect(config.daemon.runtime).toBe("bun");
       expect(config.daemon.auto_start).toBe(true);
     });
 
@@ -208,6 +260,7 @@ daemon:
 
       expect(config.daemon.port).toBe(3456); // default
       expect(config.daemon.host).toBe("localhost"); // default
+      expect(config.daemon.runtime).toBe("bun"); // default
       expect(config.daemon.auto_start).toBe(false); // from config
     });
   });
@@ -218,6 +271,7 @@ daemon:
 
       expect(defaults.daemon.port).toBe(3456);
       expect(defaults.daemon.host).toBe("localhost");
+      expect(defaults.daemon.runtime).toBe("bun");
       expect(defaults.daemon.auto_start).toBe(true);
     });
   });
@@ -276,6 +330,7 @@ daemon:
 
       // config.daemon should have the config file values
       expect(ctx.config.daemon.port).toBe(6000);
+      expect(ctx.config.daemon.runtime).toBe("bun");
       expect(ctx.config.daemon.auto_start).toBe(false);
 
       // manifest.daemon should still have old values (for deprecation warning)
@@ -334,6 +389,7 @@ daemon:
       const ctx = await initContext(tempDir);
 
       expect(ctx.config.daemon.port).toBe(7777);
+      expect(ctx.config.daemon.runtime).toBe("bun");
       expect(ctx.config.daemon.auto_start).toBe(false);
     });
 
@@ -349,6 +405,7 @@ daemon:
       const ctx = await initContext(tempDir);
 
       expect(ctx.config.daemon.port).toBe(3456);
+      expect(ctx.config.daemon.runtime).toBe("bun");
       expect(ctx.config.daemon.auto_start).toBe(true);
     });
   });
