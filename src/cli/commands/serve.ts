@@ -27,9 +27,10 @@ export async function resolveDefaultKspecDir(explicitDir?: string): Promise<stri
   }
 }
 
+type DaemonRuntime = "bun" | "node";
+
 /**
  * Check if Bun runtime is available.
- * Daemon requires Bun to run TypeScript directly.
  */
 function isBunAvailable(): boolean {
   try {
@@ -106,8 +107,34 @@ function parseUptimeSeconds(raw: unknown): number | null {
   return null;
 }
 
-export function buildDaemonChildEnv(baseEnv: NodeJS.ProcessEnv = process.env): NodeJS.ProcessEnv {
-  const { KSPEC_NO_DAEMON: _kspecNoDaemon, ...childEnv } = baseEnv;
+function getProjectRootFromKspecDir(kspecDir: string): string {
+  return dirname(kspecDir);
+}
+
+async function resolveDaemonRuntime(kspecDir: string): Promise<DaemonRuntime> {
+  const projectRoot = getProjectRootFromKspecDir(kspecDir);
+  const { config } = await loadProjectConfig(projectRoot, projectRoot);
+  return config.daemon.runtime;
+}
+
+function getDaemonRuntimeCommand(runtime: DaemonRuntime): string {
+  return runtime === "node" ? process.execPath : "bun";
+}
+
+export function buildDaemonChildEnv(
+  runtime: DaemonRuntime,
+  baseEnv: NodeJS.ProcessEnv = process.env,
+): NodeJS.ProcessEnv {
+  const {
+    KSPEC_NO_DAEMON: _kspecNoDaemon,
+    BUN_ENV: _bunEnv,
+    NODE_ENV: _nodeEnv,
+    ...childEnv
+  } = baseEnv;
+  if (runtime === "node") {
+    return { ...childEnv, NODE_ENV: "production" };
+  }
+
   return { ...childEnv, BUN_ENV: "production" };
 }
 
@@ -235,9 +262,13 @@ async function startServer(opts: {
   guardAgentContext("start");
   const jsonMode = isJsonMode();
   const kspecDir = await resolveDefaultKspecDir(opts.kspecDir);
+  const runtime = await resolveDaemonRuntime(kspecDir);
 
   // AC: @config-daemon ac-1, ac-2 — load config for default port, CLI flag overrides
-  const { config } = await loadProjectConfig();
+  const { config } = await loadProjectConfig(
+    getProjectRootFromKspecDir(kspecDir),
+    getProjectRootFromKspecDir(kspecDir),
+  );
   const configPort = config.daemon.port;
 
   // AC: @config-daemon ac-2 — CLI flag takes precedence over config
@@ -290,7 +321,7 @@ async function startServer(opts: {
   }
 
   // AC: @web-ui ac-2 — clear error with install URL when Bun is missing
-  if (!isBunAvailable()) {
+  if (runtime === "bun" && !isBunAvailable()) {
     const installHint =
       process.platform === "win32"
         ? 'Install Bun: powershell -c "irm bun.sh/install.ps1 | iex"'
@@ -318,17 +349,17 @@ async function startServer(opts: {
 
   // AC: @cli-serve-commands ac-2 - background mode
   if (opts.detach) {
-    const runtime = "bun";
-
     // Spawn detached process
-    // Set BUN_ENV=production to prevent Bun dev mode HTML transformation
-    // which can cause asset hash mismatches in the web UI
-    const child = spawn(runtime, [daemonBinary, "--port", String(port), "--kspec-dir", kspecDir], {
-      detached: true,
-      stdio: "ignore", // TODO: redirect to log file when logging implemented
-      cwd: process.cwd(),
-      env: buildDaemonChildEnv(),
-    });
+    const child = spawn(
+      getDaemonRuntimeCommand(runtime),
+      [daemonBinary, "--port", String(port), "--kspec-dir", kspecDir],
+      {
+        detached: true,
+        stdio: "ignore", // TODO: redirect to log file when logging implemented
+        cwd: process.cwd(),
+        env: buildDaemonChildEnv(runtime),
+      },
+    );
 
     // Detach from parent
     child.unref();
@@ -368,14 +399,15 @@ async function startServer(opts: {
       info("Press Ctrl+C to stop");
     }
 
-    const runtime = "bun";
-
-    // Set BUN_ENV=production to prevent Bun dev mode HTML transformation
-    const child = spawn(runtime, [daemonBinary, "--port", String(port), "--kspec-dir", kspecDir], {
-      stdio: "inherit",
-      cwd: process.cwd(),
-      env: buildDaemonChildEnv(),
-    });
+    const child = spawn(
+      getDaemonRuntimeCommand(runtime),
+      [daemonBinary, "--port", String(port), "--kspec-dir", kspecDir],
+      {
+        stdio: "inherit",
+        cwd: process.cwd(),
+        env: buildDaemonChildEnv(runtime),
+      },
+    );
 
     // Handle Ctrl+C - forward SIGTERM to child for graceful shutdown
     process.on("SIGINT", () => {

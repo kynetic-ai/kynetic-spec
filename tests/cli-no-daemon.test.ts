@@ -56,7 +56,7 @@ describe("KSPEC_NO_DAEMON", () => {
 
   // AC: @multi-directory-daemon ac-33
   it("strips KSPEC_NO_DAEMON from explicit daemon child processes", () => {
-    const childEnv = buildDaemonChildEnv({
+    const childEnv = buildDaemonChildEnv("bun", {
       ...process.env,
       KSPEC_NO_DAEMON: "1",
       KSPEC_CUSTOM_FLAG: "preserved",
@@ -65,5 +65,18 @@ describe("KSPEC_NO_DAEMON", () => {
     expect(childEnv.KSPEC_NO_DAEMON).toBeUndefined();
     expect(childEnv.KSPEC_CUSTOM_FLAG).toBe("preserved");
     expect(childEnv.BUN_ENV).toBe("production");
+  });
+
+  it("sets NODE_ENV for node runtime child processes", () => {
+    const childEnv = buildDaemonChildEnv("node", {
+      ...process.env,
+      KSPEC_NO_DAEMON: "1",
+      KSPEC_CUSTOM_FLAG: "preserved",
+    });
+
+    expect(childEnv.KSPEC_NO_DAEMON).toBeUndefined();
+    expect(childEnv.KSPEC_CUSTOM_FLAG).toBe("preserved");
+    expect(childEnv.NODE_ENV).toBe("production");
+    expect(childEnv.BUN_ENV).toBeUndefined();
   });
 });

@@ -110,6 +110,11 @@ describe("daemon build pipeline", () => {
   beforeEach(async () => {
     tempDir = await setupTempFixtures();
     initGitRepo(tempDir);
+    fs.mkdirSync(path.join(tempDir, "test-web-ui"), { recursive: true });
+    fs.writeFileSync(
+      path.join(tempDir, "test-web-ui", "index.html"),
+      "<!doctype html><html><body>runtime-ui</body></html>",
+    );
   });
 
   afterEach(async () => {
@@ -128,7 +133,8 @@ describe("daemon build pipeline", () => {
   });
 
   // AC: @daemon-runtime-adapter ac-runtime-selection
-  it("compiled daemon entrypoint starts and serves health checks under node and bun", async () => {
+  // AC: @daemon-runtime-adapter ac-http-parity
+  it("compiled daemon entrypoint starts and serves health checks and SPA routes under node and bun", async () => {
     const buildResult = runCommand("npm", ["run", "build:daemon"]);
     expect(buildResult.status).toBe(0);
 
@@ -151,6 +157,8 @@ describe("daemon build pipeline", () => {
           env: {
             ...process.env,
             ...isolatedHome.env,
+            WEB_UI_DIR: path.join(tempDir, "test-web-ui"),
+            KSPEC_DAEMON_RUNTIME: runtime.command,
             [runtime.envVar]: "test",
           },
         },
@@ -164,6 +172,10 @@ describe("daemon build pipeline", () => {
 
       const response = await fetch(`http://localhost:${port}/api/health`);
       expect(response.status).toBe(200);
+      const spaResponse = await fetch(`http://localhost:${port}/tasks`);
+      expect(spaResponse.status).toBe(200);
+      expect(spaResponse.headers.get("content-type")).toContain("text/html");
+      expect(await spaResponse.text()).toContain("runtime-ui");
       await stopDaemon(child);
       child = null;
     }
