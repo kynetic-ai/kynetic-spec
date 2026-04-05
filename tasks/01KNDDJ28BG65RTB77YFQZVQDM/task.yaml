@@ -60,7 +60,8 @@ plan_ref: "@plan-granular-cache-invalidation"
 origin: derived
 status: pending
 blocked_by: []
-depends_on: []
+depends_on:
+  - "@task-e2e-runtime-aware"
 context: []
 priority: 1
 tags:
@@ -76,6 +77,14 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-04-04T23:43:32.348Z
+  - author: "@claude"
+    changes:
+      depends_on:
+        new:
+          - "@task-e2e-runtime-aware"
+        previous: []
+    command: task-set
+    timestamp: 2026-04-05T05:55:10.046Z
 created_at: 2026-04-04T23:34:26.315Z
 todos: []
 automation: eligible

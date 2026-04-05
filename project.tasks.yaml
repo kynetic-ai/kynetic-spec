@@ -24834,7 +24834,8 @@
   plan_ref: "@plan-granular-cache-invalidation"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@task-e2e-runtime-aware"
   priority: 1
   tags:
     - spec-update
