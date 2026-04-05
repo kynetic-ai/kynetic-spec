@@ -117729,3 +117729,29 @@ reviews:
     created_at: 2026-04-05T08:24:22.658Z
     updated_at: 2026-04-05T08:29:22.922Z
     notes: []
+  - _ulid: 01KNEDH0CMPCMNVFDBNFMFMJ9E
+    slugs: []
+    title: Review task-daemon-spawn-runtime
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KNEDH0CMEWJAVS7VFP4830QH
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-05T08:53:06.068Z
+    examined_commit: 3a2a1fa44fccbb2fff87d33daa35c3154f94e598
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNE1NKXMCW3FZTNYK2QK5WFT"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-05T08:53:06.068Z
+    updated_at: null
+    notes: []
