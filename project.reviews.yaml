@@ -119308,3 +119308,29 @@ reviews:
     created_at: 2026-04-05T21:51:04.520Z
     updated_at: 2026-04-05T21:51:42.246Z
     notes: []
+  - _ulid: 01KNFT7R2AVD0PF0NH14294WM5
+    slugs: []
+    title: Review task-add-ac-context-reuse
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KNFT7R2A45JAJN2FEVY00M7H
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-05T21:54:28.554Z
+    examined_commit: 7179f7c7f383279482d07f1582205ae1b10534f5
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNDDJ28BG65RTB77YFQZVQDM"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-05T21:54:28.554Z
+    updated_at: null
+    notes: []
