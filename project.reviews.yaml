@@ -119393,7 +119393,18 @@ reviews:
     slugs: []
     title: Review task-add-ac-context-reuse
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed: npm test -- --fresh tests/daemon-entity-cache.test.ts (31 suites, 100 tests).
+          Confirmed the manifest-change scenario in the existing cache tests still passes."
+        name: daemon entity-cache focused test
+        required: false
+        runner: npm
+        created_at: 2026-04-05T21:59:09.459Z
+        completed_at: 2026-04-05T21:59:09.459Z
     events:
       - _ulid: 01KNFT7R2A45JAJN2FEVY00M7H
         actor: Jacob Chapel
@@ -119415,6 +119426,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNFTG7WXPZ5HYG8WAYWT2PCY
         timestamp: 2026-04-05T21:59:07.740Z
+      - _ulid: 01KNFTGBARY3PW22X49JBWK4SE
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: daemon entity-cache focused test
+        timestamp: 2026-04-05T21:59:10.424Z
     examined_commit: 7179f7c7f383279482d07f1582205ae1b10534f5
     external_links: []
     lifecycle_state: open
@@ -119446,5 +119464,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-05T21:54:28.554Z
-    updated_at: 2026-04-05T21:59:06.910Z
+    updated_at: 2026-04-05T21:59:09.459Z
     notes: []
