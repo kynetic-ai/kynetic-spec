@@ -3916,6 +3916,9 @@ features:
       runtime, the server uses a runtime adapter for HTTP and WebSocket
       handling. Features that depend on runtime-specific APIs degrade
       gracefully when unavailable rather than crashing.
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
