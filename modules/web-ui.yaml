@@ -126,7 +126,7 @@ features:
         id: ac-15
         then: use plugin pattern for middleware (CORS, logging, validation)
         when: routes are registered
-      - given: daemon code is ready
+      - given: The daemon is configured to use bun runtime and the daemon code is ready
         id: ac-16
         then: produces standalone executable without requiring Bun installation
         when: bun build --compile runs
