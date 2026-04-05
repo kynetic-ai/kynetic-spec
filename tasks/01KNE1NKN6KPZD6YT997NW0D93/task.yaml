@@ -71,8 +71,13 @@ description: |
 spec_ref: "@daemon-runtime-adapter"
 plan_ref: "@plan-configurable-daemon-runtime"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved review @01KNEBWDC29ZRC6VD5RCVH3FNT and merged
+  dispatch/task/task-elysia-node-adapter/01kne1nk into
+  plan/plan-configurable-daemon-runtime/01kndgvz. Verified npm test passed (2077/2077 suites) and
+  kspec validate had warnings only; confirmed node runtime selection, adapter wiring,
+  runtime-agnostic SPA fallback serving, and graceful shutdown behavior.
 depends_on:
   - "@task-daemon-runtime-config"
   - "@task-ws-connection-state-abstraction"
@@ -198,8 +203,26 @@ history:
         previous: "@01KNEATFSJ5FS8WAH5RWF83TE5"
     command: review-link
     timestamp: 2026-04-05T08:24:25.182Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved review @01KNEBWDC29ZRC6VD5RCVH3FNT and merged
+          dispatch/task/task-elysia-node-adapter/01kne1nk into
+          plan/plan-configurable-daemon-runtime/01kndgvz. Verified npm test passed (2077/2077
+          suites) and kspec validate had warnings only; confirmed node runtime selection, adapter
+          wiring, runtime-agnostic SPA fallback serving, and graceful shutdown behavior.
+        previous: null
+      completed_at:
+        new: 2026-04-05T08:30:09.282Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-05T08:30:09.290Z
 created_at: 2026-04-05T05:25:53.958Z
 started_at: 2026-04-05T08:13:37.320Z
 submitted_at: 2026-04-05T08:21:55.892Z
+completed_at: 2026-04-05T08:30:09.282Z
 todos: []
 automation: eligible
