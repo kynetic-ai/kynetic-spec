@@ -46,3 +46,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-05T22:19:56.318Z
+  - _ulid: 01KNFVZ9N4ZNXX252GC2KRRN46
+    content: "Fix cycle 2: tightened debounce-window scoping in src/daemon/entity-cache.ts so
+      currentReloadCycle is released when the window closes, even if that window's reloads are still
+      in flight. Added overlapping-window coverage in tests/daemon-entity-cache.test.ts to prove
+      manifest-triggered meta+items reloads still share one initContext() within a window while a
+      later task-domain invalidation starts a fresh initContext() call. Re-verified with npm test --
+      --fresh tests/daemon-entity-cache.test.ts, full npm test, and kspec validate (warnings only;
+      same pre-existing repo-wide warning set)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-05T22:24:48.805Z
