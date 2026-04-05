@@ -22,3 +22,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-05T22:02:40.772Z
+  - _ulid: 01KNFV0X2881SDCGXPAX0Z5FGF
+    content: "Fix cycle 1: implemented debounce-cycle-scoped initContext() reuse for watcher-driven
+      reloads in src/daemon/entity-cache.ts so manifest-triggered meta+items reloads share one
+      initialization pass. Added behavioral coverage in tests/daemon-entity-cache.test.ts for
+      @daemon-entity-cache ac-context-reuse. Re-verified with npm test -- --fresh
+      tests/daemon-entity-cache.test.ts, full npm test, and kspec validate (warnings only;
+      pre-existing repo-wide warnings remain)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-05T22:08:12.872Z
