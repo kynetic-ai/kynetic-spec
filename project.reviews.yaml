@@ -119500,6 +119500,42 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-05T21:59:42.545Z
+      - _ulid: 01KNFV2YJKW74TB7MD615THTNB
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNFTG7WXPZ5HYG8WAYWT2PCY
+        timestamp: 2026-04-05T22:09:19.955Z
+      - _ulid: 01KNFV30K6BBBM4F43NCMRTQPG
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNFTG7WXPZ5HYG8WAYWT2PCY
+        timestamp: 2026-04-05T22:09:22.022Z
+      - _ulid: 01KNFV32GFWSEFNE5NQWM4DZ6T
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNFTGK20G1TK7RP8AQY92DJY
+        timestamp: 2026-04-05T22:09:23.983Z
+      - _ulid: 01KNFV34FN1WR09A4SZC8B9NBC
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNFTGK20G1TK7RP8AQY92DJY
+        timestamp: 2026-04-05T22:09:26.005Z
+      - _ulid: 01KNFV36G04ESVBM8335M49J7E
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNFTGYT5Z544K5D9RQY6FK65
+        timestamp: 2026-04-05T22:09:28.064Z
+      - _ulid: 01KNFV38F34KMZAV2YCZNCBAEZ
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNFTGYT5Z544K5D9RQY6FK65
+        timestamp: 2026-04-05T22:09:30.083Z
     examined_commit: 7179f7c7f383279482d07f1582205ae1b10534f5
     external_links: []
     lifecycle_state: closed
@@ -119528,7 +119564,17 @@ reviews:
               this AC until the reuse behavior exists and is covered, or implement the reuse +
               coverage in the same change.
             created_at: 2026-04-05T21:59:06.910Z
+          - _ulid: 01KNFV2XTF5XED9AJHBZZH0MSA
+            author: Jacob Chapel
+            body: "Fixed in commit c6054304d: watcher-driven invalidations now share a debounce-cycle-scoped
+              initContext() promise, so a manifest-triggered meta+items reload reuses one
+              initialization pass instead of one per domain. Added behavioral coverage in
+              tests/daemon-entity-cache.test.ts for @daemon-entity-cache ac-context-reuse and
+              reverified with focused and full npm test runs."
+            created_at: 2026-04-05T22:09:19.183Z
         kind: blocker
+        resolved_at: 2026-04-05T22:09:21.246Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KNFTGK20G1TK7RP8AQY92DJY
         entries:
           - _ulid: 01KNFTGK21P184XHTTHB9MTRWX
@@ -119616,7 +119662,15 @@ reviews:
               and focused tests pass. Categories searched: correctness, test quality, spec
               alignment, and integration.
             created_at: 2026-04-05T21:59:18.337Z
+          - _ulid: 01KNFV31T70VG0CNZH7C83VQCY
+            author: Jacob Chapel
+            body: Acknowledged. This cycle added the missing implementation and AC-backed test coverage, then
+              reran kspec validate (warnings only, same repo-wide pre-existing warnings) plus
+              focused and full test suites.
+            created_at: 2026-04-05T22:09:23.271Z
         kind: nit
+        resolved_at: 2026-04-05T22:09:25.225Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KNFTGYT5Z544K5D9RQY6FK65
         entries:
           - _ulid: 01KNFTGYT5CYCEQRXR2TP1PQAX
@@ -119630,7 +119684,15 @@ reviews:
               meta and items; full and focused tests pass. Categories searched: correctness, test
               quality, spec alignment, and integration."
             created_at: 2026-04-05T21:59:30.373Z
+          - _ulid: 01KNFV35PPBRETJ9BR9BKEW0HA
+            author: Jacob Chapel
+            body: Acknowledged. The branch now includes the context-reuse implementation and behavioral AC
+              coverage the review requested; verification results are captured in the task note for
+              this fix cycle.
+            created_at: 2026-04-05T22:09:27.254Z
         kind: nit
+        resolved_at: 2026-04-05T22:09:29.320Z
+        resolved_by: Jacob Chapel
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -119640,5 +119702,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-05T21:59:42.545Z
     created_at: 2026-04-05T21:54:28.554Z
-    updated_at: 2026-04-05T21:59:42.545Z
+    updated_at: 2026-04-05T22:09:29.320Z
     notes: []
