@@ -117436,6 +117436,12 @@ reviews:
         payload:
           thread_ulid: 01KNEB3HYGF0ARN92NPDMN7B7S
         timestamp: 2026-04-05T08:21:12.856Z
+      - _ulid: 01KNEBPPFRPCC7S8SPTRMYNSZZ
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNEB32EDQC4VD7W26GKJY79F
+        timestamp: 2026-04-05T08:21:15.385Z
     examined_commit: 1481fb7b89bf57138df6ba96e4537dbda6361cfd
     external_links: []
     lifecycle_state: closed
@@ -117482,6 +117488,12 @@ reviews:
               searched: correctness, integration, shutdown behavior, HTTP parity tests, AC
               coverage."
             created_at: 2026-04-05T08:10:32.269Z
+          - _ulid: 01KNEBPNP4914YGYS6Y6EY5EGJ
+            author: Jacob Chapel
+            body: "Re-verified after the fix in 083fa6b5e: focused runtime tests pass, full npm test passes
+              (2077 suites, 7531 tests, 5 skipped), and kspec validate still reports only the repo's
+              existing warning set."
+            created_at: 2026-04-05T08:21:14.564Z
         kind: nit
       - _ulid: 01KNEB3FMT1XZ6FV7R886TAS9W
         anchor:
@@ -117538,5 +117550,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-05T08:10:56.178Z
     created_at: 2026-04-05T08:05:51.026Z
-    updated_at: 2026-04-05T08:21:12.054Z
+    updated_at: 2026-04-05T08:21:14.564Z
     notes: []
