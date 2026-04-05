@@ -117201,6 +117201,16 @@ reviews:
         required: false
         created_at: 2026-04-05T07:51:54.938Z
         completed_at: 2026-04-05T07:51:54.938Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/daemon-entity-cache.test.ts passed: 31/31 suites, 100 tests"
+        name: daemon entity-cache regression
+        required: true
+        runner: vitest
+        created_at: 2026-04-05T07:51:57.291Z
+        completed_at: 2026-04-05T07:51:57.291Z
     events:
       - _ulid: 01KNE9RN74DVNR4F3C10GM190G
         actor: Jacob Chapel
@@ -117236,6 +117246,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-04-05T07:51:55.740Z
+      - _ulid: 01KNEA12CMTCKPG93YK0HFBGW5
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: daemon entity-cache regression
+        timestamp: 2026-04-05T07:51:58.101Z
     examined_commit: c46ee609a39deee3e464bae212ab0911e04c5fd9
     external_links: []
     lifecycle_state: open
@@ -117248,5 +117265,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-05T07:47:22.468Z
-    updated_at: 2026-04-05T07:51:54.938Z
+    updated_at: 2026-04-05T07:51:57.291Z
     notes: []
