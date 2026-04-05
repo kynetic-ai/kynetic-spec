@@ -119477,6 +119477,13 @@ reviews:
           kind: nit
           thread_ulid: 01KNFTGK20G1TK7RP8AQY92DJY
         timestamp: 2026-04-05T21:59:19.211Z
+      - _ulid: 01KNFTGZKF8HDGW9ZEJ5C6SX21
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNFTGYT5Z544K5D9RQY6FK65
+        timestamp: 2026-04-05T21:59:31.183Z
     examined_commit: 7179f7c7f383279482d07f1582205ae1b10534f5
     external_links: []
     lifecycle_state: open
@@ -119594,7 +119601,21 @@ reviews:
               alignment, and integration.
             created_at: 2026-04-05T21:59:18.337Z
         kind: nit
+      - _ulid: 01KNFTGYT5Z544K5D9RQY6FK65
+        entries:
+          - _ulid: 01KNFTGYT5CYCEQRXR2TP1PQAX
+            author: Jacob Chapel
+            body: "Evidence log: Files read: AGENTS.md, kspec-agents.md, src/daemon/entity-cache.ts,
+              tests/daemon-entity-cache.test.ts, package.json, task metadata, review metadata, and
+              the kspec-meta diff that added ac-context-reuse. Commands run: kspec task get, kspec
+              review for-task, kspec validate, rg for AC annotations, git show on the shadow-branch
+              change, npm test, and npm test -- --fresh tests/daemon-entity-cache.test.ts. Claims
+              verified: the AC was added on the shadow branch; manifest invalidation reloads both
+              meta and items; full and focused tests pass. Categories searched: correctness, test
+              quality, spec alignment, and integration."
+            created_at: 2026-04-05T21:59:30.373Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-05T21:54:28.554Z
-    updated_at: 2026-04-05T21:59:18.337Z
+    updated_at: 2026-04-05T21:59:30.373Z
     notes: []
