@@ -118528,6 +118528,17 @@ reviews:
         runner: npm
         created_at: 2026-04-05T10:03:58.040Z
         completed_at: 2026-04-05T10:03:58.040Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: After deleting packages/web-ui/.svelte-kit, npm run build --workspace @kynetic-ai/web-ui
+          succeeded with the updated 'svelte-kit sync && vite build' script.
+        name: web-ui-build-clean-state
+        required: false
+        runner: npm
+        created_at: 2026-04-05T10:04:02.526Z
+        completed_at: 2026-04-05T10:04:02.526Z
     events:
       - _ulid: 01KNEHA3S7XNMKD1DTM8NKD8HB
         actor: Jacob Chapel
@@ -118556,6 +118567,13 @@ reviews:
           status: pass
           name: npm-test
         timestamp: 2026-04-05T10:03:59.508Z
+      - _ulid: 01KNEHJYHPQNBHGCGD5NKAA48V
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: web-ui-build-clean-state
+        timestamp: 2026-04-05T10:04:04.022Z
     examined_commit: cb909e6edefa9de81d07fd46a6a25c2a5bb1dcd8
     external_links: []
     lifecycle_state: open
@@ -118583,5 +118601,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-05T09:59:14.472Z
-    updated_at: 2026-04-05T10:03:58.040Z
+    updated_at: 2026-04-05T10:04:02.526Z
     notes: []
