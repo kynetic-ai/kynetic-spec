@@ -118373,6 +118373,12 @@ reviews:
         payload:
           thread_ulid: 01KNEH3H38Y555X6DEJECK9RSM
         timestamp: 2026-04-05T10:07:25.134Z
+      - _ulid: 01KNEHS57K5DR9JPPQV6VQ9DWG
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNEH3X85FZNXAXEE6W6YG65K
+        timestamp: 2026-04-05T10:07:27.475Z
     examined_commit: 2dcb662b95ad4a3b36fa2e9717c1d464d99f7ce7
     external_links: []
     lifecycle_state: closed
@@ -118515,6 +118521,8 @@ reviews:
               node-backed UI smoke is a must-fix regression."
             created_at: 2026-04-05T09:55:51.173Z
         kind: blocker
+        resolved_at: 2026-04-05T10:07:26.639Z
+        resolved_by: Jacob Chapel
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -118524,7 +118532,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-05T09:56:08.117Z
     created_at: 2026-04-05T09:48:15.937Z
-    updated_at: 2026-04-05T10:07:24.385Z
+    updated_at: 2026-04-05T10:07:26.639Z
     notes: []
   - _ulid: 01KNEHA3S8K3WSJPZX8R2XSB88
     slugs: []
