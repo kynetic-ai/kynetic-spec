@@ -116381,7 +116381,19 @@ reviews:
     slugs: []
     title: Review task-scope-ac16-bun-only
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate exited 6 with pre-existing repo warnings only (orphaned skill dir,
+          alignment/completeness backlog); no schema/reference/task-specific regression from this AC
+          text update.
+        name: validate
+        required: true
+        runner: kspec
+        created_at: 2026-04-05T06:25:02.774Z
+        completed_at: 2026-04-05T06:25:02.774Z
     events:
       - _ulid: 01KNE4SR36AJ7WE1V5Z3PN6QX0
         actor: Jacob Chapel
@@ -116403,6 +116415,13 @@ reviews:
           kind: nit
           thread_ulid: 01KNE51KEGG7NXJ4SY2VAB7E77
         timestamp: 2026-04-05T06:24:53.478Z
+      - _ulid: 01KNE51Y1063HA6WY670MCGDT1
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: validate
+        timestamp: 2026-04-05T06:25:03.520Z
     examined_commit: 7179f7c7f383279482d07f1582205ae1b10534f5
     external_links: []
     lifecycle_state: open
@@ -116442,5 +116461,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-05T06:20:35.303Z
-    updated_at: 2026-04-05T06:24:52.689Z
+    updated_at: 2026-04-05T06:25:02.774Z
     notes: []
