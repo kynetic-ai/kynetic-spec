@@ -16,6 +16,7 @@ import { PubSubManager } from "./websocket/pubsub.js";
 import { HeartbeatManager } from "./websocket/heartbeat.js";
 import { WebSocketHandler } from "./websocket/handler.js";
 import { handleWebSocketClose } from "./websocket/lifecycle.js";
+import { ConnectionStateManager } from "./websocket/connection-state.js";
 import { resolveWebSocketProject } from "./websocket/project-resolution.js";
 import type { ConnectionData, ConnectedEvent } from "./websocket/types.js";
 import { PidFileManager } from "./pid.js";
@@ -284,8 +285,9 @@ export async function createServer(options: ServerOptions) {
   }
 
   // Initialize WebSocket managers
-  pubsubManager = new PubSubManager();
-  heartbeatManager = new HeartbeatManager();
+  const connectionState = new ConnectionStateManager();
+  pubsubManager = new PubSubManager(connectionState);
+  heartbeatManager = new HeartbeatManager(connectionState);
   wsHandler = new WebSocketHandler(pubsubManager);
 
   // WeakMap to store project path during WebSocket upgrade (keyed by Request object)
@@ -535,14 +537,14 @@ export async function createServer(options: ServerOptions) {
           ? wsProjectPaths.get(request) || startupProjectPath
           : startupProjectPath;
 
-        ws.data = {
+        connectionState.init(ws, {
           sessionId,
           topics: new Set<string>(),
           seq: 0,
           lastPing: undefined,
           lastPong: Date.now(),
           projectPath, // AC: @multi-directory-daemon ac-21 - immutable binding
-        };
+        });
 
         pubsubManager.addConnection(sessionId, ws, contextId);
         console.log(

@@ -1,5 +1,4 @@
-import type { ServerWebSocket } from "bun";
-import type { ConnectionData } from "./types.js";
+import type { WebSocketConnection } from "./types.js";
 import type { PubSubManager } from "./pubsub.js";
 
 /**
@@ -7,7 +6,7 @@ import type { PubSubManager } from "./pubsub.js";
  */
 export function handleWebSocketClose(
   pubsub: PubSubManager,
-  ws: ServerWebSocket<ConnectionData>,
+  ws: WebSocketConnection,
   code: number,
   reason: string,
 ): string {
