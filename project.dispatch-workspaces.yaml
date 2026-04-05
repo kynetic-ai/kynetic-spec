@@ -37674,12 +37674,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-05T09:00:58.267Z
+      updated_at: 2026-04-05T09:01:34.375Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-05T09:01:00.075Z
+      updated_at: 2026-04-05T09:01:34.375Z
     integration:
       status: pending
       detail: null
@@ -37687,7 +37687,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-configurable-daemon-runtime/01kndgvz
       target_commit: f143b0818864b0b3aa69bafdb281d417e77bedd6
-      updated_at: 2026-04-05T09:00:58.267Z
+      updated_at: 2026-04-05T09:01:34.375Z
     lifecycle_state: ready
     resolved_base_branch: plan/plan-configurable-daemon-runtime/01kndgvz
     task_ref: "@01KNE1NKXMCW3FZTNYK2QK5WFT"
@@ -37695,9 +37695,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-05T08:52:27.379Z
-      last_reconciled_at: 2026-04-05T09:01:00.075Z
+      last_reconciled_at: 2026-04-05T09:01:34.375Z
       created_at: 2026-04-05T08:31:13.313Z
-      updated_at: 2026-04-05T09:01:00.075Z
+      updated_at: 2026-04-05T09:01:34.375Z
     workspace_id: dispatch-workspace-01KNE1NKXMCW3FZTNYK2QK5WFT
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -37706,7 +37706,7 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-daemon-spawn-runtime/01kne1nk
         head: 3a2a1fa44fccbb2fff87d33daa35c3154f94e598
-        last_seen_at: 2026-04-05T08:52:21.466Z
+        last_seen_at: 2026-04-05T09:01:34.375Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-spawn-runtime-01kne1nk
   - active_role: null
     base_branch_point: f143b0818864b0b3aa69bafdb281d417e77bedd6
