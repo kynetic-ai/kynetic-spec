@@ -115295,6 +115295,27 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-04-05T00:21:12.272Z
+      - _ulid: 01KNDG8R09BN4XAEQP2RMQZW46
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNDG8Q73JEXN4VB269WGEHPQ
+        timestamp: 2026-04-05T00:21:46.634Z
+      - _ulid: 01KNDG8T1D53SE0A1PKXS2CZTA
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNDG8S8XGKSK5N17QWKW3MCJ
+        timestamp: 2026-04-05T00:21:48.717Z
+      - _ulid: 01KNDG8W2W7WH3ZJCRTB2RBE0X
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNDG8VA9MRJ76GJKW5J63S64
+        timestamp: 2026-04-05T00:21:50.812Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -115304,8 +115325,64 @@ reviews:
       content_hash: ""
       ref: "@plan-configurable-daemon-runtime"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNDG8Q73JEXN4VB269WGEHPQ
+        anchor:
+          type: structured
+          ref: "@task-elysia-node-adapter"
+          section: tasks
+        entries:
+          - _ulid: 01KNDG8Q748476DWH774WXQSHS
+            author: "@claude"
+            body: "CRITICAL: ws.data property not supported under crossws. The plan identifies ws.ping() and
+              ws.getBufferedAmount() as Bun-specific APIs, but misses that ws.data is itself a Bun
+              ServerWebSocket feature. Under the Elysia node adapter, WebSockets are crossws Peer
+              instances that do NOT have a mutable .data property. The daemon uses ws.data
+              extensively across 5 files (server.ts, heartbeat.ts, handler.ts, pubsub.ts,
+              lifecycle.ts) to store ConnectionData (sessionId, topics, seq, lastPing, lastPong,
+              projectPath). This is the primary mechanism for per-connection state. Without ws.data,
+              connection tracking, heartbeat, pub/sub, and multi-project routing all break. The plan
+              needs a task to abstract per-connection state — likely using a WeakMap<WebSocket,
+              ConnectionData> or similar pattern that works on both runtimes."
+            created_at: 2026-04-05T00:21:45.828Z
+        kind: blocker
+      - _ulid: 01KNDG8S8XGKSK5N17QWKW3MCJ
+        anchor:
+          type: structured
+          ref: "@task-elysia-node-adapter"
+          section: tasks
+        entries:
+          - _ulid: 01KNDG8S8XV517MFH4HJD1C53C
+            author: "@claude"
+            body: The pong(ws) handler in server.ts:524 is a Bun-specific WebSocket lifecycle hook. Under
+              crossws, pong is not one of the mapped events (only open, message, close, error are).
+              The plan mentions this in the Implementation Notes (item 4 in the Bun-specific surface
+              area list) but no task addresses it. Task task-ws-degradation-node mentions crossws
+              event mapping but only guards ws.ping() — it does not handle the missing pong handler.
+              Without pong reception, heartbeat tracking is fully broken on node, not just degraded.
+              This should be explicitly called out and the heartbeat task should document that on
+              node, both ping sending AND pong receiving are unavailable.
+            created_at: 2026-04-05T00:21:47.933Z
+        kind: blocker
+      - _ulid: 01KNDG8VA9MRJ76GJKW5J63S64
+        anchor:
+          type: structured
+          ref: "@task-elysia-node-adapter"
+          section: tasks
+        entries:
+          - _ulid: 01KNDG8VAAFH45QJNNDBZ2W54E
+            author: "@claude"
+            body: 'tsconfig types and moduleResolution are unaddressed. The daemon tsconfig.json has "types":
+              ["bun-types"] and "moduleResolution": "bundler". When running under node with tsx: (1)
+              bun-types provides global type declarations (Bun.file, ServerWebSocket, etc.) that
+              will type-check but not exist at runtime — this creates false safety; (2)
+              moduleResolution bundler may cause import resolution differences under tsx/node. The
+              plan needs a task to either make the tsconfig conditional, create a separate tsconfig
+              for node builds, or at minimum document these as known type-check-only gaps. The
+              ServerWebSocket type import used in 5+ files will need a runtime-agnostic type alias.'
+            created_at: 2026-04-05T00:21:50.026Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-05T00:21:12.273Z
-    updated_at: null
+    updated_at: 2026-04-05T00:21:50.026Z
     notes: []
