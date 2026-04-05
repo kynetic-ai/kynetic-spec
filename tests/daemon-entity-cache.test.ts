@@ -487,6 +487,21 @@ describe("ProjectEntityCache", () => {
       expect(itemsAfter).not.toBe(itemsBefore);
     });
 
+    // AC: @daemon-entity-cache ac-context-reuse
+    it("should reuse initContext once across manifest-triggered multi-domain reloads", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("meta");
+      await cache.loadDomain("items");
+
+      const initContextSpy = vi.spyOn(yamlModule, "initContext");
+      const kspecDir = join(projectA, ".kspec");
+      const manifestPath = join(kspecDir, "kynetic.yaml");
+
+      await cache.handleFileChange(kspecDir, manifestPath);
+
+      expect(initContextSpy).toHaveBeenCalledTimes(1);
+    });
+
     it("should invalidate sessions domain when session watcher path is received", async () => {
       const cache = new ProjectEntityCache(projectA);
       await cache.loadDomain("sessions");
