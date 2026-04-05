@@ -115316,6 +115316,34 @@ reviews:
           kind: blocker
           thread_ulid: 01KNDG8VA9MRJ76GJKW5J63S64
         timestamp: 2026-04-05T00:21:50.812Z
+      - _ulid: 01KNDG9NH1TY43EGABX6M92B9D
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KNDG9MSTNYP2VB0P8WMR6VVB
+        timestamp: 2026-04-05T00:22:16.865Z
+      - _ulid: 01KNDG9QEQ3W0G3SK1FGPEHYC1
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KNDG9PQHYT90XWS86NQCRES6
+        timestamp: 2026-04-05T00:22:18.839Z
+      - _ulid: 01KNDG9SB9JC4PD0C5VKB39NCA
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KNDG9RN00GK5KSSAKREDQX5M
+        timestamp: 2026-04-05T00:22:20.778Z
+      - _ulid: 01KNDG9V8NWKS2ARVCRD5WZ8BE
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KNDG9TG9NZA4BJX7HF6SP8ZD
+        timestamp: 2026-04-05T00:22:22.741Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -115382,7 +115410,76 @@ reviews:
               ServerWebSocket type import used in 5+ files will need a runtime-agnostic type alias.'
             created_at: 2026-04-05T00:21:50.026Z
         kind: blocker
+      - _ulid: 01KNDG9MSTNYP2VB0P8WMR6VVB
+        anchor:
+          type: structured
+          ref: "@task-daemon-spawn-runtime"
+          section: tasks
+        entries:
+          - _ulid: 01KNDG9MSTZP2QYQ5DQZKJS9GY
+            author: "@claude"
+            body: tsx is a devDependency (package.json line 96). The plan acknowledges this in Implementation
+              Notes ("tsx needs to be a regular dependency or found via npx") and the task says to
+              use npx tsx. However, npx tsx has meaningful overhead on every daemon spawn — it
+              resolves the package, potentially downloads it, then runs it. For auto-start (which
+              happens on every kspec CLI invocation when auto_start is true), this adds latency to
+              every command. Should tsx be promoted to a regular dependency, or should the plan
+              specify building the daemon to JS (eliminating the tsx requirement for node)? The plan
+              mentions this tangentially ("the build pipeline needs to compile to .js — addressed
+              separately if needed") but it should be a deliberate decision, not a deferred one.
+            created_at: 2026-04-05T00:22:16.122Z
+        kind: question
+      - _ulid: 01KNDG9PQHYT90XWS86NQCRES6
+        anchor:
+          type: structured
+          ref: "@daemon-runtime-adapter"
+          section: specs
+        entries:
+          - _ulid: 01KNDG9PQH7F2HVQFJ94A9DME5
+            author: "@claude"
+            body: The spec has no AC for the ws.publish() / topic broadcast mechanism. Under bun,
+              ws.publish(topic, message) is the native pub/sub broadcast. Under crossws,
+              subscribe/unsubscribe are no-ops (the plan notes this), which means ws.publish() also
+              does not work — messages do not reach subscribers because there are no transport-level
+              subscriptions. The pubsub.ts broadcastToTopic() at line 148+ likely iterates
+              connections and calls ws.send() directly, which would work. But if any code path uses
+              ws.publish(), it will silently fail on node. This needs verification and an AC if the
+              behavior differs.
+            created_at: 2026-04-05T00:22:18.097Z
+        kind: question
+      - _ulid: 01KNDG9RN00GK5KSSAKREDQX5M
+        anchor:
+          type: structured
+          ref: "@task-elysia-node-adapter"
+          section: tasks
+        entries:
+          - _ulid: 01KNDG9RN0P6GBX1ACNQE9RNJK
+            author: "@claude"
+            body: No version compatibility verification for @elysiajs/node. The task says "Check version
+              compatibility with the current elysia version (^1.1.31). The node adapter versioning
+              typically tracks the main Elysia version." This is a hope, not a verified fact. The
+              Elysia node adapter (@elysiajs/node) was released later and may have different version
+              constraints. If the adapter requires elysia ^1.2 or ^2.0, the plan needs to account
+              for an Elysia upgrade or pin to a specific adapter version. This should be verified
+              before the plan is approved — check npm for the adapter version range.
+            created_at: 2026-04-05T00:22:20.064Z
+        kind: question
+      - _ulid: 01KNDG9TG9NZA4BJX7HF6SP8ZD
+        anchor:
+          type: structured
+          section: dependencies
+        entries:
+          - _ulid: 01KNDG9TGA06NDP2Y6E7QV013E
+            author: "@claude"
+            body: "Priority inversion: task-scope-ws-heartbeat-acs (P1) is documentation-only and has no
+              dependents. It could be P2 or P3 without affecting any other task. Meanwhile,
+              task-ws-degradation-node (P2) is functionally critical — if the daemon runs on node
+              without the heartbeat guard, ws.ping() will throw and crash the heartbeat interval,
+              killing all connection monitoring. Consider swapping priorities or at least making
+              task-ws-degradation-node P1."
+            created_at: 2026-04-05T00:22:21.962Z
+        kind: question
     verdicts: []
     created_at: 2026-04-05T00:21:12.273Z
-    updated_at: 2026-04-05T00:21:50.026Z
+    updated_at: 2026-04-05T00:22:21.962Z
     notes: []
