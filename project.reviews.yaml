@@ -116065,6 +116065,16 @@ reviews:
         required: true
         created_at: 2026-04-05T04:34:35.121Z
         completed_at: 2026-04-05T04:34:35.121Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "AC removed from spec. No orphaned references in any task Covers: line. Description
+          sentence about compiled JS also removed."
+        name: ac-compiled-output removal
+        required: true
+        created_at: 2026-04-05T04:34:40.645Z
+        completed_at: 2026-04-05T04:34:40.645Z
     events:
       - _ulid: 01KNDYPZASWD8PCDZZ9S2H9994
         actor: "@claude"
@@ -116079,6 +116089,13 @@ reviews:
           status: pass
           name: "AC quality: runtime-generic language"
         timestamp: 2026-04-05T04:34:36.158Z
+      - _ulid: 01KNDYQVCJYTX04635BED0Z9D1
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-compiled-output removal
+        timestamp: 2026-04-05T04:34:41.682Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -116091,5 +116108,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-05T04:34:12.954Z
-    updated_at: 2026-04-05T04:34:35.121Z
+    updated_at: 2026-04-05T04:34:40.645Z
     notes: []
