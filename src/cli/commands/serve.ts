@@ -32,13 +32,27 @@ type DaemonRuntime = "bun" | "node";
 /**
  * Check if Bun runtime is available.
  */
-function isBunAvailable(): boolean {
+function isRuntimeAvailable(runtime: DaemonRuntime): boolean {
   try {
-    execSync("bun --version", { stdio: "pipe" });
+    execSync(`${runtime} --version`, { stdio: "pipe" });
     return true;
   } catch {
     return false;
   }
+}
+
+function getRuntimeInstallHint(runtime: DaemonRuntime): string {
+  if (runtime === "bun") {
+    return process.platform === "win32"
+      ? 'Install Bun: powershell -c "irm bun.sh/install.ps1 | iex"'
+      : "Install Bun: curl -fsSL https://bun.sh/install | bash";
+  }
+
+  return "Install Node.js: https://nodejs.org/en/download";
+}
+
+function getRuntimeInstallUrl(runtime: DaemonRuntime): string {
+  return runtime === "bun" ? "https://bun.sh/docs/installation" : "https://nodejs.org/en/download";
 }
 
 const __filename = fileURLToPath(import.meta.url);
@@ -117,8 +131,8 @@ async function resolveDaemonRuntime(kspecDir: string): Promise<DaemonRuntime> {
   return config.daemon.runtime;
 }
 
-function getDaemonRuntimeCommand(runtime: DaemonRuntime): string {
-  return runtime === "node" ? process.execPath : "bun";
+export function getDaemonRuntimeCommand(runtime: DaemonRuntime): string {
+  return runtime;
 }
 
 export function buildDaemonChildEnv(
@@ -321,22 +335,21 @@ async function startServer(opts: {
   }
 
   // AC: @web-ui ac-2 — clear error with install URL when Bun is missing
-  if (runtime === "bun" && !isBunAvailable()) {
-    const installHint =
-      process.platform === "win32"
-        ? 'Install Bun: powershell -c "irm bun.sh/install.ps1 | iex"'
-        : "Install Bun: curl -fsSL https://bun.sh/install | bash";
+  // AC: @daemon-runtime-adapter ac-runtime-missing
+  if (!isRuntimeAvailable(runtime)) {
+    const runtimeName = runtime === "bun" ? "Bun" : "Node";
+    const installHint = getRuntimeInstallHint(runtime);
+    const installUrl = getRuntimeInstallUrl(runtime);
     if (isJsonMode()) {
       output({
-        error: "Bun runtime is required for the kspec daemon",
+        error: `${runtimeName} runtime is required for the kspec daemon`,
         hint: installHint,
-        url: "https://bun.sh/docs/installation",
+        url: installUrl,
       });
     } else {
-      error("Bun runtime is required for the kspec daemon");
-      error("The daemon uses Elysia (a Bun-native framework) and cannot run on Node.js alone.");
+      error(`${runtimeName} runtime is required for the kspec daemon`);
       info(installHint);
-      info("For more options: https://bun.sh/docs/installation");
+      info(`For more options: ${installUrl}`);
     }
     process.exit(EXIT_CODES.ERROR);
   }
