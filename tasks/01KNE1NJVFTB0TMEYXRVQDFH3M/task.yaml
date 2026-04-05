@@ -1,0 +1,82 @@
+_ulid: 01KNE1NJVFTB0TMEYXRVQDFH3M
+slugs:
+  - task-daemon-compile-js
+title: Compile daemon TypeScript to JavaScript for dual-runtime support
+type: task
+description: |
+  Change the daemon build pipeline to compile TypeScript to
+  JavaScript so both bun and node can execute the output without
+  a TypeScript loader.
+
+  Why: The current build:daemon script (package.json line 42)
+  copies raw .ts files to dist/daemon/ and relies on bun's native
+  TypeScript execution. Node cannot run .ts files without a loader
+  like tsx. Compiling to JS eliminates this dependency and makes
+  both runtimes execute the same output. Bun can also run compiled
+  JS, so this is a unifying change, not a regression.
+
+  The current daemon tsconfig (packages/daemon/tsconfig.json) has
+  two bun-specific settings that need updating:
+  - "types": ["bun-types"] — makes bun globals (Bun.file,
+    ServerWebSocket) available globally, providing false type
+    safety when building for node
+  - "moduleResolution": "bundler" — bun's resolution strategy
+
+  What:
+
+  1. Update packages/daemon/tsconfig.json:
+     - Remove "bun-types" from the types array. Instead, use
+       explicit type imports where bun types are needed (the
+       existing `import type { ServerWebSocket } from "bun"`
+       statements already do this).
+     - Add a conditional type reference or runtime type shim
+       for Bun.file() (which will be replaced in a later task).
+
+  2. Add a build step that compiles the daemon TypeScript to
+     JavaScript. Options include:
+     - tsc with the daemon's tsconfig (produces .js + .d.ts)
+     - A bundler like vite/esbuild (produces a single or few
+       .js files, resolves imports)
+
+     A bundler is preferred because it resolves the .js extension
+     imports (e.g. import from "./server.js" resolving to
+     server.ts) and produces self-contained output. The existing
+     entity-cache.ts in src/daemon/ that gets copied into
+     dist/daemon/ also needs to be included in the build input.
+
+  3. Update the build:daemon script in package.json to invoke
+     the compilation instead of copying raw .ts files.
+
+  4. Update the daemon entry point reference in serve.ts (line 278)
+     from dist/daemon/index.ts to dist/daemon/index.js.
+
+  5. Update maybeAutoStartDaemon in src/cli/index.ts — it already
+     references dist/daemon/index.js (line 169), so it should
+     continue working. Verify this.
+
+  How: Choose a build tool (vite or esbuild recommended — both
+  are already available in the project). Configure it to compile
+  packages/daemon/src/ + src/daemon/entity-cache.ts into
+  dist/daemon/ as JavaScript. Test that the compiled output runs
+  under both `bun dist/daemon/index.js` and `node dist/daemon/index.js`.
+  Update the tsconfig types to remove global bun-types. Add tests
+  that verify the build produces valid JS output.
+
+  Covers: @daemon-runtime-adapter ac-runtime-selection (enables
+  both runtimes to execute the daemon).
+spec_ref: "@daemon-runtime-adapter"
+plan_ref: "@plan-configurable-daemon-runtime"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-scope-ac16-bun-only"
+context: []
+priority: 1
+tags:
+  - daemon
+  - build
+  - node
+vcs_refs: []
+created_at: 2026-04-05T05:25:53.135Z
+todos: []

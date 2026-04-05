@@ -1,0 +1,92 @@
+_ulid: 01KNE1NM5ZEA6RPA7XN1R8ZPEA
+slugs:
+  - task-ws-degradation-node
+title: Handle WebSocket API gaps for node runtime
+type: task
+description: |
+  Ensure the daemon's WebSocket features degrade gracefully when
+  running on node, where certain bun-native WebSocket APIs are
+  unavailable.
+
+  Why: The Elysia node adapter uses the crossws library for
+  WebSocket support. crossws wraps the ws npm package but does not
+  expose all of bun's native ServerWebSocket APIs. Specifically:
+
+  - ws.ping() is not available (crossws Peer has no ping method)
+  - The pong event handler does not fire (crossws only maps open,
+    message, close, error — not pong)
+  - ws.getBufferedAmount() is not available (crossws Peer has no
+    equivalent)
+  - ws.subscribe() / ws.unsubscribe() are no-ops (track topics
+    in a Set but don't create transport-level pub/sub)
+
+  The subscribe/unsubscribe and getBufferedAmount calls are already
+  guarded with optional chaining (?.) and fallback values, so they
+  won't crash. But ws.ping() in heartbeat.ts:51 is called directly
+  and will throw if the method doesn't exist.
+
+  What: Four changes:
+
+  1. In packages/daemon/src/websocket/heartbeat.ts, guard the
+     ws.ping() call. Check if the method exists before calling:
+
+       if (typeof ws.ping === "function") {
+         ws.ping();
+       }
+
+     When ping is unavailable, skip heartbeat enforcement for
+     that connection entirely. Do not close connections for
+     missing pong when ping was never sent — the pong timeout
+     check must be conditional on whether a ping was actually
+     sent.
+
+  2. Handle the missing pong handler. The pong callback at
+     server.ts:524 calls heartbeatManager.recordPong(ws). Under
+     crossws, this callback never fires because crossws doesn't
+     map pong events. This is safe — recordPong just updates a
+     timestamp, and if ping was never sent (step 1), the timeout
+     check won't fire either. Verify this logic holds by tracing
+     the heartbeat flow: if lastPing is never set (ping skipped),
+     the timeout comparison should not trigger connection closure.
+
+  3. Log a one-time warning at daemon startup when running on
+     node indicating WebSocket heartbeat is degraded:
+     "[daemon] Running on node: WebSocket heartbeat ping/pong
+     is unavailable. Dead connection detection is disabled."
+
+  4. Verify existing guards are sufficient:
+     - pubsub.ts:40 ws.subscribe?.() — already safe
+     - pubsub.ts:49 ws.unsubscribe?.() — already safe
+     - pubsub.ts:166 ws.getBufferedAmount?.() ?? 0 — already safe
+     - The daemon's PubSubManager.broadcast() iterates connections
+       and calls ws.send() directly — it does NOT use bun's
+       ws.publish() for topic-based broadcast, so this path
+       works on both runtimes.
+
+  How: Edit heartbeat.ts to add the typeof guard on ws.ping().
+  Verify the timeout logic is safe when ping is skipped (trace
+  the lastPing/lastPong flow). Add the startup warning in
+  server.ts (after server starts, check runtime and log). Write
+  tests that verify: ping is skipped when ws.ping is undefined,
+  connections are not reaped when ping was never sent, startup
+  warning is logged on node runtime.
+
+  Covers: @daemon-runtime-adapter ac-heartbeat-degradation,
+  ac-backpressure-degradation, ac-websocket-parity.
+spec_ref: "@daemon-runtime-adapter"
+plan_ref: "@plan-configurable-daemon-runtime"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-ws-connection-state-abstraction"
+  - "@task-elysia-node-adapter"
+context: []
+priority: 1
+tags:
+  - daemon
+  - websocket
+  - node
+vcs_refs: []
+created_at: 2026-04-05T05:25:54.495Z
+todos: []

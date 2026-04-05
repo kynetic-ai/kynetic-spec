@@ -1,0 +1,87 @@
+_ulid: 01KNE1NKN6KPZD6YT997NW0D93
+slugs:
+  - task-elysia-node-adapter
+title: Install and wire Elysia node adapter in daemon server
+type: task
+description: |
+  Install @elysiajs/node and conditionally apply the node adapter
+  when the daemon is configured to run on node.
+
+  Why: Elysia is the HTTP/WebSocket framework used by the daemon.
+  By default it uses bun's native HTTP server. The @elysiajs/node
+  package provides an adapter that lets Elysia run on node using
+  standard Node.js HTTP and the crossws WebSocket library. The
+  daemon needs to apply this adapter when running under node.
+
+  What: Four changes:
+
+  1. Add @elysiajs/node as a dependency in packages/daemon/
+     package.json. Verify version compatibility with the current
+     elysia version (^1.1.31). Check the @elysiajs/node npm page
+     or changelog — the node adapter version should be compatible
+     with the installed Elysia version. If not, update both
+     together. Document the verified compatible version pairing
+     in a task note.
+
+  2. In packages/daemon/src/server.ts, accept a runtime parameter
+     (passed from the entry point). When runtime is "node",
+     import and apply the adapter:
+
+       import { node } from "@elysiajs/node";
+       const app = new Elysia(
+         runtime === "node" ? { adapter: node() } : {}
+       );
+
+  3. Replace the Bun.file() usage at line 571 of server.ts with
+     a runtime-agnostic alternative. Bun.file() returns a Response
+     from a file path. The replacement should work on both runtimes:
+
+       import { readFileSync } from "fs";
+       // Read once at startup, serve from memory
+       const indexHtml = readFileSync(indexHtmlPath);
+       app.get(route, () => new Response(
+         indexHtml,
+         { headers: { "Content-Type": "text/html" } }
+       ));
+
+     Verify there are no other Bun.file() calls in the daemon
+     codebase (grep for "Bun\." across packages/daemon/src/).
+
+  4. Handle the shutdown path. The current shutdown at line 728
+     calls app.server?.stop(). Under the node adapter, the server
+     object is a Node http.Server which uses .close() not .stop().
+     Use a runtime-aware shutdown:
+
+       if (app.server) {
+         if (typeof app.server.stop === "function") {
+           app.server.stop();
+         } else if (typeof app.server.close === "function") {
+           app.server.close();
+         }
+       }
+
+  How: Install the dependency, make the server.ts changes above,
+  and verify the daemon starts and serves HTTP routes under both
+  runtimes. The runtime value should be passed from the entry
+  point (index.ts) via CLI argument or environment variable.
+  Write a test that verifies the adapter is applied when runtime
+  is "node" and not applied when runtime is "bun".
+
+  Covers: @daemon-runtime-adapter ac-http-parity, ac-graceful-shutdown.
+spec_ref: "@daemon-runtime-adapter"
+plan_ref: "@plan-configurable-daemon-runtime"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-daemon-runtime-config"
+  - "@task-ws-connection-state-abstraction"
+context: []
+priority: 1
+tags:
+  - daemon
+  - server
+  - node
+vcs_refs: []
+created_at: 2026-04-05T05:25:53.958Z
+todos: []

@@ -1,0 +1,72 @@
+_ulid: 01KNE1NKXMCW3FZTNYK2QK5WFT
+slugs:
+  - task-daemon-spawn-runtime
+title: Update daemon spawn to use configured runtime
+type: task
+description: |
+  Update the serve command and auto-start to spawn the daemon using
+  the configured runtime instead of hardcoding bun.
+
+  Why: The serve command (src/cli/commands/serve.ts) hardcodes
+  "bun" as the spawn runtime at lines 322 and 372. The auto-start
+  function (src/cli/index.ts line 177) uses process.execPath which
+  inherits whatever runtime is running the CLI. Neither reads the
+  daemon.runtime config. Both need to read the config and spawn
+  accordingly.
+
+  What: Five changes:
+
+  1. In src/cli/commands/serve.ts, read the daemon.runtime config
+     value (from the project's kspec.config.yaml). Replace the
+     hardcoded "bun" at lines 322 and 372 with the config value.
+
+  2. When runtime is "node", spawn with:
+       spawn("node", [daemonBinary, ...args])
+     The daemon binary is now compiled JavaScript
+     (dist/daemon/index.js) thanks to the build pipeline task,
+     so node can execute it directly without tsx.
+
+     When runtime is "bun", spawn with:
+       spawn("bun", [daemonBinary, ...args])
+     Bun can also run the compiled .js output.
+
+  3. Update buildDaemonChildEnv() (line 109) to set NODE_ENV
+     instead of BUN_ENV when runtime is "node". When runtime is
+     "bun", continue setting BUN_ENV as before.
+
+  4. Update the bun availability check (lines 293-312) to only
+     run when runtime is "bun". When runtime is "node", check
+     that node is available instead. Update the error messages
+     to reference the correct runtime and remove the outdated
+     "cannot run on Node.js alone" message.
+
+  5. Update maybeAutoStartDaemon in src/cli/index.ts to read the
+     daemon.runtime config and use the configured runtime instead
+     of process.execPath. Auto-start already references
+     dist/daemon/index.js (line 169), which aligns with the
+     compiled output from the build pipeline task.
+
+  How: Edit serve.ts and index.ts as described. The config read
+  should use the same initContext/loadConfig path that resolves
+  daemon.port. Test that `kspec serve start` with runtime: node
+  spawns node instead of bun, and that `kspec serve start` with
+  no runtime config spawns bun. Test that auto-start reads config.
+
+  Covers: @daemon-runtime-adapter ac-runtime-selection,
+  ac-default-bun, ac-auto-start-runtime, ac-runtime-missing.
+spec_ref: "@daemon-runtime-adapter"
+plan_ref: "@plan-configurable-daemon-runtime"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-elysia-node-adapter"
+context: []
+priority: 1
+tags:
+  - daemon
+  - cli
+  - node
+vcs_refs: []
+created_at: 2026-04-05T05:25:54.228Z
+todos: []

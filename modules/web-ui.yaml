@@ -3904,6 +3904,113 @@ features:
     tags: []
     created: 2026-04-04T23:34:26.208Z
     notes: []
+  - _ulid: 01KNE1NJH5963SNM24G43V52ZE
+    slugs:
+      - daemon-runtime-adapter
+    title: Configurable Daemon Runtime
+    type: feature
+    description: |
+      The daemon supports running on multiple JavaScript runtimes. The
+      runtime is selected at startup via configuration, with bun as the
+      default for backward compatibility. When running on an alternative
+      runtime, the server uses a runtime adapter for HTTP and WebSocket
+      handling. Features that depend on runtime-specific APIs degrade
+      gracefully when unavailable rather than crashing.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    acceptance_criteria:
+      - given: |
+          The user has configured a daemon runtime preference
+        id: ac-runtime-selection
+        then: |
+          The daemon spawns using the configured runtime
+        when: |
+          The daemon starts
+      - given: |
+          No runtime preference is configured
+        id: ac-default-bun
+        then: |
+          By default the daemon spawns using bun
+        when: |
+          The daemon starts
+      - given: |
+          The daemon is running on any configured runtime
+        id: ac-http-parity
+        then: |
+          All routes serve correctly regardless of runtime
+        when: |
+          HTTP API requests arrive, including SPA fallback routes
+      - given: |
+          The daemon is running on any configured runtime
+        id: ac-websocket-parity
+        then: |
+          The client receives connection events, topic subscriptions,
+          and broadcast messages regardless of runtime
+        when: |
+          A WebSocket client connects
+      - given: |
+          The daemon is running on any supported runtime
+        id: ac-connection-state
+        then: |
+          Per-connection state (session ID, subscribed topics, sequence
+          number, heartbeat timestamps, project path) is tracked and
+          accessible throughout the connection lifecycle
+        when: |
+          A WebSocket client connects and interacts with the server
+      - given: |
+          The daemon is running on a runtime where frame-level WebSocket
+          ping is unavailable
+        id: ac-heartbeat-degradation
+        then: |
+          The connection remains open without heartbeat enforcement and
+          a warning is logged at startup indicating degraded heartbeat
+        when: |
+          A WebSocket connection is idle
+      - given: |
+          The daemon is running on a runtime where buffered amount
+          queries are unavailable
+        id: ac-backpressure-degradation
+        then: |
+          Broadcasts proceed without backpressure checks rather than
+          failing
+        when: |
+          The server broadcasts to WebSocket clients
+      - given: |
+          The daemon is running on any supported runtime
+        id: ac-runtime-health
+        then: |
+          The response includes which runtime the daemon is using
+        when: |
+          The health endpoint is called
+      - given: |
+          The daemon is running on any supported runtime
+        id: ac-graceful-shutdown
+        then: |
+          The daemon shuts down cleanly, closing connections and
+          removing the PID file
+        when: |
+          A shutdown signal is received or stop is requested
+      - given: |
+          Auto-start is enabled and a runtime preference is configured
+        id: ac-auto-start-runtime
+        then: |
+          The auto-started daemon uses the configured runtime
+        when: |
+          The daemon auto-starts in the background
+      - given: |
+          The configured runtime is not installed on the system
+        id: ac-runtime-missing
+        then: |
+          A clear error message names the missing runtime and provides
+          installation guidance
+        when: |
+          The daemon attempts to start
+    tags: []
+    created: 2026-04-05T05:25:52.805Z
+    notes: []
 requirements:
   - _ulid: 01KJZH33ZQ6DS7KTNFCRBBBBVX
     slugs:

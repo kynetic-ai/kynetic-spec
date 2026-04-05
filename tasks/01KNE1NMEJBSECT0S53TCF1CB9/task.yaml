@@ -1,0 +1,44 @@
+_ulid: 01KNE1NMEJBSECT0S53TCF1CB9
+slugs:
+  - task-health-runtime-field
+title: Add runtime field to health endpoint response
+type: task
+description: |
+  Add a runtime field to the GET /api/health response so operators
+  can verify which runtime the daemon is using.
+
+  Why: When the daemon supports multiple runtimes, operators and
+  tooling need to know which runtime is active. The health endpoint
+  already returns status, uptime, connections, and version. Adding
+  the runtime field makes it easy to verify the configuration took
+  effect, and aids debugging when behavior differs between runtimes.
+
+  What: Add a "runtime" field to the health endpoint response.
+  The value should be "bun" or "node" based on which runtime the
+  daemon was started with. The runtime value is available from the
+  same source that the server adapter selection uses (CLI argument
+  or environment variable passed at spawn time).
+
+  How: In the health route handler (packages/daemon/src/routes/
+  or server.ts — find the GET /api/health handler), add the
+  runtime field to the response object. The runtime value should
+  be determined once at startup and stored in a module-level
+  variable or passed through the server context. Write a test
+  that verifies the health response includes the runtime field.
+
+  Covers: @daemon-runtime-adapter ac-runtime-health.
+spec_ref: "@daemon-runtime-adapter"
+plan_ref: "@plan-configurable-daemon-runtime"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-daemon-spawn-runtime"
+context: []
+priority: 2
+tags:
+  - daemon
+  - api
+vcs_refs: []
+created_at: 2026-04-05T05:25:54.770Z
+todos: []

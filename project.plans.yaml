@@ -36278,11 +36278,21 @@ plans:
       depends on both. Phase 6 (spawn) depends on the adapter. Phase 7
       (WS degradation) depends on the ws.data abstraction and adapter.
       Phase 8 (health) and Phase 9 (E2E) are lower priority follow-ups.
-    status: approved
+    status: active
     approved_at: 2026-04-05T05:25:34.604Z
     branch: plan/plan-configurable-daemon-runtime/01kndgvz
-    derived_specs: []
-    derived_tasks: []
+    derived_specs:
+      - "@daemon-runtime-adapter"
+    derived_tasks:
+      - "@task-scope-ac16-bun-only"
+      - "@task-daemon-compile-js"
+      - "@task-daemon-runtime-config"
+      - "@task-ws-connection-state-abstraction"
+      - "@task-elysia-node-adapter"
+      - "@task-daemon-spawn-runtime"
+      - "@task-ws-degradation-node"
+      - "@task-health-runtime-field"
+      - "@task-e2e-runtime-aware"
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec/plans/daemon-node-runtime.md
     created_at: 2026-04-05T00:32:17.328Z
@@ -36298,3 +36308,108 @@ plans:
           already confirmed during design
         author: "@claude"
         created_at: 2026-04-05T04:41:11.962Z
+      - _ulid: 01KNE1NN1AY33W0N1J74NJNNFZ
+        content: |-
+          ### Motivation
+
+          The daemon freezes under sustained load due to a bun runtime deadlock
+          (oven-sh/bun#26762) — a lock ordering violation between
+          GeneralPurposeAllocator and the thread pool drain mechanism. All threads
+          end up in futex_wait with zero CPU and the event loop stops polling
+          epoll entirely. The fix PRs are open but unmerged. The granular cache
+          invalidation plan (@plan-granular-cache-invalidation) reduces the
+          triggering I/O burst but will take time to implement and test. Running
+          on node eliminates the bun-specific deadlock entirely as an interim
+          measure while both long-term fixes progress.
+
+          ### Why configurable, not a hard switch
+
+          Bun provides meaningful benefits: native TypeScript execution, faster
+          HTTP serving, built-in WebSocket pub/sub, and standalone binary
+          compilation (ac-16). The node runtime is a workaround for a specific
+          bug, not a permanent migration. Making it configurable lets users
+          switch between runtimes without code changes, and lets the project
+          switch back to bun-only when the deadlock is fixed upstream.
+
+          ### Compiled JS eliminates the tsx dependency
+
+          Rather than running TypeScript source on node via tsx (a devDependency
+          with spawn latency overhead), the daemon is compiled to JavaScript.
+          Both bun and node execute the compiled .js output. This:
+          - Eliminates the need for tsx as a runtime dependency
+          - Unifies the entry point (dist/daemon/index.js for both runtimes)
+          - Resolves the auto-start divergence (maybeAutoStartDaemon already
+            uses dist/daemon/index.js)
+          - Avoids moduleResolution differences between bun's "bundler" mode
+            and node's module resolver (compiled output has resolved imports)
+
+          Build tool options: vite or esbuild (both available in the project).
+          The build must include packages/daemon/src/ and src/daemon/entity-cache.ts.
+
+          ### Elysia node adapter
+
+          Elysia provides @elysiajs/node, a runtime adapter that uses Node's
+          native HTTP server and the crossws library for WebSocket support. The
+          adapter is applied at Elysia construction time:
+
+            import { node } from "@elysiajs/node";
+            const app = new Elysia({ adapter: node() });
+
+          All Elysia routes, plugins, and middleware work identically. The gaps
+          are in WebSocket-specific APIs that bun's ServerWebSocket provides
+          but crossws does not: ping(), pong handler, getBufferedAmount(), and
+          transport-level subscribe/unsubscribe.
+
+          Version compatibility: @elysiajs/node versioning tracks the main Elysia
+          version. The task to install it must verify compatibility with the
+          current elysia ^1.1.31 and document the verified pairing.
+
+          ### ws.data and per-connection state
+
+          The daemon stores all per-connection state (sessionId, topics, seq,
+          lastPing, lastPong, projectPath) on bun's ws.data property. This is
+          the largest bun-specific API surface in the codebase (~20 call sites
+          across 5 files). Under crossws, ws.data may not be available or may
+          behave differently. The plan abstracts this into a WeakMap-based
+          ConnectionStateManager that works on any runtime. The WeakMap uses the
+          WebSocket object as the key, so state is automatically GC'd when the
+          connection closes.
+
+          ### What's already runtime-agnostic
+
+          Most of the daemon codebase has no bun dependencies:
+          - PID file management (packages/daemon/src/pid.ts)
+          - Watcher health monitor
+          - Entity cache (src/daemon/entity-cache.ts)
+          - Session watcher (chokidar-based)
+          - All route handlers
+          - Dispatch engine
+          - Signal handling (SIGTERM/SIGINT)
+
+          ### Bun-specific surface area (complete list)
+
+          1. Bun.file() — server.ts:571 (SPA fallback routes)
+          2. ServerWebSocket type — 5 files (type-only imports, erased at compile)
+          3. ws.data — ~20 call sites across 5 websocket files (connection state)
+          4. ws.ping() — heartbeat.ts:51 (heartbeat sending)
+          5. pong handler — server.ts:524 (heartbeat tracking, never fires on node)
+          6. ws.getBufferedAmount() — pubsub.ts:166 (backpressure, already guarded)
+          7. ws.subscribe/unsubscribe — pubsub.ts:40,49 (already guarded)
+          8. app.server?.stop() — server.ts:728 (shutdown)
+          9. "bun" spawn — serve.ts:322,372 (daemon startup)
+          10. BUN_ENV env var — serve.ts:111
+          11. #!/usr/bin/env bun shebang — index.ts:1 (cosmetic)
+          12. tsconfig "types": ["bun-types"] — packages/daemon/tsconfig.json
+          13. tsconfig "moduleResolution": "bundler" — packages/daemon/tsconfig.json
+
+          ### Phasing rationale
+
+          Phase 1 (spec updates) establishes contracts before code changes.
+          Phase 2 (build pipeline) is the foundation — compiled JS enables
+          everything else. Phase 3 (config) and Phase 4 (ws.data abstraction)
+          are independent and can be parallelized. Phase 5 (server adapter)
+          depends on both. Phase 6 (spawn) depends on the adapter. Phase 7
+          (WS degradation) depends on the ws.data abstraction and adapter.
+          Phase 8 (health) and Phase 9 (E2E) are lower priority follow-ups.
+        author: "@claude"
+        created_at: 2026-04-05T05:25:55.370Z

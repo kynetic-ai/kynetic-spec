@@ -1,0 +1,58 @@
+_ulid: 01KNE1NMR6HFEVDHMWDH0PGTWH
+slugs:
+  - task-e2e-runtime-aware
+title: Update E2E test fixture to support configurable runtime
+type: task
+description: |
+  Update the E2E test fixture to support running tests against
+  either bun or node daemon runtime.
+
+  Why: The E2E test fixture (tests/e2e/fixtures/test-base.ts)
+  hardcodes "bun" as the daemon runtime at line 208 and checks
+  bun availability at lines 67-86. To verify that the daemon
+  works correctly on node, the test fixture needs to support
+  spawning the daemon with either runtime. This also serves as
+  integration-level verification that all the runtime adapter
+  changes work end-to-end.
+
+  What: Update tests/e2e/fixtures/test-base.ts:
+
+  1. Accept a runtime parameter (default "bun") that controls
+     which runtime is used to spawn the daemon.
+
+  2. When runtime is "node", spawn with node and the compiled
+     .js entry point. Update the availability check to verify
+     node is installed.
+
+  3. Add a test configuration option (environment variable or
+     Playwright config) to select the runtime for E2E runs.
+
+  This task does NOT require running the full E2E suite on node
+  as part of CI. It enables manual verification and makes future
+  CI matrix testing possible. The primary CI target remains bun.
+
+  How: Edit tests/e2e/fixtures/test-base.ts to parameterize the
+  runtime. Add a KSPEC_TEST_RUNTIME environment variable that
+  defaults to "bun". When set to "node", use node with the
+  compiled JS for spawning. Verify at least one E2E test passes
+  with KSPEC_TEST_RUNTIME=node manually.
+
+  Covers: @daemon-runtime-adapter ac-http-parity, ac-websocket-parity
+  (integration verification).
+spec_ref: "@daemon-runtime-adapter"
+plan_ref: "@plan-configurable-daemon-runtime"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-daemon-spawn-runtime"
+  - "@task-ws-degradation-node"
+context: []
+priority: 3
+tags:
+  - e2e
+  - testing
+  - daemon
+vcs_refs: []
+created_at: 2026-04-05T05:25:55.078Z
+todos: []
