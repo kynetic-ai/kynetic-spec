@@ -117828,6 +117828,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-05T08:59:53.619Z
+      - _ulid: 01KNEEF06DFH4B0TRC4MBAFS7K
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNEDWT2DBPVM3E819NJBM7E5
+        timestamp: 2026-04-05T09:09:28.909Z
     examined_commit: 3a2a1fa44fccbb2fff87d33daa35c3154f94e598
     external_links: []
     lifecycle_state: closed
@@ -117857,6 +117863,14 @@ reviews:
               CLI command, lets auto-start run, and verifies the spawned daemon process/runtime
               comes from daemon.runtime config.
             created_at: 2026-04-05T08:59:32.813Z
+          - _ulid: 01KNEEEZF4G9P3CF1SCAMVC4QW
+            author: Jacob Chapel
+            body: "Fixed: replaced the helper-level assertion with a behavioral auto-start test. The test now
+              runs the CLI under bun, configures daemon.runtime=node, strips leaked
+              KSPEC_NO_DAEMON/session env, triggers a non-serve command so maybeAutoStartDaemon
+              executes, waits for the daemon pid file, and verifies the spawned process command
+              contains node and dist/daemon/index.js."
+            created_at: 2026-04-05T09:09:28.164Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -117867,7 +117881,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-05T08:59:53.619Z
     created_at: 2026-04-05T08:53:06.068Z
-    updated_at: 2026-04-05T08:59:53.619Z
+    updated_at: 2026-04-05T09:09:28.164Z
     notes: []
   - _ulid: 01KNEE231SWR23XV1EH69G14YC
     slugs: []
