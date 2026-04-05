@@ -116974,6 +116974,18 @@ reviews:
         required: false
         created_at: 2026-04-05T07:40:30.162Z
         completed_at: 2026-04-05T07:40:30.162Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Both npm test runs failed on the same reviewed state. Failures are two tests in
+          tests/daemon-entity-cache.test.ts covering cache broadcast delivery; run 2 reused cached
+          identical failures. No hangs or timeouts occurred.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-05T07:40:55.989Z
+        completed_at: 2026-04-05T07:40:55.989Z
     events:
       - _ulid: 01KNE943THVDSN8PV5W1PPAZXS
         actor: Jacob Chapel
@@ -117016,6 +117028,13 @@ reviews:
           kind: nit
           thread_ulid: 01KNE9CSJF6GQCW2EV2VFW2DGZ
         timestamp: 2026-04-05T07:40:54.477Z
+      - _ulid: 01KNE9CWJJDJR9JC9F0ZJK7AEY
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-04-05T07:40:56.786Z
     examined_commit: 778b1b6e671dc0279b83d97486aaf27e574257df
     external_links: []
     lifecycle_state: open
@@ -117072,5 +117091,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-05T07:36:09.297Z
-    updated_at: 2026-04-05T07:40:53.711Z
+    updated_at: 2026-04-05T07:40:55.989Z
     notes: []
