@@ -14,9 +14,9 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import * as path from "node:path";
 import { Elysia } from "elysia";
 import { createTempDir, cleanupTempDir, initGitRepo, testUlid } from "./helpers/cli";
-import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.ts";
-import { createReviewsRoutes } from "../dist/daemon/routes/reviews.ts";
-import { PubSubManager } from "../dist/daemon/websocket/pubsub.ts";
+import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.js";
+import { createReviewsRoutes } from "../dist/daemon/routes/reviews.js";
+import { PubSubManager } from "../dist/daemon/websocket/pubsub.js";
 
 // Test ULIDs
 const REVIEW_OPEN_ULID = testUlid("RVOP", 1);

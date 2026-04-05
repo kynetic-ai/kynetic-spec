@@ -11,7 +11,7 @@
 
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
-import { wrapResponse, toCacheStatus } from "../dist/daemon/routes/response-envelope.ts";
+import { wrapResponse, toCacheStatus } from "../dist/daemon/routes/response-envelope.js";
 import {
   CacheStatusSchema,
   ApiResponseMetaSchema,

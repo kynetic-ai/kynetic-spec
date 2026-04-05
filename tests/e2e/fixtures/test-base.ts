@@ -10,7 +10,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Daemon entry point — spawned directly via bun to avoid CLI PID-file timeout
-const DAEMON_ENTRY = join(__dirname, "../../../dist/daemon/index.ts");
+const DAEMON_ENTRY = join(__dirname, "../../../dist/daemon/index.js");
 // CLI entry point — used for scoped `kspec serve stop` teardown (ac-4)
 const KSPEC_CLI = join(__dirname, "../../../dist/cli/index.js");
 

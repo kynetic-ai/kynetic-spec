@@ -51,8 +51,8 @@ function writeBuiltProjectFixture(rootDir: string): void {
   for (const artifact of [
     "dist/cli/index.js",
     "dist/web-ui/index.html",
-    "dist/daemon/index.ts",
-    "dist/daemon/entity-cache.ts",
+    "dist/daemon/index.js",
+    "dist/daemon/entity-cache.js",
   ]) {
     const fullPath = path.join(rootDir, artifact);
     fs.mkdirSync(path.dirname(fullPath), { recursive: true });
@@ -161,8 +161,8 @@ describe("test runner environment checks", () => {
         fs.rmSync(tempDir, { recursive: true, force: true });
       });
 
-      it("detects when dist/daemon/index.ts is missing", () => {
-        // Create all artifacts except dist/daemon/index.ts
+      it("detects when dist/daemon/index.js is missing", () => {
+        // Create all artifacts except dist/daemon/index.js
         for (const artifact of ["dist/cli/index.js", "dist/web-ui/index.html"]) {
           const fullPath = path.join(tempDir, artifact);
           fs.mkdirSync(path.dirname(fullPath), { recursive: true });
@@ -171,11 +171,11 @@ describe("test runner environment checks", () => {
 
         const result = runner.checkBuild(tempDir);
         expect(result.ok).toBe(false);
-        expect(result.reason).toContain("dist/daemon/index.ts not found");
+        expect(result.reason).toContain("dist/daemon/index.js not found");
       });
 
       it("detects when dist/web-ui/index.html is missing", () => {
-        for (const artifact of ["dist/cli/index.js", "dist/daemon/index.ts"]) {
+        for (const artifact of ["dist/cli/index.js", "dist/daemon/index.js"]) {
           const fullPath = path.join(tempDir, artifact);
           fs.mkdirSync(path.dirname(fullPath), { recursive: true });
           fs.writeFileSync(fullPath, "");
@@ -187,7 +187,7 @@ describe("test runner environment checks", () => {
       });
 
       it("detects when dist/cli/index.js is missing", () => {
-        for (const artifact of ["dist/web-ui/index.html", "dist/daemon/index.ts"]) {
+        for (const artifact of ["dist/web-ui/index.html", "dist/daemon/index.js"]) {
           const fullPath = path.join(tempDir, artifact);
           fs.mkdirSync(path.dirname(fullPath), { recursive: true });
           fs.writeFileSync(fullPath, "");
@@ -202,8 +202,8 @@ describe("test runner environment checks", () => {
         for (const artifact of [
           "dist/cli/index.js",
           "dist/web-ui/index.html",
-          "dist/daemon/index.ts",
-          "dist/daemon/entity-cache.ts",
+          "dist/daemon/index.js",
+          "dist/daemon/entity-cache.js",
         ]) {
           const fullPath = path.join(tempDir, artifact);
           fs.mkdirSync(path.dirname(fullPath), { recursive: true });
@@ -218,8 +218,8 @@ describe("test runner environment checks", () => {
         for (const artifact of [
           "dist/cli/index.js",
           "dist/web-ui/index.html",
-          "dist/daemon/index.ts",
-          "dist/daemon/entity-cache.ts",
+          "dist/daemon/index.js",
+          "dist/daemon/entity-cache.js",
         ]) {
           const fullPath = path.join(tempDir, artifact);
           fs.mkdirSync(path.dirname(fullPath), { recursive: true });

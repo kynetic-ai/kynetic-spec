@@ -9,8 +9,8 @@
  */
 
 import type { ServerWebSocket } from "bun";
-import type { WebSocketCommand, CommandAck, ConnectionData } from "./types";
-import type { PubSubManager } from "./pubsub";
+import type { WebSocketCommand, CommandAck, ConnectionData } from "./types.js";
+import type { PubSubManager } from "./pubsub.js";
 
 type WebSocketRawMessage =
   | string

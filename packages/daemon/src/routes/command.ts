@@ -18,7 +18,7 @@
 import { Elysia, t } from "elysia";
 import { ulid } from "ulidx";
 import type { Command } from "commander";
-import type { PubSubManager } from "../websocket/pubsub";
+import type { PubSubManager } from "../websocket/pubsub.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
 import type { CacheDomain } from "../../daemon/entity-cache.js";
 import { getDispatchShadowMutationLockPath } from "../../agent-runtime/workspace.js";

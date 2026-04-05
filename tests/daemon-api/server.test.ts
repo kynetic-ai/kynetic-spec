@@ -5,7 +5,7 @@
  * localhost-only enforcement, health endpoint, and non-API route bypass.
  *
  * Uses the production localhostOnly() middleware and CORS configuration
- * from dist/daemon/server.ts to ensure tests exercise the real code paths.
+ * from dist/daemon/server.js to ensure tests exercise the real code paths.
  *
  * Covered ACs:
  * - @daemon-server ac-1: Elysia HTTP server starts on configured port (verified by health check)
@@ -25,8 +25,8 @@
 import { cors } from "@elysiajs/cors";
 import { Elysia } from "elysia";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { localhostOnly } from "../../dist/daemon/server.ts";
-import { projectContextMiddleware } from "../../dist/daemon/middleware/project-context.ts";
+import { localhostOnly } from "../../dist/daemon/server.js";
+import { projectContextMiddleware } from "../../dist/daemon/middleware/project-context.js";
 import { cleanupTempDir, createTempDir, initGitRepo, setupFixtures } from "./helpers.js";
 
 let app: Elysia;

@@ -39,7 +39,7 @@ import {
 import { commitIfShadow } from "../../parser/shadow.js";
 import { TaskStatusSchema, TaskTypeSchema } from "../../schema/common.js";
 import { AutomationStatusSchema } from "../../schema/task.js";
-import type { PubSubManager } from "../websocket/pubsub";
+import type { PubSubManager } from "../websocket/pubsub.js";
 import { enumArrayUnion, enumUnion } from "./enum-utils.js";
 import { getRelatedSessionsForTask } from "./session-related.js";
 import { resolveRefTitle, resolveRefEntries } from "./ref-resolution.js";

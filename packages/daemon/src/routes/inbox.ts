@@ -23,7 +23,7 @@ import {
   type InboxItemInput,
 } from "../../parser/index.js";
 import { commitIfShadow } from "../../parser/shadow.js";
-import type { PubSubManager } from "../websocket/pubsub";
+import type { PubSubManager } from "../websocket/pubsub.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
 import { wrapResponse } from "./response-envelope.js";
 

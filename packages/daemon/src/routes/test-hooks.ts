@@ -11,7 +11,7 @@
  */
 
 import { Elysia, t } from "elysia";
-import type { EntityCacheAccessor } from "./entity-cache-types";
+import type { EntityCacheAccessor } from "./entity-cache-types.js";
 
 interface TestHookRouteOptions {
   getEntityCache: EntityCacheAccessor;
@@ -22,7 +22,7 @@ export function createTestHookRoutes(options: TestHookRouteOptions) {
 
   // Lazy import to keep test-only code out of the hot path.
   // At runtime in dist/daemon/routes/, "../entity-cache.js" resolves to
-  // dist/daemon/entity-cache.ts (Bun handles .ts natively).
+  // dist/daemon/entity-cache.js.
   let entityCacheModule: {
     setTestDelay: (projectPath: string) => void;
     releaseTestDelay: (projectPath: string) => void;

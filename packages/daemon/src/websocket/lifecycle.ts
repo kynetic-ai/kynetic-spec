@@ -1,6 +1,6 @@
 import type { ServerWebSocket } from "bun";
-import type { ConnectionData } from "./types";
-import type { PubSubManager } from "./pubsub";
+import type { ConnectionData } from "./types.js";
+import type { PubSubManager } from "./pubsub.js";
 
 /**
  * Handle websocket close cleanup and logging with stable session identity.

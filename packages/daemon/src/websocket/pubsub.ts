@@ -12,7 +12,7 @@
 
 import type { ServerWebSocket } from "bun";
 import { ulid } from "ulidx";
-import type { BroadcastEvent, ConnectionData } from "./types";
+import type { BroadcastEvent, ConnectionData } from "./types.js";
 
 const SESSION_TOPIC_PREFIX = "__kspec_session:";
 

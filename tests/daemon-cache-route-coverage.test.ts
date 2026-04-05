@@ -18,17 +18,17 @@ import * as path from "node:path";
 import { Elysia } from "elysia";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { cleanupTempDir, createTempDir, initGitRepo, testUlid } from "./helpers/cli.js";
-import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.ts";
-import { createTasksRoutes } from "../dist/daemon/routes/tasks.ts";
-import { createItemsRoutes } from "../dist/daemon/routes/items.ts";
-import { createSessionRoutes } from "../dist/daemon/routes/sessions.ts";
-import { PubSubManager } from "../dist/daemon/websocket/pubsub.ts";
+import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.js";
+import { createTasksRoutes } from "../dist/daemon/routes/tasks.js";
+import { createItemsRoutes } from "../dist/daemon/routes/items.js";
+import { createSessionRoutes } from "../dist/daemon/routes/sessions.js";
+import { PubSubManager } from "../dist/daemon/websocket/pubsub.js";
 import type {
   RouteEntityCache,
   EntityCacheAccessor,
-} from "../dist/daemon/routes/entity-cache-types.ts";
+} from "../dist/daemon/routes/entity-cache-types.js";
 import type { TaskSummary } from "../dist/parser/task-data-manager.ts";
-import type { ItemSummary } from "../dist/daemon/entity-cache.ts";
+import type { ItemSummary } from "../dist/daemon/entity-cache.js";
 import type { SessionLogSummary } from "../dist/sessions/store.ts";
 import * as yamlModule from "../dist/parser/yaml.js";
 

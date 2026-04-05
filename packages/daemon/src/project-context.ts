@@ -10,9 +10,9 @@
 import { existsSync } from "fs";
 import { mkdir, rm, writeFile } from "fs/promises";
 import { isAbsolute, join, normalize, relative } from "path";
-import { KspecWatcher } from "./watcher";
-import { SessionWatcher } from "./session-watcher";
-import type { PubSubManager } from "./websocket/pubsub";
+import { KspecWatcher } from "./watcher.js";
+import { SessionWatcher } from "./session-watcher.js";
+import type { PubSubManager } from "./websocket/pubsub.js";
 
 /**
  * Optional callback for file change events from the watcher.
