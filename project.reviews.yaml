@@ -117466,6 +117466,12 @@ reviews:
         payload:
           thread_ulid: 01KNEB32EDQC4VD7W26GKJY79F
         timestamp: 2026-04-05T08:21:35.822Z
+      - _ulid: 01KNEBQCVBGB9B2ZFYRMWBQW5Z
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNEB3064FKE85SGEN2ZY00XH
+        timestamp: 2026-04-05T08:21:38.284Z
     examined_commit: 1481fb7b89bf57138df6ba96e4537dbda6361cfd
     external_links: []
     lifecycle_state: closed
@@ -117502,6 +117508,8 @@ reviews:
               even when Bun is absent from PATH."
             created_at: 2026-04-05T08:21:16.957Z
         kind: blocker
+        resolved_at: 2026-04-05T08:21:37.435Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KNEB32EDQC4VD7W26GKJY79F
         entries:
           - _ulid: 01KNEB32ED3MQB01R1SES0KQ5J
@@ -117592,5 +117600,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-05T08:10:56.178Z
     created_at: 2026-04-05T08:05:51.026Z
-    updated_at: 2026-04-05T08:21:34.900Z
+    updated_at: 2026-04-05T08:21:37.435Z
     notes: []
