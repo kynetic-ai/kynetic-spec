@@ -119484,9 +119484,25 @@ reviews:
           kind: nit
           thread_ulid: 01KNFTGYT5Z544K5D9RQY6FK65
         timestamp: 2026-04-05T21:59:31.183Z
+      - _ulid: 01KNFTHAPHEECCY235NAB1KPW6
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-05T21:59:42.545Z
+      - _ulid: 01KNFTHAPHE01DFCJDR14B3H4N
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-05T21:59:42.545Z
     examined_commit: 7179f7c7f383279482d07f1582205ae1b10534f5
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -119615,7 +119631,14 @@ reviews:
               quality, spec alignment, and integration."
             created_at: 2026-04-05T21:59:30.373Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-05T21:59:42.545Z
     created_at: 2026-04-05T21:54:28.554Z
-    updated_at: 2026-04-05T21:59:30.373Z
+    updated_at: 2026-04-05T21:59:42.545Z
     notes: []
