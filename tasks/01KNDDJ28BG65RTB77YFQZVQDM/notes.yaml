@@ -12,3 +12,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-05T21:59:44.259Z
+  - _ulid: 01KNFTPRR476SVQAPMFZZQZD7B
+    content: "Fix cycle 1 approach: keep ac-context-reuse and implement the missing debounce-cycle
+      context reuse in src/daemon/entity-cache.ts so watcher-driven multi-domain reloads share a
+      single initContext() result. Test plan: add behavioral coverage in
+      tests/daemon-entity-cache.test.ts for a manifest-triggered meta+items reload proving
+      initContext() is called once for the shared invalidation window, then rerun focused daemon
+      cache tests plus repo validation."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-05T22:02:40.772Z
