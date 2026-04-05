@@ -115780,6 +115780,22 @@ reviews:
         required: true
         created_at: 2026-04-05T00:34:06.336Z
         completed_at: 2026-04-05T00:34:06.336Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Implementation notes enumerate 13 bun-specific items. All are addressed: Bun.file
+          (task-elysia-node-adapter step 3), ServerWebSocket type (type-only, erased at compile),
+          ws.data (task-ws-connection-state-abstraction), ws.ping (task-ws-degradation-node), pong
+          handler (task-ws-degradation-node step 2), getBufferedAmount/subscribe/unsubscribe
+          (already guarded, verified in task-ws-degradation-node step 4), app.server.stop
+          (task-elysia-node-adapter step 4), spawn hardcoding (task-daemon-spawn-runtime), BUN_ENV
+          (task-daemon-spawn-runtime step 3), shebang (cosmetic), tsconfig
+          (task-daemon-compile-js)."
+        name: Bun-specific surface area completeness
+        required: true
+        created_at: 2026-04-05T00:34:10.590Z
+        completed_at: 2026-04-05T00:34:10.590Z
     events:
       - _ulid: 01KNDGY4BEVWK68BV5880QX9NN
         actor: "@claude"
@@ -115829,6 +115845,13 @@ reviews:
           status: pass
           name: Spec conflicts with existing specs
         timestamp: 2026-04-05T00:34:07.018Z
+      - _ulid: 01KNDGZF8B0X0228A1FQEJBMXV
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Bun-specific surface area completeness
+        timestamp: 2026-04-05T00:34:11.340Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -115841,5 +115864,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-05T00:33:27.406Z
-    updated_at: 2026-04-05T00:34:06.336Z
+    updated_at: 2026-04-05T00:34:10.590Z
     notes: []
