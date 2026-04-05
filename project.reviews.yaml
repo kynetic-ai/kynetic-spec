@@ -117168,7 +117168,20 @@ reviews:
     slugs: []
     title: Review task-ws-connection-state-abstraction (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/daemon-connection-state.test.ts tests/daemon-heartbeat.test.ts
+          tests/daemon-pubsub.test.ts tests/daemon-websocket-close.test.ts
+          tests/daemon-websocket-handler.test.ts tests/parser/daemon-config.test.ts passed: 23/23
+          suites, 55 tests"
+        name: daemon websocket targets
+        required: true
+        runner: vitest
+        created_at: 2026-04-05T07:51:50.203Z
+        completed_at: 2026-04-05T07:51:50.203Z
     events:
       - _ulid: 01KNE9RN74DVNR4F3C10GM190G
         actor: Jacob Chapel
@@ -117183,6 +117196,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-05T07:47:32.309Z
+      - _ulid: 01KNEA0VE88PHECCBTCZ8MBYCK
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: daemon websocket targets
+        timestamp: 2026-04-05T07:51:50.984Z
     examined_commit: c46ee609a39deee3e464bae212ab0911e04c5fd9
     external_links: []
     lifecycle_state: open
@@ -117195,5 +117215,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-05T07:47:22.468Z
-    updated_at: 2026-04-05T07:47:31.540Z
+    updated_at: 2026-04-05T07:51:50.203Z
     notes: []
