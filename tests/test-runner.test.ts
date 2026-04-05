@@ -50,7 +50,9 @@ function writeBuiltProjectFixture(rootDir: string): void {
 
   for (const artifact of [
     "dist/cli/index.js",
+    "packages/shared/dist/index.js",
     "dist/web-ui/index.html",
+    "packages/web-ui/.svelte-kit/output/server/manifest-full.js",
     "dist/daemon/index.ts",
     "dist/daemon/entity-cache.ts",
   ]) {
@@ -163,7 +165,12 @@ describe("test runner environment checks", () => {
 
       it("detects when dist/daemon/index.ts is missing", () => {
         // Create all artifacts except dist/daemon/index.ts
-        for (const artifact of ["dist/cli/index.js", "dist/web-ui/index.html"]) {
+        for (const artifact of [
+          "dist/cli/index.js",
+          "packages/shared/dist/index.js",
+          "dist/web-ui/index.html",
+          "packages/web-ui/.svelte-kit/output/server/manifest-full.js",
+        ]) {
           const fullPath = path.join(tempDir, artifact);
           fs.mkdirSync(path.dirname(fullPath), { recursive: true });
           fs.writeFileSync(fullPath, "");
@@ -175,7 +182,13 @@ describe("test runner environment checks", () => {
       });
 
       it("detects when dist/web-ui/index.html is missing", () => {
-        for (const artifact of ["dist/cli/index.js", "dist/daemon/index.ts"]) {
+        for (const artifact of [
+          "dist/cli/index.js",
+          "packages/shared/dist/index.js",
+          "packages/web-ui/.svelte-kit/output/server/manifest-full.js",
+          "dist/daemon/index.ts",
+          "dist/daemon/entity-cache.ts",
+        ]) {
           const fullPath = path.join(tempDir, artifact);
           fs.mkdirSync(path.dirname(fullPath), { recursive: true });
           fs.writeFileSync(fullPath, "");
@@ -187,7 +200,13 @@ describe("test runner environment checks", () => {
       });
 
       it("detects when dist/cli/index.js is missing", () => {
-        for (const artifact of ["dist/web-ui/index.html", "dist/daemon/index.ts"]) {
+        for (const artifact of [
+          "packages/shared/dist/index.js",
+          "dist/web-ui/index.html",
+          "packages/web-ui/.svelte-kit/output/server/manifest-full.js",
+          "dist/daemon/index.ts",
+          "dist/daemon/entity-cache.ts",
+        ]) {
           const fullPath = path.join(tempDir, artifact);
           fs.mkdirSync(path.dirname(fullPath), { recursive: true });
           fs.writeFileSync(fullPath, "");
@@ -201,7 +220,9 @@ describe("test runner environment checks", () => {
       it("succeeds when all artifacts are present", () => {
         for (const artifact of [
           "dist/cli/index.js",
+          "packages/shared/dist/index.js",
           "dist/web-ui/index.html",
+          "packages/web-ui/.svelte-kit/output/server/manifest-full.js",
           "dist/daemon/index.ts",
           "dist/daemon/entity-cache.ts",
         ]) {
@@ -217,7 +238,9 @@ describe("test runner environment checks", () => {
       it("detects stale build artifacts when a source file is newer", async () => {
         for (const artifact of [
           "dist/cli/index.js",
+          "packages/shared/dist/index.js",
           "dist/web-ui/index.html",
+          "packages/web-ui/.svelte-kit/output/server/manifest-full.js",
           "dist/daemon/index.ts",
           "dist/daemon/entity-cache.ts",
         ]) {
@@ -242,6 +265,44 @@ describe("test runner environment checks", () => {
         const result = runner.checkBuild(tempDir);
         expect(result.ok).toBe(false);
         expect(result.reason).toContain("not found");
+      });
+
+      it("detects when the shared package build output is missing", () => {
+        for (const artifact of [
+          "dist/cli/index.js",
+          "dist/web-ui/index.html",
+          "packages/web-ui/.svelte-kit/output/server/manifest-full.js",
+          "dist/daemon/index.ts",
+          "dist/daemon/entity-cache.ts",
+        ]) {
+          const fullPath = path.join(tempDir, artifact);
+          fs.mkdirSync(path.dirname(fullPath), { recursive: true });
+          fs.writeFileSync(fullPath, "");
+        }
+
+        const result = runner.checkBuild(tempDir);
+        expect(result.ok).toBe(false);
+        expect(result.reason).toContain("packages/shared/dist/index.js not found");
+      });
+
+      it("detects when the SvelteKit server manifest is missing", () => {
+        for (const artifact of [
+          "dist/cli/index.js",
+          "packages/shared/dist/index.js",
+          "dist/web-ui/index.html",
+          "dist/daemon/index.ts",
+          "dist/daemon/entity-cache.ts",
+        ]) {
+          const fullPath = path.join(tempDir, artifact);
+          fs.mkdirSync(path.dirname(fullPath), { recursive: true });
+          fs.writeFileSync(fullPath, "");
+        }
+
+        const result = runner.checkBuild(tempDir);
+        expect(result.ok).toBe(false);
+        expect(result.reason).toContain(
+          "packages/web-ui/.svelte-kit/output/server/manifest-full.js not found",
+        );
       });
     });
 
