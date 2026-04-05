@@ -12576,6 +12576,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-05T07:31:19.860Z
+  - _ulid: 01KNE8Z2CE5VCMQNPJ36EECYM4
+    type: friction
+    content: Full npm test still hangs during teardown after long green progress output in dispatch
+      workspaces; targeted websocket tests and typecheck passed for
+      @task-ws-connection-state-abstraction but the full runner did not return a final status.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-05T07:33:23.982Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
