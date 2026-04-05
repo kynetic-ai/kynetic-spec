@@ -1,1 +1,10 @@
-notes: []
+notes:
+  - _ulid: 01KNE82XN17NGE6RN367C5ZME6
+    content: "Approach: extend the daemon config Zod schema with a runtime enum defaulting to bun, then
+      trace config consumers to ensure omission still resolves to bun. Edge cases: existing configs
+      without runtime, explicit node selection, and any default config serialization path. Test
+      plan: behavioral config parsing tests for @daemon-runtime-adapter ac-runtime-selection and
+      ac-default-bun, plus validation that legacy configs still load."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-05T07:18:01.633Z
