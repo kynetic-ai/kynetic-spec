@@ -116053,7 +116053,18 @@ reviews:
     slugs: []
     title: "Plan review: Configurable Daemon Runtime (round 3 — AC quality)"
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: ac-default-bun simplified to 'By default the daemon spawns using bun' — no implementation
+          detail. ac-http-parity and ac-websocket-parity now say 'any configured runtime' — fully
+          generic. ac-auto-start-runtime trimmed cleanly.
+        name: "AC quality: runtime-generic language"
+        required: true
+        created_at: 2026-04-05T04:34:35.121Z
+        completed_at: 2026-04-05T04:34:35.121Z
     events:
       - _ulid: 01KNDYPZASWD8PCDZZ9S2H9994
         actor: "@claude"
@@ -116061,6 +116072,13 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-04-05T04:34:12.953Z
+      - _ulid: 01KNDYQNZYX6S7VK81JJGKW55C
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: "AC quality: runtime-generic language"
+        timestamp: 2026-04-05T04:34:36.158Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -116073,5 +116091,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-05T04:34:12.954Z
-    updated_at: null
+    updated_at: 2026-04-05T04:34:35.121Z
     notes: []
