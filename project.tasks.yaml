@@ -25246,7 +25246,7 @@
   slugs: []
   title: Stabilize flaky cli-daemon-proxy cleanup tests
   type: bug
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 3
@@ -25256,4 +25256,5 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-05T21:41:49.907Z
+  started_at: 2026-04-05T21:42:57.379Z
   automation: eligible
