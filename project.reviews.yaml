@@ -115714,6 +115714,17 @@ reviews:
         required: true
         created_at: 2026-04-05T00:33:37.876Z
         completed_at: 2026-04-05T00:33:37.876Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: task-ws-degradation-node step 2 now explicitly addresses the pong handler at server.ts:524
+          — documents that crossws does not fire pong events, traces the heartbeat flow to confirm
+          safety when lastPing is never set. Resolved.
+        name: "Blocker 2: pong handler bun-only"
+        required: true
+        created_at: 2026-04-05T00:33:42.427Z
+        completed_at: 2026-04-05T00:33:42.427Z
     events:
       - _ulid: 01KNDGY4BEVWK68BV5880QX9NN
         actor: "@claude"
@@ -115728,6 +115739,13 @@ reviews:
           status: pass
           name: "Blocker 1: ws.data per-connection state"
         timestamp: 2026-04-05T00:33:38.628Z
+      - _ulid: 01KNDGYKQGSZR2SEDGEDK2ADV9
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: "Blocker 2: pong handler bun-only"
+        timestamp: 2026-04-05T00:33:43.152Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -115740,5 +115758,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-05T00:33:27.406Z
-    updated_at: 2026-04-05T00:33:37.876Z
+    updated_at: 2026-04-05T00:33:42.427Z
     notes: []
