@@ -118160,6 +118160,18 @@ reviews:
         runner: npm
         created_at: 2026-04-05T09:35:47.025Z
         completed_at: 2026-04-05T09:35:47.025Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Exited with warnings only (repo-standing warnings): 1 orphaned skill dir, 32 alignment
+          warnings, completeness warnings outside this task; no validation errors for the reviewed
+          change."
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-04-05T09:35:51.988Z
+        completed_at: 2026-04-05T09:35:51.988Z
     events:
       - _ulid: 01KNEFKM0Z8383GHARS32CWJCS
         actor: Jacob Chapel
@@ -118188,6 +118200,13 @@ reviews:
           kind: nit
           thread_ulid: 01KNEFZ7KGFEBNWHWAMCDYPVBF
         timestamp: 2026-04-05T09:35:50.296Z
+      - _ulid: 01KNEFZB176TG6K8AHZDD2EW9Z
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-05T09:35:52.871Z
     examined_commit: f47f8983e4524d69aa9ba406cff43c6f3b614418
     external_links: []
     lifecycle_state: open
@@ -118231,5 +118250,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-05T09:29:28.863Z
-    updated_at: 2026-04-05T09:35:49.361Z
+    updated_at: 2026-04-05T09:35:51.988Z
     notes: []
