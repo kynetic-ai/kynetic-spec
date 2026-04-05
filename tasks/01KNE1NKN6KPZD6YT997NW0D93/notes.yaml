@@ -1,1 +1,14 @@
-notes: []
+notes:
+  - _ulid: 01KNEA7QE9JMKYE56AF9B84TVK
+    content: "Approach: fix the Elysia node adapter wiring by passing an explicit runtime from the
+      daemon entrypoint into createServer instead of auto-detecting from process. Reuse existing
+      daemon build/startup tests and add focused behavioral tests around createServer adapter
+      selection, SPA fallback serving from memory, and runtime-aware shutdown handling. Edge cases:
+      node adapter version must match Elysia 1.1.x, startup under node must not rely on Bun globals,
+      and shutdown must tolerate either stop() or close(). Test plan: cover @daemon-runtime-adapter
+      ac-http-parity with adapter-selection plus SPA fallback behavior, and ac-graceful-shutdown
+      with runtime-aware server stop/close behavior; also re-run daemon build/startup coverage under
+      node and bun."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-05T07:55:36.265Z
