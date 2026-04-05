@@ -29,3 +29,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-05T06:46:39.249Z
+  - _ulid: 01KNE6G6PJ0WKW5QRSS08B28C9
+    content: "Fix cycle 1 update: reproduced the review blocker. The compiled JS loads under Node for
+      the invalid-port path, but real startup fails because createServer still uses Elysia's default
+      web-standard adapter and Bun.file(). Adjusting scope within this task to prove actual
+      dual-runtime execution: add the Node adapter/runtime-aware startup path, remove the remaining
+      Bun.file dependency from SPA fallback serving, and replace the fast-fail test with a real
+      health-check smoke test in temp fixtures for both node and bun."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-05T06:50:19.730Z
