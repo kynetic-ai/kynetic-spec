@@ -67,7 +67,7 @@ description: |
 spec_ref: "@daemon-runtime-adapter"
 plan_ref: "@plan-configurable-daemon-runtime"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-scope-ac16-bun-only"
@@ -78,6 +78,14 @@ tags:
   - build
   - node
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-04-05T06:37:27.250Z
+  commit: 7179f7c7f383279482d07f1582205ae1b10534f5
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dev
 session_id: 01KNE54DZ3WB7BENT4P86V2V3H
 history:
   - author: "@claude"
@@ -100,7 +108,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-05T06:26:53.115Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-04-05T06:37:27.250Z
+          commit: 7179f7c7f383279482d07f1582205ae1b10534f5
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-04-05T06:37:27.255Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-05T06:37:27.255Z
 created_at: 2026-04-05T05:25:53.135Z
 started_at: 2026-04-05T06:26:53.114Z
+submitted_at: 2026-04-05T06:37:27.255Z
 todos: []
 automation: eligible
