@@ -12627,6 +12627,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-05T08:12:17.141Z
+  - _ulid: 01KNEBSTCE4K3AX5X89CBEXV3F
+    type: success
+    content: Focused runtime-specific tests before full npm test caught a real cross-runtime env leak
+      quickly in serve start, which made the fix cheaper to validate before the 50-minute full
+      suite.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-05T08:22:57.678Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
