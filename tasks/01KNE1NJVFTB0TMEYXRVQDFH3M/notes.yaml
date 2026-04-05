@@ -1,1 +1,16 @@
-notes: []
+notes:
+  - _ulid: 01KNE57VDFTEJEK1PVKZYBC6C8
+    content: "Approach: compile daemon sources to dist/daemon as JavaScript with esbuild while
+      preserving the current module layout, plus a second build for src/daemon/entity-cache.ts so
+      the runtime sibling import stays intact. Update serve/auto-start and daemon package compile
+      scripts to target dist/daemon/index.js, remove global bun-types from
+      packages/daemon/tsconfig.json, and add a Bun.file shim until the later runtime-adapter task
+      replaces it. Edge cases: existing tests and test-runner currently treat dist/daemon/*.ts as
+      built artifacts, so imports and artifact checks must switch to .js together; keep the
+      dist/daemon/entity-cache.js sibling path stable for dynamic imports. Test plan: add behavioral
+      coverage that build:daemon emits JS artifacts and both node and bun can execute
+      dist/daemon/index.js --help/invalid-port paths without a TypeScript loader; run full npm test
+      after updating the build contract."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-05T06:28:17.456Z
