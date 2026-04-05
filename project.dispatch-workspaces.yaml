@@ -37829,7 +37829,7 @@ workspaces:
         head: 1140ea628b9f50f4fc06c09a344ccbbd8513c9ae
         last_seen_at: 2026-04-05T09:01:40.422Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ws-degradation-node-01kne1nm
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 5346456fa7d296dd63ece3804ccf6a0d92350463
     bootstrap:
       status: succeeded
@@ -37955,9 +37955,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-05T09:28:57.814Z
-      last_reconciled_at: 2026-04-05T09:37:11.952Z
+      last_reconciled_at: 2026-04-05T09:38:26.380Z
       created_at: 2026-04-05T09:21:14.269Z
-      updated_at: 2026-04-05T09:37:11.952Z
+      updated_at: 2026-04-05T09:38:26.380Z
     workspace_id: dispatch-workspace-01KNE1NMEJBSECT0S53TCF1CB9
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
