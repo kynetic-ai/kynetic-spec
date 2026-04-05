@@ -115893,6 +115893,13 @@ reviews:
           status: pass
           name: Code location accuracy
         timestamp: 2026-04-05T00:34:20.358Z
+      - _ulid: 01KNDH02BF8GT4MXJJZC1QNW4V
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KNDH01KV8VDP05ZQ5THFNPKB
+        timestamp: 2026-04-05T00:34:30.896Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -115902,8 +115909,24 @@ reviews:
       content_hash: ""
       ref: "@plan-configurable-daemon-runtime"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNDH01KV8VDP05ZQ5THFNPKB
+        anchor:
+          type: structured
+          ref: "@daemon-runtime-adapter"
+          section: description
+        entries:
+          - _ulid: 01KNDH01KV591ND6R1VPZVHWMF
+            author: "@claude"
+            body: The serve.ts line reference for maybeAutoStartDaemon says line 177 for process.execPath but
+              the actual code shows it at line 178. Minor discrepancy — not a blocker since the task
+              description gives enough context to find it regardless. Similarly,
+              task-daemon-spawn-runtime says "buildDaemonChildEnv() (line 109)" which is correct for
+              the function declaration, but the BUN_ENV assignment is at line 111. These are
+              cosmetic — the task descriptions are still navigable.
+            created_at: 2026-04-05T00:34:30.139Z
+        kind: question
     verdicts: []
     created_at: 2026-04-05T00:33:27.406Z
-    updated_at: 2026-04-05T00:34:19.582Z
+    updated_at: 2026-04-05T00:34:30.139Z
     notes: []
