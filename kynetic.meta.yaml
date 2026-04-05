@@ -12582,8 +12582,12 @@ observations:
       workspaces; targeted websocket tests and typecheck passed for
       @task-ws-connection-state-abstraction but the full runner did not return a final status.
     author: Jacob Chapel
-    resolution: null
-    resolved: false
+    resolution: Already tracked by @task-investigate-npm-test-teardown-hang-after-green-suite-run; this
+      session reproduced the same teardown-hang pattern during full npm test after targeted daemon
+      websocket tests passed.
+    resolved: true
+    resolved_at: 2026-04-05T07:34:54.153Z
+    resolved_by: Jacob Chapel
     created_at: 2026-04-05T07:33:23.982Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
