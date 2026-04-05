@@ -116834,7 +116834,18 @@ reviews:
     slugs: []
     title: Review task-daemon-runtime-config
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed locally: 2072/2072 suites, 7522/7527 tests, 5 skipped. scripts/test.cjs rebuilt
+          missing dist/cli/index.js before running and then completed cleanly."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-05T07:29:17.443Z
+        completed_at: 2026-04-05T07:29:17.443Z
     events:
       - _ulid: 01KNE8EBP6D1PY09WSE4DBC6V3
         actor: Jacob Chapel
@@ -116849,6 +116860,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-05T07:24:31.153Z
+      - _ulid: 01KNE8QK0BYTC46NF3NR5AZZZT
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-05T07:29:18.859Z
     examined_commit: 3d391eb17292124136d4a9216358106e43a0b462
     external_links: []
     lifecycle_state: open
@@ -116861,5 +116879,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-05T07:24:16.455Z
-    updated_at: 2026-04-05T07:24:30.306Z
+    updated_at: 2026-04-05T07:29:17.443Z
     notes: []
