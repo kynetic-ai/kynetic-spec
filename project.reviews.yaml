@@ -118181,6 +118181,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-05T09:35:47.816Z
+      - _ulid: 01KNEFZ8GRM50WB1RSGTY6JQE5
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNEFZ7KGFEBNWHWAMCDYPVBF
+        timestamp: 2026-04-05T09:35:50.296Z
     examined_commit: f47f8983e4524d69aa9ba406cff43c6f3b614418
     external_links: []
     lifecycle_state: open
@@ -118190,8 +118197,39 @@ reviews:
       content_hash: ""
       ref: "@01KNE1NMEJBSECT0S53TCF1CB9"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNEFZ7KGFEBNWHWAMCDYPVBF
+        entries:
+          - _ulid: 01KNEFZ7KH3QYYSJVX82RGSETF
+            author: Jacob Chapel
+            body: >-
+              Evidence log
+
+
+              Files read: packages/daemon/src/server.ts, packages/web-ui/src/lib/api.ts,
+              tests/daemon-build.test.ts, tests/daemon-api/server.test.ts, tests/cli-serve.test.ts,
+              packages/web-ui/src/routes/settings/+page.svelte, src/parser/daemon-status.ts,
+              src/cli/commands/serve.ts.
+
+
+              Commands run: kspec task get @01KNE1NMEJBSECT0S53TCF1CB9; kspec review for-task
+              @01KNE1NMEJBSECT0S53TCF1CB9; git diff/stat against 5346456fa...f47f8983e452; kspec
+              review add/open/get @01KNEFKM; grep for AC annotations; kspec validate; npm test
+              twice.
+
+
+              Claims verified: /api/health now returns the startup runtime from server context; web
+              UI health contract accepts the new field including static-mode fallback; AC
+              @daemon-runtime-adapter ac-runtime-health is covered behaviorally by
+              tests/daemon-build.test.ts.
+
+
+              Categories searched: correctness, edge cases, error handling, security, test quality,
+              integration. No task-specific findings. One flaky pre-test build failure was observed
+              and filed separately as @01KNEFYK.
+            created_at: 2026-04-05T09:35:49.361Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-05T09:29:28.863Z
-    updated_at: 2026-04-05T09:35:47.025Z
+    updated_at: 2026-04-05T09:35:49.361Z
     notes: []
