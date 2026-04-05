@@ -37188,7 +37188,7 @@ workspaces:
         head: d92ab6074a8328bd67a17b3ab01ed305f5e410c3
         last_seen_at: 2026-04-05T07:10:00.457Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-compile-js-01kne1nj
-  - active_role: worker
+  - active_role: null
     base_branch_point: 671ee155dab31adf5d842d0f482e72d24725e772
     bootstrap:
       status: succeeded
@@ -37272,12 +37272,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-05T07:23:10.437Z
+      updated_at: 2026-04-05T07:23:36.456Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-05T07:23:10.437Z
+      updated_at: 2026-04-05T07:23:36.456Z
     integration:
       status: pending
       detail: null
@@ -37285,17 +37285,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-configurable-daemon-runtime/01kndgvz
       target_commit: 671ee155dab31adf5d842d0f482e72d24725e772
-      updated_at: 2026-04-05T07:23:10.437Z
-    lifecycle_state: active
+      updated_at: 2026-04-05T07:23:36.456Z
+    lifecycle_state: ready
     resolved_base_branch: plan/plan-configurable-daemon-runtime/01kndgvz
     task_ref: "@01KNE1NK442TEXM7EYY6CX2KMJ"
     task_slug: task-daemon-runtime-config
     timestamps:
       closed_at: null
       last_active_at: 2026-04-05T07:17:18.596Z
-      last_reconciled_at: 2026-04-05T07:23:10.437Z
+      last_reconciled_at: 2026-04-05T07:23:36.456Z
       created_at: 2026-04-05T07:17:13.355Z
-      updated_at: 2026-04-05T07:23:10.437Z
+      updated_at: 2026-04-05T07:23:36.456Z
     workspace_id: dispatch-workspace-01KNE1NK442TEXM7EYY6CX2KMJ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
