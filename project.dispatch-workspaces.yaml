@@ -37668,7 +37668,7 @@ workspaces:
         head: 3a2a1fa44fccbb2fff87d33daa35c3154f94e598
         last_seen_at: 2026-04-05T09:01:34.375Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-spawn-runtime-01kne1nk
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: f143b0818864b0b3aa69bafdb281d417e77bedd6
     bootstrap:
       status: succeeded
@@ -37778,7 +37778,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-05T09:01:40.422Z
+      updated_at: 2026-04-05T09:01:46.323Z
     integration:
       status: pending
       detail: null
@@ -37793,10 +37793,10 @@ workspaces:
     task_slug: task-ws-degradation-node
     timestamps:
       closed_at: null
-      last_active_at: 2026-04-05T08:52:35.483Z
-      last_reconciled_at: 2026-04-05T09:01:40.422Z
+      last_active_at: 2026-04-05T09:01:46.323Z
+      last_reconciled_at: 2026-04-05T09:01:46.323Z
       created_at: 2026-04-05T08:52:30.328Z
-      updated_at: 2026-04-05T09:01:44.436Z
+      updated_at: 2026-04-05T09:01:46.323Z
     workspace_id: dispatch-workspace-01KNE1NM5ZEA6RPA7XN1R8ZPEA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
