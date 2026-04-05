@@ -38473,12 +38473,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-05T22:00:22.442Z
+      updated_at: 2026-04-05T22:00:31.469Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-05T22:00:24.474Z
+      updated_at: 2026-04-05T22:00:31.469Z
     integration:
       status: pending
       detail: null
@@ -38486,7 +38486,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-granular-cache-invalidation/01kndbmk
       target_commit: 7179f7c7f383279482d07f1582205ae1b10534f5
-      updated_at: 2026-04-05T22:00:22.442Z
+      updated_at: 2026-04-05T22:00:31.469Z
     lifecycle_state: ready
     resolved_base_branch: plan/plan-granular-cache-invalidation/01kndbmk
     task_ref: "@01KNDDJ28BG65RTB77YFQZVQDM"
@@ -38494,9 +38494,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-05T21:53:47.778Z
-      last_reconciled_at: 2026-04-05T22:00:24.474Z
+      last_reconciled_at: 2026-04-05T22:00:31.469Z
       created_at: 2026-04-05T21:50:46.308Z
-      updated_at: 2026-04-05T22:00:24.474Z
+      updated_at: 2026-04-05T22:00:31.469Z
     workspace_id: dispatch-workspace-01KNDDJ28BG65RTB77YFQZVQDM
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -38505,5 +38505,5 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-add-ac-context-reuse/01knddj2
         head: 7179f7c7f383279482d07f1582205ae1b10534f5
-        last_seen_at: 2026-04-05T21:53:41.282Z
+        last_seen_at: 2026-04-05T22:00:31.469Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-ac-context-reuse-01knddj2
