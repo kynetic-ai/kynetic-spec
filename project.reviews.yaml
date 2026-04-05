@@ -118146,7 +118146,20 @@ reviews:
     slugs: []
     title: Review task-health-runtime-field
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Run 1 failed before test execution in build prep with missing
+          packages/web-ui/.svelte-kit/output/server/manifest-full.js; run 2 passed cleanly with
+          2077/2077 suites, 7539/7544 tests, 5 skipped. Flaky build-prep issue tracked separately in
+          @01KNEFYK and not attributable to this change.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-05T09:35:47.025Z
+        completed_at: 2026-04-05T09:35:47.025Z
     events:
       - _ulid: 01KNEFKM0Z8383GHARS32CWJCS
         actor: Jacob Chapel
@@ -118161,6 +118174,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-05T09:29:47.605Z
+      - _ulid: 01KNEFZ638MZ34GBCJCS8NM60K
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-05T09:35:47.816Z
     examined_commit: f47f8983e4524d69aa9ba406cff43c6f3b614418
     external_links: []
     lifecycle_state: open
@@ -118173,5 +118193,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-05T09:29:28.863Z
-    updated_at: 2026-04-05T09:29:46.813Z
+    updated_at: 2026-04-05T09:35:47.025Z
     notes: []
