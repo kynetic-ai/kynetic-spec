@@ -94,6 +94,16 @@ export async function stopManagedServer(server: ManagedServer | undefined): Prom
   }
 }
 
+export function logHeartbeatDegradationWarning(runtime: DaemonRuntime): void {
+  if (runtime !== "node") {
+    return;
+  }
+
+  console.warn(
+    "[daemon] Running on node: WebSocket heartbeat ping/pong is unavailable. Dead connection detection is disabled.",
+  );
+}
+
 function hasWebUiIndex(dir: string | undefined): dir is string {
   return Boolean(dir && existsSync(join(dir, "index.html")));
 }
@@ -636,6 +646,7 @@ export async function createServer(options: ServerOptions) {
 
   console.log(`[daemon] Server listening on http://localhost:${port} (IPv4: 127.0.0.1, IPv6: ::1)`);
   console.log(`[daemon] WebSocket available at ws://localhost:${port}/ws`);
+  logHeartbeatDegradationWarning(runtime);
 
   // AC: @agent-dispatch-engine ac-5 - Wire file change callback to dispatch engine
   projectContextManager.setFileChangeCallback((projectPath, file) => {

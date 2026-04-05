@@ -158,6 +158,22 @@ describe("PubSubManager", () => {
       expect(messages[1].seq).toBe(2);
       expect(messages[2].seq).toBe(3);
     });
+
+    // AC: @daemon-runtime-adapter ac-backpressure-degradation
+    // AC: @daemon-runtime-adapter ac-websocket-parity
+    it("broadcasts when buffered amount queries are unavailable", () => {
+      const projectA = "/tmp/project-a";
+      const ws = createMockWebSocket(connectionState, "conn-1", projectA, ["tasks:updates"]);
+      delete ws.getBufferedAmount;
+
+      manager.addConnection("conn-1", ws);
+      manager.broadcast("tasks:updates", "task_updated", { ref: "task-1" }, projectA);
+
+      expect(ws.send).toHaveBeenCalledOnce();
+      const sentMessage = JSON.parse((ws.send as any).mock.calls[0][0]);
+      expect(sentMessage.event).toBe("task_updated");
+      expect(sentMessage.data).toMatchObject({ ref: "task-1" });
+    });
   });
 
   // AC: @ui-api-aggregation ac-4
@@ -430,6 +446,7 @@ function createMockWebSocket(
   const ws: WebSocketConnection = {
     send: vi.fn(),
     close: vi.fn(),
+    getBufferedAmount: vi.fn(() => 0),
     subscribe: vi.fn((topic: string) => {
       activeSubscriptions.add(topic);
     }),

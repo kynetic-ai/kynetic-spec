@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import {
   createServerApp,
+  logHeartbeatDegradationWarning,
   stopManagedServer,
   type DaemonRuntime,
 } from "../dist/daemon/server.js";
@@ -14,6 +15,19 @@ describe("daemon runtime adapter wiring", () => {
     const app = await createServerApp(runtime as DaemonRuntime);
 
     expect(Boolean((app.config as { adapter?: unknown }).adapter)).toBe(usesAdapter);
+  });
+
+  // AC: @daemon-runtime-adapter ac-heartbeat-degradation
+  it("logs the heartbeat degradation warning only for node runtime", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    logHeartbeatDegradationWarning("node");
+    logHeartbeatDegradationWarning("bun");
+
+    expect(warnSpy).toHaveBeenCalledTimes(1);
+    expect(warnSpy).toHaveBeenCalledWith(
+      "[daemon] Running on node: WebSocket heartbeat ping/pong is unavailable. Dead connection detection is disabled.",
+    );
   });
 });
 
