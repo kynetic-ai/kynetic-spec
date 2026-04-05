@@ -117332,3 +117332,29 @@ reviews:
     created_at: 2026-04-05T07:47:22.468Z
     updated_at: 2026-04-05T07:52:19.892Z
     notes: []
+  - _ulid: 01KNEATFSJ5FS8WAH5RWF83TE5
+    slugs: []
+    title: Review task-elysia-node-adapter
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KNEATFSHT8YCJ9W7800C5EZA
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-05T08:05:51.026Z
+    examined_commit: 1481fb7b89bf57138df6ba96e4537dbda6361cfd
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNE1NKN6KPZD6YT997NW0D93"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-05T08:05:51.026Z
+    updated_at: null
+    notes: []
