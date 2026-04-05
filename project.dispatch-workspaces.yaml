@@ -37569,7 +37569,7 @@ workspaces:
         head: 083fa6b5e1c136af7777c3d6989d8a3a51251452
         last_seen_at: 2026-04-05T08:23:43.180Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-elysia-node-adapter-01kne1nk
-  - active_role: worker
+  - active_role: null
     base_branch_point: f143b0818864b0b3aa69bafdb281d417e77bedd6
     bootstrap:
       status: succeeded
@@ -37653,12 +37653,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-05T08:51:11.031Z
+      updated_at: 2026-04-05T08:52:13.820Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-05T08:51:11.031Z
+      updated_at: 2026-04-05T08:52:13.820Z
     integration:
       status: pending
       detail: null
@@ -37666,17 +37666,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-configurable-daemon-runtime/01kndgvz
       target_commit: f143b0818864b0b3aa69bafdb281d417e77bedd6
-      updated_at: 2026-04-05T08:51:11.031Z
-    lifecycle_state: active
+      updated_at: 2026-04-05T08:52:13.820Z
+    lifecycle_state: ready
     resolved_base_branch: plan/plan-configurable-daemon-runtime/01kndgvz
     task_ref: "@01KNE1NKXMCW3FZTNYK2QK5WFT"
     task_slug: task-daemon-spawn-runtime
     timestamps:
       closed_at: null
       last_active_at: 2026-04-05T08:31:18.490Z
-      last_reconciled_at: 2026-04-05T08:51:11.031Z
+      last_reconciled_at: 2026-04-05T08:52:13.820Z
       created_at: 2026-04-05T08:31:13.313Z
-      updated_at: 2026-04-05T08:51:11.031Z
+      updated_at: 2026-04-05T08:52:13.820Z
     workspace_id: dispatch-workspace-01KNE1NKXMCW3FZTNYK2QK5WFT
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
