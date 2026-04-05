@@ -31,3 +31,11 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-05T09:03:54.769Z
+  - _ulid: 01KNEEF3TMH5N0SZWKT0FHV3V0
+    content: "Fix cycle 1 complete: replaced the invalid ac-auto-start-runtime helper assertion with a
+      behavioral test that runs the CLI under bun, configures daemon.runtime=node, triggers
+      incidental auto-start via a non-serve command, and verifies the spawned daemon process uses
+      node. Re-ran targeted runtime coverage, full npm test, and kspec validate --warnings-ok."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-05T09:09:32.629Z
