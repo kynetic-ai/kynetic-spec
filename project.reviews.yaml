@@ -117430,6 +117430,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-05T08:10:56.178Z
+      - _ulid: 01KNEBPM0RTRSWVWHJJDA0WKN5
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNEB3HYGF0ARN92NPDMN7B7S
+        timestamp: 2026-04-05T08:21:12.856Z
     examined_commit: 1481fb7b89bf57138df6ba96e4537dbda6361cfd
     external_links: []
     lifecycle_state: closed
@@ -117516,6 +117522,12 @@ reviews:
               requires Bun. Categories searched: correctness, integration, shutdown behavior, HTTP
               parity tests, AC coverage."
             created_at: 2026-04-05T08:10:48.145Z
+          - _ulid: 01KNEBPK7P9D8EPGBP2QXZ5VDE
+            author: Jacob Chapel
+            body: "Re-verified after the fix in 083fa6b5e: focused runtime tests pass, full npm test passes
+              (2077 suites, 7531 tests, 5 skipped), and kspec validate still reports only the repo's
+              existing warning set."
+            created_at: 2026-04-05T08:21:12.054Z
         kind: nit
     verdicts:
       - applies_to_version:
@@ -117526,5 +117538,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-05T08:10:56.178Z
     created_at: 2026-04-05T08:05:51.026Z
-    updated_at: 2026-04-05T08:10:56.178Z
+    updated_at: 2026-04-05T08:21:12.054Z
     notes: []
