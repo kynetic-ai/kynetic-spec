@@ -116232,6 +116232,17 @@ reviews:
         required: false
         created_at: 2026-04-05T04:38:10.557Z
         completed_at: 2026-04-05T04:38:10.557Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Plan refs resolve cleanly: @daemon-server and @trait-websocket-protocol exist, task
+          dependency refs point to tasks defined in the plan, and AC identifiers on
+          @daemon-runtime-adapter are sequential and internally consistent."
+        name: Cross-reference validation
+        required: true
+        created_at: 2026-04-05T04:38:10.568Z
+        completed_at: 2026-04-05T04:38:10.568Z
     events:
       - _ulid: 01KNDYX1GJ3SKC5PFB59KGWM8A
         actor: "@claude"
@@ -116267,6 +116278,13 @@ reviews:
           status: skipped
           name: Workspace validate context
         timestamp: 2026-04-05T04:38:14.791Z
+      - _ulid: 01KNDYYD3BSPWDB2S4SQABBKDS
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Cross-reference validation
+        timestamp: 2026-04-05T04:38:16.427Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -116279,5 +116297,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-05T04:37:31.794Z
-    updated_at: 2026-04-05T04:38:10.557Z
+    updated_at: 2026-04-05T04:38:10.568Z
     notes: []
