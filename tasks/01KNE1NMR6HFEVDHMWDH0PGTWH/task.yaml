@@ -54,7 +54,7 @@ tags:
   - testing
   - daemon
 vcs_refs: []
-review_ref: "@01KNFCTN1T4G22338CTA19MFZ2"
+review_ref: "@01KNFD99MQH1A03V5MN4YK8ND0"
 submission_linkage:
   review_url: null
   branch: dev
@@ -219,6 +219,13 @@ history:
         previous: 2026-04-05T10:07:43.027Z
     command: task-submit
     timestamp: 2026-04-05T18:05:34.430Z
+  - author: "@claude"
+    changes:
+      review_ref:
+        new: "@01KNFD99MQH1A03V5MN4YK8ND0"
+        previous: "@01KNFCTN1T4G22338CTA19MFZ2"
+    command: review-link
+    timestamp: 2026-04-05T18:08:10.619Z
 created_at: 2026-04-05T05:25:55.078Z
 started_at: 2026-04-05T18:03:36.091Z
 submitted_at: 2026-04-05T18:05:34.430Z
