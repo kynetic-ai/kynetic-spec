@@ -409,6 +409,11 @@ features:
             id: ac-deterministic-fd-cleanup
             then: All directory handles opened during enumeration are closed before the reload function returns
             when: The enumeration completes or fails
+          - given: Multiple cache domains are invalidated within the same debounce window
+            id: ac-context-reuse
+            then: Shared initialization work is performed once and reused across all domain reloads in that
+              window
+            when: The cache begins reloading affected data
         tags: []
         requirements:
           - _ulid: 01KMMB3S7MJZ9ZJKZT31QPM572

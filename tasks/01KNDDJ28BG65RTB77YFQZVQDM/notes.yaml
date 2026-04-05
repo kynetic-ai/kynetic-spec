@@ -1,1 +1,9 @@
-notes: []
+notes:
+  - _ulid: 01KNFT2K67CE0Q7QVNKKNCMGNK
+    content: "Approach: spec-only update to @daemon-entity-cache by adding ac-context-reuse from the
+      approved granular cache invalidation plan. Existing ac-granular-reload remains unchanged;
+      downstream implementation and test coverage belong to dependent cache work tasks.
+      Verification: kspec item get @daemon-entity-cache and kspec validate --alignment."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-05T21:51:39.719Z
