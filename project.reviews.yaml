@@ -115287,7 +115287,73 @@ reviews:
     slugs: []
     title: "Plan review: Configurable Daemon Runtime"
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All 10 ACs on daemon-runtime-adapter are claimed by at least one task. Coverage mapping is
+          complete.
+        name: AC coverage
+        required: true
+        created_at: 2026-04-05T00:23:08.428Z
+        completed_at: 2026-04-05T00:23:08.428Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "No circular dependencies. Chain is linear: scope-ac16 -> config -> adapter -> spawn ->
+          health/e2e. task-ws-degradation-node correctly depends on adapter, not spawn. Priority
+          inversion noted (P1 doc-only task) but not structural."
+        name: Dependency ordering
+        required: true
+        created_at: 2026-04-05T00:23:10.428Z
+        completed_at: 2026-04-05T00:23:10.428Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: No conflicts with @daemon-server, @daemon-file-monitoring, or @daemon-entity-cache. The
+          heartbeat degradation AC on the new spec is complementary to @trait-websocket-protocol
+          ac-4/ac-5, not contradictory. ac-16 scoping is properly handled by
+          task-scope-ac16-bun-only.
+        name: Spec conflicts with existing specs
+        required: true
+        created_at: 2026-04-05T00:23:12.364Z
+        completed_at: 2026-04-05T00:23:12.364Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Plan lists 10 Bun-specific items but misses ws.data (per-connection state used in 5 files,
+          ~20 call sites). Also misses ws.publish() verification and pong handler coverage. The
+          Bun-specific surface area list is incomplete.
+        name: Bun-specific surface area completeness
+        required: true
+        created_at: 2026-04-05T00:23:14.331Z
+        completed_at: 2026-04-05T00:23:14.331Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All 7 tasks include what/why/how sections and specific file references. Line numbers are
+          accurate (Bun.file at 571, spawn at 322/372, process.execPath at 178, stop at 728,
+          heartbeat ping at 51). Config schema location is hedged but correct on second guess.
+        name: Task standalone executability
+        required: true
+        created_at: 2026-04-05T00:23:16.276Z
+        completed_at: 2026-04-05T00:23:16.276Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Verified: Bun.file() at server.ts:571, bun spawn at serve.ts:322 and 372,
+          process.execPath at index.ts:178, app.server.stop() at server.ts:728, ws.ping() at
+          heartbeat.ts:51, BUN_ENV at serve.ts:111. All accurate."
+        name: Code location accuracy
+        required: true
+        created_at: 2026-04-05T00:23:18.291Z
+        completed_at: 2026-04-05T00:23:18.291Z
     events:
       - _ulid: 01KNDG7PEG2HQANCBJZ9FSFJ30
         actor: "@claude"
@@ -115372,6 +115438,48 @@ reviews:
           kind: nit
           thread_ulid: 01KNDGAHPZG22CBNYT518A4SQQ
         timestamp: 2026-04-05T00:22:46.519Z
+      - _ulid: 01KNDGB8KN7JD0CRVQHWQGHE6A
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: AC coverage
+        timestamp: 2026-04-05T00:23:09.173Z
+      - _ulid: 01KNDGBAJGYZ5NKM5QK7T67TKY
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Dependency ordering
+        timestamp: 2026-04-05T00:23:11.184Z
+      - _ulid: 01KNDGBCG1FZNKVYCCQNJ50215
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Spec conflicts with existing specs
+        timestamp: 2026-04-05T00:23:13.154Z
+      - _ulid: 01KNDGBEC25VKCEM3C6704GJS3
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: Bun-specific surface area completeness
+        timestamp: 2026-04-05T00:23:15.075Z
+      - _ulid: 01KNDGBGAX67EBZ454H5TZTQMC
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Task standalone executability
+        timestamp: 2026-04-05T00:23:17.085Z
+      - _ulid: 01KNDGBJ8NF85731B4ESPFRB36
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Code location accuracy
+        timestamp: 2026-04-05T00:23:19.061Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -115565,5 +115673,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-05T00:21:12.273Z
-    updated_at: 2026-04-05T00:22:45.727Z
+    updated_at: 2026-04-05T00:23:18.291Z
     notes: []
