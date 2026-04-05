@@ -38307,18 +38307,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/stabilize-flaky-cli-daemon-proxy-cleanup-tests/01knfsgk
-    canonical_branch_head: 5528165fcdb8749b84b5e254b4160f29ca4a9675
+    canonical_branch_head: 5b9d657237383d5e14a231b6a67a95bf113e5ebc
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-05T21:42:20.850Z
+      updated_at: 2026-04-05T21:50:17.040Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-05T21:42:26.217Z
+      updated_at: 2026-04-05T21:50:17.040Z
     integration:
       status: pending
       detail: null
@@ -38326,7 +38326,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 5528165fcdb8749b84b5e254b4160f29ca4a9675
-      updated_at: 2026-04-05T21:42:20.850Z
+      updated_at: 2026-04-05T21:50:17.040Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KNFSGK6K184ZDPM7Y1J8MSZK"
@@ -38334,9 +38334,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-05T21:42:26.217Z
-      last_reconciled_at: 2026-04-05T21:42:26.217Z
+      last_reconciled_at: 2026-04-05T21:50:17.040Z
       created_at: 2026-04-05T21:42:20.850Z
-      updated_at: 2026-04-05T21:42:26.217Z
+      updated_at: 2026-04-05T21:50:17.040Z
     workspace_id: dispatch-workspace-01KNFSGK6K184ZDPM7Y1J8MSZK
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
