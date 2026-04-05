@@ -117895,7 +117895,18 @@ reviews:
     slugs: []
     title: Review task-ws-degradation-node
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --run tests/daemon-heartbeat.test.ts tests/daemon-pubsub.test.ts
+          tests/daemon-runtime-adapter.test.ts passed: 10/10 suites, 30/30 tests."
+        name: targeted-daemon-tests
+        required: true
+        runner: npm
+        created_at: 2026-04-05T09:16:59.566Z
+        completed_at: 2026-04-05T09:16:59.566Z
     events:
       - _ulid: 01KNEE231SXDRCCSYH5XNA31TH
         actor: Jacob Chapel
@@ -117910,6 +117921,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-05T09:02:40.722Z
+      - _ulid: 01KNEEWS2BGS90SFRJRXT724MY
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted-daemon-tests
+        timestamp: 2026-04-05T09:17:00.363Z
     examined_commit: 1140ea628b9f50f4fc06c09a344ccbbd8513c9ae
     external_links: []
     lifecycle_state: open
@@ -117922,7 +117940,7 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-05T09:02:25.849Z
-    updated_at: 2026-04-05T09:02:39.901Z
+    updated_at: 2026-04-05T09:16:59.566Z
     notes: []
   - _ulid: 01KNEESF0MS8K5BPGM1AASAJ3M
     slugs: []
