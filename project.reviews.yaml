@@ -117907,6 +117907,26 @@ reviews:
         runner: npm
         created_at: 2026-04-05T09:16:59.566Z
         completed_at: 2026-04-05T09:16:59.566Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: packages/daemon/src/server.ts, packages/daemon/src/websocket/heartbeat.ts,
+          packages/daemon/src/websocket/pubsub.ts, packages/daemon/src/websocket/types.ts,
+          packages/daemon/src/websocket/connection-state.ts,
+          packages/daemon/src/websocket/handler.ts, tests/daemon-heartbeat.test.ts,
+          tests/daemon-pubsub.test.ts, tests/daemon-runtime-adapter.test.ts,
+          tests/daemon-api/websocket-protocol.test.ts. Commands run: kspec task get, kspec item get,
+          kspec validate, git diff/stat/log/show, rg AC annotations and websocket API usage,
+          targeted npm test. Claims verified: missing ping() leaves lastPing unset and prevents
+          timeout closure; missing getBufferedAmount falls back to 0; node-only warning helper emits
+          exactly once per invocation. Categories searched: correctness, edge cases, error handling,
+          test quality, integration; no findings."
+        name: review-evidence
+        required: false
+        runner: codex
+        created_at: 2026-04-05T09:17:01.947Z
+        completed_at: 2026-04-05T09:17:01.947Z
     events:
       - _ulid: 01KNEE231SXDRCCSYH5XNA31TH
         actor: Jacob Chapel
@@ -117928,6 +117948,13 @@ reviews:
           status: pass
           name: targeted-daemon-tests
         timestamp: 2026-04-05T09:17:00.363Z
+      - _ulid: 01KNEEWVKGGZQGA7CKBAGJ10HE
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-04-05T09:17:02.961Z
     examined_commit: 1140ea628b9f50f4fc06c09a344ccbbd8513c9ae
     external_links: []
     lifecycle_state: open
@@ -117940,7 +117967,7 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-05T09:02:25.849Z
-    updated_at: 2026-04-05T09:16:59.566Z
+    updated_at: 2026-04-05T09:17:01.947Z
     notes: []
   - _ulid: 01KNEESF0MS8K5BPGM1AASAJ3M
     slugs: []
