@@ -117414,9 +117414,25 @@ reviews:
           kind: nit
           thread_ulid: 01KNEB3HYGF0ARN92NPDMN7B7S
         timestamp: 2026-04-05T08:10:49.025Z
+      - _ulid: 01KNEB3SSJF8HFG9SJA4NV8CSN
+        actor: codex@openai.com
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-05T08:10:56.178Z
+      - _ulid: 01KNEB3SSJFJ8W81CVKNBSNA3P
+        actor: codex@openai.com
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-05T08:10:56.178Z
     examined_commit: 1481fb7b89bf57138df6ba96e4537dbda6361cfd
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -117501,7 +117517,14 @@ reviews:
               parity tests, AC coverage."
             created_at: 2026-04-05T08:10:48.145Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai.com
+        role: reviewer
+        created_at: 2026-04-05T08:10:56.178Z
     created_at: 2026-04-05T08:05:51.026Z
-    updated_at: 2026-04-05T08:10:48.145Z
+    updated_at: 2026-04-05T08:10:56.178Z
     notes: []
