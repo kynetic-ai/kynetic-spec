@@ -119784,6 +119784,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-04-05T22:16:24.782Z
+      - _ulid: 01KNFVH032EJGNF2K47X0H2VXK
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNFVGYM7JQTVXTZ0JVRYCQF4
+        timestamp: 2026-04-05T22:17:00.258Z
     examined_commit: c6054304de7fb67f41e5b3e847fc75d8ee75379d
     external_links: []
     lifecycle_state: open
@@ -119813,7 +119820,27 @@ reviews:
               debounce window, and it can carry stale initialization into a later watcher cycle."
             created_at: 2026-04-05T22:16:11.883Z
         kind: blocker
+      - _ulid: 01KNFVGYM7JQTVXTZ0JVRYCQF4
+        entries:
+          - _ulid: 01KNFVGYM7BCGRW3E2Y395MXS9
+            author: Jacob Chapel
+            body: "Evidence log: Files read: kspec-agents.md; src/daemon/entity-cache.ts;
+              tests/daemon-entity-cache.test.ts; prior review 01KNFT7R2AVD0PF0NH14294WM5. Commands
+              run: kspec task get @01KNDDJ28BG65RTB77YFQZVQDM; kspec review for-task
+              @01KNDDJ28BG65RTB77YFQZVQDM; kspec item get @daemon-entity-cache; git diff
+              7179f7c7f383279482d07f1582205ae1b10534f5..c6054304de7fb67f41e5b3e847fc75d8ee75379d; rg
+              -n AC: @daemon-entity-cache tests/daemon-entity-cache.test.ts; kspec validate; npm
+              test -- --fresh tests/daemon-entity-cache.test.ts; npm test -- --fresh; KSPEC_TEST=1
+              npm test -- --fresh tests/tmp-ac-context-reuse-window-boundary.test.ts. Claims
+              verified: the new AC annotation exists and the manifest-triggered multi-domain path
+              reuses a single initContext within one debounce window; the full suite passes.
+              Categories searched: correctness found a blocker at the reload-cycle boundary; edge
+              cases covered separate debounce windows while reload is in flight; error handling
+              found no new issue; test quality found the new AC test covers only same-window reuse;
+              integration reviewed watcher invalidation plus debounce interaction."
+            created_at: 2026-04-05T22:16:58.759Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-05T22:11:28.498Z
-    updated_at: 2026-04-05T22:16:23.952Z
+    updated_at: 2026-04-05T22:16:58.759Z
     notes: []
