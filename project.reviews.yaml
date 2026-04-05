@@ -119723,6 +119723,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-05T22:11:52.796Z
+      - _ulid: 01KNFVFHME6JDMQQRFNC2HFHYN
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNFVFGVB1VFKHZGWJHJ7PD3X
+        timestamp: 2026-04-05T22:16:12.686Z
     examined_commit: c6054304de7fb67f41e5b3e847fc75d8ee75379d
     external_links: []
     lifecycle_state: open
@@ -119732,8 +119739,27 @@ reviews:
       content_hash: ""
       ref: "@01KNDDJ28BG65RTB77YFQZVQDM"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNFVFGVB1VFKHZGWJHJ7PD3X
+        anchor:
+          type: code
+          commit: c6054304de7fb67f41e5b3e847fc75d8ee75379d
+          line_end: 1255
+          line_start: 1253
+          path: src/daemon/entity-cache.ts
+          side: head
+        entries:
+          - _ulid: 01KNFVFGVBC14DTNN7CKZGQ6WF
+            author: Jacob Chapel
+            body: " is cleared only after pending domains and active reloads both reach zero, so  reuses the
+              existing cycle for later invalidations even after the original 100ms debounce window
+              has already closed. I reproduced this by starting a manifest-triggered reload, waiting
+              150ms, starting a task-file invalidation while the first reload was still delayed, and
+              observing  called once instead of twice. That violates , which scopes reuse to one
+              debounce window, and it can carry stale initialization into a later watcher cycle."
+            created_at: 2026-04-05T22:16:11.883Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-05T22:11:28.498Z
-    updated_at: 2026-04-05T22:11:51.943Z
+    updated_at: 2026-04-05T22:16:11.883Z
     notes: []
