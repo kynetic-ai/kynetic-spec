@@ -22963,7 +22963,7 @@ runs:
     completed_at: 2026-04-05T08:04:16.725Z
   - _ulid: 01KNEB4NGX9N055C5WCRH5J8KJ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -22979,7 +22979,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-05T08:12:27.172Z
-        completed_at: 2026-04-05T08:12:27.172Z
+        completed_at: 2026-04-05T08:12:35.568Z
+        notes: "High-confidence friction: green runtime coverage missed the supported  launcher path because
+          tests exercised the daemon entrypoint and config parsing separately. High-confidence
+          success: reproducing the behavior through the built CLI with isolated HOME/PATH
+          immediately distinguished a real integration bug from a speculative code-reading concern.
+          No other session patterns met the confidence bar."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-05T08:12:35.568Z
+        completed_at: 2026-04-05T08:12:35.568Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-05T08:11:24.573Z
