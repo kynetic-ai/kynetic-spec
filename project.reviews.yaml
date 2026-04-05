@@ -116196,7 +116196,19 @@ reviews:
     slugs: []
     title: "Plan review: Configurable Daemon Runtime (round 3)"
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "The current @daemon-runtime-adapter AC set is atomic and behavior-focused. Round-3 fixes
+          are present: ac-default-bun, ac-http-parity, ac-websocket-parity, and
+          ac-auto-start-runtime are runtime-generic, and the implementation-specific
+          ac-compiled-output AC is no longer present."
+        name: AC quality
+        required: true
+        created_at: 2026-04-05T04:38:10.447Z
+        completed_at: 2026-04-05T04:38:10.447Z
     events:
       - _ulid: 01KNDYX1GJ3SKC5PFB59KGWM8A
         actor: "@claude"
@@ -116211,6 +116223,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-05T04:37:44.528Z
+      - _ulid: 01KNDYY88NE05Z82G65M8Z4NHY
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: AC quality
+        timestamp: 2026-04-05T04:38:11.478Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -116223,5 +116242,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-05T04:37:31.794Z
-    updated_at: 2026-04-05T04:37:43.487Z
+    updated_at: 2026-04-05T04:38:10.447Z
     notes: []
