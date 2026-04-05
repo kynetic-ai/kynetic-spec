@@ -61,6 +61,51 @@ describe("HeartbeatManager", () => {
     heartbeat.stop();
   });
 
+  // AC: @daemon-runtime-adapter ac-heartbeat-degradation
+  // AC: @daemon-runtime-adapter ac-websocket-parity
+  it("skips heartbeat ping when the websocket runtime does not expose ping()", () => {
+    const connectionState = new ConnectionStateManager();
+    const heartbeat = new HeartbeatManager(connectionState);
+    const pubsub = new PubSubManager(connectionState);
+    const debugSpy = vi.spyOn(console, "debug").mockImplementation(() => {});
+
+    const idle = createHeartbeatSocket(connectionState, "idle", Date.now());
+    delete idle.ping;
+    pubsub.addConnection("idle", idle);
+
+    heartbeat.start(pubsub.getAllConnections());
+    vi.advanceTimersByTime(30_000);
+
+    expect(connectionState.get(idle)?.lastPing).toBeUndefined();
+    expect(connectionState.get(idle)?.lastPong).toBe(Date.now() - 30_000);
+    expect(idle.close).not.toHaveBeenCalled();
+    expect(debugSpy).not.toHaveBeenCalled();
+
+    heartbeat.stop();
+  });
+
+  // AC: @daemon-runtime-adapter ac-heartbeat-degradation
+  it("does not reap idle connections when ping was never sent", () => {
+    const connectionState = new ConnectionStateManager();
+    const heartbeat = new HeartbeatManager(connectionState);
+    const pubsub = new PubSubManager(connectionState);
+
+    const idle = createHeartbeatSocket(connectionState, "idle", Date.now());
+    delete idle.ping;
+    pubsub.addConnection("idle", idle);
+
+    heartbeat.start(pubsub.getAllConnections());
+
+    vi.advanceTimersByTime(30_000);
+    vi.advanceTimersByTime(90_000);
+
+    expect(connectionState.get(idle)?.lastPing).toBeUndefined();
+    expect(connectionState.get(idle)?.lastPong).toBe(Date.now() - 120_000);
+    expect(idle.close).not.toHaveBeenCalled();
+
+    heartbeat.stop();
+  });
+
   // AC: @ws-disconnect-lifecycle-cleanup ac-3
   it("does not ping disconnected session after pubsub cleanup", () => {
     const connectionState = new ConnectionStateManager();

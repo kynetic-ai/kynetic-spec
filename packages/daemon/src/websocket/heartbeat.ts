@@ -53,6 +53,10 @@ export class HeartbeatManager {
         const timeSinceActivity = now - lastActivity;
 
         if (timeSinceActivity >= this.PING_INTERVAL) {
+          if (typeof ws.ping !== "function") {
+            continue;
+          }
+
           connection.lastPing = now;
           connection.lastPong = undefined; // Reset pong until received
           ws.ping();
