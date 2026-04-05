@@ -12742,6 +12742,27 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-04-05T18:06:49.859Z
+  - _ulid: 01KNFSNCNGA8B7R1XC2XD4Q9K0
+    type: friction
+    content: During review, full-suite failures from tests/cli-daemon-proxy.test.ts required isolated
+      reruns on both the review snapshot and the integration base to classify them as
+      flaky/non-regressions. This is a repeatable review burden when aggregate cleanup flakes
+      surface without task-local signal.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    created_at: 2026-04-05T21:44:27.056Z
+  - _ulid: 01KNFSNCVXHDXBJCG3S1A9Z97P
+    type: success
+    content: "Targeted node-runtime verification worked well for runtime-adapter review: focused daemon
+      tests plus KSPEC_TEST_RUNTIME=node Playwright smoke and watcher checks were enough to validate
+      task-scoped HTTP/WebSocket parity before treating unrelated full-suite failures separately."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    created_at: 2026-04-05T21:44:27.261Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
