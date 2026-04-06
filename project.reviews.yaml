@@ -121071,6 +121071,23 @@ reviews:
         runner: npm
         created_at: 2026-04-06T17:59:54.084Z
         completed_at: 2026-04-06T17:59:54.084Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: scripts/dependency-health.cjs, src/agent-runtime/bootstrap.ts,
+          tests/test-runner.test.ts, tests/dispatch-runtime-bootstrap-contract.test.ts, prior review
+          @01KNHXKF, task @01KNHWPVHMH0WRNHDJJBAX0N4X. Commands run: git diff/stat, dry-run,
+          validate, focused npm test, full npm test twice, base-branch comparison worktree. Claims
+          verified: snapshot clears dependency-health in review worktree; focused regressions pass;
+          base branch still fails before Vitest on missing direct deps. Categories searched:
+          correctness, edge cases, error handling, test quality, integration. Follow-up task:
+          @01KNHZ5F."
+        name: review-evidence
+        required: false
+        runner: reviewer
+        created_at: 2026-04-06T18:00:06.124Z
+        completed_at: 2026-04-06T18:00:06.124Z
     events:
       - _ulid: 01KNHYRSR26R4NMTV73RBRHBQR
         actor: Jacob Chapel
@@ -121113,6 +121130,13 @@ reviews:
           status: fail
           name: full-suite
         timestamp: 2026-04-06T17:59:54.911Z
+      - _ulid: 01KNHZ7B00JGNAQCHXF2QFDJ6N
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-04-06T18:00:06.913Z
     examined_commit: 3b383315d4fab7aef22c104af375c6ca426a200a
     external_links: []
     lifecycle_state: open
@@ -121125,5 +121149,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-06T17:52:10.499Z
-    updated_at: 2026-04-06T17:59:54.084Z
+    updated_at: 2026-04-06T18:00:06.124Z
     notes: []
