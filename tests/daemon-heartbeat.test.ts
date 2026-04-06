@@ -106,6 +106,28 @@ describe("HeartbeatManager", () => {
     heartbeat.stop();
   });
 
+  // AC: @daemon-runtime-adapter ac-heartbeat-degradation
+  it("survives when ws.ping() exists but throws internally (Elysia wrapper on Node)", () => {
+    const connectionState = new ConnectionStateManager();
+    const heartbeat = new HeartbeatManager(connectionState);
+    const pubsub = new PubSubManager(connectionState);
+
+    const idle = createHeartbeatSocket(connectionState, "idle", Date.now());
+    idle.ping = vi.fn(() => {
+      throw new TypeError("this.raw.ping is not a function");
+    });
+    pubsub.addConnection("idle", idle);
+
+    heartbeat.start(pubsub.getAllConnections());
+    vi.advanceTimersByTime(30_000);
+
+    // ping was attempted but caught — connection stays open
+    expect(idle.ping).toHaveBeenCalledTimes(1);
+    expect(idle.close).not.toHaveBeenCalled();
+
+    heartbeat.stop();
+  });
+
   // AC: @ws-disconnect-lifecycle-cleanup ac-3
   it("does not ping disconnected session after pubsub cleanup", () => {
     const connectionState = new ConnectionStateManager();

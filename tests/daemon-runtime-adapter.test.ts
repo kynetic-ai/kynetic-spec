@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import {
   createServerApp,
   logHeartbeatDegradationWarning,
+  shouldEnableHeartbeat,
   stopManagedServer,
   type DaemonRuntime,
 } from "../dist/daemon/server.js";
@@ -15,6 +16,12 @@ describe("daemon runtime adapter wiring", () => {
     const app = await createServerApp(runtime as DaemonRuntime);
 
     expect(Boolean((app.config as { adapter?: unknown }).adapter)).toBe(usesAdapter);
+  });
+
+  // AC: @daemon-runtime-adapter ac-heartbeat-degradation
+  it("enables heartbeat only for bun runtime", () => {
+    expect(shouldEnableHeartbeat("bun")).toBe(true);
+    expect(shouldEnableHeartbeat("node")).toBe(false);
   });
 
   // AC: @daemon-runtime-adapter ac-heartbeat-degradation
