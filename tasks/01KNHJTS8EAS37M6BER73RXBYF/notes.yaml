@@ -1,1 +1,9 @@
-notes: []
+notes:
+  - _ulid: 01KNHJYYNX1BFVTYXXGXWP31EE
+    content: "Approach: Walk Commander's parent chain from actionCommand to find the top-level command
+      name (parent.parent === root program). Replace the leaf-name check with a top-level-name check
+      in the skip list. This correctly skips auto-start for all serve subcommands. Test: add test
+      for ac-8 in cli-serve.test.ts verifying auto-start is suppressed during serve commands."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-06T14:25:49.245Z
