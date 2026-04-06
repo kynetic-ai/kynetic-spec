@@ -18,7 +18,9 @@ import {
   setupMultiDirFixtures,
   cleanupTempDir,
   createTempDir,
+  seedSplitTask,
   setupShadowDetection,
+  testUlid,
 } from "./helpers/cli";
 import {
   ProjectEntityCache,
@@ -569,6 +571,180 @@ describe("ProjectEntityCache", () => {
       } finally {
         vi.useRealTimers();
       }
+    });
+
+    // AC: @daemon-incremental-cache ac-single-entity-patch
+    // AC: @daemon-incremental-cache ac-index-consistency
+    it("should patch only the changed split-backend task in index and detail tiers", async () => {
+      const kspecDir = join(projectA, ".kspec");
+      seedSplitTask(kspecDir, {
+        _ulid: "01TASKB0000000000000000000",
+        slugs: ["task-b-sample"],
+        title: "Sample Task B",
+        type: "task",
+        status: "pending",
+        priority: 2,
+        spec_ref: "@spec-b-sample",
+        depends_on: [],
+        notes: [],
+        todos: [],
+        created_at: "2026-01-24T00:00:00.000Z",
+      });
+
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("tasks");
+
+      const originalOtherTask = cache.getTaskDetail("01TASKB0000000000000000000");
+      expect(originalOtherTask).not.toBeNull();
+
+      const taskPath = join(kspecDir, "tasks", "01TASKA0000000000000000000", "task.yaml");
+      await fs.writeFile(
+        taskPath,
+        yamlStringify({
+          _ulid: "01TASKA0000000000000000000",
+          slugs: ["task-a-sample"],
+          title: "Sample Task A Updated",
+          type: "task",
+          status: "in_progress",
+          priority: 1,
+          spec_ref: "@spec-a-sample",
+          depends_on: [],
+          created_at: "2026-01-24T00:00:00.000Z",
+        }),
+        "utf-8",
+      );
+
+      await cache.handleFileChange(kspecDir, taskPath);
+
+      expect(cache.getTaskDetail("01TASKA0000000000000000000")?.title).toBe("Sample Task A Updated");
+      expect(cache.getTaskDetail("01TASKA0000000000000000000")?.status).toBe("in_progress");
+      expect(cache.getTaskDetail("01TASKB0000000000000000000")).toBe(originalOtherTask);
+
+      const taskIndex = cache.getTaskIndex();
+      expect(taskIndex?.find((task) => task._ulid === "01TASKA0000000000000000000")?.title).toBe(
+        "Sample Task A Updated",
+      );
+      expect(taskIndex?.find((task) => task._ulid === "01TASKB0000000000000000000")?.title).toBe(
+        "Sample Task B",
+      );
+    });
+
+    // AC: @daemon-incremental-cache ac-single-entity-patch
+    it("should update task summary counts from a split-backend notes file change", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("tasks");
+
+      const kspecDir = join(projectA, ".kspec");
+      const notesPath = join(kspecDir, "tasks", "01TASKA0000000000000000000", "notes.yaml");
+      await fs.writeFile(
+        notesPath,
+        yamlStringify({
+          notes: [
+            {
+              _ulid: testUlid("NOTE", 1),
+              created_at: "2026-01-24T00:00:00.000Z",
+              author: "@test",
+              content: "Updated note",
+            },
+          ],
+        }),
+        "utf-8",
+      );
+
+      await cache.handleFileChange(kspecDir, notesPath);
+
+      expect(cache.getTaskDetail("01TASKA0000000000000000000")?.notes).toHaveLength(1);
+      expect(
+        cache.getTaskIndex()?.find((task) => task._ulid === "01TASKA0000000000000000000")
+          ?.notes_count,
+      ).toBe(1);
+    });
+
+    // AC: @daemon-incremental-cache ac-single-entity-patch
+    // AC: @daemon-incremental-cache ac-batch-coalescing
+    it("should add a new split-backend task without reloading unrelated tasks", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("tasks");
+
+      const kspecDir = join(projectA, ".kspec");
+      const newTaskUlid = "01TASKC0000000000000000000";
+
+      seedSplitTask(kspecDir, {
+        _ulid: newTaskUlid,
+        slugs: ["task-c-sample"],
+        title: "Sample Task C",
+        type: "task",
+        status: "pending",
+        priority: 3,
+        spec_ref: "@spec-c-sample",
+        depends_on: [],
+        notes: [],
+        todos: [],
+        created_at: "2026-01-24T00:00:00.000Z",
+      });
+
+      const taskPath = join(kspecDir, "tasks", newTaskUlid, "task.yaml");
+      await cache.handleFileChange(kspecDir, taskPath);
+
+      expect(cache.getTaskDetail(newTaskUlid)?.title).toBe("Sample Task C");
+      expect(cache.getTaskIndex()?.some((task) => task._ulid === newTaskUlid)).toBe(true);
+    });
+
+    // AC: @daemon-incremental-cache ac-removal-detection
+    it("should remove a deleted split-backend task from index and detail tiers", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("tasks");
+
+      const kspecDir = join(projectA, ".kspec");
+      const taskPath = join(kspecDir, "tasks", "01TASKA0000000000000000000", "task.yaml");
+      await fs.rm(taskPath, { force: true });
+
+      await cache.handleFileChange(kspecDir, taskPath);
+
+      expect(cache.getTaskDetail("01TASKA0000000000000000000")).toBeNull();
+      expect(cache.getTaskIndex()?.some((task) => task._ulid === "01TASKA0000000000000000000")).toBe(
+        false,
+      );
+    });
+
+    // AC: @daemon-incremental-cache ac-fallback-full-reload
+    it("should fall back to a full tasks reload when the monolithic task index file changes", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("tasks");
+
+      const incrementalSpy = vi.spyOn(cache as any, "tryIncrementalTaskUpdate");
+      const loadDomainSpy = vi.spyOn(cache, "loadDomain");
+      incrementalSpy.mockClear();
+      loadDomainSpy.mockClear();
+
+      const kspecDir = join(projectA, ".kspec");
+      const indexPath = join(kspecDir, "project.tasks.yaml");
+      await fs.writeFile(
+        indexPath,
+        yamlStringify([
+          {
+            _ulid: "01TASKA0000000000000000000",
+            slugs: ["task-a-sample"],
+            title: "Summary Updated From Index",
+            type: "task",
+            status: "pending",
+            priority: 1,
+            spec_ref: "@spec-a-sample",
+            depends_on: [],
+            created_at: "2026-01-24T00:00:00.000Z",
+            notes_count: 0,
+            todos_count: 0,
+          },
+        ]),
+        "utf-8",
+      );
+
+      await cache.handleFileChange(kspecDir, indexPath);
+
+      expect(incrementalSpy).toHaveBeenCalledOnce();
+      await expect(incrementalSpy.mock.results[0]?.value).resolves.toBe(false);
+      expect(loadDomainSpy).toHaveBeenCalledWith("tasks", expect.anything());
+      expect(cache.getTaskIndex()?.[0]?.title).toBe("Summary Updated From Index");
     });
 
     it("should replace stale detail cache when domain is invalidated", async () => {
