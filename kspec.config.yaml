@@ -1,6 +1,8 @@
 dispatch:
   publication_mode: manual_merge
   base_branch: dev
+daemon:
+  runtime: node
 agent:
   skills:
     pr_review: "{skill:pr-review}"
