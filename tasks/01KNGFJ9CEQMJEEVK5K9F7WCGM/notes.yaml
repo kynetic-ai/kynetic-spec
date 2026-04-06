@@ -7,3 +7,13 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-06T16:28:12.015Z
+  - _ulid: 01KNHT8H2S4Z4VTS2G8TPHFQJR
+    content: "Completed both fixes: (1) Added KSPEC_SESSION_ID early-return at top of
+      maybeAutoStartDaemon() before initContext(), covering ac-7. (2) Changed
+      PidFileManager(kspecDir) to PidFileManager() so it uses the global ~/.config/kspec/ path,
+      fixing the existing bug against @multi-directory-daemon ac-9/ac-10. Added two behavioral
+      tests: one verifying no daemon spawns with KSPEC_SESSION_ID set, one verifying the PID check
+      uses the global path. All tests pass (shard1 + shadow-drift)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-06T16:33:23.033Z
