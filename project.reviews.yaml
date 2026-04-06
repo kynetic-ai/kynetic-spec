@@ -120668,6 +120668,20 @@ reviews:
         runner: reviewer
         created_at: 2026-04-06T17:33:30.801Z
         completed_at: 2026-04-06T17:33:30.801Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm test -- --fresh failed in the build step because
+          packages/web-ui/src/routes/agents/+page.svelte imports @lucide/svelte/icons/bot, which is
+          also present in base commit b3b91d18cde400739d327720cea3e960f58f3a34. This file is outside
+          the reviewed diff, so I treated it as a pre-existing failure rather than a regression from
+          this branch.
+        name: full-suite
+        required: false
+        runner: npm
+        created_at: 2026-04-06T17:33:33.308Z
+        completed_at: 2026-04-06T17:33:33.308Z
     events:
       - _ulid: 01KNHXKF3SSQVCFKGMHH8D71R3
         actor: Jacob Chapel
@@ -120724,6 +120738,13 @@ reviews:
           status: pass
           name: review-evidence
         timestamp: 2026-04-06T17:33:31.632Z
+      - _ulid: 01KNHXPQJKRCG7WYQ6WQZ011XQ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: full-suite
+        timestamp: 2026-04-06T17:33:34.163Z
     examined_commit: 05c33e449cd51aaa81817e7ba3f98d7e8f99dedb
     external_links: []
     lifecycle_state: open
@@ -120791,5 +120812,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-06T17:31:47.194Z
-    updated_at: 2026-04-06T17:33:30.801Z
+    updated_at: 2026-04-06T17:33:33.308Z
     notes: []
