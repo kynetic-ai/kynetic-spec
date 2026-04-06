@@ -121427,6 +121427,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-06T18:46:39.315Z
+      - _ulid: 01KNJ20J89FV8QE8HTT16FPD7P
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNJ20HDVH1WBZ7JD91BJZZCA
+        timestamp: 2026-04-06T18:48:50.697Z
     examined_commit: 6e975d7da18c5811a8ea560d32eb15a026c87b99
     external_links: []
     lifecycle_state: open
@@ -121436,8 +121443,28 @@ reviews:
       content_hash: ""
       ref: "@01KNDDJ42341SCDJN6VKDV1518"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNJ20HDVH1WBZ7JD91BJZZCA
+        anchor:
+          type: code
+          commit: 6e975d7da18c5811a8ea560d32eb15a026c87b99
+          line_end: 1028
+          line_start: 890
+          path: tests/daemon-entity-cache.test.ts
+          side: head
+        entries:
+          - _ulid: 01KNJ20HDVC9PANYAPXFAQ6QWQ
+            author: Jacob Chapel
+            body: The new incremental sessions path adds a separate stale-session branch via
+              loadCachedSessionSummary(), but the added regression tests here only cover
+              update/insert/delete. There is no test proving that an active session crossing the
+              stale threshold is rewritten to status 'stalled' during incremental invalidation, even
+              though that behavior is explicitly called out in this task's required test matrix.
+              Without that coverage, this branch can regress the stale-session logic while still
+              passing the new tests.
+            created_at: 2026-04-06T18:48:49.851Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-06T18:46:23.682Z
-    updated_at: 2026-04-06T18:46:38.506Z
+    updated_at: 2026-04-06T18:48:49.851Z
     notes: []
