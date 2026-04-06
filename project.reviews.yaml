@@ -121504,9 +121504,25 @@ reviews:
           status: skipped
           name: npm-test
         timestamp: 2026-04-06T18:48:58.380Z
+      - _ulid: 01KNJ219D8CKAHMMHQY4H0SSY1
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-06T18:49:14.408Z
+      - _ulid: 01KNJ219D8KDD9YYY3G5W1H4PG
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-06T18:49:14.408Z
     examined_commit: 6e975d7da18c5811a8ea560d32eb15a026c87b99
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -121534,7 +121550,14 @@ reviews:
               passing the new tests.
             created_at: 2026-04-06T18:48:49.851Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-06T18:49:14.408Z
     created_at: 2026-04-06T18:46:23.682Z
-    updated_at: 2026-04-06T18:48:57.483Z
+    updated_at: 2026-04-06T18:49:14.408Z
     notes: []

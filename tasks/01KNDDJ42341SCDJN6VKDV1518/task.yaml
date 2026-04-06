@@ -47,7 +47,7 @@ description: |
 spec_ref: "@daemon-incremental-cache"
 plan_ref: "@plan-granular-cache-invalidation"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-debounce-path-accumulation"
@@ -67,7 +67,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: 01KNJ0R8B7V5TQDNS6FE0TSE0T
+session_id: null
 history:
   - author: "@claude"
     changes:
@@ -116,6 +116,16 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-06T18:46:26.397Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KNJ0R8B7V5TQDNS6FE0TSE0T
+    command: review-verdict-needs-work
+    timestamp: 2026-04-06T18:49:16.145Z
 created_at: 2026-04-04T23:34:28.163Z
 started_at: 2026-04-06T18:40:45.333Z
 submitted_at: 2026-04-06T18:41:20.537Z
