@@ -12801,6 +12801,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-06T16:22:38.956Z
+  - _ulid: 01KNHV943W03XYFH6D70JM3D0B
+    type: friction
+    content: Dispatch worktrees can inherit NODE_ENV=production with partial node_modules, causing npm
+      test and typecheck to fail until dev dependencies are reinstalled with NODE_ENV=development
+      npm ci.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-06T16:51:11.100Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
