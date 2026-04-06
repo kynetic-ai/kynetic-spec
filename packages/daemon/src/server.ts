@@ -94,6 +94,11 @@ export async function stopManagedServer(server: ManagedServer | undefined): Prom
   }
 }
 
+// AC: @daemon-runtime-adapter ac-heartbeat-degradation
+export function shouldEnableHeartbeat(runtime: DaemonRuntime): boolean {
+  return runtime !== "node";
+}
+
 export function logHeartbeatDegradationWarning(runtime: DaemonRuntime): void {
   if (runtime !== "node") {
     return;
@@ -813,7 +818,10 @@ export async function createServer(options: ServerOptions) {
   }
 
   // AC: @daemon-server ac-13, ac-14 - Start heartbeat monitoring
-  heartbeatManager.start(pubsubManager.getAllConnections());
+  // AC: @daemon-runtime-adapter ac-heartbeat-degradation — skip on runtimes without frame-level ping
+  if (shouldEnableHeartbeat(runtime)) {
+    heartbeatManager.start(pubsubManager.getAllConnections());
+  }
 
   // AC-12: Graceful shutdown on SIGTERM/SIGINT
   const shutdown = async (signal: string) => {

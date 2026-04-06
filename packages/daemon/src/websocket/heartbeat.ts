@@ -59,7 +59,14 @@ export class HeartbeatManager {
 
           connection.lastPing = now;
           connection.lastPong = undefined; // Reset pong until received
-          ws.ping();
+          try {
+            ws.ping();
+          } catch {
+            // Defense-in-depth: Elysia's ElysiaWS wrapper exposes .ping() but
+            // internally delegates to this.raw.ping() which may not exist on
+            // all runtimes. Skip silently if the transport rejects the call.
+            continue;
+          }
           console.debug(`[heartbeat] Sent ping to ${sessionId}`);
         }
       }
