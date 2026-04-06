@@ -120535,6 +120535,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-06T17:16:58.779Z
+      - _ulid: 01KNHWREV2S0X5NJ600GFEP7SB
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNHWRE1QBQV07MTPTNKHRCJP
+        timestamp: 2026-04-06T17:17:02.178Z
     examined_commit: e30bbe0675040848ac4e3c9dee41aade876f1021
     external_links: []
     lifecycle_state: closed
@@ -120544,7 +120551,27 @@ reviews:
       content_hash: ""
       ref: "@01KNDDJ2W7RD7D0PTZJ7WXTZ53"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNHWRE1QBQV07MTPTNKHRCJP
+        entries:
+          - _ulid: 01KNHWRE1QGNQ7ST9ZBAPAHTYJ
+            author: Jacob Chapel
+            body: "Evidence log:\\nFiles read: src/daemon/entity-cache.ts, tests/daemon-entity-cache.test.ts,
+              scripts/test.cjs, scripts/dependency-health.cjs.\\nCommands run: git diff
+              --stat/name-only/unified against plan/plan-granular-cache-invalidation/01kndbmk; kspec
+              task get @01KNDDJ2W7RD7D0PTZJ7WXTZ53; kspec item get @daemon-incremental-cache; kspec
+              validate; grep -RIn 'AC: @daemon-incremental-cache|AC: @trait-' tests; npm test; npm
+              ci; npm test -- tests/daemon-entity-cache.test.ts; git merge --no-ff
+              dispatch/task/task-debounce-path-accumulation/01knddj2.\\nClaims verified: the
+              debounce window now accumulates per-domain file changes and drains them in one pass;
+              duplicate file changes keep the latest content; invalidation without file context
+              drains an empty batch for fallback full reload.\\nCategories searched: correctness,
+              edge cases, error handling, test quality, integration. No task-specific defects
+              found.\\nNote: npm test could not reach vitest because the repo test runner's
+              dependency-health bootstrap falsely reported missing direct dependencies even after
+              npm ci; tracked separately in @01KNHWPV."
+            created_at: 2026-04-06T17:17:01.367Z
+        kind: nit
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -120554,5 +120581,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-06T17:16:58.778Z
     created_at: 2026-04-06T17:13:55.488Z
-    updated_at: 2026-04-06T17:16:58.779Z
+    updated_at: 2026-04-06T17:17:01.367Z
     notes: []
