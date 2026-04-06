@@ -25353,7 +25353,7 @@
   slugs: []
   title: Fix test-runner dependency-health false negative in review worktrees
   type: bug
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 2
@@ -25363,4 +25363,5 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-06T17:16:09.652Z
+  started_at: 2026-04-06T17:17:34.398Z
   automation: eligible
