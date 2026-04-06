@@ -121425,6 +121425,22 @@ reviews:
         runner: kspec
         created_at: 2026-04-06T18:48:52.318Z
         completed_at: 2026-04-06T18:48:52.318Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/daemon/entity-cache.ts, src/sessions/store.ts,
+          tests/daemon-entity-cache.test.ts, package.json. Commands run: git diff/stat/name-only,
+          git show, rg AC annotations, KSPEC_NO_DAEMON=1 kspec task get, kspec item get, kspec
+          validate, npm ci, npm test -- daemon-entity-cache, npm test. Claims verified: the patch
+          only touches session incremental reload logic/tests; validation has warnings only; test
+          runner currently aborts before executing suites due missing-direct-dependency detection.
+          Categories searched: correctness, edge cases, test quality, integration."
+        name: review-evidence
+        required: false
+        runner: manual
+        created_at: 2026-04-06T18:48:54.908Z
+        completed_at: 2026-04-06T18:48:54.908Z
     events:
       - _ulid: 01KNJ1W2P2Z78PPN6E4SAZHAF3
         actor: Jacob Chapel
@@ -121453,6 +121469,13 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-04-06T18:48:53.237Z
+      - _ulid: 01KNJ20Q88F5NZQ18PHNECZWGE
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-04-06T18:48:55.817Z
     examined_commit: 6e975d7da18c5811a8ea560d32eb15a026c87b99
     external_links: []
     lifecycle_state: open
@@ -121485,5 +121508,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-06T18:46:23.682Z
-    updated_at: 2026-04-06T18:48:52.318Z
+    updated_at: 2026-04-06T18:48:54.908Z
     notes: []
