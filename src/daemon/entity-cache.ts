@@ -30,9 +30,11 @@
 
 import { relative } from "path";
 import {
+  expandIncludePattern,
   getTaskFilePath,
   initContext,
   loadAllItems,
+  loadSpecFile,
   loadMetaContext,
   loadSessionContext,
   loadPlans,
@@ -480,6 +482,8 @@ export class ProjectEntityCache {
     index: null,
     details: new Map(),
   };
+  private itemSourceFiles = new Map<string, string>();
+  private itemSourceFilesTracked = false;
   private meta: DomainStore<MetaSummary, MetaContext> = {
     state: "unloaded",
     index: null,
@@ -993,12 +997,18 @@ export class ProjectEntityCache {
         const loadedItems = await loadAllItems(ctx);
         if (this.disposed) return;
         const newItemDetails = new Map<string, LoadedSpecItem>();
+        const newItemSourceFiles = new Map<string, string>();
         for (const item of loadedItems) {
           newItemDetails.set(item._ulid, item);
+          if (item._sourceFile) {
+            newItemSourceFiles.set(item._ulid, item._sourceFile);
+          }
         }
         // Atomic swap: replace index and details together
         this.items.index = loadedItems.map(toItemSummary);
         this.items.details = newItemDetails;
+        this.itemSourceFiles = newItemSourceFiles;
+        this.itemSourceFilesTracked = true;
         break;
       }
       case "meta": {
@@ -1383,6 +1393,8 @@ export class ProjectEntityCache {
     this.inFlightReloads.clear();
     this.writeThroughSkip.clear();
     this.liveEventCounts.clear();
+    this.itemSourceFiles.clear();
+    this.itemSourceFilesTracked = false;
 
     // Clear domain debounce timers
     for (const timer of this.domainDebounceTimers.values()) {
@@ -1485,6 +1497,10 @@ export class ProjectEntityCache {
       return;
     }
 
+    if (domain === "items" && (await this.tryIncrementalItemUpdate(changes, cycle))) {
+      return;
+    }
+
     await this.loadDomain(domain, cycle);
   }
 
@@ -1508,7 +1524,6 @@ export class ProjectEntityCache {
       ) {
         return false;
       }
-
       const segments = relativePath.split(/[\\/]/).filter(Boolean);
       if (
         segments.length !== 3 ||
@@ -1677,6 +1692,130 @@ export class ProjectEntityCache {
     }
 
     return { ...summary, status: "stalled" };
+  }
+
+  private async tryIncrementalItemUpdate(
+    changes: PendingDomainChange[],
+    cycle?: ReloadCycle,
+  ): Promise<boolean> {
+    if (
+      changes.length === 0 ||
+      this.items.state !== "ready" ||
+      this.items.index === null ||
+      !this.itemSourceFilesTracked
+    ) {
+      return false;
+    }
+
+    const ctx = cycle ? await this.getReloadCycleContext(cycle) : await initContext(this.projectPath);
+    if (this.disposed || !ctx.manifest || !ctx.manifestPath) return true;
+
+    const orderedSourceFiles = await this.getOrderedItemSourceFiles(ctx);
+    if (this.disposed) return true;
+    const allowedSourceFiles = new Set(orderedSourceFiles);
+
+    const changedFiles: string[] = [];
+    for (const change of changes) {
+      if (change.filePath === ctx.manifestPath) {
+        return false;
+      }
+
+      const relativePath = relative(ctx.specDir, change.filePath);
+      if (relativePath.startsWith("..") || !allowedSourceFiles.has(change.filePath)) {
+        return false;
+      }
+
+      changedFiles.push(change.filePath);
+    }
+
+    const newDetails = new Map(this.items.details);
+    const newSourceFiles = new Map(this.itemSourceFiles);
+    const removedUlids = new Set<string>();
+    const groupedSummaries = new Map<string, ItemSummary[]>();
+    const parsedItemsByUlid = new Map<string, LoadedSpecItem>();
+
+    for (const filePath of changedFiles) {
+      for (const [ulid, sourceFile] of newSourceFiles) {
+        if (sourceFile === filePath) {
+          removedUlids.add(ulid);
+        }
+      }
+
+      const parsedItems = await loadSpecFile(filePath);
+      if (this.disposed) return true;
+
+      const summaries: ItemSummary[] = [];
+      for (const item of parsedItems) {
+        removedUlids.add(item._ulid);
+        parsedItemsByUlid.set(item._ulid, item);
+        summaries.push(toItemSummary(item));
+      }
+
+      groupedSummaries.set(filePath, summaries);
+    }
+
+    for (const ulid of removedUlids) {
+      newDetails.delete(ulid);
+      newSourceFiles.delete(ulid);
+    }
+
+    for (const [ulid, item] of parsedItemsByUlid) {
+      newDetails.set(ulid, item);
+      if (item._sourceFile) {
+        newSourceFiles.set(ulid, item._sourceFile);
+      }
+    }
+
+    const groupedExisting = new Map<string, ItemSummary[]>();
+    for (const item of this.items.index) {
+      if (removedUlids.has(item._ulid) || !item._sourceFile) {
+        continue;
+      }
+
+      const existing = groupedExisting.get(item._sourceFile);
+      if (existing) {
+        existing.push(item);
+      } else {
+        groupedExisting.set(item._sourceFile, [item]);
+      }
+    }
+
+    for (const [filePath, summaries] of groupedSummaries) {
+      if (summaries.length > 0) {
+        groupedExisting.set(filePath, summaries);
+      } else {
+        groupedExisting.delete(filePath);
+      }
+    }
+
+    const nextIndex: ItemSummary[] = [];
+    for (const filePath of orderedSourceFiles) {
+      const summaries = groupedExisting.get(filePath);
+      if (summaries) {
+        nextIndex.push(...summaries);
+      }
+    }
+
+    this.items.index = nextIndex;
+    this.items.details = newDetails;
+    this.itemSourceFiles = newSourceFiles;
+    return true;
+  }
+
+  private async getOrderedItemSourceFiles(ctx: KspecContext): Promise<string[]> {
+    if (!ctx.manifest || !ctx.manifestPath) {
+      return [];
+    }
+
+    const orderedFiles = [ctx.manifestPath];
+    const manifestDir = ctx.specDir;
+
+    for (const include of ctx.manifest.includes ?? []) {
+      const expandedPaths = await expandIncludePattern(include, manifestDir);
+      orderedFiles.push(...expandedPaths);
+    }
+
+    return orderedFiles;
   }
 }
 
