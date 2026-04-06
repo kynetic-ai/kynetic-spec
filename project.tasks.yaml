@@ -24975,7 +24975,7 @@
   type: task
   spec_ref: "@daemon-incremental-cache"
   plan_ref: "@plan-granular-cache-invalidation"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-debounce-path-accumulation"
@@ -24987,6 +24987,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-04T23:34:28.163Z
+  started_at: 2026-04-06T18:40:45.333Z
   automation: eligible
 - _ulid: 01KNDDJ4BXMWVZSC7G6KMDP8BH
   slugs:
