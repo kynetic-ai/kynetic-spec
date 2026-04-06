@@ -1,0 +1,61 @@
+_ulid: 01KNGFJ9CEQMJEEVK5K9F7WCGM
+slugs: []
+title: Suppress daemon auto-start in dispatch agent sessions
+type: task
+description: >-
+  maybeAutoStartDaemon() in src/cli/index.ts spawns a detached background daemon when it determines
+  no daemon is running. It has two bugs:
+
+
+  1. It does not check for KSPEC_SESSION_ID in the environment. Dispatch agents inherit this
+  variable from the host daemon. When an agent runs any kspec CLI command, auto-start fires and
+  spawns an orphaned daemon process that outlives the agent invocation.
+
+
+  2. It passes the project's specDir to PidFileManager(kspecDir) instead of using the default global
+  path (~/.config/kspec/). This causes the "already running" check to look for daemon.pid in the
+  wrong directory, so it never detects the existing daemon. This is an existing bug against
+  @multi-directory-daemon ac-9/ac-10 — not a spec gap, but must be fixed in the same change because
+  it compounds the first issue.
+
+
+  Why: Dispatch reviewer agents running in worktrees repeatedly trigger auto-start, spawning
+  multiple detached bun processes on port 3456. These processes are orphaned when the worktree is
+  cleaned up — they accumulate indefinitely, consuming ~400MB RAM each. The wrong PID file path
+  means even the "already running" guard doesn't prevent duplicates.
+
+
+  How:
+
+
+  1. Add an early return at the very top of maybeAutoStartDaemon() (before initContext()) when
+  process.env.KSPEC_SESSION_ID is set, mirroring the existing guardAgentContext() pattern in
+  src/cli/commands/serve.ts. This covers new @config-daemon ac-7.
+
+
+  2. Change new PidFileManager(kspecDir) to new PidFileManager() (no argument) so the daemon-running
+  check uses the global ~/.config/kspec/daemon.pid path, consistent with where the daemon actually
+  writes its PID. This fixes the existing bug against @multi-directory-daemon ac-9/ac-10.
+
+
+  3. Add a test that verifies maybeAutoStartDaemon() returns early when KSPEC_SESSION_ID is set (no
+  spawn call).
+
+
+  4. Add a test that verifies the PidFileManager in maybeAutoStartDaemon() uses the global config
+  path, not the project specDir.
+spec_ref: "@config-daemon"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - cli
+  - daemon
+  - dispatch
+vcs_refs: []
+created_at: 2026-04-06T04:07:14.062Z
+todos: []
