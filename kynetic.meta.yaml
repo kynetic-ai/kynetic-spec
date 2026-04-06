@@ -12819,6 +12819,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-06T17:11:14.739Z
+  - _ulid: 01KNHXDG4Q3XPVBS64HJ7NVB9W
+    type: friction
+    content: In this dispatch worker session, daemon-backed kspec task commands intermittently failed or
+      hung (for example task get --json returned invalid JSON and a task note write stalled), while
+      rerunning the same commands with KSPEC_NO_DAEMON=1 succeeded. Direct-mode fallback was
+      required to finish task lifecycle operations.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-06T17:28:31.640Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
