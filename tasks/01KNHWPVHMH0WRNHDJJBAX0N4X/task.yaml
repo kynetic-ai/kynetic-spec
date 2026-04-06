@@ -22,6 +22,7 @@ tags:
   - test
   - infra
 vcs_refs: []
+review_ref: "@01KNHXKF3T77GB3YJ0HGHPH1RN"
 submission_linkage:
   review_url: null
   branch: dev
@@ -65,6 +66,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-04-06T17:27:23.065Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KNHXKF3T77GB3YJ0HGHPH1RN"
+        previous: null
+    command: review-link
+    timestamp: 2026-04-06T17:31:49.699Z
 created_at: 2026-04-06T17:16:09.652Z
 started_at: 2026-04-06T17:17:34.398Z
 submitted_at: 2026-04-06T17:27:23.065Z
