@@ -120872,6 +120872,26 @@ reviews:
         runner: kspec
         created_at: 2026-04-06T17:47:10.433Z
         completed_at: 2026-04-06T17:47:10.433Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: AGENTS.md, kspec-agents.md, src/daemon/entity-cache.ts,
+          tests/daemon-entity-cache.test.ts, package.json, prior review/task records for
+          @01KNDDJ28BG65RTB77YFQZVQDM, task metadata for @01KNDDJ3618FBAA9BA42NM8AEA. Commands run:
+          kspec task get @01KNDDJ3618FBAA9BA42NM8AEA, kspec item get @daemon-entity-cache, kspec
+          review for-task @01KNDDJ3618FBAA9BA42NM8AEA, kspec validate, rg -n AC annotations, git
+          log/show/diff on commits c6054304d and dbae3ce85, npm test -- --fresh
+          tests/daemon-entity-cache.test.ts. Claims verified: ac-context-reuse is implemented and
+          behaviorally covered; later debounce windows get fresh initContext; the local npm test
+          failure is the pre-existing review-worktree dependency-health false negative already
+          tracked elsewhere. Categories searched: correctness, edge cases, error handling, test
+          quality, integration."
+        name: review-evidence
+        required: false
+        runner: reviewer
+        created_at: 2026-04-06T17:47:12.817Z
+        completed_at: 2026-04-06T17:47:12.817Z
     events:
       - _ulid: 01KNHYEX81NKWT4Q0YE0BXVSTQ
         actor: Jacob Chapel
@@ -120893,6 +120913,13 @@ reviews:
           status: pass
           name: validation
         timestamp: 2026-04-06T17:47:11.253Z
+      - _ulid: 01KNHYFQV6D87VX9MD33WASAN0
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-04-06T17:47:13.638Z
     examined_commit: f79e50ae4981291472311faca180dcfcda98a05a
     external_links: []
     lifecycle_state: open
@@ -120905,5 +120932,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-06T17:46:46.402Z
-    updated_at: 2026-04-06T17:47:10.433Z
+    updated_at: 2026-04-06T17:47:12.817Z
     notes: []
