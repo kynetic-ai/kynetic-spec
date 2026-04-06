@@ -444,6 +444,37 @@ describe("ProjectEntityCache", () => {
       expect(after!.length).toBe(2);
     });
 
+    // AC: @daemon-incremental-cache ac-watcher-content-passthrough
+    it("should accept watcher-provided content when invalidating a changed file", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("tasks");
+
+      const tasksPath = join(projectA, ".kspec", "project.tasks.yaml");
+      const changedContent = yamlStringify([
+        {
+          _ulid: "01TASKA0000000000000000000",
+          slugs: ["task-a-sample"],
+          title: "Sample Task A Updated",
+          type: "task",
+          status: "pending",
+          priority: 1,
+          spec_ref: "@spec-a-sample",
+          depends_on: [],
+          created_at: "2026-01-24T00:00:00.000Z",
+          notes: [],
+          todos: [],
+        },
+      ]);
+      await fs.writeFile(tasksPath, changedContent, "utf-8");
+
+      const kspecDir = join(projectA, ".kspec");
+      await expect(cache.handleFileChange(kspecDir, tasksPath, changedContent)).resolves.toBeUndefined();
+
+      const after = cache.getTaskIndex();
+      expect(after).not.toBeNull();
+      expect(after![0].title).toBe("Sample Task A Updated");
+    });
+
     it("should replace stale detail cache when domain is invalidated", async () => {
       const cache = new ProjectEntityCache(projectA);
       await cache.loadDomain("tasks");

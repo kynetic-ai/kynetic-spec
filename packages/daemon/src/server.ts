@@ -600,11 +600,11 @@ export async function createServer(options: ServerOptions) {
   // Both .kspec/ and .kspec-sessions/ changes flow through handleFileChange;
   // fileToDomain() maps YAML files to their domains and ULID-prefixed session
   // paths to the sessions domain.
-  projectContextManager.setCacheInvalidationCallback((projectPath, kspecDir, file) => {
+  projectContextManager.setCacheInvalidationCallback((projectPath, kspecDir, file, content) => {
     const cache = entityCacheModule.getEntityCache(projectPath);
     if (!cache) return;
 
-    cache.handleFileChange(kspecDir, file).catch((err: unknown) => {
+    cache.handleFileChange(kspecDir, file, content).catch((err: unknown) => {
       console.error(`[entity-cache] Error handling file change for ${projectPath}:`, err);
     });
   });
