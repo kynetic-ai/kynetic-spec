@@ -12869,6 +12869,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-06T18:05:27.297Z
+  - _ulid: 01KNJ1P16NXFG8CZR3EM56T6X2
+    type: friction
+    content: In this dispatch worktree, mutating kspec task commands timed out through the daemon proxy
+      even while read-only commands and the daemon itself were healthy, so I had to rerun task
+      start/note/submit with KSPEC_NO_DAEMON=1. This is distinct from generic daemon timeouts
+      because the failure mode blocked lifecycle mutations but left direct mode as the necessary
+      workaround.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-06T18:43:05.558Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
