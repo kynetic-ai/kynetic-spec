@@ -1,0 +1,69 @@
+_ulid: 01KNHPYVA52VMPX7HX1X3VYQXQ
+slugs: []
+title: Skip heartbeat manager on Node runtime to prevent Elysia ping crash
+type: task
+description: >-
+  What: The daemon's WebSocket heartbeat crashes when running on Node runtime.
+  HeartbeatManager.start() is called unconditionally in createServer() at
+  packages/daemon/src/server.ts regardless of runtime. The heartbeat sends ws.ping() on active
+  connections every 30 seconds. The ws object is Elysia's ElysiaWS wrapper, which always exposes a
+  .ping() method — so the guard in heartbeat.ts (typeof ws.ping !== "function") passes. But
+  internally, ElysiaWS.ping() delegates to this.raw.ping(), and the underlying Node WebSocket
+  transport does not have .ping() on this.raw. This causes an uncaught TypeError that crashes the
+  daemon process.
+
+
+  The existing logHeartbeatDegradationWarning() function in server.ts correctly logs that heartbeat
+  is unavailable on Node, but heartbeatManager.start() is called afterward anyway — the warning and
+  the behavior are contradictory.
+
+
+  Why: The daemon crashes ~30 seconds after any WebSocket client connects when running on Node. The
+  crash is an uncaught exception inside Elysia's own code, so it cannot be caught by the heartbeat
+  manager's ping guard. This makes Node runtime unusable for any WebSocket-connected client (web UI,
+  session sync, dispatch events).
+
+
+  How:
+
+
+  1. In packages/daemon/src/server.ts, wrap heartbeatManager.start() in a runtime check — only call
+  when runtime !== "node". The runtime variable is already in scope from createServer()'s
+  destructured options.
+
+
+  2. Add a try/catch around ws.ping() in packages/daemon/src/websocket/heartbeat.ts as
+  defense-in-depth. The typeof guard is ineffective against Elysia's wrapper (ping exists on
+  wrapper, fails internally). A try/catch protects against future runtimes where the wrapper exposes
+  .ping() but the transport throws.
+
+
+  3. heartbeatManager.stop() in shutdown is safe unconditionally (no-op on never-started), no change
+  needed there.
+
+
+  4. For testing, extract a small testable helper (e.g. shouldEnableHeartbeat(runtime)) and test it
+  in tests/daemon-runtime-adapter.test.ts, matching the existing pattern of testing lightweight
+  exported functions rather than spinning up a full createServer(). The existing heartbeat unit
+  tests in tests/daemon-heartbeat.test.ts remain valid as defense-in-depth for the HeartbeatManager
+  class itself.
+
+
+  No spec changes needed — @daemon-runtime-adapter ac-heartbeat-degradation already specifies this
+  behavior ("connection remains open without heartbeat enforcement"). The implementation just
+  doesn't match the spec.
+spec_ref: "@daemon-runtime-adapter"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - daemon
+  - websocket
+  - node
+vcs_refs: []
+created_at: 2026-04-06T15:35:40.101Z
+todos: []

@@ -25316,3 +25316,19 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-06T14:37:08.410Z
+- _ulid: 01KNHPYVA52VMPX7HX1X3VYQXQ
+  slugs: []
+  title: Skip heartbeat manager on Node runtime to prevent Elysia ping crash
+  type: task
+  spec_ref: "@daemon-runtime-adapter"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - daemon
+    - websocket
+    - node
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-06T15:35:40.101Z
