@@ -39272,12 +39272,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-06T19:23:39.535Z
+      updated_at: 2026-04-06T19:23:57.435Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-06T19:23:45.089Z
+      updated_at: 2026-04-06T19:23:57.435Z
     integration:
       status: pending
       detail: null
@@ -39285,17 +39285,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-granular-cache-invalidation/01kndbmk
       target_commit: f79e50ae4981291472311faca180dcfcda98a05a
-      updated_at: 2026-04-06T19:23:39.535Z
-    lifecycle_state: ready
+      updated_at: 2026-04-06T19:23:57.435Z
+    lifecycle_state: integrating
     resolved_base_branch: plan/plan-granular-cache-invalidation/01kndbmk
     task_ref: "@01KNDDJ3RK4K2HWH7TVY6F1V66"
     task_slug: task-incremental-item-updates
     timestamps:
       closed_at: null
       last_active_at: 2026-04-06T19:00:13.411Z
-      last_reconciled_at: 2026-04-06T19:23:45.089Z
+      last_reconciled_at: 2026-04-06T19:23:57.435Z
       created_at: 2026-04-06T18:06:17.959Z
-      updated_at: 2026-04-06T19:23:45.089Z
+      updated_at: 2026-04-06T19:23:57.435Z
     workspace_id: dispatch-workspace-01KNDDJ3RK4K2HWH7TVY6F1V66
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
