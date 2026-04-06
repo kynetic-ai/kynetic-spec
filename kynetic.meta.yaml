@@ -12850,6 +12850,25 @@ observations:
     resolved_at: 2026-04-06T17:49:45.592Z
     resolved_by: Jacob Chapel
     created_at: 2026-04-06T17:49:34.011Z
+  - _ulid: 01KNHZH3KE0SDM9FXSJYDPAJQM
+    type: friction
+    content: In dispatch worker worktrees without a local .kspec mount, direct task commands can fail
+      through daemon/proxy or hang until the caller forces direct mode (KSPEC_NO_DAEMON=1) and
+      points KSPEC_SPEC_DIR at the parent repo shadow state. The workflow should make the canonical
+      shadow state explicit or route task commands there automatically.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-06T18:05:27.022Z
+  - _ulid: 01KNHZH3W1NEE2P7QRMWPH8Y7M
+    type: success
+    content: For code-only daemon/cache work in a dispatch worktree, running tests with SKIP_BUILD=1
+      isolated verification from an unrelated web-ui build failure while still exercising the
+      changed runtime and full suite.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-06T18:05:27.297Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
