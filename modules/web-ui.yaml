@@ -3837,6 +3837,9 @@ features:
       fallback when the changed file cannot be mapped to specific
       entities or when callers (such as write-through) do not provide
       file-level context.
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
