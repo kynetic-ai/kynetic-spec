@@ -25287,15 +25287,8 @@
   title: Fix auto-start racing with explicit daemon management
   type: bug
   spec_ref: "@config-daemon"
-  status: blocked
-  blocked_by:
-    - 'Dispatch workspace provisioning failed: Cannot provision workspace for
-      @01KNHJTS8EAS37M6BER73RXBYF in pending_review: no existing workspace record and no recoverable
-      branch lineage. Submission linkage references branch
-      "dispatch/task/task-fix-autostart-serve-race/01knhjts" but it could not be found locally or on
-      any remote.. Suggested action: Ensure the task has submission linkage with a valid branch
-      (kspec task set @01KNHJTS8EAS37M6BER73RXBYF --submission-linkage), or manually create the
-      workspace branch and re-submit.'
+  status: pending_review
+  blocked_by: []
   depends_on: []
   priority: 3
   tags:
