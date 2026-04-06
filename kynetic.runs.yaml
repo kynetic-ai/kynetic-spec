@@ -23430,7 +23430,7 @@ runs:
     started_at: 2026-04-06T18:42:03.985Z
   - _ulid: 01KNJ2J08ZNRBTZMJDCQVMFKWK
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -23453,7 +23453,21 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-06T18:59:10.499Z
-        completed_at: 2026-04-06T18:59:10.499Z
+        completed_at: 2026-04-06T18:59:18.345Z
+        notes: >-
+          High-confidence items identified and checked against search results.
+
+          Friction: daemon-backed read-only lookups can stall during dispatch and force
+          KSPEC_NO_DAEMON=1 retries.
+
+          Success: targeted daemon cache regression testing before full npm test shortened fix-cycle
+          feedback while preserving full verification.
+
+          Both were concrete, repeatable, and untracked.
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-06T18:59:18.345Z
+        completed_at: 2026-04-06T18:59:18.345Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-06T18:58:22.111Z
