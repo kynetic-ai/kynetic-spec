@@ -1,1 +1,14 @@
-notes: []
+notes:
+  - _ulid: 01KNHQ541KANHM8F0PFKMQE0EK
+    content: |-
+      Approach:
+      1. Extract shouldEnableHeartbeat(runtime) helper in server.ts, export it for testing
+      2. Guard heartbeatManager.start() with it at line 816
+      3. Add try/catch around ws.ping() in heartbeat.ts:62 as defense-in-depth
+      4. Add tests in daemon-runtime-adapter.test.ts for the helper
+      5. Existing heartbeat.test.ts degradation tests remain valid
+
+      ACs covered: ac-heartbeat-degradation (primary fix)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-06T15:39:05.652Z
