@@ -159,6 +159,29 @@ async function setupLocalFileDependencyProject(dir: string): Promise<void> {
   git(dir, 'commit -m "fixture: add local dependency bootstrap project"');
 }
 
+async function writeInstalledPackage(
+  nodeModulesRoot: string,
+  packageName: string,
+  mainFile = "index.js",
+): Promise<void> {
+  const packageDir = path.join(nodeModulesRoot, ...packageName.split("/"));
+  await fs.mkdir(packageDir, { recursive: true });
+  await fs.writeFile(
+    path.join(packageDir, "package.json"),
+    JSON.stringify(
+      {
+        name: packageName,
+        version: "1.0.0",
+        main: mainFile,
+      },
+      null,
+      2,
+    ),
+    "utf-8",
+  );
+  await fs.writeFile(path.join(packageDir, mainFile), "module.exports = 'ok';\n", "utf-8");
+}
+
 async function readWorkspaceRecord(
   registryPath: string,
   taskRef: string,
@@ -1031,6 +1054,107 @@ describe("dispatch runtime bootstrap contract", { timeout: 60_000 }, () => {
       expect(reusedAfterRepair.metadata.bootstrap.invalidationReasons).toEqual([]);
     },
   );
+
+  it("reuses bootstrap when workspace dependencies resolve from the project root install", async () => {
+    await seedRepo(tempDir);
+    await setupProject(tempDir, {
+      dispatchConfig: ["dispatch:", "  base_branch: agent-dev"].join("\n"),
+    });
+    await fs.writeFile(
+      path.join(tempDir, "package.json"),
+      JSON.stringify(
+        {
+          name: "dispatch-bootstrap-hoisted-fixture",
+          private: true,
+          version: "1.0.0",
+          dependencies: {
+            "local-dep": "1.0.0",
+          },
+        },
+        null,
+        2,
+      ),
+      "utf-8",
+    );
+    await fs.writeFile(path.join(tempDir, "package-lock.json"), "{}\n", "utf-8");
+    await writeInstalledPackage(path.join(tempDir, "node_modules"), "local-dep");
+    git(
+      tempDir,
+      "add package.json package-lock.json kynetic.yaml kynetic.meta.yaml project.tasks.yaml",
+    );
+    git(tempDir, 'commit -m "fixture: add hoisted dependency bootstrap project"');
+
+    const taskRef = `@${testUlid("TASK", 38)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: { title: "Hoisted Dependency Bootstrap", slugs: ["hoisted-dependency-bootstrap"] },
+    });
+
+    const initial = await ensureWorkspaceBootstrap({
+      projectDir: tempDir,
+      workspaceDir: workspace.cwd,
+      metadataPath: workspace.metadataPath,
+      metadata: workspace.metadata,
+      role: "worker",
+      agent: makeAgent(),
+      env: {},
+    });
+
+    expect(initial.ranSteps).toBe(false);
+
+    const record = await readWorkspaceRecord(workspace.metadataPath, taskRef);
+    const reused = await ensureWorkspaceBootstrap({
+      projectDir: tempDir,
+      workspaceDir: workspace.cwd,
+      metadataPath: workspace.metadataPath,
+      metadata: {
+        ...workspace.metadata,
+        bootstrap: record.bootstrap,
+        bootstrapState: record.bootstrap,
+      },
+      role: "worker",
+      agent: makeAgent(),
+      env: {},
+    });
+
+    expect(reused.reused).toBe(true);
+    expect(reused.ranSteps).toBe(false);
+    expect(reused.metadata.bootstrap.invalidationReasons).toEqual([]);
+  });
+
+  it("does not reuse bootstrap from installs found only above the project root", async () => {
+    const outerInstallRoot = tempDir;
+    const projectDir = path.join(tempDir, "project");
+    await fs.mkdir(projectDir, { recursive: true });
+    await seedRepo(projectDir);
+    await setupProject(projectDir, {
+      dispatchConfig: ["dispatch:", "  base_branch: agent-dev"].join("\n"),
+    });
+    await setupLocalFileDependencyProject(projectDir);
+    await writeInstalledPackage(path.join(outerInstallRoot, "node_modules"), "local-dep");
+
+    const taskRef = `@${testUlid("TASK", 38)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir,
+      taskRef,
+      task: { title: "Boundary Dependency Bootstrap", slugs: ["boundary-dependency-bootstrap"] },
+    });
+
+    const initial = await ensureWorkspaceBootstrap({
+      projectDir,
+      workspaceDir: workspace.cwd,
+      metadataPath: workspace.metadataPath,
+      metadata: workspace.metadata,
+      role: "worker",
+      agent: makeAgent(),
+      env: {},
+    });
+
+    expect(initial.ranSteps).toBe(true);
+    expect(initial.metadata.bootstrap.invalidationReasons).toContain("workspace-dependencies-missing");
+    await expect(fs.stat(path.join(workspace.cwd, "node_modules", "local-dep"))).resolves.toBeTruthy();
+  });
 
   // AC: @dispatch-runtime-bootstrap-contract ac-6
   // AC: @trait-error-guidance ac-1

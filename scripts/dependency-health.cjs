@@ -40,29 +40,63 @@ function packageInstallPath(nodeModulesDir, packageName, pathApi = path) {
   return pathApi.join(nodeModulesDir, ...packageName.split("/"));
 }
 
+function dependencySearchRoot(rootDir, pathApi = path) {
+  const normalizedRoot = pathApi.resolve(rootDir);
+  const worktreeSegment = `${pathApi.sep}.kspec-worktrees${pathApi.sep}`;
+  const markerIndex = normalizedRoot.lastIndexOf(worktreeSegment);
+  if (markerIndex === -1) {
+    return normalizedRoot;
+  }
+  return normalizedRoot.slice(0, markerIndex);
+}
+
+function packageExistsInAncestorNodeModules(rootDir, packageName, fsApi = fs, pathApi = path) {
+  const searchRoot = dependencySearchRoot(rootDir, pathApi);
+  let currentDir = pathApi.resolve(rootDir);
+  for (;;) {
+    if (fsApi.existsSync(packageInstallPath(pathApi.join(currentDir, "node_modules"), packageName))) {
+      return true;
+    }
+    if (currentDir === searchRoot) {
+      return false;
+    }
+    const parentDir = pathApi.dirname(currentDir);
+    currentDir = parentDir;
+  }
+}
+
 function checkProjectDependencies(rootDir, options = {}) {
   const fsApi = options.fsApi || fs;
   const pathApi = options.pathApi || path;
+  const hasPackage =
+    options.hasPackage ||
+    ((dir, packageName) => packageExistsInAncestorNodeModules(dir, packageName, fsApi, pathApi));
   const packageJson = readPackageJson(rootDir, fsApi, pathApi);
   const lockfilePath = pathApi.join(rootDir, "package-lock.json");
   const nodeModules = pathApi.join(rootDir, "node_modules");
+  const directDependencies = collectDirectDependencies(packageJson);
 
   if (!fsApi.existsSync(lockfilePath) || !packageJson) {
     return { ok: true, directDependencies: [], missingPackages: [] };
   }
 
-  if (!fsApi.existsSync(nodeModules)) {
+  const ancestorHasDirectDependencies = directDependencies.some((packageName) =>
+    hasPackage(rootDir, packageName),
+  );
+
+  if (!fsApi.existsSync(nodeModules) && !ancestorHasDirectDependencies) {
     return {
       ok: false,
       reason: "node_modules/ not found",
-      directDependencies: collectDirectDependencies(packageJson),
+      directDependencies,
       missingPackages: [],
     };
   }
 
-  const directDependencies = collectDirectDependencies(packageJson);
   const missingPackages = directDependencies.filter(
-    (packageName) => !fsApi.existsSync(packageInstallPath(nodeModules, packageName, pathApi)),
+    (packageName) =>
+      !fsApi.existsSync(packageInstallPath(nodeModules, packageName, pathApi)) &&
+      !hasPackage(rootDir, packageName),
   );
 
   if (missingPackages.length > 0) {

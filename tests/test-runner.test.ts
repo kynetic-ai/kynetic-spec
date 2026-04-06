@@ -62,6 +62,24 @@ function writeBuiltProjectFixture(rootDir: string): void {
   }
 }
 
+function writeInstallablePackage(nodeModulesRoot: string, packageName: string): void {
+  const packageDir = path.join(nodeModulesRoot, ...packageName.split("/"));
+  fs.mkdirSync(packageDir, { recursive: true });
+  fs.writeFileSync(
+    path.join(packageDir, "package.json"),
+    JSON.stringify(
+      {
+        name: packageName,
+        version: "1.0.0",
+        main: "index.js",
+      },
+      null,
+      2,
+    ),
+  );
+  fs.writeFileSync(path.join(packageDir, "index.js"), "module.exports = 'ok';\n");
+}
+
 // Import the shipped module — tests exercise this, not reimplemented logic
 const runner = require("../scripts/test.cjs");
 
@@ -369,6 +387,47 @@ describe("test runner environment checks", () => {
         fs.writeFileSync(path.join(tempDir, "package-lock.json"), "{}");
         const result = runner.checkDependencies(tempDir);
         expect(result.ok).toBe(true);
+      });
+
+      it("accepts direct dependencies resolved from an ancestor node_modules", () => {
+        const projectDir = path.join(tempDir, "project");
+        const workspaceDir = path.join(projectDir, ".kspec-worktrees", "review");
+        fs.mkdirSync(path.join(projectDir, "node_modules"), { recursive: true });
+        fs.mkdirSync(workspaceDir, { recursive: true });
+        writeInstallablePackage(path.join(projectDir, "node_modules"), "vitest");
+        writeInstallablePackage(path.join(projectDir, "node_modules"), "croner");
+        fs.writeFileSync(
+          path.join(workspaceDir, "package.json"),
+          JSON.stringify({
+            dependencies: { croner: "^10.0.0" },
+            devDependencies: { vitest: "^4.0.0" },
+          }),
+        );
+        fs.writeFileSync(path.join(workspaceDir, "package-lock.json"), "{}");
+
+        const result = runner.checkDependencies(workspaceDir);
+        expect(result.ok).toBe(true);
+      });
+
+      it("rejects dependencies found only above the project root", () => {
+        const projectDir = path.join(tempDir, "project");
+        const workspaceDir = path.join(projectDir, ".kspec-worktrees", "review");
+        fs.mkdirSync(path.join(tempDir, "node_modules"), { recursive: true });
+        writeInstallablePackage(path.join(tempDir, "node_modules"), "vitest");
+        writeInstallablePackage(path.join(tempDir, "node_modules"), "croner");
+        fs.mkdirSync(workspaceDir, { recursive: true });
+        fs.writeFileSync(
+          path.join(workspaceDir, "package.json"),
+          JSON.stringify({
+            dependencies: { croner: "^10.0.0" },
+            devDependencies: { vitest: "^4.0.0" },
+          }),
+        );
+        fs.writeFileSync(path.join(workspaceDir, "package-lock.json"), "{}");
+
+        const result = runner.checkDependencies(workspaceDir);
+        expect(result.ok).toBe(false);
+        expect(result.reason).toContain("node_modules/ not found");
       });
     });
   });
