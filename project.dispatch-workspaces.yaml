@@ -38736,7 +38736,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-06T17:17:44.291Z
+      updated_at: 2026-04-06T17:18:04.878Z
     integration:
       status: merged
       detail: integration:merged
@@ -38752,18 +38752,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-06T17:13:17.345Z
-      last_reconciled_at: 2026-04-06T17:18:03.255Z
+      last_reconciled_at: 2026-04-06T17:18:04.878Z
       created_at: 2026-04-06T17:02:46.730Z
-      updated_at: 2026-04-06T17:18:03.255Z
+      updated_at: 2026-04-06T17:18:04.878Z
     workspace_id: dispatch-workspace-01KNDDJ2W7RD7D0PTZJ7WXTZ53
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: e30bbe0675040848ac4e3c9dee41aade876f1021
-        last_seen_at: 2026-04-06T17:13:11.276Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-debounce-path-accumulation-01knddj2-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-debounce-path-accumulation/01knddj2
