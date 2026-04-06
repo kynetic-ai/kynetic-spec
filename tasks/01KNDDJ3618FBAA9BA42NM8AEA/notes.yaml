@@ -1,1 +1,10 @@
-notes: []
+notes:
+  - _ulid: 01KNHXR2WJ8D9M29939ZB12RVK
+    content: Verified this branch already contains the implementation for @daemon-entity-cache
+      ac-context-reuse via commits c6054304d (reuse cache context across invalidation cycle) and
+      dbae3ce85 (bound context reuse to debounce window). AC coverage exists in
+      tests/daemon-entity-cache.test.ts for ac-context-reuse. KSPEC_NO_DAEMON=1 kspec validate
+      completed with only unrelated project-wide warnings.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-06T17:34:18.514Z
