@@ -120046,6 +120046,18 @@ reviews:
         runner: kspec validate
         created_at: 2026-04-06T16:08:10.308Z
         completed_at: 2026-04-06T16:08:10.308Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed on submitted branch: npm test -- tests/cli-no-daemon.test.ts -t 'auto-starts the
+          daemon with the configured node runtime even when the CLI runs under bun'. Also passed on
+          clean origin/dev worktree."
+        name: cli-no-daemon-rerun
+        required: false
+        runner: npm test
+        created_at: 2026-04-06T16:08:30.465Z
+        completed_at: 2026-04-06T16:08:30.465Z
     events:
       - _ulid: 01KNHRSRAQXH7A0ZCQP9BM80T6
         actor: Jacob Chapel
@@ -120081,6 +120093,13 @@ reviews:
           status: fail
           name: kspec-validate
         timestamp: 2026-04-06T16:08:15.294Z
+      - _ulid: 01KNHRV0BQ7A7MMHQ5JH3KWDJG
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: cli-no-daemon-rerun
+        timestamp: 2026-04-06T16:08:31.351Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -120093,5 +120112,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-06T16:07:50.360Z
-    updated_at: 2026-04-06T16:08:10.308Z
+    updated_at: 2026-04-06T16:08:30.465Z
     notes: []
