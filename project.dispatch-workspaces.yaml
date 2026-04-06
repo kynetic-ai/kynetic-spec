@@ -38704,18 +38704,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-debounce-path-accumulation/01knddj2
-    canonical_branch_head: 44d753472881707702ac038f2821b685c8f06bb7
+    canonical_branch_head: e30bbe0675040848ac4e3c9dee41aade876f1021
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-06T17:02:46.730Z
+      updated_at: 2026-04-06T17:11:42.823Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-06T17:02:52.963Z
+      updated_at: 2026-04-06T17:11:42.823Z
     integration:
       status: pending
       detail: null
@@ -38723,7 +38723,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-granular-cache-invalidation/01kndbmk
       target_commit: 44d753472881707702ac038f2821b685c8f06bb7
-      updated_at: 2026-04-06T17:02:46.730Z
+      updated_at: 2026-04-06T17:11:42.823Z
     lifecycle_state: active
     resolved_base_branch: plan/plan-granular-cache-invalidation/01kndbmk
     task_ref: "@01KNDDJ2W7RD7D0PTZJ7WXTZ53"
@@ -38731,9 +38731,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-06T17:02:52.963Z
-      last_reconciled_at: 2026-04-06T17:02:52.963Z
+      last_reconciled_at: 2026-04-06T17:11:42.823Z
       created_at: 2026-04-06T17:02:46.730Z
-      updated_at: 2026-04-06T17:02:52.963Z
+      updated_at: 2026-04-06T17:11:42.823Z
     workspace_id: dispatch-workspace-01KNDDJ2W7RD7D0PTZJ7WXTZ53
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
