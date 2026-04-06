@@ -55,7 +55,7 @@ description: >-
 spec_ref: "@daemon-runtime-adapter"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -65,6 +65,14 @@ tags:
   - websocket
   - node
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/skip-heartbeat-manager-on-node-runtime-to-prevent-elysia-ping-crash/01knhpyv
+  captured_at: 2026-04-06T15:50:40.348Z
+  commit: 02e753b16c8880104f11547a11cecc038815c858
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KNBFSP8V1D63NSRQJ3GXRX3G
 history:
   - author: "@claude"
@@ -80,6 +88,27 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-06T15:38:36.726Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/skip-heartbeat-manager-on-node-runtime-to-prevent-elysia-ping-crash/01knhpyv
+          captured_at: 2026-04-06T15:50:40.348Z
+          commit: 02e753b16c8880104f11547a11cecc038815c858
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-04-06T15:50:40.351Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-06T15:50:40.351Z
 created_at: 2026-04-06T15:35:40.101Z
 started_at: 2026-04-06T15:38:36.726Z
+submitted_at: 2026-04-06T15:50:40.351Z
 todos: []
