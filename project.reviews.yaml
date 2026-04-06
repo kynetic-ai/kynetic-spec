@@ -120791,6 +120791,12 @@ reviews:
         payload:
           thread_ulid: 01KNHXNWCAMX3XN8C0XYPDZQ8D
         timestamp: 2026-04-06T17:48:32.219Z
+      - _ulid: 01KNHYJ70JDA3J0XMM0X0BA8TN
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNHXNT1A2YHAVA7C9ZTJNW60
+        timestamp: 2026-04-06T17:48:34.706Z
     examined_commit: 05c33e449cd51aaa81817e7ba3f98d7e8f99dedb
     external_links: []
     lifecycle_state: closed
@@ -120853,6 +120859,8 @@ reviews:
               the project root still fail dependency health.
             created_at: 2026-04-06T17:48:14.632Z
         kind: blocker
+        resolved_at: 2026-04-06T17:48:33.872Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KNHXNWCAMX3XN8C0XYPDZQ8D
         anchor:
           type: code
@@ -120889,7 +120897,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-06T17:33:39.563Z
     created_at: 2026-04-06T17:31:47.194Z
-    updated_at: 2026-04-06T17:48:31.396Z
+    updated_at: 2026-04-06T17:48:33.872Z
     notes: []
   - _ulid: 01KNHYEX820KPYHEQ3DWG74XZB
     slugs: []
