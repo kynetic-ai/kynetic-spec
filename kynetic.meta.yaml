@@ -12829,6 +12829,14 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-06T17:28:31.640Z
+  - _ulid: 01KNHXR1YE156RK7201FWBD4B2
+    type: friction
+    content: Task work needed KSPEC_NO_DAEMON=1 because daemon-backed CLI reads returned a JSON parse
+      error ('Unexpected token u'). Direct mode worked.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-06T17:34:17.550Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
