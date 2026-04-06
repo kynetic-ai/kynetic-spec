@@ -121441,6 +121441,27 @@ reviews:
         runner: manual
         created_at: 2026-04-06T18:48:54.908Z
         completed_at: 2026-04-06T18:48:54.908Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: >-
+          After a successful npm ci, both 
+
+          > @kynetic-ai/spec@0.12.0 test
+
+          > node scripts/test.cjs daemon-entity-cache and 
+
+          > @kynetic-ai/spec@0.12.0 test
+
+          > node scripts/test.cjs exited 1 before running tests because scripts/test.cjs still
+          reported missing direct dependencies: @agentclientprotocol/sdk, @tailwindcss/postcss,
+          @types/diff.
+        name: npm-test
+        required: false
+        runner: npm
+        created_at: 2026-04-06T18:48:57.483Z
+        completed_at: 2026-04-06T18:48:57.483Z
     events:
       - _ulid: 01KNJ1W2P2Z78PPN6E4SAZHAF3
         actor: Jacob Chapel
@@ -121476,6 +121497,13 @@ reviews:
           status: pass
           name: review-evidence
         timestamp: 2026-04-06T18:48:55.817Z
+      - _ulid: 01KNJ20SRC9KHED0NC7RFRMJZ2
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: npm-test
+        timestamp: 2026-04-06T18:48:58.380Z
     examined_commit: 6e975d7da18c5811a8ea560d32eb15a026c87b99
     external_links: []
     lifecycle_state: open
@@ -121508,5 +121536,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-06T18:46:23.682Z
-    updated_at: 2026-04-06T18:48:54.908Z
+    updated_at: 2026-04-06T18:48:57.483Z
     notes: []
