@@ -38875,7 +38875,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-06T17:34:51.680Z
+      updated_at: 2026-04-06T17:34:53.444Z
     integration:
       status: pending
       detail: null
@@ -38884,25 +38884,20 @@ workspaces:
       target_branch: dev
       target_commit: b3b91d18cde400739d327720cea3e960f58f3a34
       updated_at: 2026-04-06T17:34:51.680Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KNHWPVHMH0WRNHDJJBAX0N4X"
     task_slug: fix-test-runner-dependency-health-false-negative-in-review-worktrees
     timestamps:
       closed_at: null
       last_active_at: 2026-04-06T17:29:04.871Z
-      last_reconciled_at: 2026-04-06T17:34:51.680Z
+      last_reconciled_at: 2026-04-06T17:34:53.444Z
       created_at: 2026-04-06T17:16:53.434Z
-      updated_at: 2026-04-06T17:34:51.680Z
+      updated_at: 2026-04-06T17:34:53.444Z
     workspace_id: dispatch-workspace-01KNHWPVHMH0WRNHDJJBAX0N4X
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 05c33e449cd51aaa81817e7ba3f98d7e8f99dedb
-        last_seen_at: 2026-04-06T17:28:58.586Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-test-runner-dependency-health-false-negative-in-review-worktrees-01knhwpv-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/fix-test-runner-dependency-health-false-negative-in-review-worktrees/01knhwpv
