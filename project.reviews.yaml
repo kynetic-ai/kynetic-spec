@@ -119929,6 +119929,18 @@ reviews:
         runner: npm
         created_at: 2026-04-06T15:27:11.808Z
         completed_at: 2026-04-06T15:27:11.808Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Failed on 2026-04-06 due to pre-existing repo-wide validation issues unrelated to this
+          branch: 4 broken references, 31 alignment warnings, 523 completeness warnings. No findings
+          tied to src/cli/index.ts or tests/cli-no-daemon.test.ts."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-06T15:27:11.813Z
+        completed_at: 2026-04-06T15:27:11.813Z
     events:
       - _ulid: 01KNHPE2FJXPGEJF9VWBTT3PW6
         actor: Jacob Chapel
@@ -119950,6 +119962,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-06T15:27:12.807Z
+      - _ulid: 01KNHPFDE5T8NTXGPJ5VHAB3SR
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-06T15:27:14.373Z
     examined_commit: 61e1789e6d8c70138c3b022fff4be02b03182cf7
     external_links: []
     lifecycle_state: open
@@ -119962,5 +119981,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-06T15:26:30.386Z
-    updated_at: 2026-04-06T15:27:11.808Z
+    updated_at: 2026-04-06T15:27:11.813Z
     notes: []
