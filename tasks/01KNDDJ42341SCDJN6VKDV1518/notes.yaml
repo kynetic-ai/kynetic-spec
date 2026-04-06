@@ -13,3 +13,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-06T18:49:16.145Z
+  - _ulid: 01KNJ32P1QRSF3XE5KA0EAFMA9
+    content: "Approach: keep incremental session index patching, but preserve detail freshness by
+      invalidating detail entries when watcher-driven metadata-only reloads occur instead of caching
+      metadata summaries as details. Edge cases: active sessions with live event counters,
+      stale-threshold transitions on incremental invalidation, deleted sessions, and sessions-root
+      directory events that must fall back to full reload. Test plan: add behavioral regressions for
+      stale-session rewrite during incremental invalidation and for active-session detail freshness
+      after events-file changes, alongside the existing update/insert/delete coverage."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-06T19:07:28.695Z
