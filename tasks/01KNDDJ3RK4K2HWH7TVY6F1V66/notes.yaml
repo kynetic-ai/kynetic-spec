@@ -15,3 +15,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-06T18:34:35.191Z
+  - _ulid: 01KNJ2GC17VNZNYWRVB12Y2WGD
+    content: "[FIX_CYCLE: 1] Addressed the review blocker by rebuilding incremental item index order
+      from manifest include expansion instead of insertion offsets, so multiple changed module files
+      preserve full-reload ordering in one debounce window. Also kept plain invalidateDomain() calls
+      on fresh reload cycles, preserved full-reload fallback when item context is unavailable, and
+      reverified @daemon-incremental-cache ACs with NODE_ENV=development npm test -- --run
+      tests/daemon-entity-cache.test.ts, KSPEC_NO_DAEMON=1 kspec validate, and NODE_ENV=development
+      npm test."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-06T18:57:28.616Z
