@@ -38906,7 +38906,7 @@ workspaces:
         head: 05c33e449cd51aaa81817e7ba3f98d7e8f99dedb
         last_seen_at: 2026-04-06T17:42:55.166Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-test-runner-dependency-health-false-negative-in-review-worktrees-01knhwpv
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: f79e50ae4981291472311faca180dcfcda98a05a
     bootstrap:
       status: succeeded
@@ -39016,7 +39016,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-06T17:43:03.835Z
+      updated_at: 2026-04-06T17:43:10.114Z
     integration:
       status: pending
       detail: null
@@ -39031,10 +39031,10 @@ workspaces:
     task_slug: task-cache-kspec-context
     timestamps:
       closed_at: null
-      last_active_at: 2026-04-06T17:29:12.863Z
-      last_reconciled_at: 2026-04-06T17:43:03.835Z
+      last_active_at: 2026-04-06T17:43:10.114Z
+      last_reconciled_at: 2026-04-06T17:43:10.114Z
       created_at: 2026-04-06T17:29:08.220Z
-      updated_at: 2026-04-06T17:43:07.034Z
+      updated_at: 2026-04-06T17:43:10.114Z
     workspace_id: dispatch-workspace-01KNDDJ3618FBAA9BA42NM8AEA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
