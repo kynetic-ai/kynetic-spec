@@ -39263,18 +39263,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-incremental-item-updates/01knddj3
-    canonical_branch_head: f79e50ae4981291472311faca180dcfcda98a05a
+    canonical_branch_head: a76e028682e2d5456ba6c58f7237e288d23b466e
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-06T18:06:17.959Z
+      updated_at: 2026-04-06T18:24:53.139Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-06T18:06:22.596Z
+      updated_at: 2026-04-06T18:24:53.139Z
     integration:
       status: pending
       detail: null
@@ -39282,7 +39282,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-granular-cache-invalidation/01kndbmk
       target_commit: f79e50ae4981291472311faca180dcfcda98a05a
-      updated_at: 2026-04-06T18:06:17.959Z
+      updated_at: 2026-04-06T18:24:53.139Z
     lifecycle_state: active
     resolved_base_branch: plan/plan-granular-cache-invalidation/01kndbmk
     task_ref: "@01KNDDJ3RK4K2HWH7TVY6F1V66"
@@ -39290,9 +39290,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-06T18:06:22.596Z
-      last_reconciled_at: 2026-04-06T18:06:22.596Z
+      last_reconciled_at: 2026-04-06T18:24:53.139Z
       created_at: 2026-04-06T18:06:17.959Z
-      updated_at: 2026-04-06T18:06:22.596Z
+      updated_at: 2026-04-06T18:24:53.139Z
     workspace_id: dispatch-workspace-01KNDDJ3RK4K2HWH7TVY6F1V66
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
