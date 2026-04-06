@@ -9,3 +9,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-06T17:03:44.415Z
+  - _ulid: 01KNHWDWG7TK1ZW9HYN9VDPV0E
+    content: "Implemented debounce-window path accumulation in ProjectEntityCache. Added per-domain
+      pending change tracking keyed by file path, drained the accumulated batch when the debounce
+      timer fires, and routed the batch through a new processDomainChanges seam that currently
+      delegates to full loadDomain for fallback behavior. Verified duplicate file changes keep the
+      latest content and invalidations without file context produce an empty batch for full reload
+      fallback. Validation: npm test passed (7524 passed, 5 skipped); kspec validate still reports
+      the repo's pre-existing warnings/completeness debt."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-06T17:11:15.719Z
