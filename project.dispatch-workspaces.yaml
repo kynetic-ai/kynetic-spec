@@ -38765,7 +38765,7 @@ workspaces:
         head: e30bbe0675040848ac4e3c9dee41aade876f1021
         last_seen_at: 2026-04-06T17:13:11.276Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-debounce-path-accumulation-01knddj2
-  - active_role: null
+  - active_role: worker
     base_branch_point: b3b91d18cde400739d327720cea3e960f58f3a34
     bootstrap:
       status: succeeded
@@ -38877,7 +38877,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-06T17:42:55.166Z
+      updated_at: 2026-04-06T17:42:59.887Z
     integration:
       status: pending
       detail: null
@@ -38886,16 +38886,16 @@ workspaces:
       target_branch: dev
       target_commit: b3b91d18cde400739d327720cea3e960f58f3a34
       updated_at: 2026-04-06T17:42:55.166Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KNHWPVHMH0WRNHDJJBAX0N4X"
     task_slug: fix-test-runner-dependency-health-false-negative-in-review-worktrees
     timestamps:
       closed_at: null
-      last_active_at: 2026-04-06T17:29:04.871Z
-      last_reconciled_at: 2026-04-06T17:42:55.166Z
+      last_active_at: 2026-04-06T17:42:59.887Z
+      last_reconciled_at: 2026-04-06T17:42:59.887Z
       created_at: 2026-04-06T17:16:53.434Z
-      updated_at: 2026-04-06T17:42:58.441Z
+      updated_at: 2026-04-06T17:42:59.887Z
     workspace_id: dispatch-workspace-01KNHWPVHMH0WRNHDJJBAX0N4X
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
