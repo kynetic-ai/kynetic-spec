@@ -35,3 +35,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-06T17:33:41.212Z
+  - _ulid: 01KNHYHJ10Q472YA02YZRARA92
+    content: "Fix cycle 1: bounded dependency resolution to the current project root instead of
+      searching every filesystem ancestor. Also corrected the detached-worktree case where
+      workspace/node_modules is absent but dependencies resolve from the project root install. Added
+      regressions for both test-runner and dispatch bootstrap paths, including a negative case
+      proving installs above the project root do not suppress dependency repair. Re-verified with
+      SKIP_BUILD=1 npm test -- --fresh tests/test-runner.test.ts
+      tests/dispatch-runtime-bootstrap-contract.test.ts and SKIP_BUILD=1 node scripts/test.cjs
+      --dry-run."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-06T17:48:13.216Z
