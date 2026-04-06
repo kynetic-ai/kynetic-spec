@@ -41,8 +41,13 @@ description: |
 spec_ref: "@daemon-incremental-cache"
 plan_ref: "@plan-granular-cache-invalidation"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Approved and merged into plan/plan-granular-cache-invalidation/01kndbmk at
+  f79e50ae4981291472311faca180dcfcda98a05a. Added debounce-window accumulation of pending file
+  changes and coverage for coalescing/latest-content/fallback behavior. Follow-up infra issue:
+  @01KNHWPV tracks the pre-existing npm test dependency-health bootstrap failure observed in this
+  review worktree."
 depends_on:
   - "@task-watcher-content-passthrough"
 context: []
@@ -110,8 +115,26 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-06T17:13:58.118Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Approved and merged into plan/plan-granular-cache-invalidation/01kndbmk at
+          f79e50ae4981291472311faca180dcfcda98a05a. Added debounce-window accumulation of pending
+          file changes and coverage for coalescing/latest-content/fallback behavior. Follow-up infra
+          issue: @01KNHWPV tracks the pre-existing npm test dependency-health bootstrap failure
+          observed in this review worktree."
+        previous: null
+      completed_at:
+        new: 2026-04-06T17:17:19.874Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-06T17:17:19.882Z
 created_at: 2026-04-04T23:34:26.951Z
 started_at: 2026-04-06T17:03:31.385Z
 submitted_at: 2026-04-06T17:11:31.193Z
+completed_at: 2026-04-06T17:17:19.874Z
 todos: []
 automation: eligible
