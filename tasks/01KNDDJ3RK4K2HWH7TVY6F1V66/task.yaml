@@ -58,8 +58,10 @@ description: |
 spec_ref: "@daemon-incremental-cache"
 plan_ref: "@plan-granular-cache-invalidation"
 origin: derived
-status: pending_review
-blocked_by: []
+status: blocked
+blocked_by:
+  - "Agent pr-reviewer failed 3 consecutive times: Request 1 timed out after 30000ms (method:
+    initialize)"
 depends_on:
   - "@task-debounce-path-accumulation"
 context: []
@@ -184,6 +186,22 @@ history:
         previous: "@01KNJ0W7A05T7X1R4374C2F403"
     command: review-link
     timestamp: 2026-04-06T19:04:46.099Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: blocked
+        previous: pending_review
+      blocked_by:
+        new:
+          - "Agent pr-reviewer failed 3 consecutive times: Request 1 timed out after 30000ms
+            (method: initialize)"
+        previous: []
+      prior_status:
+        new: pending_review
+        previous: null
+    command: task-block
+    timestamp: 2026-04-06T19:26:48.821Z
+prior_status: pending_review
 created_at: 2026-04-04T23:34:27.859Z
 started_at: 2026-04-06T18:54:21.925Z
 submitted_at: 2026-04-06T18:57:47.021Z
