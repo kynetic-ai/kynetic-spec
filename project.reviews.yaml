@@ -121048,6 +121048,17 @@ reviews:
         runner: node
         created_at: 2026-04-06T17:59:44.792Z
         completed_at: 2026-04-06T17:59:44.792Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: KSPEC_NO_DAEMON=1 kspec validate exited 6 with repo-wide warnings only
+          (alignment/completeness/orphan-skill), no blocking validation errors for this task.
+        name: validation
+        required: false
+        runner: kspec
+        created_at: 2026-04-06T17:59:49.446Z
+        completed_at: 2026-04-06T17:59:49.446Z
     events:
       - _ulid: 01KNHYRSR26R4NMTV73RBRHBQR
         actor: Jacob Chapel
@@ -121076,6 +121087,13 @@ reviews:
           status: pass
           name: dry-run
         timestamp: 2026-04-06T17:59:45.604Z
+      - _ulid: 01KNHZ6TR4Y33V0MZJP6V720M8
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: validation
+        timestamp: 2026-04-06T17:59:50.276Z
     examined_commit: 3b383315d4fab7aef22c104af375c6ca426a200a
     external_links: []
     lifecycle_state: open
@@ -121088,5 +121106,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-06T17:52:10.499Z
-    updated_at: 2026-04-06T17:59:44.792Z
+    updated_at: 2026-04-06T17:59:49.446Z
     notes: []
