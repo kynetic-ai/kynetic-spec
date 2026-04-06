@@ -180,10 +180,7 @@ async function checkWorkspaceDependencies(workspaceDir: string): Promise<Depende
   const dependencyNames = collectDirectDependencies(packageJson);
   const existResults = await Promise.all(
     dependencyNames.map((packageName) =>
-      fs.access(path.join(nodeModulesDir, ...packageName.split("/"))).then(
-        () => true,
-        () => false,
-      ),
+      canResolveWorkspaceDependency(workspaceDir, nodeModulesDir, packageName),
     ),
   );
   const missingPackages = dependencyNames.filter((_, i) => !existResults[i]);
@@ -197,6 +194,40 @@ async function checkWorkspaceDependencies(workspaceDir: string): Promise<Depende
   }
 
   return { ok: true, reason: null, missingPackages: [] };
+}
+
+async function canResolveWorkspaceDependency(
+  workspaceDir: string,
+  nodeModulesDir: string,
+  packageName: string,
+): Promise<boolean> {
+  const localInstallPath = path.join(nodeModulesDir, ...packageName.split("/"));
+  if (
+    await fs.access(localInstallPath).then(
+      () => true,
+      () => false,
+    )
+  ) {
+    return true;
+  }
+
+  let currentDir = workspaceDir;
+  for (;;) {
+    const installPath = path.join(currentDir, "node_modules", ...packageName.split("/"));
+    if (
+      await fs.access(installPath).then(
+        () => true,
+        () => false,
+      )
+    ) {
+      return true;
+    }
+    const parentDir = path.dirname(currentDir);
+    if (parentDir === currentDir) {
+      return false;
+    }
+    currentDir = parentDir;
+  }
 }
 
 async function implicitDependencyStep(workspaceDir: string): Promise<DispatchBootstrapStep | null> {
