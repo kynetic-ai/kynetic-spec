@@ -121327,6 +121327,13 @@ reviews:
           status: pass
           name: daemon-entity-cache focused
         timestamp: 2026-04-06T18:34:06.896Z
+      - _ulid: 01KNJ15ZGP86MH86V0MJSCWXTJ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNJ15Y1DDD0VFH0Y283F9NG9
+        timestamp: 2026-04-06T18:34:19.543Z
     examined_commit: a76e028682e2d5456ba6c58f7237e288d23b466e
     external_links: []
     lifecycle_state: open
@@ -121357,7 +121364,24 @@ reviews:
               exercise single-file invalidations."
             created_at: 2026-04-06T18:33:51.618Z
         kind: blocker
+      - _ulid: 01KNJ15Y1DDD0VFH0Y283F9NG9
+        entries:
+          - _ulid: 01KNJ15Y1DM8YNSGN8X8B0G6MD
+            author: Jacob Chapel
+            body: 'Review evidence log: Files read: src/daemon/entity-cache.ts, src/parser/yaml.ts,
+              tests/daemon-entity-cache.test.ts, tests/daemon-context-manager.test.ts,
+              tests/helpers/cli.ts. Commands run: git diff --stat/diff vs f79e50a...a76e028, kspec
+              task get, kspec item get @daemon-incremental-cache, grep -Rni "AC:
+              @daemon-incremental-cache" tests, KSPEC_NO_DAEMON=1 kspec validate,
+              NODE_ENV=development npm test -- --run tests/daemon-entity-cache.test.ts,
+              NODE_ENV=development npm test, and an npx tsx repro for batched module changes. Claims
+              verified: incremental item invalidation updates changed files without full reload for
+              single-file cases; full suite passed on this snapshot; multi-file batched invalidation
+              reorders index entries incorrectly. Categories searched: correctness, edge cases, test
+              quality, integration, error handling.'
+            created_at: 2026-04-06T18:34:18.029Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-06T18:28:59.840Z
-    updated_at: 2026-04-06T18:34:05.330Z
+    updated_at: 2026-04-06T18:34:18.029Z
     notes: []
