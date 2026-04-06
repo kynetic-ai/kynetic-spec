@@ -38765,7 +38765,7 @@ workspaces:
         head: e30bbe0675040848ac4e3c9dee41aade876f1021
         last_seen_at: 2026-04-06T17:13:11.276Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-debounce-path-accumulation-01knddj2
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: b3b91d18cde400739d327720cea3e960f58f3a34
     bootstrap:
       status: succeeded
@@ -38894,9 +38894,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-06T17:50:15.158Z
-      last_reconciled_at: 2026-04-06T18:02:00.890Z
+      last_reconciled_at: 2026-04-06T18:02:20.356Z
       created_at: 2026-04-06T17:16:53.434Z
-      updated_at: 2026-04-06T18:02:00.890Z
+      updated_at: 2026-04-06T18:02:20.356Z
     workspace_id: dispatch-workspace-01KNHWPVHMH0WRNHDJJBAX0N4X
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
