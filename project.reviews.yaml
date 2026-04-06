@@ -120649,6 +120649,25 @@ reviews:
         runner: kspec
         created_at: 2026-04-06T17:33:10.859Z
         completed_at: 2026-04-06T17:33:10.859Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: kspec-agents.md, .agents/skills/review-gates/SKILL.md,
+          scripts/dependency-health.cjs, src/agent-runtime/bootstrap.ts, tests/test-runner.test.ts,
+          tests/dispatch-runtime-bootstrap-contract.test.ts,
+          packages/web-ui/src/routes/agents/+page.svelte at base. Commands run: git diff/stat/log,
+          KSPEC_NO_DAEMON=1 kspec validate --json, npm test -- --fresh, SKIP_BUILD=1 npm test --
+          --fresh tests/test-runner.test.ts tests/dispatch-runtime-bootstrap-contract.test.ts, node
+          reproduction for checkProjectDependencies(). Claims verified: focused tests pass; ancestor
+          walk returns ok=true for unrelated parent node_modules; full-suite build failure is
+          pre-existing from base. Categories searched: correctness blocker found, test quality, edge
+          cases, error handling, integration, regression triage."
+        name: review-evidence
+        required: false
+        runner: reviewer
+        created_at: 2026-04-06T17:33:30.801Z
+        completed_at: 2026-04-06T17:33:30.801Z
     events:
       - _ulid: 01KNHXKF3SSQVCFKGMHH8D71R3
         actor: Jacob Chapel
@@ -120698,6 +120717,13 @@ reviews:
           status: pass
           name: validation
         timestamp: 2026-04-06T17:33:11.651Z
+      - _ulid: 01KNHXPN3GQG656B8AV912AP3Z
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-04-06T17:33:31.632Z
     examined_commit: 05c33e449cd51aaa81817e7ba3f98d7e8f99dedb
     external_links: []
     lifecycle_state: open
@@ -120765,5 +120791,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-06T17:31:47.194Z
-    updated_at: 2026-04-06T17:33:10.859Z
+    updated_at: 2026-04-06T17:33:30.801Z
     notes: []
