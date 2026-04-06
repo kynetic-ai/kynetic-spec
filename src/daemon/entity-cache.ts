@@ -1289,7 +1289,7 @@ export class ProjectEntityCache {
    * AC: @daemon-entity-cache ac-watcher-invalidation
    * AC: @daemon-entity-cache ac-granular-reload
    */
-  async handleFileChange(kspecDir: string, filePath: string): Promise<void> {
+  async handleFileChange(kspecDir: string, filePath: string, _content?: string): Promise<void> {
     if (this.disposed) return;
 
     const relativePath = relative(kspecDir, filePath);

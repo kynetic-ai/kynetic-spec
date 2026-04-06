@@ -10,7 +10,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { setupMultiDirFixtures, cleanupTempDir } from "./helpers/cli";
 import { join } from "path";
-import { access, readdir, symlink, writeFile } from "fs/promises";
+import { access, readdir, rm, symlink, writeFile } from "fs/promises";
 import { ProjectContextManager } from "../packages/daemon/src/project-context";
 import { KspecWatcher } from "../packages/daemon/src/watcher";
 import { SessionWatcher } from "../packages/daemon/src/session-watcher";
@@ -162,6 +162,82 @@ describe("ProjectContextManager", () => {
 
       expect(kspecWatcherStop).toHaveBeenCalledOnce();
       expect(sessionWatcherStop).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe("cache invalidation callback content passthrough", () => {
+    // AC: @daemon-incremental-cache ac-watcher-content-passthrough
+    it("forwards watcher-read file content to the cache invalidation callback", async () => {
+      manager.registerProject(projectA);
+
+      const received: Array<{
+        projectPath: string;
+        kspecDir: string;
+        file: string;
+        content: string | undefined;
+      }> = [];
+      manager.setCacheInvalidationCallback((projectPath, kspecDir, file, content) => {
+        received.push({ projectPath, kspecDir, file, content });
+      });
+
+      await manager.startWatcher(projectA);
+
+      const changedFile = join(projectA, ".kspec", "modules", "content-passthrough.yaml");
+      const changedContent = "title: Content passthrough\n";
+      await writeFile(changedFile, changedContent, "utf-8");
+
+      await vi.waitFor(
+        () => {
+          expect(received).toContainEqual({
+            projectPath: projectA,
+            kspecDir: join(projectA, ".kspec"),
+            file: changedFile,
+            content: changedContent,
+          });
+        },
+        { timeout: WATCHER_WAIT_MS },
+      );
+    });
+
+    // AC: @daemon-incremental-cache ac-watcher-content-passthrough
+    it("passes undefined content to cache invalidation for removed files", async () => {
+      manager.registerProject(projectA);
+
+      const received: Array<{
+        projectPath: string;
+        kspecDir: string;
+        file: string;
+        content: string | undefined;
+      }> = [];
+      manager.setCacheInvalidationCallback((projectPath, kspecDir, file, content) => {
+        received.push({ projectPath, kspecDir, file, content });
+      });
+
+      await manager.startWatcher(projectA);
+
+      const removedFile = join(projectA, ".kspec", "modules", "content-removed.yaml");
+      await writeFile(removedFile, "title: Content removed\n", "utf-8");
+      await vi.waitFor(
+        () => {
+          expect(received.some((event) => event.file === removedFile)).toBe(true);
+        },
+        { timeout: WATCHER_WAIT_MS },
+      );
+
+      received.length = 0;
+      await rm(removedFile);
+
+      await vi.waitFor(
+        () => {
+          expect(received).toContainEqual({
+            projectPath: projectA,
+            kspecDir: join(projectA, ".kspec"),
+            file: removedFile,
+            content: undefined,
+          });
+        },
+        { timeout: WATCHER_WAIT_MS },
+      );
     });
   });
 

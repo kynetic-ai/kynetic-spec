@@ -29,6 +29,7 @@ export type CacheInvalidationCallback = (
   projectPath: string,
   kspecDir: string,
   file: string,
+  content?: string,
 ) => void;
 
 export interface ProjectContext {
@@ -162,7 +163,7 @@ export class ProjectContextManager {
           }
           // AC: @daemon-entity-cache ac-watcher-invalidation — invalidate affected cache domain
           if (this.cacheInvalidationCallback) {
-            this.cacheInvalidationCallback(normalizedPath, kspecDir, file);
+            this.cacheInvalidationCallback(normalizedPath, kspecDir, file, content);
           }
         },
         // AC: @daemon-entity-cache ac-watcher-invalidation — file deletion/rename invalidates cache
@@ -185,7 +186,7 @@ export class ProjectContextManager {
           }
           // Cache invalidation for removed files — same path as onFileChange
           if (this.cacheInvalidationCallback) {
-            this.cacheInvalidationCallback(normalizedPath, kspecDir, file);
+            this.cacheInvalidationCallback(normalizedPath, kspecDir, file, undefined);
           }
         },
         onError: (error, file) => {
@@ -215,7 +216,7 @@ export class ProjectContextManager {
           if (this.cacheInvalidationCallback) {
             // Session changes invalidate the sessions domain; pass sessionsDir as kspecDir
             // so the callback can map the file to a domain
-            this.cacheInvalidationCallback(normalizedPath, sessionsDir, file);
+            this.cacheInvalidationCallback(normalizedPath, sessionsDir, file, undefined);
           }
         },
         onError: (error, file) => {
