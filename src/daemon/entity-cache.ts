@@ -53,6 +53,7 @@ import { getUnresolvedBlockers } from "../parser/review-threads.js";
 import { getShadowStatus, hasRemoteTracking } from "../parser/shadow.js";
 import {
   type SessionLogSummary,
+  getSessionDir,
   getSessionMetadataOnly,
   resolveStaleSessionCriteria,
   getSessionActivityForStaleCheck,
@@ -131,6 +132,14 @@ function toItemSummary(item: LoadedSpecItem): ItemSummary {
     created: item.created,
     acceptance_criteria_count: item.acceptance_criteria?.length ?? 0,
   };
+}
+
+function sortSessionSummaries(summaries: SessionLogSummary[]): void {
+  summaries.sort((a, b) => {
+    const aTs = new Date(a.started_at).getTime();
+    const bTs = new Date(b.started_at).getTime();
+    return bTs - aTs;
+  });
 }
 
 /** Summary type for plans (index tier — excludes content and notes). */
@@ -1472,6 +1481,10 @@ export class ProjectEntityCache {
       return;
     }
 
+    if (domain === "sessions" && (await this.tryIncrementalSessionUpdate(changes, cycle))) {
+      return;
+    }
+
     await this.loadDomain(domain, cycle);
   }
 
@@ -1553,6 +1566,115 @@ export class ProjectEntityCache {
     this.tasks.index = nextIndex;
     this.tasks.details = nextDetails;
     return true;
+  }
+
+  private async tryIncrementalSessionUpdate(
+    changes: PendingDomainChange[],
+    cycle?: ReloadCycle,
+  ): Promise<boolean> {
+    if (changes.length === 0 || this.sessions.state !== "ready" || !this.sessions.index) {
+      return false;
+    }
+
+    const ctx = cycle ? await this.getReloadCycleContext(cycle) : await initContext(this.projectPath);
+    const changedSessionIds = new Set<string>();
+
+    for (const change of changes) {
+      const relativePath = relative(ctx.sessionsDir, change.filePath);
+      const segments = relativePath.split(/[\\/]/).filter(Boolean);
+      if (segments.length === 0 || relativePath.startsWith("..")) {
+        return false;
+      }
+
+      changedSessionIds.add(segments[0]);
+    }
+
+    if (changedSessionIds.size === 0) {
+      return false;
+    }
+
+    const nextIndex = [...this.sessions.index];
+    const nextDetails = new Map(this.sessions.details);
+
+    for (const sessionId of changedSessionIds) {
+      const sessionDir = getSessionDir(ctx.sessionsDir, sessionId);
+      let sessionExists = true;
+      try {
+        await fs.access(sessionDir);
+      } catch {
+        sessionExists = false;
+      }
+
+      const existingIndex = nextIndex.findIndex((session) => session.id === sessionId);
+
+      if (!sessionExists) {
+        if (existingIndex >= 0) {
+          nextIndex.splice(existingIndex, 1);
+        }
+        nextDetails.delete(sessionId);
+        this.liveEventCounts.delete(sessionId);
+        continue;
+      }
+
+      const summary = await this.loadCachedSessionSummary(ctx.sessionsDir, sessionId);
+      if (!summary) {
+        if (existingIndex >= 0) {
+          nextIndex.splice(existingIndex, 1);
+        }
+        nextDetails.delete(sessionId);
+        this.liveEventCounts.delete(sessionId);
+        continue;
+      }
+
+      if (existingIndex >= 0) {
+        nextIndex[existingIndex] = summary;
+      } else {
+        nextIndex.push(summary);
+      }
+      nextDetails.set(sessionId, summary);
+
+      if (summary.status !== "active" && summary.status !== "stalled") {
+        this.liveEventCounts.delete(sessionId);
+      }
+    }
+
+    sortSessionSummaries(nextIndex);
+    this.sessions.index = nextIndex.slice(0, this.sessionConfig.maxIndexSize);
+    this.sessions.details = nextDetails;
+    return true;
+  }
+
+  private async loadCachedSessionSummary(
+    sessionsDir: string,
+    sessionId: string,
+  ): Promise<SessionLogSummary | null> {
+    const summary = await getSessionMetadataOnly(sessionsDir, sessionId);
+    if (!summary || summary.status !== "active") {
+      return summary;
+    }
+
+    const staleResolved = resolveStaleSessionCriteria({});
+    if (!staleResolved.ok) {
+      return summary;
+    }
+
+    const now = Date.now();
+    const startedAtMs = new Date(summary.started_at).getTime();
+    if (now - startedAtMs <= staleResolved.criteria.olderThanMs) {
+      return summary;
+    }
+
+    const activityResult = await getSessionActivityForStaleCheck(sessionsDir, sessionId);
+    if (!activityResult.ok) {
+      return summary;
+    }
+
+    const inactivityMs = now - activityResult.activity.lastActivityTs;
+    if (inactivityMs <= staleResolved.criteria.inactiveForMs) {
+      return summary;
+    }
+
+    return { ...summary, status: "stalled" };
   }
 }
 
