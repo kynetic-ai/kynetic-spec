@@ -28,7 +28,7 @@
  * - @daemon-entity-cache ac-domain-ready-event
  */
 
-import { relative } from "path";
+import { dirname, relative } from "path";
 import {
   expandIncludePattern,
   getTaskFilePath,
@@ -1271,7 +1271,9 @@ export class ProjectEntityCache {
       clearTimeout(existingTimer);
     }
 
-    const cycle = this.domainReloadCycles.get(domain) ?? this.getOrCreateReloadCycle();
+    const cycle =
+      this.domainReloadCycles.get(domain) ??
+      (this.pendingDomainChanges.has(domain) ? this.getOrCreateReloadCycle() : { pendingDomains: new Set() });
     cycle.pendingDomains.add(domain);
     this.domainReloadCycles.set(domain, cycle);
 
@@ -1708,7 +1710,8 @@ export class ProjectEntityCache {
     }
 
     const ctx = cycle ? await this.getReloadCycleContext(cycle) : await initContext(this.projectPath);
-    if (this.disposed || !ctx.manifest || !ctx.manifestPath) return true;
+    if (this.disposed) return true;
+    if (!ctx.manifest || !ctx.manifestPath) return false;
 
     const orderedSourceFiles = await this.getOrderedItemSourceFiles(ctx);
     if (this.disposed) return true;
@@ -1808,7 +1811,7 @@ export class ProjectEntityCache {
     }
 
     const orderedFiles = [ctx.manifestPath];
-    const manifestDir = ctx.specDir;
+    const manifestDir = dirname(ctx.manifestPath);
 
     for (const include of ctx.manifest.includes ?? []) {
       const expandedPaths = await expandIncludePattern(include, manifestDir);
