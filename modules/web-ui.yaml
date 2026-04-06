@@ -31,10 +31,9 @@ acceptance_criteria:
     then: all daemon runtime dependencies (elysia, @elysiajs/cors, @elysiajs/static) are available
       without additional install steps
     when: kspec serve start is run
-  - given: Bun runtime is not installed
+  - given: The configured daemon runtime is not installed
     id: ac-2
-    then: shows a clear error message with Bun install URL and optionally offers to install via the
-      official install script
+    then: Shows a clear error message naming the missing runtime with installation guidance
     when: kspec serve start is run
 tags:
   - web
@@ -48,10 +47,11 @@ features:
       - daemon-server
     title: Daemon Server Mode
     type: feature
-    description: Long-running Elysia.js server on Bun runtime that exposes kspec state via HTTP API and
-      WebSocket for real-time updates. File watcher drives both WebSocket broadcast and entity cache
-      invalidation. Binds to localhost only for security. Supports foreground and background modes
-      with PID file management. Includes heartbeat ping/pong for connection health monitoring.
+    description: Long-running Elysia.js server that exposes kspec state via HTTP API and WebSocket for
+      real-time updates. File watcher drives both WebSocket broadcast and entity cache invalidation.
+      Binds to localhost only for security. Supports foreground and background modes with PID file
+      management. Includes heartbeat ping/pong for connection health monitoring on runtimes that
+      support it.
     status:
       maturity: draft
       implementation: in_progress
@@ -3917,13 +3917,10 @@ features:
       - daemon-runtime-adapter
     title: Configurable Daemon Runtime
     type: feature
-    description: |
-      The daemon supports running on multiple JavaScript runtimes. The
-      runtime is selected at startup via configuration, with bun as the
-      default for backward compatibility. When running on an alternative
-      runtime, the server uses a runtime adapter for HTTP and WebSocket
-      handling. Features that depend on runtime-specific APIs degrade
-      gracefully when unavailable rather than crashing.
+    description: The daemon supports running on multiple JavaScript runtimes. The runtime is selected at
+      startup via configuration, with node as the default. When running on an alternative runtime,
+      the server uses a runtime adapter for HTTP and WebSocket handling. Features that depend on
+      runtime-specific APIs degrade gracefully when unavailable rather than crashing.
     status:
       maturity: draft
       implementation: implemented
@@ -3940,13 +3937,10 @@ features:
           The daemon spawns using the configured runtime
         when: |
           The daemon starts
-      - given: |
-          No runtime preference is configured
-        id: ac-default-bun
-        then: |
-          By default the daemon spawns using bun
-        when: |
-          The daemon starts
+      - given: No runtime preference is configured
+        id: ac-default-node
+        then: By default the daemon spawns using node
+        when: The daemon starts
       - given: |
           The daemon is running on any configured runtime
         id: ac-http-parity

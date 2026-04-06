@@ -2,6 +2,38 @@ _ulid: 01KNHZPRQ8DGQW6A7XY985F61M
 slugs: []
 title: Switch daemon default runtime from bun to node
 type: task
+description: >-
+  The daemon supports both bun and node runtimes via @daemon-runtime-adapter. The current default is
+  bun for historical reasons. Now that the node adapter is fully implemented (HTTP parity, WebSocket
+  parity, graceful degradation for heartbeat/backpressure), node should become the default because
+  it has broader install base and does not require an additional runtime install.
+
+
+  What changes:
+
+  1. Change DEFAULT_CONFIG.daemon.runtime in src/parser/config.ts from bun to node
+
+  2. Update test assertions expecting bun as default in tests/parser/daemon-config.test.ts,
+  tests/daemon-api/server.test.ts, and tests/cli-serve.test.ts
+
+  3. Restructure tests/cli-serve.test.ts daemon test gates — currently skip on !bunAvailable, should
+  gate on node availability or remove gate since node is always present
+
+  4. Flip KSPEC_TEST_RUNTIME default in tests/e2e/fixtures/test-base.ts from bun to node
+
+  5. Update runtime-missing error path in CLI serve to reference configured runtime generically
+  instead of hardcoding bun
+
+
+  Not changing:
+
+  - @daemon-server ac-16 (bun compiled binary) — remains bun-specific, still valid
+
+  - @types/bun dependency — still needed for runtime detection typing
+
+  - build:compile script — bun-only, stays as-is
+
+  - packages/daemon/package.json dev script — not part of any documented workflow
 spec_ref: "@daemon-runtime-adapter"
 meta_ref: null
 plan_ref: null
@@ -15,6 +47,47 @@ tags:
   - daemon
   - infra
 vcs_refs: []
+history:
+  - author: "@claude"
+    changes:
+      description:
+        new: >-
+          The daemon supports both bun and node runtimes via @daemon-runtime-adapter. The current
+          default is bun for historical reasons. Now that the node adapter is fully implemented
+          (HTTP parity, WebSocket parity, graceful degradation for heartbeat/backpressure), node
+          should become the default because it has broader install base and does not require an
+          additional runtime install.
+
+
+          What changes:
+
+          1. Change DEFAULT_CONFIG.daemon.runtime in src/parser/config.ts from bun to node
+
+          2. Update test assertions expecting bun as default in tests/parser/daemon-config.test.ts,
+          tests/daemon-api/server.test.ts, and tests/cli-serve.test.ts
+
+          3. Restructure tests/cli-serve.test.ts daemon test gates — currently skip on
+          !bunAvailable, should gate on node availability or remove gate since node is always
+          present
+
+          4. Flip KSPEC_TEST_RUNTIME default in tests/e2e/fixtures/test-base.ts from bun to node
+
+          5. Update runtime-missing error path in CLI serve to reference configured runtime
+          generically instead of hardcoding bun
+
+
+          Not changing:
+
+          - @daemon-server ac-16 (bun compiled binary) — remains bun-specific, still valid
+
+          - @types/bun dependency — still needed for runtime detection typing
+
+          - build:compile script — bun-only, stays as-is
+
+          - packages/daemon/package.json dev script — not part of any documented workflow
+        previous: null
+    command: task-set
+    timestamp: 2026-04-06T18:10:52.559Z
 created_at: 2026-04-06T18:08:32.488Z
 todos: []
 automation: eligible
