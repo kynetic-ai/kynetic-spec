@@ -121520,6 +121520,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-06T18:49:14.408Z
+      - _ulid: 01KNJ23BE5YN0N21T17X76PZC8
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNJ23AJWS1386952K55P05ND
+        timestamp: 2026-04-06T18:50:22.021Z
     examined_commit: 6e975d7da18c5811a8ea560d32eb15a026c87b99
     external_links: []
     lifecycle_state: closed
@@ -121550,6 +121557,26 @@ reviews:
               passing the new tests.
             created_at: 2026-04-06T18:48:49.851Z
         kind: blocker
+      - _ulid: 01KNJ23AJWS1386952K55P05ND
+        anchor:
+          type: code
+          commit: 6e975d7da18c5811a8ea560d32eb15a026c87b99
+          line_end: 1617
+          line_start: 1617
+          path: src/daemon/entity-cache.ts
+          side: head
+        entries:
+          - _ulid: 01KNJ23AJW24JX59DCSYNDM0RW
+            author: Jacob Chapel
+            body: Incremental session invalidation now rewrites the detail cache from metadata-only state (),
+              but the session detail route prefers  over the live-count-adjusted index. For active
+              sessions,  changes do not update persisted metadata counts, so after a watcher event
+              the API can serve stale  from the detail cache even though the index would still show
+              the live counter. Before this patch, full reload cleared session details and the route
+              fell back to the index, so this is a regression in session detail freshness for active
+              sessions.
+            created_at: 2026-04-06T18:50:21.148Z
+        kind: blocker
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -121559,5 +121586,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-06T18:49:14.408Z
     created_at: 2026-04-06T18:46:23.682Z
-    updated_at: 2026-04-06T18:49:14.408Z
+    updated_at: 2026-04-06T18:50:21.148Z
     notes: []
