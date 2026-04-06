@@ -1,0 +1,34 @@
+_ulid: 01KNHZ5FH33G2C27BMG0SHPC74
+slugs: []
+title: Investigate full-suite instability after dependency-health passes in review worktrees
+type: bug
+description: "Review evidence on 2026-04-06 in detached review worktree
+  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-test-runner-dependency-health-fa\
+  lse-negative-in-review-worktrees-01knhwpv-review: SKIP_BUILD=1 npm test -- --fresh
+  tests/test-runner.test.ts tests/dispatch-runtime-bootstrap-contract.test.ts passed (44 tests).
+  Full-suite retries after the dependency-health fix remained unstable. First retry failed across
+  many suites after invoking dist/cli/index.js with a repeated Node loader error from
+  node:internal/modules/cjs/loader:1424 (examples: tests/ac-delete-confirmation.test.ts,
+  tests/ac-schema-drift.test.ts, tests/activity-display.test.ts,
+  tests/agents-instruction-gen.test.ts, tests/batch-commands.test.ts,
+  tests/batch-exec-engine.test.ts, tests/batch-write-buffer.test.ts). Second retry failed only in
+  tests/daemon-web-ui-bundle.test.ts with bundled dist/web-ui expectations returning null/false.
+  Integration base b3b91d18cde400739d327720cea3e960f58f3a34 still fails earlier at dependency health
+  and does not reach these later failures. Investigate the later failures directly once
+  dependency-health is fixed, classify which are deterministic vs flaky, and restore a reliable
+  full-suite signal for review worktrees."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - test
+  - infra
+vcs_refs: []
+created_at: 2026-04-06T17:59:06.018Z
+todos: []
+automation: eligible

@@ -24928,7 +24928,7 @@
   type: task
   spec_ref: "@daemon-incremental-cache"
   plan_ref: "@plan-granular-cache-invalidation"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-debounce-path-accumulation"
@@ -24940,6 +24940,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-04T23:34:27.563Z
+  started_at: 2026-04-06T17:55:33.419Z
   automation: eligible
 - _ulid: 01KNDDJ3RK4K2HWH7TVY6F1V66
   slugs:
@@ -25370,4 +25371,19 @@
   created_at: 2026-04-06T17:16:09.652Z
   started_at: 2026-04-06T17:45:12.159Z
   submitted_at: 2026-04-06T17:48:46.541Z
+  automation: eligible
+- _ulid: 01KNHZ5FH33G2C27BMG0SHPC74
+  slugs: []
+  title: Investigate full-suite instability after dependency-health passes in review worktrees
+  type: bug
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - test
+    - infra
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-06T17:59:06.018Z
   automation: eligible
