@@ -475,6 +475,102 @@ describe("ProjectEntityCache", () => {
       expect(after![0].title).toBe("Sample Task A Updated");
     });
 
+    // AC: @daemon-incremental-cache ac-batch-coalescing
+    // AC: @daemon-incremental-cache ac-file-path-preserved
+    it("should coalesce all changed file paths into one domain batch per debounce window", async () => {
+      vi.useFakeTimers();
+
+      try {
+        const cache = new ProjectEntityCache(projectA);
+        (cache as any).domainDebounceMs = 50;
+
+        const processChangesSpy = vi
+          .spyOn(cache as any, "processDomainChanges")
+          .mockResolvedValue(undefined);
+
+        const kspecDir = join(projectA, ".kspec");
+        const itemPathA = join(kspecDir, "modules", "alpha.yaml");
+        const itemPathB = join(kspecDir, "modules", "beta.yaml");
+
+        const firstInvalidation = cache.handleFileChange(kspecDir, itemPathA, "title: alpha");
+        const secondInvalidation = cache.handleFileChange(kspecDir, itemPathB, "title: beta");
+
+        await vi.advanceTimersByTimeAsync(49);
+        expect(processChangesSpy).not.toHaveBeenCalled();
+
+        await vi.advanceTimersByTimeAsync(1);
+        await Promise.all([firstInvalidation, secondInvalidation]);
+
+        expect(processChangesSpy).toHaveBeenCalledTimes(1);
+        expect(processChangesSpy).toHaveBeenCalledWith(
+          "items",
+          [
+            { filePath: itemPathA, content: "title: alpha" },
+            { filePath: itemPathB, content: "title: beta" },
+          ],
+          expect.anything(),
+        );
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    // AC: @daemon-incremental-cache ac-file-path-preserved
+    it("should keep only the latest content for the same file within one debounce window", async () => {
+      vi.useFakeTimers();
+
+      try {
+        const cache = new ProjectEntityCache(projectA);
+        (cache as any).domainDebounceMs = 50;
+
+        const processChangesSpy = vi
+          .spyOn(cache as any, "processDomainChanges")
+          .mockResolvedValue(undefined);
+
+        const kspecDir = join(projectA, ".kspec");
+        const itemPath = join(kspecDir, "modules", "alpha.yaml");
+
+        const firstInvalidation = cache.handleFileChange(kspecDir, itemPath, "title: alpha v1");
+        const secondInvalidation = cache.handleFileChange(kspecDir, itemPath, "title: alpha v2");
+
+        await vi.advanceTimersByTimeAsync(50);
+        await Promise.all([firstInvalidation, secondInvalidation]);
+
+        expect(processChangesSpy).toHaveBeenCalledTimes(1);
+        expect(processChangesSpy).toHaveBeenCalledWith(
+          "items",
+          [{ filePath: itemPath, content: "title: alpha v2" }],
+          expect.anything(),
+        );
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    // AC: @daemon-incremental-cache ac-fallback-full-reload
+    it("should pass an empty change set for invalidations without file context", async () => {
+      vi.useFakeTimers();
+
+      try {
+        const cache = new ProjectEntityCache(projectA);
+        (cache as any).domainDebounceMs = 50;
+
+        const processChangesSpy = vi
+          .spyOn(cache as any, "processDomainChanges")
+          .mockResolvedValue(undefined);
+
+        const invalidation = cache.invalidateDomain("tasks");
+
+        await vi.advanceTimersByTimeAsync(50);
+        await invalidation;
+
+        expect(processChangesSpy).toHaveBeenCalledTimes(1);
+        expect(processChangesSpy).toHaveBeenCalledWith("tasks", [], expect.anything());
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
     it("should replace stale detail cache when domain is invalidated", async () => {
       const cache = new ProjectEntityCache(projectA);
       await cache.loadDomain("tasks");
