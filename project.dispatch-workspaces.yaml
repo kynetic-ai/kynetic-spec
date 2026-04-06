@@ -38843,18 +38843,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/fix-test-runner-dependency-health-false-negative-in-review-worktrees/01knhwpv
-    canonical_branch_head: b3b91d18cde400739d327720cea3e960f58f3a34
+    canonical_branch_head: 05c33e449cd51aaa81817e7ba3f98d7e8f99dedb
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-06T17:16:53.434Z
+      updated_at: 2026-04-06T17:27:43.329Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-06T17:17:06.188Z
+      updated_at: 2026-04-06T17:27:43.329Z
     integration:
       status: pending
       detail: null
@@ -38862,7 +38862,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: b3b91d18cde400739d327720cea3e960f58f3a34
-      updated_at: 2026-04-06T17:16:53.434Z
+      updated_at: 2026-04-06T17:27:43.329Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KNHWPVHMH0WRNHDJJBAX0N4X"
@@ -38870,9 +38870,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-06T17:17:06.188Z
-      last_reconciled_at: 2026-04-06T17:17:06.188Z
+      last_reconciled_at: 2026-04-06T17:27:43.329Z
       created_at: 2026-04-06T17:16:53.434Z
-      updated_at: 2026-04-06T17:17:06.188Z
+      updated_at: 2026-04-06T17:27:43.329Z
     workspace_id: dispatch-workspace-01KNHWPVHMH0WRNHDJJBAX0N4X
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
