@@ -121576,6 +121576,12 @@ reviews:
           kind: blocker
           thread_ulid: 01KNJ23JAYX7Q3FB5EKVNQ65E4
         timestamp: 2026-04-06T18:50:29.943Z
+      - _ulid: 01KNJ39C6ES2JXM3JPF06DKSXX
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNJ20HDVH1WBZ7JD91BJZZCA
+        timestamp: 2026-04-06T19:11:07.982Z
     examined_commit: 6e975d7da18c5811a8ea560d32eb15a026c87b99
     external_links: []
     lifecycle_state: closed
@@ -121605,6 +121611,12 @@ reviews:
               Without that coverage, this branch can regress the stale-session logic while still
               passing the new tests.
             created_at: 2026-04-06T18:48:49.851Z
+          - _ulid: 01KNJ39BCKTTWXHGYX0PF0A6EV
+            author: Jacob Chapel
+            body: Added an incremental stale-session regression that advances time across the default stale
+              thresholds, triggers watcher invalidation for the single session, and verifies the
+              cached index rewrites the session to stalled while leaving detail uncached.
+            created_at: 2026-04-06T19:11:07.155Z
         kind: blocker
       - _ulid: 01KNJ23AJWS1386952K55P05ND
         anchor:
@@ -121656,7 +121668,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-06T18:49:14.408Z
     created_at: 2026-04-06T18:46:23.682Z
-    updated_at: 2026-04-06T18:50:29.086Z
+    updated_at: 2026-04-06T19:11:07.155Z
     notes: []
   - _ulid: 01KNJ2XMNNYA5ESB1K5FRNXVNW
     slugs: []
