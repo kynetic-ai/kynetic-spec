@@ -1,1 +1,13 @@
-notes: []
+notes:
+  - _ulid: 01KNHTXC9556E4WHBQ3WPEH2AT
+    content: "Approach: thread watcher-provided content through ProjectContextManager cache invalidation
+      callbacks into ProjectEntityCache.handleFileChange without changing watcher parsing behavior.
+      Edge cases: removed files and session watcher events must pass no content; existing direct
+      cache.handleFileChange callers must continue to work with omitted content. Test plan: add
+      behavioral coverage for changed-file callbacks forwarding content and removed-file callbacks
+      forwarding undefined, plus entity-cache coverage for accepting optional content on
+      watcher-triggered invalidation. Covers @daemon-incremental-cache
+      ac-watcher-content-passthrough."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-06T16:44:46.245Z
