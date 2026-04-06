@@ -120024,6 +120024,17 @@ reviews:
         runner: npm test
         created_at: 2026-04-06T16:08:10.292Z
         completed_at: 2026-04-06T16:08:10.292Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed: npm test -- tests/daemon-heartbeat.test.ts tests/daemon-runtime-adapter.test.ts
+          (12 tests, 5 suites)."
+        name: daemon-targeted-tests
+        required: true
+        runner: npm test
+        created_at: 2026-04-06T16:08:10.311Z
+        completed_at: 2026-04-06T16:08:10.311Z
     events:
       - _ulid: 01KNHRSRAQXH7A0ZCQP9BM80T6
         actor: Jacob Chapel
@@ -120045,6 +120056,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-06T16:08:12.541Z
+      - _ulid: 01KNHRTFBG0PT3YS02VMTW5TCP
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: daemon-targeted-tests
+        timestamp: 2026-04-06T16:08:13.936Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -120057,5 +120075,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-06T16:07:50.360Z
-    updated_at: 2026-04-06T16:08:10.293Z
+    updated_at: 2026-04-06T16:08:10.311Z
     notes: []
