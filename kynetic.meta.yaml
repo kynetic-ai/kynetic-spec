@@ -12899,6 +12899,28 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-06T18:51:51.150Z
+  - _ulid: 01KNJ2K5EDTY14TCD9B84ZCRER
+    type: friction
+    content: During dispatch fix-cycle work, read-only kspec lookups like session start/task get can
+      stall against the daemon and require rerunning with KSPEC_NO_DAEMON=1. A direct-mode fallback
+      for read-only commands would remove manual retries and make autonomous workflows more
+      reliable.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-04-06T18:59:00.173Z
+  - _ulid: 01KNJ2K5N8Q5JFK51QP774769B
+    type: success
+    content: Running the focused daemon cache suite before the full test suite caught two related
+      reload-cycle regressions immediately after the batch-order fix. The pattern of targeted
+      regression verification first, then full npm test, reduced fix-cycle turnaround without
+      skipping full verification.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-04-06T18:59:00.392Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
