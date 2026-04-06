@@ -121350,6 +121350,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-06T18:34:26.618Z
+      - _ulid: 01KNJ2GWRJK5Q0122E9147E6NS
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNJ15482CDT5AW9786T28W67
+        timestamp: 2026-04-06T18:57:45.747Z
     examined_commit: a76e028682e2d5456ba6c58f7237e288d23b466e
     external_links: []
     lifecycle_state: closed
@@ -121379,6 +121385,14 @@ reviews:
               expected for batched item updates and is not covered by the new tests, which only
               exercise single-file invalidations."
             created_at: 2026-04-06T18:33:51.618Z
+          - _ulid: 01KNJ2GW0BC3F8D2SVX0NS8E72
+            author: Jacob Chapel
+            body: Fixed in commit 89a854716. Incremental item patching now rebuilds the item index by manifest
+              include order instead of reinserting changed-file slices with offset math, so batched
+              changes to multiple module files preserve the same file ordering as a full reload.
+              Added a regression test that updates alpha.yaml and beta.yaml in one debounce window
+              and verifies the resulting index order remains alpha, beta, gamma.
+            created_at: 2026-04-06T18:57:44.971Z
         kind: blocker
       - _ulid: 01KNJ15Y1DDD0VFH0Y283F9NG9
         entries:
@@ -121406,7 +121420,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-06T18:34:26.617Z
     created_at: 2026-04-06T18:28:59.840Z
-    updated_at: 2026-04-06T18:34:26.618Z
+    updated_at: 2026-04-06T18:57:44.971Z
     notes: []
   - _ulid: 01KNJ1W2P27ZAQ8T88N2JMQXWJ
     slugs: []
