@@ -120486,7 +120486,18 @@ reviews:
     slugs: []
     title: Review task-debounce-path-accumulation
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate reported no schema/reference errors; only existing repo-level warnings
+          (orphaned skill dir, alignment/completeness debt unrelated to this task).
+        name: kspec-validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-06T17:16:55.593Z
+        completed_at: 2026-04-06T17:16:55.593Z
     events:
       - _ulid: 01KNHWJRH0NC2H7DJNBJHPXYMC
         actor: Jacob Chapel
@@ -120501,6 +120512,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-06T17:14:59.851Z
+      - _ulid: 01KNHWR975ZSGJ6X0QVG592CY5
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec-validate
+        timestamp: 2026-04-06T17:16:56.421Z
     examined_commit: e30bbe0675040848ac4e3c9dee41aade876f1021
     external_links: []
     lifecycle_state: open
@@ -120513,5 +120531,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-06T17:13:55.488Z
-    updated_at: 2026-04-06T17:14:59.067Z
+    updated_at: 2026-04-06T17:16:55.593Z
     notes: []
