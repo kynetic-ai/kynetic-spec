@@ -120666,6 +120666,13 @@ reviews:
           status: pass
           name: focused-tests
         timestamp: 2026-04-06T17:32:52.477Z
+      - _ulid: 01KNHXNTSHKN1QHN1QTDSA1TJP
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNHXNT1A2YHAVA7C9ZTJNW60
+        timestamp: 2026-04-06T17:33:04.689Z
     examined_commit: 05c33e449cd51aaa81817e7ba3f98d7e8f99dedb
     external_links: []
     lifecycle_state: open
@@ -120694,7 +120701,26 @@ reviews:
               boundary) instead of accepting any filesystem ancestor."
             created_at: 2026-04-06T17:32:32.896Z
         kind: blocker
+      - _ulid: 01KNHXNT1A2YHAVA7C9ZTJNW60
+        anchor:
+          type: code
+          commit: 05c33e449cd51aaa81817e7ba3f98d7e8f99dedb
+          line_end: 54
+          line_start: 43
+          path: scripts/dependency-health.cjs
+          side: head
+        entries:
+          - _ulid: 01KNHXNT1AF0DF3AMA98J33KF2
+            author: Jacob Chapel
+            body: "This ancestor walk is too broad: it keeps searching past the project root all the way to /. I
+              reproduced checkProjectDependencies() returning ok=true for a review workspace whose
+              dependencies existed only in an unrelated parent directory (.../outer/node_modules),
+              so a random ancestor install can now suppress a real missing-dependency failure.
+              Please stop at the project root, or another explicit boundary, instead of accepting
+              any filesystem ancestor."
+            created_at: 2026-04-06T17:33:03.914Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-06T17:31:47.194Z
-    updated_at: 2026-04-06T17:32:51.672Z
+    updated_at: 2026-04-06T17:33:03.914Z
     notes: []
