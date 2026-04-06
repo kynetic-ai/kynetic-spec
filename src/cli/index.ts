@@ -122,6 +122,21 @@ async function maybeAcquireDispatchMutationLock(isMutating: boolean): Promise<vo
 }
 
 /**
+ * Resolve the top-level command name from a Commander action command.
+ * Commander's actionCommand.name() returns the leaf subcommand (e.g. "start"
+ * for "kspec serve start"). This walks the parent chain to find the first
+ * command below the root program, so skip-list checks match top-level names.
+ * AC: @config-daemon ac-8
+ */
+function getTopLevelCommandName(actionCommand: Command): string {
+  let cmd = actionCommand;
+  while (cmd.parent && cmd.parent.parent) {
+    cmd = cmd.parent;
+  }
+  return cmd.name();
+}
+
+/**
  * Auto-start daemon if configured and not already running
  * AC: @daemon-server (implicit auto-start behavior)
  * AC: @config-daemon ac-3 — uses config.daemon.auto_start
@@ -239,9 +254,6 @@ program
   .hook("preAction", async (thisCommand, actionCommand) => {
     // Skip all hooks during batch dispatch — the batch handler manages modes itself
     if (isBatchMode()) return;
-
-    // The actionCommand is the actual command being executed (e.g., 'export')
-    const executingCommandName = actionCommand.name();
 
     // Check format options at top level
     const opts = thisCommand.opts();
@@ -390,10 +402,11 @@ program
     await maybeAcquireDispatchMutationLock(isMutating);
 
     // Auto-start daemon if configured and not running
-    // Skip for init, serve, and help commands
+    // AC: @config-daemon ac-8 — skip for commands that explicitly manage the daemon lifecycle
     const skipCommands = ["init", "serve", "help", "kspec"];
+    const topLevelName = getTopLevelCommandName(actionCommand);
 
-    if (!skipCommands.includes(executingCommandName)) {
+    if (!skipCommands.includes(topLevelName)) {
       await maybeAutoStartDaemon();
     }
   })
