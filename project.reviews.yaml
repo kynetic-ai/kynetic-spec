@@ -120773,6 +120773,12 @@ reviews:
         payload:
           thread_ulid: 01KNHXMVQZDGNAWX0TD9HR3QQ8
         timestamp: 2026-04-06T17:34:16.980Z
+      - _ulid: 01KNHYHM8148JZ9M5FN9QD7MJP
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNHXNT1A2YHAVA7C9ZTJNW60
+        timestamp: 2026-04-06T17:48:15.489Z
     examined_commit: 05c33e449cd51aaa81817e7ba3f98d7e8f99dedb
     external_links: []
     lifecycle_state: closed
@@ -120826,6 +120832,14 @@ reviews:
               Please stop at the project root, or another explicit boundary, instead of accepting
               any filesystem ancestor."
             created_at: 2026-04-06T17:33:03.914Z
+          - _ulid: 01KNHYHKD9X3WSTYBJ0NVG8DTF
+            author: Jacob Chapel
+            body: Fixed by bounding ancestor dependency lookup to the current project's root (the directory
+              above .kspec-worktrees for review workspaces, otherwise the working directory itself).
+              The test-runner regression now covers both the real detached-worktree case with no
+              workspace/node_modules and a negative case showing that packages installed only above
+              the project root still fail dependency health.
+            created_at: 2026-04-06T17:48:14.632Z
         kind: blocker
       - _ulid: 01KNHXNWCAMX3XN8C0XYPDZQ8D
         anchor:
@@ -120854,7 +120868,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-06T17:33:39.563Z
     created_at: 2026-04-06T17:31:47.194Z
-    updated_at: 2026-04-06T17:34:16.158Z
+    updated_at: 2026-04-06T17:48:14.632Z
     notes: []
   - _ulid: 01KNHYEX820KPYHEQ3DWG74XZB
     slugs: []
