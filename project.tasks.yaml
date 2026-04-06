@@ -25321,7 +25321,7 @@
   title: Skip heartbeat manager on Node runtime to prevent Elysia ping crash
   type: task
   spec_ref: "@daemon-runtime-adapter"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 2
@@ -25332,3 +25332,4 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-06T15:35:40.101Z
+  started_at: 2026-04-06T15:38:36.726Z
