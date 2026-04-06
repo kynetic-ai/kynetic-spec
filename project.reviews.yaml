@@ -120498,6 +120498,19 @@ reviews:
         runner: kspec
         created_at: 2026-04-06T17:16:55.593Z
         completed_at: 2026-04-06T17:16:55.593Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm test aborted before running vitest because scripts/test.cjs/dependency-health.cjs
+          reported root direct dependencies as missing even immediately after a successful npm ci.
+          This predates the reviewed diff (no package manifest changes in the task branch vs base)
+          and is tracked separately in @01KNHWPV.
+        name: npm-test
+        required: false
+        runner: npm
+        created_at: 2026-04-06T17:17:04.220Z
+        completed_at: 2026-04-06T17:17:04.220Z
     events:
       - _ulid: 01KNHWJRH0NC2H7DJNBJHPXYMC
         actor: Jacob Chapel
@@ -120542,6 +120555,13 @@ reviews:
           kind: nit
           thread_ulid: 01KNHWRE1QBQV07MTPTNKHRCJP
         timestamp: 2026-04-06T17:17:02.178Z
+      - _ulid: 01KNHWRHMZ1NMEFB2FAE7BVGSW
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: npm-test
+        timestamp: 2026-04-06T17:17:05.056Z
     examined_commit: e30bbe0675040848ac4e3c9dee41aade876f1021
     external_links: []
     lifecycle_state: closed
@@ -120581,5 +120601,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-06T17:16:58.778Z
     created_at: 2026-04-06T17:13:55.488Z
-    updated_at: 2026-04-06T17:17:01.367Z
+    updated_at: 2026-04-06T17:17:04.220Z
     notes: []
