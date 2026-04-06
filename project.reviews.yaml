@@ -120100,9 +120100,25 @@ reviews:
           status: pass
           name: cli-no-daemon-rerun
         timestamp: 2026-04-06T16:08:31.351Z
+      - _ulid: 01KNHRV8VY5A5ZNXTKF3PSMCHS
+        actor: codex@openai
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-04-06T16:08:40.062Z
+      - _ulid: 01KNHRV8VYV8MA2J2SD87CS0WN
+        actor: codex@openai
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-06T16:08:40.063Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -120110,7 +120126,14 @@ reviews:
       ref: "@01KNHPYV"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex@openai
+        role: reviewer
+        created_at: 2026-04-06T16:08:40.062Z
     created_at: 2026-04-06T16:07:50.360Z
-    updated_at: 2026-04-06T16:08:30.465Z
+    updated_at: 2026-04-06T16:08:40.062Z
     notes: []
