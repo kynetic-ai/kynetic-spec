@@ -121412,7 +121412,19 @@ reviews:
     slugs: []
     title: Review task-incremental-session-updates
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "KSPEC_NO_DAEMON=1 kspec validate exited 6 with warnings only: schema and references OK,
+          no validation errors. Warnings were pre-existing completeness/alignment items unrelated to
+          this diff."
+        name: kspec-validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-06T18:48:52.318Z
+        completed_at: 2026-04-06T18:48:52.318Z
     events:
       - _ulid: 01KNJ1W2P2Z78PPN6E4SAZHAF3
         actor: Jacob Chapel
@@ -121434,6 +121446,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNJ20HDVH1WBZ7JD91BJZZCA
         timestamp: 2026-04-06T18:48:50.697Z
+      - _ulid: 01KNJ20MQNBN2AV4M91BGC070E
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec-validate
+        timestamp: 2026-04-06T18:48:53.237Z
     examined_commit: 6e975d7da18c5811a8ea560d32eb15a026c87b99
     external_links: []
     lifecycle_state: open
@@ -121466,5 +121485,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-06T18:46:23.682Z
-    updated_at: 2026-04-06T18:48:49.851Z
+    updated_at: 2026-04-06T18:48:52.318Z
     notes: []
