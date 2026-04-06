@@ -59,3 +59,8 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-06T19:42:44.380Z
+  - _ulid: 01KNJ5GH6QN916S7PCC5PMPZK2
+    content: "[AGENT-FAIL] Invocation failed: Request 1 timed out after 30000ms (method: initialize)"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-06T19:49:59.639Z
