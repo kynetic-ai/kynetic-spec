@@ -120511,6 +120511,18 @@ reviews:
         runner: npm
         created_at: 2026-04-06T17:17:04.220Z
         completed_at: 2026-04-06T17:17:04.220Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: grep confirmed @daemon-incremental-cache coverage in tests/daemon-entity-cache.test.ts for
+          ac-watcher-content-passthrough, ac-batch-coalescing, ac-file-path-preserved, and
+          ac-fallback-full-reload.
+        name: spec-annotations
+        required: false
+        runner: grep
+        created_at: 2026-04-06T17:17:06.549Z
+        completed_at: 2026-04-06T17:17:06.549Z
     events:
       - _ulid: 01KNHWJRH0NC2H7DJNBJHPXYMC
         actor: Jacob Chapel
@@ -120562,6 +120574,13 @@ reviews:
           status: skipped
           name: npm-test
         timestamp: 2026-04-06T17:17:05.056Z
+      - _ulid: 01KNHWRKY63Y8TSMYVYW27BT4P
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: spec-annotations
+        timestamp: 2026-04-06T17:17:07.399Z
     examined_commit: e30bbe0675040848ac4e3c9dee41aade876f1021
     external_links: []
     lifecycle_state: closed
@@ -120601,5 +120620,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-06T17:16:58.778Z
     created_at: 2026-04-06T17:13:55.488Z
-    updated_at: 2026-04-06T17:17:04.220Z
+    updated_at: 2026-04-06T17:17:06.549Z
     notes: []
