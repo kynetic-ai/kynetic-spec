@@ -1090,7 +1090,6 @@ describe("dispatch runtime bootstrap contract", { timeout: 60_000 }, () => {
       taskRef,
       task: { title: "Hoisted Dependency Bootstrap", slugs: ["hoisted-dependency-bootstrap"] },
     });
-    await fs.mkdir(path.join(workspace.cwd, "node_modules"), { recursive: true });
 
     const initial = await ensureWorkspaceBootstrap({
       projectDir: tempDir,
@@ -1122,6 +1121,39 @@ describe("dispatch runtime bootstrap contract", { timeout: 60_000 }, () => {
     expect(reused.reused).toBe(true);
     expect(reused.ranSteps).toBe(false);
     expect(reused.metadata.bootstrap.invalidationReasons).toEqual([]);
+  });
+
+  it("does not reuse bootstrap from installs found only above the project root", async () => {
+    const outerInstallRoot = tempDir;
+    const projectDir = path.join(tempDir, "project");
+    await fs.mkdir(projectDir, { recursive: true });
+    await seedRepo(projectDir);
+    await setupProject(projectDir, {
+      dispatchConfig: ["dispatch:", "  base_branch: agent-dev"].join("\n"),
+    });
+    await setupLocalFileDependencyProject(projectDir);
+    await writeInstalledPackage(path.join(outerInstallRoot, "node_modules"), "local-dep");
+
+    const taskRef = `@${testUlid("TASK", 38)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir,
+      taskRef,
+      task: { title: "Boundary Dependency Bootstrap", slugs: ["boundary-dependency-bootstrap"] },
+    });
+
+    const initial = await ensureWorkspaceBootstrap({
+      projectDir,
+      workspaceDir: workspace.cwd,
+      metadataPath: workspace.metadataPath,
+      metadata: workspace.metadata,
+      role: "worker",
+      agent: makeAgent(),
+      env: {},
+    });
+
+    expect(initial.ranSteps).toBe(true);
+    expect(initial.metadata.bootstrap.invalidationReasons).toContain("workspace-dependencies-missing");
+    await expect(fs.stat(path.join(workspace.cwd, "node_modules", "local-dep"))).resolves.toBeTruthy();
   });
 
   // AC: @dispatch-runtime-bootstrap-contract ac-6

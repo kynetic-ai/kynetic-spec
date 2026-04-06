@@ -135,6 +135,16 @@ function collectDirectDependencies(packageJson: Record<string, unknown>): string
   return [...names].toSorted();
 }
 
+function dependencySearchRoot(workspaceDir: string): string {
+  const normalizedWorkspaceDir = path.resolve(workspaceDir);
+  const worktreeSegment = `${path.sep}.kspec-worktrees${path.sep}`;
+  const markerIndex = normalizedWorkspaceDir.lastIndexOf(worktreeSegment);
+  if (markerIndex === -1) {
+    return normalizedWorkspaceDir;
+  }
+  return normalizedWorkspaceDir.slice(0, markerIndex);
+}
+
 async function checkWorkspaceDependencies(workspaceDir: string): Promise<DependencyHealth> {
   const packageJsonPath = path.join(workspaceDir, "package.json");
   const lockfilePath = path.join(workspaceDir, "package-lock.json");
@@ -169,21 +179,21 @@ async function checkWorkspaceDependencies(workspaceDir: string): Promise<Depende
     () => true,
     () => false,
   );
-  if (!nodeModulesExists) {
+  const dependencyNames = collectDirectDependencies(packageJson);
+  const searchRoot = dependencySearchRoot(workspaceDir);
+  const ancestorResults = await Promise.all(
+    dependencyNames.map((packageName) => canResolveWorkspaceDependency(workspaceDir, searchRoot, packageName)),
+  );
+
+  if (!nodeModulesExists && !ancestorResults.some(Boolean)) {
     return {
       ok: false,
       reason: "node_modules/ not found",
-      missingPackages: collectDirectDependencies(packageJson),
+      missingPackages: dependencyNames,
     };
   }
 
-  const dependencyNames = collectDirectDependencies(packageJson);
-  const existResults = await Promise.all(
-    dependencyNames.map((packageName) =>
-      canResolveWorkspaceDependency(workspaceDir, nodeModulesDir, packageName),
-    ),
-  );
-  const missingPackages = dependencyNames.filter((_, i) => !existResults[i]);
+  const missingPackages = dependencyNames.filter((_, i) => !ancestorResults[i]);
 
   if (missingPackages.length > 0) {
     return {
@@ -198,20 +208,10 @@ async function checkWorkspaceDependencies(workspaceDir: string): Promise<Depende
 
 async function canResolveWorkspaceDependency(
   workspaceDir: string,
-  nodeModulesDir: string,
+  searchRoot: string,
   packageName: string,
 ): Promise<boolean> {
-  const localInstallPath = path.join(nodeModulesDir, ...packageName.split("/"));
-  if (
-    await fs.access(localInstallPath).then(
-      () => true,
-      () => false,
-    )
-  ) {
-    return true;
-  }
-
-  let currentDir = workspaceDir;
+  let currentDir = path.resolve(workspaceDir);
   for (;;) {
     const installPath = path.join(currentDir, "node_modules", ...packageName.split("/"));
     if (
@@ -222,10 +222,10 @@ async function canResolveWorkspaceDependency(
     ) {
       return true;
     }
-    const parentDir = path.dirname(currentDir);
-    if (parentDir === currentDir) {
+    if (currentDir === searchRoot) {
       return false;
     }
+    const parentDir = path.dirname(currentDir);
     currentDir = parentDir;
   }
 }

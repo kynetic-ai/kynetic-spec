@@ -392,8 +392,8 @@ describe("test runner environment checks", () => {
       it("accepts direct dependencies resolved from an ancestor node_modules", () => {
         const projectDir = path.join(tempDir, "project");
         const workspaceDir = path.join(projectDir, ".kspec-worktrees", "review");
-        fs.mkdirSync(path.join(workspaceDir, "node_modules"), { recursive: true });
         fs.mkdirSync(path.join(projectDir, "node_modules"), { recursive: true });
+        fs.mkdirSync(workspaceDir, { recursive: true });
         writeInstallablePackage(path.join(projectDir, "node_modules"), "vitest");
         writeInstallablePackage(path.join(projectDir, "node_modules"), "croner");
         fs.writeFileSync(
@@ -407,6 +407,27 @@ describe("test runner environment checks", () => {
 
         const result = runner.checkDependencies(workspaceDir);
         expect(result.ok).toBe(true);
+      });
+
+      it("rejects dependencies found only above the project root", () => {
+        const projectDir = path.join(tempDir, "project");
+        const workspaceDir = path.join(projectDir, ".kspec-worktrees", "review");
+        fs.mkdirSync(path.join(tempDir, "node_modules"), { recursive: true });
+        writeInstallablePackage(path.join(tempDir, "node_modules"), "vitest");
+        writeInstallablePackage(path.join(tempDir, "node_modules"), "croner");
+        fs.mkdirSync(workspaceDir, { recursive: true });
+        fs.writeFileSync(
+          path.join(workspaceDir, "package.json"),
+          JSON.stringify({
+            dependencies: { croner: "^10.0.0" },
+            devDependencies: { vitest: "^4.0.0" },
+          }),
+        );
+        fs.writeFileSync(path.join(workspaceDir, "package-lock.json"), "{}");
+
+        const result = runner.checkDependencies(workspaceDir);
+        expect(result.ok).toBe(false);
+        expect(result.reason).toContain("node_modules/ not found");
       });
     });
   });
