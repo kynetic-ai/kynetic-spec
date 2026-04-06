@@ -120785,6 +120785,12 @@ reviews:
         payload:
           thread_ulid: 01KNHXNWCAMX3XN8C0XYPDZQ8D
         timestamp: 2026-04-06T17:48:18.008Z
+      - _ulid: 01KNHYJ4JV6PG91N29ZNSXVSCN
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNHXNWCAMX3XN8C0XYPDZQ8D
+        timestamp: 2026-04-06T17:48:32.219Z
     examined_commit: 05c33e449cd51aaa81817e7ba3f98d7e8f99dedb
     external_links: []
     lifecycle_state: closed
@@ -120872,6 +120878,8 @@ reviews:
               instead of reusing stale bootstrap metadata.
             created_at: 2026-04-06T17:48:17.142Z
         kind: blocker
+        resolved_at: 2026-04-06T17:48:31.396Z
+        resolved_by: Jacob Chapel
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -120881,7 +120889,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-06T17:33:39.563Z
     created_at: 2026-04-06T17:31:47.194Z
-    updated_at: 2026-04-06T17:48:17.142Z
+    updated_at: 2026-04-06T17:48:31.396Z
     notes: []
   - _ulid: 01KNHYEX820KPYHEQ3DWG74XZB
     slugs: []
