@@ -58,7 +58,7 @@ description: |
 spec_ref: "@daemon-incremental-cache"
 plan_ref: "@plan-granular-cache-invalidation"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-debounce-path-accumulation"
@@ -73,7 +73,7 @@ review_ref: "@01KNJ0W7A05T7X1R4374C2F403"
 submission_linkage:
   review_url: null
   branch: dev
-  captured_at: 2026-04-06T18:24:57.116Z
+  captured_at: 2026-04-06T18:57:47.012Z
   commit: 34dd3d45c187a99ec1c4944bb4914e6549935f6d
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
@@ -150,8 +150,35 @@ history:
         previous: 2026-04-06T18:24:38.489Z
     command: task-start
     timestamp: 2026-04-06T18:54:21.926Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-04-06T18:57:47.012Z
+          commit: 34dd3d45c187a99ec1c4944bb4914e6549935f6d
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous:
+          review_url: null
+          branch: dev
+          captured_at: 2026-04-06T18:24:57.116Z
+          commit: 34dd3d45c187a99ec1c4944bb4914e6549935f6d
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+      submitted_at:
+        new: 2026-04-06T18:57:47.021Z
+        previous: 2026-04-06T18:24:57.121Z
+    command: task-submit
+    timestamp: 2026-04-06T18:57:47.021Z
 created_at: 2026-04-04T23:34:27.859Z
 started_at: 2026-04-06T18:54:21.925Z
-submitted_at: 2026-04-06T18:24:57.121Z
+submitted_at: 2026-04-06T18:57:47.021Z
 todos: []
 automation: eligible
