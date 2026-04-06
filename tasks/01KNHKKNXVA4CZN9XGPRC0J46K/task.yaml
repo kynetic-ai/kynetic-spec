@@ -1,0 +1,30 @@
+_ulid: 01KNHKKNXVA4CZN9XGPRC0J46K
+slugs: []
+title: Stabilize CLI integration tests timing out at 15s
+type: bug
+description: "Multiple CLI integration tests consistently time out at the 15000ms vitest threshold.
+  Affected tests: activity-display.test.ts (caps default display, shows all entries),
+  dispatch-target-sync.test.ts (rejects stale second reviewer push),
+  review-per-cycle-lifecycle.test.ts (each closed review preserves verdict independently),
+  task-needs-work.test.ts (increments fix cycle counter on repeated kickbacks),
+  cli-mutation-input-validation.test.ts (accepts valid values and defaults). All share the same
+  pattern: they run many sequential kspec CLI commands in temp directories and exceed the 15s
+  timeout. The root cause needs investigation — possible contributors include daemon auto-start
+  overhead on each CLI invocation, shadow branch I/O latency compounding across many commands, or
+  the 15s timeout being too tight for tests that legitimately need more time due to their multi-step
+  nature. The fix should either address the latency source or adjust timeouts for tests that
+  legitimately require more time."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - bug
+  - testing
+vcs_refs: []
+created_at: 2026-04-06T14:37:08.410Z
+todos: []

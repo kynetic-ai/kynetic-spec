@@ -25299,3 +25299,17 @@
   todos_count: 0
   created_at: 2026-04-06T14:23:32.622Z
   started_at: 2026-04-06T14:25:07.237Z
+- _ulid: 01KNHKKNXVA4CZN9XGPRC0J46K
+  slugs: []
+  title: Stabilize CLI integration tests timing out at 15s
+  type: bug
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 3
+  tags:
+    - bug
+    - testing
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-06T14:37:08.410Z
