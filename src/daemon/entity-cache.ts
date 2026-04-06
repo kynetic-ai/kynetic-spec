@@ -30,11 +30,13 @@
 
 import { relative } from "path";
 import {
+  getTaskFilePath,
   initContext,
   loadAllItems,
   loadMetaContext,
   loadSessionContext,
   loadPlans,
+  rawToSummary,
   resolveTaskDataManager,
   type KspecContext,
   type LoadedSpecItem,
@@ -323,6 +325,8 @@ interface PendingDomainChange {
   filePath: string;
   content?: string;
 }
+
+const TASK_ULID_PATTERN = /^[0-9A-HJKMNP-TV-Z]{26}$/i;
 
 const DEFAULT_SESSION_CACHE_CONFIG: SessionCacheConfig = {
   maxIndexSize: 100,
@@ -1461,10 +1465,94 @@ export class ProjectEntityCache {
 
   private async processDomainChanges(
     domain: CacheDomain,
-    _changes: PendingDomainChange[],
+    changes: PendingDomainChange[],
     cycle?: ReloadCycle,
   ): Promise<void> {
+    if (domain === "tasks" && (await this.tryIncrementalTaskUpdate(changes, cycle))) {
+      return;
+    }
+
     await this.loadDomain(domain, cycle);
+  }
+
+  private async tryIncrementalTaskUpdate(
+    changes: PendingDomainChange[],
+    cycle?: ReloadCycle,
+  ): Promise<boolean> {
+    if (changes.length === 0 || this.tasks.state !== "ready" || !this.tasks.index) {
+      return false;
+    }
+
+    const ctx = cycle ? await this.getReloadCycleContext(cycle) : await initContext(this.projectPath);
+    const changedUlids = new Set<string>();
+
+    for (const change of changes) {
+      const relativePath = relative(ctx.specDir, change.filePath);
+      if (
+        relativePath === "project.tasks.yaml" ||
+        relativePath === "tasks.yaml" ||
+        relativePath.endsWith(".tasks.yaml")
+      ) {
+        return false;
+      }
+
+      const segments = relativePath.split(/[\\/]/).filter(Boolean);
+      if (
+        segments.length !== 3 ||
+        segments[0] !== "tasks" ||
+        !TASK_ULID_PATTERN.test(segments[1]) ||
+        (segments[2] !== "task.yaml" && segments[2] !== "notes.yaml")
+      ) {
+        return false;
+      }
+
+      changedUlids.add(segments[1]);
+    }
+
+    if (changedUlids.size === 0) {
+      return false;
+    }
+
+    const tdm = resolveTaskDataManager(ctx);
+    const nextIndex = [...this.tasks.index];
+    const nextDetails = new Map(this.tasks.details);
+
+    for (const ulid of changedUlids) {
+      const taskFilePath = getTaskFilePath(ctx, ulid);
+      let taskExists = true;
+      try {
+        await fs.access(taskFilePath);
+      } catch {
+        taskExists = false;
+      }
+
+      const existingIndex = nextIndex.findIndex((task) => task._ulid === ulid);
+
+      if (!taskExists) {
+        if (existingIndex >= 0) {
+          nextIndex.splice(existingIndex, 1);
+        }
+        nextDetails.delete(ulid);
+        continue;
+      }
+
+      const loadedTask = await tdm.getTask(ctx, ulid);
+      const summary = rawToSummary(loadedTask);
+      if (!loadedTask || !summary) {
+        return false;
+      }
+
+      if (existingIndex >= 0) {
+        nextIndex[existingIndex] = summary;
+      } else {
+        nextIndex.push(summary);
+      }
+      nextDetails.set(ulid, loadedTask);
+    }
+
+    this.tasks.index = nextIndex;
+    this.tasks.details = nextDetails;
+    return true;
   }
 }
 
