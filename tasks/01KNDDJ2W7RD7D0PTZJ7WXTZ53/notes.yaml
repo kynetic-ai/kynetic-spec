@@ -1,1 +1,11 @@
-notes: []
+notes:
+  - _ulid: 01KNHW03RZ3JP2JRVM5EE66J9T
+    content: "Approach: reuse the existing debounce path in ProjectEntityCache and extend it with
+      per-domain pending file changes so the timer drains one coalesced batch into a new processing
+      method. Edge cases: repeated changes to the same file within the window should collapse to one
+      latest entry, invalidations without a file path must still trigger full reload, and one file
+      may map to multiple domains. Test plan: behavioral cache tests for multi-file coalescing,
+      duplicate-file latest-content wins, and fallback full reload when no file path is available."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-06T17:03:44.415Z
