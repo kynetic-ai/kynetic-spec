@@ -120641,6 +120641,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-06T17:32:21.882Z
+      - _ulid: 01KNHXMWHBSHC6TSWJJEPFEB5Y
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNHXMVQZDGNAWX0TD9HR3QQ8
+        timestamp: 2026-04-06T17:32:33.707Z
     examined_commit: 05c33e449cd51aaa81817e7ba3f98d7e8f99dedb
     external_links: []
     lifecycle_state: open
@@ -120650,8 +120657,26 @@ reviews:
       content_hash: ""
       ref: "@01KNHWPVHMH0WRNHDJJBAX0N4X"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNHXMVQZDGNAWX0TD9HR3QQ8
+        anchor:
+          type: code
+          commit: 05c33e449cd51aaa81817e7ba3f98d7e8f99dedb
+          line_end: 54
+          line_start: 43
+          path: scripts/dependency-health.cjs
+          side: head
+        entries:
+          - _ulid: 01KNHXMVR0C42E92GF02NJPC65
+            author: Jacob Chapel
+            body: "This ancestor walk is too broad: it keeps searching past the project root all the way to '/'.
+              I reproduced  returning  for a review workspace whose dependencies existed only in an
+              unrelated parent directory (), so a random ancestor install can now suppress a real
+              missing-dependency failure. Please stop at the project root (or another explicit
+              boundary) instead of accepting any filesystem ancestor."
+            created_at: 2026-04-06T17:32:32.896Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-06T17:31:47.194Z
-    updated_at: 2026-04-06T17:32:21.107Z
+    updated_at: 2026-04-06T17:32:32.896Z
     notes: []
