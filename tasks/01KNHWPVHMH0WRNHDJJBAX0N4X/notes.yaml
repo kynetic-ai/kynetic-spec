@@ -11,3 +11,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-06T17:18:21.455Z
+  - _ulid: 01KNHX0WBK6KT5PTXVD4ZMMY75
+    content: Implemented dependency-health fix by searching ancestor node_modules paths from the
+      workspace instead of only checking workspace/node_modules package directories.
+      scripts/test.cjs now passes dependency bootstrap in this review worktree. Verification hit an
+      unrelated existing build failure in packages/web-ui (unresolved
+      @lucide/svelte/icons/triangle-alert during npm run build), so targeted and dry-run
+      verification is running with SKIP_BUILD=1 to isolate this task's dependency/bootstrap
+      behavior.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-06T17:21:38.164Z
