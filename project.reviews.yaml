@@ -121059,6 +121059,18 @@ reviews:
         runner: kspec
         created_at: 2026-04-06T17:59:49.446Z
         completed_at: 2026-04-06T17:59:49.446Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "SKIP_BUILD=1 npm test -- --fresh failed twice after this fix, but failures were unstable
+          and unrelated to the changed files. Base branch b3b91d18cde400739d327720cea3e960f58f3a34
+          still fails earlier at dependency health before Vitest. Follow-up task: @01KNHZ5F."
+        name: full-suite
+        required: false
+        runner: npm
+        created_at: 2026-04-06T17:59:54.084Z
+        completed_at: 2026-04-06T17:59:54.084Z
     events:
       - _ulid: 01KNHYRSR26R4NMTV73RBRHBQR
         actor: Jacob Chapel
@@ -121094,6 +121106,13 @@ reviews:
           status: pass
           name: validation
         timestamp: 2026-04-06T17:59:50.276Z
+      - _ulid: 01KNHZ6Z8Z3ZSEM84215XZDJ8T
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: full-suite
+        timestamp: 2026-04-06T17:59:54.911Z
     examined_commit: 3b383315d4fab7aef22c104af375c6ca426a200a
     external_links: []
     lifecycle_state: open
@@ -121106,5 +121125,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-06T17:52:10.499Z
-    updated_at: 2026-04-06T17:59:49.446Z
+    updated_at: 2026-04-06T17:59:54.084Z
     notes: []
