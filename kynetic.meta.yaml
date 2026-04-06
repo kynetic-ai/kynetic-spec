@@ -12837,6 +12837,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-06T17:34:17.550Z
+  - _ulid: 01KNHYM0XVXJHFARHN8N5HQW4H
+    type: friction
+    content: Daemon-backed kspec CLI commands in this dispatch workspace returned 'Unexpected token "u",
+      "undefined "... is not valid JSON', which forced a direct-mode fallback with KSPEC_NO_DAEMON=1
+      for task/review operations. This looks like a systemic dispatch/daemon serialization bug
+      rather than task-specific behavior.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-06T17:49:34.011Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
