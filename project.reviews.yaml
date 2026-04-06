@@ -121368,6 +121368,12 @@ reviews:
         payload:
           thread_ulid: 01KNJ15482CDT5AW9786T28W67
         timestamp: 2026-04-06T18:57:52.014Z
+      - _ulid: 01KNJ2H60V7SPCTFS7F8MWHRB7
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNJ15Y1DDD0VFH0Y283F9NG9
+        timestamp: 2026-04-06T18:57:55.228Z
     examined_commit: a76e028682e2d5456ba6c58f7237e288d23b466e
     external_links: []
     lifecycle_state: closed
@@ -121431,6 +121437,8 @@ reviews:
               only the existing warning set, and the full npm test run passed on this branch.
             created_at: 2026-04-06T18:57:48.517Z
         kind: nit
+        resolved_at: 2026-04-06T18:57:54.379Z
+        resolved_by: Jacob Chapel
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -121440,7 +121448,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-06T18:34:26.617Z
     created_at: 2026-04-06T18:28:59.840Z
-    updated_at: 2026-04-06T18:57:51.085Z
+    updated_at: 2026-04-06T18:57:54.379Z
     notes: []
   - _ulid: 01KNJ1W2P27ZAQ8T88N2JMQXWJ
     slugs: []
