@@ -121021,3 +121021,29 @@ reviews:
     created_at: 2026-04-06T17:46:46.402Z
     updated_at: 2026-04-06T17:47:26.891Z
     notes: []
+  - _ulid: 01KNHYRSR38ZEV0JGRZK0XDB6C
+    slugs: []
+    title: Review fix-test-runner dependency-health false negative (cycle 2)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KNHYRSR26R4NMTV73RBRHBQR
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-06T17:52:10.498Z
+    examined_commit: 3b383315d4fab7aef22c104af375c6ca426a200a
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNHWPVHMH0WRNHDJJBAX0N4X"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-06T17:52:10.499Z
+    updated_at: null
+    notes: []
