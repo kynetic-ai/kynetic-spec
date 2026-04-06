@@ -120779,6 +120779,12 @@ reviews:
         payload:
           thread_ulid: 01KNHXNT1A2YHAVA7C9ZTJNW60
         timestamp: 2026-04-06T17:48:15.489Z
+      - _ulid: 01KNHYHPPR1Q9EKNSFFHFQJPSF
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNHXNWCAMX3XN8C0XYPDZQ8D
+        timestamp: 2026-04-06T17:48:18.008Z
     examined_commit: 05c33e449cd51aaa81817e7ba3f98d7e8f99dedb
     external_links: []
     lifecycle_state: closed
@@ -120858,6 +120864,13 @@ reviews:
               re-running install-workspace-dependencies. This needs the same project-root boundary
               as the test-runner check.
             created_at: 2026-04-06T17:33:06.314Z
+          - _ulid: 01KNHYHNVP33P6ZBAS3KHQ8BN7
+            author: Jacob Chapel
+            body: Applied the same project-root boundary to dispatch bootstrap reuse detection. The bootstrap
+              contract tests now verify both that project-root hoisted installs are accepted and
+              that installs found only above the project root trigger install-workspace-dependencies
+              instead of reusing stale bootstrap metadata.
+            created_at: 2026-04-06T17:48:17.142Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -120868,7 +120881,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-06T17:33:39.563Z
     created_at: 2026-04-06T17:31:47.194Z
-    updated_at: 2026-04-06T17:48:14.632Z
+    updated_at: 2026-04-06T17:48:17.142Z
     notes: []
   - _ulid: 01KNHYEX820KPYHEQ3DWG74XZB
     slugs: []
