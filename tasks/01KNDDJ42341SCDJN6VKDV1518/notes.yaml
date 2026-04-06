@@ -24,3 +24,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-06T19:07:28.695Z
+  - _ulid: 01KNJ39WW682YZKYBW62HGQKCH
+    content: "Fix cycle 1: addressed all review threads. Cleared metadata-only session detail entries
+      during incremental watcher updates so active-session detail requests stay fresh via the
+      live-count-adjusted index or on-demand reload. Added regressions for stale-session transition
+      during incremental invalidation, active-session events-file freshness, and sessions-root
+      fallback to full reload. Re-verified @daemon-incremental-cache ACs for single-entity patching,
+      removal detection, index consistency, and fallback reload behavior."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-06T19:11:25.063Z
