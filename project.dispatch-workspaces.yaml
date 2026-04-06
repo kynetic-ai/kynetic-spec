@@ -38453,12 +38453,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-06T05:13:08.782Z
+      updated_at: 2026-04-06T14:42:38.131Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-06T05:13:08.782Z
+      updated_at: 2026-04-06T14:42:38.131Z
     integration:
       status: pending
       detail: null
@@ -38466,7 +38466,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-granular-cache-invalidation/01kndbmk
       target_commit: 7179f7c7f383279482d07f1582205ae1b10534f5
-      updated_at: 2026-04-06T05:13:08.782Z
+      updated_at: 2026-04-06T14:42:38.131Z
     lifecycle_state: integrating
     resolved_base_branch: plan/plan-granular-cache-invalidation/01kndbmk
     task_ref: "@01KNDDJ28BG65RTB77YFQZVQDM"
@@ -38474,9 +38474,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-06T05:10:58.404Z
-      last_reconciled_at: 2026-04-06T05:13:08.782Z
+      last_reconciled_at: 2026-04-06T14:42:38.131Z
       created_at: 2026-04-05T21:50:46.308Z
-      updated_at: 2026-04-06T05:13:13.116Z
+      updated_at: 2026-04-06T14:42:38.131Z
     workspace_id: dispatch-workspace-01KNDDJ28BG65RTB77YFQZVQDM
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -38484,11 +38484,11 @@ workspaces:
         branch_mode: detached
         branch_ref: null
         head: dbae3ce85105c4cf1ffbdcc4cdd85f92953c99dd
-        last_seen_at: 2026-04-06T05:13:08.782Z
+        last_seen_at: 2026-04-06T14:42:38.131Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-ac-context-reuse-01knddj2-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-add-ac-context-reuse/01knddj2
         head: dbae3ce85105c4cf1ffbdcc4cdd85f92953c99dd
-        last_seen_at: 2026-04-06T05:13:08.782Z
+        last_seen_at: 2026-04-06T14:42:38.131Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-ac-context-reuse-01knddj2
