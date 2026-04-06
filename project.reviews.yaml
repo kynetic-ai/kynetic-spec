@@ -121193,9 +121193,25 @@ reviews:
           kind: nit
           thread_ulid: 01KNJ00JWF8FXPQCJ20TD65AG8
         timestamp: 2026-04-06T18:13:55.025Z
+      - _ulid: 01KNJ0F1M2N3P4Q5R6S7T8V9WX
+        actor: "@codex"
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-04-06T18:15:30.000Z
+      - _ulid: 01KNJ0F1M2N3P4Q5R6S7T8V9WY
+        actor: "@codex"
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: closed
+        timestamp: 2026-04-06T18:15:30.000Z
     examined_commit: ba4b2952e42cf3f86f7fdabe62989f0bd533c7e7
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -121219,7 +121235,14 @@ reviews:
               defects found in the submitted change."
             created_at: 2026-04-06T18:13:54.191Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: "@codex"
+        role: reviewer
+        created_at: 2026-04-06T18:15:30.000Z
     created_at: 2026-04-06T18:13:32.601Z
-    updated_at: 2026-04-06T18:13:54.191Z
+    updated_at: 2026-04-06T18:15:30.000Z
     notes: []
