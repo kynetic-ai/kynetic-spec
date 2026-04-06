@@ -39,7 +39,7 @@
     "build": "tsc && chmod +x dist/cli/index.js && npm run build:shared && npm run build:daemon && npm run build:web-ui && npm run build:plugin",
     "build:shared": "cd packages/shared && npm run build",
     "build:plugin": "node scripts/build-plugin.cjs",
-    "build:daemon": "shx rm -rf dist/daemon && shx mkdir -p dist/daemon && shx cp -r packages/daemon/src/* dist/daemon/ && shx cp src/daemon/entity-cache.ts dist/daemon/",
+    "build:daemon": "node scripts/build-daemon.cjs",
     "build:web-ui": "shx rm -rf dist/web-ui && cd packages/web-ui && npm run build && shx cp -r build ../../dist/web-ui",
     "build:e2e": "tsc && chmod +x dist/cli/index.js && npm run build:shared && npm run build:daemon && npm run build:web-ui",
     "dev": "tsx src/cli/index.ts",
@@ -60,7 +60,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@elysiajs/cors": "^1.1.3",
+    "@elysiajs/cors": "^1.4.1",
     "@elysiajs/static": "^1.4.7",
     "chalk": "^5.3.0",
     "chokidar": "^4.0.3",
@@ -68,7 +68,7 @@
     "commander": "^12.1.0",
     "croner": "^10.0.1",
     "diff": "^8.0.3",
-    "elysia": "^1.1.31",
+    "elysia": "^1.4.28",
     "js-yaml": "^4.1.0",
     "smol-toml": "^1.6.0",
     "ulid": "^2.3.0",

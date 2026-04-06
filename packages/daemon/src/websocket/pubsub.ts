@@ -10,9 +10,9 @@
  * - ac-6 (@trait-websocket-protocol): Backpressure pause
  */
 
-import type { ServerWebSocket } from "bun";
 import { ulid } from "ulidx";
-import type { BroadcastEvent, ConnectionData } from "./types";
+import { ConnectionStateManager } from "./connection-state.js";
+import type { BroadcastEvent, WebSocketConnection } from "./types.js";
 
 const SESSION_TOPIC_PREFIX = "__kspec_session:";
 
@@ -21,16 +21,19 @@ function sessionTopic(sessionId: string): string {
 }
 
 export class PubSubManager {
-  private connections = new Map<string, ServerWebSocket<ConnectionData>>();
-  private sessionIdsBySocket = new WeakMap<ServerWebSocket<ConnectionData>, string>();
+  private connections = new Map<string, WebSocketConnection>();
+  private sessionIdsBySocket = new WeakMap<WebSocketConnection, string>();
   private sessionIdsByContextId = new Map<string, string>();
   private contextIdsBySessionId = new Map<string, string>();
+
+  constructor(private readonly connectionState: ConnectionStateManager = new ConnectionStateManager()) {}
 
   /**
    * Register a new WebSocket connection
    * AC: @trait-websocket-protocol ac-1
    */
-  addConnection(sessionId: string, ws: ServerWebSocket<ConnectionData>, contextId?: string) {
+  addConnection(sessionId: string, ws: WebSocketConnection, contextId?: string) {
+    this.connectionState.get(ws) ?? this.connectionState.adopt(ws);
     this.connections.set(sessionId, ws);
     this.sessionIdsBySocket.set(ws, sessionId);
     if (contextId) {
@@ -48,6 +51,7 @@ export class PubSubManager {
     if (ws) {
       ws.unsubscribe?.(sessionTopic(sessionId));
       this.sessionIdsBySocket.delete(ws);
+      this.connectionState.remove(ws);
     }
     const contextId = this.contextIdsBySessionId.get(sessionId);
     if (contextId) {
@@ -59,12 +63,9 @@ export class PubSubManager {
 
   /**
    * Resolve a stable session ID for a socket and remove that connection.
-   * This is resilient when ws.data.sessionId is missing in close callbacks.
+   * This is resilient when the close callback sees a wrapper without connection state.
    */
-  removeConnectionBySocket(
-    ws: ServerWebSocket<ConnectionData>,
-    contextId?: string,
-  ): string | undefined {
+  removeConnectionBySocket(ws: WebSocketConnection, contextId?: string): string | undefined {
     const sessionId = this.getSessionIdBySocket(ws, contextId);
     if (!sessionId) {
       return undefined;
@@ -77,21 +78,18 @@ export class PubSubManager {
   /**
    * Get stable session ID for socket from registration mapping.
    */
-  getSessionIdBySocket(
-    ws: ServerWebSocket<ConnectionData>,
-    contextId?: string,
-  ): string | undefined {
+  getSessionIdBySocket(ws: WebSocketConnection, contextId?: string): string | undefined {
     const mappedSessionId = this.sessionIdsBySocket.get(ws);
     if (mappedSessionId) {
       return mappedSessionId;
     }
 
-    const data = ws.data as Partial<ConnectionData> | undefined;
-    if (data?.sessionId) {
-      return data.sessionId;
+    const connection = this.connectionState.get(ws);
+    if (connection?.sessionId) {
+      return connection.sessionId;
     }
 
-    const subscriptions = (ws as Partial<ServerWebSocket<ConnectionData>>).subscriptions;
+    const subscriptions = ws.subscriptions;
     if (Array.isArray(subscriptions)) {
       const sessionSubscription = subscriptions.find((topic) =>
         topic.startsWith(SESSION_TOPIC_PREFIX),
@@ -117,12 +115,13 @@ export class PubSubManager {
    */
   subscribe(sessionId: string, topics: string[]): boolean {
     const ws = this.connections.get(sessionId);
-    if (!ws) {
+    const connection = ws ? this.connectionState.get(ws) : undefined;
+    if (!ws || !connection) {
       return false;
     }
 
     for (const topic of topics) {
-      ws.data.topics.add(topic);
+      connection.topics.add(topic);
     }
 
     return true;
@@ -133,12 +132,13 @@ export class PubSubManager {
    */
   unsubscribe(sessionId: string, topics: string[]): boolean {
     const ws = this.connections.get(sessionId);
-    if (!ws) {
+    const connection = ws ? this.connectionState.get(ws) : undefined;
+    if (!ws || !connection) {
       return false;
     }
 
     for (const topic of topics) {
-      ws.data.topics.delete(topic);
+      connection.topics.delete(topic);
     }
 
     return true;
@@ -151,13 +151,18 @@ export class PubSubManager {
    */
   broadcast(topic: string, event: string, data: Record<string, unknown>, projectPath?: string) {
     for (const [sessionId, ws] of this.connections) {
+      const connection = this.connectionState.get(ws);
+      if (!connection) {
+        continue;
+      }
+
       // AC: @multi-directory-daemon ac-18 - Only send to connections bound to same project
-      if (projectPath && ws.data.projectPath !== projectPath) {
+      if (projectPath && connection.projectPath !== projectPath) {
         continue;
       }
 
       // Only send to connections subscribed to this topic
-      if (!ws.data.topics.has(topic)) {
+      if (!connection.topics.has(topic)) {
         continue;
       }
 
@@ -174,12 +179,12 @@ export class PubSubManager {
       }
 
       // Increment sequence number for this connection
-      ws.data.seq++;
+      connection.seq++;
 
       // AC: @api-contract ac-29, @trait-websocket-protocol ac-3
       const message: BroadcastEvent = {
         msg_id: ulid(),
-        seq: ws.data.seq,
+        seq: connection.seq,
         timestamp: new Date().toISOString(),
         topic,
         event,
@@ -193,8 +198,12 @@ export class PubSubManager {
   /**
    * Get all connections (for heartbeat checks)
    */
-  getAllConnections(): Map<string, ServerWebSocket<ConnectionData>> {
+  getAllConnections(): Map<string, WebSocketConnection> {
     return this.connections;
+  }
+
+  getConnectionState(ws: WebSocketConnection) {
+    return this.connectionState.get(ws);
   }
 
   /**

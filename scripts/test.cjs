@@ -45,8 +45,8 @@ const BUILD_ARTIFACTS = [
   "packages/shared/dist/index.js",
   "dist/web-ui/index.html",
   "packages/web-ui/.svelte-kit/output/server/manifest-full.js",
-  "dist/daemon/index.ts",
-  "dist/daemon/entity-cache.ts",
+  "dist/daemon/index.js",
+  "dist/daemon/entity-cache.js",
 ];
 const BUILD_INPUT_PATHS = [
   "src",

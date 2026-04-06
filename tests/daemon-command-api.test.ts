@@ -26,13 +26,13 @@ import {
   testUlid,
 } from "./helpers/cli.js";
 import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
-import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.ts";
-import { createCommandRoutes } from "../dist/daemon/routes/command.ts";
-import { PubSubManager } from "../dist/daemon/websocket/pubsub.ts";
+import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.js";
+import { createCommandRoutes } from "../dist/daemon/routes/command.js";
+import { PubSubManager } from "../dist/daemon/websocket/pubsub.js";
 import type {
   RouteEntityCache,
   EntityCacheAccessor,
-} from "../dist/daemon/routes/entity-cache-types.ts";
+} from "../dist/daemon/routes/entity-cache-types.js";
 
 ensureSplitBackendRegistered();
 

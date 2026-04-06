@@ -3,11 +3,11 @@ import * as path from "node:path";
 import * as os from "node:os";
 import { afterEach, describe, expect, it } from "vitest";
 import { initContext, loadAllItems, loadAllTasks } from "../src/parser/index.js";
-import type { RouteEntityCache } from "../dist/daemon/routes/entity-cache-types.ts";
+import type { RouteEntityCache } from "../dist/daemon/routes/entity-cache-types.js";
 import {
   getRelatedSessionsForItem,
   getRelatedSessionsForTask,
-} from "../dist/daemon/routes/session-related.ts";
+} from "../dist/daemon/routes/session-related.js";
 
 const tempDirs: string[] = [];
 

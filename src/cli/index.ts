@@ -65,6 +65,7 @@ import { existsSync } from "fs";
 import { acquireFileLock, type FileLockAcquireInfo } from "../parser/file-lock.js";
 import { rollbackDirtyShadowWorktree } from "../agent-runtime/workspace.js";
 import { shouldProxyCommand, proxyCommand, extractCommandPayload } from "./daemon-proxy.js";
+import { buildDaemonChildEnv } from "./commands/serve.js";
 
 const program = new Command();
 
@@ -172,16 +173,15 @@ async function maybeAutoStartDaemon(): Promise<void> {
       return;
     }
 
-    // Start daemon in background using current runtime
-    // Set BUN_ENV=production to prevent Bun dev mode HTML transformation
+    // Start daemon in background using configured runtime rather than inheriting the CLI runtime.
     const child = spawn(
-      process.execPath,
+      daemonConfig.runtime,
       [daemonBinary, "--port", String(port), "--kspec-dir", kspecDir],
       {
         detached: true,
         stdio: "ignore",
         cwd: process.cwd(),
-        env: { ...process.env, BUN_ENV: "production" },
+        env: buildDaemonChildEnv(daemonConfig.runtime),
       },
     );
 

@@ -9,15 +9,16 @@ import {
   cleanupTempDir,
   createIsolatedKspecHome,
   initGitRepo,
+  CLI_PATH,
   kspec,
   readTestOutputSync,
   waitForStartup,
   type KspecOptions,
 } from "./helpers/cli";
-import { spawn, execSync } from "child_process";
+import { spawn, spawnSync, execSync } from "child_process";
 import { once } from "events";
 import { dirname, join } from "path";
-import { existsSync, mkdirSync } from "fs";
+import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { createServer } from "net";
 
 // Check if Bun runtime is available
@@ -65,6 +66,10 @@ describe("kspec serve commands", () => {
       ...options,
       env: { ...testEnv, ...options.env },
     });
+  }
+
+  function readProcessCommand(pid: number): string {
+    return execSync(`ps -p ${pid} -o command=`, { encoding: "utf-8" }).trim();
   }
 
   async function waitForDaemonHealth(port: number): Promise<void> {
@@ -649,8 +654,9 @@ describe("kspec serve commands", () => {
       const healthResponse = await fetch(`http://localhost:${port}/api/health`);
       // oxlint-disable-next-line jest/valid-expect -- vitest supports custom message as 2nd arg
       expect(healthResponse.ok, "daemon health endpoint should respond").toBe(true);
-      const healthBody = await healthResponse.json();
+      const healthBody = (await healthResponse.json()) as { status: string; runtime: string };
       expect(healthBody).toHaveProperty("status", "ok");
+      expect(healthBody).toHaveProperty("runtime", "bun");
 
       // Cleanup: stop the daemon
       try {
@@ -706,6 +712,37 @@ describe("kspec serve commands", () => {
     expect(result.stdout).toContain("bun.sh");
   });
 
+  // AC: @daemon-runtime-adapter ac-default-bun
+  it("should default to spawning the daemon with bun when no runtime is configured", async () => {
+    if (!bunAvailable) {
+      console.log("  ⊘ Skipping test - Bun runtime required");
+      return;
+    }
+
+    const port = await getAvailablePort();
+
+    const result = runKspec(
+      `serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`,
+      tempDir,
+    );
+
+    expect(result.exitCode).toBe(0);
+    await waitForDaemonHealth(port);
+
+    const status = JSON.parse(
+      runKspec(`serve status --json --kspec-dir ${join(tempDir, ".kspec")}`, tempDir).stdout,
+    ) as {
+      running: boolean;
+      pid: number | null;
+    };
+
+    expect(status.running).toBe(true);
+    expect(status.pid).not.toBeNull();
+    expect(readProcessCommand(status.pid as number)).toContain("bun");
+
+    runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
+  });
+
   // AC: @web-ui ac-2
   it("should show Bun install URL in JSON mode when Bun is not available", () => {
     // Build PATH that includes node but excludes bun
@@ -735,6 +772,80 @@ describe("kspec serve commands", () => {
     expect(parsed.hint).toContain("bun.sh");
     expect(parsed).toHaveProperty("url");
     expect(parsed.url).toBe("https://bun.sh/docs/installation");
+  });
+
+  // AC: @daemon-runtime-adapter ac-runtime-missing
+  it("should report missing node runtime with installation guidance", () => {
+    const nodeDir = dirname(execSync("which node", { encoding: "utf-8" }).trim());
+    const noNodePath = (process.env.PATH || "")
+      .split(":")
+      .filter((p) => {
+        try {
+          return p !== nodeDir && !existsSync(join(p, "node"));
+        } catch {
+          return true;
+        }
+      })
+      .join(":");
+
+    writeFileSync(
+      join(tempDir, "kspec.config.yaml"),
+      ["daemon:", "  runtime: node", ""].join("\n"),
+      "utf-8",
+    );
+
+    const { KSPEC_SESSION_ID: _sessionId, ...cleanProcessEnv } = process.env;
+    const result = spawnSync(process.execPath, [CLI_PATH, "serve", "start", "--kspec-dir", join(tempDir, ".kspec")], {
+      cwd: tempDir,
+      encoding: "utf-8",
+      env: { ...cleanProcessEnv, ...testEnv, PATH: noNodePath },
+    });
+
+    expect(result.status).not.toBe(0);
+    expect(result.stderr).toContain("Node runtime is required");
+    expect(result.stdout).toContain("nodejs.org");
+  });
+
+  // AC: @daemon-runtime-adapter ac-runtime-selection
+  // AC: @daemon-runtime-adapter ac-http-parity
+  it("should start via configured node runtime even when Bun is unavailable", async () => {
+    const nodeDir = dirname(execSync("which node", { encoding: "utf-8" }).trim());
+    const noBunPath = (process.env.PATH || "")
+      .split(":")
+      .filter((p) => {
+        try {
+          return !existsSync(join(p, "bun"));
+        } catch {
+          return true;
+        }
+      })
+      .join(":");
+    const pathWithNode = noBunPath.includes(nodeDir) ? noBunPath : `${nodeDir}:${noBunPath}`;
+    const port = await getAvailablePort();
+
+    writeFileSync(
+      join(tempDir, "kspec.config.yaml"),
+      ["daemon:", "  runtime: node", `  port: ${port}`, ""].join("\n"),
+      "utf-8",
+    );
+
+    const result = runKspec(
+      `serve start --detach --kspec-dir ${join(tempDir, ".kspec")}`,
+      tempDir,
+      { env: { PATH: pathWithNode } },
+    );
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain(`port ${port}`);
+
+    await waitForDaemonHealth(port);
+
+    const healthResponse = await fetch(`http://localhost:${port}/api/health`);
+    expect(healthResponse.ok).toBe(true);
+
+    runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir, {
+      env: { PATH: pathWithNode },
+    });
   });
 
   // AC: @cli-serve-commands ac-11

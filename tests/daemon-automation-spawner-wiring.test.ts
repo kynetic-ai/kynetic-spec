@@ -37,7 +37,7 @@ vi.mock("../dist/parser/index.js", async (importOriginal) => {
   };
 });
 
-import { createAutomationAgentSpawner } from "../dist/daemon/routes/agent-dispatch.ts";
+import { createAutomationAgentSpawner } from "../dist/daemon/routes/agent-dispatch.js";
 
 describe("createAutomationAgentSpawner daemon wiring", () => {
   const fakeProjectDir = "/tmp/test-project";

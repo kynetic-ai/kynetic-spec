@@ -19,20 +19,20 @@ import * as path from "node:path";
 import { Elysia } from "elysia";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { cleanupTempDir, createTempDir, initGitRepo, testUlid } from "./helpers/cli.js";
-import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.ts";
-import { createTasksRoutes } from "../dist/daemon/routes/tasks.ts";
-import { createItemsRoutes } from "../dist/daemon/routes/items.ts";
-import { createAggregationRoutes } from "../dist/daemon/routes/aggregation.ts";
-import { createValidationRoutes } from "../dist/daemon/routes/validation.ts";
-import { createInboxRoutes } from "../dist/daemon/routes/inbox.ts";
-import { createRefsRoutes } from "../dist/daemon/routes/refs.ts";
-import { createPlansRoutes } from "../dist/daemon/routes/plans.ts";
-import { createMetaRoutes } from "../dist/daemon/routes/meta.ts";
-import { PubSubManager } from "../dist/daemon/websocket/pubsub.ts";
+import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.js";
+import { createTasksRoutes } from "../dist/daemon/routes/tasks.js";
+import { createItemsRoutes } from "../dist/daemon/routes/items.js";
+import { createAggregationRoutes } from "../dist/daemon/routes/aggregation.js";
+import { createValidationRoutes } from "../dist/daemon/routes/validation.js";
+import { createInboxRoutes } from "../dist/daemon/routes/inbox.js";
+import { createRefsRoutes } from "../dist/daemon/routes/refs.js";
+import { createPlansRoutes } from "../dist/daemon/routes/plans.js";
+import { createMetaRoutes } from "../dist/daemon/routes/meta.js";
+import { PubSubManager } from "../dist/daemon/websocket/pubsub.js";
 import type {
   RouteEntityCache,
   EntityCacheAccessor,
-} from "../dist/daemon/routes/entity-cache-types.ts";
+} from "../dist/daemon/routes/entity-cache-types.js";
 import type { TaskSummary } from "../dist/parser/task-data-manager.ts";
 import type {
   ItemSummary,
@@ -40,7 +40,7 @@ import type {
   PlanIndexSummary,
   CachedShadowInfo,
   CachedProjectConfig,
-} from "../dist/daemon/entity-cache.ts";
+} from "../dist/daemon/entity-cache.js";
 import type { MetaContext } from "../dist/parser/meta.ts";
 import type { LoadedInboxItem, LoadedSpecItem, LoadedTask } from "../dist/parser/yaml.ts";
 import { ShadowSyncScheduler } from "../src/parser/shadow-sync-scheduler.js";

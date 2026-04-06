@@ -8,8 +8,8 @@
  */
 
 import type { Elysia } from "elysia";
-import { ProjectContextManager, type ProjectContext } from "../project-context";
-import type { PubSubManager } from "../websocket/pubsub";
+import { ProjectContextManager, type ProjectContext } from "../project-context.js";
+import type { PubSubManager } from "../websocket/pubsub.js";
 
 export interface ProjectContextMiddlewareOptions {
   /**

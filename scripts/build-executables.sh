@@ -5,7 +5,7 @@ set -euo pipefail
 # Requires: npm run build (to populate dist/daemon/ with correct import paths)
 # Requires: Bun 1.0+ with --compile support
 
-DAEMON_SRC="dist/daemon/index.ts"
+DAEMON_SRC="dist/daemon/index.js"
 DIST_DIR="dist/executables"
 
 if [ ! -f "$DAEMON_SRC" ]; then

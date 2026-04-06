@@ -9,26 +9,33 @@
  * - ac-7 (@trait-websocket-protocol): Close code 1001 for timeout
  */
 
-import type { ServerWebSocket } from "bun";
-import type { ConnectionData } from "./types";
+import { ConnectionStateManager } from "./connection-state.js";
+import type { WebSocketConnection } from "./types.js";
 
 export class HeartbeatManager {
   private pingInterval?: NodeJS.Timeout;
   private readonly PING_INTERVAL = 30_000; // 30 seconds
   private readonly PONG_TIMEOUT = 90_000; // 90 seconds
 
+  constructor(private readonly connectionState: ConnectionStateManager) {}
+
   /**
    * Start heartbeat monitoring for all connections
    * AC: @daemon-server ac-13, @trait-websocket-protocol ac-4
    */
-  start(connections: Map<string, ServerWebSocket<ConnectionData>>) {
+  start(connections: Map<string, WebSocketConnection>) {
     this.pingInterval = setInterval(() => {
       const now = Date.now();
 
       for (const [sessionId, ws] of connections) {
+        const connection = this.connectionState.get(ws);
+        if (!connection) {
+          continue;
+        }
+
         // Check if pong timeout exceeded
-        if (ws.data.lastPing && !ws.data.lastPong) {
-          const timeSincePing = now - ws.data.lastPing;
+        if (connection.lastPing && !connection.lastPong) {
+          const timeSincePing = now - connection.lastPing;
 
           // AC: @daemon-server ac-14, @trait-websocket-protocol ac-5, ac-7
           if (timeSincePing >= this.PONG_TIMEOUT) {
@@ -42,12 +49,16 @@ export class HeartbeatManager {
         }
 
         // Send ping if no recent activity
-        const lastActivity = ws.data.lastPong ?? ws.data.lastPing ?? 0;
+        const lastActivity = connection.lastPong ?? connection.lastPing ?? 0;
         const timeSinceActivity = now - lastActivity;
 
         if (timeSinceActivity >= this.PING_INTERVAL) {
-          ws.data.lastPing = now;
-          ws.data.lastPong = undefined; // Reset pong until received
+          if (typeof ws.ping !== "function") {
+            continue;
+          }
+
+          connection.lastPing = now;
+          connection.lastPong = undefined; // Reset pong until received
           ws.ping();
           console.debug(`[heartbeat] Sent ping to ${sessionId}`);
         }
@@ -68,7 +79,11 @@ export class HeartbeatManager {
   /**
    * Record pong received from connection
    */
-  recordPong(ws: ServerWebSocket<ConnectionData>) {
-    ws.data.lastPong = Date.now();
+  recordPong(ws: WebSocketConnection) {
+    const connection = this.connectionState.get(ws);
+    if (!connection) {
+      return;
+    }
+    connection.lastPong = Date.now();
   }
 }

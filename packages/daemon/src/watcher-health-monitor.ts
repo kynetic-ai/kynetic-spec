@@ -1,4 +1,4 @@
-import type { ProjectContextManager } from "./project-context";
+import type { ProjectContextManager } from "./project-context.js";
 
 interface WatcherHealthMonitorOptions {
   intervalMs?: number;

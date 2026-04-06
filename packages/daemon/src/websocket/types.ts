@@ -12,8 +12,6 @@
  * - ac-3 (@trait-websocket-protocol): Broadcast event format
  */
 
-import type { ServerWebSocket } from "bun";
-
 // AC: @api-contract ac-26
 export interface WebSocketCommand {
   action: "subscribe" | "unsubscribe" | "ping";
@@ -60,7 +58,19 @@ export interface ConnectionData {
   projectPath: string; // AC: @multi-directory-daemon ac-21 - bound project path
 }
 
+export interface WebSocketConnection {
+  id?: string;
+  data?: unknown;
+  subscriptions?: string[];
+  send(data: string): unknown;
+  close(code?: number, reason?: string): unknown;
+  ping?(): unknown;
+  subscribe?(topic: string): unknown;
+  unsubscribe?(topic: string): unknown;
+  getBufferedAmount?(): number;
+}
+
 export interface WebSocketContext {
-  ws: ServerWebSocket<ConnectionData>;
-  connections: Map<string, ServerWebSocket<ConnectionData>>;
+  ws: WebSocketConnection;
+  connections: Map<string, WebSocketConnection>;
 }

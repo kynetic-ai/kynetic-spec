@@ -53,8 +53,8 @@ function writeBuiltProjectFixture(rootDir: string): void {
     "packages/shared/dist/index.js",
     "dist/web-ui/index.html",
     "packages/web-ui/.svelte-kit/output/server/manifest-full.js",
-    "dist/daemon/index.ts",
-    "dist/daemon/entity-cache.ts",
+    "dist/daemon/index.js",
+    "dist/daemon/entity-cache.js",
   ]) {
     const fullPath = path.join(rootDir, artifact);
     fs.mkdirSync(path.dirname(fullPath), { recursive: true });
@@ -163,8 +163,8 @@ describe("test runner environment checks", () => {
         fs.rmSync(tempDir, { recursive: true, force: true });
       });
 
-      it("detects when dist/daemon/index.ts is missing", () => {
-        // Create all artifacts except dist/daemon/index.ts
+      it("detects when dist/daemon/index.js is missing", () => {
+        // Create all artifacts except dist/daemon/index.js
         for (const artifact of [
           "dist/cli/index.js",
           "packages/shared/dist/index.js",
@@ -178,7 +178,7 @@ describe("test runner environment checks", () => {
 
         const result = runner.checkBuild(tempDir);
         expect(result.ok).toBe(false);
-        expect(result.reason).toContain("dist/daemon/index.ts not found");
+        expect(result.reason).toContain("dist/daemon/index.js not found");
       });
 
       it("detects when dist/web-ui/index.html is missing", () => {
@@ -186,8 +186,8 @@ describe("test runner environment checks", () => {
           "dist/cli/index.js",
           "packages/shared/dist/index.js",
           "packages/web-ui/.svelte-kit/output/server/manifest-full.js",
-          "dist/daemon/index.ts",
-          "dist/daemon/entity-cache.ts",
+          "dist/daemon/index.js",
+          "dist/daemon/entity-cache.js",
         ]) {
           const fullPath = path.join(tempDir, artifact);
           fs.mkdirSync(path.dirname(fullPath), { recursive: true });
@@ -204,8 +204,8 @@ describe("test runner environment checks", () => {
           "packages/shared/dist/index.js",
           "dist/web-ui/index.html",
           "packages/web-ui/.svelte-kit/output/server/manifest-full.js",
-          "dist/daemon/index.ts",
-          "dist/daemon/entity-cache.ts",
+          "dist/daemon/index.js",
+          "dist/daemon/entity-cache.js",
         ]) {
           const fullPath = path.join(tempDir, artifact);
           fs.mkdirSync(path.dirname(fullPath), { recursive: true });
@@ -223,8 +223,8 @@ describe("test runner environment checks", () => {
           "packages/shared/dist/index.js",
           "dist/web-ui/index.html",
           "packages/web-ui/.svelte-kit/output/server/manifest-full.js",
-          "dist/daemon/index.ts",
-          "dist/daemon/entity-cache.ts",
+          "dist/daemon/index.js",
+          "dist/daemon/entity-cache.js",
         ]) {
           const fullPath = path.join(tempDir, artifact);
           fs.mkdirSync(path.dirname(fullPath), { recursive: true });
@@ -241,8 +241,8 @@ describe("test runner environment checks", () => {
           "packages/shared/dist/index.js",
           "dist/web-ui/index.html",
           "packages/web-ui/.svelte-kit/output/server/manifest-full.js",
-          "dist/daemon/index.ts",
-          "dist/daemon/entity-cache.ts",
+          "dist/daemon/index.js",
+          "dist/daemon/entity-cache.js",
         ]) {
           const fullPath = path.join(tempDir, artifact);
           fs.mkdirSync(path.dirname(fullPath), { recursive: true });

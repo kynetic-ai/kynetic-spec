@@ -11,7 +11,7 @@ import { readTestOutputSync } from "../helpers/cli.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const DAEMON_ENTRY = join(__dirname, "../../dist/daemon/index.ts");
+const DAEMON_ENTRY = join(__dirname, "../../dist/daemon/index.js");
 const KSPEC_CLI = join(__dirname, "../../dist/cli/index.js");
 const E2E_FIXTURES = join(__dirname, "../e2e/fixtures");
 const WEB_UI_BUILD = join(__dirname, "../../packages/web-ui/build");
