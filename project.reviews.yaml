@@ -120673,6 +120673,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNHXNT1A2YHAVA7C9ZTJNW60
         timestamp: 2026-04-06T17:33:04.689Z
+      - _ulid: 01KNHXNX5TW2TVTT0B2S1S7H4Y
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNHXNWCAMX3XN8C0XYPDZQ8D
+        timestamp: 2026-04-06T17:33:07.131Z
     examined_commit: 05c33e449cd51aaa81817e7ba3f98d7e8f99dedb
     external_links: []
     lifecycle_state: open
@@ -120720,7 +120727,25 @@ reviews:
               any filesystem ancestor."
             created_at: 2026-04-06T17:33:03.914Z
         kind: blocker
+      - _ulid: 01KNHXNWCAMX3XN8C0XYPDZQ8D
+        anchor:
+          type: code
+          commit: 05c33e449cd51aaa81817e7ba3f98d7e8f99dedb
+          line_end: 230
+          line_start: 214
+          path: src/agent-runtime/bootstrap.ts
+          side: head
+        entries:
+          - _ulid: 01KNHXNWCAE0N9A9KQ93F58CM4
+            author: Jacob Chapel
+            body: The same unbounded ancestor search was copied into bootstrap reuse detection. Because it also
+              walks to /, an unrelated node_modules above the repo can make the dispatcher think
+              workspace dependencies are healthy and incorrectly reuse bootstrap metadata instead of
+              re-running install-workspace-dependencies. This needs the same project-root boundary
+              as the test-runner check.
+            created_at: 2026-04-06T17:33:06.314Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-06T17:31:47.194Z
-    updated_at: 2026-04-06T17:33:03.914Z
+    updated_at: 2026-04-06T17:33:06.314Z
     notes: []
