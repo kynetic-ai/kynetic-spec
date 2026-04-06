@@ -121262,6 +121262,18 @@ reviews:
         runner: npm
         created_at: 2026-04-06T18:33:56.033Z
         completed_at: 2026-04-06T18:33:56.033Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: KSPEC_NO_DAEMON=1 kspec validate exited 6 with repository-wide warnings only (orphaned
+          skills/specs and annotation fixtures); no new task-specific validation error was
+          introduced in this snapshot.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-06T18:34:00.635Z
+        completed_at: 2026-04-06T18:34:00.635Z
     events:
       - _ulid: 01KNJ0W7A0BQJSD0FS7X8J9G4N
         actor: Jacob Chapel
@@ -121290,6 +121302,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-06T18:33:57.587Z
+      - _ulid: 01KNJ15EMSDCAZY0W35EBNB1ED
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-04-06T18:34:02.265Z
     examined_commit: a76e028682e2d5456ba6c58f7237e288d23b466e
     external_links: []
     lifecycle_state: open
@@ -121322,5 +121341,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-06T18:28:59.840Z
-    updated_at: 2026-04-06T18:33:56.033Z
+    updated_at: 2026-04-06T18:34:00.635Z
     notes: []
