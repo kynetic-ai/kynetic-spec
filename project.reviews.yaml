@@ -121250,7 +121250,18 @@ reviews:
     slugs: []
     title: Review incremental item updates
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "NODE_ENV=development npm test passed: 2070/2070 suites, 7528/7533 tests, 5 skipped.
+          Background run duration 3498.3s."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-06T18:33:56.033Z
+        completed_at: 2026-04-06T18:33:56.033Z
     events:
       - _ulid: 01KNJ0W7A0BQJSD0FS7X8J9G4N
         actor: Jacob Chapel
@@ -121272,6 +121283,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNJ15482CDT5AW9786T28W67
         timestamp: 2026-04-06T18:33:53.088Z
+      - _ulid: 01KNJ15A2K1RGQ1Y14CE5T5CAA
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-06T18:33:57.587Z
     examined_commit: a76e028682e2d5456ba6c58f7237e288d23b466e
     external_links: []
     lifecycle_state: open
@@ -121304,5 +121322,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-06T18:28:59.840Z
-    updated_at: 2026-04-06T18:33:51.618Z
+    updated_at: 2026-04-06T18:33:56.033Z
     notes: []
