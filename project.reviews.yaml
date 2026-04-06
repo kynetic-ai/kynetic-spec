@@ -120860,7 +120860,18 @@ reviews:
     slugs: []
     title: Review task-cache-kspec-context
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: KSPEC_NO_DAEMON=1 kspec validate exited 6 with repository-wide warnings only; no
+          schema/reference errors specific to @01KNDDJ3618FBAA9BA42NM8AEA or @daemon-entity-cache.
+        name: validation
+        required: false
+        runner: kspec
+        created_at: 2026-04-06T17:47:10.433Z
+        completed_at: 2026-04-06T17:47:10.433Z
     events:
       - _ulid: 01KNHYEX81NKWT4Q0YE0BXVSTQ
         actor: Jacob Chapel
@@ -120875,6 +120886,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-06T17:47:08.897Z
+      - _ulid: 01KNHYFNGNWPR1X6ZFVVWYQWSB
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: validation
+        timestamp: 2026-04-06T17:47:11.253Z
     examined_commit: f79e50ae4981291472311faca180dcfcda98a05a
     external_links: []
     lifecycle_state: open
@@ -120887,5 +120905,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-06T17:46:46.402Z
-    updated_at: 2026-04-06T17:47:08.108Z
+    updated_at: 2026-04-06T17:47:10.433Z
     notes: []
