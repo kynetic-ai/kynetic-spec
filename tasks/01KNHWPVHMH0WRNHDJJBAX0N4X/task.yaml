@@ -1,0 +1,27 @@
+_ulid: 01KNHWPVHMH0WRNHDJJBAX0N4X
+slugs: []
+title: Fix test-runner dependency-health false negative in review worktrees
+type: bug
+description: In this detached review worktree, 'npm test' aborts before running vitest because
+  scripts/test.cjs reports three direct dependencies (@agentclientprotocol/sdk,
+  @tailwindcss/postcss, @types/diff) as missing from node_modules. This reproduces immediately after
+  a successful 'npm ci', and package.json is unchanged between
+  plan/plan-granular-cache-invalidation/01kndbmk and the reviewed snapshot. Investigate why
+  scripts/dependency-health.cjs still sees those root direct dependencies as absent in
+  dispatch/review worktrees, determine whether npm ci is omitting them or the check is looking in
+  the wrong place, and restore a reliable bootstrap path for npm test.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - test
+  - infra
+vcs_refs: []
+created_at: 2026-04-06T17:16:09.652Z
+todos: []
+automation: eligible
