@@ -1,1 +1,10 @@
-notes: []
+notes:
+  - _ulid: 01KNJ1J6FTEQFNYA20J5GE6BF1
+    content: "Implemented incremental sessions-domain patching in ProjectEntityCache. Session
+      invalidations now reload only the changed session, preserve sorted bounded index semantics,
+      re-apply stale-session handling for active sessions, and drop deleted sessions plus any cached
+      live counters. Added daemon cache regression tests for single-session update, new-session
+      insertion, and deletion removal. Verification: npm test -- daemon-entity-cache; npm test."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-06T18:40:59.898Z
