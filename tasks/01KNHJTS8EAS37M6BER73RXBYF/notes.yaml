@@ -25,3 +25,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-06T14:42:52.471Z
+  - _ulid: 01KNHNE0GVEKYXGRNSCQADQW1Y
+    content: Reviewer agent (kspec agent run pr-reviewer) made direct code changes instead of just
+      reviewing — replaced unit tests with a behavioral integration test and un-exported the helper
+      function. Changes were an improvement so they were committed, but the reviewer agent should
+      not be editing code. The codex-acp process also OOM-killed (30GB RSS) taking out the Ghostty
+      terminal. Both issues are likely related to direct agent run mode rather than dispatch.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-06T15:08:59.803Z
