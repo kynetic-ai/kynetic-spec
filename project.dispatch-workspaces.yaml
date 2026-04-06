@@ -39353,12 +39353,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-06T19:54:39.330Z
+      updated_at: 2026-04-06T19:54:49.587Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-06T19:54:39.330Z
+      updated_at: 2026-04-06T19:54:49.587Z
     integration:
       status: pending
       detail: null
@@ -39366,7 +39366,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-granular-cache-invalidation/01kndbmk
       target_commit: 86cb6380b29cd12f94708aa18ab2603da5c54af7
-      updated_at: 2026-04-06T19:54:39.330Z
+      updated_at: 2026-04-06T19:54:49.587Z
     lifecycle_state: ready
     resolved_base_branch: plan/plan-granular-cache-invalidation/01kndbmk
     task_ref: "@01KNDDJ42341SCDJN6VKDV1518"
@@ -39374,9 +39374,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-06T19:53:02.633Z
-      last_reconciled_at: 2026-04-06T19:54:39.330Z
+      last_reconciled_at: 2026-04-06T19:54:49.587Z
       created_at: 2026-04-06T18:26:44.881Z
-      updated_at: 2026-04-06T19:54:39.330Z
+      updated_at: 2026-04-06T19:54:49.587Z
     workspace_id: dispatch-workspace-01KNDDJ42341SCDJN6VKDV1518
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -39385,5 +39385,5 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-incremental-session-updates/01knddj4
         head: 6e975d7da18c5811a8ea560d32eb15a026c87b99
-        last_seen_at: 2026-04-06T19:52:58.766Z
+        last_seen_at: 2026-04-06T19:54:49.587Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-incremental-session-updates-01knddj4
