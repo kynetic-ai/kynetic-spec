@@ -24880,7 +24880,7 @@
   type: task
   spec_ref: "@daemon-incremental-cache"
   plan_ref: "@plan-granular-cache-invalidation"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-watcher-content-passthrough"
@@ -24893,6 +24893,7 @@
   todos_count: 0
   created_at: 2026-04-04T23:34:26.951Z
   started_at: 2026-04-06T17:03:31.385Z
+  submitted_at: 2026-04-06T17:11:31.193Z
   automation: eligible
 - _ulid: 01KNDDJ3618FBAA9BA42NM8AEA
   slugs:
