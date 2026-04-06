@@ -12,3 +12,11 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-06T15:39:05.652Z
+  - _ulid: 01KNHQ6SJQ3QJMSZZXDYKHBSGB
+    content: "Approach: extract shouldEnableHeartbeat(runtime) helper in server.ts, guard
+      heartbeatManager.start() at line 816, add try/catch around ws.ping() in heartbeat.ts as
+      defense-in-depth, test helper in daemon-runtime-adapter.test.ts. ACs:
+      ac-heartbeat-degradation."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-06T15:40:00.471Z
