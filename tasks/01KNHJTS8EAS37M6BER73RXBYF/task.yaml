@@ -13,7 +13,7 @@ description: When running kspec serve start in foreground mode, the daemon auto-
 spec_ref: "@config-daemon"
 meta_ref: null
 plan_ref: null
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -23,6 +23,7 @@ tags:
   - cli
   - daemon
 vcs_refs: []
+session_id: 01KM0XRFH87T3QWPVXDQZCA2XK
 history:
   - author: "@claude"
     changes:
@@ -38,5 +39,19 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-04-06T14:23:50.050Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KM0XRFH87T3QWPVXDQZCA2XK
+        previous: null
+      started_at:
+        new: 2026-04-06T14:25:07.237Z
+        previous: null
+    command: task-start
+    timestamp: 2026-04-06T14:25:07.238Z
 created_at: 2026-04-06T14:23:32.622Z
+started_at: 2026-04-06T14:25:07.237Z
 todos: []

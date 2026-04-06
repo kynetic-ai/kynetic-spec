@@ -25287,7 +25287,7 @@
   title: Fix auto-start racing with explicit daemon management
   type: bug
   spec_ref: "@config-daemon"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 3
@@ -25298,3 +25298,4 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-06T14:23:32.622Z
+  started_at: 2026-04-06T14:25:07.237Z
