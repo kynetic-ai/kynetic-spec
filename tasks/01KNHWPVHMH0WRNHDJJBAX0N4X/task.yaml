@@ -13,8 +13,12 @@ description: In this detached review worktree, 'npm test' aborts before running 
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev after review approval. Fix bounds dependency resolution to the project
+  root for detached review worktrees, keeps runtime/bootstrap checks aligned, and adds
+  positive/negative regression coverage for hoisted dependencies. Follow-up instability captured in
+  @01KNHZ5F.
 depends_on: []
 context: []
 priority: 2
@@ -130,8 +134,25 @@ history:
         previous: "@01KNHXKF3T77GB3YJ0HGHPH1RN"
     command: review-link
     timestamp: 2026-04-06T17:52:12.994Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev after review approval. Fix bounds dependency resolution to the project root for
+          detached review worktrees, keeps runtime/bootstrap checks aligned, and adds
+          positive/negative regression coverage for hoisted dependencies. Follow-up instability
+          captured in @01KNHZ5F.
+        previous: null
+      completed_at:
+        new: 2026-04-06T18:01:01.434Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-06T18:01:01.483Z
 created_at: 2026-04-06T17:16:09.652Z
 started_at: 2026-04-06T17:45:12.159Z
 submitted_at: 2026-04-06T17:48:46.541Z
+completed_at: 2026-04-06T18:01:01.434Z
 todos: []
 automation: eligible
