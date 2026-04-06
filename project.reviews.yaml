@@ -121274,6 +121274,17 @@ reviews:
         runner: kspec
         created_at: 2026-04-06T18:34:00.635Z
         completed_at: 2026-04-06T18:34:00.635Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "NODE_ENV=development npm test -- --run tests/daemon-entity-cache.test.ts passed: 31/31
+          suites, 110/110 tests."
+        name: daemon-entity-cache focused
+        required: false
+        runner: npm
+        created_at: 2026-04-06T18:34:05.330Z
+        completed_at: 2026-04-06T18:34:05.330Z
     events:
       - _ulid: 01KNJ0W7A0BQJSD0FS7X8J9G4N
         actor: Jacob Chapel
@@ -121309,6 +121320,13 @@ reviews:
           status: skipped
           name: kspec validate
         timestamp: 2026-04-06T18:34:02.265Z
+      - _ulid: 01KNJ15K5G8BGADN4KY7QH21R2
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: daemon-entity-cache focused
+        timestamp: 2026-04-06T18:34:06.896Z
     examined_commit: a76e028682e2d5456ba6c58f7237e288d23b466e
     external_links: []
     lifecycle_state: open
@@ -121341,5 +121359,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-06T18:28:59.840Z
-    updated_at: 2026-04-06T18:34:00.635Z
+    updated_at: 2026-04-06T18:34:05.330Z
     notes: []
