@@ -12844,8 +12844,11 @@ observations:
       for task/review operations. This looks like a systemic dispatch/daemon serialization bug
       rather than task-specific behavior.
     author: Jacob Chapel
-    resolution: null
-    resolved: false
+    resolution: Duplicate of existing daemon/direct-mode friction observations recorded earlier on
+      2026-04-06; session reflection search by exact phrase missed the prior items.
+    resolved: true
+    resolved_at: 2026-04-06T17:49:45.592Z
+    resolved_by: Jacob Chapel
     created_at: 2026-04-06T17:49:34.011Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
