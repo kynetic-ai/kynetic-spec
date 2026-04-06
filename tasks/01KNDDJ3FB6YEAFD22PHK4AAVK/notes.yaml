@@ -1,1 +1,10 @@
-notes: []
+notes:
+  - _ulid: 01KNHZDXQHXKXY76D1BHE3XC93
+    content: Implemented targeted task-domain cache patching for split-backend task.yaml and notes.yaml
+      changes. The cache now updates only affected task summaries/details, removes deleted tasks
+      without relying on index fallback, and falls back to full reload for monolithic task index
+      changes. Verified with env -u NODE_ENV SKIP_BUILD=1 npm test -- daemon-entity-cache.test.ts
+      and env -u NODE_ENV SKIP_BUILD=1 npm test.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-06T18:03:42.705Z
