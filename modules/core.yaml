@@ -1001,6 +1001,10 @@ features:
             id: ac-7
             then: auto-start is suppressed — the agent relies on the host daemon
             when: a kspec command would normally auto-start the daemon
+          - given: the user is explicitly managing the daemon lifecycle
+            id: ac-8
+            then: auto-start is suppressed to avoid conflicting with the user's intent
+            when: auto-start would normally trigger
         tags: []
         created: 2026-02-19T21:41:10.986Z
         notes: []
