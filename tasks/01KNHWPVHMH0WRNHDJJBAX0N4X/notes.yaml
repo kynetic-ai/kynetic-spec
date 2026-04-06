@@ -1,1 +1,13 @@
-notes: []
+notes:
+  - _ulid: 01KNHWTW8EY0RN47TJJBD7C6AJ
+    content: "Approach: update dependency-health checks to validate installability via Node module
+      resolution from the workspace instead of requiring every direct dependency to exist physically
+      under workspace/node_modules. Reuse the same rule in scripts/dependency-health.cjs and
+      src/agent-runtime/bootstrap.ts so test-runner bootstrap and dispatch bootstrap agree. Edge
+      cases: workspace has local node_modules but package directories are hoisted to a parent
+      install; scoped packages; real missing deps should still fail. Test plan: add isolated unit
+      coverage for ancestor-resolved deps and a behavioral regression for npm test dry-run from a
+      review-style worktree with dependencies only in an ancestor node_modules."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-06T17:18:21.455Z
