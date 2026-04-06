@@ -997,6 +997,10 @@ features:
             id: ac-6
             then: env var value takes precedence
             when: config file also sets daemon.host
+          - given: the CLI is running inside a dispatch agent session
+            id: ac-7
+            then: auto-start is suppressed — the agent relies on the host daemon
+            when: a kspec command would normally auto-start the daemon
         tags: []
         created: 2026-02-19T21:41:10.986Z
         notes: []
