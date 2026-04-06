@@ -121527,6 +121527,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNJ23AJWS1386952K55P05ND
         timestamp: 2026-04-06T18:50:22.021Z
+      - _ulid: 01KNJ23K5QJWVW0EP8N29S81Y6
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNJ23JAYX7Q3FB5EKVNQ65E4
+        timestamp: 2026-04-06T18:50:29.943Z
     examined_commit: 6e975d7da18c5811a8ea560d32eb15a026c87b99
     external_links: []
     lifecycle_state: closed
@@ -121577,6 +121584,27 @@ reviews:
               sessions.
             created_at: 2026-04-06T18:50:21.148Z
         kind: blocker
+      - _ulid: 01KNJ23JAYX7Q3FB5EKVNQ65E4
+        anchor:
+          type: code
+          commit: 6e975d7da18c5811a8ea560d32eb15a026c87b99
+          line_end: 1634
+          line_start: 1634
+          path: src/daemon/entity-cache.ts
+          side: head
+        entries:
+          - _ulid: 01KNJ23JAYASF9ETKTJV4F9WDE
+            author: Jacob Chapel
+            body: Incremental session invalidation now rewrites the detail cache from metadata-only state
+              (`nextDetails.set(sessionId, summary)`), but the session detail route prefers
+              `getSessionDetail()` over the live-count-adjusted index. For active sessions,
+              `events.jsonl` changes do not update persisted metadata counts, so after a watcher
+              event the API can serve stale `event_count` from the detail cache even though the
+              index would still show the live counter. Before this patch, full reload cleared
+              session details and the route fell back to the index, so this is a regression in
+              session detail freshness for active sessions.
+            created_at: 2026-04-06T18:50:29.086Z
+        kind: blocker
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -121586,5 +121614,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-06T18:49:14.408Z
     created_at: 2026-04-06T18:46:23.682Z
-    updated_at: 2026-04-06T18:50:21.148Z
+    updated_at: 2026-04-06T18:50:29.086Z
     notes: []
