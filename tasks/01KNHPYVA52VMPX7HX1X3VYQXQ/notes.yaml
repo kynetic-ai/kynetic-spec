@@ -20,3 +20,10 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-06T15:40:00.471Z
+  - _ulid: 01KNHQS67ES0R9C15ME5C5GDY5
+    content: "Implemented and all 7547 tests pass. Changes: shouldEnableHeartbeat(runtime) guard in
+      server.ts, try/catch defense-in-depth in heartbeat.ts, two new tests covering both the runtime
+      guard and the Elysia wrapper throw scenario."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-06T15:50:03.246Z
