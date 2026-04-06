@@ -319,6 +319,11 @@ interface ReloadCycle {
   pendingDomains: Set<CacheDomain>;
 }
 
+interface PendingDomainChange {
+  filePath: string;
+  content?: string;
+}
+
 const DEFAULT_SESSION_CACHE_CONFIG: SessionCacheConfig = {
   maxIndexSize: 100,
 };
@@ -528,6 +533,7 @@ export class ProjectEntityCache {
    */
   private domainDebounceTimers = new Map<CacheDomain, NodeJS.Timeout>();
   private domainDebounceMs = 100;
+  private pendingDomainChanges = new Map<CacheDomain, Map<string, PendingDomainChange>>();
 
   /**
    * Deferred domain invalidation promises for callers awaiting the debounced reload.
@@ -1230,6 +1236,7 @@ export class ProjectEntityCache {
     // AC: @daemon-entity-cache ac-write-through — skip if write-through just updated this domain
     if (this.writeThroughSkip.has(domain)) {
       this.writeThroughSkip.delete(domain);
+      this.pendingDomainChanges.delete(domain);
       return;
     }
 
@@ -1260,6 +1267,7 @@ export class ProjectEntityCache {
       this.domainDebounceTimers.delete(domain);
       const reloadCycle = this.domainReloadCycles.get(domain);
       this.domainReloadCycles.delete(domain);
+      const pendingChanges = this.drainPendingDomainChanges(domain);
       if (reloadCycle) {
         reloadCycle.pendingDomains.delete(domain);
         this.maybeClearReloadCycle(reloadCycle);
@@ -1269,7 +1277,7 @@ export class ProjectEntityCache {
       try {
         // AC: @daemon-server ac-18 — track last invalidation timestamp
         this.getStore(domain).lastInvalidatedAt = new Date().toISOString();
-        await this.loadDomain(domain, reloadCycle);
+        await this.processDomainChanges(domain, pendingChanges, reloadCycle);
         if (!this.disposed && this.getStore(domain).state === "ready") {
           this.onDomainReloaded?.(domain, this.projectPath);
         }
@@ -1301,6 +1309,9 @@ export class ProjectEntityCache {
       : ("kspec" as const);
     const domains = fileToDomain(relativePath, source);
     if (domains) {
+      for (const domain of domains) {
+        this.recordPendingDomainChange(domain, filePath, _content);
+      }
       await Promise.all(domains.map((d) => this.invalidateDomain(d)));
     }
   }
@@ -1365,6 +1376,7 @@ export class ProjectEntityCache {
       clearTimeout(timer);
     }
     this.domainDebounceTimers.clear();
+    this.pendingDomainChanges.clear();
     this.domainReloadCycles.clear();
     // Resolve any pending debounce promises so awaiting callers don't hang
     for (const deferred of this.domainDebouncePromises.values()) {
@@ -1421,6 +1433,38 @@ export class ProjectEntityCache {
     if (this.currentReloadCycle === cycle && cycle.pendingDomains.size === 0) {
       this.currentReloadCycle = null;
     }
+  }
+
+  private recordPendingDomainChange(
+    domain: CacheDomain,
+    filePath: string,
+    content?: string,
+  ): void {
+    let changes = this.pendingDomainChanges.get(domain);
+    if (!changes) {
+      changes = new Map<string, PendingDomainChange>();
+      this.pendingDomainChanges.set(domain, changes);
+    }
+
+    changes.set(filePath, { filePath, content });
+  }
+
+  private drainPendingDomainChanges(domain: CacheDomain): PendingDomainChange[] {
+    const changes = this.pendingDomainChanges.get(domain);
+    if (!changes) {
+      return [];
+    }
+
+    this.pendingDomainChanges.delete(domain);
+    return Array.from(changes.values());
+  }
+
+  private async processDomainChanges(
+    domain: CacheDomain,
+    _changes: PendingDomainChange[],
+    cycle?: ReloadCycle,
+  ): Promise<void> {
+    await this.loadDomain(domain, cycle);
   }
 }
 
