@@ -3,6 +3,13 @@ slugs:
   - task-fix-autostart-serve-race
 title: Fix auto-start racing with explicit daemon management
 type: bug
+description: When running kspec serve start in foreground mode, the daemon auto-start logic races
+  with the explicit start command. The preAction hook calls maybeAutoStartDaemon() before serve
+  subcommands execute, spawning a background daemon that grabs the PID file. The foreground start
+  then fails with 'Daemon already running'. The root cause is that the auto-start skip list checks
+  the leaf command name (e.g. 'start') via Commander's actionCommand.name() rather than resolving
+  the top-level parent command ('serve'). The fix should resolve the top-level command from the
+  command chain so that all serve subcommands are correctly excluded from auto-start.
 spec_ref: "@config-daemon"
 meta_ref: null
 plan_ref: null
@@ -16,5 +23,20 @@ tags:
   - cli
   - daemon
 vcs_refs: []
+history:
+  - author: "@claude"
+    changes:
+      description:
+        new: When running kspec serve start in foreground mode, the daemon auto-start logic races with the
+          explicit start command. The preAction hook calls maybeAutoStartDaemon() before serve
+          subcommands execute, spawning a background daemon that grabs the PID file. The foreground
+          start then fails with 'Daemon already running'. The root cause is that the auto-start skip
+          list checks the leaf command name (e.g. 'start') via Commander's actionCommand.name()
+          rather than resolving the top-level parent command ('serve'). The fix should resolve the
+          top-level command from the command chain so that all serve subcommands are correctly
+          excluded from auto-start.
+        previous: null
+    command: task-set
+    timestamp: 2026-04-06T14:23:50.050Z
 created_at: 2026-04-06T14:23:32.622Z
 todos: []
