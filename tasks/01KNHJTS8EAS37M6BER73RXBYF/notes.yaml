@@ -7,3 +7,11 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-06T14:25:49.245Z
+  - _ulid: 01KNHKMZGYFM29AFEYJ72QWPJP
+    content: Fix implemented and tested. Added getTopLevelCommandName() that walks Commander parent
+      chain to resolve top-level command. All serve subcommands now correctly skip auto-start. 3 new
+      tests in cli-no-daemon.test.ts covering nested, direct, and all-subcommand cases. All new
+      tests pass. Pre-existing test timeouts are unrelated — tracked in separate task.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-06T14:37:51.006Z
