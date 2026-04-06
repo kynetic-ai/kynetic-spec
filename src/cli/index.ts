@@ -128,7 +128,7 @@ async function maybeAcquireDispatchMutationLock(isMutating: boolean): Promise<vo
  * command below the root program, so skip-list checks match top-level names.
  * AC: @config-daemon ac-8
  */
-export function getTopLevelCommandName(actionCommand: Command): string {
+function getTopLevelCommandName(actionCommand: Command): string {
   let cmd = actionCommand;
   while (cmd.parent && cmd.parent.parent) {
     cmd = cmd.parent;

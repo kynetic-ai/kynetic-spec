@@ -1,11 +1,9 @@
 import { execSync, spawnSync } from "node:child_process";
-import { mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { Command } from "commander";
 import { PidFileManager } from "../src/cli/pid-utils";
 import { buildDaemonChildEnv } from "../src/cli/commands/serve";
-import { getTopLevelCommandName } from "../src/cli/index";
 import {
   CLI_PATH,
   cleanupTempDir,
@@ -156,34 +154,29 @@ describe("KSPEC_NO_DAEMON", () => {
       env: isolatedHome.env,
     });
   });
-});
+  // AC: @config-daemon ac-8
+  describe("explicit daemon lifecycle commands", () => {
+    it("does not auto-start the daemon for serve status", async () => {
+      const isolatedHome = await createIsolatedKspecHome(tempDir);
+      writeFileSync(
+        join(tempDir, "kspec.config.yaml"),
+        ["daemon:", "  auto_start: true", "  runtime: node", ""].join("\n"),
+        "utf-8",
+      );
 
-// AC: @config-daemon ac-8
-describe("getTopLevelCommandName", () => {
-  it("returns the top-level command for nested subcommands", () => {
-    const root = new Command("kspec");
-    const serve = root.command("serve");
-    const start = serve.command("start").action(() => {});
+      const result = kspec(`serve status --json --kspec-dir ${join(tempDir, ".kspec")}`, tempDir, {
+        env: { ...isolatedHome.env, KSPEC_NO_DAEMON: "" },
+      });
+      const status = JSON.parse(result.stdout) as {
+        running: boolean;
+        pid: number | null;
+        port: number | null;
+      };
 
-    expect(getTopLevelCommandName(start)).toBe("serve");
-  });
-
-  it("returns the command itself when it is a direct child of root", () => {
-    const root = new Command("kspec");
-    const init = root.command("init").action(() => {});
-
-    expect(getTopLevelCommandName(init)).toBe("init");
-  });
-
-  it("resolves all serve subcommands to 'serve'", () => {
-    const root = new Command("kspec");
-    const serve = root.command("serve");
-    const stop = serve.command("stop").action(() => {});
-    const status = serve.command("status").action(() => {});
-    const restart = serve.command("restart").action(() => {});
-
-    expect(getTopLevelCommandName(stop)).toBe("serve");
-    expect(getTopLevelCommandName(status)).toBe("serve");
-    expect(getTopLevelCommandName(restart)).toBe("serve");
+      expect(status.running).toBe(false);
+      expect(status.pid).toBeNull();
+      expect(status.port).toBeNull();
+      expect(existsSync(isolatedHome.daemonPidFilePath)).toBe(false);
+    });
   });
 });
