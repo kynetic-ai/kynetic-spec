@@ -144,6 +144,11 @@ function getTopLevelCommandName(actionCommand: Command): string {
  */
 async function maybeAutoStartDaemon(): Promise<void> {
   try {
+    // AC: @config-daemon ac-7 — suppress auto-start in dispatch agent sessions
+    if (process.env.KSPEC_SESSION_ID) {
+      return;
+    }
+
     // Load context to get daemon config from kspec.config.yaml
     const context = await initContext();
     const daemonConfig = context.config.daemon;
@@ -171,9 +176,8 @@ async function maybeAutoStartDaemon(): Promise<void> {
     // AC: @config-daemon ac-1 — port from config (defaults to 3456)
     const port = daemonConfig.port;
 
-    // Check if daemon is already running
-    const kspecDir = context.specDir;
-    const pidManager = new PidFileManager(kspecDir);
+    // Check if daemon is already running (global config path, not project specDir)
+    const pidManager = new PidFileManager();
 
     if (pidManager.isDaemonRunning()) {
       // Already running, nothing to do
@@ -191,7 +195,7 @@ async function maybeAutoStartDaemon(): Promise<void> {
     // Start daemon in background using configured runtime rather than inheriting the CLI runtime.
     const child = spawn(
       daemonConfig.runtime,
-      [daemonBinary, "--port", String(port), "--kspec-dir", kspecDir],
+      [daemonBinary, "--port", String(port), "--kspec-dir", context.specDir],
       {
         detached: true,
         stdio: "ignore",
