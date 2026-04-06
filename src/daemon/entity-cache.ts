@@ -314,6 +314,11 @@ export type DomainReadyCallback = (
  */
 export type DomainReloadedCallback = (domain: CacheDomain, projectPath: string) => void;
 
+interface ReloadCycle {
+  contextPromise?: Promise<KspecContext>;
+  pendingDomains: Set<CacheDomain>;
+}
+
 const DEFAULT_SESSION_CACHE_CONFIG: SessionCacheConfig = {
   maxIndexSize: 100,
 };
@@ -532,6 +537,13 @@ export class ProjectEntityCache {
     CacheDomain,
     { resolve: () => void; promise: Promise<void> }
   >();
+
+  /**
+   * Debounce-cycle-scoped context reuse for watcher invalidations.
+   * AC: @daemon-entity-cache ac-context-reuse
+   */
+  private currentReloadCycle: ReloadCycle | null = null;
+  private domainReloadCycles = new Map<CacheDomain, ReloadCycle>();
 
   /** Whether dispose() has been called. */
   private disposed = false;
@@ -861,7 +873,7 @@ export class ProjectEntityCache {
    * AC: @daemon-entity-cache ac-stale-during-reload — ready domains stay ready during reload
    * AC: @daemon-entity-cache ac-domain-ready-event — broadcast on non-ready → ready transition
    */
-  async loadDomain(domain: CacheDomain): Promise<void> {
+  async loadDomain(domain: CacheDomain, cycle?: ReloadCycle): Promise<void> {
     if (this.disposed) return;
 
     // AC: @daemon-entity-cache ac-reload-dedup — reuse in-flight promise
@@ -886,7 +898,7 @@ export class ProjectEntityCache {
       store.state = "loading";
     }
 
-    const promise = this.doLoadDomain(domain)
+    const promise = this.doLoadDomain(domain, cycle)
       .then(() => {
         if (!this.disposed) {
           store.state = "ready";
@@ -916,12 +928,12 @@ export class ProjectEntityCache {
     await promise;
   }
 
-  private async doLoadDomain(domain: CacheDomain): Promise<void> {
+  private async doLoadDomain(domain: CacheDomain, cycle?: ReloadCycle): Promise<void> {
     // Test-only: wait for delay gate before loading (KSPEC_TEST)
     await awaitTestDelay(this.projectPath);
     if (this.disposed) return;
 
-    const ctx = await initContext(this.projectPath);
+    const ctx = cycle ? await this.getReloadCycleContext(cycle) : await initContext(this.projectPath);
     // AC: @daemon-entity-cache ac-unregister-cleanup — bail after each await
     // to prevent a completed load from repopulating stores that dispose() cleared.
     if (this.disposed) return;
@@ -1229,6 +1241,10 @@ export class ProjectEntityCache {
       clearTimeout(existingTimer);
     }
 
+    const cycle = this.domainReloadCycles.get(domain) ?? this.getOrCreateReloadCycle();
+    cycle.pendingDomains.add(domain);
+    this.domainReloadCycles.set(domain, cycle);
+
     // Create or reuse the deferred promise for this domain's debounce window
     let deferred = this.domainDebouncePromises.get(domain);
     if (!deferred) {
@@ -1242,12 +1258,18 @@ export class ProjectEntityCache {
 
     const timer = setTimeout(async () => {
       this.domainDebounceTimers.delete(domain);
+      const reloadCycle = this.domainReloadCycles.get(domain);
+      this.domainReloadCycles.delete(domain);
+      if (reloadCycle) {
+        reloadCycle.pendingDomains.delete(domain);
+        this.maybeClearReloadCycle(reloadCycle);
+      }
       const d = this.domainDebouncePromises.get(domain);
       this.domainDebouncePromises.delete(domain);
       try {
         // AC: @daemon-server ac-18 — track last invalidation timestamp
         this.getStore(domain).lastInvalidatedAt = new Date().toISOString();
-        await this.loadDomain(domain);
+        await this.loadDomain(domain, reloadCycle);
         if (!this.disposed && this.getStore(domain).state === "ready") {
           this.onDomainReloaded?.(domain, this.projectPath);
         }
@@ -1343,11 +1365,13 @@ export class ProjectEntityCache {
       clearTimeout(timer);
     }
     this.domainDebounceTimers.clear();
+    this.domainReloadCycles.clear();
     // Resolve any pending debounce promises so awaiting callers don't hang
     for (const deferred of this.domainDebouncePromises.values()) {
       deferred.resolve();
     }
     this.domainDebouncePromises.clear();
+    this.currentReloadCycle = null;
   }
 
   /** Check if the cache has been disposed. */
@@ -1376,6 +1400,26 @@ export class ProjectEntityCache {
         return this.reviews;
       case "sessions":
         return this.sessions;
+    }
+  }
+
+  private getOrCreateReloadCycle(): ReloadCycle {
+    if (!this.currentReloadCycle) {
+      this.currentReloadCycle = {
+        pendingDomains: new Set(),
+      };
+    }
+    return this.currentReloadCycle;
+  }
+
+  private async getReloadCycleContext(cycle: ReloadCycle): Promise<KspecContext> {
+    cycle.contextPromise ??= initContext(this.projectPath);
+    return await cycle.contextPromise;
+  }
+
+  private maybeClearReloadCycle(cycle: ReloadCycle): void {
+    if (this.currentReloadCycle === cycle && cycle.pendingDomains.size === 0) {
+      this.currentReloadCycle = null;
     }
   }
 }
