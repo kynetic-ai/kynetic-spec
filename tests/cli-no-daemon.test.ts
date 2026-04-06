@@ -2,8 +2,10 @@ import { execSync, spawnSync } from "node:child_process";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { Command } from "commander";
 import { PidFileManager } from "../src/cli/pid-utils";
 import { buildDaemonChildEnv } from "../src/cli/commands/serve";
+import { getTopLevelCommandName } from "../src/cli/index";
 import {
   CLI_PATH,
   cleanupTempDir,
@@ -153,5 +155,35 @@ describe("KSPEC_NO_DAEMON", () => {
     kspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir, {
       env: isolatedHome.env,
     });
+  });
+});
+
+// AC: @config-daemon ac-8
+describe("getTopLevelCommandName", () => {
+  it("returns the top-level command for nested subcommands", () => {
+    const root = new Command("kspec");
+    const serve = root.command("serve");
+    const start = serve.command("start").action(() => {});
+
+    expect(getTopLevelCommandName(start)).toBe("serve");
+  });
+
+  it("returns the command itself when it is a direct child of root", () => {
+    const root = new Command("kspec");
+    const init = root.command("init").action(() => {});
+
+    expect(getTopLevelCommandName(init)).toBe("init");
+  });
+
+  it("resolves all serve subcommands to 'serve'", () => {
+    const root = new Command("kspec");
+    const serve = root.command("serve");
+    const stop = serve.command("stop").action(() => {});
+    const status = serve.command("status").action(() => {});
+    const restart = serve.command("restart").action(() => {});
+
+    expect(getTopLevelCommandName(stop)).toBe("serve");
+    expect(getTopLevelCommandName(status)).toBe("serve");
+    expect(getTopLevelCommandName(restart)).toBe("serve");
   });
 });
