@@ -121594,6 +121594,12 @@ reviews:
         payload:
           thread_ulid: 01KNJ20HDVH1WBZ7JD91BJZZCA
         timestamp: 2026-04-06T19:11:12.828Z
+      - _ulid: 01KNJ39KAQK1P9VRTQVSDKXQ35
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNJ23JAYX7Q3FB5EKVNQ65E4
+        timestamp: 2026-04-06T19:11:15.288Z
     examined_commit: 6e975d7da18c5811a8ea560d32eb15a026c87b99
     external_links: []
     lifecycle_state: closed
@@ -121679,6 +121685,12 @@ reviews:
               session details and the route fell back to the index, so this is a regression in
               session detail freshness for active sessions.
             created_at: 2026-04-06T18:50:29.086Z
+          - _ulid: 01KNJ39JF6S7GD0VMYMKA5307Z
+            author: Jacob Chapel
+            body: Also added a regression around events.jsonl invalidation for an active session with live event
+              counters. The test verifies detail is cleared and the index continues serving the live
+              event count, which covers the freshness regression called out here.
+            created_at: 2026-04-06T19:11:14.406Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -121689,7 +121701,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-06T18:49:14.408Z
     created_at: 2026-04-06T18:46:23.682Z
-    updated_at: 2026-04-06T19:11:11.954Z
+    updated_at: 2026-04-06T19:11:14.406Z
     notes: []
   - _ulid: 01KNJ2XMNNYA5ESB1K5FRNXVNW
     slugs: []
