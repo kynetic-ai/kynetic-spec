@@ -121174,3 +121174,29 @@ reviews:
     created_at: 2026-04-06T17:52:10.499Z
     updated_at: 2026-04-06T18:00:17.302Z
     notes: []
+  - _ulid: 01KNHZZXSSRR5TP71N3A5F0WVM
+    slugs: []
+    title: Review incremental task cache updates
+    author: "@codex"
+    checks: []
+    events:
+      - _ulid: 01KNHZZXSSRJ9ZC8XCFM1TR620
+        actor: "@codex"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-06T18:13:32.601Z
+    examined_commit: ba4b2952e42cf3f86f7fdabe62989f0bd533c7e7
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNDDJ3FB6YEAFD22PHK4AAVK"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-06T18:13:32.601Z
+    updated_at: null
+    notes: []
