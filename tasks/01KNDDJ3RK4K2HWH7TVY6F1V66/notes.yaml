@@ -1,1 +1,12 @@
-notes: []
+notes:
+  - _ulid: 01KNJ0M976FCM1KGCNQP44CE33
+    content: "Implemented incremental items-domain patching in ProjectEntityCache. Item loads now track
+      source files, module/spec file invalidations re-parse only the changed file, remove stale
+      entries from cloned index/detail/source maps, and swap the new structures atomically. Added
+      daemon cache tests covering single-file replacement, multi-item file expansion, deleted module
+      removal, and kynetic.yaml full-reload fallback. Verification: NODE_ENV=development npm test --
+      --run tests/daemon-entity-cache.test.ts; KSPEC_NO_DAEMON=1 kspec validate;
+      NODE_ENV=development npm test."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-06T18:24:39.654Z
