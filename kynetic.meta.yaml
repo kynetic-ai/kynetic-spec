@@ -12781,6 +12781,26 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-05T22:10:28.777Z
+  - _ulid: 01KNHSMVWXB7Y17V1C04MWA6SY
+    type: friction
+    content: Detached review snapshots can arrive with node_modules present but dev dependencies
+      omitted, which makes scripts/test.cjs report missing direct dependencies and attempt npm ci
+      from a partially populated workspace install. In this session the reviewer had to repair the
+      workspace with npm ci --include=dev --force before required verification could run.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-06T16:22:38.749Z
+  - _ulid: 01KNHSMW3BZ5B72SRRYDQ2M4SQ
+    type: success
+    content: The review flow worked well for this cache fix because the task notes documented prior
+      blockers and the diff stayed tightly scoped to src/daemon/entity-cache.ts plus behavioral
+      coverage in tests/daemon-entity-cache.test.ts. That made it straightforward to verify the
+      overlapping debounce-window regression and complete the merge confidently.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-06T16:22:38.956Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
