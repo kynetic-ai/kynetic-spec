@@ -120745,9 +120745,25 @@ reviews:
           status: fail
           name: full-suite
         timestamp: 2026-04-06T17:33:34.163Z
+      - _ulid: 01KNHXPWVBNEQ27JQ05D12TY8Y
+        actor: codex-reviewer
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-06T17:33:39.563Z
+      - _ulid: 01KNHXPWVBK0JM712FJDZMT001
+        actor: codex-reviewer
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-06T17:33:39.564Z
     examined_commit: 05c33e449cd51aaa81817e7ba3f98d7e8f99dedb
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -120810,7 +120826,14 @@ reviews:
               as the test-runner check.
             created_at: 2026-04-06T17:33:06.314Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex-reviewer
+        role: reviewer
+        created_at: 2026-04-06T17:33:39.563Z
     created_at: 2026-04-06T17:31:47.194Z
-    updated_at: 2026-04-06T17:33:33.308Z
+    updated_at: 2026-04-06T17:33:39.563Z
     notes: []

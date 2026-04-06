@@ -13,7 +13,7 @@ description: In this detached review worktree, 'npm test' aborts before running 
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on: []
 context: []
@@ -31,7 +31,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: 01KNHWRH7P4MKFB3PGV9JFZGMP
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -73,6 +73,16 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-06T17:31:49.699Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KNHWRH7P4MKFB3PGV9JFZGMP
+    command: review-verdict-needs-work
+    timestamp: 2026-04-06T17:33:41.213Z
 created_at: 2026-04-06T17:16:09.652Z
 started_at: 2026-04-06T17:17:34.398Z
 submitted_at: 2026-04-06T17:27:23.065Z
