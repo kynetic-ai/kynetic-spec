@@ -13,7 +13,7 @@ description: In this detached review worktree, 'npm test' aborts before running 
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -26,7 +26,7 @@ review_ref: "@01KNHXKF3T77GB3YJ0HGHPH1RN"
 submission_linkage:
   review_url: null
   branch: dev
-  captured_at: 2026-04-06T17:27:23.060Z
+  captured_at: 2026-04-06T17:48:46.534Z
   commit: b3b91d18cde400739d327720cea3e960f58f3a34
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
@@ -96,8 +96,35 @@ history:
         previous: 2026-04-06T17:17:34.398Z
     command: task-start
     timestamp: 2026-04-06T17:45:12.160Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-04-06T17:48:46.534Z
+          commit: b3b91d18cde400739d327720cea3e960f58f3a34
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous:
+          review_url: null
+          branch: dev
+          captured_at: 2026-04-06T17:27:23.060Z
+          commit: b3b91d18cde400739d327720cea3e960f58f3a34
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+      submitted_at:
+        new: 2026-04-06T17:48:46.541Z
+        previous: 2026-04-06T17:27:23.065Z
+    command: task-submit
+    timestamp: 2026-04-06T17:48:46.541Z
 created_at: 2026-04-06T17:16:09.652Z
 started_at: 2026-04-06T17:45:12.159Z
-submitted_at: 2026-04-06T17:27:23.065Z
+submitted_at: 2026-04-06T17:48:46.541Z
 todos: []
 automation: eligible
