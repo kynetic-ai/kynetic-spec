@@ -15,3 +15,13 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-06T14:37:51.006Z
+  - _ulid: 01KNHKY5XPYK86RQEEDG66XTBB
+    content: '[DISPATCH-WORKSPACE] Cannot provision workspace for @01KNHJTS8EAS37M6BER73RXBYF in
+      pending_review: no existing workspace record and no recoverable branch lineage. Submission
+      linkage references branch "dispatch/task/task-fix-autostart-serve-race/01knhjts" but it could
+      not be found locally or on any remote. Suggested action: Ensure the task has submission
+      linkage with a valid branch (kspec task set @01KNHJTS8EAS37M6BER73RXBYF --submission-linkage),
+      or manually create the workspace branch and re-submit.'
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-06T14:42:52.471Z
