@@ -560,6 +560,7 @@ export class ProjectEntityCache {
   };
   private cachedMetaRuntime: CachedMetaRuntime | null = null;
   private pendingMetaSubdomains = new Set<MetaSubdomain>();
+  private activeMetaSubdomains = new Set<MetaSubdomain>();
   private pendingMetaReloadCycle: ReloadCycle | undefined;
 
   /**
@@ -1368,6 +1369,7 @@ export class ProjectEntityCache {
       session: false,
     };
     this.pendingMetaSubdomains.clear();
+    this.activeMetaSubdomains.clear();
     this.pendingMetaReloadCycle = undefined;
 
     // Clear domain debounce timers
@@ -1712,7 +1714,6 @@ export class ProjectEntityCache {
     return { ...summary, status: "stalled" };
   }
 
-<<<<<<< HEAD
   private async tryIncrementalItemUpdate(
     changes: PendingDomainChange[],
     cycle?: ReloadCycle,
@@ -1877,7 +1878,6 @@ export class ProjectEntityCache {
           this.meta.state = "ready";
         }
       } catch (err) {
-      } catch (err) {
         if (!this.disposed) {
           this.meta.state = "degraded";
           this.meta.lastError = err instanceof Error ? err : new Error(String(err));
@@ -1894,6 +1894,9 @@ export class ProjectEntityCache {
 
   private enqueueMetaReload(subdomains: MetaSubdomain[], cycle?: ReloadCycle): void {
     for (const subdomain of subdomains) {
+      if (this.activeMetaSubdomains.has(subdomain)) {
+        continue;
+      }
       this.pendingMetaSubdomains.add(subdomain);
     }
 
@@ -1935,20 +1938,30 @@ export class ProjectEntityCache {
     await awaitTestDelay(this.projectPath);
     if (this.disposed) return;
 
-    for (const subdomain of subdomains) {
-      switch (subdomain) {
-        case "manifest":
-          await this.loadMetaManifestSubdomain(cycle);
-          break;
-        case "shadow":
-          await this.loadMetaShadowSubdomain(cycle);
-          break;
-        case "session":
-          await this.loadMetaSessionSubdomain();
-          break;
-      }
+    this.activeMetaSubdomains = new Set(subdomains);
 
-      if (this.disposed) return;
+    try {
+      for (const subdomain of subdomains) {
+        try {
+          switch (subdomain) {
+            case "manifest":
+              await this.loadMetaManifestSubdomain(cycle);
+              break;
+            case "shadow":
+              await this.loadMetaShadowSubdomain(cycle);
+              break;
+            case "session":
+              await this.loadMetaSessionSubdomain();
+              break;
+          }
+        } finally {
+          this.activeMetaSubdomains.delete(subdomain);
+        }
+
+        if (this.disposed) return;
+      }
+    } finally {
+      this.activeMetaSubdomains.clear();
     }
   }
 
