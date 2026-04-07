@@ -121972,6 +121972,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-07T03:01:56.337Z
+      - _ulid: 01KNJYBXJ53QSZ2N06HRDGYRX1
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNJYBTC60HVZAAFYJ4B3RQNG
+        timestamp: 2026-04-07T03:04:22.853Z
     examined_commit: 58d872ce04698b021e6dd29ddfefd0f6016406a6
     external_links: []
     lifecycle_state: open
@@ -121981,8 +121988,25 @@ reviews:
       content_hash: ""
       ref: "@01KNHZ5FH33G2C27BMG0SHPC74"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNJYBTC60HVZAAFYJ4B3RQNG
+        entries:
+          - _ulid: 01KNJYBTC64NKCKBRMAZNH8XD8
+            author: Jacob Chapel
+            body: "Files read: src/agent-runtime/bootstrap.ts,
+              tests/dispatch-runtime-bootstrap-contract.test.ts, selected web-ui import-path diffs,
+              scripts/test.cjs, tests/helpers/cli.ts, tests/parser.test.ts, src/parser/shadow.ts,
+              src/parser/yaml.ts. Commands run: git diff/stat/log, kspec task get, kspec item get
+              @dispatch-runtime-bootstrap-contract, grep AC annotations, kspec validate,
+              SKIP_BUILD=1 npm test -- --fresh, node dist/cli/index.js spot checks, npm run build
+              plus focused regression tests, and base-branch parser reproduction in a temporary
+              worktree. Claims verified: the submitted bootstrap change fixes the reported
+              review-worktree loader/build failures after build repair runs; the remaining parser
+              detached-worktree failure is pre-existing on dev. Categories searched: correctness,
+              edge cases, error handling, test quality, integration."
+            created_at: 2026-04-07T03:04:19.590Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-07T03:01:36.780Z
-    updated_at: 2026-04-07T03:01:55.184Z
+    updated_at: 2026-04-07T03:04:19.590Z
     notes: []
