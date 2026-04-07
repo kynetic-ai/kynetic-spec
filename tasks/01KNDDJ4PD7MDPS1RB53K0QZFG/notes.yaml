@@ -52,3 +52,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-07T05:48:41.389Z
+  - _ulid: 01KNK8FSZZZGES8M13R0GA4KHR
+    content: "[FIX_CYCLE: 4] Restored the daemon shadow-sync onPull callback to reload the full entity
+      cache after successful pulls, preventing stale task/item/session snapshots after remote shadow
+      updates. Added a regression test for the server callback wiring in
+      tests/daemon-read-path.test.ts. Verification: NODE_ENV= npm test -- --fresh daemon-read-path
+      daemon-entity-cache (36 suites / 161 tests passed); KSPEC_NO_DAEMON=1 kspec validate exited 6
+      with only pre-existing repository warnings; NODE_ENV= npm test -- --fresh hit an unrelated
+      flaky failure in tests/dispatch-target-sync.test.ts (STACK_TRACE_ERROR), and NODE_ENV= npm
+      test -- --fresh dispatch-target-sync immediately passed in isolation (2 suites / 41 tests)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T06:01:16.031Z
