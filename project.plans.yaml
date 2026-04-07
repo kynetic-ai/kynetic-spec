@@ -36426,152 +36426,44 @@ plans:
 
       ```yaml
 
-      # ─── New Spec: Cache-Backed Command Execution ───
-
-
-      - title: Cache-Backed Command Execution
-        slug: daemon-cache-command
-        type: feature
-        description: |
-          When the daemon executes CLI commands in-process via the command
-          API, data loading operations read from the entity cache instead
-          of parsing files from disk. This eliminates redundant I/O for
-          projects whose cache domains are already populated. Commands that
-          run outside the daemon continue to load from disk. The cache
-          integration is transparent to command handlers — they call the
-          same data loading functions regardless of execution context.
-        acceptance_criteria:
-          - id: ac-cache-context-propagation
-            given: |
-              The daemon executes a CLI command via the command API
-            when: |
-              The command begins execution
-            then: |
-              The entity cache for the target project is accessible to
-              data loading functions throughout the command's async
-              execution chain
-          - id: ac-read-from-cache
-            given: |
-              A data loading function is called during command execution
-              and the entity cache has the requested domain in ready state
-            when: |
-              The function resolves data
-            then: |
-              Data is returned from the cache without reading files from
-              disk or running git operations
-          - id: ac-disk-fallback
-            given: |
-              A data loading function is called during command execution
-              and the entity cache does not have the requested domain in
-              ready state
-            when: |
-              The function resolves data
-            then: |
-              Data is loaded from disk using the existing file-based path
-          - id: ac-no-cache-outside-daemon
-            given: |
-              A CLI command runs in direct mode without the daemon
-            when: |
-              Data loading functions are called
-            then: |
-              Data is loaded from disk and no cache lookup is attempted
-          - id: ac-context-from-cache
-            given: |
-              The daemon executes a CLI command via the command API and
-              the meta cache domain is in ready state
-            when: |
-              Project context initialization runs
-            then: |
-              Project configuration, manifest data, and shadow branch
-              state are resolved from cached meta artifacts without
-              disk reads or git operations
-          - id: ac-mutation-disk-path
-            given: |
-              A mutating command executes via the command API
-            when: |
-              The mutation writes data
-            then: |
-              Writes go through the existing disk and shadow branch path;
-              only reads are served from cache
-
-      # ─── New Spec: Task History Cache ───
-
-
-      - title: Task History in Entity Cache
-        slug: daemon-task-history-cache
-        type: feature
-        description: |
-          The entity cache retains task field-change history alongside
-          task detail data. History entries are available from the cache
-          without re-reading task files from disk. History is populated
-          during task domain loading and updated incrementally when
-          individual task files change.
-        acceptance_criteria:
-          - id: ac-history-populated
-            given: |
-              The task cache domain loads or reloads
-            when: |
-              Task files are parsed
-            then: |
-              Field-change history entries from each task file are retained
-              in the cache alongside the task detail data
-          - id: ac-history-served
-            given: |
-              A request for task history arrives and the task domain is
-              in ready state
-            when: |
-              The history is resolved
-            then: |
-              History entries are returned from cache without reading the
-              task file from disk
-          - id: ac-history-incremental
-            given: |
-              A single task file changes and the cache performs an
-              incremental update
-            when: |
-              The changed task is re-parsed
-            then: |
-              The history entries for that task are updated in cache
-              without affecting other tasks' cached history
-
-      # ─── New Spec: Concurrent Read Commands ───
+      # ─── New Spec: Concurrent Read Command Execution ───
 
 
       - title: Concurrent Read Command Execution
         slug: daemon-concurrent-reads
         type: requirement
         description: |
-          Read-only commands executed via the command API can run
-          concurrently when they are served entirely from cache. The
-          in-process serialization mutex is only required for commands
-          that mutate process-global state or write to disk. Cache-backed
-          reads do not modify process state and can safely overlap.
+          Read-only commands executed via the command API can complete
+          concurrently when served from cached data. Mutating commands
+          and commands that require disk access continue to execute
+          sequentially to preserve data integrity.
         acceptance_criteria:
-          - id: ac-read-bypass-mutex
+          - id: ac-concurrent-cache-reads
             given: |
-              A read-only command is executed via the command API and
-              all required cache domains are in ready state
+              Multiple read-only commands are submitted to the command
+              API concurrently and all required cache domains are in
+              ready state
             when: |
-              The command begins execution
+              The commands execute
             then: |
-              The command does not acquire the in-process dispatch mutex
-          - id: ac-mutation-keeps-mutex
+              The commands complete without waiting for each other
+          - id: ac-mutation-serialization
             given: |
-              A mutating command is executed via the command API
+              A mutating command is submitted to the command API
             when: |
-              The command begins execution
+              The command executes
             then: |
-              The command acquires the in-process dispatch mutex and
-              cross-process file lock before executing
-          - id: ac-fallback-acquires-mutex
+              The command executes sequentially with respect to other
+              mutating commands and does not overlap with them
+          - id: ac-disk-fallback-serialization
             given: |
-              A read-only command is executed via the command API but
+              A read-only command is submitted to the command API but
               one or more required cache domains are not in ready state
             when: |
-              The command falls back to disk-based loading
+              The command falls back to disk-based data loading
             then: |
-              The command acquires the in-process dispatch mutex to
-              protect process-global state during disk-based execution
+              The command executes sequentially to protect shared
+              process state during disk-based execution
       ```
 
 
@@ -36583,14 +36475,108 @@ plans:
 
       ```yaml
 
-      # ─── Phase 1: Cache Context Propagation ───
+      # ─── Phase 1: Spec Updates ───
+
+
+      - title: Add cache-serving AC to daemon-command-api spec
+        slug: task-update-command-api-spec
+        priority: 1
+        tags: [spec-update, daemon]
+        spec_ref: "@daemon-command-api"
+        description: |
+          Add acceptance criteria to @daemon-command-api that specify
+          cache-aware behavior for command execution.
+
+          Why: The current @daemon-command-api spec requires response
+          parity (ac-response-parity) and mutation cache updates
+          (ac-mutation-cache-update) but does not specify that read
+          commands should use cached data, that the cache should be
+          accessible during command execution, or that commands running
+          outside the daemon skip cache lookups. These behaviors are
+          the core of this plan and need explicit spec coverage before
+          implementation begins.
+
+          What: Add three ACs to @daemon-command-api:
+
+          ac-read-cache-serving:
+            given: A read-only command is executed via the command API
+                   and the entity cache has all required domains in
+                   ready state
+            when: The command resolves data
+            then: Data is served from the entity cache without reading
+                  files from disk
+
+          ac-cache-context-propagation:
+            given: The daemon executes a CLI command via the command API
+            when: The command begins execution
+            then: The entity cache for the target project is accessible
+                  to data loading functions throughout the command's
+                  async execution chain
+
+          ac-no-cache-outside-daemon:
+            given: A CLI command runs in direct mode without the daemon
+            when: Data loading functions are called
+            then: Data is loaded from disk and no cache lookup is
+                  attempted
+
+          How: Run three kspec item ac add commands for
+          @daemon-command-api with the AC definitions above. Verify
+          with kspec item get @daemon-command-api.
+
+          Covers: @daemon-command-api ac-read-cache-serving (new),
+          ac-cache-context-propagation (new),
+          ac-no-cache-outside-daemon (new).
+
+      - title: Add task history retention AC to daemon-entity-cache spec
+        slug: task-update-entity-cache-history-ac
+        priority: 1
+        tags: [spec-update, daemon, cache]
+        spec_ref: "@daemon-entity-cache"
+        description: |
+          Add an acceptance criterion to @daemon-entity-cache that
+          specifies task history entries are retained in the cache
+          alongside task detail data.
+
+          Why: The current entity cache spec covers index and detail
+          tiers but does not mention task field-change history — a
+          distinct data category that is parsed from the same file as
+          task details but excluded from the LoadedTask type. Making
+          history caching explicit ensures the cache contract covers
+          all task data that consumers need. This is the single home
+          for the history-retention contract; no separate spec is
+          needed because history is a data tier concern within the
+          existing entity cache.
+
+          What: Add ac-task-history-retention to @daemon-entity-cache:
+
+            given: The task cache domain loads or incrementally updates
+                   a task
+            when: The task file is parsed
+            then: Field-change history entries from the task file are
+                  retained in the cache and available to consumers
+                  without re-reading the file from disk
+
+          How: Run:
+            kspec item ac add @daemon-entity-cache \
+              --id ac-task-history-retention \
+              --given "The task cache domain loads or incrementally updates a task" \
+              --when "The task file is parsed" \
+              --then "Field-change history entries from the task file are retained in the cache and available to consumers without re-reading the file from disk"
+
+          Verify with: kspec item get @daemon-entity-cache
+
+          Covers: @daemon-entity-cache ac-task-history-retention (new).
+
+      # ─── Phase 2: Cache Context Propagation ───
 
 
       - title: Add AsyncLocalStorage for entity cache propagation
         slug: task-cache-async-context
         priority: 1
         tags: [daemon, cache, foundation]
-        spec_ref: "@daemon-cache-command"
+        spec_ref: "@daemon-command-api"
+        depends_on:
+          - "@task-update-command-api-spec"
         description: |
           Create an AsyncLocalStorage-based mechanism for propagating
           the entity cache reference into CLI command execution chains
@@ -36614,7 +36600,9 @@ plans:
           1. In src/parser/yaml.ts, create entityCacheStorage as a new
              AsyncLocalStorage instance alongside the existing
              specDirOverrideStorage. The store shape holds a reference to
-             the project's entity cache accessor and the project path.
+             the project's entity cache accessor (a function that takes a
+             project path and returns the cache interface) and the project
+             path string.
 
           2. Export runWithEntityCache(fn, cacheAccessor, projectPath) that
              wraps fn in entityCacheStorage.run(). Export
@@ -36625,32 +36613,36 @@ plans:
              executeCommand function, wrap the existing
              runWithoutSpecDirOverride(program.parseAsync(...)) call
              inside runWithEntityCache() using the project's entity cache
-             from getEntityCache(projectContext.path).
+             from getEntityCache(projectContext.path). The two
+             AsyncLocalStorage wrappers nest independently.
 
           No behavior change in this task — data loaders do not read
           from the cache yet. This task establishes the propagation
           channel only.
 
           How: The entityCacheStorage uses the same AsyncLocalStorage API
-          as specDirOverrideStorage. The two can be nested — the
-          executeCommand function already wraps parseAsync in
-          runWithoutSpecDirOverride, and the new wrapper nests outside or
-          inside it (order does not matter since they use independent
-          storage instances). Add a test that verifies
-          getEntityCacheContext() returns the cache reference inside a
-          runWithEntityCache block and returns undefined outside it.
+          as specDirOverrideStorage. Import AsyncLocalStorage from
+          node:async_hooks. Define the store type as
+          { cacheAccessor: EntityCacheAccessor; projectPath: string }.
+          The EntityCacheAccessor type is imported from
+          packages/daemon/src/routes/entity-cache-types.ts. In
+          executeCommand, the getEntityCache callback is already available
+          in the route closure — pass it into runWithEntityCache. Add a
+          unit test that verifies getEntityCacheContext() returns the
+          cache reference inside a runWithEntityCache block and returns
+          undefined outside it.
 
-          Covers: @daemon-cache-command ac-cache-context-propagation,
+          Covers: @daemon-command-api ac-cache-context-propagation,
           ac-no-cache-outside-daemon.
 
-      # ─── Phase 2: Cache-Aware Context Initialization ───
+      # ─── Phase 3: Cache-Aware Context Initialization ───
 
 
       - title: Resolve project context from entity cache during command execution
         slug: task-cache-aware-init-context
         priority: 1
         tags: [daemon, cache, performance]
-        spec_ref: "@daemon-cache-command"
+        spec_ref: "@daemon-command-api"
         depends_on:
           - "@task-cache-async-context"
         description: |
@@ -36660,12 +36652,13 @@ plans:
 
           Why: initContext() is the single most expensive call in the
           command execution path. It reads kspec.config.yaml, resolves
-          the manifest, detects the shadow branch (including git operations
-          for sync status), and builds KspecContext. The entity cache
-          already stores all of this in cachedProjectConfig,
-          cachedShadowInfo, and the meta domain detail tier. When the
-          meta domain is ready, initContext() can build KspecContext from
-          these cached artifacts instead of going to disk.
+          the manifest, detects the shadow branch (including git
+          operations for sync status), and builds KspecContext. The entity
+          cache already stores all of this in cachedProjectConfig,
+          cachedShadowInfo, and the meta domain detail tier (after
+          @plan-granular-cache-invalidation). When the meta domain is
+          ready, initContext() can build KspecContext from these cached
+          artifacts instead of going to disk.
 
           What: In initContext() (src/parser/yaml.ts), before the existing
           disk-based discovery logic, check getEntityCacheContext(). If a
@@ -36677,39 +36670,44 @@ plans:
           2. Read cachedShadowInfo for shadow branch state (enabled,
              branch name, worktree dir, healthy, remote tracking).
 
-          3. Read the meta detail tier for the manifest.
+          3. Read the meta detail tier for the manifest via
+             getMetaDetail().
 
           4. Construct KspecContext from these cached values and return
-             immediately.
+             immediately without any disk reads or git operations.
 
           If the meta domain is not ready or getEntityCacheContext()
           returns undefined, fall through to the existing disk-based
           path unchanged.
 
-          How: The cache already exposes getCachedProjectConfig(),
+          How: The cache exposes getCachedProjectConfig(),
           getCachedShadowInfo(), and getMetaDetail() as public methods.
-          The constructed KspecContext must match the shape that
-          disk-based initContext produces — same fields, same types.
-          The specDir can be derived from cachedProjectConfig.root_dir
-          plus the configured shadow directory name. The sessionsDir
-          follows the same derivation. Add tests that verify:
-          initContext returns cached context when meta is ready,
+          The constructed KspecContext must have the same field shape as
+          disk-based initContext: rootDir, projectRoot, specDir,
+          sessionsDir, manifestPath, manifest, shadow, config. Derive
+          specDir from cachedProjectConfig.root_dir plus the configured
+          shadow directory name. Derive sessionsDir as
+          projectRoot + "/.kspec-sessions". Build the shadow config
+          object from cachedShadowInfo fields. Build the config object
+          from cachedProjectConfig. The manifest comes from
+          getMetaDetail().manifest or the meta index. Add tests that
+          verify: initContext returns cached context when meta is ready,
           initContext falls through to disk when meta is not ready,
           initContext falls through to disk when no cache context exists,
-          and the returned KspecContext has the same shape as disk-based
-          context.
+          and the returned KspecContext has identical field values to
+          disk-based context for the same project.
 
-          Covers: @daemon-cache-command ac-context-from-cache,
-          ac-disk-fallback.
+          Covers: @daemon-command-api ac-read-cache-serving (partial —
+          context initialization).
 
-      # ─── Phase 3: Cache-Aware Data Loaders ───
+      # ─── Phase 4: Cache-Aware Data Loaders ───
 
 
       - title: Serve task data from entity cache during command execution
         slug: task-cache-aware-task-loading
         priority: 2
         tags: [daemon, cache, tasks]
-        spec_ref: "@daemon-cache-command"
+        spec_ref: "@daemon-command-api"
         depends_on:
           - "@task-cache-async-context"
         description: |
@@ -36720,11 +36718,13 @@ plans:
           split task files, loadAllTasks() reads every task directory.
           listTasks() reads the task index. getTask() reads a single
           task's files. The entity cache already holds all of this in
-          memory (index tier for summaries, detail tier for full tasks).
-          When running inside the daemon's command execution context,
-          these functions should return cached data directly.
+          memory (index tier for summaries, detail tier for full tasks
+          eagerly loaded during domain initialization). When running
+          inside the daemon's command execution context, these functions
+          should return cached data directly.
 
-          What: In the TaskDataManager methods (src/parser/task-data-manager.ts):
+          What: In the TaskDataManager methods
+          (src/parser/task-data-manager.ts):
 
           1. listTasks(): Check getEntityCacheContext(). If cache
              available and tasks domain ready, return
@@ -36733,34 +36733,39 @@ plans:
           2. loadAllTasks(): Check cache. If ready, return
              cache.getAllTaskDetails(). Otherwise fall through to disk.
 
-          3. getTask(): Check cache. If ready, look up the task in
+          3. getTask(): Check cache. If ready, look up the task via
              cache.getTaskDetail(ulid). If found, return it. If not
              found in cache (detail miss), fall through to disk and
-             optionally populate cache via setTaskDetail().
+             populate cache via setTaskDetail().
 
-          The cache check is a preamble of 3-5 lines at the top of each
-          method. The existing disk-based logic is unchanged.
+          The cache check is a 3-5 line preamble at the top of each
+          method. The existing disk-based logic is unchanged as the
+          fallback path.
 
           Mutation methods (mutateTask, addNote, etc.) are NOT modified —
           they always use the disk path. After mutation, the existing
           write-through mechanism updates the cache.
 
           How: Import getEntityCacheContext from src/parser/yaml.ts.
-          Each method checks: const cacheCtx = getEntityCacheContext();
-          if (cacheCtx) { const cache = cacheCtx.cacheAccessor(cacheCtx.projectPath); ... }
-          Add tests verifying: cache hit returns cached data, cache miss
-          falls through to disk, mutation methods always use disk, and
-          getTask with cache detail miss loads from disk and populates
-          cache.
+          Each method checks:
+          const cacheCtx = getEntityCacheContext();
+          if (cacheCtx) {
+            const cache = cacheCtx.cacheAccessor(cacheCtx.projectPath);
+            if (cache?.getDomainState("tasks") === "ready") { ... }
+          }
+          Add tests verifying: cache hit returns cached data without
+          disk reads, cache miss falls through to disk, mutation methods
+          always use disk regardless of cache state, and getTask with
+          cache detail miss loads from disk and populates cache.
 
-          Covers: @daemon-cache-command ac-read-from-cache,
-          ac-disk-fallback, ac-mutation-disk-path.
+          Covers: @daemon-command-api ac-read-cache-serving (partial —
+          task domain).
 
       - title: Serve item data from entity cache during command execution
         slug: task-cache-aware-item-loading
         priority: 2
         tags: [daemon, cache, items]
-        spec_ref: "@daemon-cache-command"
+        spec_ref: "@daemon-command-api"
         depends_on:
           - "@task-cache-async-context"
         description: |
@@ -36770,84 +36775,140 @@ plans:
           Why: loadAllItems() parses the manifest, follows include
           patterns, and reads every module YAML file. The entity cache
           already holds all loaded spec items in its detail tier
-          (getAllItemDetails()). Returning cached data eliminates this
-          multi-file parse.
+          (getAllItemDetails() returns LoadedSpecItem[]). Returning
+          cached data eliminates this multi-file parse.
 
           What: In loadAllItems() (src/parser/yaml.ts), add a cache
           check preamble. If getEntityCacheContext() provides a cache
           with items domain ready, return cache.getAllItemDetails().
-          Otherwise fall through to disk.
+          Otherwise fall through to the existing disk-based path.
 
-          How: Same pattern as task loading. Import
+          How: Same preamble pattern as task loading — import
           getEntityCacheContext, check domain state, return cached data
           or fall through. Add tests verifying cache hit returns cached
           items, cache miss falls through to disk.
 
-          Covers: @daemon-cache-command ac-read-from-cache,
-          ac-disk-fallback.
+          Covers: @daemon-command-api ac-read-cache-serving (partial —
+          items domain).
 
-      - title: Serve remaining domains from entity cache during command execution
-        slug: task-cache-aware-remaining-loaders
+      - title: Serve inbox and triage data from entity cache during command execution
+        slug: task-cache-aware-inbox-triage
         priority: 2
         tags: [daemon, cache]
-        spec_ref: "@daemon-cache-command"
+        spec_ref: "@daemon-command-api"
         depends_on:
           - "@task-cache-async-context"
         description: |
-          Make the remaining data loading functions return cached data
-          when the entity cache is available and their domain is ready.
+          Make loadInboxItems() and loadTriageRecords() return cached
+          data when the entity cache is available and their domains are
+          ready.
 
-          Why: The same cache-bypass problem affects all data loaders,
-          not just tasks and items. loadInboxItems, loadPlans,
-          loadReviewRecords, loadTriageRecords, and loadMetaContext all
-          read from disk when the cache already holds their data.
+          Why: Both functions read single YAML files from disk. The
+          entity cache already holds their data: inbox stores full
+          LoadedInboxItem[] in its index tier, and triage stores full
+          LoadedTriageRecord[] in its detail tier. Returning cached data
+          avoids the file read and YAML parse.
 
-          What: Add cache check preambles to each loader function:
+          What:
 
-          1. loadInboxItems() (src/parser/yaml.ts) — check inbox domain,
-             return cache.getInboxIndex() which stores full
-             LoadedInboxItem[].
+          1. loadInboxItems() (src/parser/yaml.ts) — add cache check
+             preamble. If inbox domain ready, return
+             cache.getInboxIndex() which stores full LoadedInboxItem[].
+             Otherwise fall through to disk.
 
-          2. loadPlans() (src/parser/plans.ts) — check plans domain. The
-             cache stores PlanIndexSummary[] in index tier and full
-             LoadedPlan in detail tier. Return all plan details from the
-             detail tier. If detail tier is empty but index is ready,
-             fall through to disk (plans may not have full details
-             loaded).
+          2. loadTriageRecords() (src/parser/yaml.ts) — add cache check
+             preamble. If triage domain ready, return all triage details
+             from the detail tier. Otherwise fall through to disk.
 
-          3. loadReviewRecords() (src/parser/reviews.ts) — check reviews
-             domain. Same pattern: return all review details from detail
-             tier if available, fall through if only index is populated.
+          How: Same preamble pattern. Both functions are in the same
+          file (src/parser/yaml.ts). Add tests verifying each loader
+          returns cached data on hit and falls through on miss.
 
-          4. loadTriageRecords() (src/parser/yaml.ts) — check triage
-             domain. Return all triage details from detail tier.
+          Covers: @daemon-command-api ac-read-cache-serving (partial —
+          inbox and triage domains).
 
-          5. loadMetaContext() (src/parser/meta.ts) — check meta domain.
-             Return cache.getMetaDetail() which stores full MetaContext.
+      - title: Serve plan and review data from entity cache during command execution
+        slug: task-cache-aware-plans-reviews
+        priority: 2
+        tags: [daemon, cache]
+        spec_ref: "@daemon-command-api"
+        depends_on:
+          - "@task-cache-async-context"
+        description: |
+          Make loadPlans() and loadReviewRecords() return cached data
+          when the entity cache is available and their domains are ready.
 
-          Each function gets the same 3-5 line preamble. The existing
-          disk-based logic is the unchanged fallback.
+          Why: Both functions read single YAML files from disk. The
+          entity cache holds plan and review data in index and detail
+          tiers. Returning cached data avoids the file read and YAML
+          parse.
 
-          How: Same pattern as task and item loading. For domains where
-          the cache stores only index-tier summaries (not full loaded
-          types), the cache check verifies that the detail tier has
-          entries before returning. If detail tier is empty, fall through
-          to disk — this handles the case where the cache was populated
-          with index-only data. Add tests verifying each loader returns
-          cached data on hit and falls through on miss.
+          What:
 
-          Covers: @daemon-cache-command ac-read-from-cache,
-          ac-disk-fallback.
+          1. loadPlans() (src/parser/plans.ts) — add cache check
+             preamble. If plans domain ready and detail tier has entries,
+             return all plan details from the detail tier. If detail tier
+             is empty (index-only), fall through to disk because
+             LoadedPlan[] is the expected return type and index-tier
+             PlanIndexSummary[] is not type-compatible.
 
-      # ─── Phase 4: Task History Caching ───
+          2. loadReviewRecords() (src/parser/reviews.ts) — add cache
+             check preamble. Same pattern: if reviews domain ready and
+             detail tier has entries, return all review details. Otherwise
+             fall through to disk.
+
+          How: Same preamble pattern. Each function is in its own file.
+          The detail tier check is important: unlike tasks and items
+          where the cache eagerly loads details, plans and reviews may
+          have only index-tier data populated. The preamble checks both
+          domain state and detail tier population before returning. Add
+          tests verifying each loader returns cached data when detail
+          tier is populated, falls through when detail tier is empty,
+          and falls through when domain is not ready.
+
+          Covers: @daemon-command-api ac-read-cache-serving (partial —
+          plans and reviews domains).
+
+      - title: Serve meta context from entity cache during command execution
+        slug: task-cache-aware-meta
+        priority: 2
+        tags: [daemon, cache, meta]
+        spec_ref: "@daemon-command-api"
+        depends_on:
+          - "@task-cache-async-context"
+        description: |
+          Make loadMetaContext() return cached data when the entity
+          cache is available and the meta domain is ready.
+
+          Why: loadMetaContext() reads the meta manifest and all
+          included meta YAML files from disk to build MetaContext. The
+          entity cache stores the full MetaContext in its meta detail
+          tier (getMetaDetail()). Returning cached data avoids the
+          multi-file parse.
+
+          What: In loadMetaContext() (src/parser/meta.ts), add a cache
+          check preamble. If getEntityCacheContext() provides a cache
+          with meta domain ready, return cache.getMetaDetail().
+          Otherwise fall through to the existing disk-based path.
+
+          How: Same preamble pattern. Import getEntityCacheContext,
+          check meta domain state, return getMetaDetail() or fall
+          through. Add tests verifying cache hit returns cached meta,
+          cache miss falls through to disk.
+
+          Covers: @daemon-command-api ac-read-cache-serving (partial —
+          meta domain).
+
+      # ─── Phase 5: Task History Caching ───
 
 
       - title: Retain task history entries in entity cache
         slug: task-cache-task-history
         priority: 2
         tags: [daemon, cache, tasks]
-        spec_ref: "@daemon-task-history-cache"
+        spec_ref: "@daemon-entity-cache"
         depends_on:
+          - "@task-update-entity-cache-history-ac"
           - "@task-cache-aware-task-loading"
         description: |
           Store task field-change history entries in the entity cache
@@ -36856,11 +36917,11 @@ plans:
 
           Why: The split backend's loadTaskFromDirWithHistory() reads
           task.yaml and extracts the history array, but this history is
-          stripped from the LoadedTask before it enters the cache's
+          stripped from the LoadedTask type before it enters the cache's
           detail tier. When getTaskHistory() is called, it re-reads the
-          same task.yaml to extract history. In the cache-aware command
-          execution context, this re-read is unnecessary — the history
-          was already parsed during the initial load.
+          same task.yaml to extract history again. In the cache-aware
+          command execution context, this re-read is unnecessary — the
+          history was already parsed during the initial load.
 
           What:
 
@@ -36868,55 +36929,54 @@ plans:
              the task domain store in entity-cache.ts, alongside the
              existing details map.
 
-          2. During task domain loading in doLoadDomain("tasks"), after
-             loading full tasks, also extract and store history entries.
-             The split backend's loadTaskFromDirWithHistory returns both
-             task and history — use the history output.
+          2. Extend the TaskDataManager interface with an optional
+             loadTaskWithHistory(ctx, ulid) method that returns both
+             LoadedTask and HistoryEntry[]. The split backend already
+             has loadTaskFromDirWithHistory internally — expose it
+             through this new public method.
 
-          3. During incremental task updates
+          3. During task domain loading in doLoadDomain("tasks"), use
+             loadTaskWithHistory instead of loadTask for each task. Store
+             the history in historyDetails keyed by ULID alongside the
+             task in the details map.
+
+          4. During incremental task updates
              (tryIncrementalTaskUpdate), when a single task file is
              re-parsed, update the history entries for that task in the
-             historyDetails map.
+             historyDetails map using the same loadTaskWithHistory call.
 
-          4. Add getTaskHistory(ulid) to the cache accessor interface
-             (RouteEntityCache) that returns HistoryEntry[] or null.
+          5. Add getTaskHistory(ulid) to the cache accessor interface
+             (RouteEntityCache in entity-cache-types.ts) that returns
+             HistoryEntry[] or null.
 
-          5. In TaskDataManager.getTaskHistory(), add a cache check
-             preamble (same pattern as other loaders). If cache is
-             available and the task's history is in historyDetails,
-             return it. Otherwise fall through to disk.
+          6. In TaskDataManager.getTaskHistory()
+             (src/parser/task-data-manager.ts), add a cache check
+             preamble following the same pattern as other loaders. If
+             cache is available and historyDetails has an entry for the
+             requested ULID, return it. Otherwise fall through to disk.
 
-          How: The split backend already parses history during
-          loadTaskFromDirWithHistory(). The challenge is that the entity
-          cache calls loadAllTasks() through the TaskDataManager's
-          public API, which calls loadTaskFromDir() (without history).
-          The cache loading path in doLoadDomain("tasks") needs to use
-          a different loading path that retains history. Options:
-
-          a) Call the split backend's loadAllTasksWithHistory (if
-             exposed) during cache loading.
-          b) Add a loadTaskWithHistory method to TaskDataManager that
-             returns both task and history.
-          c) Have the cache load tasks normally, then do a second pass
-             to extract history.
-
-          Option (b) is cleanest — extend the TaskDataManager interface
-          with an optional method for history-aware loading, used only
-          by the entity cache. The split backend already has
-          loadTaskFromDirWithHistory internally.
-
+          How: The split backend's private loadTaskFromDirWithHistory
+          returns { task, history, rawCore }. Add a public method on
+          SplitTaskBackend that calls loadTaskFromDirWithHistory and
+          returns { task, history }. Register this method on the
+          TaskStorageBackend interface as optional (only split format
+          supports it). In doLoadDomain("tasks"), iterate tasks using
+          the new method and populate both details and historyDetails
+          maps. In tryIncrementalTaskUpdate, similarly use the new
+          method for the changed task and update historyDetails. The
+          historyDetails map follows the same lifecycle as the details
+          map — cleared on dispose, swapped atomically during reloads.
           Add tests verifying: history populated during domain load,
           history served from cache on getTaskHistory() call, history
           updated on incremental task update, history falls through to
           disk when cache not ready.
 
-          Covers: @daemon-task-history-cache ac-history-populated,
-          ac-history-served, ac-history-incremental.
+          Covers: @daemon-entity-cache ac-task-history-retention.
 
-      # ─── Phase 5: Read Command Concurrency ───
+      # ─── Phase 6: Read Command Concurrency ───
 
 
-      - title: Skip dispatch mutex for cache-backed read commands
+      - title: Allow concurrent execution of cache-backed read commands
         slug: task-read-command-concurrency
         priority: 3
         tags: [daemon, cache, performance]
@@ -36925,161 +36985,68 @@ plans:
           - "@task-cache-aware-init-context"
           - "@task-cache-aware-task-loading"
           - "@task-cache-aware-item-loading"
-          - "@task-cache-aware-remaining-loaders"
+          - "@task-cache-aware-inbox-triage"
+          - "@task-cache-aware-plans-reviews"
+          - "@task-cache-aware-meta"
         description: |
-          Allow read-only commands executed via the command API to skip
-          the in-process dispatch mutex when all required cache domains
-          are in ready state, enabling concurrent read command execution.
+          Allow read-only commands executed via the command API to run
+          concurrently when all required cache domains are ready, by
+          skipping the dispatch mutex for these commands.
 
           Why: The dispatch mutex (DispatchMutex in command.ts)
           serializes all command execution because executeCommand()
           mutates process-global state: process.cwd(), console.log,
-          process.stderr.write, and the exit interceptor. When reads
-          are served from cache, these mutations are unnecessary — no
-          chdir is needed (context from cache), no console capture is
-          needed (data is returned directly), and no exit interceptor
-          is needed (no Commander parsing for data access). However,
-          the current architecture still runs program.parseAsync() even
-          for cache-backed reads, which means process-global mutations
-          still occur. This task only enables concurrency for reads that
-          can be fully served from cache without program.parseAsync().
-
-          This is a performance optimization that matters under load —
-          when multiple CLI processes or agents query the daemon
-          concurrently, read commands should not block each other or
-          block behind ongoing mutations.
+          process.stderr.write, and the process.exit interceptor.
+          After phases 3-4 of this plan, cache-backed read commands
+          get their data from memory. However, they still run through
+          program.parseAsync() which uses process.chdir() and console
+          interception for output capture. Skipping the mutex for reads
+          is safe because: (a) initContext returns from cache without
+          needing chdir, (b) data loaders return from cache without
+          disk I/O, and (c) output capture via console interception is
+          per-call (each executeCommand saves and restores the
+          originals). The chdir in executeCommand is the remaining
+          concern — but with cached initContext, the chdir result is
+          never used by data loaders since they skip disk paths.
 
           What: In the command route handler (command.ts POST /):
 
-          1. After determining the command is read-only (not mutating),
-             check whether all cache domains needed by this command
-             are in ready state.
+          1. Add a canServeFromCache(command, cache) function that
+             checks two conditions: the command is classified as
+             read-only (not mutating), and all cache domains are in
+             ready state. Use a conservative allowlist of commands
+             known to be cache-safe: task list, task get, tasks list,
+             tasks ready, item list, item get, search, inbox list,
+             plan list, plan get, review get, review list.
 
-          2. If all domains are ready, execute the command outside the
-             dispatch mutex. The command still calls program.parseAsync()
-             which triggers the CLI handler, but the handler's data
-             loaders will return cached data without disk I/O.
+          2. When canServeFromCache returns true, execute the command
+             outside the dispatch mutex. The command still runs through
+             executeCommand() with console capture and chdir, but it
+             does not wait for the mutex.
 
-          3. If any required domain is not ready, fall through to the
-             existing mutex-protected path so the disk-based fallback
-             has process-global state protection.
+          3. When canServeFromCache returns false (cache not ready or
+             command not in allowlist), use the existing mutex-protected
+             path. Mutations always use the mutex.
 
-          4. Mutations always go through the mutex regardless of cache
-             state.
+          How: The allowlist approach is conservative — only commands
+          verified to work correctly with cache-backed data are
+          included. The isCommandMutating() function already classifies
+          commands. canServeFromCache adds the cache-readiness check.
+          In the route handler, branch before dispatchMutex.run():
+          if (!mutating && canServeFromCache(payload, cache)) {
+            return executeCommand(payload, program, projectPath);
+          } else {
+            return dispatchMutex.run(() => ... existing logic ...);
+          }
+          Add tests verifying: allowlisted read commands skip mutex
+          when all cache domains are ready, read commands acquire mutex
+          when any cache domain is not ready, commands not in allowlist
+          acquire mutex, mutations always acquire mutex, and two
+          concurrent allowlisted read commands can complete without
+          blocking each other.
 
-          The challenge is that program.parseAsync() still captures
-          console output and does process.chdir(). For true concurrent
-          reads, the executeCommand function needs a cache-only execution
-          mode that does not mutate process-global state. This requires
-          either:
-          a) Separate output capture per async context (not console
-             monkey-patching), or
-          b) A flag that tells executeCommand to skip console capture
-             and chdir when the command will read from cache.
-
-          Approach (b) is simpler: when cache domains are ready and
-          the command is read-only, skip chdir (initContext uses cached
-          context), skip console/stdout interception (output is captured
-          via a different mechanism or the response is built from cached
-          data). This requires understanding which commands can produce
-          output purely from cached data without Commander's parsing.
-
-          How: Add a canServeFromCache(command, cache) function that
-          checks whether the command is read-only and all its required
-          cache domains are ready. Start with a conservative allowlist
-          of commands known to be cache-safe (task list, task get,
-          item list, item get, search, inbox list, plan list). For
-          these commands, run executeCommand without mutex acquisition.
-          The execution still goes through program.parseAsync() with
-          console capture, but the mutex is not held, allowing
-          concurrent reads. The chdir is still needed for Commander's
-          command resolution. If this causes issues (concurrent chdir
-          corruption), fall back to mutex for all commands and revisit
-          with approach (a).
-
-          Add tests verifying: read commands skip mutex when cache is
-          ready, read commands acquire mutex when cache is not ready,
-          mutations always acquire mutex, two concurrent read commands
-          can execute simultaneously.
-
-          Covers: @daemon-concurrent-reads ac-read-bypass-mutex,
-          ac-mutation-keeps-mutex, ac-fallback-acquires-mutex.
-
-      # ─── Phase 6: Spec Updates ───
-
-
-      - title: Add cache-serving AC to daemon-command-api spec
-        slug: task-update-command-api-spec
-        priority: 1
-        tags: [spec-update, daemon]
-        spec_ref: "@daemon-command-api"
-        description: |
-          Add an acceptance criterion to @daemon-command-api that
-          specifies read commands are served from entity cache when
-          available.
-
-          Why: The current @daemon-command-api spec requires response
-          parity (ac-response-parity) and mutation cache updates
-          (ac-mutation-cache-update) but does not specify that read
-          commands should use cached data. This AC makes explicit that
-          the command API leverages the entity cache for reads.
-
-          What: Add ac-read-cache-serving to @daemon-command-api:
-
-            given: A read-only command is executed via the command API
-                   and the entity cache has all required domains in
-                   ready state
-            when: The command resolves data
-            then: Data is served from the entity cache without reading
-                  files from disk
-
-          How: Run:
-            kspec item ac add @daemon-command-api \
-              --id ac-read-cache-serving \
-              --given "A read-only command is executed via the command API and the entity cache has all required domains in ready state" \
-              --when "The command resolves data" \
-              --then "Data is served from the entity cache without reading files from disk"
-
-          Verify with: kspec item get @daemon-command-api
-
-          Covers: @daemon-command-api ac-read-cache-serving (new).
-
-      - title: Add task history AC to daemon-entity-cache spec
-        slug: task-update-entity-cache-history-ac
-        priority: 1
-        tags: [spec-update, daemon, cache]
-        spec_ref: "@daemon-entity-cache"
-        description: |
-          Add an acceptance criterion to @daemon-entity-cache that
-          specifies task history entries are retained in the cache
-          alongside task detail data.
-
-          Why: The current entity cache spec covers index and detail
-          tiers but does not mention task history — a distinct data
-          category that is parsed from the same file as task details
-          but excluded from the LoadedTask type. Making history caching
-          explicit ensures the cache contract covers all task data that
-          consumers need.
-
-          What: Add ac-task-history-retention to @daemon-entity-cache:
-
-            given: The task cache domain loads or incrementally updates
-                   a task
-            when: The task file is parsed
-            then: Field-change history entries from the task file are
-                  retained in the cache and available to consumers
-                  without re-reading the file from disk
-
-          How: Run:
-            kspec item ac add @daemon-entity-cache \
-              --id ac-task-history-retention \
-              --given "The task cache domain loads or incrementally updates a task" \
-              --when "The task file is parsed" \
-              --then "Field-change history entries from the task file are retained in the cache and available to consumers without re-reading the file from disk"
-
-          Verify with: kspec item get @daemon-entity-cache
-
-          Covers: @daemon-entity-cache ac-task-history-retention (new).
+          Covers: @daemon-concurrent-reads ac-concurrent-cache-reads,
+          ac-mutation-serialization, ac-disk-fallback-serialization.
       ```
 
 
@@ -37155,7 +37122,27 @@ plans:
 
       runWithoutSpecDirOverride, and the new cache wrapper nests
 
-      alongside it.
+      alongside it using an independent storage instance.
+
+
+      ### Spec ownership boundaries
+
+
+      This plan does not introduce standalone specs for cache-backed
+
+      command execution or task history caching. Instead:
+
+
+      - Cache-serving behavior for the command API is specified as new
+        ACs on the existing @daemon-command-api spec (ac-read-cache-serving,
+        ac-cache-context-propagation, ac-no-cache-outside-daemon).
+      - Task history retention is specified as a new AC on the existing
+        @daemon-entity-cache spec (ac-task-history-retention).
+      - Only @daemon-concurrent-reads is a new spec because concurrent
+        read execution is a distinct behavioral contract not covered by
+        existing specs.
+
+      This avoids duplicate ownership between new and existing specs.
 
 
       ### What does NOT change
@@ -37186,58 +37173,61 @@ plans:
       loadAllTasks() which returns LoadedTask[] without history.
 
 
-      To cache history, the entity cache's task domain loading needs to
+      To cache history, the TaskDataManager interface is extended with
 
-      use a history-aware loading path. The split backend already has
+      an optional loadTaskWithHistory method that the split backend
 
-      the internal method; it needs to be exposed through the
+      implements by exposing its existing internal method. The entity
 
-      TaskDataManager interface.
+      cache uses this during domain loading and incremental updates.
 
 
       ### Concurrent read commands
 
 
-      Phase 5 (read command concurrency) is the riskiest phase because
+      Phase 6 (read command concurrency) uses a conservative allowlist
 
-      program.parseAsync() mutates process-global state even for reads.
+      approach. Only commands verified to work correctly with
 
-      The conservative approach starts with mutex bypass for reads while
+      cache-backed data are included in the allowlist. The existing
 
-      still running through parseAsync — relying on the cache to
+      mutex-protected path is the fallback for everything else. The
 
-      eliminate the disk I/O that made serialization necessary. If
+      allowlist can be expanded incrementally as more commands are
 
-      concurrent chdir or console capture causes corruption, the mutex
-
-      bypass can be rolled back without affecting cache-aware reading.
+      verified safe.
 
 
       ### Phasing rationale
 
 
-      Phase 1 (AsyncLocalStorage plumbing) is zero-risk infrastructure.
+      Phase 1 (spec updates) establishes target contracts before code
 
-      Phase 2 (initContext cache) provides the biggest single performance
+      changes. Phase 2 (AsyncLocalStorage plumbing) is zero-risk
 
-      win. Phases 3a-3c (per-domain loader cache awareness) are
+      infrastructure. Phase 3 (initContext cache) provides the biggest
 
-      independent of each other and can be parallelized. Phase 4 (history
+      single performance win. Phases 4a-4e (per-domain loader cache
 
-      caching) extends the existing task detail caching. Phase 5
+      awareness) are independent of each other and can be parallelized.
 
-      (concurrency) is the riskiest and depends on all read loaders
+      Phase 5 (history caching) extends the existing task detail caching
 
-      being cache-aware. Phase 6 (spec updates) runs in parallel with
+      and depends on the task loader being cache-aware. Phase 6
 
-      Phase 1 to establish the target contracts early.
+      (concurrency) depends on all read loaders being cache-aware and
+
+      is the final optimization.
     status: draft
     approved_at: null
-    branch: null
     derived_specs: []
     derived_tasks: []
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec/plans/cache-aware-command-execution.md
     created_at: 2026-04-07T07:56:48.162Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KNKFNBK8H36QEZZ1PMZ5XKEY
+        content: Content updated from file
+        author: "@claude"
+        created_at: 2026-04-07T08:06:37.928Z
