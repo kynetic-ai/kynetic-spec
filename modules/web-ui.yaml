@@ -4422,6 +4422,9 @@ requirements:
       concurrently when served from cached data. Mutating commands
       and commands that require disk access continue to execute
       sequentially to preserve data integrity.
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
