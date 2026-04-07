@@ -23948,7 +23948,7 @@ runs:
     completed_at: 2026-04-07T18:58:46.850Z
   - _ulid: 01KNMNVWA1BEZDXQVE17Z9X47Y
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -23965,7 +23965,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-07T19:15:26.419Z
-        completed_at: 2026-04-07T19:15:26.419Z
+        completed_at: 2026-04-07T19:15:43.202Z
+        notes: "High-confidence findings: one systemic friction only. Working well: targeted parser plus
+          daemon API reruns exposed the null-index cache shape before resubmission, and anchored
+          review threads kept the fix cycle focused. No other session patterns met the
+          high-confidence bar for capture."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-07T19:15:43.202Z
+        completed_at: 2026-04-07T19:15:43.202Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-07T19:14:17.537Z
