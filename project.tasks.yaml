@@ -25024,7 +25024,7 @@
   type: task
   spec_ref: "@daemon-incremental-cache"
   plan_ref: "@plan-granular-cache-invalidation"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-incremental-task-updates"
@@ -25039,7 +25039,7 @@
   notes_count: 3
   todos_count: 0
   created_at: 2026-04-04T23:34:28.813Z
-  started_at: 2026-04-07T04:54:24.800Z
+  started_at: 2026-04-07T05:22:54.385Z
   submitted_at: 2026-04-07T05:05:17.841Z
   automation: eligible
 - _ulid: 01KNE1NJJX5JAGSAD6GXXZAQQ1
