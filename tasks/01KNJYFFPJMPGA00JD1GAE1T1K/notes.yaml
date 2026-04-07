@@ -9,3 +9,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-07T04:16:09.971Z
+  - _ulid: 01KNK2SX4PV9YMBAGF1ZEC8P11
+    content: "Verification on dev @ 3c32e6485e3a0987fc61bf791be2f73f557882ac: npm run build succeeds in
+      this detached review-task workspace, and npm test -- --fresh tests/parser.test.ts passes
+      including 'loadAllItems integration > treats detached worktrees without a usable shadow
+      worktree as skippable'. A fresh full-suite run still fails, but only in unrelated areas:
+      tests/cli-schedule-commands.test.ts, tests/dispatch-target-sync.test.ts, and
+      tests/integration.test.ts. The parser-specific detached-worktree failure that created this
+      task is no longer reproducing on current dev, which indicates it was already addressed by the
+      merged parser stabilization work on dev."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T04:21:55.478Z
