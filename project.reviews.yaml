@@ -124142,6 +124142,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNKF8MG7DX4GKR77FWAMET60
         timestamp: 2026-04-07T07:59:41.879Z
+      - _ulid: 01KNKF8PJTQ9ND4N34CDYGH586
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNKF8MHC319XR0VQ5C7X832R
+        timestamp: 2026-04-07T07:59:43.194Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -124166,7 +124173,22 @@ reviews:
               spec complementary rather than overlapping.
             created_at: 2026-04-07T07:59:41.063Z
         kind: blocker
+      - _ulid: 01KNKF8MHC319XR0VQ5C7X832R
+        anchor:
+          type: structured
+          ref: "@task-read-command-concurrency"
+          section: description
+        entries:
+          - _ulid: 01KNKF8MHDKRNCR6TXDW7P4A7F
+            author: "@claude"
+            body: This task is not standalone-executable yet. Its How section leaves the core implementation
+              choice unresolved (cache-only mode vs conservative allowlist), includes an explicit
+              fallback-if-it-causes-issues branch, and assumes the worker will discover which
+              commands are truly safe mid-task. Split the design decision from the implementation or
+              commit to one concrete approach and verification plan.
+            created_at: 2026-04-07T07:59:41.101Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-07T07:58:55.565Z
-    updated_at: 2026-04-07T07:59:41.063Z
+    updated_at: 2026-04-07T07:59:41.101Z
     notes: []
