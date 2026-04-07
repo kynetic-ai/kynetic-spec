@@ -7,3 +7,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-07T16:22:00.725Z
+  - _ulid: 01KNMC1M3M4MHYDRD95F10ENQW
+    content: Added ac-read-cache-serving, ac-cache-context-propagation, and ac-no-cache-outside-daemon
+      to @daemon-command-api. Verified the updated spec with kspec item get. Ran kspec validate; it
+      passed schema/reference checks and reported only existing project-level warnings (orphaned
+      skill directory, alignment debt, and longstanding completeness/AC-annotation warnings
+      unrelated to this task).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T16:22:39.988Z
