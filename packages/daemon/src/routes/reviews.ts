@@ -1051,6 +1051,8 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
             `${decision}${shouldAutoClose ? " (auto-closed)" : ""}`,
           );
 
+          let transitionedTaskUlids: string[] = [];
+
           // AC: @review-task-lifecycle-integration ac-4
           // Auto-transition tasks to needs_work on changes_requested verdict
           if (decision === "request_changes") {
@@ -1070,6 +1072,9 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
                 "tasks transitioned to needs_work",
               );
             }
+            transitionedTaskUlids = transitioned
+              .filter((taskTransition) => taskTransition.transitioned)
+              .map((taskTransition) => taskTransition.ulid);
           }
 
           // AC: @daemon-entity-cache ac-write-through — update cache before response
@@ -1078,8 +1083,12 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           const verdictCache = getEntityCache?.(projectContext.path);
           if (verdictCache) {
             await verdictCache.writeThrough("reviews");
-            if (decision === "request_changes") {
-              await verdictCache.writeThrough("tasks");
+            if (transitionedTaskUlids.length > 0) {
+              await Promise.all(
+                transitionedTaskUlids.map((ulid) =>
+                  verdictCache.writeThrough("tasks", { ulid }),
+                ),
+              );
             }
           }
 

@@ -19,6 +19,7 @@ import type {
   CachedProjectConfig,
   CachedSessionContext,
   CacheDiagnostic,
+  WriteThroughHint,
 } from "../../daemon/entity-cache.js";
 import type { SessionLogSummary } from "../../sessions/store.js";
 import type { LoadedInboxItem } from "../../parser/yaml.js";
@@ -27,6 +28,7 @@ import type { LoadedReviewRecord } from "../../parser/reviews.js";
 
 /** Domain state as reported by the cache. */
 export type CacheDomainState = "unloaded" | "loading" | "ready" | "degraded";
+export type { WriteThroughHint };
 
 /**
  * Minimal cache interface consumed by route handlers.
@@ -62,7 +64,7 @@ export interface RouteEntityCache {
   getShadowInfo(): CachedShadowInfo | null;
   getProjectConfig(): CachedProjectConfig | null;
   getSessionContext(): CachedSessionContext | null;
-  writeThrough(domain: string): Promise<void>;
+  writeThrough(domain: string, hint?: WriteThroughHint): Promise<void>;
   markWriteThrough(domain: string): void;
   getCacheDiagnostics(): CacheDiagnostic;
 }

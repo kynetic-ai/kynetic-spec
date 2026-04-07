@@ -1761,6 +1761,150 @@ describe("ProjectEntityCache", () => {
       expect(cache.getTaskIndex()).toBe(afterWriteThrough);
     });
 
+    // AC: @daemon-incremental-cache ac-single-entity-patch
+    // AC: @daemon-entity-cache ac-write-through
+    it("should use incremental task patching for writeThrough when given a task hint", async () => {
+      const kspecDir = join(projectA, ".kspec");
+      seedSplitTask(kspecDir, {
+        _ulid: "01TASKB0000000000000000000",
+        slugs: ["task-b-sample"],
+        title: "Sample Task B",
+        type: "task",
+        status: "pending",
+        priority: 2,
+        spec_ref: "@spec-b-sample",
+        depends_on: [],
+        notes: [],
+        todos: [],
+        created_at: "2026-01-24T00:00:00.000Z",
+      });
+
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("tasks");
+
+      const unchangedTask = cache.getTaskDetail("01TASKB0000000000000000000");
+      expect(unchangedTask).not.toBeNull();
+
+      const loadDomainSpy = vi.spyOn(cache, "loadDomain");
+      loadDomainSpy.mockClear();
+
+      const taskPath = join(kspecDir, "tasks", "01TASKA0000000000000000000", "task.yaml");
+      await fs.writeFile(
+        taskPath,
+        yamlStringify({
+          _ulid: "01TASKA0000000000000000000",
+          slugs: ["task-a-sample"],
+          title: "Sample Task A via WriteThrough",
+          type: "task",
+          status: "in_progress",
+          priority: 1,
+          spec_ref: "@spec-a-sample",
+          depends_on: [],
+          created_at: "2026-01-24T00:00:00.000Z",
+        }),
+        "utf-8",
+      );
+
+      await cache.writeThrough("tasks", { ulid: "01TASKA0000000000000000000" });
+
+      expect(loadDomainSpy).not.toHaveBeenCalled();
+      expect(cache.getTaskDetail("01TASKA0000000000000000000")?.title).toBe(
+        "Sample Task A via WriteThrough",
+      );
+      expect(cache.getTaskDetail("01TASKB0000000000000000000")).toBe(unchangedTask);
+
+      const afterWriteThrough = cache.getTaskIndex();
+      await cache.invalidateDomain("tasks");
+      expect(cache.getTaskIndex()).toBe(afterWriteThrough);
+    });
+
+    // AC: @daemon-incremental-cache ac-fallback-full-reload
+    // AC: @daemon-entity-cache ac-write-through
+    it("should fall back to a full reload when writeThrough has no entity hint", async () => {
+      const kspecDir = join(projectA, ".kspec");
+      seedSplitTask(kspecDir, {
+        _ulid: "01TASKB0000000000000000000",
+        slugs: ["task-b-sample"],
+        title: "Sample Task B",
+        type: "task",
+        status: "pending",
+        priority: 2,
+        spec_ref: "@spec-b-sample",
+        depends_on: [],
+        notes: [],
+        todos: [],
+        created_at: "2026-01-24T00:00:00.000Z",
+      });
+
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("tasks");
+
+      const sentinel = { _ulid: "01TASKB0000000000000000000", title: "stale detail" } as any;
+      cache.setTaskDetail("01TASKB0000000000000000000", sentinel);
+
+      const loadDomainSpy = vi.spyOn(cache, "loadDomain");
+      loadDomainSpy.mockClear();
+
+      const taskPath = join(kspecDir, "tasks", "01TASKA0000000000000000000", "task.yaml");
+      await fs.writeFile(
+        taskPath,
+        yamlStringify({
+          _ulid: "01TASKA0000000000000000000",
+          slugs: ["task-a-sample"],
+          title: "Sample Task A full reload",
+          type: "task",
+          status: "in_progress",
+          priority: 1,
+          spec_ref: "@spec-a-sample",
+          depends_on: [],
+          created_at: "2026-01-24T00:00:00.000Z",
+        }),
+        "utf-8",
+      );
+
+      await cache.writeThrough("tasks");
+
+      expect(loadDomainSpy).toHaveBeenCalledWith("tasks");
+      expect(cache.getTaskDetail("01TASKB0000000000000000000")).not.toBe(sentinel);
+      expect(cache.getTaskDetail("01TASKB0000000000000000000")?.title).toBe("Sample Task B");
+    });
+
+    // AC: @daemon-incremental-cache ac-multi-entity-file
+    // AC: @daemon-entity-cache ac-write-through
+    it("should use item source-file patching for writeThrough when given an item hint", async () => {
+      await writeItemsFixture(projectA, {
+        "modules/alpha.yaml": [buildSpecItem(20, "alpha-spec", "Alpha Spec v1")],
+        "modules/beta.yaml": [buildSpecItem(21, "beta-spec", "Beta Spec")],
+      });
+
+      const cache = new ProjectEntityCache(projectA);
+      const loadAllItemsSpy = vi.spyOn(yamlModule, "loadAllItems");
+      await cache.loadDomain("items");
+      loadAllItemsSpy.mockClear();
+
+      const alphaUlid = testUlid("SPEC", 20);
+      const betaUlid = testUlid("SPEC", 21);
+      const betaBefore = cache.getItemDetail(betaUlid);
+      expect(betaBefore).not.toBeNull();
+
+      const alphaPath = join(projectA, ".kspec", "modules", "alpha.yaml");
+      await fs.writeFile(
+        alphaPath,
+        yamlStringify([buildSpecItem(20, "alpha-spec", "Alpha Spec v2")]),
+        "utf-8",
+      );
+
+      await cache.writeThrough("items", { ulid: alphaUlid });
+
+      expect(loadAllItemsSpy).not.toHaveBeenCalled();
+      expect(cache.getItemDetail(alphaUlid)?.title).toBe("Alpha Spec v2");
+      expect(cache.getItemDetail(betaUlid)).toBe(betaBefore);
+
+      const afterWriteThrough = cache.getItemIndex();
+      await cache.invalidateDomain("items");
+      expect(cache.getItemIndex()).toBe(afterWriteThrough);
+    });
+
     // AC: @daemon-entity-cache ac-write-through
     // AC: @daemon-entity-cache ac-graceful-degradation
     it("should NOT suppress watcher invalidation when writeThrough reload fails", async () => {

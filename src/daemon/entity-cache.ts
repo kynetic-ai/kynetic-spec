@@ -102,6 +102,12 @@ export const DOMAIN_LOAD_ORDER: CacheDomain[] = [
 /** Per-domain state. */
 export type DomainState = "unloaded" | "loading" | "ready" | "degraded";
 
+export interface WriteThroughHint {
+  ulid?: string;
+  filePath?: string;
+  sessionId?: string;
+}
+
 /** Summary type for spec items (index tier — excludes description, notes, AC content). */
 export interface ItemSummary {
   _ulid: string;
@@ -1324,10 +1330,13 @@ export class ProjectEntityCache {
    *
    * AC: @daemon-entity-cache ac-write-through
    */
-  async writeThrough(domain: CacheDomain): Promise<void> {
+  async writeThrough(domain: CacheDomain, entityHint?: WriteThroughHint): Promise<void> {
     // AC: @daemon-server ac-18 — track last invalidation timestamp
     this.getStore(domain).lastInvalidatedAt = new Date().toISOString();
-    await this.loadDomain(domain);
+    const handledIncrementally = await this.tryHintedWriteThrough(domain, entityHint);
+    if (!handledIncrementally) {
+      await this.loadDomain(domain);
+    }
     // Only suppress the next watcher invalidation when the reload succeeded —
     // if the domain degraded, the watcher must still fire so a subsequent
     // file-change event can recover the domain.
@@ -1459,6 +1468,62 @@ export class ProjectEntityCache {
 
     this.pendingDomainChanges.delete(domain);
     return Array.from(changes.values());
+  }
+
+  private async tryHintedWriteThrough(
+    domain: CacheDomain,
+    entityHint?: WriteThroughHint,
+  ): Promise<boolean> {
+    if (!entityHint) {
+      return false;
+    }
+
+    const change = await this.buildWriteThroughChange(domain, entityHint);
+    if (!change) {
+      return false;
+    }
+
+    await this.processDomainChanges(domain, [change]);
+    return true;
+  }
+
+  private async buildWriteThroughChange(
+    domain: CacheDomain,
+    entityHint: WriteThroughHint,
+  ): Promise<PendingDomainChange | null> {
+    if (entityHint.filePath) {
+      return { filePath: entityHint.filePath };
+    }
+
+    switch (domain) {
+      case "tasks": {
+        if (!entityHint.ulid) {
+          return null;
+        }
+        const ctx = await initContext(this.projectPath);
+        return { filePath: getTaskFilePath(ctx, entityHint.ulid) };
+      }
+      case "items": {
+        if (!entityHint.ulid) {
+          return null;
+        }
+        const filePath =
+          this.itemSourceFiles.get(entityHint.ulid) ??
+          this.items.details.get(entityHint.ulid)?._sourceFile ??
+          null;
+        return filePath ? { filePath } : null;
+      }
+      case "sessions": {
+        const sessionId = entityHint.sessionId ?? entityHint.ulid;
+        if (!sessionId) {
+          return null;
+        }
+        const ctx = await initContext(this.projectPath);
+        return { filePath: getSessionDir(ctx.sessionsDir, sessionId) };
+      }
+      default:
+        return null;
+    }
   }
 
   private async processDomainChanges(
