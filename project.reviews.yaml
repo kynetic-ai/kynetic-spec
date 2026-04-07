@@ -127792,6 +127792,17 @@ reviews:
         runner: vitest
         created_at: 2026-04-07T20:59:30.459Z
         completed_at: 2026-04-07T20:59:30.459Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate reported warnings only (exit 6): 1 reference warning, 31 alignment
+          warnings, 519 completeness warnings; no validation errors."
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-04-07T20:59:32.938Z
+        completed_at: 2026-04-07T20:59:32.938Z
     events:
       - _ulid: 01KNMV9BGGBEFWBC5ZMHS5N4YA
         actor: Jacob Chapel
@@ -127841,6 +127852,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-07T20:59:31.356Z
+      - _ulid: 01KNMVWMHNCEC35JV7RQDQJNH6
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-07T20:59:33.813Z
     examined_commit: 6e37e6b9839a0d69b7aaadaa6f2b9c3f2ca74b24
     external_links: []
     lifecycle_state: open
@@ -127923,5 +127941,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-07T20:49:01.968Z
-    updated_at: 2026-04-07T20:59:30.459Z
+    updated_at: 2026-04-07T20:59:32.938Z
     notes: []
