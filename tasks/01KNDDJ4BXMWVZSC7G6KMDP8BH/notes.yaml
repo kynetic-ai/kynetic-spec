@@ -29,3 +29,11 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-07T03:20:51.908Z
+  - _ulid: 01KNJZJWEHB9QD8HH108ZHV7MH
+    content: "Fix cycle 1 approach: preserve the meta sub-domain split but route manifest/shadow/session
+      refreshes through the existing meta in-flight reload slot so concurrent meta reload requests
+      still deduplicate. Re-verify all four ACs and add a regression test for overlapping
+      manifest-only invalidations."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T03:25:39.665Z
