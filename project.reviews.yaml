@@ -127055,7 +127055,18 @@ reviews:
     slugs: []
     title: Review task-cache-aware-plans-reviews (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation completed with the existing repository warning baseline only; no new
+          task-specific gaps were introduced.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-07T19:25:00.061Z
+        completed_at: 2026-04-07T19:25:00.061Z
     events:
       - _ulid: 01KNMP2614NCJS2K38TQP2MXRA
         actor: Jacob Chapel
@@ -127093,6 +127104,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-07T19:23:33.454Z
+      - _ulid: 01KNMPFGMXVM1R4BHB60DFKB49
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-07T19:25:00.957Z
     examined_commit: 2723f252985dcc0d0a354d77d9c6aaccc5b81081
     external_links: []
     lifecycle_state: closed
@@ -127137,5 +127155,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-07T19:23:33.453Z
     created_at: 2026-04-07T19:17:44.100Z
-    updated_at: 2026-04-07T19:23:33.454Z
+    updated_at: 2026-04-07T19:25:00.061Z
     notes: []
