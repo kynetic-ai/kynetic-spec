@@ -13318,6 +13318,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-07T18:24:53.649Z
+  - _ulid: 01KNMM5NWYXDJ3J3DMQC4KHJ9X
+    type: friction
+    content: Cache-serving changes can pass review with mocked ready-cache fixtures that do not match
+      ProjectEntityCache's production contract. In this session, a triage read-path change assumed
+      ready triage domains had populated detail entries, but the actual cache keeps triage details
+      empty after domain load and fills them on demand. We need a shared behavioral test/helper for
+      cache-backed read paths that exercises real warmed cache state, especially for
+      detail-on-demand domains.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T18:44:41.502Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
