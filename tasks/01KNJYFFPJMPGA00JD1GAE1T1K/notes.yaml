@@ -1,1 +1,11 @@
-notes: []
+notes:
+  - _ulid: 01KNK2FBQJZTSJ91Z6Z28HQWWF
+    content: "Approach: verify whether the detached-review-worktree parser failure is already fixed on
+      current dev before making any code changes. Reusing the new parser regression in
+      tests/parser.test.ts and a fresh full-suite run as proof. Edge cases: detached HEAD review
+      worktree with a visible kspec-meta branch but no usable .kspec worktree, plus current
+      workspace bootstrap/build state. Test plan: targeted parser regression plus fresh npm test
+      from this assigned worktree."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T04:16:09.971Z
