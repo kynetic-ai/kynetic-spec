@@ -12988,6 +12988,24 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-04-07T03:11:57.352Z
+  - _ulid: 01KNJZDJYAP4J39Q12NXCDQ8Z5
+    type: friction
+    content: kspec review reply can hang even when the intended update is simple, which forced a
+      follow-up read of the review record and a second shorter reply to confirm persistence during a
+      fix cycle.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T03:22:46.090Z
+  - _ulid: 01KNJZDK5N9JE6RFQHTFN45XNJ
+    type: success
+    content: Rebasing a fix-cycle branch onto the integration target before editing exposed the
+      overlapping incremental-cache conflict early, and pairing the review repro with a behavioral
+      regression test made the final fallback fix straightforward to verify.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T03:22:46.326Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
