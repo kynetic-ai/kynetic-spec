@@ -127557,9 +127557,25 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-07T20:17:15.615Z
+      - _ulid: 01KNMSFT35JZERA8NN7MB082GW
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-07T20:17:36.357Z
+      - _ulid: 01KNMSFT353A88ST33XZK0BAQY
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-07T20:17:36.357Z
     examined_commit: 1dcde7937b52018f763a0cff9973e4977ab9e72e
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -127655,7 +127671,14 @@ reviews:
               or validation regression introduced by this task.
             created_at: 2026-04-07T20:17:01.108Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-07T20:17:36.357Z
     created_at: 2026-04-07T20:10:07.646Z
-    updated_at: 2026-04-07T20:17:14.720Z
+    updated_at: 2026-04-07T20:17:36.357Z
     notes: []
