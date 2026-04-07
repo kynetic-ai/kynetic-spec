@@ -2,6 +2,51 @@ _ulid: 01KNN24YV6T3TPR7R1Y2CTH66C
 slugs: []
 title: Extend loadAllTasks to return history alongside task data
 type: task
+description: >-
+  The task domain loading in doLoadDomain(tasks) in src/daemon/entity-cache.ts was changed from bulk
+  loadAllTasks() to per-task loadTaskWithHistory() iteration to capture history alongside task data.
+  For projects with 1335+ tasks, this changes from one bulk pass to N individual loadTaskWithHistory
+  calls during cache warm-up, which is significantly slower.
+
+
+  Why: The entity cache needs both LoadedTask and HistoryEntry[] per task, but loadAllTasks() only
+  returns LoadedTask[] (history is stripped during parsing in the split backend). The implementation
+  solved this by calling loadTaskWithHistory() per task, but this loses the performance benefit of
+  bulk loading.
+
+
+  What: Add a loadAllTasksWithHistory() method to the TaskDataManager and SplitTaskBackend that
+  returns both task and history data in a single bulk pass.
+
+
+  1. Add loadAllTasksWithHistory() to the TaskStorageBackend interface as an optional method
+  returning Array<{ task: LoadedTask; history: HistoryEntry[] }>.
+
+
+  2. Implement it in SplitTaskBackend by using loadTaskFromDirWithHistory (the existing internal
+  method) instead of loadTaskFromDir for each task in the bulk iteration, collecting both task and
+  history.
+
+
+  3. Add loadAllTasksWithHistory() to TaskDataManager that delegates to the backend method.
+
+
+  4. Update doLoadDomain(tasks) in entity-cache.ts to use loadAllTasksWithHistory() instead of
+  per-task iteration. Populate both the details map and the historyDetails map from the bulk result
+  in a single pass.
+
+
+  5. Keep loadTaskWithHistory() for incremental updates where only one task changes.
+
+
+  How: The SplitTaskBackend's existing loadAllTasks() iterates task directories and calls
+  loadTaskFromDir() per task. loadTaskFromDir internally calls loadTaskFromDirWithHistory and
+  discards the history. The new loadAllTasksWithHistory uses the same directory iteration but
+  retains the history output alongside the task. The entity cache's doLoadDomain(tasks) replaces its
+  current per-task loop with a single call to loadAllTasksWithHistory, then builds both the details
+  map and historyDetails map from the result array. Add tests verifying: loadAllTasksWithHistory
+  returns both task and history, cache warm-up uses bulk loading, incremental updates still use
+  per-task loading.
 spec_ref: "@daemon-entity-cache"
 meta_ref: null
 plan_ref: "@plan-cache-aware-command-execution"
@@ -15,6 +60,58 @@ tags:
   - cache
   - performance
 vcs_refs: []
+history:
+  - author: "@claude"
+    changes:
+      description:
+        new: >-
+          The task domain loading in doLoadDomain(tasks) in src/daemon/entity-cache.ts was changed
+          from bulk loadAllTasks() to per-task loadTaskWithHistory() iteration to capture history
+          alongside task data. For projects with 1335+ tasks, this changes from one bulk pass to N
+          individual loadTaskWithHistory calls during cache warm-up, which is significantly slower.
+
+
+          Why: The entity cache needs both LoadedTask and HistoryEntry[] per task, but
+          loadAllTasks() only returns LoadedTask[] (history is stripped during parsing in the split
+          backend). The implementation solved this by calling loadTaskWithHistory() per task, but
+          this loses the performance benefit of bulk loading.
+
+
+          What: Add a loadAllTasksWithHistory() method to the TaskDataManager and SplitTaskBackend
+          that returns both task and history data in a single bulk pass.
+
+
+          1. Add loadAllTasksWithHistory() to the TaskStorageBackend interface as an optional method
+          returning Array<{ task: LoadedTask; history: HistoryEntry[] }>.
+
+
+          2. Implement it in SplitTaskBackend by using loadTaskFromDirWithHistory (the existing
+          internal method) instead of loadTaskFromDir for each task in the bulk iteration,
+          collecting both task and history.
+
+
+          3. Add loadAllTasksWithHistory() to TaskDataManager that delegates to the backend method.
+
+
+          4. Update doLoadDomain(tasks) in entity-cache.ts to use loadAllTasksWithHistory() instead
+          of per-task iteration. Populate both the details map and the historyDetails map from the
+          bulk result in a single pass.
+
+
+          5. Keep loadTaskWithHistory() for incremental updates where only one task changes.
+
+
+          How: The SplitTaskBackend's existing loadAllTasks() iterates task directories and calls
+          loadTaskFromDir() per task. loadTaskFromDir internally calls loadTaskFromDirWithHistory
+          and discards the history. The new loadAllTasksWithHistory uses the same directory
+          iteration but retains the history output alongside the task. The entity cache's
+          doLoadDomain(tasks) replaces its current per-task loop with a single call to
+          loadAllTasksWithHistory, then builds both the details map and historyDetails map from the
+          result array. Add tests verifying: loadAllTasksWithHistory returns both task and history,
+          cache warm-up uses bulk loading, incremental updates still use per-task loading.
+        previous: null
+    command: task-set
+    timestamp: 2026-04-07T22:49:29.558Z
 created_at: 2026-04-07T22:48:57.957Z
 todos: []
 automation: eligible

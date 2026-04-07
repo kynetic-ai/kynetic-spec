@@ -2,12 +2,36 @@ _ulid: 01KNN24QFDBF9BXMEX895A2R6J
 slugs: []
 title: Profile Commander program creation and evaluate reuse
 type: task
+description: >-
+  getProgram() in packages/daemon/src/routes/command.ts creates a fresh Commander program via
+  createProgram() for every command API request, re-registering 30+ command groups each time. For
+  concurrent cache-backed reads, this overhead may be significant.
+
+
+  Why: Investigation shows resetCommandTree() clears parsed state and batch mode successfully reuses
+  programs. However, Commander is not designed for concurrent parseAsync calls on the same instance
+  — concurrent cache-backed reads each need their own program instance. The question is whether
+  creation overhead is significant enough to warrant optimization.
+
+
+  What: Profile createProgram() cost in isolation. If the cost is greater than 10ms, evaluate a
+  program pool (pre-created instances recycled after use) or lazy command registration (register
+  only the requested command group). If the cost is less than 10ms, document the finding and keep
+  per-request creation for its simplicity and safety.
+
+
+  How: Time createProgram() in a microbenchmark by importing it and measuring wall-clock time across
+  100 iterations. Compare against typical cache-backed command execution time (expected under 50ms).
+  Document findings in a code comment at the getProgram call site explaining the profiling result
+  and the decision rationale. If optimization is warranted, note that singleton reuse is unsafe for
+  concurrent parseAsync — a pool or lazy registration pattern is needed instead.
 spec_ref: "@daemon-concurrent-reads"
 meta_ref: null
 plan_ref: "@plan-cache-aware-command-execution"
 status: pending
 blocked_by: []
-depends_on: []
+depends_on:
+  - "@01KNN24A"
 context: []
 priority: 3
 tags:
@@ -15,6 +39,42 @@ tags:
   - cache
   - performance
 vcs_refs: []
+history:
+  - author: "@claude"
+    changes:
+      description:
+        new: >-
+          getProgram() in packages/daemon/src/routes/command.ts creates a fresh Commander program
+          via createProgram() for every command API request, re-registering 30+ command groups each
+          time. For concurrent cache-backed reads, this overhead may be significant.
+
+
+          Why: Investigation shows resetCommandTree() clears parsed state and batch mode
+          successfully reuses programs. However, Commander is not designed for concurrent parseAsync
+          calls on the same instance — concurrent cache-backed reads each need their own program
+          instance. The question is whether creation overhead is significant enough to warrant
+          optimization.
+
+
+          What: Profile createProgram() cost in isolation. If the cost is greater than 10ms,
+          evaluate a program pool (pre-created instances recycled after use) or lazy command
+          registration (register only the requested command group). If the cost is less than 10ms,
+          document the finding and keep per-request creation for its simplicity and safety.
+
+
+          How: Time createProgram() in a microbenchmark by importing it and measuring wall-clock
+          time across 100 iterations. Compare against typical cache-backed command execution time
+          (expected under 50ms). Document findings in a code comment at the getProgram call site
+          explaining the profiling result and the decision rationale. If optimization is warranted,
+          note that singleton reuse is unsafe for concurrent parseAsync — a pool or lazy
+          registration pattern is needed instead.
+        previous: null
+      depends_on:
+        new:
+          - "@01KNN24A"
+        previous: []
+    command: task-set
+    timestamp: 2026-04-07T22:49:27.802Z
 created_at: 2026-04-07T22:48:50.413Z
 todos: []
 automation: manual_only

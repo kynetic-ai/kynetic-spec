@@ -2,12 +2,55 @@ _ulid: 01KNN24V593SQEF0CA5Z00NQNF
 slugs: []
 title: Apply cache context and working directory isolation to batch route
 type: task
+description: >-
+  The batch command route (POST /api/command/batch) in packages/daemon/src/routes/command.ts still
+  uses process.chdir(projectPath) directly and lacks entity cache context propagation,
+  commandExecutionStorage wrapping, and runWithWorkingDirectory isolation. If a batch mutation runs
+  while a cache-backed read (which skips the mutex) is in flight, the global process.chdir could
+  affect the concurrent read's path resolution.
+
+
+  Why: The single command route was updated with full ALS-based isolation (runWithEntityCache,
+  runWithWorkingDirectory, commandExecutionStorage, runWithOutputState) but the batch route was not
+  updated to match. Both routes execute CLI commands in-process, but the batch route wraps execution
+  differently — it manages its own chdir, console capture, and output state. Since cache-backed
+  reads now skip the mutex, any mutation (including batch) that modifies process-global state can
+  interfere with concurrent reads.
+
+
+  What: Update the batch route's command execution path to use the same ALS-based isolation as the
+  single command route:
+
+
+  1. Wrap batch command execution inside runWithEntityCache() using the project's entity cache, so
+  batch-executed commands benefit from cache reads.
+
+
+  2. Replace process.chdir(projectPath) with runWithWorkingDirectory() so concurrent reads are not
+  affected by the batch's working directory.
+
+
+  3. Wrap output capture in commandExecutionStorage so console and stdout/stderr capture is
+  request-scoped.
+
+
+  4. Wrap output format in runWithOutputState so batch commands get isolated output format and
+  verbose mode.
+
+
+  How: The batch route handler has its own executeCommand-equivalent logic at approximately lines
+  715-756 of packages/daemon/src/routes/command.ts. Apply the same nesting pattern used in the
+  single command route: runWithEntityCache wrapping runWithWorkingDirectory wrapping
+  runWithOutputState wrapping the actual command execution. The batch route always runs inside the
+  mutex, so the primary concern is not concurrency between batch commands but between a batch
+  mutation and concurrent cache-backed reads that skip the mutex.
 spec_ref: "@daemon-command-api"
 meta_ref: null
 plan_ref: "@plan-cache-aware-command-execution"
 status: pending
 blocked_by: []
-depends_on: []
+depends_on:
+  - "@01KNN24A"
 context: []
 priority: 3
 tags:
@@ -15,6 +58,59 @@ tags:
   - cache
   - bug
 vcs_refs: []
+history:
+  - author: "@claude"
+    changes:
+      description:
+        new: >-
+          The batch command route (POST /api/command/batch) in packages/daemon/src/routes/command.ts
+          still uses process.chdir(projectPath) directly and lacks entity cache context propagation,
+          commandExecutionStorage wrapping, and runWithWorkingDirectory isolation. If a batch
+          mutation runs while a cache-backed read (which skips the mutex) is in flight, the global
+          process.chdir could affect the concurrent read's path resolution.
+
+
+          Why: The single command route was updated with full ALS-based isolation
+          (runWithEntityCache, runWithWorkingDirectory, commandExecutionStorage, runWithOutputState)
+          but the batch route was not updated to match. Both routes execute CLI commands in-process,
+          but the batch route wraps execution differently — it manages its own chdir, console
+          capture, and output state. Since cache-backed reads now skip the mutex, any mutation
+          (including batch) that modifies process-global state can interfere with concurrent reads.
+
+
+          What: Update the batch route's command execution path to use the same ALS-based isolation
+          as the single command route:
+
+
+          1. Wrap batch command execution inside runWithEntityCache() using the project's entity
+          cache, so batch-executed commands benefit from cache reads.
+
+
+          2. Replace process.chdir(projectPath) with runWithWorkingDirectory() so concurrent reads
+          are not affected by the batch's working directory.
+
+
+          3. Wrap output capture in commandExecutionStorage so console and stdout/stderr capture is
+          request-scoped.
+
+
+          4. Wrap output format in runWithOutputState so batch commands get isolated output format
+          and verbose mode.
+
+
+          How: The batch route handler has its own executeCommand-equivalent logic at approximately
+          lines 715-756 of packages/daemon/src/routes/command.ts. Apply the same nesting pattern
+          used in the single command route: runWithEntityCache wrapping runWithWorkingDirectory
+          wrapping runWithOutputState wrapping the actual command execution. The batch route always
+          runs inside the mutex, so the primary concern is not concurrency between batch commands
+          but between a batch mutation and concurrent cache-backed reads that skip the mutex.
+        previous: null
+      depends_on:
+        new:
+          - "@01KNN24A"
+        previous: []
+    command: task-set
+    timestamp: 2026-04-07T22:49:28.695Z
 created_at: 2026-04-07T22:48:54.185Z
 todos: []
 automation: eligible

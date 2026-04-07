@@ -25833,7 +25833,8 @@
   plan_ref: "@plan-cache-aware-command-execution"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@01KNN24A"
   priority: 3
   tags:
     - daemon
@@ -25851,7 +25852,8 @@
   plan_ref: "@plan-cache-aware-command-execution"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@01KNN24A"
   priority: 3
   tags:
     - daemon
