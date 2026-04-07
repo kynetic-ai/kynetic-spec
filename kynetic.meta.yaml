@@ -13300,6 +13300,24 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-07T18:07:58.955Z
+  - _ulid: 01KNMK1DF0TNFX19Z1DVMECRV7
+    type: success
+    content: Reviewing the exact diff first, then validating the entity-cache contract in
+      src/daemon/entity-cache.ts and running a focused parser suite made it easy to approve a small
+      cache-serving change without being derailed by unrelated full-suite noise.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T18:24:53.216Z
+  - _ulid: 01KNMK1DWHGV0RFTC6XGWZ4WAV
+    type: friction
+    content: Running multiple full npm test processes in the same review workspace produced misleading
+      failures and file-collision cleanup errors. Review workflows should treat full-suite reruns as
+      sequential-only in a shared worktree, or provide isolated temp paths per run.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T18:24:53.649Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
