@@ -20,3 +20,11 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-07T16:36:27.075Z
+  - _ulid: 01KNME8DZ5AENDZSE6ZDW31BKB
+    content: "Fix cycle 1: made daemon cache retain task field-change history on initial loads and
+      incremental write-through updates; added AC-tagged daemon cache tests for both paths; fixed
+      remaining daemon dist .ts test imports; npm test passed (2085/2085 suites, 7597 passed, 5
+      skipped); kspec validate produced only the repo's existing warnings."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T17:01:20.229Z
