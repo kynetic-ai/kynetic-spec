@@ -40651,7 +40651,7 @@ workspaces:
         head: 343472d01808d514accacb66d1bb86db4519b37f
         last_seen_at: 2026-04-07T16:28:17.851Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-update-entity-cache-history-ac-01knmbpc
-  - active_role: null
+  - active_role: worker
     base_branch_point: 343472d01808d514accacb66d1bb86db4519b37f
     bootstrap:
       status: succeeded
@@ -40740,7 +40740,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-07T16:32:19.388Z
+      updated_at: 2026-04-07T16:32:27.329Z
     integration:
       status: pending
       detail: null
@@ -40749,16 +40749,16 @@ workspaces:
       target_branch: plan/plan-cache-aware-command-execution/01knkf3b
       target_commit: 343472d01808d514accacb66d1bb86db4519b37f
       updated_at: 2026-04-07T16:32:19.388Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: plan/plan-cache-aware-command-execution/01knkf3b
     task_ref: "@01KNMCHPEEXG7VSVJJ0748PYC9"
     task_slug: task-fix-daemon-test-dist-imports
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-04-07T16:32:19.388Z
+      last_active_at: 2026-04-07T16:32:27.329Z
+      last_reconciled_at: 2026-04-07T16:32:27.329Z
       created_at: 2026-04-07T16:32:19.388Z
-      updated_at: 2026-04-07T16:32:25.684Z
+      updated_at: 2026-04-07T16:32:27.329Z
     workspace_id: dispatch-workspace-01KNMCHPEEXG7VSVJJ0748PYC9
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
