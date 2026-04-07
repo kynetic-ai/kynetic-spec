@@ -125048,6 +125048,17 @@ reviews:
         required: true
         created_at: 2026-04-07T08:26:14.572Z
         completed_at: 2026-04-07T08:26:14.572Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: The new spec @daemon-concurrent-reads is still fully covered by
+          @task-read-command-concurrency, and the existing spec-update/cache-loader tasks still
+          claim the command-api and entity-cache AC additions introduced by this plan.
+        name: Coverage mapping
+        required: true
+        created_at: 2026-04-07T08:26:17.441Z
+        completed_at: 2026-04-07T08:26:17.441Z
     events:
       - _ulid: 01KNKGRSXEQG74XE0W0Q6VFR6S
         actor: "@claude"
@@ -125069,6 +125080,13 @@ reviews:
           status: pass
           name: Behavioral purity
         timestamp: 2026-04-07T08:26:15.465Z
+      - _ulid: 01KNKGSCBXZ6YBXG0J08HJNPWC
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Coverage mapping
+        timestamp: 2026-04-07T08:26:18.365Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -125081,5 +125099,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-07T08:25:59.470Z
-    updated_at: 2026-04-07T08:26:14.572Z
+    updated_at: 2026-04-07T08:26:17.441Z
     notes: []
