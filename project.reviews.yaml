@@ -124493,9 +124493,25 @@ reviews:
           status: fail
           name: Task executability
         timestamp: 2026-04-07T08:09:09.410Z
+      - _ulid: 01KNKFT409ZNTXV0MRZNRRAP0K
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-07T08:09:13.994Z
+      - _ulid: 01KNKFT40AFWJSWZYNWRGBN3JJ
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-07T08:09:13.994Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -124538,7 +124554,14 @@ reviews:
               domains that command actually touches.
             created_at: 2026-04-07T08:08:48.287Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-07T08:09:13.993Z
     created_at: 2026-04-07T08:07:45.498Z
-    updated_at: 2026-04-07T08:09:08.582Z
+    updated_at: 2026-04-07T08:09:13.994Z
     notes: []
