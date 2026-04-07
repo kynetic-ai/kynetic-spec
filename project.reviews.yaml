@@ -123523,6 +123523,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-07T05:19:41.284Z
+      - _ulid: 01KNK645RRJJT8SRA0XJ15Q62A
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNK623FMKDWD18MWFWFZQRQ0
+        timestamp: 2026-04-07T05:19:57.720Z
     examined_commit: 2c9267a1925319c10a2571e224cff060caf50007
     external_links: []
     lifecycle_state: closed
@@ -123552,6 +123558,16 @@ reviews:
               until a later watcher/full reload. Please serialize hinted task write-throughs or
               reuse the existing domain reload dedup path, and add a concurrency regression test."
             created_at: 2026-04-07T05:18:49.844Z
+          - _ulid: 01KNK644Z0QMXZJHND0VAE5A0T
+            author: Jacob Chapel
+            body: "Confirmed repro: a tsx script updated task A and task B on disk, then ran Promise.all on two
+              hinted writeThrough calls for the tasks domain. After the calls completed, task B
+              reflected the new title but task A was still stale in cache on iteration 0. The root
+              cause is that each incremental task update clones the current tasks index/details,
+              awaits disk reads, and then assigns the cloned structures back without serialization.
+              packages/daemon/src/routes/reviews.ts now makes this path easy to hit by issuing
+              Promise.all over transitioned task ULIDs for request_changes."
+            created_at: 2026-04-07T05:19:56.896Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -123562,5 +123578,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-07T05:19:41.283Z
     created_at: 2026-04-07T05:09:07.555Z
-    updated_at: 2026-04-07T05:19:41.284Z
+    updated_at: 2026-04-07T05:19:56.896Z
     notes: []
