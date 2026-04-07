@@ -71,5 +71,14 @@ tags:
   - cache
   - performance
 vcs_refs: []
+history:
+  - author: "@claude"
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-04-07T16:17:37.541Z
 created_at: 2026-04-07T16:16:31.829Z
 todos: []
+automation: eligible

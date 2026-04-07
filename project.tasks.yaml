@@ -25508,6 +25508,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-07T16:16:30.952Z
+  automation: eligible
 - _ulid: 01KNMBPC0GJ184YT6G3T43TNGB
   slugs:
     - task-update-entity-cache-history-ac
@@ -25526,6 +25527,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-07T16:16:31.247Z
+  automation: eligible
 - _ulid: 01KNMBPC9J7VPZGMJJ7V20W12T
   slugs:
     - task-cache-async-context
@@ -25545,6 +25547,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-07T16:16:31.538Z
+  automation: eligible
 - _ulid: 01KNMBPCJN1F5VZZ2DQV10VG76
   slugs:
     - task-cache-aware-init-context
@@ -25564,6 +25567,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-07T16:16:31.829Z
+  automation: eligible
 - _ulid: 01KNMBPCVJ0GEZR7FSE927QKNW
   slugs:
     - task-cache-aware-task-loading
@@ -25583,6 +25587,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-07T16:16:32.114Z
+  automation: eligible
 - _ulid: 01KNMBPD58NNNGKW4VQ1ENXX6F
   slugs:
     - task-cache-aware-item-loading
@@ -25602,6 +25607,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-07T16:16:32.424Z
+  automation: eligible
 - _ulid: 01KNMBPDFJVDHBED491ZCJGFV9
   slugs:
     - task-cache-aware-inbox-triage
@@ -25620,6 +25626,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-07T16:16:32.754Z
+  automation: eligible
 - _ulid: 01KNMBPDRSN3PXZ81CHXBWXKTN
   slugs:
     - task-cache-aware-plans-reviews
@@ -25638,6 +25645,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-07T16:16:33.049Z
+  automation: eligible
 - _ulid: 01KNMBPE1VG2HJEQZBXT33W1R8
   slugs:
     - task-cache-aware-meta
@@ -25657,6 +25665,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-07T16:16:33.339Z
+  automation: eligible
 - _ulid: 01KNMBPEAV13JG7RG434PY22CF
   slugs:
     - task-cache-task-history
@@ -25677,6 +25686,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-07T16:16:33.627Z
+  automation: eligible
 - _ulid: 01KNMBPEM8EBQPTWHSKP7M5JT4
   slugs:
     - task-read-command-concurrency
@@ -25702,3 +25712,4 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-07T16:16:33.928Z
+  automation: eligible

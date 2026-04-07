@@ -74,5 +74,14 @@ tags:
   - cache
   - foundation
 vcs_refs: []
+history:
+  - author: "@claude"
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-04-07T16:17:36.673Z
 created_at: 2026-04-07T16:16:31.538Z
 todos: []
+automation: eligible

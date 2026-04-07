@@ -39,5 +39,14 @@ tags:
   - cache
   - items
 vcs_refs: []
+history:
+  - author: "@claude"
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-04-07T16:17:39.177Z
 created_at: 2026-04-07T16:16:32.424Z
 todos: []
+automation: eligible
