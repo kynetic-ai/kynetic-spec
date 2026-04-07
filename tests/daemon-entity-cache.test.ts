@@ -22,6 +22,7 @@ import {
   setupShadowDetection,
   testUlid,
 } from "./helpers/cli";
+import { TaskDataManager } from "../src/parser/task-data-manager";
 import {
   ProjectEntityCache,
   fileToDomain,
@@ -1818,6 +1819,100 @@ describe("ProjectEntityCache", () => {
       expect(cache.getTaskIndex()).toBe(afterWriteThrough);
     });
 
+    // AC: @daemon-incremental-cache ac-single-entity-patch
+    // AC: @daemon-incremental-cache ac-index-consistency
+    // AC: @daemon-entity-cache ac-write-through
+    it("should preserve both task patches during concurrent hinted writeThrough calls", async () => {
+      const kspecDir = join(projectA, ".kspec");
+      seedSplitTask(kspecDir, {
+        _ulid: "01TASKB0000000000000000000",
+        slugs: ["task-b-sample"],
+        title: "Sample Task B",
+        type: "task",
+        status: "pending",
+        priority: 2,
+        spec_ref: "@spec-b-sample",
+        depends_on: [],
+        notes: [],
+        todos: [],
+        created_at: "2026-01-24T00:00:00.000Z",
+      });
+
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("tasks");
+
+      const taskAPath = join(kspecDir, "tasks", "01TASKA0000000000000000000", "task.yaml");
+      const taskBPath = join(kspecDir, "tasks", "01TASKB0000000000000000000", "task.yaml");
+      await fs.writeFile(
+        taskAPath,
+        yamlStringify({
+          _ulid: "01TASKA0000000000000000000",
+          slugs: ["task-a-sample"],
+          title: "Sample Task A concurrent update",
+          type: "task",
+          status: "in_progress",
+          priority: 1,
+          spec_ref: "@spec-a-sample",
+          depends_on: [],
+          created_at: "2026-01-24T00:00:00.000Z",
+        }),
+        "utf-8",
+      );
+      await fs.writeFile(
+        taskBPath,
+        yamlStringify({
+          _ulid: "01TASKB0000000000000000000",
+          slugs: ["task-b-sample"],
+          title: "Sample Task B concurrent update",
+          type: "task",
+          status: "completed",
+          priority: 2,
+          spec_ref: "@spec-b-sample",
+          depends_on: [],
+          created_at: "2026-01-24T00:00:00.000Z",
+        }),
+        "utf-8",
+      );
+
+      const originalGetTask = TaskDataManager.prototype.getTask;
+      let releaseTaskARead!: () => void;
+      const taskAReadGate = new Promise<void>((resolve) => {
+        releaseTaskARead = resolve;
+      });
+      let resolveTaskBRead!: () => void;
+      const taskBRead = new Promise<void>((resolve) => {
+        resolveTaskBRead = resolve;
+      });
+
+      vi.spyOn(TaskDataManager.prototype, "getTask").mockImplementation(async function (ctx, ref) {
+        if (ref === "01TASKA0000000000000000000") {
+          await taskAReadGate;
+        }
+        const task = await originalGetTask.call(this, ctx, ref);
+        if (ref === "01TASKB0000000000000000000") {
+          resolveTaskBRead();
+        }
+        return task;
+      });
+
+      const writeThroughs = Promise.all([
+        cache.writeThrough("tasks", { ulid: "01TASKA0000000000000000000" }),
+        cache.writeThrough("tasks", { ulid: "01TASKB0000000000000000000" }),
+      ]);
+
+      await Promise.race([taskBRead, new Promise((resolve) => setTimeout(resolve, 25))]);
+      releaseTaskARead();
+      await writeThroughs;
+
+      expect(cache.getTaskDetail("01TASKA0000000000000000000")?.title).toBe(
+        "Sample Task A concurrent update",
+      );
+      expect(cache.getTaskDetail("01TASKB0000000000000000000")?.title).toBe(
+        "Sample Task B concurrent update",
+      );
+      expect(cache.getTaskDetail("01TASKB0000000000000000000")?.status).toBe("completed");
+    });
+
     // AC: @daemon-incremental-cache ac-fallback-full-reload
     // AC: @daemon-entity-cache ac-write-through
     it("should fall back to a full reload when writeThrough has no entity hint", async () => {
@@ -1842,9 +1937,6 @@ describe("ProjectEntityCache", () => {
       const sentinel = { _ulid: "01TASKB0000000000000000000", title: "stale detail" } as any;
       cache.setTaskDetail("01TASKB0000000000000000000", sentinel);
 
-      const loadDomainSpy = vi.spyOn(cache, "loadDomain");
-      loadDomainSpy.mockClear();
-
       const taskPath = join(kspecDir, "tasks", "01TASKA0000000000000000000", "task.yaml");
       await fs.writeFile(
         taskPath,
@@ -1864,7 +1956,6 @@ describe("ProjectEntityCache", () => {
 
       await cache.writeThrough("tasks");
 
-      expect(loadDomainSpy).toHaveBeenCalledWith("tasks");
       expect(cache.getTaskDetail("01TASKB0000000000000000000")).not.toBe(sentinel);
       expect(cache.getTaskDetail("01TASKB0000000000000000000")?.title).toBe("Sample Task B");
     });

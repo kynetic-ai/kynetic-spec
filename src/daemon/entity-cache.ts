@@ -950,56 +950,9 @@ export class ProjectEntityCache {
       return;
     }
 
-    // AC: @daemon-entity-cache ac-reload-dedup — reuse in-flight promise
-    const existing = this.inFlightReloads.get(domain);
-    if (existing) {
-      await existing;
-      return;
-    }
-
-    const store = this.getStore(domain);
-
-    // AC: @daemon-entity-cache ac-domain-ready-event — capture state before
-    // transition so we can detect non-ready → ready and fire the callback.
-    const previousState = store.state;
-
-    // AC: @daemon-entity-cache ac-stale-during-reload — only transition to
-    // "loading" for initial loads. When a domain is already "ready", keep it
-    // ready so API routes continue serving cached data during the reload.
-    // Previously cached data remains accessible until doLoadDomain() swaps
-    // in the new data on completion.
-    if (store.state !== "ready") {
-      store.state = "loading";
-    }
-
-    const promise = this.doLoadDomain(domain, cycle)
-      .then(() => {
-        if (!this.disposed) {
-          store.state = "ready";
-          store.lastError = undefined;
-
-          // AC: @daemon-entity-cache ac-domain-ready-event — only fire when
-          // transitioning FROM a non-ready state. Reloads of already-ready
-          // domains (ac-stale-during-reload) do not trigger the event.
-          if (previousState !== "ready" && this.onDomainReady) {
-            this.onDomainReady(domain, this.projectPath, previousState);
-          }
-        }
-      })
-      .catch((err) => {
-        if (!this.disposed) {
-          // AC: @daemon-entity-cache ac-graceful-degradation
-          store.state = "degraded";
-          store.lastError = err instanceof Error ? err : new Error(String(err));
-          console.error(`[entity-cache] Failed to load domain "${domain}":`, err);
-        }
-      })
-      .finally(() => {
-        this.inFlightReloads.delete(domain);
-      });
-
-    this.inFlightReloads.set(domain, promise);
-    await promise;
+    await this.runNonMetaDomainReload(domain, "dedupe", async () => {
+      await this.loadNonMetaDomain(domain, cycle);
+    });
   }
 
   private async doLoadDomain(domain: CacheDomain, cycle?: ReloadCycle): Promise<void> {
@@ -1333,10 +1286,7 @@ export class ProjectEntityCache {
   async writeThrough(domain: CacheDomain, entityHint?: WriteThroughHint): Promise<void> {
     // AC: @daemon-server ac-18 — track last invalidation timestamp
     this.getStore(domain).lastInvalidatedAt = new Date().toISOString();
-    const handledIncrementally = await this.tryHintedWriteThrough(domain, entityHint);
-    if (!handledIncrementally) {
-      await this.loadDomain(domain);
-    }
+    await this.runHintedWriteThrough(domain, entityHint);
     // Only suppress the next watcher invalidation when the reload succeeded —
     // if the domain degraded, the watcher must still fire so a subsequent
     // file-change event can recover the domain.
@@ -1485,6 +1435,97 @@ export class ProjectEntityCache {
 
     await this.processDomainChanges(domain, [change]);
     return true;
+  }
+
+  private async runHintedWriteThrough(
+    domain: CacheDomain,
+    entityHint?: WriteThroughHint,
+  ): Promise<void> {
+    if (domain === "meta") {
+      const handledIncrementally = await this.tryHintedWriteThrough(domain, entityHint);
+      if (!handledIncrementally) {
+        await this.loadDomain(domain);
+      }
+      return;
+    }
+
+    await this.runNonMetaDomainReload(domain, "queue", async () => {
+      const handledIncrementally = await this.tryHintedWriteThrough(domain, entityHint);
+      if (!handledIncrementally) {
+        await this.loadNonMetaDomain(domain);
+      }
+    });
+  }
+
+  private async loadNonMetaDomain(
+    domain: Exclude<CacheDomain, "meta">,
+    cycle?: ReloadCycle,
+  ): Promise<void> {
+    const store = this.getStore(domain);
+
+    // AC: @daemon-entity-cache ac-domain-ready-event — capture state before
+    // transition so we can detect non-ready → ready and fire the callback.
+    const previousState = store.state;
+
+    // AC: @daemon-entity-cache ac-stale-during-reload — only transition to
+    // "loading" for initial loads. When a domain is already "ready", keep it
+    // ready so API routes continue serving cached data during the reload.
+    // Previously cached data remains accessible until doLoadDomain() swaps
+    // in the new data on completion.
+    if (store.state !== "ready") {
+      store.state = "loading";
+    }
+
+    try {
+      await this.doLoadDomain(domain, cycle);
+      if (!this.disposed) {
+        store.state = "ready";
+        store.lastError = undefined;
+
+        // AC: @daemon-entity-cache ac-domain-ready-event — only fire when
+        // transitioning FROM a non-ready state. Reloads of already-ready
+        // domains (ac-stale-during-reload) do not trigger the event.
+        if (previousState !== "ready" && this.onDomainReady) {
+          this.onDomainReady(domain, this.projectPath, previousState);
+        }
+      }
+    } catch (err) {
+      if (!this.disposed) {
+        // AC: @daemon-entity-cache ac-graceful-degradation
+        store.state = "degraded";
+        store.lastError = err instanceof Error ? err : new Error(String(err));
+        console.error(`[entity-cache] Failed to load domain "${domain}":`, err);
+      }
+    }
+  }
+
+  private async runNonMetaDomainReload(
+    domain: Exclude<CacheDomain, "meta">,
+    mode: "dedupe" | "queue",
+    work: () => Promise<void>,
+  ): Promise<void> {
+    const existing = this.inFlightReloads.get(domain);
+    if (mode === "dedupe" && existing) {
+      await existing;
+      return;
+    }
+
+    const promise = (async () => {
+      if (mode === "queue" && existing) {
+        await existing;
+      }
+      if (this.disposed) {
+        return;
+      }
+      await work();
+    })().finally(() => {
+      if (this.inFlightReloads.get(domain) === promise) {
+        this.inFlightReloads.delete(domain);
+      }
+    });
+
+    this.inFlightReloads.set(domain, promise);
+    await promise;
   }
 
   private async buildWriteThroughChange(
