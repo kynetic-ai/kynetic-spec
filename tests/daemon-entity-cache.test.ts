@@ -40,6 +40,7 @@ import {
 } from "../src/daemon/entity-cache";
 import { ensureSplitBackendRegistered } from "../src/parser/split-backend";
 import * as yamlModule from "../src/parser/yaml";
+import * as sessionStoreModule from "../src/sessions/store";
 
 ensureSplitBackendRegistered();
 
@@ -884,6 +885,318 @@ describe("ProjectEntityCache", () => {
       // Sessions domain should have been reloaded
       const after = cache.getSessionIndex();
       expect(after).not.toBe(before);
+    });
+
+    // AC: @daemon-incremental-cache ac-single-entity-patch
+    // AC: @daemon-incremental-cache ac-index-consistency
+    it("should patch only the changed session without rescanning the sessions directory", async () => {
+      const sessionsDir = join(projectA, ".kspec-sessions");
+      await fs.mkdir(sessionsDir, { recursive: true });
+
+      const alphaDir = join(sessionsDir, "session-alpha");
+      const betaDir = join(sessionsDir, "session-beta");
+      await fs.mkdir(alphaDir, { recursive: true });
+      await fs.mkdir(betaDir, { recursive: true });
+      const alphaPath = join(alphaDir, "session.yaml");
+      await fs.writeFile(
+        alphaPath,
+        yamlStringify({
+          id: "session-alpha",
+          agent_type: "claude-agent-acp",
+          status: "active",
+          started_at: "2026-04-01T00:00:00.000Z",
+          event_count: 1,
+        }),
+        "utf-8",
+      );
+      await fs.writeFile(
+        join(betaDir, "session.yaml"),
+        yamlStringify({
+          id: "session-beta",
+          agent_type: "claude-agent-acp",
+          status: "completed",
+          started_at: "2026-04-02T00:00:00.000Z",
+          ended_at: "2026-04-02T00:05:00.000Z",
+          event_count: 2,
+        }),
+        "utf-8",
+      );
+
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("sessions");
+
+      const metadataSpy = vi.spyOn(sessionStoreModule, "getSessionMetadataOnly");
+
+      await fs.writeFile(
+        alphaPath,
+        yamlStringify({
+          id: "session-alpha",
+          agent_type: "claude-agent-acp",
+          status: "completed",
+          started_at: "2026-04-01T00:00:00.000Z",
+          ended_at: "2026-04-01T00:07:00.000Z",
+          event_count: 7,
+          iteration_count: 3,
+        }),
+        "utf-8",
+      );
+
+      await cache.handleFileChange(sessionsDir, alphaPath);
+
+      expect(metadataSpy).toHaveBeenCalledTimes(1);
+      expect(metadataSpy).toHaveBeenCalledWith(sessionsDir, "session-alpha");
+      expect(cache.getSessionDetail("session-alpha")).toBeNull();
+      expect(cache.getSessionIndex()?.map((session) => session.id)).toEqual([
+        "session-beta",
+        "session-alpha",
+      ]);
+      expect(cache.getSessionIndex()?.find((session) => session.id === "session-beta")).toMatchObject(
+        {
+          id: "session-beta",
+          status: "completed",
+          event_count: 2,
+        },
+      );
+    });
+
+    // AC: @daemon-incremental-cache ac-single-entity-patch
+    // AC: @daemon-incremental-cache ac-index-consistency
+    // AC: @daemon-entity-cache ac-session-bounded-index
+    it("should insert a new session into the bounded index in recency order", async () => {
+      const sessionsDir = join(projectA, ".kspec-sessions");
+      await fs.mkdir(sessionsDir, { recursive: true });
+
+      for (const [id, startedAt] of [
+        ["session-oldest", "2026-04-01T00:00:00.000Z"],
+        ["session-middle", "2026-04-02T00:00:00.000Z"],
+      ] as const) {
+        const sessionDir = join(sessionsDir, id);
+        await fs.mkdir(sessionDir, { recursive: true });
+        await fs.writeFile(
+          join(sessionDir, "session.yaml"),
+          yamlStringify({
+            id,
+            agent_type: "claude-agent-acp",
+            status: "completed",
+            started_at: startedAt,
+            ended_at: startedAt,
+          }),
+          "utf-8",
+        );
+      }
+
+      const cache = new ProjectEntityCache(projectA, { maxIndexSize: 2 });
+      await cache.loadDomain("sessions");
+
+      const newestDir = join(sessionsDir, "session-newest");
+      await fs.mkdir(newestDir, { recursive: true });
+      const newestPath = join(newestDir, "session.yaml");
+      await fs.writeFile(
+        newestPath,
+        yamlStringify({
+          id: "session-newest",
+          agent_type: "claude-agent-acp",
+          status: "completed",
+          started_at: "2026-04-03T00:00:00.000Z",
+          ended_at: "2026-04-03T00:05:00.000Z",
+        }),
+        "utf-8",
+      );
+
+      const metadataSpy = vi.spyOn(sessionStoreModule, "getSessionMetadataOnly");
+
+      await cache.handleFileChange(sessionsDir, newestPath);
+
+      expect(metadataSpy).toHaveBeenCalledTimes(1);
+      expect(metadataSpy).toHaveBeenCalledWith(sessionsDir, "session-newest");
+      expect(cache.getSessionIndex()?.map((session) => session.id)).toEqual([
+        "session-newest",
+        "session-middle",
+      ]);
+      expect(cache.getSessionDetail("session-newest")).toBeNull();
+    });
+
+    // AC: @daemon-incremental-cache ac-removal-detection
+    it("should remove a deleted session from index, detail cache, and live counters", async () => {
+      const sessionsDir = join(projectA, ".kspec-sessions");
+      await fs.mkdir(sessionsDir, { recursive: true });
+
+      const removableDir = join(sessionsDir, "session-removable");
+      await fs.mkdir(removableDir, { recursive: true });
+      const removablePath = join(removableDir, "session.yaml");
+      await fs.writeFile(
+        removablePath,
+        yamlStringify({
+          id: "session-removable",
+          agent_type: "claude-agent-acp",
+          status: "active",
+          started_at: "2026-04-03T00:00:00.000Z",
+          event_count: 1,
+        }),
+        "utf-8",
+      );
+
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("sessions");
+      cache.setSessionDetail("session-removable", {
+        id: "session-removable",
+        status: "active",
+        agent_type: "claude-agent-acp",
+        agent_id: undefined,
+        session_type: "agent",
+        trigger: "legacy",
+        task_id: undefined,
+        started_at: "2026-04-03T00:00:00.000Z",
+        ended_at: undefined,
+        duration_ms: 0,
+        event_count: 1,
+        iteration_count: 0,
+        tasks_completed: 0,
+      });
+      cache.incrementSessionEventCount("session-removable");
+
+      await fs.rm(removableDir, { recursive: true, force: true });
+
+      const metadataSpy = vi.spyOn(sessionStoreModule, "getSessionMetadataOnly");
+      await cache.handleFileChange(sessionsDir, removablePath);
+
+      expect(metadataSpy).not.toHaveBeenCalled();
+      expect(cache.getSessionIndex()?.find((session) => session.id === "session-removable")).toBe(
+        undefined,
+      );
+      expect(cache.getSessionDetail("session-removable")).toBeNull();
+      expect(cache.getSessionLiveEventCount("session-removable")).toBeUndefined();
+    });
+
+    // AC: @daemon-incremental-cache ac-single-entity-patch
+    it("should clear stale detail cache on active-session event invalidation so routes use live counts", async () => {
+      const sessionsDir = join(projectA, ".kspec-sessions");
+      await fs.mkdir(sessionsDir, { recursive: true });
+
+      const sessionId = "session-live-detail";
+      const sessionDir = join(sessionsDir, sessionId);
+      await fs.mkdir(sessionDir, { recursive: true });
+      const eventsPath = join(sessionDir, "events.jsonl");
+      await fs.writeFile(
+        join(sessionDir, "session.yaml"),
+        yamlStringify({
+          id: sessionId,
+          agent_type: "claude-agent-acp",
+          status: "active",
+          started_at: "2026-04-03T00:00:00.000Z",
+          event_count: 1,
+        }),
+        "utf-8",
+      );
+      await fs.writeFile(eventsPath, "", "utf-8");
+
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("sessions");
+      cache.setSessionDetail(sessionId, {
+        id: sessionId,
+        status: "active",
+        agent_type: "claude-agent-acp",
+        agent_id: undefined,
+        session_type: "agent",
+        trigger: "legacy",
+        task_id: undefined,
+        started_at: "2026-04-03T00:00:00.000Z",
+        ended_at: undefined,
+        duration_ms: 0,
+        event_count: 1,
+        iteration_count: 0,
+        tasks_completed: 0,
+      });
+      cache.incrementSessionEventCount(sessionId);
+      cache.incrementSessionEventCount(sessionId);
+
+      await fs.appendFile(eventsPath, '{"type":"tool_call"}\n', "utf-8");
+      await cache.handleFileChange(sessionsDir, eventsPath);
+
+      expect(cache.getSessionDetail(sessionId)).toBeNull();
+      expect(cache.getSessionIndex()?.find((session) => session.id === sessionId)?.event_count).toBe(3);
+    });
+
+    // AC: @daemon-incremental-cache ac-single-entity-patch
+    it("should mark an incrementally invalidated active session as stalled when it crosses stale thresholds", async () => {
+      vi.useFakeTimers();
+
+      try {
+        vi.setSystemTime(new Date("2026-04-02T12:00:00.000Z"));
+
+        const sessionsDir = join(projectA, ".kspec-sessions");
+        await fs.mkdir(sessionsDir, { recursive: true });
+
+        const sessionId = "session-turns-stale";
+        const sessionDir = join(sessionsDir, sessionId);
+        await fs.mkdir(sessionDir, { recursive: true });
+        const metadataPath = join(sessionDir, "session.yaml");
+        await fs.writeFile(
+          metadataPath,
+          yamlStringify({
+            id: sessionId,
+            agent_type: "claude-agent-acp",
+            status: "active",
+            started_at: "2026-04-02T00:00:00.000Z",
+            event_count: 1,
+          }),
+          "utf-8",
+        );
+
+        const cache = new ProjectEntityCache(projectA);
+        await cache.loadDomain("sessions");
+        (cache as any).domainDebounceMs = 0;
+
+        expect(cache.getSessionIndex()?.find((session) => session.id === sessionId)?.status).toBe(
+          "active",
+        );
+
+        vi.setSystemTime(new Date("2026-04-03T18:30:00.000Z"));
+        const invalidation = cache.handleFileChange(sessionsDir, metadataPath);
+        await vi.advanceTimersByTimeAsync(0);
+        await invalidation;
+
+        expect(cache.getSessionIndex()?.find((session) => session.id === sessionId)?.status).toBe(
+          "stalled",
+        );
+        expect(cache.getSessionDetail(sessionId)).toBeNull();
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    // AC: @daemon-incremental-cache ac-fallback-full-reload
+    it("should fall back to a full sessions reload when the sessions root changes without a session id", async () => {
+      const sessionsDir = join(projectA, ".kspec-sessions");
+      await fs.mkdir(sessionsDir, { recursive: true });
+
+      const sessionId = "session-root-fallback";
+      const sessionDir = join(sessionsDir, sessionId);
+      await fs.mkdir(sessionDir, { recursive: true });
+      await fs.writeFile(
+        join(sessionDir, "session.yaml"),
+        yamlStringify({
+          id: sessionId,
+          agent_type: "claude-agent-acp",
+          status: "completed",
+          started_at: "2026-04-03T00:00:00.000Z",
+          ended_at: "2026-04-03T00:05:00.000Z",
+        }),
+        "utf-8",
+      );
+
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("sessions");
+
+      const incrementalSpy = vi.spyOn(cache as any, "tryIncrementalSessionUpdate");
+      const loadDomainSpy = vi.spyOn(cache, "loadDomain");
+      incrementalSpy.mockClear();
+      loadDomainSpy.mockClear();
+
+      await cache.handleFileChange(sessionsDir, sessionsDir);
+
+      expect(incrementalSpy).toHaveBeenCalledTimes(1);
+      expect(loadDomainSpy).toHaveBeenCalledWith("sessions", expect.anything());
     });
   });
 
