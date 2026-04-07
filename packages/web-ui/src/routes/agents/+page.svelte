@@ -28,8 +28,8 @@
 	import ActiveInvocationRow from '$lib/components/agents/ActiveInvocationRow.svelte';
 	import { Separator } from '$lib/components/ui/separator';
 	import { Skeleton } from '$lib/components/ui/skeleton';
-	import Bot from '@lucide/svelte/icons/bot';
-	import Zap from '@lucide/svelte/icons/zap';
+	import Bot from 'lucide-svelte/icons/bot';
+	import Zap from 'lucide-svelte/icons/zap';
 
 	const queryClient = useQueryClient();
 

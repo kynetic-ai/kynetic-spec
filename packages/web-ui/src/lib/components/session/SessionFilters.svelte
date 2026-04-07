@@ -19,7 +19,7 @@
 		SelectTrigger
 	} from '$lib/components/ui/select';
 	import { Button } from '$lib/components/ui/button';
-	import X from '@lucide/svelte/icons/x';
+	import X from 'lucide-svelte/icons/x';
 
 	interface Props {
 		/** Total sessions matching current filters */

@@ -6,8 +6,8 @@
 <script lang="ts">
 	import { useQueryClient } from '@tanstack/svelte-query';
 	import { Button } from '$lib/components/ui/button';
-	import AlertTriangle from '@lucide/svelte/icons/alert-triangle';
-	import RefreshCw from '@lucide/svelte/icons/refresh-cw';
+	import AlertTriangle from 'lucide-svelte/icons/alert-triangle';
+	import RefreshCw from 'lucide-svelte/icons/refresh-cw';
 
 	interface Props {
 		/** Human-readable entity name, e.g. "tasks", "inbox items" */

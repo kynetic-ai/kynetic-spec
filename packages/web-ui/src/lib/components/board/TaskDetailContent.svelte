@@ -32,8 +32,8 @@
 	import { renderMarkdown } from '$lib/utils/markdown';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { getStatusClasses, formatVcsRef } from './board-utils';
-	import GitBranch from '@lucide/svelte/icons/git-branch';
-	import ExternalLink from '@lucide/svelte/icons/external-link';
+	import GitBranch from 'lucide-svelte/icons/git-branch';
+	import ExternalLink from 'lucide-svelte/icons/external-link';
 	import RelatedSessionsSection from '$lib/components/session/RelatedSessionsSection.svelte';
 
 	interface Props {

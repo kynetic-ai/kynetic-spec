@@ -15,14 +15,14 @@
 	import { Card, CardContent, CardHeader } from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
-	import WorkflowIcon from '@lucide/svelte/icons/workflow';
-	import PlayIcon from '@lucide/svelte/icons/play';
-	import ZapIcon from '@lucide/svelte/icons/zap';
-	import RepeatIcon from '@lucide/svelte/icons/repeat';
-	import CheckCircleIcon from '@lucide/svelte/icons/check-circle';
-	import CircleDotIcon from '@lucide/svelte/icons/circle-dot';
-	import CircleIcon from '@lucide/svelte/icons/circle';
-	import CopyIcon from '@lucide/svelte/icons/copy';
+	import WorkflowIcon from 'lucide-svelte/icons/workflow';
+	import PlayIcon from 'lucide-svelte/icons/play';
+	import ZapIcon from 'lucide-svelte/icons/zap';
+	import RepeatIcon from 'lucide-svelte/icons/repeat';
+	import CheckCircleIcon from 'lucide-svelte/icons/check-circle';
+	import CircleDotIcon from 'lucide-svelte/icons/circle-dot';
+	import CircleIcon from 'lucide-svelte/icons/circle';
+	import CopyIcon from 'lucide-svelte/icons/copy';
 	import { renderMarkdown } from '$lib/utils/markdown';
 
 	// ── Step type classes (using design-system severity tokens) ──

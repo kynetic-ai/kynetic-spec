@@ -37,7 +37,7 @@
 	import { isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 	import { renderMarkdown } from '$lib/utils/markdown';
 	import { queryKeys } from '$lib/query/keys.js';
-	import Inbox from '@lucide/svelte/icons/inbox';
+	import Inbox from 'lucide-svelte/icons/inbox';
 
 	const queryClient = useQueryClient();
 

@@ -5,8 +5,8 @@
 <script lang="ts">
 	import type { ThinkingBlock as ThinkingBlockType } from './session-utils';
 	import { formatTime } from './session-utils';
-	import ChevronRight from '@lucide/svelte/icons/chevron-right';
-	import Brain from '@lucide/svelte/icons/brain';
+	import ChevronRight from 'lucide-svelte/icons/chevron-right';
+	import Brain from 'lucide-svelte/icons/brain';
 
 	let { block }: { block: ThinkingBlockType } = $props();
 

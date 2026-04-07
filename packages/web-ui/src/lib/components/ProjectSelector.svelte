@@ -22,7 +22,7 @@
 		isLoading as isProjectLoading
 	} from '$lib/stores/project.svelte';
 	import { reconnectWithProject } from '$lib/stores/connection.svelte';
-	import FolderIcon from '@lucide/svelte/icons/folder';
+	import FolderIcon from 'lucide-svelte/icons/folder';
 
 	// Derive display name from path (last segment)
 	function getProjectName(path: string): string {

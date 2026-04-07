@@ -7,7 +7,7 @@
 	import type { EventEnvelopeSummary } from '$lib/api';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Card } from '$lib/components/ui/card';
-	import ScrollText from '@lucide/svelte/icons/scroll-text';
+	import ScrollText from 'lucide-svelte/icons/scroll-text';
 
 	interface Props {
 		events: EventEnvelopeSummary[];

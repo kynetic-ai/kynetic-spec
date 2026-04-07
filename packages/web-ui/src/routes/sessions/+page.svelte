@@ -39,12 +39,12 @@
 	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
 	import { createInfiniteQuery, createQuery } from '$lib/query/createQuery.svelte.js';
 	import { queryKeys } from '$lib/query/keys.js';
-	import Activity from '@lucide/svelte/icons/activity';
-	import Zap from '@lucide/svelte/icons/zap';
-	import Terminal from '@lucide/svelte/icons/terminal';
-	import Loader2 from '@lucide/svelte/icons/loader-2';
-	import Search from '@lucide/svelte/icons/search';
-	import ArrowUp from '@lucide/svelte/icons/arrow-up';
+	import Activity from 'lucide-svelte/icons/activity';
+	import Zap from 'lucide-svelte/icons/zap';
+	import Terminal from 'lucide-svelte/icons/terminal';
+	import Loader2 from 'lucide-svelte/icons/loader-2';
+	import Search from 'lucide-svelte/icons/search';
+	import ArrowUp from 'lucide-svelte/icons/arrow-up';
 	import type { BroadcastEvent } from '@kynetic-ai/shared';
 
 	const PAGE_SIZE = 25;
