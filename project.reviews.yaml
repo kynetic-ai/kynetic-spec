@@ -127782,6 +127782,16 @@ reviews:
         runner: vitest
         created_at: 2026-04-07T20:59:25.309Z
         completed_at: 2026-04-07T20:59:25.309Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh passed: 2094 suites, 7636 tests passed, 5 skipped, duration 3020.2s."
+        name: npm test
+        required: true
+        runner: vitest
+        created_at: 2026-04-07T20:59:30.459Z
+        completed_at: 2026-04-07T20:59:30.459Z
     events:
       - _ulid: 01KNMV9BGGBEFWBC5ZMHS5N4YA
         actor: Jacob Chapel
@@ -127824,6 +127834,13 @@ reviews:
           kind: nit
           thread_ulid: 01KNMVWENYN00S1P27SGC4GS2H
         timestamp: 2026-04-07T20:59:28.820Z
+      - _ulid: 01KNMVWJ4WSKWCRT2ADSQTR095
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-07T20:59:31.356Z
     examined_commit: 6e37e6b9839a0d69b7aaadaa6f2b9c3f2ca74b24
     external_links: []
     lifecycle_state: open
@@ -127906,5 +127923,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-07T20:49:01.968Z
-    updated_at: 2026-04-07T20:59:27.806Z
+    updated_at: 2026-04-07T20:59:30.459Z
     notes: []
