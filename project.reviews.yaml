@@ -124266,9 +124266,25 @@ reviews:
           status: fail
           name: Task executability
         timestamp: 2026-04-07T08:00:33.675Z
+      - _ulid: 01KNKFAG50H5W0VB1CN2ABJHTB
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-07T08:00:42.144Z
+      - _ulid: 01KNKFAG50PZG2D4SBJF48A95W
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-07T08:00:42.145Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -124362,7 +124378,14 @@ reviews:
               easier to review, and less likely to hide partial coverage gaps."
             created_at: 2026-04-07T08:00:03.188Z
         kind: question
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-07T08:00:42.144Z
     created_at: 2026-04-07T07:58:55.565Z
-    updated_at: 2026-04-07T08:00:32.842Z
+    updated_at: 2026-04-07T08:00:42.144Z
     notes: []
