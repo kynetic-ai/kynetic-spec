@@ -24028,7 +24028,7 @@ runs:
     completed_at: 2026-04-07T19:27:41.204Z
   - _ulid: 01KNMRXA4Q7R93NZEPZ3WA1T1W
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -24041,7 +24041,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-07T20:08:37.726Z
-        completed_at: 2026-04-07T20:08:37.726Z
+        completed_at: 2026-04-07T20:08:38.551Z
+        notes: "Coverage check: searched for 'cache-backed read concurrency', 'command cache domains',
+          'daemon command api tests', 'submission linkage main', 'task submission linkage', and
+          'branch linkage'. Only the submission-linkage issue mapped to existing tracked work
+          (@portable-task-submission-linkage / @implement-portable-task-submission-linkage)."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-07T20:08:38.551Z
+        completed_at: 2026-04-07T20:08:38.551Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-07T20:07:30.200Z
