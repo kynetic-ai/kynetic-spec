@@ -122452,7 +122452,16 @@ reviews:
     slugs: []
     title: Review task-meta-subdomain-decomposition (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate exited 6 with warnings only; no schema or reference errors in this snapshot.
+        name: kspec-validate
+        required: false
+        created_at: 2026-04-07T03:50:05.723Z
+        completed_at: 2026-04-07T03:50:05.723Z
     events:
       - _ulid: 01KNK0YHWXDS5Y6T0QNZ6YC5XW
         actor: Jacob Chapel
@@ -122467,6 +122476,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-07T03:50:04.019Z
+      - _ulid: 01KNK0ZN19J8R6BQPY9FQ5FC0A
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec-validate
+        timestamp: 2026-04-07T03:50:06.633Z
     examined_commit: 7f8b957f999ba7f29846b7669ed6b8da0e8f67c8
     external_links: []
     lifecycle_state: open
@@ -122479,5 +122495,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-07T03:49:30.653Z
-    updated_at: 2026-04-07T03:50:03.123Z
+    updated_at: 2026-04-07T03:50:05.723Z
     notes: []
