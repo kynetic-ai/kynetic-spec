@@ -127295,3 +127295,29 @@ reviews:
     created_at: 2026-04-07T19:33:19.130Z
     updated_at: 2026-04-07T19:34:00.454Z
     notes: []
+  - _ulid: 01KNMQMW0D362KSBEQ01VTE39E
+    slugs: []
+    title: Review task-cache-task-history
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KNMQMW0CE1MXA5DDFSFRN16C
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-07T19:45:25.004Z
+    examined_commit: 6ab12a48afa9ea404d715befd30a0aa524537911
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNMBPEAV13JG7RG434PY22CF"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-07T19:45:25.005Z
+    updated_at: null
+    notes: []
