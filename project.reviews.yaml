@@ -125934,9 +125934,16 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-04-07T17:51:31.286Z
+      - _ulid: 01KNMH4CYDX8CDNB0JTDZBYG0M
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-04-07T17:51:33.837Z
     examined_commit: 8284b1a506930a0baf9d03648e397ecf94e733e7
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: open
     related_refs: []
     subject:
       type: task
@@ -125963,5 +125970,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-07T17:43:54.285Z
-    updated_at: 2026-04-07T17:51:30.422Z
+    updated_at: 2026-04-07T17:51:32.964Z
     notes: []
