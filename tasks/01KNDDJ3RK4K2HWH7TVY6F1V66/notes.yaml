@@ -41,3 +41,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-07T02:50:03.955Z
+  - _ulid: 01KNJZ176PEGAR060B1H2EBQ0H
+    content: "Fix cycle 3 approach: rebase onto plan/plan-granular-cache-invalidation/01kndbmk, keep the
+      new sessions incremental reload path alongside item incremental reloads, and constrain item
+      incremental updates to manifest-expanded source files so off-manifest *.spec.yaml changes fall
+      back to full reload. Test plan: re-run daemon entity cache behavioral coverage for item
+      incremental updates, then kspec validate."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T03:16:00.854Z
