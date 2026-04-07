@@ -45,7 +45,7 @@ description: |
 spec_ref: "@daemon-incremental-cache"
 plan_ref: "@plan-granular-cache-invalidation"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-incremental-task-updates"
@@ -58,6 +58,14 @@ tags:
   - cache
   - refactor
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-04-07T05:05:17.836Z
+  commit: dfe2138f1545b01c3147f5f425dc3ef7cff403b1
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dev
 session_id: 01KNK4KR0GKT1RKKTCGRE9CV0H
 history:
   - author: "@claude"
@@ -80,7 +88,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-07T04:54:24.800Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-04-07T05:05:17.836Z
+          commit: dfe2138f1545b01c3147f5f425dc3ef7cff403b1
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-04-07T05:05:17.841Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-07T05:05:17.841Z
 created_at: 2026-04-04T23:34:28.813Z
 started_at: 2026-04-07T04:54:24.800Z
+submitted_at: 2026-04-07T05:05:17.841Z
 todos: []
 automation: eligible
