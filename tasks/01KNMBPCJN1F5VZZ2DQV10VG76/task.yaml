@@ -60,8 +60,13 @@ description: |
 spec_ref: "@daemon-command-api"
 plan_ref: "@plan-cache-aware-command-execution"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved review 01KNMGPC and merged
+  dispatch/task/task-cache-aware-init-context/01knmbpc into
+  plan/plan-cache-aware-command-execution/01knkf3b at 67ebfe91db89764dcd98955256e641f2950e0787.
+  Verified initContext cache-path behavior via targeted parser and daemon command API tests plus
+  full npm test (7603 passed, 5 skipped).
 depends_on:
   - "@task-cache-async-context"
 context: []
@@ -129,8 +134,25 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-07T17:43:56.880Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved review 01KNMGPC and merged dispatch/task/task-cache-aware-init-context/01knmbpc into
+          plan/plan-cache-aware-command-execution/01knkf3b at
+          67ebfe91db89764dcd98955256e641f2950e0787. Verified initContext cache-path behavior via
+          targeted parser and daemon command API tests plus full npm test (7603 passed, 5 skipped).
+        previous: null
+      completed_at:
+        new: 2026-04-07T17:52:31.055Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-07T17:52:31.094Z
 created_at: 2026-04-07T16:16:31.829Z
 started_at: 2026-04-07T17:29:45.313Z
 submitted_at: 2026-04-07T17:38:34.606Z
+completed_at: 2026-04-07T17:52:31.055Z
 todos: []
 automation: eligible
