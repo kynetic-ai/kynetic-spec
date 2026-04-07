@@ -127615,6 +127615,12 @@ reviews:
         payload:
           thread_ulid: 01KNMSEQNM214KVGPGS6JKAQSN
         timestamp: 2026-04-07T20:44:57.692Z
+      - _ulid: 01KNMV1ZHSG0WCPM2S3HS5HEEE
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNMSEFF0JTSV6KR2QCR8VH78
+        timestamp: 2026-04-07T20:45:00.345Z
     examined_commit: 1dcde7937b52018f763a0cff9973e4977ab9e72e
     external_links: []
     lifecycle_state: closed
@@ -127713,6 +127719,8 @@ reviews:
               tests/daemon-command-api.test.ts and npm test -- --fresh."
             created_at: 2026-04-07T20:42:24.751Z
         kind: blocker
+        resolved_at: 2026-04-07T20:44:59.417Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KNMSEQNM214KVGPGS6JKAQSN
         entries:
           - _ulid: 01KNMSEQNM0TS4T5JPNZGWAHR9
@@ -127757,5 +127765,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-07T20:17:36.357Z
     created_at: 2026-04-07T20:10:07.646Z
-    updated_at: 2026-04-07T20:44:56.865Z
+    updated_at: 2026-04-07T20:44:59.417Z
     notes: []
