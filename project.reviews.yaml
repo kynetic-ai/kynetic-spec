@@ -124756,6 +124756,17 @@ reviews:
         required: true
         created_at: 2026-04-07T08:19:12.480Z
         completed_at: 2026-04-07T08:19:12.480Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Ownership boundaries remain coherent: @daemon-command-api owns cache-serving behavior,
+          @daemon-entity-cache owns task-history retention, and @daemon-concurrent-reads owns only
+          the distinct concurrent-read contract."
+        name: Coverage mapping
+        required: true
+        created_at: 2026-04-07T08:19:18.937Z
+        completed_at: 2026-04-07T08:19:18.937Z
     events:
       - _ulid: 01KNKGB6VD6CJ9NQ0VD5GWMR06
         actor: "@claude"
@@ -124798,6 +124809,13 @@ reviews:
           status: pass
           name: Dependency ordering
         timestamp: 2026-04-07T08:19:13.305Z
+      - _ulid: 01KNKGCKHH90BXME0K39WBQ798
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Coverage mapping
+        timestamp: 2026-04-07T08:19:19.730Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -124832,5 +124850,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-07T08:18:33.965Z
-    updated_at: 2026-04-07T08:19:12.480Z
+    updated_at: 2026-04-07T08:19:18.937Z
     notes: []
