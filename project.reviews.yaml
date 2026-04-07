@@ -126090,6 +126090,12 @@ reviews:
         payload:
           thread_ulid: 01KNMHKVXEFJV21C7RJBVWBDXS
         timestamp: 2026-04-07T18:20:54.697Z
+      - _ulid: 01KNMJTHX70J14HV5FS2SEQP6N
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNMHKVXEFJV21C7RJBVWBDXS
+        timestamp: 2026-04-07T18:21:08.391Z
     examined_commit: 9eb7d18c54e9943217facfd01734ab79bad8865e
     external_links: []
     lifecycle_state: closed
@@ -126125,6 +126131,8 @@ reviews:
               to backend disk reads instead of using cached task data."
             created_at: 2026-04-07T18:20:53.753Z
         kind: blocker
+        resolved_at: 2026-04-07T18:21:07.497Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KNMHM5BWPTEESDP2CWFNTWZX
         anchor:
           type: code
@@ -126160,7 +126168,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-07T18:01:16.386Z
     created_at: 2026-04-07T17:58:39.728Z
-    updated_at: 2026-04-07T18:20:53.753Z
+    updated_at: 2026-04-07T18:21:07.497Z
     notes: []
   - _ulid: 01KNMJ5GMX4RP27PS0NXG8XH63
     slugs: []
