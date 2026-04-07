@@ -121723,7 +121723,19 @@ reviews:
     slugs: []
     title: Review incremental item updates (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Prepared snapshot is missing direct dependencies (@agentclientprotocol/sdk,
+          @tailwindcss/postcss, @types/diff). npm test stopped in scripts/test.cjs before executing
+          tests; the branch did not modify package manifests.
+        name: npm test
+        required: false
+        runner: npm
+        created_at: 2026-04-07T02:48:32.184Z
+        completed_at: 2026-04-07T02:48:32.184Z
     events:
       - _ulid: 01KNJ2XMNN9QDT2AX646T62SGS
         actor: Jacob Chapel
@@ -121745,6 +121757,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNJ39SPJ8RA220M2JFEXA5BB
         timestamp: 2026-04-06T19:11:22.683Z
+      - _ulid: 01KNJXEY9JZMEQ75NM0ZN3ZMNG
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: npm test
+        timestamp: 2026-04-07T02:48:33.331Z
     examined_commit: 89a85471696747b54a3759286576ba49873261f7
     external_links: []
     lifecycle_state: open
@@ -121777,7 +121796,7 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-06T19:04:43.445Z
-    updated_at: 2026-04-06T19:11:21.810Z
+    updated_at: 2026-04-07T02:48:32.184Z
     notes: []
   - _ulid: 01KNJW88C0C4C8EYQEST1BA3B0
     slugs: []
