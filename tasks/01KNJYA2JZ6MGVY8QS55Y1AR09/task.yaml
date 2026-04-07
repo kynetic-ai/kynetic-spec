@@ -17,7 +17,7 @@ description: "Review evidence on 2026-04-07: full npm test on submitted snapshot
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -27,6 +27,14 @@ tags:
   - parser
   - infra
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-04-07T03:55:28.437Z
+  commit: 564fc9691ffbb185333b969ebce501d0abb71013
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dev
 session_id: 01KNK0Q31ERXQ77PG6HWGTVQC0
 history:
   - author: Jacob Chapel
@@ -42,7 +50,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-07T03:46:13.157Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-04-07T03:55:28.437Z
+          commit: 564fc9691ffbb185333b969ebce501d0abb71013
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-04-07T03:55:28.444Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-07T03:55:28.444Z
 created_at: 2026-04-07T03:03:22.463Z
 started_at: 2026-04-07T03:46:13.156Z
+submitted_at: 2026-04-07T03:55:28.444Z
 todos: []
 automation: eligible
