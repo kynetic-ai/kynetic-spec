@@ -16,6 +16,13 @@ import {
   loadTriageRecords,
   runWithEntityCache,
 } from "../../src/parser/yaml.js";
+import { createPlan, loadPlans, savePlan } from "../../src/parser/plans.js";
+import {
+  createReviewRecord,
+  loadReviewRecords,
+  saveReviewRecord,
+} from "../../src/parser/reviews.js";
+import { testUlid } from "../helpers/cli.js";
 
 const cleanupDirs: string[] = [];
 
@@ -530,5 +537,176 @@ triage:
       _ulid: directTriageUlid,
       action: "duplicate",
     });
+  });
+});
+
+describe("loadPlans with entity cache context", () => {
+  // AC: @daemon-command-api ac-read-cache-serving
+  it("returns cached plan details when the plans domain is ready and details are populated", async () => {
+    const tempDir = await setupShadowProject();
+    const ctx = await initContext(tempDir, { syncMode: "skip" });
+    const plan = createPlan({
+      _ulid: testUlid("PLN"),
+      title: "Disk Plan",
+      content: "disk content",
+      slugs: ["disk-plan"],
+    });
+    await savePlan(ctx, plan);
+
+    const cachedPlans = [
+      {
+        ...(await loadPlans(ctx))[0],
+        title: "Cached Plan",
+      },
+    ];
+    const cache = {
+      getDomainState: vi.fn((domain: string) => (domain === "plans" ? "ready" : "unloaded")),
+      getPlansIndex: vi.fn(() => cachedPlans.map(({ _ulid }) => ({ _ulid }))),
+      getPlanDetail: vi.fn((ulid: string) => cachedPlans.find((plan) => plan._ulid === ulid) ?? null),
+    };
+
+    const plans = await runWithEntityCache(() => loadPlans(ctx), () => cache, tempDir);
+
+    expect(plans).toEqual(cachedPlans);
+    expect(cache.getDomainState).toHaveBeenCalledWith("plans");
+    expect(cache.getPlansIndex).toHaveBeenCalled();
+    expect(cache.getPlanDetail).toHaveBeenCalledWith(cachedPlans[0]._ulid);
+  });
+
+  // AC: @daemon-command-api ac-read-cache-serving
+  it("falls through to disk loading when the plans detail tier is empty", async () => {
+    const tempDir = await setupShadowProject();
+    const ctx = await initContext(tempDir, { syncMode: "skip" });
+    const plan = createPlan({
+      _ulid: testUlid("PLN"),
+      title: "Disk Plan",
+      content: "disk content",
+      slugs: ["disk-plan"],
+    });
+    await savePlan(ctx, plan);
+    const expectedPlans = await loadPlans(ctx);
+    const cache = {
+      getDomainState: vi.fn((domain: string) => (domain === "plans" ? "ready" : "unloaded")),
+      getPlansIndex: vi.fn(() => expectedPlans.map(({ _ulid }) => ({ _ulid }))),
+      getPlanDetail: vi.fn(() => null),
+    };
+
+    const plans = await runWithEntityCache(() => loadPlans(ctx), () => cache, tempDir);
+
+    expect(plans).toEqual(expectedPlans);
+    expect(cache.getPlansIndex).toHaveBeenCalled();
+    expect(cache.getPlanDetail).toHaveBeenCalledWith(expectedPlans[0]._ulid);
+  });
+
+  // AC: @daemon-command-api ac-read-cache-serving
+  it("falls through to disk loading when the plans domain is not ready", async () => {
+    const tempDir = await setupShadowProject();
+    const ctx = await initContext(tempDir, { syncMode: "skip" });
+    const plan = createPlan({
+      _ulid: testUlid("PLN"),
+      title: "Disk Plan",
+      content: "disk content",
+      slugs: ["disk-plan"],
+    });
+    await savePlan(ctx, plan);
+    const expectedPlans = await loadPlans(ctx);
+    const cache = {
+      getDomainState: vi.fn(() => "loading"),
+      getPlansIndex: vi.fn(() => {
+        throw new Error("plan index should not be read before the plans domain is ready");
+      }),
+      getPlanDetail: vi.fn(),
+    };
+
+    const plans = await runWithEntityCache(() => loadPlans(ctx), () => cache, tempDir);
+
+    expect(plans).toEqual(expectedPlans);
+    expect(cache.getDomainState).toHaveBeenCalledWith("plans");
+    expect(cache.getPlansIndex).not.toHaveBeenCalled();
+    expect(cache.getPlanDetail).not.toHaveBeenCalled();
+  });
+});
+
+describe("loadReviewRecords with entity cache context", () => {
+  function makeReviewInput() {
+    return {
+      _ulid: testUlid("REV"),
+      title: "Disk Review",
+      author: "tester",
+      subject: {
+        type: "code" as const,
+        base_commit: "abc123",
+        head_commit: "def456",
+      },
+    };
+  }
+
+  // AC: @daemon-command-api ac-read-cache-serving
+  it("returns cached review details when the reviews domain is ready and details are populated", async () => {
+    const tempDir = await setupShadowProject();
+    const ctx = await initContext(tempDir, { syncMode: "skip" });
+    await saveReviewRecord(ctx, createReviewRecord(makeReviewInput()));
+
+    const cachedReviews = [
+      {
+        ...(await loadReviewRecords(ctx))[0],
+        title: "Cached Review",
+      },
+    ];
+    const cache = {
+      getDomainState: vi.fn((domain: string) => (domain === "reviews" ? "ready" : "unloaded")),
+      getReviewsIndex: vi.fn(() => cachedReviews.map(({ _ulid }) => ({ _ulid }))),
+      getReviewDetail: vi.fn(
+        (ulid: string) => cachedReviews.find((review) => review._ulid === ulid) ?? null,
+      ),
+    };
+
+    const reviews = await runWithEntityCache(() => loadReviewRecords(ctx), () => cache, tempDir);
+
+    expect(reviews).toEqual(cachedReviews);
+    expect(cache.getDomainState).toHaveBeenCalledWith("reviews");
+    expect(cache.getReviewsIndex).toHaveBeenCalled();
+    expect(cache.getReviewDetail).toHaveBeenCalledWith(cachedReviews[0]._ulid);
+  });
+
+  // AC: @daemon-command-api ac-read-cache-serving
+  it("falls through to disk loading when the reviews detail tier is empty", async () => {
+    const tempDir = await setupShadowProject();
+    const ctx = await initContext(tempDir, { syncMode: "skip" });
+    await saveReviewRecord(ctx, createReviewRecord(makeReviewInput()));
+    const expectedReviews = await loadReviewRecords(ctx);
+    const cache = {
+      getDomainState: vi.fn((domain: string) => (domain === "reviews" ? "ready" : "unloaded")),
+      getReviewsIndex: vi.fn(() => expectedReviews.map(({ _ulid }) => ({ _ulid }))),
+      getReviewDetail: vi.fn(() => null),
+    };
+
+    const reviews = await runWithEntityCache(() => loadReviewRecords(ctx), () => cache, tempDir);
+
+    expect(reviews).toEqual(expectedReviews);
+    expect(cache.getReviewsIndex).toHaveBeenCalled();
+    expect(cache.getReviewDetail).toHaveBeenCalledWith(expectedReviews[0]._ulid);
+  });
+
+  // AC: @daemon-command-api ac-read-cache-serving
+  it("falls through to disk loading when the reviews domain is not ready", async () => {
+    const tempDir = await setupShadowProject();
+    const ctx = await initContext(tempDir, { syncMode: "skip" });
+    await saveReviewRecord(ctx, createReviewRecord(makeReviewInput()));
+    const expectedReviews = await loadReviewRecords(ctx);
+    const cache = {
+      getDomainState: vi.fn(() => "loading"),
+      getReviewsIndex: vi.fn(() => {
+        throw new Error("review index should not be read before the reviews domain is ready");
+      }),
+      getReviewDetail: vi.fn(),
+    };
+
+    const reviews = await runWithEntityCache(() => loadReviewRecords(ctx), () => cache, tempDir);
+
+    expect(reviews).toEqual(expectedReviews);
+    expect(cache.getDomainState).toHaveBeenCalledWith("reviews");
+    expect(cache.getReviewsIndex).not.toHaveBeenCalled();
+    expect(cache.getReviewDetail).not.toHaveBeenCalled();
   });
 });

@@ -168,6 +168,28 @@ function stripReviewMetadata(review: ReviewRecord | LoadedReviewRecord): ReviewR
  * AC: @review-record-storage-and-identity ac-3 - single dedicated file per project
  */
 export async function loadReviewRecords(ctx: KspecContext): Promise<LoadedReviewRecord[]> {
+  const { getEntityCacheContext } = await import("./yaml.js");
+  const cacheContext = getEntityCacheContext();
+  if (cacheContext) {
+    const cache = cacheContext.cacheAccessor(cacheContext.projectPath) as
+      | {
+          getDomainState?(domain: string): string | null | undefined;
+          getReviewsIndex?(): Array<{ _ulid: string }> | null;
+          getReviewDetail?(ulid: string): LoadedReviewRecord | null;
+        }
+      | null
+      | undefined;
+    if (cache?.getDomainState?.("reviews") === "ready") {
+      const reviewIndex = cache.getReviewsIndex?.() ?? [];
+      const cachedReviews = reviewIndex
+        .map((review) => cache.getReviewDetail?.(review._ulid) ?? null)
+        .filter((review): review is LoadedReviewRecord => review !== null);
+      if (cachedReviews.length > 0) {
+        return cachedReviews;
+      }
+    }
+  }
+
   const reviewsPath = getReviewsFilePath(ctx);
 
   try {
