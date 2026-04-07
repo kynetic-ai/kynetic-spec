@@ -10409,6 +10409,20 @@ features:
               command
             when: |
               the result is returned
+          - given: A read-only command is executed via the command API and the entity cache has all required
+              domains in ready state
+            id: ac-read-cache-serving
+            then: Data is served from the entity cache without reading files from disk
+            when: The command resolves data
+          - given: The daemon executes a CLI command via the command API
+            id: ac-cache-context-propagation
+            then: The entity cache for the target project is accessible to data loading functions throughout the
+              command's async execution chain
+            when: The command begins execution
+          - given: A CLI command runs in direct mode without the daemon
+            id: ac-no-cache-outside-daemon
+            then: Data is loaded from disk and no cache lookup is attempted
+            when: Data loading functions are called
         tags: []
         created: 2026-03-26T05:50:40.740Z
         notes: []
