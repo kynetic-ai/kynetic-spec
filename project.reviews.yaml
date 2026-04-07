@@ -122490,6 +122490,18 @@ reviews:
         runner: node
         created_at: 2026-04-07T03:50:16.745Z
         completed_at: 2026-04-07T03:50:16.745Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test fails before vitest on both the reviewed snapshot (7f8b957f999b) and the
+          recorded integration target (d5cf75d00642) with the same detached-worktree
+          dependency-health bootstrap error: missing direct dependencies @agentclientprotocol/sdk,
+          @tailwindcss/postcss, @types/diff. Treated as pre-existing, not introduced by this task."
+        name: npm-test
+        required: false
+        created_at: 2026-04-07T03:50:45.562Z
+        completed_at: 2026-04-07T03:50:45.562Z
     events:
       - _ulid: 01KNK0YHWXDS5Y6T0QNZ6YC5XW
         actor: Jacob Chapel
@@ -122532,6 +122544,13 @@ reviews:
           status: fail
           name: meta-subdomain-overlap-repro
         timestamp: 2026-04-07T03:50:18.142Z
+      - _ulid: 01KNK10WPYB0WZ2DFWFFYWXANN
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: npm-test
+        timestamp: 2026-04-07T03:50:47.264Z
     examined_commit: 7f8b957f999ba7f29846b7669ed6b8da0e8f67c8
     external_links: []
     lifecycle_state: open
@@ -122564,5 +122583,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-07T03:49:30.653Z
-    updated_at: 2026-04-07T03:50:16.745Z
+    updated_at: 2026-04-07T03:50:45.562Z
     notes: []
