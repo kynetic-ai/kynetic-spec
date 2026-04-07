@@ -13154,6 +13154,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-07T05:07:30.486Z
+  - _ulid: 01KNK66C55SVNP20X8ZJ7NB5HM
+    type: friction
+    content: Daemon-routed task submission timed out even while kspec serve status reported the daemon
+      healthy; I had to switch to KSPEC_NO_DAEMON=1 to submit the task and confirm pending_review.
+      This makes end-of-task state transitions less reliable in dispatch worktrees.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T05:21:09.797Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
