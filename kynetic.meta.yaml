@@ -13096,6 +13096,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-07T04:39:39.611Z
+  - _ulid: 01KNK3TCKY9SV0V4W81JE4W62C
+    type: success
+    content: Keeping the npm-installed package startup test in the targeted verification pass
+      immediately exposed that switching the default daemon runtime to node also required the root
+      package to ship the @elysiajs/node adapter dependency. The packaged-install check caught a
+      real distribution gap before review.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T04:39:39.902Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
