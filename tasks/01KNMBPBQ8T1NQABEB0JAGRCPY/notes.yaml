@@ -16,3 +16,11 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-07T16:22:39.988Z
+  - _ulid: 01KNMC44GVY35G4B35S739W9E3
+    content: "Reflection: the spec-first workflow for this task was straightforward. The only friction
+      was shell quoting when passing JSON inline to kspec batch; switching to a file-backed payload
+      resolved it immediately. Existing observation coverage already tracks CLI payload fragility,
+      so no new observation was captured."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T16:24:02.331Z
