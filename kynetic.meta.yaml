@@ -13263,6 +13263,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-07T17:04:54.435Z
+  - _ulid: 01KNMF4AHTSED56NYTGM7SNV8G
+    type: friction
+    content: Root CLI/parser TypeScript config does not allow type-only imports from packages/daemon/src
+      into src/, so shared parser-daemon contracts like the entity cache accessor require duplicated
+      local types instead of a single source of truth.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T17:16:34.234Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
