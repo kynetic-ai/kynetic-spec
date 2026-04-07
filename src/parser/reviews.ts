@@ -180,12 +180,14 @@ export async function loadReviewRecords(ctx: KspecContext): Promise<LoadedReview
       | null
       | undefined;
     if (cache?.getDomainState?.("reviews") === "ready") {
-      const reviewIndex = cache.getReviewsIndex?.() ?? [];
-      const cachedReviews = reviewIndex
-        .map((review) => cache.getReviewDetail?.(review._ulid) ?? null)
-        .filter((review): review is LoadedReviewRecord => review !== null);
-      if (cachedReviews.length > 0) {
-        return cachedReviews;
+      const reviewIndex = cache.getReviewsIndex?.();
+      if (reviewIndex) {
+        const cachedReviews = reviewIndex
+          .map((review) => cache.getReviewDetail?.(review._ulid) ?? null)
+          .filter((review): review is LoadedReviewRecord => review !== null);
+        if (cachedReviews.length === reviewIndex.length) {
+          return cachedReviews;
+        }
       }
     }
   }

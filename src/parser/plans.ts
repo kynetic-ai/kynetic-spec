@@ -190,12 +190,14 @@ export async function loadPlans(ctx: KspecContext): Promise<LoadedPlan[]> {
       | null
       | undefined;
     if (cache?.getDomainState?.("plans") === "ready") {
-      const planIndex = cache.getPlansIndex?.() ?? [];
-      const cachedPlans = planIndex
-        .map((plan) => cache.getPlanDetail?.(plan._ulid) ?? null)
-        .filter((plan): plan is LoadedPlan => plan !== null);
-      if (cachedPlans.length > 0) {
-        return cachedPlans;
+      const planIndex = cache.getPlansIndex?.();
+      if (planIndex) {
+        const cachedPlans = planIndex
+          .map((plan) => cache.getPlanDetail?.(plan._ulid) ?? null)
+          .filter((plan): plan is LoadedPlan => plan !== null);
+        if (cachedPlans.length === planIndex.length) {
+          return cachedPlans;
+        }
       }
     }
   }

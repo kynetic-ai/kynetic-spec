@@ -599,6 +599,70 @@ describe("loadPlans with entity cache context", () => {
   });
 
   // AC: @daemon-command-api ac-read-cache-serving
+  it("falls through to disk loading when the plans detail tier is only partially populated", async () => {
+    const tempDir = await setupShadowProject();
+    const ctx = await initContext(tempDir, { syncMode: "skip" });
+    const plansToSave = [
+      createPlan({
+        _ulid: testUlid("PLA", 1),
+        title: "Disk Plan One",
+        content: "disk content one",
+        slugs: ["disk-plan-one"],
+      }),
+      createPlan({
+        _ulid: testUlid("PLA", 2),
+        title: "Disk Plan Two",
+        content: "disk content two",
+        slugs: ["disk-plan-two"],
+      }),
+    ];
+    for (const plan of plansToSave) {
+      await savePlan(ctx, plan);
+    }
+    const expectedPlans = await loadPlans(ctx);
+    const cache = {
+      getDomainState: vi.fn((domain: string) => (domain === "plans" ? "ready" : "unloaded")),
+      getPlansIndex: vi.fn(() => expectedPlans.map(({ _ulid }) => ({ _ulid }))),
+      getPlanDetail: vi.fn((ulid: string) =>
+        ulid === expectedPlans[0]?._ulid ? expectedPlans[0] : null,
+      ),
+    };
+
+    const plans = await runWithEntityCache(() => loadPlans(ctx), () => cache, tempDir);
+
+    expect(plans).toEqual(expectedPlans);
+    expect(cache.getPlansIndex).toHaveBeenCalled();
+    expect(cache.getPlanDetail).toHaveBeenCalledTimes(expectedPlans.length);
+    expect(cache.getPlanDetail).toHaveBeenCalledWith(expectedPlans[0]._ulid);
+    expect(cache.getPlanDetail).toHaveBeenCalledWith(expectedPlans[1]._ulid);
+  });
+
+  // AC: @daemon-command-api ac-read-cache-serving
+  it("falls through to disk loading when the plans index tier is unavailable", async () => {
+    const tempDir = await setupShadowProject();
+    const ctx = await initContext(tempDir, { syncMode: "skip" });
+    const plan = createPlan({
+      _ulid: testUlid("PLN"),
+      title: "Disk Plan",
+      content: "disk content",
+      slugs: ["disk-plan"],
+    });
+    await savePlan(ctx, plan);
+    const expectedPlans = await loadPlans(ctx);
+    const cache = {
+      getDomainState: vi.fn((domain: string) => (domain === "plans" ? "ready" : "unloaded")),
+      getPlansIndex: vi.fn(() => null),
+      getPlanDetail: vi.fn(),
+    };
+
+    const plans = await runWithEntityCache(() => loadPlans(ctx), () => cache, tempDir);
+
+    expect(plans).toEqual(expectedPlans);
+    expect(cache.getPlansIndex).toHaveBeenCalled();
+    expect(cache.getPlanDetail).not.toHaveBeenCalled();
+  });
+
+  // AC: @daemon-command-api ac-read-cache-serving
   it("falls through to disk loading when the plans domain is not ready", async () => {
     const tempDir = await setupShadowProject();
     const ctx = await initContext(tempDir, { syncMode: "skip" });
@@ -686,6 +750,63 @@ describe("loadReviewRecords with entity cache context", () => {
     expect(reviews).toEqual(expectedReviews);
     expect(cache.getReviewsIndex).toHaveBeenCalled();
     expect(cache.getReviewDetail).toHaveBeenCalledWith(expectedReviews[0]._ulid);
+  });
+
+  // AC: @daemon-command-api ac-read-cache-serving
+  it("falls through to disk loading when the reviews detail tier is only partially populated", async () => {
+    const tempDir = await setupShadowProject();
+    const ctx = await initContext(tempDir, { syncMode: "skip" });
+    await saveReviewRecord(
+      ctx,
+      createReviewRecord({
+        ...makeReviewInput(),
+        _ulid: testUlid("REW", 1),
+        slugs: ["disk-review-one"],
+      }),
+    );
+    await saveReviewRecord(
+      ctx,
+      createReviewRecord({
+        ...makeReviewInput(),
+        _ulid: testUlid("REW", 2),
+        slugs: ["disk-review-two"],
+      }),
+    );
+    const expectedReviews = await loadReviewRecords(ctx);
+    const cache = {
+      getDomainState: vi.fn((domain: string) => (domain === "reviews" ? "ready" : "unloaded")),
+      getReviewsIndex: vi.fn(() => expectedReviews.map(({ _ulid }) => ({ _ulid }))),
+      getReviewDetail: vi.fn((ulid: string) =>
+        ulid === expectedReviews[0]?._ulid ? expectedReviews[0] : null,
+      ),
+    };
+
+    const reviews = await runWithEntityCache(() => loadReviewRecords(ctx), () => cache, tempDir);
+
+    expect(reviews).toEqual(expectedReviews);
+    expect(cache.getReviewsIndex).toHaveBeenCalled();
+    expect(cache.getReviewDetail).toHaveBeenCalledTimes(expectedReviews.length);
+    expect(cache.getReviewDetail).toHaveBeenCalledWith(expectedReviews[0]._ulid);
+    expect(cache.getReviewDetail).toHaveBeenCalledWith(expectedReviews[1]._ulid);
+  });
+
+  // AC: @daemon-command-api ac-read-cache-serving
+  it("falls through to disk loading when the reviews index tier is unavailable", async () => {
+    const tempDir = await setupShadowProject();
+    const ctx = await initContext(tempDir, { syncMode: "skip" });
+    await saveReviewRecord(ctx, createReviewRecord(makeReviewInput()));
+    const expectedReviews = await loadReviewRecords(ctx);
+    const cache = {
+      getDomainState: vi.fn((domain: string) => (domain === "reviews" ? "ready" : "unloaded")),
+      getReviewsIndex: vi.fn(() => null),
+      getReviewDetail: vi.fn(),
+    };
+
+    const reviews = await runWithEntityCache(() => loadReviewRecords(ctx), () => cache, tempDir);
+
+    expect(reviews).toEqual(expectedReviews);
+    expect(cache.getReviewsIndex).toHaveBeenCalled();
+    expect(cache.getReviewDetail).not.toHaveBeenCalled();
   });
 
   // AC: @daemon-command-api ac-read-cache-serving
