@@ -115,6 +115,12 @@ function shortReviewRef(review: LoadedReviewRecord, reviews: LoadedReviewRecord[
   );
 }
 
+function rethrowInterceptedProcessExit(err: unknown): void {
+  if (err instanceof Error && err.message.startsWith("__KSPEC_COMMAND_EXIT__:")) {
+    throw err;
+  }
+}
+
 /**
  * Compute gate state from checks using shared evaluateGates.
  * AC: @review-cli-commands ac-2
@@ -529,6 +535,7 @@ export function registerReviewCommands(program: Command): void {
             );
           });
         } catch (err) {
+          rethrowInterceptedProcessExit(err);
           error(errors.failures.createReview, err);
           process.exit(EXIT_CODES.ERROR);
         }
@@ -551,6 +558,7 @@ export function registerReviewCommands(program: Command): void {
           formatReviewDetails(found, reviews);
         });
       } catch (err) {
+        rethrowInterceptedProcessExit(err);
         error(errors.failures.getReview, err);
         process.exit(EXIT_CODES.ERROR);
       }
@@ -715,6 +723,7 @@ export function registerReviewCommands(program: Command): void {
           }
         });
       } catch (err) {
+        rethrowInterceptedProcessExit(err);
         error(errors.failures.listReviews, err);
         process.exit(EXIT_CODES.ERROR);
       }
@@ -821,6 +830,7 @@ export function registerReviewCommands(program: Command): void {
             success(`Added ${options.kind} thread to review ${shortReviewRef(found, reviews)}`);
           });
         } catch (err) {
+          rethrowInterceptedProcessExit(err);
           error(errors.failures.addReviewComment, err);
           process.exit(EXIT_CODES.ERROR);
         }
@@ -902,6 +912,7 @@ export function registerReviewCommands(program: Command): void {
             },
           );
         } catch (err) {
+          rethrowInterceptedProcessExit(err);
           error(errors.failures.replyToReviewThread, err);
           process.exit(EXIT_CODES.ERROR);
         }
@@ -988,6 +999,7 @@ export function registerReviewCommands(program: Command): void {
             },
           );
         } catch (err) {
+          rethrowInterceptedProcessExit(err);
           error(errors.failures.addReviewCheck, err);
           process.exit(EXIT_CODES.ERROR);
         }
@@ -1081,6 +1093,7 @@ export function registerReviewCommands(program: Command): void {
             },
           );
         } catch (err) {
+          rethrowInterceptedProcessExit(err);
           error(errors.failures.setReviewVerdict, err);
           process.exit(EXIT_CODES.ERROR);
         }
@@ -1161,6 +1174,7 @@ export function registerReviewCommands(program: Command): void {
             },
           );
         } catch (err) {
+          rethrowInterceptedProcessExit(err);
           error(errors.failures.resolveReviewThread, err);
           process.exit(EXIT_CODES.ERROR);
         }
@@ -1241,6 +1255,7 @@ export function registerReviewCommands(program: Command): void {
             },
           );
         } catch (err) {
+          rethrowInterceptedProcessExit(err);
           error(errors.failures.reopenReviewThread, err);
           process.exit(EXIT_CODES.ERROR);
         }
@@ -1298,6 +1313,7 @@ export function registerReviewCommands(program: Command): void {
             success(`Opened review ${shortReviewRef(found, reviews)}`);
           });
         } catch (err) {
+          rethrowInterceptedProcessExit(err);
           error(errors.failures.openReview, err);
           process.exit(EXIT_CODES.ERROR);
         }
@@ -1360,6 +1376,7 @@ export function registerReviewCommands(program: Command): void {
             success(`Closed review ${shortReviewRef(found, reviews)}`);
           });
         } catch (err) {
+          rethrowInterceptedProcessExit(err);
           error(errors.failures.closeReview, err);
           process.exit(EXIT_CODES.ERROR);
         }
@@ -1417,6 +1434,7 @@ export function registerReviewCommands(program: Command): void {
             success(`Archived review ${shortReviewRef(found, reviews)}`);
           });
         } catch (err) {
+          rethrowInterceptedProcessExit(err);
           error(errors.failures.archiveReview, err);
           process.exit(EXIT_CODES.ERROR);
         }
@@ -1481,6 +1499,7 @@ export function registerReviewCommands(program: Command): void {
             success(`Refreshed subject on review ${shortReviewRef(found, reviews)}`);
           });
         } catch (err) {
+          rethrowInterceptedProcessExit(err);
           error(errors.failures.refreshReview, err);
           process.exit(EXIT_CODES.ERROR);
         }
@@ -1551,6 +1570,7 @@ export function registerReviewCommands(program: Command): void {
           }
         });
       } catch (err) {
+        rethrowInterceptedProcessExit(err);
         error(errors.failures.findReviewsForTask, err);
         process.exit(EXIT_CODES.ERROR);
       }

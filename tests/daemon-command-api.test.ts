@@ -621,6 +621,28 @@ describe("Daemon Command API", () => {
     expect(body.exitCode).not.toBe(0);
   });
 
+  // AC: @daemon-command-api ac-response-parity
+  // AC: @daemon-concurrent-reads ac-concurrent-cache-reads
+  it("preserves pure JSON stderr for helper-based review errors under daemon execution", async () => {
+    const response = await makeRequest("/api/command", {
+      method: "POST",
+      body: JSON.stringify({
+        command: "review get",
+        args: { ref: "@does-not-exist", json: true },
+      }),
+    });
+
+    expect(response.status).toBe(422);
+    const body = await response.json();
+    expect(body.exitCode).not.toBe(0);
+
+    const parsed = JSON.parse(body.stderr);
+    expect(parsed.success).toBe(false);
+    expect(parsed.error).toContain("not found");
+    expect(parsed.suggestion ?? parsed.guidance ?? "").not.toContain("\nSuggestion:");
+    expect(body.stderr).not.toContain("\nSuggestion:");
+  });
+
   // AC: @daemon-command-api ac-cache-context-propagation
   it("installs entity cache context for in-process command execution", async () => {
     await withCacheContextCommand(async () => {

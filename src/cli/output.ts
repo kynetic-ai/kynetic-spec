@@ -123,7 +123,7 @@ export function setJsonMode(enabled: boolean): void {
  * AC: @output-format-option ac-json-shorthand
  */
 export function isJsonMode(): boolean {
-  return globalOutputFormat === "json";
+  return getOutputFormat() === "json";
 }
 
 /**
@@ -143,7 +143,7 @@ export function setYamlMode(enabled: boolean): void {
  * AC: @output-format-option ac-format-yaml
  */
 export function isYamlMode(): boolean {
-  return globalOutputFormat === "yaml";
+  return getOutputFormat() === "yaml";
 }
 
 /**
