@@ -127442,6 +127442,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-07T20:10:34.909Z
+      - _ulid: 01KNMSE69NRHBTQEHMHSSJJHJJ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNMSE5CAYR7PG595TKX4A3KV
+        timestamp: 2026-04-07T20:16:43.317Z
     examined_commit: 1dcde7937b52018f763a0cff9973e4977ab9e72e
     external_links: []
     lifecycle_state: open
@@ -127451,8 +127458,28 @@ reviews:
       content_hash: ""
       ref: "@01KNMBPEM8EBQPTWHSKP7M5JT4"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNMSE5CAYR7PG595TKX4A3KV
+        entries:
+          - _ulid: 01KNMSE5CA2VZRYYEJNJ19A2MV
+            author: Jacob Chapel
+            body: 'Evidence log:\nFiles read: packages/daemon/src/routes/command.ts,
+              tests/daemon-command-api.test.ts, src/cli/commands/task.ts, src/cli/commands/tasks.ts,
+              src/cli/commands/item.ts, src/cli/commands/search.ts, src/cli/commands/plan.ts,
+              src/cli/commands/review.ts, src/cli/commands/inbox.ts.\nCommands run: kspec task get
+              @01KNMBPEM8EBQPTWHSKP7M5JT4; kspec item get @daemon-concurrent-reads; kspec review
+              for-task @01KNMBPEM8EBQPTWHSKP7M5JT4; kspec validate; grep -Rni "AC:
+              @daemon-concurrent-reads\|AC: @trait-" tests; npm test --
+              tests/daemon-command-api.test.ts; npm test; bounded node repro for concurrent
+              cache-backed reads.\nClaims verified: cache-domain allowlist was compared against the
+              underlying CLI handlers; worker claim that concurrent cache-backed reads are safe was
+              disproved with the direct repro above.\nCategories searched: correctness, edge cases,
+              error handling, test quality, integration. Findings: 1 blocker in
+              correctness/integration; no separate AC annotation or validation regression introduced
+              by this task.'
+            created_at: 2026-04-07T20:16:42.378Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-07T20:10:07.646Z
-    updated_at: 2026-04-07T20:10:33.986Z
+    updated_at: 2026-04-07T20:16:42.378Z
     notes: []
