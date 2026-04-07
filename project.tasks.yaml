@@ -25388,7 +25388,7 @@
   slugs: []
   title: Investigate full-suite instability after dependency-health passes in review worktrees
   type: bug
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 2
@@ -25398,6 +25398,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-06T17:59:06.018Z
+  started_at: 2026-04-07T02:27:43.589Z
   automation: eligible
 - _ulid: 01KNHZPRQ8DGQW6A7XY985F61M
   slugs: []
