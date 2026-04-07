@@ -1,1 +1,14 @@
-notes: []
+notes:
+  - _ulid: 01KNJXMAFNWDZ4RK39AFQMHKW9
+    content: "Approach: split meta cache internals in src/daemon/entity-cache.ts into manifest, shadow,
+      and session sub-loaders while keeping the public meta API unchanged. Wire
+      packages/daemon/src/server.ts background shadow sync to refresh only the shadow sub-domain
+      instead of loadAll(). Edge cases: manifest changes still co-invalidate items via kynetic.yaml,
+      meta domain should not report ready until all three sub-domains have loaded once, and targeted
+      meta refreshes must preserve stale data for untouched sub-domains. Test plan: add behavioral
+      coverage in tests/daemon-entity-cache.test.ts for @daemon-meta-subdomain
+      ac-manifest-only-reload, ac-shadow-on-schedule, ac-session-context-independent, and
+      ac-initial-load-all by spying on the loader boundaries rather than reading source text."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T02:51:29.653Z
