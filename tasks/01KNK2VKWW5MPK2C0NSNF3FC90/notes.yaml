@@ -1,1 +1,10 @@
-notes: []
+notes:
+  - _ulid: 01KNK5JCBSN442WC3B432N83Q1
+    content: "Approach: inspect post-invocation re-evaluation tests and dispatch completion path, then
+      reproduce under full-suite load because the file passes in isolation. Edge cases: silent
+      polling timeouts, async completion after engine.stop(), cross-file mock/env leakage, and
+      provisioning/reconciliation races. Test plan: reproduce with full npm test -- --fresh, then
+      add/adjust behavioral tests around the concrete race and rerun the full suite."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T05:10:14.650Z
