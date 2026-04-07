@@ -122093,6 +122093,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-07T03:20:00.413Z
+      - _ulid: 01KNJZ8KRT695XBD1MMEVCCCJP
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNJZ8JV12V4ZC0DV5H233QCZ
+        timestamp: 2026-04-07T03:20:03.098Z
     examined_commit: 82b0e36155173b06f9cc85bf4c36a93b876855c6
     external_links: []
     lifecycle_state: open
@@ -122102,8 +122109,27 @@ reviews:
       content_hash: ""
       ref: "@01KNDDJ4BXMWVZSC7G6KMDP8BH"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNJZ8JV12V4ZC0DV5H233QCZ
+        anchor:
+          type: code
+          commit: 82b0e36155173b06f9cc85bf4c36a93b876855c6
+          line_end: 1492
+          line_start: 1441
+          path: src/daemon/entity-cache.ts
+          side: head
+        entries:
+          - _ulid: 01KNJZ8JV1XDJEPEWYMEMCFA7Y
+            author: Jacob Chapel
+            body: "The new incremental meta path bypasses the meta domain's in-flight reload dedup.  now returns
+              early into , which calls  directly instead of going through . I reproduced this with a
+              delayed  in a focused  harness: two  calls for  in separate debounce windows reached ,
+              ,  while  stayed at 1 (the concurrent  reload only). That violates the
+              existing  contract and reintroduces overlapping manifest/meta reload work under rapid
+              file changes."
+            created_at: 2026-04-07T03:20:02.145Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-07T03:19:36.797Z
-    updated_at: 2026-04-07T03:19:59.519Z
+    updated_at: 2026-04-07T03:20:02.145Z
     notes: []
