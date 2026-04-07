@@ -126558,6 +126558,13 @@ reviews:
           status: pass
           name: parser cache tests
         timestamp: 2026-04-07T18:41:23.924Z
+      - _ulid: 01KNMM028ZS2BC6RQD05XG55X5
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNMM01F1JJ8ERFPCYR7DDX05
+        timestamp: 2026-04-07T18:41:37.567Z
     examined_commit: 83d5ca14bff1114bc7729d90080a7c424973a446
     external_links: []
     lifecycle_state: draft
@@ -126605,7 +126612,27 @@ reviews:
               production does not create.
             created_at: 2026-04-07T18:41:15.213Z
         kind: blocker
+      - _ulid: 01KNMM01F1JJ8ERFPCYR7DDX05
+        anchor:
+          type: code
+          commit: 83d5ca14bff1114bc7729d90080a7c424973a446
+          line_end: 2608
+          line_start: 2593
+          path: src/parser/yaml.ts
+          side: head
+        entries:
+          - _ulid: 01KNMM01F2G2QNDZW5GZR5VV6N
+            author: Jacob Chapel
+            body: The new triage fast path never serves data from cache in the normal "ready" state.
+              loadTriageRecords() now returns cached records only when every ULID in
+              getTriageIndex() also has a populated getTriageDetail() entry, but the cache contract
+              explicitly keeps triage details empty after loadDomain("triage") and loads them on
+              demand. In practice, a ready triage domain still falls through to disk, so this task
+              does not satisfy @daemon-command-api ac-read-cache-serving for triage and the new test
+              only passes because it mocks a cache state that production does not create.
+            created_at: 2026-04-07T18:41:36.738Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-07T18:35:24.994Z
-    updated_at: 2026-04-07T18:41:22.986Z
+    updated_at: 2026-04-07T18:41:36.738Z
     notes: []
