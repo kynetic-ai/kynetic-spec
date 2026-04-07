@@ -127786,6 +127786,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-07T20:49:29.434Z
+      - _ulid: 01KNMVTVRT5T31FVC4K6J7RW4B
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNMVTTZ2B79TEYFSGSY6HV1A
+        timestamp: 2026-04-07T20:58:35.674Z
     examined_commit: 6e37e6b9839a0d69b7aaadaa6f2b9c3f2ca74b24
     external_links: []
     lifecycle_state: open
@@ -127795,8 +127802,29 @@ reviews:
       content_hash: ""
       ref: "@01KNMBPEM8EBQPTWHSKP7M5JT4"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNMVTTZ2B79TEYFSGSY6HV1A
+        anchor:
+          type: code
+          commit: 6e37e6b9839a0d69b7aaadaa6f2b9c3f2ca74b24
+          line_end: 146
+          line_start: 125
+          path: src/cli/output.ts
+          side: head
+        entries:
+          - _ulid: 01KNMVTTZ23VGSKQ86JJR43VK5
+            author: Jacob Chapel
+            body: " now stores output mode in request-local async state, but / still read only the old global
+              variables.  depends on that async-local state for daemon requests, so any command path
+              that branches on  or  will mis-detect structured mode under the command API. I
+              reproduced this by running the CLI through  the same way the daemon does and executing
+              : stderr contained a JSON error object followed by a plain-text  line, which breaks
+              JSON response parity for an allowlisted concurrent read command. This needs to read
+              the async-local state as well and add coverage for a daemon-executed command that uses
+              the helper-based error path."
+            created_at: 2026-04-07T20:58:34.850Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-07T20:49:01.968Z
-    updated_at: 2026-04-07T20:49:28.407Z
+    updated_at: 2026-04-07T20:58:34.850Z
     notes: []
