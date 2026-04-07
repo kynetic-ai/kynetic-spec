@@ -123405,7 +123405,19 @@ reviews:
     slugs: []
     title: Review @01KNDDJ4PD7MDPS1RB53K0QZFG
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate exited 6 with repository-wide pre-existing warnings only (orphaned skill
+          dir, orphaned specs, existing AC annotation warnings); no new task-specific validation
+          errors observed.
+        name: validation
+        required: false
+        runner: kspec
+        created_at: 2026-04-07T05:18:45.073Z
+        completed_at: 2026-04-07T05:18:45.073Z
     events:
       - _ulid: 01KNK5GAV2KC2JZJZVFERJW5YV
         actor: Jacob Chapel
@@ -123420,6 +123432,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-07T05:09:25.556Z
+      - _ulid: 01KNK61ZMDSTP7WM25B076AK2G
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: validation
+        timestamp: 2026-04-07T05:18:45.901Z
     examined_commit: 2c9267a1925319c10a2571e224cff060caf50007
     external_links: []
     lifecycle_state: open
@@ -123432,5 +123451,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-07T05:09:07.555Z
-    updated_at: 2026-04-07T05:09:24.711Z
+    updated_at: 2026-04-07T05:18:45.073Z
     notes: []
