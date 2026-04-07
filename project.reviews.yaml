@@ -128254,7 +128254,17 @@ reviews:
     slugs: []
     title: Review extend loadAllTasks to return history alongside task data
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed full suite: 2096/2096 suites, 7642/7647 tests passed, 5 skipped, 0 failed."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-07T23:31:36.118Z
+        completed_at: 2026-04-07T23:31:36.118Z
     events:
       - _ulid: 01KNN49K7VZ6QND8W6H39585S8
         actor: Jacob Chapel
@@ -128269,6 +128279,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-07T23:26:39.938Z
+      - _ulid: 01KNN4K2S6FVWBKETD6T60016A
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-07T23:31:37.895Z
     examined_commit: bc0435b6cd39c76c9ffa63c060e74ccf4196cb4e
     external_links: []
     lifecycle_state: open
@@ -128281,5 +128298,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-07T23:26:27.067Z
-    updated_at: 2026-04-07T23:26:39.100Z
+    updated_at: 2026-04-07T23:31:36.118Z
     notes: []
