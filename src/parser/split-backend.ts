@@ -573,6 +573,35 @@ class SplitBackend implements TaskStorageBackend {
   }
 
   /**
+   * Load all tasks with their field-change history in a single bulk pass.
+   *
+   * Uses the same directory iteration as loadAllTasks() but retains the
+   * history output from loadTaskFromDirWithHistory() instead of discarding it.
+   *
+   * AC: @daemon-entity-cache ac-task-history-retention — bulk load retains history
+   */
+  async loadAllTasksWithHistory(
+    ctx: KspecContext,
+  ): Promise<Array<{ task: LoadedTask; history: HistoryEntry[] }>> {
+    await this.ensureMigrated(ctx);
+    const ulids = await listTaskDirs(ctx);
+    const results: Array<{ task: LoadedTask; history: HistoryEntry[] }> = [];
+
+    for (const ulid of ulids) {
+      try {
+        const { task, history } = await this.loadTaskFromDirWithHistory(ctx, ulid);
+        if (task) {
+          results.push({ task, history });
+        }
+      } catch {
+        // Skip tasks that fail to load — consistent with loadAllTasks()
+      }
+    }
+
+    return results;
+  }
+
+  /**
    * Get a single task's full details.
    *
    * Uses per-task directory files, not the index.

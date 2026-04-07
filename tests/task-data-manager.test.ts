@@ -446,6 +446,83 @@ describe("TaskDataManager", () => {
       }
     });
 
+    // AC: @daemon-entity-cache ac-task-history-retention
+    it("delegates loadAllTasksWithHistory to backend when available", async () => {
+      tempDir = await setupTempFixtures();
+      const ctx = await initContext(tempDir);
+      const fixtureTask = await loadFixtureTask(ctx, "@test-task-secondary");
+
+      const mockHistory = [
+        {
+          timestamp: "2026-01-01T00:00:00.000Z",
+          author: "@tester",
+          command: "task-start",
+          changes: { status: { previous: "pending", new: "in_progress" } },
+        },
+      ];
+
+      const mockSplitBackend: TaskStorageBackend = {
+        format: "split",
+        listTasks: vi.fn(async () => []),
+        loadAllTasks: vi.fn(async () => [fixtureTask]),
+        getTask: vi.fn(async () => undefined),
+        createTask: vi.fn(async (_ctx, task) => ({ ...task, _sourceFile: `/mock/${task._ulid}.yaml` })),
+        mutateTask: vi.fn(async (_ctx, task) => task),
+        mutateTasks: vi.fn(async (_ctx, tasks) => tasks),
+        deleteTask: vi.fn(async () => {}),
+        rebuildIndex: vi.fn(async () => ({ count: 0 })),
+        loadAllTasksWithHistory: vi.fn(async () => [{ task: fixtureTask, history: mockHistory }]),
+      };
+
+      registerBackend(mockSplitBackend);
+      try {
+        manager = new TaskDataManager("split");
+
+        const result = await manager.loadAllTasksWithHistory(ctx);
+
+        expect(result).toEqual([{ task: fixtureTask, history: mockHistory }]);
+        expect(mockSplitBackend.loadAllTasksWithHistory).toHaveBeenCalledOnce();
+        // loadAllTasks should NOT be called when loadAllTasksWithHistory is available
+        expect(mockSplitBackend.loadAllTasks).not.toHaveBeenCalled();
+      } finally {
+        unregisterBackend("split");
+        registerBackend(splitBackend);
+      }
+    });
+
+    // AC: @daemon-entity-cache ac-task-history-retention
+    it("falls back to loadAllTasks with empty history when backend lacks loadAllTasksWithHistory", async () => {
+      tempDir = await setupTempFixtures();
+      const ctx = await initContext(tempDir);
+      const fixtureTask = await loadFixtureTask(ctx, "@test-task-secondary");
+
+      const mockSplitBackend: TaskStorageBackend = {
+        format: "split",
+        listTasks: vi.fn(async () => []),
+        loadAllTasks: vi.fn(async () => [fixtureTask]),
+        getTask: vi.fn(async () => undefined),
+        createTask: vi.fn(async (_ctx, task) => ({ ...task, _sourceFile: `/mock/${task._ulid}.yaml` })),
+        mutateTask: vi.fn(async (_ctx, task) => task),
+        mutateTasks: vi.fn(async (_ctx, tasks) => tasks),
+        deleteTask: vi.fn(async () => {}),
+        rebuildIndex: vi.fn(async () => ({ count: 0 })),
+        // No loadAllTasksWithHistory — fallback path
+      };
+
+      registerBackend(mockSplitBackend);
+      try {
+        manager = new TaskDataManager("split");
+
+        const result = await manager.loadAllTasksWithHistory(ctx);
+
+        expect(result).toEqual([{ task: fixtureTask, history: [] }]);
+        expect(mockSplitBackend.loadAllTasks).toHaveBeenCalledOnce();
+      } finally {
+        unregisterBackend("split");
+        registerBackend(splitBackend);
+      }
+    });
+
     it("loads getTask from disk on cache detail miss and writes through to cache", async () => {
       tempDir = await setupTempFixtures();
       const ctx = await initContext(tempDir);

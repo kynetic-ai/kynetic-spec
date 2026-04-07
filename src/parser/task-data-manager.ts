@@ -285,6 +285,16 @@ export interface TaskStorageBackend {
   rebuildIndex(ctx: KspecContext): Promise<{ count: number }>;
 
   /**
+   * Load all tasks with their field-change history in one bulk pass.
+   * Optional because only the split backend currently exposes both.
+   *
+   * AC: @daemon-entity-cache ac-task-history-retention — bulk load retains history
+   */
+  loadAllTasksWithHistory?(
+    ctx: KspecContext,
+  ): Promise<Array<{ task: LoadedTask; history: HistoryEntry[] }>>;
+
+  /**
    * Load a task and its field-change history in one read operation.
    * Optional because only the split backend currently exposes both.
    */
@@ -576,6 +586,26 @@ export class TaskDataManager {
    */
   async loadAllTasks(ctx: KspecContext): Promise<LoadedTask[]> {
     return getReadyTaskCache()?.getAllTaskDetails() ?? this.backend.loadAllTasks(ctx);
+  }
+
+  /**
+   * Load all tasks with their field-change history in one bulk pass.
+   *
+   * Delegates to the backend's loadAllTasksWithHistory() if available,
+   * otherwise falls back to loadAllTasks() with empty history arrays.
+   *
+   * AC: @daemon-entity-cache ac-task-history-retention — bulk load retains history
+   */
+  async loadAllTasksWithHistory(
+    ctx: KspecContext,
+  ): Promise<Array<{ task: LoadedTask; history: HistoryEntry[] }>> {
+    if (this.backend.loadAllTasksWithHistory) {
+      return this.backend.loadAllTasksWithHistory(ctx);
+    }
+
+    // Fallback: load tasks without history
+    const tasks = await this.backend.loadAllTasks(ctx);
+    return tasks.map((task) => ({ task, history: [] }));
   }
 
   /**

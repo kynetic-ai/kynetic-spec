@@ -985,23 +985,25 @@ export class ProjectEntityCache {
         // AC: @daemon-entity-cache ac-load-on-register — load task index
         // AC: @daemon-entity-cache ac-stale-during-reload — build new data locally,
         // then swap into the store atomically so reads see either all-old or all-new.
+        // AC: @daemon-entity-cache ac-task-history-retention — bulk load retains history
         const tdm = resolveTaskDataManager(ctx);
         const summaries = await tdm.listTasks(ctx);
         if (this.disposed) return;
         // Eagerly populate detail tier so search (grepItem) can access full
         // entity data (description, notes, todos) that summaries strip.
+        // Uses bulk loadAllTasksWithHistory() for a single pass instead of
+        // per-task loadTaskWithHistory() calls — avoids N individual reads
+        // during cache warm-up.
         // Non-fatal: if full loading fails, the detail tier stays empty and
         // search falls through to disk on miss.
         const newTaskDetails = new Map<string, CachedTaskDetail>();
         const newTaskHistoryDetails = new Map<string, HistoryEntry[]>();
         try {
-          for (const summary of summaries) {
-            const { task: loadedTask, history } = await tdm.loadTaskWithHistory(ctx, summary._ulid);
-            if (this.disposed) return;
-            if (loadedTask) {
-              newTaskDetails.set(summary._ulid, loadedTask);
-              newTaskHistoryDetails.set(summary._ulid, history);
-            }
+          const tasksWithHistory = await tdm.loadAllTasksWithHistory(ctx);
+          if (this.disposed) return;
+          for (const { task, history } of tasksWithHistory) {
+            newTaskDetails.set(task._ulid, task);
+            newTaskHistoryDetails.set(task._ulid, history);
           }
         } catch {
           // Detail tier remains empty — search will use summaries or fall back to disk
