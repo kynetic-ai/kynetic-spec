@@ -35,6 +35,19 @@ export class BatchExitError extends Error {
   }
 }
 
+/**
+ * Thrown when process.exit() is intercepted during in-process command execution.
+ * Caught by the daemon command route to preserve the command's intended exit code.
+ */
+export class CommandExitError extends Error {
+  code: number;
+  constructor(code: number) {
+    super(`process.exit(${code}) called during command execution`);
+    this.name = "CommandExitError";
+    this.code = code;
+  }
+}
+
 let _originalExit: typeof process.exit | null = null;
 
 /**

@@ -1,7 +1,7 @@
 /**
  * Tests for the batch execution engine.
  *
- * Unit tests for buildCommandArgv, resetCommandTree, OutputCapture, BatchExitError.
+ * Unit tests for buildCommandArgv, resetCommandTree, OutputCapture, exit errors.
  * Integration tests via CLI helper for atomic/immediate modes.
  */
 
@@ -12,6 +12,7 @@ import * as path from "node:path";
 import { buildCommandArgv, resetCommandTree } from "../src/cli/batch-exec.js";
 import {
   BatchExitError,
+  CommandExitError,
   OutputCapture,
   installExitInterceptor,
   uninstallExitInterceptor,
@@ -387,6 +388,14 @@ describe("BatchExitError", () => {
   it("stores exit code 0", () => {
     const err = new BatchExitError(0);
     expect(err.code).toBe(0);
+  });
+});
+
+describe("CommandExitError", () => {
+  it("stores exit code", () => {
+    const err = new CommandExitError(7);
+    expect(err.code).toBe(7);
+    expect(err.name).toBe("CommandExitError");
   });
 });
 

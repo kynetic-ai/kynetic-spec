@@ -24,6 +24,7 @@ import type { PubSubManager } from "../websocket/pubsub.js";
 import type { EntityCacheAccessor, RouteEntityCache } from "./entity-cache-types.js";
 import type { CacheDomain } from "../../daemon/entity-cache.js";
 import { getDispatchShadowMutationLockPath } from "../../agent-runtime/workspace.js";
+import { CommandExitError } from "../../cli/batch-context.js";
 import {
   runWithEntityCache,
   runWithoutSpecDirOverride,
@@ -55,6 +56,7 @@ interface RefLikeEntity {
 interface CommandExecutionContext {
   stdoutChunks: string[];
   stderrChunks: string[];
+  interceptedExitCode?: number;
 }
 
 const commandExecutionStorage = new AsyncLocalStorage<CommandExecutionContext>();
@@ -159,8 +161,10 @@ process.stderr.write = ((chunk: unknown, ...rest: unknown[]) => {
 }) as typeof process.stderr.write;
 
 process.exit = ((code?: number) => {
-  if (commandExecutionStorage.getStore()) {
-    throw new Error(`__KSPEC_COMMAND_EXIT__:${code ?? 0}`);
+  const capture = commandExecutionStorage.getStore();
+  if (capture) {
+    capture.interceptedExitCode ??= code ?? 0;
+    throw new CommandExitError(capture.interceptedExitCode);
   }
   return originalProcessExit(code);
 }) as typeof process.exit;
@@ -251,6 +255,7 @@ async function executeCommand(
   const capture: CommandExecutionContext = {
     stdoutChunks: [],
     stderrChunks: [],
+    interceptedExitCode: undefined,
   };
   let exitCode = 0;
 
@@ -272,8 +277,8 @@ async function executeCommand(
       }
     });
   } catch (err) {
-    if (err instanceof Error && err.message.startsWith("__KSPEC_COMMAND_EXIT__:")) {
-      exitCode = Number(err.message.slice("__KSPEC_COMMAND_EXIT__:".length));
+    if (err instanceof CommandExitError) {
+      exitCode = err.code;
     } else {
       exitCode = 1;
       const msg = err instanceof Error ? err.message : String(err);
@@ -287,10 +292,10 @@ async function executeCommand(
   const stdout = capture.stdoutChunks.join("");
   const stderr = capture.stderrChunks.join("");
 
-  // Filter BatchExitError noise from stderr (preserving other content intact)
+  // Filter intercepted exit noise from stderr (preserving other content intact)
   const filteredStderr = stderr
     .split("\n")
-    .filter((line) => !line.includes("BatchExitError"))
+    .filter((line) => !line.includes("BatchExitError") && !line.includes("CommandExitError"))
     .join("\n");
 
   return {

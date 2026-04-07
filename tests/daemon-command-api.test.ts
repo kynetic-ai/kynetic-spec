@@ -199,6 +199,18 @@ async function withDelayedCommandAction<T>(
   }
 }
 
+async function withInjectedCommand<T>(
+  configure: (program: Command) => void | Promise<void>,
+  fn: () => Promise<T>,
+): Promise<T> {
+  prepareProgram = configure;
+  try {
+    return await fn();
+  } finally {
+    prepareProgram = undefined;
+  }
+}
+
 async function measureConcurrentRequests(requests: Array<() => Promise<Response>>): Promise<number> {
   const startedAt = Date.now();
   const responses = await Promise.all(requests.map((request) => request()));
@@ -498,6 +510,29 @@ describe("Daemon Command API", () => {
     expect(body.stderr).toBeTruthy();
   });
 
+  // AC: @daemon-command-api ac-command-endpoint
+  // AC: @daemon-command-api ac-response-parity
+  it("preserves exit codes for commands that call process.exit directly", async () => {
+    await withInjectedCommand((program) => {
+      program.command("debug-exit").action(() => {
+        process.exit(7);
+      });
+    }, async () => {
+      const response = await makeRequest("/api/command", {
+        method: "POST",
+        body: JSON.stringify({
+          command: "debug-exit",
+          args: {},
+        }),
+      });
+
+      expect(response.status).toBe(422);
+      const body = await response.json();
+      expect(body.exitCode).toBe(7);
+      expect(body.stderr).toBe("");
+    });
+  });
+
   // AC: @daemon-command-api ac-response-parity
   it("produces matching stderr for unknown commands vs direct CLI", async () => {
     // Run the same unknown command via direct CLI (subprocess) as ground truth
@@ -641,6 +676,42 @@ describe("Daemon Command API", () => {
     expect(parsed.error).toContain("not found");
     expect(parsed.suggestion ?? parsed.guidance ?? "").not.toContain("\nSuggestion:");
     expect(body.stderr).not.toContain("\nSuggestion:");
+  });
+
+  // AC: @daemon-command-api ac-response-parity
+  // AC: @daemon-concurrent-reads ac-concurrent-cache-reads
+  it("preserves independent exit results for concurrent failing read commands", async () => {
+    const [reviewResponse, taskResponse] = await Promise.all([
+      makeRequest("/api/command", {
+        method: "POST",
+        body: JSON.stringify({
+          command: "review get",
+          args: { ref: "@does-not-exist", json: true },
+        }),
+      }),
+      makeRequest("/api/command", {
+        method: "POST",
+        body: JSON.stringify({
+          command: "task get",
+          args: { ref: "@missing-task", json: true },
+        }),
+      }),
+    ]);
+
+    expect(reviewResponse.status).toBe(422);
+    expect(taskResponse.status).toBe(422);
+
+    const reviewBody = await reviewResponse.json();
+    const taskBody = await taskResponse.json();
+
+    expect(reviewBody.exitCode).toBe(3);
+    expect(taskBody.exitCode).toBe(3);
+    expect(JSON.parse(reviewBody.stderr).error).toContain("not found");
+    expect(JSON.parse(taskBody.stderr).error).toContain("not found");
+    expect(reviewBody.stderr).not.toContain("CommandExitError");
+    expect(taskBody.stderr).not.toContain("CommandExitError");
+    expect(reviewBody.stderr).not.toContain("Task not found");
+    expect(taskBody.stderr).not.toContain("Review not found");
   });
 
   // AC: @daemon-command-api ac-cache-context-propagation
