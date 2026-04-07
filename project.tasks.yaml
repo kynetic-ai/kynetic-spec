@@ -25474,7 +25474,7 @@
   slugs: []
   title: Stabilize flaky agent dispatch post-invocation re-evaluation tests
   type: bug
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 3
@@ -25484,4 +25484,5 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-07T04:22:51.548Z
+  started_at: 2026-04-07T05:08:47.221Z
   automation: eligible
