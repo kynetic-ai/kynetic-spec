@@ -127603,6 +127603,12 @@ reviews:
         payload:
           thread_ulid: 01KNMSE5CAYR7PG595TKX4A3KV
         timestamp: 2026-04-07T20:43:08.244Z
+      - _ulid: 01KNMTYMNTMQGZ0K77ZN36TFBE
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNMSEQNM214KVGPGS6JKAQSN
+        timestamp: 2026-04-07T20:43:10.906Z
     examined_commit: 1dcde7937b52018f763a0cff9973e4977ab9e72e
     external_links: []
     lifecycle_state: closed
@@ -127727,6 +127733,12 @@ reviews:
               integration. Findings: 1 blocker in correctness/integration; no separate AC annotation
               or validation regression introduced by this task.
             created_at: 2026-04-07T20:17:01.108Z
+          - _ulid: 01KNMTYKQ1FP6Y5MJJXZ5KSS8T
+            author: Jacob Chapel
+            body: Updated. The fix-cycle verification covered the reviewed route/tests plus a fresh full-suite
+              run to avoid stale cached test artifacts, and the new regression test now checks
+              behavioral isolation for concurrent cache-backed reads.
+            created_at: 2026-04-07T20:43:09.921Z
         kind: nit
     verdicts:
       - applies_to_version:
@@ -127737,5 +127749,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-07T20:17:36.357Z
     created_at: 2026-04-07T20:10:07.646Z
-    updated_at: 2026-04-07T20:43:07.314Z
+    updated_at: 2026-04-07T20:43:09.921Z
     notes: []
