@@ -39678,7 +39678,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-07T03:53:06.362Z
+      updated_at: 2026-04-07T03:53:08.201Z
     integration:
       status: pending
       detail: null
@@ -39687,25 +39687,20 @@ workspaces:
       target_branch: plan/plan-granular-cache-invalidation/01kndbmk
       target_commit: d5cf75d00642de5a31d80d1969cb337194ca1207
       updated_at: 2026-04-07T03:53:06.362Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: plan/plan-granular-cache-invalidation/01kndbmk
     task_ref: "@01KNDDJ4BXMWVZSC7G6KMDP8BH"
     task_slug: task-meta-subdomain-decomposition
     timestamps:
       closed_at: null
       last_active_at: 2026-04-07T03:45:15.953Z
-      last_reconciled_at: 2026-04-07T03:53:06.362Z
+      last_reconciled_at: 2026-04-07T03:53:08.201Z
       created_at: 2026-04-07T02:49:48.924Z
-      updated_at: 2026-04-07T03:53:06.362Z
+      updated_at: 2026-04-07T03:53:08.201Z
     workspace_id: dispatch-workspace-01KNDDJ4BXMWVZSC7G6KMDP8BH
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 7f8b957f999ba7f29846b7669ed6b8da0e8f67c8
-        last_seen_at: 2026-04-07T03:45:08.861Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-meta-subdomain-decomposition-01knddj4-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-meta-subdomain-decomposition/01knddj4
