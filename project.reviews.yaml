@@ -126084,6 +126084,12 @@ reviews:
         payload:
           thread_ulid: 01KNMHM5BWPTEESDP2CWFNTWZX
         timestamp: 2026-04-07T18:20:51.965Z
+      - _ulid: 01KNMJT4H9NE2MYCV8HE1YMJ39
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNMHKVXEFJV21C7RJBVWBDXS
+        timestamp: 2026-04-07T18:20:54.697Z
     examined_commit: 9eb7d18c54e9943217facfd01734ab79bad8865e
     external_links: []
     lifecycle_state: closed
@@ -126111,6 +126117,13 @@ reviews:
               the cache whenever AsyncLocalStorage is present would still pass this suite, so the
               task requirement to fall through on non-ready cache state is not actually verified.
             created_at: 2026-04-07T18:00:00.687Z
+          - _ulid: 01KNMJT3KTEY8WVZPAB68VN5GQ
+            author: Jacob Chapel
+            body: "Fixed in b53db5948: added behavioral coverage for the missing AsyncLocalStorage fallback
+              case. The new test executes listTasks, loadAllTasks, and getTask with an entity-cache
+              context whose tasks domain state is 'loading' and verifies each method falls through
+              to backend disk reads instead of using cached task data."
+            created_at: 2026-04-07T18:20:53.753Z
         kind: blocker
       - _ulid: 01KNMHM5BWPTEESDP2CWFNTWZX
         anchor:
@@ -126147,7 +126160,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-07T18:01:16.386Z
     created_at: 2026-04-07T17:58:39.728Z
-    updated_at: 2026-04-07T18:20:51.077Z
+    updated_at: 2026-04-07T18:20:53.753Z
     notes: []
   - _ulid: 01KNMJ5GMX4RP27PS0NXG8XH63
     slugs: []
