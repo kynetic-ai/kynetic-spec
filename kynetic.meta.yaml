@@ -13024,6 +13024,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-07T03:42:08.061Z
+  - _ulid: 01KNK1B6PTQR9M3VW395BSQGFF
+    type: success
+    content: Reproducing review-worktree failures with a minimal detached git worktree before patching
+      the test quickly separated environment assumptions from real parser defects and led to a
+      targeted regression.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T03:56:25.178Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
