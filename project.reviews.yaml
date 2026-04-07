@@ -122213,6 +122213,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-07T03:20:50.019Z
+      - _ulid: 01KNJZB15ZMNDCTZ4R1JKZGHHX
+        actor: codex-reviewer
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNJZ8JV12V4ZC0DV5H233QCZ
+        timestamp: 2026-04-07T03:21:22.367Z
     examined_commit: 82b0e36155173b06f9cc85bf4c36a93b876855c6
     external_links: []
     lifecycle_state: closed
@@ -122242,6 +122248,8 @@ reviews:
               file changes."
             created_at: 2026-04-07T03:20:02.145Z
         kind: blocker
+        resolved_at: 2026-04-07T03:21:21.468Z
+        resolved_by: codex-reviewer
       - _ulid: 01KNJZ9BW1K68MBJ8T1ESAP856
         anchor:
           type: code
@@ -122272,5 +122280,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-07T03:20:50.019Z
     created_at: 2026-04-07T03:19:36.797Z
-    updated_at: 2026-04-07T03:20:50.019Z
+    updated_at: 2026-04-07T03:21:21.468Z
     notes: []
