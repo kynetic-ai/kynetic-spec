@@ -122189,9 +122189,25 @@ reviews:
           status: fail
           name: meta-reload-dedup-repro
         timestamp: 2026-04-07T03:20:36.769Z
+      - _ulid: 01KNJZA1K355S7SSCY983XD77T
+        actor: codex-reviewer
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-07T03:20:50.019Z
+      - _ulid: 01KNJZA1K30YNBCDEZN1QK2DTS
+        actor: codex-reviewer
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-07T03:20:50.019Z
     examined_commit: 82b0e36155173b06f9cc85bf4c36a93b876855c6
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -122239,7 +122255,14 @@ reviews:
               reintroduces overlapping manifest/meta reload work under rapid file changes."
             created_at: 2026-04-07T03:20:27.777Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex-reviewer
+        role: reviewer
+        created_at: 2026-04-07T03:20:50.019Z
     created_at: 2026-04-07T03:19:36.797Z
-    updated_at: 2026-04-07T03:20:35.855Z
+    updated_at: 2026-04-07T03:20:50.019Z
     notes: []
