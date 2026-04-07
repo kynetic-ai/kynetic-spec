@@ -53,8 +53,12 @@ description: >
 spec_ref: "@daemon-entity-cache"
 plan_ref: "@plan-cache-aware-command-execution"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to plan/plan-cache-aware-command-execution/01knkf3b after approved review.
+  Verified @daemon-entity-cache ac-task-history-retention on both full task-domain load and hinted
+  incremental task write-through, with npm test passing and kspec validate showing only pre-existing
+  repository warnings.
 depends_on: []
 context: []
 priority: 1
@@ -178,8 +182,25 @@ history:
         previous: "@01KNMCDVFS6JP3CC8YCTNHM53D"
     command: review-link
     timestamp: 2026-04-07T17:06:36.017Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to plan/plan-cache-aware-command-execution/01knkf3b after approved review. Verified
+          @daemon-entity-cache ac-task-history-retention on both full task-domain load and hinted
+          incremental task write-through, with npm test passing and kspec validate showing only
+          pre-existing repository warnings.
+        previous: null
+      completed_at:
+        new: 2026-04-07T17:12:59.053Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-07T17:12:59.093Z
 created_at: 2026-04-07T16:16:31.247Z
 started_at: 2026-04-07T16:44:23.984Z
 submitted_at: 2026-04-07T17:03:00.628Z
+completed_at: 2026-04-07T17:12:59.053Z
 todos: []
 automation: eligible
