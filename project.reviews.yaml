@@ -126793,6 +126793,12 @@ reviews:
         payload:
           thread_ulid: 01KNMMMBAV13W6NBVVYK4JB2HW
         timestamp: 2026-04-07T19:12:42.761Z
+      - _ulid: 01KNMNS2ACXHAG1WJ4P1AJ8W51
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNMMMFS578K2JA5X66Z1APWK
+        timestamp: 2026-04-07T19:12:45.388Z
     examined_commit: 7e7d977f1ee9fa6b316d425babd9ba06eab87328
     external_links: []
     lifecycle_state: closed
@@ -126850,6 +126856,12 @@ reviews:
               loadReviewRecords() can therefore hide uncached reviews after a single detail fetch
               unless this branch verifies the detail tier is complete before returning cached data."
             created_at: 2026-04-07T18:52:46.758Z
+          - _ulid: 01KNMNS1F7AN0C7TEKRTMZVFEX
+            author: Jacob Chapel
+            body: "Fixed in 2723f2529: loadReviewRecords() now requires a real reviews index plus complete
+              detail coverage before returning cache data. Partial-detail and null-index cache
+              states fall through to disk, with matching regression tests added."
+            created_at: 2026-04-07T19:12:44.519Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -126860,7 +126872,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-07T18:53:07.038Z
     created_at: 2026-04-07T18:47:17.189Z
-    updated_at: 2026-04-07T19:12:41.841Z
+    updated_at: 2026-04-07T19:12:44.519Z
     notes: []
   - _ulid: 01KNMN3TR0X2FJC963QS8X1Z7K
     slugs: []
