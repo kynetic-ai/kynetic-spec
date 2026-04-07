@@ -12921,6 +12921,15 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-04-06T18:59:00.392Z
+  - _ulid: 01KNJW5P8G53NCCJAB08KGNJ1X
+    type: friction
+    content: In dispatch worktrees, some read-only kspec commands (search/get/note flows) timed out or
+      hung via daemon mode and had to be re-run with KSPEC_NO_DAEMON=1 or after a direct-mode
+      fallback. This adds avoidable latency and makes autonomous task workflow less reliable.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T02:26:01.616Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
