@@ -36988,16 +36988,17 @@ plans:
           - "@task-cache-aware-inbox-triage"
           - "@task-cache-aware-plans-reviews"
           - "@task-cache-aware-meta"
+          - "@task-cache-task-history"
         description: |
           Allow read-only commands executed via the command API to run
-          concurrently when all required cache domains are ready, by
+          concurrently when their required cache domains are ready, by
           skipping the dispatch mutex for these commands.
 
           Why: The dispatch mutex (DispatchMutex in command.ts)
           serializes all command execution because executeCommand()
           mutates process-global state: process.cwd(), console.log,
           process.stderr.write, and the process.exit interceptor.
-          After phases 3-4 of this plan, cache-backed read commands
+          After phases 3-5 of this plan, cache-backed read commands
           get their data from memory. However, they still run through
           program.parseAsync() which uses process.chdir() and console
           interception for output capture. Skipping the mutex for reads
@@ -37013,37 +37014,44 @@ plans:
 
           1. Add a canServeFromCache(command, cache) function that
              checks two conditions: the command is classified as
-             read-only (not mutating), and all cache domains are in
-             ready state. Use a conservative allowlist of commands
-             known to be cache-safe: task list, task get, tasks list,
-             tasks ready, item list, item get, search, inbox list,
-             plan list, plan get, review get, review list.
+             read-only (not mutating), and the specific cache domains
+             that command requires are in ready state. Each allowlisted
+             command declares its required domains (e.g. task list
+             requires tasks + items for ReferenceIndex; inbox list
+             requires only inbox). Use a conservative allowlist of
+             commands known to be cache-safe: task list, task get,
+             tasks list, tasks ready, item list, item get, search,
+             inbox list, plan list, plan get, review get, review list.
 
           2. When canServeFromCache returns true, execute the command
              outside the dispatch mutex. The command still runs through
              executeCommand() with console capture and chdir, but it
              does not wait for the mutex.
 
-          3. When canServeFromCache returns false (cache not ready or
-             command not in allowlist), use the existing mutex-protected
-             path. Mutations always use the mutex.
+          3. When canServeFromCache returns false (required domains not
+             ready or command not in allowlist), use the existing
+             mutex-protected path. Mutations always use the mutex.
 
-          How: The allowlist approach is conservative — only commands
-          verified to work correctly with cache-backed data are
-          included. The isCommandMutating() function already classifies
-          commands. canServeFromCache adds the cache-readiness check.
-          In the route handler, branch before dispatchMutex.run():
+          How: Define a COMMAND_CACHE_DOMAINS map that associates each
+          allowlisted command with its required cache domains. For
+          example: "task list" requires ["tasks", "items", "meta"],
+          "inbox list" requires ["inbox"]. The isCommandMutating()
+          function already classifies commands. canServeFromCache looks
+          up the command in COMMAND_CACHE_DOMAINS and checks that each
+          required domain is in ready state. Commands not in the map
+          are not cache-eligible. In the route handler, branch before
+          dispatchMutex.run():
           if (!mutating && canServeFromCache(payload, cache)) {
             return executeCommand(payload, program, projectPath);
           } else {
             return dispatchMutex.run(() => ... existing logic ...);
           }
           Add tests verifying: allowlisted read commands skip mutex
-          when all cache domains are ready, read commands acquire mutex
-          when any cache domain is not ready, commands not in allowlist
-          acquire mutex, mutations always acquire mutex, and two
-          concurrent allowlisted read commands can complete without
-          blocking each other.
+          when their required cache domains are ready, read commands
+          acquire mutex when a required domain is not ready, commands
+          not in allowlist acquire mutex, mutations always acquire
+          mutex, and two concurrent allowlisted read commands can
+          complete without blocking each other.
 
           Covers: @daemon-concurrent-reads ac-concurrent-cache-reads,
           ac-mutation-serialization, ac-disk-fallback-serialization.
@@ -37231,3 +37239,7 @@ plans:
         content: Content updated from file
         author: "@claude"
         created_at: 2026-04-07T08:06:37.928Z
+      - _ulid: 01KNKFXVMQPSF3WCE1CKB4V0MG
+        content: Content updated from file
+        author: "@claude"
+        created_at: 2026-04-07T08:11:16.503Z
