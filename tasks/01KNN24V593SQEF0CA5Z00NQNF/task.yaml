@@ -1,0 +1,20 @@
+_ulid: 01KNN24V593SQEF0CA5Z00NQNF
+slugs: []
+title: Apply cache context and working directory isolation to batch route
+type: task
+spec_ref: "@daemon-command-api"
+meta_ref: null
+plan_ref: "@plan-cache-aware-command-execution"
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - daemon
+  - cache
+  - bug
+vcs_refs: []
+created_at: 2026-04-07T22:48:54.185Z
+todos: []
+automation: eligible
