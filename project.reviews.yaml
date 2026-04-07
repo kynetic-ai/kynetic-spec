@@ -126328,6 +126328,17 @@ reviews:
         runner: tsc
         created_at: 2026-04-07T18:29:38.536Z
         completed_at: 2026-04-07T18:29:38.536Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test passed after runner auto-built dist: 2089 suites passed, 7609 tests passed, 5
+          skipped"
+        name: full test suite
+        required: true
+        runner: npm-test
+        created_at: 2026-04-07T18:29:41.128Z
+        completed_at: 2026-04-07T18:29:41.128Z
     events:
       - _ulid: 01KNMJZ5H3Z7PYKMRTRN7TED1Q
         actor: Jacob Chapel
@@ -126349,6 +126360,13 @@ reviews:
           status: pass
           name: typecheck
         timestamp: 2026-04-07T18:29:39.435Z
+      - _ulid: 01KNMKA7FTFXQRAJ9S0RQQPM6D
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: full test suite
+        timestamp: 2026-04-07T18:29:42.010Z
     examined_commit: b53db594898c8844cc6eb960f7777b1ef295c2a9
     external_links: []
     lifecycle_state: open
@@ -126361,5 +126379,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-07T18:23:39.556Z
-    updated_at: 2026-04-07T18:29:38.536Z
+    updated_at: 2026-04-07T18:29:41.128Z
     notes: []
