@@ -123083,6 +123083,13 @@ reviews:
           status: skipped
           name: kspec validate
         timestamp: 2026-04-07T04:35:19.703Z
+      - _ulid: 01KNK3K44APRNESAHDDZB63QBB
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNK3K2G04XR5FZJ73H8K3Q19
+        timestamp: 2026-04-07T04:35:41.834Z
     examined_commit: 3c32e6485e3a0987fc61bf791be2f73f557882ac
     external_links: []
     lifecycle_state: closed
@@ -123092,7 +123099,30 @@ reviews:
       content_hash: ""
       ref: "@01KNJYFFPJMPGA00JD1GAE1T1K"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNK3K2G04XR5FZJ73H8K3Q19
+        entries:
+          - _ulid: 01KNK3K2G0VR6CR3RD7690GGQ6
+            author: Jacob Chapel
+            body: >-
+              Review evidence log
+
+
+              Files read: tests/parser.test.ts, src/parser/yaml.ts, src/parser/shadow.ts,
+              tests/worktree-context.test.ts, tests/shadow.test.ts
+
+              Commands run: git diff 3c32e6485^1 3c32e6485 -- tests/parser.test.ts; git show
+              6d5dc4019; kspec task get @01KNJYFFPJMPGA00JD1GAE1T1K --json; kspec validate; npm test
+              -- --fresh tests/parser.test.ts; npm test -- --fresh; npm test -- --fresh .
+
+              Claims verified: the detached review-worktree parser probe now skips only
+              detached-HEAD shadow-health failures, and the detached-worktree regression test
+              passes; fresh full-suite runs pass in this snapshot.
+
+              Categories searched: correctness, edge cases, error handling, test quality,
+              integration. No blocking issues found.
+            created_at: 2026-04-07T04:35:40.160Z
+        kind: nit
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -123102,5 +123132,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-07T04:35:01.537Z
     created_at: 2026-04-07T04:26:37.303Z
-    updated_at: 2026-04-07T04:35:18.226Z
+    updated_at: 2026-04-07T04:35:40.160Z
     notes: []
