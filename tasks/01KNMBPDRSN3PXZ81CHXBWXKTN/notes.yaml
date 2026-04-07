@@ -28,3 +28,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-07T19:00:45.037Z
+  - _ulid: 01KNMNRK5C13VHY8J9QD2S423W
+    content: "Fix cycle 1: addressed both review blockers by requiring complete detail coverage before
+      returning cache-backed plan/review lists, and by falling through to disk when the ready-domain
+      index tier is unavailable. Added regression coverage for partial-detail and null-index cache
+      states in parser tests, rechecked daemon command API parity, reran fresh focused suites and
+      the full npm test suite, and revalidated with the existing warning-only baseline."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T19:12:29.868Z
