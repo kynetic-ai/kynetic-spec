@@ -123529,6 +123529,12 @@ reviews:
         payload:
           thread_ulid: 01KNK623FMKDWD18MWFWFZQRQ0
         timestamp: 2026-04-07T05:19:57.720Z
+      - _ulid: 01KNK6TV0E7MV4H2FGGZ25TGDH
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNK623FMKDWD18MWFWFZQRQ0
+        timestamp: 2026-04-07T05:32:20.366Z
     examined_commit: 2c9267a1925319c10a2571e224cff060caf50007
     external_links: []
     lifecycle_state: closed
@@ -123568,6 +123574,14 @@ reviews:
               packages/daemon/src/routes/reviews.ts now makes this path easy to hit by issuing
               Promise.all over transitioned task ULIDs for request_changes."
             created_at: 2026-04-07T05:19:56.896Z
+          - _ulid: 01KNK6TT6X39MH574VG5QGXY1V
+            author: Jacob Chapel
+            body: Fixed in fee4f128f. Hinted writeThrough for non-meta domains now runs through a queued
+              in-flight reload lane, so concurrent task writeThrough calls no longer clone from the
+              same stale snapshot and overwrite each other. Added a regression test that updates two
+              task files, runs Promise.all over hinted task writeThrough calls, and verifies both
+              cached task details reflect the new disk state.
+            created_at: 2026-04-07T05:32:19.549Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -123578,7 +123592,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-07T05:19:41.283Z
     created_at: 2026-04-07T05:09:07.555Z
-    updated_at: 2026-04-07T05:19:56.896Z
+    updated_at: 2026-04-07T05:32:19.549Z
     notes: []
   - _ulid: 01KNK690ZWFWXTRTMCJPBK2RT8
     slugs: []
