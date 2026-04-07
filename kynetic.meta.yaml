@@ -13192,6 +13192,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-07T06:03:14.698Z
+  - _ulid: 01KNK9Y3R7B1A67TJ03V67ZQBZ
+    type: friction
+    content: Daemon route tests that build ad hoc app.handle harnesses can drift from the shared daemon
+      API helper setup (missing error() polyfill, stale fixture shapes), turning route regressions
+      into harness debugging instead of behavioral verification.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T06:26:33.351Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
