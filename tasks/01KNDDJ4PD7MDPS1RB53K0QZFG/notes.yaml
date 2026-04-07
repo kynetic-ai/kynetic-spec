@@ -12,3 +12,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-07T04:56:40.456Z
+  - _ulid: 01KNK58SKJ263ZGFH2NX2Z104H
+    content: "Implemented hinted write-through alignment for incremental cache domains. writeThrough now
+      accepts optional task/item/session hints, reuses processDomainChanges for hinted updates, and
+      falls back to full reload when hints are absent or unresolvable. Task and review mutation
+      routes now pass task/spec ULIDs so request-path cache refreshes can use the incremental path.
+      Verification: NODE_ENV= npm test -- --fresh daemon-entity-cache (31 suites / 126 tests passed)
+      and NODE_ENV= npm test -- --fresh (2070 suites / 7544 passed, 5 skipped). kspec validate still
+      exits with pre-existing repository warnings only."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T05:05:00.531Z
