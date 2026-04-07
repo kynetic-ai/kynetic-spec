@@ -124970,9 +124970,25 @@ reviews:
           status: pass
           name: Behavioral purity
         timestamp: 2026-04-07T08:23:24.183Z
+      - _ulid: 01KNKGMBHCWAH5B2FQRZR6E258
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-07T08:23:33.676Z
+      - _ulid: 01KNKGMBHCY7G75VHC3285EN9G
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-07T08:23:33.676Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -125005,7 +125021,14 @@ reviews:
               required on the successful execution path for each allowlisted command."
             created_at: 2026-04-07T08:23:18.058Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-07T08:23:33.676Z
     created_at: 2026-04-07T08:22:42.376Z
-    updated_at: 2026-04-07T08:23:23.370Z
+    updated_at: 2026-04-07T08:23:33.676Z
     notes: []
