@@ -1,0 +1,20 @@
+_ulid: 01KNN24QFDBF9BXMEX895A2R6J
+slugs: []
+title: Profile Commander program creation and evaluate reuse
+type: task
+spec_ref: "@daemon-concurrent-reads"
+meta_ref: null
+plan_ref: "@plan-cache-aware-command-execution"
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - daemon
+  - cache
+  - performance
+vcs_refs: []
+created_at: 2026-04-07T22:48:50.413Z
+todos: []
+automation: manual_only
