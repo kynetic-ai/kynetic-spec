@@ -123746,6 +123746,13 @@ reviews:
           status: pass
           name: full-test-suite
         timestamp: 2026-04-07T05:47:10.600Z
+      - _ulid: 01KNK7P2SZ5RNQBR16ZRPQ6XAS
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNK7P1WSP3MNRVQ81XFSD21Q
+        timestamp: 2026-04-07T05:47:13.087Z
     examined_commit: fee4f128f4c1a3d24a69690d1ae11fbfa6154991
     external_links: []
     lifecycle_state: open
@@ -123755,8 +123762,27 @@ reviews:
       content_hash: ""
       ref: "@01KNDDJ4PD7MDPS1RB53K0QZFG"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNK7P1WSP3MNRVQ81XFSD21Q
+        anchor:
+          type: code
+          commit: fee4f128f4c1a3d24a69690d1ae11fbfa6154991
+          line_end: 672
+          line_start: 667
+          path: packages/daemon/src/server.ts
+          side: head
+        entries:
+          - _ulid: 01KNK7P1WSRM9GHAMT0XHSSK48
+            author: Jacob Chapel
+            body: " no longer reloads entity domains after a successful shadow pull.  requires pulled data to
+              invalidate and reload the entity cache, but this branch changed the callback
+              from  to  only. That updates shadow status metadata while leaving
+              tasks/items/reviews/etc. at their old snapshots, so daemon read routes can continue
+              serving stale data after remote shadow updates until some unrelated local invalidation
+              happens."
+            created_at: 2026-04-07T05:47:12.153Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-07T05:36:40.308Z
-    updated_at: 2026-04-07T05:47:09.746Z
+    updated_at: 2026-04-07T05:47:12.153Z
     notes: []
