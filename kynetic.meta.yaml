@@ -13046,6 +13046,25 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-07T04:07:45.649Z
+  - _ulid: 01KNK2AX16DPFG0WNNHFFKK37T
+    type: friction
+    content: After kspec session start reported a shadow sync conflict, follow-up write commands like
+      task note, review resolve, and task submit sometimes hung in this dispatch workspace until
+      retried as fresh CLI invocations. The writes eventually succeeded, but the lack of fast
+      failure or clear progress signal made fix-cycle completion unnecessarily hard to verify.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T04:13:43.847Z
+  - _ulid: 01KNK2AX7T9CY4HG0FD8DWQ3S1
+    type: success
+    content: Rebasing the dispatch branch onto the plan branch before finishing the fix cycle exposed
+      the real integration conflicts early, and pairing a focused daemon regression with a full npm
+      test -- --fresh rerun caught the overlap bug without causing another review round.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T04:13:44.058Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
