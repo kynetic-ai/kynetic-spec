@@ -127875,6 +127875,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-07T20:59:44.949Z
+      - _ulid: 01KNMWXJCNDZ9XQDWGPM0BH7C8
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNMVTTZ2B79TEYFSGSY6HV1A
+        timestamp: 2026-04-07T21:17:32.949Z
     examined_commit: 6e37e6b9839a0d69b7aaadaa6f2b9c3f2ca74b24
     external_links: []
     lifecycle_state: closed
@@ -127905,6 +127911,13 @@ reviews:
               the async-local state as well and add coverage for a daemon-executed command that uses
               the helper-based error path."
             created_at: 2026-04-07T20:58:34.850Z
+          - _ulid: 01KNMWXHJQ2F5WQ1CCANS16Q0Q
+            author: Jacob Chapel
+            body: Fixed in 2242eedd6. isJsonMode()/isYamlMode() now read the request-local output state instead
+              of the stale globals, and added concurrent async-local regression coverage in
+              tests/output-format-option.test.ts so daemon requests with conflicting formats stay
+              isolated.
+            created_at: 2026-04-07T21:17:32.119Z
         kind: blocker
       - _ulid: 01KNMVV6QD992T0JYDKSDK3VG3
         anchor:
@@ -127964,5 +127977,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-07T20:59:44.949Z
     created_at: 2026-04-07T20:49:01.968Z
-    updated_at: 2026-04-07T20:59:44.949Z
+    updated_at: 2026-04-07T21:17:32.119Z
     notes: []
