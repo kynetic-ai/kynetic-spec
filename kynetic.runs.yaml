@@ -24113,9 +24113,23 @@ runs:
     completed_at: 2026-04-07T23:07:04.216Z
   - _ulid: 01KNN3Q3BAX00E15MF4FHY4WH3
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-07T23:16:20.970Z
+        completed_at: 2026-04-07T23:17:39.060Z
+        notes: "What worked well: direct CLI vs daemon comparison quickly validated the worker's exit-code
+          claim and exposed a real parity regression that the suite missed. Friction: current daemon
+          parity coverage did not exercise text-mode intercepted-exit stderr behavior, so a green
+          suite was not sufficient evidence. Search coverage: searched for existing tracking on
+          response-parity/text-mode/CommandExitError issues and found no matches. Capture: recorded
+          a friction observation for the missing text-mode parity coverage signal."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-07T23:17:39.060Z
+        completed_at: 2026-04-07T23:17:39.060Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-07T23:16:20.970Z
