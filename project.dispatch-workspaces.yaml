@@ -39914,12 +39914,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-07T04:25:40.971Z
+      updated_at: 2026-04-07T04:25:52.042Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-07T04:25:40.971Z
+      updated_at: 2026-04-07T04:25:52.042Z
     integration:
       status: pending
       detail: null
@@ -39927,24 +39927,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 3c32e6485e3a0987fc61bf791be2f73f557882ac
-      updated_at: 2026-04-07T04:25:40.971Z
-    lifecycle_state: ready
+      updated_at: 2026-04-07T04:25:52.042Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KNJYFFPJMPGA00JD1GAE1T1K"
     task_slug: stabilize-parser-integration-test-in-detached-review-worktrees
     timestamps:
       closed_at: null
       last_active_at: 2026-04-07T04:14:22.925Z
-      last_reconciled_at: 2026-04-07T04:25:40.971Z
+      last_reconciled_at: 2026-04-07T04:25:52.042Z
       created_at: 2026-04-07T04:14:18.207Z
-      updated_at: 2026-04-07T04:25:40.971Z
+      updated_at: 2026-04-07T04:25:52.042Z
     workspace_id: dispatch-workspace-01KNJYFFPJMPGA00JD1GAE1T1K
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 3c32e6485e3a0987fc61bf791be2f73f557882ac
+        last_seen_at: 2026-04-07T04:25:52.042Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-parser-integration-test-in-detached-review-worktrees-01knjyff-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/stabilize-parser-integration-test-in-detached-review-worktrees/01knjyff
         head: 3c32e6485e3a0987fc61bf791be2f73f557882ac
-        last_seen_at: 2026-04-07T04:14:18.207Z
+        last_seen_at: 2026-04-07T04:25:52.042Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-parser-integration-test-in-detached-review-worktrees-01knjyff
