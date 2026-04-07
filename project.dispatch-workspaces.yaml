@@ -39563,7 +39563,7 @@ workspaces:
         head: 58d872ce04698b021e6dd29ddfefd0f6016406a6
         last_seen_at: 2026-04-07T02:49:23.944Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/investigate-full-suite-instability-after-dependency-health-passes-in-review-worktrees-01knhz5f
-  - active_role: worker
+  - active_role: null
     base_branch_point: d5cf75d00642de5a31d80d1969cb337194ca1207
     bootstrap:
       status: succeeded
@@ -39647,12 +39647,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-07T03:10:37.653Z
+      updated_at: 2026-04-07T03:13:00.923Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-07T03:10:37.653Z
+      updated_at: 2026-04-07T03:13:00.923Z
     integration:
       status: pending
       detail: null
@@ -39660,17 +39660,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-granular-cache-invalidation/01kndbmk
       target_commit: d5cf75d00642de5a31d80d1969cb337194ca1207
-      updated_at: 2026-04-07T03:10:37.653Z
-    lifecycle_state: active
+      updated_at: 2026-04-07T03:13:00.923Z
+    lifecycle_state: ready
     resolved_base_branch: plan/plan-granular-cache-invalidation/01kndbmk
     task_ref: "@01KNDDJ4BXMWVZSC7G6KMDP8BH"
     task_slug: task-meta-subdomain-decomposition
     timestamps:
       closed_at: null
       last_active_at: 2026-04-07T02:49:56.736Z
-      last_reconciled_at: 2026-04-07T03:10:37.653Z
+      last_reconciled_at: 2026-04-07T03:13:00.923Z
       created_at: 2026-04-07T02:49:48.924Z
-      updated_at: 2026-04-07T03:10:37.653Z
+      updated_at: 2026-04-07T03:13:00.923Z
     workspace_id: dispatch-workspace-01KNDDJ4BXMWVZSC7G6KMDP8BH
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
