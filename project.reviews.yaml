@@ -122108,6 +122108,19 @@ reviews:
         runner: kspec
         created_at: 2026-04-07T03:20:30.436Z
         completed_at: 2026-04-07T03:20:30.436Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm test aborts before suites run in both this snapshot and the integration base because
+          dependency bootstrap still reports missing direct deps (@agentclientprotocol/sdk,
+          @tailwindcss/postcss, @types/diff). This is pre-existing and not attributable to the
+          reviewed diff.
+        name: npm-test
+        required: false
+        runner: npm
+        created_at: 2026-04-07T03:20:33.136Z
+        completed_at: 2026-04-07T03:20:33.136Z
     events:
       - _ulid: 01KNJZ7T2X55PMK4G30CRWRXQ0
         actor: Jacob Chapel
@@ -122150,6 +122163,13 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-04-07T03:20:31.377Z
+      - _ulid: 01KNJZ9J1Q7V7MEB3YQVWYT8P3
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: npm-test
+        timestamp: 2026-04-07T03:20:34.104Z
     examined_commit: 82b0e36155173b06f9cc85bf4c36a93b876855c6
     external_links: []
     lifecycle_state: open
@@ -122202,5 +122222,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-07T03:19:36.797Z
-    updated_at: 2026-04-07T03:20:30.436Z
+    updated_at: 2026-04-07T03:20:33.136Z
     notes: []
