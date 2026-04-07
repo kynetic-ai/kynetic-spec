@@ -121957,7 +121957,22 @@ reviews:
     slugs: []
     title: Review investigate full-suite instability after dependency-health passes in review worktrees
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh on snapshot 58d872ce04698b021e6dd29ddfefd0f6016406a6 finished with 2
+          failed suites / 1 failed test after rebuilding artifacts. Remaining visible failure:
+          tests/parser.test.ts 'loadAllItems integration should load items from real spec files' ->
+          ShadowError: Worktree disconnected from git. The same failure reproduces on dev commit
+          34dd3d45c187a99ec1c4944bb4914e6549935f6d in a fresh temporary worktree and is tracked as
+          @01KNJYA2, so it is not a regression from this branch."
+        name: full suite detached-worktree baseline
+        required: false
+        runner: npm
+        created_at: 2026-04-07T03:04:26.551Z
+        completed_at: 2026-04-07T03:04:26.551Z
     events:
       - _ulid: 01KNJY6VCCK2EZYXY3FZY880XQ
         actor: Jacob Chapel
@@ -121979,6 +121994,13 @@ reviews:
           kind: nit
           thread_ulid: 01KNJYBTC60HVZAAFYJ4B3RQNG
         timestamp: 2026-04-07T03:04:22.853Z
+      - _ulid: 01KNJYC2Q9FB5JTY7WJ6YEMVP6
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: full suite detached-worktree baseline
+        timestamp: 2026-04-07T03:04:28.140Z
     examined_commit: 58d872ce04698b021e6dd29ddfefd0f6016406a6
     external_links: []
     lifecycle_state: open
@@ -122008,5 +122030,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-07T03:01:36.780Z
-    updated_at: 2026-04-07T03:04:19.590Z
+    updated_at: 2026-04-07T03:04:26.551Z
     notes: []
