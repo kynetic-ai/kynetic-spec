@@ -14,7 +14,7 @@ description: "Full NODE_ENV=development npm test -- --fresh on review snapshot
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -23,6 +23,14 @@ tags:
   - test
   - dispatch
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-04-07T05:20:09.362Z
+  commit: dfe2138f1545b01c3147f5f425dc3ef7cff403b1
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dev
 session_id: 01KNK5EPWC4N8G28E6TFQ3YBYY
 history:
   - author: Jacob Chapel
@@ -38,7 +46,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-07T05:08:47.222Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-04-07T05:20:09.362Z
+          commit: dfe2138f1545b01c3147f5f425dc3ef7cff403b1
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-04-07T05:20:09.370Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-07T05:20:09.371Z
 created_at: 2026-04-07T04:22:51.548Z
 started_at: 2026-04-07T05:08:47.221Z
+submitted_at: 2026-04-07T05:20:09.370Z
 todos: []
 automation: eligible
