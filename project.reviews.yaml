@@ -124135,6 +124135,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-07T07:59:03.418Z
+      - _ulid: 01KNKF8N9Q8VTNH67EKPNPP3KR
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNKF8MG7DX4GKR77FWAMET60
+        timestamp: 2026-04-07T07:59:41.879Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -124144,8 +124151,22 @@ reviews:
       content_hash: ""
       ref: "@plan-cache-aware-command-execution"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNKF8MG7DX4GKR77FWAMET60
+        anchor:
+          type: structured
+          ref: "@daemon-cache-command"
+        entries:
+          - _ulid: 01KNKF8MG74PX5MVR5FJMQ4MV3
+            author: "@claude"
+            body: This spec duplicates ownership with the planned @daemon-command-api AC update. Both describe
+              read commands being served from cache when domains are ready, so the plan currently
+              assigns the same behavior to two contracts. The benchmark plans keep spec boundaries
+              crisp; choose one home for the command-API cache-serving behavior and make the other
+              spec complementary rather than overlapping.
+            created_at: 2026-04-07T07:59:41.063Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-07T07:58:55.565Z
-    updated_at: 2026-04-07T07:59:02.605Z
+    updated_at: 2026-04-07T07:59:41.063Z
     notes: []
