@@ -124581,6 +124581,17 @@ reviews:
         required: true
         created_at: 2026-04-07T08:14:44.039Z
         completed_at: 2026-04-07T08:14:44.039Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "The concurrency spec remains behavioral: it is framed in terms of overlapping
+          cache-backed reads versus serialized mutation or disk-fallback execution, not mutex
+          internals."
+        name: Behavioral purity
+        required: true
+        created_at: 2026-04-07T08:14:43.975Z
+        completed_at: 2026-04-07T08:14:43.975Z
     events:
       - _ulid: 01KNKG3CD7SNDYHZ1MRDQ48YZR
         actor: "@claude"
@@ -124602,6 +124613,13 @@ reviews:
           status: pass
           name: Dependency ordering
         timestamp: 2026-04-07T08:14:46.102Z
+      - _ulid: 01KNKG49VFNBE86TJNWBSXBQXE
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Behavioral purity
+        timestamp: 2026-04-07T08:14:47.663Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -124637,5 +124655,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-07T08:14:17.511Z
-    updated_at: 2026-04-07T08:14:44.039Z
+    updated_at: 2026-04-07T08:14:43.975Z
     notes: []
