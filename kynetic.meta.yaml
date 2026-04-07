@@ -13015,6 +13015,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-07T03:39:48.632Z
+  - _ulid: 01KNK0H1NWG53RF21VMTPCM4Z9
+    type: friction
+    content: Dispatch worktrees can inherit NODE_ENV=production, causing npm installs and the test
+      runner dependency check to omit devDependencies until the workspace is manually repaired with
+      NODE_ENV= npm install --include=dev.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T03:42:08.061Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
