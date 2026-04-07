@@ -8,3 +8,10 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-07T16:33:28.100Z
+  - _ulid: 01KNMCX8TRRK2Y200EY3WPNVTP
+    content: "Updated remaining daemon test dist imports from .ts to .js in the affected suites.
+      Verification: npm test passed via the standard runner (2085/2085 suites, 7595 passed, 5
+      skipped)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T16:37:45.944Z
