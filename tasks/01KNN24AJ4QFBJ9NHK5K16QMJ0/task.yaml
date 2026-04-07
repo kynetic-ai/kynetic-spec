@@ -1,0 +1,20 @@
+_ulid: 01KNN24AJ4QFBJ9NHK5K16QMJ0
+slugs: []
+title: Replace process.exit string sentinel with typed error class
+type: task
+spec_ref: "@daemon-command-api"
+meta_ref: null
+plan_ref: "@plan-cache-aware-command-execution"
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - daemon
+  - cache
+  - bug
+vcs_refs: []
+created_at: 2026-04-07T22:48:37.188Z
+todos: []
+automation: eligible
