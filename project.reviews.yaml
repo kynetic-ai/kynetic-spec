@@ -125879,3 +125879,29 @@ reviews:
     created_at: 2026-04-07T17:17:40.073Z
     updated_at: 2026-04-07T17:25:50.734Z
     notes: []
+  - _ulid: 01KNMGPC5DQVF4B59NXB0ZV439
+    slugs: []
+    title: Review task-cache-aware-init-context
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KNMGPC5D2P2Z4Y8XF6P9F0W2
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-07T17:43:54.285Z
+    examined_commit: 8284b1a506930a0baf9d03648e397ecf94e733e7
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNMBPCJN1F5VZZ2DQV10VG76"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-07T17:43:54.285Z
+    updated_at: null
+    notes: []
