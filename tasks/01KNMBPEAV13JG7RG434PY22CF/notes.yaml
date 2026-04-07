@@ -11,3 +11,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-07T19:40:53.879Z
+  - _ulid: 01KNMQDRFGGAS1S0HASK7BWH8D
+    content: "Implemented task-history retention in the daemon task cache by splitting history into a
+      dedicated historyDetails map, adding TaskDataManager.loadTaskWithHistory() with split-backend
+      support, and routing task-domain warm/incremental loads through that combined path.
+      Verification: focused suites passed (tests/task-data-manager.test.ts,
+      tests/daemon-entity-cache.test.ts, tests/daemon-cache-route-coverage.test.ts,
+      tests/daemon-command-api.test.ts, tests/daemon-debug-routes.test.ts,
+      tests/daemon-read-path.test.ts, tests/daemon-triage-write-through.test.ts,
+      tests/session-related-routes.test.ts); kspec validate returned only the repository's
+      pre-existing warning set. Full npm test did not complete in this workspace and appeared to hit
+      the known teardown-hang area rather than producing a failing assertion."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T19:41:32.016Z
