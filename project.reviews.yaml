@@ -122504,6 +122504,13 @@ reviews:
           status: pass
           name: review-evidence
         timestamp: 2026-04-07T03:50:09.024Z
+      - _ulid: 01KNK0ZTSFHS6BYK8AY0GR52YF
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNK0ZSEVW75NVD90AX92P2VG
+        timestamp: 2026-04-07T03:50:12.527Z
     examined_commit: 7f8b957f999ba7f29846b7669ed6b8da0e8f67c8
     external_links: []
     lifecycle_state: open
@@ -122513,8 +122520,28 @@ reviews:
       content_hash: ""
       ref: "@01KNDDJ4BXMWVZSC7G6KMDP8BH"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNK0ZSEVW75NVD90AX92P2VG
+        anchor:
+          type: code
+          commit: 7f8b957f999ba7f29846b7669ed6b8da0e8f67c8
+          line_end: 1701
+          line_start: 1698
+          path: src/daemon/entity-cache.ts
+          side: head
+        entries:
+          - _ulid: 01KNK0ZSEV6D9VP0M00PY5DZAY
+            author: Jacob Chapel
+            body: 'Concurrent meta reloads can now drop requested sub-domain refreshes. When a
+              manifest-triggered reload is already in flight, loadMetaDomain() just awaits the
+              existing promise and returns without merging the new subdomains. I confirmed this with
+              a runnable repro against the multi-dir fixture: pausing a manifest invalidation and
+              then calling refreshMetaShadowInfo() produced {"manifestCalls":1,"shadowCalls":0}, so
+              the requested shadow refresh never ran and /api/meta/shadow can stay stale until a
+              later trigger.'
+            created_at: 2026-04-07T03:50:11.163Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-07T03:49:30.653Z
-    updated_at: 2026-04-07T03:50:08.180Z
+    updated_at: 2026-04-07T03:50:11.163Z
     notes: []
