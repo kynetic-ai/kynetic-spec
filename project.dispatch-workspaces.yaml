@@ -41483,7 +41483,7 @@ workspaces:
         head: 86d0dbc3ac5abcffc965a0c0cb55fa5d9ef3f381
         last_seen_at: 2026-04-07T18:59:24.532Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cache-aware-inbox-triage-01knmbpd
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: c0d9fee072d7e8719e05e1d8a17ea7e6148140c8
     bootstrap:
       status: succeeded
@@ -41612,9 +41612,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-07T19:17:00.298Z
-      last_reconciled_at: 2026-04-07T19:27:50.174Z
+      last_reconciled_at: 2026-04-07T19:28:22.992Z
       created_at: 2026-04-07T18:34:37.775Z
-      updated_at: 2026-04-07T19:27:50.174Z
+      updated_at: 2026-04-07T19:28:22.992Z
     workspace_id: dispatch-workspace-01KNMBPDRSN3PXZ81CHXBWXKTN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
