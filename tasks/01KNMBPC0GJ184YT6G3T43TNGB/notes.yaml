@@ -7,3 +7,11 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-07T16:26:17.112Z
+  - _ulid: 01KNMC8WR7P2QH3KQWRTMQ6BVP
+    content: "Completed spec update: added @daemon-entity-cache ac-task-history-retention covering both
+      initial task loads and incremental updates. Verification: kspec item get @daemon-entity-cache
+      shows the new AC. kspec validate returned the repo's existing warning set (exit 6) with no
+      task-specific validation errors introduced by this change."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T16:26:38.215Z
