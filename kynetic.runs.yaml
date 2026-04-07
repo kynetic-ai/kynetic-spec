@@ -23491,7 +23491,7 @@ runs:
     completed_at: 2026-04-06T18:59:30.990Z
   - _ulid: 01KNJYQKZ9GWEXF48RBBN3QCAT
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -23503,7 +23503,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-07T03:12:15.184Z
-        completed_at: 2026-04-07T03:12:15.184Z
+        completed_at: 2026-04-07T03:12:30.085Z
+        notes: "Identified two high-confidence friction points from this session after duplicate checks: 1)
+          NODE_ENV=production caused npm test to omit devDependencies, trigger repair installs, and
+          rewrite package manifests during verification; 2) kspec task note failed because .kspec/
+          was missing while kspec shadow repair still reported the shadow branch healthy. Skipped
+          success capture because an existing observation already tracks the focused-suite-first
+          verification pattern."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-07T03:12:30.085Z
+        completed_at: 2026-04-07T03:12:30.085Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-07T03:10:46.250Z
