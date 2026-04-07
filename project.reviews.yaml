@@ -124946,6 +124946,13 @@ reviews:
           status: pass
           name: Coverage mapping
         timestamp: 2026-04-07T08:23:08.232Z
+      - _ulid: 01KNKGKX39118AEFXD11VZ1HDK
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNKGKW99V5E7M5SQ6GSF034J
+        timestamp: 2026-04-07T08:23:18.889Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -124955,8 +124962,33 @@ reviews:
       content_hash: ""
       ref: "@plan-cache-aware-command-execution"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNKGKW99V5E7M5SQ6GSF034J
+        anchor:
+          type: structured
+          ref: "@task-read-command-concurrency"
+          section: description
+        entries:
+          - _ulid: 01KNKGKW994F2ZR2GYP8GJCGME
+            author: "@claude"
+            body: "The Phase 6 COMMAND_CACHE_DOMAINS map still does not match the real loader graph, so the task
+              remains non-executable as written. The plan now fixes item list and plan list, but
+              several other entries still overstate required domains: tasks ready loads only tasks
+              plus items in src/cli/commands/tasks.ts:239-242 yet the map still requires meta; item
+              get succeeds from buildIndexes alone and only consults meta on the not-found hint path
+              in src/cli/commands/item.ts:471-479, so plans are not an unconditional dependency and
+              meta is not required on successful reads; review get loads only reviews in
+              src/cli/commands/review.ts:546-548; task get loads tasks, items, and reviews via
+              listTasks/loadAllItems/buildIndexes/loadReviewRecords in
+              src/cli/commands/task.ts:715-723 and 770-771, but not meta. Because
+              canServeFromCache() gates concurrency on this map, these false dependencies would
+              still force mutex fallback even when every domain the command actually needs is ready,
+              which violates @daemon-concurrent-reads ac-concurrent-cache-reads. Re-derive the map
+              command-by-command from the current handlers and list only domains that are always
+              required on the successful execution path for each allowlisted command."
+            created_at: 2026-04-07T08:23:18.058Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-07T08:22:42.376Z
-    updated_at: 2026-04-07T08:23:02.993Z
+    updated_at: 2026-04-07T08:23:18.058Z
     notes: []
