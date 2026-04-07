@@ -40641,7 +40641,7 @@ workspaces:
         head: 343472d01808d514accacb66d1bb86db4519b37f
         last_seen_at: 2026-04-07T16:39:15.075Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-update-entity-cache-history-ac-01knmbpc
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 343472d01808d514accacb66d1bb86db4519b37f
     bootstrap:
       status: succeeded
@@ -40767,9 +40767,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-07T16:39:31.649Z
-      last_reconciled_at: 2026-04-07T16:48:05.108Z
+      last_reconciled_at: 2026-04-07T16:49:44.520Z
       created_at: 2026-04-07T16:32:19.388Z
-      updated_at: 2026-04-07T16:48:05.108Z
+      updated_at: 2026-04-07T16:49:44.520Z
     workspace_id: dispatch-workspace-01KNMCHPEEXG7VSVJJ0748PYC9
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
