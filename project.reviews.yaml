@@ -125159,3 +125159,29 @@ reviews:
     created_at: 2026-04-07T08:25:59.470Z
     updated_at: 2026-04-07T08:26:26.927Z
     notes: []
+  - _ulid: 01KNMC7A0CK37JPEC9SCPCRSQ8
+    slugs: []
+    title: Review task-update-command-api-spec
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KNMC7A0C37HV8BC90VJQZMH3
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-07T16:25:46.252Z
+    examined_commit: 343472d01808d514accacb66d1bb86db4519b37f
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNMBPBQ8T1NQABEB0JAGRCPY"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-07T16:25:46.252Z
+    updated_at: null
+    notes: []
