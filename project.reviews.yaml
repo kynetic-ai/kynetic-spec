@@ -122238,6 +122238,12 @@ reviews:
         payload:
           thread_ulid: 01KNJZ9BW1K68MBJ8T1ESAP856
         timestamp: 2026-04-07T03:40:32.377Z
+      - _ulid: 01KNK0HKVYEA8JVP7WR09A1PW1
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNJZ9BW1K68MBJ8T1ESAP856
+        timestamp: 2026-04-07T03:42:26.686Z
     examined_commit: 82b0e36155173b06f9cc85bf4c36a93b876855c6
     external_links: []
     lifecycle_state: closed
@@ -122297,6 +122303,8 @@ reviews:
               invalidations and re-ran NODE_ENV= npm test -- --fresh.'
             created_at: 2026-04-07T03:40:31.501Z
         kind: blocker
+        resolved_at: 2026-04-07T03:42:25.768Z
+        resolved_by: Jacob Chapel
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -122306,7 +122314,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-07T03:20:50.019Z
     created_at: 2026-04-07T03:19:36.797Z
-    updated_at: 2026-04-07T03:40:31.501Z
+    updated_at: 2026-04-07T03:42:25.768Z
     notes: []
   - _ulid: 01KNJZFZAGPTGRDK55FYHQRPDH
     slugs: []
