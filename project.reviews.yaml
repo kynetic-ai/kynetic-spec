@@ -124879,7 +124879,17 @@ reviews:
     slugs: []
     title: "Plan review: Cache-Aware Command Execution"
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Phase ordering is still coherent: concurrency depends on the cache-aware loader tasks and
+          task-history caching before mutex bypass is introduced."
+        name: Dependency ordering
+        required: true
+        created_at: 2026-04-07T08:23:02.992Z
+        completed_at: 2026-04-07T08:23:02.992Z
     events:
       - _ulid: 01KNKGJSE7ZTSZS59AN9S6ZG1J
         actor: "@claude"
@@ -124894,6 +124904,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-07T08:23:03.777Z
+      - _ulid: 01KNKGKFQBHSDDHT251CE5WFM0
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Dependency ordering
+        timestamp: 2026-04-07T08:23:05.195Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -124906,5 +124923,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-07T08:22:42.376Z
-    updated_at: 2026-04-07T08:23:02.947Z
+    updated_at: 2026-04-07T08:23:02.992Z
     notes: []
