@@ -122462,6 +122462,20 @@ reviews:
         required: false
         created_at: 2026-04-07T03:50:05.723Z
         completed_at: 2026-04-07T03:50:05.723Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: AGENTS.md, kspec-agents.md, src/daemon/entity-cache.ts,
+          packages/daemon/src/server.ts, packages/daemon/src/routes/meta.ts,
+          tests/daemon-entity-cache.test.ts. Commands run: git diff/stat, git log, kspec item get
+          @daemon-meta-subdomain, kspec validate, grep AC annotations, npm test on snapshot and base
+          branch, runnable tsx overlap repro. Categories searched: correctness, concurrency/dedup,
+          test quality, integration, error handling."
+        name: review-evidence
+        required: false
+        created_at: 2026-04-07T03:50:08.180Z
+        completed_at: 2026-04-07T03:50:08.180Z
     events:
       - _ulid: 01KNK0YHWXDS5Y6T0QNZ6YC5XW
         actor: Jacob Chapel
@@ -122483,6 +122497,13 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-04-07T03:50:06.633Z
+      - _ulid: 01KNK0ZQC0GF2CJG9KM6FS8XP6
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-04-07T03:50:09.024Z
     examined_commit: 7f8b957f999ba7f29846b7669ed6b8da0e8f67c8
     external_links: []
     lifecycle_state: open
@@ -122495,5 +122516,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-07T03:49:30.653Z
-    updated_at: 2026-04-07T03:50:05.723Z
+    updated_at: 2026-04-07T03:50:08.180Z
     notes: []
