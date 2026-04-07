@@ -51,6 +51,7 @@ import {
   ReviewThreadKindSchema,
 } from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
+import { CommandExitError } from "../batch-context.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { describeEnumValues } from "../enum-help.js";
 import { error, info, isJsonMode, output, success } from "../output.js";
@@ -529,6 +530,7 @@ export function registerReviewCommands(program: Command): void {
             );
           });
         } catch (err) {
+          if (err instanceof CommandExitError) throw err;
           error(errors.failures.createReview, err);
           process.exit(EXIT_CODES.ERROR);
         }
@@ -551,6 +553,7 @@ export function registerReviewCommands(program: Command): void {
           formatReviewDetails(found, reviews);
         });
       } catch (err) {
+        if (err instanceof CommandExitError) throw err;
         error(errors.failures.getReview, err);
         process.exit(EXIT_CODES.ERROR);
       }
@@ -715,6 +718,7 @@ export function registerReviewCommands(program: Command): void {
           }
         });
       } catch (err) {
+        if (err instanceof CommandExitError) throw err;
         error(errors.failures.listReviews, err);
         process.exit(EXIT_CODES.ERROR);
       }
@@ -821,6 +825,7 @@ export function registerReviewCommands(program: Command): void {
             success(`Added ${options.kind} thread to review ${shortReviewRef(found, reviews)}`);
           });
         } catch (err) {
+          if (err instanceof CommandExitError) throw err;
           error(errors.failures.addReviewComment, err);
           process.exit(EXIT_CODES.ERROR);
         }
@@ -902,6 +907,7 @@ export function registerReviewCommands(program: Command): void {
             },
           );
         } catch (err) {
+          if (err instanceof CommandExitError) throw err;
           error(errors.failures.replyToReviewThread, err);
           process.exit(EXIT_CODES.ERROR);
         }
@@ -988,6 +994,7 @@ export function registerReviewCommands(program: Command): void {
             },
           );
         } catch (err) {
+          if (err instanceof CommandExitError) throw err;
           error(errors.failures.addReviewCheck, err);
           process.exit(EXIT_CODES.ERROR);
         }
@@ -1081,6 +1088,7 @@ export function registerReviewCommands(program: Command): void {
             },
           );
         } catch (err) {
+          if (err instanceof CommandExitError) throw err;
           error(errors.failures.setReviewVerdict, err);
           process.exit(EXIT_CODES.ERROR);
         }
@@ -1161,6 +1169,7 @@ export function registerReviewCommands(program: Command): void {
             },
           );
         } catch (err) {
+          if (err instanceof CommandExitError) throw err;
           error(errors.failures.resolveReviewThread, err);
           process.exit(EXIT_CODES.ERROR);
         }
@@ -1241,6 +1250,7 @@ export function registerReviewCommands(program: Command): void {
             },
           );
         } catch (err) {
+          if (err instanceof CommandExitError) throw err;
           error(errors.failures.reopenReviewThread, err);
           process.exit(EXIT_CODES.ERROR);
         }
@@ -1298,6 +1308,7 @@ export function registerReviewCommands(program: Command): void {
             success(`Opened review ${shortReviewRef(found, reviews)}`);
           });
         } catch (err) {
+          if (err instanceof CommandExitError) throw err;
           error(errors.failures.openReview, err);
           process.exit(EXIT_CODES.ERROR);
         }
@@ -1360,6 +1371,7 @@ export function registerReviewCommands(program: Command): void {
             success(`Closed review ${shortReviewRef(found, reviews)}`);
           });
         } catch (err) {
+          if (err instanceof CommandExitError) throw err;
           error(errors.failures.closeReview, err);
           process.exit(EXIT_CODES.ERROR);
         }
@@ -1417,6 +1429,7 @@ export function registerReviewCommands(program: Command): void {
             success(`Archived review ${shortReviewRef(found, reviews)}`);
           });
         } catch (err) {
+          if (err instanceof CommandExitError) throw err;
           error(errors.failures.archiveReview, err);
           process.exit(EXIT_CODES.ERROR);
         }
@@ -1481,6 +1494,7 @@ export function registerReviewCommands(program: Command): void {
             success(`Refreshed subject on review ${shortReviewRef(found, reviews)}`);
           });
         } catch (err) {
+          if (err instanceof CommandExitError) throw err;
           error(errors.failures.refreshReview, err);
           process.exit(EXIT_CODES.ERROR);
         }
@@ -1551,6 +1565,7 @@ export function registerReviewCommands(program: Command): void {
           }
         });
       } catch (err) {
+        if (err instanceof CommandExitError) throw err;
         error(errors.failures.findReviewsForTask, err);
         process.exit(EXIT_CODES.ERROR);
       }

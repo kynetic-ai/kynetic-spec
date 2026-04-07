@@ -679,6 +679,33 @@ describe("Daemon Command API", () => {
   });
 
   // AC: @daemon-command-api ac-response-parity
+  it("does not emit wrapper error lines for text-mode review failures", async () => {
+    // Text-mode review get for a missing ref should produce the same stderr
+    // as direct CLI: just the not-found message and suggestion, without an
+    // extra "Failed to get review" wrapper from the catch block.
+    const cliResult = kspec("review get @does-not-exist", tempDir, { expectFail: true });
+
+    const response = await makeRequest("/api/command", {
+      method: "POST",
+      body: JSON.stringify({
+        command: "review get",
+        args: { ref: "@does-not-exist" },
+      }),
+    });
+
+    expect(response.status).toBe(422);
+    const body = await response.json();
+    expect(body.exitCode).toBe(cliResult.exitCode);
+
+    // The daemon stderr should NOT contain the wrapper error line that the
+    // catch block would emit if CommandExitError were not re-thrown.
+    expect(body.stderr).not.toContain("Failed to get review");
+
+    // Stderr should match direct CLI output (both contain the not-found message)
+    expect(body.stderr).toContain("not found");
+  });
+
+  // AC: @daemon-command-api ac-response-parity
   // AC: @daemon-concurrent-reads ac-concurrent-cache-reads
   it("preserves independent exit results for concurrent failing read commands", async () => {
     const [reviewResponse, taskResponse] = await Promise.all([
