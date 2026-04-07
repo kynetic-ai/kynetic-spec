@@ -124393,7 +124393,18 @@ reviews:
     slugs: []
     title: "Plan review: Cache-Aware Command Execution"
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: The revised @daemon-concurrent-reads ACs are now framed in observable outcomes (commands
+          complete without waiting, mutations serialize, disk fallback serializes) rather than
+          internal mutex or lock mechanics.
+        name: Behavioral purity
+        required: true
+        created_at: 2026-04-07T08:08:48.407Z
+        completed_at: 2026-04-07T08:08:48.407Z
     events:
       - _ulid: 01KNKFQDJTD2D15JPPSZJXZXQN
         actor: "@claude"
@@ -124415,6 +124426,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNKFSAVVF4AQTARBD735A6GT
         timestamp: 2026-04-07T08:08:49.080Z
+      - _ulid: 01KNKFSCZ03FNNS32P4K0PTMSN
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Behavioral purity
+        timestamp: 2026-04-07T08:08:50.400Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -124444,5 +124462,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-07T08:07:45.498Z
-    updated_at: 2026-04-07T08:08:48.251Z
+    updated_at: 2026-04-07T08:08:48.407Z
     notes: []
