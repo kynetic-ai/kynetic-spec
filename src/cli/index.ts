@@ -12,7 +12,7 @@ const require = createRequire(import.meta.url);
 const { version } = require("../../package.json");
 
 import { setVerboseModeGetter } from "../parser/shadow.js";
-import { initContext } from "../parser/yaml.js";
+import { getWorkingDirectoryOverride, initContext } from "../parser/yaml.js";
 import { isBatchMode } from "./batch-context.js";
 import {
   registerAgentCommands,
@@ -66,8 +66,6 @@ import { acquireFileLock, type FileLockAcquireInfo } from "../parser/file-lock.j
 import { rollbackDirtyShadowWorktree } from "../agent-runtime/workspace.js";
 import { shouldProxyCommand, proxyCommand, extractCommandPayload } from "./daemon-proxy.js";
 import { buildDaemonChildEnv } from "./commands/serve.js";
-
-const program = new Command();
 
 // Initialize verbose mode getter for shadow operations
 setVerboseModeGetter(getVerboseMode);
@@ -241,269 +239,243 @@ function showRemovedRalphCommandError(): never {
   process.exit(EXIT_CODES.ERROR);
 }
 
-program
-  .name("kspec")
-  .description("Kynetic Spec - Structured specification format CLI")
-  .version(version)
-  // AC: @output-format-option ac-format-json, ac-format-yaml, ac-global-scope
-  // Note: We use shorthands --json, --yaml, --raw as global options
-  // --format is NOT global because it conflicts with command-specific --format options (e.g., export)
-  // Commands can still use --format locally; the global behavior uses shorthands only
-  .option("--json", "Output in JSON format")
-  .option("--yaml", "Output in YAML format")
-  .option("--raw", "Output in raw JSON format (same as --json)")
-  .option("--debug-shadow", "Enable debug output for shadow operations")
-  // AC: @cli-daemon-proxy ac-force-proxy — require daemon routing
-  .option("--daemon", "Require daemon routing (fail if daemon is unavailable)")
-  .hook("preAction", async (thisCommand, actionCommand) => {
-    // Skip all hooks during batch dispatch — the batch handler manages modes itself
-    if (isBatchMode()) return;
+function configureProgram(program: Command): Command {
+  program
+    .name("kspec")
+    .description("Kynetic Spec - Structured specification format CLI")
+    .version(version)
+    // AC: @output-format-option ac-format-json, ac-format-yaml, ac-global-scope
+    // Note: We use shorthands --json, --yaml, --raw as global options
+    // --format is NOT global because it conflicts with command-specific --format options (e.g., export)
+    // Commands can still use --format locally; the global behavior uses shorthands only
+    .option("--json", "Output in JSON format")
+    .option("--yaml", "Output in YAML format")
+    .option("--raw", "Output in raw JSON format (same as --json)")
+    .option("--debug-shadow", "Enable debug output for shadow operations")
+    // AC: @cli-daemon-proxy ac-force-proxy — require daemon routing
+    .option("--daemon", "Require daemon routing (fail if daemon is unavailable)")
+    .hook("preAction", async (thisCommand, actionCommand) => {
+      if (isBatchMode()) return;
 
-    // Check format options at top level
-    const opts = thisCommand.opts();
+      const opts = thisCommand.opts();
+      const formatFlags = [];
+      if (opts.json) formatFlags.push("--json");
+      if (opts.yaml) formatFlags.push("--yaml");
+      if (opts.raw) formatFlags.push("--raw");
 
-    // AC: @output-format-option ac-conflict-error
-    // Detect conflicting format shorthand specifications
-    const formatFlags = [];
-    if (opts.json) formatFlags.push("--json");
-    if (opts.yaml) formatFlags.push("--yaml");
-    if (opts.raw) formatFlags.push("--raw");
+      if (formatFlags.length > 1) {
+        console.error(chalk.red(`error: Conflicting format options: ${formatFlags.join(", ")}`));
+        console.error(chalk.gray("Use only one of: --json, --yaml, --raw"));
+        process.exit(EXIT_CODES.ERROR);
+      }
 
-    if (formatFlags.length > 1) {
-      console.error(chalk.red(`error: Conflicting format options: ${formatFlags.join(", ")}`));
-      console.error(chalk.gray("Use only one of: --json, --yaml, --raw"));
+      if (opts.json || opts.raw) {
+        setJsonMode(true);
+      } else if (opts.yaml) {
+        setYamlMode(true);
+      }
+
+      if (opts.debugShadow) {
+        setVerboseMode(true);
+      }
+
+      const isAlwaysSync = getAlwaysSyncAnnotation(actionCommand);
+      const isMutating = getMutatingAnnotation(actionCommand);
+
+      if (isAlwaysSync) {
+        setSyncMode("always");
+      } else if (isMutating) {
+        setSyncMode("skip");
+      } else {
+        setSyncMode("drift-check");
+      }
+
+      const proxySkipCommands = new Set([
+        "init",
+        "serve",
+        "help",
+        "setup",
+        "shadow",
+        "doctor",
+        "clone-for-testing",
+        "batch",
+        "agent",
+        "event",
+      ]);
+
+      let shouldSkipProxy = false;
+      {
+        let cmd: typeof actionCommand | null | undefined = actionCommand;
+        while (cmd && typeof cmd.name === "function") {
+          const name = cmd.name();
+          if (name && name !== "kspec" && proxySkipCommands.has(name)) {
+            shouldSkipProxy = true;
+            break;
+          }
+          cmd = cmd.parent as typeof actionCommand | null | undefined;
+        }
+      }
+
+      if (!shouldSkipProxy) {
+        const proxyResult = await shouldProxyCommand({
+          forceDaemon: opts.daemon,
+        });
+
+        if (proxyResult.proxy) {
+          const { command, args: cmdArgs } = extractCommandPayload(actionCommand);
+
+          const currentWorkingDirectory = getWorkingDirectoryOverride() ?? process.cwd();
+          let projectPath: string;
+          try {
+            projectPath = path.resolve(currentWorkingDirectory);
+          } catch {
+            projectPath = currentWorkingDirectory;
+          }
+
+          const result = await proxyCommand({
+            port: proxyResult.port,
+            command,
+            args: cmdArgs,
+            projectPath,
+            isMutating,
+          });
+
+          if (result.ok) {
+            if (result.result.stdout) {
+              process.stdout.write(result.result.stdout);
+            }
+            if (result.result.stderr) {
+              process.stderr.write(result.result.stderr);
+            }
+            process.exit(result.result.exitCode);
+          } else if (result.fallbackToDirectMode) {
+            console.error(chalk.yellow(`⚠ ${result.error}`));
+          } else {
+            console.error(chalk.red(`error: ${result.error}`));
+            if (opts.daemon) {
+              console.error(
+                chalk.gray(
+                  "Suggested action: start the daemon with 'kspec serve start', or remove --daemon to allow direct mode.",
+                ),
+              );
+            } else {
+              console.error(
+                chalk.gray(
+                  "Suggested action: check daemon status with 'kspec serve status' or restart with 'kspec serve restart'.",
+                ),
+              );
+            }
+            process.exit(EXIT_CODES.ERROR);
+          }
+        } else if (opts.daemon && proxyResult.reason) {
+          console.error(chalk.red(`error: ${proxyResult.reason}`));
+          console.error(
+            chalk.gray(
+              "Suggested action: start the daemon with 'kspec serve start', or remove --daemon to allow direct mode.",
+            ),
+          );
+          process.exit(EXIT_CODES.ERROR);
+        }
+      }
+
+      await maybeAcquireDispatchMutationLock(isMutating);
+
+      const skipCommands = ["init", "serve", "help", "kspec"];
+      const topLevelName = getTopLevelCommandName(actionCommand);
+
+      if (!skipCommands.includes(topLevelName)) {
+        await maybeAutoStartDaemon();
+      }
+    })
+    .hook("postAction", async () => {
+      clearSyncMode();
+
+      if (heldMutationLockRelease) {
+        const release = heldMutationLockRelease;
+        heldMutationLockRelease = null;
+        heldMutationLockPath = null;
+        await release();
+      }
+    });
+
+  registerTasksCommands(program);
+  registerTaskCommands(program);
+  registerSetupCommand(program);
+  registerSessionCommands(program);
+  registerInitCommand(program);
+
+  registerItemCommands(program);
+  const itemCmd = program.commands.find((cmd) => cmd.name() === "item");
+  if (itemCmd) {
+    registerItemTraitCommands(itemCmd);
+  }
+
+  registerTraitCommands(program);
+  registerValidateCommand(program);
+  registerHelpCommand(program);
+  registerDoctorCommand(program);
+  registerDeriveCommand(program);
+  registerInboxCommands(program);
+  registerTriageCommands(program);
+  registerShadowCommands(program);
+  registerLogCommand(program);
+  registerSearchCommand(program);
+  registerRefsCommand(program);
+  registerServeCommands(program);
+  registerMetaCommands(program);
+  registerLinkCommands(program);
+  registerModuleCommands(program);
+  registerPlanCommands(program);
+  registerReviewCommands(program);
+  registerCloneForTestingCommand(program);
+  registerWorkflowCommand(program);
+  registerMergeDriverCommand(program);
+  registerExportCommand(program);
+  registerGuardCommand(program);
+  registerHookCommands(program);
+  registerEventCommands(program);
+  registerUtilCommands(program);
+  registerBatchCommand(program);
+  registerSkillCommands(program);
+  registerScheduleCommands(program);
+  registerAgentsCommands(program);
+  registerAgentCommands(program);
+
+  program.on("command:*", (operands) => {
+    const unknownCommand = operands[0];
+
+    if (unknownCommand === "ralph") {
+      showRemovedRalphCommandError();
+    }
+
+    if (COMMAND_ALIASES[unknownCommand]) {
+      console.error(chalk.red(`error: unknown command '${unknownCommand}'`));
+      console.error(chalk.yellow(`Did you mean: kspec ${COMMAND_ALIASES[unknownCommand]}?`));
       process.exit(EXIT_CODES.ERROR);
     }
 
-    // AC: @output-format-option ac-json-shorthand, ac-raw-shorthand, ac-yaml-shorthand
-    // Set output format based on shorthand flags
-    if (opts.json || opts.raw) {
-      setJsonMode(true);
-    } else if (opts.yaml) {
-      setYamlMode(true);
-    }
+    const allCommands = getAllCommands(program);
+    const suggestion = findClosestCommand(unknownCommand, allCommands);
 
-    if (opts.debugShadow) {
-      setVerboseMode(true);
-    }
-
-    // AC: @shadow-lazy-read-sync ac-syncmode-propagation
-    // AC: @shadow-write-sync ac-write-skips-read-check — mutating commands skip pre-read sync
-    // Determine sync mode centrally based on command annotations
-    const isAlwaysSync = getAlwaysSyncAnnotation(actionCommand);
-    const isMutating = getMutatingAnnotation(actionCommand);
-
-    if (isAlwaysSync) {
-      setSyncMode("always");
-    } else if (isMutating) {
-      setSyncMode("skip");
+    if (suggestion) {
+      console.error(chalk.red(`error: unknown command '${unknownCommand}'`));
+      console.error(chalk.yellow(`Did you mean: kspec ${suggestion}?`));
     } else {
-      setSyncMode("drift-check");
+      console.error(chalk.red(`error: unknown command '${unknownCommand}'`));
+      console.error(chalk.gray(`Run 'kspec help' to see available commands`));
     }
 
-    // AC: @cli-daemon-proxy ac-auto-detect, ac-direct-fallback, ac-force-proxy, ac-force-direct
-    // Daemon proxy routing — attempt to route command through daemon API.
-    // Commands that should never be proxied (infrastructure/lifecycle commands).
-    // Checked against the full command chain — if any ancestor is a skip
-    // command, skip proxy (e.g. "serve start" → "serve" is in the skip list).
-    const proxySkipCommands = new Set([
-      "init",
-      "serve",
-      "help",
-      "setup",
-      "shadow",
-      "doctor",
-      "clone-for-testing",
-      "batch",
-      "agent",
-      "event",
-    ]);
-
-    // Walk up the Commander parent chain to check all command names.
-    // Skip the root program name ("kspec") — only check actual command groups.
-    let shouldSkipProxy = false;
-    {
-      let cmd: typeof actionCommand | null | undefined = actionCommand;
-      while (cmd && typeof cmd.name === "function") {
-        const name = cmd.name();
-        if (name && name !== "kspec" && proxySkipCommands.has(name)) {
-          shouldSkipProxy = true;
-          break;
-        }
-        cmd = cmd.parent as typeof actionCommand | null | undefined;
-      }
-    }
-
-    if (!shouldSkipProxy) {
-      const proxyResult = await shouldProxyCommand({
-        forceDaemon: opts.daemon,
-      });
-
-      if (proxyResult.proxy) {
-        // Route through daemon — extract command payload from Commander state
-        const { command, args: cmdArgs } = extractCommandPayload(actionCommand);
-
-        // Resolve project path for X-Kspec-Dir header
-        let projectPath: string;
-        try {
-          projectPath = path.resolve(process.cwd());
-        } catch {
-          projectPath = process.cwd();
-        }
-
-        const result = await proxyCommand({
-          port: proxyResult.port,
-          command,
-          args: cmdArgs,
-          projectPath,
-          isMutating,
-        });
-
-        if (result.ok) {
-          // AC: @cli-daemon-proxy ac-transparent-output — write stdout/stderr, exit with code
-          if (result.result.stdout) {
-            process.stdout.write(result.result.stdout);
-          }
-          if (result.result.stderr) {
-            process.stderr.write(result.result.stderr);
-          }
-          process.exit(result.result.exitCode);
-        } else if (result.fallbackToDirectMode) {
-          // AC: @cli-daemon-proxy ac-timeout-fallback — fall back to direct mode with warning
-          console.error(chalk.yellow(`⚠ ${result.error}`));
-          // Continue to normal command execution (direct mode)
-        } else {
-          // AC: @cli-daemon-proxy ac-timeout-mutation-error, ac-force-proxy error
-          console.error(chalk.red(`error: ${result.error}`));
-          if (opts.daemon) {
-            console.error(
-              chalk.gray(
-                "Suggested action: start the daemon with 'kspec serve start', or remove --daemon to allow direct mode.",
-              ),
-            );
-          } else {
-            console.error(
-              chalk.gray(
-                "Suggested action: check daemon status with 'kspec serve status' or restart with 'kspec serve restart'.",
-              ),
-            );
-          }
-          process.exit(EXIT_CODES.ERROR);
-        }
-      } else if (opts.daemon && proxyResult.reason) {
-        // AC: @cli-daemon-proxy ac-force-proxy — --daemon flag but daemon unavailable
-        console.error(chalk.red(`error: ${proxyResult.reason}`));
-        console.error(
-          chalk.gray(
-            "Suggested action: start the daemon with 'kspec serve start', or remove --daemon to allow direct mode.",
-          ),
-        );
-        process.exit(EXIT_CODES.ERROR);
-      }
-    }
-
-    // If we reach here, we're in direct mode — proceed with normal execution
-    await maybeAcquireDispatchMutationLock(isMutating);
-
-    // Auto-start daemon if configured and not running
-    // AC: @config-daemon ac-8 — skip for commands that explicitly manage the daemon lifecycle
-    const skipCommands = ["init", "serve", "help", "kspec"];
-    const topLevelName = getTopLevelCommandName(actionCommand);
-
-    if (!skipCommands.includes(topLevelName)) {
-      await maybeAutoStartDaemon();
-    }
-  })
-  .hook("postAction", async () => {
-    // Clear sync mode after command completes so non-Commander callers
-    // (daemon, dispatch engine) that call initContext() later in the
-    // same process get 'drift-check' default, not stale command state.
-    clearSyncMode();
-
-    if (heldMutationLockRelease) {
-      const release = heldMutationLockRelease;
-      heldMutationLockRelease = null;
-      heldMutationLockPath = null;
-      await release();
-    }
+    process.exit(EXIT_CODES.ERROR);
   });
 
-// Register command groups
-registerTasksCommands(program);
-registerTaskCommands(program);
-registerSetupCommand(program);
-registerSessionCommands(program);
-registerInitCommand(program);
-
-// Register item commands first, then add trait subcommands to it
-registerItemCommands(program);
-const itemCmd = program.commands.find((cmd) => cmd.name() === "item");
-if (itemCmd) {
-  registerItemTraitCommands(itemCmd);
+  return program;
 }
 
-registerTraitCommands(program);
-registerValidateCommand(program);
-registerHelpCommand(program);
-registerDoctorCommand(program);
-registerDeriveCommand(program);
-registerInboxCommands(program);
-registerTriageCommands(program);
-registerShadowCommands(program);
-registerLogCommand(program);
-registerSearchCommand(program);
-registerRefsCommand(program);
-registerServeCommands(program);
-registerMetaCommands(program);
-registerLinkCommands(program);
-registerModuleCommands(program);
-registerPlanCommands(program);
-registerReviewCommands(program);
-registerCloneForTestingCommand(program);
-registerWorkflowCommand(program);
-registerMergeDriverCommand(program);
-registerExportCommand(program);
-registerGuardCommand(program);
-registerHookCommands(program);
-registerEventCommands(program);
-registerUtilCommands(program);
-registerBatchCommand(program);
-registerSkillCommands(program);
-registerScheduleCommands(program);
-registerAgentsCommands(program);
-registerAgentCommands(program);
+export function createProgram(): Command {
+  return configureProgram(new Command());
+}
 
-// Handle unknown commands with suggestions
-program.on("command:*", (operands) => {
-  const unknownCommand = operands[0];
-
-  if (unknownCommand === "ralph") {
-    showRemovedRalphCommandError();
-  }
-
-  // Check for direct alias match
-  if (COMMAND_ALIASES[unknownCommand]) {
-    console.error(chalk.red(`error: unknown command '${unknownCommand}'`));
-    console.error(chalk.yellow(`Did you mean: kspec ${COMMAND_ALIASES[unknownCommand]}?`));
-    process.exit(EXIT_CODES.ERROR);
-  }
-
-  // Get all available commands
-  const allCommands = getAllCommands(program);
-
-  // Find closest match
-  const suggestion = findClosestCommand(unknownCommand, allCommands);
-
-  if (suggestion) {
-    console.error(chalk.red(`error: unknown command '${unknownCommand}'`));
-    console.error(chalk.yellow(`Did you mean: kspec ${suggestion}?`));
-  } else {
-    console.error(chalk.red(`error: unknown command '${unknownCommand}'`));
-    console.error(chalk.gray(`Run 'kspec help' to see available commands`));
-  }
-
-  process.exit(EXIT_CODES.ERROR);
-});
+const program = createProgram();
 
 // Export program for introspection (used by help command)
 export { program };

@@ -1,3 +1,4 @@
+import { AsyncLocalStorage } from "node:async_hooks";
 import chalk from "chalk";
 import { stringify as yamlStringify } from "yaml";
 import type { ReferenceIndex } from "../parser/index.js";
@@ -52,18 +53,57 @@ export type OutputFormat = "text" | "json" | "yaml";
  */
 export const VALID_FORMATS = ["json", "yaml"] as const;
 
+interface OutputRuntimeState {
+  outputFormat: OutputFormat;
+  verboseMode: boolean;
+}
+
+const outputRuntimeStorage = new AsyncLocalStorage<OutputRuntimeState>();
+
 /**
  * Global output format (set by --json, --yaml, --raw, or --format flags)
  * AC: @output-format-option ac-format-json, ac-format-yaml
  */
 let globalOutputFormat: OutputFormat = "text";
 
+function getOutputRuntimeState(): OutputRuntimeState | undefined {
+  return outputRuntimeStorage.getStore();
+}
+
+function updateOutputRuntimeState(update: Partial<OutputRuntimeState>): void {
+  const runtimeState = getOutputRuntimeState();
+  if (runtimeState) {
+    Object.assign(runtimeState, update);
+    return;
+  }
+
+  if (update.outputFormat !== undefined) {
+    globalOutputFormat = update.outputFormat;
+  }
+  if (update.verboseMode !== undefined) {
+    globalVerboseMode = update.verboseMode;
+  }
+}
+
+export function runWithOutputState<T>(
+  fn: () => T,
+  initialState: Partial<OutputRuntimeState> = {},
+): T {
+  return outputRuntimeStorage.run(
+    {
+      outputFormat: initialState.outputFormat ?? "text",
+      verboseMode: initialState.verboseMode ?? false,
+    },
+    fn,
+  );
+}
+
 export function setOutputFormat(format: OutputFormat): void {
-  globalOutputFormat = format;
+  updateOutputRuntimeState({ outputFormat: format });
 }
 
 export function getOutputFormat(): OutputFormat {
-  return globalOutputFormat;
+  return getOutputRuntimeState()?.outputFormat ?? globalOutputFormat;
 }
 
 /**
@@ -72,9 +112,9 @@ export function getOutputFormat(): OutputFormat {
  */
 export function setJsonMode(enabled: boolean): void {
   if (enabled) {
-    globalOutputFormat = "json";
-  } else if (globalOutputFormat === "json") {
-    globalOutputFormat = "text";
+    updateOutputRuntimeState({ outputFormat: "json" });
+  } else if (getOutputFormat() === "json") {
+    updateOutputRuntimeState({ outputFormat: "text" });
   }
 }
 
@@ -92,9 +132,9 @@ export function isJsonMode(): boolean {
  */
 export function setYamlMode(enabled: boolean): void {
   if (enabled) {
-    globalOutputFormat = "yaml";
-  } else if (globalOutputFormat === "yaml") {
-    globalOutputFormat = "text";
+    updateOutputRuntimeState({ outputFormat: "yaml" });
+  } else if (getOutputFormat() === "yaml") {
+    updateOutputRuntimeState({ outputFormat: "text" });
   }
 }
 
@@ -111,7 +151,8 @@ export function isYamlMode(): boolean {
  * AC: @output-format-option ac-yaml-no-ansi, ac-yaml-references
  */
 export function isStructuredMode(): boolean {
-  return globalOutputFormat === "json" || globalOutputFormat === "yaml";
+  const format = getOutputFormat();
+  return format === "json" || format === "yaml";
 }
 
 /**
@@ -120,11 +161,11 @@ export function isStructuredMode(): boolean {
 let globalVerboseMode = false;
 
 export function setVerboseMode(enabled: boolean): void {
-  globalVerboseMode = enabled;
+  updateOutputRuntimeState({ verboseMode: enabled });
 }
 
 export function getVerboseMode(): boolean {
-  return globalVerboseMode;
+  return getOutputRuntimeState()?.verboseMode ?? globalVerboseMode;
 }
 
 /**
@@ -132,9 +173,10 @@ export function getVerboseMode(): boolean {
  * AC: @output-format-option ac-format-json, ac-format-yaml
  */
 export function output(data: unknown, formatter?: () => void): void {
-  if (globalOutputFormat === "json") {
+  const format = getOutputFormat();
+  if (format === "json") {
     console.log(JSON.stringify(data, null, 2));
-  } else if (globalOutputFormat === "yaml") {
+  } else if (format === "yaml") {
     console.log(yamlStringify(data, { indent: 2 }));
   } else if (formatter) {
     formatter();
@@ -148,9 +190,10 @@ export function output(data: unknown, formatter?: () => void): void {
  * AC: @output-format-option ac-format-json, ac-format-yaml
  */
 export function success(message: string, data?: Record<string, unknown>): void {
-  if (globalOutputFormat === "json") {
+  const format = getOutputFormat();
+  if (format === "json") {
     console.log(JSON.stringify({ success: true, message, ...data }));
-  } else if (globalOutputFormat === "yaml") {
+  } else if (format === "yaml") {
     console.log(yamlStringify({ success: true, message, ...data }, { indent: 2 }));
   } else {
     console.log(chalk.green("OK"), message);
@@ -162,9 +205,10 @@ export function success(message: string, data?: Record<string, unknown>): void {
  * AC: @output-format-option ac-format-json, ac-format-yaml
  */
 export function error(message: string, details?: unknown): void {
-  if (globalOutputFormat === "json") {
+  const format = getOutputFormat();
+  if (format === "json") {
     console.error(JSON.stringify({ success: false, error: message, details }));
-  } else if (globalOutputFormat === "yaml") {
+  } else if (format === "yaml") {
     console.error(yamlStringify({ success: false, error: message, details }, { indent: 2 }));
   } else {
     console.error(chalk.red("✗"), message);

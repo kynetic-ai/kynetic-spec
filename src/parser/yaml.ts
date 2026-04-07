@@ -67,6 +67,7 @@ import { TraitIndex } from "./traits.js";
  * the current async execution chain and cannot race with other threads.
  */
 const specDirOverrideStorage = new AsyncLocalStorage<{ ignore: boolean }>();
+const workingDirectoryStorage = new AsyncLocalStorage<{ cwd: string }>();
 export type EntityCacheAccessor = (projectPath: string) => unknown;
 
 export interface EntityCacheContext {
@@ -83,6 +84,14 @@ const entityCacheStorage = new AsyncLocalStorage<EntityCacheContext>();
  */
 export function runWithoutSpecDirOverride<T>(fn: () => T): T {
   return specDirOverrideStorage.run({ ignore: true }, fn);
+}
+
+export function runWithWorkingDirectory<T>(fn: () => T, cwd: string): T {
+  return workingDirectoryStorage.run({ cwd }, fn);
+}
+
+export function getWorkingDirectoryOverride(): string | undefined {
+  return workingDirectoryStorage.getStore()?.cwd;
 }
 
 export function runWithEntityCache<T>(
@@ -696,7 +705,7 @@ export async function initContext(
     return cachedContext;
   }
 
-  const cwd = startDir || process.cwd();
+  const cwd = startDir || getWorkingDirectoryOverride() || process.cwd();
   const projectRoots = resolveProjectRoots(cwd);
 
   // AC: @project-config ac-2, ac-6, ac-7 — load config before shadow detection

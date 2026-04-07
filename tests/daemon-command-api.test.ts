@@ -55,6 +55,9 @@ let pubsub: PubSubManager;
 let mockCache: RouteEntityCache;
 let writeThroughCalls: string[];
 let cacheSnapshot: CacheSnapshot;
+let prepareProgram:
+  | ((program: Command) => void | Promise<void>)
+  | undefined;
 
 type CacheState = "unloaded" | "loading" | "ready" | "degraded";
 
@@ -78,34 +81,25 @@ interface CacheSnapshot {
 }
 
 async function withCacheContextCommand<T>(fn: () => Promise<T>): Promise<T> {
-  const { program } = await import("../dist/cli/index.js");
-  const commandName = "debug-cache-context";
-  const existingIndex = program.commands.findIndex((command) => command.name() === commandName);
-  if (existingIndex >= 0) {
-    program.commands.splice(existingIndex, 1);
-  }
+  prepareProgram = (program) => {
+    program.command("debug-cache-context").action(async () => {
+      const { getEntityCacheContext } = await import("../dist/parser/yaml.js");
+      const context = getEntityCacheContext();
+      const resolvedCache = context?.cacheAccessor(context.projectPath) ?? null;
 
-  program.command(commandName).action(async () => {
-    const { getEntityCacheContext } = await import("../dist/parser/yaml.js");
-    const context = getEntityCacheContext();
-    const resolvedCache = context?.cacheAccessor(context.projectPath) ?? null;
-
-    console.log(
-      JSON.stringify({
-        hasContext: context !== undefined,
-        projectPath: context?.projectPath ?? null,
-        resolvedCache: resolvedCache !== null,
-      }),
-    );
-  });
-
+      console.log(
+        JSON.stringify({
+          hasContext: context !== undefined,
+          projectPath: context?.projectPath ?? null,
+          resolvedCache: resolvedCache !== null,
+        }),
+      );
+    });
+  };
   try {
     return await fn();
   } finally {
-    const index = program.commands.findIndex((command) => command.name() === commandName);
-    if (index >= 0) {
-      program.commands.splice(index, 1);
-    }
+    prepareProgram = undefined;
   }
 }
 
@@ -181,28 +175,27 @@ async function withDelayedCommandAction<T>(
   delayMs: number,
   fn: () => Promise<T>,
 ): Promise<T> {
-  const { program } = await import("../dist/cli/index.js");
-  const command = findCommand(program, commandPath.split(" "));
-  const originalHandler = (command as Command & { _actionHandler?: (...args: unknown[]) => unknown })
-    ._actionHandler;
+  prepareProgram = (program) => {
+    const command = findCommand(program, commandPath.split(" "));
+    const originalHandler = (command as Command & {
+      _actionHandler?: (...args: unknown[]) => unknown;
+    })._actionHandler;
 
-  if (!originalHandler) {
-    throw new Error(`Command has no action handler: ${commandPath}`);
-  }
+    if (!originalHandler) {
+      throw new Error(`Command has no action handler: ${commandPath}`);
+    }
 
-  (
-    command as Command & { _actionHandler: (...args: unknown[]) => Promise<unknown> }
-  )._actionHandler = async (...args: unknown[]) => {
-    await new Promise((resolve) => setTimeout(resolve, delayMs));
-    return originalHandler(...args);
+    (
+      command as Command & { _actionHandler: (...args: unknown[]) => Promise<unknown> }
+    )._actionHandler = async (...args: unknown[]) => {
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+      return originalHandler(...args);
+    };
   };
-
   try {
     return await fn();
   } finally {
-    (
-      command as Command & { _actionHandler: (...args: unknown[]) => unknown }
-    )._actionHandler = originalHandler;
+    prepareProgram = undefined;
   }
 }
 
@@ -442,6 +435,7 @@ conventions: []
 
 describe("Daemon Command API", () => {
   beforeEach(async () => {
+    prepareProgram = undefined;
     tempDir = await createTempDir("kspec-daemon-command-api-");
     initGitRepo(tempDir);
     setupFixtures();
@@ -455,7 +449,9 @@ describe("Daemon Command API", () => {
       return null;
     };
     const { middleware } = projectContextMiddleware();
-    app = new Elysia().use(middleware).use(createCommandRoutes({ pubsub, getEntityCache }));
+    app = new Elysia()
+      .use(middleware)
+      .use(createCommandRoutes({ pubsub, getEntityCache, prepareProgram: (program) => prepareProgram?.(program) }));
   });
 
   afterEach(async () => {
@@ -811,6 +807,54 @@ describe("Daemon Command API", () => {
 
       expect(elapsed).toBeLessThan(150);
     });
+  });
+
+  // AC: @daemon-concurrent-reads ac-concurrent-cache-reads
+  it("keeps concurrent cache-backed read outputs isolated", async () => {
+    const leakedStdout: string[] = [];
+    const originalWrite = process.stdout.write.bind(process.stdout);
+
+    process.stdout.write = ((chunk: unknown, ...rest: unknown[]) => {
+      const text =
+        typeof chunk === "string" ? chunk : Buffer.isBuffer(chunk) ? chunk.toString() : String(chunk);
+      leakedStdout.push(text);
+      return originalWrite(
+        chunk as Parameters<typeof process.stdout.write>[0],
+        ...(rest as Parameters<typeof process.stdout.write>[1][]),
+      );
+    }) as typeof process.stdout.write;
+
+    try {
+      const [tasksResponse, planResponse] = await Promise.all([
+        makeRequest("/api/command", {
+          method: "POST",
+          body: JSON.stringify({
+            command: "tasks list",
+            args: { json: true },
+          }),
+        }),
+        makeRequest("/api/command", {
+          method: "POST",
+          body: JSON.stringify({
+            command: "plan list",
+            args: {},
+          }),
+        }),
+      ]);
+
+      const tasksBody = await tasksResponse.json();
+      const planBody = await planResponse.json();
+
+      expect(tasksBody.exitCode).toBe(0);
+      expect(planBody.exitCode).toBe(0);
+      expect(tasksBody.stdout).toContain(TASK_ULID);
+      expect(tasksBody.stdout).not.toContain("Plans (1):");
+      expect(planBody.stdout).toContain("Plans (1):");
+      expect(planBody.stdout).not.toContain(TASK_ULID);
+      expect(leakedStdout).toEqual([]);
+    } finally {
+      process.stdout.write = originalWrite;
+    }
   });
 
   // AC: @daemon-concurrent-reads ac-disk-fallback-serialization

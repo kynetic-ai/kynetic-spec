@@ -16,6 +16,7 @@
  * - @trait-api-endpoint ac-6: includes X-Request-Id header
  */
 
+import { AsyncLocalStorage } from "node:async_hooks";
 import { Elysia, t } from "elysia";
 import { ulid } from "ulidx";
 import type { Command } from "commander";
@@ -23,7 +24,12 @@ import type { PubSubManager } from "../websocket/pubsub.js";
 import type { EntityCacheAccessor, RouteEntityCache } from "./entity-cache-types.js";
 import type { CacheDomain } from "../../daemon/entity-cache.js";
 import { getDispatchShadowMutationLockPath } from "../../agent-runtime/workspace.js";
-import { runWithEntityCache, runWithoutSpecDirOverride } from "../../parser/yaml.js";
+import {
+  runWithEntityCache,
+  runWithoutSpecDirOverride,
+  runWithWorkingDirectory,
+} from "../../parser/yaml.js";
+import { runWithOutputState } from "../../cli/output.js";
 
 // ── Types ──────────────────────────────────────────────────────────
 
@@ -46,11 +52,125 @@ interface RefLikeEntity {
   slugs?: string[];
 }
 
+interface CommandExecutionContext {
+  stdoutChunks: string[];
+  stderrChunks: string[];
+}
+
+const commandExecutionStorage = new AsyncLocalStorage<CommandExecutionContext>();
+
+function serializeConsoleArgs(args: unknown[]): string {
+  return args.map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg))).join(" ");
+}
+
+function extractGlobalOptionArgv(args: Record<string, unknown>): string[] {
+  const globalFlags: string[] = [];
+  const flagKeys: Array<[string, string]> = [
+    ["json", "--json"],
+    ["yaml", "--yaml"],
+    ["raw", "--raw"],
+    ["debugShadow", "--debug-shadow"],
+    ["debug-shadow", "--debug-shadow"],
+    ["daemon", "--daemon"],
+  ];
+
+  for (const [key, flag] of flagKeys) {
+    if (args[key] === true) {
+      globalFlags.push(flag);
+      delete args[key];
+    }
+  }
+
+  return globalFlags;
+}
+
+const originalConsoleLog = console.log.bind(console);
+const originalConsoleError = console.error.bind(console);
+const originalConsoleWarn = console.warn.bind(console);
+const originalStdoutWrite = process.stdout.write.bind(process.stdout);
+const originalStderrWrite = process.stderr.write.bind(process.stderr);
+const originalProcessExit = process.exit.bind(process);
+
+console.log = (...args: unknown[]) => {
+  const capture = commandExecutionStorage.getStore();
+  if (capture) {
+    capture.stdoutChunks.push(`${serializeConsoleArgs(args)}\n`);
+    return;
+  }
+  originalConsoleLog(...args);
+};
+
+console.error = (...args: unknown[]) => {
+  const capture = commandExecutionStorage.getStore();
+  if (capture) {
+    capture.stderrChunks.push(`${serializeConsoleArgs(args)}\n`);
+    return;
+  }
+  originalConsoleError(...args);
+};
+
+console.warn = (...args: unknown[]) => {
+  const capture = commandExecutionStorage.getStore();
+  if (capture) {
+    capture.stderrChunks.push(`${serializeConsoleArgs(args)}\n`);
+    return;
+  }
+  originalConsoleWarn(...args);
+};
+
+process.stdout.write = ((chunk: unknown, ...rest: unknown[]) => {
+  const capture = commandExecutionStorage.getStore();
+  if (capture) {
+    const text =
+      typeof chunk === "string" ? chunk : Buffer.isBuffer(chunk) ? chunk.toString() : String(chunk);
+    capture.stdoutChunks.push(text);
+    const callback =
+      typeof rest[0] === "function" ? rest[0] : typeof rest[1] === "function" ? rest[1] : undefined;
+    if (callback) {
+      (callback as () => void)();
+    }
+    return true;
+  }
+
+  return originalStdoutWrite(
+    chunk as Parameters<typeof process.stdout.write>[0],
+    ...(rest as Parameters<typeof process.stdout.write>[1][]),
+  );
+}) as typeof process.stdout.write;
+
+process.stderr.write = ((chunk: unknown, ...rest: unknown[]) => {
+  const capture = commandExecutionStorage.getStore();
+  if (capture) {
+    const text =
+      typeof chunk === "string" ? chunk : Buffer.isBuffer(chunk) ? chunk.toString() : String(chunk);
+    capture.stderrChunks.push(text);
+    const callback =
+      typeof rest[0] === "function" ? rest[0] : typeof rest[1] === "function" ? rest[1] : undefined;
+    if (callback) {
+      (callback as () => void)();
+    }
+    return true;
+  }
+
+  return originalStderrWrite(
+    chunk as Parameters<typeof process.stderr.write>[0],
+    ...(rest as Parameters<typeof process.stderr.write>[1][]),
+  );
+}) as typeof process.stderr.write;
+
+process.exit = ((code?: number) => {
+  if (commandExecutionStorage.getStore()) {
+    throw new Error(`__KSPEC_COMMAND_EXIT__:${code ?? 0}`);
+  }
+  return originalProcessExit(code);
+}) as typeof process.exit;
+
 // ── Route Options ──────────────────────────────────────────────────
 
 interface CommandRouteOptions {
   pubsub: PubSubManager;
   getEntityCache?: EntityCacheAccessor;
+  prepareProgram?: (program: Command) => void | Promise<void>;
 }
 
 // ── In-Process Dispatch Mutex ────────────────────────────────────────
@@ -96,14 +216,9 @@ class DispatchMutex {
 /**
  * Execute a single CLI command within the daemon process.
  *
- * IMPORTANT: This function mutates process-global state (process.cwd(),
- * console.log/error/warn, process.stdout/stderr.write, process.exit) and
- * normally must be called inside the dispatch mutex. The route may bypass
- * the mutex only for cache-backed read commands that have been proven safe.
- *
- * Intercepts both console methods AND process.stdout/stderr.write to capture
- * all CLI output, since some commands write directly to process streams
- * (e.g., plan export uses process.stdout.write).
+ * Executes a command inside request-scoped async context so concurrent
+ * cache-backed reads do not share stdout/stderr capture, output mode,
+ * exit interception, or working-directory discovery.
  *
  * AC: @daemon-command-api ac-command-endpoint — executes command in-process
  * AC: @daemon-command-api ac-response-parity — captures same stdout/stderr as direct CLI
@@ -115,126 +230,62 @@ async function executeCommand(
   cacheAccessor?: EntityCacheAccessor,
 ): Promise<CommandResult> {
   // Lazy import to avoid loading the full CLI at daemon startup
-  const { buildCommandArgv, resetCommandTree } = await import("../../cli/batch-exec.js");
+  const { buildCommandArgv } = await import("../../cli/batch-exec.js");
   const { extractCommandTree, findCommand } = await import("../../cli/introspection.js");
-  const { installExitInterceptor, uninstallExitInterceptor, BatchExitError } =
-    await import("../../cli/batch-context.js");
-  const { setOutputFormat, setVerboseMode } = await import("../../cli/output.js");
 
   const tree = extractCommandTree(program);
   const parts = payload.command.trim().split(/\s+/);
   const cmdMeta = findCommand(tree, parts);
+  const commandArgs = { ...payload.args };
+  const globalArgv = extractGlobalOptionArgv(commandArgs);
 
   // Build argv from payload. For unknown commands, pass the raw command words
   // so Commander's "command:*" handler fires and produces the same stderr
   // output as direct CLI execution (ac-response-parity).
   const argv = cmdMeta
-    ? buildCommandArgv({ command: payload.command, args: payload.args, id: payload.id }, cmdMeta)
-    : parts;
-
-  // Reset Commander state and ALL output mode globals between dispatches.
-  // setOutputFormat("text") resets json, yaml, or any other format — unlike
-  // setJsonMode(false) which only clears json and leaves yaml intact.
-  // AC: @daemon-command-api ac-response-parity — prevents output mode leaking between requests
-  resetCommandTree(program);
-  setOutputFormat("text");
-  setVerboseMode(false);
-
-  // Capture stdout and stderr separately.
-  // Intercepts both console.log/error/warn AND process.stdout/stderr.write
-  // because CLI commands use both paths (e.g., plan export uses process.stdout.write).
-  // AC: @daemon-command-api ac-response-parity — full stdout/stderr capture
-  const stdoutChunks: string[] = [];
-  const stderrChunks: string[] = [];
-  const origLog = console.log;
-  const origError = console.error;
-  const origWarn = console.warn;
-  const origStdoutWrite = process.stdout.write;
-  const origStderrWrite = process.stderr.write;
-
-  console.log = (...args: unknown[]) => {
-    stdoutChunks.push(
-      args.map((a) => (typeof a === "string" ? a : JSON.stringify(a))).join(" ") + "\n",
-    );
+    ? [
+        ...globalArgv,
+        ...buildCommandArgv({ command: payload.command, args: commandArgs, id: payload.id }, cmdMeta),
+      ]
+    : [...globalArgv, ...parts];
+  const capture: CommandExecutionContext = {
+    stdoutChunks: [],
+    stderrChunks: [],
   };
-  console.error = (...args: unknown[]) => {
-    stderrChunks.push(
-      args.map((a) => (typeof a === "string" ? a : JSON.stringify(a))).join(" ") + "\n",
-    );
-  };
-  console.warn = (...args: unknown[]) => {
-    stderrChunks.push(
-      args.map((a) => (typeof a === "string" ? a : JSON.stringify(a))).join(" ") + "\n",
-    );
-  };
-
-  // Intercept process.stdout.write / process.stderr.write so commands that
-  // bypass console (e.g., process.stdout.write(...)) are also captured.
-  process.stdout.write = (chunk: unknown, ...rest: unknown[]): boolean => {
-    const text =
-      typeof chunk === "string" ? chunk : Buffer.isBuffer(chunk) ? chunk.toString() : String(chunk);
-    stdoutChunks.push(text);
-    // Invoke the callback if provided (Node stream write signature)
-    const cb =
-      typeof rest[0] === "function" ? rest[0] : typeof rest[1] === "function" ? rest[1] : undefined;
-    if (cb) (cb as () => void)();
-    return true;
-  };
-  process.stderr.write = (chunk: unknown, ...rest: unknown[]): boolean => {
-    const text =
-      typeof chunk === "string" ? chunk : Buffer.isBuffer(chunk) ? chunk.toString() : String(chunk);
-    stderrChunks.push(text);
-    const cb =
-      typeof rest[0] === "function" ? rest[0] : typeof rest[1] === "function" ? rest[1] : undefined;
-    if (cb) (cb as () => void)();
-    return true;
-  };
-
-  installExitInterceptor();
-
-  const originalCwd = process.cwd();
   let exitCode = 0;
 
   try {
-    // Set process.cwd() to the project path so initContext() discovers
-    // the correct kspec project
-    process.chdir(projectPath);
-
-    // Run inside runWithoutSpecDirOverride so initContext() ignores the
-    // KSPEC_SPEC_DIR env var (which may be set by concurrent threads such
-    // as batch-atomic mode or test fixtures) and resolves the project
-    // purely from cwd.  This avoids mutating process.env which is shared
-    // across all threads in the process.
     const parseCommand = () =>
-      runWithoutSpecDirOverride(() => program.parseAsync(argv, { from: "user" }));
-    if (cacheAccessor) {
-      await runWithEntityCache(parseCommand, cacheAccessor, projectPath);
-    } else {
-      await parseCommand();
-    }
+      runWithOutputState(
+        () =>
+          runWithoutSpecDirOverride(() =>
+            runWithWorkingDirectory(() => program.parseAsync(argv, { from: "user" }), projectPath),
+          ),
+        { outputFormat: "text", verboseMode: false },
+      );
+
+    await commandExecutionStorage.run(capture, async () => {
+      if (cacheAccessor) {
+        await runWithEntityCache(parseCommand, cacheAccessor, projectPath);
+      } else {
+        await parseCommand();
+      }
+    });
   } catch (err) {
-    if (err instanceof BatchExitError) {
-      exitCode = err.code;
+    if (err instanceof Error && err.message.startsWith("__KSPEC_COMMAND_EXIT__:")) {
+      exitCode = Number(err.message.slice("__KSPEC_COMMAND_EXIT__:".length));
     } else {
       exitCode = 1;
       const msg = err instanceof Error ? err.message : String(err);
-      stderrChunks.push(msg);
+      capture.stderrChunks.push(msg);
     }
-  } finally {
-    process.chdir(originalCwd);
-    console.log = origLog;
-    console.error = origError;
-    console.warn = origWarn;
-    process.stdout.write = origStdoutWrite;
-    process.stderr.write = origStderrWrite;
-    uninstallExitInterceptor();
   }
 
   // Combine captured chunks verbatim — no trimming, to preserve response
   // parity with direct CLI execution.
   // AC: @daemon-command-api ac-response-parity — exact stdout/stderr match
-  const stdout = stdoutChunks.join("");
-  const stderr = stderrChunks.join("");
+  const stdout = capture.stdoutChunks.join("");
+  const stderr = capture.stderrChunks.join("");
 
   // Filter BatchExitError noise from stderr (preserving other content intact)
   const filteredStderr = stderr
@@ -505,25 +556,24 @@ const MUTATION_AFFECTED_DOMAINS: CacheDomain[] = [
  * AC: @trait-api-endpoint ac-6 — X-Request-Id header
  */
 export function createCommandRoutes(options: CommandRouteOptions) {
-  const { pubsub, getEntityCache } = options;
+  const { pubsub, getEntityCache, prepareProgram } = options;
 
   // In-process mutex serializes all command dispatches to protect
   // process-global state (cwd, console, exit interceptor).
   const dispatchMutex = new DispatchMutex();
 
-  // Lazy-loaded Commander program reference — loaded once on first request
-  let _program: Command | null = null;
   const getProgram = async (): Promise<Command> => {
-    if (!_program) {
-      // Ensure the split storage backend is registered before CLI commands execute.
-      // The CLI's task commands need this backend for split-format task storage.
-      const { ensureSplitBackendRegistered } = await import("../../parser/split-backend.js");
-      ensureSplitBackendRegistered();
+    // Ensure the split storage backend is registered before CLI commands execute.
+    // The CLI's task commands need this backend for split-format task storage.
+    const { ensureSplitBackendRegistered } = await import("../../parser/split-backend.js");
+    ensureSplitBackendRegistered();
 
-      const { program } = await import("../../cli/index.js");
-      _program = program;
+    const { createProgram } = await import("../../cli/index.js");
+    const program = createProgram();
+    if (prepareProgram) {
+      await prepareProgram(program);
     }
-    return _program;
+    return program;
   };
 
   return (
