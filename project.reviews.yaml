@@ -124911,6 +124911,16 @@ reviews:
         required: true
         created_at: 2026-04-07T08:23:02.993Z
         completed_at: 2026-04-07T08:23:02.993Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Specs and tasks remain behavioral; the remaining issue is loader-graph accuracy in the
+          Phase 6 task description, not AC wording.
+        name: Behavioral purity
+        required: true
+        created_at: 2026-04-07T08:23:23.370Z
+        completed_at: 2026-04-07T08:23:23.370Z
     events:
       - _ulid: 01KNKGJSE7ZTSZS59AN9S6ZG1J
         actor: "@claude"
@@ -124953,6 +124963,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNKGKW99V5E7M5SQ6GSF034J
         timestamp: 2026-04-07T08:23:18.889Z
+      - _ulid: 01KNKGM28QNF28M83EWQWMV96C
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Behavioral purity
+        timestamp: 2026-04-07T08:23:24.183Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -124990,5 +125007,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-07T08:22:42.376Z
-    updated_at: 2026-04-07T08:23:18.058Z
+    updated_at: 2026-04-07T08:23:23.370Z
     notes: []
