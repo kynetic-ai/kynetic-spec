@@ -39631,12 +39631,17 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-07T03:56:53.487Z
+      updated_at: 2026-04-07T03:58:36.708Z
     health:
-      status: healthy
-      issues: []
-      summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-07T03:56:57.926Z
+      status: stale
+      issues:
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-meta-subdomain-decomposition-01knddj4"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+      summary: Workspace registry record is stale and needs reconciliation.
+      updated_at: 2026-04-07T03:58:36.708Z
     integration:
       status: pending
       detail: null
@@ -39644,17 +39649,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-granular-cache-invalidation/01kndbmk
       target_commit: d5cf75d00642de5a31d80d1969cb337194ca1207
-      updated_at: 2026-04-07T03:56:53.487Z
-    lifecycle_state: active
+      updated_at: 2026-04-07T03:58:36.708Z
+    lifecycle_state: stale
     resolved_base_branch: plan/plan-granular-cache-invalidation/01kndbmk
     task_ref: "@01KNDDJ4BXMWVZSC7G6KMDP8BH"
     task_slug: task-meta-subdomain-decomposition
     timestamps:
       closed_at: null
       last_active_at: 2026-04-07T03:56:57.926Z
-      last_reconciled_at: 2026-04-07T03:56:57.926Z
+      last_reconciled_at: 2026-04-07T03:58:36.708Z
       created_at: 2026-04-07T02:49:48.924Z
-      updated_at: 2026-04-07T03:56:57.926Z
+      updated_at: 2026-04-07T03:58:36.708Z
     workspace_id: dispatch-workspace-01KNDDJ4BXMWVZSC7G6KMDP8BH
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
