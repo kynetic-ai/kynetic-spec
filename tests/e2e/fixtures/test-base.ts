@@ -63,7 +63,7 @@ async function getAvailablePort(): Promise<number> {
 }
 
 function resolveTestRuntime(env: NodeJS.ProcessEnv = process.env): DaemonRuntime {
-  const runtime = env.KSPEC_TEST_RUNTIME ?? "bun";
+  const runtime = env.KSPEC_TEST_RUNTIME ?? "node";
   if (runtime === "bun" || runtime === "node") {
     return runtime;
   }

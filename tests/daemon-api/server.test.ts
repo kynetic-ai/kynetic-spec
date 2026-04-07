@@ -68,7 +68,7 @@ function createServerTestApp(projectDir: string) {
         uptime: process.uptime(),
         connections: 0,
         version: "0.1.0",
-        runtime: "bun",
+        runtime: "node",
       }))
       // SPA fallback route (simulates static plugin's index.html serving).
       // In production, this is handled by the Elysia static plugin + explicit
@@ -168,7 +168,7 @@ describe("GET /api/health", () => {
   it("returns runtime field", async () => {
     const response = await makeReq("/api/health");
     const body = (await response.json()) as { runtime: string };
-    expect(body.runtime).toBe("bun");
+    expect(body.runtime).toBe("node");
   });
 
   it("returns JSON content type", async () => {

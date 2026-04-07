@@ -61,6 +61,7 @@
   },
   "dependencies": {
     "@elysiajs/cors": "^1.4.1",
+    "@elysiajs/node": "^1.4.5",
     "@elysiajs/static": "^1.4.7",
     "chalk": "^5.3.0",
     "chokidar": "^4.0.3",
