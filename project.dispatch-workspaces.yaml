@@ -41424,18 +41424,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-cache-aware-inbox-triage/01knmbpd
-    canonical_branch_head: 67ebfe91db89764dcd98955256e641f2950e0787
+    canonical_branch_head: 83d5ca14bff1114bc7729d90080a7c424973a446
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-07T18:23:07.155Z
+      updated_at: 2026-04-07T18:31:45.859Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-07T18:23:19.988Z
+      updated_at: 2026-04-07T18:31:45.859Z
     integration:
       status: pending
       detail: null
@@ -41443,7 +41443,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-cache-aware-command-execution/01knkf3b
       target_commit: 67ebfe91db89764dcd98955256e641f2950e0787
-      updated_at: 2026-04-07T18:23:07.155Z
+      updated_at: 2026-04-07T18:31:45.859Z
     lifecycle_state: active
     resolved_base_branch: plan/plan-cache-aware-command-execution/01knkf3b
     task_ref: "@01KNMBPDFJVDHBED491ZCJGFV9"
@@ -41451,9 +41451,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-07T18:23:19.988Z
-      last_reconciled_at: 2026-04-07T18:23:19.988Z
+      last_reconciled_at: 2026-04-07T18:31:45.859Z
       created_at: 2026-04-07T18:23:07.155Z
-      updated_at: 2026-04-07T18:23:19.988Z
+      updated_at: 2026-04-07T18:31:45.859Z
     workspace_id: dispatch-workspace-01KNMBPDFJVDHBED491ZCJGFV9
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
