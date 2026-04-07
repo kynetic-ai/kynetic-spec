@@ -13400,6 +13400,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-07T20:47:56.318Z
+  - _ulid: 01KNMX551PXCRE1V4ER07V4H9F
+    type: success
+    content: Adding daemon-executed behavioral regression tests for helper-based error paths exposed a
+      real shared-state/output-mode bug that unit-level helper coverage alone did not catch. For
+      daemon concurrency and output isolation work, verify behavior through the command API as well
+      as helper tests.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T21:21:41.430Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
