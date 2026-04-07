@@ -128214,6 +128214,12 @@ reviews:
         payload:
           thread_ulid: 01KNN3M19HGDCK65P10DWW75B5
         timestamp: 2026-04-07T23:40:59.306Z
+      - _ulid: 01KNN54P2JFBH14C84K0T03976
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNN3M19HGDCK65P10DWW75B5
+        timestamp: 2026-04-07T23:41:14.706Z
     examined_commit: b5d0c386a50acb9dd457f6b8b29bae37711254c5
     external_links: []
     lifecycle_state: closed
@@ -128253,6 +128259,8 @@ reviews:
               @does-not-exist produces matching stderr between daemon API and direct CLI."
             created_at: 2026-04-07T23:40:58.438Z
         kind: blocker
+        resolved_at: 2026-04-07T23:41:13.824Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -128262,7 +128270,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-07T23:15:34.160Z
     created_at: 2026-04-07T23:08:40.852Z
-    updated_at: 2026-04-07T23:40:58.438Z
+    updated_at: 2026-04-07T23:41:13.824Z
     notes: []
   - _ulid: 01KNN49K7V9VZG3MJ8N21P21CE
     slugs: []
