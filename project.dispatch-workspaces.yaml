@@ -41848,12 +41848,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-07T19:43:00.656Z
+      updated_at: 2026-04-07T19:43:08.556Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-07T19:43:00.656Z
+      updated_at: 2026-04-07T19:43:08.556Z
     integration:
       status: pending
       detail: null
@@ -41861,24 +41861,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-cache-aware-command-execution/01knkf3b
       target_commit: f2c6cbcfa58e452080d089c6f211ae2611c382a1
-      updated_at: 2026-04-07T19:43:00.656Z
-    lifecycle_state: ready
+      updated_at: 2026-04-07T19:43:08.556Z
+    lifecycle_state: integrating
     resolved_base_branch: plan/plan-cache-aware-command-execution/01knkf3b
     task_ref: "@01KNMBPEAV13JG7RG434PY22CF"
     task_slug: task-cache-task-history
     timestamps:
       closed_at: null
       last_active_at: 2026-04-07T19:29:04.412Z
-      last_reconciled_at: 2026-04-07T19:43:00.656Z
+      last_reconciled_at: 2026-04-07T19:43:08.556Z
       created_at: 2026-04-07T19:28:59.444Z
-      updated_at: 2026-04-07T19:43:00.656Z
+      updated_at: 2026-04-07T19:43:08.556Z
     workspace_id: dispatch-workspace-01KNMBPEAV13JG7RG434PY22CF
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 6ab12a48afa9ea404d715befd30a0aa524537911
+        last_seen_at: 2026-04-07T19:43:08.556Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cache-task-history-01knmbpe-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-cache-task-history/01knmbpe
-        head: f2c6cbcfa58e452080d089c6f211ae2611c382a1
-        last_seen_at: 2026-04-07T19:28:59.444Z
+        head: 6ab12a48afa9ea404d715befd30a0aa524537911
+        last_seen_at: 2026-04-07T19:43:08.556Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cache-task-history-01knmbpe
