@@ -123922,6 +123922,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNK9131KW1T39RBRRFBAKGJB
         timestamp: 2026-04-07T06:10:43.244Z
+      - _ulid: 01KNK91671QB98XR5SMRXS4CKQ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNK915CWN5YX71NKKQZH3XKY
+        timestamp: 2026-04-07T06:10:45.601Z
     examined_commit: 6391877ed741b6f9c2a5ebbe19de3aee5f6de5a6
     external_links: []
     lifecycle_state: open
@@ -123952,7 +123959,22 @@ reviews:
               `result.resultRef` (or the created task ULID) and passes it through here.
             created_at: 2026-04-07T06:10:42.356Z
         kind: blocker
+      - _ulid: 01KNK915CWN5YX71NKKQZH3XKY
+        entries:
+          - _ulid: 01KNK915CWYK6CMW1YZBXZ0XHG
+            author: Jacob Chapel
+            body: "Files read: packages/daemon/src/routes/tasks.ts, packages/daemon/src/routes/reviews.ts,
+              packages/daemon/src/routes/triage.ts, packages/daemon/src/server.ts,
+              src/daemon/entity-cache.ts, src/triage/actions.ts, tests/daemon-entity-cache.test.ts,
+              tests/daemon-read-path.test.ts. Commands run: git diff/stat, kspec task get, kspec
+              item get, kspec validate, rg AC coverage searches, targeted + full npm test. Claims
+              verified: hinted task/item write-through uses incremental patching in cache code and
+              tests; shadow-sync onPull now reloads full cache. Categories searched: correctness,
+              edge cases, error handling, test quality, integration. Findings: triage promote still
+              misses the task hint, so one request path remains on full reloads."
+            created_at: 2026-04-07T06:10:44.764Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-07T06:10:21.358Z
-    updated_at: 2026-04-07T06:10:42.356Z
+    updated_at: 2026-04-07T06:10:44.764Z
     notes: []
