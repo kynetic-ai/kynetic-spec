@@ -27,9 +27,9 @@ import type {
   RouteEntityCache,
   EntityCacheAccessor,
 } from "../dist/daemon/routes/entity-cache-types.js";
-import type { TaskSummary } from "../dist/parser/task-data-manager.ts";
+import type { TaskSummary } from "../dist/parser/task-data-manager.js";
 import type { ItemSummary } from "../dist/daemon/entity-cache.js";
-import type { SessionLogSummary } from "../dist/sessions/store.ts";
+import type { SessionLogSummary } from "../dist/sessions/store.js";
 import * as yamlModule from "../dist/parser/yaml.js";
 
 const TASK_ULID = testUlid("RTSK", 1);

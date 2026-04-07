@@ -33,17 +33,17 @@ import type {
   RouteEntityCache,
   EntityCacheAccessor,
 } from "../dist/daemon/routes/entity-cache-types.js";
-import type { TaskSummary } from "../dist/parser/task-data-manager.ts";
+import type { TaskSummary } from "../dist/parser/task-data-manager.js";
 import type {
   ItemSummary,
   TriageIndexSummary,
   PlanIndexSummary,
   CachedShadowInfo,
   CachedProjectConfig,
-} from "../dist/daemon/entity-cache.ts";
-import { createShadowSyncOnPullHandler } from "../dist/daemon/server.ts";
-import type { MetaContext } from "../dist/parser/meta.ts";
-import type { LoadedInboxItem, LoadedSpecItem, LoadedTask } from "../dist/parser/yaml.ts";
+} from "../dist/daemon/entity-cache.js";
+import { createShadowSyncOnPullHandler } from "../dist/daemon/server.js";
+import type { MetaContext } from "../dist/parser/meta.js";
+import type { LoadedInboxItem, LoadedSpecItem, LoadedTask } from "../dist/parser/yaml.js";
 import { ShadowSyncScheduler } from "../src/parser/shadow-sync-scheduler.js";
 import * as parserModule from "../dist/parser/index.js";
 import * as shadowModule from "../dist/parser/shadow.js";

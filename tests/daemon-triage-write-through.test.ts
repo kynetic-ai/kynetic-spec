@@ -6,15 +6,15 @@
 
 import { Elysia } from "elysia";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.ts";
-import { createInboxRoutes } from "../dist/daemon/routes/inbox.ts";
-import { createTriageRoutes } from "../dist/daemon/routes/triage.ts";
-import { PubSubManager } from "../dist/daemon/websocket/pubsub.ts";
+import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.js";
+import { createInboxRoutes } from "../dist/daemon/routes/inbox.js";
+import { createTriageRoutes } from "../dist/daemon/routes/triage.js";
+import { PubSubManager } from "../dist/daemon/websocket/pubsub.js";
 import type {
   EntityCacheAccessor,
   RouteEntityCache,
-} from "../dist/daemon/routes/entity-cache-types.ts";
-import type { WriteThroughHint } from "../dist/daemon/entity-cache.ts";
+} from "../dist/daemon/routes/entity-cache-types.js";
+import type { WriteThroughHint } from "../dist/daemon/entity-cache.js";
 import {
   cleanupTempDir,
   createTempDir,
