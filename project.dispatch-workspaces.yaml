@@ -39250,12 +39250,17 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-07T03:13:09.418Z
+      updated_at: 2026-04-07T03:14:37.124Z
     health:
-      status: healthy
-      issues: []
-      summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-07T03:13:13.900Z
+      status: stale
+      issues:
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-incremental-item-updates-01knddj3"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+      summary: Workspace registry record is stale and needs reconciliation.
+      updated_at: 2026-04-07T03:14:37.124Z
     integration:
       status: pending
       detail: null
@@ -39263,17 +39268,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-granular-cache-invalidation/01kndbmk
       target_commit: f79e50ae4981291472311faca180dcfcda98a05a
-      updated_at: 2026-04-07T03:13:09.418Z
-    lifecycle_state: active
+      updated_at: 2026-04-07T03:14:37.124Z
+    lifecycle_state: stale
     resolved_base_branch: plan/plan-granular-cache-invalidation/01kndbmk
     task_ref: "@01KNDDJ3RK4K2HWH7TVY6F1V66"
     task_slug: task-incremental-item-updates
     timestamps:
       closed_at: null
       last_active_at: 2026-04-07T03:13:13.900Z
-      last_reconciled_at: 2026-04-07T03:13:13.900Z
+      last_reconciled_at: 2026-04-07T03:14:37.124Z
       created_at: 2026-04-06T18:06:17.959Z
-      updated_at: 2026-04-07T03:13:13.900Z
+      updated_at: 2026-04-07T03:14:37.124Z
     workspace_id: dispatch-workspace-01KNDDJ3RK4K2HWH7TVY6F1V66
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
