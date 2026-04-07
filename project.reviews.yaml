@@ -127591,6 +127591,12 @@ reviews:
         payload:
           thread_ulid: 01KNMSECX6CACHE98YX6QWM35J
         timestamp: 2026-04-07T20:42:28.557Z
+      - _ulid: 01KNMTYFF2XPNX7QM4KYXSDCHJ
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNMSECX6CACHE98YX6QWM35J
+        timestamp: 2026-04-07T20:43:05.570Z
     examined_commit: 1dcde7937b52018f763a0cff9973e4977ab9e72e
     external_links: []
     lifecycle_state: closed
@@ -127656,6 +127662,8 @@ reviews:
               allowlisted reads and asserts their outputs stay isolated with no stdout leakage.
             created_at: 2026-04-07T20:42:27.598Z
         kind: blocker
+        resolved_at: 2026-04-07T20:43:04.759Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KNMSEFF0JTSV6KR2QCR8VH78
         anchor:
           type: code
@@ -127721,5 +127729,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-07T20:17:36.357Z
     created_at: 2026-04-07T20:10:07.646Z
-    updated_at: 2026-04-07T20:42:27.598Z
+    updated_at: 2026-04-07T20:43:04.759Z
     notes: []
