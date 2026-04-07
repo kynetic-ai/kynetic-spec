@@ -11,3 +11,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-07T17:06:17.652Z
+  - _ulid: 01KNMF2APN8HZHR0C0C42KDQ63
+    content: "Implemented entity-cache async-context plumbing for daemon command execution. Added
+      runWithEntityCache/getEntityCacheContext in parser yaml utilities, wrapped command-route
+      parseAsync execution so daemon requests install cache context without affecting direct CLI
+      mode, and added AC-tagged parser/route tests for propagation and no-context behavior.
+      Verification: npm run typecheck passed, targeted parser/daemon command tests passed, full npm
+      test passed. kspec validate reported the repository’s existing warning set only; no new
+      validation errors were introduced. Note: attempted to type the parser store with the daemon
+      route accessor interface, but the root tsconfig rejects cross-root imports from
+      packages/daemon into src/, so the parser helper uses an equivalent local function type to
+      preserve build stability."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T17:15:28.853Z
