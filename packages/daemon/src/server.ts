@@ -668,8 +668,8 @@ export async function createServer(options: ServerOptions) {
             if (!startupProjectPath) return;
             const cache = entityCacheModule.getEntityCache(startupProjectPath);
             if (!cache) return;
-            console.log("[daemon] Shadow sync pulled data — reloading entity cache");
-            await cache.loadAll();
+            console.log("[daemon] Shadow sync pulled data — refreshing cached shadow info");
+            await cache.refreshMetaShadowInfo();
           },
         });
         shadowSyncScheduler.start();

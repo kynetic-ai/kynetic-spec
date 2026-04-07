@@ -174,6 +174,10 @@ describe("ProjectEntityCache", () => {
       expect(domains).toHaveLength(2);
     });
 
+    it("should map session context file to meta domain", () => {
+      expect(fileToDomain(".kspec-session")).toEqual(["meta"]);
+    });
+
     it("should map module files to items domain", () => {
       expect(fileToDomain("modules/test.yaml")).toEqual(["items"]);
       expect(fileToDomain("modules/nested/feature.yaml")).toEqual(["items"]);
@@ -1040,6 +1044,214 @@ describe("ProjectEntityCache", () => {
       expect(loadAllItemsSpy).toHaveBeenCalledTimes(1);
     });
 
+    // AC: @daemon-meta-subdomain ac-manifest-only-reload
+    it("reloads only manifest-backed meta data when a meta YAML file changes", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("meta");
+      await cache.loadDomain("items");
+
+      const manifestSpy = vi.spyOn(cache as any, "loadMetaManifestSubdomain");
+      const shadowSpy = vi.spyOn(cache as any, "loadMetaShadowSubdomain");
+      const sessionSpy = vi.spyOn(cache as any, "loadMetaSessionSubdomain");
+
+      const shadowBefore = cache.getShadowInfo();
+      const sessionBefore = cache.getSessionContext();
+
+      const kspecDir = join(projectA, ".kspec");
+      const manifestPath = join(kspecDir, "kynetic.yaml");
+      await cache.handleFileChange(kspecDir, manifestPath);
+
+      expect(manifestSpy).toHaveBeenCalledOnce();
+      expect(shadowSpy).not.toHaveBeenCalled();
+      expect(sessionSpy).not.toHaveBeenCalled();
+      expect(cache.getShadowInfo()).toBe(shadowBefore);
+      expect(cache.getSessionContext()).toBe(sessionBefore);
+    });
+
+    // AC: @daemon-meta-subdomain ac-manifest-only-reload
+    it("reloads only manifest-backed meta data when an included meta YAML file changes", async () => {
+      const kspecDir = join(projectA, ".kspec");
+      const metaManifestPath = join(kspecDir, "kynetic.meta.yaml");
+      const includedMetaPath = join(kspecDir, "meta", "roles.yaml");
+
+      await fs.mkdir(dirname(includedMetaPath), { recursive: true });
+      await fs.writeFile(
+        metaManifestPath,
+        yamlStringify({
+          kynetic_meta: "1.0",
+          includes: ["meta/roles.yaml"],
+          conventions: [],
+        }),
+        "utf-8",
+      );
+      await fs.writeFile(
+        includedMetaPath,
+        yamlStringify({
+          conventions: [],
+        }),
+        "utf-8",
+      );
+
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("meta");
+
+      const manifestSpy = vi.spyOn(cache as any, "loadMetaManifestSubdomain");
+      const shadowSpy = vi.spyOn(cache as any, "loadMetaShadowSubdomain");
+      const sessionSpy = vi.spyOn(cache as any, "loadMetaSessionSubdomain");
+
+      const shadowBefore = cache.getShadowInfo();
+      const sessionBefore = cache.getSessionContext();
+
+      await fs.writeFile(
+        includedMetaPath,
+        yamlStringify({
+          conventions: [{ title: "Roles convention", rules: ["Use named roles"] }],
+        }),
+        "utf-8",
+      );
+
+      await cache.handleFileChange(kspecDir, includedMetaPath);
+
+      expect(manifestSpy).toHaveBeenCalledOnce();
+      expect(shadowSpy).not.toHaveBeenCalled();
+      expect(sessionSpy).not.toHaveBeenCalled();
+      expect(cache.getShadowInfo()).toBe(shadowBefore);
+      expect(cache.getSessionContext()).toBe(sessionBefore);
+    });
+
+    it("deduplicates overlapping manifest-only meta reloads", async () => {
+      const originalKspecTest = process.env.KSPEC_TEST;
+      process.env.KSPEC_TEST = "1";
+
+      try {
+        const cache = new ProjectEntityCache(projectA);
+        (cache as any).domainDebounceMs = 0;
+        await cache.loadDomain("meta");
+
+        const manifestSpy = vi.spyOn(cache as any, "loadMetaManifestSubdomain");
+        const kspecDir = join(projectA, ".kspec");
+        const manifestPath = join(kspecDir, "kynetic.yaml");
+
+        setTestDelay(projectA);
+
+        const firstReload = cache.handleFileChange(kspecDir, manifestPath);
+        await vi.waitFor(() => expect((cache as any).inFlightReloads.has("meta")).toBe(true));
+
+        const secondReload = cache.handleFileChange(kspecDir, manifestPath);
+
+        releaseTestDelay(projectA);
+        await Promise.all([firstReload, secondReload]);
+
+        expect(manifestSpy).toHaveBeenCalledTimes(1);
+        expect(cache.getDomainState("meta")).toBe("ready");
+      } finally {
+        releaseTestDelay(projectA);
+        if (originalKspecTest === undefined) {
+          delete process.env.KSPEC_TEST;
+        } else {
+          process.env.KSPEC_TEST = originalKspecTest;
+        }
+      }
+    });
+
+    // AC: @daemon-entity-cache ac-reload-dedup
+    it("runs pending shadow refreshes after an in-flight manifest-only meta reload finishes", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("meta");
+
+      const originalManifestLoad = (cache as any).loadMetaManifestSubdomain.bind(cache);
+      let releaseManifestLoad!: () => void;
+      const manifestGate = new Promise<void>((resolve) => {
+        releaseManifestLoad = resolve;
+      });
+      const manifestSpy = vi
+        .spyOn(cache as any, "loadMetaManifestSubdomain")
+        .mockImplementation(async (cycle?: unknown) => {
+          await manifestGate;
+          await originalManifestLoad(cycle);
+        });
+      const shadowSpy = vi.spyOn(cache as any, "loadMetaShadowSubdomain");
+
+      const kspecDir = join(projectA, ".kspec");
+      const manifestPath = join(kspecDir, "kynetic.yaml");
+
+      const manifestReload = cache.handleFileChange(kspecDir, manifestPath);
+      await vi.waitFor(() => expect(manifestSpy).toHaveBeenCalledOnce());
+
+      const shadowReload = cache.refreshMetaShadowInfo();
+      await vi.waitFor(() => expect((cache as any).pendingMetaSubdomains.has("shadow")).toBe(true));
+
+      releaseManifestLoad();
+      await Promise.all([manifestReload, shadowReload]);
+
+      expect(manifestSpy).toHaveBeenCalledOnce();
+      expect(shadowSpy).toHaveBeenCalledOnce();
+      expect(cache.getDomainState("meta")).toBe("ready");
+    });
+
+    // AC: @daemon-meta-subdomain ac-session-context-independent
+    it("reloads only cached session context when the session context file changes", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("meta");
+
+      const manifestSpy = vi.spyOn(cache as any, "loadMetaManifestSubdomain");
+      const shadowSpy = vi.spyOn(cache as any, "loadMetaShadowSubdomain");
+      const sessionSpy = vi.spyOn(cache as any, "loadMetaSessionSubdomain");
+
+      const metaBefore = cache.getMetaIndex();
+      const shadowBefore = cache.getShadowInfo();
+      const kspecDir = join(projectA, ".kspec");
+      const sessionContextPath = join(kspecDir, ".kspec-session");
+
+      await fs.writeFile(
+        sessionContextPath,
+        yamlStringify({
+          focus: "Investigate meta sub-domain reloads",
+          threads: ["thread-a"],
+          open_questions: ["question-a"],
+          updated_at: "2026-04-06T00:00:00.000Z",
+        }),
+        "utf-8",
+      );
+
+      await cache.handleFileChange(kspecDir, sessionContextPath);
+
+      expect(sessionSpy).toHaveBeenCalledOnce();
+      expect(manifestSpy).not.toHaveBeenCalled();
+      expect(shadowSpy).not.toHaveBeenCalled();
+      expect(cache.getMetaIndex()).toBe(metaBefore);
+      expect(cache.getShadowInfo()).toBe(shadowBefore);
+      expect(cache.getSessionContext()).toMatchObject({
+        focus: "Investigate meta sub-domain reloads",
+        threads: ["thread-a"],
+        questions: ["question-a"],
+      });
+    });
+
+    // AC: @daemon-meta-subdomain ac-shadow-on-schedule
+    it("refreshes only cached shadow info during background shadow sync", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("meta");
+
+      const manifestSpy = vi.spyOn(cache as any, "loadMetaManifestSubdomain");
+      const shadowSpy = vi.spyOn(cache as any, "loadMetaShadowSubdomain");
+      const sessionSpy = vi.spyOn(cache as any, "loadMetaSessionSubdomain");
+
+      const metaBefore = cache.getMetaIndex();
+      const sessionBefore = cache.getSessionContext();
+      const shadowBefore = cache.getShadowInfo();
+
+      await cache.refreshMetaShadowInfo();
+
+      expect(shadowSpy).toHaveBeenCalledOnce();
+      expect(manifestSpy).not.toHaveBeenCalled();
+      expect(sessionSpy).not.toHaveBeenCalled();
+      expect(cache.getMetaIndex()).toBe(metaBefore);
+      expect(cache.getSessionContext()).toBe(sessionBefore);
+      expect(cache.getShadowInfo()).not.toBeNull();
+      expect(cache.getShadowInfo()).not.toBe(shadowBefore);
+    });
+
     // AC: @daemon-entity-cache ac-context-reuse
     it("should reuse initContext once across manifest-triggered multi-domain reloads", async () => {
       const cache = new ProjectEntityCache(projectA);
@@ -1074,10 +1286,17 @@ describe("ProjectEntityCache", () => {
         setTestDelay(projectA);
 
         const firstWindowReload = cache.handleFileChange(kspecDir, manifestPath);
-        await vi.waitFor(() => expect((cache as any).inFlightReloads.size).toBe(2));
+        await vi.waitFor(() => {
+          expect((cache as any).inFlightReloads.has("meta")).toBe(true);
+          expect((cache as any).inFlightReloads.has("items")).toBe(true);
+        });
 
         const secondWindowReload = cache.invalidateDomain("tasks");
-        await vi.waitFor(() => expect((cache as any).inFlightReloads.size).toBe(3));
+        await vi.waitFor(() => {
+          expect((cache as any).inFlightReloads.has("meta")).toBe(true);
+          expect((cache as any).inFlightReloads.has("items")).toBe(true);
+          expect((cache as any).inFlightReloads.has("tasks")).toBe(true);
+        });
 
         releaseTestDelay(projectA);
         await Promise.all([firstWindowReload, secondWindowReload]);
@@ -2073,6 +2292,40 @@ describe("ProjectEntityCache", () => {
       expect(cache.getDomainState("tasks")).toBe("ready");
       expect(cache.getDomainState("items")).toBe("ready");
       expect(cache.getDomainState("meta")).toBe("ready");
+    });
+
+    // AC: @daemon-meta-subdomain ac-initial-load-all
+    it("keeps meta loading until all three meta sub-domains finish the initial load", async () => {
+      const cache = new ProjectEntityCache(projectA);
+
+      const manifestSpy = vi.spyOn(cache as any, "loadMetaManifestSubdomain");
+      const shadowSpy = vi.spyOn(cache as any, "loadMetaShadowSubdomain");
+      const originalLoadSession = (cache as any).loadMetaSessionSubdomain.bind(cache);
+      let releaseSessionLoad!: () => void;
+      const sessionGate = new Promise<void>((resolve) => {
+        releaseSessionLoad = resolve;
+      });
+      const sessionSpy = vi
+        .spyOn(cache as any, "loadMetaSessionSubdomain")
+        .mockImplementation(async () => {
+          await originalLoadSession();
+          await sessionGate;
+        });
+
+      const loadPromise = cache.loadDomain("meta");
+
+      await vi.waitFor(() => expect(sessionSpy).toHaveBeenCalledOnce());
+      expect(manifestSpy).toHaveBeenCalledOnce();
+      expect(shadowSpy).toHaveBeenCalledOnce();
+      expect(cache.getDomainState("meta")).toBe("loading");
+
+      releaseSessionLoad();
+      await loadPromise;
+
+      expect(cache.getDomainState("meta")).toBe("ready");
+      expect(cache.getMetaIndex()).not.toBeNull();
+      expect(cache.getShadowInfo()).not.toBeNull();
+      expect(cache.getSessionContext()).not.toBeNull();
     });
   });
 
