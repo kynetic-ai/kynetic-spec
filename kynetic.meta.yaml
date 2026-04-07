@@ -13382,6 +13382,24 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-07T19:28:07.588Z
+  - _ulid: 01KNMV7B6B6EGAZVPK5BBX9HKT
+    type: friction
+    content: Full npm test can fail on a stale cached suite path that no longer exists (for example
+      tests/_trivial-verbose-check.test.ts) and requires rerunning with --fresh to get the real
+      result.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T20:47:56.107Z
+  - _ulid: 01KNMV7BCXTZ6AB0SNVW9Y0YMQ
+    type: friction
+    content: Read-only CLI lookups and review bookkeeping can still proxy through the daemon and hang or
+      time out even when direct mode succeeds immediately; workers had to force KSPEC_NO_DAEMON=1 to
+      finish reflection searches and review thread resolution.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T20:47:56.318Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
