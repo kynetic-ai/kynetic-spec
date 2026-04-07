@@ -40751,7 +40751,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-07T16:48:05.108Z
+      updated_at: 2026-04-07T16:49:48.020Z
     integration:
       status: merged
       detail: integration:merged
@@ -40767,18 +40767,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-07T16:39:31.649Z
-      last_reconciled_at: 2026-04-07T16:49:44.520Z
+      last_reconciled_at: 2026-04-07T16:49:48.020Z
       created_at: 2026-04-07T16:32:19.388Z
-      updated_at: 2026-04-07T16:49:44.520Z
+      updated_at: 2026-04-07T16:49:48.020Z
     workspace_id: dispatch-workspace-01KNMCHPEEXG7VSVJJ0748PYC9
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 5ed91dd971c7633e2a34b93683183a0f0f0a77da
-        last_seen_at: 2026-04-07T16:39:24.724Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-daemon-test-dist-imports-01knmchp-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-fix-daemon-test-dist-imports/01knmchp
