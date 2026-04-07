@@ -124156,6 +124156,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNKF8MH5XNSMD75BTW5890DE
         timestamp: 2026-04-07T07:59:44.667Z
+      - _ulid: 01KNKF8SDYDG58K0DHYENHNWH5
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KNKF8MGN9CEQRRF17MG0YKV3
+        timestamp: 2026-04-07T07:59:46.110Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -124210,7 +124217,21 @@ reviews:
               behavioral instead of locking in one implementation.
             created_at: 2026-04-07T07:59:41.093Z
         kind: blocker
+      - _ulid: 01KNKF8MGN9CEQRRF17MG0YKV3
+        anchor:
+          type: structured
+          ref: "@task-cache-task-history"
+          section: description
+        entries:
+          - _ulid: 01KNKF8MGPZJGFVFRFNYFCR0DM
+            author: "@claude"
+            body: This task still presents three competing implementation options before saying option (b) is
+              cleanest. The benchmark plans usually leave workers with one concrete path, not an
+              in-task design fork. Tighten the task so the chosen approach, required interface
+              changes, and verification boundary are explicit.
+            created_at: 2026-04-07T07:59:41.078Z
+        kind: question
     verdicts: []
     created_at: 2026-04-07T07:58:55.565Z
-    updated_at: 2026-04-07T07:59:41.093Z
+    updated_at: 2026-04-07T07:59:41.078Z
     notes: []
