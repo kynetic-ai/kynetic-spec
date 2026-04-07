@@ -25661,7 +25661,7 @@
   type: task
   spec_ref: "@daemon-command-api"
   plan_ref: "@plan-cache-aware-command-execution"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-cache-async-context"
@@ -25670,7 +25670,7 @@
     - daemon
     - cache
   review_ref: "@01KNMMADY56C0YNMGGTQBCDG38"
-  notes_count: 2
+  notes_count: 3
   todos_count: 0
   created_at: 2026-04-07T16:16:33.049Z
   started_at: 2026-04-07T18:35:20.020Z
