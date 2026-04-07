@@ -13254,6 +13254,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-07T16:37:35.121Z
+  - _ulid: 01KNMEEZ53TTHTNG2HCY7HNZNF
+    type: success
+    content: Running a focused daemon cache suite before the full npm test run made it clear the
+      history-retention change was correct and separated task-specific regressions from unrelated
+      stale dist import failures.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T17:04:54.435Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
