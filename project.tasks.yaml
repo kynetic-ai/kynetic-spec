@@ -24952,7 +24952,7 @@
   type: task
   spec_ref: "@daemon-incremental-cache"
   plan_ref: "@plan-granular-cache-invalidation"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-debounce-path-accumulation"
@@ -24967,6 +24967,7 @@
   created_at: 2026-04-04T23:34:27.859Z
   started_at: 2026-04-07T03:14:08.846Z
   submitted_at: 2026-04-07T03:21:03.620Z
+  completed_at: 2026-04-07T03:32:24.690Z
   automation: eligible
 - _ulid: 01KNDDJ42341SCDJN6VKDV1518
   slugs:
