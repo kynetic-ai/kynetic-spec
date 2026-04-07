@@ -25527,7 +25527,7 @@
     - spec-update
     - daemon
     - cache
-  notes_count: 0
+  notes_count: 1
   todos_count: 0
   created_at: 2026-04-07T16:16:31.247Z
   started_at: 2026-04-07T16:25:30.515Z

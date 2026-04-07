@@ -1,1 +1,9 @@
-notes: []
+notes:
+  - _ulid: 01KNMC884RZV55YV62NYEFW6Z9
+    content: "Approach: update @daemon-entity-cache via kspec CLI only; no code-path changes. Edge
+      cases: ensure the new AC covers both initial loads and incremental task updates so history
+      retention is part of the cache contract in both paths. Test plan: spec-only task, so verify
+      with kspec item get @daemon-entity-cache and kspec validate rather than adding runtime tests."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T16:26:17.112Z

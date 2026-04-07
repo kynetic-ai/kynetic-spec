@@ -414,6 +414,11 @@ features:
             then: Shared initialization work is performed once and reused across all domain reloads in that
               window
             when: The cache begins reloading affected data
+          - given: The task cache domain loads or incrementally updates a task
+            id: ac-task-history-retention
+            then: Field-change history entries from the task file are retained in the cache and available to
+              consumers without re-reading the file from disk
+            when: The task file is parsed
         tags: []
         requirements:
           - _ulid: 01KMMB3S7MJZ9ZJKZT31QPM572
