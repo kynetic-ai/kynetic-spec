@@ -17,3 +17,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-07T19:54:59.558Z
+  - _ulid: 01KNMRW4RME9MKV0PVCJRYHYG6
+    content: "Implemented cache-backed read concurrency in the daemon command route. Added a traced
+      COMMAND_CACHE_DOMAINS allowlist with dynamic branch handling for search/review list, guarded
+      *get commands behind cached ref existence checks so missing refs still fall back to the
+      serialized path, and bypassed DispatchMutex only when all required domains are ready. Added
+      daemon command API timing tests that wrap real Commander actions to prove allowlisted reads
+      overlap, required-domain misses serialize, non-allowlisted reads serialize, and mutations
+      remain serialized. Verification: npm test -- tests/daemon-command-api.test.ts, npm test, kspec
+      validate (warnings only: pre-existing project validation debt)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T20:06:51.924Z
