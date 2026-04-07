@@ -128250,3 +128250,29 @@ reviews:
     created_at: 2026-04-07T23:08:40.852Z
     updated_at: 2026-04-07T23:15:34.161Z
     notes: []
+  - _ulid: 01KNN49K7V9VZG3MJ8N21P21CE
+    slugs: []
+    title: Review extend loadAllTasks to return history alongside task data
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KNN49K7VZ6QND8W6H39585S8
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-07T23:26:27.067Z
+    examined_commit: bc0435b6cd39c76c9ffa63c060e74ccf4196cb4e
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNN24YV6T3TPR7R1Y2CTH66C"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-07T23:26:27.067Z
+    updated_at: null
+    notes: []
