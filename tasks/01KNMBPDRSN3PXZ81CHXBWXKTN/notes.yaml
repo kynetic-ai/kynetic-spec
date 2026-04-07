@@ -21,3 +21,10 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-07T18:53:08.958Z
+  - _ulid: 01KNMN32VD5N38GAWV8CW404ZW
+    content: "Fix cycle 1 plan: tighten plan/review cache hit conditions to require detail coverage for
+      every indexed entity, add partial-detail regression tests for both loaders, then rerun
+      targeted and full verification before resubmitting."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T19:00:45.037Z
