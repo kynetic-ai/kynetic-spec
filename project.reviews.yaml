@@ -123507,9 +123507,25 @@ reviews:
           status: pass
           name: full-test-suite-2
         timestamp: 2026-04-07T05:19:29.782Z
+      - _ulid: 01KNK63NQ4B3EGZ4EZ0AR786QR
+        actor: Codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-07T05:19:41.284Z
+      - _ulid: 01KNK63NQ45DAMXWBFNRVBESV8
+        actor: Codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-07T05:19:41.284Z
     examined_commit: 2c9267a1925319c10a2571e224cff060caf50007
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -123537,7 +123553,14 @@ reviews:
               reuse the existing domain reload dedup path, and add a concurrency regression test."
             created_at: 2026-04-07T05:18:49.844Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: Codex
+        role: reviewer
+        created_at: 2026-04-07T05:19:41.283Z
     created_at: 2026-04-07T05:09:07.555Z
-    updated_at: 2026-04-07T05:19:28.973Z
+    updated_at: 2026-04-07T05:19:41.284Z
     notes: []
