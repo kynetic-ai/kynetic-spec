@@ -1,0 +1,51 @@
+_ulid: 01KNMCHPEEXG7VSVJJ0748PYC9
+slugs:
+  - task-fix-daemon-test-dist-imports
+title: Fix daemon test imports against dist JS outputs
+type: bug
+description: >-
+  Full `npm test` on commit 343472d01808d514accacb66d1bb86db4519b37f fails in two daemon suites
+  because tests import `.ts` files from `dist/`, but the build output only contains `.js` files.
+
+
+  Observed failures:
+
+  - tests/daemon-read-path.test.ts: Cannot find module `../dist/daemon/server.ts`
+
+  - tests/daemon-triage-write-through.test.ts: Cannot find module
+  `../dist/daemon/middleware/project-context.ts`
+
+
+  Evidence:
+
+  - `plan/plan-cache-aware-command-execution/01knkf3b` and
+  `dispatch/task/task-update-command-api-spec/01knmbpb` both resolve to
+  343472d01808d514accacb66d1bb86db4519b37f, so this is pre-existing relative to
+  @01KNMBPBQ8T1NQABEB0JAGRCPY.
+
+  - `dist/daemon/server.js` and `dist/daemon/middleware/project-context.js` exist; matching `.ts`
+  build outputs do not.
+
+
+  Expected fix:
+
+  - Update affected test imports to use the emitted `.js` paths consistently (or otherwise align
+  test import resolution with actual dist outputs).
+
+  - Re-run `npm test` and confirm the daemon suites load successfully.
+spec_ref: null
+meta_ref: null
+plan_ref: "@plan-cache-aware-command-execution"
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - test
+  - daemon
+  - build
+vcs_refs: []
+created_at: 2026-04-07T16:31:26.670Z
+todos: []
+automation: eligible
