@@ -1,1 +1,11 @@
-notes: []
+notes:
+  - _ulid: 01KNMKP1DPBBJGND1VKTY9DZJQ
+    content: "Approach: mirror the existing item/inbox/triage cache-aware loader pattern for
+      src/parser/plans.ts and src/parser/reviews.ts using getEntityCacheContext(). Edge cases: no
+      daemon cache context, domain not ready, index-only cache with empty detail tier, and
+      preserving _sourceFile metadata on cache hits. Test plan: add behavioral tests for cache hit,
+      empty-detail fallback, and non-ready-domain fallback for both loaders; then run targeted tests
+      plus full npm test and kspec validate."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T18:36:09.015Z
