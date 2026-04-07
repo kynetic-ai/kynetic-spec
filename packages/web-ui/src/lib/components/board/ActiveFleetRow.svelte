@@ -8,9 +8,9 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
 	import { formatElapsed } from './board-utils';
-	import Bot from '@lucide/svelte/icons/bot';
-	import Activity from '@lucide/svelte/icons/activity';
-	import Terminal from '@lucide/svelte/icons/terminal';
+	import Bot from 'lucide-svelte/icons/bot';
+	import Activity from 'lucide-svelte/icons/activity';
+	import Terminal from 'lucide-svelte/icons/terminal';
 
 	let {
 		status,

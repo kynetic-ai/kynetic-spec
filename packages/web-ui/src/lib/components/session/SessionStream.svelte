@@ -9,7 +9,7 @@
 	import ToolCallView from './ToolCallView.svelte';
 	import ThinkingBlock from './ThinkingBlock.svelte';
 	import SystemBlock from './SystemBlock.svelte';
-	import ArrowDown from '@lucide/svelte/icons/arrow-down';
+	import ArrowDown from 'lucide-svelte/icons/arrow-down';
 
 	let {
 		blocks,

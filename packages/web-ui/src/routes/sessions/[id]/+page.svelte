@@ -37,7 +37,7 @@
 	import SessionStream from '$lib/components/session/SessionStream.svelte';
 	import SessionContextPanel from '$lib/components/session/SessionContextPanel.svelte';
 	import SessionStreamSkeleton from '$lib/components/session/SessionStreamSkeleton.svelte';
-	import ArrowLeft from '@lucide/svelte/icons/arrow-left';
+	import ArrowLeft from 'lucide-svelte/icons/arrow-left';
 	import { base } from '$app/paths';
 
 	let sessionId = $derived($page.params.id);

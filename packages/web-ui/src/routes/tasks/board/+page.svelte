@@ -31,8 +31,8 @@
 		processTextChunk,
 		type FleetSessionState,
 	} from '$lib/components/board/fleet-buffer';
-	import LayoutGrid from '@lucide/svelte/icons/layout-grid';
-	import List from '@lucide/svelte/icons/list';
+	import LayoutGrid from 'lucide-svelte/icons/layout-grid';
+	import List from 'lucide-svelte/icons/list';
 	import { Button } from '$lib/components/ui/button';
 	import { base } from '$app/paths';
 	import { goto } from '$app/navigation';

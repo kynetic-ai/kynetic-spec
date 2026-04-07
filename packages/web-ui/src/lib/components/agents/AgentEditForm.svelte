@@ -18,7 +18,7 @@
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Separator } from '$lib/components/ui/separator';
-	import X from '@lucide/svelte/icons/x';
+	import X from 'lucide-svelte/icons/x';
 
 	let {
 		open = $bindable(false),

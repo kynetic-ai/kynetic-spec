@@ -4,9 +4,9 @@
 	import { Button } from '$lib/components/ui/button';
 	import { isStaticMode } from '$lib/stores/mode.svelte';
 	import * as Tooltip from '$lib/components/ui/tooltip';
-	import Play from '@lucide/svelte/icons/play';
-	import Square from '@lucide/svelte/icons/square';
-	import Loader2 from '@lucide/svelte/icons/loader-2';
+	import Play from 'lucide-svelte/icons/play';
+	import Square from 'lucide-svelte/icons/square';
+	import Loader2 from 'lucide-svelte/icons/loader-2';
 
 	interface Props {
 		enabled: boolean;

@@ -9,15 +9,15 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import { Separator } from '$lib/components/ui/separator';
 	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
-	import Clock from '@lucide/svelte/icons/clock';
-	import Bot from '@lucide/svelte/icons/bot';
-	import FileText from '@lucide/svelte/icons/file-text';
-	import Activity from '@lucide/svelte/icons/activity';
-	import CheckCircle from '@lucide/svelte/icons/check-circle';
-	import Wallet from '@lucide/svelte/icons/wallet';
-	import FolderOpen from '@lucide/svelte/icons/folder-open';
-	import Zap from '@lucide/svelte/icons/zap';
-	import Terminal from '@lucide/svelte/icons/terminal';
+	import Clock from 'lucide-svelte/icons/clock';
+	import Bot from 'lucide-svelte/icons/bot';
+	import FileText from 'lucide-svelte/icons/file-text';
+	import Activity from 'lucide-svelte/icons/activity';
+	import CheckCircle from 'lucide-svelte/icons/check-circle';
+	import Wallet from 'lucide-svelte/icons/wallet';
+	import FolderOpen from 'lucide-svelte/icons/folder-open';
+	import Zap from 'lucide-svelte/icons/zap';
+	import Terminal from 'lucide-svelte/icons/terminal';
 
 	let {
 		session,

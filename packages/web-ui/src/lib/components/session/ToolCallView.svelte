@@ -11,11 +11,11 @@
 	import { createQuery } from '$lib/query/createQuery.svelte.js';
 	import { fetchSessionEventDetail } from '$lib/api';
 	import { queryKeys } from '$lib/query/keys.js';
-	import ChevronRight from '@lucide/svelte/icons/chevron-right';
-	import Check from '@lucide/svelte/icons/check';
-	import X from '@lucide/svelte/icons/x';
-	import Loader from '@lucide/svelte/icons/loader';
-	import RefreshCw from '@lucide/svelte/icons/refresh-cw';
+	import ChevronRight from 'lucide-svelte/icons/chevron-right';
+	import Check from 'lucide-svelte/icons/check';
+	import X from 'lucide-svelte/icons/x';
+	import Loader from 'lucide-svelte/icons/loader';
+	import RefreshCw from 'lucide-svelte/icons/refresh-cw';
 
 	let {
 		block,

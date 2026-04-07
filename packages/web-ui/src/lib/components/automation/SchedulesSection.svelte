@@ -19,8 +19,8 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import { Card } from '$lib/components/ui/card';
-	import Clock from '@lucide/svelte/icons/clock';
-	import Play from '@lucide/svelte/icons/play';
+	import Clock from 'lucide-svelte/icons/clock';
+	import Play from 'lucide-svelte/icons/play';
 
 	interface Props {
 		schedules: ScheduleSummary[];

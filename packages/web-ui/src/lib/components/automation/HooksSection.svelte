@@ -7,7 +7,7 @@
 	import type { HookSummary } from '$lib/api';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Card } from '$lib/components/ui/card';
-	import Webhook from '@lucide/svelte/icons/webhook';
+	import Webhook from 'lucide-svelte/icons/webhook';
 
 	interface Props {
 		hooks: HookSummary[];
