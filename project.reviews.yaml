@@ -127331,6 +127331,13 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-04-07T19:48:00.544Z
+      - _ulid: 01KNMQTGQHGRZ6KMMJ72V9BVAJ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNMQTFXPF42BSXGQVPP7555H
+        timestamp: 2026-04-07T19:48:30.065Z
     examined_commit: 6ab12a48afa9ea404d715befd30a0aa524537911
     external_links: []
     lifecycle_state: open
@@ -127340,8 +127347,39 @@ reviews:
       content_hash: ""
       ref: "@01KNMBPEAV13JG7RG434PY22CF"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNMQTFXPF42BSXGQVPP7555H
+        entries:
+          - _ulid: 01KNMQTFXPAYCZ3MZ3ADWYNEVV
+            author: Jacob Chapel
+            body: >-
+              Evidence log
+
+
+              Files read: src/daemon/entity-cache.ts, src/parser/task-data-manager.ts,
+              src/parser/split-backend.ts, src/cli/commands/task.ts,
+              tests/daemon-entity-cache.test.ts, tests/task-data-manager.test.ts,
+              tests/daemon-command-api.test.ts, tests/daemon-read-path.test.ts,
+              tests/daemon-cache-route-coverage.test.ts, tests/daemon-debug-routes.test.ts,
+              tests/daemon-triage-write-through.test.ts, tests/session-related-routes.test.ts.
+
+
+              Commands run: kspec task get @01KNMBPEAV13JG7RG434PY22CF; kspec item get
+              @daemon-entity-cache; git diff against f2c6cbcfa58e452080d089c6f211ae2611c382a1; kspec
+              validate; grep -Rni "AC: @daemon-entity-cache|AC: @daemon-command-api" tests; npm
+              test.
+
+
+              Claims verified: task-domain load stores history separately; incremental task updates
+              refresh historyDetails; TaskDataManager.getTaskHistory serves ready-cache history
+              before disk fallback; split backend exposes loadTaskWithHistory for combined reads.
+
+
+              Categories searched: correctness, edge cases, error handling, test quality,
+              integration. No blocking issues found.
+            created_at: 2026-04-07T19:48:29.238Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-07T19:45:25.005Z
-    updated_at: 2026-04-07T19:47:59.717Z
+    updated_at: 2026-04-07T19:48:29.238Z
     notes: []
