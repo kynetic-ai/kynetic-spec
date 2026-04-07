@@ -25543,7 +25543,7 @@
   type: task
   spec_ref: "@daemon-command-api"
   plan_ref: "@plan-cache-aware-command-execution"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-update-command-api-spec"
@@ -25556,6 +25556,7 @@
   todos_count: 0
   created_at: 2026-04-07T16:16:31.538Z
   started_at: 2026-04-07T17:06:06.001Z
+  submitted_at: 2026-04-07T17:15:42.750Z
   automation: eligible
 - _ulid: 01KNMBPCJN1F5VZZ2DQV10VG76
   slugs:
