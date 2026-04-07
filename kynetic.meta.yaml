@@ -13076,6 +13076,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-07T04:26:41.457Z
+  - _ulid: 01KNK3RQP5Q4GAZEMZDYH870TW
+    type: friction
+    content: In a detached review snapshot, 'kspec task complete @ref --reason ...' hung when routed
+      through the daemon and never returned, even though daemon health was OK. Workaround was to
+      rerun with KSPEC_NO_DAEMON=1. This should either complete normally through the daemon or fail
+      fast with a clear fallback path for mutating review/closeout commands.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T04:38:45.701Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
