@@ -121953,3 +121953,29 @@ reviews:
     created_at: 2026-04-07T02:27:25.696Z
     updated_at: 2026-04-07T02:35:38.304Z
     notes: []
+  - _ulid: 01KNJY6VCCZVD07G7JBHARXVS1
+    slugs: []
+    title: Review investigate full-suite instability after dependency-health passes in review worktrees
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KNJY6VCCK2EZYXY3FZY880XQ
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-07T03:01:36.780Z
+    examined_commit: 58d872ce04698b021e6dd29ddfefd0f6016406a6
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNHZ5FH33G2C27BMG0SHPC74"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-07T03:01:36.780Z
+    updated_at: null
+    notes: []
