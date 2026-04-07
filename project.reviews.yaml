@@ -125336,6 +125336,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-04-07T16:35:27.433Z
+      - _ulid: 01KNMCS6358J273C75ETKRBKWS
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNMCS4HEQ2SHX3VA6KHERNER
+        timestamp: 2026-04-07T16:35:32.069Z
     examined_commit: 343472d01808d514accacb66d1bb86db4519b37f
     external_links: []
     lifecycle_state: open
@@ -125361,7 +125368,24 @@ reviews:
               contract unverified."
             created_at: 2026-04-07T16:35:21.473Z
         kind: blocker
+      - _ulid: 01KNMCS4HEQ2SHX3VA6KHERNER
+        anchor:
+          type: structured
+          field: ac-task-history-retention
+          ref: "@daemon-entity-cache"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KNMCS4HEN0ZGTMVZPAYA1GY0
+            author: Jacob Chapel
+            body: The new AC is not true of the current daemon cache implementation.  only stores  detail
+              objects for the tasks domain (), and  is built from split-task data after
+              stripping  history out of the parsed record (). Current consumers still fetch history
+              through  as a separate disk read (). As written,  claims history is retained in cache
+              and available without rereading the file, but the code path still discards history
+              before caching it.
+            created_at: 2026-04-07T16:35:30.478Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-07T16:29:20.761Z
-    updated_at: 2026-04-07T16:35:25.926Z
+    updated_at: 2026-04-07T16:35:30.478Z
     notes: []
