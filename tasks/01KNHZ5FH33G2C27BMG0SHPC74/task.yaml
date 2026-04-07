@@ -20,7 +20,7 @@ description: "Review evidence on 2026-04-06 in detached review worktree
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -29,6 +29,14 @@ tags:
   - test
   - infra
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-04-07T02:45:28.567Z
+  commit: 34dd3d45c187a99ec1c4944bb4914e6549935f6d
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dev
 session_id: 01KNJW72VMP3ME1G4NZFFXKNWP
 history:
   - author: Jacob Chapel
@@ -44,7 +52,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-07T02:27:43.590Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-04-07T02:45:28.567Z
+          commit: 34dd3d45c187a99ec1c4944bb4914e6549935f6d
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-04-07T02:45:28.573Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-07T02:45:28.573Z
 created_at: 2026-04-06T17:59:06.018Z
 started_at: 2026-04-07T02:27:43.589Z
+submitted_at: 2026-04-07T02:45:28.573Z
 todos: []
 automation: eligible
