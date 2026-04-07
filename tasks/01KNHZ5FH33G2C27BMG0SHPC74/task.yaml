@@ -20,8 +20,12 @@ description: "Review evidence on 2026-04-06 in detached review worktree
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved and merged
+  dispatch/task/investigate-full-suite-instability-after-dependency-health-passes-in-review-worktrees/01knhz5f
+  into dev. Verified the bootstrap/build repair path with focused regression coverage; tracked the
+  remaining pre-existing detached-worktree parser failure separately as @01KNJYA2.
 depends_on: []
 context: []
 priority: 2
@@ -80,8 +84,26 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-07T03:01:40.531Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved and merged
+          dispatch/task/investigate-full-suite-instability-after-dependency-health-passes-in-review-worktrees/01knhz5f
+          into dev. Verified the bootstrap/build repair path with focused regression coverage;
+          tracked the remaining pre-existing detached-worktree parser failure separately as
+          @01KNJYA2.
+        previous: null
+      completed_at:
+        new: 2026-04-07T03:06:02.177Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-07T03:06:02.242Z
 created_at: 2026-04-06T17:59:06.018Z
 started_at: 2026-04-07T02:27:43.589Z
 submitted_at: 2026-04-07T02:45:28.573Z
+completed_at: 2026-04-07T03:06:02.177Z
 todos: []
 automation: eligible
