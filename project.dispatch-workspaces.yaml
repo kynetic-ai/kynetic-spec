@@ -41764,7 +41764,7 @@ workspaces:
         head: cf0877725dfea92e556e66d3b3c50c9254e04263
         last_seen_at: 2026-04-07T19:28:48.184Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cache-aware-meta-01knmbpe
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: f2c6cbcfa58e452080d089c6f211ae2611c382a1
     bootstrap:
       status: succeeded
@@ -41890,9 +41890,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-07T19:43:14.930Z
-      last_reconciled_at: 2026-04-07T19:49:48.428Z
+      last_reconciled_at: 2026-04-07T19:51:09.498Z
       created_at: 2026-04-07T19:28:59.444Z
-      updated_at: 2026-04-07T19:49:48.428Z
+      updated_at: 2026-04-07T19:51:09.498Z
     workspace_id: dispatch-workspace-01KNMBPEAV13JG7RG434PY22CF
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
