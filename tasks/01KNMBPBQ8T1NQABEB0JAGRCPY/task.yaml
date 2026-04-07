@@ -49,7 +49,7 @@ description: |
 spec_ref: "@daemon-command-api"
 plan_ref: "@plan-cache-aware-command-execution"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -58,6 +58,7 @@ tags:
   - spec-update
   - daemon
 vcs_refs: []
+session_id: 01KNMBY6ZTWQ27BB2J1788TWQ9
 history:
   - author: "@claude"
     changes:
@@ -66,6 +67,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-04-07T16:17:34.867Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KNMBY6ZTWQ27BB2J1788TWQ9
+        previous: null
+      started_at:
+        new: 2026-04-07T16:21:44.145Z
+        previous: null
+    command: task-start
+    timestamp: 2026-04-07T16:21:44.145Z
 created_at: 2026-04-07T16:16:30.952Z
+started_at: 2026-04-07T16:21:44.145Z
 todos: []
 automation: eligible
