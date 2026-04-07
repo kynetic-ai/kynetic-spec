@@ -1,1 +1,14 @@
-notes: []
+notes:
+  - _ulid: 01KNK4SH88E7JQSESM8XB68WDV
+    content: "Approach: extend writeThrough with an optional entity hint and route hinted
+      task/item/session domains through the existing incremental processDomainChanges path instead
+      of unconditional loadDomain. Reuse getTaskFilePath, item source-file tracking, and session dir
+      mapping to derive pending changes. Edge cases: missing hint data falls back to full reload,
+      item hints that cannot resolve to a tracked source file must not suppress watcher
+      invalidation, and incremental write-through must still consume the next watcher event via the
+      skip flag only after a successful ready-state update. Test plan: add behavioral cache tests
+      for hinted write-through incremental patching, no-hint fallback to full reload, and skip-flag
+      behavior after incremental write-through."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T04:56:40.456Z
