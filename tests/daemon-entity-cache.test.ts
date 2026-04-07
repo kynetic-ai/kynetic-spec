@@ -1068,6 +1068,57 @@ describe("ProjectEntityCache", () => {
       expect(cache.getSessionContext()).toBe(sessionBefore);
     });
 
+    // AC: @daemon-meta-subdomain ac-manifest-only-reload
+    it("reloads only manifest-backed meta data when an included meta YAML file changes", async () => {
+      const kspecDir = join(projectA, ".kspec");
+      const metaManifestPath = join(kspecDir, "kynetic.meta.yaml");
+      const includedMetaPath = join(kspecDir, "meta", "roles.yaml");
+
+      await fs.mkdir(dirname(includedMetaPath), { recursive: true });
+      await fs.writeFile(
+        metaManifestPath,
+        yamlStringify({
+          kynetic_meta: "1.0",
+          includes: ["meta/roles.yaml"],
+          conventions: [],
+        }),
+        "utf-8",
+      );
+      await fs.writeFile(
+        includedMetaPath,
+        yamlStringify({
+          conventions: [],
+        }),
+        "utf-8",
+      );
+
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("meta");
+
+      const manifestSpy = vi.spyOn(cache as any, "loadMetaManifestSubdomain");
+      const shadowSpy = vi.spyOn(cache as any, "loadMetaShadowSubdomain");
+      const sessionSpy = vi.spyOn(cache as any, "loadMetaSessionSubdomain");
+
+      const shadowBefore = cache.getShadowInfo();
+      const sessionBefore = cache.getSessionContext();
+
+      await fs.writeFile(
+        includedMetaPath,
+        yamlStringify({
+          conventions: [{ title: "Roles convention", rules: ["Use named roles"] }],
+        }),
+        "utf-8",
+      );
+
+      await cache.handleFileChange(kspecDir, includedMetaPath);
+
+      expect(manifestSpy).toHaveBeenCalledOnce();
+      expect(shadowSpy).not.toHaveBeenCalled();
+      expect(sessionSpy).not.toHaveBeenCalled();
+      expect(cache.getShadowInfo()).toBe(shadowBefore);
+      expect(cache.getSessionContext()).toBe(sessionBefore);
+    });
+
     it("deduplicates overlapping manifest-only meta reloads", async () => {
       const originalKspecTest = process.env.KSPEC_TEST;
       process.env.KSPEC_TEST = "1";

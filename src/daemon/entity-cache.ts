@@ -349,6 +349,7 @@ interface CachedMetaRuntime {
   rootDir: string;
   specDir: string;
   projectRoot: string;
+  metaSourceFiles: string[];
   project: { name?: string; version?: string; status?: string } | null;
   specVersion: string | null;
   daemon: { port: number; host: string; auto_start: boolean };
@@ -1496,14 +1497,20 @@ export class ProjectEntityCache {
       return false;
     }
 
-    const specDir = this.cachedMetaRuntime?.specDir ?? join(this.projectPath, ".kspec");
+    const runtime = this.cachedMetaRuntime;
+    const specDir = runtime?.specDir ?? join(this.projectPath, ".kspec");
+    const manifestSourceFiles = new Set(runtime?.metaSourceFiles ?? []);
     const targets = new Set<MetaSubdomain>();
 
     for (const change of changes) {
       const relativePath = relative(specDir, change.filePath);
       const pathSegments = relativePath.split(/[\\/]/).filter(Boolean);
       const leaf = pathSegments[pathSegments.length - 1] ?? relativePath;
-      if (leaf === "kynetic.yaml" || leaf.endsWith(".meta.yaml")) {
+      if (
+        leaf === "kynetic.yaml" ||
+        leaf.endsWith(".meta.yaml") ||
+        manifestSourceFiles.has(change.filePath)
+      ) {
         targets.add("manifest");
         continue;
       }
@@ -1972,6 +1979,15 @@ export class ProjectEntityCache {
     const metaCtx = await loadMetaContext(ctx);
     if (this.disposed) return;
 
+    const metaSourceFiles = metaCtx.manifestPath ? [metaCtx.manifestPath] : [];
+    if (metaCtx.manifest?.includes && metaCtx.manifestPath) {
+      const manifestDir = dirname(metaCtx.manifestPath);
+      for (const include of metaCtx.manifest.includes) {
+        const expandedPaths = await expandIncludePattern(include, manifestDir);
+        metaSourceFiles.push(...expandedPaths);
+      }
+    }
+
     const newMetaIndex: MetaSummary = {
       projectName: ctx.manifest?.project?.name,
       version: ctx.manifest?.project?.version,
@@ -2010,6 +2026,7 @@ export class ProjectEntityCache {
       rootDir: ctx.rootDir,
       specDir: ctx.specDir,
       projectRoot: ctx.projectRoot,
+      metaSourceFiles,
       project: newProjectConfig.project,
       specVersion: newProjectConfig.spec_version,
       daemon: newProjectConfig.daemon,
