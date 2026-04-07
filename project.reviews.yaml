@@ -126599,6 +126599,12 @@ reviews:
         payload:
           thread_ulid: 01KNMM01F1JJ8ERFPCYR7DDX05
         timestamp: 2026-04-07T18:55:40.588Z
+      - _ulid: 01KNMMV8VP4Z99PHEYQHV3TKTC
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNMKZCEC6E2W1JHHTZ3ZN99V
+        timestamp: 2026-04-07T18:56:29.046Z
     examined_commit: 83d5ca14bff1114bc7729d90080a7c424973a446
     external_links: []
     lifecycle_state: closed
@@ -126645,6 +126651,13 @@ reviews:
               satisfy  for triage and the new test only passes because it mocks a cache state that
               production does not create.
             created_at: 2026-04-07T18:41:15.213Z
+          - _ulid: 01KNMMV7ZKY125A6TREAGNAPXK
+            author: Jacob Chapel
+            body: "Fixed: loadTriageRecords() no longer requires pre-populated triage detail entries to hit
+              cache. It now reconstructs cached records from the ready triage summary index plus
+              ready inbox cache snapshots, and only falls back to disk when the cache cannot supply
+              the full record shape."
+            created_at: 2026-04-07T18:56:28.147Z
         kind: blocker
         resolved_at: 2026-04-07T18:55:37.010Z
         resolved_by: Jacob Chapel
@@ -126686,7 +126699,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-07T18:41:56.413Z
     created_at: 2026-04-07T18:35:24.994Z
-    updated_at: 2026-04-07T18:55:39.666Z
+    updated_at: 2026-04-07T18:56:28.147Z
     notes: []
   - _ulid: 01KNMMADY56C0YNMGGTQBCDG38
     slugs: []
