@@ -50,3 +50,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-07T03:16:00.854Z
+  - _ulid: 01KNJZAG3HW1DYT9B721MX841Y
+    content: "Fix cycle 3: addressed the review blocker by restricting incremental item patching to
+      manifest-expanded source files only, so changed off-manifest *.spec.yaml files now force a
+      full item reload instead of leaking detail-only entities. Also rebased onto
+      plan/plan-granular-cache-invalidation/01kndbmk and merged the newer sessions incremental
+      reload path into the same cache flow. Added a regression test for orphan spec-file changes
+      outside manifest includes and reverified @daemon-incremental-cache ACs with
+      NODE_ENV=development npm test -- --run tests/daemon-entity-cache.test.ts, KSPEC_NO_DAEMON=1
+      kspec validate (warnings only, exit 6), and npm test."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T03:21:04.881Z
