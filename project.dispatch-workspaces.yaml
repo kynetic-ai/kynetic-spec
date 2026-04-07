@@ -42016,7 +42016,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-07T21:01:50.560Z
+      updated_at: 2026-04-07T21:01:52.256Z
     integration:
       status: pending
       detail: null
@@ -42025,25 +42025,20 @@ workspaces:
       target_branch: plan/plan-cache-aware-command-execution/01knkf3b
       target_commit: b5e2773dfdaccb6ff3da28b4eae36af7f30640e2
       updated_at: 2026-04-07T21:01:50.560Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: plan/plan-cache-aware-command-execution/01knkf3b
     task_ref: "@01KNMBPEM8EBQPTWHSKP7M5JT4"
     task_slug: task-read-command-concurrency
     timestamps:
       closed_at: null
       last_active_at: 2026-04-07T20:48:20.751Z
-      last_reconciled_at: 2026-04-07T21:01:50.560Z
+      last_reconciled_at: 2026-04-07T21:01:52.256Z
       created_at: 2026-04-07T19:51:41.226Z
-      updated_at: 2026-04-07T21:01:50.560Z
+      updated_at: 2026-04-07T21:01:52.256Z
     workspace_id: dispatch-workspace-01KNMBPEM8EBQPTWHSKP7M5JT4
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 6e37e6b9839a0d69b7aaadaa6f2b9c3f2ca74b24
-        last_seen_at: 2026-04-07T20:48:14.093Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-read-command-concurrency-01knmbpe-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-read-command-concurrency/01knmbpe
