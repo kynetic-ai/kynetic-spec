@@ -10,3 +10,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-07T17:30:07.300Z
+  - _ulid: 01KNMGC0PY0F5FB1296SGHTZPP
+    content: "Implemented cache-aware initContext() for daemon command execution. Added an early fast
+      path that reconstructs KspecContext from the entity cache only when the meta domain is ready
+      and the cache contains the full resolved config plus manifest data; otherwise initContext()
+      falls back to the existing disk-based path unchanged. Verification: npm test passed (7603
+      passed, 5 skipped) and targeted parser coverage confirms cache hit, meta-not-ready fallback,
+      and no-cache fallback behavior."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T17:38:14.878Z
