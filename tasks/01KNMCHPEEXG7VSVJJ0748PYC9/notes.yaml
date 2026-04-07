@@ -1,1 +1,10 @@
-notes: []
+notes:
+  - _ulid: 01KNMCND148W1ZH39G36H4277F
+    content: "Approach: align daemon test imports with emitted dist JS entrypoints instead of .ts source
+      names. Reuse the existing dist-import pattern already used by most daemon suites. Edge cases:
+      type-only imports should also match dist .js specifiers so runtime loaders never attempt
+      missing .ts paths. Test plan: update the affected suites and related daemon dist imports, then
+      run npm test to verify the daemon suites load under the standard test runner."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T16:33:28.100Z
