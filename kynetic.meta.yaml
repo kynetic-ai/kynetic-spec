@@ -13410,6 +13410,24 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-07T21:21:41.430Z
+  - _ulid: 01KNN34ZMC01KHBWTA9MC2KFD0
+    type: friction
+    content: Daemon route tests import compiled dist artifacts, so source edits can look unfixed until a
+      full build refreshes dist. This made verification slower and easy to misread during daemon
+      command API work.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T23:06:27.340Z
+  - _ulid: 01KNN34ZVDTGK21B0Z8XDT940Y
+    type: success
+    content: Running focused daemon command API regressions before the full npm test suite surfaced that
+      preserving typed exits in one command was insufficient; the targeted failure exposed the
+      broader request-scoped exit-code bug quickly.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T23:06:27.565Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
