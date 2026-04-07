@@ -123900,7 +123900,19 @@ reviews:
     slugs: []
     title: Review task-writethrough-incremental-alignment (cycle 3)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "NODE_ENV= npm test -- --fresh passed: 2070/2070 suites, 7554 passed, 5 skipped. Targeted
+          run NODE_ENV= npm test -- --fresh daemon-entity-cache daemon-read-path also passed: 36/36
+          suites, 161/161 tests."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-07T06:10:57.828Z
+        completed_at: 2026-04-07T06:10:57.828Z
     events:
       - _ulid: 01KNK90EHDCW2YMB7ZAHY6QG0Q
         actor: Jacob Chapel
@@ -123929,6 +123941,13 @@ reviews:
           kind: nit
           thread_ulid: 01KNK915CWN5YX71NKKQZH3XKY
         timestamp: 2026-04-07T06:10:45.601Z
+      - _ulid: 01KNK91JXWQ2J239403FTNRFAW
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-07T06:10:58.620Z
     examined_commit: 6391877ed741b6f9c2a5ebbe19de3aee5f6de5a6
     external_links: []
     lifecycle_state: open
@@ -123976,5 +123995,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-07T06:10:21.358Z
-    updated_at: 2026-04-07T06:10:44.764Z
+    updated_at: 2026-04-07T06:10:57.828Z
     notes: []
