@@ -122567,6 +122567,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-07T03:51:00.294Z
+      - _ulid: 01KNK269RGJTC8JNQFVD54CPGG
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNK0ZSEVW75NVD90AX92P2VG
+        timestamp: 2026-04-07T04:11:13.040Z
     examined_commit: 7f8b957f999ba7f29846b7669ed6b8da0e8f67c8
     external_links: []
     lifecycle_state: closed
@@ -122596,6 +122602,13 @@ reviews:
               the requested shadow refresh never ran and /api/meta/shadow can stay stale until a
               later trigger.'
             created_at: 2026-04-07T03:50:11.163Z
+          - _ulid: 01KNK268WW54E1CJCC1WWCRF2B
+            author: Jacob Chapel
+            body: "Fixed in a75610606: the meta in-flight gate now tracks active sub-domains separately from
+              pending ones. Duplicate manifest invalidations stay deduplicated, but a concurrent
+              shadow refresh is queued and runs after the in-flight manifest reload instead of being
+              swallowed."
+            created_at: 2026-04-07T04:11:12.156Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -122606,7 +122619,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-07T03:51:00.293Z
     created_at: 2026-04-07T03:49:30.653Z
-    updated_at: 2026-04-07T03:51:00.294Z
+    updated_at: 2026-04-07T04:11:12.156Z
     notes: []
   - _ulid: 01KNK1J6MZQQJ0TWPDK01TDPHR
     slugs: []
