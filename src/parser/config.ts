@@ -90,9 +90,9 @@ const DaemonConfigSchema = z
     /** Host to bind to (default: localhost) */
     host: z.string().optional(),
     /**
-     * JavaScript runtime used to spawn the daemon (default: bun).
+     * JavaScript runtime used to spawn the daemon (default: node).
      * AC: @daemon-runtime-adapter ac-runtime-selection
-     * AC: @daemon-runtime-adapter ac-default-bun
+     * AC: @daemon-runtime-adapter ac-default-node
      */
     runtime: z.enum(["bun", "node"]).optional(),
     /**
@@ -342,7 +342,7 @@ export interface ResolvedKspecConfig {
     /**
      * Runtime used to spawn the daemon.
      * AC: @daemon-runtime-adapter ac-runtime-selection
-     * AC: @daemon-runtime-adapter ac-default-bun
+     * AC: @daemon-runtime-adapter ac-default-node
      */
     runtime: "bun" | "node";
     /**
@@ -445,7 +445,7 @@ const DEFAULT_CONFIG: ResolvedKspecConfig = {
   daemon: {
     port: 3456,
     host: "localhost",
-    runtime: "bun",
+    runtime: "node",
     auto_start: true, // AC: @config-daemon — default auto-start enabled
   },
   dispatch: {
@@ -651,7 +651,7 @@ export function resolveConfig(fileConfig: KspecConfig | null): ResolvedKspecConf
       // AC: @config-daemon ac-5 ac-6 — host from config/env
       host: envHost ?? file.daemon?.host ?? DEFAULT_CONFIG.daemon.host,
       // AC: @daemon-runtime-adapter ac-runtime-selection
-      // AC: @daemon-runtime-adapter ac-default-bun
+      // AC: @daemon-runtime-adapter ac-default-node
       runtime: file.daemon?.runtime ?? DEFAULT_CONFIG.daemon.runtime,
       // AC: @config-daemon ac-3 — auto_start from config
       auto_start: file.daemon?.auto_start ?? DEFAULT_CONFIG.daemon.auto_start,

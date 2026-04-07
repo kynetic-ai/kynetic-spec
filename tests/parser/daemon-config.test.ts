@@ -138,11 +138,11 @@ daemon:
   });
 
   describe("daemon.runtime configuration", () => {
-    // AC: @daemon-runtime-adapter ac-default-bun
-    it("defaults runtime to bun when no config", async () => {
+    // AC: @daemon-runtime-adapter ac-default-node
+    it("defaults runtime to node when no config", async () => {
       const result = await loadProjectConfig(tempDir);
 
-      expect(result.config.daemon.runtime).toBe("bun");
+      expect(result.config.daemon.runtime).toBe("node");
     });
 
     // AC: @daemon-runtime-adapter ac-runtime-selection
@@ -160,8 +160,8 @@ daemon:
       expect(result.config.daemon.runtime).toBe("node");
     });
 
-    // AC: @daemon-runtime-adapter ac-default-bun
-    it("defaults runtime to bun when daemon config omits runtime", async () => {
+    // AC: @daemon-runtime-adapter ac-default-node
+    it("defaults runtime to node when daemon config omits runtime", async () => {
       await fs.writeFile(
         path.join(tempDir, "kspec.config.yaml"),
         `
@@ -173,7 +173,7 @@ daemon:
 
       const result = await loadProjectConfig(tempDir);
 
-      expect(result.config.daemon.runtime).toBe("bun");
+      expect(result.config.daemon.runtime).toBe("node");
       expect(result.config.daemon.port).toBe(4500);
       expect(result.config.daemon.auto_start).toBe(false);
     });
@@ -250,7 +250,7 @@ daemon:
 
       expect(config.daemon.port).toBe(3456);
       expect(config.daemon.host).toBe("localhost");
-      expect(config.daemon.runtime).toBe("bun");
+      expect(config.daemon.runtime).toBe("node");
       expect(config.daemon.auto_start).toBe(true);
     });
 
@@ -261,7 +261,7 @@ daemon:
 
       expect(config.daemon.port).toBe(3456); // default
       expect(config.daemon.host).toBe("localhost"); // default
-      expect(config.daemon.runtime).toBe("bun"); // default
+      expect(config.daemon.runtime).toBe("node"); // default
       expect(config.daemon.auto_start).toBe(false); // from config
     });
   });
@@ -272,7 +272,7 @@ daemon:
 
       expect(defaults.daemon.port).toBe(3456);
       expect(defaults.daemon.host).toBe("localhost");
-      expect(defaults.daemon.runtime).toBe("bun");
+      expect(defaults.daemon.runtime).toBe("node");
       expect(defaults.daemon.auto_start).toBe(true);
     });
   });
@@ -331,7 +331,7 @@ daemon:
 
       // config.daemon should have the config file values
       expect(ctx.config.daemon.port).toBe(6000);
-      expect(ctx.config.daemon.runtime).toBe("bun");
+      expect(ctx.config.daemon.runtime).toBe("node");
       expect(ctx.config.daemon.auto_start).toBe(false);
 
       // manifest.daemon should still have old values (for deprecation warning)
@@ -390,7 +390,7 @@ daemon:
       const ctx = await initContext(tempDir);
 
       expect(ctx.config.daemon.port).toBe(7777);
-      expect(ctx.config.daemon.runtime).toBe("bun");
+      expect(ctx.config.daemon.runtime).toBe("node");
       expect(ctx.config.daemon.auto_start).toBe(false);
     });
 
@@ -406,7 +406,7 @@ daemon:
       const ctx = await initContext(tempDir);
 
       expect(ctx.config.daemon.port).toBe(3456);
-      expect(ctx.config.daemon.runtime).toBe("bun");
+      expect(ctx.config.daemon.runtime).toBe("node");
       expect(ctx.config.daemon.auto_start).toBe(true);
     });
   });
