@@ -122299,7 +122299,17 @@ reviews:
     slugs: []
     title: Review incremental item updates (cycle 3)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: KSPEC_NO_DAEMON=1 kspec validate exited 6 with warnings only; no errors, references OK,
+          schema OK.
+        name: kspec validate
+        required: false
+        created_at: 2026-04-07T03:30:25.530Z
+        completed_at: 2026-04-07T03:30:25.530Z
     events:
       - _ulid: 01KNJZFZAF99BQM2BS8WAW2BQJ
         actor: Jacob Chapel
@@ -122307,6 +122317,13 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-04-07T03:24:04.304Z
+      - _ulid: 01KNJZVMFNNTM1SBM6KARVN87Z
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-07T03:30:26.421Z
     examined_commit: 9d2241a2c40dde180fa6551bb9626fb278799152
     external_links: []
     lifecycle_state: draft
@@ -122319,5 +122336,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-07T03:24:04.304Z
-    updated_at: null
+    updated_at: 2026-04-07T03:30:25.530Z
     notes: []
