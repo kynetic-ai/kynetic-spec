@@ -1762,6 +1762,88 @@ describe("ProjectEntityCache", () => {
       expect(cache.getTaskIndex()).toBe(afterWriteThrough);
     });
 
+    // AC: @daemon-entity-cache ac-task-history-retention
+    it("retains task field-change history after hinted task write-through updates", async () => {
+      const kspecDir = join(projectA, ".kspec");
+      seedSplitTask(kspecDir, {
+        _ulid: "01TASKH0000000000000000000",
+        slugs: ["task-history-sample"],
+        title: "Task history sample",
+        type: "task",
+        status: "pending",
+        priority: 3,
+        depends_on: [],
+        created_at: "2026-01-24T00:00:00.000Z",
+        history: [
+          {
+            timestamp: "2026-01-24T00:00:00.000Z",
+            author: "@tester",
+            command: "task-set",
+            changes: {
+              priority: {
+                previous: 2,
+                new: 3,
+              },
+            },
+          },
+        ],
+      });
+
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("tasks");
+
+      const taskPath = join(kspecDir, "tasks", "01TASKH0000000000000000000", "task.yaml");
+      await fs.writeFile(
+        taskPath,
+        yamlStringify({
+          _ulid: "01TASKH0000000000000000000",
+          slugs: ["task-history-sample"],
+          title: "Task history sample updated",
+          type: "task",
+          status: "in_progress",
+          priority: 1,
+          depends_on: [],
+          created_at: "2026-01-24T00:00:00.000Z",
+          history: [
+            {
+              timestamp: "2026-01-24T00:00:00.000Z",
+              author: "@tester",
+              command: "task-set",
+              changes: {
+                priority: {
+                  previous: 2,
+                  new: 3,
+                },
+              },
+            },
+            {
+              timestamp: "2026-01-24T00:05:00.000Z",
+              author: "@tester",
+              command: "task-start",
+              changes: {
+                status: {
+                  previous: "pending",
+                  new: "in_progress",
+                },
+              },
+            },
+          ],
+        }),
+        "utf-8",
+      );
+
+      await cache.writeThrough("tasks", { ulid: "01TASKH0000000000000000000" });
+
+      const cached = cache.getTaskDetail("01TASKH0000000000000000000");
+      expect(cached).not.toBeNull();
+      expect(cached?.title).toBe("Task history sample updated");
+      expect(cached?.history).toHaveLength(2);
+      expect(cached?.history[1]?.changes.status).toEqual({
+        previous: "pending",
+        new: "in_progress",
+      });
+    });
+
     // AC: @daemon-incremental-cache ac-single-entity-patch
     // AC: @daemon-entity-cache ac-write-through
     it("should use incremental task patching for writeThrough when given a task hint", async () => {
@@ -3108,6 +3190,46 @@ describe("ProjectEntityCache", () => {
       const refreshed = cache.getTaskDetail(taskUlid);
       expect(refreshed).not.toBeNull();
       expect(refreshed!.title).toBe("Sample Task A"); // Back to disk value
+    });
+
+    // AC: @daemon-entity-cache ac-task-history-retention
+    it("retains task field-change history in cached task detail after domain load", async () => {
+      const kspecDir = join(projectA, ".kspec");
+      seedSplitTask(kspecDir, {
+        _ulid: "01TASKC0000000000000000000",
+        slugs: ["task-c-history"],
+        title: "Task C with history",
+        type: "task",
+        status: "pending_review",
+        priority: 2,
+        depends_on: [],
+        created_at: "2026-01-24T00:00:00.000Z",
+        history: [
+          {
+            timestamp: "2026-01-24T00:00:00.000Z",
+            author: "@tester",
+            command: "task-submit",
+            changes: {
+              status: {
+                previous: "in_progress",
+                new: "pending_review",
+              },
+            },
+          },
+        ],
+      });
+
+      const cache = registerEntityCache(projectA);
+      await cache.loadDomain("tasks");
+
+      const detail = cache.getTaskDetail("01TASKC0000000000000000000");
+      expect(detail).not.toBeNull();
+      expect(detail?.history).toHaveLength(1);
+      expect(detail?.history[0]?.command).toBe("task-submit");
+      expect(detail?.history[0]?.changes.status).toEqual({
+        previous: "in_progress",
+        new: "pending_review",
+      });
     });
   });
 

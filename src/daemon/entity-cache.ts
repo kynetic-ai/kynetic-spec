@@ -46,6 +46,7 @@ import {
   type TaskSummary,
 } from "../parser/index.js";
 import type { MetaContext } from "../parser/meta.js";
+import type { HistoryEntry } from "../parser/task-data-manager.js";
 import { loadInboxItems, type LoadedInboxItem } from "../parser/yaml.js";
 import { loadTriageRecords, type LoadedTriageRecord } from "../parser/yaml.js";
 import { loadReviewRecords, type LoadedReviewRecord } from "../parser/reviews.js";
@@ -106,6 +107,10 @@ export interface WriteThroughHint {
   ulid?: string;
   filePath?: string;
   sessionId?: string;
+}
+
+export interface CachedTaskDetail extends LoadedTask {
+  history: HistoryEntry[];
 }
 
 /** Summary type for spec items (index tier — excludes description, notes, AC content). */
@@ -509,7 +514,7 @@ export class ProjectEntityCache {
   private sessionConfig: SessionCacheConfig;
 
   // Per-domain stores
-  private tasks: DomainStore<TaskSummary[], LoadedTask> = {
+  private tasks: DomainStore<TaskSummary[], CachedTaskDetail> = {
     state: "unloaded",
     index: null,
     details: new Map(),
@@ -669,7 +674,7 @@ export class ProjectEntityCache {
    * Caller should fall back to disk if null and domain is ready.
    * AC: @daemon-entity-cache ac-detail-on-demand
    */
-  getTaskDetail(ulid: string): LoadedTask | null {
+  getTaskDetail(ulid: string): CachedTaskDetail | null {
     return this.tasks.details.get(ulid) ?? null;
   }
 
@@ -677,8 +682,10 @@ export class ProjectEntityCache {
    * Store a task detail in the cache (loaded on demand).
    * AC: @daemon-entity-cache ac-detail-on-demand
    */
-  setTaskDetail(ulid: string, task: LoadedTask): void {
-    this.tasks.details.set(ulid, task);
+  setTaskDetail(ulid: string, task: LoadedTask | CachedTaskDetail): void {
+    const existingHistory = this.tasks.details.get(ulid)?.history ?? [];
+    const detail = "history" in task ? task : { ...task, history: existingHistory };
+    this.tasks.details.set(ulid, detail);
   }
 
   /**
@@ -707,7 +714,7 @@ export class ProjectEntityCache {
    * Returns null if the tasks domain is not ready.
    * Populated during domain load alongside the index tier.
    */
-  getAllTaskDetails(): LoadedTask[] | null {
+  getAllTaskDetails(): CachedTaskDetail[] | null {
     if (this.tasks.state !== "ready") return null;
     return Array.from(this.tasks.details.values());
   }
@@ -977,12 +984,14 @@ export class ProjectEntityCache {
         // entity data (description, notes, todos) that summaries strip.
         // Non-fatal: if full loading fails, the detail tier stays empty and
         // search falls through to disk on miss.
-        const newTaskDetails = new Map<string, LoadedTask>();
+        const newTaskDetails = new Map<string, CachedTaskDetail>();
         try {
           const fullTasks = await tdm.loadAllTasks(ctx);
           if (this.disposed) return;
           for (const task of fullTasks) {
-            newTaskDetails.set(task._ulid, task);
+            const history = await tdm.getTaskHistory(ctx, task._ulid);
+            if (this.disposed) return;
+            newTaskDetails.set(task._ulid, { ...task, history });
           }
         } catch {
           // Detail tier remains empty — search will use summaries or fall back to disk
@@ -1698,17 +1707,21 @@ export class ProjectEntityCache {
       }
 
       const loadedTask = await tdm.getTask(ctx, ulid);
-      const summary = rawToSummary(loadedTask);
-      if (!loadedTask || !summary) {
+      if (!loadedTask) {
         return false;
       }
+      const summary = rawToSummary(loadedTask);
+      if (!summary) {
+        return false;
+      }
+      const history = await tdm.getTaskHistory(ctx, ulid);
 
       if (existingIndex >= 0) {
         nextIndex[existingIndex] = summary;
       } else {
         nextIndex.push(summary);
       }
-      nextDetails.set(ulid, loadedTask);
+      nextDetails.set(ulid, { ...loadedTask, history });
     }
 
     this.tasks.index = nextIndex;

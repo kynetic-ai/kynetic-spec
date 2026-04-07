@@ -10,6 +10,7 @@
 import type { LoadedTask, TaskSummary, LoadedPlan, LoadedSpecItem } from "../../parser/index.js";
 import type { MetaContext } from "../../parser/meta.js";
 import type {
+  CachedTaskDetail,
   ItemSummary,
   MetaSummary,
   PlanIndexSummary,
@@ -37,9 +38,9 @@ export type { WriteThroughHint };
 export interface RouteEntityCache {
   getDomainState(domain: string): CacheDomainState;
   getTaskIndex(): TaskSummary[] | null;
-  getTaskDetail(ulid: string): LoadedTask | null;
-  setTaskDetail(ulid: string, task: LoadedTask): void;
-  getAllTaskDetails(): LoadedTask[] | null;
+  getTaskDetail(ulid: string): CachedTaskDetail | null;
+  setTaskDetail(ulid: string, task: LoadedTask | CachedTaskDetail): void;
+  getAllTaskDetails(): CachedTaskDetail[] | null;
   getItemIndex(): ItemSummary[] | null;
   getItemDetail(ulid: string): LoadedSpecItem | null;
   setItemDetail(ulid: string, item: LoadedSpecItem): void;
