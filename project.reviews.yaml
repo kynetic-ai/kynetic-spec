@@ -125995,3 +125995,29 @@ reviews:
     created_at: 2026-04-07T17:43:54.285Z
     updated_at: 2026-04-07T17:51:56.526Z
     notes: []
+  - _ulid: 01KNMHHCVGQHT3PRJW3VP2YMMY
+    slugs: []
+    title: Review task-cache-aware-task-loading
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KNMHHCVG1JTSC6DAH4NAG8WK
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-07T17:58:39.728Z
+    examined_commit: 9eb7d18c54e9943217facfd01734ab79bad8865e
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNMBPCVJ0GEZR7FSE927QKNW"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-07T17:58:39.728Z
+    updated_at: null
+    notes: []
