@@ -123831,6 +123831,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-07T05:48:39.676Z
+      - _ulid: 01KNK8GJ62KPQC44N7QBV1T3MH
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNK7P1WSP3MNRVQ81XFSD21Q
+        timestamp: 2026-04-07T06:01:40.802Z
     examined_commit: fee4f128f4c1a3d24a69690d1ae11fbfa6154991
     external_links: []
     lifecycle_state: closed
@@ -123859,6 +123865,17 @@ reviews:
               serving stale data after remote shadow updates until some unrelated local invalidation
               happens."
             created_at: 2026-04-07T05:47:12.153Z
+          - _ulid: 01KNK8GHBTGNCGHNABJ1RS2E38
+            author: Jacob Chapel
+            body: "Fixed in 6391877ed: restored the daemon shadow-sync onPull callback to reload the full entity
+              cache after successful pulls instead of refreshing only cached shadow metadata. Added
+              a regression test in tests/daemon-read-path.test.ts that asserts the server callback
+              calls cache.loadAll() for the startup project. Verification: NODE_ENV= npm test --
+              --fresh daemon-read-path daemon-entity-cache (36/36 suites, 161/161 tests); kspec
+              validate exits 6 with only pre-existing repository warnings; the full suite hit an
+              unrelated dispatch-target-sync STACK_TRACE_ERROR, and NODE_ENV= npm test -- --fresh
+              dispatch-target-sync passed immediately in isolation (2/2 suites, 41/41 tests)."
+            created_at: 2026-04-07T06:01:39.962Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -123869,5 +123886,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-07T05:48:39.676Z
     created_at: 2026-04-07T05:36:40.308Z
-    updated_at: 2026-04-07T05:48:39.676Z
+    updated_at: 2026-04-07T06:01:39.962Z
     notes: []
