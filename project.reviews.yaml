@@ -127051,3 +127051,29 @@ reviews:
     created_at: 2026-04-07T19:01:09.504Z
     updated_at: 2026-04-07T19:11:42.279Z
     notes: []
+  - _ulid: 01KNMP26148YQYFGF9HTRN5C9C
+    slugs: []
+    title: Review task-cache-aware-plans-reviews (cycle 2)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KNMP2614NCJS2K38TQP2MXRA
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-07T19:17:44.100Z
+    examined_commit: 2723f252985dcc0d0a354d77d9c6aaccc5b81081
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNMBPDRSN3PXZ81CHXBWXKTN"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-07T19:17:44.100Z
+    updated_at: null
+    notes: []
