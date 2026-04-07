@@ -11,7 +11,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { join } from "path";
+import { dirname, join } from "path";
 import * as fs from "fs/promises";
 import { stringify as yamlStringify } from "yaml";
 import {
@@ -92,6 +92,55 @@ describe("ProjectEntityCache", () => {
       ProjectEntityCacheCtor: entityCacheModule.ProjectEntityCache,
       opendirMock,
     };
+  }
+
+  function buildItemsManifest(includes: string[] = ["modules/*.yaml"]): string {
+    return yamlStringify({
+      kynetic: "1.1",
+      project: {
+        name: "Incremental Items Test Project",
+        version: "0.1.0",
+        status: "draft",
+      },
+      includes,
+      task_storage: {
+        format: "split",
+      },
+    });
+  }
+
+  function buildSpecItem(sequence: number, slug: string, title: string) {
+    return {
+      _ulid: testUlid("SPEC", sequence),
+      slugs: [slug],
+      title,
+      type: "requirement",
+      description: `${title} description`,
+      acceptance_criteria: [
+        {
+          id: `ac-${sequence}`,
+          given: `${title} exists`,
+          when: `${title} is loaded`,
+          then: `${title} is returned from cache`,
+        },
+      ],
+    };
+  }
+
+  async function writeItemsFixture(
+    projectPath: string,
+    files: Record<string, unknown>,
+    includes: string[] = ["modules/*.yaml"],
+  ): Promise<void> {
+    const kspecDir = join(projectPath, ".kspec");
+    await fs.writeFile(join(kspecDir, "kynetic.yaml"), buildItemsManifest(includes), "utf-8");
+    await fs.mkdir(join(kspecDir, "modules"), { recursive: true });
+
+    for (const [relativePath, content] of Object.entries(files)) {
+      const absolutePath = join(kspecDir, relativePath);
+      await fs.mkdir(dirname(absolutePath), { recursive: true });
+      await fs.writeFile(absolutePath, yamlStringify(content), "utf-8");
+    }
   }
 
   // ─── fileToDomain mapping ──────────────────────────────────────────────
@@ -791,6 +840,204 @@ describe("ProjectEntityCache", () => {
       expect(itemsAfter).not.toBeNull();
       expect(metaAfter).not.toBe(metaBefore);
       expect(itemsAfter).not.toBe(itemsBefore);
+    });
+
+    // AC: @daemon-incremental-cache ac-single-entity-patch
+    // AC: @daemon-incremental-cache ac-index-consistency
+    it("should patch only the changed module file without full item reload", async () => {
+      await writeItemsFixture(projectA, {
+        "modules/alpha.yaml": [buildSpecItem(1, "alpha-spec", "Alpha Spec v1")],
+        "modules/beta.yaml": [buildSpecItem(2, "beta-spec", "Beta Spec")],
+      });
+
+      const cache = new ProjectEntityCache(projectA);
+      const loadAllItemsSpy = vi.spyOn(yamlModule, "loadAllItems");
+      await cache.loadDomain("items");
+      loadAllItemsSpy.mockClear();
+
+      const beforeIndex = cache.getItemIndex();
+      expect(beforeIndex).not.toBeNull();
+      expect(beforeIndex!.find((item) => item.slugs.includes("alpha-spec"))?.title).toBe(
+        "Alpha Spec v1",
+      );
+
+      const kspecDir = join(projectA, ".kspec");
+      const alphaPath = join(kspecDir, "modules", "alpha.yaml");
+      await fs.writeFile(
+        alphaPath,
+        yamlStringify([buildSpecItem(1, "alpha-spec", "Alpha Spec v2")]),
+        "utf-8",
+      );
+
+      await cache.handleFileChange(kspecDir, alphaPath);
+
+      const afterIndex = cache.getItemIndex();
+      expect(afterIndex).not.toBeNull();
+      expect(afterIndex).not.toBe(beforeIndex);
+      expect(beforeIndex!.find((item) => item.slugs.includes("alpha-spec"))?.title).toBe(
+        "Alpha Spec v1",
+      );
+      expect(afterIndex!.find((item) => item.slugs.includes("alpha-spec"))?.title).toBe(
+        "Alpha Spec v2",
+      );
+      expect(afterIndex!.find((item) => item.slugs.includes("beta-spec"))?.title).toBe(
+        "Beta Spec",
+      );
+      expect(loadAllItemsSpy).not.toHaveBeenCalled();
+    });
+
+    // AC: @daemon-incremental-cache ac-multi-entity-file
+    it("should add newly parsed items from the changed module file to index and details", async () => {
+      await writeItemsFixture(projectA, {
+        "modules/alpha.yaml": [buildSpecItem(3, "alpha-spec", "Alpha Spec")],
+      });
+
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("items");
+
+      const kspecDir = join(projectA, ".kspec");
+      const alphaPath = join(kspecDir, "modules", "alpha.yaml");
+      const newItem = buildSpecItem(4, "alpha-extra", "Alpha Extra");
+      await fs.writeFile(
+        alphaPath,
+        yamlStringify([buildSpecItem(3, "alpha-spec", "Alpha Spec"), newItem]),
+        "utf-8",
+      );
+
+      await cache.handleFileChange(kspecDir, alphaPath);
+
+      const afterIndex = cache.getItemIndex();
+      expect(afterIndex?.map((item) => item.slugs[0])).toEqual(["alpha-spec", "alpha-extra"]);
+      expect(cache.getItemDetail(newItem._ulid)?.title).toBe("Alpha Extra");
+    });
+
+    // AC: @daemon-incremental-cache ac-multi-entity-file
+    // AC: @daemon-incremental-cache ac-batch-coalescing
+    // AC: @daemon-incremental-cache ac-index-consistency
+    it("should preserve file order when multiple module files are patched in one debounce window", async () => {
+      vi.useFakeTimers();
+
+      try {
+        await writeItemsFixture(projectA, {
+          "modules/alpha.yaml": [buildSpecItem(9, "alpha-spec", "Alpha Spec v1")],
+          "modules/beta.yaml": [buildSpecItem(10, "beta-spec", "Beta Spec v1")],
+          "modules/gamma.yaml": [buildSpecItem(11, "gamma-spec", "Gamma Spec v1")],
+        });
+
+        const cache = new ProjectEntityCache(projectA);
+        (cache as any).domainDebounceMs = 50;
+        await cache.loadDomain("items");
+
+        const kspecDir = join(projectA, ".kspec");
+        const alphaPath = join(kspecDir, "modules", "alpha.yaml");
+        const betaPath = join(kspecDir, "modules", "beta.yaml");
+
+        await fs.writeFile(
+          alphaPath,
+          yamlStringify([buildSpecItem(9, "alpha-spec", "Alpha Spec v2")]),
+          "utf-8",
+        );
+        await fs.writeFile(
+          betaPath,
+          yamlStringify([buildSpecItem(10, "beta-spec", "Beta Spec v2")]),
+          "utf-8",
+        );
+
+        const alphaReload = cache.handleFileChange(kspecDir, alphaPath);
+        const betaReload = cache.handleFileChange(kspecDir, betaPath);
+
+        await vi.advanceTimersByTimeAsync(50);
+        await Promise.all([alphaReload, betaReload]);
+
+        expect(cache.getItemIndex()?.map((item) => item.title)).toEqual([
+          "Alpha Spec v2",
+          "Beta Spec v2",
+          "Gamma Spec v1",
+        ]);
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    // AC: @daemon-incremental-cache ac-removal-detection
+    it("should remove items whose source module file was deleted", async () => {
+      await writeItemsFixture(projectA, {
+        "modules/alpha.yaml": [buildSpecItem(5, "alpha-spec", "Alpha Spec")],
+        "modules/beta.yaml": [buildSpecItem(6, "beta-spec", "Beta Spec")],
+      });
+
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("items");
+
+      const kspecDir = join(projectA, ".kspec");
+      const alphaPath = join(kspecDir, "modules", "alpha.yaml");
+      const alphaUlid = testUlid("SPEC", 5);
+      await fs.rm(alphaPath);
+
+      await cache.handleFileChange(kspecDir, alphaPath);
+
+      const afterIndex = cache.getItemIndex();
+      expect(afterIndex?.map((item) => item.slugs[0])).toEqual(["beta-spec"]);
+      expect(cache.getItemDetail(alphaUlid)).toBeNull();
+    });
+
+    // AC: @daemon-incremental-cache ac-fallback-full-reload
+    it("should fall back to full item reload when kynetic.yaml changes", async () => {
+      await writeItemsFixture(
+        projectA,
+        {
+          "modules/alpha.yaml": [buildSpecItem(7, "alpha-spec", "Alpha Spec")],
+          "modules/beta.yaml": [buildSpecItem(8, "beta-spec", "Beta Spec")],
+        },
+        ["modules/alpha.yaml"],
+      );
+
+      const cache = new ProjectEntityCache(projectA);
+      const loadAllItemsSpy = vi.spyOn(yamlModule, "loadAllItems");
+      await cache.loadDomain("items");
+      loadAllItemsSpy.mockClear();
+
+      const kspecDir = join(projectA, ".kspec");
+      const manifestPath = join(kspecDir, "kynetic.yaml");
+      await fs.writeFile(
+        manifestPath,
+        buildItemsManifest(["modules/alpha.yaml", "modules/beta.yaml"]),
+        "utf-8",
+      );
+
+      await cache.handleFileChange(kspecDir, manifestPath);
+
+      const afterIndex = cache.getItemIndex();
+      expect(afterIndex?.map((item) => item.slugs[0])).toEqual(["alpha-spec", "beta-spec"]);
+      expect(loadAllItemsSpy).toHaveBeenCalledTimes(1);
+    });
+
+    // AC: @daemon-incremental-cache ac-fallback-full-reload
+    it("should fall back to full item reload for changed spec files outside manifest includes", async () => {
+      const orphanItem = buildSpecItem(12, "orphan-spec", "Orphan Spec");
+      await writeItemsFixture(projectA, {
+        "modules/alpha.yaml": [buildSpecItem(13, "alpha-spec", "Alpha Spec")],
+        "orphan.spec.yaml": [orphanItem],
+      });
+
+      const cache = new ProjectEntityCache(projectA);
+      const loadAllItemsSpy = vi.spyOn(yamlModule, "loadAllItems");
+      await cache.loadDomain("items");
+      loadAllItemsSpy.mockClear();
+
+      const kspecDir = join(projectA, ".kspec");
+      const orphanPath = join(kspecDir, "orphan.spec.yaml");
+      await fs.writeFile(
+        orphanPath,
+        yamlStringify([buildSpecItem(12, "orphan-spec", "Orphan Spec Updated")]),
+        "utf-8",
+      );
+
+      await cache.handleFileChange(kspecDir, orphanPath);
+
+      expect(cache.getItemIndex()?.map((item) => item.slugs[0])).toEqual(["alpha-spec"]);
+      expect(cache.getItemDetail(orphanItem._ulid)).toBeNull();
+      expect(loadAllItemsSpy).toHaveBeenCalledTimes(1);
     });
 
     // AC: @daemon-entity-cache ac-context-reuse
