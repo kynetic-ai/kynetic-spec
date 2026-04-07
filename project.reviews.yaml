@@ -123326,6 +123326,13 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-04-07T04:59:08.785Z
+      - _ulid: 01KNK4Y4E7VEX30V79CD0K31ZM
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNK4Y3M3RT9KCSAF52XS148V
+        timestamp: 2026-04-07T04:59:11.175Z
     examined_commit: 3bd80c9d568f431109bc15f19faaf8028c7dcf8b
     external_links: []
     lifecycle_state: open
@@ -123335,8 +123342,21 @@ reviews:
       content_hash: ""
       ref: "@01KNDDJ4BXMWVZSC7G6KMDP8BH"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNK4Y3M3RT9KCSAF52XS148V
+        entries:
+          - _ulid: 01KNK4Y3M3MFQAS9VW6ZNWRQ90
+            author: Jacob Chapel
+            body: "Evidence log: Files read: packages/daemon/src/server.ts, src/daemon/entity-cache.ts,
+              tests/daemon-entity-cache.test.ts. Commands run: kspec task get, kspec item get, kspec
+              validate, grep AC annotations, git diff/stat/show, NODE_ENV=development npm test --
+              daemon-entity-cache.test.ts --fresh, NODE_ENV=development npm test -- --fresh. Claim
+              verified: included meta YAML invalidation now routes through manifest-only reload via
+              cached meta source files. Categories searched: correctness, edge cases, error
+              handling, test quality, integration; no findings."
+            created_at: 2026-04-07T04:59:10.339Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-07T04:54:49.987Z
-    updated_at: 2026-04-07T04:59:07.969Z
+    updated_at: 2026-04-07T04:59:10.339Z
     notes: []
