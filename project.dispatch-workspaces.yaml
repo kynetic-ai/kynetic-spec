@@ -42393,18 +42393,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/replace-process-exit-string-sentinel-with-typed-error-class/01knn24a
-    canonical_branch_head: 09384972c51b1a66addefe64fbe2d42a7c428f9f
+    canonical_branch_head: b5d0c386a50acb9dd457f6b8b29bae37711254c5
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-07T22:53:08.489Z
+      updated_at: 2026-04-07T23:05:33.956Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-07T22:53:29.803Z
+      updated_at: 2026-04-07T23:05:33.956Z
     integration:
       status: pending
       detail: null
@@ -42412,7 +42412,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-cache-aware-command-execution/01knkf3b
       target_commit: 09384972c51b1a66addefe64fbe2d42a7c428f9f
-      updated_at: 2026-04-07T22:53:08.489Z
+      updated_at: 2026-04-07T23:05:33.956Z
     lifecycle_state: active
     resolved_base_branch: plan/plan-cache-aware-command-execution/01knkf3b
     task_ref: "@01KNN24AJ4QFBJ9NHK5K16QMJ0"
@@ -42420,9 +42420,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-07T22:53:29.803Z
-      last_reconciled_at: 2026-04-07T22:53:29.803Z
+      last_reconciled_at: 2026-04-07T23:05:33.956Z
       created_at: 2026-04-07T22:53:08.489Z
-      updated_at: 2026-04-07T22:53:29.803Z
+      updated_at: 2026-04-07T23:05:33.956Z
     workspace_id: dispatch-workspace-01KNN24AJ4QFBJ9NHK5K16QMJ0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
