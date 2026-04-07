@@ -123837,6 +123837,12 @@ reviews:
         payload:
           thread_ulid: 01KNK7P1WSP3MNRVQ81XFSD21Q
         timestamp: 2026-04-07T06:01:40.802Z
+      - _ulid: 01KNK8GNZTVN4VJYGVZB6MXBME
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNK7P1WSP3MNRVQ81XFSD21Q
+        timestamp: 2026-04-07T06:01:44.698Z
     examined_commit: fee4f128f4c1a3d24a69690d1ae11fbfa6154991
     external_links: []
     lifecycle_state: closed
@@ -123877,6 +123883,8 @@ reviews:
               dispatch-target-sync passed immediately in isolation (2/2 suites, 41/41 tests)."
             created_at: 2026-04-07T06:01:39.962Z
         kind: blocker
+        resolved_at: 2026-04-07T06:01:43.850Z
+        resolved_by: Jacob Chapel
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -123886,5 +123894,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-07T05:48:39.676Z
     created_at: 2026-04-07T05:36:40.308Z
-    updated_at: 2026-04-07T06:01:39.962Z
+    updated_at: 2026-04-07T06:01:43.850Z
     notes: []
