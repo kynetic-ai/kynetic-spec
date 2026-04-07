@@ -125163,7 +125163,22 @@ reviews:
     slugs: []
     title: Review task-update-command-api-spec
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Ran full `npm test` on the reviewed snapshot. Two suites failed due to pre-existing dist
+          import mismatches unrelated to this task: tests/daemon-read-path.test.ts and
+          tests/daemon-triage-write-through.test.ts import `.ts` paths under `dist/` while the
+          emitted files are `.js`. Verified the task branch and integration target both resolve to
+          343472d01808d514accacb66d1bb86db4519b37f, so the failures are not regressions from this
+          spec-only task. Follow-up captured in a new task."
+        name: npm-test
+        required: true
+        runner: npm
+        created_at: 2026-04-07T16:31:43.583Z
+        completed_at: 2026-04-07T16:31:43.583Z
     events:
       - _ulid: 01KNMC7A0C37HV8BC90VJQZMH3
         actor: Jacob Chapel
@@ -125178,6 +125193,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-07T16:26:10.017Z
+      - _ulid: 01KNMCJ8CXF506MQZ04SG2EXDQ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm-test
+        timestamp: 2026-04-07T16:31:45.053Z
     examined_commit: 343472d01808d514accacb66d1bb86db4519b37f
     external_links: []
     lifecycle_state: open
@@ -125190,7 +125212,7 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-07T16:25:46.252Z
-    updated_at: 2026-04-07T16:26:09.154Z
+    updated_at: 2026-04-07T16:31:43.583Z
     notes: []
   - _ulid: 01KNMCDVFS6JP3CC8YCTNHM53D
     slugs: []
