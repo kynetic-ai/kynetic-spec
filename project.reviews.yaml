@@ -126704,6 +126704,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNMMMBAV13W6NBVVYK4JB2HW
         timestamp: 2026-04-07T18:52:43.742Z
+      - _ulid: 01KNMMMHAJMZ0W93TXBEHNFN62
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNMMMFS578K2JA5X66Z1APWK
+        timestamp: 2026-04-07T18:52:48.338Z
     examined_commit: 7e7d977f1ee9fa6b316d425babd9ba06eab87328
     external_links: []
     lifecycle_state: open
@@ -126735,7 +126742,27 @@ reviews:
               back to disk unless the detail tier is complete."
             created_at: 2026-04-07T18:52:42.204Z
         kind: blocker
+      - _ulid: 01KNMMMFS578K2JA5X66Z1APWK
+        anchor:
+          type: code
+          commit: 7e7d977f1ee9fa6b316d425babd9ba06eab87328
+          line_end: 188
+          line_start: 183
+          path: src/parser/reviews.ts
+          side: head
+        entries:
+          - _ulid: 01KNMMMFS6GTE0J1QAZ00NA139
+            author: Jacob Chapel
+            body: "The same partial-detail bug exists for reviews. Reviews also load index first and keep detail
+              records on demand, but this code returns whatever subset of review details happens to
+              be cached once the domain is ready. I reproduced it with two review records on disk
+              and a cache that exposed both index entries but only one detail: loadReviewRecords()
+              returned 1 review instead of 2. Any review list/read path that relies on
+              loadReviewRecords() can therefore hide uncached reviews after a single detail fetch
+              unless this branch verifies the detail tier is complete before returning cached data."
+            created_at: 2026-04-07T18:52:46.758Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-07T18:47:17.189Z
-    updated_at: 2026-04-07T18:52:42.204Z
+    updated_at: 2026-04-07T18:52:46.758Z
     notes: []
