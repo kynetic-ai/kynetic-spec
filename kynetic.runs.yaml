@@ -23861,7 +23861,7 @@ runs:
     completed_at: 2026-04-07T18:45:01.767Z
   - _ulid: 01KNMMPHGXYQVGV3GAQ2548BTG
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -23877,7 +23877,14 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-07T18:54:40.490Z
-        completed_at: 2026-04-07T18:54:40.490Z
+        completed_at: 2026-04-07T18:55:13.841Z
+        notes: High-confidence item identified and captured as friction observation @01KNMMRM. No comparable
+          existing observation, inbox item, or task was found in the searches performed during this
+          reflection run.
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-07T18:55:13.841Z
+        completed_at: 2026-04-07T18:55:13.841Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-07T18:53:54.077Z
