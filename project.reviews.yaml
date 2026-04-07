@@ -126182,7 +126182,20 @@ reviews:
     slugs: []
     title: Review task-cache-aware-item-loading
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Full-suite npm test failures were unrelated to this task's changed files and reproduced
+          during comparison runs against both head and integration base; targeted parser suite
+          passed, so no task-specific regression was identified. Follow-up bug task created for
+          suite stabilization.
+        name: npm test regression triage
+        required: true
+        runner: npm
+        created_at: 2026-04-07T18:23:05.453Z
+        completed_at: 2026-04-07T18:23:05.453Z
     events:
       - _ulid: 01KNMJ5GMX6S2H0195QQ45NH7H
         actor: Jacob Chapel
@@ -126197,6 +126210,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-07T18:10:02.476Z
+      - _ulid: 01KNMJY552PJ5JBYR111MHZVRN
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test regression triage
+        timestamp: 2026-04-07T18:23:06.402Z
     examined_commit: 1f8d8a80ee91568944f3c96ae0eb6061fd60260b
     external_links: []
     lifecycle_state: open
@@ -126209,5 +126229,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-07T18:09:38.973Z
-    updated_at: 2026-04-07T18:10:01.504Z
+    updated_at: 2026-04-07T18:23:05.453Z
     notes: []
