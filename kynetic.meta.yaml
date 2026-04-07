@@ -13372,6 +13372,16 @@ observations:
     resolved_at: 2026-04-07T19:16:10.115Z
     resolved_by: Jacob Chapel
     created_at: 2026-04-07T19:15:07.080Z
+  - _ulid: 01KNMPN6X4FH820X8BVD2VMNBB
+    type: friction
+    content: Cache-loader work is converging on tests/parser/entity-cache-context.test.ts, so parallel
+      additive test changes create mechanical merge conflicts even when both sides are correct.
+      Consider splitting cache-context coverage by domain or loader to reduce merge hotspots for
+      dispatch review/merge cycles.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T19:28:07.588Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
