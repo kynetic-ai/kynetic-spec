@@ -28,3 +28,11 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-07T05:19:42.926Z
+  - _ulid: 01KNK6G8JK1CFXXZPCHV2D88VR
+    content: "Fix cycle approach: serialize same-domain hinted write-throughs through the existing
+      in-flight reload lane so concurrent task patches cannot overwrite each other. Added a
+      regression test that stages two task file updates, runs Promise.all over hinted writeThrough
+      calls, and verifies both cached task details survive the concurrent request-path refresh."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T05:26:33.811Z
