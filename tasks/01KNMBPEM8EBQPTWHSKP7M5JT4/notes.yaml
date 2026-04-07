@@ -1,1 +1,19 @@
-notes: []
+notes:
+  - _ulid: 01KNMR6D36Z6TMYTR169XJ3W6M
+    content: "Approach: update packages/daemon/src/routes/command.ts to add a conservative
+      cache-eligible read allowlist keyed by command string and required cache domains, then bypass
+      DispatchMutex only for non-mutating commands whose domains are all ready. Derive each domain
+      entry from the CLI handlers rather than inference; current trace shows tasks list/task list
+      need tasks+items+meta, tasks ready needs tasks+items, task get needs tasks+items+reviews,
+      search needs tasks+items+inbox+meta, inbox list needs inbox, plan get needs plans, plan list
+      needs plans+tasks, review get needs reviews, review list needs reviews and conditionally tasks
+      only when --task is set, so task-gated/branch-dependent loads stay out of unconditional
+      entries. Edge cases: commands not in allowlist must stay serialized, domain-not-ready reads
+      must stay serialized, mutations still take mutex+file lock, and concurrent cache-backed reads
+      need a behavioral test that proves they do not wait on each other. Test plan: extend
+      tests/daemon-command-api.test.ts with AC coverage for @daemon-concurrent-reads
+      ac-concurrent-cache-reads, ac-mutation-serialization, and ac-disk-fallback-serialization by
+      instrumenting mutex eligibility/command overlap rather than source assertions."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T19:54:59.558Z
