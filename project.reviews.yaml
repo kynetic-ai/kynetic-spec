@@ -121779,3 +121779,29 @@ reviews:
     created_at: 2026-04-06T19:04:43.445Z
     updated_at: 2026-04-06T19:11:21.810Z
     notes: []
+  - _ulid: 01KNJW88C0C4C8EYQEST1BA3B0
+    slugs: []
+    title: Review incremental session updates for individual sessions
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KNJW88BZ9C0VGYZQJDX124JX
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-07T02:27:25.695Z
+    examined_commit: 86a449c9dd84ad1a7a7d36b1552265597eb3b7d6
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNDDJ42341SCDJN6VKDV1518"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-07T02:27:25.696Z
+    updated_at: null
+    notes: []
