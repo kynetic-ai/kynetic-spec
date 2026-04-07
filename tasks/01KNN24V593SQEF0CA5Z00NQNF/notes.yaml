@@ -1,1 +1,40 @@
-notes: []
+notes:
+  - _ulid: 01KNN6267AAZZQ46D64VGYSN02
+    content: >-
+      Approach: The batch route (POST /api/command/batch) has 4 isolation gaps vs single command
+      route:
+
+
+      1. process.chdir(projectPath) instead of runWithWorkingDirectory() - concurrent reads could
+      see wrong cwd
+
+      2. No runWithEntityCache() - batch commands can't read from entity cache
+
+      3. No commandExecutionStorage wrapping - process.stdout.write/stderr.write interceptors (lines
+      96-170) rely on this ALS store; without it batch output from process.stdout.write (used by
+      plan export) leaks to real stdout
+
+      4. No runWithOutputState() - output format/verbose not isolated per-batch-request
+
+
+      Fix: Wrap the batch's runBatch() in the same ALS nesting pattern: runWithEntityCache ->
+      runWithWorkingDirectory -> runWithOutputState -> commandExecutionStorage.run(). Remove the
+      manual process.chdir() and .finally(restore) pattern.
+
+
+      Note: dispatchCommand() inside batch-exec.ts does its own per-command OutputCapture for
+      console.log/error/warn, which is fine. The commandExecutionStorage is specifically needed for
+      the process.stdout.write / process.stderr.write / process.exit interceptors in command.ts.
+
+
+      Test plan: 
+
+      - AC: @daemon-command-api ac-cache-context-propagation — batch commands have entity cache
+      context
+
+      - AC: @daemon-command-api ac-batch-support — batch executes with proper ALS isolation
+
+      - AC: @daemon-command-api ac-response-parity — batch commands don't leak stdout.write output
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-07T23:57:21.514Z
