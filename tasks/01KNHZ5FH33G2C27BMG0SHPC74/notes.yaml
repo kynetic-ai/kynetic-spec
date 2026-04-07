@@ -1,1 +1,12 @@
-notes: []
+notes:
+  - _ulid: 01KNJW9EFA05D6WD104WBKC18X
+    content: "Approach: inspect scripts/test.cjs build/cache behavior and daemon bundled web UI
+      resolution, then reproduce the reported full-suite failures in this review worktree under
+      SKIP_BUILD=1. Edge cases: stale dist artifacts copied from another worktree, Node/loader
+      resolution depending on invocation path, and bundle checks that pass in focused runs but fail
+      after full-suite setup. Test plan: reproduce the broad loader failure, reproduce the
+      daemon-web-ui-bundle failure, then add regression coverage around the root-cause path and
+      verify with full npm test."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T02:28:04.714Z
