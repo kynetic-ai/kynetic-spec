@@ -63,3 +63,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-07T20:59:46.720Z
+  - _ulid: 01KNMWX2M82C5YN396AYY5N4HH
+    content: "Fix cycle 2: closed the remaining daemon structured-output regressions.
+      isJsonMode()/isYamlMode() now read request-local output state, review command handlers rethrow
+      the daemon's intercepted process-exit sentinel instead of formatting a second error payload,
+      and added regression coverage for concurrent async-local mode isolation plus daemon-executed
+      review get --json error parity. Re-verified with npm test --
+      tests/output-format-option.test.ts, npm test -- tests/daemon-command-api.test.ts, npm test --
+      --fresh, and kspec validate (warnings only: existing repo-wide validation debt)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T21:17:16.808Z
