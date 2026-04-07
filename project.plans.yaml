@@ -37043,14 +37043,14 @@ plans:
             meta (meta loaded unconditionally for filtering/context)
           - "task get": tasks, items, reviews, meta (reviews for active
             review display, meta for context, history from task cache)
-          - "item list": items, tasks, meta (buildIndexes loads tasks
-            and reviews; meta for module resolution)
+          - "item list": items, tasks, reviews, meta (buildIndexes
+            loads tasks and reviews; meta for module resolution)
           - "item get": items, tasks, reviews, plans, meta (buildIndexes
             loads all; plans for breadcrumb; meta for context)
           - "search": tasks, items, reviews, inbox, meta (buildIndexes
             plus inbox and meta for comprehensive search)
           - "inbox list": inbox
-          - "plan list": plans
+          - "plan list": plans, tasks (tasks for derived-work summary)
           - "plan get": plans, tasks, items (for derived work resolution)
           - "review list": reviews, tasks (tasks when --task filter used;
             include unconditionally for safety)
@@ -37267,3 +37267,7 @@ plans:
         content: Content updated from file
         author: "@claude"
         created_at: 2026-04-07T08:16:56.638Z
+      - _ulid: 01KNKGDPZEDFKD6SEYYM8Y8ACY
+        content: Content updated from file
+        author: "@claude"
+        created_at: 2026-04-07T08:19:56.014Z
