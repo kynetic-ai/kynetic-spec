@@ -45,8 +45,13 @@ description: |
 spec_ref: "@daemon-incremental-cache"
 plan_ref: "@plan-granular-cache-invalidation"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved and merged dispatch/task/task-writethrough-incremental-alignment/01knddj4
+  into plan/plan-granular-cache-invalidation/01kndbmk. Verified hinted write-through alignment
+  across task/item/session routes, triage promote task hint propagation, and shadow-sync full cache
+  reload regression coverage. Validation passed with pre-existing warnings only; NODE_ENV= npm test
+  -- --fresh passed (2072 suites, 7555 tests, 5 skipped).
 depends_on:
   - "@task-incremental-task-updates"
   - "@task-incremental-item-updates"
@@ -287,8 +292,26 @@ history:
         previous: "@01KNK90EHESXMS8MWZANF66BE7"
     command: review-link
     timestamp: 2026-04-07T06:27:50.917Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved and merged dispatch/task/task-writethrough-incremental-alignment/01knddj4 into
+          plan/plan-granular-cache-invalidation/01kndbmk. Verified hinted write-through alignment
+          across task/item/session routes, triage promote task hint propagation, and shadow-sync
+          full cache reload regression coverage. Validation passed with pre-existing warnings only;
+          NODE_ENV= npm test -- --fresh passed (2072 suites, 7555 tests, 5 skipped).
+        previous: null
+      completed_at:
+        new: 2026-04-07T06:35:27.235Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-07T06:35:27.246Z
 created_at: 2026-04-04T23:34:28.813Z
 started_at: 2026-04-07T06:13:48.202Z
 submitted_at: 2026-04-07T06:24:55.745Z
+completed_at: 2026-04-07T06:35:27.235Z
 todos: []
 automation: eligible
