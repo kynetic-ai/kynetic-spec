@@ -31,3 +31,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-07T18:01:18.225Z
+  - _ulid: 01KNMJT5Z599JCQPV835FXDCG1
+    content: "Fix cycle 1: added behavioral coverage for the missing non-ready cache-state fallback. The
+      new test runs listTasks, loadAllTasks, and getTask inside an entity-cache AsyncLocalStorage
+      context with tasks domain state 'loading' and verifies all three fall through to backend disk
+      reads instead of consulting cached task data. Re-verified @daemon-command-api
+      ac-read-cache-serving and ac-no-cache-outside-daemon against TaskDataManager read paths.
+      Verification: npm run typecheck passed; npm test -- --run tests/task-data-manager.test.ts
+      passed (19 suites, 58 tests); kspec validate reported only the repo's existing warning set;
+      full npm test still hits an unrelated baseline failure in tests/dispatch-target-sync.test.ts
+      on this branch after an isolated rerun, while tests/cli-serve.test.ts passed on rerun."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T18:20:56.165Z
