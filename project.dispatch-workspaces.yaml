@@ -41060,7 +41060,7 @@ workspaces:
         head: 8284b1a506930a0baf9d03648e397ecf94e733e7
         last_seen_at: 2026-04-07T17:43:08.426Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cache-aware-init-context-01knmbpc
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 790b9dc9d020f0b72518a7d0c905afcbd99f3147
     bootstrap:
       status: succeeded
@@ -41165,12 +41165,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-07T17:57:32.797Z
+      updated_at: 2026-04-07T18:03:05.333Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-07T17:57:39.566Z
+      updated_at: 2026-04-07T18:03:05.333Z
     integration:
       status: pending
       detail: null
@@ -41178,7 +41178,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-cache-aware-command-execution/01knkf3b
       target_commit: 790b9dc9d020f0b72518a7d0c905afcbd99f3147
-      updated_at: 2026-04-07T17:57:32.797Z
+      updated_at: 2026-04-07T18:03:05.333Z
     lifecycle_state: integrating
     resolved_base_branch: plan/plan-cache-aware-command-execution/01knkf3b
     task_ref: "@01KNMBPCVJ0GEZR7FSE927QKNW"
@@ -41186,9 +41186,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-07T17:57:39.566Z
-      last_reconciled_at: 2026-04-07T17:57:39.566Z
+      last_reconciled_at: 2026-04-07T18:03:05.333Z
       created_at: 2026-04-07T17:43:20.071Z
-      updated_at: 2026-04-07T17:57:39.566Z
+      updated_at: 2026-04-07T18:03:05.333Z
     workspace_id: dispatch-workspace-01KNMBPCVJ0GEZR7FSE927QKNW
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
