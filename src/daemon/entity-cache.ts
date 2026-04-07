@@ -1631,7 +1631,9 @@ export class ProjectEntityCache {
       } else {
         nextIndex.push(summary);
       }
-      nextDetails.set(sessionId, summary);
+      // Session detail is loaded on demand and may include live event counts.
+      // Drop any cached detail so routes fall back to the refreshed index/detail loader.
+      nextDetails.delete(sessionId);
 
       if (summary.status !== "active" && summary.status !== "stalled") {
         this.liveEventCounts.delete(sessionId);
