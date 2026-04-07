@@ -1,1 +1,14 @@
-notes: []
+notes:
+  - _ulid: 01KNMGR8M0RSVPG0PE8MBXPEEY
+    content: "Approach: add a shared cache-aware preamble in TaskDataManager read paths by consulting
+      getEntityCacheContext(), resolving the per-project cache, and short-circuiting
+      listTasks/loadAllTasks/getTask only when the tasks domain is ready. Edge cases: direct CLI
+      mode must never touch the cache, filtered listTasks still applies in-memory filters after a
+      cached index hit, getTask must fall through on cache detail miss and populate the detail tier,
+      and mutation methods remain disk-backed regardless of cache state. Test plan: behavioral
+      TaskDataManager tests for cached list hit, cached loadAll hit, getTask detail miss populating
+      cache, non-ready/no-context fallback to disk, and a mutation-path test proving cache
+      availability does not bypass backend writes."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T17:44:56.192Z
