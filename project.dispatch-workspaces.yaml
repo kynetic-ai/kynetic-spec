@@ -40507,7 +40507,7 @@ workspaces:
         head: 343472d01808d514accacb66d1bb86db4519b37f
         last_seen_at: 2026-04-07T16:24:46.615Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-update-command-api-spec-01knmbpb
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 343472d01808d514accacb66d1bb86db4519b37f
     bootstrap:
       status: succeeded
@@ -40617,7 +40617,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-07T16:28:17.851Z
+      updated_at: 2026-04-07T16:28:38.672Z
     integration:
       status: pending
       detail: null
@@ -40632,10 +40632,10 @@ workspaces:
     task_slug: task-update-entity-cache-history-ac
     timestamps:
       closed_at: null
-      last_active_at: 2026-04-07T16:25:02.436Z
-      last_reconciled_at: 2026-04-07T16:28:17.851Z
+      last_active_at: 2026-04-07T16:28:38.672Z
+      last_reconciled_at: 2026-04-07T16:28:38.672Z
       created_at: 2026-04-07T16:24:57.708Z
-      updated_at: 2026-04-07T16:28:33.719Z
+      updated_at: 2026-04-07T16:28:38.672Z
     workspace_id: dispatch-workspace-01KNMBPC0GJ184YT6G3T43TNGB
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
