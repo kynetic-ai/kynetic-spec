@@ -37237,6 +37237,7 @@ plans:
       is the final optimization.
     status: approved
     approved_at: 2026-04-07T16:15:15.885Z
+    branch: plan/plan-cache-aware-command-execution/01knkf3b
     derived_specs: []
     derived_tasks: []
     module_ref: null
