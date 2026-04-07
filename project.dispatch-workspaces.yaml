@@ -42045,7 +42045,7 @@ workspaces:
         head: 2242eedd6255ca91d88b99b0f75be3ac8441fcea
         last_seen_at: 2026-04-07T21:22:37.744Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-read-command-concurrency-01knmbpe
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 09384972c51b1a66addefe64fbe2d42a7c428f9f
     bootstrap:
       status: succeeded
@@ -42423,9 +42423,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-07T23:44:24.766Z
-      last_reconciled_at: 2026-04-07T23:51:38.109Z
+      last_reconciled_at: 2026-04-07T23:52:15.789Z
       created_at: 2026-04-07T22:53:08.489Z
-      updated_at: 2026-04-07T23:51:38.109Z
+      updated_at: 2026-04-07T23:52:15.789Z
     workspace_id: dispatch-workspace-01KNN24AJ4QFBJ9NHK5K16QMJ0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
