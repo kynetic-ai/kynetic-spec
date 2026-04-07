@@ -127609,6 +127609,12 @@ reviews:
         payload:
           thread_ulid: 01KNMSEQNM214KVGPGS6JKAQSN
         timestamp: 2026-04-07T20:43:10.906Z
+      - _ulid: 01KNMV1WYW062B6W4HYJ4A4GTK
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNMSEQNM214KVGPGS6JKAQSN
+        timestamp: 2026-04-07T20:44:57.692Z
     examined_commit: 1dcde7937b52018f763a0cff9973e4977ab9e72e
     external_links: []
     lifecycle_state: closed
@@ -127740,6 +127746,8 @@ reviews:
               behavioral isolation for concurrent cache-backed reads.
             created_at: 2026-04-07T20:43:09.921Z
         kind: nit
+        resolved_at: 2026-04-07T20:44:56.865Z
+        resolved_by: Jacob Chapel
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -127749,5 +127757,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-07T20:17:36.357Z
     created_at: 2026-04-07T20:10:07.646Z
-    updated_at: 2026-04-07T20:43:09.921Z
+    updated_at: 2026-04-07T20:44:56.865Z
     notes: []
