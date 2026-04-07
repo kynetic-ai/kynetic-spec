@@ -40291,7 +40291,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-07T05:33:37.213Z
+      updated_at: 2026-04-07T05:35:06.890Z
     integration:
       status: merged
       detail: integration:merged
@@ -40307,18 +40307,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-07T05:22:08.139Z
-      last_reconciled_at: 2026-04-07T05:35:05.190Z
+      last_reconciled_at: 2026-04-07T05:35:06.890Z
       created_at: 2026-04-07T05:08:08.245Z
-      updated_at: 2026-04-07T05:35:05.190Z
+      updated_at: 2026-04-07T05:35:06.890Z
     workspace_id: dispatch-workspace-01KNK2VKWW5MPK2C0NSNF3FC90
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 9b4b7ab8676f59ebf7555aa2a5df021f747a4750
-        last_seen_at: 2026-04-07T05:22:00.086Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-flaky-agent-dispatch-post-invocation-re-evaluation-tests-01knk2vk-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/stabilize-flaky-agent-dispatch-post-invocation-re-evaluation-tests/01knk2vk
