@@ -122962,6 +122962,12 @@ reviews:
         payload:
           thread_ulid: 01KNK2WN4GTZ0VYFAG6P9B0TZC
         timestamp: 2026-04-07T04:49:25.577Z
+      - _ulid: 01KNK4DEWT8H94YKB39QCZJP7M
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNK2WN4GTZ0VYFAG6P9B0TZC
+        timestamp: 2026-04-07T04:50:04.826Z
     examined_commit: a756106068e3feea81055805f98a0510b71aa40a
     external_links: []
     lifecycle_state: closed
@@ -122998,6 +123004,8 @@ reviews:
               while shadow/session cached objects stay untouched."
             created_at: 2026-04-07T04:49:24.792Z
         kind: blocker
+        resolved_at: 2026-04-07T04:50:04.034Z
+        resolved_by: Jacob Chapel
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -123007,7 +123015,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-07T04:25:20.955Z
     created_at: 2026-04-07T04:15:01.017Z
-    updated_at: 2026-04-07T04:49:24.792Z
+    updated_at: 2026-04-07T04:50:04.034Z
     notes: []
   - _ulid: 01KNK32GBQRGQJ0ND2E5SAATFK
     slugs: []
