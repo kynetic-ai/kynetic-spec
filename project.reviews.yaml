@@ -125059,6 +125059,16 @@ reviews:
         required: true
         created_at: 2026-04-07T08:26:17.441Z
         completed_at: 2026-04-07T08:26:17.441Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Phase 6 still depends on the initContext/cache-loader/history tasks that make cache-backed
+          read execution possible before mutex bypass is attempted.
+        name: Dependency ordering
+        required: true
+        created_at: 2026-04-07T08:26:20.316Z
+        completed_at: 2026-04-07T08:26:20.316Z
     events:
       - _ulid: 01KNKGRSXEQG74XE0W0Q6VFR6S
         actor: "@claude"
@@ -125087,6 +125097,13 @@ reviews:
           status: pass
           name: Coverage mapping
         timestamp: 2026-04-07T08:26:18.365Z
+      - _ulid: 01KNKGSF5780SXAGJBK5RFGTCA
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Dependency ordering
+        timestamp: 2026-04-07T08:26:21.223Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -125099,5 +125116,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-07T08:25:59.470Z
-    updated_at: 2026-04-07T08:26:17.441Z
+    updated_at: 2026-04-07T08:26:20.316Z
     notes: []
