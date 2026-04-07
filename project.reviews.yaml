@@ -127767,3 +127767,29 @@ reviews:
     created_at: 2026-04-07T20:10:07.646Z
     updated_at: 2026-04-07T20:44:59.417Z
     notes: []
+  - _ulid: 01KNMV9BGG3YH90ZTY9343WR0S
+    slugs: []
+    title: Review task-read-command-concurrency (cycle 2)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KNMV9BGGBEFWBC5ZMHS5N4YA
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-07T20:49:01.968Z
+    examined_commit: 6e37e6b9839a0d69b7aaadaa6f2b9c3f2ca74b24
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNMBPEM8EBQPTWHSKP7M5JT4"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-07T20:49:01.968Z
+    updated_at: null
+    notes: []
