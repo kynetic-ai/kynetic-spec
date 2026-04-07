@@ -127573,6 +127573,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-07T20:17:36.357Z
+      - _ulid: 01KNMTX5X406HP3VMHJZAQ9KFN
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNMSE5CAYR7PG595TKX4A3KV
+        timestamp: 2026-04-07T20:42:23.013Z
     examined_commit: 1dcde7937b52018f763a0cff9973e4977ab9e72e
     external_links: []
     lifecycle_state: closed
@@ -127602,6 +127608,12 @@ reviews:
               correctness/integration; no separate AC annotation or validation regression introduced
               by this task.'
             created_at: 2026-04-07T20:16:42.378Z
+          - _ulid: 01KNMTX4ZAVZM1VXWST705715F
+            author: Jacob Chapel
+            body: Addressed. The implementation now isolates request-local execution state instead of assuming
+              the old process-global capture path was safe, and the verification set was refreshed
+              with the new concurrency/output-isolation regression plus a fresh full-suite run.
+            created_at: 2026-04-07T20:42:22.057Z
         kind: nit
       - _ulid: 01KNMSECX6CACHE98YX6QWM35J
         anchor:
@@ -127680,5 +127692,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-07T20:17:36.357Z
     created_at: 2026-04-07T20:10:07.646Z
-    updated_at: 2026-04-07T20:17:36.357Z
+    updated_at: 2026-04-07T20:42:22.057Z
     notes: []
