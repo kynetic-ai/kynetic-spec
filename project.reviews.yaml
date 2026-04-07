@@ -121973,6 +121973,18 @@ reviews:
         runner: npm
         created_at: 2026-04-07T03:04:26.551Z
         completed_at: 2026-04-07T03:04:26.551Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: After npm run build, SKIP_BUILD=1 npm test -- --fresh tests/ac-delete-confirmation.test.ts
+          tests/dispatch-runtime-bootstrap-contract.test.ts tests/daemon-web-ui-bundle.test.ts
+          passed (7 suites, 35 tests).
+        name: focused regression suite
+        required: true
+        runner: npm
+        created_at: 2026-04-07T03:04:32.744Z
+        completed_at: 2026-04-07T03:04:32.744Z
     events:
       - _ulid: 01KNJY6VCCK2EZYXY3FZY880XQ
         actor: Jacob Chapel
@@ -122001,6 +122013,13 @@ reviews:
           status: fail
           name: full suite detached-worktree baseline
         timestamp: 2026-04-07T03:04:28.140Z
+      - _ulid: 01KNJYC9RJKH74FJYTJ3VJ122Y
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: focused regression suite
+        timestamp: 2026-04-07T03:04:35.346Z
     examined_commit: 58d872ce04698b021e6dd29ddfefd0f6016406a6
     external_links: []
     lifecycle_state: open
@@ -122030,5 +122049,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-07T03:01:36.780Z
-    updated_at: 2026-04-07T03:04:26.551Z
+    updated_at: 2026-04-07T03:04:32.744Z
     notes: []
