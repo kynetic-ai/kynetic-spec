@@ -41144,12 +41144,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-07T17:57:23.816Z
+      updated_at: 2026-04-07T17:57:32.797Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-07T17:57:23.816Z
+      updated_at: 2026-04-07T17:57:32.797Z
     integration:
       status: pending
       detail: null
@@ -41157,24 +41157,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-cache-aware-command-execution/01knkf3b
       target_commit: 790b9dc9d020f0b72518a7d0c905afcbd99f3147
-      updated_at: 2026-04-07T17:57:23.816Z
-    lifecycle_state: ready
+      updated_at: 2026-04-07T17:57:32.797Z
+    lifecycle_state: integrating
     resolved_base_branch: plan/plan-cache-aware-command-execution/01knkf3b
     task_ref: "@01KNMBPCVJ0GEZR7FSE927QKNW"
     task_slug: task-cache-aware-task-loading
     timestamps:
       closed_at: null
       last_active_at: 2026-04-07T17:43:25.234Z
-      last_reconciled_at: 2026-04-07T17:57:23.816Z
+      last_reconciled_at: 2026-04-07T17:57:32.797Z
       created_at: 2026-04-07T17:43:20.071Z
-      updated_at: 2026-04-07T17:57:23.816Z
+      updated_at: 2026-04-07T17:57:32.797Z
     workspace_id: dispatch-workspace-01KNMBPCVJ0GEZR7FSE927QKNW
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 9eb7d18c54e9943217facfd01734ab79bad8865e
+        last_seen_at: 2026-04-07T17:57:32.797Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cache-aware-task-loading-01knmbpc-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-cache-aware-task-loading/01knmbpc
-        head: 790b9dc9d020f0b72518a7d0c905afcbd99f3147
-        last_seen_at: 2026-04-07T17:43:20.071Z
+        head: 9eb7d18c54e9943217facfd01734ab79bad8865e
+        last_seen_at: 2026-04-07T17:57:32.797Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cache-aware-task-loading-01knmbpc
