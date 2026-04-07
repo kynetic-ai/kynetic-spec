@@ -52,8 +52,13 @@ description: |
 spec_ref: "@daemon-meta-subdomain"
 plan_ref: "@plan-granular-cache-invalidation"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved in review @01KNK4P5C3DED0SM9CWYR78963 and merged
+  dispatch/task/task-meta-subdomain-decomposition/01knddj4 into
+  plan/plan-granular-cache-invalidation/01kndbmk. Meta cache now refreshes manifest, shadow, and
+  session sub-domains independently, including manifest include files, with focused daemon cache
+  coverage and a fresh full test run passing.
 depends_on:
   - "@task-cache-kspec-context"
 context: []
@@ -292,8 +297,26 @@ history:
         previous: "@01KNK2D8CS9DC0PYFYX3T6DDZ1"
     command: review-link
     timestamp: 2026-04-07T04:54:52.640Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved in review @01KNK4P5C3DED0SM9CWYR78963 and merged
+          dispatch/task/task-meta-subdomain-decomposition/01knddj4 into
+          plan/plan-granular-cache-invalidation/01kndbmk. Meta cache now refreshes manifest, shadow,
+          and session sub-domains independently, including manifest include files, with focused
+          daemon cache coverage and a fresh full test run passing.
+        previous: null
+      completed_at:
+        new: 2026-04-07T05:01:07.608Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-07T05:01:07.621Z
 created_at: 2026-04-04T23:34:28.477Z
 started_at: 2026-04-07T04:49:14.370Z
 submitted_at: 2026-04-07T04:52:09.928Z
+completed_at: 2026-04-07T05:01:07.608Z
 todos: []
 automation: eligible
