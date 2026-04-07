@@ -1,1 +1,12 @@
-notes: []
+notes:
+  - _ulid: 01KNMFX4J4ZP1C3JVH8F25FAPG
+    content: "Approach: add an early initContext() fast path that reads project config, shadow info, and
+      manifest from the daemon entity-cache async context when the meta domain is ready; otherwise
+      preserve the existing disk path unchanged. Edge cases: no cache context, cache present but
+      meta not ready, cache missing one of the required cached artifacts, and field parity between
+      cached and disk-built KspecContext. Test plan: add behavioral tests for ready-cache hit,
+      meta-not-ready fallback, no-cache fallback, and cached-vs-disk context equivalence under the
+      daemon command API coverage surface."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T17:30:07.300Z
