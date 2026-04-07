@@ -123725,6 +123725,17 @@ reviews:
         runner: npm
         created_at: 2026-04-07T05:47:09.746Z
         completed_at: 2026-04-07T05:47:09.746Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm_config_omit= NODE_ENV= npm test -- --fresh daemon-read-path daemon-entity-cache ->
+          36/36 suites, 160/160 tests passed.
+        name: targeted-tests
+        required: true
+        runner: npm
+        created_at: 2026-04-07T05:48:00.731Z
+        completed_at: 2026-04-07T05:48:00.731Z
     events:
       - _ulid: 01KNK72RVMXYATDDVQGZF1PPM5
         actor: Jacob Chapel
@@ -123753,6 +123764,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNK7P1WSP3MNRVQ81XFSD21Q
         timestamp: 2026-04-07T05:47:13.087Z
+      - _ulid: 01KNK7QJ4TSPAVB8VFVC6DGZMV
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted-tests
+        timestamp: 2026-04-07T05:48:01.562Z
     examined_commit: fee4f128f4c1a3d24a69690d1ae11fbfa6154991
     external_links: []
     lifecycle_state: open
@@ -123784,5 +123802,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-07T05:36:40.308Z
-    updated_at: 2026-04-07T05:47:12.153Z
+    updated_at: 2026-04-07T05:48:00.731Z
     notes: []
