@@ -8,3 +8,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-07T05:10:14.650Z
+  - _ulid: 01KNK5ZTVR5KYREP7E12QXS9W0
+    content: "Stabilized post-invocation re-evaluation tests by replacing the 1s ad hoc polling with
+      bounded waitForStartup-backed mock waits, adding an explicit wait before the re-evaluation
+      warning assertion, and wrapping the dedup/provisioning tests in try/finally so
+      DispatchEngine.stop() always runs even on assertion failure. Verification: npm test -- --fresh
+      tests/agent-dispatch-engine.test.ts -t 'Post-invocation re-evaluation'; npm test -- --fresh
+      tests/agent-dispatch-engine.test.ts. kspec validate still reports existing repository-wide
+      warnings only."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T05:17:35.481Z
