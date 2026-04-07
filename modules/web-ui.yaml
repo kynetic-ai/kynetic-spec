@@ -4362,6 +4362,9 @@ requirements:
       project manifest metadata, shadow branch health, and session
       context. Each sub-domain has its own invalidation trigger and
       can be refreshed without affecting the others.
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
