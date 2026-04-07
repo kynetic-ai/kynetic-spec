@@ -121783,7 +121783,17 @@ reviews:
     slugs: []
     title: Review incremental session updates for individual sessions
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate exited with warnings only; no validation errors in this snapshot.
+        name: kspec-validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-07T02:35:11.305Z
+        completed_at: 2026-04-07T02:35:11.305Z
     events:
       - _ulid: 01KNJW88BZ9C0VGYZQJDX124JX
         actor: Jacob Chapel
@@ -121798,6 +121808,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-07T02:28:21.788Z
+      - _ulid: 01KNJWPFYA55K60EKR91BJDH3S
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec-validate
+        timestamp: 2026-04-07T02:35:12.202Z
     examined_commit: 86a449c9dd84ad1a7a7d36b1552265597eb3b7d6
     external_links: []
     lifecycle_state: open
@@ -121810,5 +121827,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-07T02:27:25.696Z
-    updated_at: 2026-04-07T02:28:20.971Z
+    updated_at: 2026-04-07T02:35:11.305Z
     notes: []
