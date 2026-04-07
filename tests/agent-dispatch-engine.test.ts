@@ -385,12 +385,17 @@ async function installFakeGh(dir: string): Promise<{ restore: () => void }> {
 
 async function waitForMockCall(
   spy: { mock: { calls: unknown[] } },
-  timeoutMs = 2_000,
+  description = "mock should be called",
+  timeoutMs = 5_000,
 ): Promise<void> {
-  const deadline = Date.now() + timeoutMs;
-  while (spy.mock.calls.length === 0 && Date.now() < deadline) {
-    await new Promise((resolve) => setTimeout(resolve, 10));
-  }
+  await waitForStartup(
+    description,
+    () => ({
+      ok: spy.mock.calls.length > 0,
+      details: `mock calls=${spy.mock.calls.length}, expected>0`,
+    }),
+    { timeoutMs, intervalMs: 10 },
+  );
 }
 
 async function waitForInvocationCount(
@@ -5740,32 +5745,34 @@ describe("Post-invocation re-evaluation", () => {
       coalesceWindowMs: 0,
     });
 
-    await engine.start();
+    try {
+      await engine.start();
 
-    // Wait for first invocation to start
-    // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
-    await waitForInvocationCount(
-      () => invocationCount,
-      1,
-      "first dedup test invocation should start",
-    );
-    expect(invocationCount).toBe(1);
+      // Wait for first invocation to start
+      // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
+      await waitForInvocationCount(
+        () => invocationCount,
+        1,
+        "first dedup test invocation should start",
+      );
+      expect(invocationCount).toBe(1);
 
-    // Release first invocation — re-evaluation runs, but should NOT double-enqueue taskB
-    resolveFirst();
+      // Release first invocation — re-evaluation runs, but should NOT double-enqueue taskB
+      resolveFirst();
 
-    // Wait for second invocation
-    // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
-    await waitForInvocationCount(
-      () => invocationCount,
-      2,
-      "queued task should drain exactly once after re-evaluation",
-    );
+      // Wait for second invocation
+      // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
+      await waitForInvocationCount(
+        () => invocationCount,
+        2,
+        "queued task should drain exactly once after re-evaluation",
+      );
 
-    // Exactly 2 invocations (one per task), not 3+ from double-enqueue
-    expect(invocationCount).toBe(2);
-
-    await engine.stop();
+      // Exactly 2 invocations (one per task), not 3+ from double-enqueue
+      expect(invocationCount).toBe(2);
+    } finally {
+      await engine.stop();
+    }
   });
 
   // AC: @agent-dispatch-engine ac-24
@@ -5805,51 +5812,53 @@ describe("Post-invocation re-evaluation", () => {
       coalesceWindowMs: 0,
     });
 
-    await engine.start();
+    try {
+      await engine.start();
 
-    await writeTasks(testDir, [{ _ulid: taskId, status: "pending", automation: "eligible" }]);
+      await writeTasks(testDir, [{ _ulid: taskId, status: "pending", automation: "eligible" }]);
 
-    const handlePromise = engine.handleStateChange({
-      taskId,
-      taskRef: `@${taskId}`,
-      fromStatus: "in_progress",
-      toStatus: "pending",
-      timestamp: Date.now(),
-      task: {
-        _ulid: taskId,
-        title: `Task ${taskId}`,
-        status: "pending",
-        type: "task",
-        priority: 1,
-        blocked_by: [],
-        depends_on: [],
-        context: [],
-        tags: [],
-        vcs_refs: [],
-        notes: [],
-        todos: [],
-        created_at: new Date().toISOString(),
-        automation: "eligible",
-      } as any,
-    });
+      const handlePromise = engine.handleStateChange({
+        taskId,
+        taskRef: `@${taskId}`,
+        fromStatus: "in_progress",
+        toStatus: "pending",
+        timestamp: Date.now(),
+        task: {
+          _ulid: taskId,
+          title: `Task ${taskId}`,
+          status: "pending",
+          type: "task",
+          priority: 1,
+          blocked_by: [],
+          depends_on: [],
+          context: [],
+          tags: [],
+          vcs_refs: [],
+          notes: [],
+          todos: [],
+          created_at: new Date().toISOString(),
+          automation: "eligible",
+        } as any,
+      });
 
-    for (let i = 0; i < 100 && provisionSpy.mock.calls.length === 0; i++) {
-      await new Promise((resolve) => setTimeout(resolve, 10));
+      await waitForMockCall(
+        provisionSpy,
+        "workspace provisioning should begin before reconciliation re-check",
+      );
+      expect(provisionSpy).toHaveBeenCalledTimes(1);
+
+      await (engine as any)._reconcile();
+      expect(engine.getStatus().queuedInvocations).toBe(0);
+
+      releaseProvision();
+
+      await waitForMockCall(runSpy, "invocation should start after provisioning is released");
+      expect(runSpy).toHaveBeenCalledTimes(1);
+      await handlePromise;
+    } finally {
+      releaseProvision();
+      await engine.stop();
     }
-    expect(provisionSpy).toHaveBeenCalledTimes(1);
-
-    await (engine as any)._reconcile();
-    expect(engine.getStatus().queuedInvocations).toBe(0);
-
-    releaseProvision();
-
-    for (let i = 0; i < 100 && runSpy.mock.calls.length === 0; i++) {
-      await new Promise((resolve) => setTimeout(resolve, 10));
-    }
-    expect(runSpy).toHaveBeenCalledTimes(1);
-    await handlePromise;
-
-    await engine.stop();
   });
 
   // AC: @agent-dispatch-engine ac-25
@@ -5928,6 +5937,10 @@ describe("Post-invocation re-evaluation", () => {
       expect(invocationCount).toBe(2);
 
       // Verify warning was logged
+      await waitForMockCall(
+        warnSpy,
+        "re-evaluation failure should log a warning before the assertion runs",
+      );
       expect(warnSpy).toHaveBeenCalledWith(
         expect.stringContaining("Post-invocation re-evaluation failed"),
         expect.any(Error),
