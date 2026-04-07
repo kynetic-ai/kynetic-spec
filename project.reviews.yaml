@@ -125883,7 +125883,18 @@ reviews:
     slugs: []
     title: Review task-cache-aware-init-context
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite passed: 2088/2088 suites, 7603 passed, 5 skipped, after build bootstrap fixed
+          missing dist/cli/index.js."
+        name: npm test
+        required: true
+        runner: test-runner
+        created_at: 2026-04-07T17:51:27.932Z
+        completed_at: 2026-04-07T17:51:27.932Z
     events:
       - _ulid: 01KNMGPC5D2P2Z4Y8XF6P9F0W2
         actor: Jacob Chapel
@@ -125898,6 +125909,13 @@ reviews:
           kind: nit
           thread_ulid: 01KNMH44XBCDHGPMMZPZR91J82
         timestamp: 2026-04-07T17:51:26.382Z
+      - _ulid: 01KNMH482RTAHFAX04V92Q7EPR
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-07T17:51:28.856Z
     examined_commit: 8284b1a506930a0baf9d03648e397ecf94e733e7
     external_links: []
     lifecycle_state: draft
@@ -125927,5 +125945,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-07T17:43:54.285Z
-    updated_at: 2026-04-07T17:51:25.612Z
+    updated_at: 2026-04-07T17:51:27.932Z
     notes: []
