@@ -124132,6 +124132,17 @@ reviews:
         required: true
         created_at: 2026-04-07T08:00:19.619Z
         completed_at: 2026-04-07T08:00:19.619Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "@daemon-concurrent-reads defines success by internal mutex/file-lock acquisition, and
+          @daemon-cache-command mixes internal execution-path language into the contract instead of
+          staying purely behavioral."
+        name: Behavioral purity
+        required: true
+        created_at: 2026-04-07T08:00:19.654Z
+        completed_at: 2026-04-07T08:00:19.654Z
     events:
       - _ulid: 01KNKF782DQVR1C3GRR37P39TP
         actor: "@claude"
@@ -124195,6 +124206,13 @@ reviews:
           status: pass
           name: Dependency ordering
         timestamp: 2026-04-07T08:00:20.439Z
+      - _ulid: 01KNKF9W99WX64RNRHWN8TTCFD
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: Behavioral purity
+        timestamp: 2026-04-07T08:00:21.801Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -124293,5 +124311,5 @@ reviews:
         kind: question
     verdicts: []
     created_at: 2026-04-07T07:58:55.565Z
-    updated_at: 2026-04-07T08:00:19.619Z
+    updated_at: 2026-04-07T08:00:19.654Z
     notes: []
