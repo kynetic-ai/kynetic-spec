@@ -2202,3 +2202,14 @@ inbox:
     tags: []
     added_by: Jacob Chapel
     created_at: 2026-04-05T09:45:24.806Z
+  - _ulid: 01KNN5CW7PJPCBGQ5BRENH450D
+    text: "Add CommandExitError re-throw guards to remaining ~32 command files (beyond review.ts). All
+      command files with catch (err) { error(...); process.exit(...) } will produce extra wrapper
+      stderr lines in daemon text-mode execution, breaking ac-response-parity. Alternative: handle
+      at the daemon interceptor layer so individual command files do not need changes."
+    tags:
+      - daemon
+      - bug
+      - post-mvp
+    added_by: "@claude"
+    created_at: 2026-04-07T23:45:43.158Z
