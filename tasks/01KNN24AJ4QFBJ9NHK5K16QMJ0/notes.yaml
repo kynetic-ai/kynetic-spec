@@ -30,3 +30,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-07T23:15:35.845Z
+  - _ulid: 01KNN557ZEEMM62WS24ZDM1AH5
+    content: "Fix cycle 1: Addressed review blocker about text-mode response parity for review commands.
+      Added CommandExitError re-throw guards to all 14 catch blocks in review.ts so intercepted
+      daemon exits propagate cleanly without producing wrapper error lines (e.g. 'Failed to get
+      review'). Added behavioral test verifying text-mode 'review get @does-not-exist' produces
+      matching stderr between daemon API and direct CLI. All 7642 tests pass (2096 suites)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-07T23:41:33.038Z
