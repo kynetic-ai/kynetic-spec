@@ -1,0 +1,34 @@
+_ulid: 01KNJYFFPJMPGA00JD1GAE1T1K
+slugs: []
+title: Stabilize parser integration test in detached review worktrees
+type: bug
+description: >-
+  Review evidence on 2026-04-07: 
+
+  > @kynetic-ai/spec@0.12.0 test
+
+  > node scripts/test.cjs --fresh on submitted snapshot 58d872ce04698b021e6dd29ddfefd0f6016406a6
+  rebuilt missing build artifacts and finished with 2 failed suites / 1 failed test. The concrete
+  remaining failure is  -> , which throws  from  while running in a detached review worktree.
+  Reproduced the same failure on integration target dev commit
+  34dd3d45c187a99ec1c4944bb4914e6549935f6d in a fresh temporary worktree, so this is pre-existing
+  rather than introduced by task @01KNHZ5FH33G2C27BMG0SHPC74. Investigate why  /  treats detached
+  review worktrees as disconnected shadow worktrees during test execution, decide whether the test
+  should skip/adapt in this environment or the shadow detection should accept the workspace shape,
+  and restore a reliable full-suite pass in detached review worktrees.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - test
+  - parser
+  - infra
+vcs_refs: []
+created_at: 2026-04-07T03:06:19.730Z
+todos: []
+automation: eligible
