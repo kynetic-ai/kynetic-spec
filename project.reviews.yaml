@@ -124143,6 +124143,16 @@ reviews:
         required: true
         created_at: 2026-04-07T08:00:19.654Z
         completed_at: 2026-04-07T08:00:19.654Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Each proposed spec AC is claimed by at least one task, and the major phases are mapped to
+          the new specs without orphaned acceptance criteria.
+        name: Coverage mapping
+        required: true
+        created_at: 2026-04-07T08:00:19.712Z
+        completed_at: 2026-04-07T08:00:19.712Z
     events:
       - _ulid: 01KNKF782DQVR1C3GRR37P39TP
         actor: "@claude"
@@ -124213,6 +124223,13 @@ reviews:
           status: fail
           name: Behavioral purity
         timestamp: 2026-04-07T08:00:21.801Z
+      - _ulid: 01KNKF9XPZ7KWP04YQBMMFDMSJ
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Coverage mapping
+        timestamp: 2026-04-07T08:00:23.263Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -124311,5 +124328,5 @@ reviews:
         kind: question
     verdicts: []
     created_at: 2026-04-07T07:58:55.565Z
-    updated_at: 2026-04-07T08:00:19.654Z
+    updated_at: 2026-04-07T08:00:19.712Z
     notes: []
