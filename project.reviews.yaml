@@ -125294,7 +125294,20 @@ reviews:
     slugs: []
     title: Review task-update-entity-cache-history-ac
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Ran kspec validate on 2026-04-07. Command exited 6 with the repo's existing global
+          warnings (orphaned specs, invalid AC annotation fixtures, orphaned skill dir) but no
+          task-specific validation error for @daemon-entity-cache; ac-task-history-retention is
+          present in the spec.
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-04-07T16:35:25.926Z
+        completed_at: 2026-04-07T16:35:25.926Z
     events:
       - _ulid: 01KNMCDVFSYSRSSMHTCK5EF8AQ
         actor: Jacob Chapel
@@ -125316,6 +125329,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNMCRVR0R6Y201GXGGTGAWTW
         timestamp: 2026-04-07T16:35:23.003Z
+      - _ulid: 01KNMCS1J9KAGZ2YTMXZ6NBP2W
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-07T16:35:27.433Z
     examined_commit: 343472d01808d514accacb66d1bb86db4519b37f
     external_links: []
     lifecycle_state: open
@@ -125343,5 +125363,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-07T16:29:20.761Z
-    updated_at: 2026-04-07T16:35:21.473Z
+    updated_at: 2026-04-07T16:35:25.926Z
     notes: []
