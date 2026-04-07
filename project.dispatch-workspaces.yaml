@@ -39277,7 +39277,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-07T03:33:01.516Z
+      updated_at: 2026-04-07T03:33:36.616Z
     integration:
       status: merged
       detail: integration:merged
@@ -39293,18 +39293,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-07T03:23:25.414Z
-      last_reconciled_at: 2026-04-07T03:33:32.885Z
+      last_reconciled_at: 2026-04-07T03:33:36.616Z
       created_at: 2026-04-06T18:06:17.959Z
-      updated_at: 2026-04-07T03:33:32.885Z
+      updated_at: 2026-04-07T03:33:36.616Z
     workspace_id: dispatch-workspace-01KNDDJ3RK4K2HWH7TVY6F1V66
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 9d2241a2c40dde180fa6551bb9626fb278799152
-        last_seen_at: 2026-04-07T03:23:17.885Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-incremental-item-updates-01knddj3-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-incremental-item-updates/01knddj3
