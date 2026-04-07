@@ -13349,6 +13349,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-07T18:55:02.159Z
+  - _ulid: 01KNMMXZ58A6KSWAE88DWZY2VS
+    type: success
+    content: "Review blockers were resolved quickly once the cache contract was verified against
+      production-ready state: compare loader logic to the entity-cache domain contract, then replace
+      unrealistic cache-hit tests with behavior that matches how ready indexes and lazy detail tiers
+      actually work."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T18:57:57.416Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
