@@ -52,7 +52,7 @@ description: |
 spec_ref: "@daemon-meta-subdomain"
 plan_ref: "@plan-granular-cache-invalidation"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-cache-kspec-context"
@@ -63,6 +63,14 @@ tags:
   - cache
   - meta
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-04-07T03:10:03.772Z
+  commit: 564fc9691ffbb185333b969ebce501d0abb71013
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dev
 session_id: 01KNJXHF8KZ8D1KEP8M4NTVVJK
 history:
   - author: "@claude"
@@ -85,7 +93,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-07T02:50:37.346Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-04-07T03:10:03.772Z
+          commit: 564fc9691ffbb185333b969ebce501d0abb71013
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-04-07T03:10:03.777Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-07T03:10:03.778Z
 created_at: 2026-04-04T23:34:28.477Z
 started_at: 2026-04-07T02:50:37.345Z
+submitted_at: 2026-04-07T03:10:03.777Z
 todos: []
 automation: eligible

@@ -24999,7 +24999,7 @@
   type: task
   spec_ref: "@daemon-meta-subdomain"
   plan_ref: "@plan-granular-cache-invalidation"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-cache-kspec-context"
@@ -25012,6 +25012,7 @@
   todos_count: 0
   created_at: 2026-04-04T23:34:28.477Z
   started_at: 2026-04-07T02:50:37.345Z
+  submitted_at: 2026-04-07T03:10:03.777Z
   automation: eligible
 - _ulid: 01KNDDJ4PD7MDPS1RB53K0QZFG
   slugs:
