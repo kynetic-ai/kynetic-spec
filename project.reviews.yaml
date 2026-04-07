@@ -124734,6 +124734,18 @@ reviews:
         required: true
         created_at: 2026-04-07T08:18:56.611Z
         completed_at: 2026-04-07T08:18:56.611Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: The revised COMMAND_CACHE_DOMAINS section is closer, but it still misses real loader
+          dependencies in current handlers. item list requires reviews via buildIndexes(), and plan
+          list requires tasks for its summary output, so the current mapping is still not safe
+          enough to implement directly.
+        name: Task executability
+        required: true
+        created_at: 2026-04-07T08:18:56.542Z
+        completed_at: 2026-04-07T08:18:56.542Z
     events:
       - _ulid: 01KNKGB6VD6CJ9NQ0VD5GWMR06
         actor: "@claude"
@@ -124762,6 +124774,13 @@ reviews:
           status: pass
           name: Behavioral purity
         timestamp: 2026-04-07T08:19:00.155Z
+      - _ulid: 01KNKGC1Y5QEWGYXH407R5Z7FS
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: Task executability
+        timestamp: 2026-04-07T08:19:01.701Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -124796,5 +124815,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-07T08:18:33.965Z
-    updated_at: 2026-04-07T08:18:56.611Z
+    updated_at: 2026-04-07T08:18:56.542Z
     notes: []
