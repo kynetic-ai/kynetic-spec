@@ -39290,7 +39290,7 @@ workspaces:
         head: 89a85471696747b54a3759286576ba49873261f7
         last_seen_at: 2026-04-06T19:26:08.824Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-incremental-item-updates-01knddj3
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 86cb6380b29cd12f94708aa18ab2603da5c54af7
     bootstrap:
       status: succeeded
@@ -39381,7 +39381,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-07T02:26:21.701Z
+      updated_at: 2026-04-07T02:26:28.947Z
     integration:
       status: pending
       detail: null
@@ -39396,10 +39396,10 @@ workspaces:
     task_slug: task-incremental-session-updates
     timestamps:
       closed_at: null
-      last_active_at: 2026-04-07T02:19:21.824Z
-      last_reconciled_at: 2026-04-07T02:26:21.701Z
+      last_active_at: 2026-04-07T02:26:28.947Z
+      last_reconciled_at: 2026-04-07T02:26:28.947Z
       created_at: 2026-04-06T18:26:44.881Z
-      updated_at: 2026-04-07T02:26:25.576Z
+      updated_at: 2026-04-07T02:26:28.947Z
     workspace_id: dispatch-workspace-01KNDDJ42341SCDJN6VKDV1518
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
