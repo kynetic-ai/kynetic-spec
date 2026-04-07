@@ -40147,12 +40147,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-07T05:35:08.466Z
+      updated_at: 2026-04-07T05:35:17.925Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-07T05:35:08.466Z
+      updated_at: 2026-04-07T05:35:17.925Z
     integration:
       status: pending
       detail: null
@@ -40160,26 +40160,31 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-granular-cache-invalidation/01kndbmk
       target_commit: 8540fb7cfec2910bab762a7c1c8bfc1517466d3b
-      updated_at: 2026-04-07T05:35:08.466Z
-    lifecycle_state: ready
+      updated_at: 2026-04-07T05:35:17.925Z
+    lifecycle_state: integrating
     resolved_base_branch: plan/plan-granular-cache-invalidation/01kndbmk
     task_ref: "@01KNDDJ4PD7MDPS1RB53K0QZFG"
     task_slug: task-writethrough-incremental-alignment
     timestamps:
       closed_at: null
       last_active_at: 2026-04-07T05:21:55.491Z
-      last_reconciled_at: 2026-04-07T05:35:08.466Z
+      last_reconciled_at: 2026-04-07T05:35:17.925Z
       created_at: 2026-04-07T04:53:25.994Z
-      updated_at: 2026-04-07T05:35:08.466Z
+      updated_at: 2026-04-07T05:35:17.925Z
     workspace_id: dispatch-workspace-01KNDDJ4PD7MDPS1RB53K0QZFG
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: fee4f128f4c1a3d24a69690d1ae11fbfa6154991
+        last_seen_at: 2026-04-07T05:35:17.925Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-writethrough-incremental-alignment-01knddj4-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-writethrough-incremental-alignment/01knddj4
-        head: 2c9267a1925319c10a2571e224cff060caf50007
-        last_seen_at: 2026-04-07T05:21:51.546Z
+        head: fee4f128f4c1a3d24a69690d1ae11fbfa6154991
+        last_seen_at: 2026-04-07T05:35:17.925Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-writethrough-incremental-alignment-01knddj4
   - active_role: null
     base_branch_point: dfe2138f1545b01c3147f5f425dc3ef7cff403b1
