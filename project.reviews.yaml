@@ -125649,6 +125649,20 @@ reviews:
         required: true
         created_at: 2026-04-07T17:10:51.087Z
         completed_at: 2026-04-07T17:10:51.087Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: entity-cache source, route cache types, daemon cache/read-path/triage tests.
+          Commands run: git show, git diff, kspec task get, kspec review get, kspec item get, grep
+          AC annotations, kspec validate, npm test, git rev-parse. Claims verified: history retained
+          on full load and hinted incremental update; AC annotated tests exist; full suite passes.
+          Categories searched: correctness, test quality, integration, edge cases, type-surface
+          regressions."
+        name: review evidence
+        required: false
+        created_at: 2026-04-07T17:11:58.895Z
+        completed_at: 2026-04-07T17:11:58.895Z
     events:
       - _ulid: 01KNMEHZTBV9FBWJSEV5SB3J81
         actor: Jacob Chapel
@@ -125677,6 +125691,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-04-07T17:10:51.979Z
+      - _ulid: 01KNMEVZ3QG288GZBMMRTRQKHJ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence
+        timestamp: 2026-04-07T17:12:00.376Z
     examined_commit: 1863143d325deb941bc57cba3f161d36100a1be3
     external_links: []
     lifecycle_state: open
@@ -125689,5 +125710,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-07T17:06:33.420Z
-    updated_at: 2026-04-07T17:10:51.087Z
+    updated_at: 2026-04-07T17:11:58.895Z
     notes: []
