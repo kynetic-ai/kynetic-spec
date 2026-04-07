@@ -125308,6 +125308,22 @@ reviews:
         runner: kspec
         created_at: 2026-04-07T16:35:25.926Z
         completed_at: 2026-04-07T16:35:25.926Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Ran npm test on snapshot 343472d01808d514accacb66d1bb86db4519b37f; full suite reported
+          2078 passed and 2 failed. Failures were deterministic import errors in
+          tests/daemon-read-path.test.ts and tests/daemon-triage-write-through.test.ts against
+          missing dist/daemon modules, reproduced with npm test -- tests/daemon-read-path.test.ts
+          tests/daemon-triage-write-through.test.ts --fresh. Because this snapshot exactly matches
+          the integration target tip and the reviewed task only changed kspec-meta, I treated them
+          as pre-existing and filed follow-up task @01KNMCPT.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-07T16:36:19.188Z
+        completed_at: 2026-04-07T16:36:19.188Z
     events:
       - _ulid: 01KNMCDVFSYSRSSMHTCK5EF8AQ
         actor: Jacob Chapel
@@ -125343,6 +125359,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNMCS4HEQ2SHX3VA6KHERNER
         timestamp: 2026-04-07T16:35:32.069Z
+      - _ulid: 01KNMCTMYRT4NQBAFF736XF8YB
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-07T16:36:20.056Z
     examined_commit: 343472d01808d514accacb66d1bb86db4519b37f
     external_links: []
     lifecycle_state: open
@@ -125387,5 +125410,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-07T16:29:20.761Z
-    updated_at: 2026-04-07T16:35:30.478Z
+    updated_at: 2026-04-07T16:36:19.188Z
     notes: []
