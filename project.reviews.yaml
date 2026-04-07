@@ -123464,6 +123464,13 @@ reviews:
           status: pass
           name: review-evidence
         timestamp: 2026-04-07T05:18:48.268Z
+      - _ulid: 01KNK624A4J889ZSGJF3RR64BE
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNK623FMKDWD18MWFWFZQRQ0
+        timestamp: 2026-04-07T05:18:50.692Z
     examined_commit: 2c9267a1925319c10a2571e224cff060caf50007
     external_links: []
     lifecycle_state: open
@@ -123473,8 +123480,28 @@ reviews:
       content_hash: ""
       ref: "@01KNDDJ4PD7MDPS1RB53K0QZFG"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNK623FMKDWD18MWFWFZQRQ0
+        anchor:
+          type: code
+          commit: 2c9267a1925319c10a2571e224cff060caf50007
+          line_end: 1649
+          line_start: 1574
+          path: src/daemon/entity-cache.ts
+          side: head
+        entries:
+          - _ulid: 01KNK623FMC2DJZPTSAA6EF84Y
+            author: Jacob Chapel
+            body: "Concurrent hinted task write-throughs can lose one patch. This incremental path clones the
+              current tasks index/detail maps and writes them back after awaited disk reads, so
+              two  calls can start from the same snapshot and the later assignment overwrites the
+              earlier one. I reproduced it with  using : task B updated, but task A stayed stale
+              ().  now triggers this pattern for multi-task , so the cache can serve stale task data
+              until a later watcher/full reload. Please serialize hinted task write-throughs or
+              reuse the existing domain reload dedup path, and add a concurrency regression test."
+            created_at: 2026-04-07T05:18:49.844Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-07T05:09:07.555Z
-    updated_at: 2026-04-07T05:18:47.449Z
+    updated_at: 2026-04-07T05:18:49.844Z
     notes: []
