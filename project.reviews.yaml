@@ -125467,7 +125467,19 @@ reviews:
     slugs: []
     title: Review task-fix-daemon-test-dist-imports
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed via npm test after standard runner rebuilt dist. Result: 2085/2085 suites passed,
+          7595 passed, 5 skipped, duration 2901.1s. Full log:
+          /tmp/kspec-test-cache/01KNMD0EY5F3A1TFE2CGRXSS5W/d7ceb5577c6b0984.log"
+        name: npm test
+        required: true
+        runner: test-runner
+        created_at: 2026-04-07T16:44:41.769Z
+        completed_at: 2026-04-07T16:44:41.769Z
     events:
       - _ulid: 01KNMD1NRXTVPS56CPJATBRDCV
         actor: Jacob Chapel
@@ -125482,6 +125494,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-07T16:40:35.308Z
+      - _ulid: 01KNMD9ZST5HHZDR5DDV1AAX7K
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-07T16:44:42.682Z
     examined_commit: 5ed91dd971c7633e2a34b93683183a0f0f0a77da
     external_links: []
     lifecycle_state: open
@@ -125494,5 +125513,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-07T16:40:10.269Z
-    updated_at: 2026-04-07T16:40:34.359Z
+    updated_at: 2026-04-07T16:44:41.769Z
     notes: []
