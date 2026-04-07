@@ -1,1 +1,12 @@
-notes: []
+notes:
+  - _ulid: 01KNMHHS1Y2BB5Z84C76J81EX3
+    content: "Approach: mirror the existing cache-aware task loader pattern in src/parser/yaml.ts by
+      checking AsyncLocalStorage entity cache context before the disk-backed loadAllItems() path.
+      Edge cases: no cache context, non-ready items domain, and preserving direct CLI disk reads
+      outside daemon execution. Test plan: add behavioral parser tests for cache hit returning
+      getAllItemDetails() and cache miss falling through to manifest/module parsing. Covers
+      @daemon-command-api ac-read-cache-serving and ac-no-cache-outside-daemon for the items domain
+      path."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T17:58:52.222Z
