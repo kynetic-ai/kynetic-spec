@@ -125761,6 +125761,17 @@ reviews:
         runner: npm-test
         created_at: 2026-04-07T17:25:24.299Z
         completed_at: 2026-04-07T17:25:24.299Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test passed after readiness rebuild: 2087 suites passed, 7598 tests passed, 5
+          skipped, 7603 total. Earlier bootstrap failure did not reproduce on rerun."
+        name: full-test-suite
+        required: true
+        runner: npm-test
+        created_at: 2026-04-07T17:25:26.716Z
+        completed_at: 2026-04-07T17:25:26.716Z
     events:
       - _ulid: 01KNMF6AV8KRRFCSTDW2QNFFPJ
         actor: Jacob Chapel
@@ -125789,6 +125800,13 @@ reviews:
           status: pass
           name: targeted-tests
         timestamp: 2026-04-07T17:25:25.165Z
+      - _ulid: 01KNMFMKCQ88455TBGR6KAPMZ6
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: full-test-suite
+        timestamp: 2026-04-07T17:25:27.575Z
     examined_commit: f8e9807cb5302a289fb1ebb14e97a5f0d930fed1
     external_links: []
     lifecycle_state: open
@@ -125801,5 +125819,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-07T17:17:40.073Z
-    updated_at: 2026-04-07T17:25:24.299Z
+    updated_at: 2026-04-07T17:25:26.716Z
     notes: []
