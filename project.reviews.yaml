@@ -126697,6 +126697,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-04-07T18:52:39.282Z
+      - _ulid: 01KNMMMCTYGCCKMTF1WCE80Y8M
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNMMMBAV13W6NBVVYK4JB2HW
+        timestamp: 2026-04-07T18:52:43.742Z
     examined_commit: 7e7d977f1ee9fa6b316d425babd9ba06eab87328
     external_links: []
     lifecycle_state: open
@@ -126706,8 +126713,29 @@ reviews:
       content_hash: ""
       ref: "@01KNMBPDRSN3PXZ81CHXBWXKTN"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNMMMBAV13W6NBVVYK4JB2HW
+        anchor:
+          type: code
+          commit: 7e7d977f1ee9fa6b316d425babd9ba06eab87328
+          line_end: 198
+          line_start: 193
+          path: src/parser/plans.ts
+          side: head
+        entries:
+          - _ulid: 01KNMMMBAV7N3PR4E8XR3D21PK
+            author: Jacob Chapel
+            body: "This cache-hit branch can return an incomplete plan list. The plans domain is intentionally
+              index-only on initial load, and individual plan details are populated on demand, so a
+              ready domain may have only some details cached. Here the loader maps the full index
+              through getPlanDetail() and returns any non-null subset as soon as at least one detail
+              exists. I reproduced that state against the submitted code with two plans on disk and
+              only one cached detail: loadPlans() returned 1 plan from cache while disk held 2.
+              List-style callers of loadPlans() will silently drop uncached plans instead of falling
+              back to disk unless the detail tier is complete."
+            created_at: 2026-04-07T18:52:42.204Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-07T18:47:17.189Z
-    updated_at: 2026-04-07T18:52:37.772Z
+    updated_at: 2026-04-07T18:52:42.204Z
     notes: []
