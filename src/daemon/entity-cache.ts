@@ -1483,7 +1483,7 @@ export class ProjectEntityCache {
   }
 
   async refreshMetaShadowInfo(): Promise<void> {
-    await this.reloadMetaSubdomains(["shadow"]);
+    await this.loadMetaDomain(["shadow"]);
   }
 
   private async tryIncrementalMetaUpdate(
@@ -1518,7 +1518,7 @@ export class ProjectEntityCache {
       return false;
     }
 
-    await this.reloadMetaSubdomains([...targets], cycle);
+    await this.loadMetaDomain([...targets], cycle);
     return true;
   }
 
@@ -1712,6 +1712,7 @@ export class ProjectEntityCache {
     return { ...summary, status: "stalled" };
   }
 
+<<<<<<< HEAD
   private async tryIncrementalItemUpdate(
     changes: PendingDomainChange[],
     cycle?: ReloadCycle,
@@ -1844,7 +1845,6 @@ export class ProjectEntityCache {
     if (this.disposed) return;
 
     this.enqueueMetaReload(subdomains, cycle);
-
     const existing = this.inFlightReloads.get("meta");
     if (existing) {
       await existing;
@@ -1867,7 +1867,6 @@ export class ProjectEntityCache {
           await this.doLoadMetaSubdomains(nextReload.subdomains, nextReload.cycle);
           if (this.disposed) return;
         }
-
         this.meta.lastError = undefined;
         if (this.hasLoadedAllMetaSubdomains()) {
           this.meta.state = "ready";
@@ -1877,6 +1876,7 @@ export class ProjectEntityCache {
         } else if (previousState === "ready") {
           this.meta.state = "ready";
         }
+      } catch (err) {
       } catch (err) {
         if (!this.disposed) {
           this.meta.state = "degraded";
@@ -1928,7 +1928,6 @@ export class ProjectEntityCache {
     this.pendingMetaReloadCycle = undefined;
     return { subdomains, cycle };
   }
-
   private async doLoadMetaSubdomains(
     subdomains: MetaSubdomain[],
     cycle?: ReloadCycle,
