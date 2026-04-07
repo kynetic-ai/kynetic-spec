@@ -126581,6 +126581,12 @@ reviews:
           from: draft
           to: closed
         timestamp: 2026-04-07T18:41:56.413Z
+      - _ulid: 01KNMMSM671B21HTM7EXBKA9BS
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNMM01F1JJ8ERFPCYR7DDX05
+        timestamp: 2026-04-07T18:55:35.111Z
     examined_commit: 83d5ca14bff1114bc7729d90080a7c424973a446
     external_links: []
     lifecycle_state: closed
@@ -126647,6 +126653,13 @@ reviews:
               does not satisfy @daemon-command-api ac-read-cache-serving for triage and the new test
               only passes because it mocks a cache state that production does not create.
             created_at: 2026-04-07T18:41:36.738Z
+          - _ulid: 01KNMMSKAXJFXDYJ21GYENM5ND
+            author: Jacob Chapel
+            body: 'Fixed: replaced the unrealistic triage cache test with a realistic ready-index-only scenario
+              that matches the cache contract (triage details stay lazy after loadDomain("triage")).
+              Verified with tests/parser/entity-cache-context.test.ts,
+              tests/daemon-entity-cache.test.ts, tests/daemon-read-path.test.ts, and full npm test.'
+            created_at: 2026-04-07T18:55:34.237Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -126657,7 +126670,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-07T18:41:56.413Z
     created_at: 2026-04-07T18:35:24.994Z
-    updated_at: 2026-04-07T18:41:56.413Z
+    updated_at: 2026-04-07T18:55:34.237Z
     notes: []
   - _ulid: 01KNMMADY56C0YNMGGTQBCDG38
     slugs: []
