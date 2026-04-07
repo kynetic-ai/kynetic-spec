@@ -13,3 +13,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-07T18:24:31.173Z
+  - _ulid: 01KNMKDHFMN99P8F8J77MR2CNE
+    content: Implemented cache-backed inbox and triage reads in src/parser/yaml.ts. loadInboxItems() now
+      returns cache.getInboxIndex() when the inbox domain is ready, and loadTriageRecords() now
+      resolves full records from the triage detail tier when the triage domain is ready with
+      complete detail coverage, otherwise it falls through to disk. Verified with npm test -- --run
+      tests/parser/entity-cache-context.test.ts, npm test, and kspec validate (warnings only from
+      existing repo debt).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T18:31:30.549Z
