@@ -126876,6 +126876,16 @@ reviews:
         runner: npm
         created_at: 2026-04-07T19:11:25.569Z
         completed_at: 2026-04-07T19:11:25.569Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm test -- --run tests/daemon-read-path.test.ts => 5 suites passed, 26 tests passed.
+        name: daemon read-path tests
+        required: true
+        runner: npm
+        created_at: 2026-04-07T19:11:28.202Z
+        completed_at: 2026-04-07T19:11:28.202Z
     events:
       - _ulid: 01KNMN3TR06ERBQVDQFH5CBRWS
         actor: Jacob Chapel
@@ -126911,6 +126921,13 @@ reviews:
           status: pass
           name: parser cache tests
         timestamp: 2026-04-07T19:11:26.549Z
+      - _ulid: 01KNMNPQXBQJJZJ96SST8T6F6B
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: daemon read-path tests
+        timestamp: 2026-04-07T19:11:29.196Z
     examined_commit: 86d0dbc3ac5abcffc965a0c0cb55fa5d9ef3f381
     external_links: []
     lifecycle_state: open
@@ -126951,5 +126968,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-07T19:01:09.504Z
-    updated_at: 2026-04-07T19:11:25.569Z
+    updated_at: 2026-04-07T19:11:28.202Z
     notes: []
