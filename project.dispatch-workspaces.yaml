@@ -39785,18 +39785,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/stabilize-parser-integration-test-in-detached-review-worktrees/01knjya2
-    canonical_branch_head: 564fc9691ffbb185333b969ebce501d0abb71013
+    canonical_branch_head: 6d5dc401948ad040abc126f208241b4694c3e881
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-07T03:45:20.833Z
+      updated_at: 2026-04-07T03:54:37.402Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-07T03:45:26.432Z
+      updated_at: 2026-04-07T03:54:37.402Z
     integration:
       status: pending
       detail: null
@@ -39804,7 +39804,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 564fc9691ffbb185333b969ebce501d0abb71013
-      updated_at: 2026-04-07T03:45:20.833Z
+      updated_at: 2026-04-07T03:54:37.402Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KNJYA2JZ6MGVY8QS55Y1AR09"
@@ -39812,9 +39812,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-07T03:45:26.432Z
-      last_reconciled_at: 2026-04-07T03:45:26.432Z
+      last_reconciled_at: 2026-04-07T03:54:37.402Z
       created_at: 2026-04-07T03:45:20.833Z
-      updated_at: 2026-04-07T03:45:26.432Z
+      updated_at: 2026-04-07T03:54:37.402Z
     workspace_id: dispatch-workspace-01KNJYA2JZ6MGVY8QS55Y1AR09
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
