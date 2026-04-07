@@ -1,0 +1,20 @@
+_ulid: 01KNN24YV6T3TPR7R1Y2CTH66C
+slugs: []
+title: Extend loadAllTasks to return history alongside task data
+type: task
+spec_ref: "@daemon-entity-cache"
+meta_ref: null
+plan_ref: "@plan-cache-aware-command-execution"
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - daemon
+  - cache
+  - performance
+vcs_refs: []
+created_at: 2026-04-07T22:48:57.957Z
+todos: []
+automation: eligible
