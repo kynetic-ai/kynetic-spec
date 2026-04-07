@@ -127893,6 +127893,12 @@ reviews:
         payload:
           thread_ulid: 01KNMVTTZ2B79TEYFSGSY6HV1A
         timestamp: 2026-04-07T21:17:37.940Z
+      - _ulid: 01KNMWYW80KYHCJVXJRM0HJ7Z0
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNMVV6QD992T0JYDKSDK3VG3
+        timestamp: 2026-04-07T21:18:15.809Z
     examined_commit: 6e37e6b9839a0d69b7aaadaa6f2b9c3f2ca74b24
     external_links: []
     lifecycle_state: closed
@@ -127963,6 +127969,8 @@ reviews:
               stderr payload under daemon execution.
             created_at: 2026-04-07T21:17:34.576Z
         kind: blocker
+        resolved_at: 2026-04-07T21:18:14.979Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KNMVWENYN00S1P27SGC4GS2H
         entries:
           - _ulid: 01KNMVWENYMKK31HD797QNA5S7
@@ -127998,5 +128006,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-07T20:59:44.949Z
     created_at: 2026-04-07T20:49:01.968Z
-    updated_at: 2026-04-07T21:17:37.057Z
+    updated_at: 2026-04-07T21:18:14.979Z
     notes: []
