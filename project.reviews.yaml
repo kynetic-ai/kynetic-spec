@@ -126593,6 +126593,12 @@ reviews:
         payload:
           thread_ulid: 01KNMKZCEC6E2W1JHHTZ3ZN99V
         timestamp: 2026-04-07T18:55:37.943Z
+      - _ulid: 01KNMMSSHCBJ1Q40DNMY6QDABV
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNMM01F1JJ8ERFPCYR7DDX05
+        timestamp: 2026-04-07T18:55:40.588Z
     examined_commit: 83d5ca14bff1114bc7729d90080a7c424973a446
     external_links: []
     lifecycle_state: closed
@@ -126669,6 +126675,8 @@ reviews:
               tests/daemon-entity-cache.test.ts, tests/daemon-read-path.test.ts, and full npm test.'
             created_at: 2026-04-07T18:55:34.237Z
         kind: blocker
+        resolved_at: 2026-04-07T18:55:39.666Z
+        resolved_by: Jacob Chapel
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -126678,7 +126686,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-07T18:41:56.413Z
     created_at: 2026-04-07T18:35:24.994Z
-    updated_at: 2026-04-07T18:55:37.010Z
+    updated_at: 2026-04-07T18:55:39.666Z
     notes: []
   - _ulid: 01KNMMADY56C0YNMGGTQBCDG38
     slugs: []
