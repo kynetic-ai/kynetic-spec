@@ -41,6 +41,7 @@ import type {
   CachedShadowInfo,
   CachedProjectConfig,
 } from "../dist/daemon/entity-cache.ts";
+import { createShadowSyncOnPullHandler } from "../dist/daemon/server.ts";
 import type { MetaContext } from "../dist/parser/meta.ts";
 import type { LoadedInboxItem, LoadedSpecItem, LoadedTask } from "../dist/parser/yaml.ts";
 import { ShadowSyncScheduler } from "../src/parser/shadow-sync-scheduler.js";
@@ -128,13 +129,12 @@ function makeTriageSummary(overrides: Partial<TriageIndexSummary> = {}): TriageI
   return {
     _ulid: TRIAGE_ULID,
     inbox_ref: INBOX_ULID,
+    item_snapshot: "Test inbox item for read path",
     status: "triaged",
     created_at: "2026-01-16T00:00:00Z",
-    action: "promote_task",
+    action: "promote",
     reasoning: "Looks actionable",
     decided_by: "test",
-    acted_at: "2026-01-17T00:00:00Z",
-    result_ref: TASK_ULID_1,
     evidence_refs: [],
     ...overrides,
   };
@@ -431,13 +431,12 @@ tasks_file: project.tasks.yaml
     `records:
   - _ulid: "${TRIAGE_ULID}"
     inbox_ref: "${INBOX_ULID}"
+    item_snapshot: "Test inbox item for read path"
     status: triaged
-    action: promote_task
+    action: promote
     reasoning: "Looks actionable"
     decided_by: test
     created_at: "2026-01-16T00:00:00Z"
-    acted_at: "2026-01-17T00:00:00Z"
-    result_ref: "${TASK_ULID_1}"
 `,
   );
 
@@ -522,6 +521,12 @@ describe("ac-no-per-request-sync: read routes serve from cache without git opera
     const { middleware } = projectContextMiddleware();
 
     app = new Elysia()
+      .resolve(({ set }) => ({
+        error: (status: number, body: unknown) => {
+          set.status = status;
+          return body;
+        },
+      }))
       .use(middleware)
       .use(createTasksRoutes({ pubsub, getEntityCache }))
       .use(createItemsRoutes({ getEntityCache }))
@@ -926,6 +931,21 @@ describe("ac-background-sync: background sync invalidates cache on pull", () => 
   }
 
   // AC: @daemon-read-path ac-background-sync
+  it("server shadow-sync pull handler reloads the full entity cache", async () => {
+    const cache = {
+      loadAll: vi.fn().mockResolvedValue(undefined),
+    };
+    const getEntityCache = vi.fn().mockReturnValue(cache);
+
+    const onPull = createShadowSyncOnPullHandler(syncTestDir, getEntityCache);
+
+    await onPull();
+
+    expect(getEntityCache).toHaveBeenCalledWith(syncTestDir);
+    expect(cache.loadAll).toHaveBeenCalledTimes(1);
+  });
+
+  // AC: @daemon-read-path ac-background-sync
   it("syncOnce invokes onPull callback after pulling remote changes", async () => {
     const worktreeDir = await setupSyncEnvironment();
     const { SHADOW_BRANCH_NAME } = await import("../src/parser/shadow.js");
@@ -1200,6 +1220,12 @@ describe("ac-write-routes-sync: write operations use standard commit path with c
     const { middleware } = projectContextMiddleware();
 
     app = new Elysia()
+      .resolve(({ set }) => ({
+        error: (status: number, body: unknown) => {
+          set.status = status;
+          return body;
+        },
+      }))
       .use(middleware)
       .use(createTasksRoutes({ pubsub, getEntityCache }))
       .use(createInboxRoutes({ pubsub, getEntityCache }));

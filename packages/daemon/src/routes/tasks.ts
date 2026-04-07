@@ -44,12 +44,25 @@ import { enumArrayUnion, enumUnion } from "./enum-utils.js";
 import { getRelatedSessionsForTask } from "./session-related.js";
 import { resolveRefTitle, resolveRefEntries } from "./ref-resolution.js";
 
-import type { EntityCacheAccessor } from "./entity-cache-types.js";
+import type { EntityCacheAccessor, WriteThroughHint } from "./entity-cache-types.js";
 import { wrapResponse } from "./response-envelope.js";
 
 interface TasksRouteOptions {
   pubsub: PubSubManager;
   getEntityCache?: EntityCacheAccessor;
+}
+
+function getTaskWriteThroughHint(task: LoadedTask): WriteThroughHint {
+  return { ulid: task._ulid };
+}
+
+function getSpecWriteThroughHint(task: LoadedTask, index: ReferenceIndex): WriteThroughHint | undefined {
+  if (!task.spec_ref) {
+    return undefined;
+  }
+
+  const resolved = index.resolve(task.spec_ref);
+  return resolved.ok ? { ulid: resolved.ulid } : undefined;
 }
 
 export function createTasksRoutes(options: TasksRouteOptions) {
@@ -504,7 +517,10 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           // modifies spec items (implementation status) as a side effect of task transitions.
           const startCache = getEntityCache?.(projectContext.path);
           if (startCache) {
-            await Promise.all([startCache.writeThrough("tasks"), startCache.writeThrough("items")]);
+            await Promise.all([
+              startCache.writeThrough("tasks", getTaskWriteThroughHint(updatedTask)),
+              startCache.writeThrough("items", getSpecWriteThroughHint(updatedTask, index)),
+            ]);
           }
 
           // AC: @api-contract ac-6, @trait-api-endpoint ac-5 - WebSocket broadcast
@@ -580,7 +596,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           // AC: @daemon-entity-cache ac-write-through — update cache before response
           const noteCache = getEntityCache?.(projectContext.path);
           if (noteCache) {
-            await noteCache.writeThrough("tasks");
+            await noteCache.writeThrough("tasks", getTaskWriteThroughHint(result.task));
           }
 
           // AC: @api-contract ac-7 - WebSocket broadcast
@@ -676,8 +692,8 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           const submitCache = getEntityCache?.(projectContext.path);
           if (submitCache) {
             await Promise.all([
-              submitCache.writeThrough("tasks"),
-              submitCache.writeThrough("items"),
+              submitCache.writeThrough("tasks", getTaskWriteThroughHint(updatedTask)),
+              submitCache.writeThrough("items", getSpecWriteThroughHint(updatedTask, index)),
             ]);
           }
 
@@ -756,8 +772,8 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           const completeCache = getEntityCache?.(projectContext.path);
           if (completeCache) {
             await Promise.all([
-              completeCache.writeThrough("tasks"),
-              completeCache.writeThrough("items"),
+              completeCache.writeThrough("tasks", getTaskWriteThroughHint(updatedTask)),
+              completeCache.writeThrough("items", getSpecWriteThroughHint(updatedTask, index)),
             ]);
           }
 
@@ -839,7 +855,10 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           // modifies spec items (implementation status) as a side effect of task transitions.
           const blockCache = getEntityCache?.(projectContext.path);
           if (blockCache) {
-            await Promise.all([blockCache.writeThrough("tasks"), blockCache.writeThrough("items")]);
+            await Promise.all([
+              blockCache.writeThrough("tasks", getTaskWriteThroughHint(updatedTask)),
+              blockCache.writeThrough("items", getSpecWriteThroughHint(updatedTask, index)),
+            ]);
           }
 
           // AC: @ui-api-aggregation ac-4 - Include title and old/new status

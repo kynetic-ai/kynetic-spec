@@ -53,6 +53,10 @@ export interface ServerOptions {
   webUiDir?: string; // Path to web UI build directory (default: auto-detect)
 }
 
+interface ShadowPullReloadableCache {
+  loadAll(): Promise<void>;
+}
+
 function hasWebUiIndex(dir: string | undefined): dir is string {
   return Boolean(dir && existsSync(join(dir, "index.html")));
 }
@@ -89,6 +93,19 @@ export function resolveWebUiPath(webUiDir?: string): string | null {
   }
 
   return null;
+}
+
+export function createShadowSyncOnPullHandler(
+  startupProjectPath: string | undefined,
+  getEntityCache: (projectPath: string) => ShadowPullReloadableCache | undefined,
+): () => Promise<void> {
+  return async () => {
+    if (!startupProjectPath) return;
+    const cache = getEntityCache(startupProjectPath);
+    if (!cache) return;
+    console.log("[daemon] Shadow sync pulled data — reloading entity cache");
+    await cache.loadAll();
+  };
 }
 
 // WebSocket pub/sub and heartbeat managers
@@ -664,13 +681,10 @@ export async function createServer(options: ServerOptions) {
           },
           pubsub: pubsubManager,
           // AC: @daemon-read-path ac-background-sync — invalidate entity cache when background sync pulls new data
-          onPull: async () => {
-            if (!startupProjectPath) return;
-            const cache = entityCacheModule.getEntityCache(startupProjectPath);
-            if (!cache) return;
-            console.log("[daemon] Shadow sync pulled data — refreshing cached shadow info");
-            await cache.refreshMetaShadowInfo();
-          },
+          onPull: createShadowSyncOnPullHandler(
+            startupProjectPath,
+            entityCacheModule.getEntityCache,
+          ),
         });
         shadowSyncScheduler.start();
       }
