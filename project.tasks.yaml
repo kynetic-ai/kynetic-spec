@@ -25419,3 +25419,19 @@
   todos_count: 0
   created_at: 2026-04-06T18:08:32.488Z
   automation: eligible
+- _ulid: 01KNJYA2JZ6MGVY8QS55Y1AR09
+  slugs: []
+  title: Stabilize parser integration test in detached review worktrees
+  type: bug
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - test
+    - parser
+    - infra
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-07T03:03:22.463Z
+  automation: eligible
