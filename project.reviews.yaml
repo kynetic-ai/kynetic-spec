@@ -122321,6 +122321,17 @@ reviews:
         runner: npm
         created_at: 2026-04-07T03:30:28.212Z
         completed_at: 2026-04-07T03:30:28.212Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "NODE_ENV=development npm test passed after build bootstrap: 2070 suites, 7541 tests
+          passed, 5 skipped, 0 failures."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-07T03:30:30.912Z
+        completed_at: 2026-04-07T03:30:30.912Z
     events:
       - _ulid: 01KNJZFZAF99BQM2BS8WAW2BQJ
         actor: Jacob Chapel
@@ -122342,6 +122353,13 @@ reviews:
           status: pass
           name: daemon cache test
         timestamp: 2026-04-07T03:30:29.134Z
+      - _ulid: 01KNJZVSS9DF82ACKQKDJRQHMJ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-07T03:30:31.849Z
     examined_commit: 9d2241a2c40dde180fa6551bb9626fb278799152
     external_links: []
     lifecycle_state: draft
@@ -122354,5 +122372,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-07T03:24:04.304Z
-    updated_at: 2026-04-07T03:30:28.212Z
+    updated_at: 2026-04-07T03:30:30.912Z
     notes: []
