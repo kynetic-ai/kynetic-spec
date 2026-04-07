@@ -1,1 +1,13 @@
-notes: []
+notes:
+  - _ulid: 01KNMEHGDM1A69867Z01THVDYV
+    content: "Approach: mirror specDirOverrideStorage in src/parser/yaml.ts with a dedicated
+      AsyncLocalStorage for entity cache context, then thread it into daemon command execution by
+      nesting runWithEntityCache around the existing runWithoutSpecDirOverride(parseAsync) call.
+      Edge cases: nested async boundaries during parseAsync, direct CLI execution must see no store,
+      and the daemon wrapper must pass the per-project cache accessor without coupling parser
+      helpers to daemon internals beyond the shared accessor type. Test plan: add parser-level
+      storage tests for inside/outside visibility and daemon route coverage that command execution
+      installs cache context only within the async command chain."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T17:06:17.652Z
