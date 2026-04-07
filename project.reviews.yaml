@@ -127881,6 +127881,12 @@ reviews:
         payload:
           thread_ulid: 01KNMVTTZ2B79TEYFSGSY6HV1A
         timestamp: 2026-04-07T21:17:32.949Z
+      - _ulid: 01KNMWXMTBFFMBTNPXY9153MBR
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNMVV6QD992T0JYDKSDK3VG3
+        timestamp: 2026-04-07T21:17:35.435Z
     examined_commit: 6e37e6b9839a0d69b7aaadaa6f2b9c3f2ca74b24
     external_links: []
     lifecycle_state: closed
@@ -127941,6 +127947,13 @@ reviews:
               state as well and add coverage for a daemon-executed command that uses the
               helper-based error path."
             created_at: 2026-04-07T20:58:46.894Z
+          - _ulid: 01KNMWXKZG1NR45YD87DJ5R2YY
+            author: Jacob Chapel
+            body: Fixed in 2242eedd6. review command handlers now rethrow the daemon's intercepted process-exit
+              sentinel instead of wrapping it in a second error payload, and
+              tests/daemon-command-api.test.ts now verifies review get --json returns a single JSON
+              stderr payload under daemon execution.
+            created_at: 2026-04-07T21:17:34.576Z
         kind: blocker
       - _ulid: 01KNMVWENYN00S1P27SGC4GS2H
         entries:
@@ -127977,5 +127990,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-07T20:59:44.949Z
     created_at: 2026-04-07T20:49:01.968Z
-    updated_at: 2026-04-07T21:17:32.119Z
+    updated_at: 2026-04-07T21:17:34.576Z
     notes: []
