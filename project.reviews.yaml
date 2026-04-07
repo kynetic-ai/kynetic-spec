@@ -123982,6 +123982,12 @@ reviews:
         payload:
           thread_ulid: 01KNK915CWN5YX71NKKQZH3XKY
         timestamp: 2026-04-07T06:24:33.378Z
+      - _ulid: 01KNK9TGXV2ATFSXAXA852ECG0
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNK9131KW1T39RBRRFBAKGJB
+        timestamp: 2026-04-07T06:24:35.771Z
     examined_commit: 6391877ed741b6f9c2a5ebbe19de3aee5f6de5a6
     external_links: []
     lifecycle_state: closed
@@ -124018,6 +124024,8 @@ reviews:
               path uses the incremental task patch instead of a full reload."
             created_at: 2026-04-07T06:24:20.686Z
         kind: blocker
+        resolved_at: 2026-04-07T06:24:34.939Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KNK915CWN5YX71NKKQZH3XKY
         entries:
           - _ulid: 01KNK915CWYK6CMW1YZBXZ0XHG
@@ -124050,5 +124058,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-07T06:11:01.047Z
     created_at: 2026-04-07T06:10:21.358Z
-    updated_at: 2026-04-07T06:24:32.560Z
+    updated_at: 2026-04-07T06:24:34.939Z
     notes: []
