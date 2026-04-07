@@ -127817,6 +127817,13 @@ reviews:
           status: pass
           name: daemon-command-api tests
         timestamp: 2026-04-07T20:59:26.172Z
+      - _ulid: 01KNMVWFNM8BG9WGFMAVZQJ26N
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNMVWENYN00S1P27SGC4GS2H
+        timestamp: 2026-04-07T20:59:28.820Z
     examined_commit: 6e37e6b9839a0d69b7aaadaa6f2b9c3f2ca74b24
     external_links: []
     lifecycle_state: open
@@ -127871,7 +127878,33 @@ reviews:
               helper-based error path."
             created_at: 2026-04-07T20:58:46.894Z
         kind: blocker
+      - _ulid: 01KNMVWENYN00S1P27SGC4GS2H
+        entries:
+          - _ulid: 01KNMVWENYMKK31HD797QNA5S7
+            author: Jacob Chapel
+            body: >-
+              Evidence log:
+
+              Files read: packages/daemon/src/routes/command.ts, src/cli/output.ts,
+              src/cli/index.ts, src/parser/yaml.ts, src/cli/commands/review.ts,
+              src/cli/commands/task.ts, src/cli/commands/plan.ts, tests/daemon-command-api.test.ts.
+
+              Commands run: kspec task get @01KNMBPEM8EBQPTWHSKP7M5JT4; kspec review for-task
+              @01KNMBPEM8EBQPTWHSKP7M5JT4; kspec review get @01KNMS23WYFPTZ5CFVH2FWDPY3; kspec item
+              get @daemon-concurrent-reads; kspec validate; rg for AC annotations/usages; npm test
+              -- tests/daemon-command-api.test.ts --fresh; npm test -- --fresh; direct repro via
+              runWithOutputState() for --json review get @does-not-exist.
+
+              Claims verified: concurrent-read daemon tests pass; full repo suite passes;
+              async-local output state is active in executeCommand(); helper-based JSON-mode
+              detection is still global and misbehaves under daemon-style execution.
+
+              Categories searched: correctness, edge cases, error handling, test quality,
+              integration. Finding: structured-output regression on helper-based error paths under
+              daemon execution.
+            created_at: 2026-04-07T20:59:27.806Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-07T20:49:01.968Z
-    updated_at: 2026-04-07T20:59:25.309Z
+    updated_at: 2026-04-07T20:59:27.806Z
     notes: []
