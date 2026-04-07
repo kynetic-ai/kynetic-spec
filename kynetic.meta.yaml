@@ -13366,8 +13366,11 @@ observations:
       a fix-cycle resubmission. Direct-mode fallback should be automatic or the daemon path should
       fail closed with a seamless retry.
     author: Jacob Chapel
-    resolution: null
-    resolved: false
+    resolution: Duplicate of existing daemon-routing friction observations @01KNK4JR and @01KNK66C about
+      daemon-routed task/review commands and task submission timing out in dispatch sessions.
+    resolved: true
+    resolved_at: 2026-04-07T19:16:10.115Z
+    resolved_by: Jacob Chapel
     created_at: 2026-04-07T19:15:07.080Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
