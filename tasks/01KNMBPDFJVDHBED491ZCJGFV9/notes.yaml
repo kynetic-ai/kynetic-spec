@@ -1,1 +1,15 @@
-notes: []
+notes:
+  - _ulid: 01KNMK0QY54ZCF8SPQ86E4S4FT
+    content: "Approach: reuse the existing getEntityCacheContext preamble pattern from
+      initContext/loadAllItems and add cache-backed fast paths in src/parser/yaml.ts for
+      loadInboxItems() and loadTriageRecords(). Inbox can return cache.getInboxIndex() directly
+      because that tier already stores full LoadedInboxItem records. Triage will aggregate full
+      records from cache detail lookups keyed by the triage index so we only return cache-backed
+      data when the triage domain is ready and every indexed record has detail data. Edge cases: no
+      cache context, domain not ready, missing inbox file on disk, triage detail/index mismatch, and
+      preserving current parse-error fallback behavior. Test plan: extend parser
+      entity-cache-context coverage with behavioral hit/miss tests for inbox and triage loaders,
+      including the non-ready and missing-detail fall-through paths."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T18:24:31.173Z
