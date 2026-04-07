@@ -122476,6 +122476,20 @@ reviews:
         required: false
         created_at: 2026-04-07T03:50:08.180Z
         completed_at: 2026-04-07T03:50:08.180Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Manual repro using a temporary copy of tests/fixtures/multi-dir plus setupShadowDetection
+          equivalent: pause loadMetaManifestSubdomain(), trigger manifest invalidation, then call
+          refreshMetaShadowInfo() while meta is in flight. Result: {manifestCalls:1, shadowCalls:0,
+          metaState:ready}. The shadow refresh request was swallowed instead of running after the
+          manifest reload."
+        name: meta-subdomain-overlap-repro
+        required: true
+        runner: node
+        created_at: 2026-04-07T03:50:16.745Z
+        completed_at: 2026-04-07T03:50:16.745Z
     events:
       - _ulid: 01KNK0YHWXDS5Y6T0QNZ6YC5XW
         actor: Jacob Chapel
@@ -122511,6 +122525,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNK0ZSEVW75NVD90AX92P2VG
         timestamp: 2026-04-07T03:50:12.527Z
+      - _ulid: 01KNK1008XFBMNGJ7EB2HBHK2W
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: meta-subdomain-overlap-repro
+        timestamp: 2026-04-07T03:50:18.142Z
     examined_commit: 7f8b957f999ba7f29846b7669ed6b8da0e8f67c8
     external_links: []
     lifecycle_state: open
@@ -122543,5 +122564,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-07T03:49:30.653Z
-    updated_at: 2026-04-07T03:50:11.163Z
+    updated_at: 2026-04-07T03:50:16.745Z
     notes: []
