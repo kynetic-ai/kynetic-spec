@@ -13330,6 +13330,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-07T18:44:41.502Z
+  - _ulid: 01KNMMRJMWPKT6EQA63W0DN9GK
+    type: friction
+    content: Direct npm run build from a worker worktree still fails in packages/web-ui postbuild with
+      missing .svelte-kit/output/server/manifest-full.js, while the project test runner can
+      self-heal and continue. This makes standalone build verification unreliable during task work.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T18:55:00.764Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
