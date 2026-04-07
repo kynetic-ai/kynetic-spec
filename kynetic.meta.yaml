@@ -13126,6 +13126,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-07T04:50:11.019Z
+  - _ulid: 01KNK4JRDP40HGB7DNKKG4CAPM
+    type: friction
+    content: Daemon-routed kspec task/review commands can hang in dispatch workspaces even for local
+      shadow-branch mutations; this session had task get/submit and review reply/resolve stall until
+      rerun with KSPEC_NO_DAEMON=1 direct mode. Investigate daemon proxy behavior for localhost/vat
+      connections and consider an automatic fallback or clearer direct-mode guidance for task-local
+      mutations.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T04:52:58.422Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
