@@ -23660,7 +23660,7 @@ runs:
     completed_at: 2026-04-07T16:24:28.505Z
   - _ulid: 01KNMCMS1NS6WY4JXZK68GDA6K
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -23673,7 +23673,14 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-07T16:33:51.571Z
-        completed_at: 2026-04-07T16:33:51.571Z
+        completed_at: 2026-04-07T16:35:12.172Z
+        notes: "No new captures from reflection. Durable outputs from the session are already in place:
+          approved review @01KNMC7A, completed task @01KNMBPBQ8T1NQABEB0JAGRCPY, and follow-up bug
+          task @01KNMCHP for the unrelated dist import mismatch."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-07T16:35:12.172Z
+        completed_at: 2026-04-07T16:35:12.172Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-07T16:33:07.637Z
