@@ -127077,9 +127077,25 @@ reviews:
           kind: nit
           thread_ulid: 01KNMPCQR223BTDADWRBGKH8G9
         timestamp: 2026-04-07T19:23:30.810Z
+      - _ulid: 01KNMPCV6DMGDZM78RF71HCWV4
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-04-07T19:23:33.454Z
+      - _ulid: 01KNMPCV6E8G3DPKMGG01BF9DZ
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-07T19:23:33.454Z
     examined_commit: 2723f252985dcc0d0a354d77d9c6aaccc5b81081
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -127112,7 +127128,14 @@ reviews:
               integration. No remaining findings.
             created_at: 2026-04-07T19:23:29.923Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-07T19:23:33.453Z
     created_at: 2026-04-07T19:17:44.100Z
-    updated_at: 2026-04-07T19:23:29.923Z
+    updated_at: 2026-04-07T19:23:33.454Z
     notes: []
