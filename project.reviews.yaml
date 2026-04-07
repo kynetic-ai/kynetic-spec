@@ -128208,6 +128208,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-07T23:15:34.161Z
+      - _ulid: 01KNN5471AGXTPJFS8QVD4VJ1H
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNN3M19HGDCK65P10DWW75B5
+        timestamp: 2026-04-07T23:40:59.306Z
     examined_commit: b5d0c386a50acb9dd457f6b8b29bae37711254c5
     external_links: []
     lifecycle_state: closed
@@ -128238,6 +128244,14 @@ reviews:
               CommandExitError filtering removes the thrown-error line, but not this wrapper error,
               so the daemon response still diverges from direct CLI behavior."
             created_at: 2026-04-07T23:14:40.562Z
+          - _ulid: 01KNN5466611HGB4FRBGJQFX5P
+            author: "@claude"
+            body: "Fixed: Added CommandExitError re-throw guards to all 14 catch blocks in review.ts. When the
+              daemon's process.exit interceptor throws CommandExitError, each catch block now
+              re-throws it before reaching the error() wrapper call, preventing spurious 'Failed to
+              get review' stderr lines. Added a behavioral test verifying text-mode review get
+              @does-not-exist produces matching stderr between daemon API and direct CLI."
+            created_at: 2026-04-07T23:40:58.438Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -128248,7 +128262,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-07T23:15:34.160Z
     created_at: 2026-04-07T23:08:40.852Z
-    updated_at: 2026-04-07T23:15:34.161Z
+    updated_at: 2026-04-07T23:40:58.438Z
     notes: []
   - _ulid: 01KNN49K7V9VZG3MJ8N21P21CE
     slugs: []
