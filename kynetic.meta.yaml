@@ -13006,6 +13006,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-07T03:22:46.326Z
+  - _ulid: 01KNK0CSGQ8KFM4EQ0T162Q7Z2
+    type: friction
+    content: Dispatch worktrees inherit NODE_ENV=production, which causes npm test dependency readiness
+      to omit devDependencies until the workspace is manually reinstalled with NODE_ENV= npm install
+      --include=dev.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T03:39:48.632Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
