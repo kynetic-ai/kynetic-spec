@@ -39513,12 +39513,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-07T02:49:11.181Z
+      updated_at: 2026-04-07T02:49:23.944Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-07T02:49:11.181Z
+      updated_at: 2026-04-07T02:49:23.944Z
     integration:
       status: pending
       detail: null
@@ -39526,24 +39526,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 34dd3d45c187a99ec1c4944bb4914e6549935f6d
-      updated_at: 2026-04-07T02:49:11.181Z
-    lifecycle_state: ready
+      updated_at: 2026-04-07T02:49:23.944Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KNHZ5FH33G2C27BMG0SHPC74"
     task_slug: investigate-full-suite-instability-after-dependency-health-passes-in-review-worktrees
     timestamps:
       closed_at: null
       last_active_at: 2026-04-07T02:26:47.645Z
-      last_reconciled_at: 2026-04-07T02:49:11.181Z
+      last_reconciled_at: 2026-04-07T02:49:23.944Z
       created_at: 2026-04-07T02:26:42.396Z
-      updated_at: 2026-04-07T02:49:11.181Z
+      updated_at: 2026-04-07T02:49:23.944Z
     workspace_id: dispatch-workspace-01KNHZ5FH33G2C27BMG0SHPC74
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 58d872ce04698b021e6dd29ddfefd0f6016406a6
+        last_seen_at: 2026-04-07T02:49:23.944Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/investigate-full-suite-instability-after-dependency-health-passes-in-review-worktrees-01knhz5f-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/investigate-full-suite-instability-after-dependency-health-passes-in-review-worktrees/01knhz5f
-        head: 34dd3d45c187a99ec1c4944bb4914e6549935f6d
-        last_seen_at: 2026-04-07T02:26:42.396Z
+        head: 58d872ce04698b021e6dd29ddfefd0f6016406a6
+        last_seen_at: 2026-04-07T02:49:23.944Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/investigate-full-suite-instability-after-dependency-health-passes-in-review-worktrees-01knhz5f
