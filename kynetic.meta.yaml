@@ -13033,6 +13033,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-07T03:56:25.178Z
+  - _ulid: 01KNK1ZZ7H8EVVH978NZ0S9SP2
+    type: friction
+    content: "Reviewer merge flow in detached review snapshots is misleading when the integration branch
+      is already checked out in another worktree. In this session, 'git checkout dev' failed with:
+      fatal: 'dev' is already used by worktree at '/home/chapel/Projects/kynetic-spec-dispatch'. The
+      practical workaround was merging from the main project worktree with 'git -C
+      /home/chapel/Projects/kynetic-spec-dispatch merge --no-ff <task-branch>'. Consider updating
+      reviewer/merge guidance or adding a helper command for manual_merge from detached reviewer
+      snapshots."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T04:07:45.649Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
