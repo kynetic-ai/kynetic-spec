@@ -40363,7 +40363,7 @@ workspaces:
         head: 9b4b7ab8676f59ebf7555aa2a5df021f747a4750
         last_seen_at: 2026-04-07T05:22:00.086Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-flaky-agent-dispatch-post-invocation-re-evaluation-tests-01knk2vk
-  - active_role: null
+  - active_role: worker
     base_branch_point: 343472d01808d514accacb66d1bb86db4519b37f
     bootstrap:
       status: succeeded
@@ -40452,7 +40452,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-07T16:20:43.830Z
+      updated_at: 2026-04-07T16:20:48.585Z
     integration:
       status: pending
       detail: null
@@ -40461,16 +40461,16 @@ workspaces:
       target_branch: plan/plan-cache-aware-command-execution/01knkf3b
       target_commit: 343472d01808d514accacb66d1bb86db4519b37f
       updated_at: 2026-04-07T16:20:43.830Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: plan/plan-cache-aware-command-execution/01knkf3b
     task_ref: "@01KNMBPBQ8T1NQABEB0JAGRCPY"
     task_slug: task-update-command-api-spec
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-04-07T16:20:43.830Z
+      last_active_at: 2026-04-07T16:20:48.585Z
+      last_reconciled_at: 2026-04-07T16:20:48.585Z
       created_at: 2026-04-07T16:20:43.830Z
-      updated_at: 2026-04-07T16:20:47.131Z
+      updated_at: 2026-04-07T16:20:48.585Z
     workspace_id: dispatch-workspace-01KNMBPBQ8T1NQABEB0JAGRCPY
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
