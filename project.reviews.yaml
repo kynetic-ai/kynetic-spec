@@ -126010,6 +126010,16 @@ reviews:
         runner: tsc
         created_at: 2026-04-07T18:00:20.578Z
         completed_at: 2026-04-07T18:00:20.578Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --run tests/task-data-manager.test.ts passed: 19 suites, 57 tests"
+        name: task-data-manager targeted tests
+        required: true
+        runner: npm
+        created_at: 2026-04-07T18:00:23.112Z
+        completed_at: 2026-04-07T18:00:23.112Z
     events:
       - _ulid: 01KNMHHCVG1JTSC6DAH4NAG8WK
         actor: Jacob Chapel
@@ -126045,6 +126055,13 @@ reviews:
           status: pass
           name: typecheck
         timestamp: 2026-04-07T18:00:21.405Z
+      - _ulid: 01KNMHMJS5AKXTQYY1W6HGF9JE
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: task-data-manager targeted tests
+        timestamp: 2026-04-07T18:00:24.101Z
     examined_commit: 9eb7d18c54e9943217facfd01734ab79bad8865e
     external_links: []
     lifecycle_state: open
@@ -126094,5 +126111,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-07T17:58:39.728Z
-    updated_at: 2026-04-07T18:00:20.578Z
+    updated_at: 2026-04-07T18:00:23.112Z
     notes: []
