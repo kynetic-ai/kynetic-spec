@@ -41,6 +41,7 @@ import type {
   CachedShadowInfo,
   CachedProjectConfig,
 } from "../dist/daemon/entity-cache.ts";
+import { createShadowSyncOnPullHandler } from "../dist/daemon/server.ts";
 import type { MetaContext } from "../dist/parser/meta.ts";
 import type { LoadedInboxItem, LoadedSpecItem, LoadedTask } from "../dist/parser/yaml.ts";
 import { ShadowSyncScheduler } from "../src/parser/shadow-sync-scheduler.js";
@@ -924,6 +925,21 @@ describe("ac-background-sync: background sync invalidates cache on pull", () => 
 
     return path.join(syncTestDir, SHADOW_WORKTREE_DIR);
   }
+
+  // AC: @daemon-read-path ac-background-sync
+  it("server shadow-sync pull handler reloads the full entity cache", async () => {
+    const cache = {
+      loadAll: vi.fn().mockResolvedValue(undefined),
+    };
+    const getEntityCache = vi.fn().mockReturnValue(cache);
+
+    const onPull = createShadowSyncOnPullHandler(syncTestDir, getEntityCache);
+
+    await onPull();
+
+    expect(getEntityCache).toHaveBeenCalledWith(syncTestDir);
+    expect(cache.loadAll).toHaveBeenCalledTimes(1);
+  });
 
   // AC: @daemon-read-path ac-background-sync
   it("syncOnce invokes onPull callback after pulling remote changes", async () => {
