@@ -28,3 +28,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-07T18:41:58.057Z
+  - _ulid: 01KNMMRKKWQC0WPQFK4B98DY3K
+    content: "Fix cycle 1: addressed the triage cache blocker by rebuilding cache-backed triage records
+      from the ready triage summary index plus ready inbox cache snapshots, while still using triage
+      detail records when they already exist and falling back to disk when the full record shape
+      cannot be reconstructed (for example inbox cache not ready or override-only fields missing).
+      Also resolved the parser cache test rebase conflict, replaced the unrealistic
+      ready-with-detail triage test with a realistic ready-index-only coverage case, and re-verified
+      with focused parser/entity-cache/read-path tests plus full npm test. Direct npm run build
+      still fails in the existing web-ui postbuild path with missing manifest-full.js."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T18:55:01.757Z
