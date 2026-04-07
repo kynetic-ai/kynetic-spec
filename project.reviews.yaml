@@ -124816,9 +124816,25 @@ reviews:
           status: pass
           name: Coverage mapping
         timestamp: 2026-04-07T08:19:19.730Z
+      - _ulid: 01KNKGCR66TE0X93KW198KDD60
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-07T08:19:24.487Z
+      - _ulid: 01KNKGCR67BR5XGGSV5CDS13D5
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-07T08:19:24.487Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -124848,7 +124864,14 @@ reviews:
               item list and tasks for plan list, or narrow the initial allowlist further."
             created_at: 2026-04-07T08:18:56.509Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-07T08:19:24.486Z
     created_at: 2026-04-07T08:18:33.965Z
-    updated_at: 2026-04-07T08:19:18.937Z
+    updated_at: 2026-04-07T08:19:24.487Z
     notes: []
