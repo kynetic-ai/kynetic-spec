@@ -13183,6 +13183,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-07T05:34:52.654Z
+  - _ulid: 01KNK8KDWAJ82AMXR5MHGCSYEF
+    type: friction
+    content: Long-running exec sessions for npm test can become unattachable mid-run and later report
+      'Unknown process id', forcing redundant reruns and making automated wait/verification
+      unreliable for full-suite and targeted test commands.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T06:03:14.698Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
