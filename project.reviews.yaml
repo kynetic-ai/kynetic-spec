@@ -125309,6 +125309,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-07T16:29:42.385Z
+      - _ulid: 01KNMCRX7VCCJPJCS6XFPR36TC
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNMCRVR0R6Y201GXGGTGAWTW
+        timestamp: 2026-04-07T16:35:23.003Z
     examined_commit: 343472d01808d514accacb66d1bb86db4519b37f
     external_links: []
     lifecycle_state: open
@@ -125318,8 +125325,23 @@ reviews:
       content_hash: ""
       ref: "@01KNMBPC0GJ184YT6G3T43TNGB"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNMCRVR0R6Y201GXGGTGAWTW
+        anchor:
+          type: structured
+          field: ac-task-history-retention
+          ref: "@daemon-entity-cache"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KNMCRVR12J25KKK9MKY2M5WB
+            author: Jacob Chapel
+            body: " has no annotated test coverage in this snapshot.  returns no matches, so there is no
+              AC-linked proof that task history is retained and served from cache. Adding a new
+              acceptance criterion without adding or re-annotating a behavioral test leaves the new
+              contract unverified."
+            created_at: 2026-04-07T16:35:21.473Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-07T16:29:20.761Z
-    updated_at: 2026-04-07T16:29:41.561Z
+    updated_at: 2026-04-07T16:35:21.473Z
     notes: []
