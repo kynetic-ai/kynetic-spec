@@ -9,3 +9,10 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-07T18:36:09.015Z
+  - _ulid: 01KNMM3NWCRWHDB4T94Y6EG5X7
+    content: Implemented cache-backed loadPlans/loadReviewRecords with ready-domain +
+      populated-detail-tier checks; verified with focused parser tests, full npm test, and
+      existing-warning-only kspec validate.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T18:43:35.948Z
