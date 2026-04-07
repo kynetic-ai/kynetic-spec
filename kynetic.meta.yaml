@@ -12966,6 +12966,28 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-07T03:07:41.714Z
+  - _ulid: 01KNJYSS5S68540AG3QQ7XYF3H
+    type: friction
+    content: With NODE_ENV=production set in the shell, npm test repaired dependencies repeatedly
+      because devDependencies were omitted, then also rewrote package manifests during verification.
+      The test runner should either force a dev install mode for local verification or surface the
+      environment mismatch before mutating the workspace.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-04-07T03:11:57.113Z
+  - _ulid: 01KNJYSSD8V7P60SEP3M7011FC
+    type: friction
+    content: "A worker workspace could report Shadow branch healthy while .kspec/ was absent: kspec task
+      note failed with .kspec directory missing, but kspec shadow repair reported nothing to repair.
+      Shadow health/repair should detect and recover a missing worktree path instead of claiming the
+      branch is healthy."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-04-07T03:11:57.352Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
