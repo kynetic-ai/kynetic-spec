@@ -127793,6 +127793,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNMVTTZ2B79TEYFSGSY6HV1A
         timestamp: 2026-04-07T20:58:35.674Z
+      - _ulid: 01KNMVV7K4FEY18JVJA6FW61SN
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNMVV6QD992T0JYDKSDK3VG3
+        timestamp: 2026-04-07T20:58:47.780Z
     examined_commit: 6e37e6b9839a0d69b7aaadaa6f2b9c3f2ca74b24
     external_links: []
     lifecycle_state: open
@@ -127824,7 +127831,30 @@ reviews:
               the helper-based error path."
             created_at: 2026-04-07T20:58:34.850Z
         kind: blocker
+      - _ulid: 01KNMVV6QD992T0JYDKSDK3VG3
+        anchor:
+          type: code
+          commit: 6e37e6b9839a0d69b7aaadaa6f2b9c3f2ca74b24
+          line_end: 146
+          line_start: 125
+          path: src/cli/output.ts
+          side: head
+        entries:
+          - _ulid: 01KNMVV6QEHMECSM9D0SKPBHA1
+            author: Jacob Chapel
+            body: "src/cli/output.ts now stores output mode in request-local async state, but
+              isJsonMode()/isYamlMode() still read only the old global variables. executeCommand()
+              depends on that async-local state for daemon requests, so any command path that
+              branches on those helpers will mis-detect structured mode under the command API. I
+              reproduced this by running the CLI through runWithOutputState() the same way the
+              daemon does and executing --json review get @does-not-exist: stderr contained a JSON
+              error object followed by a plain-text Suggestion: line, which breaks JSON response
+              parity for an allowlisted concurrent read command. This needs to read the async-local
+              state as well and add coverage for a daemon-executed command that uses the
+              helper-based error path."
+            created_at: 2026-04-07T20:58:46.894Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-07T20:49:01.968Z
-    updated_at: 2026-04-07T20:58:34.850Z
+    updated_at: 2026-04-07T20:58:46.894Z
     notes: []
