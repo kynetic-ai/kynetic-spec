@@ -58,7 +58,7 @@ tags:
   - cache
   - refactor
 vcs_refs: []
-review_ref: "@01KNK72RVMJH1ARV7NQCVFYQR7"
+review_ref: "@01KNK90EHESXMS8MWZANF66BE7"
 submission_linkage:
   review_url: null
   branch: dev
@@ -223,6 +223,13 @@ history:
         previous: 2026-04-07T05:32:53.042Z
     command: task-submit
     timestamp: 2026-04-07T06:01:52.917Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KNK90EHESXMS8MWZANF66BE7"
+        previous: "@01KNK72RVMJH1ARV7NQCVFYQR7"
+    command: review-link
+    timestamp: 2026-04-07T06:10:23.841Z
 created_at: 2026-04-04T23:34:28.813Z
 started_at: 2026-04-07T05:52:40.949Z
 submitted_at: 2026-04-07T06:01:52.916Z
