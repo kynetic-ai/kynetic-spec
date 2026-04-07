@@ -125814,9 +125814,25 @@ reviews:
           kind: nit
           thread_ulid: 01KNMFN03V1KB1F24R1PWWM4PA
         timestamp: 2026-04-07T17:25:41.397Z
+      - _ulid: 01KNMFNA0EPBYYX945FZ39P2QX
+        actor: jacob.chapel@gmail.com
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-04-07T17:25:50.734Z
+      - _ulid: 01KNMFNA0EBR7QSGVEFS6BXN44
+        actor: jacob.chapel@gmail.com
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-07T17:25:50.734Z
     examined_commit: f8e9807cb5302a289fb1ebb14e97a5f0d930fed1
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -125852,7 +125868,14 @@ reviews:
               suite ran; it did not reproduce on the subsequent full rerun.
             created_at: 2026-04-07T17:25:40.603Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: jacob.chapel@gmail.com
+        role: reviewer
+        created_at: 2026-04-07T17:25:50.733Z
     created_at: 2026-04-07T17:17:40.073Z
-    updated_at: 2026-04-07T17:25:40.603Z
+    updated_at: 2026-04-07T17:25:50.734Z
     notes: []
