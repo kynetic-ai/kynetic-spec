@@ -123964,6 +123964,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-07T06:11:01.047Z
+      - _ulid: 01KNK9T2YZ7MQKVMTP285HEFQQ
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNK9131KW1T39RBRRFBAKGJB
+        timestamp: 2026-04-07T06:24:21.471Z
     examined_commit: 6391877ed741b6f9c2a5ebbe19de3aee5f6de5a6
     external_links: []
     lifecycle_state: closed
@@ -123993,6 +123999,12 @@ reviews:
               which task was created, the implementation is still incomplete until it resolves
               `result.resultRef` (or the created task ULID) and passes it through here.
             created_at: 2026-04-07T06:10:42.356Z
+          - _ulid: 01KNK9T26EV0A5GTJTKC84EWPT
+            author: Jacob Chapel
+            body: "Fixed: triage promote now resolves the created task ref back through taskDataManager and
+              passes the created task ULID as the tasks-domain writeThrough hint, so this request
+              path uses the incremental task patch instead of a full reload."
+            created_at: 2026-04-07T06:24:20.686Z
         kind: blocker
       - _ulid: 01KNK915CWN5YX71NKKQZH3XKY
         entries:
@@ -124018,5 +124030,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-07T06:11:01.047Z
     created_at: 2026-04-07T06:10:21.358Z
-    updated_at: 2026-04-07T06:11:01.047Z
+    updated_at: 2026-04-07T06:24:20.686Z
     notes: []
