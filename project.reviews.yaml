@@ -128128,7 +128128,24 @@ reviews:
     slugs: []
     title: Review replace-process-exit-string-sentinel-with-typed-error-class
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: packages/daemon/src/routes/command.ts, src/cli/batch-context.ts,
+          src/cli/commands/review.ts, tests/batch-exec-engine.test.ts,
+          tests/daemon-command-api.test.ts. Commands run: git diff/stat, kspec task get, kspec item
+          get @daemon-command-api, kspec review for-task, rg AC annotations, kspec validate, npm
+          test, targeted node reproduction comparing daemon-style in-process review get failure vs
+          direct CLI. Claims verified: CommandExitError preserves exit code 3, but text-mode stderr
+          parity still regresses with an extra wrapper error line. Categories searched: correctness,
+          error handling, test quality, integration, response parity."
+        name: review evidence
+        required: false
+        runner: manual
+        created_at: 2026-04-07T23:14:43.054Z
+        completed_at: 2026-04-07T23:14:43.054Z
     events:
       - _ulid: 01KNN3920MPECV4YTANR6YB601
         actor: Jacob Chapel
@@ -128150,6 +128167,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNN3M19HGDCK65P10DWW75B5
         timestamp: 2026-04-07T23:14:41.375Z
+      - _ulid: 01KNN3M4JFH5S00TFVEYZWWQ0H
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence
+        timestamp: 2026-04-07T23:14:43.919Z
     examined_commit: b5d0c386a50acb9dd457f6b8b29bae37711254c5
     external_links: []
     lifecycle_state: open
@@ -128183,5 +128207,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-07T23:08:40.852Z
-    updated_at: 2026-04-07T23:14:40.562Z
+    updated_at: 2026-04-07T23:14:43.054Z
     notes: []
