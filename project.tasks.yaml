@@ -25726,7 +25726,7 @@
   title: Fix daemon test imports against dist JS outputs
   type: bug
   plan_ref: "@plan-cache-aware-command-execution"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 2
@@ -25740,6 +25740,7 @@
   created_at: 2026-04-07T16:31:26.670Z
   started_at: 2026-04-07T16:32:59.401Z
   submitted_at: 2026-04-07T16:38:07.771Z
+  completed_at: 2026-04-07T16:47:26.403Z
   automation: eligible
 - _ulid: 01KNMCPT0W7P3V0PXESVZ40GFN
   slugs: []
