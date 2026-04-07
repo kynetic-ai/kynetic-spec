@@ -125422,6 +125422,12 @@ reviews:
         payload:
           thread_ulid: 01KNMCRVR0R6Y201GXGGTGAWTW
         timestamp: 2026-04-07T17:00:50.534Z
+      - _ulid: 01KNME7WFSSBVZ87H6WPV3G2E1
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNMCS4HEQ2SHX3VA6KHERNER
+        timestamp: 2026-04-07T17:01:02.329Z
     examined_commit: 343472d01808d514accacb66d1bb86db4519b37f
     external_links: []
     lifecycle_state: closed
@@ -125471,6 +125477,13 @@ reviews:
               and available without rereading the file, but the code path still discards history
               before caching it.
             created_at: 2026-04-07T16:35:30.478Z
+          - _ulid: 01KNME7VQY9ZSHSRR5356TFBV2
+            author: Jacob Chapel
+            body: Updated the daemon cache so cached task detail now retains per-task field-change history on
+              both initial tasks-domain loads and incremental task updates.
+              src/daemon/entity-cache.ts now attaches TaskDataManager.getTaskHistory() results
+              before storing task detail, and the AC tests exercise both load paths.
+            created_at: 2026-04-07T17:01:01.566Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -125481,7 +125494,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-07T16:36:25.245Z
     created_at: 2026-04-07T16:29:20.761Z
-    updated_at: 2026-04-07T17:00:49.697Z
+    updated_at: 2026-04-07T17:01:01.566Z
     notes: []
   - _ulid: 01KNMD1NRXPWKVA8FJH864YKGC
     slugs: []
