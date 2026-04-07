@@ -122638,6 +122638,26 @@ reviews:
         runner: test.cjs
         created_at: 2026-04-07T04:05:11.870Z
         completed_at: 2026-04-07T04:05:11.870Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: tests/parser.test.ts, src/parser/yaml.ts, src/parser/shadow.ts,
+          tests/worktree-context.test.ts, tests/parser/resolve-project-roots.test.ts,
+          tests/helpers/cli.ts, src/utils/git.ts. Commands run: git diff --stat, git diff
+          base...head -- tests/parser.test.ts, git show --stat, kspec task get, kspec review
+          for-task, kspec validate, rg -n AC:, npm test -- --fresh, npm test, npm test --
+          tests/parser.test.ts --fresh --verbose. Claims verified: the detached-review-worktree
+          parser test now passes without weakening the fail-closed initContext behavior; the new
+          regression reproduces detached worktree + missing shadow worktree and confirms the skip
+          helper returns true only for detached HEAD plus DIRECTORY_MISSING/WORKTREE_DISCONNECTED.
+          Categories searched: correctness, edge cases, error handling, test quality, integration;
+          no blocking issues found."
+        name: review-evidence
+        required: false
+        runner: manual
+        created_at: 2026-04-07T04:05:14.237Z
+        completed_at: 2026-04-07T04:05:14.237Z
     events:
       - _ulid: 01KNK1J6MZ1996KEYWMRDX23YR
         actor: Jacob Chapel
@@ -122666,6 +122686,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-07T04:05:12.745Z
+      - _ulid: 01KNK1VC689AH16NF0D4W3Q6W1
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-04-07T04:05:15.081Z
     examined_commit: 6d5dc401948ad040abc126f208241b4694c3e881
     external_links: []
     lifecycle_state: open
@@ -122678,5 +122705,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-07T04:00:14.495Z
-    updated_at: 2026-04-07T04:05:11.870Z
+    updated_at: 2026-04-07T04:05:14.237Z
     notes: []
