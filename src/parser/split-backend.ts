@@ -1157,8 +1157,17 @@ class SplitBackend implements TaskStorageBackend {
    */
   async getTaskHistory(ctx: KspecContext, ulid: string): Promise<HistoryEntry[]> {
     await this.ensureMigrated(ctx);
-    const { history } = await this.loadTaskFromDirWithHistory(ctx, ulid);
+    const { history } = await this.loadTaskWithHistory(ctx, ulid);
     return history;
+  }
+
+  async loadTaskWithHistory(
+    ctx: KspecContext,
+    ulid: string,
+  ): Promise<{ task: LoadedTask | undefined; history: HistoryEntry[] }> {
+    await this.ensureMigrated(ctx);
+    const { task, history } = await this.loadTaskFromDirWithHistory(ctx, ulid);
+    return { task, history };
   }
 
   /**

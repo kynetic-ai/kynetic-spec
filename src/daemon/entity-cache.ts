@@ -109,9 +109,7 @@ export interface WriteThroughHint {
   sessionId?: string;
 }
 
-export interface CachedTaskDetail extends LoadedTask {
-  history: HistoryEntry[];
-}
+export type CachedTaskDetail = LoadedTask;
 
 /** Summary type for spec items (index tier — excludes description, notes, AC content). */
 export interface ItemSummary {
@@ -398,6 +396,10 @@ interface DomainStore<TIndex, TDetail = unknown> {
   lastInvalidatedAt?: string;
 }
 
+interface TaskDomainStore extends DomainStore<TaskSummary[], CachedTaskDetail> {
+  historyDetails: Map<string, HistoryEntry[]>;
+}
+
 // ─── File → Domain Mapping ───────────────────────────────────────────────────
 
 /**
@@ -517,10 +519,11 @@ export class ProjectEntityCache {
   private sessionConfig: SessionCacheConfig;
 
   // Per-domain stores
-  private tasks: DomainStore<TaskSummary[], CachedTaskDetail> = {
+  private tasks: TaskDomainStore = {
     state: "unloaded",
     index: null,
     details: new Map(),
+    historyDetails: new Map(),
   };
   private items: DomainStore<ItemSummary[], LoadedSpecItem> = {
     state: "unloaded",
@@ -681,14 +684,16 @@ export class ProjectEntityCache {
     return this.tasks.details.get(ulid) ?? null;
   }
 
+  getTaskHistory(ulid: string): HistoryEntry[] | null {
+    return this.tasks.historyDetails.get(ulid) ?? null;
+  }
+
   /**
    * Store a task detail in the cache (loaded on demand).
    * AC: @daemon-entity-cache ac-detail-on-demand
    */
   setTaskDetail(ulid: string, task: LoadedTask | CachedTaskDetail): void {
-    const existingHistory = this.tasks.details.get(ulid)?.history ?? [];
-    const detail = "history" in task ? task : { ...task, history: existingHistory };
-    this.tasks.details.set(ulid, detail);
+    this.tasks.details.set(ulid, task);
   }
 
   /**
@@ -988,13 +993,15 @@ export class ProjectEntityCache {
         // Non-fatal: if full loading fails, the detail tier stays empty and
         // search falls through to disk on miss.
         const newTaskDetails = new Map<string, CachedTaskDetail>();
+        const newTaskHistoryDetails = new Map<string, HistoryEntry[]>();
         try {
-          const fullTasks = await tdm.loadAllTasks(ctx);
-          if (this.disposed) return;
-          for (const task of fullTasks) {
-            const history = await tdm.getTaskHistory(ctx, task._ulid);
+          for (const summary of summaries) {
+            const { task: loadedTask, history } = await tdm.loadTaskWithHistory(ctx, summary._ulid);
             if (this.disposed) return;
-            newTaskDetails.set(task._ulid, { ...task, history });
+            if (loadedTask) {
+              newTaskDetails.set(summary._ulid, loadedTask);
+              newTaskHistoryDetails.set(summary._ulid, history);
+            }
           }
         } catch {
           // Detail tier remains empty — search will use summaries or fall back to disk
@@ -1002,6 +1009,7 @@ export class ProjectEntityCache {
         // Atomic swap: replace index and details together
         this.tasks.index = summaries;
         this.tasks.details = newTaskDetails;
+        this.tasks.historyDetails = newTaskHistoryDetails;
         break;
       }
       case "items": {
@@ -1322,6 +1330,9 @@ export class ProjectEntityCache {
       const store = this.getStore(domain);
       store.index = null;
       store.details.clear();
+      if (domain === "tasks") {
+        this.tasks.historyDetails.clear();
+      }
       store.state = "unloaded";
       store.lastError = undefined;
     }
@@ -1689,6 +1700,7 @@ export class ProjectEntityCache {
     const tdm = resolveTaskDataManager(ctx);
     const nextIndex = [...this.tasks.index];
     const nextDetails = new Map(this.tasks.details);
+    const nextHistoryDetails = new Map(this.tasks.historyDetails);
 
     for (const ulid of changedUlids) {
       const taskFilePath = getTaskFilePath(ctx, ulid);
@@ -1706,10 +1718,11 @@ export class ProjectEntityCache {
           nextIndex.splice(existingIndex, 1);
         }
         nextDetails.delete(ulid);
+        nextHistoryDetails.delete(ulid);
         continue;
       }
 
-      const loadedTask = await tdm.getTask(ctx, ulid);
+      const { task: loadedTask, history } = await tdm.loadTaskWithHistory(ctx, ulid);
       if (!loadedTask) {
         return false;
       }
@@ -1717,18 +1730,19 @@ export class ProjectEntityCache {
       if (!summary) {
         return false;
       }
-      const history = await tdm.getTaskHistory(ctx, ulid);
 
       if (existingIndex >= 0) {
         nextIndex[existingIndex] = summary;
       } else {
         nextIndex.push(summary);
       }
-      nextDetails.set(ulid, { ...loadedTask, history });
+      nextDetails.set(ulid, loadedTask);
+      nextHistoryDetails.set(ulid, history);
     }
 
     this.tasks.index = nextIndex;
     this.tasks.details = nextDetails;
+    this.tasks.historyDetails = nextHistoryDetails;
     return true;
   }
 

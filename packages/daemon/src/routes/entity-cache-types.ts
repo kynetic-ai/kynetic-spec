@@ -26,6 +26,7 @@ import type { SessionLogSummary } from "../../sessions/store.js";
 import type { LoadedInboxItem } from "../../parser/yaml.js";
 import type { LoadedTriageRecord } from "../../parser/yaml.js";
 import type { LoadedReviewRecord } from "../../parser/reviews.js";
+import type { HistoryEntry } from "../../parser/task-data-manager.js";
 
 /** Domain state as reported by the cache. */
 export type CacheDomainState = "unloaded" | "loading" | "ready" | "degraded";
@@ -39,6 +40,7 @@ export interface RouteEntityCache {
   getDomainState(domain: string): CacheDomainState;
   getTaskIndex(): TaskSummary[] | null;
   getTaskDetail(ulid: string): CachedTaskDetail | null;
+  getTaskHistory(ulid: string): HistoryEntry[] | null;
   setTaskDetail(ulid: string, task: LoadedTask | CachedTaskDetail): void;
   getAllTaskDetails(): CachedTaskDetail[] | null;
   getItemIndex(): ItemSummary[] | null;

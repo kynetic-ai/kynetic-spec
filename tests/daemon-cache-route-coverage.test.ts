@@ -111,6 +111,7 @@ function createWarmCache(
     },
     getTaskIndex: () => tasks,
     getTaskDetail: (ulid: string) => taskDetails.get(ulid) ?? null,
+    getTaskHistory: () => null,
     setTaskDetail: (ulid, task) => taskDetails.set(ulid, task),
     getItemIndex: () => items,
     getItemDetail: (ulid: string) => itemDetails.get(ulid) ?? null,

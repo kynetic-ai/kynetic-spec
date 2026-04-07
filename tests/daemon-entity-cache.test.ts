@@ -298,6 +298,7 @@ describe("ProjectEntityCache", () => {
       const detail = cache.getTaskDetail("01TASKA0000000000000000000");
       expect(detail).not.toBeNull();
       expect(detail!.title).toBe("Sample Task A");
+      expect(cache.getTaskHistory("01TASKA0000000000000000000")).toEqual([]);
     });
 
     it("should retain task detail after explicit set", async () => {
@@ -1835,10 +1836,11 @@ describe("ProjectEntityCache", () => {
       await cache.writeThrough("tasks", { ulid: "01TASKH0000000000000000000" });
 
       const cached = cache.getTaskDetail("01TASKH0000000000000000000");
+      const history = cache.getTaskHistory("01TASKH0000000000000000000");
       expect(cached).not.toBeNull();
       expect(cached?.title).toBe("Task history sample updated");
-      expect(cached?.history).toHaveLength(2);
-      expect(cached?.history[1]?.changes.status).toEqual({
+      expect(history).toHaveLength(2);
+      expect(history?.[1]?.changes.status).toEqual({
         previous: "pending",
         new: "in_progress",
       });
@@ -3223,10 +3225,11 @@ describe("ProjectEntityCache", () => {
       await cache.loadDomain("tasks");
 
       const detail = cache.getTaskDetail("01TASKC0000000000000000000");
+      const history = cache.getTaskHistory("01TASKC0000000000000000000");
       expect(detail).not.toBeNull();
-      expect(detail?.history).toHaveLength(1);
-      expect(detail?.history[0]?.command).toBe("task-submit");
-      expect(detail?.history[0]?.changes.status).toEqual({
+      expect(history).toHaveLength(1);
+      expect(history?.[0]?.command).toBe("task-submit");
+      expect(history?.[0]?.changes.status).toEqual({
         previous: "in_progress",
         new: "pending_review",
       });

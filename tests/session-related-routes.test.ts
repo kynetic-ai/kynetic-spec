@@ -125,6 +125,7 @@ function createReadySessionsCacheWithLiveCounter(
     getDomainState: (domain: string) => (domain === "sessions" ? "ready" : "unloaded"),
     getTaskIndex: () => null,
     getTaskDetail: () => null,
+    getTaskHistory: () => null,
     setTaskDetail: () => {},
     getAllTaskDetails: () => null,
     getItemIndex: () => null,

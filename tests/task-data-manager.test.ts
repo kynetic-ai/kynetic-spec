@@ -388,6 +388,7 @@ describe("TaskDataManager", () => {
             getDomainState: () => "ready",
             getTaskIndex: () => [toSummary(fixtureTask)],
             getTaskDetail: () => fixtureTask,
+            getTaskHistory: () => [],
             setTaskDetail: vi.fn(),
             getAllTaskDetails: () => [fixtureTask],
           }),
@@ -430,6 +431,7 @@ describe("TaskDataManager", () => {
             getDomainState: () => "ready",
             getTaskIndex: () => [toSummary(fixtureTask)],
             getTaskDetail: () => fixtureTask,
+            getTaskHistory: () => [],
             setTaskDetail: vi.fn(),
             getAllTaskDetails: () => [fixtureTask],
           }),
@@ -473,6 +475,7 @@ describe("TaskDataManager", () => {
             getDomainState: () => "ready",
             getTaskIndex: () => [toSummary(fixtureTask)],
             getTaskDetail: () => null,
+            getTaskHistory: () => [],
             setTaskDetail,
             getAllTaskDetails: () => [fixtureTask],
           }),
@@ -551,6 +554,7 @@ describe("TaskDataManager", () => {
             getDomainState: () => "loading",
             getTaskIndex: vi.fn(() => [toSummary(fixtureTask)]),
             getTaskDetail: vi.fn(() => fixtureTask),
+            getTaskHistory: vi.fn(() => []),
             setTaskDetail: vi.fn(),
             getAllTaskDetails: vi.fn(() => [fixtureTask]),
           }),
@@ -602,6 +606,7 @@ describe("TaskDataManager", () => {
             getDomainState: () => "ready",
             getTaskIndex: () => [toSummary(fixtureTask)],
             getTaskDetail: () => fixtureTask,
+            getTaskHistory: () => [],
             setTaskDetail: vi.fn(),
             getAllTaskDetails: () => [fixtureTask],
           }),
@@ -609,6 +614,119 @@ describe("TaskDataManager", () => {
         );
 
         expect(mockSplitBackend.mutateTask).toHaveBeenCalledOnce();
+      } finally {
+        unregisterBackend("split");
+        registerBackend(splitBackend);
+      }
+    });
+
+    // AC: @daemon-entity-cache ac-task-history-retention
+    it("serves getTaskHistory from the ready task cache without backend reads", async () => {
+      tempDir = await setupTempFixtures();
+      const ctx = await initContext(tempDir);
+      const fixtureTask = await loadFixtureTask(ctx, "@test-task-pending");
+      const cachedHistory = [
+        {
+          timestamp: "2026-03-20T00:00:00.000Z",
+          author: "@tester",
+          command: "task-start",
+          changes: {
+            status: {
+              previous: "pending",
+              new: "in_progress",
+            },
+          },
+        },
+      ];
+
+      const mockSplitBackend: TaskStorageBackend = {
+        format: "split",
+        listTasks: vi.fn(async () => []),
+        loadAllTasks: vi.fn(async () => []),
+        getTask: vi.fn(async () => fixtureTask),
+        createTask: vi.fn(async (_ctx, task) => ({ ...task, _sourceFile: `/mock/${task._ulid}.yaml` })),
+        mutateTask: vi.fn(async (_ctx, task) => task),
+        mutateTasks: vi.fn(async (_ctx, tasks) => tasks),
+        deleteTask: vi.fn(async () => {}),
+        rebuildIndex: vi.fn(async () => ({ count: 0 })),
+        getTaskHistory: vi.fn(async () => []),
+      };
+
+      registerBackend(mockSplitBackend);
+      try {
+        manager = new TaskDataManager("split");
+
+        const result = await runWithEntityCache(
+          () => manager.getTaskHistory(ctx, fixtureTask._ulid),
+          () => ({
+            getDomainState: () => "ready",
+            getTaskIndex: () => [toSummary(fixtureTask)],
+            getTaskDetail: () => fixtureTask,
+            getTaskHistory: () => cachedHistory,
+            setTaskDetail: vi.fn(),
+            getAllTaskDetails: () => [fixtureTask],
+          }),
+          tempDir,
+        );
+
+        expect(result).toEqual(cachedHistory);
+        expect(mockSplitBackend.getTaskHistory).not.toHaveBeenCalled();
+      } finally {
+        unregisterBackend("split");
+        registerBackend(splitBackend);
+      }
+    });
+
+    it("falls back to backend getTaskHistory when the task cache is not ready", async () => {
+      tempDir = await setupTempFixtures();
+      const ctx = await initContext(tempDir);
+      const fixtureTask = await loadFixtureTask(ctx, "@test-task-pending");
+      const diskHistory = [
+        {
+          timestamp: "2026-03-20T00:05:00.000Z",
+          author: "@tester",
+          command: "task-submit",
+          changes: {
+            status: {
+              previous: "in_progress",
+              new: "pending_review",
+            },
+          },
+        },
+      ];
+
+      const mockSplitBackend: TaskStorageBackend = {
+        format: "split",
+        listTasks: vi.fn(async () => [toSummary(fixtureTask)]),
+        loadAllTasks: vi.fn(async () => [fixtureTask]),
+        getTask: vi.fn(async () => fixtureTask),
+        createTask: vi.fn(async (_ctx, task) => ({ ...task, _sourceFile: `/mock/${task._ulid}.yaml` })),
+        mutateTask: vi.fn(async (_ctx, task) => task),
+        mutateTasks: vi.fn(async (_ctx, tasks) => tasks),
+        deleteTask: vi.fn(async () => {}),
+        rebuildIndex: vi.fn(async () => ({ count: 0 })),
+        getTaskHistory: vi.fn(async () => diskHistory),
+      };
+
+      registerBackend(mockSplitBackend);
+      try {
+        manager = new TaskDataManager("split");
+
+        const result = await runWithEntityCache(
+          () => manager.getTaskHistory(ctx, fixtureTask._ulid),
+          () => ({
+            getDomainState: () => "loading",
+            getTaskIndex: vi.fn(() => [toSummary(fixtureTask)]),
+            getTaskDetail: vi.fn(() => fixtureTask),
+            getTaskHistory: vi.fn(() => []),
+            setTaskDetail: vi.fn(),
+            getAllTaskDetails: vi.fn(() => [fixtureTask]),
+          }),
+          tempDir,
+        );
+
+        expect(result).toEqual(diskHistory);
+        expect(mockSplitBackend.getTaskHistory).toHaveBeenCalledWith(ctx, fixtureTask._ulid);
       } finally {
         unregisterBackend("split");
         registerBackend(splitBackend);

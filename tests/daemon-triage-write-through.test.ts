@@ -34,6 +34,7 @@ function createMockCache(): RouteEntityCache {
     getDomainState: () => "ready",
     getTaskIndex: () => null,
     getTaskDetail: () => null,
+    getTaskHistory: () => null,
     setTaskDetail: () => {},
     getAllTaskDetails: () => null,
     getItemIndex: () => null,

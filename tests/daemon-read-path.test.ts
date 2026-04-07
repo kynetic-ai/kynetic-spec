@@ -303,6 +303,7 @@ function createWarmCache(
     getDomainState: () => "ready",
     getTaskIndex: () => tasks,
     getTaskDetail: (ulid: string) => taskDetails.get(ulid) ?? null,
+    getTaskHistory: () => null,
     setTaskDetail: (ulid, task) => taskDetails.set(ulid, task),
     getAllTaskDetails: () => Array.from(taskDetails.values()),
     getItemIndex: () => items,
@@ -310,6 +311,7 @@ function createWarmCache(
     setItemDetail: (ulid, item) => itemDetails.set(ulid, item),
     getAllItemDetails: () => Array.from(itemDetails.values()),
     getSessionIndex: () => [],
+    getSessionLiveEventCount: () => undefined,
     getSessionDetail: (id: string) => sessionDetails.get(id) ?? null,
     setSessionDetail: (id, summary) => sessionDetails.set(id, summary),
     getPlansIndex: () => plans,
@@ -337,6 +339,19 @@ function createWarmCache(
       writeThroughCalls.push(domain);
     },
     markWriteThrough: () => {},
+    getCacheDiagnostics: () => ({
+      projectPath: tempDir,
+      domains: {
+        tasks: { state: "ready", indexCount: tasks.length, detailCount: taskDetails.size, lastError: null, lastInvalidatedAt: null },
+        items: { state: "ready", indexCount: items.length, detailCount: itemDetails.size, lastError: null, lastInvalidatedAt: null },
+        meta: { state: "ready", indexCount: 1, detailCount: 1, lastError: null, lastInvalidatedAt: null },
+        inbox: { state: "ready", indexCount: inbox.length, detailCount: 0, lastError: null, lastInvalidatedAt: null },
+        plans: { state: "ready", indexCount: plans.length, detailCount: planDetails.size, lastError: null, lastInvalidatedAt: null },
+        triage: { state: "ready", indexCount: triage.length, detailCount: triageDetails.size, lastError: null, lastInvalidatedAt: null },
+        reviews: { state: "ready", indexCount: 0, detailCount: reviewDetails.size, lastError: null, lastInvalidatedAt: null },
+        sessions: { state: "ready", indexCount: 0, detailCount: sessionDetails.size, lastError: null, lastInvalidatedAt: null },
+      },
+    }),
     // Expose for test assertions
     get _writeThroughCalls() {
       return writeThroughCalls;
