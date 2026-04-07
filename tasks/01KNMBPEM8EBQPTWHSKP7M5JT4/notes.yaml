@@ -34,3 +34,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-07T20:17:38.007Z
+  - _ulid: 01KNMSQ2SPVMBNZGQ0Y919FCSX
+    content: "Fix cycle 1 plan: remove the unsafe shared-state assumptions behind executeCommand()
+      rather than keeping the old bypass. Refactor command execution to use per-request async
+      context for output/exit/working-dir state, stop relying on process.chdir() for initContext
+      discovery, and avoid sharing a mutable Commander instance across concurrent requests.
+      Re-verify the existing cache-domain allowlist against the isolated execution path, then
+      replace the timing-only overlap checks with behavioral concurrency coverage that proves
+      outputs stay isolated under concurrent allowlisted reads while non-eligible reads and
+      mutations remain serialized."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T20:21:34.646Z
