@@ -126499,6 +126499,13 @@ reviews:
           status: pass
           name: triage cache contract
         timestamp: 2026-04-07T18:41:13.542Z
+      - _ulid: 01KNMKZDAJRFWY4CJGC85T8NXP
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNMKZCEC6E2W1JHHTZ3ZN99V
+        timestamp: 2026-04-07T18:41:16.114Z
     examined_commit: 83d5ca14bff1114bc7729d90080a7c424973a446
     external_links: []
     lifecycle_state: draft
@@ -126527,7 +126534,26 @@ reviews:
               test quality, integration; blocker found in triage cache/read-path integration.'
             created_at: 2026-04-07T18:41:10.135Z
         kind: nit
+      - _ulid: 01KNMKZCEC6E2W1JHHTZ3ZN99V
+        anchor:
+          type: code
+          commit: 83d5ca14bff1114bc7729d90080a7c424973a446
+          line_end: 2608
+          line_start: 2593
+          path: src/parser/yaml.ts
+          side: head
+        entries:
+          - _ulid: 01KNMKZCED31Y2YM97JN29VEAJ
+            author: Jacob Chapel
+            body: The new triage fast path never serves data from cache in the normal "ready" state.  now
+              returns cached records only when every ULID in  also has a populated  entry, but the
+              cache contract explicitly keeps triage details empty after  and loads them on demand.
+              In practice, a ready triage domain still falls through to disk, so this task does not
+              satisfy  for triage and the new test only passes because it mocks a cache state that
+              production does not create.
+            created_at: 2026-04-07T18:41:15.213Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-07T18:35:24.994Z
-    updated_at: 2026-04-07T18:41:12.639Z
+    updated_at: 2026-04-07T18:41:15.213Z
     notes: []
