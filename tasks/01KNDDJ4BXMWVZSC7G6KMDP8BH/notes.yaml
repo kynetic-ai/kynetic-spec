@@ -12,3 +12,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-07T02:51:29.653Z
+  - _ulid: 01KNJYNG1VRBSRVCFVTRQPE09S
+    content: "Implemented meta cache sub-domain decomposition in src/daemon/entity-cache.ts and wired
+      packages/daemon/src/server.ts background shadow sync to refresh only cached shadow info. Added
+      behavioral coverage in tests/daemon-entity-cache.test.ts for manifest-only reload, shadow-only
+      scheduled refresh, session-context-only reload, and meta readiness gating on all three
+      sub-loads. Verification: NODE_ENV=development npm test -- daemon-entity-cache.test.ts passed
+      (31/31 suites, 122/122 tests). Full NODE_ENV=development npm test still reports unrelated
+      failures in agent dispatch, dispatch-target sync, and web-ui session stream suites;
+      task-specific daemon cache coverage is green."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T03:09:36.700Z
