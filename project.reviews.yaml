@@ -128409,6 +128409,22 @@ reviews:
         runner: npm
         created_at: 2026-04-07T23:50:23.166Z
         completed_at: 2026-04-07T23:50:23.166Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: packages/daemon/src/routes/command.ts, src/cli/batch-context.ts,
+          src/cli/commands/review.ts, src/cli/commands/task.ts, src/cli/output.ts,
+          tests/daemon-command-api.test.ts, tests/batch-exec-engine.test.ts. Commands run: git diff
+          --stat/--name-only/--unified, kspec task get, kspec item get, kspec review get/for-task,
+          kspec validate, rg AC annotations, rg catch/process.exit patterns, npm test. Claims
+          verified: previous review blocker fixed by rethrowing CommandExitError in review.ts catch
+          blocks; daemon command route now returns typed exit codes; full suite passes. Categories
+          searched: correctness, error handling, test quality, integration, edge cases."
+        name: review evidence
+        required: false
+        created_at: 2026-04-07T23:50:25.787Z
+        completed_at: 2026-04-07T23:50:25.787Z
     events:
       - _ulid: 01KNN5BS1MMRXZZVA29DT2QNGP
         actor: Jacob Chapel
@@ -128430,6 +128446,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-07T23:50:24.065Z
+      - _ulid: 01KNN5NH47HYG8VSADT66XW844
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence
+        timestamp: 2026-04-07T23:50:26.695Z
     examined_commit: 7d9352d758d692bad3547788b23619ada85d8d6a
     external_links: []
     lifecycle_state: open
@@ -128442,5 +128465,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-07T23:45:07.125Z
-    updated_at: 2026-04-07T23:50:23.166Z
+    updated_at: 2026-04-07T23:50:25.787Z
     notes: []
