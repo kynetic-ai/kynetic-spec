@@ -124163,6 +124163,13 @@ reviews:
           kind: question
           thread_ulid: 01KNKF8MGN9CEQRRF17MG0YKV3
         timestamp: 2026-04-07T07:59:46.110Z
+      - _ulid: 01KNKF95B18K613T9ZAXVKSRRA
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNKF94HK5DH1MNS15HKPWSKT
+        timestamp: 2026-04-07T07:59:58.305Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -124231,7 +124238,21 @@ reviews:
               changes, and verification boundary are explicit.
             created_at: 2026-04-07T07:59:41.078Z
         kind: question
+      - _ulid: 01KNKF94HK5DH1MNS15HKPWSKT
+        anchor:
+          type: structured
+          ref: "@daemon-task-history-cache"
+        entries:
+          - _ulid: 01KNKF94HM555FN129YCJTV6GM
+            author: "@claude"
+            body: This spec overlaps with the planned @daemon-entity-cache AC update instead of extending it
+              cleanly. Retaining task history in cache is being introduced both as a new feature
+              spec and as a new AC on the existing entity-cache spec, which creates duplicate
+              ownership and review ambiguity. Consolidate the history-retention contract into one
+              place and let the other spec reference it.
+            created_at: 2026-04-07T07:59:57.492Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-07T07:58:55.565Z
-    updated_at: 2026-04-07T07:59:41.078Z
+    updated_at: 2026-04-07T07:59:57.492Z
     notes: []
