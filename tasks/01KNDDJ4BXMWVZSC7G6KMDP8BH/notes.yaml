@@ -37,3 +37,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-07T03:25:39.665Z
+  - _ulid: 01KNK0CS27S7E1AS5216RHR9TX
+    content: "Fix cycle 1: restored meta reload dedup by routing both full meta loads and incremental
+      manifest/shadow/session refreshes through the meta domain's in-flight promise gate. Added a
+      regression test for overlapping manifest-only invalidations, updated the context-reuse
+      assertions to track the actual meta/items/tasks in-flight domains, and re-verified
+      @daemon-meta-subdomain ACs plus the full test suite (NODE_ENV= npm test -- --fresh)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T03:39:48.167Z
