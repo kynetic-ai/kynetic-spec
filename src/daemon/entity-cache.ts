@@ -291,6 +291,9 @@ export interface CachedProjectConfig {
   root_dir: string;
   remote_tracking: { value: string; type: string } | null;
   daemon: { port: number; host: string; auto_start: boolean };
+  manifest_path?: string | null;
+  manifest?: KspecContext["manifest"];
+  config?: KspecContext["config"];
 }
 
 /** Cached session context, computed at cache load time to avoid per-request disk reads. */
@@ -2134,6 +2137,9 @@ export class ProjectEntityCache {
         host: ctx.config.daemon.host,
         auto_start: ctx.config.daemon.auto_start,
       },
+      manifest_path: ctx.manifestPath,
+      manifest: ctx.manifest,
+      config: ctx.config,
     };
 
     const newMetaDetails = new Map<string, MetaContext>();

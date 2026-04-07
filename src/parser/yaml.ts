@@ -97,6 +97,70 @@ export function getEntityCacheContext(): EntityCacheContext | undefined {
   return entityCacheStorage.getStore();
 }
 
+interface InitContextEntityCache {
+  getDomainState?(domain: string): string | null | undefined;
+  getProjectConfig?(): {
+    root_dir: string;
+    manifest_path?: string | null;
+    manifest?: Manifest | null;
+    config?: ResolvedKspecConfig;
+  } | null;
+  getShadowInfo?(): {
+    enabled: boolean;
+    branch_name: string | null;
+    worktree_dir: string | null;
+  } | null;
+  getMetaDetail?(): unknown;
+}
+
+function tryGetCachedInitContext(): KspecContext | null {
+  const cacheContext = getEntityCacheContext();
+  if (!cacheContext) {
+    return null;
+  }
+
+  const resolvedCache = cacheContext.cacheAccessor(cacheContext.projectPath) as
+    | InitContextEntityCache
+    | null
+    | undefined;
+  if (!resolvedCache || resolvedCache.getDomainState?.("meta") !== "ready") {
+    return null;
+  }
+
+  const cachedProjectConfig = resolvedCache.getProjectConfig?.();
+  const cachedShadowInfo = resolvedCache.getShadowInfo?.();
+  const metaDetail = resolvedCache.getMetaDetail?.();
+  if (!cachedProjectConfig?.config || !cachedShadowInfo || metaDetail == null) {
+    return null;
+  }
+
+  const projectRoot = cachedProjectConfig.root_dir;
+  const shadowDirectory = cachedProjectConfig.config.shadow.directory;
+  const specDir =
+    cachedShadowInfo.enabled && cachedShadowInfo.worktree_dir
+      ? cachedShadowInfo.worktree_dir
+      : path.join(projectRoot, shadowDirectory);
+
+  return {
+    rootDir: projectRoot,
+    projectRoot,
+    specDir,
+    sessionsDir: path.join(projectRoot, ".kspec-sessions"),
+    manifestPath: cachedProjectConfig.manifest_path ?? null,
+    manifest: cachedProjectConfig.manifest ?? null,
+    shadow:
+      cachedShadowInfo.enabled && cachedShadowInfo.branch_name && cachedShadowInfo.worktree_dir
+        ? {
+            enabled: true,
+            worktreeDir: cachedShadowInfo.worktree_dir,
+            branchName: cachedShadowInfo.branch_name,
+            projectRoot,
+          }
+        : null,
+    config: cachedProjectConfig.config,
+  };
+}
+
 /**
  * Log a debug message (only when KSPEC_DEBUG=1)
  */
@@ -553,6 +617,11 @@ export async function initContext(
   startDir?: string,
   options?: { syncMode?: ShadowSyncMode },
 ): Promise<KspecContext> {
+  const cachedContext = tryGetCachedInitContext();
+  if (cachedContext) {
+    return cachedContext;
+  }
+
   const cwd = startDir || process.cwd();
   const projectRoots = resolveProjectRoots(cwd);
 
