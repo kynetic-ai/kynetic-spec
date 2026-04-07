@@ -125192,3 +125192,29 @@ reviews:
     created_at: 2026-04-07T16:25:46.252Z
     updated_at: 2026-04-07T16:26:09.154Z
     notes: []
+  - _ulid: 01KNMCDVFS6JP3CC8YCTNHM53D
+    slugs: []
+    title: Review task-update-entity-cache-history-ac
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KNMCDVFSYSRSSMHTCK5EF8AQ
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-07T16:29:20.761Z
+    examined_commit: 343472d01808d514accacb66d1bb86db4519b37f
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNMBPC0GJ184YT6G3T43TNGB"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-07T16:29:20.761Z
+    updated_at: null
+    notes: []
