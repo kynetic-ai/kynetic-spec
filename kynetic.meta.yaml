@@ -13173,6 +13173,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-07T05:21:10.103Z
+  - _ulid: 01KNK6ZFQEAMVCX4DP0PS3W71Y
+    type: friction
+    content: kspec review resolve can report success without immediately updating review thread_state;
+      after resolving a blocker thread during a fix cycle, a follow-up review get still showed
+      blockers_unresolved=1 until a second bounded resolve/read check. This makes it harder to trust
+      review closure state in automated task resubmission flows.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T05:34:52.654Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
