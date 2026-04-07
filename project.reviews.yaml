@@ -127579,6 +127579,12 @@ reviews:
         payload:
           thread_ulid: 01KNMSE5CAYR7PG595TKX4A3KV
         timestamp: 2026-04-07T20:42:23.013Z
+      - _ulid: 01KNMTX8K0KYG44CNQST9WMVZ6
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNMSEFF0JTSV6KR2QCR8VH78
+        timestamp: 2026-04-07T20:42:25.760Z
     examined_commit: 1dcde7937b52018f763a0cff9973e4977ab9e72e
     external_links: []
     lifecycle_state: closed
@@ -127655,6 +127661,14 @@ reviews:
               completed before timeout 15s expired. That means concurrent reads can corrupt captured
               output or hang, so ac-concurrent-cache-reads is not actually satisfied yet."
             created_at: 2026-04-07T20:16:52.704Z
+          - _ulid: 01KNMTX7KG5KKA0JDJ74TTEQTP
+            author: Jacob Chapel
+            body: "Fixed in the same isolation refactor. Cache-backed concurrent reads now run against
+              per-request execution state and fresh CLI programs, and the new daemon command API
+              coverage exercises the concrete reviewer repro shape by running concurrent read
+              commands and asserting no cross-response leakage. Verification: npm test --
+              tests/daemon-command-api.test.ts and npm test -- --fresh."
+            created_at: 2026-04-07T20:42:24.751Z
         kind: blocker
       - _ulid: 01KNMSEQNM214KVGPGS6JKAQSN
         entries:
@@ -127692,5 +127706,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-07T20:17:36.357Z
     created_at: 2026-04-07T20:10:07.646Z
-    updated_at: 2026-04-07T20:42:22.057Z
+    updated_at: 2026-04-07T20:42:24.751Z
     notes: []
