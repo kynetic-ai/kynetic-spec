@@ -125895,6 +125895,17 @@ reviews:
         runner: test-runner
         created_at: 2026-04-07T17:51:27.932Z
         completed_at: 2026-04-07T17:51:27.932Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation completed with repo-wide pre-existing warnings only (exit 6); no task-specific
+          validation errors introduced by this snapshot.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-07T17:51:30.422Z
+        completed_at: 2026-04-07T17:51:30.422Z
     events:
       - _ulid: 01KNMGPC5D2P2Z4Y8XF6P9F0W2
         actor: Jacob Chapel
@@ -125916,6 +125927,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-07T17:51:28.856Z
+      - _ulid: 01KNMH4AEPCY7X546323XB932M
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-07T17:51:31.286Z
     examined_commit: 8284b1a506930a0baf9d03648e397ecf94e733e7
     external_links: []
     lifecycle_state: draft
@@ -125945,5 +125963,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-07T17:43:54.285Z
-    updated_at: 2026-04-07T17:51:27.932Z
+    updated_at: 2026-04-07T17:51:30.422Z
     notes: []
