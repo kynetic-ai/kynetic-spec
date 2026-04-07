@@ -39424,7 +39424,7 @@ workspaces:
         head: 86a449c9dd84ad1a7a7d36b1552265597eb3b7d6
         last_seen_at: 2026-04-07T02:26:21.701Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-incremental-session-updates-01knddj4
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 34dd3d45c187a99ec1c4944bb4914e6549935f6d
     bootstrap:
       status: succeeded
@@ -39550,9 +39550,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-07T02:49:41.996Z
-      last_reconciled_at: 2026-04-07T03:06:26.204Z
+      last_reconciled_at: 2026-04-07T03:07:58.430Z
       created_at: 2026-04-07T02:26:42.396Z
-      updated_at: 2026-04-07T03:06:26.204Z
+      updated_at: 2026-04-07T03:07:58.430Z
     workspace_id: dispatch-workspace-01KNHZ5FH33G2C27BMG0SHPC74
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
