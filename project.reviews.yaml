@@ -127491,6 +127491,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNMSECX6CACHE98YX6QWM35J
         timestamp: 2026-04-07T20:16:50.976Z
+      - _ulid: 01KNMSEGFZ0VW22YZCEABZC2DA
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNMSEFF0JTSV6KR2QCR8VH78
+        timestamp: 2026-04-07T20:16:53.759Z
     examined_commit: 1dcde7937b52018f763a0cff9973e4977ab9e72e
     external_links: []
     lifecycle_state: open
@@ -127541,7 +127548,28 @@ reviews:
               satisfied yet."
             created_at: 2026-04-07T20:16:50.086Z
         kind: blocker
+      - _ulid: 01KNMSEFF0JTSV6KR2QCR8VH78
+        anchor:
+          type: code
+          commit: 1dcde7937b52018f763a0cff9973e4977ab9e72e
+          line_end: 562
+          line_start: 561
+          path: packages/daemon/src/routes/command.ts
+          side: head
+        entries:
+          - _ulid: 01KNMSEFF0CRVGVDW2W3EV45TR
+            author: Jacob Chapel
+            body: "Bypassing the dispatch mutex here is still unsafe because executeCommand() mutates shared
+              process-wide state and a shared Commander instance (resetCommandTree(program),
+              console.*, process.stdout/stderr.write, process.chdir(), and the exit interceptor at
+              lines 135-230). I reproduced this with two concurrent cache-eligible reads (tasks list
+              + plan list) against a ready mock cache: plan list output leaked to the parent stdout
+              (B-end / Plans (1): ...) instead of staying in the API response, and the pair never
+              completed before timeout 15s expired. That means concurrent reads can corrupt captured
+              output or hang, so ac-concurrent-cache-reads is not actually satisfied yet."
+            created_at: 2026-04-07T20:16:52.704Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-07T20:10:07.646Z
-    updated_at: 2026-04-07T20:16:50.086Z
+    updated_at: 2026-04-07T20:16:52.704Z
     notes: []
