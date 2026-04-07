@@ -17,3 +17,11 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-07T22:58:31.083Z
+  - _ulid: 01KNN2S1TK7RHCKV6TR7ZGJHBV
+    content: Adjusted the daemon interceptor to preserve the first request-scoped exit code across
+      nested catch/re-exit paths. This avoids touching every command file while still preventing
+      helper-triggered NOT_FOUND/VALIDATION exits from collapsing to generic ERROR during daemon
+      execution.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T22:59:56.371Z
