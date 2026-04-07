@@ -24112,7 +24112,7 @@ runs:
     started_at: 2026-04-07T23:05:33.490Z
     completed_at: 2026-04-07T23:07:04.216Z
   - _ulid: 01KNN3Q3BAX00E15MF4FHY4WH3
-    status: active
+    status: completed
     current_step: 3
     initiated_by: Jacob Chapel
     step_results:
@@ -24145,7 +24145,10 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-07T23:18:01.723Z
-        completed_at: 2026-04-07T23:18:01.723Z
+        completed_at: 2026-04-07T23:18:24.395Z
+        notes: "Captured approved item: friction observation @01KNN3SC for the missing text-mode daemon
+          parity coverage signal. No additional captures needed. Reflection run complete."
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-07T23:16:20.970Z
+    completed_at: 2026-04-07T23:18:24.400Z
