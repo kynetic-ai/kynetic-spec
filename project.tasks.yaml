@@ -25447,7 +25447,7 @@
   slugs: []
   title: Stabilize parser integration test in detached review worktrees
   type: bug
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 2
@@ -25461,6 +25461,7 @@
   created_at: 2026-04-07T03:06:19.730Z
   started_at: 2026-04-07T04:22:45.278Z
   submitted_at: 2026-04-07T04:23:04.233Z
+  completed_at: 2026-04-07T04:37:30.222Z
   automation: eligible
 - _ulid: 01KNK2VKWW5MPK2C0NSNF3FC90
   slugs: []
