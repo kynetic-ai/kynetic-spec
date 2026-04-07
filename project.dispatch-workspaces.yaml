@@ -41566,12 +41566,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-07T18:45:54.235Z
+      updated_at: 2026-04-07T18:46:10.896Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-07T18:45:54.235Z
+      updated_at: 2026-04-07T18:46:10.896Z
     integration:
       status: pending
       detail: null
@@ -41579,24 +41579,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-cache-aware-command-execution/01knkf3b
       target_commit: c0d9fee072d7e8719e05e1d8a17ea7e6148140c8
-      updated_at: 2026-04-07T18:45:54.235Z
-    lifecycle_state: ready
+      updated_at: 2026-04-07T18:46:10.896Z
+    lifecycle_state: integrating
     resolved_base_branch: plan/plan-cache-aware-command-execution/01knkf3b
     task_ref: "@01KNMBPDRSN3PXZ81CHXBWXKTN"
     task_slug: task-cache-aware-plans-reviews
     timestamps:
       closed_at: null
       last_active_at: 2026-04-07T18:34:48.977Z
-      last_reconciled_at: 2026-04-07T18:45:54.235Z
+      last_reconciled_at: 2026-04-07T18:46:10.896Z
       created_at: 2026-04-07T18:34:37.775Z
-      updated_at: 2026-04-07T18:45:54.235Z
+      updated_at: 2026-04-07T18:46:10.896Z
     workspace_id: dispatch-workspace-01KNMBPDRSN3PXZ81CHXBWXKTN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 7e7d977f1ee9fa6b316d425babd9ba06eab87328
+        last_seen_at: 2026-04-07T18:46:10.896Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cache-aware-plans-reviews-01knmbpd-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-cache-aware-plans-reviews/01knmbpd
-        head: c0d9fee072d7e8719e05e1d8a17ea7e6148140c8
-        last_seen_at: 2026-04-07T18:34:37.775Z
+        head: 7e7d977f1ee9fa6b316d425babd9ba06eab87328
+        last_seen_at: 2026-04-07T18:46:10.896Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cache-aware-plans-reviews-01knmbpd
