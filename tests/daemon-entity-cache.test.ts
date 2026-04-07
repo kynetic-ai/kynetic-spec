@@ -11,15 +11,18 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { join } from "path";
+import { dirname, join } from "path";
 import * as fs from "fs/promises";
 import { stringify as yamlStringify } from "yaml";
 import {
   setupMultiDirFixtures,
   cleanupTempDir,
   createTempDir,
+  seedSplitTask,
   setupShadowDetection,
+  testUlid,
 } from "./helpers/cli";
+import { TaskDataManager } from "../src/parser/task-data-manager";
 import {
   ProjectEntityCache,
   fileToDomain,
@@ -28,6 +31,8 @@ import {
   getEntityCache,
   getAllRegisteredCaches,
   clearAllEntityCaches,
+  setTestDelay,
+  releaseTestDelay,
   type CacheDomain,
   type DomainState,
   type DomainReadyCallback,
@@ -36,6 +41,7 @@ import {
 } from "../src/daemon/entity-cache";
 import { ensureSplitBackendRegistered } from "../src/parser/split-backend";
 import * as yamlModule from "../src/parser/yaml";
+import * as sessionStoreModule from "../src/sessions/store";
 
 ensureSplitBackendRegistered();
 
@@ -89,6 +95,55 @@ describe("ProjectEntityCache", () => {
     };
   }
 
+  function buildItemsManifest(includes: string[] = ["modules/*.yaml"]): string {
+    return yamlStringify({
+      kynetic: "1.1",
+      project: {
+        name: "Incremental Items Test Project",
+        version: "0.1.0",
+        status: "draft",
+      },
+      includes,
+      task_storage: {
+        format: "split",
+      },
+    });
+  }
+
+  function buildSpecItem(sequence: number, slug: string, title: string) {
+    return {
+      _ulid: testUlid("SPEC", sequence),
+      slugs: [slug],
+      title,
+      type: "requirement",
+      description: `${title} description`,
+      acceptance_criteria: [
+        {
+          id: `ac-${sequence}`,
+          given: `${title} exists`,
+          when: `${title} is loaded`,
+          then: `${title} is returned from cache`,
+        },
+      ],
+    };
+  }
+
+  async function writeItemsFixture(
+    projectPath: string,
+    files: Record<string, unknown>,
+    includes: string[] = ["modules/*.yaml"],
+  ): Promise<void> {
+    const kspecDir = join(projectPath, ".kspec");
+    await fs.writeFile(join(kspecDir, "kynetic.yaml"), buildItemsManifest(includes), "utf-8");
+    await fs.mkdir(join(kspecDir, "modules"), { recursive: true });
+
+    for (const [relativePath, content] of Object.entries(files)) {
+      const absolutePath = join(kspecDir, relativePath);
+      await fs.mkdir(dirname(absolutePath), { recursive: true });
+      await fs.writeFile(absolutePath, yamlStringify(content), "utf-8");
+    }
+  }
+
   // ─── fileToDomain mapping ──────────────────────────────────────────────
 
   describe("fileToDomain", () => {
@@ -118,6 +173,10 @@ describe("ProjectEntityCache", () => {
       const domains = fileToDomain("kynetic.yaml");
       expect(domains).toEqual(expect.arrayContaining(["meta", "items"]));
       expect(domains).toHaveLength(2);
+    });
+
+    it("should map session context file to meta domain", () => {
+      expect(fileToDomain(".kspec-session")).toEqual(["meta"]);
     });
 
     it("should map module files to items domain", () => {
@@ -442,6 +501,307 @@ describe("ProjectEntityCache", () => {
       expect(after!.length).toBe(2);
     });
 
+    // AC: @daemon-incremental-cache ac-watcher-content-passthrough
+    it("should accept watcher-provided content when invalidating a changed file", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("tasks");
+
+      const tasksPath = join(projectA, ".kspec", "project.tasks.yaml");
+      const changedContent = yamlStringify([
+        {
+          _ulid: "01TASKA0000000000000000000",
+          slugs: ["task-a-sample"],
+          title: "Sample Task A Updated",
+          type: "task",
+          status: "pending",
+          priority: 1,
+          spec_ref: "@spec-a-sample",
+          depends_on: [],
+          created_at: "2026-01-24T00:00:00.000Z",
+          notes: [],
+          todos: [],
+        },
+      ]);
+      await fs.writeFile(tasksPath, changedContent, "utf-8");
+
+      const kspecDir = join(projectA, ".kspec");
+      await expect(cache.handleFileChange(kspecDir, tasksPath, changedContent)).resolves.toBeUndefined();
+
+      const after = cache.getTaskIndex();
+      expect(after).not.toBeNull();
+      expect(after![0].title).toBe("Sample Task A Updated");
+    });
+
+    // AC: @daemon-incremental-cache ac-batch-coalescing
+    // AC: @daemon-incremental-cache ac-file-path-preserved
+    it("should coalesce all changed file paths into one domain batch per debounce window", async () => {
+      vi.useFakeTimers();
+
+      try {
+        const cache = new ProjectEntityCache(projectA);
+        (cache as any).domainDebounceMs = 50;
+
+        const processChangesSpy = vi
+          .spyOn(cache as any, "processDomainChanges")
+          .mockResolvedValue(undefined);
+
+        const kspecDir = join(projectA, ".kspec");
+        const itemPathA = join(kspecDir, "modules", "alpha.yaml");
+        const itemPathB = join(kspecDir, "modules", "beta.yaml");
+
+        const firstInvalidation = cache.handleFileChange(kspecDir, itemPathA, "title: alpha");
+        const secondInvalidation = cache.handleFileChange(kspecDir, itemPathB, "title: beta");
+
+        await vi.advanceTimersByTimeAsync(49);
+        expect(processChangesSpy).not.toHaveBeenCalled();
+
+        await vi.advanceTimersByTimeAsync(1);
+        await Promise.all([firstInvalidation, secondInvalidation]);
+
+        expect(processChangesSpy).toHaveBeenCalledTimes(1);
+        expect(processChangesSpy).toHaveBeenCalledWith(
+          "items",
+          [
+            { filePath: itemPathA, content: "title: alpha" },
+            { filePath: itemPathB, content: "title: beta" },
+          ],
+          expect.anything(),
+        );
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    // AC: @daemon-incremental-cache ac-file-path-preserved
+    it("should keep only the latest content for the same file within one debounce window", async () => {
+      vi.useFakeTimers();
+
+      try {
+        const cache = new ProjectEntityCache(projectA);
+        (cache as any).domainDebounceMs = 50;
+
+        const processChangesSpy = vi
+          .spyOn(cache as any, "processDomainChanges")
+          .mockResolvedValue(undefined);
+
+        const kspecDir = join(projectA, ".kspec");
+        const itemPath = join(kspecDir, "modules", "alpha.yaml");
+
+        const firstInvalidation = cache.handleFileChange(kspecDir, itemPath, "title: alpha v1");
+        const secondInvalidation = cache.handleFileChange(kspecDir, itemPath, "title: alpha v2");
+
+        await vi.advanceTimersByTimeAsync(50);
+        await Promise.all([firstInvalidation, secondInvalidation]);
+
+        expect(processChangesSpy).toHaveBeenCalledTimes(1);
+        expect(processChangesSpy).toHaveBeenCalledWith(
+          "items",
+          [{ filePath: itemPath, content: "title: alpha v2" }],
+          expect.anything(),
+        );
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    // AC: @daemon-incremental-cache ac-fallback-full-reload
+    it("should pass an empty change set for invalidations without file context", async () => {
+      vi.useFakeTimers();
+
+      try {
+        const cache = new ProjectEntityCache(projectA);
+        (cache as any).domainDebounceMs = 50;
+
+        const processChangesSpy = vi
+          .spyOn(cache as any, "processDomainChanges")
+          .mockResolvedValue(undefined);
+
+        const invalidation = cache.invalidateDomain("tasks");
+
+        await vi.advanceTimersByTimeAsync(50);
+        await invalidation;
+
+        expect(processChangesSpy).toHaveBeenCalledTimes(1);
+        expect(processChangesSpy).toHaveBeenCalledWith("tasks", [], expect.anything());
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    // AC: @daemon-incremental-cache ac-single-entity-patch
+    // AC: @daemon-incremental-cache ac-index-consistency
+    it("should patch only the changed split-backend task in index and detail tiers", async () => {
+      const kspecDir = join(projectA, ".kspec");
+      seedSplitTask(kspecDir, {
+        _ulid: "01TASKB0000000000000000000",
+        slugs: ["task-b-sample"],
+        title: "Sample Task B",
+        type: "task",
+        status: "pending",
+        priority: 2,
+        spec_ref: "@spec-b-sample",
+        depends_on: [],
+        notes: [],
+        todos: [],
+        created_at: "2026-01-24T00:00:00.000Z",
+      });
+
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("tasks");
+
+      const originalOtherTask = cache.getTaskDetail("01TASKB0000000000000000000");
+      expect(originalOtherTask).not.toBeNull();
+
+      const taskPath = join(kspecDir, "tasks", "01TASKA0000000000000000000", "task.yaml");
+      await fs.writeFile(
+        taskPath,
+        yamlStringify({
+          _ulid: "01TASKA0000000000000000000",
+          slugs: ["task-a-sample"],
+          title: "Sample Task A Updated",
+          type: "task",
+          status: "in_progress",
+          priority: 1,
+          spec_ref: "@spec-a-sample",
+          depends_on: [],
+          created_at: "2026-01-24T00:00:00.000Z",
+        }),
+        "utf-8",
+      );
+
+      await cache.handleFileChange(kspecDir, taskPath);
+
+      expect(cache.getTaskDetail("01TASKA0000000000000000000")?.title).toBe("Sample Task A Updated");
+      expect(cache.getTaskDetail("01TASKA0000000000000000000")?.status).toBe("in_progress");
+      expect(cache.getTaskDetail("01TASKB0000000000000000000")).toBe(originalOtherTask);
+
+      const taskIndex = cache.getTaskIndex();
+      expect(taskIndex?.find((task) => task._ulid === "01TASKA0000000000000000000")?.title).toBe(
+        "Sample Task A Updated",
+      );
+      expect(taskIndex?.find((task) => task._ulid === "01TASKB0000000000000000000")?.title).toBe(
+        "Sample Task B",
+      );
+    });
+
+    // AC: @daemon-incremental-cache ac-single-entity-patch
+    it("should update task summary counts from a split-backend notes file change", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("tasks");
+
+      const kspecDir = join(projectA, ".kspec");
+      const notesPath = join(kspecDir, "tasks", "01TASKA0000000000000000000", "notes.yaml");
+      await fs.writeFile(
+        notesPath,
+        yamlStringify({
+          notes: [
+            {
+              _ulid: testUlid("NOTE", 1),
+              created_at: "2026-01-24T00:00:00.000Z",
+              author: "@test",
+              content: "Updated note",
+            },
+          ],
+        }),
+        "utf-8",
+      );
+
+      await cache.handleFileChange(kspecDir, notesPath);
+
+      expect(cache.getTaskDetail("01TASKA0000000000000000000")?.notes).toHaveLength(1);
+      expect(
+        cache.getTaskIndex()?.find((task) => task._ulid === "01TASKA0000000000000000000")
+          ?.notes_count,
+      ).toBe(1);
+    });
+
+    // AC: @daemon-incremental-cache ac-single-entity-patch
+    // AC: @daemon-incremental-cache ac-batch-coalescing
+    it("should add a new split-backend task without reloading unrelated tasks", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("tasks");
+
+      const kspecDir = join(projectA, ".kspec");
+      const newTaskUlid = "01TASKC0000000000000000000";
+
+      seedSplitTask(kspecDir, {
+        _ulid: newTaskUlid,
+        slugs: ["task-c-sample"],
+        title: "Sample Task C",
+        type: "task",
+        status: "pending",
+        priority: 3,
+        spec_ref: "@spec-c-sample",
+        depends_on: [],
+        notes: [],
+        todos: [],
+        created_at: "2026-01-24T00:00:00.000Z",
+      });
+
+      const taskPath = join(kspecDir, "tasks", newTaskUlid, "task.yaml");
+      await cache.handleFileChange(kspecDir, taskPath);
+
+      expect(cache.getTaskDetail(newTaskUlid)?.title).toBe("Sample Task C");
+      expect(cache.getTaskIndex()?.some((task) => task._ulid === newTaskUlid)).toBe(true);
+    });
+
+    // AC: @daemon-incremental-cache ac-removal-detection
+    it("should remove a deleted split-backend task from index and detail tiers", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("tasks");
+
+      const kspecDir = join(projectA, ".kspec");
+      const taskPath = join(kspecDir, "tasks", "01TASKA0000000000000000000", "task.yaml");
+      await fs.rm(taskPath, { force: true });
+
+      await cache.handleFileChange(kspecDir, taskPath);
+
+      expect(cache.getTaskDetail("01TASKA0000000000000000000")).toBeNull();
+      expect(cache.getTaskIndex()?.some((task) => task._ulid === "01TASKA0000000000000000000")).toBe(
+        false,
+      );
+    });
+
+    // AC: @daemon-incremental-cache ac-fallback-full-reload
+    it("should fall back to a full tasks reload when the monolithic task index file changes", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("tasks");
+
+      const incrementalSpy = vi.spyOn(cache as any, "tryIncrementalTaskUpdate");
+      const loadDomainSpy = vi.spyOn(cache, "loadDomain");
+      incrementalSpy.mockClear();
+      loadDomainSpy.mockClear();
+
+      const kspecDir = join(projectA, ".kspec");
+      const indexPath = join(kspecDir, "project.tasks.yaml");
+      await fs.writeFile(
+        indexPath,
+        yamlStringify([
+          {
+            _ulid: "01TASKA0000000000000000000",
+            slugs: ["task-a-sample"],
+            title: "Summary Updated From Index",
+            type: "task",
+            status: "pending",
+            priority: 1,
+            spec_ref: "@spec-a-sample",
+            depends_on: [],
+            created_at: "2026-01-24T00:00:00.000Z",
+            notes_count: 0,
+            todos_count: 0,
+          },
+        ]),
+        "utf-8",
+      );
+
+      await cache.handleFileChange(kspecDir, indexPath);
+
+      expect(incrementalSpy).toHaveBeenCalledOnce();
+      await expect(incrementalSpy.mock.results[0]?.value).resolves.toBe(false);
+      expect(loadDomainSpy).toHaveBeenCalledWith("tasks", expect.anything());
+      expect(cache.getTaskIndex()?.[0]?.title).toBe("Summary Updated From Index");
+    });
+
     it("should replace stale detail cache when domain is invalidated", async () => {
       const cache = new ProjectEntityCache(projectA);
       await cache.loadDomain("tasks");
@@ -487,6 +847,472 @@ describe("ProjectEntityCache", () => {
       expect(itemsAfter).not.toBe(itemsBefore);
     });
 
+    // AC: @daemon-incremental-cache ac-single-entity-patch
+    // AC: @daemon-incremental-cache ac-index-consistency
+    it("should patch only the changed module file without full item reload", async () => {
+      await writeItemsFixture(projectA, {
+        "modules/alpha.yaml": [buildSpecItem(1, "alpha-spec", "Alpha Spec v1")],
+        "modules/beta.yaml": [buildSpecItem(2, "beta-spec", "Beta Spec")],
+      });
+
+      const cache = new ProjectEntityCache(projectA);
+      const loadAllItemsSpy = vi.spyOn(yamlModule, "loadAllItems");
+      await cache.loadDomain("items");
+      loadAllItemsSpy.mockClear();
+
+      const beforeIndex = cache.getItemIndex();
+      expect(beforeIndex).not.toBeNull();
+      expect(beforeIndex!.find((item) => item.slugs.includes("alpha-spec"))?.title).toBe(
+        "Alpha Spec v1",
+      );
+
+      const kspecDir = join(projectA, ".kspec");
+      const alphaPath = join(kspecDir, "modules", "alpha.yaml");
+      await fs.writeFile(
+        alphaPath,
+        yamlStringify([buildSpecItem(1, "alpha-spec", "Alpha Spec v2")]),
+        "utf-8",
+      );
+
+      await cache.handleFileChange(kspecDir, alphaPath);
+
+      const afterIndex = cache.getItemIndex();
+      expect(afterIndex).not.toBeNull();
+      expect(afterIndex).not.toBe(beforeIndex);
+      expect(beforeIndex!.find((item) => item.slugs.includes("alpha-spec"))?.title).toBe(
+        "Alpha Spec v1",
+      );
+      expect(afterIndex!.find((item) => item.slugs.includes("alpha-spec"))?.title).toBe(
+        "Alpha Spec v2",
+      );
+      expect(afterIndex!.find((item) => item.slugs.includes("beta-spec"))?.title).toBe(
+        "Beta Spec",
+      );
+      expect(loadAllItemsSpy).not.toHaveBeenCalled();
+    });
+
+    // AC: @daemon-incremental-cache ac-multi-entity-file
+    it("should add newly parsed items from the changed module file to index and details", async () => {
+      await writeItemsFixture(projectA, {
+        "modules/alpha.yaml": [buildSpecItem(3, "alpha-spec", "Alpha Spec")],
+      });
+
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("items");
+
+      const kspecDir = join(projectA, ".kspec");
+      const alphaPath = join(kspecDir, "modules", "alpha.yaml");
+      const newItem = buildSpecItem(4, "alpha-extra", "Alpha Extra");
+      await fs.writeFile(
+        alphaPath,
+        yamlStringify([buildSpecItem(3, "alpha-spec", "Alpha Spec"), newItem]),
+        "utf-8",
+      );
+
+      await cache.handleFileChange(kspecDir, alphaPath);
+
+      const afterIndex = cache.getItemIndex();
+      expect(afterIndex?.map((item) => item.slugs[0])).toEqual(["alpha-spec", "alpha-extra"]);
+      expect(cache.getItemDetail(newItem._ulid)?.title).toBe("Alpha Extra");
+    });
+
+    // AC: @daemon-incremental-cache ac-multi-entity-file
+    // AC: @daemon-incremental-cache ac-batch-coalescing
+    // AC: @daemon-incremental-cache ac-index-consistency
+    it("should preserve file order when multiple module files are patched in one debounce window", async () => {
+      vi.useFakeTimers();
+
+      try {
+        await writeItemsFixture(projectA, {
+          "modules/alpha.yaml": [buildSpecItem(9, "alpha-spec", "Alpha Spec v1")],
+          "modules/beta.yaml": [buildSpecItem(10, "beta-spec", "Beta Spec v1")],
+          "modules/gamma.yaml": [buildSpecItem(11, "gamma-spec", "Gamma Spec v1")],
+        });
+
+        const cache = new ProjectEntityCache(projectA);
+        (cache as any).domainDebounceMs = 50;
+        await cache.loadDomain("items");
+
+        const kspecDir = join(projectA, ".kspec");
+        const alphaPath = join(kspecDir, "modules", "alpha.yaml");
+        const betaPath = join(kspecDir, "modules", "beta.yaml");
+
+        await fs.writeFile(
+          alphaPath,
+          yamlStringify([buildSpecItem(9, "alpha-spec", "Alpha Spec v2")]),
+          "utf-8",
+        );
+        await fs.writeFile(
+          betaPath,
+          yamlStringify([buildSpecItem(10, "beta-spec", "Beta Spec v2")]),
+          "utf-8",
+        );
+
+        const alphaReload = cache.handleFileChange(kspecDir, alphaPath);
+        const betaReload = cache.handleFileChange(kspecDir, betaPath);
+
+        await vi.advanceTimersByTimeAsync(50);
+        await Promise.all([alphaReload, betaReload]);
+
+        expect(cache.getItemIndex()?.map((item) => item.title)).toEqual([
+          "Alpha Spec v2",
+          "Beta Spec v2",
+          "Gamma Spec v1",
+        ]);
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    // AC: @daemon-incremental-cache ac-removal-detection
+    it("should remove items whose source module file was deleted", async () => {
+      await writeItemsFixture(projectA, {
+        "modules/alpha.yaml": [buildSpecItem(5, "alpha-spec", "Alpha Spec")],
+        "modules/beta.yaml": [buildSpecItem(6, "beta-spec", "Beta Spec")],
+      });
+
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("items");
+
+      const kspecDir = join(projectA, ".kspec");
+      const alphaPath = join(kspecDir, "modules", "alpha.yaml");
+      const alphaUlid = testUlid("SPEC", 5);
+      await fs.rm(alphaPath);
+
+      await cache.handleFileChange(kspecDir, alphaPath);
+
+      const afterIndex = cache.getItemIndex();
+      expect(afterIndex?.map((item) => item.slugs[0])).toEqual(["beta-spec"]);
+      expect(cache.getItemDetail(alphaUlid)).toBeNull();
+    });
+
+    // AC: @daemon-incremental-cache ac-fallback-full-reload
+    it("should fall back to full item reload when kynetic.yaml changes", async () => {
+      await writeItemsFixture(
+        projectA,
+        {
+          "modules/alpha.yaml": [buildSpecItem(7, "alpha-spec", "Alpha Spec")],
+          "modules/beta.yaml": [buildSpecItem(8, "beta-spec", "Beta Spec")],
+        },
+        ["modules/alpha.yaml"],
+      );
+
+      const cache = new ProjectEntityCache(projectA);
+      const loadAllItemsSpy = vi.spyOn(yamlModule, "loadAllItems");
+      await cache.loadDomain("items");
+      loadAllItemsSpy.mockClear();
+
+      const kspecDir = join(projectA, ".kspec");
+      const manifestPath = join(kspecDir, "kynetic.yaml");
+      await fs.writeFile(
+        manifestPath,
+        buildItemsManifest(["modules/alpha.yaml", "modules/beta.yaml"]),
+        "utf-8",
+      );
+
+      await cache.handleFileChange(kspecDir, manifestPath);
+
+      const afterIndex = cache.getItemIndex();
+      expect(afterIndex?.map((item) => item.slugs[0])).toEqual(["alpha-spec", "beta-spec"]);
+      expect(loadAllItemsSpy).toHaveBeenCalledTimes(1);
+    });
+
+    // AC: @daemon-incremental-cache ac-fallback-full-reload
+    it("should fall back to full item reload for changed spec files outside manifest includes", async () => {
+      const orphanItem = buildSpecItem(12, "orphan-spec", "Orphan Spec");
+      await writeItemsFixture(projectA, {
+        "modules/alpha.yaml": [buildSpecItem(13, "alpha-spec", "Alpha Spec")],
+        "orphan.spec.yaml": [orphanItem],
+      });
+
+      const cache = new ProjectEntityCache(projectA);
+      const loadAllItemsSpy = vi.spyOn(yamlModule, "loadAllItems");
+      await cache.loadDomain("items");
+      loadAllItemsSpy.mockClear();
+
+      const kspecDir = join(projectA, ".kspec");
+      const orphanPath = join(kspecDir, "orphan.spec.yaml");
+      await fs.writeFile(
+        orphanPath,
+        yamlStringify([buildSpecItem(12, "orphan-spec", "Orphan Spec Updated")]),
+        "utf-8",
+      );
+
+      await cache.handleFileChange(kspecDir, orphanPath);
+
+      expect(cache.getItemIndex()?.map((item) => item.slugs[0])).toEqual(["alpha-spec"]);
+      expect(cache.getItemDetail(orphanItem._ulid)).toBeNull();
+      expect(loadAllItemsSpy).toHaveBeenCalledTimes(1);
+    });
+
+    // AC: @daemon-meta-subdomain ac-manifest-only-reload
+    it("reloads only manifest-backed meta data when a meta YAML file changes", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("meta");
+      await cache.loadDomain("items");
+
+      const manifestSpy = vi.spyOn(cache as any, "loadMetaManifestSubdomain");
+      const shadowSpy = vi.spyOn(cache as any, "loadMetaShadowSubdomain");
+      const sessionSpy = vi.spyOn(cache as any, "loadMetaSessionSubdomain");
+
+      const shadowBefore = cache.getShadowInfo();
+      const sessionBefore = cache.getSessionContext();
+
+      const kspecDir = join(projectA, ".kspec");
+      const manifestPath = join(kspecDir, "kynetic.yaml");
+      await cache.handleFileChange(kspecDir, manifestPath);
+
+      expect(manifestSpy).toHaveBeenCalledOnce();
+      expect(shadowSpy).not.toHaveBeenCalled();
+      expect(sessionSpy).not.toHaveBeenCalled();
+      expect(cache.getShadowInfo()).toBe(shadowBefore);
+      expect(cache.getSessionContext()).toBe(sessionBefore);
+    });
+
+    // AC: @daemon-meta-subdomain ac-manifest-only-reload
+    it("reloads only manifest-backed meta data when an included meta YAML file changes", async () => {
+      const kspecDir = join(projectA, ".kspec");
+      const metaManifestPath = join(kspecDir, "kynetic.meta.yaml");
+      const includedMetaPath = join(kspecDir, "meta", "roles.yaml");
+
+      await fs.mkdir(dirname(includedMetaPath), { recursive: true });
+      await fs.writeFile(
+        metaManifestPath,
+        yamlStringify({
+          kynetic_meta: "1.0",
+          includes: ["meta/roles.yaml"],
+          conventions: [],
+        }),
+        "utf-8",
+      );
+      await fs.writeFile(
+        includedMetaPath,
+        yamlStringify({
+          conventions: [],
+        }),
+        "utf-8",
+      );
+
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("meta");
+
+      const manifestSpy = vi.spyOn(cache as any, "loadMetaManifestSubdomain");
+      const shadowSpy = vi.spyOn(cache as any, "loadMetaShadowSubdomain");
+      const sessionSpy = vi.spyOn(cache as any, "loadMetaSessionSubdomain");
+
+      const shadowBefore = cache.getShadowInfo();
+      const sessionBefore = cache.getSessionContext();
+
+      await fs.writeFile(
+        includedMetaPath,
+        yamlStringify({
+          conventions: [{ title: "Roles convention", rules: ["Use named roles"] }],
+        }),
+        "utf-8",
+      );
+
+      await cache.handleFileChange(kspecDir, includedMetaPath);
+
+      expect(manifestSpy).toHaveBeenCalledOnce();
+      expect(shadowSpy).not.toHaveBeenCalled();
+      expect(sessionSpy).not.toHaveBeenCalled();
+      expect(cache.getShadowInfo()).toBe(shadowBefore);
+      expect(cache.getSessionContext()).toBe(sessionBefore);
+    });
+
+    it("deduplicates overlapping manifest-only meta reloads", async () => {
+      const originalKspecTest = process.env.KSPEC_TEST;
+      process.env.KSPEC_TEST = "1";
+
+      try {
+        const cache = new ProjectEntityCache(projectA);
+        (cache as any).domainDebounceMs = 0;
+        await cache.loadDomain("meta");
+
+        const manifestSpy = vi.spyOn(cache as any, "loadMetaManifestSubdomain");
+        const kspecDir = join(projectA, ".kspec");
+        const manifestPath = join(kspecDir, "kynetic.yaml");
+
+        setTestDelay(projectA);
+
+        const firstReload = cache.handleFileChange(kspecDir, manifestPath);
+        await vi.waitFor(() => expect((cache as any).inFlightReloads.has("meta")).toBe(true));
+
+        const secondReload = cache.handleFileChange(kspecDir, manifestPath);
+
+        releaseTestDelay(projectA);
+        await Promise.all([firstReload, secondReload]);
+
+        expect(manifestSpy).toHaveBeenCalledTimes(1);
+        expect(cache.getDomainState("meta")).toBe("ready");
+      } finally {
+        releaseTestDelay(projectA);
+        if (originalKspecTest === undefined) {
+          delete process.env.KSPEC_TEST;
+        } else {
+          process.env.KSPEC_TEST = originalKspecTest;
+        }
+      }
+    });
+
+    // AC: @daemon-entity-cache ac-reload-dedup
+    it("runs pending shadow refreshes after an in-flight manifest-only meta reload finishes", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("meta");
+
+      const originalManifestLoad = (cache as any).loadMetaManifestSubdomain.bind(cache);
+      let releaseManifestLoad!: () => void;
+      const manifestGate = new Promise<void>((resolve) => {
+        releaseManifestLoad = resolve;
+      });
+      const manifestSpy = vi
+        .spyOn(cache as any, "loadMetaManifestSubdomain")
+        .mockImplementation(async (cycle?: unknown) => {
+          await manifestGate;
+          await originalManifestLoad(cycle);
+        });
+      const shadowSpy = vi.spyOn(cache as any, "loadMetaShadowSubdomain");
+
+      const kspecDir = join(projectA, ".kspec");
+      const manifestPath = join(kspecDir, "kynetic.yaml");
+
+      const manifestReload = cache.handleFileChange(kspecDir, manifestPath);
+      await vi.waitFor(() => expect(manifestSpy).toHaveBeenCalledOnce());
+
+      const shadowReload = cache.refreshMetaShadowInfo();
+      await vi.waitFor(() => expect((cache as any).pendingMetaSubdomains.has("shadow")).toBe(true));
+
+      releaseManifestLoad();
+      await Promise.all([manifestReload, shadowReload]);
+
+      expect(manifestSpy).toHaveBeenCalledOnce();
+      expect(shadowSpy).toHaveBeenCalledOnce();
+      expect(cache.getDomainState("meta")).toBe("ready");
+    });
+
+    // AC: @daemon-meta-subdomain ac-session-context-independent
+    it("reloads only cached session context when the session context file changes", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("meta");
+
+      const manifestSpy = vi.spyOn(cache as any, "loadMetaManifestSubdomain");
+      const shadowSpy = vi.spyOn(cache as any, "loadMetaShadowSubdomain");
+      const sessionSpy = vi.spyOn(cache as any, "loadMetaSessionSubdomain");
+
+      const metaBefore = cache.getMetaIndex();
+      const shadowBefore = cache.getShadowInfo();
+      const kspecDir = join(projectA, ".kspec");
+      const sessionContextPath = join(kspecDir, ".kspec-session");
+
+      await fs.writeFile(
+        sessionContextPath,
+        yamlStringify({
+          focus: "Investigate meta sub-domain reloads",
+          threads: ["thread-a"],
+          open_questions: ["question-a"],
+          updated_at: "2026-04-06T00:00:00.000Z",
+        }),
+        "utf-8",
+      );
+
+      await cache.handleFileChange(kspecDir, sessionContextPath);
+
+      expect(sessionSpy).toHaveBeenCalledOnce();
+      expect(manifestSpy).not.toHaveBeenCalled();
+      expect(shadowSpy).not.toHaveBeenCalled();
+      expect(cache.getMetaIndex()).toBe(metaBefore);
+      expect(cache.getShadowInfo()).toBe(shadowBefore);
+      expect(cache.getSessionContext()).toMatchObject({
+        focus: "Investigate meta sub-domain reloads",
+        threads: ["thread-a"],
+        questions: ["question-a"],
+      });
+    });
+
+    // AC: @daemon-meta-subdomain ac-shadow-on-schedule
+    it("refreshes only cached shadow info during background shadow sync", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("meta");
+
+      const manifestSpy = vi.spyOn(cache as any, "loadMetaManifestSubdomain");
+      const shadowSpy = vi.spyOn(cache as any, "loadMetaShadowSubdomain");
+      const sessionSpy = vi.spyOn(cache as any, "loadMetaSessionSubdomain");
+
+      const metaBefore = cache.getMetaIndex();
+      const sessionBefore = cache.getSessionContext();
+      const shadowBefore = cache.getShadowInfo();
+
+      await cache.refreshMetaShadowInfo();
+
+      expect(shadowSpy).toHaveBeenCalledOnce();
+      expect(manifestSpy).not.toHaveBeenCalled();
+      expect(sessionSpy).not.toHaveBeenCalled();
+      expect(cache.getMetaIndex()).toBe(metaBefore);
+      expect(cache.getSessionContext()).toBe(sessionBefore);
+      expect(cache.getShadowInfo()).not.toBeNull();
+      expect(cache.getShadowInfo()).not.toBe(shadowBefore);
+    });
+
+    // AC: @daemon-entity-cache ac-context-reuse
+    it("should reuse initContext once across manifest-triggered multi-domain reloads", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("meta");
+      await cache.loadDomain("items");
+
+      const initContextSpy = vi.spyOn(yamlModule, "initContext");
+      const kspecDir = join(projectA, ".kspec");
+      const manifestPath = join(kspecDir, "kynetic.yaml");
+
+      await cache.handleFileChange(kspecDir, manifestPath);
+
+      expect(initContextSpy).toHaveBeenCalledTimes(1);
+    });
+
+    // AC: @daemon-entity-cache ac-context-reuse
+    it("should start a fresh initContext for a later debounce window", async () => {
+      const originalKspecTest = process.env.KSPEC_TEST;
+      process.env.KSPEC_TEST = "1";
+
+      try {
+        const cache = new ProjectEntityCache(projectA);
+        (cache as any).domainDebounceMs = 0;
+        await cache.loadDomain("meta");
+        await cache.loadDomain("items");
+        await cache.loadDomain("tasks");
+
+        const initContextSpy = vi.spyOn(yamlModule, "initContext");
+        const kspecDir = join(projectA, ".kspec");
+        const manifestPath = join(kspecDir, "kynetic.yaml");
+
+        setTestDelay(projectA);
+
+        const firstWindowReload = cache.handleFileChange(kspecDir, manifestPath);
+        await vi.waitFor(() => {
+          expect((cache as any).inFlightReloads.has("meta")).toBe(true);
+          expect((cache as any).inFlightReloads.has("items")).toBe(true);
+        });
+
+        const secondWindowReload = cache.invalidateDomain("tasks");
+        await vi.waitFor(() => {
+          expect((cache as any).inFlightReloads.has("meta")).toBe(true);
+          expect((cache as any).inFlightReloads.has("items")).toBe(true);
+          expect((cache as any).inFlightReloads.has("tasks")).toBe(true);
+        });
+
+        releaseTestDelay(projectA);
+        await Promise.all([firstWindowReload, secondWindowReload]);
+
+        expect(initContextSpy).toHaveBeenCalledTimes(2);
+      } finally {
+        releaseTestDelay(projectA);
+        if (originalKspecTest === undefined) {
+          delete process.env.KSPEC_TEST;
+        } else {
+          process.env.KSPEC_TEST = originalKspecTest;
+        }
+      }
+    });
+
     it("should invalidate sessions domain when session watcher path is received", async () => {
       const cache = new ProjectEntityCache(projectA);
       await cache.loadDomain("sessions");
@@ -526,6 +1352,318 @@ describe("ProjectEntityCache", () => {
       // Sessions domain should have been reloaded
       const after = cache.getSessionIndex();
       expect(after).not.toBe(before);
+    });
+
+    // AC: @daemon-incremental-cache ac-single-entity-patch
+    // AC: @daemon-incremental-cache ac-index-consistency
+    it("should patch only the changed session without rescanning the sessions directory", async () => {
+      const sessionsDir = join(projectA, ".kspec-sessions");
+      await fs.mkdir(sessionsDir, { recursive: true });
+
+      const alphaDir = join(sessionsDir, "session-alpha");
+      const betaDir = join(sessionsDir, "session-beta");
+      await fs.mkdir(alphaDir, { recursive: true });
+      await fs.mkdir(betaDir, { recursive: true });
+      const alphaPath = join(alphaDir, "session.yaml");
+      await fs.writeFile(
+        alphaPath,
+        yamlStringify({
+          id: "session-alpha",
+          agent_type: "claude-agent-acp",
+          status: "active",
+          started_at: "2026-04-01T00:00:00.000Z",
+          event_count: 1,
+        }),
+        "utf-8",
+      );
+      await fs.writeFile(
+        join(betaDir, "session.yaml"),
+        yamlStringify({
+          id: "session-beta",
+          agent_type: "claude-agent-acp",
+          status: "completed",
+          started_at: "2026-04-02T00:00:00.000Z",
+          ended_at: "2026-04-02T00:05:00.000Z",
+          event_count: 2,
+        }),
+        "utf-8",
+      );
+
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("sessions");
+
+      const metadataSpy = vi.spyOn(sessionStoreModule, "getSessionMetadataOnly");
+
+      await fs.writeFile(
+        alphaPath,
+        yamlStringify({
+          id: "session-alpha",
+          agent_type: "claude-agent-acp",
+          status: "completed",
+          started_at: "2026-04-01T00:00:00.000Z",
+          ended_at: "2026-04-01T00:07:00.000Z",
+          event_count: 7,
+          iteration_count: 3,
+        }),
+        "utf-8",
+      );
+
+      await cache.handleFileChange(sessionsDir, alphaPath);
+
+      expect(metadataSpy).toHaveBeenCalledTimes(1);
+      expect(metadataSpy).toHaveBeenCalledWith(sessionsDir, "session-alpha");
+      expect(cache.getSessionDetail("session-alpha")).toBeNull();
+      expect(cache.getSessionIndex()?.map((session) => session.id)).toEqual([
+        "session-beta",
+        "session-alpha",
+      ]);
+      expect(cache.getSessionIndex()?.find((session) => session.id === "session-beta")).toMatchObject(
+        {
+          id: "session-beta",
+          status: "completed",
+          event_count: 2,
+        },
+      );
+    });
+
+    // AC: @daemon-incremental-cache ac-single-entity-patch
+    // AC: @daemon-incremental-cache ac-index-consistency
+    // AC: @daemon-entity-cache ac-session-bounded-index
+    it("should insert a new session into the bounded index in recency order", async () => {
+      const sessionsDir = join(projectA, ".kspec-sessions");
+      await fs.mkdir(sessionsDir, { recursive: true });
+
+      for (const [id, startedAt] of [
+        ["session-oldest", "2026-04-01T00:00:00.000Z"],
+        ["session-middle", "2026-04-02T00:00:00.000Z"],
+      ] as const) {
+        const sessionDir = join(sessionsDir, id);
+        await fs.mkdir(sessionDir, { recursive: true });
+        await fs.writeFile(
+          join(sessionDir, "session.yaml"),
+          yamlStringify({
+            id,
+            agent_type: "claude-agent-acp",
+            status: "completed",
+            started_at: startedAt,
+            ended_at: startedAt,
+          }),
+          "utf-8",
+        );
+      }
+
+      const cache = new ProjectEntityCache(projectA, { maxIndexSize: 2 });
+      await cache.loadDomain("sessions");
+
+      const newestDir = join(sessionsDir, "session-newest");
+      await fs.mkdir(newestDir, { recursive: true });
+      const newestPath = join(newestDir, "session.yaml");
+      await fs.writeFile(
+        newestPath,
+        yamlStringify({
+          id: "session-newest",
+          agent_type: "claude-agent-acp",
+          status: "completed",
+          started_at: "2026-04-03T00:00:00.000Z",
+          ended_at: "2026-04-03T00:05:00.000Z",
+        }),
+        "utf-8",
+      );
+
+      const metadataSpy = vi.spyOn(sessionStoreModule, "getSessionMetadataOnly");
+
+      await cache.handleFileChange(sessionsDir, newestPath);
+
+      expect(metadataSpy).toHaveBeenCalledTimes(1);
+      expect(metadataSpy).toHaveBeenCalledWith(sessionsDir, "session-newest");
+      expect(cache.getSessionIndex()?.map((session) => session.id)).toEqual([
+        "session-newest",
+        "session-middle",
+      ]);
+      expect(cache.getSessionDetail("session-newest")).toBeNull();
+    });
+
+    // AC: @daemon-incremental-cache ac-removal-detection
+    it("should remove a deleted session from index, detail cache, and live counters", async () => {
+      const sessionsDir = join(projectA, ".kspec-sessions");
+      await fs.mkdir(sessionsDir, { recursive: true });
+
+      const removableDir = join(sessionsDir, "session-removable");
+      await fs.mkdir(removableDir, { recursive: true });
+      const removablePath = join(removableDir, "session.yaml");
+      await fs.writeFile(
+        removablePath,
+        yamlStringify({
+          id: "session-removable",
+          agent_type: "claude-agent-acp",
+          status: "active",
+          started_at: "2026-04-03T00:00:00.000Z",
+          event_count: 1,
+        }),
+        "utf-8",
+      );
+
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("sessions");
+      cache.setSessionDetail("session-removable", {
+        id: "session-removable",
+        status: "active",
+        agent_type: "claude-agent-acp",
+        agent_id: undefined,
+        session_type: "agent",
+        trigger: "legacy",
+        task_id: undefined,
+        started_at: "2026-04-03T00:00:00.000Z",
+        ended_at: undefined,
+        duration_ms: 0,
+        event_count: 1,
+        iteration_count: 0,
+        tasks_completed: 0,
+      });
+      cache.incrementSessionEventCount("session-removable");
+
+      await fs.rm(removableDir, { recursive: true, force: true });
+
+      const metadataSpy = vi.spyOn(sessionStoreModule, "getSessionMetadataOnly");
+      await cache.handleFileChange(sessionsDir, removablePath);
+
+      expect(metadataSpy).not.toHaveBeenCalled();
+      expect(cache.getSessionIndex()?.find((session) => session.id === "session-removable")).toBe(
+        undefined,
+      );
+      expect(cache.getSessionDetail("session-removable")).toBeNull();
+      expect(cache.getSessionLiveEventCount("session-removable")).toBeUndefined();
+    });
+
+    // AC: @daemon-incremental-cache ac-single-entity-patch
+    it("should clear stale detail cache on active-session event invalidation so routes use live counts", async () => {
+      const sessionsDir = join(projectA, ".kspec-sessions");
+      await fs.mkdir(sessionsDir, { recursive: true });
+
+      const sessionId = "session-live-detail";
+      const sessionDir = join(sessionsDir, sessionId);
+      await fs.mkdir(sessionDir, { recursive: true });
+      const eventsPath = join(sessionDir, "events.jsonl");
+      await fs.writeFile(
+        join(sessionDir, "session.yaml"),
+        yamlStringify({
+          id: sessionId,
+          agent_type: "claude-agent-acp",
+          status: "active",
+          started_at: "2026-04-03T00:00:00.000Z",
+          event_count: 1,
+        }),
+        "utf-8",
+      );
+      await fs.writeFile(eventsPath, "", "utf-8");
+
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("sessions");
+      cache.setSessionDetail(sessionId, {
+        id: sessionId,
+        status: "active",
+        agent_type: "claude-agent-acp",
+        agent_id: undefined,
+        session_type: "agent",
+        trigger: "legacy",
+        task_id: undefined,
+        started_at: "2026-04-03T00:00:00.000Z",
+        ended_at: undefined,
+        duration_ms: 0,
+        event_count: 1,
+        iteration_count: 0,
+        tasks_completed: 0,
+      });
+      cache.incrementSessionEventCount(sessionId);
+      cache.incrementSessionEventCount(sessionId);
+
+      await fs.appendFile(eventsPath, '{"type":"tool_call"}\n', "utf-8");
+      await cache.handleFileChange(sessionsDir, eventsPath);
+
+      expect(cache.getSessionDetail(sessionId)).toBeNull();
+      expect(cache.getSessionIndex()?.find((session) => session.id === sessionId)?.event_count).toBe(3);
+    });
+
+    // AC: @daemon-incremental-cache ac-single-entity-patch
+    it("should mark an incrementally invalidated active session as stalled when it crosses stale thresholds", async () => {
+      vi.useFakeTimers();
+
+      try {
+        vi.setSystemTime(new Date("2026-04-02T12:00:00.000Z"));
+
+        const sessionsDir = join(projectA, ".kspec-sessions");
+        await fs.mkdir(sessionsDir, { recursive: true });
+
+        const sessionId = "session-turns-stale";
+        const sessionDir = join(sessionsDir, sessionId);
+        await fs.mkdir(sessionDir, { recursive: true });
+        const metadataPath = join(sessionDir, "session.yaml");
+        await fs.writeFile(
+          metadataPath,
+          yamlStringify({
+            id: sessionId,
+            agent_type: "claude-agent-acp",
+            status: "active",
+            started_at: "2026-04-02T00:00:00.000Z",
+            event_count: 1,
+          }),
+          "utf-8",
+        );
+
+        const cache = new ProjectEntityCache(projectA);
+        await cache.loadDomain("sessions");
+        (cache as any).domainDebounceMs = 0;
+
+        expect(cache.getSessionIndex()?.find((session) => session.id === sessionId)?.status).toBe(
+          "active",
+        );
+
+        vi.setSystemTime(new Date("2026-04-03T18:30:00.000Z"));
+        const invalidation = cache.handleFileChange(sessionsDir, metadataPath);
+        await vi.advanceTimersByTimeAsync(0);
+        await invalidation;
+
+        expect(cache.getSessionIndex()?.find((session) => session.id === sessionId)?.status).toBe(
+          "stalled",
+        );
+        expect(cache.getSessionDetail(sessionId)).toBeNull();
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    // AC: @daemon-incremental-cache ac-fallback-full-reload
+    it("should fall back to a full sessions reload when the sessions root changes without a session id", async () => {
+      const sessionsDir = join(projectA, ".kspec-sessions");
+      await fs.mkdir(sessionsDir, { recursive: true });
+
+      const sessionId = "session-root-fallback";
+      const sessionDir = join(sessionsDir, sessionId);
+      await fs.mkdir(sessionDir, { recursive: true });
+      await fs.writeFile(
+        join(sessionDir, "session.yaml"),
+        yamlStringify({
+          id: sessionId,
+          agent_type: "claude-agent-acp",
+          status: "completed",
+          started_at: "2026-04-03T00:00:00.000Z",
+          ended_at: "2026-04-03T00:05:00.000Z",
+        }),
+        "utf-8",
+      );
+
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("sessions");
+
+      const incrementalSpy = vi.spyOn(cache as any, "tryIncrementalSessionUpdate");
+      const loadDomainSpy = vi.spyOn(cache, "loadDomain");
+      incrementalSpy.mockClear();
+      loadDomainSpy.mockClear();
+
+      await cache.handleFileChange(sessionsDir, sessionsDir);
+
+      expect(incrementalSpy).toHaveBeenCalledTimes(1);
+      expect(loadDomainSpy).toHaveBeenCalledWith("sessions", expect.anything());
     });
   });
 
@@ -622,6 +1760,240 @@ describe("ProjectEntityCache", () => {
       const afterWriteThrough = cache.getTaskIndex();
       await cache.invalidateDomain("tasks");
       expect(cache.getTaskIndex()).toBe(afterWriteThrough);
+    });
+
+    // AC: @daemon-incremental-cache ac-single-entity-patch
+    // AC: @daemon-entity-cache ac-write-through
+    it("should use incremental task patching for writeThrough when given a task hint", async () => {
+      const kspecDir = join(projectA, ".kspec");
+      seedSplitTask(kspecDir, {
+        _ulid: "01TASKB0000000000000000000",
+        slugs: ["task-b-sample"],
+        title: "Sample Task B",
+        type: "task",
+        status: "pending",
+        priority: 2,
+        spec_ref: "@spec-b-sample",
+        depends_on: [],
+        notes: [],
+        todos: [],
+        created_at: "2026-01-24T00:00:00.000Z",
+      });
+
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("tasks");
+
+      const unchangedTask = cache.getTaskDetail("01TASKB0000000000000000000");
+      expect(unchangedTask).not.toBeNull();
+
+      const loadDomainSpy = vi.spyOn(cache, "loadDomain");
+      loadDomainSpy.mockClear();
+
+      const taskPath = join(kspecDir, "tasks", "01TASKA0000000000000000000", "task.yaml");
+      await fs.writeFile(
+        taskPath,
+        yamlStringify({
+          _ulid: "01TASKA0000000000000000000",
+          slugs: ["task-a-sample"],
+          title: "Sample Task A via WriteThrough",
+          type: "task",
+          status: "in_progress",
+          priority: 1,
+          spec_ref: "@spec-a-sample",
+          depends_on: [],
+          created_at: "2026-01-24T00:00:00.000Z",
+        }),
+        "utf-8",
+      );
+
+      await cache.writeThrough("tasks", { ulid: "01TASKA0000000000000000000" });
+
+      expect(loadDomainSpy).not.toHaveBeenCalled();
+      expect(cache.getTaskDetail("01TASKA0000000000000000000")?.title).toBe(
+        "Sample Task A via WriteThrough",
+      );
+      expect(cache.getTaskDetail("01TASKB0000000000000000000")).toBe(unchangedTask);
+
+      const afterWriteThrough = cache.getTaskIndex();
+      await cache.invalidateDomain("tasks");
+      expect(cache.getTaskIndex()).toBe(afterWriteThrough);
+    });
+
+    // AC: @daemon-incremental-cache ac-single-entity-patch
+    // AC: @daemon-incremental-cache ac-index-consistency
+    // AC: @daemon-entity-cache ac-write-through
+    it("should preserve both task patches during concurrent hinted writeThrough calls", async () => {
+      const kspecDir = join(projectA, ".kspec");
+      seedSplitTask(kspecDir, {
+        _ulid: "01TASKB0000000000000000000",
+        slugs: ["task-b-sample"],
+        title: "Sample Task B",
+        type: "task",
+        status: "pending",
+        priority: 2,
+        spec_ref: "@spec-b-sample",
+        depends_on: [],
+        notes: [],
+        todos: [],
+        created_at: "2026-01-24T00:00:00.000Z",
+      });
+
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("tasks");
+
+      const taskAPath = join(kspecDir, "tasks", "01TASKA0000000000000000000", "task.yaml");
+      const taskBPath = join(kspecDir, "tasks", "01TASKB0000000000000000000", "task.yaml");
+      await fs.writeFile(
+        taskAPath,
+        yamlStringify({
+          _ulid: "01TASKA0000000000000000000",
+          slugs: ["task-a-sample"],
+          title: "Sample Task A concurrent update",
+          type: "task",
+          status: "in_progress",
+          priority: 1,
+          spec_ref: "@spec-a-sample",
+          depends_on: [],
+          created_at: "2026-01-24T00:00:00.000Z",
+        }),
+        "utf-8",
+      );
+      await fs.writeFile(
+        taskBPath,
+        yamlStringify({
+          _ulid: "01TASKB0000000000000000000",
+          slugs: ["task-b-sample"],
+          title: "Sample Task B concurrent update",
+          type: "task",
+          status: "completed",
+          priority: 2,
+          spec_ref: "@spec-b-sample",
+          depends_on: [],
+          created_at: "2026-01-24T00:00:00.000Z",
+        }),
+        "utf-8",
+      );
+
+      const originalGetTask = TaskDataManager.prototype.getTask;
+      let releaseTaskARead!: () => void;
+      const taskAReadGate = new Promise<void>((resolve) => {
+        releaseTaskARead = resolve;
+      });
+      let resolveTaskBRead!: () => void;
+      const taskBRead = new Promise<void>((resolve) => {
+        resolveTaskBRead = resolve;
+      });
+
+      vi.spyOn(TaskDataManager.prototype, "getTask").mockImplementation(async function (ctx, ref) {
+        if (ref === "01TASKA0000000000000000000") {
+          await taskAReadGate;
+        }
+        const task = await originalGetTask.call(this, ctx, ref);
+        if (ref === "01TASKB0000000000000000000") {
+          resolveTaskBRead();
+        }
+        return task;
+      });
+
+      const writeThroughs = Promise.all([
+        cache.writeThrough("tasks", { ulid: "01TASKA0000000000000000000" }),
+        cache.writeThrough("tasks", { ulid: "01TASKB0000000000000000000" }),
+      ]);
+
+      await Promise.race([taskBRead, new Promise((resolve) => setTimeout(resolve, 25))]);
+      releaseTaskARead();
+      await writeThroughs;
+
+      expect(cache.getTaskDetail("01TASKA0000000000000000000")?.title).toBe(
+        "Sample Task A concurrent update",
+      );
+      expect(cache.getTaskDetail("01TASKB0000000000000000000")?.title).toBe(
+        "Sample Task B concurrent update",
+      );
+      expect(cache.getTaskDetail("01TASKB0000000000000000000")?.status).toBe("completed");
+    });
+
+    // AC: @daemon-incremental-cache ac-fallback-full-reload
+    // AC: @daemon-entity-cache ac-write-through
+    it("should fall back to a full reload when writeThrough has no entity hint", async () => {
+      const kspecDir = join(projectA, ".kspec");
+      seedSplitTask(kspecDir, {
+        _ulid: "01TASKB0000000000000000000",
+        slugs: ["task-b-sample"],
+        title: "Sample Task B",
+        type: "task",
+        status: "pending",
+        priority: 2,
+        spec_ref: "@spec-b-sample",
+        depends_on: [],
+        notes: [],
+        todos: [],
+        created_at: "2026-01-24T00:00:00.000Z",
+      });
+
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("tasks");
+
+      const sentinel = { _ulid: "01TASKB0000000000000000000", title: "stale detail" } as any;
+      cache.setTaskDetail("01TASKB0000000000000000000", sentinel);
+
+      const taskPath = join(kspecDir, "tasks", "01TASKA0000000000000000000", "task.yaml");
+      await fs.writeFile(
+        taskPath,
+        yamlStringify({
+          _ulid: "01TASKA0000000000000000000",
+          slugs: ["task-a-sample"],
+          title: "Sample Task A full reload",
+          type: "task",
+          status: "in_progress",
+          priority: 1,
+          spec_ref: "@spec-a-sample",
+          depends_on: [],
+          created_at: "2026-01-24T00:00:00.000Z",
+        }),
+        "utf-8",
+      );
+
+      await cache.writeThrough("tasks");
+
+      expect(cache.getTaskDetail("01TASKB0000000000000000000")).not.toBe(sentinel);
+      expect(cache.getTaskDetail("01TASKB0000000000000000000")?.title).toBe("Sample Task B");
+    });
+
+    // AC: @daemon-incremental-cache ac-multi-entity-file
+    // AC: @daemon-entity-cache ac-write-through
+    it("should use item source-file patching for writeThrough when given an item hint", async () => {
+      await writeItemsFixture(projectA, {
+        "modules/alpha.yaml": [buildSpecItem(20, "alpha-spec", "Alpha Spec v1")],
+        "modules/beta.yaml": [buildSpecItem(21, "beta-spec", "Beta Spec")],
+      });
+
+      const cache = new ProjectEntityCache(projectA);
+      const loadAllItemsSpy = vi.spyOn(yamlModule, "loadAllItems");
+      await cache.loadDomain("items");
+      loadAllItemsSpy.mockClear();
+
+      const alphaUlid = testUlid("SPEC", 20);
+      const betaUlid = testUlid("SPEC", 21);
+      const betaBefore = cache.getItemDetail(betaUlid);
+      expect(betaBefore).not.toBeNull();
+
+      const alphaPath = join(projectA, ".kspec", "modules", "alpha.yaml");
+      await fs.writeFile(
+        alphaPath,
+        yamlStringify([buildSpecItem(20, "alpha-spec", "Alpha Spec v2")]),
+        "utf-8",
+      );
+
+      await cache.writeThrough("items", { ulid: alphaUlid });
+
+      expect(loadAllItemsSpy).not.toHaveBeenCalled();
+      expect(cache.getItemDetail(alphaUlid)?.title).toBe("Alpha Spec v2");
+      expect(cache.getItemDetail(betaUlid)).toBe(betaBefore);
+
+      const afterWriteThrough = cache.getItemIndex();
+      await cache.invalidateDomain("items");
+      expect(cache.getItemIndex()).toBe(afterWriteThrough);
     });
 
     // AC: @daemon-entity-cache ac-write-through
@@ -1155,6 +2527,40 @@ describe("ProjectEntityCache", () => {
       expect(cache.getDomainState("tasks")).toBe("ready");
       expect(cache.getDomainState("items")).toBe("ready");
       expect(cache.getDomainState("meta")).toBe("ready");
+    });
+
+    // AC: @daemon-meta-subdomain ac-initial-load-all
+    it("keeps meta loading until all three meta sub-domains finish the initial load", async () => {
+      const cache = new ProjectEntityCache(projectA);
+
+      const manifestSpy = vi.spyOn(cache as any, "loadMetaManifestSubdomain");
+      const shadowSpy = vi.spyOn(cache as any, "loadMetaShadowSubdomain");
+      const originalLoadSession = (cache as any).loadMetaSessionSubdomain.bind(cache);
+      let releaseSessionLoad!: () => void;
+      const sessionGate = new Promise<void>((resolve) => {
+        releaseSessionLoad = resolve;
+      });
+      const sessionSpy = vi
+        .spyOn(cache as any, "loadMetaSessionSubdomain")
+        .mockImplementation(async () => {
+          await originalLoadSession();
+          await sessionGate;
+        });
+
+      const loadPromise = cache.loadDomain("meta");
+
+      await vi.waitFor(() => expect(sessionSpy).toHaveBeenCalledOnce());
+      expect(manifestSpy).toHaveBeenCalledOnce();
+      expect(shadowSpy).toHaveBeenCalledOnce();
+      expect(cache.getDomainState("meta")).toBe("loading");
+
+      releaseSessionLoad();
+      await loadPromise;
+
+      expect(cache.getDomainState("meta")).toBe("ready");
+      expect(cache.getMetaIndex()).not.toBeNull();
+      expect(cache.getShadowInfo()).not.toBeNull();
+      expect(cache.getSessionContext()).not.toBeNull();
     });
   });
 

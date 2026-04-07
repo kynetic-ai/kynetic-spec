@@ -565,7 +565,13 @@ export function createTriageRoutes(options: TriageRouteOptions) {
             await actCache.writeThrough("triage");
             const action = record.action;
             if (action === "promote") {
-              await actCache.writeThrough("tasks");
+              const createdTask = result.resultRef
+                ? await resolveTaskDataManager(ctx).getTask(ctx, result.resultRef).catch(() => undefined)
+                : undefined;
+              await actCache.writeThrough(
+                "tasks",
+                createdTask ? { ulid: createdTask._ulid } : undefined,
+              );
               await actCache.writeThrough("inbox");
             } else if (action === "delete" || action === "duplicate") {
               await actCache.writeThrough("inbox");

@@ -109,6 +109,10 @@ export function logHeartbeatDegradationWarning(runtime: DaemonRuntime): void {
   );
 }
 
+interface ShadowPullReloadableCache {
+  loadAll(): Promise<void>;
+}
+
 function hasWebUiIndex(dir: string | undefined): dir is string {
   return Boolean(dir && existsSync(join(dir, "index.html")));
 }
@@ -188,6 +192,19 @@ export function resolveWebUiPath(webUiDir?: string): string | null {
   }
 
   return null;
+}
+
+export function createShadowSyncOnPullHandler(
+  startupProjectPath: string | undefined,
+  getEntityCache: (projectPath: string) => ShadowPullReloadableCache | undefined,
+): () => Promise<void> {
+  return async () => {
+    if (!startupProjectPath) return;
+    const cache = getEntityCache(startupProjectPath);
+    if (!cache) return;
+    console.log("[daemon] Shadow sync pulled data — reloading entity cache");
+    await cache.loadAll();
+  };
 }
 
 // WebSocket pub/sub and heartbeat managers
@@ -727,11 +744,11 @@ export async function createServer(options: ServerOptions) {
   // Both .kspec/ and .kspec-sessions/ changes flow through handleFileChange;
   // fileToDomain() maps YAML files to their domains and ULID-prefixed session
   // paths to the sessions domain.
-  projectContextManager.setCacheInvalidationCallback((projectPath, kspecDir, file) => {
+  projectContextManager.setCacheInvalidationCallback((projectPath, kspecDir, file, content) => {
     const cache = entityCacheModule.getEntityCache(projectPath);
     if (!cache) return;
 
-    cache.handleFileChange(kspecDir, file).catch((err: unknown) => {
+    cache.handleFileChange(kspecDir, file, content).catch((err: unknown) => {
       console.error(`[entity-cache] Error handling file change for ${projectPath}:`, err);
     });
   });
@@ -791,13 +808,10 @@ export async function createServer(options: ServerOptions) {
           },
           pubsub: pubsubManager,
           // AC: @daemon-read-path ac-background-sync — invalidate entity cache when background sync pulls new data
-          onPull: async () => {
-            if (!startupProjectPath) return;
-            const cache = entityCacheModule.getEntityCache(startupProjectPath);
-            if (!cache) return;
-            console.log("[daemon] Shadow sync pulled data — reloading entity cache");
-            await cache.loadAll();
-          },
+          onPull: createShadowSyncOnPullHandler(
+            startupProjectPath,
+            entityCacheModule.getEntityCache,
+          ),
         });
         shadowSyncScheduler.start();
       }
