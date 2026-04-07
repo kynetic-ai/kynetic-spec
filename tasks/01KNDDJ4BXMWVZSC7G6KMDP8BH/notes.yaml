@@ -74,3 +74,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-07T04:42:31.638Z
+  - _ulid: 01KNK49MK8FBA2YKF2PZZME3A2
+    content: "Fix cycle 3: addressed the blocker for arbitrary meta include files by caching resolved
+      meta manifest source files and treating watcher invalidations for those included YAML files as
+      manifest-only meta reloads. Added a regression test covering included meta YAML changes and
+      re-verified @daemon-meta-subdomain with NODE_ENV=development npm test --
+      daemon-entity-cache.test.ts (31/31 suites, 131/131 tests) plus NODE_ENV=development npm test
+      -- --fresh (2070/2070 suites, 7549 passed, 5 skipped)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T04:47:59.593Z
