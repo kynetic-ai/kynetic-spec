@@ -122121,6 +122121,18 @@ reviews:
         runner: npm
         created_at: 2026-04-07T03:20:33.136Z
         completed_at: 2026-04-07T03:20:33.136Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Focused repro using a delayed loadMetaManifestSubdomain showed overlapping meta
+          invalidations: {started:2, active:2, maxActive:2, inFlightReloads:1}. Expected maxActive=1
+          if meta reload dedup were preserved."
+        name: meta-reload-dedup-repro
+        required: true
+        runner: tsx
+        created_at: 2026-04-07T03:20:35.855Z
+        completed_at: 2026-04-07T03:20:35.855Z
     events:
       - _ulid: 01KNJZ7T2X55PMK4G30CRWRXQ0
         actor: Jacob Chapel
@@ -122170,6 +122182,13 @@ reviews:
           status: skipped
           name: npm-test
         timestamp: 2026-04-07T03:20:34.104Z
+      - _ulid: 01KNJZ9MN1TAJEWXJ5D6T06KFT
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: meta-reload-dedup-repro
+        timestamp: 2026-04-07T03:20:36.769Z
     examined_commit: 82b0e36155173b06f9cc85bf4c36a93b876855c6
     external_links: []
     lifecycle_state: open
@@ -122222,5 +122241,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-07T03:19:36.797Z
-    updated_at: 2026-04-07T03:20:33.136Z
+    updated_at: 2026-04-07T03:20:35.855Z
     notes: []
