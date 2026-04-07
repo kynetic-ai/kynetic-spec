@@ -23948,9 +23948,24 @@ runs:
     completed_at: 2026-04-07T18:58:46.850Z
   - _ulid: 01KNMNVWA1BEZDXQVE17Z9X47Y
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-07T19:14:17.537Z
+        completed_at: 2026-04-07T19:15:26.419Z
+        notes: "What worked well: targeted parser+daemon API reruns caught the null-index regression before
+          resubmission, and anchored review threads made the fix cycle precise. Friction: kspec task
+          submit initially went through the daemon path and failed with fetch failed during
+          dispatch; had to rerun in direct mode with KSPEC_NO_DAEMON=1. Search coverage: no existing
+          matches for the daemon submit fallback issue or for the partial-detail cache bug. Capture:
+          recorded one friction observation for the daemon submit fallback problem; no additional
+          items were high-confidence enough to capture."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-07T19:15:26.419Z
+        completed_at: 2026-04-07T19:15:26.419Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-07T19:14:17.537Z
