@@ -10,3 +10,13 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-07T23:11:57.228Z
+  - _ulid: 01KNN40P9AV0TRMSFQQHZJJ41V
+    content: Implementation complete. Added loadAllTasksWithHistory() as optional method on
+      TaskStorageBackend interface, implemented in SplitTaskBackend (reuses
+      loadTaskFromDirWithHistory in bulk loop), delegated through TaskDataManager with fallback for
+      backends without it. Updated entity-cache doLoadDomain(tasks) to use bulk method instead of
+      per-task loop. Per-task loadTaskWithHistory() preserved for incremental updates. All 7642
+      tests pass (5 CI-skipped).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-07T23:21:35.274Z
