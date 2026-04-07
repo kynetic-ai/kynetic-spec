@@ -124426,6 +124426,17 @@ reviews:
         required: true
         created_at: 2026-04-07T08:09:03.188Z
         completed_at: 2026-04-07T08:09:03.188Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: The concurrency task still leaves the readiness rule mis-specified relative to the spec by
+          requiring all cache domains to be ready instead of the specific domains each allowlisted
+          command touches.
+        name: Task executability
+        required: true
+        created_at: 2026-04-07T08:09:08.582Z
+        completed_at: 2026-04-07T08:09:08.582Z
     events:
       - _ulid: 01KNKFQDJTD2D15JPPSZJXZXQN
         actor: "@claude"
@@ -124475,6 +124486,13 @@ reviews:
           status: pass
           name: Coverage mapping
         timestamp: 2026-04-07T08:09:03.992Z
+      - _ulid: 01KNKFSZH29WSA7N0F1SA6WP06
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: Task executability
+        timestamp: 2026-04-07T08:09:09.410Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -124522,5 +124540,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-07T08:07:45.498Z
-    updated_at: 2026-04-07T08:09:03.188Z
+    updated_at: 2026-04-07T08:09:08.582Z
     notes: []
