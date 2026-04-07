@@ -122956,6 +122956,12 @@ reviews:
           status: skipped
           name: npm-test
         timestamp: 2026-04-07T04:26:28.532Z
+      - _ulid: 01KNK4C8J9DRHF7DG81SQBJT8C
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNK2WN4GTZ0VYFAG6P9B0TZC
+        timestamp: 2026-04-07T04:49:25.577Z
     examined_commit: a756106068e3feea81055805f98a0510b71aa40a
     external_links: []
     lifecycle_state: closed
@@ -122983,6 +122989,14 @@ reviews:
               still violates @daemon-meta-subdomain ac-manifest-only-reload by re-running git shadow
               checks and session reads for included meta YAML changes.
             created_at: 2026-04-07T04:23:25.585Z
+          - _ulid: 01KNK4C7SRJF7G3ZRWKEA5JNM6
+            author: Jacob Chapel
+            body: "Fixed in 3bd80c9d5: the meta cache now remembers the resolved source files for the meta
+              manifest plus all expanded meta includes, and watcher invalidations for those included
+              files route through the manifest-only subdomain reload path. Added a regression test
+              that changes .kspec/meta/roles.yaml and verifies only loadMetaManifestSubdomain runs
+              while shadow/session cached objects stay untouched."
+            created_at: 2026-04-07T04:49:24.792Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -122993,7 +123007,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-07T04:25:20.955Z
     created_at: 2026-04-07T04:15:01.017Z
-    updated_at: 2026-04-07T04:26:27.734Z
+    updated_at: 2026-04-07T04:49:24.792Z
     notes: []
   - _ulid: 01KNK32GBQRGQJ0ND2E5SAATFK
     slugs: []
