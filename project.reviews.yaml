@@ -124746,6 +124746,16 @@ reviews:
         required: true
         created_at: 2026-04-07T08:18:56.542Z
         completed_at: 2026-04-07T08:18:56.542Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: The concurrency task still depends on the cache-aware context and loader phases, including
+          task history, before attempting to bypass the dispatch mutex.
+        name: Dependency ordering
+        required: true
+        created_at: 2026-04-07T08:19:12.480Z
+        completed_at: 2026-04-07T08:19:12.480Z
     events:
       - _ulid: 01KNKGB6VD6CJ9NQ0VD5GWMR06
         actor: "@claude"
@@ -124781,6 +124791,13 @@ reviews:
           status: fail
           name: Task executability
         timestamp: 2026-04-07T08:19:01.701Z
+      - _ulid: 01KNKGCD8SHC2Z605F37B16RBZ
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Dependency ordering
+        timestamp: 2026-04-07T08:19:13.305Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -124815,5 +124832,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-07T08:18:33.965Z
-    updated_at: 2026-04-07T08:18:56.542Z
+    updated_at: 2026-04-07T08:19:12.480Z
     notes: []
