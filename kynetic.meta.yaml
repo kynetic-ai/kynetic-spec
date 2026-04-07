@@ -13210,6 +13210,23 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-07T06:26:33.658Z
+  - _ulid: 01KNMC9XRFC54MK2NYVYQ2QDX1
+    type: success
+    content: Using file-backed JSON payloads for kspec batch kept the spec mutation workflow reliable
+      and avoided shell quoting problems during autonomous task work.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T16:27:12.015Z
+  - _ulid: 01KNMC9Y4J6DM9GA321RJZ88NE
+    type: friction
+    content: kspec batch argument shapes are not always obvious from the top-level command names; task
+      note rejected body and required message, causing a failed first attempt before the actual spec
+      update could be applied.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T16:27:12.402Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
