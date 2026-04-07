@@ -40226,3 +40226,79 @@ workspaces:
         head: 2c9267a1925319c10a2571e224cff060caf50007
         last_seen_at: 2026-04-07T05:07:54.372Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-writethrough-incremental-alignment-01knddj4
+  - active_role: null
+    base_branch_point: dfe2138f1545b01c3147f5f425dc3ef7cff403b1
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/stabilize-flaky-agent-dispatch-post-invocation-re-evaluation-tests/01knk2vk
+    canonical_branch_head: dfe2138f1545b01c3147f5f425dc3ef7cff403b1
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-04-07T05:08:08.245Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-04-07T05:08:08.245Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: dfe2138f1545b01c3147f5f425dc3ef7cff403b1
+      updated_at: 2026-04-07T05:08:08.245Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KNK2VKWW5MPK2C0NSNF3FC90"
+    task_slug: stabilize-flaky-agent-dispatch-post-invocation-re-evaluation-tests
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-04-07T05:08:08.245Z
+      created_at: 2026-04-07T05:08:08.245Z
+      updated_at: 2026-04-07T05:08:08.245Z
+    workspace_id: dispatch-workspace-01KNK2VKWW5MPK2C0NSNF3FC90
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/stabilize-flaky-agent-dispatch-post-invocation-re-evaluation-tests/01knk2vk
+        head: dfe2138f1545b01c3147f5f425dc3ef7cff403b1
+        last_seen_at: 2026-04-07T05:08:08.245Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-flaky-agent-dispatch-post-invocation-re-evaluation-tests-01knk2vk
