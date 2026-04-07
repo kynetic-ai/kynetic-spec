@@ -1,1 +1,12 @@
-notes: []
+notes:
+  - _ulid: 01KNK0XHS9E1MK83TEWWF18NB4
+    content: "Approach: keep fail-closed shadow detection for real parser behavior and stabilize the
+      real-spec integration test instead. Reuse existing ShadowError codes from initContext() to
+      distinguish detached/review worktrees with visible shadow branch metadata but no usable .kspec
+      worktree. Edge cases: detached worktree with missing .kspec, corrupted shadow link, normal
+      repo with real spec files. Test plan: update the integration probe in tests/parser.test.ts to
+      skip only these environment-specific shadow errors and add a dedicated regression covering a
+      detached worktree missing its shadow worktree."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T03:48:57.770Z
