@@ -28,7 +28,7 @@
  * - @daemon-entity-cache ac-domain-ready-event
  */
 
-import { dirname, relative } from "path";
+import { dirname, join, relative } from "path";
 import {
   expandIncludePattern,
   getTaskFilePath,
@@ -332,9 +332,33 @@ interface ReloadCycle {
   pendingDomains: Set<CacheDomain>;
 }
 
+type MetaSubdomain = "manifest" | "shadow" | "session";
+
 interface PendingDomainChange {
   filePath: string;
   content?: string;
+}
+
+interface MetaLoadState {
+  manifest: boolean;
+  shadow: boolean;
+  session: boolean;
+}
+
+interface CachedMetaRuntime {
+  rootDir: string;
+  specDir: string;
+  projectRoot: string;
+  project: { name?: string; version?: string; status?: string } | null;
+  specVersion: string | null;
+  daemon: { port: number; host: string; auto_start: boolean };
+  remoteTracking: { value: string; type: string } | null;
+  shadow: {
+    enabled: boolean;
+    branchName: string | null;
+    worktreeDir: string | null;
+    directory: string;
+  };
 }
 
 const TASK_ULID_PATTERN = /^[0-9A-HJKMNP-TV-Z]{26}$/i;
@@ -342,6 +366,8 @@ const TASK_ULID_PATTERN = /^[0-9A-HJKMNP-TV-Z]{26}$/i;
 const DEFAULT_SESSION_CACHE_CONFIG: SessionCacheConfig = {
   maxIndexSize: 100,
 };
+
+const META_SUBDOMAIN_LOAD_ORDER: MetaSubdomain[] = ["manifest", "shadow", "session"];
 
 // ─── Domain Data Store ───────────────────────────────────────────────────────
 
@@ -413,6 +439,10 @@ export function fileToDomain(
 
   // Meta (manifest)
   if (relativePath === "kynetic.yaml" || relativePath.endsWith(".meta.yaml")) {
+    domains.push("meta");
+  }
+
+  if (relativePath === ".kspec-session") {
     domains.push("meta");
   }
 
@@ -523,6 +553,14 @@ export class ProjectEntityCache {
 
   /** Cached session context, populated during meta domain load. */
   private cachedSessionContext: CachedSessionContext | null = null;
+  private metaLoadState: MetaLoadState = {
+    manifest: false,
+    shadow: false,
+    session: false,
+  };
+  private cachedMetaRuntime: CachedMetaRuntime | null = null;
+  private pendingMetaSubdomains = new Set<MetaSubdomain>();
+  private pendingMetaReloadCycle: ReloadCycle | undefined;
 
   /**
    * In-flight reload promises for dedup.
@@ -899,6 +937,11 @@ export class ProjectEntityCache {
   async loadDomain(domain: CacheDomain, cycle?: ReloadCycle): Promise<void> {
     if (this.disposed) return;
 
+    if (domain === "meta") {
+      await this.loadMetaDomain(META_SUBDOMAIN_LOAD_ORDER, cycle);
+      return;
+    }
+
     // AC: @daemon-entity-cache ac-reload-dedup — reuse in-flight promise
     const existing = this.inFlightReloads.get(domain);
     if (existing) {
@@ -1012,93 +1055,11 @@ export class ProjectEntityCache {
         break;
       }
       case "meta": {
-        // AC: @daemon-entity-cache ac-stale-during-reload — build all meta
-        // artifacts into local variables, then swap into the store atomically
-        // so reads see either all-old or all-new data during a reload.
-
-        // Load full MetaContext into detail tier for meta read routes
-        const metaCtx = await loadMetaContext(ctx);
+        await this.loadMetaManifestSubdomain(cycle);
         if (this.disposed) return;
-        const newMetaIndex: MetaSummary = {
-          projectName: ctx.manifest?.project?.name,
-          version: ctx.manifest?.project?.version,
-          status: ctx.manifest?.project?.status,
-          modules: ctx.manifest?.modules?.map((m: { title?: string; name?: string } | string) =>
-            typeof m === "string" ? m : (m.title ?? m.name ?? "unknown"),
-          ),
-        };
-
-        // AC: @daemon-read-path ac-no-per-request-sync — cache shadow status
-        // and project config so /api/meta/shadow and /api/meta/config routes
-        // serve from memory without per-request git operations.
-        let newShadowInfo: CachedShadowInfo;
-        if (ctx.shadow) {
-          const status = await getShadowStatus(ctx.rootDir, {
-            branchName: ctx.shadow.branchName,
-            directory: ctx.config.shadow.directory,
-          });
-          if (this.disposed) return;
-          const hasRemote = await hasRemoteTracking(ctx.shadow.worktreeDir, {
-            branchName: ctx.shadow.branchName,
-          });
-          if (this.disposed) return;
-          newShadowInfo = {
-            enabled: ctx.shadow.enabled,
-            branch_name: ctx.shadow.branchName,
-            worktree_dir: ctx.shadow.worktreeDir,
-            healthy: status.healthy,
-            remote_tracking: hasRemote,
-          };
-        } else {
-          newShadowInfo = {
-            enabled: false,
-            branch_name: null,
-            worktree_dir: null,
-            healthy: false,
-            remote_tracking: false,
-          };
-        }
-
-        const newProjectConfig: CachedProjectConfig = {
-          project: ctx.manifest?.project
-            ? {
-                name: ctx.manifest.project.name,
-                version: ctx.manifest.project.version,
-                status: ctx.manifest.project.status,
-              }
-            : null,
-          spec_version: ctx.manifest?.kynetic ?? null,
-          root_dir: ctx.projectRoot,
-          remote_tracking: ctx.config.shadow.remote
-            ? { value: ctx.config.shadow.remote.value, type: ctx.config.shadow.remote.type }
-            : null,
-          daemon: {
-            port: ctx.config.daemon.port,
-            host: ctx.config.daemon.host,
-            auto_start: ctx.config.daemon.auto_start,
-          },
-        };
-
-        // AC: @daemon-read-path ac-no-per-request-sync — cache session context
-        // so /api/meta/session serves from memory without per-request disk reads.
-        const sessionCtx = await loadSessionContext(ctx);
+        await this.loadMetaShadowSubdomain(cycle);
         if (this.disposed) return;
-        const newSessionContext: CachedSessionContext = {
-          focus: sessionCtx.focus,
-          threads: sessionCtx.threads || [],
-          questions: sessionCtx.open_questions || [],
-          updated_at: sessionCtx.updated_at,
-        };
-
-        // Atomic swap: replace all meta artifacts together so concurrent
-        // readers never see a mix of old and new meta state.
-        const newMetaDetails = new Map<string, MetaContext>();
-        newMetaDetails.set("_context", metaCtx);
-        this.meta.index = newMetaIndex;
-        this.meta.details = newMetaDetails;
-        this.cachedShadowInfo = newShadowInfo;
-        this.cachedProjectConfig = newProjectConfig;
-        this.cachedSessionContext = newSessionContext;
+        await this.loadMetaSessionSubdomain();
         break;
       }
       case "inbox": {
@@ -1397,6 +1358,17 @@ export class ProjectEntityCache {
     this.liveEventCounts.clear();
     this.itemSourceFiles.clear();
     this.itemSourceFilesTracked = false;
+    this.cachedShadowInfo = null;
+    this.cachedProjectConfig = null;
+    this.cachedSessionContext = null;
+    this.cachedMetaRuntime = null;
+    this.metaLoadState = {
+      manifest: false,
+      shadow: false,
+      session: false,
+    };
+    this.pendingMetaSubdomains.clear();
+    this.pendingMetaReloadCycle = undefined;
 
     // Clear domain debounce timers
     for (const timer of this.domainDebounceTimers.values()) {
@@ -1491,6 +1463,10 @@ export class ProjectEntityCache {
     changes: PendingDomainChange[],
     cycle?: ReloadCycle,
   ): Promise<void> {
+    if (domain === "meta" && (await this.tryIncrementalMetaUpdate(changes, cycle))) {
+      return;
+    }
+
     if (domain === "tasks" && (await this.tryIncrementalTaskUpdate(changes, cycle))) {
       return;
     }
@@ -1504,6 +1480,46 @@ export class ProjectEntityCache {
     }
 
     await this.loadDomain(domain, cycle);
+  }
+
+  async refreshMetaShadowInfo(): Promise<void> {
+    await this.reloadMetaSubdomains(["shadow"]);
+  }
+
+  private async tryIncrementalMetaUpdate(
+    changes: PendingDomainChange[],
+    cycle?: ReloadCycle,
+  ): Promise<boolean> {
+    if (changes.length === 0) {
+      return false;
+    }
+
+    const specDir = this.cachedMetaRuntime?.specDir ?? join(this.projectPath, ".kspec");
+    const targets = new Set<MetaSubdomain>();
+
+    for (const change of changes) {
+      const relativePath = relative(specDir, change.filePath);
+      const pathSegments = relativePath.split(/[\\/]/).filter(Boolean);
+      const leaf = pathSegments[pathSegments.length - 1] ?? relativePath;
+      if (leaf === "kynetic.yaml" || leaf.endsWith(".meta.yaml")) {
+        targets.add("manifest");
+        continue;
+      }
+
+      if (leaf === ".kspec-session") {
+        targets.add("session");
+        continue;
+      }
+
+      return false;
+    }
+
+    if (targets.size === 0) {
+      return false;
+    }
+
+    await this.reloadMetaSubdomains([...targets], cycle);
+    return true;
   }
 
   private async tryIncrementalTaskUpdate(
@@ -1819,6 +1835,243 @@ export class ProjectEntityCache {
     }
 
     return orderedFiles;
+  }
+
+  private async loadMetaDomain(
+    subdomains: MetaSubdomain[],
+    cycle?: ReloadCycle,
+  ): Promise<void> {
+    if (this.disposed) return;
+
+    this.enqueueMetaReload(subdomains, cycle);
+
+    const existing = this.inFlightReloads.get("meta");
+    if (existing) {
+      await existing;
+      return;
+    }
+
+    const previousState = this.meta.state;
+    if (this.meta.state !== "ready") {
+      this.meta.state = "loading";
+    }
+
+    const promise = (async () => {
+      try {
+        while (true) {
+          const nextReload = this.drainPendingMetaReload();
+          if (!nextReload) {
+            break;
+          }
+
+          await this.doLoadMetaSubdomains(nextReload.subdomains, nextReload.cycle);
+          if (this.disposed) return;
+        }
+
+        this.meta.lastError = undefined;
+        if (this.hasLoadedAllMetaSubdomains()) {
+          this.meta.state = "ready";
+          if (previousState !== "ready" && this.onDomainReady) {
+            this.onDomainReady("meta", this.projectPath, previousState);
+          }
+        } else if (previousState === "ready") {
+          this.meta.state = "ready";
+        }
+      } catch (err) {
+        if (!this.disposed) {
+          this.meta.state = "degraded";
+          this.meta.lastError = err instanceof Error ? err : new Error(String(err));
+          console.error(`[entity-cache] Failed to reload meta sub-domain(s):`, err);
+        }
+      } finally {
+        this.inFlightReloads.delete("meta");
+      }
+    })();
+
+    this.inFlightReloads.set("meta", promise);
+    await promise;
+  }
+
+  private enqueueMetaReload(subdomains: MetaSubdomain[], cycle?: ReloadCycle): void {
+    for (const subdomain of subdomains) {
+      this.pendingMetaSubdomains.add(subdomain);
+    }
+
+    if (!cycle) {
+      this.pendingMetaReloadCycle = undefined;
+      return;
+    }
+
+    if (!this.pendingMetaReloadCycle) {
+      this.pendingMetaReloadCycle = cycle;
+      return;
+    }
+
+    if (this.pendingMetaReloadCycle !== cycle) {
+      this.pendingMetaReloadCycle = undefined;
+    }
+  }
+
+  private drainPendingMetaReload():
+    | { subdomains: MetaSubdomain[]; cycle?: ReloadCycle }
+    | null {
+    if (this.pendingMetaSubdomains.size === 0) {
+      this.pendingMetaReloadCycle = undefined;
+      return null;
+    }
+
+    const subdomains = META_SUBDOMAIN_LOAD_ORDER.filter((subdomain) =>
+      this.pendingMetaSubdomains.has(subdomain),
+    );
+    const cycle = this.pendingMetaReloadCycle;
+    this.pendingMetaSubdomains.clear();
+    this.pendingMetaReloadCycle = undefined;
+    return { subdomains, cycle };
+  }
+
+  private async doLoadMetaSubdomains(
+    subdomains: MetaSubdomain[],
+    cycle?: ReloadCycle,
+  ): Promise<void> {
+    await awaitTestDelay(this.projectPath);
+    if (this.disposed) return;
+
+    for (const subdomain of subdomains) {
+      switch (subdomain) {
+        case "manifest":
+          await this.loadMetaManifestSubdomain(cycle);
+          break;
+        case "shadow":
+          await this.loadMetaShadowSubdomain(cycle);
+          break;
+        case "session":
+          await this.loadMetaSessionSubdomain();
+          break;
+      }
+
+      if (this.disposed) return;
+    }
+  }
+
+  private async loadMetaManifestSubdomain(cycle?: ReloadCycle): Promise<void> {
+    const ctx = cycle ? await this.getReloadCycleContext(cycle) : await initContext(this.projectPath);
+    if (this.disposed) return;
+
+    const metaCtx = await loadMetaContext(ctx);
+    if (this.disposed) return;
+
+    const newMetaIndex: MetaSummary = {
+      projectName: ctx.manifest?.project?.name,
+      version: ctx.manifest?.project?.version,
+      status: ctx.manifest?.project?.status,
+      modules: ctx.manifest?.modules?.map((m: { title?: string; name?: string } | string) =>
+        typeof m === "string" ? m : (m.title ?? m.name ?? "unknown"),
+      ),
+    };
+
+    const newProjectConfig: CachedProjectConfig = {
+      project: ctx.manifest?.project
+        ? {
+            name: ctx.manifest.project.name,
+            version: ctx.manifest.project.version,
+            status: ctx.manifest.project.status,
+          }
+        : null,
+      spec_version: ctx.manifest?.kynetic ?? null,
+      root_dir: ctx.projectRoot,
+      remote_tracking: ctx.config.shadow.remote
+        ? { value: ctx.config.shadow.remote.value, type: ctx.config.shadow.remote.type }
+        : null,
+      daemon: {
+        port: ctx.config.daemon.port,
+        host: ctx.config.daemon.host,
+        auto_start: ctx.config.daemon.auto_start,
+      },
+    };
+
+    const newMetaDetails = new Map<string, MetaContext>();
+    newMetaDetails.set("_context", metaCtx);
+    this.meta.index = newMetaIndex;
+    this.meta.details = newMetaDetails;
+    this.cachedProjectConfig = newProjectConfig;
+    this.cachedMetaRuntime = {
+      rootDir: ctx.rootDir,
+      specDir: ctx.specDir,
+      projectRoot: ctx.projectRoot,
+      project: newProjectConfig.project,
+      specVersion: newProjectConfig.spec_version,
+      daemon: newProjectConfig.daemon,
+      remoteTracking: newProjectConfig.remote_tracking,
+      shadow: {
+        enabled: ctx.shadow?.enabled ?? false,
+        branchName: ctx.shadow?.branchName ?? null,
+        worktreeDir: ctx.shadow?.worktreeDir ?? null,
+        directory: ctx.config.shadow.directory,
+      },
+    };
+    this.metaLoadState.manifest = true;
+  }
+
+  private async loadMetaShadowSubdomain(cycle?: ReloadCycle): Promise<void> {
+    const runtime = await this.ensureMetaRuntime(cycle);
+    if (this.disposed) return;
+
+    let newShadowInfo: CachedShadowInfo;
+    if (runtime.shadow.enabled && runtime.shadow.branchName && runtime.shadow.worktreeDir) {
+      const status = await getShadowStatus(runtime.rootDir, {
+        branchName: runtime.shadow.branchName,
+        directory: runtime.shadow.directory,
+      });
+      if (this.disposed) return;
+      const hasRemote = await hasRemoteTracking(runtime.shadow.worktreeDir, {
+        branchName: runtime.shadow.branchName,
+      });
+      if (this.disposed) return;
+      newShadowInfo = {
+        enabled: true,
+        branch_name: runtime.shadow.branchName,
+        worktree_dir: runtime.shadow.worktreeDir,
+        healthy: status.healthy,
+        remote_tracking: hasRemote,
+      };
+    } else {
+      newShadowInfo = {
+        enabled: false,
+        branch_name: null,
+        worktree_dir: null,
+        healthy: false,
+        remote_tracking: false,
+      };
+    }
+
+    this.cachedShadowInfo = newShadowInfo;
+    this.metaLoadState.shadow = true;
+  }
+
+  private async loadMetaSessionSubdomain(): Promise<void> {
+    const specDir = this.cachedMetaRuntime?.specDir ?? join(this.projectPath, ".kspec");
+    const sessionCtx = await loadSessionContext({ specDir } as KspecContext);
+    if (this.disposed) return;
+
+    this.cachedSessionContext = {
+      focus: sessionCtx.focus,
+      threads: sessionCtx.threads || [],
+      questions: sessionCtx.open_questions || [],
+      updated_at: sessionCtx.updated_at,
+    };
+    this.metaLoadState.session = true;
+  }
+
+  private async ensureMetaRuntime(cycle?: ReloadCycle): Promise<CachedMetaRuntime> {
+    if (!this.cachedMetaRuntime) {
+      await this.loadMetaManifestSubdomain(cycle);
+    }
+
+    return this.cachedMetaRuntime as CachedMetaRuntime;
+  }
+
+  private hasLoadedAllMetaSubdomains(): boolean {
+    return this.metaLoadState.manifest && this.metaLoadState.shadow && this.metaLoadState.session;
   }
 }
 
