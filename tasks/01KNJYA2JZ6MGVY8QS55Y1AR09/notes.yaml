@@ -10,3 +10,11 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-07T03:48:57.770Z
+  - _ulid: 01KNK103TZG6B1PC42Y99S3PZ1
+    content: "Implemented test-side stabilization: the real-spec parser integration probe now skips only
+      in detached HEAD snapshots when initContext() fails because the snapshot has no usable shadow
+      worktree. Added a regression that reproduces a detached worktree with a visible kspec-meta
+      branch but missing .kspec worktree and verifies the skip path."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T03:50:21.791Z
