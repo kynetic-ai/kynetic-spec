@@ -20,7 +20,7 @@ import { Elysia, t } from "elysia";
 import { ulid } from "ulidx";
 import type { Command } from "commander";
 import type { PubSubManager } from "../websocket/pubsub.js";
-import type { EntityCacheAccessor } from "./entity-cache-types.js";
+import type { EntityCacheAccessor, RouteEntityCache } from "./entity-cache-types.js";
 import type { CacheDomain } from "../../daemon/entity-cache.js";
 import { getDispatchShadowMutationLockPath } from "../../agent-runtime/workspace.js";
 import { runWithEntityCache, runWithoutSpecDirOverride } from "../../parser/yaml.js";
@@ -39,6 +39,11 @@ interface CommandResult {
   stdout: string;
   stderr: string;
   exitCode: number;
+}
+
+interface RefLikeEntity {
+  _ulid: string;
+  slugs?: string[];
 }
 
 // ── Route Options ──────────────────────────────────────────────────
@@ -93,8 +98,8 @@ class DispatchMutex {
  *
  * IMPORTANT: This function mutates process-global state (process.cwd(),
  * console.log/error/warn, process.stdout/stderr.write, process.exit) and
- * MUST be called inside the dispatch mutex to prevent concurrent request
- * corruption.
+ * normally must be called inside the dispatch mutex. The route may bypass
+ * the mutex only for cache-backed read commands that have been proven safe.
  *
  * Intercepts both console methods AND process.stdout/stderr.write to capture
  * all CLI output, since some commands write directly to process streams
@@ -256,6 +261,223 @@ async function isCommandMutating(payload: CommandPayload, program: Command): Pro
   return cmdMeta?.mutating === true;
 }
 
+const COMMAND_CACHE_DOMAINS = new Map<string, readonly CacheDomain[]>([
+  [
+    "task list",
+    [
+      // src/cli/commands/task.ts:703 delegates to listTasksAction()
+      // src/cli/commands/tasks.ts:90,92,96 load tasks, items, meta
+      "tasks",
+      "items",
+      "meta",
+    ],
+  ],
+  [
+    "task get",
+    [
+      // src/cli/commands/task.ts:716,717,720,771
+      // src/parser/yaml.ts:1751-1753 via buildIndexes()
+      "tasks",
+      "items",
+      "reviews",
+    ],
+  ],
+  [
+    "tasks list",
+    [
+      // src/cli/commands/tasks.ts:221 delegates to listTasksAction()
+      // src/cli/commands/tasks.ts:90,92,96 load tasks, items, meta
+      "tasks",
+      "items",
+      "meta",
+    ],
+  ],
+  [
+    "tasks ready",
+    [
+      // src/cli/commands/tasks.ts:239-242 load tasks and items
+      "tasks",
+      "items",
+    ],
+  ],
+  [
+    "item list",
+    [
+      // src/cli/commands/item.ts:331 calls buildIndexes()
+      // src/parser/yaml.ts:1751-1753 load tasks, items, reviews
+      "tasks",
+      "items",
+      "reviews",
+    ],
+  ],
+  [
+    "item get",
+    [
+      // src/cli/commands/item.ts:471 calls buildIndexes()
+      // src/parser/yaml.ts:1751-1753 load tasks, items, reviews
+      "tasks",
+      "items",
+      "reviews",
+    ],
+  ],
+  [
+    "search",
+    [
+      // src/cli/commands/search.ts:170 calls buildIndexes()
+      // src/parser/yaml.ts:1751-1753 load tasks, items, reviews
+      "tasks",
+      "items",
+      "reviews",
+    ],
+  ],
+  [
+    "inbox list",
+    [
+      // src/cli/commands/inbox.ts:127 loads inbox items
+      "inbox",
+    ],
+  ],
+  [
+    "plan list",
+    [
+      // src/cli/commands/plan.ts:1142-1143 load plans and tasks
+      "plans",
+      "tasks",
+    ],
+  ],
+  [
+    "plan get",
+    [
+      // src/cli/commands/plan.ts:777 loads plans
+      "plans",
+    ],
+  ],
+  [
+    "review get",
+    [
+      // src/cli/commands/review.ts:547 loads review records
+      "reviews",
+    ],
+  ],
+  [
+    "review list",
+    [
+      // src/cli/commands/review.ts:582 and 682 load review records
+      "reviews",
+    ],
+  ],
+]);
+
+function normalizeCommandKey(command: string): string {
+  return command.trim().replace(/\s+/g, " ").toLowerCase();
+}
+
+function getArgValue(args: Record<string, unknown>, ...keys: string[]): unknown {
+  for (const key of keys) {
+    if (key in args) {
+      return args[key];
+    }
+  }
+  return undefined;
+}
+
+function hasTruthyArg(args: Record<string, unknown>, ...keys: string[]): boolean {
+  return Boolean(getArgValue(args, ...keys));
+}
+
+function getRefArg(payload: CommandPayload): string | null {
+  const value = getArgValue(payload.args, "ref");
+  return typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
+}
+
+function refExistsInCacheIndex(ref: string, entries: RefLikeEntity[] | null): boolean {
+  if (!entries) {
+    return false;
+  }
+
+  const normalized = ref.startsWith("@") ? ref.slice(1) : ref;
+  const normalizedLower = normalized.toLowerCase();
+
+  return entries.some((entry) => {
+    if (entry._ulid.toLowerCase() === normalizedLower) {
+      return true;
+    }
+    if (entry._ulid.toLowerCase().startsWith(normalizedLower)) {
+      return true;
+    }
+    return (entry.slugs ?? []).some((slug) => slug.toLowerCase() === normalizedLower);
+  });
+}
+
+function getRequiredCacheDomains(payload: CommandPayload): CacheDomain[] | null {
+  const commandKey = normalizeCommandKey(payload.command);
+  const baseDomains = COMMAND_CACHE_DOMAINS.get(commandKey);
+  if (!baseDomains) {
+    return null;
+  }
+
+  const domains = [...baseDomains];
+
+  if (commandKey === "review list" && hasTruthyArg(payload.args, "task")) {
+    // src/cli/commands/review.ts:629-650 loads tasks when --task is present
+    domains.push("tasks");
+  }
+
+  if (commandKey === "search") {
+    const itemsOnly = hasTruthyArg(payload.args, "itemsOnly", "items-only");
+    const tasksOnly = hasTruthyArg(payload.args, "tasksOnly", "tasks-only");
+    const observationsOnly = hasTruthyArg(payload.args, "observationsOnly", "observations-only");
+
+    if (!itemsOnly && !tasksOnly && !observationsOnly) {
+      // src/cli/commands/search.ts:235-253 conditionally loads inbox + meta
+      domains.push("inbox", "meta");
+    } else if (observationsOnly) {
+      // src/cli/commands/search.ts:252-259 loads meta for observations-only searches
+      domains.push("meta");
+    }
+  }
+
+  return [...new Set(domains)];
+}
+
+function cacheHasResolvedRef(payload: CommandPayload, cache: RouteEntityCache): boolean {
+  const ref = getRefArg(payload);
+  if (!ref) {
+    return false;
+  }
+
+  switch (normalizeCommandKey(payload.command)) {
+    case "task get":
+      return refExistsInCacheIndex(ref, cache.getTaskIndex());
+    case "item get":
+      return refExistsInCacheIndex(ref, cache.getItemIndex());
+    case "plan get":
+      return refExistsInCacheIndex(ref, cache.getPlansIndex());
+    case "review get":
+      return refExistsInCacheIndex(ref, cache.getReviewsIndex());
+    default:
+      return true;
+  }
+}
+
+function canServeFromCache(payload: CommandPayload, cache: RouteEntityCache): boolean {
+  const requiredDomains = getRequiredCacheDomains(payload);
+  if (!requiredDomains) {
+    return false;
+  }
+
+  if (requiredDomains.some((domain) => cache.getDomainState(domain) !== "ready")) {
+    return false;
+  }
+
+  const commandKey = normalizeCommandKey(payload.command);
+  if (commandKey.endsWith(" get")) {
+    return cacheHasResolvedRef(payload, cache);
+  }
+
+  return true;
+}
+
 /**
  * All cache domains that might be affected by CLI mutations.
  * We write through all domains after a mutating command because
@@ -334,6 +556,11 @@ export function createCommandRoutes(options: CommandRouteOptions) {
           };
 
           const mutating = await isCommandMutating(payload, program);
+          const cache = getEntityCache?.(projectContext.path) ?? null;
+
+          if (!mutating && cache && canServeFromCache(payload, cache)) {
+            return executeCommand(payload, program, projectContext.path, getEntityCache);
+          }
 
           // All command execution goes through the dispatch mutex to serialize
           // process-global state (cwd, console capture, exit interceptor).

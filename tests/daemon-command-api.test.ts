@@ -17,6 +17,7 @@ import { execSync } from "node:child_process";
 import { mkdirSync, writeFileSync } from "node:fs";
 import * as path from "node:path";
 import { Elysia } from "elysia";
+import type { Command } from "commander";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   cleanupTempDir,
@@ -34,18 +35,47 @@ import type {
   RouteEntityCache,
   EntityCacheAccessor,
 } from "../dist/daemon/routes/entity-cache-types.js";
+import type { CacheDomain } from "../src/daemon/entity-cache.js";
+import type { LoadedTask } from "../src/parser/index.js";
+import type { LoadedSpecItem } from "../src/parser/index.js";
+import type { LoadedPlan } from "../src/parser/plans.js";
+import type { LoadedReviewRecord } from "../src/parser/reviews.js";
+import type { MetaContext } from "../src/parser/meta.js";
 
 ensureSplitBackendRegistered();
 
 const TASK_ULID = testUlid("TASK", 1);
 const SPEC_ULID = testUlid("SPEC", 2);
 const PLAN_ULID = testUlid("PLAN", 3);
+const TEST_CWD = process.cwd();
 
 let tempDir: string;
 let app: Elysia;
 let pubsub: PubSubManager;
 let mockCache: RouteEntityCache;
 let writeThroughCalls: string[];
+let cacheSnapshot: CacheSnapshot;
+
+type CacheState = "unloaded" | "loading" | "ready" | "degraded";
+
+interface RefEntity {
+  _ulid: string;
+  slugs: string[];
+}
+
+interface CacheSnapshot {
+  tasks: LoadedTask[];
+  items: LoadedSpecItem[];
+  plans: LoadedPlan[];
+  reviews: LoadedReviewRecord[];
+  meta: MetaContext;
+  taskIndex: RefEntity[];
+  itemIndex: RefEntity[];
+  planIndex: RefEntity[];
+  reviewIndex: RefEntity[];
+  projectConfig: NonNullable<RouteEntityCache["getProjectConfig"]>;
+  shadowInfo: NonNullable<RouteEntityCache["getShadowInfo"]>;
+}
 
 async function withCacheContextCommand<T>(fn: () => Promise<T>): Promise<T> {
   const { program } = await import("../dist/cli/index.js");
@@ -79,42 +109,151 @@ async function withCacheContextCommand<T>(fn: () => Promise<T>): Promise<T> {
   }
 }
 
+function pickRefEntity(entity: { _ulid: string; slugs?: string[] }): RefEntity {
+  return {
+    _ulid: entity._ulid,
+    slugs: entity.slugs ?? [],
+  };
+}
+
+async function buildCacheSnapshot(): Promise<CacheSnapshot> {
+  const previousCwd = TEST_CWD;
+  process.chdir(tempDir);
+
+  try {
+    const parser = await import("../src/parser/index.js");
+    const { loadReviewRecords } = await import("../src/parser/reviews.js");
+    const ctx = await parser.initContext();
+    const taskManager = parser.resolveTaskDataManager(ctx);
+    const tasks = await taskManager.loadAllTasks(ctx);
+    const items = await parser.loadAllItems(ctx);
+    const plans = await parser.loadPlans(ctx);
+    const reviews = await loadReviewRecords(ctx);
+    const meta = await parser.loadMetaContext(ctx);
+
+    return {
+      tasks,
+      items,
+      plans,
+      reviews,
+      meta,
+      taskIndex: tasks.map(pickRefEntity),
+      itemIndex: items.map(pickRefEntity),
+      planIndex: plans.map(pickRefEntity),
+      reviewIndex: reviews.map(pickRefEntity),
+      projectConfig: () => ({
+        project: ctx.config?.project ?? null,
+        spec_version: "1.1",
+        root_dir: tempDir,
+        remote_tracking: null,
+        daemon: ctx.config?.daemon ?? { port: 3456, host: "127.0.0.1", auto_start: false },
+        manifest_path: ctx.manifestPath ?? null,
+        manifest: ctx.manifest ?? null,
+        config: ctx.config,
+      }),
+      shadowInfo: () => ({
+        enabled: true,
+        branch_name: ctx.shadow?.branchName ?? "kspec-meta",
+        worktree_dir: tempDir,
+        healthy: true,
+        remote_tracking: false,
+      }),
+    };
+  } finally {
+    process.chdir(previousCwd);
+  }
+}
+
+function findCommand(program: Command, pathParts: string[]): Command {
+  let current = program;
+  for (const part of pathParts) {
+    const next = current.commands.find((command) => command.name() === part);
+    if (!next) {
+      throw new Error(`Command not found: ${pathParts.join(" ")}`);
+    }
+    current = next;
+  }
+  return current;
+}
+
+async function withDelayedCommandAction<T>(
+  commandPath: string,
+  delayMs: number,
+  fn: () => Promise<T>,
+): Promise<T> {
+  const { program } = await import("../dist/cli/index.js");
+  const command = findCommand(program, commandPath.split(" "));
+  const originalHandler = (command as Command & { _actionHandler?: (...args: unknown[]) => unknown })
+    ._actionHandler;
+
+  if (!originalHandler) {
+    throw new Error(`Command has no action handler: ${commandPath}`);
+  }
+
+  (
+    command as Command & { _actionHandler: (...args: unknown[]) => Promise<unknown> }
+  )._actionHandler = async (...args: unknown[]) => {
+    await new Promise((resolve) => setTimeout(resolve, delayMs));
+    return originalHandler(...args);
+  };
+
+  try {
+    return await fn();
+  } finally {
+    (
+      command as Command & { _actionHandler: (...args: unknown[]) => unknown }
+    )._actionHandler = originalHandler;
+  }
+}
+
+async function measureConcurrentRequests(requests: Array<() => Promise<Response>>): Promise<number> {
+  const startedAt = Date.now();
+  const responses = await Promise.all(requests.map((request) => request()));
+  await Promise.all(responses.map((response) => response.json()));
+  return Date.now() - startedAt;
+}
+
 /**
  * Create a mock entity cache that tracks writeThrough calls.
  * This ensures ac-mutation-cache-update is genuinely exercised.
  */
-function createMockEntityCache(): RouteEntityCache {
+function createMockEntityCache(
+  states: Partial<Record<CacheDomain, CacheState>> = {},
+): RouteEntityCache {
   writeThroughCalls = [];
+  const getState = (domain: CacheDomain): CacheState => states[domain] ?? "ready";
+
   return {
-    getDomainState: () => "ready",
-    getTaskIndex: () => null,
-    getTaskDetail: () => null,
+    getDomainState: (domain: string) => getState(domain as CacheDomain),
+    getTaskIndex: () => cacheSnapshot.taskIndex as any,
+    getTaskDetail: (ulid: string) => cacheSnapshot.tasks.find((task) => task._ulid === ulid) ?? null,
     getTaskHistory: () => null,
     setTaskDetail: () => {},
-    getAllTaskDetails: () => null,
-    getItemIndex: () => null,
-    getItemDetail: () => null,
+    getAllTaskDetails: () => cacheSnapshot.tasks as any,
+    getItemIndex: () => cacheSnapshot.itemIndex as any,
+    getItemDetail: (ulid: string) => cacheSnapshot.items.find((item) => item._ulid === ulid) ?? null,
     setItemDetail: () => {},
-    getAllItemDetails: () => null,
+    getAllItemDetails: () => cacheSnapshot.items,
     getSessionIndex: () => null,
     getSessionLiveEventCount: () => undefined,
     getSessionDetail: () => null,
     setSessionDetail: () => {},
-    getPlansIndex: () => null,
-    getPlanDetail: () => null,
+    getPlansIndex: () => cacheSnapshot.planIndex as any,
+    getPlanDetail: (ulid: string) => cacheSnapshot.plans.find((plan) => plan._ulid === ulid) ?? null,
     setPlanDetail: () => {},
-    getInboxIndex: () => null,
+    getInboxIndex: () => [],
     getTriageIndex: () => null,
     getTriageDetail: () => null,
     setTriageDetail: () => {},
-    getReviewsIndex: () => null,
-    getReviewDetail: () => null,
+    getReviewsIndex: () => cacheSnapshot.reviewIndex as any,
+    getReviewDetail: (ulid: string) =>
+      cacheSnapshot.reviews.find((review) => review._ulid === ulid) ?? null,
     setReviewDetail: () => {},
     getMetaIndex: () => null,
-    getMetaDetail: () => null,
+    getMetaDetail: () => cacheSnapshot.meta,
     setMetaDetail: () => {},
-    getShadowInfo: () => null,
-    getProjectConfig: () => null,
+    getShadowInfo: cacheSnapshot.shadowInfo,
+    getProjectConfig: cacheSnapshot.projectConfig,
     getSessionContext: () => null,
     writeThrough: vi.fn(async (domain: string) => {
       writeThroughCalls.push(domain);
@@ -124,56 +263,56 @@ function createMockEntityCache(): RouteEntityCache {
       projectPath: tempDir,
       domains: {
         tasks: {
-          state: "ready",
-          indexCount: 0,
-          detailCount: 0,
+          state: getState("tasks"),
+          indexCount: cacheSnapshot.taskIndex.length,
+          detailCount: cacheSnapshot.tasks.length,
           lastError: null,
           lastInvalidatedAt: null,
         },
         items: {
-          state: "ready",
-          indexCount: 0,
-          detailCount: 0,
+          state: getState("items"),
+          indexCount: cacheSnapshot.itemIndex.length,
+          detailCount: cacheSnapshot.items.length,
           lastError: null,
           lastInvalidatedAt: null,
         },
         meta: {
-          state: "ready",
+          state: getState("meta"),
           indexCount: 0,
-          detailCount: 0,
+          detailCount: 1,
           lastError: null,
           lastInvalidatedAt: null,
         },
         inbox: {
-          state: "ready",
+          state: getState("inbox"),
           indexCount: 0,
           detailCount: 0,
           lastError: null,
           lastInvalidatedAt: null,
         },
         plans: {
-          state: "ready",
-          indexCount: 0,
-          detailCount: 0,
+          state: getState("plans"),
+          indexCount: cacheSnapshot.planIndex.length,
+          detailCount: cacheSnapshot.plans.length,
           lastError: null,
           lastInvalidatedAt: null,
         },
         triage: {
-          state: "ready",
+          state: getState("triage"),
           indexCount: 0,
           detailCount: 0,
           lastError: null,
           lastInvalidatedAt: null,
         },
         reviews: {
-          state: "ready",
-          indexCount: 0,
-          detailCount: 0,
+          state: getState("reviews"),
+          indexCount: cacheSnapshot.reviewIndex.length,
+          detailCount: cacheSnapshot.reviews.length,
           lastError: null,
           lastInvalidatedAt: null,
         },
         sessions: {
-          state: "ready",
+          state: getState("sessions"),
           indexCount: 0,
           detailCount: 0,
           lastError: null,
@@ -308,6 +447,7 @@ describe("Daemon Command API", () => {
     setupFixtures();
 
     pubsub = new PubSubManager();
+    cacheSnapshot = await buildCacheSnapshot();
     mockCache = createMockEntityCache();
     const getEntityCache: EntityCacheAccessor = (projectPath: string) => {
       // Return mock cache only for the temp project
@@ -319,6 +459,7 @@ describe("Daemon Command API", () => {
   });
 
   afterEach(async () => {
+    process.chdir(TEST_CWD);
     await cleanupTempDir(tempDir);
   });
 
@@ -644,6 +785,111 @@ describe("Daemon Command API", () => {
     // and the file lock ensures no shadow branch conflicts
     expect(body1.exitCode).toBe(0);
     expect(body2.exitCode).toBe(0);
+  });
+
+  // AC: @daemon-concurrent-reads ac-concurrent-cache-reads
+  it("allows cache-backed allowlisted read commands to overlap", async () => {
+    await withDelayedCommandAction("tasks list", 80, async () => {
+      const elapsed = await measureConcurrentRequests([
+        () =>
+          makeRequest("/api/command", {
+            method: "POST",
+            body: JSON.stringify({
+              command: "tasks list",
+              args: { json: true },
+            }),
+          }),
+        () =>
+          makeRequest("/api/command", {
+            method: "POST",
+            body: JSON.stringify({
+              command: "tasks list",
+              args: { json: true },
+            }),
+          }),
+      ]);
+
+      expect(elapsed).toBeLessThan(150);
+    });
+  });
+
+  // AC: @daemon-concurrent-reads ac-disk-fallback-serialization
+  it("serializes allowlisted reads when a required cache domain is not ready", async () => {
+    mockCache = createMockEntityCache({ meta: "loading" });
+
+    await withDelayedCommandAction("tasks list", 80, async () => {
+      const elapsed = await measureConcurrentRequests([
+        () =>
+          makeRequest("/api/command", {
+            method: "POST",
+            body: JSON.stringify({
+              command: "tasks list",
+              args: { json: true },
+            }),
+          }),
+        () =>
+          makeRequest("/api/command", {
+            method: "POST",
+            body: JSON.stringify({
+              command: "tasks list",
+              args: { json: true },
+            }),
+          }),
+      ]);
+
+      expect(elapsed).toBeGreaterThanOrEqual(150);
+    });
+  });
+
+  it("serializes read commands that are not in the cache-safe allowlist", async () => {
+    await withDelayedCommandAction("tasks next", 80, async () => {
+      const elapsed = await measureConcurrentRequests([
+        () =>
+          makeRequest("/api/command", {
+            method: "POST",
+            body: JSON.stringify({
+              command: "tasks next",
+              args: {},
+            }),
+          }),
+        () =>
+          makeRequest("/api/command", {
+            method: "POST",
+            body: JSON.stringify({
+              command: "tasks next",
+              args: {},
+            }),
+          }),
+      ]);
+
+      expect(elapsed).toBeGreaterThanOrEqual(150);
+    });
+  });
+
+  // AC: @daemon-concurrent-reads ac-mutation-serialization
+  it("keeps mutating commands serialized even when cache domains are ready", async () => {
+    await withDelayedCommandAction("task start", 80, async () => {
+      const elapsed = await measureConcurrentRequests([
+        () =>
+          makeRequest("/api/command", {
+            method: "POST",
+            body: JSON.stringify({
+              command: "task start",
+              args: { ref: "@task-test" },
+            }),
+          }),
+        () =>
+          makeRequest("/api/command", {
+            method: "POST",
+            body: JSON.stringify({
+              command: "task start",
+              args: { ref: "@task-test" },
+            }),
+          }),
+      ]);
+
+      expect(elapsed).toBeGreaterThanOrEqual(150);
+    });
   });
 
   // ───────────────────────────────────────────────────────────────────
