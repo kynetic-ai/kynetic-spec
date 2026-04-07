@@ -40614,7 +40614,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-07T17:13:44.377Z
+      updated_at: 2026-04-07T17:14:14.342Z
     integration:
       status: merged
       detail: integration:merged
@@ -40630,18 +40630,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-07T17:05:25.517Z
-      last_reconciled_at: 2026-04-07T17:14:12.690Z
+      last_reconciled_at: 2026-04-07T17:14:14.342Z
       created_at: 2026-04-07T16:24:57.708Z
-      updated_at: 2026-04-07T17:14:12.690Z
+      updated_at: 2026-04-07T17:14:14.342Z
     workspace_id: dispatch-workspace-01KNMBPC0GJ184YT6G3T43TNGB
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 1863143d325deb941bc57cba3f161d36100a1be3
-        last_seen_at: 2026-04-07T17:05:18.814Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-update-entity-cache-history-ac-01knmbpc-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-update-entity-cache-history-ac/01knmbpc
