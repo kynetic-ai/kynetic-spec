@@ -41487,23 +41487,24 @@ workspaces:
     base_branch_point: c0d9fee072d7e8719e05e1d8a17ea7e6148140c8
     bootstrap:
       status: succeeded
-      canonicalBranchHead: 7e7d977f1ee9fa6b316d425babd9ba06eab87328
+      canonicalBranchHead: 2723f252985dcc0d0a354d77d9c6aaccc5b81081
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
       failureMessage: null
       invalidationReasons:
         - canonical-branch-head-changed
         - workspace-dependencies-missing
-      lastRole: worker
-      lastRunAt: 2026-04-07T18:59:16.233Z
+      lastRole: reviewer
+      lastRunAt: 2026-04-07T19:16:57.092Z
       roleStates:
         reviewer:
           status: succeeded
-          canonicalBranchHead: 7e7d977f1ee9fa6b316d425babd9ba06eab87328
+          canonicalBranchHead: 2723f252985dcc0d0a354d77d9c6aaccc5b81081
           configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
           failureMessage: null
           invalidationReasons:
+            - canonical-branch-head-changed
             - workspace-dependencies-missing
-          lastRunAt: 2026-04-07T18:46:14.117Z
+          lastRunAt: 2026-04-07T19:16:57.092Z
           steps:
             - status: succeeded
               allowTrackedChanges: false
@@ -41573,7 +41574,7 @@ workspaces:
 
             Run `npm audit` for details.
           reviewerRerunAllowed: true
-          role: worker
+          role: reviewer
           run: npm ci
           source: dispatch
     branch_provenance:
@@ -41613,7 +41614,7 @@ workspaces:
       last_active_at: 2026-04-07T18:59:18.109Z
       last_reconciled_at: 2026-04-07T19:16:53.765Z
       created_at: 2026-04-07T18:34:37.775Z
-      updated_at: 2026-04-07T19:16:53.765Z
+      updated_at: 2026-04-07T19:16:57.092Z
     workspace_id: dispatch-workspace-01KNMBPDRSN3PXZ81CHXBWXKTN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
