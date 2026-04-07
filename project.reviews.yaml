@@ -126805,6 +126805,12 @@ reviews:
         payload:
           thread_ulid: 01KNMMMFS578K2JA5X66Z1APWK
         timestamp: 2026-04-07T19:13:03.189Z
+      - _ulid: 01KNMNSP6WDHJZFYX1SPW8EK0P
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNMMMBAV13W6NBVVYK4JB2HW
+        timestamp: 2026-04-07T19:13:05.756Z
     examined_commit: 7e7d977f1ee9fa6b316d425babd9ba06eab87328
     external_links: []
     lifecycle_state: closed
@@ -126843,6 +126849,8 @@ reviews:
               regressions."
             created_at: 2026-04-07T19:12:41.841Z
         kind: blocker
+        resolved_at: 2026-04-07T19:13:04.822Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KNMMMFS578K2JA5X66Z1APWK
         anchor:
           type: code
@@ -126880,7 +126888,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-07T18:53:07.038Z
     created_at: 2026-04-07T18:47:17.189Z
-    updated_at: 2026-04-07T19:13:02.340Z
+    updated_at: 2026-04-07T19:13:04.822Z
     notes: []
   - _ulid: 01KNMN3TR0X2FJC963QS8X1Z7K
     slugs: []
