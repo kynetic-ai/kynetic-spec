@@ -122295,3 +122295,29 @@ reviews:
     created_at: 2026-04-07T03:19:36.797Z
     updated_at: 2026-04-07T03:21:21.468Z
     notes: []
+  - _ulid: 01KNJZFZAGPTGRDK55FYHQRPDH
+    slugs: []
+    title: Review incremental item updates (cycle 3)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KNJZFZAF99BQM2BS8WAW2BQJ
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-07T03:24:04.304Z
+    examined_commit: 9d2241a2c40dde180fa6551bb9626fb278799152
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNDDJ3RK4K2HWH7TVY6F1V66"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-07T03:24:04.304Z
+    updated_at: null
+    notes: []
