@@ -42045,7 +42045,7 @@ workspaces:
         head: 2242eedd6255ca91d88b99b0f75be3ac8441fcea
         last_seen_at: 2026-04-07T21:22:37.744Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-read-command-concurrency-01knmbpe
-  - active_role: worker
+  - active_role: null
     base_branch_point: 09384972c51b1a66addefe64fbe2d42a7c428f9f
     bootstrap:
       status: succeeded
@@ -42245,12 +42245,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-07T23:40:42.517Z
+      updated_at: 2026-04-07T23:43:55.297Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-07T23:40:42.517Z
+      updated_at: 2026-04-07T23:43:55.297Z
     integration:
       status: pending
       detail: null
@@ -42258,17 +42258,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-cache-aware-command-execution/01knkf3b
       target_commit: 09384972c51b1a66addefe64fbe2d42a7c428f9f
-      updated_at: 2026-04-07T23:40:42.517Z
-    lifecycle_state: active
+      updated_at: 2026-04-07T23:43:55.297Z
+    lifecycle_state: ready
     resolved_base_branch: plan/plan-cache-aware-command-execution/01knkf3b
     task_ref: "@01KNN24AJ4QFBJ9NHK5K16QMJ0"
     task_slug: replace-process-exit-string-sentinel-with-typed-error-class
     timestamps:
       closed_at: null
       last_active_at: 2026-04-07T23:25:13.439Z
-      last_reconciled_at: 2026-04-07T23:40:42.517Z
+      last_reconciled_at: 2026-04-07T23:43:55.297Z
       created_at: 2026-04-07T22:53:08.489Z
-      updated_at: 2026-04-07T23:40:42.517Z
+      updated_at: 2026-04-07T23:43:55.297Z
     workspace_id: dispatch-workspace-01KNN24AJ4QFBJ9NHK5K16QMJ0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
