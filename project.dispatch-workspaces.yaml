@@ -40103,7 +40103,7 @@ workspaces:
         head: f1baf3ed548773a41dff114cceaea08c7597bc3d
         last_seen_at: 2026-04-07T04:40:24.012Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/switch-daemon-default-runtime-from-bun-to-node-01knhzpr
-  - active_role: null
+  - active_role: worker
     base_branch_point: 8540fb7cfec2910bab762a7c1c8bfc1517466d3b
     bootstrap:
       status: succeeded
@@ -40152,7 +40152,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-07T05:21:51.546Z
+      updated_at: 2026-04-07T05:21:55.491Z
     integration:
       status: pending
       detail: null
@@ -40161,16 +40161,16 @@ workspaces:
       target_branch: plan/plan-granular-cache-invalidation/01kndbmk
       target_commit: 8540fb7cfec2910bab762a7c1c8bfc1517466d3b
       updated_at: 2026-04-07T05:21:51.546Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: plan/plan-granular-cache-invalidation/01kndbmk
     task_ref: "@01KNDDJ4PD7MDPS1RB53K0QZFG"
     task_slug: task-writethrough-incremental-alignment
     timestamps:
       closed_at: null
-      last_active_at: 2026-04-07T05:08:01.060Z
-      last_reconciled_at: 2026-04-07T05:21:51.546Z
+      last_active_at: 2026-04-07T05:21:55.491Z
+      last_reconciled_at: 2026-04-07T05:21:55.491Z
       created_at: 2026-04-07T04:53:25.994Z
-      updated_at: 2026-04-07T05:21:52.641Z
+      updated_at: 2026-04-07T05:21:55.491Z
     workspace_id: dispatch-workspace-01KNDDJ4PD7MDPS1RB53K0QZFG
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
