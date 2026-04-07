@@ -127178,7 +127178,18 @@ reviews:
     slugs: []
     title: Review task-cache-aware-meta
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation returned only pre-existing repo warnings (exit 6); no new errors or
+          task-specific coverage issues detected.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-07T19:33:37.806Z
+        completed_at: 2026-04-07T19:33:37.806Z
     events:
       - _ulid: 01KNMPYQ4TAWWNMQBD5CK0WHGT
         actor: Jacob Chapel
@@ -127193,6 +127204,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-07T19:33:36.096Z
+      - _ulid: 01KNMPZAA7M5T4X331GVSAMWSY
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-07T19:33:38.759Z
     examined_commit: cf0877725dfea92e556e66d3b3c50c9254e04263
     external_links: []
     lifecycle_state: open
@@ -127205,5 +127223,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-07T19:33:19.130Z
-    updated_at: 2026-04-07T19:33:35.248Z
+    updated_at: 2026-04-07T19:33:37.806Z
     notes: []
