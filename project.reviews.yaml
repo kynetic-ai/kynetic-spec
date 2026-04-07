@@ -124149,6 +124149,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNKF8MHC319XR0VQ5C7X832R
         timestamp: 2026-04-07T07:59:43.194Z
+      - _ulid: 01KNKF8R0T6QSCC403KW37Z12X
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNKF8MH5XNSMD75BTW5890DE
+        timestamp: 2026-04-07T07:59:44.667Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -124188,7 +124195,22 @@ reviews:
               commit to one concrete approach and verification plan.
             created_at: 2026-04-07T07:59:41.101Z
         kind: blocker
+      - _ulid: 01KNKF8MH5XNSMD75BTW5890DE
+        anchor:
+          type: structured
+          ref: "@daemon-concurrent-reads"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KNKF8MH55AVVXE860PE9B4ST
+            author: "@claude"
+            body: All three ACs define success in terms of internal mutex/file-lock acquisition rather than
+              observable command behavior. Rewrite this spec around externally verifiable outcomes
+              (for example, cache-backed reads can overlap without blocking each other, while
+              commands that need disk/global-state serialization still do not) so the contract stays
+              behavioral instead of locking in one implementation.
+            created_at: 2026-04-07T07:59:41.093Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-07T07:58:55.565Z
-    updated_at: 2026-04-07T07:59:41.101Z
+    updated_at: 2026-04-07T07:59:41.093Z
     notes: []
