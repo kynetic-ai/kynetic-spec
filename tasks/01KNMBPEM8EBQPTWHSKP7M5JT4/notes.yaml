@@ -46,3 +46,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-07T20:21:34.646Z
+  - _ulid: 01KNMTX3JYH9J61G6J4Q6Y3V9H
+    content: "Fix cycle 1: addressed the concurrency blocker by isolating daemon command execution state
+      per request instead of only bypassing the dispatch mutex. Added request-scoped stdout/stderr
+      capture, exit interception, output-mode state, working-directory resolution, and fresh
+      Commander instances per command request; also forwarded root CLI flags like --json/--yaml
+      explicitly and updated daemon command API tests to prepare fresh programs and assert
+      concurrent read output isolation. Re-verified @daemon-concurrent-reads ACs with npm test --
+      tests/daemon-command-api.test.ts, npm test -- --fresh, and kspec validate (warnings only:
+      existing repo debt)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T20:42:20.638Z
