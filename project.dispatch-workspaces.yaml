@@ -40221,7 +40221,7 @@ workspaces:
         head: 2c9267a1925319c10a2571e224cff060caf50007
         last_seen_at: 2026-04-07T05:07:54.372Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-writethrough-incremental-alignment-01knddj4
-  - active_role: worker
+  - active_role: null
     base_branch_point: dfe2138f1545b01c3147f5f425dc3ef7cff403b1
     bootstrap:
       status: succeeded
@@ -40305,12 +40305,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-07T05:18:32.377Z
+      updated_at: 2026-04-07T05:21:41.927Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-07T05:18:32.377Z
+      updated_at: 2026-04-07T05:21:41.927Z
     integration:
       status: pending
       detail: null
@@ -40318,17 +40318,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: dfe2138f1545b01c3147f5f425dc3ef7cff403b1
-      updated_at: 2026-04-07T05:18:32.377Z
-    lifecycle_state: active
+      updated_at: 2026-04-07T05:21:41.927Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KNK2VKWW5MPK2C0NSNF3FC90"
     task_slug: stabilize-flaky-agent-dispatch-post-invocation-re-evaluation-tests
     timestamps:
       closed_at: null
       last_active_at: 2026-04-07T05:08:14.696Z
-      last_reconciled_at: 2026-04-07T05:18:32.377Z
+      last_reconciled_at: 2026-04-07T05:21:41.927Z
       created_at: 2026-04-07T05:08:08.245Z
-      updated_at: 2026-04-07T05:18:32.377Z
+      updated_at: 2026-04-07T05:21:41.927Z
     workspace_id: dispatch-workspace-01KNK2VKWW5MPK2C0NSNF3FC90
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
