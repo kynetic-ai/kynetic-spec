@@ -13227,6 +13227,33 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-07T16:27:12.402Z
+  - _ulid: 01KNMCWXW15B36TD3EA4KTE3EB
+    type: success
+    content: For detached review snapshots, checking kspec-meta history alongside the code snapshot
+      cleanly separated the real spec-only task mutation from unrelated code-branch changes and
+      prevented a false review scope.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T16:37:34.722Z
+  - _ulid: 01KNMCWY2JNHV2XJQXDJTP5567
+    type: friction
+    content: Detached review snapshots can point the code worktree at an unrelated integration-tip
+      commit while the actual submitted task change lives only on kspec-meta, which makes spec-only
+      reviews look conflated until the reviewer inspects the shadow-branch history.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T16:37:34.930Z
+  - _ulid: 01KNMCWY8HH0XG7FNPWKFM95AZ
+    type: friction
+    content: Shelling kspec review comment with unescaped backticks in the body triggers command
+      substitution and corrupts automated review comments; the CLI flow needs a safer file-or-stdin
+      payload path for comment bodies.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T16:37:35.121Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
