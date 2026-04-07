@@ -10,6 +10,7 @@ import {
 import {
   getEntityCacheContext,
   initContext,
+  loadAllItems,
   runWithEntityCache,
 } from "../../src/parser/yaml.js";
 
@@ -32,7 +33,29 @@ includes:
 `,
     "utf-8",
   );
-  await fs.writeFile(path.join(tempDir, ".kspec", "modules", "test.yaml"), "features: []\n", "utf-8");
+  await fs.writeFile(
+    path.join(tempDir, ".kspec", "modules", "test.yaml"),
+    `_ulid: 01KFCVXQAABBCCDDEEFFGGHHXX
+slugs:
+  - cache-test-module
+title: Cache Test Module
+type: module
+description: Module for entity cache loader tests
+features:
+  - _ulid: 01KF1645CBDJYHWBPYWRN3HYPJ
+    slugs:
+      - cache-test-feature
+    title: Cache Test Feature
+    type: feature
+    description: Feature for entity cache loader tests
+    acceptance_criteria:
+      - id: ac-1
+        given: test fixture exists
+        when: loadAllItems runs
+        then: the feature is returned
+`,
+    "utf-8",
+  );
   await fs.writeFile(
     path.join(tempDir, "kspec.config.yaml"),
     `shadow:
@@ -208,5 +231,73 @@ describe("initContext with entity cache context", () => {
 
     expect(ctx).toEqual(expectedCtx);
     expect(loadProjectConfigSpy).toHaveBeenCalled();
+  });
+});
+
+describe("loadAllItems with entity cache context", () => {
+  // AC: @daemon-command-api ac-read-cache-serving
+  it("returns cached item details when the items domain is ready", async () => {
+    const tempDir = await setupShadowProject();
+    const ctx = await initContext(tempDir, { syncMode: "skip" });
+    const diskItems = await loadAllItems(ctx);
+    expect(diskItems.length).toBeGreaterThan(0);
+
+    const cachedItems = diskItems.map((item, index) =>
+      index === 0 ? { ...item, title: `${item.title} (cached)` } : item,
+    );
+    const cache = {
+      getDomainState: vi.fn((domain: string) => (domain === "items" ? "ready" : "unloaded")),
+      getAllItemDetails: vi.fn(() => cachedItems),
+    };
+
+    const items = await runWithEntityCache(
+      () =>
+        loadAllItems({
+          ...ctx,
+          manifest: null,
+          manifestPath: null,
+        }),
+      () => cache,
+      tempDir,
+    );
+
+    expect(items).toEqual(cachedItems);
+    expect(cache.getDomainState).toHaveBeenCalledWith("items");
+    expect(cache.getAllItemDetails).toHaveBeenCalled();
+  });
+
+  // AC: @daemon-command-api ac-read-cache-serving
+  it("falls through to disk loading when the items domain is not ready", async () => {
+    const tempDir = await setupShadowProject();
+    const ctx = await initContext(tempDir, { syncMode: "skip" });
+    const expectedItems = await loadAllItems(ctx);
+    const cache = {
+      getDomainState: vi.fn(() => "loading"),
+      getAllItemDetails: vi.fn(() => {
+        throw new Error("item details should not be read before the items domain is ready");
+      }),
+    };
+
+    const items = await runWithEntityCache(
+      () => loadAllItems(ctx),
+      () => cache,
+      tempDir,
+    );
+
+    expect(items).toEqual(expectedItems);
+    expect(cache.getDomainState).toHaveBeenCalledWith("items");
+    expect(cache.getAllItemDetails).not.toHaveBeenCalled();
+  });
+
+  // AC: @daemon-command-api ac-no-cache-outside-daemon
+  it("falls through to disk loading when no cache context exists", async () => {
+    const tempDir = await setupShadowProject();
+    const ctx = await initContext(tempDir, { syncMode: "skip" });
+    const expectedItems = await loadAllItems(ctx);
+
+    const items = await loadAllItems(ctx);
+
+    expect(items).toEqual(expectedItems);
+    expect(items.length).toBeGreaterThan(0);
   });
 });
