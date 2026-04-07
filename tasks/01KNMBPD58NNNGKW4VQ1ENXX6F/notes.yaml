@@ -10,3 +10,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-07T17:58:52.222Z
+  - _ulid: 01KNMJ07WJ9REC0RA70WZS867F
+    content: "Implemented cache-aware item reads in loadAllItems(). When AsyncLocalStorage exposes a
+      ready items domain, the loader now returns cache.getAllItemDetails() before any
+      manifest/include traversal. Added parser coverage for cache hit, non-ready fallback, and
+      no-cache direct mode fallback in tests/parser/entity-cache-context.test.ts. Verification: npm
+      test -- --run tests/parser/entity-cache-context.test.ts, npm test, kspec validate (warnings
+      only; existing project-wide warnings remain)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T18:06:46.163Z
