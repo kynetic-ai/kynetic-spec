@@ -122074,3 +122074,29 @@ reviews:
     created_at: 2026-04-07T03:01:36.780Z
     updated_at: 2026-04-07T03:04:56.550Z
     notes: []
+  - _ulid: 01KNJZ7T2XYQB92R7APAFQWVKV
+    slugs: []
+    title: Review task-meta-subdomain-decomposition
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KNJZ7T2X55PMK4G30CRWRXQ0
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-07T03:19:36.797Z
+    examined_commit: 82b0e36155173b06f9cc85bf4c36a93b876855c6
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNDDJ4BXMWVZSC7G6KMDP8BH"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-07T03:19:36.797Z
+    updated_at: null
+    notes: []
