@@ -121811,6 +121811,16 @@ reviews:
         runner: codex
         created_at: 2026-04-07T02:35:18.210Z
         completed_at: 2026-04-07T02:35:18.210Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- tests/daemon-entity-cache.test.ts --verbose passed: 117/117."
+        name: daemon-entity-cache
+        required: true
+        runner: vitest
+        created_at: 2026-04-07T02:35:38.304Z
+        completed_at: 2026-04-07T02:35:38.304Z
     events:
       - _ulid: 01KNJW88BZ9C0VGYZQJDX124JX
         actor: Jacob Chapel
@@ -121855,6 +121865,13 @@ reviews:
           status: pass
           name: review-evidence
         timestamp: 2026-04-07T02:35:19.155Z
+      - _ulid: 01KNJWQAAP6R2EV35FFQPE6Z7A
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: daemon-entity-cache
+        timestamp: 2026-04-07T02:35:39.222Z
     examined_commit: 86a449c9dd84ad1a7a7d36b1552265597eb3b7d6
     external_links: []
     lifecycle_state: closed
@@ -121874,5 +121891,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-07T02:35:14.948Z
     created_at: 2026-04-07T02:27:25.696Z
-    updated_at: 2026-04-07T02:35:18.210Z
+    updated_at: 2026-04-07T02:35:38.304Z
     notes: []
