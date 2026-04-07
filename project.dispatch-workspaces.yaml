@@ -39415,7 +39415,7 @@ workspaces:
         head: 86a449c9dd84ad1a7a7d36b1552265597eb3b7d6
         last_seen_at: 2026-04-07T02:26:21.701Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-incremental-session-updates-01knddj4
-  - active_role: null
+  - active_role: worker
     base_branch_point: 34dd3d45c187a99ec1c4944bb4914e6549935f6d
     bootstrap:
       status: succeeded
@@ -39504,7 +39504,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-07T02:26:42.396Z
+      updated_at: 2026-04-07T02:26:47.645Z
     integration:
       status: pending
       detail: null
@@ -39513,16 +39513,16 @@ workspaces:
       target_branch: dev
       target_commit: 34dd3d45c187a99ec1c4944bb4914e6549935f6d
       updated_at: 2026-04-07T02:26:42.396Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KNHZ5FH33G2C27BMG0SHPC74"
     task_slug: investigate-full-suite-instability-after-dependency-health-passes-in-review-worktrees
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-04-07T02:26:42.396Z
+      last_active_at: 2026-04-07T02:26:47.645Z
+      last_reconciled_at: 2026-04-07T02:26:47.645Z
       created_at: 2026-04-07T02:26:42.396Z
-      updated_at: 2026-04-07T02:26:46.099Z
+      updated_at: 2026-04-07T02:26:47.645Z
     workspace_id: dispatch-workspace-01KNHZ5FH33G2C27BMG0SHPC74
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
