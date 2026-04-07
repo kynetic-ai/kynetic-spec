@@ -10,6 +10,7 @@
  * - @daemon-command-api ac-batch-support: batch array execution via existing batch runner
  * - @daemon-command-api ac-concurrent-mutations: file lock serialization
  * - @daemon-command-api ac-response-parity: stdout/stderr/exitCode match direct CLI
+ * - @daemon-command-api ac-cache-context-propagation: command execution receives entity cache async context
  * - @trait-api-endpoint ac-1: returns 2xx with JSON body on success
  * - @trait-api-endpoint ac-3: returns 400 on invalid body
  * - @trait-api-endpoint ac-6: includes X-Request-Id header
@@ -22,7 +23,7 @@ import type { PubSubManager } from "../websocket/pubsub.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
 import type { CacheDomain } from "../../daemon/entity-cache.js";
 import { getDispatchShadowMutationLockPath } from "../../agent-runtime/workspace.js";
-import { runWithoutSpecDirOverride } from "../../parser/yaml.js";
+import { runWithEntityCache, runWithoutSpecDirOverride } from "../../parser/yaml.js";
 
 // ── Types ──────────────────────────────────────────────────────────
 
@@ -106,6 +107,7 @@ async function executeCommand(
   payload: CommandPayload,
   program: Command,
   projectPath: string,
+  cacheAccessor?: EntityCacheAccessor,
 ): Promise<CommandResult> {
   // Lazy import to avoid loading the full CLI at daemon startup
   const { buildCommandArgv, resetCommandTree } = await import("../../cli/batch-exec.js");
@@ -198,7 +200,13 @@ async function executeCommand(
     // as batch-atomic mode or test fixtures) and resolves the project
     // purely from cwd.  This avoids mutating process.env which is shared
     // across all threads in the process.
-    await runWithoutSpecDirOverride(() => program.parseAsync(argv, { from: "user" }));
+    const parseCommand = () =>
+      runWithoutSpecDirOverride(() => program.parseAsync(argv, { from: "user" }));
+    if (cacheAccessor) {
+      await runWithEntityCache(parseCommand, cacheAccessor, projectPath);
+    } else {
+      await parseCommand();
+    }
   } catch (err) {
     if (err instanceof BatchExitError) {
       exitCode = err.code;
@@ -310,6 +318,7 @@ export function createCommandRoutes(options: CommandRouteOptions) {
       // AC: @daemon-command-api ac-response-parity — stdout/stderr/exitCode parity
       // AC: @daemon-command-api ac-mutation-cache-update — cache + broadcast after mutations
       // AC: @daemon-command-api ac-concurrent-mutations — dispatch mutex + file lock
+      // AC: @daemon-command-api ac-cache-context-propagation — entity cache async context installed for command execution
       // AC: @trait-api-endpoint ac-1 — returns 2xx with JSON body
       // AC: @trait-api-endpoint ac-3 — returns 400 on invalid body
       .post(
@@ -337,10 +346,10 @@ export function createCommandRoutes(options: CommandRouteOptions) {
               const { withFileLock } = await import("../../parser/file-lock.js");
               const lockPath = getDispatchShadowMutationLockPath(projectContext.path);
               return withFileLock(lockPath, () =>
-                executeCommand(payload, program, projectContext.path),
+                executeCommand(payload, program, projectContext.path, getEntityCache),
               );
             }
-            return executeCommand(payload, program, projectContext.path);
+            return executeCommand(payload, program, projectContext.path, getEntityCache);
           });
 
           // AC: @daemon-command-api ac-mutation-cache-update — update cache before response

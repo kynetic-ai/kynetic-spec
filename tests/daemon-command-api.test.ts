@@ -7,6 +7,7 @@
  * - @daemon-command-api ac-batch-support: batch array execution
  * - @daemon-command-api ac-concurrent-mutations: serialized mutation execution
  * - @daemon-command-api ac-response-parity: stdout/stderr/exitCode match direct CLI
+ * - @daemon-command-api ac-cache-context-propagation: command execution receives entity cache async context
  * - @trait-api-endpoint ac-1: returns 2xx with JSON body
  * - @trait-api-endpoint ac-3: returns 400 on invalid body
  * - @trait-api-endpoint ac-6: includes X-Request-Id header
@@ -45,6 +46,38 @@ let app: Elysia;
 let pubsub: PubSubManager;
 let mockCache: RouteEntityCache;
 let writeThroughCalls: string[];
+
+async function withCacheContextCommand<T>(fn: () => Promise<T>): Promise<T> {
+  const { program } = await import("../dist/cli/index.js");
+  const commandName = "debug-cache-context";
+  const existingIndex = program.commands.findIndex((command) => command.name() === commandName);
+  if (existingIndex >= 0) {
+    program.commands.splice(existingIndex, 1);
+  }
+
+  program.command(commandName).action(async () => {
+    const { getEntityCacheContext } = await import("../dist/parser/yaml.js");
+    const context = getEntityCacheContext();
+    const resolvedCache = context?.cacheAccessor(context.projectPath) ?? null;
+
+    console.log(
+      JSON.stringify({
+        hasContext: context !== undefined,
+        projectPath: context?.projectPath ?? null,
+        resolvedCache: resolvedCache !== null,
+      }),
+    );
+  });
+
+  try {
+    return await fn();
+  } finally {
+    const index = program.commands.findIndex((command) => command.name() === commandName);
+    if (index >= 0) {
+      program.commands.splice(index, 1);
+    }
+  }
+}
 
 /**
  * Create a mock entity cache that tracks writeThrough calls.
@@ -381,6 +414,30 @@ describe("Daemon Command API", () => {
     // Both should fail with non-zero exit code
     expect(cliResult.exitCode).not.toBe(0);
     expect(body.exitCode).not.toBe(0);
+  });
+
+  // AC: @daemon-command-api ac-cache-context-propagation
+  it("installs entity cache context for in-process command execution", async () => {
+    await withCacheContextCommand(async () => {
+      const response = await makeRequest("/api/command", {
+        method: "POST",
+        body: JSON.stringify({
+          command: "debug-cache-context",
+          args: {},
+        }),
+      });
+
+      expect(response.status).toBe(200);
+      const body = await response.json();
+      expect(body.exitCode).toBe(0);
+
+      const context = JSON.parse(body.stdout);
+      expect(context).toEqual({
+        hasContext: true,
+        projectPath: tempDir,
+        resolvedCache: true,
+      });
+    });
   });
 
   // ───────────────────────────────────────────────────────────────────

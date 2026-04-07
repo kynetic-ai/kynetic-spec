@@ -67,6 +67,14 @@ import { TraitIndex } from "./traits.js";
  * the current async execution chain and cannot race with other threads.
  */
 const specDirOverrideStorage = new AsyncLocalStorage<{ ignore: boolean }>();
+export type EntityCacheAccessor = (projectPath: string) => unknown;
+
+export interface EntityCacheContext {
+  cacheAccessor: EntityCacheAccessor;
+  projectPath: string;
+}
+
+const entityCacheStorage = new AsyncLocalStorage<EntityCacheContext>();
 
 /**
  * Run `fn` in an async context where initContext() will skip the
@@ -75,6 +83,18 @@ const specDirOverrideStorage = new AsyncLocalStorage<{ ignore: boolean }>();
  */
 export function runWithoutSpecDirOverride<T>(fn: () => T): T {
   return specDirOverrideStorage.run({ ignore: true }, fn);
+}
+
+export function runWithEntityCache<T>(
+  fn: () => T,
+  cacheAccessor: EntityCacheAccessor,
+  projectPath: string,
+): T {
+  return entityCacheStorage.run({ cacheAccessor, projectPath }, fn);
+}
+
+export function getEntityCacheContext(): EntityCacheContext | undefined {
+  return entityCacheStorage.getStore();
 }
 
 /**
