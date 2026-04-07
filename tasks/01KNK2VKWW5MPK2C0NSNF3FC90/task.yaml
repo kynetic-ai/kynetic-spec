@@ -14,8 +14,13 @@ description: "Full NODE_ENV=development npm test -- --fresh on review snapshot
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev after approved review. Verified tests/agent-dispatch-engine.test.ts
+  diff, ran kspec validate (warnings-only), npm test -- --fresh tests/agent-dispatch-engine.test.ts,
+  five fresh reruns of the Post-invocation re-evaluation subset, and a full fresh npm test before
+  merging dispatch/task/stabilize-flaky-agent-dispatch-post-invocation-re-evaluation-tests/01knk2vk
+  into dev.
 depends_on: []
 context: []
 priority: 3
@@ -74,8 +79,27 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-07T05:22:39.344Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev after approved review. Verified tests/agent-dispatch-engine.test.ts diff, ran
+          kspec validate (warnings-only), npm test -- --fresh tests/agent-dispatch-engine.test.ts,
+          five fresh reruns of the Post-invocation re-evaluation subset, and a full fresh npm test
+          before merging
+          dispatch/task/stabilize-flaky-agent-dispatch-post-invocation-re-evaluation-tests/01knk2vk
+          into dev.
+        previous: null
+      completed_at:
+        new: 2026-04-07T05:32:32.344Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-07T05:32:32.352Z
 created_at: 2026-04-07T04:22:51.548Z
 started_at: 2026-04-07T05:08:47.221Z
 submitted_at: 2026-04-07T05:20:09.370Z
+completed_at: 2026-04-07T05:32:32.344Z
 todos: []
 automation: eligible
