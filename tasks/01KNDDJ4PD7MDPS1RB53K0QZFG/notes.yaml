@@ -69,3 +69,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-07T06:11:02.664Z
+  - _ulid: 01KNK9V3AGMYKT723S4TQTYG2Z
+    content: "[FIX_CYCLE: 5] Addressed the remaining triage promote gap from review. The
+      /api/triage/:ref/act promote path now resolves the created task ref back to its ULID and
+      passes that hint into tasks writeThrough, so this mutation entry point uses the incremental
+      task patch instead of a full tasks reload. Added dedicated daemon route regression coverage in
+      tests/daemon-triage-write-through.test.ts and aligned the read-path harness with the shared
+      error polyfill pattern. Verification: npm test -- --fresh daemon-triage-write-through
+      daemon-entity-cache (33 suites / 136 tests passed); KSPEC_NO_DAEMON=1 kspec validate exited 6
+      with only pre-existing repository warnings; NODE_ENV= npm test -- --fresh passed (2072 suites
+      / 7555 passed / 5 skipped)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T06:24:54.608Z
