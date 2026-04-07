@@ -39507,18 +39507,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/investigate-full-suite-instability-after-dependency-health-passes-in-review-worktrees/01knhz5f
-    canonical_branch_head: 34dd3d45c187a99ec1c4944bb4914e6549935f6d
+    canonical_branch_head: 58d872ce04698b021e6dd29ddfefd0f6016406a6
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-07T02:26:42.396Z
+      updated_at: 2026-04-07T02:45:33.065Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-07T02:26:47.645Z
+      updated_at: 2026-04-07T02:45:33.065Z
     integration:
       status: pending
       detail: null
@@ -39526,7 +39526,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 34dd3d45c187a99ec1c4944bb4914e6549935f6d
-      updated_at: 2026-04-07T02:26:42.396Z
+      updated_at: 2026-04-07T02:45:33.065Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KNHZ5FH33G2C27BMG0SHPC74"
@@ -39534,9 +39534,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-07T02:26:47.645Z
-      last_reconciled_at: 2026-04-07T02:26:47.645Z
+      last_reconciled_at: 2026-04-07T02:45:33.065Z
       created_at: 2026-04-07T02:26:42.396Z
-      updated_at: 2026-04-07T02:26:47.645Z
+      updated_at: 2026-04-07T02:45:33.065Z
     workspace_id: dispatch-workspace-01KNHZ5FH33G2C27BMG0SHPC74
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
