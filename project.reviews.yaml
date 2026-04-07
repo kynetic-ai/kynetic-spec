@@ -122755,7 +122755,18 @@ reviews:
     slugs: []
     title: Review task-meta-subdomain-decomposition (cycle 3)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Ad-hoc reproduction on head a756106068e3 created  with , changed , then ran . Observed
+          reload counts were  instead of manifest-only.
+        name: meta-include-refresh-repro
+        required: true
+        runner: manual
+        created_at: 2026-04-07T04:23:30.207Z
+        completed_at: 2026-04-07T04:23:30.207Z
     events:
       - _ulid: 01KNK2D8CSMZSAJ4D56DMTGM9J
         actor: Jacob Chapel
@@ -122777,6 +122788,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNK2WN4GTZ0VYFAG6P9B0TZC
         timestamp: 2026-04-07T04:23:27.061Z
+      - _ulid: 01KNK2WV4KQM8V3DYFNWH051G6
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: meta-include-refresh-repro
+        timestamp: 2026-04-07T04:23:31.732Z
     examined_commit: a756106068e3feea81055805f98a0510b71aa40a
     external_links: []
     lifecycle_state: open
@@ -122807,5 +122825,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-07T04:15:01.017Z
-    updated_at: 2026-04-07T04:23:25.585Z
+    updated_at: 2026-04-07T04:23:30.207Z
     notes: []
