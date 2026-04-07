@@ -125891,6 +125891,13 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-04-07T17:43:54.285Z
+      - _ulid: 01KNMH45NEBZDNMY5BV2RDF5SA
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNMH44XBCDHGPMMZPZR91J82
+        timestamp: 2026-04-07T17:51:26.382Z
     examined_commit: 8284b1a506930a0baf9d03648e397ecf94e733e7
     external_links: []
     lifecycle_state: draft
@@ -125900,8 +125907,25 @@ reviews:
       content_hash: ""
       ref: "@01KNMBPCJN1F5VZZ2DQV10VG76"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNMH44XBCDHGPMMZPZR91J82
+        entries:
+          - _ulid: 01KNMH44XCZJYE8SDJE80PTMGC
+            author: Jacob Chapel
+            body: "Evidence log: Files read: src/parser/yaml.ts, src/daemon/entity-cache.ts, src/parser/meta.ts,
+              tests/parser/entity-cache-context.test.ts, tests/daemon-command-api.test.ts,
+              dist/daemon/routes/command.js. Commands run: git diff --stat/base diff, kspec task get
+              @01KNMBPCJN1F5VZZ2DQV10VG76, kspec item get @daemon-command-api, grep AC annotations
+              in tests, kspec validate, npm test -- tests/parser/entity-cache-context.test.ts, npm
+              test -- tests/daemon-command-api.test.ts, npm test. Claims verified: daemon command
+              execution installs entity cache async context in the built command route; initContext
+              cache hit preserves full KspecContext parity with disk path in the new parser tests;
+              no regression in targeted daemon/parser flows or full suite. Categories searched:
+              correctness, edge cases/fallbacks, error handling, test quality, integration.
+              Findings: none."
+            created_at: 2026-04-07T17:51:25.612Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-07T17:43:54.285Z
-    updated_at: null
+    updated_at: 2026-04-07T17:51:25.612Z
     notes: []
