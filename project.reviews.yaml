@@ -127070,6 +127070,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-07T19:18:18.288Z
+      - _ulid: 01KNMPCRKTC718E8C9PVE1PYKV
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNMPCQR223BTDADWRBGKH8G9
+        timestamp: 2026-04-07T19:23:30.810Z
     examined_commit: 2723f252985dcc0d0a354d77d9c6aaccc5b81081
     external_links: []
     lifecycle_state: open
@@ -127079,8 +127086,33 @@ reviews:
       content_hash: ""
       ref: "@01KNMBPDRSN3PXZ81CHXBWXKTN"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNMPCQR223BTDADWRBGKH8G9
+        entries:
+          - _ulid: 01KNMPCQR2M7WF8R0Y4GK5K5MW
+            author: Jacob Chapel
+            body: >-
+              Evidence log:
+
+              Files read: src/parser/plans.ts, src/parser/reviews.ts,
+              tests/parser/entity-cache-context.test.ts, src/parser/yaml.ts,
+              src/parser/task-data-manager.ts, tests/daemon-read-path.test.ts,
+              tests/daemon-entity-cache.test.ts.
+
+              Commands run: git diff against c0d9fee...2723f252, kspec task get
+              @01KNMBPDRSN3PXZ81CHXBWXKTN, kspec item get @daemon-command-api, kspec review get
+              @01KNMMADY56C0YNMGGTQBCDG38, rg AC annotations, kspec validate, npm test -- --fresh
+              tests/parser/entity-cache-context.test.ts, npm test -- --fresh.
+
+              Claims verified: loadPlans/loadReviewRecords now require ready domain + available
+              index + complete detail coverage before serving from cache; partial-detail,
+              empty-detail, null-index, and non-ready fallbacks are covered by behavioral tests.
+
+              Categories searched: correctness, edge cases, error handling, test quality,
+              integration. No remaining findings.
+            created_at: 2026-04-07T19:23:29.923Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-07T19:17:44.100Z
-    updated_at: 2026-04-07T19:18:17.447Z
+    updated_at: 2026-04-07T19:23:29.923Z
     notes: []
