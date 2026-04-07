@@ -4407,4 +4407,49 @@ requirements:
     tags: []
     created: 2026-04-04T23:34:26.266Z
     notes: []
+  - _ulid: 01KNMBPBNGP3F059SEQ2MCD2MT
+    slugs:
+      - daemon-concurrent-reads
+    title: Concurrent Read Command Execution
+    type: requirement
+    description: |
+      Read-only commands executed via the command API can complete
+      concurrently when served from cached data. Mutating commands
+      and commands that require disk access continue to execute
+      sequentially to preserve data integrity.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    acceptance_criteria:
+      - given: |
+          Multiple read-only commands are submitted to the command
+          API concurrently and all required cache domains are in
+          ready state
+        id: ac-concurrent-cache-reads
+        then: |
+          The commands complete without waiting for each other
+        when: |
+          The commands execute
+      - given: |
+          A mutating command is submitted to the command API
+        id: ac-mutation-serialization
+        then: |
+          The command executes sequentially with respect to other
+          mutating commands and does not overlap with them
+        when: |
+          The command executes
+      - given: |
+          A read-only command is submitted to the command API but
+          one or more required cache domains are not in ready state
+        id: ac-disk-fallback-serialization
+        then: |
+          The command executes sequentially to protect shared
+          process state during disk-based execution
+        when: |
+          The command falls back to disk-based data loading
+    tags: []
+    created: 2026-04-07T16:16:30.896Z
+    notes: []
 notes: []

@@ -1,0 +1,43 @@
+_ulid: 01KNMBPD58NNNGKW4VQ1ENXX6F
+slugs:
+  - task-cache-aware-item-loading
+title: Serve item data from entity cache during command execution
+type: task
+description: |
+  Make loadAllItems() return cached data when the entity cache
+  is available and the items domain is ready.
+
+  Why: loadAllItems() parses the manifest, follows include
+  patterns, and reads every module YAML file. The entity cache
+  already holds all loaded spec items in its detail tier
+  (getAllItemDetails() returns LoadedSpecItem[]). Returning
+  cached data eliminates this multi-file parse.
+
+  What: In loadAllItems() (src/parser/yaml.ts), add a cache
+  check preamble. If getEntityCacheContext() provides a cache
+  with items domain ready, return cache.getAllItemDetails().
+  Otherwise fall through to the existing disk-based path.
+
+  How: Same preamble pattern as task loading — import
+  getEntityCacheContext, check domain state, return cached data
+  or fall through. Add tests verifying cache hit returns cached
+  items, cache miss falls through to disk.
+
+  Covers: @daemon-command-api ac-read-cache-serving (partial —
+  items domain).
+spec_ref: "@daemon-command-api"
+plan_ref: "@plan-cache-aware-command-execution"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-cache-async-context"
+context: []
+priority: 2
+tags:
+  - daemon
+  - cache
+  - items
+vcs_refs: []
+created_at: 2026-04-07T16:16:32.424Z
+todos: []

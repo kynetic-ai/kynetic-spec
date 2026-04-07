@@ -1,0 +1,54 @@
+_ulid: 01KNMBPDRSN3PXZ81CHXBWXKTN
+slugs:
+  - task-cache-aware-plans-reviews
+title: Serve plan and review data from entity cache during command execution
+type: task
+description: |
+  Make loadPlans() and loadReviewRecords() return cached data
+  when the entity cache is available and their domains are ready.
+
+  Why: Both functions read single YAML files from disk. The
+  entity cache holds plan and review data in index and detail
+  tiers. Returning cached data avoids the file read and YAML
+  parse.
+
+  What:
+
+  1. loadPlans() (src/parser/plans.ts) — add cache check
+     preamble. If plans domain ready and detail tier has entries,
+     return all plan details from the detail tier. If detail tier
+     is empty (index-only), fall through to disk because
+     LoadedPlan[] is the expected return type and index-tier
+     PlanIndexSummary[] is not type-compatible.
+
+  2. loadReviewRecords() (src/parser/reviews.ts) — add cache
+     check preamble. Same pattern: if reviews domain ready and
+     detail tier has entries, return all review details. Otherwise
+     fall through to disk.
+
+  How: Same preamble pattern. Each function is in its own file.
+  The detail tier check is important: unlike tasks and items
+  where the cache eagerly loads details, plans and reviews may
+  have only index-tier data populated. The preamble checks both
+  domain state and detail tier population before returning. Add
+  tests verifying each loader returns cached data when detail
+  tier is populated, falls through when detail tier is empty,
+  and falls through when domain is not ready.
+
+  Covers: @daemon-command-api ac-read-cache-serving (partial —
+  plans and reviews domains).
+spec_ref: "@daemon-command-api"
+plan_ref: "@plan-cache-aware-command-execution"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-cache-async-context"
+context: []
+priority: 2
+tags:
+  - daemon
+  - cache
+vcs_refs: []
+created_at: 2026-04-07T16:16:33.049Z
+todos: []

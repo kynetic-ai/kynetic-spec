@@ -1,0 +1,102 @@
+_ulid: 01KNMBPEM8EBQPTWHSKP7M5JT4
+slugs:
+  - task-read-command-concurrency
+title: Allow concurrent execution of cache-backed read commands
+type: task
+description: |
+  Allow read-only commands executed via the command API to run
+  concurrently when their required cache domains are ready, by
+  skipping the dispatch mutex for these commands.
+
+  Why: The dispatch mutex (DispatchMutex in command.ts)
+  serializes all command execution because executeCommand()
+  mutates process-global state: process.cwd(), console.log,
+  process.stderr.write, and the process.exit interceptor.
+  After phases 3-5 of this plan, cache-backed read commands
+  get their data from memory. However, they still run through
+  program.parseAsync() which uses process.chdir() and console
+  interception for output capture. Skipping the mutex for reads
+  is safe because: (a) initContext returns from cache without
+  needing chdir, (b) data loaders return from cache without
+  disk I/O, and (c) output capture via console interception is
+  per-call (each executeCommand saves and restores the
+  originals). The chdir in executeCommand is the remaining
+  concern — but with cached initContext, the chdir result is
+  never used by data loaders since they skip disk paths.
+
+  What: In the command route handler (command.ts POST /):
+
+  1. Add a canServeFromCache(command, cache) function that
+     checks two conditions: the command is classified as
+     read-only (not mutating), and the specific cache domains
+     that command requires are in ready state. Each allowlisted
+     command declares its required domains (e.g. task list
+     requires tasks + items for ReferenceIndex; inbox list
+     requires only inbox). Use a conservative allowlist of
+     commands known to be cache-safe: task list, task get,
+     tasks list, tasks ready, item list, item get, search,
+     inbox list, plan list, plan get, review get, review list.
+
+  2. When canServeFromCache returns true, execute the command
+     outside the dispatch mutex. The command still runs through
+     executeCommand() with console capture and chdir, but it
+     does not wait for the mutex.
+
+  3. When canServeFromCache returns false (required domains not
+     ready or command not in allowlist), use the existing
+     mutex-protected path. Mutations always use the mutex.
+
+  How: Define a COMMAND_CACHE_DOMAINS map that associates each
+  allowlisted command with its required cache domains. The
+  domain list for each command must be derived by the worker
+  at implementation time by reading each command handler in
+  src/cli/commands/ and tracing every data loading call through
+  all code paths (including flag-dependent branches). Each
+  entry must list exactly the domains the handler loads
+  unconditionally — not more (which would over-serialize) and
+  not less (which would allow mutex bypass while a loader falls
+  back to disk). The worker must add inline comments in the
+  COMMAND_CACHE_DOMAINS map citing the source file and line
+  number that justifies each domain entry.
+
+  The isCommandMutating() function already classifies commands.
+  canServeFromCache looks up the command in COMMAND_CACHE_DOMAINS
+  and checks that each listed domain is in ready state. Commands
+  not in the map are not cache-eligible. In the route handler,
+  branch before dispatchMutex.run():
+  if (!mutating && canServeFromCache(payload, cache)) {
+    return executeCommand(payload, program, projectPath);
+  } else {
+    return dispatchMutex.run(() => ... existing logic ...);
+  }
+  Add tests verifying: allowlisted read commands skip mutex
+  when their required cache domains are ready, read commands
+  acquire mutex when a required domain is not ready, commands
+  not in allowlist acquire mutex, mutations always acquire
+  mutex, and two concurrent allowlisted read commands can
+  complete without blocking each other.
+
+  Covers: @daemon-concurrent-reads ac-concurrent-cache-reads,
+  ac-mutation-serialization, ac-disk-fallback-serialization.
+spec_ref: "@daemon-concurrent-reads"
+plan_ref: "@plan-cache-aware-command-execution"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-cache-aware-init-context"
+  - "@task-cache-aware-task-loading"
+  - "@task-cache-aware-item-loading"
+  - "@task-cache-aware-inbox-triage"
+  - "@task-cache-aware-plans-reviews"
+  - "@task-cache-aware-meta"
+  - "@task-cache-task-history"
+context: []
+priority: 3
+tags:
+  - daemon
+  - cache
+  - performance
+vcs_refs: []
+created_at: 2026-04-07T16:16:33.928Z
+todos: []

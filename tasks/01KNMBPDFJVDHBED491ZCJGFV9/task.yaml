@@ -1,0 +1,48 @@
+_ulid: 01KNMBPDFJVDHBED491ZCJGFV9
+slugs:
+  - task-cache-aware-inbox-triage
+title: Serve inbox and triage data from entity cache during command execution
+type: task
+description: |
+  Make loadInboxItems() and loadTriageRecords() return cached
+  data when the entity cache is available and their domains are
+  ready.
+
+  Why: Both functions read single YAML files from disk. The
+  entity cache already holds their data: inbox stores full
+  LoadedInboxItem[] in its index tier, and triage stores full
+  LoadedTriageRecord[] in its detail tier. Returning cached data
+  avoids the file read and YAML parse.
+
+  What:
+
+  1. loadInboxItems() (src/parser/yaml.ts) — add cache check
+     preamble. If inbox domain ready, return
+     cache.getInboxIndex() which stores full LoadedInboxItem[].
+     Otherwise fall through to disk.
+
+  2. loadTriageRecords() (src/parser/yaml.ts) — add cache check
+     preamble. If triage domain ready, return all triage details
+     from the detail tier. Otherwise fall through to disk.
+
+  How: Same preamble pattern. Both functions are in the same
+  file (src/parser/yaml.ts). Add tests verifying each loader
+  returns cached data on hit and falls through on miss.
+
+  Covers: @daemon-command-api ac-read-cache-serving (partial —
+  inbox and triage domains).
+spec_ref: "@daemon-command-api"
+plan_ref: "@plan-cache-aware-command-execution"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-cache-async-context"
+context: []
+priority: 2
+tags:
+  - daemon
+  - cache
+vcs_refs: []
+created_at: 2026-04-07T16:16:32.754Z
+todos: []

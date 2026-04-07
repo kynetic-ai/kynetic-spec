@@ -37235,11 +37235,23 @@ plans:
       (concurrency) depends on all read loaders being cache-aware and
 
       is the final optimization.
-    status: approved
+    status: active
     approved_at: 2026-04-07T16:15:15.885Z
     branch: plan/plan-cache-aware-command-execution/01knkf3b
-    derived_specs: []
-    derived_tasks: []
+    derived_specs:
+      - "@daemon-concurrent-reads"
+    derived_tasks:
+      - "@task-update-command-api-spec"
+      - "@task-update-entity-cache-history-ac"
+      - "@task-cache-async-context"
+      - "@task-cache-aware-init-context"
+      - "@task-cache-aware-task-loading"
+      - "@task-cache-aware-item-loading"
+      - "@task-cache-aware-inbox-triage"
+      - "@task-cache-aware-plans-reviews"
+      - "@task-cache-aware-meta"
+      - "@task-cache-task-history"
+      - "@task-read-command-concurrency"
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec/plans/cache-aware-command-execution.md
     created_at: 2026-04-07T07:56:48.162Z
@@ -37265,3 +37277,109 @@ plans:
         content: Content updated from file
         author: "@claude"
         created_at: 2026-04-07T08:24:57.067Z
+      - _ulid: 01KNMBPEYG10H4TJCCNFBMYMXF
+        content: |-
+          ### Motivation
+
+          The daemon's command API (POST /api/command) executes CLI commands
+          in-process by calling program.parseAsync(). Every command that reads
+          spec/task data calls initContext() which performs disk reads and git
+          operations, then calls data loading functions that parse YAML files
+          from disk. The entity cache holds all of this data in memory but the
+          command execution path bypasses it entirely.
+
+          For projects with many entities (1335+ tasks), this makes command
+          execution take 60+ seconds — exceeding the CLI proxy timeout — even
+          though the same data is available from cache in milliseconds.
+
+          The REST API routes (GET /api/tasks, GET /api/items, etc.) already
+          serve from cache. This plan makes the command API path equally fast
+          by making data loaders cache-aware.
+
+          ### Builds on granular cache invalidation
+
+          This plan depends on @plan-granular-cache-invalidation being merged
+          to dev. That plan provides:
+
+          - ReloadCycle with context caching (getReloadCycleContext)
+          - getAllTaskDetails() and getAllItemDetails() on the cache
+          - Incremental update methods (tryIncrementalTaskUpdate, etc.)
+          - WriteThroughHint for entity-level write-through
+          - Meta sub-domain decomposition (cached config, shadow, session)
+
+          The cache-aware command execution builds on these by making the
+          cached data accessible to the CLI command handlers that run inside
+          the daemon process.
+
+          ### AsyncLocalStorage pattern
+
+          The parser layer already uses AsyncLocalStorage for
+          specDirOverrideStorage (src/parser/yaml.ts). The new
+          entityCacheStorage follows the identical pattern. These two can
+          be nested — executeCommand already wraps parseAsync in
+          runWithoutSpecDirOverride, and the new cache wrapper nests
+          alongside it using an independent storage instance.
+
+          ### Spec ownership boundaries
+
+          This plan does not introduce standalone specs for cache-backed
+          command execution or task history caching. Instead:
+
+          - Cache-serving behavior for the command API is specified as new
+            ACs on the existing @daemon-command-api spec (ac-read-cache-serving,
+            ac-cache-context-propagation, ac-no-cache-outside-daemon).
+          - Task history retention is specified as a new AC on the existing
+            @daemon-entity-cache spec (ac-task-history-retention).
+          - Only @daemon-concurrent-reads is a new spec because concurrent
+            read execution is a distinct behavioral contract not covered by
+            existing specs.
+
+          This avoids duplicate ownership between new and existing specs.
+
+          ### What does NOT change
+
+          - CLI command handlers — zero changes to command code in
+            src/cli/commands/. They call the same data loading functions.
+          - Direct CLI mode — no cache in AsyncLocalStorage = disk path.
+          - REST API routes — already serve from cache via getEntityCache
+            callback. Unaffected.
+          - Mutation path — writes always go through disk + shadow commit +
+            write-through. The cache-aware path is read-only.
+          - Response parity — commands still produce the same stdout/stderr
+            because they run through the same formatters.
+
+          ### Task history architecture
+
+          Task history (field-change audit trail) lives in task.yaml but is
+          stripped from LoadedTask during parsing — the split backend's
+          loadTaskFromDirWithHistory() returns history as a separate array.
+          The entity cache currently discards this history because it calls
+          loadAllTasks() which returns LoadedTask[] without history.
+
+          To cache history, the TaskDataManager interface is extended with
+          an optional loadTaskWithHistory method that the split backend
+          implements by exposing its existing internal method. The entity
+          cache uses this during domain loading and incremental updates.
+
+          ### Concurrent read commands
+
+          Phase 6 (read command concurrency) uses a conservative allowlist
+          approach. Only commands verified to work correctly with
+          cache-backed data are included in the allowlist. The existing
+          mutex-protected path is the fallback for everything else. The
+          allowlist can be expanded incrementally as more commands are
+          verified safe.
+
+          ### Phasing rationale
+
+          Phase 1 (spec updates) establishes target contracts before code
+          changes. Phase 2 (AsyncLocalStorage plumbing) is zero-risk
+          infrastructure. Phase 3 (initContext cache) provides the biggest
+          single performance win. Phases 4a-4e (per-domain loader cache
+          awareness) are independent of each other and can be parallelized.
+          Phase 5 (history caching) extends the existing task detail caching
+          and depends on the task loader being cache-aware. Phase 6
+          (concurrency) depends on all read loaders being cache-aware and
+          is the final optimization.
+        author: "@claude"
+        created_at: 2026-04-07T16:16:34.256Z

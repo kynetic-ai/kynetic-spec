@@ -25491,3 +25491,214 @@
   submitted_at: 2026-04-07T05:20:09.370Z
   completed_at: 2026-04-07T05:32:32.344Z
   automation: eligible
+- _ulid: 01KNMBPBQ8T1NQABEB0JAGRCPY
+  slugs:
+    - task-update-command-api-spec
+  title: Add cache-serving AC to daemon-command-api spec
+  type: task
+  spec_ref: "@daemon-command-api"
+  plan_ref: "@plan-cache-aware-command-execution"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - spec-update
+    - daemon
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-07T16:16:30.952Z
+- _ulid: 01KNMBPC0GJ184YT6G3T43TNGB
+  slugs:
+    - task-update-entity-cache-history-ac
+  title: Add task history retention AC to daemon-entity-cache spec
+  type: task
+  spec_ref: "@daemon-entity-cache"
+  plan_ref: "@plan-cache-aware-command-execution"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - spec-update
+    - daemon
+    - cache
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-07T16:16:31.247Z
+- _ulid: 01KNMBPC9J7VPZGMJJ7V20W12T
+  slugs:
+    - task-cache-async-context
+  title: Add AsyncLocalStorage for entity cache propagation
+  type: task
+  spec_ref: "@daemon-command-api"
+  plan_ref: "@plan-cache-aware-command-execution"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-update-command-api-spec"
+  priority: 1
+  tags:
+    - daemon
+    - cache
+    - foundation
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-07T16:16:31.538Z
+- _ulid: 01KNMBPCJN1F5VZZ2DQV10VG76
+  slugs:
+    - task-cache-aware-init-context
+  title: Resolve project context from entity cache during command execution
+  type: task
+  spec_ref: "@daemon-command-api"
+  plan_ref: "@plan-cache-aware-command-execution"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-cache-async-context"
+  priority: 1
+  tags:
+    - daemon
+    - cache
+    - performance
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-07T16:16:31.829Z
+- _ulid: 01KNMBPCVJ0GEZR7FSE927QKNW
+  slugs:
+    - task-cache-aware-task-loading
+  title: Serve task data from entity cache during command execution
+  type: task
+  spec_ref: "@daemon-command-api"
+  plan_ref: "@plan-cache-aware-command-execution"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-cache-async-context"
+  priority: 2
+  tags:
+    - daemon
+    - cache
+    - tasks
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-07T16:16:32.114Z
+- _ulid: 01KNMBPD58NNNGKW4VQ1ENXX6F
+  slugs:
+    - task-cache-aware-item-loading
+  title: Serve item data from entity cache during command execution
+  type: task
+  spec_ref: "@daemon-command-api"
+  plan_ref: "@plan-cache-aware-command-execution"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-cache-async-context"
+  priority: 2
+  tags:
+    - daemon
+    - cache
+    - items
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-07T16:16:32.424Z
+- _ulid: 01KNMBPDFJVDHBED491ZCJGFV9
+  slugs:
+    - task-cache-aware-inbox-triage
+  title: Serve inbox and triage data from entity cache during command execution
+  type: task
+  spec_ref: "@daemon-command-api"
+  plan_ref: "@plan-cache-aware-command-execution"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-cache-async-context"
+  priority: 2
+  tags:
+    - daemon
+    - cache
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-07T16:16:32.754Z
+- _ulid: 01KNMBPDRSN3PXZ81CHXBWXKTN
+  slugs:
+    - task-cache-aware-plans-reviews
+  title: Serve plan and review data from entity cache during command execution
+  type: task
+  spec_ref: "@daemon-command-api"
+  plan_ref: "@plan-cache-aware-command-execution"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-cache-async-context"
+  priority: 2
+  tags:
+    - daemon
+    - cache
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-07T16:16:33.049Z
+- _ulid: 01KNMBPE1VG2HJEQZBXT33W1R8
+  slugs:
+    - task-cache-aware-meta
+  title: Serve meta context from entity cache during command execution
+  type: task
+  spec_ref: "@daemon-command-api"
+  plan_ref: "@plan-cache-aware-command-execution"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-cache-async-context"
+  priority: 2
+  tags:
+    - daemon
+    - cache
+    - meta
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-07T16:16:33.339Z
+- _ulid: 01KNMBPEAV13JG7RG434PY22CF
+  slugs:
+    - task-cache-task-history
+  title: Retain task history entries in entity cache
+  type: task
+  spec_ref: "@daemon-entity-cache"
+  plan_ref: "@plan-cache-aware-command-execution"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-update-entity-cache-history-ac"
+    - "@task-cache-aware-task-loading"
+  priority: 2
+  tags:
+    - daemon
+    - cache
+    - tasks
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-07T16:16:33.627Z
+- _ulid: 01KNMBPEM8EBQPTWHSKP7M5JT4
+  slugs:
+    - task-read-command-concurrency
+  title: Allow concurrent execution of cache-backed read commands
+  type: task
+  spec_ref: "@daemon-concurrent-reads"
+  plan_ref: "@plan-cache-aware-command-execution"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-cache-aware-init-context"
+    - "@task-cache-aware-task-loading"
+    - "@task-cache-aware-item-loading"
+    - "@task-cache-aware-inbox-triage"
+    - "@task-cache-aware-plans-reviews"
+    - "@task-cache-aware-meta"
+    - "@task-cache-task-history"
+  priority: 3
+  tags:
+    - daemon
+    - cache
+    - performance
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-07T16:16:33.928Z

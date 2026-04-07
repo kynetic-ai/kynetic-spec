@@ -1,0 +1,84 @@
+_ulid: 01KNMBPEAV13JG7RG434PY22CF
+slugs:
+  - task-cache-task-history
+title: Retain task history entries in entity cache
+type: task
+description: |
+  Store task field-change history entries in the entity cache
+  alongside task detail data so getTaskHistory() can return
+  cached history without re-reading task files.
+
+  Why: The split backend's loadTaskFromDirWithHistory() reads
+  task.yaml and extracts the history array, but this history is
+  stripped from the LoadedTask type before it enters the cache's
+  detail tier. When getTaskHistory() is called, it re-reads the
+  same task.yaml to extract history again. In the cache-aware
+  command execution context, this re-read is unnecessary — the
+  history was already parsed during the initial load.
+
+  What:
+
+  1. Add a historyDetails map (Map<string, HistoryEntry[]>) to
+     the task domain store in entity-cache.ts, alongside the
+     existing details map.
+
+  2. Extend the TaskDataManager interface with an optional
+     loadTaskWithHistory(ctx, ulid) method that returns both
+     LoadedTask and HistoryEntry[]. The split backend already
+     has loadTaskFromDirWithHistory internally — expose it
+     through this new public method.
+
+  3. During task domain loading in doLoadDomain("tasks"), use
+     loadTaskWithHistory instead of loadTask for each task. Store
+     the history in historyDetails keyed by ULID alongside the
+     task in the details map.
+
+  4. During incremental task updates
+     (tryIncrementalTaskUpdate), when a single task file is
+     re-parsed, update the history entries for that task in the
+     historyDetails map using the same loadTaskWithHistory call.
+
+  5. Add getTaskHistory(ulid) to the cache accessor interface
+     (RouteEntityCache in entity-cache-types.ts) that returns
+     HistoryEntry[] or null.
+
+  6. In TaskDataManager.getTaskHistory()
+     (src/parser/task-data-manager.ts), add a cache check
+     preamble following the same pattern as other loaders. If
+     cache is available and historyDetails has an entry for the
+     requested ULID, return it. Otherwise fall through to disk.
+
+  How: The split backend's private loadTaskFromDirWithHistory
+  returns { task, history, rawCore }. Add a public method on
+  SplitTaskBackend that calls loadTaskFromDirWithHistory and
+  returns { task, history }. Register this method on the
+  TaskStorageBackend interface as optional (only split format
+  supports it). In doLoadDomain("tasks"), iterate tasks using
+  the new method and populate both details and historyDetails
+  maps. In tryIncrementalTaskUpdate, similarly use the new
+  method for the changed task and update historyDetails. The
+  historyDetails map follows the same lifecycle as the details
+  map — cleared on dispose, swapped atomically during reloads.
+  Add tests verifying: history populated during domain load,
+  history served from cache on getTaskHistory() call, history
+  updated on incremental task update, history falls through to
+  disk when cache not ready.
+
+  Covers: @daemon-entity-cache ac-task-history-retention.
+spec_ref: "@daemon-entity-cache"
+plan_ref: "@plan-cache-aware-command-execution"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-update-entity-cache-history-ac"
+  - "@task-cache-aware-task-loading"
+context: []
+priority: 2
+tags:
+  - daemon
+  - cache
+  - tasks
+vcs_refs: []
+created_at: 2026-04-07T16:16:33.627Z
+todos: []

@@ -1,0 +1,67 @@
+_ulid: 01KNMBPC0GJ184YT6G3T43TNGB
+slugs:
+  - task-update-entity-cache-history-ac
+title: Add task history retention AC to daemon-entity-cache spec
+type: task
+description: >
+  Add an acceptance criterion to @daemon-entity-cache that
+
+  specifies task history entries are retained in the cache
+
+  alongside task detail data.
+
+
+  Why: The current entity cache spec covers index and detail
+
+  tiers but does not mention task field-change history — a
+
+  distinct data category that is parsed from the same file as
+
+  task details but excluded from the LoadedTask type. Making
+
+  history caching explicit ensures the cache contract covers
+
+  all task data that consumers need. This is the single home
+
+  for the history-retention contract; no separate spec is
+
+  needed because history is a data tier concern within the
+
+  existing entity cache.
+
+
+  What: Add ac-task-history-retention to @daemon-entity-cache:
+
+    given: The task cache domain loads or incrementally updates
+           a task
+    when: The task file is parsed
+    then: Field-change history entries from the task file are
+          retained in the cache and available to consumers
+          without re-reading the file from disk
+
+  How: Run:
+    kspec item ac add @daemon-entity-cache \
+      --id ac-task-history-retention \
+      --given "The task cache domain loads or incrementally updates a task" \
+      --when "The task file is parsed" \
+      --then "Field-change history entries from the task file are retained in the cache and available to consumers without re-reading the file from disk"
+
+  Verify with: kspec item get @daemon-entity-cache
+
+
+  Covers: @daemon-entity-cache ac-task-history-retention (new).
+spec_ref: "@daemon-entity-cache"
+plan_ref: "@plan-cache-aware-command-execution"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - spec-update
+  - daemon
+  - cache
+vcs_refs: []
+created_at: 2026-04-07T16:16:31.247Z
+todos: []
