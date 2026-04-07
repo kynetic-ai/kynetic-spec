@@ -1,1 +1,13 @@
-notes: []
+notes:
+  - _ulid: 01KNMQCK7PEJT8Z2Z6DXQZWSDY
+    content: "Approach: split cached task detail from cached task history, add
+      TaskDataManager.loadTaskWithHistory() so the split backend exposes one combined read path, and
+      warm/incrementally update task history through a dedicated history map on the tasks domain.
+      Edge cases: cache-ready history hit, task deletion clearing cached history, detail-only cache
+      writes not inventing history, and fallback to backend history reads when the tasks domain is
+      not ready. Test plan: cover domain load retention, incremental hinted update retention,
+      TaskDataManager cache hit for getTaskHistory(), and fallback to disk when cache is
+      unavailable."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T19:40:53.879Z
