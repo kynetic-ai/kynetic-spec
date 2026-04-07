@@ -52,7 +52,7 @@ description: |
 spec_ref: "@daemon-meta-subdomain"
 plan_ref: "@plan-granular-cache-invalidation"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-cache-kspec-context"
@@ -72,7 +72,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: 01KNK1C5NYN55RFYN4FBKCK3YB
+session_id: null
 history:
   - author: "@claude"
     changes:
@@ -235,6 +235,16 @@ history:
         previous: "@01KNK0YHWXEQNJDQC4P17YA2NB"
     command: review-link
     timestamp: 2026-04-07T04:15:03.612Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KNK1C5NYN55RFYN4FBKCK3YB
+    command: review-verdict-needs-work
+    timestamp: 2026-04-07T04:25:22.681Z
 created_at: 2026-04-04T23:34:28.477Z
 started_at: 2026-04-07T03:57:48.368Z
 submitted_at: 2026-04-07T04:12:30.945Z
