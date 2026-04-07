@@ -13282,6 +13282,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-07T17:56:03.836Z
+  - _ulid: 01KNMJ2ENV80C7KVM5X512HT4T
+    type: friction
+    content: The npm test wrapper can run for minutes with almost no streamed progress or completion
+      signal in agent sessions, which led to duplicate full-suite invocations while waiting for
+      output.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T18:07:58.651Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
