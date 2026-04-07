@@ -123418,6 +123418,24 @@ reviews:
         runner: kspec
         created_at: 2026-04-07T05:18:45.073Z
         completed_at: 2026-04-07T05:18:45.073Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/daemon/entity-cache.ts, packages/daemon/src/routes/tasks.ts,
+          packages/daemon/src/routes/reviews.ts, packages/daemon/src/routes/entity-cache-types.ts,
+          tests/daemon-entity-cache.test.ts. Commands run: kspec task get, kspec item get, kspec
+          validate, git diff, rg AC annotations, npm test targeted/full, npx tsx concurrent
+          write-through repro. Claims verified: worker claimed hinted write-through routes use
+          incremental paths and tests pass; verified both, and the repro exposed a missing
+          concurrency case. Categories searched: correctness (found race), test quality (missing
+          concurrent coverage), edge cases/integration/error handling/security (no additional
+          blockers found)."
+        name: review-evidence
+        required: false
+        runner: codex
+        created_at: 2026-04-07T05:18:47.449Z
+        completed_at: 2026-04-07T05:18:47.449Z
     events:
       - _ulid: 01KNK5GAV2KC2JZJZVFERJW5YV
         actor: Jacob Chapel
@@ -123439,6 +123457,13 @@ reviews:
           status: pass
           name: validation
         timestamp: 2026-04-07T05:18:45.901Z
+      - _ulid: 01KNK621YBGW9BRHSSAB2EX3EY
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-04-07T05:18:48.268Z
     examined_commit: 2c9267a1925319c10a2571e224cff060caf50007
     external_links: []
     lifecycle_state: open
@@ -123451,5 +123476,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-07T05:09:07.555Z
-    updated_at: 2026-04-07T05:18:45.073Z
+    updated_at: 2026-04-07T05:18:47.449Z
     notes: []
