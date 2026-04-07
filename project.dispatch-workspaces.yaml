@@ -41482,7 +41482,7 @@ workspaces:
         head: 83d5ca14bff1114bc7729d90080a7c424973a446
         last_seen_at: 2026-04-07T18:46:01.935Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cache-aware-inbox-triage-01knmbpd
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: c0d9fee072d7e8719e05e1d8a17ea7e6148140c8
     bootstrap:
       status: succeeded
@@ -41592,7 +41592,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-07T18:46:10.896Z
+      updated_at: 2026-04-07T18:46:17.665Z
     integration:
       status: pending
       detail: null
@@ -41607,10 +41607,10 @@ workspaces:
     task_slug: task-cache-aware-plans-reviews
     timestamps:
       closed_at: null
-      last_active_at: 2026-04-07T18:34:48.977Z
-      last_reconciled_at: 2026-04-07T18:46:10.896Z
+      last_active_at: 2026-04-07T18:46:17.665Z
+      last_reconciled_at: 2026-04-07T18:46:17.665Z
       created_at: 2026-04-07T18:34:37.775Z
-      updated_at: 2026-04-07T18:46:14.117Z
+      updated_at: 2026-04-07T18:46:17.665Z
     workspace_id: dispatch-workspace-01KNMBPDRSN3PXZ81CHXBWXKTN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
