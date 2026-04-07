@@ -39974,7 +39974,7 @@ workspaces:
         head: 3c32e6485e3a0987fc61bf791be2f73f557882ac
         last_seen_at: 2026-04-07T04:25:52.042Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-parser-integration-test-in-detached-review-worktrees-01knjyff
-  - active_role: null
+  - active_role: worker
     base_branch_point: 3c32e6485e3a0987fc61bf791be2f73f557882ac
     bootstrap:
       status: succeeded
@@ -40063,7 +40063,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-07T04:26:03.425Z
+      updated_at: 2026-04-07T04:26:08.467Z
     integration:
       status: pending
       detail: null
@@ -40072,16 +40072,16 @@ workspaces:
       target_branch: dev
       target_commit: 3c32e6485e3a0987fc61bf791be2f73f557882ac
       updated_at: 2026-04-07T04:26:03.425Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KNHZPRQ8DGQW6A7XY985F61M"
     task_slug: switch-daemon-default-runtime-from-bun-to-node
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-04-07T04:26:03.425Z
+      last_active_at: 2026-04-07T04:26:08.467Z
+      last_reconciled_at: 2026-04-07T04:26:08.467Z
       created_at: 2026-04-07T04:26:03.425Z
-      updated_at: 2026-04-07T04:26:06.754Z
+      updated_at: 2026-04-07T04:26:08.467Z
     workspace_id: dispatch-workspace-01KNHZPRQ8DGQW6A7XY985F61M
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
