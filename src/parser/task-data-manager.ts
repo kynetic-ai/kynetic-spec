@@ -16,7 +16,7 @@
 import type { Note, Task, TaskInput } from "../schema/task.js";
 import { TaskSchema } from "../schema/task.js";
 import type { KspecContext, LoadedTask } from "./yaml.js";
-import { createNote, createTask, getAuthor } from "./yaml.js";
+import { createNote, createTask, getAuthor, getEntityCacheContext } from "./yaml.js";
 import { createRequire } from "node:module";
 import { commitIfShadow } from "./shadow.js";
 import { getActiveBatchBuffer, runWithBuffer } from "../cli/batch-write-buffer.js";
@@ -292,6 +292,51 @@ export interface TaskStorageBackend {
   getTaskHistory?(ctx: KspecContext, ulid: string): Promise<HistoryEntry[]>;
 }
 
+interface TaskReadCache {
+  getDomainState(domain: "tasks"): string;
+  getTaskIndex(): TaskSummary[] | null;
+  getTaskDetail(ulid: string): LoadedTask | null;
+  setTaskDetail(ulid: string, task: LoadedTask): void;
+  getAllTaskDetails(): LoadedTask[] | null;
+}
+
+function isTaskReadCache(cache: unknown): cache is TaskReadCache {
+  return (
+    typeof cache === "object" &&
+    cache !== null &&
+    typeof (cache as TaskReadCache).getDomainState === "function" &&
+    typeof (cache as TaskReadCache).getTaskIndex === "function" &&
+    typeof (cache as TaskReadCache).getTaskDetail === "function" &&
+    typeof (cache as TaskReadCache).setTaskDetail === "function" &&
+    typeof (cache as TaskReadCache).getAllTaskDetails === "function"
+  );
+}
+
+function getReadyTaskCache(): TaskReadCache | null {
+  const cacheCtx = getEntityCacheContext();
+  if (!cacheCtx) {
+    return null;
+  }
+
+  const cache = cacheCtx.cacheAccessor(cacheCtx.projectPath);
+  if (!isTaskReadCache(cache) || cache.getDomainState("tasks") !== "ready") {
+    return null;
+  }
+
+  return cache;
+}
+
+function findTaskSummaryByRef(tasks: TaskSummary[], ref: string): TaskSummary | undefined {
+  const cleanRef = ref.startsWith("@") ? ref.slice(1) : ref;
+
+  return tasks.find((task) => {
+    if (task._ulid === cleanRef) return true;
+    if (task._ulid.toLowerCase().startsWith(cleanRef.toLowerCase())) return true;
+    if (task.slugs.includes(cleanRef)) return true;
+    return false;
+  });
+}
+
 /**
  * In-memory per-task FIFO mutex for contention-free non-overlapping mutations.
  *
@@ -481,7 +526,7 @@ export class TaskDataManager {
    * AC: @task-data-manager ac-2 — only index data read from storage
    */
   async listTasks(ctx: KspecContext, filters?: TaskListFilters): Promise<TaskSummary[]> {
-    const summaries = await this.backend.listTasks(ctx);
+    const summaries = getReadyTaskCache()?.getTaskIndex() ?? (await this.backend.listTasks(ctx));
 
     if (!filters) {
       return summaries;
@@ -519,7 +564,7 @@ export class TaskDataManager {
    * AC: @task-data-manager ac-1 — callers don't know about storage format
    */
   async loadAllTasks(ctx: KspecContext): Promise<LoadedTask[]> {
-    return this.backend.loadAllTasks(ctx);
+    return getReadyTaskCache()?.getAllTaskDetails() ?? this.backend.loadAllTasks(ctx);
   }
 
   /**
@@ -532,7 +577,25 @@ export class TaskDataManager {
    * AC: @trait-error-guidance ac-3 — suggests checking ref on not found
    */
   async getTask(ctx: KspecContext, ref: string): Promise<LoadedTask> {
-    const task = await this.backend.getTask(ctx, ref);
+    let task: LoadedTask | undefined;
+    const cache = getReadyTaskCache();
+    if (cache) {
+      const cachedSummary = findTaskSummaryByRef(cache.getTaskIndex() ?? [], ref);
+      if (cachedSummary) {
+        const cachedTask = cache.getTaskDetail(cachedSummary._ulid);
+        if (cachedTask) {
+          return cachedTask;
+        }
+      }
+
+      task = await this.backend.getTask(ctx, ref);
+      if (task) {
+        cache.setTaskDetail(task._ulid, task);
+        return task;
+      }
+    }
+
+    task ??= await this.backend.getTask(ctx, ref);
     if (!task) {
       // AC: @trait-error-guidance ac-1, ac-2, ac-3
       throw new TaskDataManagerError(`Task not found: ${ref}`, {
