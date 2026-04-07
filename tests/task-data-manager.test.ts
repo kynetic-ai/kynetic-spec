@@ -519,6 +519,58 @@ describe("TaskDataManager", () => {
       }
     });
 
+    it("falls back to disk reads when cache context exists but the tasks domain is not ready", async () => {
+      tempDir = await setupTempFixtures();
+      const ctx = await initContext(tempDir);
+      const fixtureTask = await loadFixtureTask(ctx, "@test-task-pending");
+
+      const mockSplitBackend: TaskStorageBackend = {
+        format: "split",
+        listTasks: vi.fn(async () => [toSummary(fixtureTask)]),
+        loadAllTasks: vi.fn(async () => [fixtureTask]),
+        getTask: vi.fn(async () => fixtureTask),
+        createTask: vi.fn(async (_ctx, task) => ({ ...task, _sourceFile: `/mock/${task._ulid}.yaml` })),
+        mutateTask: vi.fn(async (_ctx, task) => task),
+        mutateTasks: vi.fn(async (_ctx, tasks) => tasks),
+        deleteTask: vi.fn(async () => {}),
+        rebuildIndex: vi.fn(async () => ({ count: 0 })),
+      };
+
+      registerBackend(mockSplitBackend);
+      try {
+        manager = new TaskDataManager("split");
+
+        // AC: @daemon-command-api ac-read-cache-serving
+        const result = await runWithEntityCache(
+          async () => ({
+            summaries: await manager.listTasks(ctx),
+            allTasks: await manager.loadAllTasks(ctx),
+            task: await manager.getTask(ctx, "@test-task-pending"),
+          }),
+          () => ({
+            getDomainState: () => "loading",
+            getTaskIndex: vi.fn(() => [toSummary(fixtureTask)]),
+            getTaskDetail: vi.fn(() => fixtureTask),
+            setTaskDetail: vi.fn(),
+            getAllTaskDetails: vi.fn(() => [fixtureTask]),
+          }),
+          tempDir,
+        );
+
+        expect(result).toEqual({
+          summaries: [toSummary(fixtureTask)],
+          allTasks: [fixtureTask],
+          task: fixtureTask,
+        });
+        expect(mockSplitBackend.listTasks).toHaveBeenCalledOnce();
+        expect(mockSplitBackend.loadAllTasks).toHaveBeenCalledOnce();
+        expect(mockSplitBackend.getTask).toHaveBeenCalledWith(ctx, "@test-task-pending");
+      } finally {
+        unregisterBackend("split");
+        registerBackend(splitBackend);
+      }
+    });
+
     it("keeps mutation methods on the backend write path even when cache is ready", async () => {
       tempDir = await setupTempFixtures();
       const ctx = await initContext(tempDir);
