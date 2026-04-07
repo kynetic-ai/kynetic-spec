@@ -122999,7 +122999,18 @@ reviews:
     slugs: []
     title: Review stabilize parser integration test in detached review worktrees
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/parser.test.ts passed: 17/17 suites, 66/66 tests.
+          Detached-worktree parser case passed."
+        name: npm test (targeted parser)
+        required: false
+        runner: npm
+        created_at: 2026-04-07T04:34:55.572Z
+        completed_at: 2026-04-07T04:34:55.572Z
     events:
       - _ulid: 01KNK32GBQ9AFC0FMTV87J9E54
         actor: Jacob Chapel
@@ -123014,6 +123025,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-07T04:26:56.420Z
+      - _ulid: 01KNK3HREMZQR0PJNG1683VR9N
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test (targeted parser)
+        timestamp: 2026-04-07T04:34:57.108Z
     examined_commit: 3c32e6485e3a0987fc61bf791be2f73f557882ac
     external_links: []
     lifecycle_state: open
@@ -123026,5 +123044,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-07T04:26:37.303Z
-    updated_at: 2026-04-07T04:26:55.635Z
+    updated_at: 2026-04-07T04:34:55.572Z
     notes: []
