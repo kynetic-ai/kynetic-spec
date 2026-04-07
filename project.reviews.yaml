@@ -124389,3 +124389,29 @@ reviews:
     created_at: 2026-04-07T07:58:55.565Z
     updated_at: 2026-04-07T08:00:42.144Z
     notes: []
+  - _ulid: 01KNKFQDJTP3740NJ7EFVBBDRN
+    slugs: []
+    title: "Plan review: Cache-Aware Command Execution"
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KNKFQDJTD2D15JPPSZJXZXQN
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-07T08:07:45.498Z
+    examined_commit: null
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-cache-aware-command-execution"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-07T08:07:45.498Z
+    updated_at: null
+    notes: []
