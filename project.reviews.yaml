@@ -125036,7 +125036,18 @@ reviews:
     slugs: []
     title: "Plan review: Cache-Aware Command Execution"
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: The plan keeps behavior in specs and task outcomes; the prior hardcoded
+          COMMAND_CACHE_DOMAINS data was removed from the plan and replaced with implementation-time
+          derivation instructions.
+        name: Behavioral purity
+        required: true
+        created_at: 2026-04-07T08:26:14.572Z
+        completed_at: 2026-04-07T08:26:14.572Z
     events:
       - _ulid: 01KNKGRSXEQG74XE0W0Q6VFR6S
         actor: "@claude"
@@ -125051,6 +125062,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-07T08:26:12.656Z
+      - _ulid: 01KNKGS9H8TKE71CQ9EV753T88
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Behavioral purity
+        timestamp: 2026-04-07T08:26:15.465Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -125063,5 +125081,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-07T08:25:59.470Z
-    updated_at: 2026-04-07T08:26:11.735Z
+    updated_at: 2026-04-07T08:26:14.572Z
     notes: []
