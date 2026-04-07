@@ -126787,6 +126787,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-07T18:53:07.038Z
+      - _ulid: 01KNMNRZR92DZCCKTP4QK4945C
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNMMMBAV13W6NBVVYK4JB2HW
+        timestamp: 2026-04-07T19:12:42.761Z
     examined_commit: 7e7d977f1ee9fa6b316d425babd9ba06eab87328
     external_links: []
     lifecycle_state: closed
@@ -126817,6 +126823,13 @@ reviews:
               List-style callers of loadPlans() will silently drop uncached plans instead of falling
               back to disk unless the detail tier is complete."
             created_at: 2026-04-07T18:52:42.204Z
+          - _ulid: 01KNMNRYVHT5Z533BBH4AXTNJ8
+            author: Jacob Chapel
+            body: "Fixed in 2723f2529: loadPlans() now uses cached plan data only when getPlansIndex() returns a
+              real index and every indexed plan has a populated detail record. Partial-detail and
+              null-index states now fall through to disk, and parser coverage includes both
+              regressions."
+            created_at: 2026-04-07T19:12:41.841Z
         kind: blocker
       - _ulid: 01KNMMMFS578K2JA5X66Z1APWK
         anchor:
@@ -126847,7 +126860,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-07T18:53:07.038Z
     created_at: 2026-04-07T18:47:17.189Z
-    updated_at: 2026-04-07T18:53:07.038Z
+    updated_at: 2026-04-07T19:12:41.841Z
     notes: []
   - _ulid: 01KNMN3TR0X2FJC963QS8X1Z7K
     slugs: []
