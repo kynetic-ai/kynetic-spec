@@ -25709,7 +25709,7 @@
   type: task
   spec_ref: "@daemon-entity-cache"
   plan_ref: "@plan-cache-aware-command-execution"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-update-entity-cache-history-ac"
@@ -25725,6 +25725,7 @@
   created_at: 2026-04-07T16:16:33.627Z
   started_at: 2026-04-07T19:40:45.205Z
   submitted_at: 2026-04-07T19:41:33.117Z
+  completed_at: 2026-04-07T19:49:34.170Z
   automation: eligible
 - _ulid: 01KNMBPEM8EBQPTWHSKP7M5JT4
   slugs:

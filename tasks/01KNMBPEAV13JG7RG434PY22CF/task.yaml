@@ -68,8 +68,12 @@ description: |
 spec_ref: "@daemon-entity-cache"
 plan_ref: "@plan-cache-aware-command-execution"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Reviewed and approved via @01KNMQMW. Merged
+  dispatch/task/task-cache-task-history/01knmbpe into
+  plan/plan-cache-aware-command-execution/01knkf3b after verifying cached task history retention and
+  passing npm test (2093 suites, 7629 tests).
 depends_on:
   - "@task-update-entity-cache-history-ac"
   - "@task-cache-aware-task-loading"
@@ -138,8 +142,24 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-07T19:45:35.633Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Reviewed and approved via @01KNMQMW. Merged dispatch/task/task-cache-task-history/01knmbpe into
+          plan/plan-cache-aware-command-execution/01knkf3b after verifying cached task history
+          retention and passing npm test (2093 suites, 7629 tests).
+        previous: null
+      completed_at:
+        new: 2026-04-07T19:49:34.170Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-07T19:49:34.179Z
 created_at: 2026-04-07T16:16:33.627Z
 started_at: 2026-04-07T19:40:45.205Z
 submitted_at: 2026-04-07T19:41:33.117Z
+completed_at: 2026-04-07T19:49:34.170Z
 todos: []
 automation: eligible
