@@ -13201,6 +13201,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-07T06:26:33.351Z
+  - _ulid: 01KNK9Y41T02PPQ8YX0GX10XHD
+    type: success
+    content: When a route-level regression was hard to verify in a broad read-path harness, adding a
+      dedicated daemon route test with shared fixtures and a hint-aware cache spy isolated the
+      behavior quickly and produced durable coverage for the fix cycle.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T06:26:33.658Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
