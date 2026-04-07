@@ -36,7 +36,7 @@ description: >-
 spec_ref: null
 meta_ref: null
 plan_ref: "@plan-cache-aware-command-execution"
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -46,6 +46,14 @@ tags:
   - daemon
   - build
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: main
+  captured_at: 2026-04-07T16:38:07.767Z
+  commit: 0e8bb13333df66f07effff2246a167e6a9504797
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/main
 session_id: 01KNMCKHAZ1VTQ6B82B782S9N7
 history:
   - author: Jacob Chapel
@@ -61,7 +69,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-07T16:32:59.401Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: main
+          captured_at: 2026-04-07T16:38:07.767Z
+          commit: 0e8bb13333df66f07effff2246a167e6a9504797
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/main
+        previous: null
+      submitted_at:
+        new: 2026-04-07T16:38:07.771Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-07T16:38:07.772Z
 created_at: 2026-04-07T16:31:26.670Z
 started_at: 2026-04-07T16:32:59.401Z
+submitted_at: 2026-04-07T16:38:07.771Z
 todos: []
 automation: eligible
