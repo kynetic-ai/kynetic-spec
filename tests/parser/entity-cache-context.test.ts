@@ -2,6 +2,7 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { MetaContext } from "../../src/parser/meta.js";
+import { loadMetaContext } from "../../src/parser/meta.js";
 import {
   cleanupTempDir,
   createTempDir,
@@ -829,5 +830,70 @@ describe("loadReviewRecords with entity cache context", () => {
     expect(cache.getDomainState).toHaveBeenCalledWith("reviews");
     expect(cache.getReviewsIndex).not.toHaveBeenCalled();
     expect(cache.getReviewDetail).not.toHaveBeenCalled();
+  });
+});
+
+describe("loadMetaContext with entity cache context", () => {
+  // AC: @daemon-command-api ac-read-cache-serving
+  it("returns cached meta context when the meta domain is ready", async () => {
+    const tempDir = await setupShadowProject();
+    const ctx = await initContext(tempDir, { syncMode: "skip" });
+    const cachedMeta: MetaContext = {
+      manifest: null,
+      manifestPath: path.join(tempDir, ".kspec", "cached.meta.yaml"),
+      agents: [],
+      workflows: [],
+      conventions: [],
+      observations: [],
+      skills: [],
+      hooks: [],
+      schedules: [],
+      compositions: [],
+    };
+    const cache = {
+      getDomainState: vi.fn((domain: string) => (domain === "meta" ? "ready" : "unloaded")),
+      getMetaDetail: vi.fn(() => cachedMeta),
+    };
+
+    const readYamlSpy = vi.spyOn(await import("../../src/parser/yaml.js"), "readYamlFile");
+
+    const meta = await runWithEntityCache(() => loadMetaContext(ctx), () => cache, tempDir);
+
+    expect(meta).toEqual(cachedMeta);
+    expect(cache.getDomainState).toHaveBeenCalledWith("meta");
+    expect(cache.getMetaDetail).toHaveBeenCalled();
+    expect(readYamlSpy).not.toHaveBeenCalled();
+  });
+
+  // AC: @daemon-command-api ac-read-cache-serving
+  it("falls through to disk loading when the cached meta detail is unavailable", async () => {
+    const tempDir = await setupShadowProject();
+    await fs.writeFile(
+      path.join(tempDir, ".kspec", "kynetic.meta.yaml"),
+      `kynetic_meta: "1.0"
+conventions:
+  - _ulid: ${testUlid("CNVA")}
+    domain: disk-meta
+    rules:
+      - disk rule
+`,
+      "utf-8",
+    );
+    const ctx = await initContext(tempDir, { syncMode: "skip" });
+    const cache = {
+      getDomainState: vi.fn((domain: string) => (domain === "meta" ? "ready" : "unloaded")),
+      getMetaDetail: vi.fn(() => null),
+    };
+
+    const meta = await runWithEntityCache(() => loadMetaContext(ctx), () => cache, tempDir);
+
+    expect(meta.conventions).toEqual([
+      expect.objectContaining({
+        domain: "disk-meta",
+        _sourceFile: path.join(tempDir, ".kspec", "kynetic.meta.yaml"),
+      }),
+    ]);
+    expect(cache.getDomainState).toHaveBeenCalledWith("meta");
+    expect(cache.getMetaDetail).toHaveBeenCalled();
   });
 });
