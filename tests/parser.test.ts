@@ -1,3 +1,4 @@
+import { execSync } from "node:child_process";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
@@ -23,6 +24,24 @@ import {
   type LoadedTask,
 } from "../src/parser/index.js";
 import type { Task, TaskInput } from "../src/schema/index.js";
+
+function shouldSkipRealSpecIntegrationProbe(cwd: string, error: unknown): boolean {
+  const code = typeof error === "object" && error && "code" in error ? error.code : undefined;
+  if (code !== "DIRECTORY_MISSING" && code !== "WORKTREE_DISCONNECTED") {
+    return false;
+  }
+
+  try {
+    const currentBranch = execSync("git branch --show-current", {
+      cwd,
+      stdio: ["ignore", "pipe", "ignore"],
+      encoding: "utf-8",
+    }).trim();
+    return currentBranch.length === 0;
+  } catch {
+    return false;
+  }
+}
 
 describe("YAML parsing", () => {
   it("should parse YAML to object", () => {
@@ -681,7 +700,15 @@ describe("expandIncludePattern", () => {
 describe("loadAllItems integration", () => {
   it("should load items from real spec files", async () => {
     // This tests against the actual kynetic-spec spec files
-    const ctx = await initContext(process.cwd());
+    let ctx;
+    try {
+      ctx = await initContext(process.cwd());
+    } catch (error) {
+      if (shouldSkipRealSpecIntegrationProbe(process.cwd(), error)) {
+        return;
+      }
+      throw error;
+    }
 
     // Skip if no manifest found (e.g., running in CI without spec files)
     if (!ctx.manifestPath) {
@@ -702,6 +729,38 @@ describe("loadAllItems integration", () => {
     // Should include known slugs
     const slugs = items.flatMap((i) => i.slugs);
     expect(slugs.includes("core")).toBe(true);
+  });
+
+  it("treats detached worktrees without a usable shadow worktree as skippable", async () => {
+    const repoDir = await fs.mkdtemp(path.join(os.tmpdir(), "kspec-parser-detached-"));
+    const worktreeDir = path.join(repoDir, "review");
+
+    try {
+      execSync("git init -b main", { cwd: repoDir, stdio: "pipe" });
+      execSync('git config user.email "test@example.com"', { cwd: repoDir, stdio: "pipe" });
+      execSync('git config user.name "Test User"', { cwd: repoDir, stdio: "pipe" });
+      await fs.writeFile(path.join(repoDir, "README.md"), "seed\n");
+      execSync("git add README.md", { cwd: repoDir, stdio: "pipe" });
+      execSync('git commit -m "init"', { cwd: repoDir, stdio: "pipe" });
+      execSync("git branch kspec-meta", { cwd: repoDir, stdio: "pipe" });
+      execSync(`git worktree add --detach "${worktreeDir}" HEAD`, {
+        cwd: repoDir,
+        stdio: "pipe",
+      });
+
+      await expect(initContext(worktreeDir)).rejects.toMatchObject({
+        code: "DIRECTORY_MISSING",
+      });
+
+      try {
+        await initContext(worktreeDir);
+        expect.fail("expected initContext() to fail without a shadow worktree");
+      } catch (error) {
+        expect(shouldSkipRealSpecIntegrationProbe(worktreeDir, error)).toBe(true);
+      }
+    } finally {
+      await fs.rm(repoDir, { recursive: true, force: true });
+    }
   });
 });
 
