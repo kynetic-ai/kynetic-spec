@@ -39707,7 +39707,7 @@ workspaces:
         head: 7f8b957f999ba7f29846b7669ed6b8da0e8f67c8
         last_seen_at: 2026-04-07T03:45:08.861Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-meta-subdomain-decomposition-01knddj4
-  - active_role: worker
+  - active_role: null
     base_branch_point: 564fc9691ffbb185333b969ebce501d0abb71013
     bootstrap:
       status: succeeded
@@ -39791,12 +39791,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-07T03:54:37.402Z
+      updated_at: 2026-04-07T03:56:44.697Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-07T03:54:37.402Z
+      updated_at: 2026-04-07T03:56:44.697Z
     integration:
       status: pending
       detail: null
@@ -39804,17 +39804,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 564fc9691ffbb185333b969ebce501d0abb71013
-      updated_at: 2026-04-07T03:54:37.402Z
-    lifecycle_state: active
+      updated_at: 2026-04-07T03:56:44.697Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KNJYA2JZ6MGVY8QS55Y1AR09"
     task_slug: stabilize-parser-integration-test-in-detached-review-worktrees
     timestamps:
       closed_at: null
       last_active_at: 2026-04-07T03:45:26.432Z
-      last_reconciled_at: 2026-04-07T03:54:37.402Z
+      last_reconciled_at: 2026-04-07T03:56:44.697Z
       created_at: 2026-04-07T03:45:20.833Z
-      updated_at: 2026-04-07T03:54:37.402Z
+      updated_at: 2026-04-07T03:56:44.697Z
     workspace_id: dispatch-workspace-01KNJYA2JZ6MGVY8QS55Y1AR09
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
