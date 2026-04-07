@@ -123599,6 +123599,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-07T05:23:39.181Z
+      - _ulid: 01KNK6KKQ66HFBX4F1H4WDBHZ7
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNK6KJ8K724BB3S7479MKRCR
+        timestamp: 2026-04-07T05:28:23.526Z
     examined_commit: 9b4b7ab8676f59ebf7555aa2a5df021f747a4750
     external_links: []
     lifecycle_state: open
@@ -123608,8 +123615,34 @@ reviews:
       content_hash: ""
       ref: "@01KNK2VKWW5MPK2C0NSNF3FC90"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNK6KJ8K724BB3S7479MKRCR
+        entries:
+          - _ulid: 01KNK6KJ8MZF8G5NKHYSNTYBDX
+            author: Jacob Chapel
+            body: >-
+              Evidence log:
+
+              Files read: tests/agent-dispatch-engine.test.ts
+
+              Commands run: git diff --unified=80 dfe2138f1545b01c3147f5f425dc3ef7cff403b1...HEAD --
+              tests/agent-dispatch-engine.test.ts; nl -ba tests/agent-dispatch-engine.test.ts | sed
+              -n "380,470p;5650,5965p"; rg -n "AC: @agent-dispatch-engine ac-(24|25)|Post-invocation
+              re-evaluation|waitForMockCall|waitForInvocationCount"
+              tests/agent-dispatch-engine.test.ts; kspec validate; npm test -- --fresh
+              tests/agent-dispatch-engine.test.ts; npm test -- --fresh; bash -lc "for i in 1 2 3 4
+              5; do npm test -- --fresh tests/agent-dispatch-engine.test.ts -t "Post-invocation
+              re-evaluation" || exit 1; done"
+
+              Claims verified: the changed post-invocation re-evaluation tests pass in isolation,
+              the targeted flaky subset is stable across 5 fresh reruns, and the full fresh suite
+              passes from this snapshot.
+
+              Categories searched: correctness, test quality, edge cases, error handling,
+              integration. No blockers found.
+            created_at: 2026-04-07T05:28:22.036Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-07T05:22:36.668Z
-    updated_at: 2026-04-07T05:23:38.352Z
+    updated_at: 2026-04-07T05:28:22.036Z
     notes: []
