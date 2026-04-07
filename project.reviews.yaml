@@ -126021,6 +126021,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNMHKVXEFJV21C7RJBVWBDXS
         timestamp: 2026-04-07T18:00:01.543Z
+      - _ulid: 01KNMHM672ZD8NBHD3N8NB4X5X
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNMHM5BWPTEESDP2CWFNTWZX
+        timestamp: 2026-04-07T18:00:11.234Z
     examined_commit: 9eb7d18c54e9943217facfd01734ab79bad8865e
     external_links: []
     lifecycle_state: open
@@ -126049,7 +126056,26 @@ reviews:
               task requirement to fall through on non-ready cache state is not actually verified.
             created_at: 2026-04-07T18:00:00.687Z
         kind: blocker
+      - _ulid: 01KNMHM5BWPTEESDP2CWFNTWZX
+        anchor:
+          type: code
+          commit: 9eb7d18c54e9943217facfd01734ab79bad8865e
+          line_end: 515
+          line_start: 491
+          path: tests/task-data-manager.test.ts
+          side: head
+        entries:
+          - _ulid: 01KNMHM5BWY62J59SXMYSS2FA6
+            author: Jacob Chapel
+            body: The new cache-read coverage never exercises the case where an entity-cache context exists but
+              the tasks domain is not ready. getReadyTaskCache() only falls back to disk when the
+              tasks domain state is ready-check false, but the added tests cover only ready-state
+              hits and the no-context path. A regression that used the cache whenever
+              AsyncLocalStorage is present would still pass this suite, so the required non-ready
+              fallback is not actually verified.
+            created_at: 2026-04-07T18:00:10.364Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-07T17:58:39.728Z
-    updated_at: 2026-04-07T18:00:00.687Z
+    updated_at: 2026-04-07T18:00:10.364Z
     notes: []
