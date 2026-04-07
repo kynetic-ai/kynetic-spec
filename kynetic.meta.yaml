@@ -12930,6 +12930,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-07T02:26:01.616Z
+  - _ulid: 01KNJYH997M75GTQWDWE4HK3H1
+    type: friction
+    content: "Detached review snapshots can arrive with a broken .kspec worktree link. This blocks
+      normal reviewer actions like kspec search, review add, and task/review writes until someone
+      manually runs 'kspec shadow repair'. The failure mode surfaced mid-review as ShadowError:
+      Worktree disconnected from git, and it also showed up in detached-worktree test behavior.
+      Consider making reviewer snapshot preparation verify or auto-repair shadow linkage before
+      handing off the workspace."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T03:07:18.696Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
