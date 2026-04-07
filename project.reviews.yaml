@@ -125324,6 +125324,27 @@ reviews:
         runner: npm
         created_at: 2026-04-07T16:36:19.188Z
         completed_at: 2026-04-07T16:36:19.188Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: modules/web-ui.yaml; project.tasks.yaml;
+          tasks/01KNMBPC0GJ184YT6G3T43TNGB/task.yaml; tasks/01KNMBPC0GJ184YT6G3T43TNGB/notes.yaml;
+          src/daemon/entity-cache.ts; src/parser/split-backend.ts; src/parser/task-data-manager.ts;
+          packages/daemon/src/routes/tasks.ts; packages/daemon/src/routes/entity-cache-types.ts;
+          src/cli/commands/task.ts. Commands run: kspec task get, kspec item get, kspec validate,
+          kspec review for-task/get/add/open, git show/log/diff/merge-base, grep and rg AC scans,
+          npm test, npm test -- tests/daemon-read-path.test.ts
+          tests/daemon-triage-write-through.test.ts --fresh. Claims verified: the AC exists in the
+          spec; the task snapshot only changed kspec-meta; task history is stripped before caching
+          and still read separately from disk; no test annotation covers ac-task-history-retention.
+          Categories searched: correctness, test quality, integration, read-path behavior,
+          regression triage."
+        name: review evidence
+        required: false
+        runner: codex
+        created_at: 2026-04-07T16:36:21.777Z
+        completed_at: 2026-04-07T16:36:21.777Z
     events:
       - _ulid: 01KNMCDVFSYSRSSMHTCK5EF8AQ
         actor: Jacob Chapel
@@ -125366,6 +125387,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-07T16:36:20.056Z
+      - _ulid: 01KNMCTQH8GHN2AX8CBBV4K1JA
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence
+        timestamp: 2026-04-07T16:36:22.696Z
     examined_commit: 343472d01808d514accacb66d1bb86db4519b37f
     external_links: []
     lifecycle_state: open
@@ -125410,5 +125438,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-07T16:29:20.761Z
-    updated_at: 2026-04-07T16:36:19.188Z
+    updated_at: 2026-04-07T16:36:21.777Z
     notes: []
