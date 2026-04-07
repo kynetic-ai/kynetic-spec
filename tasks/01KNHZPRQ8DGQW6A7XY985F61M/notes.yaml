@@ -1,1 +1,13 @@
-notes: []
+notes:
+  - _ulid: 01KNK34F2JVHGA3JY68MHVCJ6F
+    content: "Approach: switch parser daemon runtime defaults and related AC annotations from bun to
+      node, reuse existing serve runtime helper paths rather than introducing new runtime selection
+      logic. Edge cases: tests that start the daemon implicitly via defaults must stop skipping on
+      bun availability, runtime-missing output must stay generic for the configured runtime, and
+      health/runtime assertions must still allow explicit bun configuration where applicable. Test
+      plan: update parser config coverage for @daemon-runtime-adapter ac-default-node, update
+      serve/API tests for node default behavior plus missing-runtime guidance, flip E2E fixture
+      default runtime to node, then run targeted tests followed by full npm test."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T04:27:41.522Z
