@@ -123755,6 +123755,17 @@ reviews:
         runner: reviewer
         created_at: 2026-04-07T05:48:03.119Z
         completed_at: 2026-04-07T05:48:03.119Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate exited 6 with repository-wide pre-existing warnings only; no new validation
+          errors for this change.
+        name: validation
+        required: false
+        runner: kspec
+        created_at: 2026-04-07T05:48:05.568Z
+        completed_at: 2026-04-07T05:48:05.568Z
     events:
       - _ulid: 01KNK72RVMXYATDDVQGZF1PPM5
         actor: Jacob Chapel
@@ -123797,6 +123808,13 @@ reviews:
           status: pass
           name: review-evidence
         timestamp: 2026-04-07T05:48:03.996Z
+      - _ulid: 01KNK7QPW7GKPK138EK70J5PR6
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: validation
+        timestamp: 2026-04-07T05:48:06.407Z
     examined_commit: fee4f128f4c1a3d24a69690d1ae11fbfa6154991
     external_links: []
     lifecycle_state: open
@@ -123828,5 +123846,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-07T05:36:40.308Z
-    updated_at: 2026-04-07T05:48:03.119Z
+    updated_at: 2026-04-07T05:48:05.568Z
     notes: []
