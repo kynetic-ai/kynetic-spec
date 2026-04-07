@@ -6,11 +6,14 @@ import {
   cleanupTempDir,
   createTempDir,
   setupShadowDetection,
+  testUlid,
 } from "../helpers/cli.js";
 import {
   getEntityCacheContext,
   initContext,
   loadAllItems,
+  loadInboxItems,
+  loadTriageRecords,
   runWithEntityCache,
 } from "../../src/parser/yaml.js";
 
@@ -299,5 +302,233 @@ describe("loadAllItems with entity cache context", () => {
 
     expect(items).toEqual(expectedItems);
     expect(items.length).toBeGreaterThan(0);
+  });
+});
+
+describe("cache-backed inbox and triage loaders", () => {
+  // AC: @daemon-command-api ac-read-cache-serving
+  it("returns cached inbox items when the inbox domain is ready", async () => {
+    const tempDir = await setupShadowProject();
+    const ctx = await initContext(tempDir, { syncMode: "skip" });
+    const cachedInboxUlid = testUlid("NBXA");
+    const cachedInboxItems = [
+      {
+        _ulid: cachedInboxUlid,
+        text: "Cached inbox item",
+        created_at: "2026-04-07T00:00:00.000Z",
+        tags: ["cache"],
+        added_by: "cache-test",
+        _sourceFile: path.join(tempDir, ".kspec", "project.inbox.yaml"),
+      },
+    ];
+    const cache = {
+      getDomainState: vi.fn((domain: string) => (domain === "inbox" ? "ready" : "unloaded")),
+      getInboxIndex: vi.fn(() => cachedInboxItems),
+    };
+
+    const items = await runWithEntityCache(() => loadInboxItems(ctx), () => cache, tempDir);
+
+    expect(items).toEqual(cachedInboxItems);
+    expect(cache.getDomainState).toHaveBeenCalledWith("inbox");
+    expect(cache.getInboxIndex).toHaveBeenCalled();
+  });
+
+  // AC: @daemon-command-api ac-read-cache-serving
+  it("falls through to disk for inbox items when the inbox domain is not ready", async () => {
+    const tempDir = await setupShadowProject();
+    const diskInboxUlid = testUlid("NBXD");
+    await fs.writeFile(
+      path.join(tempDir, ".kspec", "project.inbox.yaml"),
+      `inbox:
+  - _ulid: "${diskInboxUlid}"
+    text: "Disk inbox item"
+    created_at: "2026-04-07T00:00:00.000Z"
+    tags: []
+    added_by: "disk-test"
+`,
+      "utf-8",
+    );
+    const ctx = await initContext(tempDir, { syncMode: "skip" });
+    const cache = {
+      getDomainState: vi.fn((domain: string) => (domain === "inbox" ? "loading" : "unloaded")),
+      getInboxIndex: vi.fn(() => {
+        throw new Error("inbox cache should not be read before the domain is ready");
+      }),
+    };
+
+    const items = await runWithEntityCache(() => loadInboxItems(ctx), () => cache, tempDir);
+
+    expect(items).toHaveLength(1);
+    expect(items[0]).toMatchObject({
+      _ulid: diskInboxUlid,
+      text: "Disk inbox item",
+      added_by: "disk-test",
+    });
+    expect(cache.getInboxIndex).not.toHaveBeenCalled();
+  });
+
+  // AC: @daemon-command-api ac-read-cache-serving
+  it("returns cached triage records from the ready index using inbox cache snapshots", async () => {
+    const tempDir = await setupShadowProject();
+    const ctx = await initContext(tempDir, { syncMode: "skip" });
+    const cachedInboxUlid = testUlid("NBXC");
+    const cachedTriageUlid = testUlid("TRCA");
+    const cache = {
+      getDomainState: vi.fn((domain: string) =>
+        domain === "triage" || domain === "inbox" ? "ready" : "unloaded",
+      ),
+      getInboxIndex: vi.fn(() => [
+        {
+          _ulid: cachedInboxUlid,
+          text: "Cached inbox item",
+          created_at: "2026-04-07T00:00:00.000Z",
+          tags: ["cache"],
+          added_by: "cache-test",
+          _sourceFile: path.join(tempDir, ".kspec", "project.inbox.yaml"),
+        },
+      ]),
+      getTriageIndex: vi.fn(() => [
+        {
+          _ulid: cachedTriageUlid,
+          inbox_ref: cachedInboxUlid,
+          status: "triaged",
+          created_at: "2026-04-07T00:00:00.000Z",
+          action: "promote",
+          reasoning: "Use cached triage summary",
+          decided_by: "cache-test",
+          evidence_refs: [],
+        },
+      ]),
+      getTriageDetail: vi.fn(() => null),
+    };
+
+    const records = await runWithEntityCache(() => loadTriageRecords(ctx), () => cache, tempDir);
+
+    expect(records).toEqual([
+      {
+        _ulid: cachedTriageUlid,
+        inbox_ref: cachedInboxUlid,
+        item_snapshot: "Cached inbox item",
+        status: "triaged",
+        created_at: "2026-04-07T00:00:00.000Z",
+        action: "promote",
+        reasoning: "Use cached triage summary",
+        decided_by: "cache-test",
+        evidence_refs: [],
+        _sourceFile: path.join(tempDir, ".kspec", "project.triage.yaml"),
+      },
+    ]);
+    expect(cache.getDomainState).toHaveBeenCalledWith("triage");
+    expect(cache.getDomainState).toHaveBeenCalledWith("inbox");
+    expect(cache.getInboxIndex).toHaveBeenCalled();
+    expect(cache.getTriageIndex).toHaveBeenCalled();
+    expect(cache.getTriageDetail).toHaveBeenCalledWith(cachedTriageUlid);
+  });
+
+  // AC: @daemon-command-api ac-read-cache-serving
+  it("falls through to disk for triage records when inbox cache is unavailable", async () => {
+    const tempDir = await setupShadowProject();
+    const diskInboxUlid = testUlid("NBXE");
+    const diskTriageUlid = testUlid("TRDB");
+    await fs.writeFile(
+      path.join(tempDir, ".kspec", "project.triage.yaml"),
+      `kynetic_triage: "1.0"
+triage:
+  - _ulid: "${diskTriageUlid}"
+    inbox_ref: "${diskInboxUlid}"
+    item_snapshot: "Disk triage item"
+    status: "triaged"
+    created_at: "2026-04-07T00:00:00.000Z"
+    action: "defer"
+    reasoning: "Disk fallback"
+    decided_by: "disk-test"
+    evidence_refs: []
+`,
+      "utf-8",
+    );
+    const ctx = await initContext(tempDir, { syncMode: "skip" });
+    const cache = {
+      getDomainState: vi.fn((domain: string) =>
+        domain === "triage" ? "ready" : domain === "inbox" ? "loading" : "unloaded",
+      ),
+      getInboxIndex: vi.fn(() => {
+        throw new Error("inbox cache should not be read before the domain is ready");
+      }),
+      getTriageIndex: vi.fn(() => [
+        {
+          _ulid: diskTriageUlid,
+          inbox_ref: diskInboxUlid,
+          status: "triaged",
+          created_at: "2026-04-07T00:00:00.000Z",
+          action: "defer",
+          reasoning: "Disk fallback",
+          decided_by: "disk-test",
+          evidence_refs: [],
+        },
+      ]),
+      getTriageDetail: vi.fn(() => null),
+    };
+
+    const records = await runWithEntityCache(() => loadTriageRecords(ctx), () => cache, tempDir);
+
+    expect(records).toHaveLength(1);
+    expect(records[0]).toMatchObject({
+      _ulid: diskTriageUlid,
+      inbox_ref: diskInboxUlid,
+      action: "defer",
+      decided_by: "disk-test",
+    });
+    expect(cache.getTriageIndex).toHaveBeenCalled();
+    expect(cache.getTriageDetail).toHaveBeenCalledWith(diskTriageUlid);
+    expect(cache.getInboxIndex).not.toHaveBeenCalled();
+  });
+
+  // AC: @daemon-command-api ac-no-cache-outside-daemon
+  it("loads inbox and triage data from disk when no cache context exists", async () => {
+    const tempDir = await setupShadowProject();
+    const directInboxUlid = testUlid("NBXF");
+    const directTriageUlid = testUlid("TRDC");
+    await fs.writeFile(
+      path.join(tempDir, ".kspec", "project.inbox.yaml"),
+      `inbox:
+  - _ulid: "${directInboxUlid}"
+    text: "Direct inbox item"
+    created_at: "2026-04-07T00:00:00.000Z"
+    tags: []
+    added_by: "direct-test"
+`,
+      "utf-8",
+    );
+    await fs.writeFile(
+      path.join(tempDir, ".kspec", "project.triage.yaml"),
+      `kynetic_triage: "1.0"
+triage:
+  - _ulid: "${directTriageUlid}"
+    inbox_ref: "${directInboxUlid}"
+    item_snapshot: "Direct triage item"
+    status: "triaged"
+    created_at: "2026-04-07T00:00:00.000Z"
+    action: "duplicate"
+    reasoning: "Direct mode disk read"
+    decided_by: "direct-test"
+    evidence_refs: []
+`,
+      "utf-8",
+    );
+    const ctx = await initContext(tempDir, { syncMode: "skip" });
+
+    const inboxItems = await loadInboxItems(ctx);
+    const triageRecords = await loadTriageRecords(ctx);
+
+    expect(inboxItems).toHaveLength(1);
+    expect(inboxItems[0]).toMatchObject({
+      _ulid: directInboxUlid,
+      text: "Direct inbox item",
+    });
+    expect(triageRecords).toHaveLength(1);
+    expect(triageRecords[0]).toMatchObject({
+      _ulid: directTriageUlid,
+      action: "duplicate",
+    });
   });
 });

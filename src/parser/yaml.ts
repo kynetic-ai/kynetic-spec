@@ -111,6 +111,80 @@ interface InitContextEntityCache {
     worktree_dir: string | null;
   } | null;
   getMetaDetail?(): unknown;
+  getInboxIndex?(): LoadedInboxItem[] | null;
+  getTriageIndex?(): Array<{
+    _ulid: string;
+    inbox_ref: string;
+    status: TriageRecord["status"];
+    created_at: string;
+    action?: TriageRecord["action"];
+    reasoning?: string;
+    decided_by?: string;
+    override_by?: string;
+    override_at?: string;
+    acted_at?: string;
+    updated_at?: string;
+    result_ref?: string;
+    evidence_refs: string[];
+  }> | null;
+  getTriageDetail?(ulid: string): LoadedTriageRecord | null;
+}
+
+function tryGetCachedTriageRecords(
+  ctx: KspecContext,
+  cache: InitContextEntityCache,
+): LoadedTriageRecord[] | null {
+  if (cache.getDomainState?.("triage") !== "ready") {
+    return null;
+  }
+
+  const cachedIndex = cache.getTriageIndex?.();
+  if (!cachedIndex) {
+    return null;
+  }
+
+  const inboxItems =
+    cache.getDomainState?.("inbox") === "ready" ? (cache.getInboxIndex?.() ?? null) : null;
+  const inboxByUlid = new Map(inboxItems?.map((item) => [item._ulid, item.text]) ?? []);
+  const triagePath = getTriageFilePath(ctx);
+  const cachedRecords: LoadedTriageRecord[] = [];
+
+  for (const summary of cachedIndex) {
+    const detail = cache.getTriageDetail?.(summary._ulid);
+    if (detail) {
+      cachedRecords.push(detail);
+      continue;
+    }
+
+    if (summary.override_by || summary.override_at) {
+      return null;
+    }
+
+    const itemSnapshot = inboxByUlid.get(summary.inbox_ref);
+    if (!itemSnapshot) {
+      return null;
+    }
+
+    cachedRecords.push({
+      _ulid: summary._ulid,
+      inbox_ref: summary.inbox_ref,
+      item_snapshot: itemSnapshot,
+      status: summary.status,
+      action: summary.action,
+      reasoning: summary.reasoning,
+      decided_by: summary.decided_by,
+      override_by: summary.override_by,
+      override_at: summary.override_at,
+      acted_at: summary.acted_at,
+      updated_at: summary.updated_at,
+      result_ref: summary.result_ref,
+      evidence_refs: summary.evidence_refs,
+      created_at: summary.created_at,
+      _sourceFile: triagePath,
+    });
+  }
+
+  return cachedRecords;
 }
 
 function tryGetCachedInitContext(): KspecContext | null {
@@ -2190,6 +2264,18 @@ async function loadInboxItemsFromFile(inboxPath: string): Promise<InboxItem[]> {
  * Load all inbox items from the project.
  */
 export async function loadInboxItems(ctx: KspecContext): Promise<LoadedInboxItem[]> {
+  const cacheContext = getEntityCacheContext();
+  const resolvedCache = cacheContext?.cacheAccessor(cacheContext.projectPath) as
+    | InitContextEntityCache
+    | null
+    | undefined;
+  if (resolvedCache?.getDomainState?.("inbox") === "ready") {
+    const cachedItems = resolvedCache.getInboxIndex?.();
+    if (cachedItems) {
+      return cachedItems;
+    }
+  }
+
   const inboxPath = getInboxFilePath(ctx);
 
   try {
@@ -2586,6 +2672,18 @@ function mergeTriagePreservingRawShape(
  * AC: @triage-record-schema ac-6, ac-7
  */
 export async function loadTriageRecords(ctx: KspecContext): Promise<LoadedTriageRecord[]> {
+  const cacheContext = getEntityCacheContext();
+  const resolvedCache = cacheContext?.cacheAccessor(cacheContext.projectPath) as
+    | InitContextEntityCache
+    | null
+    | undefined;
+  if (resolvedCache) {
+    const cachedRecords = tryGetCachedTriageRecords(ctx, resolvedCache);
+    if (cachedRecords) {
+      return cachedRecords;
+    }
+  }
+
   const triagePath = getTriageFilePath(ctx);
 
   try {
