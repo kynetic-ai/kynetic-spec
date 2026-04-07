@@ -13339,6 +13339,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-07T18:55:00.764Z
+  - _ulid: 01KNMMRM0F9R178P5GETS2CR3N
+    type: friction
+    content: Cache-aware loaders for plans/reviews can reach ready state with only a subset of details
+      populated because detail tiers are on-demand. Tests in this session covered empty and fully
+      populated detail tiers but missed the partial-detail case, allowing a regression where list
+      loaders returned incomplete subsets from cache instead of falling through to disk.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-07T18:55:02.159Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
