@@ -81,7 +81,7 @@ description: |
 spec_ref: "@daemon-concurrent-reads"
 plan_ref: "@plan-cache-aware-command-execution"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-cache-aware-init-context"
@@ -107,7 +107,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/main
-session_id: 01KNMSJY0BGGGWHTTFGK8MPNBG
+session_id: null
 history:
   - author: "@claude"
     changes:
@@ -213,6 +213,16 @@ history:
         previous: "@01KNMS23WYFPTZ5CFVH2FWDPY3"
     command: review-link
     timestamp: 2026-04-07T20:49:04.816Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KNMSJY0BGGGWHTTFGK8MPNBG
+    command: review-verdict-needs-work
+    timestamp: 2026-04-07T20:59:46.720Z
 created_at: 2026-04-07T16:16:33.928Z
 started_at: 2026-04-07T20:46:10.413Z
 submitted_at: 2026-04-07T20:46:20.564Z
