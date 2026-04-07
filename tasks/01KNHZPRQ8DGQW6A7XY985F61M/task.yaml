@@ -37,8 +37,11 @@ description: >-
 spec_ref: "@daemon-runtime-adapter"
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev at dfe2138f1 after approved review 01KNK3XE. Switched the default
+  daemon runtime from bun to node, updated daemon/config/E2E expectations, and added the packaged
+  @elysiajs/node dependency required by the published dist daemon.
 depends_on: []
 context: []
 priority: 3
@@ -138,8 +141,24 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-07T04:41:23.034Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev at dfe2138f1 after approved review 01KNK3XE. Switched the default daemon runtime
+          from bun to node, updated daemon/config/E2E expectations, and added the packaged
+          @elysiajs/node dependency required by the published dist daemon.
+        previous: null
+      completed_at:
+        new: 2026-04-07T04:48:53.486Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-07T04:48:53.494Z
 created_at: 2026-04-06T18:08:32.488Z
 started_at: 2026-04-07T04:38:47.265Z
 submitted_at: 2026-04-07T04:38:48.481Z
+completed_at: 2026-04-07T04:48:53.486Z
 todos: []
 automation: eligible
