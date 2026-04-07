@@ -1,0 +1,28 @@
+_ulid: 01KNK2VKWW5MPK2C0NSNF3FC90
+slugs: []
+title: Stabilize flaky agent dispatch post-invocation re-evaluation tests
+type: bug
+description: "Full NODE_ENV=development npm test -- --fresh on review snapshot
+  a756106068e3feea81055805f98a0510b71aa40a failed in tests/agent-dispatch-engine.test.ts with two
+  post-invocation re-evaluation cases: expected runInvocation to be called once but got 0, and
+  expected logger.warn to be called but got 0. A second targeted run on the same snapshot passed
+  (37/37 suites, 126/126 tests), and the same targeted run passed on base commit
+  d5cf75d00642de5a31d80d1969cb337194ca1207, so this currently looks flaky or suite-order dependent
+  rather than a deterministic regression from the task under review. Investigate shared state,
+  timing, or cross-suite interference in the post-invocation re-evaluation path and make the full
+  suite deterministic."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - test
+  - dispatch
+vcs_refs: []
+created_at: 2026-04-07T04:22:51.548Z
+todos: []
+automation: eligible
