@@ -36,3 +36,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-07T05:26:33.811Z
+  - _ulid: 01KNK6TW9G3X7RFDQVM1VZ3XDZ
+    content: "[FIX_CYCLE: 1] Addressed the concurrent hinted task write-through race from review.
+      Non-meta hinted writeThrough now queues behind the per-domain in-flight reload lane instead of
+      applying cloned task maps in parallel, so two request-path task refreshes cannot overwrite
+      each other. Added a regression test for Promise.all over hinted task writeThrough calls.
+      Verification: npm test -- daemon-entity-cache (31/31 suites, 135/135 tests) after the final
+      test cleanup; npm test -- --fresh (2070/2070 suites, 7553 passed, 5 skipped); kspec validate
+      exited 6 with only pre-existing repository warnings."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-07T05:32:21.680Z
