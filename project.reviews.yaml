@@ -121798,6 +121798,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-07T02:50:01.539Z
+      - _ulid: 01KNJZADBS4F41N1MXV1XD6B72
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNJ39SPJ8RA220M2JFEXA5BB
+        timestamp: 2026-04-07T03:21:02.074Z
     examined_commit: 89a85471696747b54a3759286576ba49873261f7
     external_links: []
     lifecycle_state: closed
@@ -121828,6 +121834,8 @@ reviews:
               getItemDetail(orphanUlid) return the orphan item."
             created_at: 2026-04-06T19:11:21.810Z
         kind: blocker
+        resolved_at: 2026-04-07T03:21:01.147Z
+        resolved_by: Jacob Chapel
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -121837,7 +121845,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-07T02:50:01.538Z
     created_at: 2026-04-06T19:04:43.445Z
-    updated_at: 2026-04-07T02:50:01.539Z
+    updated_at: 2026-04-07T03:21:01.147Z
     notes: []
   - _ulid: 01KNJW88C0C4C8EYQEST1BA3B0
     slugs: []
