@@ -124569,7 +124569,18 @@ reviews:
     slugs: []
     title: "Plan review: Cache-Aware Command Execution"
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: The explicit dependency on @task-cache-task-history closes the prior ordering hole for
+          task get, and the concurrency phase still sits after the cache-aware loader phases it
+          relies on.
+        name: Dependency ordering
+        required: true
+        created_at: 2026-04-07T08:14:44.039Z
+        completed_at: 2026-04-07T08:14:44.039Z
     events:
       - _ulid: 01KNKG3CD7SNDYHZ1MRDQ48YZR
         actor: "@claude"
@@ -124584,6 +124595,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNKG4674ES3M7870EKPZ5CZH
         timestamp: 2026-04-07T08:14:44.759Z
+      - _ulid: 01KNKG48AP9WPY7QJE2A9JSBCM
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Dependency ordering
+        timestamp: 2026-04-07T08:14:46.102Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -124619,5 +124637,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-07T08:14:17.511Z
-    updated_at: 2026-04-07T08:14:43.940Z
+    updated_at: 2026-04-07T08:14:44.039Z
     notes: []
