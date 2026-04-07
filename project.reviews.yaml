@@ -124170,6 +124170,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNKF94HK5DH1MNS15HKPWSKT
         timestamp: 2026-04-07T07:59:58.305Z
+      - _ulid: 01KNKF9AXKKVGN3T8W6N3Z3TTE
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KNKF9A3M8M3F5YFDGFSBAWCT
+        timestamp: 2026-04-07T08:00:04.019Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -124252,7 +124259,21 @@ reviews:
               place and let the other spec reference it.
             created_at: 2026-04-07T07:59:57.492Z
         kind: blocker
+      - _ulid: 01KNKF9A3M8M3F5YFDGFSBAWCT
+        anchor:
+          type: structured
+          ref: "@task-cache-aware-remaining-loaders"
+          section: description
+        entries:
+          - _ulid: 01KNKF9A3MWJQ48J9X98BF051T
+            author: "@claude"
+            body: "This task is much coarser than the benchmark plans: it bundles five loaders across four
+              modules plus mixed index/detail fallback rules into one implementation step. Consider
+              splitting it by domain or file cluster so each task stays independently executable,
+              easier to review, and less likely to hide partial coverage gaps."
+            created_at: 2026-04-07T08:00:03.188Z
+        kind: question
     verdicts: []
     created_at: 2026-04-07T07:58:55.565Z
-    updated_at: 2026-04-07T07:59:57.492Z
+    updated_at: 2026-04-07T08:00:03.188Z
     notes: []
