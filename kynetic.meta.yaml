@@ -13676,6 +13676,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-08T13:01:27.648Z
+  - _ulid: 01KNPJYMMQFX1Y81DTP1ZPC15C
+    type: friction
+    content: "When implementing ref resolution logic (plan filters, entity lookups), ULID prefix
+      matching is easy to omit even when the AC specifies it. The daemon plan filter used exact
+      equality while api-static.ts and ReferenceIndex both had prefix support — the inconsistency
+      caused a fix cycle. Consider: any new ref resolution should use ReferenceIndex.resolve() or
+      replicate its full resolution order (exact ULID, ULID prefix, slug)."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-08T13:01:51.127Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
