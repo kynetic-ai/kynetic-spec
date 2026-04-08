@@ -173,9 +173,14 @@ export function createTasksRoutes(options: TasksRouteOptions) {
               const ctx = await getCtx();
               plans = await loadPlans(ctx);
             }
+            // AC: @api-contract ac-plan-filter-resolve — resolve by full ULID, ULID prefix, or slug
+            const planRef = query.plan!;
+            const planRefUpper = planRef.toUpperCase();
             const plan = plans.find(
               (p: { _ulid: string; slugs: string[] }) =>
-                p._ulid === query.plan || p.slugs.includes(query.plan!),
+                p._ulid === planRef ||
+                p._ulid.startsWith(planRefUpper) ||
+                p.slugs.includes(planRef),
             );
             if (plan) {
               // Forward link: tasks listed in plan.derived_tasks

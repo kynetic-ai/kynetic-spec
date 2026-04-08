@@ -547,9 +547,22 @@ describe("Tasks API", () => {
     });
 
     // AC: @api-contract ac-plan-filter-resolve
-    it("resolves plan by ULID", async () => {
+    it("resolves plan by full ULID", async () => {
       const response = await request(
         "/api/tasks?plan=01KG0RRPCA45ZT43W2T6HJMVP1",
+      );
+      expect(response.status).toBe(200);
+
+      const body = await response.json();
+      expect(body.data.length).toBeGreaterThan(0);
+      const slugs = body.data.flatMap((t: { slugs: string[] }) => t.slugs);
+      expect(slugs).toContain("test-task-in-progress");
+    });
+
+    // AC: @api-contract ac-plan-filter-resolve
+    it("resolves plan by ULID prefix", async () => {
+      const response = await request(
+        "/api/tasks?plan=01KG0RRPCA",
       );
       expect(response.status).toBe(200);
 
