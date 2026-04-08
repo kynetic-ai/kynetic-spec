@@ -44149,7 +44149,7 @@ workspaces:
         head: d29bbeb0834487440004909576233e6836ae30b8
         last_seen_at: 2026-04-08T09:14:58.782Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-unrelated-full-suite-failures-in-review-environment-01knmjxc
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 6a8fd6df49537d95cca2f6283be8a4aa82cc30c8
     bootstrap:
       status: succeeded
@@ -44659,12 +44659,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-08T09:15:06.584Z
+      updated_at: 2026-04-08T09:32:06.040Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-08T09:15:28.921Z
+      updated_at: 2026-04-08T09:32:06.040Z
     integration:
       status: pending
       detail: null
@@ -44672,7 +44672,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 6a8fd6df49537d95cca2f6283be8a4aa82cc30c8
-      updated_at: 2026-04-08T09:15:06.584Z
+      updated_at: 2026-04-08T09:32:06.040Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KNNZ6D4P24MB9J94K4Q068AN"
@@ -44680,9 +44680,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-08T09:15:28.921Z
-      last_reconciled_at: 2026-04-08T09:15:28.921Z
+      last_reconciled_at: 2026-04-08T09:32:06.040Z
       created_at: 2026-04-08T08:21:47.826Z
-      updated_at: 2026-04-08T09:15:28.921Z
+      updated_at: 2026-04-08T09:32:06.040Z
     workspace_id: dispatch-workspace-01KNNZ6D4P24MB9J94K4Q068AN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
