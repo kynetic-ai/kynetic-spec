@@ -131783,3 +131783,29 @@ reviews:
     created_at: 2026-04-08T13:26:29.279Z
     updated_at: 2026-04-08T13:26:42.466Z
     notes: []
+  - _ulid: 01KNPNZH4X7S1ES27X5XGF3AZP
+    slugs: []
+    title: Review task-fix-plan-filter-bidirectional (cycle 3)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KNPNZH4TXZFNVZJF132FYQ40
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-08T13:54:46.043Z
+    examined_commit: 0f6ce922d951cfad32553f12ac6117ef5d730376
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNP0D9JWZ00XZQJMM5G5X7XX"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-08T13:54:46.045Z
+    updated_at: null
+    notes: []
