@@ -733,13 +733,14 @@ export function createCommandRoutes(options: CommandRouteOptions) {
           // Batch execution goes through the dispatch mutex (process-global
           // state protection) and optionally the file lock (cross-process).
           // AC: @daemon-command-api ac-cache-context-propagation — entity cache context for batch
-          const batchResult = await dispatchMutex.run(async () => {
-            const capture: CommandExecutionContext = {
-              stdoutChunks: [],
-              stderrChunks: [],
-              interceptedExitCode: undefined,
-            };
+          // AC: @daemon-command-api ac-response-parity — capture process.stdout.write/stderr.write
+          const capture: CommandExecutionContext = {
+            stdoutChunks: [],
+            stderrChunks: [],
+            interceptedExitCode: undefined,
+          };
 
+          const batchResult = await dispatchMutex.run(async () => {
             const runBatch = () => {
               // Wrap batch execution in the same ALS nesting pattern as
               // executeCommand: entity cache → working directory → output
@@ -784,6 +785,20 @@ export function createCommandRoutes(options: CommandRouteOptions) {
             }
             return runBatch();
           });
+
+          // Merge process.stdout.write/stderr.write output captured by the
+          // ALS-based commandExecutionStorage hook into the batch response.
+          // executeBatch()'s per-command OutputCapture handles console.log/
+          // error/warn, but process.stdout.write (used by plan export and
+          // similar commands) is only captured at the daemon level. Without
+          // this merge the output would be silently dropped.
+          // AC: @daemon-command-api ac-response-parity — include raw stdout/stderr in batch response
+          const capturedStdout = capture.stdoutChunks.join("");
+          const capturedStderr = capture.stderrChunks.join("");
+          if (capturedStdout || capturedStderr) {
+            (batchResult as Record<string, unknown>).stdout = capturedStdout;
+            (batchResult as Record<string, unknown>).stderr = capturedStderr;
+          }
 
           // AC: @daemon-command-api ac-batch-support, ac-mutation-cache-update
           // Update cache once after batch completes

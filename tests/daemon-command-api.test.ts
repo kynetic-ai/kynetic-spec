@@ -1489,6 +1489,12 @@ describe("Daemon Command API", () => {
           return text.includes(SENTINEL);
         });
         expect(sentinelReachedStream).toBe(false);
+
+        // The captured process.stdout.write output must appear in the
+        // batch response's stdout field — not silently dropped.
+        // AC: @daemon-command-api ac-response-parity — batch includes raw stdout
+        expect(body.stdout).toBeDefined();
+        expect(body.stdout).toContain(SENTINEL);
       });
     } finally {
       writeSpy.mockRestore();
