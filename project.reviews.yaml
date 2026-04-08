@@ -129826,6 +129826,18 @@ reviews:
         runner: kspec
         created_at: 2026-04-08T10:40:23.697Z
         completed_at: 2026-04-08T10:40:23.697Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Two consecutive uncached full-suite runs passed in the detached review snapshot. Run 1:
+          2082/2082 suites, 7556/7561 tests, 5 skipped, 3117.5s. Run 2: 2082/2082 suites, 7556/7561
+          tests, 5 skipped, 2498.9s."
+        name: npm test -- --fresh
+        required: true
+        runner: test-runner
+        created_at: 2026-04-08T10:40:26.290Z
+        completed_at: 2026-04-08T10:40:26.290Z
     events:
       - _ulid: 01KNP8M7G83THVR5CGCNJ61178
         actor: Jacob Chapel
@@ -129854,6 +129866,13 @@ reviews:
           status: skipped
           name: kspec validate
         timestamp: 2026-04-08T10:40:24.619Z
+      - _ulid: 01KNPAVQH30QR646NR536YHM89
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test -- --fresh
+        timestamp: 2026-04-08T10:40:27.171Z
     examined_commit: 1d09289d43ce44411f6d8efaf6cbf31a30ce1ad4
     external_links: []
     lifecycle_state: open
@@ -129890,7 +129909,7 @@ reviews:
         kind: question
     verdicts: []
     created_at: 2026-04-08T10:01:24.232Z
-    updated_at: 2026-04-08T10:40:23.697Z
+    updated_at: 2026-04-08T10:40:26.290Z
     notes: []
   - _ulid: 01KNP9XQCHMV876AW114SHZEP5
     slugs: []
