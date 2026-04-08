@@ -13647,6 +13647,35 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-08T12:43:00.659Z
+  - _ulid: 01KNPJXXACMEV5WNNPD9XP1PJD
+    type: friction
+    content: Review worktrees can execute a globally linked kspec binary instead of the workspace-local
+      CLI, which makes validation results disagree with the code under review. Review flow should
+      prefer node dist/cli/index.js or otherwise force the workspace build when comparing behavior
+      in detached snapshots.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-08T13:01:27.244Z
+  - _ulid: 01KNPJXXGX2D3C69YPJF4FC87R
+    type: friction
+    content: The npm test harness in review snapshots can run for many minutes without emitting progress
+      back to the caller, which makes it hard to distinguish slow progress from a hung run during
+      automated review. A lightweight progress heartbeat or surfaced log path earlier would reduce
+      review uncertainty.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-08T13:01:27.453Z
+  - _ulid: 01KNPJXXQ05RSZ8426ZKV59YPQ
+    type: success
+    content: Comparing workspace-local validation results against a base-commit source-level validate
+      run was an effective way to distinguish pre-existing annotation noise from regressions
+      introduced by the reviewed task.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-08T13:01:27.648Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
