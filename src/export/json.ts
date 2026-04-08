@@ -262,7 +262,11 @@ export async function generateJsonSnapshot(includeValidation = false): Promise<K
   const { refIndex, traitIndex } = await buildIndexes(ctx);
 
   // Scan test coverage for AC annotations
-  const coveredACs = await scanTestCoverage(ctx.rootDir);
+  const coveredACs = await scanTestCoverage(
+    ctx.rootDir,
+    ctx.config.coverage.scan_paths,
+    ctx.config.coverage.exclude_patterns,
+  );
 
   // Expand tasks with resolved spec references
   const exportedTasks = expandTasks(tasks, items, refIndex);

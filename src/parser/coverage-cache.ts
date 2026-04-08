@@ -30,7 +30,7 @@ const DEFAULT_TTL_MS = 60_000;
 
 /**
  * Per-project cache storage
- * Key: normalized root directory path
+ * Key: normalized root directory path + sorted scan paths
  */
 const cache = new Map<string, CacheEntry>();
 
@@ -48,6 +48,22 @@ function normalizePath(dir: string): string {
 }
 
 /**
+ * Build a cache key from rootDir, scanPaths, and excludePatterns.
+ * Different scan/exclude configurations for the same rootDir
+ * must produce different cache entries.
+ */
+function buildCacheKey(
+  rootDir: string,
+  scanPaths: string[],
+  excludePatterns: string[],
+): string {
+  const normalizedDir = normalizePath(rootDir);
+  const sortedPaths = [...scanPaths].sort().join("\0");
+  const sortedExcludes = [...excludePatterns].sort().join("\0");
+  return `${normalizedDir}\0${sortedPaths}\0${sortedExcludes}`;
+}
+
+/**
  * Check if a cache entry is still valid based on TTL.
  */
 function isValid(entry: CacheEntry): boolean {
@@ -62,11 +78,16 @@ function isValid(entry: CacheEntry): boolean {
  * 2. Returns in-flight scan result if a scan is already in progress
  * 3. Otherwise initiates a new scan and caches the result
  *
- * @param rootDir - Project root directory containing tests/
+ * @param rootDir - Project root directory
+ * @param scanPaths - Directories to scan (relative to rootDir). Empty = no scanning.
  * @returns Set of covered AC references (e.g., "@spec-ref ac-1")
  */
-export async function getCachedTestCoverage(rootDir: string): Promise<Set<string>> {
-  const key = normalizePath(rootDir);
+export async function getCachedTestCoverage(
+  rootDir: string,
+  scanPaths: string[] = [],
+  excludePatterns: string[] = [],
+): Promise<Set<string>> {
+  const key = buildCacheKey(rootDir, scanPaths, excludePatterns);
   const existing = cache.get(key);
 
   // Return cached result if valid
@@ -80,7 +101,7 @@ export async function getCachedTestCoverage(rootDir: string): Promise<Set<string
   }
 
   // Initiate new scan
-  const scanPromise = scanTestCoverage(rootDir);
+  const scanPromise = scanTestCoverage(rootDir, scanPaths, excludePatterns);
 
   // Store pending promise to prevent parallel scans
   const entry: CacheEntry = existing || {
@@ -114,8 +135,12 @@ export async function getCachedTestCoverage(rootDir: string): Promise<Set<string
  */
 export function invalidateTestCoverageCache(rootDir?: string): void {
   if (rootDir) {
-    const key = normalizePath(rootDir);
-    cache.delete(key);
+    const prefix = normalizePath(rootDir) + "\0";
+    for (const key of cache.keys()) {
+      if (key.startsWith(prefix)) {
+        cache.delete(key);
+      }
+    }
   } else {
     cache.clear();
   }

@@ -3058,7 +3058,6 @@ describe("Integration: Batch operations", () => {
   // AC: @multi-ref-batch ac-8 - Ref resolution uses existing logic
   it(
     "should resolve refs using existing resolution logic (slugs, ULID prefixes)",
-    { timeout: 15000 },
     () => {
       // Create two tasks with slugs
       const task1 = kspecJson<{ task: { _ulid: string } }>(

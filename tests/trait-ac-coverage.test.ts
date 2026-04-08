@@ -12,6 +12,7 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import * as os from "node:os";
+import { execSync } from "node:child_process";
 import { validate } from "../src/parser/validate.js";
 import { initContext } from "../src/parser/yaml.js";
 import { writeYamlFilePreserveFormat } from "../src/parser/yaml.js";
@@ -21,6 +22,15 @@ describe("Trait AC coverage validation", () => {
 
   beforeEach(async () => {
     tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "kspec-test-"));
+    // Initialize git so loadProjectConfig can find config at git root
+    execSync("git init", { cwd: tempDir, stdio: "pipe" });
+    execSync('git config user.email "test@test.com"', { cwd: tempDir, stdio: "pipe" });
+    execSync('git config user.name "Test"', { cwd: tempDir, stdio: "pipe" });
+    // Enable coverage scanning for tests
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      "coverage:\n  scan_paths:\n    - tests/\n",
+    );
   });
 
   afterEach(async () => {

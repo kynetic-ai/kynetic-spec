@@ -35,7 +35,7 @@ describe("coverage-cache", () => {
 
   describe("getCachedTestCoverage", () => {
     it("should return empty set for project with no tests", async () => {
-      const coverage = await getCachedTestCoverage(tempDir);
+      const coverage = await getCachedTestCoverage(tempDir, ["tests/"]);
       expect(coverage).toBeInstanceOf(Set);
       expect(coverage.size).toBe(0);
     });
@@ -54,7 +54,7 @@ it('should do more', () => {});
 `,
       );
 
-      const coverage = await getCachedTestCoverage(tempDir);
+      const coverage = await getCachedTestCoverage(tempDir, ["tests/"]);
       expect(coverage.has("@spec-item ac-1")).toBe(true);
       expect(coverage.has("@spec-item ac-2")).toBe(true);
       expect(coverage.has("@spec-item ac-3")).toBe(true);
@@ -69,7 +69,7 @@ it('should not count as coverage', () => {});
 `,
       );
 
-      const coverage = await getCachedTestCoverage(tempDir);
+      const coverage = await getCachedTestCoverage(tempDir, ["tests/"]);
       expect([...coverage]).toEqual([]);
     });
 
@@ -87,7 +87,7 @@ test('filters tasks', async () => {});
 `,
       );
 
-      const coverage = await getCachedTestCoverage(tempDir);
+      const coverage = await getCachedTestCoverage(tempDir, ["tests/"]);
       expect(coverage.has("@api-contract ac-2")).toBe(true);
       expect(coverage.has("@api-contract ac-3")).toBe(true);
     });
@@ -107,7 +107,7 @@ test('appends note to task', async () => {});
 `,
       );
 
-      const coverage = await getCachedTestCoverage(tempDir);
+      const coverage = await getCachedTestCoverage(tempDir, ["tests/"]);
       expect(coverage.has("@api-contract ac-2")).toBe(true);
       expect(coverage.has("@api-contract ac-7")).toBe(true);
     });
@@ -125,19 +125,19 @@ test('appends note to task', async () => {});
         '// AC: @api-contract ac-5\ntest("e2e test", async () => {});',
       );
 
-      const coverage = await getCachedTestCoverage(tempDir);
+      const coverage = await getCachedTestCoverage(tempDir, ["tests/"]);
       expect(coverage.has("@spec-a ac-1")).toBe(true);
       expect(coverage.has("@api-contract ac-5")).toBe(true);
     });
 
     it("should cache results on second call", async () => {
       // First call populates cache
-      const coverage1 = await getCachedTestCoverage(tempDir);
+      const coverage1 = await getCachedTestCoverage(tempDir, ["tests/"]);
       const stats1 = getTestCoverageCacheStats();
       expect(stats1.entries).toBe(1);
 
       // Second call should return cached result
-      const coverage2 = await getCachedTestCoverage(tempDir);
+      const coverage2 = await getCachedTestCoverage(tempDir, ["tests/"]);
 
       // Should be the same object (cached)
       expect(coverage1).toBe(coverage2);
@@ -150,9 +150,9 @@ test('appends note to task', async () => {});
 
       // Start multiple parallel calls
       const results = await Promise.all([
-        getCachedTestCoverage(tempDir),
-        getCachedTestCoverage(tempDir),
-        getCachedTestCoverage(tempDir),
+        getCachedTestCoverage(tempDir, ["tests/"]),
+        getCachedTestCoverage(tempDir, ["tests/"]),
+        getCachedTestCoverage(tempDir, ["tests/"]),
       ]);
 
       // All should return the same cached result
@@ -162,6 +162,41 @@ test('appends note to task', async () => {});
       // Only one cache entry should exist
       const stats = getTestCoverageCacheStats();
       expect(stats.entries).toBe(1);
+    });
+
+    // AC: @coverage-scan-config ac-configured-paths
+    it("should cache separately per scan path configuration", async () => {
+      // Regression: cache key must include scanPaths, not just rootDir.
+      // Same rootDir with different scanPaths must produce independent cache entries.
+      const dirA = path.join(tempDir, "a");
+      const dirB = path.join(tempDir, "b");
+      await fs.mkdir(dirA, { recursive: true });
+      await fs.mkdir(dirB, { recursive: true });
+      await fs.writeFile(
+        path.join(dirA, "a.test.ts"),
+        '// AC: @spec-a ac-1\nit("test a", () => {});',
+      );
+      await fs.writeFile(
+        path.join(dirB, "b.test.ts"),
+        '// AC: @spec-b ac-1\nit("test b", () => {});',
+      );
+
+      const coverageA = await getCachedTestCoverage(tempDir, ["a/"]);
+      const coverageB = await getCachedTestCoverage(tempDir, ["b/"]);
+
+      // Different scan paths should produce different results
+      expect(coverageA.has("@spec-a ac-1")).toBe(true);
+      expect(coverageA.has("@spec-b ac-1")).toBe(false);
+
+      expect(coverageB.has("@spec-b ac-1")).toBe(true);
+      expect(coverageB.has("@spec-a ac-1")).toBe(false);
+
+      // Should NOT be the same object (different cache entries)
+      expect(coverageA).not.toBe(coverageB);
+
+      // Two cache entries should exist (one per scan path set)
+      const stats = getTestCoverageCacheStats();
+      expect(stats.entries).toBe(2);
     });
 
     it("should cache separately per project directory", async () => {
@@ -179,8 +214,8 @@ test('appends note to task', async () => {});
           '// AC: @spec-b ac-1\nit("test", () => {});',
         );
 
-        const coverage1 = await getCachedTestCoverage(tempDir);
-        const coverage2 = await getCachedTestCoverage(tempDir2);
+        const coverage1 = await getCachedTestCoverage(tempDir, ["tests/"]);
+        const coverage2 = await getCachedTestCoverage(tempDir2, ["tests/"]);
 
         // Different projects should have different coverage
         expect(coverage1.has("@spec-a ac-1")).toBe(true);
@@ -205,7 +240,7 @@ test('appends note to task', async () => {});
       const testFile = path.join(tempDir, "tests", "example.test.ts");
       await fs.writeFile(testFile, '// AC: @spec-a ac-1\nit("test", () => {});');
 
-      const coverage1 = await getCachedTestCoverage(tempDir);
+      const coverage1 = await getCachedTestCoverage(tempDir, ["tests/"]);
       expect(coverage1.has("@spec-a ac-1")).toBe(true);
 
       // Update the test file
@@ -215,7 +250,7 @@ test('appends note to task', async () => {});
       await new Promise((resolve) => setTimeout(resolve, 20));
 
       // Should re-scan and get new coverage
-      const coverage2 = await getCachedTestCoverage(tempDir);
+      const coverage2 = await getCachedTestCoverage(tempDir, ["tests/"]);
       expect(coverage2.has("@spec-b ac-1")).toBe(true);
       // Old coverage should be gone (new object)
       expect(coverage2).not.toBe(coverage1);
@@ -225,7 +260,7 @@ test('appends note to task', async () => {});
   describe("invalidateTestCoverageCache", () => {
     it("should clear cache for specific project", async () => {
       // Populate cache
-      await getCachedTestCoverage(tempDir);
+      await getCachedTestCoverage(tempDir, ["tests/"]);
       expect(getTestCoverageCacheStats().entries).toBe(1);
 
       // Invalidate
@@ -239,8 +274,8 @@ test('appends note to task', async () => {});
 
       try {
         // Populate caches for multiple projects
-        await getCachedTestCoverage(tempDir);
-        await getCachedTestCoverage(tempDir2);
+        await getCachedTestCoverage(tempDir, ["tests/"]);
+        await getCachedTestCoverage(tempDir2, ["tests/"]);
         expect(getTestCoverageCacheStats().entries).toBe(2);
 
         // Invalidate all
@@ -251,9 +286,33 @@ test('appends note to task', async () => {});
       }
     });
 
+    it("should invalidate all scan path variants for a project", async () => {
+      // Populate cache with two different scan path configs for same rootDir
+      const dirA = path.join(tempDir, "a");
+      const dirB = path.join(tempDir, "b");
+      await fs.mkdir(dirA, { recursive: true });
+      await fs.mkdir(dirB, { recursive: true });
+      await fs.writeFile(
+        path.join(dirA, "a.test.ts"),
+        '// AC: @spec-a ac-1\nit("test", () => {});',
+      );
+      await fs.writeFile(
+        path.join(dirB, "b.test.ts"),
+        '// AC: @spec-b ac-1\nit("test", () => {});',
+      );
+
+      await getCachedTestCoverage(tempDir, ["a/"]);
+      await getCachedTestCoverage(tempDir, ["b/"]);
+      expect(getTestCoverageCacheStats().entries).toBe(2);
+
+      // Invalidating by rootDir should clear both scan path variants
+      invalidateTestCoverageCache(tempDir);
+      expect(getTestCoverageCacheStats().entries).toBe(0);
+    });
+
     it("should handle path with trailing slash", async () => {
       // Populate cache with path without trailing slash
-      await getCachedTestCoverage(tempDir);
+      await getCachedTestCoverage(tempDir, ["tests/"]);
       expect(getTestCoverageCacheStats().entries).toBe(1);
 
       // Invalidate with trailing slash - should still work

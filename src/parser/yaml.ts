@@ -537,8 +537,13 @@ export async function initContext(
   const projectRoots = resolveProjectRoots(cwd);
 
   // AC: @project-config ac-2, ac-6, ac-7 — load config before shadow detection
-  // Config is loaded from git root, not cwd or KSPEC_SPEC_DIR temp dir
-  const configResult = await loadProjectConfig(cwd, projectRoots?.mainRoot);
+  // Config is loaded from worktree root (the checked-out code's config), falling
+  // back to main root. In worktrees, the branch-specific kspec.config.yaml lives
+  // at worktreeRoot, not mainRoot (the parent repo may have a different version).
+  const configResult = await loadProjectConfig(
+    cwd,
+    projectRoots?.worktreeRoot ?? projectRoots?.mainRoot,
+  );
 
   // AC: @project-config ac-3 — emit warning to stderr if config had issues
   if (configResult.warning) {
