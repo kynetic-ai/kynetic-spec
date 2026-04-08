@@ -42980,7 +42980,7 @@ workspaces:
         head: bc0435b6cd39c76c9ffa63c060e74ccf4196cb4e
         last_seen_at: 2026-04-07T23:25:16.568Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/extend-loadalltasks-to-return-history-alongside-task-data-01knn24y
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 13df74fef446a37cb44bb5b37bbf0fc8be5f4c82
     bootstrap:
       status: succeeded
@@ -43342,7 +43342,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-08T01:05:37.790Z
+      updated_at: 2026-04-08T01:06:00.147Z
     integration:
       status: pending
       detail: null
@@ -43357,10 +43357,10 @@ workspaces:
     task_slug: apply-cache-context-and-working-directory-isolation-to-batch-route
     timestamps:
       closed_at: null
-      last_active_at: 2026-04-08T00:49:39.874Z
-      last_reconciled_at: 2026-04-08T01:05:37.790Z
+      last_active_at: 2026-04-08T01:06:00.147Z
+      last_reconciled_at: 2026-04-08T01:06:00.147Z
       created_at: 2026-04-07T23:52:36.781Z
-      updated_at: 2026-04-08T01:05:57.090Z
+      updated_at: 2026-04-08T01:06:00.147Z
     workspace_id: dispatch-workspace-01KNN24V593SQEF0CA5Z00NQNF
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
