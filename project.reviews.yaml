@@ -131832,9 +131832,25 @@ reviews:
           status: skipped
           name: kspec-validate
         timestamp: 2026-04-08T14:13:20.663Z
+      - _ulid: 01KNPQ23SKXW5QAPTSAJN13AKQ
+        actor: "@codex"
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-04-08T14:13:39.251Z
+      - _ulid: 01KNPQ23SK9NC59VHY3ZD1MKCK
+        actor: "@codex"
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-08T14:13:39.251Z
     examined_commit: efd95569e94451efa368054907859bca82fed913
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -131873,9 +131889,16 @@ reviews:
               integration (oxlint config wiring, daemon read-path suite, full npm test).
             created_at: 2026-04-08T14:13:11.958Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: "@codex"
+        role: reviewer
+        created_at: 2026-04-08T14:13:39.251Z
     created_at: 2026-04-08T13:26:29.279Z
-    updated_at: 2026-04-08T14:13:19.783Z
+    updated_at: 2026-04-08T14:13:39.251Z
     notes: []
   - _ulid: 01KNPNZH4X7S1ES27X5XGF3AZP
     slugs: []
