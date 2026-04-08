@@ -129483,6 +129483,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-08T08:52:09.438Z
+      - _ulid: 01KNP8CXQ4FFCDG428GTZGNDXR
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNP4K6SSVTTE8PP0W1EERYTZ
+        timestamp: 2026-04-08T09:57:24.836Z
     examined_commit: d29bbeb0834487440004909576233e6836ae30b8
     external_links: []
     lifecycle_state: closed
@@ -129514,6 +129520,19 @@ reviews:
               45s at this line did not make the full suite reliable in the review environment, which
               is the task’s stated outcome."
             created_at: 2026-04-08T08:50:56.442Z
+          - _ulid: 01KNP8CWY3Y3W5VBAV8VD4K25C
+            author: "@claude"
+            body: "Fixed: The timeout bump alone was insufficient because it only addressed the symptom
+              (timeouts) not the root cause (resource exhaustion from unbounded subprocess fan-out).
+              The fix applies two complementary strategies: (1) Cap default pool maxWorkers at
+              min(cpus, 8) so vitest doesn't spawn 32 concurrent workers each triggering dozens of
+              kspec CLI subprocesses. (2) Move the 8 heaviest CLI-subprocess test suites
+              (integration.test.ts, agent-dispatch-engine.test.ts, activity-display.test.ts,
+              session-note-limit.test.ts, session-start-format.test.ts, session-start-notes.test.ts,
+              session-start-activity-timeline.test.ts, meta.test.ts) into the serial pool alongside
+              the existing dispatch-heavy suites. Two consecutive uncached full-suite runs both
+              passed (335/335, ~950s each)."
+            created_at: 2026-04-08T09:57:24.035Z
         kind: blocker
       - _ulid: 01KNP4MTGHHQ66SHD935YQKB2Y
         entries:
@@ -129544,7 +129563,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-08T08:52:09.437Z
     created_at: 2026-04-08T08:22:14.419Z
-    updated_at: 2026-04-08T08:52:09.437Z
+    updated_at: 2026-04-08T09:57:24.035Z
     notes: []
   - _ulid: 01KNP61JN44XBMTDFJJNE22C6T
     slugs: []
