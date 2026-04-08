@@ -131384,7 +131384,17 @@ reviews:
     slugs: []
     title: Review task-coverage-scan-config (cycle 4)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 2093 suites passed; 7602 passed, 5 skipped; duration 3816.8s.
+        name: npm test
+        required: true
+        runner: test.cjs
+        created_at: 2026-04-08T12:59:02.258Z
+        completed_at: 2026-04-08T12:59:02.258Z
     events:
       - _ulid: 01KNPHZYVPQNAVHMNHS1TNXQFT
         actor: Jacob Chapel
@@ -131399,6 +131409,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-08T12:45:43.847Z
+      - _ulid: 01KNPJSGKQASJJJ2DS3SMEPXD6
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-08T12:59:03.159Z
     examined_commit: 5aaffcd7d574a1c0ae6557dd72e1aa1862425e14
     external_links: []
     lifecycle_state: open
@@ -131411,5 +131428,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-08T12:45:05.783Z
-    updated_at: 2026-04-08T12:45:42.253Z
+    updated_at: 2026-04-08T12:59:02.258Z
     notes: []
