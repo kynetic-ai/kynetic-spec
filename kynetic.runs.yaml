@@ -24431,7 +24431,7 @@ runs:
     completed_at: 2026-04-08T09:31:37.643Z
   - _ulid: 01KNP8K71WK5Q3NAQQVM1G4HJK
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -24443,7 +24443,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-08T10:02:36.279Z
-        completed_at: 2026-04-08T10:02:36.279Z
+        completed_at: 2026-04-08T10:02:53.073Z
+        notes: "One high-confidence success pattern: the existing dispatch-heavy serial pool in
+          vitest.config.ts provided a proven template for isolating additional resource-heavy
+          suites. The pattern of fileParallelism:false + maxWorkers:1 + groupOrder:1 was reusable
+          without inventing new infrastructure. No new friction points — session was straightforward
+          once root cause (unbounded parallelism) was identified."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-08T10:02:53.073Z
+        completed_at: 2026-04-08T10:02:53.073Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-08T10:00:51.004Z
