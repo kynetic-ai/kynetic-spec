@@ -129441,6 +129441,13 @@ reviews:
           status: fail
           name: npm test -- --fresh
         timestamp: 2026-04-08T08:51:47.632Z
+      - _ulid: 01KNP4MVCG1GV0C4XKZXA1XXXE
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KNP4MTGHHQ66SHD935YQKB2Y
+        timestamp: 2026-04-08T08:51:50.288Z
     examined_commit: d29bbeb0834487440004909576233e6836ae30b8
     external_links: []
     lifecycle_state: open
@@ -129473,7 +129480,27 @@ reviews:
               is the task’s stated outcome."
             created_at: 2026-04-08T08:50:56.442Z
         kind: blocker
+      - _ulid: 01KNP4MTGHHQ66SHD935YQKB2Y
+        entries:
+          - _ulid: 01KNP4MTGHFVMQYC9470QSE3ZG
+            author: Jacob Chapel
+            body: "Evidence log: Files read: vitest.config.ts, tests/cli-serve.test.ts,
+              tests/cli/session-start-activity-timeline.test.ts, tests/integration.test.ts,
+              tests/task-needs-work.test.ts, scripts/test.cjs. Commands run: kspec task get
+              @01KNMJXC8DADJDK9R9CGK6B854; git diff
+              6a8fd6df49537d95cca2f6283be8a4aa82cc30c8...d29bbeb0834487440004909576233e6836ae30b8 --
+              <changed files>; git show --stat --summary d29bbeb0834487440004909576233e6836ae30b8;
+              kspec validate; npm test -- --fresh (twice on reviewed head); base-worktree bootstrap
+              attempts in /tmp/kspec-review-base-01knmjxc. Claims verified: the worker claim that a
+              higher global timeout stabilizes full-suite review runs was checked directly by
+              repeated uncached full-suite execution and disproved by the second failing run.
+              Categories searched: correctness (does the suite stabilize), edge cases (repeatability
+              under load), error handling (runner/bootstrap behavior in detached worktrees), test
+              quality (timeout changes versus real failures), integration (interaction with
+              test-runner dependency/bootstrap logic)."
+            created_at: 2026-04-08T08:51:49.393Z
+        kind: question
     verdicts: []
     created_at: 2026-04-08T08:22:14.419Z
-    updated_at: 2026-04-08T08:51:46.714Z
+    updated_at: 2026-04-08T08:51:49.393Z
     notes: []
