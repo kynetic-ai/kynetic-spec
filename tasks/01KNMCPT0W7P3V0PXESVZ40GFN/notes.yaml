@@ -29,3 +29,27 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-08T10:58:45.809Z
+  - _ulid: 01KNPGJRYPVNMDPGAC5KW8SDJE
+    content: >-
+      Fix cycle 1: Addressed blocker — rebased onto origin/dev, removing the unrelated plan branch
+      merge that violated branch isolation.
+
+
+      Root cause clarification: On current dev, all dist/daemon/ imports already use .js extensions.
+      The .ts import failures were only present in the plan branch merge (343472d01) that the
+      previous worker incorrectly merged into this task branch. The plan branch's
+      daemon-triage-write-through.test.ts still has .ts imports — that should be fixed as part of
+      the plan branch work.
+
+
+      Preventive fix: Added a custom oxlint lint rule (no-daemon-ts-imports) that catches value
+      imports from dist/daemon/ using .ts extensions at lint time. Type-only imports are still
+      allowed since they're erased at compile time. The rule has 5 tests covering: flagging value
+      .ts imports, allowing .js imports, allowing type-only .ts imports, not flagging dist/parser/
+      imports, and flagging mixed value+type imports.
+
+
+      Full suite passes: 2084 suites, 7561 tests, 5 skipped. Lint passes with no new violations.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-08T12:20:25.174Z
