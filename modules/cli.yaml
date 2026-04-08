@@ -1329,6 +1329,10 @@ features:
                 then: the upstream_ref field is populated from the dispatch config base_branch as a fallback; git
                   upstream tracking takes precedence when available
                 when: submission linkage is captured and dispatch config specifies a base_branch
+              - given: A task is submitted from a linked git worktree
+                id: ac-worktree-branch
+                then: The recorded branch reflects the worktree's checked-out branch
+                when: Submission linkage is captured
             tags: []
             created: 2026-03-13T09:16:57.822Z
             notes: []
