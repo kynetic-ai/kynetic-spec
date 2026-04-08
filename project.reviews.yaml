@@ -130310,6 +130310,12 @@ reviews:
         payload:
           thread_ulid: 01KNPBVC3FXQF7JRSV7GZ069B5
         timestamp: 2026-04-08T12:19:26.098Z
+      - _ulid: 01KNPGHGRGM0Y6YYYNEHBQT6AS
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNPBVGWN315Y9K8TQHM0VNFS
+        timestamp: 2026-04-08T12:19:44.016Z
     examined_commit: 8fda82f5accc0aa0563322520735f3c0eb1c4df7
     external_links: []
     lifecycle_state: closed
@@ -130683,6 +130689,11 @@ reviews:
               and diff show the merged incremental-cache branch).\\nCategories searched:
               correctness, test quality, integration, branch isolation, regression surface."
             created_at: 2026-04-08T10:57:48.949Z
+          - _ulid: 01KNPGHFXV3K0C8XGEHA1EV9RX
+            author: "@claude"
+            body: Acknowledged. Evidence log is correct — the prior snapshot was not limited to import-path
+              edits. This fix cycle rebases to a clean dev base with only the preventive lint rule.
+            created_at: 2026-04-08T12:19:43.163Z
         kind: nit
     verdicts:
       - applies_to_version:
@@ -130693,7 +130704,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-08T10:58:37.455Z
     created_at: 2026-04-08T10:45:18.726Z
-    updated_at: 2026-04-08T12:19:25.272Z
+    updated_at: 2026-04-08T12:19:43.163Z
     notes: []
   - _ulid: 01KNPCSJ0VFFGHKBBEGNQFT6M8
     slugs: []
