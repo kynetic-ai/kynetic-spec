@@ -24468,7 +24468,7 @@ runs:
     completed_at: 2026-04-08T10:03:25.030Z
   - _ulid: 01KNPCQE3QZ6HY41H35781D4YH
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -24523,7 +24523,23 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-04-08T11:15:07.991Z
-        completed_at: 2026-04-08T11:15:07.991Z
+        completed_at: 2026-04-08T11:15:27.231Z
+        notes: >-
+          Decision matrix:
+
+
+          1. @lucide/svelte package rename causing dep-health false negative:
+             - Related but distinct from completed tasks 01KNHWPV/01KNHZ5F (those fixed hoisted deps in review worktrees)
+             - This is a new variant: scoped package name that npm resolves to a different directory name
+             - High confidence, concrete, reproducible → CAPTURE as inbox item (scope needs investigation — could be a dep-health fix or a package.json fix)
+
+          2. "Search codebase for existing correct logic" success pattern:
+             - General good practice, not unique to this project
+             - SKIP — too general to be actionable as an observation
+      - status: completed
+        step_index: 3
+        started_at: 2026-04-08T11:15:27.231Z
+        completed_at: 2026-04-08T11:15:27.231Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-08T11:13:03.607Z
