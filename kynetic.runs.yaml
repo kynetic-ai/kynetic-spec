@@ -24227,7 +24227,7 @@ runs:
     completed_at: 2026-04-08T01:07:56.111Z
   - _ulid: 01KNNB5ZGZ0CZX1HBVRJTJB243
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -24267,7 +24267,23 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-04-08T01:28:43.911Z
-        completed_at: 2026-04-08T01:28:43.911Z
+        completed_at: 2026-04-08T01:29:22.342Z
+        notes: >-
+          Decision: One success observation to capture. No friction items meet the high-confidence
+          bar.
+
+
+          CAPTURE: Success observation about reviewer reproduction scripts accelerating fix cycles.
+          Searched 'reviewer reproduction' and 'review evidence' — no existing tracking. This is a
+          concrete, repeatable pattern worth documenting.
+
+
+          SKIP: Duplicate review threads (one-off, not systemic). SKIP: needs_work transition step
+          (by design, not friction).
+      - status: completed
+        step_index: 3
+        started_at: 2026-04-08T01:29:22.342Z
+        completed_at: 2026-04-08T01:29:22.342Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-08T01:26:48.607Z
