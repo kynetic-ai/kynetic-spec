@@ -77,7 +77,7 @@ describe("initContext with linked worktrees", () => {
 
   // AC: @coverage-scan-config ac-configured-paths
   it("loads config from worktree root, not main repo root", async () => {
-    const { mainDir, codeWorktreeDir } = await setupWorktreeProject();
+    const { codeWorktreeDir } = await setupWorktreeProject();
 
     // Write a config with coverage settings ONLY in the worktree, not in mainDir
     await fs.writeFile(

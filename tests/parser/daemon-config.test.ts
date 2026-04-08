@@ -24,6 +24,7 @@ import {
   createIsolatedKspecHome,
   initGitRepo,
   kspec,
+  readTestOutput,
 } from "../helpers/cli.js";
 import { existsSync } from "node:fs";
 import { stringify } from "yaml";
@@ -442,7 +443,7 @@ daemon:
       expect(result.exitCode).toBe(0);
 
       // The PID file should still contain only our original PID — no new daemon was spawned
-      const pidContent = await fs.readFile(isolatedHome.daemonPidFilePath, "utf-8");
+      const pidContent = await readTestOutput(isolatedHome.daemonPidFilePath);
       expect(pidContent.trim()).toBe(String(process.pid));
     });
   });

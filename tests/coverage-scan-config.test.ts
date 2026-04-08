@@ -14,7 +14,7 @@ import {
   getACLinePrefix,
   parseACAnnotationLine,
 } from "../src/parser/validate.js";
-import { resolveConfig, type ResolvedKspecConfig } from "../src/parser/config.js";
+import { resolveConfig } from "../src/parser/config.js";
 import { createTempDir, cleanupTempDir, testUlid } from "./helpers/cli";
 
 describe("coverage-scan-config", () => {
