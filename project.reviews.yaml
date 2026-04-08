@@ -130065,6 +130065,12 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-08T10:31:45.411Z
+      - _ulid: 01KNPDXK092X1KHA6J4V75DRMY
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNPABH9A6EFH3VJ662253STJ
+        timestamp: 2026-04-08T11:33:53.801Z
     examined_commit: c9c1487bd64cf4de30d1631ed6a16f9419c30dd2
     external_links: []
     lifecycle_state: closed
@@ -130173,6 +130179,16 @@ reviews:
               avoid scanning fixture-style test files or those tests need to stop using unresolved
               refs in files covered by project scanning.
             created_at: 2026-04-08T10:31:36.490Z
+          - _ulid: 01KNPDXJ5XW8T8D2BKR69JV933
+            author: "@claude"
+            body: "Fixed: Added exclude_patterns config option to coverage scanning. The self-hosting
+              kspec.config.yaml now excludes the three test files that embed fixture AC annotations
+              (ac-annotation-validation.test.ts, coverage-cache.test.ts,
+              coverage-scan-config.test.ts). kspec validate now reports 0 invalid annotation
+              warnings (down from 307). Exclude patterns use glob matching against relative paths
+              from rootDir, threaded through all scanning callers and cache key. 9 new tests cover
+              the exclude_patterns functionality."
+            created_at: 2026-04-08T11:33:52.957Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -130183,7 +130199,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-08T10:31:17.269Z
     created_at: 2026-04-08T10:24:03.985Z
-    updated_at: 2026-04-08T10:31:43.448Z
+    updated_at: 2026-04-08T11:33:52.957Z
     notes: []
   - _ulid: 01KNPB4M86JJD780JF5CFTPFAQ
     slugs: []
