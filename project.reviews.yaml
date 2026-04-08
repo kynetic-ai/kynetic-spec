@@ -129398,7 +129398,21 @@ reviews:
     slugs: []
     title: Review stabilize-unrelated-full-suite-failures-in-review-environment
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Run 1 on d29bbeb0834487440004909576233e6836ae30b8 passed: 2082/2082 suites, 7556 passed,
+          5 skipped, duration 7506.6s. Run 2 on the same commit failed: 7 suites failed, 4 tests
+          failed, duration 11024.6s. Reported failures included tests/activity-display.test.ts
+          (STACK_TRACE_ERROR), tests/agent-dispatch-engine.test.ts (assertion failure), and
+          tests/cli/session-note-limit.test.ts (STACK_TRACE_ERROR)."
+        name: npm test -- --fresh
+        required: true
+        runner: test-runner
+        created_at: 2026-04-08T08:51:46.714Z
+        completed_at: 2026-04-08T08:51:46.714Z
     events:
       - _ulid: 01KNP2YN4JBFTG04YRPY3K9PYA
         actor: Jacob Chapel
@@ -129420,6 +129434,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNP4K6SSVTTE8PP0W1EERYTZ
         timestamp: 2026-04-08T08:50:57.326Z
+      - _ulid: 01KNP4MRSF00FNZFKR3E38KGYW
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test -- --fresh
+        timestamp: 2026-04-08T08:51:47.632Z
     examined_commit: d29bbeb0834487440004909576233e6836ae30b8
     external_links: []
     lifecycle_state: open
@@ -129454,5 +129475,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-08T08:22:14.419Z
-    updated_at: 2026-04-08T08:50:56.442Z
+    updated_at: 2026-04-08T08:51:46.714Z
     notes: []
