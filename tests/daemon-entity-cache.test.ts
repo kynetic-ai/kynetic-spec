@@ -526,7 +526,9 @@ describe("ProjectEntityCache", () => {
       await fs.writeFile(tasksPath, changedContent, "utf-8");
 
       const kspecDir = join(projectA, ".kspec");
-      await expect(cache.handleFileChange(kspecDir, tasksPath, changedContent)).resolves.toBeUndefined();
+      await expect(
+        cache.handleFileChange(kspecDir, tasksPath, changedContent),
+      ).resolves.toBeUndefined();
 
       const after = cache.getTaskIndex();
       expect(after).not.toBeNull();
@@ -672,7 +674,9 @@ describe("ProjectEntityCache", () => {
 
       await cache.handleFileChange(kspecDir, taskPath);
 
-      expect(cache.getTaskDetail("01TASKA0000000000000000000")?.title).toBe("Sample Task A Updated");
+      expect(cache.getTaskDetail("01TASKA0000000000000000000")?.title).toBe(
+        "Sample Task A Updated",
+      );
       expect(cache.getTaskDetail("01TASKA0000000000000000000")?.status).toBe("in_progress");
       expect(cache.getTaskDetail("01TASKB0000000000000000000")).toBe(originalOtherTask);
 
@@ -758,9 +762,9 @@ describe("ProjectEntityCache", () => {
       await cache.handleFileChange(kspecDir, taskPath);
 
       expect(cache.getTaskDetail("01TASKA0000000000000000000")).toBeNull();
-      expect(cache.getTaskIndex()?.some((task) => task._ulid === "01TASKA0000000000000000000")).toBe(
-        false,
-      );
+      expect(
+        cache.getTaskIndex()?.some((task) => task._ulid === "01TASKA0000000000000000000"),
+      ).toBe(false);
     });
 
     // AC: @daemon-incremental-cache ac-fallback-full-reload
@@ -886,9 +890,7 @@ describe("ProjectEntityCache", () => {
       expect(afterIndex!.find((item) => item.slugs.includes("alpha-spec"))?.title).toBe(
         "Alpha Spec v2",
       );
-      expect(afterIndex!.find((item) => item.slugs.includes("beta-spec"))?.title).toBe(
-        "Beta Spec",
-      );
+      expect(afterIndex!.find((item) => item.slugs.includes("beta-spec"))?.title).toBe("Beta Spec");
       expect(loadAllItemsSpy).not.toHaveBeenCalled();
     });
 
@@ -1418,13 +1420,13 @@ describe("ProjectEntityCache", () => {
         "session-beta",
         "session-alpha",
       ]);
-      expect(cache.getSessionIndex()?.find((session) => session.id === "session-beta")).toMatchObject(
-        {
-          id: "session-beta",
-          status: "completed",
-          event_count: 2,
-        },
-      );
+      expect(
+        cache.getSessionIndex()?.find((session) => session.id === "session-beta"),
+      ).toMatchObject({
+        id: "session-beta",
+        status: "completed",
+        event_count: 2,
+      });
     });
 
     // AC: @daemon-incremental-cache ac-single-entity-patch
@@ -1582,7 +1584,9 @@ describe("ProjectEntityCache", () => {
       await cache.handleFileChange(sessionsDir, eventsPath);
 
       expect(cache.getSessionDetail(sessionId)).toBeNull();
-      expect(cache.getSessionIndex()?.find((session) => session.id === sessionId)?.event_count).toBe(3);
+      expect(
+        cache.getSessionIndex()?.find((session) => session.id === sessionId)?.event_count,
+      ).toBe(3);
     });
 
     // AC: @daemon-incremental-cache ac-single-entity-patch

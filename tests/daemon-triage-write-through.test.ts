@@ -124,9 +124,14 @@ describe("triage promote write-through", () => {
     expect(triageResponse.status).toBe(200);
 
     const triageBody = (await triageResponse.json()) as { record: { _ulid: string } };
-    const actResponse = await makeRequest(app, tempDir, `/api/triage/@${triageBody.record._ulid}/act`, {
-      method: "POST",
-    });
+    const actResponse = await makeRequest(
+      app,
+      tempDir,
+      `/api/triage/@${triageBody.record._ulid}/act`,
+      {
+        method: "POST",
+      },
+    );
     expect(actResponse.status).toBe(200);
 
     expect(writeThroughEntries).toEqual(

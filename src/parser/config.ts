@@ -740,8 +740,7 @@ export function resolveConfig(fileConfig: KspecConfig | null): ResolvedKspecConf
     coverage: {
       // AC: @coverage-scan-config ac-explicit-opt-in — empty default = no scanning
       scan_paths: file.coverage?.scan_paths ?? DEFAULT_CONFIG.coverage.scan_paths,
-      exclude_patterns:
-        file.coverage?.exclude_patterns ?? DEFAULT_CONFIG.coverage.exclude_patterns,
+      exclude_patterns: file.coverage?.exclude_patterns ?? DEFAULT_CONFIG.coverage.exclude_patterns,
     },
   };
 }

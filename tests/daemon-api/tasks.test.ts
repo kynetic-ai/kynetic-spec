@@ -534,9 +534,7 @@ describe("Tasks API", () => {
 
     // AC: @api-contract ac-plan-filter-additive
     it("plan filter is additive with status filter", async () => {
-      const response = await request(
-        "/api/tasks?plan=test-plan-active&status=in_progress",
-      );
+      const response = await request("/api/tasks?plan=test-plan-active&status=in_progress");
       expect(response.status).toBe(200);
 
       const body = await response.json();
@@ -548,9 +546,7 @@ describe("Tasks API", () => {
 
     // AC: @api-contract ac-plan-filter-resolve
     it("resolves plan by full ULID", async () => {
-      const response = await request(
-        "/api/tasks?plan=01KG0RRPCA45ZT43W2T6HJMVP1",
-      );
+      const response = await request("/api/tasks?plan=01KG0RRPCA45ZT43W2T6HJMVP1");
       expect(response.status).toBe(200);
 
       const body = await response.json();
@@ -561,9 +557,7 @@ describe("Tasks API", () => {
 
     // AC: @api-contract ac-plan-filter-resolve
     it("resolves plan by ULID prefix", async () => {
-      const response = await request(
-        "/api/tasks?plan=01KG0RRPCA",
-      );
+      const response = await request("/api/tasks?plan=01KG0RRPCA");
       expect(response.status).toBe(200);
 
       const body = await response.json();

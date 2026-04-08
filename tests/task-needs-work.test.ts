@@ -164,41 +164,38 @@ describe("Integration: needs_work state", () => {
   });
 
   // Additional: full fix cycle round-trip
-  it(
-    "supports full fix cycle: pending_review -> needs_work -> in_progress -> pending_review",
-    () => {
-      // Initial work
-      kspec("task start @test-task-pending", tempDir);
-      kspec("task submit @test-task-pending", tempDir);
-      expect(kspecJson<{ status: string }>("task get @test-task-pending", tempDir).status).toBe(
-        "pending_review",
-      );
+  it("supports full fix cycle: pending_review -> needs_work -> in_progress -> pending_review", () => {
+    // Initial work
+    kspec("task start @test-task-pending", tempDir);
+    kspec("task submit @test-task-pending", tempDir);
+    expect(kspecJson<{ status: string }>("task get @test-task-pending", tempDir).status).toBe(
+      "pending_review",
+    );
 
-      // Reviewer kicks back
-      kspec('task needs-work @test-task-pending --reason "Fix needed"', tempDir);
-      expect(kspecJson<{ status: string }>("task get @test-task-pending", tempDir).status).toBe(
-        "needs_work",
-      );
+    // Reviewer kicks back
+    kspec('task needs-work @test-task-pending --reason "Fix needed"', tempDir);
+    expect(kspecJson<{ status: string }>("task get @test-task-pending", tempDir).status).toBe(
+      "needs_work",
+    );
 
-      // Worker picks up and fixes
-      kspec("task start @test-task-pending", tempDir);
-      expect(kspecJson<{ status: string }>("task get @test-task-pending", tempDir).status).toBe(
-        "in_progress",
-      );
+    // Worker picks up and fixes
+    kspec("task start @test-task-pending", tempDir);
+    expect(kspecJson<{ status: string }>("task get @test-task-pending", tempDir).status).toBe(
+      "in_progress",
+    );
 
-      // Worker resubmits
-      kspec("task submit @test-task-pending", tempDir);
-      expect(kspecJson<{ status: string }>("task get @test-task-pending", tempDir).status).toBe(
-        "pending_review",
-      );
+    // Worker resubmits
+    kspec("task submit @test-task-pending", tempDir);
+    expect(kspecJson<{ status: string }>("task get @test-task-pending", tempDir).status).toBe(
+      "pending_review",
+    );
 
-      // Reviewer approves and completes
-      kspec('task complete @test-task-pending --reason "Clean after fix cycle"', tempDir);
-      expect(kspecJson<{ status: string }>("task get @test-task-pending", tempDir).status).toBe(
-        "completed",
-      );
-    },
-  );
+    // Reviewer approves and completes
+    kspec('task complete @test-task-pending --reason "Clean after fix cycle"', tempDir);
+    expect(kspecJson<{ status: string }>("task get @test-task-pending", tempDir).status).toBe(
+      "completed",
+    );
+  });
 
   // Additional: --reason is required
   it("requires --reason flag for needs-work command", () => {

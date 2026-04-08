@@ -3,12 +3,7 @@ import * as path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { MetaContext } from "../../src/parser/meta.js";
 import { loadMetaContext } from "../../src/parser/meta.js";
-import {
-  cleanupTempDir,
-  createTempDir,
-  setupShadowDetection,
-  testUlid,
-} from "../helpers/cli.js";
+import { cleanupTempDir, createTempDir, setupShadowDetection, testUlid } from "../helpers/cli.js";
 import {
   getEntityCacheContext,
   initContext,
@@ -334,7 +329,11 @@ describe("cache-backed inbox and triage loaders", () => {
       getInboxIndex: vi.fn(() => cachedInboxItems),
     };
 
-    const items = await runWithEntityCache(() => loadInboxItems(ctx), () => cache, tempDir);
+    const items = await runWithEntityCache(
+      () => loadInboxItems(ctx),
+      () => cache,
+      tempDir,
+    );
 
     expect(items).toEqual(cachedInboxItems);
     expect(cache.getDomainState).toHaveBeenCalledWith("inbox");
@@ -364,7 +363,11 @@ describe("cache-backed inbox and triage loaders", () => {
       }),
     };
 
-    const items = await runWithEntityCache(() => loadInboxItems(ctx), () => cache, tempDir);
+    const items = await runWithEntityCache(
+      () => loadInboxItems(ctx),
+      () => cache,
+      tempDir,
+    );
 
     expect(items).toHaveLength(1);
     expect(items[0]).toMatchObject({
@@ -410,7 +413,11 @@ describe("cache-backed inbox and triage loaders", () => {
       getTriageDetail: vi.fn(() => null),
     };
 
-    const records = await runWithEntityCache(() => loadTriageRecords(ctx), () => cache, tempDir);
+    const records = await runWithEntityCache(
+      () => loadTriageRecords(ctx),
+      () => cache,
+      tempDir,
+    );
 
     expect(records).toEqual([
       {
@@ -477,7 +484,11 @@ triage:
       getTriageDetail: vi.fn(() => null),
     };
 
-    const records = await runWithEntityCache(() => loadTriageRecords(ctx), () => cache, tempDir);
+    const records = await runWithEntityCache(
+      () => loadTriageRecords(ctx),
+      () => cache,
+      tempDir,
+    );
 
     expect(records).toHaveLength(1);
     expect(records[0]).toMatchObject({
@@ -563,10 +574,16 @@ describe("loadPlans with entity cache context", () => {
     const cache = {
       getDomainState: vi.fn((domain: string) => (domain === "plans" ? "ready" : "unloaded")),
       getPlansIndex: vi.fn(() => cachedPlans.map(({ _ulid }) => ({ _ulid }))),
-      getPlanDetail: vi.fn((ulid: string) => cachedPlans.find((plan) => plan._ulid === ulid) ?? null),
+      getPlanDetail: vi.fn(
+        (ulid: string) => cachedPlans.find((plan) => plan._ulid === ulid) ?? null,
+      ),
     };
 
-    const plans = await runWithEntityCache(() => loadPlans(ctx), () => cache, tempDir);
+    const plans = await runWithEntityCache(
+      () => loadPlans(ctx),
+      () => cache,
+      tempDir,
+    );
 
     expect(plans).toEqual(cachedPlans);
     expect(cache.getDomainState).toHaveBeenCalledWith("plans");
@@ -592,7 +609,11 @@ describe("loadPlans with entity cache context", () => {
       getPlanDetail: vi.fn(() => null),
     };
 
-    const plans = await runWithEntityCache(() => loadPlans(ctx), () => cache, tempDir);
+    const plans = await runWithEntityCache(
+      () => loadPlans(ctx),
+      () => cache,
+      tempDir,
+    );
 
     expect(plans).toEqual(expectedPlans);
     expect(cache.getPlansIndex).toHaveBeenCalled();
@@ -629,7 +650,11 @@ describe("loadPlans with entity cache context", () => {
       ),
     };
 
-    const plans = await runWithEntityCache(() => loadPlans(ctx), () => cache, tempDir);
+    const plans = await runWithEntityCache(
+      () => loadPlans(ctx),
+      () => cache,
+      tempDir,
+    );
 
     expect(plans).toEqual(expectedPlans);
     expect(cache.getPlansIndex).toHaveBeenCalled();
@@ -656,7 +681,11 @@ describe("loadPlans with entity cache context", () => {
       getPlanDetail: vi.fn(),
     };
 
-    const plans = await runWithEntityCache(() => loadPlans(ctx), () => cache, tempDir);
+    const plans = await runWithEntityCache(
+      () => loadPlans(ctx),
+      () => cache,
+      tempDir,
+    );
 
     expect(plans).toEqual(expectedPlans);
     expect(cache.getPlansIndex).toHaveBeenCalled();
@@ -683,7 +712,11 @@ describe("loadPlans with entity cache context", () => {
       getPlanDetail: vi.fn(),
     };
 
-    const plans = await runWithEntityCache(() => loadPlans(ctx), () => cache, tempDir);
+    const plans = await runWithEntityCache(
+      () => loadPlans(ctx),
+      () => cache,
+      tempDir,
+    );
 
     expect(plans).toEqual(expectedPlans);
     expect(cache.getDomainState).toHaveBeenCalledWith("plans");
@@ -726,7 +759,11 @@ describe("loadReviewRecords with entity cache context", () => {
       ),
     };
 
-    const reviews = await runWithEntityCache(() => loadReviewRecords(ctx), () => cache, tempDir);
+    const reviews = await runWithEntityCache(
+      () => loadReviewRecords(ctx),
+      () => cache,
+      tempDir,
+    );
 
     expect(reviews).toEqual(cachedReviews);
     expect(cache.getDomainState).toHaveBeenCalledWith("reviews");
@@ -746,7 +783,11 @@ describe("loadReviewRecords with entity cache context", () => {
       getReviewDetail: vi.fn(() => null),
     };
 
-    const reviews = await runWithEntityCache(() => loadReviewRecords(ctx), () => cache, tempDir);
+    const reviews = await runWithEntityCache(
+      () => loadReviewRecords(ctx),
+      () => cache,
+      tempDir,
+    );
 
     expect(reviews).toEqual(expectedReviews);
     expect(cache.getReviewsIndex).toHaveBeenCalled();
@@ -782,7 +823,11 @@ describe("loadReviewRecords with entity cache context", () => {
       ),
     };
 
-    const reviews = await runWithEntityCache(() => loadReviewRecords(ctx), () => cache, tempDir);
+    const reviews = await runWithEntityCache(
+      () => loadReviewRecords(ctx),
+      () => cache,
+      tempDir,
+    );
 
     expect(reviews).toEqual(expectedReviews);
     expect(cache.getReviewsIndex).toHaveBeenCalled();
@@ -803,7 +848,11 @@ describe("loadReviewRecords with entity cache context", () => {
       getReviewDetail: vi.fn(),
     };
 
-    const reviews = await runWithEntityCache(() => loadReviewRecords(ctx), () => cache, tempDir);
+    const reviews = await runWithEntityCache(
+      () => loadReviewRecords(ctx),
+      () => cache,
+      tempDir,
+    );
 
     expect(reviews).toEqual(expectedReviews);
     expect(cache.getReviewsIndex).toHaveBeenCalled();
@@ -824,7 +873,11 @@ describe("loadReviewRecords with entity cache context", () => {
       getReviewDetail: vi.fn(),
     };
 
-    const reviews = await runWithEntityCache(() => loadReviewRecords(ctx), () => cache, tempDir);
+    const reviews = await runWithEntityCache(
+      () => loadReviewRecords(ctx),
+      () => cache,
+      tempDir,
+    );
 
     expect(reviews).toEqual(expectedReviews);
     expect(cache.getDomainState).toHaveBeenCalledWith("reviews");
@@ -857,7 +910,11 @@ describe("loadMetaContext with entity cache context", () => {
 
     const readYamlSpy = vi.spyOn(await import("../../src/parser/yaml.js"), "readYamlFile");
 
-    const meta = await runWithEntityCache(() => loadMetaContext(ctx), () => cache, tempDir);
+    const meta = await runWithEntityCache(
+      () => loadMetaContext(ctx),
+      () => cache,
+      tempDir,
+    );
 
     expect(meta).toEqual(cachedMeta);
     expect(cache.getDomainState).toHaveBeenCalledWith("meta");
@@ -885,7 +942,11 @@ conventions:
       getMetaDetail: vi.fn(() => null),
     };
 
-    const meta = await runWithEntityCache(() => loadMetaContext(ctx), () => cache, tempDir);
+    const meta = await runWithEntityCache(
+      () => loadMetaContext(ctx),
+      () => cache,
+      tempDir,
+    );
 
     expect(meta.conventions).toEqual([
       expect.objectContaining({

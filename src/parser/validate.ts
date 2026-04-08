@@ -1000,7 +1000,12 @@ export async function scanTestCoverage(
 
   // AC: ac-configured-paths — scan each configured path
   for (const scanPath of scanPaths) {
-    await scanDirForACAnnotations(path.join(rootDir, scanPath), coveredACs, rootDir, compiledExcludes);
+    await scanDirForACAnnotations(
+      path.join(rootDir, scanPath),
+      coveredACs,
+      rootDir,
+      compiledExcludes,
+    );
   }
   return coveredACs;
 }

@@ -107,7 +107,7 @@ describe("initContext with linked worktrees", () => {
     // Worktree has a config WITH coverage
     await fs.writeFile(
       path.join(codeWorktreeDir, "kspec.config.yaml"),
-      'coverage:\n  scan_paths:\n    - src/tests/\n',
+      "coverage:\n  scan_paths:\n    - src/tests/\n",
       "utf-8",
     );
 

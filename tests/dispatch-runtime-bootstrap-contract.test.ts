@@ -220,7 +220,11 @@ async function setupBuildableProjectFixture(dir: string): Promise<void> {
     ),
     "utf-8",
   );
-  await fs.writeFile(path.join(dir, "deps", "local-dep", "index.js"), "module.exports = 'ok';\n", "utf-8");
+  await fs.writeFile(
+    path.join(dir, "deps", "local-dep", "index.js"),
+    "module.exports = 'ok';\n",
+    "utf-8",
+  );
   execSync("npm install --package-lock-only", {
     cwd: dir,
     stdio: "pipe",
@@ -1265,8 +1269,12 @@ describe("dispatch runtime bootstrap contract", { timeout: 60_000 }, () => {
     });
 
     expect(initial.ranSteps).toBe(true);
-    expect(initial.metadata.bootstrap.invalidationReasons).toContain("workspace-dependencies-missing");
-    await expect(fs.stat(path.join(workspace.cwd, "node_modules", "local-dep"))).resolves.toBeTruthy();
+    expect(initial.metadata.bootstrap.invalidationReasons).toContain(
+      "workspace-dependencies-missing",
+    );
+    await expect(
+      fs.stat(path.join(workspace.cwd, "node_modules", "local-dep")),
+    ).resolves.toBeTruthy();
   });
 
   it(
@@ -1292,7 +1300,9 @@ describe("dispatch runtime bootstrap contract", { timeout: 60_000 }, () => {
         agent: makeAgent(),
         env: {},
       });
-      await expect(fs.stat(path.join(workspace.cwd, "dist", "cli", "index.js"))).resolves.toBeTruthy();
+      await expect(
+        fs.stat(path.join(workspace.cwd, "dist", "cli", "index.js")),
+      ).resolves.toBeTruthy();
 
       await fs.rm(path.join(workspace.cwd, "dist"), { recursive: true, force: true });
       await fs.rm(path.join(workspace.cwd, "packages", "shared", "dist"), {
@@ -1330,7 +1340,9 @@ describe("dispatch runtime bootstrap contract", { timeout: 60_000 }, () => {
       expect(
         repaired.metadata.bootstrap.steps.some((step) => step.name === "build-workspace-artifacts"),
       ).toBe(true);
-      await expect(fs.stat(path.join(workspace.cwd, "dist", "web-ui", "index.html"))).resolves.toBeTruthy();
+      await expect(
+        fs.stat(path.join(workspace.cwd, "dist", "web-ui", "index.html")),
+      ).resolves.toBeTruthy();
 
       workspace = await provisionDispatchWorkspace({
         projectDir: tempDir,

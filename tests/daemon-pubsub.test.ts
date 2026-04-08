@@ -100,7 +100,9 @@ describe("PubSubManager", () => {
     it("should handle connections with no projectPath (pre-multi-project)", () => {
       const projectA = "/tmp/project-a";
 
-      const wsLegacy = createMockWebSocket(connectionState, "conn-legacy", undefined, ["tasks:updates"]);
+      const wsLegacy = createMockWebSocket(connectionState, "conn-legacy", undefined, [
+        "tasks:updates",
+      ]);
       const wsNew = createMockWebSocket(connectionState, "conn-new", projectA, ["tasks:updates"]);
 
       manager.addConnection("conn-legacy", wsLegacy);
@@ -367,7 +369,9 @@ describe("PubSubManager", () => {
 
     // AC: @ws-disconnect-lifecycle-cleanup ac-2
     it("removes connection by socket using stable session mapping when connection state is missing", () => {
-      const ws = createMockWebSocket(connectionState, "conn-1", "/tmp/project-a", ["tasks:updates"]);
+      const ws = createMockWebSocket(connectionState, "conn-1", "/tmp/project-a", [
+        "tasks:updates",
+      ]);
       manager.addConnection("conn-1", ws);
 
       // Simulate close callback race where data no longer has sessionId.
@@ -381,7 +385,9 @@ describe("PubSubManager", () => {
     });
 
     it("resolves session id from internal subscription topic when close callback socket wrapper differs", () => {
-      const ws = createMockWebSocket(connectionState, "conn-1", "/tmp/project-a", ["tasks:updates"]);
+      const ws = createMockWebSocket(connectionState, "conn-1", "/tmp/project-a", [
+        "tasks:updates",
+      ]);
       manager.addConnection("conn-1", ws);
 
       const closeSocketWrapper = {
@@ -396,7 +402,9 @@ describe("PubSubManager", () => {
     });
 
     it("resolves session id from websocket context id when close callback loses data/subscriptions", () => {
-      const ws = createMockWebSocket(connectionState, "conn-1", "/tmp/project-a", ["tasks:updates"]);
+      const ws = createMockWebSocket(connectionState, "conn-1", "/tmp/project-a", [
+        "tasks:updates",
+      ]);
       manager.addConnection("conn-1", ws, "ctx-1");
 
       const closeSocketWrapper = {
@@ -411,7 +419,9 @@ describe("PubSubManager", () => {
     });
 
     it("should clean up connection when removed", () => {
-      const ws = createMockWebSocket(connectionState, "conn-1", "/tmp/project-a", ["tasks:updates"]);
+      const ws = createMockWebSocket(connectionState, "conn-1", "/tmp/project-a", [
+        "tasks:updates",
+      ]);
 
       manager.addConnection("conn-1", ws);
       manager.broadcast("tasks:updates", "event1", {}, "/tmp/project-a");

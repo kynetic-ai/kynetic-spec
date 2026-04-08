@@ -52,11 +52,7 @@ function normalizePath(dir: string): string {
  * Different scan/exclude configurations for the same rootDir
  * must produce different cache entries.
  */
-function buildCacheKey(
-  rootDir: string,
-  scanPaths: string[],
-  excludePatterns: string[],
-): string {
+function buildCacheKey(rootDir: string, scanPaths: string[], excludePatterns: string[]): string {
   const normalizedDir = normalizePath(rootDir);
   const sortedPaths = [...scanPaths].sort().join("\0");
   const sortedExcludes = [...excludePatterns].sort().join("\0");

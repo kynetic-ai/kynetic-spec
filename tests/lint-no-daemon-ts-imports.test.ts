@@ -35,14 +35,11 @@ function runOxlint(fileContent: string): { exitCode: number; output: string } {
   writeFileSync(testFile, fileContent);
 
   try {
-    const output = execSync(
-      `npx oxlint --config ${configFile} ${testFile}`,
-      {
-        cwd: projectRoot,
-        encoding: "utf-8",
-        stdio: ["pipe", "pipe", "pipe"],
-      },
-    );
+    const output = execSync(`npx oxlint --config ${configFile} ${testFile}`, {
+      cwd: projectRoot,
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "pipe"],
+    });
     rmSync(tempDir, { recursive: true, force: true });
     return { exitCode: 0, output };
   } catch (err: unknown) {
@@ -76,9 +73,7 @@ describe("no-daemon-ts-imports lint rule", () => {
   });
 
   it("should not flag imports from dist/parser/ with .ts extension", () => {
-    const result = runOxlint(
-      `import type { MetaContext } from "../dist/parser/meta.ts";\n`,
-    );
+    const result = runOxlint(`import type { MetaContext } from "../dist/parser/meta.ts";\n`);
     expect(result.output).not.toContain("no-daemon-ts-imports");
   });
 
@@ -90,9 +85,7 @@ describe("no-daemon-ts-imports lint rule", () => {
   });
 
   it("should flag side-effect-only imports from dist/daemon/ with .ts extension", () => {
-    const result = runOxlint(
-      `import "../dist/daemon/server.ts";\n`,
-    );
+    const result = runOxlint(`import "../dist/daemon/server.ts";\n`);
     expect(result.output).toContain("no-daemon-ts-imports");
   });
 });

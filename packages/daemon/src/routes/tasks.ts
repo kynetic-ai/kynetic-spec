@@ -56,7 +56,10 @@ function getTaskWriteThroughHint(task: LoadedTask): WriteThroughHint {
   return { ulid: task._ulid };
 }
 
-function getSpecWriteThroughHint(task: LoadedTask, index: ReferenceIndex): WriteThroughHint | undefined {
+function getSpecWriteThroughHint(
+  task: LoadedTask,
+  index: ReferenceIndex,
+): WriteThroughHint | undefined {
   if (!task.spec_ref) {
     return undefined;
   }

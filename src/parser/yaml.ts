@@ -1649,7 +1649,10 @@ export async function loadAllItems(ctx: KspecContext): Promise<LoadedSpecItem[]>
   const cacheContext = getEntityCacheContext();
   if (cacheContext) {
     const cache = cacheContext.cacheAccessor(cacheContext.projectPath) as
-      | { getDomainState?(domain: string): string | null | undefined; getAllItemDetails?(): LoadedSpecItem[] | null }
+      | {
+          getDomainState?(domain: string): string | null | undefined;
+          getAllItemDetails?(): LoadedSpecItem[] | null;
+        }
       | null
       | undefined;
     if (cache?.getDomainState?.("items") === "ready") {

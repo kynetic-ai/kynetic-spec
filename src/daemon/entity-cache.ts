@@ -975,7 +975,9 @@ export class ProjectEntityCache {
     await awaitTestDelay(this.projectPath);
     if (this.disposed) return;
 
-    const ctx = cycle ? await this.getReloadCycleContext(cycle) : await initContext(this.projectPath);
+    const ctx = cycle
+      ? await this.getReloadCycleContext(cycle)
+      : await initContext(this.projectPath);
     // AC: @daemon-entity-cache ac-unregister-cleanup — bail after each await
     // to prevent a completed load from repopulating stores that dispose() cleared.
     if (this.disposed) return;
@@ -1217,7 +1219,9 @@ export class ProjectEntityCache {
 
     const cycle =
       this.domainReloadCycles.get(domain) ??
-      (this.pendingDomainChanges.has(domain) ? this.getOrCreateReloadCycle() : { pendingDomains: new Set() });
+      (this.pendingDomainChanges.has(domain)
+        ? this.getOrCreateReloadCycle()
+        : { pendingDomains: new Set() });
     cycle.pendingDomains.add(domain);
     this.domainReloadCycles.set(domain, cycle);
 
@@ -1421,11 +1425,7 @@ export class ProjectEntityCache {
     }
   }
 
-  private recordPendingDomainChange(
-    domain: CacheDomain,
-    filePath: string,
-    content?: string,
-  ): void {
+  private recordPendingDomainChange(domain: CacheDomain, filePath: string, content?: string): void {
     let changes = this.pendingDomainChanges.get(domain);
     if (!changes) {
       changes = new Map<string, PendingDomainChange>();
@@ -1670,7 +1670,9 @@ export class ProjectEntityCache {
       return false;
     }
 
-    const ctx = cycle ? await this.getReloadCycleContext(cycle) : await initContext(this.projectPath);
+    const ctx = cycle
+      ? await this.getReloadCycleContext(cycle)
+      : await initContext(this.projectPath);
     const changedUlids = new Set<string>();
 
     for (const change of changes) {
@@ -1756,7 +1758,9 @@ export class ProjectEntityCache {
       return false;
     }
 
-    const ctx = cycle ? await this.getReloadCycleContext(cycle) : await initContext(this.projectPath);
+    const ctx = cycle
+      ? await this.getReloadCycleContext(cycle)
+      : await initContext(this.projectPath);
     const changedSessionIds = new Set<string>();
 
     for (const change of changes) {
@@ -1872,7 +1876,9 @@ export class ProjectEntityCache {
       return false;
     }
 
-    const ctx = cycle ? await this.getReloadCycleContext(cycle) : await initContext(this.projectPath);
+    const ctx = cycle
+      ? await this.getReloadCycleContext(cycle)
+      : await initContext(this.projectPath);
     if (this.disposed) return true;
     if (!ctx.manifest || !ctx.manifestPath) return false;
 
@@ -1984,10 +1990,7 @@ export class ProjectEntityCache {
     return orderedFiles;
   }
 
-  private async loadMetaDomain(
-    subdomains: MetaSubdomain[],
-    cycle?: ReloadCycle,
-  ): Promise<void> {
+  private async loadMetaDomain(subdomains: MetaSubdomain[], cycle?: ReloadCycle): Promise<void> {
     if (this.disposed) return;
 
     this.enqueueMetaReload(subdomains, cycle);
@@ -2060,9 +2063,7 @@ export class ProjectEntityCache {
     }
   }
 
-  private drainPendingMetaReload():
-    | { subdomains: MetaSubdomain[]; cycle?: ReloadCycle }
-    | null {
+  private drainPendingMetaReload(): { subdomains: MetaSubdomain[]; cycle?: ReloadCycle } | null {
     if (this.pendingMetaSubdomains.size === 0) {
       this.pendingMetaReloadCycle = undefined;
       return null;
@@ -2111,7 +2112,9 @@ export class ProjectEntityCache {
   }
 
   private async loadMetaManifestSubdomain(cycle?: ReloadCycle): Promise<void> {
-    const ctx = cycle ? await this.getReloadCycleContext(cycle) : await initContext(this.projectPath);
+    const ctx = cycle
+      ? await this.getReloadCycleContext(cycle)
+      : await initContext(this.projectPath);
     if (this.disposed) return;
 
     const metaCtx = await loadMetaContext(ctx);

@@ -54,7 +54,9 @@ function packageExistsInAncestorNodeModules(rootDir, packageName, fsApi = fs, pa
   const searchRoot = dependencySearchRoot(rootDir, pathApi);
   let currentDir = pathApi.resolve(rootDir);
   for (;;) {
-    if (fsApi.existsSync(packageInstallPath(pathApi.join(currentDir, "node_modules"), packageName))) {
+    if (
+      fsApi.existsSync(packageInstallPath(pathApi.join(currentDir, "node_modules"), packageName))
+    ) {
       return true;
     }
     if (currentDir === searchRoot) {

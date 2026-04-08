@@ -1085,9 +1085,7 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
             await verdictCache.writeThrough("reviews");
             if (transitionedTaskUlids.length > 0) {
               await Promise.all(
-                transitionedTaskUlids.map((ulid) =>
-                  verdictCache.writeThrough("tasks", { ulid }),
-                ),
+                transitionedTaskUlids.map((ulid) => verdictCache.writeThrough("tasks", { ulid })),
               );
             }
           }

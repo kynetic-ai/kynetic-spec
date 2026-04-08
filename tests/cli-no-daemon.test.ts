@@ -115,15 +115,11 @@ describe("KSPEC_NO_DAEMON", () => {
       ...cleanEnv
     } = process.env;
 
-    const result = spawnSync(
-      "bun",
-      [CLI_PATH, "util", "ulid"],
-      {
-        cwd: tempDir,
-        encoding: "utf-8",
-        env: { ...cleanEnv, ...isolatedHome.env, KSPEC_AUTHOR: "@test" },
-      },
-    );
+    const result = spawnSync("bun", [CLI_PATH, "util", "ulid"], {
+      cwd: tempDir,
+      encoding: "utf-8",
+      env: { ...cleanEnv, ...isolatedHome.env, KSPEC_AUTHOR: "@test" },
+    });
 
     expect(result.status).toBe(0);
 

@@ -12,11 +12,14 @@ describe("daemon runtime adapter wiring", () => {
   it.each([
     ["node", true],
     ["bun", false],
-  ] as const)("applies the Elysia node adapter only for %s runtime", async (runtime, usesAdapter) => {
-    const app = await createServerApp(runtime as DaemonRuntime);
+  ] as const)(
+    "applies the Elysia node adapter only for %s runtime",
+    async (runtime, usesAdapter) => {
+      const app = await createServerApp(runtime as DaemonRuntime);
 
-    expect(Boolean((app.config as { adapter?: unknown }).adapter)).toBe(usesAdapter);
-  });
+      expect(Boolean((app.config as { adapter?: unknown }).adapter)).toBe(usesAdapter);
+    },
+  );
 
   // AC: @daemon-runtime-adapter ac-heartbeat-degradation
   it("enables heartbeat only for bun runtime", () => {

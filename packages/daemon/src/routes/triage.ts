@@ -566,7 +566,9 @@ export function createTriageRoutes(options: TriageRouteOptions) {
             const action = record.action;
             if (action === "promote") {
               const createdTask = result.resultRef
-                ? await resolveTaskDataManager(ctx).getTask(ctx, result.resultRef).catch(() => undefined)
+                ? await resolveTaskDataManager(ctx)
+                    .getTask(ctx, result.resultRef)
+                    .catch(() => undefined)
                 : undefined;
               await actCache.writeThrough(
                 "tasks",

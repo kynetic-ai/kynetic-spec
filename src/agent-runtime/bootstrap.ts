@@ -211,7 +211,9 @@ async function checkWorkspaceDependencies(workspaceDir: string): Promise<Depende
   const dependencyNames = collectDirectDependencies(packageJson);
   const searchRoot = dependencySearchRoot(workspaceDir);
   const ancestorResults = await Promise.all(
-    dependencyNames.map((packageName) => canResolveWorkspaceDependency(workspaceDir, searchRoot, packageName)),
+    dependencyNames.map((packageName) =>
+      canResolveWorkspaceDependency(workspaceDir, searchRoot, packageName),
+    ),
   );
 
   if (!nodeModulesExists && !ancestorResults.some(Boolean)) {
@@ -275,9 +277,7 @@ async function implicitDependencyStep(workspaceDir: string): Promise<DispatchBoo
   };
 }
 
-async function readPackageJson(
-  workspaceDir: string,
-): Promise<Record<string, unknown> | null> {
+async function readPackageJson(workspaceDir: string): Promise<Record<string, unknown> | null> {
   const packageJsonPath = path.join(workspaceDir, "package.json");
   try {
     return JSON.parse(await fs.readFile(packageJsonPath, "utf-8")) as Record<string, unknown>;

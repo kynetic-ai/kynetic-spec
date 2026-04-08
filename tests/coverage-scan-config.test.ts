@@ -81,9 +81,7 @@ describe("coverage-scan-config", () => {
   describe("ac-unconfigured-guidance / ac-no-silent-regression: warning when unconfigured", () => {
     it("should emit coverage_not_configured warning during validation", async () => {
       const { validate } = await import("../src/parser/validate.js");
-      const { initContext, writeYamlFilePreserveFormat } = await import(
-        "../src/parser/yaml.js"
-      );
+      const { initContext, writeYamlFilePreserveFormat } = await import("../src/parser/yaml.js");
 
       // Initialize git so initContext can find project root for config loading
       const { execSync } = await import("node:child_process");
@@ -112,9 +110,7 @@ describe("coverage-scan-config", () => {
           title: "Test Feature",
           type: "feature",
           slugs: ["test-feature"],
-          acceptance_criteria: [
-            { id: "ac-1", given: "a", when: "b", then: "c" },
-          ],
+          acceptance_criteria: [{ id: "ac-1", given: "a", when: "b", then: "c" }],
         },
       ]);
 
@@ -214,10 +210,7 @@ describe("coverage-scan-config", () => {
     it("should parse // style AC annotations in TypeScript files", async () => {
       const testsDir = path.join(tempDir, "tests");
       await fs.mkdir(testsDir, { recursive: true });
-      await fs.writeFile(
-        path.join(testsDir, "example.ts"),
-        '// AC: @my-spec ac-1\nconst x = 1;\n',
-      );
+      await fs.writeFile(path.join(testsDir, "example.ts"), "// AC: @my-spec ac-1\nconst x = 1;\n");
 
       const coverage = await scanTestCoverage(tempDir, ["tests/"]);
       expect(coverage.has("@my-spec ac-1")).toBe(true);
@@ -228,7 +221,7 @@ describe("coverage-scan-config", () => {
       await fs.mkdir(testsDir, { recursive: true });
       await fs.writeFile(
         path.join(testsDir, "test_module.rs"),
-        '// AC: @rust-spec ac-1\n#[test]\nfn test_something() {}\n',
+        "// AC: @rust-spec ac-1\n#[test]\nfn test_something() {}\n",
       );
 
       const coverage = await scanTestCoverage(tempDir, ["tests/"]);
@@ -240,7 +233,7 @@ describe("coverage-scan-config", () => {
       await fs.mkdir(testsDir, { recursive: true });
       await fs.writeFile(
         path.join(testsDir, "test_example.py"),
-        '# AC: @python-spec ac-1\ndef test_something():\n    pass\n',
+        "# AC: @python-spec ac-1\ndef test_something():\n    pass\n",
       );
 
       const coverage = await scanTestCoverage(tempDir, ["tests/"]);
@@ -288,7 +281,7 @@ describe("coverage-scan-config", () => {
       await fs.mkdir(testsDir, { recursive: true });
       await fs.writeFile(
         path.join(testsDir, "example_test.go"),
-        '// AC: @go-spec ac-1\nfunc TestSomething(t *testing.T) {}\n',
+        "// AC: @go-spec ac-1\nfunc TestSomething(t *testing.T) {}\n",
       );
 
       const coverage = await scanTestCoverage(tempDir, ["tests/"]);
@@ -350,7 +343,7 @@ describe("coverage-scan-config", () => {
       await fs.mkdir(testsDir, { recursive: true });
       await fs.writeFile(
         path.join(testsDir, "test_example.py"),
-        'import pytest\n\n# AC: @py-spec ac-1\ndef test_something():\n    pass\n',
+        "import pytest\n\n# AC: @py-spec ac-1\ndef test_something():\n    pass\n",
       );
 
       const annotations = await scanACAnnotations(tempDir, ["tests/"]);
@@ -369,10 +362,7 @@ describe("coverage-scan-config", () => {
       await fs.mkdir(testsDir, { recursive: true });
 
       // Create a file with an unrecognized extension containing AC-like content
-      await fs.writeFile(
-        path.join(testsDir, "data.xyz"),
-        "// AC: @phantom-spec ac-1\nsome data\n",
-      );
+      await fs.writeFile(path.join(testsDir, "data.xyz"), "// AC: @phantom-spec ac-1\nsome data\n");
 
       // Also create a recognized file to prove scanning works
       await fs.writeFile(
@@ -444,7 +434,7 @@ describe("coverage-scan-config", () => {
       // Now all recognized files in configured paths are scanned.
       await fs.writeFile(
         path.join(testsDir, "helpers.ts"),
-        '// AC: @helper-spec ac-1\nexport const helper = true;\n',
+        "// AC: @helper-spec ac-1\nexport const helper = true;\n",
       );
 
       const coverage = await scanTestCoverage(tempDir, ["tests/"]);

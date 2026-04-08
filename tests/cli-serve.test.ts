@@ -27,7 +27,9 @@ try {
   execSync("which node", { stdio: "pipe" });
   nodeAvailable = true;
 } catch {
-  console.log("⊘ Node runtime not available - skipping daemon tests requiring actual daemon process");
+  console.log(
+    "⊘ Node runtime not available - skipping daemon tests requiring actual daemon process",
+  );
 }
 
 describe("kspec serve commands", () => {
@@ -805,11 +807,15 @@ describe("kspec serve commands", () => {
     );
 
     const { KSPEC_SESSION_ID: _sessionId, ...cleanProcessEnv } = process.env;
-    const result = spawnSync(process.execPath, [CLI_PATH, "serve", "start", "--kspec-dir", join(tempDir, ".kspec")], {
-      cwd: tempDir,
-      encoding: "utf-8",
-      env: { ...cleanProcessEnv, ...testEnv, PATH: noNodePath },
-    });
+    const result = spawnSync(
+      process.execPath,
+      [CLI_PATH, "serve", "start", "--kspec-dir", join(tempDir, ".kspec")],
+      {
+        cwd: tempDir,
+        encoding: "utf-8",
+        env: { ...cleanProcessEnv, ...testEnv, PATH: noNodePath },
+      },
+    );
 
     expect(result.status).not.toBe(0);
     expect(result.stderr).toContain("Node runtime is required");

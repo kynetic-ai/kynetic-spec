@@ -26,7 +26,9 @@ export class PubSubManager {
   private sessionIdsByContextId = new Map<string, string>();
   private contextIdsBySessionId = new Map<string, string>();
 
-  constructor(private readonly connectionState: ConnectionStateManager = new ConnectionStateManager()) {}
+  constructor(
+    private readonly connectionState: ConnectionStateManager = new ConnectionStateManager(),
+  ) {}
 
   /**
    * Register a new WebSocket connection

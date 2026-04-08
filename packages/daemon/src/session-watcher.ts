@@ -109,7 +109,9 @@ export class SessionWatcher {
     await Promise.all(
       entries
         .filter((entry) => entry.isDirectory())
-        .map((entry) => this.handleSessionDirAdded(join(this.options.sessionsDir, entry.name), false)),
+        .map((entry) =>
+          this.handleSessionDirAdded(join(this.options.sessionsDir, entry.name), false),
+        ),
     );
   }
 
@@ -118,11 +120,16 @@ export class SessionWatcher {
     await Promise.all(
       entries
         .filter((entry) => entry.isDirectory())
-        .map((entry) => this.handleSessionDirAdded(join(this.options.sessionsDir, entry.name), true)),
+        .map((entry) =>
+          this.handleSessionDirAdded(join(this.options.sessionsDir, entry.name), true),
+        ),
     );
   }
 
-  private async handleSessionDirAdded(sessionRoot: string, emitInitialChange: boolean): Promise<void> {
+  private async handleSessionDirAdded(
+    sessionRoot: string,
+    emitInitialChange: boolean,
+  ): Promise<void> {
     if (this.stopped || sessionRoot === this.options.sessionsDir) {
       return;
     }
@@ -290,7 +297,10 @@ export class SessionWatcher {
     return basename(filePath) === "session.yaml";
   }
 
-  private async readSessionStatus(sessionRoot: string, remainingRetries = 0): Promise<string | null> {
+  private async readSessionStatus(
+    sessionRoot: string,
+    remainingRetries = 0,
+  ): Promise<string | null> {
     const metadataPath = join(sessionRoot, "session.yaml");
 
     try {
@@ -317,7 +327,11 @@ export class SessionWatcher {
   }
 
   private scheduleSessionWatcherRetry(sessionRoot: string, emitInitialChange: boolean): void {
-    if (this.stopped || this.sessionWatchers.has(sessionRoot) || this.sessionWatcherRetryTimers.has(sessionRoot)) {
+    if (
+      this.stopped ||
+      this.sessionWatchers.has(sessionRoot) ||
+      this.sessionWatcherRetryTimers.has(sessionRoot)
+    ) {
       return;
     }
 
@@ -445,7 +459,9 @@ export class SessionWatcher {
     this.sessionWatcherRetryCounts.clear();
 
     await Promise.all(
-      Array.from(this.sessionWatchers.keys(), (sessionRoot) => this.closeSessionWatcher(sessionRoot)),
+      Array.from(this.sessionWatchers.keys(), (sessionRoot) =>
+        this.closeSessionWatcher(sessionRoot),
+      ),
     );
     this.pendingSessionWatchers.clear();
 

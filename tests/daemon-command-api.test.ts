@@ -55,9 +55,7 @@ let pubsub: PubSubManager;
 let mockCache: RouteEntityCache;
 let writeThroughCalls: string[];
 let cacheSnapshot: CacheSnapshot;
-let prepareProgram:
-  | ((program: Command) => void | Promise<void>)
-  | undefined;
+let prepareProgram: ((program: Command) => void | Promise<void>) | undefined;
 
 type CacheState = "unloaded" | "loading" | "ready" | "degraded";
 
@@ -177,9 +175,11 @@ async function withDelayedCommandAction<T>(
 ): Promise<T> {
   prepareProgram = (program) => {
     const command = findCommand(program, commandPath.split(" "));
-    const originalHandler = (command as Command & {
-      _actionHandler?: (...args: unknown[]) => unknown;
-    })._actionHandler;
+    const originalHandler = (
+      command as Command & {
+        _actionHandler?: (...args: unknown[]) => unknown;
+      }
+    )._actionHandler;
 
     if (!originalHandler) {
       throw new Error(`Command has no action handler: ${commandPath}`);
@@ -211,7 +211,9 @@ async function withInjectedCommand<T>(
   }
 }
 
-async function measureConcurrentRequests(requests: Array<() => Promise<Response>>): Promise<number> {
+async function measureConcurrentRequests(
+  requests: Array<() => Promise<Response>>,
+): Promise<number> {
   const startedAt = Date.now();
   const responses = await Promise.all(requests.map((request) => request()));
   await Promise.all(responses.map((response) => response.json()));
@@ -231,12 +233,14 @@ function createMockEntityCache(
   return {
     getDomainState: (domain: string) => getState(domain as CacheDomain),
     getTaskIndex: () => cacheSnapshot.taskIndex as any,
-    getTaskDetail: (ulid: string) => cacheSnapshot.tasks.find((task) => task._ulid === ulid) ?? null,
+    getTaskDetail: (ulid: string) =>
+      cacheSnapshot.tasks.find((task) => task._ulid === ulid) ?? null,
     getTaskHistory: () => null,
     setTaskDetail: () => {},
     getAllTaskDetails: () => cacheSnapshot.tasks as any,
     getItemIndex: () => cacheSnapshot.itemIndex as any,
-    getItemDetail: (ulid: string) => cacheSnapshot.items.find((item) => item._ulid === ulid) ?? null,
+    getItemDetail: (ulid: string) =>
+      cacheSnapshot.items.find((item) => item._ulid === ulid) ?? null,
     setItemDetail: () => {},
     getAllItemDetails: () => cacheSnapshot.items,
     getSessionIndex: () => null,
@@ -244,7 +248,8 @@ function createMockEntityCache(
     getSessionDetail: () => null,
     setSessionDetail: () => {},
     getPlansIndex: () => cacheSnapshot.planIndex as any,
-    getPlanDetail: (ulid: string) => cacheSnapshot.plans.find((plan) => plan._ulid === ulid) ?? null,
+    getPlanDetail: (ulid: string) =>
+      cacheSnapshot.plans.find((plan) => plan._ulid === ulid) ?? null,
     setPlanDetail: () => {},
     getInboxIndex: () => [],
     getTriageIndex: () => null,
@@ -463,7 +468,13 @@ describe("Daemon Command API", () => {
     const { middleware } = projectContextMiddleware();
     app = new Elysia()
       .use(middleware)
-      .use(createCommandRoutes({ pubsub, getEntityCache, prepareProgram: (program) => prepareProgram?.(program) }));
+      .use(
+        createCommandRoutes({
+          pubsub,
+          getEntityCache,
+          prepareProgram: (program) => prepareProgram?.(program),
+        }),
+      );
   });
 
   afterEach(async () => {
@@ -513,24 +524,27 @@ describe("Daemon Command API", () => {
   // AC: @daemon-command-api ac-command-endpoint
   // AC: @daemon-command-api ac-response-parity
   it("preserves exit codes for commands that call process.exit directly", async () => {
-    await withInjectedCommand((program) => {
-      program.command("debug-exit").action(() => {
-        process.exit(7);
-      });
-    }, async () => {
-      const response = await makeRequest("/api/command", {
-        method: "POST",
-        body: JSON.stringify({
-          command: "debug-exit",
-          args: {},
-        }),
-      });
+    await withInjectedCommand(
+      (program) => {
+        program.command("debug-exit").action(() => {
+          process.exit(7);
+        });
+      },
+      async () => {
+        const response = await makeRequest("/api/command", {
+          method: "POST",
+          body: JSON.stringify({
+            command: "debug-exit",
+            args: {},
+          }),
+        });
 
-      expect(response.status).toBe(422);
-      const body = await response.json();
-      expect(body.exitCode).toBe(7);
-      expect(body.stderr).toBe("");
-    });
+        expect(response.status).toBe(422);
+        const body = await response.json();
+        expect(body.exitCode).toBe(7);
+        expect(body.stderr).toBe("");
+      },
+    );
   });
 
   // AC: @daemon-command-api ac-response-parity
@@ -936,7 +950,11 @@ describe("Daemon Command API", () => {
 
     process.stdout.write = ((chunk: unknown, ...rest: unknown[]) => {
       const text =
-        typeof chunk === "string" ? chunk : Buffer.isBuffer(chunk) ? chunk.toString() : String(chunk);
+        typeof chunk === "string"
+          ? chunk
+          : Buffer.isBuffer(chunk)
+            ? chunk.toString()
+            : String(chunk);
       leakedStdout.push(text);
       return originalWrite(
         chunk as Parameters<typeof process.stdout.write>[0],
@@ -1377,13 +1395,13 @@ describe("Daemon Command API", () => {
     };
 
     const { middleware } = projectContextMiddleware();
-    app = new Elysia()
-      .use(middleware)
-      .use(createCommandRoutes({
+    app = new Elysia().use(middleware).use(
+      createCommandRoutes({
         pubsub,
         getEntityCache: spiedAccessor,
         prepareProgram: (program) => prepareProgram?.(program),
-      }));
+      }),
+    );
 
     const response = await makeRequest("/api/command/batch", {
       method: "POST",
@@ -1434,18 +1452,22 @@ describe("Daemon Command API", () => {
     const writeSpy = vi.spyOn(process.stdout, "_write" as keyof typeof process.stdout);
 
     try {
-      await withInjectedCommand((program) => {
-        const inboxCmd = findCommand(program, ["inbox", "add"]);
-        const originalHandler = (inboxCmd as Command & {
-          _actionHandler?: (...args: unknown[]) => unknown;
-        })._actionHandler;
+      await withInjectedCommand(
+        (program) => {
+          const inboxCmd = findCommand(program, ["inbox", "add"]);
+          const originalHandler = (
+            inboxCmd as Command & {
+              _actionHandler?: (...args: unknown[]) => unknown;
+            }
+          )._actionHandler;
 
-        if (!originalHandler) {
-          throw new Error("inbox add has no action handler");
-        }
+          if (!originalHandler) {
+            throw new Error("inbox add has no action handler");
+          }
 
-        (inboxCmd as Command & { _actionHandler: (...args: unknown[]) => Promise<unknown> })
-          ._actionHandler = async (...args: unknown[]) => {
+          (
+            inboxCmd as Command & { _actionHandler: (...args: unknown[]) => Promise<unknown> }
+          )._actionHandler = async (...args: unknown[]) => {
             // Write sentinel via process.stdout.write — the exact channel
             // that plan export and similar commands use.
             process.stdout.write(SENTINEL);
@@ -1453,49 +1475,51 @@ describe("Daemon Command API", () => {
 
             return originalHandler(...args);
           };
-      }, async () => {
-        const response = await makeRequest("/api/command/batch", {
-          method: "POST",
-          body: JSON.stringify({
-            commands: [
-              {
-                command: "inbox add",
-                args: { text: "Stdout leak test batch" },
-                id: "leak-test",
-              },
-            ],
-          }),
-        });
+        },
+        async () => {
+          const response = await makeRequest("/api/command/batch", {
+            method: "POST",
+            body: JSON.stringify({
+              commands: [
+                {
+                  command: "inbox add",
+                  args: { text: "Stdout leak test batch" },
+                  id: "leak-test",
+                },
+              ],
+            }),
+          });
 
-        expect(response.status).toBe(200);
-        const body = await response.json();
-        expect(body.success).toBe(true);
+          expect(response.status).toBe(200);
+          const body = await response.json();
+          expect(body.success).toBe(true);
 
-        // The handler must have executed and written the sentinel.
-        expect(sentinelWritten).toBe(true);
+          // The handler must have executed and written the sentinel.
+          expect(sentinelWritten).toBe(true);
 
-        // The sentinel must NOT have reached the underlying stream writer.
-        // If commandExecutionStorage is active, the route's hook intercepts
-        // the process.stdout.write call and captures it into the ALS store
-        // without forwarding to originalStdoutWrite → _write.
-        const sentinelReachedStream = writeSpy.mock.calls.some((call) => {
-          const chunk = call[0];
-          const text =
-            typeof chunk === "string"
-              ? chunk
-              : Buffer.isBuffer(chunk)
-                ? chunk.toString()
-                : String(chunk);
-          return text.includes(SENTINEL);
-        });
-        expect(sentinelReachedStream).toBe(false);
+          // The sentinel must NOT have reached the underlying stream writer.
+          // If commandExecutionStorage is active, the route's hook intercepts
+          // the process.stdout.write call and captures it into the ALS store
+          // without forwarding to originalStdoutWrite → _write.
+          const sentinelReachedStream = writeSpy.mock.calls.some((call) => {
+            const chunk = call[0];
+            const text =
+              typeof chunk === "string"
+                ? chunk
+                : Buffer.isBuffer(chunk)
+                  ? chunk.toString()
+                  : String(chunk);
+            return text.includes(SENTINEL);
+          });
+          expect(sentinelReachedStream).toBe(false);
 
-        // The captured process.stdout.write output must appear in the
-        // batch response's stdout field — not silently dropped.
-        // AC: @daemon-command-api ac-response-parity — batch includes raw stdout
-        expect(body.stdout).toBeDefined();
-        expect(body.stdout).toContain(SENTINEL);
-      });
+          // The captured process.stdout.write output must appear in the
+          // batch response's stdout field — not silently dropped.
+          // AC: @daemon-command-api ac-response-parity — batch includes raw stdout
+          expect(body.stdout).toBeDefined();
+          expect(body.stdout).toContain(SENTINEL);
+        },
+      );
     } finally {
       writeSpy.mockRestore();
     }

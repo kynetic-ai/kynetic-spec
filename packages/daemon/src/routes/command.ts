@@ -61,7 +61,6 @@ export interface CommandExecutionContext {
 
 const commandExecutionStorage = new AsyncLocalStorage<CommandExecutionContext>();
 
-
 function serializeConsoleArgs(args: unknown[]): string {
   return args.map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg))).join(" ");
 }
@@ -250,7 +249,10 @@ async function executeCommand(
   const argv = cmdMeta
     ? [
         ...globalArgv,
-        ...buildCommandArgv({ command: payload.command, args: commandArgs, id: payload.id }, cmdMeta),
+        ...buildCommandArgv(
+          { command: payload.command, args: commandArgs, id: payload.id },
+          cmdMeta,
+        ),
       ]
     : [...globalArgv, ...parts];
   const capture: CommandExecutionContext = {
