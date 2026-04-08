@@ -131550,6 +131550,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-08T13:14:00.928Z
+      - _ulid: 01KNPKMZTS8WGWSJCF11QYP84A
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNPKMYYQN1DX3M1D26NCKEJG
+        timestamp: 2026-04-08T13:14:03.481Z
     examined_commit: 72652dbf3922f76eb3fdb366f475c2adc1483441
     external_links: []
     lifecycle_state: open
@@ -131579,7 +131586,28 @@ reviews:
               while the daemon path now passes."
             created_at: 2026-04-08T13:13:57.570Z
         kind: blocker
+      - _ulid: 01KNPKMYYQN1DX3M1D26NCKEJG
+        entries:
+          - _ulid: 01KNPKMYYQNTSM6S5BT3HR8DYH
+            author: Jacob Chapel
+            body: "Evidence log\\nFiles read: packages/daemon/src/routes/tasks.ts,
+              packages/web-ui/src/lib/api-static.ts, tests/daemon-api/tasks.test.ts,
+              tests/web-ui/api-static.test.ts, tests/plan-summary.test.ts, src/lib/plan-summary.ts,
+              tests/daemon-api/plans.test.ts, tests/e2e/fixtures/project.tasks.yaml,
+              tests/e2e/fixtures/tasks/01KG0RRJCC9N4YGP991WD7XSFF/task.yaml.\\nCommands run: kspec
+              task get @01KNP0D9JWZ00XZQJMM5G5X7XX, kspec review get @01KNPCSJ0VFFGHKBBEGNQFT6M8,
+              git diff
+              1703ee4826ac0695803028d3fcd23d4b21917c5c..72652dbf3922f76eb3fdb366f475c2adc1483441,
+              kspec validate, rg for AC annotations, npm test, and a direct node reproduction of the
+              static  helper against mixed slug/ULID inputs.\\nClaims verified: full npm suite
+              passes on the review snapshot; daemon plan filtering now resolves ULID prefixes;
+              shared plan-summary logic intentionally treats slug/full-ULID/prefix  values as
+              equivalent.\\nCategories searched: correctness, edge cases, test quality, integration,
+              and spec alignment. Finding recorded in static export reverse-link matching; no
+              additional regressions found in the daemon path or test wiring."
+            created_at: 2026-04-08T13:14:02.583Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-08T13:02:06.087Z
-    updated_at: 2026-04-08T13:14:00.059Z
+    updated_at: 2026-04-08T13:14:02.583Z
     notes: []
