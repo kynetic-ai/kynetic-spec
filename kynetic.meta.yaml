@@ -13575,6 +13575,28 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-08T11:00:19.666Z
+  - _ulid: 01KNPE58K5CAFGEXZE18FSHKS0
+    type: friction
+    content: When dispatch agents modify kspec source and run kspec validate, the installed binary is
+      stale — it reflects pre-build code, not the changes just made. Agents must run npm run build
+      then node dist/cli/index.js validate to verify against current code. This caused confusion
+      during fix cycle 2 of task-coverage-scan-config where validate appeared to still show 307
+      warnings until the dev build was used instead.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-08T11:38:05.285Z
+  - _ulid: 01KNPE58STFW0FDD5F8P0NZNFQ
+    type: success
+    content: "Fix cycle 2 on task-coverage-scan-config completed in a single pass: read review threads,
+      identified root cause (fixture test files with fake AC refs), designed and implemented
+      exclude_patterns config option, threaded through all callers, wrote 9 tests, verified with
+      full suite (7600 passed) and kspec validate (0 invalid annotations). Systematic review reading
+      and grep-based root cause analysis kept the fix focused."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-08T11:38:05.498Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
