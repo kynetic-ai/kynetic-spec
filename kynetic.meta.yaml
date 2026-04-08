@@ -13629,6 +13629,24 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-08T12:25:59.613Z
+  - _ulid: 01KNPHW4ESSSDFM1G11PGHRXHC
+    type: friction
+    content: npm run dev -- validate fails with split storage backend not registered. Cannot locally
+      verify kspec validate changes using branch code without the full build/install cycle. Tests
+      cover it but ad-hoc validation during development is blocked.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-08T12:43:00.441Z
+  - _ulid: 01KNPHW4NJ8SSS5BKGRXC6NBBG
+    type: success
+    content: Config loading fix for worktrees was identified quickly by comparing initContext() calling
+      pattern against all other loadProjectConfig() callers — the inconsistency (mainRoot vs
+      projectDir,projectDir) was the root cause signal.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-08T12:43:00.659Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
