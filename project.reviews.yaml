@@ -128523,6 +128523,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNN73KKT0DVTMTV9TJ5DCTTX
         timestamp: 2026-04-08T00:15:37.596Z
+      - _ulid: 01KNN7458G8KCNNRAM5F6D3HAG
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNN744CTH01V1FKHA3FSV0SQ
+        timestamp: 2026-04-08T00:15:54.640Z
     examined_commit: 93b76749adaa9d11a0d4f2432a41023a4170bce0
     external_links: []
     lifecycle_state: open
@@ -128574,7 +128581,28 @@ reviews:
               cache access from the post-success cache refresh.
             created_at: 2026-04-08T00:15:36.570Z
         kind: blocker
+      - _ulid: 01KNN744CTH01V1FKHA3FSV0SQ
+        anchor:
+          type: code
+          commit: 93b76749adaa9d11a0d4f2432a41023a4170bce0
+          line_end: 1408
+          line_start: 1357
+          path: tests/daemon-command-api.test.ts
+          side: head
+        entries:
+          - _ulid: 01KNN744CTX5CHZT676XZ3CAFQ
+            author: Jacob Chapel
+            body: This test does not prove batch cache-context propagation. The body says it uses a non-mutating
+              batch so any cache accessor call must come from runWithEntityCache, but the request
+              actually executes inbox add, which is mutating. In the route, every successful
+              mutating batch calls getEntityCache?.(projectPath) again during the post-batch
+              writeThrough step, so accessorCallCount >= 1 would still pass even if the batch body
+              never ran inside runWithEntityCache. Replace this with a genuinely non-mutating
+              command or another assertion that distinguishes execution-time cache access from the
+              post-success cache refresh.
+            created_at: 2026-04-08T00:15:53.755Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-08T00:14:30.965Z
-    updated_at: 2026-04-08T00:15:36.570Z
+    updated_at: 2026-04-08T00:15:53.755Z
     notes: []
