@@ -43490,12 +43490,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-08T00:18:26.390Z
+      updated_at: 2026-04-08T00:18:35.951Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-08T00:18:27.727Z
+      updated_at: 2026-04-08T00:18:35.951Z
     integration:
       status: pending
       detail: null
@@ -43503,7 +43503,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-cache-aware-command-execution/01knkf3b
       target_commit: 13df74fef446a37cb44bb5b37bbf0fc8be5f4c82
-      updated_at: 2026-04-08T00:18:26.390Z
+      updated_at: 2026-04-08T00:18:35.951Z
     lifecycle_state: ready
     resolved_base_branch: plan/plan-cache-aware-command-execution/01knkf3b
     task_ref: "@01KNN24V593SQEF0CA5Z00NQNF"
@@ -43511,9 +43511,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-08T00:12:39.333Z
-      last_reconciled_at: 2026-04-08T00:18:27.727Z
+      last_reconciled_at: 2026-04-08T00:18:35.951Z
       created_at: 2026-04-07T23:52:36.781Z
-      updated_at: 2026-04-08T00:18:27.727Z
+      updated_at: 2026-04-08T00:18:35.951Z
     workspace_id: dispatch-workspace-01KNN24V593SQEF0CA5Z00NQNF
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -43522,5 +43522,5 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/apply-cache-context-and-working-directory-isolation-to-batch-route/01knn24v
         head: 93b76749adaa9d11a0d4f2432a41023a4170bce0
-        last_seen_at: 2026-04-08T00:12:17.013Z
+        last_seen_at: 2026-04-08T00:18:35.951Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/apply-cache-context-and-working-directory-isolation-to-batch-route-01knn24v
