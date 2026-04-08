@@ -129681,6 +129681,12 @@ reviews:
         payload:
           thread_ulid: 01KNP6R8KXH07Z559W0GGZTVJJ
         timestamp: 2026-04-08T10:19:30.538Z
+      - _ulid: 01KNP9P09M61RRN9KNHPDTTE0V
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNP6SY2EY8HE1MCX6MVSSR3G
+        timestamp: 2026-04-08T10:19:50.964Z
     examined_commit: d5219487701ed784f3ba16a03534c851be57ce02
     external_links: []
     lifecycle_state: closed
@@ -129758,6 +129764,14 @@ reviews:
               coverage whenever the path set changes. Cache identity and regression tests need to
               include scanPaths."
             created_at: 2026-04-08T09:29:34.031Z
+          - _ulid: 01KNP9NZE3SP01PKC5G9F52G9M
+            author: "@claude"
+            body: "Fixed: same fix as thread 01KNP6R8KX — cache key is now a composite of rootDir + sorted
+              scanPaths. The regression test confirms: getCachedTestCoverage(dir, ['a/']) and
+              getCachedTestCoverage(dir, ['b/']) return independent results and are not the same Set
+              object. Also added a test verifying invalidateTestCoverageCache(rootDir) clears all
+              scan path variants."
+            created_at: 2026-04-08T10:19:50.083Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -129768,7 +129782,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-08T09:29:30.668Z
     created_at: 2026-04-08T09:16:15.908Z
-    updated_at: 2026-04-08T10:19:29.575Z
+    updated_at: 2026-04-08T10:19:50.083Z
     notes: []
   - _ulid: 01KNP8M7G8XSGTFKZ529X1PRKN
     slugs: []
