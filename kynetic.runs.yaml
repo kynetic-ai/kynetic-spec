@@ -24227,7 +24227,7 @@ runs:
     completed_at: 2026-04-08T01:07:56.111Z
   - _ulid: 01KNNB5ZGZ0CZX1HBVRJTJB243
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -24245,7 +24245,29 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-08T01:27:23.145Z
-        completed_at: 2026-04-08T01:27:23.145Z
+        completed_at: 2026-04-08T01:28:43.911Z
+        notes: >-
+          High-confidence observations after searching existing state:
+
+
+          SUCCESS (high confidence): Detailed reviewer reproduction scripts make fix cycles
+          efficient. The cycle 3 reviewer traced the exact code path, ran a reproduction script
+          against dist/cli/batch-exec.js, and confirmed the output was dropped. This made diagnosis
+          take minutes rather than hours. Pattern is repeatable across all review cycles on this
+          task.
+
+
+          FRICTION (lower confidence, not capturing): Two identical blocker threads were filed in
+          the review — likely a reviewer tool glitch, not systemic. One-off, not capturing.
+
+
+          FRICTION (lower confidence, not capturing): needs_work -> start -> submit transition for
+          fix cycles adds a manual step. But this is by design (state machine enforces valid
+          transitions). Not a real friction point.
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-08T01:28:43.911Z
+        completed_at: 2026-04-08T01:28:43.911Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-08T01:26:48.607Z
