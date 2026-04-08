@@ -129613,6 +129613,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-08T09:29:30.669Z
+      - _ulid: 01KNP6SYZWM9SV40VAS64BQ441
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNP6SY2EY8HE1MCX6MVSSR3G
+        timestamp: 2026-04-08T09:29:34.972Z
     examined_commit: d5219487701ed784f3ba16a03534c851be57ce02
     external_links: []
     lifecycle_state: closed
@@ -129659,6 +129666,27 @@ reviews:
               error handling; finding recorded in coverage cache correctness."
             created_at: 2026-04-08T09:28:42.107Z
         kind: nit
+      - _ulid: 01KNP6SY2EY8HE1MCX6MVSSR3G
+        anchor:
+          type: code
+          commit: d5219487701ed784f3ba16a03534c851be57ce02
+          line_end: 83
+          line_start: 69
+          path: src/parser/coverage-cache.ts
+          side: head
+        entries:
+          - _ulid: 01KNP6SY2FQ50KDD0QRTS9J67Z
+            author: Jacob Chapel
+            body: "getCachedTestCoverage() now takes scanPaths, but the cache key still only uses rootDir. I
+              reproduced this with two directories under the same temp project:
+              scanTestCoverage(dir, ['a/']) returned @spec-a ac-1 and scanTestCoverage(dir, ['b/'])
+              returned @spec-b ac-1, but getCachedTestCoverage(dir, ['a/']) followed by
+              getCachedTestCoverage(dir, ['b/']) returned @spec-a ac-1 both times and reused the
+              same Set object. That means the configurable scanner can serve stale or incorrect AC
+              coverage whenever the path set changes. Cache identity and regression tests need to
+              include scanPaths."
+            created_at: 2026-04-08T09:29:34.031Z
+        kind: blocker
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -129668,5 +129696,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-08T09:29:30.668Z
     created_at: 2026-04-08T09:16:15.908Z
-    updated_at: 2026-04-08T09:29:30.669Z
+    updated_at: 2026-04-08T09:29:34.031Z
     notes: []
