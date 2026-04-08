@@ -129565,6 +129565,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-08T09:16:50.336Z
+      - _ulid: 01KNP6R9G5V8Z03DDRGT81R1TF
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNP6R8KXH07Z559W0GGZTVJJ
+        timestamp: 2026-04-08T09:28:40.197Z
     examined_commit: d5219487701ed784f3ba16a03534c851be57ce02
     external_links: []
     lifecycle_state: open
@@ -129574,8 +129581,27 @@ reviews:
       content_hash: ""
       ref: "@01KNNZ6D4P24MB9J94K4Q068AN"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNP6R8KXH07Z559W0GGZTVJJ
+        anchor:
+          type: code
+          commit: d5219487701ed784f3ba16a03534c851be57ce02
+          line_end: 83
+          line_start: 69
+          path: src/parser/coverage-cache.ts
+          side: head
+        entries:
+          - _ulid: 01KNP6R8KXQCNHYCPS8T0M9Y3A
+            author: Jacob Chapel
+            body: " now accepts , but the cache key is still only . That makes the API return incorrect coverage
+              when the same project is queried with different configured scan path sets: I
+              reproduced  and , while  followed by  returned  both times and reused the
+              same  instance. This violates the new config-driven contract and can serve stale/wrong
+              AC coverage after a scan-path change or for any caller that varies the path set. The
+              cache identity and tests need to include ."
+            created_at: 2026-04-08T09:28:39.293Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-08T09:16:15.908Z
-    updated_at: 2026-04-08T09:16:49.525Z
+    updated_at: 2026-04-08T09:28:39.293Z
     notes: []
