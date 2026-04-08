@@ -129878,6 +129878,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-08T10:31:17.270Z
+      - _ulid: 01KNPABE39RP562KFMT99MPBV4
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNPABCB9QEVNB4QWPDDQ0HNA
+        timestamp: 2026-04-08T10:31:33.225Z
     examined_commit: c9c1487bd64cf4de30d1631ed6a16f9419c30dd2
     external_links: []
     lifecycle_state: closed
@@ -129887,7 +129894,24 @@ reviews:
       content_hash: ""
       ref: "@01KNNZ6D4P24MB9J94K4Q068AN"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNPABCB9QEVNB4QWPDDQ0HNA
+        entries:
+          - _ulid: 01KNPABCBAS4PBSK0FWX8FFWXV
+            author: Jacob Chapel
+            body: "Review evidence log: files read = kspec.config.yaml, src/parser/config.ts,
+              src/parser/validate.ts, src/parser/coverage-cache.ts,
+              packages/daemon/src/routes/items.ts, src/export/json.ts, src/cli/commands/task.ts,
+              tests/ac-annotation-validation.test.ts, tests/coverage-cache.test.ts,
+              tests/coverage-scan-config.test.ts, tests/trait-ac-coverage.test.ts. Commands run =
+              kspec task get, kspec item get, kspec review get/for-task/add/open, git diff
+              --stat/--name-only/--unified, grep for AC annotations, kspec validate, ps/tail for npm
+              test progress. Claims verified = previous cache-key blocker is fixed in
+              coverage-cache.ts; config-driven scanning is implemented and threaded through callers;
+              self-hosting config now makes validate emit invalid annotation warnings. Categories
+              searched = correctness, tests, edge cases, integration, error handling."
+            created_at: 2026-04-08T10:31:31.434Z
+        kind: nit
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -129897,5 +129921,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-08T10:31:17.269Z
     created_at: 2026-04-08T10:24:03.985Z
-    updated_at: 2026-04-08T10:31:17.270Z
+    updated_at: 2026-04-08T10:31:31.434Z
     notes: []
