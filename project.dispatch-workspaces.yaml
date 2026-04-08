@@ -45994,7 +45994,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-08T22:55:26.453Z
+      updated_at: 2026-04-08T22:56:10.159Z
     integration:
       status: merged
       detail: integration:merged
@@ -46010,18 +46010,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-08T22:33:31.397Z
-      last_reconciled_at: 2026-04-08T22:56:08.797Z
+      last_reconciled_at: 2026-04-08T22:56:10.159Z
       created_at: 2026-04-08T22:07:31.582Z
-      updated_at: 2026-04-08T22:56:08.797Z
+      updated_at: 2026-04-08T22:56:10.159Z
     workspace_id: dispatch-workspace-01KNQJ4TX3ZR80MSV8Q38RHG06
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: a6698d0d7053638669479e3bd101f8f3c6a2c693
-        last_seen_at: 2026-04-08T22:33:09.028Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-worktree-linkage-capture-01knqj4t-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-fix-worktree-linkage-capture/01knqj4t
