@@ -25796,7 +25796,7 @@
   slugs: []
   title: Stabilize unrelated full-suite failures in review environment
   type: bug
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   priority: 2
@@ -25804,7 +25804,7 @@
     - tests
     - infra
   review_ref: "@01KNP2YN4KSYT7C6J32XVB2Y4M"
-  notes_count: 2
+  notes_count: 3
   todos_count: 0
   created_at: 2026-04-07T18:22:40.909Z
   started_at: 2026-04-08T07:38:21.125Z
