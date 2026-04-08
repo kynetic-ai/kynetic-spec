@@ -130840,6 +130840,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-08T11:38:40.858Z
+      - _ulid: 01KNPET1HGKGG606DCMGTDWKP0
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNPET0MRXZBZNBCZ3YY606DN
+        timestamp: 2026-04-08T11:49:26.192Z
     examined_commit: 55e02c8f3fc9b7325eb12c0c81a3f6e4386147d4
     external_links: []
     lifecycle_state: open
@@ -130849,8 +130856,26 @@ reviews:
       content_hash: ""
       ref: "@01KNNZ6D4P24MB9J94K4Q068AN"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNPET0MRXZBZNBCZ3YY606DN
+        entries:
+          - _ulid: 01KNPET0MRJMPTN7RR4P4MZW2Z
+            author: Jacob Chapel
+            body: "Review evidence log: files read = kspec.config.yaml, src/parser/config.ts,
+              src/parser/validate.ts, src/parser/coverage-cache.ts, src/parser/yaml.ts,
+              src/parser/shadow.ts, packages/daemon/src/routes/items.ts, src/export/json.ts,
+              src/cli/commands/task.ts, tests/ac-annotation-validation.test.ts,
+              tests/coverage-cache.test.ts, tests/coverage-scan-config.test.ts,
+              tests/trait-ac-coverage.test.ts. Commands run = kspec task get, kspec item get, kspec
+              review add/open/get, git diff --stat/--name-only/--unified, rg for AC annotations and
+              config loading, git rev-parse --show-toplevel --git-common-dir, kspec validate, npx
+              tsx repros for initContext()/scanACAnnotations(), npm test. Claims verified =
+              cache-key fix is present; full suite passes; branch-local coverage config is not
+              loaded in this detached worktree, so validate still reports 317 invalid annotations.
+              Categories searched = correctness, tests, edge cases, integration, config loading."
+            created_at: 2026-04-08T11:49:25.273Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-08T11:38:09.742Z
-    updated_at: 2026-04-08T11:38:39.935Z
+    updated_at: 2026-04-08T11:49:25.273Z
     notes: []
