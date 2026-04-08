@@ -14,7 +14,7 @@ description: "npm test on snapshot 343472d01808d514accacb66d1bb86db4519b37f fail
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -30,7 +30,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: null
+session_id: 01KNPK0C6AAWSFCKANC0XZBG8F
 history:
   - author: "@claude"
     changes:
@@ -139,8 +139,21 @@ history:
         previous: 01KNPE3C5B2WC4FQNA80Q55ARW
     command: review-verdict-needs-work
     timestamp: 2026-04-08T12:36:12.322Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KNPK0C6AAWSFCKANC0XZBG8F
+        previous: null
+      started_at:
+        new: 2026-04-08T13:04:34.843Z
+        previous: 2026-04-08T11:38:33.613Z
+    command: task-start
+    timestamp: 2026-04-08T13:04:34.843Z
 created_at: 2026-04-07T16:34:14.172Z
-started_at: 2026-04-08T11:38:33.613Z
+started_at: 2026-04-08T13:04:34.843Z
 submitted_at: 2026-04-08T12:20:40.212Z
 todos: []
 automation: eligible
