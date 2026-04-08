@@ -128490,3 +128490,29 @@ reviews:
     created_at: 2026-04-07T23:45:07.125Z
     updated_at: 2026-04-07T23:50:57.974Z
     notes: []
+  - _ulid: 01KNN71KHNN9HTVRN65Q6CQZVZ
+    slugs: []
+    title: Review apply cache context and working directory isolation to batch route
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KNN71KHN78A7TKGTSAA4SE3K
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-08T00:14:30.965Z
+    examined_commit: 93b76749adaa9d11a0d4f2432a41023a4170bce0
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNN24V593SQEF0CA5Z00NQNF"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-08T00:14:30.965Z
+    updated_at: null
+    notes: []
