@@ -130825,7 +130825,17 @@ reviews:
     slugs: []
     title: Review task-coverage-scan-config (cycle 3)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite passed in this snapshot: 2093/2093 suites, 7600/7605 tests, 5 skipped, exit 0."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-08T11:49:28.082Z
+        completed_at: 2026-04-08T11:49:28.082Z
     events:
       - _ulid: 01KNPE5CYE5CC6EEJWNATCBEZA
         actor: Jacob Chapel
@@ -130847,6 +130857,13 @@ reviews:
           kind: nit
           thread_ulid: 01KNPET0MRXZBZNBCZ3YY606DN
         timestamp: 2026-04-08T11:49:26.192Z
+      - _ulid: 01KNPET491EF8DZHN9Z9KZMJGA
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-08T11:49:28.993Z
     examined_commit: 55e02c8f3fc9b7325eb12c0c81a3f6e4386147d4
     external_links: []
     lifecycle_state: open
@@ -130877,5 +130894,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-08T11:38:09.742Z
-    updated_at: 2026-04-08T11:49:25.273Z
+    updated_at: 2026-04-08T11:49:28.082Z
     notes: []
