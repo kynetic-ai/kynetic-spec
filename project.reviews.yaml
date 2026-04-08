@@ -131769,6 +131769,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-08T13:26:43.435Z
+      - _ulid: 01KNPQ1A0F6CDGZ73MT7VTJ1S2
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNPQ194P8WZTWPS8EJRNR5QY
+        timestamp: 2026-04-08T14:13:12.847Z
     examined_commit: efd95569e94451efa368054907859bca82fed913
     external_links: []
     lifecycle_state: open
@@ -131778,10 +131785,41 @@ reviews:
       content_hash: ""
       ref: "@01KNMCPT0W7P3V0PXESVZ40GFN"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNPQ194P8WZTWPS8EJRNR5QY
+        entries:
+          - _ulid: 01KNPQ194PGTV2XVN6MBCPRJ2W
+            author: Jacob Chapel
+            body: >-
+              Evidence log
+
+              Files read: AGENTS.md; kspec-agents.md; .agents/skills/review-gates/SKILL.md; task
+              metadata; prior review @01KNPGQESJ8MNJQ8Q5FAMGHFJT; .oxlintrc.json;
+              tools/eslint-rules/no-daemon-ts-imports.js; tests/lint-no-daemon-ts-imports.test.ts;
+              tests/daemon-read-path.test.ts; tests/test-runner.test.ts.
+
+              Commands run: kspec task get @01KNMCPT0W7P3V0PXESVZ40GFN; kspec review for-task/get;
+              git diff/log/show against snapshot and recorded base
+              6a8fd6df49537d95cca2f6283be8a4aa82cc30c8; kspec validate; rg for ACs and
+              dist/daemon/*.ts imports; direct npx oxlint repros; npm test --
+              tests/lint-no-daemon-ts-imports.test.ts --fresh; npm test --
+              tests/daemon-read-path.test.ts --fresh; npm test -- --fresh; npx oxlint
+              tests/lint-no-daemon-ts-imports.test.ts tools/eslint-rules/no-daemon-ts-imports.js
+              .oxlintrc.json.
+
+              Claims verified: the new rule now flags side-effect-only dist/daemon/*.ts imports; it
+              still allows type-only dist/daemon/*.ts imports; targeted rule tests pass; daemon
+              read-path suite passes against .js dist imports; full suite passes in this snapshot.
+
+              Categories searched: correctness (rule logic and regex scope), edge cases (side-effect
+              imports, mixed imports, type-only imports), error handling (rule reports actionable
+              message), test quality (behavioral lint invocation instead of source scanning),
+              integration (oxlint config wiring, daemon read-path suite, full npm test).
+            created_at: 2026-04-08T14:13:11.958Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-08T13:26:29.279Z
-    updated_at: 2026-04-08T13:26:42.466Z
+    updated_at: 2026-04-08T14:13:11.958Z
     notes: []
   - _ulid: 01KNPNZH4X7S1ES27X5XGF3AZP
     slugs: []
