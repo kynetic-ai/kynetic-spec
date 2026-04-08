@@ -590,9 +590,11 @@ async function setTaskFields(
             nextTask.submission_linkage = null;
           }
         } else if (options.submissionLinkage) {
-          const linkage = isGitRepo(ctx.projectRoot)
+          // AC: @portable-task-submission-linkage ac-worktree-branch — use rootDir
+          // (active code checkout root) so worktree context captures the correct branch
+          const linkage = isGitRepo(ctx.rootDir)
             ? captureSubmissionLinkage(
-                ctx.projectRoot,
+                ctx.rootDir,
                 latestTask.review_url,
                 ctx.config?.dispatch?.base_branch,
               )
@@ -1807,10 +1809,11 @@ Examples:
         const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
         const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
-        // AC: @portable-task-submission-linkage ac-1, ac-3, ac-5 — capture git context
-        const linkage = isGitRepo(ctx.projectRoot)
+        // AC: @portable-task-submission-linkage ac-1, ac-3, ac-5, ac-worktree-branch — capture git context
+        // Use rootDir (active code checkout root) so worktree context captures the correct branch
+        const linkage = isGitRepo(ctx.rootDir)
           ? captureSubmissionLinkage(
-              ctx.projectRoot,
+              ctx.rootDir,
               options.reviewUrl,
               ctx.config?.dispatch?.base_branch,
             )
