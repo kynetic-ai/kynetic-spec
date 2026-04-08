@@ -129293,6 +129293,23 @@ reviews:
         runner: test-runner
         created_at: 2026-04-08T08:04:41.896Z
         completed_at: 2026-04-08T08:04:41.896Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: packages/daemon/src/server.ts, tests/daemon-read-path.test.ts,
+          tests/daemon-entity-cache.test.ts. Commands run: kspec task get, kspec item get, kspec
+          validate, rg AC searches, git diff against plan/plan-granular-cache-invalidation/01kndbmk,
+          npm test twice, targeted npm test on head, targeted npm test on integration base via
+          detached worktree. Claims verified: onPull now calls refreshMetaShadowInfo(); existing
+          entity-cache AC test still proves shadow-only reload; changed test annotation matches
+          @daemon-meta-subdomain ac-shadow-on-schedule. Categories searched: correctness, edge
+          cases, error handling, test quality, integration; no task-specific findings."
+        name: review-evidence
+        required: false
+        runner: manual
+        created_at: 2026-04-08T08:04:44.742Z
+        completed_at: 2026-04-08T08:04:44.742Z
     events:
       - _ulid: 01KNP0DX9QX0VHEWJ1R0Q5V4JM
         actor: Jacob Chapel
@@ -129314,6 +129331,13 @@ reviews:
           status: pass
           name: npm-test
         timestamp: 2026-04-08T08:04:42.827Z
+      - _ulid: 01KNP1YN1TCFW4Y6P3285XG2X7
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-04-08T08:04:45.754Z
     examined_commit: 0c91c0d9d36df1418b5f95c65e2ef485a3466a90
     external_links: []
     lifecycle_state: open
@@ -129326,5 +129350,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-08T07:38:08.567Z
-    updated_at: 2026-04-08T08:04:41.896Z
+    updated_at: 2026-04-08T08:04:44.742Z
     notes: []
