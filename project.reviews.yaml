@@ -131013,6 +131013,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-08T11:50:07.155Z
+      - _ulid: 01KNPHMWB3F3FJK98E0FY65A85
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNPET8HZQ5CM0F38TQRJD13X
+        timestamp: 2026-04-08T12:39:02.755Z
     examined_commit: 55e02c8f3fc9b7325eb12c0c81a3f6e4386147d4
     external_links: []
     lifecycle_state: closed
@@ -131123,6 +131129,17 @@ reviews:
               claimed fix for the invalid-annotation regression is not actually present in the
               environment where reviewers run the task.
             created_at: 2026-04-08T11:49:33.375Z
+          - _ulid: 01KNPHMVFG1SCQEEWMDZG0Y4X4
+            author: "@claude"
+            body: "Fixed: initContext() was passing projectRoots.mainRoot to loadProjectConfig(), causing config
+              to load from the parent repo root instead of the worktree's checkout. Changed to pass
+              projectRoots.worktreeRoot (falling back to mainRoot when not in a worktree). This
+              matches the pattern used by every other loadProjectConfig() caller in the codebase
+              (all pass projectDir, projectDir). Added 2 regression tests in
+              worktree-context.test.ts proving: (1) worktree-only config is loaded when main has no
+              config, (2) worktree config takes precedence when both exist. Full suite: 7602
+              passed."
+            created_at: 2026-04-08T12:39:01.872Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -131133,7 +131150,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-08T11:50:07.155Z
     created_at: 2026-04-08T11:38:09.742Z
-    updated_at: 2026-04-08T11:50:07.155Z
+    updated_at: 2026-04-08T12:39:01.872Z
     notes: []
   - _ulid: 01KNPGQESJ8MNJQ8Q5FAMGHFJT
     slugs: []
