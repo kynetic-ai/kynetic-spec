@@ -132116,6 +132116,13 @@ reviews:
           status: skipped
           name: full-suite
         timestamp: 2026-04-08T22:53:30.666Z
+      - _ulid: 01KNQMTC5HEWHWEXZA8FXX8TAV
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNQMTBA5F3CW9TJQ6DNF4DNS
+        timestamp: 2026-04-08T22:53:42.961Z
     examined_commit: a6698d0d7053638669479e3bd101f8f3c6a2c693
     external_links: []
     lifecycle_state: open
@@ -132125,8 +132132,39 @@ reviews:
       content_hash: ""
       ref: "@01KNQJ4TX3ZR80MSV8Q38RHG06"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNQMTBA5F3CW9TJQ6DNF4DNS
+        entries:
+          - _ulid: 01KNQMTBA6TR7R6R9JHYSG22YT
+            author: Jacob Chapel
+            body: >-
+              Evidence log
+
+
+              Files read: src/cli/commands/task.ts, src/agent-runtime/workspace.ts,
+              src/utils/git.ts, tests/submission-linkage-worktree.test.ts,
+              tests/dispatch-workspace-adopt-branch-lineage.test.ts, tests/helpers/cli.ts,
+              src/agent-runtime/dispatch.ts.
+
+
+              Commands run: git diff/stat/log, kspec task get, kspec review for-task, kspec item get
+              @portable-task-submission-linkage, kspec item get @adopt-existing-task-branch-lineage,
+              kspec validate, rg for AC annotations, npm test --
+              tests/submission-linkage-worktree.test.ts, npm test --
+              tests/dispatch-workspace-adopt-branch-lineage.test.ts, repeated npm test attempts.
+
+
+              Claims verified: captureSubmissionLinkage shells into the provided cwd and therefore
+              the call-site change from ctx.projectRoot to ctx.rootDir changes real behavior;
+              provisionDispatchWorkspace receives the dispatcher project root in runtime, so the
+              main-checkout adoption guard is on the real path.
+
+
+              Categories searched: correctness, edge cases, error handling, test quality,
+              integration. No blocking defects found.
+            created_at: 2026-04-08T22:53:42.086Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-08T22:34:01.436Z
-    updated_at: 2026-04-08T22:53:29.779Z
+    updated_at: 2026-04-08T22:53:42.086Z
     notes: []
