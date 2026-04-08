@@ -25901,7 +25901,7 @@
   type: task
   spec_ref: "@daemon-meta-subdomain"
   plan_ref: "@plan-granular-cache-invalidation"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 1
@@ -25915,6 +25915,7 @@
   created_at: 2026-04-08T06:02:03.561Z
   started_at: 2026-04-08T07:23:14.275Z
   submitted_at: 2026-04-08T07:35:53.675Z
+  completed_at: 2026-04-08T08:06:04.581Z
   automation: eligible
 - _ulid: 01KNNZ6D4P24MB9J94K4Q068AN
   slugs:

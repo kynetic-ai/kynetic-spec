@@ -56,8 +56,13 @@ description: >-
 spec_ref: "@daemon-meta-subdomain"
 meta_ref: null
 plan_ref: "@plan-granular-cache-invalidation"
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved review @01KNP0DX9Q0YE50ZDXPT471FXB and merged
+  dispatch/task/task-shadow-sync-narrow-invalidation/01knntxz into
+  plan/plan-granular-cache-invalidation/01kndbmk. Verified the shadow-sync onPull handler now calls
+  refreshMetaShadowInfo(), the targeted AC annotation/test alignment is correct, and no
+  task-specific regressions were found.
 depends_on: []
 context: []
 priority: 1
@@ -283,9 +288,27 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-08T07:38:11.250Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved review @01KNP0DX9Q0YE50ZDXPT471FXB and merged
+          dispatch/task/task-shadow-sync-narrow-invalidation/01knntxz into
+          plan/plan-granular-cache-invalidation/01kndbmk. Verified the shadow-sync onPull handler
+          now calls refreshMetaShadowInfo(), the targeted AC annotation/test alignment is correct,
+          and no task-specific regressions were found.
+        previous: null
+      completed_at:
+        new: 2026-04-08T08:06:04.581Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-08T08:06:04.592Z
 prior_status: null
 created_at: 2026-04-08T06:02:03.561Z
 started_at: 2026-04-08T07:23:14.275Z
 submitted_at: 2026-04-08T07:35:53.675Z
+completed_at: 2026-04-08T08:06:04.581Z
 todos: []
 automation: eligible
