@@ -131416,6 +131416,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-08T12:59:03.159Z
+      - _ulid: 01KNPJSK222N1F9TWZ4KJE6Y7J
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNPJSJ7K94WR2TKE9ARJ2QXT
+        timestamp: 2026-04-08T12:59:05.666Z
     examined_commit: 5aaffcd7d574a1c0ae6557dd72e1aa1862425e14
     external_links: []
     lifecycle_state: open
@@ -131425,8 +131432,36 @@ reviews:
       content_hash: ""
       ref: "@01KNNZ6D4P24MB9J94K4Q068AN"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNPJSJ7K94WR2TKE9ARJ2QXT
+        entries:
+          - _ulid: 01KNPJSJ7KH9SEJH2SXWAYSAN0
+            author: Jacob Chapel
+            body: >-
+              Review evidence log:
+
+              Files read: kspec.config.yaml, src/parser/config.ts, src/parser/yaml.ts,
+              src/parser/validate.ts, src/parser/coverage-cache.ts, src/cli/commands/task.ts,
+              src/export/json.ts, packages/daemon/src/routes/items.ts,
+              tests/coverage-scan-config.test.ts, tests/worktree-context.test.ts,
+              tests/coverage-cache.test.ts, tests/ac-annotation-validation.test.ts,
+              tests/trait-ac-coverage.test.ts.
+
+              Commands run: kspec task get @01KNNZ6D4P24MB9J94K4Q068AN; kspec review for-task
+              @01KNNZ6D4P24MB9J94K4Q068AN; kspec item get @coverage-scan-config; grep -RIn "AC:
+              @coverage-scan-config" tests/; npm test; node dist/cli/index.js validate; source-level
+              scan/validate comparisons against base.
+
+              Claims verified: detached worktree config loading now resolves coverage config from
+              the worktree root; excluded fixture files are no longer scanned in the reviewed build;
+              remaining invalid annotation warnings are pre-existing debt reduced vs base (286 on
+              base source-level validate, 239 on head local CLI validate).
+
+              Categories searched: correctness, edge cases, error handling, integration, test
+              quality.
+            created_at: 2026-04-08T12:59:04.819Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-08T12:45:05.783Z
-    updated_at: 2026-04-08T12:59:02.258Z
+    updated_at: 2026-04-08T12:59:04.819Z
     notes: []
