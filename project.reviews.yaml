@@ -128554,9 +128554,25 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-08T00:17:16.144Z
+      - _ulid: 01KNN76QK8G3V3BVM7N4MRE1S6
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-08T00:17:18.953Z
+      - _ulid: 01KNN76QK9RYGJBT1FMJDY7F8V
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-08T00:17:18.953Z
     examined_commit: 93b76749adaa9d11a0d4f2432a41023a4170bce0
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -128646,7 +128662,14 @@ reviews:
               captured output path that depends on that interception.
             created_at: 2026-04-08T00:15:56.432Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-08T00:17:18.952Z
     created_at: 2026-04-08T00:14:30.965Z
-    updated_at: 2026-04-08T00:17:15.286Z
+    updated_at: 2026-04-08T00:17:18.953Z
     notes: []
