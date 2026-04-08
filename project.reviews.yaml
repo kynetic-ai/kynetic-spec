@@ -132029,7 +132029,17 @@ reviews:
     slugs: []
     title: Review task-fix-worktree-linkage-capture
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- tests/submission-linkage-worktree.test.ts passed: 2 suites, 5 tests"
+        name: targeted-tests-submission-linkage
+        required: true
+        runner: npm test
+        created_at: 2026-04-08T22:52:52.949Z
+        completed_at: 2026-04-08T22:52:52.949Z
     events:
       - _ulid: 01KNQKPAAWNSFBG3A0QQ1J550Z
         actor: Jacob Chapel
@@ -132044,6 +132054,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-08T22:52:41.546Z
+      - _ulid: 01KNQMRW5JS2JCE1N7PA32CGDQ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted-tests-submission-linkage
+        timestamp: 2026-04-08T22:52:53.811Z
     examined_commit: a6698d0d7053638669479e3bd101f8f3c6a2c693
     external_links: []
     lifecycle_state: open
@@ -132056,5 +132073,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-08T22:34:01.436Z
-    updated_at: 2026-04-08T22:52:40.692Z
+    updated_at: 2026-04-08T22:52:52.949Z
     notes: []
