@@ -19,3 +19,21 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-08T07:55:40.559Z
+  - _ulid: 01KNP29WKG8H4HSB5E0XNTCPEE
+    content: >-
+      Revised approach: Second full-suite run revealed 25 failures (all timeouts), not just the
+      original 3. Machine load variance (first run: 6300s, second: 10600s) proves the 15s global
+      timeout is simply too tight for full-suite concurrency.
+
+
+      Changes:
+
+      1. vitest.config.ts: Raise default testTimeout from 15s to 45s (above the 30s kspec CLI
+      subprocess timeout)
+
+      2. cli-serve.test.ts: Add retry loop for process.kill(pid,0) race condition after SIGTERM  
+
+      3. Remove 3 stale explicit {timeout: 15000} overrides that now restrict below the new default
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-08T08:10:53.936Z
