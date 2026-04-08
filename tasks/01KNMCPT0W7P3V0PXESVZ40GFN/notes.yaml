@@ -1,1 +1,26 @@
-notes: []
+notes:
+  - _ulid: 01KNPAW38FR895VFJ7YDCW5T9X
+    content: >-
+      Approach: Merged snapshot 343472d01 (plan-granular-cache-invalidation) to get the failing test
+      files, then fixed all dist/daemon/ imports that used .ts extensions to use .js extensions
+      instead.
+
+
+      Root cause: The daemon build uses esbuild (not tsc), which only produces .js files — no .d.ts
+      declaration files. Value imports from dist/daemon/*.ts fail because Node's ESM resolver can't
+      find the .ts files. Type-only imports from dist/parser/*.ts are safe because (a) tsc produces
+      .d.ts files there and (b) they're erased at compile time.
+
+
+      Files fixed:
+
+      - tests/daemon-read-path.test.ts: entity-cache.ts → .js, server.ts → .js
+
+      - tests/daemon-triage-write-through.test.ts: 6 imports changed from .ts to .js
+      (project-context, inbox, triage, pubsub, entity-cache-types, entity-cache)
+
+
+      Full suite passes: 2085 suites, 7595 tests, 5 skipped.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-08T10:40:39.183Z
