@@ -25854,7 +25854,7 @@
   type: task
   spec_ref: "@daemon-command-api"
   plan_ref: "@plan-cache-aware-command-execution"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@01KNN24A"
@@ -25867,7 +25867,7 @@
   notes_count: 6
   todos_count: 0
   created_at: 2026-04-07T22:48:54.185Z
-  started_at: 2026-04-08T00:34:46.360Z
+  started_at: 2026-04-08T01:04:10.656Z
   submitted_at: 2026-04-08T00:35:00.501Z
   automation: eligible
 - _ulid: 01KNN24YV6T3TPR7R1Y2CTH66C
