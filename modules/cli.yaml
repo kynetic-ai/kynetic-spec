@@ -1338,6 +1338,10 @@ features:
                 id: ac-worktree-branch-isolation
                 then: The recorded branch is not affected by the main repository working tree's checked-out branch
                 when: Submission linkage is captured
+              - given: A task is submitted from a linked git worktree
+                id: ac-worktree-commit
+                then: The recorded commit reflects the worktree's HEAD
+                when: Submission linkage is captured
             tags: []
             created: 2026-03-13T09:16:57.822Z
             notes: []
