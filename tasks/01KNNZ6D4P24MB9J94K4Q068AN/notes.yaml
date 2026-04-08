@@ -32,3 +32,36 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-08T08:26:07.960Z
+  - _ulid: 01KNP5WF4KEVAMQTBSXWYQVPJE
+    content: >-
+      Implementation complete. All 6 ACs covered with 33 new tests in
+      tests/coverage-scan-config.test.ts.
+
+
+      Key decisions:
+
+      - scan_paths defaults to empty array (explicit opt-in, not implicit scanning)
+
+      - When scan_paths is empty, no files are scanned AND no missing_test_coverage warnings are
+      generated (can't claim uncovered when not scanning)
+
+      - coverage_not_configured warning emitted during completeness to surface the inactive state
+
+      - Comment prefix map keyed by extension, getACLinePrefix() exported for test use
+
+      - parseACAnnotationLine() accepts optional prefix param (default stays JS/TS for backward
+      compat)
+
+      - Daemon routes use lazy getCtx() to access config for coverage calls
+
+      - Updated existing tests (ac-annotation-validation, coverage-cache, trait-ac-coverage) to
+      provide scan_paths
+
+      - Self-hosting: kspec.config.yaml now has coverage.scan_paths for tests/ and
+      packages/web-ui/tests/e2e/
+
+
+      Full test suite: 2092 suites, 7589 tests pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-08T09:13:28.468Z
