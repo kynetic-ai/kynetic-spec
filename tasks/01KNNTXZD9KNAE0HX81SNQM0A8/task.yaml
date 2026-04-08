@@ -56,7 +56,7 @@ description: >-
 spec_ref: "@daemon-meta-subdomain"
 meta_ref: null
 plan_ref: "@plan-granular-cache-invalidation"
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -66,6 +66,14 @@ tags:
   - cache
   - bug
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dev-dispatch
+  captured_at: 2026-04-08T07:35:53.672Z
+  commit: 6a8fd6df49537d95cca2f6283be8a4aa82cc30c8
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dev
 session_id: 01KNNZH13VD6YVC381JTAH6PKJ
 history:
   - author: "@claude"
@@ -247,8 +255,29 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-08T07:23:14.275Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev-dispatch
+          captured_at: 2026-04-08T07:35:53.672Z
+          commit: 6a8fd6df49537d95cca2f6283be8a4aa82cc30c8
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-04-08T07:35:53.675Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-08T07:35:53.675Z
 prior_status: null
 created_at: 2026-04-08T06:02:03.561Z
 started_at: 2026-04-08T07:23:14.275Z
+submitted_at: 2026-04-08T07:35:53.675Z
 todos: []
 automation: eligible
