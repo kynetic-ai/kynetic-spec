@@ -25929,7 +25929,7 @@
   title: Make AC coverage scanner configurable and language-agnostic
   type: task
   spec_ref: "@coverage-scan-config"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 2
@@ -25940,6 +25940,7 @@
   created_at: 2026-04-08T07:16:34.070Z
   started_at: 2026-04-08T12:40:30.229Z
   submitted_at: 2026-04-08T12:40:41.165Z
+  completed_at: 2026-04-08T13:00:13.127Z
   automation: eligible
 - _ulid: 01KNP0D9JWZ00XZQJMM5G5X7XX
   slugs:
