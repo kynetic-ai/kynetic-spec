@@ -129413,6 +129413,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-08T08:23:02.765Z
+      - _ulid: 01KNP4K7NE6JM53BF2J3J6A1QB
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNP4K6SSVTTE8PP0W1EERYTZ
+        timestamp: 2026-04-08T08:50:57.326Z
     examined_commit: d29bbeb0834487440004909576233e6836ae30b8
     external_links: []
     lifecycle_state: open
@@ -129422,8 +129429,30 @@ reviews:
       content_hash: ""
       ref: "@01KNMJXC8DADJDK9R9CGK6B854"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNP4K6SSVTTE8PP0W1EERYTZ
+        anchor:
+          type: code
+          commit: d29bbeb0834487440004909576233e6836ae30b8
+          line_end: 31
+          line_start: 31
+          path: vitest.config.ts
+          side: head
+        entries:
+          - _ulid: 01KNP4K6STC007GHAEXPFBZ65N
+            author: Jacob Chapel
+            body: "MUST-FIX: the reviewed snapshot still fails repeated uncached full-suite runs, so the
+              stabilization is not complete. I ran 'npm test -- --fresh' twice on commit
+              d29bbeb0834487440004909576233e6836ae30b8 in this review worktree: the first run passed
+              after 7506.6s, but the second run failed after 11024.6s with 7 failed suites / 4
+              failed tests, including STACK_TRACE_ERROR failures in tests/activity-display.test.ts
+              and tests/cli/session-note-limit.test.ts plus an assertion failure in
+              tests/agent-dispatch-engine.test.ts. Raising the global default timeout from 15s to
+              45s at this line did not make the full suite reliable in the review environment, which
+              is the task’s stated outcome."
+            created_at: 2026-04-08T08:50:56.442Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-08T08:22:14.419Z
-    updated_at: 2026-04-08T08:23:01.824Z
+    updated_at: 2026-04-08T08:50:56.442Z
     notes: []
