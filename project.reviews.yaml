@@ -129843,3 +129843,29 @@ reviews:
     created_at: 2026-04-08T10:01:24.232Z
     updated_at: 2026-04-08T10:01:55.513Z
     notes: []
+  - _ulid: 01KNP9XQCHMV876AW114SHZEP5
+    slugs: []
+    title: Review task-coverage-scan-config (cycle 2)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KNP9XQCG40J3H14S8Q646EB0
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-08T10:24:03.985Z
+    examined_commit: c9c1487bd64cf4de30d1631ed6a16f9419c30dd2
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNNZ6D4P24MB9J94K4Q068AN"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-08T10:24:03.985Z
+    updated_at: null
+    notes: []
