@@ -45093,7 +45093,7 @@ workspaces:
         head: efd95569e94451efa368054907859bca82fed913
         last_seen_at: 2026-04-08T13:25:13.275Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-daemon-dist-module-import-failures-in-test-runner-01knmcpt
-  - active_role: worker
+  - active_role: null
     base_branch_point: 1703ee4826ac0695803028d3fcd23d4b21917c5c
     bootstrap:
       status: succeeded
@@ -45294,12 +45294,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-08T13:48:50.321Z
+      updated_at: 2026-04-08T13:52:08.440Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-08T13:48:50.321Z
+      updated_at: 2026-04-08T13:52:08.440Z
     integration:
       status: pending
       detail: null
@@ -45307,17 +45307,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-cache-aware-command-execution/01knkf3b
       target_commit: 1703ee4826ac0695803028d3fcd23d4b21917c5c
-      updated_at: 2026-04-08T13:48:50.321Z
-    lifecycle_state: active
+      updated_at: 2026-04-08T13:52:08.440Z
+    lifecycle_state: ready
     resolved_base_branch: plan/plan-cache-aware-command-execution/01knkf3b
     task_ref: "@01KNP0D9JWZ00XZQJMM5G5X7XX"
     task_slug: task-fix-plan-filter-bidirectional
     timestamps:
       closed_at: null
       last_active_at: 2026-04-08T13:25:08.563Z
-      last_reconciled_at: 2026-04-08T13:48:50.321Z
+      last_reconciled_at: 2026-04-08T13:52:08.440Z
       created_at: 2026-04-08T10:43:23.931Z
-      updated_at: 2026-04-08T13:48:50.321Z
+      updated_at: 2026-04-08T13:52:08.440Z
     workspace_id: dispatch-workspace-01KNP0D9JWZ00XZQJMM5G5X7XX
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
