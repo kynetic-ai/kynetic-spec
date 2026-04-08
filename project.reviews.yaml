@@ -129847,7 +129847,82 @@ reviews:
     slugs: []
     title: Review task-coverage-scan-config (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: >-
+          ✓ Validation passed
+
+          ────────────────────────────────────────
+
+          Files checked: 10
+
+          Items checked: 578
+
+          Tasks checked: 0
+
+          Meta: 11 agents, 11 workflows, 10 conventions
+
+
+          Schema: OK
+
+          References: OK
+
+
+          Reference warnings: 1
+            ⚠ @skills
+              Orphaned skill directory 'skills' has no corresponding meta entry
+              in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+          Alignment warnings: 32
+            Orphaned specs (no tasks): 30
+              ○ Test Trait
+              ○ Filterable List Commands
+              ○ Dry Run Preview Mode
+              ... and 27 more
+            Status mismatches: 2
+              ! Task Set Batch Support
+                Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+              ! Concurrent Read Command Execution
+                Spec "Concurrent Read Command Execution" status is "implemented" but should be "in_progress" based on task progress
+
+          Alignment stats: 415/578 specs have tasks, 413 aligned
+
+
+          Completeness warnings: 544
+            Missing acceptance criteria: 1
+              ○ @01KJN1WT - Test Trait
+            Missing own AC coverage: 236
+              ! @spec-item - Spec Item
+                Uncovered: ac-item-1, ac-item-2
+              ! @ulid-system - ULID Identifier System
+                Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+              ! @slug-system - Slug Alias System
+                Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+              ... and 233 more
+            Invalid AC annotations: 307
+              ! AC annotation references '@slug' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-scan-config-01knnz6d-review/tests/ac-annotation-validation.test.ts:6
+              ! AC annotation references '@my-spec' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-scan-config-01knnz6d-review/tests/ac-annotation-validation.test.ts:96
+              ! AC annotation references '@my-spec' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-scan-config-01knnz6d-review/tests/ac-annotation-validation.test.ts:99
+              ! AC annotation references '@spec-a' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-scan-config-01knnz6d-review/tests/ac-annotation-validation.test.ts:126
+              ! AC annotation references '@spec-b' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-scan-config-01knnz6d-review/tests/ac-annotation-validation.test.ts:130
+              ... and 302 more
+          Skills: OK (10 files checked) exits 6 in this snapshot. New self-hosted coverage scanning
+          produces 307 invalid_ac_annotation warnings from fixture-style tests under tests/ (for
+          example tests/ac-annotation-validation.test.ts lines 96, 99, 126, 130 and
+          tests/coverage-scan-config.test.ts lines 146, 161, 165, 178, 197).
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-04-08T10:31:43.448Z
+        completed_at: 2026-04-08T10:31:43.448Z
     events:
       - _ulid: 01KNP9XQCG40J3H14S8Q646EB0
         actor: Jacob Chapel
@@ -129892,6 +129967,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNPABH9A6EFH3VJ662253STJ
         timestamp: 2026-04-08T10:31:38.190Z
+      - _ulid: 01KNPABT03EZ4936SQ35VWDQAG
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-08T10:31:45.411Z
     examined_commit: c9c1487bd64cf4de30d1631ed6a16f9419c30dd2
     external_links: []
     lifecycle_state: closed
@@ -130010,5 +130092,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-08T10:31:17.269Z
     created_at: 2026-04-08T10:24:03.985Z
-    updated_at: 2026-04-08T10:31:36.490Z
+    updated_at: 2026-04-08T10:31:43.448Z
     notes: []
