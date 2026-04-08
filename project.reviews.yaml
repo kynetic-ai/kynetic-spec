@@ -129310,6 +129310,18 @@ reviews:
         runner: manual
         created_at: 2026-04-08T08:04:44.742Z
         completed_at: 2026-04-08T08:04:44.742Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate exited 6 with repo-wide warnings only (orphaned skill dir, existing
+          alignment/completeness warnings); no task-specific schema or reference errors in the
+          reviewed change.
+        name: validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-08T08:04:47.693Z
+        completed_at: 2026-04-08T08:04:47.693Z
     events:
       - _ulid: 01KNP0DX9QX0VHEWJ1R0Q5V4JM
         actor: Jacob Chapel
@@ -129338,6 +129350,13 @@ reviews:
           status: pass
           name: review-evidence
         timestamp: 2026-04-08T08:04:45.754Z
+      - _ulid: 01KNP1YQYKS6X5X84AXQ5J73NC
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: validate
+        timestamp: 2026-04-08T08:04:48.723Z
     examined_commit: 0c91c0d9d36df1418b5f95c65e2ef485a3466a90
     external_links: []
     lifecycle_state: open
@@ -129350,5 +129369,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-08T07:38:08.567Z
-    updated_at: 2026-04-08T08:04:44.742Z
+    updated_at: 2026-04-08T08:04:47.693Z
     notes: []
