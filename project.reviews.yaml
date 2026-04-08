@@ -130947,6 +130947,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-08T11:49:31.679Z
+      - _ulid: 01KNPET9HRYMH0PMED1WHF9M6V
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNPET8HZQ5CM0F38TQRJD13X
+        timestamp: 2026-04-08T11:49:34.392Z
     examined_commit: 55e02c8f3fc9b7325eb12c0c81a3f6e4386147d4
     external_links: []
     lifecycle_state: open
@@ -130975,7 +130982,90 @@ reviews:
               Categories searched = correctness, tests, edge cases, integration, config loading."
             created_at: 2026-04-08T11:49:25.273Z
         kind: nit
+      - _ulid: 01KNPET8HZQ5CM0F38TQRJD13X
+        anchor:
+          type: code
+          commit: 55e02c8f3fc9b7325eb12c0c81a3f6e4386147d4
+          line_end: 16
+          line_start: 9
+          path: kspec.config.yaml
+          side: head
+        entries:
+          - _ulid: 01KNPET8HZQMCP01XDYMVSESDJ
+            author: Jacob Chapel
+            body: >-
+              The new self-hosting coverage config is still ineffective in detached worktree
+              reviews, so this task does not actually clear its own validation gate. In this
+              snapshot, ✓ Validation passed
+
+              ────────────────────────────────────────
+
+              Files checked: 10
+
+              Items checked: 578
+
+              Tasks checked: 0
+
+              Meta: 11 agents, 11 workflows, 10 conventions
+
+
+              Schema: OK
+
+              References: OK
+
+
+              Reference warnings: 1
+                ⚠ @skills
+                  Orphaned skill directory 'skills' has no corresponding meta entry
+                  in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+              Alignment warnings: 32
+                Orphaned specs (no tasks): 30
+                  ○ Test Trait
+                  ○ Filterable List Commands
+                  ○ Dry Run Preview Mode
+                  ... and 27 more
+                Status mismatches: 2
+                  ! Task Set Batch Support
+                    Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+                  ! Concurrent Read Command Execution
+                    Spec "Concurrent Read Command Execution" status is "implemented" but should be "in_progress" based on task progress
+
+              Alignment stats: 415/578 specs have tasks, 413 aligned
+
+
+              Completeness warnings: 554
+                Missing acceptance criteria: 1
+                  ○ @01KJN1WT - Test Trait
+                Missing own AC coverage: 236
+                  ! @spec-item - Spec Item
+                    Uncovered: ac-item-1, ac-item-2
+                  ! @ulid-system - ULID Identifier System
+                    Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+                  ! @slug-system - Slug Alias System
+                    Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+                  ... and 233 more
+                Invalid AC annotations: 317
+                  ! AC annotation references '@slug' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-scan-config-01knnz6d-review/tests/ac-annotation-validation.test.ts:6
+                  ! AC annotation references '@my-spec' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-scan-config-01knnz6d-review/tests/ac-annotation-validation.test.ts:96
+                  ! AC annotation references '@my-spec' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-scan-config-01knnz6d-review/tests/ac-annotation-validation.test.ts:99
+                  ! AC annotation references '@spec-a' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-scan-config-01knnz6d-review/tests/ac-annotation-validation.test.ts:126
+                  ! AC annotation references '@spec-b' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-scan-config-01knnz6d-review/tests/ac-annotation-validation.test.ts:130
+                  ... and 312 more
+              Skills: OK (10 files checked) still exits 6 with 317  warnings from  and , and a
+              direct runtime repro shows why:  resolves  to empty arrays here, because config is
+              being loaded from the parent repo root rather than this worktree snapshot. As a
+              result, the added / entries in this file never take effect during review, so the
+              claimed fix for the invalid-annotation regression is not actually present in the
+              environment where reviewers run the task.
+            created_at: 2026-04-08T11:49:33.375Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-08T11:38:09.742Z
-    updated_at: 2026-04-08T11:49:30.744Z
+    updated_at: 2026-04-08T11:49:33.375Z
     notes: []
