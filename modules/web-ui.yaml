@@ -899,6 +899,26 @@ features:
         then: the response metadata includes a cache status value of "loading" and the data payload is empty
           or default, distinct from a normal empty result where cache status is "ready"
         when: an API list or query endpoint is called
+      - given: daemon is running
+        id: ac-plan-filter-resolve
+        then: resolves plan by ULID (full or prefix) or slug
+        when: GET /api/tasks with plan filter (?plan=<ref>)
+      - given: plan is resolved from filter
+        id: ac-plan-filter-derived
+        then: task is included in results
+        when: task appears in the plan's derived task list
+      - given: plan is resolved from filter
+        id: ac-plan-filter-ref
+        then: task is included in results
+        when: task's plan reference resolves to the plan
+      - given: daemon is running
+        id: ac-plan-filter-not-found
+        then: returns empty array
+        when: GET /api/tasks with plan filter that matches no plan
+      - given: plan filter is applied
+        id: ac-plan-filter-additive
+        then: plan filter is additive with other filters
+        when: other query parameters are also present (status, tag, etc.)
     tags:
       - api
       - rest
