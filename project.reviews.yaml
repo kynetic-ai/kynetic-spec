@@ -130204,6 +130204,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-08T10:45:48.214Z
+      - _ulid: 01KNPBVDPVEJ3VK0B3XEDARHJP
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNPBVC3FXQF7JRSV7GZ069B5
+        timestamp: 2026-04-08T10:57:45.691Z
     examined_commit: 8fda82f5accc0aa0563322520735f3c0eb1c4df7
     external_links: []
     lifecycle_state: open
@@ -130213,8 +130220,342 @@ reviews:
       content_hash: ""
       ref: "@01KNMCPT0W7P3V0PXESVZ40GFN"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNPBVC3FXQF7JRSV7GZ069B5
+        anchor:
+          type: code
+          commit: 8fda82f5accc0aa0563322520735f3c0eb1c4df7
+          line_end: 617
+          line_start: 589
+          path: src/daemon/entity-cache.ts
+          side: head
+        entries:
+          - _ulid: 01KNPBVC3G01D4W35Z4SWBWC0E
+            author: Jacob Chapel
+            body: >-
+              This task is supposed to fix two daemon test imports, but this snapshot also includes
+              the incremental cache work from the unmerged plan branch. commit
+              8fda82f5accc0aa0563322520735f3c0eb1c4df7
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Wed Apr 8 03:40:55 2026 -0700
+
+                  fix(test): use .js extensions for dist/daemon imports in test suites
+                  The daemon build uses esbuild which only produces .js files (no .d.ts).
+                  Value imports using .ts extensions fail with ERR_MODULE_NOT_FOUND because
+                  Node's ESM resolver cannot find .ts files in dist/daemon/. Changed all
+                  dist/daemon/ imports in daemon-read-path.test.ts and
+                  daemon-triage-write-through.test.ts to use .js extensions.
+                  Task: @fix-daemon-dist-module-import-failures-in-test-runner
+                  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+              commit 343472d01808d514accacb66d1bb86db4519b37f
+
+              Merge: 6a8fd6df4 6fa53bdea
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Tue Apr 7 09:14:57 2026 -0700
+
+                  Merge remote-tracking branch 'origin/plan/plan-granular-cache-invalidation/01kndbmk' into dev
+                  # Conflicts:
+                  #       packages/daemon/src/server.ts
+                  #       tests/daemon-read-path.test.ts
+
+              commit 6fa53bdea274ac3f0a39842cdef71ee2b1b4b6ba
+
+              Merge: 82c5df5ea fb22f2e25
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Mon Apr 6 23:35:10 2026 -0700
+
+                  Merge branch 'dispatch/task/task-writethrough-incremental-alignment/01knddj4' into plan/plan-granular-cache-invalidation/01kndbmk
+
+              commit fb22f2e258a4916bf9164b820a5de7e48db08522
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Mon Apr 6 23:24:38 2026 -0700
+
+                  fix(daemon): hint triage promote task write-through
+                  Pass the created task ULID through triage promote write-through so the tasks cache can use the incremental update path.
+                  Task: @01KNDDJ4PD7MDPS1RB53K0QZFG
+                  Spec: @daemon-incremental-cache
+                  Co-Authored-By: OpenAI Codex <codex@openai.com>
+
+              commit 6391877ed741b6f9c2a5ebbe19de3aee5f6de5a6
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Mon Apr 6 23:01:26 2026 -0700
+
+                  fix(daemon): restore shadow sync cache reload
+                  Restore the daemon shadow-sync onPull callback to reload the full entity cache after successful pulls, and add a regression test for the server callback wiring.
+                  Task: @01KNDDJ4PD7MDPS1RB53K0QZFG
+                  Spec: @daemon-incremental-cache
+                  Co-Authored-By: Codex <codex@openai.com>
+
+              commit fee4f128f4c1a3d24a69690d1ae11fbfa6154991
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Mon Apr 6 22:32:06 2026 -0700
+
+                  fix(daemon): serialize hinted write-through updates
+                  Queue same-domain hinted write-through work behind the in-flight reload lane so concurrent task patches cannot overwrite each other. Add a regression test covering Promise.all over hinted task writeThrough calls and keep the no-hint fallback assertion behavioral.
+                  Task: @01KNDDJ4PD7MDPS1RB53K0QZFG
+                  Spec: @daemon-incremental-cache
+                  Co-Authored-By: OpenAI Codex <codex@openai.com>
+
+              commit e29af70a377664fca3f8d18703b86af08570216c
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Mon Apr 6 22:05:13 2026 -0700
+
+                  feat(daemon): align write-through with incremental cache updates
+                  Route hinted write-through calls through the existing incremental domain
+                  processors for tasks, items, and sessions, while preserving full-reload
+                  fallbacks and watcher skip semantics for unsupported domains.
+                  Task: @01KNDDJ4PD7MDPS1RB53K0QZFG
+                  Spec: @daemon-incremental-cache
+                  Co-Authored-By: OpenAI Codex <codex@openai.com>
+
+              commit 82c5df5ea74a3e5801b69525990fd0edddd181b7
+
+              Merge: 8540fb7cf 3bd80c9d5
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Mon Apr 6 22:00:55 2026 -0700
+
+                  Merge branch 'dispatch/task/task-meta-subdomain-decomposition/01knddj4' into plan/plan-granular-cache-invalidation/01kndbmk
+
+              commit 3bd80c9d568f431109bc15f19faaf8028c7dcf8b
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Mon Apr 6 21:47:46 2026 -0700
+
+                  fix(daemon): reload included meta files incrementally
+                  Preserve manifest-only meta reloads for arbitrary files loaded through meta includes.
+                  Task: @01KNDDJ4BXMWVZSC7G6KMDP8BH
+                  Spec: @daemon-meta-subdomain
+                  Co-Authored-By: OpenAI Codex <codex@openai.com>
+
+              commit a756106068e3feea81055805f98a0510b71aa40a
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Mon Apr 6 21:09:41 2026 -0700
+
+                  fix(daemon): merge overlapping meta reload targets
+                  Keep same-subdomain meta reloads deduplicated while allowing other meta sub-domains to queue behind an active reload.
+                  Task: @01KNDDJ4BXMWVZSC7G6KMDP8BH
+                  Spec: @daemon-meta-subdomain
+
+              commit f8e8cf68fcc7260af1ebe02f30c8827a6ab0e6c8
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Mon Apr 6 20:40:30 2026 -0700
+
+                  fix(daemon): preserve meta reload dedup
+                  Restore the meta domain in-flight gate for incremental subdomain refreshes and add a regression test for overlapping manifest invalidations.
+                  Task: @01KNDDJ4BXMWVZSC7G6KMDP8BH
+                  Spec: @daemon-meta-subdomain
+
+              commit f5c4515af9055dd9aa57f3ce30f6502f2de8f4f7
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Mon Apr 6 20:09:54 2026 -0700
+
+                  feat: split meta cache into independent reload paths
+                  Decompose the meta cache domain into manifest, shadow, and session-context
+                  sub-loads so watcher invalidations and background sync can refresh only the
+                  relevant data source.
+                  Task: @01KNDDJ4BXMWVZSC7G6KMDP8BH
+                  Spec: @daemon-meta-subdomain
+                  Co-Authored-By: OpenAI Codex <codex@openai.com>
+
+              commit 8540fb7cfec2910bab762a7c1c8bfc1517466d3b
+
+              Merge: d5cf75d00 9d2241a2c
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Mon Apr 6 20:32:14 2026 -0700
+
+                  Merge branch 'dispatch/task/task-incremental-item-updates/01knddj3' into plan/plan-granular-cache-invalidation/01kndbmk
+
+              commit 9d2241a2c40dde180fa6551bb9626fb278799152
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Mon Apr 6 11:57:27 2026 -0700
+
+                  fix(daemon): preserve batched item file order
+                  Keep later debounce-window invalidations on fresh reload cycles,
+                  fall back to full reload when item context is unavailable, and
+                  resolve include ordering from the manifest path so incremental
+                  item patches match full reload order.
+                  Task: @01KNDDJ3RK4K2HWH7TVY6F1V66
+                  Spec: @daemon-incremental-cache
+                  Co-Authored-By: OpenAI Codex <codex@openai.com>
+
+              commit 8fddcd4075df88d4c6db316199c04bfb2196d016
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Mon Apr 6 11:24:50 2026 -0700
+
+                  feat(daemon): incrementally patch item cache
+                  Track item source files so module and spec file invalidations can replace only the affected item entries while preserving atomic index/detail swaps. Add daemon cache coverage for replace, add, remove, and manifest fallback behavior.
+                  Task: @01KNDDJ3RK4K2HWH7TVY6F1V66
+                  Spec: @daemon-incremental-cache
+                  Co-Authored-By: OpenAI Codex <codex@openai.com>
+
+              commit d5cf75d00642de5a31d80d1969cb337194ca1207
+
+              Merge: 86cb6380b 86a449c9d
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Mon Apr 6 19:35:45 2026 -0700
+
+                  Merge branch 'dispatch/task/task-incremental-session-updates/01knddj4' into plan/plan-granular-cache-invalidation/01kndbmk
+
+              commit 86a449c9dd84ad1a7a7d36b1552265597eb3b7d6
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Mon Apr 6 19:22:27 2026 -0700
+
+                  fix(daemon): invalidate session detail cache on patch updates
+                  Keep incremental session index patching, but clear cached session detail entries when watcher-driven updates only refresh metadata. This prevents active-session detail reads from serving stale event counts after events-file changes while preserving fallback reload behavior.
+                  Task: @01KNDDJ42341SCDJN6VKDV1518
+                  Spec: @daemon-incremental-cache
+                  Co-Authored-By: OpenAI Codex <codex@openai.com>
+
+              commit 6e975d7da18c5811a8ea560d32eb15a026c87b99
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Mon Apr 6 11:41:11 2026 -0700
+
+                  feat(daemon): patch session cache incrementally
+                  Update the sessions cache in place for single-session watcher changes.
+                  Task: @01KNDDJ42341SCDJN6VKDV1518
+                  Spec: @daemon-incremental-cache
+                  Co-Authored-By: OpenAI Codex <codex@openai.com>
+
+              commit 86cb6380b29cd12f94708aa18ab2603da5c54af7
+
+              Merge: f79e50ae4 ba4b2952e
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Mon Apr 6 11:17:42 2026 -0700
+
+                  Merge commit 'ba4b2952e42cf3f86f7fdabe62989f0bd533c7e7' into plan/plan-granular-cache-invalidation/01kndbmk
+
+              commit ba4b2952e42cf3f86f7fdabe62989f0bd533c7e7
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Mon Apr 6 11:03:55 2026 -0700
+
+                  feat(daemon): patch split task cache incrementally
+                  Update the task cache in place for split-backend task file changes.
+                  Task: @01KNDDJ3FB6YEAFD22PHK4AAVK
+                  Spec: @daemon-incremental-cache
+
+              commit f79e50ae4981291472311faca180dcfcda98a05a
+
+              Merge: 44d753472 e30bbe067
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Mon Apr 6 10:16:08 2026 -0700
+
+                  Merge branch 'dispatch/task/task-debounce-path-accumulation/01knddj2' into plan/plan-granular-cache-invalidation/01kndbmk
+
+              commit e30bbe0675040848ac4e3c9dee41aade876f1021
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Mon Apr 6 10:11:25 2026 -0700
+
+                  feat(daemon): batch pending cache file changes
+                  Accumulate per-domain file paths and latest content across the debounce
+                  window, then hand the drained batch to a dedicated processing seam.
+                  Task: @01KNDDJ2W7RD7D0PTZJ7WXTZ53
+                  Spec: @daemon-incremental-cache
+                  Co-Authored-By: OpenAI Codex <codex@openai.com>
+
+              commit 44d753472881707702ac038f2821b685c8f06bb7
+
+              Merge: fcee8b4c7 ff63743ab
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Mon Apr 6 10:00:27 2026 -0700
+
+                  Merge branch 'dispatch/task/task-watcher-content-passthrough/01knddj2' into plan/plan-granular-cache-invalidation/01kndbmk
+
+              commit ff63743abc8886abd905b90286ceacb67216f3ac
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Mon Apr 6 09:51:44 2026 -0700
+
+                  feat(daemon): pass watcher content to cache invalidation
+                  Thread watcher-provided file content through project context cache
+                  invalidation callbacks into the entity cache handler, while preserving
+                  undefined content for removals and session watcher events.
+                  Task: @01KNDDJ2JK36PAG8WA81WMTSD2
+                  Spec: @daemon-incremental-cache
+                  Co-Authored-By: OpenAI Codex <codex@openai.com>
+
+              commit fcee8b4c7aafcc8c8263a9eb53de3589b8a8c1d2
+
+              Merge: 7179f7c7f dbae3ce85
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Mon Apr 6 09:21:38 2026 -0700
+
+                  Merge branch 'dispatch/task/task-add-ac-context-reuse/01knddj2' into plan/plan-granular-cache-invalidation/01kndbmk
+
+              commit dbae3ce85105c4cf1ffbdcc4cdd85f92953c99dd
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Sun Apr 5 15:24:47 2026 -0700
+
+                  fix(daemon): bound context reuse to debounce window
+                  Release the shared reload cycle as soon as its debounce window closes so later invalidation windows start a fresh initContext(). Add a regression test for overlapping windows while reloads remain in flight.
+                  Task: @01KNDDJ28BG65RTB77YFQZVQDM
+                  Spec: @daemon-entity-cache
+                  Co-Authored-By: OpenAI Codex <codex@openai.com>
+
+              commit c6054304de7fb67f41e5b3e847fc75d8ee75379d
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Sun Apr 5 15:08:21 2026 -0700
+
+                  fix(daemon): reuse cache context across invalidation cycle
+                  Reuse initContext() across watcher-driven multi-domain reloads in the same debounce cycle and cover the manifest-triggered meta+items path.
+                  Task: @01KNDDJ28BG65RTB77YFQZVQDM
+                  Spec: @daemon-entity-cache
+                  Co-Authored-By: OpenAI Codex <codex@openai.com> shows commit  plus its precursor commits before the final import-fix commit, and those changes are visible here in the new debounce/reload machinery. That violates the repo's branch-isolation gate for task work: merging this task would ship unrelated daemon behavior that has not been reviewed as part of this task. Rebase or cherry-pick only the  import fix onto  and resubmit that minimal diff.
+            created_at: 2026-04-08T10:57:44.048Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-08T10:45:18.726Z
-    updated_at: 2026-04-08T10:45:47.360Z
+    updated_at: 2026-04-08T10:57:44.048Z
     notes: []
