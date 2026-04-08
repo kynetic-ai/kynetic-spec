@@ -164,6 +164,41 @@ test('appends note to task', async () => {});
       expect(stats.entries).toBe(1);
     });
 
+    // AC: @coverage-scan-config ac-configured-paths
+    it("should cache separately per scan path configuration", async () => {
+      // Regression: cache key must include scanPaths, not just rootDir.
+      // Same rootDir with different scanPaths must produce independent cache entries.
+      const dirA = path.join(tempDir, "a");
+      const dirB = path.join(tempDir, "b");
+      await fs.mkdir(dirA, { recursive: true });
+      await fs.mkdir(dirB, { recursive: true });
+      await fs.writeFile(
+        path.join(dirA, "a.test.ts"),
+        '// AC: @spec-a ac-1\nit("test a", () => {});',
+      );
+      await fs.writeFile(
+        path.join(dirB, "b.test.ts"),
+        '// AC: @spec-b ac-1\nit("test b", () => {});',
+      );
+
+      const coverageA = await getCachedTestCoverage(tempDir, ["a/"]);
+      const coverageB = await getCachedTestCoverage(tempDir, ["b/"]);
+
+      // Different scan paths should produce different results
+      expect(coverageA.has("@spec-a ac-1")).toBe(true);
+      expect(coverageA.has("@spec-b ac-1")).toBe(false);
+
+      expect(coverageB.has("@spec-b ac-1")).toBe(true);
+      expect(coverageB.has("@spec-a ac-1")).toBe(false);
+
+      // Should NOT be the same object (different cache entries)
+      expect(coverageA).not.toBe(coverageB);
+
+      // Two cache entries should exist (one per scan path set)
+      const stats = getTestCoverageCacheStats();
+      expect(stats.entries).toBe(2);
+    });
+
     it("should cache separately per project directory", async () => {
       const tempDir2 = await createTempDir("coverage-cache-2-");
       await fs.mkdir(path.join(tempDir2, "tests"), { recursive: true });
@@ -249,6 +284,30 @@ test('appends note to task', async () => {});
       } finally {
         await cleanupTempDir(tempDir2);
       }
+    });
+
+    it("should invalidate all scan path variants for a project", async () => {
+      // Populate cache with two different scan path configs for same rootDir
+      const dirA = path.join(tempDir, "a");
+      const dirB = path.join(tempDir, "b");
+      await fs.mkdir(dirA, { recursive: true });
+      await fs.mkdir(dirB, { recursive: true });
+      await fs.writeFile(
+        path.join(dirA, "a.test.ts"),
+        '// AC: @spec-a ac-1\nit("test", () => {});',
+      );
+      await fs.writeFile(
+        path.join(dirB, "b.test.ts"),
+        '// AC: @spec-b ac-1\nit("test", () => {});',
+      );
+
+      await getCachedTestCoverage(tempDir, ["a/"]);
+      await getCachedTestCoverage(tempDir, ["b/"]);
+      expect(getTestCoverageCacheStats().entries).toBe(2);
+
+      // Invalidating by rootDir should clear both scan path variants
+      invalidateTestCoverageCache(tempDir);
+      expect(getTestCoverageCacheStats().entries).toBe(0);
     });
 
     it("should handle path with trailing slash", async () => {

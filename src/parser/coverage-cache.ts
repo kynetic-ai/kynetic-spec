@@ -30,7 +30,7 @@ const DEFAULT_TTL_MS = 60_000;
 
 /**
  * Per-project cache storage
- * Key: normalized root directory path
+ * Key: normalized root directory path + sorted scan paths
  */
 const cache = new Map<string, CacheEntry>();
 
@@ -45,6 +45,17 @@ let ttlMs = DEFAULT_TTL_MS;
  */
 function normalizePath(dir: string): string {
   return dir.endsWith("/") ? dir.slice(0, -1) : dir;
+}
+
+/**
+ * Build a cache key from rootDir and scanPaths.
+ * Different scan path configurations for the same rootDir
+ * must produce different cache entries.
+ */
+function buildCacheKey(rootDir: string, scanPaths: string[]): string {
+  const normalizedDir = normalizePath(rootDir);
+  const sortedPaths = [...scanPaths].sort().join("\0");
+  return `${normalizedDir}\0${sortedPaths}`;
 }
 
 /**
@@ -70,7 +81,7 @@ export async function getCachedTestCoverage(
   rootDir: string,
   scanPaths: string[] = [],
 ): Promise<Set<string>> {
-  const key = normalizePath(rootDir);
+  const key = buildCacheKey(rootDir, scanPaths);
   const existing = cache.get(key);
 
   // Return cached result if valid
@@ -118,8 +129,12 @@ export async function getCachedTestCoverage(
  */
 export function invalidateTestCoverageCache(rootDir?: string): void {
   if (rootDir) {
-    const key = normalizePath(rootDir);
-    cache.delete(key);
+    const prefix = normalizePath(rootDir) + "\0";
+    for (const key of cache.keys()) {
+      if (key.startsWith(prefix)) {
+        cache.delete(key);
+      }
+    }
   } else {
     cache.clear();
   }
