@@ -47,7 +47,7 @@ description: >-
 spec_ref: "@daemon-command-api"
 meta_ref: null
 plan_ref: "@plan-cache-aware-command-execution"
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@01KNN24A"
@@ -67,7 +67,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/main
-session_id: null
+session_id: 01KNNAFAP5FHB7PSXGBRNXJWAG
 history:
   - author: "@claude"
     changes:
@@ -285,8 +285,21 @@ history:
         previous: 01KNN91Y9KNAY6V7CNKN3WY2G3
     command: review-verdict-needs-work
     timestamp: 2026-04-08T01:12:45.788Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KNNAFAP5FHB7PSXGBRNXJWAG
+        previous: null
+      started_at:
+        new: 2026-04-08T01:25:34.517Z
+        previous: 2026-04-08T01:04:10.656Z
+    command: task-start
+    timestamp: 2026-04-08T01:25:34.517Z
 created_at: 2026-04-07T22:48:54.185Z
-started_at: 2026-04-08T01:04:10.656Z
+started_at: 2026-04-08T01:25:34.517Z
 submitted_at: 2026-04-08T01:04:24.708Z
 todos: []
 automation: eligible
