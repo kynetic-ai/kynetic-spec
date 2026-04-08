@@ -129501,6 +129501,12 @@ reviews:
         payload:
           thread_ulid: 01KNP4MTGHHQ66SHD935YQKB2Y
         timestamp: 2026-04-08T09:58:11.555Z
+      - _ulid: 01KNP8ETD1JMHNK45R6MF5G0PE
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNP4MTGHHQ66SHD935YQKB2Y
+        timestamp: 2026-04-08T09:58:26.978Z
     examined_commit: d29bbeb0834487440004909576233e6836ae30b8
     external_links: []
     lifecycle_state: closed
@@ -129576,6 +129582,8 @@ reviews:
               uncached full-suite passes."
             created_at: 2026-04-08T09:58:10.741Z
         kind: question
+        resolved_at: 2026-04-08T09:58:26.139Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -129585,7 +129593,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-08T08:52:09.437Z
     created_at: 2026-04-08T08:22:14.419Z
-    updated_at: 2026-04-08T09:58:10.741Z
+    updated_at: 2026-04-08T09:58:26.139Z
     notes: []
   - _ulid: 01KNP61JN44XBMTDFJJNE22C6T
     slugs: []
