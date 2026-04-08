@@ -131139,7 +131139,19 @@ reviews:
     slugs: []
     title: Review fix-daemon-dist-module-import-failures-in-test-runner
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Invoked tools/eslint-rules/no-daemon-ts-imports.js directly with an ImportDeclaration for
+          ../dist/daemon/server.ts, importKind=value, specifiers=[]. The rule produced
+          {"reports":0}, so side-effect imports are not flagged.
+        name: side-effect-import-repro
+        required: true
+        runner: node
+        created_at: 2026-04-08T12:36:06.720Z
+        completed_at: 2026-04-08T12:36:06.720Z
     events:
       - _ulid: 01KNPGQESHM6DM1PBAZKF7N2RY
         actor: Jacob Chapel
@@ -131175,6 +131187,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNPH0WJJVBNW6E2RS98CF15X
         timestamp: 2026-04-08T12:28:08.960Z
+      - _ulid: 01KNPHFHBAGSQ19T844RZYG4BG
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: side-effect-import-repro
+        timestamp: 2026-04-08T12:36:07.658Z
     examined_commit: 51a9b0812fe1532fa38c567b4868cac67b3c2dc5
     external_links: []
     lifecycle_state: open
@@ -131254,5 +131273,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-08T12:22:58.610Z
-    updated_at: 2026-04-08T12:28:07.635Z
+    updated_at: 2026-04-08T12:36:06.720Z
     notes: []
