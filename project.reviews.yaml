@@ -128509,6 +128509,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-08T00:15:00.871Z
+      - _ulid: 01KNN73HTNG5PRTHEJJVM877YX
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNN73GXXPBX99SBYK4RZDEXN
+        timestamp: 2026-04-08T00:15:34.741Z
     examined_commit: 93b76749adaa9d11a0d4f2432a41023a4170bce0
     external_links: []
     lifecycle_state: open
@@ -128518,8 +128525,28 @@ reviews:
       content_hash: ""
       ref: "@01KNN24V593SQEF0CA5Z00NQNF"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNN73GXXPBX99SBYK4RZDEXN
+        anchor:
+          type: code
+          commit: 93b76749adaa9d11a0d4f2432a41023a4170bce0
+          line_end: 1450
+          line_start: 1413
+          path: tests/daemon-command-api.test.ts
+          side: head
+        entries:
+          - _ulid: 01KNN73GXXBHTKX2GB8P89SZMA
+            author: Jacob Chapel
+            body: This stdout-leak test never exercises the behavior it claims to cover. The batch command under
+              test is , but that command reports success through /,
+              not  ([src/cli/commands/inbox.ts:109](/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/apply-cache-context-and-working-directory-isolation-to-batch-route-01knn24v-review/src/cli/commands/inbox.ts#L109)).
+              As a result,  stays empty regardless of whether batch execution is wrapped in , so
+              this AC annotation can pass while the exact  regression remains broken. Use a batch
+              command that actually writes via  or assert against a captured output path that
+              depends on that interception.
+            created_at: 2026-04-08T00:15:33.821Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-08T00:14:30.965Z
-    updated_at: 2026-04-08T00:14:59.099Z
+    updated_at: 2026-04-08T00:15:33.821Z
     notes: []
