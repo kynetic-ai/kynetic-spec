@@ -130211,6 +130211,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNPBVC3FXQF7JRSV7GZ069B5
         timestamp: 2026-04-08T10:57:45.691Z
+      - _ulid: 01KNPBVJGQHK8440Q8J8TDCM6G
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNPBVGWN315Y9K8TQHM0VNFS
+        timestamp: 2026-04-08T10:57:50.615Z
     examined_commit: 8fda82f5accc0aa0563322520735f3c0eb1c4df7
     external_links: []
     lifecycle_state: open
@@ -130555,7 +130562,25 @@ reviews:
                   Co-Authored-By: OpenAI Codex <codex@openai.com> shows commit  plus its precursor commits before the final import-fix commit, and those changes are visible here in the new debounce/reload machinery. That violates the repo's branch-isolation gate for task work: merging this task would ship unrelated daemon behavior that has not been reviewed as part of this task. Rebase or cherry-pick only the  import fix onto  and resubmit that minimal diff.
             created_at: 2026-04-08T10:57:44.048Z
         kind: blocker
+      - _ulid: 01KNPBVGWN315Y9K8TQHM0VNFS
+        entries:
+          - _ulid: 01KNPBVGWND505ZWTN9EWKSPSC
+            author: Jacob Chapel
+            body: "Evidence log\\nFiles read: AGENTS.md; kspec-agents.md; src/daemon/entity-cache.ts;
+              packages/daemon/src/routes/tasks.ts; packages/daemon/src/routes/triage.ts;
+              packages/daemon/src/server.ts; tests/daemon-read-path.test.ts;
+              tests/daemon-triage-write-through.test.ts; git diff/log for
+              6a8fd6df49537d95cca2f6283be8a4aa82cc30c8..8fda82f5accc0aa0563322520735f3c0eb1c4df7.\\\
+              nCommands run: kspec task get; kspec review for-task; git diff --stat; git diff; git
+              log; kspec validate; rg AC annotations; npm test; npm test --
+              tests/daemon-read-path.test.ts tests/daemon-triage-write-through.test.ts
+              --fresh.\\nClaims verified: the targeted daemon import issue is fixed (targeted daemon
+              suites pass); the submitted snapshot is not limited to import-path edits (git history
+              and diff show the merged incremental-cache branch).\\nCategories searched:
+              correctness, test quality, integration, branch isolation, regression surface."
+            created_at: 2026-04-08T10:57:48.949Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-08T10:45:18.726Z
-    updated_at: 2026-04-08T10:57:44.048Z
+    updated_at: 2026-04-08T10:57:48.949Z
     notes: []
