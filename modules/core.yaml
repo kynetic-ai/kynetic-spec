@@ -2084,6 +2084,10 @@ features:
         id: ac-unrecognized-language
         then: the file is skipped
         when: the scanner encounters it
+      - given: a project upgrading from implicit scanning behavior
+        id: ac-no-silent-regression
+        then: the guidance warning surfaces (coverage does not silently disappear)
+        when: validation runs without coverage configuration
     tags: []
     created: 2026-04-08T07:14:02.061Z
     notes: []
