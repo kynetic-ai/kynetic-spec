@@ -130689,6 +130689,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNPDEP9T98HNENQF8K6TB5KV
         timestamp: 2026-04-08T11:25:47.394Z
+      - _ulid: 01KNPDF46H4SVGQ8NGHGCFZQMH
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNPDF2MMVPKW7G1341KNNHTV
+        timestamp: 2026-04-08T11:25:59.890Z
     examined_commit: 07efa1018689974414c95ff7b95bfce949756022
     external_links: []
     lifecycle_state: open
@@ -130717,7 +130724,26 @@ reviews:
               spec-required path remains both broken and untested.
             created_at: 2026-04-08T11:25:45.658Z
         kind: blocker
+      - _ulid: 01KNPDF2MMVPKW7G1341KNNHTV
+        anchor:
+          type: code
+          commit: 07efa1018689974414c95ff7b95bfce949756022
+          line_end: 178
+          line_start: 176
+          path: packages/daemon/src/routes/tasks.ts
+          side: head
+        entries:
+          - _ulid: 01KNPDF2MM2D719MYJZWBE5FED
+            author: Jacob Chapel
+            body: The daemon plan filter still resolves plans by exact ULID or slug only, so API requests using
+              a valid ULID prefix return an empty result instead of matching the plan. This violates
+              @api-contract ac-plan-filter-resolve. I reproduced it against the rebuilt snapshot
+              with /api/tasks?plan=01KG0RRPCA, which returned total 0 even though fixture plan
+              01KG0RRPCA45ZT43W2T6HJMVP1 exists. The new daemon tests only cover the full ULID case,
+              so this required path remains broken and untested.
+            created_at: 2026-04-08T11:25:58.293Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-08T11:14:13.147Z
-    updated_at: 2026-04-08T11:25:45.658Z
+    updated_at: 2026-04-08T11:25:58.293Z
     notes: []
