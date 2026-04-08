@@ -45212,7 +45212,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-08T11:00:35.306Z
+      updated_at: 2026-04-08T11:00:36.707Z
     integration:
       status: pending
       detail: null
@@ -45221,25 +45221,20 @@ workspaces:
       target_branch: dev
       target_commit: 6a8fd6df49537d95cca2f6283be8a4aa82cc30c8
       updated_at: 2026-04-08T11:00:35.306Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KNMCPT0W7P3V0PXESVZ40GFN"
     task_slug: fix-daemon-dist-module-import-failures-in-test-runner
     timestamps:
       closed_at: null
       last_active_at: 2026-04-08T10:44:11.848Z
-      last_reconciled_at: 2026-04-08T11:00:35.306Z
+      last_reconciled_at: 2026-04-08T11:00:36.707Z
       created_at: 2026-04-08T10:23:05.575Z
-      updated_at: 2026-04-08T11:00:35.306Z
+      updated_at: 2026-04-08T11:00:36.707Z
     workspace_id: dispatch-workspace-01KNMCPT0W7P3V0PXESVZ40GFN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 8fda82f5accc0aa0563322520735f3c0eb1c4df7
-        last_seen_at: 2026-04-08T10:43:49.106Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-daemon-dist-module-import-failures-in-test-runner-01knmcpt-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/fix-daemon-dist-module-import-failures-in-test-runner/01knmcpt
