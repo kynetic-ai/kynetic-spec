@@ -45059,7 +45059,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-08T14:14:43.280Z
+      updated_at: 2026-04-08T14:16:01.995Z
     integration:
       status: merged
       detail: integration:merged
@@ -45075,18 +45075,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-08T13:25:39.177Z
-      last_reconciled_at: 2026-04-08T14:16:00.646Z
+      last_reconciled_at: 2026-04-08T14:16:01.995Z
       created_at: 2026-04-08T10:23:05.575Z
-      updated_at: 2026-04-08T14:16:00.646Z
+      updated_at: 2026-04-08T14:16:01.995Z
     workspace_id: dispatch-workspace-01KNMCPT0W7P3V0PXESVZ40GFN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: efd95569e94451efa368054907859bca82fed913
-        last_seen_at: 2026-04-08T13:25:13.275Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-daemon-dist-module-import-failures-in-test-runner-01knmcpt-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/fix-daemon-dist-module-import-failures-in-test-runner/01knmcpt
