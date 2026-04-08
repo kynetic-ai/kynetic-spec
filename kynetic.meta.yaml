@@ -13687,6 +13687,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-08T13:01:51.127Z
+  - _ulid: 01KNPNWFGT50SJSHWB5X44BQ5J
+    type: success
+    content: Fix cycle 2 on plan filter task completed in one pass — reviewer's blocker description was
+      precise enough to identify root cause immediately. Mirroring the daemon's
+      resolved-plan-identity comparison pattern in the static path was the right approach.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-08T13:53:06.074Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
