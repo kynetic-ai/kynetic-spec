@@ -130836,6 +130836,82 @@ reviews:
         runner: npm
         created_at: 2026-04-08T11:49:28.082Z
         completed_at: 2026-04-08T11:49:28.082Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: >-
+          In this detached review snapshot, ✓ Validation passed
+
+          ────────────────────────────────────────
+
+          Files checked: 10
+
+          Items checked: 578
+
+          Tasks checked: 0
+
+          Meta: 11 agents, 11 workflows, 10 conventions
+
+
+          Schema: OK
+
+          References: OK
+
+
+          Reference warnings: 1
+            ⚠ @skills
+              Orphaned skill directory 'skills' has no corresponding meta entry
+              in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+          Alignment warnings: 32
+            Orphaned specs (no tasks): 30
+              ○ Test Trait
+              ○ Filterable List Commands
+              ○ Dry Run Preview Mode
+              ... and 27 more
+            Status mismatches: 2
+              ! Task Set Batch Support
+                Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+              ! Concurrent Read Command Execution
+                Spec "Concurrent Read Command Execution" status is "implemented" but should be "in_progress" based on task progress
+
+          Alignment stats: 415/578 specs have tasks, 413 aligned
+
+
+          Completeness warnings: 554
+            Missing acceptance criteria: 1
+              ○ @01KJN1WT - Test Trait
+            Missing own AC coverage: 236
+              ! @spec-item - Spec Item
+                Uncovered: ac-item-1, ac-item-2
+              ! @ulid-system - ULID Identifier System
+                Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+              ! @slug-system - Slug Alias System
+                Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+              ... and 233 more
+            Invalid AC annotations: 317
+              ! AC annotation references '@slug' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-scan-config-01knnz6d-review/tests/ac-annotation-validation.test.ts:6
+              ! AC annotation references '@my-spec' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-scan-config-01knnz6d-review/tests/ac-annotation-validation.test.ts:96
+              ! AC annotation references '@my-spec' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-scan-config-01knnz6d-review/tests/ac-annotation-validation.test.ts:99
+              ! AC annotation references '@spec-a' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-scan-config-01knnz6d-review/tests/ac-annotation-validation.test.ts:126
+              ! AC annotation references '@spec-b' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-scan-config-01knnz6d-review/tests/ac-annotation-validation.test.ts:130
+              ... and 312 more
+          Skills: OK (10 files checked) exits 6 with 317 invalid_ac_annotation warnings from
+          fixture-style tests (for example tests/ac-annotation-validation.test.ts:6, :96, :99, :126,
+          :130). A direct runtime repro via  shows  resolves ctx.config.coverage as { scan_paths:
+          [], exclude_patterns: [] } here, so the new self-hosting coverage config is not being
+          loaded during review.
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-04-08T11:49:30.744Z
+        completed_at: 2026-04-08T11:49:30.744Z
     events:
       - _ulid: 01KNPE5CYE5CC6EEJWNATCBEZA
         actor: Jacob Chapel
@@ -130864,6 +130940,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-08T11:49:28.993Z
+      - _ulid: 01KNPET6WZA74EV8ETYXJNPNBA
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-08T11:49:31.679Z
     examined_commit: 55e02c8f3fc9b7325eb12c0c81a3f6e4386147d4
     external_links: []
     lifecycle_state: open
@@ -130894,5 +130977,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-08T11:38:09.742Z
-    updated_at: 2026-04-08T11:49:28.082Z
+    updated_at: 2026-04-08T11:49:30.744Z
     notes: []
