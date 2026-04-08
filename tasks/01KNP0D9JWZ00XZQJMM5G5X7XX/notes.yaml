@@ -64,3 +64,33 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-08T10:47:21.465Z
+  - _ulid: 01KNPCKE5Z5DT74Q9M8TYBDZMV
+    content: >-
+      Implementation complete. Changes:
+
+
+      1. Daemon tasks.ts: Plan filter now checks BOTH derived_tasks (forward) and task.plan_ref
+      (reverse). Matches the bidirectional logic in plan-summary.ts getLinkedPlanSummaryTasks.
+
+
+      2. Static api-static.ts: filterTasks plan filter now looks up the plan by ref and checks
+      derived_tasks, in addition to matching plan_ref. Returns empty on plan-not-found.
+
+
+      3. Test fixtures: Added test-task-planref-only — a task with plan_ref pointing to
+      test-plan-active but NOT in derived_tasks. This exercises the reverse-link-only case.
+
+
+      4. Test coverage (12 new tests):
+         - Daemon API (7 tests): resolve by slug, ULID, derived_tasks forward, plan_ref reverse, bidirectional OR, not-found empty, additive with status
+         - Static export (5 tests): derived_tasks-only, plan_ref-only, not-found, additive with status, ULID prefix resolution
+
+      ACs covered: ac-plan-filter-resolve, ac-plan-filter-derived, ac-plan-filter-ref,
+      ac-plan-filter-not-found, ac-plan-filter-additive
+
+
+      All 761 related tests pass (203 suites). Full test suite had 7660/7661 passing with 1
+      unrelated flaky failure in dispatch-runtime-bootstrap-contract.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-08T11:10:52.608Z
