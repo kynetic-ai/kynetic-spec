@@ -129550,7 +129550,18 @@ reviews:
     slugs: []
     title: Review task-coverage-scan-config
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Run twice. First run: 2092/2092 suites passed, 7589 passed and 5 skipped out of 7594
+          tests. Second run matched and reported cached results."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-08T09:28:44.854Z
+        completed_at: 2026-04-08T09:28:44.854Z
     events:
       - _ulid: 01KNP61JN4G3GS5DMM427B0NCW
         actor: Jacob Chapel
@@ -129579,6 +129590,13 @@ reviews:
           kind: nit
           thread_ulid: 01KNP6RBBVBEAXCG86SAXMFH6F
         timestamp: 2026-04-08T09:28:43.031Z
+      - _ulid: 01KNP6REYVWCNKMWYB4B7E5FR8
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-08T09:28:45.787Z
     examined_commit: d5219487701ed784f3ba16a03534c851be57ce02
     external_links: []
     lifecycle_state: open
@@ -129627,5 +129645,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-08T09:16:15.908Z
-    updated_at: 2026-04-08T09:28:42.107Z
+    updated_at: 2026-04-08T09:28:44.854Z
     notes: []
