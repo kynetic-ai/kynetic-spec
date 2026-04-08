@@ -2058,6 +2058,9 @@ features:
       which paths contain test files, and the scanner adapts its annotation parsing to the source
       language of each file. When unconfigured, the scanner is inactive and validation communicates
       what is missing and why.
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
