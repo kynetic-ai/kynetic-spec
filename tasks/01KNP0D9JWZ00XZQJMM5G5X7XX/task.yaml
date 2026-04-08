@@ -6,7 +6,7 @@ type: task
 spec_ref: "@api-contract"
 meta_ref: null
 plan_ref: "@plan-cache-aware-command-execution"
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -20,7 +20,7 @@ review_ref: "@01KNPJZ387GJGXYKZAMQZ6P90J"
 submission_linkage:
   review_url: null
   branch: dev-dispatch
-  captured_at: 2026-04-08T12:59:49.881Z
+  captured_at: 2026-04-08T13:51:03.865Z
   commit: 6a8fd6df49537d95cca2f6283be8a4aa82cc30c8
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
@@ -162,8 +162,35 @@ history:
         previous: 2026-04-08T12:59:38.980Z
     command: task-start
     timestamp: 2026-04-08T13:50:51.357Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev-dispatch
+          captured_at: 2026-04-08T13:51:03.865Z
+          commit: 6a8fd6df49537d95cca2f6283be8a4aa82cc30c8
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous:
+          review_url: null
+          branch: dev-dispatch
+          captured_at: 2026-04-08T12:59:49.881Z
+          commit: 6a8fd6df49537d95cca2f6283be8a4aa82cc30c8
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+      submitted_at:
+        new: 2026-04-08T13:51:03.872Z
+        previous: 2026-04-08T12:59:49.885Z
+    command: task-submit
+    timestamp: 2026-04-08T13:51:03.873Z
 created_at: 2026-04-08T07:37:48.380Z
 started_at: 2026-04-08T13:50:51.357Z
-submitted_at: 2026-04-08T12:59:49.885Z
+submitted_at: 2026-04-08T13:51:03.872Z
 todos: []
 automation: eligible
