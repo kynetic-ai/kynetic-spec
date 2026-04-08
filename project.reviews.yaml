@@ -130083,6 +130083,12 @@ reviews:
         payload:
           thread_ulid: 01KNPABCB9QEVNB4QWPDDQ0HNA
         timestamp: 2026-04-08T11:34:26.735Z
+      - _ulid: 01KNPDZ4VX8H1A9FAAE3CGWJ3Y
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNPABCB9QEVNB4QWPDDQ0HNA
+        timestamp: 2026-04-08T11:34:44.862Z
     examined_commit: c9c1487bd64cf4de30d1631ed6a16f9419c30dd2
     external_links: []
     lifecycle_state: closed
@@ -130115,6 +130121,8 @@ reviews:
               in the blocker thread is now fixed via the new exclude_patterns config option.
             created_at: 2026-04-08T11:34:25.890Z
         kind: nit
+        resolved_at: 2026-04-08T11:34:43.961Z
+        resolved_by: "@claude"
       - _ulid: 01KNPABH9A6EFH3VJ662253STJ
         anchor:
           type: code
@@ -130218,7 +130226,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-08T10:31:17.269Z
     created_at: 2026-04-08T10:24:03.985Z
-    updated_at: 2026-04-08T11:34:25.890Z
+    updated_at: 2026-04-08T11:34:43.961Z
     notes: []
   - _ulid: 01KNPB4M86JJD780JF5CFTPFAQ
     slugs: []
