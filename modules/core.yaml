@@ -2076,6 +2076,10 @@ features:
         id: ac-configured-paths
         then: files under those paths are scanned for AC annotations
         when: validation runs
+      - given: a source file in a configured scan path
+        id: ac-language-aware-parsing
+        then: the comment syntax used matches the file's language
+        when: the scanner parses it for AC annotations
     tags: []
     created: 2026-04-08T07:14:02.061Z
     notes: []
