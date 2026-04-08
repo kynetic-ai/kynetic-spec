@@ -88,3 +88,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-08T10:31:26.035Z
+  - _ulid: 01KNPDZR1AV3CDWT4XT63GR113
+    content: "Fix cycle 2: Addressed blocker about self-hosting config causing 307 invalid AC annotation
+      warnings. Root cause: adding tests/ to scan_paths caused the scanner to pick up fake AC refs
+      embedded as fixture data inside test files (ac-annotation-validation.test.ts,
+      coverage-cache.test.ts, coverage-scan-config.test.ts). Fix: added exclude_patterns config
+      option (array of glob patterns) to coverage scanning config. Patterns are matched against
+      relative file paths from rootDir. Self-hosting kspec.config.yaml now excludes the three
+      fixture test files. Changes threaded through all callers: validate.ts scanning functions,
+      coverage-cache.ts (cache key includes exclude_patterns), json.ts export, task.ts CLI command,
+      and daemon routes. Added 9 new tests for exclude_patterns behavior and schema validation. Full
+      test suite: 7600 passed. kspec validate: 0 invalid annotation warnings (down from 307)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-08T11:35:04.490Z
