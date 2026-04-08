@@ -1,0 +1,107 @@
+_ulid: 01KNQJ4TX3ZR80MSV8Q38RHG06
+slugs:
+  - task-fix-worktree-linkage-capture
+title: Fix worktree-unaware submission linkage capture and unguarded base-branch adoption
+type: bug
+description: |-
+  What:
+
+  Two defects in the dispatch provisioning pipeline interact to
+  block approved tasks after unblock:
+
+  1. captureSubmissionLinkage in task submit and task set
+     --submission-linkage is called with ctx.projectRoot (main
+     repo root). In a dispatch worktree context, ctx.projectRoot
+     resolves to the main repository working tree, not the
+     dispatch worktree where the task branch is checked out.
+     getCurrentBranch and getHeadCommit run against the main
+     checkout, so submission linkage records the base branch
+     (e.g. main) and its HEAD instead of the task's dispatch
+     branch and its HEAD. The remote and upstream_ref fields are
+     also wrong because getBranchRemote queries tracking info for
+     the wrong branch.
+
+  2. The branch adoption path in provisionDispatchWorkspace
+     unconditionally adopts submissionLinkage.branch when no
+     existing workspace record is found. No validation prevents
+     adopting a branch that is currently checked out in the main
+     repository working tree. When the linkage incorrectly points
+     to the base branch (from defect 1), dispatch attempts to use
+     it as the task's canonical branch, which triggers the
+     findForeignWorktreeForBranch guard and blocks the task with
+     an opaque error.
+
+  Why:
+
+  These defects create a failure mode where an approved task
+  cannot be re-dispatched after unblocking. The sequence:
+  (a) worker submits from dispatch worktree — linkage captures
+  the main checkout's branch instead of the dispatch branch;
+  (b) reviewer approves but blocks on unrelated integration
+  issue; (c) operator unblocks; (d) dispatch re-provisions,
+  existing record lookup misses, falls through to adoption path,
+  adopts the main checkout's branch as canonical branch, hits
+  foreign worktree guard, blocks the task. The operator cannot
+  recover without manually editing submission_linkage or the
+  workspace registry.
+
+  Defect 1 is the root cause — submission linkage should capture
+  git context from the active code checkout root (ctx.rootDir),
+  which is the dispatch worktree when running from one, and
+  equals ctx.projectRoot when not in a worktree.
+
+  Defect 2 is a missing safety net — even with bad linkage data,
+  adoption should never select a branch currently checked out in
+  the main repository working tree as a canonical task branch.
+
+  How:
+
+  1. Change both captureSubmissionLinkage call sites in
+     src/cli/commands/task.ts (task submit at ~line 1812 and
+     task set --submission-linkage at ~line 595) to pass
+     ctx.rootDir instead of ctx.projectRoot. Also change the
+     isGitRepo guard at both sites to use ctx.rootDir for
+     consistency. When not in a worktree, rootDir === projectRoot
+     so behavior is unchanged.
+
+  2. In provisionDispatchWorkspace (src/agent-runtime/workspace.ts),
+     after resolving adoptedBranch (~line 3340) and before
+     setting canonicalBranch (~line 3373), add a guard: query
+     parseWorktreeList to find the branch checked out in the main
+     repository working tree (the entry whose path is outside the
+     dispatch worktree root), and reject adoption if adoptedBranch
+     matches that branch.
+
+  3. Tests:
+     (a) captureSubmissionLinkage called from a git worktree
+         returns the worktree's branch, commit, and remote info —
+         not the main checkout's.
+     (b) captureSubmissionLinkage called from a worktree where the
+         main checkout has a different branch returns the worktree
+         branch unaffected by the main checkout.
+     (c) provisionDispatchWorkspace with submissionLinkage.branch
+         matching a branch checked out in the main working tree
+         and no existing workspace record rejects adoption with
+         repair guidance.
+
+  Covers:
+    @portable-task-submission-linkage ac-worktree-branch,
+      ac-worktree-branch-isolation, ac-worktree-commit,
+      ac-worktree-remote
+    @adopt-existing-task-branch-lineage ac-reject-main-checkout-branch
+spec_ref: "@portable-task-submission-linkage"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - dispatch
+  - worktree
+  - submission-linkage
+vcs_refs: []
+created_at: 2026-04-08T22:07:00.003Z
+todos: []
+automation: eligible

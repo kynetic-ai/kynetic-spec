@@ -25966,3 +25966,21 @@
   submitted_at: 2026-04-08T13:51:03.872Z
   completed_at: 2026-04-08T14:07:18.557Z
   automation: eligible
+- _ulid: 01KNQJ4TX3ZR80MSV8Q38RHG06
+  slugs:
+    - task-fix-worktree-linkage-capture
+  title: Fix worktree-unaware submission linkage capture and unguarded base-branch adoption
+  type: bug
+  spec_ref: "@portable-task-submission-linkage"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - dispatch
+    - worktree
+    - submission-linkage
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-08T22:07:00.003Z
+  automation: eligible
