@@ -132040,6 +132040,17 @@ reviews:
         runner: npm test
         created_at: 2026-04-08T22:52:52.949Z
         completed_at: 2026-04-08T22:52:52.949Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- tests/dispatch-workspace-adopt-branch-lineage.test.ts passed: 2 suites, 12
+          tests"
+        name: targeted-tests-branch-adoption
+        required: true
+        runner: npm test
+        created_at: 2026-04-08T22:53:05.214Z
+        completed_at: 2026-04-08T22:53:05.214Z
     events:
       - _ulid: 01KNQKPAAWNSFBG3A0QQ1J550Z
         actor: Jacob Chapel
@@ -132061,6 +132072,13 @@ reviews:
           status: pass
           name: targeted-tests-submission-linkage
         timestamp: 2026-04-08T22:52:53.811Z
+      - _ulid: 01KNQMS84FMADSXJQG2VHTNQ7J
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted-tests-branch-adoption
+        timestamp: 2026-04-08T22:53:06.063Z
     examined_commit: a6698d0d7053638669479e3bd101f8f3c6a2c693
     external_links: []
     lifecycle_state: open
@@ -132073,5 +132091,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-08T22:34:01.436Z
-    updated_at: 2026-04-08T22:52:52.949Z
+    updated_at: 2026-04-08T22:53:05.214Z
     notes: []
