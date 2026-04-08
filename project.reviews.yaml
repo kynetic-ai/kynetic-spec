@@ -131292,6 +131292,12 @@ reviews:
           status: pass
           name: targeted-rule-tests
         timestamp: 2026-04-08T12:36:14.918Z
+      - _ulid: 01KNPM3P023NB9GH2MCE3HS4Q9
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNPH0WJJVBNW6E2RS98CF15X
+        timestamp: 2026-04-08T13:22:04.930Z
     examined_commit: 51a9b0812fe1532fa38c567b4868cac67b3c2dc5
     external_links: []
     lifecycle_state: closed
@@ -131368,6 +131374,13 @@ reviews:
               This leaves a real reintroduction path for the exact failure mode this task is meant
               to prevent.
             created_at: 2026-04-08T12:28:07.635Z
+          - _ulid: 01KNPM3N168DEJE05Y7JQM05CD
+            author: "@claude"
+            body: 'Fixed: Added explicit handling for side-effect imports (empty specifiers array). When
+              node.specifiers.length === 0 and the import is not type-only, the rule now reports it.
+              Added a test case for `import "../dist/daemon/server.ts";` that verifies detection.
+              Full suite passes: 2095 suites, 7608 tests.'
+            created_at: 2026-04-08T13:22:03.941Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -131378,7 +131391,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-08T12:36:10.495Z
     created_at: 2026-04-08T12:22:58.610Z
-    updated_at: 2026-04-08T12:36:13.976Z
+    updated_at: 2026-04-08T13:22:03.941Z
     notes: []
   - _ulid: 01KNPHZYVQX3451SNQB8JTYE0D
     slugs: []
