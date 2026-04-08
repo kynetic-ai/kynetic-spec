@@ -77,13 +77,21 @@ description: >-
 spec_ref: "@coverage-scan-config"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
 priority: 2
 tags: []
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dev-dispatch
+  captured_at: 2026-04-08T09:13:43.196Z
+  commit: 6a8fd6df49537d95cca2f6283be8a4aa82cc30c8
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dev
 session_id: 01KNP2YEV6442E27ASWM9YHS24
 history:
   - author: "@claude"
@@ -99,7 +107,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-08T08:22:51.089Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev-dispatch
+          captured_at: 2026-04-08T09:13:43.196Z
+          commit: 6a8fd6df49537d95cca2f6283be8a4aa82cc30c8
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-04-08T09:13:43.198Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-08T09:13:43.198Z
 created_at: 2026-04-08T07:16:34.070Z
 started_at: 2026-04-08T08:22:51.088Z
+submitted_at: 2026-04-08T09:13:43.198Z
 todos: []
 automation: eligible
