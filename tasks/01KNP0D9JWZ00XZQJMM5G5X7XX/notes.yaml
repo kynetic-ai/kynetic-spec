@@ -99,3 +99,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-08T11:26:14.031Z
+  - _ulid: 01KNPJT0BNF72RZZ64XX5GMD1E
+    content: "Fix cycle 1: Addressed review blocker — daemon plan filter lacked ULID prefix resolution.
+      Root cause: plans.find() used exact equality (p._ulid === query.plan) instead of startsWith
+      for prefix matching. Fix: added case-insensitive p._ulid.startsWith(planRefUpper), consistent
+      with ReferenceIndex.resolve() and api-static.ts findPlanByRef(). Added test for
+      ?plan=01KG0RRPCA prefix case. All 8 plan filter tests pass. Re-verified all ACs:
+      ac-plan-filter-resolve (full ULID, prefix, slug), ac-plan-filter-derived, ac-plan-filter-ref,
+      ac-plan-filter-not-found, ac-plan-filter-additive."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-08T12:59:19.285Z
