@@ -131709,3 +131709,29 @@ reviews:
     created_at: 2026-04-08T13:02:06.087Z
     updated_at: 2026-04-08T13:14:25.941Z
     notes: []
+  - _ulid: 01KNPMBR4ZREM4KW3M4ZJ71364
+    slugs: []
+    title: Review fix-daemon-dist-module-import-failures-in-test-runner (cycle 3)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KNPMBR4YA4RSVG8M1PHJBWFB
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-08T13:26:29.279Z
+    examined_commit: efd95569e94451efa368054907859bca82fed913
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNMCPT0W7P3V0PXESVZ40GFN"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-08T13:26:29.279Z
+    updated_at: null
+    notes: []
