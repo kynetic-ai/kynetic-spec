@@ -44507,12 +44507,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-08T12:43:44.533Z
+      updated_at: 2026-04-08T12:44:00.093Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-08T12:43:44.533Z
+      updated_at: 2026-04-08T12:44:00.093Z
     integration:
       status: pending
       detail: null
@@ -44520,7 +44520,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 6a8fd6df49537d95cca2f6283be8a4aa82cc30c8
-      updated_at: 2026-04-08T12:43:44.533Z
+      updated_at: 2026-04-08T12:44:00.093Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KNNZ6D4P24MB9J94K4Q068AN"
@@ -44528,18 +44528,23 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-08T12:22:00.212Z
-      last_reconciled_at: 2026-04-08T12:43:44.533Z
+      last_reconciled_at: 2026-04-08T12:44:00.093Z
       created_at: 2026-04-08T08:21:47.826Z
-      updated_at: 2026-04-08T12:43:44.533Z
+      updated_at: 2026-04-08T12:44:00.093Z
     workspace_id: dispatch-workspace-01KNNZ6D4P24MB9J94K4Q068AN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 5aaffcd7d574a1c0ae6557dd72e1aa1862425e14
+        last_seen_at: 2026-04-08T12:44:00.093Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-scan-config-01knnz6d-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-coverage-scan-config/01knnz6d
-        head: 55e02c8f3fc9b7325eb12c0c81a3f6e4386147d4
-        last_seen_at: 2026-04-08T12:21:56.565Z
+        head: 5aaffcd7d574a1c0ae6557dd72e1aa1862425e14
+        last_seen_at: 2026-04-08T12:44:00.093Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-scan-config-01knnz6d
   - active_role: null
     base_branch_point: 6a8fd6df49537d95cca2f6283be8a4aa82cc30c8
