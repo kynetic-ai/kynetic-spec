@@ -13696,6 +13696,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-08T13:53:06.074Z
+  - _ulid: 01KNPQ60HPT749WNDGQF9QH6V0
+    type: friction
+    content: "Review snapshots can drift against a moved local integration branch: this session's
+      detached reviewer worktree initially compared efd95569e944 against local dev e4ce9897814d, but
+      the dispatch prompt and task submission linkage both recorded the true review base as
+      6a8fd6df49537d95cca2f6283be8a4aa82cc30c8. Review tooling should expose or default to the
+      recorded submission/integration base commit so reviewers do not accidentally inspect unrelated
+      newer dev changes."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-08T14:15:46.998Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
