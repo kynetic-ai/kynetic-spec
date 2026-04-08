@@ -1,1 +1,33 @@
-notes: []
+notes:
+  - _ulid: 01KNP0FA96CMA6VPHJ380PDVRR
+    content: >-
+      What: GET /api/tasks?plan=<ref> only returns tasks in the plan's derived_tasks array. The
+      static export filter (api-static.ts) has the inverse bug — only checks task.plan_ref. Neither
+      path uses bidirectional matching.
+
+
+      Why: Follow-on tasks created after plan derivation reference the plan via plan_ref but aren't
+      in derived_tasks. Plan progress (via getLinkedPlanSummaryTasks) correctly counts both,
+      creating a mismatch between progress bar and filtered task list.
+
+
+      How:
+
+      1. Verify TaskSummary (or cached index tier) includes plan_ref. Extend if needed.
+
+      2. Update plan filter in packages/daemon/src/routes/tasks.ts (~line 163) to match tasks by
+      derived_tasks OR plan_ref, using getLinkedPlanSummaryTasks from src/lib/plan-summary.ts or
+      equivalent logic.
+
+      3. Update packages/web-ui/src/lib/api-static.ts (~line 177) to also check derived_tasks, not
+      just plan_ref.
+
+      4. Add test coverage in tests/daemon-api/tasks.test.ts for the plan filter: derived-only task,
+      plan_ref-only task, plan not found, and interaction with status filters.
+
+
+      Spec: @api-contract (ac-plan-filter-resolve, ac-plan-filter-derived, ac-plan-filter-ref,
+      ac-plan-filter-not-found, ac-plan-filter-additive)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-08T07:38:54.630Z

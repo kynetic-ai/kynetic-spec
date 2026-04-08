@@ -25932,7 +25932,8 @@
   created_at: 2026-04-08T07:16:34.070Z
   automation: eligible
 - _ulid: 01KNP0D9JWZ00XZQJMM5G5X7XX
-  slugs: []
+  slugs:
+    - task-fix-plan-filter-bidirectional
   title: Fix plan filter in daemon and static export to use bidirectional matching
   type: task
   spec_ref: "@api-contract"
@@ -25945,6 +25946,7 @@
     - bug
     - daemon
     - web-ui
-  notes_count: 0
+  notes_count: 1
   todos_count: 0
   created_at: 2026-04-08T07:37:48.380Z
+  automation: eligible
