@@ -464,6 +464,42 @@ describe("static API snapshot adapters", () => {
     expect(tasks.meta.total).toBe(1);
     expect(tasks.data[0].title).toBe("Task One");
   });
+
+  // AC: @api-contract ac-plan-filter-resolve, ac-plan-filter-ref
+  it("matches plan_ref slug when query is ULID prefix (cross-format reverse link)", () => {
+    // task-one has plan_ref: "@plan-one" (slug), query by ULID prefix
+    const tasks = fetchTasksStatic({ plan: "01PLAN00000000000000000001" });
+    expect(tasks.meta.total).toBe(1);
+    expect(tasks.data[0].title).toBe("Task One");
+  });
+
+  // AC: @api-contract ac-plan-filter-resolve, ac-plan-filter-ref
+  it("matches plan_ref ULID when query is slug (cross-format reverse link)", () => {
+    // Add a task whose plan_ref is a ULID, then query by slug
+    modeState.snapshot!.tasks.push({
+      _ulid: "01TASK00000000000000000008",
+      slugs: ["task-ulid-planref"],
+      title: "ULID PlanRef Task",
+      type: "task",
+      status: "pending",
+      priority: 2,
+      spec_ref: "@spec-one",
+      tags: [],
+      depends_on: [],
+      plan_ref: "01PLAN00000000000000000001",
+      automation: "eligible",
+      notes: [],
+      todos: [],
+      notes_count: 0,
+      todos_count: 0,
+      created_at: "2026-03-08T00:00:00.000Z",
+    } as any);
+
+    const tasks = fetchTasksStatic({ plan: "plan-one" });
+    const titles = tasks.data.map((t: any) => t.title);
+    expect(titles).toContain("Task One"); // slug plan_ref, slug query
+    expect(titles).toContain("ULID PlanRef Task"); // ULID plan_ref, slug query
+  });
 });
 
 // AC: @gh-pages-export ac-22

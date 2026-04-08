@@ -134,17 +134,6 @@ function findPlanByRef(snapshot: KspecSnapshot, ref: string): PlanDetail | null 
   );
 }
 
-function matchesPlanRef(planRef: string | undefined, ref: string): boolean {
-  const normalizedPlanRef = normalizeRef(planRef);
-  const normalizedRef = normalizeRef(ref);
-
-  if (!normalizedPlanRef || !normalizedRef) return false;
-  return (
-    normalizedPlanRef === normalizedRef ||
-    normalizedPlanRef.toUpperCase().startsWith(normalizedRef.toUpperCase())
-  );
-}
-
 /**
  * Filter helper for tasks
  */
@@ -180,8 +169,17 @@ function filterTasks(
     const plan = snapshot ? findPlanByRef(snapshot, params.plan) : null;
     if (plan) {
       const derivedTaskRefs = new Set(plan.derived_tasks.map((ref) => normalizeRef(ref)));
+      const planUlid = plan._ulid;
+      const planSlugs = plan.slugs;
       result = result.filter((t) => {
-        const matchesByPlanRef = matchesPlanRef(t.plan_ref, params.plan!);
+        // Reverse: task's plan_ref resolves to this plan (compare against plan identity, not raw query)
+        const taskPlanRef = normalizeRef(t.plan_ref);
+        const matchesByPlanRef =
+          taskPlanRef !== null &&
+          (taskPlanRef === planUlid ||
+            planUlid.startsWith(taskPlanRef.toUpperCase()) ||
+            planSlugs.includes(taskPlanRef));
+        // Forward: task is in plan's derived_tasks
         const matchesByDerived =
           derivedTaskRefs.has(t._ulid) || t.slugs.some((slug) => derivedTaskRefs.has(slug));
         return matchesByPlanRef || matchesByDerived;
