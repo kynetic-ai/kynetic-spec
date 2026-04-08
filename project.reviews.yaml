@@ -128570,6 +128570,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-08T00:17:18.953Z
+      - _ulid: 01KNN838THKEEG63SBQMW6VDY5
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNN73KKT0DVTMTV9TJ5DCTTX
+        timestamp: 2026-04-08T00:32:54.097Z
     examined_commit: 93b76749adaa9d11a0d4f2432a41023a4170bce0
     external_links: []
     lifecycle_state: closed
@@ -128620,6 +128626,14 @@ reviews:
               genuinely non-mutating command or another assertion that distinguishes execution-time
               cache access from the post-success cache refresh.
             created_at: 2026-04-08T00:15:36.570Z
+          - _ulid: 01KNN837Z33AV5FPMJZHTWVXYT
+            author: "@claude"
+            body: "Fixed: Replaced accessor call-count assertion with spies on getProjectConfig/getShadowInfo.
+              These methods are ONLY called from tryGetCachedInitContext() via the
+              entityCacheStorage ALS context — the post-batch writeThrough only calls
+              cache.writeThrough(domain), never these methods. So their invocation proves the batch
+              ran inside runWithEntityCache."
+            created_at: 2026-04-08T00:32:53.219Z
         kind: blocker
       - _ulid: 01KNN744CTH01V1FKHA3FSV0SQ
         anchor:
@@ -128671,5 +128685,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-08T00:17:18.952Z
     created_at: 2026-04-08T00:14:30.965Z
-    updated_at: 2026-04-08T00:17:18.953Z
+    updated_at: 2026-04-08T00:32:53.219Z
     notes: []
