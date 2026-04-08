@@ -1,1 +1,21 @@
-notes: []
+notes:
+  - _ulid: 01KNP1E0MFZE1R87DDGX0ZRANP
+    content: >-
+      Approach: Three tests fail under full-suite load but pass in isolation.
+
+
+      1. cli-serve.test.ts:356 — Race condition: after 'serve stop' returns 'Daemon stopped',
+      process.kill(pid, 0) finds process still in OS table. Fix: add retry loop with brief delays.
+
+      2. dispatch-target-sync.test.ts:688 — Heavy test (git clones, merges, engine start/stop,
+      workspace provisioning) times out at default 15s under load. Fix: increase timeout to 30s.
+
+      3. enhanced-setup.test.ts:233 — kspec setup --dry-run takes >15s under load. Fix: increase
+      timeout to 30s.
+
+
+      All three pass reliably in isolation. The fixes are minimal: retry logic for the race
+      condition, timeout bumps for resource contention.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-08T07:55:40.559Z
