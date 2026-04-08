@@ -45479,7 +45479,7 @@ workspaces:
         head: 0f6ce922d951cfad32553f12ac6117ef5d730376
         last_seen_at: 2026-04-08T13:52:40.638Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-plan-filter-bidirectional-01knp0d9
-  - active_role: null
+  - active_role: worker
     base_branch_point: 410b0321d2606f140f3db1ed76beecd87adf251b
     bootstrap:
       status: succeeded
@@ -45838,7 +45838,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-08T22:07:31.582Z
+      updated_at: 2026-04-08T22:07:52.197Z
     integration:
       status: pending
       detail: null
@@ -45847,16 +45847,16 @@ workspaces:
       target_branch: dev
       target_commit: 410b0321d2606f140f3db1ed76beecd87adf251b
       updated_at: 2026-04-08T22:07:31.582Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KNQJ4TX3ZR80MSV8Q38RHG06"
     task_slug: task-fix-worktree-linkage-capture
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-04-08T22:07:31.582Z
+      last_active_at: 2026-04-08T22:07:52.197Z
+      last_reconciled_at: 2026-04-08T22:07:52.197Z
       created_at: 2026-04-08T22:07:31.582Z
-      updated_at: 2026-04-08T22:07:50.659Z
+      updated_at: 2026-04-08T22:07:52.197Z
     workspace_id: dispatch-workspace-01KNQJ4TX3ZR80MSV8Q38RHG06
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
