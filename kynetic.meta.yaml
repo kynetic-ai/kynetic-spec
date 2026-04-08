@@ -13708,6 +13708,28 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-08T14:15:46.998Z
+  - _ulid: 01KNQKREV541R1PK45TBJY3CHS
+    type: friction
+    content: npm test (scripts/test.cjs) finds 0 test files when run from a dispatch worktree under
+      .kspec-worktrees/ because vitest.config.ts excludes **/.kspec-worktrees/**. The exclude is
+      correct for preventing test discovery of nested worktree fixtures, but it also excludes the
+      actual project test files when the cwd is itself inside .kspec-worktrees/. Workers must fall
+      back to npx vitest --run directly, which contradicts the testing convention. The test runner
+      or vitest config needs worktree-awareness — possibly by resolving exclude patterns relative to
+      the project root rather than using absolute glob matching.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-08T22:35:11.590Z
+  - _ulid: 01KNQKRF2T0BMCP3B5K5RNBR4X
+    type: success
+    content: Highly precise task descriptions with exact line numbers, function names, root cause vs
+      safety net framing, and explicit test plan made a complex two-defect fix straightforward. The
+      task for fix-worktree-linkage-capture was a model for bug task descriptions.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-08T22:35:11.834Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
