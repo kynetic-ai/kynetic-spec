@@ -128954,6 +128954,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-08T01:08:16.744Z
+      - _ulid: 01KNNA9YAZ627HRNPHW1VJYNY2
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNNA9XDR5CS5GHEQ03ZG84MB
+        timestamp: 2026-04-08T01:11:29.888Z
     examined_commit: 26fd64812fb4f06d68226cee491ca077ac1c5522
     external_links: []
     lifecycle_state: open
@@ -128963,8 +128970,33 @@ reviews:
       content_hash: ""
       ref: "@01KNN24V593SQEF0CA5Z00NQNF"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNNA9XDR5CS5GHEQ03ZG84MB
+        anchor:
+          type: code
+          commit: 26fd64812fb4f06d68226cee491ca077ac1c5522
+          line_end: 774
+          line_start: 737
+          path: packages/daemon/src/routes/command.ts
+          side: head
+        entries:
+          - _ulid: 01KNNA9XDR1SF6ZN8Z5T9Q7SV9
+            author: Jacob Chapel
+            body: "The batch route now intercepts process.stdout.write/process.stderr.write into a
+              request-scoped AsyncLocalStorage capture, but it never merges that capture back into
+              the API response. In packages/daemon/src/routes/command.ts:737-774 the new  object is
+              only passed to ; after  returns, the handler immediately returns  and discards  / .
+              That means commands which write directly to stdout, such as the  path and the
+              injected  case, no longer leak to the real process stream, but their output is still
+              missing from , breaking response parity. I confirmed the underlying behavior
+              separately with  against : a mutating test command that does  produces batch output of
+              only , proving  itself does not include raw stdout writes. The new test at
+              tests/daemon-command-api.test.ts:1416-1492 only asserts the sentinel did not leak to ,
+              so it would pass even though the API silently drops the output instead of returning
+              it."
+            created_at: 2026-04-08T01:11:28.952Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-08T01:07:19.717Z
-    updated_at: 2026-04-08T01:08:14.278Z
+    updated_at: 2026-04-08T01:11:28.952Z
     notes: []
