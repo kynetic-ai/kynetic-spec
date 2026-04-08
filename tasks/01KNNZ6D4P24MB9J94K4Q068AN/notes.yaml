@@ -107,3 +107,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-08T11:50:09.076Z
+  - _ulid: 01KNPHPXZ4ZC6B6H7R7PGJK6Z2
+    content: "Fix cycle 3: Addressed blocker about config not loading in detached review worktrees. Root
+      cause: initContext() passed projectRoots.mainRoot to loadProjectConfig(), so the config was
+      loaded from the parent repo root (which has no coverage section) instead of the worktree's own
+      kspec.config.yaml. Fix: changed to pass projectRoots.worktreeRoot (falling back to mainRoot),
+      which matches the pattern used by all other loadProjectConfig() callers. Added 2 regression
+      tests in worktree-context.test.ts proving worktree-specific config loading works. Full suite:
+      7602 passed. All 6 ACs remain covered."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-08T12:40:09.956Z
