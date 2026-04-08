@@ -13597,6 +13597,28 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-08T11:38:05.498Z
+  - _ulid: 01KNPEZ1WG6XHKAAVR57TD4AYT
+    type: friction
+    content: "Detached review worktrees can load kspec.config.yaml from the parent repo root instead of
+      the review snapshot root. In this session that made branch-local
+      coverage.scan_paths/exclude_patterns inert during review, so kspec validate still reported
+      invalid_ac_annotation warnings even though the branch changed kspec.config.yaml. Search
+      checked: worktree config load detached review; project config worktree mainRoot;
+      invalid_ac_annotation detached worktree."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-08T11:52:10.384Z
+  - _ulid: 01KNPEZ231V10EP0FBQMCNKF7T
+    type: success
+    content: Combining a direct runtime repro (initContext plus scanACAnnotations in the review
+      snapshot) with a full npm test run cleanly separated environment/config-loading defects from
+      feature correctness. That made it possible to reject the task for a real review-gate failure
+      without misclassifying the passing test suite as contradictory evidence.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-08T11:52:10.593Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
