@@ -31,3 +31,36 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-08T07:38:54.630Z
+  - _ulid: 01KNPB8C3SKXYK8JYRC0CYSAZF
+    content: >-
+      Approach: Bidirectional plan filter fix
+
+
+      Analysis confirmed: daemon tasks.ts only checks derived_tasks (forward link), api-static.ts
+      filterTasks only checks task.plan_ref (reverse link). The plan-summary.ts
+      getLinkedPlanSummaryTasks correctly does bidirectional matching — use its pattern as
+      reference.
+
+
+      Plan:
+
+      1. Daemon tasks.ts (~line 163): After resolving plan, also check each task's plan_ref against
+      the plan's ULID/slugs (like plan-summary.ts matchesPlanRef). TaskSummary already has plan_ref
+      field.
+
+      2. Static api-static.ts filterTasks (~line 176): After matching plan_ref, ALSO look up the
+      plan in the snapshot and check its derived_tasks. Reuse findPlanByRef and normalizeRef already
+      in that file.
+
+      3. Tests: Add test cases to api-static.test.ts for bidirectional matching:
+         - Task with plan_ref but NOT in derived_tasks (currently missed by daemon)
+         - Task in derived_tasks but WITHOUT plan_ref (currently missed by static)
+         - Task with both (should still match, no duplication)
+         - Plan not found → empty array
+         - Plan filter additive with other filters
+
+      ACs covered: ac-plan-filter-resolve, ac-plan-filter-derived, ac-plan-filter-ref,
+      ac-plan-filter-not-found, ac-plan-filter-additive
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-08T10:47:21.465Z
