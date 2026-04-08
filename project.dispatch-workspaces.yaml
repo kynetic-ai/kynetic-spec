@@ -45093,7 +45093,7 @@ workspaces:
         head: efd95569e94451efa368054907859bca82fed913
         last_seen_at: 2026-04-08T13:25:13.275Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-daemon-dist-module-import-failures-in-test-runner-01knmcpt
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 1703ee4826ac0695803028d3fcd23d4b21917c5c
     bootstrap:
       status: succeeded
@@ -45471,9 +45471,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-08T13:53:52.049Z
-      last_reconciled_at: 2026-04-08T14:07:47.848Z
+      last_reconciled_at: 2026-04-08T14:08:19.167Z
       created_at: 2026-04-08T10:43:23.931Z
-      updated_at: 2026-04-08T14:07:47.848Z
+      updated_at: 2026-04-08T14:08:19.167Z
     workspace_id: dispatch-workspace-01KNP0D9JWZ00XZQJMM5G5X7XX
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
