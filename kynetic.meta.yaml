@@ -13619,6 +13619,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-08T11:52:10.593Z
+  - _ulid: 01KNPGWZHXT7XDDZ9X96S3899A
+    type: success
+    content: "Preventive lint rules as bug-class fixes: when a runtime bug stems from a toolchain
+      constraint (e.g., esbuild daemon build only produces .js files, not .d.ts), adding a custom
+      oxlint lint rule to catch the pattern at lint time is more durable than fixing individual
+      instances. The jsPlugins mechanism makes this lightweight to implement and test."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-08T12:25:59.613Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
