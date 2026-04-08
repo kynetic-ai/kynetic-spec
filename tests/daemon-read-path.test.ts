@@ -930,10 +930,10 @@ describe("ac-background-sync: background sync invalidates cache on pull", () => 
     return path.join(syncTestDir, SHADOW_WORKTREE_DIR);
   }
 
-  // AC: @daemon-read-path ac-background-sync
-  it("server shadow-sync pull handler reloads the full entity cache", async () => {
+  // AC: @daemon-meta-subdomain ac-shadow-on-schedule
+  it("server shadow-sync pull handler refreshes only shadow status", async () => {
     const cache = {
-      loadAll: vi.fn().mockResolvedValue(undefined),
+      refreshMetaShadowInfo: vi.fn().mockResolvedValue(undefined),
     };
     const getEntityCache = vi.fn().mockReturnValue(cache);
 
@@ -942,7 +942,7 @@ describe("ac-background-sync: background sync invalidates cache on pull", () => 
     await onPull();
 
     expect(getEntityCache).toHaveBeenCalledWith(syncTestDir);
-    expect(cache.loadAll).toHaveBeenCalledTimes(1);
+    expect(cache.refreshMetaShadowInfo).toHaveBeenCalledTimes(1);
   });
 
   // AC: @daemon-read-path ac-background-sync

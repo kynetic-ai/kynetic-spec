@@ -57,6 +57,10 @@ export interface ServerOptions {
   webUiDir?: string; // Path to web UI build directory (default: auto-detect)
 }
 
+interface ShadowPullReloadableCache {
+  refreshMetaShadowInfo(): Promise<void>;
+}
+
 type ManagedServer = {
   stop?: () => unknown;
   close?: (callback: (error?: Error | null) => void) => void;
@@ -107,10 +111,6 @@ export function logHeartbeatDegradationWarning(runtime: DaemonRuntime): void {
   console.warn(
     "[daemon] Running on node: WebSocket heartbeat ping/pong is unavailable. Dead connection detection is disabled.",
   );
-}
-
-interface ShadowPullReloadableCache {
-  loadAll(): Promise<void>;
 }
 
 function hasWebUiIndex(dir: string | undefined): dir is string {
@@ -202,8 +202,8 @@ export function createShadowSyncOnPullHandler(
     if (!startupProjectPath) return;
     const cache = getEntityCache(startupProjectPath);
     if (!cache) return;
-    console.log("[daemon] Shadow sync pulled data — reloading entity cache");
-    await cache.loadAll();
+    console.log("[daemon] Shadow sync pulled data — refreshing shadow status");
+    await cache.refreshMetaShadowInfo();
   };
 }
 
@@ -807,7 +807,7 @@ export async function createServer(options: ServerOptions) {
             remoteType: config.shadow.remote?.type,
           },
           pubsub: pubsubManager,
-          // AC: @daemon-read-path ac-background-sync — invalidate entity cache when background sync pulls new data
+          // AC: @daemon-meta-subdomain ac-shadow-on-schedule — refresh shadow status only; file content changes are handled by the watcher independently
           onPull: createShadowSyncOnPullHandler(
             startupProjectPath,
             entityCacheModule.getEntityCache,
