@@ -80,6 +80,7 @@
   },
   "devDependencies": {
     "@agentclientprotocol/sdk": "^0.14.0",
+    "@lucide/svelte": "^0.561.0",
     "@tailwindcss/postcss": "^4.1.18",
     "@types/diff": "^7.0.2",
     "@types/js-yaml": "^4.0.9",
