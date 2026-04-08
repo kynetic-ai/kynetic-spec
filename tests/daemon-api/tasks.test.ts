@@ -11,6 +11,11 @@
  * - @api-contract ac-5: GET /api/tasks/:ref returns full task with notes, todos, deps
  * - @api-contract ac-6: POST /api/tasks/:ref/start transitions to in_progress
  * - @api-contract ac-7: POST /api/tasks/:ref/note appends note
+ * - @api-contract ac-plan-filter-resolve: Plan filter resolves by ULID or slug
+ * - @api-contract ac-plan-filter-derived: Tasks in derived_tasks included
+ * - @api-contract ac-plan-filter-ref: Tasks with plan_ref included
+ * - @api-contract ac-plan-filter-not-found: Plan not found returns empty
+ * - @api-contract ac-plan-filter-additive: Plan filter additive with other filters
  */
 
 import type { Elysia } from "elysia";
@@ -465,6 +470,93 @@ describe("Tasks API", () => {
       expect(detailTask._ulid).toBe(listTask._ulid);
       expect(detailTask.title).toBe(listTask.title);
       expect(detailTask.status).toBe(listTask.status);
+    });
+  });
+
+  describe("GET /api/tasks?plan= (plan filter)", () => {
+    // AC: @api-contract ac-plan-filter-resolve
+    it("resolves plan by slug", async () => {
+      const response = await request("/api/tasks?plan=test-plan-active");
+      expect(response.status).toBe(200);
+
+      const body = await response.json();
+      expect(body.data.length).toBeGreaterThan(0);
+    });
+
+    // AC: @api-contract ac-plan-filter-derived
+    it("includes tasks in derived_tasks (forward link)", async () => {
+      const response = await request("/api/tasks?plan=test-plan-active");
+      expect(response.status).toBe(200);
+
+      const body = await response.json();
+      const slugs = body.data.flatMap((t: { slugs: string[] }) => t.slugs);
+      // test-task-ready is in derived_tasks but has no plan_ref
+      expect(slugs).toContain("test-task-ready");
+    });
+
+    // AC: @api-contract ac-plan-filter-ref
+    it("includes tasks with plan_ref (reverse link)", async () => {
+      const response = await request("/api/tasks?plan=test-plan-active");
+      expect(response.status).toBe(200);
+
+      const body = await response.json();
+      const slugs = body.data.flatMap((t: { slugs: string[] }) => t.slugs);
+      // test-task-planref-only has plan_ref but is NOT in derived_tasks
+      expect(slugs).toContain("test-task-planref-only");
+    });
+
+    // AC: @api-contract ac-plan-filter-derived, ac-plan-filter-ref
+    it("uses bidirectional matching (derived_tasks OR plan_ref)", async () => {
+      const response = await request("/api/tasks?plan=test-plan-active");
+      expect(response.status).toBe(200);
+
+      const body = await response.json();
+      const slugs = body.data.flatMap((t: { slugs: string[] }) => t.slugs);
+      // test-task-in-progress: in derived_tasks AND has plan_ref (both links)
+      expect(slugs).toContain("test-task-in-progress");
+      // test-task-ready: in derived_tasks only (forward link)
+      expect(slugs).toContain("test-task-ready");
+      // test-task-planref-only: has plan_ref only (reverse link)
+      expect(slugs).toContain("test-task-planref-only");
+      // test-task-blocked: NOT in derived_tasks, NO plan_ref
+      expect(slugs).not.toContain("test-task-blocked");
+    });
+
+    // AC: @api-contract ac-plan-filter-not-found
+    it("returns empty array when plan is not found", async () => {
+      const response = await request("/api/tasks?plan=nonexistent-plan");
+      expect(response.status).toBe(200);
+
+      const body = await response.json();
+      expect(body.data).toEqual([]);
+      expect(body.meta.total).toBe(0);
+    });
+
+    // AC: @api-contract ac-plan-filter-additive
+    it("plan filter is additive with status filter", async () => {
+      const response = await request(
+        "/api/tasks?plan=test-plan-active&status=in_progress",
+      );
+      expect(response.status).toBe(200);
+
+      const body = await response.json();
+      // Only test-task-in-progress has status=in_progress AND matches plan
+      expect(body.data.length).toBe(1);
+      const slugs = body.data.flatMap((t: { slugs: string[] }) => t.slugs);
+      expect(slugs).toContain("test-task-in-progress");
+    });
+
+    // AC: @api-contract ac-plan-filter-resolve
+    it("resolves plan by ULID", async () => {
+      const response = await request(
+        "/api/tasks?plan=01KG0RRPCA45ZT43W2T6HJMVP1",
+      );
+      expect(response.status).toBe(200);
+
+      const body = await response.json();
+      expect(body.data.length).toBeGreaterThan(0);
+      const slugs = body.data.flatMap((t: { slugs: string[] }) => t.slugs);
+      expect(slugs).toContain("test-task-in-progress");
     });
   });
 });

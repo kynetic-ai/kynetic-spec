@@ -174,7 +174,22 @@ function filterTasks(
     result = result.filter((t) => t.automation === params.automation);
   }
   if (params?.plan) {
-    result = result.filter((t) => matchesPlanRef(t.plan_ref, params.plan!));
+    // Bidirectional: check plan_ref (reverse) AND derived_tasks (forward)
+    // AC: @api-contract ac-plan-filter-derived, ac-plan-filter-ref
+    const snapshot = getSnapshot();
+    const plan = snapshot ? findPlanByRef(snapshot, params.plan) : null;
+    if (plan) {
+      const derivedTaskRefs = new Set(plan.derived_tasks.map((ref) => normalizeRef(ref)));
+      result = result.filter((t) => {
+        const matchesByPlanRef = matchesPlanRef(t.plan_ref, params.plan!);
+        const matchesByDerived =
+          derivedTaskRefs.has(t._ulid) || t.slugs.some((slug) => derivedTaskRefs.has(slug));
+        return matchesByPlanRef || matchesByDerived;
+      });
+    } else {
+      // AC: @api-contract ac-plan-filter-not-found
+      result = [];
+    }
   }
 
   return result;

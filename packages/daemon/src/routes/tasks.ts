@@ -160,7 +160,8 @@ export function createTasksRoutes(options: TasksRouteOptions) {
             );
           }
 
-          // Plan filter — show only tasks derived from a given plan
+          // Plan filter — show tasks linked to a given plan (bidirectional)
+          // AC: @api-contract ac-plan-filter-resolve, ac-plan-filter-derived, ac-plan-filter-ref
           if (query.plan) {
             // AC: @daemon-entity-cache ac-serve-from-memory — try cache for plans too
             let plans;
@@ -177,14 +178,31 @@ export function createTasksRoutes(options: TasksRouteOptions) {
                 p._ulid === query.plan || p.slugs.includes(query.plan!),
             );
             if (plan) {
+              // Forward link: tasks listed in plan.derived_tasks
               const derivedRefs = new Set(
                 (plan as { derived_tasks: string[] }).derived_tasks.map((r: string) =>
                   r.startsWith("@") ? r.slice(1) : r,
                 ),
               );
-              filtered = filtered.filter(
-                (task) => derivedRefs.has(task._ulid) || task.slugs.some((s) => derivedRefs.has(s)),
-              );
+              const planUlid = (plan as { _ulid: string })._ulid;
+              const planSlugs = (plan as { slugs: string[] }).slugs;
+              filtered = filtered.filter((task) => {
+                // Forward: task is in plan's derived_tasks
+                const matchesDerived =
+                  derivedRefs.has(task._ulid) || task.slugs.some((s) => derivedRefs.has(s));
+                // Reverse: task's plan_ref points to this plan
+                const taskPlanRef = task.plan_ref
+                  ? task.plan_ref.startsWith("@")
+                    ? task.plan_ref.slice(1)
+                    : task.plan_ref
+                  : null;
+                const matchesPlanRef =
+                  taskPlanRef !== null &&
+                  (taskPlanRef === planUlid ||
+                    planUlid.startsWith(taskPlanRef) ||
+                    planSlugs.includes(taskPlanRef));
+                return matchesDerived || matchesPlanRef;
+              });
             } else {
               filtered = [];
             }
