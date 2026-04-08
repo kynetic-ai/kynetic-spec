@@ -128772,6 +128772,21 @@ reviews:
         runner: npm
         created_at: 2026-04-08T00:45:49.999Z
         completed_at: 2026-04-08T00:45:49.999Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: AGENTS.md, kspec-agents.md, packages/daemon/src/routes/command.ts,
+          src/parser/yaml.ts, src/cli/batch-exec.ts, src/cli/batch-context.ts,
+          tests/daemon-command-api.test.ts. Commands run: git diff --stat, git diff, kspec task get,
+          kspec item get, kspec review get/for-task, kspec validate, rg for AC annotations and
+          symbol usage, npm test. Claims verified: full suite passes; batch route now uses ALS
+          wrappers; new export is test-only and only referenced from tests. Categories searched:
+          correctness, edge cases, error handling, test quality, integration."
+        name: review-evidence
+        required: false
+        created_at: 2026-04-08T00:45:52.569Z
+        completed_at: 2026-04-08T00:45:52.569Z
     events:
       - _ulid: 01KNN8DPVRVY2G7P4TRSHM9MFW
         actor: Jacob Chapel
@@ -128800,6 +128815,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-08T00:45:50.926Z
+      - _ulid: 01KNN8V1Y1054S3HYAJ17RQDHW
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-04-08T00:45:53.474Z
     examined_commit: 8dea9d5b04e97640d8261ee15807f510d3593817
     external_links: []
     lifecycle_state: open
@@ -128831,5 +128853,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-08T00:38:36.152Z
-    updated_at: 2026-04-08T00:45:49.999Z
+    updated_at: 2026-04-08T00:45:52.569Z
     notes: []
