@@ -2072,6 +2072,10 @@ features:
         id: ac-unconfigured-guidance
         then: a warning explains that coverage scanning is inactive and how to enable it
         when: validation runs with completeness checks enabled
+      - given: a project with coverage scan paths configured
+        id: ac-configured-paths
+        then: files under those paths are scanned for AC annotations
+        when: validation runs
     tags: []
     created: 2026-04-08T07:14:02.061Z
     notes: []
