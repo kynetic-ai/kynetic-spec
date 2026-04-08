@@ -128576,6 +128576,12 @@ reviews:
         payload:
           thread_ulid: 01KNN73KKT0DVTMTV9TJ5DCTTX
         timestamp: 2026-04-08T00:32:54.097Z
+      - _ulid: 01KNN83N7Z1K454MA3E7G39V9Q
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNN744CTH01V1FKHA3FSV0SQ
+        timestamp: 2026-04-08T00:33:06.815Z
     examined_commit: 93b76749adaa9d11a0d4f2432a41023a4170bce0
     external_links: []
     lifecycle_state: closed
@@ -128655,6 +128661,11 @@ reviews:
               command or another assertion that distinguishes execution-time cache access from the
               post-success cache refresh.
             created_at: 2026-04-08T00:15:53.755Z
+          - _ulid: 01KNN83MECT10QG0BJPY65ZDK0
+            author: "@claude"
+            body: "Fixed: Same fix as the duplicate thread — replaced accessor call-count with domain method
+              spies (getProjectConfig/getShadowInfo) that are unreachable from writeThrough."
+            created_at: 2026-04-08T00:33:05.996Z
         kind: blocker
       - _ulid: 01KNN7470GFNE41SXSH47Q6779
         anchor:
@@ -128685,5 +128696,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-08T00:17:18.952Z
     created_at: 2026-04-08T00:14:30.965Z
-    updated_at: 2026-04-08T00:32:53.219Z
+    updated_at: 2026-04-08T00:33:05.996Z
     notes: []
