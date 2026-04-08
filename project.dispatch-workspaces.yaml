@@ -45052,18 +45052,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/fix-daemon-dist-module-import-failures-in-test-runner/01knmcpt
-    canonical_branch_head: 8fda82f5accc0aa0563322520735f3c0eb1c4df7
+    canonical_branch_head: ac41f5c3992dad1157c18e5464c508952726f7e8
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-08T11:37:00.456Z
+      updated_at: 2026-04-08T11:44:41.550Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-08T11:37:04.210Z
+      updated_at: 2026-04-08T11:44:41.550Z
     integration:
       status: pending
       detail: null
@@ -45071,7 +45071,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 6a8fd6df49537d95cca2f6283be8a4aa82cc30c8
-      updated_at: 2026-04-08T11:37:00.456Z
+      updated_at: 2026-04-08T11:44:41.550Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KNMCPT0W7P3V0PXESVZ40GFN"
@@ -45079,9 +45079,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-08T11:37:04.210Z
-      last_reconciled_at: 2026-04-08T11:37:04.210Z
+      last_reconciled_at: 2026-04-08T11:44:41.550Z
       created_at: 2026-04-08T10:23:05.575Z
-      updated_at: 2026-04-08T11:37:04.210Z
+      updated_at: 2026-04-08T11:44:41.550Z
     workspace_id: dispatch-workspace-01KNMCPT0W7P3V0PXESVZ40GFN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
