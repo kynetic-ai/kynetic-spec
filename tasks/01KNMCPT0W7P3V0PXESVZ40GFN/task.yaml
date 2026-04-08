@@ -14,7 +14,7 @@ description: "npm test on snapshot 343472d01808d514accacb66d1bb86db4519b37f fail
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -25,7 +25,7 @@ review_ref: "@01KNPB4M86JJD780JF5CFTPFAQ"
 submission_linkage:
   review_url: null
   branch: dev-dispatch
-  captured_at: 2026-04-08T10:41:00.165Z
+  captured_at: 2026-04-08T12:20:40.208Z
   commit: 6a8fd6df49537d95cca2f6283be8a4aa82cc30c8
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
@@ -95,8 +95,35 @@ history:
         previous: 2026-04-08T10:24:22.903Z
     command: task-start
     timestamp: 2026-04-08T11:38:33.613Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev-dispatch
+          captured_at: 2026-04-08T12:20:40.208Z
+          commit: 6a8fd6df49537d95cca2f6283be8a4aa82cc30c8
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous:
+          review_url: null
+          branch: dev-dispatch
+          captured_at: 2026-04-08T10:41:00.165Z
+          commit: 6a8fd6df49537d95cca2f6283be8a4aa82cc30c8
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+      submitted_at:
+        new: 2026-04-08T12:20:40.212Z
+        previous: 2026-04-08T10:41:00.170Z
+    command: task-submit
+    timestamp: 2026-04-08T12:20:40.212Z
 created_at: 2026-04-07T16:34:14.172Z
 started_at: 2026-04-08T11:38:33.613Z
-submitted_at: 2026-04-08T10:41:00.170Z
+submitted_at: 2026-04-08T12:20:40.212Z
 todos: []
 automation: eligible

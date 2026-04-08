@@ -25783,7 +25783,7 @@
   slugs: []
   title: Fix daemon dist module import failures in test runner
   type: task
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 3
@@ -25793,7 +25793,7 @@
   todos_count: 0
   created_at: 2026-04-07T16:34:14.172Z
   started_at: 2026-04-08T11:38:33.613Z
-  submitted_at: 2026-04-08T10:41:00.170Z
+  submitted_at: 2026-04-08T12:20:40.212Z
   automation: eligible
 - _ulid: 01KNMJXC8DADJDK9R9CGK6B854
   slugs: []
