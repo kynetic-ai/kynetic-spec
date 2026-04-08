@@ -64,3 +64,27 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-08T00:17:20.728Z
+  - _ulid: 01KNN8608JW9DM8YH8SJY0SEBE
+    content: >-
+      Fix cycle 1: addressed all 4 review threads (2 unique issues, each duplicated).
+
+
+      1. Cache-context propagation test (threads 01KNN73KKT, 01KNN744CT): Replaced accessor
+      call-count assertion with spies on getProjectConfig/getShadowInfo. These methods are only
+      called from tryGetCachedInitContext() via the entityCacheStorage ALS context — the post-batch
+      writeThrough never calls them. So their invocation proves ALS propagation into batch
+      execution.
+
+
+      2. Stdout-leak test (threads 01KNN73GXX, 01KNN7470G): Rewrote to wrap inbox add's handler to
+      call process.stdout.write with a sentinel, then verify the commandExecutionStorage ALS store
+      captured it. Added getCommandExecutionStore() export to command.ts following the
+      getEntityCacheContext() pattern. The prior test used inbox add which never calls
+      process.stdout.write, so the assertion was vacuously true.
+
+
+      Re-verified all ACs against implementation. All 7648 tests pass (1 pre-existing flaky timeout
+      in cli-no-daemon.test.ts unrelated to changes).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-08T00:34:23.634Z
