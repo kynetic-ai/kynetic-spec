@@ -77,7 +77,7 @@ description: >-
 spec_ref: "@coverage-scan-config"
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on: []
 context: []
@@ -93,7 +93,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: 01KNPCQBTB500JV5A43B9CHACZ
+session_id: null
 history:
   - author: "@claude"
     changes:
@@ -249,6 +249,16 @@ history:
         previous: "@01KNP9XQCHMV876AW114SHZEP5"
     command: review-link
     timestamp: 2026-04-08T11:38:12.580Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KNPCQBTB500JV5A43B9CHACZ
+    command: review-verdict-needs-work
+    timestamp: 2026-04-08T11:50:09.076Z
 created_at: 2026-04-08T07:16:34.070Z
 started_at: 2026-04-08T11:35:24.129Z
 submitted_at: 2026-04-08T11:35:38.631Z
