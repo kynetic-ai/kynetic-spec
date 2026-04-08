@@ -44464,3 +44464,79 @@ workspaces:
         head: d29bbeb0834487440004909576233e6836ae30b8
         last_seen_at: 2026-04-08T08:21:20.102Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-unrelated-full-suite-failures-in-review-environment-01knmjxc
+  - active_role: null
+    base_branch_point: 6a8fd6df49537d95cca2f6283be8a4aa82cc30c8
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-coverage-scan-config/01knnz6d
+    canonical_branch_head: 6a8fd6df49537d95cca2f6283be8a4aa82cc30c8
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-04-08T08:21:47.826Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-04-08T08:21:47.826Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: 6a8fd6df49537d95cca2f6283be8a4aa82cc30c8
+      updated_at: 2026-04-08T08:21:47.826Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KNNZ6D4P24MB9J94K4Q068AN"
+    task_slug: task-coverage-scan-config
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-04-08T08:21:47.826Z
+      created_at: 2026-04-08T08:21:47.826Z
+      updated_at: 2026-04-08T08:21:47.826Z
+    workspace_id: dispatch-workspace-01KNNZ6D4P24MB9J94K4Q068AN
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-coverage-scan-config/01knnz6d
+        head: 6a8fd6df49537d95cca2f6283be8a4aa82cc30c8
+        last_seen_at: 2026-04-08T08:21:47.826Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-scan-config-01knnz6d
