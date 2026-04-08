@@ -727,25 +727,49 @@ export function createCommandRoutes(options: CommandRouteOptions) {
           }));
 
           const projectPath = projectContext.path;
+          const cacheAccessor = getEntityCache;
 
           // Batch execution goes through the dispatch mutex (process-global
           // state protection) and optionally the file lock (cross-process).
+          // AC: @daemon-command-api ac-cache-context-propagation — entity cache context for batch
           const batchResult = await dispatchMutex.run(async () => {
+            const capture: CommandExecutionContext = {
+              stdoutChunks: [],
+              stderrChunks: [],
+              interceptedExitCode: undefined,
+            };
+
             const runBatch = () => {
-              const originalCwd = process.cwd();
-              process.chdir(projectPath);
-              // Run inside runWithoutSpecDirOverride so initContext() ignores
-              // the ambient KSPEC_SPEC_DIR env var (same rationale as
-              // executeCommand above — avoids process.env mutation races).
-              return runWithoutSpecDirOverride(() =>
-                executeBatch(batchCommands, program, {
-                  atomic: body.atomic !== false, // Default atomic
-                  continueOnError: body.continue_on_error ?? false,
-                  dryRun: false,
-                  json: true,
-                }),
-              ).finally(() => {
-                process.chdir(originalCwd);
+              // Wrap batch execution in the same ALS nesting pattern as
+              // executeCommand: entity cache → working directory → output
+              // state → command execution storage. This ensures:
+              // - Cache-backed reads work inside batch commands
+              // - process.cwd() is not mutated (concurrent read safety)
+              // - process.stdout.write/stderr.write are captured
+              // - Output format is request-scoped
+              const parseCommands = () =>
+                runWithOutputState(
+                  () =>
+                    runWithoutSpecDirOverride(() =>
+                      runWithWorkingDirectory(
+                        () =>
+                          executeBatch(batchCommands, program, {
+                            atomic: body.atomic !== false, // Default atomic
+                            continueOnError: body.continue_on_error ?? false,
+                            dryRun: false,
+                            json: true,
+                          }),
+                        projectPath,
+                      ),
+                    ),
+                  { outputFormat: "text", verboseMode: false },
+                );
+
+              return commandExecutionStorage.run(capture, () => {
+                if (cacheAccessor) {
+                  return runWithEntityCache(parseCommands, cacheAccessor, projectPath);
+                }
+                return parseCommands();
               });
             };
 
