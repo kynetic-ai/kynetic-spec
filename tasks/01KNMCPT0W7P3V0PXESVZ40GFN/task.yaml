@@ -14,8 +14,11 @@ description: "npm test on snapshot 343472d01808d514accacb66d1bb86db4519b37f fail
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev after approved review @01KNPMBR. Added oxlint rule
+  no-daemon-ts-imports, covered side-effect/type-only/mixed import cases, and verified with targeted
+  daemon tests plus full npm test (2095 suites passed).
 depends_on: []
 context: []
 priority: 3
@@ -186,8 +189,24 @@ history:
         previous: "@01KNPGQESJ8MNJQ8Q5FAMGHFJT"
     command: review-link
     timestamp: 2026-04-08T13:26:32.374Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev after approved review @01KNPMBR. Added oxlint rule no-daemon-ts-imports, covered
+          side-effect/type-only/mixed import cases, and verified with targeted daemon tests plus
+          full npm test (2095 suites passed).
+        previous: null
+      completed_at:
+        new: 2026-04-08T14:14:24.336Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-08T14:14:24.347Z
 created_at: 2026-04-07T16:34:14.172Z
 started_at: 2026-04-08T13:04:34.843Z
 submitted_at: 2026-04-08T13:23:50.901Z
+completed_at: 2026-04-08T14:14:24.336Z
 todos: []
 automation: eligible
