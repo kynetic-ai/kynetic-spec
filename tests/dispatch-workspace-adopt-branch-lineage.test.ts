@@ -427,4 +427,61 @@ describe("dispatch workspace adopt existing task branch lineage", () => {
     expect(workspace.metadata.canonicalBranch).toBe("feat/pre-existing");
     expect(workspace.metadata.branchProvenance.ownership).toBe("adopted");
   });
+
+  // AC: @adopt-existing-task-branch-lineage ac-reject-main-checkout-branch
+  it("rejects adoption when submission linkage branch is currently checked out in the main working tree", async () => {
+    await seedRepo(tempDir);
+
+    // Main working tree is on "dev" — linkage incorrectly points to "dev"
+    git(tempDir, "checkout -b dev");
+    git(tempDir, 'commit --allow-empty -m "dev commit"');
+    const devCommit = git(tempDir, "rev-parse HEAD");
+
+    const taskRef = `@${testUlid("ADPT", 11)}`;
+
+    try {
+      await provisionDispatchWorkspace({
+        projectDir: tempDir,
+        taskRef,
+        role: "reviewer",
+        task: { title: "Bad Linkage Test", slugs: ["bad-linkage-test"] },
+        taskStatus: "pending_review",
+        submissionLinkage: makeSubmissionLinkage("dev", devCommit),
+      });
+      expect.fail("should have thrown DispatchWorkspaceError");
+    } catch (err) {
+      expect(err).toBeInstanceOf(DispatchWorkspaceError);
+      const wsErr = err as InstanceType<typeof DispatchWorkspaceError>;
+      // AC: @trait-error-guidance ac-1 — error describes what went wrong
+      expect(wsErr.message).toContain("checked out in the main");
+      // AC: @trait-error-guidance ac-2 — suggestion includes recovery action
+      expect(wsErr.suggestion).toBeTruthy();
+      expect(wsErr.suggestion).toContain("submission linkage");
+    }
+  });
+
+  // AC: @adopt-existing-task-branch-lineage ac-reject-main-checkout-branch
+  it("rejects adoption of main checkout branch even for non-review tasks", async () => {
+    await seedRepo(tempDir);
+
+    // Main working tree is on "main" — linkage points to "main"
+    const mainCommit = git(tempDir, "rev-parse HEAD");
+
+    const taskRef = `@${testUlid("ADPT", 12)}`;
+
+    try {
+      await provisionDispatchWorkspace({
+        projectDir: tempDir,
+        taskRef,
+        role: "worker",
+        task: { title: "Main Branch Adoption", slugs: ["main-branch-adoption"] },
+        submissionLinkage: makeSubmissionLinkage("main", mainCommit),
+      });
+      expect.fail("should have thrown DispatchWorkspaceError");
+    } catch (err) {
+      expect(err).toBeInstanceOf(DispatchWorkspaceError);
+      const wsErr = err as InstanceType<typeof DispatchWorkspaceError>;
+      expect(wsErr.message).toContain("checked out in the main");
+    }
+  });
 });
