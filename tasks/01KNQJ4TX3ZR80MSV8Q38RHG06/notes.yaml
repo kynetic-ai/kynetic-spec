@@ -29,3 +29,34 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-08T22:11:38.462Z
+  - _ulid: 01KNQKJ3QT64GWGTZ0KS4YQYJC
+    content: >-
+      Implementation complete. Two fixes applied:
+
+
+      Fix 1 (root cause): Changed both captureSubmissionLinkage call sites in
+      src/cli/commands/task.ts (task submit at line 1811, task set --submission-linkage at line 593)
+      from ctx.projectRoot to ctx.rootDir. The isGitRepo guards updated too. When running from a
+      worktree, rootDir correctly points to the active code checkout rather than the main repo root.
+
+
+      Fix 2 (safety net): Added adoption guard in provisionDispatchWorkspace
+      (src/agent-runtime/workspace.ts) after adoptedBranch resolution and before canonicalBranch
+      assignment. The guard queries parseWorktreeList, finds the main repo working tree entry, and
+      rejects adoption if the adopted branch matches the main checkout's branch. Error includes
+      repair guidance.
+
+
+      Test coverage:
+
+      - 5 new tests in submission-linkage-worktree.test.ts covering ac-worktree-branch,
+      ac-worktree-branch-isolation, ac-worktree-commit, ac-worktree-remote
+
+      - 2 new tests in dispatch-workspace-adopt-branch-lineage.test.ts covering
+      ac-reject-main-checkout-branch (review and non-review cases)
+
+
+      All 7627 tests pass. 2 pre-existing daemon module import failures unrelated to this change.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-08T22:31:43.610Z
