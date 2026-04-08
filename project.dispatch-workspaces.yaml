@@ -45833,12 +45833,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-08T22:33:01.651Z
+      updated_at: 2026-04-08T22:33:09.028Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-08T22:33:01.651Z
+      updated_at: 2026-04-08T22:33:09.028Z
     integration:
       status: pending
       detail: null
@@ -45846,24 +45846,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 410b0321d2606f140f3db1ed76beecd87adf251b
-      updated_at: 2026-04-08T22:33:01.651Z
-    lifecycle_state: ready
+      updated_at: 2026-04-08T22:33:09.028Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KNQJ4TX3ZR80MSV8Q38RHG06"
     task_slug: task-fix-worktree-linkage-capture
     timestamps:
       closed_at: null
       last_active_at: 2026-04-08T22:07:52.197Z
-      last_reconciled_at: 2026-04-08T22:33:01.651Z
+      last_reconciled_at: 2026-04-08T22:33:09.028Z
       created_at: 2026-04-08T22:07:31.582Z
-      updated_at: 2026-04-08T22:33:01.651Z
+      updated_at: 2026-04-08T22:33:09.028Z
     workspace_id: dispatch-workspace-01KNQJ4TX3ZR80MSV8Q38RHG06
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: a6698d0d7053638669479e3bd101f8f3c6a2c693
+        last_seen_at: 2026-04-08T22:33:09.028Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-worktree-linkage-capture-01knqj4t-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-fix-worktree-linkage-capture/01knqj4t
-        head: 410b0321d2606f140f3db1ed76beecd87adf251b
-        last_seen_at: 2026-04-08T22:07:31.582Z
+        head: a6698d0d7053638669479e3bd101f8f3c6a2c693
+        last_seen_at: 2026-04-08T22:33:09.028Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-worktree-linkage-capture-01knqj4t
