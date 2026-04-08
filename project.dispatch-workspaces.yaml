@@ -45051,12 +45051,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-08T10:43:34.806Z
+      updated_at: 2026-04-08T10:43:49.106Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-08T10:43:34.806Z
+      updated_at: 2026-04-08T10:43:49.106Z
     integration:
       status: pending
       detail: null
@@ -45064,7 +45064,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 6a8fd6df49537d95cca2f6283be8a4aa82cc30c8
-      updated_at: 2026-04-08T10:43:34.806Z
+      updated_at: 2026-04-08T10:43:49.106Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KNMCPT0W7P3V0PXESVZ40GFN"
@@ -45072,18 +45072,23 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-08T10:23:31.602Z
-      last_reconciled_at: 2026-04-08T10:43:34.806Z
+      last_reconciled_at: 2026-04-08T10:43:49.106Z
       created_at: 2026-04-08T10:23:05.575Z
-      updated_at: 2026-04-08T10:43:34.806Z
+      updated_at: 2026-04-08T10:43:49.106Z
     workspace_id: dispatch-workspace-01KNMCPT0W7P3V0PXESVZ40GFN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 8fda82f5accc0aa0563322520735f3c0eb1c4df7
+        last_seen_at: 2026-04-08T10:43:49.106Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-daemon-dist-module-import-failures-in-test-runner-01knmcpt-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/fix-daemon-dist-module-import-failures-in-test-runner/01knmcpt
-        head: 6a8fd6df49537d95cca2f6283be8a4aa82cc30c8
-        last_seen_at: 2026-04-08T10:23:05.575Z
+        head: 8fda82f5accc0aa0563322520735f3c0eb1c4df7
+        last_seen_at: 2026-04-08T10:43:49.106Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-daemon-dist-module-import-failures-in-test-runner-01knmcpt
   - active_role: worker
     base_branch_point: 1703ee4826ac0695803028d3fcd23d4b21917c5c
