@@ -129174,6 +129174,22 @@ reviews:
         runner: kspec
         created_at: 2026-04-08T01:37:48.866Z
         completed_at: 2026-04-08T01:37:48.866Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: packages/daemon/src/routes/command.ts, tests/daemon-command-api.test.ts,
+          src/cli/batch-context.ts, src/cli/batch-exec.ts, src/schema/batch.ts. Commands run: kspec
+          task get, kspec item get, kspec review for-task, git diff, grep AC annotations, kspec
+          validate, npm test, git rev-parse. Claims verified: batch route now uses entity cache +
+          working-directory ALS isolation and returns captured stdout.write output in response.
+          Categories searched: correctness, edge cases, error handling, test quality, integration;
+          no remaining findings."
+        name: review evidence
+        required: false
+        runner: codex
+        created_at: 2026-04-08T01:37:51.297Z
+        completed_at: 2026-04-08T01:37:51.297Z
     events:
       - _ulid: 01KNNBEGXS4HKR2X8JXP55BHCQ
         actor: Jacob Chapel
@@ -129195,6 +129211,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-04-08T01:37:49.686Z
+      - _ulid: 01KNNBT7J86PM9RHTPK34FMHQ0
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence
+        timestamp: 2026-04-08T01:37:52.200Z
     examined_commit: 8d4edb1acffd10a64f60976eb71b12da1dd5a9b0
     external_links: []
     lifecycle_state: open
@@ -129207,5 +129230,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-08T01:31:28.570Z
-    updated_at: 2026-04-08T01:37:48.866Z
+    updated_at: 2026-04-08T01:37:51.297Z
     notes: []
