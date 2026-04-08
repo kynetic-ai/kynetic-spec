@@ -131194,9 +131194,25 @@ reviews:
           status: fail
           name: side-effect-import-repro
         timestamp: 2026-04-08T12:36:07.658Z
+      - _ulid: 01KNPHFM3ZPWA0SZ9R2JMC6HJP
+        actor: "@codex"
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-08T12:36:10.495Z
+      - _ulid: 01KNPHFM3Z6Z3G7WP3V3PR6JWR
+        actor: "@codex"
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-08T12:36:10.495Z
     examined_commit: 51a9b0812fe1532fa38c567b4868cac67b3c2dc5
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -131271,7 +131287,14 @@ reviews:
               to prevent.
             created_at: 2026-04-08T12:28:07.635Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: "@codex"
+        role: reviewer
+        created_at: 2026-04-08T12:36:10.495Z
     created_at: 2026-04-08T12:22:58.610Z
-    updated_at: 2026-04-08T12:36:06.720Z
+    updated_at: 2026-04-08T12:36:10.495Z
     notes: []
