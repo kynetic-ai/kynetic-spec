@@ -128939,7 +128939,35 @@ reviews:
     slugs: []
     title: Review apply cache context and working directory isolation to batch route (cycle 3)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: >-
+          Files read: kspec-agents.md; packages/daemon/src/routes/command.ts;
+          tests/daemon-command-api.test.ts; src/parser/yaml.ts; src/cli/batch-exec.ts;
+          src/cli/batch-context.ts.
+
+          Commands run: kspec task get @01KNN24V593SQEF0CA5Z00NQNF; kspec item get
+          @daemon-command-api; kspec validate; rg -n "AC: @daemon-command-api|AC: @trait-"
+          tests/daemon-command-api.test.ts; git diff
+          13df74fef446a37cb44bb5b37bbf0fc8be5f4c82...26fd64812fb4f06d68226cee491ca077ac1c5522; npm
+          test (twice); node --input-type=module reproduction against ./dist/cli/batch-exec.js.
+
+          Claims verified: Verified the batch route now uses
+          runWithEntityCache/runWithWorkingDirectory/runWithOutputState/commandExecutionStorage
+          nesting; verified executeBatch itself does not include raw process.stdout.write output by
+          reproducing a mutating command that emitted SENTINEL via stdout and VISIBLE via
+          console.log, with batch output containing only VISIBLE.
+
+          Categories searched: correctness (found blocker), edge cases (stdout write path), error
+          handling, test quality (found missing assertion on returned output), integration (batch
+          route vs batch executor/output capture interaction).
+        name: review-evidence
+        required: false
+        created_at: 2026-04-08T01:12:47.289Z
+        completed_at: 2026-04-08T01:12:47.289Z
     events:
       - _ulid: 01KNNA2A141EZ76A1H30JMMP8T
         actor: Jacob Chapel
@@ -128984,6 +129012,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-08T01:12:43.941Z
+      - _ulid: 01KNNACATP2Q7BJF66WK2AR4M1
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-04-08T01:12:48.215Z
     examined_commit: 26fd64812fb4f06d68226cee491ca077ac1c5522
     external_links: []
     lifecycle_state: closed
@@ -129057,5 +129092,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-08T01:12:43.940Z
     created_at: 2026-04-08T01:07:19.717Z
-    updated_at: 2026-04-08T01:12:43.941Z
+    updated_at: 2026-04-08T01:12:47.289Z
     notes: []
