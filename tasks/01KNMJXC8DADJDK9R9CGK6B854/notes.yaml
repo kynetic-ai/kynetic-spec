@@ -42,3 +42,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-08T08:52:11.244Z
+  - _ulid: 01KNP8FNQJ85T432QV7M2J3JTT
+    content: "Fix cycle 1: Addressed blocker — timeout bump alone was insufficient because root cause
+      was resource exhaustion from unbounded subprocess fan-out, not slow individual tests. Applied
+      two complementary fixes: (1) capped default pool maxWorkers at min(cpus, 8), (2) moved 8
+      heaviest CLI-subprocess suites into serial pool. Verified with two consecutive uncached
+      full-suite runs (335/335, ~950s each). Resolved both review threads."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-08T09:58:54.962Z
