@@ -1,1 +1,31 @@
-notes: []
+notes:
+  - _ulid: 01KNQJDATYRE06W85ZFJQP45EP
+    content: >-
+      Approach: Two fixes required.
+
+
+      Fix 1 (root cause): Change captureSubmissionLinkage call sites in task.ts (lines 593 and 1811)
+      from ctx.projectRoot to ctx.rootDir. Also update isGitRepo guards. In worktree context,
+      rootDir is the worktree root (correct checkout) while projectRoot is the main repo root (wrong
+      checkout). When not in a worktree, rootDir === projectRoot so behavior unchanged.
+
+
+      Fix 2 (safety net): Add guard in provisionDispatchWorkspace (workspace.ts) after adoptedBranch
+      is resolved (~line 3357) and before canonicalBranch is set (~line 3373). Use parseWorktreeList
+      to find the main repo working tree's branch and reject adoption if adoptedBranch matches it.
+
+
+      Test plan: 4 ACs need coverage:
+
+      - ac-worktree-branch: linkage captures worktree branch
+
+      - ac-worktree-branch-isolation: main checkout's different branch doesn't affect capture
+
+      - ac-worktree-commit: linkage captures worktree HEAD
+
+      - ac-worktree-remote: linkage captures worktree branch tracking info
+
+      - ac-reject-main-checkout-branch: adoption rejected when branch matches main checkout
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-08T22:11:38.462Z
