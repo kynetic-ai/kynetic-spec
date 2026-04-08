@@ -68,3 +68,11 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-08T06:02:57.506Z
+  - _ulid: 01KNNZM9H6ECYQRACNFHV32HSE
+    content: "Approach: 4 changes needed — (1) narrow ShadowPullReloadableCache interface to
+      refreshMetaShadowInfo(), (2) update handler body, (3) update AC annotation comment, (4) update
+      test mock. Entity-cache test for ac-shadow-on-schedule already tests refreshMetaShadowInfo in
+      isolation — should remain unaffected."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-08T07:24:09.127Z
