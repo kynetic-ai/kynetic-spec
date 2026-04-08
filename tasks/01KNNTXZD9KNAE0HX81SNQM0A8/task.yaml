@@ -1,0 +1,79 @@
+_ulid: 01KNNTXZD9KNAE0HX81SNQM0A8
+slugs:
+  - task-shadow-sync-narrow-invalidation
+title: Wire shadow sync onPull handler to refreshMetaShadowInfo instead of loadAll
+type: task
+description: >-
+  The @daemon-meta-subdomain spec requires that shadow branch health updates happen independently of
+  other meta sub-domains (ac-shadow-on-schedule). The entity cache has a refreshMetaShadowInfo()
+  method that loads only the shadow sub-domain, and it has passing tests. However, the production
+  wiring in packages/daemon/src/server.ts does not use it.
+
+
+  The createShadowSyncOnPullHandler function (server.ts around line 197) creates the callback that
+  the ShadowSyncScheduler invokes after a successful git pull on the shadow branch. This callback
+  currently calls cache.loadAll(), which reloads every domain (items, tasks, sessions, meta with all
+  three sub-domains, inbox, plans, reviews, triage). This defeats the purpose of the meta sub-domain
+  decomposition — a background sync that only affects shadow branch health should not trigger full
+  reloads of unrelated domains.
+
+
+  The fix is to replace the cache.loadAll() call in createShadowSyncOnPullHandler with
+  cache.refreshMetaShadowInfo(). The file watcher (packages/daemon/src/watcher.ts) reliably detects
+  file changes from git pull in the .kspec/ worktree via chokidar filesystem events, so pulled file
+  content changes (specs, tasks, etc.) are handled independently through normal incremental cache
+  invalidation. The onPull handler only needs to refresh shadow status metadata, which the watcher
+  cannot infer from file changes alone.
+
+
+  Implementation steps:
+
+
+  1. Update the ShadowPullReloadableCache interface (server.ts around line 112) to expose
+  refreshMetaShadowInfo() instead of loadAll(). Remove loadAll() from the interface if no other
+  callers use it through this type.
+
+
+  2. Replace cache.loadAll() with cache.refreshMetaShadowInfo() in createShadowSyncOnPullHandler
+  (server.ts around line 206).
+
+
+  3. Update the AC annotation comment on the onPull wiring (server.ts around line 810). The current
+  comment references @daemon-read-path ac-background-sync with the phrase "invalidate entity cache
+  when background sync pulls new data." Narrow the comment to clarify that shadow sync triggers only
+  shadow subdomain refresh — file content changes are handled by the watcher independently.
+
+
+  4. Update the existing test in tests/daemon-read-path.test.ts (around line 945-965) that verifies
+  the onPull handler calls loadAll(). Change it to expect refreshMetaShadowInfo() instead.
+
+
+  5. Verify the existing test in tests/daemon-entity-cache.test.ts for ac-shadow-on-schedule (around
+  line 1233-1255) still passes — it already tests refreshMetaShadowInfo() in isolation.
+
+
+  Covers: @daemon-meta-subdomain ac-shadow-on-schedule.
+spec_ref: "@daemon-meta-subdomain"
+meta_ref: null
+plan_ref: "@plan-granular-cache-invalidation"
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - daemon
+  - cache
+  - bug
+vcs_refs: []
+history:
+  - author: "@claude"
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-04-08T06:02:04.526Z
+created_at: 2026-04-08T06:02:03.561Z
+todos: []
+automation: eligible
