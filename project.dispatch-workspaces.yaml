@@ -44659,12 +44659,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-08T09:32:06.040Z
+      updated_at: 2026-04-08T10:00:25.082Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-08T09:32:07.510Z
+      updated_at: 2026-04-08T10:00:25.082Z
     integration:
       status: pending
       detail: null
@@ -44672,7 +44672,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 6a8fd6df49537d95cca2f6283be8a4aa82cc30c8
-      updated_at: 2026-04-08T09:32:06.040Z
+      updated_at: 2026-04-08T10:00:25.082Z
     lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KNNZ6D4P24MB9J94K4Q068AN"
@@ -44680,9 +44680,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-08T09:15:28.921Z
-      last_reconciled_at: 2026-04-08T09:32:07.510Z
+      last_reconciled_at: 2026-04-08T10:00:25.082Z
       created_at: 2026-04-08T08:21:47.826Z
-      updated_at: 2026-04-08T09:32:07.510Z
+      updated_at: 2026-04-08T10:00:25.082Z
     workspace_id: dispatch-workspace-01KNNZ6D4P24MB9J94K4Q068AN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -44691,5 +44691,5 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-coverage-scan-config/01knnz6d
         head: d5219487701ed784f3ba16a03534c851be57ce02
-        last_seen_at: 2026-04-08T09:15:06.584Z
+        last_seen_at: 2026-04-08T10:00:25.082Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-scan-config-01knnz6d
