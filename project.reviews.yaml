@@ -131787,7 +131787,17 @@ reviews:
     slugs: []
     title: Review task-fix-plan-filter-bidirectional (cycle 3)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed from reviewer snapshot: 2098/2098 suites, 7664 tests passed, 5 skipped, 0 failed."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-08T14:06:34.629Z
+        completed_at: 2026-04-08T14:06:34.629Z
     events:
       - _ulid: 01KNPNZH4TXZFNVZJF132FYQ40
         actor: Jacob Chapel
@@ -131802,6 +131812,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-08T13:55:19.731Z
+      - _ulid: 01KNPPN61054D1A25T234TSMW1
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-08T14:06:35.552Z
     examined_commit: 0f6ce922d951cfad32553f12ac6117ef5d730376
     external_links: []
     lifecycle_state: open
@@ -131814,5 +131831,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-08T13:54:46.045Z
-    updated_at: 2026-04-08T13:55:17.131Z
+    updated_at: 2026-04-08T14:06:34.629Z
     notes: []
