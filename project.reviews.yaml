@@ -128759,7 +128759,19 @@ reviews:
     slugs: []
     title: Review apply cache context and working directory isolation to batch route (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed in detached review snapshot: 2097/2097 suites, 7649 passed, 5 skipped, 7654 total.
+          Duration 3268.7s. Log:
+          /tmp/kspec-test-cache/01KNN8CACK0DRMNHQV59A8561W/67c48b3ba576383a.log"
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-08T00:45:49.999Z
+        completed_at: 2026-04-08T00:45:49.999Z
     events:
       - _ulid: 01KNN8DPVRVY2G7P4TRSHM9MFW
         actor: Jacob Chapel
@@ -128781,6 +128793,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNN8TW4NARXKQZN41AKWTJZ1
         timestamp: 2026-04-08T00:45:48.411Z
+      - _ulid: 01KNN8TZEDWK3CH5DMPJ452AY3
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-08T00:45:50.926Z
     examined_commit: 8dea9d5b04e97640d8261ee15807f510d3593817
     external_links: []
     lifecycle_state: open
@@ -128812,5 +128831,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-08T00:38:36.152Z
-    updated_at: 2026-04-08T00:45:47.541Z
+    updated_at: 2026-04-08T00:45:49.999Z
     notes: []
