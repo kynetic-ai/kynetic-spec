@@ -129814,7 +129814,18 @@ reviews:
     slugs: []
     title: Review stabilize unrelated full-suite failures in review environment
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate exited 6 with repo-wide warnings only (orphaned skill dir, existing
+          alignment/completeness warnings) and no schema/reference errors attributable to this task.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-08T10:40:23.697Z
+        completed_at: 2026-04-08T10:40:23.697Z
     events:
       - _ulid: 01KNP8M7G83THVR5CGCNJ61178
         actor: Jacob Chapel
@@ -129836,6 +129847,13 @@ reviews:
           kind: question
           thread_ulid: 01KNPAVHN10BGTXXMH5GW7SJ97
         timestamp: 2026-04-08T10:40:22.022Z
+      - _ulid: 01KNPAVN1AE5TZPHQP4K5YK8EP
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-04-08T10:40:24.619Z
     examined_commit: 1d09289d43ce44411f6d8efaf6cbf31a30ce1ad4
     external_links: []
     lifecycle_state: open
@@ -129872,7 +129890,7 @@ reviews:
         kind: question
     verdicts: []
     created_at: 2026-04-08T10:01:24.232Z
-    updated_at: 2026-04-08T10:40:21.154Z
+    updated_at: 2026-04-08T10:40:23.697Z
     notes: []
   - _ulid: 01KNP9XQCHMV876AW114SHZEP5
     slugs: []
