@@ -131168,6 +131168,13 @@ reviews:
           kind: nit
           thread_ulid: 01KNPH0S33F6V4NYRCYRN841MA
         timestamp: 2026-04-08T12:28:05.241Z
+      - _ulid: 01KNPH0XW0DWMPPC58GS9Y2P6P
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNPH0WJJVBNW6E2RS98CF15X
+        timestamp: 2026-04-08T12:28:08.960Z
     examined_commit: 51a9b0812fe1532fa38c567b4868cac67b3c2dc5
     external_links: []
     lifecycle_state: open
@@ -131219,7 +131226,33 @@ reviews:
               side-effect imports), error handling, test quality, integration.
             created_at: 2026-04-08T12:28:04.067Z
         kind: nit
+      - _ulid: 01KNPH0WJJVBNW6E2RS98CF15X
+        anchor:
+          type: code
+          commit: 51a9b0812fe1532fa38c567b4868cac67b3c2dc5
+          line_end: 41
+          line_start: 37
+          path: tools/eslint-rules/no-daemon-ts-imports.js
+          side: head
+        entries:
+          - _ulid: 01KNPH0WJKRDGMZ3KHSVHFFG14
+            author: Jacob Chapel
+            body: >-
+              The new lint rule still misses side-effect-only imports such as import
+              "../dist/daemon/server.ts";.
+
+              At runtime those imports resolve the same .ts path and fail with ERR_MODULE_NOT_FOUND,
+              but this implementation returns early because node.specifiers is empty and
+              hasValueSpecifier becomes false.
+
+              I verified it by invoking the rule directly with an ImportDeclaration node whose
+              specifiers array was empty; it produced {"reports":0}.
+
+              This leaves a real reintroduction path for the exact failure mode this task is meant
+              to prevent.
+            created_at: 2026-04-08T12:28:07.635Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-08T12:22:58.610Z
-    updated_at: 2026-04-08T12:28:04.067Z
+    updated_at: 2026-04-08T12:28:07.635Z
     notes: []
