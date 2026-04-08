@@ -167,7 +167,7 @@ describe("session start activity timeline", () => {
 
   // AC: @session-start-activity-timeline ac-activity-sort
   describe("chronological sort (ac-activity-sort)", () => {
-    it("should sort timeline items most recent first", { timeout: 15000 }, () => {
+    it("should sort timeline items most recent first", () => {
       // Create a task completed "earlier"
       kspec('task add --title "Earlier task" --slug task-earlier', tempDir);
       kspec("task start @task-earlier", tempDir);

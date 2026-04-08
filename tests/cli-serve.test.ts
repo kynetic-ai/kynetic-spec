@@ -344,14 +344,18 @@ describe("kspec serve commands", () => {
     expect(result.stdout).toContain(`PID ${pid}`);
     expect(result.stdout).toContain("Daemon stopped");
 
-    // PID file should be removed (eventually by daemon cleanup, but may still exist during test)
-    // Process should not be running
-    let processRunning = false;
-    try {
-      process.kill(pid, 0);
-      processRunning = true;
-    } catch {
-      processRunning = false;
+    // The OS may not have fully reaped the process yet even though the
+    // daemon's PID file has been removed.  Poll briefly to avoid a race
+    // between SIGTERM delivery and process-table cleanup.
+    let processRunning = true;
+    for (let attempt = 0; attempt < 20; attempt++) {
+      try {
+        process.kill(pid, 0);
+      } catch {
+        processRunning = false;
+        break;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 100));
     }
     expect(processRunning).toBe(false);
   });

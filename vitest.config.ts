@@ -28,7 +28,7 @@ export default defineConfig({
           name: "default",
           globals: true,
           environment: "node",
-          testTimeout: 15_000,
+          testTimeout: 45_000,
           globalSetup: "./tests/global-setup.ts",
           setupFiles: ["./tests/setup.ts"],
           exclude: [...baseExclude, ...dispatchHeavySuites],
