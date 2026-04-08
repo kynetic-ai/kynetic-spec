@@ -43334,12 +43334,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-08T00:12:09.132Z
+      updated_at: 2026-04-08T00:12:17.013Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-08T00:12:09.132Z
+      updated_at: 2026-04-08T00:12:17.013Z
     integration:
       status: pending
       detail: null
@@ -43347,24 +43347,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-cache-aware-command-execution/01knkf3b
       target_commit: 13df74fef446a37cb44bb5b37bbf0fc8be5f4c82
-      updated_at: 2026-04-08T00:12:09.132Z
-    lifecycle_state: ready
+      updated_at: 2026-04-08T00:12:17.013Z
+    lifecycle_state: integrating
     resolved_base_branch: plan/plan-cache-aware-command-execution/01knkf3b
     task_ref: "@01KNN24V593SQEF0CA5Z00NQNF"
     task_slug: apply-cache-context-and-working-directory-isolation-to-batch-route
     timestamps:
       closed_at: null
       last_active_at: 2026-04-07T23:52:57.740Z
-      last_reconciled_at: 2026-04-08T00:12:09.132Z
+      last_reconciled_at: 2026-04-08T00:12:17.013Z
       created_at: 2026-04-07T23:52:36.781Z
-      updated_at: 2026-04-08T00:12:09.132Z
+      updated_at: 2026-04-08T00:12:17.013Z
     workspace_id: dispatch-workspace-01KNN24V593SQEF0CA5Z00NQNF
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 93b76749adaa9d11a0d4f2432a41023a4170bce0
+        last_seen_at: 2026-04-08T00:12:17.013Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/apply-cache-context-and-working-directory-isolation-to-batch-route-01knn24v-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/apply-cache-context-and-working-directory-isolation-to-batch-route/01knn24v
-        head: 13df74fef446a37cb44bb5b37bbf0fc8be5f4c82
-        last_seen_at: 2026-04-07T23:52:36.781Z
+        head: 93b76749adaa9d11a0d4f2432a41023a4170bce0
+        last_seen_at: 2026-04-08T00:12:17.013Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/apply-cache-context-and-working-directory-isolation-to-batch-route-01knn24v
