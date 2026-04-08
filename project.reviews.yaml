@@ -129276,7 +129276,23 @@ reviews:
     slugs: []
     title: Review task-shadow-sync-narrow-invalidation
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Ran npm test twice on head: both runs reported the same unrelated failures. Deterministic
+          failure: tests/daemon-triage-write-through.test.ts missing
+          dist/daemon/middleware/project-context.ts. Full-suite-only timeout failures:
+          tests/native-guard-setup.test.ts, tests/review-per-cycle-lifecycle.test.ts,
+          tests/setup-pipeline-unification.test.ts. Isolated targeted runs on both head and
+          integration base passed those 23 timeout-prone tests and failed only
+          daemon-triage-write-through, so no regression is attributable to this two-file change."
+        name: npm-test
+        required: true
+        runner: test-runner
+        created_at: 2026-04-08T08:04:41.896Z
+        completed_at: 2026-04-08T08:04:41.896Z
     events:
       - _ulid: 01KNP0DX9QX0VHEWJ1R0Q5V4JM
         actor: Jacob Chapel
@@ -129291,6 +129307,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-08T07:38:31.519Z
+      - _ulid: 01KNP1YJ6BRZPQF34A7X28DXHQ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm-test
+        timestamp: 2026-04-08T08:04:42.827Z
     examined_commit: 0c91c0d9d36df1418b5f95c65e2ef485a3466a90
     external_links: []
     lifecycle_state: open
@@ -129303,5 +129326,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-08T07:38:08.567Z
-    updated_at: 2026-04-08T07:38:30.625Z
+    updated_at: 2026-04-08T08:04:41.896Z
     notes: []
