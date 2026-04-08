@@ -130071,6 +130071,12 @@ reviews:
         payload:
           thread_ulid: 01KNPABH9A6EFH3VJ662253STJ
         timestamp: 2026-04-08T11:33:53.801Z
+      - _ulid: 01KNPDY2AQ5K2VR9JSX2A48EAP
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNPABH9A6EFH3VJ662253STJ
+        timestamp: 2026-04-08T11:34:09.495Z
     examined_commit: c9c1487bd64cf4de30d1631ed6a16f9419c30dd2
     external_links: []
     lifecycle_state: closed
@@ -130190,6 +130196,8 @@ reviews:
               the exclude_patterns functionality."
             created_at: 2026-04-08T11:33:52.957Z
         kind: blocker
+        resolved_at: 2026-04-08T11:34:08.627Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -130199,7 +130207,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-08T10:31:17.269Z
     created_at: 2026-04-08T10:24:03.985Z
-    updated_at: 2026-04-08T11:33:52.957Z
+    updated_at: 2026-04-08T11:34:08.627Z
     notes: []
   - _ulid: 01KNPB4M86JJD780JF5CFTPFAQ
     slugs: []
