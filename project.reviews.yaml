@@ -128774,6 +128774,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-08T00:39:14.179Z
+      - _ulid: 01KNN8TWZV44CX5F40S53JYWKR
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNN8TW4NARXKQZN41AKWTJZ1
+        timestamp: 2026-04-08T00:45:48.411Z
     examined_commit: 8dea9d5b04e97640d8261ee15807f510d3593817
     external_links: []
     lifecycle_state: open
@@ -128783,8 +128790,27 @@ reviews:
       content_hash: ""
       ref: "@01KNN24V593SQEF0CA5Z00NQNF"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNN8TW4NARXKQZN41AKWTJZ1
+        anchor:
+          type: code
+          commit: 8dea9d5b04e97640d8261ee15807f510d3593817
+          line_end: 70
+          line_start: 64
+          path: packages/daemon/src/routes/command.ts
+          side: head
+        entries:
+          - _ulid: 01KNN8TW4NHGQ559330AHQKCAC
+            author: Jacob Chapel
+            body: This export is a test-only escape hatch in production code. The docstring says it is 'Used by
+              tests to verify that command execution is wrapped in commandExecutionStorage.run()',
+              and  shows the only consumer is . Project work gates treat test helpers exported from
+              runtime modules as MUST-FIX because they widen the public surface area without adding
+              product behavior. Please replace this with a behavioral test strategy that does not
+              require exporting route-internal ALS state from the daemon module.
+            created_at: 2026-04-08T00:45:47.541Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-08T00:38:36.152Z
-    updated_at: 2026-04-08T00:39:12.625Z
+    updated_at: 2026-04-08T00:45:47.541Z
     notes: []
