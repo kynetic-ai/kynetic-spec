@@ -2080,6 +2080,10 @@ features:
         id: ac-language-aware-parsing
         then: the comment syntax used matches the file's language
         when: the scanner parses it for AC annotations
+      - given: a file whose language cannot be determined
+        id: ac-unrecognized-language
+        then: the file is skipped
+        when: the scanner encounters it
     tags: []
     created: 2026-04-08T07:14:02.061Z
     notes: []
