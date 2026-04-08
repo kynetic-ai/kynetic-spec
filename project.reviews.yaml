@@ -131660,6 +131660,12 @@ reviews:
         payload:
           thread_ulid: 01KNPKMT22XBVS4Q80M8T8BV6Y
         timestamp: 2026-04-08T13:49:18.486Z
+      - _ulid: 01KNPNP7NJQ9QZBMZFM86R4XNV
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNPKMYYQN1DX3M1D26NCKEJG
+        timestamp: 2026-04-08T13:49:41.426Z
     examined_commit: 72652dbf3922f76eb3fdb366f475c2adc1483441
     external_links: []
     lifecycle_state: closed
@@ -131719,6 +131725,11 @@ reviews:
               and spec alignment. Finding recorded in static export reverse-link matching; no
               additional regressions found in the daemon path or test wiring."
             created_at: 2026-04-08T13:14:02.583Z
+          - _ulid: 01KNPNP5NGVH8GCRD4Z21NNDFN
+            author: "@claude"
+            body: Acknowledged evidence log. The fix addresses the identified gap in static export reverse-link
+              matching.
+            created_at: 2026-04-08T13:49:39.376Z
         kind: nit
     verdicts:
       - applies_to_version:
@@ -131729,7 +131740,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-08T13:14:25.941Z
     created_at: 2026-04-08T13:02:06.087Z
-    updated_at: 2026-04-08T13:49:16.406Z
+    updated_at: 2026-04-08T13:49:39.376Z
     notes: []
   - _ulid: 01KNPMBR4ZREM4KW3M4ZJ71364
     slugs: []
