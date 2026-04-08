@@ -29,7 +29,7 @@ import {
 } from "./helpers/cli.js";
 import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
 import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.js";
-import { createCommandRoutes } from "../dist/daemon/routes/command.js";
+import { createCommandRoutes, getCommandExecutionStore } from "../dist/daemon/routes/command.js";
 import { PubSubManager } from "../dist/daemon/websocket/pubsub.js";
 import type {
   RouteEntityCache,
@@ -1356,20 +1356,23 @@ describe("Daemon Command API", () => {
   // AC: @daemon-command-api ac-batch-support
   it("propagates entity cache context into batch command execution", async () => {
     // Verify that batch execution wraps commands in runWithEntityCache.
-    // We confirm this by checking that the entity cache accessor is invoked
-    // from within the batch execution's async chain (not just from the
-    // route's post-mutation writeThrough). When runWithEntityCache wraps
-    // the batch, initContext() calls getEntityCacheContext() → cacheAccessor()
-    // to resolve the cached project config.
-    //
-    // Strategy: run a non-mutating batch (read-only task list). A non-mutating
-    // batch does NOT trigger writeThrough after execution. So any call to the
-    // cache accessor during the request must come from within the batch
-    // execution chain — i.e., from the runWithEntityCache ALS context.
-    let accessorCallCount = 0;
-    const instrumentedAccessor: EntityCacheAccessor = (projectPath: string) => {
-      accessorCallCount++;
-      if (projectPath === tempDir) return mockCache;
+    // Strategy: spy on cache domain methods (getProjectConfig, getShadowInfo)
+    // that are ONLY called from tryGetCachedInitContext() in the parser.
+    // That function is only reached via the entityCacheStorage ALS context
+    // set by runWithEntityCache. The post-batch writeThrough calls
+    // cache.writeThrough(domain) but never getProjectConfig/getShadowInfo.
+    // So calls to these methods prove ALS propagation into batch execution.
+    const getProjectConfigSpy = vi.fn(cacheSnapshot.projectConfig);
+    const getShadowInfoSpy = vi.fn(cacheSnapshot.shadowInfo);
+
+    const spiedCache: RouteEntityCache = {
+      ...mockCache,
+      getProjectConfig: getProjectConfigSpy,
+      getShadowInfo: getShadowInfoSpy,
+    };
+
+    const spiedAccessor: EntityCacheAccessor = (projectPath: string) => {
+      if (projectPath === tempDir) return spiedCache;
       return null;
     };
 
@@ -1378,7 +1381,7 @@ describe("Daemon Command API", () => {
       .use(middleware)
       .use(createCommandRoutes({
         pubsub,
-        getEntityCache: instrumentedAccessor,
+        getEntityCache: spiedAccessor,
         prepareProgram: (program) => prepareProgram?.(program),
       }));
 
@@ -1399,36 +1402,60 @@ describe("Daemon Command API", () => {
     const body = await response.json();
     expect(body.success).toBe(true);
 
-    // The accessor should have been called from within the batch execution.
-    // When runWithEntityCache wraps execution, initContext() discovers the
-    // cache via getEntityCacheContext() → cacheAccessor(projectPath).
-    // The accessor is also called by the route's post-mutation writeThrough,
-    // but the calls during execution (from initContext) confirm the ALS
-    // propagation is working.
-    expect(accessorCallCount).toBeGreaterThanOrEqual(1);
+    // getProjectConfig and getShadowInfo are called by tryGetCachedInitContext()
+    // inside initContext(), which only reaches the cache when runWithEntityCache
+    // has installed the ALS context. The post-batch writeThrough does NOT call
+    // these methods — it only calls cache.writeThrough(domain). So these spies
+    // prove the batch command ran inside the entity cache ALS context.
+    expect(getProjectConfigSpy).toHaveBeenCalled();
+    expect(getShadowInfoSpy).toHaveBeenCalled();
   });
 
   // AC: @daemon-command-api ac-batch-support
   // AC: @daemon-command-api ac-response-parity
-  it("does not leak batch process.stdout.write output to real stdout", async () => {
-    // Monitor real stdout for any leaked output during batch execution.
-    // The batch route must capture process.stdout.write calls (used by
-    // plan export and similar commands) via commandExecutionStorage,
-    // preventing them from reaching the real stdout.
-    const leakedStdout: string[] = [];
-    const originalWrite = process.stdout.write.bind(process.stdout);
+  it("captures batch process.stdout.write output via commandExecutionStorage", async () => {
+    // Verify that process.stdout.write output during batch execution is
+    // captured by commandExecutionStorage (the ALS-based interception in
+    // the route), not leaked to real stdout.
+    //
+    // Strategy: wrap the existing inbox add command's action handler to
+    // also call process.stdout.write with a sentinel string. Since
+    // inbox add is already marked mutating, it passes batch validation.
+    // After the write, check that the commandExecutionStorage ALS store
+    // is active and contains the captured sentinel.
+    const SENTINEL = "BATCH_STDOUT_WRITE_SENTINEL_" + Date.now();
+    let storeActiveduringExecution = false;
+    let sentinelCaptured = false;
 
-    process.stdout.write = ((chunk: unknown, ...rest: unknown[]) => {
-      const text =
-        typeof chunk === "string" ? chunk : Buffer.isBuffer(chunk) ? chunk.toString() : String(chunk);
-      leakedStdout.push(text);
-      return originalWrite(
-        chunk as Parameters<typeof process.stdout.write>[0],
-        ...(rest as Parameters<typeof process.stdout.write>[1][]),
-      );
-    }) as typeof process.stdout.write;
+    await withInjectedCommand((program) => {
+      const inboxCmd = findCommand(program, ["inbox", "add"]);
+      const originalHandler = (inboxCmd as Command & {
+        _actionHandler?: (...args: unknown[]) => unknown;
+      })._actionHandler;
 
-    try {
+      if (!originalHandler) {
+        throw new Error("inbox add has no action handler");
+      }
+
+      (inboxCmd as Command & { _actionHandler: (...args: unknown[]) => Promise<unknown> })
+        ._actionHandler = async (...args: unknown[]) => {
+          // Write sentinel via process.stdout.write — the exact channel
+          // that plan export and similar commands use.
+          process.stdout.write(SENTINEL);
+
+          // Verify the commandExecutionStorage ALS store is active and
+          // captured the sentinel. When the store is active, the route's
+          // process.stdout.write hook intercepts the call and pushes to
+          // stdoutChunks instead of forwarding to real stdout.
+          const store = getCommandExecutionStore();
+          storeActiveduringExecution = store !== undefined;
+          sentinelCaptured = store?.stdoutChunks.some(
+            (chunk) => chunk.includes(SENTINEL),
+          ) ?? false;
+
+          return originalHandler(...args);
+        };
+    }, async () => {
       const response = await makeRequest("/api/command/batch", {
         method: "POST",
         body: JSON.stringify({
@@ -1446,11 +1473,12 @@ describe("Daemon Command API", () => {
       const body = await response.json();
       expect(body.success).toBe(true);
 
-      // No output should have leaked to the real process.stdout.write
-      expect(leakedStdout).toEqual([]);
-    } finally {
-      process.stdout.write = originalWrite;
-    }
+      // The commandExecutionStorage ALS store must have been active
+      // during batch command execution, proving that process.stdout.write
+      // calls are intercepted and captured (not leaked to real stdout).
+      expect(storeActiveduringExecution).toBe(true);
+      expect(sentinelCaptured).toBe(true);
+    });
   });
 
   // AC: @daemon-command-api ac-batch-support
