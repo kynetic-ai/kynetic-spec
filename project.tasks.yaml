@@ -25854,7 +25854,7 @@
   type: task
   spec_ref: "@daemon-command-api"
   plan_ref: "@plan-cache-aware-command-execution"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@01KNN24A"
@@ -25864,7 +25864,7 @@
     - cache
     - bug
   review_ref: "@01KNNA2A15A4Z96CCVPC5G84B8"
-  notes_count: 6
+  notes_count: 7
   todos_count: 0
   created_at: 2026-04-07T22:48:54.185Z
   started_at: 2026-04-08T01:04:10.656Z
