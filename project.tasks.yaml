@@ -25925,13 +25925,13 @@
   title: Make AC coverage scanner configurable and language-agnostic
   type: task
   spec_ref: "@coverage-scan-config"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   priority: 2
   tags: []
   review_ref: "@01KNP61JN44XBMTDFJJNE22C6T"
-  notes_count: 2
+  notes_count: 3
   todos_count: 0
   created_at: 2026-04-08T07:16:34.070Z
   started_at: 2026-04-08T08:22:51.088Z
