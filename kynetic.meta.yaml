@@ -13501,6 +13501,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-08T01:29:32.713Z
+  - _ulid: 01KNP32RDJ8AA6857HVHVSKF9T
+    type: success
+    content: "Test timeout alignment principle: vitest testTimeout must be >= kspec CLI subprocess
+      timeout (30s) so that subprocess-level timeout errors propagate as actionable messages rather
+      than opaque vitest STACK_TRACE_ERROR. Applied in stabilize-unrelated-full-suite-failures task
+      by raising default from 15s to 45s."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-08T08:24:28.851Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
