@@ -34,6 +34,16 @@ const noDaemonTsImports = {
         // Type-only imports are erased at compile time — safe to use .ts
         if (node.importKind === "type") return;
 
+        // Side-effect imports (no specifiers) execute at runtime — flag them
+        if (node.specifiers.length === 0) {
+          context.report({
+            node,
+            messageId: "noDaemonTsImport",
+            data: { source },
+          });
+          return;
+        }
+
         // Mixed import: check if ALL specifiers are type-only
         const hasValueSpecifier = node.specifiers.some(
           (spec) => spec.type !== "ImportSpecifier" || spec.importKind !== "type",

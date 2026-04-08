@@ -88,4 +88,11 @@ describe("no-daemon-ts-imports lint rule", () => {
     );
     expect(result.output).toContain("no-daemon-ts-imports");
   });
+
+  it("should flag side-effect-only imports from dist/daemon/ with .ts extension", () => {
+    const result = runOxlint(
+      `import "../dist/daemon/server.ts";\n`,
+    );
+    expect(result.output).toContain("no-daemon-ts-imports");
+  });
 });
