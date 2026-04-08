@@ -44813,18 +44813,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-coverage-scan-config/01knnz6d
-    canonical_branch_head: c9c1487bd64cf4de30d1631ed6a16f9419c30dd2
+    canonical_branch_head: 55e02c8f3fc9b7325eb12c0c81a3f6e4386147d4
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-08T11:12:41.120Z
+      updated_at: 2026-04-08T11:33:34.235Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-08T11:13:01.681Z
+      updated_at: 2026-04-08T11:33:34.235Z
     integration:
       status: pending
       detail: null
@@ -44832,7 +44832,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 6a8fd6df49537d95cca2f6283be8a4aa82cc30c8
-      updated_at: 2026-04-08T11:12:41.120Z
+      updated_at: 2026-04-08T11:33:34.235Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KNNZ6D4P24MB9J94K4Q068AN"
@@ -44840,9 +44840,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-08T11:13:01.681Z
-      last_reconciled_at: 2026-04-08T11:13:01.681Z
+      last_reconciled_at: 2026-04-08T11:33:34.235Z
       created_at: 2026-04-08T08:21:47.826Z
-      updated_at: 2026-04-08T11:13:01.681Z
+      updated_at: 2026-04-08T11:33:34.235Z
     workspace_id: dispatch-workspace-01KNNZ6D4P24MB9J94K4Q068AN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
