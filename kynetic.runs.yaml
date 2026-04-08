@@ -24154,7 +24154,7 @@ runs:
     completed_at: 2026-04-07T23:18:24.400Z
   - _ulid: 01KNN8YMMN53YSPPXJ12GADXD9
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -24167,7 +24167,14 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-08T00:48:43.421Z
-        completed_at: 2026-04-08T00:48:43.421Z
+        completed_at: 2026-04-08T00:48:44.220Z
+        notes: "What worked well: the review workflow was durable and deterministic. Creating a fresh
+          review, attaching checks, and submitting the verdict correctly persisted state in the
+          detached snapshot and updated the task lifecycle."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-08T00:48:44.220Z
+        completed_at: 2026-04-08T00:48:44.220Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-08T00:47:50.933Z
