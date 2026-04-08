@@ -58,3 +58,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-08T12:36:12.322Z
+  - _ulid: 01KNPM6EZDDBHNGRNGZTNZ76FJ
+    content: 'Fix cycle 2: Addressed blocker — lint rule now catches side-effect-only imports (e.g.
+      import "../dist/daemon/server.ts"). Root cause: empty specifiers array caused
+      hasValueSpecifier to be false via Array.some() on empty array. Fix adds explicit check for
+      specifiers.length === 0 before the mixed-import logic. Added test case. Full suite passes:
+      2095 suites, 7608 tests, 5 skipped.'
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-08T13:23:36.046Z
