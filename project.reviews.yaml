@@ -131798,6 +131798,17 @@ reviews:
         runner: npm
         created_at: 2026-04-08T14:06:34.629Z
         completed_at: 2026-04-08T14:06:34.629Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Ran kspec validate. Exit code 6 with project-wide pre-existing warnings only (orphaned
+          skill dir, orphaned specs, missing AC coverage, invalid AC annotation fixtures); no
+          schema/reference errors introduced by this task.
+        name: kspec validate
+        required: false
+        created_at: 2026-04-08T14:06:37.296Z
+        completed_at: 2026-04-08T14:06:37.296Z
     events:
       - _ulid: 01KNPNZH4TXZFNVZJF132FYQ40
         actor: Jacob Chapel
@@ -131819,6 +131830,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-08T14:06:35.552Z
+      - _ulid: 01KNPPN8KVRCHZMCBC5P4HXJ1N
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-04-08T14:06:38.203Z
     examined_commit: 0f6ce922d951cfad32553f12ac6117ef5d730376
     external_links: []
     lifecycle_state: open
@@ -131831,5 +131849,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-08T13:54:46.045Z
-    updated_at: 2026-04-08T14:06:34.629Z
+    updated_at: 2026-04-08T14:06:37.296Z
     notes: []
