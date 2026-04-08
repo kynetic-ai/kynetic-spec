@@ -129272,3 +129272,29 @@ reviews:
     created_at: 2026-04-08T01:31:28.570Z
     updated_at: 2026-04-08T01:38:07.062Z
     notes: []
+  - _ulid: 01KNP0DX9Q0YE50ZDXPT471FXB
+    slugs: []
+    title: Review task-shadow-sync-narrow-invalidation
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KNP0DX9QX0VHEWJ1R0Q5V4JM
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-08T07:38:08.567Z
+    examined_commit: 0c91c0d9d36df1418b5f95c65e2ef485a3466a90
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNNTXZD9KNAE0HX81SNQM0A8"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-08T07:38:08.567Z
+    updated_at: null
+    notes: []
