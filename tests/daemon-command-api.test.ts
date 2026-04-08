@@ -29,7 +29,7 @@ import {
 } from "./helpers/cli.js";
 import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
 import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.js";
-import { createCommandRoutes, getCommandExecutionStore } from "../dist/daemon/routes/command.js";
+import { createCommandRoutes } from "../dist/daemon/routes/command.js";
 import { PubSubManager } from "../dist/daemon/websocket/pubsub.js";
 import type {
   RouteEntityCache,
@@ -1413,72 +1413,86 @@ describe("Daemon Command API", () => {
 
   // AC: @daemon-command-api ac-batch-support
   // AC: @daemon-command-api ac-response-parity
-  it("captures batch process.stdout.write output via commandExecutionStorage", async () => {
+  it("captures batch process.stdout.write output without leaking to real stdout", async () => {
     // Verify that process.stdout.write output during batch execution is
-    // captured by commandExecutionStorage (the ALS-based interception in
-    // the route), not leaked to real stdout.
+    // intercepted by the route's ALS-based hook (commandExecutionStorage),
+    // not forwarded to the underlying stdout stream.
     //
-    // Strategy: wrap the existing inbox add command's action handler to
-    // also call process.stdout.write with a sentinel string. Since
-    // inbox add is already marked mutating, it passes batch validation.
-    // After the write, check that the commandExecutionStorage ALS store
-    // is active and contains the captured sentinel.
+    // Strategy: wrap inbox add's handler to call process.stdout.write with
+    // a sentinel. Spy on process.stdout._write (the underlying Writable
+    // stream method) to detect whether the sentinel passes through. When
+    // commandExecutionStorage is active, the route's process.stdout.write
+    // hook captures the sentinel and returns true without calling the
+    // original write — so _write never sees it.
     const SENTINEL = "BATCH_STDOUT_WRITE_SENTINEL_" + Date.now();
-    let storeActiveduringExecution = false;
-    let sentinelCaptured = false;
+    let sentinelWritten = false;
 
-    await withInjectedCommand((program) => {
-      const inboxCmd = findCommand(program, ["inbox", "add"]);
-      const originalHandler = (inboxCmd as Command & {
-        _actionHandler?: (...args: unknown[]) => unknown;
-      })._actionHandler;
+    // Spy on the underlying stream writer to detect sentinel leaks.
+    // The route module's process.stdout.write hook calls originalStdoutWrite
+    // (the real write method) only when commandExecutionStorage has no active
+    // store. The real write method calls _write on the stream.
+    const writeSpy = vi.spyOn(process.stdout, "_write" as keyof typeof process.stdout);
 
-      if (!originalHandler) {
-        throw new Error("inbox add has no action handler");
-      }
+    try {
+      await withInjectedCommand((program) => {
+        const inboxCmd = findCommand(program, ["inbox", "add"]);
+        const originalHandler = (inboxCmd as Command & {
+          _actionHandler?: (...args: unknown[]) => unknown;
+        })._actionHandler;
 
-      (inboxCmd as Command & { _actionHandler: (...args: unknown[]) => Promise<unknown> })
-        ._actionHandler = async (...args: unknown[]) => {
-          // Write sentinel via process.stdout.write — the exact channel
-          // that plan export and similar commands use.
-          process.stdout.write(SENTINEL);
+        if (!originalHandler) {
+          throw new Error("inbox add has no action handler");
+        }
 
-          // Verify the commandExecutionStorage ALS store is active and
-          // captured the sentinel. When the store is active, the route's
-          // process.stdout.write hook intercepts the call and pushes to
-          // stdoutChunks instead of forwarding to real stdout.
-          const store = getCommandExecutionStore();
-          storeActiveduringExecution = store !== undefined;
-          sentinelCaptured = store?.stdoutChunks.some(
-            (chunk) => chunk.includes(SENTINEL),
-          ) ?? false;
+        (inboxCmd as Command & { _actionHandler: (...args: unknown[]) => Promise<unknown> })
+          ._actionHandler = async (...args: unknown[]) => {
+            // Write sentinel via process.stdout.write — the exact channel
+            // that plan export and similar commands use.
+            process.stdout.write(SENTINEL);
+            sentinelWritten = true;
 
-          return originalHandler(...args);
-        };
-    }, async () => {
-      const response = await makeRequest("/api/command/batch", {
-        method: "POST",
-        body: JSON.stringify({
-          commands: [
-            {
-              command: "inbox add",
-              args: { text: "Stdout leak test batch" },
-              id: "leak-test",
-            },
-          ],
-        }),
+            return originalHandler(...args);
+          };
+      }, async () => {
+        const response = await makeRequest("/api/command/batch", {
+          method: "POST",
+          body: JSON.stringify({
+            commands: [
+              {
+                command: "inbox add",
+                args: { text: "Stdout leak test batch" },
+                id: "leak-test",
+              },
+            ],
+          }),
+        });
+
+        expect(response.status).toBe(200);
+        const body = await response.json();
+        expect(body.success).toBe(true);
+
+        // The handler must have executed and written the sentinel.
+        expect(sentinelWritten).toBe(true);
+
+        // The sentinel must NOT have reached the underlying stream writer.
+        // If commandExecutionStorage is active, the route's hook intercepts
+        // the process.stdout.write call and captures it into the ALS store
+        // without forwarding to originalStdoutWrite → _write.
+        const sentinelReachedStream = writeSpy.mock.calls.some((call) => {
+          const chunk = call[0];
+          const text =
+            typeof chunk === "string"
+              ? chunk
+              : Buffer.isBuffer(chunk)
+                ? chunk.toString()
+                : String(chunk);
+          return text.includes(SENTINEL);
+        });
+        expect(sentinelReachedStream).toBe(false);
       });
-
-      expect(response.status).toBe(200);
-      const body = await response.json();
-      expect(body.success).toBe(true);
-
-      // The commandExecutionStorage ALS store must have been active
-      // during batch command execution, proving that process.stdout.write
-      // calls are intercepted and captured (not leaked to real stdout).
-      expect(storeActiveduringExecution).toBe(true);
-      expect(sentinelCaptured).toBe(true);
-    });
+    } finally {
+      writeSpy.mockRestore();
+    }
   });
 
   // AC: @daemon-command-api ac-batch-support

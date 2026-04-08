@@ -61,14 +61,6 @@ export interface CommandExecutionContext {
 
 const commandExecutionStorage = new AsyncLocalStorage<CommandExecutionContext>();
 
-/**
- * Returns the active command execution context from ALS, if any.
- * Used by tests to verify that command execution is wrapped in
- * commandExecutionStorage.run().
- */
-export function getCommandExecutionStore(): CommandExecutionContext | undefined {
-  return commandExecutionStorage.getStore();
-}
 
 function serializeConsoleArgs(args: unknown[]): string {
   return args.map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg))).join(" ");
