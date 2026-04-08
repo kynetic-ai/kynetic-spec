@@ -25972,7 +25972,7 @@
   title: Fix worktree-unaware submission linkage capture and unguarded base-branch adoption
   type: bug
   spec_ref: "@portable-task-submission-linkage"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 1
@@ -25983,4 +25983,5 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-08T22:07:00.003Z
+  started_at: 2026-04-08T22:08:54.909Z
   automation: eligible

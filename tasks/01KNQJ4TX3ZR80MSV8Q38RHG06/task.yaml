@@ -92,7 +92,7 @@ description: |-
 spec_ref: "@portable-task-submission-linkage"
 meta_ref: null
 plan_ref: null
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -102,6 +102,22 @@ tags:
   - worktree
   - submission-linkage
 vcs_refs: []
+session_id: 01KNQJ6DGBF2FQAND7GREVHGE1
+history:
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KNQJ6DGBF2FQAND7GREVHGE1
+        previous: null
+      started_at:
+        new: 2026-04-08T22:08:54.909Z
+        previous: null
+    command: task-start
+    timestamp: 2026-04-08T22:08:54.910Z
 created_at: 2026-04-08T22:07:00.003Z
+started_at: 2026-04-08T22:08:54.909Z
 todos: []
 automation: eligible
