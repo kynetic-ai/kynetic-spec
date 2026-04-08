@@ -13456,6 +13456,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-07T23:45:43.225Z
+  - _ulid: 01KNN6W9M1H8EYZX5BVVC1EKAG
+    type: success
+    content: "Batch route ALS isolation pattern: when applying ALS context wrappers (runWithEntityCache,
+      runWithWorkingDirectory, runWithOutputState, commandExecutionStorage) to new code paths, the
+      single command route (executeCommand) serves as the canonical reference for nesting order.
+      Tests for batch ALS isolation must use behavioral verification (chdir interception, stdout
+      leak monitoring, instrumented accessors) rather than injected debug commands, since
+      executeBatch pre-validates commands against the command tree."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-08T00:11:36.961Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
