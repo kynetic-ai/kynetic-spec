@@ -132062,6 +132062,18 @@ reviews:
         runner: kspec validate
         created_at: 2026-04-08T22:53:17.464Z
         completed_at: 2026-04-08T22:53:17.464Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Attempted npm test three times in this review snapshot; runner did not converge to a
+          result and remained idle for multiple minutes, so verdict is based on code inspection plus
+          targeted behavioral suites.
+        name: full-suite
+        required: false
+        runner: npm test
+        created_at: 2026-04-08T22:53:29.779Z
+        completed_at: 2026-04-08T22:53:29.779Z
     events:
       - _ulid: 01KNQKPAAWNSFBG3A0QQ1J550Z
         actor: Jacob Chapel
@@ -132097,6 +132109,13 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-04-08T22:53:18.335Z
+      - _ulid: 01KNQMT05AP16715E5VFE54R82
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: full-suite
+        timestamp: 2026-04-08T22:53:30.666Z
     examined_commit: a6698d0d7053638669479e3bd101f8f3c6a2c693
     external_links: []
     lifecycle_state: open
@@ -132109,5 +132128,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-08T22:34:01.436Z
-    updated_at: 2026-04-08T22:53:17.464Z
+    updated_at: 2026-04-08T22:53:29.779Z
     notes: []
