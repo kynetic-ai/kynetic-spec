@@ -24336,7 +24336,7 @@ runs:
     completed_at: 2026-04-08T07:39:07.941Z
   - _ulid: 01KNP2YM0H0KYVJB2CSK2GRRB1
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -24352,7 +24352,28 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-08T08:22:49.466Z
-        completed_at: 2026-04-08T08:22:49.466Z
+        completed_at: 2026-04-08T08:23:53.706Z
+        notes: >-
+          Searched existing state. Found
+          @task-investigate-flaky-full-suite-dispatch-and-daemon-api-tests (completed) which is the
+          predecessor investigation. No existing inbox or observation items about test timeouts.
+          High-confidence findings:
+
+
+          FRICTION: The 15s default testTimeout was a ticking bomb — it was set when the suite was
+          smaller and ran on faster machines. As the suite grew to 2000+ files, any machine under
+          load would hit it. The mismatch between vitest testTimeout (15s) and kspec CLI subprocess
+          timeout (30s) meant vitest killed tests before they could report meaningful errors,
+          producing opaque STACK_TRACE_ERROR messages instead of actionable timeout messages.
+
+
+          SUCCESS: Running full suite twice under different load conditions proved the systemic
+          nature of the issue. If I had only run once and seen 3 failures, I might have applied
+          per-test fixes instead of the correct global fix.
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-08T08:23:53.706Z
+        completed_at: 2026-04-08T08:23:53.706Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-08T08:22:13.265Z
