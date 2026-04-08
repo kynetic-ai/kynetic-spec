@@ -2063,6 +2063,11 @@ features:
     relates_to: []
     tests: []
     traits: []
+    acceptance_criteria:
+      - given: a project with no coverage scanning configured
+        id: ac-explicit-opt-in
+        then: no files are scanned for AC annotations
+        when: validation runs
     tags: []
     created: 2026-04-08T07:14:02.061Z
     notes: []
