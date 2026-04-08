@@ -131766,6 +131766,18 @@ reviews:
         runner: test.cjs
         created_at: 2026-04-08T14:13:14.497Z
         completed_at: 2026-04-08T14:13:14.497Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm test -- tests/lint-no-daemon-ts-imports.test.ts --fresh passed (2 suites, 6 tests).
+          npm test -- tests/daemon-read-path.test.ts --fresh passed (5 suites, 25 tests). Direct npx
+          oxlint repro also flagged side-effect import and allowed type-only import.
+        name: targeted-daemon-and-rule
+        required: true
+        runner: test.cjs
+        created_at: 2026-04-08T14:13:17.044Z
+        completed_at: 2026-04-08T14:13:17.044Z
     events:
       - _ulid: 01KNPMBR4YA4RSVG8M1PHJBWFB
         actor: Jacob Chapel
@@ -131794,6 +131806,13 @@ reviews:
           status: pass
           name: npm-test
         timestamp: 2026-04-08T14:13:15.374Z
+      - _ulid: 01KNPQ1F24G0EER5AW4106DKQ1
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted-daemon-and-rule
+        timestamp: 2026-04-08T14:13:18.020Z
     examined_commit: efd95569e94451efa368054907859bca82fed913
     external_links: []
     lifecycle_state: open
@@ -131837,7 +131856,7 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-08T13:26:29.279Z
-    updated_at: 2026-04-08T14:13:14.497Z
+    updated_at: 2026-04-08T14:13:17.044Z
     notes: []
   - _ulid: 01KNPNZH4X7S1ES27X5XGF3AZP
     slugs: []
