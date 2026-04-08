@@ -129413,6 +129413,18 @@ reviews:
         runner: test-runner
         created_at: 2026-04-08T08:51:46.714Z
         completed_at: 2026-04-08T08:51:46.714Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Exited 6 with long-standing repository warnings (orphaned skill dir, orphaned specs,
+          missing AC coverage, invalid AC annotations). No task-specific validation error introduced
+          by this snapshot.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-08T08:51:52.068Z
+        completed_at: 2026-04-08T08:51:52.068Z
     events:
       - _ulid: 01KNP2YN4JBFTG04YRPY3K9PYA
         actor: Jacob Chapel
@@ -129448,6 +129460,13 @@ reviews:
           kind: question
           thread_ulid: 01KNP4MTGHHQ66SHD935YQKB2Y
         timestamp: 2026-04-08T08:51:50.288Z
+      - _ulid: 01KNP4MY1DH8T1FG117HWE44QJ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-08T08:51:53.005Z
     examined_commit: d29bbeb0834487440004909576233e6836ae30b8
     external_links: []
     lifecycle_state: open
@@ -129502,5 +129521,5 @@ reviews:
         kind: question
     verdicts: []
     created_at: 2026-04-08T08:22:14.419Z
-    updated_at: 2026-04-08T08:51:49.393Z
+    updated_at: 2026-04-08T08:51:52.068Z
     notes: []
