@@ -131298,6 +131298,12 @@ reviews:
         payload:
           thread_ulid: 01KNPH0WJJVBNW6E2RS98CF15X
         timestamp: 2026-04-08T13:22:04.930Z
+      - _ulid: 01KNPM45PMVJX841NKXP7NPT88
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNPH0WJJVBNW6E2RS98CF15X
+        timestamp: 2026-04-08T13:22:21.012Z
     examined_commit: 51a9b0812fe1532fa38c567b4868cac67b3c2dc5
     external_links: []
     lifecycle_state: closed
@@ -131382,6 +131388,8 @@ reviews:
               Full suite passes: 2095 suites, 7608 tests.'
             created_at: 2026-04-08T13:22:03.941Z
         kind: blocker
+        resolved_at: 2026-04-08T13:22:20.047Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -131391,7 +131399,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-08T12:36:10.495Z
     created_at: 2026-04-08T12:22:58.610Z
-    updated_at: 2026-04-08T13:22:03.941Z
+    updated_at: 2026-04-08T13:22:20.047Z
     notes: []
   - _ulid: 01KNPHZYVQX3451SNQB8JTYE0D
     slugs: []
