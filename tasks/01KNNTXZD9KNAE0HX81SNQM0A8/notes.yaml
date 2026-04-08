@@ -76,3 +76,15 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-08T07:24:09.127Z
+  - _ulid: 01KNP09A21M0XQ6PV5PF3SW2BB
+    content: "Completed all 5 implementation steps: (1) Narrowed ShadowPullReloadableCache interface
+      from loadAll() to refreshMetaShadowInfo(), (2) replaced cache.loadAll() with
+      cache.refreshMetaShadowInfo() in createShadowSyncOnPullHandler, (3) updated AC annotation on
+      onPull wiring from @daemon-read-path ac-background-sync to @daemon-meta-subdomain
+      ac-shadow-on-schedule, (4) updated test mock and assertion in daemon-read-path.test.ts, (5)
+      verified existing ac-shadow-on-schedule test in daemon-entity-cache.test.ts passes unchanged.
+      Full test suite: 7594 passed, 5 skipped. One pre-existing failure in
+      daemon-triage-write-through.test.ts (missing middleware build artifact, unrelated)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-08T07:35:37.793Z
