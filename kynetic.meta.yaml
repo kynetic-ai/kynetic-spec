@@ -13554,6 +13554,27 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-08T10:42:51.145Z
+  - _ulid: 01KNPC03VTDWYSFQWX5CZRE6AR
+    type: friction
+    content: Review comments that include shell-sensitive quoting are easy to mangle when sent through
+      one-line exec commands. In this review, backticks inside a kspec review comment body triggered
+      shell command substitution before the CLI saw the text. For agent workflows, multiline
+      review/note payloads should use a temp file or heredoc-safe path instead of inline shell
+      strings.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-08T11:00:19.450Z
+  - _ulid: 01KNPC042JMKXDXKT99RFEAGQF
+    type: success
+    content: The review workflow caught an isolation breach by checking git history and diff scope
+      before relying on the worker note. Verifying the targeted daemon suites separately from the
+      failing full suite made it possible to distinguish the real task outcome from unrelated test
+      noise and send the task back for the correct reason.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-08T11:00:19.666Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
