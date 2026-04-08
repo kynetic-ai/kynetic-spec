@@ -56,7 +56,7 @@ description: >-
 spec_ref: "@daemon-meta-subdomain"
 meta_ref: null
 plan_ref: "@plan-granular-cache-invalidation"
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -66,6 +66,7 @@ tags:
   - cache
   - bug
 vcs_refs: []
+session_id: 01KNNZH13VD6YVC381JTAH6PKJ
 history:
   - author: "@claude"
     changes:
@@ -233,7 +234,21 @@ history:
         previous: pending
     command: task-unblock
     timestamp: 2026-04-08T06:29:31.971Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KNNZH13VD6YVC381JTAH6PKJ
+        previous: null
+      started_at:
+        new: 2026-04-08T07:23:14.275Z
+        previous: null
+    command: task-start
+    timestamp: 2026-04-08T07:23:14.275Z
 prior_status: null
 created_at: 2026-04-08T06:02:03.561Z
+started_at: 2026-04-08T07:23:14.275Z
 todos: []
 automation: eligible
