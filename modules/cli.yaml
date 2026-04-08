@@ -8764,6 +8764,11 @@ features:
                   submitted work under review
                 when: |
                   Dispatch attempts to prepare the workspace
+              - given: A task's submission linkage names a branch that is currently checked out in the main
+                  repository working tree
+                id: ac-reject-main-checkout-branch
+                then: Adoption is rejected with guidance to repair the submission linkage
+                when: The dispatcher attempts to adopt that branch as the task's canonical branch
             tags: []
             created: 2026-03-13T09:16:58.026Z
             notes: []
