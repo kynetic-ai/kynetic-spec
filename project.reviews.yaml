@@ -129669,6 +129669,12 @@ reviews:
           kind: blocker
           thread_ulid: 01KNP6SY2EY8HE1MCX6MVSSR3G
         timestamp: 2026-04-08T09:29:34.972Z
+      - _ulid: 01KNP9MVMJ0JRQMDQPW885AVJE
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNP6R8KXH07Z559W0GGZTVJJ
+        timestamp: 2026-04-08T10:19:13.426Z
     examined_commit: d5219487701ed784f3ba16a03534c851be57ce02
     external_links: []
     lifecycle_state: closed
@@ -129697,6 +129703,15 @@ reviews:
               AC coverage after a scan-path change or for any caller that varies the path set. The
               cache identity and tests need to include ."
             created_at: 2026-04-08T09:28:39.293Z
+          - _ulid: 01KNP9MTRX70N7WTZ3MPEA03HE
+            author: "@claude"
+            body: "Fixed: cache key now uses buildCacheKey(rootDir, scanPaths) which creates a composite key
+              from the normalized rootDir and sorted scanPaths joined with null bytes. Different
+              scan path configurations for the same rootDir produce independent cache entries.
+              invalidateTestCoverageCache(rootDir) uses prefix matching to clear all scan path
+              variants. Added regression test reproducing the exact repro scenario (same rootDir,
+              different scanPaths returning independent results)."
+            created_at: 2026-04-08T10:19:12.541Z
         kind: blocker
       - _ulid: 01KNP6RBBVBEAXCG86SAXMFH6F
         entries:
@@ -129745,7 +129760,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-08T09:29:30.668Z
     created_at: 2026-04-08T09:16:15.908Z
-    updated_at: 2026-04-08T09:29:34.031Z
+    updated_at: 2026-04-08T10:19:12.541Z
     notes: []
   - _ulid: 01KNP8M7G8XSGTFKZ529X1PRKN
     slugs: []
