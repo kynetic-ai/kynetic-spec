@@ -131395,6 +131395,18 @@ reviews:
         runner: test.cjs
         created_at: 2026-04-08T12:59:02.258Z
         completed_at: 2026-04-08T12:59:02.258Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Workspace-local validate exits with warnings only. Invalid AC annotation warnings dropped
+          from 286 on base (source-level validate) to 239 on head; excluded self-host fixture files
+          no longer appear.
+        name: coverage validation regression check
+        required: true
+        runner: kspec
+        created_at: 2026-04-08T12:59:12.122Z
+        completed_at: 2026-04-08T12:59:12.122Z
     events:
       - _ulid: 01KNPHZYVPQNAVHMNHS1TNXQFT
         actor: Jacob Chapel
@@ -131423,6 +131435,13 @@ reviews:
           kind: nit
           thread_ulid: 01KNPJSJ7K94WR2TKE9ARJ2QXT
         timestamp: 2026-04-08T12:59:05.666Z
+      - _ulid: 01KNPJST7WNB60D7YGBSMSF354
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: coverage validation regression check
+        timestamp: 2026-04-08T12:59:13.020Z
     examined_commit: 5aaffcd7d574a1c0ae6557dd72e1aa1862425e14
     external_links: []
     lifecycle_state: open
@@ -131463,5 +131482,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-08T12:45:05.783Z
-    updated_at: 2026-04-08T12:59:04.819Z
+    updated_at: 2026-04-08T12:59:12.122Z
     notes: []
