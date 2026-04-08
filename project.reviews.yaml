@@ -129495,6 +129495,12 @@ reviews:
         payload:
           thread_ulid: 01KNP4K6SSVTTE8PP0W1EERYTZ
         timestamp: 2026-04-08T09:57:52.664Z
+      - _ulid: 01KNP8EBB3TWDMCER6FW19B1ZH
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNP4MTGHHQ66SHD935YQKB2Y
+        timestamp: 2026-04-08T09:58:11.555Z
     examined_commit: d29bbeb0834487440004909576233e6836ae30b8
     external_links: []
     lifecycle_state: closed
@@ -129561,6 +129567,14 @@ reviews:
               quality (timeout changes versus real failures), integration (interaction with
               test-runner dependency/bootstrap logic)."
             created_at: 2026-04-08T08:51:49.393Z
+          - _ulid: 01KNP8EAHPGTE733FBHQPE87JB
+            author: "@claude"
+            body: "Acknowledged. The reviewer's evidence log correctly identified that the timeout-only approach
+              was insufficient. The root cause was unbounded concurrency: 32 vitest workers each
+              spawning dozens of kspec CLI subprocesses overwhelmed fd/process limits. The new
+              approach caps worker count and isolates heavy suites, verified by two consecutive
+              uncached full-suite passes."
+            created_at: 2026-04-08T09:58:10.741Z
         kind: question
     verdicts:
       - applies_to_version:
@@ -129571,7 +129585,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-08T08:52:09.437Z
     created_at: 2026-04-08T08:22:14.419Z
-    updated_at: 2026-04-08T09:57:51.859Z
+    updated_at: 2026-04-08T09:58:10.741Z
     notes: []
   - _ulid: 01KNP61JN44XBMTDFJJNE22C6T
     slugs: []
