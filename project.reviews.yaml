@@ -131152,6 +131152,17 @@ reviews:
         runner: node
         created_at: 2026-04-08T12:36:06.720Z
         completed_at: 2026-04-08T12:36:06.720Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Ran npm test -- tests/lint-no-daemon-ts-imports.test.ts --fresh. Result: 2 suites passed,
+          5 tests passed in 1.5s."
+        name: targeted-rule-tests
+        required: true
+        runner: npm
+        created_at: 2026-04-08T12:36:13.976Z
+        completed_at: 2026-04-08T12:36:13.976Z
     events:
       - _ulid: 01KNPGQESHM6DM1PBAZKF7N2RY
         actor: Jacob Chapel
@@ -131210,6 +131221,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-08T12:36:10.495Z
+      - _ulid: 01KNPHFRE68MJV73F23EWXTY1Y
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted-rule-tests
+        timestamp: 2026-04-08T12:36:14.918Z
     examined_commit: 51a9b0812fe1532fa38c567b4868cac67b3c2dc5
     external_links: []
     lifecycle_state: closed
@@ -131296,5 +131314,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-08T12:36:10.495Z
     created_at: 2026-04-08T12:22:58.610Z
-    updated_at: 2026-04-08T12:36:10.495Z
+    updated_at: 2026-04-08T12:36:13.976Z
     notes: []
