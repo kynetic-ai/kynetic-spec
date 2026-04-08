@@ -229,6 +229,27 @@ const AgentConfigSchema = z
 const LegacyAgentConfigAliasSchema = AgentConfigSchema;
 
 /**
+ * Schema for coverage scanning configuration.
+ *
+ * AC: @coverage-scan-config ac-explicit-opt-in — scanning requires explicit configuration
+ * AC: @coverage-scan-config ac-configured-paths — configured paths are scanned
+ */
+const CoverageConfigSchema = z
+  .object({
+    /**
+     * Directories to scan for AC annotation test files.
+     * When empty or absent, no files are scanned (explicit opt-in).
+     * Paths are relative to the project root.
+     *
+     * AC: @coverage-scan-config ac-explicit-opt-in
+     * AC: @coverage-scan-config ac-configured-paths
+     */
+    scan_paths: z.array(z.string()).optional(),
+  })
+  .strict()
+  .optional();
+
+/**
  * Complete schema for kspec.config.yaml.
  *
  * AC: @project-config ac-4 — unknown fields are ignored via passthrough
@@ -251,6 +272,8 @@ export const KspecConfigSchema = z
     ralph: LegacyAgentConfigAliasSchema,
     /** Hooks installation configuration */
     hooks: HooksConfigSchema,
+    /** Coverage scanning configuration */
+    coverage: CoverageConfigSchema,
   })
   .passthrough(); // AC: ac-4 — ignore unknown fields
 
@@ -416,6 +439,16 @@ export interface ResolvedKspecConfig {
      */
     prompt_check: boolean;
   };
+  coverage: {
+    /**
+     * Directories to scan for AC annotation test files.
+     * Empty array means no scanning (explicit opt-in required).
+     *
+     * AC: @coverage-scan-config ac-explicit-opt-in
+     * AC: @coverage-scan-config ac-configured-paths
+     */
+    scan_paths: string[];
+  };
 }
 
 // ── Defaults ────────────────────────────────────────────────────────────
@@ -469,6 +502,10 @@ const DEFAULT_CONFIG: ResolvedKspecConfig = {
     // AC: @project-config ac-hooks-no-config — defaults when no config
     checkpoint: false, // Disabled by default — dispatch handles task lifecycle
     prompt_check: true, // Enabled by default — lightweight spec-first reminder
+  },
+  coverage: {
+    // AC: @coverage-scan-config ac-explicit-opt-in — empty = no scanning
+    scan_paths: [],
   },
 };
 
@@ -689,6 +726,10 @@ export function resolveConfig(fileConfig: KspecConfig | null): ResolvedKspecConf
       checkpoint: file.hooks?.checkpoint ?? DEFAULT_CONFIG.hooks.checkpoint,
       prompt_check: file.hooks?.prompt_check ?? DEFAULT_CONFIG.hooks.prompt_check,
     },
+    coverage: {
+      // AC: @coverage-scan-config ac-explicit-opt-in — empty default = no scanning
+      scan_paths: file.coverage?.scan_paths ?? DEFAULT_CONFIG.coverage.scan_paths,
+    },
   };
 }
 
@@ -756,5 +797,8 @@ export function getDefaultConfig(): ResolvedKspecConfig {
       skills: { ...DEFAULT_CONFIG.agent.skills },
     },
     hooks: { ...DEFAULT_CONFIG.hooks },
+    coverage: {
+      scan_paths: [...DEFAULT_CONFIG.coverage.scan_paths],
+    },
   };
 }

@@ -6,3 +6,7 @@ daemon:
 agent:
   skills:
     pr_review: "{skill:pr-review}"
+coverage:
+  scan_paths:
+    - tests/
+    - packages/web-ui/tests/e2e/

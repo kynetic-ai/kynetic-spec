@@ -2531,7 +2531,7 @@ Examples:
 
             // Check test coverage for ACs if spec has them
             if (specItem?.acceptance_criteria && specItem.acceptance_criteria.length > 0) {
-              const coveredACs = await scanTestCoverage(ctx.rootDir);
+              const coveredACs = await scanTestCoverage(ctx.rootDir, ctx.config.coverage.scan_paths);
               const covered: string[] = [];
               const uncovered: string[] = [];
 

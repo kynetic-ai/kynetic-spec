@@ -62,10 +62,14 @@ function isValid(entry: CacheEntry): boolean {
  * 2. Returns in-flight scan result if a scan is already in progress
  * 3. Otherwise initiates a new scan and caches the result
  *
- * @param rootDir - Project root directory containing tests/
+ * @param rootDir - Project root directory
+ * @param scanPaths - Directories to scan (relative to rootDir). Empty = no scanning.
  * @returns Set of covered AC references (e.g., "@spec-ref ac-1")
  */
-export async function getCachedTestCoverage(rootDir: string): Promise<Set<string>> {
+export async function getCachedTestCoverage(
+  rootDir: string,
+  scanPaths: string[] = [],
+): Promise<Set<string>> {
   const key = normalizePath(rootDir);
   const existing = cache.get(key);
 
@@ -80,7 +84,7 @@ export async function getCachedTestCoverage(rootDir: string): Promise<Set<string
   }
 
   // Initiate new scan
-  const scanPromise = scanTestCoverage(rootDir);
+  const scanPromise = scanTestCoverage(rootDir, scanPaths);
 
   // Store pending promise to prevent parallel scans
   const entry: CacheEntry = existing || {

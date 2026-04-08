@@ -91,7 +91,8 @@ export type CompletenessWarningType =
   | "automation_eligible_no_spec"
   | "ac_schema_field_mismatch"
   | "invalid_ac_annotation"
-  | "inconsistent_review_linkage";
+  | "inconsistent_review_linkage"
+  | "coverage_not_configured";
 
 /**
  * Trait cycle error
@@ -752,11 +753,12 @@ function detectTraitCycles(items: LoadedSpecItem[], index: ReferenceIndex): Trai
 // ============================================================
 
 /**
- * Recursively find all test files in a directory.
- * Matches .test.ts, .test.js, .spec.ts, and .spec.js files.
+ * Recursively find all files in a directory.
+ *
+ * AC: @coverage-scan-config ac-configured-paths — scan all files under configured paths
  */
-async function findTestFilesRecursive(dir: string): Promise<string[]> {
-  const testFiles: string[] = [];
+async function findAllFilesRecursive(dir: string): Promise<string[]> {
+  const files: string[] = [];
 
   try {
     const entries = await fs.readdir(dir, { withFileTypes: true });
@@ -765,27 +767,63 @@ async function findTestFilesRecursive(dir: string): Promise<string[]> {
       const fullPath = path.join(dir, entry.name);
 
       if (entry.isDirectory()) {
-        // Recurse into subdirectories
-        const subFiles = await findTestFilesRecursive(fullPath);
-        testFiles.push(...subFiles);
-      } else if (
-        entry.isFile() &&
-        (entry.name.endsWith(".test.ts") ||
-          entry.name.endsWith(".test.js") ||
-          entry.name.endsWith(".spec.ts") ||
-          entry.name.endsWith(".spec.js"))
-      ) {
-        testFiles.push(fullPath);
+        const subFiles = await findAllFilesRecursive(fullPath);
+        files.push(...subFiles);
+      } else if (entry.isFile()) {
+        files.push(fullPath);
       }
     }
   } catch {
     // Directory doesn't exist or can't be read - return empty
   }
 
-  return testFiles;
+  return files;
 }
 
-/** Prefix pattern that identifies an AC annotation line. */
+/**
+ * Map of file extensions to the AC annotation prefix regex for that language.
+ *
+ * AC: @coverage-scan-config ac-language-aware-parsing — comment syntax matches file language
+ */
+const COMMENT_PREFIX_MAP: Record<string, RegExp> = {
+  // // style comments
+  ".ts": /\/\/\s*AC:\s*/,
+  ".js": /\/\/\s*AC:\s*/,
+  ".tsx": /\/\/\s*AC:\s*/,
+  ".jsx": /\/\/\s*AC:\s*/,
+  ".rs": /\/\/\s*AC:\s*/,
+  ".go": /\/\/\s*AC:\s*/,
+  ".java": /\/\/\s*AC:\s*/,
+  ".c": /\/\/\s*AC:\s*/,
+  ".cpp": /\/\/\s*AC:\s*/,
+  ".swift": /\/\/\s*AC:\s*/,
+  ".kt": /\/\/\s*AC:\s*/,
+  // # style comments
+  ".py": /#\s*AC:\s*/,
+  ".rb": /#\s*AC:\s*/,
+  ".sh": /#\s*AC:\s*/,
+  ".yaml": /#\s*AC:\s*/,
+  ".yml": /#\s*AC:\s*/,
+  ".toml": /#\s*AC:\s*/,
+  // -- style comments
+  ".lua": /--\s*AC:\s*/,
+  ".sql": /--\s*AC:\s*/,
+  // <!-- --> style comments
+  ".html": /<!--\s*AC:\s*/,
+  ".svelte": /<!--\s*AC:\s*/,
+};
+
+/**
+ * Get the AC annotation line prefix regex for a given file extension.
+ * Returns null for unrecognized extensions.
+ *
+ * AC: @coverage-scan-config ac-unrecognized-language — unrecognized extensions return null
+ */
+export function getACLinePrefix(ext: string): RegExp | null {
+  return COMMENT_PREFIX_MAP[ext] ?? null;
+}
+
+/** Legacy constant for backward compatibility with parseACAnnotationLine tests. */
 const AC_LINE_PREFIX = /\/\/\s*AC:\s*/;
 
 /**
@@ -797,8 +835,11 @@ const AC_LINE_PREFIX = /\/\/\s*AC:\s*/;
  *   "// AC: @spec-a ac-1, @spec-b ac-2"          → [{specRef:"@spec-a", acIds:["ac-1"]}, {specRef:"@spec-b", acIds:["ac-2"]}]
  *   "// AC: @spec-a ac-1 — N/A: reason"          → [{specRef:"@spec-a", acIds:["ac-1"]}]
  */
-export function parseACAnnotationLine(lineText: string): { specRef: string; acIds: string[] }[] {
-  const prefixMatch = AC_LINE_PREFIX.exec(lineText);
+export function parseACAnnotationLine(
+  lineText: string,
+  prefix: RegExp = AC_LINE_PREFIX,
+): { specRef: string; acIds: string[] }[] {
+  const prefixMatch = prefix.exec(lineText);
   if (!prefixMatch) return [];
 
   // Get everything after "// AC: "
@@ -837,7 +878,11 @@ export function parseACAnnotationLine(lineText: string): { specRef: string; acId
 }
 
 /**
- * Scan a directory of test files for AC annotations and add to the coverage set.
+ * Scan a directory for AC annotations and add to the coverage set.
+ * Scans all files and uses language-aware comment prefix detection.
+ *
+ * AC: @coverage-scan-config ac-language-aware-parsing — comment syntax matches file language
+ * AC: @coverage-scan-config ac-unrecognized-language — unrecognized files are skipped
  */
 async function scanDirForACAnnotations(dir: string, coveredACs: Set<string>): Promise<void> {
   try {
@@ -847,16 +892,20 @@ async function scanDirForACAnnotations(dir: string, coveredACs: Set<string>): Pr
     return;
   }
 
-  const testFiles = await findTestFilesRecursive(dir);
+  const allFiles = await findAllFilesRecursive(dir);
 
-  for (const filePath of testFiles) {
+  for (const filePath of allFiles) {
+    const ext = path.extname(filePath);
+    const prefix = getACLinePrefix(ext);
+    if (!prefix) continue; // AC: ac-unrecognized-language — skip unrecognized extensions
+
     const content = await fs.readFile(filePath, "utf-8");
     const lines = content.split("\n");
 
     for (const lineText of lines) {
-      if (!AC_LINE_PREFIX.test(lineText)) continue;
+      if (!prefix.test(lineText)) continue;
 
-      const groups = parseACAnnotationLine(lineText);
+      const groups = parseACAnnotationLine(lineText, prefix);
       for (const { specRef, acIds } of groups) {
         for (const ac of acIds) {
           coveredACs.add(`${specRef} ${ac}`);
@@ -868,12 +917,31 @@ async function scanDirForACAnnotations(dir: string, coveredACs: Set<string>): Pr
 
 /**
  * Scan test files for AC annotations to build coverage index.
- * Scans tests/ directory (unit, integration, and E2E Playwright tests).
- * Returns a Set of covered ACs in format "@spec-ref ac-id"
+ * When scanPaths is provided (non-empty), scans those directories.
+ * When scanPaths is empty or not provided, returns empty set (no scanning).
+ *
+ * AC: @coverage-scan-config ac-explicit-opt-in — no scanning when unconfigured
+ * AC: @coverage-scan-config ac-configured-paths — scans configured directories
+ *
+ * @param rootDir - Project root directory
+ * @param scanPaths - Directories to scan (relative to rootDir). Empty = no scanning.
+ * @returns Set of covered ACs in format "@spec-ref ac-id"
  */
-export async function scanTestCoverage(rootDir: string): Promise<Set<string>> {
+export async function scanTestCoverage(
+  rootDir: string,
+  scanPaths: string[] = [],
+): Promise<Set<string>> {
   const coveredACs = new Set<string>();
-  await scanDirForACAnnotations(path.join(rootDir, "tests"), coveredACs);
+
+  // AC: ac-explicit-opt-in — no scanning when unconfigured
+  if (scanPaths.length === 0) {
+    return coveredACs;
+  }
+
+  // AC: ac-configured-paths — scan each configured path
+  for (const scanPath of scanPaths) {
+    await scanDirForACAnnotations(path.join(rootDir, scanPath), coveredACs);
+  }
   return coveredACs;
 }
 
@@ -895,6 +963,9 @@ export interface ACAnnotation {
  * Scan a directory for structured AC annotation data.
  * Unlike scanDirForACAnnotations which only returns a Set<string>,
  * this returns full annotation details including file and line number.
+ *
+ * AC: @coverage-scan-config ac-language-aware-parsing — comment syntax matches file language
+ * AC: @coverage-scan-config ac-unrecognized-language — unrecognized files are skipped
  */
 async function scanDirForACAnnotationsStructured(
   dir: string,
@@ -906,17 +977,21 @@ async function scanDirForACAnnotationsStructured(
     return;
   }
 
-  const testFiles = await findTestFilesRecursive(dir);
+  const allFiles = await findAllFilesRecursive(dir);
 
-  for (const filePath of testFiles) {
+  for (const filePath of allFiles) {
+    const ext = path.extname(filePath);
+    const prefix = getACLinePrefix(ext);
+    if (!prefix) continue; // AC: ac-unrecognized-language — skip unrecognized extensions
+
     const content = await fs.readFile(filePath, "utf-8");
     const lines = content.split("\n");
 
     for (let i = 0; i < lines.length; i++) {
       const lineText = lines[i];
-      if (!AC_LINE_PREFIX.test(lineText)) continue;
+      if (!prefix.test(lineText)) continue;
 
-      const groups = parseACAnnotationLine(lineText);
+      const groups = parseACAnnotationLine(lineText, prefix);
       for (const { specRef, acIds } of groups) {
         annotations.push({
           specRef,
@@ -930,16 +1005,30 @@ async function scanDirForACAnnotationsStructured(
 }
 
 /**
- * Scan all test directories for structured AC annotations.
+ * Scan configured test directories for structured AC annotations.
+ * When scanPaths is empty, returns empty array (no scanning).
+ *
+ * AC: @coverage-scan-config ac-explicit-opt-in — no scanning when unconfigured
+ * AC: @coverage-scan-config ac-configured-paths — scans configured directories
+ *
+ * @param rootDir - Project root directory
+ * @param scanPaths - Directories to scan (relative to rootDir). Empty = no scanning.
  */
-export async function scanACAnnotations(rootDir: string): Promise<ACAnnotation[]> {
+export async function scanACAnnotations(
+  rootDir: string,
+  scanPaths: string[] = [],
+): Promise<ACAnnotation[]> {
   const annotations: ACAnnotation[] = [];
 
-  await scanDirForACAnnotationsStructured(path.join(rootDir, "tests"), annotations);
-  await scanDirForACAnnotationsStructured(
-    path.join(rootDir, "packages", "web-ui", "tests", "e2e"),
-    annotations,
-  );
+  // AC: ac-explicit-opt-in — no scanning when unconfigured
+  if (scanPaths.length === 0) {
+    return annotations;
+  }
+
+  // AC: ac-configured-paths — scan each configured path
+  for (const scanPath of scanPaths) {
+    await scanDirForACAnnotationsStructured(path.join(rootDir, scanPath), annotations);
+  }
 
   return annotations;
 }
@@ -1072,11 +1161,26 @@ async function checkCompleteness(
   index: ReferenceIndex,
   rootDir: string,
   traitIndex?: TraitIndex,
+  scanPaths: string[] = [],
 ): Promise<CompletenessWarning[]> {
   const warnings: CompletenessWarning[] = [];
 
+  // AC: @coverage-scan-config ac-unconfigured-guidance — warn when no coverage scanning configured
+  // AC: @coverage-scan-config ac-no-silent-regression — guidance warning surfaces
+  if (scanPaths.length === 0) {
+    warnings.push({
+      type: "coverage_not_configured",
+      itemRef: "coverage",
+      itemTitle: "Coverage Scanning",
+      message:
+        "AC coverage scanning is inactive — no scan paths configured. " +
+        "Add a coverage.scan_paths array to kspec.config.yaml to enable AC coverage scanning. " +
+        "Example:\n  coverage:\n    scan_paths:\n      - tests/",
+    });
+  }
+
   // Scan test files for AC coverage
-  const coveredACs = await scanTestCoverage(rootDir);
+  const coveredACs = await scanTestCoverage(rootDir, scanPaths);
 
   for (const item of items) {
     const itemRef = item.slugs?.[0] ? `@${item.slugs[0]}` : `@${index.shortUlid(item._ulid)}`;
@@ -1152,7 +1256,8 @@ async function checkCompleteness(
     }
 
     // Check for test coverage of acceptance criteria
-    if (item.acceptance_criteria && item.acceptance_criteria.length > 0) {
+    // AC: @coverage-scan-config ac-explicit-opt-in — only check coverage when scanning is configured
+    if (scanPaths.length > 0 && item.acceptance_criteria && item.acceptance_criteria.length > 0) {
       const uncoveredACs: string[] = [];
 
       for (const ac of item.acceptance_criteria) {
@@ -1193,7 +1298,8 @@ async function checkCompleteness(
 
     // AC: @trait-validation ac-1, ac-2
     // Check for test coverage of trait acceptance criteria
-    if (traitIndex && item.traits && item.traits.length > 0) {
+    // AC: @coverage-scan-config ac-explicit-opt-in — only check coverage when scanning is configured
+    if (scanPaths.length > 0 && traitIndex && item.traits && item.traits.length > 0) {
       const inheritedACs = traitIndex.getInheritedAC(item._ulid);
       const uncoveredTraitACs: Array<{ traitSlug: string; acId: string }> = [];
 
@@ -2177,6 +2283,7 @@ export async function validate(
         index,
         ctx.rootDir,
         traitIndex,
+        ctx.config.coverage.scan_paths,
       );
 
       // AC: @task-automation-eligibility ac-21, ac-23
@@ -2198,7 +2305,7 @@ export async function validate(
       }
 
       // Validate AC annotations in test files
-      const annotations = await scanACAnnotations(ctx.rootDir);
+      const annotations = await scanACAnnotations(ctx.rootDir, ctx.config.coverage.scan_paths);
       const annotationWarnings = validateACAnnotations(annotations, allItems, index);
       completenessWarnings.push(...annotationWarnings);
 
