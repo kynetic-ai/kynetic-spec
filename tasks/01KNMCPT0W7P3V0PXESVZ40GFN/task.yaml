@@ -14,13 +14,29 @@ description: "npm test on snapshot 343472d01808d514accacb66d1bb86db4519b37f fail
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
 priority: 3
 tags: []
 vcs_refs: []
+session_id: 01KNP9WQCN9RQPRP9YCYVTBES4
+history:
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KNP9WQCN9RQPRP9YCYVTBES4
+        previous: null
+      started_at:
+        new: 2026-04-08T10:24:22.903Z
+        previous: null
+    command: task-start
+    timestamp: 2026-04-08T10:24:22.904Z
 created_at: 2026-04-07T16:34:14.172Z
+started_at: 2026-04-08T10:24:22.903Z
 todos: []
 automation: eligible
