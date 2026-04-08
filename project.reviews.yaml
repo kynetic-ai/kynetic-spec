@@ -132051,6 +132051,17 @@ reviews:
         runner: npm test
         created_at: 2026-04-08T22:53:05.214Z
         completed_at: 2026-04-08T22:53:05.214Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate exited with warnings only (code 6): repo-global
+          orphan/alignment/completeness warnings, no task-specific validation errors"
+        name: kspec-validate
+        required: true
+        runner: kspec validate
+        created_at: 2026-04-08T22:53:17.464Z
+        completed_at: 2026-04-08T22:53:17.464Z
     events:
       - _ulid: 01KNQKPAAWNSFBG3A0QQ1J550Z
         actor: Jacob Chapel
@@ -132079,6 +132090,13 @@ reviews:
           status: pass
           name: targeted-tests-branch-adoption
         timestamp: 2026-04-08T22:53:06.063Z
+      - _ulid: 01KNQMSM3Z6V3CPH9EJKCAG6D9
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec-validate
+        timestamp: 2026-04-08T22:53:18.335Z
     examined_commit: a6698d0d7053638669479e3bd101f8f3c6a2c693
     external_links: []
     lifecycle_state: open
@@ -132091,5 +132109,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-08T22:34:01.436Z
-    updated_at: 2026-04-08T22:53:05.214Z
+    updated_at: 2026-04-08T22:53:17.464Z
     notes: []
