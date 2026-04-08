@@ -43725,12 +43725,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-08T07:36:39.370Z
+      updated_at: 2026-04-08T07:36:48.761Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-08T07:36:39.370Z
+      updated_at: 2026-04-08T07:36:48.761Z
     integration:
       status: pending
       detail: null
@@ -43738,24 +43738,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-granular-cache-invalidation/01kndbmk
       target_commit: 4c2d9f633e63493444510b02259ca1153974cc97
-      updated_at: 2026-04-08T07:36:39.370Z
-    lifecycle_state: ready
+      updated_at: 2026-04-08T07:36:48.761Z
+    lifecycle_state: integrating
     resolved_base_branch: plan/plan-granular-cache-invalidation/01kndbmk
     task_ref: "@01KNNTXZD9KNAE0HX81SNQM0A8"
     task_slug: task-shadow-sync-narrow-invalidation
     timestamps:
       closed_at: null
       last_active_at: 2026-04-08T07:22:22.892Z
-      last_reconciled_at: 2026-04-08T07:36:39.370Z
+      last_reconciled_at: 2026-04-08T07:36:48.761Z
       created_at: 2026-04-08T07:22:02.073Z
-      updated_at: 2026-04-08T07:36:39.370Z
+      updated_at: 2026-04-08T07:36:48.761Z
     workspace_id: dispatch-workspace-01KNNTXZD9KNAE0HX81SNQM0A8
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 0c91c0d9d36df1418b5f95c65e2ef485a3466a90
+        last_seen_at: 2026-04-08T07:36:48.761Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-shadow-sync-narrow-invalidation-01knntxz-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-shadow-sync-narrow-invalidation/01knntxz
-        head: 4c2d9f633e63493444510b02259ca1153974cc97
-        last_seen_at: 2026-04-08T07:22:02.073Z
+        head: 0c91c0d9d36df1418b5f95c65e2ef485a3466a90
+        last_seen_at: 2026-04-08T07:36:48.761Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-shadow-sync-narrow-invalidation-01knntxz
