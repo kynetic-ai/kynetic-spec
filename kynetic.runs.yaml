@@ -24584,7 +24584,7 @@ runs:
     completed_at: 2026-04-08T11:52:22.061Z
   - _ulid: 01KNPGPE2ANCBBHQGM12GXYKSH
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -24619,7 +24619,28 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-08T12:23:05.218Z
-        completed_at: 2026-04-08T12:23:05.218Z
+        completed_at: 2026-04-08T12:24:29.693Z
+        notes: >-
+          High-confidence findings:
+
+
+          1. FRICTION (already tracked): Branch isolation violations in fix cycles — observation
+          @01KK5HGE already covers this. This session confirms the pattern: the previous worker
+          merged the plan branch into the task branch, violating isolation. No new capture needed.
+
+
+          2. SUCCESS: Preventive lint rules as fix outcomes — when a runtime bug class is identified
+          (esbuild daemon .ts imports), adding a lint rule to catch it at lint time is more valuable
+          than just fixing the current instances. The oxlint jsPlugins mechanism made this
+          straightforward.
+
+
+          No new items to capture — the main friction is already tracked, and the success is a
+          natural application of existing tooling.
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-08T12:24:29.693Z
+        completed_at: 2026-04-08T12:24:29.693Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-08T12:22:25.098Z
