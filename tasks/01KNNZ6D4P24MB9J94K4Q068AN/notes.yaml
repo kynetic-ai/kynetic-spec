@@ -70,3 +70,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-08T09:29:32.455Z
+  - _ulid: 01KNP9R45B0VTTV2TB4WBDBQWA
+    content: "Fix cycle 1: Addressed both blocker threads about cache key not including scanPaths. The
+      cache key in getCachedTestCoverage() was only using rootDir, causing stale/incorrect results
+      when the same project was queried with different scan path configurations. Fix: introduced
+      buildCacheKey(rootDir, scanPaths) creating a composite key with sorted scanPaths. Updated
+      invalidateTestCoverageCache() to use prefix matching so rootDir-level invalidation clears all
+      scan path variants. Added 2 regression tests: one reproducing the exact reviewer repro
+      scenario (same rootDir, different scanPaths), one verifying invalidation clears all variants.
+      Re-verified all 6 ACs still covered. Full test suite: 7591 passed (2 pre-existing flaky
+      failures in cli-serve and shadow tests, unrelated to this change)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-08T10:21:00.459Z
