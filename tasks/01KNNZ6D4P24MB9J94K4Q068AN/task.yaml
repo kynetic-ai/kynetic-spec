@@ -1,0 +1,89 @@
+_ulid: 01KNNZ6D4P24MB9J94K4Q068AN
+slugs:
+  - task-coverage-scan-config
+title: Make AC coverage scanner configurable and language-agnostic
+type: task
+description: >-
+  Replace the hardcoded test directory scanning and JS/TS-only file extension filter with a
+  config-driven, language-aware coverage scanner.
+
+
+  Why: The current scanner hardcodes kspec-project-specific paths (tests/,
+  packages/web-ui/tests/e2e/) and only recognizes .test.ts/.spec.ts/.test.js/.spec.js files. Rust
+  projects, Python projects, and anything non-JS/TS are invisible to it. Agents working in non-JS
+  projects hit kspec validate failures they cannot fix because the scanner cannot see their tests.
+  This also violates separation of concerns — general-purpose scanning code should not contain
+  project-specific path assumptions.
+
+
+  What:
+
+  - Add a coverage section to kspec.config.yaml schema (KspecConfigSchema, ResolvedKspecConfig,
+  DEFAULT_CONFIG) with scan_paths as a string array, defaulting to empty
+
+  - Modify scanTestCoverage() and scanACAnnotations() to accept config and skip scanning when
+  scan_paths is empty
+
+  - Replace findTestFilesRecursive() extension allowlist (.test.ts, .spec.ts, etc.) with scanning
+  all files in configured paths, using a file-extension-to-comment-prefix map to determine how to
+  parse each file
+
+  - Built-in comment prefix mappings: // for .ts, .js, .rs, .go, .java, .c, .cpp, .swift, .kt; # for
+  .py, .rb, .sh, .yaml, .toml; -- for .lua, .sql
+
+  - Add a completeness warning when coverage.scan_paths is not configured and completeness checks
+  are enabled, with guidance text pointing to kspec.config.yaml
+
+  - Thread config through all callers: checkCompleteness(), coverage-cache.ts
+  (getCachedTestCoverage), json.ts export, task.ts CLI command
+
+  - Remove all hardcoded kspec-project-specific directory paths from the scanning code — no project
+  should have its own paths baked into general-purpose code paths
+
+  - Update kynetic-spec's own kspec.config.yaml to add coverage.scan_paths for its tests/ and
+  packages/web-ui/tests/e2e/ directories (self-hosting the new config)
+
+
+  How:
+
+  - Config schema follows the existing pattern (see validation, dispatch, hooks sections in
+  src/parser/config.ts)
+
+  - The comment prefix map is a simple Record<string, RegExp> keyed by extension
+
+  - AC_LINE_PREFIX becomes a function that takes an extension and returns the appropriate regex
+
+  - scanTestCoverage signature changes from (rootDir) to (rootDir, config) — callers already have
+  ctx.config available
+
+
+  Testing:
+
+  - Update existing AC annotation tests to use configured scan paths
+
+  - Add test for Rust-style // AC: annotations in .rs files
+
+  - Add test for Python-style # AC: annotations in .py files  
+
+  - Add test for unconfigured warning emission
+
+  - Add test that unrecognized extensions are skipped
+
+  - Verify backward compat: existing tests pass with scan_paths configured to tests/
+
+
+  Covers: @coverage-scan-config ac-explicit-opt-in, ac-unconfigured-guidance, ac-configured-paths,
+  ac-language-aware-parsing, ac-unrecognized-language, ac-no-silent-regression
+spec_ref: "@coverage-scan-config"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags: []
+vcs_refs: []
+created_at: 2026-04-08T07:16:34.070Z
+todos: []
+automation: eligible

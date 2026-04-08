@@ -25912,3 +25912,18 @@
   todos_count: 0
   created_at: 2026-04-08T06:02:03.561Z
   automation: eligible
+- _ulid: 01KNNZ6D4P24MB9J94K4Q068AN
+  slugs:
+    - task-coverage-scan-config
+  title: Make AC coverage scanner configurable and language-agnostic
+  type: task
+  spec_ref: "@coverage-scan-config"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags: []
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-08T07:16:34.070Z
+  automation: eligible
