@@ -129041,6 +129041,12 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-04-08T01:12:50.927Z
+      - _ulid: 01KNNB173NRTME918R75S1986W
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNNA9XDR5CS5GHEQ03ZG84MB
+        timestamp: 2026-04-08T01:24:12.533Z
     examined_commit: 26fd64812fb4f06d68226cee491ca077ac1c5522
     external_links: []
     lifecycle_state: closed
@@ -129075,6 +129081,14 @@ reviews:
               so it would pass even though the API silently drops the output instead of returning
               it."
             created_at: 2026-04-08T01:11:28.952Z
+          - _ulid: 01KNNB167V1C5K3D16AD0WN6H6
+            author: "@claude"
+            body: "Fixed: moved the capture object outside the dispatchMutex.run() scope so it's accessible
+              after executeBatch() returns. After batch execution, captured
+              process.stdout.write/stderr.write content is merged as stdout/stderr fields on the
+              batch response. Updated test to assert the sentinel appears in body.stdout, not just
+              that it didn't leak to _write."
+            created_at: 2026-04-08T01:24:11.643Z
         kind: blocker
       - _ulid: 01KNNAAC343B88TS58RXJ1TAPF
         anchor:
@@ -129114,5 +129128,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-08T01:12:43.940Z
     created_at: 2026-04-08T01:07:19.717Z
-    updated_at: 2026-04-08T01:12:49.982Z
+    updated_at: 2026-04-08T01:24:11.643Z
     notes: []
