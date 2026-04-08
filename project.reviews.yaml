@@ -131154,6 +131154,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-08T12:23:25.485Z
+      - _ulid: 01KNPH04A09J83V08D8YZ7Z7B2
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNPH034C64JFE0M6S80JBRRW
+        timestamp: 2026-04-08T12:27:42.785Z
     examined_commit: 51a9b0812fe1532fa38c567b4868cac67b3c2dc5
     external_links: []
     lifecycle_state: open
@@ -131163,8 +131170,25 @@ reviews:
       content_hash: ""
       ref: "@01KNMCPT0W7P3V0PXESVZ40GFN"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNPH034C64JFE0M6S80JBRRW
+        entries:
+          - _ulid: 01KNPH034C0AB5HYA1CZQ2EJY1
+            author: Jacob Chapel
+            body: "Evidence log\\nFiles read: AGENTS.md; kspec-agents.md; task metadata; prior review;
+              .oxlintrc.json; tools/eslint-rules/no-daemon-ts-imports.js;
+              tests/lint-no-daemon-ts-imports.test.ts; git history around 51a9b081 and current
+              dev.\\nCommands run: kspec task get; kspec review for-task/get/add/open; git
+              diff/log/show/status; rg 'dist/daemon/.*\\.ts'; grep AC annotations; npm test --
+              tests/lint-no-daemon-ts-imports.test.ts --fresh; Node reproduction of the rule on a
+              synthetic side-effect import AST node.\\nClaims verified: confirmed current dev has
+              no  imports in tracked source; confirmed the new rule reports zero diagnostics for
+              side-effect imports; confirmed the rule's added test file passes.\\nCategories
+              searched: correctness (found blocker), edge cases (found blocker on side-effect
+              imports), error handling, test quality, integration."
+            created_at: 2026-04-08T12:27:41.580Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-08T12:22:58.610Z
-    updated_at: 2026-04-08T12:23:24.600Z
+    updated_at: 2026-04-08T12:27:41.580Z
     notes: []
