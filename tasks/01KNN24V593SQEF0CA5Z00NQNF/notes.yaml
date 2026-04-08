@@ -38,3 +38,24 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-07T23:57:21.514Z
+  - _ulid: 01KNN6N47C1XPZKK86R0MFBX2G
+    content: >-
+      Implementation complete. Changes:
+
+
+      1. packages/daemon/src/routes/command.ts: Replaced batch route's process.chdir() +
+      .finally(restore) pattern with ALS-based isolation matching the single command route. The
+      batch now wraps executeBatch() in: runWithOutputState → runWithoutSpecDirOverride →
+      runWithWorkingDirectory → commandExecutionStorage.run → runWithEntityCache (when accessor
+      available).
+
+
+      2. tests/daemon-command-api.test.ts: Added 3 new tests:
+         - ac-cache-context-propagation: Verifies entity cache accessor is called from within batch execution (non-mutating batch so writeThrough is not triggered, confirming calls come from ALS context)
+         - ac-response-parity: Verifies process.stdout.write output does not leak to real stdout during batch execution
+         - ac-batch-support: Verifies process.chdir is NOT called during batch execution (confirming ALS-based cwd isolation)
+
+      All 7649 tests pass, no regressions.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-08T00:07:42.060Z
