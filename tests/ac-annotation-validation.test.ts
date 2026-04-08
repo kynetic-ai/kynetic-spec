@@ -10,6 +10,7 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import * as os from "node:os";
+import { execSync } from "node:child_process";
 import {
   computeACCoverage,
   validate,
@@ -44,6 +45,17 @@ describe("AC annotation validation", () => {
     const testsDir = path.join(tempDir, "tests");
     await fs.mkdir(modulesDir, { recursive: true });
     await fs.mkdir(testsDir, { recursive: true });
+
+    // Initialize git so loadProjectConfig can find config at git root
+    execSync("git init", { cwd: tempDir, stdio: "pipe" });
+    execSync('git config user.email "test@test.com"', { cwd: tempDir, stdio: "pipe" });
+    execSync('git config user.name "Test"', { cwd: tempDir, stdio: "pipe" });
+
+    // Enable coverage scanning for tests
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      "coverage:\n  scan_paths:\n    - tests/\n",
+    );
 
     // Create manifest
     await writeYamlFilePreserveFormat(path.join(specDir, "kynetic.yaml"), {
@@ -89,7 +101,7 @@ it('should also work', () => {});
 `,
       );
 
-      const annotations = await scanACAnnotations(tempDir);
+      const annotations = await scanACAnnotations(tempDir, ["tests/"]);
 
       expect(annotations).toHaveLength(2);
 
@@ -103,7 +115,7 @@ it('should also work', () => {});
       expect(annotations[1].line).toBe(6);
     });
 
-    it("should scan both tests/ and E2E directories", async () => {
+    it("should scan multiple configured directories", async () => {
       const testsDir = path.join(tempDir, "tests");
       const e2eDir = path.join(tempDir, "packages", "web-ui", "tests", "e2e");
       await fs.mkdir(testsDir, { recursive: true });
@@ -118,7 +130,10 @@ it('should also work', () => {});
         "// AC: @spec-b ac-2\ntest('test', async () => {});",
       );
 
-      const annotations = await scanACAnnotations(tempDir);
+      const annotations = await scanACAnnotations(tempDir, [
+        "tests/",
+        "packages/web-ui/tests/e2e/",
+      ]);
       expect(annotations).toHaveLength(2);
 
       const refs = annotations.map((a) => `${a.specRef} ${a.acIds[0]}`);
@@ -136,7 +151,7 @@ it('should also work', () => {});
         "// AC: @task-add ac-create, ac-priority-valid\nit('test', () => {});",
       );
 
-      const annotations = await scanACAnnotations(tempDir);
+      const annotations = await scanACAnnotations(tempDir, ["tests/"]);
       expect(annotations).toHaveLength(1);
       expect(annotations[0].specRef).toBe("@task-add");
       expect(annotations[0].acIds).toEqual(["ac-create", "ac-priority-valid"]);
@@ -151,14 +166,14 @@ it('should also work', () => {});
         "// AC: @some-spec\nit('test', () => {});",
       );
 
-      const annotations = await scanACAnnotations(tempDir);
+      const annotations = await scanACAnnotations(tempDir, ["tests/"]);
       expect(annotations).toHaveLength(1);
       expect(annotations[0].specRef).toBe("@some-spec");
       expect(annotations[0].acIds).toEqual([]);
     });
 
     it("should return empty array when no test directories exist", async () => {
-      const annotations = await scanACAnnotations(tempDir);
+      const annotations = await scanACAnnotations(tempDir, ["tests/"]);
       expect(annotations).toEqual([]);
     });
   });
@@ -791,7 +806,7 @@ it('test', () => {});
 `,
       );
 
-      const annotations = await scanACAnnotations(tempDir);
+      const annotations = await scanACAnnotations(tempDir, ["tests/"]);
 
       expect(annotations).toHaveLength(2);
       expect(annotations[0]).toEqual(
@@ -813,7 +828,7 @@ it('test', () => {});
 `,
       );
 
-      const annotations = await scanACAnnotations(tempDir);
+      const annotations = await scanACAnnotations(tempDir, ["tests/"]);
 
       expect(annotations).toHaveLength(3);
       expect(annotations[0].specRef).toBe("@feat-a");
