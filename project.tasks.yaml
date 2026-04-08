@@ -25948,7 +25948,7 @@
   type: task
   spec_ref: "@api-contract"
   plan_ref: "@plan-cache-aware-command-execution"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 3
@@ -25960,4 +25960,5 @@
   todos_count: 0
   created_at: 2026-04-08T07:37:48.380Z
   started_at: 2026-04-08T10:44:31.409Z
+  submitted_at: 2026-04-08T11:11:06.427Z
   automation: eligible
