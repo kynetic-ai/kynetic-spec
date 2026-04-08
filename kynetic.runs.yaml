@@ -24227,9 +24227,25 @@ runs:
     completed_at: 2026-04-08T01:07:56.111Z
   - _ulid: 01KNNB5ZGZ0CZX1HBVRJTJB243
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-08T01:26:48.607Z
+        completed_at: 2026-04-08T01:27:23.145Z
+        notes: "Session: fix cycle 3 for batch isolation task. What worked: (1) The review blocker was
+          well-described — the reviewer traced the exact code path and confirmed with a reproduction
+          script, making diagnosis fast. (2) The fix was surgical — moving capture outside the mutex
+          scope and merging into the response. (3) All 7649 tests passed first try after the change.
+          Friction: (1) Test runner's --fresh flag is npm-level not script-level, caused a warning.
+          (2) Two identical blocker threads were filed for the same issue (duplicate threads in the
+          review). (3) Task was in needs_work but had to transition through start before submit — an
+          extra step for fix cycles."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-08T01:27:23.145Z
+        completed_at: 2026-04-08T01:27:23.145Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-08T01:26:48.607Z
