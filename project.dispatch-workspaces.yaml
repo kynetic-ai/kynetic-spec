@@ -43719,18 +43719,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-shadow-sync-narrow-invalidation/01knntxz
-    canonical_branch_head: 4c2d9f633e63493444510b02259ca1153974cc97
+    canonical_branch_head: 0c91c0d9d36df1418b5f95c65e2ef485a3466a90
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-08T07:22:02.073Z
+      updated_at: 2026-04-08T07:35:34.415Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-08T07:22:22.892Z
+      updated_at: 2026-04-08T07:35:34.415Z
     integration:
       status: pending
       detail: null
@@ -43738,7 +43738,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-granular-cache-invalidation/01kndbmk
       target_commit: 4c2d9f633e63493444510b02259ca1153974cc97
-      updated_at: 2026-04-08T07:22:02.073Z
+      updated_at: 2026-04-08T07:35:34.415Z
     lifecycle_state: active
     resolved_base_branch: plan/plan-granular-cache-invalidation/01kndbmk
     task_ref: "@01KNNTXZD9KNAE0HX81SNQM0A8"
@@ -43746,9 +43746,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-08T07:22:22.892Z
-      last_reconciled_at: 2026-04-08T07:22:22.892Z
+      last_reconciled_at: 2026-04-08T07:35:34.415Z
       created_at: 2026-04-08T07:22:02.073Z
-      updated_at: 2026-04-08T07:22:22.892Z
+      updated_at: 2026-04-08T07:35:34.415Z
     workspace_id: dispatch-workspace-01KNNTXZD9KNAE0HX81SNQM0A8
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
