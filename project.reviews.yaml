@@ -132025,3 +132025,29 @@ reviews:
     created_at: 2026-04-08T13:54:46.045Z
     updated_at: 2026-04-08T14:06:43.660Z
     notes: []
+  - _ulid: 01KNQKPAAWW4ZQ56XYFG1JJ3TS
+    slugs: []
+    title: Review task-fix-worktree-linkage-capture
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KNQKPAAWNSFBG3A0QQ1J550Z
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-08T22:34:01.436Z
+    examined_commit: a6698d0d7053638669479e3bd101f8f3c6a2c693
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNQJ4TX3ZR80MSV8Q38RHG06"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-08T22:34:01.436Z
+    updated_at: null
+    notes: []
