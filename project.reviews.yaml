@@ -128530,6 +128530,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNN744CTH01V1FKHA3FSV0SQ
         timestamp: 2026-04-08T00:15:54.640Z
+      - _ulid: 01KNN747Z144XMA6HVP0A1Y18Q
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNN7470GFNE41SXSH47Q6779
+        timestamp: 2026-04-08T00:15:57.409Z
     examined_commit: 93b76749adaa9d11a0d4f2432a41023a4170bce0
     external_links: []
     lifecycle_state: open
@@ -128602,7 +128609,27 @@ reviews:
               post-success cache refresh.
             created_at: 2026-04-08T00:15:53.755Z
         kind: blocker
+      - _ulid: 01KNN7470GFNE41SXSH47Q6779
+        anchor:
+          type: code
+          commit: 93b76749adaa9d11a0d4f2432a41023a4170bce0
+          line_end: 1450
+          line_start: 1413
+          path: tests/daemon-command-api.test.ts
+          side: head
+        entries:
+          - _ulid: 01KNN7470G53ME6YBE2663KQDR
+            author: Jacob Chapel
+            body: This stdout-leak test never exercises the behavior it claims to cover. The batch command under
+              test is inbox add, but that command reports success through success(...) and
+              console.log, not process.stdout.write. As a result, leakedStdout stays empty
+              regardless of whether batch execution is wrapped in commandExecutionStorage, so this
+              AC annotation can pass while the exact stdout.write regression remains broken. Use a
+              batch command that actually writes via process.stdout.write or assert against a
+              captured output path that depends on that interception.
+            created_at: 2026-04-08T00:15:56.432Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-08T00:14:30.965Z
-    updated_at: 2026-04-08T00:15:53.755Z
+    updated_at: 2026-04-08T00:15:56.432Z
     notes: []
