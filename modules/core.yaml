@@ -2049,6 +2049,23 @@ features:
         notes: []
     created: 2026-03-14T08:45:51.655Z
     notes: []
+  - _ulid: 01KNNZ1RPDK27DJJ6E974JYPDH
+    slugs:
+      - coverage-scan-config
+    title: Configurable AC Coverage Scanner
+    type: feature
+    description: AC coverage scanning requires explicit per-project configuration. Projects declare
+      which paths contain test files, and the scanner adapts its annotation parsing to the source
+      language of each file. When unconfigured, the scanner is inactive and validation communicates
+      what is missing and why.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    tags: []
+    created: 2026-04-08T07:14:02.061Z
+    notes: []
 requirements:
   - _ulid: 01KKB8FCEPMCC7J05GV278WKGT
     slugs:
