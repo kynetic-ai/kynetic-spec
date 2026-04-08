@@ -10,3 +10,7 @@ coverage:
   scan_paths:
     - tests/
     - packages/web-ui/tests/e2e/
+  exclude_patterns:
+    - "tests/ac-annotation-validation.test.ts"
+    - "tests/coverage-cache.test.ts"
+    - "tests/coverage-scan-config.test.ts"

@@ -48,14 +48,19 @@ function normalizePath(dir: string): string {
 }
 
 /**
- * Build a cache key from rootDir and scanPaths.
- * Different scan path configurations for the same rootDir
+ * Build a cache key from rootDir, scanPaths, and excludePatterns.
+ * Different scan/exclude configurations for the same rootDir
  * must produce different cache entries.
  */
-function buildCacheKey(rootDir: string, scanPaths: string[]): string {
+function buildCacheKey(
+  rootDir: string,
+  scanPaths: string[],
+  excludePatterns: string[],
+): string {
   const normalizedDir = normalizePath(rootDir);
   const sortedPaths = [...scanPaths].sort().join("\0");
-  return `${normalizedDir}\0${sortedPaths}`;
+  const sortedExcludes = [...excludePatterns].sort().join("\0");
+  return `${normalizedDir}\0${sortedPaths}\0${sortedExcludes}`;
 }
 
 /**
@@ -80,8 +85,9 @@ function isValid(entry: CacheEntry): boolean {
 export async function getCachedTestCoverage(
   rootDir: string,
   scanPaths: string[] = [],
+  excludePatterns: string[] = [],
 ): Promise<Set<string>> {
-  const key = buildCacheKey(rootDir, scanPaths);
+  const key = buildCacheKey(rootDir, scanPaths, excludePatterns);
   const existing = cache.get(key);
 
   // Return cached result if valid
@@ -95,7 +101,7 @@ export async function getCachedTestCoverage(
   }
 
   // Initiate new scan
-  const scanPromise = scanTestCoverage(rootDir, scanPaths);
+  const scanPromise = scanTestCoverage(rootDir, scanPaths, excludePatterns);
 
   // Store pending promise to prevent parallel scans
   const entry: CacheEntry = existing || {

@@ -245,6 +245,11 @@ const CoverageConfigSchema = z
      * AC: @coverage-scan-config ac-configured-paths
      */
     scan_paths: z.array(z.string()).optional(),
+    /**
+     * Glob patterns for files to exclude from scanning.
+     * Matched against the relative path from rootDir.
+     */
+    exclude_patterns: z.array(z.string()).optional(),
   })
   .strict()
   .optional();
@@ -448,6 +453,11 @@ export interface ResolvedKspecConfig {
      * AC: @coverage-scan-config ac-configured-paths
      */
     scan_paths: string[];
+    /**
+     * Glob patterns for files to exclude from scanning.
+     * Matched against the relative path from rootDir.
+     */
+    exclude_patterns: string[];
   };
 }
 
@@ -506,6 +516,7 @@ const DEFAULT_CONFIG: ResolvedKspecConfig = {
   coverage: {
     // AC: @coverage-scan-config ac-explicit-opt-in — empty = no scanning
     scan_paths: [],
+    exclude_patterns: [],
   },
 };
 
@@ -729,6 +740,8 @@ export function resolveConfig(fileConfig: KspecConfig | null): ResolvedKspecConf
     coverage: {
       // AC: @coverage-scan-config ac-explicit-opt-in — empty default = no scanning
       scan_paths: file.coverage?.scan_paths ?? DEFAULT_CONFIG.coverage.scan_paths,
+      exclude_patterns:
+        file.coverage?.exclude_patterns ?? DEFAULT_CONFIG.coverage.exclude_patterns,
     },
   };
 }
@@ -799,6 +812,7 @@ export function getDefaultConfig(): ResolvedKspecConfig {
     hooks: { ...DEFAULT_CONFIG.hooks },
     coverage: {
       scan_paths: [...DEFAULT_CONFIG.coverage.scan_paths],
+      exclude_patterns: [...DEFAULT_CONFIG.coverage.exclude_patterns],
     },
   };
 }

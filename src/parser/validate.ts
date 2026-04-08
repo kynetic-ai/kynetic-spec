@@ -781,6 +781,53 @@ async function findAllFilesRecursive(dir: string): Promise<string[]> {
 }
 
 /**
+ * Convert a simple glob pattern to a regex for matching file paths.
+ * Supports * (any non-separator chars) and ** (any chars including separators).
+ */
+function globToRegex(pattern: string): RegExp {
+  let regex = "";
+  let i = 0;
+  while (i < pattern.length) {
+    const ch = pattern[i];
+    if (ch === "*") {
+      if (pattern[i + 1] === "*") {
+        // ** matches any characters including path separators
+        if (pattern[i + 2] === "/") {
+          regex += "(?:.*/)?";
+          i += 3;
+        } else {
+          regex += ".*";
+          i += 2;
+        }
+      } else {
+        // * matches any non-separator characters
+        regex += "[^/]*";
+        i += 1;
+      }
+    } else if (ch === "?") {
+      regex += "[^/]";
+      i += 1;
+    } else if (".+^${}()|[]\\".includes(ch)) {
+      regex += "\\" + ch;
+      i += 1;
+    } else {
+      regex += ch;
+      i += 1;
+    }
+  }
+  return new RegExp("^" + regex + "$");
+}
+
+/**
+ * Check if a file path matches any of the exclude patterns.
+ * @param relPath - File path relative to rootDir
+ * @param excludePatterns - Glob patterns to match against
+ */
+function isExcluded(relPath: string, excludePatterns: RegExp[]): boolean {
+  return excludePatterns.some((re) => re.test(relPath));
+}
+
+/**
  * Map of file extensions to the AC annotation prefix regex for that language.
  *
  * AC: @coverage-scan-config ac-language-aware-parsing — comment syntax matches file language
@@ -884,7 +931,12 @@ export function parseACAnnotationLine(
  * AC: @coverage-scan-config ac-language-aware-parsing — comment syntax matches file language
  * AC: @coverage-scan-config ac-unrecognized-language — unrecognized files are skipped
  */
-async function scanDirForACAnnotations(dir: string, coveredACs: Set<string>): Promise<void> {
+async function scanDirForACAnnotations(
+  dir: string,
+  coveredACs: Set<string>,
+  rootDir: string,
+  excludePatterns: RegExp[],
+): Promise<void> {
   try {
     await fs.access(dir);
   } catch {
@@ -895,6 +947,11 @@ async function scanDirForACAnnotations(dir: string, coveredACs: Set<string>): Pr
   const allFiles = await findAllFilesRecursive(dir);
 
   for (const filePath of allFiles) {
+    if (excludePatterns.length > 0) {
+      const relPath = path.relative(rootDir, filePath);
+      if (isExcluded(relPath, excludePatterns)) continue;
+    }
+
     const ext = path.extname(filePath);
     const prefix = getACLinePrefix(ext);
     if (!prefix) continue; // AC: ac-unrecognized-language — skip unrecognized extensions
@@ -930,6 +987,7 @@ async function scanDirForACAnnotations(dir: string, coveredACs: Set<string>): Pr
 export async function scanTestCoverage(
   rootDir: string,
   scanPaths: string[] = [],
+  excludePatterns: string[] = [],
 ): Promise<Set<string>> {
   const coveredACs = new Set<string>();
 
@@ -938,9 +996,11 @@ export async function scanTestCoverage(
     return coveredACs;
   }
 
+  const compiledExcludes = excludePatterns.map(globToRegex);
+
   // AC: ac-configured-paths — scan each configured path
   for (const scanPath of scanPaths) {
-    await scanDirForACAnnotations(path.join(rootDir, scanPath), coveredACs);
+    await scanDirForACAnnotations(path.join(rootDir, scanPath), coveredACs, rootDir, compiledExcludes);
   }
   return coveredACs;
 }
@@ -970,6 +1030,8 @@ export interface ACAnnotation {
 async function scanDirForACAnnotationsStructured(
   dir: string,
   annotations: ACAnnotation[],
+  rootDir: string,
+  excludePatterns: RegExp[],
 ): Promise<void> {
   try {
     await fs.access(dir);
@@ -980,6 +1042,11 @@ async function scanDirForACAnnotationsStructured(
   const allFiles = await findAllFilesRecursive(dir);
 
   for (const filePath of allFiles) {
+    if (excludePatterns.length > 0) {
+      const relPath = path.relative(rootDir, filePath);
+      if (isExcluded(relPath, excludePatterns)) continue;
+    }
+
     const ext = path.extname(filePath);
     const prefix = getACLinePrefix(ext);
     if (!prefix) continue; // AC: ac-unrecognized-language — skip unrecognized extensions
@@ -1017,6 +1084,7 @@ async function scanDirForACAnnotationsStructured(
 export async function scanACAnnotations(
   rootDir: string,
   scanPaths: string[] = [],
+  excludePatterns: string[] = [],
 ): Promise<ACAnnotation[]> {
   const annotations: ACAnnotation[] = [];
 
@@ -1025,9 +1093,16 @@ export async function scanACAnnotations(
     return annotations;
   }
 
+  const compiledExcludes = excludePatterns.map(globToRegex);
+
   // AC: ac-configured-paths — scan each configured path
   for (const scanPath of scanPaths) {
-    await scanDirForACAnnotationsStructured(path.join(rootDir, scanPath), annotations);
+    await scanDirForACAnnotationsStructured(
+      path.join(rootDir, scanPath),
+      annotations,
+      rootDir,
+      compiledExcludes,
+    );
   }
 
   return annotations;
@@ -1162,6 +1237,7 @@ async function checkCompleteness(
   rootDir: string,
   traitIndex?: TraitIndex,
   scanPaths: string[] = [],
+  excludePatterns: string[] = [],
 ): Promise<CompletenessWarning[]> {
   const warnings: CompletenessWarning[] = [];
 
@@ -1180,7 +1256,7 @@ async function checkCompleteness(
   }
 
   // Scan test files for AC coverage
-  const coveredACs = await scanTestCoverage(rootDir, scanPaths);
+  const coveredACs = await scanTestCoverage(rootDir, scanPaths, excludePatterns);
 
   for (const item of items) {
     const itemRef = item.slugs?.[0] ? `@${item.slugs[0]}` : `@${index.shortUlid(item._ulid)}`;
@@ -2284,6 +2360,7 @@ export async function validate(
         ctx.rootDir,
         traitIndex,
         ctx.config.coverage.scan_paths,
+        ctx.config.coverage.exclude_patterns,
       );
 
       // AC: @task-automation-eligibility ac-21, ac-23
@@ -2305,7 +2382,11 @@ export async function validate(
       }
 
       // Validate AC annotations in test files
-      const annotations = await scanACAnnotations(ctx.rootDir, ctx.config.coverage.scan_paths);
+      const annotations = await scanACAnnotations(
+        ctx.rootDir,
+        ctx.config.coverage.scan_paths,
+        ctx.config.coverage.exclude_patterns,
+      );
       const annotationWarnings = validateACAnnotations(annotations, allItems, index);
       completenessWarnings.push(...annotationWarnings);
 

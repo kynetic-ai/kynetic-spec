@@ -469,6 +469,108 @@ describe("coverage-scan-config", () => {
     });
   });
 
+  describe("exclude_patterns", () => {
+    it("should exclude files matching exclude patterns from coverage scanning", async () => {
+      const testsDir = path.join(tempDir, "tests");
+      await fs.mkdir(testsDir, { recursive: true });
+      await fs.writeFile(
+        path.join(testsDir, "real.test.ts"),
+        '// AC: @real-spec ac-1\nit("test", () => {});\n',
+      );
+      await fs.writeFile(
+        path.join(testsDir, "fixture.test.ts"),
+        '// AC: @fixture-spec ac-1\nit("test", () => {});\n',
+      );
+
+      const coverage = await scanTestCoverage(tempDir, ["tests/"], ["tests/fixture.test.ts"]);
+      expect(coverage.has("@real-spec ac-1")).toBe(true);
+      expect(coverage.has("@fixture-spec ac-1")).toBe(false);
+    });
+
+    it("should exclude files matching glob patterns from coverage scanning", async () => {
+      const testsDir = path.join(tempDir, "tests");
+      await fs.mkdir(testsDir, { recursive: true });
+      await fs.writeFile(
+        path.join(testsDir, "real.test.ts"),
+        '// AC: @real-spec ac-1\nit("test", () => {});\n',
+      );
+      await fs.writeFile(
+        path.join(testsDir, "coverage-cache.test.ts"),
+        '// AC: @cached-spec ac-1\nit("test", () => {});\n',
+      );
+      await fs.writeFile(
+        path.join(testsDir, "coverage-scan.test.ts"),
+        '// AC: @scan-spec ac-1\nit("test", () => {});\n',
+      );
+
+      const coverage = await scanTestCoverage(tempDir, ["tests/"], ["**/coverage-*.test.ts"]);
+      expect(coverage.has("@real-spec ac-1")).toBe(true);
+      expect(coverage.has("@cached-spec ac-1")).toBe(false);
+      expect(coverage.has("@scan-spec ac-1")).toBe(false);
+    });
+
+    it("should exclude files matching patterns from structured annotation scanning", async () => {
+      const testsDir = path.join(tempDir, "tests");
+      await fs.mkdir(testsDir, { recursive: true });
+      await fs.writeFile(
+        path.join(testsDir, "real.test.ts"),
+        '// AC: @real-spec ac-1\nit("test", () => {});\n',
+      );
+      await fs.writeFile(
+        path.join(testsDir, "fixture.test.ts"),
+        '// AC: @fixture-spec ac-1\nit("test", () => {});\n',
+      );
+
+      const annotations = await scanACAnnotations(tempDir, ["tests/"], ["tests/fixture.test.ts"]);
+      expect(annotations).toHaveLength(1);
+      expect(annotations[0].specRef).toBe("@real-spec");
+    });
+
+    it("should not exclude files when exclude_patterns is empty", async () => {
+      const testsDir = path.join(tempDir, "tests");
+      await fs.mkdir(testsDir, { recursive: true });
+      await fs.writeFile(
+        path.join(testsDir, "example.test.ts"),
+        '// AC: @my-spec ac-1\nit("test", () => {});\n',
+      );
+
+      const coverage = await scanTestCoverage(tempDir, ["tests/"], []);
+      expect(coverage.has("@my-spec ac-1")).toBe(true);
+    });
+
+    it("should exclude files in subdirectories matching patterns", async () => {
+      const subDir = path.join(tempDir, "tests", "fixtures");
+      await fs.mkdir(subDir, { recursive: true });
+      await fs.writeFile(
+        path.join(subDir, "helper.test.ts"),
+        '// AC: @fixture-helper ac-1\nit("test", () => {});\n',
+      );
+      await fs.writeFile(
+        path.join(tempDir, "tests", "real.test.ts"),
+        '// AC: @real-spec ac-1\nit("test", () => {});\n',
+      );
+
+      const coverage = await scanTestCoverage(tempDir, ["tests/"], ["**/fixtures/**"]);
+      expect(coverage.has("@real-spec ac-1")).toBe(true);
+      expect(coverage.has("@fixture-helper ac-1")).toBe(false);
+    });
+
+    it("should resolve exclude_patterns from config", () => {
+      const config = resolveConfig({
+        coverage: {
+          scan_paths: ["tests/"],
+          exclude_patterns: ["tests/fixture.test.ts"],
+        },
+      });
+      expect(config.coverage.exclude_patterns).toEqual(["tests/fixture.test.ts"]);
+    });
+
+    it("should default exclude_patterns to empty array", () => {
+      const config = resolveConfig(null);
+      expect(config.coverage.exclude_patterns).toEqual([]);
+    });
+  });
+
   describe("config schema", () => {
     it("should accept coverage config with scan_paths", async () => {
       const { KspecConfigSchema } = await import("../src/parser/config.js");
@@ -490,6 +592,25 @@ describe("coverage-scan-config", () => {
       const { KspecConfigSchema } = await import("../src/parser/config.js");
       const result = KspecConfigSchema.safeParse({
         coverage: { scan_paths: "not-an-array" },
+      });
+      expect(result.success).toBe(false);
+    });
+
+    it("should accept coverage config with exclude_patterns", async () => {
+      const { KspecConfigSchema } = await import("../src/parser/config.js");
+      const result = KspecConfigSchema.safeParse({
+        coverage: {
+          scan_paths: ["tests/"],
+          exclude_patterns: ["**/fixture-*.test.ts"],
+        },
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it("should reject invalid exclude_patterns type", async () => {
+      const { KspecConfigSchema } = await import("../src/parser/config.js");
+      const result = KspecConfigSchema.safeParse({
+        coverage: { exclude_patterns: "not-an-array" },
       });
       expect(result.success).toBe(false);
     });

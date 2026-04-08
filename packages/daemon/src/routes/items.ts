@@ -458,6 +458,7 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
                   const coveredACs = await getCachedTestCoverage(
                     projectContext.path,
                     ctx.config.coverage.scan_paths,
+                    ctx.config.coverage.exclude_patterns,
                   );
                   acceptanceCriteriaWithCoverage = computeACCoverage(cachedDetail, coveredACs);
                 } catch {
@@ -535,6 +536,7 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
               const coveredACs = await getCachedTestCoverage(
                 projectContext.path,
                 ctx.config.coverage.scan_paths,
+                ctx.config.coverage.exclude_patterns,
               );
               acceptanceCriteriaWithCoverage = computeACCoverage(item, coveredACs);
             } catch (err) {
