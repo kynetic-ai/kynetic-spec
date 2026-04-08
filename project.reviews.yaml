@@ -129829,6 +129829,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-08T10:01:56.527Z
+      - _ulid: 01KNPAVJG66QNP1X2DGCVSFGYB
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KNPAVHN10BGTXXMH5GW7SJ97
+        timestamp: 2026-04-08T10:40:22.022Z
     examined_commit: 1d09289d43ce44411f6d8efaf6cbf31a30ce1ad4
     external_links: []
     lifecycle_state: open
@@ -129838,10 +129845,34 @@ reviews:
       content_hash: ""
       ref: "@01KNMJXC8DADJDK9R9CGK6B854"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNPAVHN10BGTXXMH5GW7SJ97
+        entries:
+          - _ulid: 01KNPAVHN201NGRTP065BDTA58
+            author: Jacob Chapel
+            body: >-
+              Evidence log:
+
+              Files read: vitest.config.ts, tests/cli-serve.test.ts,
+              tests/cli/session-start-activity-timeline.test.ts, tests/integration.test.ts,
+              tests/task-needs-work.test.ts, scripts/test.cjs.
+
+              Commands run: kspec task get @01KNMJXC8DADJDK9R9CGK6B854, git diff --stat
+              6a8fd6df4...1d09289d4, git diff 6a8fd6df4...1d09289d4 on touched files, kspec review
+              for-task @01KNMJXC8DADJDK9R9CGK6B854, kspec review get @01KNP2YN4KSYT7C6J32XVB2Y4M,
+              kspec validate, npm test -- --fresh (twice), AC annotation grep on touched tests.
+
+              Claims verified: the new vitest project split is exercised by npm test; two
+              consecutive uncached full-suite runs pass in this review worktree; the heavy serial
+              suites still execute under npm test.
+
+              Categories searched: correctness, test quality, integration, edge cases around process
+              shutdown and suite concurrency; no remaining blockers found.
+            created_at: 2026-04-08T10:40:21.154Z
+        kind: question
     verdicts: []
     created_at: 2026-04-08T10:01:24.232Z
-    updated_at: 2026-04-08T10:01:55.513Z
+    updated_at: 2026-04-08T10:40:21.154Z
     notes: []
   - _ulid: 01KNP9XQCHMV876AW114SHZEP5
     slugs: []
