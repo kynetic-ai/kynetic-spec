@@ -132367,3 +132367,29 @@ reviews:
     created_at: 2026-04-09T09:37:07.240Z
     updated_at: 2026-04-09T10:04:25.811Z
     notes: []
+  - _ulid: 01KNRVFZNC71DEHYFHCH8XJ68K
+    slugs: []
+    title: Review task-e2e-fixture-decoupled-assertions (cycle 2)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KNRVFZNC8MND3V2ATC9REEWG
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-09T10:09:36.940Z
+    examined_commit: 3d85f61f03d5eab3efb3c9c22cfc3d284b8ae965
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNRNP11FC3RCW2M08RM1842A"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-09T10:09:36.940Z
+    updated_at: null
+    notes: []
