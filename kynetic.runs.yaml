@@ -24765,7 +24765,7 @@ runs:
     started_at: 2026-04-09T08:12:34.222Z
   - _ulid: 01KNRX29RXWRA5Z2YHSKSZRYM0
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -24779,7 +24779,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-09T10:38:32.713Z
-        completed_at: 2026-04-09T10:38:32.713Z
+        completed_at: 2026-04-09T10:39:21.849Z
+        notes: No high-confidence friction identified in this session. The fix was focused and clean —
+          single file change, single test, clear reviewer feedback. The only workflow step that
+          required two commands (start + submit for needs_work -> pending_review) is expected state
+          machine behavior, not friction. Existing observation 01KNRSP6 already covers the success
+          pattern of detailed task descriptions enabling precise fix cycles.
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-09T10:39:21.849Z
+        completed_at: 2026-04-09T10:39:21.849Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-09T10:37:05.693Z
