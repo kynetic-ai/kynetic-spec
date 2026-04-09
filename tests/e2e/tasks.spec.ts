@@ -220,6 +220,11 @@ test.describe("Tasks View", () => {
       const filterAutomation = page.getByTestId("filter-automation");
       await expect(filterAutomation).toBeVisible();
 
+      // Set up response interception before triggering the filter
+      const filteredResponse = page.waitForResponse(
+        (resp) => resp.url().includes("/api/tasks") && resp.url().includes("automation=eligible") && resp.status() === 200,
+      );
+
       // Select "eligible" automation status
       await filterAutomation.click();
       await page.getByRole("option", { name: "Eligible" }).click();
@@ -227,19 +232,18 @@ test.describe("Tasks View", () => {
       // Wait for URL to update with automation=eligible
       await page.waitForURL(/\/tasks\?.*automation=eligible/);
 
-      // Verify filter returned results (at least one eligible task exists)
+      // Verify the API response contains only eligible tasks
+      const response = await filteredResponse;
+      const body = await response.json() as { data: Array<{ automation?: string }> };
+      expect(body.data.length).toBeGreaterThan(0);
+      for (const task of body.data) {
+        expect(task.automation).toBe("eligible");
+      }
+
+      // Verify UI rendered the filtered results
       const taskItems = page.getByTestId("task-list-item");
       await expect(taskItems.first()).toBeVisible();
-      expect(await taskItems.count()).toBeGreaterThan(0);
-
-      // Close the dropdown overlay before interacting with task list
-      await page.keyboard.press("Escape");
-
-      // Spot-check: open the first filtered task and verify it has eligible automation
-      await taskItems.first().click();
-      const detailPanel = page.getByTestId("task-detail-panel");
-      await expect(detailPanel).toBeVisible({ timeout: 5000 });
-      await expect(detailPanel.getByTestId("task-automation")).toContainText(/eligible/i);
+      expect(await taskItems.count()).toBe(body.data.length);
     });
 
     // AC: @web-dashboard ac-9 - automation filter dropdown has correct options
