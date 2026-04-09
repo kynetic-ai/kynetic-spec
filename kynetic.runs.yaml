@@ -24809,7 +24809,7 @@ runs:
     completed_at: 2026-04-09T10:39:53.928Z
   - _ulid: 01KNTAHJAB370C7RHKYHQNKGRB
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -24849,7 +24849,56 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-09T23:52:34.058Z
-        completed_at: 2026-04-09T23:52:34.058Z
+        completed_at: 2026-04-09T23:52:59.112Z
+        notes: >-
+          FRICTION 1: Test runner non-verbose mode is indistinguishable from a hang. The user lost
+          11+ minutes thinking npm test was stuck because there's no incremental output between
+          'Cache cleared (--fresh)' and the final summary. Vitest output goes to a log file the user
+          doesn't know exists. This is a systemic recurring usability issue — affects every
+          first-time user, every agent picking up the tool, every dev wondering whether to wait or
+          kill the process.
+
+
+          FRICTION 2: Recurring inbox neglect — write-only pattern. @01KKSGTN was filed 2026-03-15
+          documenting the exact bug (cli-serve.test.ts cleanup placement) with the exact root cause
+          and same file/line references. It sat in the inbox for 3+ weeks. We rediscovered the same
+          finding through hours of investigation. This is structural: items are filed but inbox
+          triage isn't happening on a regular cadence. Filing-without-triage means the inbox is a
+          write-only log, not actionable knowledge.
+
+
+          FRICTION 3: Documented test baseline is misleading. kspec-agents.md says 'Use npm run
+          test:shard1/shard2/shard3 for faster local dev runs (~50s vs ~150s). Full suite still
+          required before PR.' Real measured time is 8-15+ minutes when heavy-serial tests run.
+          dispatch-runtime-bootstrap-contract.test.ts tests legitimately take 6-20s each. The
+          '~150s' number creates a false expectation that anything longer = stuck, which directly
+          contributed to the user's confusion at the start of this session.
+
+
+          FRICTION 4: Three different code paths spawn the same daemon binary with different
+          lifecycle semantics. src/cli/commands/serve.ts:366 uses detached+unref (production
+          --detach), src/cli/index.ts:194 uses detached+unref (auto-start),
+          tests/e2e/fixtures/test-base.ts:324 uses non-detached parent-tracked. There is no single
+          'spawn a kspec daemon' helper to reuse. The asymmetry is what enables the leak class —
+          three implementations of the same operation with three different cleanup contracts.
+
+
+          FRICTION 5: Custom lint rule pattern is non-obvious. The project has
+          tools/eslint-rules/no-daemon-ts-imports.js but uses oxlint as the primary linter. The
+          actual enforcement runs as a vitest test (tests/lint-no-daemon-ts-imports.test.ts) —
+          vitest-as-lint-runner. This pattern isn't documented in AGENTS.md, kspec-agents.md, or the
+          testing convention. Figuring out the right shape for Task B's lint rule added meaningful
+          cognitive overhead and required multiple file reads to discover.
+
+
+          FRICTION 6: No way to discover orphan kspec daemons via the CLI. Killing 142 leaked
+          daemons required ad-hoc pkill incantations with regex matching on /proc args. There's no
+          'kspec serve list-orphans' or 'kspec doctor' command. Every dev who hits this same
+          situation will reinvent the same pkill commands.
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-09T23:52:59.112Z
+        completed_at: 2026-04-09T23:52:59.112Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-09T23:51:51.883Z
