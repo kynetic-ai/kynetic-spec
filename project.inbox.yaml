@@ -2260,3 +2260,29 @@ inbox:
       - daemon
     added_by: "@claude"
     created_at: 2026-04-09T21:48:56.795Z
+  - _ulid: 01KNTAB3HPGJKVS4PVSEVA43TC
+    text: "kspec plan get --json shape is unclear for plan→task lookup. Tried jq paths .tasks[]
+      (errored) and .derived_tasks[] (errored) before falling back to filtering kspec task list
+      --json by plan_ref. Two paths to consider: (1) document the plan get --json response shape
+      clearly, or (2) add a kspec plan tasks @plan subcommand that returns all tasks bidirectionally
+      linked to the plan (via plan_ref OR derived_from). Reduces friction for any
+      what-is-in-this-plan lookup."
+    tags:
+      - cli
+      - plans
+      - reflection
+    added_by: "@claude"
+    created_at: 2026-04-09T23:48:20.151Z
+  - _ulid: 01KNTAB3M16Q7W1MBNJ26NCZE8
+    text: "Reviewer agent scope guardrail: when asking a review agent to check N specific changes, also
+      ask whether there are unrelated lint/format issues in the same files. Recently, four lint
+      fixes were reviewed in isolation; reviewer correctly verified the four but missed two
+      pre-existing lint errors (testUlid duplicate from a merge resolution, worktreeBranch unused
+      destructure) that CI later caught. Eventually belongs in the reviewer skill as a checklist
+      item — for now, capture and triage."
+    tags:
+      - skills
+      - review
+      - reflection
+    added_by: "@claude"
+    created_at: 2026-04-09T23:48:20.225Z
