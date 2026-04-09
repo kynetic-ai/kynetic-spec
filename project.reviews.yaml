@@ -132208,6 +132208,18 @@ reviews:
         runner: npm
         created_at: 2026-04-09T09:42:05.891Z
         completed_at: 2026-04-09T09:42:05.891Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate exited 6 with repo-wide pre-existing warnings only (orphaned skill dir,
+          existing alignment/completeness warnings); no new validation errors attributable to this
+          change.
+        name: kspec-validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-09T09:42:08.548Z
+        completed_at: 2026-04-09T09:42:08.548Z
     events:
       - _ulid: 01KNRSMFN7G0699HNBDHXWDS51
         actor: Jacob Chapel
@@ -132236,6 +132248,13 @@ reviews:
           status: skipped
           name: npm-test
         timestamp: 2026-04-09T09:42:06.833Z
+      - _ulid: 01KNRSXPV0K2AMR1EM0PACYE29
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec-validate
+        timestamp: 2026-04-09T09:42:09.504Z
     examined_commit: 715277ceed6a2659d779cbbf017cb216c5267b04
     external_links: []
     lifecycle_state: open
@@ -132268,5 +132287,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-09T09:37:07.240Z
-    updated_at: 2026-04-09T09:42:05.891Z
+    updated_at: 2026-04-09T09:42:08.548Z
     notes: []
