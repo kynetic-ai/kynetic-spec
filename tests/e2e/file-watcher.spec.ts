@@ -47,7 +47,7 @@ test.describe("File Watcher UI", () => {
 
     const taskItems = page.getByTestId("task-list-item");
     await expect(taskItems.first()).toBeVisible({ timeout: 10_000 });
-    await expect(taskItems).toHaveCount(6);
+    await expect(taskItems).toHaveCount(7);
 
     const tasksFile = join(daemon.kspecDir, "project.tasks.yaml");
     appendYamlBlock(
@@ -72,7 +72,7 @@ test.describe("File Watcher UI", () => {
     await expect(taskItems.filter({ hasText: "Watcher added task" })).toBeVisible({
       timeout: 10_000,
     });
-    await expect(taskItems).toHaveCount(7, { timeout: 10_000 });
+    await expect(taskItems).toHaveCount(8, { timeout: 10_000 });
   });
 
   // AC: @ui-data-freshness ac-3
@@ -143,7 +143,7 @@ test.describe("File Watcher UI", () => {
 
     const taskItems = page.getByTestId("task-list-item");
     await expect(taskItems.first()).toBeVisible({ timeout: 10_000 });
-    await expect(taskItems).toHaveCount(6);
+    await expect(taskItems).toHaveCount(7);
     await expect(page.getByTestId("project-selector")).toContainText(
       projectNameFromPath(daemon.tempDir),
     );
@@ -180,6 +180,6 @@ test.describe("File Watcher UI", () => {
 
     expect(await unexpectedFirstProjectRefetch).toBe(false);
     await expect(taskItems.filter({ hasText: "Second project watcher task" })).toHaveCount(0);
-    await expect(taskItems).toHaveCount(6);
+    await expect(taskItems).toHaveCount(7);
   });
 });

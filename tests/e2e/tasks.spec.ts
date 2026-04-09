@@ -30,9 +30,9 @@ test.describe("Tasks View", () => {
       const taskItems = page.getByTestId("task-list-item");
       await expect(taskItems.first()).toBeVisible({ timeout: 10000 });
 
-      // Fixture has 7 tasks: 4 pending, 1 in_progress, 1 pending_review, 1 completed
-      // Default "Active" filter should hide the completed task (6 shown)
-      await expect(taskItems).toHaveCount(6);
+      // Fixture has 8 tasks: 5 pending, 1 in_progress, 1 pending_review, 1 completed
+      // Default "Active" filter should hide the completed task (7 shown)
+      await expect(taskItems).toHaveCount(7);
 
       // The status filter should display "Active" (not "All Statuses")
       const filterStatus = page.getByTestId("filter-status");
@@ -63,9 +63,9 @@ test.describe("Tasks View", () => {
       // URL should have status=all
       await page.waitForURL(/status=all/, { timeout: 10000 });
 
-      // All 7 tasks should be visible
+      // All 8 tasks should be visible
       const taskItems = page.getByTestId("task-list-item");
-      await expect(taskItems).toHaveCount(7, { timeout: 10000 });
+      await expect(taskItems).toHaveCount(8, { timeout: 10000 });
     });
 
     // AC: @web-dashboard ac-default-active-filter
@@ -79,7 +79,7 @@ test.describe("Tasks View", () => {
       const taskList = page.getByTestId("task-list");
       await expect(taskList).toBeVisible();
       await expect(page.getByTestId("task-list-item").first()).toBeVisible({ timeout: 10000 });
-      await expect(page.getByTestId("task-list-item")).toHaveCount(7, { timeout: 10000 });
+      await expect(page.getByTestId("task-list-item")).toHaveCount(8, { timeout: 10000 });
 
       // Switch to "Active"
       const filterStatus = page.getByTestId("filter-status");
@@ -91,9 +91,9 @@ test.describe("Tasks View", () => {
         timeout: 10000,
       });
 
-      // Should show 6 active tasks (no completed)
+      // Should show 7 active tasks (no completed)
       const taskItems = page.getByTestId("task-list-item");
-      await expect(taskItems).toHaveCount(6, { timeout: 10000 });
+      await expect(taskItems).toHaveCount(7, { timeout: 10000 });
     });
 
     // AC: @web-dashboard ac-4
@@ -216,8 +216,8 @@ test.describe("Tasks View", () => {
       const taskItems = page.getByTestId("task-list-item");
       await expect(taskItems.first()).toBeVisible();
 
-      // Only the task with automation=eligible should appear (1 task in fixture)
-      await expect(taskItems).toHaveCount(1);
+      // Only the tasks with automation=eligible should appear (2 tasks in fixture)
+      await expect(taskItems).toHaveCount(2);
     });
 
     // AC: @web-dashboard ac-9 - automation filter dropdown has correct options
