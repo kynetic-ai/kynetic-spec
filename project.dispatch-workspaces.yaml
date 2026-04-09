@@ -46419,12 +46419,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-09T09:35:54.287Z
+      updated_at: 2026-04-09T09:36:01.600Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-09T09:35:54.287Z
+      updated_at: 2026-04-09T09:36:01.600Z
     integration:
       status: pending
       detail: null
@@ -46432,24 +46432,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 6395ef2790db23c27cabaf3d52c19547102e891e
-      updated_at: 2026-04-09T09:35:54.287Z
-    lifecycle_state: ready
+      updated_at: 2026-04-09T09:36:01.600Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KNRNP11FC3RCW2M08RM1842A"
     task_slug: task-e2e-fixture-decoupled-assertions
     timestamps:
       closed_at: null
       last_active_at: 2026-04-09T08:53:38.270Z
-      last_reconciled_at: 2026-04-09T09:35:54.287Z
+      last_reconciled_at: 2026-04-09T09:36:01.600Z
       created_at: 2026-04-09T08:53:14.749Z
-      updated_at: 2026-04-09T09:35:54.287Z
+      updated_at: 2026-04-09T09:36:01.600Z
     workspace_id: dispatch-workspace-01KNRNP11FC3RCW2M08RM1842A
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 715277ceed6a2659d779cbbf017cb216c5267b04
+        last_seen_at: 2026-04-09T09:36:01.600Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-e2e-fixture-decoupled-assertions-01knrnp1-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-e2e-fixture-decoupled-assertions/01knrnp1
-        head: 6395ef2790db23c27cabaf3d52c19547102e891e
-        last_seen_at: 2026-04-09T08:53:14.749Z
+        head: 715277ceed6a2659d779cbbf017cb216c5267b04
+        last_seen_at: 2026-04-09T09:36:01.600Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-e2e-fixture-decoupled-assertions-01knrnp1
