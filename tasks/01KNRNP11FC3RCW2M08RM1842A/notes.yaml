@@ -60,3 +60,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-09T10:10:59.295Z
+  - _ulid: 01KNRWYXK0A9B6Z4BNJF3R6DVE
+    content: "Fix cycle 2: Addressed blocker about UI-side verification in automation filter test.
+      Replaced the count-only proxy (taskItems.count() === body.data.length) with per-row identity
+      assertion — each rendered row's data-task-ref is cross-checked against the API response's
+      eligible task set. Also added a spot-check that clicks the first row and verifies the detail
+      panel shows the eligible badge. This catches UI rendering bugs (stale rows, wrong rows) that
+      the count-only check would miss. All 25 tasks.spec.ts tests pass, all 28
+      dashboard+file-watcher tests pass, full unit suite (7723 tests) passes."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-09T10:35:14.913Z
