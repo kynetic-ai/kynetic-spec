@@ -132220,6 +132220,32 @@ reviews:
         runner: kspec
         created_at: 2026-04-09T09:42:08.548Z
         completed_at: 2026-04-09T09:42:08.548Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: tests/e2e/tasks.spec.ts, tests/e2e/file-watcher.spec.ts,
+          tests/e2e/dashboard.spec.ts, tests/e2e/fixtures/test-base.ts,
+          tests/e2e/fixtures/project.tasks.yaml, tests/e2e/fixtures/tasks/*/task.yaml,
+          tests/e2e/fixtures/kynetic.yaml, packages/web-ui/src/routes/tasks/+page.svelte,
+          packages/web-ui/src/lib/components/TaskList.svelte,
+          packages/web-ui/src/lib/components/TaskFilters.svelte,
+          packages/web-ui/src/lib/components/board/TaskDetailContent.svelte,
+          src/parser/task-data-manager.ts, packages/web-ui/src/lib/api.ts. Commands run: git diff
+          --stat, git diff --name-only, git diff, kspec task get, kspec item get @web-dashboard,
+          kspec validate, grep AC annotations, fixture-file reads, npm test. Claims verified:
+          fixture canonical task storage is split (kynetic.yaml), fixture-derived status counts are
+          8 total / pending 5 / in_progress 1 / pending_review 1 / completed 1, and the
+          automation-filter test now asserts only the first visible row instead of the full filtered
+          set. Categories searched: correctness (1 blocker in automation filter test), edge cases
+          (checked relative-count and snapshot assertions), error handling (checked fixture helper
+          throws), test quality (1 blocker), integration (checked tasks route/filter implementation
+          and API filtering)."
+        name: manual-review
+        required: false
+        runner: codex
+        created_at: 2026-04-09T09:42:11.281Z
+        completed_at: 2026-04-09T09:42:11.281Z
     events:
       - _ulid: 01KNRSMFN7G0699HNBDHXWDS51
         actor: Jacob Chapel
@@ -132255,6 +132281,13 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-04-09T09:42:09.504Z
+      - _ulid: 01KNRSXSCXYBFW7V9AVK69N99D
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: manual-review
+        timestamp: 2026-04-09T09:42:12.125Z
     examined_commit: 715277ceed6a2659d779cbbf017cb216c5267b04
     external_links: []
     lifecycle_state: open
@@ -132287,5 +132320,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-09T09:37:07.240Z
-    updated_at: 2026-04-09T09:42:08.548Z
+    updated_at: 2026-04-09T09:42:11.281Z
     notes: []
