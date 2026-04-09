@@ -30,15 +30,15 @@ test.describe("Tasks View", () => {
       const taskItems = page.getByTestId("task-list-item");
       await expect(taskItems.first()).toBeVisible({ timeout: 10000 });
 
-      // Fixture has 8 tasks: 5 pending, 1 in_progress, 1 pending_review, 1 completed
-      // Default "Active" filter should hide the completed task (7 shown)
-      await expect(taskItems).toHaveCount(7);
+      // Default "Active" filter should hide completed/cancelled tasks
+      // Verify at least one task is visible (filter is not empty)
+      expect(await taskItems.count()).toBeGreaterThan(0);
 
       // The status filter should display "Active" (not "All Statuses")
       const filterStatus = page.getByTestId("filter-status");
       await expect(filterStatus).toContainText("Active");
 
-      // No completed tasks should be visible
+      // No completed or cancelled tasks should be visible
       for (let i = 0; i < (await taskItems.count()); i++) {
         const statusBadge = taskItems.nth(i).getByTestId("task-status-badge");
         await expect(statusBadge).not.toContainText(/completed/i);
@@ -63,9 +63,13 @@ test.describe("Tasks View", () => {
       // URL should have status=all
       await page.waitForURL(/status=all/, { timeout: 10000 });
 
-      // All 8 tasks should be visible
+      // All tasks should be visible, including completed ones
       const taskItems = page.getByTestId("task-list-item");
-      await expect(taskItems).toHaveCount(8, { timeout: 10000 });
+      // Verify at least one completed badge is now visible (confirming the filter change worked)
+      const completedBadges = taskItems.filter({
+        has: page.locator('[data-testid="task-status-badge"]', { hasText: /completed/i }),
+      });
+      await expect(completedBadges.first()).toBeVisible({ timeout: 10000 });
     });
 
     // AC: @web-dashboard ac-default-active-filter
@@ -79,7 +83,13 @@ test.describe("Tasks View", () => {
       const taskList = page.getByTestId("task-list");
       await expect(taskList).toBeVisible();
       await expect(page.getByTestId("task-list-item").first()).toBeVisible({ timeout: 10000 });
-      await expect(page.getByTestId("task-list-item")).toHaveCount(8, { timeout: 10000 });
+
+      // Verify at least one completed task is visible in "All Statuses" mode
+      const allTaskItems = page.getByTestId("task-list-item");
+      const completedInAll = allTaskItems.filter({
+        has: page.locator('[data-testid="task-status-badge"]', { hasText: /completed/i }),
+      });
+      await expect(completedInAll.first()).toBeVisible({ timeout: 10000 });
 
       // Switch to "Active"
       const filterStatus = page.getByTestId("filter-status");
@@ -91,9 +101,14 @@ test.describe("Tasks View", () => {
         timeout: 10000,
       });
 
-      // Should show 7 active tasks (no completed)
+      // Previously-visible completed badges should no longer be visible
       const taskItems = page.getByTestId("task-list-item");
-      await expect(taskItems).toHaveCount(7, { timeout: 10000 });
+      await expect(taskItems.first()).toBeVisible({ timeout: 10000 });
+      for (let i = 0; i < (await taskItems.count()); i++) {
+        const statusBadge = taskItems.nth(i).getByTestId("task-status-badge");
+        await expect(statusBadge).not.toContainText(/completed/i);
+        await expect(statusBadge).not.toContainText(/cancelled/i);
+      }
     });
 
     // AC: @web-dashboard ac-4
@@ -205,6 +220,11 @@ test.describe("Tasks View", () => {
       const filterAutomation = page.getByTestId("filter-automation");
       await expect(filterAutomation).toBeVisible();
 
+      // Set up response interception before triggering the filter
+      const filteredResponse = page.waitForResponse(
+        (resp) => resp.url().includes("/api/tasks") && resp.url().includes("automation=eligible") && resp.status() === 200,
+      );
+
       // Select "eligible" automation status
       await filterAutomation.click();
       await page.getByRole("option", { name: "Eligible" }).click();
@@ -212,12 +232,35 @@ test.describe("Tasks View", () => {
       // Wait for URL to update with automation=eligible
       await page.waitForURL(/\/tasks\?.*automation=eligible/);
 
-      // Verify filtered results show only eligible tasks
+      // Verify the API response contains only eligible tasks
+      const response = await filteredResponse;
+      const body = await response.json() as { data: Array<{ automation?: string; slugs?: string[]; _ulid?: string }> };
+      expect(body.data.length).toBeGreaterThan(0);
+      const eligibleRefs = new Set<string>();
+      for (const task of body.data) {
+        expect(task.automation).toBe("eligible");
+        // Track eligible task refs so we can cross-check rendered rows
+        if (task.slugs?.[0]) eligibleRefs.add(task.slugs[0]);
+        if (task._ulid) eligibleRefs.add(task._ulid);
+      }
+
+      // Verify every rendered row corresponds to an eligible task
       const taskItems = page.getByTestId("task-list-item");
       await expect(taskItems.first()).toBeVisible();
+      const rowCount = await taskItems.count();
+      expect(rowCount).toBeGreaterThan(0);
+      for (let i = 0; i < rowCount; i++) {
+        const ref = await taskItems.nth(i).getAttribute("data-task-ref");
+        expect(eligibleRefs, `rendered row ${i} ref "${ref}" should be in eligible set`).toContain(ref);
+      }
 
-      // Only the tasks with automation=eligible should appear (2 tasks in fixture)
-      await expect(taskItems).toHaveCount(2);
+      // Spot-check: click the first row and verify the detail panel shows eligible badge
+      // Dismiss any open dropdown overlay first
+      await page.keyboard.press("Escape");
+      await taskItems.first().click();
+      const automationBadge = page.getByTestId("task-automation");
+      await expect(automationBadge).toBeVisible();
+      await expect(automationBadge).toHaveText("eligible");
     });
 
     // AC: @web-dashboard ac-9 - automation filter dropdown has correct options

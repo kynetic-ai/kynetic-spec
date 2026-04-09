@@ -1,10 +1,20 @@
 import { test as base, expect } from "@playwright/test";
 import { execSync, type ChildProcess, spawn } from "child_process";
-import { mkdirSync, mkdtempSync, cpSync, rmSync, existsSync, writeFileSync } from "fs";
+import {
+  mkdirSync,
+  mkdtempSync,
+  cpSync,
+  rmSync,
+  existsSync,
+  writeFileSync,
+  readFileSync,
+  readdirSync,
+} from "fs";
 import { join, dirname } from "path";
 import { tmpdir } from "os";
 import { fileURLToPath } from "url";
 import { createServer } from "net";
+import { parse as parseYaml } from "yaml";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -21,6 +31,75 @@ const E2E_FIXTURES = __dirname;
 // Path to built web UI bundle copied by build:e2e. Using dist/web-ui avoids
 // worktree-specific package build paths leaking into isolated daemon fixtures.
 const WEB_UI_BUILD = join(__dirname, "../../../dist/web-ui");
+
+export interface FixtureTaskCounts {
+  /** Total number of tasks in the fixture */
+  total: number;
+  /** Per-status breakdown: { pending: N, in_progress: N, ... } */
+  byStatus: Record<string, number>;
+}
+
+/**
+ * Parse the e2e fixture task data and derive expected per-status counts.
+ *
+ * Reads from the split per-task YAML files under tasks/<ULID>/task.yaml
+ * (canonical when task_storage.format is "split"), falling back to
+ * project.tasks.yaml if no split directory exists.
+ *
+ * Throws if neither source can be found or parsed.
+ */
+export function getFixtureTaskCounts(): FixtureTaskCounts {
+  const splitDir = join(E2E_FIXTURES, "tasks");
+  let statuses: string[];
+
+  if (existsSync(splitDir)) {
+    // Read from split per-task YAML files (canonical for format: split)
+    statuses = [];
+    // oxlint-disable-next-line no-source-scanning/no-source-file-reads -- reads e2e fixture files, not source code
+    const taskDirs = readdirSync(splitDir, { withFileTypes: true })
+      .filter((d) => d.isDirectory())
+      .map((d) => d.name);
+
+    for (const ulid of taskDirs) {
+      const taskFile = join(splitDir, ulid, "task.yaml");
+      if (!existsSync(taskFile)) continue;
+      // oxlint-disable-next-line no-source-scanning/no-source-file-reads -- reads e2e fixture files, not source code
+      const content = readFileSync(taskFile, "utf8");
+      const task = parseYaml(content) as { status?: string };
+      if (task?.status) {
+        statuses.push(task.status);
+      }
+    }
+
+    if (statuses.length === 0) {
+      throw new Error(
+        `No valid task.yaml files found in split directory: ${splitDir}`,
+      );
+    }
+  } else {
+    // Fallback: read project.tasks.yaml
+    const tasksFile = join(E2E_FIXTURES, "project.tasks.yaml");
+    if (!existsSync(tasksFile)) {
+      throw new Error(
+        `E2E fixture task data not found. Checked:\n  Split: ${splitDir}\n  File: ${tasksFile}`,
+      );
+    }
+    // oxlint-disable-next-line no-source-scanning/no-source-file-reads -- reads e2e fixture files, not source code
+    const content = readFileSync(tasksFile, "utf8");
+    const tasks = parseYaml(content) as Array<{ status?: string }>;
+    if (!Array.isArray(tasks)) {
+      throw new Error(`Expected array in ${tasksFile}, got ${typeof tasks}`);
+    }
+    statuses = tasks.map((t) => t.status ?? "unknown");
+  }
+
+  const byStatus: Record<string, number> = {};
+  for (const status of statuses) {
+    byStatus[status] = (byStatus[status] || 0) + 1;
+  }
+
+  return { total: statuses.length, byStatus };
+}
 
 interface DaemonFixture {
   tempDir: string;
