@@ -132538,6 +132538,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-09T10:10:57.421Z
+      - _ulid: 01KNRVKQ7BB36YEK2C12EV4EV7
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNRVH3MQNXSCJPA80C6RCDQP
+        timestamp: 2026-04-09T10:11:39.371Z
     examined_commit: 3d85f61f03d5eab3efb3c9c22cfc3d284b8ae965
     external_links: []
     lifecycle_state: closed
@@ -132568,6 +132574,8 @@ reviews:
               per-rendered-row automation assertion instead of a count-only proxy.
             created_at: 2026-04-09T10:10:13.783Z
         kind: blocker
+        resolved_at: 2026-04-09T10:11:38.467Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KNRVHWRM25TH4YE9BAHMMK20
         anchor:
           type: code
@@ -132598,5 +132606,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-09T10:10:57.420Z
     created_at: 2026-04-09T10:09:36.940Z
-    updated_at: 2026-04-09T10:10:57.421Z
+    updated_at: 2026-04-09T10:11:38.467Z
     notes: []
