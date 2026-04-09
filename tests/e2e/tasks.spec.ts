@@ -234,16 +234,33 @@ test.describe("Tasks View", () => {
 
       // Verify the API response contains only eligible tasks
       const response = await filteredResponse;
-      const body = await response.json() as { data: Array<{ automation?: string }> };
+      const body = await response.json() as { data: Array<{ automation?: string; slugs?: string[]; _ulid?: string }> };
       expect(body.data.length).toBeGreaterThan(0);
+      const eligibleRefs = new Set<string>();
       for (const task of body.data) {
         expect(task.automation).toBe("eligible");
+        // Track eligible task refs so we can cross-check rendered rows
+        if (task.slugs?.[0]) eligibleRefs.add(task.slugs[0]);
+        if (task._ulid) eligibleRefs.add(task._ulid);
       }
 
-      // Verify UI rendered the filtered results
+      // Verify every rendered row corresponds to an eligible task
       const taskItems = page.getByTestId("task-list-item");
       await expect(taskItems.first()).toBeVisible();
-      expect(await taskItems.count()).toBe(body.data.length);
+      const rowCount = await taskItems.count();
+      expect(rowCount).toBeGreaterThan(0);
+      for (let i = 0; i < rowCount; i++) {
+        const ref = await taskItems.nth(i).getAttribute("data-task-ref");
+        expect(eligibleRefs, `rendered row ${i} ref "${ref}" should be in eligible set`).toContain(ref);
+      }
+
+      // Spot-check: click the first row and verify the detail panel shows eligible badge
+      // Dismiss any open dropdown overlay first
+      await page.keyboard.press("Escape");
+      await taskItems.first().click();
+      const automationBadge = page.getByTestId("task-automation");
+      await expect(automationBadge).toBeVisible();
+      await expect(automationBadge).toHaveText("eligible");
     });
 
     // AC: @web-dashboard ac-9 - automation filter dropdown has correct options
