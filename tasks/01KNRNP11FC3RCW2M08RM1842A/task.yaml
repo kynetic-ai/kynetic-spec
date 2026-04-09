@@ -83,17 +83,17 @@ description: >-
   ### 3. Fixture-derived counts for the API contract test
 
 
-  In `tests/e2e/dashboard.spec.ts` (the test currently at "daemon returns task counts matching
+  In `tests/e2e/dashboard.spec.ts` (the test currently named "daemon returns task counts matching
   fixture data"):
 
 
-  - This test verifies the daemon's `/api/tasks` returns all fixture tasks and groups them correctly
+  - This test verifies the daemon `/api/tasks` returns all fixture tasks and groups them correctly
   by status. It legitimately needs absolute counts.
 
   - Derive expected per-status counts from the fixture itself at test-fixture-load time.
   Implementation path: extend `tests/e2e/fixtures/test-base.ts` so the daemon fixture exposes
   `expectedTaskCounts: Record<string, number>` (or similar), computed by parsing the task data from
-  whichever is the canonical source for the e2e daemon (verify whether that's `project.tasks.yaml`
+  whichever is the canonical source for the e2e daemon (verify whether that is `project.tasks.yaml`
   or the split per-task directories — both exist in the fixture and the manifest uses
   `task_storage.format: split`).
 
@@ -105,10 +105,7 @@ description: >-
 
 
   - `tests/e2e/dashboard.spec.ts` — the API contract test that fetches `/api/tasks` and asserts
-  per-status counts (currently hardcoded at lines around 537–554). Out of scope: the parallel-mocked
-  Status Summary tests in the same file that use `interceptDashboardAPIs` and a hardcoded
-  `fixtureTasks()` mock — those are mock-based and don't break when the real fixture changes (though
-  they suffer a different drift problem; track separately).
+  per-status counts (currently hardcoded around lines 537–554).
 
   - `tests/e2e/tasks.spec.ts` — filter tests that hardcode active/all/automation counts.
 
@@ -121,18 +118,58 @@ description: >-
   ## Out of scope
 
 
+  - The Status Summary tests in `dashboard.spec.ts` (lines around 246–303) that use
+  `interceptDashboardAPIs` and a parallel hardcoded `fixtureTasks()` mock. Those do not break when
+  the real fixture changes because they consume mocked data. They have a separate drift problem (the
+  mock has already drifted from the real fixture) and should be addressed in their own task.
+
   - Other e2e tests where the count IS the contract being tested (e.g., "exactly 3 workflow steps",
   "exactly 1 fleet card", "exactly 2 review revisions"). These assert known, intentional
   cardinality, not incidental fixture content.
-
-  - Parallel hardcoded mock data inside `dashboard.spec.ts` (the `fixtureTasks()` function and
-  `interceptDashboardAPIs` interceptors). This has its own drift problem but is a separate
-  brittleness pattern and should be addressed in its own task.
 
   - Inbox, observation, plan, and review fixtures. These are stable enough that count-based
   assertions on them are not currently a problem.
 
   - Unit and integration tests outside `tests/e2e/`.
+
+
+  ## Done when
+
+
+  - Adding a new task row to the e2e fixture (either `project.tasks.yaml` or the per-task split
+  format) does not require editing any count assertions in `tests/e2e/tasks.spec.ts` or
+  `tests/e2e/file-watcher.spec.ts`.
+
+  - The Active filter test in `tests/e2e/tasks.spec.ts` asserts filter behavior directly (no
+  hardcoded total count, no completed/cancelled badge visible, at least one task visible).
+
+  - The All Statuses filter test in `tests/e2e/tasks.spec.ts` asserts at least one completed badge
+  is visible after switching to All, with no hardcoded total count.
+
+  - The "switching back to Active" test in `tests/e2e/tasks.spec.ts` asserts previously-visible
+  completed badges are no longer visible after switching back, with no hardcoded total count.
+
+  - The automation-eligible filter test in `tests/e2e/tasks.spec.ts` asserts every visible task
+  carries the eligible badge, with no hardcoded matching count.
+
+  - The "task added via watcher" test in `tests/e2e/file-watcher.spec.ts` uses a relative count
+  (`before + 1`) rather than an absolute literal.
+
+  - The "second-project mutation does not affect first project" test in
+  `tests/e2e/file-watcher.spec.ts` compares the first-project list snapshot before/after rather than
+  asserting an absolute literal.
+
+  - The daemon API task-counts contract test in `tests/e2e/dashboard.spec.ts` derives expected
+  per-status counts from the fixture at test-fixture-load time via a helper exposed on
+  `tests/e2e/fixtures/test-base.ts`, with no inline literal counts.
+
+  - Changing which tasks exist in the canonical fixture source automatically recalculates the
+  expected counts; the contract test fails with a clear message if the fixture cannot be found or
+  parsed.
+
+  - The full e2e suite passes against the current fixture after the changes
+  (`tests/e2e/dashboard.spec.ts`, `tests/e2e/tasks.spec.ts`, `tests/e2e/file-watcher.spec.ts` all
+  green).
 spec_ref: null
 meta_ref: null
 plan_ref: null
@@ -284,5 +321,311 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-04-09T08:28:51.606Z
+  - author: "@claude"
+    changes:
+      description:
+        new: >-
+          ## What
+
+
+          Reduce the brittleness of e2e tests that assert task counts. Several Playwright tests in
+          `tests/e2e/` assert exact task counts as proxies for behavioral checks (e.g., "active
+          filter hides completed tasks" → `toHaveCount(7)`). Adding or removing a row from the e2e
+          fixture (`tests/e2e/fixtures/project.tasks.yaml` and the per-task split format under
+          `tests/e2e/fixtures/tasks/<ULID>/task.yaml`, both of which coexist in the fixture)
+          cascades into multiple test assertion edits across multiple files.
+
+
+          ## Why
+
+
+          Hardcoded count assertions couple test behavior to incidental fixture content. They:
+
+
+          - Cascade fixture changes into multiple unrelated test files (one fixture row addition
+          recently broke 6 assertions across 3 files in 2 separate fix cycles)
+
+          - Don't actually verify the behavior under test (e.g., "active filter hides completed" is
+          provable without knowing the total count)
+
+          - Get out of sync silently — comments saying "fixture has 7 tasks" are not enforced
+
+          - Make the cost of adding fixture coverage for new features artificially high
+
+
+          The single legitimate exception is the daemon API contract test that verifies the daemon
+          returns all fixture tasks — that test genuinely needs absolute totals, but should derive
+          them from the fixture rather than inline literals.
+
+
+          ## How
+
+
+          For each existing count-based assertion, choose the right replacement:
+
+
+          ### 1. Behavioral assertions for filter tests
+
+
+          In `tests/e2e/tasks.spec.ts`:
+
+
+          - "Default Active filter hides completed" — verify no completed badge is visible AND at
+          least one task is visible. Existing code already iterates and checks
+          `not.toContainText(/completed/i)` and `not.toContainText(/cancelled/i)`; the count
+          assertion is redundant. Keep the cancelled check as a defensive guard even though no
+          cancelled task exists in the fixture.
+
+          - "All Statuses filter shows completed" — verify at least one completed badge is visible
+          after switching to "All Statuses".
+
+          - "Switching back to Active hides completed" — verify the previously-visible completed
+          badges are no longer visible after switching.
+
+          - "Automation=eligible filter" — verify every visible item carries the eligible automation
+          badge (or none carry ineligible/manual badges).
+
+
+          ### 2. Relative counts for watcher / mutation tests
+
+
+          In `tests/e2e/file-watcher.spec.ts`:
+
+
+          - "Adding a task via file watcher updates the list" — capture the count before the append,
+          append the row, and assert `before + 1` after waiting for the new row's title to appear
+          via `filter({ hasText })`. The title-based wait is the real behavioral check; the count
+          assertion just guards against duplicates.
+
+          - "Second-project mutation does not affect first project" — capture the first-project list
+          snapshot before the second-project mutation and assert it is unchanged after, without
+          baking in absolute totals.
+
+
+          ### 3. Fixture-derived counts for the API contract test
+
+
+          In `tests/e2e/dashboard.spec.ts` (the test currently named "daemon returns task counts
+          matching fixture data"):
+
+
+          - This test verifies the daemon `/api/tasks` returns all fixture tasks and groups them
+          correctly by status. It legitimately needs absolute counts.
+
+          - Derive expected per-status counts from the fixture itself at test-fixture-load time.
+          Implementation path: extend `tests/e2e/fixtures/test-base.ts` so the daemon fixture
+          exposes `expectedTaskCounts: Record<string, number>` (or similar), computed by parsing the
+          task data from whichever is the canonical source for the e2e daemon (verify whether that
+          is `project.tasks.yaml` or the split per-task directories — both exist in the fixture and
+          the manifest uses `task_storage.format: split`).
+
+          - The contract test then asserts against `daemon.expectedTaskCounts.pending` etc. instead
+          of hardcoded numbers.
+
+
+          ## Files in scope
+
+
+          - `tests/e2e/dashboard.spec.ts` — the API contract test that fetches `/api/tasks` and
+          asserts per-status counts (currently hardcoded around lines 537–554).
+
+          - `tests/e2e/tasks.spec.ts` — filter tests that hardcode active/all/automation counts.
+
+          - `tests/e2e/file-watcher.spec.ts` — watcher tests that hardcode pre/post counts.
+
+          - `tests/e2e/fixtures/test-base.ts` — daemon fixture setup; add the helper that exposes
+          derived expected counts.
+
+
+          ## Out of scope
+
+
+          - The Status Summary tests in `dashboard.spec.ts` (lines around 246–303) that use
+          `interceptDashboardAPIs` and a parallel hardcoded `fixtureTasks()` mock. Those do not
+          break when the real fixture changes because they consume mocked data. They have a separate
+          drift problem (the mock has already drifted from the real fixture) and should be addressed
+          in their own task.
+
+          - Other e2e tests where the count IS the contract being tested (e.g., "exactly 3 workflow
+          steps", "exactly 1 fleet card", "exactly 2 review revisions"). These assert known,
+          intentional cardinality, not incidental fixture content.
+
+          - Inbox, observation, plan, and review fixtures. These are stable enough that count-based
+          assertions on them are not currently a problem.
+
+          - Unit and integration tests outside `tests/e2e/`.
+
+
+          ## Done when
+
+
+          - Adding a new task row to the e2e fixture (either `project.tasks.yaml` or the per-task
+          split format) does not require editing any count assertions in `tests/e2e/tasks.spec.ts`
+          or `tests/e2e/file-watcher.spec.ts`.
+
+          - The Active filter test in `tests/e2e/tasks.spec.ts` asserts filter behavior directly (no
+          hardcoded total count, no completed/cancelled badge visible, at least one task visible).
+
+          - The All Statuses filter test in `tests/e2e/tasks.spec.ts` asserts at least one completed
+          badge is visible after switching to All, with no hardcoded total count.
+
+          - The "switching back to Active" test in `tests/e2e/tasks.spec.ts` asserts
+          previously-visible completed badges are no longer visible after switching back, with no
+          hardcoded total count.
+
+          - The automation-eligible filter test in `tests/e2e/tasks.spec.ts` asserts every visible
+          task carries the eligible badge, with no hardcoded matching count.
+
+          - The "task added via watcher" test in `tests/e2e/file-watcher.spec.ts` uses a relative
+          count (`before + 1`) rather than an absolute literal.
+
+          - The "second-project mutation does not affect first project" test in
+          `tests/e2e/file-watcher.spec.ts` compares the first-project list snapshot before/after
+          rather than asserting an absolute literal.
+
+          - The daemon API task-counts contract test in `tests/e2e/dashboard.spec.ts` derives
+          expected per-status counts from the fixture at test-fixture-load time via a helper exposed
+          on `tests/e2e/fixtures/test-base.ts`, with no inline literal counts.
+
+          - Changing which tasks exist in the canonical fixture source automatically recalculates
+          the expected counts; the contract test fails with a clear message if the fixture cannot be
+          found or parsed.
+
+          - The full e2e suite passes against the current fixture after the changes
+          (`tests/e2e/dashboard.spec.ts`, `tests/e2e/tasks.spec.ts`,
+          `tests/e2e/file-watcher.spec.ts` all green).
+        previous: >-
+          ## What
+
+
+          Reduce the brittleness of e2e tests that assert task counts. Several Playwright tests in
+          `tests/e2e/` assert exact task counts as proxies for behavioral checks (e.g., "active
+          filter hides completed tasks" → `toHaveCount(7)`). Adding or removing a row from the e2e
+          fixture (`tests/e2e/fixtures/project.tasks.yaml` and the per-task split format under
+          `tests/e2e/fixtures/tasks/<ULID>/task.yaml`, both of which coexist in the fixture)
+          cascades into multiple test assertion edits across multiple files.
+
+
+          ## Why
+
+
+          Hardcoded count assertions couple test behavior to incidental fixture content. They:
+
+
+          - Cascade fixture changes into multiple unrelated test files (one fixture row addition
+          recently broke 6 assertions across 3 files in 2 separate fix cycles)
+
+          - Don't actually verify the behavior under test (e.g., "active filter hides completed" is
+          provable without knowing the total count)
+
+          - Get out of sync silently — comments saying "fixture has 7 tasks" are not enforced
+
+          - Make the cost of adding fixture coverage for new features artificially high
+
+
+          The single legitimate exception is the daemon API contract test that verifies the daemon
+          returns all fixture tasks — that test genuinely needs absolute totals, but should derive
+          them from the fixture rather than inline literals.
+
+
+          ## How
+
+
+          For each existing count-based assertion, choose the right replacement:
+
+
+          ### 1. Behavioral assertions for filter tests
+
+
+          In `tests/e2e/tasks.spec.ts`:
+
+
+          - "Default Active filter hides completed" — verify no completed badge is visible AND at
+          least one task is visible. Existing code already iterates and checks
+          `not.toContainText(/completed/i)` and `not.toContainText(/cancelled/i)`; the count
+          assertion is redundant. Keep the cancelled check as a defensive guard even though no
+          cancelled task exists in the fixture.
+
+          - "All Statuses filter shows completed" — verify at least one completed badge is visible
+          after switching to "All Statuses".
+
+          - "Switching back to Active hides completed" — verify the previously-visible completed
+          badges are no longer visible after switching.
+
+          - "Automation=eligible filter" — verify every visible item carries the eligible automation
+          badge (or none carry ineligible/manual badges).
+
+
+          ### 2. Relative counts for watcher / mutation tests
+
+
+          In `tests/e2e/file-watcher.spec.ts`:
+
+
+          - "Adding a task via file watcher updates the list" — capture the count before the append,
+          append the row, and assert `before + 1` after waiting for the new row's title to appear
+          via `filter({ hasText })`. The title-based wait is the real behavioral check; the count
+          assertion just guards against duplicates.
+
+          - "Second-project mutation does not affect first project" — capture the first-project list
+          snapshot before the second-project mutation and assert it is unchanged after, without
+          baking in absolute totals.
+
+
+          ### 3. Fixture-derived counts for the API contract test
+
+
+          In `tests/e2e/dashboard.spec.ts` (the test currently at "daemon returns task counts
+          matching fixture data"):
+
+
+          - This test verifies the daemon's `/api/tasks` returns all fixture tasks and groups them
+          correctly by status. It legitimately needs absolute counts.
+
+          - Derive expected per-status counts from the fixture itself at test-fixture-load time.
+          Implementation path: extend `tests/e2e/fixtures/test-base.ts` so the daemon fixture
+          exposes `expectedTaskCounts: Record<string, number>` (or similar), computed by parsing the
+          task data from whichever is the canonical source for the e2e daemon (verify whether that's
+          `project.tasks.yaml` or the split per-task directories — both exist in the fixture and the
+          manifest uses `task_storage.format: split`).
+
+          - The contract test then asserts against `daemon.expectedTaskCounts.pending` etc. instead
+          of hardcoded numbers.
+
+
+          ## Files in scope
+
+
+          - `tests/e2e/dashboard.spec.ts` — the API contract test that fetches `/api/tasks` and
+          asserts per-status counts (currently hardcoded at lines around 537–554). Out of scope: the
+          parallel-mocked Status Summary tests in the same file that use `interceptDashboardAPIs`
+          and a hardcoded `fixtureTasks()` mock — those are mock-based and don't break when the real
+          fixture changes (though they suffer a different drift problem; track separately).
+
+          - `tests/e2e/tasks.spec.ts` — filter tests that hardcode active/all/automation counts.
+
+          - `tests/e2e/file-watcher.spec.ts` — watcher tests that hardcode pre/post counts.
+
+          - `tests/e2e/fixtures/test-base.ts` — daemon fixture setup; add the helper that exposes
+          derived expected counts.
+
+
+          ## Out of scope
+
+
+          - Other e2e tests where the count IS the contract being tested (e.g., "exactly 3 workflow
+          steps", "exactly 1 fleet card", "exactly 2 review revisions"). These assert known,
+          intentional cardinality, not incidental fixture content.
+
+          - Parallel hardcoded mock data inside `dashboard.spec.ts` (the `fixtureTasks()` function
+          and `interceptDashboardAPIs` interceptors). This has its own drift problem but is a
+          separate brittleness pattern and should be addressed in its own task.
+
+          - Inbox, observation, plan, and review fixtures. These are stable enough that count-based
+          assertions on them are not currently a problem.
+
+          - Unit and integration tests outside `tests/e2e/`.
+    command: task-set
+    timestamp: 2026-04-09T08:31:04.586Z
 created_at: 2026-04-09T08:28:03.503Z
 todos: []
