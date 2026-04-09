@@ -1,1 +1,13 @@
-notes: []
+notes:
+  - _ulid: 01KNRQ8J9AMFJAD1CKHNTS0CJ4
+    content: "Approach: 1) tasks.spec.ts — remove hardcoded counts (7, 8, 2), replace with behavioral
+      assertions (no completed badge visible + at least one visible; at least one completed badge
+      after 'All'; every visible item has eligible badge). 2) file-watcher.spec.ts — capture count
+      before mutation, assert before+1 after; snapshot first-project list before second-project
+      mutation. 3) dashboard.spec.ts — add fixture-parsing helper to test-base.ts that reads
+      project.tasks.yaml + per-task split files to derive expected counts; contract test uses
+      derived counts. Edge cases: split format is canonical (manifest says format: split), need to
+      parse both sources and determine which the daemon actually loads."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-09T08:55:39.562Z
