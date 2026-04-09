@@ -173,7 +173,7 @@ description: >-
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -183,6 +183,14 @@ tags:
   - e2e
   - infra
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-e2e-fixture-decoupled-assertions/01knrnp1
+  captured_at: 2026-04-09T09:34:36.192Z
+  commit: 715277ceed6a2659d779cbbf017cb216c5267b04
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KNRQ4V244KXTP6H4N4D049M7
 history:
   - author: "@claude"
@@ -648,7 +656,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-09T08:54:31.106Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-e2e-fixture-decoupled-assertions/01knrnp1
+          captured_at: 2026-04-09T09:34:36.192Z
+          commit: 715277ceed6a2659d779cbbf017cb216c5267b04
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-04-09T09:34:36.195Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-09T09:34:36.195Z
 created_at: 2026-04-09T08:28:03.503Z
 started_at: 2026-04-09T08:54:31.105Z
+submitted_at: 2026-04-09T09:34:36.195Z
 todos: []
 automation: eligible
