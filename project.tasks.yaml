@@ -25988,3 +25988,19 @@
   submitted_at: 2026-04-08T22:31:58.596Z
   completed_at: 2026-04-08T22:54:33.194Z
   automation: eligible
+- _ulid: 01KNRNP11FC3RCW2M08RM1842A
+  slugs:
+    - task-e2e-fixture-decoupled-assertions
+  title: Replace count-based e2e assertions with behavioral assertions and fixture-derived counts
+  type: task
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - tests
+    - e2e
+    - infra
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-09T08:28:03.503Z
