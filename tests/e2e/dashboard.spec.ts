@@ -1,4 +1,4 @@
-import { test, expect } from "./fixtures/test-base";
+import { test, expect, getFixtureTaskCounts } from "./fixtures/test-base";
 
 /**
  * Dashboard Overview E2E Tests
@@ -535,22 +535,26 @@ test.describe("Dashboard Overview", () => {
     }
 
     test("daemon returns task counts matching fixture data", async ({ daemon }) => {
+      const expectedCounts = getFixtureTaskCounts();
       const envelope = await fetchWhenReady(daemon.baseUrl, "/api/tasks");
 
       const tasks = envelope.data as Array<{ status: string }>;
       expect(tasks).toBeDefined();
+      expect(tasks).toHaveLength(expectedCounts.total);
 
       const statusCounts: Record<string, number> = {};
       for (const task of tasks) {
         statusCounts[task.status] = (statusCounts[task.status] || 0) + 1;
       }
 
-      // Fixture has: 5 pending (ready, dep-blocked, needs-review, manual-only, planref-only),
-      // 1 in_progress, 1 pending_review, 1 completed
-      expect(statusCounts["pending"]).toBe(5);
-      expect(statusCounts["in_progress"]).toBe(1);
-      expect(statusCounts["pending_review"]).toBe(1);
-      expect(statusCounts["completed"]).toBe(1);
+      // Verify each status count matches the fixture-derived expectation
+      for (const [status, expectedCount] of Object.entries(expectedCounts.byStatus)) {
+        expect(statusCounts[status] ?? 0, `Expected ${expectedCount} tasks with status "${status}"`).toBe(expectedCount);
+      }
+      // Verify no unexpected statuses appeared in the API response
+      for (const [status, count] of Object.entries(statusCounts)) {
+        expect(expectedCounts.byStatus[status] ?? 0, `Unexpected status "${status}" in API response with count ${count}`).toBe(count);
+      }
     });
 
     test("daemon returns inbox items", async ({ daemon }) => {
