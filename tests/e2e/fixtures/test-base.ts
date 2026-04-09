@@ -165,6 +165,11 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
         cpSync(projectTests, join(tempDir, "tests"), { recursive: true });
       }
 
+      // Configure coverage scanning for the copied project-tests directory.
+      // Coverage scanning is explicit opt-in (AC: @coverage-scan-config ac-explicit-opt-in)
+      // and the e2e items spec relies on AC coverage being detected for @test-feature ac-1.
+      writeFileSync(join(tempDir, "kspec.config.yaml"), "coverage:\n  scan_paths:\n    - tests\n");
+
       // Initialize git repo in project root (required for kspec)
       execSync("git init", { cwd: tempDir, stdio: "ignore" });
       execSync('git config user.email "test@test.com"', { cwd: tempDir, stdio: "ignore" });
