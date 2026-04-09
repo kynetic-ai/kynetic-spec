@@ -132288,9 +132288,25 @@ reviews:
           status: pass
           name: manual-review
         timestamp: 2026-04-09T09:42:12.125Z
+      - _ulid: 01KNRSYDPDBY6AYZRZ5CRHRVPH
+        actor: codex@openai.com
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-09T09:42:32.910Z
+      - _ulid: 01KNRSYDPE2NRG01D068NGDDH0
+        actor: codex@openai.com
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-09T09:42:32.910Z
     examined_commit: 715277ceed6a2659d779cbbf017cb216c5267b04
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -132318,7 +132334,14 @@ reviews:
               an equivalent negative assertion that no ineligible statuses remain).
             created_at: 2026-04-09T09:42:03.371Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai.com
+        role: reviewer
+        created_at: 2026-04-09T09:42:32.909Z
     created_at: 2026-04-09T09:37:07.240Z
-    updated_at: 2026-04-09T09:42:11.281Z
+    updated_at: 2026-04-09T09:42:32.910Z
     notes: []
