@@ -2243,3 +2243,20 @@ inbox:
       - workspace-registry
     added_by: "@claude"
     created_at: 2026-04-09T06:13:25.371Z
+  - _ulid: 01KNT3GG2T4KQ28SMS0TZY39GS
+    text: "Test daemons should self-terminate when their spawning test process dies. Currently any
+      'kspec serve start --detach' from a test is detached + unref'd, so when the vitest worker is
+      SIGKILLed, OOM-killed, times out, or otherwise exits abnormally, the daemon survives and gets
+      reparented to PID 1. Proposal: when a daemon is started for tests (e.g., env flag
+      KSPEC_DAEMON_PARENT_PID=$$ or KSPEC_DAEMON_TEST_MODE=1), it polls kill(parentPid, 0) every N
+      seconds and self-exits cleanly when the parent disappears. Real user 'kspec serve start
+      --detach' invocations don't set the flag and behave unchanged. Bulletproof against SIGKILL
+      because the daemon kills itself rather than relying on signal propagation. Complements but
+      doesn't replace afterEach cleanup — this is the safety net for the abnormal-termination
+      paths."
+    tags:
+      - bug
+      - testing
+      - daemon
+    added_by: "@claude"
+    created_at: 2026-04-09T21:48:56.795Z
