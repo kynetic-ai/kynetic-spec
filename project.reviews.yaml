@@ -132522,9 +132522,25 @@ reviews:
           kind: blocker
           thread_ulid: 01KNRVHWRM25TH4YE9BAHMMK20
         timestamp: 2026-04-09T10:10:40.370Z
+      - _ulid: 01KNRVJE8DBXKA5RJY70C2TCWT
+        actor: codex@openai.com
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-09T10:10:57.421Z
+      - _ulid: 01KNRVJE8DAT812GAT7NWA442Y
+        actor: codex@openai.com
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-09T10:10:57.421Z
     examined_commit: 3d85f61f03d5eab3efb3c9c22cfc3d284b8ae965
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -132573,7 +132589,14 @@ reviews:
               automation assertion instead of a count-only proxy.
             created_at: 2026-04-09T10:10:39.509Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai.com
+        role: reviewer
+        created_at: 2026-04-09T10:10:57.420Z
     created_at: 2026-04-09T10:09:36.940Z
-    updated_at: 2026-04-09T10:10:39.509Z
+    updated_at: 2026-04-09T10:10:57.421Z
     notes: []
