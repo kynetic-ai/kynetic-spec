@@ -627,5 +627,13 @@ history:
           - Unit and integration tests outside `tests/e2e/`.
     command: task-set
     timestamp: 2026-04-09T08:31:04.586Z
+  - author: "@claude"
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-04-09T08:35:37.825Z
 created_at: 2026-04-09T08:28:03.503Z
 todos: []
+automation: eligible
