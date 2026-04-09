@@ -19,30 +19,31 @@ import * as path from "node:path";
 import { Elysia } from "elysia";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { cleanupTempDir, createTempDir, initGitRepo, testUlid } from "./helpers/cli.js";
-import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.ts";
-import { createTasksRoutes } from "../dist/daemon/routes/tasks.ts";
-import { createItemsRoutes } from "../dist/daemon/routes/items.ts";
-import { createAggregationRoutes } from "../dist/daemon/routes/aggregation.ts";
-import { createValidationRoutes } from "../dist/daemon/routes/validation.ts";
-import { createInboxRoutes } from "../dist/daemon/routes/inbox.ts";
-import { createRefsRoutes } from "../dist/daemon/routes/refs.ts";
-import { createPlansRoutes } from "../dist/daemon/routes/plans.ts";
-import { createMetaRoutes } from "../dist/daemon/routes/meta.ts";
-import { PubSubManager } from "../dist/daemon/websocket/pubsub.ts";
+import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.js";
+import { createTasksRoutes } from "../dist/daemon/routes/tasks.js";
+import { createItemsRoutes } from "../dist/daemon/routes/items.js";
+import { createAggregationRoutes } from "../dist/daemon/routes/aggregation.js";
+import { createValidationRoutes } from "../dist/daemon/routes/validation.js";
+import { createInboxRoutes } from "../dist/daemon/routes/inbox.js";
+import { createRefsRoutes } from "../dist/daemon/routes/refs.js";
+import { createPlansRoutes } from "../dist/daemon/routes/plans.js";
+import { createMetaRoutes } from "../dist/daemon/routes/meta.js";
+import { PubSubManager } from "../dist/daemon/websocket/pubsub.js";
 import type {
   RouteEntityCache,
   EntityCacheAccessor,
-} from "../dist/daemon/routes/entity-cache-types.ts";
-import type { TaskSummary } from "../dist/parser/task-data-manager.ts";
+} from "../dist/daemon/routes/entity-cache-types.js";
+import type { TaskSummary } from "../dist/parser/task-data-manager.js";
 import type {
   ItemSummary,
   TriageIndexSummary,
   PlanIndexSummary,
   CachedShadowInfo,
   CachedProjectConfig,
-} from "../dist/daemon/entity-cache.ts";
-import type { MetaContext } from "../dist/parser/meta.ts";
-import type { LoadedInboxItem, LoadedSpecItem, LoadedTask } from "../dist/parser/yaml.ts";
+} from "../dist/daemon/entity-cache.js";
+import { createShadowSyncOnPullHandler } from "../dist/daemon/server.js";
+import type { MetaContext } from "../dist/parser/meta.js";
+import type { LoadedInboxItem, LoadedSpecItem, LoadedTask } from "../dist/parser/yaml.js";
 import { ShadowSyncScheduler } from "../src/parser/shadow-sync-scheduler.js";
 import * as parserModule from "../dist/parser/index.js";
 import * as shadowModule from "../dist/parser/shadow.js";
@@ -128,13 +129,12 @@ function makeTriageSummary(overrides: Partial<TriageIndexSummary> = {}): TriageI
   return {
     _ulid: TRIAGE_ULID,
     inbox_ref: INBOX_ULID,
+    item_snapshot: "Test inbox item for read path",
     status: "triaged",
     created_at: "2026-01-16T00:00:00Z",
-    action: "promote_task",
+    action: "promote",
     reasoning: "Looks actionable",
     decided_by: "test",
-    acted_at: "2026-01-17T00:00:00Z",
-    result_ref: TASK_ULID_1,
     evidence_refs: [],
     ...overrides,
   };
@@ -303,6 +303,7 @@ function createWarmCache(
     getDomainState: () => "ready",
     getTaskIndex: () => tasks,
     getTaskDetail: (ulid: string) => taskDetails.get(ulid) ?? null,
+    getTaskHistory: () => null,
     setTaskDetail: (ulid, task) => taskDetails.set(ulid, task),
     getAllTaskDetails: () => Array.from(taskDetails.values()),
     getItemIndex: () => items,
@@ -310,6 +311,7 @@ function createWarmCache(
     setItemDetail: (ulid, item) => itemDetails.set(ulid, item),
     getAllItemDetails: () => Array.from(itemDetails.values()),
     getSessionIndex: () => [],
+    getSessionLiveEventCount: () => undefined,
     getSessionDetail: (id: string) => sessionDetails.get(id) ?? null,
     setSessionDetail: (id, summary) => sessionDetails.set(id, summary),
     getPlansIndex: () => plans,
@@ -337,6 +339,67 @@ function createWarmCache(
       writeThroughCalls.push(domain);
     },
     markWriteThrough: () => {},
+    getCacheDiagnostics: () => ({
+      projectPath: tempDir,
+      domains: {
+        tasks: {
+          state: "ready",
+          indexCount: tasks.length,
+          detailCount: taskDetails.size,
+          lastError: null,
+          lastInvalidatedAt: null,
+        },
+        items: {
+          state: "ready",
+          indexCount: items.length,
+          detailCount: itemDetails.size,
+          lastError: null,
+          lastInvalidatedAt: null,
+        },
+        meta: {
+          state: "ready",
+          indexCount: 1,
+          detailCount: 1,
+          lastError: null,
+          lastInvalidatedAt: null,
+        },
+        inbox: {
+          state: "ready",
+          indexCount: inbox.length,
+          detailCount: 0,
+          lastError: null,
+          lastInvalidatedAt: null,
+        },
+        plans: {
+          state: "ready",
+          indexCount: plans.length,
+          detailCount: planDetails.size,
+          lastError: null,
+          lastInvalidatedAt: null,
+        },
+        triage: {
+          state: "ready",
+          indexCount: triage.length,
+          detailCount: triageDetails.size,
+          lastError: null,
+          lastInvalidatedAt: null,
+        },
+        reviews: {
+          state: "ready",
+          indexCount: 0,
+          detailCount: reviewDetails.size,
+          lastError: null,
+          lastInvalidatedAt: null,
+        },
+        sessions: {
+          state: "ready",
+          indexCount: 0,
+          detailCount: sessionDetails.size,
+          lastError: null,
+          lastInvalidatedAt: null,
+        },
+      },
+    }),
     // Expose for test assertions
     get _writeThroughCalls() {
       return writeThroughCalls;
@@ -431,13 +494,12 @@ tasks_file: project.tasks.yaml
     `records:
   - _ulid: "${TRIAGE_ULID}"
     inbox_ref: "${INBOX_ULID}"
+    item_snapshot: "Test inbox item for read path"
     status: triaged
-    action: promote_task
+    action: promote
     reasoning: "Looks actionable"
     decided_by: test
     created_at: "2026-01-16T00:00:00Z"
-    acted_at: "2026-01-17T00:00:00Z"
-    result_ref: "${TASK_ULID_1}"
 `,
   );
 
@@ -522,6 +584,12 @@ describe("ac-no-per-request-sync: read routes serve from cache without git opera
     const { middleware } = projectContextMiddleware();
 
     app = new Elysia()
+      .resolve(({ set }) => ({
+        error: (status: number, body: unknown) => {
+          set.status = status;
+          return body;
+        },
+      }))
       .use(middleware)
       .use(createTasksRoutes({ pubsub, getEntityCache }))
       .use(createItemsRoutes({ getEntityCache }))
@@ -925,6 +993,21 @@ describe("ac-background-sync: background sync invalidates cache on pull", () => 
     return path.join(syncTestDir, SHADOW_WORKTREE_DIR);
   }
 
+  // AC: @daemon-meta-subdomain ac-shadow-on-schedule
+  it("server shadow-sync pull handler refreshes only shadow status", async () => {
+    const cache = {
+      refreshMetaShadowInfo: vi.fn().mockResolvedValue(undefined),
+    };
+    const getEntityCache = vi.fn().mockReturnValue(cache);
+
+    const onPull = createShadowSyncOnPullHandler(syncTestDir, getEntityCache);
+
+    await onPull();
+
+    expect(getEntityCache).toHaveBeenCalledWith(syncTestDir);
+    expect(cache.refreshMetaShadowInfo).toHaveBeenCalledTimes(1);
+  });
+
   // AC: @daemon-read-path ac-background-sync
   it("syncOnce invokes onPull callback after pulling remote changes", async () => {
     const worktreeDir = await setupSyncEnvironment();
@@ -1200,6 +1283,12 @@ describe("ac-write-routes-sync: write operations use standard commit path with c
     const { middleware } = projectContextMiddleware();
 
     app = new Elysia()
+      .resolve(({ set }) => ({
+        error: (status: number, body: unknown) => {
+          set.status = status;
+          return body;
+        },
+      }))
       .use(middleware)
       .use(createTasksRoutes({ pubsub, getEntityCache }))
       .use(createInboxRoutes({ pubsub, getEntityCache }));

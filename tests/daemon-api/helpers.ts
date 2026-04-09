@@ -13,21 +13,21 @@ import { cpSync, mkdirSync, writeFileSync } from "node:fs";
 import * as path from "node:path";
 import { Elysia } from "elysia";
 import { cleanupTempDir, createTempDir, initGitRepo } from "../helpers/cli.js";
-import { projectContextMiddleware } from "../../dist/daemon/middleware/project-context.ts";
-import { createTasksRoutes } from "../../dist/daemon/routes/tasks.ts";
-import { createItemsRoutes } from "../../dist/daemon/routes/items.ts";
-import { createReviewsRoutes } from "../../dist/daemon/routes/reviews.ts";
-import { createTriageRoutes } from "../../dist/daemon/routes/triage.ts";
-import { createPlansRoutes } from "../../dist/daemon/routes/plans.ts";
-import { createSessionRoutes } from "../../dist/daemon/routes/sessions.ts";
-import { createValidationRoutes } from "../../dist/daemon/routes/validation.ts";
-import { createMetaRoutes } from "../../dist/daemon/routes/meta.ts";
-import { createInboxRoutes } from "../../dist/daemon/routes/inbox.ts";
-import { createAggregationRoutes } from "../../dist/daemon/routes/aggregation.ts";
-import { createAgentDispatchRoutes } from "../../dist/daemon/routes/agent-dispatch.ts";
-import { PubSubManager } from "../../dist/daemon/websocket/pubsub.ts";
+import { projectContextMiddleware } from "../../dist/daemon/middleware/project-context.js";
+import { createTasksRoutes } from "../../dist/daemon/routes/tasks.js";
+import { createItemsRoutes } from "../../dist/daemon/routes/items.js";
+import { createReviewsRoutes } from "../../dist/daemon/routes/reviews.js";
+import { createTriageRoutes } from "../../dist/daemon/routes/triage.js";
+import { createPlansRoutes } from "../../dist/daemon/routes/plans.js";
+import { createSessionRoutes } from "../../dist/daemon/routes/sessions.js";
+import { createValidationRoutes } from "../../dist/daemon/routes/validation.js";
+import { createMetaRoutes } from "../../dist/daemon/routes/meta.js";
+import { createInboxRoutes } from "../../dist/daemon/routes/inbox.js";
+import { createAggregationRoutes } from "../../dist/daemon/routes/aggregation.js";
+import { createAgentDispatchRoutes } from "../../dist/daemon/routes/agent-dispatch.js";
+import { PubSubManager } from "../../dist/daemon/websocket/pubsub.js";
 import { ensureSplitBackendRegistered } from "../../dist/parser/split-backend.js";
-import type { ProjectContextManager } from "../../dist/daemon/project-context.ts";
+import type { ProjectContextManager } from "../../dist/daemon/project-context.js";
 
 // Register the split storage backend so task routes can handle the split format
 // used by e2e fixtures. In production this happens lazily via createRequire(),

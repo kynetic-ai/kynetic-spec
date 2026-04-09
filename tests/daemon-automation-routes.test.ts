@@ -5,12 +5,12 @@ import { Elysia } from "elysia";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { initGitRepo, createTempDir, cleanupTempDir } from "./helpers/cli.js";
 import { testUlid } from "./helpers/cli.js";
-import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.ts";
-import { createAutomationRoutes } from "../dist/daemon/routes/automation.ts";
+import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.js";
+import { createAutomationRoutes } from "../dist/daemon/routes/automation.js";
 import {
   createAgentDispatchRoutes,
   getDispatchEngine,
-} from "../dist/daemon/routes/agent-dispatch.ts";
+} from "../dist/daemon/routes/agent-dispatch.js";
 
 /**
  * Set up a kspec project directory with automation config (hooks, schedules, compositions).

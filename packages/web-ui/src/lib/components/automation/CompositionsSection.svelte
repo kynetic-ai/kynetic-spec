@@ -15,7 +15,7 @@
 	import { queryKeys } from '$lib/query/keys.js';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Card } from '$lib/components/ui/card';
-	import Layers from '@lucide/svelte/icons/layers';
+	import Layers from 'lucide-svelte/icons/layers';
 
 	// AC: @ui-automation-view ac-6 — Fetch composition configs to discover available IDs
 	const compositionConfigsQuery = createQuery(() => ({

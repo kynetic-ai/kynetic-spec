@@ -1778,4 +1778,119 @@ describe("SplitBackend", () => {
       await expect(manager.getTask(ctx, nonExistentUlid)).rejects.toThrow("Task not found");
     });
   });
+
+  // ─── loadAllTasksWithHistory ─────────────────────────────────────────────
+  describe("loadAllTasksWithHistory", () => {
+    // AC: @daemon-entity-cache ac-task-history-retention
+    it("returns both task data and history entries for each task", async () => {
+      const ulid1 = testUlid("BLK1");
+      const ulid2 = testUlid("BLK2");
+
+      // Create task WITH history in task.yaml
+      const taskDir1 = getTaskDir(ctx, ulid1);
+      await fs.mkdir(taskDir1, { recursive: true });
+      await fs.writeFile(
+        path.join(taskDir1, "task.yaml"),
+        toYaml({
+          _ulid: ulid1,
+          slugs: ["bulk-history-1"],
+          title: "Bulk task 1",
+          type: "task",
+          status: "in_progress",
+          priority: 2,
+          tags: [],
+          depends_on: [],
+          created_at: "2026-01-01T00:00:00.000Z",
+          history: [
+            {
+              timestamp: "2026-01-02T00:00:00.000Z",
+              author: "@tester",
+              command: "task-start",
+              changes: {
+                status: { previous: "pending", new: "in_progress" },
+              },
+            },
+          ],
+        }),
+      );
+      await fs.writeFile(path.join(taskDir1, "notes.yaml"), toYaml({ notes: [] }));
+
+      // Create task WITHOUT history
+      const taskDir2 = getTaskDir(ctx, ulid2);
+      await fs.mkdir(taskDir2, { recursive: true });
+      await fs.writeFile(
+        path.join(taskDir2, "task.yaml"),
+        toYaml({
+          _ulid: ulid2,
+          slugs: ["bulk-history-2"],
+          title: "Bulk task 2",
+          type: "task",
+          status: "pending",
+          priority: 3,
+          tags: [],
+          depends_on: [],
+          created_at: "2026-01-01T00:00:00.000Z",
+        }),
+      );
+      await fs.writeFile(path.join(taskDir2, "notes.yaml"), toYaml({ notes: [] }));
+
+      const results = await splitBackend.loadAllTasksWithHistory(ctx);
+
+      expect(results).toHaveLength(2);
+
+      const task1Result = results.find((r) => r.task._ulid === ulid1);
+      const task2Result = results.find((r) => r.task._ulid === ulid2);
+
+      // Task 1 has history
+      expect(task1Result).toBeDefined();
+      expect(task1Result!.task.title).toBe("Bulk task 1");
+      expect(task1Result!.history).toHaveLength(1);
+      expect(task1Result!.history[0].command).toBe("task-start");
+      expect(task1Result!.history[0].changes.status).toEqual({
+        previous: "pending",
+        new: "in_progress",
+      });
+
+      // Task 2 has empty history
+      expect(task2Result).toBeDefined();
+      expect(task2Result!.task.title).toBe("Bulk task 2");
+      expect(task2Result!.history).toHaveLength(0);
+    });
+
+    // AC: @daemon-entity-cache ac-task-history-retention
+    it("skips tasks that fail to load, consistent with loadAllTasks", async () => {
+      const validUlid = testUlid("VLID");
+      const badUlid = testUlid("BAAD");
+
+      // Create a valid task
+      const validDir = getTaskDir(ctx, validUlid);
+      await fs.mkdir(validDir, { recursive: true });
+      await fs.writeFile(
+        path.join(validDir, "task.yaml"),
+        toYaml({
+          _ulid: validUlid,
+          slugs: ["valid-task"],
+          title: "Valid task",
+          type: "task",
+          status: "pending",
+          priority: 3,
+          tags: [],
+          depends_on: [],
+          created_at: "2026-01-01T00:00:00.000Z",
+        }),
+      );
+      await fs.writeFile(path.join(validDir, "notes.yaml"), toYaml({ notes: [] }));
+
+      // Create an invalid task (corrupted YAML)
+      const badDir = getTaskDir(ctx, badUlid);
+      await fs.mkdir(badDir, { recursive: true });
+      await fs.writeFile(path.join(badDir, "task.yaml"), "not: valid: yaml: {{");
+
+      const results = await splitBackend.loadAllTasksWithHistory(ctx);
+
+      // Only the valid task should be returned
+      expect(results).toHaveLength(1);
+      expect(results[0].task._ulid).toBe(validUlid);
+    });
+  });
 });

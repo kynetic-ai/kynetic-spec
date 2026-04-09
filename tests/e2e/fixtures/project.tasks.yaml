@@ -115,3 +115,20 @@
   created_at: "2026-01-01T00:00:00Z"
   notes_count: 0
   todos_count: 0
+
+- _ulid: 01KG0RRJCC9N4YGP991WD7XSFF
+  slugs:
+    - test-task-planref-only
+  title: Plan ref only task
+  type: task
+  status: pending
+  priority: 2
+  tags:
+    - test
+  spec_ref: "@test-feature"
+  depends_on: []
+  plan_ref: "@test-plan-active"
+  automation: eligible
+  created_at: "2026-01-01T00:00:00Z"
+  notes_count: 0
+  todos_count: 0

@@ -1,6 +1,6 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { initContext, TaskDataManager, TaskDataManagerError } from "../src/parser/index.js";
 import type { TaskStorageBackend } from "../src/parser/task-data-manager.js";
 import {
@@ -9,6 +9,7 @@ import {
   resolveTaskDataManager,
 } from "../src/parser/task-data-manager.js";
 import { splitBackend, ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
+import { runWithEntityCache } from "../src/parser/yaml.js";
 
 // Register the split backend (no longer auto-registered at module scope)
 ensureSplitBackendRegistered();
@@ -38,6 +39,40 @@ const DETAIL_ONLY_FIELDS = [
   "complexity",
   "context",
 ] as const;
+
+async function loadFixtureTask(ctx: Awaited<ReturnType<typeof initContext>>, ref: string) {
+  const { findTaskByRef, loadAllTasks } = await import("../src/parser/yaml.js");
+  const task = findTaskByRef(await loadAllTasks(ctx), ref);
+  if (!task) {
+    throw new Error(`Fixture task not found: ${ref}`);
+  }
+  return task;
+}
+
+function toSummary(task: Awaited<ReturnType<typeof loadFixtureTask>>) {
+  return {
+    _ulid: task._ulid,
+    slugs: task.slugs,
+    title: task.title,
+    type: task.type,
+    status: task.status,
+    priority: task.priority,
+    tags: task.tags,
+    assignee: task.assignee,
+    automation: task.automation,
+    spec_ref: task.spec_ref,
+    plan_ref: task.plan_ref,
+    review_ref: task.review_ref,
+    depends_on: task.depends_on,
+    blocked_by: task.blocked_by,
+    created_at: task.created_at,
+    started_at: task.started_at,
+    submitted_at: task.submitted_at,
+    completed_at: task.completed_at,
+    notes_count: task.notes.length,
+    todos_count: task.todos.length,
+  };
+}
 
 describe("TaskDataManager", () => {
   let tempDir: string;
@@ -317,6 +352,491 @@ describe("TaskDataManager", () => {
         const tdmErr = err as TaskDataManagerError;
         expect(tdmErr.message).toContain("Task not found");
         expect(tdmErr.suggestion).toContain("kspec search");
+      }
+    });
+  });
+
+  describe("cache-backed task reads", () => {
+    it("serves listTasks from the ready task cache without backend reads", async () => {
+      tempDir = await setupTempFixtures();
+      const ctx = await initContext(tempDir);
+      const fixtureTask = await loadFixtureTask(ctx, "@test-task-pending");
+
+      const mockSplitBackend: TaskStorageBackend = {
+        format: "split",
+        listTasks: vi.fn(async () => []),
+        loadAllTasks: vi.fn(async () => []),
+        getTask: vi.fn(async () => undefined),
+        createTask: vi.fn(async (_ctx, task) => ({
+          ...task,
+          _sourceFile: `/mock/${task._ulid}.yaml`,
+        })),
+        mutateTask: vi.fn(async (_ctx, task) => task),
+        mutateTasks: vi.fn(async (_ctx, tasks) => tasks),
+        deleteTask: vi.fn(async () => {}),
+        rebuildIndex: vi.fn(async () => ({ count: 0 })),
+      };
+
+      registerBackend(mockSplitBackend);
+      try {
+        manager = new TaskDataManager("split");
+
+        // AC: @daemon-command-api ac-read-cache-serving
+        const result = await runWithEntityCache(
+          () =>
+            manager.listTasks(ctx, {
+              status: "pending",
+            }),
+          () => ({
+            getDomainState: () => "ready",
+            getTaskIndex: () => [toSummary(fixtureTask)],
+            getTaskDetail: () => fixtureTask,
+            getTaskHistory: () => [],
+            setTaskDetail: vi.fn(),
+            getAllTaskDetails: () => [fixtureTask],
+          }),
+          tempDir,
+        );
+
+        expect(result).toEqual([toSummary(fixtureTask)]);
+        expect(mockSplitBackend.listTasks).not.toHaveBeenCalled();
+      } finally {
+        unregisterBackend("split");
+        registerBackend(splitBackend);
+      }
+    });
+
+    it("serves loadAllTasks from the ready task cache without backend reads", async () => {
+      tempDir = await setupTempFixtures();
+      const ctx = await initContext(tempDir);
+      const fixtureTask = await loadFixtureTask(ctx, "@test-task-secondary");
+
+      const mockSplitBackend: TaskStorageBackend = {
+        format: "split",
+        listTasks: vi.fn(async () => []),
+        loadAllTasks: vi.fn(async () => []),
+        getTask: vi.fn(async () => undefined),
+        createTask: vi.fn(async (_ctx, task) => ({
+          ...task,
+          _sourceFile: `/mock/${task._ulid}.yaml`,
+        })),
+        mutateTask: vi.fn(async (_ctx, task) => task),
+        mutateTasks: vi.fn(async (_ctx, tasks) => tasks),
+        deleteTask: vi.fn(async () => {}),
+        rebuildIndex: vi.fn(async () => ({ count: 0 })),
+      };
+
+      registerBackend(mockSplitBackend);
+      try {
+        manager = new TaskDataManager("split");
+
+        // AC: @daemon-command-api ac-read-cache-serving
+        const result = await runWithEntityCache(
+          () => manager.loadAllTasks(ctx),
+          () => ({
+            getDomainState: () => "ready",
+            getTaskIndex: () => [toSummary(fixtureTask)],
+            getTaskDetail: () => fixtureTask,
+            getTaskHistory: () => [],
+            setTaskDetail: vi.fn(),
+            getAllTaskDetails: () => [fixtureTask],
+          }),
+          tempDir,
+        );
+
+        expect(result).toEqual([fixtureTask]);
+        expect(mockSplitBackend.loadAllTasks).not.toHaveBeenCalled();
+      } finally {
+        unregisterBackend("split");
+        registerBackend(splitBackend);
+      }
+    });
+
+    // AC: @daemon-entity-cache ac-task-history-retention
+    it("delegates loadAllTasksWithHistory to backend when available", async () => {
+      tempDir = await setupTempFixtures();
+      const ctx = await initContext(tempDir);
+      const fixtureTask = await loadFixtureTask(ctx, "@test-task-secondary");
+
+      const mockHistory = [
+        {
+          timestamp: "2026-01-01T00:00:00.000Z",
+          author: "@tester",
+          command: "task-start",
+          changes: { status: { previous: "pending", new: "in_progress" } },
+        },
+      ];
+
+      const mockSplitBackend: TaskStorageBackend = {
+        format: "split",
+        listTasks: vi.fn(async () => []),
+        loadAllTasks: vi.fn(async () => [fixtureTask]),
+        getTask: vi.fn(async () => undefined),
+        createTask: vi.fn(async (_ctx, task) => ({
+          ...task,
+          _sourceFile: `/mock/${task._ulid}.yaml`,
+        })),
+        mutateTask: vi.fn(async (_ctx, task) => task),
+        mutateTasks: vi.fn(async (_ctx, tasks) => tasks),
+        deleteTask: vi.fn(async () => {}),
+        rebuildIndex: vi.fn(async () => ({ count: 0 })),
+        loadAllTasksWithHistory: vi.fn(async () => [{ task: fixtureTask, history: mockHistory }]),
+      };
+
+      registerBackend(mockSplitBackend);
+      try {
+        manager = new TaskDataManager("split");
+
+        const result = await manager.loadAllTasksWithHistory(ctx);
+
+        expect(result).toEqual([{ task: fixtureTask, history: mockHistory }]);
+        expect(mockSplitBackend.loadAllTasksWithHistory).toHaveBeenCalledOnce();
+        // loadAllTasks should NOT be called when loadAllTasksWithHistory is available
+        expect(mockSplitBackend.loadAllTasks).not.toHaveBeenCalled();
+      } finally {
+        unregisterBackend("split");
+        registerBackend(splitBackend);
+      }
+    });
+
+    // AC: @daemon-entity-cache ac-task-history-retention
+    it("falls back to loadAllTasks with empty history when backend lacks loadAllTasksWithHistory", async () => {
+      tempDir = await setupTempFixtures();
+      const ctx = await initContext(tempDir);
+      const fixtureTask = await loadFixtureTask(ctx, "@test-task-secondary");
+
+      const mockSplitBackend: TaskStorageBackend = {
+        format: "split",
+        listTasks: vi.fn(async () => []),
+        loadAllTasks: vi.fn(async () => [fixtureTask]),
+        getTask: vi.fn(async () => undefined),
+        createTask: vi.fn(async (_ctx, task) => ({
+          ...task,
+          _sourceFile: `/mock/${task._ulid}.yaml`,
+        })),
+        mutateTask: vi.fn(async (_ctx, task) => task),
+        mutateTasks: vi.fn(async (_ctx, tasks) => tasks),
+        deleteTask: vi.fn(async () => {}),
+        rebuildIndex: vi.fn(async () => ({ count: 0 })),
+        // No loadAllTasksWithHistory — fallback path
+      };
+
+      registerBackend(mockSplitBackend);
+      try {
+        manager = new TaskDataManager("split");
+
+        const result = await manager.loadAllTasksWithHistory(ctx);
+
+        expect(result).toEqual([{ task: fixtureTask, history: [] }]);
+        expect(mockSplitBackend.loadAllTasks).toHaveBeenCalledOnce();
+      } finally {
+        unregisterBackend("split");
+        registerBackend(splitBackend);
+      }
+    });
+
+    it("loads getTask from disk on cache detail miss and writes through to cache", async () => {
+      tempDir = await setupTempFixtures();
+      const ctx = await initContext(tempDir);
+      const fixtureTask = await loadFixtureTask(ctx, "@test-task-pending");
+      const setTaskDetail = vi.fn();
+
+      const mockSplitBackend: TaskStorageBackend = {
+        format: "split",
+        listTasks: vi.fn(async () => []),
+        loadAllTasks: vi.fn(async () => []),
+        getTask: vi.fn(async () => fixtureTask),
+        createTask: vi.fn(async (_ctx, task) => ({
+          ...task,
+          _sourceFile: `/mock/${task._ulid}.yaml`,
+        })),
+        mutateTask: vi.fn(async (_ctx, task) => task),
+        mutateTasks: vi.fn(async (_ctx, tasks) => tasks),
+        deleteTask: vi.fn(async () => {}),
+        rebuildIndex: vi.fn(async () => ({ count: 0 })),
+      };
+
+      registerBackend(mockSplitBackend);
+      try {
+        manager = new TaskDataManager("split");
+
+        // AC: @daemon-command-api ac-read-cache-serving
+        const task = await runWithEntityCache(
+          () => manager.getTask(ctx, "@test-task-pending"),
+          () => ({
+            getDomainState: () => "ready",
+            getTaskIndex: () => [toSummary(fixtureTask)],
+            getTaskDetail: () => null,
+            getTaskHistory: () => [],
+            setTaskDetail,
+            getAllTaskDetails: () => [fixtureTask],
+          }),
+          tempDir,
+        );
+
+        expect(task).toEqual(fixtureTask);
+        expect(mockSplitBackend.getTask).toHaveBeenCalledWith(ctx, "@test-task-pending");
+        expect(setTaskDetail).toHaveBeenCalledWith(fixtureTask._ulid, fixtureTask);
+      } finally {
+        unregisterBackend("split");
+        registerBackend(splitBackend);
+      }
+    });
+
+    it("falls back to disk reads when no daemon cache context exists", async () => {
+      tempDir = await setupTempFixtures();
+      const ctx = await initContext(tempDir);
+      const fixtureTask = await loadFixtureTask(ctx, "@test-task-pending");
+
+      const mockSplitBackend: TaskStorageBackend = {
+        format: "split",
+        listTasks: vi.fn(async () => [toSummary(fixtureTask)]),
+        loadAllTasks: vi.fn(async () => [fixtureTask]),
+        getTask: vi.fn(async () => fixtureTask),
+        createTask: vi.fn(async (_ctx, task) => ({
+          ...task,
+          _sourceFile: `/mock/${task._ulid}.yaml`,
+        })),
+        mutateTask: vi.fn(async (_ctx, task) => task),
+        mutateTasks: vi.fn(async (_ctx, tasks) => tasks),
+        deleteTask: vi.fn(async () => {}),
+        rebuildIndex: vi.fn(async () => ({ count: 0 })),
+      };
+
+      registerBackend(mockSplitBackend);
+      try {
+        manager = new TaskDataManager("split");
+
+        // AC: @daemon-command-api ac-no-cache-outside-daemon
+        const summaries = await manager.listTasks(ctx);
+        expect(summaries).toEqual([toSummary(fixtureTask)]);
+        expect(mockSplitBackend.listTasks).toHaveBeenCalledOnce();
+      } finally {
+        unregisterBackend("split");
+        registerBackend(splitBackend);
+      }
+    });
+
+    it("falls back to disk reads when cache context exists but the tasks domain is not ready", async () => {
+      tempDir = await setupTempFixtures();
+      const ctx = await initContext(tempDir);
+      const fixtureTask = await loadFixtureTask(ctx, "@test-task-pending");
+
+      const mockSplitBackend: TaskStorageBackend = {
+        format: "split",
+        listTasks: vi.fn(async () => [toSummary(fixtureTask)]),
+        loadAllTasks: vi.fn(async () => [fixtureTask]),
+        getTask: vi.fn(async () => fixtureTask),
+        createTask: vi.fn(async (_ctx, task) => ({
+          ...task,
+          _sourceFile: `/mock/${task._ulid}.yaml`,
+        })),
+        mutateTask: vi.fn(async (_ctx, task) => task),
+        mutateTasks: vi.fn(async (_ctx, tasks) => tasks),
+        deleteTask: vi.fn(async () => {}),
+        rebuildIndex: vi.fn(async () => ({ count: 0 })),
+      };
+
+      registerBackend(mockSplitBackend);
+      try {
+        manager = new TaskDataManager("split");
+
+        // AC: @daemon-command-api ac-read-cache-serving
+        const result = await runWithEntityCache(
+          async () => ({
+            summaries: await manager.listTasks(ctx),
+            allTasks: await manager.loadAllTasks(ctx),
+            task: await manager.getTask(ctx, "@test-task-pending"),
+          }),
+          () => ({
+            getDomainState: () => "loading",
+            getTaskIndex: vi.fn(() => [toSummary(fixtureTask)]),
+            getTaskDetail: vi.fn(() => fixtureTask),
+            getTaskHistory: vi.fn(() => []),
+            setTaskDetail: vi.fn(),
+            getAllTaskDetails: vi.fn(() => [fixtureTask]),
+          }),
+          tempDir,
+        );
+
+        expect(result).toEqual({
+          summaries: [toSummary(fixtureTask)],
+          allTasks: [fixtureTask],
+          task: fixtureTask,
+        });
+        expect(mockSplitBackend.listTasks).toHaveBeenCalledOnce();
+        expect(mockSplitBackend.loadAllTasks).toHaveBeenCalledOnce();
+        expect(mockSplitBackend.getTask).toHaveBeenCalledWith(ctx, "@test-task-pending");
+      } finally {
+        unregisterBackend("split");
+        registerBackend(splitBackend);
+      }
+    });
+
+    it("keeps mutation methods on the backend write path even when cache is ready", async () => {
+      tempDir = await setupTempFixtures();
+      const ctx = await initContext(tempDir);
+      const fixtureTask = await loadFixtureTask(ctx, "@test-task-pending");
+
+      const mockSplitBackend: TaskStorageBackend = {
+        format: "split",
+        listTasks: vi.fn(async () => [toSummary(fixtureTask)]),
+        loadAllTasks: vi.fn(async () => [fixtureTask]),
+        getTask: vi.fn(async () => fixtureTask),
+        createTask: vi.fn(async (_ctx, task) => ({
+          ...task,
+          _sourceFile: `/mock/${task._ulid}.yaml`,
+        })),
+        mutateTask: vi.fn(async (_ctx, task, mutate) => mutate(task) as Promise<any>),
+        mutateTasks: vi.fn(async (_ctx, tasks) => tasks),
+        deleteTask: vi.fn(async () => {}),
+        rebuildIndex: vi.fn(async () => ({ count: 0 })),
+      };
+
+      registerBackend(mockSplitBackend);
+      try {
+        manager = new TaskDataManager("split");
+
+        await runWithEntityCache(
+          () =>
+            manager.mutateTask(ctx, "@test-task-pending", (task) => ({
+              ...task,
+              priority: 1,
+            })),
+          () => ({
+            getDomainState: () => "ready",
+            getTaskIndex: () => [toSummary(fixtureTask)],
+            getTaskDetail: () => fixtureTask,
+            getTaskHistory: () => [],
+            setTaskDetail: vi.fn(),
+            getAllTaskDetails: () => [fixtureTask],
+          }),
+          tempDir,
+        );
+
+        expect(mockSplitBackend.mutateTask).toHaveBeenCalledOnce();
+      } finally {
+        unregisterBackend("split");
+        registerBackend(splitBackend);
+      }
+    });
+
+    // AC: @daemon-entity-cache ac-task-history-retention
+    it("serves getTaskHistory from the ready task cache without backend reads", async () => {
+      tempDir = await setupTempFixtures();
+      const ctx = await initContext(tempDir);
+      const fixtureTask = await loadFixtureTask(ctx, "@test-task-pending");
+      const cachedHistory = [
+        {
+          timestamp: "2026-03-20T00:00:00.000Z",
+          author: "@tester",
+          command: "task-start",
+          changes: {
+            status: {
+              previous: "pending",
+              new: "in_progress",
+            },
+          },
+        },
+      ];
+
+      const mockSplitBackend: TaskStorageBackend = {
+        format: "split",
+        listTasks: vi.fn(async () => []),
+        loadAllTasks: vi.fn(async () => []),
+        getTask: vi.fn(async () => fixtureTask),
+        createTask: vi.fn(async (_ctx, task) => ({
+          ...task,
+          _sourceFile: `/mock/${task._ulid}.yaml`,
+        })),
+        mutateTask: vi.fn(async (_ctx, task) => task),
+        mutateTasks: vi.fn(async (_ctx, tasks) => tasks),
+        deleteTask: vi.fn(async () => {}),
+        rebuildIndex: vi.fn(async () => ({ count: 0 })),
+        getTaskHistory: vi.fn(async () => []),
+      };
+
+      registerBackend(mockSplitBackend);
+      try {
+        manager = new TaskDataManager("split");
+
+        const result = await runWithEntityCache(
+          () => manager.getTaskHistory(ctx, fixtureTask._ulid),
+          () => ({
+            getDomainState: () => "ready",
+            getTaskIndex: () => [toSummary(fixtureTask)],
+            getTaskDetail: () => fixtureTask,
+            getTaskHistory: () => cachedHistory,
+            setTaskDetail: vi.fn(),
+            getAllTaskDetails: () => [fixtureTask],
+          }),
+          tempDir,
+        );
+
+        expect(result).toEqual(cachedHistory);
+        expect(mockSplitBackend.getTaskHistory).not.toHaveBeenCalled();
+      } finally {
+        unregisterBackend("split");
+        registerBackend(splitBackend);
+      }
+    });
+
+    it("falls back to backend getTaskHistory when the task cache is not ready", async () => {
+      tempDir = await setupTempFixtures();
+      const ctx = await initContext(tempDir);
+      const fixtureTask = await loadFixtureTask(ctx, "@test-task-pending");
+      const diskHistory = [
+        {
+          timestamp: "2026-03-20T00:05:00.000Z",
+          author: "@tester",
+          command: "task-submit",
+          changes: {
+            status: {
+              previous: "in_progress",
+              new: "pending_review",
+            },
+          },
+        },
+      ];
+
+      const mockSplitBackend: TaskStorageBackend = {
+        format: "split",
+        listTasks: vi.fn(async () => [toSummary(fixtureTask)]),
+        loadAllTasks: vi.fn(async () => [fixtureTask]),
+        getTask: vi.fn(async () => fixtureTask),
+        createTask: vi.fn(async (_ctx, task) => ({
+          ...task,
+          _sourceFile: `/mock/${task._ulid}.yaml`,
+        })),
+        mutateTask: vi.fn(async (_ctx, task) => task),
+        mutateTasks: vi.fn(async (_ctx, tasks) => tasks),
+        deleteTask: vi.fn(async () => {}),
+        rebuildIndex: vi.fn(async () => ({ count: 0 })),
+        getTaskHistory: vi.fn(async () => diskHistory),
+      };
+
+      registerBackend(mockSplitBackend);
+      try {
+        manager = new TaskDataManager("split");
+
+        const result = await runWithEntityCache(
+          () => manager.getTaskHistory(ctx, fixtureTask._ulid),
+          () => ({
+            getDomainState: () => "loading",
+            getTaskIndex: vi.fn(() => [toSummary(fixtureTask)]),
+            getTaskDetail: vi.fn(() => fixtureTask),
+            getTaskHistory: vi.fn(() => []),
+            setTaskDetail: vi.fn(),
+            getAllTaskDetails: vi.fn(() => [fixtureTask]),
+          }),
+          tempDir,
+        );
+
+        expect(result).toEqual(diskHistory);
+        expect(mockSplitBackend.getTaskHistory).toHaveBeenCalledWith(ctx, fixtureTask._ulid);
+      } finally {
+        unregisterBackend("split");
+        registerBackend(splitBackend);
       }
     });
   });

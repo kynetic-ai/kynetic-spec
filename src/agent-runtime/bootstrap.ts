@@ -56,6 +56,35 @@ interface DependencyHealth {
   missingPackages: string[];
 }
 
+interface BuildHealth {
+  ok: boolean;
+  reason: string | null;
+}
+
+const BUILD_ARTIFACTS = [
+  "dist/cli/index.js",
+  "packages/shared/dist/index.js",
+  "dist/web-ui/index.html",
+  "packages/web-ui/.svelte-kit/output/server/manifest-full.js",
+  "dist/daemon/index.js",
+  "dist/daemon/entity-cache.js",
+] as const;
+
+const BUILD_INPUT_PATHS = [
+  "src",
+  "packages/shared/src",
+  "packages/daemon/src",
+  "packages/web-ui/src",
+  "packages/web-ui/static",
+  "package.json",
+  "tsconfig.json",
+  "packages/shared/package.json",
+  "packages/daemon/package.json",
+  "packages/web-ui/package.json",
+  "packages/web-ui/vite.config.ts",
+  "packages/web-ui/svelte.config.js",
+] as const;
+
 async function runShell(
   cwd: string,
   command: string,
@@ -135,6 +164,16 @@ function collectDirectDependencies(packageJson: Record<string, unknown>): string
   return [...names].toSorted();
 }
 
+function dependencySearchRoot(workspaceDir: string): string {
+  const normalizedWorkspaceDir = path.resolve(workspaceDir);
+  const worktreeSegment = `${path.sep}.kspec-worktrees${path.sep}`;
+  const markerIndex = normalizedWorkspaceDir.lastIndexOf(worktreeSegment);
+  if (markerIndex === -1) {
+    return normalizedWorkspaceDir;
+  }
+  return normalizedWorkspaceDir.slice(0, markerIndex);
+}
+
 async function checkWorkspaceDependencies(workspaceDir: string): Promise<DependencyHealth> {
   const packageJsonPath = path.join(workspaceDir, "package.json");
   const lockfilePath = path.join(workspaceDir, "package-lock.json");
@@ -169,24 +208,23 @@ async function checkWorkspaceDependencies(workspaceDir: string): Promise<Depende
     () => true,
     () => false,
   );
-  if (!nodeModulesExists) {
+  const dependencyNames = collectDirectDependencies(packageJson);
+  const searchRoot = dependencySearchRoot(workspaceDir);
+  const ancestorResults = await Promise.all(
+    dependencyNames.map((packageName) =>
+      canResolveWorkspaceDependency(workspaceDir, searchRoot, packageName),
+    ),
+  );
+
+  if (!nodeModulesExists && !ancestorResults.some(Boolean)) {
     return {
       ok: false,
       reason: "node_modules/ not found",
-      missingPackages: collectDirectDependencies(packageJson),
+      missingPackages: dependencyNames,
     };
   }
 
-  const dependencyNames = collectDirectDependencies(packageJson);
-  const existResults = await Promise.all(
-    dependencyNames.map((packageName) =>
-      fs.access(path.join(nodeModulesDir, ...packageName.split("/"))).then(
-        () => true,
-        () => false,
-      ),
-    ),
-  );
-  const missingPackages = dependencyNames.filter((_, i) => !existResults[i]);
+  const missingPackages = dependencyNames.filter((_, i) => !ancestorResults[i]);
 
   if (missingPackages.length > 0) {
     return {
@@ -199,6 +237,30 @@ async function checkWorkspaceDependencies(workspaceDir: string): Promise<Depende
   return { ok: true, reason: null, missingPackages: [] };
 }
 
+async function canResolveWorkspaceDependency(
+  workspaceDir: string,
+  searchRoot: string,
+  packageName: string,
+): Promise<boolean> {
+  let currentDir = path.resolve(workspaceDir);
+  for (;;) {
+    const installPath = path.join(currentDir, "node_modules", ...packageName.split("/"));
+    if (
+      await fs.access(installPath).then(
+        () => true,
+        () => false,
+      )
+    ) {
+      return true;
+    }
+    if (currentDir === searchRoot) {
+      return false;
+    }
+    const parentDir = path.dirname(currentDir);
+    currentDir = parentDir;
+  }
+}
+
 async function implicitDependencyStep(workspaceDir: string): Promise<DispatchBootstrapStep | null> {
   const dependencyHealth = await checkWorkspaceDependencies(workspaceDir);
   if (dependencyHealth.ok) {
@@ -209,6 +271,115 @@ async function implicitDependencyStep(workspaceDir: string): Promise<DispatchBoo
     source: "dispatch",
     name: "install-workspace-dependencies",
     run: "npm ci",
+    idempotent: true,
+    allowTrackedChanges: false,
+    reviewerRerunAllowed: true,
+  };
+}
+
+async function readPackageJson(workspaceDir: string): Promise<Record<string, unknown> | null> {
+  const packageJsonPath = path.join(workspaceDir, "package.json");
+  try {
+    return JSON.parse(await fs.readFile(packageJsonPath, "utf-8")) as Record<string, unknown>;
+  } catch {
+    return null;
+  }
+}
+
+async function pathExists(targetPath: string): Promise<boolean> {
+  return fs.access(targetPath).then(
+    () => true,
+    () => false,
+  );
+}
+
+async function newestPathMtime(
+  fullPath: string,
+  relativePath: string,
+): Promise<{ relativePath: string; mtimeMs: number } | null> {
+  let stat;
+  try {
+    stat = await fs.stat(fullPath);
+  } catch {
+    return null;
+  }
+
+  if (!stat.isDirectory()) {
+    return { relativePath, mtimeMs: stat.mtimeMs };
+  }
+
+  let newest = { relativePath, mtimeMs: stat.mtimeMs };
+  const entries = await fs.readdir(fullPath, { withFileTypes: true });
+  for (const entry of entries) {
+    const childFullPath = path.join(fullPath, entry.name);
+    const childRelativePath = path.join(relativePath, entry.name);
+    const candidate = await newestPathMtime(childFullPath, childRelativePath);
+    if (candidate && candidate.mtimeMs > newest.mtimeMs) {
+      newest = candidate;
+    }
+  }
+  return newest;
+}
+
+async function newestBuildInput(
+  workspaceDir: string,
+): Promise<{ relativePath: string; mtimeMs: number } | null> {
+  let newest: { relativePath: string; mtimeMs: number } | null = null;
+  for (const relativePath of BUILD_INPUT_PATHS) {
+    const fullPath = path.join(workspaceDir, relativePath);
+    const candidate = await newestPathMtime(fullPath, relativePath);
+    if (!candidate) {
+      continue;
+    }
+    if (!newest || candidate.mtimeMs > newest.mtimeMs) {
+      newest = candidate;
+    }
+  }
+  return newest;
+}
+
+async function checkWorkspaceBuild(workspaceDir: string): Promise<BuildHealth> {
+  const packageJson = await readPackageJson(workspaceDir);
+  const scripts = packageJson?.scripts;
+  const hasBuildScript =
+    scripts &&
+    typeof scripts === "object" &&
+    typeof (scripts as Record<string, unknown>).build === "string";
+  if (!hasBuildScript) {
+    return { ok: true, reason: null };
+  }
+
+  for (const artifact of BUILD_ARTIFACTS) {
+    if (!(await pathExists(path.join(workspaceDir, artifact)))) {
+      return { ok: false, reason: `${artifact} not found` };
+    }
+  }
+
+  const artifactStats = await Promise.all(
+    BUILD_ARTIFACTS.map((artifact) => fs.stat(path.join(workspaceDir, artifact))),
+  );
+  const oldestArtifactMtime = Math.min(...artifactStats.map((stat) => stat.mtimeMs));
+  const newestInput = await newestBuildInput(workspaceDir);
+  if (newestInput && newestInput.mtimeMs > oldestArtifactMtime) {
+    return {
+      ok: false,
+      reason: `${newestInput.relativePath} is newer than build artifacts`,
+    };
+  }
+
+  return { ok: true, reason: null };
+}
+
+async function implicitBuildStep(workspaceDir: string): Promise<DispatchBootstrapStep | null> {
+  const buildHealth = await checkWorkspaceBuild(workspaceDir);
+  if (buildHealth.ok) {
+    return null;
+  }
+
+  return {
+    source: "dispatch",
+    name: "build-workspace-artifacts",
+    run: "npm run build",
     idempotent: true,
     allowTrackedChanges: false,
     reviewerRerunAllowed: true,
@@ -255,7 +426,8 @@ function computeInvalidationReasons(
   state: DispatchWorkspaceBootstrapRoleState,
   canonicalBranchHead: string,
   configHash: string,
-  dependencyStepRequired: boolean,
+  dependencyInvalidationReason: string | null,
+  buildInvalidationReason: string | null,
 ): string[] {
   const reasons: string[] = [];
   if (state.status === "failed") {
@@ -267,8 +439,11 @@ function computeInvalidationReasons(
   if (state.canonicalBranchHead && state.canonicalBranchHead !== canonicalBranchHead) {
     reasons.push("canonical-branch-head-changed");
   }
-  if (dependencyStepRequired) {
-    reasons.push("workspace-dependencies-missing");
+  if (dependencyInvalidationReason) {
+    reasons.push(dependencyInvalidationReason);
+  }
+  if (buildInvalidationReason) {
+    reasons.push(buildInvalidationReason);
   }
   return reasons;
 }
@@ -311,7 +486,12 @@ export async function ensureWorkspaceBootstrap(
   const { config } = await loadProjectConfig(projectDir, projectDir);
   const steps = resolveBootstrapSteps(agent, config.dispatch.bootstrap.steps);
   const dependencyStep = await implicitDependencyStep(workspaceDir);
-  const effectiveSteps = dependencyStep ? [dependencyStep, ...steps] : steps;
+  const buildStep = await implicitBuildStep(workspaceDir);
+  const effectiveSteps = [
+    ...(dependencyStep ? [dependencyStep] : []),
+    ...(buildStep ? [buildStep] : []),
+    ...steps,
+  ];
   const roleSteps = effectiveSteps.filter((step) => stepAppliesToRole(step, role));
   const configHash = hashConfig(steps);
   const metadata: DispatchWorkspaceMetadata = structuredClone(options.metadata);
@@ -319,17 +499,21 @@ export async function ensureWorkspaceBootstrap(
   metadata.bootstrapState = metadata.bootstrap;
   const workerState = metadata.bootstrap.roleStates.worker;
   const reviewerState = metadata.bootstrap.roleStates.reviewer;
+  const dependencyInvalidationReason = dependencyStep ? "workspace-dependencies-missing" : null;
+  const buildInvalidationReason = buildStep ? "workspace-build-missing" : null;
   const workerInvalidationReasons = computeInvalidationReasons(
     workerState,
     metadata.canonicalBranchHead,
     configHash,
-    Boolean(dependencyStep),
+    dependencyInvalidationReason,
+    buildInvalidationReason,
   );
   const reviewerInvalidationReasons = computeInvalidationReasons(
     reviewerState,
     metadata.canonicalBranchHead,
     configHash,
-    Boolean(dependencyStep),
+    dependencyInvalidationReason,
+    buildInvalidationReason,
   );
   const workerBootstrapSucceeded =
     workerState.status === "succeeded" && workerInvalidationReasons.length === 0;

@@ -40,7 +40,7 @@ import { type Hook, HookSchema } from "../schema/hooks.js";
 import { type Schedule, ScheduleSchema } from "../schema/schedules.js";
 import { type Composition, CompositionSchema } from "../schema/composition.js";
 import { withFileLock } from "./file-lock.js";
-import type { KspecContext } from "./yaml.js";
+import { getEntityCacheContext, type KspecContext } from "./yaml.js";
 import {
   expandIncludePattern,
   getAuthor,
@@ -129,6 +129,11 @@ export interface MetaContext {
   hooks: LoadedHook[];
   schedules: LoadedSchedule[];
   compositions: LoadedComposition[];
+}
+
+interface MetaContextEntityCache {
+  getDomainState?(domain: string): string | null | undefined;
+  getMetaDetail?(): MetaContext | null;
 }
 
 /**
@@ -338,6 +343,18 @@ async function loadMetaFile(filePath: string): Promise<{
  * AC: @skill-meta-type ac-4 - MetaContext.skills contains LoadedSkill objects with _sourceFile set
  */
 export async function loadMetaContext(ctx: KspecContext): Promise<MetaContext> {
+  const cacheContext = getEntityCacheContext();
+  const resolvedCache = cacheContext?.cacheAccessor(cacheContext.projectPath) as
+    | MetaContextEntityCache
+    | null
+    | undefined;
+  if (resolvedCache?.getDomainState?.("meta") === "ready") {
+    const cachedMeta = resolvedCache.getMetaDetail?.();
+    if (cachedMeta) {
+      return cachedMeta;
+    }
+  }
+
   const result: MetaContext = {
     manifest: null,
     manifestPath: null,

@@ -67,6 +67,15 @@ import { TraitIndex } from "./traits.js";
  * the current async execution chain and cannot race with other threads.
  */
 const specDirOverrideStorage = new AsyncLocalStorage<{ ignore: boolean }>();
+const workingDirectoryStorage = new AsyncLocalStorage<{ cwd: string }>();
+export type EntityCacheAccessor = (projectPath: string) => unknown;
+
+export interface EntityCacheContext {
+  cacheAccessor: EntityCacheAccessor;
+  projectPath: string;
+}
+
+const entityCacheStorage = new AsyncLocalStorage<EntityCacheContext>();
 
 /**
  * Run `fn` in an async context where initContext() will skip the
@@ -75,6 +84,164 @@ const specDirOverrideStorage = new AsyncLocalStorage<{ ignore: boolean }>();
  */
 export function runWithoutSpecDirOverride<T>(fn: () => T): T {
   return specDirOverrideStorage.run({ ignore: true }, fn);
+}
+
+export function runWithWorkingDirectory<T>(fn: () => T, cwd: string): T {
+  return workingDirectoryStorage.run({ cwd }, fn);
+}
+
+export function getWorkingDirectoryOverride(): string | undefined {
+  return workingDirectoryStorage.getStore()?.cwd;
+}
+
+export function runWithEntityCache<T>(
+  fn: () => T,
+  cacheAccessor: EntityCacheAccessor,
+  projectPath: string,
+): T {
+  return entityCacheStorage.run({ cacheAccessor, projectPath }, fn);
+}
+
+export function getEntityCacheContext(): EntityCacheContext | undefined {
+  return entityCacheStorage.getStore();
+}
+
+interface InitContextEntityCache {
+  getDomainState?(domain: string): string | null | undefined;
+  getProjectConfig?(): {
+    root_dir: string;
+    manifest_path?: string | null;
+    manifest?: Manifest | null;
+    config?: ResolvedKspecConfig;
+  } | null;
+  getShadowInfo?(): {
+    enabled: boolean;
+    branch_name: string | null;
+    worktree_dir: string | null;
+  } | null;
+  getMetaDetail?(): unknown;
+  getInboxIndex?(): LoadedInboxItem[] | null;
+  getTriageIndex?(): Array<{
+    _ulid: string;
+    inbox_ref: string;
+    status: TriageRecord["status"];
+    created_at: string;
+    action?: TriageRecord["action"];
+    reasoning?: string;
+    decided_by?: string;
+    override_by?: string;
+    override_at?: string;
+    acted_at?: string;
+    updated_at?: string;
+    result_ref?: string;
+    evidence_refs: string[];
+  }> | null;
+  getTriageDetail?(ulid: string): LoadedTriageRecord | null;
+}
+
+function tryGetCachedTriageRecords(
+  ctx: KspecContext,
+  cache: InitContextEntityCache,
+): LoadedTriageRecord[] | null {
+  if (cache.getDomainState?.("triage") !== "ready") {
+    return null;
+  }
+
+  const cachedIndex = cache.getTriageIndex?.();
+  if (!cachedIndex) {
+    return null;
+  }
+
+  const inboxItems =
+    cache.getDomainState?.("inbox") === "ready" ? (cache.getInboxIndex?.() ?? null) : null;
+  const inboxByUlid = new Map(inboxItems?.map((item) => [item._ulid, item.text]) ?? []);
+  const triagePath = getTriageFilePath(ctx);
+  const cachedRecords: LoadedTriageRecord[] = [];
+
+  for (const summary of cachedIndex) {
+    const detail = cache.getTriageDetail?.(summary._ulid);
+    if (detail) {
+      cachedRecords.push(detail);
+      continue;
+    }
+
+    if (summary.override_by || summary.override_at) {
+      return null;
+    }
+
+    const itemSnapshot = inboxByUlid.get(summary.inbox_ref);
+    if (!itemSnapshot) {
+      return null;
+    }
+
+    cachedRecords.push({
+      _ulid: summary._ulid,
+      inbox_ref: summary.inbox_ref,
+      item_snapshot: itemSnapshot,
+      status: summary.status,
+      action: summary.action,
+      reasoning: summary.reasoning,
+      decided_by: summary.decided_by,
+      override_by: summary.override_by,
+      override_at: summary.override_at,
+      acted_at: summary.acted_at,
+      updated_at: summary.updated_at,
+      result_ref: summary.result_ref,
+      evidence_refs: summary.evidence_refs,
+      created_at: summary.created_at,
+      _sourceFile: triagePath,
+    });
+  }
+
+  return cachedRecords;
+}
+
+function tryGetCachedInitContext(): KspecContext | null {
+  const cacheContext = getEntityCacheContext();
+  if (!cacheContext) {
+    return null;
+  }
+
+  const resolvedCache = cacheContext.cacheAccessor(cacheContext.projectPath) as
+    | InitContextEntityCache
+    | null
+    | undefined;
+  if (!resolvedCache || resolvedCache.getDomainState?.("meta") !== "ready") {
+    return null;
+  }
+
+  const cachedProjectConfig = resolvedCache.getProjectConfig?.();
+  const cachedShadowInfo = resolvedCache.getShadowInfo?.();
+  const metaDetail = resolvedCache.getMetaDetail?.();
+  if (!cachedProjectConfig?.config || !cachedShadowInfo || metaDetail == null) {
+    return null;
+  }
+
+  const projectRoot = cachedProjectConfig.root_dir;
+  const shadowDirectory = cachedProjectConfig.config.shadow.directory;
+  const specDir =
+    cachedShadowInfo.enabled && cachedShadowInfo.worktree_dir
+      ? cachedShadowInfo.worktree_dir
+      : path.join(projectRoot, shadowDirectory);
+
+  return {
+    rootDir: projectRoot,
+    projectRoot,
+    specDir,
+    sessionsDir: path.join(projectRoot, ".kspec-sessions"),
+    manifestPath: cachedProjectConfig.manifest_path ?? null,
+    manifest: cachedProjectConfig.manifest ?? null,
+    shadow:
+      cachedShadowInfo.enabled && cachedShadowInfo.branch_name && cachedShadowInfo.worktree_dir
+        ? {
+            enabled: true,
+            worktreeDir: cachedShadowInfo.worktree_dir,
+            branchName: cachedShadowInfo.branch_name,
+            projectRoot,
+          }
+        : null,
+    config: cachedProjectConfig.config,
+  };
 }
 
 /**
@@ -533,12 +700,22 @@ export async function initContext(
   startDir?: string,
   options?: { syncMode?: ShadowSyncMode },
 ): Promise<KspecContext> {
-  const cwd = startDir || process.cwd();
+  const cachedContext = tryGetCachedInitContext();
+  if (cachedContext) {
+    return cachedContext;
+  }
+
+  const cwd = startDir || getWorkingDirectoryOverride() || process.cwd();
   const projectRoots = resolveProjectRoots(cwd);
 
   // AC: @project-config ac-2, ac-6, ac-7 — load config before shadow detection
-  // Config is loaded from git root, not cwd or KSPEC_SPEC_DIR temp dir
-  const configResult = await loadProjectConfig(cwd, projectRoots?.mainRoot);
+  // Config is loaded from worktree root (the checked-out code's config), falling
+  // back to main root. In worktrees, the branch-specific kspec.config.yaml lives
+  // at worktreeRoot, not mainRoot (the parent repo may have a different version).
+  const configResult = await loadProjectConfig(
+    cwd,
+    projectRoots?.worktreeRoot ?? projectRoots?.mainRoot,
+  );
 
   // AC: @project-config ac-3 — emit warning to stderr if config had issues
   if (configResult.warning) {
@@ -1469,6 +1646,20 @@ export async function loadSpecFile(filePath: string): Promise<LoadedSpecItem[]> 
  * Parses manifest, follows includes, and builds unified collection.
  */
 export async function loadAllItems(ctx: KspecContext): Promise<LoadedSpecItem[]> {
+  const cacheContext = getEntityCacheContext();
+  if (cacheContext) {
+    const cache = cacheContext.cacheAccessor(cacheContext.projectPath) as
+      | {
+          getDomainState?(domain: string): string | null | undefined;
+          getAllItemDetails?(): LoadedSpecItem[] | null;
+        }
+      | null
+      | undefined;
+    if (cache?.getDomainState?.("items") === "ready") {
+      return cache.getAllItemDetails?.() ?? [];
+    }
+  }
+
   const items: LoadedSpecItem[] = [];
 
   if (!ctx.manifest || !ctx.manifestPath) {
@@ -2085,6 +2276,18 @@ async function loadInboxItemsFromFile(inboxPath: string): Promise<InboxItem[]> {
  * Load all inbox items from the project.
  */
 export async function loadInboxItems(ctx: KspecContext): Promise<LoadedInboxItem[]> {
+  const cacheContext = getEntityCacheContext();
+  const resolvedCache = cacheContext?.cacheAccessor(cacheContext.projectPath) as
+    | InitContextEntityCache
+    | null
+    | undefined;
+  if (resolvedCache?.getDomainState?.("inbox") === "ready") {
+    const cachedItems = resolvedCache.getInboxIndex?.();
+    if (cachedItems) {
+      return cachedItems;
+    }
+  }
+
   const inboxPath = getInboxFilePath(ctx);
 
   try {
@@ -2481,6 +2684,18 @@ function mergeTriagePreservingRawShape(
  * AC: @triage-record-schema ac-6, ac-7
  */
 export async function loadTriageRecords(ctx: KspecContext): Promise<LoadedTriageRecord[]> {
+  const cacheContext = getEntityCacheContext();
+  const resolvedCache = cacheContext?.cacheAccessor(cacheContext.projectPath) as
+    | InitContextEntityCache
+    | null
+    | undefined;
+  if (resolvedCache) {
+    const cachedRecords = tryGetCachedTriageRecords(ctx, resolvedCache);
+    if (cachedRecords) {
+      return cachedRecords;
+    }
+  }
+
   const triagePath = getTriageFilePath(ctx);
 
   try {

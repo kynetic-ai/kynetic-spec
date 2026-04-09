@@ -9,52 +9,155 @@ import { Elysia } from "elysia";
 import { cors } from "@elysiajs/cors";
 import { staticPlugin } from "@elysiajs/static";
 import { ulid } from "ulidx";
-import { existsSync } from "fs";
+import { existsSync, readFileSync } from "fs";
 import { fileURLToPath } from "url";
-import { dirname } from "path";
-import { PubSubManager } from "./websocket/pubsub";
-import { HeartbeatManager } from "./websocket/heartbeat";
-import { WebSocketHandler } from "./websocket/handler";
-import { handleWebSocketClose } from "./websocket/lifecycle";
-import { resolveWebSocketProject } from "./websocket/project-resolution";
-import type { ConnectionData, ConnectedEvent } from "./websocket/types";
-import { PidFileManager } from "./pid";
-import { projectContextMiddleware } from "./middleware/project-context";
-import { createTasksRoutes } from "./routes/tasks";
-import { createItemsRoutes } from "./routes/items";
-import { createInboxRoutes } from "./routes/inbox";
-import { createMetaRoutes } from "./routes/meta";
-import { createValidationRoutes } from "./routes/validation";
-import { createProjectsRoutes } from "./routes/projects";
-import { createTriageRoutes } from "./routes/triage";
+import { dirname, extname, join, resolve } from "path";
+import { PubSubManager } from "./websocket/pubsub.js";
+import { HeartbeatManager } from "./websocket/heartbeat.js";
+import { WebSocketHandler } from "./websocket/handler.js";
+import { handleWebSocketClose } from "./websocket/lifecycle.js";
+import { ConnectionStateManager } from "./websocket/connection-state.js";
+import { getWebSocketContextId } from "./websocket/context-id.js";
+import { resolveWebSocketProject } from "./websocket/project-resolution.js";
+import type { ConnectionData, ConnectedEvent } from "./websocket/types.js";
+import { PidFileManager } from "./pid.js";
+import { projectContextMiddleware } from "./middleware/project-context.js";
+import { createTasksRoutes } from "./routes/tasks.js";
+import { createItemsRoutes } from "./routes/items.js";
+import { createInboxRoutes } from "./routes/inbox.js";
+import { createMetaRoutes } from "./routes/meta.js";
+import { createValidationRoutes } from "./routes/validation.js";
+import { createProjectsRoutes } from "./routes/projects.js";
+import { createTriageRoutes } from "./routes/triage.js";
 import {
   createAgentDispatchRoutes,
   getDispatchEngine,
   stopAllEngines,
-} from "./routes/agent-dispatch";
-import { createCommandRoutes } from "./routes/command";
-import { createAutomationRoutes } from "./routes/automation";
-import { createDebugRoutes } from "./routes/debug";
-import { createSessionRoutes } from "./routes/sessions";
-import { createPlansRoutes } from "./routes/plans";
-import { createAggregationRoutes } from "./routes/aggregation";
-import { createRefsRoutes } from "./routes/refs";
-import { createDiffRoutes } from "./routes/diff";
-import { createReviewsRoutes } from "./routes/reviews";
-import { ShadowSyncScheduler } from "./shadow-sync";
-import { SessionSyncScheduler } from "./session-sync";
-import { WatcherHealthMonitor } from "./watcher-health-monitor";
-import { join } from "path";
+} from "./routes/agent-dispatch.js";
+import { createCommandRoutes } from "./routes/command.js";
+import { createAutomationRoutes } from "./routes/automation.js";
+import { createDebugRoutes } from "./routes/debug.js";
+import { createSessionRoutes } from "./routes/sessions.js";
+import { createPlansRoutes } from "./routes/plans.js";
+import { createAggregationRoutes } from "./routes/aggregation.js";
+import { createRefsRoutes } from "./routes/refs.js";
+import { createDiffRoutes } from "./routes/diff.js";
+import { createReviewsRoutes } from "./routes/reviews.js";
+import { ShadowSyncScheduler } from "./shadow-sync.js";
+import { SessionSyncScheduler } from "./session-sync.js";
+import { WatcherHealthMonitor } from "./watcher-health-monitor.js";
+
+export type DaemonRuntime = "bun" | "node";
 
 export interface ServerOptions {
   port: number;
   isDaemon: boolean;
+  runtime: DaemonRuntime;
   kspecDir?: string; // Path to .kspec directory (default: .kspec in cwd)
   webUiDir?: string; // Path to web UI build directory (default: auto-detect)
 }
 
+interface ShadowPullReloadableCache {
+  refreshMetaShadowInfo(): Promise<void>;
+}
+
+type ManagedServer = {
+  stop?: () => unknown;
+  close?: (callback: (error?: Error | null) => void) => void;
+};
+
+export async function createServerApp(runtime: DaemonRuntime): Promise<Elysia> {
+  if (runtime === "node") {
+    const { node } = await import("@elysiajs/node");
+    return new Elysia({ adapter: node() });
+  }
+
+  return new Elysia();
+}
+
+export async function stopManagedServer(server: ManagedServer | undefined): Promise<void> {
+  if (!server) {
+    return;
+  }
+
+  if (typeof server.stop === "function") {
+    await server.stop();
+    return;
+  }
+
+  if (typeof server.close === "function") {
+    await new Promise<void>((resolve, reject) => {
+      server.close?.((error?: Error | null) => {
+        if (error) {
+          reject(error);
+          return;
+        }
+        resolve();
+      });
+    });
+  }
+}
+
+// AC: @daemon-runtime-adapter ac-heartbeat-degradation
+export function shouldEnableHeartbeat(runtime: DaemonRuntime): boolean {
+  return runtime !== "node";
+}
+
+export function logHeartbeatDegradationWarning(runtime: DaemonRuntime): void {
+  if (runtime !== "node") {
+    return;
+  }
+
+  console.warn(
+    "[daemon] Running on node: WebSocket heartbeat ping/pong is unavailable. Dead connection detection is disabled.",
+  );
+}
+
 function hasWebUiIndex(dir: string | undefined): dir is string {
   return Boolean(dir && existsSync(join(dir, "index.html")));
+}
+
+const STATIC_ASSET_CONTENT_TYPES: Record<string, string> = {
+  ".css": "text/css; charset=utf-8",
+  ".html": "text/html; charset=utf-8",
+  ".ico": "image/x-icon",
+  ".js": "text/javascript; charset=utf-8",
+  ".json": "application/json; charset=utf-8",
+  ".map": "application/json; charset=utf-8",
+  ".png": "image/png",
+  ".svg": "image/svg+xml",
+  ".txt": "text/plain; charset=utf-8",
+  ".woff": "font/woff",
+  ".woff2": "font/woff2",
+};
+
+function getStaticAssetContentType(assetPath: string): string {
+  return STATIC_ASSET_CONTENT_TYPES[extname(assetPath).toLowerCase()] ?? "application/octet-stream";
+}
+
+function serveWebUiStaticAsset(webUiPath: string, requestPath: string): Response {
+  const webUiRoot = resolve(webUiPath);
+  const relativePath = requestPath.startsWith("/") ? requestPath.slice(1) : requestPath;
+  const assetPath = resolve(webUiRoot, relativePath);
+  if (assetPath !== webUiRoot && !assetPath.startsWith(`${webUiRoot}/`)) {
+    return new Response("Not found", { status: 404 });
+  }
+
+  if (!existsSync(assetPath)) {
+    return new Response("Not found", { status: 404 });
+  }
+
+  return new Response(readFileSync(assetPath), {
+    headers: {
+      "Cache-Control": "public, max-age=86400",
+      "Content-Type": getStaticAssetContentType(assetPath),
+    },
+  });
+}
+
+function isRootWebUiAssetPath(requestPath: string): boolean {
+  const normalizedPath = requestPath.startsWith("/") ? requestPath.slice(1) : requestPath;
+  return normalizedPath.length > 0 && !normalizedPath.includes("/") && normalizedPath.includes(".");
 }
 
 /**
@@ -91,11 +194,24 @@ export function resolveWebUiPath(webUiDir?: string): string | null {
   return null;
 }
 
+export function createShadowSyncOnPullHandler(
+  startupProjectPath: string | undefined,
+  getEntityCache: (projectPath: string) => ShadowPullReloadableCache | undefined,
+): () => Promise<void> {
+  return async () => {
+    if (!startupProjectPath) return;
+    const cache = getEntityCache(startupProjectPath);
+    if (!cache) return;
+    console.log("[daemon] Shadow sync pulled data — refreshing shadow status");
+    await cache.refreshMetaShadowInfo();
+  };
+}
+
 // WebSocket pub/sub and heartbeat managers
 let pubsubManager: PubSubManager;
 let heartbeatManager: HeartbeatManager;
 let wsHandler: WebSocketHandler;
-let _projectManager: import("./project-context").ProjectContextManager | undefined;
+let _projectManager: import("./project-context.js").ProjectContextManager | undefined;
 let shadowSyncScheduler: ShadowSyncScheduler | undefined;
 let watcherHealthMonitor: WatcherHealthMonitor | undefined;
 const sessionSyncSchedulers: Map<string, SessionSyncScheduler> = new Map();
@@ -219,7 +335,7 @@ export function localhostOnly() {
  * - ac-15: Uses plugin pattern for middleware
  */
 export async function createServer(options: ServerOptions) {
-  const { port, isDaemon, kspecDir = join(process.cwd(), ".kspec"), webUiDir } = options;
+  const { port, isDaemon, runtime, kspecDir = join(process.cwd(), ".kspec"), webUiDir } = options;
 
   // Determine startup project path (project root, not .kspec/)
   // AC: @multi-directory-daemon ac-2 - daemon uses startup directory as default project
@@ -228,7 +344,7 @@ export async function createServer(options: ServerOptions) {
     : kspecDir;
 
   // Import ProjectContextManager (needed for WebSocket binding)
-  const { ProjectContextManager: _ProjectContextManager } = await import("./project-context");
+  const { ProjectContextManager: _ProjectContextManager } = await import("./project-context.js");
 
   // AC: @daemon-server ac-17 - Resolve web UI path for static file serving
   const resolvedWebUiPath = resolveWebUiPath(webUiDir);
@@ -251,8 +367,9 @@ export async function createServer(options: ServerOptions) {
   }
 
   // Initialize WebSocket managers
-  pubsubManager = new PubSubManager();
-  heartbeatManager = new HeartbeatManager();
+  const connectionState = new ConnectionStateManager();
+  pubsubManager = new PubSubManager(connectionState);
+  heartbeatManager = new HeartbeatManager(connectionState);
   wsHandler = new WebSocketHandler(pubsubManager);
 
   // WeakMap to store project path during WebSocket upgrade (keyed by Request object)
@@ -260,7 +377,9 @@ export async function createServer(options: ServerOptions) {
   // which breaks WebSocket upgrade in Elysia 1.4 when derive middleware is present.
   const wsProjectPaths = new WeakMap<Request, string>();
 
-  const app = new Elysia()
+  const app = await createServerApp(runtime);
+
+  app
     // AC-15: Plugin pattern for middleware
     // AC: @api-contract ac-1 - Allow CORS from dev server on localhost:5173
     .use(
@@ -275,8 +394,8 @@ export async function createServer(options: ServerOptions) {
     .onRequest(localhostOnly());
 
   // AC: @daemon-entity-cache ac-load-on-register — lazy import entity cache module
-  // At build time, packages/daemon/src/ is copied to dist/daemon/ where entity-cache.js
-  // (compiled from src/daemon/entity-cache.ts) is a sibling.
+  // The daemon build compiles packages/daemon/src plus src/daemon/entity-cache.ts
+  // into dist/daemon/, where entity-cache.js is a sibling module.
   const entityCacheModule = await import("./entity-cache.js");
 
   // Shared callback for all registration paths (middleware, projects API, WebSocket)
@@ -337,6 +456,7 @@ export async function createServer(options: ServerOptions) {
       uptime: process.uptime(),
       connections: pubsubManager.getConnectionCount(),
       version: "0.1.0",
+      runtime,
     }))
 
     // AC: @api-contract ac-2 through ac-7 - Task API endpoints
@@ -456,7 +576,7 @@ export async function createServer(options: ServerOptions) {
         // Use a WeakMap keyed by Request object to pass data to open().
         try {
           const manager = (store as Record<string, unknown>).projectManager as
-            | import("./project-context").ProjectContextManager
+            | import("./project-context.js").ProjectContextManager
             | undefined;
           if (!manager) {
             // Fallback: project manager not initialized yet
@@ -484,8 +604,8 @@ export async function createServer(options: ServerOptions) {
       open(ws) {
         // AC: @api-contract ac-25, @trait-websocket-protocol ac-1
         const sessionId = ulid();
-        const openContext = ws.data as { id?: unknown; request?: unknown } | undefined;
-        const contextId = typeof openContext?.id === "string" ? openContext.id : undefined;
+        const openContext = ws.data as { request?: unknown } | undefined;
+        const contextId = getWebSocketContextId(ws);
 
         // AC: @multi-directory-daemon ac-21 - Get bound project path
         // Retrieve project path from WeakMap via the request object on ws.data
@@ -494,14 +614,14 @@ export async function createServer(options: ServerOptions) {
           ? wsProjectPaths.get(request) || startupProjectPath
           : startupProjectPath;
 
-        ws.data = {
+        connectionState.init(ws, {
           sessionId,
           topics: new Set<string>(),
           seq: 0,
           lastPing: undefined,
           lastPong: Date.now(),
           projectPath, // AC: @multi-directory-daemon ac-21 - immutable binding
-        };
+        });
 
         pubsubManager.addConnection(sessionId, ws, contextId);
         console.log(
@@ -534,15 +654,30 @@ export async function createServer(options: ServerOptions) {
   // Added after API routes so API routes take precedence
   if (resolvedWebUiPath) {
     const indexHtmlPath = join(resolvedWebUiPath, "index.html");
+    const indexHtml = readFileSync(indexHtmlPath);
 
-    // Serve static files from web UI build directory
-    app.use(
-      await staticPlugin({
-        assets: resolvedWebUiPath,
-        prefix: "/",
-        noCache: process.env.NODE_ENV === "development", // Disable cache in dev
-      }),
-    );
+    if (runtime === "node") {
+      app.get("/_app/*", ({ request }) =>
+        serveWebUiStaticAsset(resolvedWebUiPath, new URL(request.url).pathname),
+      );
+      app.get("/:asset", ({ request }) => {
+        const requestPath = new URL(request.url).pathname;
+        if (!isRootWebUiAssetPath(requestPath)) {
+          return new Response("Not found", { status: 404 });
+        }
+
+        return serveWebUiStaticAsset(resolvedWebUiPath, requestPath);
+      });
+    } else {
+      // Bun's static plugin serves the bundle with correct MIME metadata.
+      app.use(
+        await staticPlugin({
+          assets: resolvedWebUiPath,
+          prefix: "/",
+          noCache: process.env.NODE_ENV === "development", // Disable cache in dev
+        }),
+      );
+    }
 
     // SPA fallback routes for client-side routing
     // These catch paths like /tasks, /items, /inbox that don't have static files
@@ -568,7 +703,15 @@ export async function createServer(options: ServerOptions) {
       "/automation",
     ];
     for (const route of spaRoutes) {
-      app.get(route, () => Bun.file(indexHtmlPath));
+      app.get(
+        route,
+        () =>
+          new Response(indexHtml, {
+            headers: {
+              "Content-Type": "text/html; charset=utf-8",
+            },
+          }),
+      );
     }
 
     console.log("[daemon] Web UI static file serving enabled");
@@ -583,6 +726,7 @@ export async function createServer(options: ServerOptions) {
 
   console.log(`[daemon] Server listening on http://localhost:${port} (IPv4: 127.0.0.1, IPv6: ::1)`);
   console.log(`[daemon] WebSocket available at ws://localhost:${port}/ws`);
+  logHeartbeatDegradationWarning(runtime);
 
   // AC: @agent-dispatch-engine ac-5 - Wire file change callback to dispatch engine
   projectContextManager.setFileChangeCallback((projectPath, file) => {
@@ -600,11 +744,11 @@ export async function createServer(options: ServerOptions) {
   // Both .kspec/ and .kspec-sessions/ changes flow through handleFileChange;
   // fileToDomain() maps YAML files to their domains and ULID-prefixed session
   // paths to the sessions domain.
-  projectContextManager.setCacheInvalidationCallback((projectPath, kspecDir, file) => {
+  projectContextManager.setCacheInvalidationCallback((projectPath, kspecDir, file, content) => {
     const cache = entityCacheModule.getEntityCache(projectPath);
     if (!cache) return;
 
-    cache.handleFileChange(kspecDir, file).catch((err: unknown) => {
+    cache.handleFileChange(kspecDir, file, content).catch((err: unknown) => {
       console.error(`[entity-cache] Error handling file change for ${projectPath}:`, err);
     });
   });
@@ -663,14 +807,11 @@ export async function createServer(options: ServerOptions) {
             remoteType: config.shadow.remote?.type,
           },
           pubsub: pubsubManager,
-          // AC: @daemon-read-path ac-background-sync — invalidate entity cache when background sync pulls new data
-          onPull: async () => {
-            if (!startupProjectPath) return;
-            const cache = entityCacheModule.getEntityCache(startupProjectPath);
-            if (!cache) return;
-            console.log("[daemon] Shadow sync pulled data — reloading entity cache");
-            await cache.loadAll();
-          },
+          // AC: @daemon-meta-subdomain ac-shadow-on-schedule — refresh shadow status only; file content changes are handled by the watcher independently
+          onPull: createShadowSyncOnPullHandler(
+            startupProjectPath,
+            entityCacheModule.getEntityCache,
+          ),
         });
         shadowSyncScheduler.start();
       }
@@ -691,7 +832,10 @@ export async function createServer(options: ServerOptions) {
   }
 
   // AC: @daemon-server ac-13, ac-14 - Start heartbeat monitoring
-  heartbeatManager.start(pubsubManager.getAllConnections());
+  // AC: @daemon-runtime-adapter ac-heartbeat-degradation — skip on runtimes without frame-level ping
+  if (shouldEnableHeartbeat(runtime)) {
+    heartbeatManager.start(pubsubManager.getAllConnections());
+  }
 
   // AC-12: Graceful shutdown on SIGTERM/SIGINT
   const shutdown = async (signal: string) => {
@@ -725,7 +869,7 @@ export async function createServer(options: ServerOptions) {
       }
 
       // Stop the server
-      await app.server?.stop();
+      await stopManagedServer(app.server as ManagedServer | undefined);
 
       // AC: @daemon-server ac-10 - Remove PID file on shutdown
       if (isDaemon) {

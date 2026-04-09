@@ -90,6 +90,12 @@ const DaemonConfigSchema = z
     /** Host to bind to (default: localhost) */
     host: z.string().optional(),
     /**
+     * JavaScript runtime used to spawn the daemon (default: node).
+     * AC: @daemon-runtime-adapter ac-runtime-selection
+     * AC: @daemon-runtime-adapter ac-default-node
+     */
+    runtime: z.enum(["bun", "node"]).optional(),
+    /**
      * Whether to auto-start daemon when running kspec commands.
      * AC: @config-daemon ac-3 — auto_start configurable
      */
@@ -223,6 +229,32 @@ const AgentConfigSchema = z
 const LegacyAgentConfigAliasSchema = AgentConfigSchema;
 
 /**
+ * Schema for coverage scanning configuration.
+ *
+ * AC: @coverage-scan-config ac-explicit-opt-in — scanning requires explicit configuration
+ * AC: @coverage-scan-config ac-configured-paths — configured paths are scanned
+ */
+const CoverageConfigSchema = z
+  .object({
+    /**
+     * Directories to scan for AC annotation test files.
+     * When empty or absent, no files are scanned (explicit opt-in).
+     * Paths are relative to the project root.
+     *
+     * AC: @coverage-scan-config ac-explicit-opt-in
+     * AC: @coverage-scan-config ac-configured-paths
+     */
+    scan_paths: z.array(z.string()).optional(),
+    /**
+     * Glob patterns for files to exclude from scanning.
+     * Matched against the relative path from rootDir.
+     */
+    exclude_patterns: z.array(z.string()).optional(),
+  })
+  .strict()
+  .optional();
+
+/**
  * Complete schema for kspec.config.yaml.
  *
  * AC: @project-config ac-4 — unknown fields are ignored via passthrough
@@ -245,6 +277,8 @@ export const KspecConfigSchema = z
     ralph: LegacyAgentConfigAliasSchema,
     /** Hooks installation configuration */
     hooks: HooksConfigSchema,
+    /** Coverage scanning configuration */
+    coverage: CoverageConfigSchema,
   })
   .passthrough(); // AC: ac-4 — ignore unknown fields
 
@@ -334,6 +368,12 @@ export interface ResolvedKspecConfig {
     port: number;
     host: string;
     /**
+     * Runtime used to spawn the daemon.
+     * AC: @daemon-runtime-adapter ac-runtime-selection
+     * AC: @daemon-runtime-adapter ac-default-node
+     */
+    runtime: "bun" | "node";
+    /**
      * Whether to auto-start daemon when running kspec commands.
      * AC: @config-daemon ac-3
      */
@@ -404,6 +444,21 @@ export interface ResolvedKspecConfig {
      */
     prompt_check: boolean;
   };
+  coverage: {
+    /**
+     * Directories to scan for AC annotation test files.
+     * Empty array means no scanning (explicit opt-in required).
+     *
+     * AC: @coverage-scan-config ac-explicit-opt-in
+     * AC: @coverage-scan-config ac-configured-paths
+     */
+    scan_paths: string[];
+    /**
+     * Glob patterns for files to exclude from scanning.
+     * Matched against the relative path from rootDir.
+     */
+    exclude_patterns: string[];
+  };
 }
 
 // ── Defaults ────────────────────────────────────────────────────────────
@@ -433,6 +488,7 @@ const DEFAULT_CONFIG: ResolvedKspecConfig = {
   daemon: {
     port: 3456,
     host: "localhost",
+    runtime: "node",
     auto_start: true, // AC: @config-daemon — default auto-start enabled
   },
   dispatch: {
@@ -456,6 +512,11 @@ const DEFAULT_CONFIG: ResolvedKspecConfig = {
     // AC: @project-config ac-hooks-no-config — defaults when no config
     checkpoint: false, // Disabled by default — dispatch handles task lifecycle
     prompt_check: true, // Enabled by default — lightweight spec-first reminder
+  },
+  coverage: {
+    // AC: @coverage-scan-config ac-explicit-opt-in — empty = no scanning
+    scan_paths: [],
+    exclude_patterns: [],
   },
 };
 
@@ -637,6 +698,9 @@ export function resolveConfig(fileConfig: KspecConfig | null): ResolvedKspecConf
         DEFAULT_CONFIG.daemon.port,
       // AC: @config-daemon ac-5 ac-6 — host from config/env
       host: envHost ?? file.daemon?.host ?? DEFAULT_CONFIG.daemon.host,
+      // AC: @daemon-runtime-adapter ac-runtime-selection
+      // AC: @daemon-runtime-adapter ac-default-node
+      runtime: file.daemon?.runtime ?? DEFAULT_CONFIG.daemon.runtime,
       // AC: @config-daemon ac-3 — auto_start from config
       auto_start: file.daemon?.auto_start ?? DEFAULT_CONFIG.daemon.auto_start,
     },
@@ -672,6 +736,11 @@ export function resolveConfig(fileConfig: KspecConfig | null): ResolvedKspecConf
       // AC: @project-config ac-hooks-missing-keys — absent keys resolve to defaults
       checkpoint: file.hooks?.checkpoint ?? DEFAULT_CONFIG.hooks.checkpoint,
       prompt_check: file.hooks?.prompt_check ?? DEFAULT_CONFIG.hooks.prompt_check,
+    },
+    coverage: {
+      // AC: @coverage-scan-config ac-explicit-opt-in — empty default = no scanning
+      scan_paths: file.coverage?.scan_paths ?? DEFAULT_CONFIG.coverage.scan_paths,
+      exclude_patterns: file.coverage?.exclude_patterns ?? DEFAULT_CONFIG.coverage.exclude_patterns,
     },
   };
 }
@@ -721,6 +790,7 @@ export function getDefaultConfig(): ResolvedKspecConfig {
     daemon: {
       port: DEFAULT_CONFIG.daemon.port,
       host: DEFAULT_CONFIG.daemon.host,
+      runtime: DEFAULT_CONFIG.daemon.runtime,
       auto_start: DEFAULT_CONFIG.daemon.auto_start,
     },
     dispatch: {
@@ -739,5 +809,9 @@ export function getDefaultConfig(): ResolvedKspecConfig {
       skills: { ...DEFAULT_CONFIG.agent.skills },
     },
     hooks: { ...DEFAULT_CONFIG.hooks },
+    coverage: {
+      scan_paths: [...DEFAULT_CONFIG.coverage.scan_paths],
+      exclude_patterns: [...DEFAULT_CONFIG.coverage.exclude_patterns],
+    },
   };
 }

@@ -454,7 +454,12 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
               let acceptanceCriteriaWithCoverage = cachedDetail.acceptance_criteria;
               if (cachedDetail.acceptance_criteria && cachedDetail.acceptance_criteria.length > 0) {
                 try {
-                  const coveredACs = await getCachedTestCoverage(projectContext.path);
+                  const ctx = await getCtx();
+                  const coveredACs = await getCachedTestCoverage(
+                    projectContext.path,
+                    ctx.config.coverage.scan_paths,
+                    ctx.config.coverage.exclude_patterns,
+                  );
                   acceptanceCriteriaWithCoverage = computeACCoverage(cachedDetail, coveredACs);
                 } catch {
                   // Coverage scan failed - leave as-is
@@ -527,7 +532,12 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
           let acceptanceCriteriaWithCoverage = item.acceptance_criteria;
           if (item.acceptance_criteria && item.acceptance_criteria.length > 0) {
             try {
-              const coveredACs = await getCachedTestCoverage(projectContext.path);
+              const ctx = await getCtx();
+              const coveredACs = await getCachedTestCoverage(
+                projectContext.path,
+                ctx.config.coverage.scan_paths,
+                ctx.config.coverage.exclude_patterns,
+              );
               acceptanceCriteriaWithCoverage = computeACCoverage(item, coveredACs);
             } catch (err) {
               // Coverage scan failed - leave as undefined

@@ -28,12 +28,12 @@
 		SelectTrigger
 	} from '$lib/components/ui/select';
 	import * as Dialog from '$lib/components/ui/dialog';
-	import Bot from '@lucide/svelte/icons/bot';
-	import Zap from '@lucide/svelte/icons/zap';
-	import Pencil from '@lucide/svelte/icons/pencil';
-	import X from '@lucide/svelte/icons/x';
-	import Plus from '@lucide/svelte/icons/plus';
-	import Filter from '@lucide/svelte/icons/filter';
+	import Bot from 'lucide-svelte/icons/bot';
+	import Zap from 'lucide-svelte/icons/zap';
+	import Pencil from 'lucide-svelte/icons/pencil';
+	import X from 'lucide-svelte/icons/x';
+	import Plus from 'lucide-svelte/icons/plus';
+	import Filter from 'lucide-svelte/icons/filter';
 
 	interface Props {
 		agents: AgentDefinition[];

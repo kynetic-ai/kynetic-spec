@@ -5,10 +5,10 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import { Card } from '$lib/components/ui/card';
-	import Bot from '@lucide/svelte/icons/bot';
-	import Zap from '@lucide/svelte/icons/zap';
-	import Pencil from '@lucide/svelte/icons/pencil';
-	import Settings from '@lucide/svelte/icons/settings';
+	import Bot from 'lucide-svelte/icons/bot';
+	import Zap from 'lucide-svelte/icons/zap';
+	import Pencil from 'lucide-svelte/icons/pencil';
+	import Settings from 'lucide-svelte/icons/settings';
 
 	interface Props {
 		agent: AgentDefinition;

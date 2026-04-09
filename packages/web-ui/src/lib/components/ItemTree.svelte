@@ -2,7 +2,7 @@
 	// AC: @web-dashboard ac-11
 	import type { ItemSummary } from '@kynetic-ai/shared';
 	import { Badge } from '$lib/components/ui/badge';
-	import ChevronRight from '@lucide/svelte/icons/chevron-right';
+	import ChevronRight from 'lucide-svelte/icons/chevron-right';
 	import { createEventDispatcher } from 'svelte';
 
 	export let items: ItemSummary[];

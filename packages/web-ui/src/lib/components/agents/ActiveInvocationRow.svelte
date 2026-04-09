@@ -4,8 +4,8 @@
 	import type { ActiveInvocation } from '$lib/api';
 	import { Badge } from '$lib/components/ui/badge';
 	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
-	import ExternalLink from '@lucide/svelte/icons/external-link';
-	import Clock from '@lucide/svelte/icons/clock';
+	import ExternalLink from 'lucide-svelte/icons/external-link';
+	import Clock from 'lucide-svelte/icons/clock';
 
 	interface Props {
 		invocation: ActiveInvocation;

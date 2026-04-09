@@ -5,13 +5,13 @@
  * localhost-only enforcement, health endpoint, and non-API route bypass.
  *
  * Uses the production localhostOnly() middleware and CORS configuration
- * from dist/daemon/server.ts to ensure tests exercise the real code paths.
+ * from dist/daemon/server.js to ensure tests exercise the real code paths.
  *
  * Covered ACs:
  * - @daemon-server ac-1: Elysia HTTP server starts on configured port (verified by health check)
  * - @daemon-server ac-2: Binds to localhost only (verified by localhost enforcement middleware)
  * - @daemon-server ac-3: Rejects non-localhost connections with 403 Forbidden
- * - @daemon-server ac-11: GET /api/health returns {status, uptime, connections, version}
+ * - @daemon-server ac-11: GET /api/health returns {status, uptime, connections, version, runtime}
  * - @daemon-server ac-15: Plugin pattern middleware (CORS verified via response headers)
  * - @daemon-server ac-17: Non-API routes bypass project context middleware (SPA fallback regression)
  * - @api-contract ac-1: CORS headers allow localhost origins (dev server)
@@ -25,8 +25,8 @@
 import { cors } from "@elysiajs/cors";
 import { Elysia } from "elysia";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { localhostOnly } from "../../dist/daemon/server.ts";
-import { projectContextMiddleware } from "../../dist/daemon/middleware/project-context.ts";
+import { localhostOnly } from "../../dist/daemon/server.js";
+import { projectContextMiddleware } from "../../dist/daemon/middleware/project-context.js";
 import { cleanupTempDir, createTempDir, initGitRepo, setupFixtures } from "./helpers.js";
 
 let app: Elysia;
@@ -68,6 +68,7 @@ function createServerTestApp(projectDir: string) {
         uptime: process.uptime(),
         connections: 0,
         version: "0.1.0",
+        runtime: "node",
       }))
       // SPA fallback route (simulates static plugin's index.html serving).
       // In production, this is handled by the Elysia static plugin + explicit
@@ -120,12 +121,12 @@ afterEach(async () => {
 
 describe("GET /api/health", () => {
   // AC: @daemon-server ac-1, ac-2, ac-11
-  it("returns 200 with {status, uptime, connections, version}", async () => {
+  it("returns 200 with {status, uptime, connections, version, runtime}", async () => {
     const response = await makeReq("/api/health");
     expect(response.status).toBe(200);
 
     const body = (await response.json()) as Record<string, unknown>;
-    // AC: @daemon-server ac-11 — must have all four fields
+    // AC: @daemon-server ac-11 — must have all health fields
     expect(body).toHaveProperty("status");
     expect(body.status).toBe("ok");
     expect(body).toHaveProperty("uptime");
@@ -137,6 +138,8 @@ describe("GET /api/health", () => {
     expect(body).toHaveProperty("version");
     expect(typeof body.version).toBe("string");
     expect((body.version as string).length).toBeGreaterThan(0);
+    expect(body).toHaveProperty("runtime");
+    expect(body.runtime === "bun" || body.runtime === "node").toBe(true);
   });
 
   // AC: @daemon-server ac-11
@@ -160,6 +163,12 @@ describe("GET /api/health", () => {
     const body = (await response.json()) as { version: string };
     expect(typeof body.version).toBe("string");
     expect(body.version.length).toBeGreaterThan(0);
+  });
+
+  it("returns runtime field", async () => {
+    const response = await makeReq("/api/health");
+    const body = (await response.json()) as { runtime: string };
+    expect(body.runtime).toBe("node");
   });
 
   it("returns JSON content type", async () => {

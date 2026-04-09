@@ -26,8 +26,38 @@ async function waitForDebounce(): Promise<void> {
   await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_WAIT));
 }
 
+async function waitForMs(ms: number): Promise<void> {
+  await new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 async function countOpenFileDescriptors(): Promise<number> {
   return (await readdir("/proc/self/fd")).length;
+}
+
+async function writeSessionFixture(
+  projectDir: string,
+  sessionId: string,
+  status: "active" | "completed" | "abandoned" | "timed_out" | "failed" | "stalled",
+): Promise<string> {
+  const sessionDir = join(projectDir, ".kspec-sessions", sessionId);
+  await mkdir(sessionDir, { recursive: true });
+
+  const lines = [
+    `id: ${sessionId}`,
+    "agent_type: task-worker",
+    `status: ${status}`,
+    'started_at: "2026-03-19T12:00:00.000Z"',
+  ];
+
+  if (status !== "active") {
+    lines.push('ended_at: "2026-03-19T12:05:00.000Z"');
+  }
+
+  lines.push("");
+
+  await writeFile(join(sessionDir, "session.yaml"), lines.join("\n"));
+  await writeFile(join(sessionDir, "events.jsonl"), '{"type":"session.started"}\n');
+  return sessionDir;
 }
 
 describeOrSkip("SessionWatcher", () => {
@@ -43,21 +73,19 @@ describeOrSkip("SessionWatcher", () => {
     await cleanupTempDir(fixturesRoot);
   });
 
-  // AC: @daemon-file-monitoring ac-2
-  it("fires when session metadata changes under .kspec-sessions", async () => {
+  // AC: @daemon-file-monitoring ac-active-only-watching
+  // AC: @daemon-file-monitoring ac-startup-active-only
+  it("only watches active sessions that exist when monitoring starts", async () => {
     const onSessionChange = vi.fn();
-    const sessionDir = join(projectDir, ".kspec-sessions", "01JTESTSESSIONWATCHER0000001");
-    await mkdir(sessionDir, { recursive: true });
-    const metadataPath = join(sessionDir, "session.yaml");
-    await writeFile(
-      metadataPath,
-      [
-        "id: 01JTESTSESSIONWATCHER0000001",
-        "agent_type: task-worker",
-        "status: active",
-        'started_at: "2026-03-19T12:00:00.000Z"',
-        "",
-      ].join("\n"),
+    const activeDir = await writeSessionFixture(
+      projectDir,
+      "01JTESTSESSIONWATCHER0000001",
+      "active",
+    );
+    const completedDir = await writeSessionFixture(
+      projectDir,
+      "01JTESTSESSIONWATCHER0000002",
+      "completed",
     );
 
     const watcher = new SessionWatcher({
@@ -67,30 +95,27 @@ describeOrSkip("SessionWatcher", () => {
     });
 
     await watcher.start();
+    onSessionChange.mockClear();
 
-    await writeFile(
-      metadataPath,
-      [
-        "id: 01JTESTSESSIONWATCHER0000001",
-        "agent_type: task-worker",
-        "status: completed",
-        'started_at: "2026-03-19T12:00:00.000Z"',
-        "",
-      ].join("\n"),
-    );
-
+    await writeFile(join(activeDir, "events.jsonl"), '{"type":"session.updated"}\n', { flag: "a" });
+    await writeFile(join(completedDir, "events.jsonl"), '{"type":"session.updated"}\n', {
+      flag: "a",
+    });
     await waitForDebounce();
 
-    expect(onSessionChange).toHaveBeenCalled();
+    expect(onSessionChange).toHaveBeenCalledTimes(1);
+    expect(onSessionChange).toHaveBeenCalledWith(activeDir);
 
     await watcher.stop();
   });
 
   // AC: @daemon-file-monitoring ac-7
-  it("starts before .kspec-sessions exists and emits after the directory is created", async () => {
+  // AC: @daemon-file-monitoring ac-new-session-conditional-watch
+  it("detects a new active session created after monitoring starts", async () => {
     const onSessionChange = vi.fn();
     const sessionsDir = join(projectDir, ".kspec-sessions");
     await rm(sessionsDir, { recursive: true, force: true });
+
     const watcher = new SessionWatcher({
       sessionsDir,
       onSessionChange,
@@ -99,20 +124,10 @@ describeOrSkip("SessionWatcher", () => {
 
     await watcher.start();
 
-    const sessionDir = join(sessionsDir, "01JTESTSESSIONWATCHER0000004");
-    const metadataPath = join(sessionDir, "session.yaml");
+    const sessionId = "01JTESTSESSIONWATCHER0000003";
+    const sessionDir = join(sessionsDir, sessionId);
     await mkdir(sessionDir, { recursive: true });
-    await writeFile(
-      metadataPath,
-      [
-        "id: 01JTESTSESSIONWATCHER0000004",
-        "agent_type: task-worker",
-        "status: active",
-        'started_at: "2026-03-19T12:00:00.000Z"',
-        "",
-      ].join("\n"),
-    );
-
+    await writeSessionFixture(projectDir, sessionId, "active");
     await waitForDebounce();
 
     expect(onSessionChange).toHaveBeenCalledTimes(1);
@@ -121,13 +136,76 @@ describeOrSkip("SessionWatcher", () => {
     await watcher.stop();
   });
 
-  // AC: @daemon-file-monitoring ac-2
-  it("fires when session event logs change", async () => {
+  // AC: @daemon-file-monitoring ac-7
+  // AC: @daemon-file-monitoring ac-new-session-conditional-watch
+  it("attaches to a new active session when metadata arrives after the directory", async () => {
     const onSessionChange = vi.fn();
-    const sessionDir = join(projectDir, ".kspec-sessions", "01JTESTSESSIONWATCHER0000005");
+    const sessionsDir = join(projectDir, ".kspec-sessions");
+    const sessionId = "01JTESTSESSIONWATCHER000000A";
+    const sessionDir = join(sessionsDir, sessionId);
+
+    const watcher = new SessionWatcher({
+      sessionsDir,
+      onSessionChange,
+      onError: vi.fn(),
+    });
+
+    await watcher.start();
+
     await mkdir(sessionDir, { recursive: true });
+    await waitForMs(500);
+    await writeSessionFixture(projectDir, sessionId, "active");
+    await waitForDebounce();
+
+    await writeFile(join(sessionDir, "events.jsonl"), '{"type":"session.updated"}\n', {
+      flag: "a",
+    });
+    await waitForDebounce();
+
+    expect(onSessionChange).toHaveBeenCalled();
+    expect(onSessionChange).toHaveBeenCalledWith(sessionDir);
+
+    await watcher.stop();
+  });
+
+  // AC: @daemon-file-monitoring ac-new-session-conditional-watch
+  it("does not watch new non-active sessions", async () => {
+    const onSessionChange = vi.fn();
+    const watcher = new SessionWatcher({
+      sessionsDir: join(projectDir, ".kspec-sessions"),
+      onSessionChange,
+      onError: vi.fn(),
+    });
+
+    await watcher.start();
+
+    const sessionDir = await writeSessionFixture(
+      projectDir,
+      "01JTESTSESSIONWATCHER0000004",
+      "completed",
+    );
+    await waitForDebounce();
+    expect(onSessionChange).not.toHaveBeenCalled();
+
+    await writeFile(join(sessionDir, "events.jsonl"), '{"type":"session.updated"}\n', {
+      flag: "a",
+    });
+    await waitForDebounce();
+
+    expect(onSessionChange).not.toHaveBeenCalled();
+
+    await watcher.stop();
+  });
+
+  // AC: @daemon-file-monitoring ac-2
+  it("fires when active session event logs change", async () => {
+    const onSessionChange = vi.fn();
+    const sessionDir = await writeSessionFixture(
+      projectDir,
+      "01JTESTSESSIONWATCHER0000005",
+      "active",
+    );
     const eventsPath = join(sessionDir, "events.jsonl");
-    await writeFile(eventsPath, '{"type":"session.started"}\n');
 
     const watcher = new SessionWatcher({
       sessionsDir: join(projectDir, ".kspec-sessions"),
@@ -147,12 +225,13 @@ describeOrSkip("SessionWatcher", () => {
   });
 
   // AC: @daemon-file-monitoring ac-2
-  // AC: @daemon-file-monitoring ac-3
   it("ignores blob subtree writes so content storage does not trigger monitoring", async () => {
     const onSessionChange = vi.fn();
-    const sessionDir = join(projectDir, ".kspec-sessions", "01JTESTSESSIONWATCHER0000006");
-    await mkdir(sessionDir, { recursive: true });
-    await writeFile(join(sessionDir, "session.yaml"), "status: active\n");
+    const sessionDir = await writeSessionFixture(
+      projectDir,
+      "01JTESTSESSIONWATCHER0000006",
+      "active",
+    );
 
     const watcher = new SessionWatcher({
       sessionsDir: join(projectDir, ".kspec-sessions"),
@@ -173,60 +252,14 @@ describeOrSkip("SessionWatcher", () => {
     await watcher.stop();
   });
 
-  // AC: @daemon-file-monitoring ac-3
-  const itWithProcFd = existsSync("/proc/self/fd") ? it : it.skip;
-  itWithProcFd(
-    "keeps open file descriptor usage flat when blob file volume increases",
-    async () => {
-      async function measureWatcherDelta(sessionId: string, blobCount: number): Promise<number> {
-        const sessionsDir = join(projectDir, ".kspec-sessions");
-        const sessionDir = join(sessionsDir, sessionId);
-        const blobDir = join(sessionDir, "blobs");
-        await mkdir(blobDir, { recursive: true });
-        await writeFile(join(sessionDir, "session.yaml"), "status: active\n");
-        await writeFile(join(sessionDir, "events.jsonl"), '{"type":"session.started"}\n');
-
-        for (let index = 0; index < blobCount; index++) {
-          await writeFile(join(blobDir, `payload-${index}.blob`), `blob ${index}\n`);
-        }
-
-        const baselineFdCount = await countOpenFileDescriptors();
-        const watcher = new SessionWatcher({
-          sessionsDir,
-          onSessionChange: vi.fn(),
-          onError: vi.fn(),
-        });
-
-        try {
-          await watcher.start();
-          await waitForDebounce();
-
-          const watcherFdCount = await countOpenFileDescriptors();
-          return watcherFdCount - baselineFdCount;
-        } finally {
-          await watcher.stop();
-          await waitForDebounce();
-        }
-      }
-
-      const lowBlobFootprint = await measureWatcherDelta("01JTESTSESSIONWATCHER0000008", 1);
-      const highBlobFootprint = await measureWatcherDelta("01JTESTSESSIONWATCHER0000009", 250);
-
-      // oxlint-disable-next-line no-standalone-expect -- inside itWithProcFd (conditional it/it.skip)
-      expect(lowBlobFootprint).toBeGreaterThanOrEqual(0);
-      // oxlint-disable-next-line no-standalone-expect -- inside itWithProcFd (conditional it/it.skip)
-      expect(highBlobFootprint).toBeGreaterThanOrEqual(0);
-      // oxlint-disable-next-line no-standalone-expect -- inside itWithProcFd (conditional it/it.skip)
-      expect(highBlobFootprint - lowBlobFootprint).toBeLessThanOrEqual(1);
-    },
-  );
-
   // AC: @daemon-file-monitoring ac-2
-  it("ignores non-metadata file types in session directories", async () => {
+  it("ignores non-metadata file types in active session directories", async () => {
     const onSessionChange = vi.fn();
-    const sessionDir = join(projectDir, ".kspec-sessions", "01JTESTSESSIONWATCHER0000007");
-    await mkdir(sessionDir, { recursive: true });
-    await writeFile(join(sessionDir, "session.yaml"), "status: active\n");
+    const sessionDir = await writeSessionFixture(
+      projectDir,
+      "01JTESTSESSIONWATCHER0000007",
+      "active",
+    );
 
     const watcher = new SessionWatcher({
       sessionsDir: join(projectDir, ".kspec-sessions"),
@@ -245,38 +278,113 @@ describeOrSkip("SessionWatcher", () => {
     await watcher.stop();
   });
 
-  it("coalesces one logical session creation into a single callback", async () => {
+  // AC: @daemon-file-monitoring ac-session-close-unwatch
+  it("removes the per-session watch after a session becomes non-active", async () => {
     const onSessionChange = vi.fn();
-    const sessionsDir = join(projectDir, ".kspec-sessions");
-    await mkdir(sessionsDir, { recursive: true });
+    const sessionId = "01JTESTSESSIONWATCHER0000008";
+    const sessionDir = await writeSessionFixture(projectDir, sessionId, "active");
+    const metadataPath = join(sessionDir, "session.yaml");
+    const eventsPath = join(sessionDir, "events.jsonl");
+
     const watcher = new SessionWatcher({
-      sessionsDir,
+      sessionsDir: join(projectDir, ".kspec-sessions"),
       onSessionChange,
       onError: vi.fn(),
     });
 
     await watcher.start();
+    onSessionChange.mockClear();
 
-    const sessionDir = join(projectDir, ".kspec-sessions", "01JTESTSESSIONWATCHER0000003");
-    const metadataPath = join(sessionDir, "session.yaml");
-    await mkdir(sessionDir, { recursive: true });
     await writeFile(
       metadataPath,
       [
-        "id: 01JTESTSESSIONWATCHER0000003",
+        `id: ${sessionId}`,
         "agent_type: task-worker",
-        "status: active",
+        "status: completed",
         'started_at: "2026-03-19T12:00:00.000Z"',
+        'ended_at: "2026-03-19T12:05:00.000Z"',
         "",
       ].join("\n"),
     );
-
     await waitForDebounce();
 
     expect(onSessionChange).toHaveBeenCalledTimes(1);
     expect(onSessionChange).toHaveBeenCalledWith(sessionDir);
 
+    onSessionChange.mockClear();
+    await writeFile(eventsPath, '{"type":"session.updated"}\n', { flag: "a" });
+    await waitForDebounce();
+
+    expect(onSessionChange).not.toHaveBeenCalled();
+
     await watcher.stop();
+  });
+
+  // AC: @daemon-file-monitoring ac-3
+  // AC: @daemon-file-monitoring ac-active-only-watching
+  // AC: @daemon-file-monitoring ac-startup-active-only
+  const itWithProcFd = existsSync("/proc/self/fd") ? it : it.skip;
+  itWithProcFd("keeps open file descriptor usage tied to active sessions", async () => {
+    async function measureWatcherDelta(
+      activeCount: number,
+      inactiveCount: number,
+    ): Promise<number> {
+      const sessionsDir = join(projectDir, ".kspec-sessions");
+      await rm(sessionsDir, { recursive: true, force: true });
+      await mkdir(sessionsDir, { recursive: true });
+
+      for (let index = 0; index < activeCount; index++) {
+        await writeSessionFixture(
+          projectDir,
+          `01JTESTACTIVE${index.toString().padStart(13, "0")}`,
+          "active",
+        );
+      }
+
+      const terminalStatuses = [
+        "completed",
+        "abandoned",
+        "timed_out",
+        "failed",
+        "stalled",
+      ] as const;
+      for (let index = 0; index < inactiveCount; index++) {
+        const status = terminalStatuses[index % terminalStatuses.length];
+        await writeSessionFixture(
+          projectDir,
+          `01JTESTINACTIVE${index.toString().padStart(11, "0")}`,
+          status,
+        );
+      }
+
+      const baselineFdCount = await countOpenFileDescriptors();
+      const watcher = new SessionWatcher({
+        sessionsDir,
+        onSessionChange: vi.fn(),
+        onError: vi.fn(),
+      });
+
+      try {
+        await watcher.start();
+        await waitForDebounce();
+
+        const watcherFdCount = await countOpenFileDescriptors();
+        return watcherFdCount - baselineFdCount;
+      } finally {
+        await watcher.stop();
+        await waitForDebounce();
+      }
+    }
+
+    const fewInactive = await measureWatcherDelta(2, 2);
+    const manyInactive = await measureWatcherDelta(2, 40);
+
+    // oxlint-disable-next-line no-standalone-expect -- inside itWithProcFd (conditional it/it.skip)
+    expect(fewInactive).toBeGreaterThanOrEqual(0);
+    // oxlint-disable-next-line no-standalone-expect -- inside itWithProcFd (conditional it/it.skip)
+    expect(manyInactive).toBeGreaterThanOrEqual(0);
+    // oxlint-disable-next-line no-standalone-expect -- inside itWithProcFd (conditional it/it.skip)
+    expect(manyInactive - fewInactive).toBeLessThanOrEqual(3);
   });
 
   it("stops emitting after watcher stop", async () => {
@@ -290,20 +398,7 @@ describeOrSkip("SessionWatcher", () => {
     await watcher.start();
     await watcher.stop();
 
-    const sessionDir = join(projectDir, ".kspec-sessions", "01JTESTSESSIONWATCHER0000002");
-    await mkdir(sessionDir, { recursive: true });
-    const metadataPath = join(sessionDir, "session.yaml");
-    await writeFile(
-      metadataPath,
-      [
-        "id: 01JTESTSESSIONWATCHER0000002",
-        "agent_type: task-worker",
-        "status: completed",
-        'started_at: "2026-03-19T12:00:00.000Z"',
-        "",
-      ].join("\n"),
-    );
-
+    await writeSessionFixture(projectDir, "01JTESTSESSIONWATCHER0000009", "active");
     await waitForDebounce();
 
     expect(onSessionChange).not.toHaveBeenCalled();

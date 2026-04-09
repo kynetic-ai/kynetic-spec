@@ -18,7 +18,15 @@ import {
   KspecConfigSchema,
 } from "../../src/parser/config.js";
 import { initContext } from "../../src/parser/yaml.js";
-import { createTempDir, cleanupTempDir, initGitRepo, kspec } from "../helpers/cli.js";
+import {
+  createTempDir,
+  cleanupTempDir,
+  createIsolatedKspecHome,
+  initGitRepo,
+  kspec,
+  readTestOutput,
+} from "../helpers/cli.js";
+import { existsSync } from "node:fs";
 import { stringify } from "yaml";
 
 describe("Daemon Config", () => {
@@ -136,6 +144,48 @@ daemon:
     });
   });
 
+  describe("daemon.runtime configuration", () => {
+    // AC: @daemon-runtime-adapter ac-default-node
+    it("defaults runtime to node when no config", async () => {
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.config.daemon.runtime).toBe("node");
+    });
+
+    // AC: @daemon-runtime-adapter ac-runtime-selection
+    it("loads runtime: node from config", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+daemon:
+  runtime: node
+`,
+      );
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.config.daemon.runtime).toBe("node");
+    });
+
+    // AC: @daemon-runtime-adapter ac-default-node
+    it("defaults runtime to node when daemon config omits runtime", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+daemon:
+  port: 4500
+  auto_start: false
+`,
+      );
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.config.daemon.runtime).toBe("node");
+      expect(result.config.daemon.port).toBe(4500);
+      expect(result.config.daemon.auto_start).toBe(false);
+    });
+  });
+
   describe("daemon schema validation", () => {
     it("rejects invalid port: too low", () => {
       const result = KspecConfigSchema.safeParse({
@@ -169,11 +219,20 @@ daemon:
       expect(result.success).toBe(false);
     });
 
+    it("rejects invalid runtime", () => {
+      const result = KspecConfigSchema.safeParse({
+        daemon: { runtime: "deno" },
+      });
+
+      expect(result.success).toBe(false);
+    });
+
     it("accepts valid daemon config", () => {
       const result = KspecConfigSchema.safeParse({
         daemon: {
           port: 4000,
           host: "0.0.0.0",
+          runtime: "node",
           auto_start: true,
         },
       });
@@ -198,6 +257,7 @@ daemon:
 
       expect(config.daemon.port).toBe(3456);
       expect(config.daemon.host).toBe("localhost");
+      expect(config.daemon.runtime).toBe("node");
       expect(config.daemon.auto_start).toBe(true);
     });
 
@@ -208,6 +268,7 @@ daemon:
 
       expect(config.daemon.port).toBe(3456); // default
       expect(config.daemon.host).toBe("localhost"); // default
+      expect(config.daemon.runtime).toBe("node"); // default
       expect(config.daemon.auto_start).toBe(false); // from config
     });
   });
@@ -218,6 +279,7 @@ daemon:
 
       expect(defaults.daemon.port).toBe(3456);
       expect(defaults.daemon.host).toBe("localhost");
+      expect(defaults.daemon.runtime).toBe("node");
       expect(defaults.daemon.auto_start).toBe(true);
     });
   });
@@ -276,6 +338,7 @@ daemon:
 
       // config.daemon should have the config file values
       expect(ctx.config.daemon.port).toBe(6000);
+      expect(ctx.config.daemon.runtime).toBe("node");
       expect(ctx.config.daemon.auto_start).toBe(false);
 
       // manifest.daemon should still have old values (for deprecation warning)
@@ -334,6 +397,7 @@ daemon:
       const ctx = await initContext(tempDir);
 
       expect(ctx.config.daemon.port).toBe(7777);
+      expect(ctx.config.daemon.runtime).toBe("node");
       expect(ctx.config.daemon.auto_start).toBe(false);
     });
 
@@ -349,7 +413,63 @@ daemon:
       const ctx = await initContext(tempDir);
 
       expect(ctx.config.daemon.port).toBe(3456);
+      expect(ctx.config.daemon.runtime).toBe("node");
       expect(ctx.config.daemon.auto_start).toBe(true);
+    });
+  });
+
+  // AC: @multi-directory-daemon ac-9, ac-10 — auto-start checks global PID path
+  describe("auto-start PID file path", () => {
+    it("detects existing daemon via global config PID file, not project specDir", async () => {
+      const isolatedHome = await createIsolatedKspecHome(tempDir);
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        ["daemon:", "  auto_start: true", "  runtime: node", ""].join("\n"),
+      );
+
+      // Write a PID file to the global config path (where the daemon actually writes)
+      // using the current process PID so isDaemonRunning() sees a live process
+      await fs.writeFile(isolatedHome.daemonPidFilePath, `${process.pid}\n`);
+
+      // Run a CLI command — auto-start should detect the PID and NOT spawn a new daemon
+      const result = kspec(`util ulid`, tempDir, {
+        env: {
+          ...isolatedHome.env,
+          KSPEC_NO_DAEMON: "",
+          KSPEC_SESSION_ID: "",
+        },
+      });
+
+      expect(result.exitCode).toBe(0);
+
+      // The PID file should still contain only our original PID — no new daemon was spawned
+      const pidContent = await readTestOutput(isolatedHome.daemonPidFilePath);
+      expect(pidContent.trim()).toBe(String(process.pid));
+    });
+  });
+
+  // AC: @config-daemon ac-7 — suppress auto-start in dispatch agent sessions
+  describe("dispatch agent session suppression", () => {
+    it("does not auto-start daemon when KSPEC_SESSION_ID is set", async () => {
+      const isolatedHome = await createIsolatedKspecHome(tempDir);
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        ["daemon:", "  auto_start: true", "  runtime: node", ""].join("\n"),
+      );
+
+      // Run a CLI command with KSPEC_SESSION_ID set — should suppress auto-start
+      const result = kspec(`util ulid`, tempDir, {
+        env: {
+          ...isolatedHome.env,
+          KSPEC_SESSION_ID: "test-dispatch-session",
+          KSPEC_NO_DAEMON: "",
+        },
+      });
+
+      expect(result.exitCode).toBe(0);
+
+      // No daemon PID file should have been created — auto-start was suppressed
+      expect(existsSync(isolatedHome.daemonPidFilePath)).toBe(false);
     });
   });
 });

@@ -3056,74 +3056,70 @@ describe("Integration: Batch operations", () => {
   });
 
   // AC: @multi-ref-batch ac-8 - Ref resolution uses existing logic
-  it(
-    "should resolve refs using existing resolution logic (slugs, ULID prefixes)",
-    { timeout: 15000 },
-    () => {
-      // Create two tasks with slugs
-      const task1 = kspecJson<{ task: { _ulid: string } }>(
-        'task add --title "Slug Test 1" --slug test-slug-1 --priority 3',
-        tempDir,
-      );
-      const task2 = kspecJson<{ task: { _ulid: string } }>(
-        'task add --title "Slug Test 2" --slug test-slug-2 --priority 3',
-        tempDir,
-      );
+  it("should resolve refs using existing resolution logic (slugs, ULID prefixes)", () => {
+    // Create two tasks with slugs
+    const task1 = kspecJson<{ task: { _ulid: string } }>(
+      'task add --title "Slug Test 1" --slug test-slug-1 --priority 3',
+      tempDir,
+    );
+    const task2 = kspecJson<{ task: { _ulid: string } }>(
+      'task add --title "Slug Test 2" --slug test-slug-2 --priority 3',
+      tempDir,
+    );
 
-      const ulid1 = task1.task._ulid;
-      const ulid2 = task2.task._ulid;
-      const _shortUlid1 = ulid1.slice(0, 8);
-      const _shortUlid2 = ulid2.slice(0, 8);
+    const ulid1 = task1.task._ulid;
+    const ulid2 = task2.task._ulid;
+    const _shortUlid1 = ulid1.slice(0, 8);
+    const _shortUlid2 = ulid2.slice(0, 8);
 
-      // Start and submit both tasks
-      kspec(`task start @${ulid1}`, tempDir);
-      kspec(`task start @${ulid2}`, tempDir);
-      kspec(`task submit @${ulid1}`, tempDir);
-      kspec(`task submit @${ulid2}`, tempDir);
+    // Start and submit both tasks
+    kspec(`task start @${ulid1}`, tempDir);
+    kspec(`task start @${ulid2}`, tempDir);
+    kspec(`task submit @${ulid1}`, tempDir);
+    kspec(`task submit @${ulid2}`, tempDir);
 
-      // Test slug resolution
-      const slugResult = kspecJson<{
-        success: boolean;
-        results: Array<{ ref: string; status: string }>;
-      }>('task complete --refs @test-slug-1 @test-slug-2 --reason "Test"', tempDir);
-      expect(slugResult.success).toBe(true);
-      expect(slugResult.results[0].status).toBe("success");
-      expect(slugResult.results[1].status).toBe("success");
+    // Test slug resolution
+    const slugResult = kspecJson<{
+      success: boolean;
+      results: Array<{ ref: string; status: string }>;
+    }>('task complete --refs @test-slug-1 @test-slug-2 --reason "Test"', tempDir);
+    expect(slugResult.success).toBe(true);
+    expect(slugResult.results[0].status).toBe("success");
+    expect(slugResult.results[1].status).toBe("success");
 
-      // Create two more tasks for ULID prefix test
-      // Use full ULIDs since short prefixes (8 chars) can be ambiguous when
-      // tasks are created in quick succession (ULID first 10 chars are timestamp)
-      const task3 = kspecJson<{ task: { _ulid: string } }>(
-        'task add --title "Prefix Test 1" --priority 3',
-        tempDir,
-      );
-      const task4 = kspecJson<{ task: { _ulid: string } }>(
-        'task add --title "Prefix Test 2" --priority 3',
-        tempDir,
-      );
-      const ulid3 = task3.task._ulid;
-      const ulid4 = task4.task._ulid;
+    // Create two more tasks for ULID prefix test
+    // Use full ULIDs since short prefixes (8 chars) can be ambiguous when
+    // tasks are created in quick succession (ULID first 10 chars are timestamp)
+    const task3 = kspecJson<{ task: { _ulid: string } }>(
+      'task add --title "Prefix Test 1" --priority 3',
+      tempDir,
+    );
+    const task4 = kspecJson<{ task: { _ulid: string } }>(
+      'task add --title "Prefix Test 2" --priority 3',
+      tempDir,
+    );
+    const ulid3 = task3.task._ulid;
+    const ulid4 = task4.task._ulid;
 
-      // Start and submit both
-      kspec(`task start @${ulid3}`, tempDir);
-      kspec(`task start @${ulid4}`, tempDir);
-      kspec(`task submit @${ulid3}`, tempDir);
-      kspec(`task submit @${ulid4}`, tempDir);
+    // Start and submit both
+    kspec(`task start @${ulid3}`, tempDir);
+    kspec(`task start @${ulid4}`, tempDir);
+    kspec(`task submit @${ulid3}`, tempDir);
+    kspec(`task submit @${ulid4}`, tempDir);
 
-      // Test ULID resolution with full ULIDs (ref resolution still uses the same logic)
-      const prefixResult = kspecJson<{
-        success: boolean;
-        summary: { total: number; succeeded: number; failed: number };
-        results: Array<{ ref: string; status: string; error?: string }>;
-      }>(`task complete --refs @${ulid3} @${ulid4} --reason "Test"`, tempDir);
+    // Test ULID resolution with full ULIDs (ref resolution still uses the same logic)
+    const prefixResult = kspecJson<{
+      success: boolean;
+      summary: { total: number; succeeded: number; failed: number };
+      results: Array<{ ref: string; status: string; error?: string }>;
+    }>(`task complete --refs @${ulid3} @${ulid4} --reason "Test"`, tempDir);
 
-      // Full ULIDs should always resolve uniquely
-      expect(prefixResult.success).toBe(true);
-      expect(prefixResult.summary.succeeded).toBe(2);
-      expect(prefixResult.results[0].status).toBe("success");
-      expect(prefixResult.results[1].status).toBe("success");
-    },
-  );
+    // Full ULIDs should always resolve uniquely
+    expect(prefixResult.success).toBe(true);
+    expect(prefixResult.summary.succeeded).toBe(2);
+    expect(prefixResult.results[0].status).toBe("success");
+    expect(prefixResult.results[1].status).toBe("success");
+  });
 
   // Test task complete batch
   it("should batch complete multiple tasks", () => {

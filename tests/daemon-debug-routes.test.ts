@@ -13,13 +13,13 @@ import { describe, it, expect, afterEach } from "vitest";
 import { mkdirSync, writeFileSync } from "node:fs";
 import * as path from "node:path";
 import { createTempDir, cleanupTempDir, initGitRepo } from "./helpers/cli.js";
-import { createDebugRoutes } from "../dist/daemon/routes/debug.ts";
-import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.ts";
+import { createDebugRoutes } from "../dist/daemon/routes/debug.js";
+import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.js";
 import type {
   RouteEntityCache,
   EntityCacheAccessor,
-} from "../dist/daemon/routes/entity-cache-types.ts";
-import type { CacheDiagnostic, DomainDiagnostic } from "../dist/daemon/entity-cache.ts";
+} from "../dist/daemon/routes/entity-cache-types.js";
+import type { CacheDiagnostic, DomainDiagnostic } from "../dist/daemon/entity-cache.js";
 
 let tempDir: string;
 let app: Elysia;
@@ -76,6 +76,7 @@ function createMockCache(
       (domains[domain]?.state ?? "unloaded") as "ready" | "unloaded" | "loading" | "degraded",
     getTaskIndex: () => null,
     getTaskDetail: () => null,
+    getTaskHistory: () => null,
     setTaskDetail: () => {},
     getAllTaskDetails: () => null,
     getItemIndex: () => null,
@@ -83,6 +84,7 @@ function createMockCache(
     setItemDetail: () => {},
     getAllItemDetails: () => null,
     getSessionIndex: () => null,
+    getSessionLiveEventCount: () => undefined,
     getSessionDetail: () => null,
     setSessionDetail: () => {},
     getPlansIndex: () => null,

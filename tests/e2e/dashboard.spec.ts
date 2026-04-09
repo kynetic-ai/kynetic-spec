@@ -545,9 +545,9 @@ test.describe("Dashboard Overview", () => {
         statusCounts[task.status] = (statusCounts[task.status] || 0) + 1;
       }
 
-      // Fixture has: 4 pending (ready, dep-blocked, needs-review, manual-only),
+      // Fixture has: 5 pending (ready, dep-blocked, needs-review, manual-only, planref-only),
       // 1 in_progress, 1 pending_review, 1 completed
-      expect(statusCounts["pending"]).toBe(4);
+      expect(statusCounts["pending"]).toBe(5);
       expect(statusCounts["in_progress"]).toBe(1);
       expect(statusCounts["pending_review"]).toBe(1);
       expect(statusCounts["completed"]).toBe(1);

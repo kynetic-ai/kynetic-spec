@@ -16,7 +16,7 @@
 import type { Note, Task, TaskInput } from "../schema/task.js";
 import { TaskSchema } from "../schema/task.js";
 import type { KspecContext, LoadedTask } from "./yaml.js";
-import { createNote, createTask, getAuthor } from "./yaml.js";
+import { createNote, createTask, getAuthor, getEntityCacheContext } from "./yaml.js";
 import { createRequire } from "node:module";
 import { commitIfShadow } from "./shadow.js";
 import { getActiveBatchBuffer, runWithBuffer } from "../cli/batch-write-buffer.js";
@@ -285,11 +285,77 @@ export interface TaskStorageBackend {
   rebuildIndex(ctx: KspecContext): Promise<{ count: number }>;
 
   /**
+   * Load all tasks with their field-change history in one bulk pass.
+   * Optional because only the split backend currently exposes both.
+   *
+   * AC: @daemon-entity-cache ac-task-history-retention — bulk load retains history
+   */
+  loadAllTasksWithHistory?(
+    ctx: KspecContext,
+  ): Promise<Array<{ task: LoadedTask; history: HistoryEntry[] }>>;
+
+  /**
+   * Load a task and its field-change history in one read operation.
+   * Optional because only the split backend currently exposes both.
+   */
+  loadTaskWithHistory?(
+    ctx: KspecContext,
+    ulid: string,
+  ): Promise<{ task: LoadedTask | undefined; history: HistoryEntry[] }>;
+
+  /**
    * Get the history entries for a task (optional — only split backend provides this).
    *
    * AC: @task-core-data-file ac-2 — history provides complete audit trail
    */
   getTaskHistory?(ctx: KspecContext, ulid: string): Promise<HistoryEntry[]>;
+}
+
+interface TaskReadCache {
+  getDomainState(domain: "tasks"): string;
+  getTaskIndex(): TaskSummary[] | null;
+  getTaskDetail(ulid: string): LoadedTask | null;
+  getTaskHistory(ulid: string): HistoryEntry[] | null;
+  setTaskDetail(ulid: string, task: LoadedTask): void;
+  getAllTaskDetails(): LoadedTask[] | null;
+}
+
+function isTaskReadCache(cache: unknown): cache is TaskReadCache {
+  return (
+    typeof cache === "object" &&
+    cache !== null &&
+    typeof (cache as TaskReadCache).getDomainState === "function" &&
+    typeof (cache as TaskReadCache).getTaskIndex === "function" &&
+    typeof (cache as TaskReadCache).getTaskDetail === "function" &&
+    typeof (cache as TaskReadCache).getTaskHistory === "function" &&
+    typeof (cache as TaskReadCache).setTaskDetail === "function" &&
+    typeof (cache as TaskReadCache).getAllTaskDetails === "function"
+  );
+}
+
+function getReadyTaskCache(): TaskReadCache | null {
+  const cacheCtx = getEntityCacheContext();
+  if (!cacheCtx) {
+    return null;
+  }
+
+  const cache = cacheCtx.cacheAccessor(cacheCtx.projectPath);
+  if (!isTaskReadCache(cache) || cache.getDomainState("tasks") !== "ready") {
+    return null;
+  }
+
+  return cache;
+}
+
+function findTaskSummaryByRef(tasks: TaskSummary[], ref: string): TaskSummary | undefined {
+  const cleanRef = ref.startsWith("@") ? ref.slice(1) : ref;
+
+  return tasks.find((task) => {
+    if (task._ulid === cleanRef) return true;
+    if (task._ulid.toLowerCase().startsWith(cleanRef.toLowerCase())) return true;
+    if (task.slugs.includes(cleanRef)) return true;
+    return false;
+  });
 }
 
 /**
@@ -481,7 +547,7 @@ export class TaskDataManager {
    * AC: @task-data-manager ac-2 — only index data read from storage
    */
   async listTasks(ctx: KspecContext, filters?: TaskListFilters): Promise<TaskSummary[]> {
-    const summaries = await this.backend.listTasks(ctx);
+    const summaries = getReadyTaskCache()?.getTaskIndex() ?? (await this.backend.listTasks(ctx));
 
     if (!filters) {
       return summaries;
@@ -519,7 +585,27 @@ export class TaskDataManager {
    * AC: @task-data-manager ac-1 — callers don't know about storage format
    */
   async loadAllTasks(ctx: KspecContext): Promise<LoadedTask[]> {
-    return this.backend.loadAllTasks(ctx);
+    return getReadyTaskCache()?.getAllTaskDetails() ?? this.backend.loadAllTasks(ctx);
+  }
+
+  /**
+   * Load all tasks with their field-change history in one bulk pass.
+   *
+   * Delegates to the backend's loadAllTasksWithHistory() if available,
+   * otherwise falls back to loadAllTasks() with empty history arrays.
+   *
+   * AC: @daemon-entity-cache ac-task-history-retention — bulk load retains history
+   */
+  async loadAllTasksWithHistory(
+    ctx: KspecContext,
+  ): Promise<Array<{ task: LoadedTask; history: HistoryEntry[] }>> {
+    if (this.backend.loadAllTasksWithHistory) {
+      return this.backend.loadAllTasksWithHistory(ctx);
+    }
+
+    // Fallback: load tasks without history
+    const tasks = await this.backend.loadAllTasks(ctx);
+    return tasks.map((task) => ({ task, history: [] }));
   }
 
   /**
@@ -532,7 +618,25 @@ export class TaskDataManager {
    * AC: @trait-error-guidance ac-3 — suggests checking ref on not found
    */
   async getTask(ctx: KspecContext, ref: string): Promise<LoadedTask> {
-    const task = await this.backend.getTask(ctx, ref);
+    let task: LoadedTask | undefined;
+    const cache = getReadyTaskCache();
+    if (cache) {
+      const cachedSummary = findTaskSummaryByRef(cache.getTaskIndex() ?? [], ref);
+      if (cachedSummary) {
+        const cachedTask = cache.getTaskDetail(cachedSummary._ulid);
+        if (cachedTask) {
+          return cachedTask;
+        }
+      }
+
+      task = await this.backend.getTask(ctx, ref);
+      if (task) {
+        cache.setTaskDetail(task._ulid, task);
+        return task;
+      }
+    }
+
+    task ??= await this.backend.getTask(ctx, ref);
     if (!task) {
       // AC: @trait-error-guidance ac-1, ac-2, ac-3
       throw new TaskDataManagerError(`Task not found: ${ref}`, {
@@ -543,6 +647,34 @@ export class TaskDataManager {
   }
 
   /**
+   * Load a task and its history together when the backend can provide both.
+   *
+   * This lets cache-aware command execution reuse eagerly retained history
+   * without re-reading task.yaml after task detail is already warm.
+   */
+  async loadTaskWithHistory(
+    ctx: KspecContext,
+    ulid: string,
+  ): Promise<{ task: LoadedTask | undefined; history: HistoryEntry[] }> {
+    const cache = getReadyTaskCache();
+    if (cache) {
+      const cachedTask = cache.getTaskDetail(ulid);
+      const cachedHistory = cache.getTaskHistory(ulid);
+      if (cachedTask && cachedHistory) {
+        return { task: cachedTask, history: cachedHistory };
+      }
+    }
+
+    if (this.backend.loadTaskWithHistory) {
+      return this.backend.loadTaskWithHistory(ctx, ulid);
+    }
+
+    const task = await this.backend.getTask(ctx, ulid);
+    const history = this.backend.getTaskHistory ? await this.backend.getTaskHistory(ctx, ulid) : [];
+    return { task, history };
+  }
+
+  /**
    * Get the history entries for a task from the storage backend.
    *
    * Returns the per-task field-change history if the backend supports it.
@@ -550,6 +682,11 @@ export class TaskDataManager {
    * AC: @task-core-data-file ac-2 — history provides complete audit trail
    */
   async getTaskHistory(ctx: KspecContext, ulid: string): Promise<HistoryEntry[]> {
+    const cachedHistory = getReadyTaskCache()?.getTaskHistory(ulid);
+    if (cachedHistory) {
+      return cachedHistory;
+    }
+
     if (this.backend.getTaskHistory) {
       return this.backend.getTaskHistory(ctx, ulid);
     }

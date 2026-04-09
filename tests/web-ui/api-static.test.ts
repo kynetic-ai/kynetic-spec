@@ -360,6 +360,146 @@ describe("static API snapshot adapters", () => {
     expect(items.data[0].title).toBe("Spec One");
     expect(items.data[0].acceptance_criteria_count).toBe(1);
   });
+
+  // AC: @api-contract ac-plan-filter-derived
+  it("includes tasks in derived_tasks even without plan_ref (bidirectional)", () => {
+    // Add a task that is in plan-one's derived_tasks but has NO plan_ref
+    modeState.snapshot!.tasks.push({
+      _ulid: "01TASK00000000000000000005",
+      slugs: ["task-derived-only"],
+      title: "Derived Only Task",
+      type: "task",
+      status: "pending",
+      priority: 2,
+      spec_ref: "@spec-one",
+      tags: [],
+      depends_on: [],
+      plan_ref: "",
+      automation: "eligible",
+      notes: [],
+      todos: [],
+      notes_count: 0,
+      todos_count: 0,
+      created_at: "2026-03-05T00:00:00.000Z",
+    } as any);
+    // Add this task to plan-one's derived_tasks
+    modeState.snapshot!.plans![0].derived_tasks.push("@task-derived-only");
+
+    const tasks = fetchTasksStatic({ plan: "plan-one" });
+    const titles = tasks.data.map((t: any) => t.title);
+    expect(titles).toContain("Task One"); // matched by plan_ref
+    expect(titles).toContain("Derived Only Task"); // matched by derived_tasks
+    expect(tasks.meta.total).toBe(2);
+  });
+
+  // AC: @api-contract ac-plan-filter-ref
+  it("includes tasks with plan_ref even when not in derived_tasks (bidirectional)", () => {
+    // Add a task with plan_ref pointing to plan-one but NOT in derived_tasks
+    modeState.snapshot!.tasks.push({
+      _ulid: "01TASK00000000000000000006",
+      slugs: ["task-planref-only"],
+      title: "PlanRef Only Task",
+      type: "task",
+      status: "pending",
+      priority: 2,
+      spec_ref: "@spec-one",
+      tags: [],
+      depends_on: [],
+      plan_ref: "@plan-one",
+      automation: "eligible",
+      notes: [],
+      todos: [],
+      notes_count: 0,
+      todos_count: 0,
+      created_at: "2026-03-06T00:00:00.000Z",
+    } as any);
+    // plan-one.derived_tasks still only has ["@task-one"]
+
+    const tasks = fetchTasksStatic({ plan: "plan-one" });
+    const titles = tasks.data.map((t: any) => t.title);
+    expect(titles).toContain("Task One"); // matched by both
+    expect(titles).toContain("PlanRef Only Task"); // matched by plan_ref only
+    expect(tasks.meta.total).toBe(2);
+  });
+
+  // AC: @api-contract ac-plan-filter-not-found
+  it("returns empty array when plan filter matches no plan", () => {
+    const tasks = fetchTasksStatic({ plan: "nonexistent-plan" });
+    expect(tasks.data).toEqual([]);
+    expect(tasks.meta.total).toBe(0);
+  });
+
+  // AC: @api-contract ac-plan-filter-additive
+  it("plan filter is additive with other filters", () => {
+    // Add a task with plan_ref pointing to plan-one but different status
+    modeState.snapshot!.tasks.push({
+      _ulid: "01TASK00000000000000000007",
+      slugs: ["task-plan-completed"],
+      title: "Completed Plan Task",
+      type: "task",
+      status: "completed",
+      priority: 2,
+      spec_ref: "@spec-one",
+      tags: [],
+      depends_on: [],
+      plan_ref: "@plan-one",
+      automation: "eligible",
+      notes: [],
+      todos: [],
+      notes_count: 0,
+      todos_count: 0,
+      created_at: "2026-03-07T00:00:00.000Z",
+    } as any);
+    modeState.snapshot!.plans![0].derived_tasks.push("@task-plan-completed");
+
+    // Filter by plan AND status
+    const tasks = fetchTasksStatic({ plan: "plan-one", status: "in_progress" });
+    expect(tasks.meta.total).toBe(1);
+    expect(tasks.data[0].title).toBe("Task One");
+  });
+
+  // AC: @api-contract ac-plan-filter-resolve
+  it("resolves plan by ULID prefix", () => {
+    const tasks = fetchTasksStatic({ plan: "01PLAN" });
+    expect(tasks.meta.total).toBe(1);
+    expect(tasks.data[0].title).toBe("Task One");
+  });
+
+  // AC: @api-contract ac-plan-filter-resolve, ac-plan-filter-ref
+  it("matches plan_ref slug when query is ULID prefix (cross-format reverse link)", () => {
+    // task-one has plan_ref: "@plan-one" (slug), query by ULID prefix
+    const tasks = fetchTasksStatic({ plan: "01PLAN00000000000000000001" });
+    expect(tasks.meta.total).toBe(1);
+    expect(tasks.data[0].title).toBe("Task One");
+  });
+
+  // AC: @api-contract ac-plan-filter-resolve, ac-plan-filter-ref
+  it("matches plan_ref ULID when query is slug (cross-format reverse link)", () => {
+    // Add a task whose plan_ref is a ULID, then query by slug
+    modeState.snapshot!.tasks.push({
+      _ulid: "01TASK00000000000000000008",
+      slugs: ["task-ulid-planref"],
+      title: "ULID PlanRef Task",
+      type: "task",
+      status: "pending",
+      priority: 2,
+      spec_ref: "@spec-one",
+      tags: [],
+      depends_on: [],
+      plan_ref: "01PLAN00000000000000000001",
+      automation: "eligible",
+      notes: [],
+      todos: [],
+      notes_count: 0,
+      todos_count: 0,
+      created_at: "2026-03-08T00:00:00.000Z",
+    } as any);
+
+    const tasks = fetchTasksStatic({ plan: "plan-one" });
+    const titles = tasks.data.map((t: any) => t.title);
+    expect(titles).toContain("Task One"); // slug plan_ref, slug query
+    expect(titles).toContain("ULID PlanRef Task"); // ULID plan_ref, slug query
+  });
 });
 
 // AC: @gh-pages-export ac-22

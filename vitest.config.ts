@@ -1,4 +1,5 @@
 import { defineConfig, defineProject } from "vitest/config";
+import { cpus } from "node:os";
 
 const baseExclude = [
   "**/node_modules/**",
@@ -12,13 +13,30 @@ const baseExclude = [
 // These integration suites perform real git worktree/shadow-lock/bootstrap I/O.
 // They pass in isolation but can time out when competing with the rest of the
 // full suite, so run them in a dedicated serial project after the default pool.
-const dispatchHeavySuites = [
+const heavySerialSuites = [
   "tests/dispatch-workspace-config.test.ts",
   "tests/dispatch-workspace-registry.test.ts",
   "tests/dispatch-workspace-cleanup.test.ts",
   "tests/canonical-task-workspace-contract.test.ts",
   "tests/dispatch-runtime-bootstrap-contract.test.ts",
+  // CLI-heavy integration suites that spawn 100+ subprocesses each.
+  // Under full-suite concurrency they exhaust process/fd limits and
+  // crash with STACK_TRACE_ERROR or assertion failures.
+  "tests/integration.test.ts",
+  "tests/agent-dispatch-engine.test.ts",
+  "tests/activity-display.test.ts",
+  "tests/cli/session-note-limit.test.ts",
+  "tests/cli/session-start-format.test.ts",
+  "tests/cli/session-start-notes.test.ts",
+  "tests/cli/session-start-activity-timeline.test.ts",
+  "tests/meta.test.ts",
 ];
+
+// On machines with many cores vitest spawns one worker per core by default.
+// Each worker can trigger dozens of kspec CLI subprocesses, leading to resource
+// exhaustion (fd limits, process table pressure) on repeated full-suite runs.
+// Cap at 8 workers to keep subprocess fan-out manageable.
+const defaultMaxWorkers = Math.min(cpus().length, 8);
 
 export default defineConfig({
   test: {
@@ -28,10 +46,11 @@ export default defineConfig({
           name: "default",
           globals: true,
           environment: "node",
-          testTimeout: 15_000,
+          testTimeout: 45_000,
+          maxWorkers: defaultMaxWorkers,
           globalSetup: "./tests/global-setup.ts",
           setupFiles: ["./tests/setup.ts"],
-          exclude: [...baseExclude, ...dispatchHeavySuites],
+          exclude: [...baseExclude, ...heavySerialSuites],
           sequence: {
             groupOrder: 0,
           },
@@ -39,13 +58,13 @@ export default defineConfig({
       }),
       defineProject({
         test: {
-          name: "dispatch-heavy",
+          name: "heavy-serial",
           globals: true,
           environment: "node",
-          testTimeout: 30_000,
+          testTimeout: 45_000,
           globalSetup: "./tests/global-setup.ts",
           setupFiles: ["./tests/setup.ts"],
-          include: dispatchHeavySuites,
+          include: heavySerialSuites,
           exclude: baseExclude,
           fileParallelism: false,
           maxWorkers: 1,

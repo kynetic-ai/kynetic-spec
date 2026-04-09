@@ -28,13 +28,17 @@
  * - @daemon-entity-cache ac-domain-ready-event
  */
 
-import { relative } from "path";
+import { dirname, join, relative } from "path";
 import {
+  expandIncludePattern,
+  getTaskFilePath,
   initContext,
   loadAllItems,
+  loadSpecFile,
   loadMetaContext,
   loadSessionContext,
   loadPlans,
+  rawToSummary,
   resolveTaskDataManager,
   type KspecContext,
   type LoadedSpecItem,
@@ -42,6 +46,7 @@ import {
   type TaskSummary,
 } from "../parser/index.js";
 import type { MetaContext } from "../parser/meta.js";
+import type { HistoryEntry } from "../parser/task-data-manager.js";
 import { loadInboxItems, type LoadedInboxItem } from "../parser/yaml.js";
 import { loadTriageRecords, type LoadedTriageRecord } from "../parser/yaml.js";
 import { loadReviewRecords, type LoadedReviewRecord } from "../parser/reviews.js";
@@ -51,11 +56,24 @@ import { getUnresolvedBlockers } from "../parser/review-threads.js";
 import { getShadowStatus, hasRemoteTracking } from "../parser/shadow.js";
 import {
   type SessionLogSummary,
+  getSessionDir,
   getSessionMetadataOnly,
   resolveStaleSessionCriteria,
   getSessionActivityForStaleCheck,
 } from "../sessions/store.js";
-import { readdir } from "fs/promises";
+import type { Dir } from "fs";
+import * as fs from "fs/promises";
+
+async function closeDirectoryHandle(dir: Dir): Promise<void> {
+  try {
+    await dir.close();
+  } catch (error) {
+    const errorWithCode = error as NodeJS.ErrnoException;
+    if (errorWithCode.code !== "ERR_DIR_CLOSED") {
+      throw error;
+    }
+  }
+}
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -84,6 +102,14 @@ export const DOMAIN_LOAD_ORDER: CacheDomain[] = [
 
 /** Per-domain state. */
 export type DomainState = "unloaded" | "loading" | "ready" | "degraded";
+
+export interface WriteThroughHint {
+  ulid?: string;
+  filePath?: string;
+  sessionId?: string;
+}
+
+export type CachedTaskDetail = LoadedTask;
 
 /** Summary type for spec items (index tier — excludes description, notes, AC content). */
 export interface ItemSummary {
@@ -117,6 +143,14 @@ function toItemSummary(item: LoadedSpecItem): ItemSummary {
     created: item.created,
     acceptance_criteria_count: item.acceptance_criteria?.length ?? 0,
   };
+}
+
+function sortSessionSummaries(summaries: SessionLogSummary[]): void {
+  summaries.sort((a, b) => {
+    const aTs = new Date(a.started_at).getTime();
+    const bTs = new Date(b.started_at).getTime();
+    return bTs - aTs;
+  });
 }
 
 /** Summary type for plans (index tier — excludes content and notes). */
@@ -255,6 +289,9 @@ export interface CachedProjectConfig {
   root_dir: string;
   remote_tracking: { value: string; type: string } | null;
   daemon: { port: number; host: string; auto_start: boolean };
+  manifest_path?: string | null;
+  manifest?: KspecContext["manifest"];
+  config?: KspecContext["config"];
 }
 
 /** Cached session context, computed at cache load time to avoid per-request disk reads. */
@@ -302,9 +339,48 @@ export type DomainReadyCallback = (
  */
 export type DomainReloadedCallback = (domain: CacheDomain, projectPath: string) => void;
 
+interface ReloadCycle {
+  contextPromise?: Promise<KspecContext>;
+  pendingDomains: Set<CacheDomain>;
+}
+
+type MetaSubdomain = "manifest" | "shadow" | "session";
+
+interface PendingDomainChange {
+  filePath: string;
+  content?: string;
+}
+
+interface MetaLoadState {
+  manifest: boolean;
+  shadow: boolean;
+  session: boolean;
+}
+
+interface CachedMetaRuntime {
+  rootDir: string;
+  specDir: string;
+  projectRoot: string;
+  metaSourceFiles: string[];
+  project: { name?: string; version?: string; status?: string } | null;
+  specVersion: string | null;
+  daemon: { port: number; host: string; auto_start: boolean };
+  remoteTracking: { value: string; type: string } | null;
+  shadow: {
+    enabled: boolean;
+    branchName: string | null;
+    worktreeDir: string | null;
+    directory: string;
+  };
+}
+
+const TASK_ULID_PATTERN = /^[0-9A-HJKMNP-TV-Z]{26}$/i;
+
 const DEFAULT_SESSION_CACHE_CONFIG: SessionCacheConfig = {
   maxIndexSize: 100,
 };
+
+const META_SUBDOMAIN_LOAD_ORDER: MetaSubdomain[] = ["manifest", "shadow", "session"];
 
 // ─── Domain Data Store ───────────────────────────────────────────────────────
 
@@ -318,6 +394,10 @@ interface DomainStore<TIndex, TDetail = unknown> {
   lastError?: Error;
   /** Timestamp of last invalidation (watcher-driven or write-through). */
   lastInvalidatedAt?: string;
+}
+
+interface TaskDomainStore extends DomainStore<TaskSummary[], CachedTaskDetail> {
+  historyDetails: Map<string, HistoryEntry[]>;
 }
 
 // ─── File → Domain Mapping ───────────────────────────────────────────────────
@@ -379,6 +459,10 @@ export function fileToDomain(
     domains.push("meta");
   }
 
+  if (relativePath === ".kspec-session") {
+    domains.push("meta");
+  }
+
   // Spec items — modules/*.yaml, *.spec.yaml, or kynetic.yaml
   // (kynetic.yaml is the root of the item include tree; loadAllItems()
   // reads the manifest to discover module includes)
@@ -435,16 +519,19 @@ export class ProjectEntityCache {
   private sessionConfig: SessionCacheConfig;
 
   // Per-domain stores
-  private tasks: DomainStore<TaskSummary[], LoadedTask> = {
+  private tasks: TaskDomainStore = {
     state: "unloaded",
     index: null,
     details: new Map(),
+    historyDetails: new Map(),
   };
   private items: DomainStore<ItemSummary[], LoadedSpecItem> = {
     state: "unloaded",
     index: null,
     details: new Map(),
   };
+  private itemSourceFiles = new Map<string, string>();
+  private itemSourceFilesTracked = false;
   private meta: DomainStore<MetaSummary, MetaContext> = {
     state: "unloaded",
     index: null,
@@ -484,6 +571,15 @@ export class ProjectEntityCache {
 
   /** Cached session context, populated during meta domain load. */
   private cachedSessionContext: CachedSessionContext | null = null;
+  private metaLoadState: MetaLoadState = {
+    manifest: false,
+    shadow: false,
+    session: false,
+  };
+  private cachedMetaRuntime: CachedMetaRuntime | null = null;
+  private pendingMetaSubdomains = new Set<MetaSubdomain>();
+  private activeMetaSubdomains = new Set<MetaSubdomain>();
+  private pendingMetaReloadCycle: ReloadCycle | undefined;
 
   /**
    * In-flight reload promises for dedup.
@@ -511,6 +607,7 @@ export class ProjectEntityCache {
    */
   private domainDebounceTimers = new Map<CacheDomain, NodeJS.Timeout>();
   private domainDebounceMs = 100;
+  private pendingDomainChanges = new Map<CacheDomain, Map<string, PendingDomainChange>>();
 
   /**
    * Deferred domain invalidation promises for callers awaiting the debounced reload.
@@ -520,6 +617,13 @@ export class ProjectEntityCache {
     CacheDomain,
     { resolve: () => void; promise: Promise<void> }
   >();
+
+  /**
+   * Debounce-cycle-scoped context reuse for watcher invalidations.
+   * AC: @daemon-entity-cache ac-context-reuse
+   */
+  private currentReloadCycle: ReloadCycle | null = null;
+  private domainReloadCycles = new Map<CacheDomain, ReloadCycle>();
 
   /** Whether dispose() has been called. */
   private disposed = false;
@@ -576,15 +680,19 @@ export class ProjectEntityCache {
    * Caller should fall back to disk if null and domain is ready.
    * AC: @daemon-entity-cache ac-detail-on-demand
    */
-  getTaskDetail(ulid: string): LoadedTask | null {
+  getTaskDetail(ulid: string): CachedTaskDetail | null {
     return this.tasks.details.get(ulid) ?? null;
+  }
+
+  getTaskHistory(ulid: string): HistoryEntry[] | null {
+    return this.tasks.historyDetails.get(ulid) ?? null;
   }
 
   /**
    * Store a task detail in the cache (loaded on demand).
    * AC: @daemon-entity-cache ac-detail-on-demand
    */
-  setTaskDetail(ulid: string, task: LoadedTask): void {
+  setTaskDetail(ulid: string, task: LoadedTask | CachedTaskDetail): void {
     this.tasks.details.set(ulid, task);
   }
 
@@ -614,7 +722,7 @@ export class ProjectEntityCache {
    * Returns null if the tasks domain is not ready.
    * Populated during domain load alongside the index tier.
    */
-  getAllTaskDetails(): LoadedTask[] | null {
+  getAllTaskDetails(): CachedTaskDetail[] | null {
     if (this.tasks.state !== "ready") return null;
     return Array.from(this.tasks.details.values());
   }
@@ -849,67 +957,27 @@ export class ProjectEntityCache {
    * AC: @daemon-entity-cache ac-stale-during-reload — ready domains stay ready during reload
    * AC: @daemon-entity-cache ac-domain-ready-event — broadcast on non-ready → ready transition
    */
-  async loadDomain(domain: CacheDomain): Promise<void> {
+  async loadDomain(domain: CacheDomain, cycle?: ReloadCycle): Promise<void> {
     if (this.disposed) return;
 
-    // AC: @daemon-entity-cache ac-reload-dedup — reuse in-flight promise
-    const existing = this.inFlightReloads.get(domain);
-    if (existing) {
-      await existing;
+    if (domain === "meta") {
+      await this.loadMetaDomain(META_SUBDOMAIN_LOAD_ORDER, cycle);
       return;
     }
 
-    const store = this.getStore(domain);
-
-    // AC: @daemon-entity-cache ac-domain-ready-event — capture state before
-    // transition so we can detect non-ready → ready and fire the callback.
-    const previousState = store.state;
-
-    // AC: @daemon-entity-cache ac-stale-during-reload — only transition to
-    // "loading" for initial loads. When a domain is already "ready", keep it
-    // ready so API routes continue serving cached data during the reload.
-    // Previously cached data remains accessible until doLoadDomain() swaps
-    // in the new data on completion.
-    if (store.state !== "ready") {
-      store.state = "loading";
-    }
-
-    const promise = this.doLoadDomain(domain)
-      .then(() => {
-        if (!this.disposed) {
-          store.state = "ready";
-          store.lastError = undefined;
-
-          // AC: @daemon-entity-cache ac-domain-ready-event — only fire when
-          // transitioning FROM a non-ready state. Reloads of already-ready
-          // domains (ac-stale-during-reload) do not trigger the event.
-          if (previousState !== "ready" && this.onDomainReady) {
-            this.onDomainReady(domain, this.projectPath, previousState);
-          }
-        }
-      })
-      .catch((err) => {
-        if (!this.disposed) {
-          // AC: @daemon-entity-cache ac-graceful-degradation
-          store.state = "degraded";
-          store.lastError = err instanceof Error ? err : new Error(String(err));
-          console.error(`[entity-cache] Failed to load domain "${domain}":`, err);
-        }
-      })
-      .finally(() => {
-        this.inFlightReloads.delete(domain);
-      });
-
-    this.inFlightReloads.set(domain, promise);
-    await promise;
+    await this.runNonMetaDomainReload(domain, "dedupe", async () => {
+      await this.loadNonMetaDomain(domain, cycle);
+    });
   }
 
-  private async doLoadDomain(domain: CacheDomain): Promise<void> {
+  private async doLoadDomain(domain: CacheDomain, cycle?: ReloadCycle): Promise<void> {
     // Test-only: wait for delay gate before loading (KSPEC_TEST)
     await awaitTestDelay(this.projectPath);
     if (this.disposed) return;
 
-    const ctx = await initContext(this.projectPath);
+    const ctx = cycle
+      ? await this.getReloadCycleContext(cycle)
+      : await initContext(this.projectPath);
     // AC: @daemon-entity-cache ac-unregister-cleanup — bail after each await
     // to prevent a completed load from repopulating stores that dispose() cleared.
     if (this.disposed) return;
@@ -919,19 +987,25 @@ export class ProjectEntityCache {
         // AC: @daemon-entity-cache ac-load-on-register — load task index
         // AC: @daemon-entity-cache ac-stale-during-reload — build new data locally,
         // then swap into the store atomically so reads see either all-old or all-new.
+        // AC: @daemon-entity-cache ac-task-history-retention — bulk load retains history
         const tdm = resolveTaskDataManager(ctx);
         const summaries = await tdm.listTasks(ctx);
         if (this.disposed) return;
         // Eagerly populate detail tier so search (grepItem) can access full
         // entity data (description, notes, todos) that summaries strip.
+        // Uses bulk loadAllTasksWithHistory() for a single pass instead of
+        // per-task loadTaskWithHistory() calls — avoids N individual reads
+        // during cache warm-up.
         // Non-fatal: if full loading fails, the detail tier stays empty and
         // search falls through to disk on miss.
-        const newTaskDetails = new Map<string, LoadedTask>();
+        const newTaskDetails = new Map<string, CachedTaskDetail>();
+        const newTaskHistoryDetails = new Map<string, HistoryEntry[]>();
         try {
-          const fullTasks = await tdm.loadAllTasks(ctx);
+          const tasksWithHistory = await tdm.loadAllTasksWithHistory(ctx);
           if (this.disposed) return;
-          for (const task of fullTasks) {
+          for (const { task, history } of tasksWithHistory) {
             newTaskDetails.set(task._ulid, task);
+            newTaskHistoryDetails.set(task._ulid, history);
           }
         } catch {
           // Detail tier remains empty — search will use summaries or fall back to disk
@@ -939,6 +1013,7 @@ export class ProjectEntityCache {
         // Atomic swap: replace index and details together
         this.tasks.index = summaries;
         this.tasks.details = newTaskDetails;
+        this.tasks.historyDetails = newTaskHistoryDetails;
         break;
       }
       case "items": {
@@ -950,102 +1025,26 @@ export class ProjectEntityCache {
         const loadedItems = await loadAllItems(ctx);
         if (this.disposed) return;
         const newItemDetails = new Map<string, LoadedSpecItem>();
+        const newItemSourceFiles = new Map<string, string>();
         for (const item of loadedItems) {
           newItemDetails.set(item._ulid, item);
+          if (item._sourceFile) {
+            newItemSourceFiles.set(item._ulid, item._sourceFile);
+          }
         }
         // Atomic swap: replace index and details together
         this.items.index = loadedItems.map(toItemSummary);
         this.items.details = newItemDetails;
+        this.itemSourceFiles = newItemSourceFiles;
+        this.itemSourceFilesTracked = true;
         break;
       }
       case "meta": {
-        // AC: @daemon-entity-cache ac-stale-during-reload — build all meta
-        // artifacts into local variables, then swap into the store atomically
-        // so reads see either all-old or all-new data during a reload.
-
-        // Load full MetaContext into detail tier for meta read routes
-        const metaCtx = await loadMetaContext(ctx);
+        await this.loadMetaManifestSubdomain(cycle);
         if (this.disposed) return;
-        const newMetaIndex: MetaSummary = {
-          projectName: ctx.manifest?.project?.name,
-          version: ctx.manifest?.project?.version,
-          status: ctx.manifest?.project?.status,
-          modules: ctx.manifest?.modules?.map((m: { title?: string; name?: string } | string) =>
-            typeof m === "string" ? m : (m.title ?? m.name ?? "unknown"),
-          ),
-        };
-
-        // AC: @daemon-read-path ac-no-per-request-sync — cache shadow status
-        // and project config so /api/meta/shadow and /api/meta/config routes
-        // serve from memory without per-request git operations.
-        let newShadowInfo: CachedShadowInfo;
-        if (ctx.shadow) {
-          const status = await getShadowStatus(ctx.rootDir, {
-            branchName: ctx.shadow.branchName,
-            directory: ctx.config.shadow.directory,
-          });
-          if (this.disposed) return;
-          const hasRemote = await hasRemoteTracking(ctx.shadow.worktreeDir, {
-            branchName: ctx.shadow.branchName,
-          });
-          if (this.disposed) return;
-          newShadowInfo = {
-            enabled: ctx.shadow.enabled,
-            branch_name: ctx.shadow.branchName,
-            worktree_dir: ctx.shadow.worktreeDir,
-            healthy: status.healthy,
-            remote_tracking: hasRemote,
-          };
-        } else {
-          newShadowInfo = {
-            enabled: false,
-            branch_name: null,
-            worktree_dir: null,
-            healthy: false,
-            remote_tracking: false,
-          };
-        }
-
-        const newProjectConfig: CachedProjectConfig = {
-          project: ctx.manifest?.project
-            ? {
-                name: ctx.manifest.project.name,
-                version: ctx.manifest.project.version,
-                status: ctx.manifest.project.status,
-              }
-            : null,
-          spec_version: ctx.manifest?.kynetic ?? null,
-          root_dir: ctx.projectRoot,
-          remote_tracking: ctx.config.shadow.remote
-            ? { value: ctx.config.shadow.remote.value, type: ctx.config.shadow.remote.type }
-            : null,
-          daemon: {
-            port: ctx.config.daemon.port,
-            host: ctx.config.daemon.host,
-            auto_start: ctx.config.daemon.auto_start,
-          },
-        };
-
-        // AC: @daemon-read-path ac-no-per-request-sync — cache session context
-        // so /api/meta/session serves from memory without per-request disk reads.
-        const sessionCtx = await loadSessionContext(ctx);
+        await this.loadMetaShadowSubdomain(cycle);
         if (this.disposed) return;
-        const newSessionContext: CachedSessionContext = {
-          focus: sessionCtx.focus,
-          threads: sessionCtx.threads || [],
-          questions: sessionCtx.open_questions || [],
-          updated_at: sessionCtx.updated_at,
-        };
-
-        // Atomic swap: replace all meta artifacts together so concurrent
-        // readers never see a mix of old and new meta state.
-        const newMetaDetails = new Map<string, MetaContext>();
-        newMetaDetails.set("_context", metaCtx);
-        this.meta.index = newMetaIndex;
-        this.meta.details = newMetaDetails;
-        this.cachedShadowInfo = newShadowInfo;
-        this.cachedProjectConfig = newProjectConfig;
-        this.cachedSessionContext = newSessionContext;
+        await this.loadMetaSessionSubdomain();
         break;
       }
       case "inbox": {
@@ -1100,16 +1099,29 @@ export class ProjectEntityCache {
   private async loadSessionIndex(ctx: KspecContext): Promise<void> {
     const sessionsDir = ctx.sessionsDir;
     let sessionIds: string[];
+    let directory: Dir | null = null;
 
     try {
-      const entries = await readdir(sessionsDir, { withFileTypes: true });
-      if (this.disposed) return;
-      sessionIds = entries.filter((e) => e.isDirectory()).map((e) => e.name);
+      directory = await fs.opendir(sessionsDir);
+      sessionIds = [];
+
+      while (true) {
+        const entry = await directory.read();
+        if (entry === null) break;
+        if (entry.isDirectory()) {
+          sessionIds.push(entry.name);
+        }
+        if (this.disposed) return;
+      }
     } catch {
       // No sessions directory — empty index
       if (this.disposed) return;
       this.sessions.index = [];
       return;
+    } finally {
+      if (directory) {
+        await closeDirectoryHandle(directory);
+      }
     }
 
     // Load metadata-only summaries for all sessions (avoids reading events.jsonl)
@@ -1193,6 +1205,7 @@ export class ProjectEntityCache {
     // AC: @daemon-entity-cache ac-write-through — skip if write-through just updated this domain
     if (this.writeThroughSkip.has(domain)) {
       this.writeThroughSkip.delete(domain);
+      this.pendingDomainChanges.delete(domain);
       return;
     }
 
@@ -1203,6 +1216,14 @@ export class ProjectEntityCache {
     if (existingTimer) {
       clearTimeout(existingTimer);
     }
+
+    const cycle =
+      this.domainReloadCycles.get(domain) ??
+      (this.pendingDomainChanges.has(domain)
+        ? this.getOrCreateReloadCycle()
+        : { pendingDomains: new Set() });
+    cycle.pendingDomains.add(domain);
+    this.domainReloadCycles.set(domain, cycle);
 
     // Create or reuse the deferred promise for this domain's debounce window
     let deferred = this.domainDebouncePromises.get(domain);
@@ -1217,12 +1238,19 @@ export class ProjectEntityCache {
 
     const timer = setTimeout(async () => {
       this.domainDebounceTimers.delete(domain);
+      const reloadCycle = this.domainReloadCycles.get(domain);
+      this.domainReloadCycles.delete(domain);
+      const pendingChanges = this.drainPendingDomainChanges(domain);
+      if (reloadCycle) {
+        reloadCycle.pendingDomains.delete(domain);
+        this.maybeClearReloadCycle(reloadCycle);
+      }
       const d = this.domainDebouncePromises.get(domain);
       this.domainDebouncePromises.delete(domain);
       try {
         // AC: @daemon-server ac-18 — track last invalidation timestamp
         this.getStore(domain).lastInvalidatedAt = new Date().toISOString();
-        await this.loadDomain(domain);
+        await this.processDomainChanges(domain, pendingChanges, reloadCycle);
         if (!this.disposed && this.getStore(domain).state === "ready") {
           this.onDomainReloaded?.(domain, this.projectPath);
         }
@@ -1242,7 +1270,7 @@ export class ProjectEntityCache {
    * AC: @daemon-entity-cache ac-watcher-invalidation
    * AC: @daemon-entity-cache ac-granular-reload
    */
-  async handleFileChange(kspecDir: string, filePath: string): Promise<void> {
+  async handleFileChange(kspecDir: string, filePath: string, _content?: string): Promise<void> {
     if (this.disposed) return;
 
     const relativePath = relative(kspecDir, filePath);
@@ -1254,6 +1282,9 @@ export class ProjectEntityCache {
       : ("kspec" as const);
     const domains = fileToDomain(relativePath, source);
     if (domains) {
+      for (const domain of domains) {
+        this.recordPendingDomainChange(domain, filePath, _content);
+      }
       await Promise.all(domains.map((d) => this.invalidateDomain(d)));
     }
   }
@@ -1278,10 +1309,10 @@ export class ProjectEntityCache {
    *
    * AC: @daemon-entity-cache ac-write-through
    */
-  async writeThrough(domain: CacheDomain): Promise<void> {
+  async writeThrough(domain: CacheDomain, entityHint?: WriteThroughHint): Promise<void> {
     // AC: @daemon-server ac-18 — track last invalidation timestamp
     this.getStore(domain).lastInvalidatedAt = new Date().toISOString();
-    await this.loadDomain(domain);
+    await this.runHintedWriteThrough(domain, entityHint);
     // Only suppress the next watcher invalidation when the reload succeeded —
     // if the domain degraded, the watcher must still fire so a subsequent
     // file-change event can recover the domain.
@@ -1305,6 +1336,9 @@ export class ProjectEntityCache {
       const store = this.getStore(domain);
       store.index = null;
       store.details.clear();
+      if (domain === "tasks") {
+        this.tasks.historyDetails.clear();
+      }
       store.state = "unloaded";
       store.lastError = undefined;
     }
@@ -1312,17 +1346,34 @@ export class ProjectEntityCache {
     this.inFlightReloads.clear();
     this.writeThroughSkip.clear();
     this.liveEventCounts.clear();
+    this.itemSourceFiles.clear();
+    this.itemSourceFilesTracked = false;
+    this.cachedShadowInfo = null;
+    this.cachedProjectConfig = null;
+    this.cachedSessionContext = null;
+    this.cachedMetaRuntime = null;
+    this.metaLoadState = {
+      manifest: false,
+      shadow: false,
+      session: false,
+    };
+    this.pendingMetaSubdomains.clear();
+    this.activeMetaSubdomains.clear();
+    this.pendingMetaReloadCycle = undefined;
 
     // Clear domain debounce timers
     for (const timer of this.domainDebounceTimers.values()) {
       clearTimeout(timer);
     }
     this.domainDebounceTimers.clear();
+    this.pendingDomainChanges.clear();
+    this.domainReloadCycles.clear();
     // Resolve any pending debounce promises so awaiting callers don't hang
     for (const deferred of this.domainDebouncePromises.values()) {
       deferred.resolve();
     }
     this.domainDebouncePromises.clear();
+    this.currentReloadCycle = null;
   }
 
   /** Check if the cache has been disposed. */
@@ -1352,6 +1403,848 @@ export class ProjectEntityCache {
       case "sessions":
         return this.sessions;
     }
+  }
+
+  private getOrCreateReloadCycle(): ReloadCycle {
+    if (!this.currentReloadCycle) {
+      this.currentReloadCycle = {
+        pendingDomains: new Set(),
+      };
+    }
+    return this.currentReloadCycle;
+  }
+
+  private async getReloadCycleContext(cycle: ReloadCycle): Promise<KspecContext> {
+    cycle.contextPromise ??= initContext(this.projectPath);
+    return await cycle.contextPromise;
+  }
+
+  private maybeClearReloadCycle(cycle: ReloadCycle): void {
+    if (this.currentReloadCycle === cycle && cycle.pendingDomains.size === 0) {
+      this.currentReloadCycle = null;
+    }
+  }
+
+  private recordPendingDomainChange(domain: CacheDomain, filePath: string, content?: string): void {
+    let changes = this.pendingDomainChanges.get(domain);
+    if (!changes) {
+      changes = new Map<string, PendingDomainChange>();
+      this.pendingDomainChanges.set(domain, changes);
+    }
+
+    changes.set(filePath, { filePath, content });
+  }
+
+  private drainPendingDomainChanges(domain: CacheDomain): PendingDomainChange[] {
+    const changes = this.pendingDomainChanges.get(domain);
+    if (!changes) {
+      return [];
+    }
+
+    this.pendingDomainChanges.delete(domain);
+    return Array.from(changes.values());
+  }
+
+  private async tryHintedWriteThrough(
+    domain: CacheDomain,
+    entityHint?: WriteThroughHint,
+  ): Promise<boolean> {
+    if (!entityHint) {
+      return false;
+    }
+
+    const change = await this.buildWriteThroughChange(domain, entityHint);
+    if (!change) {
+      return false;
+    }
+
+    await this.processDomainChanges(domain, [change]);
+    return true;
+  }
+
+  private async runHintedWriteThrough(
+    domain: CacheDomain,
+    entityHint?: WriteThroughHint,
+  ): Promise<void> {
+    if (domain === "meta") {
+      const handledIncrementally = await this.tryHintedWriteThrough(domain, entityHint);
+      if (!handledIncrementally) {
+        await this.loadDomain(domain);
+      }
+      return;
+    }
+
+    await this.runNonMetaDomainReload(domain, "queue", async () => {
+      const handledIncrementally = await this.tryHintedWriteThrough(domain, entityHint);
+      if (!handledIncrementally) {
+        await this.loadNonMetaDomain(domain);
+      }
+    });
+  }
+
+  private async loadNonMetaDomain(
+    domain: Exclude<CacheDomain, "meta">,
+    cycle?: ReloadCycle,
+  ): Promise<void> {
+    const store = this.getStore(domain);
+
+    // AC: @daemon-entity-cache ac-domain-ready-event — capture state before
+    // transition so we can detect non-ready → ready and fire the callback.
+    const previousState = store.state;
+
+    // AC: @daemon-entity-cache ac-stale-during-reload — only transition to
+    // "loading" for initial loads. When a domain is already "ready", keep it
+    // ready so API routes continue serving cached data during the reload.
+    // Previously cached data remains accessible until doLoadDomain() swaps
+    // in the new data on completion.
+    if (store.state !== "ready") {
+      store.state = "loading";
+    }
+
+    try {
+      await this.doLoadDomain(domain, cycle);
+      if (!this.disposed) {
+        store.state = "ready";
+        store.lastError = undefined;
+
+        // AC: @daemon-entity-cache ac-domain-ready-event — only fire when
+        // transitioning FROM a non-ready state. Reloads of already-ready
+        // domains (ac-stale-during-reload) do not trigger the event.
+        if (previousState !== "ready" && this.onDomainReady) {
+          this.onDomainReady(domain, this.projectPath, previousState);
+        }
+      }
+    } catch (err) {
+      if (!this.disposed) {
+        // AC: @daemon-entity-cache ac-graceful-degradation
+        store.state = "degraded";
+        store.lastError = err instanceof Error ? err : new Error(String(err));
+        console.error(`[entity-cache] Failed to load domain "${domain}":`, err);
+      }
+    }
+  }
+
+  private async runNonMetaDomainReload(
+    domain: Exclude<CacheDomain, "meta">,
+    mode: "dedupe" | "queue",
+    work: () => Promise<void>,
+  ): Promise<void> {
+    const existing = this.inFlightReloads.get(domain);
+    if (mode === "dedupe" && existing) {
+      await existing;
+      return;
+    }
+
+    const promise = (async () => {
+      if (mode === "queue" && existing) {
+        await existing;
+      }
+      if (this.disposed) {
+        return;
+      }
+      await work();
+    })().finally(() => {
+      if (this.inFlightReloads.get(domain) === promise) {
+        this.inFlightReloads.delete(domain);
+      }
+    });
+
+    this.inFlightReloads.set(domain, promise);
+    await promise;
+  }
+
+  private async buildWriteThroughChange(
+    domain: CacheDomain,
+    entityHint: WriteThroughHint,
+  ): Promise<PendingDomainChange | null> {
+    if (entityHint.filePath) {
+      return { filePath: entityHint.filePath };
+    }
+
+    switch (domain) {
+      case "tasks": {
+        if (!entityHint.ulid) {
+          return null;
+        }
+        const ctx = await initContext(this.projectPath);
+        return { filePath: getTaskFilePath(ctx, entityHint.ulid) };
+      }
+      case "items": {
+        if (!entityHint.ulid) {
+          return null;
+        }
+        const filePath =
+          this.itemSourceFiles.get(entityHint.ulid) ??
+          this.items.details.get(entityHint.ulid)?._sourceFile ??
+          null;
+        return filePath ? { filePath } : null;
+      }
+      case "sessions": {
+        const sessionId = entityHint.sessionId ?? entityHint.ulid;
+        if (!sessionId) {
+          return null;
+        }
+        const ctx = await initContext(this.projectPath);
+        return { filePath: getSessionDir(ctx.sessionsDir, sessionId) };
+      }
+      default:
+        return null;
+    }
+  }
+
+  private async processDomainChanges(
+    domain: CacheDomain,
+    changes: PendingDomainChange[],
+    cycle?: ReloadCycle,
+  ): Promise<void> {
+    if (domain === "meta" && (await this.tryIncrementalMetaUpdate(changes, cycle))) {
+      return;
+    }
+
+    if (domain === "tasks" && (await this.tryIncrementalTaskUpdate(changes, cycle))) {
+      return;
+    }
+
+    if (domain === "sessions" && (await this.tryIncrementalSessionUpdate(changes, cycle))) {
+      return;
+    }
+
+    if (domain === "items" && (await this.tryIncrementalItemUpdate(changes, cycle))) {
+      return;
+    }
+
+    await this.loadDomain(domain, cycle);
+  }
+
+  async refreshMetaShadowInfo(): Promise<void> {
+    await this.loadMetaDomain(["shadow"]);
+  }
+
+  private async tryIncrementalMetaUpdate(
+    changes: PendingDomainChange[],
+    cycle?: ReloadCycle,
+  ): Promise<boolean> {
+    if (changes.length === 0) {
+      return false;
+    }
+
+    const runtime = this.cachedMetaRuntime;
+    const specDir = runtime?.specDir ?? join(this.projectPath, ".kspec");
+    const manifestSourceFiles = new Set(runtime?.metaSourceFiles ?? []);
+    const targets = new Set<MetaSubdomain>();
+
+    for (const change of changes) {
+      const relativePath = relative(specDir, change.filePath);
+      const pathSegments = relativePath.split(/[\\/]/).filter(Boolean);
+      const leaf = pathSegments[pathSegments.length - 1] ?? relativePath;
+      if (
+        leaf === "kynetic.yaml" ||
+        leaf.endsWith(".meta.yaml") ||
+        manifestSourceFiles.has(change.filePath)
+      ) {
+        targets.add("manifest");
+        continue;
+      }
+
+      if (leaf === ".kspec-session") {
+        targets.add("session");
+        continue;
+      }
+
+      return false;
+    }
+
+    if (targets.size === 0) {
+      return false;
+    }
+
+    await this.loadMetaDomain([...targets], cycle);
+    return true;
+  }
+
+  private async tryIncrementalTaskUpdate(
+    changes: PendingDomainChange[],
+    cycle?: ReloadCycle,
+  ): Promise<boolean> {
+    if (changes.length === 0 || this.tasks.state !== "ready" || !this.tasks.index) {
+      return false;
+    }
+
+    const ctx = cycle
+      ? await this.getReloadCycleContext(cycle)
+      : await initContext(this.projectPath);
+    const changedUlids = new Set<string>();
+
+    for (const change of changes) {
+      const relativePath = relative(ctx.specDir, change.filePath);
+      if (
+        relativePath === "project.tasks.yaml" ||
+        relativePath === "tasks.yaml" ||
+        relativePath.endsWith(".tasks.yaml")
+      ) {
+        return false;
+      }
+      const segments = relativePath.split(/[\\/]/).filter(Boolean);
+      if (
+        segments.length !== 3 ||
+        segments[0] !== "tasks" ||
+        !TASK_ULID_PATTERN.test(segments[1]) ||
+        (segments[2] !== "task.yaml" && segments[2] !== "notes.yaml")
+      ) {
+        return false;
+      }
+
+      changedUlids.add(segments[1]);
+    }
+
+    if (changedUlids.size === 0) {
+      return false;
+    }
+
+    const tdm = resolveTaskDataManager(ctx);
+    const nextIndex = [...this.tasks.index];
+    const nextDetails = new Map(this.tasks.details);
+    const nextHistoryDetails = new Map(this.tasks.historyDetails);
+
+    for (const ulid of changedUlids) {
+      const taskFilePath = getTaskFilePath(ctx, ulid);
+      let taskExists = true;
+      try {
+        await fs.access(taskFilePath);
+      } catch {
+        taskExists = false;
+      }
+
+      const existingIndex = nextIndex.findIndex((task) => task._ulid === ulid);
+
+      if (!taskExists) {
+        if (existingIndex >= 0) {
+          nextIndex.splice(existingIndex, 1);
+        }
+        nextDetails.delete(ulid);
+        nextHistoryDetails.delete(ulid);
+        continue;
+      }
+
+      const { task: loadedTask, history } = await tdm.loadTaskWithHistory(ctx, ulid);
+      if (!loadedTask) {
+        return false;
+      }
+      const summary = rawToSummary(loadedTask);
+      if (!summary) {
+        return false;
+      }
+
+      if (existingIndex >= 0) {
+        nextIndex[existingIndex] = summary;
+      } else {
+        nextIndex.push(summary);
+      }
+      nextDetails.set(ulid, loadedTask);
+      nextHistoryDetails.set(ulid, history);
+    }
+
+    this.tasks.index = nextIndex;
+    this.tasks.details = nextDetails;
+    this.tasks.historyDetails = nextHistoryDetails;
+    return true;
+  }
+
+  private async tryIncrementalSessionUpdate(
+    changes: PendingDomainChange[],
+    cycle?: ReloadCycle,
+  ): Promise<boolean> {
+    if (changes.length === 0 || this.sessions.state !== "ready" || !this.sessions.index) {
+      return false;
+    }
+
+    const ctx = cycle
+      ? await this.getReloadCycleContext(cycle)
+      : await initContext(this.projectPath);
+    const changedSessionIds = new Set<string>();
+
+    for (const change of changes) {
+      const relativePath = relative(ctx.sessionsDir, change.filePath);
+      const segments = relativePath.split(/[\\/]/).filter(Boolean);
+      if (segments.length === 0 || relativePath.startsWith("..")) {
+        return false;
+      }
+
+      changedSessionIds.add(segments[0]);
+    }
+
+    if (changedSessionIds.size === 0) {
+      return false;
+    }
+
+    const nextIndex = [...this.sessions.index];
+    const nextDetails = new Map(this.sessions.details);
+
+    for (const sessionId of changedSessionIds) {
+      const sessionDir = getSessionDir(ctx.sessionsDir, sessionId);
+      let sessionExists = true;
+      try {
+        await fs.access(sessionDir);
+      } catch {
+        sessionExists = false;
+      }
+
+      const existingIndex = nextIndex.findIndex((session) => session.id === sessionId);
+
+      if (!sessionExists) {
+        if (existingIndex >= 0) {
+          nextIndex.splice(existingIndex, 1);
+        }
+        nextDetails.delete(sessionId);
+        this.liveEventCounts.delete(sessionId);
+        continue;
+      }
+
+      const summary = await this.loadCachedSessionSummary(ctx.sessionsDir, sessionId);
+      if (!summary) {
+        if (existingIndex >= 0) {
+          nextIndex.splice(existingIndex, 1);
+        }
+        nextDetails.delete(sessionId);
+        this.liveEventCounts.delete(sessionId);
+        continue;
+      }
+
+      if (existingIndex >= 0) {
+        nextIndex[existingIndex] = summary;
+      } else {
+        nextIndex.push(summary);
+      }
+      // Session detail is loaded on demand and may include live event counts.
+      // Drop any cached detail so routes fall back to the refreshed index/detail loader.
+      nextDetails.delete(sessionId);
+
+      if (summary.status !== "active" && summary.status !== "stalled") {
+        this.liveEventCounts.delete(sessionId);
+      }
+    }
+
+    sortSessionSummaries(nextIndex);
+    this.sessions.index = nextIndex.slice(0, this.sessionConfig.maxIndexSize);
+    this.sessions.details = nextDetails;
+    return true;
+  }
+
+  private async loadCachedSessionSummary(
+    sessionsDir: string,
+    sessionId: string,
+  ): Promise<SessionLogSummary | null> {
+    const summary = await getSessionMetadataOnly(sessionsDir, sessionId);
+    if (!summary || summary.status !== "active") {
+      return summary;
+    }
+
+    const staleResolved = resolveStaleSessionCriteria({});
+    if (!staleResolved.ok) {
+      return summary;
+    }
+
+    const now = Date.now();
+    const startedAtMs = new Date(summary.started_at).getTime();
+    if (now - startedAtMs <= staleResolved.criteria.olderThanMs) {
+      return summary;
+    }
+
+    const activityResult = await getSessionActivityForStaleCheck(sessionsDir, sessionId);
+    if (!activityResult.ok) {
+      return summary;
+    }
+
+    const inactivityMs = now - activityResult.activity.lastActivityTs;
+    if (inactivityMs <= staleResolved.criteria.inactiveForMs) {
+      return summary;
+    }
+
+    return { ...summary, status: "stalled" };
+  }
+
+  private async tryIncrementalItemUpdate(
+    changes: PendingDomainChange[],
+    cycle?: ReloadCycle,
+  ): Promise<boolean> {
+    if (
+      changes.length === 0 ||
+      this.items.state !== "ready" ||
+      this.items.index === null ||
+      !this.itemSourceFilesTracked
+    ) {
+      return false;
+    }
+
+    const ctx = cycle
+      ? await this.getReloadCycleContext(cycle)
+      : await initContext(this.projectPath);
+    if (this.disposed) return true;
+    if (!ctx.manifest || !ctx.manifestPath) return false;
+
+    const orderedSourceFiles = await this.getOrderedItemSourceFiles(ctx);
+    if (this.disposed) return true;
+    const allowedSourceFiles = new Set(orderedSourceFiles);
+
+    const changedFiles: string[] = [];
+    for (const change of changes) {
+      if (change.filePath === ctx.manifestPath) {
+        return false;
+      }
+
+      const relativePath = relative(ctx.specDir, change.filePath);
+      if (relativePath.startsWith("..") || !allowedSourceFiles.has(change.filePath)) {
+        return false;
+      }
+
+      changedFiles.push(change.filePath);
+    }
+
+    const newDetails = new Map(this.items.details);
+    const newSourceFiles = new Map(this.itemSourceFiles);
+    const removedUlids = new Set<string>();
+    const groupedSummaries = new Map<string, ItemSummary[]>();
+    const parsedItemsByUlid = new Map<string, LoadedSpecItem>();
+
+    for (const filePath of changedFiles) {
+      for (const [ulid, sourceFile] of newSourceFiles) {
+        if (sourceFile === filePath) {
+          removedUlids.add(ulid);
+        }
+      }
+
+      const parsedItems = await loadSpecFile(filePath);
+      if (this.disposed) return true;
+
+      const summaries: ItemSummary[] = [];
+      for (const item of parsedItems) {
+        removedUlids.add(item._ulid);
+        parsedItemsByUlid.set(item._ulid, item);
+        summaries.push(toItemSummary(item));
+      }
+
+      groupedSummaries.set(filePath, summaries);
+    }
+
+    for (const ulid of removedUlids) {
+      newDetails.delete(ulid);
+      newSourceFiles.delete(ulid);
+    }
+
+    for (const [ulid, item] of parsedItemsByUlid) {
+      newDetails.set(ulid, item);
+      if (item._sourceFile) {
+        newSourceFiles.set(ulid, item._sourceFile);
+      }
+    }
+
+    const groupedExisting = new Map<string, ItemSummary[]>();
+    for (const item of this.items.index) {
+      if (removedUlids.has(item._ulid) || !item._sourceFile) {
+        continue;
+      }
+
+      const existing = groupedExisting.get(item._sourceFile);
+      if (existing) {
+        existing.push(item);
+      } else {
+        groupedExisting.set(item._sourceFile, [item]);
+      }
+    }
+
+    for (const [filePath, summaries] of groupedSummaries) {
+      if (summaries.length > 0) {
+        groupedExisting.set(filePath, summaries);
+      } else {
+        groupedExisting.delete(filePath);
+      }
+    }
+
+    const nextIndex: ItemSummary[] = [];
+    for (const filePath of orderedSourceFiles) {
+      const summaries = groupedExisting.get(filePath);
+      if (summaries) {
+        nextIndex.push(...summaries);
+      }
+    }
+
+    this.items.index = nextIndex;
+    this.items.details = newDetails;
+    this.itemSourceFiles = newSourceFiles;
+    return true;
+  }
+
+  private async getOrderedItemSourceFiles(ctx: KspecContext): Promise<string[]> {
+    if (!ctx.manifest || !ctx.manifestPath) {
+      return [];
+    }
+
+    const orderedFiles = [ctx.manifestPath];
+    const manifestDir = dirname(ctx.manifestPath);
+
+    for (const include of ctx.manifest.includes ?? []) {
+      const expandedPaths = await expandIncludePattern(include, manifestDir);
+      orderedFiles.push(...expandedPaths);
+    }
+
+    return orderedFiles;
+  }
+
+  private async loadMetaDomain(subdomains: MetaSubdomain[], cycle?: ReloadCycle): Promise<void> {
+    if (this.disposed) return;
+
+    this.enqueueMetaReload(subdomains, cycle);
+    const existing = this.inFlightReloads.get("meta");
+    if (existing) {
+      await existing;
+      return;
+    }
+
+    const previousState = this.meta.state;
+    if (this.meta.state !== "ready") {
+      this.meta.state = "loading";
+    }
+
+    const promise = (async () => {
+      try {
+        while (true) {
+          const nextReload = this.drainPendingMetaReload();
+          if (!nextReload) {
+            break;
+          }
+
+          await this.doLoadMetaSubdomains(nextReload.subdomains, nextReload.cycle);
+          if (this.disposed) return;
+        }
+        this.meta.lastError = undefined;
+        if (this.hasLoadedAllMetaSubdomains()) {
+          this.meta.state = "ready";
+          if (previousState !== "ready" && this.onDomainReady) {
+            this.onDomainReady("meta", this.projectPath, previousState);
+          }
+        } else if (previousState === "ready") {
+          this.meta.state = "ready";
+        }
+      } catch (err) {
+        if (!this.disposed) {
+          this.meta.state = "degraded";
+          this.meta.lastError = err instanceof Error ? err : new Error(String(err));
+          console.error(`[entity-cache] Failed to reload meta sub-domain(s):`, err);
+        }
+      } finally {
+        this.inFlightReloads.delete("meta");
+      }
+    })();
+
+    this.inFlightReloads.set("meta", promise);
+    await promise;
+  }
+
+  private enqueueMetaReload(subdomains: MetaSubdomain[], cycle?: ReloadCycle): void {
+    for (const subdomain of subdomains) {
+      if (this.activeMetaSubdomains.has(subdomain)) {
+        continue;
+      }
+      this.pendingMetaSubdomains.add(subdomain);
+    }
+
+    if (!cycle) {
+      this.pendingMetaReloadCycle = undefined;
+      return;
+    }
+
+    if (!this.pendingMetaReloadCycle) {
+      this.pendingMetaReloadCycle = cycle;
+      return;
+    }
+
+    if (this.pendingMetaReloadCycle !== cycle) {
+      this.pendingMetaReloadCycle = undefined;
+    }
+  }
+
+  private drainPendingMetaReload(): { subdomains: MetaSubdomain[]; cycle?: ReloadCycle } | null {
+    if (this.pendingMetaSubdomains.size === 0) {
+      this.pendingMetaReloadCycle = undefined;
+      return null;
+    }
+
+    const subdomains = META_SUBDOMAIN_LOAD_ORDER.filter((subdomain) =>
+      this.pendingMetaSubdomains.has(subdomain),
+    );
+    const cycle = this.pendingMetaReloadCycle;
+    this.pendingMetaSubdomains.clear();
+    this.pendingMetaReloadCycle = undefined;
+    return { subdomains, cycle };
+  }
+  private async doLoadMetaSubdomains(
+    subdomains: MetaSubdomain[],
+    cycle?: ReloadCycle,
+  ): Promise<void> {
+    await awaitTestDelay(this.projectPath);
+    if (this.disposed) return;
+
+    this.activeMetaSubdomains = new Set(subdomains);
+
+    try {
+      for (const subdomain of subdomains) {
+        try {
+          switch (subdomain) {
+            case "manifest":
+              await this.loadMetaManifestSubdomain(cycle);
+              break;
+            case "shadow":
+              await this.loadMetaShadowSubdomain(cycle);
+              break;
+            case "session":
+              await this.loadMetaSessionSubdomain();
+              break;
+          }
+        } finally {
+          this.activeMetaSubdomains.delete(subdomain);
+        }
+
+        if (this.disposed) return;
+      }
+    } finally {
+      this.activeMetaSubdomains.clear();
+    }
+  }
+
+  private async loadMetaManifestSubdomain(cycle?: ReloadCycle): Promise<void> {
+    const ctx = cycle
+      ? await this.getReloadCycleContext(cycle)
+      : await initContext(this.projectPath);
+    if (this.disposed) return;
+
+    const metaCtx = await loadMetaContext(ctx);
+    if (this.disposed) return;
+
+    const metaSourceFiles = metaCtx.manifestPath ? [metaCtx.manifestPath] : [];
+    if (metaCtx.manifest?.includes && metaCtx.manifestPath) {
+      const manifestDir = dirname(metaCtx.manifestPath);
+      for (const include of metaCtx.manifest.includes) {
+        const expandedPaths = await expandIncludePattern(include, manifestDir);
+        metaSourceFiles.push(...expandedPaths);
+      }
+    }
+
+    const newMetaIndex: MetaSummary = {
+      projectName: ctx.manifest?.project?.name,
+      version: ctx.manifest?.project?.version,
+      status: ctx.manifest?.project?.status,
+      modules: ctx.manifest?.modules?.map((m: { title?: string; name?: string } | string) =>
+        typeof m === "string" ? m : (m.title ?? m.name ?? "unknown"),
+      ),
+    };
+
+    const newProjectConfig: CachedProjectConfig = {
+      project: ctx.manifest?.project
+        ? {
+            name: ctx.manifest.project.name,
+            version: ctx.manifest.project.version,
+            status: ctx.manifest.project.status,
+          }
+        : null,
+      spec_version: ctx.manifest?.kynetic ?? null,
+      root_dir: ctx.projectRoot,
+      remote_tracking: ctx.config.shadow.remote
+        ? { value: ctx.config.shadow.remote.value, type: ctx.config.shadow.remote.type }
+        : null,
+      daemon: {
+        port: ctx.config.daemon.port,
+        host: ctx.config.daemon.host,
+        auto_start: ctx.config.daemon.auto_start,
+      },
+      manifest_path: ctx.manifestPath,
+      manifest: ctx.manifest,
+      config: ctx.config,
+    };
+
+    const newMetaDetails = new Map<string, MetaContext>();
+    newMetaDetails.set("_context", metaCtx);
+    this.meta.index = newMetaIndex;
+    this.meta.details = newMetaDetails;
+    this.cachedProjectConfig = newProjectConfig;
+    this.cachedMetaRuntime = {
+      rootDir: ctx.rootDir,
+      specDir: ctx.specDir,
+      projectRoot: ctx.projectRoot,
+      metaSourceFiles,
+      project: newProjectConfig.project,
+      specVersion: newProjectConfig.spec_version,
+      daemon: newProjectConfig.daemon,
+      remoteTracking: newProjectConfig.remote_tracking,
+      shadow: {
+        enabled: ctx.shadow?.enabled ?? false,
+        branchName: ctx.shadow?.branchName ?? null,
+        worktreeDir: ctx.shadow?.worktreeDir ?? null,
+        directory: ctx.config.shadow.directory,
+      },
+    };
+    this.metaLoadState.manifest = true;
+  }
+
+  private async loadMetaShadowSubdomain(cycle?: ReloadCycle): Promise<void> {
+    const runtime = await this.ensureMetaRuntime(cycle);
+    if (this.disposed) return;
+
+    let newShadowInfo: CachedShadowInfo;
+    if (runtime.shadow.enabled && runtime.shadow.branchName && runtime.shadow.worktreeDir) {
+      const status = await getShadowStatus(runtime.rootDir, {
+        branchName: runtime.shadow.branchName,
+        directory: runtime.shadow.directory,
+      });
+      if (this.disposed) return;
+      const hasRemote = await hasRemoteTracking(runtime.shadow.worktreeDir, {
+        branchName: runtime.shadow.branchName,
+      });
+      if (this.disposed) return;
+      newShadowInfo = {
+        enabled: true,
+        branch_name: runtime.shadow.branchName,
+        worktree_dir: runtime.shadow.worktreeDir,
+        healthy: status.healthy,
+        remote_tracking: hasRemote,
+      };
+    } else {
+      newShadowInfo = {
+        enabled: false,
+        branch_name: null,
+        worktree_dir: null,
+        healthy: false,
+        remote_tracking: false,
+      };
+    }
+
+    this.cachedShadowInfo = newShadowInfo;
+    this.metaLoadState.shadow = true;
+  }
+
+  private async loadMetaSessionSubdomain(): Promise<void> {
+    const specDir = this.cachedMetaRuntime?.specDir ?? join(this.projectPath, ".kspec");
+    const sessionCtx = await loadSessionContext({ specDir } as KspecContext);
+    if (this.disposed) return;
+
+    this.cachedSessionContext = {
+      focus: sessionCtx.focus,
+      threads: sessionCtx.threads || [],
+      questions: sessionCtx.open_questions || [],
+      updated_at: sessionCtx.updated_at,
+    };
+    this.metaLoadState.session = true;
+  }
+
+  private async ensureMetaRuntime(cycle?: ReloadCycle): Promise<CachedMetaRuntime> {
+    if (!this.cachedMetaRuntime) {
+      await this.loadMetaManifestSubdomain(cycle);
+    }
+
+    return this.cachedMetaRuntime as CachedMetaRuntime;
+  }
+
+  private hasLoadedAllMetaSubdomains(): boolean {
+    return this.metaLoadState.manifest && this.metaLoadState.shadow && this.metaLoadState.session;
   }
 }
 

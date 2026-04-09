@@ -10,6 +10,7 @@
 import type { LoadedTask, TaskSummary, LoadedPlan, LoadedSpecItem } from "../../parser/index.js";
 import type { MetaContext } from "../../parser/meta.js";
 import type {
+  CachedTaskDetail,
   ItemSummary,
   MetaSummary,
   PlanIndexSummary,
@@ -19,14 +20,17 @@ import type {
   CachedProjectConfig,
   CachedSessionContext,
   CacheDiagnostic,
+  WriteThroughHint,
 } from "../../daemon/entity-cache.js";
 import type { SessionLogSummary } from "../../sessions/store.js";
 import type { LoadedInboxItem } from "../../parser/yaml.js";
 import type { LoadedTriageRecord } from "../../parser/yaml.js";
 import type { LoadedReviewRecord } from "../../parser/reviews.js";
+import type { HistoryEntry } from "../../parser/task-data-manager.js";
 
 /** Domain state as reported by the cache. */
 export type CacheDomainState = "unloaded" | "loading" | "ready" | "degraded";
+export type { WriteThroughHint };
 
 /**
  * Minimal cache interface consumed by route handlers.
@@ -35,9 +39,10 @@ export type CacheDomainState = "unloaded" | "loading" | "ready" | "degraded";
 export interface RouteEntityCache {
   getDomainState(domain: string): CacheDomainState;
   getTaskIndex(): TaskSummary[] | null;
-  getTaskDetail(ulid: string): LoadedTask | null;
-  setTaskDetail(ulid: string, task: LoadedTask): void;
-  getAllTaskDetails(): LoadedTask[] | null;
+  getTaskDetail(ulid: string): CachedTaskDetail | null;
+  getTaskHistory(ulid: string): HistoryEntry[] | null;
+  setTaskDetail(ulid: string, task: LoadedTask | CachedTaskDetail): void;
+  getAllTaskDetails(): CachedTaskDetail[] | null;
   getItemIndex(): ItemSummary[] | null;
   getItemDetail(ulid: string): LoadedSpecItem | null;
   setItemDetail(ulid: string, item: LoadedSpecItem): void;
@@ -62,7 +67,7 @@ export interface RouteEntityCache {
   getShadowInfo(): CachedShadowInfo | null;
   getProjectConfig(): CachedProjectConfig | null;
   getSessionContext(): CachedSessionContext | null;
-  writeThrough(domain: string): Promise<void>;
+  writeThrough(domain: string, hint?: WriteThroughHint): Promise<void>;
   markWriteThrough(domain: string): void;
   getCacheDiagnostics(): CacheDiagnostic;
 }

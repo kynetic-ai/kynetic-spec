@@ -21,10 +21,10 @@
 	import { Button } from '$lib/components/ui/button';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import PlanEmbeddedBlocks from '$lib/components/plans/PlanEmbeddedBlocks.svelte';
-	import MapIcon from '@lucide/svelte/icons/map';
-	import FileTextIcon from '@lucide/svelte/icons/file-text';
-	import ListTodoIcon from '@lucide/svelte/icons/list-todo';
-	import ChevronDownIcon from '@lucide/svelte/icons/chevron-down';
+	import MapIcon from 'lucide-svelte/icons/map';
+	import FileTextIcon from 'lucide-svelte/icons/file-text';
+	import ListTodoIcon from 'lucide-svelte/icons/list-todo';
+	import ChevronDownIcon from 'lucide-svelte/icons/chevron-down';
 
 	// ── Filter state — URL-driven for consistency ──
 	type PlanStatusFilter = 'all' | 'draft' | 'approved' | 'active' | 'completed' | 'rejected';

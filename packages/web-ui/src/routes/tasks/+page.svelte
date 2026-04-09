@@ -24,8 +24,8 @@
 	import { queryKeys } from '$lib/query/keys.js';
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
-	import LayoutGrid from '@lucide/svelte/icons/layout-grid';
-	import ListIcon from '@lucide/svelte/icons/list';
+	import LayoutGrid from 'lucide-svelte/icons/layout-grid';
+	import ListIcon from 'lucide-svelte/icons/list';
 
 	const queryClient = useQueryClient();
 

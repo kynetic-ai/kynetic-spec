@@ -74,4 +74,45 @@ describe("initContext with linked worktrees", () => {
     expect(ctx.specDir).toBe(path.join(mainDir, ".kspec"));
     expect(ctx.sessionsDir).toBe(path.join(mainDir, ".kspec-sessions"));
   });
+
+  // AC: @coverage-scan-config ac-configured-paths
+  it("loads config from worktree root, not main repo root", async () => {
+    const { codeWorktreeDir } = await setupWorktreeProject();
+
+    // Write a config with coverage settings ONLY in the worktree, not in mainDir
+    await fs.writeFile(
+      path.join(codeWorktreeDir, "kspec.config.yaml"),
+      'coverage:\n  scan_paths:\n    - tests/\n  exclude_patterns:\n    - "fixtures/**"\n',
+      "utf-8",
+    );
+    // Main repo has no config — should NOT be loaded
+    // (no kspec.config.yaml in mainDir)
+
+    const ctx = await initContext(codeWorktreeDir);
+
+    expect(ctx.config.coverage.scan_paths).toEqual(["tests/"]);
+    expect(ctx.config.coverage.exclude_patterns).toEqual(["fixtures/**"]);
+  });
+
+  // AC: @coverage-scan-config ac-configured-paths
+  it("worktree config takes precedence over main repo config", async () => {
+    const { mainDir, codeWorktreeDir } = await setupWorktreeProject();
+
+    // Main repo has a config WITHOUT coverage
+    await fs.writeFile(
+      path.join(mainDir, "kspec.config.yaml"),
+      "dispatch:\n  base_branch: main\n",
+      "utf-8",
+    );
+    // Worktree has a config WITH coverage
+    await fs.writeFile(
+      path.join(codeWorktreeDir, "kspec.config.yaml"),
+      "coverage:\n  scan_paths:\n    - src/tests/\n",
+      "utf-8",
+    );
+
+    const ctx = await initContext(codeWorktreeDir);
+
+    expect(ctx.config.coverage.scan_paths).toEqual(["src/tests/"]);
+  });
 });

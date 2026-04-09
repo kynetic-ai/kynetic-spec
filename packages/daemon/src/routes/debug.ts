@@ -11,8 +11,8 @@
  */
 
 import { Elysia } from "elysia";
-import type { ProjectContextManager } from "../project-context";
-import type { EntityCacheAccessor } from "./entity-cache-types";
+import type { ProjectContextManager } from "../project-context.js";
+import type { EntityCacheAccessor } from "./entity-cache-types.js";
 
 interface DebugRouteOptions {
   projectManager: ProjectContextManager;

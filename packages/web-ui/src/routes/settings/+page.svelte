@@ -22,12 +22,12 @@
 	import { queryKeys } from '$lib/query/keys.js';
 	import { Card, CardContent, CardHeader } from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
-	import ServerIcon from '@lucide/svelte/icons/server';
-	import GitBranchIcon from '@lucide/svelte/icons/git-branch';
-	import BookOpenIcon from '@lucide/svelte/icons/book-open';
-	import FolderIcon from '@lucide/svelte/icons/folder';
-	import ChevronDownIcon from '@lucide/svelte/icons/chevron-down';
-	import ChevronRightIcon from '@lucide/svelte/icons/chevron-right';
+	import ServerIcon from 'lucide-svelte/icons/server';
+	import GitBranchIcon from 'lucide-svelte/icons/git-branch';
+	import BookOpenIcon from 'lucide-svelte/icons/book-open';
+	import FolderIcon from 'lucide-svelte/icons/folder';
+	import ChevronDownIcon from 'lucide-svelte/icons/chevron-down';
+	import ChevronRightIcon from 'lucide-svelte/icons/chevron-right';
 
 	// Convention expand state
 	let expandedDomains = $state<Set<string>>(new Set());

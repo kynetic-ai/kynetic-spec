@@ -7,9 +7,17 @@
  * --json, --yaml, --raw
  */
 
-import { describe, it, expect, beforeAll, afterAll } from "vitest";
+import { afterEach, describe, it, expect, beforeAll, afterAll } from "vitest";
 import * as yaml from "yaml";
 import { setupTempFixtures, cleanupTempDir, kspec } from "./helpers/cli.js";
+import {
+  isJsonMode,
+  isYamlMode,
+  runWithOutputState,
+  setOutputFormat,
+  setJsonMode,
+  setYamlMode,
+} from "../src/cli/output.js";
 
 describe("Output Format Option", () => {
   let tempDir: string;
@@ -20,6 +28,10 @@ describe("Output Format Option", () => {
 
   afterAll(async () => {
     await cleanupTempDir(tempDir);
+  });
+
+  afterEach(() => {
+    setOutputFormat("text");
   });
 
   describe("--json shorthand (ac-format-json, ac-json-shorthand)", () => {
@@ -157,6 +169,34 @@ describe("Output Format Option", () => {
       expect(result.exitCode).toBe(0);
       // Session start outputs YAML context
       expect(() => yaml.parse(result.stdout)).not.toThrow();
+    });
+  });
+
+  describe("request-local output state", () => {
+    it("uses async-local json/yaml mode state for concurrent requests", async () => {
+      const [jsonState, yamlState] = await Promise.all([
+        runWithOutputState(async () => {
+          setJsonMode(true);
+          await new Promise((resolve) => setTimeout(resolve, 10));
+          return {
+            json: isJsonMode(),
+            yaml: isYamlMode(),
+          };
+        }),
+        runWithOutputState(async () => {
+          setYamlMode(true);
+          await new Promise((resolve) => setTimeout(resolve, 10));
+          return {
+            json: isJsonMode(),
+            yaml: isYamlMode(),
+          };
+        }),
+      ]);
+
+      expect(jsonState).toEqual({ json: true, yaml: false });
+      expect(yamlState).toEqual({ json: false, yaml: true });
+      expect(isJsonMode()).toBe(false);
+      expect(isYamlMode()).toBe(false);
     });
   });
 });

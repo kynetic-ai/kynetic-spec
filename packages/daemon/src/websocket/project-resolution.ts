@@ -7,7 +7,7 @@
  * Task: @01KKBD6KH5F5MVC5BXV2NQG474
  */
 
-import type { ProjectContextManager } from "../project-context";
+import type { ProjectContextManager } from "../project-context.js";
 
 export interface ResolveWebSocketProjectOptions {
   request: Request;

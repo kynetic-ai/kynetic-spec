@@ -9,25 +9,26 @@ import {
   cleanupTempDir,
   createIsolatedKspecHome,
   initGitRepo,
+  CLI_PATH,
   kspec,
   readTestOutputSync,
   waitForStartup,
   type KspecOptions,
 } from "./helpers/cli";
-import { spawn, execSync } from "child_process";
+import { spawn, spawnSync, execSync } from "child_process";
 import { once } from "events";
 import { dirname, join } from "path";
-import { existsSync, mkdirSync } from "fs";
+import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { createServer } from "net";
 
-// Check if Bun runtime is available
-let bunAvailable = false;
+// Check if Node runtime is available.
+let nodeAvailable = false;
 try {
-  execSync("which bun", { stdio: "pipe" });
-  bunAvailable = true;
+  execSync("which node", { stdio: "pipe" });
+  nodeAvailable = true;
 } catch {
   console.log(
-    "⊘ Bun runtime not available - skipping daemon tests requiring actual daemon process",
+    "⊘ Node runtime not available - skipping daemon tests requiring actual daemon process",
   );
 }
 
@@ -65,6 +66,10 @@ describe("kspec serve commands", () => {
       ...options,
       env: { ...testEnv, ...options.env },
     });
+  }
+
+  function readProcessCommand(pid: number): string {
+    return execSync(`ps -p ${pid} -o command=`, { encoding: "utf-8" }).trim();
   }
 
   async function waitForDaemonHealth(port: number): Promise<void> {
@@ -166,8 +171,8 @@ describe("kspec serve commands", () => {
   // AC: @cli-serve-commands ac-1
   // AC: @daemon-server ac-12
   it("should start in foreground mode with Ctrl+C support", async () => {
-    if (!bunAvailable) {
-      console.log("  ⊘ Skipping test - Bun runtime required");
+    if (!nodeAvailable) {
+      console.log("  ⊘ Skipping test - Node runtime required");
       return;
     }
 
@@ -260,8 +265,8 @@ describe("kspec serve commands", () => {
   // AC: @cli-serve-commands ac-2
   // AC: @daemon-sensitive-cli-test-determinism ac-2
   it("should start in daemon mode and detach", async () => {
-    if (!bunAvailable) {
-      console.log("  ⊘ Skipping test - Bun runtime required");
+    if (!nodeAvailable) {
+      console.log("  ⊘ Skipping test - Node runtime required");
       return;
     }
 
@@ -301,8 +306,8 @@ describe("kspec serve commands", () => {
 
   // AC: @cli-serve-commands ac-3
   it("should accept custom port via --port flag", async () => {
-    if (!bunAvailable) {
-      console.log("  ⊘ Skipping test - Bun runtime required");
+    if (!nodeAvailable) {
+      console.log("  ⊘ Skipping test - Node runtime required");
       return;
     }
 
@@ -322,8 +327,8 @@ describe("kspec serve commands", () => {
   // AC: @cli-serve-commands ac-4
   // AC: @daemon-server ac-12
   it("should send SIGTERM and wait for shutdown", async () => {
-    if (!bunAvailable) {
-      console.log("  ⊘ Skipping test - Bun runtime required");
+    if (!nodeAvailable) {
+      console.log("  ⊘ Skipping test - Node runtime required");
       return;
     }
 
@@ -341,14 +346,18 @@ describe("kspec serve commands", () => {
     expect(result.stdout).toContain(`PID ${pid}`);
     expect(result.stdout).toContain("Daemon stopped");
 
-    // PID file should be removed (eventually by daemon cleanup, but may still exist during test)
-    // Process should not be running
-    let processRunning = false;
-    try {
-      process.kill(pid, 0);
-      processRunning = true;
-    } catch {
-      processRunning = false;
+    // The OS may not have fully reaped the process yet even though the
+    // daemon's PID file has been removed.  Poll briefly to avoid a race
+    // between SIGTERM delivery and process-table cleanup.
+    let processRunning = true;
+    for (let attempt = 0; attempt < 20; attempt++) {
+      try {
+        process.kill(pid, 0);
+      } catch {
+        processRunning = false;
+        break;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 100));
     }
     expect(processRunning).toBe(false);
   });
@@ -363,8 +372,8 @@ describe("kspec serve commands", () => {
 
   // AC: @cli-serve-commands ac-6
   it("should return JSON status with process info", async () => {
-    if (!bunAvailable) {
-      console.log("  ⊘ Skipping test - Bun runtime required");
+    if (!nodeAvailable) {
+      console.log("  ⊘ Skipping test - Node runtime required");
       return;
     }
 
@@ -391,8 +400,8 @@ describe("kspec serve commands", () => {
   // AC: @multi-directory-daemon ac-12
   // AC: @daemon-sensitive-cli-test-determinism ac-3
   it("should show registered projects with paths in status output", async () => {
-    if (!bunAvailable) {
-      console.log("  ⊘ Skipping test - Bun runtime required");
+    if (!nodeAvailable) {
+      console.log("  ⊘ Skipping test - Node runtime required");
       return;
     }
 
@@ -425,8 +434,8 @@ describe("kspec serve commands", () => {
 
   // AC: @multi-directory-daemon ac-12
   it("should include projects list in JSON status output", async () => {
-    if (!bunAvailable) {
-      console.log("  ⊘ Skipping test - Bun runtime required");
+    if (!nodeAvailable) {
+      console.log("  ⊘ Skipping test - Node runtime required");
       return;
     }
 
@@ -466,8 +475,8 @@ describe("kspec serve commands", () => {
 
   // AC: @multi-directory-daemon ac-12
   it('should show "No projects registered" when no projects exist', async () => {
-    if (!bunAvailable) {
-      console.log("  ⊘ Skipping test - Bun runtime required");
+    if (!nodeAvailable) {
+      console.log("  ⊘ Skipping test - Node runtime required");
       return;
     }
 
@@ -497,8 +506,8 @@ describe("kspec serve commands", () => {
 
   // AC: @multi-directory-daemon ac-12
   it("should show uptime in status output", async () => {
-    if (!bunAvailable) {
-      console.log("  ⊘ Skipping test - Bun runtime required");
+    if (!nodeAvailable) {
+      console.log("  ⊘ Skipping test - Node runtime required");
       return;
     }
 
@@ -531,8 +540,8 @@ describe("kspec serve commands", () => {
 
   // AC: @cli-serve-commands ac-7
   it("should stop then start on restart", async () => {
-    if (!bunAvailable) {
-      console.log("  ⊘ Skipping test - Bun runtime required");
+    if (!nodeAvailable) {
+      console.log("  ⊘ Skipping test - Node runtime required");
       return;
     }
 
@@ -584,8 +593,8 @@ describe("kspec serve commands", () => {
 
   // AC: @web-ui ac-1
   it("should start daemon from npm-installed package with all deps available", async () => {
-    if (!bunAvailable) {
-      console.log("  ⊘ Skipping test - Bun runtime required");
+    if (!nodeAvailable) {
+      console.log("  ⊘ Skipping test - Node runtime required");
       return;
     }
 
@@ -649,8 +658,9 @@ describe("kspec serve commands", () => {
       const healthResponse = await fetch(`http://localhost:${port}/api/health`);
       // oxlint-disable-next-line jest/valid-expect -- vitest supports custom message as 2nd arg
       expect(healthResponse.ok, "daemon health endpoint should respond").toBe(true);
-      const healthBody = await healthResponse.json();
+      const healthBody = (await healthResponse.json()) as { status: string; runtime: string };
       expect(healthBody).toHaveProperty("status", "ok");
+      expect(healthBody).toHaveProperty("runtime", "node");
 
       // Cleanup: stop the daemon
       try {
@@ -679,36 +689,142 @@ describe("kspec serve commands", () => {
   }, 120_000);
 
   // AC: @web-ui ac-2
-  it("should show clear error with Bun install URL when Bun is not available", () => {
-    // Build PATH that includes node but excludes bun
+  it("should show clear error with Node install URL when the configured node runtime is not available", () => {
+    // Build PATH that excludes node.
     const nodeDir = dirname(execSync("which node", { encoding: "utf-8" }).trim());
-    const noBunPath = (process.env.PATH || "")
+    const noNodePath = (process.env.PATH || "")
       .split(":")
       .filter((p) => {
         try {
-          return !existsSync(join(p, "bun"));
+          return p !== nodeDir && !existsSync(join(p, "node"));
         } catch {
           return true;
         }
       })
       .join(":");
-    // Ensure node's directory is always present
-    const pathWithNode = noBunPath.includes(nodeDir) ? noBunPath : `${nodeDir}:${noBunPath}`;
 
-    const result = runKspec(`serve start --kspec-dir ${join(tempDir, ".kspec")}`, tempDir, {
-      expectFail: true,
-      env: { PATH: pathWithNode },
-    });
+    const { KSPEC_SESSION_ID: _sessionId, ...cleanProcessEnv } = process.env;
+    const result = spawnSync(
+      process.execPath,
+      [CLI_PATH, "serve", "start", "--kspec-dir", join(tempDir, ".kspec")],
+      {
+        cwd: tempDir,
+        encoding: "utf-8",
+        env: { ...cleanProcessEnv, ...testEnv, PATH: noNodePath },
+      },
+    );
 
     expect(result.exitCode).not.toBe(0);
-    expect(result.stderr).toContain("Bun runtime is required");
-    // Install instructions go to stdout via info()
-    expect(result.stdout).toContain("bun.sh");
+    expect(result.stderr).toContain("Node runtime is required");
+    expect(result.stdout).toContain("nodejs.org");
+  });
+
+  // AC: @daemon-runtime-adapter ac-default-node
+  it("should default to spawning the daemon with node when no runtime is configured", async () => {
+    if (!nodeAvailable) {
+      console.log("  ⊘ Skipping test - Node runtime required");
+      return;
+    }
+
+    const port = await getAvailablePort();
+
+    const result = runKspec(
+      `serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`,
+      tempDir,
+    );
+
+    expect(result.exitCode).toBe(0);
+    await waitForDaemonHealth(port);
+
+    const status = JSON.parse(
+      runKspec(`serve status --json --kspec-dir ${join(tempDir, ".kspec")}`, tempDir).stdout,
+    ) as {
+      running: boolean;
+      pid: number | null;
+    };
+
+    expect(status.running).toBe(true);
+    expect(status.pid).not.toBeNull();
+    expect(readProcessCommand(status.pid as number)).toContain("node");
+
+    runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
   });
 
   // AC: @web-ui ac-2
-  it("should show Bun install URL in JSON mode when Bun is not available", () => {
-    // Build PATH that includes node but excludes bun
+  it("should show Node install URL in JSON mode when the configured node runtime is not available", () => {
+    // Build PATH that excludes node.
+    const nodeDir = dirname(execSync("which node", { encoding: "utf-8" }).trim());
+    const noNodePath = (process.env.PATH || "")
+      .split(":")
+      .filter((p) => {
+        try {
+          return p !== nodeDir && !existsSync(join(p, "node"));
+        } catch {
+          return true;
+        }
+      })
+      .join(":");
+
+    const { KSPEC_SESSION_ID: _sessionId, ...cleanProcessEnv } = process.env;
+    const result = spawnSync(
+      process.execPath,
+      [CLI_PATH, "serve", "start", "--json", "--kspec-dir", join(tempDir, ".kspec")],
+      {
+        cwd: tempDir,
+        encoding: "utf-8",
+        env: { ...cleanProcessEnv, ...testEnv, PATH: noNodePath },
+      },
+    );
+
+    expect(result.exitCode).not.toBe(0);
+    const parsed = JSON.parse((result.stdout ?? "").trim());
+    expect(parsed).toHaveProperty("error");
+    expect(parsed.error).toContain("Node runtime is required");
+    expect(parsed).toHaveProperty("hint");
+    expect(parsed.hint).toContain("nodejs.org");
+    expect(parsed).toHaveProperty("url");
+    expect(parsed.url).toBe("https://nodejs.org/en/download");
+  });
+
+  // AC: @daemon-runtime-adapter ac-runtime-missing
+  it("should report missing node runtime with installation guidance", () => {
+    const nodeDir = dirname(execSync("which node", { encoding: "utf-8" }).trim());
+    const noNodePath = (process.env.PATH || "")
+      .split(":")
+      .filter((p) => {
+        try {
+          return p !== nodeDir && !existsSync(join(p, "node"));
+        } catch {
+          return true;
+        }
+      })
+      .join(":");
+
+    writeFileSync(
+      join(tempDir, "kspec.config.yaml"),
+      ["daemon:", "  runtime: node", ""].join("\n"),
+      "utf-8",
+    );
+
+    const { KSPEC_SESSION_ID: _sessionId, ...cleanProcessEnv } = process.env;
+    const result = spawnSync(
+      process.execPath,
+      [CLI_PATH, "serve", "start", "--kspec-dir", join(tempDir, ".kspec")],
+      {
+        cwd: tempDir,
+        encoding: "utf-8",
+        env: { ...cleanProcessEnv, ...testEnv, PATH: noNodePath },
+      },
+    );
+
+    expect(result.status).not.toBe(0);
+    expect(result.stderr).toContain("Node runtime is required");
+    expect(result.stdout).toContain("nodejs.org");
+  });
+
+  // AC: @daemon-runtime-adapter ac-runtime-selection
+  // AC: @daemon-runtime-adapter ac-http-parity
+  it("should start via configured node runtime even when Bun is unavailable", async () => {
     const nodeDir = dirname(execSync("which node", { encoding: "utf-8" }).trim());
     const noBunPath = (process.env.PATH || "")
       .split(":")
@@ -721,20 +837,31 @@ describe("kspec serve commands", () => {
       })
       .join(":");
     const pathWithNode = noBunPath.includes(nodeDir) ? noBunPath : `${nodeDir}:${noBunPath}`;
+    const port = await getAvailablePort();
 
-    const result = runKspec(`serve start --json --kspec-dir ${join(tempDir, ".kspec")}`, tempDir, {
-      expectFail: true,
+    writeFileSync(
+      join(tempDir, "kspec.config.yaml"),
+      ["daemon:", "  runtime: node", `  port: ${port}`, ""].join("\n"),
+      "utf-8",
+    );
+
+    const result = runKspec(
+      `serve start --detach --kspec-dir ${join(tempDir, ".kspec")}`,
+      tempDir,
+      { env: { PATH: pathWithNode } },
+    );
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain(`port ${port}`);
+
+    await waitForDaemonHealth(port);
+
+    const healthResponse = await fetch(`http://localhost:${port}/api/health`);
+    expect(healthResponse.ok).toBe(true);
+
+    runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir, {
       env: { PATH: pathWithNode },
     });
-
-    expect(result.exitCode).not.toBe(0);
-    const parsed = JSON.parse(result.stdout);
-    expect(parsed).toHaveProperty("error");
-    expect(parsed.error).toContain("Bun runtime is required");
-    expect(parsed).toHaveProperty("hint");
-    expect(parsed.hint).toContain("bun.sh");
-    expect(parsed).toHaveProperty("url");
-    expect(parsed.url).toBe("https://bun.sh/docs/installation");
   });
 
   // AC: @cli-serve-commands ac-11
@@ -827,8 +954,8 @@ describe("kspec serve commands", () => {
 
     // AC: @trait-json-output ac-2
     it("should include all data in JSON mode that appears in human mode", async () => {
-      if (!bunAvailable) {
-        console.log("  ⊘ Skipping test - Bun runtime required");
+      if (!nodeAvailable) {
+        console.log("  ⊘ Skipping test - Node runtime required");
         return;
       }
 

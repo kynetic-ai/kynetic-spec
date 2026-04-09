@@ -3356,6 +3356,27 @@ export async function provisionDispatchWorkspace(
     }
   }
 
+  // AC: @adopt-existing-task-branch-lineage ac-reject-main-checkout-branch
+  // Reject adoption when the branch is currently checked out in the main
+  // repository working tree. This prevents adopting the base branch (or any
+  // branch occupying the main checkout) as a task's canonical branch, which
+  // would trigger the foreign worktree guard and block the task.
+  if (adoptedBranch) {
+    const worktreeEntries = await parseWorktreeList(projectDir);
+    const mainEntry = worktreeEntries.find(
+      (entry) => path.resolve(entry.path) === path.resolve(projectDir),
+    );
+    const mainBranchRef = mainEntry?.branch ?? null;
+    const adoptedBranchRef = `refs/heads/${adoptedBranch}`;
+    if (mainBranchRef === adoptedBranchRef) {
+      throw new DispatchWorkspaceError(
+        `Cannot adopt branch "${adoptedBranch}" for task ${taskRef}: it is currently checked out in the main repository working tree (${projectDir}).` +
+          ` This usually means submission linkage was captured from the wrong checkout.`,
+        `Repair the task's submission linkage to reference the correct task branch: kspec task set ${taskRef} --submission-linkage`,
+      );
+    }
+  }
+
   // AC: @adopt-existing-task-branch-lineage ac-4 — explicit failure when no record
   // and no recoverable submission linkage for review/fix-cycle tasks.
   if (!existingRecord && !adoptedBranch && isReviewOrFixCycle) {

@@ -7,10 +7,10 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
 	import { getStatusClasses, formatAge } from './board-utils';
-	import MessageSquare from '@lucide/svelte/icons/message-square';
-	import GitBranch from '@lucide/svelte/icons/git-branch';
-	import AlertTriangle from '@lucide/svelte/icons/alert-triangle';
-	import Ban from '@lucide/svelte/icons/ban';
+	import MessageSquare from 'lucide-svelte/icons/message-square';
+	import GitBranch from 'lucide-svelte/icons/git-branch';
+	import AlertTriangle from 'lucide-svelte/icons/alert-triangle';
+	import Ban from 'lucide-svelte/icons/ban';
 
 	let { task, onclick }: { task: TaskSummary; onclick: (task: TaskSummary) => void } = $props();
 

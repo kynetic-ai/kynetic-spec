@@ -15,8 +15,8 @@ import * as path from "node:path";
 import { Elysia } from "elysia";
 import { parseUnifiedDiff } from "../src/utils/git-diff-parser";
 import { createTempDir, cleanupTempDir, initGitRepo, testUlid, seedSplitTask } from "./helpers/cli";
-import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.ts";
-import { createDiffRoutes } from "../dist/daemon/routes/diff.ts";
+import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.js";
+import { createDiffRoutes } from "../dist/daemon/routes/diff.js";
 // Register split backend in the dist module space (routes use dist, not src)
 import { ensureSplitBackendRegistered } from "../dist/parser/split-backend.js";
 ensureSplitBackendRegistered();

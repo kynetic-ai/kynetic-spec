@@ -178,6 +178,30 @@ function stripPlanMetadata(plan: Plan | LoadedPlan): Plan {
  * AC: @plan-crud ac-7, ac-31 - listing plans
  */
 export async function loadPlans(ctx: KspecContext): Promise<LoadedPlan[]> {
+  const { getEntityCacheContext } = await import("./yaml.js");
+  const cacheContext = getEntityCacheContext();
+  if (cacheContext) {
+    const cache = cacheContext.cacheAccessor(cacheContext.projectPath) as
+      | {
+          getDomainState?(domain: string): string | null | undefined;
+          getPlansIndex?(): Array<{ _ulid: string }> | null;
+          getPlanDetail?(ulid: string): LoadedPlan | null;
+        }
+      | null
+      | undefined;
+    if (cache?.getDomainState?.("plans") === "ready") {
+      const planIndex = cache.getPlansIndex?.();
+      if (planIndex) {
+        const cachedPlans = planIndex
+          .map((plan) => cache.getPlanDetail?.(plan._ulid) ?? null)
+          .filter((plan): plan is LoadedPlan => plan !== null);
+        if (cachedPlans.length === planIndex.length) {
+          return cachedPlans;
+        }
+      }
+    }
+  }
+
   const plansPath = getPlansFilePath(ctx);
 
   try {

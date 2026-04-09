@@ -42,9 +42,11 @@ const c = {
 const projectRoot = path.dirname(__dirname);
 const BUILD_ARTIFACTS = [
   "dist/cli/index.js",
+  "packages/shared/dist/index.js",
   "dist/web-ui/index.html",
-  "dist/daemon/index.ts",
-  "dist/daemon/entity-cache.ts",
+  "packages/web-ui/.svelte-kit/output/server/manifest-full.js",
+  "dist/daemon/index.js",
+  "dist/daemon/entity-cache.js",
 ];
 const BUILD_INPUT_PATHS = [
   "src",

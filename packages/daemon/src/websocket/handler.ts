@@ -8,9 +8,9 @@
  * - ac-30 (@api-contract): Malformed command error
  */
 
-import type { ServerWebSocket } from "bun";
-import type { WebSocketCommand, CommandAck, ConnectionData } from "./types";
-import type { PubSubManager } from "./pubsub";
+import type { WebSocketCommand, CommandAck, WebSocketConnection } from "./types.js";
+import type { PubSubManager } from "./pubsub.js";
+import { getWebSocketContextId } from "./context-id.js";
 
 type WebSocketRawMessage =
   | string
@@ -60,15 +60,12 @@ export class WebSocketHandler {
    * Handle incoming WebSocket command
    * AC: @api-contract ac-26, ac-27, ac-28, ac-30
    */
-  handleMessage(
-    ws: ServerWebSocket<ConnectionData>,
-    rawMessage: WebSocketRawMessage,
-  ): Promise<void> {
+  handleMessage(ws: WebSocketConnection, rawMessage: WebSocketRawMessage): Promise<void> {
     return this.handleMessageInternal(ws, rawMessage);
   }
 
   private async handleMessageInternal(
-    ws: ServerWebSocket<ConnectionData>,
+    ws: WebSocketConnection,
     rawMessage: WebSocketRawMessage,
   ): Promise<void> {
     let command: WebSocketCommand;
@@ -129,7 +126,7 @@ export class WebSocketHandler {
    * Handle subscribe command
    * AC: @api-contract ac-28
    */
-  private handleSubscribe(ws: ServerWebSocket<ConnectionData>, command: WebSocketCommand) {
+  private handleSubscribe(ws: WebSocketConnection, command: WebSocketCommand) {
     const topics = command.payload?.topics;
 
     if (!topics || !Array.isArray(topics) || topics.length === 0) {
@@ -151,7 +148,7 @@ export class WebSocketHandler {
   /**
    * Handle unsubscribe command
    */
-  private handleUnsubscribe(ws: ServerWebSocket<ConnectionData>, command: WebSocketCommand) {
+  private handleUnsubscribe(ws: WebSocketConnection, command: WebSocketCommand) {
     const topics = command.payload?.topics;
 
     if (!topics || !Array.isArray(topics) || topics.length === 0) {
@@ -173,22 +170,20 @@ export class WebSocketHandler {
   /**
    * Handle ping command (application-level ping, not WebSocket frame)
    */
-  private handlePing(ws: ServerWebSocket<ConnectionData>, command: WebSocketCommand) {
+  private handlePing(ws: WebSocketConnection, command: WebSocketCommand) {
     this.sendAck(ws, true, command.request_id, true);
   }
 
   private sendValidationError(
-    ws: ServerWebSocket<ConnectionData>,
+    ws: WebSocketConnection,
     request_id: string | undefined,
     details: string,
   ) {
     this.sendAck(ws, false, request_id, false, "validation_error", details);
   }
 
-  private resolveSessionId(ws: ServerWebSocket<ConnectionData>): string | undefined {
-    const data = ws.data as { id?: unknown } | undefined;
-    const contextId = typeof data?.id === "string" ? data.id : undefined;
-    return this.pubsub.getSessionIdBySocket(ws, contextId);
+  private resolveSessionId(ws: WebSocketConnection): string | undefined {
+    return this.pubsub.getSessionIdBySocket(ws, getWebSocketContextId(ws));
   }
 
   private injectTestFailure(command: WebSocketCommand) {
@@ -203,7 +198,7 @@ export class WebSocketHandler {
    * AC: @api-contract ac-27
    */
   private sendAck(
-    ws: ServerWebSocket<ConnectionData>,
+    ws: WebSocketConnection,
     isAck: boolean,
     request_id: string | undefined,
     success: boolean,

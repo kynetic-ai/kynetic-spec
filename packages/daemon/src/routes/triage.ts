@@ -45,7 +45,7 @@ import { normalizeRefInput, TriageActionSchema, TriageStatusSchema } from "../..
 import type { TriageAction } from "../../schema/index.js";
 import { exportTriageRecords } from "../../export/triage.js";
 import { executeTriageAction, VALID_ACTIONS } from "../../triage/index.js";
-import type { PubSubManager } from "../websocket/pubsub";
+import type { PubSubManager } from "../websocket/pubsub.js";
 import { enumArrayUnion, enumUnion } from "./enum-utils.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
 import { wrapResponse } from "./response-envelope.js";
@@ -565,7 +565,15 @@ export function createTriageRoutes(options: TriageRouteOptions) {
             await actCache.writeThrough("triage");
             const action = record.action;
             if (action === "promote") {
-              await actCache.writeThrough("tasks");
+              const createdTask = result.resultRef
+                ? await resolveTaskDataManager(ctx)
+                    .getTask(ctx, result.resultRef)
+                    .catch(() => undefined)
+                : undefined;
+              await actCache.writeThrough(
+                "tasks",
+                createdTask ? { ulid: createdTask._ulid } : undefined,
+              );
               await actCache.writeThrough("inbox");
             } else if (action === "delete" || action === "duplicate") {
               await actCache.writeThrough("inbox");

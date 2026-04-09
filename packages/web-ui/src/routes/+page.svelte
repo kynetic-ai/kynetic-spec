@@ -35,15 +35,15 @@
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
 	import { isStaticMode } from '$lib/stores/mode.svelte';
 	import { queryKeys } from '$lib/query/keys.js';
-	import AlertTriangle from '@lucide/svelte/icons/triangle-alert';
-	import InboxIcon from '@lucide/svelte/icons/inbox';
-	import Eye from '@lucide/svelte/icons/eye';
-	import ShieldAlert from '@lucide/svelte/icons/shield-alert';
-	import Ban from '@lucide/svelte/icons/ban';
-	import Activity from '@lucide/svelte/icons/activity';
-	import Bot from '@lucide/svelte/icons/bot';
-	import ExternalLink from '@lucide/svelte/icons/external-link';
-	import TerminalIcon from '@lucide/svelte/icons/terminal';
+	import AlertTriangle from 'lucide-svelte/icons/alert-triangle';
+	import InboxIcon from 'lucide-svelte/icons/inbox';
+	import Eye from 'lucide-svelte/icons/eye';
+	import ShieldAlert from 'lucide-svelte/icons/shield-alert';
+	import Ban from 'lucide-svelte/icons/ban';
+	import Activity from 'lucide-svelte/icons/activity';
+	import Bot from 'lucide-svelte/icons/bot';
+	import ExternalLink from 'lucide-svelte/icons/external-link';
+	import TerminalIcon from 'lucide-svelte/icons/terminal';
 
 	const queryClient = useQueryClient();
 

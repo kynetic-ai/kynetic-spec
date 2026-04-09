@@ -50,14 +50,34 @@ function writeBuiltProjectFixture(rootDir: string): void {
 
   for (const artifact of [
     "dist/cli/index.js",
+    "packages/shared/dist/index.js",
     "dist/web-ui/index.html",
-    "dist/daemon/index.ts",
-    "dist/daemon/entity-cache.ts",
+    "packages/web-ui/.svelte-kit/output/server/manifest-full.js",
+    "dist/daemon/index.js",
+    "dist/daemon/entity-cache.js",
   ]) {
     const fullPath = path.join(rootDir, artifact);
     fs.mkdirSync(path.dirname(fullPath), { recursive: true });
     fs.writeFileSync(fullPath, "");
   }
+}
+
+function writeInstallablePackage(nodeModulesRoot: string, packageName: string): void {
+  const packageDir = path.join(nodeModulesRoot, ...packageName.split("/"));
+  fs.mkdirSync(packageDir, { recursive: true });
+  fs.writeFileSync(
+    path.join(packageDir, "package.json"),
+    JSON.stringify(
+      {
+        name: packageName,
+        version: "1.0.0",
+        main: "index.js",
+      },
+      null,
+      2,
+    ),
+  );
+  fs.writeFileSync(path.join(packageDir, "index.js"), "module.exports = 'ok';\n");
 }
 
 // Import the shipped module — tests exercise this, not reimplemented logic
@@ -161,9 +181,14 @@ describe("test runner environment checks", () => {
         fs.rmSync(tempDir, { recursive: true, force: true });
       });
 
-      it("detects when dist/daemon/index.ts is missing", () => {
-        // Create all artifacts except dist/daemon/index.ts
-        for (const artifact of ["dist/cli/index.js", "dist/web-ui/index.html"]) {
+      it("detects when dist/daemon/index.js is missing", () => {
+        // Create all artifacts except dist/daemon/index.js
+        for (const artifact of [
+          "dist/cli/index.js",
+          "packages/shared/dist/index.js",
+          "dist/web-ui/index.html",
+          "packages/web-ui/.svelte-kit/output/server/manifest-full.js",
+        ]) {
           const fullPath = path.join(tempDir, artifact);
           fs.mkdirSync(path.dirname(fullPath), { recursive: true });
           fs.writeFileSync(fullPath, "");
@@ -171,11 +196,17 @@ describe("test runner environment checks", () => {
 
         const result = runner.checkBuild(tempDir);
         expect(result.ok).toBe(false);
-        expect(result.reason).toContain("dist/daemon/index.ts not found");
+        expect(result.reason).toContain("dist/daemon/index.js not found");
       });
 
       it("detects when dist/web-ui/index.html is missing", () => {
-        for (const artifact of ["dist/cli/index.js", "dist/daemon/index.ts"]) {
+        for (const artifact of [
+          "dist/cli/index.js",
+          "packages/shared/dist/index.js",
+          "packages/web-ui/.svelte-kit/output/server/manifest-full.js",
+          "dist/daemon/index.js",
+          "dist/daemon/entity-cache.js",
+        ]) {
           const fullPath = path.join(tempDir, artifact);
           fs.mkdirSync(path.dirname(fullPath), { recursive: true });
           fs.writeFileSync(fullPath, "");
@@ -187,7 +218,13 @@ describe("test runner environment checks", () => {
       });
 
       it("detects when dist/cli/index.js is missing", () => {
-        for (const artifact of ["dist/web-ui/index.html", "dist/daemon/index.ts"]) {
+        for (const artifact of [
+          "packages/shared/dist/index.js",
+          "dist/web-ui/index.html",
+          "packages/web-ui/.svelte-kit/output/server/manifest-full.js",
+          "dist/daemon/index.js",
+          "dist/daemon/entity-cache.js",
+        ]) {
           const fullPath = path.join(tempDir, artifact);
           fs.mkdirSync(path.dirname(fullPath), { recursive: true });
           fs.writeFileSync(fullPath, "");
@@ -201,9 +238,11 @@ describe("test runner environment checks", () => {
       it("succeeds when all artifacts are present", () => {
         for (const artifact of [
           "dist/cli/index.js",
+          "packages/shared/dist/index.js",
           "dist/web-ui/index.html",
-          "dist/daemon/index.ts",
-          "dist/daemon/entity-cache.ts",
+          "packages/web-ui/.svelte-kit/output/server/manifest-full.js",
+          "dist/daemon/index.js",
+          "dist/daemon/entity-cache.js",
         ]) {
           const fullPath = path.join(tempDir, artifact);
           fs.mkdirSync(path.dirname(fullPath), { recursive: true });
@@ -217,9 +256,11 @@ describe("test runner environment checks", () => {
       it("detects stale build artifacts when a source file is newer", async () => {
         for (const artifact of [
           "dist/cli/index.js",
+          "packages/shared/dist/index.js",
           "dist/web-ui/index.html",
-          "dist/daemon/index.ts",
-          "dist/daemon/entity-cache.ts",
+          "packages/web-ui/.svelte-kit/output/server/manifest-full.js",
+          "dist/daemon/index.js",
+          "dist/daemon/entity-cache.js",
         ]) {
           const fullPath = path.join(tempDir, artifact);
           fs.mkdirSync(path.dirname(fullPath), { recursive: true });
@@ -242,6 +283,44 @@ describe("test runner environment checks", () => {
         const result = runner.checkBuild(tempDir);
         expect(result.ok).toBe(false);
         expect(result.reason).toContain("not found");
+      });
+
+      it("detects when the shared package build output is missing", () => {
+        for (const artifact of [
+          "dist/cli/index.js",
+          "dist/web-ui/index.html",
+          "packages/web-ui/.svelte-kit/output/server/manifest-full.js",
+          "dist/daemon/index.ts",
+          "dist/daemon/entity-cache.ts",
+        ]) {
+          const fullPath = path.join(tempDir, artifact);
+          fs.mkdirSync(path.dirname(fullPath), { recursive: true });
+          fs.writeFileSync(fullPath, "");
+        }
+
+        const result = runner.checkBuild(tempDir);
+        expect(result.ok).toBe(false);
+        expect(result.reason).toContain("packages/shared/dist/index.js not found");
+      });
+
+      it("detects when the SvelteKit server manifest is missing", () => {
+        for (const artifact of [
+          "dist/cli/index.js",
+          "packages/shared/dist/index.js",
+          "dist/web-ui/index.html",
+          "dist/daemon/index.ts",
+          "dist/daemon/entity-cache.ts",
+        ]) {
+          const fullPath = path.join(tempDir, artifact);
+          fs.mkdirSync(path.dirname(fullPath), { recursive: true });
+          fs.writeFileSync(fullPath, "");
+        }
+
+        const result = runner.checkBuild(tempDir);
+        expect(result.ok).toBe(false);
+        expect(result.reason).toContain(
+          "packages/web-ui/.svelte-kit/output/server/manifest-full.js not found",
+        );
       });
     });
 
@@ -308,6 +387,47 @@ describe("test runner environment checks", () => {
         fs.writeFileSync(path.join(tempDir, "package-lock.json"), "{}");
         const result = runner.checkDependencies(tempDir);
         expect(result.ok).toBe(true);
+      });
+
+      it("accepts direct dependencies resolved from an ancestor node_modules", () => {
+        const projectDir = path.join(tempDir, "project");
+        const workspaceDir = path.join(projectDir, ".kspec-worktrees", "review");
+        fs.mkdirSync(path.join(projectDir, "node_modules"), { recursive: true });
+        fs.mkdirSync(workspaceDir, { recursive: true });
+        writeInstallablePackage(path.join(projectDir, "node_modules"), "vitest");
+        writeInstallablePackage(path.join(projectDir, "node_modules"), "croner");
+        fs.writeFileSync(
+          path.join(workspaceDir, "package.json"),
+          JSON.stringify({
+            dependencies: { croner: "^10.0.0" },
+            devDependencies: { vitest: "^4.0.0" },
+          }),
+        );
+        fs.writeFileSync(path.join(workspaceDir, "package-lock.json"), "{}");
+
+        const result = runner.checkDependencies(workspaceDir);
+        expect(result.ok).toBe(true);
+      });
+
+      it("rejects dependencies found only above the project root", () => {
+        const projectDir = path.join(tempDir, "project");
+        const workspaceDir = path.join(projectDir, ".kspec-worktrees", "review");
+        fs.mkdirSync(path.join(tempDir, "node_modules"), { recursive: true });
+        writeInstallablePackage(path.join(tempDir, "node_modules"), "vitest");
+        writeInstallablePackage(path.join(tempDir, "node_modules"), "croner");
+        fs.mkdirSync(workspaceDir, { recursive: true });
+        fs.writeFileSync(
+          path.join(workspaceDir, "package.json"),
+          JSON.stringify({
+            dependencies: { croner: "^10.0.0" },
+            devDependencies: { vitest: "^4.0.0" },
+          }),
+        );
+        fs.writeFileSync(path.join(workspaceDir, "package-lock.json"), "{}");
+
+        const result = runner.checkDependencies(workspaceDir);
+        expect(result.ok).toBe(false);
+        expect(result.reason).toContain("node_modules/ not found");
       });
     });
   });

@@ -16,7 +16,7 @@
 
 import { Elysia, t } from "elysia";
 import { isAbsolute } from "path";
-import type { ProjectContextManager } from "../project-context";
+import type { ProjectContextManager } from "../project-context.js";
 
 interface ProjectsRouteOptions {
   projectManager: ProjectContextManager;

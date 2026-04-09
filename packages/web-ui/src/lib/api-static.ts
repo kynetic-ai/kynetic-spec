@@ -134,17 +134,6 @@ function findPlanByRef(snapshot: KspecSnapshot, ref: string): PlanDetail | null 
   );
 }
 
-function matchesPlanRef(planRef: string | undefined, ref: string): boolean {
-  const normalizedPlanRef = normalizeRef(planRef);
-  const normalizedRef = normalizeRef(ref);
-
-  if (!normalizedPlanRef || !normalizedRef) return false;
-  return (
-    normalizedPlanRef === normalizedRef ||
-    normalizedPlanRef.toUpperCase().startsWith(normalizedRef.toUpperCase())
-  );
-}
-
 /**
  * Filter helper for tasks
  */
@@ -174,7 +163,31 @@ function filterTasks(
     result = result.filter((t) => t.automation === params.automation);
   }
   if (params?.plan) {
-    result = result.filter((t) => matchesPlanRef(t.plan_ref, params.plan!));
+    // Bidirectional: check plan_ref (reverse) AND derived_tasks (forward)
+    // AC: @api-contract ac-plan-filter-derived, ac-plan-filter-ref
+    const snapshot = getSnapshot();
+    const plan = snapshot ? findPlanByRef(snapshot, params.plan) : null;
+    if (plan) {
+      const derivedTaskRefs = new Set(plan.derived_tasks.map((ref) => normalizeRef(ref)));
+      const planUlid = plan._ulid;
+      const planSlugs = plan.slugs;
+      result = result.filter((t) => {
+        // Reverse: task's plan_ref resolves to this plan (compare against plan identity, not raw query)
+        const taskPlanRef = normalizeRef(t.plan_ref);
+        const matchesByPlanRef =
+          taskPlanRef !== null &&
+          (taskPlanRef === planUlid ||
+            planUlid.startsWith(taskPlanRef.toUpperCase()) ||
+            planSlugs.includes(taskPlanRef));
+        // Forward: task is in plan's derived_tasks
+        const matchesByDerived =
+          derivedTaskRefs.has(t._ulid) || t.slugs.some((slug) => derivedTaskRefs.has(slug));
+        return matchesByPlanRef || matchesByDerived;
+      });
+    } else {
+      // AC: @api-contract ac-plan-filter-not-found
+      result = [];
+    }
   }
 
   return result;
