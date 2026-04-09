@@ -132386,6 +132386,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-09T10:10:12.004Z
+      - _ulid: 01KNRVH4JJVKSXWR29MF132RVW
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNRVH3MQNXSCJPA80C6RCDQP
+        timestamp: 2026-04-09T10:10:14.738Z
     examined_commit: 3d85f61f03d5eab3efb3c9c22cfc3d284b8ae965
     external_links: []
     lifecycle_state: open
@@ -132395,8 +132402,28 @@ reviews:
       content_hash: ""
       ref: "@01KNRNP11FC3RCW2M08RM1842A"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNRVH3MQNXSCJPA80C6RCDQP
+        anchor:
+          type: code
+          commit: 3d85f61f03d5eab3efb3c9c22cfc3d284b8ae965
+          line_end: 246
+          line_start: 223
+          path: tests/e2e/tasks.spec.ts
+          side: head
+        entries:
+          - _ulid: 01KNRVH3MQSTXR3Q3S4CDS9374
+            author: Jacob Chapel
+            body: This fix cycle still doesn’t prove the UI-side behavior required by the task. The test now
+              verifies that the filtered  response only contains  records, but the only assertion
+              against the rendered list is . A UI bug that rendered the wrong rows, stale rows, or
+              any other two tasks would still pass as long as the backend response stayed correct.
+              The task’s done condition explicitly requires asserting that every visible task is
+              eligible (or that no visible task is manual/needs_review), so the test still needs a
+              per-rendered-row automation assertion instead of a count-only proxy.
+            created_at: 2026-04-09T10:10:13.783Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-09T10:09:36.940Z
-    updated_at: 2026-04-09T10:10:11.069Z
+    updated_at: 2026-04-09T10:10:13.783Z
     notes: []
