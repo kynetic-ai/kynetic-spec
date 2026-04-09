@@ -132210,6 +132210,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-09T09:37:36.295Z
+      - _ulid: 01KNRSXHNY8ZBE2T9ZX0R67H8F
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNRSXGVBT86YJAHWXDKZGW5K
+        timestamp: 2026-04-09T09:42:04.222Z
     examined_commit: 715277ceed6a2659d779cbbf017cb216c5267b04
     external_links: []
     lifecycle_state: open
@@ -132219,8 +132226,28 @@ reviews:
       content_hash: ""
       ref: "@01KNRNP11FC3RCW2M08RM1842A"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNRSXGVBT86YJAHWXDKZGW5K
+        anchor:
+          type: code
+          commit: 715277ceed6a2659d779cbbf017cb216c5267b04
+          line_end: 242
+          line_start: 230
+          path: tests/e2e/tasks.spec.ts
+          side: head
+        entries:
+          - _ulid: 01KNRSXGVBBGYC8XTHZMRSJFM5
+            author: Jacob Chapel
+            body: The rewritten automation-filter test no longer proves the filter behavior for the full result
+              set. It only checks that at least one row remains and that opening the first row shows
+              automation=eligible. If the list regressed to include a mix of eligible and
+              manual_only/needs_review rows, this test would still pass as long as the first row
+              happened to be eligible. The task and AC both require verifying that the filtered list
+              contains only eligible tasks, so this needs an assertion over every visible result (or
+              an equivalent negative assertion that no ineligible statuses remain).
+            created_at: 2026-04-09T09:42:03.371Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-09T09:37:07.240Z
-    updated_at: 2026-04-09T09:37:35.352Z
+    updated_at: 2026-04-09T09:42:03.371Z
     notes: []
