@@ -73,8 +73,7 @@ afterEach(async () => {
 describe("captureSubmissionLinkage from git worktree", () => {
   // AC: @portable-task-submission-linkage ac-worktree-branch
   it("records the worktree's checked-out branch, not the main checkout's branch", async () => {
-    const { mainDir, worktreeDir, worktreeBranch, mainBranch } =
-      await setupWorktreeEnvironment();
+    const { mainDir, worktreeDir, worktreeBranch, mainBranch } = await setupWorktreeEnvironment();
 
     // Verify the main repo is on a different branch
     expect(git(mainDir, "branch --show-current")).toBe(mainBranch);
@@ -87,7 +86,7 @@ describe("captureSubmissionLinkage from git worktree", () => {
 
   // AC: @portable-task-submission-linkage ac-worktree-branch-isolation
   it("is not affected by the main repository working tree's checked-out branch", async () => {
-    const { mainDir, worktreeDir, worktreeBranch } = await setupWorktreeEnvironment({
+    const { mainDir, worktreeDir } = await setupWorktreeEnvironment({
       worktreeBranch: "feat/isolated-task",
     });
 

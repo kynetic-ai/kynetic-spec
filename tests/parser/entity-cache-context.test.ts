@@ -18,7 +18,6 @@ import {
   loadReviewRecords,
   saveReviewRecord,
 } from "../../src/parser/reviews.js";
-import { testUlid } from "../helpers/cli.js";
 
 const cleanupDirs: string[] = [];
 

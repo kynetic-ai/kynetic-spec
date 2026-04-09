@@ -466,15 +466,13 @@ describe("Daemon Command API", () => {
       return null;
     };
     const { middleware } = projectContextMiddleware();
-    app = new Elysia()
-      .use(middleware)
-      .use(
-        createCommandRoutes({
-          pubsub,
-          getEntityCache,
-          prepareProgram: (program) => prepareProgram?.(program),
-        }),
-      );
+    app = new Elysia().use(middleware).use(
+      createCommandRoutes({
+        pubsub,
+        getEntityCache,
+        prepareProgram: (program) => prepareProgram?.(program),
+      }),
+    );
   });
 
   afterEach(async () => {
