@@ -173,7 +173,7 @@ description: >-
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -183,6 +183,7 @@ tags:
   - e2e
   - infra
 vcs_refs: []
+session_id: 01KNRQ4V244KXTP6H4N4D049M7
 history:
   - author: "@claude"
     changes:
@@ -634,6 +635,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-04-09T08:35:37.825Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KNRQ4V244KXTP6H4N4D049M7
+        previous: null
+      started_at:
+        new: 2026-04-09T08:54:31.105Z
+        previous: null
+    command: task-start
+    timestamp: 2026-04-09T08:54:31.106Z
 created_at: 2026-04-09T08:28:03.503Z
+started_at: 2026-04-09T08:54:31.105Z
 todos: []
 automation: eligible
