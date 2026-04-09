@@ -24703,7 +24703,7 @@ runs:
     completed_at: 2026-04-08T22:36:05.716Z
   - _ulid: 01KNRMSNHD8ZQ61V7MSQ4BCVWW
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -24718,7 +24718,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-09T08:13:21.551Z
-        completed_at: 2026-04-09T08:13:21.551Z
+        completed_at: 2026-04-09T08:13:56.682Z
+        notes: "Friction: (1) hardcoded e2e count assertions duplicated across 6 spots — adding one fixture
+          row breaks many tests, (2) had to resolve same .ts→.js import conflict twice (initial
+          merge + rebase after origin/dev moved), no merge driver for source files, (3) kspec plan
+          get JSON shape unclear — had to try .tasks then .derived_tasks then fall back to filtering
+          kspec task list, (4) reviewer agent on lint fixes was narrowly scoped — missed
+          pre-existing testUlid duplicate and worktreeBranch unused that CI caught later, (5) gh run
+          view --log-failed waits for entire run completion before returning anything, even when one
+          job has already failed — had to scrape via gh api jobs/{id}/logs"
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-09T08:13:56.682Z
+        completed_at: 2026-04-09T08:13:56.682Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-09T08:12:34.222Z
