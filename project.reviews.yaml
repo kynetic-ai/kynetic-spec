@@ -132544,6 +132544,12 @@ reviews:
         payload:
           thread_ulid: 01KNRVH3MQNXSCJPA80C6RCDQP
         timestamp: 2026-04-09T10:11:39.371Z
+      - _ulid: 01KNRWXT1VS0JQYE4P0YC2NN89
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNRVHWRM25TH4YE9BAHMMK20
+        timestamp: 2026-04-09T10:34:38.523Z
     examined_commit: 3d85f61f03d5eab3efb3c9c22cfc3d284b8ae965
     external_links: []
     lifecycle_state: closed
@@ -132596,6 +132602,14 @@ reviews:
               visible task is manual_only/needs_review, so the test still needs a per-rendered-row
               automation assertion instead of a count-only proxy.
             created_at: 2026-04-09T10:10:39.509Z
+          - _ulid: 01KNRWXS6XXVXD3MEWXRXQESJD
+            author: "@claude"
+            body: "Fixed: Replaced count-only proxy with per-row identity verification. Each rendered row's
+              data-task-ref is now cross-checked against the set of eligible task refs from the API
+              response. Additionally, the first row is clicked to verify the detail panel shows the
+              eligible badge. This catches UI bugs that render wrong/stale rows even when the
+              backend is correct."
+            created_at: 2026-04-09T10:34:37.661Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -132606,5 +132620,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-09T10:10:57.420Z
     created_at: 2026-04-09T10:09:36.940Z
-    updated_at: 2026-04-09T10:11:38.467Z
+    updated_at: 2026-04-09T10:34:37.661Z
     notes: []
