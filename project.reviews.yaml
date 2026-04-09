@@ -132371,7 +132371,80 @@ reviews:
     slugs: []
     title: Review task-e2e-fixture-decoupled-assertions (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: >-
+          Ran ✓ Validation passed
+
+          ────────────────────────────────────────
+
+          Files checked: 10
+
+          Items checked: 578
+
+          Tasks checked: 0
+
+          Meta: 11 agents, 11 workflows, 10 conventions
+
+
+          Schema: OK
+
+          References: OK
+
+
+          Reference warnings: 1
+            ⚠ @skills
+              Orphaned skill directory 'skills' has no corresponding meta entry
+              in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+          Alignment warnings: 32
+            Orphaned specs (no tasks): 30
+              ○ Test Trait
+              ○ Filterable List Commands
+              ○ Dry Run Preview Mode
+              ... and 27 more
+            Status mismatches: 2
+              ! Task Set Batch Support
+                Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+              ! Concurrent Read Command Execution
+                Spec "Concurrent Read Command Execution" status is "implemented" but should be "in_progress" based on task progress
+
+          Alignment stats: 415/578 specs have tasks, 413 aligned
+
+
+          Completeness warnings: 474
+            Missing acceptance criteria: 1
+              ○ @01KJN1WT - Test Trait
+            Missing own AC coverage: 234
+              ! @spec-item - Spec Item
+                Uncovered: ac-item-1, ac-item-2
+              ! @ulid-system - ULID Identifier System
+                Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+              ! @slug-system - Slug Alias System
+                Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+              ... and 231 more
+            Invalid AC annotations: 239
+              ! AC annotation references '@01KJE3T7' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-e2e-fixture-decoupled-assertions-01knrnp1-review/tests/agent-detection.test.ts:43
+              ! AC annotation references '@01KJE3T7' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-e2e-fixture-decoupled-assertions-01knrnp1-review/tests/agent-detection.test.ts:61
+              ! AC annotation references '@01KJE3T7' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-e2e-fixture-decoupled-assertions-01knrnp1-review/tests/agent-detection.test.ts:75
+              ! AC annotation references '@01KJE3T7' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-e2e-fixture-decoupled-assertions-01knrnp1-review/tests/agent-detection.test.ts:88
+              ! AC annotation references '@ui-agent-dispatch ac-8' but @ui-agent-dispatch has no acceptance criterion 'ac-8'
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-e2e-fixture-decoupled-assertions-01knrnp1-review/tests/agent-dispatch-engine.test.ts:4965
+              ... and 234 more
+          Skills: OK (10 files checked). Result: schema/reference validation passed with repo-wide
+          pre-existing warnings only (exit 6); no new task-specific errors surfaced.
+        name: kspec-validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-09T10:10:16.415Z
+        completed_at: 2026-04-09T10:10:16.415Z
     events:
       - _ulid: 01KNRVFZNC8MND3V2ATC9REEWG
         actor: Jacob Chapel
@@ -132393,6 +132466,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNRVH3MQNXSCJPA80C6RCDQP
         timestamp: 2026-04-09T10:10:14.738Z
+      - _ulid: 01KNRVH739CWYTT4XT8C7SZ9HN
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec-validate
+        timestamp: 2026-04-09T10:10:17.322Z
     examined_commit: 3d85f61f03d5eab3efb3c9c22cfc3d284b8ae965
     external_links: []
     lifecycle_state: open
@@ -132425,5 +132505,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-09T10:09:36.940Z
-    updated_at: 2026-04-09T10:10:13.783Z
+    updated_at: 2026-04-09T10:10:16.415Z
     notes: []
