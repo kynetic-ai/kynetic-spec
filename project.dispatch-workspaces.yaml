@@ -46023,7 +46023,7 @@ workspaces:
         head: a6698d0d7053638669479e3bd101f8f3c6a2c693
         last_seen_at: 2026-04-08T22:33:09.028Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-worktree-linkage-capture-01knqj4t
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 6395ef2790db23c27cabaf3d52c19547102e891e
     bootstrap:
       status: succeeded
@@ -46427,7 +46427,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-09T10:06:22.408Z
+      updated_at: 2026-04-09T10:06:47.830Z
     integration:
       status: pending
       detail: null
@@ -46442,10 +46442,10 @@ workspaces:
     task_slug: task-e2e-fixture-decoupled-assertions
     timestamps:
       closed_at: null
-      last_active_at: 2026-04-09T09:44:22.386Z
-      last_reconciled_at: 2026-04-09T10:06:22.408Z
+      last_active_at: 2026-04-09T10:06:47.830Z
+      last_reconciled_at: 2026-04-09T10:06:47.830Z
       created_at: 2026-04-09T08:53:14.749Z
-      updated_at: 2026-04-09T10:06:43.635Z
+      updated_at: 2026-04-09T10:06:47.830Z
     workspace_id: dispatch-workspace-01KNRNP11FC3RCW2M08RM1842A
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
