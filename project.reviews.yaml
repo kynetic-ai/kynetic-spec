@@ -132634,7 +132634,18 @@ reviews:
     slugs: []
     title: Review task-e2e-fixture-decoupled-assertions (cycle 3)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm run test:e2e -- tests/e2e/tasks.spec.ts tests/e2e/dashboard.spec.ts
+          tests/e2e/file-watcher.spec.ts => 53 passed, 1 skipped.
+        name: test:e2e
+        required: true
+        runner: playwright
+        created_at: 2026-04-09T10:41:07.023Z
+        completed_at: 2026-04-09T10:41:07.023Z
     events:
       - _ulid: 01KNRX48KBWT92161KRNXWC2CB
         actor: Jacob Chapel
@@ -132649,6 +132660,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-09T10:38:45.069Z
+      - _ulid: 01KNRX9P989J6STH007MRSBFF9
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: test:e2e
+        timestamp: 2026-04-09T10:41:07.880Z
     examined_commit: 3e876f35aa9437eaeee74d3332c2edc84ed3afa2
     external_links: []
     lifecycle_state: open
@@ -132661,5 +132679,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-09T10:38:10.028Z
-    updated_at: 2026-04-09T10:38:44.151Z
+    updated_at: 2026-04-09T10:41:07.023Z
     notes: []
