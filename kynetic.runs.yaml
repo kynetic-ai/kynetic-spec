@@ -24809,7 +24809,7 @@ runs:
     completed_at: 2026-04-09T10:39:53.928Z
   - _ulid: 01KNTAHJAB370C7RHKYHQNKGRB
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -24934,7 +24934,61 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-09T23:54:22.852Z
-        completed_at: 2026-04-09T23:54:22.852Z
+        completed_at: 2026-04-09T23:54:50.294Z
+        notes: >-
+          PROPOSAL P1 (for F1, untracked): Make scripts/test.cjs print incremental test-file
+          progress in non-verbose mode. Currently the runner prints 'Cache cleared' then nothing
+          until the final summary. Even in non-verbose mode, the runner could print one line per
+          test file that completes (e.g., '✓ tests/parser.test.ts (66 tests, 350ms)'). This makes
+          liveness visible without dumping the full vitest verbose stream. Scope: SMALL — a few
+          lines in scripts/test.cjs, parsing the JSON reporter output as it streams or tailing the
+          log file in-process. Helps every first-time user, every agent dispatch, every CI setup
+          that doesn't set CI=true.
+
+
+          PROPOSAL P2 (for F2, partially tracked): Add a session-start gate that requires
+          acknowledging or triaging untriaged inbox items above a threshold (e.g., 10+ items >2
+          weeks old). The existing @session-start-inbox-triage shows the count; this would add
+          discipline by surfacing a more disruptive prompt or by enriching session-start with the
+          OLDEST untriaged items first (so 3-week-old @01KKSGTN would have shown up at session start
+          with 'CRITICAL: in inbox 25 days' marker). Scope: SMALL-MEDIUM. Risk of being annoying —
+          could be opt-in via config.
+
+
+          PROPOSAL P3 (for F3, untracked): Update kspec-agents.md testing convention with REAL test
+          suite timings, not aspirational ones. Measure full suite, default project, heavy-serial
+          project separately and document each. Add note that heavy-serial tests can take 5-15
+          minutes total and the '~150s' figure was historical. Scope: SMALL — doc update + one
+          measurement run. Prevents 'tests are stuck' confusion for every future user.
+
+
+          PROPOSAL P4 (for F4, untracked): Extract a single 'spawnKspecDaemon(opts)' helper that
+          encodes the lifecycle contract (detached vs parented, child handle returned vs not,
+          cleanup hook required). All three current call sites (serve.ts, index.ts auto-start, e2e
+          fixture) migrate to use it. The asymmetry that enabled the leak class becomes structurally
+          impossible. Scope: MEDIUM — touches production code, needs careful review of detach
+          semantics for the production path. Should land AFTER the daemon-leak fix tasks (A and B)
+          so the test refactor is straightforward.
+
+
+          PROPOSAL P5 (for F5, untracked): Document the vitest-as-lint-runner pattern in either
+          AGENTS.md, the testing convention, or a new 'custom lint rules' skill. Current state: the
+          pattern exists in tools/eslint-rules/no-daemon-ts-imports.js +
+          tests/lint-no-daemon-ts-imports.test.ts but is undiscoverable without grepping. Scope:
+          SMALL — add a section to the testing convention or a one-page skill explaining when to
+          write a custom rule and where it goes.
+
+
+          PROPOSAL P6 (for F6, partially tracked): Add an 'orphan daemons' section to kspec doctor
+          that scans the process table for kspec daemon processes whose --kspec-dir points at a
+          deleted path (or any kspec daemon not registered in any known PID file). Reports them with
+          PID, age, and command-line. Optionally accepts --reap to kill them with the user's
+          consent. Scope: SMALL-MEDIUM — extends existing @doctor-command, adds a process-scan
+          helper. Self-service recovery for the exact situation we just hit.
+      - status: completed
+        step_index: 4
+        started_at: 2026-04-09T23:54:50.294Z
+        completed_at: 2026-04-09T23:54:50.294Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-09T23:51:51.883Z
