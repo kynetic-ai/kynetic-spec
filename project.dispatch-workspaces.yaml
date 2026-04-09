@@ -46601,7 +46601,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-09T09:44:09.344Z
+      updated_at: 2026-04-09T09:44:11.162Z
     integration:
       status: pending
       detail: null
@@ -46610,25 +46610,20 @@ workspaces:
       target_branch: dev
       target_commit: 6395ef2790db23c27cabaf3d52c19547102e891e
       updated_at: 2026-04-09T09:44:09.344Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KNRNP11FC3RCW2M08RM1842A"
     task_slug: task-e2e-fixture-decoupled-assertions
     timestamps:
       closed_at: null
       last_active_at: 2026-04-09T09:36:25.405Z
-      last_reconciled_at: 2026-04-09T09:44:09.344Z
+      last_reconciled_at: 2026-04-09T09:44:11.162Z
       created_at: 2026-04-09T08:53:14.749Z
-      updated_at: 2026-04-09T09:44:09.344Z
+      updated_at: 2026-04-09T09:44:11.162Z
     workspace_id: dispatch-workspace-01KNRNP11FC3RCW2M08RM1842A
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 715277ceed6a2659d779cbbf017cb216c5267b04
-        last_seen_at: 2026-04-09T09:36:01.600Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-e2e-fixture-decoupled-assertions-01knrnp1-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-e2e-fixture-decoupled-assertions/01knrnp1
