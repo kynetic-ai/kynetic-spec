@@ -24703,7 +24703,7 @@ runs:
     completed_at: 2026-04-08T22:36:05.716Z
   - _ulid: 01KNRMSNHD8ZQ61V7MSQ4BCVWW
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -24739,7 +24739,17 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-09T08:16:18.448Z
-        completed_at: 2026-04-09T08:16:18.448Z
+        completed_at: 2026-04-09T08:16:52.157Z
+        notes: "Proposed: (A) e2e fixture-driven counts — derive task counts from project.tasks.yaml or
+          generate expected-counts.ts (medium); (B) kspec plan tasks subcommand or plan get --json
+          shape doc — bidirectional plan↔task lookup in one command (small); (C) plan-branch merge
+          driver / convention note for .ts→.js dist import conflicts (small, doc); (D) reviewer
+          agent scope guardrail — capture as feedback memory; (E) gh api jobs/{id}/logs pattern —
+          capture as reference memory"
+      - status: completed
+        step_index: 4
+        started_at: 2026-04-09T08:16:52.157Z
+        completed_at: 2026-04-09T08:16:52.157Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-09T08:12:34.222Z
