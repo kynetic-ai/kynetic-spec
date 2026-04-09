@@ -2224,3 +2224,22 @@ inbox:
       - reflection
     added_by: "@claude"
     created_at: 2026-04-08T11:15:43.978Z
+  - _ulid: 01KNRDZG7VRC5WGTVJK9DXRZ6B
+    text: "Investigate: loadWorkspaceRecordForWorktreeRoot returns undefined when workspace record
+      exists. During dispatch re-provisioning after task unblock (blocked -> pending_review), the
+      record lookup in provisionDispatchWorkspace fails to find an existing workspace record despite
+      the record being present in project.dispatch-workspaces.yaml on the shadow branch. Direct
+      Node.js testing of the same lookup (initContext + loadDispatchWorkspaceRegistry + filter)
+      succeeds. Likely candidates: (1) race between periodic _reconcile (which acquires shadowMutex
+      and writes to registry via reconcileDispatchWorkspaceRegistry) and _spawnInvocation (which
+      reads registry via provisionDispatchWorkspace without shadowMutex), (2) shadow sync timing
+      causing stale reads during context initialization, (3) concurrent file writes from
+      withFileLock in saveDispatchWorkspaceRecord leaving a transient partial state. Observed in
+      hawse project with task-proposal-lifecycle — workaround was repairing submission_linkage so
+      the adoption fallback path used the correct branch instead of depending on the record lookup."
+    tags:
+      - dispatch
+      - bug-investigation
+      - workspace-registry
+    added_by: "@claude"
+    created_at: 2026-04-09T06:13:25.371Z
