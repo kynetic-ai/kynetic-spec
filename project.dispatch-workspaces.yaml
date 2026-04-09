@@ -46238,18 +46238,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-e2e-fixture-decoupled-assertions/01knrnp1
-    canonical_branch_head: 715277ceed6a2659d779cbbf017cb216c5267b04
+    canonical_branch_head: 3d85f61f03d5eab3efb3c9c22cfc3d284b8ae965
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-09T09:44:18.868Z
+      updated_at: 2026-04-09T10:04:43.577Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-09T09:44:22.386Z
+      updated_at: 2026-04-09T10:04:43.577Z
     integration:
       status: pending
       detail: null
@@ -46257,7 +46257,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 6395ef2790db23c27cabaf3d52c19547102e891e
-      updated_at: 2026-04-09T09:44:18.868Z
+      updated_at: 2026-04-09T10:04:43.577Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KNRNP11FC3RCW2M08RM1842A"
@@ -46265,9 +46265,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-09T09:44:22.386Z
-      last_reconciled_at: 2026-04-09T09:44:22.386Z
+      last_reconciled_at: 2026-04-09T10:04:43.577Z
       created_at: 2026-04-09T08:53:14.749Z
-      updated_at: 2026-04-09T09:44:22.386Z
+      updated_at: 2026-04-09T10:04:43.577Z
     workspace_id: dispatch-workspace-01KNRNP11FC3RCW2M08RM1842A
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
