@@ -132646,6 +132646,25 @@ reviews:
         runner: playwright
         created_at: 2026-04-09T10:41:07.023Z
         completed_at: 2026-04-09T10:41:07.023Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: tests/e2e/tasks.spec.ts, tests/e2e/file-watcher.spec.ts,
+          tests/e2e/dashboard.spec.ts, tests/e2e/fixtures/test-base.ts,
+          tests/e2e/fixtures/kynetic.yaml, tests/e2e/fixtures/project.tasks.yaml,
+          packages/web-ui/src/lib/components/TaskList.svelte, package.json. Commands run: git diff
+          --stat/name-only, git diff, kspec task get, kspec review for-task, kspec item get
+          @web-dashboard @ui-data-freshness @ui-dashboard-overview @multi-directory-daemon, kspec
+          validate, rg AC annotations, targeted e2e run, package/dependency checks. Claims verified:
+          changed Playwright tests pass; manifest uses split task storage; rendered task rows expose
+          data-task-ref as slug-or-ULID for UI cross-checks. Categories searched: correctness, test
+          quality, edge cases, integration, environment."
+        name: review-evidence
+        required: false
+        runner: codex
+        created_at: 2026-04-09T10:41:09.562Z
+        completed_at: 2026-04-09T10:41:09.562Z
     events:
       - _ulid: 01KNRX48KBWT92161KRNXWC2CB
         actor: Jacob Chapel
@@ -132667,6 +132686,13 @@ reviews:
           status: pass
           name: test:e2e
         timestamp: 2026-04-09T10:41:07.880Z
+      - _ulid: 01KNRX9RT2E179HZGA1R1P43JQ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-04-09T10:41:10.467Z
     examined_commit: 3e876f35aa9437eaeee74d3332c2edc84ed3afa2
     external_links: []
     lifecycle_state: open
@@ -132679,5 +132705,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-09T10:38:10.028Z
-    updated_at: 2026-04-09T10:41:07.023Z
+    updated_at: 2026-04-09T10:41:09.562Z
     notes: []
