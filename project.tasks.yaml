@@ -26009,3 +26009,40 @@
   submitted_at: 2026-04-09T10:35:45.906Z
   completed_at: 2026-04-09T10:42:04.270Z
   automation: eligible
+- _ulid: 01KNTACN5YJKW4NE46WWDP95KY
+  slugs:
+    - task-cli-serve-test-daemon-cleanup
+  title: Add explicit cleanup to all daemon-spawning tests in cli-serve.test.ts
+  type: task
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - bug
+    - testing
+    - daemon
+    - cli
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-09T23:49:10.974Z
+  automation: eligible
+- _ulid: 01KNTACP2BXY12MTB2GETNJ7CS
+  slugs:
+    - task-lint-rule-test-daemon-cleanup
+  title: Custom lint rule for unsafe daemon-spawn patterns in test files
+  type: task
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-cli-serve-test-daemon-cleanup"
+  priority: 2
+  tags:
+    - testing
+    - daemon
+    - infra
+    - lint
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-09T23:49:11.883Z
+  automation: eligible

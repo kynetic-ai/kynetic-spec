@@ -1,0 +1,220 @@
+_ulid: 01KNTACN5YJKW4NE46WWDP95KY
+slugs:
+  - task-cli-serve-test-daemon-cleanup
+title: Add explicit cleanup to all daemon-spawning tests in cli-serve.test.ts
+type: task
+description: >-
+  ## What
+
+
+  Every test in `tests/cli-serve.test.ts` that spawns a daemon must register cleanup that runs on
+  every exit path (success, assertion failure, timeout, early return). Use vitest's
+  `onTestFinished(callback)` registered **immediately after the spawn returns**, while the PID is
+  fresh and known. Where the test is testing daemon-needing functionality but not the `kspec serve
+  start --detach` command itself, additionally migrate the spawn to the direct-spawn pattern from
+  `tests/e2e/fixtures/test-base.ts:324` (plain `spawn()` of the daemon binary, not detached, not
+  unref'd) so the OS reaps the process via process group on parent death.
+
+
+  ## Why
+
+
+  `tests/cli-serve.test.ts` spawns daemons via `kspec serve start --detach`, which calls `spawn(...,
+  { detached: true }); child.unref()` in `src/cli/commands/serve.ts:364–378`. Detached + unref'd
+  children survive parent death by design — that's correct for production `kspec serve start
+  --detach` users, but it means tests have no signal-propagation guarantee. When an `expect()`
+  throws before the test reaches its inline `serve stop` cleanup, the daemon is never reaped. Its
+  `--kspec-dir` becomes a deleted tempdir, but the process keeps running and gets reparented to PID
+  1.
+
+
+  A live observation found 142 leaked daemons accumulated over 3 days from this exact mechanism,
+  consuming 8–13% CPU each, forcing the system into 41 GiB of swap, and slowing `npm test` from its
+  ~150 s baseline to 11+ minutes. Inbox item @01KKSGTN (filed 2026-03-15) documented the same root
+  cause at the same code location and was never triaged.
+
+
+  The Playwright e2e fixture at `tests/e2e/fixtures/test-base.ts` spawns daemons differently: plain
+  `spawn(runtime, [DAEMON_ENTRY, ...], { stdio: "pipe" })` — non-detached, parented in the normal
+  process group — so the OS sends SIGHUP to the daemon when the worker dies. That's the auto-cleanup
+  model. Tests in `cli-serve.test.ts` that don't actually test the `--detach` flag itself can adopt
+  the same model.
+
+
+  ## How
+
+
+  1. Read `tests/cli-serve.test.ts` end to end. Identify all 13 daemon-spawn call sites:
+
+     | Spawn line | `it()` at | Test name |
+     |---:|---:|---|
+     | 276 | 267 | should start in daemon mode and detach |
+     | 317 | 308 | should accept custom port via --port flag |
+     | 338 | 329 | should send SIGTERM and wait for shutdown |
+     | 382 | 374 | should return JSON status with process info |
+     | 411 | 402 | should show registered projects with paths in status output |
+     | 445 | 436 | should include projects list in JSON status output |
+     | 493 | 477 | should show "No projects registered" when no projects exist |
+     | 517 | 508 | should show uptime in status output |
+     | 551 | 542 | should stop then start on restart |
+     | 642 | 595 | should start daemon from npm-installed package with all deps available |
+     | 732 | 723 | should default to spawning the daemon with node when no runtime is configured |
+     | 849 | 827 | should start via configured node runtime even when Bun is unavailable |
+     | 966 | 956 | should include all data in JSON mode that appears in human mode |
+
+     Verify these line numbers against the current state of the file before editing — they may have drifted.
+
+  2. For each test, classify it:
+     - **Must invoke `kspec serve start --detach`**: tests where the CLI command path (argument parsing, runtime selection, PID file behavior, package install resolution) is the thing under test. Examples: line 267 (tests `--detach` itself), line 595 (tests installed-package CLI invocation), lines 723/827 (test runtime selection during CLI spawn).
+     - **Just needs a running daemon as fixture**: tests where the daemon is incidental — the test really exercises a different command (`serve status`, `serve stop`, `serve restart`) or asserts a message format. These can migrate to direct-spawn.
+     - When in doubt, leave the test on `serve start --detach` and add explicit cleanup. Don't refactor for the sake of refactoring.
+
+  3. **For every daemon-spawning test, register cleanup via `onTestFinished` at spawn time.**
+  Pattern:
+
+     ```ts
+     import { onTestFinished } from "vitest";
+
+     // ... inside the test:
+     const result = runKspec(`serve start --detach --port ${port} --kspec-dir ${kspecDir}`, tempDir);
+     const pid = parseInt(readFileSync(pidFilePath, "utf-8").trim(), 10);
+     onTestFinished(() => {
+       try {
+         process.kill(pid, "SIGTERM");
+       } catch {
+         // Already gone — fine
+       }
+     });
+     // ... assertions ...
+     ```
+
+     Register the cleanup **before any assertion that could throw**. The point is that the cleanup is queued the moment the daemon exists, regardless of what happens next in the test.
+
+  4. **For tests that migrate to direct-spawn**, follow `tests/e2e/fixtures/test-base.ts:324` as the
+  reference:
+
+     ```ts
+     const daemonProcess = spawn(
+       runtime,
+       [DAEMON_ENTRY, "--runtime", runtime, "--port", String(port), "--kspec-dir", kspecDir],
+       { cwd: tempDir, stdio: "pipe", env: isolatedEnv },
+     );
+     onTestFinished(async () => {
+       if (daemonProcess.exitCode === null) {
+         daemonProcess.kill("SIGTERM");
+         await new Promise((resolve) => {
+           const timeout = setTimeout(() => {
+             if (daemonProcess.exitCode === null) daemonProcess.kill("SIGKILL");
+             resolve(undefined);
+           }, 5000);
+           daemonProcess.once("exit", () => { clearTimeout(timeout); resolve(undefined); });
+         });
+       }
+     });
+     await waitForDaemonReady(port);
+     ```
+
+  5. **Pay special attention to the three tests that create their own isolated tempdir/HOME inside
+  the test body**, separate from the outer `beforeEach` (lines 131–158):
+     - Line 477 (`'should show "No projects registered"'`) creates `emptyTempDir` + custom env
+     - Line 595 (`'should start daemon from npm-installed package'`) creates `installDir` + isolated HOME via `createIsolatedKspecHome(installDir)`
+     - Line 827 (`'should start via configured node runtime even when Bun is unavailable'`) uses a custom `PATH` env that strips bun
+
+     The outer `afterEach` daemon stop at line 152 runs `serve stop` against the OUTER `tempDir/.kspec` only. It cannot reach daemons spawned with a different `--kspec-dir`. These three tests need their own `onTestFinished` cleanup, not reliance on the outer pair.
+
+  6. For test 827 specifically, the inline `serve stop` (if used) must run with the same custom
+  `PATH` that the spawn used — otherwise the `serve stop` CLI may fail to resolve `node` and fail
+  silently. Use `onTestFinished` with a direct `process.kill(pid, "SIGTERM")` instead of going
+  through the CLI.
+
+
+  7. After the changes, run `npm test -- tests/cli-serve.test.ts` (or with `--verbose` to watch
+  live), then verify zero leaked daemons:
+
+     ```bash
+     ps -ef | grep "dist/daemon/index.js" | grep -v grep | grep "kspec-test-"
+     ```
+
+     Should return nothing.
+
+  ## Acceptance criteria
+
+
+  - AC1: Every daemon-spawning `it(...)` block in `tests/cli-serve.test.ts` registers cleanup via
+  `onTestFinished` at the same statement scope as the spawn, before any subsequent `expect`/`await`
+  that could throw.
+
+  - AC2: The three tests at lines 477, 595, and 827 — which use isolated tempdirs/HOMEs/PATHs
+  different from the outer `beforeEach` — have cleanup that targets their own daemon's PID, not the
+  outer `tempDir`'s daemon.
+
+  - AC3: After running `npm test -- tests/cli-serve.test.ts` to completion, `ps -ef | grep
+  "dist/daemon/index.js" | grep "kspec-test-"` returns zero rows.
+
+  - AC4: Tests that classify as "daemon-as-fixture" (not testing `--detach` behavior itself) are
+  migrated to the direct-`spawn()` pattern from `tests/e2e/fixtures/test-base.ts:324`. The
+  classification rationale is documented in a comment on each migrated test.
+
+  - AC5: Test 827's cleanup uses `process.kill(pid, "SIGTERM")` directly, not a CLI subprocess that
+  depends on `PATH` resolution.
+
+  - AC6: No changes to `src/cli/commands/serve.ts`, `src/cli/index.ts`, or any production code. This
+  is a test-only refactor.
+
+
+  ## Out of scope
+
+
+  - The custom lint rule that enforces this pattern (covered by the follow-up task
+  @task-lint-rule-test-daemon-cleanup).
+
+  - Test files other than `tests/cli-serve.test.ts`. (If a quick grep shows other test files
+  spawning daemons unsafely, add them to the audit step but defer the actual fix to a follow-up if
+  the surface is large.)
+
+  - Daemon parent-watchdog mode (inbox @01KNT3GG).
+
+  - Cross-run orphan reaping (separate inbox item).
+
+  - Changes to `tests/e2e/fixtures/test-base.ts` itself.
+
+  - Spec changes — this is a pure test-implementation refactor, no product behavior changes.
+
+
+  ## Background
+
+
+  A live system observation on 2026-04-09 found 142 leaked daemons accumulated over 3 days, all
+  matching the pattern of detached test daemons whose tempdirs had been deleted but whose processes
+  kept running. The leaks slowed `npm test` from ~150s baseline to 11+ minutes due to CPU contention
+  and swap pressure. Inbox item @01KKSGTN documented the root cause 3+ weeks earlier but was never
+  triaged. This task closes the loop on the most prolific known leak source.
+
+
+  ## Related
+
+
+  - @01KKSGTN (inbox, original report)
+
+  - @01KNT3GG (inbox, daemon parent-watchdog complement)
+
+  - @daemon-sensitive-cli-test-determinism (existing spec — not modified)
+
+  - @task-lint-rule-test-daemon-cleanup (follow-up: lint enforcement)
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - bug
+  - testing
+  - daemon
+  - cli
+vcs_refs: []
+created_at: 2026-04-09T23:49:10.974Z
+todos: []
+automation: eligible

@@ -2286,3 +2286,23 @@ inbox:
       - reflection
     added_by: "@claude"
     created_at: 2026-04-09T23:48:20.225Z
+  - _ulid: 01KNTACPC0RGWTD27VP514P64Y
+    text: "Vitest globalSetup orphan-daemon reaper. Belt-and-suspenders defense against test daemon
+      leaks if @task-cli-serve-test-daemon-cleanup's per-test cleanup misses something OR a vitest
+      worker is killed by SIGKILL/OOM/Ctrl+C before its onTestFinished registrations run. Reaper
+      would scan ps at session start and teardown, identifying daemons whose --kspec-dir is a
+      deleted tempdir under os.tmpdir() matching helper prefixes (kspec-test-, kspec-multi-,
+      kspec-e2e-). Only build if Task A's per-test cleanup AND inbox @01KNT3GG (parent-watchdog
+      mode) prove insufficient. Cross-platform considerations: macOS BSD ps argv truncation (use ps
+      -ww or /proc/pid/cmdline on Linux); concurrent runs across vitest projects (default +
+      heavy-serial both invoke globalSetup, must be safe to run twice); never killing user daemons
+      (match only deleted tempdirs with known test prefixes); SIGKILL+TIME_WAIT port reuse race.
+      Don't build until evidence of recurring leaks after Task A and watchdog land. Related:
+      @01KKSGTN (original report), @01KNT3GG (parent-watchdog idea),
+      @task-cli-serve-test-daemon-cleanup, @task-lint-rule-test-daemon-cleanup."
+    tags:
+      - testing
+      - daemon
+      - infra
+    added_by: "@claude"
+    created_at: 2026-04-09T23:49:12.192Z

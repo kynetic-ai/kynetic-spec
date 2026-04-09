@@ -1,0 +1,179 @@
+_ulid: 01KNTACP2BXY12MTB2GETNJ7CS
+slugs:
+  - task-lint-rule-test-daemon-cleanup
+title: Custom lint rule for unsafe daemon-spawn patterns in test files
+type: task
+description: >-
+  ## What
+
+
+  Add a custom lint rule that fails the lint pass when a test file spawns a kspec daemon without
+  registering cleanup that runs on every exit path. Two anti-patterns to detect:
+
+
+  1. A call to `runKspec("serve start --detach ...")` (or `execSync`/`spawn` of the same string)
+  without an `onTestFinished` registration in the same scope before the next assertion.
+
+  2. A direct `spawn(...)` call where the binary path matches `dist/daemon/index.js`, again without
+  an `onTestFinished` registration before any subsequent assertion or await.
+
+
+  The rule must allow the cleanup to be registered via any of: `onTestFinished(...)`, a wrapping
+  `try { ... } finally { ... }` whose finally calls a stop helper, or a covering `afterEach` whose
+  body calls `serve stop` or `process.kill` against the same scope. False positives are worse than
+  false negatives here — if the rule can't statically prove cleanup is missing, it should pass.
+
+
+  The rule lives next to the existing custom-rule precedent:
+  `tools/eslint-rules/no-daemon-ts-imports.js` (rule definition) and
+  `tests/lint-no-daemon-ts-imports.test.ts` (vitest test that asserts the rule catches violations
+  and doesn't false-positive on safe code).
+
+
+  ## Why
+
+
+  Without lint-time enforcement, the cleanup pattern is a gentleman's agreement that future test
+  authors will violate. Inbox item @01KKSGTN documented exactly this regression at exactly the file
+  in scope, and the bug persisted for 3+ weeks because nothing flagged it. A lint rule converts a
+  recurring footgun into a build-time error.
+
+
+  The rule doesn't need to be perfect — it needs to catch the pattern that just leaked 142 daemons
+  over 3 days. Detecting `serve start --detach` as a string in a test file is enough; AST
+  sophistication is a nice-to-have.
+
+
+  ## How
+
+
+  1. Read `tools/eslint-rules/no-daemon-ts-imports.js` to understand the rule structure (what
+  context the rule receives, how it reports violations, how it's wired into the lint runner).
+
+  2. Read `tests/lint-no-daemon-ts-imports.test.ts` to understand how rules are tested in this
+  project (fixture file pattern, RuleTester invocation, etc).
+
+  3. Read `tests/cli-serve.test.ts` after the prerequisite task @task-cli-serve-test-daemon-cleanup
+  has landed, so the rule can be developed against a clean tree where every daemon-spawning test is
+  already correct. The clean tree becomes the no-false-positive baseline.
+
+  4. Implement `tools/eslint-rules/no-leaky-test-daemon.js`:
+     - Match string literals containing `serve start --detach` in test files (path matches `tests/**/*.ts` or `tests/**/*.test.ts`).
+     - Match `spawn(...)` calls where the first arg is a path-resolution that includes `dist/daemon/index.js` or a constant like `DAEMON_ENTRY`.
+     - For each match, walk forward in the same statement scope looking for an `onTestFinished` call, a `finally` block, or an enclosing function with an `afterEach` reference. If none found before the next `expect`, `await`, or function-scope exit, report.
+     - Provide a fix-it suggestion in the report message (text, not auto-fix): "Register cleanup via `onTestFinished(() => process.kill(pid, 'SIGTERM'))` immediately after the spawn returns."
+  5. Implement `tests/lint-no-leaky-test-daemon.test.ts`:
+     - **Positive cases** (rule should flag): test files that call `runKspec("serve start --detach ...")` with no `onTestFinished` after; tests that `spawn` the daemon binary and run an `expect` before any cleanup registration.
+     - **Negative cases** (rule should NOT flag): tests using the standard `beforeEach`/`afterEach` daemon cleanup pair where the spawn is in the same `describe` block; tests that register `onTestFinished` immediately after spawn; tests that call `spawn` for non-daemon binaries.
+     - Test fixtures live as inline source strings, not real test files, to keep them isolated.
+  6. Wire the rule into whatever runs custom rules in this project. Check `package.json` and lint
+  configuration files for how `no-daemon-ts-imports.js` is invoked. If oxlint doesn't support custom
+  rules in this version, follow the same vitest-test-as-lint-runner pattern that
+  `lint-no-daemon-ts-imports.test.ts` uses.
+
+  7. Run `npm test -- tests/lint-no-leaky-test-daemon.test.ts` and `npm test --
+  tests/cli-serve.test.ts` to confirm the rule passes against the post-prerequisite-task clean tree.
+
+  8. Update the project's `testing` convention via `kspec meta set testing --add-rule` with the
+  cleanup-pattern requirement (see "Convention update" below). The convention documents the rule for
+  human readers and links the lint rule as enforcement.
+
+
+  ## Convention update (run as part of this task)
+
+
+  Run:
+
+
+  ```bash
+
+  kspec meta set testing --add-rule "Test daemons must register cleanup via vitest's onTestFinished
+  at spawn time, not in the test body. Prefer direct spawn() (see tests/e2e/fixtures/test-base.ts)
+  so the OS reaps the daemon via process group on parent death. If a test must invoke 'kspec serve
+  start --detach' because the CLI command itself is under test, read the PID immediately after the
+  spawn returns and register process.kill(pid, 'SIGTERM') in onTestFinished — never rely on inline
+  cleanup that won't run on assertion failure."
+
+  ```
+
+
+  ## Acceptance criteria
+
+
+  - AC1: A custom lint rule exists at `tools/eslint-rules/no-leaky-test-daemon.js` with documented
+  purpose, options (none), and structure matching `no-daemon-ts-imports.js`.
+
+  - AC2: A vitest test exists at `tests/lint-no-leaky-test-daemon.test.ts` covering at least four
+  positive cases (rule should flag) and at least four negative cases (rule should pass), including
+  the standard `beforeEach`/`afterEach` pattern as a negative case.
+
+  - AC3: The rule is wired into the project's lint pipeline by the same mechanism
+  `no-daemon-ts-imports.js` uses. Running `npm test` (or whichever script invokes the rule) executes
+  it.
+
+  - AC4: After the prerequisite task @task-cli-serve-test-daemon-cleanup has landed and this task is
+  complete, the rule passes against the entire `tests/` directory with zero violations.
+
+  - AC5: The project's `testing` convention has a new rule entry covering the cleanup pattern, added
+  via `kspec meta set testing --add-rule`.
+
+  - AC6: A test that intentionally violates the rule (added to
+  `tests/lint-no-leaky-test-daemon.test.ts` as a positive case) is correctly flagged with a message
+  that includes the suggested fix.
+
+
+  ## Out of scope
+
+
+  - Refactoring `tests/cli-serve.test.ts` — covered by prerequisite
+  @task-cli-serve-test-daemon-cleanup (must land first).
+
+  - Auto-fix capability — the rule reports and suggests, but doesn't rewrite code.
+
+  - Detection of leaked daemons at runtime — that's the inboxed reaper idea, deferred.
+
+  - Production daemon code changes.
+
+  - Linting test files outside the `tests/` directory.
+
+
+  ## Background
+
+
+  This task is the second half of a two-task fix for a daemon-leak bug observed on 2026-04-09 (142
+  orphan daemons accumulated over 3 days). The first task (@task-cli-serve-test-daemon-cleanup)
+  fixes the actual leaky tests. This task adds lint-time enforcement so the pattern can't regress.
+  Inbox item @01KKSGTN documented the underlying bug 3+ weeks before it was rediscovered — a lint
+  rule would have caught the regression immediately and saved that delay.
+
+
+  ## Related
+
+
+  - @task-cli-serve-test-daemon-cleanup (prerequisite — must land first)
+
+  - @01KKSGTN (inbox, original bug report)
+
+  - @01KNT3GG (inbox, daemon parent-watchdog complement)
+
+  - `tools/eslint-rules/no-daemon-ts-imports.js` (precedent for custom rule)
+
+  - `tests/lint-no-daemon-ts-imports.test.ts` (precedent for rule testing)
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-cli-serve-test-daemon-cleanup"
+context: []
+priority: 2
+tags:
+  - testing
+  - daemon
+  - infra
+  - lint
+vcs_refs: []
+created_at: 2026-04-09T23:49:11.883Z
+todos: []
+automation: eligible
