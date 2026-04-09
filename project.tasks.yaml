@@ -25993,7 +25993,7 @@
     - task-e2e-fixture-decoupled-assertions
   title: Replace count-based e2e assertions with behavioral assertions and fixture-derived counts
   type: task
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 2
@@ -26007,4 +26007,5 @@
   created_at: 2026-04-09T08:28:03.503Z
   started_at: 2026-04-09T10:35:34.896Z
   submitted_at: 2026-04-09T10:35:45.906Z
+  completed_at: 2026-04-09T10:42:04.270Z
   automation: eligible

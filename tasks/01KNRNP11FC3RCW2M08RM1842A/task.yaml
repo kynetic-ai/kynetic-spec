@@ -173,8 +173,11 @@ description: >-
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved review @01KNRX48KCP6TS82BPJTJDCXVS and merged
+  dispatch/task/task-e2e-fixture-decoupled-assertions/01knrnp1 into dev. Behavioral e2e assertions
+  now replace fixture-coupled counts, and dashboard task totals are derived from split-fixture data.
 depends_on: []
 context: []
 priority: 2
@@ -798,8 +801,25 @@ history:
         previous: "@01KNRVFZNC71DEHYFHCH8XJ68K"
     command: review-link
     timestamp: 2026-04-09T10:38:12.713Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved review @01KNRX48KCP6TS82BPJTJDCXVS and merged
+          dispatch/task/task-e2e-fixture-decoupled-assertions/01knrnp1 into dev. Behavioral e2e
+          assertions now replace fixture-coupled counts, and dashboard task totals are derived from
+          split-fixture data.
+        previous: null
+      completed_at:
+        new: 2026-04-09T10:42:04.270Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-09T10:42:04.281Z
 created_at: 2026-04-09T08:28:03.503Z
 started_at: 2026-04-09T10:35:34.896Z
 submitted_at: 2026-04-09T10:35:45.906Z
+completed_at: 2026-04-09T10:42:04.270Z
 todos: []
 automation: eligible
