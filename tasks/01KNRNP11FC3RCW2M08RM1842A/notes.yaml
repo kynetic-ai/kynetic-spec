@@ -46,3 +46,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-09T09:42:34.621Z
+  - _ulid: 01KNRV72E8GKTPWBFQNB4V4NKD
+    content: "Fix cycle 1: Addressed blocker in automation-filter test (tasks.spec.ts:217). The original
+      test only spot-checked the first row via the detail panel. Replaced with API response
+      interception that verifies every task returned by the filtered /api/tasks endpoint has
+      automation='eligible'. Also asserts UI row count matches API response count. All 53 e2e tests
+      in scope pass (tasks, dashboard, file-watcher). Full unit suite (7723 tests) also passes."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-09T10:04:44.872Z
