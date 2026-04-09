@@ -24809,7 +24809,7 @@ runs:
     completed_at: 2026-04-09T10:39:53.928Z
   - _ulid: 01KNTAHJAB370C7RHKYHQNKGRB
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -24898,7 +24898,43 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-04-09T23:52:59.112Z
-        completed_at: 2026-04-09T23:52:59.112Z
+        completed_at: 2026-04-09T23:54:22.852Z
+        notes: >-
+          F1 (test runner silent): NOT TRACKED. No matches for 'test runner verbose' or 'test
+          progress'. Genuinely untracked friction.
+
+
+          F2 (inbox neglect / triage cadence): PARTIALLY TRACKED. @session-start-inbox-triage exists
+          and makes the user aware of untriaged items at session start. But awareness != action. The
+          actual gap is the cadence/discipline to follow through and triage what session-start
+          surfaces. The existing spec is implementation-complete; the missing piece is procedural,
+          not technical.
+
+
+          F3 (misleading test baseline): NOT TRACKED. No matches for 'test baseline' or 'heavy
+          serial slow'. The kspec-agents.md '~150s' figure is plain wrong for the actual full suite
+          and not tracked anywhere.
+
+
+          F4 (three daemon-spawn paths with different lifecycles): NOT TRACKED. No matches for
+          'daemon spawn helper' or 'spawn daemon unify'. The asymmetry between detached +
+          non-detached daemon spawning across three call sites enables the leak class — there's no
+          shared abstraction.
+
+
+          F5 (vitest-as-lint-runner pattern undocumented): NOT TRACKED. The pattern exists in
+          tests/lint-no-daemon-ts-imports.test.ts but isn't documented in AGENTS.md, conventions, or
+          any spec. Agents picking up custom-rule tasks have to discover it via file-reading.
+
+
+          F6 (no CLI orphan daemon discovery): PARTIALLY TRACKED. @doctor-command exists and reports
+          daemon health (PID alive, port responding) but doesn't enumerate orphan daemons by
+          scanning ps for the daemon binary pattern. The use case 'find all leaked test daemons' is
+          uncovered.
+      - status: completed
+        step_index: 3
+        started_at: 2026-04-09T23:54:22.852Z
+        completed_at: 2026-04-09T23:54:22.852Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-09T23:51:51.883Z
