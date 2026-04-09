@@ -132195,7 +132195,19 @@ reviews:
     slugs: []
     title: Review task-e2e-fixture-decoupled-assertions
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm test did not reach the suite in this snapshot. The runner stopped during readiness
+          checks because node_modules is missing direct dependency @lucide/svelte even after its
+          auto-fix attempt (workspace setup issue, not a reproduced branch regression).
+        name: npm-test
+        required: false
+        runner: npm
+        created_at: 2026-04-09T09:42:05.891Z
+        completed_at: 2026-04-09T09:42:05.891Z
     events:
       - _ulid: 01KNRSMFN7G0699HNBDHXWDS51
         actor: Jacob Chapel
@@ -132217,6 +132229,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNRSXGVBT86YJAHWXDKZGW5K
         timestamp: 2026-04-09T09:42:04.222Z
+      - _ulid: 01KNRSXM7H035CK90DZBGCM3PX
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: npm-test
+        timestamp: 2026-04-09T09:42:06.833Z
     examined_commit: 715277ceed6a2659d779cbbf017cb216c5267b04
     external_links: []
     lifecycle_state: open
@@ -132249,5 +132268,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-09T09:37:07.240Z
-    updated_at: 2026-04-09T09:42:03.371Z
+    updated_at: 2026-04-09T09:42:05.891Z
     notes: []
