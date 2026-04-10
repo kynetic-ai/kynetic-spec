@@ -77,3 +77,23 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-10T02:42:52.037Z
+  - _ulid: 01KNTN3CE7BPBG2Q6SFA6BBG1D
+    content: >-
+      Fix cycle 1: addressed both review blockers.
+
+
+      Blocker 1 (afterEach too broad): Replaced generic 'kill'/'stop' text matching in
+      isAfterEachWithCleanup with daemon-specific patterns only (SIGTERM, killPid, stopDaemon,
+      'serve stop'). An afterEach like stopUnrelatedFixture() no longer passes the cleanup check.
+
+
+      Blocker 2 (forward scan too permissive): hasCleanupAfter now stops at the first statement
+      containing 'await ' or 'expect(' — cleanup registered after a potential failure point is
+      correctly rejected.
+
+
+      Added 3 new test cases (8 positive total, 8 negative, 1 codebase validation = 17 tests). All 3
+      test shards pass (2118 suites, 7740 tests, 0 failures). Re-verified all ACs.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-10T02:56:21.447Z
