@@ -133211,6 +133211,12 @@ reviews:
         payload:
           thread_ulid: 01KNTM9E4E1RXTBNXB529CG48N
         timestamp: 2026-04-10T02:55:51.597Z
+      - _ulid: 01KNTN2YYYRDVW4CRDHHFVHHBY
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNTM9E4E1RXTBNXB529CG48N
+        timestamp: 2026-04-10T02:56:07.646Z
     examined_commit: 695a3a850da681a37673a880ca422bb8e4f3e9fa
     external_links: []
     lifecycle_state: closed
@@ -133275,6 +133281,8 @@ reviews:
               await, one with cleanup after expect. Both are correctly flagged."
             created_at: 2026-04-10T02:55:50.713Z
         kind: blocker
+        resolved_at: 2026-04-10T02:56:06.733Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -133284,7 +133292,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-10T02:42:50.173Z
     created_at: 2026-04-10T02:29:39.183Z
-    updated_at: 2026-04-10T02:55:50.713Z
+    updated_at: 2026-04-10T02:56:06.733Z
     notes: []
   - _ulid: 01KNTM922M15ADCXT8HWEC1TW3
     slugs: []
