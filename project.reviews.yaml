@@ -133939,6 +133939,13 @@ reviews:
           status: pass
           name: npm test -- tests/lint-no-leaky-test-daemon.test.ts tests/cli-serve.test.ts
         timestamp: 2026-04-10T03:40:12.276Z
+      - _ulid: 01KNTQKR8D5BJAPNN9JAMB258Y
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNTQKQA1ZVP4N1ZE4ZASZTMN
+        timestamp: 2026-04-10T03:40:14.989Z
     examined_commit: bfc112ad754cb512d23d6f95793917495c7cafa4
     external_links: []
     lifecycle_state: open
@@ -133948,8 +133955,29 @@ reviews:
       content_hash: ""
       ref: "@01KNTACP2BXY12MTB2GETNJ7CS"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNTQKQA1ZVP4N1ZE4ZASZTMN
+        anchor:
+          type: code
+          commit: bfc112ad754cb512d23d6f95793917495c7cafa4
+          line_end: 337
+          line_start: 323
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KNTQKQA1WPZ8FSK0GEYZ0N7G
+            author: Jacob Chapel
+            body: " currently treats any call expression with a string/template argument containing 'serve
+              start' and '--detach' as a daemon spawn. That means harmless calls like  or  are
+              reported as violations even though no daemon is spawned. I reproduced both cases by
+              running oxlint against temporary test files, and both fail under this rule. Because
+              the task explicitly says false positives are worse than false negatives, wiring this
+              matcher into the lint pipeline is unsafe until detection is limited to actual
+              spawn-like APIs (for example , , /, or equivalent command runners) instead of
+              arbitrary call sites."
+            created_at: 2026-04-10T03:40:14.017Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-10T03:30:08.656Z
-    updated_at: 2026-04-10T03:40:11.374Z
+    updated_at: 2026-04-10T03:40:14.017Z
     notes: []
