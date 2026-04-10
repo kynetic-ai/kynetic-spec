@@ -132985,6 +132985,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-10T02:19:29.639Z
+      - _ulid: 01KNTM4EQDXJZYNHQXCSSGQQQJ
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNTJZ429HFY2E287G87DRWZE
+        timestamp: 2026-04-10T02:39:27.981Z
     examined_commit: 6a061a6a1c7dd5547a4892c9cc24180efb5aef04
     external_links: []
     lifecycle_state: closed
@@ -133015,6 +133021,13 @@ reviews:
               the log artifact the task explicitly said not to touch and contradicts the worker note
               claiming log contents are unchanged.
             created_at: 2026-04-10T02:19:04.649Z
+          - _ulid: 01KNTM4DP2PBHBVGPEQ1H6298X
+            author: "@claude"
+            body: "Fixed: Removed the logStream.write() calls for progress lines in both the main loop and the
+              end handler. Progress lines now go to stderr (terminal) only. Added a dedicated test
+              that runs the test runner, reads the cached log file, and verifies no PASS/FAIL
+              progress lines appear in it. Full suite passes (7731 tests, 0 failures)."
+            created_at: 2026-04-10T02:39:26.914Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -133025,7 +133038,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-10T02:19:29.638Z
     created_at: 2026-04-10T02:11:37.312Z
-    updated_at: 2026-04-10T02:19:29.639Z
+    updated_at: 2026-04-10T02:39:26.914Z
     notes: []
   - _ulid: 01KNTKJFQFHRMCVDJYB7FK36J0
     slugs: []
