@@ -134648,9 +134648,25 @@ reviews:
           status: pass
           name: Data-model support
         timestamp: 2026-04-10T09:26:03.467Z
+      - _ulid: 01KNVBD893HRW00ZK6F6ASXM3M
+        actor: codex@local
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-04-10T09:26:13.539Z
+      - _ulid: 01KNVBD893RC81EJGRQ6VJ6W9Z
+        actor: codex@local
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-10T09:26:13.539Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -134658,7 +134674,14 @@ reviews:
       ref: "@plan-init-setup-and-upgrade-rough-edges"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex@local
+        role: reviewer
+        created_at: 2026-04-10T09:26:13.539Z
     created_at: 2026-04-10T09:23:39.386Z
-    updated_at: 2026-04-10T09:26:02.575Z
+    updated_at: 2026-04-10T09:26:13.539Z
     notes: []
