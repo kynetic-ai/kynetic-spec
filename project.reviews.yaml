@@ -134548,6 +134548,20 @@ reviews:
         required: true
         created_at: 2026-04-10T09:25:22.550Z
         completed_at: 2026-04-10T09:25:22.550Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Rechecked the exact prior anchors. @scaffolded-agents-file now defines forced overwrite
+          and backup ACs; @default-project-agents-and-conventions now defines first-run marker plus
+          removal/rename preservation and force reseed semantics; @task-upgrade-command now depends
+          on @task-default-reflection-hooks and @task-derivable-default-module; and the upgrade task
+          now defines fallback and unknown source-version detection paths for pre-version-tracking
+          projects.
+        name: Previous-cycle blockers
+        required: true
+        created_at: 2026-04-10T09:25:45.172Z
+        completed_at: 2026-04-10T09:25:45.172Z
     events:
       - _ulid: 01KNVB8HQT80AT5CCZTD9QA4RP
         actor: Jacob Chapel
@@ -134590,6 +134604,13 @@ reviews:
           status: pass
           name: Task standalone executability
         timestamp: 2026-04-10T09:25:27.850Z
+      - _ulid: 01KNVBCDEP287YRVBDF2RNDKT5
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Previous-cycle blockers
+        timestamp: 2026-04-10T09:25:46.070Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -134602,5 +134623,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-10T09:23:39.386Z
-    updated_at: 2026-04-10T09:25:22.550Z
+    updated_at: 2026-04-10T09:25:45.172Z
     notes: []
