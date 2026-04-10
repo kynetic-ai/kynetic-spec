@@ -25065,7 +25065,7 @@ runs:
     completed_at: 2026-04-10T00:04:50.157Z
   - _ulid: 01KNTJCEFJJJBNKSY2S5F5NGAK
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -25103,7 +25103,31 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-10T02:09:14.850Z
-        completed_at: 2026-04-10T02:09:14.850Z
+        completed_at: 2026-04-10T02:09:37.124Z
+        notes: >-
+          Searched existing state. No duplicates found for the friction points identified.
+
+
+          High-confidence items:
+
+          1. SUCCESS: The prefix-on-stderr protocol pattern (reporter writes prefixed lines to
+          stderr, parent filters and forwards) is a clean, reusable pattern for any vitest reporter
+          that needs to communicate with the parent process. This worked better than fd inheritance
+          and is simpler than IPC. Worth documenting for future reporter needs.
+
+
+          2. FRICTION: npx does not preserve extra fds (fd 3+) when spawning child processes. This
+          is a Node.js/npx gotcha that cost debugging time. The workaround (use stderr with a
+          parseable prefix) is documented in the code but not in agent instructions.
+
+
+          No other high-confidence systemic items. The fd 3 issue was a one-time discovery, now
+          solved. The vitest output interleaving observation is inherent to vitest's parallel
+          execution model, not friction per se.
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-10T02:09:37.124Z
+        completed_at: 2026-04-10T02:09:37.124Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-10T02:08:52.722Z
