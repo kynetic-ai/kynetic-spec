@@ -162,7 +162,7 @@ description: >-
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-cli-serve-test-daemon-cleanup"
@@ -183,7 +183,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-lint-rule-test-daemon-cleanup/01kntacp
-session_id: null
+session_id: 01KNTP43F4X4CEHHFGDERC8SZJ
 history:
   - author: "@claude"
     changes:
@@ -292,8 +292,21 @@ history:
         previous: 01KNTMD4QYG46MHJKNDRW1Q95F
     command: review-verdict-needs-work
     timestamp: 2026-04-10T03:10:36.418Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KNTP43F4X4CEHHFGDERC8SZJ
+        previous: null
+      started_at:
+        new: 2026-04-10T03:28:00.298Z
+        previous: 2026-04-10T02:56:34.698Z
+    command: task-start
+    timestamp: 2026-04-10T03:28:00.298Z
 created_at: 2026-04-09T23:49:11.883Z
-started_at: 2026-04-10T02:56:34.698Z
+started_at: 2026-04-10T03:28:00.298Z
 submitted_at: 2026-04-10T02:56:37.866Z
 todos: []
 automation: eligible
