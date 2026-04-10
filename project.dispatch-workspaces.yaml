@@ -47375,12 +47375,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-10T02:10:06.700Z
+      updated_at: 2026-04-10T02:10:13.279Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-10T02:10:06.700Z
+      updated_at: 2026-04-10T02:10:13.279Z
     integration:
       status: pending
       detail: null
@@ -47388,24 +47388,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 7b1b856564b91f28efc8bbb2d3b8e41034fd9a3f
-      updated_at: 2026-04-10T02:10:06.700Z
-    lifecycle_state: ready
+      updated_at: 2026-04-10T02:10:13.279Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KNTB8YTNSHRAPC5WRQWH4RRV"
     task_slug: task-test-runner-progress-output
     timestamps:
       closed_at: null
       last_active_at: 2026-04-10T01:46:24.411Z
-      last_reconciled_at: 2026-04-10T02:10:06.700Z
+      last_reconciled_at: 2026-04-10T02:10:13.279Z
       created_at: 2026-04-10T01:46:04.178Z
-      updated_at: 2026-04-10T02:10:06.700Z
+      updated_at: 2026-04-10T02:10:13.279Z
     workspace_id: dispatch-workspace-01KNTB8YTNSHRAPC5WRQWH4RRV
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 6a061a6a1c7dd5547a4892c9cc24180efb5aef04
+        last_seen_at: 2026-04-10T02:10:13.279Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-test-runner-progress-output-01kntb8y-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-test-runner-progress-output/01kntb8y
-        head: 7b1b856564b91f28efc8bbb2d3b8e41034fd9a3f
-        last_seen_at: 2026-04-10T01:46:04.178Z
+        head: 6a061a6a1c7dd5547a4892c9cc24180efb5aef04
+        last_seen_at: 2026-04-10T02:10:13.279Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-test-runner-progress-output-01kntb8y
