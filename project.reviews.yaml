@@ -133667,6 +133667,12 @@ reviews:
         payload:
           thread_ulid: 01KNTNWGJMRHYXA11ZBZH57YAT
         timestamp: 2026-04-10T03:27:19.236Z
+      - _ulid: 01KNTPW7MDD1KSBHBA5TCH2YBZ
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNTNX2QSQ2DTTQ0P1WK3SG7Y
+        timestamp: 2026-04-10T03:27:24.301Z
     examined_commit: 98105ed15c18b2af19e8280fa3957089ca379e72
     external_links: []
     lifecycle_state: closed
@@ -133749,6 +133755,12 @@ reviews:
               daemon-specific filtering you added for `afterEach`, otherwise unrelated teardown
               helpers suppress real leaks."
             created_at: 2026-04-10T03:10:23.482Z
+          - _ulid: 01KNTPW6SGJ3V5TSWX3T5PGBA5
+            author: "@claude"
+            body: "Fixed: isInTryWithFinallyCleanup() now uses the same hasDaemonCleanupPattern() as afterEach
+              instead of generic 'kill'/'stop' substrings. finally { stopUnrelatedFixture() } is now
+              correctly flagged. Added positive test confirming this."
+            created_at: 2026-04-10T03:27:23.440Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -133759,7 +133771,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-10T03:10:34.723Z
     created_at: 2026-04-10T02:58:18.979Z
-    updated_at: 2026-04-10T03:27:18.311Z
+    updated_at: 2026-04-10T03:27:23.440Z
     notes: []
   - _ulid: 01KNTP6E6JRD6KE0JFN4PPM3RE
     slugs: []
