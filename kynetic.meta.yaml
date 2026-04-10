@@ -13762,6 +13762,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-10T00:46:52.665Z
+  - _ulid: 01KNTHX2H0GVD1DK29G3YV6CD6
+    type: friction
+    content: Full npm test still left multiple review-worktree daemon processes alive under
+      /tmp/kspec-test-* and /tmp/kspec-setup-no-agent-* after the cli-serve cleanup task merged.
+      This indicates other tests still spawn daemons without reliable cleanup outside
+      tests/cli-serve.test.ts. Search before capture found no existing tracking for the broader leak
+      pattern; follow-up should inventory daemon-spawning tests across the suite and close the
+      remaining leak sources.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-10T02:00:28.960Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
