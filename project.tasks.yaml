@@ -26036,7 +26036,7 @@
     - task-lint-rule-test-daemon-cleanup
   title: Custom lint rule for unsafe daemon-spawn patterns in test files
   type: task
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-cli-serve-test-daemon-cleanup"
@@ -26049,6 +26049,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-09T23:49:11.883Z
+  started_at: 2026-04-10T02:11:29.649Z
   automation: eligible
 - _ulid: 01KNTB8YTNSHRAPC5WRQWH4RRV
   slugs:
