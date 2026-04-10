@@ -134268,6 +134268,13 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-04-10T09:16:05.068Z
+      - _ulid: 01KNVAVTCQ81R7DV6ZQVTV1F28
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNVAVSDXR9C3MXACXBZ2JPGM
+        timestamp: 2026-04-10T09:16:42.263Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -134277,8 +134284,24 @@ reviews:
       content_hash: ""
       ref: "@plan-init-setup-and-upgrade-rough-edges"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNVAVSDXR9C3MXACXBZ2JPGM
+        anchor:
+          type: structured
+          ref: "@task-upgrade-command"
+          section: dependencies
+        entries:
+          - _ulid: 01KNVAVSDYCJ72EYJS64QGVT6W
+            author: Jacob Chapel
+            body: This task's step 5 explicitly invokes the default-module scaffold and the default
+              reflection-hook scaffold, but depends_on only lists the config, AGENTS file,
+              gitignore, and default-agents tasks. As written, the plan allows the upgrade task to
+              start before the module or hook scaffolds exist, even though it is supposed to compose
+              those behaviors. Add dependencies on @task-derivable-default-module and
+              @task-default-reflection-hooks, or remove those steps from the upgrade task's scope.
+            created_at: 2026-04-10T09:16:41.278Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-10T09:16:05.068Z
-    updated_at: null
+    updated_at: 2026-04-10T09:16:41.278Z
     notes: []
