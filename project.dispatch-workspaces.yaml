@@ -47609,12 +47609,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-10T02:28:41.932Z
+      updated_at: 2026-04-10T02:28:45.978Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-10T02:28:41.932Z
+      updated_at: 2026-04-10T02:28:45.978Z
     integration:
       status: pending
       detail: null
@@ -47622,7 +47622,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 270b2a07519a9147db0504584b49967c91115179
-      updated_at: 2026-04-10T02:28:41.932Z
+      updated_at: 2026-04-10T02:28:45.978Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KNTACP2BXY12MTB2GETNJ7CS"
@@ -47630,16 +47630,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-10T02:11:06.350Z
-      last_reconciled_at: 2026-04-10T02:28:41.932Z
+      last_reconciled_at: 2026-04-10T02:28:45.978Z
       created_at: 2026-04-10T02:10:45.797Z
-      updated_at: 2026-04-10T02:28:41.932Z
+      updated_at: 2026-04-10T02:28:45.978Z
     workspace_id: dispatch-workspace-01KNTACP2BXY12MTB2GETNJ7CS
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 695a3a850da681a37673a880ca422bb8e4f3e9fa
+        last_seen_at: 2026-04-10T02:28:45.978Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-lint-rule-test-daemon-cleanup-01kntacp-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-lint-rule-test-daemon-cleanup/01kntacp
-        head: 270b2a07519a9147db0504584b49967c91115179
-        last_seen_at: 2026-04-10T02:10:45.797Z
+        head: 695a3a850da681a37673a880ca422bb8e4f3e9fa
+        last_seen_at: 2026-04-10T02:28:45.978Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-lint-rule-test-daemon-cleanup-01kntacp
