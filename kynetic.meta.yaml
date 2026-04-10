@@ -13741,6 +13741,27 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-09T09:38:03.049Z
+  - _ulid: 01KNTDP9H5RHAHC7X95RR6DP5Y
+    type: friction
+    content: "npm config omit=dev blocks test runner in dispatch worktrees: system-level npm config has
+      omit=dev, which causes the test runner dependency-health hook to fail in an infinite loop (npm
+      ci also omits dev deps, so the fix never resolves). The test runner fix hook should pass
+      --include=dev to npm ci, or the dependency-health check should detect the omit config and
+      warn."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-10T00:46:52.453Z
+  - _ulid: 01KNTDP9QSHTVXGG71NQ2CX2XP
+    type: success
+    content: Task @task-cli-serve-test-daemon-cleanup had an exceptionally detailed description with
+      spawn line numbers, per-test classification guidance, and specific AC for edge cases. This
+      level of detail enabled efficient autonomous execution with correct design decisions (e.g.,
+      recognizing PID file dependency prevented incorrect direct-spawn migration).
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-10T00:46:52.665Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
