@@ -132899,6 +132899,19 @@ reviews:
         required: false
         created_at: 2026-04-10T02:19:07.542Z
         completed_at: 2026-04-10T02:19:07.542Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: A clean full-suite rerun was started under KSPEC_SESSION_ID=review-full-clean, but earlier
+          overlapping review-spawned test runs polluted the evidence and had to be terminated. I did
+          verify the touched path directly with 'node scripts/test.cjs --fresh
+          tests/test-runner.test.ts', which passed while reproducing the blocker.
+        name: npm test
+        required: false
+        runner: npm
+        created_at: 2026-04-10T02:19:10.591Z
+        completed_at: 2026-04-10T02:19:10.591Z
     events:
       - _ulid: 01KNTJHF70ZYTWBCKSPGGVZXDM
         actor: Jacob Chapel
@@ -132927,6 +132940,13 @@ reviews:
           status: skipped
           name: kspec validate
         timestamp: 2026-04-10T02:19:08.637Z
+      - _ulid: 01KNTJZAX4KRRX0PJ5DSXDE4F8
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: npm test
+        timestamp: 2026-04-10T02:19:11.652Z
     examined_commit: 6a061a6a1c7dd5547a4892c9cc24180efb5aef04
     external_links: []
     lifecycle_state: open
@@ -132960,5 +132980,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-10T02:11:37.312Z
-    updated_at: 2026-04-10T02:19:07.542Z
+    updated_at: 2026-04-10T02:19:10.591Z
     notes: []
