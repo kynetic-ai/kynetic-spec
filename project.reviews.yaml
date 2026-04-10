@@ -134357,6 +134357,13 @@ reviews:
           status: fail
           name: Dependency ordering
         timestamp: 2026-04-10T09:17:17.779Z
+      - _ulid: 01KNVAXEJHKRQQY6HTEG2HYNMB
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNVAXDQ6RNNTECWNPZC7S2PZ
+        timestamp: 2026-04-10T09:17:35.697Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -134430,7 +134437,24 @@ reviews:
               the plan.
             created_at: 2026-04-10T09:17:12.491Z
         kind: question
+      - _ulid: 01KNVAXDQ6RNNTECWNPZC7S2PZ
+        anchor:
+          type: structured
+          ref: "@task-upgrade-command"
+          section: description
+        entries:
+          - _ulid: 01KNVAXDQ67JNGPQTXBX66ZKVH
+            author: Jacob Chapel
+            body: The upgrade spec requires the command to detect version skew and report both the source and
+              target versions before applying changes, but this task only proposes reading the
+              source version from a new shadow-branch state field. Older supported projects will not
+              have that field, so the task as written cannot satisfy ac-detects-skew/ac-reports-skew
+              for the very upgrade cases this plan is meant to handle. Define a fallback
+              source-version detection strategy for pre-state-file projects, or narrow the spec so
+              it does not promise exact from-version reporting when the version cannot be inferred.
+            created_at: 2026-04-10T09:17:34.822Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-10T09:16:05.068Z
-    updated_at: 2026-04-10T09:17:12.609Z
+    updated_at: 2026-04-10T09:17:34.822Z
     notes: []
