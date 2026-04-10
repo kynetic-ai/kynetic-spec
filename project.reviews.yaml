@@ -133067,6 +133067,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-10T02:30:30.306Z
+      - _ulid: 01KNTM99V4M15R12TB1X2F61FC
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNTM99030NZBBRNKRGE68P5D
+        timestamp: 2026-04-10T02:42:06.820Z
     examined_commit: 695a3a850da681a37673a880ca422bb8e4f3e9fa
     external_links: []
     lifecycle_state: open
@@ -133076,10 +133083,29 @@ reviews:
       content_hash: ""
       ref: "@01KNTACP2BXY12MTB2GETNJ7CS"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNTM99030NZBBRNKRGE68P5D
+        anchor:
+          type: code
+          commit: 695a3a850da681a37673a880ca422bb8e4f3e9fa
+          line_end: 126
+          line_start: 111
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KNTM990334A1PPEGTKFPKPYB
+            author: Jacob Chapel
+            body: Any afterEach whose source text contains 'kill' or 'stop' is treated as cleanup for the whole
+              enclosing describe, even when it does not stop the spawned daemon. I reproduced this
+              with an unrelated afterEach(() => stopUnrelatedFixture()) plus runKspec("serve start
+              --detach --port 3456") and the rule reported 0 errors. That violates the task
+              requirement that afterEach only count when it actually covers the daemon cleanup in
+              the same scope, so the original leak pattern can still pass lint.
+            created_at: 2026-04-10T02:42:05.955Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-10T02:29:39.183Z
-    updated_at: 2026-04-10T02:30:29.340Z
+    updated_at: 2026-04-10T02:42:05.955Z
     notes: []
   - _ulid: 01KNTM922M15ADCXT8HWEC1TW3
     slugs: []
