@@ -47570,3 +47570,79 @@ workspaces:
         head: 6a061a6a1c7dd5547a4892c9cc24180efb5aef04
         last_seen_at: 2026-04-10T02:10:13.279Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-test-runner-progress-output-01kntb8y
+  - active_role: null
+    base_branch_point: 270b2a07519a9147db0504584b49967c91115179
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-lint-rule-test-daemon-cleanup/01kntacp
+    canonical_branch_head: 270b2a07519a9147db0504584b49967c91115179
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-04-10T02:10:45.797Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-04-10T02:10:45.797Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: 270b2a07519a9147db0504584b49967c91115179
+      updated_at: 2026-04-10T02:10:45.797Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KNTACP2BXY12MTB2GETNJ7CS"
+    task_slug: task-lint-rule-test-daemon-cleanup
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-04-10T02:10:45.797Z
+      created_at: 2026-04-10T02:10:45.797Z
+      updated_at: 2026-04-10T02:10:45.797Z
+    workspace_id: dispatch-workspace-01KNTACP2BXY12MTB2GETNJ7CS
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-lint-rule-test-daemon-cleanup/01kntacp
+        head: 270b2a07519a9147db0504584b49967c91115179
+        last_seen_at: 2026-04-10T02:10:45.797Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-lint-rule-test-daemon-cleanup-01kntacp
