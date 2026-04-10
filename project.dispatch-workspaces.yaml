@@ -47612,18 +47612,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-lint-rule-test-daemon-cleanup/01kntacp
-    canonical_branch_head: 98105ed15c18b2af19e8280fa3957089ca379e72
+    canonical_branch_head: bfc112ad754cb512d23d6f95793917495c7cafa4
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-10T03:14:10.725Z
+      updated_at: 2026-04-10T03:27:44.337Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-10T03:14:14.366Z
+      updated_at: 2026-04-10T03:27:44.337Z
     integration:
       status: pending
       detail: null
@@ -47631,7 +47631,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 270b2a07519a9147db0504584b49967c91115179
-      updated_at: 2026-04-10T03:14:10.725Z
+      updated_at: 2026-04-10T03:27:44.337Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KNTACP2BXY12MTB2GETNJ7CS"
@@ -47639,9 +47639,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-10T03:14:14.366Z
-      last_reconciled_at: 2026-04-10T03:14:14.366Z
+      last_reconciled_at: 2026-04-10T03:27:44.337Z
       created_at: 2026-04-10T02:10:45.797Z
-      updated_at: 2026-04-10T03:14:14.366Z
+      updated_at: 2026-04-10T03:27:44.337Z
     workspace_id: dispatch-workspace-01KNTACP2BXY12MTB2GETNJ7CS
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
