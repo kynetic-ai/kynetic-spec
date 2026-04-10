@@ -133256,7 +133256,18 @@ reviews:
     slugs: []
     title: Review task-test-runner-progress-output (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite passed twice in this snapshot: run 1 2114/2114 suites, 7731/7736 tests passed,
+          5 skipped, duration 1618.0s; run 2 cache hit with matching summary."
+        name: npm test
+        required: true
+        runner: scripts/test.cjs
+        created_at: 2026-04-10T02:52:25.998Z
+        completed_at: 2026-04-10T02:52:25.998Z
     events:
       - _ulid: 01KNTM922KFX582JK28BAQQ72V
         actor: Jacob Chapel
@@ -133271,6 +133282,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-10T02:42:21.675Z
+      - _ulid: 01KNTMW7XZDW4MGT5NJC2JXP33
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-10T02:52:27.456Z
     examined_commit: 65b5da6c7c3c49023c6610d6d04405362a963b3e
     external_links: []
     lifecycle_state: open
@@ -133283,5 +133301,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-10T02:41:58.868Z
-    updated_at: 2026-04-10T02:42:20.820Z
+    updated_at: 2026-04-10T02:52:25.998Z
     notes: []
