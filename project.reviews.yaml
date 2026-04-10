@@ -134574,6 +134574,17 @@ reviews:
         required: true
         created_at: 2026-04-10T09:25:54.178Z
         completed_at: 2026-04-10T09:25:54.178Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Each new behavioral surface has corresponding persisted state or source-of-truth design
+          in task descriptions: first-run seeding marker, last-known version field, derivable
+          default module item, release-notes source file, and doctor-visible setup state."
+        name: Data-model support
+        required: true
+        created_at: 2026-04-10T09:26:02.575Z
+        completed_at: 2026-04-10T09:26:02.575Z
     events:
       - _ulid: 01KNVB8HQT80AT5CCZTD9QA4RP
         actor: Jacob Chapel
@@ -134630,6 +134641,13 @@ reviews:
           status: pass
           name: Dependency ordering
         timestamp: 2026-04-10T09:25:55.221Z
+      - _ulid: 01KNVBCYEA81RDMHZRX2FFHJKT
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Data-model support
+        timestamp: 2026-04-10T09:26:03.467Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -134642,5 +134660,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-10T09:23:39.386Z
-    updated_at: 2026-04-10T09:25:54.178Z
+    updated_at: 2026-04-10T09:26:02.575Z
     notes: []
