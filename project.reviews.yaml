@@ -133091,6 +133091,13 @@ reviews:
           status: pass
           name: npm test -- tests/lint-no-leaky-test-daemon.test.ts
         timestamp: 2026-04-10T02:42:09.501Z
+      - _ulid: 01KNTM9EZN3ZEVK9C4SS8VCXKH
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNTM9E4E1RXTBNXB529CG48N
+        timestamp: 2026-04-10T02:42:12.085Z
     examined_commit: 695a3a850da681a37673a880ca422bb8e4f3e9fa
     external_links: []
     lifecycle_state: open
@@ -133120,9 +133127,28 @@ reviews:
               the same scope, so the original leak pattern can still pass lint.
             created_at: 2026-04-10T02:42:05.955Z
         kind: blocker
+      - _ulid: 01KNTM9E4E1RXTBNXB529CG48N
+        anchor:
+          type: code
+          commit: 695a3a850da681a37673a880ca422bb8e4f3e9fa
+          line_end: 145
+          line_start: 133
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KNTM9E4EPPJZ8FCS9725C703
+            author: Jacob Chapel
+            body: 'The forward scan accepts cleanup registered anywhere later in the block, even after an await
+              or assertion. Repro fixture: runKspec("serve start --detach --port 3456"); await
+              somethingAsync(); onTestFinished(() => process.kill(pid, "SIGTERM")); produced 0 lint
+              errors. The task explicitly requires cleanup to be registered before the next expect,
+              await, or scope exit, so this misses unsafe tests that can fail before cleanup is
+              registered.'
+            created_at: 2026-04-10T02:42:11.214Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-10T02:29:39.183Z
-    updated_at: 2026-04-10T02:42:08.574Z
+    updated_at: 2026-04-10T02:42:11.214Z
     notes: []
   - _ulid: 01KNTM922M15ADCXT8HWEC1TW3
     slugs: []
