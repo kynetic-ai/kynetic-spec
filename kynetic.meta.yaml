@@ -13844,6 +13844,38 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-10T02:58:00.277Z
+  - _ulid: 01KNTPX4KV25NV3J4SSPCWM53Y
+    type: friction
+    content: "Reviewer merge ergonomics: detached review worktrees cannot directly check out the
+      integration branch when that branch is already active in the main worktree. In this session,
+      approving and merging an otherwise clean task required a dry-run merge in the detached review
+      workspace, then the actual merge in the main dev worktree. This is repeatable reviewer
+      friction and would benefit from a first-class kspec merge path for detached review snapshots."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-10T03:27:53.979Z
+  - _ulid: 01KNTPX4TWGKJ3273RBRN0M9B3
+    type: friction
+    content: "Review signal noise: repo-wide kspec validate warnings are hard to use during task review
+      because the output mixes long-standing project completeness/alignment issues with
+      task-specific verification. In this session, validate returned exit code 6 with many unrelated
+      warnings, so the useful conclusion was only that there were no new task-local validation
+      errors. A scoped or baseline-aware review validation mode would reduce noise."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-10T03:27:54.204Z
+  - _ulid: 01KNTPX50JSY9YW73PZ8X0QGWZ
+    type: success
+    content: "Review verification pattern worked well: creating a fresh review record, reading the diff
+      before notes, then offloading long-running full-suite and repeated targeted test runs to
+      awaiter agents produced clear evidence without blocking the main review flow. This pattern is
+      worth reusing for future review cycles with expensive test suites."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-10T03:27:54.386Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
