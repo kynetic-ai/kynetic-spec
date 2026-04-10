@@ -133470,7 +133470,17 @@ reviews:
     slugs: []
     title: Review task-lint-rule-test-daemon-cleanup (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 2118/2118 suites passed; 7740 passed, 5 skipped; duration 1751.2s.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-10T03:08:58.010Z
+        completed_at: 2026-04-10T03:08:58.010Z
     events:
       - _ulid: 01KNTN6Z73RJ39YGWPM91STFGY
         actor: Jacob Chapel
@@ -133485,6 +133495,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-10T02:58:37.709Z
+      - _ulid: 01KNTNTG4BS3JRK4KAHE2PFPCA
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-10T03:08:58.891Z
     examined_commit: 98105ed15c18b2af19e8280fa3957089ca379e72
     external_links: []
     lifecycle_state: open
@@ -133497,5 +133514,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-10T02:58:18.979Z
-    updated_at: 2026-04-10T02:58:36.826Z
+    updated_at: 2026-04-10T03:08:58.010Z
     notes: []
