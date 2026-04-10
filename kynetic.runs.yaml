@@ -25065,9 +25065,45 @@ runs:
     completed_at: 2026-04-10T00:04:50.157Z
   - _ulid: 01KNTJCEFJJJBNKSY2S5F5NGAK
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-10T02:08:52.722Z
+        completed_at: 2026-04-10T02:09:14.850Z
+        notes: >-
+          Session completed task @task-test-runner-progress-output. One task worked, one commit
+          made.
+
+
+          What worked well:
+
+          - Custom vitest reporter approach was the right call after discovering tail-and-filter is
+          unreliable with interleaved parallel test output
+
+          - The KSPEC_PROGRESS: prefix protocol cleanly separates progress output from regular
+          vitest stderr, avoiding fd inheritance issues with npx
+
+          - Smoke testing early and iteratively caught the fd 3 inheritance problem before it became
+          a test-time surprise
+
+          - Full test suite passed on first run (7735 tests, 0 failures)
+
+
+          Friction points:
+
+          1. The fd 3 approach (passing extra stdio pipe through spawn) failed because npx creates
+          an intermediate process that doesn't inherit extra fds. Burned ~10 minutes diagnosing
+          before switching to the prefix-on-stderr approach. This is a general Node.js gotcha with
+          npx + custom fds.
+
+          2. No existing cached log files in the worktree to inspect vitest output format — had to
+          check /tmp/kspec-test-cache from other sessions. Minor but worth noting.
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-10T02:09:14.850Z
+        completed_at: 2026-04-10T02:09:14.850Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-10T02:08:52.722Z
