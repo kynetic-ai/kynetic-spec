@@ -3,7 +3,7 @@
  * Spec: @cli-serve-commands
  */
 
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, onTestFinished } from "vitest";
 import {
   createTempDir,
   cleanupTempDir,
@@ -18,8 +18,43 @@ import {
 import { spawn, spawnSync, execSync } from "child_process";
 import { once } from "events";
 import { dirname, join } from "path";
-import { existsSync, mkdirSync, writeFileSync } from "fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import { createServer } from "net";
+import type { ChildProcess } from "child_process";
+
+/**
+ * Kill a process by PID, swallowing ESRCH (already dead).
+ * Used in onTestFinished cleanup callbacks.
+ */
+function killPid(pid: number, signal: NodeJS.Signals = "SIGTERM"): void {
+  try {
+    process.kill(pid, signal);
+  } catch {
+    // Already gone — fine
+  }
+}
+
+/**
+ * Wait for a ChildProcess to exit, with a SIGKILL fallback timeout.
+ */
+function waitForChildExit(child: ChildProcess, timeoutMs = 5000): Promise<void> {
+  return new Promise((resolve) => {
+    if (child.exitCode !== null) {
+      resolve();
+      return;
+    }
+    const timeout = setTimeout(() => {
+      if (child.exitCode === null) {
+        child.kill("SIGKILL");
+      }
+      resolve();
+    }, timeoutMs);
+    child.once("exit", () => {
+      clearTimeout(timeout);
+      resolve();
+    });
+  });
+}
 
 // Check if Node runtime is available.
 let nodeAvailable = false;
@@ -201,6 +236,14 @@ describe("kspec serve commands", () => {
       },
     );
 
+    // Register cleanup before any assertion that could throw
+    onTestFinished(async () => {
+      if (child.exitCode === null) {
+        child.kill("SIGTERM");
+        await waitForChildExit(child);
+      }
+    });
+
     let output = "";
     child.stdout?.on("data", (data) => {
       output += data.toString();
@@ -277,6 +320,12 @@ describe("kspec serve commands", () => {
       tempDir,
     );
 
+    // Register PID-based cleanup before any assertion that could throw.
+    // This test must use --detach (it tests the detach CLI path itself),
+    // so we read the PID file and kill directly.
+    const pid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
+    onTestFinished(() => killPid(pid));
+
     // Should report success
     expect(result.stdout).toContain("Daemon started");
     expect(result.stdout).toContain(`port ${port}`);
@@ -287,7 +336,6 @@ describe("kspec serve commands", () => {
     expect(globalPidFilePath.startsWith(isolatedHome)).toBe(true);
     expect(globalPortFilePath.startsWith(isolatedHome)).toBe(true);
 
-    const pid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
     expect(pid).toBeGreaterThan(0);
 
     // Process should be running
@@ -313,10 +361,15 @@ describe("kspec serve commands", () => {
 
     const customPort = await getAvailablePort();
 
+    // Must use --detach: tests CLI --port flag parsing and output
     const result = runKspec(
       `serve start --detach --port ${customPort} --kspec-dir ${join(tempDir, ".kspec")}`,
       tempDir,
     );
+
+    // Register PID-based cleanup before assertions
+    const pid = parseInt(readFileSync(globalPidFilePath, "utf-8").trim(), 10);
+    onTestFinished(() => killPid(pid));
 
     expect(result.stdout).toContain(`port ${customPort}`);
 
@@ -334,10 +387,12 @@ describe("kspec serve commands", () => {
 
     const port = await getAvailablePort();
 
-    // Start daemon
+    // Must use --detach: tests the `serve stop` CLI command which depends on PID file
     runKspec(`serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
 
     const pid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
+    // Register PID-based cleanup before assertions, in case serve stop itself fails
+    onTestFinished(() => killPid(pid));
 
     // Stop daemon
     const result = runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
@@ -377,11 +432,12 @@ describe("kspec serve commands", () => {
       return;
     }
 
-    // Start daemon
+    // Start daemon (uses --detach so serve status can find PID file)
     const port = await getAvailablePort();
     runKspec(`serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
 
     const pid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
+    onTestFinished(() => killPid(pid));
 
     // Check status with --json flag
     const result = runKspec(`serve status --json --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
@@ -407,8 +463,11 @@ describe("kspec serve commands", () => {
 
     const port = await getAvailablePort();
 
-    // Start daemon
+    // Start daemon (uses --detach so serve status can find PID file)
     runKspec(`serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
+
+    const pid = parseInt(readFileSync(globalPidFilePath, "utf-8").trim(), 10);
+    onTestFinished(() => killPid(pid));
 
     await waitForDaemonHealth(port);
 
@@ -441,8 +500,11 @@ describe("kspec serve commands", () => {
 
     const port = await getAvailablePort();
 
-    // Start daemon
+    // Start daemon (uses --detach so serve status can find PID file)
     runKspec(`serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
+
+    const pid = parseInt(readFileSync(globalPidFilePath, "utf-8").trim(), 10);
+    onTestFinished(() => killPid(pid));
 
     await waitForDaemonHealth(port);
 
@@ -492,6 +554,14 @@ describe("kspec serve commands", () => {
     // This ensures no default project is registered
     runKspec(`serve start --detach --port ${port}`, emptyTempDir, { env });
 
+    // AC2: This test uses its own isolated HOME, so the outer afterEach
+    // cannot reach this daemon. Register cleanup targeting this daemon's PID.
+    const pid = parseInt(readFileSync(isolated.daemonPidFilePath, "utf-8").trim(), 10);
+    onTestFinished(async () => {
+      killPid(pid);
+      await cleanupTempDir(emptyTempDir);
+    });
+
     await waitForDaemonHealth(port);
 
     // Check status - should indicate no projects
@@ -501,7 +571,6 @@ describe("kspec serve commands", () => {
 
     // Cleanup
     runKspec(`serve stop`, emptyTempDir, { env });
-    await cleanupTempDir(emptyTempDir);
   });
 
   // AC: @multi-directory-daemon ac-12
@@ -513,8 +582,11 @@ describe("kspec serve commands", () => {
 
     const port = await getAvailablePort();
 
-    // Start daemon
+    // Start daemon (uses --detach so serve status can find PID file)
     runKspec(`serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
+
+    const pid = parseInt(readFileSync(globalPidFilePath, "utf-8").trim(), 10);
+    onTestFinished(() => killPid(pid));
 
     await waitForDaemonHealth(port);
     await waitForDaemonUptime(1);
@@ -547,10 +619,12 @@ describe("kspec serve commands", () => {
 
     const port = await getAvailablePort();
 
-    // Start daemon
+    // Must use --detach: tests the `serve restart` CLI command which uses PID files
     runKspec(`serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
 
     const originalPid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
+    // Kill original in case restart fails to stop it
+    onTestFinished(() => killPid(originalPid));
 
     // Restart
     const result = runKspec(`serve restart --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
@@ -560,6 +634,9 @@ describe("kspec serve commands", () => {
 
     // Should have new PID
     const newPid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
+    // Kill the new daemon on test exit
+    onTestFinished(() => killPid(newPid));
+
     expect(newPid).not.toBe(originalPid);
 
     // New process should be running
@@ -637,7 +714,7 @@ describe("kspec serve commands", () => {
       // Strip KSPEC_SESSION_ID to prevent dispatch guard from blocking
       const { KSPEC_SESSION_ID: _, ...cleanProcessEnv } = process.env;
 
-      // Run the installed CLI's serve start in daemon mode
+      // Must use --detach: tests the installed CLI's serve start command path
       const result = execSync(
         `"${installedCli}" serve start --detach --port ${port} --kspec-dir "${kspecDir}"`,
         {
@@ -648,6 +725,13 @@ describe("kspec serve commands", () => {
           env: { ...cleanProcessEnv, ...isolated.env },
         },
       );
+
+      // AC2: This test uses its own isolated HOME (installDir), so the outer
+      // afterEach cannot reach this daemon. Register PID-based cleanup.
+      if (existsSync(isolated.daemonPidFilePath)) {
+        const pid = parseInt(readFileSync(isolated.daemonPidFilePath, "utf-8").trim(), 10);
+        onTestFinished(() => killPid(pid));
+      }
 
       // Daemon should have started — output contains PID and port
       expect(result).toContain(`port ${port}`);
@@ -728,10 +812,14 @@ describe("kspec serve commands", () => {
 
     const port = await getAvailablePort();
 
+    // Must use --detach: tests runtime detection during CLI-driven daemon spawn
     const result = runKspec(
       `serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`,
       tempDir,
     );
+
+    const pid = parseInt(readFileSync(globalPidFilePath, "utf-8").trim(), 10);
+    onTestFinished(() => killPid(pid));
 
     expect(result.exitCode).toBe(0);
     await waitForDaemonHealth(port);
@@ -845,11 +933,17 @@ describe("kspec serve commands", () => {
       "utf-8",
     );
 
+    // Must use --detach: tests runtime selection during CLI-driven daemon spawn
     const result = runKspec(
       `serve start --detach --kspec-dir ${join(tempDir, ".kspec")}`,
       tempDir,
       { env: { PATH: pathWithNode } },
     );
+
+    // AC5: Use process.kill directly for cleanup, not CLI subprocess
+    // that depends on custom PATH resolution (which may fail silently).
+    const pid = parseInt(readFileSync(globalPidFilePath, "utf-8").trim(), 10);
+    onTestFinished(() => killPid(pid));
 
     expect(result.exitCode).toBe(0);
     expect(result.stdout).toContain(`port ${port}`);
@@ -858,10 +952,6 @@ describe("kspec serve commands", () => {
 
     const healthResponse = await fetch(`http://localhost:${port}/api/health`);
     expect(healthResponse.ok).toBe(true);
-
-    runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir, {
-      env: { PATH: pathWithNode },
-    });
   });
 
   // AC: @cli-serve-commands ac-11
@@ -961,11 +1051,14 @@ describe("kspec serve commands", () => {
 
       const port = await getAvailablePort();
 
-      // Start daemon
+      // Start daemon (uses --detach so serve status can find PID file)
       runKspec(
         `serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`,
         tempDir,
       );
+
+      const pid = parseInt(readFileSync(globalPidFilePath, "utf-8").trim(), 10);
+      onTestFinished(() => killPid(pid));
 
       // Compare JSON vs human output
       const humanResult = runKspec(`serve status --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
