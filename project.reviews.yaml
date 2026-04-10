@@ -133679,6 +133679,12 @@ reviews:
         payload:
           thread_ulid: 01KNTNWGJMRHYXA11ZBZH57YAT
         timestamp: 2026-04-10T03:27:32.208Z
+      - _ulid: 01KNTPWM6RD3ZJN0Z4290T5FP5
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNTNX2QSQ2DTTQ0P1WK3SG7Y
+        timestamp: 2026-04-10T03:27:37.176Z
     examined_commit: 98105ed15c18b2af19e8280fa3957089ca379e72
     external_links: []
     lifecycle_state: closed
@@ -133770,6 +133776,8 @@ reviews:
               correctly flagged. Added positive test confirming this."
             created_at: 2026-04-10T03:27:23.440Z
         kind: blocker
+        resolved_at: 2026-04-10T03:27:36.302Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -133779,7 +133787,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-10T03:10:34.723Z
     created_at: 2026-04-10T02:58:18.979Z
-    updated_at: 2026-04-10T03:27:31.326Z
+    updated_at: 2026-04-10T03:27:36.302Z
     notes: []
   - _ulid: 01KNTP6E6JRD6KE0JFN4PPM3RE
     slugs: []
