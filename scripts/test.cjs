@@ -505,8 +505,8 @@ function runVitest(cmd, { verbose, logOutPath }) {
       child.stderr.pipe(process.stderr);
     } else {
       // In non-verbose mode, filter stderr line-by-line:
-      // - Lines with KSPEC_PROGRESS: prefix → strip prefix, forward to terminal
-      // - All lines → write to log file (without prefix for clean logs)
+      // - Lines with KSPEC_PROGRESS: prefix → strip prefix, forward to terminal only
+      // - All other lines → write to log file
       let stderrBuf = "";
       child.stderr.on("data", (chunk) => {
         stderrBuf += chunk.toString();
@@ -518,7 +518,6 @@ function runVitest(cmd, { verbose, logOutPath }) {
           if (line.startsWith(PROGRESS_PREFIX)) {
             const display = line.slice(PROGRESS_PREFIX.length);
             process.stderr.write(`${display}\n`);
-            logStream.write(`${display}\n`);
           } else {
             logStream.write(`${line}\n`);
           }
@@ -529,7 +528,6 @@ function runVitest(cmd, { verbose, logOutPath }) {
           if (stderrBuf.startsWith(PROGRESS_PREFIX)) {
             const display = stderrBuf.slice(PROGRESS_PREFIX.length);
             process.stderr.write(`${display}\n`);
-            logStream.write(`${display}\n`);
           } else {
             logStream.write(`${stderrBuf}\n`);
           }

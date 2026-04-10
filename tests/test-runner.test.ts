@@ -807,6 +807,53 @@ it('fails', () => { expect(1).toBe(2); });
       }
     });
 
+    // AC: @task-test-runner-progress-output ac-5
+    it("progress lines are not written to the log file", () => {
+      const tempTestFile = path.join(projectRoot, "tests", "_trivial-log-clean.test.ts");
+      fs.writeFileSync(
+        tempTestFile,
+        `import { it, expect } from 'vitest';\nit('passes', () => { expect(1).toBe(1); });\n`,
+      );
+
+      const sessionId = `test-log-clean-${Date.now()}`;
+      const cacheDir = path.join(os.tmpdir(), "kspec-test-cache", sessionId);
+
+      try {
+        const result = spawnSync(
+          "node",
+          [runnerScript, "--fresh", "tests/_trivial-log-clean.test.ts"],
+          {
+            cwd: projectRoot,
+            encoding: "utf8",
+            env: { ...process.env, SKIP_BUILD: "1", KSPEC_SESSION_ID: sessionId },
+            timeout: 30_000,
+          },
+        );
+
+        expect(result.status).toBe(0);
+
+        // Progress line should appear on stderr (terminal)
+        const stderr = stripAnsi(result.stderr);
+        const progressLines = stderr.split("\n").filter((l) => l.trim().startsWith("PASS"));
+        expect(progressLines.length).toBe(1);
+
+        // But the cached log file must NOT contain the progress line
+        const cacheFiles = fs.readdirSync(cacheDir);
+        const logFiles = cacheFiles.filter((f) => f.endsWith(".log"));
+        expect(logFiles.length).toBeGreaterThanOrEqual(1);
+
+        const logContent = stripAnsi(fs.readFileSync(path.join(cacheDir, logFiles[0]), "utf8"));
+        // The log should not contain progress-style "PASS tests/..." lines
+        const logProgressLines = logContent.split("\n").filter(
+          (l) => l.trim().startsWith("PASS") && l.includes("_trivial-log-clean"),
+        );
+        expect(logProgressLines.length).toBe(0);
+      } finally {
+        fs.unlinkSync(tempTestFile);
+        fs.rmSync(cacheDir, { recursive: true, force: true });
+      }
+    });
+
     // AC: @task-test-runner-progress-output ac-3
     it("progress output uses PASS/FAIL markers matching condensed output conventions", () => {
       const tempTestFile = path.join(projectRoot, "tests", "_trivial-markers.test.ts");
