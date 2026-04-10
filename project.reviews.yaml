@@ -134030,6 +134030,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-10T03:40:53.818Z
+      - _ulid: 01KNTRAN10NJ3J9Y2WRZD46B3P
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNTQKQA1ZVP4N1ZE4ZASZTMN
+        timestamp: 2026-04-10T03:52:45.344Z
     examined_commit: bfc112ad754cb512d23d6f95793917495c7cafa4
     external_links: []
     lifecycle_state: closed
@@ -134060,6 +134066,14 @@ reviews:
               spawn-like APIs (for example , , /, or equivalent command runners) instead of
               arbitrary call sites."
             created_at: 2026-04-10T03:40:14.017Z
+          - _ulid: 01KNTRAM54S2M9EQXCEF7FNXX2
+            author: "@claude"
+            body: "Fixed: isDetachCallExpression() now checks the callee name against a whitelist of spawn-like
+              APIs (runKspec, kspec, exec, execSync, spawn, spawnSync, execFile, execFileSync, fork)
+              before inspecting string arguments. Non-spawn calls like expect().toContain() or
+              console.log() are no longer flagged. Added two negative test cases covering both
+              scenarios."
+            created_at: 2026-04-10T03:52:44.451Z
         kind: blocker
       - _ulid: 01KNTQMBBRQYVP0YC7XW9QMR4S
         anchor:
@@ -134093,5 +134107,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-10T03:40:53.818Z
     created_at: 2026-04-10T03:30:08.656Z
-    updated_at: 2026-04-10T03:40:53.818Z
+    updated_at: 2026-04-10T03:52:44.451Z
     notes: []
