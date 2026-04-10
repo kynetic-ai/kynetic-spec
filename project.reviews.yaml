@@ -133748,3 +133748,29 @@ reviews:
     created_at: 2026-04-10T02:58:18.979Z
     updated_at: 2026-04-10T03:11:03.646Z
     notes: []
+  - _ulid: 01KNTP6E6JRD6KE0JFN4PPM3RE
+    slugs: []
+    title: Review task-test-runner-progress-output (cycle 3)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KNTP6E6J3PSPGH4HYZE90SG5
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-10T03:15:30.130Z
+    examined_commit: 945626c09a11f9d123dd912e773ef4724a5f7a16
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNTB8YTNSHRAPC5WRQWH4RRV"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-10T03:15:30.130Z
+    updated_at: null
+    notes: []
