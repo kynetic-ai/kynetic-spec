@@ -134172,6 +134172,18 @@ reviews:
         runner: codex
         created_at: 2026-04-10T04:17:19.173Z
         completed_at: 2026-04-10T04:17:19.173Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation reported no schema/reference errors for this snapshot. Exit code 6 was due to
+          pre-existing repo warnings (orphaned skill dir, unrelated alignment/completeness
+          warnings), not this change.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-10T04:17:27.330Z
+        completed_at: 2026-04-10T04:17:27.330Z
     events:
       - _ulid: 01KNTRF9MSXVXM75R7X4EAQ68C
         actor: Jacob Chapel
@@ -134216,6 +134228,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-10T04:17:23.673Z
+      - _ulid: 01KNTSQXD3ANV8F518N1ZNEKPV
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-10T04:17:28.484Z
     examined_commit: cc112485adee6ecaece0de407d9f202e379e0d0e
     external_links: []
     lifecycle_state: closed
@@ -134235,5 +134254,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-10T04:17:23.672Z
     created_at: 2026-04-10T03:55:17.529Z
-    updated_at: 2026-04-10T04:17:23.673Z
+    updated_at: 2026-04-10T04:17:27.330Z
     notes: []
