@@ -37538,3 +37538,1572 @@ plans:
     created_at: 2026-04-10T07:34:49.366Z
     completed_at: null
     notes: []
+  - _ulid: 01KNVAHVGGCVE785NNTF2GCZN4
+    slugs:
+      - plan-init-setup-and-upgrade-rough-edges
+    title: Init, Setup, and Upgrade Rough Edges
+    content: |
+      # Init, Setup, and Upgrade Rough Edges
+
+      ## Specs
+
+      ```yaml
+      - title: Scaffolded Project Config File
+        slug: scaffolded-project-config
+        type: requirement
+        parent: "@agent-integration"
+        description: |
+          When a project is initialized with full setup, a project config
+          file is scaffolded at the project root with placeholder values
+          for the knobs that real projects are expected to customize.
+          The scaffolded file uses only documented config keys, is valid
+          on first load, and marks itself visibly as a template that the
+          user should review.
+        acceptance_criteria:
+          - id: ac-file-scaffolded
+            given: |
+              A project has no project config file at its root
+            when: |
+              The project is initialized with full setup
+            then: |
+              A project config file is created at the project root
+          - id: ac-file-valid-on-load
+            given: |
+              A scaffolded project config file has just been written
+            when: |
+              The config is loaded by any kspec command
+            then: |
+              The file parses successfully and produces the same resolved
+              configuration as an empty config would, so scaffolding does
+              not change runtime behavior
+          - id: ac-placeholder-publication-mode
+            given: |
+              A scaffolded project config file is written
+            when: |
+              The file contents are inspected
+            then: |
+              The dispatch publication mode key is present with a
+              default value and an adjacent comment naming the other
+              accepted values
+          - id: ac-placeholder-base-branch
+            given: |
+              A scaffolded project config file is written
+            when: |
+              The file contents are inspected
+            then: |
+              The dispatch base branch key is present with a resolved
+              value taken from the current repository's default branch
+          - id: ac-placeholder-coverage
+            given: |
+              A scaffolded project config file is written
+            when: |
+              The file contents are inspected
+            then: |
+              The coverage scan paths key is present as a commented-out
+              example with sample paths, so users know the knob exists
+              without forcing a choice at init time
+          - id: ac-file-exists-preserved
+            given: |
+              A project already has a project config file at its root
+            when: |
+              The project is re-initialized or setup is re-run
+            then: |
+              The existing file is preserved without modification unless
+              the force flag is set
+          - id: ac-file-force-overwrites
+            given: |
+              A project already has a project config file and setup is
+              invoked with the force flag
+            when: |
+              Setup runs
+            then: |
+              The existing file is replaced with a freshly scaffolded
+              template
+          - id: ac-file-force-backup
+            given: |
+              A project already has a project config file and setup is
+              invoked with the force flag
+            when: |
+              Setup overwrites the existing file
+            then: |
+              The previous content is preserved as a sibling backup
+              file whose path is reported in the setup output
+
+      - title: Scaffolded Project Agent Instructions File
+        slug: scaffolded-agents-file
+        type: requirement
+        parent: "@agent-integration"
+        description: |
+          When a project is initialized with full setup, a human-authored
+          agent instructions file is scaffolded at the project root as a
+          placeholder containing the project name, a section for the
+          human author to describe the project, and an include directive
+          that references the auto-generated agent instructions file. The
+          scaffold is distinct from the auto-generated file and is never
+          overwritten unless the force flag is set.
+        acceptance_criteria:
+          - id: ac-file-scaffolded
+            given: |
+              A project has no human-authored agent instructions file at
+              its root
+            when: |
+              The project is initialized with full setup
+            then: |
+              A human-authored agent instructions file is created at the
+              project root
+          - id: ac-includes-generated
+            given: |
+              A scaffolded human-authored agent instructions file is
+              written
+            when: |
+              The file contents are inspected
+            then: |
+              The file contains a directive that references the
+              auto-generated agent instructions file by name
+          - id: ac-placeholders-marked
+            given: |
+              A scaffolded human-authored agent instructions file is
+              written
+            when: |
+              The file contents are inspected
+            then: |
+              Sections intended for human editing are marked with a
+              placeholder marker that distinguishes them from content
+              the user may have already customized
+          - id: ac-existing-preserved
+            given: |
+              A project already has a human-authored agent instructions
+              file
+            when: |
+              Setup runs without the force flag
+            then: |
+              The existing file is preserved without modification
+
+      - title: Complete Auto-Generated Gitignore Entries
+        slug: complete-auto-gitignore
+        type: requirement
+        parent: "@init-commands"
+        description: |
+          When a project is initialized, the gitignore file at the
+          project root contains entries for every transient directory
+          that kspec commands can create under the project root,
+          including any that are created lazily by later commands.
+          No kspec-created directory should ever appear as untracked
+          content after an init on a clean repository.
+        acceptance_criteria:
+          - id: ac-all-transient-paths-present
+            given: |
+              A fresh project is initialized
+            when: |
+              The gitignore file at the project root is inspected
+            then: |
+              Every directory that kspec commands are able to create
+              under the project root for transient state (shadow
+              worktrees, worktree pools, session storage, inbox
+              scratch, plan drafts) is listed
+          - id: ac-no-untracked-after-common-commands
+            given: |
+              A fresh project is initialized
+            when: |
+              A representative set of commands that create transient
+              state has been run and git status is inspected
+            then: |
+              No kspec-created directory appears as untracked content
+          - id: ac-existing-entries-preserved
+            given: |
+              A project has an existing gitignore file with entries
+              unrelated to kspec
+            when: |
+              Init adds kspec entries
+            then: |
+              Existing non-kspec entries are preserved unchanged
+          - id: ac-kspec-entries-idempotent
+            given: |
+              A project has an existing gitignore file that already
+              contains some kspec-managed entries
+            when: |
+              Init runs on the project
+            then: |
+              Adding kspec entries is idempotent and produces no
+              duplicate lines
+
+      - title: Default Project Agents and Conventions
+        slug: default-project-agents-and-conventions
+        type: requirement
+        parent: "@agent-integration"
+        description: |
+          When a project is initialized with full setup, the meta spec
+          contains a primary development agent, a plan reviewer agent,
+          and baseline conventions for commits, architecture, and
+          testing. These defaults establish the minimum context that
+          every project needs for normal task work and plan review to
+          function, without requiring the user to author them by hand.
+          Users remain free to edit, rename, or remove the defaults.
+        acceptance_criteria:
+          - id: ac-primary-dev-agent
+            given: |
+              A fresh project completes full setup
+            when: |
+              The meta spec agents are listed
+            then: |
+              A primary development agent is present with capabilities
+              covering code, test, refactor, and review
+          - id: ac-plan-reviewer-agent-exists
+            given: |
+              A fresh project completes full setup
+            when: |
+              The meta spec agents are listed
+            then: |
+              A plan reviewer agent is present with the review
+              capability
+          - id: ac-plan-reviewer-agent-skills
+            given: |
+              A scaffolded plan reviewer agent exists
+            when: |
+              The agent's skills are listed
+            then: |
+              The plan review skill and the writing specs skill are
+              both attached to the agent
+          - id: ac-plan-reviewer-write-authorized
+            given: |
+              A scaffolded plan reviewer agent exists
+            when: |
+              The agent's write authorization setting is inspected
+            then: |
+              Write authorization is enabled so the agent can record
+              review findings without manual approval per action
+          - id: ac-plan-reviewer-adapter-guidance
+            given: |
+              A plan reviewer agent is scaffolded
+            when: |
+              The agent definition is inspected
+            then: |
+              The agent definition includes enough inline guidance for
+              a new user to switch adapters without reading external
+              documentation
+          - id: ac-commits-convention
+            given: |
+              A fresh project completes full setup
+            when: |
+              The meta spec conventions are listed
+            then: |
+              A commits convention exists with rules covering commit
+              message format and task reference style
+          - id: ac-architecture-convention
+            given: |
+              A fresh project completes full setup
+            when: |
+              The meta spec conventions are listed
+            then: |
+              An architecture convention exists with a placeholder rule
+              that instructs the user to replace it with real project
+              constraints
+          - id: ac-testing-convention
+            given: |
+              A fresh project completes full setup
+            when: |
+              The meta spec conventions are listed
+            then: |
+              A testing convention exists with a placeholder rule that
+              instructs the user to replace it with real project
+              testing expectations
+          - id: ac-agents-md-reflects-defaults
+            given: |
+              A fresh project completes full setup
+            when: |
+              The auto-generated agent instructions file is inspected
+            then: |
+              The file reflects the scaffolded default agents and
+              conventions without requiring a separate regenerate step
+
+      - title: Default Session Reflection Hooks
+        slug: default-session-reflection-hooks
+        type: requirement
+        parent: "@agent-integration"
+        description: |
+          When a project is initialized with full setup, hooks are
+          scaffolded so that worker and reviewer sessions are prompted
+          to run session reflection when they go idle. This ensures
+          session learnings are captured from the first session
+          without requiring the user to wire hooks by hand. Users may
+          disable or remove the hooks without breaking any other
+          setup invariant.
+        acceptance_criteria:
+          - id: ac-worker-reflection-hook
+            given: |
+              A fresh project completes full setup
+            when: |
+              The hook list is inspected
+            then: |
+              A hook is present that, on idle sessions belonging to
+              the primary worker agent, prompts the session to run
+              the reflect skill
+          - id: ac-reviewer-reflection-hook
+            given: |
+              A fresh project completes full setup
+            when: |
+              The hook list is inspected
+            then: |
+              A hook is present that, on idle sessions belonging to
+              the primary reviewer agent, prompts the session to run
+              the reflect skill
+          - id: ac-hooks-idempotent
+            given: |
+              A project already has the default reflection hooks
+            when: |
+              Setup is re-run
+            then: |
+              The existing hooks are preserved and no duplicate hooks
+              are created
+          - id: ac-hooks-removable
+            given: |
+              A user removes a default reflection hook
+            when: |
+              Setup is re-run without the force flag
+            then: |
+              The removed hook is not silently recreated
+
+      - title: Derivable Default Module
+        slug: derivable-default-module
+        type: requirement
+        parent: "@init-commands"
+        description: |
+          When a project is initialized, the default module that init
+          creates is a referenceable module item that plan derivation
+          can target without requiring the user to create a separate
+          module first. A user can import and derive a plan on a fresh
+          project without any intermediate meta commands.
+        acceptance_criteria:
+          - id: ac-default-module-resolvable
+            given: |
+              A fresh project has just been initialized
+            when: |
+              The default module is queried by its reference
+            then: |
+              The module resolves to a real module item with a title,
+              slug, and description
+          - id: ac-plan-derive-accepts-default
+            given: |
+              A fresh project has a plan imported and approved
+            when: |
+              The plan is derived and targets the default module
+            then: |
+              Derivation succeeds without the user having to create a
+              module first
+          - id: ac-default-module-editable
+            given: |
+              The default module exists
+            when: |
+              The user sets its title, slug, or description
+            then: |
+              The changes persist and subsequent derivations continue
+              to target the same module
+
+      - title: Plan Document Format Error Guidance
+        slug: plan-import-format-guidance
+        type: requirement
+        parent: "@plan-support"
+        description: |
+          When a user imports a plan document whose structure does not
+          match the expected format, the import command reports a
+          specific, actionable error that names the expected structural
+          elements. The import does not silently accept a document whose
+          title cannot be extracted, whose specs section is malformed,
+          or whose acceptance criteria do not match the expected shape.
+          Users encountering the error can correct the file without
+          reading source code or external documentation.
+        acceptance_criteria:
+          - id: ac-missing-title-fails
+            given: |
+              A plan document whose first significant element is not a
+              top-level heading
+            when: |
+              The document is imported
+            then: |
+              The import fails with an error that identifies the
+              expected title location and the structural form the
+              parser recognizes
+          - id: ac-missing-specs-section-fails
+            given: |
+              A plan document with neither a specs section nor a tasks
+              section containing any derivable work
+            when: |
+              The document is imported
+            then: |
+              The import fails with an error that names the expected
+              sections and what each section must contain
+          - id: ac-ac-shape-mismatch-fails
+            given: |
+              A plan document where an acceptance criterion is not
+              expressed in the expected shape
+            when: |
+              The document is imported
+            then: |
+              The import fails with an error that locates the
+              malformed criterion by its containing spec and its
+              position within that spec
+          - id: ac-ac-shape-mismatch-describes-shape
+            given: |
+              A plan document's acceptance criterion fails shape
+              validation
+            when: |
+              The import error is displayed
+            then: |
+              The error message enumerates every required field of
+              an acceptance criterion with a one-line description
+              of each field's purpose
+          - id: ac-help-describes-format
+            given: |
+              A user queries help for the plan import command
+            when: |
+              The help output is displayed
+            then: |
+              The output includes a minimal runnable example of a plan
+              document and names every required structural element
+          - id: ac-error-no-external-references
+            given: |
+              Any of the import format errors is raised
+            when: |
+              The error message is displayed
+            then: |
+              The message is self-contained and does not require the
+              user to consult skills, README files, or source code to
+              correct the input
+
+      - title: Single-Command Version Upgrade
+        slug: single-command-version-upgrade
+        type: requirement
+        parent: "@agent-integration"
+        description: |
+          A dedicated upgrade command brings a project from any
+          previously-supported kspec version to the currently
+          installed version in a single invocation. The command
+          detects version skew, runs all required migrations,
+          re-renders skills, regenerates agent instructions, and
+          reports the net result. The upgrade is idempotent and safe
+          to run when the project is already current.
+        acceptance_criteria:
+          - id: ac-detects-skew
+            given: |
+              A project was initialized with an older kspec version
+            when: |
+              The upgrade command runs
+            then: |
+              The command detects the version skew between the
+              project state and the currently installed version
+          - id: ac-reports-skew
+            given: |
+              The upgrade command has detected version skew
+            when: |
+              The command begins its upgrade pipeline
+            then: |
+              The command reports the source version being upgraded
+              from and the target version being upgraded to before
+              any changes are applied
+          - id: ac-runs-task-storage-migration
+            given: |
+              A project uses a task storage format that is no longer
+              current
+            when: |
+              The upgrade command runs
+            then: |
+              The task storage migration is run as part of the upgrade
+              and reports whether any tasks were migrated
+          - id: ac-rerenders-skills
+            given: |
+              A project has skill files rendered from a previous
+              version of the skill templates
+            when: |
+              The upgrade command runs
+            then: |
+              Core skills are re-rendered so the rendered files match
+              the currently installed version and obsolete rendered
+              skills that no longer exist in the current version are
+              removed
+          - id: ac-regenerates-agents-file
+            given: |
+              A project has an auto-generated agent instructions file
+              from a previous version
+            when: |
+              The upgrade command runs
+            then: |
+              The auto-generated agent instructions file is
+              regenerated against the current templates
+          - id: ac-restores-gitignore-entries
+            given: |
+              A project is missing one or more kspec gitignore entries
+              that are now required
+            when: |
+              The upgrade command runs
+            then: |
+              Missing entries are appended to the gitignore and the
+              change is reported
+          - id: ac-idempotent-when-current
+            given: |
+              A project is already at the current version with no
+              drift
+            when: |
+              The upgrade command runs
+            then: |
+              The command completes successfully, reports that no
+              changes were necessary, and makes no modifications to
+              the project
+          - id: ac-reports-manual-follow-ups
+            given: |
+              The upgrade applies changes that a user should review
+              (such as a scaffolded or updated config file, new
+              default agents, or new gitignore entries)
+            when: |
+              The upgrade completes
+            then: |
+              The command reports each applied change with enough
+              context for the user to decide whether additional
+              manual follow-up is needed
+          - id: ac-dry-run-reports
+            given: |
+              A user wants to preview an upgrade without making
+              changes
+            when: |
+              The upgrade command runs with the dry-run flag
+            then: |
+              Every change the pipeline would apply is reported in
+              the same format as a real upgrade run
+          - id: ac-dry-run-no-writes
+            given: |
+              The upgrade command is running with the dry-run flag
+            when: |
+              The command completes
+            then: |
+              No filesystem modifications have been made at the
+              project root and no shadow branch commits have been
+              created
+
+      - title: Release Notes Accessible via CLI
+        slug: release-notes-accessible
+        type: requirement
+        parent: "@agent-integration"
+        description: |
+          Users can view the release notes for the currently installed
+          version and any intervening versions without leaving the
+          command line. Release notes summarize user-facing changes
+          and new or changed configuration knobs. The upgrade command
+          surfaces the relevant slice of release notes as part of its
+          output.
+        acceptance_criteria:
+          - id: ac-current-version-notes
+            given: |
+              A user wants to know what changed in the currently
+              installed version
+            when: |
+              The user runs the release notes command without
+              arguments
+            then: |
+              The release notes for the currently installed version
+              are displayed
+          - id: ac-version-range-notes
+            given: |
+              A user wants to know what changed between two versions
+            when: |
+              The user runs the release notes command with a from and
+              to version
+            then: |
+              The release notes for each version in the inclusive
+              range are displayed in chronological order
+          - id: ac-upgrade-surfaces-notes
+            given: |
+              The upgrade command upgrades a project from one version
+              to another
+            when: |
+              The upgrade reports its result
+            then: |
+              The release notes for every intervening version are
+              included in the output
+          - id: ac-notes-mention-new-config
+            given: |
+              A version introduced new configuration keys
+            when: |
+              The release notes for that version are displayed
+            then: |
+              The notes name every new configuration key and describe
+              what it controls
+
+      - title: Doctor Reports Actionable State
+        slug: doctor-reports-actionable-state
+        type: requirement
+        parent: "@enhanced-setup"
+        description: |
+          The doctor command reports the real state of the project
+          without false positives and without warnings that the user
+          has no way to act on. Every warning and error is paired with
+          a concrete command or action that resolves it, and every
+          check looks at the location where the checked artifact
+          actually lives. Doctor is the single source of truth for
+          whether a project is ready for normal work.
+        acceptance_criteria:
+          - id: ac-skills-check-accurate
+            given: |
+              A project has rendered skill files in the locations
+              currently used by the setup command
+            when: |
+              Doctor runs
+            then: |
+              The skills check reports the rendered skills as present
+              and does not emit a warning about missing rendered
+              skills
+          - id: ac-skills-check-missing
+            given: |
+              A project has no rendered skill files in any supported
+              location
+            when: |
+              Doctor runs
+            then: |
+              The skills check reports the rendered skills as missing
+              and names the command that re-renders them
+          - id: ac-config-scaffold-detected
+            given: |
+              A project is missing the scaffolded project config file
+            when: |
+              Doctor runs
+            then: |
+              A warning identifies the missing file and names the
+              command that scaffolds it
+          - id: ac-agents-file-scaffold-detected
+            given: |
+              A project is missing the scaffolded human-authored
+              agent instructions file
+            when: |
+              Doctor runs
+            then: |
+              A warning identifies the missing file and names the
+              command that scaffolds it
+          - id: ac-version-skew-detected
+            given: |
+              A project was initialized with an older kspec version
+              and has not been upgraded
+            when: |
+              Doctor runs
+            then: |
+              A warning identifies the version skew and names the
+              upgrade command
+          - id: ac-all-actionable
+            given: |
+              Any doctor output is produced
+            when: |
+              A warning or error is displayed
+            then: |
+              The message includes a concrete command or action the
+              user can run to resolve the condition
+
+      - title: Meta Set Multi-Value Option Parity
+        slug: meta-set-multi-value-parity
+        type: requirement
+        parent: "@meta"
+        description: |
+          Multi-value options on meta item update commands accept
+          repeated flags and preserve every value supplied. The set
+          and add-item flows behave identically for repeated flags so
+          users can update a meta item with the same mental model they
+          used to create it.
+        acceptance_criteria:
+          - id: ac-repeated-add-rule-all-kept
+            given: |
+              A meta convention exists
+            when: |
+              The set command is invoked with multiple add-rule flags
+              in a single call
+            then: |
+              Every supplied rule is appended to the convention's
+              rules and none are dropped
+          - id: ac-repeated-add-skill-all-kept
+            given: |
+              A meta agent exists
+            when: |
+              The set command is invoked with multiple add-skill flags
+              in a single call
+            then: |
+              Every supplied skill is added to the agent's skills and
+              none are dropped
+          - id: ac-repeated-add-capability-all-kept
+            given: |
+              A meta agent exists
+            when: |
+              The set command is invoked with multiple add-capability
+              flags in a single call
+            then: |
+              Every supplied capability is added to the agent and
+              none are dropped
+          - id: ac-remove-flags-unchanged
+            given: |
+              A meta item has multiple values for a repeatable field
+            when: |
+              The set command is invoked with repeated remove-value
+              flags
+            then: |
+              Every named value is removed and values not named are
+              preserved
+          - id: ac-mixed-add-and-remove
+            given: |
+              A meta item is updated in a single call with a mix of
+              repeated add and remove flags
+            when: |
+              The set command completes
+            then: |
+              The resulting item reflects all adds and removes applied
+              in a consistent order
+      ```
+
+      ## Tasks
+
+      derive_from_specs: false
+
+      ```yaml
+      - title: Scaffold project config file during init setup
+        slug: task-scaffold-project-config
+        priority: 1
+        tags: [init, setup, config]
+        spec_ref: "@scaffolded-project-config"
+        description: |
+          Write a project config file at the project root as part of
+          the setup step that runs during init, using resolved defaults
+          and commented placeholders for knobs that real projects are
+          expected to customize.
+
+          Why: New projects consistently need the same config file with
+          the same shape, but currently every project author writes it
+          by hand. Scaffolding it once during setup removes an entire
+          class of first-day friction and eliminates silent dispatch
+          breakage from a missing file.
+
+          What:
+          - Add a setup step that runs after the existing skill
+            rendering step and before the existing agents file
+            generation step.
+          - The step writes a project config file at the project root
+            with the following content:
+            * A dispatch section containing publication_mode set to
+              manual_merge, with an adjacent comment listing the other
+              accepted values from the dispatch publication mode schema.
+            * A dispatch section containing base_branch resolved from
+              the current repository's default branch (detect via the
+              same helper the dispatcher uses to resolve a default
+              base; if detection fails, use the literal string "main"
+              and comment that the value was a fallback).
+            * A commented-out coverage section showing scan_paths as a
+              list example with one or two sample paths, with a
+              comment explaining that uncommenting enables AC coverage
+              scanning.
+            * A top-of-file comment identifying the file as a
+              scaffolded template and instructing the user to review it.
+          - The step must be idempotent: if the file already exists
+            and the force flag is not set, the step is reported as
+            skipped with a reason.
+          - When the force flag is set and the file exists, back up
+            the existing content to a sibling file with a timestamped
+            extension and report the backup path before writing the
+            fresh template.
+          - Validate the scaffolded file by running it through the
+            existing config loader in the same invocation; if loading
+            fails the setup step must fail loudly rather than leaving
+            a broken file.
+          - The step must appear in the setup summary output with the
+            same format as existing steps.
+
+          How: The existing setup pipeline lives in the setup command
+          under src/cli/commands/setup.ts. Add a new step function
+          next to the existing skill rendering and agents file
+          generation steps, register it in the pipeline ordering, and
+          reuse the existing step result reporting helper so output
+          formatting matches. The config schema and loader live under
+          src/parser/config.ts; reuse its loader for the validation
+          check. Default branch resolution is already used by the
+          dispatch workspace resolver under src/agent-runtime; reuse
+          its helper rather than reimplementing it.
+
+          Testing: Unit tests for the step function covering the
+          fresh-project path, the existing-file skip path, and the
+          force-overwrite-with-backup path. Integration test that
+          runs init with setup on a fresh temp directory and asserts
+          the scaffolded file exists, is valid on load, and contains
+          the documented keys. Fixture test that an empty project
+          with only the scaffolded file behaves identically to a
+          project with no config file at all.
+
+          Covers: @scaffolded-project-config ac-file-scaffolded,
+          ac-file-valid-on-load, ac-placeholder-publication-mode,
+          ac-placeholder-base-branch, ac-placeholder-coverage,
+          ac-file-exists-preserved, ac-file-force-overwrites,
+          ac-file-force-backup.
+
+      - title: Scaffold human-authored agent instructions file during init setup
+        slug: task-scaffold-agents-file
+        priority: 1
+        tags: [init, setup, agents]
+        spec_ref: "@scaffolded-agents-file"
+        description: |
+          Write a human-authored agent instructions file at the project
+          root during setup, with placeholders for project context and
+          an include directive pointing at the auto-generated file.
+
+          Why: The auto-generated agent instructions file only covers
+          dynamic data from the meta spec. Every project also needs a
+          human-authored overview that explains what the project is
+          and why, and users currently author this by hand. Scaffolding
+          a placeholder removes the "what do I put in AGENTS.md"
+          friction and ensures a consistent include pattern.
+
+          What:
+          - Add a setup step that runs after the config scaffold step
+            and before the agents file generation step.
+          - The scaffolded file must contain:
+            * A top-level heading with the project name (read from
+              the project manifest).
+            * A short placeholder project overview section clearly
+              marked with a placeholder marker (for example, a visible
+              prefix or comment) so humans can distinguish untouched
+              scaffold from edited content.
+            * An "Agent Instructions" section whose body is an include
+              directive referencing the auto-generated agent
+              instructions file by name.
+          - Skip the step when a file already exists at the target
+            path unless the force flag is set.
+          - When forced, back up the existing content to a sibling
+            file with a timestamped extension and report the backup
+            path before writing the fresh scaffold.
+          - Emit the step result in the setup summary.
+          - The scaffolded file must not duplicate any content that
+            belongs in the auto-generated file.
+
+          How: Add the step in src/cli/commands/setup.ts alongside
+          the other scaffolding steps. Read the project name from
+          the existing project context helper already used by init.
+          The auto-generated file name is fixed and already defined
+          as a constant in the agents generation module; import and
+          reuse that constant rather than hardcoding a string.
+
+          Testing: Unit tests for fresh-project, existing-file skip,
+          and force-with-backup paths. Integration test asserting
+          the scaffolded file is present after init with setup and
+          contains the include directive. Test that a project with
+          a pre-existing instructions file keeps its content when
+          setup is re-run without force.
+
+          Covers: @scaffolded-agents-file ac-file-scaffolded,
+          ac-includes-generated, ac-placeholders-marked,
+          ac-existing-preserved.
+
+      - title: Expand and repair auto-generated gitignore entries
+        slug: task-complete-gitignore
+        priority: 1
+        tags: [init, setup, git]
+        spec_ref: "@complete-auto-gitignore"
+        description: |
+          Make the init gitignore writer enumerate every transient
+          directory kspec can create under the project root, and
+          ensure a repair path runs during setup to add any missing
+          entries on existing projects.
+
+          Why: The current gitignore writer misses at least one
+          transient directory that is created lazily by later commands,
+          which causes untracked content to appear after normal task
+          work. Also, existing projects need a non-destructive way to
+          get the missing entries added on upgrade.
+
+          What:
+          - Build a single canonical list of transient directories
+            that kspec may create at the project root, sourced from
+            the constants used by the commands that create them (for
+            example: shadow worktree path, worktree pool root, session
+            storage path, plan drafts path). The list must be a
+            shared constant, not duplicated inline in init.
+          - Update the init gitignore writer to append every entry in
+            the canonical list idempotently, preserving any existing
+            user-authored content above or below the managed block.
+          - Use a managed-block marker pair (start and end sentinel
+            lines) so the setup step can detect and update the
+            managed block without touching user content outside it.
+          - Add a setup step that runs on every invocation (not just
+            init) and appends any missing entries from the canonical
+            list, reporting which entries were added.
+          - Never remove entries a user added manually, even if they
+            fall inside the managed block.
+          - When the managed block is absent on an existing project,
+            create it at the end of the file with all canonical
+            entries and report that the block was created.
+
+          How: The existing gitignore writing logic lives in
+          src/cli/commands/init.ts. Extract the entry list to a shared
+          constant alongside the existing path constants used by the
+          commands that create transient directories. Add the managed
+          block marker handling (a small helper that parses, updates,
+          and serializes the block). Register the setup step in the
+          pipeline so it runs during init with setup and during
+          standalone setup invocations.
+
+          Testing: Unit tests for the managed block parser covering:
+          no existing block, existing block with same entries,
+          existing block with fewer entries, user content interleaved
+          above and below the block. Integration test that runs init
+          on a fresh project, then runs commands that create each
+          transient directory, and asserts git status reports no
+          untracked content. Test that user entries outside the
+          managed block are never touched.
+
+          Covers: @complete-auto-gitignore ac-all-transient-paths-present,
+          ac-no-untracked-after-common-commands,
+          ac-existing-entries-preserved, ac-kspec-entries-idempotent.
+
+      - title: Scaffold default project agents and conventions
+        slug: task-default-agents-and-conventions
+        priority: 1
+        tags: [init, setup, meta]
+        spec_ref: "@default-project-agents-and-conventions"
+        description: |
+          During init setup, scaffold a primary development agent, a
+          plan reviewer agent, and baseline conventions for commits,
+          architecture, and testing into the meta spec.
+
+          Why: Every real project manually adds these same defaults
+          immediately after init. Scaffolding them during setup
+          removes repetitive boilerplate, ensures plan review works
+          out of the box, and gives the auto-generated agent
+          instructions file something to render from the first time
+          it runs.
+
+          What:
+          - Add a setup step that runs after the hook installation
+            step and before the agents file generation step.
+          - The step creates the following meta items if they do not
+            already exist:
+            * A primary development agent with a stable identifier,
+              a descriptive name, and capabilities for code, test,
+              refactor, and review.
+            * A plan reviewer agent with a stable identifier, a
+              descriptive name, review capability, write-authorization
+              enabled so it can record review findings, and the plan
+              review, writing specs, and plan skills attached.
+            * A commits convention with two rules: one for commit
+              message format and one for task reference style.
+            * An architecture convention containing a single
+              placeholder rule that explicitly instructs the user to
+              replace it with project-specific rules.
+            * A testing convention containing a single placeholder
+              rule that explicitly instructs the user to replace it.
+          - The plan reviewer agent's description must include
+            inline guidance explaining how to switch adapters if the
+            default adapter's authentication fails, using only
+            commands and flags that exist in the CLI.
+          - Each item is created only when an item with the same
+            identifier does not already exist; existing items are
+            preserved.
+          - After the step runs, invoke the existing agents file
+            regeneration so the auto-generated instructions reflect
+            the scaffolded defaults without requiring a separate
+            command.
+          - Report each created item (or each skipped existing item)
+            in the setup summary output.
+
+          How: The meta item creation pathway is exposed as library
+          functions under src/parser/meta.ts; call those directly
+          from the setup step rather than shelling out to the CLI.
+          Reuse the existing "ensure built-in agents" step pattern
+          already in src/cli/commands/setup.ts — this new step
+          extends that pattern to also ensure the plan reviewer,
+          primary dev agent, and default conventions. The existing
+          agents generation step runs later in the pipeline and will
+          pick up the new meta items automatically as long as the
+          scaffold step runs before it.
+
+          Testing: Unit tests for idempotency: first run creates all
+          items, second run creates none. Integration test running
+          init with setup on a fresh temp directory and asserting
+          that the meta agent list contains the four expected
+          agents and the meta conventions list contains the three
+          expected conventions with the right shape. Test that a
+          project with an existing primary dev agent is not
+          overwritten.
+
+          Covers: @default-project-agents-and-conventions
+          ac-primary-dev-agent, ac-plan-reviewer-agent-exists,
+          ac-plan-reviewer-agent-skills,
+          ac-plan-reviewer-write-authorized,
+          ac-plan-reviewer-adapter-guidance, ac-commits-convention,
+          ac-architecture-convention, ac-testing-convention,
+          ac-agents-md-reflects-defaults.
+
+      - title: Scaffold default session reflection hooks
+        slug: task-default-reflection-hooks
+        priority: 2
+        tags: [init, setup, hooks]
+        spec_ref: "@default-session-reflection-hooks"
+        depends_on:
+          - "@task-default-agents-and-conventions"
+        description: |
+          During init setup, scaffold the worker and reviewer session
+          reflection hooks so session reflection runs on idle out of
+          the box.
+
+          Why: Session reflection is valuable from the first session,
+          but requires hooks that every project currently adds by
+          hand. Scaffolding them during setup makes reflection
+          automatic without requiring the user to read a separate
+          setup checklist.
+
+          What:
+          - Add a setup step that runs after the scaffold default
+            agents and conventions step and before the agents file
+            generation step.
+          - Create two hooks by identifier if they do not already
+            exist:
+            * A worker reflection hook that fires on the session idle
+              event, filters for sessions belonging to the primary
+              worker agent, and prompts the session to run the
+              reflect skill.
+            * A reviewer reflection hook that fires on the session
+              idle event, filters for sessions belonging to the
+              primary reviewer agent, and prompts the session to run
+              the reflect skill.
+          - Look up the primary worker and reviewer agent identifiers
+            from the meta items created in the previous setup step
+            rather than hardcoding them, so identifier changes in one
+            place are reflected here.
+          - Do not create a hook whose identifier already exists in
+            the hook list. Skip silently in that case and report it
+            as an idempotency skip.
+          - If a hook was previously created by this step and has
+            since been removed by the user, the step must not
+            recreate it. Detect this by checking for a marker field
+            on the hook (a known tag or a deterministic identifier
+            component) that only the scaffold writes, and by
+            remembering that the scaffold previously completed. Use
+            the existing setup seeding state file to persist the
+            "scaffolded hooks" marker across invocations.
+
+          How: Hook CRUD is exposed via library functions under
+          src/parser/hooks.ts (or the equivalent module). Reuse the
+          setup seeding state file pattern already used for permission
+          seeding and memory seeding to record that the hook scaffold
+          has run. The filter and action payloads are documented in
+          the hook schema in src/schema/hook.ts; follow that schema
+          exactly rather than shelling out to the CLI.
+
+          Testing: Unit tests for create, idempotent skip, and
+          removed-by-user non-recreation. Integration test running
+          init with setup and asserting both hooks exist with the
+          expected filters and actions. Test that removing a hook
+          and re-running setup without force does not recreate it.
+
+          Covers: @default-session-reflection-hooks
+          ac-worker-reflection-hook, ac-reviewer-reflection-hook,
+          ac-hooks-idempotent, ac-hooks-removable.
+
+      - title: Make default module a referenceable item
+        slug: task-derivable-default-module
+        priority: 2
+        tags: [init, modules, plans]
+        spec_ref: "@derivable-default-module"
+        description: |
+          Turn the default module that init creates into a real
+          referenceable module item so plan derivation can target it
+          without requiring the user to create a module first.
+
+          Why: On a fresh project, plan derive currently fails with
+          "requires --module" because the file init creates is a
+          placeholder list container, not a module item. This forces
+          users to run an extra command before their first plan
+          derive will work, which is exactly the kind of guesswork
+          the release is trying to remove.
+
+          What:
+          - When init creates the default module placeholder, also
+            create a real module meta item with a deterministic slug
+            (for example, derived from the project name or a fixed
+            "default" slug — pick one and document it), a title, and
+            a description that explains it is the default module.
+          - Preserve the existing placeholder file shape so that
+            library code which expected it continues to work, but
+            ensure the new module item is discoverable by the normal
+            item lookup and is accepted by plan derive.
+          - When the user edits the title, slug, or description of
+            the default module, persist the edits through normal
+            item set flows. Subsequent plan derive invocations that
+            target the default module must follow the current slug.
+          - When a project already has one or more user-created
+            modules, init still creates the default module; a later
+            setup invocation must not remove it unless the user
+            explicitly removes it.
+          - Document the default module's existence in the setup
+            summary and in the init output.
+
+          How: The default module file is created in
+          src/cli/commands/init.ts; find the code that writes
+          modules/main.yaml and augment it to also create a module
+          item via the same library function that kspec module add
+          uses (under src/parser/modules.ts or the equivalent). The
+          plan derive module check lives in src/cli/commands/plan.ts
+          under the derive handler — verify that the newly created
+          item resolves through the same lookup path that kspec
+          module add items do.
+
+          Testing: Integration test that runs init on a fresh temp
+          directory and asserts the default module item is
+          resolvable by reference. End-to-end test that imports a
+          plan, approves it, and runs derive targeting the default
+          module without any intermediate module creation. Test
+          that editing the default module's slug via item set
+          persists and is visible to plan derive.
+
+          Covers: @derivable-default-module ac-default-module-resolvable,
+          ac-plan-derive-accepts-default, ac-default-module-editable.
+
+      - title: Actionable plan import format errors and help
+        slug: task-plan-import-format-guidance
+        priority: 2
+        tags: [cli, plans]
+        spec_ref: "@plan-import-format-guidance"
+        description: |
+          Make plan document format errors actionable so the user can
+          correct a bad plan file without reading source code, and
+          embed a minimal runnable example in the import command's
+          help output.
+
+          Why: Plan import currently silently accepts documents whose
+          title cannot be extracted (importing them as "Untitled
+          Plan"), and fails later at derive time with cryptic
+          validation errors when acceptance criteria are in the wrong
+          shape. Users have no way to discover the correct format
+          without opening the parser source. Making errors and help
+          self-contained removes that hidden dependency.
+
+          What:
+          - Change plan import so that when the parser cannot
+            extract a title from the document, the command fails
+            with a non-zero exit code rather than importing as
+            "Untitled Plan". The error message must name the
+            expected structural form of the title (a top-level
+            heading as the first significant element) and show a
+            one-line example.
+          - When the parser finds neither a specs section nor a
+            tasks section with any derivable work, fail with an
+            error that names both expected sections and what each
+            must contain.
+          - When an acceptance criterion fails schema validation,
+            fail with an error that names the spec slug (or index
+            if unslugged), names the failing criterion's identifier
+            (or index), and lists every required field of an
+            acceptance criterion with a brief description. Do not
+            leak raw schema validator output.
+          - Extend the command's help output to include a minimal
+            runnable example of a plan document that uses all
+            required structural elements (title, specs section with
+            one spec, tasks section with derive directive). The
+            example must be copy-pasteable.
+          - Error messages must never reference files outside the
+            project (skills, README, docs) — everything needed to
+            correct the error must be in the message itself.
+          - The dry-run flow must produce the same errors as the
+            real import for these cases, so users can preflight
+            their document.
+
+          How: The parser entry point is parsePlanDocument in
+          src/parser/plan-document.ts. Today the title extraction
+          is best-effort; change it to required and propagate a
+          typed error. The existing ParseError types should cover
+          these cases — if not, extend them. The import command
+          handler lives in src/cli/commands/plan-import.ts and
+          already consumes parser errors — route the new error
+          types to human messages there. Help output is registered
+          when the command is built; add the example as a help text
+          block.
+
+          Testing: Unit tests for parser behavior covering: missing
+          title, missing both sections, malformed acceptance
+          criterion. CLI tests for each error producing non-zero
+          exit and the expected message content. Snapshot test for
+          help output containing the runnable example. Test that
+          dry-run produces the same errors as real import.
+
+          Covers: @plan-import-format-guidance ac-missing-title-fails,
+          ac-missing-specs-section-fails, ac-ac-shape-mismatch-fails,
+          ac-ac-shape-mismatch-describes-shape,
+          ac-help-describes-format, ac-error-no-external-references.
+
+      - title: Implement single-command version upgrade
+        slug: task-upgrade-command
+        priority: 1
+        tags: [cli, upgrade, setup]
+        spec_ref: "@single-command-version-upgrade"
+        depends_on:
+          - "@task-scaffold-project-config"
+          - "@task-scaffold-agents-file"
+          - "@task-complete-gitignore"
+          - "@task-default-agents-and-conventions"
+        description: |
+          Add an upgrade command that detects version skew between a
+          project and the installed kspec version, runs all required
+          migrations, re-renders skills, regenerates the auto-generated
+          agent instructions file, repairs gitignore entries, and
+          reports the net result.
+
+          Why: Projects today go through silent breakage on upgrade
+          because required migrations are run manually, rendered
+          skills go stale without warning, and new defaults are not
+          backfilled. A single upgrade command eliminates version
+          skew as a failure mode.
+
+          What:
+          - Add a new top-level command named upgrade. It accepts no
+            required arguments. It accepts a dry-run flag and a
+            force flag.
+          - Version detection:
+            * Read the current installed version from the package
+              manifest the CLI ships with.
+            * Read the project's last-known version from a small
+              state file stored in the shadow branch (alongside the
+              existing setup seeding state). If no file exists,
+              treat the project as pre-versioning and continue.
+            * If the two match, report that the project is current
+              and exit successfully without making changes.
+          - Upgrade pipeline (each step reports its result):
+            1. Run the existing task storage migration. Report the
+               number of tasks migrated (or zero).
+            2. Re-render skills using the existing setup force-render
+               behavior. Report how many skills were added, updated,
+               and removed since the previous state.
+            3. Regenerate the auto-generated agent instructions file
+               using the existing generation command. Report whether
+               the file changed.
+            4. Run the gitignore repair step from the gitignore
+               completion work. Report which entries were appended.
+            5. Scaffold any missing files that the init setup scaffold
+               steps would create on a fresh project (config file,
+               human-authored agent instructions file, default module,
+               default agents and conventions, default reflection
+               hooks) — but only create what is missing; never
+               overwrite. Each skipped item is reported as a skip.
+            6. Write the new current version to the last-known version
+               state file.
+          - When the dry-run flag is set, every step reports what it
+            would do without making changes, and no state file is
+            written.
+          - When any step fails, the command exits with a non-zero
+            status and reports which step failed and what state the
+            upgrade left the project in.
+          - The command output ends with a manual follow-up section
+            that lists any scaffolded or updated files the user
+            should review.
+
+          How: The existing setup force pathway under
+          src/cli/commands/setup.ts already covers most of the
+          mechanics (skill re-render, agents regeneration). Build the
+          upgrade command as a composition of existing step functions
+          plus the new task storage migration invocation (library
+          function under src/cli/commands/task-migrate.ts or the
+          equivalent). Store the last-known version in the same
+          state file pattern used by setup seeding; add a new field
+          rather than a new file. The command handler registration
+          goes in src/cli/index.ts alongside the other top-level
+          commands.
+
+          Testing: Integration tests covering each upgrade scenario:
+          pre-versioning project (no state file), current project
+          (no-op), project with legacy task storage, project with
+          stale skill renders, project with missing gitignore
+          entries, project with missing scaffolded files. Test
+          dry-run for each scenario. Test failure propagation when a
+          step fails.
+
+          Covers: @single-command-version-upgrade ac-detects-skew,
+          ac-reports-skew, ac-runs-task-storage-migration,
+          ac-rerenders-skills, ac-regenerates-agents-file,
+          ac-restores-gitignore-entries, ac-idempotent-when-current,
+          ac-reports-manual-follow-ups, ac-dry-run-reports,
+          ac-dry-run-no-writes.
+
+      - title: Author release notes and expose via CLI
+        slug: task-release-notes
+        priority: 2
+        tags: [cli, docs]
+        spec_ref: "@release-notes-accessible"
+        depends_on:
+          - "@task-upgrade-command"
+        description: |
+          Create a machine-readable release notes source, add a CLI
+          command to display them, and wire them into the upgrade
+          command's output so users see what changed during an
+          upgrade.
+
+          Why: Without release notes, users upgrade blind and have
+          no way to discover new configuration knobs or behavioral
+          changes. A single canonical source that the CLI reads
+          directly prevents drift between documentation and reality.
+
+          What:
+          - Create a single canonical release notes source file in
+            the repository root that the CLI can read. Use a format
+            the CLI can parse deterministically (structured
+            markdown with per-version headings, or a YAML file —
+            pick one and document the choice). The file is shipped
+            in the published package.
+          - Populate the source with an entry for every released
+            version since versioning began, plus an entry for the
+            unreleased changes in the upcoming version. Each entry
+            must include:
+            * The version number.
+            * A human summary of user-facing changes.
+            * A list of new or changed configuration keys with a
+              one-line description each.
+            * A list of breaking changes (empty list if none).
+          - Add a top-level CLI command that reads and displays
+            release notes. The command accepts no arguments to show
+            the current version's notes, and accepts from and to
+            version flags to show a range. Invalid version ranges
+            produce actionable errors.
+          - Extend the upgrade command from the prior task so that
+            it reads the release notes source, filters to every
+            intervening version between the previous and current
+            versions, and appends those entries to its output.
+          - The CLI command supports a structured output mode so
+            programmatic consumers can parse the notes.
+
+          How: The source file lives at the repository root and is
+          added to the published files list in the package manifest.
+          A new parser module under src/parser/release-notes.ts
+          exposes load, get-version, and get-range functions. The
+          CLI command handler lives in src/cli/commands/
+          release-notes.ts. The upgrade command imports the range
+          helper and prints the relevant slice.
+
+          Testing: Unit tests for the parser covering well-formed
+          input, missing version, and range queries. CLI tests for
+          the display command covering current, range, and
+          structured output modes. Integration test that the
+          upgrade command's output includes the relevant notes for
+          a simulated version skew.
+
+          Covers: @release-notes-accessible ac-current-version-notes,
+          ac-version-range-notes, ac-upgrade-surfaces-notes,
+          ac-notes-mention-new-config.
+
+      - title: Remove doctor false positive and add scaffold checks
+        slug: task-doctor-accuracy
+        priority: 2
+        tags: [cli, doctor]
+        spec_ref: "@doctor-reports-actionable-state"
+        depends_on:
+          - "@task-scaffold-project-config"
+          - "@task-scaffold-agents-file"
+          - "@task-upgrade-command"
+        description: |
+          Fix doctor's skill rendering check to look at the real
+          rendered skill locations, add checks for the scaffolded
+          config and agents instructions files, add a version skew
+          check that points at the upgrade command, and ensure every
+          warning and error includes a concrete resolution command.
+
+          Why: Doctor currently emits a persistent false-positive
+          warning about missing rendered skills even when skills are
+          clearly rendered, and misses several conditions that the
+          other tasks in this plan make detectable. Users ignore
+          doctor output because they have learned it is unreliable.
+          Doctor should be the single reliable signal that a project
+          is ready for work.
+
+          What:
+          - Replace the existing rendered skills check with one that
+            inspects the real rendered skill locations (the same
+            locations the setup command writes to). The check must:
+            * Report healthy when any supported rendered skill
+              location contains the expected skill files.
+            * Report a warning when no supported rendered skill
+              location contains any rendered skills, and name the
+              command that re-renders.
+            * Never report a warning when the setup command would
+              consider the project up to date.
+          - Add a scaffold check that reports a warning if the
+            project is missing the scaffolded config file or the
+            scaffolded human-authored agent instructions file, and
+            names the scaffold command (upgrade or setup with
+            force, depending on which is user-facing).
+          - Add a version skew check: read the last-known version
+            from the state file (added by the upgrade command
+            task); if it differs from the currently installed
+            version, emit a warning and name the upgrade command.
+          - Audit every other check's warning and error messages.
+            Every message must include a concrete command or action
+            the user can run. Messages that say "run setup" must
+            now name the specific setup subcommand or flag.
+          - The task storage legacy error must name the upgrade
+            command as the preferred resolution, with the
+            task-migrate command as the lower-level fallback.
+          - Doctor output format stays the same: sections with
+            check results, a summary line, and a non-zero exit code
+            when errors are present.
+
+          How: The doctor command handler lives in
+          src/cli/commands/doctor.ts. Find the rendered skills
+          check and inspect the real rendered-skill directory
+          constants from the setup command (they are the same
+          constants the skill rendering step writes to). Add new
+          check functions for the scaffold presence and version
+          skew. The existing check output formatting helper already
+          takes a resolution message — ensure every call site
+          provides one.
+
+          Testing: Unit tests for each new check covering healthy
+          and unhealthy paths. Integration test that runs init with
+          setup on a fresh temp directory and then runs doctor,
+          asserting no warnings are emitted. Snapshot test for the
+          doctor output format showing resolution commands on every
+          warning and error. Test that after a simulated version
+          downgrade, doctor surfaces the version skew warning.
+
+          Covers: @doctor-reports-actionable-state ac-skills-check-accurate,
+          ac-skills-check-missing, ac-config-scaffold-detected,
+          ac-agents-file-scaffold-detected, ac-version-skew-detected,
+          ac-all-actionable.
+
+      - title: Fix meta set multi-value option parity
+        slug: task-meta-set-multi-value
+        priority: 2
+        tags: [cli, meta, bugfix]
+        spec_ref: "@meta-set-multi-value-parity"
+        description: |
+          Make repeated multi-value options on meta set accept and
+          preserve every value the user supplies, matching the
+          behavior of the meta add flow.
+
+          Why: Repeated add-rule, add-skill, and add-capability flags
+          on meta set currently drop all values except the last,
+          silently. This diverges from meta add (which preserves all
+          repeated values) and forces users to run multiple commands
+          to do what should be one atomic update. It is a real logic
+          bug, not a documentation gap.
+
+          What:
+          - Audit the meta set command handler for every flag that
+            accepts repeated values (at minimum: add-rule, add-skill,
+            add-capability, remove-rule, remove-skill,
+            remove-capability). Confirm which are currently
+            last-write-wins.
+          - Change each affected flag to be a variadic option (or the
+            equivalent in the CLI library the project uses) so the
+            handler receives an array of every supplied value.
+          - Update the handler logic to append every supplied value
+            for add flags and remove every supplied value for remove
+            flags, in a single atomic write to the meta item.
+          - When a single invocation contains both add and remove
+            flags for the same field, apply removes before adds so
+            the user's intent is unambiguous (an explicit "replace
+            these with those" reads correctly).
+          - The fix must not change the behavior of meta add; that
+            flow already works correctly and the regression tests
+            must protect it.
+
+          How: The handler lives in src/cli/commands/meta.ts under
+          the set subcommand. The CLI library is commander; the
+          correct pattern is to declare the option as variadic
+          (option with three dots in the declaration) and consume
+          it as an array. Compare the implementation of meta add
+          for the exact pattern.
+
+          Testing: Unit tests for the handler covering: repeated
+          add-rule preserves all rules, repeated add-skill preserves
+          all skills, repeated add-capability preserves all
+          capabilities, repeated remove flags remove all named
+          values, mixed add and remove flags apply in the expected
+          order. Regression test for meta add behavior to ensure the
+          fix does not break it.
+
+          Covers: @meta-set-multi-value-parity ac-repeated-add-rule-all-kept,
+          ac-repeated-add-skill-all-kept, ac-repeated-add-capability-all-kept,
+          ac-remove-flags-unchanged, ac-mixed-add-and-remove.
+      ```
+
+      ## Implementation Notes
+
+      This plan targets rough edges that show up the moment a real user
+      initializes a project, imports a plan, or upgrades kspec. The
+      guiding principle is that every step a user takes in the first
+      hour should either succeed or fail with an actionable error that
+      tells them exactly what to do next.
+
+      The plan groups work into four themes:
+
+      1. **Fresh-setup completeness** — the scaffold work (config file,
+         human-authored agent instructions file, gitignore completion,
+         default agents and conventions, default reflection hooks,
+         derivable default module). A fresh project after init with
+         setup should be ready for plan import and dispatch with no
+         further hand-authoring.
+
+      2. **Plan import ergonomics** — the plan format guidance work.
+         Import must never silently accept a broken document, and its
+         help output must contain enough information to produce a
+         valid document without external references.
+
+      3. **Upgrade as a first-class command** — the version upgrade
+         command, release notes source, and doctor accuracy work. A
+         user upgrading should run a single command that leaves the
+         project in a known-good state, or fails loudly with a clear
+         recovery path.
+
+      4. **Meta set parity bugfix** — the repeated-flag behavior on
+         meta set is a latent bug that users currently work around
+         by running multiple commands. The fix stands alone and can
+         ship in any order.
+
+      Dependency ordering: the scaffold tasks (config, agents file,
+      gitignore, default agents and conventions) have no dependencies
+      on each other and can run in parallel. The default reflection
+      hooks task depends on default agents and conventions because it
+      looks up the primary agent identifiers. The upgrade command task
+      depends on every scaffold task because it invokes them on
+      existing projects. The release notes task depends on the upgrade
+      command because the upgrade command consumes release notes.
+      The doctor accuracy task depends on both scaffold tasks and the
+      upgrade command because it adds checks for both. The meta set
+      fix has no dependencies.
+
+      Design decisions:
+      - Scaffolding is additive and idempotent. Every scaffold step
+        has a skip path for existing files and a force path that
+        backs up before overwriting. No scaffold step ever destroys
+        user content.
+      - The canonical list of transient directories lives in a shared
+        constant, not inline in init, so future additions are
+        automatically picked up by both init and the upgrade repair
+        step.
+      - The upgrade command is a composition of existing setup steps
+        plus version detection. It is not a new mechanism; it is a
+        correct entry point into existing mechanisms.
+      - Release notes live in a single source file in the repository
+        and are shipped in the published package. The CLI reads the
+        same file users would read on the web. No duplication.
+      - Doctor becomes reliable by checking the locations that
+        setup actually writes to. The test suite includes a
+        "fresh init produces zero doctor warnings" assertion so
+        regressions are caught immediately.
+      - The meta set fix uses variadic options to match the meta
+        add pattern. The CLI library supports this natively; the
+        bug is a declaration mistake, not a design choice.
+
+      Non-goals:
+      - No changes to the shape of the shadow branch or task storage
+        beyond the existing task storage migration that the upgrade
+        command invokes.
+      - No changes to how agents are dispatched or how tasks are
+        provisioned beyond what the scaffolded defaults produce.
+      - No interactive upgrade prompts. The upgrade command is
+        non-interactive so it can run in scripts and automation.
+      - No web UI changes. The scaffolded defaults surface through
+        the existing dynamic agent instruction generation.
+    status: draft
+    approved_at: null
+    branch: null
+    derived_specs: []
+    derived_tasks: []
+    module_ref: null
+    source_path: /home/chapel/Projects/kynetic-spec/plans/init-setup-upgrade-rough-edges.md
+    created_at: 2026-04-10T09:11:15.728Z
+    completed_at: null
+    notes: []
