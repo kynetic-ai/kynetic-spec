@@ -39,3 +39,36 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-10T02:12:42.924Z
+  - _ulid: 01KNTKDT68P3E6J4XHAKXDT1AY
+    content: >-
+      Implementation complete. Created:
+
+      - tools/eslint-rules/no-leaky-test-daemon.js — oxlint JS plugin rule
+
+      - tests/lint-no-leaky-test-daemon.test.ts — 14 tests (5 positive, 8 negative, 1 codebase
+      validation)
+
+      - .oxlintrc.json — wired new rule into test file overrides
+
+      - kspec-agents.md — regenerated after convention update
+
+
+      Key design decisions:
+
+      1. Spawns in named helper functions (function startDaemon, const startDaemon = ...) are exempt
+      — callers manage cleanup
+
+      2. Detection is string-based for template literals (joining quasis) to handle interpolated
+      ports
+
+      3. afterEach cleanup detection checks the text for kill/stop/SIGTERM/killPid patterns
+
+      4. Rule passes against entire tests/ with zero violations (AC4)
+
+      5. Testing convention updated with daemon cleanup pattern (AC5)
+
+
+      All 2118 test suites pass (7737 tests, 5 pre-existing skips).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-10T02:27:06.056Z
