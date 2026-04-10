@@ -134296,6 +134296,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-10T09:16:46.695Z
+      - _ulid: 01KNVAWRSEP29CNTVPPTN5CFW6
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KNVAWQXA1H4SKDXMH2WZKRRA
+        timestamp: 2026-04-10T09:17:13.391Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -134354,7 +134361,22 @@ reviews:
               that preserve user removals/renames across reruns.
             created_at: 2026-04-10T09:16:41.325Z
         kind: blocker
+      - _ulid: 01KNVAWQXA1H4SKDXMH2WZKRRA
+        anchor:
+          type: structured
+          ref: "@task-release-notes"
+          section: description
+        entries:
+          - _ulid: 01KNVAWQXBXMPJ5A9KC1GB938S
+            author: Jacob Chapel
+            body: This task adds a structured/programmatic output mode for the release-notes command, but
+              @release-notes-accessible has no AC for machine-readable output and no JSON-output
+              trait. Either add that contract to the spec (preferred, since this is user-visible CLI
+              behavior) or drop the requirement from the task so the implementation surface matches
+              the plan.
+            created_at: 2026-04-10T09:17:12.491Z
+        kind: question
     verdicts: []
     created_at: 2026-04-10T09:16:05.068Z
-    updated_at: 2026-04-10T09:16:41.301Z
+    updated_at: 2026-04-10T09:17:12.491Z
     notes: []
