@@ -133084,6 +133084,20 @@ reviews:
         runner: kspec
         created_at: 2026-04-10T02:42:16.258Z
         completed_at: 2026-04-10T02:42:16.258Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite failed outside this diff after 1753.3s: tests/cli/session-note-limit.test.ts
+          and two companion suites failed in code paths unrelated to the changed files
+          (.oxlintrc.json, tests/lint-no-leaky-test-daemon.test.ts,
+          tools/eslint-rules/no-leaky-test-daemon.js, kspec-agents.md). Branch-relevant targeted
+          suites passed."
+        name: npm test -- --fresh
+        required: false
+        runner: npm
+        created_at: 2026-04-10T02:42:33.653Z
+        completed_at: 2026-04-10T02:42:33.653Z
     events:
       - _ulid: 01KNTKJFQFMP51F2JTHF9XY3ZR
         actor: Jacob Chapel
@@ -133133,6 +133147,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-04-10T02:42:17.118Z
+      - _ulid: 01KNTMA4XB2135NSPTBYG536H4
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test -- --fresh
+        timestamp: 2026-04-10T02:42:34.540Z
     examined_commit: 695a3a850da681a37673a880ca422bb8e4f3e9fa
     external_links: []
     lifecycle_state: open
@@ -133183,7 +133204,7 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-10T02:29:39.183Z
-    updated_at: 2026-04-10T02:42:16.258Z
+    updated_at: 2026-04-10T02:42:33.653Z
     notes: []
   - _ulid: 01KNTM922M15ADCXT8HWEC1TW3
     slugs: []
