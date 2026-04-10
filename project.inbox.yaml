@@ -2306,3 +2306,146 @@ inbox:
       - infra
     added_by: "@claude"
     created_at: 2026-04-09T23:49:12.192Z
+  - _ulid: 01KNTB8Z4K30ZN9VDFBNTP5907
+    text: >-
+      Test suite duration is too long and trending worse — needs investigation and either
+      optimization or accurate documentation. On 2026-04-09 a measured full-suite run took 8-15+
+      minutes (still in progress when killed for analysis). kspec-agents.md still claims '~150s vs
+      ~50s for shards' which is misleading and directly contributed to a 'tests are stuck' incident.
+      The reality: heavy-serial integration tests in
+      tests/dispatch-runtime-bootstrap-contract.test.ts take 6-20 SECONDS each, with 38 tests in
+      that file alone. tests/integration.test.ts has 193 tests, tests/agent-dispatch-engine.test.ts
+      has 141, all run serially. As more tests are added, the situation degrades further.
+
+
+      Two parallel concerns to triage:
+
+      (a) IMMEDIATE: Update kspec-agents.md with measured baseline timings (default project,
+      heavy-serial project, full suite) and remove the misleading ~150s claim. Small doc fix.
+
+      (b) STRUCTURAL: Investigate whether the slowest tests can be optimized — most heavy-serial
+      tests run real git operations and CLI subprocesses. Are they using the most efficient path?
+      Can the worst offenders be parallelized within the heavy-serial group? Should some tests be
+      re-categorized as 'really slow' and run only in CI / on-demand? Is there a faster fixture
+      setup pattern that could shave time off CLI-subprocess-heavy tests? Bigger investigation, may
+      require tradeoffs between coverage and speed.
+
+
+      User framing: 'The fact it takes that long is an issue and needs to be addressed, obviously
+      there's only so much you can do with so many tests, but it taking that long and only to go
+      longer with more tests is a problem.' Tags: testing, performance, infra, dx
+    tags:
+      - testing
+      - performance
+      - infra
+      - dx
+    added_by: "@claude"
+    created_at: 2026-04-10T00:04:38.675Z
+  - _ulid: 01KNTB8Z6M68GZ6XZ2QZP4DF73
+    text: >-
+      Unify the three daemon-spawn paths under a single helper. Currently three call sites spawn the
+      same dist/daemon/index.js binary with three different lifecycle contracts:
+      src/cli/commands/serve.ts:366 (--detach mode: detached+unref+stdio:ignore),
+      src/cli/index.ts:194 (auto-start: detached+unref+stdio:ignore),
+      tests/e2e/fixtures/test-base.ts:324 (e2e fixture: non-detached, parented in process group,
+      child handle retained for explicit teardown). The asymmetry is the structural enabler of the
+      daemon leak class fixed by @task-cli-serve-test-daemon-cleanup — three implementations of the
+      same operation with three different cleanup contracts.
+
+
+      Proposal: extract a single spawnKspecDaemon(opts) helper that encodes the lifecycle contract
+      explicitly:
+
+      - opts.lifecycle: 'detached' | 'parented'
+
+      - opts.cleanupHook: required when lifecycle === 'parented' (returns the child process handle)
+
+      - opts.runtime, opts.port, opts.kspecDir, opts.env: existing args
+
+      - Helper enforces: detached implies unref+stdio:ignore; parented implies child handle returned
+      + caller must register cleanup
+
+
+      All three call sites migrate to use it. Production --detach behavior unchanged. Test fixtures
+      get a single safe pattern. The architectural class of bug becomes structurally impossible
+      because the unsafe-detached path doesn't exist outside one well-tested helper.
+
+
+      Should land AFTER @task-cli-serve-test-daemon-cleanup and @task-lint-rule-test-daemon-cleanup
+      so the test refactor has a clean target. Highest-leverage long-term fix for daemon lifecycle.
+      Related: @01KKSGTN, @01KNT3GG. Tags: daemon, refactor, infra
+    tags:
+      - daemon
+      - refactor
+      - infra
+    added_by: "@claude"
+    created_at: 2026-04-10T00:04:38.740Z
+  - _ulid: 01KNTB8Z87YS7QAGYY3R5GPRK6
+    text: >-
+      Document the vitest-as-lint-runner pattern. The project has
+      tools/eslint-rules/no-daemon-ts-imports.js paired with tests/lint-no-daemon-ts-imports.test.ts
+      as a working precedent for custom lint rules, but the pattern (custom rule definition + vitest
+      test as the runner, since oxlint doesn't support custom rules) isn't documented in AGENTS.md,
+      kspec-agents.md, the testing convention, or any skill. Agents picking up custom-rule tasks
+      (like the just-created @task-lint-rule-test-daemon-cleanup) have to discover the pattern via
+      grep.
+
+
+      Add either:
+
+      (a) A section to the testing convention explaining when/where to write custom rules
+
+      (b) A small skill at templates/skills/custom-lint-rules.md
+
+      (c) A short paragraph in AGENTS.md pointing at the precedent files
+
+
+      Content to cover: when to reach for a custom rule (recurring footgun, structural pattern
+      enforceable statically), where rule files live (tools/eslint-rules/<name>.js), how to write
+      the matching vitest test (RuleTester pattern, positive/negative cases), how the rule gets
+      wired into the lint pipeline, and the false-positive-vs-false-negative tradeoff (prefer false
+      negatives — let real violations slip through occasionally rather than block legitimate code).
+      Tags: testing, lint, docs, dx
+    tags:
+      - testing
+      - lint
+      - docs
+      - dx
+    added_by: "@claude"
+    created_at: 2026-04-10T00:04:38.791Z
+  - _ulid: 01KNTB8Z9S2CAP5E4NHXM7RJ86
+    text: >-
+      Add orphan daemon discovery to kspec doctor. On 2026-04-09 cleaning up 142 leaked daemons
+      required ad-hoc pkill regex incantations because there's no CLI surface for finding orphan
+      kspec daemon processes. @doctor-command (implemented) reports the registered daemon's health
+      (PID alive, port responding) but does NOT scan the process table for daemon binaries that
+      aren't tracked in any PID file or whose --kspec-dir points at a deleted path.
+
+
+      Proposal: add an 'orphan daemons' section to kspec doctor:
+
+      - Scan ps for processes whose binary path matches dist/daemon/index.js
+
+      - For each, parse --kspec-dir from argv
+
+      - Cross-check: is this daemon registered in any known PID file (HOME-scoped or
+      project-scoped)? Does its --kspec-dir still exist on disk?
+
+      - Report orphans with PID, age, runtime (node/bun), and command-line
+
+      - Optional: --reap flag to SIGTERM-then-SIGKILL them with confirmation prompt
+
+      - Cross-platform: prefer /proc/<pid>/cmdline on Linux to avoid argv truncation; fall back to
+      ps -ww on macOS
+
+
+      Self-service recovery for the recurring leak situation. Extends existing @doctor-command spec
+      — would need new ACs covering orphan detection and optional reaping. Worth fixing per user.
+      Tags: daemon, doctor, dx, tooling. Related: @01KKSGTN, @01KNT3GG, @doctor-command
+    tags:
+      - daemon
+      - doctor
+      - dx
+      - tooling
+    added_by: "@claude"
+    created_at: 2026-04-10T00:04:38.841Z

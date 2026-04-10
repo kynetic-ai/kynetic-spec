@@ -1,0 +1,139 @@
+_ulid: 01KNTB8YTNSHRAPC5WRQWH4RRV
+slugs:
+  - task-test-runner-progress-output
+title: Add per-file progress to test runner non-verbose mode
+type: task
+description: >-
+  ## What
+
+
+  Add minimal per-test-file progress output to `scripts/test.cjs` in non-verbose mode. Currently the
+  runner prints `Cache cleared (--fresh)` and then nothing until the final summary, leaving the user
+  unable to distinguish "running" from "stuck." Print one short line per completed test file (e.g.,
+  `✓ tests/parser.test.ts (66 tests, 350ms)`) so liveness is visible without dumping the full vitest
+  verbose stream.
+
+
+  ## Why
+
+
+  On 2026-04-09 a user lost 11+ minutes thinking `npm test` was hung because the runner's
+  non-verbose mode produces no terminal output between cache-cleared and final summary. The user's
+  mental model (formed when the suite ran in ~150s) was that prolonged silence = stuck. Real cause:
+  vitest output is piped to a log file the user doesn't know exists, and heavy-serial integration
+  tests now legitimately take 8-15+ minutes.
+
+
+  This affects every first-time user, every dispatch-spawned agent, every dev returning to the
+  project after a break. The friction is recurring and high-volume even though the bug is small.
+
+
+  User feedback context: "I don't want tests to spam a bunch of stuff, but showing some low token
+  usage progress would be nice." The progress signal must be MINIMAL — one line per test file at
+  most, not full vitest verbose output.
+
+
+  ## How
+
+
+  1. Read `scripts/test.cjs` end to end. The runner currently spawns vitest with `--reporter=json
+  --outputFile.json=... --reporter=verbose` and pipes both stdout and stderr to a log file. In
+  verbose mode it tees to terminal as well; in non-verbose mode it writes only to the log.
+
+  2. Choose a low-token progress strategy. Options:
+     - **Tail the log file in-process**: as bytes are written, parse for completed test file lines (`✓ <file> (N tests, Xms)`) and forward only those to stderr. Drop everything else.
+     - **Add a custom vitest reporter**: write a small reporter that emits one stderr line per file completion. Wire it as a third `--reporter=...` arg. This is cleaner but adds a new file to maintain.
+     - **Process the JSON reporter output as it streams**: vitest writes the JSON file at the end, not incrementally, so this option doesn't work.
+     The tail-and-filter approach is simplest and self-contained in `scripts/test.cjs`.
+  3. Implement the chosen approach. Output format target (one line per file):
+     ```
+     ✓ tests/parser.test.ts (66 tests, 350ms)
+     ✓ tests/cli-serve.test.ts (32 tests, 12.4s)
+     ✗ tests/foo.test.ts (5 tests, 2 failed, 800ms)
+     ```
+     No emojis if the project convention forbids them — use ASCII markers `PASS`/`FAIL` instead. Check the existing condensed output formatter in `scripts/test.cjs` for the project's color/marker conventions.
+  4. Make the new output show ONLY in non-verbose mode. Verbose mode already streams the full vitest
+  output and doesn't need the per-file summary on top.
+
+  5. Do not change the final summary, the cache behavior, or any other runner logic. This is a
+  progress-output-only patch.
+
+  6. Manually verify by running `npm test --fresh` and confirming:
+     - You can see test files completing in real time
+     - The terminal does NOT get spammed with individual test names, error stacks, or stdout from tests
+     - Total token volume is roughly one short line per test file (~150 lines total for the full suite, vs ~9000 lines in verbose mode)
+     - Final summary still appears as before
+
+  ## Acceptance criteria
+
+
+  - AC1: `scripts/test.cjs` in non-verbose mode prints one short line per test file as it completes,
+  including pass/fail status, test count, and duration.
+
+  - AC2: The new output is suppressed in verbose mode (where the full vitest stream is already
+  shown).
+
+  - AC3: The new output respects the existing color/marker conventions used by the runner's
+  condensed final summary.
+
+  - AC4: Total non-verbose terminal output for a full suite run is roughly proportional to the
+  number of test files (~150 lines), not to the number of tests (~7500+).
+
+  - AC5: The final summary, exit code, cache behavior, and log file contents are unchanged.
+
+  - AC6: A user running `npm test --fresh` cold can tell within 30 seconds whether tests are
+  progressing or genuinely stuck, without consulting the log file or using `--verbose`.
+
+
+  ## Out of scope
+
+
+  - Verbose mode changes (already streams full output).
+
+  - Performance optimization of the test suite itself (separate inbox item).
+
+  - Updates to the kspec-agents.md `~150s` baseline figure (separate inbox item — full suite is now
+  8-15+ minutes).
+
+  - Custom vitest reporters as standalone modules — keep it self-contained in `scripts/test.cjs`
+  unless that approach proves clumsy.
+
+  - Per-test progress (only per-file).
+
+
+  ## Background
+
+
+  A live observation on 2026-04-09 found that a user ran `npm test --fresh` and waited 11+ minutes
+  thinking it was hung. Real cause: the runner pipes all vitest output to a log file in non-verbose
+  mode and shows nothing on the terminal. Combined with a misleading `~150s` baseline in
+  kspec-agents.md and the actual 8-15+ minute duration of the full suite (heavy-serial integration
+  tests run 6-20s each), the user's "tests are stuck" perception was rational. This task addresses
+  the symptom (no progress signal). The trajectory of test duration itself is captured in a separate
+  inbox item.
+
+
+  ## Related
+
+
+  - @daemon-sensitive-cli-test-determinism (existing spec — not modified)
+
+  - `scripts/test.cjs` (the file being modified)
+
+  - `vitest.config.ts` (two projects share globalSetup)
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - testing
+  - tooling
+  - dx
+vcs_refs: []
+created_at: 2026-04-10T00:04:38.357Z
+todos: []
+automation: eligible

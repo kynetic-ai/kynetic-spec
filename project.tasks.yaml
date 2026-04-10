@@ -26046,3 +26046,20 @@
   todos_count: 0
   created_at: 2026-04-09T23:49:11.883Z
   automation: eligible
+- _ulid: 01KNTB8YTNSHRAPC5WRQWH4RRV
+  slugs:
+    - task-test-runner-progress-output
+  title: Add per-file progress to test runner non-verbose mode
+  type: task
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 3
+  tags:
+    - testing
+    - tooling
+    - dx
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-10T00:04:38.357Z
+  automation: eligible
