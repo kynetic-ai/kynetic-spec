@@ -124,7 +124,7 @@ description: >-
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on: []
 context: []
@@ -143,7 +143,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-test-runner-progress-output/01kntb8y
-session_id: 01KNTKGF9WHC5KA4QER266VASX
+session_id: null
 history:
   - author: "@claude"
     changes:
@@ -242,6 +242,16 @@ history:
         previous: "@01KNTJHF70SJNJ6JCWC3YQNC9X"
     command: review-link
     timestamp: 2026-04-10T02:42:01.703Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KNTKGF9WHC5KA4QER266VASX
+    command: review-verdict-needs-work
+    timestamp: 2026-04-10T02:53:07.328Z
 created_at: 2026-04-10T00:04:38.357Z
 started_at: 2026-04-10T02:39:59.255Z
 submitted_at: 2026-04-10T02:40:02.617Z

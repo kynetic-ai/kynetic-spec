@@ -26058,7 +26058,7 @@
     - task-test-runner-progress-output
   title: Add per-file progress to test runner non-verbose mode
   type: task
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   priority: 3
@@ -26067,7 +26067,7 @@
     - tooling
     - dx
   review_ref: "@01KNTM922M15ADCXT8HWEC1TW3"
-  notes_count: 4
+  notes_count: 5
   todos_count: 0
   created_at: 2026-04-10T00:04:38.357Z
   started_at: 2026-04-10T02:39:59.255Z

@@ -133344,9 +133344,25 @@ reviews:
           status: pass
           name: review evidence
         timestamp: 2026-04-10T02:52:55.520Z
+      - _ulid: 01KNTMXD1D16RWA6GR0G8X3Y7B
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-10T02:53:05.453Z
+      - _ulid: 01KNTMXD1DRAF6BREVPYXMKQ0Q
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-10T02:53:05.453Z
     examined_commit: 65b5da6c7c3c49023c6610d6d04405362a963b3e
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -133397,7 +133413,14 @@ reviews:
               tests/test-runner.test.ts are deterministic."
             created_at: 2026-04-10T02:52:48.172Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-10T02:53:05.453Z
     created_at: 2026-04-10T02:41:58.868Z
-    updated_at: 2026-04-10T02:52:54.644Z
+    updated_at: 2026-04-10T02:53:05.453Z
     notes: []
