@@ -102,3 +102,25 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-10T03:10:36.418Z
+  - _ulid: 01KNTPWZZXPCW9XSKGKHKRFH62
+    content: >-
+      Fix cycle 2: addressed both review blockers by extracting shared hasDaemonCleanupPattern()
+      function.
+
+
+      Blocker 1 (afterEach too narrow): Added process.kill and .kill("SIG*") regex to the
+      daemon-specific pattern list. afterEach(() => process.kill(child.pid)) is now correctly
+      recognized as valid cleanup.
+
+
+      Blocker 2 (try/finally too broad): Replaced generic 'kill'/'stop' substring matching in
+      isInTryWithFinallyCleanup() with the same hasDaemonCleanupPattern() used by afterEach. finally
+      { stopUnrelatedFixture() } is now correctly flagged as missing daemon cleanup.
+
+
+      Added 3 new tests (20 total): afterEach with process.kill (negative), afterEach with
+      child.kill(SIGTERM) (negative), try/finally with unrelated teardown (positive). All 2118
+      suites pass (7743 tests, 5 pre-existing skips). Re-verified all ACs.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-10T03:27:49.245Z
