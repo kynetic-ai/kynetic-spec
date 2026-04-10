@@ -450,6 +450,12 @@ conventions:
       - Multi-project test fixtures need a git repo and shadow detection for initContext() to
         resolve specDir — use setupMultiDirFixtures() or manually init git and create .kspec/
         markers
+      - Test daemons must register cleanup via vitest's onTestFinished at spawn time, not in the
+        test body. Prefer direct spawn() (see tests/e2e/fixtures/test-base.ts) so the OS reaps the
+        daemon via process group on parent death. If a test must invoke 'kspec serve start --detach'
+        because the CLI command itself is under test, read the PID immediately after the spawn
+        returns and register process.kill(pid, 'SIGTERM') in onTestFinished — never rely on inline
+        cleanup that won't run on assertion failure.
   - _ulid: 01KHYXJVNDVVFF6PR7K4X6545H
     domain: development
     examples: []
