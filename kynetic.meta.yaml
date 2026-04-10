@@ -13780,6 +13780,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-10T02:00:28.960Z
+  - _ulid: 01KNTK1Q5QEH0VXQ3T4FC7MCVX
+    type: friction
+    content: tests/test-runner.test.ts creates fixed-named scratch files directly under tests/, so
+      concurrent executions of that suite interfere with each other and can produce false ENOENT
+      failures during review verification. Consider isolating runner smoke tests with unique
+      filenames or temp directories so parallel/overlapping test runs are safe.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-10T02:20:29.752Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
