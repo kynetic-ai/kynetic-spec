@@ -13876,6 +13876,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-10T03:27:54.386Z
+  - _ulid: 01KNTQ0DZFQH4H2BTRMKA81QWS
+    type: success
+    content: When a lint rule (or any code with multiple validation paths) checks the same concept in
+      different branches, extract the shared matching logic into a single function from the start.
+      In the no-leaky-test-daemon rule, afterEach and try/finally cleanup detection diverged across
+      fix cycles because each was maintained independently. Extracting hasDaemonCleanupPattern() as
+      a shared function fixed both review blockers at once and prevents future divergence.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-10T03:29:41.871Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
