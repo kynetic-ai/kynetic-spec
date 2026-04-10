@@ -132991,6 +132991,12 @@ reviews:
         payload:
           thread_ulid: 01KNTJZ429HFY2E287G87DRWZE
         timestamp: 2026-04-10T02:39:27.981Z
+      - _ulid: 01KNTM4PK72YT3M1V34FZ3MHVQ
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNTJZ429HFY2E287G87DRWZE
+        timestamp: 2026-04-10T02:39:36.040Z
     examined_commit: 6a061a6a1c7dd5547a4892c9cc24180efb5aef04
     external_links: []
     lifecycle_state: closed
@@ -133029,6 +133035,8 @@ reviews:
               progress lines appear in it. Full suite passes (7731 tests, 0 failures)."
             created_at: 2026-04-10T02:39:26.914Z
         kind: blocker
+        resolved_at: 2026-04-10T02:39:35.130Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -133038,7 +133046,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-10T02:19:29.638Z
     created_at: 2026-04-10T02:11:37.312Z
-    updated_at: 2026-04-10T02:39:26.914Z
+    updated_at: 2026-04-10T02:39:35.130Z
     notes: []
   - _ulid: 01KNTKJFQFHRMCVDJYB7FK36J0
     slugs: []
