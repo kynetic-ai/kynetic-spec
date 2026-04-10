@@ -132903,6 +132903,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-10T02:11:49.372Z
+      - _ulid: 01KNTJZ50TP935CWHW5HT7JSW7
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNTJZ429HFY2E287G87DRWZE
+        timestamp: 2026-04-10T02:19:05.626Z
     examined_commit: 6a061a6a1c7dd5547a4892c9cc24180efb5aef04
     external_links: []
     lifecycle_state: open
@@ -132912,8 +132919,29 @@ reviews:
       content_hash: ""
       ref: "@01KNTB8YTNSHRAPC5WRQWH4RRV"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNTJZ429HFY2E287G87DRWZE
+        anchor:
+          type: code
+          commit: 6a061a6a1c7dd5547a4892c9cc24180efb5aef04
+          line_end: 532
+          line_start: 518
+          path: scripts/test.cjs
+          side: head
+        entries:
+          - _ulid: 01KNTJZ429V3JN2W4PR7KKS11Q
+            author: Jacob Chapel
+            body: AC5 requires the saved non-verbose log to remain unchanged, but this branch appends every
+              progress line to the log file. In
+              [scripts/test.cjs](/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-test-runner-progress-output-01kntb8y-review/scripts/test.cjs)
+              the non-verbose stderr filter writes stripped progress lines to both stderr and
+              logStream, so a run like 'node scripts/test.cjs --fresh tests/test-runner.test.ts' now
+              leaves 'PASS tests/test-runner.test.ts (...)' inside the persisted log. That changes
+              the log artifact the task explicitly said not to touch and contradicts the worker note
+              claiming log contents are unchanged.
+            created_at: 2026-04-10T02:19:04.649Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-10T02:11:37.312Z
-    updated_at: 2026-04-10T02:11:48.406Z
+    updated_at: 2026-04-10T02:19:04.649Z
     notes: []
