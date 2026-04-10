@@ -1,1 +1,29 @@
-notes: []
+notes:
+  - _ulid: 01KNTHBX266MNHEDVK37FYA5DF
+    content: >-
+      Approach: Custom vitest reporter for per-file progress.
+
+
+      The tail-and-filter approach is unreliable because vitest runs files in parallel and test
+      output is heavily interleaved (confirmed by inspecting cached log output). Instead, creating a
+      small custom vitest reporter (scripts/test-progress-reporter.cjs) that implements
+      onTestModuleEnd. This hook fires exactly once when a test file completes, giving reliable
+      per-file completion detection.
+
+
+      Reporter emits one line per file to stderr: PASS/FAIL marker + file path + test count +
+      duration. Uses same color/marker conventions as test.cjs condensed output. Added as third
+      --reporter arg in non-verbose mode only. Verbose mode already streams full output, so progress
+      reporter is suppressed there.
+
+
+      Edge cases: KSPEC_TEST_PROGRESS=0 env var to opt out (unlikely needed but cheap). Duration
+      from testModule.diagnostic().duration. Test counts from
+      testModule.children.allTests('passed'|'failed'|'skipped').
+
+
+      Test plan: 6 ACs. Tests will exercise formatCondensedOutput (existing), the new reporter
+      wiring (integration via npm test), and verify verbose mode suppression.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-10T01:51:06.311Z
