@@ -132884,3 +132884,29 @@ reviews:
     created_at: 2026-04-10T01:47:59.844Z
     updated_at: 2026-04-10T01:56:46.485Z
     notes: []
+  - _ulid: 01KNTJHF70SJNJ6JCWC3YQNC9X
+    slugs: []
+    title: Review task-test-runner-progress-output
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KNTJHF70ZYTWBCKSPGGVZXDM
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-10T02:11:37.312Z
+    examined_commit: 6a061a6a1c7dd5547a4892c9cc24180efb5aef04
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNTB8YTNSHRAPC5WRQWH4RRV"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-10T02:11:37.312Z
+    updated_at: null
+    notes: []
