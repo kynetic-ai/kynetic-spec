@@ -134256,3 +134256,29 @@ reviews:
     created_at: 2026-04-10T03:55:17.529Z
     updated_at: 2026-04-10T04:17:27.330Z
     notes: []
+  - _ulid: 01KNVATP2CP05287J6558P4PJT
+    slugs: []
+    title: "Plan review: Init, Setup, and Upgrade Rough Edges"
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KNVATP2B7BVQFAWZNC206QMF
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-10T09:16:05.068Z
+    examined_commit: null
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-init-setup-and-upgrade-rough-edges"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-10T09:16:05.068Z
+    updated_at: null
+    notes: []
