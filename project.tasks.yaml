@@ -26014,7 +26014,7 @@
     - task-cli-serve-test-daemon-cleanup
   title: Add explicit cleanup to all daemon-spawning tests in cli-serve.test.ts
   type: task
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 2
@@ -26026,6 +26026,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-09T23:49:10.974Z
+  started_at: 2026-04-10T00:28:13.997Z
   automation: eligible
 - _ulid: 01KNTACP2BXY12MTB2GETNJ7CS
   slugs:
