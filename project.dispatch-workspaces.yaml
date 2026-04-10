@@ -46456,7 +46456,7 @@ workspaces:
         head: 3e876f35aa9437eaeee74d3332c2edc84ed3afa2
         last_seen_at: 2026-04-09T10:36:57.579Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-e2e-fixture-decoupled-assertions-01knrnp1
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 7b1b856564b91f28efc8bbb2d3b8e41034fd9a3f
     bootstrap:
       status: succeeded
@@ -47008,9 +47008,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-10T01:46:00.068Z
-      last_reconciled_at: 2026-04-10T01:59:46.329Z
+      last_reconciled_at: 2026-04-10T02:00:45.670Z
       created_at: 2026-04-10T00:27:23.331Z
-      updated_at: 2026-04-10T01:59:46.329Z
+      updated_at: 2026-04-10T02:00:45.670Z
     workspace_id: dispatch-workspace-01KNTACN5YJKW4NE46WWDP95KY
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
