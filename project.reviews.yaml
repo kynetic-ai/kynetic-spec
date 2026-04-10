@@ -134042,6 +134042,12 @@ reviews:
         payload:
           thread_ulid: 01KNTQKQA1ZVP4N1ZE4ZASZTMN
         timestamp: 2026-04-10T03:52:53.897Z
+      - _ulid: 01KNTRB20Z606Y14A6RK3NQ23V
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNTQMBBRQYVP0YC7XW9QMR4S
+        timestamp: 2026-04-10T03:52:58.655Z
     examined_commit: bfc112ad754cb512d23d6f95793917495c7cafa4
     external_links: []
     lifecycle_state: closed
@@ -134105,6 +134111,13 @@ reviews:
               `runKspec`, `execSync`, `spawn`/`spawnSync`, or equivalent command runners) instead of
               arbitrary call sites."
             created_at: 2026-04-10T03:40:34.552Z
+          - _ulid: 01KNTRB14TP58FFA53DHE4VC5Q
+            author: "@claude"
+            body: 'Fixed: Same root cause as the other thread — isDetachCallExpression() now gates on
+              SPAWN_LIKE_CALLEES set before checking string arguments. expect(cmd).toContain("serve
+              start --detach") and console.log("serve start --detach") are correctly ignored. Two
+              new negative test cases verify this.'
+            created_at: 2026-04-10T03:52:57.753Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -134115,5 +134128,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-10T03:40:53.818Z
     created_at: 2026-04-10T03:30:08.656Z
-    updated_at: 2026-04-10T03:52:52.919Z
+    updated_at: 2026-04-10T03:52:57.753Z
     notes: []
