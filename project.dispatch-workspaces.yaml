@@ -46456,7 +46456,7 @@ workspaces:
         head: 3e876f35aa9437eaeee74d3332c2edc84ed3afa2
         last_seen_at: 2026-04-09T10:36:57.579Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-e2e-fixture-decoupled-assertions-01knrnp1
-  - active_role: worker
+  - active_role: null
     base_branch_point: 7b1b856564b91f28efc8bbb2d3b8e41034fd9a3f
     bootstrap:
       status: succeeded
@@ -46852,12 +46852,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-10T00:44:56.366Z
+      updated_at: 2026-04-10T00:47:22.303Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-10T00:44:56.366Z
+      updated_at: 2026-04-10T00:47:22.303Z
     integration:
       status: pending
       detail: null
@@ -46865,17 +46865,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 7b1b856564b91f28efc8bbb2d3b8e41034fd9a3f
-      updated_at: 2026-04-10T00:44:56.366Z
-    lifecycle_state: active
+      updated_at: 2026-04-10T00:47:22.303Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KNTACN5YJKW4NE46WWDP95KY"
     task_slug: task-cli-serve-test-daemon-cleanup
     timestamps:
       closed_at: null
       last_active_at: 2026-04-10T00:27:47.040Z
-      last_reconciled_at: 2026-04-10T00:44:56.366Z
+      last_reconciled_at: 2026-04-10T00:47:22.303Z
       created_at: 2026-04-10T00:27:23.331Z
-      updated_at: 2026-04-10T00:44:56.366Z
+      updated_at: 2026-04-10T00:47:22.303Z
     workspace_id: dispatch-workspace-01KNTACN5YJKW4NE46WWDP95KY
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
