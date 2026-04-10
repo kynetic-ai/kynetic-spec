@@ -13887,6 +13887,24 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-10T03:29:41.871Z
+  - _ulid: 01KNTRDW195RYTGBC26DK6QW35
+    type: success
+    content: Fix cycle 3 on no-leaky-test-daemon completed in a single pass. Clear, specific reviewer
+      feedback (exact function + reproduction steps) made the fix straightforward. Callee-whitelist
+      approach is clean and extensible.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-10T03:54:30.825Z
+  - _ulid: 01KNTRDW7PFEDERG2NZS0M0VD4
+    type: friction
+    content: task submit from needs_work state requires an intermediate task start step. In fix cycles,
+      the worker always intends to submit — the needs_work -> in_progress -> pending_review dance is
+      mechanical.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-10T03:54:31.030Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
