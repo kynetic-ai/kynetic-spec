@@ -133289,6 +133289,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-10T02:52:27.456Z
+      - _ulid: 01KNTMWFY6K8FKJRPDW2ZW2DN7
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNTMWEXDAYZ6GADRMMDZWTYF
+        timestamp: 2026-04-10T02:52:35.654Z
     examined_commit: 65b5da6c7c3c49023c6610d6d04405362a963b3e
     external_links: []
     lifecycle_state: open
@@ -133298,8 +133305,29 @@ reviews:
       content_hash: ""
       ref: "@01KNTB8YTNSHRAPC5WRQWH4RRV"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNTMWEXDAYZ6GADRMMDZWTYF
+        anchor:
+          type: code
+          commit: 65b5da6c7c3c49023c6610d6d04405362a963b3e
+          line_end: 932
+          line_start: 597
+          path: tests/test-runner.test.ts
+          side: head
+        entries:
+          - _ulid: 01KNTMWEXDNZ1FVFQ60R4QZ3NB
+            author: Jacob Chapel
+            body: "These new progress tests are not isolated enough to be runnable as a targeted suite.
+              Running  twice in this snapshot failed both times with nondeterministic  cleanup
+              errors on the  files created in this block (first run: 10 failures across the new
+              cases; second run: 1 failure). That means the added coverage introduces a regression
+              in the test file itself: the branch passes the full suite, but the focused runner test
+              cannot be relied on when executed directly. Please switch these cases to cleanup that
+              tolerates missing temp files and/or isolate their temp test modules so repeated fresh
+              runs of  are deterministic."
+            created_at: 2026-04-10T02:52:34.605Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-10T02:41:58.868Z
-    updated_at: 2026-04-10T02:52:25.998Z
+    updated_at: 2026-04-10T02:52:34.605Z
     notes: []
