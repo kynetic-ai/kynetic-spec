@@ -347,6 +347,35 @@ describe("test suite", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
+    // Blocker (cycle 3): non-spawn callees with detach strings are not daemon spawns
+    it("should not flag expect().toContain with serve start --detach string", () => {
+      const result = runOxlint(`
+import { describe, it, expect } from "vitest";
+
+describe("test suite", () => {
+  it("should verify command string", () => {
+    const cmd = getCommand();
+    expect(cmd).toContain("serve start --detach");
+  });
+});
+`);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    it("should not flag console.log with serve start --detach string", () => {
+      const result = runOxlint(`
+import { describe, it, expect } from "vitest";
+
+describe("test suite", () => {
+  it("should log command", () => {
+    console.log("serve start --detach --port 3456");
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
     // Blocker 1 (cycle 2): afterEach with process.kill is valid daemon cleanup
     it("should allow serve start --detach when afterEach uses process.kill", () => {
       const result = runOxlint(`

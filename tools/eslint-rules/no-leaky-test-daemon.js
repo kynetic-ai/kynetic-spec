@@ -318,10 +318,55 @@ const noLeakyTestDaemon = {
     }
 
     /**
-     * Check if a CallExpression passes a string containing the detach pattern.
+     * Names of functions/methods that can actually spawn a process.
+     * Only these callees should trigger the detach-string check —
+     * arbitrary call sites like expect() or console.log() must be
+     * ignored to avoid false positives.
+     */
+    const SPAWN_LIKE_CALLEES = new Set([
+      "runKspec",
+      "kspec",
+      "exec",
+      "execSync",
+      "spawn",
+      "spawnSync",
+      "execFile",
+      "execFileSync",
+      "fork",
+    ]);
+
+    /**
+     * Extract the callee name from a CallExpression node.
+     * Handles both simple identifiers (runKspec(...)) and member
+     * expressions (child_process.execSync(...)).
+     */
+    function getCalleeName(node) {
+      const callee = node.callee;
+      if (callee.type === "Identifier") {
+        return callee.name;
+      }
+      if (
+        callee.type === "MemberExpression" &&
+        callee.property.type === "Identifier"
+      ) {
+        return callee.property.name;
+      }
+      return null;
+    }
+
+    /**
+     * Check if a CallExpression passes a string containing the detach
+     * pattern AND the callee is an actual spawn-like API. Ignores
+     * calls like expect(cmd).toContain("serve start --detach") or
+     * console.log("serve start --detach").
      */
     function isDetachCallExpression(node) {
       if (node.type !== "CallExpression") return false;
+
+      const calleeName = getCalleeName(node);
+      if (!calleeName || !SPAWN_LIKE_CALLEES.has(calleeName)) {
+        return false;
+      }
 
       for (const arg of node.arguments) {
         if (arg.type === "Literal" && isServeStartDetach(arg.value)) {
