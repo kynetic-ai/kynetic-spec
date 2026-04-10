@@ -46992,7 +46992,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-10T01:59:46.329Z
+      updated_at: 2026-04-10T02:00:47.605Z
     integration:
       status: merged
       detail: integration:merged
@@ -47008,18 +47008,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-10T01:46:00.068Z
-      last_reconciled_at: 2026-04-10T02:00:45.670Z
+      last_reconciled_at: 2026-04-10T02:00:47.605Z
       created_at: 2026-04-10T00:27:23.331Z
-      updated_at: 2026-04-10T02:00:45.670Z
+      updated_at: 2026-04-10T02:00:47.605Z
     workspace_id: dispatch-workspace-01KNTACN5YJKW4NE46WWDP95KY
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 57bb82ad5bbec60e2718054d5f350febed206225
-        last_seen_at: 2026-04-10T01:45:37.805Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cli-serve-test-daemon-cleanup-01kntacn-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-cli-serve-test-daemon-cleanup/01kntacn
