@@ -597,6 +597,7 @@ describe("test runner environment checks", () => {
   describe("per-file progress output", () => {
     it("non-verbose mode prints one PASS line per completed test file with count and duration", () => {
       const tempTestFile = path.join(projectRoot, "tests", "_trivial-progress.test.ts");
+      fs.rmSync(tempTestFile, { force: true });
       fs.writeFileSync(
         tempTestFile,
         `import { it, expect } from 'vitest';
@@ -638,7 +639,7 @@ it('beta', () => { expect(2).toBe(2); });
         expect(stderr).toContain("Tests passed");
         expect(stderr).toContain("Test Suites:");
       } finally {
-        fs.unlinkSync(tempTestFile);
+        fs.rmSync(tempTestFile, { force: true });
         fs.rmSync(cacheDir, { recursive: true, force: true });
       }
     });
@@ -646,6 +647,7 @@ it('beta', () => { expect(2).toBe(2); });
     // AC: @task-test-runner-progress-output ac-1
     it("shows FAIL marker and failed count for failing test files", () => {
       const tempTestFile = path.join(projectRoot, "tests", "_trivial-fail-progress.test.ts");
+      fs.rmSync(tempTestFile, { force: true });
       fs.writeFileSync(
         tempTestFile,
         `import { it, expect } from 'vitest';
@@ -682,7 +684,7 @@ it('fails', () => { expect(1).toBe(2); });
         expect(progressLine).toContain("1 failed");
         expect(progressLine).toContain("2 tests");
       } finally {
-        fs.unlinkSync(tempTestFile);
+        fs.rmSync(tempTestFile, { force: true });
         fs.rmSync(cacheDir, { recursive: true, force: true });
       }
     });
@@ -690,6 +692,7 @@ it('fails', () => { expect(1).toBe(2); });
     // AC: @task-test-runner-progress-output ac-2
     it("progress lines are suppressed in verbose mode", () => {
       const tempTestFile = path.join(projectRoot, "tests", "_trivial-verbose-progress.test.ts");
+      fs.rmSync(tempTestFile, { force: true });
       fs.writeFileSync(
         tempTestFile,
         `import { it, expect } from 'vitest';\nit('passes', () => { expect(1).toBe(1); });\n`,
@@ -722,7 +725,7 @@ it('fails', () => { expect(1).toBe(2); });
         // But verbose output still appears on stdout
         expect(result.stdout).toContain("passes");
       } finally {
-        fs.unlinkSync(tempTestFile);
+        fs.rmSync(tempTestFile, { force: true });
         fs.rmSync(cacheDir, { recursive: true, force: true });
       }
     });
@@ -731,6 +734,7 @@ it('fails', () => { expect(1).toBe(2); });
     it("output volume is proportional to file count, not test count", () => {
       // Create a file with many tests — progress output should still be 1 line
       const tempTestFile = path.join(projectRoot, "tests", "_trivial-volume.test.ts");
+      fs.rmSync(tempTestFile, { force: true });
       const tests = Array.from(
         { length: 20 },
         (_, i) => `it('test-${i}', () => { expect(${i}).toBe(${i}); });`,
@@ -763,7 +767,7 @@ it('fails', () => { expect(1).toBe(2); });
         expect(progressLines.length).toBe(1);
         expect(progressLines[0]).toContain("20 tests");
       } finally {
-        fs.unlinkSync(tempTestFile);
+        fs.rmSync(tempTestFile, { force: true });
         fs.rmSync(cacheDir, { recursive: true, force: true });
       }
     });
@@ -771,6 +775,7 @@ it('fails', () => { expect(1).toBe(2); });
     // AC: @task-test-runner-progress-output ac-5
     it("final summary and exit code are unchanged with progress enabled", () => {
       const tempTestFile = path.join(projectRoot, "tests", "_trivial-summary-unchanged.test.ts");
+      fs.rmSync(tempTestFile, { force: true });
       fs.writeFileSync(
         tempTestFile,
         `import { it, expect } from 'vitest';\nit('passes', () => { expect(1).toBe(1); });\n`,
@@ -802,7 +807,7 @@ it('fails', () => { expect(1).toBe(2); });
         // Log file reference still present
         expect(stderr).toContain("Full log:");
       } finally {
-        fs.unlinkSync(tempTestFile);
+        fs.rmSync(tempTestFile, { force: true });
         fs.rmSync(cacheDir, { recursive: true, force: true });
       }
     });
@@ -810,6 +815,7 @@ it('fails', () => { expect(1).toBe(2); });
     // AC: @task-test-runner-progress-output ac-5
     it("progress lines are not written to the log file", () => {
       const tempTestFile = path.join(projectRoot, "tests", "_trivial-log-clean.test.ts");
+      fs.rmSync(tempTestFile, { force: true });
       fs.writeFileSync(
         tempTestFile,
         `import { it, expect } from 'vitest';\nit('passes', () => { expect(1).toBe(1); });\n`,
@@ -849,7 +855,7 @@ it('fails', () => { expect(1).toBe(2); });
         );
         expect(logProgressLines.length).toBe(0);
       } finally {
-        fs.unlinkSync(tempTestFile);
+        fs.rmSync(tempTestFile, { force: true });
         fs.rmSync(cacheDir, { recursive: true, force: true });
       }
     });
@@ -857,6 +863,7 @@ it('fails', () => { expect(1).toBe(2); });
     // AC: @task-test-runner-progress-output ac-3
     it("progress output uses PASS/FAIL markers matching condensed output conventions", () => {
       const tempTestFile = path.join(projectRoot, "tests", "_trivial-markers.test.ts");
+      fs.rmSync(tempTestFile, { force: true });
       fs.writeFileSync(
         tempTestFile,
         `import { it, expect } from 'vitest';\nit('passes', () => { expect(1).toBe(1); });\n`,
@@ -883,13 +890,14 @@ it('fails', () => { expect(1).toBe(2); });
         // Green ANSI = \x1b[32m, Reset = \x1b[0m
         expect(result.stderr).toContain("\x1b[32mPASS\x1b[0m");
       } finally {
-        fs.unlinkSync(tempTestFile);
+        fs.rmSync(tempTestFile, { force: true });
         fs.rmSync(cacheDir, { recursive: true, force: true });
       }
     });
 
     it("progress is suppressed when KSPEC_TEST_PROGRESS=0", () => {
       const tempTestFile = path.join(projectRoot, "tests", "_trivial-suppress.test.ts");
+      fs.rmSync(tempTestFile, { force: true });
       fs.writeFileSync(
         tempTestFile,
         `import { it, expect } from 'vitest';\nit('passes', () => { expect(1).toBe(1); });\n`,
@@ -927,7 +935,7 @@ it('fails', () => { expect(1).toBe(2); });
         // Summary still appears
         expect(stderr).toContain("Tests passed");
       } finally {
-        fs.unlinkSync(tempTestFile);
+        fs.rmSync(tempTestFile, { force: true });
         fs.rmSync(cacheDir, { recursive: true, force: true });
       }
     });
