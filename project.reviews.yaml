@@ -133268,6 +133268,17 @@ reviews:
         runner: scripts/test.cjs
         created_at: 2026-04-10T02:52:25.998Z
         completed_at: 2026-04-10T02:52:25.998Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: " failed twice on head. Run 1: 10 failures, all  unlink cleanup errors on temporary  files
+          in tests/test-runner.test.ts. Run 2: 1  cleanup failure on ."
+        name: targeted test-runner suite
+        required: true
+        runner: scripts/test.cjs
+        created_at: 2026-04-10T02:52:37.701Z
+        completed_at: 2026-04-10T02:52:37.701Z
     events:
       - _ulid: 01KNTM922KFX582JK28BAQQ72V
         actor: Jacob Chapel
@@ -133296,6 +133307,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNTMWEXDAYZ6GADRMMDZWTYF
         timestamp: 2026-04-10T02:52:35.654Z
+      - _ulid: 01KNTMWK0ZHSRQ9G7Y4TCMRYG9
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: targeted test-runner suite
+        timestamp: 2026-04-10T02:52:38.815Z
     examined_commit: 65b5da6c7c3c49023c6610d6d04405362a963b3e
     external_links: []
     lifecycle_state: open
@@ -133329,5 +133347,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-10T02:41:58.868Z
-    updated_at: 2026-04-10T02:52:34.605Z
+    updated_at: 2026-04-10T02:52:37.701Z
     notes: []
