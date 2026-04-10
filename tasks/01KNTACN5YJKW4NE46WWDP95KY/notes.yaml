@@ -56,3 +56,29 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-10T00:32:21.464Z
+  - _ulid: 01KNTDJXFXKH96D96A85ZJSAA1
+    content: >-
+      Completed. All 13 daemon-spawning tests in cli-serve.test.ts now have onTestFinished cleanup
+      with process.kill(pid, SIGTERM).
+
+
+      AC1: Every daemon-spawning it() registers onTestFinished before assertions. ✓
+
+      AC2: Tests 477, 595, 827 have their own PID-targeted cleanup independent of outer afterEach. ✓
+
+      AC3: After running tests, ps -ef shows zero leaked test daemons. ✓
+
+      AC4: All tests keep serve start --detach because every test uses serve status/stop/restart
+      which depend on PID files. Classification comments explain this. No tests qualified for
+      direct-spawn migration because none are truly daemon-as-fixture — they all exercise CLI
+      commands that need PID file infrastructure.
+
+      AC5: Test 827's cleanup uses process.kill(pid) directly, not CLI subprocess. ✓
+
+      AC6: Only tests/cli-serve.test.ts modified, zero production code changes. ✓
+
+
+      Quick grep confirmed no other test files in tests/ spawn daemons via serve start --detach.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-10T00:45:01.821Z
