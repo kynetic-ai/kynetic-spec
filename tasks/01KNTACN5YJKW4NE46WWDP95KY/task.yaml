@@ -204,7 +204,7 @@ description: >-
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -215,6 +215,14 @@ tags:
   - daemon
   - cli
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-cli-serve-test-daemon-cleanup/01kntacn
+  captured_at: 2026-04-10T00:45:12.832Z
+  commit: 57bb82ad5bbec60e2718054d5f350febed206225
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KNTCKA591XYFA1EKK4E3HN9G
 history:
   - author: "@claude"
@@ -230,7 +238,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-10T00:28:13.997Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-cli-serve-test-daemon-cleanup/01kntacn
+          captured_at: 2026-04-10T00:45:12.832Z
+          commit: 57bb82ad5bbec60e2718054d5f350febed206225
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-04-10T00:45:12.837Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-10T00:45:12.837Z
 created_at: 2026-04-09T23:49:10.974Z
 started_at: 2026-04-10T00:28:13.997Z
+submitted_at: 2026-04-10T00:45:12.837Z
 todos: []
 automation: eligible
