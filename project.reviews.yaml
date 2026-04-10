@@ -134272,6 +134272,17 @@ reviews:
         required: true
         created_at: 2026-04-10T09:17:12.523Z
         completed_at: 2026-04-10T09:17:12.523Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "The blocker-level release gaps in RELEASE_GAPS.md are both represented: missing config
+          scaffold -> @scaffolded-project-config, missing AGENTS scaffold ->
+          @scaffolded-agents-file."
+        name: Gap coverage
+        required: true
+        created_at: 2026-04-10T09:17:12.589Z
+        completed_at: 2026-04-10T09:17:12.589Z
     events:
       - _ulid: 01KNVATP2B7BVQFAWZNC206QMF
         actor: Jacob Chapel
@@ -134321,6 +134332,13 @@ reviews:
           status: pass
           name: Spec neighborhood
         timestamp: 2026-04-10T09:17:14.820Z
+      - _ulid: 01KNVAWVPV06PM1QQ82CRN1VWN
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Gap coverage
+        timestamp: 2026-04-10T09:17:16.380Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -134396,5 +134414,5 @@ reviews:
         kind: question
     verdicts: []
     created_at: 2026-04-10T09:16:05.068Z
-    updated_at: 2026-04-10T09:17:12.523Z
+    updated_at: 2026-04-10T09:17:12.589Z
     notes: []
