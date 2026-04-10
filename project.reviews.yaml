@@ -132749,3 +132749,29 @@ reviews:
     created_at: 2026-04-09T10:38:10.028Z
     updated_at: 2026-04-09T10:41:28.393Z
     notes: []
+  - _ulid: 01KNTH66Z4DAN79BZ9AHMFC83X
+    slugs: []
+    title: Review task-cli-serve-test-daemon-cleanup
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KNTH66Z4SCSQB6J5ME54DZQ1
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-10T01:47:59.844Z
+    examined_commit: 57bb82ad5bbec60e2718054d5f350febed206225
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNTACN5YJKW4NE46WWDP95KY"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-10T01:47:59.844Z
+    updated_at: null
+    notes: []

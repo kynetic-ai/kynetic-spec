@@ -215,6 +215,7 @@ tags:
   - daemon
   - cli
 vcs_refs: []
+review_ref: "@01KNTH66Z4DAN79BZ9AHMFC83X"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-cli-serve-test-daemon-cleanup/01kntacn
@@ -258,6 +259,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-04-10T00:45:12.837Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KNTH66Z4DAN79BZ9AHMFC83X"
+        previous: null
+    command: review-link
+    timestamp: 2026-04-10T01:48:03.029Z
 created_at: 2026-04-09T23:49:10.974Z
 started_at: 2026-04-10T00:28:13.997Z
 submitted_at: 2026-04-10T00:45:12.837Z
