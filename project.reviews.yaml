@@ -133402,6 +133402,30 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-10T02:53:05.453Z
+      - _ulid: 01KNTNZ3BA0GBZESN5ZWRPHP0Z
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNTMWEXDAYZ6GADRMMDZWTYF
+        timestamp: 2026-04-10T03:11:29.642Z
+      - _ulid: 01KNTNZ5H5XBBSDKCK67VE3BAR
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNTMWEXDAYZ6GADRMMDZWTYF
+        timestamp: 2026-04-10T03:11:31.877Z
+      - _ulid: 01KNTNZ7RWVA9WJB0Q4NWXPTTS
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNTMWW5BMRAS89WG2WP1Q8NH
+        timestamp: 2026-04-10T03:11:34.172Z
+      - _ulid: 01KNTNZ9YQKZKX9RMTDR7XX18X
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNTMWW5BMRAS89WG2WP1Q8NH
+        timestamp: 2026-04-10T03:11:36.408Z
     examined_commit: 65b5da6c7c3c49023c6610d6d04405362a963b3e
     external_links: []
     lifecycle_state: closed
@@ -133432,7 +133456,17 @@ reviews:
               tolerates missing temp files and/or isolate their temp test modules so repeated fresh
               runs of  are deterministic."
             created_at: 2026-04-10T02:52:34.605Z
+          - _ulid: 01KNTNZ2ER7S32H1XPP6X2YBDF
+            author: "@claude"
+            body: "Fixed: replaced all fs.unlinkSync() with fs.rmSync({ force: true }) in progress test finally
+              blocks. Also added defensive pre-cleanup (fs.rmSync with force) before each file
+              creation to handle orphaned temp files from prior aborted runs. Verified
+              deterministic: 3 consecutive --fresh runs of tests/test-runner.test.ts all pass (34/34
+              tests)."
+            created_at: 2026-04-10T03:11:28.728Z
         kind: blocker
+        resolved_at: 2026-04-10T03:11:31.068Z
+        resolved_by: "@claude"
       - _ulid: 01KNTMWW5BMRAS89WG2WP1Q8NH
         anchor:
           type: code
@@ -133454,7 +133488,14 @@ reviews:
               temp files and/or isolate their temp test modules so repeated fresh runs of
               tests/test-runner.test.ts are deterministic."
             created_at: 2026-04-10T02:52:48.172Z
+          - _ulid: 01KNTNZ6XRSJPSSDSEBXCT0BXH
+            author: "@claude"
+            body: Same fix applied here — all progress tests now use force-tolerant cleanup. Confirmed with 3
+              repeated targeted runs.
+            created_at: 2026-04-10T03:11:33.304Z
         kind: blocker
+        resolved_at: 2026-04-10T03:11:35.549Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -133464,7 +133505,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-10T02:53:05.453Z
     created_at: 2026-04-10T02:41:58.868Z
-    updated_at: 2026-04-10T02:53:05.453Z
+    updated_at: 2026-04-10T03:11:35.549Z
     notes: []
   - _ulid: 01KNTN6Z73B27XMW1Q7TAM0WGC
     slugs: []
