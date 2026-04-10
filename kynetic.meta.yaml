@@ -13812,6 +13812,27 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-10T02:40:39.937Z
+  - _ulid: 01KNTMCB35JAWXK5V6AW3K0HG8
+    type: friction
+    content: Review/test sessions can be derailed by assuming npm test forwards raw vitest flags. In
+      this session, npm test -- --fresh --runInBand failed immediately because the project runner
+      rejects --runInBand. Consider documenting or validating unsupported forwarded flags in
+      scripts/test.cjs so agents get a clear project-specific error before spending time on a bad
+      invocation.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-10T02:43:46.406Z
+  - _ulid: 01KNTMCBAT8P3W60P1SE8FM969
+    type: success
+    content: The review flow worked well when it combined targeted behavioral repro fixtures with
+      recorded review checks. Reproducing the lint rule against minimal inline oxlint fixtures
+      exposed two real rule gaps quickly and made the request_changes verdict easy to justify with
+      executable evidence.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-10T02:43:46.650Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
