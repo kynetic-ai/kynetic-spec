@@ -324,7 +324,7 @@ agents:
   - _ulid: 01KN5TNDAEJ1R1EB6SP2EPMBWT
     description: Reviews draft plans for spec quality, task completeness, and readiness
     adapter: codex-acp
-    auto_approve: false
+    auto_approve: true
     budget:
       timeout_minutes: 60
     capabilities:
