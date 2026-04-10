@@ -124,7 +124,7 @@ description: >-
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -138,11 +138,11 @@ review_ref: "@01KNTJHF70SJNJ6JCWC3YQNC9X"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-test-runner-progress-output/01kntb8y
-  captured_at: 2026-04-10T02:08:22.964Z
-  commit: 6a061a6a1c7dd5547a4892c9cc24180efb5aef04
-  remote: null
-  remote_url: null
-  upstream_ref: dev
+  captured_at: 2026-04-10T02:40:02.614Z
+  commit: 65b5da6c7c3c49023c6610d6d04405362a963b3e
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-test-runner-progress-output/01kntb8y
 session_id: 01KNTKGF9WHC5KA4QER266VASX
 history:
   - author: "@claude"
@@ -208,8 +208,35 @@ history:
         previous: 2026-04-10T01:46:51.247Z
     command: task-start
     timestamp: 2026-04-10T02:39:59.255Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-test-runner-progress-output/01kntb8y
+          captured_at: 2026-04-10T02:40:02.614Z
+          commit: 65b5da6c7c3c49023c6610d6d04405362a963b3e
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-test-runner-progress-output/01kntb8y
+        previous:
+          review_url: null
+          branch: dispatch/task/task-test-runner-progress-output/01kntb8y
+          captured_at: 2026-04-10T02:08:22.964Z
+          commit: 6a061a6a1c7dd5547a4892c9cc24180efb5aef04
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-04-10T02:40:02.617Z
+        previous: 2026-04-10T02:08:22.967Z
+    command: task-submit
+    timestamp: 2026-04-10T02:40:02.618Z
 created_at: 2026-04-10T00:04:38.357Z
 started_at: 2026-04-10T02:39:59.255Z
-submitted_at: 2026-04-10T02:08:22.967Z
+submitted_at: 2026-04-10T02:40:02.617Z
 todos: []
 automation: eligible
