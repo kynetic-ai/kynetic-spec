@@ -134260,7 +134260,18 @@ reviews:
     slugs: []
     title: "Plan review: Init, Setup, and Upgrade Rough Edges"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "The new specs fit existing parents without obvious duplicate coverage: setup scaffolds
+          extend @enhanced-setup/@init-commands/@agent-integration, plan import guidance extends
+          @plan-support, and the meta bugfix hangs off @meta."
+        name: Spec neighborhood
+        required: true
+        created_at: 2026-04-10T09:17:12.523Z
+        completed_at: 2026-04-10T09:17:12.523Z
     events:
       - _ulid: 01KNVATP2B7BVQFAWZNC206QMF
         actor: Jacob Chapel
@@ -134303,6 +134314,13 @@ reviews:
           kind: question
           thread_ulid: 01KNVAWQXA1H4SKDXMH2WZKRRA
         timestamp: 2026-04-10T09:17:13.391Z
+      - _ulid: 01KNVAWT6444F7K1Q9X6KPF8C5
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Spec neighborhood
+        timestamp: 2026-04-10T09:17:14.820Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -134378,5 +134396,5 @@ reviews:
         kind: question
     verdicts: []
     created_at: 2026-04-10T09:16:05.068Z
-    updated_at: 2026-04-10T09:17:12.491Z
+    updated_at: 2026-04-10T09:17:12.523Z
     notes: []
