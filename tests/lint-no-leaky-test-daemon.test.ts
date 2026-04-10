@@ -130,6 +130,55 @@ describe("test suite", () => {
 `);
       expect(result.output).toContain("no-leaky-test-daemon");
     });
+
+    // Blocker 1 repro: unrelated afterEach with generic 'stop' should not count as cleanup
+    it("should flag serve start --detach when afterEach only stops an unrelated fixture", () => {
+      const result = runOxlint(`
+import { describe, it, expect, afterEach } from "vitest";
+
+describe("test suite", () => {
+  afterEach(() => stopUnrelatedFixture());
+
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    // Blocker 2 repro: cleanup registered after an await is too late
+    it("should flag serve start --detach when cleanup is registered after an await", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", async () => {
+    runKspec("serve start --detach --port 3456");
+    await somethingAsync();
+    onTestFinished(() => process.kill(pid, "SIGTERM"));
+  });
+});
+`);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    // Blocker 2 variant: cleanup after expect is too late
+    it("should flag serve start --detach when cleanup is registered after an expect", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    expect(true).toBe(true);
+    onTestFinished(() => process.kill(pid, "SIGTERM"));
+  });
+});
+`);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
   });
 
   describe("negative cases (should NOT flag)", () => {

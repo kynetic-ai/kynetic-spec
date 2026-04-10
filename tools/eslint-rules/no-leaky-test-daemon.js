@@ -106,7 +106,16 @@ const noLeakyTestDaemon = {
 
     /**
      * Check if a CallExpression is afterEach(...) and its callback body
-     * contains cleanup-related calls (kill, stop, SIGTERM, etc.).
+     * contains daemon-specific cleanup (not just any kill/stop call).
+     *
+     * Only matches patterns that are unambiguously daemon cleanup:
+     * - SIGTERM signal (only used for daemon processes in this codebase)
+     * - killPid helper (project-specific daemon kill utility)
+     * - stopDaemon helper (explicit daemon stop function)
+     * - "serve stop" or "serve", "stop" CLI command pattern
+     *
+     * Generic "kill" or "stop" alone do NOT qualify — they could be
+     * stopping unrelated fixtures (e.g., stopUnrelatedFixture()).
      */
     function isAfterEachWithCleanup(node) {
       if (node.type !== "CallExpression") return false;
@@ -118,17 +127,21 @@ const noLeakyTestDaemon = {
       }
       const text = context.sourceCode.getText(node);
       return (
-        text.includes("kill") ||
-        text.includes("stop") ||
         text.includes("SIGTERM") ||
+        text.includes("killPid") ||
         text.includes("stopDaemon") ||
-        text.includes("killPid")
+        text.includes("serve stop")
       );
     }
 
     /**
      * Check whether a node has cleanup registered in the statements
-     * that follow it within the same block/function body.
+     * that follow it within the same block/function body, BEFORE any
+     * await expression or assertion (expect call).
+     *
+     * The task requires cleanup to be registered before the next
+     * expect, await, or scope exit — so cleanup after an await or
+     * assertion is too late (the test could fail before reaching it).
      */
     function hasCleanupAfter(node) {
       const body = findContainingBody(node);
@@ -138,8 +151,14 @@ const noLeakyTestDaemon = {
       if (nodeIndex === -1) return false;
 
       for (let i = nodeIndex + 1; i < body.length; i++) {
+        // Cleanup found before any await/expect — safe
         if (statementContainsCleanup(body[i])) {
           return true;
+        }
+        // If this statement contains an await or expect, cleanup
+        // registered after it is too late — the test can fail here
+        if (statementContainsAwaitOrExpect(body[i])) {
+          return false;
         }
       }
 
@@ -223,6 +242,16 @@ const noLeakyTestDaemon = {
         text.includes("killPid") ||
         (text.includes("process.kill") && text.includes("SIGTERM"))
       );
+    }
+
+    /**
+     * Check if a statement contains an await expression or expect() call.
+     * These represent points where the test can fail or pause, so cleanup
+     * must be registered before them.
+     */
+    function statementContainsAwaitOrExpect(stmt) {
+      const text = context.sourceCode.getText(stmt);
+      return text.includes("await ") || text.includes("expect(");
     }
 
     /**
