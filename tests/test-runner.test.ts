@@ -4,6 +4,11 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
+/** Strip ANSI escape codes from a string for clean assertions. */
+function stripAnsi(str: string): string {
+  return str.replace(/\x1b\[[0-9;]*m/g, "");
+}
+
 const projectRoot = path.resolve(import.meta.dirname, "..");
 const runnerScript = path.join(projectRoot, "scripts", "test.cjs");
 
@@ -581,6 +586,302 @@ describe("test runner environment checks", () => {
         expect(typeof hook.name).toBe("string");
         expect(typeof hook.check).toBe("function");
         expect(typeof hook.fix).toBe("function");
+      }
+    });
+  });
+
+  // AC: @task-test-runner-progress-output ac-1
+  // AC: @task-test-runner-progress-output ac-3
+  // AC: @task-test-runner-progress-output ac-5
+  // AC: @task-test-runner-progress-output ac-6
+  describe("per-file progress output", () => {
+    it("non-verbose mode prints one PASS line per completed test file with count and duration", () => {
+      const tempTestFile = path.join(projectRoot, "tests", "_trivial-progress.test.ts");
+      fs.writeFileSync(
+        tempTestFile,
+        `import { it, expect } from 'vitest';
+it('alpha', () => { expect(1).toBe(1); });
+it('beta', () => { expect(2).toBe(2); });
+`,
+      );
+
+      const sessionId = `test-progress-${Date.now()}`;
+      const cacheDir = path.join(os.tmpdir(), "kspec-test-cache", sessionId);
+
+      try {
+        const result = spawnSync(
+          "node",
+          [runnerScript, "--fresh", "tests/_trivial-progress.test.ts"],
+          {
+            cwd: projectRoot,
+            encoding: "utf8",
+            env: { ...process.env, SKIP_BUILD: "1", KSPEC_SESSION_ID: sessionId },
+            timeout: 30_000,
+          },
+        );
+
+        expect(result.status).toBe(0);
+
+        const stderr = stripAnsi(result.stderr);
+        // Must contain a PASS line for the test file
+        const progressLines = stderr.split("\n").filter((l) => l.trim().startsWith("PASS"));
+        expect(progressLines.length).toBe(1);
+
+        const line = progressLines[0].trim();
+        // Format: PASS tests/_trivial-progress.test.ts (2 tests, Xms)
+        expect(line).toMatch(/^PASS\s+tests\/_trivial-progress\.test\.ts\s+\(/);
+        expect(line).toContain("2 tests");
+        // Duration present (ends with ms or s)
+        expect(line).toMatch(/\d+m?s/);
+
+        // Final summary still appears
+        expect(stderr).toContain("Tests passed");
+        expect(stderr).toContain("Test Suites:");
+      } finally {
+        fs.unlinkSync(tempTestFile);
+        fs.rmSync(cacheDir, { recursive: true, force: true });
+      }
+    });
+
+    // AC: @task-test-runner-progress-output ac-1
+    it("shows FAIL marker and failed count for failing test files", () => {
+      const tempTestFile = path.join(projectRoot, "tests", "_trivial-fail-progress.test.ts");
+      fs.writeFileSync(
+        tempTestFile,
+        `import { it, expect } from 'vitest';
+it('passes', () => { expect(1).toBe(1); });
+it('fails', () => { expect(1).toBe(2); });
+`,
+      );
+
+      const sessionId = `test-fail-progress-${Date.now()}`;
+      const cacheDir = path.join(os.tmpdir(), "kspec-test-cache", sessionId);
+
+      try {
+        const result = spawnSync(
+          "node",
+          [runnerScript, "--fresh", "tests/_trivial-fail-progress.test.ts"],
+          {
+            cwd: projectRoot,
+            encoding: "utf8",
+            env: { ...process.env, SKIP_BUILD: "1", KSPEC_SESSION_ID: sessionId },
+            timeout: 30_000,
+          },
+        );
+
+        expect(result.status).toBe(1);
+
+        const stderr = stripAnsi(result.stderr);
+        const progressLines = stderr.split("\n").filter((l) => l.trim().startsWith("FAIL"));
+        // At least one FAIL line from the progress reporter (may also have FAIL in condensed output)
+        expect(progressLines.length).toBeGreaterThanOrEqual(1);
+
+        // The first FAIL line should be the progress line with count info
+        const progressLine = progressLines.find((l) => l.includes("_trivial-fail-progress"));
+        expect(progressLine).toBeDefined();
+        expect(progressLine).toContain("1 failed");
+        expect(progressLine).toContain("2 tests");
+      } finally {
+        fs.unlinkSync(tempTestFile);
+        fs.rmSync(cacheDir, { recursive: true, force: true });
+      }
+    });
+
+    // AC: @task-test-runner-progress-output ac-2
+    it("progress lines are suppressed in verbose mode", () => {
+      const tempTestFile = path.join(projectRoot, "tests", "_trivial-verbose-progress.test.ts");
+      fs.writeFileSync(
+        tempTestFile,
+        `import { it, expect } from 'vitest';\nit('passes', () => { expect(1).toBe(1); });\n`,
+      );
+
+      const sessionId = `test-verbose-progress-${Date.now()}`;
+      const cacheDir = path.join(os.tmpdir(), "kspec-test-cache", sessionId);
+
+      try {
+        const result = spawnSync(
+          "node",
+          [runnerScript, "--fresh", "--verbose", "tests/_trivial-verbose-progress.test.ts"],
+          {
+            cwd: projectRoot,
+            encoding: "utf8",
+            env: { ...process.env, SKIP_BUILD: "1", KSPEC_SESSION_ID: sessionId },
+            timeout: 30_000,
+          },
+        );
+
+        expect(result.status).toBe(0);
+
+        const stderr = stripAnsi(result.stderr);
+        // In verbose mode, no progress lines (PASS/FAIL with file path and test count)
+        const progressLines = stderr
+          .split("\n")
+          .filter((l) => l.trim().startsWith("PASS") && l.includes("test"));
+        expect(progressLines.length).toBe(0);
+
+        // But verbose output still appears on stdout
+        expect(result.stdout).toContain("passes");
+      } finally {
+        fs.unlinkSync(tempTestFile);
+        fs.rmSync(cacheDir, { recursive: true, force: true });
+      }
+    });
+
+    // AC: @task-test-runner-progress-output ac-4
+    it("output volume is proportional to file count, not test count", () => {
+      // Create a file with many tests — progress output should still be 1 line
+      const tempTestFile = path.join(projectRoot, "tests", "_trivial-volume.test.ts");
+      const tests = Array.from(
+        { length: 20 },
+        (_, i) => `it('test-${i}', () => { expect(${i}).toBe(${i}); });`,
+      ).join("\n");
+      fs.writeFileSync(
+        tempTestFile,
+        `import { it, expect } from 'vitest';\n${tests}\n`,
+      );
+
+      const sessionId = `test-volume-${Date.now()}`;
+      const cacheDir = path.join(os.tmpdir(), "kspec-test-cache", sessionId);
+
+      try {
+        const result = spawnSync(
+          "node",
+          [runnerScript, "--fresh", "tests/_trivial-volume.test.ts"],
+          {
+            cwd: projectRoot,
+            encoding: "utf8",
+            env: { ...process.env, SKIP_BUILD: "1", KSPEC_SESSION_ID: sessionId },
+            timeout: 30_000,
+          },
+        );
+
+        expect(result.status).toBe(0);
+
+        const stderr = stripAnsi(result.stderr);
+        // Exactly 1 progress PASS line despite 20 tests
+        const progressLines = stderr.split("\n").filter((l) => l.trim().startsWith("PASS"));
+        expect(progressLines.length).toBe(1);
+        expect(progressLines[0]).toContain("20 tests");
+      } finally {
+        fs.unlinkSync(tempTestFile);
+        fs.rmSync(cacheDir, { recursive: true, force: true });
+      }
+    });
+
+    // AC: @task-test-runner-progress-output ac-5
+    it("final summary and exit code are unchanged with progress enabled", () => {
+      const tempTestFile = path.join(projectRoot, "tests", "_trivial-summary-unchanged.test.ts");
+      fs.writeFileSync(
+        tempTestFile,
+        `import { it, expect } from 'vitest';\nit('passes', () => { expect(1).toBe(1); });\n`,
+      );
+
+      const sessionId = `test-summary-unchanged-${Date.now()}`;
+      const cacheDir = path.join(os.tmpdir(), "kspec-test-cache", sessionId);
+
+      try {
+        const result = spawnSync(
+          "node",
+          [runnerScript, "--fresh", "tests/_trivial-summary-unchanged.test.ts"],
+          {
+            cwd: projectRoot,
+            encoding: "utf8",
+            env: { ...process.env, SKIP_BUILD: "1", KSPEC_SESSION_ID: sessionId },
+            timeout: 30_000,
+          },
+        );
+
+        expect(result.status).toBe(0);
+
+        const stderr = stripAnsi(result.stderr);
+        // Final summary still present
+        expect(stderr).toContain("Test Suites:");
+        expect(stderr).toContain("Tests:");
+        expect(stderr).toContain("Duration:");
+        expect(stderr).toContain("Tests passed");
+        // Log file reference still present
+        expect(stderr).toContain("Full log:");
+      } finally {
+        fs.unlinkSync(tempTestFile);
+        fs.rmSync(cacheDir, { recursive: true, force: true });
+      }
+    });
+
+    // AC: @task-test-runner-progress-output ac-3
+    it("progress output uses PASS/FAIL markers matching condensed output conventions", () => {
+      const tempTestFile = path.join(projectRoot, "tests", "_trivial-markers.test.ts");
+      fs.writeFileSync(
+        tempTestFile,
+        `import { it, expect } from 'vitest';\nit('passes', () => { expect(1).toBe(1); });\n`,
+      );
+
+      const sessionId = `test-markers-${Date.now()}`;
+      const cacheDir = path.join(os.tmpdir(), "kspec-test-cache", sessionId);
+
+      try {
+        const result = spawnSync(
+          "node",
+          [runnerScript, "--fresh", "tests/_trivial-markers.test.ts"],
+          {
+            cwd: projectRoot,
+            encoding: "utf8",
+            env: { ...process.env, SKIP_BUILD: "1", KSPEC_SESSION_ID: sessionId },
+            timeout: 30_000,
+          },
+        );
+
+        expect(result.status).toBe(0);
+
+        // Check raw stderr contains ANSI green for PASS marker
+        // Green ANSI = \x1b[32m, Reset = \x1b[0m
+        expect(result.stderr).toContain("\x1b[32mPASS\x1b[0m");
+      } finally {
+        fs.unlinkSync(tempTestFile);
+        fs.rmSync(cacheDir, { recursive: true, force: true });
+      }
+    });
+
+    it("progress is suppressed when KSPEC_TEST_PROGRESS=0", () => {
+      const tempTestFile = path.join(projectRoot, "tests", "_trivial-suppress.test.ts");
+      fs.writeFileSync(
+        tempTestFile,
+        `import { it, expect } from 'vitest';\nit('passes', () => { expect(1).toBe(1); });\n`,
+      );
+
+      const sessionId = `test-suppress-${Date.now()}`;
+      const cacheDir = path.join(os.tmpdir(), "kspec-test-cache", sessionId);
+
+      try {
+        const result = spawnSync(
+          "node",
+          [runnerScript, "--fresh", "tests/_trivial-suppress.test.ts"],
+          {
+            cwd: projectRoot,
+            encoding: "utf8",
+            env: {
+              ...process.env,
+              SKIP_BUILD: "1",
+              KSPEC_SESSION_ID: sessionId,
+              KSPEC_TEST_PROGRESS: "0",
+            },
+            timeout: 30_000,
+          },
+        );
+
+        expect(result.status).toBe(0);
+
+        const stderr = stripAnsi(result.stderr);
+        // No progress lines
+        const progressLines = stderr
+          .split("\n")
+          .filter((l) => l.trim().startsWith("PASS") && l.includes("tests"));
+        expect(progressLines.length).toBe(0);
+
+        // Summary still appears
+        expect(stderr).toContain("Tests passed");
+      } finally {
+        fs.unlinkSync(tempTestFile);
+        fs.rmSync(cacheDir, { recursive: true, force: true });
       }
     });
   });
