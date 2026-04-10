@@ -47412,7 +47412,7 @@ workspaces:
         head: 945626c09a11f9d123dd912e773ef4724a5f7a16
         last_seen_at: 2026-04-10T03:14:18.426Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-test-runner-progress-output-01kntb8y
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 270b2a07519a9147db0504584b49967c91115179
     bootstrap:
       status: succeeded
@@ -47769,12 +47769,12 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-04-10T04:18:24.082Z
+      updated_at: 2026-04-10T04:18:50.893Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-10T04:18:24.082Z
+      updated_at: 2026-04-10T04:18:50.893Z
     integration:
       status: merged
       detail: integration:merged
@@ -47782,7 +47782,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 270b2a07519a9147db0504584b49967c91115179
-      updated_at: 2026-04-10T04:18:24.082Z
+      updated_at: 2026-04-10T04:18:50.893Z
     lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KNTACP2BXY12MTB2GETNJ7CS"
@@ -47790,9 +47790,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-10T03:54:28.672Z
-      last_reconciled_at: 2026-04-10T04:18:24.082Z
+      last_reconciled_at: 2026-04-10T04:18:50.893Z
       created_at: 2026-04-10T02:10:45.797Z
-      updated_at: 2026-04-10T04:18:24.082Z
+      updated_at: 2026-04-10T04:18:50.893Z
     workspace_id: dispatch-workspace-01KNTACP2BXY12MTB2GETNJ7CS
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
