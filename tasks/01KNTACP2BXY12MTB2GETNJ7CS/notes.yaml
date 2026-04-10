@@ -1,1 +1,41 @@
-notes: []
+notes:
+  - _ulid: 01KNTJKF9CNJZ3RDMBKPVAV9M0
+    content: >-
+      Approach: Following the existing oxlint jsPlugins pattern (no-daemon-ts-imports.js,
+      no-source-scanning.js). 
+
+
+      The rule detects two anti-patterns:
+
+      1. String literals containing 'serve start' + '--detach' in test files without cleanup
+      registration
+
+      2. spawn() calls where first arg resolves to dist/daemon/index.js without cleanup registration
+
+
+      Cleanup detection: onTestFinished(), try/finally with kill/stop, afterEach in same describe
+      scope that calls kill/stop.
+
+
+      Key design decision: False positives worse than false negatives — if cleanup can't be
+      statically proven missing, pass.
+
+
+      Test plan: 4+ positive cases (no cleanup variants) × 4+ negative cases (onTestFinished,
+      afterEach, try/finally, non-daemon spawn). Using inline fixture strings like the existing
+      test.
+
+
+      Files to create:
+
+      - tools/eslint-rules/no-leaky-test-daemon.js
+
+      - tests/lint-no-leaky-test-daemon.test.ts
+
+
+      Files to modify:
+
+      - .oxlintrc.json (add plugin + rule)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-10T02:12:42.924Z
