@@ -45,3 +45,14 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-10T00:29:25.419Z
+  - _ulid: 01KNTCVPYRJAJAK1RBPCH39HS6
+    content: "Revised: All daemon-spawning tests in cli-serve.test.ts need serve start --detach because
+      serve status/stop/restart depend on PID files written by the detach flow. Direct-spawn would
+      require manually writing PID files, coupling to internal implementation details. The primary
+      fix is onTestFinished with PID-based cleanup on every daemon-spawning test — this addresses
+      the actual leak problem (cleanup runs even when assertions throw). The direct-spawn helper
+      spawnDaemonDirect is added for tests that truly only need a running health endpoint without
+      CLI interaction."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-10T00:32:21.464Z
