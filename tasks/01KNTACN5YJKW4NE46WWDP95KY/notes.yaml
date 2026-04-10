@@ -1,1 +1,47 @@
-notes: []
+notes:
+  - _ulid: 01KNTCPB1BYZNVF64R80NHTN78
+    content: >-
+      Approach: Classified all 14 daemon-spawning tests into two groups.
+
+
+      Must keep serve start --detach (testing CLI detach/restart/runtime behavior):
+
+      - L267: 'should start in daemon mode and detach' (tests --detach itself)
+
+      - L542: 'should stop then start on restart' (tests restart of detached daemon)
+
+      - L595: 'should start from npm-installed package' (tests installed CLI path)
+
+      - L723: 'should default to node when no runtime' (tests runtime detection)
+
+      - L827: 'should start via configured node runtime' (tests runtime config with PATH)
+
+
+      Migrate to direct-spawn (daemon is incidental fixture):
+
+      - L308: 'should accept custom port' → verify port via health endpoint
+
+      - L374: 'should return JSON status'
+
+      - L402: 'should show registered projects'
+
+      - L436: 'should include projects list in JSON'
+
+      - L477: 'should show No projects registered' (isolated env)
+
+      - L508: 'should show uptime'
+
+      - L956: 'should include all data in JSON mode'
+
+      - L329: 'should send SIGTERM and wait' → tests serve stop, needs daemon running
+
+
+      All tests get onTestFinished cleanup. Direct-spawn tests use non-detached spawn with
+      SIGTERM+SIGKILL fallback.
+
+      Foreground test (L173) already has cleanup but will add onTestFinished for safety.
+
+      Special attention to L477, L595, L827 which have isolated envs.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-10T00:29:25.419Z
