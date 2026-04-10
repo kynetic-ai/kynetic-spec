@@ -134154,6 +134154,24 @@ reviews:
         runner: npm
         created_at: 2026-04-10T04:17:15.875Z
         completed_at: 2026-04-10T04:17:15.875Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: AGENTS.md, kspec-agents.md, .oxlintrc.json,
+          tools/eslint-rules/no-daemon-ts-imports.js, tools/eslint-rules/no-leaky-test-daemon.js,
+          tests/lint-no-daemon-ts-imports.test.ts, tests/lint-no-leaky-test-daemon.test.ts,
+          tests/cli-serve.test.ts. Commands run: git diff/stat/log, kspec task get, kspec review
+          for-task/get, kspec validate, kspec meta get testing, rg AC annotations, npm test, npm
+          test -- --fresh. Claims verified: rule is wired into oxlint test override; testing
+          convention includes daemon cleanup rule; full suite passes; prior blocker regressions are
+          covered by tests. Categories searched: correctness, edge cases, error handling, test
+          quality, integration."
+        name: review evidence
+        required: false
+        runner: codex
+        created_at: 2026-04-10T04:17:19.173Z
+        completed_at: 2026-04-10T04:17:19.173Z
     events:
       - _ulid: 01KNTRF9MSXVXM75R7X4EAQ68C
         actor: Jacob Chapel
@@ -134175,6 +134193,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-10T04:17:17.013Z
+      - _ulid: 01KNTSQNDV3THNJ8RRZ12K6M3G
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence
+        timestamp: 2026-04-10T04:17:20.316Z
     examined_commit: cc112485adee6ecaece0de407d9f202e379e0d0e
     external_links: []
     lifecycle_state: open
@@ -134187,5 +134212,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-10T03:55:17.529Z
-    updated_at: 2026-04-10T04:17:15.875Z
+    updated_at: 2026-04-10T04:17:19.173Z
     notes: []
