@@ -37678,6 +37678,24 @@ plans:
               Setup runs without the force flag
             then: |
               The existing file is preserved without modification
+          - id: ac-force-overwrites
+            given: |
+              A project already has a human-authored agent instructions
+              file and setup is invoked with the force flag
+            when: |
+              Setup runs
+            then: |
+              The existing file is replaced with a freshly scaffolded
+              template
+          - id: ac-force-backup
+            given: |
+              A project already has a human-authored agent instructions
+              file and setup is invoked with the force flag
+            when: |
+              Setup overwrites the existing file
+            then: |
+              The previous content is preserved as a sibling backup
+              file whose path is reported in the setup output
 
       - title: Complete Auto-Generated Gitignore Entries
         slug: complete-auto-gitignore
@@ -37732,13 +37750,16 @@ plans:
         type: requirement
         parent: "@agent-integration"
         description: |
-          When a project is initialized with full setup, the meta spec
-          contains a primary development agent, a plan reviewer agent,
-          and baseline conventions for commits, architecture, and
-          testing. These defaults establish the minimum context that
-          every project needs for normal task work and plan review to
-          function, without requiring the user to author them by hand.
-          Users remain free to edit, rename, or remove the defaults.
+          When a project is initialized with full setup for the first
+          time, the meta spec is seeded with a primary development
+          agent, a plan reviewer agent, and baseline conventions for
+          commits, architecture, and testing. These defaults establish
+          the minimum context every project needs for normal task work
+          and plan review to function, without requiring the user to
+          author them by hand. After the initial seed, the scaffold
+          never recreates items the user has deliberately removed or
+          renamed — the scaffold is first-time-only state, not a
+          recurring reset.
         acceptance_criteria:
           - id: ac-primary-dev-agent
             given: |
@@ -37815,6 +37836,43 @@ plans:
             then: |
               The file reflects the scaffolded default agents and
               conventions without requiring a separate regenerate step
+          - id: ac-first-run-marker-written
+            given: |
+              A fresh project completes full setup
+            when: |
+              The setup seeding state is inspected
+            then: |
+              A first-run marker is recorded indicating that the
+              default agents and conventions scaffold has completed
+          - id: ac-removed-defaults-not-recreated
+            given: |
+              A project has previously completed first-run seeding
+              and the user has removed one or more of the scaffolded
+              default agents or conventions
+            when: |
+              Setup runs again without the force flag
+            then: |
+              The removed items are not recreated and the step
+              reports them as intentionally removed
+          - id: ac-renamed-defaults-preserved
+            given: |
+              A project has previously completed first-run seeding
+              and the user has changed the identifier of a scaffolded
+              default agent or convention
+            when: |
+              Setup runs again without the force flag
+            then: |
+              The renamed item is preserved unchanged and no new
+              item is created under the original scaffold identifier
+          - id: ac-force-reseed
+            given: |
+              A project has previously completed first-run seeding
+            when: |
+              Setup runs with the force flag
+            then: |
+              The scaffold re-seeds any missing default items and
+              reports each one as force-recreated, leaving existing
+              items (including renamed ones) untouched
 
       - title: Default Session Reflection Hooks
         slug: default-session-reflection-hooks
@@ -37986,20 +38044,47 @@ plans:
           - id: ac-detects-skew
             given: |
               A project was initialized with an older kspec version
+              and its last-known version is recorded in project state
             when: |
               The upgrade command runs
             then: |
-              The command detects the version skew between the
-              project state and the currently installed version
+              The command reads the recorded last-known version and
+              identifies it as the source version for the upgrade
+          - id: ac-source-version-fallback
+            given: |
+              A project was initialized with an older kspec version
+              but has no recorded last-known version because it
+              predates version tracking
+            when: |
+              The upgrade command runs
+            then: |
+              The command infers a source version using the
+              observable shape of project state (for example, the
+              presence or absence of task storage layouts and
+              config files introduced in known versions) and
+              records the inferred version as approximate
+          - id: ac-source-version-unknown
+            given: |
+              A project's source version cannot be identified or
+              inferred
+            when: |
+              The upgrade command runs
+            then: |
+              The command reports the source version as unknown,
+              names the target version, and proceeds with the full
+              upgrade pipeline as if the project were on the oldest
+              supported version
           - id: ac-reports-skew
             given: |
-              The upgrade command has detected version skew
+              The upgrade command has determined source and target
+              versions
             when: |
               The command begins its upgrade pipeline
             then: |
-              The command reports the source version being upgraded
-              from and the target version being upgraded to before
-              any changes are applied
+              The command reports the source version and the target
+              version before any changes are applied, and marks the
+              source as approximate or unknown when it was inferred
+              rather than read directly
           - id: ac-runs-task-storage-migration
             given: |
               A project uses a task storage format that is no longer
@@ -38126,6 +38211,18 @@ plans:
             then: |
               The notes name every new configuration key and describe
               what it controls
+          - id: ac-structured-output
+            given: |
+              A programmatic consumer wants to read release notes
+              without parsing human-formatted output
+            when: |
+              The release notes command is invoked with a structured
+              output flag
+            then: |
+              The command emits the requested notes as a
+              machine-readable document whose fields mirror the
+              release notes source shape, so downstream tools can
+              consume it without regex parsing
 
       - title: Doctor Reports Actionable State
         slug: doctor-reports-actionable-state
@@ -38389,7 +38486,7 @@ plans:
 
           Covers: @scaffolded-agents-file ac-file-scaffolded,
           ac-includes-generated, ac-placeholders-marked,
-          ac-existing-preserved.
+          ac-existing-preserved, ac-force-overwrites, ac-force-backup.
 
       - title: Expand and repair auto-generated gitignore entries
         slug: task-complete-gitignore
@@ -38460,67 +38557,106 @@ plans:
         description: |
           During init setup, scaffold a primary development agent, a
           plan reviewer agent, and baseline conventions for commits,
-          architecture, and testing into the meta spec.
+          architecture, and testing into the meta spec. The scaffold
+          runs once per project and persists a first-run marker so
+          subsequent setup runs do not resurrect items the user has
+          removed or renamed.
 
           Why: Every real project manually adds these same defaults
           immediately after init. Scaffolding them during setup
           removes repetitive boilerplate, ensures plan review works
           out of the box, and gives the auto-generated agent
           instructions file something to render from the first time
-          it runs.
+          it runs. The first-run marker is what prevents the scaffold
+          from becoming a recurring reset that fights the user.
 
           What:
           - Add a setup step that runs after the hook installation
             step and before the agents file generation step.
-          - The step creates the following meta items if they do not
-            already exist:
+          - Read a first-run marker from the setup seeding state
+            file (the same state file used by permission and memory
+            seeding). The marker is a named flag indicating whether
+            the default agents and conventions scaffold has ever
+            completed for this project.
+          - When the marker is absent (first run) the step creates
+            the following meta items:
             * A primary development agent with a stable identifier,
               a descriptive name, and capabilities for code, test,
               refactor, and review.
             * A plan reviewer agent with a stable identifier, a
-              descriptive name, review capability, write-authorization
-              enabled so it can record review findings, and the plan
-              review, writing specs, and plan skills attached.
+              descriptive name, review capability, write
+              authorization enabled so it can record review
+              findings, and the plan review, writing specs, and
+              plan skills attached.
             * A commits convention with two rules: one for commit
               message format and one for task reference style.
             * An architecture convention containing a single
-              placeholder rule that explicitly instructs the user to
-              replace it with project-specific rules.
+              placeholder rule that explicitly instructs the user
+              to replace it with project-specific rules.
             * A testing convention containing a single placeholder
               rule that explicitly instructs the user to replace it.
+            After creation, the step writes the first-run marker
+            and reports each created item in the setup summary.
           - The plan reviewer agent's description must include
-            inline guidance explaining how to switch adapters if the
-            default adapter's authentication fails, using only
+            inline guidance explaining how to switch adapters if
+            the default adapter's authentication fails, using only
             commands and flags that exist in the CLI.
-          - Each item is created only when an item with the same
-            identifier does not already exist; existing items are
-            preserved.
+          - When the marker is present (subsequent run) the step
+            does nothing and reports "defaults already seeded" with
+            an itemized status that distinguishes between items
+            that still exist, items that appear to have been
+            removed by the user, and items that appear to have been
+            renamed. Removed and renamed items are NEVER recreated
+            in this mode; the step is a report-only no-op.
+          - When setup is invoked with the force flag, the step
+            treats force as "reseed missing items only": for each
+            scaffold item whose original identifier no longer
+            resolves and whose scaffold marker has not been
+            explicitly cleared, recreate the item and report it as
+            force-recreated. Items that resolve (including renamed
+            ones) are never overwritten.
+          - Items carry a scaffold-origin tag on creation so the
+            subsequent-run detection can distinguish "user removed
+            the scaffold default" from "user renamed the scaffold
+            default to something else". The tag is a stable field
+            on the meta item; use the existing meta item tag/trait
+            field rather than inventing a new one.
           - After the step runs, invoke the existing agents file
             regeneration so the auto-generated instructions reflect
             the scaffolded defaults without requiring a separate
             command.
-          - Report each created item (or each skipped existing item)
-            in the setup summary output.
 
           How: The meta item creation pathway is exposed as library
           functions under src/parser/meta.ts; call those directly
           from the setup step rather than shelling out to the CLI.
+          The setup seeding state file pattern is already used by
+          permission seeding and memory seeding — add a new field
+          to the same state file rather than creating a new file.
           Reuse the existing "ensure built-in agents" step pattern
-          already in src/cli/commands/setup.ts — this new step
-          extends that pattern to also ensure the plan reviewer,
-          primary dev agent, and default conventions. The existing
-          agents generation step runs later in the pipeline and will
-          pick up the new meta items automatically as long as the
-          scaffold step runs before it.
+          already in src/cli/commands/setup.ts for the creation
+          pathway, but wrap it with the first-run marker check.
+          Scaffold-origin tagging uses the existing tag field on
+          meta items; pick a reserved tag string (for example
+          "scaffold-default") and document it. Rename detection
+          walks the meta item list looking for items carrying the
+          scaffold-origin tag whose identifier differs from any
+          known scaffold default identifier.
 
-          Testing: Unit tests for idempotency: first run creates all
-          items, second run creates none. Integration test running
-          init with setup on a fresh temp directory and asserting
-          that the meta agent list contains the four expected
-          agents and the meta conventions list contains the three
-          expected conventions with the right shape. Test that a
-          project with an existing primary dev agent is not
-          overwritten.
+          Testing: Unit tests for:
+          - First-run path creates all items, writes marker.
+          - Second-run path with all items present: no-op.
+          - Second-run path with one item removed: not recreated,
+            reported as intentionally removed.
+          - Second-run path with one item renamed: original id not
+            recreated, renamed item preserved unchanged.
+          - Force-reseed path with missing items: recreated and
+            reported; existing items untouched.
+          Integration test running init with setup on a fresh temp
+          directory asserting the four expected agents and three
+          expected conventions exist with the right shape and the
+          first-run marker is present. Follow-up integration test
+          removing one default, running setup again, asserting the
+          removed item stays removed.
 
           Covers: @default-project-agents-and-conventions
           ac-primary-dev-agent, ac-plan-reviewer-agent-exists,
@@ -38528,7 +38664,9 @@ plans:
           ac-plan-reviewer-write-authorized,
           ac-plan-reviewer-adapter-guidance, ac-commits-convention,
           ac-architecture-convention, ac-testing-convention,
-          ac-agents-md-reflects-defaults.
+          ac-agents-md-reflects-defaults, ac-first-run-marker-written,
+          ac-removed-defaults-not-recreated,
+          ac-renamed-defaults-preserved, ac-force-reseed.
 
       - title: Scaffold default session reflection hooks
         slug: task-default-reflection-hooks
@@ -38737,6 +38875,8 @@ plans:
           - "@task-scaffold-agents-file"
           - "@task-complete-gitignore"
           - "@task-default-agents-and-conventions"
+          - "@task-default-reflection-hooks"
+          - "@task-derivable-default-module"
         description: |
           Add an upgrade command that detects version skew between a
           project and the installed kspec version, runs all required
@@ -38754,15 +38894,43 @@ plans:
           - Add a new top-level command named upgrade. It accepts no
             required arguments. It accepts a dry-run flag and a
             force flag.
-          - Version detection:
-            * Read the current installed version from the package
-              manifest the CLI ships with.
-            * Read the project's last-known version from a small
-              state file stored in the shadow branch (alongside the
-              existing setup seeding state). If no file exists,
-              treat the project as pre-versioning and continue.
-            * If the two match, report that the project is current
-              and exit successfully without making changes.
+          - Version detection pipeline:
+            * Target version: read from the package manifest the CLI
+              ships with. This is always authoritative.
+            * Source version — preferred path: read the last-known
+              version from a dedicated field in the existing setup
+              seeding state file (the same file that already stores
+              permission and memory seeding state). A new field name
+              is added there; no new file.
+            * Source version — fallback path: if no recorded version
+              exists, infer it from the observable shape of project
+              state. Build a small set of probes for distinguishing
+              known major-version states: for example, the presence
+              of a legacy monolithic task storage file versus the
+              per-task split directories, the presence or absence of
+              the scaffolded project config file, the presence or
+              absence of the review-plan rendered skill, the content
+              of the task storage format marker field in the
+              manifest. Each probe maps to a bounded version range.
+              The inferred version is the newest version consistent
+              with every probe result.
+            * Source version — unknown: when no set of probes is
+              conclusive (for example, a project with hand-edited
+              state that does not match any known shape), report
+              the source as unknown and treat the project as if it
+              were on the oldest supported version. Every step in
+              the upgrade pipeline must be safe to run in this mode
+              because the fallback is "run everything".
+            * The source version result carries a confidence
+              marker: exact (read from state file), approximate
+              (inferred from probes), or unknown. The upgrade
+              reports the marker alongside the version.
+            * When source and target match with exact confidence,
+              report the project as current and exit successfully
+              without making changes. When source and target match
+              with approximate confidence, still run the pipeline
+              (as a safety net) but label it as a refresh rather
+              than an upgrade.
           - Upgrade pipeline (each step reports its result):
             1. Run the existing task storage migration. Report the
                number of tasks migrated (or zero).
@@ -38813,6 +38981,7 @@ plans:
           step fails.
 
           Covers: @single-command-version-upgrade ac-detects-skew,
+          ac-source-version-fallback, ac-source-version-unknown,
           ac-reports-skew, ac-runs-task-storage-migration,
           ac-rerenders-skills, ac-regenerates-agents-file,
           ac-restores-gitignore-entries, ac-idempotent-when-current,
@@ -38882,7 +39051,7 @@ plans:
 
           Covers: @release-notes-accessible ac-current-version-notes,
           ac-version-range-notes, ac-upgrade-surfaces-notes,
-          ac-notes-mention-new-config.
+          ac-notes-mention-new-config, ac-structured-output.
 
       - title: Remove doctor false positive and add scaffold checks
         slug: task-doctor-accuracy
@@ -39110,3 +39279,9 @@ plans:
         content: Split compound then-clauses per pre-review checklist
         author: Jacob Chapel
         created_at: 2026-04-10T09:11:49.093Z
+      - _ulid: 01KNVB5D2Q0HSTE6DH6682RGEV
+        content: "Address review cycle 1 blockers: force-path ACs on agents-file spec, first-run marker with
+          removal/rename preservation on defaults spec, missing upgrade task deps, source-version
+          fallback detection, structured output AC"
+        author: Jacob Chapel
+        created_at: 2026-04-10T09:21:56.311Z
