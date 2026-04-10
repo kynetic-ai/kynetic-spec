@@ -46852,12 +46852,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-10T00:47:50.822Z
+      updated_at: 2026-04-10T01:45:37.805Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-10T00:47:50.822Z
+      updated_at: 2026-04-10T01:45:37.805Z
     integration:
       status: pending
       detail: null
@@ -46865,7 +46865,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 7b1b856564b91f28efc8bbb2d3b8e41034fd9a3f
-      updated_at: 2026-04-10T00:47:50.822Z
+      updated_at: 2026-04-10T01:45:37.805Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KNTACN5YJKW4NE46WWDP95KY"
@@ -46873,16 +46873,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-10T00:27:47.040Z
-      last_reconciled_at: 2026-04-10T00:47:50.822Z
+      last_reconciled_at: 2026-04-10T01:45:37.805Z
       created_at: 2026-04-10T00:27:23.331Z
-      updated_at: 2026-04-10T00:47:50.822Z
+      updated_at: 2026-04-10T01:45:37.805Z
     workspace_id: dispatch-workspace-01KNTACN5YJKW4NE46WWDP95KY
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 57bb82ad5bbec60e2718054d5f350febed206225
+        last_seen_at: 2026-04-10T01:45:37.805Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cli-serve-test-daemon-cleanup-01kntacn-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-cli-serve-test-daemon-cleanup/01kntacn
-        head: 7b1b856564b91f28efc8bbb2d3b8e41034fd9a3f
-        last_seen_at: 2026-04-10T00:27:23.331Z
+        head: 57bb82ad5bbec60e2718054d5f350febed206225
+        last_seen_at: 2026-04-10T01:45:37.805Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cli-serve-test-daemon-cleanup-01kntacn
