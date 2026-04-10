@@ -162,7 +162,7 @@ description: >-
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-cli-serve-test-daemon-cleanup"
@@ -178,8 +178,8 @@ review_ref: "@01KNTQ184G6GT4WK65938S1KXK"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-lint-rule-test-daemon-cleanup/01kntacp
-  captured_at: 2026-04-10T03:28:03.602Z
-  commit: bfc112ad754cb512d23d6f95793917495c7cafa4
+  captured_at: 2026-04-10T03:53:33.306Z
+  commit: cc112485adee6ecaece0de407d9f202e379e0d0e
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-lint-rule-test-daemon-cleanup/01kntacp
@@ -362,8 +362,35 @@ history:
         previous: 2026-04-10T03:28:00.298Z
     command: task-start
     timestamp: 2026-04-10T03:53:30.033Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-lint-rule-test-daemon-cleanup/01kntacp
+          captured_at: 2026-04-10T03:53:33.306Z
+          commit: cc112485adee6ecaece0de407d9f202e379e0d0e
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-lint-rule-test-daemon-cleanup/01kntacp
+        previous:
+          review_url: null
+          branch: dispatch/task/task-lint-rule-test-daemon-cleanup/01kntacp
+          captured_at: 2026-04-10T03:28:03.602Z
+          commit: bfc112ad754cb512d23d6f95793917495c7cafa4
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-lint-rule-test-daemon-cleanup/01kntacp
+      submitted_at:
+        new: 2026-04-10T03:53:33.312Z
+        previous: 2026-04-10T03:28:03.607Z
+    command: task-submit
+    timestamp: 2026-04-10T03:53:33.312Z
 created_at: 2026-04-09T23:49:11.883Z
 started_at: 2026-04-10T03:53:30.033Z
-submitted_at: 2026-04-10T03:28:03.607Z
+submitted_at: 2026-04-10T03:53:33.312Z
 todos: []
 automation: eligible
