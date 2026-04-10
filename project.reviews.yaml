@@ -132888,7 +132888,17 @@ reviews:
     slugs: []
     title: Review task-test-runner-progress-output
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Exited 6 with repository-wide pre-existing warnings (orphaned specs and historical AC
+          annotation issues); no task-specific validation error identified during this review.
+        name: kspec validate
+        required: false
+        created_at: 2026-04-10T02:19:07.542Z
+        completed_at: 2026-04-10T02:19:07.542Z
     events:
       - _ulid: 01KNTJHF70ZYTWBCKSPGGVZXDM
         actor: Jacob Chapel
@@ -132910,6 +132920,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNTJZ429HFY2E287G87DRWZE
         timestamp: 2026-04-10T02:19:05.626Z
+      - _ulid: 01KNTJZ7YXQJZDWGSXR4ZNZF0N
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-04-10T02:19:08.637Z
     examined_commit: 6a061a6a1c7dd5547a4892c9cc24180efb5aef04
     external_links: []
     lifecycle_state: open
@@ -132943,5 +132960,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-10T02:11:37.312Z
-    updated_at: 2026-04-10T02:19:04.649Z
+    updated_at: 2026-04-10T02:19:07.542Z
     notes: []
