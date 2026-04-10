@@ -134275,6 +134275,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNVAVSDXR9C3MXACXBZ2JPGM
         timestamp: 2026-04-10T09:16:42.263Z
+      - _ulid: 01KNVAVVRS50XM2ZA99R0DQFKB
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNVAVSHGYEZZSV1YDXJYCREX
+        timestamp: 2026-04-10T09:16:43.673Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -134301,7 +134308,23 @@ reviews:
               @task-default-reflection-hooks, or remove those steps from the upgrade task's scope.
             created_at: 2026-04-10T09:16:41.278Z
         kind: blocker
+      - _ulid: 01KNVAVSHGYEZZSV1YDXJYCREX
+        anchor:
+          type: structured
+          ref: "@scaffolded-agents-file"
+          section: description
+        entries:
+          - _ulid: 01KNVAVSHHFJK9BK75E20SRY7D
+            author: Jacob Chapel
+            body: The description promises the scaffolded AGENTS file is never overwritten unless the force flag
+              is set, but the spec has no AC for the force path or backup behavior while the task
+              implements both. That leaves a user-visible overwrite contract unreviewable and
+              untestable. Add explicit ACs for forced overwrite behavior (and backup, if intended),
+              or narrow the description so the task does not implement behavior the spec never
+              defines.
+            created_at: 2026-04-10T09:16:41.393Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-10T09:16:05.068Z
-    updated_at: 2026-04-10T09:16:41.278Z
+    updated_at: 2026-04-10T09:16:41.393Z
     notes: []
