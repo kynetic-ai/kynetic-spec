@@ -64,3 +64,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-10T02:19:31.774Z
+  - _ulid: 01KNTM50VA6CW1NS5SVD3FFQP2
+    content: "Fix cycle 1: addressed blocker from review @01KNTJHF70SJNJ6JCWC3YQNC9X. Progress lines
+      were being written to both stderr and the log file, violating AC5. Removed logStream.write()
+      for KSPEC_PROGRESS: prefixed lines so they only go to terminal. Added test verifying log file
+      does not contain progress lines. Re-verified all ACs: AC1-AC6 still satisfied. Full suite:
+      7736 tests (7731 passed, 5 skipped, 0 failed)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-10T02:39:46.538Z
