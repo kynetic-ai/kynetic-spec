@@ -46456,3 +46456,79 @@ workspaces:
         head: 3e876f35aa9437eaeee74d3332c2edc84ed3afa2
         last_seen_at: 2026-04-09T10:36:57.579Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-e2e-fixture-decoupled-assertions-01knrnp1
+  - active_role: null
+    base_branch_point: 7b1b856564b91f28efc8bbb2d3b8e41034fd9a3f
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-cli-serve-test-daemon-cleanup/01kntacn
+    canonical_branch_head: 7b1b856564b91f28efc8bbb2d3b8e41034fd9a3f
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-04-10T00:27:23.331Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-04-10T00:27:23.331Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: 7b1b856564b91f28efc8bbb2d3b8e41034fd9a3f
+      updated_at: 2026-04-10T00:27:23.331Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KNTACN5YJKW4NE46WWDP95KY"
+    task_slug: task-cli-serve-test-daemon-cleanup
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-04-10T00:27:23.331Z
+      created_at: 2026-04-10T00:27:23.331Z
+      updated_at: 2026-04-10T00:27:23.331Z
+    workspace_id: dispatch-workspace-01KNTACN5YJKW4NE46WWDP95KY
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-cli-serve-test-daemon-cleanup/01kntacn
+        head: 7b1b856564b91f28efc8bbb2d3b8e41034fd9a3f
+        last_seen_at: 2026-04-10T00:27:23.331Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cli-serve-test-daemon-cleanup-01kntacn
