@@ -134381,9 +134381,25 @@ reviews:
           status: pass
           name: AC coverage
         timestamp: 2026-04-10T09:17:43.576Z
+      - _ulid: 01KNVAY850QZAGA2P7K920HWBJ
+        actor: codex@local
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-10T09:18:01.889Z
+      - _ulid: 01KNVAY851JXGBBM6Z33FN63QD
+        actor: codex@local
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-10T09:18:01.889Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -134471,7 +134487,14 @@ reviews:
               it does not promise exact from-version reporting when the version cannot be inferred.
             created_at: 2026-04-10T09:17:34.822Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@local
+        role: reviewer
+        created_at: 2026-04-10T09:18:01.888Z
     created_at: 2026-04-10T09:16:05.068Z
-    updated_at: 2026-04-10T09:17:42.734Z
+    updated_at: 2026-04-10T09:18:01.889Z
     notes: []
