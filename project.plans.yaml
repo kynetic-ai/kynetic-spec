@@ -39099,11 +39099,14 @@ plans:
         the existing dynamic agent instruction generation.
     status: draft
     approved_at: null
-    branch: null
     derived_specs: []
     derived_tasks: []
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec/plans/init-setup-upgrade-rough-edges.md
     created_at: 2026-04-10T09:11:15.728Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KNVAJW3572VRKAM9V1XHX7SQ
+        content: Split compound then-clauses per pre-review checklist
+        author: Jacob Chapel
+        created_at: 2026-04-10T09:11:49.093Z
