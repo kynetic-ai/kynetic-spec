@@ -105,17 +105,36 @@ const noLeakyTestDaemon = {
     }
 
     /**
-     * Check if a CallExpression is afterEach(...) and its callback body
-     * contains daemon-specific cleanup (not just any kill/stop call).
+     * Check if source text contains daemon-specific cleanup patterns.
      *
      * Only matches patterns that are unambiguously daemon cleanup:
-     * - SIGTERM signal (only used for daemon processes in this codebase)
+     * - process.kill() — sends a signal to a PID (daemon cleanup)
+     * - .kill("SIG...") — child process signal (e.g., child.kill("SIGTERM"))
+     * - SIGTERM/SIGKILL/SIGINT signal names (only used for process signals)
      * - killPid helper (project-specific daemon kill utility)
-     * - stopDaemon helper (explicit daemon stop function)
-     * - "serve stop" or "serve", "stop" CLI command pattern
+     * - stopDaemon/stopMockDaemon helpers (explicit daemon stop functions)
+     * - "serve stop" CLI command pattern
      *
      * Generic "kill" or "stop" alone do NOT qualify — they could be
      * stopping unrelated fixtures (e.g., stopUnrelatedFixture()).
+     */
+    function hasDaemonCleanupPattern(text) {
+      return (
+        text.includes("process.kill") ||
+        /\.kill\(\s*["']SIG/.test(text) ||
+        text.includes("SIGTERM") ||
+        text.includes("SIGKILL") ||
+        text.includes("SIGINT") ||
+        text.includes("killPid") ||
+        text.includes("stopDaemon") ||
+        text.includes("stopMockDaemon") ||
+        text.includes("serve stop")
+      );
+    }
+
+    /**
+     * Check if a CallExpression is afterEach(...) and its callback body
+     * contains daemon-specific cleanup.
      */
     function isAfterEachWithCleanup(node) {
       if (node.type !== "CallExpression") return false;
@@ -126,12 +145,7 @@ const noLeakyTestDaemon = {
         return false;
       }
       const text = context.sourceCode.getText(node);
-      return (
-        text.includes("SIGTERM") ||
-        text.includes("killPid") ||
-        text.includes("stopDaemon") ||
-        text.includes("serve stop")
-      );
+      return hasDaemonCleanupPattern(text);
     }
 
     /**
@@ -166,18 +180,17 @@ const noLeakyTestDaemon = {
     }
 
     /**
-     * Check if a node is inside a try block that has a finally with cleanup.
+     * Check if a node is inside a try block that has a finally with
+     * daemon-specific cleanup. Uses the same daemon-specific pattern
+     * matching as afterEach to avoid false negatives from generic
+     * "kill"/"stop" substrings matching unrelated teardown helpers.
      */
     function isInTryWithFinallyCleanup(node) {
       let current = node.parent;
       while (current) {
         if (current.type === "TryStatement" && current.finalizer) {
           const text = context.sourceCode.getText(current.finalizer);
-          if (
-            text.includes("kill") ||
-            text.includes("stop") ||
-            text.includes("SIGTERM")
-          ) {
+          if (hasDaemonCleanupPattern(text)) {
             return true;
           }
         }

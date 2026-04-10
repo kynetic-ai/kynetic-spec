@@ -179,6 +179,25 @@ describe("test suite", () => {
 `);
       expect(result.output).toContain("no-leaky-test-daemon");
     });
+
+    // Blocker 2 (cycle 2): try/finally with unrelated teardown is not daemon cleanup
+    it("should flag serve start --detach in try/finally with only unrelated teardown", () => {
+      const result = runOxlint(`
+import { describe, it, expect } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    try {
+      runKspec("serve start --detach --port 3456");
+      expect(true).toBe(true);
+    } finally {
+      stopUnrelatedFixture();
+    }
+  });
+});
+`);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
   });
 
   describe("negative cases (should NOT flag)", () => {
@@ -322,6 +341,46 @@ describe("test suite", () => {
     const child = spawn("node", [DAEMON_ENTRY, "--port", "3456"]);
     onTestFinished(() => process.kill(child.pid, "SIGTERM"));
     expect(child.pid).toBeDefined();
+  });
+});
+`);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // Blocker 1 (cycle 2): afterEach with process.kill is valid daemon cleanup
+    it("should allow serve start --detach when afterEach uses process.kill", () => {
+      const result = runOxlint(`
+import { describe, it, expect, afterEach } from "vitest";
+
+describe("test suite", () => {
+  let pid;
+  afterEach(() => process.kill(pid));
+
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    pid = 12345;
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // Blocker 1 variant: afterEach with child.kill("SIGTERM") is valid daemon cleanup
+    it("should allow serve start --detach when afterEach uses child.kill with signal", () => {
+      const result = runOxlint(`
+import { describe, it, expect, afterEach } from "vitest";
+
+describe("test suite", () => {
+  let child;
+  afterEach(() => {
+    if (child) child.kill("SIGTERM");
+  });
+
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    child = { pid: 12345, kill: () => {} };
+    expect(true).toBe(true);
   });
 });
 `);
