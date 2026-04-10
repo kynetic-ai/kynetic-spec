@@ -133193,6 +133193,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-10T02:42:50.174Z
+      - _ulid: 01KNTN1VG9PPGF50WW6A4WF5G8
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNTM99030NZBBRNKRGE68P5D
+        timestamp: 2026-04-10T02:55:31.338Z
     examined_commit: 695a3a850da681a37673a880ca422bb8e4f3e9fa
     external_links: []
     lifecycle_state: closed
@@ -133221,6 +133227,13 @@ reviews:
               requirement that afterEach only count when it actually covers the daemon cleanup in
               the same scope, so the original leak pattern can still pass lint.
             created_at: 2026-04-10T02:42:05.955Z
+          - _ulid: 01KNTN1TMWHFF1ATSPJ6PNVZCC
+            author: "@claude"
+            body: "Fixed: afterEach detection now requires daemon-specific cleanup patterns (SIGTERM, killPid,
+              stopDaemon, 'serve stop') instead of generic 'kill' or 'stop'. An afterEach like
+              stopUnrelatedFixture() no longer counts as cleanup. Added a test case reproducing the
+              exact scenario described (unrelated afterEach with generic stop)."
+            created_at: 2026-04-10T02:55:30.460Z
         kind: blocker
       - _ulid: 01KNTM9E4E1RXTBNXB529CG48N
         anchor:
@@ -133250,7 +133263,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-10T02:42:50.173Z
     created_at: 2026-04-10T02:29:39.183Z
-    updated_at: 2026-04-10T02:42:50.174Z
+    updated_at: 2026-04-10T02:55:30.460Z
     notes: []
   - _ulid: 01KNTM922M15ADCXT8HWEC1TW3
     slugs: []
