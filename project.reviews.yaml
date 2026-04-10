@@ -133502,6 +133502,33 @@ reviews:
         runner: kspec
         created_at: 2026-04-10T03:09:06.098Z
         completed_at: 2026-04-10T03:09:06.098Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: >-
+          Files read: .oxlintrc.json, kspec-agents.md, tools/eslint-rules/no-daemon-ts-imports.js,
+          tools/eslint-rules/no-leaky-test-daemon.js, tests/lint-no-daemon-ts-imports.test.ts,
+          tests/lint-no-leaky-test-daemon.test.ts.
+
+          Commands run: git diff --stat/name-only, git diff against dev, kspec task get, kspec
+          review for-task/get/add/open, grep AC annotations, rg task ref, kspec validate, npm test,
+          npm test -- tests/lint-no-leaky-test-daemon.test.ts, and direct npx oxlint fixtures for
+          afterEach/await/finally cases.
+
+          Claims verified: full suite passes on this snapshot; the previous two blockers are fixed;
+          direct oxlint reproduction still shows one false negative (unrelated finally stop helper
+          passes) and one false positive (afterEach process.kill(pid) still fails).
+
+          Categories searched: correctness (2 blockers), edge cases (finally and process.kill
+          cleanup forms), error handling (reviewed rule fallback behavior), test quality (new
+          fixtures still miss the two confirmed behaviors), integration (rule is wired into
+          .oxlintrc and runs under npm test).
+        name: review evidence
+        required: false
+        runner: codex
+        created_at: 2026-04-10T03:10:02.229Z
+        completed_at: 2026-04-10T03:10:02.229Z
     events:
       - _ulid: 01KNTN6Z73RJ39YGWPM91STFGY
         actor: Jacob Chapel
@@ -133544,6 +133571,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-04-10T03:09:06.989Z
+      - _ulid: 01KNTNWEVRWGV4RM7W7TTPT7SV
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence
+        timestamp: 2026-04-10T03:10:03.128Z
     examined_commit: 98105ed15c18b2af19e8280fa3957089ca379e72
     external_links: []
     lifecycle_state: open
@@ -133574,5 +133608,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-10T02:58:18.979Z
-    updated_at: 2026-04-10T03:09:06.098Z
+    updated_at: 2026-04-10T03:10:02.229Z
     notes: []
