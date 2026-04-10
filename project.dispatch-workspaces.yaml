@@ -47417,7 +47417,7 @@ workspaces:
         head: 65b5da6c7c3c49023c6610d6d04405362a963b3e
         last_seen_at: 2026-04-10T02:41:00.689Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-test-runner-progress-output-01kntb8y
-  - active_role: null
+  - active_role: worker
     base_branch_point: 270b2a07519a9147db0504584b49967c91115179
     bootstrap:
       status: succeeded
@@ -47622,7 +47622,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-10T02:44:09.309Z
+      updated_at: 2026-04-10T02:44:13.560Z
     integration:
       status: pending
       detail: null
@@ -47631,16 +47631,16 @@ workspaces:
       target_branch: dev
       target_commit: 270b2a07519a9147db0504584b49967c91115179
       updated_at: 2026-04-10T02:44:09.309Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KNTACP2BXY12MTB2GETNJ7CS"
     task_slug: task-lint-rule-test-daemon-cleanup
     timestamps:
       closed_at: null
-      last_active_at: 2026-04-10T02:29:07.716Z
-      last_reconciled_at: 2026-04-10T02:44:09.309Z
+      last_active_at: 2026-04-10T02:44:13.560Z
+      last_reconciled_at: 2026-04-10T02:44:13.560Z
       created_at: 2026-04-10T02:10:45.797Z
-      updated_at: 2026-04-10T02:44:10.568Z
+      updated_at: 2026-04-10T02:44:13.560Z
     workspace_id: dispatch-workspace-01KNTACP2BXY12MTB2GETNJ7CS
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
