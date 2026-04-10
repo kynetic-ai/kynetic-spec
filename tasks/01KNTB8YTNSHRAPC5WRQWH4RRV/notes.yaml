@@ -78,3 +78,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-10T02:53:07.328Z
+  - _ulid: 01KNTNZS10C45SKFE94SMDWWRD
+    content: "Fix cycle 2: addressed both blocker threads from review @01KNTM922M15ADCXT8HWEC1TW3. Root
+      cause: progress tests used fs.unlinkSync() for temp file cleanup, which throws ENOENT if the
+      file doesn't exist. This caused nondeterministic failures when running
+      tests/test-runner.test.ts in isolation repeatedly. Fix: replaced all unlinkSync with rmSync({
+      force: true }) in finally blocks, and added defensive pre-cleanup before file creation.
+      Verified deterministic: 3 consecutive --fresh targeted runs all pass (34/34). Full suite: 7736
+      tests (7731 passed, 5 skipped, 0 failed)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-10T03:11:51.840Z
