@@ -133903,3 +133903,29 @@ reviews:
     created_at: 2026-04-10T03:15:30.130Z
     updated_at: 2026-04-10T03:25:44.129Z
     notes: []
+  - _ulid: 01KNTQ184G6GT4WK65938S1KXK
+    slugs: []
+    title: Review task-lint-rule-test-daemon-cleanup (cycle 3)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KNTQ184FEMFWJKR0TTKQTGT8
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-10T03:30:08.655Z
+    examined_commit: bfc112ad754cb512d23d6f95793917495c7cafa4
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNTACP2BXY12MTB2GETNJ7CS"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-10T03:30:08.656Z
+    updated_at: null
+    notes: []
