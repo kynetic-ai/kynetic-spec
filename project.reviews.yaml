@@ -134283,6 +134283,17 @@ reviews:
         required: true
         created_at: 2026-04-10T09:17:12.589Z
         completed_at: 2026-04-10T09:17:12.589Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: task-upgrade-command composes the default-module and default-reflection-hook scaffolds in
+          its step list but does not depend on @task-derivable-default-module or
+          @task-default-reflection-hooks.
+        name: Dependency ordering
+        required: true
+        created_at: 2026-04-10T09:17:12.609Z
+        completed_at: 2026-04-10T09:17:12.609Z
     events:
       - _ulid: 01KNVATP2B7BVQFAWZNC206QMF
         actor: Jacob Chapel
@@ -134339,6 +134350,13 @@ reviews:
           status: pass
           name: Gap coverage
         timestamp: 2026-04-10T09:17:16.380Z
+      - _ulid: 01KNVAWX2KPTSM0F4SADV06HCP
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: Dependency ordering
+        timestamp: 2026-04-10T09:17:17.779Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -134414,5 +134432,5 @@ reviews:
         kind: question
     verdicts: []
     created_at: 2026-04-10T09:16:05.068Z
-    updated_at: 2026-04-10T09:17:12.589Z
+    updated_at: 2026-04-10T09:17:12.609Z
     notes: []
