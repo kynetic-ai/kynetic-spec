@@ -129,3 +129,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-10T03:40:55.518Z
+  - _ulid: 01KNTRBN3JX1JGEVRZEJVP8QM9
+    content: "Fix cycle 3: addressed both blockers (same root cause). isDetachCallExpression() was
+      matching ANY CallExpression with 'serve start --detach' string args, causing false positives
+      on non-spawn calls like expect().toContain() and console.log(). Fixed by adding a
+      SPAWN_LIKE_CALLEES whitelist (runKspec, kspec, exec, execSync, spawn, spawnSync, execFile,
+      execFileSync, fork) — the function now verifies the callee name before inspecting arguments.
+      Added 2 new negative test cases. All 2118 suites pass (7745 tests, 5 pre-existing skips).
+      Re-verified all ACs."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-10T03:53:18.194Z
