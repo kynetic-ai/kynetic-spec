@@ -1,0 +1,259 @@
+/**
+ * Managed-block gitignore writer for kspec transient directories.
+ *
+ * Maintains a sentinel-delimited block inside .gitignore so that:
+ * - All kspec transient directories are enumerated in one place
+ * - The block can be created or updated idempotently
+ * - User content outside the block is never touched
+ * - User content inside the block is preserved (never removed)
+ *
+ * AC: @complete-auto-gitignore ac-all-transient-paths-present
+ * AC: @complete-auto-gitignore ac-existing-entries-preserved
+ * AC: @complete-auto-gitignore ac-kspec-entries-idempotent
+ */
+
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
+
+import {
+  SHADOW_WORKTREE_DIR,
+  SESSIONS_WORKTREE_DIR,
+  TRANSIENT_PLANS_DIR,
+} from "./shadow.js";
+
+// ── Sentinel markers ──────────────────────────────────────────────
+
+export const MANAGED_BLOCK_START = "# >>> kspec managed";
+export const MANAGED_BLOCK_END = "# <<< kspec managed";
+
+// ── Canonical transient directory list ────────────────────────────
+
+/**
+ * Build the canonical list of transient paths that kspec may create
+ * at the project root. Accepts an optional shadow directory name
+ * override for custom-configured projects.
+ *
+ * The default dispatch worktree root (".kspec-worktrees") comes from
+ * config.ts DEFAULT_CONFIG.dispatch.worktree_root but is kept as a
+ * literal here to avoid a circular import.
+ */
+export function buildKspecGitignoreEntries(shadowDir?: string): string[] {
+  const dir = shadowDir ?? SHADOW_WORKTREE_DIR;
+  return [
+    `${dir}/`,
+    `${SESSIONS_WORKTREE_DIR}/`,
+    `${TRANSIENT_PLANS_DIR}/`,
+    ".kspec-worktrees/",
+    ".kspec-dispatch-workspace.json",
+    ".kspec-dispatch-shadow-mutation",
+  ];
+}
+
+/**
+ * Default entries using the default shadow directory (.kspec/).
+ */
+export const KSPEC_GITIGNORE_ENTRIES: readonly string[] =
+  buildKspecGitignoreEntries();
+
+// ── Managed block helpers ─────────────────────────────────────────
+
+export interface ManagedBlockResult {
+  /** Whether any entries were added (block created or expanded) */
+  changed: boolean;
+  /** Entries that were added in this invocation */
+  entriesAdded: string[];
+  /** Whether the managed block was newly created (vs updated) */
+  blockCreated: boolean;
+}
+
+/**
+ * Parse a gitignore file into three regions:
+ * - before: lines before the managed block (or the entire file if no block)
+ * - block:  lines inside the managed block (excluding sentinels)
+ * - after:  lines after the managed block
+ *
+ * Returns null for block/after when no managed block exists.
+ */
+export function parseManagedBlock(content: string): {
+  before: string[];
+  block: string[] | null;
+  after: string[] | null;
+} {
+  const lines = content.split("\n");
+  let startIdx = -1;
+  let endIdx = -1;
+
+  for (let i = 0; i < lines.length; i++) {
+    const trimmed = lines[i].trim();
+    if (trimmed === MANAGED_BLOCK_START && startIdx === -1) {
+      startIdx = i;
+    } else if (trimmed === MANAGED_BLOCK_END && startIdx !== -1) {
+      endIdx = i;
+      break;
+    }
+  }
+
+  if (startIdx === -1 || endIdx === -1) {
+    // No managed block found
+    return { before: lines, block: null, after: null };
+  }
+
+  return {
+    before: lines.slice(0, startIdx),
+    block: lines.slice(startIdx + 1, endIdx),
+    after: lines.slice(endIdx + 1),
+  };
+}
+
+/**
+ * Serialize the three regions back into a gitignore string.
+ * Ensures a trailing newline.
+ */
+export function serializeManagedBlock(
+  before: string[],
+  blockLines: string[],
+  after: string[],
+): string {
+  const parts = [
+    ...before,
+    MANAGED_BLOCK_START,
+    ...blockLines,
+    MANAGED_BLOCK_END,
+    ...after,
+  ];
+
+  let result = parts.join("\n");
+  if (!result.endsWith("\n")) {
+    result += "\n";
+  }
+  return result;
+}
+
+/**
+ * Ensure all canonical kspec entries exist inside the managed block.
+ *
+ * Rules:
+ * - If no managed block exists, create one at the end of the file
+ * - If managed block exists, add any missing entries
+ * - Never remove entries (even user-added ones inside the block)
+ * - Returns what changed
+ */
+export function updateManagedBlock(
+  content: string,
+  entries: readonly string[] = KSPEC_GITIGNORE_ENTRIES,
+): { newContent: string; result: ManagedBlockResult } {
+  const parsed = parseManagedBlock(content);
+
+  const result: ManagedBlockResult = {
+    changed: false,
+    entriesAdded: [],
+    blockCreated: false,
+  };
+
+  if (parsed.block === null) {
+    // No managed block — create one at the end
+    result.blockCreated = true;
+    result.changed = true;
+    result.entriesAdded = [...entries];
+
+    const before = parsed.before;
+    // Ensure there's a blank line before the block if the file has content
+    const hasContent = before.some((line) => line.trim().length > 0);
+    if (hasContent) {
+      const lastLine = before[before.length - 1];
+      if (lastLine !== undefined && lastLine.trim().length > 0) {
+        before.push("");
+      }
+    }
+
+    const newContent = serializeManagedBlock(before, [...entries], [""]);
+    return { newContent, result };
+  }
+
+  // Block exists — find missing entries
+  const existingTrimmed = new Set(parsed.block.map((line) => line.trim()));
+  const missing: string[] = [];
+
+  for (const entry of entries) {
+    if (!existingTrimmed.has(entry)) {
+      missing.push(entry);
+    }
+  }
+
+  if (missing.length === 0) {
+    // All entries already present — no change
+    const newContent = serializeManagedBlock(parsed.before, parsed.block, parsed.after!);
+    return { newContent, result };
+  }
+
+  // Add missing entries to the block
+  result.changed = true;
+  result.entriesAdded = missing;
+
+  const updatedBlock = [...parsed.block, ...missing];
+  const newContent = serializeManagedBlock(parsed.before, updatedBlock, parsed.after!);
+  return { newContent, result };
+}
+
+// ── File-level operations ─────────────────────────────────────────
+
+export interface EnsureKspecGitignoreOptions {
+  /** Override the shadow directory name (default: .kspec) */
+  shadowDir?: string;
+}
+
+/**
+ * Ensure the root .gitignore has a managed block with all kspec entries.
+ * Creates the file if it doesn't exist.
+ *
+ * AC: @complete-auto-gitignore ac-all-transient-paths-present
+ * AC: @complete-auto-gitignore ac-existing-entries-preserved
+ * AC: @complete-auto-gitignore ac-kspec-entries-idempotent
+ *
+ * @returns Result describing what changed
+ */
+export async function ensureKspecGitignore(
+  projectRoot: string,
+  options?: EnsureKspecGitignoreOptions,
+): Promise<ManagedBlockResult> {
+  const gitignorePath = path.join(projectRoot, ".gitignore");
+  const entries = buildKspecGitignoreEntries(options?.shadowDir);
+
+  let content = "";
+  try {
+    content = await fs.readFile(gitignorePath, "utf-8");
+  } catch {
+    // File doesn't exist, will create
+  }
+
+  const { newContent, result } = updateManagedBlock(content, entries);
+
+  if (result.changed) {
+    await fs.writeFile(gitignorePath, newContent, "utf-8");
+  }
+
+  return result;
+}
+
+/**
+ * Check whether the managed block needs any entries added.
+ * Does not modify the file.
+ */
+export async function needsKspecGitignoreUpdate(
+  projectRoot: string,
+  options?: EnsureKspecGitignoreOptions,
+): Promise<boolean> {
+  const gitignorePath = path.join(projectRoot, ".gitignore");
+  const entries = buildKspecGitignoreEntries(options?.shadowDir);
+
+  let content = "";
+  try {
+    content = await fs.readFile(gitignorePath, "utf-8");
+  } catch {
+    // File doesn't exist — definitely needs update
+    return true;
+  }
+
+  const { result } = updateManagedBlock(content, entries);
+  return result.changed;
+}

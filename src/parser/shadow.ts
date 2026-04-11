@@ -2802,30 +2802,30 @@ export async function initializeShadow(
 
   let stashedWorktreeDir: string | null = null;
   try {
-    // Step 1: Update .gitignore first (before creating worktree)
-    result.gitignoreUpdated = await ensureGitignore(projectRoot, options.shadow);
-
-    // Step 1b: Also add .kspec-sessions/ to .gitignore
-    // AC: @session-storage-modes ac-gitignore
-    const sessionsAdded = await ensureSessionsGitignore(projectRoot);
-    if (sessionsAdded) {
-      // Commit .kspec-sessions/ gitignore entry (may be separate commit if .kspec/ was already present)
-      await runGitAsync(projectRoot, ["add", ".gitignore"]);
-      await runGitAsync(projectRoot, [
-        "commit",
-        "-m",
-        `chore: add ${SESSIONS_WORKTREE_DIR}/ to .gitignore for session storage`,
-      ]);
+    // Step 1: Update .gitignore with managed block containing all transient entries
+    // AC: @complete-auto-gitignore ac-all-transient-paths-present
+    // AC: @complete-auto-gitignore ac-existing-entries-preserved
+    // AC: @complete-auto-gitignore ac-kspec-entries-idempotent
+    if (await hasUncommittedGitignore(projectRoot)) {
+      throw new ShadowError(
+        ".gitignore has uncommitted changes",
+        "GIT_ERROR",
+        "Commit or stash your .gitignore changes before running kspec init.",
+      );
     }
 
-    // Step 1c: Also add plans/ to .gitignore for transient plan documents
-    const plansAdded = await ensurePlansGitignore(projectRoot);
-    if (plansAdded) {
+    const { ensureKspecGitignore } = await import("./gitignore.js");
+    const gitignoreResult = await ensureKspecGitignore(projectRoot, {
+      shadowDir: directoryName,
+    });
+    result.gitignoreUpdated = gitignoreResult.changed;
+
+    if (gitignoreResult.changed) {
       await runGitAsync(projectRoot, ["add", ".gitignore"]);
       await runGitAsync(projectRoot, [
         "commit",
         "-m",
-        `chore: add ${TRANSIENT_PLANS_DIR}/ to .gitignore for transient plan files`,
+        "chore: add kspec transient directories to .gitignore",
       ]);
     }
 
