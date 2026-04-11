@@ -135125,6 +135125,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-11T10:01:13.604Z
+      - _ulid: 01KNY038NT32J5R9FE0PZYQAFF
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNY037R7P0A34TQE2XSF78JC
+        timestamp: 2026-04-11T10:06:15.226Z
     examined_commit: 4f57708fe3e613630f0e50337cbdaf60d0493333
     external_links: []
     lifecycle_state: open
@@ -135134,8 +135141,26 @@ reviews:
       content_hash: ""
       ref: "@01KNXYJ3PYYG1ABH6SMQ2KRE1S"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNY037R7P0A34TQE2XSF78JC
+        anchor:
+          type: code
+          commit: 4f57708fe3e613630f0e50337cbdaf60d0493333
+          line_end: 1199
+          line_start: 1160
+          path: src/cli/commands/setup.ts
+          side: head
+        entries:
+          - _ulid: 01KNY037R7DGHV9D9H4JZW0EK3
+            author: Jacob Chapel
+            body: This task explicitly required reusing the dispatcher's existing default-base resolver, but the
+              implementation copies that logic into a new local helper instead.  duplicates the
+              remote-HEAD/current-branch fallback sequence already implemented in  ( / ), which
+              means future fixes can diverge between setup scaffolding and workspace provisioning.
+              The requirement here was reuse, not a second implementation of the same algorithm.
+            created_at: 2026-04-11T10:06:14.279Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-11T10:00:55.406Z
-    updated_at: 2026-04-11T10:01:12.518Z
+    updated_at: 2026-04-11T10:06:14.279Z
     notes: []
