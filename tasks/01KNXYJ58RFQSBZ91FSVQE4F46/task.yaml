@@ -1,0 +1,108 @@
+_ulid: 01KNXYJ58RFQSBZ91FSVQE4F46
+slugs:
+  - task-plan-import-format-guidance
+title: Actionable plan import format errors and empty-plan derive guard
+type: task
+description: |
+  Make plan import strict about structural invariants
+  (title, acceptance criterion shape), tolerant of plans
+  that have no specs or tasks yet (warn instead of fail),
+  and move the "no derivable work" failure to plan derive
+  so empty-but-intentional plan content can land before
+  the structured work is written.
+
+  Why: Plan import currently silently accepts documents
+  whose title cannot be extracted (importing them as
+  "Untitled Plan") and fails later at derive time with
+  cryptic schema errors. At the same time, users
+  legitimately want to land a planning document that
+  contains prose and links before any specs or tasks have
+  been authored. The right split is: import stores content
+  (and warns if the plan is empty); derive refuses to
+  materialize anything when there is nothing to materialize.
+  Users discover both conditions with self-contained
+  messages.
+
+  What:
+  - Change plan import so that when the parser cannot
+    extract a title from the document, the command fails
+    with a non-zero exit code rather than importing as
+    "Untitled Plan". The error message must name the
+    expected structural form of the title (a top-level
+    heading as the first significant element) and show a
+    one-line example.
+  - Change plan import so that a document with a valid
+    title but neither a specs section nor a tasks section
+    containing derivable work imports successfully with a
+    warning. The warning must name both expected sections,
+    explain that derive will fail until at least one is
+    populated, and appear in normal and JSON output modes.
+  - When an acceptance criterion fails schema validation,
+    fail the import with an error that names the spec slug
+    (or index if unslugged), names the failing criterion's
+    identifier (or index), and lists every required field
+    of an acceptance criterion with a brief description.
+    Do not leak raw schema validator output.
+  - Change plan derive so that a plan with no specs and no
+    tasks fails with a non-zero exit code and a message
+    that names both expected sections, explains the plan
+    has no derivable work, and points the user at plan
+    import to update the plan's content.
+  - Extend the import command's help output to include a
+    minimal runnable example of a plan document that uses
+    all required structural elements (title, specs section
+    with one spec, tasks section with derive directive).
+    The example must be copy-pasteable.
+  - Error and warning messages must never reference files
+    outside the project (skills, README, docs) — everything
+    needed to correct the input must be in the message
+    itself.
+  - The dry-run flow for import must produce the same
+    errors and warnings as a real import so users can
+    preflight their document.
+
+  How: The parser entry point is parsePlanDocument in
+  src/parser/plan-document.ts. Today the title extraction
+  is best-effort; change it to required and propagate a
+  typed error. Introduce a typed "empty plan" signal
+  (not an error) that the import command translates into
+  a warning. The import command handler lives in
+  src/cli/commands/plan-import.ts and already consumes
+  parser errors — route the new error types and warning
+  signal to human messages there. The derive command
+  handler lives in src/cli/commands/plan.ts under the
+  derive subcommand; add the empty-plan guard check at
+  the top of the handler so it fails before any shadow
+  branch work begins. Help output is registered when the
+  command is built; add the runnable example as a help
+  text block.
+
+  Testing: Unit tests for parser behavior covering: missing
+  title, empty plan body, malformed acceptance criterion.
+  CLI tests for import covering the title error (non-zero
+  exit), empty plan warning (zero exit, warning captured),
+  AC shape error (non-zero exit). CLI tests for derive
+  covering the empty-plan failure (non-zero exit, actionable
+  message). Snapshot test for import help output containing
+  the runnable example. Test that dry-run import produces
+  the same errors and warnings as a real import.
+
+  Covers: @plan-import-format-guidance ac-missing-title-fails-import,
+  ac-empty-plan-import-warns, ac-empty-plan-derive-fails,
+  ac-ac-shape-mismatch-fails-import,
+  ac-ac-shape-mismatch-describes-shape,
+  ac-help-describes-format, ac-error-no-external-references.
+spec_ref: "@plan-import-format-guidance"
+plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - cli
+  - plans
+vcs_refs: []
+created_at: 2026-04-11T09:39:26.104Z
+todos: []

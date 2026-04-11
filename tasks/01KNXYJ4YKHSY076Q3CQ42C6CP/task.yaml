@@ -1,0 +1,73 @@
+_ulid: 01KNXYJ4YKHSY076Q3CQ42C6CP
+slugs:
+  - task-derivable-default-module
+title: Make default module a referenceable item
+type: task
+description: |
+  Turn the default module that init creates into a real
+  referenceable module item so plan derivation can target it
+  without requiring the user to create a module first.
+
+  Why: On a fresh project, plan derive currently fails with
+  "requires --module" because the file init creates is a
+  placeholder list container, not a module item. This forces
+  users to run an extra command before their first plan
+  derive will work, which is exactly the kind of guesswork
+  the release is trying to remove.
+
+  What:
+  - When init creates the default module placeholder, also
+    create a real module meta item with a deterministic slug
+    (for example, derived from the project name or a fixed
+    "default" slug — pick one and document it), a title, and
+    a description that explains it is the default module.
+  - Preserve the existing placeholder file shape so that
+    library code which expected it continues to work, but
+    ensure the new module item is discoverable by the normal
+    item lookup and is accepted by plan derive.
+  - When the user edits the title, slug, or description of
+    the default module, persist the edits through normal
+    item set flows. Subsequent plan derive invocations that
+    target the default module must follow the current slug.
+  - When a project already has one or more user-created
+    modules, init still creates the default module; a later
+    setup invocation must not remove it unless the user
+    explicitly removes it.
+  - Document the default module's existence in the setup
+    summary and in the init output.
+
+  How: The default module file is created in
+  src/cli/commands/init.ts; find the code that writes
+  modules/main.yaml and augment it to also create a module
+  item via the same library function that kspec module add
+  uses (under src/parser/modules.ts or the equivalent). The
+  plan derive module check lives in src/cli/commands/plan.ts
+  under the derive handler — verify that the newly created
+  item resolves through the same lookup path that kspec
+  module add items do.
+
+  Testing: Integration test that runs init on a fresh temp
+  directory and asserts the default module item is
+  resolvable by reference. End-to-end test that imports a
+  plan, approves it, and runs derive targeting the default
+  module without any intermediate module creation. Test
+  that editing the default module's slug via item set
+  persists and is visible to plan derive.
+
+  Covers: @derivable-default-module ac-default-module-resolvable,
+  ac-plan-derive-accepts-default, ac-default-module-editable.
+spec_ref: "@derivable-default-module"
+plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - init
+  - modules
+  - plans
+vcs_refs: []
+created_at: 2026-04-11T09:39:25.779Z
+todos: []

@@ -1,0 +1,75 @@
+_ulid: 01KNXYJ40TP75YKCV51RM6H6YZ
+slugs:
+  - task-complete-gitignore
+title: Expand and repair auto-generated gitignore entries
+type: task
+description: |
+  Make the init gitignore writer enumerate every transient
+  directory kspec can create under the project root, and
+  ensure a repair path runs during setup to add any missing
+  entries on existing projects.
+
+  Why: The current gitignore writer misses at least one
+  transient directory that is created lazily by later commands,
+  which causes untracked content to appear after normal task
+  work. Also, existing projects need a non-destructive way to
+  get the missing entries added on upgrade.
+
+  What:
+  - Build a single canonical list of transient directories
+    that kspec may create at the project root, sourced from
+    the constants used by the commands that create them (for
+    example: shadow worktree path, worktree pool root, session
+    storage path, plan drafts path). The list must be a
+    shared constant, not duplicated inline in init.
+  - Update the init gitignore writer to append every entry in
+    the canonical list idempotently, preserving any existing
+    user-authored content above or below the managed block.
+  - Use a managed-block marker pair (start and end sentinel
+    lines) so the setup step can detect and update the
+    managed block without touching user content outside it.
+  - Add a setup step that runs on every invocation (not just
+    init) and appends any missing entries from the canonical
+    list, reporting which entries were added.
+  - Never remove entries a user added manually, even if they
+    fall inside the managed block.
+  - When the managed block is absent on an existing project,
+    create it at the end of the file with all canonical
+    entries and report that the block was created.
+
+  How: The existing gitignore writing logic lives in
+  src/cli/commands/init.ts. Extract the entry list to a shared
+  constant alongside the existing path constants used by the
+  commands that create transient directories. Add the managed
+  block marker handling (a small helper that parses, updates,
+  and serializes the block). Register the setup step in the
+  pipeline so it runs during init with setup and during
+  standalone setup invocations.
+
+  Testing: Unit tests for the managed block parser covering:
+  no existing block, existing block with same entries,
+  existing block with fewer entries, user content interleaved
+  above and below the block. Integration test that runs init
+  on a fresh project, then runs commands that create each
+  transient directory, and asserts git status reports no
+  untracked content. Test that user entries outside the
+  managed block are never touched.
+
+  Covers: @complete-auto-gitignore ac-all-transient-paths-present,
+  ac-no-untracked-after-common-commands,
+  ac-existing-entries-preserved, ac-kspec-entries-idempotent.
+spec_ref: "@complete-auto-gitignore"
+plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - init
+  - setup
+  - git
+vcs_refs: []
+created_at: 2026-04-11T09:39:24.826Z
+todos: []

@@ -1,0 +1,73 @@
+_ulid: 01KNXYJ4MR4J2MR2DXYG24HB2K
+slugs:
+  - task-default-reflection-hook
+title: Scaffold default session reflection hook
+type: task
+description: |
+  During init setup, scaffold a single reflection hook that
+  fires on any idle agent session (no per-agent filter) and
+  prompts the session to run the reflect skill, so reflection
+  runs out of the box for every agent.
+
+  Why: Session reflection is valuable from the first session,
+  but requires a hook that every project currently adds by
+  hand. Treating reflection as a universal concern rather
+  than a per-agent one removes the need to look up individual
+  agent identifiers at scaffold time and simplifies the setup
+  graph — the reflection hook no longer depends on the
+  default agent scaffold running first.
+
+  What:
+  - Add a setup step that runs after the scaffold default
+    agents and conventions step and before the agents file
+    generation step.
+  - Create one hook by identifier if it does not already
+    exist: a reflection hook that fires on the session idle
+    event, applies to every agent session (no agent filter),
+    and prompts the session to run the reflect skill.
+  - Do not create the hook if its identifier already exists
+    in the hook list. Skip silently in that case and report
+    it as an idempotency skip.
+  - If the hook was previously created by this step and has
+    since been removed by the user, the step must not
+    recreate it. Detect this by checking for a marker field
+    on the hook (a known tag or a deterministic identifier
+    component) that only the scaffold writes, and by
+    remembering that the scaffold previously completed. Use
+    the existing setup seeding state file to persist the
+    "scaffolded reflection hook" marker across invocations.
+
+  How: Hook CRUD is exposed via library functions under
+  src/parser/hooks.ts (or the equivalent module). Reuse the
+  setup seeding state file pattern already used for permission
+  seeding and memory seeding to record that the hook scaffold
+  has run. The filter and action payloads are documented in
+  the hook schema in src/schema/hook.ts; follow that schema
+  exactly rather than shelling out to the CLI. The hook's
+  agent filter must be empty or a wildcard so every session
+  matches, not a list of named agents.
+
+  Testing: Unit tests for create, idempotent skip, and
+  removed-by-user non-recreation. Integration test running
+  init with setup and asserting exactly one reflection hook
+  exists with no agent filter. Test that removing the hook
+  and re-running setup without force does not recreate it.
+
+  Covers: @default-session-reflection-hook
+  ac-reflection-hook-present, ac-hook-idempotent,
+  ac-hook-removable.
+spec_ref: "@default-session-reflection-hook"
+plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - init
+  - setup
+  - hooks
+vcs_refs: []
+created_at: 2026-04-11T09:39:25.463Z
+todos: []

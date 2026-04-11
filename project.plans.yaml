@@ -39313,10 +39313,31 @@ plans:
         non-interactive so it can run in scripts and automation.
       - No web UI changes. The scaffolded defaults surface through
         the existing dynamic agent instruction generation.
-    status: approved
+    status: active
     approved_at: 2026-04-11T09:38:40.141Z
-    derived_specs: []
-    derived_tasks: []
+    derived_specs:
+      - "@trait-idempotent-file-scaffold"
+      - "@scaffolded-project-config"
+      - "@complete-auto-gitignore"
+      - "@default-project-agents-and-conventions"
+      - "@default-session-reflection-hook"
+      - "@derivable-default-module"
+      - "@plan-import-format-guidance"
+      - "@single-command-version-upgrade"
+      - "@release-notes-accessible"
+      - "@doctor-reports-actionable-state"
+      - "@meta-set-multi-value-parity"
+    derived_tasks:
+      - "@task-scaffold-project-config"
+      - "@task-complete-gitignore"
+      - "@task-default-agents-and-conventions"
+      - "@task-default-reflection-hook"
+      - "@task-derivable-default-module"
+      - "@task-plan-import-format-guidance"
+      - "@task-upgrade-command"
+      - "@task-release-notes"
+      - "@task-doctor-accuracy"
+      - "@task-meta-set-multi-value"
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec/plans/init-setup-upgrade-rough-edges.md
     created_at: 2026-04-10T09:11:15.728Z
@@ -39347,3 +39368,92 @@ plans:
           decisions section"
         author: Jacob Chapel
         created_at: 2026-04-11T09:27:20.077Z
+      - _ulid: 01KNXYJ6V949BSHQ0YHN2ZNWMQ
+        content: |-
+          This plan targets rough edges that show up the moment a real user
+          initializes a project, imports a plan, or upgrades kspec. The
+          guiding principle is that every step a user takes in the first
+          hour should either succeed or fail with an actionable error that
+          tells them exactly what to do next.
+
+          The plan groups work into four themes:
+
+          1. **Fresh-setup completeness** — the scaffold work (config file,
+             gitignore completion, default agents and conventions, default
+             reflection hook, derivable default module). A fresh project
+             after init with setup should be ready for plan import and
+             dispatch with no further hand-authoring.
+
+          2. **Plan import ergonomics** — the plan format guidance work.
+             Import must never silently accept a broken document, and its
+             help output must contain enough information to produce a
+             valid document without external references.
+
+          3. **Upgrade as a first-class command** — the version upgrade
+             command, release notes source, and doctor accuracy work. A
+             user upgrading should run a single command that leaves the
+             project in a known-good state, or fails loudly with a clear
+             recovery path.
+
+          4. **Meta set parity bugfix** — the repeated-flag behavior on
+             meta set is a latent bug that users currently work around
+             by running multiple commands. The fix stands alone and can
+             ship in any order.
+
+          Dependency ordering: the scaffold tasks (config file, gitignore,
+          default agents and conventions, default reflection hook, default
+          module) have no dependencies on each other and can run in
+          parallel. The reflection hook task used to depend on the default
+          agents task so it could look up primary agent identifiers, but
+          reflection is now a universal hook with no per-agent filter, so
+          that dependency no longer exists. The upgrade command task
+          depends on every scaffold task because it invokes them on
+          existing projects. The release notes task depends on the upgrade
+          command because the upgrade command consumes release notes.
+          The doctor accuracy task depends on the config scaffold task and
+          the upgrade command because it adds checks for both. The meta
+          set fix has no dependencies.
+
+          Design decisions:
+          - Scaffolding is additive and idempotent, with two different
+            force contracts depending on what is being scaffolded. File
+            scaffolds (config file, gitignore block) preserve existing
+            files byte-for-byte without force, and back up then replace
+            on force — this is the @trait-idempotent-file-scaffold
+            contract. Meta-item scaffolds (default agents, conventions,
+            reflection hook, default module) are first-run-only: after
+            the first successful seed, subsequent runs never recreate
+            items the user has removed or renamed, and force is scoped
+            to "reseed missing items only" without overwriting anything
+            the user currently has. No scaffold step ever destroys user
+            content.
+          - The canonical list of transient directories lives in a shared
+            constant, not inline in init, so future additions are
+            automatically picked up by both init and the upgrade repair
+            step.
+          - The upgrade command is a composition of existing setup steps
+            plus version detection. It is not a new mechanism; it is a
+            correct entry point into existing mechanisms.
+          - Release notes live in a single source file in the repository
+            and are shipped in the published package. The CLI reads the
+            same file users would read on the web. No duplication.
+          - Doctor becomes reliable by checking the locations that
+            setup actually writes to. The test suite includes a
+            "fresh init produces zero doctor warnings" assertion so
+            regressions are caught immediately.
+          - The meta set fix uses variadic options to match the meta
+            add pattern. The CLI library supports this natively; the
+            bug is a declaration mistake, not a design choice.
+
+          Non-goals:
+          - No changes to the shape of the shadow branch or task storage
+            beyond the existing task storage migration that the upgrade
+            command invokes.
+          - No changes to how agents are dispatched or how tasks are
+            provisioned beyond what the scaffolded defaults produce.
+          - No interactive upgrade prompts. The upgrade command is
+            non-interactive so it can run in scripts and automation.
+          - No web UI changes. The scaffolded defaults surface through
+            the existing dynamic agent instruction generation.
+        author: Jacob Chapel
+        created_at: 2026-04-11T09:39:27.721Z

@@ -26075,3 +26075,188 @@
   submitted_at: 2026-04-10T03:12:13.317Z
   completed_at: 2026-04-10T03:27:16.787Z
   automation: eligible
+- _ulid: 01KNXYJ3PYYG1ABH6SMQ2KRE1S
+  slugs:
+    - task-scaffold-project-config
+  title: Scaffold project config file during init setup
+  type: task
+  spec_ref: "@scaffolded-project-config"
+  plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - init
+    - setup
+    - config
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-11T09:39:24.510Z
+- _ulid: 01KNXYJ40TP75YKCV51RM6H6YZ
+  slugs:
+    - task-complete-gitignore
+  title: Expand and repair auto-generated gitignore entries
+  type: task
+  spec_ref: "@complete-auto-gitignore"
+  plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - init
+    - setup
+    - git
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-11T09:39:24.826Z
+- _ulid: 01KNXYJ4AP5ACVWK4Y93JG7BKH
+  slugs:
+    - task-default-agents-and-conventions
+  title: Scaffold default project agents and conventions
+  type: task
+  spec_ref: "@default-project-agents-and-conventions"
+  plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - init
+    - setup
+    - meta
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-11T09:39:25.142Z
+- _ulid: 01KNXYJ4MR4J2MR2DXYG24HB2K
+  slugs:
+    - task-default-reflection-hook
+  title: Scaffold default session reflection hook
+  type: task
+  spec_ref: "@default-session-reflection-hook"
+  plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - init
+    - setup
+    - hooks
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-11T09:39:25.463Z
+- _ulid: 01KNXYJ4YKHSY076Q3CQ42C6CP
+  slugs:
+    - task-derivable-default-module
+  title: Make default module a referenceable item
+  type: task
+  spec_ref: "@derivable-default-module"
+  plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - init
+    - modules
+    - plans
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-11T09:39:25.779Z
+- _ulid: 01KNXYJ58RFQSBZ91FSVQE4F46
+  slugs:
+    - task-plan-import-format-guidance
+  title: Actionable plan import format errors and empty-plan derive guard
+  type: task
+  spec_ref: "@plan-import-format-guidance"
+  plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - cli
+    - plans
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-11T09:39:26.104Z
+- _ulid: 01KNXYJ5JCR99F76N8N7265E0B
+  slugs:
+    - task-upgrade-command
+  title: Implement single-command version upgrade
+  type: task
+  spec_ref: "@single-command-version-upgrade"
+  plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-scaffold-project-config"
+    - "@task-complete-gitignore"
+    - "@task-default-agents-and-conventions"
+    - "@task-default-reflection-hook"
+    - "@task-derivable-default-module"
+  priority: 1
+  tags:
+    - cli
+    - upgrade
+    - setup
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-11T09:39:26.412Z
+- _ulid: 01KNXYJ5XEHD54A46S1988T3CV
+  slugs:
+    - task-release-notes
+  title: Author release notes and expose via CLI
+  type: task
+  spec_ref: "@release-notes-accessible"
+  plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-upgrade-command"
+  priority: 2
+  tags:
+    - cli
+    - docs
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-11T09:39:26.766Z
+- _ulid: 01KNXYJ66ZQ5TBZ69YFCKK3J2T
+  slugs:
+    - task-doctor-accuracy
+  title: Remove doctor false positive and add scaffold checks
+  type: task
+  spec_ref: "@doctor-reports-actionable-state"
+  plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-scaffold-project-config"
+    - "@task-upgrade-command"
+  priority: 2
+  tags:
+    - cli
+    - doctor
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-11T09:39:27.071Z
+- _ulid: 01KNXYJ6GNEEFAAYRXSCPHVNSR
+  slugs:
+    - task-meta-set-multi-value
+  title: Fix meta set multi-value option parity
+  type: task
+  spec_ref: "@meta-set-multi-value-parity"
+  plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - cli
+    - meta
+    - bugfix
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-11T09:39:27.381Z

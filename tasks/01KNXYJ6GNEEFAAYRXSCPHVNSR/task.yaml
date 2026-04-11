@@ -1,0 +1,70 @@
+_ulid: 01KNXYJ6GNEEFAAYRXSCPHVNSR
+slugs:
+  - task-meta-set-multi-value
+title: Fix meta set multi-value option parity
+type: task
+description: |
+  Make repeated multi-value options on meta set accept and
+  preserve every value the user supplies, matching the
+  behavior of the meta add flow.
+
+  Why: Repeated add-rule, add-skill, and add-capability flags
+  on meta set currently drop all values except the last,
+  silently. This diverges from meta add (which preserves all
+  repeated values) and forces users to run multiple commands
+  to do what should be one atomic update. It is a real logic
+  bug, not a documentation gap.
+
+  What:
+  - Audit the meta set command handler for every flag that
+    accepts repeated values (at minimum: add-rule, add-skill,
+    add-capability, remove-rule, remove-skill,
+    remove-capability). Confirm which are currently
+    last-write-wins.
+  - Change each affected flag to be a variadic option (or the
+    equivalent in the CLI library the project uses) so the
+    handler receives an array of every supplied value.
+  - Update the handler logic to append every supplied value
+    for add flags and remove every supplied value for remove
+    flags, in a single atomic write to the meta item.
+  - When a single invocation contains both add and remove
+    flags for the same field, apply removes before adds so
+    the user's intent is unambiguous (an explicit "replace
+    these with those" reads correctly).
+  - The fix must not change the behavior of meta add; that
+    flow already works correctly and the regression tests
+    must protect it.
+
+  How: The handler lives in src/cli/commands/meta.ts under
+  the set subcommand. The CLI library is commander; the
+  correct pattern is to declare the option as variadic
+  (option with three dots in the declaration) and consume
+  it as an array. Compare the implementation of meta add
+  for the exact pattern.
+
+  Testing: Unit tests for the handler covering: repeated
+  add-rule preserves all rules, repeated add-skill preserves
+  all skills, repeated add-capability preserves all
+  capabilities, repeated remove flags remove all named
+  values, mixed add and remove flags apply in the expected
+  order. Regression test for meta add behavior to ensure the
+  fix does not break it.
+
+  Covers: @meta-set-multi-value-parity ac-repeated-add-rule-all-kept,
+  ac-repeated-add-skill-all-kept, ac-repeated-add-capability-all-kept,
+  ac-remove-flags-unchanged, ac-mixed-add-and-remove.
+spec_ref: "@meta-set-multi-value-parity"
+plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - cli
+  - meta
+  - bugfix
+vcs_refs: []
+created_at: 2026-04-11T09:39:27.381Z
+todos: []

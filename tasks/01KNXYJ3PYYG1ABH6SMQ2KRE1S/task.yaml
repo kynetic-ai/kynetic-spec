@@ -1,0 +1,91 @@
+_ulid: 01KNXYJ3PYYG1ABH6SMQ2KRE1S
+slugs:
+  - task-scaffold-project-config
+title: Scaffold project config file during init setup
+type: task
+description: |
+  Write a project config file at the project root as part of
+  the setup step that runs during init, using resolved defaults
+  and commented placeholders for knobs that real projects are
+  expected to customize.
+
+  Why: New projects consistently need the same config file with
+  the same shape, but currently every project author writes it
+  by hand. Scaffolding it once during setup removes an entire
+  class of first-day friction and eliminates silent dispatch
+  breakage from a missing file.
+
+  What:
+  - Add a setup step that runs after the existing skill
+    rendering step and before the existing agents file
+    generation step.
+  - The step writes a project config file at the project root
+    with the following content:
+    * A dispatch section containing publication_mode set to
+      manual_merge, with an adjacent comment listing the other
+      accepted values from the dispatch publication mode schema.
+    * A dispatch section containing base_branch resolved from
+      the current repository's default branch (detect via the
+      same helper the dispatcher uses to resolve a default
+      base; if detection fails, use the literal string "main"
+      and comment that the value was a fallback).
+    * A commented-out coverage section showing scan_paths as a
+      list example with one or two sample paths, with a
+      comment explaining that uncommenting enables AC coverage
+      scanning.
+    * A top-of-file comment identifying the file as a
+      scaffolded template and instructing the user to review it.
+  - The step must be idempotent: if the file already exists
+    and the force flag is not set, the step is reported as
+    skipped with a reason.
+  - When the force flag is set and the file exists, back up
+    the existing content to a sibling file with a timestamped
+    extension and report the backup path before writing the
+    fresh template.
+  - Validate the scaffolded file by running it through the
+    existing config loader in the same invocation; if loading
+    fails the setup step must fail loudly rather than leaving
+    a broken file.
+  - The step must appear in the setup summary output with the
+    same format as existing steps.
+
+  How: The existing setup pipeline lives in the setup command
+  under src/cli/commands/setup.ts. Add a new step function
+  next to the existing skill rendering and agents file
+  generation steps, register it in the pipeline ordering, and
+  reuse the existing step result reporting helper so output
+  formatting matches. The config schema and loader live under
+  src/parser/config.ts; reuse its loader for the validation
+  check. Default branch resolution is already used by the
+  dispatch workspace resolver under src/agent-runtime; reuse
+  its helper rather than reimplementing it.
+
+  Testing: Unit tests for the step function covering the
+  fresh-project path, the existing-file skip path, and the
+  force-overwrite-with-backup path. Integration test that
+  runs init with setup on a fresh temp directory and asserts
+  the scaffolded file exists, is valid on load, and contains
+  the documented keys. Fixture test that an empty project
+  with only the scaffolded file behaves identically to a
+  project with no config file at all.
+
+  Covers: @scaffolded-project-config ac-file-scaffolded,
+  ac-file-valid-on-load, ac-placeholder-publication-mode,
+  ac-placeholder-base-branch, ac-placeholder-coverage,
+  ac-file-exists-preserved, ac-file-force-overwrites,
+  ac-file-force-backup.
+spec_ref: "@scaffolded-project-config"
+plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - init
+  - setup
+  - config
+vcs_refs: []
+created_at: 2026-04-11T09:39:24.510Z
+todos: []

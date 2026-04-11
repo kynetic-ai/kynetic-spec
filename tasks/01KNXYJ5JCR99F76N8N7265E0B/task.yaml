@@ -1,0 +1,134 @@
+_ulid: 01KNXYJ5JCR99F76N8N7265E0B
+slugs:
+  - task-upgrade-command
+title: Implement single-command version upgrade
+type: task
+description: |
+  Add an upgrade command that detects version skew between a
+  project and the installed kspec version, runs all required
+  migrations, re-renders skills, regenerates the auto-generated
+  agent instructions file, repairs gitignore entries, and
+  reports the net result.
+
+  Why: Projects today go through silent breakage on upgrade
+  because required migrations are run manually, rendered
+  skills go stale without warning, and new defaults are not
+  backfilled. A single upgrade command eliminates version
+  skew as a failure mode.
+
+  What:
+  - Add a new top-level command named upgrade. It accepts no
+    required arguments. It accepts a dry-run flag and a
+    force flag.
+  - Version detection pipeline:
+    * Target version: read from the package manifest the CLI
+      ships with. This is always authoritative.
+    * Source version — preferred path: read the last-known
+      version from a dedicated field in the existing setup
+      seeding state file (the same file that already stores
+      permission and memory seeding state). A new field name
+      is added there; no new file.
+    * Source version — fallback path: if no recorded version
+      exists, infer it from the observable shape of project
+      state. Build a small set of probes for distinguishing
+      known major-version states: for example, the presence
+      of a legacy monolithic task storage file versus the
+      per-task split directories, the presence or absence of
+      the scaffolded project config file, the presence or
+      absence of the review-plan rendered skill, the content
+      of the task storage format marker field in the
+      manifest. Each probe maps to a bounded version range.
+      The inferred version is the newest version consistent
+      with every probe result.
+    * Source version — unknown: when no set of probes is
+      conclusive (for example, a project with hand-edited
+      state that does not match any known shape), report
+      the source as unknown and treat the project as if it
+      were on the oldest supported version. Every step in
+      the upgrade pipeline must be safe to run in this mode
+      because the fallback is "run everything".
+    * The source version result carries a confidence
+      marker: exact (read from state file), approximate
+      (inferred from probes), or unknown. The upgrade
+      reports the marker alongside the version.
+    * When source and target match with exact confidence,
+      report the project as current and exit successfully
+      without making changes. When source and target match
+      with approximate confidence, still run the pipeline
+      (as a safety net) but label it as a refresh rather
+      than an upgrade.
+  - Upgrade pipeline (each step reports its result):
+    1. Run the existing task storage migration. Report the
+       number of tasks migrated (or zero).
+    2. Re-render skills using the existing setup force-render
+       behavior. Report how many skills were added, updated,
+       and removed since the previous state.
+    3. Regenerate the auto-generated agent instructions file
+       using the existing generation command. Report whether
+       the file changed.
+    4. Run the gitignore repair step from the gitignore
+       completion work. Report which entries were appended.
+    5. Scaffold any missing files that the init setup scaffold
+       steps would create on a fresh project (config file,
+       default module, default agents and conventions, default
+       reflection hook) — but only create what is missing;
+       never overwrite. Each skipped item is reported as a skip.
+    6. Write the new current version to the last-known version
+       state file.
+  - When the dry-run flag is set, every step reports what it
+    would do without making changes, and no state file is
+    written.
+  - When any step fails, the command exits with a non-zero
+    status and reports which step failed and what state the
+    upgrade left the project in.
+  - The command output ends with a manual follow-up section
+    that lists any scaffolded or updated files the user
+    should review.
+
+  How: The existing setup force pathway under
+  src/cli/commands/setup.ts already covers most of the
+  mechanics (skill re-render, agents regeneration). Build the
+  upgrade command as a composition of existing step functions
+  plus the new task storage migration invocation (library
+  function under src/cli/commands/task-migrate.ts or the
+  equivalent). Store the last-known version in the same
+  state file pattern used by setup seeding; add a new field
+  rather than a new file. The command handler registration
+  goes in src/cli/index.ts alongside the other top-level
+  commands.
+
+  Testing: Integration tests covering each upgrade scenario:
+  pre-versioning project (no state file), current project
+  (no-op), project with legacy task storage, project with
+  stale skill renders, project with missing gitignore
+  entries, project with missing scaffolded files. Test
+  dry-run for each scenario. Test failure propagation when a
+  step fails.
+
+  Covers: @single-command-version-upgrade ac-detects-skew,
+  ac-source-version-fallback, ac-source-version-unknown,
+  ac-reports-skew, ac-runs-task-storage-migration,
+  ac-rerenders-skills, ac-regenerates-agents-file,
+  ac-restores-gitignore-entries, ac-idempotent-when-current,
+  ac-reports-manual-follow-ups, ac-dry-run-reports,
+  ac-dry-run-no-writes.
+spec_ref: "@single-command-version-upgrade"
+plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-scaffold-project-config"
+  - "@task-complete-gitignore"
+  - "@task-default-agents-and-conventions"
+  - "@task-default-reflection-hook"
+  - "@task-derivable-default-module"
+context: []
+priority: 1
+tags:
+  - cli
+  - upgrade
+  - setup
+vcs_refs: []
+created_at: 2026-04-11T09:39:26.412Z
+todos: []

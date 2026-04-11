@@ -2613,7 +2613,77 @@ modules:
     implements: []
     relates_to: []
     tests: []
-    traits: []
+    traits:
+      - _ulid: 01KNXYJ2VH0Y7Z6XHSMXE251GK
+        slugs:
+          - trait-idempotent-file-scaffold
+        title: Idempotent File Scaffolding Trait
+        type: trait
+        description: |
+          A scaffolding step that creates a file or writes to a
+          managed block inside a file on disk follows a uniform set
+          of rules so users can predict its behavior without reading
+          its implementation: the target file is never modified
+          unless the force flag is set; when force is set, the
+          existing file is backed up to a sibling path before being
+          replaced and the backup path is reported in the step's
+          output; the step is safe to re-run and produces the same
+          visible result on the second run as the first when no
+          inputs changed; the step always reports its action
+          (created, skipped, force-recreated) in a stable format
+          consumable by the setup summary; and the step never
+          destroys user content outside the file it owns.
+
+          Scope: this trait applies only to scaffolding that writes
+          files on disk. Scaffolds that create meta-spec items
+          (agents, conventions, hooks, modules) have different force
+          semantics — they use first-run-only creation with
+          "reseed missing items only" on force — and must not
+          inherit this trait.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              A file scaffold step's target file already exists
+            id: ac-existing-file-preserved-without-force
+            then: |
+              The existing file is preserved byte-for-byte and
+              the step reports "skipped"
+            when: |
+              The step runs without the force flag
+          - given: |
+              A file scaffold step's target file already exists and
+              the step is invoked with the force flag
+            id: ac-force-backs-up-before-overwrite
+            then: |
+              The previous content is preserved as a sibling backup
+              with a timestamped name, the backup path is reported
+              before the overwrite, and only then is the file
+              replaced with a freshly scaffolded template
+            when: |
+              The step runs
+          - given: |
+              A file scaffold step's target file does not exist
+            id: ac-fresh-file-creation
+            then: |
+              The file is created and the step reports "created"
+            when: |
+              The step runs with or without the force flag
+          - given: |
+              Any file scaffold step completes
+            id: ac-step-reports-action
+            then: |
+              The step's action (created, skipped, force-recreated)
+              and any backup path are included in the summary in a
+              stable format
+            when: |
+              The setup summary is produced
+        tags: []
+        created: 2026-04-11T09:39:23.633Z
+        notes: []
     tags: []
     decisions:
       - _ulid: 01KKZPVBRMZCGV3JGQMMTS23KH
@@ -4064,6 +4134,74 @@ modules:
                 when: initialization completes
             tags: []
             created: 2026-02-15T00:39:29.479Z
+            notes: []
+          - _ulid: 01KNXYJ3JVEW84C2VMF02Z8XXB
+            slugs:
+              - doctor-reports-actionable-state
+            title: Doctor Reports Actionable State
+            type: requirement
+            description: |
+              The doctor command reports the real state of the project
+              without false positives and without warnings that the user
+              has no way to act on. Every warning and error is paired with
+              a concrete command or action that resolves it, and every
+              check looks at the location where the checked artifact
+              actually lives. Doctor is the single source of truth for
+              whether a project is ready for normal work.
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits:
+              - "@trait-error-guidance"
+              - "@trait-semantic-exit-codes"
+            acceptance_criteria:
+              - given: |
+                  A project has rendered skill files in the locations
+                  currently used by the setup command
+                id: ac-skills-check-accurate
+                then: |
+                  The skills check reports the rendered skills as present
+                  and does not emit a warning about missing rendered
+                  skills
+                when: |
+                  Doctor runs
+              - given: |
+                  A project has no rendered skill files in any supported
+                  location
+                id: ac-skills-check-missing
+                then: |
+                  The skills check reports the rendered skills as missing
+                  and names the command that re-renders them
+                when: |
+                  Doctor runs
+              - given: |
+                  A project is missing the scaffolded project config file
+                id: ac-config-scaffold-detected
+                then: |
+                  A warning identifies the missing file and names the
+                  command that scaffolds it
+                when: |
+                  Doctor runs
+              - given: |
+                  A project was initialized with an older kspec version
+                  and has not been upgraded
+                id: ac-version-skew-detected
+                then: |
+                  A warning identifies the version skew and names the
+                  upgrade command
+                when: |
+                  Doctor runs
+              - given: |
+                  Any doctor output is produced
+                id: ac-all-actionable
+                then: |
+                  The message includes a concrete command or action the
+                  user can run to resolve the condition
+                when: |
+                  A warning or error is displayed
+            tags: []
+            created: 2026-04-11T09:39:24.379Z
             notes: []
         created: 2026-02-15T00:39:29.347Z
         notes: []
@@ -6314,6 +6452,512 @@ modules:
           - daemon
         created: 2026-03-27T03:27:40.575Z
         notes: []
+      - _ulid: 01KNXYJ2Y3A2MAVHRQQ97VD0PV
+        slugs:
+          - scaffolded-project-config
+        title: Scaffolded Project Config File
+        type: requirement
+        description: |
+          When a project is initialized with full setup, a project config
+          file is scaffolded at the project root with placeholder values
+          for the knobs that real projects are expected to customize.
+          The scaffolded file uses only documented config keys, is valid
+          on first load, and marks itself visibly as a template that the
+          user should review.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-idempotent-file-scaffold"
+          - "@trait-error-guidance"
+        acceptance_criteria:
+          - given: |
+              A project has no project config file at its root
+            id: ac-file-scaffolded
+            then: |
+              A project config file is created at the project root
+            when: |
+              The project is initialized with full setup
+          - given: |
+              A scaffolded project config file has just been written
+            id: ac-file-valid-on-load
+            then: |
+              The file parses successfully and produces the same resolved
+              configuration as an empty config would, so scaffolding does
+              not change runtime behavior
+            when: |
+              The config is loaded by any kspec command
+          - given: |
+              A scaffolded project config file is written
+            id: ac-placeholder-publication-mode
+            then: |
+              The dispatch publication mode key is present with a
+              default value and an adjacent comment naming the other
+              accepted values
+            when: |
+              The file contents are inspected
+          - given: |
+              A scaffolded project config file is written
+            id: ac-placeholder-base-branch
+            then: |
+              The dispatch base branch key is present with a resolved
+              value taken from the current repository's default branch
+            when: |
+              The file contents are inspected
+          - given: |
+              A scaffolded project config file is written
+            id: ac-placeholder-coverage
+            then: |
+              The coverage scan paths key is present as a commented-out
+              example with sample paths, so users know the knob exists
+              without forcing a choice at init time
+            when: |
+              The file contents are inspected
+          - given: |
+              A project already has a project config file at its root
+            id: ac-file-exists-preserved
+            then: |
+              The existing file is preserved byte-for-byte
+            when: |
+              The project is re-initialized or setup is re-run without
+              the force flag
+          - given: |
+              A project already has a project config file and setup is
+              invoked with the force flag
+            id: ac-file-force-overwrites
+            then: |
+              The existing file is replaced with a freshly scaffolded
+              template
+            when: |
+              Setup runs
+          - given: |
+              A project already has a project config file and setup is
+              invoked with the force flag
+            id: ac-file-force-backup
+            then: |
+              The previous content is preserved as a sibling backup
+              file whose path is reported in the setup output
+            when: |
+              Setup overwrites the existing file
+        tags: []
+        created: 2026-04-11T09:39:23.715Z
+        notes: []
+      - _ulid: 01KNXYJ33X5MDDET9E4CQ7Z5QX
+        slugs:
+          - default-project-agents-and-conventions
+        title: Default Project Agents and Conventions
+        type: requirement
+        description: |
+          When a project is initialized with full setup for the first
+          time, the meta spec is seeded with a complete set of default
+          agents covering task work, code review, general development,
+          and plan review, plus baseline conventions for commits,
+          architecture, and testing. Every default agent has write
+          authorization enabled unconditionally so agents can operate
+          without per-action approval. These defaults establish the
+          minimum context every project needs for normal task work,
+          code review, and plan review to function out of the box.
+          After the initial seed, the scaffold never recreates items
+          the user has deliberately removed or renamed — the scaffold
+          is first-time-only state, not a recurring reset.
+
+          This spec is the single source of truth for the default
+          agent roster. Older specs that describe individual scaffold
+          agents by name are superseded by this one, and their tests
+          are re-annotated against the acceptance criteria below.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              A fresh project completes full setup
+            id: ac-task-worker-agent
+            then: |
+              A task worker agent is present with dispatch rules that
+              respond to task ready and task needs-work events, uses
+              the automation eligibility filter by default, and has
+              write authorization enabled
+            when: |
+              The meta spec agents are listed
+          - given: |
+              A fresh project completes full setup
+            id: ac-pr-reviewer-agent
+            then: |
+              A code review agent is present with a dispatch rule that
+              responds to task pending-review events and has write
+              authorization enabled
+            when: |
+              The meta spec agents are listed
+          - given: |
+              A fresh project completes full setup
+            id: ac-primary-dev-agent
+            then: |
+              A primary development agent is present with capabilities
+              covering code, test, refactor, and review, and has
+              write authorization enabled
+            when: |
+              The meta spec agents are listed
+          - given: |
+              A fresh project completes full setup
+            id: ac-plan-reviewer-agent
+            then: |
+              A plan reviewer agent is present with the review
+              capability and has write authorization enabled
+            when: |
+              The meta spec agents are listed
+          - given: |
+              A scaffolded plan reviewer agent exists
+            id: ac-plan-reviewer-agent-skills
+            then: |
+              The plan review skill and the writing specs skill are
+              both attached to the agent
+            when: |
+              The agent's skills are listed
+          - given: |
+              A plan reviewer agent is scaffolded
+            id: ac-plan-reviewer-adapter-guidance
+            then: |
+              The agent definition includes enough inline guidance for
+              a new user to switch adapters without reading external
+              documentation
+            when: |
+              The agent definition is inspected
+          - given: |
+              A fresh project completes full setup
+            id: ac-all-defaults-write-authorized
+            then: |
+              Every default agent has write authorization enabled
+              unconditionally, with no per-action approval gating
+            when: |
+              Each scaffolded default agent's write authorization
+              setting is inspected
+          - given: |
+              A fresh project completes full setup
+            id: ac-commits-convention
+            then: |
+              A commits convention exists with rules covering commit
+              message format and task reference style
+            when: |
+              The meta spec conventions are listed
+          - given: |
+              A fresh project completes full setup
+            id: ac-architecture-convention
+            then: |
+              An architecture convention exists with a placeholder rule
+              that instructs the user to replace it with real project
+              constraints
+            when: |
+              The meta spec conventions are listed
+          - given: |
+              A fresh project completes full setup
+            id: ac-testing-convention
+            then: |
+              A testing convention exists with a placeholder rule that
+              instructs the user to replace it with real project
+              testing expectations
+            when: |
+              The meta spec conventions are listed
+          - given: |
+              A fresh project completes full setup
+            id: ac-agents-md-reflects-defaults
+            then: |
+              The file reflects the scaffolded default agents and
+              conventions without requiring a separate regenerate step
+            when: |
+              The auto-generated agent instructions file is inspected
+          - given: |
+              A fresh project completes full setup
+            id: ac-first-run-marker-written
+            then: |
+              A first-run marker is recorded indicating that the
+              default agents and conventions scaffold has completed
+            when: |
+              The setup seeding state is inspected
+          - given: |
+              A project has previously completed first-run seeding
+              and the user has removed one or more of the scaffolded
+              default agents or conventions
+            id: ac-removed-defaults-not-recreated
+            then: |
+              The removed items are not recreated and the step
+              reports them as intentionally removed
+            when: |
+              Setup runs again without the force flag
+          - given: |
+              A project has previously completed first-run seeding
+              and the user has changed the identifier of a scaffolded
+              default agent or convention
+            id: ac-renamed-defaults-preserved
+            then: |
+              The renamed item is preserved unchanged and no new
+              item is created under the original scaffold identifier
+            when: |
+              Setup runs again without the force flag
+          - given: |
+              A project has previously completed first-run seeding
+            id: ac-force-reseed
+            then: |
+              The scaffold re-seeds any missing default items and
+              reports each one as force-recreated, leaving existing
+              items (including renamed ones) untouched
+            when: |
+              Setup runs with the force flag
+        tags: []
+        created: 2026-04-11T09:39:23.901Z
+        notes: []
+      - _ulid: 01KNXYJ35SYSMHST75Y4FMMARF
+        slugs:
+          - default-session-reflection-hook
+        title: Default Session Reflection Hook
+        type: requirement
+        description: |
+          When a project is initialized with full setup, a single
+          reflection hook is scaffolded that fires on any idle agent
+          session regardless of which agent owns it, and prompts the
+          session to run the reflect skill. Reflection applies to
+          every session uniformly so setup does not need to enumerate
+          individual agents. Users may disable or remove the hook
+          without breaking any other setup invariant.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              A fresh project completes full setup
+            id: ac-reflection-hook-present
+            then: |
+              A single reflection hook is present that fires on the
+              session idle event for every agent session, with no
+              per-agent filter, and prompts the session to run the
+              reflect skill
+            when: |
+              The hook list is inspected
+          - given: |
+              A project already has the default reflection hook
+            id: ac-hook-idempotent
+            then: |
+              The existing hook is preserved and no duplicate hook
+              is created
+            when: |
+              Setup is re-run
+          - given: |
+              A user removes the default reflection hook
+            id: ac-hook-removable
+            then: |
+              The removed hook is not silently recreated
+            when: |
+              Setup is re-run without the force flag
+        tags: []
+        created: 2026-04-11T09:39:23.961Z
+        notes: []
+      - _ulid: 01KNXYJ3EVJKEJDNRDZ55WM0KF
+        slugs:
+          - single-command-version-upgrade
+        title: Single-Command Version Upgrade
+        type: requirement
+        description: |
+          A dedicated upgrade command brings a project from any
+          previously-supported kspec version to the currently
+          installed version in a single invocation. The command
+          detects version skew, runs all required migrations,
+          re-renders skills, regenerates agent instructions, and
+          reports the net result. The upgrade is idempotent and safe
+          to run when the project is already current.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-error-guidance"
+          - "@trait-semantic-exit-codes"
+          - "@trait-dry-run"
+          - "@trait-json-output"
+        acceptance_criteria:
+          - given: |
+              A project was initialized with an older kspec version
+              and its last-known version is recorded in project state
+            id: ac-detects-skew
+            then: |
+              The command reads the recorded last-known version and
+              identifies it as the source version for the upgrade
+            when: |
+              The upgrade command runs
+          - given: |
+              A project has no recorded last-known version
+            id: ac-source-version-fallback
+            then: |
+              The command infers a source version from the shape of
+              project state and records it with approximate confidence
+            when: |
+              The upgrade command runs
+          - given: |
+              A project's source version cannot be identified or
+              inferred
+            id: ac-source-version-unknown
+            then: |
+              The command reports the source version as unknown,
+              names the target version, and proceeds with the full
+              upgrade pipeline as if the project were on the oldest
+              supported version
+            when: |
+              The upgrade command runs
+          - given: |
+              The upgrade command has determined source and target
+              versions
+            id: ac-reports-skew
+            then: |
+              The command reports the source version and the target
+              version before any changes are applied, and marks the
+              source as approximate or unknown when it was inferred
+              rather than read directly
+            when: |
+              The command begins its upgrade pipeline
+          - given: |
+              A project uses a task storage format that is no longer
+              current
+            id: ac-runs-task-storage-migration
+            then: |
+              The task storage migration is run as part of the upgrade
+              and reports whether any tasks were migrated
+            when: |
+              The upgrade command runs
+          - given: |
+              A project has skill files rendered from a previous
+              version of the skill templates
+            id: ac-rerenders-skills
+            then: |
+              Core skills are re-rendered so the rendered files match
+              the currently installed version and obsolete rendered
+              skills that no longer exist in the current version are
+              removed
+            when: |
+              The upgrade command runs
+          - given: |
+              A project has an auto-generated agent instructions file
+              from a previous version
+            id: ac-regenerates-agents-file
+            then: |
+              The auto-generated agent instructions file is
+              regenerated against the current templates
+            when: |
+              The upgrade command runs
+          - given: |
+              A project is missing one or more kspec gitignore entries
+              that are now required
+            id: ac-restores-gitignore-entries
+            then: |
+              Missing entries are appended to the gitignore and the
+              change is reported
+            when: |
+              The upgrade command runs
+          - given: |
+              A project is already at the current version with no
+              drift
+            id: ac-idempotent-when-current
+            then: |
+              The command completes successfully, reports that no
+              changes were necessary, and makes no modifications to
+              the project
+            when: |
+              The upgrade command runs
+          - given: |
+              The upgrade applies changes that a user should review
+              (such as a scaffolded or updated config file, new
+              default agents, or new gitignore entries)
+            id: ac-reports-manual-follow-ups
+            then: |
+              The command reports each applied change with enough
+              context for the user to decide whether additional
+              manual follow-up is needed
+            when: |
+              The upgrade completes
+          - given: |
+              A user wants to preview an upgrade without making
+              changes
+            id: ac-dry-run-reports
+            then: |
+              Every change the pipeline would apply is reported in
+              the same format as a real upgrade run
+            when: |
+              The upgrade command runs with the dry-run flag
+          - given: |
+              The upgrade command is running with the dry-run flag
+            id: ac-dry-run-no-writes
+            then: |
+              No filesystem modifications have been made at the
+              project root and no shadow branch commits have been
+              created
+            when: |
+              The command completes
+        tags: []
+        created: 2026-04-11T09:39:24.251Z
+        notes: []
+      - _ulid: 01KNXYJ3GWD9B6QYWDY559TTAB
+        slugs:
+          - release-notes-accessible
+        title: Release Notes Accessible via CLI
+        type: requirement
+        description: |
+          Users can view the release notes for the currently installed
+          version and any intervening versions without leaving the
+          command line. Release notes live in a single project file
+          that is the source of truth for human readers and the CLI
+          alike, and the upgrade command surfaces the relevant slice
+          of that file as part of its output. The file format is
+          chosen and documented in the release skill so authoring
+          and CLI consumption stay in sync.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-error-guidance"
+          - "@trait-semantic-exit-codes"
+        acceptance_criteria:
+          - given: |
+              A user wants to know what changed in the currently
+              installed version
+            id: ac-current-version-notes
+            then: |
+              The release notes for the currently installed version
+              are displayed
+            when: |
+              The user runs the release notes command without
+              arguments
+          - given: |
+              A user wants to know what changed between two versions
+            id: ac-version-range-notes
+            then: |
+              The release notes for each version in the inclusive
+              range are displayed in chronological order
+            when: |
+              The user runs the release notes command with a from and
+              to version
+          - given: |
+              The upgrade command upgrades a project from one version
+              to another
+            id: ac-upgrade-surfaces-notes
+            then: |
+              The release notes for every intervening version are
+              included in the output
+            when: |
+              The upgrade reports its result
+          - given: |
+              A version introduced new configuration keys
+            id: ac-notes-mention-new-config
+            then: |
+              The notes name every new configuration key and describe
+              what it controls
+            when: |
+              The release notes for that version are displayed
+        tags: []
+        created: 2026-04-11T09:39:24.316Z
+        notes: []
     created: 2026-02-15T00:39:20.586Z
     notes: []
 requirements:
@@ -6434,4 +7078,71 @@ requirements:
           Checking for missing descriptions
     tags: []
     created: 2026-03-10T06:55:43.295Z
+    notes: []
+  - _ulid: 01KNXYJ3MW6N3915DDKM0M0W29
+    slugs:
+      - meta-set-multi-value-parity
+    title: Meta Set Multi-Value Option Parity
+    type: requirement
+    description: |
+      Multi-value options on meta item update commands accept
+      repeated flags and preserve every value supplied. The set
+      and add-item flows behave identically for repeated flags so
+      users can update a meta item with the same mental model they
+      used to create it.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits:
+      - "@trait-error-guidance"
+      - "@trait-shadow-commit"
+    acceptance_criteria:
+      - given: |
+          A meta convention exists
+        id: ac-repeated-add-rule-all-kept
+        then: |
+          Every supplied rule is appended to the convention's
+          rules and none are dropped
+        when: |
+          The set command is invoked with multiple add-rule flags
+          in a single call
+      - given: |
+          A meta agent exists
+        id: ac-repeated-add-skill-all-kept
+        then: |
+          Every supplied skill is added to the agent's skills and
+          none are dropped
+        when: |
+          The set command is invoked with multiple add-skill flags
+          in a single call
+      - given: |
+          A meta agent exists
+        id: ac-repeated-add-capability-all-kept
+        then: |
+          Every supplied capability is added to the agent and
+          none are dropped
+        when: |
+          The set command is invoked with multiple add-capability
+          flags in a single call
+      - given: |
+          A meta item has multiple values for a repeatable field
+        id: ac-remove-flags-unchanged
+        then: |
+          Every named value is removed and values not named are
+          preserved
+        when: |
+          The set command is invoked with repeated remove-value
+          flags
+      - given: |
+          A meta item is updated in a single call with a mix of
+          repeated add and remove flags
+        id: ac-mixed-add-and-remove
+        then: |
+          The resulting item reflects all adds and removes applied
+          in a consistent order
+        when: |
+          The set command completes
+    tags: []
+    created: 2026-04-11T09:39:24.444Z
     notes: []

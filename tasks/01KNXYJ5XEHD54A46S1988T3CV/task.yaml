@@ -1,0 +1,92 @@
+_ulid: 01KNXYJ5XEHD54A46S1988T3CV
+slugs:
+  - task-release-notes
+title: Author release notes and expose via CLI
+type: task
+description: |
+  Create a standardized release notes file in the repository,
+  add a CLI command to display its entries, wire them into
+  the upgrade command's output, and update the release skill
+  to be the single source of truth for how release notes are
+  authored and maintained.
+
+  Why: Without release notes, users upgrade blind and have
+  no way to discover new configuration knobs or behavioral
+  changes. A single canonical source that the CLI reads
+  directly prevents drift between documentation and reality.
+  The notes are intended for humans first — keeping the file
+  format simple and human-authored (rather than a strict
+  machine-readable schema) keeps friction low and lets the
+  release skill document the conventions the CLI relies on.
+
+  What:
+  - Create a single canonical release notes file in the
+    repository root in standardized markdown with one
+    per-version section per release. The file is human-
+    authored, reviewed by humans, and shipped in the
+    published package. No new machine-readable schema.
+  - Define the section conventions (version heading,
+    summary paragraph, "New or changed configuration"
+    subsection, "Breaking changes" subsection) in the
+    release skill rather than in this plan so authoring
+    and CLI consumption share one source of truth.
+  - Populate the file with an entry for every released
+    version since versioning began, plus an "unreleased"
+    entry for changes staged for the next release.
+  - Add a top-level CLI command that reads and displays
+    release notes. The command accepts no arguments to
+    show the current version's notes, and accepts from and
+    to version flags to show a range. Invalid version
+    ranges produce actionable errors. Output is the
+    markdown section as authored; no reformatting, no
+    alternate structured output mode.
+  - Extend the upgrade command from the prior task so that
+    it reads the release notes file, filters to every
+    intervening version between the previous and current
+    versions, and appends those sections to its output.
+  - Update the existing release skill with a "Maintaining
+    release notes" section that covers: where the file
+    lives, how to add an entry, the section conventions
+    above, when to promote the unreleased entry to a
+    versioned one, and the exact pre-release check that
+    ensures the notes for the version being released are
+    non-empty. Enforcement of the update step lives in the
+    release skill, not in a separate specification.
+
+  How: The file lives at the repository root and is added
+  to the published files list in the package manifest. A
+  new parser module under src/parser/release-notes.ts
+  exposes load, get-version, and get-range functions using
+  a small heading-based markdown walker. The CLI command
+  handler lives in src/cli/commands/release-notes.ts. The
+  upgrade command imports the range helper and prints the
+  relevant slice. The release skill lives under the shared
+  release skill file (see skills list); patch it with the
+  new section.
+
+  Testing: Unit tests for the parser covering well-formed
+  input, missing version, and range queries. CLI tests for
+  the display command covering current and range modes.
+  Integration test that the upgrade command's output
+  includes the relevant notes for a simulated version skew.
+  Skill change is verified by a test that loads the skill
+  and asserts the new section headings exist.
+
+  Covers: @release-notes-accessible ac-current-version-notes,
+  ac-version-range-notes, ac-upgrade-surfaces-notes,
+  ac-notes-mention-new-config.
+spec_ref: "@release-notes-accessible"
+plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-upgrade-command"
+context: []
+priority: 2
+tags:
+  - cli
+  - docs
+vcs_refs: []
+created_at: 2026-04-11T09:39:26.766Z
+todos: []

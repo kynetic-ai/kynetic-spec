@@ -1,0 +1,87 @@
+_ulid: 01KNXYJ66ZQ5TBZ69YFCKK3J2T
+slugs:
+  - task-doctor-accuracy
+title: Remove doctor false positive and add scaffold checks
+type: task
+description: |
+  Fix doctor's skill rendering check to look at the real
+  rendered skill locations, add a check for the scaffolded
+  config file, add a version skew check that points at the
+  upgrade command, and ensure every warning and error
+  includes a concrete resolution command.
+
+  Why: Doctor currently emits a persistent false-positive
+  warning about missing rendered skills even when skills are
+  clearly rendered, and misses several conditions that the
+  other tasks in this plan make detectable. Users ignore
+  doctor output because they have learned it is unreliable.
+  Doctor should be the single reliable signal that a project
+  is ready for work.
+
+  What:
+  - Replace the existing rendered skills check with one that
+    inspects the real rendered skill locations (the same
+    locations the setup command writes to). The check must:
+    * Report healthy when any supported rendered skill
+      location contains the expected skill files.
+    * Report a warning when no supported rendered skill
+      location contains any rendered skills, and name the
+      command that re-renders.
+    * Never report a warning when the setup command would
+      consider the project up to date.
+  - Add a scaffold check that reports a warning if the
+    project is missing the scaffolded config file, and
+    names the scaffold command (upgrade or setup with
+    force, depending on which is user-facing).
+  - Add a version skew check: read the last-known version
+    from the state file (added by the upgrade command
+    task); if it differs from the currently installed
+    version, emit a warning and name the upgrade command.
+  - Audit every other check's warning and error messages.
+    Every message must include a concrete command or action
+    the user can run. Messages that say "run setup" must
+    now name the specific setup subcommand or flag.
+  - The task storage legacy error must name the upgrade
+    command as the preferred resolution, with the
+    task-migrate command as the lower-level fallback.
+  - Doctor output format stays the same: sections with
+    check results, a summary line, and a non-zero exit code
+    when errors are present.
+
+  How: The doctor command handler lives in
+  src/cli/commands/doctor.ts. Find the rendered skills
+  check and inspect the real rendered-skill directory
+  constants from the setup command (they are the same
+  constants the skill rendering step writes to). Add new
+  check functions for the scaffold presence and version
+  skew. The existing check output formatting helper already
+  takes a resolution message — ensure every call site
+  provides one.
+
+  Testing: Unit tests for each new check covering healthy
+  and unhealthy paths. Integration test that runs init with
+  setup on a fresh temp directory and then runs doctor,
+  asserting no warnings are emitted. Snapshot test for the
+  doctor output format showing resolution commands on every
+  warning and error. Test that after a simulated version
+  downgrade, doctor surfaces the version skew warning.
+
+  Covers: @doctor-reports-actionable-state ac-skills-check-accurate,
+  ac-skills-check-missing, ac-config-scaffold-detected,
+  ac-version-skew-detected, ac-all-actionable.
+spec_ref: "@doctor-reports-actionable-state"
+plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-scaffold-project-config"
+  - "@task-upgrade-command"
+context: []
+priority: 2
+tags:
+  - cli
+  - doctor
+vcs_refs: []
+created_at: 2026-04-11T09:39:27.071Z
+todos: []

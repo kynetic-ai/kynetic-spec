@@ -2856,6 +2856,107 @@ features:
         tags: []
         created: 2026-02-26T11:07:03.048Z
         notes: []
+      - _ulid: 01KNXYJ307RWSX0E6HEX7HH58B
+        slugs:
+          - complete-auto-gitignore
+        title: Complete Auto-Generated Gitignore Entries
+        type: requirement
+        description: |
+          When a project is initialized, the gitignore file at the
+          project root contains entries for every transient directory
+          that kspec commands can create under the project root,
+          including any that are created lazily by later commands.
+          No kspec-created directory should ever appear as untracked
+          content after an init on a clean repository.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-idempotent-file-scaffold"
+        acceptance_criteria:
+          - given: |
+              A fresh project is initialized
+            id: ac-all-transient-paths-present
+            then: |
+              Every directory that kspec commands are able to create
+              under the project root for transient state (shadow
+              worktrees, worktree pools, session storage, inbox
+              scratch, plan drafts) is listed
+            when: |
+              The gitignore file at the project root is inspected
+          - given: |
+              A fresh project is initialized
+            id: ac-no-untracked-after-common-commands
+            then: |
+              No kspec-created directory appears as untracked content
+            when: |
+              A representative set of commands that create transient
+              state has been run and git status is inspected
+          - given: |
+              A project has an existing gitignore file with entries
+              unrelated to kspec
+            id: ac-existing-entries-preserved
+            then: |
+              Existing non-kspec entries are preserved unchanged
+            when: |
+              Init adds kspec entries
+          - given: |
+              A project has an existing gitignore file that already
+              contains some kspec-managed entries
+            id: ac-kspec-entries-idempotent
+            then: |
+              Adding kspec entries is idempotent and produces no
+              duplicate lines
+            when: |
+              Init runs on the project
+        tags: []
+        created: 2026-04-11T09:39:23.783Z
+        notes: []
+      - _ulid: 01KNXYJ37Q01D94YVR5QZS0J8B
+        slugs:
+          - derivable-default-module
+        title: Derivable Default Module
+        type: requirement
+        description: |
+          When a project is initialized, the default module that init
+          creates is a referenceable module item that plan derivation
+          can target without requiring the user to create a separate
+          module first. A user can import and derive a plan on a fresh
+          project without any intermediate meta commands.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              A fresh project has just been initialized
+            id: ac-default-module-resolvable
+            then: |
+              The module resolves to a real module item with a title,
+              slug, and description
+            when: |
+              The default module is queried by its reference
+          - given: |
+              A fresh project has a plan imported and approved
+            id: ac-plan-derive-accepts-default
+            then: |
+              Derivation succeeds without the user having to create a
+              module first
+            when: |
+              The plan is derived and targets the default module
+          - given: |
+              The default module exists
+            id: ac-default-module-editable
+            then: |
+              The changes persist and subsequent derivations continue
+              to target the same module
+            when: |
+              The user sets its title, slug, or description
+        tags: []
+        created: 2026-04-11T09:39:24.023Z
+        notes: []
   - _ulid: 01KF15N59C28PGQYJQNADVFHPA
     slugs:
       - inbox-commands
@@ -6469,6 +6570,106 @@ features:
               The plan transitions to active via derive
         tags: []
         created: 2026-04-02T01:45:32.895Z
+        notes: []
+      - _ulid: 01KNXYJ3B76M4EE36RH1931G99
+        slugs:
+          - plan-import-format-guidance
+        title: Plan Document Format Error Guidance
+        type: requirement
+        description: |
+          Plan import is tolerant of documents that have no specs or
+          tasks yet (planning content is allowed to land before the
+          structured work has been written), but is strict about
+          structural invariants that downstream commands rely on:
+          the title must be extractable, and any specs or acceptance
+          criteria that are present must match the expected shape.
+          An imported plan with no specs or tasks surfaces a visible
+          warning so the user knows content is still missing, and
+          plan derive refuses to run against a plan that has no
+          derivable work. Errors and warnings are self-contained —
+          users can correct the input without reading source or
+          external documentation.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-error-guidance"
+          - "@trait-semantic-exit-codes"
+          - "@trait-json-output"
+        acceptance_criteria:
+          - given: |
+              A plan document whose first significant element is not a
+              top-level heading
+            id: ac-missing-title-fails-import
+            then: |
+              The import fails with an error that identifies the
+              expected title location and the structural form the
+              parser recognizes
+            when: |
+              The document is imported
+          - given: |
+              A plan document with a valid title but neither a specs
+              section nor a tasks section containing any derivable
+              work
+            id: ac-empty-plan-import-warns
+            then: |
+              The import succeeds, the plan is stored as content,
+              and a warning is reported that names both expected
+              sections and explains that derive will not run until
+              at least one is populated
+            when: |
+              The document is imported
+          - given: |
+              A plan was imported with no specs and no tasks
+            id: ac-empty-plan-derive-fails
+            then: |
+              Derive fails with a non-zero exit code and an error
+              that names the expected sections, explains that the
+              plan has no derivable work, and points the user at
+              the import command to update the plan's content
+            when: |
+              Plan derive is invoked for that plan
+          - given: |
+              A plan document where an acceptance criterion is not
+              expressed in the expected shape
+            id: ac-ac-shape-mismatch-fails-import
+            then: |
+              The import fails with an error that locates the
+              malformed criterion by its containing spec and its
+              position within that spec
+            when: |
+              The document is imported
+          - given: |
+              A plan document's acceptance criterion fails shape
+              validation
+            id: ac-ac-shape-mismatch-describes-shape
+            then: |
+              The error message enumerates every required field of
+              an acceptance criterion with a one-line description
+              of each field's purpose
+            when: |
+              The import error is displayed
+          - given: |
+              A user queries help for the plan import command
+            id: ac-help-describes-format
+            then: |
+              The output includes a minimal runnable example of a plan
+              document and names every required structural element
+            when: |
+              The help output is displayed
+          - given: |
+              Any import error, derive error, or empty-plan warning
+              from this spec is surfaced
+            id: ac-error-no-external-references
+            then: |
+              The message is self-contained and does not require the
+              user to consult skills, README files, or source code to
+              correct the input
+            when: |
+              The message is displayed
+        tags: []
+        created: 2026-04-11T09:39:24.135Z
         notes: []
     created: 2026-02-04T07:43:15.186Z
     notes: []
