@@ -42,7 +42,7 @@ import {
   needsShadowSessionsGitignore,
   type ShadowOptions,
 } from "../../parser/shadow.js";
-import { loadProjectConfig } from "../../parser/config.js";
+import { loadProjectConfig, CONFIG_FILENAME } from "../../parser/config.js";
 import { detectAgentFromEnv, type AgentConfidence } from "../../parser/agent-detection.js";
 import { getSetupStatus as getSharedSetupStatus } from "../../parser/setup-status.js";
 import {
@@ -1181,6 +1181,188 @@ async function installCoreSkillsForSetup(
 }
 
 /**
+ * Detect the repository's default branch name.
+ *
+ * Uses the same approach as the dispatcher's resolveRemoteHeadBranch:
+ * reads refs/remotes/<remote>/HEAD to find the upstream default branch.
+ * Falls back to "main" if detection fails.
+ *
+ * AC: @scaffolded-project-config ac-placeholder-base-branch
+ */
+async function detectDefaultBranch(projectDir: string): Promise<{ branch: string; fallback: boolean }> {
+  const { execSync } = await import("node:child_process");
+
+  // Try remote HEAD first (same as dispatcher)
+  try {
+    const remotes = execSync("git remote", { cwd: projectDir, encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] }).trim();
+    for (const remote of remotes.split("\n").filter(Boolean)) {
+      try {
+        const ref = execSync(`git symbolic-ref --quiet refs/remotes/${remote}/HEAD`, {
+          cwd: projectDir,
+          encoding: "utf-8",
+          stdio: ["pipe", "pipe", "pipe"],
+        }).trim();
+        const prefix = `refs/remotes/${remote}/`;
+        if (ref.startsWith(prefix)) {
+          return { branch: ref.slice(prefix.length), fallback: false };
+        }
+      } catch {
+        // This remote doesn't have HEAD, try next
+      }
+    }
+  } catch {
+    // git remote failed, no remotes
+  }
+
+  // Try current branch as a second resort
+  try {
+    const branch = execSync("git symbolic-ref --quiet --short HEAD", {
+      cwd: projectDir,
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "pipe"],
+    }).trim();
+    if (branch) {
+      return { branch, fallback: false };
+    }
+  } catch {
+    // Detached HEAD or no branch
+  }
+
+  return { branch: "main", fallback: true };
+}
+
+/**
+ * Result of the project config scaffold step.
+ *
+ * AC: @trait-idempotent-file-scaffold ac-step-reports-action
+ */
+interface ScaffoldProjectConfigResult {
+  action: "created" | "skipped" | "force-recreated";
+  configPath: string;
+  backupPath?: string;
+  validationError?: string;
+}
+
+/**
+ * Scaffold a project config file (kspec.config.yaml) at the project root.
+ *
+ * Writes a template config with resolved defaults and commented placeholders
+ * for knobs that real projects are expected to customize.
+ *
+ * AC: @scaffolded-project-config ac-file-scaffolded — creates config at project root
+ * AC: @scaffolded-project-config ac-file-valid-on-load — validated after write
+ * AC: @scaffolded-project-config ac-placeholder-publication-mode — publication mode with comment
+ * AC: @scaffolded-project-config ac-placeholder-base-branch — resolved base branch
+ * AC: @scaffolded-project-config ac-placeholder-coverage — commented-out coverage section
+ * AC: @scaffolded-project-config ac-file-exists-preserved — skip if exists, no force
+ * AC: @scaffolded-project-config ac-file-force-overwrites — replace on force
+ * AC: @scaffolded-project-config ac-file-force-backup — backup before force overwrite
+ * AC: @trait-idempotent-file-scaffold ac-existing-file-preserved-without-force
+ * AC: @trait-idempotent-file-scaffold ac-force-backs-up-before-overwrite
+ * AC: @trait-idempotent-file-scaffold ac-fresh-file-creation
+ * AC: @trait-idempotent-file-scaffold ac-step-reports-action
+ */
+async function scaffoldProjectConfig(
+  projectDir: string,
+  dryRun: boolean,
+  force: boolean,
+): Promise<ScaffoldProjectConfigResult> {
+  const configPath = path.join(projectDir, CONFIG_FILENAME);
+
+  // AC: @scaffolded-project-config ac-file-exists-preserved
+  // AC: @trait-idempotent-file-scaffold ac-existing-file-preserved-without-force
+  if (existsSync(configPath)) {
+    if (!force) {
+      return { action: "skipped", configPath };
+    }
+
+    // AC: @scaffolded-project-config ac-file-force-backup
+    // AC: @trait-idempotent-file-scaffold ac-force-backs-up-before-overwrite
+    const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+    const ext = path.extname(configPath);
+    const base = configPath.slice(0, -ext.length);
+    const backupPath = `${base}.backup-${timestamp}${ext}`;
+
+    if (!dryRun) {
+      await fs.copyFile(configPath, backupPath);
+    }
+
+    // Write fresh template
+    if (!dryRun) {
+      const content = await generateConfigContent(projectDir);
+      await fs.writeFile(configPath, content, "utf-8");
+
+      // AC: @scaffolded-project-config ac-file-valid-on-load — validate after write
+      const loadResult = await loadProjectConfig(projectDir, projectDir);
+      if (loadResult.warning) {
+        return {
+          action: "force-recreated",
+          configPath,
+          backupPath,
+          validationError: loadResult.warning,
+        };
+      }
+    }
+
+    return { action: "force-recreated", configPath, backupPath };
+  }
+
+  // AC: @scaffolded-project-config ac-file-scaffolded
+  // AC: @trait-idempotent-file-scaffold ac-fresh-file-creation
+  if (!dryRun) {
+    const content = await generateConfigContent(projectDir);
+    await fs.writeFile(configPath, content, "utf-8");
+
+    // AC: @scaffolded-project-config ac-file-valid-on-load — validate after write
+    const loadResult = await loadProjectConfig(projectDir, projectDir);
+    if (loadResult.warning) {
+      return {
+        action: "created",
+        configPath,
+        validationError: loadResult.warning,
+      };
+    }
+  }
+
+  return { action: "created", configPath };
+}
+
+/**
+ * Generate the content for the scaffolded project config file.
+ *
+ * AC: @scaffolded-project-config ac-placeholder-publication-mode
+ * AC: @scaffolded-project-config ac-placeholder-base-branch
+ * AC: @scaffolded-project-config ac-placeholder-coverage
+ */
+async function generateConfigContent(projectDir: string): Promise<string> {
+  const { branch, fallback } = await detectDefaultBranch(projectDir);
+
+  const baseBranchComment = fallback
+    ? "  # Detected value is a fallback — no remote HEAD found. Update to your actual default branch."
+    : "  # Resolved from repository default branch.";
+
+  return `# kspec project configuration
+# This file was scaffolded by kspec setup. Review and customize for your project.
+# Documentation: https://github.com/lepahc/kynetic-spec
+
+dispatch:
+${baseBranchComment}
+  base_branch: "${branch}"
+
+  # How dispatched agents publish completed work.
+  # Accepted values: pull_request, manual_merge, auto
+  publication_mode: manual_merge
+
+# Uncomment to enable acceptance criteria coverage scanning.
+# scan_paths lists directories to scan for AC annotations in test files.
+# coverage:
+#   scan_paths:
+#     - "tests/"
+#     - "src/"
+`;
+}
+
+/**
  * Run the full setup pipeline programmatically.
  * Used by both 'kspec setup' command and 'kspec init --setup'.
  * AC: @init-setup-integration ac-2, ac-3
@@ -1553,6 +1735,50 @@ export async function runSetupPipeline(
         status: hookResult.status === "created" ? "done" : "skipped",
         message: hookResult.reason,
       });
+    }
+
+    // Step 4d: Scaffold project config file
+    // AC: @scaffolded-project-config ac-file-scaffolded — config created at project root
+    // AC: @trait-idempotent-file-scaffold ac-step-reports-action — action reported in summary
+    {
+      try {
+        const scaffoldResult = await scaffoldProjectConfig(projectDir, dryRun, options.force ?? false);
+
+        if (scaffoldResult.validationError) {
+          steps.push({
+            name: "Scaffold project config",
+            status: "failed",
+            message: `validation failed: ${scaffoldResult.validationError}`,
+          });
+        } else if (scaffoldResult.action === "created") {
+          steps.push({
+            name: "Scaffold project config",
+            status: "done",
+            message: `created ${scaffoldResult.configPath}`,
+          });
+        } else if (scaffoldResult.action === "skipped") {
+          steps.push({
+            name: "Scaffold project config",
+            status: "skipped",
+            message: `${CONFIG_FILENAME} already exists`,
+          });
+        } else if (scaffoldResult.action === "force-recreated") {
+          steps.push({
+            name: "Scaffold project config",
+            status: "done",
+            message: scaffoldResult.backupPath
+              ? `force-recreated (backup: ${scaffoldResult.backupPath})`
+              : "force-recreated",
+          });
+        }
+      } catch (err) {
+        debugLog("scaffoldProjectConfig failed", err);
+        steps.push({
+          name: "Scaffold project config",
+          status: "failed",
+          message: err instanceof Error ? err.message : "unknown error",
+        });
+      }
     }
 
     // Step 5: Generate kspec-agents.md
