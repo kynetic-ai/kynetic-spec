@@ -134948,6 +134948,18 @@ reviews:
         required: true
         created_at: 2026-04-11T09:29:52.086Z
         completed_at: 2026-04-11T09:29:52.086Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "The upgrade task still defines concrete fallback probes for ac-source-version-fallback:
+          legacy monolithic task storage vs split storage, scaffolded config presence, rendered
+          review-plan skill presence, and task-format marker shape, with selection by newest version
+          consistent with all probes."
+        name: Source version fallback concreteness
+        required: true
+        created_at: 2026-04-11T09:29:52.097Z
+        completed_at: 2026-04-11T09:29:52.097Z
     events:
       - _ulid: 01KNXXY6GSD57ZC41RCSMMY34W
         actor: Jacob Chapel
@@ -134976,6 +134988,13 @@ reviews:
           status: pass
           name: Force-path AC separation
         timestamp: 2026-04-11T09:29:54.626Z
+      - _ulid: 01KNXY0RH6T7DFH7K44WSAZ09Z
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Source version fallback concreteness
+        timestamp: 2026-04-11T09:29:56.006Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -134988,5 +135007,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-11T09:28:32.025Z
-    updated_at: 2026-04-11T09:29:52.086Z
+    updated_at: 2026-04-11T09:29:52.097Z
     notes: []
