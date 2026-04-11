@@ -134737,6 +134737,17 @@ reviews:
         required: true
         created_at: 2026-04-11T09:24:06.933Z
         completed_at: 2026-04-11T09:24:06.933Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Spec and task describe a universal hook with no per-agent lookup, but the implementation
+          notes still say the reflection hook task depends on default agents because it looks up
+          primary agent identifiers (plans/init-setup-upgrade-rough-edges.md:1715-1717).
+        name: Reflection hook consistency
+        required: true
+        created_at: 2026-04-11T09:24:24.813Z
+        completed_at: 2026-04-11T09:24:24.813Z
     events:
       - _ulid: 01KNXXMCSXBH8Y5KHFPE8QE4KH
         actor: Jacob Chapel
@@ -134793,6 +134804,13 @@ reviews:
           status: fail
           name: Idempotent scaffold trait fit
         timestamp: 2026-04-11T09:24:12.036Z
+      - _ulid: 01KNXXPNYW11VS4W5XGVV197F8
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: Reflection hook consistency
+        timestamp: 2026-04-11T09:24:25.692Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -134841,5 +134859,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-11T09:23:10.782Z
-    updated_at: 2026-04-11T09:24:06.933Z
+    updated_at: 2026-04-11T09:24:24.813Z
     notes: []
