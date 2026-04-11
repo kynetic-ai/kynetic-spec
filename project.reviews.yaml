@@ -134704,6 +134704,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-11T09:23:26.809Z
+      - _ulid: 01KNXXN67PEYMARGQH4SRQE3H3
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNXXN5C4YR0HVQPDTBPY6D1M
+        timestamp: 2026-04-11T09:23:36.822Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -134713,8 +134720,27 @@ reviews:
       content_hash: ""
       ref: "@plan-init-setup-and-upgrade-rough-edges"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KNXXN5C4YR0HVQPDTBPY6D1M
+        anchor:
+          type: structured
+          ref: "@default-project-agents-and-conventions"
+          section: traits
+        entries:
+          - _ulid: 01KNXXN5C4H2HPHX7QSZFGVD44
+            author: Jacob Chapel
+            body: "@trait-idempotent-scaffold currently conflicts with this spec's stated force behavior. The
+              inherited trait contract says force replaces existing artifacts after backing them up,
+              but ac-force-reseed says force only recreates missing defaults and leaves existing or
+              renamed items untouched. The same trait is also attached to
+              @default-session-reflection-hook and @complete-auto-gitignore, where the plan likewise
+              avoids overwrite-style force semantics, while @derivable-default-module is treated as
+              a scaffolded item in the upgrade task but does not implement the trait. Tighten the
+              trait's scope or reassign it so inherited ACs match each scaffolded spec's actual
+              force/idempotency model."
+            created_at: 2026-04-11T09:23:35.940Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-11T09:23:10.782Z
-    updated_at: 2026-04-11T09:23:25.890Z
+    updated_at: 2026-04-11T09:23:35.940Z
     notes: []
