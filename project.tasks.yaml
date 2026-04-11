@@ -26131,6 +26131,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-11T09:39:25.142Z
+  automation: eligible
 - _ulid: 01KNXYJ4MR4J2MR2DXYG24HB2K
   slugs:
     - task-default-reflection-hook
