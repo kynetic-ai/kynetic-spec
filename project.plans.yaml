@@ -39315,6 +39315,7 @@ plans:
         the existing dynamic agent instruction generation.
     status: active
     approved_at: 2026-04-11T09:38:40.141Z
+    branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
     derived_specs:
       - "@trait-idempotent-file-scaffold"
       - "@scaffolded-project-config"
