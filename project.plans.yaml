@@ -37548,10 +37548,67 @@ plans:
       ## Specs
 
       ```yaml
+      - title: Idempotent Scaffolding Trait
+        slug: trait-idempotent-scaffold
+        type: trait
+        parent: "@agent-integration"
+        description: |
+          A scaffolding step that creates files, directories, or meta
+          items follows a uniform set of rules so users can predict
+          its behavior without reading its implementation: existing
+          artifacts are never modified unless the force flag is set;
+          when force is set, existing artifacts are backed up to a
+          sibling path before being replaced and the backup path is
+          reported in the step's output; the step is safe to re-run
+          and produces the same visible result on the second run as
+          the first when no inputs changed; the step always reports
+          its action (created, skipped, force-recreated) in a stable
+          format consumable by the setup summary; and the step never
+          destroys user content outside the artifact it owns.
+        acceptance_criteria:
+          - id: ac-existing-preserved-without-force
+            given: |
+              A scaffold step's target artifact already exists
+            when: |
+              The step runs without the force flag
+            then: |
+              The existing artifact is preserved byte-for-byte and
+              the step reports "skipped"
+          - id: ac-force-backs-up-before-overwrite
+            given: |
+              A scaffold step's target artifact already exists and
+              the step is invoked with the force flag
+            when: |
+              The step runs
+            then: |
+              The previous content is preserved as a sibling backup
+              with a timestamped name, the backup path is reported
+              before the overwrite, and only then is the artifact
+              replaced with a freshly scaffolded template
+          - id: ac-fresh-creation
+            given: |
+              A scaffold step's target artifact does not exist
+            when: |
+              The step runs with or without the force flag
+            then: |
+              The artifact is created and the step reports "created"
+          - id: ac-step-reports-action
+            given: |
+              Any scaffold step completes
+            when: |
+              The setup summary is produced
+            then: |
+              The step's action (created, skipped, force-recreated)
+              and any backup path are included in the summary in a
+              stable format
+
       - title: Scaffolded Project Config File
         slug: scaffolded-project-config
         type: requirement
         parent: "@agent-integration"
+        traits:
+          - "@trait-idempotent-scaffold"
+          - "@trait-error-guidance"
         description: |
           When a project is initialized with full setup, a project config
           file is scaffolded at the project root with placeholder values
@@ -37606,10 +37663,10 @@ plans:
             given: |
               A project already has a project config file at its root
             when: |
-              The project is re-initialized or setup is re-run
+              The project is re-initialized or setup is re-run without
+              the force flag
             then: |
-              The existing file is preserved without modification unless
-              the force flag is set
+              The existing file is preserved byte-for-byte
           - id: ac-file-force-overwrites
             given: |
               A project already has a project config file and setup is
@@ -37629,78 +37686,12 @@ plans:
               The previous content is preserved as a sibling backup
               file whose path is reported in the setup output
 
-      - title: Scaffolded Project Agent Instructions File
-        slug: scaffolded-agents-file
-        type: requirement
-        parent: "@agent-integration"
-        description: |
-          When a project is initialized with full setup, a human-authored
-          agent instructions file is scaffolded at the project root as a
-          placeholder containing the project name, a section for the
-          human author to describe the project, and an include directive
-          that references the auto-generated agent instructions file. The
-          scaffold is distinct from the auto-generated file and is never
-          overwritten unless the force flag is set.
-        acceptance_criteria:
-          - id: ac-file-scaffolded
-            given: |
-              A project has no human-authored agent instructions file at
-              its root
-            when: |
-              The project is initialized with full setup
-            then: |
-              A human-authored agent instructions file is created at the
-              project root
-          - id: ac-includes-generated
-            given: |
-              A scaffolded human-authored agent instructions file is
-              written
-            when: |
-              The file contents are inspected
-            then: |
-              The file contains a directive that references the
-              auto-generated agent instructions file by name
-          - id: ac-placeholders-marked
-            given: |
-              A scaffolded human-authored agent instructions file is
-              written
-            when: |
-              The file contents are inspected
-            then: |
-              Sections intended for human editing are marked with a
-              placeholder marker that distinguishes them from content
-              the user may have already customized
-          - id: ac-existing-preserved
-            given: |
-              A project already has a human-authored agent instructions
-              file
-            when: |
-              Setup runs without the force flag
-            then: |
-              The existing file is preserved without modification
-          - id: ac-force-overwrites
-            given: |
-              A project already has a human-authored agent instructions
-              file and setup is invoked with the force flag
-            when: |
-              Setup runs
-            then: |
-              The existing file is replaced with a freshly scaffolded
-              template
-          - id: ac-force-backup
-            given: |
-              A project already has a human-authored agent instructions
-              file and setup is invoked with the force flag
-            when: |
-              Setup overwrites the existing file
-            then: |
-              The previous content is preserved as a sibling backup
-              file whose path is reported in the setup output
-
       - title: Complete Auto-Generated Gitignore Entries
         slug: complete-auto-gitignore
         type: requirement
         parent: "@init-commands"
+        traits:
+          - "@trait-idempotent-scaffold"
         description: |
           When a project is initialized, the gitignore file at the
           project root contains entries for every transient directory
@@ -37749,18 +37740,46 @@ plans:
         slug: default-project-agents-and-conventions
         type: requirement
         parent: "@agent-integration"
+        traits:
+          - "@trait-idempotent-scaffold"
         description: |
           When a project is initialized with full setup for the first
-          time, the meta spec is seeded with a primary development
-          agent, a plan reviewer agent, and baseline conventions for
-          commits, architecture, and testing. These defaults establish
-          the minimum context every project needs for normal task work
-          and plan review to function, without requiring the user to
-          author them by hand. After the initial seed, the scaffold
-          never recreates items the user has deliberately removed or
-          renamed — the scaffold is first-time-only state, not a
-          recurring reset.
+          time, the meta spec is seeded with a complete set of default
+          agents covering task work, code review, general development,
+          and plan review, plus baseline conventions for commits,
+          architecture, and testing. Every default agent has write
+          authorization enabled unconditionally so agents can operate
+          without per-action approval. These defaults establish the
+          minimum context every project needs for normal task work,
+          code review, and plan review to function out of the box.
+          After the initial seed, the scaffold never recreates items
+          the user has deliberately removed or renamed — the scaffold
+          is first-time-only state, not a recurring reset.
+
+          This spec is the single source of truth for the default
+          agent roster. Older specs that describe individual scaffold
+          agents by name are superseded by this one, and their tests
+          are re-annotated against the acceptance criteria below.
         acceptance_criteria:
+          - id: ac-task-worker-agent
+            given: |
+              A fresh project completes full setup
+            when: |
+              The meta spec agents are listed
+            then: |
+              A task worker agent is present with dispatch rules that
+              respond to task ready and task needs-work events, uses
+              the automation eligibility filter by default, and has
+              write authorization enabled
+          - id: ac-pr-reviewer-agent
+            given: |
+              A fresh project completes full setup
+            when: |
+              The meta spec agents are listed
+            then: |
+              A code review agent is present with a dispatch rule that
+              responds to task pending-review events and has write
+              authorization enabled
           - id: ac-primary-dev-agent
             given: |
               A fresh project completes full setup
@@ -37768,15 +37787,16 @@ plans:
               The meta spec agents are listed
             then: |
               A primary development agent is present with capabilities
-              covering code, test, refactor, and review
-          - id: ac-plan-reviewer-agent-exists
+              covering code, test, refactor, and review, and has
+              write authorization enabled
+          - id: ac-plan-reviewer-agent
             given: |
               A fresh project completes full setup
             when: |
               The meta spec agents are listed
             then: |
               A plan reviewer agent is present with the review
-              capability
+              capability and has write authorization enabled
           - id: ac-plan-reviewer-agent-skills
             given: |
               A scaffolded plan reviewer agent exists
@@ -37785,14 +37805,6 @@ plans:
             then: |
               The plan review skill and the writing specs skill are
               both attached to the agent
-          - id: ac-plan-reviewer-write-authorized
-            given: |
-              A scaffolded plan reviewer agent exists
-            when: |
-              The agent's write authorization setting is inspected
-            then: |
-              Write authorization is enabled so the agent can record
-              review findings without manual approval per action
           - id: ac-plan-reviewer-adapter-guidance
             given: |
               A plan reviewer agent is scaffolded
@@ -37802,6 +37814,15 @@ plans:
               The agent definition includes enough inline guidance for
               a new user to switch adapters without reading external
               documentation
+          - id: ac-all-defaults-write-authorized
+            given: |
+              A fresh project completes full setup
+            when: |
+              Each scaffolded default agent's write authorization
+              setting is inspected
+            then: |
+              Every default agent has write authorization enabled
+              unconditionally, with no per-action approval gating
           - id: ac-commits-convention
             given: |
               A fresh project completes full setup
@@ -37874,48 +37895,42 @@ plans:
               reports each one as force-recreated, leaving existing
               items (including renamed ones) untouched
 
-      - title: Default Session Reflection Hooks
-        slug: default-session-reflection-hooks
+      - title: Default Session Reflection Hook
+        slug: default-session-reflection-hook
         type: requirement
         parent: "@agent-integration"
+        traits:
+          - "@trait-idempotent-scaffold"
         description: |
-          When a project is initialized with full setup, hooks are
-          scaffolded so that worker and reviewer sessions are prompted
-          to run session reflection when they go idle. This ensures
-          session learnings are captured from the first session
-          without requiring the user to wire hooks by hand. Users may
-          disable or remove the hooks without breaking any other
-          setup invariant.
+          When a project is initialized with full setup, a single
+          reflection hook is scaffolded that fires on any idle agent
+          session regardless of which agent owns it, and prompts the
+          session to run the reflect skill. Reflection applies to
+          every session uniformly so setup does not need to enumerate
+          individual agents. Users may disable or remove the hook
+          without breaking any other setup invariant.
         acceptance_criteria:
-          - id: ac-worker-reflection-hook
+          - id: ac-reflection-hook-present
             given: |
               A fresh project completes full setup
             when: |
               The hook list is inspected
             then: |
-              A hook is present that, on idle sessions belonging to
-              the primary worker agent, prompts the session to run
-              the reflect skill
-          - id: ac-reviewer-reflection-hook
+              A single reflection hook is present that fires on the
+              session idle event for every agent session, with no
+              per-agent filter, and prompts the session to run the
+              reflect skill
+          - id: ac-hook-idempotent
             given: |
-              A fresh project completes full setup
-            when: |
-              The hook list is inspected
-            then: |
-              A hook is present that, on idle sessions belonging to
-              the primary reviewer agent, prompts the session to run
-              the reflect skill
-          - id: ac-hooks-idempotent
-            given: |
-              A project already has the default reflection hooks
+              A project already has the default reflection hook
             when: |
               Setup is re-run
             then: |
-              The existing hooks are preserved and no duplicate hooks
-              are created
-          - id: ac-hooks-removable
+              The existing hook is preserved and no duplicate hook
+              is created
+          - id: ac-hook-removable
             given: |
-              A user removes a default reflection hook
+              A user removes the default reflection hook
             when: |
               Setup is re-run without the force flag
             then: |
@@ -37961,17 +37976,25 @@ plans:
         slug: plan-import-format-guidance
         type: requirement
         parent: "@plan-support"
+        traits:
+          - "@trait-error-guidance"
+          - "@trait-semantic-exit-codes"
+          - "@trait-json-output"
         description: |
-          When a user imports a plan document whose structure does not
-          match the expected format, the import command reports a
-          specific, actionable error that names the expected structural
-          elements. The import does not silently accept a document whose
-          title cannot be extracted, whose specs section is malformed,
-          or whose acceptance criteria do not match the expected shape.
-          Users encountering the error can correct the file without
-          reading source code or external documentation.
+          Plan import is tolerant of documents that have no specs or
+          tasks yet (planning content is allowed to land before the
+          structured work has been written), but is strict about
+          structural invariants that downstream commands rely on:
+          the title must be extractable, and any specs or acceptance
+          criteria that are present must match the expected shape.
+          An imported plan with no specs or tasks surfaces a visible
+          warning so the user knows content is still missing, and
+          plan derive refuses to run against a plan that has no
+          derivable work. Errors and warnings are self-contained —
+          users can correct the input without reading source or
+          external documentation.
         acceptance_criteria:
-          - id: ac-missing-title-fails
+          - id: ac-missing-title-fails-import
             given: |
               A plan document whose first significant element is not a
               top-level heading
@@ -37981,16 +38004,29 @@ plans:
               The import fails with an error that identifies the
               expected title location and the structural form the
               parser recognizes
-          - id: ac-missing-specs-section-fails
+          - id: ac-empty-plan-import-warns
             given: |
-              A plan document with neither a specs section nor a tasks
-              section containing any derivable work
+              A plan document with a valid title but neither a specs
+              section nor a tasks section containing any derivable
+              work
             when: |
               The document is imported
             then: |
-              The import fails with an error that names the expected
-              sections and what each section must contain
-          - id: ac-ac-shape-mismatch-fails
+              The import succeeds, the plan is stored as content,
+              and a warning is reported that names both expected
+              sections and explains that derive will not run until
+              at least one is populated
+          - id: ac-empty-plan-derive-fails
+            given: |
+              A plan was imported with no specs and no tasks
+            when: |
+              Plan derive is invoked for that plan
+            then: |
+              Derive fails with a non-zero exit code and an error
+              that names the expected sections, explains that the
+              plan has no derivable work, and points the user at
+              the import command to update the plan's content
+          - id: ac-ac-shape-mismatch-fails-import
             given: |
               A plan document where an acceptance criterion is not
               expressed in the expected shape
@@ -38020,9 +38056,10 @@ plans:
               document and names every required structural element
           - id: ac-error-no-external-references
             given: |
-              Any of the import format errors is raised
+              Any import error, derive error, or empty-plan warning
+              from this spec is surfaced
             when: |
-              The error message is displayed
+              The message is displayed
             then: |
               The message is self-contained and does not require the
               user to consult skills, README files, or source code to
@@ -38032,6 +38069,11 @@ plans:
         slug: single-command-version-upgrade
         type: requirement
         parent: "@agent-integration"
+        traits:
+          - "@trait-error-guidance"
+          - "@trait-semantic-exit-codes"
+          - "@trait-dry-run"
+          - "@trait-json-output"
         description: |
           A dedicated upgrade command brings a project from any
           previously-supported kspec version to the currently
@@ -38052,17 +38094,12 @@ plans:
               identifies it as the source version for the upgrade
           - id: ac-source-version-fallback
             given: |
-              A project was initialized with an older kspec version
-              but has no recorded last-known version because it
-              predates version tracking
+              A project has no recorded last-known version
             when: |
               The upgrade command runs
             then: |
-              The command infers a source version using the
-              observable shape of project state (for example, the
-              presence or absence of task storage layouts and
-              config files introduced in known versions) and
-              records the inferred version as approximate
+              The command infers a source version from the shape of
+              project state and records it with approximate confidence
           - id: ac-source-version-unknown
             given: |
               A project's source version cannot be identified or
@@ -38167,13 +38204,18 @@ plans:
         slug: release-notes-accessible
         type: requirement
         parent: "@agent-integration"
+        traits:
+          - "@trait-error-guidance"
+          - "@trait-semantic-exit-codes"
         description: |
           Users can view the release notes for the currently installed
           version and any intervening versions without leaving the
-          command line. Release notes summarize user-facing changes
-          and new or changed configuration knobs. The upgrade command
-          surfaces the relevant slice of release notes as part of its
-          output.
+          command line. Release notes live in a single project file
+          that is the source of truth for human readers and the CLI
+          alike, and the upgrade command surfaces the relevant slice
+          of that file as part of its output. The file format is
+          chosen and documented in the release skill so authoring
+          and CLI consumption stay in sync.
         acceptance_criteria:
           - id: ac-current-version-notes
             given: |
@@ -38211,23 +38253,14 @@ plans:
             then: |
               The notes name every new configuration key and describe
               what it controls
-          - id: ac-structured-output
-            given: |
-              A programmatic consumer wants to read release notes
-              without parsing human-formatted output
-            when: |
-              The release notes command is invoked with a structured
-              output flag
-            then: |
-              The command emits the requested notes as a
-              machine-readable document whose fields mirror the
-              release notes source shape, so downstream tools can
-              consume it without regex parsing
 
       - title: Doctor Reports Actionable State
         slug: doctor-reports-actionable-state
         type: requirement
         parent: "@enhanced-setup"
+        traits:
+          - "@trait-error-guidance"
+          - "@trait-semantic-exit-codes"
         description: |
           The doctor command reports the real state of the project
           without false positives and without warnings that the user
@@ -38264,15 +38297,6 @@ plans:
             then: |
               A warning identifies the missing file and names the
               command that scaffolds it
-          - id: ac-agents-file-scaffold-detected
-            given: |
-              A project is missing the scaffolded human-authored
-              agent instructions file
-            when: |
-              Doctor runs
-            then: |
-              A warning identifies the missing file and names the
-              command that scaffolds it
           - id: ac-version-skew-detected
             given: |
               A project was initialized with an older kspec version
@@ -38295,6 +38319,9 @@ plans:
         slug: meta-set-multi-value-parity
         type: requirement
         parent: "@meta"
+        traits:
+          - "@trait-error-guidance"
+          - "@trait-shadow-commit"
         description: |
           Multi-value options on meta item update commands accept
           repeated flags and preserve every value supplied. The set
@@ -38431,63 +38458,6 @@ plans:
           ac-file-exists-preserved, ac-file-force-overwrites,
           ac-file-force-backup.
 
-      - title: Scaffold human-authored agent instructions file during init setup
-        slug: task-scaffold-agents-file
-        priority: 1
-        tags: [init, setup, agents]
-        spec_ref: "@scaffolded-agents-file"
-        description: |
-          Write a human-authored agent instructions file at the project
-          root during setup, with placeholders for project context and
-          an include directive pointing at the auto-generated file.
-
-          Why: The auto-generated agent instructions file only covers
-          dynamic data from the meta spec. Every project also needs a
-          human-authored overview that explains what the project is
-          and why, and users currently author this by hand. Scaffolding
-          a placeholder removes the "what do I put in AGENTS.md"
-          friction and ensures a consistent include pattern.
-
-          What:
-          - Add a setup step that runs after the config scaffold step
-            and before the agents file generation step.
-          - The scaffolded file must contain:
-            * A top-level heading with the project name (read from
-              the project manifest).
-            * A short placeholder project overview section clearly
-              marked with a placeholder marker (for example, a visible
-              prefix or comment) so humans can distinguish untouched
-              scaffold from edited content.
-            * An "Agent Instructions" section whose body is an include
-              directive referencing the auto-generated agent
-              instructions file by name.
-          - Skip the step when a file already exists at the target
-            path unless the force flag is set.
-          - When forced, back up the existing content to a sibling
-            file with a timestamped extension and report the backup
-            path before writing the fresh scaffold.
-          - Emit the step result in the setup summary.
-          - The scaffolded file must not duplicate any content that
-            belongs in the auto-generated file.
-
-          How: Add the step in src/cli/commands/setup.ts alongside
-          the other scaffolding steps. Read the project name from
-          the existing project context helper already used by init.
-          The auto-generated file name is fixed and already defined
-          as a constant in the agents generation module; import and
-          reuse that constant rather than hardcoding a string.
-
-          Testing: Unit tests for fresh-project, existing-file skip,
-          and force-with-backup paths. Integration test asserting
-          the scaffolded file is present after init with setup and
-          contains the include directive. Test that a project with
-          a pre-existing instructions file keeps its content when
-          setup is re-run without force.
-
-          Covers: @scaffolded-agents-file ac-file-scaffolded,
-          ac-includes-generated, ac-placeholders-marked,
-          ac-existing-preserved, ac-force-overwrites, ac-force-backup.
-
       - title: Expand and repair auto-generated gitignore entries
         slug: task-complete-gitignore
         priority: 1
@@ -38555,20 +38525,29 @@ plans:
         tags: [init, setup, meta]
         spec_ref: "@default-project-agents-and-conventions"
         description: |
-          During init setup, scaffold a primary development agent, a
-          plan reviewer agent, and baseline conventions for commits,
-          architecture, and testing into the meta spec. The scaffold
+          During init setup, scaffold the full default agent roster
+          (task worker, code reviewer, primary development agent, plan
+          reviewer) and baseline conventions for commits, architecture,
+          and testing into the meta spec. Every scaffolded agent has
+          write authorization enabled unconditionally. The scaffold
           runs once per project and persists a first-run marker so
           subsequent setup runs do not resurrect items the user has
           removed or renamed.
 
           Why: Every real project manually adds these same defaults
-          immediately after init. Scaffolding them during setup
-          removes repetitive boilerplate, ensures plan review works
-          out of the box, and gives the auto-generated agent
-          instructions file something to render from the first time
-          it runs. The first-run marker is what prevents the scaffold
-          from becoming a recurring reset that fights the user.
+          immediately after init, and restricted-mode authorization is
+          not a supported execution path today — agents that cannot
+          write cannot do useful work. Scaffolding the full roster
+          with write authorization enabled removes repetitive
+          boilerplate, ensures task dispatch, code review, and plan
+          review work out of the box, and gives the auto-generated
+          agent instructions file something to render from the first
+          time it runs. The first-run marker is what prevents the
+          scaffold from becoming a recurring reset that fights the
+          user. This task supersedes the older ralph-replacement
+          acceptance criteria for worker and reviewer scaffolding;
+          tests that covered those criteria must be re-annotated to
+          the acceptance criteria on this spec rather than deleted.
 
           What:
           - Add a setup step that runs after the hook installation
@@ -38580,14 +38559,23 @@ plans:
             completed for this project.
           - When the marker is absent (first run) the step creates
             the following meta items:
+            * A task worker agent with a stable identifier, a
+              descriptive name, write authorization enabled
+              unconditionally, and dispatch rules that respond to
+              task ready and task needs-work events with the
+              automation eligibility filter set by default.
+            * A code reviewer agent with a stable identifier, a
+              descriptive name, write authorization enabled
+              unconditionally, and a dispatch rule that responds to
+              task pending-review events.
             * A primary development agent with a stable identifier,
-              a descriptive name, and capabilities for code, test,
-              refactor, and review.
+              a descriptive name, capabilities for code, test,
+              refactor, and review, and write authorization enabled
+              unconditionally.
             * A plan reviewer agent with a stable identifier, a
               descriptive name, review capability, write
-              authorization enabled so it can record review
-              findings, and the plan review, writing specs, and
-              plan skills attached.
+              authorization enabled unconditionally, and the plan
+              review, writing specs, and plan skills attached.
             * A commits convention with two rules: one for commit
               message format and one for task reference style.
             * An architecture convention containing a single
@@ -38597,10 +38585,20 @@ plans:
               rule that explicitly instructs the user to replace it.
             After creation, the step writes the first-run marker
             and reports each created item in the setup summary.
+          - Write authorization on every default agent must be set
+            to the unconditional "always allow" setting. Restricted
+            or per-action approval modes are not valid defaults for
+            any scaffolded agent.
           - The plan reviewer agent's description must include
             inline guidance explaining how to switch adapters if
             the default adapter's authentication fails, using only
             commands and flags that exist in the CLI.
+          - Any existing built-in agent scaffolding (for example,
+            the ralph-replacement task worker and pr reviewer
+            creation paths already present in the setup command)
+            must be folded into this step rather than continuing
+            to exist as a parallel code path. There must be exactly
+            one scaffold site for default agents.
           - When the marker is present (subsequent run) the step
             does nothing and reports "defaults already seeded" with
             an itemized status that distinguishes between items
@@ -38632,18 +38630,23 @@ plans:
           The setup seeding state file pattern is already used by
           permission seeding and memory seeding — add a new field
           to the same state file rather than creating a new file.
-          Reuse the existing "ensure built-in agents" step pattern
-          already in src/cli/commands/setup.ts for the creation
-          pathway, but wrap it with the first-run marker check.
-          Scaffold-origin tagging uses the existing tag field on
-          meta items; pick a reserved tag string (for example
-          "scaffold-default") and document it. Rename detection
-          walks the meta item list looking for items carrying the
-          scaffold-origin tag whose identifier differs from any
-          known scaffold default identifier.
+          The existing "ensure built-in agents" step in
+          src/cli/commands/setup.ts currently creates the
+          ralph-replacement task worker and pr reviewer; consolidate
+          that logic into this step so there is one scaffold path,
+          and re-annotate any tests previously asserting the
+          ralph-replacement AC behavior to the new acceptance
+          criteria on this spec. Scaffold-origin tagging uses the
+          existing tag field on meta items; pick a reserved tag
+          string (for example "scaffold-default") and document it.
+          Rename detection walks the meta item list looking for
+          items carrying the scaffold-origin tag whose identifier
+          differs from any known scaffold default identifier.
 
           Testing: Unit tests for:
-          - First-run path creates all items, writes marker.
+          - First-run path creates every default agent and
+            convention, writes marker, verifies every agent has
+            write authorization set to the unconditional value.
           - Second-run path with all items present: no-op.
           - Second-run path with one item removed: not recreated,
             reported as intentionally removed.
@@ -38653,68 +38656,64 @@ plans:
             reported; existing items untouched.
           Integration test running init with setup on a fresh temp
           directory asserting the four expected agents and three
-          expected conventions exist with the right shape and the
-          first-run marker is present. Follow-up integration test
-          removing one default, running setup again, asserting the
-          removed item stays removed.
+          expected conventions exist with the right shape, every
+          agent has write authorization enabled, and the first-run
+          marker is present. Follow-up integration test removing
+          one default, running setup again, asserting the removed
+          item stays removed. Re-annotate the existing
+          ralph-replacement worker/reviewer scaffold tests onto the
+          new ac-task-worker-agent and ac-pr-reviewer-agent
+          acceptance criteria.
 
           Covers: @default-project-agents-and-conventions
-          ac-primary-dev-agent, ac-plan-reviewer-agent-exists,
+          ac-task-worker-agent, ac-pr-reviewer-agent,
+          ac-primary-dev-agent, ac-plan-reviewer-agent,
           ac-plan-reviewer-agent-skills,
-          ac-plan-reviewer-write-authorized,
-          ac-plan-reviewer-adapter-guidance, ac-commits-convention,
+          ac-plan-reviewer-adapter-guidance,
+          ac-all-defaults-write-authorized, ac-commits-convention,
           ac-architecture-convention, ac-testing-convention,
           ac-agents-md-reflects-defaults, ac-first-run-marker-written,
           ac-removed-defaults-not-recreated,
           ac-renamed-defaults-preserved, ac-force-reseed.
 
-      - title: Scaffold default session reflection hooks
-        slug: task-default-reflection-hooks
+      - title: Scaffold default session reflection hook
+        slug: task-default-reflection-hook
         priority: 2
         tags: [init, setup, hooks]
-        spec_ref: "@default-session-reflection-hooks"
-        depends_on:
-          - "@task-default-agents-and-conventions"
+        spec_ref: "@default-session-reflection-hook"
         description: |
-          During init setup, scaffold the worker and reviewer session
-          reflection hooks so session reflection runs on idle out of
-          the box.
+          During init setup, scaffold a single reflection hook that
+          fires on any idle agent session (no per-agent filter) and
+          prompts the session to run the reflect skill, so reflection
+          runs out of the box for every agent.
 
           Why: Session reflection is valuable from the first session,
-          but requires hooks that every project currently adds by
-          hand. Scaffolding them during setup makes reflection
-          automatic without requiring the user to read a separate
-          setup checklist.
+          but requires a hook that every project currently adds by
+          hand. Treating reflection as a universal concern rather
+          than a per-agent one removes the need to look up individual
+          agent identifiers at scaffold time and simplifies the setup
+          graph — the reflection hook no longer depends on the
+          default agent scaffold running first.
 
           What:
           - Add a setup step that runs after the scaffold default
             agents and conventions step and before the agents file
             generation step.
-          - Create two hooks by identifier if they do not already
-            exist:
-            * A worker reflection hook that fires on the session idle
-              event, filters for sessions belonging to the primary
-              worker agent, and prompts the session to run the
-              reflect skill.
-            * A reviewer reflection hook that fires on the session
-              idle event, filters for sessions belonging to the
-              primary reviewer agent, and prompts the session to run
-              the reflect skill.
-          - Look up the primary worker and reviewer agent identifiers
-            from the meta items created in the previous setup step
-            rather than hardcoding them, so identifier changes in one
-            place are reflected here.
-          - Do not create a hook whose identifier already exists in
-            the hook list. Skip silently in that case and report it
-            as an idempotency skip.
-          - If a hook was previously created by this step and has
+          - Create one hook by identifier if it does not already
+            exist: a reflection hook that fires on the session idle
+            event, applies to every agent session (no agent filter),
+            and prompts the session to run the reflect skill.
+          - Do not create the hook if its identifier already exists
+            in the hook list. Skip silently in that case and report
+            it as an idempotency skip.
+          - If the hook was previously created by this step and has
             since been removed by the user, the step must not
             recreate it. Detect this by checking for a marker field
             on the hook (a known tag or a deterministic identifier
             component) that only the scaffold writes, and by
             remembering that the scaffold previously completed. Use
             the existing setup seeding state file to persist the
-            "scaffolded hooks" marker across invocations.
+            "scaffolded reflection hook" marker across invocations.
 
           How: Hook CRUD is exposed via library functions under
           src/parser/hooks.ts (or the equivalent module). Reuse the
@@ -38722,17 +38721,19 @@ plans:
           seeding and memory seeding to record that the hook scaffold
           has run. The filter and action payloads are documented in
           the hook schema in src/schema/hook.ts; follow that schema
-          exactly rather than shelling out to the CLI.
+          exactly rather than shelling out to the CLI. The hook's
+          agent filter must be empty or a wildcard so every session
+          matches, not a list of named agents.
 
           Testing: Unit tests for create, idempotent skip, and
           removed-by-user non-recreation. Integration test running
-          init with setup and asserting both hooks exist with the
-          expected filters and actions. Test that removing a hook
+          init with setup and asserting exactly one reflection hook
+          exists with no agent filter. Test that removing the hook
           and re-running setup without force does not recreate it.
 
-          Covers: @default-session-reflection-hooks
-          ac-worker-reflection-hook, ac-reviewer-reflection-hook,
-          ac-hooks-idempotent, ac-hooks-removable.
+          Covers: @default-session-reflection-hook
+          ac-reflection-hook-present, ac-hook-idempotent,
+          ac-hook-removable.
 
       - title: Make default module a referenceable item
         slug: task-derivable-default-module
@@ -38793,24 +38794,30 @@ plans:
           Covers: @derivable-default-module ac-default-module-resolvable,
           ac-plan-derive-accepts-default, ac-default-module-editable.
 
-      - title: Actionable plan import format errors and help
+      - title: Actionable plan import format errors and empty-plan derive guard
         slug: task-plan-import-format-guidance
         priority: 2
         tags: [cli, plans]
         spec_ref: "@plan-import-format-guidance"
         description: |
-          Make plan document format errors actionable so the user can
-          correct a bad plan file without reading source code, and
-          embed a minimal runnable example in the import command's
-          help output.
+          Make plan import strict about structural invariants
+          (title, acceptance criterion shape), tolerant of plans
+          that have no specs or tasks yet (warn instead of fail),
+          and move the "no derivable work" failure to plan derive
+          so empty-but-intentional plan content can land before
+          the structured work is written.
 
-          Why: Plan import currently silently accepts documents whose
-          title cannot be extracted (importing them as "Untitled
-          Plan"), and fails later at derive time with cryptic
-          validation errors when acceptance criteria are in the wrong
-          shape. Users have no way to discover the correct format
-          without opening the parser source. Making errors and help
-          self-contained removes that hidden dependency.
+          Why: Plan import currently silently accepts documents
+          whose title cannot be extracted (importing them as
+          "Untitled Plan") and fails later at derive time with
+          cryptic schema errors. At the same time, users
+          legitimately want to land a planning document that
+          contains prose and links before any specs or tasks have
+          been authored. The right split is: import stores content
+          (and warns if the plan is empty); derive refuses to
+          materialize anything when there is nothing to materialize.
+          Users discover both conditions with self-contained
+          messages.
 
           What:
           - Change plan import so that when the parser cannot
@@ -38820,48 +38827,65 @@ plans:
             expected structural form of the title (a top-level
             heading as the first significant element) and show a
             one-line example.
-          - When the parser finds neither a specs section nor a
-            tasks section with any derivable work, fail with an
-            error that names both expected sections and what each
-            must contain.
+          - Change plan import so that a document with a valid
+            title but neither a specs section nor a tasks section
+            containing derivable work imports successfully with a
+            warning. The warning must name both expected sections,
+            explain that derive will fail until at least one is
+            populated, and appear in normal and JSON output modes.
           - When an acceptance criterion fails schema validation,
-            fail with an error that names the spec slug (or index
-            if unslugged), names the failing criterion's identifier
-            (or index), and lists every required field of an
-            acceptance criterion with a brief description. Do not
-            leak raw schema validator output.
-          - Extend the command's help output to include a minimal
-            runnable example of a plan document that uses all
-            required structural elements (title, specs section with
-            one spec, tasks section with derive directive). The
-            example must be copy-pasteable.
-          - Error messages must never reference files outside the
-            project (skills, README, docs) — everything needed to
-            correct the error must be in the message itself.
-          - The dry-run flow must produce the same errors as the
-            real import for these cases, so users can preflight
-            their document.
+            fail the import with an error that names the spec slug
+            (or index if unslugged), names the failing criterion's
+            identifier (or index), and lists every required field
+            of an acceptance criterion with a brief description.
+            Do not leak raw schema validator output.
+          - Change plan derive so that a plan with no specs and no
+            tasks fails with a non-zero exit code and a message
+            that names both expected sections, explains the plan
+            has no derivable work, and points the user at plan
+            import to update the plan's content.
+          - Extend the import command's help output to include a
+            minimal runnable example of a plan document that uses
+            all required structural elements (title, specs section
+            with one spec, tasks section with derive directive).
+            The example must be copy-pasteable.
+          - Error and warning messages must never reference files
+            outside the project (skills, README, docs) — everything
+            needed to correct the input must be in the message
+            itself.
+          - The dry-run flow for import must produce the same
+            errors and warnings as a real import so users can
+            preflight their document.
 
           How: The parser entry point is parsePlanDocument in
           src/parser/plan-document.ts. Today the title extraction
           is best-effort; change it to required and propagate a
-          typed error. The existing ParseError types should cover
-          these cases — if not, extend them. The import command
-          handler lives in src/cli/commands/plan-import.ts and
-          already consumes parser errors — route the new error
-          types to human messages there. Help output is registered
-          when the command is built; add the example as a help text
-          block.
+          typed error. Introduce a typed "empty plan" signal
+          (not an error) that the import command translates into
+          a warning. The import command handler lives in
+          src/cli/commands/plan-import.ts and already consumes
+          parser errors — route the new error types and warning
+          signal to human messages there. The derive command
+          handler lives in src/cli/commands/plan.ts under the
+          derive subcommand; add the empty-plan guard check at
+          the top of the handler so it fails before any shadow
+          branch work begins. Help output is registered when the
+          command is built; add the runnable example as a help
+          text block.
 
           Testing: Unit tests for parser behavior covering: missing
-          title, missing both sections, malformed acceptance
-          criterion. CLI tests for each error producing non-zero
-          exit and the expected message content. Snapshot test for
-          help output containing the runnable example. Test that
-          dry-run produces the same errors as real import.
+          title, empty plan body, malformed acceptance criterion.
+          CLI tests for import covering the title error (non-zero
+          exit), empty plan warning (zero exit, warning captured),
+          AC shape error (non-zero exit). CLI tests for derive
+          covering the empty-plan failure (non-zero exit, actionable
+          message). Snapshot test for import help output containing
+          the runnable example. Test that dry-run import produces
+          the same errors and warnings as a real import.
 
-          Covers: @plan-import-format-guidance ac-missing-title-fails,
-          ac-missing-specs-section-fails, ac-ac-shape-mismatch-fails,
+          Covers: @plan-import-format-guidance ac-missing-title-fails-import,
+          ac-empty-plan-import-warns, ac-empty-plan-derive-fails,
+          ac-ac-shape-mismatch-fails-import,
           ac-ac-shape-mismatch-describes-shape,
           ac-help-describes-format, ac-error-no-external-references.
 
@@ -38872,10 +38896,9 @@ plans:
         spec_ref: "@single-command-version-upgrade"
         depends_on:
           - "@task-scaffold-project-config"
-          - "@task-scaffold-agents-file"
           - "@task-complete-gitignore"
           - "@task-default-agents-and-conventions"
-          - "@task-default-reflection-hooks"
+          - "@task-default-reflection-hook"
           - "@task-derivable-default-module"
         description: |
           Add an upgrade command that detects version skew between a
@@ -38944,10 +38967,9 @@ plans:
                completion work. Report which entries were appended.
             5. Scaffold any missing files that the init setup scaffold
                steps would create on a fresh project (config file,
-               human-authored agent instructions file, default module,
-               default agents and conventions, default reflection
-               hooks) — but only create what is missing; never
-               overwrite. Each skipped item is reported as a skip.
+               default module, default agents and conventions, default
+               reflection hook) — but only create what is missing;
+               never overwrite. Each skipped item is reported as a skip.
             6. Write the new current version to the last-known version
                state file.
           - When the dry-run flag is set, every step reports what it
@@ -38996,62 +39018,77 @@ plans:
         depends_on:
           - "@task-upgrade-command"
         description: |
-          Create a machine-readable release notes source, add a CLI
-          command to display them, and wire them into the upgrade
-          command's output so users see what changed during an
-          upgrade.
+          Create a standardized release notes file in the repository,
+          add a CLI command to display its entries, wire them into
+          the upgrade command's output, and update the release skill
+          to be the single source of truth for how release notes are
+          authored and maintained.
 
           Why: Without release notes, users upgrade blind and have
           no way to discover new configuration knobs or behavioral
           changes. A single canonical source that the CLI reads
           directly prevents drift between documentation and reality.
+          The notes are intended for humans first — keeping the file
+          format simple and human-authored (rather than a strict
+          machine-readable schema) keeps friction low and lets the
+          release skill document the conventions the CLI relies on.
 
           What:
-          - Create a single canonical release notes source file in
-            the repository root that the CLI can read. Use a format
-            the CLI can parse deterministically (structured
-            markdown with per-version headings, or a YAML file —
-            pick one and document the choice). The file is shipped
-            in the published package.
-          - Populate the source with an entry for every released
-            version since versioning began, plus an entry for the
-            unreleased changes in the upcoming version. Each entry
-            must include:
-            * The version number.
-            * A human summary of user-facing changes.
-            * A list of new or changed configuration keys with a
-              one-line description each.
-            * A list of breaking changes (empty list if none).
+          - Create a single canonical release notes file in the
+            repository root in standardized markdown with one
+            per-version section per release. The file is human-
+            authored, reviewed by humans, and shipped in the
+            published package. No new machine-readable schema.
+          - Define the section conventions (version heading,
+            summary paragraph, "New or changed configuration"
+            subsection, "Breaking changes" subsection) in the
+            release skill rather than in this plan so authoring
+            and CLI consumption share one source of truth.
+          - Populate the file with an entry for every released
+            version since versioning began, plus an "unreleased"
+            entry for changes staged for the next release.
           - Add a top-level CLI command that reads and displays
-            release notes. The command accepts no arguments to show
-            the current version's notes, and accepts from and to
-            version flags to show a range. Invalid version ranges
-            produce actionable errors.
+            release notes. The command accepts no arguments to
+            show the current version's notes, and accepts from and
+            to version flags to show a range. Invalid version
+            ranges produce actionable errors. Output is the
+            markdown section as authored; no reformatting, no
+            alternate structured output mode.
           - Extend the upgrade command from the prior task so that
-            it reads the release notes source, filters to every
+            it reads the release notes file, filters to every
             intervening version between the previous and current
-            versions, and appends those entries to its output.
-          - The CLI command supports a structured output mode so
-            programmatic consumers can parse the notes.
+            versions, and appends those sections to its output.
+          - Update the existing release skill with a "Maintaining
+            release notes" section that covers: where the file
+            lives, how to add an entry, the section conventions
+            above, when to promote the unreleased entry to a
+            versioned one, and the exact pre-release check that
+            ensures the notes for the version being released are
+            non-empty. Enforcement of the update step lives in the
+            release skill, not in a separate specification.
 
-          How: The source file lives at the repository root and is
-          added to the published files list in the package manifest.
-          A new parser module under src/parser/release-notes.ts
-          exposes load, get-version, and get-range functions. The
-          CLI command handler lives in src/cli/commands/
-          release-notes.ts. The upgrade command imports the range
-          helper and prints the relevant slice.
+          How: The file lives at the repository root and is added
+          to the published files list in the package manifest. A
+          new parser module under src/parser/release-notes.ts
+          exposes load, get-version, and get-range functions using
+          a small heading-based markdown walker. The CLI command
+          handler lives in src/cli/commands/release-notes.ts. The
+          upgrade command imports the range helper and prints the
+          relevant slice. The release skill lives under the shared
+          release skill file (see skills list); patch it with the
+          new section.
 
           Testing: Unit tests for the parser covering well-formed
           input, missing version, and range queries. CLI tests for
-          the display command covering current, range, and
-          structured output modes. Integration test that the
-          upgrade command's output includes the relevant notes for
-          a simulated version skew.
+          the display command covering current and range modes.
+          Integration test that the upgrade command's output
+          includes the relevant notes for a simulated version skew.
+          Skill change is verified by a test that loads the skill
+          and asserts the new section headings exist.
 
           Covers: @release-notes-accessible ac-current-version-notes,
           ac-version-range-notes, ac-upgrade-surfaces-notes,
-          ac-notes-mention-new-config, ac-structured-output.
+          ac-notes-mention-new-config.
 
       - title: Remove doctor false positive and add scaffold checks
         slug: task-doctor-accuracy
@@ -39060,14 +39097,13 @@ plans:
         spec_ref: "@doctor-reports-actionable-state"
         depends_on:
           - "@task-scaffold-project-config"
-          - "@task-scaffold-agents-file"
           - "@task-upgrade-command"
         description: |
           Fix doctor's skill rendering check to look at the real
-          rendered skill locations, add checks for the scaffolded
-          config and agents instructions files, add a version skew
-          check that points at the upgrade command, and ensure every
-          warning and error includes a concrete resolution command.
+          rendered skill locations, add a check for the scaffolded
+          config file, add a version skew check that points at the
+          upgrade command, and ensure every warning and error
+          includes a concrete resolution command.
 
           Why: Doctor currently emits a persistent false-positive
           warning about missing rendered skills even when skills are
@@ -39089,8 +39125,7 @@ plans:
             * Never report a warning when the setup command would
               consider the project up to date.
           - Add a scaffold check that reports a warning if the
-            project is missing the scaffolded config file or the
-            scaffolded human-authored agent instructions file, and
+            project is missing the scaffolded config file, and
             names the scaffold command (upgrade or setup with
             force, depending on which is user-facing).
           - Add a version skew check: read the last-known version
@@ -39128,8 +39163,7 @@ plans:
 
           Covers: @doctor-reports-actionable-state ac-skills-check-accurate,
           ac-skills-check-missing, ac-config-scaffold-detected,
-          ac-agents-file-scaffold-detected, ac-version-skew-detected,
-          ac-all-actionable.
+          ac-version-skew-detected, ac-all-actionable.
 
       - title: Fix meta set multi-value option parity
         slug: task-meta-set-multi-value
@@ -39285,3 +39319,10 @@ plans:
           fallback detection, structured output AC"
         author: Jacob Chapel
         created_at: 2026-04-10T09:21:56.311Z
+      - _ulid: 01KNXX6Q0YYHA713MWGKS87BPC
+        content: "Address cycle 2 review: split file-exists AC, drop AGENTS.md scaffold, expand default
+          agent roster, simplify reflection hook, empty-plan import/derive split, tighten
+          source-version-fallback, simplify release notes, trait audit + new idempotent-scaffold
+          trait"
+        author: Jacob Chapel
+        created_at: 2026-04-11T09:15:42.494Z
