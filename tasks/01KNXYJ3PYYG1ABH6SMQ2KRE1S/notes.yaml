@@ -1,1 +1,27 @@
-notes: []
+notes:
+  - _ulid: 01KNXYWCJJ1GVDCR97XEHM0RN4
+    content: >-
+      Approach: Adding a scaffoldProjectConfig() step function in setup.ts that:
+
+      1. Detects default branch via git symbolic-ref (same approach as dispatcher's
+      resolveRemoteHeadBranch), falling back to 'main'
+
+      2. Generates kspec.config.yaml with dispatch.publication_mode (manual_merge default + comment
+      listing others), dispatch.base_branch (resolved), and commented-out coverage.scan_paths
+
+      3. Follows idempotent file scaffold trait: skip if exists (no force), backup+overwrite on
+      force
+
+      4. Validates scaffolded file via loadProjectConfig before returning success
+
+      5. Registered in pipeline between 'Render skills' and 'Generate kspec-agents.md' steps
+
+
+      Edge cases: no git remote (fallback to 'main' with comment), existing file byte-preservation,
+      force backup with timestamp, validation failure cleanup.
+
+      Test plan: 8 spec ACs + 4 trait ACs + relevant error-guidance trait ACs via E2E CLI tests in
+      temp dirs.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-11T09:45:01.267Z
