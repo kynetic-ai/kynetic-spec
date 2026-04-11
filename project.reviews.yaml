@@ -134936,6 +134936,18 @@ reviews:
         required: true
         created_at: 2026-04-11T09:29:52.053Z
         completed_at: 2026-04-11T09:29:52.053Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "@scaffolded-project-config still separates non-force preservation
+          (ac-file-exists-preserved) from force overwrite/backup (ac-file-force-overwrites,
+          ac-file-force-backup), so the file-scaffold force path remains mutually exclusive and
+          testable."
+        name: Force-path AC separation
+        required: true
+        created_at: 2026-04-11T09:29:52.086Z
+        completed_at: 2026-04-11T09:29:52.086Z
     events:
       - _ulid: 01KNXXY6GSD57ZC41RCSMMY34W
         actor: Jacob Chapel
@@ -134957,6 +134969,13 @@ reviews:
           status: pass
           name: Release notes format deferral
         timestamp: 2026-04-11T09:29:52.968Z
+      - _ulid: 01KNXY0Q62WPM229ZHYDFZK3W1
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Force-path AC separation
+        timestamp: 2026-04-11T09:29:54.626Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -134969,5 +134988,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-11T09:28:32.025Z
-    updated_at: 2026-04-11T09:29:52.053Z
+    updated_at: 2026-04-11T09:29:52.086Z
     notes: []
