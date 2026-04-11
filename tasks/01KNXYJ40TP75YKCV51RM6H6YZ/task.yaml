@@ -71,6 +71,7 @@ tags:
   - setup
   - git
 vcs_refs: []
+review_ref: "@01KNY1GZQP0FK7D8D9GYVYEK0S"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-complete-gitignore/01knxyj4
@@ -121,6 +122,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-04-11T10:29:26.435Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KNY1GZQP0FK7D8D9GYVYEK0S"
+        previous: null
+    command: review-link
+    timestamp: 2026-04-11T10:31:16.390Z
 created_at: 2026-04-11T09:39:24.826Z
 started_at: 2026-04-11T10:01:10.823Z
 submitted_at: 2026-04-11T10:29:26.435Z
