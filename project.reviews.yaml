@@ -134711,6 +134711,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNXXN5C4YR0HVQPDTBPY6D1M
         timestamp: 2026-04-11T09:23:36.822Z
+      - _ulid: 01KNXXNF8EE7XEX8M3MGYM7ZYF
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNXXNECR4XJZEPDDJ4AT0722
+        timestamp: 2026-04-11T09:23:46.062Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -134740,7 +134747,24 @@ reviews:
               force/idempotency model."
             created_at: 2026-04-11T09:23:35.940Z
         kind: blocker
+      - _ulid: 01KNXXNECR4XJZEPDDJ4AT0722
+        anchor:
+          type: structured
+          ref: "@default-session-reflection-hook"
+          section: dependencies
+        entries:
+          - _ulid: 01KNXXNECSKCV53RMRKCYWNPDJ
+            author: Jacob Chapel
+            body: The reflection-hook simplification is not carried through consistently. The spec and task now
+              say the hook is universal and no longer needs per-agent identifiers, and the task no
+              longer declares a depends_on edge, but the implementation notes still state that the
+              default reflection hooks task depends on default agents and conventions because it
+              looks up primary agent identifiers. That leaves the plan with two incompatible
+              dependency stories for the same task. Update the dependency notes to match the
+              simplified model so task ordering and rationale are unambiguous.
+            created_at: 2026-04-11T09:23:45.177Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-11T09:23:10.782Z
-    updated_at: 2026-04-11T09:23:35.940Z
+    updated_at: 2026-04-11T09:23:45.177Z
     notes: []
