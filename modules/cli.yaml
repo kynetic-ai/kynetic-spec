@@ -2868,6 +2868,9 @@ features:
           including any that are created lazily by later commands.
           No kspec-created directory should ever appear as untracked
           content after an init on a clean repository.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
