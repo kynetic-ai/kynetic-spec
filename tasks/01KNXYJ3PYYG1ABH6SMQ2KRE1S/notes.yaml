@@ -25,3 +25,32 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-11T09:45:01.267Z
+  - _ulid: 01KNXZP3S7Z6SPEPS1XM5VJDJW
+    content: >-
+      Implementation complete. Changes:
+
+
+      1. src/parser/config.ts: Exported CONFIG_FILENAME constant for reuse.
+
+
+      2. src/cli/commands/setup.ts: Added three new functions:
+         - detectDefaultBranch(): Resolves default branch using same approach as dispatcher (remote HEAD → current branch → 'main' fallback)
+         - generateConfigContent(): Produces the YAML template with dispatch.publication_mode (manual_merge + comment listing pull_request, manual_merge, auto), dispatch.base_branch (resolved), and commented-out coverage.scan_paths
+         - scaffoldProjectConfig(): Idempotent step following @trait-idempotent-file-scaffold (skip if exists, backup+overwrite on force, validate via loadProjectConfig)
+         Registered as step 4c in pipeline between 'Ensure built-in agents' and 'Generate kspec-agents.md'.
+
+      3. tests/scaffold-project-config.test.ts: 14 E2E tests covering all 8 spec ACs + 4 trait ACs:
+         - Fresh file creation and validation
+         - Publication mode key with accepted values comment
+         - Base branch resolved from repo
+         - Commented-out coverage section with sample paths
+         - Byte-for-byte preservation without force
+         - Force overwrite with backup
+         - Idempotent created/skipped reporting
+         - Integration with init --setup flow
+         - Behavioral equivalence with empty config
+
+      Full test suite: 7737 passed, 0 failed.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-11T09:59:04.231Z
