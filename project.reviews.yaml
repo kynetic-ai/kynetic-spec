@@ -135110,7 +135110,21 @@ reviews:
     slugs: []
     title: Review scaffold-project-config-file during init setup
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: >-
+          > @kynetic-ai/spec@0.12.0 test
+
+          > node scripts/test.cjs --run tests/scaffold-project-config.test.ts passed: 8 suites / 14
+          tests.
+        name: scaffold-project-config tests
+        required: true
+        runner: npm
+        created_at: 2026-04-11T10:06:19.960Z
+        completed_at: 2026-04-11T10:06:19.960Z
     events:
       - _ulid: 01KNXZSGBE2QED5CMJ5QSK2FWY
         actor: Jacob Chapel
@@ -135139,6 +135153,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNY03AF6PTHXA56SJNBDZ1A1
         timestamp: 2026-04-11T10:06:18.099Z
+      - _ulid: 01KNY03E6RWZDG8YEJ8G4YTSS4
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: scaffold-project-config tests
+        timestamp: 2026-04-11T10:06:20.888Z
     examined_commit: 4f57708fe3e613630f0e50337cbdaf60d0493333
     external_links: []
     lifecycle_state: open
@@ -135189,5 +135210,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-11T10:00:55.406Z
-    updated_at: 2026-04-11T10:06:17.062Z
+    updated_at: 2026-04-11T10:06:19.960Z
     notes: []
