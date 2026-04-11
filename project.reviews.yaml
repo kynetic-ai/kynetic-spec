@@ -135185,6 +135185,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-11T10:06:26.536Z
+      - _ulid: 01KNY03PD5XVWJ9QBR8GA79EAY
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KNY03NGZVPXS10M5XW7ESBAM
+        timestamp: 2026-04-11T10:06:29.285Z
     examined_commit: 4f57708fe3e613630f0e50337cbdaf60d0493333
     external_links: []
     lifecycle_state: open
@@ -135419,7 +135426,151 @@ reviews:
                   Then: guidance included in structured error object. A repo-wide search of the setup/init/scaffold tests found no  annotations in this area, so the task is missing required inherited AC coverage (or explicit N/A annotations) for the command surface it changed.
             created_at: 2026-04-11T10:06:22.747Z
         kind: blocker
+      - _ulid: 01KNY03NGZVPXS10M5XW7ESBAM
+        entries:
+          - _ulid: 01KNY03NGZ5RBBZ47XZG6NV2F0
+            author: Jacob Chapel
+            body: >-
+              Review evidence log: Files read: src/cli/commands/setup.ts, src/parser/config.ts,
+              src/agent-runtime/workspace.ts, tests/scaffold-project-config.test.ts,
+              tests/init-setup-integration.test.ts, tests/setup-pipeline-unification.test.ts,
+              tests/dispatch-workspace-config.test.ts. Commands run: , , , , , ✗ Validation failed
+
+              ────────────────────────────────────────
+
+              Files checked: 10
+
+              Items checked: 589
+
+              Tasks checked: 0
+
+              Meta: 11 agents, 11 workflows, 10 conventions
+
+
+              Schema errors: 1
+                ✗ /home/chapel/Projects/kynetic-spec-dispatch/.kspec/modules/meta.yaml:modules[0].traits.0
+                  Expected string, received object
+              References: OK
+
+
+              Reference warnings: 1
+                ⚠ @skills
+                  Orphaned skill directory 'skills' has no corresponding meta entry
+                  in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+              Alignment warnings: 33
+                Orphaned specs (no tasks): 31
+                  ○ Test Trait
+                  ○ Filterable List Commands
+                  ○ Dry Run Preview Mode
+                  ... and 28 more
+                Status mismatches: 2
+                  ! Task Set Batch Support
+                    Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+                  ! Concurrent Read Command Execution
+                    Spec "Concurrent Read Command Execution" status is "implemented" but should be "in_progress" based on task progress
+
+              Alignment stats: 425/589 specs have tasks, 423 aligned
+
+
+              Completeness warnings: 483
+                Missing acceptance criteria: 1
+                  ○ @01KJN1WT - Test Trait
+                Missing own AC coverage: 243
+                  ! @spec-item - Spec Item
+                    Uncovered: ac-item-1, ac-item-2
+                  ! @ulid-system - ULID Identifier System
+                    Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+                  ! @slug-system - Slug Alias System
+                    Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+                  ... and 240 more
+                Invalid AC annotations: 239
+                  ! AC annotation references '@01KJE3T7' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review/tests/agent-detection.test.ts:43
+                  ! AC annotation references '@01KJE3T7' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review/tests/agent-detection.test.ts:61
+                  ! AC annotation references '@01KJE3T7' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review/tests/agent-detection.test.ts:75
+                  ! AC annotation references '@01KJE3T7' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review/tests/agent-detection.test.ts:88
+                  ! AC annotation references '@ui-agent-dispatch ac-8' but @ui-agent-dispatch has no acceptance criterion 'ac-8'
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review/tests/agent-dispatch-engine.test.ts:4965
+                  ... and 234 more
+              Skills: OK (10 files checked), targeted / searches, 
+
+              > @kynetic-ai/spec@0.12.0 test
+
+              > node scripts/test.cjs --run tests/scaffold-project-config.test.ts, and a direct
+              kspec-meta shadow state exists but .kspec worktree is missing or unhealthy. Create it?
+              (y/N)  reproduction for failed-step exit behavior. Claims verified: new scaffold tests
+              pass; repo-wide ✗ Validation failed
+
+              ────────────────────────────────────────
+
+              Files checked: 10
+
+              Items checked: 589
+
+              Tasks checked: 0
+
+              Meta: 11 agents, 11 workflows, 10 conventions
+
+
+              Schema errors: 1
+                ✗ /home/chapel/Projects/kynetic-spec-dispatch/.kspec/modules/meta.yaml:modules[0].traits.0
+                  Expected string, received object
+              References: OK
+
+
+              Reference warnings: 1
+                ⚠ @skills
+                  Orphaned skill directory 'skills' has no corresponding meta entry
+                  in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+              Alignment warnings: 33
+                Orphaned specs (no tasks): 31
+                  ○ Test Trait
+                  ○ Filterable List Commands
+                  ○ Dry Run Preview Mode
+                  ... and 28 more
+                Status mismatches: 2
+                  ! Task Set Batch Support
+                    Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+                  ! Concurrent Read Command Execution
+                    Spec "Concurrent Read Command Execution" status is "implemented" but should be "in_progress" based on task progress
+
+              Alignment stats: 425/589 specs have tasks, 423 aligned
+
+
+              Completeness warnings: 483
+                Missing acceptance criteria: 1
+                  ○ @01KJN1WT - Test Trait
+                Missing own AC coverage: 243
+                  ! @spec-item - Spec Item
+                    Uncovered: ac-item-1, ac-item-2
+                  ! @ulid-system - ULID Identifier System
+                    Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+                  ! @slug-system - Slug Alias System
+                    Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+                  ... and 240 more
+                Invalid AC annotations: 239
+                  ! AC annotation references '@01KJE3T7' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review/tests/agent-detection.test.ts:43
+                  ! AC annotation references '@01KJE3T7' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review/tests/agent-detection.test.ts:61
+                  ! AC annotation references '@01KJE3T7' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review/tests/agent-detection.test.ts:75
+                  ! AC annotation references '@01KJE3T7' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review/tests/agent-detection.test.ts:88
+                  ! AC annotation references '@ui-agent-dispatch ac-8' but @ui-agent-dispatch has no acceptance criterion 'ac-8'
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review/tests/agent-dispatch-engine.test.ts:4965
+                  ... and 234 more
+              Skills: OK (10 files checked) is already failing; setup currently exits 0 even when a
+              pipeline step is marked failed. Categories searched: correctness, AC coverage, error
+              handling, integration, test quality.
+            created_at: 2026-04-11T10:06:28.383Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-11T10:00:55.406Z
-    updated_at: 2026-04-11T10:06:25.562Z
+    updated_at: 2026-04-11T10:06:28.383Z
     notes: []
