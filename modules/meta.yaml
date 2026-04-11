@@ -6464,6 +6464,9 @@ modules:
           The scaffolded file uses only documented config keys, is valid
           on first load, and marks itself visibly as a template that the
           user should review.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
