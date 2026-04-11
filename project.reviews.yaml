@@ -135125,6 +135125,17 @@ reviews:
         runner: npm
         created_at: 2026-04-11T10:06:19.960Z
         completed_at: 2026-04-11T10:06:19.960Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Pre-existing repo validation failure unrelated to this task:  schema error plus
+          long-standing completeness/alignment warnings."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-11T10:06:25.562Z
+        completed_at: 2026-04-11T10:06:25.562Z
     events:
       - _ulid: 01KNXZSGBE2QED5CMJ5QSK2FWY
         actor: Jacob Chapel
@@ -135167,6 +135178,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNY03G0VM8WPNGX2FKKYYAAA
         timestamp: 2026-04-11T10:06:23.770Z
+      - _ulid: 01KNY03KQ82D5FRTJE84BH4DVK
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-11T10:06:26.536Z
     examined_commit: 4f57708fe3e613630f0e50337cbdaf60d0493333
     external_links: []
     lifecycle_state: open
@@ -135403,5 +135421,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-11T10:00:55.406Z
-    updated_at: 2026-04-11T10:06:22.747Z
+    updated_at: 2026-04-11T10:06:25.562Z
     notes: []
