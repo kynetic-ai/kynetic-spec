@@ -134712,6 +134712,18 @@ reviews:
         required: true
         created_at: 2026-04-11T09:24:06.867Z
         completed_at: 2026-04-11T09:24:06.867Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "The upgrade task now makes ac-source-version-fallback actionable by specifying concrete
+          probes and a selection rule: task storage shape, scaffolded config presence, rendered
+          review-plan skill presence, and task-format marker are used to infer the newest version
+          consistent with observed state."
+        name: Source version fallback concreteness
+        required: true
+        created_at: 2026-04-11T09:24:06.926Z
+        completed_at: 2026-04-11T09:24:06.926Z
     events:
       - _ulid: 01KNXXMCSXBH8Y5KHFPE8QE4KH
         actor: Jacob Chapel
@@ -134754,6 +134766,13 @@ reviews:
           status: pass
           name: Force-path AC separation
         timestamp: 2026-04-11T09:24:09.174Z
+      - _ulid: 01KNXXP76VY5G810QRXM9A699Y
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Source version fallback concreteness
+        timestamp: 2026-04-11T09:24:10.588Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -134802,5 +134821,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-11T09:23:10.782Z
-    updated_at: 2026-04-11T09:24:06.867Z
+    updated_at: 2026-04-11T09:24:06.926Z
     notes: []
