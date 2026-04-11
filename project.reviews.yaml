@@ -134960,6 +134960,17 @@ reviews:
         required: true
         created_at: 2026-04-11T09:29:52.097Z
         completed_at: 2026-04-11T09:29:52.097Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "@plan-import-format-guidance still cleanly separates empty-plan behaviors: import stores
+          empty plans with a warning (ac-empty-plan-import-warns), while derive rejects plans with
+          no derivable work (ac-empty-plan-derive-fails), matching the current plan-support model."
+        name: Plan import/derive split
+        required: true
+        created_at: 2026-04-11T09:29:52.118Z
+        completed_at: 2026-04-11T09:29:52.118Z
     events:
       - _ulid: 01KNXXY6GSD57ZC41RCSMMY34W
         actor: Jacob Chapel
@@ -134995,6 +135006,13 @@ reviews:
           status: pass
           name: Source version fallback concreteness
         timestamp: 2026-04-11T09:29:56.006Z
+      - _ulid: 01KNXY0SZM57641KFRQ1QYC38J
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Plan import/derive split
+        timestamp: 2026-04-11T09:29:57.492Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -135007,5 +135025,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-11T09:28:32.025Z
-    updated_at: 2026-04-11T09:29:52.097Z
+    updated_at: 2026-04-11T09:29:52.118Z
     notes: []
