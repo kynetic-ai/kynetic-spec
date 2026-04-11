@@ -135160,6 +135160,13 @@ reviews:
           status: pass
           name: scaffold-project-config tests
         timestamp: 2026-04-11T10:06:20.888Z
+      - _ulid: 01KNY03H0TJTCG103QGTX0WGNR
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KNY03G0VM8WPNGX2FKKYYAAA
+        timestamp: 2026-04-11T10:06:23.770Z
     examined_commit: 4f57708fe3e613630f0e50337cbdaf60d0493333
     external_links: []
     lifecycle_state: open
@@ -135208,7 +135215,193 @@ reviews:
               shows this pipeline path does not surface step failures to callers."
             created_at: 2026-04-11T10:06:17.062Z
         kind: blocker
+      - _ulid: 01KNY03G0VM8WPNGX2FKKYYAAA
+        anchor:
+          type: code
+          commit: 4f57708fe3e613630f0e50337cbdaf60d0493333
+          line_end: 15
+          line_start: 1
+          path: tests/scaffold-project-config.test.ts
+          side: head
+        entries:
+          - _ulid: 01KNY03G0VY31S93Q8T3A4D09J
+            author: Jacob Chapel
+            body: >-
+              The new coverage only annotates the requirement's own ACs and ; it does not cover the
+              inherited  ACs shown on Scaffolded Project Config File
+
+              ────────────────────────────────────────
+
+              ULID:      01KNXYJ2Y3A2MAVHRQQ97VD0PV
+
+              Slugs:     scaffolded-project-config
+
+              Type:      requirement
+
+              Maturity:  draft
+
+              Implementation: in_progress
+
+
+              ─── Description ───
+
+              When a project is initialized with full setup, a project config
+
+              file is scaffolded at the project root with placeholder values
+
+              for the knobs that real projects are expected to customize.
+
+              The scaffolded file uses only documented config keys, is valid
+
+              on first load, and marks itself visibly as a template that the
+
+              user should review.
+
+
+
+              ─── Acceptance Criteria ───
+                [ac-file-scaffolded]
+                  Given: A project has no project config file at its root
+
+                  When: The project is initialized with full setup
+
+                  Then: A project config file is created at the project root
+
+                [ac-file-valid-on-load]
+                  Given: A scaffolded project config file has just been written
+
+                  When: The config is loaded by any kspec command
+
+                  Then: The file parses successfully and produces the same resolved
+              configuration as an empty config would, so scaffolding does
+
+              not change runtime behavior
+
+                [ac-placeholder-publication-mode]
+                  Given: A scaffolded project config file is written
+
+                  When: The file contents are inspected
+
+                  Then: The dispatch publication mode key is present with a
+              default value and an adjacent comment naming the other
+
+              accepted values
+
+                [ac-placeholder-base-branch]
+                  Given: A scaffolded project config file is written
+
+                  When: The file contents are inspected
+
+                  Then: The dispatch base branch key is present with a resolved
+              value taken from the current repository's default branch
+
+                [ac-placeholder-coverage]
+                  Given: A scaffolded project config file is written
+
+                  When: The file contents are inspected
+
+                  Then: The coverage scan paths key is present as a commented-out
+              example with sample paths, so users know the knob exists
+
+              without forcing a choice at init time
+
+                [ac-file-exists-preserved]
+                  Given: A project already has a project config file at its root
+
+                  When: The project is re-initialized or setup is re-run without
+              the force flag
+
+                  Then: The existing file is preserved byte-for-byte
+
+                [ac-file-force-overwrites]
+                  Given: A project already has a project config file and setup is
+              invoked with the force flag
+
+                  When: Setup runs
+
+                  Then: The existing file is replaced with a freshly scaffolded
+              template
+
+                [ac-file-force-backup]
+                  Given: A project already has a project config file and setup is
+              invoked with the force flag
+
+                  When: Setup overwrites the existing file
+
+                  Then: The previous content is preserved as a sibling backup
+              file whose path is reported in the setup output
+
+
+
+              ─── Inherited from @trait-idempotent-file-scaffold ───
+                [ac-existing-file-preserved-without-force] (from @trait-idempotent-file-scaffold)
+                  Given: A file scaffold step's target file already exists
+
+                  When: The step runs without the force flag
+
+                  Then: The existing file is preserved byte-for-byte and
+              the step reports "skipped"
+
+                [ac-force-backs-up-before-overwrite] (from @trait-idempotent-file-scaffold)
+                  Given: A file scaffold step's target file already exists and
+              the step is invoked with the force flag
+
+                  When: The step runs
+
+                  Then: The previous content is preserved as a sibling backup
+              with a timestamped name, the backup path is reported
+
+              before the overwrite, and only then is the file
+
+              replaced with a freshly scaffolded template
+
+                [ac-fresh-file-creation] (from @trait-idempotent-file-scaffold)
+                  Given: A file scaffold step's target file does not exist
+
+                  When: The step runs with or without the force flag
+
+                  Then: The file is created and the step reports "created"
+
+                [ac-step-reports-action] (from @trait-idempotent-file-scaffold)
+                  Given: Any file scaffold step completes
+
+                  When: The setup summary is produced
+
+                  Then: The step's action (created, skipped, force-recreated)
+              and any backup path are included in the summary in a
+
+              stable format
+
+
+
+              ─── Inherited from @trait-error-guidance ───
+                [ac-1] (from @trait-error-guidance)
+                  Given: command encounters error
+                  When: error message is shown
+                  Then: includes description of what went wrong
+                [ac-2] (from @trait-error-guidance)
+                  Given: command encounters error
+                  When: error message is shown
+                  Then: includes suggested action to resolve
+                [ac-3] (from @trait-error-guidance)
+                  Given: reference not found
+                  When: error is shown
+                  Then: suggests checking ref with kspec search or kspec <type> list
+                [ac-4] (from @trait-error-guidance)
+                  Given: invalid state transition
+                  When: error is shown
+                  Then: indicates current state and valid next states
+                [ac-5] (from @trait-error-guidance)
+                  Given: validation error
+                  When: error is shown
+                  Then: indicates which field/value failed validation
+                [ac-6] (from @trait-error-guidance)
+                  Given: error in JSON mode
+                  When: --json is active
+                  Then: guidance included in structured error object. A repo-wide search of the setup/init/scaffold tests found no  annotations in this area, so the task is missing required inherited AC coverage (or explicit N/A annotations) for the command surface it changed.
+            created_at: 2026-04-11T10:06:22.747Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-11T10:00:55.406Z
-    updated_at: 2026-04-11T10:06:19.960Z
+    updated_at: 2026-04-11T10:06:22.747Z
     notes: []
