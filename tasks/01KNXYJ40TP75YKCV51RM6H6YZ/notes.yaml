@@ -39,3 +39,35 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-11T10:04:17.751Z
+  - _ulid: 01KNY1DF39YF125RAYZPGY7PDA
+    content: >-
+      Implementation complete:
+
+
+      - Created src/parser/gitignore.ts with managed-block gitignore writer
+        - KSPEC_GITIGNORE_ENTRIES canonical list: .kspec/, .kspec-sessions/, plans/, .kspec-worktrees/, .kspec-dispatch-workspace.json, .kspec-dispatch-shadow-mutation
+        - Sentinel markers: # >>> kspec managed / # <<< kspec managed
+        - parseManagedBlock/updateManagedBlock/serializeManagedBlock pure functions
+        - ensureKspecGitignore/needsKspecGitignoreUpdate file-level operations
+        - buildKspecGitignoreEntries supports custom shadow directory names
+
+      - Updated src/parser/shadow.ts initializeShadow()
+        - Replaced 3 separate gitignore calls with single ensureKspecGitignore()
+        - Passes custom shadow directory name for custom config support
+        - Preserved uncommitted-changes check and commit behavior
+
+      - Updated src/cli/commands/setup.ts runSetupPipeline()
+        - Setup step now uses managed-block approach
+        - Dry-run lists specific entries that would be added
+        - Step name changed to 'Ensure gitignore and sessions directory'
+
+      - Tests: 21 new tests in tests/gitignore-managed-block.test.ts
+        - Pure function tests for parseManagedBlock, updateManagedBlock
+        - File-level tests for ensureKspecGitignore, needsKspecGitignoreUpdate
+        - Integration tests via kspec init CLI
+        - AC coverage: all 4 own ACs + 3 applicable trait ACs (ac-force-backs-up-before-overwrite N/A)
+
+      - Full test suite passes: 2119 suites, 7744 tests, 0 regressions
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-11T10:29:18.057Z
