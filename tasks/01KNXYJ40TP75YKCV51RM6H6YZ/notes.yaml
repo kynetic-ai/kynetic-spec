@@ -1,1 +1,41 @@
-notes: []
+notes:
+  - _ulid: 01KNXZZNYQ6TZ65WT4SW9JNG68
+    content: >-
+      Approach: 
+
+
+      1. Create shared constant KSPEC_GITIGNORE_ENTRIES in src/parser/shadow.ts alongside existing
+      path constants. Entries derived from: SHADOW_WORKTREE_DIR (.kspec/), SESSIONS_WORKTREE_DIR
+      (.kspec-sessions/), TRANSIENT_PLANS_DIR (plans/), dispatch worktree_root (.kspec-worktrees/),
+      dispatch workspace metadata (.kspec-dispatch-workspace.json), dispatch shadow mutation lock
+      (.kspec-dispatch-shadow-mutation).
+
+
+      2. Add managed-block sentinel markers (# >>> kspec managed / # <<< kspec managed) and a helper
+      that parses/updates/serializes the block. The helper: reads .gitignore, finds the managed
+      block (or creates it at end), ensures all canonical entries exist inside the block, never
+      removes user entries inside or outside the block.
+
+
+      3. Replace the per-entry ensureGitignore/ensureSessionsGitignore/ensurePlansGitignore with a
+      single ensureKspecGitignore() that uses the managed block approach.
+
+
+      4. Add a setup step that calls ensureKspecGitignore() on every setup invocation, reporting
+      which entries were added.
+
+
+      5. Update initializeShadow() to call the new unified function.
+
+
+      Edge cases: existing projects without managed block markers (create block with all entries),
+      user content above/below block preserved, idempotent on re-run, force flag preserves
+      byte-for-byte (trait AC).
+
+
+      Test plan: 8 own ACs + 4 trait ACs. Tests for managed block parser: no block, block with same
+      entries, block with fewer entries, user content interleaved. Integration test for init + git
+      status.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-11T10:04:17.751Z
