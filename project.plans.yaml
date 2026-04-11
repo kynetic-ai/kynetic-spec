@@ -37548,53 +37548,61 @@ plans:
       ## Specs
 
       ```yaml
-      - title: Idempotent Scaffolding Trait
-        slug: trait-idempotent-scaffold
+      - title: Idempotent File Scaffolding Trait
+        slug: trait-idempotent-file-scaffold
         type: trait
         parent: "@agent-integration"
         description: |
-          A scaffolding step that creates files, directories, or meta
-          items follows a uniform set of rules so users can predict
-          its behavior without reading its implementation: existing
-          artifacts are never modified unless the force flag is set;
-          when force is set, existing artifacts are backed up to a
-          sibling path before being replaced and the backup path is
-          reported in the step's output; the step is safe to re-run
-          and produces the same visible result on the second run as
-          the first when no inputs changed; the step always reports
-          its action (created, skipped, force-recreated) in a stable
-          format consumable by the setup summary; and the step never
-          destroys user content outside the artifact it owns.
+          A scaffolding step that creates a file or writes to a
+          managed block inside a file on disk follows a uniform set
+          of rules so users can predict its behavior without reading
+          its implementation: the target file is never modified
+          unless the force flag is set; when force is set, the
+          existing file is backed up to a sibling path before being
+          replaced and the backup path is reported in the step's
+          output; the step is safe to re-run and produces the same
+          visible result on the second run as the first when no
+          inputs changed; the step always reports its action
+          (created, skipped, force-recreated) in a stable format
+          consumable by the setup summary; and the step never
+          destroys user content outside the file it owns.
+
+          Scope: this trait applies only to scaffolding that writes
+          files on disk. Scaffolds that create meta-spec items
+          (agents, conventions, hooks, modules) have different force
+          semantics — they use first-run-only creation with
+          "reseed missing items only" on force — and must not
+          inherit this trait.
         acceptance_criteria:
-          - id: ac-existing-preserved-without-force
+          - id: ac-existing-file-preserved-without-force
             given: |
-              A scaffold step's target artifact already exists
+              A file scaffold step's target file already exists
             when: |
               The step runs without the force flag
             then: |
-              The existing artifact is preserved byte-for-byte and
+              The existing file is preserved byte-for-byte and
               the step reports "skipped"
           - id: ac-force-backs-up-before-overwrite
             given: |
-              A scaffold step's target artifact already exists and
+              A file scaffold step's target file already exists and
               the step is invoked with the force flag
             when: |
               The step runs
             then: |
               The previous content is preserved as a sibling backup
               with a timestamped name, the backup path is reported
-              before the overwrite, and only then is the artifact
+              before the overwrite, and only then is the file
               replaced with a freshly scaffolded template
-          - id: ac-fresh-creation
+          - id: ac-fresh-file-creation
             given: |
-              A scaffold step's target artifact does not exist
+              A file scaffold step's target file does not exist
             when: |
               The step runs with or without the force flag
             then: |
-              The artifact is created and the step reports "created"
+              The file is created and the step reports "created"
           - id: ac-step-reports-action
             given: |
-              Any scaffold step completes
+              Any file scaffold step completes
             when: |
               The setup summary is produced
             then: |
@@ -37607,7 +37615,7 @@ plans:
         type: requirement
         parent: "@agent-integration"
         traits:
-          - "@trait-idempotent-scaffold"
+          - "@trait-idempotent-file-scaffold"
           - "@trait-error-guidance"
         description: |
           When a project is initialized with full setup, a project config
@@ -37691,7 +37699,7 @@ plans:
         type: requirement
         parent: "@init-commands"
         traits:
-          - "@trait-idempotent-scaffold"
+          - "@trait-idempotent-file-scaffold"
         description: |
           When a project is initialized, the gitignore file at the
           project root contains entries for every transient directory
@@ -37740,8 +37748,6 @@ plans:
         slug: default-project-agents-and-conventions
         type: requirement
         parent: "@agent-integration"
-        traits:
-          - "@trait-idempotent-scaffold"
         description: |
           When a project is initialized with full setup for the first
           time, the meta spec is seeded with a complete set of default
@@ -37899,8 +37905,6 @@ plans:
         slug: default-session-reflection-hook
         type: requirement
         parent: "@agent-integration"
-        traits:
-          - "@trait-idempotent-scaffold"
         description: |
           When a project is initialized with full setup, a single
           reflection hook is scaffolded that fires on any idle agent
@@ -39233,11 +39237,10 @@ plans:
       The plan groups work into four themes:
 
       1. **Fresh-setup completeness** — the scaffold work (config file,
-         human-authored agent instructions file, gitignore completion,
-         default agents and conventions, default reflection hooks,
-         derivable default module). A fresh project after init with
-         setup should be ready for plan import and dispatch with no
-         further hand-authoring.
+         gitignore completion, default agents and conventions, default
+         reflection hook, derivable default module). A fresh project
+         after init with setup should be ready for plan import and
+         dispatch with no further hand-authoring.
 
       2. **Plan import ergonomics** — the plan format guidance work.
          Import must never silently accept a broken document, and its
@@ -39255,23 +39258,33 @@ plans:
          by running multiple commands. The fix stands alone and can
          ship in any order.
 
-      Dependency ordering: the scaffold tasks (config, agents file,
-      gitignore, default agents and conventions) have no dependencies
-      on each other and can run in parallel. The default reflection
-      hooks task depends on default agents and conventions because it
-      looks up the primary agent identifiers. The upgrade command task
+      Dependency ordering: the scaffold tasks (config file, gitignore,
+      default agents and conventions, default reflection hook, default
+      module) have no dependencies on each other and can run in
+      parallel. The reflection hook task used to depend on the default
+      agents task so it could look up primary agent identifiers, but
+      reflection is now a universal hook with no per-agent filter, so
+      that dependency no longer exists. The upgrade command task
       depends on every scaffold task because it invokes them on
       existing projects. The release notes task depends on the upgrade
       command because the upgrade command consumes release notes.
-      The doctor accuracy task depends on both scaffold tasks and the
-      upgrade command because it adds checks for both. The meta set
-      fix has no dependencies.
+      The doctor accuracy task depends on the config scaffold task and
+      the upgrade command because it adds checks for both. The meta
+      set fix has no dependencies.
 
       Design decisions:
-      - Scaffolding is additive and idempotent. Every scaffold step
-        has a skip path for existing files and a force path that
-        backs up before overwriting. No scaffold step ever destroys
-        user content.
+      - Scaffolding is additive and idempotent, with two different
+        force contracts depending on what is being scaffolded. File
+        scaffolds (config file, gitignore block) preserve existing
+        files byte-for-byte without force, and back up then replace
+        on force — this is the @trait-idempotent-file-scaffold
+        contract. Meta-item scaffolds (default agents, conventions,
+        reflection hook, default module) are first-run-only: after
+        the first successful seed, subsequent runs never recreate
+        items the user has removed or renamed, and force is scoped
+        to "reseed missing items only" without overwriting anything
+        the user currently has. No scaffold step ever destroys user
+        content.
       - The canonical list of transient directories lives in a shared
         constant, not inline in init, so future additions are
         automatically picked up by both init and the upgrade repair
@@ -39326,3 +39339,11 @@ plans:
           trait"
         author: Jacob Chapel
         created_at: 2026-04-11T09:15:42.494Z
+      - _ulid: 01KNXXW08D1A82NKBX9N07GGPS
+        content: "Cycle 3 fixes: narrow @trait-idempotent-scaffold to @trait-idempotent-file-scaffold (file
+          scaffolds only); strip trait from meta-item specs (default agents, reflection hook) whose
+          force semantics differ; update implementation notes to reflect that reflection hook no
+          longer depends on default agents; document the two scaffold force contracts in the design
+          decisions section"
+        author: Jacob Chapel
+        created_at: 2026-04-11T09:27:20.077Z
