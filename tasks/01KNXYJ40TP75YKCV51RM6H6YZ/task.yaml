@@ -61,7 +61,7 @@ description: |
 spec_ref: "@complete-auto-gitignore"
 plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -71,6 +71,14 @@ tags:
   - setup
   - git
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-complete-gitignore/01knxyj4
+  captured_at: 2026-04-11T10:29:26.432Z
+  commit: d8602e6f790919893fc9aa7907493193f5f99411
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KNXZS4W4FFKQKYWEDY35QKDQ
 history:
   - author: Jacob Chapel
@@ -93,7 +101,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-11T10:01:10.823Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-complete-gitignore/01knxyj4
+          captured_at: 2026-04-11T10:29:26.432Z
+          commit: d8602e6f790919893fc9aa7907493193f5f99411
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-04-11T10:29:26.435Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-11T10:29:26.435Z
 created_at: 2026-04-11T09:39:24.826Z
 started_at: 2026-04-11T10:01:10.823Z
+submitted_at: 2026-04-11T10:29:26.435Z
 todos: []
 automation: eligible
