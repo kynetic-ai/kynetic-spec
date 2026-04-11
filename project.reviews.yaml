@@ -134689,7 +134689,18 @@ reviews:
     slugs: []
     title: "Plan review: Init, Setup, and Upgrade Rough Edges (cycle 3)"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "@default-project-agents-and-conventions now has explicit ACs for task worker, code
+          reviewer, primary dev, and plan reviewer, plus ac-all-defaults-write-authorized to cover
+          unconditional write authorization across all four defaults."
+        name: Default agent roster coverage
+        required: true
+        created_at: 2026-04-11T09:24:06.831Z
+        completed_at: 2026-04-11T09:24:06.831Z
     events:
       - _ulid: 01KNXXMCSXBH8Y5KHFPE8QE4KH
         actor: Jacob Chapel
@@ -134718,6 +134729,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KNXXNECR4XJZEPDDJ4AT0722
         timestamp: 2026-04-11T09:23:46.062Z
+      - _ulid: 01KNXXP4DS3DHPDBVX7G0F4WK7
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Default agent roster coverage
+        timestamp: 2026-04-11T09:24:07.737Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -134766,5 +134784,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-11T09:23:10.782Z
-    updated_at: 2026-04-11T09:23:45.177Z
+    updated_at: 2026-04-11T09:24:06.831Z
     notes: []
