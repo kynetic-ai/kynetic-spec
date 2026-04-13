@@ -1,0 +1,272 @@
+notes:
+  - _ulid: 01KP4KSP6R7ZHWN91D86AVJ5E1
+    content: >-
+      WHY — incident context.
+
+
+      On 2026-04-11 around 03:38 local time, two concurrent npm test runs inside dispatch-managed
+      linked worktrees reached a shadow-lifecycle code path with the cwd set to the linked worktree.
+      The operation succeeded — but succeeded against the main working tree's shadow worktree, not
+      the linked one. The spec data on the kspec-meta branch was preserved (tip 4c9c302e6 intact),
+      but the main repo's .kspec/ working tree and its worktree admin entry were destroyed. The
+      failure was silent: the destructive command returned exit code zero with no output, and only
+      surfaced later as every subsequent kspec CLI invocation breaking until manual recovery.
+
+
+      The incident is reproducible from a clean repo using only native git commands — it does not
+      require kspec to trigger. The underlying git behavior (a bare relative worktree name resolving
+      across the shared worktree admin of all linked worktrees of the same repo via
+      find_worktree_by_suffix in git's worktree.c) is documented and stable; kspec's guarantee must
+      be built on top of it. The guarantee is product-level: kspec is the primary interface to spec
+      data for every user of the project, and a silent path where concurrent automation destroys a
+      user's spec state is a data-integrity regression.
+
+
+      Recovery is straightforward once the user knows what happened — the shadow branch preserves
+      all data and kspec shadow repair from the main repo rebuilds the worktree — but 'knows what
+      happened' is a high bar for a silent failure. The fix needs to make the failure either
+      impossible or loud.
+
+
+      The secondary lesson is that the project's test helpers have a latent amplifier: a
+      subprocess-spawning helper that silently inherits the vitest worker's cwd when a caller
+      forgets to pass one, which is how an unrelated test reached the buggy code path without anyone
+      writing a line of code targeting the shadow worktree. Enforcing explicit cwd at the test
+      helper layer removes the amplifier and makes any future variant of the same class of bug fail
+      loudly at its origin rather than silently in a shared directory.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-13T23:45:59.512Z
+  - _ulid: 01KP4KSPW2GFE2TXAYVW5QCYQJ
+    content: >-
+      HOW part 1 of 3 — code changes.
+
+
+      Implementation details are owned by the task worker. The following are the known constraints
+      and starting points; the worker is free to propose a different implementation if it closes the
+      ACs more cleanly.
+
+
+      1. Shadow-lifecycle operations must identify their target by absolute path. In
+      src/parser/shadow.ts, each call to git worktree add or git worktree remove for the shadow
+      directory currently passes the bare relative directory name (lines 2777, 2787, 2811, 2818,
+      2958, 2978). Replace with the absolute path already computed at or near the top of each
+      function (worktreeDir exists in repairShadow at line 2952; an equivalent should be computed
+      once in initializeShadow). Audit createOrphanBranchFallback specifically to confirm it passes
+      an absolute worktreeDir, not directoryName, to every git worktree invocation it makes. This
+      single-mechanism change closes the cross-worktree vector for any correctly-routed caller.
+
+
+      2. Add an entry guard to initializeShadow and repairShadow as defense-in-depth, not as the
+      primary fix. At the top of each function, call a new helper assertMainWorkingTree(projectRoot)
+      that uses a single git rev-parse --show-toplevel --git-common-dir invocation to detect whether
+      projectRoot is a linked worktree. On detection, throw a ShadowError with an instructional
+      message naming the main working tree's path (derived from the parent of the git common
+      directory). No bypass flag. Framing: after step 3 lands, the common-path callers always pass
+      mainRoot and the guard never fires — the guard exists to catch any future caller (or
+      regression) that forgets to resolve, so that the destructive path cannot reopen.
+
+
+      3. Correct kspec init's project root resolution. src/cli/commands/init.ts:155 currently calls
+      getGitRoot(targetDir) directly, which returns the linked worktree root when invoked from a
+      linked worktree. Replace with the same pattern src/cli/commands/shadow.ts:28 uses:
+      resolveProjectRoots(targetDir)?.mainRoot ?? getGitRoot(targetDir). Then add explicit detection
+      of the linked-worktree case before calling initializeShadow, and hard-error with instructional
+      message naming the main working tree path. Hard error (non-zero exit) is the chosen
+      implementation per the task's lean-toward-option-(b) direction.
+
+
+      4. Audit kspec setup and other lifecycle entry points. Verify src/cli/commands/setup.ts:600
+      and :617 pass projectRoot resolved via the worktree-aware path. Also audit
+      src/cli/commands/shadow.ts end-to-end even though it already uses resolveCliProjectRoot().
+      Apply the same hard-error pattern to any setup path that would invoke a lifecycle op from a
+      linked worktree.
+
+
+      5. Grep for every caller of initializeShadow( and repairShadow( in src/ — explicitly including
+      src/cli/commands/init.ts, src/cli/commands/setup.ts, src/cli/commands/shadow.ts,
+      src/parser/index.ts, and any daemon-side caller. Document the audit in a task note with
+      per-caller verdict: resolves to main / resolves to linked and needs fix / N/A.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-13T23:46:00.194Z
+  - _ulid: 01KP4KSQHJYE75AJ41G51EV4HT
+    content: >-
+      HOW part 2 of 3 — test helper and convention rule.
+
+
+      6. Test helper cwd enforcement. Change tests/helpers/cli.ts:111 so kspec() requires cwd:
+      string. Delete the cwd ?? process.cwd() fallback at line 167. Run tsc --noEmit to find every
+      caller that compile-fails; fix each by passing the correct per-test temp dir. Known offender:
+      tests/clone-for-testing.test.ts:99 via import { kspecOutput as kspec } from ...
+
+
+      7. Add the convention rule to the testing domain via:
+
+         kspec meta set testing --add-rule "Test helpers that drive kspec CLI subprocesses must require an explicit cwd parameter. Never fall back to process.cwd() — a missing cwd is a test bug, not a default. A silent fallback caused a shadow worktree destruction incident on 2026-04-11."
+
+      After adding the rule, run kspec agents generate to refresh kspec-agents.md and commit the
+      regenerated file alongside the source changes.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-13T23:46:00.882Z
+  - _ulid: 01KP4KSR79N8K7ZHNW8YZ4ZDTS
+    content: >-
+      HOW part 3 of 3 — regression tests.
+
+
+      All tests must use isolated temp dirs created via createTempDir() from tests/helpers/cli.ts
+      and register cleanup via onTestFinished. None may touch the real project's .kspec/ or any path
+      outside their own temp tree. Every test must include an // AC: @worktree-support ac-<id>
+      annotation immediately above the test block for each AC it covers.
+
+
+      Shared baseline fixture — 'main unchanged' assertion method. Before the operation under test,
+      capture: (1) git worktree list --porcelain full output, (2) the SHA of the shadow branch tip
+      via git rev-parse kspec-meta, (3) the target of readlink .kspec/.git (or fs.readFile on the
+      .git file), (4) the mtime and inode of the .kspec/ directory. After the operation, re-capture
+      all four and assert byte-equal on the first two and identity on the last two. This catches
+      silent gitdir pointer mutations, worktree admin entry changes, and directory re-creation that
+      a naive 'does .kspec/ exist' check would miss.
+
+
+      Test files to add:
+
+
+      a. tests/shadow-cross-worktree-isolation.test.ts — Low-level test calling initializeShadow() /
+      repairShadow() directly with a linked worktree path as projectRoot. Asserts the guard throws
+      with a message naming the main path. Closes ac-shadow-ops-scoped-to-main.
+
+
+      b. tests/init-from-linked-worktree-existing-shadow.test.ts — Main has a healthy shadow. Linked
+      worktree invokes kspec init. Assert baseline comparison on main (unchanged), linked worktree
+      has no .kspec/ created, stdout/stderr contains the main working tree path, exit code is
+      non-zero. Closes ac-init-linked-wt-unchanged, ac-init-main-wt-unchanged,
+      ac-init-guidance-direction, ac-init-guidance-path.
+
+
+      c. tests/init-from-linked-worktree-empty-main.test.ts — Main has NO shadow. Linked worktree
+      invokes kspec init. Assert main still has no .kspec/, linked worktree has no .kspec/,
+      stdout/stderr contains the main working tree path, exit code is non-zero. Closes the same four
+      init ACs for the empty-main edge case.
+
+
+      d. tests/setup-from-linked-worktree.test.ts — Analogous to (b) for kspec setup. Closes all
+      four setup ACs.
+
+
+      e. tests/repair-from-linked-worktree-broken-main.test.ts — Main's shadow is broken (worktree
+      dir exists but .git pointer is invalid). Linked worktree invokes kspec shadow repair. Assert
+      main's shadow is recovered (the command proceeds via resolveCliProjectRoot → mainRoot), linked
+      worktree has no .kspec/ created, command exits successfully. Verifies ac-shadow-commands still
+      holds and that the new guard does not over-fire on legitimate shadow ops. Closes
+      ac-shadow-ops-scoped-to-main for the repair flow.
+
+
+      f. tests/shadow-lifecycle-concurrent.test.ts — Spawn two kspec subprocesses concurrently: one
+      from main running kspec shadow repair, one from a linked worktree running the same. Await
+      both. Assert main's shadow is in a consistent state (kspec shadow status succeeds) and the
+      linked-worktree invocation was refused cleanly (per the option (b) lean) while the main
+      invocation ran to completion without damage. Closes ac-shadow-ops-concurrent-safety.
+
+
+      8. Dispatch worker smoke test. After the guard lands, run a minimal dispatch invocation (a
+      dry-run or a short task) to verify kspec shadow status, kspec shadow log, kspec shadow
+      resolve, and kspec shadow sync all still function from within a dispatch-managed linked
+      worktree — these commands should NOT go through initializeShadow/repairShadow and the guard
+      should not fire. Document the verification in the task note. Per ac-dispatch-cwd, dispatch
+      agents legitimately run from linked worktrees and must remain able to read shadow state.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-13T23:46:01.577Z
+  - _ulid: 01KP4KSRW3T201F9A25ZGQ1YR2
+    content: >-
+      NOT IN SCOPE.
+
+
+      - Changing the shadow branch name, layout, or storage format.
+
+      - Changing how the dispatch engine creates or manages its own worktrees — dispatch worktree
+      lifecycle is owned by @dispatch-invocation-worktree-isolation and is unchanged by this task.
+
+      - Adding mutation-lock coverage for shadow lifecycle operations.
+      @scoped-dispatch-shadow-serialization already defines serialization for metadata mutations;
+      this task is orthogonal and does not need new locks.
+
+      - Broader refactoring of tests/helpers/cli.ts beyond the single required-cwd enforcement.
+
+      - Retroactive forensics on the 2026-04-11 dispatch sessions — root cause is already proven and
+      reproduced.
+
+      - A dependency on @complete-auto-gitignore or its task — unrelated.
+
+      - Feature-flagging the guard or adding a bypass environment variable. Any legitimate use case
+      is better served by running from the main working tree.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-13T23:46:02.244Z
+  - _ulid: 01KP4KSSHN2X8VKAZZCY8X8ASV
+    content: >-
+      SUCCESS CRITERIA.
+
+
+      1. All six new regression tests pass after the fix and fail against the unfixed baseline
+      (confirming they catch the bug — run in both directions as part of the fix verification).
+
+      2. Full test suite passes including the pre-existing shadow/worktree/dispatch tests.
+
+      3. Manual verification from a linked worktree: kspec init, kspec setup, and kspec shadow
+      repair. First two hard-error and emit instructional output including the main working tree
+      path. Third succeeds against main.
+
+      4. Reproducing the /tmp/gw-test suffix-match scenario against a kspec-fixed build leaves the
+      main shadow worktree intact.
+
+      5. tsc --noEmit passes with the required-cwd signature on tests/helpers/cli.ts.
+
+      6. The new convention rule appears in kspec-agents.md after kspec agents generate.
+
+      7. Dispatch smoke test confirms read-side shadow commands (status, log, resolve, sync) still
+      work from linked worktrees.
+
+      8. Task note at completion includes: (a) the file/line changes made, (b) the list of ACs
+      closed per test, (c) the before/after output of the /tmp/gw-test suffix-match repro, (d) the
+      convention rule ID that was added, (e) the dispatch smoke-test verification result, (f) the
+      grep audit from HOW step 5 with per-caller verdicts.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-13T23:46:02.934Z
+  - _ulid: 01KP4KST8AVP13B8K7ZRQ31P5M
+    content: >-
+      REPRODUCER (for worker reference).
+
+
+      Minimal standalone repro in /tmp — does not involve kspec code at all, confirms the underlying
+      git behavior the fix must guard against:
+
+        cd /tmp && rm -rf gw-test && mkdir gw-test && cd gw-test
+        git init -q
+        git config user.email t@t.com && git config user.name t
+        echo hi > x && git add x && git commit -qm init
+        git checkout -q --orphan meta
+        git rm -qrf . 2>/dev/null
+        git commit -q --allow-empty -m meta
+        git checkout -q main
+        git worktree add .kspec meta -q
+        git worktree add ./sub HEAD~0 -q
+        cd sub
+        git worktree remove .kspec --force    # exit 0, removes /tmp/gw-test/.kspec
+        cd ..
+        git worktree list                      # .kspec is gone
+
+      The pre-fix kspec code hits the same pattern when initializeShadow/repairShadow is called from
+      a cwd inside a linked worktree: it runs git worktree remove directoryName --force where
+      directoryName is the bare string '.kspec'. Git's find_worktree_by_suffix matches the suffix
+      across the shared worktree admin and finds the main working tree's shadow worktree.
+
+
+      Post-fix, the same repro must leave the main .kspec/ intact — the test in
+      tests/shadow-cross-worktree-isolation.test.ts should reproduce this scenario programmatically.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-13T23:46:03.658Z

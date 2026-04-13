@@ -796,6 +796,49 @@ features:
                 then: it uses a single git rev-parse call (--show-toplevel --git-common-dir) instead of multiple
                   separate calls
                 when: it resolves project roots via git
+              - given: kspec init is invoked from a linked git worktree
+                id: ac-init-linked-wt-unchanged
+                then: no shadow worktree is created, removed, or modified under the linked worktree's root
+                when: the command returns
+              - given: kspec init is invoked from a linked git worktree
+                id: ac-init-main-wt-unchanged
+                then: no shadow worktree is created, removed, or modified under the repo's main working tree root
+                when: the command returns
+              - given: kspec init is invoked from a linked git worktree
+                id: ac-init-guidance-direction
+                then: the user is told kspec init must be run from the repo's main working tree
+                when: the command returns
+              - given: kspec init is invoked from a linked git worktree
+                id: ac-init-guidance-path
+                then: the message identifies the path of the repo's main working tree
+                when: the command returns
+              - given: kspec setup is invoked from a linked git worktree
+                id: ac-setup-linked-wt-unchanged
+                then: no shadow worktree is created, removed, or modified under the linked worktree's root
+                when: the command returns
+              - given: kspec setup is invoked from a linked git worktree
+                id: ac-setup-main-wt-unchanged
+                then: no shadow worktree is created, removed, or modified under the repo's main working tree root
+                when: the command returns
+              - given: kspec setup is invoked from a linked git worktree
+                id: ac-setup-guidance-direction
+                then: the user is told shadow worktree setup must be run from the repo's main working tree
+                when: the command returns
+              - given: kspec setup is invoked from a linked git worktree
+                id: ac-setup-guidance-path
+                then: the message identifies the path of the repo's main working tree
+                when: the command returns
+              - given: a kspec command that creates, removes, or repairs a shadow worktree is invoked from any
+                  working tree of a repo
+                id: ac-shadow-ops-scoped-to-main
+                then: the command affects only the shadow worktree belonging to the main working tree of the repo
+                when: the command performs its shadow worktree lifecycle action
+              - given: two kspec shadow-lifecycle commands run concurrently from two different working trees of the
+                  same repo
+                id: ac-shadow-ops-concurrent-safety
+                then: the main working tree's shadow worktree is in a consistent state, and neither command observes
+                  the other as a destructive side effect
+                when: both commands complete
             tags:
               - cli
               - shadow
