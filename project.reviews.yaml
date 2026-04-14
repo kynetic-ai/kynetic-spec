@@ -139218,6 +139218,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP6J9W8NS1PZHTEM934ARXRK
         timestamp: 2026-04-14T17:58:22.768Z
+      - _ulid: 01KP6JAC73WVH3AKNVSG8F7J6N
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KP6JAB81PB7TSY1EYN0FP2D6
+        timestamp: 2026-04-14T17:58:38.051Z
     examined_commit: 73651ba0549f7b0bbf3eb4aba1512c21e3f914e3
     external_links: []
     lifecycle_state: open
@@ -139280,7 +139287,24 @@ reviews:
               are left missing once an unrelated renamed agent exists."
             created_at: 2026-04-14T17:58:21.718Z
         kind: blocker
+      - _ulid: 01KP6JAB81PB7TSY1EYN0FP2D6
+        entries:
+          - _ulid: 01KP6JAB81HSBBNGXDF3W6S3WJ
+            author: Jacob Chapel
+            body: "Evidence log: Files read: src/cli/commands/setup-defaults.ts, src/cli/commands/setup.ts,
+              src/cli/commands/init.ts, tests/setup-builtin-agents.test.ts,
+              tests/setup-from-linked-worktree.test.ts,
+              tests/init-from-linked-worktree-empty-main.test.ts,
+              tests/init-from-linked-worktree-existing-shadow.test.ts, tests/helpers/cli.ts.
+              Commands run: kspec task get, kspec review for-task, git diff/stat, git grep for AC
+              annotations, kspec validate, targeted npm test, direct CLI repros for mixed
+              rename/remove and renamed convention force-reseed. Claims verified: scaffold defaults
+              are created on happy path; mixed-state rename/remove handling and renamed convention
+              handling fail under direct reproduction. Categories searched: correctness, edge cases,
+              test quality, integration."
+            created_at: 2026-04-14T17:58:37.057Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-14T17:49:38.559Z
-    updated_at: 2026-04-14T17:58:21.718Z
+    updated_at: 2026-04-14T17:58:37.057Z
     notes: []
