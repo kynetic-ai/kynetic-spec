@@ -1,1 +1,33 @@
-notes: []
+notes:
+  - _ulid: 01KP6VHZAPMFM9BV9QF9V1T190
+    content: >-
+      Approach: Fix multi-value option parity in meta set command.
+
+
+      The bug: Commander option declarations in meta set use single-value syntax (<val>) instead of
+      variadic (<val...>). When repeated flags are passed, Commander keeps only the last value.
+
+
+      Affected options: --add-capability, --add-tool, --add-convention, --add-skill, --add-rule,
+      --add-tag, --remove-capability, --remove-tool, --remove-convention, --remove-skill,
+      --remove-tag (11 options total).
+
+
+      Already correct: --add-dispatch-rule (uses collectRepeatedOptionValues accumulator).
+
+
+      Fix plan:
+
+      1. Change all 11 affected option declarations to use collectRepeatedOptionValues accumulator
+      (consistent with existing --add-dispatch-rule pattern).
+         - Using accumulator rather than variadic <val...> because add-rule values may contain spaces/quotes, and the accumulator pattern is already established in this codebase.
+      2. Update all handler code to iterate arrays instead of treating values as single strings.
+
+      3. For mixed add+remove: apply removes first, then adds (per spec).
+
+      4. Write E2E tests covering all 5 ACs.
+
+      5. Regression test for meta add behavior.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-14T20:40:04.182Z
