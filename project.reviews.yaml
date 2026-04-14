@@ -140078,6 +140078,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP6QFYSNRXAKTBH8KRYVJ7AP
         timestamp: 2026-04-14T19:29:04.881Z
+      - _ulid: 01KP6QGQAFSWEHKFZQQ1380SW8
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP6QGP9N872P3D3NS4S52DZJ
+        timestamp: 2026-04-14T19:29:28.911Z
     examined_commit: aa54a59e81afbe4563b663a6a13c28fc5d644f8a
     external_links: []
     lifecycle_state: open
@@ -140451,7 +140458,32 @@ reviews:
                   Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com> shows non-scaffold commits like  (test runner progress output), / (no-leaky-test-daemon lint rule),  (cli serve daemon cleanup), and  (shadow worktree cross-contamination guard) before the scaffold-project-config commits. The diff also still modifies unrelated files such as , , , and . That means merging this branch into  would pull in multiple other tasks that were never part of this review cycle. Rebase or cherry-pick this task onto the integration target so only the scaffold-project-config changes remain, then resubmit for review.
             created_at: 2026-04-14T19:29:03.797Z
         kind: blocker
+      - _ulid: 01KP6QGP9N872P3D3NS4S52DZJ
+        anchor:
+          type: code
+          commit: aa54a59e81afbe4563b663a6a13c28fc5d644f8a
+          line_end: 79
+          line_start: 1
+          path: scripts/test.cjs
+          side: head
+        entries:
+          - _ulid: 01KP6QGP9N22SZES9F0CA7BP9C
+            author: Jacob Chapel
+            body: This task snapshot still includes unrelated work from other tasks, so approving it would merge
+              code that is outside @scaffolded-project-config. `git log 7b1b8565..aa54a59e` shows
+              non-scaffold commits like `6a061a6a1` (test runner progress output),
+              `695a3a850`/`cc112485a` (no-leaky-test-daemon lint rule), `57bb82ad5` (cli serve
+              daemon cleanup), and `5eee12c46` (shadow worktree cross-contamination guard) before
+              the scaffold-project-config commits. The diff also still modifies unrelated files such
+              as `scripts/test.cjs`, `tools/eslint-rules/no-leaky-test-daemon.js`,
+              `tests/cli-serve.test.ts`, and `src/parser/shadow.ts`. That means merging this branch
+              into `plan/plan-init-setup-and-upgrade-rough-edges/01knvahv` would pull in multiple
+              other tasks that were never part of this review cycle. Rebase or cherry-pick this task
+              onto the integration target so only the scaffold-project-config changes remain, then
+              resubmit for review.
+            created_at: 2026-04-14T19:29:27.861Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-14T19:18:59.898Z
-    updated_at: 2026-04-14T19:29:03.797Z
+    updated_at: 2026-04-14T19:29:27.861Z
     notes: []
