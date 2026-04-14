@@ -25525,7 +25525,7 @@ runs:
     completed_at: 2026-04-14T18:03:51.229Z
   - _ulid: 01KP6NQEMVB6V8T1TD5JKAV2Y9
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -25540,7 +25540,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-14T18:59:21.224Z
-        completed_at: 2026-04-14T18:59:21.224Z
+        completed_at: 2026-04-14T18:59:29.408Z
+        notes: Already searched and captured one friction observation (@01KP6NS8) about branch rebase target
+          contamination. No additional high-confidence items — the ULID rename detection fix was a
+          straightforward code correction, not a systemic pattern. The branch contamination was the
+          only systemic friction point.
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-14T18:59:29.408Z
+        completed_at: 2026-04-14T18:59:29.408Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-14T18:58:12.252Z
