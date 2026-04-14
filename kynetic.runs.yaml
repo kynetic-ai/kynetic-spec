@@ -25286,7 +25286,7 @@ runs:
     started_at: 2026-04-14T08:02:44.062Z
   - _ulid: 01KP5N3HK8D5NXVS2W44CK128W
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -25299,7 +25299,28 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-14T09:28:21.678Z
-        completed_at: 2026-04-14T09:28:21.678Z
+        completed_at: 2026-04-14T09:28:55.863Z
+        notes: >-
+          Searched observations, inbox, and tasks. No existing tracking for the patterns found in
+          this session. Two high-confidence items identified:
+
+
+          1. FRICTION: AC annotations placed inside JSDoc block comments (/** */) are invisible to
+          kspec validate — the scanner only matches standalone line comments (// AC:). This is a
+          recurring trap since JSDoc is a natural place to document AC coverage. The task-work skill
+          warns about block comments but agents still fall into the pattern. The original worker
+          placed all AC annotations in a block comment header and the validator silently missed
+          them.
+
+
+          2. SUCCESS: The fix cycle workflow worked efficiently — review thread ULIDs were
+          accessible via JSON, batch reply/resolve handled all 5 threads atomically, and the
+          task-work fix cycle steps (read review, re-read ACs, fix, reply, resolve, note, submit)
+          followed naturally.
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-14T09:28:55.863Z
+        completed_at: 2026-04-14T09:28:55.863Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-14T09:28:05.481Z
