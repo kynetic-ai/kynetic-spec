@@ -138902,6 +138902,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-14T10:30:50.423Z
+      - _ulid: 01KP5RQ33G17TEXG94GQJ290EG
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP5RQ1ZZJF5W42G4GZYQYJNZ
+        timestamp: 2026-04-14T10:31:11.728Z
     examined_commit: af2e3dadb9fcf2bd02574cdd0abf3588cc9608a5
     external_links: []
     lifecycle_state: open
@@ -138911,8 +138918,29 @@ reviews:
       content_hash: ""
       ref: "@01KNXYJ40TP75YKCV51RM6H6YZ"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KP5RQ1ZZJF5W42G4GZYQYJNZ
+        anchor:
+          type: code
+          commit: af2e3dadb9fcf2bd02574cdd0abf3588cc9608a5
+          line_end: 42
+          line_start: 37
+          path: src/parser/gitignore.ts
+          side: head
+        entries:
+          - _ulid: 01KP5RQ1ZZ5RRZEP9T17HMRNMD
+            author: Jacob Chapel
+            body: ' now writes the configured  verbatim into the managed block, but  may be an absolute path
+              outside the repo (for example ). I verified that by running
+              [".kspec/",".kspec-sessions/","plans/","/tmp/kspec-worktrees/",".kspec-dispatch-workspace.json",".kspec-dispatch-shadow-mutation"],
+              which produced an entry list containing . That breaks the task contract to enumerate
+              transient paths under the project root only, and it does not actually help Git ignore
+              the external worktree pool because  patterns are relative to the repository. Existing
+              tests only cover a relative override (), so this outside-root configuration regresses
+              silently.'
+            created_at: 2026-04-14T10:31:10.592Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-14T10:30:13.609Z
-    updated_at: 2026-04-14T10:30:49.375Z
+    updated_at: 2026-04-14T10:31:10.592Z
     notes: []
