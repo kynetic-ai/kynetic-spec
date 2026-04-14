@@ -517,7 +517,7 @@ async function tryRestoreBranchFromRemote(projectDir: string, branch: string): P
   return false;
 }
 
-async function resolveRemoteHeadBranch(projectDir: string): Promise<string | null> {
+export async function resolveRemoteHeadBranch(projectDir: string): Promise<string | null> {
   for (const remote of await listGitRemotes(projectDir)) {
     const result = await runGit(projectDir, [
       "symbolic-ref",
@@ -533,9 +533,32 @@ async function resolveRemoteHeadBranch(projectDir: string): Promise<string | nul
   return null;
 }
 
-async function resolveCurrentBranch(projectDir: string): Promise<string | null> {
+export async function resolveCurrentBranch(projectDir: string): Promise<string | null> {
   const result = await runGit(projectDir, ["symbolic-ref", "--quiet", "--short", "HEAD"]);
   return result.status === 0 && result.stdout ? result.stdout : null;
+}
+
+/**
+ * Resolve the repository's default branch using the dispatcher's standard
+ * fallback chain: remote HEAD → current branch → "main" literal.
+ *
+ * Returns both the resolved branch name and whether the result is a fallback.
+ * Shared by dispatch workspace provisioning and setup config scaffolding.
+ */
+export async function resolveDefaultBranch(
+  projectDir: string,
+): Promise<{ branch: string; source: "remote-head" | "current-branch" | "fallback" }> {
+  const remoteHead = await resolveRemoteHeadBranch(projectDir);
+  if (remoteHead) {
+    return { branch: remoteHead, source: "remote-head" };
+  }
+
+  const currentBranch = await resolveCurrentBranch(projectDir);
+  if (currentBranch) {
+    return { branch: currentBranch, source: "current-branch" };
+  }
+
+  return { branch: "main", source: "fallback" };
 }
 
 interface DispatchCheckoutCoherenceResult {
@@ -2163,46 +2186,31 @@ export async function resolveDispatchWorkspaceConfig(
     };
   }
 
-  const remoteHeadBranch = await resolveRemoteHeadBranch(projectDir);
-  if (remoteHeadBranch) {
-    const resolved = await resolveBranchStartPoint(projectDir, remoteHeadBranch);
-    if (resolved) {
-      return {
-        baseBranch: remoteHeadBranch,
-        baseBranchStartPoint: resolved.startPoint,
-        baseBranchSource: "remote-head",
-        worktreeRoot,
-        publicationMode,
-      };
-    }
+  const defaultResolved = await resolveDefaultBranch(projectDir);
+  const resolved = await resolveBranchStartPoint(projectDir, defaultResolved.branch);
+  const baseBranchSource =
+    defaultResolved.source === "fallback" ? "default" : defaultResolved.source;
+  if (resolved) {
+    return {
+      baseBranch: defaultResolved.branch,
+      baseBranchStartPoint: resolved.startPoint,
+      baseBranchSource,
+      worktreeRoot,
+      publicationMode,
+    };
   }
 
-  const currentBranch = await resolveCurrentBranch(projectDir);
-  if (currentBranch) {
-    const resolved = (await resolveBranchStartPoint(projectDir, currentBranch)) ?? {
-      startPoint: currentBranch,
-      branch: currentBranch,
-    };
+  // current-branch source always has a valid start point (it's checked out)
+  if (defaultResolved.source === "current-branch") {
     return {
-      baseBranch: currentBranch,
-      baseBranchStartPoint: resolved.startPoint,
+      baseBranch: defaultResolved.branch,
+      baseBranchStartPoint: defaultResolved.branch,
       baseBranchSource: "current-branch",
       worktreeRoot,
       publicationMode,
     };
   }
 
-  const defaultBranch = "main";
-  const resolved = await resolveBranchStartPoint(projectDir, defaultBranch);
-  if (resolved) {
-    return {
-      baseBranch: defaultBranch,
-      baseBranchStartPoint: resolved.startPoint,
-      baseBranchSource: "default",
-      worktreeRoot,
-      publicationMode,
-    };
-  }
   throw new DispatchWorkspaceError(
     "No base branch could be resolved: no configured dispatch.base_branch, no remote HEAD, " +
       'no current branch, and default "main" does not exist.',

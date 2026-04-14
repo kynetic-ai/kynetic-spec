@@ -1,19 +1,19 @@
-/**
- * Tests for scaffolding project config file during init/setup.
- *
- * AC: @scaffolded-project-config ac-file-scaffolded
- * AC: @scaffolded-project-config ac-file-valid-on-load
- * AC: @scaffolded-project-config ac-placeholder-publication-mode
- * AC: @scaffolded-project-config ac-placeholder-base-branch
- * AC: @scaffolded-project-config ac-placeholder-coverage
- * AC: @scaffolded-project-config ac-file-exists-preserved
- * AC: @scaffolded-project-config ac-file-force-overwrites
- * AC: @scaffolded-project-config ac-file-force-backup
- * AC: @trait-idempotent-file-scaffold ac-existing-file-preserved-without-force
- * AC: @trait-idempotent-file-scaffold ac-force-backs-up-before-overwrite
- * AC: @trait-idempotent-file-scaffold ac-fresh-file-creation
- * AC: @trait-idempotent-file-scaffold ac-step-reports-action
- */
+// Tests for scaffolding project config file during init/setup.
+//
+// AC: @scaffolded-project-config ac-file-scaffolded
+// AC: @scaffolded-project-config ac-file-valid-on-load
+// AC: @scaffolded-project-config ac-placeholder-publication-mode
+// AC: @scaffolded-project-config ac-placeholder-base-branch
+// AC: @scaffolded-project-config ac-placeholder-coverage
+// AC: @scaffolded-project-config ac-file-exists-preserved
+// AC: @scaffolded-project-config ac-file-force-overwrites
+// AC: @scaffolded-project-config ac-file-force-backup
+// AC: @trait-idempotent-file-scaffold ac-existing-file-preserved-without-force
+// AC: @trait-idempotent-file-scaffold ac-force-backs-up-before-overwrite
+// AC: @trait-idempotent-file-scaffold ac-fresh-file-creation
+// AC: @trait-idempotent-file-scaffold ac-step-reports-action
+// AC: @trait-error-guidance ac-3 — N/A: scaffold step does not perform ref lookups
+// AC: @trait-error-guidance ac-4 — N/A: scaffold step does not perform state transitions
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
@@ -323,6 +323,85 @@ describe("Scaffold Project Config", () => {
       expect(result.stdout).toContain("Scaffold project config");
       expect(result.stdout).toContain("Agent detection");
       expect(result.stdout).toContain("Generate kspec-agents.md");
+    });
+  });
+
+  describe("fail loudly on step failure", () => {
+    // AC: @scaffolded-project-config ac-file-valid-on-load
+    // AC: @trait-error-guidance ac-1
+    // AC: @trait-error-guidance ac-2
+    it("setup exits non-zero when scaffold step fails due to write error", async () => {
+      await setupKspecProject(testDir);
+
+      // Write a config file, then make it read-only and force overwrite —
+      // the backup succeeds (reads old file) but writeFile fails with EACCES
+      const configPath = path.join(testDir, CONFIG_FILENAME);
+      await fs.writeFile(configPath, "dispatch:\n  base_branch: old\n", "utf-8");
+      await fs.chmod(configPath, 0o444);
+
+      const result = kspec("setup --force", testDir);
+
+      // Restore permissions so cleanup can succeed
+      await fs.chmod(configPath, 0o644).catch(() => {});
+
+      // Should exit non-zero because the scaffold step failed
+      expect(result.exitCode).not.toBe(0);
+
+      // AC: @trait-error-guidance ac-1 — error description present
+      const combined = result.stdout + result.stderr;
+      expect(combined).toMatch(/[Ff]ailed|[Ee]rror|EACCES/);
+    });
+
+    // AC: @trait-error-guidance ac-2
+    it("setup failure output includes suggested action to resolve", async () => {
+      await setupKspecProject(testDir);
+
+      const configPath = path.join(testDir, CONFIG_FILENAME);
+      await fs.writeFile(configPath, "dispatch:\n  base_branch: old\n", "utf-8");
+      await fs.chmod(configPath, 0o444);
+
+      const result = kspec("setup --force", testDir);
+      await fs.chmod(configPath, 0o644).catch(() => {});
+
+      expect(result.exitCode).not.toBe(0);
+
+      // Should include guidance about fixing and re-running
+      const combined = result.stdout + result.stderr;
+      expect(combined).toMatch(/[Ff]ix.*re-run|[Ss]etup failed/i);
+    });
+
+    // AC: @trait-error-guidance ac-5
+    it("scaffold step failure includes description of what failed", async () => {
+      await setupKspecProject(testDir);
+
+      const configPath = path.join(testDir, CONFIG_FILENAME);
+      await fs.writeFile(configPath, "dispatch:\n  base_branch: old\n", "utf-8");
+      await fs.chmod(configPath, 0o444);
+
+      const result = kspec("setup --force", testDir);
+      await fs.chmod(configPath, 0o644).catch(() => {});
+
+      expect(result.exitCode).not.toBe(0);
+
+      // The step failure message should appear in output
+      expect(result.stdout + result.stderr).toContain("Scaffold project config");
+    });
+
+    // AC: @trait-error-guidance ac-6
+    it("scaffold step failure is included in JSON output", async () => {
+      await setupKspecProject(testDir);
+
+      const configPath = path.join(testDir, CONFIG_FILENAME);
+      await fs.writeFile(configPath, "dispatch:\n  base_branch: old\n", "utf-8");
+      await fs.chmod(configPath, 0o444);
+
+      const result = kspec("setup --force --json", testDir);
+      await fs.chmod(configPath, 0o644).catch(() => {});
+
+      // JSON output should include the failed step with structured data
+      const combined = result.stdout + result.stderr;
+      expect(combined).toContain("failed");
+      expect(combined).toContain("Scaffold project config");
     });
   });
 });

@@ -274,12 +274,20 @@ export function registerInitCommand(program: Command): void {
               installHooks: true,
             });
 
-            if (setupResult.success) {
-              console.log();
-              success("Setup complete. Your project is ready for use.");
-            } else {
-              warn("Setup encountered issues. Run 'kspec setup --status' for details.");
+            console.log();
+
+            // AC: @scaffolded-project-config ac-file-valid-on-load — fail loudly on scaffold failure
+            const scaffoldStep = setupResult.steps.find(
+              (s) => s.name === "Scaffold project config",
+            );
+            if (scaffoldStep?.status === "failed") {
+              warn(
+                `Setup scaffold failed: ${scaffoldStep.message}. Fix the issue and re-run kspec setup.`,
+              );
+              process.exit(EXIT_CODES.ERROR);
             }
+
+            success("Setup complete. Your project is ready for use.");
           } else {
             // AC: @init-setup-integration ac-4 - Without --setup, behavior unchanged
             console.log("\nNext steps:");

@@ -53,6 +53,7 @@ import {
 import { errors } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, output, success, warn } from "../output.js";
+import { resolveDefaultBranch } from "../../agent-runtime/workspace.js";
 
 /**
  * Log a message at debug level (only when KSPEC_DEBUG=1)
@@ -1181,57 +1182,6 @@ async function installCoreSkillsForSetup(
 }
 
 /**
- * Detect the repository's default branch name.
- *
- * Uses the same approach as the dispatcher's resolveRemoteHeadBranch:
- * reads refs/remotes/<remote>/HEAD to find the upstream default branch.
- * Falls back to "main" if detection fails.
- *
- * AC: @scaffolded-project-config ac-placeholder-base-branch
- */
-async function detectDefaultBranch(projectDir: string): Promise<{ branch: string; fallback: boolean }> {
-  const { execSync } = await import("node:child_process");
-
-  // Try remote HEAD first (same as dispatcher)
-  try {
-    const remotes = execSync("git remote", { cwd: projectDir, encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] }).trim();
-    for (const remote of remotes.split("\n").filter(Boolean)) {
-      try {
-        const ref = execSync(`git symbolic-ref --quiet refs/remotes/${remote}/HEAD`, {
-          cwd: projectDir,
-          encoding: "utf-8",
-          stdio: ["pipe", "pipe", "pipe"],
-        }).trim();
-        const prefix = `refs/remotes/${remote}/`;
-        if (ref.startsWith(prefix)) {
-          return { branch: ref.slice(prefix.length), fallback: false };
-        }
-      } catch {
-        // This remote doesn't have HEAD, try next
-      }
-    }
-  } catch {
-    // git remote failed, no remotes
-  }
-
-  // Try current branch as a second resort
-  try {
-    const branch = execSync("git symbolic-ref --quiet --short HEAD", {
-      cwd: projectDir,
-      encoding: "utf-8",
-      stdio: ["pipe", "pipe", "pipe"],
-    }).trim();
-    if (branch) {
-      return { branch, fallback: false };
-    }
-  } catch {
-    // Detached HEAD or no branch
-  }
-
-  return { branch: "main", fallback: true };
-}
-
-/**
  * Result of the project config scaffold step.
  *
  * AC: @trait-idempotent-file-scaffold ac-step-reports-action
@@ -1240,7 +1190,6 @@ interface ScaffoldProjectConfigResult {
   action: "created" | "skipped" | "force-recreated";
   configPath: string;
   backupPath?: string;
-  validationError?: string;
 }
 
 /**
@@ -1293,14 +1242,15 @@ async function scaffoldProjectConfig(
       await fs.writeFile(configPath, content, "utf-8");
 
       // AC: @scaffolded-project-config ac-file-valid-on-load — validate after write
+      // Fail loudly: remove broken file and throw rather than leaving invalid config
       const loadResult = await loadProjectConfig(projectDir, projectDir);
       if (loadResult.warning) {
-        return {
-          action: "force-recreated",
-          configPath,
-          backupPath,
-          validationError: loadResult.warning,
-        };
+        // Restore from backup instead of leaving a broken file
+        await fs.copyFile(backupPath, configPath);
+        throw new Error(
+          `Scaffolded config failed validation: ${loadResult.warning}. ` +
+            `Original file restored from backup at ${backupPath}. Fix the template and re-run kspec setup.`,
+        );
       }
     }
 
@@ -1314,13 +1264,14 @@ async function scaffoldProjectConfig(
     await fs.writeFile(configPath, content, "utf-8");
 
     // AC: @scaffolded-project-config ac-file-valid-on-load — validate after write
+    // Fail loudly: remove broken file and throw rather than leaving invalid config
     const loadResult = await loadProjectConfig(projectDir, projectDir);
     if (loadResult.warning) {
-      return {
-        action: "created",
-        configPath,
-        validationError: loadResult.warning,
-      };
+      await fs.unlink(configPath);
+      throw new Error(
+        `Scaffolded config failed validation: ${loadResult.warning}. ` +
+          `Broken file removed. Fix the template and re-run kspec setup.`,
+      );
     }
   }
 
@@ -1335,11 +1286,12 @@ async function scaffoldProjectConfig(
  * AC: @scaffolded-project-config ac-placeholder-coverage
  */
 async function generateConfigContent(projectDir: string): Promise<string> {
-  const { branch, fallback } = await detectDefaultBranch(projectDir);
+  const { branch, source } = await resolveDefaultBranch(projectDir);
 
-  const baseBranchComment = fallback
-    ? "  # Detected value is a fallback — no remote HEAD found. Update to your actual default branch."
-    : "  # Resolved from repository default branch.";
+  const baseBranchComment =
+    source === "fallback"
+      ? "  # Detected value is a fallback — no remote HEAD found. Update to your actual default branch."
+      : "  # Resolved from repository default branch.";
 
   return `# kspec project configuration
 # This file was scaffolded by kspec setup. Review and customize for your project.
@@ -1744,13 +1696,7 @@ export async function runSetupPipeline(
       try {
         const scaffoldResult = await scaffoldProjectConfig(projectDir, dryRun, options.force ?? false);
 
-        if (scaffoldResult.validationError) {
-          steps.push({
-            name: "Scaffold project config",
-            status: "failed",
-            message: `validation failed: ${scaffoldResult.validationError}`,
-          });
-        } else if (scaffoldResult.action === "created") {
+        if (scaffoldResult.action === "created") {
           steps.push({
             name: "Scaffold project config",
             status: "done",
@@ -2134,6 +2080,14 @@ export function registerSetupCommand(program: Command): void {
             }
           },
         );
+
+        // AC: @scaffolded-project-config ac-file-valid-on-load — fail loudly on scaffold failure
+        const scaffoldStep = result.steps.find((s) => s.name === "Scaffold project config");
+        if (scaffoldStep?.status === "failed") {
+          error(`Setup failed: ${scaffoldStep.message}`, undefined);
+          console.error(chalk.gray("Fix the issue and re-run kspec setup."));
+          process.exit(EXIT_CODES.ERROR);
+        }
       } catch (err) {
         error(errors.failures.setupFailed, err);
         process.exit(EXIT_CODES.ERROR);
