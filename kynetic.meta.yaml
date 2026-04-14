@@ -14108,6 +14108,24 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-14T19:02:21.886Z
+  - _ulid: 01KP6PS1H5E8M85YM6NNTCGTBZ
+    type: success
+    content: Review sessions benefit from a targeted regression slice before the full suite. In this
+      session, running the changed setup tests plus a focused setup/dispatch contract slice surfaced
+      no regressions quickly and gave high-confidence signal while the full npm test run continued.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-14T19:16:32.933Z
+  - _ulid: 01KP6PS1QWE57VW4RNJAS91GM8
+    type: friction
+    content: The condensed test runner hides progress for long npm test runs. During review, the suite
+      appeared idle for minutes and required manual inspection of /tmp/kspec-test-cache logs and
+      process state to confirm liveness and completion progress.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-14T19:16:33.148Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:

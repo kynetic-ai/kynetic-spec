@@ -2495,3 +2495,14 @@ inbox:
       - tasks
     added_by: Jacob Chapel
     created_at: 2026-04-14T08:24:35.049Z
+  - _ulid: 01KP6PS1XYDPY44XRSS126N0CV
+    text: Consolidate setup scaffold state handling so setup scaffolds share one state file/helper
+      instead of splitting defaults into .setup-state.json and the reflection hook into
+      .setup-scaffold-state.json. The split caused merge overlap in src/cli/commands/setup.ts and
+      duplicates scaffold persistence logic across setup.ts and setup-defaults.ts.
+    tags:
+      - reflection
+      - setup
+      - meta
+    added_by: Jacob Chapel
+    created_at: 2026-04-14T19:16:33.342Z
