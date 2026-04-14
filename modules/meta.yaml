@@ -6571,7 +6571,7 @@ modules:
           are re-annotated against the acceptance criteria below.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
