@@ -53,7 +53,7 @@ import {
 import { errors } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, output, success, warn } from "../output.js";
-import { resolveRemoteHeadBranch } from "../../agent-runtime/workspace.js";
+import { resolveDefaultBranch } from "../../agent-runtime/workspace.js";
 
 /**
  * Log a message at debug level (only when KSPEC_DEBUG=1)
@@ -1286,18 +1286,17 @@ async function scaffoldProjectConfig(
  * AC: @scaffolded-project-config ac-placeholder-coverage
  */
 async function generateConfigContent(projectDir: string): Promise<string> {
-  // For scaffolding, only use the remote HEAD to detect the default branch.
-  // If no remote HEAD exists, fall back to the literal "main" — NOT the current
-  // branch, which may be a feature/dispatch branch and would silently scaffold
-  // a wrong dispatch target.
-  const remoteHead = await resolveRemoteHeadBranch(projectDir);
-  const branch = remoteHead ?? "main";
-  const source: "remote-head" | "fallback" = remoteHead ? "remote-head" : "fallback";
+  // Use the same fallback chain as the dispatch resolver (remote HEAD →
+  // current branch → "main" literal) so that loading the scaffolded file
+  // produces the same resolved base_branch as an empty config would.
+  const { branch, source } = await resolveDefaultBranch(projectDir);
 
   const baseBranchComment =
-    source === "fallback"
-      ? "  # Detected value is a fallback — no remote HEAD found. Update to your actual default branch."
-      : "  # Resolved from repository default branch.";
+    source === "remote-head"
+      ? "  # Resolved from repository default branch."
+      : source === "current-branch"
+        ? "  # Resolved from current branch — no remote HEAD found. Update if this is not your default branch."
+        : "  # Detected value is a fallback — no remote HEAD or current branch found. Update to your actual default branch.";
 
   return `# kspec project configuration
 # This file was scaffolded by kspec setup. Review and customize for your project.

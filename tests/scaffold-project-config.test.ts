@@ -103,15 +103,17 @@ describe("Scaffold Project Config", () => {
       // Must have base_branch key present
       expect(content).toContain("base_branch:");
 
-      // In a test environment without remotes, should fall back to "main"
+      // In a test environment without remotes, resolves to current branch ("main" from initGitRepo)
       expect(content).toMatch(/base_branch:\s*"main"/);
     });
 
     // AC: @scaffolded-project-config ac-placeholder-base-branch
-    it("scaffolds base_branch as 'main' when no remote exists, even on a non-main branch", async () => {
-      // Regression: resolveDefaultBranch used to fall back to the current branch
-      // before "main". For scaffolding, this is wrong — a feature branch checkout
-      // should not leak into the scaffolded config.
+    // AC: @scaffolded-project-config ac-file-valid-on-load
+    it("scaffolds base_branch from current branch when no remote exists", async () => {
+      // The scaffolded config must resolve the same base_branch as an empty
+      // config would. The empty-config fallback chain is: remote HEAD →
+      // current branch → "main". On a repo with no remote, the current
+      // branch is used — so the scaffold must match.
       initGitRepo(testDir);
       await fs.writeFile(path.join(testDir, "README.md"), "# Test", "utf-8");
       execSync('git add README.md && git commit -m "Initial"', {
@@ -129,9 +131,11 @@ describe("Scaffold Project Config", () => {
 
       const content = await fs.readFile(path.join(testDir, CONFIG_FILENAME), "utf-8");
 
-      // Must be "main" (the fallback), NOT "dev" (the current branch)
-      expect(content).toMatch(/base_branch:\s*"main"/);
-      expect(content).toContain("fallback");
+      // Must be "dev" (the current branch), matching what the empty-config
+      // fallback chain would resolve. Hard-coding "main" here would violate
+      // ac-file-valid-on-load by changing dispatch behavior.
+      expect(content).toMatch(/base_branch:\s*"dev"/);
+      expect(content).toContain("current branch");
     });
 
     // AC: @scaffolded-project-config ac-placeholder-coverage
