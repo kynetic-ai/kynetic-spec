@@ -136568,6 +136568,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP5NJZ83638T1XBZQP3Q5E35
         timestamp: 2026-04-14T09:36:32.102Z
+      - _ulid: 01KP5NK32B8Y2H9X73CM7MYK92
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP5NK243RQGNR9K82WB7RMJ3
+        timestamp: 2026-04-14T09:36:34.891Z
     examined_commit: ed0456aa9354b0abee7bd8e70dde0857b610cf3e
     external_links: []
     lifecycle_state: open
@@ -136639,7 +136646,28 @@ reviews:
               regression this task is meant to prevent.
             created_at: 2026-04-14T09:36:30.979Z
         kind: blocker
+      - _ulid: 01KP5NK243RQGNR9K82WB7RMJ3
+        anchor:
+          type: code
+          commit: ed0456aa9354b0abee7bd8e70dde0857b610cf3e
+          line_end: 45
+          line_start: 36
+          path: src/parser/gitignore.ts
+          side: head
+        entries:
+          - _ulid: 01KP5NK244MMTD99FXV5926YE5
+            author: Jacob Chapel
+            body: "buildKspecGitignoreEntries() still hardcodes .kspec-worktrees/, so projects that set
+              dispatch.worktree_root to another project-relative path do not gitignore the actual
+              dispatch worktree pool. I reproduced this with dispatch.worktree_root: .dispatch-root:
+              after kspec init --no-prompt, .gitignore still contained .kspec-worktrees/, and git
+              status --porcelain reported ?? .dispatch-root/ once that directory existed. That
+              violates @complete-auto-gitignore ac-all-transient-paths-present for configurable
+              worktree pools and leaves normal dispatch usage able to surface untracked transient
+              content."
+            created_at: 2026-04-14T09:36:33.924Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-14T09:30:46.921Z
-    updated_at: 2026-04-14T09:36:30.979Z
+    updated_at: 2026-04-14T09:36:33.924Z
     notes: []
