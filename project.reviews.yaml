@@ -135634,7 +135634,23 @@ reviews:
     slugs: []
     title: Review task-shadow-worktree-cross-contamination-guard
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --run tests/shadow-cross-worktree-isolation.test.ts
+          tests/init-from-linked-worktree-empty-main.test.ts
+          tests/init-from-linked-worktree-existing-shadow.test.ts
+          tests/setup-from-linked-worktree.test.ts
+          tests/repair-from-linked-worktree-broken-main.test.ts
+          tests/shadow-lifecycle-concurrent.test.ts tests/clone-for-testing.test.ts: 14 suites, 18
+          tests passed."
+        name: targeted-shadow-regressions
+        required: true
+        runner: npm-test
+        created_at: 2026-04-14T01:10:39.860Z
+        completed_at: 2026-04-14T01:10:39.860Z
     events:
       - _ulid: 01KP4RAJC8H7QERJAZE9WH94TW
         actor: Jacob Chapel
@@ -135658,6 +135674,13 @@ reviews:
             content_hash: ""
           decision: comment
         timestamp: 2026-04-14T01:10:40.722Z
+      - _ulid: 01KP4RMSPW5MRPWV99TBJK1K9G
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted-shadow-regressions
+        timestamp: 2026-04-14T01:10:42.140Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -135677,5 +135700,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-14T01:10:40.721Z
     created_at: 2026-04-14T01:05:06.952Z
-    updated_at: 2026-04-14T01:10:40.721Z
+    updated_at: 2026-04-14T01:10:39.860Z
     notes: []
