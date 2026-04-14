@@ -77,7 +77,7 @@ description: |
 spec_ref: "@scaffolded-project-config"
 plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -91,8 +91,8 @@ review_ref: "@01KP5SJJR9S8KE3FZ3VY408Z54"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-scaffold-project-config/01knxyj3
-  captured_at: 2026-04-14T10:42:19.331Z
-  commit: 303b2298f2b8eb0d7136364c00fd26ab21d50ba5
+  captured_at: 2026-04-14T19:17:16.367Z
+  commit: aa54a59e81afbe4563b663a6a13c28fc5d644f8a
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-scaffold-project-config/01knxyj3
@@ -339,8 +339,35 @@ history:
         previous: 2026-04-14T10:42:15.866Z
     command: task-start
     timestamp: 2026-04-14T19:17:13.083Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-scaffold-project-config/01knxyj3
+          captured_at: 2026-04-14T19:17:16.367Z
+          commit: aa54a59e81afbe4563b663a6a13c28fc5d644f8a
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-scaffold-project-config/01knxyj3
+        previous:
+          review_url: null
+          branch: dispatch/task/task-scaffold-project-config/01knxyj3
+          captured_at: 2026-04-14T10:42:19.331Z
+          commit: 303b2298f2b8eb0d7136364c00fd26ab21d50ba5
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-scaffold-project-config/01knxyj3
+      submitted_at:
+        new: 2026-04-14T19:17:16.373Z
+        previous: 2026-04-14T10:42:19.336Z
+    command: task-submit
+    timestamp: 2026-04-14T19:17:16.373Z
 created_at: 2026-04-11T09:39:24.510Z
 started_at: 2026-04-14T19:17:13.083Z
-submitted_at: 2026-04-14T10:42:19.336Z
+submitted_at: 2026-04-14T19:17:16.373Z
 todos: []
 automation: eligible
