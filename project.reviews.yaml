@@ -140911,6 +140911,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP6W3DPEJ0Y4PNFC3JNJMMDT
         timestamp: 2026-04-14T20:49:36.893Z
+      - _ulid: 01KP6W3Y7XTJFDFKH5MBV80ZTB
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KP6W3X84T441524BVTCP1VB3
+        timestamp: 2026-04-14T20:49:52.894Z
     examined_commit: af9d75e0a7abb47bcd90459f7ec70d16c51e0769
     external_links: []
     lifecycle_state: open
@@ -140962,7 +140969,34 @@ reviews:
               warned when any setup step failed.'
             created_at: 2026-04-14T20:49:35.951Z
         kind: blocker
+      - _ulid: 01KP6W3X84T441524BVTCP1VB3
+        entries:
+          - _ulid: 01KP6W3X85M2VTTM5TY0E7AQCY
+            author: Jacob Chapel
+            body: >-
+              Evidence log:
+
+              Files read: src/agent-runtime/workspace.ts, src/cli/commands/init.ts,
+              src/cli/commands/setup.ts, src/parser/config.ts,
+              tests/scaffold-project-config.test.ts, tests/helpers/cli.ts.
+
+              Commands run: git diff/stat/log against
+              plan/plan-init-setup-and-upgrade-rough-edges/01knvahv, kspec task get, kspec item get,
+              kspec review get/for-task, rg AC annotation scan, kspec validate on branch and
+              integration head, npm test, and a reproduced `HOME=/dev/null node dist/cli/index.js
+              init --no-prompt --setup` run.
+
+              Claims verified: branch ancestry is clean relative to integration head f205808d2; full
+              test suite passes; kspec validate failure is pre-existing on both branch and
+              integration head; non-scaffold setup failures are now reported as overall init
+              success.
+
+              Categories searched: correctness (found regression), tests (suite passes, but misses
+              this regression), edge cases (forced failing setup environment), error handling (found
+              regression), integration (setup/init interaction), security (no findings).
+            created_at: 2026-04-14T20:49:51.877Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-14T20:38:21.450Z
-    updated_at: 2026-04-14T20:49:35.951Z
+    updated_at: 2026-04-14T20:49:51.877Z
     notes: []
