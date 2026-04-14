@@ -140841,6 +140841,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-14T20:38:31.850Z
+      - _ulid: 01KP6W2M14FCMAJBGW7EG04S9S
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP6W2K1VTZ9KMRKEJ0B6A1NC
+        timestamp: 2026-04-14T20:49:09.669Z
     examined_commit: af9d75e0a7abb47bcd90459f7ec70d16c51e0769
     external_links: []
     lifecycle_state: open
@@ -140850,8 +140857,28 @@ reviews:
       content_hash: ""
       ref: "@01KNXYJ3PYYG1ABH6SMQ2KRE1S"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KP6W2K1VTZ9KMRKEJ0B6A1NC
+        anchor:
+          type: code
+          commit: af9d75e0a7abb47bcd90459f7ec70d16c51e0769
+          line_end: 290
+          line_start: 279
+          path: src/cli/commands/init.ts
+          side: head
+        entries:
+          - _ulid: 01KP6W2K1WM1BZ693NYA172CK7
+            author: Jacob Chapel
+            body: " now reports success whenever the scaffold step succeeds, even if other setup steps fail. In
+              , the old  gate was removed and replaced with a scaffold-only check, so failures like
+              plugin marketplace or memory seeding are silently downgraded to a green footer and
+              exit 0. I reproduced this with : the summary showed failed  and  steps, but the
+              command still printed 'Setup complete. Your project is ready for use.' and exited 0.
+              That is a regression from the base branch behavior, which warned when any setup step
+              failed."
+            created_at: 2026-04-14T20:49:08.668Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-14T20:38:21.450Z
-    updated_at: 2026-04-14T20:38:30.949Z
+    updated_at: 2026-04-14T20:49:08.668Z
     notes: []
