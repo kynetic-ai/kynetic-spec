@@ -136687,6 +136687,12 @@ reviews:
         payload:
           thread_ulid: 01KP5NJEEAX2E13M3T9E40VHNM
         timestamp: 2026-04-14T10:25:28.564Z
+      - _ulid: 01KP5RCYME8MEB8AYXM14DED2X
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP5NJH59EW8833EVXYZGPDNZ
+        timestamp: 2026-04-14T10:25:39.471Z
     examined_commit: ed0456aa9354b0abee7bd8e70dde0857b610cf3e
     external_links: []
     lifecycle_state: closed
@@ -136749,6 +136755,14 @@ reviews:
               creators, the spec’s "representative set of commands" behavior remains unverified and
               this coverage is still too weak to catch the regression this task is meant to prevent.
             created_at: 2026-04-14T09:36:16.554Z
+          - _ulid: 01KP5RCXSA12JDF24NA8N2QPT5
+            author: "@claude"
+            body: "Fixed: the test now creates all transient directories that post-init commands would lazily
+              create — .kspec-worktrees/ with a child worktree dir, .kspec-sessions/ with a session
+              file, plans/ with a draft file, .kspec-dispatch-workspace.json, and
+              .kspec-dispatch-shadow-mutation — and verifies none appear as untracked in git
+              status."
+            created_at: 2026-04-14T10:25:38.602Z
         kind: blocker
       - _ulid: 01KP5NJZ83638T1XBZQP3Q5E35
         anchor:
@@ -136823,7 +136837,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-14T09:44:32.177Z
     created_at: 2026-04-14T09:30:46.921Z
-    updated_at: 2026-04-14T10:25:27.512Z
+    updated_at: 2026-04-14T10:25:38.602Z
     notes: []
   - _ulid: 01KP5P0AD2TJBM33GQJ6X9V5CE
     slugs: []
