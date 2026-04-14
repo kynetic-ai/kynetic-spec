@@ -140150,9 +140150,25 @@ reviews:
           kind: nit
           thread_ulid: 01KP6QHS5FDASFJJYNA27RV3WV
         timestamp: 2026-04-14T19:30:04.663Z
+      - _ulid: 01KP6QJ4DZMS92XZ0RHFAE8X30
+        actor: codex@openai.com
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-14T19:30:15.103Z
+      - _ulid: 01KP6QJ4DZEGZP5PNNT1QJC3T2
+        actor: codex@openai.com
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-14T19:30:15.103Z
     examined_commit: aa54a59e81afbe4563b663a6a13c28fc5d644f8a
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -140580,7 +140596,14 @@ reviews:
               integration behavior, and branch hygiene/scope isolation.
             created_at: 2026-04-14T19:30:03.568Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai.com
+        role: reviewer
+        created_at: 2026-04-14T19:30:15.102Z
     created_at: 2026-04-14T19:18:59.898Z
-    updated_at: 2026-04-14T19:30:03.568Z
+    updated_at: 2026-04-14T19:30:15.103Z
     notes: []
