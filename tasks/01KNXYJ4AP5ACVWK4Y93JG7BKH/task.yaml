@@ -157,7 +157,7 @@ description: |
 spec_ref: "@default-project-agents-and-conventions"
 plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -167,6 +167,14 @@ tags:
   - setup
   - meta
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-default-agents-and-conventions/01knxyj4
+  captured_at: 2026-04-14T10:09:45.788Z
+  commit: 19cd846fa9b2eb146a3eda5902e50c47e0f96226
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KP5NZZWN6PET9WTE0VMC4T84
 history:
   - author: Jacob Chapel
@@ -189,7 +197,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-14T09:43:59.477Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-default-agents-and-conventions/01knxyj4
+          captured_at: 2026-04-14T10:09:45.788Z
+          commit: 19cd846fa9b2eb146a3eda5902e50c47e0f96226
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-04-14T10:09:45.790Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-14T10:09:45.791Z
 created_at: 2026-04-11T09:39:25.142Z
 started_at: 2026-04-14T09:43:59.477Z
+submitted_at: 2026-04-14T10:09:45.790Z
 todos: []
 automation: eligible
