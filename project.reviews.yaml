@@ -139518,6 +139518,13 @@ reviews:
           status: fail
           name: scaffold repro
         timestamp: 2026-04-14T18:30:17.122Z
+      - _ulid: 01KP6M56Y60YPN2FBJ8EFN3FH2
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KP6M55QDYY68CBXZD5SFWKQM
+        timestamp: 2026-04-14T18:30:45.958Z
     examined_commit: 326439565e1a2f14584c3f1028cb186369093f19
     external_links: []
     lifecycle_state: open
@@ -139568,7 +139575,23 @@ reviews:
               DEFAULT_AGENTS order."
             created_at: 2026-04-14T18:30:11.912Z
         kind: blocker
+      - _ulid: 01KP6M55QDYY68CBXZD5SFWKQM
+        entries:
+          - _ulid: 01KP6M55QDF690X5VSKNF9BRQ5
+            author: Jacob Chapel
+            body: "Evidence log: Files read: src/cli/commands/setup-defaults.ts, src/cli/commands/setup.ts,
+              src/cli/commands/init.ts, tests/setup-builtin-agents.test.ts, src/parser/shadow.ts,
+              scripts/test.cjs. Commands run: kspec task get @01KNXYJ4AP5ACVWK4Y93JG7BKH; kspec item
+              get @default-project-agents-and-conventions; git diff --stat/--name-only
+              7b1b85656...326439565; git log 7b1b85656..326439565; git rev-list --left-right --count
+              7b1b85656...326439565; kspec validate; grep for AC annotations; npm test; temp-project
+              repro for force reseed. Claims verified: prior review fixes for convention rename
+              detection and agents.md test; force-reseed behavior independently reproduced; branch
+              ancestry checked against recorded integration target. Categories searched:
+              correctness, tests, edge cases, integration, merge safety."
+            created_at: 2026-04-14T18:30:44.717Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-14T18:20:55.124Z
-    updated_at: 2026-04-14T18:30:15.798Z
+    updated_at: 2026-04-14T18:30:44.717Z
     notes: []
