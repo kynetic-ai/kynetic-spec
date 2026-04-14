@@ -139314,6 +139314,12 @@ reviews:
         payload:
           thread_ulid: 01KP6J9W8NS1PZHTEM934ARXRK
         timestamp: 2026-04-14T18:18:28.824Z
+      - _ulid: 01KP6KEZNDN2X9TR789SRM5XP5
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP6J9W8NS1PZHTEM934ARXRK
+        timestamp: 2026-04-14T18:18:37.613Z
     examined_commit: 73651ba0549f7b0bbf3eb4aba1512c21e3f914e3
     external_links: []
     lifecycle_state: closed
@@ -139404,6 +139410,8 @@ reviews:
               --force — primary-dev is recreated, task-worker is not."
             created_at: 2026-04-14T18:18:27.898Z
         kind: blocker
+        resolved_at: 2026-04-14T18:18:36.655Z
+        resolved_by: "@claude"
       - _ulid: 01KP6JAB81PB7TSY1EYN0FP2D6
         entries:
           - _ulid: 01KP6JAB81HSBBNGXDF3W6S3WJ
@@ -139430,5 +139438,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-14T17:58:40.996Z
     created_at: 2026-04-14T17:49:38.559Z
-    updated_at: 2026-04-14T18:18:27.898Z
+    updated_at: 2026-04-14T18:18:36.655Z
     notes: []
