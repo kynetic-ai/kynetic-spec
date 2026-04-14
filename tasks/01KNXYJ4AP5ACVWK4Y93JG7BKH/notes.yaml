@@ -135,3 +135,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-14T10:10:44.719Z
+  - _ulid: 01KP6GEJQTN08RYC7KB90V4DRJ
+    content: Unblocked after investigating the bootstrap failure. Rebased branch onto current dev (was
+      based at 7b1b85656, now carries the shadow-cross-contamination guard 5eee12c46 plus the
+      test-runner/daemon-cleanup and lint fixes). 'npm run build' completed cleanly end-to-end in
+      the rebased worktree (tsc, shared, daemon, web-ui 17.79s, plugin), so the original
+      'build-workspace-artifacts' failure was either a transient flake or resolved by one of the
+      fixes that landed on dev between 7b1b85656 and 8068a15ad. Ready for reviewer to pick up on
+      next dispatch cycle.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-14T17:25:58.651Z
