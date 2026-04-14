@@ -287,7 +287,11 @@ export function registerInitCommand(program: Command): void {
               process.exit(EXIT_CODES.ERROR);
             }
 
-            success("Setup complete. Your project is ready for use.");
+            if (setupResult.success) {
+              success("Setup complete. Your project is ready for use.");
+            } else {
+              warn("Setup encountered issues. Run 'kspec setup --status' for details.");
+            }
           } else {
             // AC: @init-setup-integration ac-4 - Without --setup, behavior unchanged
             console.log("\nNext steps:");
