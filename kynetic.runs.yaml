@@ -25761,9 +25761,21 @@ runs:
     completed_at: 2026-04-14T19:52:45.127Z
   - _ulid: 01KP6TNYCX3DVDDM13XPVKXJ2F
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-14T20:24:45.725Z
+        completed_at: 2026-04-14T20:25:33.723Z
+        notes: "Session had one task: @task-plan-import-format-guidance. Completed and submitted in single
+          pass. No significant friction — existing patterns (error accumulation, test helpers)
+          supported the work. One expected regression in parser unit test from changing
+          title-extraction contract."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-14T20:25:33.723Z
+        completed_at: 2026-04-14T20:25:33.723Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-14T20:24:45.725Z

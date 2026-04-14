@@ -14147,6 +14147,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-14T19:32:11.240Z
+  - _ulid: 01KP6TQCMQHX54VWDEDVXFAF4T
+    type: success
+    content: Plan import format guidance task completed in single pass — detailed task descriptions with
+      per-AC implementation guidance (what/how/testing) enabled focused implementation without
+      ambiguity. Parser error accumulation pattern made adding new typed errors natural.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-14T20:25:33.079Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
