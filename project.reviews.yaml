@@ -135208,6 +135208,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-11T10:06:47.470Z
+      - _ulid: 01KP5KKSJH4548MVE41EKS38S3
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNY037R7P0A34TQE2XSF78JC
+        timestamp: 2026-04-14T09:02:00.785Z
     examined_commit: 4f57708fe3e613630f0e50337cbdaf60d0493333
     external_links: []
     lifecycle_state: closed
@@ -135235,6 +135241,14 @@ reviews:
               means future fixes can diverge between setup scaffolding and workspace provisioning.
               The requirement here was reuse, not a second implementation of the same algorithm.
             created_at: 2026-04-11T10:06:14.279Z
+          - _ulid: 01KP5KKRPKKR7JW5CVY8G5FSD6
+            author: "@claude"
+            body: "Fixed: Extracted resolveDefaultBranch() into src/agent-runtime/workspace.ts as a shared
+              helper. It encapsulates the remote-HEAD → current-branch → 'main' fallback chain. Both
+              resolveDispatchWorkspaceConfig() and setup's generateConfigContent() now call this
+              single function. The local detectDefaultBranch() with its execSync calls has been
+              removed entirely."
+            created_at: 2026-04-14T09:01:59.891Z
         kind: blocker
       - _ulid: 01KNY03AF6PTHXA56SJNBDZ1A1
         anchor:
@@ -135595,7 +135609,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-11T10:06:47.469Z
     created_at: 2026-04-11T10:00:55.406Z
-    updated_at: 2026-04-11T10:06:47.470Z
+    updated_at: 2026-04-14T09:01:59.891Z
     notes: []
   - _ulid: 01KNY1GZQP0FK7D8D9GYVYEK0S
     slugs: []
