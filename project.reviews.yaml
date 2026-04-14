@@ -137065,6 +137065,12 @@ reviews:
         payload:
           thread_ulid: 01KP5PP697QMNVK6ZB4PX67V83
         timestamp: 2026-04-14T10:41:35.401Z
+      - _ulid: 01KP5SAER0XSEFD26AVACGJJEV
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP5PP987G9RAW10BNZGWJNBX
+        timestamp: 2026-04-14T10:41:46.240Z
     examined_commit: 8f5854d049e6359236067f8ee3b0c47fa4fec6b7
     external_links: []
     lifecycle_state: closed
@@ -138894,6 +138900,14 @@ reviews:
               of `fail loudly`: callers get a contradictory success signal in the same invocation,
               and the current tests do not guard against it."
             created_at: 2026-04-14T09:55:48.103Z
+          - _ulid: 01KP5SADXBDZD7YWV8TGZWJP2J
+            author: "@claude"
+            body: "Fixed: Moved the scaffold failure check into the output() callback, before the footer. When
+              hasFatalFailure is true, the callback now prints 'Setup failed: <message>' and 'Fix
+              the issue and re-run kspec setup.' instead of 'Setup complete.' The process.exit(1)
+              still runs after output() returns. Added a regression test that makes the config
+              read-only, runs setup --force, and asserts stdout does NOT contain 'Setup complete.'"
+            created_at: 2026-04-14T10:41:45.387Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -138904,7 +138918,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-14T09:56:59.688Z
     created_at: 2026-04-14T09:43:48.386Z
-    updated_at: 2026-04-14T10:41:34.499Z
+    updated_at: 2026-04-14T10:41:45.387Z
     notes: []
   - _ulid: 01KP5RNAB9WRASR0HJ52N27Q90
     slugs: []
