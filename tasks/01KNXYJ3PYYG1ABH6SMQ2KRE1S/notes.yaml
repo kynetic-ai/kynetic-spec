@@ -192,3 +192,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-14T20:50:12.379Z
+  - _ulid: 01KP6X30E0RSN87XG6BXCPGWMM
+    content: "Fix cycle 7: Restored the general setupResult.success gate in init.ts that was replaced by
+      the scaffold-specific check in an earlier cycle. The regression caused init --setup to print
+      'Setup complete.' even when non-scaffold steps (plugin marketplace, memory seeding) failed.
+      Fix: scaffold failure check runs first (hard exit), then the general setupResult.success gate
+      determines success vs warning footer — matching base branch behavior. All 7772 tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-14T21:06:50.944Z
