@@ -33,3 +33,21 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-14T09:47:39.697Z
+  - _ulid: 01KP5QFMMN9RJWM1S0GD43SSCX
+    content: >-
+      Implementation complete. Created setup-defaults.ts with scaffoldDefaults() function.
+      Consolidated ensureBuiltInAgents into new scaffold step. 22 tests covering all 15 ACs pass.
+      Full test suite (7740 tests) passes with no regressions. Key decisions:
+
+      - State file at .kspec/.setup-state.json tracks first-run marker and scaffolded item list
+
+      - Agents tagged with 'scaffold-default' for rename detection
+
+      - Conventions tracked via state file (no tags field on ConventionSchema)
+
+      - Plan reviewer includes adapter guidance in description with specific kspec commands
+
+      - pr-reviewer changed from auto_approve:false to auto_approve:true per AC requirement
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-14T10:09:38.965Z
