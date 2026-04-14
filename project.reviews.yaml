@@ -140849,6 +140849,19 @@ reviews:
         runner: kspec
         created_at: 2026-04-14T20:49:14.540Z
         completed_at: 2026-04-14T20:49:14.540Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Confirmed scaffold spec and inherited trait AC annotations in
+          tests/scaffold-project-config.test.ts; structured scan via dist/parser/validate.js
+          resolves the expected @scaffolded-project-config, @trait-idempotent-file-scaffold, and
+          @trait-error-guidance refs.
+        name: AC annotation scan
+        required: true
+        runner: rg
+        created_at: 2026-04-14T20:49:17.218Z
+        completed_at: 2026-04-14T20:49:17.218Z
     events:
       - _ulid: 01KP6VEV0A8ESJ5Y6DCZR305M4
         actor: Jacob Chapel
@@ -140884,6 +140897,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-14T20:49:15.528Z
+      - _ulid: 01KP6W2WC7YC2H2717BHWK6JRY
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: AC annotation scan
+        timestamp: 2026-04-14T20:49:18.216Z
     examined_commit: af9d75e0a7abb47bcd90459f7ec70d16c51e0769
     external_links: []
     lifecycle_state: open
@@ -140916,5 +140936,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-14T20:38:21.450Z
-    updated_at: 2026-04-14T20:49:14.540Z
+    updated_at: 2026-04-14T20:49:17.218Z
     notes: []
