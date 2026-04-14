@@ -139541,6 +139541,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-14T18:30:55.320Z
+      - _ulid: 01KP6NKZM9ETZDNB28GJA7QAEC
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP6M3YBBQZY441WG556GFQ9D
+        timestamp: 2026-04-14T18:56:18.569Z
     examined_commit: 326439565e1a2f14584c3f1028cb186369093f19
     external_links: []
     lifecycle_state: closed
@@ -139569,6 +139575,12 @@ reviews:
               mode is manual_merge back into plan/plan-init-setup-and-upgrade-rough-edges/01knvahv,
               approving this snapshot would merge unrelated work from other tasks into that branch.
             created_at: 2026-04-14T18:30:04.395Z
+          - _ulid: 01KP6NKYR6TJBTZFBAC0RAXTXC
+            author: "@claude"
+            body: "Fixed: Rebased branch onto integration target 7b1b856564b9, carrying only the 3 task-specific
+              commits. git diff 7b1b856..HEAD --stat now shows only setup-defaults.ts, setup.ts, and
+              setup-builtin-agents.test.ts — no unrelated shadow/lint/test-runner commits."
+            created_at: 2026-04-14T18:56:17.669Z
         kind: blocker
       - _ulid: 01KP6M45P7K532PFNM3F6CX3Q1
         anchor:
@@ -139616,7 +139628,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-14T18:30:55.320Z
     created_at: 2026-04-14T18:20:55.124Z
-    updated_at: 2026-04-14T18:30:55.320Z
+    updated_at: 2026-04-14T18:56:17.669Z
     notes: []
   - _ulid: 01KP6MQJ4JQQ66QW1BS8B7G3HH
     slugs: []
