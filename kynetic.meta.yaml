@@ -14087,6 +14087,27 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-14T18:59:11.899Z
+  - _ulid: 01KP6NZ272HEFAQYZF1S1NWTPR
+    type: friction
+    content: Detached review snapshots can diverge from the review record's examined commit. In this
+      session the open review still examined 303b2298f2b8 while the snapshot under review was
+      790807a3a503, which required manual diffing against the actual snapshot to avoid reviewing
+      stale state. Consider surfacing snapshot-vs-examined drift directly in review/task context or
+      auto-refreshing review subjects when a new snapshot is prepared.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-14T19:02:21.666Z
+  - _ulid: 01KP6NZ2DY6HYJNY88J4ZZQTQR
+    type: success
+    content: A targeted temp-repo runtime repro was an efficient way to validate spec equivalence for
+      scaffolded config. Comparing resolveDispatchWorkspaceConfig() with and without
+      kspec.config.yaml in the same no-remote dev-branch repo exposed a real behavior regression
+      even though the full test suite passed.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-14T19:02:21.886Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
