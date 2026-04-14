@@ -136554,6 +136554,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP5NJEEAX2E13M3T9E40VHNM
         timestamp: 2026-04-14T09:36:14.728Z
+      - _ulid: 01KP5NJJ4RVANXHFHG0R38YZBH
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP5NJH59EW8833EVXYZGPDNZ
+        timestamp: 2026-04-14T09:36:17.560Z
     examined_commit: ed0456aa9354b0abee7bd8e70dde0857b610cf3e
     external_links: []
     lifecycle_state: open
@@ -136582,7 +136589,30 @@ reviews:
               pools and leaves normal dispatch usage able to surface untracked transient content."
             created_at: 2026-04-14T09:36:13.770Z
         kind: blocker
+      - _ulid: 01KP5NJH59EW8833EVXYZGPDNZ
+        anchor:
+          type: code
+          commit: ed0456aa9354b0abee7bd8e70dde0857b610cf3e
+          line_end: 421
+          line_start: 391
+          path: tests/gitignore-managed-block.test.ts
+          side: head
+        entries:
+          - _ulid: 01KP5NJH5AK87VB3V4A4NQ18FG
+            author: Jacob Chapel
+            body: >-
+              The new  test still does not prove the AC it is annotated to cover. It runs Project
+              name (Task Complete Gitignore 01knxyj4 Review): , commits , and immediately checks Not
+              currently on any branch.
+
+              nothing to commit, working tree clean, but it never invokes any post-init command that
+              lazily creates transient state such as the dispatch worktree root, plan drafts, or
+              other later-created paths. Because the assertion passes without exercising those
+              creators, the spec’s "representative set of commands" behavior remains unverified and
+              this coverage is still too weak to catch the regression this task is meant to prevent.
+            created_at: 2026-04-14T09:36:16.554Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-14T09:30:46.921Z
-    updated_at: 2026-04-14T09:36:13.770Z
+    updated_at: 2026-04-14T09:36:16.554Z
     notes: []
