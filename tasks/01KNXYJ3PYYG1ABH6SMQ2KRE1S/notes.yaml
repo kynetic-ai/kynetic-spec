@@ -115,3 +115,24 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-14T09:57:01.905Z
+  - _ulid: 01KP5SB13RB25PV9HX0JQT7QT6
+    content: >-
+      Fix cycle 3: addressed both unresolved blocker threads.
+
+
+      1. base_branch fallback (blocker): generateConfigContent() now calls resolveRemoteHeadBranch()
+      directly instead of resolveDefaultBranch(). The current-branch fallback step is skipped for
+      scaffolding — only remote HEAD or literal 'main'. Added regression test with git checkout -b
+      dev + no remote.
+
+
+      2. Contradictory success footer (blocker): Moved scaffold failure check into the output()
+      callback so 'Setup failed:' prints instead of 'Setup complete.' when the scaffold step fails.
+      process.exit(1) still runs after output(). Added regression test asserting stdout does NOT
+      contain 'Setup complete.' on failure.
+
+
+      Full test suite: 7743 passed (2 new), 5 skipped, 0 failed.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-14T10:42:05.048Z
