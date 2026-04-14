@@ -76,3 +76,28 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-14T08:50:22.472Z
+  - _ulid: 01KP5N2DFYPX08NAXXP5R02P8R
+    content: >-
+      Fix cycle 1: addressed all 4 blocker threads from review @01KP5J03V6J4AWV8W95T4WQBKS.
+
+
+      1. Setup shadow directory bug (2 threads): setup.ts now loads project config via
+      loadProjectConfig() and passes the configured shadow.directory to buildKspecGitignoreEntries()
+      and ensureKspecGitignore(). Added unit and integration tests for custom shadow directory
+      support.
+
+
+      2. AC annotations in block comments (2 threads): moved all AC annotations from JSDoc block
+      comments to standalone // AC: line comments. The N/A annotation for
+      ac-force-backs-up-before-overwrite is now a standalone line comment. Removed duplicate AC
+      annotations from src/parser/gitignore.ts JSDoc blocks.
+
+
+      3. Added missing test for ac-no-untracked-after-common-commands — was only in block comment
+      header, now has a proper integration test.
+
+
+      Full test suite: 2120 suites, 7748 tests pass, 0 failures.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-14T09:27:28.511Z
