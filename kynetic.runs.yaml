@@ -25241,16 +25241,16 @@ runs:
       - status: completed
         step_index: 0
         started_at: 2026-04-14T08:02:44.062Z
-        completed_at: 2026-04-14T08:03:21.656Z
-        notes: "Friction points: full npm test produced sustained PASS output for minutes before the run was
-          clearly complete, which made it ambiguous whether the suite was still progressing or hung.
-          Also, task completion emitted a broad AC coverage reminder after merge without
-          distinguishing whether it was a blocking coverage gap or a generic reminder, which added
-          noise at close-out."
+        completed_at: 2026-04-14T08:03:21.662Z
+        notes: "Proposed improvements: (1) add explicit end-of-run signaling in the test runner so long
+          suites emit a definitive final status artifact/message as soon as execution completes,
+          even if parent process shutdown lags; scope medium. (2) tighten task-complete AC coverage
+          messaging so it differentiates blocking uncovered ACs from informational reminders after
+          successful review+merge; scope small to medium."
       - status: completed
         step_index: 1
-        started_at: 2026-04-14T08:03:21.656Z
-        completed_at: 2026-04-14T08:03:21.656Z
+        started_at: 2026-04-14T08:03:21.662Z
+        completed_at: 2026-04-14T08:03:21.662Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-14T08:02:44.062Z
