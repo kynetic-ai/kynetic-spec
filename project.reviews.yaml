@@ -136127,6 +136127,17 @@ reviews:
         runner: npm
         created_at: 2026-04-14T09:15:19.863Z
         completed_at: 2026-04-14T09:15:19.863Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "node scripts/test.cjs --verbose tests/scaffold-project-config.test.ts: 18/18 tests
+          passed."
+        name: scaffold-project-config tests
+        required: true
+        runner: vitest
+        created_at: 2026-04-14T09:15:24.878Z
+        completed_at: 2026-04-14T09:15:24.878Z
     events:
       - _ulid: 01KP5KRW275JSF4SS2NTFC7BM7
         actor: Jacob Chapel
@@ -136148,6 +136159,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-14T09:15:20.770Z
+      - _ulid: 01KP5MCBTG1N14FJZ9H5QSR2DY
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: scaffold-project-config tests
+        timestamp: 2026-04-14T09:15:25.904Z
     examined_commit: 0da5706286daf663aa2beb1418e4eaa19055f976
     external_links: []
     lifecycle_state: open
@@ -136160,5 +136178,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-14T09:04:47.175Z
-    updated_at: 2026-04-14T09:15:19.863Z
+    updated_at: 2026-04-14T09:15:24.878Z
     notes: []
