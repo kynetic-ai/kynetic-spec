@@ -134,3 +134,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-14T10:39:38.375Z
+  - _ulid: 01KP6JF8DPNPJFXT5FMF78FF9C
+    content: "Fix cycle 3: the blocker about absolute worktree_root leaking into .gitignore was a
+      stale-remote issue. The fix (path.isAbsolute guard in buildKspecGitignoreEntries, line 46 of
+      gitignore.ts) was already present in the local rebased branch (e4174f9c2) but the remote still
+      had the old commit (af2e3dadb) without it. Pushed the rebased branch to remote. Verified:
+      buildKspecGitignoreEntries(undefined, '/tmp/kspec-worktrees') correctly excludes the absolute
+      path. Full test suite: 2138 suites, 7795 tests pass, 0 failures. All ACs verified."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-14T18:01:18.006Z
