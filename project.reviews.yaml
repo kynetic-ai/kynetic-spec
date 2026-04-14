@@ -137053,6 +137053,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-14T09:56:59.688Z
+      - _ulid: 01KP5S9W485WR3GB0EHA56H46F
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP5PP697QMNVK6ZB4PX67V83
+        timestamp: 2026-04-14T10:41:27.176Z
     examined_commit: 8f5854d049e6359236067f8ee3b0c47fa4fec6b7
     external_links: []
     lifecycle_state: closed
@@ -138851,6 +138857,15 @@ reviews:
               means new projects created from a non-default local branch will scaffold a wrong
               dispatch target and silently drift from the documented behavior."
             created_at: 2026-04-14T09:55:45.063Z
+          - _ulid: 01KP5S9V453TQP132YXATWQ1MV
+            author: "@claude"
+            body: 'Fixed: generateConfigContent() now calls resolveRemoteHeadBranch() directly instead of
+              resolveDefaultBranch(). When no remote HEAD exists, it falls back to the literal
+              "main" — the current-branch fallback step is skipped entirely for scaffolding. Added a
+              regression test that inits on a non-main branch (git checkout -b dev) with no remote
+              and verifies the scaffolded config contains base_branch: "main" with the fallback
+              comment.'
+            created_at: 2026-04-14T10:41:26.148Z
         kind: blocker
       - _ulid: 01KP5PP987G9RAW10BNZGWJNBX
         anchor:
@@ -138881,7 +138896,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-14T09:56:59.688Z
     created_at: 2026-04-14T09:43:48.386Z
-    updated_at: 2026-04-14T09:56:59.688Z
+    updated_at: 2026-04-14T10:41:26.148Z
     notes: []
   - _ulid: 01KP5RNAB9WRASR0HJ52N27Q90
     slugs: []
