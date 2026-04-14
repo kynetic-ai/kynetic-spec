@@ -273,6 +273,21 @@ describe("ensureKspecGitignore", () => {
     expect(content).toContain(".kspec/");
   });
 
+  it("omits worktree root from gitignore when configured as absolute path", async () => {
+    const result = await ensureKspecGitignore(testDir, { worktreeRoot: "/tmp/external-worktrees" });
+
+    expect(result.changed).toBe(true);
+    expect(result.blockCreated).toBe(true);
+
+    const content = await readTestOutput(path.join(testDir, ".gitignore"));
+    // Absolute path should NOT appear in gitignore
+    expect(content).not.toContain("/tmp/external-worktrees/");
+    // Other entries still present
+    expect(content).toContain(".kspec/");
+    expect(content).toContain(".kspec-sessions/");
+    expect(content).toContain("plans/");
+  });
+
   it("adds missing entries to an existing partial managed block", async () => {
     // Write a managed block with only .kspec/
     const partial = [
@@ -508,6 +523,23 @@ describe("buildKspecGitignoreEntries custom overrides", () => {
     expect(entries).toContain(".my-worktrees/");
     expect(entries).not.toContain(".kspec/");
     expect(entries).not.toContain(".kspec-worktrees/");
+  });
+
+  it("omits worktree root entry when it is an absolute path", () => {
+    const entries = buildKspecGitignoreEntries(undefined, "/tmp/kspec-worktrees");
+    // Absolute paths are outside the repo — .gitignore patterns are repo-relative
+    expect(entries).not.toContain("/tmp/kspec-worktrees/");
+    // Other entries still present
+    expect(entries).toContain(".kspec/");
+    expect(entries).toContain(".kspec-sessions/");
+    expect(entries).toContain("plans/");
+    expect(entries).toContain(".kspec-dispatch-workspace.json");
+    expect(entries).toContain(".kspec-dispatch-shadow-mutation");
+  });
+
+  it("includes worktree root entry when it is a relative path", () => {
+    const entries = buildKspecGitignoreEntries(undefined, "custom-worktrees");
+    expect(entries).toContain("custom-worktrees/");
   });
 });
 

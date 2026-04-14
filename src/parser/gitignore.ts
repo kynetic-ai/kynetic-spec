@@ -35,14 +35,22 @@ export function buildKspecGitignoreEntries(
 ): string[] {
   const dir = shadowDir ?? SHADOW_WORKTREE_DIR;
   const wtRoot = worktreeRoot ?? ".kspec-worktrees";
-  return [
+  const entries = [
     `${dir}/`,
     `${SESSIONS_WORKTREE_DIR}/`,
     `${TRANSIENT_PLANS_DIR}/`,
-    `${wtRoot}/`,
+  ];
+  // Only add worktree root to .gitignore when it's a relative path (inside
+  // the repo). Absolute paths point outside the project root and cannot be
+  // matched by .gitignore patterns, which are repository-relative.
+  if (!path.isAbsolute(wtRoot)) {
+    entries.push(`${wtRoot}/`);
+  }
+  entries.push(
     ".kspec-dispatch-workspace.json",
     ".kspec-dispatch-shadow-mutation",
-  ];
+  );
+  return entries;
 }
 
 /**
