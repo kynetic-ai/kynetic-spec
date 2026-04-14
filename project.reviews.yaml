@@ -138962,6 +138962,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-14T10:39:36.573Z
+      - _ulid: 01KP5S6MHVKEGXFEA7DMHJYYWH
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KP5S6KKAB2BZMCXN76MP7H7C
+        timestamp: 2026-04-14T10:39:41.115Z
     examined_commit: af2e3dadb9fcf2bd02574cdd0abf3588cc9608a5
     external_links: []
     lifecycle_state: closed
@@ -139024,6 +139031,23 @@ reviews:
               configuration regresses silently.
             created_at: 2026-04-14T10:31:20.849Z
         kind: blocker
+      - _ulid: 01KP5S6KKAB2BZMCXN76MP7H7C
+        entries:
+          - _ulid: 01KP5S6KKAYTX8YE3J8ZEHPFR7
+            author: Jacob Chapel
+            body: "Files read: src/parser/gitignore.ts, src/parser/shadow.ts, src/cli/commands/setup.ts,
+              src/cli/commands/init.ts, tests/gitignore-managed-block.test.ts,
+              tests/dispatch-workspace-config.test.ts, tests/parser/config.test.ts,
+              src/agent-runtime/workspace.ts. Commands run: git diff/stat/name-only, kspec task get,
+              kspec item get, kspec review get/for-task, kspec validate, rg AC scans, npm test, npm
+              test -- --fresh, npx tsx reproduction for buildKspecGitignoreEntries(undefined,
+              '/tmp/kspec-worktrees'). Claims verified: configurable shadow directory and relative
+              worktree root handling were added; absolute worktree_root still leaks into .gitignore.
+              Categories searched: correctness (found blocker), edge cases (absolute outside-root
+              config found blocker), error handling (no additional issue), test quality (tests miss
+              absolute-root case), integration (setup/init both call the same faulty helper)."
+            created_at: 2026-04-14T10:39:40.138Z
+        kind: nit
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -139033,5 +139057,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-14T10:39:36.572Z
     created_at: 2026-04-14T10:30:13.609Z
-    updated_at: 2026-04-14T10:39:36.572Z
+    updated_at: 2026-04-14T10:39:40.138Z
     notes: []
