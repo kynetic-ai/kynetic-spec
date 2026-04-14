@@ -834,6 +834,132 @@ function getHookInstallSkipMessage(agentType: AgentType): string {
   return `not applicable for ${agentType}`;
 }
 
+// ─── Scaffold State Persistence ───────────────────────────────────────────────
+
+/**
+ * Path to the scaffold state file that tracks which setup scaffolds have run.
+ * Used to detect user-removal of scaffolded items (e.g., reflection hook).
+ *
+ * AC: @default-session-reflection-hook ac-hook-removable
+ */
+function getScaffoldStatePath(projectDir: string): string {
+  return path.join(projectDir, ".kspec", ".setup-scaffold-state.json");
+}
+
+/**
+ * Scaffold state persisted across setup invocations.
+ */
+interface ScaffoldState {
+  /** Set to true after the default reflection hook is first scaffolded */
+  reflectionHookScaffolded?: boolean;
+}
+
+/**
+ * Read the scaffold state file, returning empty state if missing or invalid.
+ */
+async function readScaffoldState(projectDir: string): Promise<ScaffoldState> {
+  try {
+    const content = await fs.readFile(getScaffoldStatePath(projectDir), "utf-8");
+    return JSON.parse(content) as ScaffoldState;
+  } catch {
+    return {};
+  }
+}
+
+/**
+ * Write the scaffold state file.
+ */
+async function writeScaffoldState(projectDir: string, state: ScaffoldState): Promise<void> {
+  const statePath = getScaffoldStatePath(projectDir);
+  await fs.mkdir(path.dirname(statePath), { recursive: true });
+  await fs.writeFile(statePath, `${JSON.stringify(state, null, 2)}\n`, "utf-8");
+}
+
+// ─── Default Reflection Hook ─────────────────────────────────────────────────
+
+/**
+ * The deterministic name for the default reflection hook.
+ * Used to identify the hook in the hooks list for idempotency checks.
+ *
+ * AC: @default-session-reflection-hook ac-reflection-hook-present
+ */
+const DEFAULT_REFLECTION_HOOK_NAME = "default-session-reflect";
+
+/**
+ * Ensure the default session reflection hook exists in the project meta.
+ *
+ * Creates a single hook that:
+ * - Fires on session.idle event
+ * - Applies to every agent session (no filter)
+ * - Prompts the session to run the reflect skill
+ *
+ * Idempotency rules:
+ * - If a hook named "default-session-reflect" already exists → skip (AC: ac-hook-idempotent)
+ * - If the hook was previously scaffolded but has been removed → skip (AC: ac-hook-removable)
+ * - Only creates when neither condition applies
+ *
+ * AC: @default-session-reflection-hook ac-reflection-hook-present
+ * AC: @default-session-reflection-hook ac-hook-idempotent
+ * AC: @default-session-reflection-hook ac-hook-removable
+ */
+async function ensureDefaultReflectionHook(
+  projectDir: string,
+  dryRun: boolean,
+  force: boolean,
+): Promise<{ status: "created" | "skipped"; reason: string }> {
+  const { initContext } = await import("../../parser/index.js");
+  const { loadMetaContext, saveHook } = await import("../../parser/meta.js");
+  const { ulid } = await import("ulid");
+
+  try {
+    const ctx = await initContext();
+    if (!ctx.manifestPath) {
+      return { status: "skipped", reason: "no kspec project found" };
+    }
+
+    const meta = await loadMetaContext(ctx);
+    const existingHook = meta.hooks.find((h) => h.name === DEFAULT_REFLECTION_HOOK_NAME);
+
+    // AC: @default-session-reflection-hook ac-hook-idempotent
+    if (existingHook) {
+      return { status: "skipped", reason: "already exists" };
+    }
+
+    // AC: @default-session-reflection-hook ac-hook-removable
+    if (!force) {
+      const state = await readScaffoldState(projectDir);
+      if (state.reflectionHookScaffolded) {
+        return { status: "skipped", reason: "previously removed by user" };
+      }
+    }
+
+    // AC: @default-session-reflection-hook ac-reflection-hook-present
+    if (!dryRun) {
+      await saveHook(ctx, {
+        _ulid: ulid(),
+        name: DEFAULT_REFLECTION_HOOK_NAME,
+        on: "session.idle",
+        action: {
+          type: "session_prompt",
+          prompt: "Run session reflection using /kspec:reflect",
+          skills: ["reflect"],
+        },
+        enabled: true,
+      });
+
+      // Record that we scaffolded this hook
+      const state = await readScaffoldState(projectDir);
+      state.reflectionHookScaffolded = true;
+      await writeScaffoldState(projectDir, state);
+    }
+
+    return { status: "created", reason: "default reflection hook" };
+  } catch (err) {
+    debugLog("ensureDefaultReflectionHook failed", err);
+    return { status: "skipped", reason: `error: ${err instanceof Error ? err.message : String(err)}` };
+  }
+}
+
 /**
  * Ensure built-in worker and reviewer agent definitions exist in the project meta.
  *
@@ -1494,6 +1620,21 @@ export async function runSetupPipeline(
               : `already exist: ${agentsBuiltIn.skipped.join(", ")}`,
         });
       }
+    }
+
+    // Step 4c: Ensure default session reflection hook
+    // AC: @default-session-reflection-hook ac-reflection-hook-present, ac-hook-idempotent, ac-hook-removable
+    {
+      const hookResult = await ensureDefaultReflectionHook(
+        projectDir,
+        dryRun,
+        options.force ?? false,
+      );
+      steps.push({
+        name: "Ensure reflection hook",
+        status: hookResult.status === "created" ? "done" : "skipped",
+        message: hookResult.reason,
+      });
     }
 
     // Step 5: Generate kspec-agents.md
