@@ -140918,9 +140918,25 @@ reviews:
           kind: nit
           thread_ulid: 01KP6W3X84T441524BVTCP1VB3
         timestamp: 2026-04-14T20:49:52.894Z
+      - _ulid: 01KP6W4FFKP1AMG8ZWG1TCRCYK
+        actor: codex@openai.com
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-14T20:50:10.548Z
+      - _ulid: 01KP6W4FFM7CH5041QN9KTF3HR
+        actor: codex@openai.com
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-14T20:50:10.548Z
     examined_commit: af9d75e0a7abb47bcd90459f7ec70d16c51e0769
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -140996,7 +141012,14 @@ reviews:
               regression), integration (setup/init interaction), security (no findings).
             created_at: 2026-04-14T20:49:51.877Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai.com
+        role: reviewer
+        created_at: 2026-04-14T20:50:10.547Z
     created_at: 2026-04-14T20:38:21.450Z
-    updated_at: 2026-04-14T20:49:51.877Z
+    updated_at: 2026-04-14T20:50:10.548Z
     notes: []
