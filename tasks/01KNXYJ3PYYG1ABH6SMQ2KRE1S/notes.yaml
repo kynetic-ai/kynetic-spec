@@ -59,3 +59,27 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-11T10:06:49.292Z
+  - _ulid: 01KP5KN1BPZGNFR2AMV6S7FEQ7
+    content: >-
+      Fix cycle 1: addressed all 3 review blockers.
+
+
+      1. Blocker (reuse dispatcher resolver): Extracted resolveDefaultBranch() into workspace.ts as
+      shared helper. Both dispatch provisioning and setup scaffolding now call this single function.
+      Removed local detectDefaultBranch() with its duplicate execSync logic.
+
+
+      2. Blocker (fail loudly): scaffoldProjectConfig() now throws on validation failure — broken
+      file is deleted (fresh) or restored from backup (force). Setup/init commands exit non-zero
+      specifically for scaffold failures without making all step failures fatal.
+
+
+      3. Blocker (trait AC coverage): Converted block-comment annotations to standalone line
+      comments. All 4 @trait-idempotent-file-scaffold ACs covered by individual tests.
+      @trait-error-guidance ac-1/2/5/6 covered by fail-loudly tests, ac-3/4 N/A-annotated.
+
+
+      Full test suite: 7741 passed, 0 failed.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-14T09:02:41.527Z
