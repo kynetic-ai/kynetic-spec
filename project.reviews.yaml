@@ -140143,6 +140143,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-14T19:29:49.441Z
+      - _ulid: 01KP6QHT7QRF1XF4DX7JP1JPGZ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KP6QHS5FDASFJJYNA27RV3WV
+        timestamp: 2026-04-14T19:30:04.663Z
     examined_commit: aa54a59e81afbe4563b663a6a13c28fc5d644f8a
     external_links: []
     lifecycle_state: open
@@ -140541,7 +140548,39 @@ reviews:
               resubmit for review.
             created_at: 2026-04-14T19:29:27.861Z
         kind: blocker
+      - _ulid: 01KP6QHS5FDASFJJYNA27RV3WV
+        anchor:
+          type: code
+          commit: aa54a59e81afbe4563b663a6a13c28fc5d644f8a
+          line_end: 1295
+          line_start: 1190
+          path: src/cli/commands/setup.ts
+          side: head
+        entries:
+          - _ulid: 01KP6QHS5G8YCD29S44ZW5SHXR
+            author: Jacob Chapel
+            body: >-
+              Review evidence log:
+
+              - Files read: src/cli/commands/setup.ts, src/cli/commands/init.ts,
+              src/agent-runtime/workspace.ts, src/parser/config.ts, src/parser/shadow.ts,
+              tests/scaffold-project-config.test.ts, tests/helpers/cli.ts, scripts/test.cjs,
+              tests/cli-serve.test.ts.
+
+              - Commands run: kspec task get @01KNXYJ3PYYG1ABH6SMQ2KRE1S, kspec review for-task
+              @01KNXYJ3PYYG1ABH6SMQ2KRE1S, git diff/stat/log against
+              7b1b856564b91f28efc8bbb2d3b8e41034fd9a3f..aa54a59e81afbe4563b663a6a13c28fc5d644f8a,
+              kspec validate, rg AC annotation scan, npm test.
+
+              - Claims verified: scaffold step is wired between skill rendering and agents
+              generation; scaffolded config uses resolveDefaultBranch(); full test suite passes in
+              this snapshot.
+
+              - Categories searched: correctness/spec alignment, AC coverage, error handling,
+              integration behavior, and branch hygiene/scope isolation.
+            created_at: 2026-04-14T19:30:03.568Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-14T19:18:59.898Z
-    updated_at: 2026-04-14T19:29:48.398Z
+    updated_at: 2026-04-14T19:30:03.568Z
     notes: []
