@@ -1,1 +1,25 @@
-notes: []
+notes:
+  - _ulid: 01KP6S2B5RWPBA9C32CHK3V6CE
+    content: >-
+      Approach: 
+
+      1. Parser (plan-document.ts): Make parsePlanDocument return a typed result with missing-title
+      error, empty-plan warning, and AC shape mismatch errors with per-spec/per-AC context. Reuse
+      existing AcceptanceCriterionSchema.
+
+      2. Import command (plan-import.ts): Route new parser error/warning types to actionable human
+      messages. Title missing = exit 1 with format guidance. Empty plan = success + warning. AC
+      shape mismatch = exit 1 with field descriptions.
+
+      3. Derive command (plan.ts): Add empty-plan guard at top before module resolution. Non-zero
+      exit with guidance pointing to import command.
+
+      4. Help text: Add runnable example to plan import command registration.
+
+      5. Tests: CLI integration tests for each AC using kspecRun/kspecJson helpers.
+
+      Edge cases: dry-run must produce same errors/warnings, JSON mode must include warnings in
+      structured output.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-14T19:56:34.873Z
