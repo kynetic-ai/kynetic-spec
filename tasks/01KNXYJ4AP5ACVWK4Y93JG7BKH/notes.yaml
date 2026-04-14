@@ -1,1 +1,35 @@
-notes: []
+notes:
+  - _ulid: 01KP5P7C9H4VPEWTBQSBNWNMNH
+    content: >-
+      Approach: Replace ensureBuiltInAgents() with a new scaffoldDefaults() function that:
+
+      1. Reads a first-run marker from .kspec/.setup-state.json (new state file alongside
+      .kspec-agents-hash)
+
+      2. When marker absent (first run): creates 4 agents (task-worker, pr-reviewer, primary-dev,
+      plan-reviewer) + 3 conventions (commits, architecture, testing), writes marker, tags each with
+      'scaffold-default'
+
+      3. When marker present (subsequent): reports itemized status - items still exist, removed by
+      user, renamed by user
+
+      4. When --force: re-seeds only missing items (id doesn't resolve AND not renamed)
+
+      5. Consolidates existing ensureBuiltInAgents into this single scaffold site
+
+      6. Uses saveMetaItem from parser/meta.ts directly (library call, not CLI)
+
+      7. auto_approve=true on all 4 agents for write authorization
+
+      8. Plan reviewer gets adapter guidance in description,
+      skills=['review-plan','writing-specs','plan']
+
+      9. After scaffold, agents.md regeneration runs as existing step
+
+
+      Test plan: 15 ACs x 1+ test each. E2E tests using kspec CLI in temp dirs. Tests for first-run,
+      second-run (all present), second-run (removed), second-run (renamed), force-reseed, write
+      authorization, conventions content.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-14T09:47:39.697Z
