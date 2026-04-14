@@ -1410,11 +1410,11 @@ Examples:
     .option("--name <name>", "Update name (for agents)")
     .option("--description <desc>", "Update description")
     .option("--trigger <trigger>", "Update trigger (for workflows)")
-    .option("--add-capability <cap>", "Add capability (for agents)")
-    .option("--add-tool <tool>", "Add tool (for agents)")
-    .option("--add-convention <conv>", "Add convention reference (for agents)")
+    .option("--add-capability <cap>", "Add capability (for agents)", collectRepeatedOptionValues, [])
+    .option("--add-tool <tool>", "Add tool (for agents)", collectRepeatedOptionValues, [])
+    .option("--add-convention <conv>", "Add convention reference (for agents)", collectRepeatedOptionValues, [])
     .option("--adapter <adapter>", "Set adapter reference or npx package (for agents)")
-    .option("--add-skill <skill>", "Add skill slug (for agents)")
+    .option("--add-skill <skill>", "Add skill slug (for agents)", collectRepeatedOptionValues, [])
     .option(
       "--add-dispatch-rule <json>",
       "Append dispatch rule JSON (for agents)",
@@ -1442,13 +1442,13 @@ Examples:
       "--initial-response-timeout-seconds <n>",
       "Set initial response timeout in seconds (for agents)",
     )
-    .option("--remove-capability <cap>", "Remove capability (for agents)")
-    .option("--remove-tool <tool>", "Remove tool (for agents)")
-    .option("--remove-convention <conv>", "Remove convention reference (for agents)")
-    .option("--remove-skill <skill>", "Remove skill slug (for agents)")
-    .option("--add-tag <tag>", "Add tag (for agents)")
-    .option("--remove-tag <tag>", "Remove tag (for agents)")
-    .option("--add-rule <rule>", "Add rule (for conventions)")
+    .option("--remove-capability <cap>", "Remove capability (for agents)", collectRepeatedOptionValues, [])
+    .option("--remove-tool <tool>", "Remove tool (for agents)", collectRepeatedOptionValues, [])
+    .option("--remove-convention <conv>", "Remove convention reference (for agents)", collectRepeatedOptionValues, [])
+    .option("--remove-skill <skill>", "Remove skill slug (for agents)", collectRepeatedOptionValues, [])
+    .option("--add-tag <tag>", "Add tag (for agents)", collectRepeatedOptionValues, [])
+    .option("--remove-tag <tag>", "Remove tag (for agents)", collectRepeatedOptionValues, [])
+    .option("--add-rule <rule>", "Add rule (for conventions)", collectRepeatedOptionValues, [])
     .action(async (ref: string, options) => {
       try {
         const ctx = await initContext();
@@ -1479,19 +1479,43 @@ Examples:
           const item = found as Agent;
           if (options.name) item.name = options.name;
           if (options.description !== undefined) item.description = options.description;
-          if (options.addCapability) {
-            if (!item.capabilities.includes(options.addCapability)) {
-              item.capabilities.push(options.addCapability);
+          // AC: @meta-set-multi-value-parity ac-mixed-add-and-remove — removes before adds
+          // Apply removals first so mixed add+remove in one call is unambiguous
+          for (const cap of options.removeCapability) {
+            item.capabilities = item.capabilities.filter((c: string) => c !== cap);
+          }
+          for (const tool of options.removeTool) {
+            item.tools = item.tools.filter((t: string) => t !== tool);
+          }
+          for (const conv of options.removeConvention) {
+            item.conventions = item.conventions.filter((c: string) => c !== conv);
+          }
+          for (const skill of options.removeSkill) {
+            if (item.skills) {
+              item.skills = item.skills.filter((s: string) => s !== skill);
             }
           }
-          if (options.addTool) {
-            if (!item.tools.includes(options.addTool)) {
-              item.tools.push(options.addTool);
+          for (const tag of options.removeTag) {
+            if (item.tags) {
+              item.tags = item.tags.filter((t: string) => t !== tag);
             }
           }
-          if (options.addConvention) {
-            if (!item.conventions.includes(options.addConvention)) {
-              item.conventions.push(options.addConvention);
+
+          // AC: @meta-set-multi-value-parity ac-repeated-add-capability-all-kept
+          for (const cap of options.addCapability) {
+            if (!item.capabilities.includes(cap)) {
+              item.capabilities.push(cap);
+            }
+          }
+          // AC: @meta-set-multi-value-parity ac-repeated-add-skill-all-kept (tool variant)
+          for (const tool of options.addTool) {
+            if (!item.tools.includes(tool)) {
+              item.tools.push(tool);
+            }
+          }
+          for (const conv of options.addConvention) {
+            if (!item.conventions.includes(conv)) {
+              item.conventions.push(conv);
             }
           }
           // AC: @agent-definition-schema ac-10 - new fields preserved during set
@@ -1510,10 +1534,13 @@ Examples:
               process.exit(EXIT_CODES.ERROR);
             }
           }
-          if (options.addSkill) {
+          // AC: @meta-set-multi-value-parity ac-repeated-add-skill-all-kept
+          if (options.addSkill.length > 0) {
             if (!item.skills) item.skills = [];
-            if (!item.skills.includes(options.addSkill)) {
-              item.skills.push(options.addSkill);
+            for (const skill of options.addSkill) {
+              if (!item.skills.includes(skill)) {
+                item.skills.push(skill);
+              }
             }
           }
           if (options.autoApprove === true) item.auto_approve = true;
@@ -1610,33 +1637,11 @@ Examples:
             item.budget.initial_response_timeout_seconds = result.value;
           }
           // AC: @agent-definition-schema ac-16 — array removal and tag operations
-          if (options.removeCapability) {
-            item.capabilities = item.capabilities.filter(
-              (c: string) => c !== options.removeCapability,
-            );
-          }
-          if (options.removeTool) {
-            item.tools = item.tools.filter((t: string) => t !== options.removeTool);
-          }
-          if (options.removeConvention) {
-            item.conventions = item.conventions.filter(
-              (c: string) => c !== options.removeConvention,
-            );
-          }
-          if (options.removeSkill) {
-            if (item.skills) {
-              item.skills = item.skills.filter((s: string) => s !== options.removeSkill);
-            }
-          }
-          if (options.addTag) {
+          // (Now handled above: removes before adds for all array fields)
+          for (const tag of options.addTag) {
             if (!item.tags) item.tags = [];
-            if (!item.tags.includes(options.addTag)) {
-              item.tags.push(options.addTag);
-            }
-          }
-          if (options.removeTag) {
-            if (item.tags) {
-              item.tags = item.tags.filter((t: string) => t !== options.removeTag);
+            if (!item.tags.includes(tag)) {
+              item.tags.push(tag);
             }
           }
         } else if (itemType === "workflow") {
@@ -1646,9 +1651,10 @@ Examples:
         } else {
           const item = found as Convention;
           // Convention doesn't have a description field
-          if (options.addRule) {
-            if (!item.rules.includes(options.addRule)) {
-              item.rules.push(options.addRule);
+          // AC: @meta-set-multi-value-parity ac-repeated-add-rule-all-kept
+          for (const rule of options.addRule) {
+            if (!item.rules.includes(rule)) {
+              item.rules.push(rule);
             }
           }
         }
