@@ -139209,6 +139209,13 @@ reviews:
           status: skipped
           name: kspec validate
         timestamp: 2026-04-14T19:00:22.830Z
+      - _ulid: 01KP6NW07NHHAXT98J0F5FTVTP
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KP6NVZAGZ2WJGNG314PJ9ETT
+        timestamp: 2026-04-14T19:00:41.333Z
     examined_commit: 303b2298f2b8eb0d7136364c00fd26ab21d50ba5
     external_links: []
     lifecycle_state: open
@@ -139239,9 +139246,33 @@ reviews:
               ac-file-valid-on-load (scaffolded config must resolve the same as an empty config).'
             created_at: 2026-04-14T19:00:19.271Z
         kind: blocker
+      - _ulid: 01KP6NVZAGZ2WJGNG314PJ9ETT
+        entries:
+          - _ulid: 01KP6NVZAH3NM7PQ72F5TVJGGB
+            author: Jacob Chapel
+            body: >-
+              Review evidence log:
+
+              Files read: src/cli/commands/setup.ts, src/agent-runtime/workspace.ts,
+              src/parser/shadow.ts, tests/scaffold-project-config.test.ts,
+              tests/setup-from-linked-worktree.test.ts, tests/dispatch-workspace-config.test.ts.
+
+              Commands run: kspec task get @01KNXYJ3PYYG1ABH6SMQ2KRE1S; kspec review for-task
+              @01KNXYJ3PYYG1ABH6SMQ2KRE1S; kspec review get @01KP5SJJR9S8KE3FZ3VY408Z54; git diff
+              against base and head; grep for AC annotations; kspec validate; npm test; targeted
+              node repro comparing resolveDispatchWorkspaceConfig() with and without the scaffolded
+              config in a no-remote dev-branch repo.
+
+              Claims verified: full suite passes on this snapshot; scaffolded config does not
+              preserve empty-config dispatch base-branch resolution when no remote HEAD exists.
+
+              Categories searched: correctness, spec alignment, test quality, linked-worktree error
+              handling, integration/runtime behavior.
+            created_at: 2026-04-14T19:00:40.401Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-14T10:46:12.489Z
-    updated_at: 2026-04-14T19:00:21.897Z
+    updated_at: 2026-04-14T19:00:40.401Z
     notes: []
   - _ulid: 01KP6HSXBZYXZMMAGGTMXJMTAC
     slugs: []
