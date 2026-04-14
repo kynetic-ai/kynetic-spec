@@ -140934,6 +140934,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-14T20:50:10.548Z
+      - _ulid: 01KP6X253MYQP1D30Y57156TE2
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP6W2K1VTZ9KMRKEJ0B6A1NC
+        timestamp: 2026-04-14T21:06:22.964Z
     examined_commit: af9d75e0a7abb47bcd90459f7ec70d16c51e0769
     external_links: []
     lifecycle_state: closed
@@ -140963,6 +140969,13 @@ reviews:
               That is a regression from the base branch behavior, which warned when any setup step
               failed."
             created_at: 2026-04-14T20:49:08.668Z
+          - _ulid: 01KP6X24340AEMGPXQQZTAX5C6
+            author: "@claude"
+            body: "Fixed: restored the setupResult.success gate in init.ts. The scaffold-specific check now runs
+              first (hard exit on scaffold failure), then the general gate checks
+              setupResult.success — if false, prints the base-branch-original warning instead of the
+              success footer. Commit b91fc2f0e."
+            created_at: 2026-04-14T21:06:21.924Z
         kind: blocker
       - _ulid: 01KP6W3DPEJ0Y4PNFC3JNJMMDT
         anchor:
@@ -141021,7 +141034,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-14T20:50:10.547Z
     created_at: 2026-04-14T20:38:21.450Z
-    updated_at: 2026-04-14T20:50:10.548Z
+    updated_at: 2026-04-14T21:06:21.924Z
     notes: []
   - _ulid: 01KP6WE68779Q5AMYA88CA33TT
     slugs: []
