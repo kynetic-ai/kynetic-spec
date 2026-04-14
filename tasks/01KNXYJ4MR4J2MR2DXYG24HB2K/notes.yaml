@@ -40,3 +40,31 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-14T18:24:52.326Z
+  - _ulid: 01KP6MKZC1V6JZPS4JTA2RRT04
+    content: >-
+      Implementation complete. Added ensureDefaultReflectionHook step to setup pipeline.
+
+
+      Changes:
+
+      - src/cli/commands/setup.ts: Added scaffold state persistence (read/write
+      .kspec/.setup-scaffold-state.json), ensureDefaultReflectionHook function, and step 4c in
+      runSetupPipeline
+
+      - tests/setup-reflection-hook.test.ts: 7 tests covering all 3 ACs
+
+
+      AC coverage:
+
+      - ac-reflection-hook-present: 3 tests (hook exists with correct fields, session_prompt action
+      with reflect skill, scaffold state recorded)
+
+      - ac-hook-idempotent: 2 tests (no duplicates on re-run, ULID preserved)
+
+      - ac-hook-removable: 2 tests (not recreated after user removal, recreated with --force)
+
+
+      Full test suite passes (2117 suites, 7730 tests, 0 regressions).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-14T18:38:49.729Z
