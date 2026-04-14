@@ -31,3 +31,29 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-14T20:40:04.182Z
+  - _ulid: 01KP6WB3GQMG3DBY54C8YHT2D1
+    content: >-
+      Implementation complete. Changes:
+
+
+      1. Option declarations: Changed 11 options on meta set to use collectRepeatedOptionValues
+      accumulator (--add-capability, --add-tool, --add-convention, --add-skill, --add-rule,
+      --add-tag, --remove-capability, --remove-tool, --remove-convention, --remove-skill,
+      --remove-tag). Each now receives an array instead of last-write-wins string.
+
+
+      2. Handler logic: Restructured the agent handler to apply removes before adds (per
+      ac-mixed-add-and-remove). All array field mutations iterate the full arrays.
+
+
+      3. Convention handler: Updated --add-rule to iterate the array for conventions.
+
+
+      4. Tests: 12 new test cases covering all 5 ACs plus regression tests for meta add behavior,
+      deduplication, multi-tool operations, and remove-then-re-add ordering.
+
+
+      5. Full test suite: 7763 tests pass, 0 regressions.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-14T20:53:47.671Z
