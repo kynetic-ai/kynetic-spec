@@ -25345,9 +25345,23 @@ runs:
     completed_at: 2026-04-14T09:29:32.662Z
   - _ulid: 01KP5NY5H2B6YWVACCG0FYT1XT
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-14T09:42:37.858Z
+        completed_at: 2026-04-14T09:43:17.992Z
+        notes: "Session: fix cycle 2 for task-scaffold-project-config. Single blocker: shared
+          resolveDefaultBranch helper changed dispatch fallback semantics — stale remote HEAD threw
+          instead of falling through to current branch. Fix: restored original per-step verification
+          in resolveDispatchWorkspaceConfig. What worked well: clear review feedback with
+          reproduction steps made root cause identification fast. Fix was surgical — one function
+          restored to original semantics."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-14T09:43:17.992Z
+        completed_at: 2026-04-14T09:43:17.992Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-14T09:42:37.858Z
