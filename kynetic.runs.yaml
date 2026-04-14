@@ -25345,7 +25345,7 @@ runs:
     completed_at: 2026-04-14T09:29:32.662Z
   - _ulid: 01KP5NY5H2B6YWVACCG0FYT1XT
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -25361,7 +25361,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-14T09:43:17.992Z
-        completed_at: 2026-04-14T09:43:17.992Z
+        completed_at: 2026-04-14T09:43:47.695Z
+        notes: "Friction: The fix cycle 1 refactor introduced a subtle behavioral regression by extracting a
+          shared helper without preserving the caller's fallback semantics. This is a known category
+          of refactoring risk (shared abstraction changes call-site behavior), not a systemic
+          tooling gap. The review process caught it correctly with reproduction steps. No new
+          friction patterns identified — this was a clean fix cycle with clear feedback. Success:
+          reviewer provided concrete reproduction steps (temp repo with stale remote HEAD), making
+          root cause identification and fix verification straightforward."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-14T09:43:47.695Z
+        completed_at: 2026-04-14T09:43:47.695Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-14T09:42:37.858Z
