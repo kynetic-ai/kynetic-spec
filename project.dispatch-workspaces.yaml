@@ -50677,7 +50677,7 @@ workspaces:
         head: f205808d2cf1f58d18f7fdf45435996b4092d52a
         last_seen_at: 2026-04-14T19:53:40.062Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-plan-import-format-guidance-01knxyj5
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: f205808d2cf1f58d18f7fdf45435996b4092d52a
     bootstrap:
       status: succeeded
@@ -51192,7 +51192,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-14T20:54:31.426Z
+      updated_at: 2026-04-14T20:54:54.440Z
     integration:
       status: pending
       detail: null
@@ -51207,10 +51207,10 @@ workspaces:
     task_slug: task-meta-set-multi-value
     timestamps:
       closed_at: null
-      last_active_at: 2026-04-14T20:37:58.380Z
-      last_reconciled_at: 2026-04-14T20:54:31.426Z
+      last_active_at: 2026-04-14T20:54:54.440Z
+      last_reconciled_at: 2026-04-14T20:54:54.440Z
       created_at: 2026-04-14T20:37:37.527Z
-      updated_at: 2026-04-14T20:54:51.133Z
+      updated_at: 2026-04-14T20:54:54.440Z
     workspace_id: dispatch-workspace-01KNXYJ6GNEEFAAYRXSCPHVNSR
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
