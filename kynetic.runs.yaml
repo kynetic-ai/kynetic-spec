@@ -25563,7 +25563,7 @@ runs:
     completed_at: 2026-04-14T18:59:43.256Z
   - _ulid: 01KP6PRAJ1N55FBBX557PAF9SW
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -25575,7 +25575,13 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-14T19:16:55.709Z
-        completed_at: 2026-04-14T19:16:55.709Z
+        completed_at: 2026-04-14T19:16:56.737Z
+        notes: "Friction points: the condensed test runner provided little progress visibility during long
+          npm test runs, requiring manual cache-log and process inspection to confirm liveness."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-14T19:16:56.737Z
+        completed_at: 2026-04-14T19:16:56.737Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-14T19:16:09.409Z
