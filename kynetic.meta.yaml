@@ -14045,6 +14045,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-14T18:31:55.680Z
+  - _ulid: 01KP6M7BEBA86CMRQV2VF058F6
+    type: success
+    content: For review sessions, validating suspected scaffold edge cases with a minimal temp project
+      repro worked well. A direct 'setup --force' repro exposed the mixed rename+delete bug in
+      default-agent reseeding quickly and provided concrete evidence for an anchored blocker instead
+      of relying on code inspection alone.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-14T18:31:56.108Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
