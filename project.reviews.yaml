@@ -135238,6 +135238,12 @@ reviews:
         payload:
           thread_ulid: 01KNY03AF6PTHXA56SJNBDZ1A1
         timestamp: 2026-04-14T09:02:25.303Z
+      - _ulid: 01KP5KMPDQYBVXHGNVTNND262C
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KNY03G0VM8WPNGX2FKKYYAAA
+        timestamp: 2026-04-14T09:02:30.328Z
     examined_commit: 4f57708fe3e613630f0e50337cbdaf60d0493333
     external_links: []
     lifecycle_state: closed
@@ -135500,6 +135506,8 @@ reviews:
               tests), ac-3/4 (N/A-annotated with reasons)."
             created_at: 2026-04-14T09:02:10.184Z
         kind: blocker
+        resolved_at: 2026-04-14T09:02:29.430Z
+        resolved_by: "@claude"
       - _ulid: 01KNY03NGZVPXS10M5XW7ESBAM
         entries:
           - _ulid: 01KNY03NGZ5RBBZ47XZG6NV2F0
@@ -135653,7 +135661,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-11T10:06:47.469Z
     created_at: 2026-04-11T10:00:55.406Z
-    updated_at: 2026-04-14T09:02:24.417Z
+    updated_at: 2026-04-14T09:02:29.430Z
     notes: []
   - _ulid: 01KNY1GZQP0FK7D8D9GYVYEK0S
     slugs: []
