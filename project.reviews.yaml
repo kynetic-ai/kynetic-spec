@@ -136920,6 +136920,12 @@ reviews:
         payload:
           thread_ulid: 01KP5PNAX9T8RPJ3C7AZB92PBX
         timestamp: 2026-04-14T09:56:37.782Z
+      - _ulid: 01KP5PQWW4A3GP83F65J2X3MN1
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP5PN84M5S48Q8DVP1KCA1W3
+        timestamp: 2026-04-14T09:56:40.964Z
     examined_commit: 8f5854d049e6359236067f8ee3b0c47fa4fec6b7
     external_links: []
     lifecycle_state: open
@@ -136949,6 +136955,11 @@ reviews:
               but stdout still ends with . That is the opposite of : callers get a contradictory
               success signal in the same invocation, and the current tests do not guard against it."
             created_at: 2026-04-14T09:55:14.196Z
+          - _ulid: 01KP5PQVST1ZEC04C7CQYD4PHN
+            author: Jacob Chapel
+            body: Superseded by corrected duplicate thread 01KP5PP987G9RAW10BNZGWJNBX after shell quoting
+              mangled the original body.
+            created_at: 2026-04-14T09:56:39.866Z
         kind: blocker
         resolved_at: 2026-04-14T09:56:33.558Z
         resolved_by: Jacob Chapel
@@ -138731,5 +138742,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-14T09:43:48.386Z
-    updated_at: 2026-04-14T09:56:36.687Z
+    updated_at: 2026-04-14T09:56:39.866Z
     notes: []
