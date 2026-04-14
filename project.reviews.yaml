@@ -139448,3 +139448,29 @@ reviews:
     created_at: 2026-04-14T17:49:38.559Z
     updated_at: 2026-04-14T18:18:46.585Z
     notes: []
+  - _ulid: 01KP6KK5YMTAEJCDYWC9KW0PFK
+    slugs: []
+    title: Review task-default-agents-and-conventions (cycle 2)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KP6KK5YMMDW62JGN74K893MW
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-14T18:20:55.124Z
+    examined_commit: 326439565e1a2f14584c3f1028cb186369093f19
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNXYJ4AP5ACVWK4Y93JG7BKH"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-14T18:20:55.124Z
+    updated_at: null
+    notes: []
