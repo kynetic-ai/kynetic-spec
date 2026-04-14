@@ -139464,6 +139464,18 @@ reviews:
         required: false
         created_at: 2026-04-14T18:30:08.069Z
         completed_at: 2026-04-14T18:30:08.069Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Reproduced force-reseed bug in a temp project: after renaming pr-reviewer to my-reviewer
+          and deleting task-worker, running 'kspec setup --no-hooks --skip-skills --force' recreated
+          both task-worker and pr-reviewer. Output included 'created: task-worker, pr-reviewer'."
+        name: scaffold repro
+        required: true
+        runner: manual
+        created_at: 2026-04-14T18:30:15.798Z
+        completed_at: 2026-04-14T18:30:15.798Z
     events:
       - _ulid: 01KP6KK5YMMDW62JGN74K893MW
         actor: Jacob Chapel
@@ -139499,6 +139511,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP6M45P7K532PFNM3F6CX3Q1
         timestamp: 2026-04-14T18:30:13.252Z
+      - _ulid: 01KP6M4AS2WMJK60TTV7Y40F12
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: scaffold repro
+        timestamp: 2026-04-14T18:30:17.122Z
     examined_commit: 326439565e1a2f14584c3f1028cb186369093f19
     external_links: []
     lifecycle_state: open
@@ -139551,5 +139570,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-14T18:20:55.124Z
-    updated_at: 2026-04-14T18:30:11.912Z
+    updated_at: 2026-04-14T18:30:15.798Z
     notes: []
