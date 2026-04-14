@@ -135214,6 +135214,12 @@ reviews:
         payload:
           thread_ulid: 01KNY037R7P0A34TQE2XSF78JC
         timestamp: 2026-04-14T09:02:00.785Z
+      - _ulid: 01KP5KKYQ67QPBVKK4CERSKTPN
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNY03AF6PTHXA56SJNBDZ1A1
+        timestamp: 2026-04-14T09:02:06.054Z
     examined_commit: 4f57708fe3e613630f0e50337cbdaf60d0493333
     external_links: []
     lifecycle_state: closed
@@ -135269,6 +135275,15 @@ reviews:
               (y/N)  in a non-kspec repo produced exit status 0 even with  in the summary, which
               shows this pipeline path does not surface step failures to callers."
             created_at: 2026-04-11T10:06:17.062Z
+          - _ulid: 01KP5KKXTA8BG1YZ49465NJ9JR
+            author: "@claude"
+            body: "Fixed: scaffoldProjectConfig() now throws on validation failure instead of returning a
+              validationError field. On fresh creation the broken file is deleted; on force
+              overwrite the original is restored from backup. The setup and init command handlers
+              check specifically for scaffold step failure and exit non-zero. Other non-critical
+              step failures (like plugin marketplace) remain non-fatal to avoid breaking existing
+              test contracts."
+            created_at: 2026-04-14T09:02:05.130Z
         kind: blocker
       - _ulid: 01KNY03G0VM8WPNGX2FKKYYAAA
         anchor:
@@ -135609,7 +135624,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-11T10:06:47.469Z
     created_at: 2026-04-11T10:00:55.406Z
-    updated_at: 2026-04-14T09:01:59.891Z
+    updated_at: 2026-04-14T09:02:05.130Z
     notes: []
   - _ulid: 01KNY1GZQP0FK7D8D9GYVYEK0S
     slugs: []
