@@ -135784,6 +135784,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP5J8K15MRK0X3T497G18TYP
         timestamp: 2026-04-14T08:38:26.074Z
+      - _ulid: 01KP5J8PR68GFM0GGVSEEXEBJJ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP5J8NSRZWN3GW41RCVRQEAT
+        timestamp: 2026-04-14T08:38:28.870Z
     examined_commit: d8602e6f790919893fc9aa7907493193f5f99411
     external_links: []
     lifecycle_state: open
@@ -135923,7 +135930,30 @@ reviews:
               with a real N/A handling path that the validator recognizes.
             created_at: 2026-04-14T08:38:25.061Z
         kind: blocker
+      - _ulid: 01KP5J8NSRZWN3GW41RCVRQEAT
+        anchor:
+          type: code
+          commit: d8602e6f790919893fc9aa7907493193f5f99411
+          line_end: 1328
+          line_start: 1307
+          path: src/cli/commands/setup.ts
+          side: head
+        entries:
+          - _ulid: 01KP5J8NSR30ZJHCV002XWXBXG
+            author: Jacob Chapel
+            body: "The new setup repair path ignores configured shadow directory names and always computes the
+              managed block from the default .kspec entry. buildKspecGitignoreEntries() only
+              substitutes the shadow path when a shadowDir argument is passed, and
+              initializeShadow() does that, but runSetupPipeline() calls
+              buildKspecGitignoreEntries() and ensureKspecGitignore(projectDir) with no shadow
+              option. On any project configured with shadow.directory: .specs or similar, kspec
+              setup will treat .kspec/ as missing and rewrite the managed block with the wrong
+              canonical entry, which regresses the existing custom-directory behavior covered
+              elsewhere in the codebase. The setup path needs to load project config and pass the
+              configured shadow directory through just like init does."
+            created_at: 2026-04-14T08:38:27.896Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-14T08:33:47.366Z
-    updated_at: 2026-04-14T08:38:25.061Z
+    updated_at: 2026-04-14T08:38:27.896Z
     notes: []
