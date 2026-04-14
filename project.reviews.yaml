@@ -136887,6 +136887,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP5PNAX9T8RPJ3C7AZB92PBX
         timestamp: 2026-04-14T09:55:18.019Z
+      - _ulid: 01KP5PNEKAFS19J9KZZ6JC0FDH
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KP5PNDNKVB2WZ3DY6CQPSKX2
+        timestamp: 2026-04-14T09:55:20.810Z
     examined_commit: 8f5854d049e6359236067f8ee3b0c47fa4fec6b7
     external_links: []
     lifecycle_state: open
@@ -136939,7 +136946,1718 @@ reviews:
               target and silently drift from the documented behavior."
             created_at: 2026-04-14T09:55:17.033Z
         kind: blocker
+      - _ulid: 01KP5PNDNKVB2WZ3DY6CQPSKX2
+        entries:
+          - _ulid: 01KP5PNDNK432V5F9WW54KGZ3K
+            author: Jacob Chapel
+            body: >-
+              Review evidence log: Files read: src/agent-runtime/workspace.ts,
+              src/cli/commands/setup.ts, src/cli/commands/init.ts, src/parser/config.ts,
+              tests/scaffold-project-config.test.ts. Commands run: , full , , Scaffolded Project
+              Config File
+
+              ────────────────────────────────────────
+
+              ULID:      01KNXYJ2Y3A2MAVHRQQ97VD0PV
+
+              Slugs:     scaffolded-project-config
+
+              Type:      requirement
+
+              Maturity:  draft
+
+              Implementation: in_progress
+
+
+              ─── Description ───
+
+              When a project is initialized with full setup, a project config
+
+              file is scaffolded at the project root with placeholder values
+
+              for the knobs that real projects are expected to customize.
+
+              The scaffolded file uses only documented config keys, is valid
+
+              on first load, and marks itself visibly as a template that the
+
+              user should review.
+
+
+
+              ─── Acceptance Criteria ───
+                [ac-file-scaffolded]
+                  Given: A project has no project config file at its root
+
+                  When: The project is initialized with full setup
+
+                  Then: A project config file is created at the project root
+
+                [ac-file-valid-on-load]
+                  Given: A scaffolded project config file has just been written
+
+                  When: The config is loaded by any kspec command
+
+                  Then: The file parses successfully and produces the same resolved
+              configuration as an empty config would, so scaffolding does
+
+              not change runtime behavior
+
+                [ac-placeholder-publication-mode]
+                  Given: A scaffolded project config file is written
+
+                  When: The file contents are inspected
+
+                  Then: The dispatch publication mode key is present with a
+              default value and an adjacent comment naming the other
+
+              accepted values
+
+                [ac-placeholder-base-branch]
+                  Given: A scaffolded project config file is written
+
+                  When: The file contents are inspected
+
+                  Then: The dispatch base branch key is present with a resolved
+              value taken from the current repository's default branch
+
+                [ac-placeholder-coverage]
+                  Given: A scaffolded project config file is written
+
+                  When: The file contents are inspected
+
+                  Then: The coverage scan paths key is present as a commented-out
+              example with sample paths, so users know the knob exists
+
+              without forcing a choice at init time
+
+                [ac-file-exists-preserved]
+                  Given: A project already has a project config file at its root
+
+                  When: The project is re-initialized or setup is re-run without
+              the force flag
+
+                  Then: The existing file is preserved byte-for-byte
+
+                [ac-file-force-overwrites]
+                  Given: A project already has a project config file and setup is
+              invoked with the force flag
+
+                  When: Setup runs
+
+                  Then: The existing file is replaced with a freshly scaffolded
+              template
+
+                [ac-file-force-backup]
+                  Given: A project already has a project config file and setup is
+              invoked with the force flag
+
+                  When: Setup overwrites the existing file
+
+                  Then: The previous content is preserved as a sibling backup
+              file whose path is reported in the setup output
+
+
+
+              ─── Inherited from @trait-idempotent-file-scaffold ───
+                [ac-existing-file-preserved-without-force] (from @trait-idempotent-file-scaffold)
+                  Given: A file scaffold step's target file already exists
+
+                  When: The step runs without the force flag
+
+                  Then: The existing file is preserved byte-for-byte and
+              the step reports "skipped"
+
+                [ac-force-backs-up-before-overwrite] (from @trait-idempotent-file-scaffold)
+                  Given: A file scaffold step's target file already exists and
+              the step is invoked with the force flag
+
+                  When: The step runs
+
+                  Then: The previous content is preserved as a sibling backup
+              with a timestamped name, the backup path is reported
+
+              before the overwrite, and only then is the file
+
+              replaced with a freshly scaffolded template
+
+                [ac-fresh-file-creation] (from @trait-idempotent-file-scaffold)
+                  Given: A file scaffold step's target file does not exist
+
+                  When: The step runs with or without the force flag
+
+                  Then: The file is created and the step reports "created"
+
+                [ac-step-reports-action] (from @trait-idempotent-file-scaffold)
+                  Given: Any file scaffold step completes
+
+                  When: The setup summary is produced
+
+                  Then: The step's action (created, skipped, force-recreated)
+              and any backup path are included in the summary in a
+
+              stable format
+
+
+
+              ─── Inherited from @trait-error-guidance ───
+                [ac-1] (from @trait-error-guidance)
+                  Given: command encounters error
+                  When: error message is shown
+                  Then: includes description of what went wrong
+                [ac-2] (from @trait-error-guidance)
+                  Given: command encounters error
+                  When: error message is shown
+                  Then: includes suggested action to resolve
+                [ac-3] (from @trait-error-guidance)
+                  Given: reference not found
+                  When: error is shown
+                  Then: suggests checking ref with kspec search or kspec <type> list
+                [ac-4] (from @trait-error-guidance)
+                  Given: invalid state transition
+                  When: error is shown
+                  Then: indicates current state and valid next states
+                [ac-5] (from @trait-error-guidance)
+                  Given: validation error
+                  When: error is shown
+                  Then: indicates which field/value failed validation
+                [ac-6] (from @trait-error-guidance)
+                  Given: error in JSON mode
+                  When: --json is active
+                  Then: guidance included in structured error object, Idempotent File Scaffolding Trait
+              ────────────────────────────────────────
+
+              ULID:      01KNXYJ2VH0Y7Z6XHSMXE251GK
+
+              Slugs:     trait-idempotent-file-scaffold
+
+              Type:      trait
+
+
+              ─── Description ───
+
+              A scaffolding step that creates a file or writes to a
+
+              managed block inside a file on disk follows a uniform set
+
+              of rules so users can predict its behavior without reading
+
+              its implementation: the target file is never modified
+
+              unless the force flag is set; when force is set, the
+
+              existing file is backed up to a sibling path before being
+
+              replaced and the backup path is reported in the step's
+
+              output; the step is safe to re-run and produces the same
+
+              visible result on the second run as the first when no
+
+              inputs changed; the step always reports its action
+
+              (created, skipped, force-recreated) in a stable format
+
+              consumable by the setup summary; and the step never
+
+              destroys user content outside the file it owns.
+
+
+              Scope: this trait applies only to scaffolding that writes
+
+              files on disk. Scaffolds that create meta-spec items
+
+              (agents, conventions, hooks, modules) have different force
+
+              semantics — they use first-run-only creation with
+
+              "reseed missing items only" on force — and must not
+
+              inherit this trait.
+
+
+
+              ─── Acceptance Criteria ───
+                [ac-existing-file-preserved-without-force]
+                  Given: A file scaffold step's target file already exists
+
+                  When: The step runs without the force flag
+
+                  Then: The existing file is preserved byte-for-byte and
+              the step reports "skipped"
+
+                [ac-force-backs-up-before-overwrite]
+                  Given: A file scaffold step's target file already exists and
+              the step is invoked with the force flag
+
+                  When: The step runs
+
+                  Then: The previous content is preserved as a sibling backup
+              with a timestamped name, the backup path is reported
+
+              before the overwrite, and only then is the file
+
+              replaced with a freshly scaffolded template
+
+                [ac-fresh-file-creation]
+                  Given: A file scaffold step's target file does not exist
+
+                  When: The step runs with or without the force flag
+
+                  Then: The file is created and the step reports "created"
+
+                [ac-step-reports-action]
+                  Given: Any file scaffold step completes
+
+                  When: The setup summary is produced
+
+                  Then: The step's action (created, skipped, force-recreated)
+              and any backup path are included in the summary in a
+
+              stable format, Error Messages with Recovery Guidance
+
+              ────────────────────────────────────────
+
+              ULID:      01KFDZSHFBEGRP3JKBHH31NYJT
+
+              Slugs:     trait-error-guidance
+
+              Type:      trait
+
+
+              ─── Description ───
+
+              Error messages include actionable suggestions for resolution
+
+
+              ─── Acceptance Criteria ───
+                [ac-1]
+                  Given: command encounters error
+                  When: error message is shown
+                  Then: includes description of what went wrong
+                [ac-2]
+                  Given: command encounters error
+                  When: error message is shown
+                  Then: includes suggested action to resolve
+                [ac-3]
+                  Given: reference not found
+                  When: error is shown
+                  Then: suggests checking ref with kspec search or kspec <type> list
+                [ac-4]
+                  Given: invalid state transition
+                  When: error is shown
+                  Then: indicates current state and valid next states
+                [ac-5]
+                  Given: validation error
+                  When: error is shown
+                  Then: indicates which field/value failed validation
+                [ac-6]
+                  Given: error in JSON mode
+                  When: --json is active
+                  Then: guidance included in structured error object, ✗ Validation failed
+              ────────────────────────────────────────
+
+              Files checked: 10
+
+              Items checked: 589
+
+              Tasks checked: 0
+
+              Meta: 11 agents, 11 workflows, 10 conventions
+
+
+              Schema errors: 1
+                ✗ /home/chapel/Projects/kynetic-spec-dispatch/.kspec/modules/meta.yaml:modules[0].traits.0
+                  Expected string, received object
+              References: OK
+
+
+              Reference warnings: 1
+                ⚠ @skills
+                  Orphaned skill directory 'skills' has no corresponding meta entry
+                  in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+              Alignment warnings: 33
+                Orphaned specs (no tasks): 31
+                  ○ Test Trait
+                  ○ Filterable List Commands
+                  ○ Dry Run Preview Mode
+                  ... and 28 more
+                Status mismatches: 2
+                  ! Task Set Batch Support
+                    Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+                  ! Concurrent Read Command Execution
+                    Spec "Concurrent Read Command Execution" status is "implemented" but should be "in_progress" based on task progress
+
+              Alignment stats: 425/589 specs have tasks, 423 aligned
+
+
+              Completeness warnings: 484
+                Missing acceptance criteria: 1
+                  ○ @01KJN1WT - Test Trait
+                Missing own AC coverage: 244
+                  ! @spec-item - Spec Item
+                    Uncovered: ac-item-1, ac-item-2
+                  ! @ulid-system - ULID Identifier System
+                    Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+                  ! @slug-system - Slug Alias System
+                    Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+                  ... and 241 more
+                Invalid AC annotations: 239
+                  ! AC annotation references '@01KJE3T7' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review/tests/agent-detection.test.ts:43
+                  ! AC annotation references '@01KJE3T7' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review/tests/agent-detection.test.ts:61
+                  ! AC annotation references '@01KJE3T7' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review/tests/agent-detection.test.ts:75
+                  ! AC annotation references '@01KJE3T7' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review/tests/agent-detection.test.ts:88
+                  ! AC annotation references '@ui-agent-dispatch ac-8' but @ui-agent-dispatch has no acceptance criterion 'ac-8'
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review/tests/agent-dispatch-engine.test.ts:4965
+                  ... and 234 more
+              Skills: OK (10 files checked), tests/action-model.test.ts:972:// AC:
+              @trait-error-guidance ac-1 — N/A: ActionExecutor is a library component,
+
+              tests/action-model.test.ts:977:// AC: @trait-error-guidance ac-2 — N/A: Same as ac-1.
+              Suggested actions are the
+
+              tests/action-model.test.ts:980:// AC: @trait-error-guidance ac-3 — N/A: ActionExecutor
+              does not resolve references.
+
+              tests/action-model.test.ts:983:// AC: @trait-error-guidance ac-4 — N/A: ActionExecutor
+              does not manage state
+
+              tests/action-model.test.ts:987:// AC: @trait-error-guidance ac-5 — N/A: Validation
+              errors for action schemas
+
+              tests/action-model.test.ts:991:// AC: @trait-error-guidance ac-6 — N/A: ActionExecutor
+              does not operate in JSON
+
+              tests/agent-dispatch-engine.test.ts:3626:// AC: @trait-error-guidance ac-1 — N/A:
+              dispatch engine is not a CLI command, errors are logged internally
+
+              tests/agent-dispatch-engine.test.ts:3627:// AC: @trait-error-guidance ac-2 — N/A:
+              dispatch engine is not a CLI command, errors are logged internally
+
+              tests/agent-dispatch-engine.test.ts:3628:// AC: @trait-error-guidance ac-3 — N/A:
+              dispatch engine is not a CLI command, no user-facing ref lookup
+
+              tests/agent-dispatch-engine.test.ts:3629:// AC: @trait-error-guidance ac-4 — N/A:
+              dispatch engine is not a CLI command, no state transition errors shown to user
+
+              tests/agent-dispatch-engine.test.ts:3630:// AC: @trait-error-guidance ac-5 — N/A:
+              dispatch engine is not a CLI command, no validation errors shown to user
+
+              tests/agent-dispatch-engine.test.ts:3631:// AC: @trait-error-guidance ac-6 — N/A:
+              dispatch engine is not a CLI command, no JSON mode
+
+              tests/agent-invocation-lifecycle.test.ts:431:    // AC: @trait-error-guidance ac-1
+
+              tests/agent-invocation-lifecycle.test.ts:432:    // AC: @trait-error-guidance ac-2
+
+              tests/agent-invocation-lifecycle.test.ts:1741:// AC: @trait-error-guidance ac-1 — N/A:
+              This is a library module (not a CLI command).
+
+              tests/agent-invocation-lifecycle.test.ts:1745:// AC: @trait-error-guidance ac-2 — N/A:
+              Library module; error guidance is responsibility
+
+              tests/agent-invocation-lifecycle.test.ts:1748:// AC: @trait-error-guidance ac-3 — N/A:
+              No ref lookups in this module.
+
+              tests/agent-invocation-lifecycle.test.ts:1750:// AC: @trait-error-guidance ac-4 — N/A:
+              No state transitions displayed to users.
+
+              tests/agent-invocation-lifecycle.test.ts:1752:// AC: @trait-error-guidance ac-5 — N/A:
+              Validation errors are thrown as TypeScript errors,
+
+              tests/agent-invocation-lifecycle.test.ts:1755:// AC: @trait-error-guidance ac-6 — N/A:
+              Module has no --json mode; it's a library function.
+
+              tests/api-response-envelope.test.ts:39:// AC: @trait-error-guidance ac-1 — N/A: this
+              task defines types, not error handling
+
+              tests/api-response-envelope.test.ts:40:// AC: @trait-error-guidance ac-2 — N/A: this
+              task defines types, not error handling
+
+              tests/api-response-envelope.test.ts:41:// AC: @trait-error-guidance ac-3 — N/A: this
+              task defines types, not error handling
+
+              tests/api-response-envelope.test.ts:42:// AC: @trait-error-guidance ac-4 — N/A: this
+              task defines types, not error handling
+
+              tests/api-response-envelope.test.ts:43:// AC: @trait-error-guidance ac-5 — N/A: this
+              task defines types, not error handling
+
+              tests/api-response-envelope.test.ts:44:// AC: @trait-error-guidance ac-6 — N/A: this
+              task defines types, not error handling
+
+              tests/batch-exec-engine.test.ts:501:  // AC: @trait-error-guidance ac-1 — describes
+              what went wrong ("not allowed in batch mode")
+
+              tests/batch-exec-engine.test.ts:981:  // AC: @trait-error-guidance ac-2 — suggested
+              action to resolve (typo suggestion)
+
+              tests/batch-exec-engine.test.ts:982:  // AC: @trait-error-guidance ac-5 — indicates
+              which field/value failed validation
+
+              tests/batch-exec-engine.test.ts:995:  // AC: @trait-error-guidance ac-2 — suggests
+              corrective action ("Did you mean")
+
+              tests/batch-exec-engine.test.ts:1005:  // AC: @trait-error-guidance ac-2 — suggests
+              action ("Run 'kspec batch commands'")
+
+              tests/batch-exec-engine.test.ts:1085:  // AC: @trait-error-guidance ac-6 — guidance
+              included in structured error object
+
+              tests/canonical-task-workspace-contract.test.ts:445:// AC: @trait-error-guidance ac-1
+              — N/A: dispatch worktree isolation is an internal runtime surface,
+
+              tests/canonical-task-workspace-contract.test.ts:447:// AC: @trait-error-guidance ac-2
+              — N/A: actionable guidance is captured in task notes/block reasons,
+
+              tests/canonical-task-workspace-contract.test.ts:449:// AC: @trait-error-guidance ac-3
+              — N/A: these tests do not exercise missing ref lookup UX.
+
+              tests/canonical-task-workspace-contract.test.ts:450:// AC: @trait-error-guidance ac-4
+              — N/A: invalid state transition messaging belongs to task CLI flows.
+
+              tests/canonical-task-workspace-contract.test.ts:451:// AC: @trait-error-guidance ac-5
+              — N/A: no structured field validation errors are surfaced here.
+
+              tests/canonical-task-workspace-contract.test.ts:452:// AC: @trait-error-guidance ac-6
+              — N/A: this runtime surface has no --json error mode.
+
+              tests/cli-agent-commands.test.ts:1712:// AC: @trait-error-guidance ac-3
+
+              tests/cli-agent-commands.test.ts:1741:    // AC: @trait-error-guidance ac-3 - suggests
+              checking ref
+
+              tests/cli-agent-commands.test.ts:1755:// AC: @trait-error-guidance ac-1, ac-2
+
+              tests/cli-agent-commands.test.ts:1793:    // AC: @trait-error-guidance ac-1 -
+              describes what went wrong
+
+              tests/cli-agent-commands.test.ts:1794:    // AC: @trait-error-guidance ac-2 - suggests
+              action (kspec serve)
+
+              tests/cli-agent-commands.test.ts:1842:// AC: @trait-error-guidance ac-4 — N/A: agent
+              commands don't involve state transitions shown to user
+
+              tests/cli-agent-commands.test.ts:1843:// AC: @trait-error-guidance ac-5 — N/A: agent
+              commands don't have field validation errors shown to user
+
+              tests/cli-agent-commands.test.ts:1844:// AC: @trait-error-guidance ac-6 — N/A: agent
+              commands don't support JSON error mode (no --json on error paths)
+
+              tests/cli-daemon-proxy.test.ts:707:  // AC: @trait-error-guidance ac-1 — error
+              includes description
+
+              tests/cli-daemon-proxy.test.ts:708:  // AC: @trait-error-guidance ac-2 — error
+              includes suggested action
+
+              tests/cli-filter-input-validation.test.ts:50:  // AC: @trait-error-guidance ac-1
+
+              tests/cli-filter-input-validation.test.ts:51:  // AC: @trait-error-guidance ac-5
+
+              tests/cli-filter-input-validation.test.ts:146:  // AC: @trait-error-guidance ac-1
+
+              tests/cli-filter-input-validation.test.ts:147:  // AC: @trait-error-guidance ac-5
+
+              tests/cli-mutation-input-validation.test.ts:25:  // AC: @trait-error-guidance ac-1
+
+              tests/cli-mutation-input-validation.test.ts:26:  // AC: @trait-error-guidance ac-5
+
+              tests/cli-plan-derive.test.ts:179:    // AC: @trait-error-guidance ac-1, ac-2
+
+              tests/cli-plan-derive.test.ts:244:    // AC: @trait-error-guidance ac-5
+
+              tests/cli-plan-derive.test.ts:810:    // AC: @trait-error-guidance ac-5
+
+              tests/cli-plan-derive.test.ts:863:    // AC: @trait-error-guidance ac-1, ac-2, ac-3,
+              ac-6
+
+              tests/cli-plan-derive.test.ts:883:    // AC: @trait-error-guidance ac-4, ac-6
+
+              tests/cli-plan-import.test.ts:486:  // AC: @trait-error-guidance ac-1
+
+              tests/cli-plan-import.test.ts:487:  // AC: @trait-error-guidance ac-2
+
+              tests/cli-plan-import.test.ts:488:  // AC: @trait-error-guidance ac-4
+
+              tests/cli-plan-import.test.ts:503:  // AC: @trait-error-guidance ac-3
+
+              tests/cli-plan-import.test.ts:504:  // AC: @trait-error-guidance ac-6
+
+              tests/cli-plan-import.test.ts:554:  // AC: @trait-error-guidance ac-6
+
+              tests/cli-schedule-commands.test.ts:260:  // AC: @trait-error-guidance ac-1, ac-2,
+              ac-3
+
+              tests/cli-schedule-commands.test.ts:314:  // AC: @trait-error-guidance ac-5 —
+              validation error indicates which field failed
+
+              tests/cli-schedule-commands.test.ts:339:  // AC: @trait-error-guidance ac-1, ac-2
+
+              tests/cli-schedule-commands.test.ts:485:  // AC: @trait-error-guidance ac-3 — suggests
+              search for unknown ref
+
+              tests/cli-schedule-commands.test.ts:530:  // AC: @trait-error-guidance ac-1, ac-2
+
+              tests/cli-schedule-commands.test.ts:593:  // AC: @trait-error-guidance ac-3
+
+              tests/cli-schedule-commands.test.ts:611:  // AC: @trait-error-guidance ac-1, ac-2
+
+              tests/cli-schedule-commands.test.ts:627:  // AC: @trait-error-guidance ac-3
+
+              tests/cli-schedule-commands.test.ts:675:  // AC: @trait-error-guidance ac-6 — guidance
+              included in structured error object
+
+              tests/cli-schedule-commands.test.ts:689:  // AC: @trait-error-guidance ac-4 — N/A:
+              schedules are configuration items with no state transitions; invalid state transition
+              errors do not apply
+
+              tests/daemon-api/reviews-list.test.ts:10:// AC: @trait-error-guidance ac-1 — N/A:
+              error guidance is a CLI trait, not applicable to daemon API
+
+              tests/daemon-api/reviews-list.test.ts:11:// AC: @trait-error-guidance ac-2 — N/A:
+              error guidance is a CLI trait, not applicable to daemon API
+
+              tests/daemon-api/reviews-list.test.ts:12:// AC: @trait-error-guidance ac-3 — N/A:
+              error guidance is a CLI trait, not applicable to daemon API
+
+              tests/daemon-api/reviews-list.test.ts:13:// AC: @trait-error-guidance ac-4 — N/A:
+              error guidance is a CLI trait, not applicable to daemon API
+
+              tests/daemon-api/reviews-list.test.ts:14:// AC: @trait-error-guidance ac-5 — N/A:
+              error guidance is a CLI trait, not applicable to daemon API
+
+              tests/daemon-api/reviews-list.test.ts:15:// AC: @trait-error-guidance ac-6 — N/A:
+              error guidance is a CLI trait, not applicable to daemon API
+
+              tests/daemon-debug-routes.test.ts:327:  // AC: @trait-error-guidance ac-1 through ac-6
+              — N/A: This read-only debug endpoint has no command-level errors
+
+              tests/daemon-diff-api.test.ts:882:// AC: @trait-error-guidance ac-1
+
+              tests/daemon-diff-api.test.ts:883:// AC: @trait-error-guidance ac-2
+
+              tests/daemon-diff-api.test.ts:886:// AC: @trait-error-guidance ac-3 — N/A: These
+              endpoints don't resolve kspec references for the diff API. The review content endpoint
+              uses findReviewByRef which provides appropriate error messages.
+
+              tests/daemon-diff-api.test.ts:887:// AC: @trait-error-guidance ac-4 — N/A: These
+              endpoints don't perform state transitions.
+
+              tests/daemon-diff-api.test.ts:888:// AC: @trait-error-guidance ac-5
+
+              tests/daemon-diff-api.test.ts:891:// AC: @trait-error-guidance ac-6 — N/A: These are
+              HTTP API endpoints, not CLI commands. All responses are JSON.
+
+              tests/daemon-review-verdicts-api.test.ts:678:// AC: @trait-error-guidance ac-1 — N/A:
+              API error responses include error description (covered by ac-10 tests)
+
+              tests/daemon-review-verdicts-api.test.ts:679:// AC: @trait-error-guidance ac-2 — N/A:
+              API error responses include suggestion field (covered by ac-10 tests)
+
+              tests/daemon-review-verdicts-api.test.ts:680:// AC: @trait-error-guidance ac-3 — N/A:
+              API 404s include suggestion to use kspec review list (covered by tests)
+
+              tests/daemon-review-verdicts-api.test.ts:681:// AC: @trait-error-guidance ac-4 — N/A:
+              Lifecycle transition errors show current state and valid transitions (covered by
+              tests)
+
+              tests/daemon-review-verdicts-api.test.ts:682:// AC: @trait-error-guidance ac-5 — N/A:
+              Validation errors indicate which field failed (covered by details array in tests)
+
+              tests/daemon-review-verdicts-api.test.ts:683:// AC: @trait-error-guidance ac-6 — N/A:
+              API is always JSON; no --json flag distinction
+
+              tests/daemon-review-websocket.test.ts:557:// AC: @trait-error-guidance ac-1 — N/A:
+              WebSocket broadcasts are fire-and-forget; errors in mutation endpoints are covered by
+              ac-10 tests
+
+              tests/daemon-review-websocket.test.ts:558:// AC: @trait-error-guidance ac-2 — N/A:
+              Mutation endpoint error responses are tested in daemon-review-verdicts-api.test.ts
+
+              tests/daemon-review-websocket.test.ts:559:// AC: @trait-error-guidance ac-3 — N/A:
+              Not-found errors are tested in daemon-review-verdicts-api.test.ts
+
+              tests/daemon-review-websocket.test.ts:560:// AC: @trait-error-guidance ac-4 — N/A:
+              Invalid lifecycle transitions are tested in daemon-review-verdicts-api.test.ts
+
+              tests/daemon-review-websocket.test.ts:561:// AC: @trait-error-guidance ac-5 — N/A:
+              Validation errors with field details are tested in daemon-review-verdicts-api.test.ts
+
+              tests/daemon-review-websocket.test.ts:562:// AC: @trait-error-guidance ac-6 — N/A: API
+              is always JSON; no --json flag distinction
+
+              tests/dispatch-adopted-branch-regression.test.ts:934:// AC: @trait-error-guidance ac-1
+              — Covered by ac-3 tests: DispatchWorkspaceError.message includes description of what
+              went wrong
+
+              tests/dispatch-adopted-branch-regression.test.ts:935:// AC: @trait-error-guidance ac-2
+              — Covered by ac-3 tests: DispatchWorkspaceError.suggestion includes recovery action
+
+              tests/dispatch-adopted-branch-regression.test.ts:936:// AC: @trait-error-guidance ac-3
+              — N/A: workspace provisioning does not perform ref lookups surfaced as CLI "not found"
+              errors
+
+              tests/dispatch-adopted-branch-regression.test.ts:937:// AC: @trait-error-guidance ac-4
+              — N/A: workspace provisioning does not produce task state transition errors
+
+              tests/dispatch-adopted-branch-regression.test.ts:938:// AC: @trait-error-guidance ac-5
+              — Covered by ac-3 tests: error message identifies what is missing (linkage/branch)
+
+              tests/dispatch-adopted-branch-regression.test.ts:939:// AC: @trait-error-guidance ac-6
+              — N/A: workspace provisioning errors propagate through dispatch engine; no separate
+              JSON CLI mode
+
+              tests/dispatch-branch-push-lifecycle.test.ts:15:// AC: @trait-error-guidance ac-1 —
+              N/A: push helpers are internal engine operations, not user-facing CLI commands
+
+              tests/dispatch-branch-push-lifecycle.test.ts:16:// AC: @trait-error-guidance ac-2 —
+              N/A: push failures return structured results, not CLI error messages
+
+              tests/dispatch-branch-push-lifecycle.test.ts:17:// AC: @trait-error-guidance ac-3 —
+              N/A: no ref lookups in push operations
+
+              tests/dispatch-branch-push-lifecycle.test.ts:18:// AC: @trait-error-guidance ac-4 —
+              N/A: no state transitions in push operations
+
+              tests/dispatch-branch-push-lifecycle.test.ts:19:// AC: @trait-error-guidance ac-5 —
+              N/A: no schema validation in push operations
+
+              tests/dispatch-branch-push-lifecycle.test.ts:20:// AC: @trait-error-guidance ac-6 —
+              N/A: no JSON CLI mode in push operations
+
+              tests/dispatch-degraded-state.test.ts:259:  // AC: @trait-error-guidance ac-1
+
+              tests/dispatch-degraded-state.test.ts:260:  // AC: @trait-error-guidance ac-2
+
+              tests/dispatch-runtime-bootstrap-contract.test.ts:338:  // AC: @trait-error-guidance
+              ac-3 — N/A: pre-invocation workspace validation does not resolve user-supplied refs.
+
+              tests/dispatch-runtime-bootstrap-contract.test.ts:339:  // AC: @trait-error-guidance
+              ac-4 — N/A: the validation path does not perform or report invalid task state
+              transitions.
+
+              tests/dispatch-runtime-bootstrap-contract.test.ts:340:  // AC: @trait-error-guidance
+              ac-5 — N/A: workspace validation failures are runtime diagnostics, not schema
+              validation errors.
+
+              tests/dispatch-runtime-bootstrap-contract.test.ts:341:  // AC: @trait-error-guidance
+              ac-6 — N/A: validateDispatchWorkspaceForInvocation is a runtime helper and has no JSON
+              output mode.
+
+              tests/dispatch-runtime-bootstrap-contract.test.ts:435:  // AC: @trait-error-guidance
+              ac-1
+
+              tests/dispatch-runtime-bootstrap-contract.test.ts:436:  // AC: @trait-error-guidance
+              ac-2
+
+              tests/dispatch-runtime-bootstrap-contract.test.ts:996:  // AC: @trait-error-guidance
+              ac-1
+
+              tests/dispatch-runtime-bootstrap-contract.test.ts:997:  // AC: @trait-error-guidance
+              ac-2
+
+              tests/dispatch-runtime-bootstrap-contract.test.ts:1040:  // AC: @trait-error-guidance
+              ac-1
+
+              tests/dispatch-runtime-bootstrap-contract.test.ts:1041:  // AC: @trait-error-guidance
+              ac-2
+
+              tests/dispatch-runtime-bootstrap-contract.test.ts:1431:  // AC: @trait-error-guidance
+              ac-1
+
+              tests/dispatch-runtime-bootstrap-contract.test.ts:1432:  // AC: @trait-error-guidance
+              ac-2
+
+              tests/dispatch-runtime-bootstrap-contract.test.ts:1515:  // AC: @trait-error-guidance
+              ac-1
+
+              tests/dispatch-runtime-bootstrap-contract.test.ts:1516:  // AC: @trait-error-guidance
+              ac-2
+
+              tests/dispatch-shadow-mutation-lock.test.ts:106:    // AC: @trait-error-guidance ac-1
+
+              tests/dispatch-shadow-mutation-lock.test.ts:107:    // AC: @trait-error-guidance ac-2
+
+              tests/dispatch-target-sync.test.ts:375:// AC: @trait-error-guidance ac-1 — N/A:
+              internal dispatch engine sync, not a user-facing CLI command.
+
+              tests/dispatch-target-sync.test.ts:376:// AC: @trait-error-guidance ac-2 — N/A:
+              internal dispatch engine sync, not a user-facing CLI command.
+
+              tests/dispatch-target-sync.test.ts:377:// AC: @trait-error-guidance ac-3 — N/A:
+              internal dispatch engine sync, not a user-facing CLI command.
+
+              tests/dispatch-target-sync.test.ts:378:// AC: @trait-error-guidance ac-4 — N/A:
+              internal dispatch engine sync, not a user-facing CLI command.
+
+              tests/dispatch-target-sync.test.ts:379:// AC: @trait-error-guidance ac-5 — N/A:
+              internal dispatch engine sync, not a user-facing CLI command.
+
+              tests/dispatch-target-sync.test.ts:380:// AC: @trait-error-guidance ac-6 — N/A:
+              internal dispatch engine sync, not a user-facing CLI command.
+
+              tests/dispatch-workspace-adopt-branch-lineage.test.ts:18:// AC: @trait-error-guidance
+              ac-1 — Covered by AC-4 test: DispatchWorkspaceError.message includes description
+
+              tests/dispatch-workspace-adopt-branch-lineage.test.ts:19:// AC: @trait-error-guidance
+              ac-2 — Covered by AC-4 test: DispatchWorkspaceError.suggestion includes recovery
+              action
+
+              tests/dispatch-workspace-adopt-branch-lineage.test.ts:20:// AC: @trait-error-guidance
+              ac-3 — N/A: adoption does not perform ref lookups surfaced as CLI errors
+
+              tests/dispatch-workspace-adopt-branch-lineage.test.ts:21:// AC: @trait-error-guidance
+              ac-4 — N/A: adoption does not introduce new task state transitions; it occurs during
+              workspace provisioning
+
+              tests/dispatch-workspace-adopt-branch-lineage.test.ts:22:// AC: @trait-error-guidance
+              ac-5 — Covered by AC-4 test: error message identifies what is missing (linkage/branch)
+
+              tests/dispatch-workspace-adopt-branch-lineage.test.ts:23:// AC: @trait-error-guidance
+              ac-6 — N/A: adoption errors propagate through dispatch engine, which adds structured
+              notes; no separate JSON CLI mode
+
+              tests/dispatch-workspace-adopt-branch-lineage.test.ts:307:      // AC:
+              @trait-error-guidance ac-1 — error message includes description of what went wrong
+
+              tests/dispatch-workspace-adopt-branch-lineage.test.ts:310:      // AC:
+              @trait-error-guidance ac-2 — suggestion includes recovery action
+
+              tests/dispatch-workspace-adopt-branch-lineage.test.ts:312:      // AC:
+              @trait-error-guidance ac-5 — indicates what is missing
+
+              tests/dispatch-workspace-adopt-branch-lineage.test.ts:455:      // AC:
+              @trait-error-guidance ac-1 — error describes what went wrong
+
+              tests/dispatch-workspace-adopt-branch-lineage.test.ts:457:      // AC:
+              @trait-error-guidance ac-2 — suggestion includes recovery action
+
+              tests/dispatch-workspace-adopted-branch-cleanup.test.ts:26:// AC:
+              @trait-error-guidance ac-1 — N/A: adopted branch cleanup is internal workspace runtime
+              state, not a user-facing CLI command
+
+              tests/dispatch-workspace-adopted-branch-cleanup.test.ts:27:// AC:
+              @trait-error-guidance ac-2 — N/A: adopted branch cleanup is internal workspace runtime
+              state, not a user-facing CLI command
+
+              tests/dispatch-workspace-adopted-branch-cleanup.test.ts:28:// AC:
+              @trait-error-guidance ac-3 — N/A: adopted branch cleanup is internal workspace runtime
+              state, not a user-facing ref lookup surface
+
+              tests/dispatch-workspace-adopted-branch-cleanup.test.ts:29:// AC:
+              @trait-error-guidance ac-4 — N/A: adopted branch cleanup does not introduce state
+              transitions surfaced as CLI errors
+
+              tests/dispatch-workspace-adopted-branch-cleanup.test.ts:30:// AC:
+              @trait-error-guidance ac-5 — N/A: adopted branch cleanup validation is exercised
+              through schema parsing, not CLI error rendering
+
+              tests/dispatch-workspace-adopted-branch-cleanup.test.ts:31:// AC:
+              @trait-error-guidance ac-6 — N/A: adopted branch cleanup is not exposed through a JSON
+              CLI mode
+
+              tests/dispatch-workspace-branch-provenance.test.ts:28:// AC: @trait-error-guidance
+              ac-1 — N/A: branch provenance is internal workspace registry state, not a user-facing
+              CLI command
+
+              tests/dispatch-workspace-branch-provenance.test.ts:29:// AC: @trait-error-guidance
+              ac-2 — N/A: branch provenance is internal workspace registry state, not a user-facing
+              CLI command
+
+              tests/dispatch-workspace-branch-provenance.test.ts:30:// AC: @trait-error-guidance
+              ac-3 — N/A: branch provenance is internal workspace registry state, not a user-facing
+              ref lookup surface
+
+              tests/dispatch-workspace-branch-provenance.test.ts:31:// AC: @trait-error-guidance
+              ac-4 — N/A: branch provenance does not introduce state transitions surfaced as CLI
+              errors
+
+              tests/dispatch-workspace-branch-provenance.test.ts:32:// AC: @trait-error-guidance
+              ac-5 — N/A: branch provenance validation is exercised through schema parsing, not CLI
+              error rendering
+
+              tests/dispatch-workspace-branch-provenance.test.ts:33:// AC: @trait-error-guidance
+              ac-6 — N/A: branch provenance is not exposed through a JSON CLI mode
+
+              tests/dispatch-workspace-cleanup.test.ts:392:// AC: @trait-error-guidance ac-1 — N/A:
+              cleanup runs in the dispatch runtime and reports through task notes/logging, not
+              direct CLI errors.
+
+              tests/dispatch-workspace-cleanup.test.ts:393:// AC: @trait-error-guidance ac-2 — N/A:
+              dispatcher guidance is recorded in metadata/task notes rather than a user-facing
+              command response here.
+
+              tests/dispatch-workspace-cleanup.test.ts:394:// AC: @trait-error-guidance ac-3 — N/A:
+              cleanup reconciliation does not surface reference lookup errors to a direct CLI caller
+              in this module test.
+
+              tests/dispatch-workspace-cleanup.test.ts:395:// AC: @trait-error-guidance ac-4 — N/A:
+              invalid task state transitions are enforced by task commands, not by workspace cleanup
+              helpers.
+
+              tests/dispatch-workspace-cleanup.test.ts:396:// AC: @trait-error-guidance ac-5 — N/A:
+              cleanup helpers do not expose field-validation error payloads in this library-level
+              path.
+
+              tests/dispatch-workspace-cleanup.test.ts:397:// AC: @trait-error-guidance ac-6 — N/A:
+              workspace cleanup helpers do not implement a JSON CLI error mode.
+
+              tests/dispatch-workspace-config.test.ts:276:  // AC: @trait-error-guidance ac-1
+
+              tests/dispatch-workspace-config.test.ts:277:  // AC: @trait-error-guidance ac-2
+
+              tests/dispatch-workspace-config.test.ts:577:  // AC: @trait-error-guidance ac-1
+
+              tests/dispatch-workspace-config.test.ts:578:  // AC: @trait-error-guidance ac-2
+
+              tests/dispatch-workspace-config.test.ts:639:  // AC: @trait-error-guidance ac-1
+
+              tests/dispatch-workspace-config.test.ts:640:  // AC: @trait-error-guidance ac-2
+
+              tests/dispatch-workspace-config.test.ts:786:// AC: @trait-error-guidance ac-3 — N/A:
+              stale target errors reference config keys, not kspec item refs
+
+              tests/dispatch-workspace-config.test.ts:787:// AC: @trait-error-guidance ac-4 — N/A:
+              stale target detection is not a state transition error
+
+              tests/dispatch-workspace-config.test.ts:788:// AC: @trait-error-guidance ac-5 — N/A:
+              stale target detection is not a field validation error
+
+              tests/dispatch-workspace-config.test.ts:789:// AC: @trait-error-guidance ac-6 — N/A:
+              stale target error is thrown before any CLI output mode applies
+
+              tests/dispatch-workspace-config.test.ts:967:  // AC: @trait-error-guidance ac-1
+
+              tests/dispatch-workspace-config.test.ts:968:  // AC: @trait-error-guidance ac-2
+
+              tests/dispatch-workspace-config.test.ts:1008:      // AC: @trait-error-guidance ac-1 —
+              includes description of what went wrong
+
+              tests/dispatch-workspace-config.test.ts:1012:      // AC: @trait-error-guidance ac-2 —
+              includes suggested action to resolve
+
+              tests/dispatch-workspace-discovery.test.ts:13:// AC: @trait-error-guidance ac-1 —
+              diagnostics include description of what went wrong
+
+              tests/dispatch-workspace-discovery.test.ts:14:// AC: @trait-error-guidance ac-2 —
+              diagnostics include suggested action to resolve
+
+              tests/dispatch-workspace-discovery.test.ts:15:// AC: @trait-error-guidance ac-3 — N/A:
+              discovery is not a reference lookup surface
+
+              tests/dispatch-workspace-discovery.test.ts:16:// AC: @trait-error-guidance ac-4 — N/A:
+              discovery does not perform task state transitions
+
+              tests/dispatch-workspace-discovery.test.ts:17:// AC: @trait-error-guidance ac-5 — N/A:
+              discovery does not validate schema fields
+
+              tests/dispatch-workspace-discovery.test.ts:18:// AC: @trait-error-guidance ac-6 — N/A:
+              discovery is internal runtime, not a JSON CLI mode
+
+              tests/dispatch-workspace-discovery.test.ts:236:  // AC: @trait-error-guidance ac-1 —
+              diagnostics include description of what went wrong
+
+              tests/dispatch-workspace-discovery.test.ts:237:  // AC: @trait-error-guidance ac-2 —
+              diagnostics include suggested action to resolve
+
+              tests/dispatch-workspace-discovery.test.ts:493:    // AC: @trait-error-guidance ac-1 —
+              description of what went wrong
+
+              tests/dispatch-workspace-discovery.test.ts:495:    // AC: @trait-error-guidance ac-2 —
+              suggested action to resolve
+
+              tests/dispatch-workspace-registry-purge.test.ts:102:// AC: @trait-error-guidance ac-1
+              — N/A: purge logic is internal registry maintenance, not a user-facing CLI command
+
+              tests/dispatch-workspace-registry-purge.test.ts:103:// AC: @trait-error-guidance ac-2
+              — N/A: purge logic is internal registry maintenance, not a user-facing CLI command
+
+              tests/dispatch-workspace-registry-purge.test.ts:104:// AC: @trait-error-guidance ac-3
+              — N/A: purge logic does not involve ref lookups
+
+              tests/dispatch-workspace-registry-purge.test.ts:105:// AC: @trait-error-guidance ac-4
+              — N/A: purge logic does not involve state transitions surfaced to users
+
+              tests/dispatch-workspace-registry-purge.test.ts:106:// AC: @trait-error-guidance ac-5
+              — N/A: purge logic does not produce validation errors for users
+
+              tests/dispatch-workspace-registry-purge.test.ts:107:// AC: @trait-error-guidance ac-6
+              — N/A: purge logic does not expose a JSON CLI mode
+
+              tests/dispatch-workspace-registry.test.ts:206:// AC: @trait-error-guidance ac-1 — N/A:
+              dispatch workspace registry is internal runtime state, not a user-facing CLI command
+
+              tests/dispatch-workspace-registry.test.ts:207:// AC: @trait-error-guidance ac-2 — N/A:
+              dispatch workspace registry is internal runtime state, not a user-facing CLI command
+
+              tests/dispatch-workspace-registry.test.ts:208:// AC: @trait-error-guidance ac-3 — N/A:
+              dispatch workspace registry is internal runtime state, not a user-facing ref lookup
+              surface
+
+              tests/dispatch-workspace-registry.test.ts:209:// AC: @trait-error-guidance ac-4 — N/A:
+              lifecycle states are persisted internally, not surfaced as CLI transition errors here
+
+              tests/dispatch-workspace-registry.test.ts:210:// AC: @trait-error-guidance ac-5 — N/A:
+              schema validation is exercised through parser/runtime tests, not CLI error rendering
+
+              tests/dispatch-workspace-registry.test.ts:211:// AC: @trait-error-guidance ac-6 — N/A:
+              registry persistence does not expose a JSON CLI mode
+
+              tests/dispatch-workspace-registry.test.ts:1094:  // AC: @trait-error-guidance ac-1 —
+              runtime error explains the persistence failure
+
+              tests/dispatch-workspace-registry.test.ts:1095:  // AC: @trait-error-guidance ac-2 —
+              runtime error includes a concrete recovery action
+
+              tests/dispatch-workspace-remote-branch-fallback.test.ts:19:// AC:
+              @trait-error-guidance ac-1 — N/A: internal workspace health reconciliation, not a
+              user-facing CLI command
+
+              tests/dispatch-workspace-remote-branch-fallback.test.ts:20:// AC:
+              @trait-error-guidance ac-2 — N/A: internal workspace health reconciliation, not a
+              user-facing CLI command
+
+              tests/dispatch-workspace-remote-branch-fallback.test.ts:21:// AC:
+              @trait-error-guidance ac-3 — N/A: internal workspace health reconciliation, not a
+              user-facing ref lookup surface
+
+              tests/dispatch-workspace-remote-branch-fallback.test.ts:22:// AC:
+              @trait-error-guidance ac-4 — N/A: internal state transitions, not surfaced as CLI
+              transition errors
+
+              tests/dispatch-workspace-remote-branch-fallback.test.ts:23:// AC:
+              @trait-error-guidance ac-5 — N/A: schema validation exercised through parser/runtime
+              tests
+
+              tests/dispatch-workspace-remote-branch-fallback.test.ts:24:// AC:
+              @trait-error-guidance ac-6 — N/A: health reconciliation does not expose a JSON CLI
+              mode
+
+              tests/dispatch-workspace-terminal-reconciliation.test.ts:66:// AC:
+              @trait-error-guidance ac-1 — N/A: reconciliation runs internally in the dispatch
+              runtime and reports through registry state/logging, not CLI errors.
+
+              tests/dispatch-workspace-terminal-reconciliation.test.ts:67:// AC:
+              @trait-error-guidance ac-2 — N/A: reconciliation guidance is captured in registry
+              health issues and task notes, not user-facing CLI suggestions.
+
+              tests/dispatch-workspace-terminal-reconciliation.test.ts:68:// AC:
+              @trait-error-guidance ac-3 — N/A: reconciliation does not surface reference lookup
+              errors to a direct CLI caller.
+
+              tests/dispatch-workspace-terminal-reconciliation.test.ts:69:// AC:
+              @trait-error-guidance ac-4 — N/A: invalid state transitions are enforced by task
+              commands, not by reconciliation helpers.
+
+              tests/dispatch-workspace-terminal-reconciliation.test.ts:70:// AC:
+              @trait-error-guidance ac-5 — N/A: reconciliation does not expose field-validation
+              error payloads in this path.
+
+              tests/dispatch-workspace-terminal-reconciliation.test.ts:71:// AC:
+              @trait-error-guidance ac-6 — N/A: reconciliation helpers do not implement a JSON CLI
+              error mode.
+
+              tests/dispatch-workspace-unrecoverable-purge.test.ts:300:// AC: @trait-error-guidance
+              ac-1 — N/A: purge logic is internal dispatch behavior, not a user-facing CLI command
+
+              tests/dispatch-workspace-unrecoverable-purge.test.ts:301:// AC: @trait-error-guidance
+              ac-2 — N/A: purge logic is internal dispatch behavior, not a user-facing CLI command
+
+              tests/dispatch-workspace-unrecoverable-purge.test.ts:302:// AC: @trait-error-guidance
+              ac-3 — N/A: purge logic does not involve ref lookups
+
+              tests/dispatch-workspace-unrecoverable-purge.test.ts:303:// AC: @trait-error-guidance
+              ac-4 — N/A: purge logic does not involve state transitions surfaced to users
+
+              tests/dispatch-workspace-unrecoverable-purge.test.ts:304:// AC: @trait-error-guidance
+              ac-5 — N/A: purge logic does not produce validation errors for users
+
+              tests/dispatch-workspace-unrecoverable-purge.test.ts:305:// AC: @trait-error-guidance
+              ac-6 — N/A: purge logic does not expose a JSON CLI mode
+
+              tests/e2e/api-watcher.spec.ts:30:// AC: @trait-error-guidance ac-1 — N/A: watcher
+              errors are broadcast as WebSocket events, not CLI error guidance
+
+              tests/e2e/api-watcher.spec.ts:31:// AC: @trait-error-guidance ac-2 — N/A: watcher
+              errors are broadcast as WebSocket events, not CLI error guidance
+
+              tests/e2e/api-watcher.spec.ts:32:// AC: @trait-error-guidance ac-3 — N/A: watcher
+              errors are broadcast as WebSocket events, not CLI error guidance
+
+              tests/e2e/api-watcher.spec.ts:33:// AC: @trait-error-guidance ac-4 — N/A: watcher
+              errors are broadcast as WebSocket events, not CLI error guidance
+
+              tests/e2e/api-watcher.spec.ts:34:// AC: @trait-error-guidance ac-5 — N/A: watcher
+              errors are broadcast as WebSocket events, not CLI error guidance
+
+              tests/e2e/api-watcher.spec.ts:35:// AC: @trait-error-guidance ac-6 — N/A: watcher
+              errors are broadcast as WebSocket events, not CLI error guidance
+
+              tests/event-cli.test.ts:74:  // AC: @trait-error-guidance ac-1, ac-2, ac-5 — error for
+              invalid domain
+
+              tests/event-cli.test.ts:174:  // AC: @trait-error-guidance ac-1, ac-2 — error when
+              daemon not running
+
+              tests/event-cli.test.ts:186:  // AC: @trait-error-guidance ac-5 — indicate which
+              field/value failed
+
+              tests/event-cli.test.ts:232:  // AC: @trait-error-guidance ac-5 — indicate which
+              field/value failed
+
+              tests/event-cli.test.ts:243:  // AC: @trait-error-guidance ac-5 — error for malformed
+              event type
+
+              tests/event-cli.test.ts:254:  // AC: @trait-error-guidance ac-5 — error for invalid
+              JSON payload
+
+              tests/event-cli.test.ts:265:  // AC: @trait-error-guidance ac-1, ac-2 — error when
+              daemon not running
+
+              tests/event-cli.test.ts:295:  // AC: @trait-error-guidance ac-5 — known domain but
+              unknown event
+
+              tests/event-cli.test.ts:353:// ─── Trait AC: @trait-error-guidance
+              ────────────────────────────────────────
+
+              tests/event-cli.test.ts:354:// AC: @trait-error-guidance ac-3 — N/A: event commands
+              don't resolve references; they use event types
+
+              tests/event-cli.test.ts:355:// AC: @trait-error-guidance ac-4 — N/A: event commands
+              have no state transitions
+
+              tests/event-cli.test.ts:356:// AC: @trait-error-guidance ac-6 — covered by JSON error
+              tests above
+
+              tests/event-registry.test.ts:498:// AC: @trait-error-guidance ac-1
+
+              tests/event-registry.test.ts:519:// AC: @trait-error-guidance ac-2
+
+              tests/event-registry.test.ts:538:// AC: @trait-error-guidance ac-5
+
+              tests/event-registry.test.ts:558:// AC: @trait-error-guidance ac-3 — N/A:
+              validateEventType handles event type strings, not refs.
+
+              tests/event-registry.test.ts:561:// AC: @trait-error-guidance ac-4 — N/A:
+              validateEventType does not handle state transitions.
+
+              tests/event-registry.test.ts:564:// AC: @trait-error-guidance ac-6 — N/A:
+              validateEventType returns structured error objects directly.
+
+              tests/git-terminal-prompt-suppression.test.ts:144:  // AC: @trait-error-guidance ac-1
+              — N/A: this fix prevents hangs, not user-facing error messages
+
+              tests/git-terminal-prompt-suppression.test.ts:145:  // AC: @trait-error-guidance ac-2
+              — N/A: this fix prevents hangs, not user-facing error messages
+
+              tests/git-terminal-prompt-suppression.test.ts:146:  // AC: @trait-error-guidance ac-3
+              — N/A: this fix is about git subprocess env, not ref lookups
+
+              tests/git-terminal-prompt-suppression.test.ts:147:  // AC: @trait-error-guidance ac-4
+              — N/A: this fix is about git subprocess env, not state transitions
+
+              tests/git-terminal-prompt-suppression.test.ts:148:  // AC: @trait-error-guidance ac-5
+              — N/A: this fix is about git subprocess env, not validation errors
+
+              tests/git-terminal-prompt-suppression.test.ts:149:  // AC: @trait-error-guidance ac-6
+              — N/A: this fix is about git subprocess env, not JSON mode
+
+              tests/hook-cli.test.ts:280:  // AC: @trait-error-guidance ac-5 — validation error with
+              field info
+
+              tests/hook-cli.test.ts:291:  // AC: @trait-error-guidance ac-5
+
+              tests/hook-cli.test.ts:374:  // AC: @trait-error-guidance ac-1, ac-2, ac-3 — not found
+              with suggestion
+
+              tests/hook-cli.test.ts:456:  // AC: @trait-error-guidance ac-1, ac-2
+
+              tests/hook-cli.test.ts:472:  // AC: @trait-error-guidance ac-5 — invalid event type
+
+              tests/hook-cli.test.ts:533:  // AC: @trait-error-guidance ac-1, ac-2
+
+              tests/hook-cli.test.ts:581:  // AC: @trait-error-guidance ac-1, ac-2
+
+              tests/hook-cli.test.ts:647:  // AC: @trait-error-guidance ac-1 — description of what
+              went wrong
+
+              tests/hook-cli.test.ts:648:  // AC: @trait-error-guidance ac-2 — suggested action to
+              resolve
+
+              tests/hook-cli.test.ts:655:  // AC: @trait-error-guidance ac-6 — guidance in
+              structured error object
+
+              tests/hook-cli.test.ts:709:// AC: @trait-error-guidance ac-4 — N/A: hooks do not have
+              state transitions
+
+              tests/hook-executor.test.ts:667:// ─── Trait AC: @trait-error-guidance
+              ─────────────────────────────────────────
+
+              tests/hook-executor.test.ts:674:// AC: @trait-error-guidance ac-1 — N/A: HookExecutor
+              is an internal runtime component, not a CLI command; errors are logged, not shown to
+              users
+
+              tests/hook-executor.test.ts:675:// AC: @trait-error-guidance ac-2 — N/A: HookExecutor
+              is an internal runtime component; no user-facing suggested actions
+
+              tests/hook-executor.test.ts:676:// AC: @trait-error-guidance ac-3 — N/A: HookExecutor
+              does not resolve references from user input
+
+              tests/hook-executor.test.ts:677:// AC: @trait-error-guidance ac-4 — N/A: HookExecutor
+              does not perform state transitions on user-facing entities
+
+              tests/hook-executor.test.ts:678:// AC: @trait-error-guidance ac-5 — N/A: HookExecutor
+              does not surface validation errors to users; hook schema validation is done at load
+              time by the parser
+
+              tests/hook-executor.test.ts:679:// AC: @trait-error-guidance ac-6 — N/A: HookExecutor
+              has no --json mode; it is an internal engine component
+
+              tests/invocation-stall-watchdog.test.ts:620:// AC: @trait-error-guidance ac-1 — N/A:
+              InvocationStallError is an internal error type
+
+              tests/invocation-stall-watchdog.test.ts:624:// AC: @trait-error-guidance ac-2 — N/A:
+              Stall errors are infrastructure-level and
+
+              tests/invocation-stall-watchdog.test.ts:627:// AC: @trait-error-guidance ac-3 — N/A:
+              Stall detection doesn't involve reference lookup.
+
+              tests/invocation-stall-watchdog.test.ts:629:// AC: @trait-error-guidance ac-4 — N/A:
+              Stall is not a state transition error.
+
+              tests/invocation-stall-watchdog.test.ts:631:// AC: @trait-error-guidance ac-5 — N/A:
+              Stall is not a validation error.
+
+              tests/invocation-stall-watchdog.test.ts:633:// AC: @trait-error-guidance ac-6 — N/A:
+              Stall detection is not a CLI JSON mode operation.
+
+              tests/multi-turn-invocation.test.ts:1595:// AC: @trait-error-guidance ac-1 — N/A: This
+              is a library module (not a CLI command).
+
+              tests/multi-turn-invocation.test.ts:1599:// AC: @trait-error-guidance ac-2 — N/A:
+              Library module; error guidance is responsibility
+
+              tests/multi-turn-invocation.test.ts:1602:// AC: @trait-error-guidance ac-3 — N/A: No
+              ref lookups in this module.
+
+              tests/multi-turn-invocation.test.ts:1604:// AC: @trait-error-guidance ac-4 — N/A: No
+              state transitions displayed to users.
+
+              tests/multi-turn-invocation.test.ts:1606:// AC: @trait-error-guidance ac-5 — N/A:
+              Validation errors are thrown as TypeScript errors,
+
+              tests/multi-turn-invocation.test.ts:1609:// AC: @trait-error-guidance ac-6 — N/A:
+              Module has no --json mode; it's a library function.
+
+              tests/parser/config.test.ts:1247:  // AC: @trait-error-guidance ac-1 — N/A: config
+              loading returns warnings, not command errors; validation errors describe what went
+              wrong via Zod issue messages
+
+              tests/parser/config.test.ts:1248:  // AC: @trait-error-guidance ac-2 — N/A: config
+              loading falls back to defaults with "Using defaults" guidance; not a command error
+              path
+
+              tests/parser/config.test.ts:1249:  // AC: @trait-error-guidance ac-3 — N/A: no
+              reference lookups in config schema
+
+              tests/parser/config.test.ts:1250:  // AC: @trait-error-guidance ac-4 — N/A: no state
+              transitions in config schema
+
+              tests/parser/config.test.ts:1251:  // AC: @trait-error-guidance ac-5
+
+              tests/parser/config.test.ts:1301:  // AC: @trait-error-guidance ac-6 — N/A: config
+              loading does not support --json mode
+
+              tests/plan-branch-helper.test.ts:7: * AC: @trait-error-guidance ac-1, ac-2, ac-3, ac-6
+
+              tests/plan-branch-helper.test.ts:184:  // AC: @trait-error-guidance ac-6
+
+              tests/plan-branch-helper.test.ts:186:  // AC: @trait-error-guidance ac-1, ac-2, ac-3
+
+              tests/plan-branch-helper.test.ts:221:  // AC: @trait-error-guidance ac-4 — N/A: plan
+              branch performs no state transition validation
+
+              tests/plan-branch-helper.test.ts:222:  // AC: @trait-error-guidance ac-5 — N/A: the
+              command has no field-level schema validation surface beyond ref resolution
+
+              tests/ralph/end-loop.test.ts:6: * AC: @trait-error-guidance ac-1, ac-2
+
+              tests/ralph/end-loop.test.ts:7: * AC: @trait-error-guidance ac-3 N/A — no ref
+              resolution in end-loop command
+
+              tests/ralph/end-loop.test.ts:8: * AC: @trait-error-guidance ac-4 N/A — no state
+              transitions in end-loop command
+
+              tests/ralph/end-loop.test.ts:9: * AC: @trait-error-guidance ac-5 N/A — no field-level
+              validation in end-loop command
+
+              tests/ralph/end-loop.test.ts:10: * AC: @trait-error-guidance ac-6 N/A — agent end-loop
+              does not support --json output mode
+
+              tests/ralph/end-loop.test.ts:111:      // AC: @trait-error-guidance ac-1, ac-2
+
+              tests/ralph/end-loop.test.ts:124:      // AC: @trait-error-guidance ac-1, ac-2
+
+              tests/ralph/end-loop.test.ts:171:      // AC: @trait-error-guidance ac-2
+
+              tests/read-side-validation-warnings.test.ts:145:  // AC: @trait-error-guidance ac-3 -
+              N/A: read-side validation warnings do not handle missing refs.
+
+              tests/read-side-validation-warnings.test.ts:146:  // AC: @trait-error-guidance ac-4 -
+              N/A: read-side validation warnings do not handle state transitions.
+
+              tests/read-side-validation-warnings.test.ts:147:  // AC: @trait-error-guidance ac-6 -
+              N/A: parser loaders do not emit structured JSON-mode errors.
+
+              tests/read-side-validation-warnings.test.ts:150:  // AC: @trait-error-guidance ac-1
+
+              tests/read-side-validation-warnings.test.ts:151:  // AC: @trait-error-guidance ac-2
+
+              tests/read-side-validation-warnings.test.ts:152:  // AC: @trait-error-guidance ac-5
+
+              tests/read-side-validation-warnings.test.ts:179:  // AC: @trait-error-guidance ac-5
+
+              tests/review-cli.test.ts:178:    // AC: @trait-error-guidance ac-1, ac-2, ac-5
+
+              tests/review-cli.test.ts:185:    // AC: @trait-error-guidance ac-5
+
+              tests/review-cli.test.ts:278:    // AC: @trait-error-guidance ac-3
+
+              tests/review-cli.test.ts:286:    // AC: @trait-error-guidance ac-6
+
+              tests/review-cli.test.ts:648:    // AC: @trait-error-guidance ac-5
+
+              tests/review-cli.test.ts:707:    // AC: @trait-error-guidance ac-4
+
+              tests/review-cli.test.ts:716:    // AC: @trait-error-guidance ac-4
+
+              tests/review-cli.test.ts:780:    // AC: @trait-error-guidance ac-4
+
+              tests/review-cli.test.ts:788:    // AC: @trait-error-guidance ac-4
+
+              tests/review-cli.test.ts:795:    // AC: @trait-error-guidance ac-4
+
+              tests/scaffold-project-config.test.ts:3:// AC: @scaffolded-project-config
+              ac-file-scaffolded
+
+              tests/scaffold-project-config.test.ts:4:// AC: @scaffolded-project-config
+              ac-file-valid-on-load
+
+              tests/scaffold-project-config.test.ts:5:// AC: @scaffolded-project-config
+              ac-placeholder-publication-mode
+
+              tests/scaffold-project-config.test.ts:6:// AC: @scaffolded-project-config
+              ac-placeholder-base-branch
+
+              tests/scaffold-project-config.test.ts:7:// AC: @scaffolded-project-config
+              ac-placeholder-coverage
+
+              tests/scaffold-project-config.test.ts:8:// AC: @scaffolded-project-config
+              ac-file-exists-preserved
+
+              tests/scaffold-project-config.test.ts:9:// AC: @scaffolded-project-config
+              ac-file-force-overwrites
+
+              tests/scaffold-project-config.test.ts:10:// AC: @scaffolded-project-config
+              ac-file-force-backup
+
+              tests/scaffold-project-config.test.ts:11:// AC: @trait-idempotent-file-scaffold
+              ac-existing-file-preserved-without-force
+
+              tests/scaffold-project-config.test.ts:12:// AC: @trait-idempotent-file-scaffold
+              ac-force-backs-up-before-overwrite
+
+              tests/scaffold-project-config.test.ts:13:// AC: @trait-idempotent-file-scaffold
+              ac-fresh-file-creation
+
+              tests/scaffold-project-config.test.ts:14:// AC: @trait-idempotent-file-scaffold
+              ac-step-reports-action
+
+              tests/scaffold-project-config.test.ts:15:// AC: @trait-error-guidance ac-3 — N/A:
+              scaffold step does not perform ref lookups
+
+              tests/scaffold-project-config.test.ts:16:// AC: @trait-error-guidance ac-4 — N/A:
+              scaffold step does not perform state transitions
+
+              tests/scaffold-project-config.test.ts:52:    // AC: @scaffolded-project-config
+              ac-file-scaffolded
+
+              tests/scaffold-project-config.test.ts:53:    // AC: @trait-idempotent-file-scaffold
+              ac-fresh-file-creation
+
+              tests/scaffold-project-config.test.ts:67:      // AC: @trait-idempotent-file-scaffold
+              ac-step-reports-action
+
+              tests/scaffold-project-config.test.ts:71:    // AC: @scaffolded-project-config
+              ac-file-valid-on-load
+
+              tests/scaffold-project-config.test.ts:82:    // AC: @scaffolded-project-config
+              ac-placeholder-publication-mode
+
+              tests/scaffold-project-config.test.ts:96:    // AC: @scaffolded-project-config
+              ac-placeholder-base-branch
+
+              tests/scaffold-project-config.test.ts:111:    // AC: @scaffolded-project-config
+              ac-placeholder-coverage
+
+              tests/scaffold-project-config.test.ts:143:    // AC: @scaffolded-project-config
+              ac-file-exists-preserved
+
+              tests/scaffold-project-config.test.ts:144:    // AC: @trait-idempotent-file-scaffold
+              ac-existing-file-preserved-without-force
+
+              tests/scaffold-project-config.test.ts:161:      // AC: @trait-idempotent-file-scaffold
+              ac-step-reports-action
+
+              tests/scaffold-project-config.test.ts:169:    // AC: @scaffolded-project-config
+              ac-file-force-overwrites
+
+              tests/scaffold-project-config.test.ts:189:    // AC: @scaffolded-project-config
+              ac-file-force-backup
+
+              tests/scaffold-project-config.test.ts:190:    // AC: @trait-idempotent-file-scaffold
+              ac-force-backs-up-before-overwrite
+
+              tests/scaffold-project-config.test.ts:220:    // AC: @trait-idempotent-file-scaffold
+              ac-fresh-file-creation
+
+              tests/scaffold-project-config.test.ts:237:    // AC: @trait-idempotent-file-scaffold
+              ac-existing-file-preserved-without-force
+
+              tests/scaffold-project-config.test.ts:252:    // AC: @scaffolded-project-config
+              ac-file-scaffolded
+
+              tests/scaffold-project-config.test.ts:276:    // AC: @scaffolded-project-config
+              ac-file-valid-on-load
+
+              tests/scaffold-project-config.test.ts:315:    // AC: @trait-idempotent-file-scaffold
+              ac-step-reports-action
+
+              tests/scaffold-project-config.test.ts:330:    // AC: @scaffolded-project-config
+              ac-file-valid-on-load
+
+              tests/scaffold-project-config.test.ts:331:    // AC: @trait-error-guidance ac-1
+
+              tests/scaffold-project-config.test.ts:332:    // AC: @trait-error-guidance ac-2
+
+              tests/scaffold-project-config.test.ts:350:      // AC: @trait-error-guidance ac-1 —
+              error description present
+
+              tests/scaffold-project-config.test.ts:355:    // AC: @trait-error-guidance ac-2
+
+              tests/scaffold-project-config.test.ts:373:    // AC: @trait-error-guidance ac-5
+
+              tests/scaffold-project-config.test.ts:390:    // AC: @trait-error-guidance ac-6
+
+              tests/schedule-engine.test.ts:884:// AC: @trait-error-guidance ac-1 — N/A:
+              ScheduleEngine is an internal runtime engine, not a CLI command
+
+              tests/schedule-engine.test.ts:885:// AC: @trait-error-guidance ac-2 — N/A:
+              ScheduleEngine is an internal runtime engine, not a CLI command
+
+              tests/schedule-engine.test.ts:886:// AC: @trait-error-guidance ac-3 — N/A:
+              ScheduleEngine is an internal runtime engine, not a CLI command
+
+              tests/schedule-engine.test.ts:887:// AC: @trait-error-guidance ac-4 — N/A:
+              ScheduleEngine is an internal runtime engine, not a CLI command
+
+              tests/schedule-engine.test.ts:888:// AC: @trait-error-guidance ac-5 — N/A:
+              ScheduleEngine is an internal runtime engine, not a CLI command
+
+              tests/schedule-engine.test.ts:889:// AC: @trait-error-guidance ac-6 — N/A:
+              ScheduleEngine is an internal runtime engine, not a CLI command
+
+              tests/session-create.test.ts:1149:  // AC: @trait-error-guidance ac-5 - indicate
+              field/value that failed
+
+              tests/session-create.test.ts:1274:  // AC: @trait-error-guidance ac-1 - error includes
+              description of what went wrong
+
+              tests/session-create.test.ts:1283:  // AC: @trait-error-guidance ac-2 - error includes
+              suggested action
+
+              tests/session-create.test.ts:1291:  // AC: @trait-error-guidance ac-6 - guidance in
+              structured error object
+
+              tests/session-lifecycle-events.test.ts:755:// AC: @trait-error-guidance ac-1 — N/A:
+              session events are bus emissions, not user-facing CLI commands with error messages
+
+              tests/session-lifecycle-events.test.ts:756:// AC: @trait-error-guidance ac-2 — N/A:
+              session events are bus emissions, not user-facing CLI commands with error messages
+
+              tests/session-lifecycle-events.test.ts:757:// AC: @trait-error-guidance ac-3 — N/A:
+              session events are bus emissions, not user-facing CLI commands with ref lookup
+
+              tests/session-lifecycle-events.test.ts:758:// AC: @trait-error-guidance ac-4 — N/A:
+              session events are bus emissions, not user-facing CLI commands with state transitions
+
+              tests/session-lifecycle-events.test.ts:759:// AC: @trait-error-guidance ac-5 — N/A:
+              session events are bus emissions, not user-facing CLI commands with validation errors
+
+              tests/session-lifecycle-events.test.ts:760:// AC: @trait-error-guidance ac-6 — N/A:
+              session events are bus emissions, not user-facing CLI commands with JSON mode
+
+              tests/session-prompt-action.test.ts:1065:// AC: @trait-error-guidance ac-1 —
+              session_prompt error messages describe what went wrong:
+
+              tests/session-prompt-action.test.ts:1073:// AC: @trait-error-guidance ac-2 —
+              session_prompt error messages include suggested actions:
+
+              tests/session-prompt-action.test.ts:1080:// AC: @trait-error-guidance ac-3 — N/A:
+              session_prompt action does not resolve
+
+              tests/session-prompt-action.test.ts:1083:// AC: @trait-error-guidance ac-4 — N/A:
+              session_prompt actions have a simple
+
+              tests/session-prompt-action.test.ts:1087:// AC: @trait-error-guidance ac-5 — N/A:
+              Validation errors for session_prompt
+
+              tests/session-prompt-action.test.ts:1093:// AC: @trait-error-guidance ac-6 — N/A:
+              session_prompt action does not operate
+
+              tests/session-stale-close.test.ts:258:  // AC: @trait-error-guidance ac-1
+
+              tests/session-stale-close.test.ts:259:  // AC: @trait-error-guidance ac-2
+
+              tests/session-stale-close.test.ts:260:  // AC: @trait-error-guidance ac-3
+
+              tests/session-stale-close.test.ts:261:  // AC: @trait-error-guidance ac-6
+
+              tests/session-stale-close.test.ts:296:  // AC: @trait-error-guidance ac-5
+
+              tests/session-stale-close.test.ts:406:  // AC: @trait-error-guidance ac-4 -- N/A:
+              command has no state machine transitions; only validation/lookup errors.
+
+              tests/session-watcher.test.ts:18:// AC: @trait-error-guidance ac-1 — N/A:
+              SessionWatcher is an internal daemon component, not a user-facing command.
+
+              tests/session-watcher.test.ts:19:// AC: @trait-error-guidance ac-2 — N/A:
+              SessionWatcher reports errors to callbacks/logging, not command guidance.
+
+              tests/session-watcher.test.ts:20:// AC: @trait-error-guidance ac-3 — N/A:
+              SessionWatcher does not resolve user-facing refs.
+
+              tests/session-watcher.test.ts:21:// AC: @trait-error-guidance ac-4 — N/A:
+              SessionWatcher does not perform task/item state transitions.
+
+              tests/session-watcher.test.ts:22:// AC: @trait-error-guidance ac-5 — N/A:
+              SessionWatcher does not surface field validation errors to users.
+
+              tests/session-watcher.test.ts:23:// AC: @trait-error-guidance ac-6 — N/A:
+              SessionWatcher has no JSON error mode.
+
+              tests/submission-linkage-worktree.test.ts:171:  // AC: @trait-error-guidance ac-1 —
+              N/A: captureSubmissionLinkage is best-effort, returns null on error
+
+              tests/submission-linkage-worktree.test.ts:172:  // AC: @trait-error-guidance ac-2 —
+              N/A: no user-facing errors from linkage capture
+
+              tests/submission-linkage-worktree.test.ts:173:  // AC: @trait-error-guidance ac-3 —
+              N/A: linkage capture does not do ref lookups
+
+              tests/submission-linkage-worktree.test.ts:174:  // AC: @trait-error-guidance ac-4 —
+              N/A: linkage capture does not introduce state transitions
+
+              tests/submission-linkage-worktree.test.ts:175:  // AC: @trait-error-guidance ac-5 —
+              N/A: linkage validation handled by Zod schema
+
+              tests/submission-linkage-worktree.test.ts:176:  // AC: @trait-error-guidance ac-6 —
+              N/A: linkage errors covered by existing JSON error handling
+
+              tests/task-branch-helper.test.ts:6: * AC: @trait-error-guidance ac-1, ac-2, ac-3,
+              ac-5, ac-6
+
+              tests/task-branch-helper.test.ts:243:  // AC: @trait-error-guidance ac-3
+
+              tests/task-branch-helper.test.ts:251:  // AC: @trait-error-guidance ac-1, ac-2
+
+              tests/task-branch-helper.test.ts:260:  // AC: @trait-error-guidance ac-6
+
+              tests/task-branch-helper.test.ts:290:  // AC: @trait-error-guidance ac-4 — N/A: task
+              branch does not perform state transitions
+
+              tests/task-budget-enforcement.test.ts:312:    // AC: @trait-error-guidance ac-1 —
+              error includes what went wrong
+
+              tests/task-budget-enforcement.test.ts:326:    // AC: @trait-error-guidance ac-2 —
+              error includes suggested action
+
+              tests/task-budget-enforcement.test.ts:341:    // AC: @trait-error-guidance ac-5 —
+              validation error indicates which field/value failed
+
+              tests/task-budget-enforcement.test.ts:355:    // AC: @trait-error-guidance ac-6 — JSON
+              mode error guidance
+
+              tests/task-data-manager.test.ts:340:    // AC: @trait-error-guidance ac-3 — suggests
+              checking ref on not found
+
+              tests/task-data-manager.test.ts:1093:      // AC: @trait-error-guidance ac-1, ac-2
+
+              tests/task-data-manager.test.ts:1545:  // AC: @trait-error-guidance ac-1 — error
+              includes description
+
+              tests/task-data-manager.test.ts:1546:  // AC: @trait-error-guidance ac-2 — error
+              includes suggested action
+
+              tests/task-data-manager.test.ts:1548:    // AC: @trait-error-guidance ac-1
+
+              tests/task-data-manager.test.ts:1563:    // AC: @trait-error-guidance ac-2
+
+              tests/task-data-manager.test.ts:1579:    // AC: @trait-error-guidance ac-3
+
+              tests/task-data-manager.test.ts:1594:    // AC: @trait-error-guidance ac-5
+
+              tests/task-data-manager.test.ts:1611:  // AC: @trait-error-guidance ac-4 — N/A:
+              TaskDataManager does not perform state transitions directly;
+
+              tests/task-data-manager.test.ts:1614:  // AC: @trait-error-guidance ac-6 — N/A:
+              TaskDataManager is a library module, not a CLI command.
+
+              tests/task-migrate.test.ts:825:  // AC: @trait-error-guidance ac-1
+
+              tests/task-migrate.test.ts:826:  // AC: @trait-error-guidance ac-2
+
+              tests/task-migrate.test.ts:842:      // AC: @trait-error-guidance ac-1 — description
+              of what went wrong
+
+              tests/task-migrate.test.ts:844:      // AC: @trait-error-guidance ac-2 — suggested
+              action to resolve
+
+              tests/task-migrate.test.ts:851:  // AC: @trait-error-guidance ac-6
+
+              tests/task-migrate.test.ts:867:      // AC: @trait-error-guidance ac-6 — guidance in
+              structured error object
+
+              tests/task-migrate.test.ts:878:  // AC: @trait-error-guidance ac-3 — N/A: migrate
+              doesn't use references that could be "not found"
+
+              tests/task-migrate.test.ts:879:  // AC: @trait-error-guidance ac-4 — N/A: migrate
+              doesn't perform state transitions
+
+              tests/task-migrate.test.ts:880:  // AC: @trait-error-guidance ac-5 — N/A: migrate
+              doesn't validate individual fields with user-provided values
+
+              tests/task-rebuild-index.test.ts:411:  // ── AC: @trait-error-guidance ac-1
+              ────────────────────────────────────────
+
+              tests/task-rebuild-index.test.ts:416:  // AC: @trait-error-guidance ac-1
+
+              tests/task-rebuild-index.test.ts:427:  // ── AC: @trait-error-guidance ac-2
+              ────────────────────────────────────────
+
+              tests/task-rebuild-index.test.ts:432:  // AC: @trait-error-guidance ac-2
+
+              tests/task-rebuild-index.test.ts:443:  // ── AC: @trait-error-guidance ac-6
+              ────────────────────────────────────────
+
+              tests/task-rebuild-index.test.ts:448:  // AC: @trait-error-guidance ac-6
+
+              tests/task-reset.test.ts:328:  // AC: @trait-error-guidance ac-1, ac-2 - Error
+              includes description and suggestion
+
+              tests/task-submission-linkage.test.ts:307:  // AC: @trait-error-guidance ac-1 — N/A:
+              submission linkage capture is best-effort, not error-producing
+
+              tests/task-submission-linkage.test.ts:308:  // AC: @trait-error-guidance ac-2 — N/A:
+              no user-facing errors from linkage capture itself
+
+              tests/task-submission-linkage.test.ts:309:  // AC: @trait-error-guidance ac-3 — N/A:
+              submission linkage uses task refs, not linkage-specific refs
+
+              tests/task-submission-linkage.test.ts:310:  // AC: @trait-error-guidance ac-4 — N/A:
+              submission linkage does not introduce new state transitions
+
+              tests/task-submission-linkage.test.ts:311:  // AC: @trait-error-guidance ac-5 — N/A:
+              linkage validation is handled by Zod schema, not custom errors
+
+              tests/task-submission-linkage.test.ts:312:  // AC: @trait-error-guidance ac-6 — N/A:
+              linkage errors would be schema validation, covered by existing JSON error handling
+
+              tests/trait-cli.test.ts:570:  // AC: @trait-error-guidance ac-2
+
+              tests/trait-cli.test.ts:571:  // AC: @trait-error-guidance ac-5
+
+              tests/trait-cli.test.ts:585:  // AC: @trait-error-guidance ac-2
+
+              tests/trait-cli.test.ts:586:  // AC: @trait-error-guidance ac-5
+
+              tests/trait-cli.test.ts:599:  // AC: @trait-error-guidance ac-6
+
+              tests/trait-cli.test.ts:614:  // AC: @trait-error-guidance ac-6
+
+              tests/triage-cli.test.ts:143:  // AC: @trait-error-guidance ac-1
+
+              tests/triage-cli.test.ts:440:  // AC: @trait-error-guidance ac-1
+
+              tests/triage-cli.test.ts:455:  // AC: @trait-error-guidance ac-1, ac-2
+
+              tests/triage-cli.test.ts:568:  // AC: @trait-error-guidance ac-1
+
+              tests/triage-cli.test.ts:648:  // AC: @trait-error-guidance ac-1
+
+              tests/triage-cli.test.ts:851:  // AC: @trait-error-guidance ac-2
+
+              tests/triage-cli.test.ts:857:  // AC: @trait-error-guidance ac-4
+
+              tests/triage-cli.test.ts:867:  // AC: @trait-error-guidance ac-5
+
+              tests/triage-cli.test.ts:879:  // AC: @trait-error-guidance ac-6
+
+              tests/triage-schema.test.ts:131:  // AC: @trait-error-guidance ac-5 — validation error
+              indicates which field failed
+
+              tests/triage-schema.test.ts:146:  // AC: @trait-error-guidance ac-5 — validation error
+              indicates which field failed
+
+              tests/triage-schema.test.ts:161:  // AC: @trait-error-guidance ac-5 — validation error
+              indicates which field failed
+
+              tests/triage-schema.test.ts:233:  // AC: @trait-error-guidance ac-4 — indicates
+              current state and valid next states
+
+              tests/triage-schema.test.ts:234:  // AC: @trait-error-guidance ac-5 — validation error
+              indicates which field failed
+
+              tests/triage-schema.test.ts:359:// AC: @trait-error-guidance ac-1 — error includes
+              description of what went wrong
+
+              tests/triage-schema.test.ts:360:// AC: @trait-error-guidance ac-2 — error includes
+              suggested action to resolve
+
+              tests/triage-schema.test.ts:372:  // AC: @trait-error-guidance ac-5 — validation error
+              indicates which field/value failed
+
+              tests/triage-schema.test.ts:382:  // AC: @trait-error-guidance ac-4 — invalid state
+              transition guidance
+
+              tests/triage-schema.test.ts:401:  // AC: @trait-error-guidance ac-6 — errors in
+              structured format (Zod issues are JSON-serializable)
+
+              tests/workflow-runs.test.ts:819:// AC: @trait-error-guidance (inherited), 
+
+              > @kynetic-ai/spec@0.12.0 test
+
+              > node scripts/test.cjs tests/scaffold-project-config.test.ts, 
+
+              > @kynetic-ai/spec@0.12.0 test
+
+              > node scripts/test.cjs, 
+
+              > @kynetic-ai/spec@0.12.0 test
+
+              > node scripts/test.cjs (cached), plus two manual reproductions for non-remote branch
+              scaffolding and scaffold-write failure. Claims verified: prior stale-remote-HEAD
+              blocker is fixed; scaffold tests and full suite pass; branch/no-remote reproduction
+              writes ; scaffold write failure exits 1 but still prints . Categories searched:
+              correctness, edge cases, error handling, test quality, integration.
+            created_at: 2026-04-14T09:55:19.859Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-14T09:43:48.386Z
-    updated_at: 2026-04-14T09:55:17.033Z
+    updated_at: 2026-04-14T09:55:19.859Z
     notes: []
