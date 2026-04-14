@@ -25761,7 +25761,7 @@ runs:
     completed_at: 2026-04-14T19:52:45.127Z
   - _ulid: 01KP6TNYCX3DVDDM13XPVKXJ2F
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -25775,7 +25775,13 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-14T20:25:33.723Z
-        completed_at: 2026-04-14T20:25:33.723Z
+        completed_at: 2026-04-14T20:25:45.772Z
+        notes: "No friction items to search — session was clean. Only observation: the existing parser test
+          for missing-title needed updating when the contract changed, which is normal maintenance."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-14T20:25:45.772Z
+        completed_at: 2026-04-14T20:25:45.772Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-14T20:24:45.725Z
