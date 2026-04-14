@@ -140745,6 +140745,12 @@ reviews:
         payload:
           thread_ulid: 01KP6S24H2CC5ES74D536JJ80M
         timestamp: 2026-04-14T20:36:01.404Z
+      - _ulid: 01KP6VASYXYANKY36BRP5QJ6JJ
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP6S24H2CC5ES74D536JJ80M
+        timestamp: 2026-04-14T20:36:09.309Z
     examined_commit: af9d75e0a7abb47bcd90459f7ec70d16c51e0769
     external_links: []
     lifecycle_state: closed
@@ -140803,6 +140809,8 @@ reviews:
               those files. The merge-base between HEAD and f205808d2 is f205808d2 itself.
             created_at: 2026-04-14T20:36:00.513Z
         kind: blocker
+        resolved_at: 2026-04-14T20:36:08.414Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -140812,5 +140820,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-14T19:59:00.011Z
     created_at: 2026-04-14T19:54:04.755Z
-    updated_at: 2026-04-14T20:36:00.513Z
+    updated_at: 2026-04-14T20:36:08.414Z
     notes: []
