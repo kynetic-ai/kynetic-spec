@@ -135770,6 +135770,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP5J8273XT8CWRBQZ62F0SSQ
         timestamp: 2026-04-14T08:38:08.793Z
+      - _ulid: 01KP5J87REPBV6B7A2WZ3ZWCEY
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP5J86S61BMZAAG5EYBDKFXE
+        timestamp: 2026-04-14T08:38:13.518Z
     examined_commit: d8602e6f790919893fc9aa7907493193f5f99411
     external_links: []
     lifecycle_state: open
@@ -135801,7 +135808,94 @@ reviews:
               configured shadow directory through just like init does.
             created_at: 2026-04-14T08:38:07.844Z
         kind: blocker
+      - _ulid: 01KP5J86S61BMZAAG5EYBDKFXE
+        anchor:
+          type: code
+          commit: d8602e6f790919893fc9aa7907493193f5f99411
+          line_end: 16
+          line_start: 1
+          path: tests/gitignore-managed-block.test.ts
+          side: head
+        entries:
+          - _ulid: 01KP5J86S693W17SRRC8F6N8YV
+            author: Jacob Chapel
+            body: >-
+              Trait and spec AC coverage is still invalid here because the file-level annotations
+              were added inside a block comment, which this project explicitly rejects as
+              coverage.  places  and  inside a header comment instead of standalone line comments
+              attached to concrete tests, so ✗ Validation failed
+
+              ────────────────────────────────────────
+
+              Files checked: 10
+
+              Items checked: 589
+
+              Tasks checked: 0
+
+              Meta: 11 agents, 11 workflows, 10 conventions
+
+
+              Schema errors: 1
+                ✗ /home/chapel/Projects/kynetic-spec-dispatch/.kspec/modules/meta.yaml:modules[0].traits.0
+                  Expected string, received object
+              References: OK
+
+
+              Reference warnings: 1
+                ⚠ @skills
+                  Orphaned skill directory 'skills' has no corresponding meta entry
+                  in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+              Alignment warnings: 33
+                Orphaned specs (no tasks): 31
+                  ○ Test Trait
+                  ○ Filterable List Commands
+                  ○ Dry Run Preview Mode
+                  ... and 28 more
+                Status mismatches: 2
+                  ! Task Set Batch Support
+                    Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+                  ! Concurrent Read Command Execution
+                    Spec "Concurrent Read Command Execution" status is "implemented" but should be "in_progress" based on task progress
+
+              Alignment stats: 425/589 specs have tasks, 423 aligned
+
+
+              Completeness warnings: 488
+                Missing acceptance criteria: 1
+                  ○ @01KJN1WT - Test Trait
+                Missing own AC coverage: 246
+                  ! @spec-item - Spec Item
+                    Uncovered: ac-item-1, ac-item-2
+                  ! @ulid-system - ULID Identifier System
+                    Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+                  ! @slug-system - Slug Alias System
+                    Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+                  ... and 243 more
+                Missing trait AC coverage: 2
+                  ! @complete-auto-gitignore - Complete Auto-Generated Gitignore Entries
+                    Uncovered trait ACs: @trait-idempotent-file-scaffold ac-force-backs-up-before-overwrite
+                  ! @scaffolded-project-config - Scaffolded Project Config File
+                    Uncovered trait ACs: @trait-idempotent-file-scaffold ac-force-backs-up-before-overwrite
+                Invalid AC annotations: 239
+                  ! AC annotation references '@01KJE3T7' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-complete-gitignore-01knxyj4-review/tests/agent-detection.test.ts:43
+                  ! AC annotation references '@01KJE3T7' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-complete-gitignore-01knxyj4-review/tests/agent-detection.test.ts:61
+                  ! AC annotation references '@01KJE3T7' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-complete-gitignore-01knxyj4-review/tests/agent-detection.test.ts:75
+                  ! AC annotation references '@01KJE3T7' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-complete-gitignore-01knxyj4-review/tests/agent-detection.test.ts:88
+                  ! AC annotation references '@ui-agent-dispatch ac-8' but @ui-agent-dispatch has no acceptance criterion 'ac-8'
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-complete-gitignore-01knxyj4-review/tests/agent-dispatch-engine.test.ts:4965
+                  ... and 234 more
+              Skills: OK (10 files checked) still reports  missing trait coverage for . This loses
+              the task's required AC evidence and must be fixed with standalone per-test annotations
+              (or a real N/A handling path that the validator recognizes).
+            created_at: 2026-04-14T08:38:12.518Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-14T08:33:47.366Z
-    updated_at: 2026-04-14T08:38:07.844Z
+    updated_at: 2026-04-14T08:38:12.518Z
     notes: []
