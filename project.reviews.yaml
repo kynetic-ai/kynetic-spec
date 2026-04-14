@@ -138916,6 +138916,12 @@ reviews:
           kind: blocker
           thread_ulid: 01KP5RQC0H0MTWQ9YZER1WVP7Q
         timestamp: 2026-04-14T10:31:21.902Z
+      - _ulid: 01KP5RS19H5AEEPBX4C2FHB0SD
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP5RQ1ZZJF5W42G4GZYQYJNZ
+        timestamp: 2026-04-14T10:32:15.409Z
     examined_commit: af2e3dadb9fcf2bd02574cdd0abf3588cc9608a5
     external_links: []
     lifecycle_state: open
@@ -138946,6 +138952,11 @@ reviews:
               tests only cover a relative override (), so this outside-root configuration regresses
               silently.'
             created_at: 2026-04-14T10:31:10.592Z
+          - _ulid: 01KP5RS09CGH1R2JACYHAWWDJR
+            author: Jacob Chapel
+            body: "Superseded by the next thread: this one was created from a shell-mangled comment body and
+              should be ignored."
+            created_at: 2026-04-14T10:32:14.379Z
         kind: blocker
       - _ulid: 01KP5RQC0H0MTWQ9YZER1WVP7Q
         anchor:
@@ -138973,5 +138984,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-14T10:30:13.609Z
-    updated_at: 2026-04-14T10:31:20.849Z
+    updated_at: 2026-04-14T10:32:14.379Z
     notes: []
