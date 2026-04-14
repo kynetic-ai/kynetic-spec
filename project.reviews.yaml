@@ -139211,6 +139211,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-14T17:58:19.843Z
+      - _ulid: 01KP6J9X9G2GSEJGNDCAGFGWF5
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP6J9W8NS1PZHTEM934ARXRK
+        timestamp: 2026-04-14T17:58:22.768Z
     examined_commit: 73651ba0549f7b0bbf3eb4aba1512c21e3f914e3
     external_links: []
     lifecycle_state: open
@@ -139256,7 +139263,24 @@ reviews:
               generation or omit the scaffolded defaults without this test failing."
             created_at: 2026-04-14T17:58:13.119Z
         kind: blocker
+      - _ulid: 01KP6J9W8NS1PZHTEM934ARXRK
+        anchor:
+          type: code
+          commit: 73651ba0549f7b0bbf3eb4aba1512c21e3f914e3
+          line_end: 303
+          line_start: 294
+          path: src/cli/commands/setup-defaults.ts
+          side: head
+        entries:
+          - _ulid: 01KP6J9W8NHDNGMR9KM2ECPA7K
+            author: Jacob Chapel
+            body: "Force reseed misclassifies missing agents when any other scaffolded agent was renamed. Repro:
+              rename task-worker to my-worker, delete primary-dev, then run 'setup --force' —
+              primary-dev is not recreated. That violates ac-force-reseed because removed defaults
+              are left missing once an unrelated renamed agent exists."
+            created_at: 2026-04-14T17:58:21.718Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-14T17:49:38.559Z
-    updated_at: 2026-04-14T17:58:18.829Z
+    updated_at: 2026-04-14T17:58:21.718Z
     notes: []
