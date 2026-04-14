@@ -6569,6 +6569,9 @@ modules:
           agent roster. Older specs that describe individual scaffold
           agents by name are superseded by this one, and their tests
           are re-annotated against the acceptance criteria below.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
