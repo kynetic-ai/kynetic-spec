@@ -6,10 +6,6 @@
  * - The block can be created or updated idempotently
  * - User content outside the block is never touched
  * - User content inside the block is preserved (never removed)
- *
- * AC: @complete-auto-gitignore ac-all-transient-paths-present
- * AC: @complete-auto-gitignore ac-existing-entries-preserved
- * AC: @complete-auto-gitignore ac-kspec-entries-idempotent
  */
 
 import * as fs from "node:fs/promises";
@@ -205,10 +201,6 @@ export interface EnsureKspecGitignoreOptions {
 /**
  * Ensure the root .gitignore has a managed block with all kspec entries.
  * Creates the file if it doesn't exist.
- *
- * AC: @complete-auto-gitignore ac-all-transient-paths-present
- * AC: @complete-auto-gitignore ac-existing-entries-preserved
- * AC: @complete-auto-gitignore ac-kspec-entries-idempotent
  *
  * @returns Result describing what changed
  */

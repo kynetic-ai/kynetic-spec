@@ -1,19 +1,5 @@
-/**
- * Tests for managed-block gitignore writer.
- *
- * AC: @complete-auto-gitignore ac-all-transient-paths-present
- * AC: @complete-auto-gitignore ac-no-untracked-after-common-commands
- * AC: @complete-auto-gitignore ac-existing-entries-preserved
- * AC: @complete-auto-gitignore ac-kspec-entries-idempotent
- *
- * Trait ACs from @trait-idempotent-file-scaffold:
- * AC: @trait-idempotent-file-scaffold ac-existing-file-preserved-without-force
- * AC: @trait-idempotent-file-scaffold ac-fresh-file-creation
- * AC: @trait-idempotent-file-scaffold ac-step-reports-action
- * AC: @trait-idempotent-file-scaffold ac-force-backs-up-before-overwrite — N/A: managed-block writer
- *   appends to files, it does not overwrite them. Force semantics are handled at the init/setup
- *   command level, not at the gitignore block level.
- */
+// Tests for managed-block gitignore writer.
+// AC: @trait-idempotent-file-scaffold ac-force-backs-up-before-overwrite — N/A: managed-block writer appends to files, it does not overwrite them. Force semantics are handled at the init/setup command level, not at the gitignore block level.
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
@@ -25,6 +11,7 @@ import {
   serializeManagedBlock,
   ensureKspecGitignore,
   needsKspecGitignoreUpdate,
+  buildKspecGitignoreEntries,
   MANAGED_BLOCK_START,
   MANAGED_BLOCK_END,
   KSPEC_GITIGNORE_ENTRIES,
@@ -259,6 +246,20 @@ describe("ensureKspecGitignore", () => {
     expect(contentAfterSecond).toBe(contentAfterFirst);
   });
 
+  it("uses configured shadow directory when provided", async () => {
+    const result = await ensureKspecGitignore(testDir, { shadowDir: ".specs" });
+
+    expect(result.changed).toBe(true);
+    expect(result.blockCreated).toBe(true);
+
+    const content = await readTestOutput(path.join(testDir, ".gitignore"));
+    expect(content).toContain(".specs/");
+    expect(content).not.toContain(".kspec/");
+    // Other entries still present
+    expect(content).toContain(".kspec-sessions/");
+    expect(content).toContain(".kspec-worktrees/");
+  });
+
   it("adds missing entries to an existing partial managed block", async () => {
     // Write a managed block with only .kspec/
     const partial = [
@@ -386,6 +387,40 @@ describe("kspec init gitignore integration", () => {
     }
   });
 
+  // AC: @complete-auto-gitignore ac-no-untracked-after-common-commands
+  it("no kspec-created directory appears as untracked after init", () => {
+    const result = kspec("init --no-prompt", testDir);
+    expect(result.exitCode).toBe(0);
+
+    // Commit the gitignore so it doesn't show up as untracked
+    execSync('git add .gitignore && git commit -m "gitignore" --allow-empty', {
+      cwd: testDir,
+      stdio: "pipe",
+    });
+
+    // Check git status — no kspec-related entries should be untracked
+    const statusOutput = execSync("git status --porcelain", {
+      cwd: testDir,
+      encoding: "utf-8",
+    });
+
+    // Filter for untracked kspec directories (lines starting with "?? ")
+    const untrackedKspecEntries = statusOutput
+      .split("\n")
+      .filter((line) => line.startsWith("?? "))
+      .map((line) => line.slice(3))
+      .filter(
+        (entry) =>
+          entry.startsWith(".kspec") ||
+          entry.startsWith("plans/") ||
+          entry.startsWith(".kspec-worktrees/") ||
+          entry.startsWith(".kspec-sessions/") ||
+          entry.startsWith(".kspec-dispatch-"),
+      );
+
+    expect(untrackedKspecEntries).toEqual([]);
+  });
+
   // AC: @trait-idempotent-file-scaffold ac-step-reports-action
   it("setup reports gitignore actions in summary", () => {
     // First init to set up project
@@ -409,6 +444,19 @@ describe("kspec init gitignore integration", () => {
     const result = kspec("setup --agent claude-code", testDir);
     expect(result.exitCode).toBe(0);
     expect(result.stdout + result.stderr).toMatch(/gitignore|managed block/i);
+  });
+});
+
+describe("buildKspecGitignoreEntries custom shadow directory", () => {
+  it("uses custom shadow directory when provided", () => {
+    const entries = buildKspecGitignoreEntries(".specs");
+    expect(entries).toContain(".specs/");
+    expect(entries).not.toContain(".kspec/");
+  });
+
+  it("uses default .kspec/ when no shadow directory provided", () => {
+    const entries = buildKspecGitignoreEntries();
+    expect(entries).toContain(".kspec/");
   });
 });
 
