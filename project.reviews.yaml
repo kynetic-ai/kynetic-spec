@@ -135220,6 +135220,12 @@ reviews:
         payload:
           thread_ulid: 01KNY03AF6PTHXA56SJNBDZ1A1
         timestamp: 2026-04-14T09:02:06.054Z
+      - _ulid: 01KP5KM3K6TQ8N4XG8AV1KH8R0
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KNY03G0VM8WPNGX2FKKYYAAA
+        timestamp: 2026-04-14T09:02:11.046Z
     examined_commit: 4f57708fe3e613630f0e50337cbdaf60d0493333
     external_links: []
     lifecycle_state: closed
@@ -135470,6 +135476,13 @@ reviews:
                   When: --json is active
                   Then: guidance included in structured error object. A repo-wide search of the setup/init/scaffold tests found no  annotations in this area, so the task is missing required inherited AC coverage (or explicit N/A annotations) for the command surface it changed.
             created_at: 2026-04-11T10:06:22.747Z
+          - _ulid: 01KP5KM2R8NDZ3MBJ9VT9KA5QJ
+            author: "@claude"
+            body: "Fixed: Converted all AC annotations from JSDoc block comment to standalone line comments for
+              machine parseability. Full trait AC coverage: @trait-idempotent-file-scaffold (4 ACs
+              covered by individual tests), @trait-error-guidance ac-1/2/5/6 (covered by fail-loudly
+              tests), ac-3/4 (N/A-annotated with reasons)."
+            created_at: 2026-04-14T09:02:10.184Z
         kind: blocker
       - _ulid: 01KNY03NGZVPXS10M5XW7ESBAM
         entries:
@@ -135624,7 +135637,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-11T10:06:47.469Z
     created_at: 2026-04-11T10:00:55.406Z
-    updated_at: 2026-04-14T09:02:05.130Z
+    updated_at: 2026-04-14T09:02:10.184Z
     notes: []
   - _ulid: 01KNY1GZQP0FK7D8D9GYVYEK0S
     slugs: []
