@@ -14012,6 +14012,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-14T09:59:07.469Z
+  - _ulid: 01KP5SEJVG11MZSF2TA8T188XM
+    type: friction
+    content: "Review fix cycle: discovering thread ULIDs for kspec review reply/resolve requires JSON
+      parsing with non-obvious _ulid field. The human-readable kspec review get output shows thread
+      content and severity but not thread ULIDs. Agents must call --json and discover the _ulid key
+      by trial-and-error. A small UX improvement would be showing thread ULIDs in the human-readable
+      output or accepting thread index numbers."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-14T10:44:01.520Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
