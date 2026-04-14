@@ -135744,3 +135744,29 @@ reviews:
     created_at: 2026-04-14T01:05:06.952Z
     updated_at: 2026-04-14T05:45:32.171Z
     notes: []
+  - _ulid: 01KP5J03V6J4AWV8W95T4WQBKS
+    slugs: []
+    title: Review task-complete-gitignore
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KP5J03V6TY0MV26MN1TQ4J91
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-14T08:33:47.366Z
+    examined_commit: d8602e6f790919893fc9aa7907493193f5f99411
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNXYJ40TP75YKCV51RM6H6YZ"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-14T08:33:47.366Z
+    updated_at: null
+    notes: []
