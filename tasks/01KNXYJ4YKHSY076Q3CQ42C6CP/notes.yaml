@@ -1,1 +1,47 @@
-notes: []
+notes:
+  - _ulid: 01KP6Q553XQ793ZYDA8MZNBDRP
+    content: >-
+      Approach: Both generateShadowModule() in shadow.ts and generateMainModule() in init.ts
+      currently create placeholder containers (items: [] or items: [...]) that are NOT module items.
+      The fix is to change both generators to produce proper module items with _ulid, slugs: [main],
+      type: module, title, description, and status. The module item will be written as a top-level
+      YAML document (like tests/fixtures/modules/core.yaml), which extractItemsFromRaw() already
+      handles by checking for _ulid at the top level.
+
+
+      Key changes:
+
+      1. shadow.ts: generateShadowModule() - generate a real module item with ulid, slug 'main',
+      title derived from project name
+
+      2. init.ts: generateMainModule() - same change for non-shadow mode 
+
+      3. Both use ulid() to generate deterministic module IDs at init time
+
+      4. No changes needed in plan.ts - resolveDeriveModuleRef already resolves by slug/ulid through
+      refIndex
+
+
+      Edge cases:
+
+      - Existing projects already initialized won't be affected (no migration needed, this is for
+      new init)
+
+      - The slug 'main' is deterministic and human-friendly
+
+      - User can still edit title/slug/description via kspec item set
+
+
+      Test plan: 3 ACs × 1+ tests each:
+
+      1. ac-default-module-resolvable: init a fresh project, then kspec item get @main resolves to
+      module item
+
+      2. ac-plan-derive-accepts-default: init, import plan, approve, derive targeting @main -
+      succeeds
+
+      3. ac-default-module-editable: init, kspec item set to change title/slug, verify persisted and
+      derivation still works
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-14T19:23:09.822Z
