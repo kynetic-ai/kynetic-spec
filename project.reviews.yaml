@@ -136873,6 +136873,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-14T09:55:12.180Z
+      - _ulid: 01KP5PN949TNG8MCXZ7J6FC0B2
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP5PN84M5S48Q8DVP1KCA1W3
+        timestamp: 2026-04-14T09:55:15.209Z
     examined_commit: 8f5854d049e6359236067f8ee3b0c47fa4fec6b7
     external_links: []
     lifecycle_state: open
@@ -136882,8 +136889,28 @@ reviews:
       content_hash: ""
       ref: "@01KNXYJ3PYYG1ABH6SMQ2KRE1S"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KP5PN84M5S48Q8DVP1KCA1W3
+        anchor:
+          type: code
+          commit: 8f5854d049e6359236067f8ee3b0c47fa4fec6b7
+          line_end: 2029
+          line_start: 2004
+          path: src/cli/commands/setup.ts
+          side: head
+        entries:
+          - _ulid: 01KP5PN84MM9729THB0HZ4ZPKD
+            author: Jacob Chapel
+            body: "The new failure handling still prints a success footer before exiting non-zero. In   cd
+              /home/chapel/Projects/kynetic-spec-dispatch && kspec setup, the summary callback
+              unconditionally writes  /  at lines 2006-2008, and only afterwards checks whether the
+              scaffold step failed. Repro: make  read-only, run   cd
+              /home/chapel/Projects/kynetic-spec-dispatch && kspec setup, and the command exits 1
+              but stdout still ends with . That is the opposite of : callers get a contradictory
+              success signal in the same invocation, and the current tests do not guard against it."
+            created_at: 2026-04-14T09:55:14.196Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-14T09:43:48.386Z
-    updated_at: 2026-04-14T09:55:11.162Z
+    updated_at: 2026-04-14T09:55:14.196Z
     notes: []
