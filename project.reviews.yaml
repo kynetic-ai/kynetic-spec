@@ -136547,6 +136547,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-14T09:31:35.128Z
+      - _ulid: 01KP5NJFC8AV9W3J7QW9TJ6ZXK
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP5NJEEAX2E13M3T9E40VHNM
+        timestamp: 2026-04-14T09:36:14.728Z
     examined_commit: ed0456aa9354b0abee7bd8e70dde0857b610cf3e
     external_links: []
     lifecycle_state: open
@@ -136556,8 +136563,26 @@ reviews:
       content_hash: ""
       ref: "@01KNXYJ40TP75YKCV51RM6H6YZ"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KP5NJEEAX2E13M3T9E40VHNM
+        anchor:
+          type: code
+          commit: ed0456aa9354b0abee7bd8e70dde0857b610cf3e
+          line_end: 45
+          line_start: 36
+          path: src/parser/gitignore.ts
+          side: head
+        entries:
+          - _ulid: 01KP5NJEEAAKFBCMJ0RN29ASRP
+            author: Jacob Chapel
+            body: " still hardcodes , so projects that set  to another project-relative path do not gitignore
+              the actual dispatch worktree pool. I reproduced this with : after   cd
+              /home/chapel/Projects/kynetic-spec-dispatch && kspec init,  still contained ,
+              and  reported  once that directory existed. That violates  for configurable worktree
+              pools and leaves normal dispatch usage able to surface untracked transient content."
+            created_at: 2026-04-14T09:36:13.770Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-14T09:30:46.921Z
-    updated_at: 2026-04-14T09:31:33.819Z
+    updated_at: 2026-04-14T09:36:13.770Z
     notes: []
