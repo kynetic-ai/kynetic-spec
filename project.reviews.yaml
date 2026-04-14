@@ -136659,9 +136659,25 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-14T09:38:39.882Z
+      - _ulid: 01KP5P1N5J5QJ64XV9Z2RPEZYW
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-14T09:44:32.178Z
+      - _ulid: 01KP5P1N5J3GKFYR3JTYPCAKJ0
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-14T09:44:32.178Z
     examined_commit: ed0456aa9354b0abee7bd8e70dde0857b610cf3e
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -136774,9 +136790,16 @@ reviews:
               Categories searched: correctness, configuration edge cases, test quality, integration.
             created_at: 2026-04-14T09:38:23.099Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-14T09:44:32.177Z
     created_at: 2026-04-14T09:30:46.921Z
-    updated_at: 2026-04-14T09:38:38.907Z
+    updated_at: 2026-04-14T09:44:32.178Z
     notes: []
   - _ulid: 01KP5P0AD2TJBM33GQJ6X9V5CE
     slugs: []

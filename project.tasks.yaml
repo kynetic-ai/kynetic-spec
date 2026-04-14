@@ -26104,7 +26104,7 @@
   type: task
   spec_ref: "@complete-auto-gitignore"
   plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   priority: 1
@@ -26113,7 +26113,7 @@
     - setup
     - git
   review_ref: "@01KP5N8F89YFDR3DXW4PDGEPER"
-  notes_count: 4
+  notes_count: 5
   todos_count: 0
   created_at: 2026-04-11T09:39:24.826Z
   started_at: 2026-04-14T09:05:33.129Z
