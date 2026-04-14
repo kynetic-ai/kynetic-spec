@@ -136352,6 +136352,12 @@ reviews:
         payload:
           thread_ulid: 01KP5MEJBR9JF8F3Y3VXJ6C6GK
         timestamp: 2026-04-14T09:41:18.716Z
+      - _ulid: 01KP5NW12D3HS0JAC9KVJTMJKB
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP5MEJBR9JF8F3Y3VXJ6C6GK
+        timestamp: 2026-04-14T09:41:27.757Z
     examined_commit: 0da5706286daf663aa2beb1418e4eaa19055f976
     external_links: []
     lifecycle_state: closed
@@ -136545,6 +136551,8 @@ reviews:
               commit 8f5854d04."
             created_at: 2026-04-14T09:41:17.729Z
         kind: blocker
+        resolved_at: 2026-04-14T09:41:26.674Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -136561,7 +136569,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-14T09:16:18.023Z
     created_at: 2026-04-14T09:04:47.175Z
-    updated_at: 2026-04-14T09:41:17.729Z
+    updated_at: 2026-04-14T09:41:26.674Z
     notes: []
   - _ulid: 01KP5N8F89YFDR3DXW4PDGEPER
     slugs: []
