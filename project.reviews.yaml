@@ -139903,7 +139903,18 @@ reviews:
     slugs: []
     title: Review scaffold default project agents and conventions
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: tests/setup-builtin-agents.test.ts plus setup/dispatch contract slice passed (123 tests
+          total across 7 files)
+        name: targeted regression slice
+        required: true
+        runner: vitest
+        created_at: 2026-04-14T19:08:17.509Z
+        completed_at: 2026-04-14T19:08:17.509Z
     events:
       - _ulid: 01KP6P2JFY9PJPF816P32GC8BP
         actor: Jacob Chapel
@@ -139925,6 +139936,13 @@ reviews:
           kind: nit
           thread_ulid: 01KP6P921N50KWP88NBXQS5WQY
         timestamp: 2026-04-14T19:07:50.445Z
+      - _ulid: 01KP6P9YPR0HB07ZNR7RSZFSK6
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted regression slice
+        timestamp: 2026-04-14T19:08:18.520Z
     examined_commit: a7c72916243514df6efab4bee95db653c74e7a59
     external_links: []
     lifecycle_state: open
@@ -139961,5 +139979,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-14T19:04:16.638Z
-    updated_at: 2026-04-14T19:07:49.174Z
+    updated_at: 2026-04-14T19:08:17.509Z
     notes: []
