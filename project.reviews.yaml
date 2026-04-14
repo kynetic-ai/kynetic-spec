@@ -139918,6 +139918,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-14T19:05:24.029Z
+      - _ulid: 01KP6P939DQX0G25MEB4KASB23
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KP6P921N50KWP88NBXQS5WQY
+        timestamp: 2026-04-14T19:07:50.445Z
     examined_commit: a7c72916243514df6efab4bee95db653c74e7a59
     external_links: []
     lifecycle_state: open
@@ -139927,8 +139934,32 @@ reviews:
       content_hash: ""
       ref: "@01KNXYJ4AP5ACVWK4Y93JG7BKH"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KP6P921N50KWP88NBXQS5WQY
+        entries:
+          - _ulid: 01KP6P921NNMAM8YAYJKBYQ64H
+            author: Jacob Chapel
+            body: "Evidence log: Files read: src/cli/commands/setup-defaults.ts, src/cli/commands/setup.ts,
+              tests/setup-builtin-agents.test.ts, src/cli/commands/setup-seeding.ts,
+              src/parser/setup-status.ts, tests/canonical-task-workspace-contract.test.ts,
+              tests/dispatch-runtime-bootstrap-contract.test.ts,
+              tests/setup-pipeline-unification.test.ts. Commands run: kspec task get
+              @01KNXYJ4AP5ACVWK4Y93JG7BKH; kspec review for-task/list/get; git diff/stat/log; kspec
+              item get @default-project-agents-and-conventions; kspec validate; rg for AC
+              annotations and related code; npm test -- --verbose
+              tests/setup-builtin-agents.test.ts; npm test -- --verbose
+              tests/canonical-task-workspace-contract.test.ts
+              tests/dispatch-runtime-bootstrap-contract.test.ts tests/dispatch-target-sync.test.ts
+              tests/setup.test.ts tests/init-setup-integration.test.ts
+              tests/setup-pipeline-unification.test.ts; npm test. Claims verified: ULID-based rename
+              detection now matches items per original scaffold record for both agents and
+              conventions; setup pipeline has a single scaffold site before kspec-agents generation;
+              changed tests behaviorally cover first-run, no-op rerun, remove, rename, and
+              force-reseed cases. Categories searched: correctness, edge cases, test quality,
+              integration, regressions; no task-specific blockers found."
+            created_at: 2026-04-14T19:07:49.174Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-14T19:04:16.638Z
-    updated_at: 2026-04-14T19:05:22.919Z
+    updated_at: 2026-04-14T19:07:49.174Z
     notes: []
