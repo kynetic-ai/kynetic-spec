@@ -136932,9 +136932,25 @@ reviews:
         payload:
           thread_ulid: 01KP5PNAX9T8RPJ3C7AZB92PBX
         timestamp: 2026-04-14T09:56:44.061Z
+      - _ulid: 01KP5PRF5891ZW83CJ3XA894EF
+        actor: "@codex"
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-14T09:56:59.688Z
+      - _ulid: 01KP5PRF58DKR26G2SN6HYR8T8
+        actor: "@codex"
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-14T09:56:59.688Z
     examined_commit: 8f5854d049e6359236067f8ee3b0c47fa4fec6b7
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -138751,7 +138767,14 @@ reviews:
               and the current tests do not guard against it."
             created_at: 2026-04-14T09:55:48.103Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: "@codex"
+        role: reviewer
+        created_at: 2026-04-14T09:56:59.688Z
     created_at: 2026-04-14T09:43:48.386Z
-    updated_at: 2026-04-14T09:56:43.015Z
+    updated_at: 2026-04-14T09:56:59.688Z
     notes: []
