@@ -140052,3 +140052,29 @@ reviews:
     created_at: 2026-04-14T19:04:16.638Z
     updated_at: 2026-04-14T19:14:23.190Z
     notes: []
+  - _ulid: 01KP6PXH1TXC833YA6Q2A0EK6K
+    slugs: []
+    title: Review scaffold project config during init/setup (cycle 5)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KP6PXH1T432G92EN9V9RKG25
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-14T19:18:59.898Z
+    examined_commit: aa54a59e81afbe4563b663a6a13c28fc5d644f8a
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNXYJ3PYYG1ABH6SMQ2KRE1S"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-14T19:18:59.898Z
+    updated_at: null
+    notes: []
