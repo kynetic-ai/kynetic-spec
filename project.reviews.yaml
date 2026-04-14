@@ -136827,6 +136827,17 @@ reviews:
         runner: npm
         created_at: 2026-04-14T09:55:08.203Z
         completed_at: 2026-04-14T09:55:08.203Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Fails on pre-existing shadow/meta validation issues unrelated to this diff (schema error
+          in .kspec/modules/meta.yaml plus existing warnings); no .kspec changes in this branch.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-14T09:55:11.162Z
+        completed_at: 2026-04-14T09:55:11.162Z
     events:
       - _ulid: 01KP5P0AD2TY8WJKZF4EQWSNFG
         actor: Jacob Chapel
@@ -136855,6 +136866,13 @@ reviews:
           status: pass
           name: scaffold-project-config tests
         timestamp: 2026-04-14T09:55:09.225Z
+      - _ulid: 01KP5PN65M100MZC45FZ3YE5X1
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-14T09:55:12.180Z
     examined_commit: 8f5854d049e6359236067f8ee3b0c47fa4fec6b7
     external_links: []
     lifecycle_state: open
@@ -136867,5 +136885,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-14T09:43:48.386Z
-    updated_at: 2026-04-14T09:55:08.203Z
+    updated_at: 2026-04-14T09:55:11.162Z
     notes: []
