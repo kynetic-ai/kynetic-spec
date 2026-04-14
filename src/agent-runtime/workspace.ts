@@ -2186,26 +2186,46 @@ export async function resolveDispatchWorkspaceConfig(
     };
   }
 
-  const defaultResolved = await resolveDefaultBranch(projectDir);
-  const resolved = await resolveBranchStartPoint(projectDir, defaultResolved.branch);
-  const baseBranchSource =
-    defaultResolved.source === "fallback" ? "default" : defaultResolved.source;
-  if (resolved) {
+  // Fallback chain: remote HEAD → current branch → "main" literal.
+  // Each step independently verifies the branch exists before committing,
+  // so a stale remote HEAD (pointing to a nonexistent branch) falls through
+  // to the current branch rather than throwing.
+  const remoteHeadBranch = await resolveRemoteHeadBranch(projectDir);
+  if (remoteHeadBranch) {
+    const resolved = await resolveBranchStartPoint(projectDir, remoteHeadBranch);
+    if (resolved) {
+      return {
+        baseBranch: remoteHeadBranch,
+        baseBranchStartPoint: resolved.startPoint,
+        baseBranchSource: "remote-head",
+        worktreeRoot,
+        publicationMode,
+      };
+    }
+  }
+
+  const currentBranch = await resolveCurrentBranch(projectDir);
+  if (currentBranch) {
+    const resolved = (await resolveBranchStartPoint(projectDir, currentBranch)) ?? {
+      startPoint: currentBranch,
+      branch: currentBranch,
+    };
     return {
-      baseBranch: defaultResolved.branch,
+      baseBranch: currentBranch,
       baseBranchStartPoint: resolved.startPoint,
-      baseBranchSource,
+      baseBranchSource: "current-branch",
       worktreeRoot,
       publicationMode,
     };
   }
 
-  // current-branch source always has a valid start point (it's checked out)
-  if (defaultResolved.source === "current-branch") {
+  const defaultBranch = "main";
+  const resolved = await resolveBranchStartPoint(projectDir, defaultBranch);
+  if (resolved) {
     return {
-      baseBranch: defaultResolved.branch,
-      baseBranchStartPoint: defaultResolved.branch,
-      baseBranchSource: "current-branch",
+      baseBranch: defaultBranch,
+      baseBranchStartPoint: resolved.startPoint,
+      baseBranchSource: "default",
       worktreeRoot,
       publicationMode,
     };
