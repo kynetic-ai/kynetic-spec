@@ -136908,6 +136908,12 @@ reviews:
           kind: blocker
           thread_ulid: 01KP5PP987G9RAW10BNZGWJNBX
         timestamp: 2026-04-14T09:55:49.202Z
+      - _ulid: 01KP5PQPMQNHPVAV47YBFSB1XY
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP5PN84M5S48Q8DVP1KCA1W3
+        timestamp: 2026-04-14T09:56:34.583Z
     examined_commit: 8f5854d049e6359236067f8ee3b0c47fa4fec6b7
     external_links: []
     lifecycle_state: open
@@ -136938,6 +136944,8 @@ reviews:
               success signal in the same invocation, and the current tests do not guard against it."
             created_at: 2026-04-14T09:55:14.196Z
         kind: blocker
+        resolved_at: 2026-04-14T09:56:33.558Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KP5PNAX9T8RPJ3C7AZB92PBX
         anchor:
           type: code
@@ -138715,5 +138723,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-14T09:43:48.386Z
-    updated_at: 2026-04-14T09:55:48.103Z
+    updated_at: 2026-04-14T09:56:33.558Z
     notes: []
