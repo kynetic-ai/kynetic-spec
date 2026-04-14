@@ -13992,6 +13992,26 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-14T09:29:26.119Z
+  - _ulid: 01KP5PWBPMHG9X9PJ34V9B4MC8
+    type: friction
+    content: Review comment creation is brittle when bodies contain backticks, quotes, or shell
+      metacharacters. In this review, malformed CLI payloads created broken duplicate blocker
+      threads that then had to be manually superseded/resolved. A file- or stdin-based body input
+      for review comments would reduce audit-noise and cleanup work.
+    author: "@codex"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-14T09:59:07.220Z
+  - _ulid: 01KP5PWBYDP15SJJHFXPDCH5DR
+    type: success
+    content: Direct temp-repo behavioral reproductions during review caught two setup/config regressions
+      that both the targeted scaffold tests and the full suite missed. Reproducing the claimed
+      behavior in a fresh repo remains a high-value review pattern for init/setup and
+      config-scaffolding work.
+    author: "@codex"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-14T09:59:07.469Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
