@@ -1,1 +1,42 @@
-notes: []
+notes:
+  - _ulid: 01KP6KTDK6GJ2AXJ7GN844XAYT
+    content: >-
+      Approach: Adding ensureDefaultReflectionHook step to setup pipeline.
+
+
+      Hook definition:
+
+      - name: 'default-session-reflect'
+
+      - on: 'session.idle'  
+
+      - filter: none (matches all agents)
+
+      - action: { type: 'session_prompt', skills: ['reflect'], prompt: 'Run session reflection.' }
+
+      - enabled: true
+
+
+      Idempotency (AC-2): Check hooks list for existing hook with name 'default-session-reflect'.
+      Skip if found.
+
+
+      User-removal detection (AC-3): Store scaffold marker in .kspec/.setup-scaffold-state.json. On
+      re-run, if hook doesn't exist but marker says we previously scaffolded it, skip (user removed
+      it).
+
+
+      Pipeline placement: After ensureBuiltInAgents, before generateAgentInstructions.
+
+
+      Test plan:
+
+      1. AC-1: Setup creates reflection hook with correct fields (session.idle, no filter, reflect
+      skill)
+
+      2. AC-2: Running setup twice doesn't duplicate the hook
+
+      3. AC-3: Removing hook and re-running setup (without force) doesn't recreate it
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-14T18:24:52.326Z
