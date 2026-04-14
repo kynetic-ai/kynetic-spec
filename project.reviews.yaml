@@ -140070,6 +140070,19 @@ reviews:
         runner: rg
         created_at: 2026-04-14T19:29:42.148Z
         completed_at: 2026-04-14T19:29:42.148Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Repository validation currently fails in this snapshot, but not because of the scaffold
+          project config task. Observed pre-existing repo issues: .kspec/modules/meta.yaml schema
+          error (traits[0] expected string), orphaned skill directory warning, and many unrelated
+          completeness/alignment warnings."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-14T19:29:45.244Z
+        completed_at: 2026-04-14T19:29:45.244Z
     events:
       - _ulid: 01KP6PXH1T432G92EN9V9RKG25
         actor: Jacob Chapel
@@ -140105,6 +140118,13 @@ reviews:
           status: pass
           name: AC annotation scan
         timestamp: 2026-04-14T19:29:43.209Z
+      - _ulid: 01KP6QH89ZQWYB19YQX61F2DAJ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-14T19:29:46.303Z
     examined_commit: aa54a59e81afbe4563b663a6a13c28fc5d644f8a
     external_links: []
     lifecycle_state: open
@@ -140505,5 +140525,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-14T19:18:59.898Z
-    updated_at: 2026-04-14T19:29:42.148Z
+    updated_at: 2026-04-14T19:29:45.244Z
     notes: []
