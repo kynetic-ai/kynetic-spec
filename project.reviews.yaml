@@ -136184,6 +136184,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-14T09:15:31.107Z
+      - _ulid: 01KP5MDF1PKCAEYH6K19KNET6W
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP5MDE3BFHWBY70A3H98T7PG
+        timestamp: 2026-04-14T09:16:01.975Z
     examined_commit: 0da5706286daf663aa2beb1418e4eaa19055f976
     external_links: []
     lifecycle_state: open
@@ -136193,8 +136200,28 @@ reviews:
       content_hash: ""
       ref: "@01KNXYJ3PYYG1ABH6SMQ2KRE1S"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KP5MDE3BFHWBY70A3H98T7PG
+        anchor:
+          type: code
+          commit: 0da5706286daf663aa2beb1418e4eaa19055f976
+          line_end: 2217
+          line_start: 2189
+          path: src/agent-runtime/workspace.ts
+          side: head
+        entries:
+          - _ulid: 01KP5MDE3BY9B30B27NQ9YW5VV
+            author: Jacob Chapel
+            body: 'The shared fallback helper changed dispatch base-branch resolution semantics. At these
+              lines,  commits to whatever  returns first, so a stale  now blocks the older
+              current-branch fallback. I reproduced this in a temp repo with current
+              branch  and  pointing to nonexistent :  now throws "No base branch could be resolved",
+              while the pre-change logic fell through to the checked-out branch. That breaks
+              dispatch workspace creation in repos with stale remote HEAD refs, which is exactly the
+              path this task was supposed to reuse safely.'
+            created_at: 2026-04-14T09:16:01.003Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-14T09:04:47.175Z
-    updated_at: 2026-04-14T09:15:30.224Z
+    updated_at: 2026-04-14T09:16:01.003Z
     notes: []
