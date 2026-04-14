@@ -140071,6 +140071,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-14T19:19:11.384Z
+      - _ulid: 01KP6QFZVH0PASXN25XTB3MV60
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP6QFYSNRXAKTBH8KRYVJ7AP
+        timestamp: 2026-04-14T19:29:04.881Z
     examined_commit: aa54a59e81afbe4563b663a6a13c28fc5d644f8a
     external_links: []
     lifecycle_state: open
@@ -140080,8 +140087,371 @@ reviews:
       content_hash: ""
       ref: "@01KNXYJ3PYYG1ABH6SMQ2KRE1S"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KP6QFYSNRXAKTBH8KRYVJ7AP
+        anchor:
+          type: code
+          commit: aa54a59e81afbe4563b663a6a13c28fc5d644f8a
+          line_end: 79
+          line_start: 1
+          path: scripts/test.cjs
+          side: head
+        entries:
+          - _ulid: 01KP6QFYSNQHC6FZVYCWAMYKDQ
+            author: Jacob Chapel
+            body: >-
+              This task snapshot still includes unrelated work from other tasks, so approving it
+              would merge code that is outside @scaffolded-project-config. commit
+              aa54a59e81afbe4563b663a6a13c28fc5d644f8a
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Tue Apr 14 12:16:04 2026 -0700
+
+                  fix(setup): use full fallback chain for scaffold base_branch resolution
+                  generateConfigContent() now calls resolveDefaultBranch() (remote HEAD →
+                  current branch → "main") instead of resolveRemoteHeadBranch() alone.
+                  This ensures the scaffolded config's base_branch matches what the
+                  empty-config fallback chain would resolve, satisfying ac-file-valid-on-load.
+                  Previously, repos with no remote but on a non-main branch would scaffold
+                  base_branch: "main" while the empty-config path would resolve to the
+                  current branch, changing runtime dispatch behavior.
+                  Task: @task-scaffold-project-config
+                  Spec: @scaffolded-project-config
+                  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+              commit 790807a3a50347a166477c2f42f1a0a43cfad703
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Tue Apr 14 03:40:51 2026 -0700
+
+                  fix(setup): use remote-HEAD-only fallback for scaffold base_branch and fix success footer
+                  Two review blockers addressed:
+                  1. generateConfigContent() previously called resolveDefaultBranch() which
+                     falls back to the current branch before "main". For scaffolding, this is
+                     wrong — a feature branch checkout should not leak into the config. Now
+                     calls resolveRemoteHeadBranch() directly and falls back to "main" only.
+                  2. The setup command unconditionally printed "Setup complete." before checking
+                     for scaffold failures, producing contradictory output (success message +
+                     exit 1). Moved the failure check into the output callback so the footer
+                     shows "Setup failed:" instead when the scaffold step fails.
+                  Added regression tests for both issues.
+                  Task: @task-scaffold-project-config
+                  Spec: @scaffolded-project-config
+                  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+              commit 9197f0a194d45bf0666b92df92864979606c8dc2
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Tue Apr 14 02:40:47 2026 -0700
+
+                  fix(setup): restore dispatch fallback chain for stale remote HEAD
+                  The fix cycle 1 refactor extracted resolveDefaultBranch as a shared
+                  helper, but resolveDispatchWorkspaceConfig started committing to
+                  whatever resolveDefaultBranch returned first. When remote HEAD points
+                  to a nonexistent branch (stale refs/remotes/origin/HEAD), this caused
+                  "No base branch could be resolved" instead of falling through to the
+                  current branch.
+                  Restored the original three-step fallback in resolveDispatchWorkspaceConfig
+                  where each candidate is independently verified via resolveBranchStartPoint
+                  before committing. The shared resolveDefaultBranch helper remains available
+                  for setup scaffolding where commit-to-first-answer semantics are correct.
+                  Task: @task-scaffold-project-config
+                  Spec: @scaffolded-project-config
+                  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+              commit 704334f08dd43073c6d9881a889d12b035a6a570
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Tue Apr 14 02:01:51 2026 -0700
+
+                  fix(setup): address review feedback for scaffold project config
+                  - Blocker 1: Extracted resolveDefaultBranch() into workspace.ts as a shared
+                    helper that encapsulates the remote-HEAD → current-branch → "main" fallback
+                    chain. Both resolveDispatchWorkspaceConfig() and generateConfigContent() now
+                    call this single function instead of duplicating the algorithm.
+                  - Blocker 2: scaffoldProjectConfig() now throws on validation failure instead
+                    of returning a validationError field. On fresh creation, the broken file is
+                    deleted; on force overwrite, the original is restored from backup. The setup
+                    and init commands check specifically for scaffold step failure and exit
+                    non-zero, satisfying the "fail loudly" requirement without making all
+                    non-critical step failures fatal.
+                  - Blocker 3: Converted AC annotations from JSDoc block comment to standalone
+                    line comments so they are machine-parseable. All trait ACs are covered:
+                    @trait-idempotent-file-scaffold (4 ACs on individual tests),
+                    @trait-error-guidance ac-1/2/5/6 (on fail-loudly tests), ac-3/4 (N/A).
+                  Task: @task-scaffold-project-config
+                  Spec: @scaffolded-project-config
+                  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+              commit 25c39f0668b4152b42139c5ba63bf7842d7b08d0
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Sat Apr 11 02:58:48 2026 -0700
+
+                  feat(setup): scaffold project config file during init/setup
+                  Add a new setup pipeline step that writes kspec.config.yaml at the
+                  project root with resolved defaults and commented placeholders for
+                  dispatch.publication_mode, dispatch.base_branch, and coverage.scan_paths.
+                  The step follows the idempotent file scaffold trait: skips if the file
+                  exists (no force), backs up + overwrites on force, validates the
+                  scaffolded file via the config loader, and reports its action in the
+                  setup summary.
+                  Task: @task-scaffold-project-config
+                  Spec: @scaffolded-project-config
+                  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+              commit 8068a15ad06fdad3f38be42442b38a782e717b1c
+
+              Merge: 9ed082194 5eee12c46
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Mon Apr 13 22:45:47 2026 -0700
+
+                  Merge branch 'dispatch/task/task-shadow-worktree-cross-contamination-guard/01kp4ksn' into dev
+
+              commit 5eee12c46238f0ab1f1dc65df02b4db6d9246e14
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Mon Apr 13 17:37:11 2026 -0700
+
+                  fix(shadow): guard shadow-lifecycle ops against linked-worktree cross-contamination
+                  Closes the 2026-04-11 incident where a kspec command routed through a
+                  linked-worktree cwd silently destroyed the main working tree's shadow
+                  worktree via git's shared worktree admin (find_worktree_by_suffix).
+                  Three-layer defense:
+                  1. Absolute paths — initializeShadow, repairShadow, and
+                     createOrphanBranchFallback now pass the absolute worktreeDir to every
+                     `git worktree add/remove` invocation, so git's suffix matcher cannot
+                     reach across linked-worktree admin entries.
+                  2. Function-level guard — new assertMainWorkingTree() uses
+                     resolveProjectRoots to refuse initializeShadow/repairShadow calls
+                     whose projectRoot is a linked worktree. Defense-in-depth for future
+                     callers that forget to resolve mainRoot.
+                  3. Command-level hard-error — kspec init and kspec setup detect linked
+                     worktrees via resolveProjectRoots at entry and exit non-zero with
+                     instructional guidance identifying the main working tree path.
+                     shadow status/repair/log/sync continue to work correctly from linked
+                     worktrees because they already resolve to mainRoot via
+                     resolveCliProjectRoot.
+                  Test-helper contract: tests/helpers/cli.ts `kspec()` now requires an
+                  explicit cwd at runtime; the silent `cwd ?? process.cwd()` fallback was
+                  the amplifier that let an unrelated test reach the buggy code path.
+                  Added a testing convention rule documenting the new requirement.
+                  Regression coverage: six new test files using a baseline fixture method
+                  (worktree list porcelain, shadow tip SHA, .kspec/.git pointer, mtime,
+                  inode) to detect silent mutations that a naive existence check would
+                  miss. Closes 10 new ACs on @worktree-support:
+                    ac-init-linked-wt-unchanged, ac-init-main-wt-unchanged,
+                    ac-init-guidance-direction, ac-init-guidance-path,
+                    ac-setup-linked-wt-unchanged, ac-setup-main-wt-unchanged,
+                    ac-setup-guidance-direction, ac-setup-guidance-path,
+                    ac-shadow-ops-scoped-to-main, ac-shadow-ops-concurrent-safety.
+                  Task: @task-shadow-worktree-cross-contamination-guard
+                  Spec: @worktree-support
+                  Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
+
+              commit 9ed0821941f5a563d8b6585d92d1e1d09195b8da
+
+              Merge: 16df87946 cc112485a
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Apr 9 21:18:07 2026 -0700
+
+                  Merge branch 'dispatch/task/task-lint-rule-test-daemon-cleanup/01kntacp' into dev
+
+              commit cc112485adee6ecaece0de407d9f202e379e0d0e
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Apr 9 20:52:29 2026 -0700
+
+                  fix(lint): restrict detach detection to spawn-like API callees only
+                  isDetachCallExpression() was matching ANY call expression whose string
+                  argument contained "serve start --detach", causing false positives on
+                  non-spawn calls like expect(cmd).toContain("serve start --detach") or
+                  console.log("serve start --detach"). Restricted detection to a
+                  whitelist of actual spawn-like APIs: runKspec, kspec, exec, execSync,
+                  spawn, spawnSync, execFile, execFileSync, and fork.
+                  Added 2 negative test cases covering the false positive scenarios.
+                  Task: @task-lint-rule-test-daemon-cleanup
+                  Spec: @01KNTACP2BXY12MTB2GETNJ7CS
+                  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+              commit 16df879469e62d3ef754cbc73466ba442bb103fe
+
+              Merge: 270b2a075 945626c09
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Apr 9 20:27:09 2026 -0700
+
+                  Merge branch 'dispatch/task/task-test-runner-progress-output/01kntb8y' into dev
+
+              commit bfc112ad754cb512d23d6f95793917495c7cafa4
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Apr 9 20:27:05 2026 -0700
+
+                  fix(lint): use daemon-specific patterns in afterEach and try/finally checks
+                  Extracted hasDaemonCleanupPattern() to share daemon-specific detection
+                  across isAfterEachWithCleanup() and isInTryWithFinallyCleanup(). Now
+                  recognizes process.kill(), .kill("SIG*"), SIGTERM/SIGKILL/SIGINT,
+                  killPid, stopDaemon, stopMockDaemon, and 'serve stop' as valid cleanup.
+                  Previously afterEach only matched SIGTERM/killPid/stopDaemon/'serve stop',
+                  so afterEach(() => process.kill(child.pid)) was a false positive. And
+                  isInTryWithFinallyCleanup used generic 'kill'/'stop' substrings, so
+                  finally { stopUnrelatedFixture() } was a false negative.
+                  Added 3 new test cases: afterEach with process.kill (negative),
+                  afterEach with child.kill("SIGTERM") (negative), try/finally with
+                  unrelated teardown (positive). All 2118 suites pass (7743 tests).
+                  Task: @task-lint-rule-test-daemon-cleanup
+                  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+              commit 945626c09a11f9d123dd912e773ef4724a5f7a16
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Apr 9 20:10:43 2026 -0700
+
+                  fix: make progress test cleanup tolerate missing temp files
+                  Replace fs.unlinkSync() with fs.rmSync({ force: true }) in all progress
+                  test finally blocks to prevent ENOENT errors on repeated targeted runs.
+                  Add defensive pre-cleanup before file creation to handle orphaned temp
+                  files from prior aborted runs.
+                  Verified deterministic with 3 consecutive --fresh runs of
+                  tests/test-runner.test.ts.
+                  Task: @task-test-runner-progress-output
+                  Spec: @task-test-runner-progress-output
+                  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+              commit 98105ed15c18b2af19e8280fa3957089ca379e72
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Apr 9 19:55:23 2026 -0700
+
+                  fix(lint): tighten no-leaky-test-daemon afterEach and forward-scan checks
+                  Two issues from review:
+                  1. afterEach detection was too broad — any afterEach containing generic
+                     'kill' or 'stop' text (e.g., stopUnrelatedFixture()) was treated as
+                     daemon cleanup. Now requires daemon-specific patterns: SIGTERM,
+                     killPid, stopDaemon, or 'serve stop'.
+                  2. Forward cleanup scan accepted cleanup registered after await/expect.
+                     Now stops at the first await or expect() call — cleanup after a
+                     potential failure point is too late.
+                  Added 3 test cases reproducing both reviewer-reported scenarios plus an
+                  expect-after variant. All 17 tests pass, full 3-shard suite green.
+                  Task: @task-lint-rule-test-daemon-cleanup
+                  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+              commit 65b5da6c7c3c49023c6610d6d04405362a963b3e
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Apr 9 19:39:08 2026 -0700
+
+                  fix: exclude progress lines from log file to satisfy AC5
+                  Progress lines (KSPEC_PROGRESS: prefixed) were being written to both
+                  stderr (terminal) and the log file. AC5 requires log file contents to
+                  remain unchanged, so progress lines now go to stderr only.
+                  Added test verifying progress lines are absent from the cached log.
+                  Task: @task-test-runner-progress-output
+                  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+              commit 695a3a850da681a37673a880ca422bb8e4f3e9fa
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Apr 9 19:26:56 2026 -0700
+
+                  feat(lint): add no-leaky-test-daemon rule for daemon cleanup enforcement
+                  Custom oxlint rule that detects daemon-spawning patterns in test files
+                  lacking cleanup registration (onTestFinished, afterEach with kill/stop,
+                  or try/finally). Catches two anti-patterns:
+                  1. Calls with "serve start --detach" without cleanup
+                  2. spawn() targeting dist/daemon/index.js without cleanup
+                  Spawns in named helper functions are exempt (callers manage cleanup).
+                  False positives are worse than false negatives by design.
+                  Includes 14 tests: 5 positive cases (should flag), 8 negative cases
+                  (should pass), and 1 real codebase validation test. Rule wired into
+                  .oxlintrc.json alongside existing custom rules. Zero violations against
+                  current tests/ directory.
+                  Task: @task-lint-rule-test-daemon-cleanup
+                  Spec: @01KNTACP2BXY12MTB2GETNJ7CS
+                  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+              commit 6a061a6a1c7dd5547a4892c9cc24180efb5aef04
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Apr 9 19:08:02 2026 -0700
+
+                  feat: add per-file progress output to test runner non-verbose mode
+                  Add a custom vitest reporter (test-progress-reporter.cjs) that emits one
+                  line per completed test file to stderr via a prefixed marker protocol.
+                  The parent process (test.cjs) strips the prefix and forwards progress
+                  lines to the terminal while routing all other vitest output to the log
+                  file only.
+                  This solves the "is it stuck?" problem: users can now see test files
+                  completing in real time without the full verbose stream (~200 lines
+                  for the full suite vs ~9000+ in verbose mode).
+                  Output format:
+                    PASS tests/parser.test.ts (66 tests, 350ms)
+                    FAIL tests/foo.test.ts (5 tests, 2 failed, 800ms)
+                  - Progress shown only in non-verbose mode (verbose already streams all)
+                  - Suppressed with KSPEC_TEST_PROGRESS=0
+                  - Uses PASS/FAIL markers with green/red ANSI matching existing conventions
+                  - Final summary, exit code, cache behavior, and log contents unchanged
+                  Task: @task-test-runner-progress-output
+                  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+              commit 270b2a07519a9147db0504584b49967c91115179
+
+              Merge: 7b1b85656 57bb82ad5
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Apr 9 18:58:38 2026 -0700
+
+                  Merge branch 'dispatch/task/task-cli-serve-test-daemon-cleanup/01kntacn' into dev
+
+              commit 57bb82ad5bbec60e2718054d5f350febed206225
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Apr 9 17:44:51 2026 -0700
+
+                  fix(test): add explicit cleanup to all daemon-spawning tests in cli-serve.test.ts
+                  Every daemon-spawning test now registers onTestFinished cleanup with
+                  process.kill(pid, SIGTERM) at spawn time, before any assertion that
+                  could throw. This prevents leaked daemons when tests fail mid-assertion.
+                  Key changes:
+                  - Import onTestFinished from vitest
+                  - Add killPid() and waitForChildExit() helpers for cleanup
+                  - Register PID-based cleanup in all 13 daemon-spawning tests
+                  - Tests with isolated envs (no-projects, npm-installed, Bun-unavailable)
+                    get their own cleanup targeting their daemon's PID directly
+                  - Test 827's cleanup uses process.kill() directly instead of CLI
+                    subprocess that depends on custom PATH resolution
+                  - Classification comments document why each test keeps --detach
+                  All tests that use serve status/stop/restart retain serve start --detach
+                  because those CLI commands depend on PID file infrastructure written by
+                  the detach flow.
+                  Task: @task-cli-serve-test-daemon-cleanup
+                  Spec: @daemon-sensitive-cli-test-determinism
+                  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com> shows non-scaffold commits like  (test runner progress output), / (no-leaky-test-daemon lint rule),  (cli serve daemon cleanup), and  (shadow worktree cross-contamination guard) before the scaffold-project-config commits. The diff also still modifies unrelated files such as , , , and . That means merging this branch into  would pull in multiple other tasks that were never part of this review cycle. Rebase or cherry-pick this task onto the integration target so only the scaffold-project-config changes remain, then resubmit for review.
+            created_at: 2026-04-14T19:29:03.797Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-14T19:18:59.898Z
-    updated_at: 2026-04-14T19:19:10.442Z
+    updated_at: 2026-04-14T19:29:03.797Z
     notes: []
