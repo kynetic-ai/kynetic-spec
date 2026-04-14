@@ -13927,6 +13927,22 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-11T10:30:31.053Z
+  - _ulid: 01KP59P8BCYVKF0ZZ0FSRTZT7G
+    type: success
+    content: "Baseline fixture assertion method — capturing git worktree list --porcelain + branch SHA +
+      gitdir pointer + directory mtime + directory inode before and after an operation, then
+      asserting byte-equality — caught a silent-success destructive bug in
+      @task-shadow-worktree-cross-contamination-guard that existence checks would have missed. The
+      linked-worktree init invocation exits 0 but silently destroys main shadow worktree via
+      find_worktree_by_suffix. Pattern worth remembering: when a bug has an
+      exit-0-plus-hidden-mutation shape, prove regression with byte-level snapshot assertions, not
+      existence checks. Reusable helper lives at tests/helpers/worktree-baseline.ts. Consider
+      promoting to a testing convention rule if the same pattern proves useful in a second
+      destructive-bug test context (current N=1; wait for N=2 before generalizing)."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-14T06:08:35.692Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:

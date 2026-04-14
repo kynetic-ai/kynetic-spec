@@ -2458,3 +2458,30 @@ inbox:
     tags: []
     added_by: Jacob Chapel
     created_at: 2026-04-11T09:38:30.211Z
+  - _ulid: 01KP59P85TXWAZXW8GRRJCMRBS
+    text: "Test files are excluded from tsc --noEmit by tsconfig.json (exclude: **/*.test.ts), so
+      test-helper API changes do not surface compile errors for missing required args. Discovered
+      during @task-shadow-worktree-cross-contamination-guard when making kspec() cwd required —
+      TypeScript-only enforcement could not catch missing-cwd callers, so a runtime check had to be
+      added as the actual enforcement mechanism. Systemic latent amplifier: any test-helper contract
+      can silently drift at the call-site layer. Options to explore: add tsconfig.test.json with
+      include: [tests/**/*] wired into CI, or add a vitest typecheck step."
+    tags:
+      - infra
+      - testing
+      - friction
+      - dx
+    added_by: "@claude"
+    created_at: 2026-04-14T06:08:35.514Z
+  - _ulid: 01KP59P88KXQ7RVJF27AACR32H
+    text: "kspec meta list --type convention shows rule counts per domain but not the rule text. kspec
+      meta show prints the meta-spec summary, not per-domain rules. Currently the only way to see
+      current rules for a domain is to read rendered kspec-agents.md output. Proposed: kspec meta
+      show <domain> --rules (or similar) to list rule bodies directly. Low scope but recurring
+      friction when editing or reviewing conventions."
+    tags:
+      - cli
+      - meta
+      - dx
+    added_by: "@claude"
+    created_at: 2026-04-14T06:08:35.603Z
