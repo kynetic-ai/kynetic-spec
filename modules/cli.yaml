@@ -2927,6 +2927,9 @@ features:
           can target without requiring the user to create a separate
           module first. A user can import and derive a plan on a fresh
           project without any intermediate meta commands.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
