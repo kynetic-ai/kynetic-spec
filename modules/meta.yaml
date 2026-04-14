@@ -6727,6 +6727,9 @@ modules:
           every session uniformly so setup does not need to enumerate
           individual agents. Users may disable or remove the hook
           without breaking any other setup invariant.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
