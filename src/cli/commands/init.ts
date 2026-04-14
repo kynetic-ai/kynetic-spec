@@ -2,6 +2,7 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import * as readline from "node:readline/promises";
 import type { Command } from "commander";
+import { ulid } from "ulid";
 import {
   getGitRoot,
   initializeShadow,
@@ -48,22 +49,21 @@ function generateManifest(projectName: string, singleFile: boolean): string {
 }
 
 /**
- * Default module template
+ * Default module template as a referenceable module item.
+ * Creates a real module with a ULID, slug, and type so that
+ * plan derivation can target it without extra setup.
  */
 function generateMainModule(projectName: string): string {
-  return `# ${projectName} - Main Module
-# Add your spec items here
-
-items:
-  - _ulid: # Generate with: node -e "const {ulid} = require('ulid'); console.log(ulid())"
-    slugs: [example-feature]
-    type: feature
-    title: "Example Feature"
-    description: |
-      Describe your feature here.
-    status:
-      maturity: proposed
-      implementation: not_started
+  return `_ulid: ${ulid()}
+slugs:
+  - main
+title: "${projectName} - Main Module"
+type: module
+status:
+  maturity: draft
+  implementation: not_started
+description: |
+  Default module for ${projectName}. Add your spec items here.
 `;
 }
 

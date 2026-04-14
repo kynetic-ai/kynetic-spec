@@ -15,6 +15,7 @@ import { tmpdir } from "node:os";
 import * as path from "node:path";
 import { promisify } from "node:util";
 import { fileURLToPath } from "node:url";
+import { ulid } from "ulid";
 import { isBatchMode } from "../cli/batch-context.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -2505,13 +2506,21 @@ includes:
 }
 
 /**
- * Generate initial module content
+ * Generate initial module content as a referenceable module item.
+ * Creates a real module with a ULID, slug, and type so that
+ * plan derivation can target it without extra setup.
  */
 function generateShadowModule(projectName: string): string {
-  return `# ${projectName} - Main Module
-# Add your spec items here
-
-items: []
+  return `_ulid: ${ulid()}
+slugs:
+  - main
+title: "${projectName} - Main Module"
+type: module
+status:
+  maturity: draft
+  implementation: not_started
+description: |
+  Default module for ${projectName}. Add your spec items here.
 `;
 }
 
