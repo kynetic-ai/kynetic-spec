@@ -25235,7 +25235,7 @@ runs:
     completed_at: 2026-04-10T03:29:49.369Z
   - _ulid: 01KP5G786Y6RA07C04R9FRKCT8
     status: active
-    current_step: 4
+    current_step: 5
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -25274,7 +25274,13 @@ runs:
       - status: completed
         step_index: 4
         started_at: 2026-04-14T08:24:35.504Z
-        completed_at: 2026-04-14T08:24:35.504Z
+        completed_at: 2026-04-14T08:24:44.841Z
+        notes: "User decision: capture only the AC coverage messaging follow-up. Test-runner completion
+          signaling not captured."
+      - status: completed
+        step_index: 5
+        started_at: 2026-04-14T08:24:44.841Z
+        completed_at: 2026-04-14T08:24:44.841Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-14T08:02:44.062Z
