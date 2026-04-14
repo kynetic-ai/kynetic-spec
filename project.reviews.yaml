@@ -140698,6 +140698,13 @@ reviews:
           status: pass
           name: AC annotation scan
         timestamp: 2026-04-14T19:56:25.713Z
+      - _ulid: 01KP6S25R8WV2DD0NN62K34RZ5
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP6S24H2CC5ES74D536JJ80M
+        timestamp: 2026-04-14T19:56:29.320Z
     examined_commit: af9d75e0a7abb47bcd90459f7ec70d16c51e0769
     external_links: []
     lifecycle_state: open
@@ -140707,8 +140714,32 @@ reviews:
       content_hash: ""
       ref: "@01KNXYJ3PYYG1ABH6SMQ2KRE1S"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KP6S24H2CC5ES74D536JJ80M
+        anchor:
+          type: code
+          commit: af9d75e0a7abb47bcd90459f7ec70d16c51e0769
+          line_end: 40
+          line_start: 1
+          path: src/cli/commands/setup-defaults.ts
+          side: head
+        entries:
+          - _ulid: 01KP6S24H2N9T60TBT5S7XS0RN
+            author: Jacob Chapel
+            body: "This branch is still conflated with unrelated work: the task spec is only about scaffolding
+              kspec.config.yaml, but the review diff also adds a new default-agents/conventions
+              scaffold module and companion reflection-hook tests. From the recorded base
+              (7b1b856564b91f28efc8bbb2d3b8e41034fd9a3f) to this head, git diff still includes 522
+              added lines in src/cli/commands/setup-defaults.ts, 636 added / 70 removed lines in
+              tests/setup-builtin-agents.test.ts, and 227 added lines in
+              tests/setup-reflection-hook.test.ts, all covering
+              @default-project-agents-and-conventions or @default-session-reflection-hook instead of
+              @scaffolded-project-config. Approving this would merge unrelated behavior under the
+              wrong task and spec lineage, so the branch still needs to be rebased/cherry-picked
+              down to only the scaffold-project-config changes."
+            created_at: 2026-04-14T19:56:28.066Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-14T19:54:04.755Z
-    updated_at: 2026-04-14T19:56:24.494Z
+    updated_at: 2026-04-14T19:56:28.066Z
     notes: []
