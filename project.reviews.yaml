@@ -141027,7 +141027,19 @@ reviews:
     slugs: []
     title: Review task-meta-set-multi-value
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Head and base f205808d2cf1f58d18f7fdf45435996b4092d52a both report the same pre-existing
+          schema error in .kspec/modules/meta.yaml plus existing repo-wide warnings; no
+          task-specific validation regression observed.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-14T21:05:29.104Z
+        completed_at: 2026-04-14T21:05:29.104Z
     events:
       - _ulid: 01KP6WE687PRSFTMRSVPHBX0B2
         actor: Jacob Chapel
@@ -141049,6 +141061,13 @@ reviews:
           kind: nit
           thread_ulid: 01KP6X0CG0G4HA1CXJV4M021SD
         timestamp: 2026-04-14T21:05:25.953Z
+      - _ulid: 01KP6X0HCZ19A38BJ5DW1RP5Z6
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-14T21:05:30.015Z
     examined_commit: d8f9c25d3b8dad39a6e1b074ec58733867fd3cd7
     external_links: []
     lifecycle_state: open
@@ -141088,5 +141107,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-14T20:55:28.775Z
-    updated_at: 2026-04-14T21:05:24.993Z
+    updated_at: 2026-04-14T21:05:29.104Z
     notes: []
