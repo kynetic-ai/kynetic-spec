@@ -53,7 +53,7 @@ import {
 import { errors } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, output, success, warn } from "../output.js";
-import { resolveDefaultBranch } from "../../agent-runtime/workspace.js";
+import { resolveRemoteHeadBranch } from "../../agent-runtime/workspace.js";
 
 /**
  * Log a message at debug level (only when KSPEC_DEBUG=1)
@@ -1286,7 +1286,13 @@ async function scaffoldProjectConfig(
  * AC: @scaffolded-project-config ac-placeholder-coverage
  */
 async function generateConfigContent(projectDir: string): Promise<string> {
-  const { branch, source } = await resolveDefaultBranch(projectDir);
+  // For scaffolding, only use the remote HEAD to detect the default branch.
+  // If no remote HEAD exists, fall back to the literal "main" — NOT the current
+  // branch, which may be a feature/dispatch branch and would silently scaffold
+  // a wrong dispatch target.
+  const remoteHead = await resolveRemoteHeadBranch(projectDir);
+  const branch = remoteHead ?? "main";
+  const source: "remote-head" | "fallback" = remoteHead ? "remote-head" : "fallback";
 
   const baseBranchComment =
     source === "fallback"
@@ -2060,8 +2066,16 @@ export function registerSetupCommand(program: Command): void {
 
             console.log();
 
+            // AC: @scaffolded-project-config ac-file-valid-on-load — fail loudly on scaffold failure
+            // Check for scaffold failure BEFORE printing success footer to avoid contradictory output
+            const scaffoldStep = result.steps.find((s) => s.name === "Scaffold project config");
+            const hasFatalFailure = scaffoldStep?.status === "failed";
+
             if (dryRun) {
               console.log(chalk.yellow("Run without --dry-run to apply changes."));
+            } else if (hasFatalFailure) {
+              console.log(chalk.red(`Setup failed: ${scaffoldStep.message}`));
+              console.log(chalk.gray("Fix the issue and re-run kspec setup."));
             } else {
               console.log(chalk.green("Setup complete."));
               console.log(chalk.gray("Restart your agent session for changes to take effect."));
@@ -2084,8 +2098,6 @@ export function registerSetupCommand(program: Command): void {
         // AC: @scaffolded-project-config ac-file-valid-on-load — fail loudly on scaffold failure
         const scaffoldStep = result.steps.find((s) => s.name === "Scaffold project config");
         if (scaffoldStep?.status === "failed") {
-          error(`Setup failed: ${scaffoldStep.message}`, undefined);
-          console.error(chalk.gray("Fix the issue and re-run kspec setup."));
           process.exit(EXIT_CODES.ERROR);
         }
       } catch (err) {

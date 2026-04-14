@@ -103,9 +103,35 @@ describe("Scaffold Project Config", () => {
       // Must have base_branch key present
       expect(content).toContain("base_branch:");
 
-      // In a test environment without remotes, should detect current branch
-      // (which is "main" from initGitRepo) or fall back to "main"
+      // In a test environment without remotes, should fall back to "main"
       expect(content).toMatch(/base_branch:\s*"main"/);
+    });
+
+    // AC: @scaffolded-project-config ac-placeholder-base-branch
+    it("scaffolds base_branch as 'main' when no remote exists, even on a non-main branch", async () => {
+      // Regression: resolveDefaultBranch used to fall back to the current branch
+      // before "main". For scaffolding, this is wrong — a feature branch checkout
+      // should not leak into the scaffolded config.
+      initGitRepo(testDir);
+      await fs.writeFile(path.join(testDir, "README.md"), "# Test", "utf-8");
+      execSync('git add README.md && git commit -m "Initial"', {
+        cwd: testDir,
+        stdio: "pipe",
+      });
+      // Create and switch to a non-main branch
+      execSync("git checkout -b dev", { cwd: testDir, stdio: "pipe" });
+
+      const initResult = kspec("init --no-prompt", testDir);
+      expect(initResult.exitCode).toBe(0);
+
+      const result = kspec("setup", testDir);
+      expect(result.exitCode).toBe(0);
+
+      const content = await fs.readFile(path.join(testDir, CONFIG_FILENAME), "utf-8");
+
+      // Must be "main" (the fallback), NOT "dev" (the current branch)
+      expect(content).toMatch(/base_branch:\s*"main"/);
+      expect(content).toContain("fallback");
     });
 
     // AC: @scaffolded-project-config ac-placeholder-coverage
@@ -368,6 +394,27 @@ describe("Scaffold Project Config", () => {
       // Should include guidance about fixing and re-running
       const combined = result.stdout + result.stderr;
       expect(combined).toMatch(/[Ff]ix.*re-run|[Ss]etup failed/i);
+    });
+
+    // Regression: the success footer used to print unconditionally before the
+    // scaffold failure check, producing contradictory output ("Setup complete."
+    // followed by exit 1).
+    it("does NOT print 'Setup complete.' when scaffold step fails", async () => {
+      await setupKspecProject(testDir);
+
+      const configPath = path.join(testDir, CONFIG_FILENAME);
+      await fs.writeFile(configPath, "dispatch:\n  base_branch: old\n", "utf-8");
+      await fs.chmod(configPath, 0o444);
+
+      const result = kspec("setup --force", testDir);
+      await fs.chmod(configPath, 0o644).catch(() => {});
+
+      expect(result.exitCode).not.toBe(0);
+
+      // Must NOT contain the success footer
+      expect(result.stdout).not.toContain("Setup complete.");
+      // Should contain failure messaging instead
+      expect(result.stdout + result.stderr).toMatch(/[Ff]ailed/);
     });
 
     // AC: @trait-error-guidance ac-5
