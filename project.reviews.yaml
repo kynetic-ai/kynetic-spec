@@ -139151,7 +139151,18 @@ reviews:
     slugs: []
     title: Review scaffold project config during init/setup (cycle 4)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed in detached review snapshot: 2140/2140 suites, 7783/7788 tests, 5 skipped.
+          Included scaffold/setup/worktree regression coverage."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-14T19:00:16.550Z
+        completed_at: 2026-04-14T19:00:16.550Z
     events:
       - _ulid: 01KP5SJJR8FCW6RG1VHWYN3BHY
         actor: Jacob Chapel
@@ -139166,6 +139177,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-14T10:46:27.157Z
+      - _ulid: 01KP6NV8Y9CX8SZNBHB4EG6QSW
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-14T19:00:17.481Z
     examined_commit: 303b2298f2b8eb0d7136364c00fd26ab21d50ba5
     external_links: []
     lifecycle_state: open
@@ -139178,7 +139196,7 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-14T10:46:12.489Z
-    updated_at: 2026-04-14T10:46:25.762Z
+    updated_at: 2026-04-14T19:00:16.550Z
     notes: []
   - _ulid: 01KP6HSXBZYXZMMAGGTMXJMTAC
     slugs: []
