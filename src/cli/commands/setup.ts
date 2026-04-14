@@ -834,102 +834,8 @@ function getHookInstallSkipMessage(agentType: AgentType): string {
   return `not applicable for ${agentType}`;
 }
 
-/**
- * Ensure built-in worker and reviewer agent definitions exist in the project meta.
- *
- * Creates task-worker and pr-reviewer agents with dispatch rules that match
- * the prior built-in automation behavior. Skips creation if agents already
- * exist (idempotent).
- *
- * AC: @ralph-replacement ac-2 — built-in worker and reviewer agent definitions
- * created in kynetic.meta.yaml with default dispatch rules matching the prior
- * built-in automation behavior
- */
-async function ensureBuiltInAgents(
-  projectDir: string,
-  dryRun: boolean,
-): Promise<{ created: string[]; skipped: string[] }> {
-  const { initContext } = await import("../../parser/index.js");
-  const { loadMetaContext, saveMetaItem } = await import("../../parser/meta.js");
-  const { ulid } = await import("ulid");
-
-  const created: string[] = [];
-  const skipped: string[] = [];
-
-  try {
-    const ctx = await initContext();
-    if (!ctx.manifestPath) {
-      return { created, skipped };
-    }
-
-    const meta = await loadMetaContext(ctx);
-    const existingIds = new Set((meta.agents || []).map((a) => a.id));
-
-    // Built-in agent definitions — preserve the prior built-in dispatch behavior
-    const builtInAgents = [
-      {
-        id: "task-worker",
-        name: "Task Worker",
-        description:
-          "Autonomous task worker. Picks up automation-eligible ready and needs_work tasks.",
-        capabilities: ["code", "test", "refactor"],
-        tools: ["kspec", "git", "npm"],
-        dispatch: [
-          { on: "task.in_progress", filter: { automation: "eligible" } },
-          { on: "task.ready", filter: { automation: "eligible" } },
-          { on: "task.needs_work", filter: { automation: "eligible" } },
-        ],
-        skills: ["task-work"],
-        concurrency: { max_concurrent: 1 },
-        auto_approve: true,
-      },
-      {
-        id: "pr-reviewer",
-        name: "PR Reviewer",
-        description:
-          "Automated PR reviewer. Reviews pending_review tasks and merges when quality gates pass.",
-        capabilities: ["review"],
-        tools: ["kspec", "git", "gh"],
-        dispatch: [{ on: "task.pending_review" }],
-        skills: ["pr-review"],
-        concurrency: { max_concurrent: 1 },
-        auto_approve: false,
-      },
-    ] as const;
-
-    for (const def of builtInAgents) {
-      if (existingIds.has(def.id)) {
-        skipped.push(def.id);
-        continue;
-      }
-
-      if (!dryRun) {
-        await saveMetaItem(
-          ctx,
-          {
-            _ulid: ulid(),
-            id: def.id,
-            name: def.name,
-            description: def.description,
-            capabilities: [...def.capabilities],
-            tools: [...def.tools],
-            conventions: [],
-            dispatch: def.dispatch.map((r) => ({ ...r })),
-            skills: [...def.skills],
-            concurrency: { ...def.concurrency },
-            auto_approve: def.auto_approve,
-          },
-          "agent",
-        );
-      }
-      created.push(def.id);
-    }
-  } catch (err) {
-    debugLog("ensureBuiltInAgents failed", err);
-  }
-
-  return { created, skipped };
-}
+// ensureBuiltInAgents has been consolidated into scaffoldDefaults (setup-defaults.ts)
+// AC: @default-project-agents-and-conventions — single scaffold site for all defaults
 
 /**
  * Generate kspec-agents.md using the canonical implementation from agents.ts
@@ -1478,20 +1384,32 @@ export async function runSetupPipeline(
       });
     }
 
-    // Step 4b: Ensure built-in worker and reviewer agent definitions exist
-    // AC: @ralph-replacement ac-2 — built-in agents created in kynetic.meta.yaml
+    // Step 4b: Scaffold default agents and conventions
+    // AC: @default-project-agents-and-conventions — single scaffold site for all defaults
     {
-      const agentsBuiltIn = await ensureBuiltInAgents(projectDir, dryRun);
-      const totalNew = agentsBuiltIn.created.length;
-      const totalSkipped = agentsBuiltIn.skipped.length;
-      if (totalNew > 0 || totalSkipped > 0) {
+      const { scaffoldDefaults } = await import("./setup-defaults.js");
+      const { initContext } = await import("../../parser/index.js");
+
+      try {
+        const ctx = await initContext();
+        const scaffoldResult = await scaffoldDefaults(ctx, {
+          dryRun,
+          force: options.force,
+        });
+
+        if (scaffoldResult.items.length > 0) {
+          steps.push({
+            name: "Scaffold default agents and conventions",
+            status: scaffoldResult.message.startsWith("failed:") ? "failed" : "done",
+            message: scaffoldResult.message,
+          });
+        }
+      } catch (err) {
+        debugLog("scaffoldDefaults step failed", err);
         steps.push({
-          name: "Ensure built-in agents",
-          status: "done",
-          message:
-            totalNew > 0
-              ? `created: ${agentsBuiltIn.created.join(", ")}`
-              : `already exist: ${agentsBuiltIn.skipped.join(", ")}`,
+          name: "Scaffold default agents and conventions",
+          status: "failed",
+          message: `failed: ${err instanceof Error ? err.message : String(err)}`,
         });
       }
     }
