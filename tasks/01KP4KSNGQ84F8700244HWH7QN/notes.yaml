@@ -270,3 +270,34 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-13T23:46:03.658Z
+  - _ulid: 01KP4NHD8Y0TPB82SZV3PPQ4J7
+    content: >-
+      Approach (user-approved):
+
+
+      3-layer defense:
+
+      1. Absolute paths to git worktree add/remove in shadow.ts (lines 2777, 2787, 2818, 2958, 2978,
+      205) - closes root cause
+
+      2. Function-level guard assertMainWorkingTree() in shadow.ts - defense in depth
+
+      3. Command-level hard-error in init.ts and setup.ts - user-friendly early exit
+
+
+      Plus:
+
+      - Required cwd in kspec() helper (tests/helpers/cli.ts)
+
+      - Testing convention rule via meta set
+
+      - 6 regression tests with baseline fixture assertion method
+
+      - Shared error message in strings/validation.ts as linkedWorktreeError()
+
+
+      Test-first: write tests, run against unfixed baseline to confirm they catch the bug, implement
+      fix, re-run.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-14T00:16:25.375Z
