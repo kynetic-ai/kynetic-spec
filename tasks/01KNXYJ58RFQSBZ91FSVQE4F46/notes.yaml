@@ -23,3 +23,44 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-14T19:56:34.873Z
+  - _ulid: 01KP6TMVEQY1GHBF8ENZ51Z8JR
+    content: >-
+      Implementation complete. Changes across 3 source files and 3 test files:
+
+
+      Parser (plan-document.ts):
+
+      - parsePlanDocument now returns a warnings array alongside errors
+
+      - Missing title produces a typed missing_title error (was silently "Untitled Plan")
+
+      - AC shape mismatches produce typed ac_shape errors with spec slug, AC id/index, and required
+      field descriptions
+
+      - Empty plans (valid title, no derivable content) produce an empty_plan warning
+
+
+      Import command (plan-import.ts):
+
+      - Validates document structure via parsePlanDocument before saving
+
+      - Missing title or AC shape errors fail with exit 2 and self-contained messages
+
+      - Empty plans succeed with a warning in stderr and JSON warnings array
+
+      - Help text includes a minimal copy-pasteable plan example
+
+      - Dry-run produces identical errors/warnings to real import
+
+
+      Derive command (plan.ts):
+
+      - Empty-plan guard message improved to name both expected sections and point to import --into
+
+
+      Tests: 22 new tests across 3 files (15 CLI import, 2 CLI derive, 5 parser unit).
+
+      All 7773 tests pass (2121 suites).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-14T20:24:09.943Z
