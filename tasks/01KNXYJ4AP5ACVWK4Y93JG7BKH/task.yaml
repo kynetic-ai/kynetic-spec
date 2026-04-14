@@ -157,7 +157,7 @@ description: |
 spec_ref: "@default-project-agents-and-conventions"
 plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -171,8 +171,8 @@ review_ref: "@01KP6KK5YMTAEJCDYWC9KW0PFK"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-default-agents-and-conventions/01knxyj4
-  captured_at: 2026-04-14T18:19:20.818Z
-  commit: 326439565e1a2f14584c3f1028cb186369093f19
+  captured_at: 2026-04-14T18:57:24.779Z
+  commit: a7c72916243514df6efab4bee95db653c74e7a59
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-default-agents-and-conventions/01knxyj4
@@ -491,9 +491,36 @@ history:
         previous: 2026-04-14T18:19:17.526Z
     command: task-start
     timestamp: 2026-04-14T18:57:21.400Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-default-agents-and-conventions/01knxyj4
+          captured_at: 2026-04-14T18:57:24.779Z
+          commit: a7c72916243514df6efab4bee95db653c74e7a59
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-default-agents-and-conventions/01knxyj4
+        previous:
+          review_url: null
+          branch: dispatch/task/task-default-agents-and-conventions/01knxyj4
+          captured_at: 2026-04-14T18:19:20.818Z
+          commit: 326439565e1a2f14584c3f1028cb186369093f19
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-default-agents-and-conventions/01knxyj4
+      submitted_at:
+        new: 2026-04-14T18:57:24.784Z
+        previous: 2026-04-14T18:19:20.823Z
+    command: task-submit
+    timestamp: 2026-04-14T18:57:24.785Z
 prior_status: null
 created_at: 2026-04-11T09:39:25.142Z
 started_at: 2026-04-14T18:57:21.399Z
-submitted_at: 2026-04-14T18:19:20.823Z
+submitted_at: 2026-04-14T18:57:24.784Z
 todos: []
 automation: eligible
