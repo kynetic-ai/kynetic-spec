@@ -136880,6 +136880,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP5PN84M5S48Q8DVP1KCA1W3
         timestamp: 2026-04-14T09:55:15.209Z
+      - _ulid: 01KP5PNBW3WK1G3J4XMVE5MKEC
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP5PNAX9T8RPJ3C7AZB92PBX
+        timestamp: 2026-04-14T09:55:18.019Z
     examined_commit: 8f5854d049e6359236067f8ee3b0c47fa4fec6b7
     external_links: []
     lifecycle_state: open
@@ -136910,7 +136917,29 @@ reviews:
               success signal in the same invocation, and the current tests do not guard against it."
             created_at: 2026-04-14T09:55:14.196Z
         kind: blocker
+      - _ulid: 01KP5PNAX9T8RPJ3C7AZB92PBX
+        anchor:
+          type: code
+          commit: 8f5854d049e6359236067f8ee3b0c47fa4fec6b7
+          line_end: 1270
+          line_start: 1257
+          path: src/cli/commands/setup.ts
+          side: head
+        entries:
+          - _ulid: 01KP5PNAX9M6F0SP615ACCXRYR
+            author: Jacob Chapel
+            body: " now scaffolds  from , which falls back to the current branch before the literal . That
+              violates this task's contract: when the repository default branch cannot be detected,
+              scaffolding is supposed to write , not whichever branch happens to be checked out. I
+              reproduced this in a fresh repo with Reinitialized existing Git repository in
+              /home/chapel/Projects/kynetic-spec-dispatch/.git/worktrees/task-scaffold-project-conf\
+              ig-01knxyj3-review/, no remote, then   cd /home/chapel/Projects/kynetic-spec-dispatch
+              && kspec init; the generated file contained  together with the comment . This means
+              new projects created from a non-default local branch will scaffold a wrong dispatch
+              target and silently drift from the documented behavior."
+            created_at: 2026-04-14T09:55:17.033Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-14T09:43:48.386Z
-    updated_at: 2026-04-14T09:55:14.196Z
+    updated_at: 2026-04-14T09:55:17.033Z
     notes: []
