@@ -136561,6 +136561,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP5NJH59EW8833EVXYZGPDNZ
         timestamp: 2026-04-14T09:36:17.560Z
+      - _ulid: 01KP5NK0B643NPXQX5WSSK9BDS
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP5NJZ83638T1XBZQP3Q5E35
+        timestamp: 2026-04-14T09:36:32.102Z
     examined_commit: ed0456aa9354b0abee7bd8e70dde0857b610cf3e
     external_links: []
     lifecycle_state: open
@@ -136612,7 +136619,27 @@ reviews:
               this coverage is still too weak to catch the regression this task is meant to prevent.
             created_at: 2026-04-14T09:36:16.554Z
         kind: blocker
+      - _ulid: 01KP5NJZ83638T1XBZQP3Q5E35
+        anchor:
+          type: code
+          commit: ed0456aa9354b0abee7bd8e70dde0857b610cf3e
+          line_end: 421
+          line_start: 391
+          path: tests/gitignore-managed-block.test.ts
+          side: head
+        entries:
+          - _ulid: 01KP5NJZ83JZTPMYZCPJN19RM7
+            author: Jacob Chapel
+            body: The new ac-no-untracked-after-common-commands test still does not prove the AC it is annotated
+              to cover. It runs kspec init, commits .gitignore, and immediately checks git status,
+              but it never invokes any post-init command that lazily creates transient state such as
+              the dispatch worktree root, plan drafts, or other later-created paths. Because the
+              assertion passes without exercising those creators, the spec's representative-set
+              behavior remains unverified and this coverage is still too weak to catch the
+              regression this task is meant to prevent.
+            created_at: 2026-04-14T09:36:30.979Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-14T09:30:46.921Z
-    updated_at: 2026-04-14T09:36:16.554Z
+    updated_at: 2026-04-14T09:36:30.979Z
     notes: []
