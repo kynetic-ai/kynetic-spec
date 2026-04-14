@@ -136817,6 +136817,16 @@ reviews:
         runner: npm
         created_at: 2026-04-14T09:55:05.401Z
         completed_at: 2026-04-14T09:55:05.401Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- tests/scaffold-project-config.test.ts passed: 9/9 suites, 18/18 tests."
+        name: scaffold-project-config tests
+        required: true
+        runner: npm
+        created_at: 2026-04-14T09:55:08.203Z
+        completed_at: 2026-04-14T09:55:08.203Z
     events:
       - _ulid: 01KP5P0AD2TY8WJKZF4EQWSNFG
         actor: Jacob Chapel
@@ -136838,6 +136848,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-14T09:55:06.336Z
+      - _ulid: 01KP5PN399VRH9CHRSTQ2FFMDK
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: scaffold-project-config tests
+        timestamp: 2026-04-14T09:55:09.225Z
     examined_commit: 8f5854d049e6359236067f8ee3b0c47fa4fec6b7
     external_links: []
     lifecycle_state: open
@@ -136850,5 +136867,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-14T09:43:48.386Z
-    updated_at: 2026-04-14T09:55:05.401Z
+    updated_at: 2026-04-14T09:55:08.203Z
     notes: []
