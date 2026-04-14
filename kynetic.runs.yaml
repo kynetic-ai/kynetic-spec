@@ -25489,9 +25489,19 @@ runs:
     completed_at: 2026-04-14T10:44:08.161Z
   - _ulid: 01KP6JHPDT8B355FNDRC9YASGJ
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-14T18:02:37.882Z
+        completed_at: 2026-04-14T18:03:02.255Z
+        notes: "Gate passed: fix cycle 3 for task-complete-gitignore. One commit (d2fc82160) with
+          path.isAbsolute guard for absolute worktree_root. Task resubmitted to pending_review."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-14T18:03:02.255Z
+        completed_at: 2026-04-14T18:03:02.255Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-14T18:02:37.882Z
