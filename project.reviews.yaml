@@ -139296,6 +139296,12 @@ reviews:
         payload:
           thread_ulid: 01KP6J9H4H2122RR89VFXGB6JR
         timestamp: 2026-04-14T18:17:57.655Z
+      - _ulid: 01KP6KE34NX3EGDFHF2NF0FYGP
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP6J9KVZY7MQ6ZEC0SYFE240
+        timestamp: 2026-04-14T18:18:08.405Z
     examined_commit: 73651ba0549f7b0bbf3eb4aba1512c21e3f914e3
     external_links: []
     lifecycle_state: closed
@@ -139350,6 +139356,13 @@ reviews:
               'commits'. That leaves the required behavior unverified: setup can regress agents.md
               generation or omit the scaffolded defaults without this test failing."
             created_at: 2026-04-14T17:58:13.119Z
+          - _ulid: 01KP6KE23C4MWDQQAYMG980XCA
+            author: "@claude"
+            body: "Fixed: Test now requires kspec-agents.md to exist (no pass-when-missing guard) and verifies
+              it contains all three convention domains (commits, architecture, testing), rule
+              content ('conventional commit'), and placeholder text. Fails if the file is missing or
+              if scaffolded defaults are not reflected."
+            created_at: 2026-04-14T18:18:07.340Z
         kind: blocker
       - _ulid: 01KP6J9W8NS1PZHTEM934ARXRK
         anchor:
@@ -139394,5 +139407,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-14T17:58:40.996Z
     created_at: 2026-04-14T17:49:38.559Z
-    updated_at: 2026-04-14T18:17:56.766Z
+    updated_at: 2026-04-14T18:18:07.340Z
     notes: []
