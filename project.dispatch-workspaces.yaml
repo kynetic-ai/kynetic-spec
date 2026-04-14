@@ -48187,12 +48187,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-14T21:08:15.589Z
+      updated_at: 2026-04-14T21:09:02.184Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-14T21:08:15.589Z
+      updated_at: 2026-04-14T21:09:02.184Z
     integration:
       status: pending
       detail: null
@@ -48200,17 +48200,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
       target_commit: 7b1b856564b91f28efc8bbb2d3b8e41034fd9a3f
-      updated_at: 2026-04-14T21:08:15.589Z
-    lifecycle_state: integrating
+      updated_at: 2026-04-14T21:09:02.184Z
+    lifecycle_state: ready
     resolved_base_branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
     task_ref: "@01KNXYJ3PYYG1ABH6SMQ2KRE1S"
     task_slug: task-scaffold-project-config
     timestamps:
       closed_at: null
       last_active_at: 2026-04-14T20:54:28.157Z
-      last_reconciled_at: 2026-04-14T21:08:09.608Z
+      last_reconciled_at: 2026-04-14T21:09:02.184Z
       created_at: 2026-04-11T09:41:17.186Z
-      updated_at: 2026-04-14T21:08:22.397Z
+      updated_at: 2026-04-14T21:09:02.184Z
     workspace_id: dispatch-workspace-01KNXYJ3PYYG1ABH6SMQ2KRE1S
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
