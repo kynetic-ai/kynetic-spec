@@ -77,7 +77,7 @@ description: |
 spec_ref: "@scaffolded-project-config"
 plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -96,7 +96,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-scaffold-project-config/01knxyj3
-session_id: null
+session_id: 01KP6TP7MHKR4SV0J439GKSNMW
 history:
   - author: Jacob Chapel
     changes:
@@ -440,8 +440,21 @@ history:
         previous: 01KP6R0ETD8GPCAZXJ4WDF1MMS
     command: review-verdict-needs-work
     timestamp: 2026-04-14T19:59:01.973Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KP6TP7MHKR4SV0J439GKSNMW
+        previous: null
+      started_at:
+        new: 2026-04-14T20:36:30.728Z
+        previous: 2026-04-14T19:51:15.704Z
+    command: task-start
+    timestamp: 2026-04-14T20:36:30.728Z
 created_at: 2026-04-11T09:39:24.510Z
-started_at: 2026-04-14T19:51:15.704Z
+started_at: 2026-04-14T20:36:30.728Z
 submitted_at: 2026-04-14T19:51:19.050Z
 todos: []
 automation: eligible

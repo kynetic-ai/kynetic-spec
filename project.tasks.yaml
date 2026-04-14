@@ -26082,7 +26082,7 @@
   type: task
   spec_ref: "@scaffolded-project-config"
   plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 1
@@ -26094,7 +26094,7 @@
   notes_count: 15
   todos_count: 0
   created_at: 2026-04-11T09:39:24.510Z
-  started_at: 2026-04-14T19:51:15.704Z
+  started_at: 2026-04-14T20:36:30.728Z
   submitted_at: 2026-04-14T19:51:19.050Z
   automation: eligible
 - _ulid: 01KNXYJ40TP75YKCV51RM6H6YZ
