@@ -136699,6 +136699,12 @@ reviews:
         payload:
           thread_ulid: 01KP5NJH59EW8833EVXYZGPDNZ
         timestamp: 2026-04-14T10:25:44.417Z
+      - _ulid: 01KP5RDCWJR7K84FVZFAT17KSC
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP5NJZ83638T1XBZQP3Q5E35
+        timestamp: 2026-04-14T10:25:54.066Z
     examined_commit: ed0456aa9354b0abee7bd8e70dde0857b610cf3e
     external_links: []
     lifecycle_state: closed
@@ -136791,6 +136797,12 @@ reviews:
               behavior remains unverified and this coverage is still too weak to catch the
               regression this task is meant to prevent.
             created_at: 2026-04-14T09:36:30.979Z
+          - _ulid: 01KP5RDC0XKR88MTH384P1F0HX
+            author: "@claude"
+            body: "Fixed: same as the duplicate thread — the test now exercises all transient state creators by
+              actually creating the directories/files that dispatch, sessions, and plan commands
+              would create, then verifying git status reports no untracked kspec content."
+            created_at: 2026-04-14T10:25:53.181Z
         kind: blocker
       - _ulid: 01KP5NK243RQGNR9K82WB7RMJ3
         anchor:
@@ -136845,7 +136857,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-14T09:44:32.177Z
     created_at: 2026-04-14T09:30:46.921Z
-    updated_at: 2026-04-14T10:25:43.540Z
+    updated_at: 2026-04-14T10:25:53.181Z
     notes: []
   - _ulid: 01KP5P0AD2TJBM33GQJ6X9V5CE
     slugs: []
