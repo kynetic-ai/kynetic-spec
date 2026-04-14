@@ -139559,6 +139559,12 @@ reviews:
         payload:
           thread_ulid: 01KP6M45P7K532PFNM3F6CX3Q1
         timestamp: 2026-04-14T18:56:40.028Z
+      - _ulid: 01KP6NMX169TTY9X6XJBSW04KW
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP6M45P7K532PFNM3F6CX3Q1
+        timestamp: 2026-04-14T18:56:48.678Z
     examined_commit: 326439565e1a2f14584c3f1028cb186369093f19
     external_links: []
     lifecycle_state: closed
@@ -139628,6 +139634,8 @@ reviews:
               and pr-reviewer is correctly preserved as my-reviewer."
             created_at: 2026-04-14T18:56:39.109Z
         kind: blocker
+        resolved_at: 2026-04-14T18:56:47.764Z
+        resolved_by: "@claude"
       - _ulid: 01KP6M55QDYY68CBXZD5SFWKQM
         entries:
           - _ulid: 01KP6M55QDF690X5VSKNF9BRQ5
@@ -139653,7 +139661,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-14T18:30:55.320Z
     created_at: 2026-04-14T18:20:55.124Z
-    updated_at: 2026-04-14T18:56:39.109Z
+    updated_at: 2026-04-14T18:56:47.764Z
     notes: []
   - _ulid: 01KP6MQJ4JQQ66QW1BS8B7G3HH
     slugs: []
