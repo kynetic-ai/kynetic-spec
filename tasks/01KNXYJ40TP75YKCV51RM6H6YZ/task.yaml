@@ -61,7 +61,7 @@ description: |
 spec_ref: "@complete-auto-gitignore"
 plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -75,8 +75,8 @@ review_ref: "@01KP5RNAB9WRASR0HJ52N27Q90"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-complete-gitignore/01knxyj4
-  captured_at: 2026-04-14T10:26:55.299Z
-  commit: af2e3dadb9fcf2bd02574cdd0abf3588cc9608a5
+  captured_at: 2026-04-14T18:01:35.166Z
+  commit: e4174f9c2223eb30fc6569ee6a5bc9ca795b14c5
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-complete-gitignore/01knxyj4
@@ -273,8 +273,35 @@ history:
         previous: 2026-04-14T10:26:51.768Z
     command: task-start
     timestamp: 2026-04-14T18:01:28.737Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-complete-gitignore/01knxyj4
+          captured_at: 2026-04-14T18:01:35.166Z
+          commit: e4174f9c2223eb30fc6569ee6a5bc9ca795b14c5
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-complete-gitignore/01knxyj4
+        previous:
+          review_url: null
+          branch: dispatch/task/task-complete-gitignore/01knxyj4
+          captured_at: 2026-04-14T10:26:55.299Z
+          commit: af2e3dadb9fcf2bd02574cdd0abf3588cc9608a5
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-complete-gitignore/01knxyj4
+      submitted_at:
+        new: 2026-04-14T18:01:35.170Z
+        previous: 2026-04-14T10:26:55.303Z
+    command: task-submit
+    timestamp: 2026-04-14T18:01:35.171Z
 created_at: 2026-04-11T09:39:24.826Z
 started_at: 2026-04-14T18:01:28.737Z
-submitted_at: 2026-04-14T10:26:55.303Z
+submitted_at: 2026-04-14T18:01:35.170Z
 todos: []
 automation: eligible
