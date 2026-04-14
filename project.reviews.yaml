@@ -136138,6 +136138,17 @@ reviews:
         runner: vitest
         created_at: 2026-04-14T09:15:24.878Z
         completed_at: 2026-04-14T09:15:24.878Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Repository has pre-existing validation failures unrelated to this task: meta schema error
+          in .kspec/modules/meta.yaml plus existing completeness/alignment warnings."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-14T09:15:30.224Z
+        completed_at: 2026-04-14T09:15:30.224Z
     events:
       - _ulid: 01KP5KRW275JSF4SS2NTFC7BM7
         actor: Jacob Chapel
@@ -136166,6 +136177,13 @@ reviews:
           status: pass
           name: scaffold-project-config tests
         timestamp: 2026-04-14T09:15:25.904Z
+      - _ulid: 01KP5MCGX3KBC38RMT4YJE2P2C
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-14T09:15:31.107Z
     examined_commit: 0da5706286daf663aa2beb1418e4eaa19055f976
     external_links: []
     lifecycle_state: open
@@ -136178,5 +136196,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-14T09:04:47.175Z
-    updated_at: 2026-04-14T09:15:24.878Z
+    updated_at: 2026-04-14T09:15:30.224Z
     notes: []
