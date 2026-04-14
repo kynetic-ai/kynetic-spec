@@ -14075,6 +14075,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-14T18:52:10.396Z
+  - _ulid: 01KP6NS8WVWFQH8C1J5N0M9TK8
+    type: friction
+    content: "Worker agent rebased task branch onto dev instead of integration target, pulling in 13
+      unrelated commits. The dispatch system provides the integration target in task context but
+      doesn't enforce that workers rebase onto it rather than dev/main. Reviewer caught this as a
+      blocker. Could be prevented by: (1) adding a pre-submit check that verifies the branch
+      ancestry matches the integration target, or (2) documenting the rebase-onto-target rule more
+      prominently in the task-work skill's rebase step."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-14T18:59:11.899Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
