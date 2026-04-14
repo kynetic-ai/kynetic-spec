@@ -136223,6 +136223,13 @@ reviews:
             content_hash: ""
           decision: request_changes
         timestamp: 2026-04-14T09:16:18.023Z
+      - _ulid: 01KP5MEGJDNVNMVSSQGGC669KC
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KP5MEFNDT861RKZWJQ2PGGC5
+        timestamp: 2026-04-14T09:16:36.301Z
     examined_commit: 0da5706286daf663aa2beb1418e4eaa19055f976
     external_links: []
     lifecycle_state: closed
@@ -136362,6 +136369,22 @@ reviews:
               dispatch fallback regression under stale remote HEAD refs.
             created_at: 2026-04-14T09:16:08.342Z
         kind: nit
+      - _ulid: 01KP5MEFNDT861RKZWJQ2PGGC5
+        entries:
+          - _ulid: 01KP5MEFNDXQXMANAM8WDQBC3R
+            author: Jacob Chapel
+            body: "Review evidence log: Files read: src/agent-runtime/workspace.ts, src/cli/commands/setup.ts,
+              src/cli/commands/init.ts, src/parser/config.ts, tests/scaffold-project-config.test.ts,
+              tests/helpers/cli.ts. Commands run: kspec task get, kspec review for-task, git diff,
+              kspec validate, rg for AC annotations, node scripts/test.cjs --verbose
+              tests/scaffold-project-config.test.ts, npm test, and a temp-repo reproduction via node
+              --import tsx calling resolveDispatchWorkspaceConfig. Claims verified: prior review
+              blockers were fixed, including shared resolver extraction, scaffold tests and trait
+              annotations, and non-zero exit on scaffold error. Categories searched: correctness,
+              edge cases, error handling, test quality, integration. Finding recorded: dispatch
+              fallback regression under stale remote HEAD refs."
+            created_at: 2026-04-14T09:16:35.373Z
+        kind: nit
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -136378,5 +136401,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-14T09:16:18.023Z
     created_at: 2026-04-14T09:04:47.175Z
-    updated_at: 2026-04-14T09:16:18.023Z
+    updated_at: 2026-04-14T09:16:35.373Z
     notes: []
