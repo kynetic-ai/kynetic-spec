@@ -139216,9 +139216,25 @@ reviews:
           kind: nit
           thread_ulid: 01KP6NVZAGZ2WJGNG314PJ9ETT
         timestamp: 2026-04-14T19:00:41.333Z
+      - _ulid: 01KP6NW2WSZPQGJTHG6Z9SMJ2P
+        actor: "@codex"
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-14T19:00:44.057Z
+      - _ulid: 01KP6NW2WTG8TQN3V66CYHG0W2
+        actor: "@codex"
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-14T19:00:44.058Z
     examined_commit: 303b2298f2b8eb0d7136364c00fd26ab21d50ba5
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -139270,9 +139286,16 @@ reviews:
               handling, integration/runtime behavior.
             created_at: 2026-04-14T19:00:40.401Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: "@codex"
+        role: reviewer
+        created_at: 2026-04-14T19:00:44.057Z
     created_at: 2026-04-14T10:46:12.489Z
-    updated_at: 2026-04-14T19:00:40.401Z
+    updated_at: 2026-04-14T19:00:44.057Z
     notes: []
   - _ulid: 01KP6HSXBZYXZMMAGGTMXJMTAC
     slugs: []
