@@ -139636,6 +139636,24 @@ reviews:
         runner: kspec
         created_at: 2026-04-14T18:50:32.658Z
         completed_at: 2026-04-14T18:50:32.658Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/cli/commands/setup.ts, tests/setup-reflection-hook.test.ts,
+          src/cli/commands/setup-seeding.ts, src/cli/commands/init.ts,
+          tests/setup-pipeline-unification.test.ts. Commands run: git diff, kspec task get, kspec
+          item get @default-session-reflection-hook, kspec validate, rg for AC annotations, npm
+          test, npm test -- --verbose tests/setup-reflection-hook.test.ts, shadow-mode init --setup
+          reproduction. Claims verified: setup scaffolds exactly one session.idle hook with reflect
+          skill; reruns are idempotent; removal is respected without --force; init --setup path
+          scaffolds the hook. Categories searched: correctness, tests, edge cases, integration,
+          error handling; no branch-introduced issues found."
+        name: npm test
+        required: true
+        runner: test-runner
+        created_at: 2026-04-14T18:50:38.190Z
+        completed_at: 2026-04-14T18:50:38.190Z
     events:
       - _ulid: 01KP6MQJ4JCVY695NJ8FK2YVCN
         actor: Jacob Chapel
@@ -139657,6 +139675,13 @@ reviews:
           kind: nit
           thread_ulid: 01KP6N9GFC29ZTKMK37SX58HEX
         timestamp: 2026-04-14T18:50:36.285Z
+      - _ulid: 01KP6N9M9AQ4TAVYWSK5H4MF3T
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-14T18:50:39.274Z
     examined_commit: f6e50c626e48f295fdd3a14f4ab6142b9908c016
     external_links: []
     lifecycle_state: draft
@@ -139680,5 +139705,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-14T18:40:47.250Z
-    updated_at: 2026-04-14T18:50:35.373Z
+    updated_at: 2026-04-14T18:50:38.190Z
     notes: []
