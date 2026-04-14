@@ -61,7 +61,7 @@ description: |
 spec_ref: "@complete-auto-gitignore"
 plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on: []
 context: []
@@ -80,7 +80,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: 01KNXZS4W4FFKQKYWEDY35QKDQ
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -136,6 +136,16 @@ history:
         previous: "@01KNY1GZQP0FK7D8D9GYVYEK0S"
     command: review-link
     timestamp: 2026-04-14T08:33:50.050Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KNXZS4W4FFKQKYWEDY35QKDQ
+    command: review-verdict-needs-work
+    timestamp: 2026-04-14T08:50:22.473Z
 created_at: 2026-04-11T09:39:24.826Z
 started_at: 2026-04-11T10:01:10.823Z
 submitted_at: 2026-04-11T10:29:26.435Z

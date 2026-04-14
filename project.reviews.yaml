@@ -135834,9 +135834,25 @@ reviews:
           kind: nit
           thread_ulid: 01KP5JXY6Q2VKTZD3YH1SHB8RS
         timestamp: 2026-04-14T08:50:05.558Z
+      - _ulid: 01KP5JYDPAA16ETP457Q5CRY6K
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-14T08:50:20.490Z
+      - _ulid: 01KP5JYDPAFGA1VAH5J198EDCT
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-14T08:50:20.491Z
     examined_commit: d8602e6f790919893fc9aa7907493193f5f99411
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -136018,7 +136034,14 @@ reviews:
               shadow-directory handling in setup.
             created_at: 2026-04-14T08:50:04.632Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-14T08:50:20.490Z
     created_at: 2026-04-14T08:33:47.366Z
-    updated_at: 2026-04-14T08:50:04.632Z
+    updated_at: 2026-04-14T08:50:20.490Z
     notes: []
