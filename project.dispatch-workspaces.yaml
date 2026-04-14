@@ -50839,3 +50839,79 @@ workspaces:
         head: f205808d2cf1f58d18f7fdf45435996b4092d52a
         last_seen_at: 2026-04-14T19:53:40.062Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-plan-import-format-guidance-01knxyj5
+  - active_role: null
+    base_branch_point: f205808d2cf1f58d18f7fdf45435996b4092d52a
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-meta-set-multi-value/01knxyj6
+    canonical_branch_head: f205808d2cf1f58d18f7fdf45435996b4092d52a
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-04-14T20:37:37.527Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-04-14T20:37:37.527Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
+      target_commit: f205808d2cf1f58d18f7fdf45435996b4092d52a
+      updated_at: 2026-04-14T20:37:37.527Z
+    lifecycle_state: ready
+    resolved_base_branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
+    task_ref: "@01KNXYJ6GNEEFAAYRXSCPHVNSR"
+    task_slug: task-meta-set-multi-value
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-04-14T20:37:37.527Z
+      created_at: 2026-04-14T20:37:37.527Z
+      updated_at: 2026-04-14T20:37:37.527Z
+    workspace_id: dispatch-workspace-01KNXYJ6GNEEFAAYRXSCPHVNSR
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-meta-set-multi-value/01knxyj6
+        head: f205808d2cf1f58d18f7fdf45435996b4092d52a
+        last_seen_at: 2026-04-14T20:37:37.527Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-meta-set-multi-value-01knxyj6
