@@ -139682,9 +139682,16 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-14T18:50:39.274Z
+      - _ulid: 01KP6N9QB47RPWQN7AXR7E3N2F
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-04-14T18:50:42.404Z
     examined_commit: f6e50c626e48f295fdd3a14f4ab6142b9908c016
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: open
     related_refs: []
     subject:
       type: task
@@ -139705,5 +139712,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-14T18:40:47.250Z
-    updated_at: 2026-04-14T18:50:38.190Z
+    updated_at: 2026-04-14T18:50:41.349Z
     notes: []
