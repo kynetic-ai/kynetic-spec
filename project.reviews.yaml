@@ -135916,6 +135916,66 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-14T08:50:20.491Z
+      - _ulid: 01KP5N13JGF31BJ1Z6B5RH7PKY
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP5J8273XT8CWRBQZ62F0SSQ
+        timestamp: 2026-04-14T09:26:45.585Z
+      - _ulid: 01KP5N15ST4B5XD8EW4533EDAH
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP5J8273XT8CWRBQZ62F0SSQ
+        timestamp: 2026-04-14T09:26:47.866Z
+      - _ulid: 01KP5N183PPVPJH0ZR1PK33EN7
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP5J86S61BMZAAG5EYBDKFXE
+        timestamp: 2026-04-14T09:26:50.230Z
+      - _ulid: 01KP5N1ACTC8YJM2PPB518ZPRA
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP5J86S61BMZAAG5EYBDKFXE
+        timestamp: 2026-04-14T09:26:52.570Z
+      - _ulid: 01KP5N1CMG17Z8WF8308NFG78H
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP5J8K15MRK0X3T497G18TYP
+        timestamp: 2026-04-14T09:26:54.864Z
+      - _ulid: 01KP5N1EWSME3H4GNS1BSA8M4E
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP5J8K15MRK0X3T497G18TYP
+        timestamp: 2026-04-14T09:26:57.178Z
+      - _ulid: 01KP5N1H365ESG0Y6AZF2FRFQB
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP5J8NSRZWN3GW41RCVRQEAT
+        timestamp: 2026-04-14T09:26:59.430Z
+      - _ulid: 01KP5N1KCY01YJMVV8WWEVSGKS
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP5J8NSRZWN3GW41RCVRQEAT
+        timestamp: 2026-04-14T09:27:01.790Z
+      - _ulid: 01KP5N1NN9PKBWA8D0N9MT1NKH
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP5JXY6Q2VKTZD3YH1SHB8RS
+        timestamp: 2026-04-14T09:27:04.105Z
+      - _ulid: 01KP5N1QXJNT050PAEBP29EJHA
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP5JXY6Q2VKTZD3YH1SHB8RS
+        timestamp: 2026-04-14T09:27:06.418Z
     examined_commit: d8602e6f790919893fc9aa7907493193f5f99411
     external_links: []
     lifecycle_state: closed
@@ -135946,7 +136006,15 @@ reviews:
               elsewhere in the codebase. The setup path needs to load project config and pass the
               configured shadow directory through just like init does.
             created_at: 2026-04-14T08:38:07.844Z
+          - _ulid: 01KP5N12NMRE59PE24SHF8FCKQ
+            author: "@claude"
+            body: "Fixed: setup now loads project config via loadProjectConfig() and passes the configured
+              shadow.directory to both buildKspecGitignoreEntries() and ensureKspecGitignore().
+              Added unit tests for custom shadow directory support."
+            created_at: 2026-04-14T09:26:44.659Z
         kind: blocker
+        resolved_at: 2026-04-14T09:26:47.033Z
+        resolved_by: "@claude"
       - _ulid: 01KP5J86S61BMZAAG5EYBDKFXE
         anchor:
           type: code
@@ -136033,7 +136101,16 @@ reviews:
               the task's required AC evidence and must be fixed with standalone per-test annotations
               (or a real N/A handling path that the validator recognizes).
             created_at: 2026-04-14T08:38:12.518Z
+          - _ulid: 01KP5N176W1YFMEXQ3342B0RNG
+            author: "@claude"
+            body: "Fixed: moved all AC annotations from block comments (/** */) to standalone line comments (//
+              AC:). The N/A annotation for ac-force-backs-up-before-overwrite is now a standalone
+              line comment at the top of the test file. Removed duplicate AC annotations from source
+              file JSDoc blocks."
+            created_at: 2026-04-14T09:26:49.308Z
         kind: blocker
+        resolved_at: 2026-04-14T09:26:51.676Z
+        resolved_by: "@claude"
       - _ulid: 01KP5J8K15MRK0X3T497G18TYP
         anchor:
           type: code
@@ -136054,7 +136131,14 @@ reviews:
               task's required AC evidence and must be fixed with standalone per-test annotations, or
               with a real N/A handling path that the validator recognizes.
             created_at: 2026-04-14T08:38:25.061Z
+          - _ulid: 01KP5N1BRRBX8SWZ5QAQ97RG36
+            author: "@claude"
+            body: "Fixed: same as the other AC annotation thread — all annotations are now standalone // AC:
+              line comments recognized by kspec validate."
+            created_at: 2026-04-14T09:26:53.976Z
         kind: blocker
+        resolved_at: 2026-04-14T09:26:56.306Z
+        resolved_by: "@claude"
       - _ulid: 01KP5J8NSRZWN3GW41RCVRQEAT
         anchor:
           type: code
@@ -136077,7 +136161,14 @@ reviews:
               elsewhere in the codebase. The setup path needs to load project config and pass the
               configured shadow directory through just like init does."
             created_at: 2026-04-14T08:38:27.896Z
+          - _ulid: 01KP5N1G844PN2SGCDEKNCVBRD
+            author: "@claude"
+            body: "Fixed: same as the first setup.ts thread — loadProjectConfig() is now called to get the
+              configured shadow directory before the gitignore step executes."
+            created_at: 2026-04-14T09:26:58.564Z
         kind: blocker
+        resolved_at: 2026-04-14T09:27:00.861Z
+        resolved_by: "@claude"
       - _ulid: 01KP5JXY6Q2VKTZD3YH1SHB8RS
         entries:
           - _ulid: 01KP5JXY6Q7FFRX5W71Z37ZQS4
@@ -136099,7 +136190,13 @@ reviews:
               quality, integration. Findings recorded on AC annotation validity and custom
               shadow-directory handling in setup.
             created_at: 2026-04-14T08:50:04.632Z
+          - _ulid: 01KP5N1MSGWWHKD95J4E3V0BGM
+            author: "@claude"
+            body: Acknowledged — all findings have been addressed in this fix cycle.
+            created_at: 2026-04-14T09:27:03.216Z
         kind: nit
+        resolved_at: 2026-04-14T09:27:05.547Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -136109,7 +136206,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-14T08:50:20.490Z
     created_at: 2026-04-14T08:33:47.366Z
-    updated_at: 2026-04-14T08:50:20.490Z
+    updated_at: 2026-04-14T09:27:05.547Z
     notes: []
   - _ulid: 01KP5KRW270JVAKBEW5W45YF97
     slugs: []
