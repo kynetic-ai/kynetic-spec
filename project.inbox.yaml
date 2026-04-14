@@ -2506,3 +2506,14 @@ inbox:
       - meta
     added_by: Jacob Chapel
     created_at: 2026-04-14T19:16:33.342Z
+  - _ulid: 01KP6QNNJ2K775VJ2XDP4YN2HF
+    text: "Add an automated review/merge guard that detects task-branch conflation before approval or
+      merge. This review snapshot for @task-scaffold-project-config contained unrelated commits and
+      files from other tasks (test runner progress output, daemon cleanup linting, shadow worktree
+      guard), and the blocker was only caught by manual git log/diff inspection. Candidate behavior:
+      warn or fail when a task review branch includes commits whose Task:/Spec: trailers do not
+      match the reviewed task/spec, or when diff scope spans known unrelated task areas."
+    tags:
+      - reflection
+    added_by: Jacob Chapel
+    created_at: 2026-04-14T19:32:10.946Z

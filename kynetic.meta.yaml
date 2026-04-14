@@ -14126,6 +14126,27 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-14T19:16:33.148Z
+  - _ulid: 01KP6QNNMJB70XCBS5T1MKFHK7
+    type: friction
+    content: Automated review comments are awkward to post safely when the body contains shell-sensitive
+      text. In this session, a long blocker comment for kspec review had backticks in the body, the
+      shell interpolated them, and the first attempt created a malformed duplicate blocker thread
+      before a retried quoted command succeeded. Consider a body-file/stdin option or safer
+      non-shell input path for long review comments.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-14T19:32:11.026Z
+  - _ulid: 01KP6QNNV7MJA10AWN8N6KTXMP
+    type: success
+    content: "The review workflow correctly prevented an incorrect merge even though the submitted
+      snapshot’s task-specific code looked mostly sound: reading the diff before notes, checking git
+      history against the integration base, and treating merge scope as part of correctness caught
+      branch conflation before manual_merge could pull unrelated tasks into the plan branch."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-14T19:32:11.240Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
