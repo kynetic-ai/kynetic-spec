@@ -14033,6 +14033,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-14T18:20:25.120Z
+  - _ulid: 01KP6M7B10Q016N9XFX6E83TN3
+    type: friction
+    content: Review snapshots in manual_merge mode can arrive rebased onto newer dev commits than the
+      recorded integration target, which makes a clean task review impossible because approving the
+      snapshot would merge unrelated work from other tasks. This session required ancestry
+      inspection against the dispatch-provided target before code-level review. Consider a
+      dispatch/workspace guard that rejects or re-prepares review snapshots when task branches are
+      no longer isolated to the recorded merge target.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-14T18:31:55.680Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
