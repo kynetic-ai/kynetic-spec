@@ -301,3 +301,124 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-14T00:16:25.375Z
+  - _ulid: 01KP4PRQBN3S0FH5SCR7BV21PP
+    content: >-
+      Implementation complete. Ready for review.
+
+
+      (a) File/line changes:
+
+      - src/parser/shadow.ts:
+        * ShadowError union: added LINKED_WORKTREE_NOT_SUPPORTED code.
+        * New exported helpers: buildLinkedWorktreeMessage(), assertMainWorkingTree() — shared message builder + defense-in-depth guard.
+        * initializeShadow: added assertMainWorkingTree() call at entry; replaced bare directoryName with absolute worktreeDir in worktree remove (L2850), worktree add remote (L2860), worktree add --orphan (L2883), worktree add local (L2892).
+        * repairShadow: added assertMainWorkingTree() at entry; replaced directoryName with worktreeDir at worktree remove (L3054) and worktree add (L3075).
+        * createOrphanBranchFallback: replaced bare directoryName with path.join(projectRoot, directoryName) at worktree add (L209), ls-files, and rm -rf paths.
+      - src/cli/commands/init.ts: new imports resolveProjectRoots + buildLinkedWorktreeMessage;
+      added explicit isWorktree detection in the shadow branch mode path BEFORE getGitRoot
+      resolution. Exits non-zero with guidance naming main working tree path when linked. gitRoot
+      now comes from projectRoots?.mainRoot as first choice.
+
+      - src/cli/commands/setup.ts: same imports; linked-worktree guard placed at the very top of the
+      setup action (applies to --status too, because --status uses raw projectDir and would
+      otherwise report confusing state from a linked wt). ensureWorktree() also hardened to resolve
+      mainRoot internally as defense in depth.
+
+      - tests/helpers/cli.ts: kspec() signature now has required cwd: string with runtime check that
+      throws on empty/missing cwd. Deleted cwd ?? process.cwd() fallback.
+
+      - tests/clone-for-testing.test.ts: fixed known offender at L99 that called kspec() without
+      cwd.
+
+      - kspec-agents.md: regenerated after kspec meta set testing --add-rule.
+
+
+      (b) ACs closed per test file:
+
+      - tests/shadow-cross-worktree-isolation.test.ts (5 tests): ac-shadow-ops-scoped-to-main
+      (low-level guard behavior).
+
+      - tests/init-from-linked-worktree-existing-shadow.test.ts (1 test):
+      ac-init-linked-wt-unchanged, ac-init-main-wt-unchanged, ac-init-guidance-direction,
+      ac-init-guidance-path.
+
+      - tests/init-from-linked-worktree-empty-main.test.ts (1 test): same four init ACs for the
+      empty-main edge case.
+
+      - tests/setup-from-linked-worktree.test.ts (1 test): ac-setup-linked-wt-unchanged,
+      ac-setup-main-wt-unchanged, ac-setup-guidance-direction, ac-setup-guidance-path.
+
+      - tests/repair-from-linked-worktree-broken-main.test.ts (1 test): ac-shadow-ops-scoped-to-main
+      — verifies guard does not over-fire on legitimate shadow repair.
+
+      - tests/shadow-lifecycle-concurrent.test.ts (1 test): ac-shadow-ops-concurrent-safety.
+
+
+      All 10 new regression tests use the baseline fixture method from
+      tests/helpers/worktree-baseline.ts (worktree list porcelain + shadow branch SHA + .kspec/.git
+      pointer + mtime + inode).
+
+
+      (c) Before/after /tmp/gw-test style reproducer:
+
+      BEFORE (unfixed code): initializing main shadow on /tmp/gw-test, then running kspec init from
+      /tmp/gw-test/sub (a linked worktree) exited 0 and silently mutated the main working tree
+      shadow. (The failing regression tests I wrote first — exit 0 — confirmed this live against the
+      unfixed baseline.)
+
+      AFTER (/tmp/gw-repro against fixed tsx build): main worktree admin entry and kspec-meta SHA
+      byte-identical before and after; linked-worktree init exits 1 with 'kspec init must be run
+      from the repo main working tree, not a linked worktree. Main working tree: /tmp/gw-repro' and
+      a 'cd /tmp/gw-repro && kspec init' suggestion.
+
+
+      (d) Convention rule added: testing — 'Test helpers that drive kspec CLI subprocesses must
+      require an explicit cwd parameter. Never fall back to process.cwd() — a missing cwd is a test
+      bug, not a default. A silent fallback caused a shadow worktree destruction incident on
+      2026-04-11.' Rule appears in regenerated kspec-agents.md (line 86).
+
+
+      (e) Dispatch smoke test: from /tmp/gw-fix-verify/sub (linked wt) — kspec shadow status (exit
+      0, reports main kspec-meta healthy), kspec shadow log -n 3 (exit 0, shows main branch
+      commits), kspec shadow sync (exit 0, no remote configured), kspec shadow repair against a
+      deliberately broken main .kspec/.git pointer (exit 0, repaired successfully). Confirms
+      read-side and legitimate repair commands remain usable from linked worktrees, as required by
+      ac-shadow-commands and ac-dispatch-cwd.
+
+
+      (f) Grep audit of initializeShadow/repairShadow callers (src/):
+
+      - src/parser/shadow.ts:2728 (definition), 2987 (definition)
+
+      - src/cli/commands/init.ts:237 — initializeShadow(gitRoot, ...) — gitRoot now resolves to
+      projectRoots.mainRoot BEFORE the call; earlier hard-error guard catches linked wt case.
+      Verdict: resolves to main.
+
+      - src/cli/commands/setup.ts:602, :619 — repairShadow(projectRoot, ...) called inside
+      ensureWorktree(), which now uses resolveProjectRoots()?.mainRoot. The command-level guard at
+      setup action entry already exits before ensureWorktree() can run. Verdict: resolves to main
+      (double defense).
+
+      - src/cli/commands/shadow.ts:239 — repairShadow(gitRoot, ...) where gitRoot =
+      resolveCliProjectRoot() which already returned mainRoot pre-fix. Verdict: resolves to main
+      (unchanged).
+
+
+      Test results:
+
+      - Full suite: 2131 suites passed, 7763 tests passed, 5 skipped, 0 failures (1639s on this
+      machine).
+
+      - Targeted regression set: 10/10 pass post-fix. Initial run against unfixed build confirmed
+      init tests failed with exit 0 (caught the bug).
+
+      - oxlint: 0 errors in changed files; pre-existing no-shadow warning in setup.ts is unrelated.
+
+      - tsc --noEmit: passes (src/ files; test files not type-checked by tsc per project config, but
+      runtime check enforces cwd contract).
+
+
+      Commit: 5eee12c46 on dispatch/task/task-shadow-worktree-cross-contamination-guard/01kp4ksn.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-14T00:37:53.653Z
