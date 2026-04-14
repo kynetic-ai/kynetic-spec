@@ -49280,12 +49280,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-14T17:47:14.708Z
+      updated_at: 2026-04-14T17:48:27.058Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-14T17:47:14.708Z
+      updated_at: 2026-04-14T17:48:27.058Z
     integration:
       status: pending
       detail: null
@@ -49293,7 +49293,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
       target_commit: 7b1b856564b91f28efc8bbb2d3b8e41034fd9a3f
-      updated_at: 2026-04-14T17:47:14.708Z
+      updated_at: 2026-04-14T17:48:27.058Z
     lifecycle_state: integrating
     resolved_base_branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
     task_ref: "@01KNXYJ4AP5ACVWK4Y93JG7BKH"
@@ -49301,16 +49301,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-14T09:43:37.965Z
-      last_reconciled_at: 2026-04-14T17:47:14.708Z
+      last_reconciled_at: 2026-04-14T17:48:27.058Z
       created_at: 2026-04-14T09:43:15.144Z
-      updated_at: 2026-04-14T17:47:14.708Z
+      updated_at: 2026-04-14T17:48:27.058Z
     workspace_id: dispatch-workspace-01KNXYJ4AP5ACVWK4Y93JG7BKH
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 73651ba0549f7b0bbf3eb4aba1512c21e3f914e3
+        last_seen_at: 2026-04-14T17:48:27.058Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-default-agents-and-conventions-01knxyj4-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-default-agents-and-conventions/01knxyj4
-        head: 7b1b856564b91f28efc8bbb2d3b8e41034fd9a3f
-        last_seen_at: 2026-04-14T09:43:15.144Z
+        head: 73651ba0549f7b0bbf3eb4aba1512c21e3f914e3
+        last_seen_at: 2026-04-14T17:48:27.058Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-default-agents-and-conventions-01knxyj4
