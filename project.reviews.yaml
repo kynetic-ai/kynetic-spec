@@ -138887,7 +138887,18 @@ reviews:
     slugs: []
     title: Review task-complete-gitignore (cycle 3)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Fails on pre-existing repo-wide schema/alignment issues unrelated to this diff (e.g.
+          .kspec/modules/meta.yaml trait shape error and many existing AC coverage warnings).
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-14T10:39:32.681Z
+        completed_at: 2026-04-14T10:39:32.681Z
     events:
       - _ulid: 01KP5RNAB843NE3X6GG7KD56AR
         actor: Jacob Chapel
@@ -138928,6 +138939,13 @@ reviews:
         payload:
           thread_ulid: 01KP5RQ1ZZJF5W42G4GZYQYJNZ
         timestamp: 2026-04-14T10:32:21.018Z
+      - _ulid: 01KP5S6D8P317DMWPEWD28SXGY
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-14T10:39:33.654Z
     examined_commit: af2e3dadb9fcf2bd02574cdd0abf3588cc9608a5
     external_links: []
     lifecycle_state: open
@@ -138992,5 +139010,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-14T10:30:13.609Z
-    updated_at: 2026-04-14T10:32:19.885Z
+    updated_at: 2026-04-14T10:39:32.681Z
     notes: []
