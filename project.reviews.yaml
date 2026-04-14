@@ -140837,6 +140837,18 @@ reviews:
         runner: npm
         created_at: 2026-04-14T20:49:11.512Z
         completed_at: 2026-04-14T20:49:11.512Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Fails on both af9d75e0a7abb47bcd90459f7ec70d16c51e0769 and the integration branch head
+          f205808d2cf1f58d18f7fdf45435996b4092d52a with the same pre-existing meta.yaml schema error
+          and completeness warnings; not introduced by this task.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-14T20:49:14.540Z
+        completed_at: 2026-04-14T20:49:14.540Z
     events:
       - _ulid: 01KP6VEV0A8ESJ5Y6DCZR305M4
         actor: Jacob Chapel
@@ -140865,6 +140877,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-14T20:49:12.525Z
+      - _ulid: 01KP6W2SR8RGT70RQQC9PJ2094
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-14T20:49:15.528Z
     examined_commit: af9d75e0a7abb47bcd90459f7ec70d16c51e0769
     external_links: []
     lifecycle_state: open
@@ -140897,5 +140916,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-14T20:38:21.450Z
-    updated_at: 2026-04-14T20:49:11.512Z
+    updated_at: 2026-04-14T20:49:14.540Z
     notes: []
