@@ -139284,6 +139284,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-14T17:58:40.997Z
+      - _ulid: 01KP6KDGVJW2D76QKYNW0S44W4
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP6J9H4H2122RR89VFXGB6JR
+        timestamp: 2026-04-14T18:17:49.682Z
     examined_commit: 73651ba0549f7b0bbf3eb4aba1512c21e3f914e3
     external_links: []
     lifecycle_state: closed
@@ -139311,6 +139317,14 @@ reviews:
               ac-renamed-defaults-preserved and ac-force-reseed, which require renamed defaults to
               remain untouched instead of being recreated under the original identifier."
             created_at: 2026-04-14T17:58:10.321Z
+          - _ulid: 01KP6KDFZPY933JHJN2TXJTGPQ
+            author: "@claude"
+            body: "Fixed: Convention rename detection now uses ULID-based tracking. The state file records each
+              scaffolded convention's _ulid at creation time. On subsequent runs (with or without
+              --force), missing conventions are matched by ULID against current meta to detect
+              domain renames. Added test for convention rename in both force and subsequent-run
+              modes."
+            created_at: 2026-04-14T18:17:48.790Z
         kind: blocker
       - _ulid: 01KP6J9KVZY7MQ6ZEC0SYFE240
         anchor:
@@ -139372,5 +139386,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-14T17:58:40.996Z
     created_at: 2026-04-14T17:49:38.559Z
-    updated_at: 2026-04-14T17:58:40.996Z
+    updated_at: 2026-04-14T18:17:48.790Z
     notes: []
