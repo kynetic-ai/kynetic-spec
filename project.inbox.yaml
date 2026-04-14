@@ -2485,3 +2485,13 @@ inbox:
       - dx
     added_by: "@claude"
     created_at: 2026-04-14T06:08:35.603Z
+  - _ulid: 01KP5HF8F9V1V57J3ZW4JBF1WA
+    text: Consider adding an explicit covered-AC field or equivalent data model support so task-complete
+      AC coverage messaging can distinguish blocking uncovered criteria from informational reminders
+      after successful review/merge.
+    tags:
+      - reflection
+      - coverage
+      - tasks
+    added_by: Jacob Chapel
+    created_at: 2026-04-14T08:24:35.049Z
