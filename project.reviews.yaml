@@ -136901,6 +136901,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP5PP697QMNVK6ZB4PX67V83
         timestamp: 2026-04-14T09:55:46.060Z
+      - _ulid: 01KP5PPAAJS9YVS4VZHJ5NJZQS
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP5PP987G9RAW10BNZGWJNBX
+        timestamp: 2026-04-14T09:55:49.202Z
     examined_commit: 8f5854d049e6359236067f8ee3b0c47fa4fec6b7
     external_links: []
     lifecycle_state: open
@@ -138686,7 +138693,27 @@ reviews:
               dispatch target and silently drift from the documented behavior."
             created_at: 2026-04-14T09:55:45.063Z
         kind: blocker
+      - _ulid: 01KP5PP987G9RAW10BNZGWJNBX
+        anchor:
+          type: code
+          commit: 8f5854d049e6359236067f8ee3b0c47fa4fec6b7
+          line_end: 2029
+          line_start: 2004
+          path: src/cli/commands/setup.ts
+          side: head
+        entries:
+          - _ulid: 01KP5PP98736FMQCXJXDYTHWMC
+            author: Jacob Chapel
+            body: "The new failure handling still prints a success footer before exiting non-zero. In `kspec
+              setup`, the summary callback unconditionally writes `Setup complete.` / `Restart your
+              agent session...` at lines 2006-2008, and only afterwards checks whether the scaffold
+              step failed. Repro: make `kspec.config.yaml` read-only, run `kspec setup --force`, and
+              the command exits 1 but stdout still ends with `Setup complete.`. That is the opposite
+              of `fail loudly`: callers get a contradictory success signal in the same invocation,
+              and the current tests do not guard against it."
+            created_at: 2026-04-14T09:55:48.103Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-14T09:43:48.386Z
-    updated_at: 2026-04-14T09:55:45.063Z
+    updated_at: 2026-04-14T09:55:48.103Z
     notes: []
