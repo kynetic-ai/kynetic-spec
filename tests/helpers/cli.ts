@@ -90,10 +90,20 @@ export interface WaitForStartupOptions {
  * Run a kspec CLI command
  *
  * @param args - CLI arguments (e.g., "task list --json")
- * @param cwd - Working directory to run the command in
+ * @param cwd - Working directory to run the command in (REQUIRED)
  * @param options - Optional settings for stdin, error handling, env vars
  * @returns KspecResult with exitCode, stdout, stderr
  * @throws Error if command fails and expectFail is not set
+ *
+ * **cwd is required.** A missing cwd is a test bug, not a default. A silent
+ * `cwd ?? process.cwd()` fallback caused the 2026-04-11 shadow worktree
+ * destruction incident: an unrelated test ran a subprocess that inherited
+ * vitest's cwd and reached the shadow-lifecycle code path with a linked-
+ * worktree cwd, silently destroying the main repo's shadow worktree via
+ * git's shared worktree admin. The explicit-cwd contract removes that
+ * amplifier and makes any future variant fail loudly at its origin.
+ *
+ * AC: @worktree-support ac-shadow-ops-scoped-to-main
  *
  * @example
  * // Simple command
@@ -108,7 +118,18 @@ export interface WaitForStartupOptions {
  * const result = kspec('task set @ref --priority 99', tempDir, { expectFail: true });
  * expect(result.exitCode).toBe(1);
  */
-export function kspec(args: string, cwd?: string, options: KspecOptions = {}): KspecResult {
+export function kspec(args: string, cwd: string, options: KspecOptions = {}): KspecResult {
+  // AC: @worktree-support ac-shadow-ops-scoped-to-main
+  // Enforce explicit cwd at runtime. TypeScript-only enforcement is
+  // insufficient because vitest does not type-check test files; a caller
+  // that omits cwd would otherwise silently inherit the vitest worker's
+  // cwd and could reach the shadow-lifecycle code path against the wrong
+  // working tree. Failing loudly here removes the silent amplifier.
+  if (typeof cwd !== "string" || cwd.length === 0) {
+    throw new Error(
+      "kspec() requires an explicit cwd (non-empty string). A missing cwd is a test bug, not a default. See tests/helpers/cli.ts for rationale.",
+    );
+  }
   const { stdin, expectFail = false, env = {} } = options;
 
   // Build clean env: strip dispatch/session vars that pollute tests when running
@@ -164,7 +185,7 @@ export function kspec(args: string, cwd?: string, options: KspecOptions = {}): K
   // plugin marketplace, daemon PID/port, and agent home-directory probes are
   // scoped to the test project instead of the parent Vitest process.
   const defaultEnv: Record<string, string> = {};
-  const isolatedHomeRoot = cwd ?? process.cwd();
+  const isolatedHomeRoot = cwd;
   try {
     if (statSync(isolatedHomeRoot).isDirectory()) {
       const isolatedHome = path.join(isolatedHomeRoot, ".test-home");
