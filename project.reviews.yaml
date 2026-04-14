@@ -136532,7 +136532,18 @@ reviews:
     slugs: []
     title: Review task-complete-gitignore (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Fails due to pre-existing repo metadata drift outside this diff: schema error in
+          .kspec/modules/meta.yaml (modules[0].traits[0] object instead of string), plus unrelated
+          global completeness/alignment warnings."
+        name: kspec validate
+        required: false
+        created_at: 2026-04-14T09:38:38.907Z
+        completed_at: 2026-04-14T09:38:38.907Z
     events:
       - _ulid: 01KP5N8F89AG5KCFBYGV5GSVPD
         actor: Jacob Chapel
@@ -136582,6 +136593,13 @@ reviews:
           kind: nit
           thread_ulid: 01KP5NPCQVQ84GQP214MY0F70X
         timestamp: 2026-04-14T09:38:24.051Z
+      - _ulid: 01KP5NPX4A3T5REG55RX7YMXZD
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-14T09:38:39.882Z
     examined_commit: ed0456aa9354b0abee7bd8e70dde0857b610cf3e
     external_links: []
     lifecycle_state: open
@@ -136699,5 +136717,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-14T09:30:46.921Z
-    updated_at: 2026-04-14T09:38:23.099Z
+    updated_at: 2026-04-14T09:38:38.907Z
     notes: []
