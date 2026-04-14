@@ -138946,9 +138946,25 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-14T10:39:33.654Z
+      - _ulid: 01KP5S6G3WJD1XCGQG9MZPEA7C
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-14T10:39:36.572Z
+      - _ulid: 01KP5S6G3W4ZFCCG1N83C0ZCGR
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-14T10:39:36.573Z
     examined_commit: af2e3dadb9fcf2bd02574cdd0abf3588cc9608a5
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -139008,7 +139024,14 @@ reviews:
               configuration regresses silently.
             created_at: 2026-04-14T10:31:20.849Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-14T10:39:36.572Z
     created_at: 2026-04-14T10:30:13.609Z
-    updated_at: 2026-04-14T10:39:32.681Z
+    updated_at: 2026-04-14T10:39:36.572Z
     notes: []
