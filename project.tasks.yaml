@@ -26252,7 +26252,7 @@
   type: task
   spec_ref: "@derivable-default-module"
   plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 2
@@ -26264,6 +26264,7 @@
   todos_count: 0
   created_at: 2026-04-11T09:39:25.779Z
   started_at: 2026-04-14T19:19:04.879Z
+  submitted_at: 2026-04-14T19:37:26.856Z
   automation: eligible
 - _ulid: 01KNXYJ58RFQSBZ91FSVQE4F46
   slugs:

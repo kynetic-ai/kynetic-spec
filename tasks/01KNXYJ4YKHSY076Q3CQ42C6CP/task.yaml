@@ -59,7 +59,7 @@ description: |
 spec_ref: "@derivable-default-module"
 plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -69,6 +69,14 @@ tags:
   - modules
   - plans
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-derivable-default-module/01knxyj4
+  captured_at: 2026-04-14T19:37:26.851Z
+  commit: a8ec989d364ab74197cc644ae7e1fd9a929197d5
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KP6PX1QYAZ4QTZF0NSBW9SZQ
 history:
   - author: Jacob Chapel
@@ -91,7 +99,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-14T19:19:04.880Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-derivable-default-module/01knxyj4
+          captured_at: 2026-04-14T19:37:26.851Z
+          commit: a8ec989d364ab74197cc644ae7e1fd9a929197d5
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-04-14T19:37:26.856Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-14T19:37:26.856Z
 created_at: 2026-04-11T09:39:25.779Z
 started_at: 2026-04-14T19:19:04.879Z
+submitted_at: 2026-04-14T19:37:26.856Z
 todos: []
 automation: eligible
