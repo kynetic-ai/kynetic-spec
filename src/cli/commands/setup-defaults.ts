@@ -261,23 +261,21 @@ export async function scaffoldDefaults(
     // Build lookup sets for current meta items
     const existingAgentIds = new Set((meta.agents || []).map((a) => a.id));
     const existingConventionDomains = new Set((meta.conventions || []).map((c) => c.domain));
-    const defaultAgentIds = new Set(DEFAULT_AGENTS.map((a) => a.id));
 
-    // Agents with scaffold tag whose ID is NOT a known default — these are
-    // candidates for renamed defaults. Each can account for at most one
-    // missing default, so we consume them from a mutable set.
-    const unmatchedTaggedAgents = new Set(
-      (meta.agents || [])
-        .filter((a) => a.tags?.includes(SCAFFOLD_TAG) && !defaultAgentIds.has(a.id))
-        .map((a) => a.id),
-    );
-
-    // Build a ULID lookup from state file for convention rename detection.
-    // Map: original domain → ULID assigned at scaffold time.
-    const scaffoldedConventionUlids = new Map<string, string>();
+    // Build ULID lookups from state file for rename detection.
+    // Map: original ID → ULID assigned at scaffold time.
+    const scaffoldedItemUlids = new Map<string, string>();
     for (const rec of state.scaffoldedItems || []) {
-      if (rec.type === "convention" && rec._ulid) {
-        scaffoldedConventionUlids.set(rec.id, rec._ulid);
+      if (rec._ulid) {
+        scaffoldedItemUlids.set(rec.id, rec._ulid);
+      }
+    }
+
+    // Build reverse lookup: ULID → current agent (for rename detection)
+    const agentsByUlid = new Map<string, { id: string }>();
+    for (const agent of meta.agents || []) {
+      if (agent._ulid) {
+        agentsByUlid.set(agent._ulid, agent);
       }
     }
 
@@ -307,15 +305,17 @@ export async function scaffoldDefaults(
 
         // Force mode: check if this specific default was renamed (not deleted)
         if (force && !isFirstRun) {
-          // Consume one unmatched tagged agent to account for this missing default.
-          // If there's at least one unmatched tagged agent, this default was renamed.
-          const firstUnmatched = unmatchedTaggedAgents.values().next();
-          if (!firstUnmatched.done) {
-            unmatchedTaggedAgents.delete(firstUnmatched.value);
-            items.push({ type: "agent", id: def.id, status: "renamed" });
-            continue;
+          const originalUlid = scaffoldedItemUlids.get(def.id);
+          if (originalUlid) {
+            // Check if an agent with that ULID still exists under a different ID
+            const renamedAgent = agentsByUlid.get(originalUlid);
+            if (renamedAgent && renamedAgent.id !== def.id) {
+              items.push({ type: "agent", id: def.id, status: "renamed" });
+              continue;
+            }
+            // ULID exists in state but no agent has it → truly deleted; recreate
           }
-          // No unmatched tagged agents left — this default was truly deleted; recreate it
+          // No ULID in state (legacy state file) → treat missing as truly deleted; recreate
         }
 
         const itemUlid = ulid();
@@ -354,7 +354,7 @@ export async function scaffoldDefaults(
 
         // Force mode: check if this convention was renamed via ULID tracking
         if (force && !isFirstRun) {
-          const originalUlid = scaffoldedConventionUlids.get(def.domain);
+          const originalUlid = scaffoldedItemUlids.get(def.domain);
           if (originalUlid) {
             // We have a ULID from when this convention was first scaffolded.
             // Check if a convention with that ULID still exists under a different domain.
@@ -440,19 +440,21 @@ export async function scaffoldDefaults(
     // AC: @default-project-agents-and-conventions ac-removed-defaults-not-recreated
     // AC: @default-project-agents-and-conventions ac-renamed-defaults-preserved
 
-    // Check agents — use consumed-set approach for per-item rename matching
+    // Check agents — use ULID-based tracking for per-item rename detection
     for (const def of DEFAULT_AGENTS) {
       if (existingAgentIds.has(def.id)) {
         items.push({ type: "agent", id: def.id, status: "exists" });
       } else {
-        // Consume one unmatched tagged agent to account for this missing default
-        const firstUnmatched = unmatchedTaggedAgents.values().next();
-        if (!firstUnmatched.done) {
-          unmatchedTaggedAgents.delete(firstUnmatched.value);
-          items.push({ type: "agent", id: def.id, status: "renamed" });
-        } else {
-          items.push({ type: "agent", id: def.id, status: "removed" });
+        // Check if this agent was renamed via ULID tracking
+        const originalUlid = scaffoldedItemUlids.get(def.id);
+        if (originalUlid) {
+          const renamedAgent = agentsByUlid.get(originalUlid);
+          if (renamedAgent && renamedAgent.id !== def.id) {
+            items.push({ type: "agent", id: def.id, status: "renamed" });
+            continue;
+          }
         }
+        items.push({ type: "agent", id: def.id, status: "removed" });
       }
     }
 
@@ -462,7 +464,7 @@ export async function scaffoldDefaults(
         items.push({ type: "convention", id: def.domain, status: "exists" });
       } else {
         // Check if this convention was renamed via ULID tracking
-        const originalUlid = scaffoldedConventionUlids.get(def.domain);
+        const originalUlid = scaffoldedItemUlids.get(def.domain);
         if (originalUlid) {
           const renamedConv = conventionsByUlid.get(originalUlid);
           if (renamedConv && renamedConv.domain !== def.domain) {

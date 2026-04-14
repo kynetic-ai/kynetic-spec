@@ -425,6 +425,45 @@ describe("kspec setup default agents and conventions — subsequent run", () => 
     expect(result.stdout + result.stderr).toContain("renamed");
   });
 
+  // AC: @default-project-agents-and-conventions ac-renamed-defaults-preserved
+  // AC: @default-project-agents-and-conventions ac-removed-defaults-not-recreated
+  it("correctly distinguishes a renamed agent from a deleted agent on subsequent run", async () => {
+    // Rename pr-reviewer (index 1) to my-reviewer, delete task-worker (index 0).
+    // The ULID-based tracking should correctly identify pr-reviewer as renamed
+    // and task-worker as removed, regardless of processing order.
+    const metaPath = path.join(tempDir, "kynetic.meta.yaml");
+    const rawContent = await fs.readFile(metaPath, "utf-8");
+    const raw = YAML.parse(rawContent) as RawMeta;
+    const reviewer = (raw.agents || []).find((a) => a.id === "pr-reviewer");
+    expect(reviewer).toBeDefined();
+    reviewer!.id = "my-reviewer";
+    reviewer!.name = "My Reviewer";
+    raw.agents = (raw.agents || []).filter((a) => a.id !== "task-worker");
+    await fs.writeFile(metaPath, YAML.stringify(raw), "utf-8");
+
+    // Run setup again (no force)
+    const result = await kspec("setup --no-hooks --skip-skills", tempDir);
+    expect(result.exitCode).toBe(0);
+
+    // task-worker should be reported as removed (not renamed)
+    const meta = await readMeta(tempDir);
+    const worker = (meta.agents || []).find((a) => a.id === "task-worker");
+    expect(worker).toBeUndefined();
+
+    // pr-reviewer should be reported as renamed (not removed)
+    const originalReviewer = (meta.agents || []).find((a) => a.id === "pr-reviewer");
+    expect(originalReviewer).toBeUndefined();
+
+    // my-reviewer should still exist
+    const renamedReviewer = (meta.agents || []).find((a) => a.id === "my-reviewer");
+    expect(renamedReviewer).toBeDefined();
+
+    // Output should mention both renamed and removed
+    const output = result.stdout + result.stderr;
+    expect(output).toContain("renamed");
+    expect(output).toContain("removed");
+  });
+
   // AC: @default-project-agents-and-conventions ac-removed-defaults-not-recreated
   it("does not recreate a removed convention on subsequent run", async () => {
     // Remove the architecture convention
@@ -568,6 +607,44 @@ describe("kspec setup default agents and conventions — force reseed", () => {
     // Renamed convention should still exist
     const customArch = (meta.conventions || []).find((c) => c.domain === "custom-architecture");
     expect(customArch).toBeDefined();
+  });
+
+  // AC: @default-project-agents-and-conventions ac-force-reseed
+  // AC: @default-project-agents-and-conventions ac-renamed-defaults-preserved
+  it("force recreates a deleted agent when the renamed agent appears later in DEFAULT_AGENTS order", async () => {
+    // Reproduction case from review: rename pr-reviewer (index 1) to my-reviewer,
+    // delete task-worker (index 0). With greedy consumed-set approach, task-worker
+    // would incorrectly consume pr-reviewer's scaffold tag and report "renamed"
+    // instead of recreating task-worker.
+    const metaPath = path.join(tempDir, "kynetic.meta.yaml");
+    const rawContent = await fs.readFile(metaPath, "utf-8");
+    const raw = YAML.parse(rawContent) as RawMeta;
+    const reviewer = (raw.agents || []).find((a) => a.id === "pr-reviewer");
+    expect(reviewer).toBeDefined();
+    reviewer!.id = "my-reviewer";
+    reviewer!.name = "My Reviewer";
+    raw.agents = (raw.agents || []).filter((a) => a.id !== "task-worker");
+    await fs.writeFile(metaPath, YAML.stringify(raw), "utf-8");
+
+    // Run setup with --force
+    const result = await kspec("setup --no-hooks --skip-skills --force", tempDir);
+    expect(result.exitCode).toBe(0);
+
+    const meta = await readMeta(tempDir);
+
+    // task-worker (deleted) SHOULD be recreated
+    const worker = (meta.agents || []).find((a) => a.id === "task-worker");
+    expect(worker).toBeDefined();
+    expect(worker!.auto_approve).toBe(true);
+    expect(worker!.tags).toContain("scaffold-default");
+
+    // pr-reviewer (renamed to my-reviewer) should NOT be recreated
+    const originalReviewer = (meta.agents || []).find((a) => a.id === "pr-reviewer");
+    expect(originalReviewer).toBeUndefined();
+
+    // my-reviewer (renamed from pr-reviewer) should still exist
+    const renamedReviewer = (meta.agents || []).find((a) => a.id === "my-reviewer");
+    expect(renamedReviewer).toBeDefined();
   });
 
   it("force-reseeds a missing convention", async () => {
