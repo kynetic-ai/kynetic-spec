@@ -136894,6 +136894,13 @@ reviews:
           kind: nit
           thread_ulid: 01KP5PNDNKVB2WZ3DY6CQPSKX2
         timestamp: 2026-04-14T09:55:20.810Z
+      - _ulid: 01KP5PP78BBP7Q8JZE0N7MT05S
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP5PP697QMNVK6ZB4PX67V83
+        timestamp: 2026-04-14T09:55:46.060Z
     examined_commit: 8f5854d049e6359236067f8ee3b0c47fa4fec6b7
     external_links: []
     lifecycle_state: open
@@ -138657,7 +138664,29 @@ reviews:
               correctness, edge cases, error handling, test quality, integration.
             created_at: 2026-04-14T09:55:19.859Z
         kind: nit
+      - _ulid: 01KP5PP697QMNVK6ZB4PX67V83
+        anchor:
+          type: code
+          commit: 8f5854d049e6359236067f8ee3b0c47fa4fec6b7
+          line_end: 1270
+          line_start: 1257
+          path: src/cli/commands/setup.ts
+          side: head
+        entries:
+          - _ulid: 01KP5PP697P0V6XZTPGZ5KHXVR
+            author: Jacob Chapel
+            body: "`generateConfigContent()` now scaffolds `dispatch.base_branch` from `resolveDefaultBranch()`,
+              which falls back to the current branch before the literal `\"main\"`. That violates
+              this task's contract: when the repository default branch cannot be detected,
+              scaffolding is supposed to write `\"main\"`, not whichever branch happens to be
+              checked out. I reproduced this in a fresh repo with `git init -b dev`, no remote, then
+              `kspec init --no-prompt && kspec setup`; the generated file contained `base_branch:
+              \"dev\"` together with the comment `Resolved from repository default branch.`. This
+              means new projects created from a non-default local branch will scaffold a wrong
+              dispatch target and silently drift from the documented behavior."
+            created_at: 2026-04-14T09:55:45.063Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-14T09:43:48.386Z
-    updated_at: 2026-04-14T09:55:19.859Z
+    updated_at: 2026-04-14T09:55:45.063Z
     notes: []
