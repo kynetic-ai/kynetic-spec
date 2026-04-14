@@ -139163,6 +139163,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP6J9H4H2122RR89VFXGB6JR
         timestamp: 2026-04-14T17:58:11.288Z
+      - _ulid: 01KP6J9MWFG2DR41VHGGSSGDP4
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP6J9KVZY7MQ6ZEC0SYFE240
+        timestamp: 2026-04-14T17:58:14.159Z
     examined_commit: 73651ba0549f7b0bbf3eb4aba1512c21e3f914e3
     external_links: []
     lifecycle_state: open
@@ -139191,7 +139198,24 @@ reviews:
               remain untouched instead of being recreated under the original identifier."
             created_at: 2026-04-14T17:58:10.321Z
         kind: blocker
+      - _ulid: 01KP6J9KVZY7MQ6ZEC0SYFE240
+        anchor:
+          type: code
+          commit: 73651ba0549f7b0bbf3eb4aba1512c21e3f914e3
+          line_end: 282
+          line_start: 262
+          path: tests/setup-builtin-agents.test.ts
+          side: head
+        entries:
+          - _ulid: 01KP6J9KVZSMNNTQ85MZQ4E3HG
+            author: Jacob Chapel
+            body: "This AC-annotated test does not prove ac-agents-md-reflects-defaults. It passes when
+              kspec-agents.md is missing, and when the file exists it only checks for the word
+              'commits'. That leaves the required behavior unverified: setup can regress agents.md
+              generation or omit the scaffolded defaults without this test failing."
+            created_at: 2026-04-14T17:58:13.119Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-14T17:49:38.559Z
-    updated_at: 2026-04-14T17:58:10.321Z
+    updated_at: 2026-04-14T17:58:13.119Z
     notes: []
