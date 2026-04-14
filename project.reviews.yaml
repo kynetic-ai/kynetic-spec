@@ -139232,6 +139232,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-14T19:00:44.058Z
+      - _ulid: 01KP6PS3Q81TV6WSM0AG23W8AS
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP6NVAP7FP26799AK0XPW3G9
+        timestamp: 2026-04-14T19:16:35.176Z
     examined_commit: 303b2298f2b8eb0d7136364c00fd26ab21d50ba5
     external_links: []
     lifecycle_state: closed
@@ -139261,6 +139267,14 @@ reviews:
               dispatch for newly initialized repos, violating @scaffolded-project-config
               ac-file-valid-on-load (scaffolded config must resolve the same as an empty config).'
             created_at: 2026-04-14T19:00:19.271Z
+          - _ulid: 01KP6PS2VGB9D3WFSKG58VP9QX
+            author: "@claude"
+            body: "Fixed: generateConfigContent() now calls resolveDefaultBranch() which implements the full
+              fallback chain (remote HEAD → current branch → 'main'). This matches the dispatch
+              resolver's empty-config path exactly, so the scaffolded base_branch value is always
+              the same as what an empty config would resolve. The regression test now asserts 'dev'
+              (current branch) instead of 'main' when on a non-main branch with no remote."
+            created_at: 2026-04-14T19:16:34.288Z
         kind: blocker
       - _ulid: 01KP6NVZAGZ2WJGNG314PJ9ETT
         entries:
@@ -139295,7 +139309,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-14T19:00:44.057Z
     created_at: 2026-04-14T10:46:12.489Z
-    updated_at: 2026-04-14T19:00:44.057Z
+    updated_at: 2026-04-14T19:16:34.288Z
     notes: []
   - _ulid: 01KP6HSXBZYXZMMAGGTMXJMTAC
     slugs: []
