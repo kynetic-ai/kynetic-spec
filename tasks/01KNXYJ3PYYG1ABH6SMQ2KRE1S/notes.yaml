@@ -160,3 +160,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-14T19:30:17.236Z
+  - _ulid: 01KP6RR7J1G6117W4WBKKKRQS0
+    content: "Fix cycle 5: addressed blocker — branch contained unrelated commits from other tasks (test
+      runner progress, lint rules, daemon cleanup, shadow worktree guard). Rebased onto latest
+      integration target (f205808d2) using git rebase --onto to cherry-pick only the 5
+      scaffold-project-config commits. Resolved merge conflict in setup.ts where the new reflection
+      hook step (from integration target) and the scaffold step both targeted step 4c — kept both,
+      renumbered scaffold to step 4d. Verified: git diff --stat shows only 5 scaffold-related files
+      changed, all 7772 tests pass (20 scaffold-specific), no unrelated code remains."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-14T19:51:03.489Z
