@@ -139238,6 +139238,12 @@ reviews:
         payload:
           thread_ulid: 01KP6NVAP7FP26799AK0XPW3G9
         timestamp: 2026-04-14T19:16:35.176Z
+      - _ulid: 01KP6PSBE0RYSQBMQTVGYDB4FJ
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP6NVAP7FP26799AK0XPW3G9
+        timestamp: 2026-04-14T19:16:43.072Z
     examined_commit: 303b2298f2b8eb0d7136364c00fd26ab21d50ba5
     external_links: []
     lifecycle_state: closed
@@ -139276,6 +139282,8 @@ reviews:
               (current branch) instead of 'main' when on a non-main branch with no remote."
             created_at: 2026-04-14T19:16:34.288Z
         kind: blocker
+        resolved_at: 2026-04-14T19:16:42.210Z
+        resolved_by: "@claude"
       - _ulid: 01KP6NVZAGZ2WJGNG314PJ9ETT
         entries:
           - _ulid: 01KP6NVZAH3NM7PQ72F5TVJGGB
@@ -139309,7 +139317,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-14T19:00:44.057Z
     created_at: 2026-04-14T10:46:12.489Z
-    updated_at: 2026-04-14T19:16:34.288Z
+    updated_at: 2026-04-14T19:16:42.210Z
     notes: []
   - _ulid: 01KP6HSXBZYXZMMAGGTMXJMTAC
     slugs: []
