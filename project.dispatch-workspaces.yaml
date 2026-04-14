@@ -49282,7 +49282,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-14T19:16:07.952Z
+      updated_at: 2026-04-14T19:17:47.020Z
     integration:
       status: merged
       detail: integration:merged
@@ -49298,18 +49298,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-14T19:03:46.846Z
-      last_reconciled_at: 2026-04-14T19:17:45.265Z
+      last_reconciled_at: 2026-04-14T19:17:47.020Z
       created_at: 2026-04-14T09:43:15.144Z
-      updated_at: 2026-04-14T19:17:45.265Z
+      updated_at: 2026-04-14T19:17:47.020Z
     workspace_id: dispatch-workspace-01KNXYJ4AP5ACVWK4Y93JG7BKH
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: a7c72916243514df6efab4bee95db653c74e7a59
-        last_seen_at: 2026-04-14T19:03:23.691Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-default-agents-and-conventions-01knxyj4-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-default-agents-and-conventions/01knxyj4
