@@ -14055,6 +14055,26 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-14T18:31:56.108Z
+  - _ulid: 01KP6NCCZMTW9RHPX9A8XEXZVM
+    type: friction
+    content: Review sessions still have to treat repository-wide kspec validate failures as ambient
+      noise. In this session, validate failed for pre-existing schema/completeness issues unrelated
+      to the task under review, so approval depended on manually classifying the result as
+      non-blocking instead of using validate as a clean gate.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-14T18:52:10.101Z
+  - _ulid: 01KP6NCD8W898ZYC6MFHX6ZXFH
+    type: success
+    content: "The review record plus manual merge flow worked well for an autonomous review cycle:
+      create review, record checks with evidence, approve, merge the dispatch branch into the
+      integration branch, and complete the task in one pass. The state transitions and audit trail
+      were clear and machine-readable."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-14T18:52:10.396Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
