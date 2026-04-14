@@ -139467,6 +139467,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-14T18:21:17.429Z
+      - _ulid: 01KP6M3ZK85J13MK82DXEJFMRV
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP6M3YBBQZY441WG556GFQ9D
+        timestamp: 2026-04-14T18:30:05.672Z
     examined_commit: 326439565e1a2f14584c3f1028cb186369093f19
     external_links: []
     lifecycle_state: open
@@ -139476,8 +139483,27 @@ reviews:
       content_hash: ""
       ref: "@01KNXYJ4AP5ACVWK4Y93JG7BKH"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KP6M3YBBQZY441WG556GFQ9D
+        anchor:
+          type: code
+          commit: 326439565e1a2f14584c3f1028cb186369093f19
+          line_end: 32
+          line_start: 25
+          path: src/parser/shadow.ts
+          side: head
+        entries:
+          - _ulid: 01KP6M3YBB4GCR65VRTK01ZJN5
+            author: Jacob Chapel
+            body: This branch is no longer isolated to @default-project-agents-and-conventions. Relative to the
+              recorded integration target 7b1b856564b9, the reviewed head brings in 15 extra commits
+              including unrelated shadow/test-runner/lint work (for example 5eee12c46 touching
+              src/parser/shadow.ts and 6a061a6a1 touching scripts/test.cjs). Because publication
+              mode is manual_merge back into plan/plan-init-setup-and-upgrade-rough-edges/01knvahv,
+              approving this snapshot would merge unrelated work from other tasks into that branch.
+            created_at: 2026-04-14T18:30:04.395Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-14T18:20:55.124Z
-    updated_at: 2026-04-14T18:21:16.458Z
+    updated_at: 2026-04-14T18:30:04.395Z
     notes: []
