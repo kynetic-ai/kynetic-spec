@@ -140665,7 +140665,18 @@ reviews:
     slugs: []
     title: Review @01KNXYJ3PYYG1ABH6SMQ2KRE1S
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Reviewed @scaffolded-project-config and confirmed matching annotations in
+          tests/scaffold-project-config.test.ts for spec ACs plus @trait-idempotent-file-scaffold
+          and @trait-error-guidance coverage/N-A lines.
+        name: AC annotation scan
+        required: true
+        created_at: 2026-04-14T19:56:24.494Z
+        completed_at: 2026-04-14T19:56:24.494Z
     events:
       - _ulid: 01KP6RXRJJZP27JAWFYFFT5Y2W
         actor: Jacob Chapel
@@ -140680,6 +140691,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-14T19:55:10.196Z
+      - _ulid: 01KP6S227GAC9JWTJVK8R477Q2
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: AC annotation scan
+        timestamp: 2026-04-14T19:56:25.713Z
     examined_commit: af9d75e0a7abb47bcd90459f7ec70d16c51e0769
     external_links: []
     lifecycle_state: open
@@ -140692,5 +140710,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-14T19:54:04.755Z
-    updated_at: 2026-04-14T19:55:08.988Z
+    updated_at: 2026-04-14T19:56:24.494Z
     notes: []
