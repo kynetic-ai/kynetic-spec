@@ -49864,13 +49864,14 @@ workspaces:
   - active_role: null
     base_branch_point: f205808d2cf1f58d18f7fdf45435996b4092d52a
     bootstrap:
-      status: not_run
-      canonicalBranchHead: null
-      configHash: null
+      status: succeeded
+      canonicalBranchHead: f205808d2cf1f58d18f7fdf45435996b4092d52a
+      configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
       failureMessage: null
-      invalidationReasons: []
-      lastRole: null
-      lastRunAt: null
+      invalidationReasons:
+        - workspace-build-missing
+      lastRole: worker
+      lastRunAt: 2026-04-14T19:18:42.908Z
       roleStates:
         reviewer:
           status: not_run
@@ -49881,14 +49882,325 @@ workspaces:
           lastRunAt: null
           steps: []
         worker:
-          status: not_run
-          canonicalBranchHead: null
-          configHash: null
+          status: succeeded
+          canonicalBranchHead: f205808d2cf1f58d18f7fdf45435996b4092d52a
+          configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
           failureMessage: null
-          invalidationReasons: []
-          lastRunAt: null
-          steps: []
-      steps: []
+          invalidationReasons:
+            - workspace-build-missing
+          lastRunAt: 2026-04-14T19:18:42.908Z
+          steps:
+            - status: succeeded
+              allowTrackedChanges: false
+              idempotent: true
+              name: build-workspace-artifacts
+              output: >-
+                > @kynetic-ai/spec@0.12.0 build
+
+                > tsc && chmod +x dist/cli/index.js && npm run build:shared && npm run build:daemon
+                && npm run build:web-ui && npm run build:plugin
+
+
+
+                > @kynetic-ai/spec@0.12.0 build:shared
+
+                > cd packages/shared && npm run build
+
+
+
+                > @kynetic-ai/shared@0.1.0 build
+
+                > tsc
+
+
+
+                > @kynetic-ai/spec@0.12.0 build:daemon
+
+                > node scripts/build-daemon.cjs
+
+
+
+                > @kynetic-ai/spec@0.12.0 build:web-ui
+
+                > shx rm -rf dist/web-ui && cd packages/web-ui && npm run build && shx cp -r build
+                ../../dist/web-ui
+
+
+
+                > @kynetic-ai/web-ui@0.1.0 build
+
+                > svelte-kit sync && vite build
+
+
+                vite v7.3.1 building ssr environment for production...
+
+                transforming...
+
+                ✓ 4542 modules transformed.
+
+                rendering chunks...
+
+                vite v7.3.1 building client environment for production...
+
+                transforming...
+
+                ✓ 4688 modules transformed.
+
+                rendering chunks...
+
+                computing gzip size...
+
+                .svelte-kit/output/client/_app/version.json                                    0.03
+                kB │ gzip:  0.05 kB
+
+                .svelte-kit/output/client/.vite/manifest.json                                 32.90
+                kB │ gzip:  3.57 kB
+
+                .svelte-kit/output/client/_app/immutable/assets/select-trigger.CV-KWLNP.css    0.29
+                kB │ gzip:  0.15 kB
+
+                .svelte-kit/output/client/_app/immutable/assets/12.BwwJybWx.css                1.26
+                kB │ gzip:  0.41 kB
+
+                .svelte-kit/output/client/_app/immutable/assets/0.BzSixdzL.css               115.67
+                kB │ gzip: 18.58 kB
+
+                .svelte-kit/output/client/_app/immutable/entry/start.BYU3mzfj.js               0.08
+                kB │ gzip:  0.09 kB
+
+                .svelte-kit/output/client/_app/immutable/chunks/DjEOUFjt.js                    0.11
+                kB │ gzip:  0.10 kB
+
+                .svelte-kit/output/client/_app/immutable/chunks/CG4ZpZfk.js                    0.18
+                kB │ gzip:  0.14 kB
+
+                .svelte-kit/output/client/_app/immutable/chunks/nYLV_lRo.js                    0.20
+                kB │ gzip:  0.18 kB
+
+                .svelte-kit/output/client/_app/immutable/chunks/D0XAlxlU.js                    0.23
+                kB │ gzip:  0.16 kB
+
+                .svelte-kit/output/client/_app/immutable/chunks/KcAf2G3T.js                    0.30
+                kB │ gzip:  0.23 kB
+
+                .svelte-kit/output/client/_app/immutable/chunks/gAKTDw7A.js                    0.44
+                kB │ gzip:  0.32 kB
+
+                .svelte-kit/output/client/_app/immutable/chunks/DQS4n12f.js                    0.45
+                kB │ gzip:  0.32 kB
+
+                .svelte-kit/output/client/_app/immutable/chunks/DGW7R2I2.js                    0.45
+                kB │ gzip:  0.32 kB
+
+                .svelte-kit/output/client/_app/immutable/nodes/1.BZKZ_HFL.js                   0.46
+                kB │ gzip:  0.29 kB
+
+                .svelte-kit/output/client/_app/immutable/chunks/JzJNJp4k.js                    0.46
+                kB │ gzip:  0.33 kB
+
+                .svelte-kit/output/client/_app/immutable/chunks/DpdiqC9U.js                    0.46
+                kB │ gzip:  0.32 kB
+
+                .svelte-kit/output/client/_app/immutable/chunks/BRSmzQKN.js                    0.47
+                kB │ gzip:  0.34 kB
+
+                .svelte-kit/output/client/_app/immutable/chunks/DN28PpOM.js                    0.47
+                kB │ gzip:  0.33 kB
+
+                .svelte-kit/output/client/_app/immutable/chunks/pqrOn-9H.js                    0.48
+                kB │ gzip:  0.29 kB
+
+                .svelte-kit/output/client/_app/immutable/chunks/BYZxSgko.js                    0.48
+                kB │ gzip:  0.34 kB
+
+                .svelte-kit/output/client/_app/immutable/chunks/CS_mItNy.js                    0.49
+                kB │ gzip:  0.34 kB
+
+                .svelte-kit/output/client/_app/immutable/chunks/BSavRELv.js                    0.51
+                kB │ gzip:  0.36 kB
+
+                .svelte-kit/output/client/_app/immutable/chunks/C7vYZMmK.js                    0.51
+                kB │ gzip:  0.35 kB
+
+                .svelte-kit/output/client/_app/immutable/chunks/DnFVet3o.js                    0.52
+                kB │ gzip:  0.37 kB
+
+                .svelte-kit/output/client/_app/immutable/chunks/Dcz87iOb.js                    0.53
+                kB │ gzip:  0.34 kB
+
+                .svelte-kit/output/client/_app/immutable/chunks/eUNBEVDN.js                    0.55
+                kB │ gzip:  0.38 kB
+
+                .svelte-kit/output/client/_app/immutable/chunks/BDROc1R4.js                    0.55
+                kB │ gzip:  0.37 kB
+
+                .svelte-kit/output/client/_app/immutable/chunks/BCBO_zNt.js                    0.56
+                kB │ gzip:  0.39 kB
+
+                .svelte-kit/output/client/_app/immutable/chunks/EIa-1FhY.js                    0.56
+                kB │ gzip:  0.39 kB
+
+                .svelte-kit/output/client/_app/immutable/chunks/B
+              reviewerRerunAllowed: true
+              role: worker
+              run: npm run build
+              source: dispatch
+      steps:
+        - status: succeeded
+          allowTrackedChanges: false
+          idempotent: true
+          name: build-workspace-artifacts
+          output: >-
+            > @kynetic-ai/spec@0.12.0 build
+
+            > tsc && chmod +x dist/cli/index.js && npm run build:shared && npm run build:daemon &&
+            npm run build:web-ui && npm run build:plugin
+
+
+
+            > @kynetic-ai/spec@0.12.0 build:shared
+
+            > cd packages/shared && npm run build
+
+
+
+            > @kynetic-ai/shared@0.1.0 build
+
+            > tsc
+
+
+
+            > @kynetic-ai/spec@0.12.0 build:daemon
+
+            > node scripts/build-daemon.cjs
+
+
+
+            > @kynetic-ai/spec@0.12.0 build:web-ui
+
+            > shx rm -rf dist/web-ui && cd packages/web-ui && npm run build && shx cp -r build
+            ../../dist/web-ui
+
+
+
+            > @kynetic-ai/web-ui@0.1.0 build
+
+            > svelte-kit sync && vite build
+
+
+            vite v7.3.1 building ssr environment for production...
+
+            transforming...
+
+            ✓ 4542 modules transformed.
+
+            rendering chunks...
+
+            vite v7.3.1 building client environment for production...
+
+            transforming...
+
+            ✓ 4688 modules transformed.
+
+            rendering chunks...
+
+            computing gzip size...
+
+            .svelte-kit/output/client/_app/version.json                                    0.03 kB │
+            gzip:  0.05 kB
+
+            .svelte-kit/output/client/.vite/manifest.json                                 32.90 kB │
+            gzip:  3.57 kB
+
+            .svelte-kit/output/client/_app/immutable/assets/select-trigger.CV-KWLNP.css    0.29 kB │
+            gzip:  0.15 kB
+
+            .svelte-kit/output/client/_app/immutable/assets/12.BwwJybWx.css                1.26 kB │
+            gzip:  0.41 kB
+
+            .svelte-kit/output/client/_app/immutable/assets/0.BzSixdzL.css               115.67 kB │
+            gzip: 18.58 kB
+
+            .svelte-kit/output/client/_app/immutable/entry/start.BYU3mzfj.js               0.08 kB │
+            gzip:  0.09 kB
+
+            .svelte-kit/output/client/_app/immutable/chunks/DjEOUFjt.js                    0.11 kB │
+            gzip:  0.10 kB
+
+            .svelte-kit/output/client/_app/immutable/chunks/CG4ZpZfk.js                    0.18 kB │
+            gzip:  0.14 kB
+
+            .svelte-kit/output/client/_app/immutable/chunks/nYLV_lRo.js                    0.20 kB │
+            gzip:  0.18 kB
+
+            .svelte-kit/output/client/_app/immutable/chunks/D0XAlxlU.js                    0.23 kB │
+            gzip:  0.16 kB
+
+            .svelte-kit/output/client/_app/immutable/chunks/KcAf2G3T.js                    0.30 kB │
+            gzip:  0.23 kB
+
+            .svelte-kit/output/client/_app/immutable/chunks/gAKTDw7A.js                    0.44 kB │
+            gzip:  0.32 kB
+
+            .svelte-kit/output/client/_app/immutable/chunks/DQS4n12f.js                    0.45 kB │
+            gzip:  0.32 kB
+
+            .svelte-kit/output/client/_app/immutable/chunks/DGW7R2I2.js                    0.45 kB │
+            gzip:  0.32 kB
+
+            .svelte-kit/output/client/_app/immutable/nodes/1.BZKZ_HFL.js                   0.46 kB │
+            gzip:  0.29 kB
+
+            .svelte-kit/output/client/_app/immutable/chunks/JzJNJp4k.js                    0.46 kB │
+            gzip:  0.33 kB
+
+            .svelte-kit/output/client/_app/immutable/chunks/DpdiqC9U.js                    0.46 kB │
+            gzip:  0.32 kB
+
+            .svelte-kit/output/client/_app/immutable/chunks/BRSmzQKN.js                    0.47 kB │
+            gzip:  0.34 kB
+
+            .svelte-kit/output/client/_app/immutable/chunks/DN28PpOM.js                    0.47 kB │
+            gzip:  0.33 kB
+
+            .svelte-kit/output/client/_app/immutable/chunks/pqrOn-9H.js                    0.48 kB │
+            gzip:  0.29 kB
+
+            .svelte-kit/output/client/_app/immutable/chunks/BYZxSgko.js                    0.48 kB │
+            gzip:  0.34 kB
+
+            .svelte-kit/output/client/_app/immutable/chunks/CS_mItNy.js                    0.49 kB │
+            gzip:  0.34 kB
+
+            .svelte-kit/output/client/_app/immutable/chunks/BSavRELv.js                    0.51 kB │
+            gzip:  0.36 kB
+
+            .svelte-kit/output/client/_app/immutable/chunks/C7vYZMmK.js                    0.51 kB │
+            gzip:  0.35 kB
+
+            .svelte-kit/output/client/_app/immutable/chunks/DnFVet3o.js                    0.52 kB │
+            gzip:  0.37 kB
+
+            .svelte-kit/output/client/_app/immutable/chunks/Dcz87iOb.js                    0.53 kB │
+            gzip:  0.34 kB
+
+            .svelte-kit/output/client/_app/immutable/chunks/eUNBEVDN.js                    0.55 kB │
+            gzip:  0.38 kB
+
+            .svelte-kit/output/client/_app/immutable/chunks/BDROc1R4.js                    0.55 kB │
+            gzip:  0.37 kB
+
+            .svelte-kit/output/client/_app/immutable/chunks/BCBO_zNt.js                    0.56 kB │
+            gzip:  0.39 kB
+
+            .svelte-kit/output/client/_app/immutable/chunks/EIa-1FhY.js                    0.56 kB │
+            gzip:  0.39 kB
+
+            .svelte-kit/output/client/_app/immutable/chunks/B
+          reviewerRerunAllowed: true
+          role: worker
+          run: npm run build
+          source: dispatch
     branch_provenance:
       adopted_at: null
       adopted_from: null
@@ -49926,7 +50238,7 @@ workspaces:
       last_active_at: null
       last_reconciled_at: 2026-04-14T19:18:22.812Z
       created_at: 2026-04-14T19:18:22.812Z
-      updated_at: 2026-04-14T19:18:22.812Z
+      updated_at: 2026-04-14T19:18:42.908Z
     workspace_id: dispatch-workspace-01KNXYJ4YKHSY076Q3CQ42C6CP
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
