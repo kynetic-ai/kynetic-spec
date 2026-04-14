@@ -139032,6 +139032,12 @@ reviews:
         payload:
           thread_ulid: 01KP5S6KKAB2BZMCXN76MP7H7C
         timestamp: 2026-04-14T18:00:59.314Z
+      - _ulid: 01KP6JEY40XVFV1WEHVZ1X5DFK
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP5S6KKAB2BZMCXN76MP7H7C
+        timestamp: 2026-04-14T18:01:07.456Z
     examined_commit: af2e3dadb9fcf2bd02574cdd0abf3588cc9608a5
     external_links: []
     lifecycle_state: closed
@@ -139128,6 +139134,8 @@ reviews:
               but not pushed to remote. Now pushed and verified.
             created_at: 2026-04-14T18:00:58.292Z
         kind: nit
+        resolved_at: 2026-04-14T18:01:06.566Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -139137,7 +139145,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-14T10:39:36.572Z
     created_at: 2026-04-14T10:30:13.609Z
-    updated_at: 2026-04-14T18:00:58.292Z
+    updated_at: 2026-04-14T18:01:06.566Z
     notes: []
   - _ulid: 01KP5SJJR9S8KE3FZ3VY408Z54
     slugs: []
