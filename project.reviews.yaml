@@ -135777,6 +135777,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP5J86S61BMZAAG5EYBDKFXE
         timestamp: 2026-04-14T08:38:13.518Z
+      - _ulid: 01KP5J8M0TMX2W4ZYSKGBW26XS
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP5J8K15MRK0X3T497G18TYP
+        timestamp: 2026-04-14T08:38:26.074Z
     examined_commit: d8602e6f790919893fc9aa7907493193f5f99411
     external_links: []
     lifecycle_state: open
@@ -135895,7 +135902,28 @@ reviews:
               (or a real N/A handling path that the validator recognizes).
             created_at: 2026-04-14T08:38:12.518Z
         kind: blocker
+      - _ulid: 01KP5J8K15MRK0X3T497G18TYP
+        anchor:
+          type: code
+          commit: d8602e6f790919893fc9aa7907493193f5f99411
+          line_end: 16
+          line_start: 1
+          path: tests/gitignore-managed-block.test.ts
+          side: head
+        entries:
+          - _ulid: 01KP5J8K15KGPQB0RGHBXHXD84
+            author: Jacob Chapel
+            body: Trait and spec AC coverage is still invalid here because the file-level annotations were added
+              inside a block comment, which this project explicitly rejects as coverage.
+              tests/gitignore-managed-block.test.ts:1-16 places AC annotations inside a header
+              comment instead of standalone line comments attached to concrete tests, so kspec
+              validate still reports @complete-auto-gitignore missing trait coverage for
+              @trait-idempotent-file-scaffold ac-force-backs-up-before-overwrite. This loses the
+              task's required AC evidence and must be fixed with standalone per-test annotations, or
+              with a real N/A handling path that the validator recognizes.
+            created_at: 2026-04-14T08:38:25.061Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-14T08:33:47.366Z
-    updated_at: 2026-04-14T08:38:12.518Z
+    updated_at: 2026-04-14T08:38:25.061Z
     notes: []
