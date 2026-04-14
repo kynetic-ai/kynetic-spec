@@ -49161,7 +49161,7 @@ workspaces:
         head: 326439565e1a2f14584c3f1028cb186369093f19
         last_seen_at: 2026-04-14T18:20:02.311Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-default-agents-and-conventions-01knxyj4
-  - active_role: worker
+  - active_role: null
     base_branch_point: 7b1b856564b91f28efc8bbb2d3b8e41034fd9a3f
     bootstrap:
       status: succeeded
@@ -49515,12 +49515,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-14T18:39:00.505Z
+      updated_at: 2026-04-14T18:39:23.174Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-14T18:39:00.505Z
+      updated_at: 2026-04-14T18:39:23.174Z
     integration:
       status: pending
       detail: null
@@ -49528,17 +49528,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
       target_commit: 7b1b856564b91f28efc8bbb2d3b8e41034fd9a3f
-      updated_at: 2026-04-14T18:39:00.505Z
-    lifecycle_state: active
+      updated_at: 2026-04-14T18:39:23.174Z
+    lifecycle_state: ready
     resolved_base_branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
     task_ref: "@01KNXYJ4MR4J2MR2DXYG24HB2K"
     task_slug: task-default-reflection-hook
     timestamps:
       closed_at: null
       last_active_at: 2026-04-14T18:20:53.683Z
-      last_reconciled_at: 2026-04-14T18:39:00.505Z
+      last_reconciled_at: 2026-04-14T18:39:23.174Z
       created_at: 2026-04-14T18:20:30.230Z
-      updated_at: 2026-04-14T18:39:00.505Z
+      updated_at: 2026-04-14T18:39:23.174Z
     workspace_id: dispatch-workspace-01KNXYJ4MR4J2MR2DXYG24HB2K
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
