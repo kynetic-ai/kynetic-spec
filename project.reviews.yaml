@@ -135827,6 +135827,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-14T08:50:02.899Z
+      - _ulid: 01KP5JXZ3PE6J7BG7AVK2407DY
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KP5JXY6Q2VKTZD3YH1SHB8RS
+        timestamp: 2026-04-14T08:50:05.558Z
     examined_commit: d8602e6f790919893fc9aa7907493193f5f99411
     external_links: []
     lifecycle_state: open
@@ -135989,7 +135996,29 @@ reviews:
               configured shadow directory through just like init does."
             created_at: 2026-04-14T08:38:27.896Z
         kind: blocker
+      - _ulid: 01KP5JXY6Q2VKTZD3YH1SHB8RS
+        entries:
+          - _ulid: 01KP5JXY6Q7FFRX5W71Z37ZQS4
+            author: Jacob Chapel
+            body: >-
+              Files read: src/parser/gitignore.ts, src/parser/shadow.ts, src/cli/commands/setup.ts,
+              tests/gitignore-managed-block.test.ts, tests/shadow.test.ts,
+              tests/init-setup-integration.test.ts.
+
+              Commands run: kspec task get @01KNXYJ40TP75YKCV51RM6H6YZ; kspec item get
+              @complete-auto-gitignore; kspec item get @trait-idempotent-file-scaffold; git diff
+              against 7b1b856564b91f28efc8bbb2d3b8e41034fd9a3f; rg AC annotations in tests; kspec
+              validate; npm test.
+
+              Claims verified: managed-block helper is wired into init and setup; full test suite
+              passes; validation still reports missing trait coverage for this task.
+
+              Categories searched: correctness, AC coverage, edge cases, error handling, test
+              quality, integration. Findings recorded on AC annotation validity and custom
+              shadow-directory handling in setup.
+            created_at: 2026-04-14T08:50:04.632Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-14T08:33:47.366Z
-    updated_at: 2026-04-14T08:50:02.007Z
+    updated_at: 2026-04-14T08:50:04.632Z
     notes: []
