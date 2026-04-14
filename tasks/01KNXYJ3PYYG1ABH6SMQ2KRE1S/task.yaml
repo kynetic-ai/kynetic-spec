@@ -87,7 +87,7 @@ tags:
   - setup
   - config
 vcs_refs: []
-review_ref: "@01KP6PXH1TXC833YA6Q2A0EK6K"
+review_ref: "@01KP6RXRJKVT3FCGF6J19K7B1Q"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-scaffold-project-config/01knxyj3
@@ -423,6 +423,13 @@ history:
         previous: 2026-04-14T19:17:16.373Z
     command: task-submit
     timestamp: 2026-04-14T19:51:19.050Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KP6RXRJKVT3FCGF6J19K7B1Q"
+        previous: "@01KP6PXH1TXC833YA6Q2A0EK6K"
+    command: review-link
+    timestamp: 2026-04-14T19:54:07.705Z
 created_at: 2026-04-11T09:39:24.510Z
 started_at: 2026-04-14T19:51:15.704Z
 submitted_at: 2026-04-14T19:51:19.050Z
