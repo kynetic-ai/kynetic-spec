@@ -26165,6 +26165,10 @@
       179:   <!-- AC: @session-filter-controls ac-status-filter -->
       180:   <div class="min-w-[240px]">
       181:     <label class="
+    - 'Dispatch workspace provisioning failed: Dispatch worktree path
+      "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review"
+      already exists and is not a registered git worktree.. Suggested action: Remove or rename that
+      directory, or choose a different dispatch.worktree_root.'
   depends_on: []
   priority: 1
   tags:
