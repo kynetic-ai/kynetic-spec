@@ -25596,7 +25596,7 @@ runs:
     completed_at: 2026-04-14T19:17:13.982Z
   - _ulid: 01KP6PV4P7550FZABPVDCHKKKQ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -25608,7 +25608,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-14T19:17:55.268Z
-        completed_at: 2026-04-14T19:17:55.268Z
+        completed_at: 2026-04-14T19:18:22.667Z
+        notes: "One high-confidence observation: fix cycle 4 was caused by previous cycles trying to be
+          smarter than the empty-config fallback chain instead of reusing its exact code path. The
+          shared helper resolveDefaultBranch() already existed but was bypassed for scaffolding.
+          This is a general engineering principle (reuse the exact code path when AC requires
+          behavioral equivalence), not a systemic project friction — no new tracking needed."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-14T19:18:22.667Z
+        completed_at: 2026-04-14T19:18:22.667Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-14T19:17:41.703Z
