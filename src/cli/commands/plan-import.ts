@@ -1,6 +1,12 @@
 /**
  * Plan import CLI command
  * AC: @plan-import-content-only ac-draft-default through ac-module-stored
+ * AC: @plan-import-format-guidance ac-missing-title-fails-import
+ * AC: @plan-import-format-guidance ac-empty-plan-import-warns
+ * AC: @plan-import-format-guidance ac-ac-shape-mismatch-fails-import
+ * AC: @plan-import-format-guidance ac-ac-shape-mismatch-describes-shape
+ * AC: @plan-import-format-guidance ac-help-describes-format
+ * AC: @plan-import-format-guidance ac-error-no-external-references
  */
 
 import * as fs from "node:fs/promises";
@@ -19,6 +25,7 @@ import {
   savePlan,
   type LoadedSpecItem,
 } from "../../parser/index.js";
+import { parsePlanDocument } from "../../parser/plan-document.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import { type Note, type PlanInput, PlanStatusSchema } from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
@@ -65,11 +72,42 @@ export function registerPlanImportCommand(planCommand: Command): void {
     .option("--json", "Output as JSON")
     .addHelpText(
       "after",
+      // AC: @plan-import-format-guidance ac-help-describes-format
       `
 Format:
   Import stores the markdown document as plan content. Specs and tasks are not
   created during import; use "kspec plan derive" after approval to materialize
   the stored document.
+
+  Required structural elements:
+    - Title: A top-level heading (# Title) as the first significant element
+    - Specs section: ## Specs containing a YAML code block with spec definitions
+    - Tasks section: ## Tasks with derive_from_specs: true or a YAML code block
+    - Acceptance criteria: Each AC requires id, given, when, and then fields
+
+  Minimal example (copy-pasteable):
+
+    # My Plan Title
+
+    ## Specs
+
+    \`\`\`yaml
+    - title: My Feature
+      slug: my-feature
+      type: feature
+      acceptance_criteria:
+        - id: ac-basic
+          given: |
+            a precondition
+          when: |
+            an action occurs
+          then: |
+            the expected outcome
+    \`\`\`
+
+    ## Tasks
+
+    derive_from_specs: true
 
 Examples:
   $ kspec plan import ./plan.md
@@ -108,6 +146,24 @@ async function importPlan(planPath: string, options: ImportOptions): Promise<voi
     return;
   }
 
+  // Validate document structure before import
+  // AC: @plan-import-format-guidance ac-missing-title-fails-import
+  // AC: @plan-import-format-guidance ac-ac-shape-mismatch-fails-import
+  // AC: @plan-import-format-guidance ac-ac-shape-mismatch-describes-shape
+  // AC: @plan-import-format-guidance ac-error-no-external-references
+  const parsed = parsePlanDocument(content);
+
+  // Fail on structural errors (missing title, AC shape mismatches)
+  const structuralErrors = parsed.errors.filter(
+    (e) => e.type === "missing_title" || e.type === "ac_shape",
+  );
+  if (structuralErrors.length > 0) {
+    for (const err of structuralErrors) {
+      error(err.message);
+    }
+    process.exit(EXIT_CODES.USAGE_ERROR);
+  }
+
   if (options.update) {
     warn(
       "--update is ignored for content-only import. Use `kspec plan derive` to materialize specs and tasks.",
@@ -142,7 +198,7 @@ async function importPlan(planPath: string, options: ImportOptions): Promise<voi
     storedModuleRef = options.module.startsWith("@") ? options.module : `@${options.module}`;
   }
 
-  const title = extractOptionalPlanTitle(content) ?? "Untitled Plan";
+  const title = parsed.title;
   const planSlug = nextAvailablePlanSlug(title, refIndex);
   const preview: ImportPreview = {
     ref: `@${planSlug}`,
@@ -157,8 +213,15 @@ async function importPlan(planPath: string, options: ImportOptions): Promise<voi
     note_message: null,
   };
 
+  // Emit warnings for empty plans
+  // AC: @plan-import-format-guidance ac-empty-plan-import-warns
+  const emptyPlanWarnings = parsed.warnings.filter((w) => w.type === "empty_plan");
+  for (const w of emptyPlanWarnings) {
+    warn(w.message);
+  }
+
   if (options.dryRun) {
-    emitImportResult(preview, { dryRun: true });
+    emitImportResult(preview, { dryRun: true, warnings: emptyPlanWarnings.map((w) => w.message) });
     return;
   }
 
@@ -172,13 +235,14 @@ async function importPlan(planPath: string, options: ImportOptions): Promise<voi
   };
   const plan = createPlan(planInput);
 
-  await saveImportedPlan(ctx, plan, preview);
+  await saveImportedPlan(ctx, plan, preview, emptyPlanWarnings.map((w) => w.message));
 }
 
 async function saveImportedPlan(
   ctx: Awaited<ReturnType<typeof initContext>>,
   plan: ReturnType<typeof createPlan>,
   preview: ImportPreview,
+  warnings: string[] = [],
 ): Promise<void> {
   await savePlan(ctx, plan);
   await commitIfShadow(
@@ -192,7 +256,7 @@ async function saveImportedPlan(
       ...preview,
       ref: plan.slugs[0] ? `@${plan.slugs[0]}` : `@${plan._ulid}`,
     },
-    { dryRun: false, createdAt: plan.created_at },
+    { dryRun: false, createdAt: plan.created_at, warnings },
   );
 }
 
@@ -327,9 +391,10 @@ function exitImportWithGuidance(
 
 function emitImportResult(
   preview: ImportPreview,
-  options: { dryRun: boolean; createdAt?: string },
+  options: { dryRun: boolean; createdAt?: string; warnings?: string[] },
 ): void {
-  const payload = {
+  const warnings = options.warnings ?? [];
+  const payload: Record<string, unknown> = {
     dry_run: options.dryRun,
     plan_ref: preview.ref,
     title: preview.title,
@@ -343,6 +408,11 @@ function emitImportResult(
     changes: preview.changes,
     note_message: preview.note_message,
   };
+
+  // AC: @plan-import-format-guidance ac-empty-plan-import-warns — include warnings in JSON output
+  if (warnings.length > 0) {
+    payload.warnings = warnings;
+  }
 
   if (isJsonMode()) {
     output(payload);

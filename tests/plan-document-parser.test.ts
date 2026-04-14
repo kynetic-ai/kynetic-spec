@@ -161,12 +161,105 @@ Add comprehensive tests.
     expect(result.errors).toHaveLength(0);
   });
 
-  it("should handle plan without title", () => {
+  // AC: @plan-import-format-guidance ac-missing-title-fails-import
+  it("should return a missing_title error when no heading is found", () => {
     const plan = `No heading here`;
 
     const result = parsePlanDocument(plan);
 
-    expect(result.title).toBe("Untitled Plan");
+    expect(result.title).toBe("");
+    expect(result.errors).toHaveLength(1);
+    expect(result.errors[0].type).toBe("missing_title");
+    expect(result.errors[0].message).toContain("top-level heading");
+  });
+
+  // AC: @plan-import-format-guidance ac-empty-plan-import-warns
+  it("should produce an empty_plan warning when title is valid but no derivable content", () => {
+    const plan = `# My Plan
+
+Just prose, no specs or tasks sections.
+`;
+
+    const result = parsePlanDocument(plan);
+
+    expect(result.title).toBe("My Plan");
+    expect(result.errors).toHaveLength(0);
+    expect(result.warnings).toHaveLength(1);
+    expect(result.warnings[0].type).toBe("empty_plan");
+    expect(result.warnings[0].message).toContain("## Specs");
+    expect(result.warnings[0].message).toContain("## Tasks");
+    expect(result.warnings[0].message).toContain("kspec plan derive");
+  });
+
+  // AC: @plan-import-format-guidance ac-empty-plan-import-warns
+  it("should not produce an empty_plan warning when specs are present", () => {
+    const plan = `# My Plan
+
+## Specs
+
+\`\`\`yaml
+- title: Feature A
+\`\`\`
+`;
+
+    const result = parsePlanDocument(plan);
+
+    expect(result.warnings).toHaveLength(0);
+  });
+
+  // AC: @plan-import-format-guidance ac-ac-shape-mismatch-fails-import
+  // AC: @plan-import-format-guidance ac-ac-shape-mismatch-describes-shape
+  it("should produce an ac_shape error for malformed acceptance criteria", () => {
+    const plan = `# My Plan
+
+## Specs
+
+\`\`\`yaml
+- title: Feature A
+  slug: feature-a
+  acceptance_criteria:
+    - id: ac-bad
+      given: a precondition
+\`\`\`
+`;
+
+    const result = parsePlanDocument(plan);
+
+    expect(result.specs).toHaveLength(0);
+    expect(result.errors).toHaveLength(1);
+    expect(result.errors[0].type).toBe("ac_shape");
+    expect(result.errors[0].specIndex).toBe(0);
+    expect(result.errors[0].specSlug).toBe("feature-a");
+    expect(result.errors[0].acIndex).toBe(0);
+    expect(result.errors[0].message).toContain("feature-a");
+    expect(result.errors[0].message).toContain("ac-bad");
+    expect(result.errors[0].message).toContain("id");
+    expect(result.errors[0].message).toContain("given");
+    expect(result.errors[0].message).toContain("when");
+    expect(result.errors[0].message).toContain("then");
+  });
+
+  // AC: @plan-import-format-guidance ac-ac-shape-mismatch-fails-import
+  it("should locate AC by index when AC has no id field", () => {
+    const plan = `# My Plan
+
+## Specs
+
+\`\`\`yaml
+- title: Feature B
+  slug: feature-b
+  acceptance_criteria:
+    - given: a precondition
+      when: an action
+\`\`\`
+`;
+
+    const result = parsePlanDocument(plan);
+
+    expect(result.errors).toHaveLength(1);
+    expect(result.errors[0].type).toBe("ac_shape");
+    expect(result.errors[0].message).toContain("index 0");
+    expect(result.errors[0].message).toContain("feature-b");
   });
 
   it("should parse additional tasks from Tasks section", () => {

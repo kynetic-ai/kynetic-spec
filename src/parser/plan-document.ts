@@ -59,6 +59,7 @@ export type TasksSection = z.infer<typeof TasksSectionSchema>;
 
 /**
  * Parsed plan document structure
+ * AC: @plan-import-format-guidance ac-empty-plan-import-warns — warnings field for empty-plan signal
  */
 export interface ParsedPlanDocument {
   title: string;
@@ -67,16 +68,29 @@ export interface ParsedPlanDocument {
   tasks: TasksSection;
   implementationNotes: string | null;
   errors: ParseError[];
+  warnings: ParseWarning[];
+}
+
+/**
+ * Warning from plan parsing (non-fatal)
+ */
+export interface ParseWarning {
+  type: "empty_plan";
+  message: string;
 }
 
 /**
  * Parse error with context
+ * AC: @plan-import-format-guidance ac-missing-title-fails-import — missing_title error type
+ * AC: @plan-import-format-guidance ac-ac-shape-mismatch-fails-import — ac_shape error type
  */
 export interface ParseError {
-  type: "yaml" | "validation" | "dependency" | "circular";
+  type: "yaml" | "validation" | "dependency" | "circular" | "missing_title" | "ac_shape";
   message: string;
   line?: number;
   specIndex?: number;
+  specSlug?: string;
+  acIndex?: number;
   spec?: PlanSpec;
 }
 
@@ -87,13 +101,29 @@ export interface ParseError {
  * AC: @plan-import ac-12 - Parse Tasks section for derive_from_specs
  * AC: @plan-import ac-13 - Extract ## Implementation Notes section
  * AC: @plan-import ac-21 - Report YAML parse errors with line numbers
+ * AC: @plan-import-format-guidance ac-missing-title-fails-import — missing_title typed error
+ * AC: @plan-import-format-guidance ac-empty-plan-import-warns — empty_plan warning
  */
 export function parsePlanDocument(content: string): ParsedPlanDocument {
   const errors: ParseError[] = [];
+  const warnings: ParseWarning[] = [];
 
-  // Extract title from first heading
+  // Extract title from first heading — must be a top-level heading (# Title)
+  // as the first significant element
   const titleMatch = content.match(/^#\s+(.+)$/m);
-  const title = titleMatch ? titleMatch[1].trim() : "Untitled Plan";
+  let title: string;
+  if (titleMatch) {
+    title = titleMatch[1].trim();
+  } else {
+    title = "";
+    errors.push({
+      type: "missing_title",
+      message:
+        "Plan document must start with a top-level heading (# Title) as the first significant element.\n" +
+        "Example: # My Plan Title\n" +
+        "The heading text becomes the plan's title.",
+    });
+  }
 
   // Extract ## Specs section
   const specs = extractSpecsSection(content, errors);
@@ -104,6 +134,23 @@ export function parsePlanDocument(content: string): ParsedPlanDocument {
   // Extract ## Implementation Notes section
   const implementationNotes = extractImplementationNotes(content);
 
+  // Check for empty plan: valid title but no derivable content
+  const hasSpecs = specs.length > 0;
+  const hasTasks =
+    Boolean(tasks.additional_tasks && tasks.additional_tasks.length > 0) ||
+    Boolean(tasks.derive_from_specs);
+  if (title && !hasSpecs && !hasTasks && errors.length === 0) {
+    warnings.push({
+      type: "empty_plan",
+      message:
+        "Plan has no derivable content. Expected a ## Specs section with spec definitions " +
+        "and/or a ## Tasks section with task definitions or derive_from_specs: true. " +
+        "The plan will be stored as content, but `kspec plan derive` will not produce " +
+        "any specs or tasks until at least one section is populated. " +
+        "Use `kspec plan import <path> --into @plan-ref` to update the plan with structured content.",
+    });
+  }
+
   return {
     title,
     content,
@@ -111,6 +158,7 @@ export function parsePlanDocument(content: string): ParsedPlanDocument {
     tasks,
     implementationNotes,
     errors,
+    warnings,
   };
 }
 
@@ -196,6 +244,36 @@ function extractSpecsSection(content: string, errors: ParseError[]): PlanSpec[] 
         specIndex: i,
       });
       continue;
+    }
+
+    // Validate acceptance criteria shapes before full schema validation
+    // AC: @plan-import-format-guidance ac-ac-shape-mismatch-fails-import
+    // AC: @plan-import-format-guidance ac-ac-shape-mismatch-describes-shape
+    if (Array.isArray(spec.acceptance_criteria)) {
+      let hasAcError = false;
+      for (let j = 0; j < spec.acceptance_criteria.length; j++) {
+        const ac = spec.acceptance_criteria[j];
+        const acResult = AcceptanceCriterionSchema.safeParse(ac);
+        if (!acResult.success) {
+          const specLabel = spec.slug || `index ${i}`;
+          const acLabel = ac && typeof ac === "object" && "id" in ac ? `"${ac.id}"` : `index ${j}`;
+          errors.push({
+            type: "ac_shape",
+            message:
+              `Acceptance criterion ${acLabel} in spec "${specLabel}" does not match the expected shape.\n` +
+              "Required fields for an acceptance criterion:\n" +
+              "  - id: unique identifier for the criterion (e.g. \"ac-login-validates\")\n" +
+              "  - given: the precondition or starting state\n" +
+              "  - when: the action or event that occurs\n" +
+              "  - then: the expected outcome or result",
+            specIndex: i,
+            specSlug: typeof spec.slug === "string" ? spec.slug : undefined,
+            acIndex: j,
+          });
+          hasAcError = true;
+        }
+      }
+      if (hasAcError) continue;
     }
 
     // Validate against schema

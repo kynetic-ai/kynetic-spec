@@ -569,3 +569,388 @@ Updated body.
     });
   });
 });
+
+// AC: @plan-import-format-guidance — Plan import format error guidance tests
+describe("Integration: plan import format guidance", () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  async function writePlan(filename: string, content: string): Promise<string> {
+    const planPath = path.join(tempDir, filename);
+    await fs.writeFile(planPath, content);
+    return planPath;
+  }
+
+  // AC: @plan-import-format-guidance ac-missing-title-fails-import
+  // AC: @trait-semantic-exit-codes ac-2
+  // AC: @trait-error-guidance ac-1
+  // AC: @trait-error-guidance ac-2
+  it("fails import when document has no top-level heading", async () => {
+    const planPath = await writePlan(
+      "no-title.md",
+      `## Not a top-level heading
+
+Some content without a # Title.
+`,
+    );
+
+    const result = kspecRun(`plan import "${planPath}"`, tempDir, { expectFail: true });
+
+    expect(result.exitCode).toBe(2);
+    expect(result.stderr).toContain("top-level heading");
+    expect(result.stderr).toContain("# ");
+    expect(result.stderr).toContain("Example:");
+  });
+
+  // AC: @plan-import-format-guidance ac-missing-title-fails-import
+  // AC: @plan-import-format-guidance ac-error-no-external-references
+  it("title error message is self-contained without external references", async () => {
+    const planPath = await writePlan(
+      "no-title-self-contained.md",
+      `Just text, no heading at all.
+`,
+    );
+
+    const result = kspecRun(`plan import "${planPath}"`, tempDir, { expectFail: true });
+
+    expect(result.exitCode).toBe(2);
+    const stderr = result.stderr;
+    // The error should explain the expected format without referencing external files
+    expect(stderr).toContain("top-level heading");
+    expect(stderr).not.toMatch(/README|docs\/|skills\//);
+    expect(stderr).not.toMatch(/source code/i);
+  });
+
+  // AC: @plan-import-format-guidance ac-missing-title-fails-import
+  // AC: @trait-error-guidance ac-6
+  // AC: @trait-json-output ac-3
+  it("returns a structured JSON error for missing title", async () => {
+    const planPath = await writePlan(
+      "no-title-json.md",
+      `Some content without a heading.
+`,
+    );
+
+    const result = kspecRun(`plan import "${planPath}" --json`, tempDir, { expectFail: true });
+
+    expect(result.exitCode).toBe(2);
+    const parsed = JSON.parse(result.stderr);
+    expect(parsed.success).toBe(false);
+    expect(parsed.error).toContain("top-level heading");
+  });
+
+  // AC: @plan-import-format-guidance ac-empty-plan-import-warns
+  // AC: @trait-semantic-exit-codes ac-1
+  it("imports an empty plan with a warning when title is valid but no specs or tasks", async () => {
+    const planPath = await writePlan(
+      "empty-plan.md",
+      `# My Empty Plan
+
+Just prose, no structured sections yet.
+`,
+    );
+
+    const result = kspecRun(`plan import "${planPath}"`, tempDir);
+
+    expect(result.exitCode).toBe(0);
+    // Warning should appear on stderr
+    expect(result.stderr).toContain("no derivable content");
+    expect(result.stderr).toContain("## Specs");
+    expect(result.stderr).toContain("## Tasks");
+    expect(result.stderr).toContain("kspec plan derive");
+
+    // Plan should be stored
+    const plan = kspecJson<{ title: string; status: string }>(
+      "plan get @plan-my-empty-plan",
+      tempDir,
+    );
+    expect(plan.title).toBe("My Empty Plan");
+    expect(plan.status).toBe("draft");
+  });
+
+  // AC: @plan-import-format-guidance ac-empty-plan-import-warns
+  // AC: @trait-json-output ac-2
+  it("includes warnings in JSON output for empty plan import", async () => {
+    const planPath = await writePlan(
+      "empty-plan-json.md",
+      `# My Empty JSON Plan
+
+Just prose.
+`,
+    );
+
+    const result = kspecRun(`plan import "${planPath}" --json`, tempDir);
+
+    expect(result.exitCode).toBe(0);
+    const parsed = JSON.parse(result.stdout);
+    expect(parsed.title).toBe("My Empty JSON Plan");
+    expect(parsed.warnings).toBeDefined();
+    expect(parsed.warnings.length).toBeGreaterThan(0);
+    expect(parsed.warnings[0]).toContain("no derivable content");
+    expect(parsed.warnings[0]).toContain("## Specs");
+    expect(parsed.warnings[0]).toContain("## Tasks");
+  });
+
+  // AC: @plan-import-format-guidance ac-empty-plan-import-warns
+  // AC: @plan-import-format-guidance ac-error-no-external-references
+  it("empty plan warning is self-contained without external references", async () => {
+    const planPath = await writePlan(
+      "empty-self-contained.md",
+      `# Empty But Self Contained
+
+Just a plan title and prose.
+`,
+    );
+
+    const result = kspecRun(`plan import "${planPath}"`, tempDir);
+
+    expect(result.exitCode).toBe(0);
+    const stderr = result.stderr;
+    expect(stderr).not.toMatch(/README|docs\/|skills\//);
+    expect(stderr).not.toMatch(/source code/i);
+  });
+
+  // AC: @plan-import-format-guidance ac-ac-shape-mismatch-fails-import
+  // AC: @plan-import-format-guidance ac-ac-shape-mismatch-describes-shape
+  // AC: @trait-semantic-exit-codes ac-2
+  it("fails import when acceptance criterion is missing required fields", async () => {
+    const planPath = await writePlan(
+      "bad-ac.md",
+      `# Plan With Bad AC
+
+## Specs
+
+\`\`\`yaml
+- title: My Feature
+  slug: my-feature
+  acceptance_criteria:
+    - id: ac-bad
+      given: a precondition
+\`\`\`
+`,
+    );
+
+    const result = kspecRun(`plan import "${planPath}"`, tempDir, { expectFail: true });
+
+    expect(result.exitCode).toBe(2);
+    // Should identify the spec and AC
+    expect(result.stderr).toContain("my-feature");
+    expect(result.stderr).toContain("ac-bad");
+    // Should describe the required fields
+    expect(result.stderr).toContain("id");
+    expect(result.stderr).toContain("given");
+    expect(result.stderr).toContain("when");
+    expect(result.stderr).toContain("then");
+  });
+
+  // AC: @plan-import-format-guidance ac-ac-shape-mismatch-fails-import
+  it("locates malformed AC by spec slug and position when AC has no id", async () => {
+    const planPath = await writePlan(
+      "bad-ac-no-id.md",
+      `# Plan With Malformed AC
+
+## Specs
+
+\`\`\`yaml
+- title: Feature Two
+  slug: feature-two
+  acceptance_criteria:
+    - given: a precondition
+      when: an action
+\`\`\`
+`,
+    );
+
+    const result = kspecRun(`plan import "${planPath}"`, tempDir, { expectFail: true });
+
+    expect(result.exitCode).toBe(2);
+    // Should locate by spec slug and AC index
+    expect(result.stderr).toContain("feature-two");
+    expect(result.stderr).toContain("index 0");
+  });
+
+  // AC: @plan-import-format-guidance ac-ac-shape-mismatch-describes-shape
+  // AC: @plan-import-format-guidance ac-error-no-external-references
+  it("AC shape error describes all required fields without external references", async () => {
+    const planPath = await writePlan(
+      "bad-ac-self-contained.md",
+      `# Plan AC Self Contained
+
+## Specs
+
+\`\`\`yaml
+- title: Feature Three
+  slug: feature-three
+  acceptance_criteria:
+    - description: not the right shape
+\`\`\`
+`,
+    );
+
+    const result = kspecRun(`plan import "${planPath}"`, tempDir, { expectFail: true });
+
+    expect(result.exitCode).toBe(2);
+    const stderr = result.stderr;
+    // Describes each required field with its purpose
+    expect(stderr).toContain("id");
+    expect(stderr).toContain("identifier");
+    expect(stderr).toContain("given");
+    expect(stderr).toContain("precondition");
+    expect(stderr).toContain("when");
+    expect(stderr).toContain("action");
+    expect(stderr).toContain("then");
+    expect(stderr).toContain("expected outcome");
+    // Self-contained
+    expect(stderr).not.toMatch(/README|docs\/|skills\//);
+    expect(stderr).not.toMatch(/source code/i);
+  });
+
+  // AC: @plan-import-format-guidance ac-help-describes-format
+  it("help output includes a minimal runnable example and names required elements", () => {
+    const result = kspecRun("plan import --help", tempDir);
+
+    const stdout = result.stdout;
+    // Must include a runnable example
+    expect(stdout).toContain("# My Plan Title");
+    expect(stdout).toContain("## Specs");
+    expect(stdout).toContain("## Tasks");
+    expect(stdout).toContain("derive_from_specs: true");
+    // Must name required structural elements
+    expect(stdout).toContain("acceptance_criteria");
+    expect(stdout).toContain("id");
+    expect(stdout).toContain("given");
+    expect(stdout).toContain("when");
+    expect(stdout).toContain("then");
+  });
+
+  // AC: @plan-import-format-guidance ac-missing-title-fails-import (dry-run parity)
+  it("dry-run produces the same title error as a real import", async () => {
+    const planPath = await writePlan(
+      "no-title-dry.md",
+      `No heading here.
+`,
+    );
+
+    const dryResult = kspecRun(`plan import "${planPath}" --dry-run`, tempDir, {
+      expectFail: true,
+    });
+    const realResult = kspecRun(`plan import "${planPath}"`, tempDir, { expectFail: true });
+
+    expect(dryResult.exitCode).toBe(realResult.exitCode);
+    // Both should produce the same structural error
+    expect(dryResult.stderr).toContain("top-level heading");
+    expect(realResult.stderr).toContain("top-level heading");
+  });
+
+  // AC: @plan-import-format-guidance ac-empty-plan-import-warns (dry-run parity)
+  it("dry-run produces the same empty-plan warning as a real import", async () => {
+    const planPath = await writePlan(
+      "empty-plan-dry.md",
+      `# Empty Plan Dry Run
+
+Prose only.
+`,
+    );
+
+    const dryResult = kspecRun(`plan import "${planPath}" --dry-run`, tempDir);
+    const realResult = kspecRun(`plan import "${planPath}"`, tempDir);
+
+    expect(dryResult.exitCode).toBe(0);
+    expect(realResult.exitCode).toBe(0);
+    // Both should produce the same warning
+    expect(dryResult.stderr).toContain("no derivable content");
+    expect(realResult.stderr).toContain("no derivable content");
+  });
+
+  // AC: @plan-import-format-guidance ac-ac-shape-mismatch-fails-import (dry-run parity)
+  it("dry-run produces the same AC shape error as a real import", async () => {
+    const planPath = await writePlan(
+      "bad-ac-dry.md",
+      `# Bad AC Dry Run
+
+## Specs
+
+\`\`\`yaml
+- title: Feature Dry
+  slug: feature-dry
+  acceptance_criteria:
+    - id: ac-incomplete
+\`\`\`
+`,
+    );
+
+    const dryResult = kspecRun(`plan import "${planPath}" --dry-run`, tempDir, {
+      expectFail: true,
+    });
+    const realResult = kspecRun(`plan import "${planPath}"`, tempDir, { expectFail: true });
+
+    expect(dryResult.exitCode).toBe(realResult.exitCode);
+    expect(dryResult.stderr).toContain("feature-dry");
+    expect(realResult.stderr).toContain("feature-dry");
+  });
+
+  // AC: @trait-error-guidance ac-5 — validation error indicates which field failed
+  it("AC shape error identifies which specific fields are missing", async () => {
+    const planPath = await writePlan(
+      "ac-missing-when-then.md",
+      `# AC Missing When Then
+
+## Specs
+
+\`\`\`yaml
+- title: Feature Fields
+  slug: feature-fields
+  acceptance_criteria:
+    - id: ac-partial
+      given: |
+        a precondition
+\`\`\`
+`,
+    );
+
+    const result = kspecRun(`plan import "${planPath}"`, tempDir, { expectFail: true });
+
+    expect(result.exitCode).toBe(2);
+    expect(result.stderr).toContain("ac-partial");
+    expect(result.stderr).toContain("feature-fields");
+    // Should enumerate the required shape
+    expect(result.stderr).toContain("when");
+    expect(result.stderr).toContain("then");
+  });
+
+  // AC: @trait-json-output ac-1 — valid JSON with no ANSI in structured mode
+  it("AC shape error in JSON mode produces valid JSON without ANSI codes", async () => {
+    const planPath = await writePlan(
+      "bad-ac-json.md",
+      `# Bad AC JSON
+
+## Specs
+
+\`\`\`yaml
+- title: JSON Feature
+  slug: json-feature
+  acceptance_criteria:
+    - id: ac-json-bad
+      given: a precondition
+\`\`\`
+`,
+    );
+
+    const result = kspecRun(`plan import "${planPath}" --json`, tempDir, { expectFail: true });
+
+    expect(result.exitCode).toBe(2);
+    const parsed = JSON.parse(result.stderr);
+    expect(parsed.success).toBe(false);
+    expect(parsed.error).toContain("json-feature");
+    expect(parsed.error).toContain("ac-json-bad");
+    // No ANSI codes in JSON output
+    expect(parsed.error).not.toMatch(/\u001b/);
+  });
+});
