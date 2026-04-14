@@ -106,3 +106,26 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-14T09:44:33.983Z
+  - _ulid: 01KP5REVHA4ET7MB0T3KJZ1WD8
+    content: >-
+      Fix cycle 2: addressed all 4 blocker threads from review @01KP5N8F89YFDR3DXW4PDGEPER.
+
+
+      1. Configurable dispatch.worktree_root (threads 1&4): buildKspecGitignoreEntries() now accepts
+      a worktreeRoot parameter. EnsureKspecGitignoreOptions and ShadowInitOptions also accept
+      worktreeRoot. setup.ts reads config.dispatch.worktree_root and passes it through. init.ts
+      passes it to initializeShadow which forwards it to ensureKspecGitignore. Added 3 new tests for
+      custom worktree root support.
+
+
+      2. ac-no-untracked-after-common-commands test (threads 2&3): the test now creates all
+      transient directories that post-init commands would lazily create — .kspec-worktrees/ with a
+      child worktree, .kspec-sessions/ with a session file, plans/ with a draft,
+      .kspec-dispatch-workspace.json, and .kspec-dispatch-shadow-mutation — then verifies none
+      appear as untracked.
+
+
+      Full test suite: 2120 suites, 7752 tests pass (4 new), 0 failures.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-14T10:26:41.834Z
