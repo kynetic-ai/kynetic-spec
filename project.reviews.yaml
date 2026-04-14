@@ -136207,6 +136207,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-14T09:16:04.866Z
+      - _ulid: 01KP5MDP5QX7G4CQWJ4A0XXWMT
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KP5MDN8PBRWZ7H9ZXX7H6JD1
+        timestamp: 2026-04-14T09:16:09.271Z
     examined_commit: 0da5706286daf663aa2beb1418e4eaa19055f976
     external_links: []
     lifecycle_state: closed
@@ -136237,6 +136244,115 @@ reviews:
               path this task was supposed to reuse safely.'
             created_at: 2026-04-14T09:16:01.003Z
         kind: blocker
+      - _ulid: 01KP5MDN8PBRWZ7H9ZXX7H6JD1
+        entries:
+          - _ulid: 01KP5MDN8PQNB2W87B0NCE7PM7
+            author: Jacob Chapel
+            body: >-
+              Review evidence log: Files read: src/agent-runtime/workspace.ts,
+              src/cli/commands/setup.ts, src/cli/commands/init.ts, src/parser/config.ts,
+              tests/scaffold-project-config.test.ts, tests/helpers/cli.ts. Commands run: , , , ✗
+              Validation failed
+
+              ────────────────────────────────────────
+
+              Files checked: 10
+
+              Items checked: 589
+
+              Tasks checked: 0
+
+              Meta: 11 agents, 11 workflows, 10 conventions
+
+
+              Schema errors: 1
+                ✗ /home/chapel/Projects/kynetic-spec-dispatch/.kspec/modules/meta.yaml:modules[0].traits.0
+                  Expected string, received object
+              References: OK
+
+
+              Reference warnings: 1
+                ⚠ @skills
+                  Orphaned skill directory 'skills' has no corresponding meta entry
+                  in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+              Alignment warnings: 33
+                Orphaned specs (no tasks): 31
+                  ○ Test Trait
+                  ○ Filterable List Commands
+                  ○ Dry Run Preview Mode
+                  ... and 28 more
+                Status mismatches: 2
+                  ! Task Set Batch Support
+                    Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+                  ! Concurrent Read Command Execution
+                    Spec "Concurrent Read Command Execution" status is "implemented" but should be "in_progress" based on task progress
+
+              Alignment stats: 425/589 specs have tasks, 423 aligned
+
+
+              Completeness warnings: 484
+                Missing acceptance criteria: 1
+                  ○ @01KJN1WT - Test Trait
+                Missing own AC coverage: 244
+                  ! @spec-item - Spec Item
+                    Uncovered: ac-item-1, ac-item-2
+                  ! @ulid-system - ULID Identifier System
+                    Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+                  ! @slug-system - Slug Alias System
+                    Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+                  ... and 241 more
+                Invalid AC annotations: 239
+                  ! AC annotation references '@01KJE3T7' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review/tests/agent-detection.test.ts:43
+                  ! AC annotation references '@01KJE3T7' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review/tests/agent-detection.test.ts:61
+                  ! AC annotation references '@01KJE3T7' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review/tests/agent-detection.test.ts:75
+                  ! AC annotation references '@01KJE3T7' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review/tests/agent-detection.test.ts:88
+                  ! AC annotation references '@ui-agent-dispatch ac-8' but @ui-agent-dispatch has no acceptance criterion 'ac-8'
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review/tests/agent-dispatch-engine.test.ts:4965
+                  ... and 234 more
+              Skills: OK (10 files checked),  for AC annotations, 
+               RUN  v4.1.4 /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review
+
+               ✓ |default| tests/scaffold-project-config.test.ts > Scaffold Project Config > fresh project (no existing config) > creates kspec.config.yaml when running init --setup on fresh project 750ms
+               ✓ |default| tests/scaffold-project-config.test.ts > Scaffold Project Config > fresh project (no existing config) > scaffolded config file is valid and produces same result as empty config 964ms
+               ✓ |default| tests/scaffold-project-config.test.ts > Scaffold Project Config > fresh project (no existing config) > contains dispatch publication_mode with default and comment listing accepted values 745ms
+               ✓ |default| tests/scaffold-project-config.test.ts > Scaffold Project Config > fresh project (no existing config) > contains dispatch base_branch resolved from repository default branch 741ms
+               ✓ |default| tests/scaffold-project-config.test.ts > Scaffold Project Config > fresh project (no existing config) > contains commented-out coverage section with sample scan_paths 754ms
+               ✓ |default| tests/scaffold-project-config.test.ts > Scaffold Project Config > fresh project (no existing config) > has a top-of-file comment identifying as scaffolded template 730ms
+               ✓ |default| tests/scaffold-project-config.test.ts > Scaffold Project Config > existing config file (no force) > preserves existing config file byte-for-byte when not using force 733ms
+               ✓ |default| tests/scaffold-project-config.test.ts > Scaffold Project Config > force overwrite > replaces existing file with fresh template when --force is used 743ms
+               ✓ |default| tests/scaffold-project-config.test.ts > Scaffold Project Config > force overwrite > creates backup of existing file before force overwrite 810ms
+               ✓ |default| tests/scaffold-project-config.test.ts > Scaffold Project Config > idempotent behavior > reports 'created' on first run 768ms
+               ✓ |default| tests/scaffold-project-config.test.ts > Scaffold Project Config > idempotent behavior > reports 'skipped' on second run without force 1302ms
+               ✓ |default| tests/scaffold-project-config.test.ts > Scaffold Project Config > integration with init --setup > creates config file as part of full init --setup flow 552ms
+               ✓ |default| tests/scaffold-project-config.test.ts > Scaffold Project Config > integration with init --setup > scaffolded file produces same behavior as empty config 1251ms
+               ✓ |default| tests/scaffold-project-config.test.ts > Scaffold Project Config > step appears in setup summary > shows scaffold step in setup output with same format as other steps 737ms
+               ✓ |default| tests/scaffold-project-config.test.ts > Scaffold Project Config > fail loudly on step failure > setup exits non-zero when scaffold step fails due to write error 755ms
+               ✓ |default| tests/scaffold-project-config.test.ts > Scaffold Project Config > fail loudly on step failure > setup failure output includes suggested action to resolve 753ms
+               ✓ |default| tests/scaffold-project-config.test.ts > Scaffold Project Config > fail loudly on step failure > scaffold step failure includes description of what failed 796ms
+               ✓ |default| tests/scaffold-project-config.test.ts > Scaffold Project Config > fail loudly on step failure > scaffold step failure is included in JSON output 880ms
+
+               Test Files  1 passed (1)
+                    Tests  18 passed (18)
+                 Start at  02:05:36
+                 Duration  14.91s (transform 23ms, setup 8ms, import 43ms, tests 14.77s, environment 0ms)
+
+              JSON report written to
+              /tmp/kspec-test-cache/01KP5KQGMG4RAMP9V87F2SDPK7/1776157536663-4063540.result.json, 
+
+              > @kynetic-ai/spec@0.12.0 test
+
+              > node scripts/test.cjs, and a temp-repo reproduction via  calling . Claims verified:
+              prior review blockers were fixed (shared resolver extracted, scaffold tests/trait
+              annotations added, setup fails non-zero on scaffold error). Categories searched:
+              correctness, edge cases, error handling, test quality, integration. Finding recorded:
+              dispatch fallback regression under stale remote HEAD refs.
+            created_at: 2026-04-14T09:16:08.342Z
+        kind: nit
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -136246,5 +136362,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-14T09:16:04.865Z
     created_at: 2026-04-14T09:04:47.175Z
-    updated_at: 2026-04-14T09:16:04.866Z
+    updated_at: 2026-04-14T09:16:08.342Z
     notes: []
