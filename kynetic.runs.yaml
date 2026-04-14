@@ -25427,7 +25427,7 @@ runs:
     completed_at: 2026-04-14T10:11:21.536Z
   - _ulid: 01KP5SC6EF8G9H81Y6GAZ17W7C
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -25440,7 +25440,26 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-14T10:42:57.322Z
-        completed_at: 2026-04-14T10:42:57.322Z
+        completed_at: 2026-04-14T10:43:37.116Z
+        notes: >-
+          High-confidence observations from this fix cycle session:
+
+
+          SUCCESS: Fix cycle 3 was efficient — read review threads, identified two distinct root
+          causes (scaffold fallback chain and success footer ordering), made surgical code changes,
+          added regression tests, all tests pass. The pattern of reading review threads first, then
+          understanding root cause before coding, works well.
+
+
+          FRICTION (minor): Getting thread ULIDs from kspec review for reply/resolve requires JSON
+          parsing — the human-readable output shows thread content but the _ulid field name is
+          non-obvious. Needed trial-and-error to find the correct JSON field. This is a repeatable
+          pattern in every fix cycle. Already partially tracked by review CLI specs but no specific
+          inbox item for this UX gap.
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-14T10:43:37.116Z
+        completed_at: 2026-04-14T10:43:37.116Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-14T10:42:43.279Z
