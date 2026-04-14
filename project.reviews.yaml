@@ -139014,6 +139014,12 @@ reviews:
           kind: nit
           thread_ulid: 01KP5S6KKAB2BZMCXN76MP7H7C
         timestamp: 2026-04-14T10:39:41.115Z
+      - _ulid: 01KP6JDZGCTWVDJA9T48RCBAYA
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP5RQC0H0MTWQ9YZER1WVP7Q
+        timestamp: 2026-04-14T18:00:36.108Z
     examined_commit: af2e3dadb9fcf2bd02574cdd0abf3588cc9608a5
     external_links: []
     lifecycle_state: closed
@@ -139075,6 +139081,16 @@ reviews:
               tests only cover a relative override (.dispatch-root), so this outside-root
               configuration regresses silently.
             created_at: 2026-04-14T10:31:20.849Z
+          - _ulid: 01KP6JDYM0G78FFFVYA89EW932
+            author: "@claude"
+            body: "Fixed: the absolute path check (path.isAbsolute) was already present in the local branch via
+              rebase (commit e4174f9c2) but the remote had stale commit af2e3dadb which lacked it.
+              The remote has now been updated. Verified by running
+              buildKspecGitignoreEntries(undefined, '/tmp/kspec-worktrees') — output correctly
+              excludes the absolute path. Test 'omits worktree root entry when it is an absolute
+              path' and 'omits worktree root from gitignore when configured as absolute path' both
+              cover this case."
+            created_at: 2026-04-14T18:00:35.199Z
         kind: blocker
       - _ulid: 01KP5S6KKAB2BZMCXN76MP7H7C
         entries:
@@ -139102,7 +139118,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-14T10:39:36.572Z
     created_at: 2026-04-14T10:30:13.609Z
-    updated_at: 2026-04-14T10:39:40.138Z
+    updated_at: 2026-04-14T18:00:35.199Z
     notes: []
   - _ulid: 01KP5SJJR9S8KE3FZ3VY408Z54
     slugs: []
