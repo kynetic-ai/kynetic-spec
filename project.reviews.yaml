@@ -140904,6 +140904,13 @@ reviews:
           status: pass
           name: AC annotation scan
         timestamp: 2026-04-14T20:49:18.216Z
+      - _ulid: 01KP6W3EKXYXTCTBCJJ32M9HT9
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP6W3DPEJ0Y4PNFC3JNJMMDT
+        timestamp: 2026-04-14T20:49:36.893Z
     examined_commit: af9d75e0a7abb47bcd90459f7ec70d16c51e0769
     external_links: []
     lifecycle_state: open
@@ -140934,7 +140941,28 @@ reviews:
               failed."
             created_at: 2026-04-14T20:49:08.668Z
         kind: blocker
+      - _ulid: 01KP6W3DPEJ0Y4PNFC3JNJMMDT
+        anchor:
+          type: code
+          commit: af9d75e0a7abb47bcd90459f7ec70d16c51e0769
+          line_end: 290
+          line_start: 279
+          path: src/cli/commands/init.ts
+          side: head
+        entries:
+          - _ulid: 01KP6W3DPF36DP9J8S2QBCHJQW
+            author: Jacob Chapel
+            body: 'init --setup now reports success whenever the scaffold step succeeds, even if other setup
+              steps fail. In src/cli/commands/init.ts, the old setupResult.success gate was removed
+              and replaced with a scaffold-only check, so failures like plugin marketplace or memory
+              seeding are silently downgraded to a green footer and exit 0. I reproduced this with
+              HOME=/dev/null and `node dist/cli/index.js init --no-prompt --setup`: the summary
+              showed failed Register plugin marketplace and Seed memory steps, but the command still
+              printed "Setup complete. Your project is ready for use." and exited 0. The base branch
+              warned when any setup step failed.'
+            created_at: 2026-04-14T20:49:35.951Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-14T20:38:21.450Z
-    updated_at: 2026-04-14T20:49:17.218Z
+    updated_at: 2026-04-14T20:49:35.951Z
     notes: []
