@@ -136214,6 +136214,15 @@ reviews:
           kind: nit
           thread_ulid: 01KP5MDN8PBRWZ7H9ZXX7H6JD1
         timestamp: 2026-04-14T09:16:09.271Z
+      - _ulid: 01KP5MDYQ7EKSW7X0HAAZ4C2CS
+        actor: "@codex"
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-14T09:16:18.023Z
     examined_commit: 0da5706286daf663aa2beb1418e4eaa19055f976
     external_links: []
     lifecycle_state: closed
@@ -136361,6 +136370,13 @@ reviews:
         reviewer: "@codex"
         role: reviewer
         created_at: 2026-04-14T09:16:04.865Z
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: "@codex"
+        role: reviewer
+        created_at: 2026-04-14T09:16:18.023Z
     created_at: 2026-04-14T09:04:47.175Z
-    updated_at: 2026-04-14T09:16:08.342Z
+    updated_at: 2026-04-14T09:16:18.023Z
     notes: []
