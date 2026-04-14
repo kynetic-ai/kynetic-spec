@@ -286,3 +286,11 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-14T21:08:24.227Z
+  - _ulid: 01KP6X63Y1XRHHMNW5HBZ6ZZ1T
+    content: '[DISPATCH-WORKSPACE] Dispatch worktree path
+      "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review"
+      already exists and is not a registered git worktree. Suggested action: Remove or rename that
+      directory, or choose a different dispatch.worktree_root.'
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-14T21:08:32.833Z
