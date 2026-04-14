@@ -135748,7 +135748,18 @@ reviews:
     slugs: []
     title: Review task-complete-gitignore
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Exit code 4. Validation reports a schema error in .kspec/modules/meta.yaml, plus this
+          task still has missing trait AC coverage for @complete-auto-gitignore:
+          @trait-idempotent-file-scaffold ac-force-backs-up-before-overwrite."
+        name: kspec validate
+        required: true
+        created_at: 2026-04-14T08:38:57.086Z
+        completed_at: 2026-04-14T08:38:57.086Z
     events:
       - _ulid: 01KP5J03V6TY0MV26MN1TQ4J91
         actor: Jacob Chapel
@@ -135791,6 +135802,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP5J8NSRZWN3GW41RCVRQEAT
         timestamp: 2026-04-14T08:38:28.870Z
+      - _ulid: 01KP5J9K6DST5TC0R6G83CCCQD
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-14T08:38:57.997Z
     examined_commit: d8602e6f790919893fc9aa7907493193f5f99411
     external_links: []
     lifecycle_state: open
@@ -135955,5 +135973,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-14T08:33:47.366Z
-    updated_at: 2026-04-14T08:38:27.896Z
+    updated_at: 2026-04-14T08:38:57.086Z
     notes: []
