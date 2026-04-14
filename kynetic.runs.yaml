@@ -25389,7 +25389,7 @@ runs:
     completed_at: 2026-04-14T09:44:02.573Z
   - _ulid: 01KP5QGTA5Q4E0RDWB5B1EM6MQ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -25402,7 +25402,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-14T10:10:56.615Z
-        completed_at: 2026-04-14T10:10:56.615Z
+        completed_at: 2026-04-14T10:11:07.034Z
+        notes: "High-confidence friction: (1) ConventionSchema has no tags field, so scaffold-origin tagging
+          is asymmetric between agents (tags) and conventions (state file only). Minor schema gap,
+          not blocking. (2) Task description referenced a non-existent setup state file; probe-based
+          pattern required creating a new .setup-state.json. Mostly a spec-description clarity
+          issue, not a code problem. Neither rises to observation level — both are minor and
+          addressed in this implementation."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-14T10:11:07.034Z
+        completed_at: 2026-04-14T10:11:07.034Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-14T10:10:17.541Z
