@@ -139899,3 +139899,29 @@ reviews:
     created_at: 2026-04-14T18:40:47.250Z
     updated_at: 2026-04-14T18:50:46.419Z
     notes: []
+  - _ulid: 01KP6P2JFYBYJQE54MFK8TVWD0
+    slugs: []
+    title: Review scaffold default project agents and conventions
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KP6P2JFY9PJPF816P32GC8BP
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-14T19:04:16.638Z
+    examined_commit: a7c72916243514df6efab4bee95db653c74e7a59
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNXYJ4AP5ACVWK4Y93JG7BKH"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-14T19:04:16.638Z
+    updated_at: null
+    notes: []

@@ -167,7 +167,7 @@ tags:
   - setup
   - meta
 vcs_refs: []
-review_ref: "@01KP6KK5YMTAEJCDYWC9KW0PFK"
+review_ref: "@01KP6P2JFYBYJQE54MFK8TVWD0"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-default-agents-and-conventions/01knxyj4
@@ -518,6 +518,13 @@ history:
         previous: 2026-04-14T18:19:20.823Z
     command: task-submit
     timestamp: 2026-04-14T18:57:24.785Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KP6P2JFYBYJQE54MFK8TVWD0"
+        previous: "@01KP6KK5YMTAEJCDYWC9KW0PFK"
+    command: review-link
+    timestamp: 2026-04-14T19:04:19.367Z
 prior_status: null
 created_at: 2026-04-11T09:39:25.142Z
 started_at: 2026-04-14T18:57:21.399Z
