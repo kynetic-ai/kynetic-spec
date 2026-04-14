@@ -139184,6 +139184,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-14T19:00:17.481Z
+      - _ulid: 01KP6NVBJWVATZ4HFP2T4FDDHC
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP6NVAP7FP26799AK0XPW3G9
+        timestamp: 2026-04-14T19:00:20.188Z
     examined_commit: 303b2298f2b8eb0d7136364c00fd26ab21d50ba5
     external_links: []
     lifecycle_state: open
@@ -139193,10 +139200,30 @@ reviews:
       content_hash: ""
       ref: "@01KNXYJ3PYYG1ABH6SMQ2KRE1S"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KP6NVAP7FP26799AK0XPW3G9
+        anchor:
+          type: code
+          commit: 790807a3a50347a166477c2f42f1a0a43cfad703
+          line_end: 1271
+          line_start: 1265
+          path: src/cli/commands/setup.ts
+          side: head
+        entries:
+          - _ulid: 01KP6NVAP7AYEF56VMTG56YXFV
+            author: Jacob Chapel
+            body: 'When no remote HEAD exists, this scaffold hard-codes dispatch.base_branch to "main" instead
+              of preserving the empty-config fallback chain. I reproduced this in a fresh repo on
+              branch  with no remote: after   cd /home/chapel/Projects/kynetic-spec-dispatch &&
+              kspec init, the scaffolded file contained , but  on the same repo without the file
+              resolved  from the current branch. That changes runtime behavior and can break
+              dispatch for newly initialized repos, violating @scaffolded-project-config
+              ac-file-valid-on-load (scaffolded config must resolve the same as an empty config).'
+            created_at: 2026-04-14T19:00:19.271Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-14T10:46:12.489Z
-    updated_at: 2026-04-14T19:00:16.550Z
+    updated_at: 2026-04-14T19:00:19.271Z
     notes: []
   - _ulid: 01KP6HSXBZYXZMMAGGTMXJMTAC
     slugs: []
