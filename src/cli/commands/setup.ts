@@ -1345,9 +1345,10 @@ export async function runSetupPipeline(
       }
 
       // Ensure managed gitignore block with all kspec transient entries
-      // Load project config to get the configured shadow directory name
+      // Load project config to get the configured shadow directory and dispatch worktree root
       const { config: setupConfig } = await loadProjectConfig(projectDir, projectDir);
       const shadowDir = setupConfig.shadow.directory || undefined;
+      const worktreeRoot = setupConfig.dispatch.worktree_root || undefined;
 
       const { ensureKspecGitignore, updateManagedBlock, buildKspecGitignoreEntries } =
         await import("../../parser/gitignore.js");
@@ -1360,7 +1361,7 @@ export async function runSetupPipeline(
         } catch {
           // File doesn't exist
         }
-        const dryResult = updateManagedBlock(gitignoreContent, buildKspecGitignoreEntries(shadowDir));
+        const dryResult = updateManagedBlock(gitignoreContent, buildKspecGitignoreEntries(shadowDir, worktreeRoot));
         if (dryResult.result.changed) {
           if (dryResult.result.blockCreated) {
             actions.push(`add to .gitignore: ${dryResult.result.entriesAdded.join(", ")}`);
@@ -1369,7 +1370,7 @@ export async function runSetupPipeline(
           }
         }
       } else {
-        const gitignoreResult = await ensureKspecGitignore(projectDir, { shadowDir });
+        const gitignoreResult = await ensureKspecGitignore(projectDir, { shadowDir, worktreeRoot });
         if (gitignoreResult.changed) {
           if (gitignoreResult.blockCreated) {
             actions.push("created kspec managed block in .gitignore");

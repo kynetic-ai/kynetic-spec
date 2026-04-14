@@ -1355,6 +1355,8 @@ export interface ShadowInitOptions {
   shadow?: ShadowOptions;
   /** Session storage configuration from manifest */
   sessions?: { storage?: string; branch?: string };
+  /** Override for the dispatch worktree root (default: .kspec-worktrees) */
+  worktreeRoot?: string;
 }
 
 /**
@@ -2817,6 +2819,7 @@ export async function initializeShadow(
     const { ensureKspecGitignore } = await import("./gitignore.js");
     const gitignoreResult = await ensureKspecGitignore(projectRoot, {
       shadowDir: directoryName,
+      worktreeRoot: options.worktreeRoot,
     });
     result.gitignoreUpdated = gitignoreResult.changed;
 

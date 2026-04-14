@@ -26,20 +26,20 @@ export const MANAGED_BLOCK_END = "# <<< kspec managed";
 
 /**
  * Build the canonical list of transient paths that kspec may create
- * at the project root. Accepts an optional shadow directory name
- * override for custom-configured projects.
- *
- * The default dispatch worktree root (".kspec-worktrees") comes from
- * config.ts DEFAULT_CONFIG.dispatch.worktree_root but is kept as a
- * literal here to avoid a circular import.
+ * at the project root. Accepts optional overrides for the shadow
+ * directory and dispatch worktree root for custom-configured projects.
  */
-export function buildKspecGitignoreEntries(shadowDir?: string): string[] {
+export function buildKspecGitignoreEntries(
+  shadowDir?: string,
+  worktreeRoot?: string,
+): string[] {
   const dir = shadowDir ?? SHADOW_WORKTREE_DIR;
+  const wtRoot = worktreeRoot ?? ".kspec-worktrees";
   return [
     `${dir}/`,
     `${SESSIONS_WORKTREE_DIR}/`,
     `${TRANSIENT_PLANS_DIR}/`,
-    ".kspec-worktrees/",
+    `${wtRoot}/`,
     ".kspec-dispatch-workspace.json",
     ".kspec-dispatch-shadow-mutation",
   ];
@@ -196,6 +196,8 @@ export function updateManagedBlock(
 export interface EnsureKspecGitignoreOptions {
   /** Override the shadow directory name (default: .kspec) */
   shadowDir?: string;
+  /** Override the dispatch worktree root (default: .kspec-worktrees) */
+  worktreeRoot?: string;
 }
 
 /**
@@ -209,7 +211,7 @@ export async function ensureKspecGitignore(
   options?: EnsureKspecGitignoreOptions,
 ): Promise<ManagedBlockResult> {
   const gitignorePath = path.join(projectRoot, ".gitignore");
-  const entries = buildKspecGitignoreEntries(options?.shadowDir);
+  const entries = buildKspecGitignoreEntries(options?.shadowDir, options?.worktreeRoot);
 
   let content = "";
   try {
@@ -236,7 +238,7 @@ export async function needsKspecGitignoreUpdate(
   options?: EnsureKspecGitignoreOptions,
 ): Promise<boolean> {
   const gitignorePath = path.join(projectRoot, ".gitignore");
-  const entries = buildKspecGitignoreEntries(options?.shadowDir);
+  const entries = buildKspecGitignoreEntries(options?.shadowDir, options?.worktreeRoot);
 
   let content = "";
   try {

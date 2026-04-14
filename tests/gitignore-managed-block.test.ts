@@ -260,6 +260,19 @@ describe("ensureKspecGitignore", () => {
     expect(content).toContain(".kspec-worktrees/");
   });
 
+  it("uses configured worktree root when provided", async () => {
+    const result = await ensureKspecGitignore(testDir, { worktreeRoot: ".dispatch-root" });
+
+    expect(result.changed).toBe(true);
+    expect(result.blockCreated).toBe(true);
+
+    const content = await readTestOutput(path.join(testDir, ".gitignore"));
+    expect(content).toContain(".dispatch-root/");
+    expect(content).not.toContain(".kspec-worktrees/");
+    // Default shadow dir still present
+    expect(content).toContain(".kspec/");
+  });
+
   it("adds missing entries to an existing partial managed block", async () => {
     // Write a managed block with only .kspec/
     const partial = [
@@ -388,7 +401,7 @@ describe("kspec init gitignore integration", () => {
   });
 
   // AC: @complete-auto-gitignore ac-no-untracked-after-common-commands
-  it("no kspec-created directory appears as untracked after init", () => {
+  it("no kspec-created directory appears as untracked after init and transient state creation", async () => {
     const result = kspec("init --no-prompt", testDir);
     expect(result.exitCode).toBe(0);
 
@@ -398,7 +411,23 @@ describe("kspec init gitignore integration", () => {
       stdio: "pipe",
     });
 
-    // Check git status — no kspec-related entries should be untracked
+    // Simulate the transient state that post-init commands lazily create:
+    // - dispatch worktree pool (.kspec-worktrees/ with a child worktree dir)
+    // - session storage (.kspec-sessions/ with a session file)
+    // - plan drafts (plans/ with a draft file)
+    // - dispatch workspace metadata file
+    // - dispatch shadow mutation lock file
+    const { mkdirSync, writeFileSync } = require("node:fs");
+    mkdirSync(path.join(testDir, ".kspec-worktrees", "dispatch-test"), { recursive: true });
+    writeFileSync(path.join(testDir, ".kspec-worktrees", "dispatch-test", "README"), "worktree");
+    mkdirSync(path.join(testDir, ".kspec-sessions", "session-abc"), { recursive: true });
+    writeFileSync(path.join(testDir, ".kspec-sessions", "session-abc", "state.json"), "{}");
+    mkdirSync(path.join(testDir, "plans"), { recursive: true });
+    writeFileSync(path.join(testDir, "plans", "draft.md"), "# Plan draft");
+    writeFileSync(path.join(testDir, ".kspec-dispatch-workspace.json"), "{}");
+    writeFileSync(path.join(testDir, ".kspec-dispatch-shadow-mutation"), "");
+
+    // Check git status — none of the kspec-created transient content should be untracked
     const statusOutput = execSync("git status --porcelain", {
       cwd: testDir,
       encoding: "utf-8",
@@ -447,7 +476,7 @@ describe("kspec init gitignore integration", () => {
   });
 });
 
-describe("buildKspecGitignoreEntries custom shadow directory", () => {
+describe("buildKspecGitignoreEntries custom overrides", () => {
   it("uses custom shadow directory when provided", () => {
     const entries = buildKspecGitignoreEntries(".specs");
     expect(entries).toContain(".specs/");
@@ -457,6 +486,28 @@ describe("buildKspecGitignoreEntries custom shadow directory", () => {
   it("uses default .kspec/ when no shadow directory provided", () => {
     const entries = buildKspecGitignoreEntries();
     expect(entries).toContain(".kspec/");
+  });
+
+  it("uses custom worktree root when provided", () => {
+    const entries = buildKspecGitignoreEntries(undefined, ".dispatch-root");
+    expect(entries).toContain(".dispatch-root/");
+    expect(entries).not.toContain(".kspec-worktrees/");
+    // Other entries still present
+    expect(entries).toContain(".kspec/");
+    expect(entries).toContain(".kspec-sessions/");
+  });
+
+  it("uses default .kspec-worktrees/ when no worktree root provided", () => {
+    const entries = buildKspecGitignoreEntries();
+    expect(entries).toContain(".kspec-worktrees/");
+  });
+
+  it("uses both custom shadow and custom worktree root together", () => {
+    const entries = buildKspecGitignoreEntries(".my-specs", ".my-worktrees");
+    expect(entries).toContain(".my-specs/");
+    expect(entries).toContain(".my-worktrees/");
+    expect(entries).not.toContain(".kspec/");
+    expect(entries).not.toContain(".kspec-worktrees/");
   });
 });
 
