@@ -26104,7 +26104,7 @@
   type: task
   spec_ref: "@complete-auto-gitignore"
   plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 1
@@ -26117,7 +26117,7 @@
   todos_count: 0
   created_at: 2026-04-11T09:39:24.826Z
   started_at: 2026-04-14T10:26:51.768Z
-  submitted_at: 2026-04-14T09:27:35.606Z
+  submitted_at: 2026-04-14T10:26:55.303Z
   automation: eligible
 - _ulid: 01KNXYJ4AP5ACVWK4Y93JG7BKH
   slugs:
