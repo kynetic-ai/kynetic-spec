@@ -13943,6 +13943,14 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-14T06:08:35.692Z
+  - _ulid: 01KP5KQNK8BMQCCH2ANH49C12C
+    type: success
+    content: "Fix-cycle workflow: reading all review threads before any code changes gave clear scope
+      and prevented partial fixes. Addressed all 3 blockers in a single pass without rework."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-14T09:04:07.784Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
