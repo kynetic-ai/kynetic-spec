@@ -136575,6 +136575,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP5NK243RQGNR9K82WB7RMJ3
         timestamp: 2026-04-14T09:36:34.891Z
+      - _ulid: 01KP5NPDNKWJ1HQ627T5AX9198
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KP5NPCQVQ84GQP214MY0F70X
+        timestamp: 2026-04-14T09:38:24.051Z
     examined_commit: ed0456aa9354b0abee7bd8e70dde0857b610cf3e
     external_links: []
     lifecycle_state: open
@@ -136667,7 +136674,30 @@ reviews:
               content."
             created_at: 2026-04-14T09:36:33.924Z
         kind: blocker
+      - _ulid: 01KP5NPCQVQ84GQP214MY0F70X
+        entries:
+          - _ulid: 01KP5NPCQVJGAR9T4HAGBNTEXR
+            author: Jacob Chapel
+            body: >-
+              Files read: src/parser/gitignore.ts, src/parser/shadow.ts, src/cli/commands/setup.ts,
+              tests/gitignore-managed-block.test.ts, tests/helpers/cli.ts, package.json,
+              scripts/test.cjs.
+
+              Commands run: git diff --stat 7b1b8565...ed0456aa, git diff --unified=80
+              7b1b8565...ed0456aa, kspec task get @01KNXYJ40TP75YKCV51RM6H6YZ, kspec item get
+              @complete-auto-gitignore, kspec review get @01KP5J03V6J4AWV8W95T4WQBKS, grep -RIn AC
+              annotations in tests, kspec validate, rg -n worktree_root src tests, npm run dev --
+              init --no-prompt on a temp repo with dispatch.worktree_root: .dispatch-root, git
+              status --porcelain in that temp repo, npm test.
+
+              Claims verified: reproduced that custom dispatch worktree roots are not added to
+              .gitignore; verified the new ac-no-untracked-after-common-commands test only checks
+              status immediately after init and does not run later transient-directory creators.
+
+              Categories searched: correctness, configuration edge cases, test quality, integration.
+            created_at: 2026-04-14T09:38:23.099Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-14T09:30:46.921Z
-    updated_at: 2026-04-14T09:36:33.924Z
+    updated_at: 2026-04-14T09:38:23.099Z
     notes: []
