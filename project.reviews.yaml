@@ -139141,7 +139141,21 @@ reviews:
     slugs: []
     title: Review task-default-agents-and-conventions
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Ran npm test -- tests/setup-builtin-agents.test.ts
+          tests/setup-from-linked-worktree.test.ts
+          tests/init-from-linked-worktree-empty-main.test.ts
+          tests/init-from-linked-worktree-existing-shadow.test.ts. Result: 12 suites, 25 tests
+          passed."
+        name: targeted setup tests
+        required: true
+        runner: npm
+        created_at: 2026-04-14T17:58:16.009Z
+        completed_at: 2026-04-14T17:58:16.009Z
     events:
       - _ulid: 01KP6HSXBZBF6Y2MPF87CPM9RD
         actor: Jacob Chapel
@@ -139170,6 +139184,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP6J9KVZY7MQ6ZEC0SYFE240
         timestamp: 2026-04-14T17:58:14.159Z
+      - _ulid: 01KP6J9QN33TK118KQXZPJB5N0
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted setup tests
+        timestamp: 2026-04-14T17:58:16.995Z
     examined_commit: 73651ba0549f7b0bbf3eb4aba1512c21e3f914e3
     external_links: []
     lifecycle_state: open
@@ -139217,5 +139238,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-14T17:49:38.559Z
-    updated_at: 2026-04-14T17:58:13.119Z
+    updated_at: 2026-04-14T17:58:16.009Z
     notes: []
