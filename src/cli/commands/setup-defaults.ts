@@ -49,6 +49,8 @@ interface ScaffoldedItemRecord {
   type: "agent" | "convention";
   /** The original scaffold identifier (agent id or convention domain) */
   id: string;
+  /** The ULID assigned at creation time (enables rename detection for conventions) */
+  _ulid?: string;
 }
 
 /**
@@ -259,54 +261,67 @@ export async function scaffoldDefaults(
     // Build lookup sets for current meta items
     const existingAgentIds = new Set((meta.agents || []).map((a) => a.id));
     const existingConventionDomains = new Set((meta.conventions || []).map((c) => c.domain));
+    const defaultAgentIds = new Set(DEFAULT_AGENTS.map((a) => a.id));
 
-    // Find items with the scaffold-default tag (for rename detection)
-    const scaffoldTaggedAgentIds = new Set(
+    // Agents with scaffold tag whose ID is NOT a known default — these are
+    // candidates for renamed defaults. Each can account for at most one
+    // missing default, so we consume them from a mutable set.
+    const unmatchedTaggedAgents = new Set(
       (meta.agents || [])
-        .filter((a) => a.tags?.includes(SCAFFOLD_TAG))
+        .filter((a) => a.tags?.includes(SCAFFOLD_TAG) && !defaultAgentIds.has(a.id))
         .map((a) => a.id),
     );
-    // Conventions don't have a tags field in the schema, so we track them
-    // through the state file's scaffoldedItems list instead.
-    const scaffoldedItemIds = new Set(
-      (state.scaffoldedItems || []).map((r) => r.id),
-    );
+
+    // Build a ULID lookup from state file for convention rename detection.
+    // Map: original domain → ULID assigned at scaffold time.
+    const scaffoldedConventionUlids = new Map<string, string>();
+    for (const rec of state.scaffoldedItems || []) {
+      if (rec.type === "convention" && rec._ulid) {
+        scaffoldedConventionUlids.set(rec.id, rec._ulid);
+      }
+    }
+
+    // Build reverse lookup: ULID → current convention (for rename detection)
+    const conventionsByUlid = new Map<string, { domain: string }>();
+    for (const conv of meta.conventions || []) {
+      const c = conv as { _ulid?: string; domain: string };
+      if (c._ulid) {
+        conventionsByUlid.set(c._ulid, c);
+      }
+    }
 
     const isFirstRun = !state.defaultsSeeded;
 
     if (isFirstRun || force) {
       // First-run or force mode: create items that don't exist
       let created = 0;
+      // Track ULIDs we generate so we can persist them in the state file
+      const newUlids = new Map<string, string>();
 
       // Create agents
       for (const def of DEFAULT_AGENTS) {
         if (existingAgentIds.has(def.id)) {
-          if (isFirstRun) {
-            items.push({ type: "agent", id: def.id, status: "exists" });
-          } else {
-            items.push({ type: "agent", id: def.id, status: "exists" });
-          }
+          items.push({ type: "agent", id: def.id, status: "exists" });
           continue;
         }
 
-        // Force mode: only recreate if the item was scaffolded before and is now missing
-        // (not renamed — if it has the scaffold tag under a different id, it was renamed)
+        // Force mode: check if this specific default was renamed (not deleted)
         if (force && !isFirstRun) {
-          // Check if there's a scaffolded agent that was renamed (has tag but different id)
-          const wasRenamed = scaffoldTaggedAgentIds.size > 0 &&
-            !scaffoldTaggedAgentIds.has(def.id) &&
-            scaffoldedItemIds.has(def.id) &&
-            [...scaffoldTaggedAgentIds].some((taggedId) => !DEFAULT_AGENTS.some((d) => d.id === taggedId));
-
-          if (wasRenamed) {
+          // Consume one unmatched tagged agent to account for this missing default.
+          // If there's at least one unmatched tagged agent, this default was renamed.
+          const firstUnmatched = unmatchedTaggedAgents.values().next();
+          if (!firstUnmatched.done) {
+            unmatchedTaggedAgents.delete(firstUnmatched.value);
             items.push({ type: "agent", id: def.id, status: "renamed" });
             continue;
           }
+          // No unmatched tagged agents left — this default was truly deleted; recreate it
         }
 
+        const itemUlid = ulid();
         if (!dryRun) {
           const agentData: Agent = {
-            _ulid: ulid(),
+            _ulid: itemUlid,
             id: def.id,
             name: def.name,
             description: def.description,
@@ -321,6 +336,7 @@ export async function scaffoldDefaults(
           };
           await saveMetaItem(ctx, agentData, "agent");
         }
+        newUlids.set(def.id, itemUlid);
         items.push({
           type: "agent",
           id: def.id,
@@ -336,27 +352,33 @@ export async function scaffoldDefaults(
           continue;
         }
 
-        // Force mode: only recreate missing items
+        // Force mode: check if this convention was renamed via ULID tracking
         if (force && !isFirstRun) {
-          // Check if this convention was scaffolded before but is now missing
-          if (!scaffoldedItemIds.has(def.domain)) {
-            // Was never scaffolded — skip in force mode
-            items.push({ type: "convention", id: def.domain, status: "exists" });
-            continue;
+          const originalUlid = scaffoldedConventionUlids.get(def.domain);
+          if (originalUlid) {
+            // We have a ULID from when this convention was first scaffolded.
+            // Check if a convention with that ULID still exists under a different domain.
+            const renamedConv = conventionsByUlid.get(originalUlid);
+            if (renamedConv && renamedConv.domain !== def.domain) {
+              items.push({ type: "convention", id: def.domain, status: "renamed" });
+              continue;
+            }
+            // ULID exists in state but no convention has it → truly deleted; recreate
           }
-          // Was scaffolded but now missing — check for rename
-          // Since conventions don't have tags, we rely on the state file
+          // No ULID in state (legacy state file) → treat missing as truly deleted; recreate
         }
 
+        const itemUlid = ulid();
         if (!dryRun) {
           const conventionData: Convention = {
-            _ulid: ulid(),
+            _ulid: itemUlid,
             domain: def.domain,
             rules: [...def.rules],
             examples: [],
           };
           await saveMetaItem(ctx, conventionData, "convention");
         }
+        newUlids.set(def.domain, itemUlid);
         items.push({
           type: "convention",
           id: def.domain,
@@ -365,11 +387,24 @@ export async function scaffoldDefaults(
         created++;
       }
 
-      // Write first-run marker
+      // Write first-run marker (preserve existing ULIDs, add new ones)
       if (!dryRun) {
+        // Merge existing state records with new/updated ones
+        const existingRecords = new Map<string, ScaffoldedItemRecord>();
+        for (const rec of state.scaffoldedItems || []) {
+          existingRecords.set(rec.id, rec);
+        }
         const scaffoldedItems: ScaffoldedItemRecord[] = [
-          ...DEFAULT_AGENTS.map((a) => ({ type: "agent" as const, id: a.id })),
-          ...DEFAULT_CONVENTIONS.map((c) => ({ type: "convention" as const, id: c.domain })),
+          ...DEFAULT_AGENTS.map((a) => ({
+            type: "agent" as const,
+            id: a.id,
+            _ulid: newUlids.get(a.id) || existingRecords.get(a.id)?._ulid,
+          })),
+          ...DEFAULT_CONVENTIONS.map((c) => ({
+            type: "convention" as const,
+            id: c.domain,
+            _ulid: newUlids.get(c.domain) || existingRecords.get(c.domain)?._ulid,
+          })),
         ];
         await writeSetupState(ctx.specDir, {
           ...state,
@@ -381,12 +416,16 @@ export async function scaffoldDefaults(
 
       const createdItems = items.filter((i) => i.status === "created" || i.status === "force-recreated");
       const existingItems = items.filter((i) => i.status === "exists");
+      const renamedItems = items.filter((i) => i.status === "renamed");
       const parts: string[] = [];
       if (createdItems.length > 0) {
         parts.push(`created: ${createdItems.map((i) => i.id).join(", ")}`);
       }
       if (existingItems.length > 0) {
         parts.push(`already exist: ${existingItems.map((i) => i.id).join(", ")}`);
+      }
+      if (renamedItems.length > 0) {
+        parts.push(`renamed by user: ${renamedItems.map((i) => i.id).join(", ")}`);
       }
 
       return {
@@ -401,16 +440,15 @@ export async function scaffoldDefaults(
     // AC: @default-project-agents-and-conventions ac-removed-defaults-not-recreated
     // AC: @default-project-agents-and-conventions ac-renamed-defaults-preserved
 
-    // Check agents
+    // Check agents — use consumed-set approach for per-item rename matching
     for (const def of DEFAULT_AGENTS) {
       if (existingAgentIds.has(def.id)) {
         items.push({ type: "agent", id: def.id, status: "exists" });
       } else {
-        // The original id doesn't exist — check for rename via scaffold tag
-        const renamedAgent = (meta.agents || []).find(
-          (a) => a.tags?.includes(SCAFFOLD_TAG) && !DEFAULT_AGENTS.some((d) => d.id === a.id),
-        );
-        if (renamedAgent) {
+        // Consume one unmatched tagged agent to account for this missing default
+        const firstUnmatched = unmatchedTaggedAgents.values().next();
+        if (!firstUnmatched.done) {
+          unmatchedTaggedAgents.delete(firstUnmatched.value);
           items.push({ type: "agent", id: def.id, status: "renamed" });
         } else {
           items.push({ type: "agent", id: def.id, status: "removed" });
@@ -418,12 +456,20 @@ export async function scaffoldDefaults(
       }
     }
 
-    // Check conventions
+    // Check conventions — use ULID tracking for rename detection
     for (const def of DEFAULT_CONVENTIONS) {
       if (existingConventionDomains.has(def.domain)) {
         items.push({ type: "convention", id: def.domain, status: "exists" });
       } else {
-        // Conventions don't have tags — treat missing as removed
+        // Check if this convention was renamed via ULID tracking
+        const originalUlid = scaffoldedConventionUlids.get(def.domain);
+        if (originalUlid) {
+          const renamedConv = conventionsByUlid.get(originalUlid);
+          if (renamedConv && renamedConv.domain !== def.domain) {
+            items.push({ type: "convention", id: def.domain, status: "renamed" });
+            continue;
+          }
+        }
         items.push({ type: "convention", id: def.domain, status: "removed" });
       }
     }
