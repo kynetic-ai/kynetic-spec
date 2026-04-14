@@ -140677,6 +140677,17 @@ reviews:
         required: true
         created_at: 2026-04-14T19:56:24.494Z
         completed_at: 2026-04-14T19:56:24.494Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Repository-wide pre-existing validation noise remains: meta schema error in
+          .kspec/modules/meta.yaml plus broad completeness/alignment warnings unrelated to this
+          task; not treated as task regression."
+        name: kspec validate
+        required: false
+        created_at: 2026-04-14T19:56:31.758Z
+        completed_at: 2026-04-14T19:56:31.758Z
     events:
       - _ulid: 01KP6RXRJJZP27JAWFYFFT5Y2W
         actor: Jacob Chapel
@@ -140705,6 +140716,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP6S24H2CC5ES74D536JJ80M
         timestamp: 2026-04-14T19:56:29.320Z
+      - _ulid: 01KP6S29AVBQA9S85NHCC69S96
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-14T19:56:32.987Z
     examined_commit: af9d75e0a7abb47bcd90459f7ec70d16c51e0769
     external_links: []
     lifecycle_state: open
@@ -140741,5 +140759,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-14T19:54:04.755Z
-    updated_at: 2026-04-14T19:56:28.066Z
+    updated_at: 2026-04-14T19:56:31.758Z
     notes: []
