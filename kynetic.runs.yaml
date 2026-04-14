@@ -25694,7 +25694,7 @@ runs:
     completed_at: 2026-04-14T19:38:40.218Z
   - _ulid: 01KP6RSA3X0XHHQ3VJBJYAA3VK
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -25711,7 +25711,29 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-14T19:51:55.387Z
-        completed_at: 2026-04-14T19:51:55.387Z
+        completed_at: 2026-04-14T19:52:28.491Z
+        notes: >-
+          High-confidence observations from this session:
+
+
+          1. FRICTION (already tracked @01KK5HGE): Branch contamination from dev merges. This task's
+          branch included commits from 4+ other tasks because it was forked from dev. This is the
+          5th fix cycle and the exact same issue was the blocker — the reviewer correctly flagged
+          that approving would merge unrelated code. The existing observation captures this pattern.
+
+
+          2. SUCCESS: git rebase --onto is the right tool for isolating task commits from a
+          contaminated branch. The command 'git rebase --onto <target> <first-commit>^ <branch>'
+          cleanly cherry-picks only the relevant commits, and resolving the single merge conflict
+          was straightforward.
+
+
+          No new items to capture — the core friction (branch contamination) is already tracked as
+          observation @01KK5HGE. The fix was clean and efficient.
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-14T19:52:28.491Z
+        completed_at: 2026-04-14T19:52:28.491Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-14T19:51:38.877Z
