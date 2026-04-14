@@ -25525,9 +25525,22 @@ runs:
     completed_at: 2026-04-14T18:03:51.229Z
   - _ulid: 01KP6NQEMVB6V8T1TD5JKAV2Y9
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-14T18:58:12.252Z
+        completed_at: 2026-04-14T18:59:21.224Z
+        notes: "Session: fix cycle 2 for task-default-agents-and-conventions. What worked: ULID-based rename
+          detection approach unified agents and conventions tracking. Friction: previous cycle
+          rebased onto dev instead of integration target, contaminating branch with 13 unrelated
+          commits. Captured friction observation @01KP6NS8. No other systemic patterns worth
+          capturing — the code fix was straightforward once the root cause was identified."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-14T18:59:21.224Z
+        completed_at: 2026-04-14T18:59:21.224Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-14T18:58:12.252Z
