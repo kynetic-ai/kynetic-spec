@@ -456,6 +456,9 @@ conventions:
         because the CLI command itself is under test, read the PID immediately after the spawn
         returns and register process.kill(pid, 'SIGTERM') in onTestFinished — never rely on inline
         cleanup that won't run on assertion failure.
+      - Test helpers that drive kspec CLI subprocesses must require an explicit cwd parameter. Never
+        fall back to process.cwd() — a missing cwd is a test bug, not a default. A silent fallback
+        caused a shadow worktree destruction incident on 2026-04-11.
   - _ulid: 01KHYXJVNDVVFF6PR7K4X6545H
     domain: development
     examples: []
