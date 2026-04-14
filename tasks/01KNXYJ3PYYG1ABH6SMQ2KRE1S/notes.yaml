@@ -88,3 +88,25 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-14T09:16:06.763Z
+  - _ulid: 01KP5NWXKNYZKZ0C3F7YNX37KT
+    content: >-
+      Fix cycle 2: addressed both blocker threads (same root cause, duplicate threads).
+
+
+      The fix cycle 1 refactor replaced the dispatch workspace's three-step fallback (remote HEAD →
+      current branch → 'main', each verified independently) with a single resolveDefaultBranch call
+      that commits to the first non-null answer. When remote HEAD points to a stale/nonexistent
+      branch, this threw 'No base branch could be resolved' instead of falling through to the
+      current branch.
+
+
+      Fix: Restored the original per-step verification in resolveDispatchWorkspaceConfig. Each
+      candidate branch is verified via resolveBranchStartPoint before committing. The shared
+      resolveDefaultBranch helper remains exported for setup scaffolding where
+      commit-to-first-answer semantics are correct.
+
+
+      Full test suite: 7741 passed, 0 failed.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-14T09:41:56.981Z
