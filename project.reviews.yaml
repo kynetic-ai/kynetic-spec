@@ -139308,6 +139308,12 @@ reviews:
         payload:
           thread_ulid: 01KP6J9KVZY7MQ6ZEC0SYFE240
         timestamp: 2026-04-14T18:18:16.213Z
+      - _ulid: 01KP6KEQ2RNX2TN49K8TA5VYWZ
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP6J9W8NS1PZHTEM934ARXRK
+        timestamp: 2026-04-14T18:18:28.824Z
     examined_commit: 73651ba0549f7b0bbf3eb4aba1512c21e3f914e3
     external_links: []
     lifecycle_state: closed
@@ -139388,6 +139394,15 @@ reviews:
               primary-dev is not recreated. That violates ac-force-reseed because removed defaults
               are left missing once an unrelated renamed agent exists."
             created_at: 2026-04-14T17:58:21.718Z
+          - _ulid: 01KP6KEP5T507WWGJ9RK3G88AN
+            author: "@claude"
+            body: "Fixed: Replaced the broken global rename detection with a consumed-set approach. Unmatched
+              scaffold-tagged agents (IDs not in the default list) are collected into a mutable set.
+              For each missing default, one unmatched agent is consumed to account for a rename. If
+              no unmatched agents remain, the default is truly deleted and gets recreated in force
+              mode. Added explicit test: rename task-worker to my-worker, delete primary-dev, run
+              --force — primary-dev is recreated, task-worker is not."
+            created_at: 2026-04-14T18:18:27.898Z
         kind: blocker
       - _ulid: 01KP6JAB81PB7TSY1EYN0FP2D6
         entries:
@@ -139415,5 +139430,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-14T17:58:40.996Z
     created_at: 2026-04-14T17:49:38.559Z
-    updated_at: 2026-04-14T18:18:15.352Z
+    updated_at: 2026-04-14T18:18:27.898Z
     notes: []
