@@ -18,7 +18,7 @@ description: >-
 spec_ref: "@worktree-support"
 meta_ref: null
 plan_ref: null
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -30,5 +30,21 @@ tags:
   - bug
   - dispatch
 vcs_refs: []
+session_id: 01KM0XRFH87T3QWPVXDQZCA2XK
+history:
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KM0XRFH87T3QWPVXDQZCA2XK
+        previous: null
+      started_at:
+        new: 2026-04-14T00:02:45.056Z
+        previous: null
+    command: task-start
+    timestamp: 2026-04-14T00:02:45.056Z
 created_at: 2026-04-13T23:45:58.806Z
+started_at: 2026-04-14T00:02:45.056Z
 todos: []
