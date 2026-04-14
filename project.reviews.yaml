@@ -135630,3 +135630,29 @@ reviews:
     created_at: 2026-04-11T10:31:13.398Z
     updated_at: 2026-04-11T10:31:22.320Z
     notes: []
+  - _ulid: 01KP4RAJC8H8RA47SXB1M3K5XK
+    slugs: []
+    title: Review task-shadow-worktree-cross-contamination-guard
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KP4RAJC8H7QERJAZE9WH94TW
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-14T01:05:06.952Z
+    examined_commit: null
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@task-shadow-worktree-cross-contamination-guard"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-14T01:05:06.952Z
+    updated_at: null
+    notes: []
