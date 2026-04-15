@@ -1,1 +1,16 @@
-notes: []
+notes:
+  - _ulid: 01KP7WYSYMVKT64CBTZW5E43JR
+    content: >-
+      Approach: Two minimal changes per task description.
+
+      1. tests/helpers/cli.ts - add KSPEC_NO_DAEMON: '1' to defaultEnv (line ~187). Caller env
+      overrides via merge order on line 208.
+
+      2. tests/setup.test.ts - add KSPEC_NO_DAEMON: '1' to cleanEnv() return (line ~190). Uses
+      direct spawnSync, not the helper.
+
+      The daemon-config.test.ts auto-start tests already pass KSPEC_NO_DAEMON: '' which overrides
+      the helper default - no changes needed there.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-15T06:23:47.668Z
