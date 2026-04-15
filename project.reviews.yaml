@@ -141629,6 +141629,18 @@ reviews:
         runner: npm
         created_at: 2026-04-15T07:33:11.298Z
         completed_at: 2026-04-15T07:33:11.298Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full npm test passed: 2131 suites, 7763 passed, 5 skipped, duration 1675.1s.
+          dist/daemon/index.js count stayed 8 before and after full run, so this snapshot did not
+          add orphan daemon processes."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-15T07:33:14.073Z
+        completed_at: 2026-04-15T07:33:14.073Z
     events:
       - _ulid: 01KP80AVYTSQXS383HRT0BPZK6
         actor: Jacob Chapel
@@ -141650,6 +141662,13 @@ reviews:
           status: pass
           name: targeted daemon/setup tests
         timestamp: 2026-04-15T07:33:12.242Z
+      - _ulid: 01KP80XZP7ABJQ1PFZSCW777TZ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-15T07:33:15.079Z
     examined_commit: 582b948ce0f292d17dc405eb485dd7519f43ecbd
     external_links: []
     lifecycle_state: open
@@ -141662,5 +141681,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-15T07:22:48.667Z
-    updated_at: 2026-04-15T07:33:11.298Z
+    updated_at: 2026-04-15T07:33:14.073Z
     notes: []
