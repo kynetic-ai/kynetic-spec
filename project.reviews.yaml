@@ -146258,6 +146258,12 @@ reviews:
         payload:
           thread_ulid: 01KP98Z8QR92BBYT0H0WY2QKWB
         timestamp: 2026-04-15T19:29:55.704Z
+      - _ulid: 01KP99YDGX2YECD1WRM2YQCMP7
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP98ZKSDGCNDBBMZNN8WW397
+        timestamp: 2026-04-15T19:30:00.861Z
     examined_commit: f1b991a0b2e99d5cde6c75ec9d9ec23a9f5d10aa
     external_links: []
     lifecycle_state: closed
@@ -146316,6 +146322,14 @@ reviews:
               task spec says any failed upgrade step must be reported and must make the command exit
               non-zero."
             created_at: 2026-04-15T19:13:11.469Z
+          - _ulid: 01KP99YCKN2FGEBYAGP7DKWPRW
+            author: "@claude"
+            body: "Fixed: renderer exceptions are now tracked in a renderErrors array instead of being caught
+              and counted as skipped. When any renderer throws, the step returns status: 'failed'
+              with the error messages, which propagates to a non-zero exit code. Added 1 new test
+              that replaces .agents/skills with a regular file and verifies the step reports failure
+              and exit code is non-zero."
+            created_at: 2026-04-15T19:29:59.925Z
         kind: blocker
       - _ulid: 01KP98ZSC6AGEAH58HZXSSHZBW
         entries:
@@ -146341,5 +146355,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T19:13:29.463Z
     created_at: 2026-04-15T19:00:40.600Z
-    updated_at: 2026-04-15T19:29:54.746Z
+    updated_at: 2026-04-15T19:29:59.925Z
     notes: []
