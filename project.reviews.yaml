@@ -146694,6 +146694,19 @@ reviews:
         runner: npm
         created_at: 2026-04-15T20:37:27.801Z
         completed_at: 2026-04-15T20:37:27.801Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Repository-wide pre-existing validation issues remain in this snapshot: schema error in
+          .kspec/modules/meta.yaml plus broad existing alignment/completeness warnings. No
+          task-specific regression tied to upgrade.ts or tests/upgrade-command.test.ts was
+          identified from this output."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-15T20:37:32.043Z
+        completed_at: 2026-04-15T20:37:32.043Z
     events:
       - _ulid: 01KP9D52X866REBTNQQTC6P1HN
         actor: Jacob Chapel
@@ -146729,6 +146742,13 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-04-15T20:37:29.324Z
+      - _ulid: 01KP9DT32MJ5Y8845ZCB6G1HH8
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-15T20:37:33.396Z
     examined_commit: 4a8adcba1d4b7e6ee073f0cff5e9863e728aa8a2
     external_links: []
     lifecycle_state: open
@@ -146770,5 +146790,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-15T20:26:05.097Z
-    updated_at: 2026-04-15T20:37:27.801Z
+    updated_at: 2026-04-15T20:37:32.043Z
     notes: []
