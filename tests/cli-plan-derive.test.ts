@@ -824,10 +824,12 @@ Just prose, no structured specs section.
     });
 
     expect(result.exitCode).toBe(2);
-    expect(result.stderr).toContain("Plan does not define derivable work");
-    expect(result.stderr).toContain(
-      "Add specs in a ## Specs section or tasks in a ## Tasks section.",
-    );
+    // AC: @plan-import-format-guidance ac-empty-plan-derive-fails
+    expect(result.stderr).toContain("Plan has no derivable work");
+    expect(result.stderr).toContain("## Specs section");
+    expect(result.stderr).toContain("## Tasks section");
+    expect(result.stderr).toContain("kspec plan import");
+    expect(result.stderr).toContain("--into");
   });
 
   it("accepts --tasks as a backward-compatible no-op", async () => {
@@ -935,5 +937,60 @@ Just prose, no structured specs section.
       "Plan already derived. Manage specs directly via kspec item set.",
     );
     expect(activeError.details.suggestion).toContain("kspec item set @plan-already-derived");
+  });
+
+  // AC: @plan-import-format-guidance ac-empty-plan-derive-fails
+  // AC: @plan-import-format-guidance ac-error-no-external-references
+  it("empty-plan derive error names both expected sections and points to import command", async () => {
+    const planPath = await writePlanFile(
+      tempDir,
+      "empty-plan-derive.md",
+      `# Empty For Derive
+
+Just prose, no specs or tasks.
+`,
+    );
+
+    kspec(`plan import "${planPath}" --status approved`, tempDir);
+
+    const result = kspecRun("plan derive @plan-empty-for-derive", tempDir, {
+      expectFail: true,
+    });
+
+    expect(result.exitCode).toBe(2);
+    expect(result.stderr).toContain("## Specs");
+    expect(result.stderr).toContain("## Tasks");
+    expect(result.stderr).toContain("no derivable work");
+    expect(result.stderr).toContain("kspec plan import");
+    expect(result.stderr).toContain("--into");
+    // Self-contained: no external references
+    expect(result.stderr).not.toMatch(/README|docs\/|skills\//);
+    expect(result.stderr).not.toMatch(/source code/i);
+  });
+
+  // AC: @plan-import-format-guidance ac-empty-plan-derive-fails
+  // AC: @trait-error-guidance ac-6
+  // AC: @trait-json-output ac-3
+  it("empty-plan derive produces structured JSON error", async () => {
+    const planPath = await writePlanFile(
+      tempDir,
+      "empty-plan-derive-json.md",
+      `# Empty For JSON Derive
+
+No structured content.
+`,
+    );
+
+    kspec(`plan import "${planPath}" --status approved`, tempDir);
+
+    const result = kspecRun("plan derive @plan-empty-for-json-derive --json", tempDir, {
+      expectFail: true,
+    });
+
+    expect(result.exitCode).toBe(2);
+    const parsed = JSON.parse(result.stderr);
+    expect(parsed.success).toBe(false);
+    expect(parsed.error).toContain("no derivable work");
+    expect(parsed.details.suggestion).toContain("kspec plan import");
   });
 });
