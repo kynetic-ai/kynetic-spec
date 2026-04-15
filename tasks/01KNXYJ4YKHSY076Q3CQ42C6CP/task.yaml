@@ -69,6 +69,7 @@ tags:
   - modules
   - plans
 vcs_refs: []
+review_ref: "@01KP83G1KHSJ451JHTCY91YN1P"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-derivable-default-module/01knxyj4
@@ -308,6 +309,13 @@ history:
         previous: pending_review
     command: task-unblock
     timestamp: 2026-04-15T07:58:24.456Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KP83G1KHSJ451JHTCY91YN1P"
+        previous: null
+    command: review-link
+    timestamp: 2026-04-15T08:18:07.094Z
 prior_status: null
 created_at: 2026-04-11T09:39:25.779Z
 started_at: 2026-04-14T19:19:04.879Z
