@@ -143623,6 +143623,18 @@ reviews:
         runner: test-runner
         created_at: 2026-04-15T08:57:23.429Z
         completed_at: 2026-04-15T08:57:23.429Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Repo-wide pre-existing metadata validation failure in .kspec/modules/meta.yaml (Expected
+          string, received object) plus existing AC annotation warnings; unchanged by this task
+          review snapshot.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-15T08:57:30.458Z
+        completed_at: 2026-04-15T08:57:30.458Z
     events:
       - _ulid: 01KP85J4FKE0EZHG4WFF9Y10FK
         actor: Jacob Chapel
@@ -143660,6 +143672,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-15T08:57:27.350Z
+      - _ulid: 01KP85R9N8TM74MX3NP8SYADQ9
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-15T08:57:31.560Z
     examined_commit: 7fba358110d6aa04056d9088a157308863994fc2
     external_links: []
     lifecycle_state: closed
@@ -143679,5 +143698,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T08:57:27.349Z
     created_at: 2026-04-15T08:54:09.652Z
-    updated_at: 2026-04-15T08:57:27.350Z
+    updated_at: 2026-04-15T08:57:30.458Z
     notes: []
