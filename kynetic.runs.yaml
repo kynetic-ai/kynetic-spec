@@ -26418,7 +26418,7 @@ runs:
     completed_at: 2026-04-15T19:15:30.596Z
   - _ulid: 01KP9DVS6ZDXPQE0RDZARXPQBW
     status: active
-    current_step: 4
+    current_step: 5
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -26456,7 +26456,14 @@ runs:
       - status: completed
         step_index: 4
         started_at: 2026-04-15T20:39:29.451Z
-        completed_at: 2026-04-15T20:39:29.451Z
+        completed_at: 2026-04-15T20:39:30.528Z
+        notes: "Discussion: high-confidence capture. The friction is specific, reproducible, and untracked;
+          capturing it as an observation is justified without further refinement. The success
+          pattern is also concrete enough to keep as a process observation."
+      - status: completed
+        step_index: 5
+        started_at: 2026-04-15T20:39:30.528Z
+        completed_at: 2026-04-15T20:39:30.528Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-15T20:38:28.831Z
