@@ -146270,6 +146270,12 @@ reviews:
         payload:
           thread_ulid: 01KP98Z8QR92BBYT0H0WY2QKWB
         timestamp: 2026-04-15T19:30:09.317Z
+      - _ulid: 01KP99YV08K8MAYH8PDH1H9ZKG
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP98ZKSDGCNDBBMZNN8WW397
+        timestamp: 2026-04-15T19:30:14.664Z
     examined_commit: f1b991a0b2e99d5cde6c75ec9d9ec23a9f5d10aa
     external_links: []
     lifecycle_state: closed
@@ -146339,6 +146345,8 @@ reviews:
               and exit code is non-zero."
             created_at: 2026-04-15T19:29:59.925Z
         kind: blocker
+        resolved_at: 2026-04-15T19:30:13.701Z
+        resolved_by: "@claude"
       - _ulid: 01KP98ZSC6AGEAH58HZXSSHZBW
         entries:
           - _ulid: 01KP98ZSC7BCRNTYX8PQ47MY44
@@ -146363,5 +146371,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T19:13:29.463Z
     created_at: 2026-04-15T19:00:40.600Z
-    updated_at: 2026-04-15T19:30:08.366Z
+    updated_at: 2026-04-15T19:30:13.701Z
     notes: []
