@@ -2536,3 +2536,27 @@ inbox:
       - post-mvp
     added_by: "@claude"
     created_at: 2026-04-15T00:32:02.932Z
+  - _ulid: 01KP7V4C4ZCAQ9JFCDZMPYM3S9
+    text: "Reviewer bootstrap failure should clean up the provisioned -review worktree before blocking
+      the task (src/agent-runtime/dispatch.ts:2504-2526 catch block for DispatchBootstrapError).
+      Currently the catch notes + blocks + returns without calling safelyRemoveDispatchWorktree on
+      the reviewer worktree that ensureReviewerWorktree just created. The next dispatch retry then
+      hits assertPathSafeForWorktree (src/agent-runtime/workspace.ts:2088) and fails with 'already
+      exists and is not a registered git worktree' as a cascading secondary error. Observed on all
+      four 2026-04-14 blocked tasks — each had both [DISPATCH-BOOTSTRAP] AND [DISPATCH-WORKSPACE]
+      errors concatenated in their block reason, where the second was caused by the first not
+      cleaning up. Fix is small (one safelyRemoveDispatchWorktree call before the block) but it IS a
+      behavior change and needs a spec-first check: @agent-dispatch-engine and
+      @dispatch-workspace-registry are the likely homes for a new or amended AC ('on reviewer
+      bootstrap failure, the reviewer workspace is cleaned up so a retry can provision fresh').
+      Triaging as inbox rather than task because the spec work to place the AC correctly is
+      non-trivial and the current workaround — investigator kills the orphan dir manually — is
+      survivable. Related: @task-bootstrap-failure-output-tail,
+      @task-tests-suppress-cli-auto-start-daemon."
+    tags:
+      - dispatch
+      - bootstrap
+      - cleanup
+      - reliability
+    added_by: "@claude"
+    created_at: 2026-04-15T05:51:52.991Z

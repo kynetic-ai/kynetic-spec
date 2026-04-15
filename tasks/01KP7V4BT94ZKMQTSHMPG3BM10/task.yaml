@@ -1,0 +1,135 @@
+_ulid: 01KP7V4BT94ZKMQTSHMPG3BM10
+slugs:
+  - task-bootstrap-failure-output-tail
+title: Capture bootstrap failure output tail so actionable error detail is preserved
+type: bug
+description: >-
+  ## What
+
+
+  Change `summarizeOutput()` in `src/agent-runtime/bootstrap.ts:129` to slice the TAIL of the
+  combined stdout+stderr output (`combined.slice(-4000)`) instead of the HEAD (`combined.slice(0,
+  4000)`).
+
+
+  ## Why
+
+
+  This is a bug fix, not a behavior change. The function is the sole source of the `failureMessage`
+  / `steps[].output` text stored on dispatch workspace metadata and surfaced in
+  `[DISPATCH-BOOTSTRAP]` task notes when a bootstrap step fails.
+
+
+  Build-tool error messages (`npm error`, `vite build failed`, `tsc error TS####`, stack traces)
+  always emit at the END of stdout/stderr — after the progress output that dominates the first N
+  thousand characters. The current head-slice throws the error away and captures only the startup
+  banner plus the first chunk of progress noise. On 2026-04-14 this blind spot wedged root-cause
+  analysis of four simultaneously-blocked tasks (`@task-scaffold-project-config`,
+  `@task-complete-gitignore`, `@task-derivable-default-module`,
+  `@task-plan-import-format-guidance`). Every one of them had an identical block reason that cut off
+  mid-Svelte-warning with no visible error, and the actual failure cause had to be inferred from
+  system-level evidence (orphan test daemons, resource pressure) rather than read directly from the
+  recorded output.
+
+
+  ## Spec alignment
+
+
+  This fix is in service of existing acceptance criteria, not a new behavior:
+
+
+  - `@dispatch-runtime-bootstrap-contract` ac-6: 'Bootstrap fails because dependencies or runtime
+  requirements cannot be satisfied automatically ... the dispatcher records the failure with
+  ACTIONABLE DETAIL and either blocks the task or marks the workspace unhealthy.' Recording 4000
+  chars of banner text with the error trimmed off does not satisfy 'actionable detail'.
+
+  - `@trait-error-guidance` ac-1 (inherited by `@dispatch-runtime-bootstrap-contract`): 'includes
+  description of what went wrong'. The head-slice consistently omits the description of what went
+  wrong.
+
+
+  No new AC is required. No spec update is required. The fix brings the implementation into
+  compliance with specs that already exist.
+
+
+  ## What to change
+
+
+  1. `src/agent-runtime/bootstrap.ts:129` — change `return combined.slice(0, 4000);` to `return
+  combined.slice(-4000);`.
+
+
+  2. Keep the 4000-char budget (do not widen it; this task is scoped to slice DIRECTION, not to
+  slice SIZE — budget changes are a separate design question).
+
+
+  3. If the tail starts mid-line, that is acceptable — the tail-most bytes are the highest-value
+  bytes. Do NOT add line-boundary alignment logic; it has edge cases and the simple fix is enough.
+
+
+  ## What NOT to change
+
+
+  - Do not touch the 4000-char constant. Do not introduce a separate constant or config knob.
+
+  - Do not change which streams are captured or how they are concatenated (the
+  `trim().filter(Boolean).join('\n')` prep stays as-is).
+
+  - Do not alter the metadata shape (`steps[].output`, `failureMessage`) or how it is written.
+
+  - Do not extend this task to also fix the orphan reviewer worktree cleanup — that is tracked
+  separately in inbox.
+
+
+  ## Acceptance criteria
+
+
+  - AC1: `summarizeOutput` returns the LAST 4000 characters of combined stdout+stderr when the
+  combined length exceeds 4000 characters.
+
+  - AC2: `tests/dispatch-runtime-bootstrap-contract.test.ts` — add a new behavioral test that stubs
+  a bootstrap step with a step command that writes a long predictable stream ending in a distinctive
+  error sentinel (something like `DISPATCH_BOOTSTRAP_TEST_ERROR_SENTINEL_${nonce}`) and exits
+  non-zero. Assert that the recorded `failureMessage` and `steps[].output` on the persisted metadata
+  BOTH contain the sentinel. This is the regression guard — without it the head-slice could silently
+  return.
+
+  - AC3: Existing `@dispatch-runtime-bootstrap-contract` ac-6 test coverage (the test 'records
+  actionable bootstrap failure detail and blocks the task before invocation' near
+  `tests/dispatch-runtime-bootstrap-contract.test.ts:1433`) still passes.
+
+  - AC4: Full `npm test` suite passes.
+
+
+  ## Covers
+
+
+  - `@dispatch-runtime-bootstrap-contract` ac-6 (bug fix honoring existing AC)
+
+  - `@trait-error-guidance` ac-1 (inherited — bug fix honoring existing trait AC)
+
+
+  ## Background
+
+
+  Root-caused during the 2026-04-14 investigation of four blocked tasks. See session notes for the
+  full trace. Also see the sibling fix `@task-tests-suppress-cli-auto-start-daemon` (the test-daemon
+  leak that was the actual TRIGGER of those failures); this task fixes the DIAGNOSTIC that made the
+  trigger invisible. The two tasks are independent — either can land first.
+spec_ref: "@dispatch-runtime-bootstrap-contract"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - dispatch
+  - bootstrap
+  - diagnostics
+  - bug
+vcs_refs: []
+created_at: 2026-04-15T05:51:52.649Z
+todos: []
+automation: eligible
