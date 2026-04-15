@@ -144334,7 +144334,18 @@ reviews:
     slugs: []
     title: Review task-complete-gitignore (cycle 7)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Ran twice in this snapshot. Both runs passed: 2145/2145 suites, 7842 passed and 5 skipped
+          of 7847 tests. Second run returned cached identical results with unchanged repo state."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-15T10:07:51.412Z
+        completed_at: 2026-04-15T10:07:51.412Z
     events:
       - _ulid: 01KP894WNCS7S1X4PPYQKW8WHB
         actor: Jacob Chapel
@@ -144349,6 +144360,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-15T09:57:12.044Z
+      - _ulid: 01KP89S3J3TGKMKRN1PWB8Z3V1
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-15T10:07:52.387Z
     examined_commit: 374dbcaee4fa46e190676ce622d71aec93a53cf9
     external_links: []
     lifecycle_state: open
@@ -144361,5 +144379,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-15T09:56:49.964Z
-    updated_at: 2026-04-15T09:57:11.123Z
+    updated_at: 2026-04-15T10:07:51.412Z
     notes: []
