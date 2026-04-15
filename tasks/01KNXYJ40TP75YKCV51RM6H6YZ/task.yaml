@@ -61,8 +61,12 @@ description: |
 spec_ref: "@complete-auto-gitignore"
 plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved in review @01KP894WNCFGX72CS8B4MQXKZH and merged
+  dispatch/task/task-complete-gitignore/01knxyj4 into
+  plan/plan-init-setup-and-upgrade-rough-edges/01knvahv. Added managed-block gitignore handling,
+  setup/init integration, configurable shadow/worktree support, and task coverage tests.
 depends_on: []
 context: []
 priority: 1
@@ -664,9 +668,27 @@ history:
         previous: "@01KP87BGZY4TTNDV1ESR1TRK1P"
     command: review-link
     timestamp: 2026-04-15T09:56:52.943Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved in review @01KP894WNCFGX72CS8B4MQXKZH and merged
+          dispatch/task/task-complete-gitignore/01knxyj4 into
+          plan/plan-init-setup-and-upgrade-rough-edges/01knvahv. Added managed-block gitignore
+          handling, setup/init integration, configurable shadow/worktree support, and task coverage
+          tests.
+        previous: null
+      completed_at:
+        new: 2026-04-15T10:08:30.365Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-15T10:08:30.380Z
 prior_status: null
 created_at: 2026-04-11T09:39:24.826Z
 started_at: 2026-04-15T09:54:05.622Z
 submitted_at: 2026-04-15T09:54:08.981Z
+completed_at: 2026-04-15T10:08:30.365Z
 todos: []
 automation: eligible
