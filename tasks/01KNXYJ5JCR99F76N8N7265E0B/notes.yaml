@@ -140,3 +140,16 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-15T18:14:35.206Z
+  - _ulid: 01KP971D4WQ5BREQQEZYQNCQW3
+    content: "Fix cycle 3: Addressed both review blockers. (1) Unknown confidence: renamed
+      anyProbeMatched to versionedProbeMatched, removed the probe-1 line that set it true for mere
+      .kspec/ existence. Now only versioned probes (manifest fields, config, skills dir, review-plan
+      skill) trigger approximate confidence. Test tightened to assert confidence === 'unknown'. (2)
+      Version recording after failure: added priorStepsAllSucceeded guard before step 6. When any
+      prior step failed, step 6 skips and does not write version to .setup-state.json. New test
+      forces EISDIR on kspec-agents.md to verify. Full suite: 7935 passed, 5 skipped, 5 failed
+      (pre-existing EACCES in cli-agent-commands, not related to upgrade). All 41 upgrade tests
+      pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-15T18:39:13.052Z
