@@ -142197,6 +142197,13 @@ reviews:
           kind: nit
           thread_ulid: 01KP84A9VEVT3GJWABP4SYXTZD
         timestamp: 2026-04-15T08:32:25.369Z
+      - _ulid: 01KP84AQWM1CR4YM12BN2W0Z8P
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP84APZVKFR2X720DF3SCXCX
+        timestamp: 2026-04-15T08:32:38.804Z
     examined_commit: f2ac5145d4ad013362635154634edcf368e694d0
     external_links: []
     lifecycle_state: open
@@ -142258,7 +142265,26 @@ reviews:
               cases, error handling, test quality, integration"
             created_at: 2026-04-15T08:32:24.430Z
         kind: nit
+      - _ulid: 01KP84APZVKFR2X720DF3SCXCX
+        anchor:
+          type: code
+          commit: f2ac5145d4ad013362635154634edcf368e694d0
+          line_end: 116
+          line_start: 111
+          path: src/parser/plan-document.ts
+          side: head
+        entries:
+          - _ulid: 01KP84APZV4V7NSXKHHHY59N16
+            author: Jacob Chapel
+            body: "The new title validation still accepts a top-level heading anywhere in the document because
+              it searches for a heading on any line instead of checking the first significant
+              element. I confirmed this with an isolated CLI reproduction: a file that starts with
+              prose and only later contains a top-level heading imported successfully with exit code
+              0, which violates the missing-title acceptance criterion for plans whose first
+              significant element is not the title heading."
+            created_at: 2026-04-15T08:32:37.883Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-15T08:20:09.323Z
-    updated_at: 2026-04-15T08:32:24.430Z
+    updated_at: 2026-04-15T08:32:37.883Z
     notes: []
