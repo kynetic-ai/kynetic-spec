@@ -239,6 +239,7 @@ export function registerInitCommand(program: Command): void {
             force: options.force,
             shadow: shadowOptions,
             sessions: sessionsConfig,
+            worktreeRoot: config.dispatch.worktree_root,
           });
 
           if (!result.success) {

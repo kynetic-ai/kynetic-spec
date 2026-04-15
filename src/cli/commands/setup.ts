@@ -35,12 +35,7 @@ import {
   SHADOW_BRANCH_NAME,
   SHADOW_WORKTREE_DIR,
   SESSIONS_WORKTREE_DIR,
-  TRANSIENT_PLANS_DIR,
-  ensurePlansGitignore,
-  ensureSessionsGitignore,
   ensureShadowSessionsGitignore,
-  needsPlansGitignore,
-  needsSessionsGitignore,
   needsShadowSessionsGitignore,
   type ShadowOptions,
 } from "../../parser/shadow.js";
@@ -1467,7 +1462,10 @@ export async function runSetupPipeline(
       });
     }
 
-    // Step 3a-ii: Ensure sessions directory and gitignore entries
+    // Step 3a-ii: Ensure gitignore managed block and sessions directory
+    // AC: @complete-auto-gitignore ac-all-transient-paths-present
+    // AC: @complete-auto-gitignore ac-existing-entries-preserved
+    // AC: @complete-auto-gitignore ac-kspec-entries-idempotent
     // AC: @session-storage-modes ac-gitignore, ac-sessions-dir-autocreate
     // AC: @session-legacy-migration ac-shadow-gitignore
     {
@@ -1488,33 +1486,68 @@ export async function runSetupPipeline(
         actions.push(`${dryRun ? "create" : "created"} ${SESSIONS_WORKTREE_DIR}/`);
       }
 
-      // Add .kspec-sessions/ to root .gitignore
+      // Ensure managed gitignore block with all kspec transient entries
+      // Load project config to get the configured shadow directory and dispatch worktree root
+      const { config: setupConfig } = await loadProjectConfig(projectDir, projectDir);
+      const shadowDir = setupConfig.shadow.directory || undefined;
+      const worktreeRoot = setupConfig.dispatch.worktree_root || undefined;
+
+      const { ensureKspecGitignore, updateManagedBlock, buildKspecGitignoreEntries, parseManagedBlock } =
+        await import("../../parser/gitignore.js");
+
+      const forceGitignore = options.force ?? false;
+
+      // AC: @trait-idempotent-file-scaffold ac-step-reports-action
       if (dryRun) {
-        const rootNeeded = await needsSessionsGitignore(projectDir);
-        if (rootNeeded) {
-          actions.push(`add ${SESSIONS_WORKTREE_DIR}/ to .gitignore`);
+        const gitignorePath = path.join(projectDir, ".gitignore");
+        let gitignoreContent = "";
+        let fileExists = false;
+        try {
+          gitignoreContent = await fs.readFile(gitignorePath, "utf-8");
+          fileExists = true;
+        } catch {
+          // File doesn't exist
+        }
+
+        // AC: @trait-idempotent-file-scaffold ac-existing-file-preserved-without-force
+        if (fileExists && parseManagedBlock(gitignoreContent).block === null && !forceGitignore) {
+          actions.push("skipped .gitignore (exists without managed block, use --force to add)");
+        } else if (fileExists && parseManagedBlock(gitignoreContent).block === null && forceGitignore) {
+          // AC: @trait-idempotent-file-scaffold ac-force-backs-up-before-overwrite
+          const entries = buildKspecGitignoreEntries(shadowDir, worktreeRoot);
+          actions.push(`force-recreate .gitignore (backup + add managed block: ${entries.join(", ")})`);
+        } else {
+          const dryResult = updateManagedBlock(gitignoreContent, buildKspecGitignoreEntries(shadowDir, worktreeRoot));
+          if (dryResult.result.changed) {
+            if (dryResult.result.blockCreated) {
+              actions.push(`create .gitignore with managed block: ${dryResult.result.entriesAdded.join(", ")}`);
+            } else {
+              actions.push(`add to .gitignore: ${dryResult.result.entriesAdded.join(", ")}`);
+            }
+          }
         }
       } else {
-        const rootAdded = await ensureSessionsGitignore(projectDir);
-        if (rootAdded) {
-          actions.push(`added ${SESSIONS_WORKTREE_DIR}/ to .gitignore`);
+        const gitignoreResult = await ensureKspecGitignore(projectDir, { shadowDir, worktreeRoot, force: forceGitignore });
+        if (gitignoreResult.skipped) {
+          // AC: @trait-idempotent-file-scaffold ac-existing-file-preserved-without-force
+          actions.push("skipped .gitignore (exists without managed block, use --force to add)");
+        } else if (gitignoreResult.changed) {
+          if (gitignoreResult.backupPath) {
+            // AC: @trait-idempotent-file-scaffold ac-force-backs-up-before-overwrite
+            actions.push(`backed up .gitignore to ${path.basename(gitignoreResult.backupPath)}`);
+            actions.push(`force-recreated .gitignore with managed block: ${gitignoreResult.entriesAdded.join(", ")}`);
+          } else if (gitignoreResult.blockCreated) {
+            // AC: @trait-idempotent-file-scaffold ac-fresh-file-creation
+            actions.push(`created .gitignore with managed block: ${gitignoreResult.entriesAdded.join(", ")}`);
+          } else {
+            actions.push(
+              `added to .gitignore: ${gitignoreResult.entriesAdded.join(", ")}`,
+            );
+          }
         }
       }
 
-      // Add plans/ to root .gitignore
-      if (dryRun) {
-        const plansNeeded = await needsPlansGitignore(projectDir);
-        if (plansNeeded) {
-          actions.push(`add ${TRANSIENT_PLANS_DIR}/ to .gitignore`);
-        }
-      } else {
-        const plansAdded = await ensurePlansGitignore(projectDir);
-        if (plansAdded) {
-          actions.push(`added ${TRANSIENT_PLANS_DIR}/ to .gitignore`);
-        }
-      }
-
-      // Add sessions/ to .kspec/.gitignore
+      // Add sessions/ to .kspec/.gitignore (shadow branch internal)
       if (dryRun) {
         const shadowNeeded = await needsShadowSessionsGitignore(projectDir);
         if (shadowNeeded) {
@@ -1528,7 +1561,7 @@ export async function runSetupPipeline(
       }
 
       steps.push({
-        name: "Ensure sessions directory",
+        name: "Ensure gitignore and sessions directory",
         status: actions.length > 0 ? "done" : "skipped",
         message: actions.length > 0 ? actions.join(", ") : "already configured",
       });
