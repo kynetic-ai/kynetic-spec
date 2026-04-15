@@ -254,3 +254,41 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-15T08:17:22.569Z
+  - _ulid: 01KP85E9ACG4Z0AVVZMKE47DEB
+    content: >-
+      Fix cycle 4: addressed the blocker about @trait-idempotent-file-scaffold contract violation.
+
+
+      The issue: ensureKspecGitignore always mutated an existing .gitignore to add a managed block,
+      even without force, violating ac-existing-file-preserved-without-force.
+
+
+      The fix:
+
+      - Added force parameter to ensureKspecGitignore and EnsureKspecGitignoreOptions
+
+      - Without force: when .gitignore exists but has no managed block, preserves file byte-for-byte
+      and returns skipped: true
+
+      - With force: backs up to timestamped sibling (.gitignore.backup-<timestamp>) then creates
+      managed block
+
+      - init passes force: true (explicit scaffolding action — user ran kspec init)
+
+      - setup respects the --force flag from the user
+
+      - needsKspecGitignoreUpdate also respects force (returns false for files without managed block
+      when force not set)
+
+      - Added ManagedBlockResult.skipped and ManagedBlockResult.backupPath fields
+
+      - Removed N/A annotation for ac-force-backs-up-before-overwrite — now implemented
+
+      - Updated tests: explicit tests for ac-existing-file-preserved-without-force and
+      ac-force-backs-up-before-overwrite
+
+
+      Full test suite: 2145 suites, 7838 tests pass, 0 failures.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-15T08:52:03.532Z
