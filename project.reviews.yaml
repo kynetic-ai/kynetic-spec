@@ -145719,9 +145719,25 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-15T13:24:43.197Z
+      - _ulid: 01KP8N2AHE1JY39JZQ3AC78NQ0
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-15T13:25:08.782Z
+      - _ulid: 01KP8N2AHFHCE73N5G1K1GFJRH
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-15T13:25:08.783Z
     examined_commit: ddf9d4a71f08cf6737492d6a6d04f5cd5f1bd606
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -145768,7 +145784,14 @@ reviews:
               can skip or mislabel upgrades for projects in that band."
             created_at: 2026-04-15T13:24:35.382Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-15T13:25:08.782Z
     created_at: 2026-04-15T13:13:44.243Z
-    updated_at: 2026-04-15T13:24:41.969Z
+    updated_at: 2026-04-15T13:25:08.783Z
     notes: []
