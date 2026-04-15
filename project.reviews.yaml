@@ -146388,6 +146388,22 @@ reviews:
         runner: npm
         created_at: 2026-04-15T20:06:51.205Z
         completed_at: 2026-04-15T20:06:51.205Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Full suite currently fails outside this diff (observed failing suites included
+          tests/cli-agent-commands.test.ts, tests/task-system-ac-backfill.test.ts,
+          tests/cli-plan.test.ts, tests/trait-cli.test.ts,
+          tests/daemon-api/websocket-protocol.test.ts, tests/daemon-web-ui-bundle.test.ts). A
+          base-branch targeted rerun reproduced tests/cli-agent-commands.test.ts failing with EACCES
+          under /tmp/.kspec-sessions, so at least part of the failure set is
+          pre-existing/environmental.
+        name: npm test
+        required: false
+        runner: npm
+        created_at: 2026-04-15T20:06:54.989Z
+        completed_at: 2026-04-15T20:06:54.989Z
     events:
       - _ulid: 01KP9BM5A0EMKBWA75FBB78P9Q
         actor: Jacob Chapel
@@ -146437,6 +146453,13 @@ reviews:
           status: pass
           name: upgrade-command tests
         timestamp: 2026-04-15T20:06:52.519Z
+      - _ulid: 01KP9C214N7RQCH64BSHA15142
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-04-15T20:06:56.405Z
     examined_commit: 588c019f60bea601d8e7cb92e4416b539a78b924
     external_links: []
     lifecycle_state: open
@@ -146522,5 +146545,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-15T19:59:21.920Z
-    updated_at: 2026-04-15T20:06:51.205Z
+    updated_at: 2026-04-15T20:06:54.989Z
     notes: []
