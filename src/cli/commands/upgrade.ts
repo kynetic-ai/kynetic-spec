@@ -527,22 +527,8 @@ async function runTaskStorageMigrationStep(
   ctx: { manifestPath: string | null; specDir: string; manifest: Record<string, unknown> | null },
   dryRun: boolean,
 ): Promise<UpgradeStepResult> {
-  // Check if migration is needed: monolithic format or no format specified
-  const taskStorage = (ctx.manifest as Record<string, unknown> | null)?.task_storage as
-    | { format?: string }
-    | undefined;
-  const currentFormat = taskStorage?.format;
-
-  if (currentFormat === "split") {
-    return {
-      name: "Task storage migration",
-      status: "skipped",
-      message: "already using split format",
-      details: { migrated: 0 },
-    };
-  }
-
-  // Check if there are actually tasks to migrate
+  // Always check the actual task file shape — never trust the manifest marker alone,
+  // because partial upgrades or hand-edits can leave the marker out of sync with reality.
   const { extractRawTaskArray } = await import("../../parser/yaml.js");
   const { getIndexFilePath } = await import("../../parser/split-backend.js");
   const indexPath = getIndexFilePath(ctx as Parameters<typeof getIndexFilePath>[0]);

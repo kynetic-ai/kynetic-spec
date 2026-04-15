@@ -474,6 +474,77 @@ describe("kspec upgrade", () => {
       expect(migrationStep!.status).toBe("done");
     });
 
+    // AC: @single-command-version-upgrade ac-runs-task-storage-migration
+    it("migrates monolithic tasks even when manifest already says split", async () => {
+      await initProject(tempDir);
+      await writeLastKnownVersion(tempDir, "0.8.0");
+
+      const specDir = path.join(tempDir, ".kspec");
+
+      const specFiles = await fs.readdir(specDir);
+      const manifestName = specFiles.find(
+        (f) => f.endsWith(".yaml") &&
+          !f.endsWith(".tasks.yaml") &&
+          !f.endsWith(".inbox.yaml") &&
+          !f.endsWith(".meta.yaml") &&
+          !f.startsWith("."),
+      );
+      expect(manifestName).toBeDefined();
+      const manifestPath = path.join(specDir, manifestName!);
+
+      const tasksName = specFiles.find(
+        (f) => f.endsWith(".tasks.yaml"),
+      );
+      expect(tasksName).toBeDefined();
+      const tasksPath = path.join(specDir, tasksName!);
+
+      // Set manifest to say "split" but leave monolithic task data in the tasks file.
+      // This simulates a partial upgrade or hand-edited state.
+      const yaml = await import("yaml");
+      const manifestRaw = await fs.readFile(manifestPath, "utf-8");
+      const manifest = yaml.parse(manifestRaw) as Record<string, unknown>;
+      manifest.task_storage = { format: "split" };
+      manifest.kynetic = "1.1";
+      await fs.writeFile(manifestPath, yaml.stringify(manifest), "utf-8");
+
+      const monolithicTasks = [
+        {
+          _ulid: "01TESTM0N0L1TH1C0000000003",
+          slugs: ["task-partial-upgrade"],
+          title: "Partial upgrade monolithic task",
+          type: "task",
+          status: "pending",
+          priority: 3,
+          tags: ["test"],
+          depends_on: [],
+          blocked_by: [],
+          created_at: "2026-01-01T00:00:00.000Z",
+          notes: [
+            {
+              _ulid: "01TESTM0N0L1TH1C0000000004",
+              created_at: "2026-01-01T01:00:00.000Z",
+              author: "@test",
+              content: "A monolithic note still inline",
+            },
+          ],
+          todos: [],
+        },
+      ];
+      await fs.writeFile(tasksPath, yaml.stringify(monolithicTasks), "utf-8");
+
+      const result = kspecJson<{
+        steps: Array<{ name: string; status: string; message: string; details?: Record<string, unknown> }>;
+      }>("upgrade", tempDir);
+
+      const migrationStep = result.steps.find(
+        (s) => s.name === "Task storage migration",
+      );
+      expect(migrationStep).toBeDefined();
+      // Must NOT be "skipped" — the actual task file has monolithic data
+      expect(migrationStep!.status).toBe("done");
+      expect(migrationStep!.status).not.toBe("skipped");
+    });
+
     // AC: @single-command-version-upgrade ac-rerenders-skills
     it("re-renders skills as part of upgrade", async () => {
       await initProject(tempDir);
