@@ -144722,6 +144722,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP8C9GYWRZP3RP8CFMQZPR64
         timestamp: 2026-04-15T10:51:48.471Z
+      - _ulid: 01KP8C9MEGMJC9G1HX0WVT9FAC
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KP8C9KGKW6C02BHZ7PQWFJSN
+        timestamp: 2026-04-15T10:51:51.120Z
     examined_commit: c93addbafe013d03742d8057fcead5ad084bbb0a
     external_links: []
     lifecycle_state: open
@@ -144752,7 +144759,27 @@ reviews:
               longer exists."
             created_at: 2026-04-15T10:51:47.549Z
         kind: blocker
+      - _ulid: 01KP8C9KGKW6C02BHZ7PQWFJSN
+        entries:
+          - _ulid: 01KP8C9KGMABSS8SEC8BBFVCTY
+            author: Jacob Chapel
+            body: "Evidence log\\n\\nFiles read: src/cli/commands/init.ts, src/cli/commands/setup.ts,
+              src/parser/shadow.ts, src/parser/yaml.ts,
+              tests/derivable-default-module.test.ts.\\nCommands run: kspec task get
+              @01KNXYJ4YKHSY076Q3CQ42C6CP; kspec item get @derivable-default-module; git log
+              --oneline --decorate --graph --max-count=25; git diff
+              4c30c4d5047b485b566eef3ae492e25338b141cb..c93addbafe013d03742d8057fcead5ad084bbb0a --
+              src/cli/commands/init.ts src/cli/commands/setup.ts src/parser/shadow.ts
+              tests/derivable-default-module.test.ts; grep/rg scans for AC annotations and parser
+              behavior; kspec validate; npm test; manual CLI repros for init, item get, item set
+              slug replacement, and setup output after rename.\\nClaims verified: prior blockers
+              fixed for placeholder preservation, init output mention, and slug replacement
+              behavior; setup output after rename is still wrong and points at an unresolved
+              ref.\\nCategories searched: correctness, edge cases, test quality, integration, error
+              handling."
+            created_at: 2026-04-15T10:51:50.164Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-15T10:41:35.747Z
-    updated_at: 2026-04-15T10:51:47.549Z
+    updated_at: 2026-04-15T10:51:50.164Z
     notes: []
