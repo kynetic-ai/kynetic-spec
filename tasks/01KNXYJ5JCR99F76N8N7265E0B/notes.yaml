@@ -295,3 +295,19 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-15T21:49:22.926Z
+  - _ulid: 01KP9JPZJJKBVK0PFTNB50TN0A
+    content: "Fix cycle 7: Addressed all 6 blockers (5 unique, 1 duplicate). (1) Probe contradiction:
+      replaced single maxMinVersion with ProbeResult ranges carrying both min and max bounds; old
+      manifest versions cap at 0.8.99, new probes have open upper bounds; if range intersection is
+      empty, returns unknown. New test creates contradictory state (old manifest + new config) and
+      asserts unknown. (2) Dry-run skill render parity: added pre-flight check on output directories
+      that runs for both dry-run and real-run; blocked directories fail the step identically. New
+      test. (3) Dry-run agent regeneration parity: moved hash/existence check outside !dryRun branch
+      so both paths make identical skip/regenerate decisions. New test verifies dry-run and real-run
+      agree on skip. (4) Migration test: replaced allow-skipped test with real monolithic task
+      storage setup (inline notes, old manifest). (5) Follow-ups test: forces gitignore deletion,
+      asserts non-empty follow-ups with gitignore-specific entry. All 47 upgrade tests pass. Full
+      suite: 7938 passed, 5 failed (pre-existing EACCES in cli-agent-commands), 5 skipped."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-15T22:03:14.386Z
