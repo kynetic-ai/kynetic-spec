@@ -146914,6 +146914,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP9FP3ZWSTPEGY2SSGW56G85
         timestamp: 2026-04-15T21:10:21.383Z
+      - _ulid: 01KP9FPFYCEEZPJRJ4P1KMV45Z
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP9FPF07D4AZ69Q92JKZSKXY
+        timestamp: 2026-04-15T21:10:32.652Z
     examined_commit: 2954ef826857c2ec41850cba22ae384ab50c3e0f
     external_links: []
     lifecycle_state: open
@@ -146965,7 +146972,26 @@ reviews:
               scenario the task description calls out.'
             created_at: 2026-04-15T21:10:20.413Z
         kind: blocker
+      - _ulid: 01KP9FPF07D4AZ69Q92JKZSKXY
+        anchor:
+          type: code
+          commit: 2954ef826857c2ec41850cba22ae384ab50c3e0f
+          line_end: 724
+          line_start: 640
+          path: src/cli/commands/upgrade.ts
+          side: head
+        entries:
+          - _ulid: 01KP9FPF08EBBT7MBSYJMF4CHR
+            author: Jacob Chapel
+            body: "The dry-run path is not surfacing execution errors that would occur on a real upgrade. I
+              reproduced this by replacing `.agents/skills` with a regular file: `upgrade --force
+              --json` failed the `Re-render skills` step with ENOTDIR and exited 3, but `upgrade
+              --force --dry-run --json` reported that same step as `done` and exited 0. That
+              violates `@trait-dry-run ac-4`, which requires dry-run to show the error a real run
+              would hit while still avoiding writes."
+            created_at: 2026-04-15T21:10:31.688Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-15T20:57:57.440Z
-    updated_at: 2026-04-15T21:10:20.413Z
+    updated_at: 2026-04-15T21:10:31.688Z
     notes: []
