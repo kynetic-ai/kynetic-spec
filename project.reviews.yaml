@@ -145520,6 +145520,12 @@ reviews:
         payload:
           thread_ulid: 01KP8K4HE0PEMFKHYD1J0VR9GR
         timestamp: 2026-04-15T13:09:31.050Z
+      - _ulid: 01KP8M5ZRYYEEE6K3EX1C11MRF
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP8K4HE0PEMFKHYD1J0VR9GR
+        timestamp: 2026-04-15T13:09:40.255Z
     examined_commit: 96b4318368a237137685b91bf85214d3e68cc139
     external_links: []
     lifecycle_state: closed
@@ -145584,6 +145590,8 @@ reviews:
               new tests: module creation, skip-when-exists, and dry-run behavior."
             created_at: 2026-04-15T13:09:30.165Z
         kind: blocker
+        resolved_at: 2026-04-15T13:09:39.218Z
+        resolved_by: "@claude"
       - _ulid: 01KP8K4M49PWJDQMFVAT3MH1R0
         entries:
           - _ulid: 01KP8K4M49Y1HAYN158T94TNG2
@@ -145612,5 +145620,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T12:52:04.178Z
     created_at: 2026-04-15T12:41:32.241Z
-    updated_at: 2026-04-15T13:09:30.165Z
+    updated_at: 2026-04-15T13:09:39.218Z
     notes: []
