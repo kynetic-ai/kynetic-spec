@@ -142190,6 +142190,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP84A6XCKRFKHCW6DX2QYPJQ
         timestamp: 2026-04-15T08:32:22.484Z
+      - _ulid: 01KP84AARS616RFPQS667HG8A4
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KP84A9VEVT3GJWABP4SYXTZD
+        timestamp: 2026-04-15T08:32:25.369Z
     examined_commit: f2ac5145d4ad013362635154634edcf368e694d0
     external_links: []
     lifecycle_state: open
@@ -142236,7 +142243,22 @@ reviews:
               explicitly says import must reject."
             created_at: 2026-04-15T08:32:21.421Z
         kind: blocker
+      - _ulid: 01KP84A9VEVT3GJWABP4SYXTZD
+        entries:
+          - _ulid: 01KP84A9VEXAM0MGJDXVRY0F08
+            author: Jacob Chapel
+            body: "Review evidence log\\n\\nFiles read: src/parser/plan-document.ts,
+              src/cli/commands/plan-import.ts, src/cli/commands/plan.ts,
+              tests/plan-document-parser.test.ts, tests/cli-plan-import.test.ts,
+              tests/cli-plan-derive.test.ts\\nCommands run: git diff a885ce6d6..f2ac5145d, kspec
+              task get @01KNXYJ58RFQSBZ91FSVQE4F46, kspec validate, rg AC annotations in targeted
+              tests, isolated CLI reproductions for late-title import and  re-import, npm
+              test\\nClaims verified: full suite passes; missing-title handling is still too
+              permissive;  bypasses the new validation path\\nCategories searched: correctness, edge
+              cases, error handling, test quality, integration"
+            created_at: 2026-04-15T08:32:24.430Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-15T08:20:09.323Z
-    updated_at: 2026-04-15T08:32:21.421Z
+    updated_at: 2026-04-15T08:32:24.430Z
     notes: []
