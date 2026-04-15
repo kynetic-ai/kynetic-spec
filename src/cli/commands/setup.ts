@@ -1350,27 +1350,37 @@ export async function runSetupPipeline(
       const shadowDir = setupConfig.shadow.directory || undefined;
       const worktreeRoot = setupConfig.dispatch.worktree_root || undefined;
 
-      const { ensureKspecGitignore, updateManagedBlock, buildKspecGitignoreEntries } =
+      const { ensureKspecGitignore, updateManagedBlock, buildKspecGitignoreEntries, parseManagedBlock } =
         await import("../../parser/gitignore.js");
+
+      const forceGitignore = options.force ?? false;
 
       if (dryRun) {
         const gitignorePath = path.join(projectDir, ".gitignore");
         let gitignoreContent = "";
+        let fileExists = false;
         try {
           gitignoreContent = await fs.readFile(gitignorePath, "utf-8");
+          fileExists = true;
         } catch {
           // File doesn't exist
         }
-        const dryResult = updateManagedBlock(gitignoreContent, buildKspecGitignoreEntries(shadowDir, worktreeRoot));
-        if (dryResult.result.changed) {
-          if (dryResult.result.blockCreated) {
-            actions.push(`add to .gitignore: ${dryResult.result.entriesAdded.join(", ")}`);
-          } else {
-            actions.push(`add to .gitignore: ${dryResult.result.entriesAdded.join(", ")}`);
+
+        // AC: @trait-idempotent-file-scaffold ac-existing-file-preserved-without-force
+        if (fileExists && parseManagedBlock(gitignoreContent).block === null && !forceGitignore) {
+          // File exists without managed block and no force → would be skipped
+        } else {
+          const dryResult = updateManagedBlock(gitignoreContent, buildKspecGitignoreEntries(shadowDir, worktreeRoot));
+          if (dryResult.result.changed) {
+            if (dryResult.result.blockCreated) {
+              actions.push(`add to .gitignore: ${dryResult.result.entriesAdded.join(", ")}`);
+            } else {
+              actions.push(`add to .gitignore: ${dryResult.result.entriesAdded.join(", ")}`);
+            }
           }
         }
       } else {
-        const gitignoreResult = await ensureKspecGitignore(projectDir, { shadowDir, worktreeRoot });
+        const gitignoreResult = await ensureKspecGitignore(projectDir, { shadowDir, worktreeRoot, force: forceGitignore });
         if (gitignoreResult.changed) {
           if (gitignoreResult.blockCreated) {
             actions.push("created kspec managed block in .gitignore");
@@ -1378,6 +1388,9 @@ export async function runSetupPipeline(
             actions.push(
               `added to .gitignore: ${gitignoreResult.entriesAdded.join(", ")}`,
             );
+          }
+          if (gitignoreResult.backupPath) {
+            actions.push(`backed up .gitignore to ${path.basename(gitignoreResult.backupPath)}`);
           }
         }
       }

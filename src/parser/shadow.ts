@@ -2820,6 +2820,7 @@ export async function initializeShadow(
     const gitignoreResult = await ensureKspecGitignore(projectRoot, {
       shadowDir: directoryName,
       worktreeRoot: options.worktreeRoot,
+      force: true, // init is an explicit scaffolding action — always create managed block
     });
     result.gitignoreUpdated = gitignoreResult.changed;
 

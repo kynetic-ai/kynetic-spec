@@ -68,6 +68,10 @@ export interface ManagedBlockResult {
   entriesAdded: string[];
   /** Whether the managed block was newly created (vs updated) */
   blockCreated: boolean;
+  /** Whether the step was skipped (file exists, no managed block, no force) */
+  skipped: boolean;
+  /** Path to backup file if force-created over existing file */
+  backupPath?: string;
 }
 
 /**
@@ -152,6 +156,7 @@ export function updateManagedBlock(
     changed: false,
     entriesAdded: [],
     blockCreated: false,
+    skipped: false,
   };
 
   if (parsed.block === null) {
@@ -206,11 +211,19 @@ export interface EnsureKspecGitignoreOptions {
   shadowDir?: string;
   /** Override the dispatch worktree root (default: .kspec-worktrees) */
   worktreeRoot?: string;
+  /** Force creation of managed block even on existing file without one (backs up first) */
+  force?: boolean;
 }
 
 /**
  * Ensure the root .gitignore has a managed block with all kspec entries.
  * Creates the file if it doesn't exist.
+ *
+ * Trait: @trait-idempotent-file-scaffold
+ * - File does not exist → create with managed block ("created")
+ * - File exists with managed block → update within block (add missing entries)
+ * - File exists without managed block, no force → preserve byte-for-byte ("skipped")
+ * - File exists without managed block, force → backup then create block
  *
  * @returns Result describing what changed
  */
@@ -220,12 +233,45 @@ export async function ensureKspecGitignore(
 ): Promise<ManagedBlockResult> {
   const gitignorePath = path.join(projectRoot, ".gitignore");
   const entries = buildKspecGitignoreEntries(options?.shadowDir, options?.worktreeRoot);
+  const force = options?.force ?? false;
 
   let content = "";
+  let fileExists = false;
   try {
     content = await fs.readFile(gitignorePath, "utf-8");
+    fileExists = true;
   } catch {
     // File doesn't exist, will create
+  }
+
+  // AC: @trait-idempotent-file-scaffold ac-existing-file-preserved-without-force
+  // When file exists but has no managed block and force is not set,
+  // preserve the file byte-for-byte and report "skipped".
+  if (fileExists) {
+    const parsed = parseManagedBlock(content);
+    if (parsed.block === null && !force) {
+      return {
+        changed: false,
+        entriesAdded: [],
+        blockCreated: false,
+        skipped: true,
+      };
+    }
+
+    // AC: @trait-idempotent-file-scaffold ac-force-backs-up-before-overwrite
+    // When file exists without managed block and force is set, backup first.
+    if (parsed.block === null && force) {
+      const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+      const backupPath = `${gitignorePath}.backup-${timestamp}`;
+      await fs.copyFile(gitignorePath, backupPath);
+
+      const { newContent, result } = updateManagedBlock(content, entries);
+      if (result.changed) {
+        await fs.writeFile(gitignorePath, newContent, "utf-8");
+      }
+      result.backupPath = backupPath;
+      return result;
+    }
   }
 
   const { newContent, result } = updateManagedBlock(content, entries);
@@ -240,6 +286,9 @@ export async function ensureKspecGitignore(
 /**
  * Check whether the managed block needs any entries added.
  * Does not modify the file.
+ *
+ * When force is false, files without a managed block are reported as
+ * NOT needing update (they would be skipped by ensureKspecGitignore).
  */
 export async function needsKspecGitignoreUpdate(
   projectRoot: string,
@@ -247,6 +296,7 @@ export async function needsKspecGitignoreUpdate(
 ): Promise<boolean> {
   const gitignorePath = path.join(projectRoot, ".gitignore");
   const entries = buildKspecGitignoreEntries(options?.shadowDir, options?.worktreeRoot);
+  const force = options?.force ?? false;
 
   let content = "";
   try {
@@ -254,6 +304,12 @@ export async function needsKspecGitignoreUpdate(
   } catch {
     // File doesn't exist — definitely needs update
     return true;
+  }
+
+  // File exists without managed block and no force → would be skipped
+  const parsed = parseManagedBlock(content);
+  if (parsed.block === null && !force) {
+    return false;
   }
 
   const { result } = updateManagedBlock(content, entries);

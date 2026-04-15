@@ -1,5 +1,4 @@
 // Tests for managed-block gitignore writer.
-// AC: @trait-idempotent-file-scaffold ac-force-backs-up-before-overwrite — N/A: managed-block writer appends to files, it does not overwrite them. Force semantics are handled at the init/setup command level, not at the gitignore block level.
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
@@ -213,23 +212,43 @@ describe("ensureKspecGitignore", () => {
     }
   });
 
-  // AC: @complete-auto-gitignore ac-existing-entries-preserved
-  it("preserves existing non-kspec entries when adding managed block", async () => {
+  // AC: @trait-idempotent-file-scaffold ac-existing-file-preserved-without-force
+  it("skips existing file without managed block when force is not set", async () => {
     const existingContent = "# My ignores\nnode_modules/\ndist/\n*.log\n";
     await fs.writeFile(path.join(testDir, ".gitignore"), existingContent, "utf-8");
 
     const result = await ensureKspecGitignore(testDir);
-    expect(result.changed).toBe(true);
+    expect(result.changed).toBe(false);
+    expect(result.skipped).toBe(true);
 
+    // File preserved byte-for-byte
+    const content = await readTestOutput(path.join(testDir, ".gitignore"));
+    expect(content).toBe(existingContent);
+  });
+
+  // AC: @complete-auto-gitignore ac-existing-entries-preserved
+  // AC: @trait-idempotent-file-scaffold ac-force-backs-up-before-overwrite
+  it("preserves existing non-kspec entries when force-adding managed block", async () => {
+    const existingContent = "# My ignores\nnode_modules/\ndist/\n*.log\n";
+    await fs.writeFile(path.join(testDir, ".gitignore"), existingContent, "utf-8");
+
+    const result = await ensureKspecGitignore(testDir, { force: true });
+    expect(result.changed).toBe(true);
+    expect(result.backupPath).toBeDefined();
+
+    // Original content preserved in the updated file
     const content = await readTestOutput(path.join(testDir, ".gitignore"));
     expect(content).toContain("# My ignores");
     expect(content).toContain("node_modules/");
     expect(content).toContain("dist/");
     expect(content).toContain("*.log");
+
+    // Backup contains original content byte-for-byte
+    const backupContent = await readTestOutput(result.backupPath!);
+    expect(backupContent).toBe(existingContent);
   });
 
   // AC: @complete-auto-gitignore ac-kspec-entries-idempotent
-  // AC: @trait-idempotent-file-scaffold ac-existing-file-preserved-without-force
   it("is idempotent — second run produces no changes", async () => {
     // First run creates the block
     const first = await ensureKspecGitignore(testDir);
@@ -325,9 +344,14 @@ describe("needsKspecGitignoreUpdate", () => {
     expect(await needsKspecGitignoreUpdate(testDir)).toBe(true);
   });
 
-  it("returns true when managed block is missing", async () => {
+  it("returns false when managed block is missing and no force", async () => {
     await fs.writeFile(path.join(testDir, ".gitignore"), "node_modules/\n", "utf-8");
-    expect(await needsKspecGitignoreUpdate(testDir)).toBe(true);
+    expect(await needsKspecGitignoreUpdate(testDir)).toBe(false);
+  });
+
+  it("returns true when managed block is missing and force is set", async () => {
+    await fs.writeFile(path.join(testDir, ".gitignore"), "node_modules/\n", "utf-8");
+    expect(await needsKspecGitignoreUpdate(testDir, { force: true })).toBe(true);
   });
 
   it("returns false when all entries present", async () => {
@@ -484,8 +508,10 @@ describe("kspec init gitignore integration", () => {
       .join("\n");
     writeFileSyncSafe(gitignorePath, stripped);
 
-    // Run setup — should report adding the block
-    const result = kspec("setup --agent claude-code", testDir);
+    // Run setup with --force — managed block was removed so force is needed
+    // to re-create it (per @trait-idempotent-file-scaffold, without force
+    // an existing file without a managed block is preserved byte-for-byte)
+    const result = kspec("setup --agent claude-code --force", testDir);
     expect(result.exitCode).toBe(0);
     expect(result.stdout + result.stderr).toMatch(/gitignore|managed block/i);
   });
