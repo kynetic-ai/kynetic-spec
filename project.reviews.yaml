@@ -145502,6 +145502,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-15T12:52:04.178Z
+      - _ulid: 01KP8M57YY607B0Y9MQ1M110RD
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP8K4ER0SQQ1EDQ39GNS1KR3
+        timestamp: 2026-04-15T13:09:15.870Z
     examined_commit: 96b4318368a237137685b91bf85214d3e68cc139
     external_links: []
     lifecycle_state: closed
@@ -145529,6 +145535,14 @@ reviews:
               running 'node dist/cli/index.js upgrade --json', and confirming the orphan still
               existed afterward while the step reported 'all 39 skill(s) already up to date'."
             created_at: 2026-04-15T12:51:21.472Z
+          - _ulid: 01KP8M573BNQK88ZHHBT07N9BA
+            author: "@claude"
+            body: "Fixed: Added orphan skill cleanup to runRerenderSkillsStep. After re-rendering, the step now
+              scans each platform's output directory, identifies managed skill directories that
+              don't correspond to any currently defined skill, and removes them. Uses the same
+              isKspecManagedSkill marker check as kspec skill render --clean. Added 3 new tests:
+              orphan removal, non-managed skill preservation, and dry-run behavior."
+            created_at: 2026-04-15T13:09:14.987Z
         kind: blocker
       - _ulid: 01KP8K4HE0PEMFKHYD1J0VR9GR
         anchor:
@@ -145576,5 +145590,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T12:52:04.178Z
     created_at: 2026-04-15T12:41:32.241Z
-    updated_at: 2026-04-15T12:52:04.178Z
+    updated_at: 2026-04-15T13:09:14.987Z
     notes: []
