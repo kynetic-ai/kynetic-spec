@@ -5,7 +5,7 @@
  * AC: @trait-error-guidance (ac-1, ac-2)
  * AC: @trait-semantic-exit-codes (ac-1, ac-4)
  * AC: @trait-dry-run (ac-1 through ac-6)
- * AC: @trait-json-output (ac-1 through ac-6)
+ * AC: @trait-json-output (ac-1, ac-2, ac-3, ac-6; ac-4 and ac-5 N/A)
  */
 import { execSync } from "node:child_process";
 import * as fs from "node:fs/promises";
@@ -551,15 +551,26 @@ describe("kspec upgrade", () => {
       await initProject(tempDir);
       await writeLastKnownVersion(tempDir, "0.8.0");
 
-      // Record state before
+      // Record state before: setup-state and shadow branch HEAD
       const versionBefore = await readLastKnownVersion(tempDir);
+      const shadowHeadBefore = execSync("git rev-parse HEAD", {
+        cwd: path.join(tempDir, ".kspec"),
+        encoding: "utf-8",
+      }).trim();
 
       const result = kspec("upgrade --dry-run", tempDir);
       expect(result.exitCode).toBe(0);
 
-      // State should be unchanged
+      // Root-level state should be unchanged
       const versionAfter = await readLastKnownVersion(tempDir);
       expect(versionAfter).toBe(versionBefore);
+
+      // Shadow branch should have no new commits
+      const shadowHeadAfter = execSync("git rev-parse HEAD", {
+        cwd: path.join(tempDir, ".kspec"),
+        encoding: "utf-8",
+      }).trim();
+      expect(shadowHeadAfter).toBe(shadowHeadBefore);
     });
 
     // AC: @trait-dry-run ac-5
@@ -627,29 +638,8 @@ describe("kspec upgrade", () => {
       expect(result).toHaveProperty("follow_ups");
     });
 
-    // AC: @trait-json-output ac-4
-    it("JSON output uses @ prefix for references", async () => {
-      await initProject(tempDir);
-
-      const result = kspecJson<Record<string, unknown>>(
-        "upgrade --dry-run",
-        tempDir,
-      );
-      // The upgrade command doesn't output refs directly, but verify JSON structure
-      expect(result).toHaveProperty("success");
-    });
-
-    // AC: @trait-json-output ac-5
-    it("JSON timestamps use ISO 8601 format", async () => {
-      await initProject(tempDir);
-
-      // This test verifies the JSON output structure
-      const result = kspecJson<Record<string, unknown>>(
-        "upgrade --dry-run",
-        tempDir,
-      );
-      expect(result).toBeDefined();
-    });
+    // AC: @trait-json-output ac-4 — N/A: upgrade command output contains version strings and step results, not entity references that would use @ prefix
+    // AC: @trait-json-output ac-5 — N/A: upgrade command output does not include timestamp fields; version detection and step results are not time-stamped
   });
 
   // ─── Error Handling ───────────────────────────────────────────────
@@ -693,6 +683,30 @@ describe("kspec upgrade", () => {
       // Guidance should be inside the JSON object, not appended as plain text
       expect(parsed.details).toBeDefined();
       expect(parsed.details.suggestion).toMatch(/init/i);
+    });
+
+    // AC: @trait-semantic-exit-codes ac-4
+    it("exits with code 3 when upgrade step fails during execution", async () => {
+      await initProject(tempDir);
+      await writeLastKnownVersion(tempDir, "0.8.0");
+
+      // Remove the agents hash file so the hash check won't short-circuit
+      const hashPath = path.join(tempDir, ".kspec", ".kspec-agents-hash");
+      if (existsSync(hashPath)) {
+        await fs.unlink(hashPath);
+      }
+
+      // Replace kspec-agents.md with a directory so fs.writeFile fails with EISDIR
+      const agentsFilePath = path.join(tempDir, "kspec-agents.md");
+      if (existsSync(agentsFilePath)) {
+        await fs.unlink(agentsFilePath);
+      }
+      await fs.mkdir(agentsFilePath, { recursive: true });
+      await fs.writeFile(path.join(agentsFilePath, "blocker"), "x", "utf-8");
+
+      const result = kspec("upgrade", tempDir, { expectFail: true });
+      // Runtime failure during execution must exit with code 3
+      expect(result.exitCode).toBe(3);
     });
 
     // AC: @trait-semantic-exit-codes ac-1

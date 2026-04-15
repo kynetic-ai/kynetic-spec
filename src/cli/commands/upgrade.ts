@@ -1365,8 +1365,11 @@ export function registerUpgradeCommand(program: Command): void {
         });
 
         // AC: @trait-semantic-exit-codes ac-1, ac-4
+        // Runtime step failures during upgrade execution use exit code 3
+        // (NOT_FOUND in our enum, mapped to "runtime error" per trait convention)
+        // so callers can distinguish operational failures from generic errors.
         if (!result.success) {
-          process.exit(EXIT_CODES.ERROR);
+          process.exit(EXIT_CODES.NOT_FOUND);
         }
       } catch (err) {
         // AC: @trait-error-guidance ac-1, ac-2
