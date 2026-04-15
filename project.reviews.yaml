@@ -144715,6 +144715,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-15T10:41:54.362Z
+      - _ulid: 01KP8C9HVQYCZCSQXTAWC15BPD
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP8C9GYWRZP3RP8CFMQZPR64
+        timestamp: 2026-04-15T10:51:48.471Z
     examined_commit: c93addbafe013d03742d8057fcead5ad084bbb0a
     external_links: []
     lifecycle_state: open
@@ -144724,8 +144731,28 @@ reviews:
       content_hash: ""
       ref: "@01KNXYJ4YKHSY076Q3CQ42C6CP"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KP8C9GYWRZP3RP8CFMQZPR64
+        anchor:
+          type: code
+          commit: c93addbafe013d03742d8057fcead5ad084bbb0a
+          line_end: 1669
+          line_start: 1665
+          path: src/cli/commands/setup.ts
+          side: head
+        entries:
+          - _ulid: 01KP8C9GYX4TZM990X3XNZFKZC
+            author: Jacob Chapel
+            body: "After the default module slug is renamed, setup still hardcodes @main here (and again at line
+              1937) instead of the module's current ref. Repro on this snapshot: init a project, run
+              'item set @main --slug custom-module' and 'item set @custom-module --remove-slug
+              main', then run 'kspec setup --skip-skills --no-hooks' and the summary still says
+              'Default module available: @main'. At that point 'item get @main' exits 1 while
+              '@custom-module' resolves, so the new setup guidance sends users to a ref that no
+              longer exists."
+            created_at: 2026-04-15T10:51:47.549Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-15T10:41:35.747Z
-    updated_at: 2026-04-15T10:41:53.432Z
+    updated_at: 2026-04-15T10:51:47.549Z
     notes: []
