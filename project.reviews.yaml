@@ -142666,6 +142666,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-15T08:38:14.793Z
+      - _ulid: 01KP8583SX4R9M49049HQ7TC9H
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP8582W5W4W963YTKS7BP9JX
+        timestamp: 2026-04-15T08:48:41.277Z
     examined_commit: 156714dac6942a1a20836fc6074b04f700a4d3e2
     external_links: []
     lifecycle_state: open
@@ -142675,8 +142682,29 @@ reviews:
       content_hash: ""
       ref: "@01KNXYJ3PYYG1ABH6SMQ2KRE1S"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KP8582W5W4W963YTKS7BP9JX
+        anchor:
+          type: code
+          commit: 156714dac6942a1a20836fc6074b04f700a4d3e2
+          line_end: 1844
+          line_start: 1821
+          path: src/cli/commands/setup.ts
+          side: head
+        entries:
+          - _ulid: 01KP8582W5PCAHPFRREN7S70A4
+            author: Jacob Chapel
+            body: The inherited @trait-error-guidance ac-6 is still not satisfied on the scaffold-failure path.
+              Reproducing  against a read-only kspec.config.yaml exits 1 but writes the
+              human-readable setup summary to stdout before the JSON payload, and the payload is
+              only a generic steps dump rather than a structured error object with recovery
+              guidance. That means machine consumers cannot reliably parse the failure output, and
+              the new test at tests/scaffold-project-config.test.ts:465 only checks for substrings
+              instead of asserting valid structured error output, so it falsely marks this AC as
+              covered.
+            created_at: 2026-04-15T08:48:40.325Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-15T08:37:57.956Z
-    updated_at: 2026-04-15T08:38:13.843Z
+    updated_at: 2026-04-15T08:48:40.325Z
     notes: []
