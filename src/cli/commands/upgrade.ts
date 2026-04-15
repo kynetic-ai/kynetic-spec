@@ -147,7 +147,8 @@ export async function detectSourceVersion(
  * - Presence of review-plan rendered skill → means >= 0.10
  *
  * The inferred version is the newest version consistent with all probe results.
- * When no probes are conclusive, returns unknown.
+ * When no probes are conclusive, or when probes are mutually contradictory,
+ * returns unknown.
  *
  * AC: @single-command-version-upgrade ac-source-version-fallback
  */
@@ -155,10 +156,18 @@ async function inferVersionFromProbes(
   specDir: string,
   projectDir: string,
 ): Promise<SourceVersionResult> {
-  const { loadProjectConfig, CONFIG_FILENAME } = await import("../../parser/config.js");
+  const { CONFIG_FILENAME } = await import("../../parser/config.js");
 
-  // Track the minimum version indicated by each probe
-  let maxMinVersion = "0.1.0";
+  // Each probe records a version range [minVersion, maxVersion] indicating
+  // what project version the observed state is consistent with.
+  // If probes contradict (one requires >= X while another caps at < X),
+  // the project state is unrecognizable → report unknown.
+  interface ProbeResult {
+    minVersion: string;
+    maxVersion: string; // inclusive upper bound for this probe's era
+  }
+  const probeResults: ProbeResult[] = [];
+
   // Track whether any versioned probe matched (probes 2-5).
   // Merely having .kspec/ exist is not enough — the project state must
   // match at least one recognizable version range.
@@ -170,19 +179,29 @@ async function inferVersionFromProbes(
   }
 
   // Probe 2: Check manifest for task_storage.format and kynetic version
-  const manifestPath = path.join(specDir, "kynetic.yaml");
+  const { findManifestInDir } = await import("../../parser/yaml.js");
+  const manifestPath = await findManifestInDir(specDir);
   try {
+    if (!manifestPath) throw new Error("no manifest");
     const yaml = await import("yaml");
     const raw = await fs.readFile(manifestPath, "utf-8");
     const manifest = yaml.parse(raw);
     if (manifest) {
       const kyneticVer = manifest.kynetic || manifest.kynetic_spec;
       if (kyneticVer === "1.1") {
-        maxMinVersion = bumpIfHigher(maxMinVersion, "0.9.0");
+        // kynetic 1.1 was introduced in 0.9
+        probeResults.push({ minVersion: "0.9.0", maxVersion: "99.99.99" });
         versionedProbeMatched = true;
+      } else if (kyneticVer && kyneticVer !== "1.1") {
+        // Old manifest version — caps the project at < 0.9 for consistency
+        // checking, but does NOT count as a positive versioned probe on its
+        // own. A project with only an old manifest and no other probes is
+        // unrecognizable. A project with an old manifest AND a newer probe
+        // (like kspec.config.yaml) creates a contradiction → unknown.
+        probeResults.push({ minVersion: "0.1.0", maxVersion: "0.8.99" });
       }
       if (manifest.task_storage?.format === "split") {
-        maxMinVersion = bumpIfHigher(maxMinVersion, "0.9.0");
+        probeResults.push({ minVersion: "0.9.0", maxVersion: "99.99.99" });
         versionedProbeMatched = true;
       }
     }
@@ -193,14 +212,14 @@ async function inferVersionFromProbes(
   // Probe 3: Check for kspec.config.yaml
   const configPath = path.join(projectDir, CONFIG_FILENAME);
   if (existsSync(configPath)) {
-    maxMinVersion = bumpIfHigher(maxMinVersion, "0.11.0");
+    probeResults.push({ minVersion: "0.11.0", maxVersion: "99.99.99" });
     versionedProbeMatched = true;
   }
 
   // Probe 4: Check for rendered skills directory
   const agentsSkillsDir = path.join(projectDir, ".agents", "skills");
   if (existsSync(agentsSkillsDir)) {
-    maxMinVersion = bumpIfHigher(maxMinVersion, "0.8.0");
+    probeResults.push({ minVersion: "0.8.0", maxVersion: "99.99.99" });
     versionedProbeMatched = true;
   }
 
@@ -208,7 +227,7 @@ async function inferVersionFromProbes(
   // Skills are rendered as directories with SKILL.md inside
   const reviewPlanSkill = path.join(agentsSkillsDir, "kspec-review-plan", "SKILL.md");
   if (existsSync(reviewPlanSkill)) {
-    maxMinVersion = bumpIfHigher(maxMinVersion, "0.10.0");
+    probeResults.push({ minVersion: "0.10.0", maxVersion: "99.99.99" });
     versionedProbeMatched = true;
   }
 
@@ -219,20 +238,49 @@ async function inferVersionFromProbes(
     return { version: null, confidence: "unknown" };
   }
 
-  return { version: maxMinVersion, confidence: "approximate" };
+  // Check for mutual consistency: the global lower bound must not exceed
+  // any probe's upper bound. If it does, the probes contradict each other
+  // (e.g., manifest says old era but config file says new era).
+  let globalMin = "0.1.0";
+  let globalMax = "99.99.99";
+  for (const probe of probeResults) {
+    globalMin = bumpIfHigher(globalMin, probe.minVersion);
+    globalMax = bumpIfLower(globalMax, probe.maxVersion);
+  }
+
+  // If the intersection is empty (min > max), probes are contradictory
+  if (compareSemver(globalMin, globalMax) > 0) {
+    return { version: null, confidence: "unknown" };
+  }
+
+  return { version: globalMin, confidence: "approximate" };
 }
 
 /**
  * Simple semver comparison — returns the higher of two version strings.
  */
 function bumpIfHigher(current: string, candidate: string): string {
-  const a = current.split(".").map(Number);
-  const b = candidate.split(".").map(Number);
+  return compareSemver(candidate, current) > 0 ? candidate : current;
+}
+
+/**
+ * Simple semver comparison — returns the lower of two version strings.
+ */
+function bumpIfLower(current: string, candidate: string): string {
+  return compareSemver(candidate, current) < 0 ? candidate : current;
+}
+
+/**
+ * Compare two semver strings. Returns negative if a < b, 0 if equal, positive if a > b.
+ */
+function compareSemver(a: string, b: string): number {
+  const ap = a.split(".").map(Number);
+  const bp = b.split(".").map(Number);
   for (let i = 0; i < 3; i++) {
-    if ((b[i] || 0) > (a[i] || 0)) return candidate;
-    if ((b[i] || 0) < (a[i] || 0)) return current;
+    const diff = (ap[i] || 0) - (bp[i] || 0);
+    if (diff !== 0) return diff;
   }
-  return current;
+  return 0;
 }
 
 // ─── Upgrade Pipeline ─────────────────────────────────────────────────────────
@@ -635,21 +683,41 @@ async function runRerenderSkillsStep(
   let skipped = 0;
   const renderErrors: string[] = [];
 
-  for (const { skill, platform } of skillsToRender) {
-    const renderer = getRenderer(platform)!;
+  // AC: @trait-dry-run ac-4 — pre-flight check: verify output directories are
+  // viable before rendering. If a directory path is blocked by a regular file,
+  // report the same error dry-run or real-run would encounter.
+  for (const renderer of getAllRenderers()) {
+    const outputDir = path.join(projectDir, renderer.defaultOutputDir);
     try {
-      const result = await renderer.render(ctx, projectDir, skill, {
-        dryRun,
-      });
-      if (result.action === "created" || result.action === "updated") {
-        rendered++;
-      } else {
-        skipped++;
+      const stat = await fs.stat(outputDir);
+      if (!stat.isDirectory()) {
+        renderErrors.push(
+          `${renderer.platform}: ${renderer.defaultOutputDir} exists but is not a directory`,
+        );
       }
-    } catch (err) {
-      renderErrors.push(
-        `${skill.id}/${platform}: ${err instanceof Error ? err.message : String(err)}`,
-      );
+    } catch {
+      // Output directory doesn't exist — that's fine, mkdir will create it
+    }
+  }
+
+  // If pre-flight found issues, skip rendering and report failure immediately
+  if (renderErrors.length === 0) {
+    for (const { skill, platform } of skillsToRender) {
+      const renderer = getRenderer(platform)!;
+      try {
+        const result = await renderer.render(ctx, projectDir, skill, {
+          dryRun,
+        });
+        if (result.action === "created" || result.action === "updated") {
+          rendered++;
+        } else {
+          skipped++;
+        }
+      } catch (err) {
+        renderErrors.push(
+          `${skill.id}/${platform}: ${err instanceof Error ? err.message : String(err)}`,
+        );
+      }
     }
   }
 
@@ -798,41 +866,46 @@ async function runRegenerateAgentsStep(
   const outputPath = path.join(projectDir, "kspec-agents.md");
   const hashPath = path.join(projectDir, ".kspec", ".kspec-agents-hash");
 
-  if (!dryRun) {
-    // Check if regeneration is needed via hash comparison
-    const metaHash = computeMetaHash(metaCtx.conventions, metaCtx.workflows, templateSections);
+  // AC: @trait-dry-run ac-4 — hash check runs for both dry-run and real-run
+  // so dry-run accurately predicts what the real run would do.
+  const metaHash = computeMetaHash(metaCtx.conventions, metaCtx.workflows, templateSections);
 
-    let storedHash: string | undefined;
-    try {
-      const hashContent = await fs.readFile(hashPath, "utf-8");
-      const hashData = JSON.parse(hashContent);
-      storedHash = hashData.metaHash;
-    } catch {
-      // No hash — regenerate
-    }
+  let storedHash: string | undefined;
+  try {
+    const hashContent = await fs.readFile(hashPath, "utf-8");
+    const hashData = JSON.parse(hashContent);
+    storedHash = hashData.metaHash;
+  } catch {
+    // No hash — regenerate
+  }
 
-    let outputIsFile = false;
-    try {
-      const stat = await fs.stat(outputPath);
-      if (stat.isFile()) {
-        outputIsFile = true;
-      } else {
+  let outputIsFile = false;
+  let outputIsCorrupted = false;
+  try {
+    const stat = await fs.stat(outputPath);
+    if (stat.isFile()) {
+      outputIsFile = true;
+    } else {
+      outputIsCorrupted = true;
+      if (!dryRun) {
         // Corrupted artifact (e.g., directory replacing the file) — remove it
         await fs.rm(outputPath, { recursive: true, force: true });
       }
-    } catch {
-      // Missing
     }
+  } catch {
+    // Missing
+  }
 
-    if (storedHash === metaHash && outputIsFile) {
-      return {
-        name: "Regenerate agent instructions",
-        status: "skipped",
-        message: "already up to date",
-        details: { skipped: true },
-      };
-    }
+  if (storedHash === metaHash && outputIsFile) {
+    return {
+      name: "Regenerate agent instructions",
+      status: "skipped",
+      message: "already up to date",
+      details: { skipped: true },
+    };
+  }
 
+  if (!dryRun) {
     await fs.writeFile(outputPath, content, "utf-8");
 
     // Update hash file
@@ -847,10 +920,18 @@ async function runRegenerateAgentsStep(
     );
   }
 
+  const reason = outputIsCorrupted
+    ? "corrupted artifact detected"
+    : !outputIsFile
+      ? "file missing"
+      : "meta hash changed";
+
   return {
     name: "Regenerate agent instructions",
     status: "done",
-    message: dryRun ? "would regenerate kspec-agents.md" : "regenerated kspec-agents.md",
+    message: dryRun
+      ? `would regenerate kspec-agents.md (${reason})`
+      : "regenerated kspec-agents.md",
     details: { skipped: false },
   };
 }

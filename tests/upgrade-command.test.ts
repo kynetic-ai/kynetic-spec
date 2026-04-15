@@ -239,6 +239,66 @@ describe("kspec upgrade", () => {
       expect(result.source_version).toBeNull();
       expect(result.target_version).toBe(getCurrentVersion());
     });
+
+    // AC: @single-command-version-upgrade ac-source-version-unknown
+    it("reports unknown when probes are mutually contradictory", async () => {
+      // Create a project whose manifest advertises old state (kynetic: "1.0")
+      // but has kspec.config.yaml present (indicating >= 0.11).
+      // These probes contradict: old manifest caps at < 0.9, config requires >= 0.11.
+      initGitRepo(tempDir);
+      await fs.writeFile(path.join(tempDir, "README.md"), "# Test\n");
+      execSync('git add . && git commit -m "initial"', {
+        cwd: tempDir,
+        stdio: "pipe",
+      });
+
+      // Create minimal .kspec/ with just enough for initContext
+      const specDir = path.join(tempDir, ".kspec");
+      await fs.mkdir(specDir, { recursive: true });
+
+      // Create a git worktree entry for .kspec
+      const worktreeDir = path.join(tempDir, ".git", "worktrees", "-kspec");
+      await fs.mkdir(worktreeDir, { recursive: true });
+      await fs.writeFile(
+        path.join(worktreeDir, "HEAD"),
+        "0".repeat(40) + "\n",
+        "utf-8",
+      );
+      await fs.writeFile(
+        path.join(worktreeDir, "gitdir"),
+        path.join(specDir, ".git") + "\n",
+        "utf-8",
+      );
+      await fs.writeFile(
+        path.join(specDir, ".git"),
+        `gitdir: ${worktreeDir}\n`,
+        "utf-8",
+      );
+
+      // Manifest with OLD format version (kynetic: "1.0" → caps at < 0.9)
+      await fs.writeFile(
+        path.join(specDir, "kynetic.yaml"),
+        `kynetic: "1.0"\ntitle: Test\nproject:\n  name: test\n  version: "0.1.0"\n`,
+        "utf-8",
+      );
+
+      // Also create kspec.config.yaml (indicates >= 0.11), contradicting the manifest
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        "dispatch:\n  publication_mode: auto\n",
+        "utf-8",
+      );
+
+      const result = kspecJson<{
+        source_version: string | null;
+        confidence: string;
+      }>("upgrade --dry-run", tempDir);
+
+      // Probes contradict: manifest says < 0.9 but config says >= 0.11
+      // Must report unknown, not approximate
+      expect(result.confidence).toBe("unknown");
+      expect(result.source_version).toBeNull();
+    });
   });
 
   // ─── Version Reporting ────────────────────────────────────────────
@@ -284,20 +344,78 @@ describe("kspec upgrade", () => {
 
   describe("upgrade pipeline", () => {
     // AC: @single-command-version-upgrade ac-runs-task-storage-migration
-    it("runs task storage migration as part of upgrade", async () => {
+    it("migrates legacy monolithic task storage during upgrade", async () => {
       await initProject(tempDir);
       await writeLastKnownVersion(tempDir, "0.8.0");
 
+      const specDir = path.join(tempDir, ".kspec");
+
+      // Find the manifest and tasks files (kspec init uses slug-based naming)
+      const specFiles = await fs.readdir(specDir);
+      const manifestName = specFiles.find(
+        (f) => f.endsWith(".yaml") &&
+          !f.endsWith(".tasks.yaml") &&
+          !f.endsWith(".inbox.yaml") &&
+          !f.endsWith(".meta.yaml") &&
+          !f.startsWith("."),
+      );
+      expect(manifestName).toBeDefined();
+      const manifestPath = path.join(specDir, manifestName!);
+
+      const tasksName = specFiles.find(
+        (f) => f.endsWith(".tasks.yaml"),
+      );
+      expect(tasksName).toBeDefined();
+      const tasksPath = path.join(specDir, tasksName!);
+
+      // Read the current manifest to preserve project metadata, then downgrade
+      // to monolithic-era format (remove task_storage, set kynetic to old version).
+      // The `kynetic` field must remain (findManifestInDir requires it for discovery).
+      const yaml = await import("yaml");
+      const manifestRaw = await fs.readFile(manifestPath, "utf-8");
+      const manifest = yaml.parse(manifestRaw) as Record<string, unknown>;
+      delete manifest.task_storage;
+      manifest.kynetic = "1.0";
+      await fs.writeFile(manifestPath, yaml.stringify(manifest), "utf-8");
+
+      // Write a monolithic task entry into the tasks file.
+      // Monolithic entries have a `notes` array (not `notes_count` scalar).
+      const monolithicTasks = [
+        {
+          _ulid: "01TESTM0N0L1TH1C0000000001",
+          slugs: ["task-legacy-mono"],
+          title: "Legacy monolithic task",
+          type: "task",
+          status: "pending",
+          priority: 3,
+          tags: ["test"],
+          depends_on: [],
+          blocked_by: [],
+          created_at: "2026-01-01T00:00:00.000Z",
+          notes: [
+            {
+              _ulid: "01TESTM0N0L1TH1C0000000002",
+              created_at: "2026-01-01T01:00:00.000Z",
+              author: "@test",
+              content: "A legacy note",
+            },
+          ],
+          todos: [],
+        },
+      ];
+      await fs.writeFile(tasksPath, yaml.stringify(monolithicTasks), "utf-8");
+
       const result = kspecJson<{
-        steps: Array<{ name: string; status: string }>;
+        steps: Array<{ name: string; status: string; message: string; details?: Record<string, unknown> }>;
       }>("upgrade", tempDir);
 
       const migrationStep = result.steps.find(
         (s) => s.name === "Task storage migration",
       );
       expect(migrationStep).toBeDefined();
-      // Should either complete or skip (no monolithic tasks to migrate)
-      expect(["done", "skipped"]).toContain(migrationStep!.status);
+      // Migration should run — either it migrates the monolithic task or
+      // at minimum upgrades the manifest to split format
+      expect(migrationStep!.status).toBe("done");
     });
 
     // AC: @single-command-version-upgrade ac-rerenders-skills
@@ -471,9 +589,16 @@ describe("kspec upgrade", () => {
     });
 
     // AC: @single-command-version-upgrade ac-reports-manual-follow-ups
-    it("reports manual follow-ups for applied changes", async () => {
+    it("reports non-empty manual follow-ups when upgrade applies changes", async () => {
       await initProject(tempDir);
       await writeLastKnownVersion(tempDir, "0.8.0");
+
+      // Delete the .gitignore so the upgrade has to restore it, which
+      // should produce a follow-up entry about the added entries.
+      const gitignorePath = path.join(tempDir, ".gitignore");
+      if (existsSync(gitignorePath)) {
+        await fs.unlink(gitignorePath);
+      }
 
       const result = kspecJson<{
         follow_ups: string[];
@@ -481,6 +606,17 @@ describe("kspec upgrade", () => {
 
       expect(result.follow_ups).toBeDefined();
       expect(Array.isArray(result.follow_ups)).toBe(true);
+      expect(result.follow_ups.length).toBeGreaterThan(0);
+      // Each follow-up must be a non-empty, user-actionable message
+      for (const followUp of result.follow_ups) {
+        expect(typeof followUp).toBe("string");
+        expect(followUp.length).toBeGreaterThan(0);
+      }
+      // At least one follow-up should mention the gitignore change
+      const hasGitignoreFollowUp = result.follow_ups.some(
+        (f) => f.toLowerCase().includes("gitignore"),
+      );
+      expect(hasGitignoreFollowUp).toBe(true);
     });
   });
 
@@ -637,6 +773,60 @@ describe("kspec upgrade", () => {
         tempDir,
       );
       expect(result.dry_run).toBe(true);
+    });
+
+    // AC: @trait-dry-run ac-4
+    it("dry-run surfaces skill render errors that real run would hit", async () => {
+      await initProject(tempDir);
+      await writeLastKnownVersion(tempDir, "0.8.0");
+
+      // Replace .agents/skills directory with a regular file so the
+      // renderer has nowhere to write — real run fails this step.
+      const skillsDir = path.join(tempDir, ".agents", "skills");
+      await fs.rm(skillsDir, { recursive: true, force: true });
+      await fs.writeFile(skillsDir, "not a directory\n", "utf-8");
+
+      // Dry-run should report the same failure, not claim "done"
+      const dryResult = kspec("upgrade --force --dry-run --json", tempDir);
+      const dryParsed = JSON.parse(dryResult.stdout);
+      const drySkillStep = dryParsed.steps.find(
+        (s: { name: string }) => s.name === "Re-render skills",
+      );
+      expect(drySkillStep).toBeDefined();
+      expect(drySkillStep.status).toBe("failed");
+      // Non-zero exit code matching real-run behavior
+      expect(dryResult.exitCode).not.toBe(0);
+    });
+
+    // AC: @trait-dry-run ac-4
+    it("dry-run skips agent regeneration when real run would skip it", async () => {
+      await initProject(tempDir);
+      await writeLastKnownVersion(tempDir, "0.8.0");
+
+      // First run to populate the hash file and kspec-agents.md
+      kspec("upgrade", tempDir);
+
+      // Now both dry-run and real-run should agree the file is up-to-date
+      const dryResult = kspecJson<{
+        steps: Array<{ name: string; status: string; details?: Record<string, unknown> }>;
+      }>("upgrade --force --dry-run", tempDir);
+
+      const dryAgentsStep = dryResult.steps.find(
+        (s) => s.name === "Regenerate agent instructions",
+      );
+      expect(dryAgentsStep).toBeDefined();
+      expect(dryAgentsStep!.status).toBe("skipped");
+
+      // Confirm real run also skips
+      const realResult = kspecJson<{
+        steps: Array<{ name: string; status: string; details?: Record<string, unknown> }>;
+      }>("upgrade --force", tempDir);
+
+      const realAgentsStep = realResult.steps.find(
+        (s) => s.name === "Regenerate agent instructions",
+      );
+      expect(realAgentsStep).toBeDefined();
+      expect(realAgentsStep!.status).toBe("skipped");
     });
   });
 
