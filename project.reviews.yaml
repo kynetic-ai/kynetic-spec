@@ -146907,6 +146907,20 @@ reviews:
         runner: manual
         created_at: 2026-04-15T21:11:51.073Z
         completed_at: 2026-04-15T21:11:51.073Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: With `.agents/skills` replaced by a regular file, `upgrade --force --json` failed
+          `Re-render skills` with ENOTDIR and exited 3, while `upgrade --force --dry-run --json`
+          reported the step as done and exited 0. On a freshly initialized project, `upgrade --force
+          --json` skipped agent regeneration but `upgrade --force --dry-run --json` reported `would
+          regenerate kspec-agents.md`.
+        name: upgrade dry-run parity repro
+        required: true
+        runner: manual
+        created_at: 2026-04-15T21:12:07.381Z
+        completed_at: 2026-04-15T21:12:07.381Z
     events:
       - _ulid: 01KP9EZEE0954KEH7M5RK1F57Q
         actor: Jacob Chapel
@@ -146984,6 +146998,13 @@ reviews:
           status: fail
           name: upgrade source-version contradiction repro
         timestamp: 2026-04-15T21:11:52.051Z
+      - _ulid: 01KP9FSDBMGKD51YRNFX2XCFD0
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: upgrade dry-run parity repro
+        timestamp: 2026-04-15T21:12:08.308Z
     examined_commit: 2954ef826857c2ec41850cba22ae384ab50c3e0f
     external_links: []
     lifecycle_state: open
@@ -147137,5 +147158,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-15T20:57:57.440Z
-    updated_at: 2026-04-15T21:11:51.073Z
+    updated_at: 2026-04-15T21:12:07.381Z
     notes: []
