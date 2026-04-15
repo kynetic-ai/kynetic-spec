@@ -26504,7 +26504,7 @@ runs:
     completed_at: 2026-04-15T22:19:08.502Z
   - _ulid: 01KP9NHWMGJ29890AHWY7CXDXP
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -26528,7 +26528,14 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-15T22:54:09.587Z
-        completed_at: 2026-04-15T22:54:09.587Z
+        completed_at: 2026-04-15T22:54:10.486Z
+        notes: "Proposed improvements: small-to-medium follow-up on parity between composed upgrade/setup
+          steps and canonical commands, ideally by sharing a library path or adding parity-focused
+          tests around failure behavior."
+      - status: completed
+        step_index: 4
+        started_at: 2026-04-15T22:54:10.486Z
+        completed_at: 2026-04-15T22:54:10.486Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-15T22:52:53.264Z
