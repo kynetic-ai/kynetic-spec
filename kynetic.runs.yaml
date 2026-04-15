@@ -26588,7 +26588,7 @@ runs:
     started_at: 2026-04-15T23:24:28.022Z
     completed_at: 2026-04-15T23:25:51.811Z
   - _ulid: 01KP9S77GMPSMEQNXJ7QK9RXAJ
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -26636,7 +26636,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-04-15T23:58:35.828Z
-        completed_at: 2026-04-15T23:58:35.828Z
+        completed_at: 2026-04-15T23:58:36.754Z
+        notes: "Proposed improvements: no new improvement item is needed from this session. The systemic
+          test-triage friction is already tracked, and the concrete upgrade-command issues are
+          better handled inside the active task's fix cycle than through new inbox or observation
+          records."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-15T23:56:58.260Z
+    completed_at: 2026-04-15T23:58:36.755Z
