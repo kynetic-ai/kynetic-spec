@@ -25796,7 +25796,7 @@ runs:
     completed_at: 2026-04-14T20:26:01.009Z
   - _ulid: 01KP7JT01SDN8FD25NW0M6K02V
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -25850,7 +25850,29 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-15T03:29:07.293Z
-        completed_at: 2026-04-15T03:29:07.293Z
+        completed_at: 2026-04-15T03:29:23.282Z
+        notes: "Proposed improvements for untracked friction: (A) Fix summarizeOutput() at
+          src/agent-runtime/bootstrap.ts:129 to slice the TAIL of combined output
+          (combined.slice(-4000) instead of combined.slice(0, 4000)). Rationale: build-tool error
+          messages always land at the end of stdout/stderr; keeping the first 4000 chars guarantees
+          we lose the error every time. Scope: SMALL — one-line change plus a contract test updating
+          the tests/dispatch-runtime-bootstrap-contract.test.ts assertion to check the failure mode
+          is captured. This is a diagnostic fix, not a behavior change (same truncation size,
+          different slice direction), so no spec update needed. High leverage: every future
+          bootstrap failure investigation benefits immediately. (B) Reviewer bootstrap failure
+          should clean up the provisioned -review worktree before blocking the task, in
+          src/agent-runtime/dispatch.ts:2504-2526 catch block. Call
+          safelyRemoveDispatchWorktree(projectDir, worktreeRoot, reviewerWorktreeDir) before
+          returning, so the next dispatch retry doesn't hit 'already exists and is not a registered
+          git worktree' as a cascading secondary error. Scope: SMALL-MEDIUM — a single catch-block
+          edit plus a regression test that asserts post-failure state has no orphan -review dir. Is
+          a behavior change, so check @agent-dispatch-engine and @dispatch-workspace-registry for
+          existing AC coverage — likely needs a new AC that 'reviewer workspace is cleaned up on
+          bootstrap failure'."
+      - status: completed
+        step_index: 4
+        started_at: 2026-04-15T03:29:23.282Z
+        completed_at: 2026-04-15T03:29:23.282Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-15T03:26:24.313Z
