@@ -26645,7 +26645,7 @@
     - task-tests-suppress-cli-auto-start-daemon
   title: Suppress CLI auto-start daemon in tests to stop orphan daemon leak
   type: bug
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 1
@@ -26658,6 +26658,7 @@
   todos_count: 0
   created_at: 2026-04-15T00:31:15.776Z
   started_at: 2026-04-15T06:23:27.386Z
+  submitted_at: 2026-04-15T06:35:36.883Z
   automation: eligible
 - _ulid: 01KP7V4BT94ZKMQTSHMPG3BM10
   slugs:
