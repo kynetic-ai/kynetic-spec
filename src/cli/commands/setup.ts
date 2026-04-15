@@ -741,6 +741,8 @@ export interface SetupPipelineResult {
   agentsMdGenerated: boolean;
   permissionsSeeded: boolean;
   memorySeeded: boolean;
+  /** Current ref of the default module (dynamically resolved, may differ from @main if renamed) */
+  defaultModuleRef: string | null;
 }
 
 /**
@@ -1851,6 +1853,20 @@ export async function runSetupPipeline(
       }
     }
 
+    // Resolve the default module's current ref dynamically (it may have been renamed)
+    let defaultModuleRef: string | null = null;
+    try {
+      const { loadAllItems, initContext: initCtx } = await import("../../parser/yaml.js");
+      const ctx = await initCtx();
+      const items = await loadAllItems(ctx);
+      const firstModule = items.find((item) => item.type === "module");
+      if (firstModule) {
+        defaultModuleRef = `@${firstModule.slugs?.[0] || firstModule._ulid}`;
+      }
+    } catch {
+      // Non-fatal: fall back to null (skip the default module message)
+    }
+
     // Output summary (skip in structured mode — stdout must stay clean for JSON/YAML)
     if (!dryRun && !isStructuredMode()) {
       console.log(chalk.bold("kspec Setup Summary\n"));
@@ -1876,11 +1892,13 @@ export async function runSetupPipeline(
       }
 
       // AC: @derivable-default-module — mention default module in setup summary
-      console.log(
-        chalk.gray(
-          "\n  Default module available: @main — use this ref for plan imports and spec placement",
-        ),
-      );
+      if (defaultModuleRef) {
+        console.log(
+          chalk.gray(
+            `\n  Default module available: ${defaultModuleRef} — use this ref for plan imports and spec placement`,
+          ),
+        );
+      }
     }
 
     const success = steps.every((s) => s.status !== "failed");
@@ -1894,6 +1912,7 @@ export async function runSetupPipeline(
       agentsMdGenerated,
       permissionsSeeded,
       memorySeeded,
+      defaultModuleRef,
     };
   } catch (err) {
     debugLog("runSetupPipeline failed", err);
@@ -1906,6 +1925,7 @@ export async function runSetupPipeline(
       agentsMdGenerated,
       permissionsSeeded,
       memorySeeded,
+      defaultModuleRef: null,
     };
   }
 }
@@ -2161,9 +2181,11 @@ export function registerSetupCommand(program: Command): void {
               console.log(chalk.green("Setup complete."));
               console.log(chalk.gray("Restart your agent session for changes to take effect."));
               // AC: @derivable-default-module — remind user about default module
-              console.log(
-                chalk.gray("Default module available: @main — use for plan imports and spec placement"),
-              );
+              if (result.defaultModuleRef) {
+                console.log(
+                  chalk.gray(`Default module available: ${result.defaultModuleRef} — use for plan imports and spec placement`),
+                );
+              }
             }
 
             const configureAuthorStep = result.steps.find(

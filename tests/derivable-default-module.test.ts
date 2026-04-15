@@ -280,6 +280,29 @@ describe.skipIf(!canRunShadowTests)("Derivable default module", () => {
     expect(stdout).toContain("Default module created");
   });
 
+  // AC: @derivable-default-module ac-default-module-editable
+  it("setup output uses renamed slug after default module slug replacement", async () => {
+    await setupFreshProject(projectDir);
+
+    // Rename the default module slug from @main to @custom-module
+    kspec("item set @main --slug custom-module", projectDir);
+    kspec("item set @custom-module --remove-slug main", projectDir);
+
+    // Verify @main no longer resolves
+    const oldSlugResult = kspecRun("item get @main --json", projectDir, {
+      expectFail: true,
+    });
+    expect(oldSlugResult.exitCode).not.toBe(0);
+
+    // Run setup and verify it mentions the new slug, not the old one
+    const setupResult = kspecRun("setup --skip-skills --no-hooks", projectDir, {
+      env: { KSPEC_AUTHOR: "@test" },
+    });
+    expect(setupResult.exitCode).toBe(0);
+    expect(setupResult.stdout).toContain("@custom-module");
+    expect(setupResult.stdout).not.toContain("@main");
+  });
+
   // AC: @derivable-default-module ac-default-module-resolvable
   it("preserves the items container in the generated module file", async () => {
     await setupFreshProject(projectDir);
