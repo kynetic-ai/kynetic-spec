@@ -52285,18 +52285,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-upgrade-command/01knxyj5
-    canonical_branch_head: 0501051eb49ee8db8faccedc035f1cb95cef85fc
+    canonical_branch_head: 96b4318368a237137685b91bf85214d3e68cc139
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-15T12:40:27.307Z
+      updated_at: 2026-04-15T12:40:34.037Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-15T12:40:27.307Z
+      updated_at: 2026-04-15T12:40:34.037Z
     integration:
       status: pending
       detail: null
@@ -52304,24 +52304,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
       target_commit: 0501051eb49ee8db8faccedc035f1cb95cef85fc
-      updated_at: 2026-04-15T12:40:27.307Z
-    lifecycle_state: ready
+      updated_at: 2026-04-15T12:40:34.037Z
+    lifecycle_state: integrating
     resolved_base_branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
     task_ref: "@01KNXYJ5JCR99F76N8N7265E0B"
     task_slug: task-upgrade-command
     timestamps:
       closed_at: null
       last_active_at: 2026-04-15T12:21:12.466Z
-      last_reconciled_at: 2026-04-15T12:40:27.307Z
+      last_reconciled_at: 2026-04-15T12:40:34.037Z
       created_at: 2026-04-15T12:20:51.766Z
-      updated_at: 2026-04-15T12:40:27.307Z
+      updated_at: 2026-04-15T12:40:34.037Z
     workspace_id: dispatch-workspace-01KNXYJ5JCR99F76N8N7265E0B
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 96b4318368a237137685b91bf85214d3e68cc139
+        last_seen_at: 2026-04-15T12:40:34.037Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-upgrade-command-01knxyj5-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-upgrade-command/01knxyj5
-        head: 0501051eb49ee8db8faccedc035f1cb95cef85fc
-        last_seen_at: 2026-04-15T12:20:51.766Z
+        head: 96b4318368a237137685b91bf85214d3e68cc139
+        last_seen_at: 2026-04-15T12:40:34.037Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-upgrade-command-01knxyj5
