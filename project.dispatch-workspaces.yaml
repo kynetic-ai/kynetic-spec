@@ -51407,7 +51407,7 @@ workspaces:
         head: d8f9c25d3b8dad39a6e1b074ec58733867fd3cd7
         last_seen_at: 2026-04-14T20:54:31.426Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-meta-set-multi-value-01knxyj6
-  - active_role: worker
+  - active_role: null
     base_branch_point: 8068a15ad06fdad3f38be42442b38a782e717b1c
     bootstrap:
       status: succeeded
@@ -51607,12 +51607,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-15T07:20:48.746Z
+      updated_at: 2026-04-15T07:21:41.240Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-15T07:20:48.746Z
+      updated_at: 2026-04-15T07:21:41.240Z
     integration:
       status: pending
       detail: null
@@ -51620,17 +51620,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 8068a15ad06fdad3f38be42442b38a782e717b1c
-      updated_at: 2026-04-15T07:20:48.746Z
-    lifecycle_state: active
+      updated_at: 2026-04-15T07:21:41.240Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KP78S9T0YHQWX9S35W8EFCRY"
     task_slug: task-tests-suppress-cli-auto-start-daemon
     timestamps:
       closed_at: null
       last_active_at: 2026-04-15T06:52:32.964Z
-      last_reconciled_at: 2026-04-15T07:20:48.746Z
+      last_reconciled_at: 2026-04-15T07:21:41.240Z
       created_at: 2026-04-15T06:22:09.609Z
-      updated_at: 2026-04-15T07:20:48.746Z
+      updated_at: 2026-04-15T07:21:41.240Z
     workspace_id: dispatch-workspace-01KP78S9T0YHQWX9S35W8EFCRY
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
