@@ -26082,7 +26082,7 @@
   type: task
   spec_ref: "@scaffolded-project-config"
   plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   priority: 1
@@ -26091,7 +26091,7 @@
     - setup
     - config
   review_ref: "@01KP84MFJ4PN83SXERG6EP164H"
-  notes_count: 22
+  notes_count: 23
   todos_count: 0
   created_at: 2026-04-11T09:39:24.510Z
   started_at: 2026-04-15T08:33:39.891Z

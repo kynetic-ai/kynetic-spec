@@ -142740,9 +142740,25 @@ reviews:
           kind: nit
           thread_ulid: 01KP858XKYQK04NTBTKPNNXF9Q
         timestamp: 2026-04-15T08:49:08.819Z
+      - _ulid: 01KP8599WPA44S2FPDAMBD3ZTC
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-15T08:49:20.278Z
+      - _ulid: 01KP8599WP661244V0GQPEXF35
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-15T08:49:20.278Z
     examined_commit: 156714dac6942a1a20836fc6074b04f700a4d3e2
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -142808,7 +142824,14 @@ reviews:
               correctness, error handling, test quality, integration, spec alignment."
             created_at: 2026-04-15T08:49:07.710Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-15T08:49:20.278Z
     created_at: 2026-04-15T08:37:57.956Z
-    updated_at: 2026-04-15T08:49:07.710Z
+    updated_at: 2026-04-15T08:49:20.278Z
     notes: []
