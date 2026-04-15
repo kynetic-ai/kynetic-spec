@@ -25957,7 +25957,7 @@ runs:
     completed_at: 2026-04-15T06:52:03.942Z
   - _ulid: 01KP839D065NAF32V2BH84ZAT4
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -25970,7 +25970,13 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-15T08:15:56.195Z
-        completed_at: 2026-04-15T08:15:56.195Z
+        completed_at: 2026-04-15T08:15:57.011Z
+        notes: "Search-first check: existing observations already cover shell-quoting fragility for inline
+          review-comment bodies, so I did not duplicate that friction."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-15T08:15:57.011Z
+        completed_at: 2026-04-15T08:15:57.011Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-15T08:14:26.310Z
