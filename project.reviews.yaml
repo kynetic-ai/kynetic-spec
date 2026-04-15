@@ -143280,6 +143280,12 @@ reviews:
         payload:
           thread_ulid: 01KP84APZVKFR2X720DF3SCXCX
         timestamp: 2026-04-15T10:09:09.076Z
+      - _ulid: 01KP89VKGFEKHVMQ9ZSEAY09TR
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP84AWF29P91G9EXY8T0Y1FA
+        timestamp: 2026-04-15T10:09:14.255Z
     examined_commit: f2ac5145d4ad013362635154634edcf368e694d0
     external_links: []
     lifecycle_state: closed
@@ -143413,6 +143419,14 @@ reviews:
               with --into exited 0 and updated the plan content instead of failing. That leaves a
               straightforward path to store content that this task says import must reject."
             created_at: 2026-04-15T08:32:43.490Z
+          - _ulid: 01KP89VJK97JC0P6563HS50S2Y
+            author: "@claude"
+            body: "Fixed: importIntoExistingPlan now calls parsePlanDocument to validate structural invariants
+              before saving. AC shape mismatches fail with exit 2. Empty-plan warnings are emitted
+              and included in JSON output. Missing title remains non-fatal for --into (per
+              ac-into-no-title). Added two CLI integration tests covering AC shape rejection and
+              empty-plan warning in the --into path."
+            created_at: 2026-04-15T10:09:13.321Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -143423,7 +143437,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T08:33:13.714Z
     created_at: 2026-04-15T08:20:09.323Z
-    updated_at: 2026-04-15T10:09:08.178Z
+    updated_at: 2026-04-15T10:09:13.321Z
     notes: []
   - _ulid: 01KP84MFJ4PN83SXERG6EP164H
     slugs: []
