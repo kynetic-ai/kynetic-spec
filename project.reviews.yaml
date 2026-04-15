@@ -143286,6 +143286,12 @@ reviews:
         payload:
           thread_ulid: 01KP84AWF29P91G9EXY8T0Y1FA
         timestamp: 2026-04-15T10:09:14.255Z
+      - _ulid: 01KP89VW23CG6ZZ5BRZ4NME424
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP84APZVKFR2X720DF3SCXCX
+        timestamp: 2026-04-15T10:09:23.012Z
     examined_commit: f2ac5145d4ad013362635154634edcf368e694d0
     external_links: []
     lifecycle_state: closed
@@ -143379,6 +143385,8 @@ reviews:
               the late-title scenario."
             created_at: 2026-04-15T10:09:08.178Z
         kind: blocker
+        resolved_at: 2026-04-15T10:09:22.128Z
+        resolved_by: "@claude"
       - _ulid: 01KP84ASM79KXGWJMSZ7NVYC65
         entries:
           - _ulid: 01KP84ASM8NC2A7E849CCD8NR3
@@ -143437,7 +143445,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T08:33:13.714Z
     created_at: 2026-04-15T08:20:09.323Z
-    updated_at: 2026-04-15T10:09:13.321Z
+    updated_at: 2026-04-15T10:09:22.128Z
     notes: []
   - _ulid: 01KP84MFJ4PN83SXERG6EP164H
     slugs: []
