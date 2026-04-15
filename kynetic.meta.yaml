@@ -14334,6 +14334,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-15T09:54:53.396Z
+  - _ulid: 01KP89YRE7M48GF7M8J5X37AJ8
+    type: friction
+    content: "Plan import --into path bypassed parsePlanDocument validation entirely, allowing malformed
+      content through. Pattern: when command handlers have multiple entry points (new vs update),
+      validation must be shared, not duplicated or omitted. The fix was to call parsePlanDocument in
+      both paths. Future similar commands should extract validation into a shared pre-save step."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-15T10:10:57.607Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
