@@ -14,3 +14,31 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-15T06:23:47.668Z
+  - _ulid: 01KP7XM8MXHXXFNBMDCB0V9C1M
+    content: >-
+      Implementation complete. Two changes made:
+
+      1. tests/helpers/cli.ts: Added KSPEC_NO_DAEMON='1' to defaultEnv — all CLI subprocesses
+      spawned by the kspec() helper now suppress implicit auto-start. Caller env overrides via merge
+      order on line 208.
+
+      2. tests/setup.test.ts: Added KSPEC_NO_DAEMON='1' to cleanEnv() — the setup tests use direct
+      spawnSync so they need their own env fix.
+
+
+      Verification:
+
+      - AC1: Daemon count stable at 2 before/after full test run (3 intermediate daemons were from
+      explicit serve start --detach tests, not auto-start).
+
+      - AC2: daemon-config.test.ts auto-start tests pass — they already set KSPEC_NO_DAEMON='' which
+      overrides the helper default.
+
+      - AC3: All 3 setup tests under 'kspec setup without agent environment' pass.
+
+      - AC4: Full suite 7763 tests pass (5 pre-existing skips).
+
+      - AC5: no-leaky-test-daemon oxlint rule — 22/22 tests pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-15T06:35:30.845Z
