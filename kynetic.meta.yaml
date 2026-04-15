@@ -14602,6 +14602,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-15T22:53:50.195Z
+  - _ulid: 01KP9PEDYVPHS0B5S1DWWMNGBZ
+    type: friction
+    content: "When composing existing functions into new commands (e.g., upgrade reusing agents
+      generate, skill render, gitignore repair), error handling semantics from the original call
+      sites are frequently dropped. Silent catch blocks replace fatal errors, leading to degraded
+      behavior that passes tests but corrupts output. The upgrade command went through 9 fix cycles,
+      with at least 4 caused by this pattern. Convention candidate: when reusing a function, audit
+      the original call site's error handling and replicate its severity (fatal vs recoverable vs
+      ignorable)."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-15T23:08:28.507Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
