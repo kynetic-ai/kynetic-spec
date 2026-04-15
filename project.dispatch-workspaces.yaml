@@ -50068,7 +50068,7 @@ workspaces:
         head: 4c30c4d5047b485b566eef3ae492e25338b141cb
         last_seen_at: 2026-04-15T10:10:34.880Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-derivable-default-module-01knxyj4
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: f205808d2cf1f58d18f7fdf45435996b4092d52a
     bootstrap:
       status: succeeded
@@ -50602,9 +50602,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-15T10:11:23.205Z
-      last_reconciled_at: 2026-04-15T10:23:43.886Z
+      last_reconciled_at: 2026-04-15T10:23:55.042Z
       created_at: 2026-04-14T19:53:40.062Z
-      updated_at: 2026-04-15T10:23:43.886Z
+      updated_at: 2026-04-15T10:23:55.042Z
     workspace_id: dispatch-workspace-01KNXYJ58RFQSBZ91FSVQE4F46
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
