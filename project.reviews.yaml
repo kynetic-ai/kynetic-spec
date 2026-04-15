@@ -146703,6 +146703,13 @@ reviews:
           status: fail
           name: upgrade corrupted agents artifact repro
         timestamp: 2026-04-15T20:37:20.780Z
+      - _ulid: 01KP9DSTZ8KSFMCYPGC0WCPDDF
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP9DSSF4H7YC9V91W6EP0MZP
+        timestamp: 2026-04-15T20:37:25.097Z
     examined_commit: 4a8adcba1d4b7e6ee073f0cff5e9863e728aa8a2
     external_links: []
     lifecycle_state: open
@@ -146712,8 +146719,37 @@ reviews:
       content_hash: ""
       ref: "@01KNXYJ5JCR99F76N8N7265E0B"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KP9DSSF4H7YC9V91W6EP0MZP
+        anchor:
+          type: code
+          commit: 4a8adcba1d4b7e6ee073f0cff5e9863e728aa8a2
+          line_end: 822
+          line_start: 814
+          path: src/cli/commands/upgrade.ts
+          side: head
+        entries:
+          - _ulid: 01KP9DSSF5TJ2BMC3W60X74XZV
+            author: Jacob Chapel
+            body: >-
+              The regeneration fast-path treats any existing  path as valid output, so a broken
+              directory can suppress step 3 entirely. I reproduced this by initializing a temp
+              project, replacing  with a directory while leaving  intact, and running {
+                "success": true,
+                "source_version": "0.12.0",
+                "target_version": "0.12.0",
+                "confidence": "exact",
+                "is_refresh": false,
+                "noop": true,
+                "steps": [],
+                "follow_ups": []
+              }: the command exited 0, reported "Regenerate agent instructions" as skipped, and left
+              the directory in place. That violates @single-command-version-upgrade
+              ac-regenerates-agents-file because upgrade neither regenerates the auto-generated file
+              nor reports the step as failed when the rendered artifact is invalid.
+            created_at: 2026-04-15T20:37:23.557Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-15T20:26:05.097Z
-    updated_at: 2026-04-15T20:37:19.383Z
+    updated_at: 2026-04-15T20:37:23.557Z
     notes: []
