@@ -346,3 +346,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-15T23:23:13.745Z
+  - _ulid: 01KP9R92T2S6NEVTR8NMJCQBV6
+    content: "Fix cycle 10: Addressed blocker — task migration step trusted manifest task_storage.format
+      marker over actual storage shape. Removed the early return at line 536 that short-circuited
+      when manifest said 'split'. The function now always reads the actual task file and counts
+      monolithic entries (those without notes_count). Added test reproducing the exact
+      partial-upgrade scenario (manifest says split, task file has inline monolithic notes). All 50
+      upgrade tests pass, full suite shows only pre-existing EACCES session-store failures
+      (unrelated to this change)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-15T23:40:30.402Z
