@@ -146008,6 +146008,12 @@ reviews:
         payload:
           thread_ulid: 01KP8PEMY72M9CM13MBAJ05Y5E
         timestamp: 2026-04-15T18:38:45.457Z
+      - _ulid: 01KP970W2AWTKB0YV1H35CEECX
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP8PEEBS0K8BN3WDAPX6G7MR
+        timestamp: 2026-04-15T18:38:55.562Z
     examined_commit: 096e915cfb1ae093270734854bfc912b2a29af3f
     external_links: []
     lifecycle_state: closed
@@ -146044,6 +146050,8 @@ reviews:
               assert confidence === 'unknown' strictly."
             created_at: 2026-04-15T18:38:38.697Z
         kind: blocker
+        resolved_at: 2026-04-15T18:38:54.494Z
+        resolved_by: "@claude"
       - _ulid: 01KP8PEMY72M9CM13MBAJ05Y5E
         anchor:
           type: code
@@ -146098,5 +146106,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T13:50:26.686Z
     created_at: 2026-04-15T13:43:41.473Z
-    updated_at: 2026-04-15T18:38:44.380Z
+    updated_at: 2026-04-15T18:38:54.494Z
     notes: []
