@@ -37,7 +37,7 @@ const canRunShadowTests = (() => {
   }
 })();
 
-async function setupFreshProject(projectDir: string): Promise<void> {
+async function setupFreshProject(projectDir: string): Promise<{ stdout: string; stderr: string }> {
   initGitRepo(projectDir);
   await fs.writeFile(path.join(projectDir, "README.md"), "# Test", "utf-8");
   execSync('git add README.md && git commit -m "initial"', {
@@ -51,6 +51,7 @@ async function setupFreshProject(projectDir: string): Promise<void> {
   if (result.exitCode !== 0) {
     throw new Error(`kspec init --no-prompt failed: ${result.stderr}`);
   }
+  return { stdout: result.stdout, stderr: result.stderr };
 }
 
 function writePlanFile(tempDir: string, name: string, content: string): Promise<string> {
@@ -199,26 +200,27 @@ describe.skipIf(!canRunShadowTests)("Derivable default module", () => {
   });
 
   // AC: @derivable-default-module ac-default-module-editable
-  it("persists slug addition and derive targets the new slug", async () => {
+  it("persists slug replacement and derive targets the new slug", async () => {
     await setupFreshProject(projectDir);
 
-    // Add a new slug to the default module
+    // Replace the default slug: add the new one and remove the old one
     kspec("item set @main --slug custom-module", projectDir);
+    kspec("item set @custom-module --remove-slug main", projectDir);
 
-    // Should be reachable by both old and new slugs
-    const byOldSlug = kspecJson<{
-      slugs: string[];
-      type: string;
-    }>("item get @main", projectDir);
-    expect(byOldSlug.slugs).toContain("main");
-    expect(byOldSlug.slugs).toContain("custom-module");
-
+    // Should only be reachable by the new slug
     const byNewSlug = kspecJson<{
       slugs: string[];
       type: string;
     }>("item get @custom-module", projectDir);
     expect(byNewSlug.slugs).toContain("custom-module");
+    expect(byNewSlug.slugs).not.toContain("main");
     expect(byNewSlug.type).toBe("module");
+
+    // Old slug should no longer resolve
+    const oldSlugResult = kspecRun("item get @main --json", projectDir, {
+      expectFail: true,
+    });
+    expect(oldSlugResult.exitCode).not.toBe(0);
 
     // Derive with the new slug works
     const planPath = await writePlanFile(
@@ -267,5 +269,30 @@ describe.skipIf(!canRunShadowTests)("Derivable default module", () => {
     }>("item get @main", projectDir);
     expect(updatedModule.description).toContain("Updated description");
     expect(updatedModule.type).toBe("module");
+  });
+
+  // AC: @derivable-default-module ac-default-module-resolvable
+  it("init output mentions the default module", async () => {
+    const { stdout } = await setupFreshProject(projectDir);
+
+    // Init output should inform the user about the default module
+    expect(stdout).toContain("@main");
+    expect(stdout).toContain("Default module created");
+  });
+
+  // AC: @derivable-default-module ac-default-module-resolvable
+  it("preserves the items container in the generated module file", async () => {
+    await setupFreshProject(projectDir);
+
+    // The generated module file should have both a module item (with _ulid)
+    // and an items: [] container for backward compatibility
+    const moduleFile = await fs.readFile(
+      path.join(projectDir, ".kspec", "modules", "main.yaml"),
+      "utf-8",
+    );
+
+    expect(moduleFile).toContain("_ulid:");
+    expect(moduleFile).toContain("type: module");
+    expect(moduleFile).toContain("items: []");
   });
 });

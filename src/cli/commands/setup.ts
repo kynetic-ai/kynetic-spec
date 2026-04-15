@@ -1874,6 +1874,13 @@ export async function runSetupPipeline(
           console.log(chalk.gray(`  ${step.message}`));
         }
       }
+
+      // AC: @derivable-default-module — mention default module in setup summary
+      console.log(
+        chalk.gray(
+          "\n  Default module available: @main — use this ref for plan imports and spec placement",
+        ),
+      );
     }
 
     const success = steps.every((s) => s.status !== "failed");
@@ -2153,6 +2160,10 @@ export function registerSetupCommand(program: Command): void {
             } else {
               console.log(chalk.green("Setup complete."));
               console.log(chalk.gray("Restart your agent session for changes to take effect."));
+              // AC: @derivable-default-module — remind user about default module
+              console.log(
+                chalk.gray("Default module available: @main — use for plan imports and spec placement"),
+              );
             }
 
             const configureAuthorStep = result.steps.find(

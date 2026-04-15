@@ -2521,6 +2521,8 @@ status:
   implementation: not_started
 description: |
   Default module for ${projectName}. Add your spec items here.
+
+items: []
 `;
 }
 

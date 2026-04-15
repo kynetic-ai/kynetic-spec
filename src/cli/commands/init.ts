@@ -64,6 +64,8 @@ status:
   implementation: not_started
 description: |
   Default module for ${projectName}. Add your spec items here.
+
+items: []
 `;
 }
 
@@ -288,6 +290,11 @@ export function registerInitCommand(program: Command): void {
             branch: branchName,
           });
 
+          // AC: @derivable-default-module — inform user about the default module
+          console.log(
+            `\n  Default module created: @main — use this ref when importing plans or adding specs`,
+          );
+
           // AC: @init-setup-integration ac-2, ac-3 - Run full setup if --setup flag is passed
           if (options.setup) {
             console.log("\nRunning setup...\n");
@@ -394,6 +401,13 @@ async function initNonShadow(
     singleFile,
     mode: "non-shadow",
   });
+
+  if (!singleFile) {
+    // AC: @derivable-default-module — inform user about the default module
+    console.log(
+      `\n  Default module created: @main — use this ref when importing plans or adding specs`,
+    );
+  }
 
   console.log("\nNext steps:");
   console.log(`  1. Edit spec/${slug}.yaml to customize your project`);
