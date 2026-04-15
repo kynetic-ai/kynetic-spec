@@ -26667,7 +26667,7 @@
   title: Capture bootstrap failure output tail so actionable error detail is preserved
   type: bug
   spec_ref: "@dispatch-runtime-bootstrap-contract"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 1
@@ -26680,4 +26680,5 @@
   todos_count: 0
   created_at: 2026-04-15T05:51:52.649Z
   started_at: 2026-04-15T06:37:31.321Z
+  submitted_at: 2026-04-15T06:50:09.369Z
   automation: eligible
