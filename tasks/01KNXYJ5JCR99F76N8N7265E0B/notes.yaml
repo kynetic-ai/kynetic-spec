@@ -158,3 +158,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-15T19:13:31.231Z
+  - _ulid: 01KP99Z5D2KXZWCD9Q50739J1F
+    content: "Fix cycle 4: Addressed both review blockers. (1) Gitignore repair: upgrade now passes
+      force: true to ensureKspecGitignore, ensuring existing .gitignore files without a managed
+      block get kspec entries appended. Dry-run path also fixed to preview the block creation
+      instead of skipping. 2 new tests. (2) Skill re-render: renderer exceptions now tracked in
+      renderErrors array and propagated as step failure with non-zero exit code instead of being
+      silently counted as skipped. 1 new test. Full suite: 7938 passed, 5 failed (pre-existing
+      EACCES in cli-agent-commands), 5 skipped. All 44 upgrade tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-15T19:30:25.314Z
