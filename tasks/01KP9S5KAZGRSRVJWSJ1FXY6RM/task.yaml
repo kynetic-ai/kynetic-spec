@@ -13,7 +13,7 @@ description: "npm test currently fails in tests/cli-agent-commands.test.ts on bo
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -23,6 +23,22 @@ tags:
   - cli
   - sessions
 vcs_refs: []
+session_id: 01KP9S803JYVFGY8EYK2ZZCW1P
+history:
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KP9S803JYVFGY8EYK2ZZCW1P
+        previous: null
+      started_at:
+        new: 2026-04-15T23:57:47.202Z
+        previous: null
+    command: task-start
+    timestamp: 2026-04-15T23:57:47.203Z
 created_at: 2026-04-15T23:56:04.831Z
+started_at: 2026-04-15T23:57:47.202Z
 todos: []
 automation: eligible
