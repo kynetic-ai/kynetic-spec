@@ -142339,6 +142339,12 @@ reviews:
         payload:
           thread_ulid: 01KP84A9VEVT3GJWABP4SYXTZD
         timestamp: 2026-04-15T08:33:53.823Z
+      - _ulid: 01KP84D460R5Z6JFQG1MDP585M
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP84A42717R0HX37KNZ43JWD
+        timestamp: 2026-04-15T08:33:56.928Z
     examined_commit: f2ac5145d4ad013362635154634edcf368e694d0
     external_links: []
     lifecycle_state: closed
@@ -142367,6 +142373,8 @@ reviews:
               element is not the title heading.
             created_at: 2026-04-15T08:32:18.503Z
         kind: blocker
+        resolved_at: 2026-04-15T08:33:55.867Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KP84A6XCKRFKHCW6DX2QYPJQ
         anchor:
           type: code
@@ -142473,5 +142481,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T08:33:13.714Z
     created_at: 2026-04-15T08:20:09.323Z
-    updated_at: 2026-04-15T08:33:52.788Z
+    updated_at: 2026-04-15T08:33:55.867Z
     notes: []
