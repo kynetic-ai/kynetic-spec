@@ -26196,7 +26196,7 @@
   type: task
   spec_ref: "@plan-import-format-guidance"
   plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 2
@@ -26209,6 +26209,7 @@
   created_at: 2026-04-11T09:39:26.104Z
   started_at: 2026-04-15T10:09:59.973Z
   submitted_at: 2026-04-15T10:10:03.190Z
+  completed_at: 2026-04-15T10:23:30.356Z
   automation: eligible
 - _ulid: 01KNXYJ5JCR99F76N8N7265E0B
   slugs:
