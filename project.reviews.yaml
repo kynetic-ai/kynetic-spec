@@ -147441,6 +147441,20 @@ reviews:
         required: false
         created_at: 2026-04-15T22:16:49.209Z
         completed_at: 2026-04-15T22:16:49.209Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: >-
+          > @kynetic-ai/spec@0.12.0 test
+
+          > node scripts/test.cjs returned 7941 passed, 5 failed, 5 skipped. All failures were in
+          tests/cli-agent-commands.test.ts with , matching the known unrelated session-store failure
+          pattern from prior cycles.
+        name: npm test
+        required: false
+        created_at: 2026-04-15T22:16:52.136Z
+        completed_at: 2026-04-15T22:16:52.136Z
     events:
       - _ulid: 01KP9JVSBX3QTMK6MTAECJYF3Y
         actor: Jacob Chapel
@@ -147483,6 +147497,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-15T22:16:50.161Z
+      - _ulid: 01KP9KFZ930FCN0A2DW4ZW0SKF
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-04-15T22:16:53.283Z
     examined_commit: d889ee3c76b715e9b8cc3872a9ae790dc86a3540
     external_links: []
     lifecycle_state: open
@@ -147549,5 +147570,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-15T22:05:51.870Z
-    updated_at: 2026-04-15T22:16:49.209Z
+    updated_at: 2026-04-15T22:16:52.136Z
     notes: []
