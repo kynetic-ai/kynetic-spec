@@ -147063,6 +147063,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-15T21:12:40.158Z
+      - _ulid: 01KP9JMCH48DS29CA8DP9HVZ9S
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP9FNTPC8QTA9NCQ12J7997Q
+        timestamp: 2026-04-15T22:01:49.348Z
     examined_commit: 2954ef826857c2ec41850cba22ae384ab50c3e0f
     external_links: []
     lifecycle_state: closed
@@ -147092,6 +147098,15 @@ reviews:
               reported source version unreliable in exactly the scenario the task description calls
               out."
             created_at: 2026-04-15T21:10:10.892Z
+          - _ulid: 01KP9JMBKEZNG4Y5TXZTNQB17W
+            author: "@claude"
+            body: "Fixed: replaced single maxMinVersion tracking with ProbeResult ranges that carry both
+              minVersion and maxVersion. Old manifest versions now cap at maxVersion 0.8.99. After
+              all probes fire, the code computes the global intersection (max of mins, min of
+              maxes). If globalMin > globalMax, probes are contradictory → returns unknown. Test
+              added that creates manifest with kynetic: 1.0 (caps < 0.9) + kspec.config.yaml
+              (requires >= 0.11) and asserts unknown confidence."
+            created_at: 2026-04-15T22:01:48.398Z
         kind: blocker
       - _ulid: 01KP9FP3ZWSTPEGY2SSGW56G85
         anchor:
@@ -147223,5 +147238,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T21:12:40.158Z
     created_at: 2026-04-15T20:57:57.440Z
-    updated_at: 2026-04-15T21:12:40.158Z
+    updated_at: 2026-04-15T22:01:48.398Z
     notes: []
