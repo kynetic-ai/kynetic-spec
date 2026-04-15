@@ -147504,9 +147504,25 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-04-15T22:16:53.283Z
+      - _ulid: 01KP9KGD3VJ8V7ZYVMQH4R6WEA
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-15T22:17:07.451Z
+      - _ulid: 01KP9KGD3V5ZM0AYTGZ8B8ATSK
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-15T22:17:07.451Z
     examined_commit: d889ee3c76b715e9b8cc3872a9ae790dc86a3540
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -147568,7 +147584,14 @@ reviews:
               task requirement to backfill the missing default-module scaffold during upgrade."
             created_at: 2026-04-15T22:16:46.323Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-15T22:17:07.450Z
     created_at: 2026-04-15T22:05:51.870Z
-    updated_at: 2026-04-15T22:16:52.136Z
+    updated_at: 2026-04-15T22:17:07.451Z
     notes: []
