@@ -143527,6 +143527,12 @@ reviews:
         payload:
           thread_ulid: 01KP8582W5W4W963YTKS7BP9JX
         timestamp: 2026-04-15T08:49:50.434Z
+      - _ulid: 01KP86BCZFE56SBP1AME1GAY4K
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP858TWGNR58R4T81J09TMSB
+        timestamp: 2026-04-15T09:07:57.551Z
     examined_commit: 156714dac6942a1a20836fc6074b04f700a4d3e2
     external_links: []
     lifecycle_state: closed
@@ -143580,6 +143586,15 @@ reviews:
               substrings instead of asserting valid structured error output, so it falsely marks
               this AC as covered.
             created_at: 2026-04-15T08:49:04.912Z
+          - _ulid: 01KP86BC35HW3H7BP7G8QKEH57
+            author: "@claude"
+            body: "Fixed: Two changes address this. (1) runSetupPipeline's summary printing is now guarded with
+              \\!isStructuredMode() so human-readable text no longer contaminates stdout in JSON
+              mode. (2) The JSON output object now includes success: false, error (with
+              description), and suggestion (with recovery action) fields when a scaffold failure
+              occurs. Test now parses JSON.parse(stdout) and asserts on the structured error
+              fields."
+            created_at: 2026-04-15T09:07:56.645Z
         kind: blocker
       - _ulid: 01KP858XKYQK04NTBTKPNNXF9Q
         entries:
@@ -143606,7 +143621,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T08:49:20.278Z
     created_at: 2026-04-15T08:37:57.956Z
-    updated_at: 2026-04-15T08:49:49.423Z
+    updated_at: 2026-04-15T09:07:56.645Z
     notes: []
   - _ulid: 01KP85J4FM3HNXZDEFGT7YCH64
     slugs: []
