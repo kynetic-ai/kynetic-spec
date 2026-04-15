@@ -142193,7 +142193,19 @@ reviews:
     slugs: []
     title: Review task-plan-import-format-guidance
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Pre-existing repository validation failures unrelated to this task:
+          .kspec/modules/meta.yaml has a schema error and the workspace reports broad existing
+          coverage/alignment warnings."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-15T08:32:58.880Z
+        completed_at: 2026-04-15T08:32:58.880Z
     events:
       - _ulid: 01KP83KVZBJB8EP7YAKCXKE1AV
         actor: Jacob Chapel
@@ -142250,6 +142262,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP84AWF29P91G9EXY8T0Y1FA
         timestamp: 2026-04-15T08:32:44.647Z
+      - _ulid: 01KP84BCDGAAZFNN0D8DR0HXAT
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-15T08:32:59.824Z
     examined_commit: f2ac5145d4ad013362635154634edcf368e694d0
     external_links: []
     lifecycle_state: open
@@ -142373,5 +142392,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-15T08:20:09.323Z
-    updated_at: 2026-04-15T08:32:43.490Z
+    updated_at: 2026-04-15T08:32:58.880Z
     notes: []
