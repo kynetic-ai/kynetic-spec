@@ -51995,12 +51995,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-15T06:52:40.068Z
+      updated_at: 2026-04-15T06:52:45.350Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-15T06:52:40.068Z
+      updated_at: 2026-04-15T06:52:45.350Z
     integration:
       status: pending
       detail: null
@@ -52008,7 +52008,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 8068a15ad06fdad3f38be42442b38a782e717b1c
-      updated_at: 2026-04-15T06:52:40.068Z
+      updated_at: 2026-04-15T06:52:45.350Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KP7V4BT94ZKMQTSHMPG3BM10"
@@ -52016,16 +52016,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-15T06:37:04.336Z
-      last_reconciled_at: 2026-04-15T06:52:40.068Z
+      last_reconciled_at: 2026-04-15T06:52:45.350Z
       created_at: 2026-04-15T06:36:42.872Z
-      updated_at: 2026-04-15T06:52:40.068Z
+      updated_at: 2026-04-15T06:52:45.350Z
     workspace_id: dispatch-workspace-01KP7V4BT94ZKMQTSHMPG3BM10
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: dc095a697b7ed17340c5951ce6652a7b79a2aebf
+        last_seen_at: 2026-04-15T06:52:45.350Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-bootstrap-failure-output-tail-01kp7v4b-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-bootstrap-failure-output-tail/01kp7v4b
-        head: 8068a15ad06fdad3f38be42442b38a782e717b1c
-        last_seen_at: 2026-04-15T06:36:42.872Z
+        head: dc095a697b7ed17340c5951ce6652a7b79a2aebf
+        last_seen_at: 2026-04-15T06:52:45.350Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-bootstrap-failure-output-tail-01kp7v4b
