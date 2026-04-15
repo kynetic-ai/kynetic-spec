@@ -311,13 +311,17 @@ export async function runUpgradePipeline(
       dryRun,
     );
     steps.push(skillResult);
-    if (
-      skillResult.status === "done" &&
-      (skillResult.details?.rendered as number) > 0
-    ) {
-      followUps.push(
-        `Skills: ${skillResult.details?.rendered} re-rendered — review .agents/skills/ for changes`,
-      );
+    if (skillResult.status === "done") {
+      const renderedCount = (skillResult.details?.rendered as number) || 0;
+      const removedCount = (skillResult.details?.removed as number) || 0;
+      const parts: string[] = [];
+      if (renderedCount > 0) parts.push(`${renderedCount} re-rendered`);
+      if (removedCount > 0) parts.push(`${removedCount} obsolete removed`);
+      if (parts.length > 0) {
+        followUps.push(
+          `Skills: ${parts.join(", ")} — review .agents/skills/ for changes`,
+        );
+      }
     }
   } catch (err) {
     steps.push({
@@ -560,8 +564,9 @@ async function runTaskStorageMigrationStep(
 }
 
 /**
- * Step 2: Re-render skills.
- * Reuses the renderSkillsForSetup pattern from setup.ts.
+ * Step 2: Re-render skills and remove obsolete rendered skills.
+ * Reuses the renderSkillsForSetup pattern from setup.ts,
+ * plus orphan cleanup logic from skill-diff.ts --clean.
  *
  * AC: @single-command-version-upgrade ac-rerenders-skills
  */
@@ -570,7 +575,12 @@ async function runRerenderSkillsStep(
   dryRun: boolean,
 ): Promise<UpgradeStepResult> {
   const { initContext, loadMetaContext } = await import("../../parser/index.js");
-  const { getRenderer } = await import("../../parser/skill-render.js");
+  const {
+    getRenderer,
+    getSkillSubdir,
+    getAllRenderers,
+    isKspecManagedSkill,
+  } = await import("../../parser/skill-render.js");
 
   const ctx = await initContext();
 
@@ -597,14 +607,6 @@ async function runRerenderSkillsStep(
     }
   }
 
-  if (skillsToRender.length === 0) {
-    return {
-      name: "Re-render skills",
-      status: "skipped",
-      message: "no skills to render",
-    };
-  }
-
   let rendered = 0;
   let skipped = 0;
 
@@ -624,20 +626,94 @@ async function runRerenderSkillsStep(
     }
   }
 
-  if (rendered === 0) {
+  // Orphan cleanup: remove managed skill directories that no longer
+  // correspond to any defined skill in the current version.
+  // AC: @single-command-version-upgrade ac-rerenders-skills
+  let removed = 0;
+  const removedIds: string[] = [];
+
+  // Build active subdir sets per platform
+  const activeSubdirsByPlatform = new Map<string, Set<string>>();
+  for (const skill of metaCtx.skills) {
+    for (const platform of skill.platforms) {
+      if (!activeSubdirsByPlatform.has(platform)) {
+        activeSubdirsByPlatform.set(platform, new Set());
+      }
+      activeSubdirsByPlatform
+        .get(platform)!
+        .add(getSkillSubdir(skill.id, skill.origin, platform));
+    }
+  }
+
+  // Scan each platform's output directory for orphans
+  const renderers = getAllRenderers();
+  for (const renderer of renderers) {
+    const activeSubdirs = activeSubdirsByPlatform.get(renderer.platform) || new Set<string>();
+    const outputDir = path.join(projectDir, renderer.defaultOutputDir);
+
+    try {
+      const entries = await fs.readdir(outputDir, { withFileTypes: true });
+      for (const entry of entries) {
+        if (!entry.isDirectory()) continue;
+
+        const skillDir = path.join(outputDir, entry.name);
+        const skillMdPath = path.join(skillDir, "SKILL.md");
+
+        // Check for SKILL.md in this directory
+        let hasSkillMd = false;
+        try {
+          await fs.access(skillMdPath);
+          hasSkillMd = true;
+        } catch {
+          // No SKILL.md
+        }
+
+        if (!hasSkillMd) continue;
+        if (activeSubdirs.has(entry.name)) continue;
+
+        // Orphan candidate — check if managed by kspec
+        const isManaged = await isKspecManagedSkill(skillMdPath);
+        if (!isManaged) continue;
+
+        if (!dryRun) {
+          await fs.rm(skillDir, { recursive: true, force: true });
+        }
+        removed++;
+        removedIds.push(entry.name);
+      }
+    } catch {
+      // Output directory doesn't exist, nothing to clean
+    }
+  }
+
+  const totalChanges = rendered + removed;
+
+  if (totalChanges === 0) {
+    if (skillsToRender.length === 0) {
+      return {
+        name: "Re-render skills",
+        status: "skipped",
+        message: "no skills to render",
+      };
+    }
     return {
       name: "Re-render skills",
       status: "skipped",
       message: `all ${skipped} skill(s) already up to date`,
-      details: { rendered: 0, skipped },
+      details: { rendered: 0, skipped, removed: 0 },
     };
   }
+
+  const parts: string[] = [];
+  if (rendered > 0) parts.push(`${rendered} re-rendered`);
+  if (skipped > 0) parts.push(`${skipped} unchanged`);
+  if (removed > 0) parts.push(`${removed} obsolete removed`);
 
   return {
     name: "Re-render skills",
     status: "done",
-    message: `${rendered} skill(s) re-rendered, ${skipped} unchanged`,
-    details: { rendered, skipped },
+    message: parts.join(", "),
+    details: { rendered, skipped, removed, removedIds },
   };
 }
 
@@ -1007,8 +1083,9 @@ dispatch:
 
   // 5d: Scaffold default module (ensure it exists)
   try {
-    const { initContext, loadAllItems } = await import("../../parser/yaml.js");
-    const freshCtx = await initContext();
+    const { loadAllItems } = await import("../../parser/yaml.js");
+    const { initContext: initCtxForModule } = await import("../../parser/index.js");
+    const freshCtx = await initCtxForModule();
     const items = await loadAllItems(freshCtx);
     const hasModule = items.some((item) => item.type === "module");
 
@@ -1018,16 +1095,79 @@ dispatch:
         status: "skipped",
         message: "module already exists",
       });
-    } else {
-      // Default module creation is handled by init — just report the gap
+    } else if (dryRun) {
       results.push({
         name: "Scaffold default module",
-        status: "skipped",
-        message: "no module found — run kspec init to create default module",
+        status: "done",
+        message: "would create default module (modules/main.yaml)",
+      });
+    } else {
+      // Create the default module and update manifest
+      const { ulid: generateUlid } = await import("ulid");
+      const {
+        readYamlFile,
+        writeYamlFilePreserveFormat,
+      } = await import("../../parser/yaml.js");
+      const { shadowAutoCommit } = await import("../../parser/shadow.js");
+
+      const moduleUlid = generateUlid();
+      const modulesDir = path.join(freshCtx.specDir, "modules");
+      const moduleFilePath = path.join(modulesDir, "main.yaml");
+      await fs.mkdir(modulesDir, { recursive: true });
+
+      // Get project name from manifest for the module title
+      const manifest = freshCtx.manifest as Record<string, unknown> | null;
+      const projectObj = manifest?.project as Record<string, unknown> | undefined;
+      const projectName = (projectObj?.name as string) || "Project";
+
+      const moduleContent = `_ulid: ${moduleUlid}
+slugs:
+  - main
+title: "${projectName} - Main Module"
+type: module
+status:
+  maturity: draft
+  implementation: not_started
+description: |
+  Default module for ${projectName}. Add your spec items here.
+
+items: []
+`;
+      await fs.writeFile(moduleFilePath, moduleContent, "utf-8");
+
+      // Update manifest with default_module and includes
+      if (freshCtx.manifestPath) {
+        const manifestData = await readYamlFile<Record<string, unknown>>(
+          freshCtx.manifestPath,
+        );
+        if (manifestData) {
+          manifestData.default_module = moduleUlid;
+          const includes = manifestData.includes as string[] | undefined;
+          if (!includes || !includes.includes("modules/main.yaml")) {
+            manifestData.includes = [
+              ...(includes || []),
+              "modules/main.yaml",
+            ];
+          }
+          await writeYamlFilePreserveFormat(freshCtx.manifestPath, manifestData);
+        }
+      }
+
+      // Commit to shadow branch
+      await shadowAutoCommit(freshCtx.specDir, "Scaffold default module via upgrade");
+
+      results.push({
+        name: "Scaffold default module",
+        status: "done",
+        message: "created default module (modules/main.yaml)",
       });
     }
-  } catch {
-    // Non-fatal
+  } catch (err) {
+    results.push({
+      name: "Scaffold default module",
+      status: "failed",
+      message: err instanceof Error ? err.message : String(err),
+    });
   }
 
   return results;

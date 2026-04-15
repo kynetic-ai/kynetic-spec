@@ -625,6 +625,88 @@ describe("kspec upgrade", () => {
     });
   });
 
+  // ─── Skill Orphan Cleanup ──────────────────────────────────────────
+
+  describe("skill orphan cleanup", () => {
+    // AC: @single-command-version-upgrade ac-rerenders-skills
+    it("removes obsolete managed skill directories during upgrade", async () => {
+      await initProject(tempDir);
+      await writeLastKnownVersion(tempDir, "0.8.0");
+
+      // Create an orphan managed skill that does not correspond to any defined skill
+      const orphanDir = path.join(tempDir, ".agents", "skills", "kspec-obsolete-skill");
+      await fs.mkdir(orphanDir, { recursive: true });
+      await fs.writeFile(
+        path.join(orphanDir, "SKILL.md"),
+        "<!-- kspec-managed -->\n# Obsolete Skill\nThis skill no longer exists.\n",
+        "utf-8",
+      );
+
+      const result = kspecJson<{
+        steps: Array<{ name: string; status: string; details?: Record<string, unknown> }>;
+      }>("upgrade", tempDir);
+
+      const skillStep = result.steps.find(
+        (s) => s.name === "Re-render skills",
+      );
+      expect(skillStep).toBeDefined();
+      expect(skillStep!.status).toBe("done");
+      expect((skillStep!.details?.removed as number) || 0).toBeGreaterThan(0);
+
+      // Verify the orphan directory was actually removed
+      expect(existsSync(orphanDir)).toBe(false);
+    });
+
+    // AC: @single-command-version-upgrade ac-rerenders-skills
+    it("preserves non-managed skill directories during orphan cleanup", async () => {
+      await initProject(tempDir);
+      await writeLastKnownVersion(tempDir, "0.8.0");
+
+      // Create a non-managed skill (no kspec-managed marker)
+      const userSkillDir = path.join(tempDir, ".agents", "skills", "user-custom-skill");
+      await fs.mkdir(userSkillDir, { recursive: true });
+      await fs.writeFile(
+        path.join(userSkillDir, "SKILL.md"),
+        "# My Custom Skill\nA user-created skill.\n",
+        "utf-8",
+      );
+
+      kspec("upgrade", tempDir);
+
+      // User skill should still exist
+      expect(existsSync(userSkillDir)).toBe(true);
+    });
+
+    // AC: @single-command-version-upgrade ac-dry-run-no-writes
+    it("does not remove orphan skills in dry-run mode", async () => {
+      await initProject(tempDir);
+      await writeLastKnownVersion(tempDir, "0.8.0");
+
+      // Create an orphan managed skill
+      const orphanDir = path.join(tempDir, ".agents", "skills", "kspec-obsolete-skill");
+      await fs.mkdir(orphanDir, { recursive: true });
+      await fs.writeFile(
+        path.join(orphanDir, "SKILL.md"),
+        "<!-- kspec-managed -->\n# Obsolete Skill\n",
+        "utf-8",
+      );
+
+      const result = kspecJson<{
+        steps: Array<{ name: string; status: string; details?: Record<string, unknown> }>;
+      }>("upgrade --dry-run", tempDir);
+
+      const skillStep = result.steps.find(
+        (s) => s.name === "Re-render skills",
+      );
+      expect(skillStep).toBeDefined();
+      expect(skillStep!.status).toBe("done");
+      expect((skillStep!.details?.removed as number) || 0).toBeGreaterThan(0);
+
+      // Orphan should still exist (dry run)
+      expect(existsSync(orphanDir)).toBe(true);
+    });
+  });
+
   // ─── Scaffold Missing Files ───────────────────────────────────────
 
   describe("scaffold missing files", () => {
@@ -662,6 +744,81 @@ describe("kspec upgrade", () => {
       );
       expect(configStep).toBeDefined();
       expect(configStep!.status).toBe("skipped");
+    });
+
+    // AC: @single-command-version-upgrade ac-reports-manual-follow-ups
+    it("scaffolds default module when missing", async () => {
+      await initProject(tempDir);
+      await writeLastKnownVersion(tempDir, "0.8.0");
+
+      // Remove the module file to simulate a project without a default module
+      const modulesDir = path.join(tempDir, ".kspec", "modules");
+      if (existsSync(modulesDir)) {
+        await fs.rm(modulesDir, { recursive: true, force: true });
+      }
+
+      const result = kspecJson<{
+        steps: Array<{ name: string; status: string; message: string }>;
+      }>("upgrade", tempDir);
+
+      const moduleStep = result.steps.find(
+        (s) => s.name === "Scaffold default module",
+      );
+      expect(moduleStep).toBeDefined();
+      expect(moduleStep!.status).toBe("done");
+
+      // Verify the module file was actually created
+      const moduleFilePath = path.join(modulesDir, "main.yaml");
+      expect(existsSync(moduleFilePath)).toBe(true);
+
+      // Verify module content has proper structure
+      const content = await fs.readFile(moduleFilePath, "utf-8");
+      expect(content).toContain("type: module");
+      expect(content).toContain("slugs:");
+      expect(content).toContain("main");
+      expect(content).toContain("_ulid:");
+    });
+
+    it("skips default module when it already exists", async () => {
+      await initProject(tempDir);
+      await writeLastKnownVersion(tempDir, "0.8.0");
+
+      const result = kspecJson<{
+        steps: Array<{ name: string; status: string }>;
+      }>("upgrade", tempDir);
+
+      const moduleStep = result.steps.find(
+        (s) => s.name === "Scaffold default module",
+      );
+      expect(moduleStep).toBeDefined();
+      expect(moduleStep!.status).toBe("skipped");
+    });
+
+    // AC: @single-command-version-upgrade ac-dry-run-no-writes
+    it("reports default module scaffold in dry-run without creating it", async () => {
+      await initProject(tempDir);
+      await writeLastKnownVersion(tempDir, "0.8.0");
+
+      // Remove the module file
+      const modulesDir = path.join(tempDir, ".kspec", "modules");
+      if (existsSync(modulesDir)) {
+        await fs.rm(modulesDir, { recursive: true, force: true });
+      }
+
+      const result = kspecJson<{
+        steps: Array<{ name: string; status: string; message: string }>;
+      }>("upgrade --dry-run", tempDir);
+
+      const moduleStep = result.steps.find(
+        (s) => s.name === "Scaffold default module",
+      );
+      expect(moduleStep).toBeDefined();
+      expect(moduleStep!.status).toBe("done");
+      expect(moduleStep!.message).toContain("would create");
+
+      // Verify the module file was NOT created
+      const moduleFilePath = path.join(modulesDir, "main.yaml");
+      expect(existsSync(moduleFilePath)).toBe(false);
     });
   });
 
