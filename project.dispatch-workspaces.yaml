@@ -48737,12 +48737,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-15T07:58:48.676Z
+      updated_at: 2026-04-15T07:59:29.428Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-15T07:58:48.676Z
+      updated_at: 2026-04-15T07:59:29.428Z
     integration:
       status: pending
       detail: null
@@ -48750,7 +48750,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
       target_commit: 7b1b856564b91f28efc8bbb2d3b8e41034fd9a3f
-      updated_at: 2026-04-15T07:58:48.676Z
+      updated_at: 2026-04-15T07:59:29.428Z
     lifecycle_state: integrating
     resolved_base_branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
     task_ref: "@01KNXYJ40TP75YKCV51RM6H6YZ"
@@ -48758,18 +48758,23 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-14T17:47:51.520Z
-      last_reconciled_at: 2026-04-15T07:58:48.676Z
+      last_reconciled_at: 2026-04-15T07:59:29.428Z
       created_at: 2026-04-11T10:00:22.959Z
-      updated_at: 2026-04-15T07:58:48.676Z
+      updated_at: 2026-04-15T07:59:29.428Z
     workspace_id: dispatch-workspace-01KNXYJ40TP75YKCV51RM6H6YZ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: d670d0dd73f99dd965a440ff538f06ca42f84f02
+        last_seen_at: 2026-04-15T07:59:29.428Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-complete-gitignore-01knxyj4-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-complete-gitignore/01knxyj4
-        head: e4174f9c2223eb30fc6569ee6a5bc9ca795b14c5
-        last_seen_at: 2026-04-14T17:47:27.025Z
+        head: d670d0dd73f99dd965a440ff538f06ca42f84f02
+        last_seen_at: 2026-04-15T07:59:29.428Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-complete-gitignore-01knxyj4
   - active_role: null
     base_branch_point: 7b1b856564b91f28efc8bbb2d3b8e41034fd9a3f
