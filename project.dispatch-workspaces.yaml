@@ -51940,176 +51940,268 @@ workspaces:
   - active_role: null
     base_branch_point: 0501051eb49ee8db8faccedc035f1cb95cef85fc
     bootstrap:
-      status: succeeded
-      canonicalBranchHead: f1b991a0b2e99d5cde6c75ec9d9ec23a9f5d10aa
+      status: failed
+      canonicalBranchHead: 588c019f60bea601d8e7cb92e4416b539a78b924
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
-      failureMessage: null
+      failureMessage: |-
+        Bootstrap step "build-workspace-artifacts" failed with exit code 1. Output: > @kynetic-ai/spec@0.12.0 build
+        > tsc && chmod +x dist/cli/index.js && npm run build:shared && npm run build:daemon && npm run build:web-ui && npm run build:plugin
+
+
+        > @kynetic-ai/spec@0.12.0 build:shared
+        > cd packages/shared && npm run build
+
+
+        > @kynetic-ai/shared@0.1.0 build
+        > tsc
+
+
+        > @kynetic-ai/spec@0.12.0 build:daemon
+        > node scripts/build-daemon.cjs
+
+
+        > @kynetic-ai/spec@0.12.0 build:web-ui
+        > shx rm -rf dist/web-ui && cd packages/web-ui && npm run build && shx cp -r build ../../dist/web-ui
+
+
+        > @kynetic-ai/web-ui@0.1.0 build
+        > svelte-kit sync && vite build
+
+        vite v7.3.1 building ssr environment for production...
+        transforming...
+        ✓ 109 modules transformed.
+        dist/daemon/entity-cache.js           52.1kb
+          dist/daemon/routes/reviews.js         37.6kb
+          dist/daemon/routes/tasks.js           22.3kb
+          dist/daemon/server.js                 20.6kb
+          dist/daemon/routes/sessions.js        20.5kb
+          dist/daemon/routes/agent-dispatch.js  18.8kb
+          dist/daemon/routes/items.js           17.6kb
+          dist/daemon/routes/command.js         17.0kb
+          dist/daemon/project-context.js        15.4kb
+          dist/daemon/routes/triage.js          14.7kb
+          dist/daemon/routes/diff.js            13.9kb
+          dist/daemon/session-watcher.js        11.8kb
+          dist/daemon/routes/automation.js      10.5kb
+          dist/daemon/routes/meta.js             9.8kb
+          dist/daemon/routes/validation.js       8.0kb
+          dist/daemon/routes/aggregation.js      7.8kb
+          dist/daemon/watcher.js                 5.7kb
+          dist/daemon/websocket/pubsub.js        5.0kb
+          dist/daemon/routes/plans.js            4.7kb
+          dist/daemon/websocket/handler.js       4.6kb
+          ...and 66 more output files...
+
+        ⚡ Done in 14ms
+        npm warn config ignoring workspace config at /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-upgrade-command-01knxyj5-review/packages/web-ui/.npmrc
+        12:31:19 PM [vite-plugin-svelte] src/routes/observations/+page.svelte:104:8 `<svelte:component>` is deprecated in runes mode — components are dynamic by default
+        https://svelte.dev/e/svelte_component_deprecated
+        102:             <div class="flex items-start gap-3">
+        103:               <div class={`mt-0.5 ${typeColors[obs.type]}`} data-testid="observation-type-icon">
+        104:                 <svelte:component this={typeIcons[obs.type]} class="h-5 w-5" />
+                                                                                            ^
+        105:               </div>
+        106:               <div class="flex-1">
+        12:31:20 PM [vite-plugin-svelte] src/lib/components/automation/DispatchTriggersSection.svelte:293:7 A form label must be associated with a control
+        https://svelte.dev/e/a11y_label_has_associated_control
+        291:             <!-- Tag filter with removable chips -->
+        292:             <div class="flex items-start gap-2">
+        293:               <label class="text-xs text-muted-foreground w-20 shrink-0 mt-1.5">Tags</label>
+                                                                                                         ^
+        294:               <div class="flex-1">
+        295:                 <div class="flex flex-wrap gap-1 mb-1" data-testid="trigger-tags-{trigger.on}">
+        12:31:20 PM [vite-plugin-svelte] src/lib/components/automation/DispatchTriggersSection.svelte:345:7 A form label must be associated with a control
+        https://svelte.dev/e/a11y_label_has_associated_control
+        343:             <!-- Priority filter threshold -->
+        344:             <div class="flex items-center gap-2">
+        345:               <label class="text-xs text-muted-foreground w-20 shrink-0">Priority &#x2264;</label>
+                                                                                                               ^
+        346:               <Input
+        347:                 class="h-7 text-xs flex-1"
+        12:31:20 PM [vite-plugin-svelte] src/lib/components/session/SessionFilters.svelte:181:2 A form label must be associated with a control
+        https://svelte.dev/e/a11y_label_has_associated_control
+        179:   <!-- AC: @session-filter-controls ac-status-filter -->
+        180:   <div class="min-w-[240px]">
+        181:     <label class="text-xs font-medium text-
       invalidationReasons:
         - canonical-branch-head-changed
-      lastRole: worker
-      lastRunAt: 2026-04-15T19:15:52.124Z
+        - workspace-build-missing
+      lastRole: reviewer
+      lastRunAt: 2026-04-15T19:31:20.621Z
       roleStates:
         reviewer:
-          status: succeeded
-          canonicalBranchHead: f1b991a0b2e99d5cde6c75ec9d9ec23a9f5d10aa
+          status: failed
+          canonicalBranchHead: 588c019f60bea601d8e7cb92e4416b539a78b924
           configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
-          failureMessage: null
+          failureMessage: |-
+            Bootstrap step "build-workspace-artifacts" failed with exit code 1. Output: > @kynetic-ai/spec@0.12.0 build
+            > tsc && chmod +x dist/cli/index.js && npm run build:shared && npm run build:daemon && npm run build:web-ui && npm run build:plugin
+
+
+            > @kynetic-ai/spec@0.12.0 build:shared
+            > cd packages/shared && npm run build
+
+
+            > @kynetic-ai/shared@0.1.0 build
+            > tsc
+
+
+            > @kynetic-ai/spec@0.12.0 build:daemon
+            > node scripts/build-daemon.cjs
+
+
+            > @kynetic-ai/spec@0.12.0 build:web-ui
+            > shx rm -rf dist/web-ui && cd packages/web-ui && npm run build && shx cp -r build ../../dist/web-ui
+
+
+            > @kynetic-ai/web-ui@0.1.0 build
+            > svelte-kit sync && vite build
+
+            vite v7.3.1 building ssr environment for production...
+            transforming...
+            ✓ 109 modules transformed.
+            dist/daemon/entity-cache.js           52.1kb
+              dist/daemon/routes/reviews.js         37.6kb
+              dist/daemon/routes/tasks.js           22.3kb
+              dist/daemon/server.js                 20.6kb
+              dist/daemon/routes/sessions.js        20.5kb
+              dist/daemon/routes/agent-dispatch.js  18.8kb
+              dist/daemon/routes/items.js           17.6kb
+              dist/daemon/routes/command.js         17.0kb
+              dist/daemon/project-context.js        15.4kb
+              dist/daemon/routes/triage.js          14.7kb
+              dist/daemon/routes/diff.js            13.9kb
+              dist/daemon/session-watcher.js        11.8kb
+              dist/daemon/routes/automation.js      10.5kb
+              dist/daemon/routes/meta.js             9.8kb
+              dist/daemon/routes/validation.js       8.0kb
+              dist/daemon/routes/aggregation.js      7.8kb
+              dist/daemon/watcher.js                 5.7kb
+              dist/daemon/websocket/pubsub.js        5.0kb
+              dist/daemon/routes/plans.js            4.7kb
+              dist/daemon/websocket/handler.js       4.6kb
+              ...and 66 more output files...
+
+            ⚡ Done in 14ms
+            npm warn config ignoring workspace config at /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-upgrade-command-01knxyj5-review/packages/web-ui/.npmrc
+            12:31:19 PM [vite-plugin-svelte] src/routes/observations/+page.svelte:104:8 `<svelte:component>` is deprecated in runes mode — components are dynamic by default
+            https://svelte.dev/e/svelte_component_deprecated
+            102:             <div class="flex items-start gap-3">
+            103:               <div class={`mt-0.5 ${typeColors[obs.type]}`} data-testid="observation-type-icon">
+            104:                 <svelte:component this={typeIcons[obs.type]} class="h-5 w-5" />
+                                                                                                ^
+            105:               </div>
+            106:               <div class="flex-1">
+            12:31:20 PM [vite-plugin-svelte] src/lib/components/automation/DispatchTriggersSection.svelte:293:7 A form label must be associated with a control
+            https://svelte.dev/e/a11y_label_has_associated_control
+            291:             <!-- Tag filter with removable chips -->
+            292:             <div class="flex items-start gap-2">
+            293:               <label class="text-xs text-muted-foreground w-20 shrink-0 mt-1.5">Tags</label>
+                                                                                                             ^
+            294:               <div class="flex-1">
+            295:                 <div class="flex flex-wrap gap-1 mb-1" data-testid="trigger-tags-{trigger.on}">
+            12:31:20 PM [vite-plugin-svelte] src/lib/components/automation/DispatchTriggersSection.svelte:345:7 A form label must be associated with a control
+            https://svelte.dev/e/a11y_label_has_associated_control
+            343:             <!-- Priority filter threshold -->
+            344:             <div class="flex items-center gap-2">
+            345:               <label class="text-xs text-muted-foreground w-20 shrink-0">Priority &#x2264;</label>
+                                                                                                                   ^
+            346:               <Input
+            347:                 class="h-7 text-xs flex-1"
+            12:31:20 PM [vite-plugin-svelte] src/lib/components/session/SessionFilters.svelte:181:2 A form label must be associated with a control
+            https://svelte.dev/e/a11y_label_has_associated_control
+            179:   <!-- AC: @session-filter-controls ac-status-filter -->
+            180:   <div class="min-w-[240px]">
+            181:     <label class="text-xs font-medium text-
           invalidationReasons:
             - canonical-branch-head-changed
             - workspace-build-missing
-          lastRunAt: 2026-04-15T18:59:58.434Z
+          lastRunAt: 2026-04-15T19:31:20.621Z
           steps:
-            - status: succeeded
+            - status: failed
               allowTrackedChanges: false
               idempotent: true
               name: build-workspace-artifacts
-              output: >-
+              output: |-
                 > @kynetic-ai/spec@0.12.0 build
-
-                > tsc && chmod +x dist/cli/index.js && npm run build:shared && npm run build:daemon
-                && npm run build:web-ui && npm run build:plugin
-
+                > tsc && chmod +x dist/cli/index.js && npm run build:shared && npm run build:daemon && npm run build:web-ui && npm run build:plugin
 
 
                 > @kynetic-ai/spec@0.12.0 build:shared
-
                 > cd packages/shared && npm run build
 
 
-
                 > @kynetic-ai/shared@0.1.0 build
-
                 > tsc
 
 
-
                 > @kynetic-ai/spec@0.12.0 build:daemon
-
                 > node scripts/build-daemon.cjs
 
 
-
                 > @kynetic-ai/spec@0.12.0 build:web-ui
-
-                > shx rm -rf dist/web-ui && cd packages/web-ui && npm run build && shx cp -r build
-                ../../dist/web-ui
-
+                > shx rm -rf dist/web-ui && cd packages/web-ui && npm run build && shx cp -r build ../../dist/web-ui
 
 
                 > @kynetic-ai/web-ui@0.1.0 build
-
                 > svelte-kit sync && vite build
 
-
                 vite v7.3.1 building ssr environment for production...
-
                 transforming...
+                ✓ 109 modules transformed.
+                dist/daemon/entity-cache.js           52.1kb
+                  dist/daemon/routes/reviews.js         37.6kb
+                  dist/daemon/routes/tasks.js           22.3kb
+                  dist/daemon/server.js                 20.6kb
+                  dist/daemon/routes/sessions.js        20.5kb
+                  dist/daemon/routes/agent-dispatch.js  18.8kb
+                  dist/daemon/routes/items.js           17.6kb
+                  dist/daemon/routes/command.js         17.0kb
+                  dist/daemon/project-context.js        15.4kb
+                  dist/daemon/routes/triage.js          14.7kb
+                  dist/daemon/routes/diff.js            13.9kb
+                  dist/daemon/session-watcher.js        11.8kb
+                  dist/daemon/routes/automation.js      10.5kb
+                  dist/daemon/routes/meta.js             9.8kb
+                  dist/daemon/routes/validation.js       8.0kb
+                  dist/daemon/routes/aggregation.js      7.8kb
+                  dist/daemon/watcher.js                 5.7kb
+                  dist/daemon/websocket/pubsub.js        5.0kb
+                  dist/daemon/routes/plans.js            4.7kb
+                  dist/daemon/websocket/handler.js       4.6kb
+                  ...and 66 more output files...
 
-                ✓ 4542 modules transformed.
-
-                rendering chunks...
-
-                vite v7.3.1 building client environment for production...
-
-                transforming...
-
-                ✓ 4688 modules transformed.
-
-                rendering chunks...
-
-                computing gzip size...
-
-                .svelte-kit/output/client/_app/version.json                                    0.03
-                kB │ gzip:  0.05 kB
-
-                .svelte-kit/output/client/.vite/manifest.json                                 32.90
-                kB │ gzip:  3.58 kB
-
-                .svelte-kit/output/client/_app/immutable/assets/select-trigger.CV-KWLNP.css    0.29
-                kB │ gzip:  0.15 kB
-
-                .svelte-kit/output/client/_app/immutable/assets/12.BwwJybWx.css                1.26
-                kB │ gzip:  0.41 kB
-
-                .svelte-kit/output/client/_app/immutable/assets/0.BzSixdzL.css               115.67
-                kB │ gzip: 18.58 kB
-
-                .svelte-kit/output/client/_app/immutable/entry/start.CIZ_62kn.js               0.08
-                kB │ gzip:  0.09 kB
-
-                .svelte-kit/output/client/_app/immutable/chunks/Di4ArDNf.js                    0.12
-                kB │ gzip:  0.10 kB
-
-                .svelte-kit/output/client/_app/immutable/chunks/DZs2Kv4k.js                    0.18
-                kB │ gzip:  0.14 kB
-
-                .svelte-kit/output/client/_app/immutable/chunks/nYLV_lRo.js                    0.20
-                kB │ gzip:  0.18 kB
-
-                .svelte-kit/output/client/_app/immutable/chunks/C_zaXyd9.js                    0.23
-                kB │ gzip:  0.16 kB
-
-                .svelte-kit/output/client/_app/immutable/chunks/KcAf2G3T.js                    0.30
-                kB │ gzip:  0.23 kB
-
-                .svelte-kit/output/client/_app/immutable/chunks/bPASKzVc.js                    0.44
-                kB │ gzip:  0.32 kB
-
-                .svelte-kit/output/client/_app/immutable/chunks/CLcIUmTF.js                    0.45
-                kB │ gzip:  0.32 kB
-
-                .svelte-kit/output/client/_app/immutable/chunks/BxIzkA_j.js                    0.45
-                kB │ gzip:  0.32 kB
-
-                .svelte-kit/output/client/_app/immutable/nodes/1.BL8GfJrQ.js                   0.46
-                kB │ gzip:  0.29 kB
-
-                .svelte-kit/output/client/_app/immutable/chunks/D7IYenSI.js                    0.46
-                kB │ gzip:  0.33 kB
-
-                .svelte-kit/output/client/_app/immutable/chunks/BXqmpUtc.js                    0.46
-                kB │ gzip:  0.32 kB
-
-                .svelte-kit/output/client/_app/immutable/chunks/BwXpq-g1.js                    0.47
-                kB │ gzip:  0.34 kB
-
-                .svelte-kit/output/client/_app/immutable/chunks/uhBv9_YA.js                    0.47
-                kB │ gzip:  0.33 kB
-
-                .svelte-kit/output/client/_app/immutable/chunks/pqrOn-9H.js                    0.48
-                kB │ gzip:  0.29 kB
-
-                .svelte-kit/output/client/_app/immutable/chunks/C3hwF3n6.js                    0.48
-                kB │ gzip:  0.34 kB
-
-                .svelte-kit/output/client/_app/immutable/chunks/BzaQMGpA.js                    0.49
-                kB │ gzip:  0.34 kB
-
-                .svelte-kit/output/client/_app/immutable/chunks/M1l9_XTL.js                    0.51
-                kB │ gzip:  0.36 kB
-
-                .svelte-kit/output/client/_app/immutable/chunks/CDIxdNJy.js                    0.51
-                kB │ gzip:  0.35 kB
-
-                .svelte-kit/output/client/_app/immutable/chunks/BgH1kU2h.js                    0.52
-                kB │ gzip:  0.37 kB
-
-                .svelte-kit/output/client/_app/immutable/chunks/Dcz87iOb.js                    0.53
-                kB │ gzip:  0.34 kB
-
-                .svelte-kit/output/client/_app/immutable/chunks/DVTyOSld.js                    0.55
-                kB │ gzip:  0.38 kB
-
-                .svelte-kit/output/client/_app/immutable/chunks/CGc4npgq.js                    0.55
-                kB │ gzip:  0.37 kB
-
-                .svelte-kit/output/client/_app/immutable/chunks/BNV6Y5KK.js                    0.56
-                kB │ gzip:  0.39 kB
-
-                .svelte-kit/output/client/_app/immutable/chunks/CFZynvmR.js                    0.56
-                kB │ gzip:  0.39 kB
-
-                .svelte-kit/output/client/_app/immutable/chunks/D
+                ⚡ Done in 14ms
+                npm warn config ignoring workspace config at /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-upgrade-command-01knxyj5-review/packages/web-ui/.npmrc
+                12:31:19 PM [vite-plugin-svelte] src/routes/observations/+page.svelte:104:8 `<svelte:component>` is deprecated in runes mode — components are dynamic by default
+                https://svelte.dev/e/svelte_component_deprecated
+                102:             <div class="flex items-start gap-3">
+                103:               <div class={`mt-0.5 ${typeColors[obs.type]}`} data-testid="observation-type-icon">
+                104:                 <svelte:component this={typeIcons[obs.type]} class="h-5 w-5" />
+                                                                                                    ^
+                105:               </div>
+                106:               <div class="flex-1">
+                12:31:20 PM [vite-plugin-svelte] src/lib/components/automation/DispatchTriggersSection.svelte:293:7 A form label must be associated with a control
+                https://svelte.dev/e/a11y_label_has_associated_control
+                291:             <!-- Tag filter with removable chips -->
+                292:             <div class="flex items-start gap-2">
+                293:               <label class="text-xs text-muted-foreground w-20 shrink-0 mt-1.5">Tags</label>
+                                                                                                                 ^
+                294:               <div class="flex-1">
+                295:                 <div class="flex flex-wrap gap-1 mb-1" data-testid="trigger-tags-{trigger.on}">
+                12:31:20 PM [vite-plugin-svelte] src/lib/components/automation/DispatchTriggersSection.svelte:345:7 A form label must be associated with a control
+                https://svelte.dev/e/a11y_label_has_associated_control
+                343:             <!-- Priority filter threshold -->
+                344:             <div class="flex items-center gap-2">
+                345:               <label class="text-xs text-muted-foreground w-20 shrink-0">Priority &#x2264;</label>
+                                                                                                                       ^
+                346:               <Input
+                347:                 class="h-7 text-xs flex-1"
+                12:31:20 PM [vite-plugin-svelte] src/lib/components/session/SessionFilters.svelte:181:2 A form label must be associated with a control
+                https://svelte.dev/e/a11y_label_has_associated_control
+                179:   <!-- AC: @session-filter-controls ac-status-filter -->
+                180:   <div class="min-w-[240px]">
+                181:     <label class="text-xs font-medium text-
               reviewerRerunAllowed: true
               role: reviewer
               run: npm run build
@@ -52123,7 +52215,95 @@ workspaces:
             - canonical-branch-head-changed
           lastRunAt: 2026-04-15T19:15:52.124Z
           steps: []
-      steps: []
+      steps:
+        - status: failed
+          allowTrackedChanges: false
+          idempotent: true
+          name: build-workspace-artifacts
+          output: |-
+            > @kynetic-ai/spec@0.12.0 build
+            > tsc && chmod +x dist/cli/index.js && npm run build:shared && npm run build:daemon && npm run build:web-ui && npm run build:plugin
+
+
+            > @kynetic-ai/spec@0.12.0 build:shared
+            > cd packages/shared && npm run build
+
+
+            > @kynetic-ai/shared@0.1.0 build
+            > tsc
+
+
+            > @kynetic-ai/spec@0.12.0 build:daemon
+            > node scripts/build-daemon.cjs
+
+
+            > @kynetic-ai/spec@0.12.0 build:web-ui
+            > shx rm -rf dist/web-ui && cd packages/web-ui && npm run build && shx cp -r build ../../dist/web-ui
+
+
+            > @kynetic-ai/web-ui@0.1.0 build
+            > svelte-kit sync && vite build
+
+            vite v7.3.1 building ssr environment for production...
+            transforming...
+            ✓ 109 modules transformed.
+            dist/daemon/entity-cache.js           52.1kb
+              dist/daemon/routes/reviews.js         37.6kb
+              dist/daemon/routes/tasks.js           22.3kb
+              dist/daemon/server.js                 20.6kb
+              dist/daemon/routes/sessions.js        20.5kb
+              dist/daemon/routes/agent-dispatch.js  18.8kb
+              dist/daemon/routes/items.js           17.6kb
+              dist/daemon/routes/command.js         17.0kb
+              dist/daemon/project-context.js        15.4kb
+              dist/daemon/routes/triage.js          14.7kb
+              dist/daemon/routes/diff.js            13.9kb
+              dist/daemon/session-watcher.js        11.8kb
+              dist/daemon/routes/automation.js      10.5kb
+              dist/daemon/routes/meta.js             9.8kb
+              dist/daemon/routes/validation.js       8.0kb
+              dist/daemon/routes/aggregation.js      7.8kb
+              dist/daemon/watcher.js                 5.7kb
+              dist/daemon/websocket/pubsub.js        5.0kb
+              dist/daemon/routes/plans.js            4.7kb
+              dist/daemon/websocket/handler.js       4.6kb
+              ...and 66 more output files...
+
+            ⚡ Done in 14ms
+            npm warn config ignoring workspace config at /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-upgrade-command-01knxyj5-review/packages/web-ui/.npmrc
+            12:31:19 PM [vite-plugin-svelte] src/routes/observations/+page.svelte:104:8 `<svelte:component>` is deprecated in runes mode — components are dynamic by default
+            https://svelte.dev/e/svelte_component_deprecated
+            102:             <div class="flex items-start gap-3">
+            103:               <div class={`mt-0.5 ${typeColors[obs.type]}`} data-testid="observation-type-icon">
+            104:                 <svelte:component this={typeIcons[obs.type]} class="h-5 w-5" />
+                                                                                                ^
+            105:               </div>
+            106:               <div class="flex-1">
+            12:31:20 PM [vite-plugin-svelte] src/lib/components/automation/DispatchTriggersSection.svelte:293:7 A form label must be associated with a control
+            https://svelte.dev/e/a11y_label_has_associated_control
+            291:             <!-- Tag filter with removable chips -->
+            292:             <div class="flex items-start gap-2">
+            293:               <label class="text-xs text-muted-foreground w-20 shrink-0 mt-1.5">Tags</label>
+                                                                                                             ^
+            294:               <div class="flex-1">
+            295:                 <div class="flex flex-wrap gap-1 mb-1" data-testid="trigger-tags-{trigger.on}">
+            12:31:20 PM [vite-plugin-svelte] src/lib/components/automation/DispatchTriggersSection.svelte:345:7 A form label must be associated with a control
+            https://svelte.dev/e/a11y_label_has_associated_control
+            343:             <!-- Priority filter threshold -->
+            344:             <div class="flex items-center gap-2">
+            345:               <label class="text-xs text-muted-foreground w-20 shrink-0">Priority &#x2264;</label>
+                                                                                                                   ^
+            346:               <Input
+            347:                 class="h-7 text-xs flex-1"
+            12:31:20 PM [vite-plugin-svelte] src/lib/components/session/SessionFilters.svelte:181:2 A form label must be associated with a control
+            https://svelte.dev/e/a11y_label_has_associated_control
+            179:   <!-- AC: @session-filter-controls ac-status-filter -->
+            180:   <div class="min-w-[240px]">
+            181:     <label class="text-xs font-medium text-
+          reviewerRerunAllowed: true
+          role: reviewer
+          run: npm run build
+          source: dispatch
     branch_provenance:
       adopted_at: null
       adopted_from: null
@@ -52159,9 +52339,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-15T19:15:54.702Z
-      last_reconciled_at: 2026-04-15T19:31:18.986Z
+      last_reconciled_at: 2026-04-15T19:31:12.884Z
       created_at: 2026-04-15T12:20:51.766Z
-      updated_at: 2026-04-15T19:31:18.986Z
+      updated_at: 2026-04-15T19:31:20.621Z
     workspace_id: dispatch-workspace-01KNXYJ5JCR99F76N8N7265E0B
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
