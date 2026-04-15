@@ -148118,6 +148118,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-15T23:42:37.179Z
+      - _ulid: 01KP9S1GJGXRQTWP2N8V7HZ31W
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP9S1FM4Y9K2MN7M72874F0B
+        timestamp: 2026-04-15T23:53:50.928Z
     examined_commit: 35e8acf2da1bea09aec4e82a607e00493b3ca4ac
     external_links: []
     lifecycle_state: open
@@ -148127,8 +148134,29 @@ reviews:
       content_hash: ""
       ref: "@01KNXYJ5JCR99F76N8N7265E0B"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KP9S1FM4Y9K2MN7M72874F0B
+        anchor:
+          type: code
+          commit: 35e8acf2da1bea09aec4e82a607e00493b3ca4ac
+          line_end: 904
+          line_start: 898
+          path: src/cli/commands/upgrade.ts
+          side: head
+        entries:
+          - _ulid: 01KP9S1FM48WKJS8405QFX3HDK
+            author: Jacob Chapel
+            body: "Regular-file corruption of kspec-agents.md is still treated as up to date here. The fast path
+              only checks that the path is a file and that the stored meta hash matches, so a
+              manually corrupted or stale regular file is skipped instead of being regenerated.
+              Reproduction: initialize a project, set .kspec/.setup-state.json lastKnownVersion to
+              the current version, overwrite kspec-agents.md with 'corrupted', then run 'kspec
+              upgrade --force --json'. Step 3 reports 'already up to date' and the file stays
+              corrupted. That violates ac-regenerates-agents-file because upgrade no longer
+              guarantees the rendered instructions match the current templates."
+            created_at: 2026-04-15T23:53:49.956Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-15T23:42:18.937Z
-    updated_at: 2026-04-15T23:42:36.048Z
+    updated_at: 2026-04-15T23:53:49.956Z
     notes: []
