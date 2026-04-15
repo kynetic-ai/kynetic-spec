@@ -14233,6 +14233,18 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-04-15T07:35:30.780Z
+  - _ulid: 01KP83B5J12MDRREEV5R4XGXDA
+    type: friction
+    content: AC-annotated tests can still false-green behavior-preserving config work when they only
+      assert that a command exits successfully instead of comparing resolved config behavior. In
+      this review, the scaffolded config changed dispatch.base_branch/publication_mode relative to
+      the empty-config case while the annotated tests still passed. For config scaffolds whose AC
+      promises unchanged runtime behavior, review/test guidance should prefer explicit
+      resolved-config equivalence assertions over generic command-success checks.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-15T08:15:24.225Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
