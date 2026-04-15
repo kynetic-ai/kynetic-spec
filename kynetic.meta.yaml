@@ -14245,6 +14245,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-15T08:15:24.225Z
+  - _ulid: 01KP83GSWXQV8EH9P8N98083PY
+    type: friction
+    content: Review signal is degraded because kspec validate currently fails repo-wide with a schema
+      error in .kspec/modules/meta.yaml plus broad completeness noise, so reviewers cannot treat
+      validate as a task-local gate even when the change under review is narrow. This session
+      required manual attribution to separate repo-state failures from branch-specific issues.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-15T08:18:28.893Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
