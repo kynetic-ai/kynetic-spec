@@ -204,3 +204,20 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-15T10:52:07.620Z
+  - _ulid: 01KP8DB89TG9JRFMJS7MGM0BQK
+    content: >-
+      Fix cycle 2: addressed 1 blocker thread.
+
+
+      1. Setup hardcodes @main (blocker): Replaced both hardcoded '@main' references in setup.ts
+      with dynamically resolved module ref. Added defaultModuleRef field to SetupPipelineResult. The
+      pipeline now calls loadAllItems() and finds the first module's current slug. Both the pipeline
+      summary output and the standalone command handler use the dynamic ref. Added E2E test that
+      renames @main to @custom-module, runs setup --skip-skills --no-hooks, and verifies output
+      contains @custom-module (not @main).
+
+
+      Full test suite: 7813 passed, 5 skipped, 0 failed.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-15T11:10:12.794Z
