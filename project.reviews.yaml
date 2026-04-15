@@ -146002,6 +146002,12 @@ reviews:
         payload:
           thread_ulid: 01KP8PEEBS0K8BN3WDAPX6G7MR
         timestamp: 2026-04-15T18:38:39.750Z
+      - _ulid: 01KP970J6HY9NMAJAVHMKKJQW9
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP8PEMY72M9CM13MBAJ05Y5E
+        timestamp: 2026-04-15T18:38:45.457Z
     examined_commit: 096e915cfb1ae093270734854bfc912b2a29af3f
     external_links: []
     lifecycle_state: closed
@@ -146056,6 +146062,14 @@ reviews:
               that project will look exact/current even though the agents file was never
               regenerated."
             created_at: 2026-04-15T13:49:21.223Z
+          - _ulid: 01KP970H4WFBDT344NNVYSY0HT
+            author: "@claude"
+            body: "Fixed: Step 6 now computes priorStepsAllSucceeded = steps.every(s => s.status \\!== 'failed')
+              before executing. When any prior step failed, step 6 reports status 'skipped' with
+              message explaining why, and does NOT write the target version to .setup-state.json.
+              New test verifies this by forcing the agents regeneration step to fail (EISDIR on
+              kspec-agents.md), then asserting step 6 is skipped and the version file is unchanged."
+            created_at: 2026-04-15T18:38:44.380Z
         kind: blocker
       - _ulid: 01KP8PFNF6GGJAZCC971CF5KT4
         entries:
@@ -146084,5 +146098,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T13:50:26.686Z
     created_at: 2026-04-15T13:43:41.473Z
-    updated_at: 2026-04-15T18:38:38.697Z
+    updated_at: 2026-04-15T18:38:44.380Z
     notes: []
