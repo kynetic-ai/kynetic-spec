@@ -143899,6 +143899,12 @@ reviews:
         payload:
           thread_ulid: 01KP873WFW0KGBZNX5D4ECMNA0
         timestamp: 2026-04-15T09:22:30.100Z
+      - _ulid: 01KP881DDNQDBVG7DB49XCN0AM
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP8742VK25ZR27D42SFNJH9R
+        timestamp: 2026-04-15T09:37:27.477Z
     examined_commit: cb88291eb760058eadd9827737b4d49f16569037
     external_links: []
     lifecycle_state: closed
@@ -143952,6 +143958,15 @@ reviews:
               `@scaffolded-project-config ac-placeholder-base-branch` and the task requirement to
               reuse the same default-base resolver the dispatcher uses."
             created_at: 2026-04-15T09:21:26.387Z
+          - _ulid: 01KP881CJ6C7XFYGBR7A3W99EB
+            author: "@claude"
+            body: "Fixed: Added resolveBranchStartPoint verification to resolveDefaultBranch's remote-head
+              candidate, matching the per-step verification pattern in
+              resolveDispatchWorkspaceConfig. A stale remote HEAD now falls through to the current
+              branch instead of being accepted blindly. Added a regression test that sets
+              refs/remotes/origin/HEAD to a nonexistent branch and verifies the scaffold falls
+              through to the current branch (dev)."
+            created_at: 2026-04-15T09:37:26.598Z
         kind: blocker
       - _ulid: 01KP874DCDAV1WMA2GEEYKZJ9B
         entries:
@@ -143986,7 +144001,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T09:21:53.580Z
     created_at: 2026-04-15T09:10:35.489Z
-    updated_at: 2026-04-15T09:22:29.140Z
+    updated_at: 2026-04-15T09:37:26.598Z
     notes: []
   - _ulid: 01KP87BGZY4TTNDV1ESR1TRK1P
     slugs: []
