@@ -77,93 +77,8 @@ description: |
 spec_ref: "@scaffolded-project-config"
 plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
 origin: derived
-status: blocked
-blocked_by:
-  - |-
-    Dispatch bootstrap failed: Bootstrap step "build-workspace-artifacts" failed with exit code 1. Output: > @kynetic-ai/spec@0.12.0 build
-    > tsc && chmod +x dist/cli/index.js && npm run build:shared && npm run build:daemon && npm run build:web-ui && npm run build:plugin
-
-
-    > @kynetic-ai/spec@0.12.0 build:shared
-    > cd packages/shared && npm run build
-
-
-    > @kynetic-ai/shared@0.1.0 build
-    > tsc
-
-
-    > @kynetic-ai/spec@0.12.0 build:daemon
-    > node scripts/build-daemon.cjs
-
-
-    > @kynetic-ai/spec@0.12.0 build:web-ui
-    > shx rm -rf dist/web-ui && cd packages/web-ui && npm run build && shx cp -r build ../../dist/web-ui
-
-
-    > @kynetic-ai/web-ui@0.1.0 build
-    > svelte-kit sync && vite build
-
-    vite v7.3.1 building ssr environment for production...
-    transforming...
-    ✓ 4542 modules transformed.
-    rendering chunks...
-    dist/daemon/entity-cache.js           52.1kb
-      dist/daemon/routes/reviews.js         37.6kb
-      dist/daemon/routes/tasks.js           22.3kb
-      dist/daemon/server.js                 20.6kb
-      dist/daemon/routes/sessions.js        20.5kb
-      dist/daemon/routes/agent-dispatch.js  18.8kb
-      dist/daemon/routes/items.js           17.6kb
-      dist/daemon/routes/command.js         17.0kb
-      dist/daemon/project-context.js        15.4kb
-      dist/daemon/routes/triage.js          14.7kb
-      dist/daemon/routes/diff.js            13.9kb
-      dist/daemon/session-watcher.js        11.8kb
-      dist/daemon/routes/automation.js      10.5kb
-      dist/daemon/routes/meta.js             9.8kb
-      dist/daemon/routes/validation.js       8.0kb
-      dist/daemon/routes/aggregation.js      7.8kb
-      dist/daemon/watcher.js                 5.7kb
-      dist/daemon/websocket/pubsub.js        5.0kb
-      dist/daemon/routes/plans.js            4.7kb
-      dist/daemon/websocket/handler.js       4.6kb
-      ...and 66 more output files...
-
-    ⚡ Done in 15ms
-    npm warn config ignoring workspace config at /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review/packages/web-ui/.npmrc
-    2:08:16 PM [vite-plugin-svelte] src/routes/observations/+page.svelte:104:8 `<svelte:component>` is deprecated in runes mode — components are dynamic by default
-    https://svelte.dev/e/svelte_component_deprecated
-    102:             <div class="flex items-start gap-3">
-    103:               <div class={`mt-0.5 ${typeColors[obs.type]}`} data-testid="observation-type-icon">
-    104:                 <svelte:component this={typeIcons[obs.type]} class="h-5 w-5" />
-                                                                                        ^
-    105:               </div>
-    106:               <div class="flex-1">
-    2:08:16 PM [vite-plugin-svelte] src/lib/components/automation/DispatchTriggersSection.svelte:293:7 A form label must be associated with a control
-    https://svelte.dev/e/a11y_label_has_associated_control
-    291:             <!-- Tag filter with removable chips -->
-    292:             <div class="flex items-start gap-2">
-    293:               <label class="text-xs text-muted-foreground w-20 shrink-0 mt-1.5">Tags</label>
-                                                                                                     ^
-    294:               <div class="flex-1">
-    295:                 <div class="flex flex-wrap gap-1 mb-1" data-testid="trigger-tags-{trigger.on}">
-    2:08:16 PM [vite-plugin-svelte] src/lib/components/automation/DispatchTriggersSection.svelte:345:7 A form label must be associated with a control
-    https://svelte.dev/e/a11y_label_has_associated_control
-    343:             <!-- Priority filter threshold -->
-    344:             <div class="flex items-center gap-2">
-    345:               <label class="text-xs text-muted-foreground w-20 shrink-0">Priority &#x2264;</label>
-                                                                                                           ^
-    346:               <Input
-    347:                 class="h-7 text-xs flex-1"
-    2:08:17 PM [vite-plugin-svelte] src/lib/components/session/SessionFilters.svelte:181:2 A form label must be associated with a control
-    https://svelte.dev/e/a11y_label_has_associated_control
-    179:   <!-- AC: @session-filter-controls ac-status-filter -->
-    180:   <div class="min-w-[240px]">
-    181:     <label class="
-  - 'Dispatch workspace provisioning failed: Dispatch worktree path
-    "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review"
-    already exists and is not a registered git worktree.. Suggested action: Remove or rename that
-    directory, or choose a different dispatch.worktree_root.'
+status: pending_review
+blocked_by: []
 depends_on: []
 context: []
 priority: 1
@@ -181,7 +96,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-scaffold-project-config/01knxyj3
-session_id: 01KP6WCA8ZJ39WQXWRDEWDR9VT
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -889,7 +804,108 @@ history:
             181:     <label class="
     command: task-block
     timestamp: 2026-04-14T21:08:36.134Z
-prior_status: pending_review
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: blocked
+      blocked_by:
+        new: []
+        previous:
+          - |-
+            Dispatch bootstrap failed: Bootstrap step "build-workspace-artifacts" failed with exit code 1. Output: > @kynetic-ai/spec@0.12.0 build
+            > tsc && chmod +x dist/cli/index.js && npm run build:shared && npm run build:daemon && npm run build:web-ui && npm run build:plugin
+
+
+            > @kynetic-ai/spec@0.12.0 build:shared
+            > cd packages/shared && npm run build
+
+
+            > @kynetic-ai/shared@0.1.0 build
+            > tsc
+
+
+            > @kynetic-ai/spec@0.12.0 build:daemon
+            > node scripts/build-daemon.cjs
+
+
+            > @kynetic-ai/spec@0.12.0 build:web-ui
+            > shx rm -rf dist/web-ui && cd packages/web-ui && npm run build && shx cp -r build ../../dist/web-ui
+
+
+            > @kynetic-ai/web-ui@0.1.0 build
+            > svelte-kit sync && vite build
+
+            vite v7.3.1 building ssr environment for production...
+            transforming...
+            ✓ 4542 modules transformed.
+            rendering chunks...
+            dist/daemon/entity-cache.js           52.1kb
+              dist/daemon/routes/reviews.js         37.6kb
+              dist/daemon/routes/tasks.js           22.3kb
+              dist/daemon/server.js                 20.6kb
+              dist/daemon/routes/sessions.js        20.5kb
+              dist/daemon/routes/agent-dispatch.js  18.8kb
+              dist/daemon/routes/items.js           17.6kb
+              dist/daemon/routes/command.js         17.0kb
+              dist/daemon/project-context.js        15.4kb
+              dist/daemon/routes/triage.js          14.7kb
+              dist/daemon/routes/diff.js            13.9kb
+              dist/daemon/session-watcher.js        11.8kb
+              dist/daemon/routes/automation.js      10.5kb
+              dist/daemon/routes/meta.js             9.8kb
+              dist/daemon/routes/validation.js       8.0kb
+              dist/daemon/routes/aggregation.js      7.8kb
+              dist/daemon/watcher.js                 5.7kb
+              dist/daemon/websocket/pubsub.js        5.0kb
+              dist/daemon/routes/plans.js            4.7kb
+              dist/daemon/websocket/handler.js       4.6kb
+              ...and 66 more output files...
+
+            ⚡ Done in 15ms
+            npm warn config ignoring workspace config at /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review/packages/web-ui/.npmrc
+            2:08:16 PM [vite-plugin-svelte] src/routes/observations/+page.svelte:104:8 `<svelte:component>` is deprecated in runes mode — components are dynamic by default
+            https://svelte.dev/e/svelte_component_deprecated
+            102:             <div class="flex items-start gap-3">
+            103:               <div class={`mt-0.5 ${typeColors[obs.type]}`} data-testid="observation-type-icon">
+            104:                 <svelte:component this={typeIcons[obs.type]} class="h-5 w-5" />
+                                                                                                ^
+            105:               </div>
+            106:               <div class="flex-1">
+            2:08:16 PM [vite-plugin-svelte] src/lib/components/automation/DispatchTriggersSection.svelte:293:7 A form label must be associated with a control
+            https://svelte.dev/e/a11y_label_has_associated_control
+            291:             <!-- Tag filter with removable chips -->
+            292:             <div class="flex items-start gap-2">
+            293:               <label class="text-xs text-muted-foreground w-20 shrink-0 mt-1.5">Tags</label>
+                                                                                                             ^
+            294:               <div class="flex-1">
+            295:                 <div class="flex flex-wrap gap-1 mb-1" data-testid="trigger-tags-{trigger.on}">
+            2:08:16 PM [vite-plugin-svelte] src/lib/components/automation/DispatchTriggersSection.svelte:345:7 A form label must be associated with a control
+            https://svelte.dev/e/a11y_label_has_associated_control
+            343:             <!-- Priority filter threshold -->
+            344:             <div class="flex items-center gap-2">
+            345:               <label class="text-xs text-muted-foreground w-20 shrink-0">Priority &#x2264;</label>
+                                                                                                                   ^
+            346:               <Input
+            347:                 class="h-7 text-xs flex-1"
+            2:08:17 PM [vite-plugin-svelte] src/lib/components/session/SessionFilters.svelte:181:2 A form label must be associated with a control
+            https://svelte.dev/e/a11y_label_has_associated_control
+            179:   <!-- AC: @session-filter-controls ac-status-filter -->
+            180:   <div class="min-w-[240px]">
+            181:     <label class="
+          - 'Dispatch workspace provisioning failed: Dispatch worktree path
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review"
+            already exists and is not a registered git worktree.. Suggested action: Remove or rename
+            that directory, or choose a different dispatch.worktree_root.'
+      session_id:
+        new: null
+        previous: 01KP6WCA8ZJ39WQXWRDEWDR9VT
+      prior_status:
+        new: null
+        previous: pending_review
+    command: task-unblock
+    timestamp: 2026-04-15T07:58:21.786Z
+prior_status: null
 created_at: 2026-04-11T09:39:24.510Z
 started_at: 2026-04-14T21:07:01.879Z
 submitted_at: 2026-04-14T21:07:05.168Z

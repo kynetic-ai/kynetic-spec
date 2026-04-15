@@ -148,3 +148,24 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-14T20:25:13.682Z
+  - _ulid: 01KP82C3NFYK1E7HGZAR8EEMVM
+    content: >-
+      Unblocked 2026-04-15 after @task-tests-suppress-cli-auto-start-daemon merged into dev
+      (cd2c71e94), closing the implicit CLI auto-start daemon vector that caused the
+      build-workspace-artifacts bootstrap failure.
+
+
+      Branch state (dispatch/task/task-plan-import-format-guidance/01knxyj5 @ f2ac5145d): merged
+      plan/plan-init-setup-and-upgrade-rough-edges/01knvahv, which itself merged origin/dev. The
+      daemon-leak fix commit 2cb9bf5ee is verified present.
+
+
+      Worker/reviewer expectations: before running npm test, confirm commit 2cb9bf5ee is in the
+      branch — it sets KSPEC_NO_DAEMON=1 in tests/helpers/cli.ts defaultEnv and tests/setup.test.ts
+      cleanEnv(). Without it, implicit kspec CLI subprocess spawns accumulate orphan daemons and
+      eventually choke build-workspace-artifacts. Status restored to pending_review. Stale
+      review-base worktree /tmp/kspec-review-base-f205808d2c was removed so dispatch recreates at
+      the new dev tip.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-15T07:58:26.479Z
