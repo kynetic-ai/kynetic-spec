@@ -254,3 +254,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-15T11:47:38.761Z
+  - _ulid: 01KP8GJ0WHCJM0581D0XWQC101
+    content: "Fix cycle 4: addressed the blocker about default module identity in multi-module projects.
+      Root cause: setup.ts used items.find() to pick the first module by type, which is
+      order-dependent. Fix: added default_module ULID field to ManifestSchema (src/schema/spec.ts),
+      stored at init time in both shadow and non-shadow paths. Setup now resolves by ULID match with
+      fallback to first-module for backward compat. New E2E test verifies the exact repro scenario
+      from the review (init, rename @main, add @extra before main.yaml, setup correctly reports
+      @custom-module not @extra). All 7899 tests pass, 5 expected skips."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-15T12:06:20.305Z
