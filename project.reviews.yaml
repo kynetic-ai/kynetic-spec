@@ -145735,6 +145735,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-15T13:25:08.783Z
+      - _ulid: 01KP8N2FQ0QXY03VYTAPD2XY2H
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KP8N2EKAR5J7KHFGYQK7DB00
+        timestamp: 2026-04-15T13:25:14.080Z
     examined_commit: ddf9d4a71f08cf6737492d6a6d04f5cd5f1bd606
     external_links: []
     lifecycle_state: closed
@@ -145784,6 +145791,24 @@ reviews:
               can skip or mislabel upgrades for projects in that band."
             created_at: 2026-04-15T13:24:35.382Z
         kind: blocker
+      - _ulid: 01KP8N2EKAR5J7KHFGYQK7DB00
+        entries:
+          - _ulid: 01KP8N2EKAE5GH692D4007QPG8
+            author: Jacob Chapel
+            body: "Review evidence log: Files read: src/cli/commands/upgrade.ts, src/cli/index.ts,
+              src/cli/output.ts, src/cli/commands/setup-defaults.ts, src/cli/commands/setup.ts,
+              tests/upgrade-command.test.ts, tests/helpers/cli.ts. Commands run: git diff/stat
+              against 0501051eb49e..ddf9d4a71f08, kspec task get, kspec item get, kspec review
+              get/add/open, grep AC annotation scan, kspec validate, npm test, and targeted
+              temp-project repro commands for upgrade --json and upgrade --dry-run --json. Claims
+              verified: prior blockers fixed (orphan skill cleanup and default module scaffolding),
+              JSON error handling, and source-version fallback behavior. Categories searched:
+              correctness (2 blockers found), test quality/AC coverage (annotations present, tests
+              missed the JSON-error corruption and bad review-plan probe), edge cases
+              (legacy/no-manifest/error paths), integration (command registration and setup-step
+              reuse)."
+            created_at: 2026-04-15T13:25:12.938Z
+        kind: nit
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -145793,5 +145818,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T13:25:08.782Z
     created_at: 2026-04-15T13:13:44.243Z
-    updated_at: 2026-04-15T13:25:08.783Z
+    updated_at: 2026-04-15T13:25:12.938Z
     notes: []
