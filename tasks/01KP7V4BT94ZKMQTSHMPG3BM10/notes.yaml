@@ -1,1 +1,19 @@
-notes: []
+notes:
+  - _ulid: 01KP7YEVC9RPK9XF0DF3RRBYM2
+    content: >-
+      Implementation complete. Two changes made:
+
+      1. src/agent-runtime/bootstrap.ts:132: Changed `combined.slice(0, 4000)` to
+      `combined.slice(-4000)` — now captures the tail of combined stdout+stderr instead of the head.
+
+      2. tests/dispatch-runtime-bootstrap-contract.test.ts: Added regression test 'preserves tail of
+      bootstrap output so error detail at end of stream is captured' — writes 5000 chars of filler
+      followed by a sentinel to stderr, exits non-zero, and asserts the sentinel survives in both
+      failureMessage and steps[].output.
+
+
+      All 21 bootstrap contract tests pass including the existing ac-6 test. Full suite (7764 tests)
+      green.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-15T06:50:01.993Z
