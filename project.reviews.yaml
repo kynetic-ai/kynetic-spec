@@ -143054,6 +143054,12 @@ reviews:
         payload:
           thread_ulid: 01KP84EQ62ZM5979GAG1TX8W66
         timestamp: 2026-04-15T10:39:00.407Z
+      - _ulid: 01KP8BJ8Z73CMHBBZQ9CZBCDQN
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP84EVV3BGTRE1NHTYJ5D9GR
+        timestamp: 2026-04-15T10:39:05.703Z
     examined_commit: 4c30c4d5047b485b566eef3ae492e25338b141cb
     external_links: []
     lifecycle_state: closed
@@ -143107,6 +143113,13 @@ reviews:
               module in init output and in the setup summary, so users still are not told that this
               module exists or how to target it.
             created_at: 2026-04-15T08:34:53.924Z
+          - _ulid: 01KP8BJ828X8JK35EY76MP2D6C
+            author: "@claude"
+            body: "Fixed: Added default module mention to init output (after success message: 'Default module
+              created: @main'), setup pipeline summary, and standalone setup command output. Also
+              added to non-shadow init path. New test verifies init output contains '@main' and
+              'Default module created'."
+            created_at: 2026-04-15T10:39:04.775Z
         kind: blocker
       - _ulid: 01KP84EYRKSDCDVF1VMP4AKSE5
         anchor:
@@ -143152,7 +143165,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T08:35:31.828Z
     created_at: 2026-04-15T08:18:04.017Z
-    updated_at: 2026-04-15T10:38:59.483Z
+    updated_at: 2026-04-15T10:39:04.775Z
     notes: []
   - _ulid: 01KP83KVZBC40W7C77XQ2DWG2R
     slugs: []
