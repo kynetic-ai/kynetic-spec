@@ -517,7 +517,7 @@ async function tryRestoreBranchFromRemote(projectDir: string, branch: string): P
   return false;
 }
 
-async function resolveRemoteHeadBranch(projectDir: string): Promise<string | null> {
+export async function resolveRemoteHeadBranch(projectDir: string): Promise<string | null> {
   for (const remote of await listGitRemotes(projectDir)) {
     const result = await runGit(projectDir, [
       "symbolic-ref",
@@ -533,9 +533,38 @@ async function resolveRemoteHeadBranch(projectDir: string): Promise<string | nul
   return null;
 }
 
-async function resolveCurrentBranch(projectDir: string): Promise<string | null> {
+export async function resolveCurrentBranch(projectDir: string): Promise<string | null> {
   const result = await runGit(projectDir, ["symbolic-ref", "--quiet", "--short", "HEAD"]);
   return result.status === 0 && result.stdout ? result.stdout : null;
+}
+
+/**
+ * Resolve the repository's default branch using the dispatcher's standard
+ * fallback chain: remote HEAD → current branch → "main" literal.
+ *
+ * Returns both the resolved branch name and whether the result is a fallback.
+ * Shared by dispatch workspace provisioning and setup config scaffolding.
+ */
+export async function resolveDefaultBranch(
+  projectDir: string,
+): Promise<{ branch: string; source: "remote-head" | "current-branch" | "fallback" }> {
+  // Each candidate is verified via resolveBranchStartPoint before committing,
+  // matching resolveDispatchWorkspaceConfig's fallback chain so a stale remote
+  // HEAD (pointing to a deleted branch) falls through to the current branch.
+  const remoteHead = await resolveRemoteHeadBranch(projectDir);
+  if (remoteHead) {
+    const resolved = await resolveBranchStartPoint(projectDir, remoteHead);
+    if (resolved) {
+      return { branch: remoteHead, source: "remote-head" };
+    }
+  }
+
+  const currentBranch = await resolveCurrentBranch(projectDir);
+  if (currentBranch) {
+    return { branch: currentBranch, source: "current-branch" };
+  }
+
+  return { branch: "main", source: "fallback" };
 }
 
 interface DispatchCheckoutCoherenceResult {
@@ -2163,6 +2192,10 @@ export async function resolveDispatchWorkspaceConfig(
     };
   }
 
+  // Fallback chain: remote HEAD → current branch → "main" literal.
+  // Each step independently verifies the branch exists before committing,
+  // so a stale remote HEAD (pointing to a nonexistent branch) falls through
+  // to the current branch rather than throwing.
   const remoteHeadBranch = await resolveRemoteHeadBranch(projectDir);
   if (remoteHeadBranch) {
     const resolved = await resolveBranchStartPoint(projectDir, remoteHeadBranch);
@@ -2203,6 +2236,7 @@ export async function resolveDispatchWorkspaceConfig(
       publicationMode,
     };
   }
+
   throw new DispatchWorkspaceError(
     "No base branch could be resolved: no configured dispatch.base_branch, no remote HEAD, " +
       'no current branch, and default "main" does not exist.',
