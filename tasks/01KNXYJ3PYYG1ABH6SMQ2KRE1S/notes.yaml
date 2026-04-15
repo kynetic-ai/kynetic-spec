@@ -373,3 +373,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-15T09:21:55.459Z
+  - _ulid: 01KP8828GGMZXBPJB9E7F82JY6
+    content: "Fix cycle 10: addressed blocker — resolveDefaultBranch accepted stale remote HEAD without
+      verifying branch existence. Root cause: the remote-head candidate was returned directly from
+      resolveRemoteHeadBranch without passing through resolveBranchStartPoint, unlike
+      resolveDispatchWorkspaceConfig which verifies each candidate. Fix: added
+      resolveBranchStartPoint gate on the remote-head step so a stale symbolic ref falls through to
+      the current branch. Added regression test with a manually-crafted stale
+      refs/remotes/origin/HEAD. Full suite: 7825 passed, 5 skipped, 0 failed."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-15T09:37:55.217Z
