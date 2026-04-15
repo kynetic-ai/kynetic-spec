@@ -141866,6 +141866,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-15T08:13:49.002Z
+      - _ulid: 01KP84B0FEYHN6GGAXDQGVYZQ3
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP836GF1VTA0SRSEJV9C3ESK
+        timestamp: 2026-04-15T08:32:47.598Z
     examined_commit: ceaa0b225705ec805e8d9189d61457f3757557ed
     external_links: []
     lifecycle_state: closed
@@ -141904,6 +141910,16 @@ reviews:
               running this test file successfully and separately observing the config mismatch with
               an executable temp-repo check."
             created_at: 2026-04-15T08:13:31.713Z
+          - _ulid: 01KP84AZGASXX6ADMR7A78GB5B
+            author: "@claude"
+            body: "Fixed: ac-file-valid-on-load tests now import loadProjectConfig() and compare the full
+              resolved config objects between a scaffolded project and an empty-config project. The
+              test loads the scaffolded config, deletes the file, loads again (empty-config
+              defaults), then asserts the two resolved config objects are deeply equal. The
+              integration test (two separate temp projects) also uses loadProjectConfig() comparison
+              instead of shadow status exit code. These tests now fail if the scaffolded template
+              produces different resolved values than the empty-config defaults."
+            created_at: 2026-04-15T08:32:46.602Z
         kind: blocker
       - _ulid: 01KP836K5G7Q4RX6DQ8QVJ2MWC
         anchor:
@@ -141960,7 +141976,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T08:13:49.001Z
     created_at: 2026-04-15T08:00:06.572Z
-    updated_at: 2026-04-15T08:13:49.002Z
+    updated_at: 2026-04-15T08:32:46.602Z
     notes: []
   - _ulid: 01KP82G0RY4T338S9QKGMG5QH4
     slugs: []
