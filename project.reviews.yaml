@@ -148103,7 +148103,18 @@ reviews:
     slugs: []
     title: Review single-command version upgrade (cycle 11)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Repository baseline failure: 1 schema error in .kspec/modules/meta.yaml
+          (modules[0].traits[0] expected string), plus existing alignment/completeness warnings
+          unrelated to upgrade."
+        name: kspec validate
+        required: false
+        created_at: 2026-04-15T23:55:40.024Z
+        completed_at: 2026-04-15T23:55:40.024Z
     events:
       - _ulid: 01KP9RCCSRH9F421XGVZC1MHBA
         actor: Jacob Chapel
@@ -148139,6 +148150,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP9S1N87H8R06ZX5RFP1RN4P
         timestamp: 2026-04-15T23:53:56.730Z
+      - _ulid: 01KP9S4W282BQAMMHZH1W0S490
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-15T23:55:41.000Z
     examined_commit: 35e8acf2da1bea09aec4e82a607e00493b3ca4ac
     external_links: []
     lifecycle_state: open
@@ -148209,5 +148227,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-15T23:42:18.937Z
-    updated_at: 2026-04-15T23:53:55.719Z
+    updated_at: 2026-04-15T23:55:40.024Z
     notes: []
