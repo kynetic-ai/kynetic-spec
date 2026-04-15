@@ -145424,6 +145424,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP8K4HE0PEMFKHYD1J0VR9GR
         timestamp: 2026-04-15T12:51:25.173Z
+      - _ulid: 01KP8K4N3ER69SRXD3HRJZZ25R
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KP8K4M49PWJDQMFVAT3MH1R0
+        timestamp: 2026-04-15T12:51:27.982Z
     examined_commit: 96b4318368a237137685b91bf85214d3e68cc139
     external_links: []
     lifecycle_state: open
@@ -145470,7 +145477,26 @@ reviews:
               command returned 'Scaffold default module' as skipped.
             created_at: 2026-04-15T12:51:24.225Z
         kind: blocker
+      - _ulid: 01KP8K4M49PWJDQMFVAT3MH1R0
+        entries:
+          - _ulid: 01KP8K4M49Y1HAYN158T94TNG2
+            author: Jacob Chapel
+            body: "Review evidence log: Files read: src/cli/commands/upgrade.ts, src/cli/index.ts,
+              src/cli/commands/index.ts, src/cli/commands/setup.ts,
+              src/cli/commands/setup-defaults.ts, src/parser/config.ts, src/parser/gitignore.ts,
+              src/parser/skill-render.ts, src/cli/commands/skill-diff.ts,
+              tests/upgrade-command.test.ts. Commands run: kspec task get
+              @01KNXYJ5JCR99F76N8N7265E0B; kspec item get @single-command-version-upgrade; kspec
+              review for-task @01KNXYJ5JCR99F76N8N7265E0B; kspec validate; grep -rn for AC
+              annotations in tests/upgrade-command.test.ts; git diff against 0501051eb49e...; npm
+              test; temp-project repro for orphan skill cleanup; temp-project repro for missing
+              default module. Claims verified: worker claim that full test suite passes was
+              confirmed by npm test; upgrade behavior for orphan skill removal and default-module
+              scaffolding was checked by direct command execution. Categories searched: correctness,
+              edge cases, error handling, test quality, integration."
+            created_at: 2026-04-15T12:51:26.985Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-15T12:41:32.241Z
-    updated_at: 2026-04-15T12:51:24.225Z
+    updated_at: 2026-04-15T12:51:26.985Z
     notes: []
