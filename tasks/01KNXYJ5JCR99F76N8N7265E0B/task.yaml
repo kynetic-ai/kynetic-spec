@@ -115,7 +115,7 @@ description: |
 spec_ref: "@single-command-version-upgrade"
 plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-scaffold-project-config"
@@ -134,8 +134,8 @@ review_ref: "@01KP9PFATHJ4HH36DMA2NV22C2"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-upgrade-command/01knxyj5
-  captured_at: 2026-04-15T23:07:19.609Z
-  commit: 4a024fed7210a6d4e75ec6705cba591d27320347
+  captured_at: 2026-04-15T23:40:45.863Z
+  commit: 35e8acf2da1bea09aec4e82a607e00493b3ca4ac
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-upgrade-command/01knxyj5
@@ -942,9 +942,36 @@ history:
         previous: 2026-04-15T23:07:16.138Z
     command: task-start
     timestamp: 2026-04-15T23:40:42.352Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-upgrade-command/01knxyj5
+          captured_at: 2026-04-15T23:40:45.863Z
+          commit: 35e8acf2da1bea09aec4e82a607e00493b3ca4ac
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-upgrade-command/01knxyj5
+        previous:
+          review_url: null
+          branch: dispatch/task/task-upgrade-command/01knxyj5
+          captured_at: 2026-04-15T23:07:19.609Z
+          commit: 4a024fed7210a6d4e75ec6705cba591d27320347
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-upgrade-command/01knxyj5
+      submitted_at:
+        new: 2026-04-15T23:40:45.877Z
+        previous: 2026-04-15T23:07:19.621Z
+    command: task-submit
+    timestamp: 2026-04-15T23:40:45.878Z
 prior_status: null
 created_at: 2026-04-11T09:39:26.412Z
 started_at: 2026-04-15T23:40:42.351Z
-submitted_at: 2026-04-15T23:07:19.621Z
+submitted_at: 2026-04-15T23:40:45.877Z
 todos: []
 automation: eligible
