@@ -144014,6 +144014,13 @@ reviews:
           kind: nit
           thread_ulid: 01KP87ZT00WW0Q1ZRZ0QHPAD5R
         timestamp: 2026-04-15T09:36:35.787Z
+      - _ulid: 01KP87ZXVD3R4D4EHZA4SZF8XG
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP87ZWV60FD4RHFSV77PM3PD
+        timestamp: 2026-04-15T09:36:38.765Z
     examined_commit: acdee373fbcc07795aaf22e3f724e66542cfee0b
     external_links: []
     lifecycle_state: open
@@ -144044,7 +144051,30 @@ reviews:
               (no merge-scope drift remains)."
             created_at: 2026-04-15T09:36:34.816Z
         kind: nit
+      - _ulid: 01KP87ZWV60FD4RHFSV77PM3PD
+        anchor:
+          type: code
+          commit: acdee373fbcc07795aaf22e3f724e66542cfee0b
+          line_end: 1414
+          line_start: 1370
+          path: src/cli/commands/setup.ts
+          side: head
+        entries:
+          - _ulid: 01KP87ZWV69159JT1NGSEJ6XEM
+            author: Jacob Chapel
+            body: " now returns the scaffold action state, but this step only emits a message when  is true and
+              otherwise falls back to . That violates @trait-idempotent-file-scaffold
+              ac-step-reports-action: on an existing project whose  lacks the managed block,   cd
+              /home/chapel/Projects/kynetic-spec-dispatch && kspec setup without  preserves the file
+              byte-for-byte yet reports  instead of a stable  action, and   cd
+              /home/chapel/Projects/kynetic-spec-dispatch && kspec setup reports  rather than a
+              distinct  action. I reproduced both cases against the built CLI in temporary repos
+              from this snapshot. The result is that the setup summary cannot distinguish no-op /
+              skipped / force-recreated outcomes for this scaffold step, which breaks the inherited
+              reporting contract and leaves the new trait AC only partially implemented."
+            created_at: 2026-04-15T09:36:37.734Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-15T09:25:30.238Z
-    updated_at: 2026-04-15T09:36:34.816Z
+    updated_at: 2026-04-15T09:36:37.734Z
     notes: []
