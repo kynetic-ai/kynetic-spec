@@ -21,7 +21,7 @@ kspec plan import ./plan.md --dry-run                           # Preview plan r
 kspec plan import ./plan.md --module @target-module             # Store plan (+ optional module)
 kspec plan import ./edited.md --into @plan-ref                  # Re-import edits into existing plan
 kspec plan set @plan-ref --status approved                      # Approve when ready
-kspec plan derive @plan-ref --module @target-module --tasks     # Materialize specs/tasks
+kspec plan derive @plan-ref --module @target-module             # Materialize specs/tasks
 ```
 
 ### Manual Path (1-2 Specs)
@@ -307,7 +307,7 @@ kspec plan import ./plan.md --into @plan-slug --reason "Refined scope"
 kspec plan set @plan-slug --status approved
 
 # Derive specs/tasks from the stored plan document
-kspec plan derive @plan-slug --tasks
+kspec plan derive @plan-slug
 
 # Validate the resulting refs and coverage surface
 kspec validate
@@ -347,7 +347,7 @@ Dispatch automatically targets the plan branch for all derived tasks.
 Without a plan branch, tasks target the default integration branch as
 usual.
 
-- **Derive** materializes an approved plan into specs and tasks, then transitions it to `active`
+- **Derive** materializes an approved plan into specs and tasks by default, then transitions it to `active`
 - Mark completed when all derived work is done:
 
 ```bash
@@ -388,7 +388,7 @@ kspec plan import <path> [--module @module] [--status approved]  # Create stored
 kspec plan export <plan-ref> --output ./plan.md
 kspec plan import <path> --into <plan-ref> [--reason "..."]  # Re-import edits
 kspec plan set <plan-ref> --status approved
-kspec plan derive <plan-ref> [--module @module] [--tasks]
+kspec plan derive <plan-ref> [--module @module] [--no-tasks]
 
 # Manual path
 kspec plan add --title "..." --content "..." --status approved
