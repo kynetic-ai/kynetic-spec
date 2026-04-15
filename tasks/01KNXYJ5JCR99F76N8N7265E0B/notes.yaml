@@ -316,3 +316,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-15T22:17:09.297Z
+  - _ulid: 01KP9MMRQZ58SR0JJY10V5EPNA
+    content: "Fix cycle 8: Addressed both blockers. (1) Skills probe misclassification: changed probe 4
+      from existsSync() to statSync().isDirectory() — regular files at .agents/skills no longer
+      count as evidence for 0.8+ layout. New test creates corrupted regular file and asserts unknown
+      confidence. (2) Default-module backfill: changed check from items.some(type==='module') to
+      existsSync(modules/main.yaml) — projects with custom modules but no default module now get the
+      scaffold. New test creates a custom module, removes main.yaml, and verifies scaffold runs. All
+      49 upgrade tests pass. Full suite: 7943 passed, 5 failed (pre-existing EACCES), 5 skipped."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-15T22:36:59.007Z
