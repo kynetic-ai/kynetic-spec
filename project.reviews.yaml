@@ -142220,6 +142220,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP84EYRKSDCDVF1VMP4AKSE5
         timestamp: 2026-04-15T08:34:57.986Z
+      - _ulid: 01KP84F2G3N7TKAVKQRZ2KS2H9
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KP84F1J7TKJHY70FE2SG1TZA
+        timestamp: 2026-04-15T08:35:00.739Z
     examined_commit: 4c30c4d5047b485b566eef3ae492e25338b141cb
     external_links: []
     lifecycle_state: open
@@ -142287,9 +142294,25 @@ reviews:
               the non-breaking part of the task.
             created_at: 2026-04-15T08:34:56.915Z
         kind: blocker
+      - _ulid: 01KP84F1J7TKJHY70FE2SG1TZA
+        entries:
+          - _ulid: 01KP84F1J7HFREHJFQF74CCF34
+            author: Jacob Chapel
+            body: "Evidence log\\n\\nFiles read: src/cli/commands/init.ts, src/parser/shadow.ts,
+              src/cli/commands/plan.ts, src/cli/commands/item.ts, src/parser/yaml.ts,
+              src/cli/commands/setup.ts, tests/derivable-default-module.test.ts,
+              tests/integration.test.ts.\\n\\nCommands run: git diff/stat vs recorded and current
+              plan bases, kspec task get, kspec item get, grep for AC annotations, kspec validate,
+              fresh temp-project `init` / `init --setup` / `item set --slug` probes, and full `npm
+              test`.\\n\\nClaims verified: the default module resolves after init; slug edits keep
+              `@main` canonical; init/setup output still omit the default-module guidance; full
+              suite passes.\\n\\nCategories searched: correctness, compatibility, output/UX
+              requirements, test quality, integration, and AC coverage."
+            created_at: 2026-04-15T08:34:59.783Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-15T08:18:04.017Z
-    updated_at: 2026-04-15T08:34:56.915Z
+    updated_at: 2026-04-15T08:34:59.783Z
     notes: []
   - _ulid: 01KP83KVZBC40W7C77XQ2DWG2R
     slugs: []
