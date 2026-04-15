@@ -33,6 +33,7 @@ function runKspecAsync(args: string[], cwd: string): Promise<ProcResult> {
       env: {
         ...process.env,
         KSPEC_AUTHOR: "@test",
+        KSPEC_NO_DAEMON: "1",
         HOME: path.join(cwd, ".test-home"),
       },
       stdio: ["ignore", "pipe", "pipe"],
