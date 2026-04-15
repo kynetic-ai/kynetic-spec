@@ -147881,6 +147881,19 @@ reviews:
         runner: vitest
         created_at: 2026-04-15T23:22:43.950Z
         completed_at: 2026-04-15T23:22:43.950Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Initialized a temp project, forced .kspec state to lastKnownVersion=0.8.0, kept manifest
+          task_storage.format=split, rewrote the tasks file to a monolithic task with inline notes,
+          then ran dist/cli/index.js upgrade --json. The Task storage migration step reported
+          'skipped: already using split format' and the monolithic YAML remained unchanged."
+        name: manual upgrade reproduction
+        required: false
+        runner: manual
+        created_at: 2026-04-15T23:22:55.885Z
+        completed_at: 2026-04-15T23:22:55.885Z
     events:
       - _ulid: 01KP9PFATH3F0EA7S0SEZSRHY3
         actor: Jacob Chapel
@@ -147930,6 +147943,13 @@ reviews:
           status: pass
           name: upgrade-command tests
         timestamp: 2026-04-15T23:22:44.932Z
+      - _ulid: 01KP9Q8XYDQ9FJ38T60DJHFE8N
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: manual upgrade reproduction
+        timestamp: 2026-04-15T23:22:56.845Z
     examined_commit: 4a024fed7210a6d4e75ec6705cba591d27320347
     external_links: []
     lifecycle_state: open
@@ -147985,5 +148005,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-15T23:08:58.065Z
-    updated_at: 2026-04-15T23:22:43.950Z
+    updated_at: 2026-04-15T23:22:55.885Z
     notes: []
