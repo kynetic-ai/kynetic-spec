@@ -14314,6 +14314,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-15T09:09:50.024Z
+  - _ulid: 01KP8784E3MQ27E22AZRN7YZ55
+    type: success
+    content: "Fix cycle 5 on @task-complete-gitignore: cherry-pick strategy for branch decontamination
+      worked cleanly. Reset to integration target + cherry-pick task-specific commits resolved the
+      'unrelated work in branch' blocker in one pass with no conflicts. Pattern: when a task branch
+      has accumulated merge pollution, identify task-specific commits via git log filtered on
+      affected files, reset to integration target, cherry-pick in order."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-15T09:23:39.076Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
