@@ -26504,7 +26504,7 @@ runs:
     completed_at: 2026-04-15T22:19:08.502Z
   - _ulid: 01KP9NHWMGJ29890AHWY7CXDXP
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -26516,7 +26516,12 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-15T22:54:07.847Z
-        completed_at: 2026-04-15T22:54:07.847Z
+        completed_at: 2026-04-15T22:54:08.717Z
+        notes: "Capture: created success observation @01KP9NKK and friction observation @01KP9NKM."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-15T22:54:08.717Z
+        completed_at: 2026-04-15T22:54:08.717Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-15T22:52:53.264Z
