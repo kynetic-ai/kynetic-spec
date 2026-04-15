@@ -148195,9 +148195,25 @@ reviews:
           status: fail
           name: manual upgrade repro
         timestamp: 2026-04-15T23:55:46.918Z
+      - _ulid: 01KP9S5TSBP9P3R436E13R90HF
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-15T23:56:12.459Z
+      - _ulid: 01KP9S5TSB3RRBENRSAG7WJA03
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-15T23:56:12.459Z
     examined_commit: 35e8acf2da1bea09aec4e82a607e00493b3ca4ac
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -148263,7 +148279,14 @@ reviews:
               the change already happened."
             created_at: 2026-04-15T23:53:55.719Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-15T23:56:12.459Z
     created_at: 2026-04-15T23:42:18.937Z
-    updated_at: 2026-04-15T23:55:45.926Z
+    updated_at: 2026-04-15T23:56:12.459Z
     notes: []
