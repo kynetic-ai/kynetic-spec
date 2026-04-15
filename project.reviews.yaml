@@ -141824,6 +141824,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP836GF1VTA0SRSEJV9C3ESK
         timestamp: 2026-04-15T08:12:52.507Z
+      - _ulid: 01KP836M3SZ2554QPYHQWR2VQE
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP836K5G7Q4RX6DQ8QVJ2MWC
+        timestamp: 2026-04-15T08:12:55.289Z
     examined_commit: ceaa0b225705ec805e8d9189d61457f3757557ed
     external_links: []
     lifecycle_state: open
@@ -141853,9 +141860,29 @@ reviews:
               generic command-success check.
             created_at: 2026-04-15T08:12:51.553Z
         kind: blocker
+      - _ulid: 01KP836K5G7Q4RX6DQ8QVJ2MWC
+        anchor:
+          type: code
+          commit: ceaa0b225705ec805e8d9189d61457f3757557ed
+          line_end: 1319
+          line_start: 1313
+          path: src/cli/commands/setup.ts
+          side: head
+        entries:
+          - _ulid: 01KP836K5HC7NKYMCSA9VB1240
+            author: Jacob Chapel
+            body: "The scaffolded template now hardcodes dispatch settings that do not match the loader's
+              empty-config defaults, so it violates . I verified this with an executable comparison
+              in a temp repo: after   cd /home/chapel/Projects/kynetic-spec-dispatch && kspec
+              setup,  resolves  to \"main\" and  to \"manual_merge\"; deleting  in the same repo
+              resolves those fields to  and \"auto\" respectively. That means scaffolding changes
+              dispatch behavior on first load instead of being behavior-preserving, which is exactly
+              what this AC forbids."
+            created_at: 2026-04-15T08:12:54.321Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-15T08:00:06.572Z
-    updated_at: 2026-04-15T08:12:51.553Z
+    updated_at: 2026-04-15T08:12:54.321Z
     notes: []
   - _ulid: 01KP82G0RY4T338S9QKGMG5QH4
     slugs: []
