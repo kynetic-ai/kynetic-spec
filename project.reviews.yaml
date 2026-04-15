@@ -141421,7 +141421,18 @@ reviews:
     slugs: []
     title: Review task-bootstrap-failure-output-tail
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Test Suites: 2131 passed of 2131; Tests: 7764 passed, 5 skipped of 7769; Duration:
+          1683.6s; clean full-suite pass on reviewed snapshot."
+        name: npm test
+        required: true
+        runner: test-runner
+        created_at: 2026-04-15T07:03:51.929Z
+        completed_at: 2026-04-15T07:03:51.929Z
     events:
       - _ulid: 01KP7YP03XS7PZKDXCYDN6SWG5
         actor: Jacob Chapel
@@ -141436,6 +141447,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-15T06:54:10.729Z
+      - _ulid: 01KP7Z86QZ43E44R4AA2917X68
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-15T07:03:52.831Z
     examined_commit: dc095a697b7ed17340c5951ce6652a7b79a2aebf
     external_links: []
     lifecycle_state: open
@@ -141448,5 +141466,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-15T06:53:56.222Z
-    updated_at: 2026-04-15T06:54:09.813Z
+    updated_at: 2026-04-15T07:03:51.929Z
     notes: []
