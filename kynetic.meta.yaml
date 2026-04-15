@@ -14344,6 +14344,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-15T10:10:57.607Z
+  - _ulid: 01KP8BQ2XY9BS6YBN9BJE3X8YV
+    type: friction
+    content: "Fix cycle resubmit requires needs_work → start → submit (two transitions). In a fix cycle,
+      the agent has already addressed review feedback and just wants to resubmit. The intermediate
+      'task start' step is non-obvious and caused a failed submit attempt. Consider: allow 'task
+      submit' directly from needs_work, or have 'task submit' auto-transition through in_progress."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-15T10:41:43.358Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
