@@ -143048,6 +143048,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-15T08:35:31.829Z
+      - _ulid: 01KP8BJ3SQW8NA3T24PGTVPSYE
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP84EQ62ZM5979GAG1TX8W66
+        timestamp: 2026-04-15T10:39:00.407Z
     examined_commit: 4c30c4d5047b485b566eef3ae492e25338b141cb
     external_links: []
     lifecycle_state: closed
@@ -143076,6 +143082,12 @@ reviews:
               user edits it, but this implementation leaves `main` as the canonical ref and the new
               test locks that behavior in.'
             created_at: 2026-04-15T08:34:49.154Z
+          - _ulid: 01KP8BJ2WWQF340CBNV6FXEK51
+            author: "@claude"
+            body: "Fixed: Replaced alias-addition test with true slug replacement test. Now uses --slug to add
+              new slug and --remove-slug to remove old one, then verifies old slug no longer
+              resolves (expectFail: true) and derive works with the new slug only."
+            created_at: 2026-04-15T10:38:59.483Z
         kind: blocker
       - _ulid: 01KP84EVV3BGTRE1NHTYJ5D9GR
         anchor:
@@ -143140,7 +143152,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T08:35:31.828Z
     created_at: 2026-04-15T08:18:04.017Z
-    updated_at: 2026-04-15T08:35:31.829Z
+    updated_at: 2026-04-15T10:38:59.483Z
     notes: []
   - _ulid: 01KP83KVZBC40W7C77XQ2DWG2R
     slugs: []
