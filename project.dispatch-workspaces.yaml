@@ -52156,7 +52156,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-15T07:05:43.617Z
+      updated_at: 2026-04-15T07:05:59.047Z
     integration:
       status: merged
       detail: integration:merged
@@ -52172,18 +52172,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-15T06:53:07.825Z
-      last_reconciled_at: 2026-04-15T07:05:57.634Z
+      last_reconciled_at: 2026-04-15T07:05:59.047Z
       created_at: 2026-04-15T06:36:42.872Z
-      updated_at: 2026-04-15T07:05:57.634Z
+      updated_at: 2026-04-15T07:05:59.047Z
     workspace_id: dispatch-workspace-01KP7V4BT94ZKMQTSHMPG3BM10
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: dc095a697b7ed17340c5951ce6652a7b79a2aebf
-        last_seen_at: 2026-04-15T06:52:45.350Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-bootstrap-failure-output-tail-01kp7v4b-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-bootstrap-failure-output-tail/01kp7v4b
