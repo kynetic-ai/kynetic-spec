@@ -145742,6 +145742,30 @@ reviews:
           kind: nit
           thread_ulid: 01KP8N2EKAR5J7KHFGYQK7DB00
         timestamp: 2026-04-15T13:25:14.080Z
+      - _ulid: 01KP8NZZ1R7VSGXS9Q102QRW13
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP8N16NTPC859ZXWNNKV9M2D
+        timestamp: 2026-04-15T13:41:20.056Z
+      - _ulid: 01KP8P01DTQ05D12YGGTXD2TMA
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP8N16NTPC859ZXWNNKV9M2D
+        timestamp: 2026-04-15T13:41:22.490Z
+      - _ulid: 01KP8P03S19H38MA76A9EDTC1J
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP8N19XPF6V9N69GKJWH1DNV
+        timestamp: 2026-04-15T13:41:24.897Z
+      - _ulid: 01KP8P05ZVSJ928FPK1HTTHEHQ
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP8N19XPF6V9N69GKJWH1DNV
+        timestamp: 2026-04-15T13:41:27.163Z
     examined_commit: ddf9d4a71f08cf6737492d6a6d04f5cd5f1bd606
     external_links: []
     lifecycle_state: closed
@@ -145770,7 +145794,18 @@ reviews:
               @trait-error-guidance ac-6 for the main not-initialized error path, and the same
               direct 'console.error(...)' pattern appears again in the catch handler below."
             created_at: 2026-04-15T13:24:32.058Z
+          - _ulid: 01KP8NZY4BGW7G44RQ7HFVJ79E
+            author: "@claude"
+            body: 'Fixed: replaced all bare console.error() calls after error() with the details parameter
+              pattern — error(msg, {suggestion: "..."}). In JSON mode, the suggestion is now
+              embedded in the structured error object ({success:false, error:"...",
+              details:{suggestion:"..."}}) instead of appended as plain text. Updated tests to
+              assert that stderr is valid parseable JSON with the suggestion inside the details
+              field.'
+            created_at: 2026-04-15T13:41:19.115Z
         kind: blocker
+        resolved_at: 2026-04-15T13:41:21.566Z
+        resolved_by: "@claude"
       - _ulid: 01KP8N19XPF6V9N69GKJWH1DNV
         anchor:
           type: code
@@ -145790,7 +145825,16 @@ reviews:
               recognizing the 0.10-era probe. That violates the source-version fallback contract and
               can skip or mislabel upgrades for projects in that band."
             created_at: 2026-04-15T13:24:35.382Z
+          - _ulid: 01KP8P02TAAJDFVHNKGX3SC5MQ
+            author: "@claude"
+            body: "Fixed: corrected probe path from .agents/skills/kspec-review-plan.md to
+              .agents/skills/kspec-review-plan/SKILL.md to match the directory-based skill layout
+              that renderers actually produce. Added a dedicated test that creates the review-plan
+              skill in the directory layout and verifies the version probe infers >= 0.10.0."
+            created_at: 2026-04-15T13:41:23.914Z
         kind: blocker
+        resolved_at: 2026-04-15T13:41:26.303Z
+        resolved_by: "@claude"
       - _ulid: 01KP8N2EKAR5J7KHFGYQK7DB00
         entries:
           - _ulid: 01KP8N2EKAE5GH692D4007QPG8
@@ -145818,5 +145862,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T13:25:08.782Z
     created_at: 2026-04-15T13:13:44.243Z
-    updated_at: 2026-04-15T13:25:12.938Z
+    updated_at: 2026-04-15T13:41:26.303Z
     notes: []
