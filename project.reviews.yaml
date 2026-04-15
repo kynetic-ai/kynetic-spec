@@ -145269,7 +145269,18 @@ reviews:
     slugs: []
     title: Review @01KNXYJ4YKHSY076Q3CQ42C6CP (cycle 5)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Ran full suite twice: 2157/2157 suites passed, 7899 passed, 5 skipped, 0 failed on both
+          runs. Second run used cached results with unchanged repo state."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-15T12:18:27.198Z
+        completed_at: 2026-04-15T12:18:27.198Z
     events:
       - _ulid: 01KP8GN9SM18YZB1VJAJB2XQK4
         actor: Jacob Chapel
@@ -145307,6 +145318,13 @@ reviews:
           kind: nit
           thread_ulid: 01KP8H844EZ5SN6ZAWH3T7GJNT
         timestamp: 2026-04-15T12:18:25.486Z
+      - _ulid: 01KP8H87P6CWJNRT1DX6Z3WYS1
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-15T12:18:28.166Z
     examined_commit: 8e05644d232c45e5ba96eb698cbf311367634c03
     external_links: []
     lifecycle_state: closed
@@ -145352,5 +145370,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T12:18:21.523Z
     created_at: 2026-04-15T12:08:07.733Z
-    updated_at: 2026-04-15T12:18:24.526Z
+    updated_at: 2026-04-15T12:18:27.198Z
     notes: []
