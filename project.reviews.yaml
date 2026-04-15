@@ -145904,6 +145904,19 @@ reviews:
         runner: npm
         created_at: 2026-04-15T13:49:57.522Z
         completed_at: 2026-04-15T13:49:57.522Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Running npm test in this snapshot surfaced at least one unrelated repo-wide failure
+          before completion: tests/cli-agent-commands.test.ts reported 5 failed tests while
+          tests/upgrade-command.test.ts passed later in the same run. I did not attribute that
+          existing suite failure to the upgrade diff."
+        name: npm test
+        required: false
+        runner: npm
+        created_at: 2026-04-15T13:50:00.474Z
+        completed_at: 2026-04-15T13:50:00.474Z
     events:
       - _ulid: 01KP8P49516SK4SK77FVBTDSC5
         actor: Jacob Chapel
@@ -145960,6 +145973,13 @@ reviews:
           status: pass
           name: upgrade-command tests
         timestamp: 2026-04-15T13:49:58.584Z
+      - _ulid: 01KP8PFWA6J47XRPZXMZWZZA78
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-04-15T13:50:01.542Z
     examined_commit: 096e915cfb1ae093270734854bfc912b2a29af3f
     external_links: []
     lifecycle_state: open
@@ -146027,5 +146047,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-15T13:43:41.473Z
-    updated_at: 2026-04-15T13:49:57.522Z
+    updated_at: 2026-04-15T13:50:00.474Z
     notes: []
