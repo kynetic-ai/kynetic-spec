@@ -48004,12 +48004,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-15T09:40:08.960Z
+      updated_at: 2026-04-15T09:40:24.336Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-15T09:40:08.960Z
+      updated_at: 2026-04-15T09:40:24.336Z
     integration:
       status: pending
       detail: null
@@ -48017,26 +48017,31 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
       target_commit: 7b1b856564b91f28efc8bbb2d3b8e41034fd9a3f
-      updated_at: 2026-04-15T09:40:08.960Z
-    lifecycle_state: ready
+      updated_at: 2026-04-15T09:40:24.336Z
+    lifecycle_state: integrating
     resolved_base_branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
     task_ref: "@01KNXYJ3PYYG1ABH6SMQ2KRE1S"
     task_slug: task-scaffold-project-config
     timestamps:
       closed_at: null
       last_active_at: 2026-04-15T09:24:06.406Z
-      last_reconciled_at: 2026-04-15T09:40:08.960Z
+      last_reconciled_at: 2026-04-15T09:40:24.336Z
       created_at: 2026-04-11T09:41:17.186Z
-      updated_at: 2026-04-15T09:40:08.960Z
+      updated_at: 2026-04-15T09:40:24.336Z
     workspace_id: dispatch-workspace-01KNXYJ3PYYG1ABH6SMQ2KRE1S
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 190b8142014c536429d48ff1fff298bd62e5a8fd
+        last_seen_at: 2026-04-15T09:40:24.336Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-scaffold-project-config/01knxyj3
-        head: cb88291eb760058eadd9827737b4d49f16569037
-        last_seen_at: 2026-04-15T09:24:02.522Z
+        head: 190b8142014c536429d48ff1fff298bd62e5a8fd
+        last_seen_at: 2026-04-15T09:40:24.336Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3
   - active_role: worker
     base_branch_point: 7b1b856564b91f28efc8bbb2d3b8e41034fd9a3f
