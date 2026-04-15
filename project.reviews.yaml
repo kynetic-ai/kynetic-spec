@@ -145526,6 +145526,12 @@ reviews:
         payload:
           thread_ulid: 01KP8K4HE0PEMFKHYD1J0VR9GR
         timestamp: 2026-04-15T13:09:40.255Z
+      - _ulid: 01KP8M64XBHA6NKAWV107FBZY3
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP8K4M49PWJDQMFVAT3MH1R0
+        timestamp: 2026-04-15T13:09:45.515Z
     examined_commit: 96b4318368a237137685b91bf85214d3e68cc139
     external_links: []
     lifecycle_state: closed
@@ -145611,6 +145617,8 @@ reviews:
               edge cases, error handling, test quality, integration."
             created_at: 2026-04-15T12:51:26.985Z
         kind: nit
+        resolved_at: 2026-04-15T13:09:44.551Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -145620,5 +145628,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T12:52:04.178Z
     created_at: 2026-04-15T12:41:32.241Z
-    updated_at: 2026-04-15T13:09:39.218Z
+    updated_at: 2026-04-15T13:09:44.551Z
     notes: []
