@@ -146669,7 +146669,19 @@ reviews:
     slugs: []
     title: Review task-upgrade-command (cycle 6)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Initialized a temp project, replaced kspec-agents.md with a directory but kept
+          .kspec/.kspec-agents-hash, then ran node dist/cli/index.js upgrade --json. The command
+          exited 0, step 3 reported skipped/already up to date, and the directory remained in place.
+        name: upgrade corrupted agents artifact repro
+        required: true
+        runner: manual
+        created_at: 2026-04-15T20:37:19.383Z
+        completed_at: 2026-04-15T20:37:19.383Z
     events:
       - _ulid: 01KP9D52X866REBTNQQTC6P1HN
         actor: Jacob Chapel
@@ -146684,6 +146696,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-15T20:26:56.361Z
+      - _ulid: 01KP9DSPRCDK0TTG9496TEM835
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: upgrade corrupted agents artifact repro
+        timestamp: 2026-04-15T20:37:20.780Z
     examined_commit: 4a8adcba1d4b7e6ee073f0cff5e9863e728aa8a2
     external_links: []
     lifecycle_state: open
@@ -146696,5 +146715,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-15T20:26:05.097Z
-    updated_at: 2026-04-15T20:26:55.134Z
+    updated_at: 2026-04-15T20:37:19.383Z
     notes: []
