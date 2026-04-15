@@ -332,3 +332,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-15T22:52:12.640Z
+  - _ulid: 01KP9PBP3VVEGM9DA5DSQSSTT7
+    content: "Fix cycle 9: Addressed blocker — step 3 template-loading failures. Changed the silent
+      catch(){ templateSections=[] } to return a failed step result, matching the canonical
+      agents.ts fatal-error behavior. This prevents kspec-agents.md from being overwritten with
+      truncated content missing template sections, and the existing priorStepsAllSucceeded guard
+      blocks version recording. All 49 upgrade tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-15T23:06:58.555Z
