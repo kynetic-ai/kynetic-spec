@@ -135702,6 +135702,16 @@ reviews:
         runner: kspec
         created_at: 2026-04-15T08:56:19.739Z
         completed_at: 2026-04-15T08:56:19.739Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Full suite passed in review snapshot via npm test -- --fresh.
+        name: npm test
+        required: true
+        runner: test-runner
+        created_at: 2026-04-15T08:56:26.402Z
+        completed_at: 2026-04-15T08:56:26.402Z
     events:
       - _ulid: 01KNY1GZQNFEH15NAXKYYFQWY8
         actor: Jacob Chapel
@@ -135751,6 +135761,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP85P6PX1S14NXKR8WPHA4BH
         timestamp: 2026-04-15T08:56:24.169Z
+      - _ulid: 01KP85PB5D39KSQ64G4G9RFM5T
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-15T08:56:27.566Z
     examined_commit: d8602e6f790919893fc9aa7907493193f5f99411
     external_links: []
     lifecycle_state: open
@@ -136374,7 +136391,7 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-11T10:31:13.398Z
-    updated_at: 2026-04-15T08:56:23.006Z
+    updated_at: 2026-04-15T08:56:26.402Z
     notes: []
   - _ulid: 01KP4RAJC8H8RA47SXB1M3K5XK
     slugs: []
