@@ -146921,6 +146921,19 @@ reviews:
         runner: manual
         created_at: 2026-04-15T21:12:07.381Z
         completed_at: 2026-04-15T21:12:07.381Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "`kspec validate` exited 4. Unrelated repo-wide issues remain, including
+          `/home/chapel/Projects/kynetic-spec-dispatch/.kspec/modules/meta.yaml:modules[0].traits.0
+          Expected string, received object`, an orphaned skill directory warning, and broad existing
+          AC coverage warnings."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-15T21:12:16.665Z
+        completed_at: 2026-04-15T21:12:16.665Z
     events:
       - _ulid: 01KP9EZEE0954KEH7M5RK1F57Q
         actor: Jacob Chapel
@@ -147005,6 +147018,13 @@ reviews:
           status: fail
           name: upgrade dry-run parity repro
         timestamp: 2026-04-15T21:12:08.308Z
+      - _ulid: 01KP9FSPCMSEE6AT0ZQCX5G390
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-15T21:12:17.556Z
     examined_commit: 2954ef826857c2ec41850cba22ae384ab50c3e0f
     external_links: []
     lifecycle_state: open
@@ -147158,5 +147178,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-15T20:57:57.440Z
-    updated_at: 2026-04-15T21:12:07.381Z
+    updated_at: 2026-04-15T21:12:16.665Z
     notes: []
