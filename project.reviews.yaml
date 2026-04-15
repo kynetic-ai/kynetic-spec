@@ -141307,6 +141307,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-15T06:48:45.446Z
+      - _ulid: 01KP7YCKA40DAKVNTXZSV48K01
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP7YCJCC82261E681W002BC1
+        timestamp: 2026-04-15T06:48:48.196Z
     examined_commit: 2cb9bf5ee7800327a7978288ffc701e6fed60192
     external_links: []
     lifecycle_state: open
@@ -141335,7 +141342,27 @@ reviews:
               [daemon] Web UI assets found at: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-tests-suppress-cli-auto-start-daemon-01kp78s9-review/dist/web-ui against  and ). The suite-level count rose from 3 to 8 overall, and the remaining current-worktree daemon processes show there are still CLI subprocess paths outside these two env injections. Until the branch finishes with zero new orphan daemons, the leak is not actually closed.
             created_at: 2026-04-15T06:48:21.951Z
         kind: blocker
+      - _ulid: 01KP7YCJCC82261E681W002BC1
+        anchor:
+          type: code
+          commit: 2cb9bf5ee7800327a7978288ffc701e6fed60192
+          line_end: 189
+          line_start: 187
+          path: tests/helpers/cli.ts
+          side: head
+        entries:
+          - _ulid: 01KP7YCJCCG3F22MZ8KZJ158A1
+            author: Jacob Chapel
+            body: This patch is still incomplete against AC1. Even with KSPEC_NO_DAEMON="1" added here, a clean
+              npm test run left new orphan daemon processes from this worktree behind
+              (dist/daemon/index.js against /tmp/kspec-test-lMGeN7 and /tmp/kspec-test-VSRfEc). The
+              suite-level count rose from 3 to 8 overall, and the remaining current-worktree daemon
+              processes show there are still CLI subprocess paths outside these two env injections.
+              Until the branch finishes with zero new orphan daemons, the leak is not actually
+              closed.
+            created_at: 2026-04-15T06:48:47.244Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-15T06:37:08.564Z
-    updated_at: 2026-04-15T06:48:44.459Z
+    updated_at: 2026-04-15T06:48:47.244Z
     notes: []
