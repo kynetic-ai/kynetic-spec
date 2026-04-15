@@ -147135,6 +147135,12 @@ reviews:
         payload:
           thread_ulid: 01KP9FQJYMVABKK0S7YWKCB765
         timestamp: 2026-04-15T22:02:55.426Z
+      - _ulid: 01KP9JPJ0Q9FGM06Y4QFN7H1SB
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP9FR8WAQYH307V98ZCKVV7Q
+        timestamp: 2026-04-15T22:03:00.503Z
     examined_commit: 2954ef826857c2ec41850cba22ae384ab50c3e0f
     external_links: []
     lifecycle_state: closed
@@ -147341,6 +147347,8 @@ reviews:
               integration. Findings recorded in correctness/dry-run semantics and AC coverage.
             created_at: 2026-04-15T21:11:30.954Z
         kind: nit
+        resolved_at: 2026-04-15T22:02:59.550Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -147350,5 +147358,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T21:12:40.158Z
     created_at: 2026-04-15T20:57:57.440Z
-    updated_at: 2026-04-15T22:02:54.362Z
+    updated_at: 2026-04-15T22:02:59.550Z
     notes: []
