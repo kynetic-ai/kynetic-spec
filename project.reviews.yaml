@@ -147386,6 +147386,13 @@ reviews:
           kind: nit
           thread_ulid: 01KP9KFJRHZTJBXJ2M2J3R0H1T
         timestamp: 2026-04-15T22:16:41.508Z
+      - _ulid: 01KP9KFPN13998FG1VV4FNGDSA
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP9KFNNMTK0SB3DHJ70QPX0H
+        timestamp: 2026-04-15T22:16:44.450Z
     examined_commit: d889ee3c76b715e9b8cc3872a9ae790dc86a3540
     external_links: []
     lifecycle_state: open
@@ -147413,7 +147420,26 @@ reviews:
               integration."
             created_at: 2026-04-15T22:16:40.465Z
         kind: nit
+      - _ulid: 01KP9KFNNMTK0SB3DHJ70QPX0H
+        anchor:
+          type: code
+          commit: d889ee3c76b715e9b8cc3872a9ae790dc86a3540
+          line_end: 223
+          line_start: 219
+          path: src/cli/commands/upgrade.ts
+          side: head
+        entries:
+          - _ulid: 01KP9KFNNM4DGBKBMMEW83YKP9
+            author: Jacob Chapel
+            body: The version-fallback probe treats any existing path at  as evidence for the 0.8+ skills
+              layout, but the spec only allows inference from recognizable project shapes. In a
+              repro project with an old manifest () and a corrupted  regular
+              file,  reported  and  instead of . That misclassifies malformed state as a known
+              version and skips the oldest-supported fallback path the spec requires for
+              unrecognizable projects.
+            created_at: 2026-04-15T22:16:43.444Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-15T22:05:51.870Z
-    updated_at: 2026-04-15T22:16:40.465Z
+    updated_at: 2026-04-15T22:16:43.444Z
     notes: []
