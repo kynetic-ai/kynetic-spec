@@ -145508,6 +145508,12 @@ reviews:
         payload:
           thread_ulid: 01KP8K4ER0SQQ1EDQ39GNS1KR3
         timestamp: 2026-04-15T13:09:15.870Z
+      - _ulid: 01KP8M5HVH254JNQ7C9BNDZ7XC
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP8K4ER0SQQ1EDQ39GNS1KR3
+        timestamp: 2026-04-15T13:09:26.001Z
     examined_commit: 96b4318368a237137685b91bf85214d3e68cc139
     external_links: []
     lifecycle_state: closed
@@ -145544,6 +145550,8 @@ reviews:
               orphan removal, non-managed skill preservation, and dry-run behavior."
             created_at: 2026-04-15T13:09:14.987Z
         kind: blocker
+        resolved_at: 2026-04-15T13:09:25.051Z
+        resolved_by: "@claude"
       - _ulid: 01KP8K4HE0PEMFKHYD1J0VR9GR
         anchor:
           type: code
@@ -145590,5 +145598,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T12:52:04.178Z
     created_at: 2026-04-15T12:41:32.241Z
-    updated_at: 2026-04-15T13:09:14.987Z
+    updated_at: 2026-04-15T13:09:25.051Z
     notes: []
