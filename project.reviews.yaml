@@ -142211,6 +142211,13 @@ reviews:
           kind: nit
           thread_ulid: 01KP84ASM79KXGWJMSZ7NVYC65
         timestamp: 2026-04-15T08:32:41.575Z
+      - _ulid: 01KP84AXK6ZTY0R2V6Z5MVMFQT
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP84AWF29P91G9EXY8T0Y1FA
+        timestamp: 2026-04-15T08:32:44.647Z
     examined_commit: f2ac5145d4ad013362635154634edcf368e694d0
     external_links: []
     lifecycle_state: open
@@ -142314,7 +142321,25 @@ reviews:
               integration
             created_at: 2026-04-15T08:32:40.584Z
         kind: nit
+      - _ulid: 01KP84AWF29P91G9EXY8T0Y1FA
+        anchor:
+          type: code
+          commit: f2ac5145d4ad013362635154634edcf368e694d0
+          line_end: 146
+          line_start: 144
+          path: src/cli/commands/plan-import.ts
+          side: head
+        entries:
+          - _ulid: 01KP84AWF2J8GDW7MZ84QM98DX
+            author: Jacob Chapel
+            body: "Plan import with --into returns before the new parser validation runs, so re-imports still
+              accept malformed plan documents and skip the new empty-plan warning path. I reproduced
+              this in an isolated temp project: after creating a plan, importing a title-less file
+              with --into exited 0 and updated the plan content instead of failing. That leaves a
+              straightforward path to store content that this task says import must reject."
+            created_at: 2026-04-15T08:32:43.490Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-15T08:20:09.323Z
-    updated_at: 2026-04-15T08:32:40.584Z
+    updated_at: 2026-04-15T08:32:43.490Z
     notes: []
