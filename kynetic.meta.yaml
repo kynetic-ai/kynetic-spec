@@ -14441,6 +14441,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-15T18:40:58.320Z
+  - _ulid: 01KP992XG81ZKKW2V3N8H1DBF2
+    type: friction
+    content: Review reruns can silently reuse cached npm test results. During this review, a second 'npm
+      test' invocation replayed cached failures instead of re-executing, which conflicted with the
+      review gate to run failing tests twice for flake classification. Review guidance should either
+      require '--fresh' for reruns or the runner should make replayed results unmistakable in review
+      contexts.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-15T19:14:59.720Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
