@@ -141454,6 +141454,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-15T07:03:52.831Z
+      - _ulid: 01KP7Z89EQDV8D3CABQE9XW3MS
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KP7Z88FD7STPVEYR91DQBMYB
+        timestamp: 2026-04-15T07:03:55.607Z
     examined_commit: dc095a697b7ed17340c5951ce6652a7b79a2aebf
     external_links: []
     lifecycle_state: open
@@ -141463,8 +141470,33 @@ reviews:
       content_hash: ""
       ref: "@01KP7V4BT94ZKMQTSHMPG3BM10"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KP7Z88FD7STPVEYR91DQBMYB
+        entries:
+          - _ulid: 01KP7Z88FD58Q7Y2JQ6JSWP4XY
+            author: Jacob Chapel
+            body: >-
+              Review evidence log:
+
+              Files read: src/agent-runtime/bootstrap.ts,
+              tests/dispatch-runtime-bootstrap-contract.test.ts, AGENTS.md, kspec-agents.md.
+
+              Commands run: git diff --stat/name-only/unified against dev base, kspec task get
+              @01KP7V4BT94ZKMQTSHMPG3BM10, kspec item get @dispatch-runtime-bootstrap-contract,
+              kspec review for-task @01KP7V4BT94ZKMQTSHMPG3BM10, kspec validate, rg for AC
+              annotations, rg for summarizeOutput/failureMessage usages, command -v python3, npm
+              test.
+
+              Claims verified: summarizeOutput feeds both persisted bootstrap failureMessage and
+              failed step output on bootstrap-step failure; new regression test behaviorally
+              exercises a long output stream and proves the end-of-stream sentinel survives in both
+              surfaces; full suite passes on the reviewed snapshot.
+
+              Categories searched: correctness, edge cases, error handling, test quality,
+              integration. No blocking issues found.
+            created_at: 2026-04-15T07:03:54.605Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-15T06:53:56.222Z
-    updated_at: 2026-04-15T07:03:51.929Z
+    updated_at: 2026-04-15T07:03:54.605Z
     notes: []
