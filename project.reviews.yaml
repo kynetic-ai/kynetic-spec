@@ -145935,6 +145935,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP8PEMY72M9CM13MBAJ05Y5E
         timestamp: 2026-04-15T13:49:22.375Z
+      - _ulid: 01KP8PFPFVND9YZP0892FGCTDY
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KP8PFNF6GGJAZCC971CF5KT4
+        timestamp: 2026-04-15T13:49:55.579Z
     examined_commit: 096e915cfb1ae093270734854bfc912b2a29af3f
     external_links: []
     lifecycle_state: open
@@ -145982,7 +145989,25 @@ reviews:
               regenerated."
             created_at: 2026-04-15T13:49:21.223Z
         kind: blocker
+      - _ulid: 01KP8PFNF6GGJAZCC971CF5KT4
+        entries:
+          - _ulid: 01KP8PFNF6KREA1CRV1CBBPA0K
+            author: Jacob Chapel
+            body: "Review evidence log: Files read: src/cli/commands/upgrade.ts, src/cli/commands/index.ts,
+              src/cli/index.ts, tests/upgrade-command.test.ts, src/cli/output.ts. Commands run:
+              kspec task get @01KNXYJ5JCR99F76N8N7265E0B; kspec item get
+              @single-command-version-upgrade; kspec review for-task @01KNXYJ5JCR99F76N8N7265E0B;
+              kspec review get @01KP8MDE1KYXM17FMAWS8F6JJS; git diff/stat against
+              0501051eb..096e915cf; grep AC annotations in tests/upgrade-command.test.ts; kspec
+              validate; npm test; npm test -- --run tests/upgrade-command.test.ts; manual CLI
+              reproductions for unknown-version and failed-step state-write behavior. Claims
+              verified: JSON error guidance is now structured correctly; review-plan probe path fix
+              is present; upgrade-command test suite passes; unknown-version behavior and
+              post-failure version recording are both reproducible defects. Categories searched:
+              correctness, edge cases, error handling, test quality, integration."
+            created_at: 2026-04-15T13:49:54.534Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-15T13:43:41.473Z
-    updated_at: 2026-04-15T13:49:21.223Z
+    updated_at: 2026-04-15T13:49:54.534Z
     notes: []
