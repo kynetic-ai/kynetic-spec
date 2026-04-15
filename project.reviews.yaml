@@ -145658,6 +145658,18 @@ reviews:
         runner: grep
         created_at: 2026-04-15T13:24:38.671Z
         completed_at: 2026-04-15T13:24:38.671Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Independent full-suite run from this snapshot produced only PASS output, including
+          tests/upgrade-command.test.ts (39 tests), with no failing test names or error snippets
+          observed during the run.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-15T13:24:41.969Z
+        completed_at: 2026-04-15T13:24:41.969Z
     events:
       - _ulid: 01KP8MDE1JW3AJXP22T670WR93
         actor: Jacob Chapel
@@ -145700,6 +145712,13 @@ reviews:
           status: pass
           name: AC annotation scan
         timestamp: 2026-04-15T13:24:39.776Z
+      - _ulid: 01KP8N1HHXDTR1DFWDSY6T52X6
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-15T13:24:43.197Z
     examined_commit: ddf9d4a71f08cf6737492d6a6d04f5cd5f1bd606
     external_links: []
     lifecycle_state: open
@@ -145751,5 +145770,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-15T13:13:44.243Z
-    updated_at: 2026-04-15T13:24:38.671Z
+    updated_at: 2026-04-15T13:24:41.969Z
     notes: []
