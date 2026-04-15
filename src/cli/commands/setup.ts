@@ -1355,6 +1355,7 @@ export async function runSetupPipeline(
 
       const forceGitignore = options.force ?? false;
 
+      // AC: @trait-idempotent-file-scaffold ac-step-reports-action
       if (dryRun) {
         const gitignorePath = path.join(projectDir, ".gitignore");
         let gitignoreContent = "";
@@ -1368,12 +1369,16 @@ export async function runSetupPipeline(
 
         // AC: @trait-idempotent-file-scaffold ac-existing-file-preserved-without-force
         if (fileExists && parseManagedBlock(gitignoreContent).block === null && !forceGitignore) {
-          // File exists without managed block and no force → would be skipped
+          actions.push("skipped .gitignore (exists without managed block, use --force to add)");
+        } else if (fileExists && parseManagedBlock(gitignoreContent).block === null && forceGitignore) {
+          // AC: @trait-idempotent-file-scaffold ac-force-backs-up-before-overwrite
+          const entries = buildKspecGitignoreEntries(shadowDir, worktreeRoot);
+          actions.push(`force-recreate .gitignore (backup + add managed block: ${entries.join(", ")})`);
         } else {
           const dryResult = updateManagedBlock(gitignoreContent, buildKspecGitignoreEntries(shadowDir, worktreeRoot));
           if (dryResult.result.changed) {
             if (dryResult.result.blockCreated) {
-              actions.push(`add to .gitignore: ${dryResult.result.entriesAdded.join(", ")}`);
+              actions.push(`create .gitignore with managed block: ${dryResult.result.entriesAdded.join(", ")}`);
             } else {
               actions.push(`add to .gitignore: ${dryResult.result.entriesAdded.join(", ")}`);
             }
@@ -1381,16 +1386,21 @@ export async function runSetupPipeline(
         }
       } else {
         const gitignoreResult = await ensureKspecGitignore(projectDir, { shadowDir, worktreeRoot, force: forceGitignore });
-        if (gitignoreResult.changed) {
-          if (gitignoreResult.blockCreated) {
-            actions.push("created kspec managed block in .gitignore");
+        if (gitignoreResult.skipped) {
+          // AC: @trait-idempotent-file-scaffold ac-existing-file-preserved-without-force
+          actions.push("skipped .gitignore (exists without managed block, use --force to add)");
+        } else if (gitignoreResult.changed) {
+          if (gitignoreResult.backupPath) {
+            // AC: @trait-idempotent-file-scaffold ac-force-backs-up-before-overwrite
+            actions.push(`backed up .gitignore to ${path.basename(gitignoreResult.backupPath)}`);
+            actions.push(`force-recreated .gitignore with managed block: ${gitignoreResult.entriesAdded.join(", ")}`);
+          } else if (gitignoreResult.blockCreated) {
+            // AC: @trait-idempotent-file-scaffold ac-fresh-file-creation
+            actions.push(`created .gitignore with managed block: ${gitignoreResult.entriesAdded.join(", ")}`);
           } else {
             actions.push(
               `added to .gitignore: ${gitignoreResult.entriesAdded.join(", ")}`,
             );
-          }
-          if (gitignoreResult.backupPath) {
-            actions.push(`backed up .gitignore to ${path.basename(gitignoreResult.backupPath)}`);
           }
         }
       }

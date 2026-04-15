@@ -490,30 +490,71 @@ describe("kspec init gitignore integration", () => {
   });
 
   // AC: @trait-idempotent-file-scaffold ac-step-reports-action
-  it("setup reports gitignore actions in summary", () => {
-    // First init to set up project
+  it("setup reports 'created' when .gitignore is freshly created", () => {
+    // Init creates the project and .gitignore in one step
     kspec("init --no-prompt", testDir);
 
-    // Remove managed block to force repair
-    const gitignorePath = path.join(testDir, ".gitignore");
-    const content = readTestOutputSync(gitignorePath);
-    const stripped = content
-      .split("\n")
-      .filter(
-        (line) =>
-          line.trim() !== MANAGED_BLOCK_START &&
-          line.trim() !== MANAGED_BLOCK_END &&
-          !KSPEC_GITIGNORE_ENTRIES.includes(line.trim()),
-      )
-      .join("\n");
-    writeFileSyncSafe(gitignorePath, stripped);
+    // Remove .gitignore entirely so setup will create it fresh
+    const { unlinkSync } = require("node:fs");
+    unlinkSync(path.join(testDir, ".gitignore"));
 
-    // Run setup with --force — managed block was removed so force is needed
-    // to re-create it (per @trait-idempotent-file-scaffold, without force
-    // an existing file without a managed block is preserved byte-for-byte)
+    const result = kspec("setup --agent claude-code", testDir);
+    expect(result.exitCode).toBe(0);
+    const output = result.stdout + result.stderr;
+    expect(output).toContain("created .gitignore with managed block");
+  });
+
+  // AC: @trait-idempotent-file-scaffold ac-step-reports-action
+  it("setup reports 'skipped' when .gitignore exists without managed block and no --force", () => {
+    kspec("init --no-prompt", testDir);
+
+    // Replace .gitignore with user-only content (no managed block)
+    writeFileSyncSafe(path.join(testDir, ".gitignore"), "node_modules/\ndist/\n");
+
+    const result = kspec("setup --agent claude-code", testDir);
+    expect(result.exitCode).toBe(0);
+    const output = result.stdout + result.stderr;
+    expect(output).toContain("skipped .gitignore");
+  });
+
+  // AC: @trait-idempotent-file-scaffold ac-step-reports-action
+  it("setup reports 'force-recreated' and backup path when --force is used on existing .gitignore without managed block", () => {
+    kspec("init --no-prompt", testDir);
+
+    // Replace .gitignore with user-only content (no managed block)
+    writeFileSyncSafe(path.join(testDir, ".gitignore"), "node_modules/\ndist/\n");
+
     const result = kspec("setup --agent claude-code --force", testDir);
     expect(result.exitCode).toBe(0);
-    expect(result.stdout + result.stderr).toMatch(/gitignore|managed block/i);
+    const output = result.stdout + result.stderr;
+    expect(output).toContain("force-recreated .gitignore");
+    expect(output).toMatch(/backed up .gitignore to .+\.backup-/);
+  });
+
+  // AC: @trait-idempotent-file-scaffold ac-step-reports-action
+  it("setup --dry-run reports 'skipped' for .gitignore without managed block", () => {
+    kspec("init --no-prompt", testDir);
+
+    // Replace .gitignore with user-only content (no managed block)
+    writeFileSyncSafe(path.join(testDir, ".gitignore"), "node_modules/\ndist/\n");
+
+    const result = kspec("setup --agent claude-code --dry-run", testDir);
+    expect(result.exitCode).toBe(0);
+    const output = result.stdout + result.stderr;
+    expect(output).toContain("skipped .gitignore");
+  });
+
+  // AC: @trait-idempotent-file-scaffold ac-step-reports-action
+  it("setup --dry-run reports 'force-recreate' for .gitignore with --force", () => {
+    kspec("init --no-prompt", testDir);
+
+    // Replace .gitignore with user-only content (no managed block)
+    writeFileSyncSafe(path.join(testDir, ".gitignore"), "node_modules/\ndist/\n");
+
+    const result = kspec("setup --agent claude-code --dry-run --force", testDir);
+    expect(result.exitCode).toBe(0);
+    const output = result.stdout + result.stderr;
+    expect(output).toContain("force-recreate .gitignore");
   });
 });
 
