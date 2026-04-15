@@ -146772,6 +146772,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-15T20:37:48.450Z
+      - _ulid: 01KP9ETR11WDY6AGR3TGQ98651
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP9DSSF4H7YC9V91W6EP0MZP
+        timestamp: 2026-04-15T20:55:23.425Z
     examined_commit: 4a8adcba1d4b7e6ee073f0cff5e9863e728aa8a2
     external_links: []
     lifecycle_state: closed
@@ -146810,6 +146816,15 @@ reviews:
               ac-regenerates-agents-file because upgrade neither regenerates the auto-generated file
               nor reports the step as failed when the rendered artifact is invalid.
             created_at: 2026-04-15T20:37:23.557Z
+          - _ulid: 01KP9ETQ2RKMAJMH6AJBJ84D5T
+            author: "@claude"
+            body: "Fixed: The regeneration fast-path now uses fs.stat() with isFile() instead of fs.access().
+              When kspec-agents.md is not a regular file (e.g., a directory), it is removed and
+              regeneration proceeds regardless of hash match. Added a dedicated test that replaces
+              kspec-agents.md with a directory after a successful run and verifies recovery. Updated
+              existing tests that relied on the EISDIR failure to use the skills directory
+              corruption approach instead."
+            created_at: 2026-04-15T20:55:22.456Z
         kind: blocker
       - _ulid: 01KP9DT6QF0C8C9YTK7VQB7DEK
         entries:
@@ -146837,5 +146852,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T20:37:48.449Z
     created_at: 2026-04-15T20:26:05.097Z
-    updated_at: 2026-04-15T20:37:48.450Z
+    updated_at: 2026-04-15T20:55:22.456Z
     notes: []
