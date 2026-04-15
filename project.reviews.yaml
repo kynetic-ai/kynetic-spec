@@ -145996,6 +145996,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-15T13:50:26.686Z
+      - _ulid: 01KP970CM6XB4YXX2D6V7HTHW1
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP8PEEBS0K8BN3WDAPX6G7MR
+        timestamp: 2026-04-15T18:38:39.750Z
     examined_commit: 096e915cfb1ae093270734854bfc912b2a29af3f
     external_links: []
     lifecycle_state: closed
@@ -146023,6 +146029,14 @@ reviews:
               contradicts the spec, which requires the command to report the source version as
               unknown while still proceeding with the full pipeline."
             created_at: 2026-04-15T13:49:14.489Z
+          - _ulid: 01KP970BK9D3G9SCTEFA6HCJQ4
+            author: "@claude"
+            body: "Fixed: Renamed anyProbeMatched to versionedProbeMatched and removed the line that set it true
+              for mere .kspec/ existence (probe 1). Now only versioned probes (2-5: manifest fields,
+              config, skills dir, review-plan skill) set the flag. A project with .kspec/ but no
+              recognizable version signals correctly returns unknown confidence. Test updated to
+              assert confidence === 'unknown' strictly."
+            created_at: 2026-04-15T18:38:38.697Z
         kind: blocker
       - _ulid: 01KP8PEMY72M9CM13MBAJ05Y5E
         anchor:
@@ -146070,5 +146084,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T13:50:26.686Z
     created_at: 2026-04-15T13:43:41.473Z
-    updated_at: 2026-04-15T13:50:26.686Z
+    updated_at: 2026-04-15T18:38:38.697Z
     notes: []
