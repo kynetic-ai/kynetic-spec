@@ -25796,7 +25796,7 @@ runs:
     completed_at: 2026-04-14T20:26:01.009Z
   - _ulid: 01KP7JT01SDN8FD25NW0M6K02V
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -25835,7 +25835,22 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-04-15T03:27:43.827Z
-        completed_at: 2026-04-15T03:27:43.827Z
+        completed_at: 2026-04-15T03:29:07.293Z
+        notes: "Friction coverage check: (1) summarizeOutput tail-slicing = UNTRACKED, no inbox/spec/task
+          match. (2) Orphan -review worktree cleanup on bootstrap failure = PARTIALLY covered — the
+          'Workspace registry management UI and CLI' inbox item covers repair tooling but not the
+          automatic cleanup-on-failure case; capture separately. (3) 'workflow show' missing step
+          content = PARTIALLY covered by existing 'Workflow CLI improvements' inbox item that groups
+          workflow show output-format fixes — overlaps enough that a new item would duplicate; note
+          the specific friction under that area if it hasn't consolidated it. (4) 'kspec tasks list
+          --state' flag-name inconsistency = COVERED by 'CLI DX: audit and normalize argument naming
+          across all subcommands' inbox item. (5) Implicit CLI auto-start surprise = just captured
+          as inbox item for skipCommands review this session. Net: two new items to propose —
+          summarizeOutput tail fix, and bootstrap-failure reviewer worktree cleanup."
+      - status: completed
+        step_index: 3
+        started_at: 2026-04-15T03:29:07.293Z
+        completed_at: 2026-04-15T03:29:07.293Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-15T03:26:24.313Z
