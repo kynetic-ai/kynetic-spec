@@ -348,3 +348,23 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-15T08:49:22.145Z
+  - _ulid: 01KP86C4J977REW834P4V1804Z
+    content: >-
+      Fix cycle 9: addressed blocker — @trait-error-guidance ac-6 not satisfied on scaffold-failure
+      path in JSON mode.
+
+
+      Root cause: runSetupPipeline printed human-readable summary to stdout unconditionally (even in
+      --json mode), contaminating the JSON output. The JSON payload also lacked error/suggestion
+      fields.
+
+
+      Fix: (1) Guard pipeline summary with !isStructuredMode() so stdout stays clean. (2) Add
+      success, error, and suggestion fields to JSON output when scaffold fails. (3) Rewrite test to
+      JSON.parse(stdout) and assert on structured error fields instead of substring checks.
+
+
+      All 7824 tests pass (20 scaffold-specific).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-15T09:08:21.705Z
