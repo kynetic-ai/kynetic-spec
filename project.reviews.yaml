@@ -145105,6 +145105,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-15T11:47:36.903Z
+      - _ulid: 01KP8FGQTNEAY5NTPAKJX621G0
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP8FEWHNT2R4Z61EJK4YAY2H
+        timestamp: 2026-04-15T11:48:09.686Z
     examined_commit: 14aa905f12b918a953625d110336eb5411cb3a14
     external_links: []
     lifecycle_state: closed
@@ -145151,6 +145157,8 @@ reviews:
               follow-up flows track the edited default-module slug."
             created_at: 2026-04-15T11:47:08.981Z
         kind: blocker
+        resolved_at: 2026-04-15T11:48:08.808Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KP8FF372X4JBGNW9V4CNDY2F
         anchor:
           type: code
@@ -145204,5 +145212,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T11:47:36.903Z
     created_at: 2026-04-15T11:40:25.702Z
-    updated_at: 2026-04-15T11:47:36.903Z
+    updated_at: 2026-04-15T11:48:08.808Z
     notes: []
