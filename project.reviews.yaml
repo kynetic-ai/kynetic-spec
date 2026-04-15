@@ -135667,7 +135667,19 @@ reviews:
     slugs: []
     title: Review task-complete-gitignore
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Repo-wide pre-existing metadata validation failure in .kspec/modules/meta.yaml (Expected
+          string, received object) plus existing AC annotation warnings; unchanged by this task
+          review snapshot.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-15T08:56:04.127Z
+        completed_at: 2026-04-15T08:56:04.127Z
     events:
       - _ulid: 01KNY1GZQNFEH15NAXKYYFQWY8
         actor: Jacob Chapel
@@ -135682,6 +135694,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-11T10:31:23.185Z
+      - _ulid: 01KP85NNCD0SNV18KDKQEA9JFF
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-15T08:56:05.261Z
     examined_commit: d8602e6f790919893fc9aa7907493193f5f99411
     external_links: []
     lifecycle_state: open
@@ -135694,7 +135713,7 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-11T10:31:13.398Z
-    updated_at: 2026-04-11T10:31:22.320Z
+    updated_at: 2026-04-15T08:56:04.127Z
     notes: []
   - _ulid: 01KP4RAJC8H8RA47SXB1M3K5XK
     slugs: []
