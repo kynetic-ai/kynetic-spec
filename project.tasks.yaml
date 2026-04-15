@@ -26219,7 +26219,7 @@
   type: task
   spec_ref: "@single-command-version-upgrade"
   plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-scaffold-project-config"
@@ -26233,7 +26233,7 @@
     - upgrade
     - setup
   review_ref: "@01KP8JJFAHJQ86FK4ZQTG7RGJK"
-  notes_count: 2
+  notes_count: 3
   todos_count: 0
   created_at: 2026-04-11T09:39:26.412Z
   started_at: 2026-04-15T12:21:31.352Z
