@@ -145980,9 +145980,25 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-04-15T13:50:01.542Z
+      - _ulid: 01KP8PGMVYTC0GYSS43N0FQTX3
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-15T13:50:26.686Z
+      - _ulid: 01KP8PGMVYCM76D5KKNYXFNSED
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-15T13:50:26.686Z
     examined_commit: 096e915cfb1ae093270734854bfc912b2a29af3f
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -146045,7 +146061,14 @@ reviews:
               correctness, edge cases, error handling, test quality, integration."
             created_at: 2026-04-15T13:49:54.534Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-15T13:50:26.686Z
     created_at: 2026-04-15T13:43:41.473Z
-    updated_at: 2026-04-15T13:50:00.474Z
+    updated_at: 2026-04-15T13:50:26.686Z
     notes: []
