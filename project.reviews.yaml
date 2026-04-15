@@ -144007,6 +144007,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-15T09:25:42.977Z
+      - _ulid: 01KP87ZTYBW303QB7TVV8MXHHD
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KP87ZT00WW0Q1ZRZ0QHPAD5R
+        timestamp: 2026-04-15T09:36:35.787Z
     examined_commit: acdee373fbcc07795aaf22e3f724e66542cfee0b
     external_links: []
     lifecycle_state: open
@@ -144016,8 +144023,28 @@ reviews:
       content_hash: ""
       ref: "@01KNXYJ40TP75YKCV51RM6H6YZ"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KP87ZT00WW0Q1ZRZ0QHPAD5R
+        entries:
+          - _ulid: 01KP87ZT0046X3D3PXRGADH9X4
+            author: Jacob Chapel
+            body: "Evidence log\\nFiles read: src/parser/gitignore.ts, src/parser/shadow.ts,
+              src/cli/commands/setup.ts, src/cli/commands/init.ts,
+              tests/gitignore-managed-block.test.ts.\\nCommands run: git diff/log/merge-base against
+              plan/plan-init-setup-and-upgrade-rough-edges/01knvahv, kspec task get, kspec item get
+              @complete-auto-gitignore, kspec item get @trait-idempotent-file-scaffold, kspec review
+              get prior review, kspec validate on head and base, AC annotation scans, npm test, and
+              temporary-repo CLI reproductions for init/setup skip+force paths.\\nClaims verified:
+              branch now contains only the five gitignore commits; npm test passes on this snapshot;
+              kspec validate failure is pre-existing on the integration branch; setup summary output
+              for skip/force cases does not match the trait action contract.\\nCategories searched:
+              correctness (1 blocker in setup summary reporting), edge cases (custom shadow/worktree
+              root and absolute worktree root handling read/tested), error handling (no additional
+              issue found), test quality (new tests miss the summary-action contract), integration
+              (no merge-scope drift remains)."
+            created_at: 2026-04-15T09:36:34.816Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-15T09:25:30.238Z
-    updated_at: 2026-04-15T09:25:42.048Z
+    updated_at: 2026-04-15T09:36:34.816Z
     notes: []
