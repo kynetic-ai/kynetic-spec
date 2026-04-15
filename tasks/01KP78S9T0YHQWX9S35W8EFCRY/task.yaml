@@ -1,0 +1,139 @@
+_ulid: 01KP78S9T0YHQWX9S35W8EFCRY
+slugs:
+  - task-tests-suppress-cli-auto-start-daemon
+title: Suppress CLI auto-start daemon in tests to stop orphan daemon leak
+type: bug
+description: >-
+  ## What
+
+
+  Add `KSPEC_NO_DAEMON=1` as the default env for tests that spawn the `kspec` CLI subprocess so
+  `maybeAutoStartDaemon()` (src/cli/index.ts:143) does not fire implicitly and leave orphan detached
+  daemons pointing at soon-to-be-deleted test fixtures.
+
+
+  ## Why
+
+
+  On 2026-04-14 a root-cause investigation of four blocked tasks (all hitting
+  `build-workspace-artifacts` bootstrap failures during dispatch reviewer provisioning) surfaced 45
+  orphan `dist/daemon/index.js` processes accumulating since morning (~4.3 GB RSS total; one runaway
+  at 61% CPU after 3+ hours). They were all spawned implicitly by the CLI's auto-start hook when
+  test subprocesses ran any `kspec` command outside the `skipCommands` list (`init`, `serve`,
+  `help`, `kspec`) without `KSPEC_SESSION_ID` or `KSPEC_NO_DAEMON` set. The resulting resource
+  pressure is the most plausible trigger for the review-worktree build failures (the diagnostic
+  output is truncated at 4000 chars from the start, so the actual error tail is lost — see separate
+  follow-up).
+
+
+  The prior daemon-leak fixes (@task-cli-serve-test-daemon-cleanup and
+  @task-lint-rule-test-daemon-cleanup, both merged 2026-04-09) targeted EXPLICIT daemon-spawning
+  patterns (`serve start --detach` strings and direct `spawn(DAEMON_ENTRY, ...)` calls). They do not
+  cover the IMPLICIT auto-start path, and the lint rule cannot see it because there is no spawn in
+  the test source — the CLI binary spawns the daemon transparently on the test's behalf.
+
+
+  ## What to change
+
+
+  1. `tests/helpers/cli.ts` — in the `defaultEnv` block around line 187 (inside `export function
+  kspec(...)`), add `KSPEC_NO_DAEMON: "1"`. Because line 208 merges env as `{ ...cleanEnv,
+  ...defaultEnv, KSPEC_AUTHOR: "@test", ...env }`, caller-provided `env` still wins, so tests that
+  need to exercise the auto-start code path can opt in by passing `env: { KSPEC_NO_DAEMON: "" }`
+  (empty string is the existing documented reset — see `src/cli/pid-utils.ts:27`
+  `isFalsyNoDaemonValue`).
+
+
+  2. `tests/setup.test.ts` — in the local `cleanEnv()` at line 190 (inside `describe("kspec setup
+  without agent environment", ...)`), add `KSPEC_NO_DAEMON: "1"` to the returned env object. That
+  test uses direct `spawnSync` rather than the `kspec()` helper, so the helper default does not
+  reach it and it needs its own fix.
+
+
+  ## What NOT to change
+
+
+  - Do NOT touch `src/cli/index.ts` or any production code. This is pure test hygiene — no CLI
+  behavior change and no spec update required. `@config-daemon ac-3` (auto_start defaults true),
+  `@config-daemon ac-7` (suppress under `KSPEC_SESSION_ID`), `@multi-directory-daemon ac-9/ac-10`
+  (global PID detection) are all unchanged and still covered by the same existing tests.
+
+
+  - Do NOT touch the two end-to-end auto-start tests in `tests/parser/daemon-config.test.ts` at line
+  423 (@multi-directory-daemon ac-9/ac-10) and line 453 (@config-daemon ac-7). They already pass
+  `KSPEC_NO_DAEMON: ""` in their `env`, which overrides the helper default by virtue of the merge
+  order, so they must continue to exercise the real auto-start code path after this change. Verify
+  both still pass and are not trivially skipped.
+
+
+  - Do NOT widen the `skipCommands` list in `src/cli/index.ts:383`. The question of whether `setup`
+  (and `agents generate`) should skip auto-start in production is tracked separately as an inbox
+  design item and is OUT OF SCOPE here.
+
+
+  ## Acceptance criteria
+
+
+  - AC1: Running the full test suite from a clean process table produces zero new orphan
+  `dist/daemon/index.js` processes. Verify by snapshotting `pgrep -f 'dist/daemon/index.js' | wc -l`
+  before and after `npm test`; the count must not increase.
+
+
+  - AC2: `tests/parser/daemon-config.test.ts` — both end-to-end auto-start tests ("detects existing
+  daemon via global config PID file, not project specDir" at line 423 and "does not auto-start
+  daemon when KSPEC_SESSION_ID is set" at line 453) still pass AND still actually exercise the
+  auto-start code path (not trivially skipped). Confirm by temporarily asserting `KSPEC_NO_DAEMON`
+  is empty in those tests' final env if unsure.
+
+
+  - AC3: `tests/setup.test.ts` — the three tests under `describe("kspec setup without agent
+  environment")` still pass after adding `KSPEC_NO_DAEMON: "1"` to `cleanEnv()`.
+
+
+  - AC4: Full `npm test` suite passes (including the shard variants if exercised).
+
+
+  - AC5: `no-leaky-test-daemon` oxlint rule still passes across `tests/` — this change neither
+  introduces a new spawn pattern nor removes any lint-required cleanup.
+
+
+  ## Background
+
+
+  - @task-cli-serve-test-daemon-cleanup (completed 2026-04-09) — fixed explicit daemon-spawning
+  tests.
+
+  - @task-lint-rule-test-daemon-cleanup (completed 2026-04-09) — added `no-leaky-test-daemon` oxlint
+  rule for explicit spawn patterns.
+
+  - This task closes the implicit CLI auto-start vector that the above two did not cover.
+
+
+  ## Out of scope (tracked elsewhere)
+
+
+  - Whether `setup` (and `agents generate`) should be added to `skipCommands` in production — inbox
+  item.
+
+  - Fixing `summarizeOutput()` at `src/agent-runtime/bootstrap.ts:129` to capture the TAIL of
+  bootstrap step output (currently slices the first 4000 chars and loses the actual error) — a
+  separate follow-up.
+
+  - Cleaning up orphan `-review` worktrees after bootstrap failure in
+  `src/agent-runtime/dispatch.ts` — a separate follow-up.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - test
+  - infra
+  - bug
+  - daemon
+vcs_refs: []
+created_at: 2026-04-15T00:31:15.776Z
+todos: []
