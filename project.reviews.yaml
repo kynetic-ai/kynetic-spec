@@ -146149,6 +146149,18 @@ reviews:
         runner: kspec
         created_at: 2026-04-15T19:13:05.770Z
         completed_at: 2026-04-15T19:13:05.770Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Ran 'npm test -- --fresh tests/upgrade-command.test.ts'. PASS: 41 tests in
+          tests/upgrade-command.test.ts; exit 0; log
+          /tmp/kspec-test-cache/01KP987FW493XN4WV0R0P5KEH3/d579b7fc381dec41.log."
+        name: upgrade-command tests
+        required: true
+        runner: npm test
+        created_at: 2026-04-15T19:13:08.569Z
+        completed_at: 2026-04-15T19:13:08.569Z
     events:
       - _ulid: 01KP988PGQWRK7F693YRDFR223
         actor: Jacob Chapel
@@ -146184,6 +146196,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-15T19:13:06.759Z
+      - _ulid: 01KP98ZHWPWZM1RQJGG68WEG08
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: upgrade-command tests
+        timestamp: 2026-04-15T19:13:09.527Z
     examined_commit: f1b991a0b2e99d5cde6c75ec9d9ec23a9f5d10aa
     external_links: []
     lifecycle_state: open
@@ -146216,5 +146235,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-15T19:00:40.600Z
-    updated_at: 2026-04-15T19:13:05.770Z
+    updated_at: 2026-04-15T19:13:08.569Z
     notes: []
