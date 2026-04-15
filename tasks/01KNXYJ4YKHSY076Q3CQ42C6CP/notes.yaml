@@ -231,3 +231,11 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-15T11:23:05.099Z
+  - _ulid: 01KP8E2XJXDE17B4RZBXKCNPJG
+    content: "[FIX_CYCLE: 3] Review findings: Manual merge into
+      plan/plan-init-setup-and-upgrade-rough-edges/01knvahv hit a content conflict in
+      src/cli/commands/setup.ts around the setup summary block; aborted merge for worker-side
+      conflict resolution."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-15T11:23:08.253Z
