@@ -148099,3 +148099,29 @@ reviews:
     created_at: 2026-04-15T23:08:58.065Z
     updated_at: 2026-04-15T23:40:18.180Z
     notes: []
+  - _ulid: 01KP9RCCSSVZ0F4QPASZDXHDVF
+    slugs: []
+    title: Review single-command version upgrade (cycle 11)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KP9RCCSRH9F421XGVZC1MHBA
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-15T23:42:18.937Z
+    examined_commit: 35e8acf2da1bea09aec4e82a607e00493b3ca4ac
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNXYJ5JCR99F76N8N7265E0B"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-15T23:42:18.937Z
+    updated_at: null
+    notes: []
