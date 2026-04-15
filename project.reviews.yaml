@@ -146885,7 +146885,17 @@ reviews:
     slugs: []
     title: Review task-upgrade-command (cycle 7)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Synthetic project with  plus present  returned  instead of unknown.
+        name: upgrade source-version contradiction repro
+        required: true
+        runner: manual
+        created_at: 2026-04-15T21:11:42.374Z
+        completed_at: 2026-04-15T21:11:42.374Z
     events:
       - _ulid: 01KP9EZEE0954KEH7M5RK1F57Q
         actor: Jacob Chapel
@@ -146949,6 +146959,13 @@ reviews:
           kind: nit
           thread_ulid: 01KP9FR8WAQYH307V98ZCKVV7Q
         timestamp: 2026-04-15T21:11:31.925Z
+      - _ulid: 01KP9FRMZZVWDE2AXFXYZCSRS6
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: upgrade source-version contradiction repro
+        timestamp: 2026-04-15T21:11:43.359Z
     examined_commit: 2954ef826857c2ec41850cba22ae384ab50c3e0f
     external_links: []
     lifecycle_state: open
@@ -147102,5 +147119,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-15T20:57:57.440Z
-    updated_at: 2026-04-15T21:11:30.954Z
+    updated_at: 2026-04-15T21:11:42.374Z
     notes: []
