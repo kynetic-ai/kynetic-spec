@@ -142726,6 +142726,13 @@ reviews:
           status: pass
           name: npm test -- scaffold-project-config
         timestamp: 2026-04-15T08:48:50.662Z
+      - _ulid: 01KP858VTWSF433C3M4BDHR5DV
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP858TWGNR58R4T81J09TMSB
+        timestamp: 2026-04-15T08:49:05.884Z
     examined_commit: 156714dac6942a1a20836fc6074b04f700a4d3e2
     external_links: []
     lifecycle_state: open
@@ -142757,7 +142764,28 @@ reviews:
               covered.
             created_at: 2026-04-15T08:48:40.325Z
         kind: blocker
+      - _ulid: 01KP858TWGNR58R4T81J09TMSB
+        anchor:
+          type: code
+          commit: 156714dac6942a1a20836fc6074b04f700a4d3e2
+          line_end: 1844
+          line_start: 1821
+          path: src/cli/commands/setup.ts
+          side: head
+        entries:
+          - _ulid: 01KP858TWG492J7B1H9H0N0CXA
+            author: Jacob Chapel
+            body: The inherited @trait-error-guidance ac-6 is still not satisfied on the scaffold-failure path.
+              Reproducing setup --force --json against a read-only kspec.config.yaml exits 1 but
+              writes the human-readable setup summary to stdout before the JSON payload, and the
+              payload is only a generic steps dump rather than a structured error object with
+              recovery guidance. That means machine consumers cannot reliably parse the failure
+              output, and the new test at tests/scaffold-project-config.test.ts:465 only checks for
+              substrings instead of asserting valid structured error output, so it falsely marks
+              this AC as covered.
+            created_at: 2026-04-15T08:49:04.912Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-15T08:37:57.956Z
-    updated_at: 2026-04-15T08:48:49.682Z
+    updated_at: 2026-04-15T08:49:04.912Z
     notes: []
