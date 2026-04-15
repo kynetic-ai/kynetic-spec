@@ -14551,6 +14551,27 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-15T22:04:45.856Z
+  - _ulid: 01KP9KKD8GXYM5WA96ZA0Y6TKD
+    type: friction
+    content: Review sessions are slowed by repo-wide `kspec validate` failures that are unrelated to the
+      branch under review. In this session the command surfaced a schema error in
+      `.kspec/modules/meta.yaml`, orphaned skill warnings, and hundreds of unrelated
+      completeness/annotation problems, so it could not serve as a branch-specific review gate for
+      `upgrade` changes.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-15T22:18:45.905Z
+  - _ulid: 01KP9KKDG9Z0071ESVN7QNJP91
+    type: success
+    content: Targeted behavioral repros in temp repos were effective for review validation. Recreating
+      legacy project shapes and running `kspec upgrade --json` directly made it fast to confirm
+      blockers such as malformed version probes and missing default-module backfill without touching
+      the branch under review.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-15T22:18:46.153Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
