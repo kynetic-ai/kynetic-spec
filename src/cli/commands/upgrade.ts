@@ -857,11 +857,16 @@ async function runRegenerateAgentsStep(
   const metaCtx = await loadMetaContext(ctx);
   const timestamp = new Date().toISOString();
 
-  let templateSections: string[] = [];
+  let templateSections: string[];
   try {
     templateSections = await loadTemplateSections(getPackageRoot());
-  } catch {
-    // No templates available
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Unknown error loading templates";
+    return {
+      name: "Regenerate agent instructions",
+      status: "failed",
+      message,
+    };
   }
 
   const content = await generateAgentsContent(
