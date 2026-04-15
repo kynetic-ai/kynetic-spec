@@ -143775,6 +143775,16 @@ reviews:
         runner: kspec
         created_at: 2026-04-15T09:21:14.190Z
         completed_at: 2026-04-15T09:21:14.190Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed: tests/scaffold-project-config.test.ts (20 tests, 20.7s)."
+        name: npm test -- scaffold-project-config
+        required: true
+        runner: npm
+        created_at: 2026-04-15T09:21:16.914Z
+        completed_at: 2026-04-15T09:21:16.914Z
     events:
       - _ulid: 01KP86G7700WFHV4YF7J5D974Y
         actor: Jacob Chapel
@@ -143796,6 +143806,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-15T09:21:15.094Z
+      - _ulid: 01KP873TN3CC4JV6ZVP35331KF
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test -- scaffold-project-config
+        timestamp: 2026-04-15T09:21:17.987Z
     examined_commit: cb88291eb760058eadd9827737b4d49f16569037
     external_links: []
     lifecycle_state: open
@@ -143808,5 +143825,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-15T09:10:35.489Z
-    updated_at: 2026-04-15T09:21:14.190Z
+    updated_at: 2026-04-15T09:21:16.914Z
     notes: []
