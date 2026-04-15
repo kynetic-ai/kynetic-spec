@@ -26219,8 +26219,11 @@
   type: task
   spec_ref: "@single-command-version-upgrade"
   plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
-  status: needs_work
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - 'Agent task-worker failed 3 consecutive times: Internal error: API Error: 500
+      {"type":"error","error":{"type":"api_error","message":"Internal server
+      error"},"request_id":"req_011Ca5jVmTu11ecQo3KoPvzh"}'
   depends_on:
     - "@task-scaffold-project-config"
     - "@task-complete-gitignore"

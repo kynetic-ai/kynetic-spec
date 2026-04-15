@@ -115,8 +115,11 @@ description: |
 spec_ref: "@single-command-version-upgrade"
 plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
 origin: derived
-status: needs_work
-blocked_by: []
+status: blocked
+blocked_by:
+  - 'Agent task-worker failed 3 consecutive times: Internal error: API Error: 500
+    {"type":"error","error":{"type":"api_error","message":"Internal server
+    error"},"request_id":"req_011Ca5jVmTu11ecQo3KoPvzh"}'
 depends_on:
   - "@task-scaffold-project-config"
   - "@task-complete-gitignore"
@@ -312,6 +315,23 @@ history:
         previous: 01KP8N5TJB16768CXZWG4CY04D
     command: review-verdict-needs-work
     timestamp: 2026-04-15T13:50:28.581Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: blocked
+        previous: needs_work
+      blocked_by:
+        new:
+          - 'Agent task-worker failed 3 consecutive times: Internal error: API Error: 500
+            {"type":"error","error":{"type":"api_error","message":"Internal server
+            error"},"request_id":"req_011Ca5jVmTu11ecQo3KoPvzh"}'
+        previous: []
+      prior_status:
+        new: needs_work
+        previous: null
+    command: task-block
+    timestamp: 2026-04-15T14:42:56.678Z
+prior_status: needs_work
 created_at: 2026-04-11T09:39:26.412Z
 started_at: 2026-04-15T13:41:51.402Z
 submitted_at: 2026-04-15T13:41:54.854Z
