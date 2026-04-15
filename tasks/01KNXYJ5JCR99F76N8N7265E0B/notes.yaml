@@ -59,3 +59,24 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-15T12:52:05.903Z
+  - _ulid: 01KP8M6HQV280Y1J1JN6W4FJR1
+    content: >-
+      Fix cycle 1: Addressed both review blockers.
+
+
+      1. Orphan skill cleanup (blocker): runRerenderSkillsStep now scans platform output directories
+      after rendering, identifies managed skill directories with no corresponding skill definition,
+      and removes them. Uses isKspecManagedSkill marker check from skill-render.ts. Respects
+      dry-run. 3 new tests.
+
+
+      2. Default module scaffolding (blocker): Step 5d now creates modules/main.yaml with proper
+      ULID/slug/type, updates manifest default_module and includes, and commits to shadow branch.
+      Dry-run reports without writing. 3 new tests.
+
+
+      Full test suite: 7938 passed, 5 skipped, 0 failures. Total 39 upgrade-command tests (up from
+      33).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-15T13:09:58.652Z
