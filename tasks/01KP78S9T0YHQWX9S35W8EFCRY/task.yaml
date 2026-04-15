@@ -124,7 +124,7 @@ description: >-
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on: []
 context: []
@@ -144,7 +144,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: 01KP7WWE5RFCS207T1X33C29TK
+session_id: null
 history:
   - author: "@claude"
     changes:
@@ -193,6 +193,16 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-15T06:37:11.305Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KP7WWE5RFCS207T1X33C29TK
+    command: review-verdict-needs-work
+    timestamp: 2026-04-15T06:49:14.249Z
 created_at: 2026-04-15T00:31:15.776Z
 started_at: 2026-04-15T06:23:27.386Z
 submitted_at: 2026-04-15T06:35:36.883Z
