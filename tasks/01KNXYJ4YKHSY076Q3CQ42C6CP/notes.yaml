@@ -239,3 +239,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-15T11:23:08.253Z
+  - _ulid: 01KP8ERJM648MJ42MCVJHEJJJE
+    content: "Fix cycle 3: rebased onto latest plan/plan-init-setup-and-upgrade-rough-edges/01knvahv to
+      resolve merge conflict in src/cli/commands/setup.ts. The conflict was between the target
+      branch's isStructuredMode() guard and our dynamic default-module ref resolution — resolved by
+      keeping both: the dynamic resolution runs before the summary block, and the summary block uses
+      the isStructuredMode() guard from the target. All 7897 tests pass (5 expected skips). Branch
+      is now clean against the integration target."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-15T11:34:57.926Z
