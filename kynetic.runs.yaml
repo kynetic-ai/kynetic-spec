@@ -25795,7 +25795,7 @@ runs:
     started_at: 2026-04-14T20:24:45.725Z
     completed_at: 2026-04-14T20:26:01.009Z
   - _ulid: 01KP7JT01SDN8FD25NW0M6K02V
-    status: active
+    status: completed
     current_step: 5
     initiated_by: "@claude"
     step_results:
@@ -25883,7 +25883,17 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-04-15T05:52:11.766Z
-        completed_at: 2026-04-15T05:52:11.766Z
+        completed_at: 2026-04-15T05:52:22.989Z
+        notes: "Capture complete via atomic batch earlier this step: (1) @task-bootstrap-failure-output-tail
+          (P1 bug, automation eligible, spec-ref @dispatch-runtime-bootstrap-contract) — the
+          summarizeOutput tail-slice bug fix. (2) Inbox item for reviewer-worktree cleanup on
+          bootstrap failure, tagged dispatch/bootstrap/cleanup/reliability, flagged as needing a
+          spec-first pass before promotion to task. Also captured earlier this session and not
+          re-added here: the P1 task @task-tests-suppress-cli-auto-start-daemon and the
+          setup-skipCommands inbox item. No friction or success meta observations added — the
+          friction items were either captured as actionable task/inbox entries (not systemic-pattern
+          observations) or already covered by existing inbox items."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-15T03:26:24.313Z
+    completed_at: 2026-04-15T05:52:22.989Z
