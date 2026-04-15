@@ -144800,6 +144800,12 @@ reviews:
         payload:
           thread_ulid: 01KP8C9KGKW6C02BHZ7PQWFJSN
         timestamp: 2026-04-15T11:09:51.501Z
+      - _ulid: 01KP8DAW0Y3009E2ABYFTW98D4
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP8C9KGKW6C02BHZ7PQWFJSN
+        timestamp: 2026-04-15T11:10:00.222Z
     examined_commit: c93addbafe013d03742d8057fcead5ad084bbb0a
     external_links: []
     lifecycle_state: closed
@@ -144866,6 +144872,8 @@ reviews:
               setup output after slug rename now reflects the current module ref.
             created_at: 2026-04-15T11:09:50.639Z
         kind: nit
+        resolved_at: 2026-04-15T11:09:59.333Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -144875,5 +144883,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T10:52:05.893Z
     created_at: 2026-04-15T10:41:35.747Z
-    updated_at: 2026-04-15T11:09:50.639Z
+    updated_at: 2026-04-15T11:09:59.333Z
     notes: []
