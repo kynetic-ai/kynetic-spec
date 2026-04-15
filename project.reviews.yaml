@@ -142176,6 +142176,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-15T08:20:28.174Z
+      - _ulid: 01KP84A4ZR57Z0BZY55CDQEF84
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP84A42717R0HX37KNZ43JWD
+        timestamp: 2026-04-15T08:32:19.448Z
     examined_commit: f2ac5145d4ad013362635154634edcf368e694d0
     external_links: []
     lifecycle_state: open
@@ -142185,8 +142192,26 @@ reviews:
       content_hash: ""
       ref: "@01KNXYJ58RFQSBZ91FSVQE4F46"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KP84A42717R0HX37KNZ43JWD
+        anchor:
+          type: code
+          commit: f2ac5145d4ad013362635154634edcf368e694d0
+          line_end: 116
+          line_start: 111
+          path: src/parser/plan-document.ts
+          side: head
+        entries:
+          - _ulid: 01KP84A427SDFEN2AGR1MG9AMX
+            author: Jacob Chapel
+            body: The new title validation still accepts a top-level heading anywhere in the document because it
+              uses  instead of checking the first significant element. In an isolated CLI
+              reproduction, a file starting with prose and only later containing  imported
+              successfully with exit code 0, which violates  for plans whose first significant
+              element is not the title heading.
+            created_at: 2026-04-15T08:32:18.503Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-15T08:20:09.323Z
-    updated_at: 2026-04-15T08:20:27.004Z
+    updated_at: 2026-04-15T08:32:18.503Z
     notes: []
