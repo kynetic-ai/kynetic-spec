@@ -26589,7 +26589,7 @@ runs:
     completed_at: 2026-04-15T23:25:51.811Z
   - _ulid: 01KP9S77GMPSMEQNXJ7QK9RXAJ
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -26609,7 +26609,16 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-04-15T23:58:33.226Z
-        completed_at: 2026-04-15T23:58:33.226Z
+        completed_at: 2026-04-15T23:58:34.105Z
+        notes: "Friction points: the upgrade task needed many review cycles because several tests only
+          asserted step status or presence, not artifact integrity or dry-run message fidelity. A
+          second friction point was the unrelated npm test baseline noise from the session-store
+          EACCES failure, which required explicit base-branch verification before it could be ruled
+          out as unrelated."
+      - status: completed
+        step_index: 3
+        started_at: 2026-04-15T23:58:34.105Z
+        completed_at: 2026-04-15T23:58:34.105Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-15T23:56:58.260Z
