@@ -6777,6 +6777,9 @@ modules:
           re-renders skills, regenerates agent instructions, and
           reports the net result. The upgrade is idempotent and safe
           to run when the project is already current.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
