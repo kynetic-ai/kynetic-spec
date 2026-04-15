@@ -142327,6 +142327,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-15T08:33:13.715Z
+      - _ulid: 01KP84CYDA67AAH2W6003VCG0B
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP84A6XCKRFKHCW6DX2QYPJQ
+        timestamp: 2026-04-15T08:33:51.018Z
     examined_commit: f2ac5145d4ad013362635154634edcf368e694d0
     external_links: []
     lifecycle_state: closed
@@ -142373,6 +142379,8 @@ reviews:
               explicitly says import must reject."
             created_at: 2026-04-15T08:32:21.421Z
         kind: blocker
+        resolved_at: 2026-04-15T08:33:50.032Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KP84A9VEVT3GJWABP4SYXTZD
         entries:
           - _ulid: 01KP84A9VEXAM0MGJDXVRY0F08
@@ -142457,5 +142465,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T08:33:13.714Z
     created_at: 2026-04-15T08:20:09.323Z
-    updated_at: 2026-04-15T08:33:13.715Z
+    updated_at: 2026-04-15T08:33:50.032Z
     notes: []
