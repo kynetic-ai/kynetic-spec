@@ -148125,6 +148125,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP9S1FM4Y9K2MN7M72874F0B
         timestamp: 2026-04-15T23:53:50.928Z
+      - _ulid: 01KP9S1KB27EENK23TVBTB94Q4
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KP9S1JBT68T86WT344KQBHHZ
+        timestamp: 2026-04-15T23:53:53.762Z
     examined_commit: 35e8acf2da1bea09aec4e82a607e00493b3ca4ac
     external_links: []
     lifecycle_state: open
@@ -148156,7 +148163,25 @@ reviews:
               guarantees the rendered instructions match the current templates."
             created_at: 2026-04-15T23:53:49.956Z
         kind: blocker
+      - _ulid: 01KP9S1JBT68T86WT344KQBHHZ
+        entries:
+          - _ulid: 01KP9S1JBT47SM3AFCATHE8CY6
+            author: Jacob Chapel
+            body: "Review evidence log:\\nFiles read: src/cli/index.ts, src/cli/commands/index.ts,
+              src/cli/commands/upgrade.ts, src/parser/gitignore.ts,
+              src/cli/commands/setup-defaults.ts, src/parser/meta.ts, src/parser/shadow.ts,
+              tests/upgrade-command.test.ts.\\nCommands run: kspec task get
+              @01KNXYJ5JCR99F76N8N7265E0B; kspec item get @single-command-version-upgrade; kspec
+              review for-task @01KNXYJ5JCR99F76N8N7265E0B; kspec validate; rg for AC annotations;
+              full npm test twice; targeted manual upgrade repros for corrupted kspec-agents.md and
+              dry-run task-migration messaging.\\nClaims verified: prior blocker at
+              src/cli/commands/upgrade.ts:536 is fixed; upgrade still fails to regenerate a
+              corrupted regular-file kspec-agents.md; dry-run messaging still misreports a manifest
+              write in the no-monolithic-tasks branch.\\nCategories searched: correctness, dry-run
+              parity, error handling, test quality, integration."
+            created_at: 2026-04-15T23:53:52.762Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-15T23:42:18.937Z
-    updated_at: 2026-04-15T23:53:49.956Z
+    updated_at: 2026-04-15T23:53:52.762Z
     notes: []
