@@ -14177,6 +14177,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-14T21:07:49.036Z
+  - _ulid: 01KP7XP7RZQVK3WX62C9DSH61D
+    type: success
+    content: Detailed task descriptions with exact file/line references, merge-order reasoning, explicit
+      what-NOT-to-change sections, and precise AC definitions lead to fast, clean implementations
+      with no ambiguity. @task-tests-suppress-cli-auto-start-daemon is a good template for bug-fix
+      task descriptions.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-15T06:36:35.487Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
