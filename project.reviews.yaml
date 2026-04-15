@@ -142733,6 +142733,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP858TWGNR58R4T81J09TMSB
         timestamp: 2026-04-15T08:49:05.884Z
+      - _ulid: 01KP858YPK6GR80XKFDVC5EGBE
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KP858XKYQK04NTBTKPNNXF9Q
+        timestamp: 2026-04-15T08:49:08.819Z
     examined_commit: 156714dac6942a1a20836fc6074b04f700a4d3e2
     external_links: []
     lifecycle_state: open
@@ -142785,7 +142792,23 @@ reviews:
               this AC as covered.
             created_at: 2026-04-15T08:49:04.912Z
         kind: blocker
+      - _ulid: 01KP858XKYQK04NTBTKPNNXF9Q
+        entries:
+          - _ulid: 01KP858XKYY2EFRCGH8CZ869JT
+            author: Jacob Chapel
+            body: "Evidence log: Files read: src/cli/commands/setup.ts, src/cli/commands/init.ts,
+              src/parser/config.ts, src/agent-runtime/workspace.ts,
+              tests/scaffold-project-config.test.ts. Commands run: kspec task get, kspec item get,
+              kspec review for-task, kspec review get, git log target..HEAD, git diff target..HEAD,
+              grep for AC annotations, kspec validate on snapshot and base, npm test --
+              scaffold-project-config, npm test, and a direct CLI reproduction of setup --force
+              --json on a read-only config file. Claims verified: scaffolded config preserves
+              empty-config defaults, focused and full tests pass, validate failure is pre-existing
+              on base, and JSON failure output is not machine-safe. Categories searched:
+              correctness, error handling, test quality, integration, spec alignment."
+            created_at: 2026-04-15T08:49:07.710Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-15T08:37:57.956Z
-    updated_at: 2026-04-15T08:49:04.912Z
+    updated_at: 2026-04-15T08:49:07.710Z
     notes: []
