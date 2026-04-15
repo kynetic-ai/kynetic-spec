@@ -146682,6 +146682,18 @@ reviews:
         runner: manual
         created_at: 2026-04-15T20:37:19.383Z
         completed_at: 2026-04-15T20:37:19.383Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Full suite run in this snapshot reproduced the known unrelated failures in
+          tests/cli-agent-commands.test.ts (5 failed) while tests/upgrade-command.test.ts passed. No
+          evidence that the failures are caused by the upgrade command changes.
+        name: npm test
+        required: false
+        runner: npm
+        created_at: 2026-04-15T20:37:27.801Z
+        completed_at: 2026-04-15T20:37:27.801Z
     events:
       - _ulid: 01KP9D52X866REBTNQQTC6P1HN
         actor: Jacob Chapel
@@ -146710,6 +146722,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP9DSSF4H7YC9V91W6EP0MZP
         timestamp: 2026-04-15T20:37:25.097Z
+      - _ulid: 01KP9DSZ3BEQ0R02SN3RDNZ8QS
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-04-15T20:37:29.324Z
     examined_commit: 4a8adcba1d4b7e6ee073f0cff5e9863e728aa8a2
     external_links: []
     lifecycle_state: open
@@ -146751,5 +146770,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-15T20:26:05.097Z
-    updated_at: 2026-04-15T20:37:23.557Z
+    updated_at: 2026-04-15T20:37:27.801Z
     notes: []
