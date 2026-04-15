@@ -148132,6 +148132,13 @@ reviews:
           kind: nit
           thread_ulid: 01KP9S1JBT68T86WT344KQBHHZ
         timestamp: 2026-04-15T23:53:53.762Z
+      - _ulid: 01KP9S1P7THDSSWGZH38VA01CT
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP9S1N87H8R06ZX5RFP1RN4P
+        timestamp: 2026-04-15T23:53:56.730Z
     examined_commit: 35e8acf2da1bea09aec4e82a607e00493b3ca4ac
     external_links: []
     lifecycle_state: open
@@ -148181,7 +148188,26 @@ reviews:
               parity, error handling, test quality, integration."
             created_at: 2026-04-15T23:53:52.762Z
         kind: nit
+      - _ulid: 01KP9S1N87H8R06ZX5RFP1RN4P
+        anchor:
+          type: code
+          commit: 35e8acf2da1bea09aec4e82a607e00493b3ca4ac
+          line_end: 569
+          line_start: 547
+          path: src/cli/commands/upgrade.ts
+          side: head
+        entries:
+          - _ulid: 01KP9S1N87W988JWBQESD91WDY
+            author: Jacob Chapel
+            body: "This dry-run branch still reports a completed manifest update even when it does not write
+              anything. With an old manifest but no monolithic tasks, 'kspec upgrade --dry-run
+              --json' returns the step message 'manifest updated to split format' although lines
+              549-563 are skipped. That is a direct mismatch with ac-dry-run-reports and
+              @trait-dry-run ac-1: the preview is supposed to describe what would change, not claim
+              the change already happened."
+            created_at: 2026-04-15T23:53:55.719Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-15T23:42:18.937Z
-    updated_at: 2026-04-15T23:53:52.762Z
+    updated_at: 2026-04-15T23:53:55.719Z
     notes: []
