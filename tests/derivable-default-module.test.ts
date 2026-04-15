@@ -318,4 +318,97 @@ describe.skipIf(!canRunShadowTests)("Derivable default module", () => {
     expect(moduleFile).toContain("type: module");
     expect(moduleFile).toContain("items: []");
   });
+
+  // AC: @derivable-default-module ac-default-module-resolvable
+  it("stores default_module ULID in the manifest", async () => {
+    await setupFreshProject(projectDir);
+
+    // Find the manifest file (the .yaml in .kspec/ that's not .tasks. or .inbox.)
+    const kspecDir = path.join(projectDir, ".kspec");
+    const files = await fs.readdir(kspecDir);
+    const manifestFile = files.find(
+      (f) => f.endsWith(".yaml") && !f.includes(".tasks.") && !f.includes(".inbox."),
+    );
+    expect(manifestFile).toBeTruthy();
+
+    const manifestContent = await fs.readFile(
+      path.join(kspecDir, manifestFile!),
+      "utf-8",
+    );
+    expect(manifestContent).toContain("default_module:");
+
+    // The ULID in the manifest should match the module's actual ULID
+    const moduleData = kspecJson<{ ulid: string }>("item get @main", projectDir);
+    expect(manifestContent).toContain(moduleData.ulid);
+  });
+
+  // AC: @derivable-default-module ac-default-module-editable
+  it("setup identifies the renamed default module in a multi-module project", async () => {
+    await setupFreshProject(projectDir);
+
+    // Rename the default module from @main to @custom-module
+    kspec("item set @main --slug custom-module", projectDir);
+    kspec("item set @custom-module --remove-slug main", projectDir);
+
+    // Find the manifest file dynamically
+    const kspecDir = path.join(projectDir, ".kspec");
+    const kspecFiles = await fs.readdir(kspecDir);
+    const manifestFile = kspecFiles.find(
+      (f) => f.endsWith(".yaml") && !f.includes(".tasks.") && !f.includes(".inbox."),
+    );
+    expect(manifestFile).toBeTruthy();
+
+    // Add another module that loads before the default one by prepending its
+    // include before modules/main.yaml in the manifest
+    const manifestPath = path.join(kspecDir, manifestFile!);
+    let manifest = await fs.readFile(manifestPath, "utf-8");
+    const extraModulePath = path.join(projectDir, ".kspec", "modules", "extra.yaml");
+    await fs.writeFile(
+      extraModulePath,
+      `_ulid: 01JEXTRA000000000000000000
+slugs:
+  - extra
+title: "Extra Module"
+type: module
+status:
+  maturity: draft
+  implementation: not_started
+description: |
+  An extra module added before the default one.
+
+items: []
+`,
+      "utf-8",
+    );
+
+    // Insert the extra module include BEFORE modules/main.yaml so it loads first
+    manifest = manifest.replace(
+      "  - modules/main.yaml",
+      "  - modules/extra.yaml\n  - modules/main.yaml",
+    );
+    await fs.writeFile(manifestPath, manifest, "utf-8");
+
+    // Commit the changes to the shadow branch so they persist
+    // (--no-verify bypasses the commit hook that blocks direct shadow commits in test env)
+    execSync('git add -A && git commit --no-verify -m "add extra module"', {
+      cwd: path.join(projectDir, ".kspec"),
+      stdio: "pipe",
+    });
+
+    // Verify that @extra loads (sanity check)
+    const extraModule = kspecJson<{ type: string; slugs: string[] }>(
+      "item get @extra",
+      projectDir,
+    );
+    expect(extraModule.type).toBe("module");
+
+    // Run setup — should still report @custom-module (the renamed default),
+    // NOT @extra (which loads first in the include order)
+    const setupResult = kspecRun("setup --skip-skills --no-hooks", projectDir, {
+      env: { KSPEC_AUTHOR: "@test" },
+    });
+    expect(setupResult.exitCode).toBe(0);
+    expect(setupResult.stdout).toContain("@custom-module");
+    expect(setupResult.stdout).not.toContain("@extra");
+  });
 });

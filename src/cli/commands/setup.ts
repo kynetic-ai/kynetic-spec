@@ -1853,15 +1853,20 @@ export async function runSetupPipeline(
       }
     }
 
-    // Resolve the default module's current ref dynamically (it may have been renamed)
+    // Resolve the default module's current ref dynamically (it may have been renamed).
+    // Use the default_module ULID from the manifest to identify the correct module,
+    // regardless of load order. Fall back to the first module for backward compat.
     let defaultModuleRef: string | null = null;
     try {
       const { loadAllItems, initContext: initCtx } = await import("../../parser/yaml.js");
       const ctx = await initCtx();
       const items = await loadAllItems(ctx);
-      const firstModule = items.find((item) => item.type === "module");
-      if (firstModule) {
-        defaultModuleRef = `@${firstModule.slugs?.[0] || firstModule._ulid}`;
+      const defaultModuleUlid = ctx.manifest?.default_module;
+      const targetModule = defaultModuleUlid
+        ? items.find((item) => item._ulid === defaultModuleUlid)
+        : items.find((item) => item.type === "module");
+      if (targetModule) {
+        defaultModuleRef = `@${targetModule.slugs?.[0] || targetModule._ulid}`;
       }
     } catch {
       // Non-fatal: fall back to null (skip the default module message)
