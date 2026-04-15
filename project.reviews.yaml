@@ -145082,6 +145082,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP8FF372X4JBGNW9V4CNDY2F
         timestamp: 2026-04-15T11:47:16.707Z
+      - _ulid: 01KP8FFC8R1G420YFQFRTZC09N
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KP8FFBB3M46V3E2R1BRZRE43
+        timestamp: 2026-04-15T11:47:25.080Z
     examined_commit: 14aa905f12b918a953625d110336eb5411cb3a14
     external_links: []
     lifecycle_state: open
@@ -145149,7 +145156,30 @@ reviews:
               track the edited default-module slug.'
             created_at: 2026-04-15T11:47:15.810Z
         kind: blocker
+      - _ulid: 01KP8FFBB3M46V3E2R1BRZRE43
+        entries:
+          - _ulid: 01KP8FFBB34HQ9A0WJ8TDN3R0D
+            author: Jacob Chapel
+            body: >-
+              Evidence log:
+
+              - Files read: src/cli/commands/init.ts, src/cli/commands/setup.ts,
+              src/parser/shadow.ts, src/parser/yaml.ts, tests/derivable-default-module.test.ts
+
+              - Commands run: kspec task get @01KNXYJ4YKHSY076Q3CQ42C6CP; kspec review for-task
+              @01KNXYJ4YKHSY076Q3CQ42C6CP; kspec item get @derivable-default-module; git diff
+              plan/plan-init-setup-and-upgrade-rough-edges/01knvahv...HEAD; grep for AC annotations;
+              kspec validate; npm test; temp-project repros for setup output
+
+              - Claims verified: full suite passes on this snapshot; setup output follows renamed
+              slug only in the single-module case covered by the new test; a multi-module repro
+              shows it can still report the wrong module
+
+              - Categories searched: correctness, AC coverage, regression risk, edge cases around
+              renamed/default-module resolution, integration with setup summary output
+            created_at: 2026-04-15T11:47:24.131Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-15T11:40:25.702Z
-    updated_at: 2026-04-15T11:47:15.810Z
+    updated_at: 2026-04-15T11:47:24.131Z
     notes: []
