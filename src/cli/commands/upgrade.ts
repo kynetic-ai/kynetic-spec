@@ -811,15 +811,20 @@ async function runRegenerateAgentsStep(
       // No hash — regenerate
     }
 
-    let outputExists = false;
+    let outputIsFile = false;
     try {
-      await fs.access(outputPath);
-      outputExists = true;
+      const stat = await fs.stat(outputPath);
+      if (stat.isFile()) {
+        outputIsFile = true;
+      } else {
+        // Corrupted artifact (e.g., directory replacing the file) — remove it
+        await fs.rm(outputPath, { recursive: true, force: true });
+      }
     } catch {
       // Missing
     }
 
-    if (storedHash === metaHash && outputExists) {
+    if (storedHash === metaHash && outputIsFile) {
       return {
         name: "Regenerate agent instructions",
         status: "skipped",

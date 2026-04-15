@@ -354,6 +354,45 @@ describe("kspec upgrade", () => {
       expect(["done", "skipped"]).toContain(agentsStep!.status);
     });
 
+    // AC: @single-command-version-upgrade ac-regenerates-agents-file
+    it("recovers corrupted kspec-agents.md (directory) and regenerates", async () => {
+      await initProject(tempDir);
+      await writeLastKnownVersion(tempDir, "0.8.0");
+
+      // Run upgrade once so the hash file is populated
+      const firstRun = kspec("upgrade", tempDir);
+      expect(firstRun.exitCode).toBe(0);
+
+      // Replace kspec-agents.md with a directory (corrupted artifact)
+      const agentsFilePath = path.join(tempDir, "kspec-agents.md");
+      await fs.rm(agentsFilePath, { force: true });
+      await fs.mkdir(agentsFilePath, { recursive: true });
+      await fs.writeFile(path.join(agentsFilePath, "blocker"), "x", "utf-8");
+
+      // Upgrade should recover: remove the directory and regenerate the file.
+      // --force needed because the first run recorded the current version,
+      // so without it the pipeline short-circuits as noop.
+      const result = kspecJson<{
+        success: boolean;
+        steps: Array<{ name: string; status: string; message?: string }>;
+      }>("upgrade --force", tempDir);
+
+      expect(result.success).toBe(true);
+      const agentsStep = result.steps.find(
+        (s) => s.name === "Regenerate agent instructions",
+      );
+      expect(agentsStep).toBeDefined();
+      expect(agentsStep!.status).toBe("done");
+
+      // Verify the output is now a regular file, not a directory
+      const stat = await fs.stat(agentsFilePath);
+      expect(stat.isFile()).toBe(true);
+
+      // Verify the content is valid
+      const content = await fs.readFile(agentsFilePath, "utf-8");
+      expect(content).toContain("kspec");
+    });
+
     // AC: @single-command-version-upgrade ac-restores-gitignore-entries
     it("restores missing gitignore entries as part of upgrade", async () => {
       await initProject(tempDir);
@@ -690,19 +729,11 @@ describe("kspec upgrade", () => {
       await initProject(tempDir);
       await writeLastKnownVersion(tempDir, "0.8.0");
 
-      // Remove the agents hash file so the hash check won't short-circuit
-      const hashPath = path.join(tempDir, ".kspec", ".kspec-agents-hash");
-      if (existsSync(hashPath)) {
-        await fs.unlink(hashPath);
-      }
-
-      // Replace kspec-agents.md with a directory so fs.writeFile fails with EISDIR
-      const agentsFilePath = path.join(tempDir, "kspec-agents.md");
-      if (existsSync(agentsFilePath)) {
-        await fs.unlink(agentsFilePath);
-      }
-      await fs.mkdir(agentsFilePath, { recursive: true });
-      await fs.writeFile(path.join(agentsFilePath, "blocker"), "x", "utf-8");
+      // Replace .agents/skills directory with a regular file so the
+      // skill renderer has nowhere to write, causing it to throw.
+      const skillsDir = path.join(tempDir, ".agents", "skills");
+      await fs.rm(skillsDir, { recursive: true, force: true });
+      await fs.writeFile(skillsDir, "not a directory\n", "utf-8");
 
       const result = kspec("upgrade", tempDir, { expectFail: true });
       // Runtime failure during execution must exit with code 3
@@ -748,27 +779,18 @@ describe("kspec upgrade", () => {
       await initProject(tempDir);
       await writeLastKnownVersion(tempDir, "0.8.0");
 
-      // Remove the agents hash file so the hash check won't short-circuit
-      const hashPath = path.join(tempDir, ".kspec", ".kspec-agents-hash");
-      if (existsSync(hashPath)) {
-        await fs.unlink(hashPath);
-      }
-
-      // Replace kspec-agents.md with a directory so fs.writeFile fails with EISDIR
-      const agentsFilePath = path.join(tempDir, "kspec-agents.md");
-      if (existsSync(agentsFilePath)) {
-        await fs.unlink(agentsFilePath);
-      }
-      await fs.mkdir(agentsFilePath, { recursive: true });
-      // Place a file inside to prevent automatic rmdir
-      await fs.writeFile(path.join(agentsFilePath, "blocker"), "x", "utf-8");
+      // Replace .agents/skills directory with a regular file so the
+      // skill renderer has nowhere to write, causing it to throw.
+      const skillsDir = path.join(tempDir, ".agents", "skills");
+      await fs.rm(skillsDir, { recursive: true, force: true });
+      await fs.writeFile(skillsDir, "not a directory\n", "utf-8");
 
       const result = kspecJson<{
         success: boolean;
         steps: Array<{ name: string; status: string }>;
       }>("upgrade", tempDir);
 
-      // At least one step should have failed (the agents regeneration)
+      // At least one step should have failed (the skill re-render)
       expect(result.success).toBe(false);
       const failedSteps = result.steps.filter((s) => s.status === "failed");
       expect(failedSteps.length).toBeGreaterThan(0);
