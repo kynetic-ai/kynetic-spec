@@ -144788,6 +144788,12 @@ reviews:
         payload:
           thread_ulid: 01KP8C9GYWRZP3RP8CFMQZPR64
         timestamp: 2026-04-15T11:09:32.716Z
+      - _ulid: 01KP8DA9GV3TMFC8Z4JG4DHH8A
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP8C9GYWRZP3RP8CFMQZPR64
+        timestamp: 2026-04-15T11:09:41.275Z
     examined_commit: c93addbafe013d03742d8057fcead5ad084bbb0a
     external_links: []
     lifecycle_state: closed
@@ -144827,6 +144833,8 @@ reviews:
               @custom-module and not @main. Full suite passes (7813 tests)."
             created_at: 2026-04-15T11:09:31.783Z
         kind: blocker
+        resolved_at: 2026-04-15T11:09:40.315Z
+        resolved_by: "@claude"
       - _ulid: 01KP8C9KGKW6C02BHZ7PQWFJSN
         entries:
           - _ulid: 01KP8C9KGMABSS8SEC8BBFVCTY
@@ -144856,5 +144864,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T10:52:05.893Z
     created_at: 2026-04-15T10:41:35.747Z
-    updated_at: 2026-04-15T11:09:31.783Z
+    updated_at: 2026-04-15T11:09:40.315Z
     notes: []
