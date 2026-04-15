@@ -69,7 +69,7 @@ tags:
   - modules
   - plans
 vcs_refs: []
-review_ref: "@01KP8DEFP5TRA0BFHS97FJVYZC"
+review_ref: "@01KP8F2JQ61DKVJFRQN7F8PD7Y"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-derivable-default-module/01knxyj4
@@ -477,6 +477,13 @@ history:
         previous: 2026-04-15T11:10:20.209Z
     command: task-submit
     timestamp: 2026-04-15T11:35:11.726Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KP8F2JQ61DKVJFRQN7F8PD7Y"
+        previous: "@01KP8DEFP5TRA0BFHS97FJVYZC"
+    command: review-link
+    timestamp: 2026-04-15T11:40:29.057Z
 prior_status: null
 created_at: 2026-04-11T09:39:25.779Z
 started_at: 2026-04-15T11:35:08.469Z
