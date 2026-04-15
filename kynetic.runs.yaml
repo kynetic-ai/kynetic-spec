@@ -25796,7 +25796,7 @@ runs:
     completed_at: 2026-04-14T20:26:01.009Z
   - _ulid: 01KP7JT01SDN8FD25NW0M6K02V
     status: active
-    current_step: 4
+    current_step: 5
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -25872,7 +25872,18 @@ runs:
       - status: completed
         step_index: 4
         started_at: 2026-04-15T03:29:23.282Z
-        completed_at: 2026-04-15T03:29:23.282Z
+        completed_at: 2026-04-15T05:52:11.766Z
+        notes: "User decision: Proposal A (summarizeOutput tail-slice) -> TASK P1 automation eligible,
+          created as @task-bootstrap-failure-output-tail with spec_ref
+          @dispatch-runtime-bootstrap-contract citing ac-6 and trait-error-guidance ac-1 as the
+          existing ACs being honored (bug fix, no spec update needed). Proposal B (orphan reviewer
+          worktree cleanup) -> INBOX with note that a spec-first check is required to place the AC
+          correctly in @agent-dispatch-engine or @dispatch-workspace-registry before promoting to
+          task."
+      - status: completed
+        step_index: 5
+        started_at: 2026-04-15T05:52:11.766Z
+        completed_at: 2026-04-15T05:52:11.766Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-15T03:26:24.313Z
