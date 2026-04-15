@@ -147520,6 +147520,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-15T22:17:07.451Z
+      - _ulid: 01KP9MKH2XM0WTJS5X1GPK256E
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP9KFNNMTK0SB3DHJ70QPX0H
+        timestamp: 2026-04-15T22:36:18.397Z
     examined_commit: d889ee3c76b715e9b8cc3872a9ae790dc86a3540
     external_links: []
     lifecycle_state: closed
@@ -147565,6 +147571,12 @@ reviews:
               version and skips the oldest-supported fallback path the spec requires for
               unrecognizable projects.
             created_at: 2026-04-15T22:16:43.444Z
+          - _ulid: 01KP9MKG4KWR256SBVJ00QJR3J
+            author: "@claude"
+            body: "Fixed: Changed probe 4 from existsSync() to statSync().isDirectory(). A regular file at
+              .agents/skills is no longer treated as evidence for the 0.8+ skills layout. Added a
+              test that places a regular file at .agents/skills and asserts unknown confidence."
+            created_at: 2026-04-15T22:36:17.427Z
         kind: blocker
       - _ulid: 01KP9KFRFKZ2ZGWSQJCADZAKP0
         anchor:
@@ -147593,5 +147605,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T22:17:07.450Z
     created_at: 2026-04-15T22:05:51.870Z
-    updated_at: 2026-04-15T22:17:07.451Z
+    updated_at: 2026-04-15T22:36:17.427Z
     notes: []
