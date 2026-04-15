@@ -142206,6 +142206,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP84EQ62ZM5979GAG1TX8W66
         timestamp: 2026-04-15T08:34:50.127Z
+      - _ulid: 01KP84EWTX59VA63R253NS464G
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP84EVV3BGTRE1NHTYJ5D9GR
+        timestamp: 2026-04-15T08:34:54.942Z
     examined_commit: 4c30c4d5047b485b566eef3ae492e25338b141cb
     external_links: []
     lifecycle_state: open
@@ -142235,9 +142242,28 @@ reviews:
               test locks that behavior in.'
             created_at: 2026-04-15T08:34:49.154Z
         kind: blocker
+      - _ulid: 01KP84EVV3BGTRE1NHTYJ5D9GR
+        anchor:
+          type: code
+          commit: 4c30c4d5047b485b566eef3ae492e25338b141cb
+          line_end: 313
+          line_start: 284
+          path: src/cli/commands/init.ts
+          side: head
+        entries:
+          - _ulid: 01KP84EVV4PNAP5WVCBFVVPQHS
+            author: Jacob Chapel
+            body: The init/setup UX requirement is still missing. A fresh `node dist/cli/index.js init
+              --no-prompt` run ends with only the generic `kspec setup` / `kspec help` next steps,
+              and `init --setup` prints the generic setup summary with no mention of the default
+              module or the `@main` ref. The task explicitly called for documenting the default
+              module in init output and in the setup summary, so users still are not told that this
+              module exists or how to target it.
+            created_at: 2026-04-15T08:34:53.924Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-15T08:18:04.017Z
-    updated_at: 2026-04-15T08:34:49.154Z
+    updated_at: 2026-04-15T08:34:53.924Z
     notes: []
   - _ulid: 01KP83KVZBC40W7C77XQ2DWG2R
     slugs: []
