@@ -50038,7 +50038,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-15T10:52:51.016Z
+      updated_at: 2026-04-15T10:52:53.175Z
     integration:
       status: pending
       detail: null
@@ -50047,25 +50047,20 @@ workspaces:
       target_branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
       target_commit: f205808d2cf1f58d18f7fdf45435996b4092d52a
       updated_at: 2026-04-15T10:52:51.016Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
     task_ref: "@01KNXYJ4YKHSY076Q3CQ42C6CP"
     task_slug: task-derivable-default-module
     timestamps:
       closed_at: null
       last_active_at: 2026-04-15T10:41:00.693Z
-      last_reconciled_at: 2026-04-15T10:52:51.016Z
+      last_reconciled_at: 2026-04-15T10:52:53.175Z
       created_at: 2026-04-14T19:18:22.812Z
-      updated_at: 2026-04-15T10:52:51.016Z
+      updated_at: 2026-04-15T10:52:53.175Z
     workspace_id: dispatch-workspace-01KNXYJ4YKHSY076Q3CQ42C6CP
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: c93addbafe013d03742d8057fcead5ad084bbb0a
-        last_seen_at: 2026-04-15T10:40:38.488Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-derivable-default-module-01knxyj4-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-derivable-default-module/01knxyj4
