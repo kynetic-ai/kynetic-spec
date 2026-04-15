@@ -61,7 +61,7 @@ description: |
 spec_ref: "@complete-auto-gitignore"
 plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -80,7 +80,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-complete-gitignore/01knxyj4
-session_id: null
+session_id: 01KP84EFGNP1X9Y3FR3G6FF41K
 history:
   - author: Jacob Chapel
     changes:
@@ -503,9 +503,22 @@ history:
         previous: pending_review
     command: review-verdict-needs-work
     timestamp: 2026-04-15T08:17:22.570Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KP84EFGNP1X9Y3FR3G6FF41K
+        previous: null
+      started_at:
+        new: 2026-04-15T08:52:14.979Z
+        previous: 2026-04-14T18:01:28.737Z
+    command: task-start
+    timestamp: 2026-04-15T08:52:14.980Z
 prior_status: null
 created_at: 2026-04-11T09:39:24.826Z
-started_at: 2026-04-14T18:01:28.737Z
+started_at: 2026-04-15T08:52:14.979Z
 submitted_at: 2026-04-14T18:01:35.170Z
 todos: []
 automation: eligible
