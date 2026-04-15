@@ -142196,6 +142196,21 @@ reviews:
         runner: npm
         created_at: 2026-04-15T08:35:15.989Z
         completed_at: 2026-04-15T08:35:15.989Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Validation fails in untouched project metadata: .kspec/modules/meta.yaml has a
+          pre-existing schema error (modules[0].traits.0 expected string, received object), plus
+          unrelated repository-wide warnings. The task branch diff against the current plan base
+          only touches src/cli/commands/init.ts, src/parser/shadow.ts, and
+          tests/derivable-default-module.test.ts, so this validate failure is not attributable to
+          the submitted change."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-15T08:35:19.020Z
+        completed_at: 2026-04-15T08:35:19.020Z
     events:
       - _ulid: 01KP83G1KG49VGEE74MABWVS7M
         actor: Jacob Chapel
@@ -142245,6 +142260,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-15T08:35:16.945Z
+      - _ulid: 01KP84FNEYHX8T6ANQ36K2YZ56
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-15T08:35:20.159Z
     examined_commit: 4c30c4d5047b485b566eef3ae492e25338b141cb
     external_links: []
     lifecycle_state: open
@@ -142330,7 +142352,7 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-15T08:18:04.017Z
-    updated_at: 2026-04-15T08:35:15.989Z
+    updated_at: 2026-04-15T08:35:19.020Z
     notes: []
   - _ulid: 01KP83KVZBC40W7C77XQ2DWG2R
     slugs: []
