@@ -147950,6 +147950,13 @@ reviews:
           status: fail
           name: manual upgrade reproduction
         timestamp: 2026-04-15T23:22:56.845Z
+      - _ulid: 01KP9Q90W60R9ZA852ZKRFBAMD
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP9Q8ZT1K4Q4WJMXW1FX09YA
+        timestamp: 2026-04-15T23:22:59.846Z
     examined_commit: 4a024fed7210a6d4e75ec6705cba591d27320347
     external_links: []
     lifecycle_state: open
@@ -148003,7 +148010,27 @@ reviews:
               states to safely run the full pipeline and leaves legacy task storage unmigrated."
             created_at: 2026-04-15T23:22:35.028Z
         kind: blocker
+      - _ulid: 01KP9Q8ZT1K4Q4WJMXW1FX09YA
+        anchor:
+          type: code
+          commit: 4a024fed7210a6d4e75ec6705cba591d27320347
+          line_end: 542
+          line_start: 536
+          path: src/cli/commands/upgrade.ts
+          side: head
+        entries:
+          - _ulid: 01KP9Q8ZT2Q0PPSKYT0KTYBBWY
+            author: Jacob Chapel
+            body: "This early return makes kspec upgrade trust the manifest field task_storage.format over the
+              actual task storage shape. I reproduced a hand-edited partial-upgrade state with
+              task_storage.format: split still present but the tasks file still containing a
+              monolithic task with inline notes, then ran kspec upgrade --json: the command reported
+              Task storage migration as skipped and left the monolithic YAML unchanged. That
+              violates the upgrade contract for unknown or hand-edited states to safely run the full
+              pipeline and leaves legacy task storage unmigrated."
+            created_at: 2026-04-15T23:22:58.754Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-15T23:08:58.065Z
-    updated_at: 2026-04-15T23:22:55.885Z
+    updated_at: 2026-04-15T23:22:58.754Z
     notes: []
