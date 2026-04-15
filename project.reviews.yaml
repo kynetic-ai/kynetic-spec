@@ -145281,6 +145281,18 @@ reviews:
         runner: npm
         created_at: 2026-04-15T12:18:27.198Z
         completed_at: 2026-04-15T12:18:27.198Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation fails on pre-existing project-wide metadata/completeness issues unrelated to
+          this task, including .kspec/modules/meta.yaml traits schema mismatch and existing AC
+          coverage warnings; no task-specific validate regression found in the changed paths.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-15T12:18:29.971Z
+        completed_at: 2026-04-15T12:18:29.971Z
     events:
       - _ulid: 01KP8GN9SM18YZB1VJAJB2XQK4
         actor: Jacob Chapel
@@ -145325,6 +145337,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-15T12:18:28.166Z
+      - _ulid: 01KP8H8ACJYBFAE55Y3RY892D6
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-15T12:18:30.930Z
     examined_commit: 8e05644d232c45e5ba96eb698cbf311367634c03
     external_links: []
     lifecycle_state: closed
@@ -145370,5 +145389,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T12:18:21.523Z
     created_at: 2026-04-15T12:08:07.733Z
-    updated_at: 2026-04-15T12:18:27.198Z
+    updated_at: 2026-04-15T12:18:29.971Z
     notes: []
