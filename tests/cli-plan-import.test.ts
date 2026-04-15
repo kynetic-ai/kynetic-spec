@@ -568,6 +568,58 @@ Updated body.
       error: `Failed to read plan file: ${missingPath}`,
     });
   });
+
+  // AC: @plan-import-format-guidance ac-ac-shape-mismatch-fails-import
+  it("rejects --into re-import when document has malformed acceptance criteria", async () => {
+    kspecOutput('plan add --title "AC Shape Plan" --content "Original content"', tempDir);
+    const editedPath = await writePlan(
+      "bad-ac-into.md",
+      `# AC Shape Plan Updated
+
+## Specs
+
+\`\`\`yaml
+- title: Feature With Bad AC
+  slug: feature-bad-ac
+  acceptance_criteria:
+    - id: ac-incomplete
+      given: a precondition
+\`\`\`
+`,
+    );
+
+    const result = kspecRun(
+      `plan import "${editedPath}" --into @plan-ac-shape-plan`,
+      tempDir,
+      { expectFail: true },
+    );
+
+    expect(result.exitCode).toBe(2);
+    expect(result.stderr).toContain("feature-bad-ac");
+    expect(result.stderr).toContain("ac-incomplete");
+  });
+
+  // AC: @plan-import-format-guidance ac-empty-plan-import-warns
+  it("emits empty-plan warning when --into re-import has no derivable content", async () => {
+    kspecOutput('plan add --title "Empty Into Plan" --content "Original content"', tempDir);
+    const editedPath = await writePlan(
+      "empty-into.md",
+      `# Empty Into Plan Updated
+
+Just prose, no specs or tasks.
+`,
+    );
+
+    const result = kspecRun(
+      `plan import "${editedPath}" --into @plan-empty-into-plan`,
+      tempDir,
+    );
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stderr).toContain("no derivable content");
+    expect(result.stderr).toContain("## Specs");
+    expect(result.stderr).toContain("## Tasks");
+  });
 });
 
 // AC: @plan-import-format-guidance — Plan import format error guidance tests
@@ -607,6 +659,31 @@ Some content without a # Title.
     expect(result.stderr).toContain("top-level heading");
     expect(result.stderr).toContain("# ");
     expect(result.stderr).toContain("Example:");
+  });
+
+  // AC: @plan-import-format-guidance ac-missing-title-fails-import
+  it("fails import when document has a heading but not as the first significant element", async () => {
+    const planPath = await writePlan(
+      "late-title.md",
+      `Some prose before the heading.
+
+# Late Title
+
+## Specs
+
+\`\`\`yaml
+- title: Feature A
+  slug: feature-a
+  type: feature
+\`\`\`
+`,
+    );
+
+    const result = kspecRun(`plan import "${planPath}"`, tempDir, { expectFail: true });
+
+    expect(result.exitCode).toBe(2);
+    expect(result.stderr).toContain("top-level heading");
+    expect(result.stderr).toContain("first significant element");
   });
 
   // AC: @plan-import-format-guidance ac-missing-title-fails-import

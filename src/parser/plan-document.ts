@@ -109,8 +109,9 @@ export function parsePlanDocument(content: string): ParsedPlanDocument {
   const warnings: ParseWarning[] = [];
 
   // Extract title from first heading — must be a top-level heading (# Title)
-  // as the first significant element
-  const titleMatch = content.match(/^#\s+(.+)$/m);
+  // as the first significant element (first non-blank line)
+  const firstSignificantLine = content.split("\n").find((line) => line.trim() !== "");
+  const titleMatch = firstSignificantLine?.match(/^#\s+(.+)$/);
   let title: string;
   if (titleMatch) {
     title = titleMatch[1].trim();

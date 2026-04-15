@@ -173,6 +173,27 @@ Add comprehensive tests.
     expect(result.errors[0].message).toContain("top-level heading");
   });
 
+  // AC: @plan-import-format-guidance ac-missing-title-fails-import
+  it("should return a missing_title error when heading is not the first significant element", () => {
+    const plan = `Some prose before the heading.
+
+# Late Title
+
+## Specs
+
+\`\`\`yaml
+- title: Feature A
+\`\`\`
+`;
+
+    const result = parsePlanDocument(plan);
+
+    expect(result.title).toBe("");
+    expect(result.errors).toHaveLength(1);
+    expect(result.errors[0].type).toBe("missing_title");
+    expect(result.errors[0].message).toContain("first significant element");
+  });
+
   // AC: @plan-import-format-guidance ac-empty-plan-import-warns
   it("should produce an empty_plan warning when title is valid but no derivable content", () => {
     const plan = `# My Plan

@@ -276,6 +276,23 @@ async function importIntoExistingPlan(
     );
   }
 
+  // Validate document structure for --into re-imports (AC shape, empty-plan warnings).
+  // Missing title is not an error for --into — the existing plan title is preserved
+  // (AC: @plan-import-into ac-into-no-title).
+  const parsed = parsePlanDocument(content);
+  const structuralErrors = parsed.errors.filter((e) => e.type === "ac_shape");
+  if (structuralErrors.length > 0) {
+    for (const err of structuralErrors) {
+      error(err.message);
+    }
+    process.exit(EXIT_CODES.USAGE_ERROR);
+  }
+
+  const emptyPlanWarnings = parsed.warnings.filter((w) => w.type === "empty_plan");
+  for (const w of emptyPlanWarnings) {
+    warn(w.message);
+  }
+
   const titleFromFile = extractOptionalPlanTitle(content);
   const nextTitle = titleFromFile ?? foundPlan.title;
   const noteMessage = options.reason || "Content updated from file";
@@ -304,8 +321,10 @@ async function importIntoExistingPlan(
 
   assertImportIntoAllowed(foundPlan);
 
+  const warningMessages = emptyPlanWarnings.map((w) => w.message);
+
   if (options.dryRun) {
-    emitImportResult(preview, { dryRun: true });
+    emitImportResult(preview, { dryRun: true, warnings: warningMessages });
     return;
   }
 
@@ -327,7 +346,11 @@ async function importIntoExistingPlan(
     updatedPlan.slugs[0] || updatedPlan._ulid.slice(0, 8),
     updatedPlan.title,
   );
-  emitImportResult(preview, { dryRun: false, createdAt: updatedPlan.created_at });
+  emitImportResult(preview, {
+    dryRun: false,
+    createdAt: updatedPlan.created_at,
+    warnings: warningMessages,
+  });
 }
 
 function assertImportIntoAllowed(plan: LoadedPlan): void {
@@ -446,7 +469,8 @@ function emitImportResult(
 }
 
 function extractOptionalPlanTitle(content: string): string | null {
-  const titleMatch = content.match(/^#\s+(.+)$/m);
+  const firstSignificantLine = content.split("\n").find((line) => line.trim() !== "");
+  const titleMatch = firstSignificantLine?.match(/^#\s+(.+)$/);
   return titleMatch ? titleMatch[1].trim() : null;
 }
 
