@@ -147526,6 +147526,12 @@ reviews:
         payload:
           thread_ulid: 01KP9KFNNMTK0SB3DHJ70QPX0H
         timestamp: 2026-04-15T22:36:18.397Z
+      - _ulid: 01KP9MKP37AQ1PZJ0165H32GW6
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP9KFRFKZ2ZGWSQJCADZAKP0
+        timestamp: 2026-04-15T22:36:23.527Z
     examined_commit: d889ee3c76b715e9b8cc3872a9ae790dc86a3540
     external_links: []
     lifecycle_state: closed
@@ -147595,6 +147601,13 @@ reviews:
               then run . The command reports , leaves  absent, and never writes . That violates the
               task requirement to backfill the missing default-module scaffold during upgrade."
             created_at: 2026-04-15T22:16:46.323Z
+          - _ulid: 01KP9MKN4CRRCG8GAD51X54J1K
+            author: "@claude"
+            body: "Fixed: Changed the default-module scaffold check from items.some(type==='module') to
+              existsSync(modules/main.yaml). Projects with only custom modules now correctly get the
+              default module backfilled. Added a test that creates a custom module without the
+              default one and verifies the scaffold runs."
+            created_at: 2026-04-15T22:36:22.540Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -147605,5 +147618,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T22:17:07.450Z
     created_at: 2026-04-15T22:05:51.870Z
-    updated_at: 2026-04-15T22:36:17.427Z
+    updated_at: 2026-04-15T22:36:22.540Z
     notes: []
