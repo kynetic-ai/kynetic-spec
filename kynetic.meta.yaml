@@ -14518,6 +14518,20 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-15T20:57:12.399Z
+  - _ulid: 01KP9FYF5JBJVNA5SZH7F3GT6J
+    type: friction
+    content: "Review triage friction: checking whether failing tests are pre-existing by adding a
+      detached base worktree was blocked by the test runner's dependency-readiness gate. The ad-hoc
+      base worktree could not run npm test because node_modules/direct dependencies were not
+      considered ready there, so base-vs-head comparison required environment workarounds before any
+      test execution. This makes the review-gate instruction to compare against base branch harder
+      than it should be. Consider a review-friendly way to reuse/install dependencies for detached
+      comparison worktrees or a command dedicated to running comparison checks against the
+      integration base."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-15T21:14:54.002Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
