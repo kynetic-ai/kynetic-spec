@@ -142157,3 +142157,29 @@ reviews:
     created_at: 2026-04-15T08:18:04.017Z
     updated_at: 2026-04-15T08:18:33.962Z
     notes: []
+  - _ulid: 01KP83KVZBC40W7C77XQ2DWG2R
+    slugs: []
+    title: Review task-plan-import-format-guidance
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KP83KVZBJB8EP7YAKCXKE1AV
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-15T08:20:09.323Z
+    examined_commit: f2ac5145d4ad013362635154634edcf368e694d0
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNXYJ58RFQSBZ91FSVQE4F46"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-15T08:20:09.323Z
+    updated_at: null
+    notes: []
