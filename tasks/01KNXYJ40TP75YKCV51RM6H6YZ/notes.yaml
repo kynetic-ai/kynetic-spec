@@ -313,3 +313,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-15T09:37:19.565Z
+  - _ulid: 01KP88ZFMBXN0XQSDFXDC0GZVT
+    content: "Fix cycle 6: addressed blocker about setup step not reporting correct scaffold actions per
+      ac-step-reports-action. The setup gitignore step now emits distinct action strings: 'created'
+      for fresh file, 'skipped' for existing file without managed block (no force),
+      'force-recreated' + backup path for force. Both dry-run and live code paths report consistent
+      vocabulary. Added 4 new CLI integration tests verifying each action string. Full suite: 2145
+      suites, 7842 tests pass, 0 failures."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-15T09:53:52.779Z
