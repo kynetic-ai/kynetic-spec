@@ -14532,6 +14532,25 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-15T21:14:54.002Z
+  - _ulid: 01KP9JSRNMPT6K74ZC1TQC7PBH
+    type: friction
+    content: Fix cycle agents must transition needs_work → in_progress → pending_review manually (two
+      commands). kspec task submit could auto-transition from needs_work for fix cycles, since the
+      intent is unambiguous.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-15T22:04:45.620Z
+  - _ulid: 01KP9JSRX01682H998MS1BPJ6B
+    type: success
+    content: "Agent inherited uncommitted working tree changes from a crashed predecessor
+      (prompt-too-long failure). Reviewing and committing existing changes rather than redoing work
+      saved significant time and avoided potential divergence. Pattern: always check git diff before
+      starting fresh work in fix cycles."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-15T22:04:45.856Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
