@@ -258,3 +258,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-15T20:07:16.582Z
+  - _ulid: 01KP9D1J3VSF0XN8T42M664E06
+    content: "Fix cycle 5: Addressed all 3 review blockers. (1) Dry-run shadow branch: test now captures
+      and compares shadow HEAD before/after, ensuring no kspec-meta commits during dry-run. (2) Exit
+      code: runtime step failures now exit with code 3 (NOT_FOUND, mapped to runtime error per trait
+      convention) instead of 1. New test asserts exit code 3 on forced failure. (3) JSON trait ACs:
+      removed false-coverage tests for ac-4 and ac-5, replaced with N/A annotations since upgrade
+      output has no entity references or timestamp fields. All 43 upgrade tests pass. Full suite:
+      7937 passed, 5 failed (pre-existing EACCES in cli-agent-commands), 5 skipped."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-15T20:24:09.595Z
