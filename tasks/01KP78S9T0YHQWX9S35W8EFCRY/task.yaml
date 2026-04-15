@@ -124,7 +124,7 @@ description: >-
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -135,6 +135,7 @@ tags:
   - bug
   - daemon
 vcs_refs: []
+session_id: 01KP7WWE5RFCS207T1X33C29TK
 history:
   - author: "@claude"
     changes:
@@ -143,6 +144,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-04-15T00:31:44.176Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KP7WWE5RFCS207T1X33C29TK
+        previous: null
+      started_at:
+        new: 2026-04-15T06:23:27.386Z
+        previous: null
+    command: task-start
+    timestamp: 2026-04-15T06:23:27.387Z
 created_at: 2026-04-15T00:31:15.776Z
+started_at: 2026-04-15T06:23:27.386Z
 todos: []
 automation: eligible
