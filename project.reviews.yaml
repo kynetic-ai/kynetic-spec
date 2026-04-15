@@ -141688,6 +141688,13 @@ reviews:
           status: skipped
           name: kspec validate
         timestamp: 2026-04-15T07:33:17.931Z
+      - _ulid: 01KP80Y53HBZ52T2Z19ZCDT595
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KP80Y45X6CKXRRKK0WCG3Q7B
+        timestamp: 2026-04-15T07:33:20.625Z
     examined_commit: 582b948ce0f292d17dc405eb485dd7519f43ecbd
     external_links: []
     lifecycle_state: open
@@ -141697,8 +141704,37 @@ reviews:
       content_hash: ""
       ref: "@01KP78S9T0YHQWX9S35W8EFCRY"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KP80Y45X6CKXRRKK0WCG3Q7B
+        entries:
+          - _ulid: 01KP80Y45XMBM585CZMF7GD8R8
+            author: Jacob Chapel
+            body: >-
+              Files read: AGENTS.md; kspec-agents.md; tests/helpers/cli.ts; tests/setup.test.ts;
+              tests/cli-daemon-proxy.test.ts; tests/parser/daemon-config.test.ts;
+              tests/batch-exec-engine.test.ts; tests/dispatch-shadow-mutation-lock.test.ts;
+              tests/plan-inbox-mutation-serialization.test.ts;
+              tests/shadow-lifecycle-concurrent.test.ts; tests/task-mutation-serialization.test.ts;
+              src/cli/index.ts; src/cli/daemon-proxy.ts; src/cli/pid-utils.ts.
+
+              Commands run: git diff/stat; kspec task get --json; kspec review
+              get/for-task/add/open; rg for CLI spawn sites and KSPEC_NO_DAEMON usage; kspec
+              validate; npm test -- tests/setup.test.ts tests/parser/daemon-config.test.ts
+              tests/cli-daemon-proxy.test.ts; npm test; daemon count snapshots via pgrep -f
+              dist/daemon/index.js.
+
+              Claims verified: worker claim that direct CLI spawn sites now suppress implicit
+              auto-start verified in the changed files; worker claim that daemon-config opt-in tests
+              still exercise the real auto-start path verified by explicit KSPEC_NO_DAEMON:""
+              overrides in tests/parser/daemon-config.test.ts; worker claim that this cycle prevents
+              new orphan daemons verified by unchanged process counts before/after targeted and full
+              test runs.
+
+              Categories searched: correctness, regression risk, test quality, integration, error
+              handling. No blocking issues found in this snapshot.
+            created_at: 2026-04-15T07:33:19.677Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-15T07:22:48.667Z
-    updated_at: 2026-04-15T07:33:16.960Z
+    updated_at: 2026-04-15T07:33:19.677Z
     notes: []
