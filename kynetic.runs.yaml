@@ -26503,7 +26503,7 @@ runs:
     started_at: 2026-04-15T22:17:56.145Z
     completed_at: 2026-04-15T22:19:08.502Z
   - _ulid: 01KP9NHWMGJ29890AHWY7CXDXP
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -26541,7 +26541,10 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-04-15T22:54:11.426Z
-        completed_at: 2026-04-15T22:54:11.426Z
+        completed_at: 2026-04-15T22:54:12.248Z
+        notes: "Coverage check: searched for tracking on command-composition drift and on review-record
+          success patterns; no existing task, spec, inbox item, or observation matched."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-15T22:52:53.264Z
+    completed_at: 2026-04-15T22:54:12.248Z
