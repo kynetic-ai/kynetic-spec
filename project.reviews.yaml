@@ -145075,6 +145075,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP8FEWHNT2R4Z61EJK4YAY2H
         timestamp: 2026-04-15T11:47:10.025Z
+      - _ulid: 01KP8FF4333EJ2MZYZ6SHZXRX9
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP8FF372X4JBGNW9V4CNDY2F
+        timestamp: 2026-04-15T11:47:16.707Z
     examined_commit: 14aa905f12b918a953625d110336eb5411cb3a14
     external_links: []
     lifecycle_state: open
@@ -145121,7 +145128,28 @@ reviews:
               follow-up flows track the edited default-module slug."
             created_at: 2026-04-15T11:47:08.981Z
         kind: blocker
+      - _ulid: 01KP8FF372X4JBGNW9V4CNDY2F
+        anchor:
+          type: code
+          commit: 14aa905f12b918a953625d110336eb5411cb3a14
+          line_end: 1864
+          line_start: 1856
+          path: src/cli/commands/setup.ts
+          side: head
+        entries:
+          - _ulid: 01KP8FF37284KKB8JYGH7VSJ4C
+            author: Jacob Chapel
+            body: 'setup now reports the first loaded module as the default module, but this branch never
+              persists any identity that distinguishes the real default module from other modules.
+              In a project where another module is loaded before modules/main.yaml, the summary
+              points users at the wrong ref. Repro: init a git-backed project, add another module
+              include before modules/*.yaml, rename @main to @custom-module, then run setup
+              --skip-skills --no-hooks; the summary prints "Default module available: @extra"
+              instead of @custom-module. That violates the task requirement that follow-up flows
+              track the edited default-module slug.'
+            created_at: 2026-04-15T11:47:15.810Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-15T11:40:25.702Z
-    updated_at: 2026-04-15T11:47:08.981Z
+    updated_at: 2026-04-15T11:47:15.810Z
     notes: []
