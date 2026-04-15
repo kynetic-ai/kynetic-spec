@@ -146120,7 +146120,22 @@ reviews:
     slugs: []
     title: Review task-upgrade-command (cycle 4)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Ran 'npm test'. Current snapshot reports 5 failing tests in
+          tests/cli-agent-commands.test.ts, all from EACCES mkdir under /tmp/.kspec-sessions/<ULID>;
+          summary 7935 passed, 5 failed, 5 skipped. A second invocation reused the test cache
+          instead of executing again. A fresh base-branch comparison could not classify these as
+          regressions because the temporary base worktree lacked node_modules and failed during
+          dependency setup before reaching those tests.
+        name: npm test
+        required: false
+        runner: npm test
+        created_at: 2026-04-15T19:13:02.944Z
+        completed_at: 2026-04-15T19:13:02.944Z
     events:
       - _ulid: 01KP988PGQWRK7F693YRDFR223
         actor: Jacob Chapel
@@ -146142,6 +146157,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP98Z8QR92BBYT0H0WY2QKWB
         timestamp: 2026-04-15T19:13:01.066Z
+      - _ulid: 01KP98ZCE5GQ32ZK258AGJ92BF
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-04-15T19:13:03.941Z
     examined_commit: f1b991a0b2e99d5cde6c75ec9d9ec23a9f5d10aa
     external_links: []
     lifecycle_state: open
@@ -146174,5 +146196,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-15T19:00:40.600Z
-    updated_at: 2026-04-15T19:13:00.152Z
+    updated_at: 2026-04-15T19:13:02.944Z
     notes: []
