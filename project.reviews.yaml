@@ -141872,6 +141872,12 @@ reviews:
         payload:
           thread_ulid: 01KP836GF1VTA0SRSEJV9C3ESK
         timestamp: 2026-04-15T08:32:47.598Z
+      - _ulid: 01KP84B5J9WYZFZRCQWDGF5FVF
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP836K5G7Q4RX6DQ8QVJ2MWC
+        timestamp: 2026-04-15T08:32:52.810Z
     examined_commit: ceaa0b225705ec805e8d9189d61457f3757557ed
     external_links: []
     lifecycle_state: closed
@@ -141949,6 +141955,16 @@ reviews:
               changes dispatch behavior on first load instead of preserving the empty-config
               behavior the AC requires.'
             created_at: 2026-04-15T08:13:34.652Z
+          - _ulid: 01KP84B4MZJ6WK201TW7W90S4Q
+            author: "@claude"
+            body: "Fixed: The root cause was the scaffolded template hardcoding values that differ from the
+              config loader defaults. Two changes: (1) publication_mode now scaffolds as 'auto'
+              (matching DEFAULT_CONFIG.dispatch.publication_mode) instead of 'manual_merge'. (2)
+              base_branch is now a commented-out placeholder showing the resolved value (like the
+              coverage section), so it doesn't change the resolved config while still being visible
+              for customization. Loading the scaffolded file now produces identical resolved config
+              to an empty config: base_branch=null, publication_mode='auto'."
+            created_at: 2026-04-15T08:32:51.871Z
         kind: blocker
       - _ulid: 01KP836NX8DGSDRDR6QKBWB3Y3
         entries:
@@ -141976,7 +141992,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T08:13:49.001Z
     created_at: 2026-04-15T08:00:06.572Z
-    updated_at: 2026-04-15T08:32:46.602Z
+    updated_at: 2026-04-15T08:32:51.871Z
     notes: []
   - _ulid: 01KP82G0RY4T338S9QKGMG5QH4
     slugs: []
