@@ -175,3 +175,27 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-15T08:35:33.669Z
+  - _ulid: 01KP8BKH9JS6SZZWJ64TN4HG2Z
+    content: >-
+      Fix cycle 1: addressed all 3 review blocker threads.
+
+
+      1. Slug edit test (blocker): Replaced alias-addition test with true slug replacement. Test now
+      uses --slug + --remove-slug, verifies old slug fails to resolve, and derive works with new
+      slug only.
+
+
+      2. Init/setup UX (blocker): Added 'Default module created: @main' to init output (shadow +
+      non-shadow paths), setup pipeline summary, and standalone setup command. New test verifies
+      init output mentions @main.
+
+
+      3. Placeholder shape (blocker): Restored 'items: []' container in both generateShadowModule()
+      and generateMainModule() so the generated YAML has both the real module item and the
+      backward-compatible container. New test verifies both _ulid: and items: [] are present.
+
+
+      Full test suite: 7812 passed, 5 skipped, 0 failed.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-15T10:39:46.994Z
