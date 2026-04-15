@@ -141850,9 +141850,25 @@ reviews:
         payload:
           thread_ulid: 01KP836K5G7Q4RX6DQ8QVJ2MWC
         timestamp: 2026-04-15T08:13:35.795Z
+      - _ulid: 01KP8388JABD5JJTNQA554PJ0G
+        actor: Jacob Chapel
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-15T08:13:49.002Z
+      - _ulid: 01KP8388JA6NG78ADZWW2R0EWN
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-15T08:13:49.002Z
     examined_commit: ceaa0b225705ec805e8d9189d61457f3757557ed
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -141935,9 +141951,16 @@ reviews:
               searched: correctness, test quality, edge cases, error handling, integration."
             created_at: 2026-04-15T08:12:57.129Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: Jacob Chapel
+        role: reviewer
+        created_at: 2026-04-15T08:13:49.001Z
     created_at: 2026-04-15T08:00:06.572Z
-    updated_at: 2026-04-15T08:13:34.652Z
+    updated_at: 2026-04-15T08:13:49.002Z
     notes: []
   - _ulid: 01KP82G0RY4T338S9QKGMG5QH4
     slugs: []
