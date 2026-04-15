@@ -299,6 +299,62 @@ describe("kspec upgrade", () => {
       expect(result.confidence).toBe("unknown");
       expect(result.source_version).toBeNull();
     });
+
+    // AC: @single-command-version-upgrade ac-source-version-unknown
+    it("reports unknown when .agents/skills is a regular file instead of a directory", async () => {
+      // A corrupted .agents/skills path (regular file, not directory) must NOT
+      // be treated as evidence for the 0.8+ skills layout. Only directories count.
+      initGitRepo(tempDir);
+      await fs.writeFile(path.join(tempDir, "README.md"), "# Test\n");
+      execSync('git add . && git commit -m "initial"', {
+        cwd: tempDir,
+        stdio: "pipe",
+      });
+
+      // Minimal .kspec/ with shadow worktree setup
+      const specDir = path.join(tempDir, ".kspec");
+      await fs.mkdir(specDir, { recursive: true });
+
+      const worktreeDir = path.join(tempDir, ".git", "worktrees", "-kspec");
+      await fs.mkdir(worktreeDir, { recursive: true });
+      await fs.writeFile(
+        path.join(worktreeDir, "HEAD"),
+        "0".repeat(40) + "\n",
+        "utf-8",
+      );
+      await fs.writeFile(
+        path.join(worktreeDir, "gitdir"),
+        path.join(specDir, ".git") + "\n",
+        "utf-8",
+      );
+      await fs.writeFile(
+        path.join(specDir, ".git"),
+        `gitdir: ${worktreeDir}\n`,
+        "utf-8",
+      );
+
+      // Old manifest with no versioned probes
+      await fs.writeFile(
+        path.join(specDir, "kynetic.yaml"),
+        `kynetic_spec: "1.0"\ntitle: Test\nproject:\n  name: test\n  version: "0.1.0"\n`,
+        "utf-8",
+      );
+
+      // Place a regular file at .agents/skills (corrupted state)
+      const agentsDir = path.join(tempDir, ".agents");
+      await fs.mkdir(agentsDir, { recursive: true });
+      await fs.writeFile(path.join(agentsDir, "skills"), "corrupted\n", "utf-8");
+
+      const result = kspecJson<{
+        source_version: string | null;
+        confidence: string;
+      }>("upgrade --dry-run", tempDir);
+
+      // Regular file at .agents/skills is not a recognizable skills layout —
+      // must not count as evidence for 0.8+ and must report unknown
+      expect(result.confidence).toBe("unknown");
+      expect(result.source_version).toBeNull();
+    });
   });
 
   // ─── Version Reporting ────────────────────────────────────────────
@@ -1181,6 +1237,49 @@ describe("kspec upgrade", () => {
       );
       expect(moduleStep).toBeDefined();
       expect(moduleStep!.status).toBe("skipped");
+    });
+
+    // AC: @single-command-version-upgrade ac-reports-manual-follow-ups
+    it("scaffolds default module when only custom modules exist", async () => {
+      await initProject(tempDir);
+      await writeLastKnownVersion(tempDir, "0.8.0");
+
+      // Remove the default module file but keep the modules directory.
+      // Create a custom module so that the old items.some(type==="module")
+      // check would have been true — but the default module is still missing.
+      const specDir = path.join(tempDir, ".kspec");
+      const modulesDir = path.join(specDir, "modules");
+      const defaultModulePath = path.join(modulesDir, "main.yaml");
+
+      // Remove the default module file
+      if (existsSync(defaultModulePath)) {
+        await fs.unlink(defaultModulePath);
+      }
+
+      // Create a custom module so we know the check isn't "any module"
+      const customModulePath = path.join(modulesDir, "custom.yaml");
+      await fs.writeFile(
+        customModulePath,
+        `_ulid: 01TESTCUSTOMMODULE0000000\nslugs:\n  - custom\ntitle: Custom Module\ntype: module\nstatus:\n  maturity: draft\nitems: []\n`,
+        "utf-8",
+      );
+
+      const result = kspecJson<{
+        steps: Array<{ name: string; status: string; message: string }>;
+      }>("upgrade", tempDir);
+
+      const moduleStep = result.steps.find(
+        (s) => s.name === "Scaffold default module",
+      );
+      expect(moduleStep).toBeDefined();
+      // Must scaffold — having a custom module is not enough, the default module is missing
+      expect(moduleStep!.status).toBe("done");
+
+      // Verify modules/main.yaml was actually created
+      expect(existsSync(defaultModulePath)).toBe(true);
+      const content = await fs.readFile(defaultModulePath, "utf-8");
+      expect(content).toContain("type: module");
+      expect(content).toContain("main");
     });
 
     // AC: @single-command-version-upgrade ac-dry-run-no-writes

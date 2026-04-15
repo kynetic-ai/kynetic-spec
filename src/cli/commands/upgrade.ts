@@ -6,7 +6,7 @@
  */
 
 import * as fs from "node:fs/promises";
-import { existsSync } from "node:fs";
+import { existsSync, statSync } from "node:fs";
 import * as path from "node:path";
 import chalk from "chalk";
 import type { Command } from "commander";
@@ -217,8 +217,16 @@ async function inferVersionFromProbes(
   }
 
   // Probe 4: Check for rendered skills directory
+  // Must be an actual directory — a regular file at this path is corrupted state,
+  // not a recognizable skills layout. Only directories count as evidence.
   const agentsSkillsDir = path.join(projectDir, ".agents", "skills");
-  if (existsSync(agentsSkillsDir)) {
+  let agentsSkillsDirIsDir = false;
+  try {
+    agentsSkillsDirIsDir = statSync(agentsSkillsDir).isDirectory();
+  } catch {
+    // Path doesn't exist — not a match
+  }
+  if (agentsSkillsDirIsDir) {
     probeResults.push({ minVersion: "0.8.0", maxVersion: "99.99.99" });
     versionedProbeMatched = true;
   }
@@ -1197,18 +1205,20 @@ dispatch:
   }
 
   // 5d: Scaffold default module (ensure it exists)
+  // Check whether the default module file (modules/main.yaml) specifically exists.
+  // Having a *different* custom module is not sufficient — the spec requires
+  // the default module scaffold to be backfilled if it's missing.
   try {
-    const { loadAllItems } = await import("../../parser/yaml.js");
     const { initContext: initCtxForModule } = await import("../../parser/index.js");
     const freshCtx = await initCtxForModule();
-    const items = await loadAllItems(freshCtx);
-    const hasModule = items.some((item) => item.type === "module");
+    const defaultModulePath = path.join(freshCtx.specDir, "modules", "main.yaml");
+    const hasDefaultModule = existsSync(defaultModulePath);
 
-    if (hasModule) {
+    if (hasDefaultModule) {
       results.push({
         name: "Scaffold default module",
         status: "skipped",
-        message: "module already exists",
+        message: "default module already exists",
       });
     } else if (dryRun) {
       results.push({
