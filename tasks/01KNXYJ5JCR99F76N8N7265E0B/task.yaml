@@ -115,7 +115,7 @@ description: |
 spec_ref: "@single-command-version-upgrade"
 plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-scaffold-project-config"
@@ -130,6 +130,14 @@ tags:
   - upgrade
   - setup
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-upgrade-command/01knxyj5
+  captured_at: 2026-04-15T12:40:04.743Z
+  commit: 96b4318368a237137685b91bf85214d3e68cc139
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KP8HD7THSBYGGNC4TAWVAAM5
 history:
   - author: Jacob Chapel
@@ -152,7 +160,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-15T12:21:31.352Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-upgrade-command/01knxyj5
+          captured_at: 2026-04-15T12:40:04.743Z
+          commit: 96b4318368a237137685b91bf85214d3e68cc139
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-04-15T12:40:04.746Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-15T12:40:04.746Z
 created_at: 2026-04-11T09:39:26.412Z
 started_at: 2026-04-15T12:21:31.352Z
+submitted_at: 2026-04-15T12:40:04.746Z
 todos: []
 automation: eligible
