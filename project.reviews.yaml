@@ -141641,6 +141641,18 @@ reviews:
         runner: npm
         created_at: 2026-04-15T07:33:14.073Z
         completed_at: 2026-04-15T07:33:14.073Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Skipped as a gate for this task because validate reports repo-level pre-existing failures
+          unrelated to this patch, including .kspec/modules/meta.yaml schema errors and broad
+          completeness/alignment issues.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-15T07:33:16.960Z
+        completed_at: 2026-04-15T07:33:16.960Z
     events:
       - _ulid: 01KP80AVYTSQXS383HRT0BPZK6
         actor: Jacob Chapel
@@ -141669,6 +141681,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-15T07:33:15.079Z
+      - _ulid: 01KP80Y2FBGCQ602TZ5EVKR23A
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-04-15T07:33:17.931Z
     examined_commit: 582b948ce0f292d17dc405eb485dd7519f43ecbd
     external_links: []
     lifecycle_state: open
@@ -141681,5 +141700,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-15T07:22:48.667Z
-    updated_at: 2026-04-15T07:33:14.073Z
+    updated_at: 2026-04-15T07:33:16.960Z
     notes: []
