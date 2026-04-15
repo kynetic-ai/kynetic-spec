@@ -141615,7 +141615,20 @@ reviews:
     slugs: []
     title: Review task-tests-suppress-cli-auto-start-daemon (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- tests/setup.test.ts tests/parser/daemon-config.test.ts
+          tests/cli-daemon-proxy.test.ts passed: 22 suites, 65 tests. tests/setup.test.ts 7 passed;
+          tests/parser/daemon-config.test.ts 27 passed; tests/cli-daemon-proxy.test.ts 31 passed.
+          dist/daemon/index.js count stayed 8 before and after targeted run."
+        name: targeted daemon/setup tests
+        required: true
+        runner: npm
+        created_at: 2026-04-15T07:33:11.298Z
+        completed_at: 2026-04-15T07:33:11.298Z
     events:
       - _ulid: 01KP80AVYTSQXS383HRT0BPZK6
         actor: Jacob Chapel
@@ -141630,6 +141643,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-15T07:23:09.065Z
+      - _ulid: 01KP80XWXH5PRV4AHGYQ2NQB2G
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted daemon/setup tests
+        timestamp: 2026-04-15T07:33:12.242Z
     examined_commit: 582b948ce0f292d17dc405eb485dd7519f43ecbd
     external_links: []
     lifecycle_state: open
@@ -141642,5 +141662,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-15T07:22:48.667Z
-    updated_at: 2026-04-15T07:23:08.140Z
+    updated_at: 2026-04-15T07:33:11.298Z
     notes: []
