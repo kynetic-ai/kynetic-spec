@@ -26418,7 +26418,7 @@ runs:
     completed_at: 2026-04-15T19:15:30.596Z
   - _ulid: 01KP9DVS6ZDXPQE0RDZARXPQBW
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -26431,7 +26431,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-15T20:39:05.565Z
-        completed_at: 2026-04-15T20:39:05.565Z
+        completed_at: 2026-04-15T20:39:27.443Z
+        notes: "Friction: the upgrade test suite covered the EISDIR path only after manually deleting the
+          agents hash file, which masked a more realistic failure mode where a corrupted
+          kspec-agents.md artifact coexists with a matching hash. That made the review rely on extra
+          manual reproduction instead of the existing integration tests catching it directly."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-15T20:39:27.443Z
+        completed_at: 2026-04-15T20:39:27.443Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-15T20:38:28.831Z
