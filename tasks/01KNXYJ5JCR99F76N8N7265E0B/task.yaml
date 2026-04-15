@@ -115,7 +115,7 @@ description: |
 spec_ref: "@single-command-version-upgrade"
 plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-scaffold-project-config"
@@ -139,7 +139,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-upgrade-command/01knxyj5
-session_id: null
+session_id: 01KP8N5TJB16768CXZWG4CY04D
 history:
   - author: Jacob Chapel
     changes:
@@ -255,8 +255,21 @@ history:
         previous: 01KP8K81V74SW4NZ72RFXHYCNG
     command: review-verdict-needs-work
     timestamp: 2026-04-15T13:25:11.031Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KP8N5TJB16768CXZWG4CY04D
+        previous: null
+      started_at:
+        new: 2026-04-15T13:41:51.402Z
+        previous: 2026-04-15T13:10:10.475Z
+    command: task-start
+    timestamp: 2026-04-15T13:41:51.403Z
 created_at: 2026-04-11T09:39:26.412Z
-started_at: 2026-04-15T13:10:10.475Z
+started_at: 2026-04-15T13:41:51.402Z
 submitted_at: 2026-04-15T13:10:13.658Z
 todos: []
 automation: eligible
