@@ -1,1 +1,37 @@
-notes: []
+notes:
+  - _ulid: 01KP8HPX8FEGQN3NNC3DWBZ7A9
+    content: >-
+      Approach: Build upgrade command as composition of existing setup step functions.
+
+
+      Version detection: Read lastKnownVersion from .setup-state.json (exact confidence), fall back
+      to probe-based inference (approximate), then unknown as last resort. Probes:
+      task_storage.format field, kynetic manifest version, presence of kspec.config.yaml, presence
+      of rendered skills.
+
+
+      Upgrade pipeline steps (reusing existing functions):
+
+      1. Task storage migration - extract inline closure from task.ts into a reusable function
+
+      2. Re-render skills - reuse renderSkillsForSetup()
+
+      3. Regenerate agents file - reuse generateAgentInstructions()
+
+      4. Gitignore repair - reuse ensureKspecGitignore()
+
+      5. Scaffold missing files - reuse scaffoldProjectConfig(), scaffoldDefaults(),
+      ensureDefaultReflectionHook()
+
+      6. Write lastKnownVersion to .setup-state.json
+
+
+      Dry-run and force flags threaded through to each step. JSON output via output() dual-mode
+      pattern.
+
+
+      Test plan: 12 spec ACs + trait ACs (error-guidance, exit-codes, dry-run, json-output). E2E
+      tests using kspec() helper in temp dirs with initGitRepo + kspec init.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-15T12:26:29.007Z
