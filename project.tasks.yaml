@@ -26387,3 +26387,20 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-15T19:27:25.425Z
+- _ulid: 01KP9S5KAZGRSRVJWSJ1FXY6RM
+  slugs:
+    - task-fix-cli-agent-session-store-eacces
+  title: Fix session store EACCES in cli-agent-commands tests
+  type: bug
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - tests
+    - cli
+    - sessions
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-15T23:56:04.831Z
+  automation: eligible
