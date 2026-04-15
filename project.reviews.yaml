@@ -145630,3 +145630,29 @@ reviews:
     created_at: 2026-04-15T12:41:32.241Z
     updated_at: 2026-04-15T13:09:44.551Z
     notes: []
+  - _ulid: 01KP8MDE1KYXM17FMAWS8F6JJS
+    slugs: []
+    title: Review task-upgrade-command (cycle 2)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KP8MDE1JW3AJXP22T670WR93
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-15T13:13:44.243Z
+    examined_commit: ddf9d4a71f08cf6737492d6a6d04f5cd5f1bd606
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNXYJ5JCR99F76N8N7265E0B"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-15T13:13:44.243Z
+    updated_at: null
+    notes: []

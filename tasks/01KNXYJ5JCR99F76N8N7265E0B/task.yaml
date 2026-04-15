@@ -130,7 +130,7 @@ tags:
   - upgrade
   - setup
 vcs_refs: []
-review_ref: "@01KP8JJFAHJQ86FK4ZQTG7RGJK"
+review_ref: "@01KP8MDE1KYXM17FMAWS8F6JJS"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-upgrade-command/01knxyj5
@@ -238,6 +238,13 @@ history:
         previous: 2026-04-15T12:40:04.746Z
     command: task-submit
     timestamp: 2026-04-15T13:10:13.658Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KP8MDE1KYXM17FMAWS8F6JJS"
+        previous: "@01KP8JJFAHJQ86FK4ZQTG7RGJK"
+    command: review-link
+    timestamp: 2026-04-15T13:13:47.066Z
 created_at: 2026-04-11T09:39:26.412Z
 started_at: 2026-04-15T13:10:10.475Z
 submitted_at: 2026-04-15T13:10:13.658Z
