@@ -141330,6 +141330,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-15T06:49:12.426Z
+      - _ulid: 01KP7YDF9KWQ32XCD1FMG93TTJ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KP7YDEAT5HT8ZB47TVZJ3NQP
+        timestamp: 2026-04-15T06:49:16.851Z
     examined_commit: 2cb9bf5ee7800327a7978288ffc701e6fed60192
     external_links: []
     lifecycle_state: closed
@@ -141378,6 +141385,27 @@ reviews:
               closed.
             created_at: 2026-04-15T06:48:47.244Z
         kind: blocker
+      - _ulid: 01KP7YDEAT5HT8ZB47TVZJ3NQP
+        entries:
+          - _ulid: 01KP7YDEATFFTFCA8306RZ361S
+            author: Jacob Chapel
+            body: >-
+              Files read: AGENTS.md; kspec-agents.md; tests/helpers/cli.ts; tests/setup.test.ts;
+              tests/parser/daemon-config.test.ts; src/cli/pid-utils.ts; tests/setup.ts;
+              tests/cli-serve.test.ts.
+
+              Commands run: kspec task get; kspec review for-task/add/open; git diff/stat/show;
+              kspec validate; rg AC/env searches; pgrep daemon counts/process list; npm test;
+              targeted npm test run.
+
+              Claims verified: the helper now defaults KSPEC_NO_DAEMON=1; setup.test cleanEnv now
+              sets KSPEC_NO_DAEMON=1; daemon-config auto-start coverage still opts back in via
+              KSPEC_NO_DAEMON=""; full suite still leaves orphan daemons.
+
+              Categories searched: correctness, test quality, edge cases, error handling,
+              integration. Finding: incomplete leak closure against AC1.
+            created_at: 2026-04-15T06:49:15.866Z
+        kind: nit
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -141387,5 +141415,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T06:49:12.426Z
     created_at: 2026-04-15T06:37:08.564Z
-    updated_at: 2026-04-15T06:49:12.426Z
+    updated_at: 2026-04-15T06:49:15.866Z
     notes: []
