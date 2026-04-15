@@ -135718,6 +135718,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-15T08:56:08.504Z
+      - _ulid: 01KP85NVQ98ANDMZCCA8096MJR
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP85NTMR9G7V110AWJN5EBE9
+        timestamp: 2026-04-15T08:56:11.753Z
     examined_commit: d8602e6f790919893fc9aa7907493193f5f99411
     external_links: []
     lifecycle_state: open
@@ -135727,10 +135734,601 @@ reviews:
       content_hash: ""
       ref: "@01KNXYJ40TP75YKCV51RM6H6YZ"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KP85NTMR9G7V110AWJN5EBE9
+        anchor:
+          type: code
+          commit: 7fba358110d6aa04056d9088a157308863994fc2
+          line_end: 60
+          line_start: 1
+          path: src/cli/commands/setup-defaults.ts
+          side: head
+        entries:
+          - _ulid: 01KP85NTMS4N29QV76JFK9BNWY
+            author: Jacob Chapel
+            body: >-
+              This branch contains unrelated task work in addition to the gitignore fix.  is a new
+              522-line scaffold for default agents/conventions with its own spec tag (), and commit
+              7fba358110d6aa04056d9088a157308863994fc2
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Wed Apr 15 01:51:11 2026 -0700
+
+                  fix: respect @trait-idempotent-file-scaffold contract for gitignore managed block
+                  When .gitignore exists without a managed block:
+                  - Without force: preserve byte-for-byte, report "skipped"
+                  - With force: backup to timestamped sibling, then create managed block
+                  init passes force: true (explicit scaffolding action).
+                  setup respects the --force flag from the user.
+                  Task: @task-complete-gitignore
+                  Spec: @complete-auto-gitignore
+                  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+              commit d670d0dd73f99dd965a440ff538f06ca42f84f02
+
+              Merge: d2fc82160 a885ce6d6
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Wed Apr 15 00:56:44 2026 -0700
+
+                  Merge plan branch to pick up dev + @task-tests-suppress-cli-auto-start-daemon daemon-leak fix
+                  Unblocks the task by bringing the implicit CLI auto-start daemon
+                  suppression fix into this branch. Prior dispatch bootstrap failures
+                  on build-workspace-artifacts were caused by orphan daemon resource
+                  pressure; that fix is now present.
+
+              commit a885ce6d6634d9d435cdd57d7afe98c73fd501dd
+
+              Merge: f31704953 cd2c71e94
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Wed Apr 15 00:56:24 2026 -0700
+
+                  Merge dev into plan branch to pick up @task-tests-suppress-cli-auto-start-daemon daemon-leak fix
+                  Brings in commits up to cd2c71e94 (dev tip) including the implicit CLI
+                  auto-start daemon suppression fix. Subsequent merges of this plan branch
+                  into the four blocked task branches will propagate the fix into them so
+                  that dispatch bootstrap no longer trips over the orphan-daemon resource
+                  pressure that caused their build-workspace-artifacts failures.
+
+              commit cd2c71e9466177bb37b9ab7f220d48722715539f
+
+              Merge: e350118b9 582b948ce
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Wed Apr 15 00:34:04 2026 -0700
+
+                  Merge branch 'dispatch/task/task-tests-suppress-cli-auto-start-daemon/01kp78s9' into dev
+
+              commit 582b948ce0f292d17dc405eb485dd7519f43ecbd
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Wed Apr 15 00:19:46 2026 -0700
+
+                  fix(test): close remaining implicit daemon leak paths in test subprocesses
+                  The initial fix only patched tests/helpers/cli.ts and tests/setup.test.ts,
+                  but five additional test files spawn kspec CLI subprocesses via direct
+                  spawn()/spawnSync() calls that bypass the helper, and one test file
+                  (cli-daemon-proxy.test.ts) opts back into auto-start via KSPEC_NO_DAEMON=""
+                  without disabling auto_start at the config level. All six paths leaked
+                  orphan daemons.
+                  Changes:
+                  - task-mutation-serialization.test.ts: add KSPEC_NO_DAEMON=1 to runKspecAsync env
+                  - plan-inbox-mutation-serialization.test.ts: add KSPEC_NO_DAEMON=1 to runKspecAsync env
+                  - shadow-lifecycle-concurrent.test.ts: add KSPEC_NO_DAEMON=1 to runKspecAsync env
+                  - dispatch-shadow-mutation-lock.test.ts: add KSPEC_NO_DAEMON=1 to runKspecAsync env
+                  - batch-exec-engine.test.ts: add KSPEC_NO_DAEMON=1 to two direct spawn calls
+                  - setup.test.ts: add KSPEC_NO_DAEMON=1 to four early spawnSync calls in first describe
+                  - cli-daemon-proxy.test.ts: add kspec.config.yaml with auto_start:false in beforeEach
+                    so proxy tests that clear KSPEC_NO_DAEMON for detection don't trigger auto-start
+                  Verified: daemon count stable at 7 before/after full test run (zero new orphans).
+                  All 7763 tests pass. Both daemon-config auto-start tests still exercise the real
+                  code path. 22/22 no-leaky-test-daemon lint tests pass.
+                  Task: @task-tests-suppress-cli-auto-start-daemon
+                  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+              commit e350118b9b41635966ac4a92f7c20359e1641e0c
+
+              Merge: 8068a15ad dc095a697
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Wed Apr 15 00:04:47 2026 -0700
+
+                  Merge branch 'dispatch/task/task-bootstrap-failure-output-tail/01kp7v4b' into dev
+
+              commit dc095a697b7ed17340c5951ce6652a7b79a2aebf
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Tue Apr 14 23:49:50 2026 -0700
+
+                  fix(bootstrap): capture tail of output so error detail is preserved
+                  summarizeOutput() was slicing the HEAD of combined stdout+stderr, which
+                  discarded build-tool error messages that always appear at the end of the
+                  stream. Changed to slice the TAIL (-4000 chars) so actionable error
+                  detail is preserved in failureMessage and steps[].output metadata.
+                  Added regression test that verifies a sentinel at the end of a long
+                  output stream survives the 4000-char budget.
+                  Task: @task-bootstrap-failure-output-tail
+                  Spec: @dispatch-runtime-bootstrap-contract
+                  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+              commit 2cb9bf5ee7800327a7978288ffc701e6fed60192
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Tue Apr 14 23:35:09 2026 -0700
+
+                  fix(test): suppress CLI auto-start daemon in test subprocesses
+                  Add KSPEC_NO_DAEMON=1 to the default env in the kspec() test helper
+                  and in the cleanEnv() of setup.test.ts so that CLI subprocesses spawned
+                  by tests do not implicitly auto-start detached daemons. Caller-provided
+                  env still overrides via merge order, so the two end-to-end auto-start
+                  tests in daemon-config.test.ts (which pass KSPEC_NO_DAEMON="") continue
+                  to exercise the real auto-start code path.
+                  Task: @task-tests-suppress-cli-auto-start-daemon
+                  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+              commit f3170495360a3c1d5c33d6bc3ac78aa3eb078247
+
+              Merge: f205808d2 d8f9c25d3
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Tue Apr 14 13:57:06 2026 -0700
+
+                  Merge branch 'dispatch/task/task-meta-set-multi-value/01knxyj6' into plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
+
+              commit d8f9c25d3b8dad39a6e1b074ec58733867fd3cd7
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Tue Apr 14 13:53:32 2026 -0700
+
+                  fix: make meta set multi-value options preserve all repeated values
+                  Commander option declarations for add-rule, add-skill, add-capability,
+                  add-tool, add-convention, add-tag, and their remove- counterparts were
+                  using single-value syntax, causing only the last value to be kept when
+                  a flag was repeated. Changed all 11 affected options to use the
+                  collectRepeatedOptionValues accumulator (matching --add-dispatch-rule)
+                  and updated the handler to iterate arrays. Removes are applied before
+                  adds so mixed operations in a single call are unambiguous.
+                  Task: @task-meta-set-multi-value
+                  Spec: @meta-set-multi-value-parity
+                  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+              commit f205808d2cf1f58d18f7fdf45435996b4092d52a
+
+              Merge: 41667bed0 a7c729162
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Tue Apr 14 12:15:16 2026 -0700
+
+                  Merge branch 'dispatch/task/task-default-agents-and-conventions/01knxyj4' into plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
+                  # Conflicts:
+                  #       src/cli/commands/setup.ts
+
+              commit 41667bed0e3753306a23e84cc2f7d3f0b621ad36
+
+              Merge: 7b1b85656 f6e50c626
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Tue Apr 14 11:51:08 2026 -0700
+
+                  Merge branch 'dispatch/task/task-default-reflection-hook/01knxyj4' into plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
+
+              commit a7c72916243514df6efab4bee95db653c74e7a59
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Tue Apr 14 11:45:10 2026 -0700
+
+                  fix: use ULID-based tracking for agent rename detection
+                  Replace greedy consumed-set approach with per-item ULID tracking for
+                  agent rename detection, matching the approach already used for
+                  conventions. Each scaffolded agent's ULID is recorded in the state
+                  file at creation time. On subsequent runs, a missing agent is checked
+                  by looking up its original ULID in the current meta — if an agent
+                  with that ULID exists under a different ID, it's a rename; if no
+                  agent has that ULID, it's a deletion.
+                  This fixes the order-dependent bug where renaming pr-reviewer and
+                  deleting task-worker would incorrectly consume pr-reviewer's scaffold
+                  tag for task-worker, causing both to be recreated on force reseed.
+                  Task: @task-default-agents-and-conventions
+                  Spec: @default-project-agents-and-conventions
+                  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+              commit ba9c2d1d21da644be1b39e48596b8d52f79aba89
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Tue Apr 14 11:17:40 2026 -0700
+
+                  fix: correct rename detection and convention tracking in scaffold defaults
+                  Three blockers from review:
+                  1. Convention rename preservation now works in both force and
+                     subsequent-run modes via ULID-based tracking. The state file records
+                     each scaffolded item's _ulid at creation time; on subsequent runs,
+                     missing conventions are matched by ULID against the current meta to
+                     detect domain renames.
+                  2. Agent rename detection uses a consumed-set approach: unmatched
+                     scaffold-tagged agents (those whose IDs aren't known defaults) are
+                     consumed one-per-missing-default. This correctly handles mixed
+                     rename/remove scenarios — a renamed agent accounts for exactly one
+                     missing default, while truly deleted defaults are recreated in
+                     force mode.
+                  3. The ac-agents-md-reflects-defaults test now requires the file to
+                     exist and verifies it contains convention domains, rule content, and
+                     placeholder text from scaffolded defaults.
+                  New test coverage: mixed rename+delete in force mode, ULID-based
+                  convention rename detection in both force and subsequent-run modes.
+                  Task: @task-default-agents-and-conventions
+                  Spec: @default-project-agents-and-conventions
+                  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+              commit dd52ae868615d968f8eb1cdbf15338736e192dfd
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Tue Apr 14 03:09:20 2026 -0700
+
+                  feat: scaffold default project agents and conventions during setup
+                  Adds a new scaffoldDefaults() function that creates four default agents
+                  (task-worker, pr-reviewer, primary-dev, plan-reviewer) and three default
+                  conventions (commits, architecture, testing) on first-run setup. All
+                  agents have unconditional write authorization (auto_approve: true).
+                  Consolidates the existing ensureBuiltInAgents() into this single scaffold
+                  site. Adds first-run marker tracking via .setup-state.json, scaffold-default
+                  tag for rename detection, and subsequent-run reporting.
+                  Re-annotates existing ralph-replacement test coverage to the new
+                  @default-project-agents-and-conventions acceptance criteria (15 ACs).
+                  Task: @task-default-agents-and-conventions
+                  Spec: @default-project-agents-and-conventions
+                  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+              commit f6e50c626e48f295fdd3a14f4ab6142b9908c016
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Tue Apr 14 11:38:38 2026 -0700
+
+                  feat(setup): scaffold default session reflection hook
+                  Add a new setup pipeline step that creates a reflection hook firing on
+                  session.idle for all agent sessions, prompting the reflect skill.
+                  Includes idempotency (skip if hook exists) and user-removal detection
+                  (skip if user previously removed the scaffolded hook, unless --force).
+                  Task: @task-default-reflection-hook
+                  Spec: @default-session-reflection-hook
+                  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+              commit d2fc821600de6d6fefe6538d416588ca8838bc93
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Tue Apr 14 11:02:18 2026 -0700
+
+                  fix: skip absolute worktree_root paths from gitignore entries
+                  Absolute paths (e.g. /tmp/kspec-worktrees) point outside the repo
+                  and cannot be matched by .gitignore patterns, which are
+                  repository-relative. Guard with path.isAbsolute() so only relative
+                  worktree roots are added to the managed block.
+                  Task: @task-complete-gitignore
+                  Spec: @complete-auto-gitignore
+                  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+              commit e4174f9c2223eb30fc6569ee6a5bc9ca795b14c5
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Tue Apr 14 03:25:06 2026 -0700
+
+                  fix: support configurable dispatch.worktree_root in gitignore entries
+                  buildKspecGitignoreEntries() hardcoded .kspec-worktrees/ instead of
+                  using the project's configured dispatch.worktree_root. Projects with
+                  custom worktree roots would still gitignore .kspec-worktrees/ and leave
+                  the actual worktree pool untracked.
+                  Also strengthened the ac-no-untracked-after-common-commands test to
+                  actually create all transient directories (worktree pool, sessions,
+                  plans, dispatch metadata) after init and verify none appear untracked.
+                  Task: @task-complete-gitignore
+                  Spec: @complete-auto-gitignore
+                  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+              commit d391fc868b6aaeb2a8a8a6319778d105df91537d
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Tue Apr 14 02:26:02 2026 -0700
+
+                  fix: pass configured shadow directory to setup gitignore path and fix AC annotations
+                  The setup pipeline's gitignore repair step was calling
+                  buildKspecGitignoreEntries() and ensureKspecGitignore() without passing
+                  the configured shadow directory, causing projects with custom shadow
+                  directories (e.g., .specs) to have the wrong entry in the managed block.
+                  Also moved AC annotations from block comments (/** */) to standalone
+                  line comments (// AC:) which is the format the kspec validator recognizes.
+                  Added test for ac-no-untracked-after-common-commands and custom shadow
+                  directory support.
+                  Task: @task-complete-gitignore
+                  Spec: @complete-auto-gitignore
+                  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+              commit 69828a55b68ade3fd14971ecf29d623d27a42de7
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Sat Apr 11 03:29:02 2026 -0700
+
+                  feat: expand and repair auto-generated gitignore entries
+                  Replace per-entry gitignore writing with a managed-block approach using
+                  sentinel markers (# >>> kspec managed / # <<< kspec managed). All kspec
+                  transient directories are enumerated in a single canonical list:
+                  .kspec/, .kspec-sessions/, plans/, .kspec-worktrees/,
+                  .kspec-dispatch-workspace.json, .kspec-dispatch-shadow-mutation.
+                  The managed block is created during init and repaired during setup,
+                  ensuring existing projects get missing entries on upgrade. User content
+                  outside the block is never touched, and entries inside are never removed.
+                  Task: @task-complete-gitignore
+                  Spec: @complete-auto-gitignore
+                  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+              commit 8068a15ad06fdad3f38be42442b38a782e717b1c
+
+              Merge: 9ed082194 5eee12c46
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Mon Apr 13 22:45:47 2026 -0700
+
+                  Merge branch 'dispatch/task/task-shadow-worktree-cross-contamination-guard/01kp4ksn' into dev
+
+              commit 5eee12c46238f0ab1f1dc65df02b4db6d9246e14
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Mon Apr 13 17:37:11 2026 -0700
+
+                  fix(shadow): guard shadow-lifecycle ops against linked-worktree cross-contamination
+                  Closes the 2026-04-11 incident where a kspec command routed through a
+                  linked-worktree cwd silently destroyed the main working tree's shadow
+                  worktree via git's shared worktree admin (find_worktree_by_suffix).
+                  Three-layer defense:
+                  1. Absolute paths — initializeShadow, repairShadow, and
+                     createOrphanBranchFallback now pass the absolute worktreeDir to every
+                     `git worktree add/remove` invocation, so git's suffix matcher cannot
+                     reach across linked-worktree admin entries.
+                  2. Function-level guard — new assertMainWorkingTree() uses
+                     resolveProjectRoots to refuse initializeShadow/repairShadow calls
+                     whose projectRoot is a linked worktree. Defense-in-depth for future
+                     callers that forget to resolve mainRoot.
+                  3. Command-level hard-error — kspec init and kspec setup detect linked
+                     worktrees via resolveProjectRoots at entry and exit non-zero with
+                     instructional guidance identifying the main working tree path.
+                     shadow status/repair/log/sync continue to work correctly from linked
+                     worktrees because they already resolve to mainRoot via
+                     resolveCliProjectRoot.
+                  Test-helper contract: tests/helpers/cli.ts `kspec()` now requires an
+                  explicit cwd at runtime; the silent `cwd ?? process.cwd()` fallback was
+                  the amplifier that let an unrelated test reach the buggy code path.
+                  Added a testing convention rule documenting the new requirement.
+                  Regression coverage: six new test files using a baseline fixture method
+                  (worktree list porcelain, shadow tip SHA, .kspec/.git pointer, mtime,
+                  inode) to detect silent mutations that a naive existence check would
+                  miss. Closes 10 new ACs on @worktree-support:
+                    ac-init-linked-wt-unchanged, ac-init-main-wt-unchanged,
+                    ac-init-guidance-direction, ac-init-guidance-path,
+                    ac-setup-linked-wt-unchanged, ac-setup-main-wt-unchanged,
+                    ac-setup-guidance-direction, ac-setup-guidance-path,
+                    ac-shadow-ops-scoped-to-main, ac-shadow-ops-concurrent-safety.
+                  Task: @task-shadow-worktree-cross-contamination-guard
+                  Spec: @worktree-support
+                  Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
+
+              commit 9ed0821941f5a563d8b6585d92d1e1d09195b8da
+
+              Merge: 16df87946 cc112485a
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Apr 9 21:18:07 2026 -0700
+
+                  Merge branch 'dispatch/task/task-lint-rule-test-daemon-cleanup/01kntacp' into dev
+
+              commit cc112485adee6ecaece0de407d9f202e379e0d0e
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Apr 9 20:52:29 2026 -0700
+
+                  fix(lint): restrict detach detection to spawn-like API callees only
+                  isDetachCallExpression() was matching ANY call expression whose string
+                  argument contained "serve start --detach", causing false positives on
+                  non-spawn calls like expect(cmd).toContain("serve start --detach") or
+                  console.log("serve start --detach"). Restricted detection to a
+                  whitelist of actual spawn-like APIs: runKspec, kspec, exec, execSync,
+                  spawn, spawnSync, execFile, execFileSync, and fork.
+                  Added 2 negative test cases covering the false positive scenarios.
+                  Task: @task-lint-rule-test-daemon-cleanup
+                  Spec: @01KNTACP2BXY12MTB2GETNJ7CS
+                  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+              commit 16df879469e62d3ef754cbc73466ba442bb103fe
+
+              Merge: 270b2a075 945626c09
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Apr 9 20:27:09 2026 -0700
+
+                  Merge branch 'dispatch/task/task-test-runner-progress-output/01kntb8y' into dev
+
+              commit bfc112ad754cb512d23d6f95793917495c7cafa4
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Apr 9 20:27:05 2026 -0700
+
+                  fix(lint): use daemon-specific patterns in afterEach and try/finally checks
+                  Extracted hasDaemonCleanupPattern() to share daemon-specific detection
+                  across isAfterEachWithCleanup() and isInTryWithFinallyCleanup(). Now
+                  recognizes process.kill(), .kill("SIG*"), SIGTERM/SIGKILL/SIGINT,
+                  killPid, stopDaemon, stopMockDaemon, and 'serve stop' as valid cleanup.
+                  Previously afterEach only matched SIGTERM/killPid/stopDaemon/'serve stop',
+                  so afterEach(() => process.kill(child.pid)) was a false positive. And
+                  isInTryWithFinallyCleanup used generic 'kill'/'stop' substrings, so
+                  finally { stopUnrelatedFixture() } was a false negative.
+                  Added 3 new test cases: afterEach with process.kill (negative),
+                  afterEach with child.kill("SIGTERM") (negative), try/finally with
+                  unrelated teardown (positive). All 2118 suites pass (7743 tests).
+                  Task: @task-lint-rule-test-daemon-cleanup
+                  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+              commit 945626c09a11f9d123dd912e773ef4724a5f7a16
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Apr 9 20:10:43 2026 -0700
+
+                  fix: make progress test cleanup tolerate missing temp files
+                  Replace fs.unlinkSync() with fs.rmSync({ force: true }) in all progress
+                  test finally blocks to prevent ENOENT errors on repeated targeted runs.
+                  Add defensive pre-cleanup before file creation to handle orphaned temp
+                  files from prior aborted runs.
+                  Verified deterministic with 3 consecutive --fresh runs of
+                  tests/test-runner.test.ts.
+                  Task: @task-test-runner-progress-output
+                  Spec: @task-test-runner-progress-output
+                  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+              commit 98105ed15c18b2af19e8280fa3957089ca379e72
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Apr 9 19:55:23 2026 -0700
+
+                  fix(lint): tighten no-leaky-test-daemon afterEach and forward-scan checks
+                  Two issues from review:
+                  1. afterEach detection was too broad — any afterEach containing generic
+                     'kill' or 'stop' text (e.g., stopUnrelatedFixture()) was treated as
+                     daemon cleanup. Now requires daemon-specific patterns: SIGTERM,
+                     killPid, stopDaemon, or 'serve stop'.
+                  2. Forward cleanup scan accepted cleanup registered after await/expect.
+                     Now stops at the first await or expect() call — cleanup after a
+                     potential failure point is too late.
+                  Added 3 test cases reproducing both reviewer-reported scenarios plus an
+                  expect-after variant. All 17 tests pass, full 3-shard suite green.
+                  Task: @task-lint-rule-test-daemon-cleanup
+                  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+              commit 65b5da6c7c3c49023c6610d6d04405362a963b3e
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Apr 9 19:39:08 2026 -0700
+
+                  fix: exclude progress lines from log file to satisfy AC5
+                  Progress lines (KSPEC_PROGRESS: prefixed) were being written to both
+                  stderr (terminal) and the log file. AC5 requires log file contents to
+                  remain unchanged, so progress lines now go to stderr only.
+                  Added test verifying progress lines are absent from the cached log.
+                  Task: @task-test-runner-progress-output
+                  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+              commit 695a3a850da681a37673a880ca422bb8e4f3e9fa
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Apr 9 19:26:56 2026 -0700
+
+                  feat(lint): add no-leaky-test-daemon rule for daemon cleanup enforcement
+                  Custom oxlint rule that detects daemon-spawning patterns in test files
+                  lacking cleanup registration (onTestFinished, afterEach with kill/stop,
+                  or try/finally). Catches two anti-patterns:
+                  1. Calls with "serve start --detach" without cleanup
+                  2. spawn() targeting dist/daemon/index.js without cleanup
+                  Spawns in named helper functions are exempt (callers manage cleanup).
+                  False positives are worse than false negatives by design.
+                  Includes 14 tests: 5 positive cases (should flag), 8 negative cases
+                  (should pass), and 1 real codebase validation test. Rule wired into
+                  .oxlintrc.json alongside existing custom rules. Zero violations against
+                  current tests/ directory.
+                  Task: @task-lint-rule-test-daemon-cleanup
+                  Spec: @01KNTACP2BXY12MTB2GETNJ7CS
+                  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+              commit 6a061a6a1c7dd5547a4892c9cc24180efb5aef04
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Apr 9 19:08:02 2026 -0700
+
+                  feat: add per-file progress output to test runner non-verbose mode
+                  Add a custom vitest reporter (test-progress-reporter.cjs) that emits one
+                  line per completed test file to stderr via a prefixed marker protocol.
+                  The parent process (test.cjs) strips the prefix and forwards progress
+                  lines to the terminal while routing all other vitest output to the log
+                  file only.
+                  This solves the "is it stuck?" problem: users can now see test files
+                  completing in real time without the full verbose stream (~200 lines
+                  for the full suite vs ~9000+ in verbose mode).
+                  Output format:
+                    PASS tests/parser.test.ts (66 tests, 350ms)
+                    FAIL tests/foo.test.ts (5 tests, 2 failed, 800ms)
+                  - Progress shown only in non-verbose mode (verbose already streams all)
+                  - Suppressed with KSPEC_TEST_PROGRESS=0
+                  - Uses PASS/FAIL markers with green/red ANSI matching existing conventions
+                  - Final summary, exit code, cache behavior, and log contents unchanged
+                  Task: @task-test-runner-progress-output
+                  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+              commit 270b2a07519a9147db0504584b49967c91115179
+
+              Merge: 7b1b85656 57bb82ad5
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Apr 9 18:58:38 2026 -0700
+
+                  Merge branch 'dispatch/task/task-cli-serve-test-daemon-cleanup/01kntacn' into dev
+
+              commit 57bb82ad5bbec60e2718054d5f350febed206225
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Apr 9 17:44:51 2026 -0700
+
+                  fix(test): add explicit cleanup to all daemon-spawning tests in cli-serve.test.ts
+                  Every daemon-spawning test now registers onTestFinished cleanup with
+                  process.kill(pid, SIGTERM) at spawn time, before any assertion that
+                  could throw. This prevents leaked daemons when tests fail mid-assertion.
+                  Key changes:
+                  - Import onTestFinished from vitest
+                  - Add killPid() and waitForChildExit() helpers for cleanup
+                  - Register PID-based cleanup in all 13 daemon-spawning tests
+                  - Tests with isolated envs (no-projects, npm-installed, Bun-unavailable)
+                    get their own cleanup targeting their daemon's PID directly
+                  - Test 827's cleanup uses process.kill() directly instead of CLI
+                    subprocess that depends on custom PATH resolution
+                  - Classification comments document why each test keeps --detach
+                  All tests that use serve status/stop/restart retain serve start --detach
+                  because those CLI commands depend on PID file infrastructure written by
+                  the detach flow.
+                  Task: @task-cli-serve-test-daemon-cleanup
+                  Spec: @daemon-sensitive-cli-test-determinism
+                  Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com> shows multiple unique commits for that other task plus separate test-runner/daemon changes. Merging this task as-is would ship behavior outside , so the worker needs to rebase/cherry-pick the gitignore-only commits onto a clean task branch before this can be approved.
+            created_at: 2026-04-15T08:56:10.649Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-11T10:31:13.398Z
-    updated_at: 2026-04-15T08:56:07.382Z
+    updated_at: 2026-04-15T08:56:10.649Z
     notes: []
   - _ulid: 01KP4RAJC8H8RA47SXB1M3K5XK
     slugs: []
