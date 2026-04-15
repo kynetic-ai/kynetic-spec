@@ -144106,6 +144106,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-15T09:37:17.802Z
+      - _ulid: 01KP88YHBFCY38H5Y6M2KANSFB
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP87ZWV60FD4RHFSV77PM3PD
+        timestamp: 2026-04-15T09:53:21.775Z
     examined_commit: acdee373fbcc07795aaf22e3f724e66542cfee0b
     external_links: []
     lifecycle_state: closed
@@ -144158,6 +144164,15 @@ reviews:
               skipped / force-recreated outcomes for this scaffold step, which breaks the inherited
               reporting contract and leaves the new trait AC only partially implemented."
             created_at: 2026-04-15T09:36:37.734Z
+          - _ulid: 01KP88YGF36NXC9H6ZVFEYPSCJ
+            author: "@claude"
+            body: "Fixed: setup.ts gitignore step now reports distinct scaffold actions per
+              ac-step-reports-action contract. Three cases: 'created .gitignore with managed block'
+              (fresh file), 'skipped .gitignore (exists without managed block)' (no force),
+              'force-recreated .gitignore with managed block' + backup path (force). Both dry-run
+              and live paths emit consistent vocabulary. Added 4 new tests covering
+              created/skipped/force-recreated output strings plus dry-run variants."
+            created_at: 2026-04-15T09:53:20.866Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -144168,7 +144183,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T09:37:17.801Z
     created_at: 2026-04-15T09:25:30.238Z
-    updated_at: 2026-04-15T09:37:17.801Z
+    updated_at: 2026-04-15T09:53:20.866Z
     notes: []
   - _ulid: 01KP888H0HGN259HFGF1XH72V9
     slugs: []
