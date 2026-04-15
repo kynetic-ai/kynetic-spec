@@ -146135,6 +146135,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-15T19:01:04.835Z
+      - _ulid: 01KP98Z9MAQ161QS2AN6G5788B
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP98Z8QR92BBYT0H0WY2QKWB
+        timestamp: 2026-04-15T19:13:01.066Z
     examined_commit: f1b991a0b2e99d5cde6c75ec9d9ec23a9f5d10aa
     external_links: []
     lifecycle_state: open
@@ -146144,8 +146151,28 @@ reviews:
       content_hash: ""
       ref: "@01KNXYJ5JCR99F76N8N7265E0B"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KP98Z8QR92BBYT0H0WY2QKWB
+        anchor:
+          type: code
+          commit: f1b991a0b2e99d5cde6c75ec9d9ec23a9f5d10aa
+          line_end: 906
+          line_start: 874
+          path: src/cli/commands/upgrade.ts
+          side: head
+        entries:
+          - _ulid: 01KP98Z8QR3JZF29R2HCHVSJE0
+            author: Jacob Chapel
+            body: "The gitignore repair step still skips an existing .gitignore that has no managed block, so
+              upgrade leaves required kspec entries missing on older projects. Repro: initialize a
+              project, replace .gitignore with only 'node_modules' and 'coverage', set
+              lastKnownVersion to 0.8.0, then run 'kspec upgrade --json'. The step reports 'all
+              entries present' and the file stays unchanged. That violates
+              @single-command-version-upgrade ac-restores-gitignore-entries, which requires missing
+              entries to be appended and reported."
+            created_at: 2026-04-15T19:13:00.152Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-15T19:00:40.600Z
-    updated_at: 2026-04-15T19:01:03.857Z
+    updated_at: 2026-04-15T19:13:00.152Z
     notes: []
