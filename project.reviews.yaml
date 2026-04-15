@@ -146935,6 +146935,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP9FQ78P0DQJZXTWFZ0DXP1G
         timestamp: 2026-04-15T21:10:57.487Z
+      - _ulid: 01KP9FQKX7X7M151F03V89GVT5
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP9FQJYMVABKK0S7YWKCB765
+        timestamp: 2026-04-15T21:11:09.479Z
     examined_commit: 2954ef826857c2ec41850cba22ae384ab50c3e0f
     external_links: []
     lifecycle_state: open
@@ -147042,7 +147049,24 @@ reviews:
               actually runs and reports migrated work.
             created_at: 2026-04-15T21:10:56.534Z
         kind: blocker
+      - _ulid: 01KP9FQJYMVABKK0S7YWKCB765
+        anchor:
+          type: code
+          commit: 2954ef826857c2ec41850cba22ae384ab50c3e0f
+          line_end: 483
+          line_start: 474
+          path: tests/upgrade-command.test.ts
+          side: head
+        entries:
+          - _ulid: 01KP9FQJYMTXKRVJE98CG26YGW
+            author: Jacob Chapel
+            body: "`follow_ups` is always returned as an array, so this assertion stays green even if upgrade
+              stops reporting any manual follow-up entries. Because the test never forces a
+              scaffold/gitignore/regen change and never checks for a non-empty, user-actionable
+              message, it does not actually cover `ac-reports-manual-follow-ups`."
+            created_at: 2026-04-15T21:11:08.500Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-15T20:57:57.440Z
-    updated_at: 2026-04-15T21:10:56.534Z
+    updated_at: 2026-04-15T21:11:08.500Z
     notes: []
