@@ -1510,6 +1510,55 @@ describe("dispatch runtime bootstrap contract", { timeout: 60_000 }, () => {
     await engine.stop();
   });
 
+  // AC: @dispatch-runtime-bootstrap-contract ac-6
+  // AC: @trait-error-guidance ac-1
+  it("preserves tail of bootstrap output so error detail at end of stream is captured", async () => {
+    await seedRepo(tempDir);
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      [
+        "dispatch:",
+        "  base_branch: agent-dev",
+        "  bootstrap:",
+        "    steps:",
+        '      - run: python3 -c "import sys; sys.stdout.write(\'A\' * 5000); sys.stderr.write(\'BOOTSTRAP_TAIL_SENTINEL_XYZ123\'); sys.exit(1)"',
+      ].join("\n"),
+      "utf-8",
+    );
+
+    const taskRef = `@${testUlid("TASK", 36)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: { title: "Bootstrap Tail Capture", slugs: ["bootstrap-tail-capture"] },
+    });
+
+    await expect(
+      ensureWorkspaceBootstrap({
+        projectDir: tempDir,
+        workspaceDir: workspace.cwd,
+        metadataPath: workspace.metadataPath,
+        metadata: workspace.metadata,
+        role: "worker",
+        agent: makeAgent(),
+        env: {},
+      }),
+    ).rejects.toThrow(DispatchBootstrapError);
+
+    const record = await readWorkspaceRecord(workspace.metadataPath, taskRef);
+    expect(record.bootstrap.roleStates.worker.status).toBe("failed");
+    // The sentinel is at the end of the combined output (after 5000 chars of filler).
+    // With a 4000-char tail slice, the sentinel must be preserved.
+    expect(record.bootstrap.roleStates.worker.failureMessage).toContain(
+      "BOOTSTRAP_TAIL_SENTINEL_XYZ123",
+    );
+    const failedStep = record.bootstrap.roleStates.worker.steps.find(
+      (s: { status: string }) => s.status === "failed",
+    );
+    expect(failedStep).toBeDefined();
+    expect(failedStep.output).toContain("BOOTSTRAP_TAIL_SENTINEL_XYZ123");
+  });
+
   // AC: @dispatch-runtime-bootstrap-contract ac-8
   // AC: @dispatch-runtime-bootstrap-contract ac-10
   // AC: @trait-error-guidance ac-1

@@ -129,7 +129,7 @@ async function trackedStatus(cwd: string): Promise<string> {
 function summarizeOutput(stdout: string, stderr: string): string | null {
   const combined = [stdout.trim(), stderr.trim()].filter(Boolean).join("\n");
   if (!combined) return null;
-  return combined.slice(0, 4000);
+  return combined.slice(-4000);
 }
 
 function hashConfig(steps: DispatchBootstrapStep[]): string {
