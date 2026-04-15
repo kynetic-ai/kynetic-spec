@@ -14489,6 +14489,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-15T20:25:41.106Z
+  - _ulid: 01KP9DY8FCP5V8AF8M2W05374S
+    type: friction
+    content: Upgrade review required a manual temp-project repro because the integration tests only
+      exercised the broken kspec-agents.md path after deleting the stored agents hash. That masked
+      the realistic case where a corrupted artifact coexists with a matching hash and the fast-path
+      incorrectly skips regeneration.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KP9DVS"
+    created_at: 2026-04-15T20:39:49.996Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
