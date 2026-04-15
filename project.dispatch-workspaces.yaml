@@ -51761,12 +51761,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-15T06:36:01.603Z
+      updated_at: 2026-04-15T06:36:08.335Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-15T06:36:01.603Z
+      updated_at: 2026-04-15T06:36:08.335Z
     integration:
       status: pending
       detail: null
@@ -51774,24 +51774,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 8068a15ad06fdad3f38be42442b38a782e717b1c
-      updated_at: 2026-04-15T06:36:01.603Z
-    lifecycle_state: ready
+      updated_at: 2026-04-15T06:36:08.335Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KP78S9T0YHQWX9S35W8EFCRY"
     task_slug: task-tests-suppress-cli-auto-start-daemon
     timestamps:
       closed_at: null
       last_active_at: 2026-04-15T06:22:30.903Z
-      last_reconciled_at: 2026-04-15T06:36:01.603Z
+      last_reconciled_at: 2026-04-15T06:36:08.335Z
       created_at: 2026-04-15T06:22:09.609Z
-      updated_at: 2026-04-15T06:36:01.603Z
+      updated_at: 2026-04-15T06:36:08.335Z
     workspace_id: dispatch-workspace-01KP78S9T0YHQWX9S35W8EFCRY
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 2cb9bf5ee7800327a7978288ffc701e6fed60192
+        last_seen_at: 2026-04-15T06:36:08.335Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-tests-suppress-cli-auto-start-daemon-01kp78s9-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-tests-suppress-cli-auto-start-daemon/01kp78s9
-        head: 8068a15ad06fdad3f38be42442b38a782e717b1c
-        last_seen_at: 2026-04-15T06:22:09.609Z
+        head: 2cb9bf5ee7800327a7978288ffc701e6fed60192
+        last_seen_at: 2026-04-15T06:36:08.335Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-tests-suppress-cli-auto-start-daemon-01kp78s9
