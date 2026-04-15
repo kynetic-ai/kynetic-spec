@@ -141219,6 +141219,18 @@ reviews:
         runner: npm
         created_at: 2026-04-15T06:48:24.691Z
         completed_at: 2026-04-15T06:48:24.691Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Repository has pre-existing global validation failures unrelated to this snapshot
+          (schema/completeness/alignment warnings and errors), so validate is not a task-specific
+          gate for this review.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-15T06:48:27.439Z
+        completed_at: 2026-04-15T06:48:27.439Z
     events:
       - _ulid: 01KP7XQ82MF2NQXRP277219VTQ
         actor: Jacob Chapel
@@ -141254,6 +141266,13 @@ reviews:
           status: pass
           name: targeted daemon/setup tests
         timestamp: 2026-04-15T06:48:25.636Z
+      - _ulid: 01KP7YBZZ9J0F80E82693GDW9J
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-04-15T06:48:28.393Z
     examined_commit: 2cb9bf5ee7800327a7978288ffc701e6fed60192
     external_links: []
     lifecycle_state: open
@@ -141284,5 +141303,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-15T06:37:08.564Z
-    updated_at: 2026-04-15T06:48:24.691Z
+    updated_at: 2026-04-15T06:48:27.439Z
     notes: []
