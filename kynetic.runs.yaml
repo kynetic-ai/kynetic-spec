@@ -26109,7 +26109,7 @@ runs:
     completed_at: 2026-04-15T09:39:55.875Z
   - _ulid: 01KP8BMVG3C0F32Y89WQ42Q8Q4
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -26122,7 +26122,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-15T10:40:55.697Z
-        completed_at: 2026-04-15T10:40:55.697Z
+        completed_at: 2026-04-15T10:41:26.133Z
+        notes: >-
+          High-confidence friction: 1) task submit from needs_work requires an intermediate 'task
+          start' transition — non-obvious for fix cycles where the agent already has context and
+          just wants to resubmit. Not currently tracked. 
+
+
+          High-confidence success: 1) Review thread reply+resolve workflow was smooth — read
+          threads, fix code, reply with explanation, resolve, resubmit. Clear and efficient.
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-15T10:41:26.133Z
+        completed_at: 2026-04-15T10:41:26.133Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-15T10:40:30.211Z
