@@ -47,3 +47,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-15T06:49:14.249Z
+  - _ulid: 01KP807FD7E6TAVKGPB2QFSM2Y
+    content: "Fix cycle 1: addressed all review threads. The initial fix only covered 2 files
+      (tests/helpers/cli.ts and tests/setup.test.ts cleanEnv). Found 5 additional test files with
+      direct spawn/spawnSync of kspec CLI that bypassed the helper: task-mutation-serialization,
+      plan-inbox-mutation-serialization, shadow-lifecycle-concurrent, dispatch-shadow-mutation-lock,
+      batch-exec-engine. Also found 4 early spawnSync calls in setup.test.ts first describe block.
+      Additionally discovered cli-daemon-proxy.test.ts proxy tests that clear KSPEC_NO_DAEMON for
+      detection testing but inadvertently trigger auto-start — fixed by adding auto_start:false
+      config. Verified: 7763 tests pass, daemon count stable (7 before/after, zero new orphans from
+      this worktree), both daemon-config auto-start tests still exercise real path, 22/22 lint tests
+      pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-15T07:20:57.511Z
