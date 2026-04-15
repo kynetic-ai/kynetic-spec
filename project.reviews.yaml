@@ -145928,6 +145928,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-15T13:49:19.036Z
+      - _ulid: 01KP8PEP270ADHPQS1EGH0HS7N
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP8PEMY72M9CM13MBAJ05Y5E
+        timestamp: 2026-04-15T13:49:22.375Z
     examined_commit: 096e915cfb1ae093270734854bfc912b2a29af3f
     external_links: []
     lifecycle_state: open
@@ -145956,7 +145963,26 @@ reviews:
               unknown while still proceeding with the full pipeline."
             created_at: 2026-04-15T13:49:14.489Z
         kind: blocker
+      - _ulid: 01KP8PEMY72M9CM13MBAJ05Y5E
+        anchor:
+          type: code
+          commit: 096e915cfb1ae093270734854bfc912b2a29af3f
+          line_end: 425
+          line_start: 399
+          path: src/cli/commands/upgrade.ts
+          side: head
+        entries:
+          - _ulid: 01KP8PEMY7P1N69DSVN1N5CV6D
+            author: Jacob Chapel
+            body: "The command records  even when an earlier upgrade step failed.  always executes step 6 before
+              computing , so a partial failure marks the project current and suppresses future
+              upgrades. I reproduced this by deleting , making  read-only, and running : the command
+              reported  with  failed, but step 6 still said  and  was updated to . On the next run
+              that project will look exact/current even though the agents file was never
+              regenerated."
+            created_at: 2026-04-15T13:49:21.223Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-15T13:43:41.473Z
-    updated_at: 2026-04-15T13:49:17.849Z
+    updated_at: 2026-04-15T13:49:21.223Z
     notes: []
