@@ -144059,9 +144059,25 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-15T09:37:09.093Z
+      - _ulid: 01KP8813Z9X3MV8QA1NX4DZ2GK
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-15T09:37:17.801Z
+      - _ulid: 01KP8813Z9F3JVASYRGN82TRJW
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-15T09:37:17.802Z
     examined_commit: acdee373fbcc07795aaf22e3f724e66542cfee0b
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -144112,7 +144128,14 @@ reviews:
               reporting contract and leaves the new trait AC only partially implemented."
             created_at: 2026-04-15T09:36:37.734Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-15T09:37:17.801Z
     created_at: 2026-04-15T09:25:30.238Z
-    updated_at: 2026-04-15T09:37:07.998Z
+    updated_at: 2026-04-15T09:37:17.801Z
     notes: []
