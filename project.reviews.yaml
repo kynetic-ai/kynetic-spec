@@ -147379,6 +147379,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-15T22:06:12.941Z
+      - _ulid: 01KP9KFKS48ZTR3EHSDTCET1B0
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KP9KFJRHZTJBXJ2M2J3R0H1T
+        timestamp: 2026-04-15T22:16:41.508Z
     examined_commit: d889ee3c76b715e9b8cc3872a9ae790dc86a3540
     external_links: []
     lifecycle_state: open
@@ -147388,8 +147395,25 @@ reviews:
       content_hash: ""
       ref: "@01KNXYJ5JCR99F76N8N7265E0B"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KP9KFJRHZTJBXJ2M2J3R0H1T
+        entries:
+          - _ulid: 01KP9KFJRHAEJF7FEWNSM6ZAYA
+            author: Jacob Chapel
+            body: "Review evidence log:\\nFiles read: src/cli/commands/upgrade.ts, src/cli/index.ts,
+              src/cli/commands/index.ts, tests/upgrade-command.test.ts,
+              src/cli/commands/setup-defaults.ts, tests/helpers/cli.ts.\\nCommands run: kspec task
+              get @01KNXYJ5JCR99F76N8N7265E0B; kspec review get @01KP9EZEE0F0YX3FZQ8BX7V4Q9; kspec
+              validate; grep -Rni AC annotations in tests/upgrade-command.test.ts; npm test (twice,
+              second run cache hit); targeted repros for malformed .agents/skills probe input and
+              custom-module/no-default-module upgrade path.\\nClaims verified: cycle-7 dry-run
+              parity fixes are present in code; current branch still misclassifies malformed skills
+              probe input and skips default-module backfill when only custom modules
+              exist.\\nCategories searched: correctness, edge cases, error handling, test quality,
+              integration."
+            created_at: 2026-04-15T22:16:40.465Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-15T22:05:51.870Z
-    updated_at: 2026-04-15T22:06:11.973Z
+    updated_at: 2026-04-15T22:16:40.465Z
     notes: []
