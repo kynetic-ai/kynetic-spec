@@ -144124,6 +144124,12 @@ reviews:
         payload:
           thread_ulid: 01KP87ZWV60FD4RHFSV77PM3PD
         timestamp: 2026-04-15T09:53:34.613Z
+      - _ulid: 01KP88Z33T8B0JA9EC35ZGJNTW
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP87ZT00WW0Q1ZRZ0QHPAD5R
+        timestamp: 2026-04-15T09:53:39.963Z
     examined_commit: acdee373fbcc07795aaf22e3f724e66542cfee0b
     external_links: []
     lifecycle_state: closed
@@ -144159,6 +144165,8 @@ reviews:
               reporting was the remaining gap.
             created_at: 2026-04-15T09:53:25.809Z
         kind: nit
+        resolved_at: 2026-04-15T09:53:39.059Z
+        resolved_by: "@claude"
       - _ulid: 01KP87ZWV60FD4RHFSV77PM3PD
         anchor:
           type: code
@@ -144202,7 +144210,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T09:37:17.801Z
     created_at: 2026-04-15T09:25:30.238Z
-    updated_at: 2026-04-15T09:53:33.685Z
+    updated_at: 2026-04-15T09:53:39.059Z
     notes: []
   - _ulid: 01KP888H0HGN259HFGF1XH72V9
     slugs: []
