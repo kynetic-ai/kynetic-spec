@@ -321,3 +321,25 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-15T08:13:50.855Z
+  - _ulid: 01KP84C9E91YF1T8G7GMV6QY10
+    content: >-
+      Fix cycle 8: addressed both blockers from review.
+
+
+      1. Blocker (false green tests): ac-file-valid-on-load tests now use loadProjectConfig() to
+      compare full resolved config objects between scaffolded and empty-config projects, instead of
+      just checking kspec shadow status exits 0. Tests fail when the scaffolded template produces
+      different values than empty-config defaults.
+
+
+      2. Blocker (template hardcodes non-default values): Changed publication_mode from
+      'manual_merge' to 'auto' (matching DEFAULT_CONFIG). Changed base_branch from an active key to
+      a commented-out placeholder showing the resolved value (matching the coverage section
+      pattern), so loading the scaffolded file produces base_branch=null (same as empty config).
+      Both changes ensure the scaffolded file is behavior-preserving per ac-file-valid-on-load.
+
+
+      Full test suite: 7824 passed, 5 skipped, 0 failed.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-15T08:33:29.545Z
