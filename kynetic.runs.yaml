@@ -25796,7 +25796,7 @@ runs:
     completed_at: 2026-04-14T20:26:01.009Z
   - _ulid: 01KP7JT01SDN8FD25NW0M6K02V
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -25816,7 +25816,26 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-15T03:27:29.823Z
-        completed_at: 2026-04-15T03:27:29.823Z
+        completed_at: 2026-04-15T03:27:43.827Z
+        notes: "(1) summarizeOutput() at src/agent-runtime/bootstrap.ts:129 slices the FIRST 4000 chars of
+          build output, throwing away the tail where npm/vite/tsc actually emit their error
+          messages. Every bootstrap failure in the task notes is recorded with a truncation that
+          cuts off mid-Svelte-warning — the real error is always lost. Spent significant time
+          investigating blind because of this. (2) Bootstrap failure leaks an orphan -review
+          worktree: after the build step fails, the catch in dispatch.ts:2504 blocks the task and
+          returns without cleaning up the reviewer worktree, so the next retry hits 'already exists
+          and is not a registered git worktree' as a cascading second error. (3) 'kspec workflow
+          show <run>' does not display the content of the current step — had to pipe --json and
+          separately fetch the workflow meta definition to see what step I was supposed to be acting
+          on. (4) 'kspec tasks list --state blocked' fails with unknown option; correct flag is
+          --status. Minor but this is a common CLI inconsistency foot-gun. (5) The implicit CLI
+          auto-start behavior is a surprise: any non-skipCommand invocation transparently spawns a
+          detached daemon, which makes test and short-CLI sessions leak processes the caller never
+          asked for."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-15T03:27:43.827Z
+        completed_at: 2026-04-15T03:27:43.827Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-15T03:26:24.313Z
