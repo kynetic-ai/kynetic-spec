@@ -141229,6 +141229,13 @@ reviews:
           status: fail
           name: daemon leak count
         timestamp: 2026-04-15T06:48:20.147Z
+      - _ulid: 01KP7YBTMC1B61AA76F7ZTW9ZV
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP7YBSNZC3KW6TSHSS6R2Q6S
+        timestamp: 2026-04-15T06:48:22.924Z
     examined_commit: 2cb9bf5ee7800327a7978288ffc701e6fed60192
     external_links: []
     lifecycle_state: open
@@ -141238,8 +141245,26 @@ reviews:
       content_hash: ""
       ref: "@01KP78S9T0YHQWX9S35W8EFCRY"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KP7YBSNZC3KW6TSHSS6R2Q6S
+        anchor:
+          type: code
+          commit: 2cb9bf5ee7800327a7978288ffc701e6fed60192
+          line_end: 189
+          line_start: 187
+          path: tests/helpers/cli.ts
+          side: head
+        entries:
+          - _ulid: 01KP7YBSNZSK47EM155VGYVG5Q
+            author: Jacob Chapel
+            body: |-
+              This patch is still incomplete against AC1. Even with  added here, a clean 
+              > @kynetic-ai/spec@0.12.0 test
+              > node scripts/test.cjs run left new orphan daemon processes from this worktree behind ([daemon] Starting kspec daemon on port 3456...
+              [daemon] Web UI assets found at: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-tests-suppress-cli-auto-start-daemon-01kp78s9-review/dist/web-ui against  and ). The suite-level count rose from 3 to 8 overall, and the remaining current-worktree daemon processes show there are still CLI subprocess paths outside these two env injections. Until the branch finishes with zero new orphan daemons, the leak is not actually closed.
+            created_at: 2026-04-15T06:48:21.951Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-15T06:37:08.564Z
-    updated_at: 2026-04-15T06:48:19.203Z
+    updated_at: 2026-04-15T06:48:21.951Z
     notes: []
