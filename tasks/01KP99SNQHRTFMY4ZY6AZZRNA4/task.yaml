@@ -1,0 +1,72 @@
+_ulid: 01KP99SNQHRTFMY4ZY6AZZRNA4
+slugs:
+  - task-default-reflection-hook-turn-filter
+title: Restrict default reflection hook to first idle event
+type: task
+description: >-
+  What:
+
+  Restrict the default session reflection hook scaffolded by kspec setup to fire only on the first
+  session idle event of each invocation. Update the spec @default-session-reflection-hook to add a
+  new acceptance criterion describing this behavior, clarify the existing ac-reflection-hook-present
+  wording so it does not conflict with the new constraint, and update the setup pipeline scaffold
+  plus its tests so the created hook carries the required filter.
+
+
+  Why:
+
+  Session idle events fire after every turn of a multi-turn session (@session-idle-event,
+  @multi-turn-session-lifecycle). Without a turn-count filter, the default reflection hook triggers
+  reflection on every turn rather than once per invocation. The per-agent reflection hooks that
+  preceded the universal default hook carried a turn-count filter for this reason; when they were
+  consolidated into a single default hook the constraint was not preserved.
+
+
+  How:
+
+  1. Update spec @default-session-reflection-hook: amend ac-reflection-hook-present so its wording
+  does not imply the absence of all filters, append a description line describing the
+  first-idle-event constraint, add ac-fires-once-per-invocation, and add relates_to
+  @dispatch-hook-filter.
+
+  2. Update the setup pipeline function that scaffolds the default reflection hook so the saved hook
+  object includes a filter matching session idle events with turn count equal to the first turn. The
+  filter value must be persisted as a numeric type — string values never match the exact-equality
+  semantics of hook filter matching and would silently disable the filter.
+
+  3. Update the setup reflection hook test suite:
+     a. Remove or replace the existing assertion that the scaffolded hook has no filter; assert instead that the hook carries the documented filter shape with a numeric value.
+     b. Add a semantic test that exercises the hook filter matching path with two synthetic session idle payloads (one representing the first turn, one representing a later turn) and asserts the hook matches the first and not the second. A shape-only assertion does not validate the acceptance criterion.
+     c. Add a round-trip test that writes the scaffolded meta, reads it back through the YAML parser, and asserts the filter value's runtime type is numeric.
+  4. Run kspec agents generate after the spec change so the generated agent instructions stay in
+  sync with the updated acceptance criteria, and run kspec validate to confirm the spec still
+  parses.
+
+  5. A backfill path for existing projects whose scaffolded hook was created without a filter is out
+  of scope — captured as a separate inbox item.
+
+
+  Testing:
+
+  Existing creation, idempotency, and user-removal tests remain in place and must continue to pass.
+  New coverage: (a) creation asserts the documented filter with a numeric value, (b) a semantic test
+  verifying the hook filter matches the first-turn event and not subsequent-turn events, (c) a YAML
+  round-trip test verifying filter value type persistence.
+
+
+  Covers: @default-session-reflection-hook ac-fires-once-per-invocation
+spec_ref: "@default-session-reflection-hook"
+meta_ref: null
+plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - init
+  - setup
+  - hooks
+vcs_refs: []
+created_at: 2026-04-15T19:27:25.425Z
+todos: []

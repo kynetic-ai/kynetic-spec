@@ -6719,31 +6719,27 @@ modules:
           - default-session-reflection-hook
         title: Default Session Reflection Hook
         type: requirement
-        description: |
-          When a project is initialized with full setup, a single
-          reflection hook is scaffolded that fires on any idle agent
-          session regardless of which agent owns it, and prompts the
-          session to run the reflect skill. Reflection applies to
-          every session uniformly so setup does not need to enumerate
-          individual agents. Users may disable or remove the hook
-          without breaking any other setup invariant.
+        description: When a project is initialized with full setup, a single reflection hook is scaffolded
+          that fires on any idle agent session regardless of which agent owns it, and prompts the
+          session to run the reflect skill. Reflection applies to every session uniformly so setup
+          does not need to enumerate individual agents. Users may disable or remove the hook without
+          breaking any other setup invariant. The hook fires only on the first session idle event of
+          an invocation, not on every turn of a multi-turn session.
         status:
           maturity: draft
           implementation: implemented
         depends_on: []
         implements: []
-        relates_to: []
+        relates_to:
+          - "@dispatch-hook-filter"
         tests: []
         traits: []
         acceptance_criteria:
           - given: |
               A fresh project completes full setup
             id: ac-reflection-hook-present
-            then: |
-              A single reflection hook is present that fires on the
-              session idle event for every agent session, with no
-              per-agent filter, and prompts the session to run the
-              reflect skill
+            then: A single reflection hook is present that fires on the session idle event for every agent
+              session and prompts the session to run the reflect skill
             when: |
               The hook list is inspected
           - given: |
@@ -6761,6 +6757,10 @@ modules:
               The removed hook is not silently recreated
             when: |
               Setup is re-run without the force flag
+          - given: An agent runs a multi-turn session that produces multiple session idle events
+            id: ac-fires-once-per-invocation
+            then: The hook's action executes only for the first idle event of the invocation
+            when: Each session idle event is emitted
         tags: []
         created: 2026-04-11T09:39:23.961Z
         notes: []

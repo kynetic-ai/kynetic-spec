@@ -2580,3 +2580,16 @@ inbox:
       - task-lifecycle
     added_by: "@claude"
     created_at: 2026-04-15T18:40:58.583Z
+  - _ulid: 01KP99SMZW5R9HAGH8WQZGKB8V
+    text: "Existing projects that already have a scaffolded default-session-reflect hook without a
+      turn-count filter will not be migrated automatically when the filter is added to setup: the
+      scaffold skips hooks that already exist by name. Users must remove the old hook and re-run
+      setup to pick up the filter. Decide whether to add a migration path or document the manual
+      step."
+    tags:
+      - init
+      - setup
+      - hooks
+      - migration
+    added_by: "@claude"
+    created_at: 2026-04-15T19:27:24.668Z

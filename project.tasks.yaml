@@ -26369,3 +26369,21 @@
   submitted_at: 2026-04-15T06:50:09.369Z
   completed_at: 2026-04-15T07:04:58.362Z
   automation: eligible
+- _ulid: 01KP99SNQHRTFMY4ZY6AZZRNA4
+  slugs:
+    - task-default-reflection-hook-turn-filter
+  title: Restrict default reflection hook to first idle event
+  type: task
+  spec_ref: "@default-session-reflection-hook"
+  plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - init
+    - setup
+    - hooks
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-15T19:27:25.425Z
