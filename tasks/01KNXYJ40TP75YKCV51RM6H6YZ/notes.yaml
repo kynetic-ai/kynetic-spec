@@ -297,3 +297,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-15T08:56:37.953Z
+  - _ulid: 01KP875PKEFEMQE52XA3JAKEDY
+    content: "Fix cycle 5: addressed blocker about unrelated task work in branch. Reset branch to
+      integration target (a885ce6d6) and cherry-picked only the 5 gitignore-specific commits
+      (41a92209b..acdee373f). Branch now contains exclusively: 1) feat: expand and repair
+      auto-generated gitignore entries, 2) fix: pass configured shadow directory, 3) fix: support
+      configurable dispatch.worktree_root, 4) fix: skip absolute worktree_root paths, 5) fix:
+      respect @trait-idempotent-file-scaffold contract. No setup-defaults.ts, daemon, or test-runner
+      changes. All 2145 suites / 7838 tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-15T09:22:19.374Z
