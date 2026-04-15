@@ -14271,8 +14271,11 @@ observations:
       can create truncated duplicate threads instead of failing cleanly, which adds cleanup work and
       noise to the review record."
     author: Jacob Chapel
-    resolution: null
-    resolved: false
+    resolution: Duplicate of existing review-comment shell-quoting friction observations such as
+      @01KP6QNNM; broader search after capture showed this pattern was already tracked.
+    resolved: true
+    resolved_at: 2026-04-15T08:36:05.956Z
+    resolved_by: Jacob Chapel
     created_at: 2026-04-15T08:35:13.298Z
   - _ulid: 01KP84FF0T29WJAP9VFG3MSB1K
     type: success
