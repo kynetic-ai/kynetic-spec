@@ -187,7 +187,9 @@ describe("kspec upgrade", () => {
 
     // AC: @single-command-version-upgrade ac-source-version-unknown
     it("reports unknown source version when project state is unrecognizable", async () => {
-      // Create a minimal kspec project without probes
+      // Create a minimal kspec project without any versioned probes.
+      // .kspec/ exists but no config, no skills dir, no split format,
+      // no kynetic 1.1 — no probe should match.
       initGitRepo(tempDir);
       await fs.writeFile(path.join(tempDir, "README.md"), "# Test\n");
       execSync('git add . && git commit -m "initial"', {
@@ -218,7 +220,8 @@ describe("kspec upgrade", () => {
         "utf-8",
       );
 
-      // Minimal manifest — intentionally using old format
+      // Minimal manifest — intentionally using old format (kynetic_spec: "1.0"
+      // does NOT match the "1.1" probe, so no versioned probe fires)
       await fs.writeFile(
         path.join(specDir, "kynetic.yaml"),
         `kynetic_spec: "1.0"\ntitle: Test\nproject:\n  name: test\n  version: "0.1.0"\n`,
@@ -231,8 +234,9 @@ describe("kspec upgrade", () => {
         target_version: string;
       }>("upgrade --dry-run", tempDir);
 
-      // Should either infer approximate or report unknown
-      expect(["approximate", "unknown"]).toContain(result.confidence);
+      // Must report unknown — no versioned probe matched
+      expect(result.confidence).toBe("unknown");
+      expect(result.source_version).toBeNull();
       expect(result.target_version).toBe(getCurrentVersion());
     });
   });
@@ -648,6 +652,45 @@ describe("kspec upgrade", () => {
 
       const recordedVersion = await readLastKnownVersion(tempDir);
       expect(recordedVersion).toBe("0.9.0"); // Should be unchanged
+    });
+
+    it("does not record version when a prior step fails", async () => {
+      await initProject(tempDir);
+      await writeLastKnownVersion(tempDir, "0.8.0");
+
+      // Remove the agents hash file so the hash check won't short-circuit
+      const hashPath = path.join(tempDir, ".kspec", ".kspec-agents-hash");
+      if (existsSync(hashPath)) {
+        await fs.unlink(hashPath);
+      }
+
+      // Replace kspec-agents.md with a directory so fs.writeFile fails with EISDIR
+      const agentsFilePath = path.join(tempDir, "kspec-agents.md");
+      if (existsSync(agentsFilePath)) {
+        await fs.unlink(agentsFilePath);
+      }
+      await fs.mkdir(agentsFilePath, { recursive: true });
+      // Place a file inside to prevent automatic rmdir
+      await fs.writeFile(path.join(agentsFilePath, "blocker"), "x", "utf-8");
+
+      const result = kspecJson<{
+        success: boolean;
+        steps: Array<{ name: string; status: string }>;
+      }>("upgrade", tempDir);
+
+      // At least one step should have failed (the agents regeneration)
+      expect(result.success).toBe(false);
+      const failedSteps = result.steps.filter((s) => s.status === "failed");
+      expect(failedSteps.length).toBeGreaterThan(0);
+
+      // The "Record version" step should be skipped, not done
+      const recordStep = result.steps.find((s) => s.name === "Record version");
+      expect(recordStep).toBeDefined();
+      expect(recordStep!.status).toBe("skipped");
+
+      // Verify the version was NOT updated in the state file
+      const recordedVersion = await readLastKnownVersion(tempDir);
+      expect(recordedVersion).toBe("0.8.0");
     });
   });
 

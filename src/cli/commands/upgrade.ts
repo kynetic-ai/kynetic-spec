@@ -159,13 +159,15 @@ async function inferVersionFromProbes(
 
   // Track the minimum version indicated by each probe
   let maxMinVersion = "0.1.0";
-  let anyProbeMatched = false;
+  // Track whether any versioned probe matched (probes 2-5).
+  // Merely having .kspec/ exist is not enough — the project state must
+  // match at least one recognizable version range.
+  let versionedProbeMatched = false;
 
   // Probe 1: Does the .kspec/ directory exist at all?
   if (!existsSync(specDir)) {
     return { version: null, confidence: "unknown" };
   }
-  anyProbeMatched = true;
 
   // Probe 2: Check manifest for task_storage.format and kynetic version
   const manifestPath = path.join(specDir, "kynetic.yaml");
@@ -177,9 +179,11 @@ async function inferVersionFromProbes(
       const kyneticVer = manifest.kynetic || manifest.kynetic_spec;
       if (kyneticVer === "1.1") {
         maxMinVersion = bumpIfHigher(maxMinVersion, "0.9.0");
+        versionedProbeMatched = true;
       }
       if (manifest.task_storage?.format === "split") {
         maxMinVersion = bumpIfHigher(maxMinVersion, "0.9.0");
+        versionedProbeMatched = true;
       }
     }
   } catch {
@@ -190,12 +194,14 @@ async function inferVersionFromProbes(
   const configPath = path.join(projectDir, CONFIG_FILENAME);
   if (existsSync(configPath)) {
     maxMinVersion = bumpIfHigher(maxMinVersion, "0.11.0");
+    versionedProbeMatched = true;
   }
 
   // Probe 4: Check for rendered skills directory
   const agentsSkillsDir = path.join(projectDir, ".agents", "skills");
   if (existsSync(agentsSkillsDir)) {
     maxMinVersion = bumpIfHigher(maxMinVersion, "0.8.0");
+    versionedProbeMatched = true;
   }
 
   // Probe 5: Check for review-plan skill (added in 0.10)
@@ -203,9 +209,13 @@ async function inferVersionFromProbes(
   const reviewPlanSkill = path.join(agentsSkillsDir, "kspec-review-plan", "SKILL.md");
   if (existsSync(reviewPlanSkill)) {
     maxMinVersion = bumpIfHigher(maxMinVersion, "0.10.0");
+    versionedProbeMatched = true;
   }
 
-  if (!anyProbeMatched) {
+  // AC: @single-command-version-upgrade ac-source-version-unknown
+  // When no versioned probe matched, the project state is unrecognizable.
+  // Report unknown and let the pipeline run everything as a safety net.
+  if (!versionedProbeMatched) {
     return { version: null, confidence: "unknown" };
   }
 
@@ -397,21 +407,34 @@ export async function runUpgradePipeline(
   }
 
   // ─── Step 6: Write lastKnownVersion ─────────────────────────────────
+  // Only record the version when ALL prior steps succeeded. Recording
+  // after a partial failure would suppress future upgrade attempts even
+  // though some steps never completed.
+  const priorStepsAllSucceeded = steps.every((s) => s.status !== "failed");
+
   if (!dryRun) {
-    try {
-      const state = await readSetupState(ctx.specDir);
-      state.lastKnownVersion = targetVersion;
-      await writeSetupState(ctx.specDir, state);
+    if (priorStepsAllSucceeded) {
+      try {
+        const state = await readSetupState(ctx.specDir);
+        state.lastKnownVersion = targetVersion;
+        await writeSetupState(ctx.specDir, state);
+        steps.push({
+          name: "Record version",
+          status: "done",
+          message: `recorded version ${targetVersion}`,
+        });
+      } catch (err) {
+        steps.push({
+          name: "Record version",
+          status: "failed",
+          message: err instanceof Error ? err.message : String(err),
+        });
+      }
+    } else {
       steps.push({
         name: "Record version",
-        status: "done",
-        message: `recorded version ${targetVersion}`,
-      });
-    } catch (err) {
-      steps.push({
-        name: "Record version",
-        status: "failed",
-        message: err instanceof Error ? err.message : String(err),
+        status: "skipped",
+        message: "skipped — prior step(s) failed; version not recorded to allow re-run",
       });
     }
   } else {
