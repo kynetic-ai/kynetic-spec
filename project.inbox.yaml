@@ -2517,3 +2517,22 @@ inbox:
       - reflection
     added_by: Jacob Chapel
     created_at: 2026-04-14T19:32:10.946Z
+  - _ulid: 01KP78TQVME9RR9VK206FASG0S
+    text: "Consider adding `setup` (and possibly `agents generate`) to the `skipCommands` list in
+      src/cli/index.ts:383 so `kspec setup` does not trigger `maybeAutoStartDaemon()`. Rationale:
+      `setup` runs during project initialization, exits synchronously, and the spawned daemon then
+      outlives the command that spawned it — three strikes against the side-effect. This is a
+      production design question distinct from @task-tests-suppress-cli-auto-start-daemon (which
+      only addresses the test leak by setting KSPEC_NO_DAEMON=1 by default in test helpers). Scope
+      to think about before triaging: (1) does any other short-lived command in skipCommands already
+      establish the precedent, (2) does skipping auto-start in `setup` break the first-run UX where
+      users expect the daemon to be running by the end of setup, (3) should setup instead EXPLICITLY
+      start the daemon at a known, idempotent point rather than relying on implicit auto-start at
+      CLI entry. Surfaced during investigation of 4 blocked tasks on 2026-04-14."
+    tags:
+      - daemon
+      - cli
+      - design
+      - post-mvp
+    added_by: "@claude"
+    created_at: 2026-04-15T00:32:02.932Z
