@@ -146406,6 +146406,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP9C09ZQ98VY71CYREGDZM22
         timestamp: 2026-04-15T20:06:01.396Z
+      - _ulid: 01KP9C0FAT95M7XH1ANR0S88Y5
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP9C0DZN3VSWVM33K3E3NX0P
+        timestamp: 2026-04-15T20:06:05.402Z
     examined_commit: 588c019f60bea601d8e7cb92e4416b539a78b924
     external_links: []
     lifecycle_state: open
@@ -146452,7 +146459,25 @@ reviews:
               generic errors."
             created_at: 2026-04-15T20:05:59.928Z
         kind: blocker
+      - _ulid: 01KP9C0DZN3VSWVM33K3E3NX0P
+        anchor:
+          type: code
+          commit: 588c019f60bea601d8e7cb92e4416b539a78b924
+          line_end: 650
+          line_start: 630
+          path: tests/upgrade-command.test.ts
+          side: head
+        entries:
+          - _ulid: 01KP9C0DZNG378VF7Q3D3ADH19
+            author: Jacob Chapel
+            body: These tests annotate @trait-json-output ac-4 and ac-5, but they never assert anything about
+              JSON references or timestamp formatting. They currently pass even when the command
+              emits no refs or timestamps at all, so they do not prove either criterion. Mark those
+              trait ACs N/A for this command or add assertions against real output fields that
+              exercise them.
+            created_at: 2026-04-15T20:06:04.021Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-15T19:59:21.920Z
-    updated_at: 2026-04-15T20:05:59.928Z
+    updated_at: 2026-04-15T20:06:04.021Z
     notes: []
