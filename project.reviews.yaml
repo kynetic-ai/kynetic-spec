@@ -141355,6 +141355,12 @@ reviews:
         payload:
           thread_ulid: 01KP7YCJCC82261E681W002BC1
         timestamp: 2026-04-15T07:20:24.532Z
+      - _ulid: 01KP806M1VSVTR77617R5CX4XW
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP7YCJCC82261E681W002BC1
+        timestamp: 2026-04-15T07:20:29.500Z
     examined_commit: 2cb9bf5ee7800327a7978288ffc701e6fed60192
     external_links: []
     lifecycle_state: closed
@@ -141426,6 +141432,8 @@ reviews:
               override (which is needed for proxy detection testing)."
             created_at: 2026-04-15T07:20:23.618Z
         kind: blocker
+        resolved_at: 2026-04-15T07:20:28.579Z
+        resolved_by: "@claude"
       - _ulid: 01KP7YDEAT5HT8ZB47TVZJ3NQP
         entries:
           - _ulid: 01KP7YDEATFFTFCA8306RZ361S
@@ -141456,7 +141464,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T06:49:12.426Z
     created_at: 2026-04-15T06:37:08.564Z
-    updated_at: 2026-04-15T07:20:23.618Z
+    updated_at: 2026-04-15T07:20:28.579Z
     notes: []
   - _ulid: 01KP7YP03YRB0Z3XT9QE3XAGZ3
     slugs: []
