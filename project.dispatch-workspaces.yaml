@@ -52469,7 +52469,7 @@ workspaces:
       last_active_at: 2026-04-15T14:42:37.522Z
       last_reconciled_at: 2026-04-15T18:18:56.704Z
       created_at: 2026-04-15T12:20:51.766Z
-      updated_at: 2026-04-15T18:18:56.704Z
+      updated_at: 2026-04-15T18:18:57.849Z
     workspace_id: dispatch-workspace-01KNXYJ5JCR99F76N8N7265E0B
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
