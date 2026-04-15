@@ -143539,6 +143539,12 @@ reviews:
         payload:
           thread_ulid: 01KP858TWGNR58R4T81J09TMSB
         timestamp: 2026-04-15T09:08:02.254Z
+      - _ulid: 01KP86BSTTT1ZXNEXVPMCEFQJQ
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP858XKYQK04NTBTKPNNXF9Q
+        timestamp: 2026-04-15T09:08:10.714Z
     examined_commit: 156714dac6942a1a20836fc6074b04f700a4d3e2
     external_links: []
     lifecycle_state: closed
@@ -143620,6 +143626,8 @@ reviews:
               correctness, error handling, test quality, integration, spec alignment."
             created_at: 2026-04-15T08:49:07.710Z
         kind: nit
+        resolved_at: 2026-04-15T09:08:09.791Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -143629,7 +143637,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T08:49:20.278Z
     created_at: 2026-04-15T08:37:57.956Z
-    updated_at: 2026-04-15T09:08:01.307Z
+    updated_at: 2026-04-15T09:08:09.791Z
     notes: []
   - _ulid: 01KP85J4FM3HNXZDEFGT7YCH64
     slugs: []
