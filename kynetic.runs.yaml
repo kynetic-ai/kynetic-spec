@@ -25796,9 +25796,27 @@ runs:
     completed_at: 2026-04-14T20:26:01.009Z
   - _ulid: 01KP7JT01SDN8FD25NW0M6K02V
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-15T03:26:24.313Z
+        completed_at: 2026-04-15T03:27:29.823Z
+        notes: "Systematic root-cause approach: read dispatch bootstrap code end-to-end, reproduced the
+          failing execFile pattern exactly (bash -lc, env vars, cwd), inspected
+          .kspec-dispatch-workspace.json metadata for historical failure state. User correction —
+          'weren't there fixes for Bug 2?' — led to checking git log and discovering prior cleanup
+          tasks covered only explicit daemon-spawn patterns, not implicit CLI auto-start. Found that
+          daemon-config.test.ts already passes KSPEC_NO_DAEMON=\"\" to override, which enabled a
+          zero-risk helper-default fix that preserves the two AC-exercising auto-start tests
+          untouched. Using kspec batch --file with a JSON file was the right call for the task
+          description — avoided all shell-quoting pitfalls on a long markdown body with backticks
+          and dollar signs."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-15T03:27:29.823Z
+        completed_at: 2026-04-15T03:27:29.823Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-15T03:26:24.313Z
