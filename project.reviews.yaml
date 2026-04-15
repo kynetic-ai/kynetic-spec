@@ -146749,6 +146749,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-15T20:37:33.396Z
+      - _ulid: 01KP9DT82T2ABAV3PF6R7B0PC8
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KP9DT6QF0C8C9YTK7VQB7DEK
+        timestamp: 2026-04-15T20:37:38.522Z
     examined_commit: 4a8adcba1d4b7e6ee073f0cff5e9863e728aa8a2
     external_links: []
     lifecycle_state: open
@@ -146788,7 +146795,24 @@ reviews:
               nor reports the step as failed when the rendered artifact is invalid.
             created_at: 2026-04-15T20:37:23.557Z
         kind: blocker
+      - _ulid: 01KP9DT6QF0C8C9YTK7VQB7DEK
+        entries:
+          - _ulid: 01KP9DT6QFWN0EW0XSR69Y7BXR
+            author: Jacob Chapel
+            body: "Review evidence log: Files read: src/cli/index.ts, src/cli/commands/index.ts,
+              src/cli/commands/upgrade.ts, src/parser/gitignore.ts, src/parser/skill-render.ts,
+              src/parser/yaml.ts, src/cli/exit-codes.ts, src/cli/commands/setup-defaults.ts,
+              tests/upgrade-command.test.ts, tests/helpers/cli.ts, prior review
+              @01KP9BM5A0MGBMYT8KP8C3YEJ7. Commands run: git show --stat, git diff, git log, kspec
+              task get, kspec item get, kspec review for-task/get/add/open, kspec validate, rg AC
+              scans, npm test, and direct temp-project reproductions for corrupted kspec-agents.md
+              handling. Claims verified: cycle-5 fixes for dry-run shadow HEAD checks, runtime exit
+              code 3 path, and JSON-output N/A annotations are present; step-3 corrupted-artifact
+              handling is still incorrect. Categories searched: correctness, edge cases, error
+              handling, test quality, integration."
+            created_at: 2026-04-15T20:37:37.135Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-15T20:26:05.097Z
-    updated_at: 2026-04-15T20:37:32.043Z
+    updated_at: 2026-04-15T20:37:37.135Z
     notes: []
