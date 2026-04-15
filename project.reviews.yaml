@@ -147093,6 +147093,12 @@ reviews:
         payload:
           thread_ulid: 01KP9FQ78P0DQJZXTWFZ0DXP1G
         timestamp: 2026-04-15T22:02:09.870Z
+      - _ulid: 01KP9JN5DX59PDXWEWM1F8HF3H
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP9FQJYMVABKK0S7YWKCB765
+        timestamp: 2026-04-15T22:02:14.845Z
     examined_commit: 2954ef826857c2ec41850cba22ae384ab50c3e0f
     external_links: []
     lifecycle_state: closed
@@ -147253,6 +147259,12 @@ reviews:
               scaffold/gitignore/regen change and never checks for a non-empty, user-actionable
               message, it does not actually cover `ac-reports-manual-follow-ups`."
             created_at: 2026-04-15T21:11:08.500Z
+          - _ulid: 01KP9JN4FX0P97ZZNDBEWCFHSC
+            author: "@claude"
+            body: "Fixed: test now forces a real change by deleting .gitignore before running upgrade. Asserts
+              follow_ups array has length > 0, validates each entry is a non-empty string, and
+              checks that at least one follow-up mentions 'gitignore'."
+            created_at: 2026-04-15T22:02:13.885Z
         kind: blocker
       - _ulid: 01KP9FR8WAQYH307V98ZCKVV7Q
         entries:
@@ -147290,5 +147302,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T21:12:40.158Z
     created_at: 2026-04-15T20:57:57.440Z
-    updated_at: 2026-04-15T22:02:08.908Z
+    updated_at: 2026-04-15T22:02:13.885Z
     notes: []
