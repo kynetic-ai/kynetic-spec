@@ -30,6 +30,8 @@ import {
   getShadowStatus,
   repairShadow,
   remoteShadowBranchExists,
+  resolveProjectRoots,
+  buildLinkedWorktreeMessage,
   SHADOW_BRANCH_NAME,
   SHADOW_WORKTREE_DIR,
   SESSIONS_WORKTREE_DIR,
@@ -566,7 +568,13 @@ async function promptYesNo(question: string): Promise<boolean> {
  * @returns true if worktree is ready to use
  */
 async function ensureWorktree(autoWorktree: boolean): Promise<boolean> {
-  const projectRoot = getGitRoot(process.cwd());
+  // AC: @worktree-support ac-shadow-ops-scoped-to-main
+  // Resolve mainRoot so that even if this helper were reached from a
+  // linked-worktree cwd (which the command-level guard in the setup
+  // action already blocks), the subsequent repairShadow call receives
+  // the main working tree root rather than a linked worktree root.
+  const projectRoot =
+    resolveProjectRoots(process.cwd())?.mainRoot ?? getGitRoot(process.cwd());
   if (!projectRoot) {
     // Not in a git repo, skip worktree check
     return true;
@@ -1705,6 +1713,30 @@ export function registerSetupCommand(program: Command): void {
       try {
         const projectDir = process.cwd();
         const agentOverride = options.agent ? parseSetupAgentOverride(options.agent) : undefined;
+
+        // AC: @worktree-support ac-setup-linked-wt-unchanged,
+        //     ac-setup-main-wt-unchanged, ac-setup-guidance-direction,
+        //     ac-setup-guidance-path
+        //
+        // Refuse to run setup from a linked git worktree. Setup's
+        // ensureWorktree step invokes repairShadow, which is a
+        // shadow-lifecycle mutation; routing that through a linked-worktree
+        // cwd risks mutating the main working tree's shadow via git's
+        // shared worktree admin (find_worktree_by_suffix — the 2026-04-11
+        // incident vector). Hard-error early with guidance pointing at the
+        // main working tree path. Applies to --status too because
+        // getSharedSetupStatus uses projectDir as-is and would otherwise
+        // report confusing state from a linked worktree.
+        const setupRoots = resolveProjectRoots(projectDir);
+        if (setupRoots?.isWorktree) {
+          const { message, suggestion } = buildLinkedWorktreeMessage(
+            "kspec setup",
+            setupRoots.mainRoot,
+          );
+          error(message);
+          console.log(`  ${suggestion}`);
+          process.exit(EXIT_CODES.ERROR);
+        }
 
         // AC: @enhanced-setup ac-7, ac-8 - --status mode
         if (options.status) {
