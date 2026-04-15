@@ -14454,6 +14454,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-15T13:43:10.087Z
+  - _ulid: 01KP974KYGV3MHV4K11K2G024P
+    type: friction
+    content: Review thread bodies have inline code formatting stripped when displayed via kspec review
+      get — backtick-wrapped identifiers render as blank spaces, making it difficult for agents to
+      understand reviewer feedback without cross-referencing code locations manually.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-15T18:40:58.320Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:

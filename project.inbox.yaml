@@ -2572,3 +2572,11 @@ inbox:
       - cli
     added_by: "@claude"
     created_at: 2026-04-15T13:12:09.469Z
+  - _ulid: 01KP974M6QZGDDWKKS037TDGT6
+    text: Allow kspec task submit from needs_work state (implicit in_progress transition) — currently
+      requires two commands (task start + task submit) which is a friction point in fix cycles.
+    tags:
+      - cli
+      - task-lifecycle
+    added_by: "@claude"
+    created_at: 2026-04-15T18:40:58.583Z
