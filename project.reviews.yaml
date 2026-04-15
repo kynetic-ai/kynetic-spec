@@ -142204,6 +142204,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP84APZVKFR2X720DF3SCXCX
         timestamp: 2026-04-15T08:32:38.804Z
+      - _ulid: 01KP84ATK7Z2RVFSHJ1CG8R47W
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KP84ASM79KXGWJMSZ7NVYC65
+        timestamp: 2026-04-15T08:32:41.575Z
     examined_commit: f2ac5145d4ad013362635154634edcf368e694d0
     external_links: []
     lifecycle_state: open
@@ -142284,7 +142291,30 @@ reviews:
               significant element is not the title heading."
             created_at: 2026-04-15T08:32:37.883Z
         kind: blocker
+      - _ulid: 01KP84ASM79KXGWJMSZ7NVYC65
+        entries:
+          - _ulid: 01KP84ASM8NC2A7E849CCD8NR3
+            author: Jacob Chapel
+            body: >-
+              Review evidence log
+
+
+              Files read: src/parser/plan-document.ts, src/cli/commands/plan-import.ts,
+              src/cli/commands/plan.ts, tests/plan-document-parser.test.ts,
+              tests/cli-plan-import.test.ts, tests/cli-plan-derive.test.ts
+
+              Commands run: git diff a885ce6d6..f2ac5145d; kspec task get
+              @01KNXYJ58RFQSBZ91FSVQE4F46; kspec validate; rg AC annotations in the targeted tests;
+              isolated CLI reproductions for late-title import and --into re-import; npm test
+
+              Claims verified: full suite passes; missing-title handling is still too permissive;
+              --into bypasses the new validation path
+
+              Categories searched: correctness, edge cases, error handling, test quality,
+              integration
+            created_at: 2026-04-15T08:32:40.584Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-15T08:20:09.323Z
-    updated_at: 2026-04-15T08:32:37.883Z
+    updated_at: 2026-04-15T08:32:40.584Z
     notes: []
