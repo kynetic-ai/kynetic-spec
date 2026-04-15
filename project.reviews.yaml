@@ -141844,6 +141844,12 @@ reviews:
         payload:
           thread_ulid: 01KP836GF1VTA0SRSEJV9C3ESK
         timestamp: 2026-04-15T08:13:32.702Z
+      - _ulid: 01KP837VNK7ESPC99SNVKJ64EW
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP836K5G7Q4RX6DQ8QVJ2MWC
+        timestamp: 2026-04-15T08:13:35.795Z
     examined_commit: ceaa0b225705ec805e8d9189d61457f3757557ed
     external_links: []
     lifecycle_state: open
@@ -141902,6 +141908,15 @@ reviews:
               dispatch behavior on first load instead of being behavior-preserving, which is exactly
               what this AC forbids."
             created_at: 2026-04-15T08:12:54.321Z
+          - _ulid: 01KP837THWBTSZ88S22KMXFSZM
+            author: Jacob Chapel
+            body: 'Clarification: this violates @scaffolded-project-config ac-file-valid-on-load. In an
+              executable temp-repo check, loading the scaffolded file resolved dispatch.base_branch
+              to "main" and dispatch.publication_mode to "manual_merge"; deleting kspec.config.yaml
+              in the same repo resolved those fields to null and "auto". The scaffold therefore
+              changes dispatch behavior on first load instead of preserving the empty-config
+              behavior the AC requires.'
+            created_at: 2026-04-15T08:13:34.652Z
         kind: blocker
       - _ulid: 01KP836NX8DGSDRDR6QKBWB3Y3
         entries:
@@ -141922,7 +141937,7 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-15T08:00:06.572Z
-    updated_at: 2026-04-15T08:13:31.713Z
+    updated_at: 2026-04-15T08:13:34.652Z
     notes: []
   - _ulid: 01KP82G0RY4T338S9QKGMG5QH4
     slugs: []
