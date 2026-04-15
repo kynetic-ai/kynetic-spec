@@ -147711,6 +147711,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-15T22:51:50.213Z
+      - _ulid: 01KP9NG1ZRRYQVGJSXQZ69H2X8
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP9NG0XM78PFS5GWX4RPYDVC
+        timestamp: 2026-04-15T22:51:53.208Z
     examined_commit: 0c1332a0dbf124738797fcac0cfdc70300bc5091
     external_links: []
     lifecycle_state: open
@@ -147747,7 +147754,27 @@ reviews:
               integration.
             created_at: 2026-04-15T22:51:43.483Z
         kind: nit
+      - _ulid: 01KP9NG0XM78PFS5GWX4RPYDVC
+        anchor:
+          type: code
+          commit: 0c1332a0dbf124738797fcac0cfdc70300bc5091
+          line_end: 865
+          line_start: 861
+          path: src/cli/commands/upgrade.ts
+          side: head
+        entries:
+          - _ulid: 01KP9NG0XNQ5TDQ8GSSC60216K
+            author: Jacob Chapel
+            body: Step 3 silently ignores template-loading failures and keeps regenerating `kspec-agents.md`
+              with `templateSections = []`. The existing `kspec agents generate` path treats missing
+              or empty `templates/agents-sections/` as a fatal error at
+              src/cli/commands/agents.ts:300-311, so upgrade no longer matches the canonical
+              generator behavior it is supposed to reuse. In that state, `kspec upgrade` reports
+              success, can overwrite the agents file with a truncated version that omits template
+              sections, and still records the project as upgraded instead of failing the step.
+            created_at: 2026-04-15T22:51:52.117Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-15T22:39:25.791Z
-    updated_at: 2026-04-15T22:51:49.219Z
+    updated_at: 2026-04-15T22:51:52.117Z
     notes: []
