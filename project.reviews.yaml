@@ -143992,7 +143992,19 @@ reviews:
     slugs: []
     title: Review task-complete-gitignore (cycle 6)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Fails on head and on integration base a885ce6d6 with the same pre-existing schema error in
+          .kspec/modules/meta.yaml (modules[0].traits.0 Expected string, received object), plus
+          existing orphan/coverage warnings; not introduced by this task.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-15T09:37:05.309Z
+        completed_at: 2026-04-15T09:37:05.309Z
     events:
       - _ulid: 01KP87BGZYZ20PQN7M6C559FGB
         actor: Jacob Chapel
@@ -144021,6 +144033,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP87ZWV60FD4RHFSV77PM3PD
         timestamp: 2026-04-15T09:36:38.765Z
+      - _ulid: 01KP880RKXP93DJF81PNK2GC7V
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-15T09:37:06.173Z
     examined_commit: acdee373fbcc07795aaf22e3f724e66542cfee0b
     external_links: []
     lifecycle_state: open
@@ -144076,5 +144095,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-15T09:25:30.238Z
-    updated_at: 2026-04-15T09:36:37.734Z
+    updated_at: 2026-04-15T09:37:05.309Z
     notes: []
