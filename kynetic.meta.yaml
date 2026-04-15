@@ -14386,6 +14386,27 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-15T12:41:14.712Z
+  - _ulid: 01KP8K737YEHS57N4ND0W69TJQ
+    type: friction
+    content: "Review friction: upgrade-command tests mostly asserted step presence/status instead of the
+      required side effects. The full suite passed even though obsolete rendered skills were not
+      removed and the default module was not scaffolded. Direct temp-project repros were needed to
+      verify behavior. This suggests a recurring review risk: broad integration coverage can still
+      miss spec-critical side effects when tests stop at step metadata."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-15T12:52:47.998Z
+  - _ulid: 01KP8K73F3ZSR0Q76C7SH66VJ7
+    type: success
+    content: "Review success: building minimal temp-project repros was an efficient way to validate
+      upgrade behavior claims. Creating one temp project for orphan skill cleanup and one for
+      missing default-module scaffolding turned suspected spec gaps into confirmed blocker findings
+      quickly, without needing to modify the review snapshot."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-15T12:52:48.227Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
