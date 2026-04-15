@@ -1,1 +1,11 @@
-notes: []
+notes:
+  - _ulid: 01KP9SCGAFSBJDXJ0X2M2P6KAE
+    content: "Approach: The 5 failing tests all call runInvocation() with specDir set to a temp dir
+      directly under /tmp/. The sessionsDir derivation (path.dirname(specDir) + '/.kspec-sessions')
+      resolves to /tmp/.kspec-sessions which has dr-xr-xr-x permissions, causing EACCES on mkdir.
+      Fix: pass sessionsDir explicitly inside each test's temp dir via the existing
+      InvocationOptions.sessionsDir field. This avoids changing production behavior and keeps test
+      isolation clean."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-15T23:59:51.119Z
