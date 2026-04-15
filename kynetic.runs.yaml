@@ -26589,7 +26589,7 @@ runs:
     completed_at: 2026-04-15T23:25:51.811Z
   - _ulid: 01KP9S77GMPSMEQNXJ7QK9RXAJ
     status: active
-    current_step: 4
+    current_step: 5
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -26626,7 +26626,17 @@ runs:
       - status: completed
         step_index: 4
         started_at: 2026-04-15T23:58:34.972Z
-        completed_at: 2026-04-15T23:58:34.972Z
+        completed_at: 2026-04-15T23:58:35.828Z
+        notes: "Coverage check: searched for dry-run parity, corrupted kspec-agents, artifact corruption,
+          base branch, pre-existing test failures, and review triage friction. Existing coverage
+          already includes observation @01KP9FYF about review triage friction around pre-existing
+          test failures, plus prior observations on base-vs-head failure comparison. The
+          upgrade-specific gaps are already captured directly on @task-upgrade-command and review
+          @01KP9RCCSSVZ0F4QPASZDXHDVF."
+      - status: completed
+        step_index: 5
+        started_at: 2026-04-15T23:58:35.828Z
+        completed_at: 2026-04-15T23:58:35.828Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-15T23:56:58.260Z
