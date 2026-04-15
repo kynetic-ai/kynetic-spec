@@ -26469,7 +26469,7 @@ runs:
     started_at: 2026-04-15T20:38:28.831Z
   - _ulid: 01KP9KHWNHQJTZGNM2P8C8FSPE
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -26481,7 +26481,14 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-15T22:18:46.474Z
-        completed_at: 2026-04-15T22:18:46.474Z
+        completed_at: 2026-04-15T22:19:00.498Z
+        notes: "Captured both untracked items as observations: one friction about unrelated validate noise
+          during review, and one success about targeted CLI repros in temp repos for blocker
+          confirmation."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-15T22:19:00.498Z
+        completed_at: 2026-04-15T22:19:00.498Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-15T22:17:56.145Z
