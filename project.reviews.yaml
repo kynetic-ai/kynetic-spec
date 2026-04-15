@@ -147734,6 +147734,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-15T22:52:10.600Z
+      - _ulid: 01KP9PAJKDG2WDB4EYB5A5MR6H
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP9NG0XM78PFS5GWX4RPYDVC
+        timestamp: 2026-04-15T23:06:22.189Z
     examined_commit: 0c1332a0dbf124738797fcac0cfdc70300bc5091
     external_links: []
     lifecycle_state: closed
@@ -147789,6 +147795,14 @@ reviews:
               success, can overwrite the agents file with a truncated version that omits template
               sections, and still records the project as upgraded instead of failing the step.
             created_at: 2026-04-15T22:51:52.117Z
+          - _ulid: 01KP9PAHPE318331W6BBHF7XBZ
+            author: "@claude"
+            body: "Fixed: loadTemplateSections() errors now propagate as a failed step result instead of being
+              silently caught. The try/catch that set templateSections=[] was replaced with one that
+              returns {status:'failed', message} on error. This matches the canonical agents.ts
+              fatal-error behavior and prevents truncated writes. The priorStepsAllSucceeded guard
+              already blocks version recording when any step fails."
+            created_at: 2026-04-15T23:06:21.262Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -147799,5 +147813,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T22:52:10.600Z
     created_at: 2026-04-15T22:39:25.791Z
-    updated_at: 2026-04-15T22:52:10.600Z
+    updated_at: 2026-04-15T23:06:21.262Z
     notes: []
