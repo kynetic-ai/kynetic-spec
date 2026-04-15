@@ -85,3 +85,25 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-15T13:25:11.030Z
+  - _ulid: 01KP8P0K3N7BWG65Q4KB4HGGPK
+    content: >-
+      Fix cycle 2: Addressed both review blockers.
+
+
+      1. JSON error handling (blocker): Replaced all bare console.error() calls after error() with
+      the details parameter pattern — error(msg, {suggestion}). In JSON mode, guidance is now
+      embedded in the structured error object instead of appended as plain text. Applied to all
+      three error paths (no project found, no manifest, catch handler). Updated 2 existing tests to
+      validate JSON error stream integrity and suggestion presence.
+
+
+      2. Review-plan skill probe path (blocker): Corrected probe from
+      .agents/skills/kspec-review-plan.md to .agents/skills/kspec-review-plan/SKILL.md matching the
+      directory-based layout renderers actually produce. Added 1 new test verifying version
+      inference with directory-based skill layout.
+
+
+      Full test suite: 7939 passed, 5 skipped, 0 failures. Total 40 upgrade-command tests.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-15T13:41:40.598Z
