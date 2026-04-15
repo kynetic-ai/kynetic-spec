@@ -146896,6 +146896,17 @@ reviews:
         runner: manual
         created_at: 2026-04-15T21:11:42.374Z
         completed_at: 2026-04-15T21:11:42.374Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 'Synthetic project with `kynetic: "1.0"` plus present `kspec.config.yaml` returned
+          `source_version: "0.11.0", confidence: "approximate"` instead of unknown.'
+        name: upgrade source-version contradiction repro
+        required: true
+        runner: manual
+        created_at: 2026-04-15T21:11:51.073Z
+        completed_at: 2026-04-15T21:11:51.073Z
     events:
       - _ulid: 01KP9EZEE0954KEH7M5RK1F57Q
         actor: Jacob Chapel
@@ -146966,6 +146977,13 @@ reviews:
           status: fail
           name: upgrade source-version contradiction repro
         timestamp: 2026-04-15T21:11:43.359Z
+      - _ulid: 01KP9FRXFKRT6N44P027DQY1VJ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: upgrade source-version contradiction repro
+        timestamp: 2026-04-15T21:11:52.051Z
     examined_commit: 2954ef826857c2ec41850cba22ae384ab50c3e0f
     external_links: []
     lifecycle_state: open
@@ -147119,5 +147137,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-15T20:57:57.440Z
-    updated_at: 2026-04-15T21:11:42.374Z
+    updated_at: 2026-04-15T21:11:51.073Z
     notes: []
