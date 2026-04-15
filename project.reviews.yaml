@@ -145675,6 +145675,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP8N16NTPC859ZXWNNKV9M2D
         timestamp: 2026-04-15T13:24:33.191Z
+      - _ulid: 01KP8N1B0YD8NV9VEPDPF233KS
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP8N19XPF6V9N69GKJWH1DNV
+        timestamp: 2026-04-15T13:24:36.510Z
     examined_commit: ddf9d4a71f08cf6737492d6a6d04f5cd5f1bd606
     external_links: []
     lifecycle_state: open
@@ -145704,7 +145711,27 @@ reviews:
               direct 'console.error(...)' pattern appears again in the catch handler below."
             created_at: 2026-04-15T13:24:32.058Z
         kind: blocker
+      - _ulid: 01KP8N19XPF6V9N69GKJWH1DNV
+        anchor:
+          type: code
+          commit: ddf9d4a71f08cf6737492d6a6d04f5cd5f1bd606
+          line_end: 204
+          line_start: 201
+          path: src/cli/commands/upgrade.ts
+          side: head
+        entries:
+          - _ulid: 01KP8N19XPBR9ZJ2CAW2Y1717Q
+            author: Jacob Chapel
+            body: "The fallback probe for the rendered review-plan skill points at
+              '.agents/skills/kspec-review-plan.md', but Codex-rendered skills live in
+              '.agents/skills/<skill>/SKILL.md'. I reproduced this by creating a temp initialized
+              project with only '.agents/skills/kspec-review-plan/SKILL.md' present and no recorded
+              version: 'kspec upgrade --dry-run --json' reported 'source_version: 0.8.0' instead of
+              recognizing the 0.10-era probe. That violates the source-version fallback contract and
+              can skip or mislabel upgrades for projects in that band."
+            created_at: 2026-04-15T13:24:35.382Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-15T13:13:44.243Z
-    updated_at: 2026-04-15T13:24:32.058Z
+    updated_at: 2026-04-15T13:24:35.382Z
     notes: []
