@@ -77,8 +77,13 @@ description: |
 spec_ref: "@scaffolded-project-config"
 plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved in review @01KP888H and merged
+  dispatch/task/task-scaffold-project-config/01knxyj3 into
+  plan/plan-init-setup-and-upgrade-rough-edges/01knvahv. Scaffolded project config step now writes a
+  validated behavior-preserving template during setup/init, with idempotent skip/backup overwrite
+  handling and regression coverage for default-branch fallback.
 depends_on: []
 context: []
 priority: 1
@@ -1080,9 +1085,26 @@ history:
         previous: "@01KP86G7719YVDVGEBA1TP0NQC"
     command: review-link
     timestamp: 2026-04-15T09:41:23.699Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved in review @01KP888H and merged dispatch/task/task-scaffold-project-config/01knxyj3
+          into plan/plan-init-setup-and-upgrade-rough-edges/01knvahv. Scaffolded project config step
+          now writes a validated behavior-preserving template during setup/init, with idempotent
+          skip/backup overwrite handling and regression coverage for default-branch fallback.
+        previous: null
+      completed_at:
+        new: 2026-04-15T09:52:57.902Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-15T09:52:57.920Z
 prior_status: null
 created_at: 2026-04-11T09:39:24.510Z
 started_at: 2026-04-15T09:38:05.393Z
 submitted_at: 2026-04-15T09:38:09.858Z
+completed_at: 2026-04-15T09:52:57.902Z
 todos: []
 automation: eligible
