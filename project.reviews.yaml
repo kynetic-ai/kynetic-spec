@@ -141611,3 +141611,29 @@ reviews:
     created_at: 2026-04-15T06:53:56.222Z
     updated_at: 2026-04-15T07:04:08.355Z
     notes: []
+  - _ulid: 01KP80AVYVV8TSVNN50C9C82GY
+    slugs: []
+    title: Review task-tests-suppress-cli-auto-start-daemon (cycle 2)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KP80AVYTSQXS383HRT0BPZK6
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-15T07:22:48.667Z
+    examined_commit: 582b948ce0f292d17dc405eb485dd7519f43ecbd
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KP78S9T0YHQWX9S35W8EFCRY"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-15T07:22:48.667Z
+    updated_at: null
+    notes: []
