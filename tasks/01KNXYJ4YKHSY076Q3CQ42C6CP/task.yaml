@@ -59,7 +59,7 @@ description: |
 spec_ref: "@derivable-default-module"
 plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on: []
 context: []
@@ -78,7 +78,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-derivable-default-module/01knxyj4
-session_id: 01KP8E55JSH85XMF4A4Y2GSZZ6
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -484,6 +484,16 @@ history:
         previous: "@01KP8DEFP5TRA0BFHS97FJVYZC"
     command: review-link
     timestamp: 2026-04-15T11:40:29.057Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KP8E55JSH85XMF4A4Y2GSZZ6
+    command: review-verdict-needs-work
+    timestamp: 2026-04-15T11:47:38.761Z
 prior_status: null
 created_at: 2026-04-11T09:39:25.779Z
 started_at: 2026-04-15T11:35:08.469Z
