@@ -48181,18 +48181,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-scaffold-project-config/01knxyj3
-    canonical_branch_head: b91fc2f0e1d9ea8bdec314f3db0bfc8aa237dfdc
+    canonical_branch_head: ceaa0b225705ec805e8d9189d61457f3757557ed
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-14T21:09:02.184Z
+      updated_at: 2026-04-15T07:56:46.157Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-14T21:09:02.184Z
+      updated_at: 2026-04-15T07:56:46.157Z
     integration:
       status: pending
       detail: null
@@ -48200,7 +48200,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
       target_commit: 7b1b856564b91f28efc8bbb2d3b8e41034fd9a3f
-      updated_at: 2026-04-14T21:09:02.184Z
+      updated_at: 2026-04-15T07:56:46.157Z
     lifecycle_state: ready
     resolved_base_branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
     task_ref: "@01KNXYJ3PYYG1ABH6SMQ2KRE1S"
@@ -48208,9 +48208,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-14T20:54:28.157Z
-      last_reconciled_at: 2026-04-14T21:09:02.184Z
+      last_reconciled_at: 2026-04-15T07:56:46.157Z
       created_at: 2026-04-11T09:41:17.186Z
-      updated_at: 2026-04-14T21:09:02.184Z
+      updated_at: 2026-04-15T07:56:46.157Z
     workspace_id: dispatch-workspace-01KNXYJ3PYYG1ABH6SMQ2KRE1S
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
