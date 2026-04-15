@@ -26418,9 +26418,20 @@ runs:
     completed_at: 2026-04-15T19:15:30.596Z
   - _ulid: 01KP9DVS6ZDXPQE0RDZARXPQBW
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-15T20:38:28.831Z
+        completed_at: 2026-04-15T20:39:05.565Z
+        notes: "Worked well: direct temp-project reproductions were fast and decisive for review. Building a
+          minimal project, mutating a single artifact, and rerunning the built CLI made it easy to
+          distinguish real upgrade regressions from repo-wide noise."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-15T20:39:05.565Z
+        completed_at: 2026-04-15T20:39:05.565Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-15T20:38:28.831Z
