@@ -142651,7 +142651,19 @@ reviews:
     slugs: []
     title: Review @01KNXYJ3PYYG1ABH6SMQ2KRE1S (cycle 9)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Fails on both this snapshot and base plan branch with the same pre-existing meta/schema
+          issues (e.g. .kspec/modules/meta.yaml traits[0] expected string, orphaned skills dir,
+          broad AC coverage warnings). Not a regression from this task.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-15T08:48:43.207Z
+        completed_at: 2026-04-15T08:48:43.207Z
     events:
       - _ulid: 01KP84MFJ446NQ091YPMXRWA7E
         actor: Jacob Chapel
@@ -142673,6 +142685,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP8582W5W4W963YTKS7BP9JX
         timestamp: 2026-04-15T08:48:41.277Z
+      - _ulid: 01KP8586R53QT5835VDPF2XS1W
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-15T08:48:44.294Z
     examined_commit: 156714dac6942a1a20836fc6074b04f700a4d3e2
     external_links: []
     lifecycle_state: open
@@ -142706,5 +142725,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-15T08:37:57.956Z
-    updated_at: 2026-04-15T08:48:40.325Z
+    updated_at: 2026-04-15T08:48:43.207Z
     notes: []
