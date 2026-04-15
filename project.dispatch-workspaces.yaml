@@ -50922,12 +50922,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-15T07:58:51.916Z
+      updated_at: 2026-04-15T08:19:09.944Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-15T07:58:51.916Z
+      updated_at: 2026-04-15T08:19:09.944Z
     integration:
       status: pending
       detail: null
@@ -50935,7 +50935,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
       target_commit: f205808d2cf1f58d18f7fdf45435996b4092d52a
-      updated_at: 2026-04-15T07:58:51.916Z
+      updated_at: 2026-04-15T08:19:09.944Z
     lifecycle_state: integrating
     resolved_base_branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
     task_ref: "@01KNXYJ58RFQSBZ91FSVQE4F46"
@@ -50943,18 +50943,23 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-14T19:54:02.468Z
-      last_reconciled_at: 2026-04-15T07:58:51.916Z
+      last_reconciled_at: 2026-04-15T08:19:09.944Z
       created_at: 2026-04-14T19:53:40.062Z
-      updated_at: 2026-04-15T07:58:51.916Z
+      updated_at: 2026-04-15T08:19:09.944Z
     workspace_id: dispatch-workspace-01KNXYJ58RFQSBZ91FSVQE4F46
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: f2ac5145d4ad013362635154634edcf368e694d0
+        last_seen_at: 2026-04-15T08:19:09.944Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-plan-import-format-guidance-01knxyj5-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-plan-import-format-guidance/01knxyj5
-        head: f205808d2cf1f58d18f7fdf45435996b4092d52a
-        last_seen_at: 2026-04-14T19:53:40.062Z
+        head: f2ac5145d4ad013362635154634edcf368e694d0
+        last_seen_at: 2026-04-15T08:19:09.944Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-plan-import-format-guidance-01knxyj5
   - active_role: null
     base_branch_point: f205808d2cf1f58d18f7fdf45435996b4092d52a
