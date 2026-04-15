@@ -26155,7 +26155,7 @@ runs:
     started_at: 2026-04-15T10:40:30.211Z
     completed_at: 2026-04-15T10:41:51.708Z
   - _ulid: 01KP8DCC0ZFPAD96GD2ZNXQS4E
-    status: active
+    status: completed
     current_step: 3
     initiated_by: "@claude"
     step_results:
@@ -26204,7 +26204,9 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-15T11:11:48.083Z
-        completed_at: 2026-04-15T11:11:48.083Z
+        completed_at: 2026-04-15T11:11:55.287Z
+        notes: No items to capture — clean fix cycle with no new patterns to record.
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-15T11:10:49.375Z
+    completed_at: 2026-04-15T11:11:55.287Z
