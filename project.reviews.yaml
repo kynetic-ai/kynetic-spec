@@ -143762,7 +143762,19 @@ reviews:
     slugs: []
     title: Review @01KNXYJ3PYYG1ABH6SMQ2KRE1S (cycle 10)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Fails on untouched repo state, not this task delta: .kspec/modules/meta.yaml
+          modules[0].traits.0 expects string but found object, plus existing completeness/alignment
+          warnings."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-15T09:21:14.190Z
+        completed_at: 2026-04-15T09:21:14.190Z
     events:
       - _ulid: 01KP86G7700WFHV4YF7J5D974Y
         actor: Jacob Chapel
@@ -143777,6 +143789,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-15T09:10:59.191Z
+      - _ulid: 01KP873QTN90J3QX85F02SMYPD
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-15T09:21:15.094Z
     examined_commit: cb88291eb760058eadd9827737b4d49f16569037
     external_links: []
     lifecycle_state: open
@@ -143789,5 +143808,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-15T09:10:35.489Z
-    updated_at: 2026-04-15T09:10:58.277Z
+    updated_at: 2026-04-15T09:21:14.190Z
     notes: []
