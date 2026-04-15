@@ -26211,7 +26211,7 @@ runs:
     started_at: 2026-04-15T11:10:49.375Z
     completed_at: 2026-04-15T11:11:55.287Z
   - _ulid: 01KP8ESN6P6N4SKP0FC1FS4R37
-    status: active
+    status: completed
     current_step: 3
     initiated_by: "@claude"
     step_results:
@@ -26268,7 +26268,11 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-15T11:36:27.706Z
-        completed_at: 2026-04-15T11:36:27.706Z
+        completed_at: 2026-04-15T11:36:36.245Z
+        notes: No items to capture — all identified friction was already tracked (needs_work → submit as
+          @01KP8BQ2). Session was narrow in scope (single merge conflict rebase). Completing
+          reflection with zero new captures.
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-15T11:35:33.334Z
+    completed_at: 2026-04-15T11:36:36.245Z
