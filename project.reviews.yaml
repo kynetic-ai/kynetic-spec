@@ -145068,6 +145068,13 @@ reviews:
           kind: nit
           thread_ulid: 01KP8FESXCE9RDC2ZH5HZZ6A5E
         timestamp: 2026-04-15T11:47:07.206Z
+      - _ulid: 01KP8FEXJ90ZKJWEA182DEYPGM
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP8FEWHNT2R4Z61EJK4YAY2H
+        timestamp: 2026-04-15T11:47:10.025Z
     examined_commit: 14aa905f12b918a953625d110336eb5411cb3a14
     external_links: []
     lifecycle_state: open
@@ -145095,7 +145102,26 @@ reviews:
               summary output"
             created_at: 2026-04-15T11:47:06.285Z
         kind: nit
+      - _ulid: 01KP8FEWHNT2R4Z61EJK4YAY2H
+        anchor:
+          type: code
+          commit: 14aa905f12b918a953625d110336eb5411cb3a14
+          line_end: 1864
+          line_start: 1856
+          path: src/cli/commands/setup.ts
+          side: head
+        entries:
+          - _ulid: 01KP8FEWHNYJKTKB1TW3S5BTWR
+            author: Jacob Chapel
+            body: " now reports the first loaded module as the default module, but this branch never persists
+              any identity that distinguishes the real default module from other modules. In a
+              project where another module is loaded before , the summary points users at the wrong
+              ref. Repro: init a git-backed project, add another module include before , rename  to
+              , then run ; the summary prints  instead of . That violates the task requirement that
+              follow-up flows track the edited default-module slug."
+            created_at: 2026-04-15T11:47:08.981Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-15T11:40:25.702Z
-    updated_at: 2026-04-15T11:47:06.285Z
+    updated_at: 2026-04-15T11:47:08.981Z
     notes: []
