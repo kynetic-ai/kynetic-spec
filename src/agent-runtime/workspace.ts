@@ -548,9 +548,15 @@ export async function resolveCurrentBranch(projectDir: string): Promise<string |
 export async function resolveDefaultBranch(
   projectDir: string,
 ): Promise<{ branch: string; source: "remote-head" | "current-branch" | "fallback" }> {
+  // Each candidate is verified via resolveBranchStartPoint before committing,
+  // matching resolveDispatchWorkspaceConfig's fallback chain so a stale remote
+  // HEAD (pointing to a deleted branch) falls through to the current branch.
   const remoteHead = await resolveRemoteHeadBranch(projectDir);
   if (remoteHead) {
-    return { branch: remoteHead, source: "remote-head" };
+    const resolved = await resolveBranchStartPoint(projectDir, remoteHead);
+    if (resolved) {
+      return { branch: remoteHead, source: "remote-head" };
+    }
   }
 
   const currentBranch = await resolveCurrentBranch(projectDir);

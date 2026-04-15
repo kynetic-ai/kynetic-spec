@@ -158,6 +158,52 @@ describe("Scaffold Project Config", () => {
       expect(scaffoldedResult.config).toEqual(emptyResult.config);
     });
 
+    // AC: @scaffolded-project-config ac-placeholder-base-branch
+    // Regression: resolveDefaultBranch used to accept the first remote HEAD
+    // symbolic ref without checking the branch exists, so a stale remote HEAD
+    // (pointing to a deleted branch) was rendered as the placeholder instead
+    // of falling through to the current branch.
+    it("falls through to current branch when remote HEAD points to a deleted branch", async () => {
+      initGitRepo(testDir);
+      await fs.writeFile(path.join(testDir, "README.md"), "# Test", "utf-8");
+      execSync('git add README.md && git commit -m "Initial"', {
+        cwd: testDir,
+        stdio: "pipe",
+      });
+      execSync("git checkout -b dev", { cwd: testDir, stdio: "pipe" });
+
+      // Create a bare remote, push to it, then make refs/remotes/origin/HEAD
+      // point to a branch that no longer exists (simulating a stale remote HEAD).
+      const bareDir = await createTempDir("kspec-bare-remote-");
+      try {
+        execSync("git init --bare", { cwd: bareDir, stdio: "pipe" });
+        execSync(`git remote add origin ${bareDir}`, { cwd: testDir, stdio: "pipe" });
+        execSync("git push origin dev", { cwd: testDir, stdio: "pipe" });
+
+        // Fetch to populate remote tracking refs, then manually set
+        // refs/remotes/origin/HEAD to a nonexistent branch name.
+        execSync("git fetch origin", { cwd: testDir, stdio: "pipe" });
+        execSync(
+          "git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/deleted-default",
+          { cwd: testDir, stdio: "pipe" },
+        );
+
+        const initResult = kspec("init --no-prompt", testDir);
+        expect(initResult.exitCode).toBe(0);
+
+        const result = kspec("setup", testDir);
+        expect(result.exitCode).toBe(0);
+
+        const content = await fs.readFile(path.join(testDir, CONFIG_FILENAME), "utf-8");
+
+        // Must NOT show "deleted-default" — should fall through to current branch "dev"
+        expect(content).not.toContain("deleted-default");
+        expect(content).toMatch(/#\s*base_branch:\s*"dev"/);
+      } finally {
+        await cleanupTempDir(bareDir);
+      }
+    });
+
     // AC: @scaffolded-project-config ac-placeholder-coverage
     it("contains commented-out coverage section with sample scan_paths", async () => {
       await setupKspecProject(testDir);
