@@ -145634,7 +145634,19 @@ reviews:
     slugs: []
     title: Review task-upgrade-command (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Fails outside the reviewed diff: .kspec/modules/meta.yaml has a schema error
+          (modules[0].traits.0 expected string, received object). This branch does not modify
+          .kspec/, so the failure is pre-existing for review purposes."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-15T13:24:28.812Z
+        completed_at: 2026-04-15T13:24:28.812Z
     events:
       - _ulid: 01KP8MDE1JW3AJXP22T670WR93
         actor: Jacob Chapel
@@ -145649,6 +145661,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-15T13:14:04.315Z
+      - _ulid: 01KP8N14JS291GT11KFQ3YMAQC
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-15T13:24:29.913Z
     examined_commit: ddf9d4a71f08cf6737492d6a6d04f5cd5f1bd606
     external_links: []
     lifecycle_state: open
@@ -145661,5 +145680,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-15T13:13:44.243Z
-    updated_at: 2026-04-15T13:14:03.142Z
+    updated_at: 2026-04-15T13:24:28.812Z
     notes: []

@@ -343,6 +343,28 @@ agents:
       - plan
     tools:
       - kspec
+  - _ulid: 01KP8MGJ5J6M35S39A3KTAPXSH
+    description: General-purpose development agent for code, testing, refactoring, and code review tasks.
+    tags:
+      - scaffold-default
+    auto_approve: true
+    capabilities:
+      - code
+      - test
+      - refactor
+      - review
+    concurrency:
+      max_concurrent: 1
+    conventions: []
+    dispatch: []
+    id: primary-dev
+    name: Primary Development Agent
+    skills:
+      - task-work
+    tools:
+      - kspec
+      - git
+      - npm
 conventions:
   - _ulid: 01KF782ZSJCXRCGV0QJ8Y9AKN2
     domain: commits
@@ -511,6 +533,11 @@ conventions:
       - E2E port hardcoded at 3456 — tests cannot run in parallel on same machine
       - GitHub Pages needs BASE_PATH=/kynetic-spec for local static builds; CI handles automatically
       - E2E tests use ephemeral ports — safe to run in parallel and with dispatch agents
+  - _ulid: 01KP8MGJAPVGV0EKE7TQY0PRMG
+    domain: architecture
+    examples: []
+    rules:
+      - "PLACEHOLDER: Replace this rule with your project's architectural constraints and patterns"
 hooks:
   - _ulid: 01KME0H8XCA8P3HC7SQM98VR61
     action:
@@ -535,6 +562,15 @@ hooks:
       agent_id: pr-reviewer
       turn_count: 1
     name: reviewer-session-reflection
+    on: session.idle
+  - _ulid: 01KP8MGJN5FW5NSD46MAHGCF25
+    action:
+      type: session_prompt
+      prompt: Run session reflection using /kspec:reflect
+      skills:
+        - reflect
+    enabled: true
+    name: default-session-reflect
     on: session.idle
 includes: []
 kynetic_meta: "1.0"
