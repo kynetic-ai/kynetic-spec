@@ -14255,6 +14255,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-15T08:18:28.893Z
+  - _ulid: 01KP84EFRTZPCPJGGN5R7J5KC8
+    type: success
+    content: "Fix cycle 8 on @task-scaffold-project-config resolved cleanly in one pass: human reviewer
+      provided executable reproduction evidence (temp-repo config comparison), making root cause
+      immediately clear. Using loadProjectConfig() directly in tests for behavioral config
+      comparison is a strong pattern for any future config-scaffolding work."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-15T08:34:41.562Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
