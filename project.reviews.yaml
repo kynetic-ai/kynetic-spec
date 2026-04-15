@@ -147973,6 +147973,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-15T23:23:11.782Z
+      - _ulid: 01KP9QAHBXMGC1J1ZZ4MK40H5E
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP9Q88MK95359PPQGRA4CH58
+        timestamp: 2026-04-15T23:23:49.501Z
     examined_commit: 4a024fed7210a6d4e75ec6705cba591d27320347
     external_links: []
     lifecycle_state: closed
@@ -148026,6 +148032,8 @@ reviews:
               states to safely run the full pipeline and leaves legacy task storage unmigrated."
             created_at: 2026-04-15T23:22:35.028Z
         kind: blocker
+        resolved_at: 2026-04-15T23:23:48.502Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KP9Q8ZT1K4Q4WJMXW1FX09YA
         anchor:
           type: code
@@ -148055,5 +148063,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T23:23:11.782Z
     created_at: 2026-04-15T23:08:58.065Z
-    updated_at: 2026-04-15T23:23:11.782Z
+    updated_at: 2026-04-15T23:23:48.502Z
     notes: []
