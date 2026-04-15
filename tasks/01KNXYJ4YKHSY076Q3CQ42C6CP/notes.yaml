@@ -221,3 +221,13 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-15T11:10:12.794Z
+  - _ulid: 01KP8E2TGBXR413GQABN4GNNF8
+    content: Merge back to plan/plan-init-setup-and-upgrade-rough-edges/01knvahv failed with a content
+      conflict in src/cli/commands/setup.ts at the setup summary block. Target branch HEAD keeps the
+      newer structured-output guard (`if (!dryRun && !isStructuredMode())`), while this task branch
+      adds dynamic default-module resolution and the default-module summary lines. Aborted merge
+      without resolving; worker needs to rebase/merge this branch against the latest target and
+      reconcile both behaviors.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-15T11:23:05.099Z
