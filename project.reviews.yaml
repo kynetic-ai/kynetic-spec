@@ -147538,6 +147538,12 @@ reviews:
         payload:
           thread_ulid: 01KP9KFNNMTK0SB3DHJ70QPX0H
         timestamp: 2026-04-15T22:36:32.650Z
+      - _ulid: 01KP9MM3S4R3TSP19QSYMX5HAJ
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP9KFRFKZ2ZGWSQJCADZAKP0
+        timestamp: 2026-04-15T22:36:37.540Z
     examined_commit: d889ee3c76b715e9b8cc3872a9ae790dc86a3540
     external_links: []
     lifecycle_state: closed
@@ -147617,6 +147623,8 @@ reviews:
               default one and verifies the scaffold runs."
             created_at: 2026-04-15T22:36:22.540Z
         kind: blocker
+        resolved_at: 2026-04-15T22:36:36.606Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -147626,5 +147634,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T22:17:07.450Z
     created_at: 2026-04-15T22:05:51.870Z
-    updated_at: 2026-04-15T22:36:31.681Z
+    updated_at: 2026-04-15T22:36:36.606Z
     notes: []
