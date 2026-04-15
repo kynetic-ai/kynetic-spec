@@ -135,6 +135,7 @@ tags:
   - bug
   - daemon
 vcs_refs: []
+review_ref: "@01KP7XQ82MMYWAWZ6XCJXJYTNS"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-tests-suppress-cli-auto-start-daemon/01kp78s9
@@ -185,6 +186,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-04-15T06:35:36.883Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KP7XQ82MMYWAWZ6XCJXJYTNS"
+        previous: null
+    command: review-link
+    timestamp: 2026-04-15T06:37:11.305Z
 created_at: 2026-04-15T00:31:15.776Z
 started_at: 2026-04-15T06:23:27.386Z
 submitted_at: 2026-04-15T06:35:36.883Z
