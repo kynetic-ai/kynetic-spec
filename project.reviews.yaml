@@ -142183,6 +142183,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP84A42717R0HX37KNZ43JWD
         timestamp: 2026-04-15T08:32:19.448Z
+      - _ulid: 01KP84A7YMHM84DB7RP5ACSV2K
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP84A6XCKRFKHCW6DX2QYPJQ
+        timestamp: 2026-04-15T08:32:22.484Z
     examined_commit: f2ac5145d4ad013362635154634edcf368e694d0
     external_links: []
     lifecycle_state: open
@@ -142211,7 +142218,25 @@ reviews:
               element is not the title heading.
             created_at: 2026-04-15T08:32:18.503Z
         kind: blocker
+      - _ulid: 01KP84A6XCKRFKHCW6DX2QYPJQ
+        anchor:
+          type: code
+          commit: f2ac5145d4ad013362635154634edcf368e694d0
+          line_end: 146
+          line_start: 144
+          path: src/cli/commands/plan-import.ts
+          side: head
+        entries:
+          - _ulid: 01KP84A6XDVS52P0R8H17CR81K
+            author: Jacob Chapel
+            body: " returns before the new parser validation runs, so re-imports still accept malformed plan
+              documents and skip the new empty-plan warning path. I reproduced this in an isolated
+              temp project: after creating ,  with a title-less file exited 0 and updated the plan
+              content instead of failing. That leaves an easy path to store content that the task
+              explicitly says import must reject."
+            created_at: 2026-04-15T08:32:21.421Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-15T08:20:09.323Z
-    updated_at: 2026-04-15T08:32:18.503Z
+    updated_at: 2026-04-15T08:32:21.421Z
     notes: []
