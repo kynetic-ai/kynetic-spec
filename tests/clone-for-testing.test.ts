@@ -96,7 +96,7 @@ describe("Integration: clone-for-testing", () => {
 
     try {
       // Clone the repo
-      kspec(`clone-for-testing ${dest} ${sourceRepo}`);
+      kspec(`clone-for-testing ${dest} ${sourceRepo}`, tempDir);
 
       // Worktree should exist
       expect(fs.existsSync(path.join(dest, ".kspec"))).toBe(true);
