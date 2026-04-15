@@ -2560,3 +2560,15 @@ inbox:
       - reliability
     added_by: "@claude"
     created_at: 2026-04-15T05:51:52.991Z
+  - _ulid: 01KP8MAHFXXXMMKFA7SMET9K16
+    text: Extract skill orphan cleanup into shared library function. Currently duplicated between
+      skill-diff.ts (--clean handler) and upgrade.ts (runRerenderSkillsStep). Both scan platform
+      output directories, check kspec-managed markers, and remove orphan directories. A shared
+      cleanOrphanSkills(projectDir, skills, options) function in skill-render.ts would eliminate the
+      duplication risk.
+    tags:
+      - refactor
+      - skills
+      - cli
+    added_by: "@claude"
+    created_at: 2026-04-15T13:12:09.469Z
