@@ -145868,7 +145868,18 @@ reviews:
     slugs: []
     title: Review task-upgrade-command (cycle 3)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Scanned tests/upgrade-command.test.ts for @single-command-version-upgrade and inherited
+          trait annotations; coverage comments are present for spec ACs and trait ACs, with N/A
+          annotations for the non-applicable inherited cases.
+        name: AC annotation scan
+        required: false
+        created_at: 2026-04-15T13:49:11.245Z
+        completed_at: 2026-04-15T13:49:11.245Z
     events:
       - _ulid: 01KP8P49516SK4SK77FVBTDSC5
         actor: Jacob Chapel
@@ -145883,6 +145894,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-15T13:44:02.075Z
+      - _ulid: 01KP8PEC9AJ870DW8M6RV1A5B4
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: AC annotation scan
+        timestamp: 2026-04-15T13:49:12.362Z
     examined_commit: 096e915cfb1ae093270734854bfc912b2a29af3f
     external_links: []
     lifecycle_state: open
@@ -145895,5 +145913,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-15T13:43:41.473Z
-    updated_at: 2026-04-15T13:44:01.147Z
+    updated_at: 2026-04-15T13:49:11.245Z
     notes: []
