@@ -50374,12 +50374,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-15T07:58:50.035Z
+      updated_at: 2026-04-15T08:16:54.625Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-15T07:58:50.035Z
+      updated_at: 2026-04-15T08:16:54.625Z
     integration:
       status: pending
       detail: null
@@ -50387,7 +50387,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
       target_commit: f205808d2cf1f58d18f7fdf45435996b4092d52a
-      updated_at: 2026-04-15T07:58:50.035Z
+      updated_at: 2026-04-15T08:16:54.625Z
     lifecycle_state: integrating
     resolved_base_branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
     task_ref: "@01KNXYJ4YKHSY076Q3CQ42C6CP"
@@ -50395,18 +50395,23 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-14T19:18:44.805Z
-      last_reconciled_at: 2026-04-15T07:58:50.035Z
+      last_reconciled_at: 2026-04-15T08:16:54.625Z
       created_at: 2026-04-14T19:18:22.812Z
-      updated_at: 2026-04-15T07:58:50.035Z
+      updated_at: 2026-04-15T08:16:54.625Z
     workspace_id: dispatch-workspace-01KNXYJ4YKHSY076Q3CQ42C6CP
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 4c30c4d5047b485b566eef3ae492e25338b141cb
+        last_seen_at: 2026-04-15T08:16:54.625Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-derivable-default-module-01knxyj4-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-derivable-default-module/01knxyj4
-        head: f205808d2cf1f58d18f7fdf45435996b4092d52a
-        last_seen_at: 2026-04-14T19:18:22.812Z
+        head: 4c30c4d5047b485b566eef3ae492e25338b141cb
+        last_seen_at: 2026-04-15T08:16:54.625Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-derivable-default-module-01knxyj4
   - active_role: null
     base_branch_point: f205808d2cf1f58d18f7fdf45435996b4092d52a
