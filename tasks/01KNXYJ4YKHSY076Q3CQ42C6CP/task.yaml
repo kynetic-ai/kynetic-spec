@@ -59,7 +59,7 @@ description: |
 spec_ref: "@derivable-default-module"
 plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on: []
 context: []
@@ -316,6 +316,13 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-15T08:18:07.094Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+    command: review-verdict-needs-work
+    timestamp: 2026-04-15T08:35:33.669Z
 prior_status: null
 created_at: 2026-04-11T09:39:25.779Z
 started_at: 2026-04-14T19:19:04.879Z

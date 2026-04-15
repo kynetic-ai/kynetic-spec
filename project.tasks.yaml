@@ -26172,7 +26172,7 @@
   type: task
   spec_ref: "@derivable-default-module"
   plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   priority: 2
@@ -26181,7 +26181,7 @@
     - modules
     - plans
   review_ref: "@01KP83G1KHSJ451JHTCY91YN1P"
-  notes_count: 4
+  notes_count: 5
   todos_count: 0
   created_at: 2026-04-11T09:39:25.779Z
   started_at: 2026-04-14T19:19:04.879Z

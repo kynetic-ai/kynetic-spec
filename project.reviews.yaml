@@ -142267,9 +142267,25 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-15T08:35:20.159Z
+      - _ulid: 01KP84G0VM74RH7C17RN7MHM03
+        actor: codex@openai
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-15T08:35:31.828Z
+      - _ulid: 01KP84G0VNHY6KFAHS2YW0T9BW
+        actor: codex@openai
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-15T08:35:31.829Z
     examined_commit: 4c30c4d5047b485b566eef3ae492e25338b141cb
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -142350,9 +142366,16 @@ reviews:
               requirements, test quality, integration, and AC coverage."
             created_at: 2026-04-15T08:34:59.783Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai
+        role: reviewer
+        created_at: 2026-04-15T08:35:31.828Z
     created_at: 2026-04-15T08:18:04.017Z
-    updated_at: 2026-04-15T08:35:19.020Z
+    updated_at: 2026-04-15T08:35:31.829Z
     notes: []
   - _ulid: 01KP83KVZBC40W7C77XQ2DWG2R
     slugs: []
