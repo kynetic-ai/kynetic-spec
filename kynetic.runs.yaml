@@ -26418,7 +26418,7 @@ runs:
     completed_at: 2026-04-15T19:15:30.596Z
   - _ulid: 01KP9DVS6ZDXPQE0RDZARXPQBW
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -26447,7 +26447,16 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-15T20:39:28.442Z
-        completed_at: 2026-04-15T20:39:28.442Z
+        completed_at: 2026-04-15T20:39:29.451Z
+        notes: "Improvement proposal: add an upgrade-command regression test for the case where
+          kspec-agents.md exists but is not a writable file while the stored hash still matches. The
+          command should treat that artifact as invalid, attempt regeneration, and fail the step if
+          rewrite is impossible. Scope: small, contained to upgrade step 3 plus one integration
+          test."
+      - status: completed
+        step_index: 4
+        started_at: 2026-04-15T20:39:29.451Z
+        completed_at: 2026-04-15T20:39:29.451Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-15T20:38:28.831Z
