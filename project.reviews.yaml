@@ -144700,7 +144700,19 @@ reviews:
     slugs: []
     title: Review @01KNXYJ4YKHSY076Q3CQ42C6CP (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation fails on this snapshot with pre-existing repository-wide issues outside the
+          touched files, including .kspec/modules/meta.yaml schema error and legacy
+          completeness/alignment warnings.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-15T10:51:52.846Z
+        completed_at: 2026-04-15T10:51:52.846Z
     events:
       - _ulid: 01KP8BPVG22WCQ47S7SRG9ECRA
         actor: Jacob Chapel
@@ -144729,6 +144741,13 @@ reviews:
           kind: nit
           thread_ulid: 01KP8C9KGKW6C02BHZ7PQWFJSN
         timestamp: 2026-04-15T10:51:51.120Z
+      - _ulid: 01KP8C9Q2VQKC6GAJME06D94F8
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-15T10:51:53.819Z
     examined_commit: c93addbafe013d03742d8057fcead5ad084bbb0a
     external_links: []
     lifecycle_state: open
@@ -144781,5 +144800,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-15T10:41:35.747Z
-    updated_at: 2026-04-15T10:51:50.164Z
+    updated_at: 2026-04-15T10:51:52.846Z
     notes: []
