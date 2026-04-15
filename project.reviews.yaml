@@ -142199,6 +142199,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-15T08:18:35.004Z
+      - _ulid: 01KP84ER4FSG9NHZS6JTVTZBXG
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP84EQ62ZM5979GAG1TX8W66
+        timestamp: 2026-04-15T08:34:50.127Z
     examined_commit: 4c30c4d5047b485b566eef3ae492e25338b141cb
     external_links: []
     lifecycle_state: open
@@ -142208,10 +142215,29 @@ reviews:
       content_hash: ""
       ref: "@01KNXYJ4YKHSY076Q3CQ42C6CP"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KP84EQ62ZM5979GAG1TX8W66
+        anchor:
+          type: code
+          commit: 4c30c4d5047b485b566eef3ae492e25338b141cb
+          line_end: 220
+          line_start: 202
+          path: tests/derivable-default-module.test.ts
+          side: head
+        entries:
+          - _ulid: 01KP84EQ62MN06WS1HPENZTFJ2
+            author: Jacob Chapel
+            body: 'The slug-edit path still behaves like alias addition, not slug replacement. After `init` and
+              `item set @main --slug custom-module`, `item get @custom-module --json` still reports
+              `"ref": "@main"`, and `item list --type module --json` still exposes the module as
+              `@main`. The task requires subsequent derive flows to follow the current slug after a
+              user edits it, but this implementation leaves `main` as the canonical ref and the new
+              test locks that behavior in.'
+            created_at: 2026-04-15T08:34:49.154Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-15T08:18:04.017Z
-    updated_at: 2026-04-15T08:18:33.962Z
+    updated_at: 2026-04-15T08:34:49.154Z
     notes: []
   - _ulid: 01KP83KVZBC40W7C77XQ2DWG2R
     slugs: []
