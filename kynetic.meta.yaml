@@ -14285,6 +14285,24 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-15T08:35:13.562Z
+  - _ulid: 01KP85GTD4VFBS8D9WAHRA0EZ7
+    type: friction
+    content: kspec review get shows truncated thread bodies in human-readable output. Agents must use
+      --json to read full blocker descriptions, then mentally parse the JSON. A --verbose flag or
+      automatic full-body display for blocker threads would reduce friction in fix cycles.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-15T08:53:26.564Z
+  - _ulid: 01KP85GTMKYB026CB3TF1GZFF6
+    type: success
+    content: "Fix cycle 4 on @task-complete-gitignore was clean: single blocker, single focused commit,
+      full test suite green. Reading the trait description carefully (it explicitly covers
+      managed-block writes) gave the right design immediately."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-15T08:53:26.803Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
