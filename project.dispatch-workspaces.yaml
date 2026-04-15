@@ -52265,7 +52265,7 @@ workspaces:
         head: 35e8acf2da1bea09aec4e82a607e00493b3ca4ac
         last_seen_at: 2026-04-15T23:41:20.475Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-upgrade-command-01knxyj5
-  - active_role: null
+  - active_role: worker
     base_branch_point: cd2c71e9466177bb37b9ab7f220d48722715539f
     bootstrap:
       status: succeeded
@@ -52556,7 +52556,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-15T23:57:02.585Z
+      updated_at: 2026-04-15T23:57:23.812Z
     integration:
       status: pending
       detail: null
@@ -52565,16 +52565,16 @@ workspaces:
       target_branch: dev
       target_commit: cd2c71e9466177bb37b9ab7f220d48722715539f
       updated_at: 2026-04-15T23:57:02.585Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KP9S5KAZGRSRVJWSJ1FXY6RM"
     task_slug: task-fix-cli-agent-session-store-eacces
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-04-15T23:57:02.585Z
+      last_active_at: 2026-04-15T23:57:23.812Z
+      last_reconciled_at: 2026-04-15T23:57:23.812Z
       created_at: 2026-04-15T23:57:02.585Z
-      updated_at: 2026-04-15T23:57:22.218Z
+      updated_at: 2026-04-15T23:57:23.812Z
     workspace_id: dispatch-workspace-01KP9S5KAZGRSRVJWSJ1FXY6RM
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
