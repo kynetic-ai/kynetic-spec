@@ -14592,6 +14592,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-15T22:53:49.879Z
+  - _ulid: 01KP9NKM7KAEB1P8733R1A5HYD
+    type: friction
+    content: Composed commands can drift from canonical command behavior when they reimplement a step
+      instead of sharing a library path or parity contract. In this session, upgrade step 3 silently
+      tolerated template-loading failures that the canonical agents generator treats as fatal, which
+      surfaced only after repeated review cycles.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-15T22:53:50.195Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
