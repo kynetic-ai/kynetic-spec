@@ -141810,6 +141810,17 @@ reviews:
         runner: npm
         created_at: 2026-04-15T08:08:31.832Z
         completed_at: 2026-04-15T08:08:31.832Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Fails in this snapshot with a repo-wide schema error in .kspec/modules/meta.yaml
+          (modules[0].traits[0] expected string, received object) plus unrelated
+          alignment/completeness warnings; not obviously attributable to this task.
+        name: kspec validate
+        required: false
+        created_at: 2026-04-15T08:08:35.266Z
+        completed_at: 2026-04-15T08:08:35.266Z
     events:
       - _ulid: 01KP82G0RYQ0HZ7AHMHE93DXYZ
         actor: Jacob Chapel
@@ -141845,6 +141856,13 @@ reviews:
           status: pass
           name: targeted gitignore tests
         timestamp: 2026-04-15T08:08:32.869Z
+      - _ulid: 01KP82YQ9ED2VP5J0WET1ASGBP
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-15T08:08:36.399Z
     examined_commit: d670d0dd73f99dd965a440ff538f06ca42f84f02
     external_links: []
     lifecycle_state: open
@@ -141895,5 +141913,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-15T08:00:34.590Z
-    updated_at: 2026-04-15T08:08:31.832Z
+    updated_at: 2026-04-15T08:08:35.266Z
     notes: []
