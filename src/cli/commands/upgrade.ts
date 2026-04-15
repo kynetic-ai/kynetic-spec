@@ -633,6 +633,7 @@ async function runRerenderSkillsStep(
 
   let rendered = 0;
   let skipped = 0;
+  const renderErrors: string[] = [];
 
   for (const { skill, platform } of skillsToRender) {
     const renderer = getRenderer(platform)!;
@@ -645,8 +646,10 @@ async function runRerenderSkillsStep(
       } else {
         skipped++;
       }
-    } catch {
-      skipped++;
+    } catch (err) {
+      renderErrors.push(
+        `${skill.id}/${platform}: ${err instanceof Error ? err.message : String(err)}`,
+      );
     }
   }
 
@@ -708,6 +711,16 @@ async function runRerenderSkillsStep(
     } catch {
       // Output directory doesn't exist, nothing to clean
     }
+  }
+
+  // If any renderer threw, the step failed — report the errors.
+  if (renderErrors.length > 0) {
+    return {
+      name: "Re-render skills",
+      status: "failed",
+      message: `${renderErrors.length} skill(s) failed to render: ${renderErrors.join("; ")}`,
+      details: { rendered, skipped, removed, renderErrors },
+    };
   }
 
   const totalChanges = rendered + removed;
@@ -851,7 +864,6 @@ async function runGitignoreRepairStep(
     ensureKspecGitignore,
     updateManagedBlock,
     buildKspecGitignoreEntries,
-    parseManagedBlock,
   } = await import("../../parser/gitignore.js");
   const { loadProjectConfig } = await import("../../parser/config.js");
 
@@ -860,23 +872,13 @@ async function runGitignoreRepairStep(
   const worktreeRoot = projectConfig.dispatch.worktree_root || undefined;
 
   if (dryRun) {
-    // Preview what would change
+    // Preview what would change — upgrade always forces the managed block
     const gitignorePath = path.join(projectDir, ".gitignore");
     let gitignoreContent = "";
-    let fileExists = false;
     try {
       gitignoreContent = await fs.readFile(gitignorePath, "utf-8");
-      fileExists = true;
     } catch {
       // File doesn't exist
-    }
-
-    if (fileExists && parseManagedBlock(gitignoreContent).block === null) {
-      return {
-        name: "Restore gitignore entries",
-        status: "skipped",
-        message: "exists without managed block (use --force to add)",
-      };
     }
 
     const entries = buildKspecGitignoreEntries(shadowDir, worktreeRoot);
@@ -893,16 +895,19 @@ async function runGitignoreRepairStep(
       name: "Restore gitignore entries",
       status: "done",
       message: dryResult.result.blockCreated
-        ? `would create .gitignore with: ${dryResult.result.entriesAdded.join(", ")}`
+        ? `would create managed block with: ${dryResult.result.entriesAdded.join(", ")}`
         : `would add: ${dryResult.result.entriesAdded.join(", ")}`,
       details: { entriesAdded: dryResult.result.entriesAdded },
     };
   }
 
-  // Actually repair
+  // Actually repair — upgrade always forces the managed block so that
+  // existing .gitignore files without the kspec managed block still get
+  // the required entries appended.
   const result = await ensureKspecGitignore(projectDir, {
     shadowDir,
     worktreeRoot,
+    force: true,
   });
 
   if (!result.changed) {

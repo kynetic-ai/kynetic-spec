@@ -316,6 +316,28 @@ describe("kspec upgrade", () => {
       expect(["done", "skipped"]).toContain(skillStep!.status);
     });
 
+    // AC: @single-command-version-upgrade ac-rerenders-skills
+    it("reports failure when skill renderer cannot write output", async () => {
+      await initProject(tempDir);
+      await writeLastKnownVersion(tempDir, "0.8.0");
+
+      // Replace .agents/skills directory with a regular file so the
+      // renderer has nowhere to write, causing it to throw.
+      const skillsDir = path.join(tempDir, ".agents", "skills");
+      await fs.rm(skillsDir, { recursive: true, force: true });
+      await fs.writeFile(skillsDir, "not a directory\n", "utf-8");
+
+      const result = kspec("upgrade --json", tempDir);
+      const parsed = JSON.parse(result.stdout);
+
+      const skillStep = parsed.steps.find(
+        (s: { name: string }) => s.name === "Re-render skills",
+      );
+      expect(skillStep).toBeDefined();
+      expect(skillStep.status).toBe("failed");
+      expect(result.exitCode).not.toBe(0);
+    });
+
     // AC: @single-command-version-upgrade ac-regenerates-agents-file
     it("regenerates agent instructions file as part of upgrade", async () => {
       await initProject(tempDir);
@@ -353,6 +375,60 @@ describe("kspec upgrade", () => {
       expect(gitignoreStep).toBeDefined();
       // Should restore the entries by creating the file
       expect(gitignoreStep!.status).toBe("done");
+    });
+
+    // AC: @single-command-version-upgrade ac-restores-gitignore-entries
+    it("appends kspec entries to existing .gitignore without managed block", async () => {
+      await initProject(tempDir);
+      await writeLastKnownVersion(tempDir, "0.8.0");
+
+      // Replace .gitignore with a plain file that has no managed block
+      const gitignorePath = path.join(tempDir, ".gitignore");
+      await fs.writeFile(gitignorePath, "node_modules\ncoverage\n", "utf-8");
+
+      const result = kspecJson<{
+        success: boolean;
+        steps: Array<{ name: string; status: string; details?: Record<string, unknown> }>;
+      }>("upgrade", tempDir);
+
+      const gitignoreStep = result.steps.find(
+        (s) => s.name === "Restore gitignore entries",
+      );
+      expect(gitignoreStep).toBeDefined();
+      expect(gitignoreStep!.status).toBe("done");
+
+      // Verify the file now contains the kspec managed block
+      const content = await fs.readFile(gitignorePath, "utf-8");
+      expect(content).toContain("# >>> kspec managed");
+      expect(content).toContain(".kspec/");
+      // Original content should be preserved
+      expect(content).toContain("node_modules");
+      expect(content).toContain("coverage");
+    });
+
+    // AC: @single-command-version-upgrade ac-restores-gitignore-entries
+    it("dry-run reports entries for existing .gitignore without managed block", async () => {
+      await initProject(tempDir);
+      await writeLastKnownVersion(tempDir, "0.8.0");
+
+      // Replace .gitignore with a plain file that has no managed block
+      const gitignorePath = path.join(tempDir, ".gitignore");
+      await fs.writeFile(gitignorePath, "node_modules\ncoverage\n", "utf-8");
+
+      const result = kspecJson<{
+        steps: Array<{ name: string; status: string; message: string }>;
+      }>("upgrade --dry-run", tempDir);
+
+      const gitignoreStep = result.steps.find(
+        (s) => s.name === "Restore gitignore entries",
+      );
+      expect(gitignoreStep).toBeDefined();
+      expect(gitignoreStep!.status).toBe("done");
+      expect(gitignoreStep!.message).toContain("would create managed block");
+
+      // Verify no modifications in dry-run mode
+      const content = await fs.readFile(gitignorePath, "utf-8");
+      expect(content).toBe("node_modules\ncoverage\n");
     });
 
     // AC: @single-command-version-upgrade ac-reports-manual-follow-ups
