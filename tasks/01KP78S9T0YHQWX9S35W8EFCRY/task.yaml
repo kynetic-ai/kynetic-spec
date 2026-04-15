@@ -135,5 +135,14 @@ tags:
   - bug
   - daemon
 vcs_refs: []
+history:
+  - author: "@claude"
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-04-15T00:31:44.176Z
 created_at: 2026-04-15T00:31:15.776Z
 todos: []
+automation: eligible
