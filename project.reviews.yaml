@@ -147867,6 +147867,13 @@ reviews:
           kind: nit
           thread_ulid: 01KP9Q85TR3EJK662PQ10YZZDQ
         timestamp: 2026-04-15T23:22:33.088Z
+      - _ulid: 01KP9Q89MTAS83WW9T2KB8312W
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP9Q88MK95359PPQGRA4CH58
+        timestamp: 2026-04-15T23:22:36.058Z
     examined_commit: 4a024fed7210a6d4e75ec6705cba591d27320347
     external_links: []
     lifecycle_state: open
@@ -147902,7 +147909,25 @@ reviews:
               compared against existing setup code).'
             created_at: 2026-04-15T23:22:32.153Z
         kind: nit
+      - _ulid: 01KP9Q88MK95359PPQGRA4CH58
+        anchor:
+          type: code
+          commit: 4a024fed7210a6d4e75ec6705cba591d27320347
+          line_end: 542
+          line_start: 536
+          path: src/cli/commands/upgrade.ts
+          side: head
+        entries:
+          - _ulid: 01KP9Q88MKZKJVZK100G6AAGME
+            author: Jacob Chapel
+            body: "This early return makes  trust the manifest's  marker over the actual task storage shape. I
+              reproduced a hand-edited/partial-upgrade state with  still present but  containing a
+              monolithic task with inline , then ran : the command reported  as skipped and left the
+              monolithic YAML unchanged. That violates the upgrade contract for unknown/hand-edited
+              states to safely run the full pipeline and leaves legacy task storage unmigrated."
+            created_at: 2026-04-15T23:22:35.028Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-15T23:08:58.065Z
-    updated_at: 2026-04-15T23:22:32.153Z
+    updated_at: 2026-04-15T23:22:35.028Z
     notes: []
