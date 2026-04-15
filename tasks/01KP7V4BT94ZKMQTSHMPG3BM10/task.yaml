@@ -119,8 +119,11 @@ description: >-
 spec_ref: "@dispatch-runtime-bootstrap-contract"
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged into dev after approved review. Verified summarizeOutput now preserves the
+  tail of bootstrap output, added regression coverage for end-of-stream sentinel capture, and full
+  npm test passed on the reviewed snapshot (7764 passed).
 depends_on: []
 context: []
 priority: 1
@@ -181,8 +184,24 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-15T06:53:59.000Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged into dev after approved review. Verified summarizeOutput now preserves the tail of
+          bootstrap output, added regression coverage for end-of-stream sentinel capture, and full
+          npm test passed on the reviewed snapshot (7764 passed).
+        previous: null
+      completed_at:
+        new: 2026-04-15T07:04:58.362Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-15T07:04:58.371Z
 created_at: 2026-04-15T05:51:52.649Z
 started_at: 2026-04-15T06:37:31.321Z
 submitted_at: 2026-04-15T06:50:09.369Z
+completed_at: 2026-04-15T07:04:58.362Z
 todos: []
 automation: eligible
