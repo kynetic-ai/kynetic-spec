@@ -14265,6 +14265,23 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-15T08:34:41.562Z
+  - _ulid: 01KP84FERHJD5M9EWGWAHF2P9S
+    type: friction
+    content: "Review comment capture is too shell-sensitive: a malformed kspec review comment invocation
+      can create truncated duplicate threads instead of failing cleanly, which adds cleanup work and
+      noise to the review record."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-15T08:35:13.298Z
+  - _ulid: 01KP84FF0T29WJAP9VFG3MSB1K
+    type: success
+    content: Behavior-first review with isolated CLI reproductions in a temp project caught real
+      plan-import regressions that the passing automated tests did not cover.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-15T08:35:13.562Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
