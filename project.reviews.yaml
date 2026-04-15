@@ -146399,6 +146399,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP9C065JWQEGVW2GCYGP1AZ7
         timestamp: 2026-04-15T20:05:57.317Z
+      - _ulid: 01KP9C0BDMX1A12N8RSTV89W1C
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP9C09ZQ98VY71CYREGDZM22
+        timestamp: 2026-04-15T20:06:01.396Z
     examined_commit: 588c019f60bea601d8e7cb92e4416b539a78b924
     external_links: []
     lifecycle_state: open
@@ -146427,7 +146434,25 @@ reviews:
               shadow branch, not just one root-level file.
             created_at: 2026-04-15T20:05:56.018Z
         kind: blocker
+      - _ulid: 01KP9C09ZQ98VY71CYREGDZM22
+        anchor:
+          type: code
+          commit: 588c019f60bea601d8e7cb92e4416b539a78b924
+          line_end: 1369
+          line_start: 1367
+          path: src/cli/commands/upgrade.ts
+          side: head
+        entries:
+          - _ulid: 01KP9C09ZQEECF1WZ7H4DK28HS
+            author: Jacob Chapel
+            body: "Runtime step failures exit with EXIT_CODES.ERROR here, but @trait-semantic-exit-codes ac-4
+              requires the runtime-failure code (3). I reproduced this by forcing agent-instruction
+              regeneration to fail and running 'node dist/cli/index.js upgrade --json': the command
+              returned status 1, so callers cannot distinguish upgrade execution failures from
+              generic errors."
+            created_at: 2026-04-15T20:05:59.928Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-15T19:59:21.920Z
-    updated_at: 2026-04-15T20:05:56.018Z
+    updated_at: 2026-04-15T20:05:59.928Z
     notes: []
