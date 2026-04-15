@@ -75,6 +75,7 @@ const TEST_INPUT_PATHS = [
   "vitest.config.ts",
   "tsconfig.json",
   "scripts/test.cjs",
+  "scripts/test-progress-reporter.cjs",
   "scripts/dependency-health.cjs",
 ];
 
@@ -473,16 +474,23 @@ function runPostTestHooks(exitCode) {
 }
 
 /**
- * Run vitest and return exit code.
- * In verbose mode: streams to terminal. In condensed mode: streams to log file.
- * Uses async spawn to avoid buffering the full output in memory.
+ * Prefix used by test-progress-reporter.cjs to mark per-file progress lines.
+ * The parent strips the prefix before forwarding to the terminal.
  */
+const PROGRESS_PREFIX = "KSPEC_PROGRESS:";
+
+/**
+ * Run vitest and return exit code.
+ * In verbose mode: streams to terminal and log file.
+ * In condensed mode: streams to log file only, except progress lines (prefixed
+ * with KSPEC_PROGRESS:) which are forwarded to the terminal for liveness.
+ */
+
 function runVitest(cmd, { verbose, logOutPath }) {
   return new Promise((resolve) => {
     const vitestEnv = { ...process.env, SKIP_BUILD: "1" };
     const logStream = fs.createWriteStream(logOutPath);
 
-    // Always pipe stdout/stderr to log file; in verbose mode also tee to terminal
     const child = spawn(cmd[0], cmd.slice(1), {
       cwd: projectRoot,
       stdio: ["inherit", "pipe", "pipe"],
@@ -490,11 +498,41 @@ function runVitest(cmd, { verbose, logOutPath }) {
     });
 
     child.stdout.pipe(logStream);
-    child.stderr.pipe(logStream);
 
     if (verbose) {
       child.stdout.pipe(process.stdout);
+      child.stderr.pipe(logStream);
       child.stderr.pipe(process.stderr);
+    } else {
+      // In non-verbose mode, filter stderr line-by-line:
+      // - Lines with KSPEC_PROGRESS: prefix → strip prefix, forward to terminal only
+      // - All other lines → write to log file
+      let stderrBuf = "";
+      child.stderr.on("data", (chunk) => {
+        stderrBuf += chunk.toString();
+        let nlIdx;
+        while ((nlIdx = stderrBuf.indexOf("\n")) !== -1) {
+          const line = stderrBuf.slice(0, nlIdx);
+          stderrBuf = stderrBuf.slice(nlIdx + 1);
+
+          if (line.startsWith(PROGRESS_PREFIX)) {
+            const display = line.slice(PROGRESS_PREFIX.length);
+            process.stderr.write(`${display}\n`);
+          } else {
+            logStream.write(`${line}\n`);
+          }
+        }
+      });
+      child.stderr.on("end", () => {
+        if (stderrBuf) {
+          if (stderrBuf.startsWith(PROGRESS_PREFIX)) {
+            const display = stderrBuf.slice(PROGRESS_PREFIX.length);
+            process.stderr.write(`${display}\n`);
+          } else {
+            logStream.write(`${stderrBuf}\n`);
+          }
+        }
+      });
     }
 
     child.on("close", (code) => {
@@ -567,10 +605,13 @@ async function main() {
   // ── Run vitest ──
   // JSON reporter writes structured data to file; verbose reporter goes to stdout
   // (only JSON supports --outputFile, so we capture stdout ourselves for the log)
+  // In non-verbose mode, add the progress reporter for per-file completion output
+  const progressReporter = path.join(__dirname, "test-progress-reporter.cjs");
   const reporterArgs = [
     "--reporter=json",
     `--outputFile.json=${jsonOutPath}`,
     "--reporter=verbose",
+    ...(!verbose && process.env.KSPEC_TEST_PROGRESS !== "0" ? [`--reporter=${progressReporter}`] : []),
   ];
 
   const cmd = ["npx", "vitest", "run", ...reporterArgs, ...vitestArgs];

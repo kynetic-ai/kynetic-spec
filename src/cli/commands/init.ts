@@ -7,6 +7,8 @@ import {
   initializeShadow,
   isGitRepo,
   checkConfigMismatch,
+  resolveProjectRoots,
+  buildLinkedWorktreeMessage,
 } from "../../parser/shadow.js";
 import { loadProjectConfig } from "../../parser/config.js";
 import { errors } from "../../strings/index.js";
@@ -152,7 +154,28 @@ export function registerInitCommand(program: Command): void {
 
         // Shadow branch mode (default for git repos)
         if (useShadow) {
-          const gitRoot = getGitRoot(targetDir);
+          // AC: @worktree-support ac-init-linked-wt-unchanged,
+          //     ac-init-main-wt-unchanged, ac-init-guidance-direction,
+          //     ac-init-guidance-path
+          //
+          // Resolve mainRoot and refuse to proceed when invoked from a
+          // linked git worktree. The 2026-04-11 incident proved that a
+          // lifecycle operation routed through a linked-worktree cwd
+          // silently mutates the main working tree's shadow via git's
+          // shared worktree admin (find_worktree_by_suffix). Hard-error
+          // early with guidance pointing at the main working tree path.
+          const projectRoots = resolveProjectRoots(targetDir);
+          if (projectRoots?.isWorktree) {
+            const { message, suggestion } = buildLinkedWorktreeMessage(
+              "kspec init",
+              projectRoots.mainRoot,
+            );
+            error(message);
+            console.log(`  ${suggestion}`);
+            process.exit(EXIT_CODES.ERROR);
+          }
+
+          const gitRoot = projectRoots?.mainRoot ?? getGitRoot(targetDir);
 
           if (!gitRoot) {
             if (await isGitRepo(targetDir)) {

@@ -201,16 +201,20 @@ export async function createOrphanBranchFallback(
     await fs.rm(tmpDir, { recursive: true, force: true });
   }
 
-  // 5. Attach worktree using standard git worktree add (no --orphan flag)
-  await runGitAsync(projectRoot, ["worktree", "add", directoryName, branchName]);
+  // 5. Attach worktree using standard git worktree add (no --orphan flag).
+  //    AC: @worktree-support ac-shadow-ops-scoped-to-main — always pass the
+  //    absolute worktree path so git cannot match a bare suffix across the
+  //    shared worktree admin of linked worktrees (find_worktree_by_suffix).
+  const worktreeDir = path.join(projectRoot, directoryName);
+  await runGitAsync(projectRoot, ["worktree", "add", worktreeDir, branchName]);
 
   // 6. Remove all tracked files from the worktree since the fallback
   //    created an empty commit but `git worktree add` may still populate
   //    the index from the branch. Clear anything that appeared.
   try {
-    const { stdout } = await runGitAsync(path.join(projectRoot, directoryName), ["ls-files"]);
+    const { stdout } = await runGitAsync(worktreeDir, ["ls-files"]);
     if (stdout.trim()) {
-      await runGitAsync(path.join(projectRoot, directoryName), ["rm", "-rf", "."]);
+      await runGitAsync(worktreeDir, ["rm", "-rf", "."]);
     }
   } catch {
     // Nothing to remove — expected for an empty commit
@@ -263,7 +267,8 @@ export class ShadowError extends Error {
       | "WORKTREE_DISCONNECTED"
       | "DIRECTORY_MISSING"
       | "GIT_ERROR"
-      | "RUNNING_FROM_SHADOW",
+      | "RUNNING_FROM_SHADOW"
+      | "LINKED_WORKTREE_NOT_SUPPORTED",
     public suggestion: string,
   ) {
     super(message);
@@ -473,6 +478,56 @@ export function resolveProjectRoots(dir: string): ProjectRoots | null {
     worktreeRoot,
     isWorktree: true,
   };
+}
+
+/**
+ * Build the instructional message shown when a shadow-lifecycle command is
+ * invoked from a linked git worktree. Shared between the function-level
+ * guard and the command-level entry checks in init/setup so the wording
+ * matches everywhere the user can hit this error.
+ *
+ * AC: @worktree-support ac-init-guidance-direction, ac-init-guidance-path,
+ *     ac-setup-guidance-direction, ac-setup-guidance-path
+ */
+export function buildLinkedWorktreeMessage(
+  command: string,
+  mainRoot: string,
+): { message: string; suggestion: string } {
+  const message = `${command} must be run from the repo's main working tree, not a linked worktree. Main working tree: ${mainRoot}`;
+  const suggestion = `cd ${mainRoot} && ${command}`;
+  return { message, suggestion };
+}
+
+/**
+ * Guard that asserts `projectRoot` is the main working tree of its git repo,
+ * not a linked worktree created via `git worktree add`. Throws ShadowError
+ * with code LINKED_WORKTREE_NOT_SUPPORTED if the check fails.
+ *
+ * This is defense-in-depth: command-layer callers should resolve mainRoot
+ * before calling into shadow-lifecycle functions, but this guard catches
+ * any future caller that forgets to do so. Passing the linked worktree root
+ * to initializeShadow/repairShadow would otherwise allow git's shared
+ * worktree admin (find_worktree_by_suffix) to silently mutate the main
+ * working tree's shadow directory — the 2026-04-11 incident vector.
+ *
+ * AC: @worktree-support ac-shadow-ops-scoped-to-main
+ *
+ * @param projectRoot Path that SHOULD be the main working tree root.
+ * @throws ShadowError when `projectRoot` is a linked worktree.
+ */
+export function assertMainWorkingTree(projectRoot: string): void {
+  const roots = resolveProjectRoots(projectRoot);
+  if (!roots) {
+    // Not a git repo — let downstream code surface the real error.
+    return;
+  }
+  if (roots.isWorktree) {
+    const { message, suggestion } = buildLinkedWorktreeMessage(
+      "Shadow worktree lifecycle operations",
+      roots.mainRoot,
+    );
+    throw new ShadowError(message, "LINKED_WORKTREE_NOT_SUPPORTED", suggestion);
+  }
 }
 
 /**
@@ -2691,6 +2746,21 @@ export async function initializeShadow(
     return result;
   }
 
+  // AC: @worktree-support ac-shadow-ops-scoped-to-main — defense-in-depth guard.
+  // Refuse to operate on shadow state when projectRoot is a linked worktree.
+  // Command-layer callers should resolve mainRoot before delegating; this
+  // guard ensures that a missed resolution surfaces loudly instead of
+  // silently mutating the main working tree's shadow via find_worktree_by_suffix.
+  try {
+    assertMainWorkingTree(projectRoot);
+  } catch (err) {
+    if (err instanceof ShadowError) {
+      result.error = err.message;
+      return result;
+    }
+    throw err;
+  }
+
   // AC: ac-1 ac-2 — use configured branch/directory or defaults
   const branchName = getBranchName(options.shadow);
   const directoryName = getDirectoryName(options.shadow);
@@ -2772,9 +2842,12 @@ export async function initializeShadow(
         stashedWorktreeDir = await stashBrokenWorktreeDir(worktreeDir);
       }
 
-      // Remove stale worktree reference if any
+      // Remove stale worktree reference if any.
+      // AC: @worktree-support ac-shadow-ops-scoped-to-main — pass the
+      // absolute worktreeDir so git cannot match a bare suffix across
+      // the shared worktree admin of linked worktrees.
       try {
-        await runGitAsync(projectRoot, ["worktree", "remove", directoryName, "--force"]);
+        await runGitAsync(projectRoot, ["worktree", "remove", worktreeDir, "--force"]);
       } catch {
         // Ignore - worktree may not exist in git's list
       }
@@ -2784,7 +2857,7 @@ export async function initializeShadow(
         // Fetch with refspec to create a local branch ref (required in shallow clones
         // where plain `git fetch origin kspec-meta` only populates FETCH_HEAD)
         await runGitAsync(projectRoot, ["fetch", remoteName, `${branchName}:${branchName}`]);
-        await runGitAsync(projectRoot, ["worktree", "add", directoryName, branchName]);
+        await runGitAsync(projectRoot, ["worktree", "add", worktreeDir, branchName]);
         // Set up tracking for the branch
         // Use git config directly — `git branch --set-upstream-to` requires
         // the remote tracking ref to exist locally, which may not be the case
@@ -2807,15 +2880,16 @@ export async function initializeShadow(
             "--orphan",
             "-b",
             branchName,
-            directoryName,
+            worktreeDir,
           ]);
         } else {
           await createOrphanBranchFallback(projectRoot, branchName, directoryName);
         }
         result.branchCreated = true;
       } else {
-        // Attach to existing local branch
-        await runGitAsync(projectRoot, ["worktree", "add", directoryName, branchName]);
+        // Attach to existing local branch.
+        // AC: @worktree-support ac-shadow-ops-scoped-to-main — absolute path.
+        await runGitAsync(projectRoot, ["worktree", "add", worktreeDir, branchName]);
       }
 
       result.worktreeCreated = true;
@@ -2914,6 +2988,27 @@ export async function repairShadow(
   projectRoot: string,
   options?: ShadowOptions,
 ): Promise<ShadowInitResult> {
+  // AC: @worktree-support ac-shadow-ops-scoped-to-main — defense-in-depth.
+  // Refuse to repair shadow state when projectRoot is a linked worktree.
+  try {
+    assertMainWorkingTree(projectRoot);
+  } catch (err) {
+    if (err instanceof ShadowError) {
+      return {
+        success: false,
+        branchCreated: false,
+        worktreeCreated: false,
+        gitignoreUpdated: false,
+        initialCommit: false,
+        alreadyExists: false,
+        createdFromRemote: false,
+        pushedToRemote: false,
+        error: err.message,
+      };
+    }
+    throw err;
+  }
+
   const branchName = getBranchName(options);
   const directoryName = getDirectoryName(options);
   const status = await getShadowStatus(projectRoot, options);
@@ -2953,9 +3048,10 @@ export async function repairShadow(
   let stashedWorktreeDir: string | null = null;
 
   try {
-    // Remove stale worktree reference
+    // Remove stale worktree reference.
+    // AC: @worktree-support ac-shadow-ops-scoped-to-main — pass absolute path.
     try {
-      await runGitAsync(projectRoot, ["worktree", "remove", directoryName, "--force"]);
+      await runGitAsync(projectRoot, ["worktree", "remove", worktreeDir, "--force"]);
     } catch {
       // Ignore - worktree may not be in git's list
     }
@@ -2974,8 +3070,9 @@ export async function repairShadow(
       await runGitAsync(projectRoot, ["fetch", remoteQueryTarget, `${branchName}:${branchName}`]);
     }
 
-    // Recreate worktree
-    await runGitAsync(projectRoot, ["worktree", "add", directoryName, branchName]);
+    // Recreate worktree.
+    // AC: @worktree-support ac-shadow-ops-scoped-to-main — absolute path.
+    await runGitAsync(projectRoot, ["worktree", "add", worktreeDir, branchName]);
 
     if (remoteHasShadow) {
       const tracking = await ensureRemoteTracking(worktreeDir, projectRoot, options);

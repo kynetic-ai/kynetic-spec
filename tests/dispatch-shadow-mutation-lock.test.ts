@@ -12,7 +12,7 @@ function runKspecAsync(
   return new Promise((resolve, reject) => {
     const child = spawn("/bin/sh", ["-c", `node ${CLI_PATH} ${args}`], {
       cwd,
-      env: { ...process.env, KSPEC_AUTHOR: "@test", ...env },
+      env: { ...process.env, KSPEC_AUTHOR: "@test", KSPEC_NO_DAEMON: "1", ...env },
     });
 
     let stdout = "";
