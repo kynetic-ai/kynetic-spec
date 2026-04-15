@@ -56,7 +56,7 @@ describe("kspec setup", () => {
     const result = spawnSync("node", [kspecBin, "setup", "--dry-run"], {
       cwd: testDir,
       encoding: "utf-8",
-      env: { ...process.env, CLAUDECODE: "1" },
+      env: { ...process.env, CLAUDECODE: "1", KSPEC_NO_DAEMON: "1" },
     });
 
     // Should succeed without prompting for worktree creation
@@ -95,6 +95,7 @@ describe("kspec setup", () => {
     const result = spawnSync("node", [kspecBin, "setup", "--auto-worktree", "--dry-run"], {
       cwd: testDir,
       encoding: "utf-8",
+      env: { ...process.env, KSPEC_NO_DAEMON: "1" },
     });
 
     // Should succeed and create worktree without prompting
@@ -134,6 +135,7 @@ describe("kspec setup", () => {
       cwd: testDir,
       encoding: "utf-8",
       input: "n\n", // Decline worktree creation
+      env: { ...process.env, KSPEC_NO_DAEMON: "1" },
     });
 
     // Should prompt with the expected message
@@ -167,6 +169,7 @@ describe("kspec setup", () => {
       const result = spawnSync("node", [kspecBin, "setup", "--auto-worktree", "--dry-run"], {
         cwd: cloneDir,
         encoding: "utf-8",
+        env: { ...process.env, KSPEC_NO_DAEMON: "1" },
       });
 
       expect(result.status).toBe(0);
@@ -193,6 +196,7 @@ describe("kspec setup without agent environment", () => {
       HOME: "/tmp/fake-home-no-claude", // Prevent ~/.claude fallback
       NODE_PATH: process.env.NODE_PATH || "",
       KSPEC_AUTHOR: "", // Explicitly unset so Configure author step runs
+      KSPEC_NO_DAEMON: "1", // Suppress implicit daemon auto-start in test subprocesses
     };
   }
 
