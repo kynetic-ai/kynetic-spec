@@ -147979,6 +147979,12 @@ reviews:
         payload:
           thread_ulid: 01KP9Q88MK95359PPQGRA4CH58
         timestamp: 2026-04-15T23:23:49.501Z
+      - _ulid: 01KP9QAM6KYTCJWQ42JXKYH998
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP9Q88MK95359PPQGRA4CH58
+        timestamp: 2026-04-15T23:23:52.403Z
     examined_commit: 4a024fed7210a6d4e75ec6705cba591d27320347
     external_links: []
     lifecycle_state: closed
@@ -148031,6 +148037,11 @@ reviews:
               monolithic YAML unchanged. That violates the upgrade contract for unknown/hand-edited
               states to safely run the full pipeline and leaves legacy task storage unmigrated."
             created_at: 2026-04-15T23:22:35.028Z
+          - _ulid: 01KP9QAK6E95BK2GCQS0F0CZYJ
+            author: Jacob Chapel
+            body: Superseded by the corrected blocker thread immediately below; this duplicate was created by a
+              shell-escaping error during review recording.
+            created_at: 2026-04-15T23:23:51.374Z
         kind: blocker
         resolved_at: 2026-04-15T23:23:48.502Z
         resolved_by: Jacob Chapel
@@ -148063,5 +148074,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T23:23:11.782Z
     created_at: 2026-04-15T23:08:58.065Z
-    updated_at: 2026-04-15T23:23:48.502Z
+    updated_at: 2026-04-15T23:23:51.374Z
     notes: []
