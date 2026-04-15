@@ -193,6 +193,7 @@ describe("kspec setup without agent environment", () => {
       HOME: "/tmp/fake-home-no-claude", // Prevent ~/.claude fallback
       NODE_PATH: process.env.NODE_PATH || "",
       KSPEC_AUTHOR: "", // Explicitly unset so Configure author step runs
+      KSPEC_NO_DAEMON: "1", // Suppress implicit daemon auto-start in test subprocesses
     };
   }
 

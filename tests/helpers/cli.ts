@@ -184,7 +184,9 @@ export function kspec(args: string, cwd: string, options: KspecOptions = {}): Ks
   // Give each CLI subprocess an isolated home/config root by default so global
   // plugin marketplace, daemon PID/port, and agent home-directory probes are
   // scoped to the test project instead of the parent Vitest process.
-  const defaultEnv: Record<string, string> = {};
+  const defaultEnv: Record<string, string> = {
+    KSPEC_NO_DAEMON: "1",
+  };
   const isolatedHomeRoot = cwd;
   try {
     if (statSync(isolatedHomeRoot).isDirectory()) {
