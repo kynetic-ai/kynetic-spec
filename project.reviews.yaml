@@ -141195,7 +141195,19 @@ reviews:
     slugs: []
     title: Review task-tests-suppress-cli-auto-start-daemon
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full npm test run increased 'pgrep -af dist/daemon/index.js | wc -l' from 3 to 8.
+          Remaining current-worktree daemon processes: /tmp/kspec-test-lMGeN7 and
+          /tmp/kspec-test-VSRfEc."
+        name: daemon leak count
+        required: true
+        runner: shell
+        created_at: 2026-04-15T06:48:19.203Z
+        completed_at: 2026-04-15T06:48:19.203Z
     events:
       - _ulid: 01KP7XQ82MF2NQXRP277219VTQ
         actor: Jacob Chapel
@@ -141210,6 +141222,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-15T06:37:23.339Z
+      - _ulid: 01KP7YBQXK61D2WQ30M1B5N336
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: daemon leak count
+        timestamp: 2026-04-15T06:48:20.147Z
     examined_commit: 2cb9bf5ee7800327a7978288ffc701e6fed60192
     external_links: []
     lifecycle_state: open
@@ -141222,5 +141241,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-15T06:37:08.564Z
-    updated_at: 2026-04-15T06:37:22.408Z
+    updated_at: 2026-04-15T06:48:19.203Z
     notes: []
