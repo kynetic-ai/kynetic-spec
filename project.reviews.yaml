@@ -141208,6 +141208,17 @@ reviews:
         runner: shell
         created_at: 2026-04-15T06:48:19.203Z
         completed_at: 2026-04-15T06:48:19.203Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed targeted run for tests/parser/daemon-config.test.ts, tests/setup.test.ts, and
+          tests/cli-no-daemon.test.ts: 18/18 suites, 40/40 tests."
+        name: targeted daemon/setup tests
+        required: true
+        runner: npm
+        created_at: 2026-04-15T06:48:24.691Z
+        completed_at: 2026-04-15T06:48:24.691Z
     events:
       - _ulid: 01KP7XQ82MF2NQXRP277219VTQ
         actor: Jacob Chapel
@@ -141236,6 +141247,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP7YBSNZC3KW6TSHSS6R2Q6S
         timestamp: 2026-04-15T06:48:22.924Z
+      - _ulid: 01KP7YBX94HN9FH1ZMCGSSZ1SM
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted daemon/setup tests
+        timestamp: 2026-04-15T06:48:25.636Z
     examined_commit: 2cb9bf5ee7800327a7978288ffc701e6fed60192
     external_links: []
     lifecycle_state: open
@@ -141266,5 +141284,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-15T06:37:08.564Z
-    updated_at: 2026-04-15T06:48:21.951Z
+    updated_at: 2026-04-15T06:48:24.691Z
     notes: []
