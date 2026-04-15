@@ -199,7 +199,8 @@ async function inferVersionFromProbes(
   }
 
   // Probe 5: Check for review-plan skill (added in 0.10)
-  const reviewPlanSkill = path.join(agentsSkillsDir, "kspec-review-plan.md");
+  // Skills are rendered as directories with SKILL.md inside
+  const reviewPlanSkill = path.join(agentsSkillsDir, "kspec-review-plan", "SKILL.md");
   if (existsSync(reviewPlanSkill)) {
     maxMinVersion = bumpIfHigher(maxMinVersion, "0.10.0");
   }
@@ -1201,23 +1202,20 @@ export function registerUpgradeCommand(program: Command): void {
           ctx = await initContext();
         } catch {
           // AC: @trait-error-guidance ac-1, ac-2
-          error("No kspec project found in the current directory.");
-          console.error(
-            chalk.gray(
-              "Suggested action: run 'kspec init' to initialize a project, or change to a directory with a .kspec/ directory.",
-            ),
-          );
+          // AC: @trait-json-output ac-3 — guidance included in structured error
+          error("No kspec project found in the current directory.", {
+            suggestion: "Run 'kspec init' to initialize a project, or change to a directory with a .kspec/ directory.",
+          });
           process.exit(EXIT_CODES.ERROR);
           return;
         }
 
         if (!ctx.manifestPath) {
-          error("No kspec manifest found. Run 'kspec init' first.");
-          console.error(
-            chalk.gray(
-              "Suggested action: run 'kspec init' to initialize a project.",
-            ),
-          );
+          // AC: @trait-error-guidance ac-1, ac-2
+          // AC: @trait-json-output ac-3 — guidance included in structured error
+          error("No kspec manifest found. Run 'kspec init' first.", {
+            suggestion: "Run 'kspec init' to initialize a project.",
+          });
           process.exit(EXIT_CODES.ERROR);
           return;
         }
@@ -1344,21 +1342,12 @@ export function registerUpgradeCommand(program: Command): void {
         }
       } catch (err) {
         // AC: @trait-error-guidance ac-1, ac-2
-        // AC: @trait-json-output ac-3
-        error(
-          `Upgrade failed: ${err instanceof Error ? err.message : String(err)}`,
-        );
-        if (err instanceof Error && err.message.includes("kspec init")) {
-          console.error(
-            chalk.gray("Suggested action: run 'kspec init' to initialize a project."),
-          );
-        } else {
-          console.error(
-            chalk.gray(
-              "Suggested action: check the error above and re-run 'kspec upgrade'.",
-            ),
-          );
-        }
+        // AC: @trait-json-output ac-3 — guidance included in structured error
+        const errMessage = err instanceof Error ? err.message : String(err);
+        const suggestion = errMessage.includes("kspec init")
+          ? "Run 'kspec init' to initialize a project."
+          : "Check the error above and re-run 'kspec upgrade'.";
+        error(`Upgrade failed: ${errMessage}`, { suggestion });
         process.exit(EXIT_CODES.ERROR);
       }
     });

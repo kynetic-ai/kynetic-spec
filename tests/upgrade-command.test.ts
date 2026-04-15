@@ -143,6 +143,48 @@ describe("kspec upgrade", () => {
       expect(result.source_version).not.toBeNull();
     });
 
+    // AC: @single-command-version-upgrade ac-source-version-fallback
+    it("detects review-plan skill in directory-based layout for version inference", async () => {
+      await initProject(tempDir);
+
+      // Remove lastKnownVersion to force probe-based inference
+      const statePath = path.join(tempDir, ".kspec", ".setup-state.json");
+      try {
+        const raw = await fs.readFile(statePath, "utf-8");
+        const state = JSON.parse(raw);
+        delete state.lastKnownVersion;
+        await fs.writeFile(
+          statePath,
+          JSON.stringify(state, null, 2) + "\n",
+          "utf-8",
+        );
+      } catch {
+        // no state file
+      }
+
+      // Ensure the review-plan skill exists in directory-based layout
+      // (kspec-review-plan/SKILL.md, not kspec-review-plan.md)
+      const skillDir = path.join(tempDir, ".agents", "skills", "kspec-review-plan");
+      await fs.mkdir(skillDir, { recursive: true });
+      await fs.writeFile(
+        path.join(skillDir, "SKILL.md"),
+        "<!-- kspec-managed -->\n# Review Plan\n",
+        "utf-8",
+      );
+
+      const result = kspecJson<{
+        source_version: string | null;
+        confidence: string;
+      }>("upgrade --dry-run", tempDir);
+
+      // With the review-plan skill present, version should be >= 0.10.0
+      expect(result.confidence).toBe("approximate");
+      expect(result.source_version).not.toBeNull();
+      // Version should be at least 0.10.0 since the review-plan probe matched
+      const parts = result.source_version!.split(".").map(Number);
+      expect(parts[0] * 100 + parts[1]).toBeGreaterThanOrEqual(10); // 0.10+
+    });
+
     // AC: @single-command-version-upgrade ac-source-version-unknown
     it("reports unknown source version when project state is unrecognizable", async () => {
       // Create a minimal kspec project without probes
@@ -560,15 +602,17 @@ describe("kspec upgrade", () => {
       });
 
       const result = kspec("upgrade --json", tempDir, { expectFail: true });
-      // Attempt to parse stderr as JSON (error output goes to stderr in structured mode)
-      let parsed: { error?: string } = {};
-      try {
-        parsed = JSON.parse(result.stderr || result.stdout);
-      } catch {
-        // May not be parseable if error happens before structured mode kicks in
-      }
-      // Verify the command exits non-zero
       expect(result.exitCode).not.toBe(0);
+
+      // stderr should be valid JSON with no trailing plain-text lines
+      const stderrTrimmed = result.stderr.trim();
+      expect(() => JSON.parse(stderrTrimmed)).not.toThrow();
+      const parsed = JSON.parse(stderrTrimmed);
+      expect(parsed).toHaveProperty("error");
+      expect(parsed.success).toBe(false);
+      // Guidance should be inside the JSON object, not appended as plain text
+      expect(parsed.details).toBeDefined();
+      expect(parsed.details.suggestion).toMatch(/init/i);
     });
 
     // AC: @trait-semantic-exit-codes ac-1
@@ -840,6 +884,14 @@ describe("kspec upgrade", () => {
 
       const result = kspec("upgrade --json", tempDir, { expectFail: true });
       expect(result.exitCode).not.toBe(0);
+
+      // Error guidance must be embedded in the JSON, not appended as plain text
+      const stderrTrimmed = result.stderr.trim();
+      const parsed = JSON.parse(stderrTrimmed);
+      expect(parsed.success).toBe(false);
+      expect(parsed.details).toBeDefined();
+      expect(parsed.details.suggestion).toBeDefined();
+      expect(parsed.details.suggestion).toMatch(/init/i);
     });
   });
 
