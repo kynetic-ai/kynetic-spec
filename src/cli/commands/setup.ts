@@ -1294,29 +1294,32 @@ async function scaffoldProjectConfig(
  * AC: @scaffolded-project-config ac-placeholder-coverage
  */
 async function generateConfigContent(projectDir: string): Promise<string> {
-  // Use the same fallback chain as the dispatch resolver (remote HEAD →
-  // current branch → "main" literal) so that loading the scaffolded file
-  // produces the same resolved base_branch as an empty config would.
+  // Resolve the default branch for display in the commented-out placeholder.
+  // The value is commented out so loading the scaffolded file produces the
+  // same resolved config as an empty config (base_branch: null → dispatcher
+  // resolves deterministically at provisioning time).
   const { branch, source } = await resolveDefaultBranch(projectDir);
 
-  const baseBranchComment =
+  const baseBranchSourceComment =
     source === "remote-head"
-      ? "  # Resolved from repository default branch."
+      ? "Resolved from repository default branch."
       : source === "current-branch"
-        ? "  # Resolved from current branch — no remote HEAD found. Update if this is not your default branch."
-        : "  # Detected value is a fallback — no remote HEAD or current branch found. Update to your actual default branch.";
+        ? "Resolved from current branch — no remote HEAD found. Update if this is not your default branch."
+        : "Detected value is a fallback — no remote HEAD or current branch found. Update to your actual default branch.";
 
   return `# kspec project configuration
 # This file was scaffolded by kspec setup. Review and customize for your project.
 # Documentation: https://github.com/lepahc/kynetic-spec
 
 dispatch:
-${baseBranchComment}
-  base_branch: "${branch}"
-
   # How dispatched agents publish completed work.
   # Accepted values: pull_request, manual_merge, auto
-  publication_mode: manual_merge
+  publication_mode: auto
+
+  # Uncomment and set to pin the base/integration branch for dispatch workspaces.
+  # When omitted, the dispatcher resolves deterministically (remote HEAD → current branch → "main").
+  # ${baseBranchSourceComment}
+  # base_branch: "${branch}"
 
 # Uncomment to enable acceptance criteria coverage scanning.
 # scan_paths lists directories to scan for AC annotations in test files.

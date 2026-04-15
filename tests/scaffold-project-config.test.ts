@@ -20,6 +20,7 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { execSync } from "node:child_process";
 import { kspec, createTempDir, cleanupTempDir, initGitRepo } from "./helpers/cli.js";
+import { loadProjectConfig } from "../src/parser/config.js";
 
 const CONFIG_FILENAME = "kspec.config.yaml";
 
@@ -69,14 +70,27 @@ describe("Scaffold Project Config", () => {
     });
 
     // AC: @scaffolded-project-config ac-file-valid-on-load
-    it("scaffolded config file is valid and produces same result as empty config", async () => {
+    it("scaffolded config file is valid and produces same resolved config as empty config", async () => {
       await setupKspecProject(testDir);
       kspec("setup", testDir);
 
-      // The scaffolded config should load without warnings/errors
-      // Run a kspec command that loads config to verify
-      const result = kspec("shadow status", testDir);
-      expect(result.exitCode).toBe(0);
+      // Load the scaffolded config and compare against empty-config defaults
+      const scaffoldedResult = await loadProjectConfig(testDir);
+      expect(scaffoldedResult.warning).toBeNull();
+      expect(scaffoldedResult.configPath).not.toBeNull();
+
+      // Load the empty-config defaults (delete the scaffolded file, reload)
+      const configPath = path.join(testDir, CONFIG_FILENAME);
+      const scaffoldedContent = await fs.readFile(configPath, "utf-8");
+      await fs.unlink(configPath);
+      const emptyResult = await loadProjectConfig(testDir);
+
+      // Restore the file for cleanup
+      await fs.writeFile(configPath, scaffoldedContent, "utf-8");
+
+      // The resolved configs must be identical — scaffolding must not change
+      // runtime behavior compared to having no config file at all
+      expect(scaffoldedResult.config).toEqual(emptyResult.config);
     });
 
     // AC: @scaffolded-project-config ac-placeholder-publication-mode
@@ -86,34 +100,35 @@ describe("Scaffold Project Config", () => {
 
       const content = await fs.readFile(path.join(testDir, CONFIG_FILENAME), "utf-8");
 
-      // Must have publication_mode set to manual_merge
-      expect(content).toContain("publication_mode: manual_merge");
+      // Must have publication_mode set to auto (the config loader default)
+      expect(content).toContain("publication_mode: auto");
 
       // Must have a comment listing accepted values
       expect(content).toMatch(/pull_request.*manual_merge.*auto/);
     });
 
     // AC: @scaffolded-project-config ac-placeholder-base-branch
-    it("contains dispatch base_branch resolved from repository default branch", async () => {
+    it("contains dispatch base_branch as commented-out placeholder with resolved value", async () => {
       await setupKspecProject(testDir);
       kspec("setup", testDir);
 
       const content = await fs.readFile(path.join(testDir, CONFIG_FILENAME), "utf-8");
 
-      // Must have base_branch key present
-      expect(content).toContain("base_branch:");
+      // Must have base_branch key present as a commented-out placeholder
+      expect(content).toMatch(/# base_branch:/);
 
       // In a test environment without remotes, resolves to current branch ("main" from initGitRepo)
-      expect(content).toMatch(/base_branch:\s*"main"/);
+      expect(content).toMatch(/#\s*base_branch:\s*"main"/);
     });
 
     // AC: @scaffolded-project-config ac-placeholder-base-branch
     // AC: @scaffolded-project-config ac-file-valid-on-load
-    it("scaffolds base_branch from current branch when no remote exists", async () => {
-      // The scaffolded config must resolve the same base_branch as an empty
-      // config would. The empty-config fallback chain is: remote HEAD →
-      // current branch → "main". On a repo with no remote, the current
-      // branch is used — so the scaffold must match.
+    it("scaffolds base_branch placeholder from current branch when no remote exists", async () => {
+      // The commented-out base_branch placeholder should show the resolved
+      // value from the same fallback chain (remote HEAD → current branch →
+      // "main"). On a repo with no remote on a "dev" branch, the placeholder
+      // should show "dev". Since it's commented out, loading the scaffolded
+      // file still produces the same config as an empty file (base_branch: null).
       initGitRepo(testDir);
       await fs.writeFile(path.join(testDir, "README.md"), "# Test", "utf-8");
       execSync('git add README.md && git commit -m "Initial"', {
@@ -131,11 +146,16 @@ describe("Scaffold Project Config", () => {
 
       const content = await fs.readFile(path.join(testDir, CONFIG_FILENAME), "utf-8");
 
-      // Must be "dev" (the current branch), matching what the empty-config
-      // fallback chain would resolve. Hard-coding "main" here would violate
-      // ac-file-valid-on-load by changing dispatch behavior.
-      expect(content).toMatch(/base_branch:\s*"dev"/);
+      // The commented-out placeholder must show "dev" (current branch)
+      expect(content).toMatch(/#\s*base_branch:\s*"dev"/);
       expect(content).toContain("current branch");
+
+      // Verify the scaffolded file resolves identically to empty config
+      const scaffoldedResult = await loadProjectConfig(testDir);
+      const configPath = path.join(testDir, CONFIG_FILENAME);
+      await fs.unlink(configPath);
+      const emptyResult = await loadProjectConfig(testDir);
+      expect(scaffoldedResult.config).toEqual(emptyResult.config);
     });
 
     // AC: @scaffolded-project-config ac-placeholder-coverage
@@ -212,7 +232,7 @@ describe("Scaffold Project Config", () => {
       // File should be replaced with fresh scaffolded content
       const afterContent = await fs.readFile(configPath, "utf-8");
       expect(afterContent).not.toBe(customConfig);
-      expect(afterContent).toContain("publication_mode: manual_merge");
+      expect(afterContent).toContain("publication_mode: auto");
       expect(afterContent).toContain("base_branch:");
     });
 
@@ -304,7 +324,7 @@ describe("Scaffold Project Config", () => {
     });
 
     // AC: @scaffolded-project-config ac-file-valid-on-load
-    it("scaffolded file produces same behavior as empty config", async () => {
+    it("scaffolded file produces same resolved config as empty config", async () => {
       // Create two projects: one with scaffolded config, one without
       const projectA = await createTempDir("kspec-scaffold-a-");
       const projectB = await createTempDir("kspec-scaffold-b-");
@@ -328,12 +348,16 @@ describe("Scaffold Project Config", () => {
         });
         kspec("init --no-prompt", projectB);
 
-        // Both should work identically for basic commands
-        const resultA = kspec("shadow status", projectA);
-        const resultB = kspec("shadow status", projectB);
+        // Load both configs and compare the resolved config objects
+        const configA = await loadProjectConfig(projectA);
+        const configB = await loadProjectConfig(projectB);
 
-        expect(resultA.exitCode).toBe(0);
-        expect(resultB.exitCode).toBe(0);
+        // Scaffolded config must parse without warnings
+        expect(configA.warning).toBeNull();
+
+        // The resolved configs must be identical — scaffolding must not
+        // change runtime behavior compared to having no config file
+        expect(configA.config).toEqual(configB.config);
       } finally {
         await cleanupTempDir(projectA);
         await cleanupTempDir(projectB);
