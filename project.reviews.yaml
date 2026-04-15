@@ -147957,9 +147957,25 @@ reviews:
           kind: blocker
           thread_ulid: 01KP9Q8ZT1K4Q4WJMXW1FX09YA
         timestamp: 2026-04-15T23:22:59.846Z
+      - _ulid: 01KP9Q9CH69SCPKTMKNX3M47VS
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-15T23:23:11.782Z
+      - _ulid: 01KP9Q9CH6VS1WY21EH5Y4K8VA
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-15T23:23:11.782Z
     examined_commit: 4a024fed7210a6d4e75ec6705cba591d27320347
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -148030,7 +148046,14 @@ reviews:
               pipeline and leaves legacy task storage unmigrated."
             created_at: 2026-04-15T23:22:58.754Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-15T23:23:11.782Z
     created_at: 2026-04-15T23:08:58.065Z
-    updated_at: 2026-04-15T23:22:58.754Z
+    updated_at: 2026-04-15T23:23:11.782Z
     notes: []
