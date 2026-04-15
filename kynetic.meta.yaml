@@ -14583,6 +14583,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-15T22:38:09.392Z
+  - _ulid: 01KP9NKKXQ18F9WP529V86K1CN
+    type: success
+    content: Per-cycle review records with anchored threads made re-review efficient during a long fix
+      cycle. Prior blockers were easy to reconstruct, verify, and avoid duplicating because each
+      cycle stayed self-contained.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-15T22:53:49.879Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
