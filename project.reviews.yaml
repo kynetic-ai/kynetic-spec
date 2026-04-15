@@ -142121,6 +142121,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-15T08:17:20.818Z
+      - _ulid: 01KP85D53RCERZCV4GD1M207M7
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP82YAVRZ6SE894AJKZEYJY5
+        timestamp: 2026-04-15T08:51:26.456Z
     examined_commit: d670d0dd73f99dd965a440ff538f06ca42f84f02
     external_links: []
     lifecycle_state: closed
@@ -142151,6 +142157,19 @@ reviews:
               removed or explicitly made N/A for this step, this cannot satisfy
               ac-existing-file-preserved-without-force.
             created_at: 2026-04-15T08:08:23.673Z
+          - _ulid: 01KP85D4720MNH598W2YF1Q02E
+            author: "@claude"
+            body: "Fixed: ensureKspecGitignore now respects the @trait-idempotent-file-scaffold contract. When
+              .gitignore exists without a managed block: (1) without force → preserves file
+              byte-for-byte and returns skipped: true, (2) with force → backs up to a timestamped
+              sibling (.gitignore.backup-<timestamp>) before creating the managed block. init passes
+              force: true since it's an explicit scaffolding action. setup respects the user's
+              --force flag. Updated tests: added explicit test for
+              ac-existing-file-preserved-without-force (verifies byte-for-byte preservation), added
+              test for ac-force-backs-up-before-overwrite (verifies backup creation), updated
+              needsKspecGitignoreUpdate to return false for files without managed block when force
+              is not set. Full test suite: 2145 suites, 7838 tests pass, 0 failures."
+            created_at: 2026-04-15T08:51:25.538Z
         kind: blocker
       - _ulid: 01KP82YEVP4Z7SD9NEXF1ERX5K
         entries:
@@ -142178,7 +142197,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T08:17:20.818Z
     created_at: 2026-04-15T08:00:34.590Z
-    updated_at: 2026-04-15T08:17:20.818Z
+    updated_at: 2026-04-15T08:51:25.538Z
     notes: []
   - _ulid: 01KP83G1KHSJ451JHTCY91YN1P
     slugs: []
