@@ -174,3 +174,29 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-15T08:33:15.537Z
+  - _ulid: 01KP89WNHB8XBKVXXAJ65DM8RP
+    content: >-
+      Fix cycle 1: addressed both review blockers.
+
+
+      1. Title validation (parser): Changed parsePlanDocument to check the first significant
+      (non-blank) line instead of regex with 'm' flag that matched headings anywhere. A file with
+      prose before a heading now fails with missing_title error.
+
+
+      2. --into bypass (plan-import command): importIntoExistingPlan now calls parsePlanDocument
+      before saving. AC shape mismatches fail with exit 2. Empty-plan warnings are emitted and
+      forwarded to JSON output. Missing title remains non-fatal for --into per @plan-import-into
+      ac-into-no-title.
+
+
+      Also fixed extractOptionalPlanTitle (used by --into for title extraction) to use the same
+      first-significant-line logic.
+
+
+      Added 4 new tests: parser late-title detection, CLI late-title import, --into AC shape
+      rejection, --into empty-plan warning. All 7828+ tests pass (1 preexisting flaky failure in
+      file-lock.test.ts unrelated to this change).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-15T10:09:49.099Z
