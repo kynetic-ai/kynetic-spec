@@ -54,7 +54,7 @@ import {
 } from "../../lib/claude-hooks.js";
 import { errors } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
-import { error, output, success, warn } from "../output.js";
+import { error, isStructuredMode, output, success, warn } from "../output.js";
 import { resolveDefaultBranch } from "../../agent-runtime/workspace.js";
 
 /**
@@ -1818,8 +1818,8 @@ export async function runSetupPipeline(
       }
     }
 
-    // Output summary
-    if (!dryRun) {
+    // Output summary (skip in structured mode — stdout must stay clean for JSON/YAML)
+    if (!dryRun && !isStructuredMode()) {
       console.log(chalk.bold("kspec Setup Summary\n"));
 
       for (const step of steps) {
@@ -2057,16 +2057,26 @@ export function registerSetupCommand(program: Command): void {
 
         // AC: @enhanced-setup ac-1 - Display summary
         // AC: @enhanced-setup ac-6 - dry-run displays planned actions
+        // AC: @trait-error-guidance ac-6 - structured error object in JSON mode
+        const scaffoldFailure = result.steps.find(
+          (s) => s.name === "Scaffold project config" && s.status === "failed",
+        );
+        const outputData: Record<string, unknown> = {
+          dry_run: dryRun,
+          success: !scaffoldFailure && result.success,
+          steps: result.steps.map((s) => ({
+            name: s.name,
+            status: s.status,
+            message: s.message,
+            details: s.details,
+          })),
+        };
+        if (scaffoldFailure) {
+          outputData.error = `Scaffold project config failed: ${scaffoldFailure.message}`;
+          outputData.suggestion = "Fix the issue and re-run kspec setup.";
+        }
         output(
-          {
-            dry_run: dryRun,
-            steps: result.steps.map((s) => ({
-              name: s.name,
-              status: s.status,
-              message: s.message,
-              details: s.details,
-            })),
-          },
+          outputData,
           () => {
             if (dryRun) {
               console.log(chalk.yellow("DRY RUN - No changes made\n"));
@@ -2102,13 +2112,10 @@ export function registerSetupCommand(program: Command): void {
 
             // AC: @scaffolded-project-config ac-file-valid-on-load — fail loudly on scaffold failure
             // Check for scaffold failure BEFORE printing success footer to avoid contradictory output
-            const scaffoldStep = result.steps.find((s) => s.name === "Scaffold project config");
-            const hasFatalFailure = scaffoldStep?.status === "failed";
-
             if (dryRun) {
               console.log(chalk.yellow("Run without --dry-run to apply changes."));
-            } else if (hasFatalFailure) {
-              console.log(chalk.red(`Setup failed: ${scaffoldStep.message}`));
+            } else if (scaffoldFailure) {
+              console.log(chalk.red(`Setup failed: ${scaffoldFailure.message}`));
               console.log(chalk.gray("Fix the issue and re-run kspec setup."));
             } else {
               console.log(chalk.green("Setup complete."));
@@ -2130,8 +2137,7 @@ export function registerSetupCommand(program: Command): void {
         );
 
         // AC: @scaffolded-project-config ac-file-valid-on-load — fail loudly on scaffold failure
-        const scaffoldStep = result.steps.find((s) => s.name === "Scaffold project config");
-        if (scaffoldStep?.status === "failed") {
+        if (scaffoldFailure) {
           process.exit(EXIT_CODES.ERROR);
         }
       } catch (err) {

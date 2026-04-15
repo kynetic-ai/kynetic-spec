@@ -463,7 +463,7 @@ describe("Scaffold Project Config", () => {
     });
 
     // AC: @trait-error-guidance ac-6
-    it("scaffold step failure is included in JSON output", async () => {
+    it("scaffold step failure produces structured JSON error with guidance", async () => {
       await setupKspecProject(testDir);
 
       const configPath = path.join(testDir, CONFIG_FILENAME);
@@ -473,10 +473,23 @@ describe("Scaffold Project Config", () => {
       const result = kspec("setup --force --json", testDir);
       await fs.chmod(configPath, 0o644).catch(() => {});
 
-      // JSON output should include the failed step with structured data
-      const combined = result.stdout + result.stderr;
-      expect(combined).toContain("failed");
-      expect(combined).toContain("Scaffold project config");
+      expect(result.exitCode).not.toBe(0);
+
+      // stdout must be valid JSON — no human-readable text mixed in
+      const parsed = JSON.parse(result.stdout.trim());
+
+      // Structured error fields for machine consumers
+      expect(parsed.success).toBe(false);
+      expect(parsed.error).toMatch(/Scaffold project config failed/);
+      expect(parsed.suggestion).toMatch(/re-run kspec setup/);
+
+      // Steps array includes the failed scaffold step
+      const scaffoldStep = parsed.steps.find(
+        (s: { name: string }) => s.name === "Scaffold project config",
+      );
+      expect(scaffoldStep).toBeDefined();
+      expect(scaffoldStep.status).toBe("failed");
+      expect(scaffoldStep.message).toBeTruthy();
     });
   });
 });
