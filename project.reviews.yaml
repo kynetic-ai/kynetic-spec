@@ -146252,6 +146252,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-15T19:13:29.463Z
+      - _ulid: 01KP99Y8FR86S988VXF6XJTH8N
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP98Z8QR92BBYT0H0WY2QKWB
+        timestamp: 2026-04-15T19:29:55.704Z
     examined_commit: f1b991a0b2e99d5cde6c75ec9d9ec23a9f5d10aa
     external_links: []
     lifecycle_state: closed
@@ -146281,6 +146287,15 @@ reviews:
               @single-command-version-upgrade ac-restores-gitignore-entries, which requires missing
               entries to be appended and reported."
             created_at: 2026-04-15T19:13:00.152Z
+          - _ulid: 01KP99Y7HVG2063R11CKY318JN
+            author: "@claude"
+            body: "Fixed: upgrade now passes force: true to ensureKspecGitignore, so existing .gitignore files
+              without a managed block get the kspec entries appended (with a backup created). The
+              dry-run path also no longer short-circuits — it runs updateManagedBlock which
+              correctly reports the block as needing creation. Added 2 new tests: one for the live
+              path verifying the managed block is created while preserving original content, and one
+              for dry-run verifying the preview message and no modifications."
+            created_at: 2026-04-15T19:29:54.746Z
         kind: blocker
       - _ulid: 01KP98ZKSDGCNDBBMZNN8WW397
         anchor:
@@ -146326,5 +146341,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T19:13:29.463Z
     created_at: 2026-04-15T19:00:40.600Z
-    updated_at: 2026-04-15T19:13:29.463Z
+    updated_at: 2026-04-15T19:29:54.746Z
     notes: []
