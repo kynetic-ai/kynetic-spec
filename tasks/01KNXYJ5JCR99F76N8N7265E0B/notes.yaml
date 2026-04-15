@@ -35,3 +35,22 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-15T12:26:29.007Z
+  - _ulid: 01KP8JFKR35NHENNTNFF0DZZEB
+    content: >-
+      Implementation complete. 4 files changed:
+
+      - src/cli/commands/upgrade.ts: New upgrade command module (680 lines) with version detection
+      pipeline, 6-step upgrade pipeline, and CLI registration
+
+      - src/cli/commands/index.ts: Re-export registerUpgradeCommand
+
+      - src/cli/index.ts: Register upgrade command, add to proxySkipCommands
+
+      - tests/upgrade-command.test.ts: 33 E2E tests covering all 12 spec ACs plus trait ACs
+      (error-guidance, exit-codes, dry-run, json-output)
+
+
+      All tests pass. Full 3-shard test suite: 7932 passed, 5 skipped, 0 failures.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-15T12:39:58.467Z
