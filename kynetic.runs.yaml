@@ -26504,9 +26504,19 @@ runs:
     completed_at: 2026-04-15T22:19:08.502Z
   - _ulid: 01KP9NHWMGJ29890AHWY7CXDXP
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-15T22:52:53.264Z
+        completed_at: 2026-04-15T22:54:07.847Z
+        notes: "What worked well: per-cycle review records with anchored findings made a long fix-cycle
+          review tractable; prior blockers were easy to verify without reopening old reviews."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-15T22:54:07.847Z
+        completed_at: 2026-04-15T22:54:07.847Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-15T22:52:53.264Z
