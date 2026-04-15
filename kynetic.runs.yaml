@@ -26381,7 +26381,7 @@ runs:
     completed_at: 2026-04-15T13:12:15.798Z
   - _ulid: 01KP99153E5GT7S4HAZAD9TS7H
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -26394,7 +26394,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-15T19:14:59.336Z
-        completed_at: 2026-04-15T19:14:59.336Z
+        completed_at: 2026-04-15T19:15:19.575Z
+        notes: "High-confidence reflection item: review reruns can silently reuse cached npm test results,
+          which conflicts with the review-gates instruction to run failures twice for flake
+          classification. Existing search found no tracked observation, inbox item, or task for this
+          specific gap."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-15T19:15:19.575Z
+        completed_at: 2026-04-15T19:15:19.575Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-15T19:14:01.966Z
