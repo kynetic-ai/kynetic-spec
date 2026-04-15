@@ -147364,7 +147364,83 @@ reviews:
     slugs: []
     title: Review single-command version upgrade
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: >-
+          ✗ Validation failed
+
+          ────────────────────────────────────────
+
+          Files checked: 10
+
+          Items checked: 589
+
+          Tasks checked: 0
+
+          Meta: 12 agents, 11 workflows, 11 conventions
+
+
+          Schema errors: 1
+            ✗ /home/chapel/Projects/kynetic-spec-dispatch/.kspec/modules/meta.yaml:modules[0].traits.0
+              Expected string, received object
+          References: OK
+
+
+          Reference warnings: 1
+            ⚠ @skills
+              Orphaned skill directory 'skills' has no corresponding meta entry
+              in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+          Alignment warnings: 34
+            Orphaned specs (no tasks): 31
+              ○ Test Trait
+              ○ Filterable List Commands
+              ○ Dry Run Preview Mode
+              ... and 28 more
+            Status mismatches: 3
+              ! Task Set Batch Support
+                Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+              ! Default Session Reflection Hook
+                Spec "Default Session Reflection Hook" status is "implemented" but should be "in_progress" based on task progress
+              ! Concurrent Read Command Execution
+                Spec "Concurrent Read Command Execution" status is "implemented" but should be "in_progress" based on task progress
+
+          Alignment stats: 425/589 specs have tasks, 422 aligned
+
+
+          Completeness warnings: 494
+            Missing acceptance criteria: 1
+              ○ @01KJN1WT - Test Trait
+            Missing own AC coverage: 238
+              ! @spec-item - Spec Item
+                Uncovered: ac-item-1, ac-item-2
+              ! @ulid-system - ULID Identifier System
+                Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+              ! @slug-system - Slug Alias System
+                Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+              ... and 235 more
+            Invalid AC annotations: 255
+              ! AC annotation references '@01KJE3T7' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-upgrade-command-01knxyj5-review/tests/agent-detection.test.ts:43
+              ! AC annotation references '@01KJE3T7' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-upgrade-command-01knxyj5-review/tests/agent-detection.test.ts:61
+              ! AC annotation references '@01KJE3T7' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-upgrade-command-01knxyj5-review/tests/agent-detection.test.ts:75
+              ! AC annotation references '@01KJE3T7' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-upgrade-command-01knxyj5-review/tests/agent-detection.test.ts:88
+              ! AC annotation references '@ui-agent-dispatch ac-8' but @ui-agent-dispatch has no acceptance criterion 'ac-8'
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-upgrade-command-01knxyj5-review/tests/agent-dispatch-engine.test.ts:4965
+              ... and 250 more
+          Skills: OK (10 files checked) exits 4 in this snapshot with repo-wide pre-existing
+          schema/reference/completeness issues (for example .kspec/modules/meta.yaml schema error
+          and many unrelated invalid AC annotations); not isolated to upgrade files.
+        name: kspec validate
+        required: false
+        created_at: 2026-04-15T22:16:49.209Z
+        completed_at: 2026-04-15T22:16:49.209Z
     events:
       - _ulid: 01KP9JVSBX3QTMK6MTAECJYF3Y
         actor: Jacob Chapel
@@ -147400,6 +147476,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP9KFRFKZ2ZGWSQJCADZAKP0
         timestamp: 2026-04-15T22:16:47.329Z
+      - _ulid: 01KP9KFW7HXCNP7QN713PGR00W
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-15T22:16:50.161Z
     examined_commit: d889ee3c76b715e9b8cc3872a9ae790dc86a3540
     external_links: []
     lifecycle_state: open
@@ -147466,5 +147549,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-15T22:05:51.870Z
-    updated_at: 2026-04-15T22:16:46.323Z
+    updated_at: 2026-04-15T22:16:49.209Z
     notes: []
