@@ -146494,6 +146494,54 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-15T20:07:13.861Z
+      - _ulid: 01KP9D0P3NQQ9BEC2T0S2KDW5A
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP9C065JWQEGVW2GCYGP1AZ7
+        timestamp: 2026-04-15T20:23:40.917Z
+      - _ulid: 01KP9D0RFYSTXP3ZAZR9H4S5DG
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP9C065JWQEGVW2GCYGP1AZ7
+        timestamp: 2026-04-15T20:23:43.358Z
+      - _ulid: 01KP9D0TW3NR7SENRA5HFGYZR0
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP9C09ZQ98VY71CYREGDZM22
+        timestamp: 2026-04-15T20:23:45.795Z
+      - _ulid: 01KP9D0XBFJ6N6JQCXQGB6247F
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP9C09ZQ98VY71CYREGDZM22
+        timestamp: 2026-04-15T20:23:48.335Z
+      - _ulid: 01KP9D0ZRW1VSVFATXS8F2RGYM
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP9C0DZN3VSWVM33K3E3NX0P
+        timestamp: 2026-04-15T20:23:50.812Z
+      - _ulid: 01KP9D123TB2HBDSZCZZC75RZK
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP9C0DZN3VSWVM33K3E3NX0P
+        timestamp: 2026-04-15T20:23:53.210Z
+      - _ulid: 01KP9D14FK5VKCZDRAH51DF6DT
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP9C121PY16Z9AZ8Q1T85E6Z
+        timestamp: 2026-04-15T20:23:55.635Z
+      - _ulid: 01KP9D16XDB53AG4F82MQPCNZF
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP9C121PY16Z9AZ8Q1T85E6Z
+        timestamp: 2026-04-15T20:23:58.125Z
     examined_commit: 588c019f60bea601d8e7cb92e4416b539a78b924
     external_links: []
     lifecycle_state: closed
@@ -146521,7 +146569,14 @@ reviews:
               test never inspects shadow HEAD or shadow git status. Add behavioral coverage for the
               shadow branch, not just one root-level file.
             created_at: 2026-04-15T20:05:56.018Z
+          - _ulid: 01KP9D0N69Q886SSKSS7RVESDQ
+            author: "@claude"
+            body: "Fixed: test now captures shadow HEAD (git rev-parse HEAD in .kspec/) before and after dry-run
+              and asserts they match. This ensures no shadow-branch commits are created."
+            created_at: 2026-04-15T20:23:39.977Z
         kind: blocker
+        resolved_at: 2026-04-15T20:23:42.425Z
+        resolved_by: "@claude"
       - _ulid: 01KP9C09ZQ98VY71CYREGDZM22
         anchor:
           type: code
@@ -146539,7 +146594,15 @@ reviews:
               returned status 1, so callers cannot distinguish upgrade execution failures from
               generic errors."
             created_at: 2026-04-15T20:05:59.928Z
+          - _ulid: 01KP9D0SZ56XGHA25DGSEDD3HK
+            author: "@claude"
+            body: "Fixed: runtime step failures now exit with EXIT_CODES.NOT_FOUND (3) instead of
+              EXIT_CODES.ERROR (1), matching @trait-semantic-exit-codes ac-4. New test asserts exit
+              code 3 by forcing EISDIR on kspec-agents.md."
+            created_at: 2026-04-15T20:23:44.869Z
         kind: blocker
+        resolved_at: 2026-04-15T20:23:47.420Z
+        resolved_by: "@claude"
       - _ulid: 01KP9C0DZN3VSWVM33K3E3NX0P
         anchor:
           type: code
@@ -146557,7 +146620,15 @@ reviews:
               trait ACs N/A for this command or add assertions against real output fields that
               exercise them.
             created_at: 2026-04-15T20:06:04.021Z
+          - _ulid: 01KP9D0YV2MFFZKTRV1S1HVH6F
+            author: "@claude"
+            body: "Fixed: removed the false-coverage tests. Both ac-4 and ac-5 are now annotated N/A with
+              reasons — upgrade output contains version strings and step results, not entity
+              references or timestamps."
+            created_at: 2026-04-15T20:23:49.858Z
         kind: blocker
+        resolved_at: 2026-04-15T20:23:52.291Z
+        resolved_by: "@claude"
       - _ulid: 01KP9C121PY16Z9AZ8Q1T85E6Z
         entries:
           - _ulid: 01KP9C121QH323GZPAPZF86PX0
@@ -146576,7 +146647,13 @@ reviews:
               searched: correctness, edge cases, error handling, test quality, integration, spec
               alignment."
             created_at: 2026-04-15T20:06:24.567Z
+          - _ulid: 01KP9D13J7H56BTH6RAS908QXS
+            author: "@claude"
+            body: Acknowledged. All issues addressed in commit 4a8adcba1.
+            created_at: 2026-04-15T20:23:54.695Z
         kind: nit
+        resolved_at: 2026-04-15T20:23:57.171Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -146586,5 +146663,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T20:07:13.860Z
     created_at: 2026-04-15T19:59:21.920Z
-    updated_at: 2026-04-15T20:07:13.861Z
+    updated_at: 2026-04-15T20:23:57.171Z
     notes: []
