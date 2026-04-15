@@ -144782,6 +144782,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-15T10:52:05.893Z
+      - _ulid: 01KP8DA15BAY643GY7CNMD8JKM
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP8C9GYWRZP3RP8CFMQZPR64
+        timestamp: 2026-04-15T11:09:32.716Z
     examined_commit: c93addbafe013d03742d8057fcead5ad084bbb0a
     external_links: []
     lifecycle_state: closed
@@ -144811,6 +144817,15 @@ reviews:
               '@custom-module' resolves, so the new setup guidance sends users to a ref that no
               longer exists."
             created_at: 2026-04-15T10:51:47.549Z
+          - _ulid: 01KP8DA087EKEDJTNTBB12MFMM
+            author: "@claude"
+            body: "Fixed: setup.ts no longer hardcodes @main. Both output locations (pipeline summary at line
+              1681 and standalone command handler at line 1958) now use a dynamically resolved
+              defaultModuleRef from SetupPipelineResult. The pipeline resolves the first module
+              item's current slug via loadAllItems() + find(type=module). Added new E2E test that
+              renames @main to @custom-module, runs setup, and verifies the output mentions
+              @custom-module and not @main. Full suite passes (7813 tests)."
+            created_at: 2026-04-15T11:09:31.783Z
         kind: blocker
       - _ulid: 01KP8C9KGKW6C02BHZ7PQWFJSN
         entries:
@@ -144841,5 +144856,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T10:52:05.893Z
     created_at: 2026-04-15T10:41:35.747Z
-    updated_at: 2026-04-15T10:52:05.893Z
+    updated_at: 2026-04-15T11:09:31.783Z
     notes: []
