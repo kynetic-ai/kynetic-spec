@@ -49520,7 +49520,7 @@ workspaces:
         head: f6e50c626e48f295fdd3a14f4ab6142b9908c016
         last_seen_at: 2026-04-14T18:39:41.432Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-default-reflection-hook-01knxyj4
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: f205808d2cf1f58d18f7fdf45435996b4092d52a
     bootstrap:
       status: succeeded
@@ -49882,7 +49882,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-15T11:35:48.845Z
+      updated_at: 2026-04-15T11:36:11.406Z
     integration:
       status: pending
       detail: null
@@ -49897,10 +49897,10 @@ workspaces:
     task_slug: task-derivable-default-module
     timestamps:
       closed_at: null
-      last_active_at: 2026-04-15T11:24:22.718Z
-      last_reconciled_at: 2026-04-15T11:35:48.845Z
+      last_active_at: 2026-04-15T11:36:11.406Z
+      last_reconciled_at: 2026-04-15T11:36:11.406Z
       created_at: 2026-04-14T19:18:22.812Z
-      updated_at: 2026-04-15T11:36:08.092Z
+      updated_at: 2026-04-15T11:36:11.406Z
     workspace_id: dispatch-workspace-01KNXYJ4YKHSY076Q3CQ42C6CP
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
