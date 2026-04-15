@@ -141798,7 +141798,18 @@ reviews:
     slugs: []
     title: Review task-complete-gitignore (cycle 4)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 'npm test -- --fresh tests/gitignore-managed-block.test.ts "preserves existing non-kspec
+          entries when adding managed block" passed: 7 suites, 32 tests, 2.3s.'
+        name: targeted gitignore tests
+        required: true
+        runner: npm
+        created_at: 2026-04-15T08:08:31.832Z
+        completed_at: 2026-04-15T08:08:31.832Z
     events:
       - _ulid: 01KP82G0RYQ0HZ7AHMHE93DXYZ
         actor: Jacob Chapel
@@ -141827,6 +141838,13 @@ reviews:
           kind: nit
           thread_ulid: 01KP82YEVP4Z7SD9NEXF1ERX5K
         timestamp: 2026-04-15T08:08:28.869Z
+      - _ulid: 01KP82YKV5MNFKF0NFG56CX6MN
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted gitignore tests
+        timestamp: 2026-04-15T08:08:32.869Z
     examined_commit: d670d0dd73f99dd965a440ff538f06ca42f84f02
     external_links: []
     lifecycle_state: open
@@ -141877,5 +141895,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-15T08:00:34.590Z
-    updated_at: 2026-04-15T08:08:27.767Z
+    updated_at: 2026-04-15T08:08:31.832Z
     notes: []
