@@ -115,11 +115,8 @@ description: |
 spec_ref: "@single-command-version-upgrade"
 plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
 origin: derived
-status: blocked
-blocked_by:
-  - 'Agent task-worker failed 3 consecutive times: Internal error: API Error: 500
-    {"type":"error","error":{"type":"api_error","message":"Internal server
-    error"},"request_id":"req_011Ca5jVmTu11ecQo3KoPvzh"}'
+status: needs_work
+blocked_by: []
 depends_on:
   - "@task-scaffold-project-config"
   - "@task-complete-gitignore"
@@ -331,7 +328,23 @@ history:
         previous: null
     command: task-block
     timestamp: 2026-04-15T14:42:56.678Z
-prior_status: needs_work
+  - author: "@claude"
+    changes:
+      status:
+        new: needs_work
+        previous: blocked
+      blocked_by:
+        new: []
+        previous:
+          - 'Agent task-worker failed 3 consecutive times: Internal error: API Error: 500
+            {"type":"error","error":{"type":"api_error","message":"Internal server
+            error"},"request_id":"req_011Ca5jVmTu11ecQo3KoPvzh"}'
+      prior_status:
+        new: null
+        previous: needs_work
+    command: task-unblock
+    timestamp: 2026-04-15T18:14:34.449Z
+prior_status: null
 created_at: 2026-04-11T09:39:26.412Z
 started_at: 2026-04-15T13:41:51.402Z
 submitted_at: 2026-04-15T13:41:54.854Z
