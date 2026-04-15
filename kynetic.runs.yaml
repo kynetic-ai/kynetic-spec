@@ -26329,7 +26329,7 @@ runs:
     completed_at: 2026-04-15T12:20:10.241Z
   - _ulid: 01KP8M7PM7YHFWZSCWHJCKCXEK
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -26340,7 +26340,22 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-15T13:11:31.040Z
-        completed_at: 2026-04-15T13:11:31.040Z
+        completed_at: 2026-04-15T13:11:50.936Z
+        notes: >-
+          Friction: Skill orphan cleanup logic is embedded in skill-diff.ts CLI handler (inside
+          options.clean block). Cannot be called as a library function. Upgrade command had to
+          reimplement the core scan-and-remove pattern. This is a duplication risk — if cleanup
+          logic changes in skill-diff.ts, upgrade.ts won't pick it up. Not currently tracked
+          anywhere. High confidence — concrete, repeatable pattern, clear duplication.
+
+
+          Success: Review blocker descriptions were specific and included reproduction steps (exact
+          commands run, exact output observed). Made fix cycle efficient — no guessing about what
+          was wrong.
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-15T13:11:50.936Z
+        completed_at: 2026-04-15T13:11:50.936Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-15T13:10:36.423Z
