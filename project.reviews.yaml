@@ -146921,6 +146921,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP9FPF07D4AZ69Q92JKZSKXY
         timestamp: 2026-04-15T21:10:32.652Z
+      - _ulid: 01KP9FPW1J7WKSZ0GWCMCAQD31
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP9FPV3S14FVFTKW0YG2APXG
+        timestamp: 2026-04-15T21:10:45.042Z
     examined_commit: 2954ef826857c2ec41850cba22ae384ab50c3e0f
     external_links: []
     lifecycle_state: open
@@ -146991,7 +146998,26 @@ reviews:
               would hit while still avoiding writes."
             created_at: 2026-04-15T21:10:31.688Z
         kind: blocker
+      - _ulid: 01KP9FPV3S14FVFTKW0YG2APXG
+        anchor:
+          type: code
+          commit: 2954ef826857c2ec41850cba22ae384ab50c3e0f
+          line_end: 855
+          line_start: 801
+          path: src/cli/commands/upgrade.ts
+          side: head
+        entries:
+          - _ulid: 01KP9FPV3SMZXAC1YHM0RY3PWF
+            author: Jacob Chapel
+            body: "The dry-run preview for agent regeneration is inaccurate because the up-to-date/hash check
+              only runs in the non-dry-run branch. On a freshly initialized project I reproduced
+              `upgrade --force --json` returning `Regenerate agent instructions: skipped` while
+              `upgrade --force --dry-run --json` reported `would regenerate kspec-agents.md` and
+              added a follow-up entry. That means the preview can claim work will happen even when
+              the real upgrade would skip the step."
+            created_at: 2026-04-15T21:10:44.089Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-15T20:57:57.440Z
-    updated_at: 2026-04-15T21:10:31.688Z
+    updated_at: 2026-04-15T21:10:44.089Z
     notes: []
