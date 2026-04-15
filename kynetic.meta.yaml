@@ -14198,6 +14198,41 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-15T07:22:18.268Z
+  - _ulid: 01KP8123SWVAK60DYNPQQFVC2Y
+    type: friction
+    content: Reviewer merge flow in a detached review snapshot is awkward when the integration branch is
+      already checked out in another worktree. This session had to discover the failure from `git
+      checkout dev` and then manually redirect the merge through the primary worktree with `git -C
+      /home/chapel/Projects/kynetic-spec-dispatch merge ...`. The system should make the correct
+      merge target/worktree explicit or provide a merge command that handles this automatically for
+      reviewer snapshots.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-04-15T07:35:30.364Z
+  - _ulid: 01KP81240SR18C4TEW1A0FEBZ4
+    type: friction
+    content: "`kspec validate` is not usable as a review gate in this repo right now because it emits
+      large volumes of unrelated pre-existing schema, completeness, and invalid-annotation failures.
+      In this session the review had to mark validate as a non-required skipped check even after
+      running it, which weakens confidence in validation as a reviewer workflow step."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-04-15T07:35:30.585Z
+  - _ulid: 01KP81246W5F32MA6XMEYEHJPM
+    type: success
+    content: For daemon-leak reviews, combining targeted test runs, full `npm test`, and before/after
+      `pgrep -f dist/daemon/index.js | wc -l` snapshots was an effective verification pattern. It
+      confirmed the fix behaviorally without relying on source inspection and clearly separated
+      no-new-orphans from pre-existing daemon processes.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-04-15T07:35:30.780Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
