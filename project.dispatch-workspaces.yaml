@@ -53911,3 +53911,79 @@ workspaces:
         head: 984280cf050f9a564882c8d0ee255f406314766b
         last_seen_at: 2026-04-16T07:01:20.772Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-doctor-accuracy-01knxyj6
+  - active_role: null
+    base_branch_point: ab4a4edc7561040863be3f739cfd6b5c159f1b7c
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-default-reflection-hook-turn-filter/01kp99sn
+    canonical_branch_head: ab4a4edc7561040863be3f739cfd6b5c159f1b7c
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-04-16T07:31:09.580Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-04-16T07:31:09.580Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
+      target_commit: ab4a4edc7561040863be3f739cfd6b5c159f1b7c
+      updated_at: 2026-04-16T07:31:09.580Z
+    lifecycle_state: ready
+    resolved_base_branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
+    task_ref: "@01KP99SNQHRTFMY4ZY6AZZRNA4"
+    task_slug: task-default-reflection-hook-turn-filter
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-04-16T07:31:09.580Z
+      created_at: 2026-04-16T07:31:09.580Z
+      updated_at: 2026-04-16T07:31:09.580Z
+    workspace_id: dispatch-workspace-01KP99SNQHRTFMY4ZY6AZZRNA4
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-default-reflection-hook-turn-filter/01kp99sn
+        head: ab4a4edc7561040863be3f739cfd6b5c159f1b7c
+        last_seen_at: 2026-04-16T07:31:09.580Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-default-reflection-hook-turn-filter-01kp99sn
