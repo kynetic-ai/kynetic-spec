@@ -49,3 +49,39 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-16T05:36:35.075Z
+  - _ulid: 01KPADBB329A2M7ECEA6EABM93
+    content: >-
+      Implementation complete.
+
+
+      Changes:
+
+      1. Skills check (ac-skills-check-accurate, ac-skills-check-missing):
+         - Added getRenderedSkillLocations() and hasAnyRenderedSkills() in setup-status.ts covering all four supported output dirs (.claude/skills, .claude/plugins/kspec/skills, .agents/skills, .factory/skills).
+         - Doctor uses hasAnyRenderedSkills() to gate the warning: healthy if any location has kspec-managed skills, warning only when none do.
+         - Changed getSetupStatus() to scan all supported locations regardless of detected agent (prevents false-positive zero-count on cross-agent projects).
+
+      2. Scaffold config check (ac-config-scaffold-detected):
+         - New buildProjectConfigCheck() checks for kspec.config.yaml at project root.
+         - Warns with guidance naming kspec upgrade (with kspec setup --force fallback).
+
+      3. Version skew check (ac-version-skew-detected):
+         - New buildVersionSkewCheck() reads lastKnownVersion from .kspec/.setup-state.json and compares to getKspecPackageVersion().
+         - Warns with kspec upgrade guidance on mismatch; reports ok (not warning) when baseline is absent to avoid noise on pre-upgrade projects.
+
+      4. All actionable audit (ac-all-actionable):
+         - Every warning/error check now includes a concrete guidance command.
+         - Updated legacy task-storage error to name kspec upgrade as preferred with kspec task migrate fallback.
+         - Updated agents.md unknown branch to suggest kspec agents generate.
+
+      5. Test coverage: 12 new tests covering all 5 ACs plus a snapshot-style assertion that every
+      warning/error has non-empty guidance. Droid test updated to reflect cross-agent scanning. Full
+      suite: 7970 passed, 5 skipped.
+
+
+      Trait AC coverage: ac-1/ac-2 covered by legacy task-storage test; ac-3/4/5/6 and exit-code
+      ac-3-8 annotated N/A with inline reasons (doctor is read-only, does not resolve refs, does not
+      transition state, has no user input validation).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-16T05:48:44.514Z
