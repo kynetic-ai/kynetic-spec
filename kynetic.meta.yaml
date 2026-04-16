@@ -14756,6 +14756,15 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-04-16T02:22:53.585Z
+  - _ulid: 01KPA2K8F205XRQDRKMH2WDVTD
+    type: success
+    content: When reviewing CLI commands that modify .kspec/, verify a successful run leaves 'git -C
+      <project>/.kspec status --short' clean in a temp project. This catches writes that bypass
+      shadow auto-commit, like upgrade leaving .setup-state.json modified after reporting success.
+    author: codex
+    resolution: null
+    resolved: false
+    created_at: 2026-04-16T02:40:49.634Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
