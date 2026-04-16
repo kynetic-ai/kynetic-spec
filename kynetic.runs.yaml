@@ -26775,7 +26775,7 @@ runs:
     completed_at: 2026-04-16T02:23:10.366Z
   - _ulid: 01KPA3EJES18P7R5N7Q2C3HSVG
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -26789,7 +26789,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-16T02:57:40.805Z
-        completed_at: 2026-04-16T02:57:40.805Z
+        completed_at: 2026-04-16T02:57:49.803Z
+        notes: "Friction identified: /tmp/.kspec-sessions/ EACCES failures cause 5 persistent
+          cli-agent-commands test failures across all review cycles. High confidence — reproducibly
+          failed across 15+ cycles on this task alone, blocks clean 'npm test' signal. Success
+          pattern: observation @01KPA2K8 already captures the lesson about verifying commitIfShadow
+          in CLI commands that modify .kspec/ — no new capture needed."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-16T02:57:49.803Z
+        completed_at: 2026-04-16T02:57:49.803Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-16T02:55:44.601Z
