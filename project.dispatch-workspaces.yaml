@@ -4399,11 +4399,11 @@ workspaces:
     canonical_branch: dispatch/task/task-ui-data-layer-skill/01kkqrk0
     canonical_branch_head: 560f730b5c458fa6f2f07280175875da2cced4e5
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-19T03:56:12.293Z
+      updated_at: 2026-04-16T16:56:26.852Z
     health:
       status: stale
       issues:
@@ -4421,17 +4421,17 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
-      updated_at: 2026-03-19T03:56:12.293Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:56:26.852Z
+    lifecycle_state: closed
     resolved_base_branch: main
     task_ref: "@01KKQRK0CVGPA3H2GT9GH0EA8B"
     task_slug: task-ui-data-layer-skill
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:56:26.852Z
       last_active_at: 2026-03-15T04:08:53.859Z
-      last_reconciled_at: 2026-03-19T03:56:12.293Z
+      last_reconciled_at: 2026-04-16T16:56:26.852Z
       created_at: 2026-03-15T03:34:35.208Z
-      updated_at: 2026-03-19T03:56:12.293Z
+      updated_at: 2026-04-16T16:56:26.852Z
     workspace_id: dispatch-workspace-01KKQRK0CVGPA3H2GT9GH0EA8B
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
