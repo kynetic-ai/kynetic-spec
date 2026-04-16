@@ -5305,11 +5305,11 @@ workspaces:
     canonical_branch: dispatch/task/remove-process-cwd-web-ui-resolution-from-daemon/01kkrp45
     canonical_branch_head: 815bd9f1a66d3319f68ad145342907d18a4ad485
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-19T03:56:14.242Z
+      updated_at: 2026-04-16T16:56:44.249Z
     health:
       status: stale
       issues:
@@ -5327,17 +5327,17 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: 8045b69abbe62718c1abb64a7b00e7dc460b571d
-      updated_at: 2026-03-19T03:56:14.242Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:56:44.249Z
+    lifecycle_state: closed
     resolved_base_branch: main
     task_ref: "@01KKRP45A6S4TBWZX8KFKQPEVV"
     task_slug: remove-process-cwd-web-ui-resolution-from-daemon
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:56:44.249Z
       last_active_at: 2026-03-15T13:56:03.934Z
-      last_reconciled_at: 2026-03-19T03:56:14.242Z
+      last_reconciled_at: 2026-04-16T16:56:44.249Z
       created_at: 2026-03-15T13:48:58.547Z
-      updated_at: 2026-03-19T03:56:14.242Z
+      updated_at: 2026-04-16T16:56:44.249Z
     workspace_id: dispatch-workspace-01KKRP45A6S4TBWZX8KFKQPEVV
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
