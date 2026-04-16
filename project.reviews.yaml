@@ -150363,6 +150363,24 @@ reviews:
         runner: npm
         created_at: 2026-04-16T06:03:55.592Z
         completed_at: 2026-04-16T06:03:55.592Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/parser/doctor.ts, src/parser/setup-status.ts, src/parser/config.ts,
+          src/parser/skill-render.ts, src/cli/commands/doctor.ts, src/cli/commands/setup.ts,
+          src/cli/commands/upgrade.ts, src/cli/commands/skill-install.ts,
+          tests/parser/doctor.test.ts, tests/droid-setup-status.test.ts. Commands run: kspec task
+          get, kspec item get, kspec review for-task, git diff --stat, git diff, rg AC annotations,
+          kspec validate, npm test, runtime probe via node --import tsx/esm. Claims verified: full
+          suite passes; validate failure is pre-existing; plugin-skill path produces a misleading
+          success message. Categories searched: correctness, edge cases, error handling, test
+          quality, integration."
+        name: review-evidence
+        required: false
+        runner: reviewer
+        created_at: 2026-04-16T06:04:01.237Z
+        completed_at: 2026-04-16T06:04:01.237Z
     events:
       - _ulid: 01KPADFT2S0P8JXKKQ0PJCBDY1
         actor: Jacob Chapel
@@ -150391,6 +150409,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPAE77MR9YA3CXKJRDRN4S3F
         timestamp: 2026-04-16T06:03:59.485Z
+      - _ulid: 01KPAE7B9YQYSE2J0PVSDQCHPV
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-04-16T06:04:02.238Z
     examined_commit: d463ef96be9ccd0cc9074bcccbf3e4a34b8afe19
     external_links: []
     lifecycle_state: open
@@ -150421,5 +150446,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-16T05:51:10.937Z
-    updated_at: 2026-04-16T06:03:58.489Z
+    updated_at: 2026-04-16T06:04:01.237Z
     notes: []
