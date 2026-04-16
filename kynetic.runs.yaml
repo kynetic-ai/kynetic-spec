@@ -27254,7 +27254,7 @@ runs:
     completed_at: 2026-04-16T05:14:24.984Z
   - _ulid: 01KPAE9DZSEBMJQ1MNERDH90DD
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -27274,7 +27274,15 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-04-16T06:06:18.234Z
-        completed_at: 2026-04-16T06:06:18.234Z
+        completed_at: 2026-04-16T06:06:30.581Z
+        notes: "Coverage check:  found no existing spec/task/inbox items for payload quoting, heredoc
+          guidance, or review-comment body-file support. This friction is partially covered by an
+          existing agent convention in kspec-agents.md that recommends file-based payloads or quoted
+          heredocs for shell-sensitive command text."
+      - status: completed
+        step_index: 3
+        started_at: 2026-04-16T06:06:30.581Z
+        completed_at: 2026-04-16T06:06:30.581Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-16T06:05:10.521Z
