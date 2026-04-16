@@ -1,1 +1,47 @@
-notes: []
+notes:
+  - _ulid: 01KPA8BXPV6B5D6VY2MZJVG7D3
+    content: >-
+      Approach:
+
+      - RELEASE_NOTES.md at repo root, human-authored markdown with sections per version (## vX.Y.Z)
+      plus an Unreleased section. Subsections authored per release skill conventions: Summary, New
+      or changed configuration, Breaking changes, and free-form categories.
+
+      - Add RELEASE_NOTES.md to package.json files[] so it ships with the published package.
+
+      - New src/parser/release-notes.ts: loadReleaseNotes (reads file), getVersionNotes (returns
+      markdown slice for version), getRangeNotes (returns intervening slices sorted chronologically
+      by file order). Heading-based walker; no reformatting. Errors: file not found, unknown
+      version, invalid range.
+
+      - New src/cli/commands/release-notes.ts: kspec release-notes (no args -> current version notes
+      from package manifest). --from/--to flags for inclusive range. --json passes markdown as
+      string plus structured fields.
+
+      - Wire upgrade command: after pipeline, call getRangeNotes(sourceVersion, targetVersion) when
+      source != target and append to output block.
+
+      - Update release skill (project-local) with a Maintaining release notes section; pre-release
+      check says: before tagging, RELEASE_NOTES.md must contain a non-empty entry for the version
+      being released (Unreleased promoted or versioned section written).
+
+
+      Edge cases: Unreleased not yet promoted (skip from upgrade display), unknown versions
+      (actionable error naming known versions), invalid range (from > to), empty/malformed file.
+
+
+      Test plan:
+
+      - Parser unit tests: well-formed, missing version, empty file, range inclusive, reverse range
+      rejected, Unreleased excluded from versioned queries.
+
+      - CLI tests: default shows current (matches package.json), --from --to shows range in order,
+      invalid range errors with exit 1 + guidance, unknown version errors.
+
+      - Upgrade integration: simulate 0.9.0 -> 0.11.0 upgrade, verify 0.10.0 and 0.11.0 notes appear
+      in output.
+
+      - Skill doc test: loads the release skill and asserts the new section heading exists.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-16T04:21:40.699Z
