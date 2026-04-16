@@ -148935,6 +148935,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KP9ZXACVAGQ9X02RDC4FPCRE
         timestamp: 2026-04-16T01:53:54.715Z
+      - _ulid: 01KP9ZXSVNWY9JZYR86E476M45
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KP9ZXRWYTF3CKHN6TQFD1HZG
+        timestamp: 2026-04-16T01:54:09.397Z
     examined_commit: ce47669438108f7e8d2199c281a219cfbd16a69f
     external_links: []
     lifecycle_state: open
@@ -148986,7 +148993,36 @@ reviews:
               uses `--force` for a safety refresh gets an intentionally deleted hook reintroduced."
             created_at: 2026-04-16T01:53:53.564Z
         kind: blocker
+      - _ulid: 01KP9ZXRWYTF3CKHN6TQFD1HZG
+        entries:
+          - _ulid: 01KP9ZXRWY3RJVP50SM8RQ6J43
+            author: Jacob Chapel
+            body: >-
+              Files read: src/cli/index.ts; src/cli/commands/index.ts; src/cli/commands/setup.ts;
+              src/cli/commands/upgrade.ts; src/parser/shadow.ts; tests/upgrade-command.test.ts;
+              tests/helpers/cli.ts; .agents/skills/review-gates/SKILL.md.
+
+              Commands run: kspec task get @01KNXYJ5JCR99F76N8N7265E0B; kspec item get
+              @single-command-version-upgrade; git diff
+              0501051eb49ee8db8faccedc035f1cb95cef85fc..ce47669438108f7e8d2199c281a219cfbd16a69f;
+              grep -rn 'AC: @single-command-version-upgrade|AC: @trait-'
+              tests/upgrade-command.test.ts; kspec validate; npm test (twice, second via cache);
+              kspec search for existing /tmp/.kspec-sessions failures; temp-project repros for
+              upgrade with and without --force after removing default-session-reflect.
+
+              Claims verified: verified the submitted branch adds the upgrade command and 55
+              upgrade-command tests pass; independently reproduced that upgrade --force recreates a
+              user-removed reflection hook; independently reproduced that plain upgrade leaves the
+              removed hook absent.
+
+              Categories searched: correctness (found blocker in scaffold semantics), edge cases
+              (checked removed-hook force refresh path), error handling (reviewed
+              failed-step/version-recording logic), test quality (AC annotations present for new
+              spec + traits; no source-scanning tests found in upgrade suite), integration (command
+              registration and setup helper reuse), security (no material findings).
+            created_at: 2026-04-16T01:54:08.414Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-16T01:39:35.422Z
-    updated_at: 2026-04-16T01:53:53.564Z
+    updated_at: 2026-04-16T01:54:08.414Z
     notes: []
