@@ -1,1 +1,51 @@
-notes: []
+notes:
+  - _ulid: 01KPAM3NVSRDKAJ0TS7JX3N12T
+    content: >-
+      Implementation complete.
+
+
+      Spec: @default-session-reflection-hook
+
+      - Amended ac-reflection-hook-present wording to clarify the hook triggers on session.idle from
+      any agent session (not agent-scoped) and may carry filters limiting which idle events trigger
+      reflection. The existing ac-fires-once-per-invocation, description addition, and relates_to
+      @dispatch-hook-filter were already present from prior spec work.
+
+
+      Setup pipeline (src/cli/commands/setup.ts):
+
+      - Added DEFAULT_REFLECTION_HOOK_FIRST_TURN = 1 numeric constant with a comment documenting why
+      the filter value must be numeric (strict-equality matching against z.number() payload).
+
+      - ensureDefaultReflectionHook now includes filter: { turn_count:
+      DEFAULT_REFLECTION_HOOK_FIRST_TURN } on the scaffolded hook.
+
+      - Added ac-fires-once-per-invocation annotation to the scaffolding path.
+
+
+      Tests (tests/setup-reflection-hook.test.ts):
+
+      - Replaced filter.toBeUndefined() with an assertion that the filter equals { turn_count: 1 }
+      AND that typeof turn_count is number.
+
+      - Added a semantic test that calls matchesFilter() with synthetic session.idle envelopes and
+      payloads for turn_count 1, 2, and 7, asserting true for the first turn and false for later
+      turns.
+
+      - Added a YAML round-trip test that reads the scaffolded kynetic.meta.yaml back through
+      YAML.parse and asserts the filter turn_count is still numeric (not the string '1').
+
+
+      Verification:
+
+      - Full test suite: 2187 suites / 8010 tests pass (5 pre-existing skips).
+
+      - tsc --noEmit clean.
+
+      - kspec agents generate re-ran; spec still parses (the pre-existing meta.yaml schema error in
+      modules[0].traits.0 is unrelated and was present before this task).
+
+      - Backfill for existing projects is out of scope per task description.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-16T07:46:53.433Z
