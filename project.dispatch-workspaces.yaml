@@ -5467,11 +5467,11 @@ workspaces:
     canonical_branch: dispatch/task/disable-ssr-globally-to-fix-hard-refresh-stuck-on-loading/01kkrvzq
     canonical_branch_head: b9504b0f55e47629c13f585fc8635100c0c56176
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-19T03:56:14.581Z
+      updated_at: 2026-04-16T16:56:47.336Z
     health:
       status: stale
       issues:
@@ -5489,17 +5489,17 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: 8045b69abbe62718c1abb64a7b00e7dc460b571d
-      updated_at: 2026-03-19T03:56:14.581Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:56:47.336Z
+    lifecycle_state: closed
     resolved_base_branch: main
     task_ref: "@01KKRVZQR41NJXPFQMDTK23801"
     task_slug: disable-ssr-globally-to-fix-hard-refresh-stuck-on-loading
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:56:47.336Z
       last_active_at: 2026-03-15T14:24:46.288Z
-      last_reconciled_at: 2026-03-19T03:56:14.581Z
+      last_reconciled_at: 2026-04-16T16:56:47.336Z
       created_at: 2026-03-15T14:13:14.505Z
-      updated_at: 2026-03-19T03:56:14.581Z
+      updated_at: 2026-04-16T16:56:47.336Z
     workspace_id: dispatch-workspace-01KKRVZQR41NJXPFQMDTK23801
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
