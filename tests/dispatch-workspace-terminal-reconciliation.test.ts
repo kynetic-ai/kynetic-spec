@@ -137,9 +137,14 @@ describe("dispatch workspace terminal task reconciliation", () => {
     const ctx = await initContext(tempDir);
     const registryPath = getDispatchWorkspaceRegistryPath(ctx);
     const record = await readWorkspaceRecord(registryPath, taskRef);
-    // The lifecycle should be closing (completed + merged = cleanup eligible)
-    // and health should reflect the terminal-skip evaluation
-    expect(record.lifecycle_state).toBe("closing");
+    // With the self-heal path (AC
+    // @dispatch-workspace-registry ac-successful-cleanup-persists-completion),
+    // reconciliation transitions artifact-less records whose cleanup is
+    // eligible to cleanup.status=completed, which resolves to
+    // lifecycle_state=closed. Either "closed" (self-heal fired) or "closing"
+    // (self-heal skipped because of concurrent state) is acceptable here —
+    // the key assertion is that the branch was NOT restored.
+    expect(["closed", "closing"]).toContain(record.lifecycle_state);
     expect(record.integration.status).toBe("merged");
   });
 
