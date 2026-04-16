@@ -33026,11 +33026,11 @@ workspaces:
     canonical_branch: dispatch/task/implement-pre-invocation-workspace-executability-validation-for-dispatch-handoff/01kn6j53
     canonical_branch_head: 4d39d320fa3721dbe60c8b003ff225d92d9e8a3f
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-04-02T09:05:58.713Z
+      updated_at: 2026-04-16T17:02:54.149Z
     health:
       status: healthy
       issues: []
@@ -33043,17 +33043,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 97615415a87f8458a20728d4acfb8e8b635015bd
-      updated_at: 2026-04-02T09:05:58.713Z
-    lifecycle_state: closing
+      updated_at: 2026-04-16T17:02:54.149Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KN6J53YQST2TF8BMFJ7GZC7T"
     task_slug: implement-pre-invocation-workspace-executability-validation-for-dispatch-handoff
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:02:54.149Z
       last_active_at: 2026-04-02T08:54:04.601Z
-      last_reconciled_at: 2026-04-02T09:06:07.190Z
+      last_reconciled_at: 2026-04-16T17:02:54.149Z
       created_at: 2026-04-02T07:44:57.865Z
-      updated_at: 2026-04-02T09:06:07.190Z
+      updated_at: 2026-04-16T17:02:54.149Z
     workspace_id: dispatch-workspace-01KN6J53YQST2TF8BMFJ7GZC7T
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
