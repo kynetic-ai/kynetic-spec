@@ -58,7 +58,7 @@ description: >-
 spec_ref: "@default-session-reflection-hook"
 meta_ref: null
 plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -68,6 +68,14 @@ tags:
   - setup
   - hooks
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-default-reflection-hook-turn-filter/01kp99sn
+  captured_at: 2026-04-16T07:46:59.735Z
+  commit: a22365e8d21c2b7cd78f62bc226a6bcaf5e5263e
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KPAK7G780C4W3P5Z18P6V7AP
 history:
   - author: "@claude"
@@ -90,7 +98,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-16T07:32:20.550Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-default-reflection-hook-turn-filter/01kp99sn
+          captured_at: 2026-04-16T07:46:59.735Z
+          commit: a22365e8d21c2b7cd78f62bc226a6bcaf5e5263e
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-04-16T07:46:59.740Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-16T07:46:59.741Z
 created_at: 2026-04-15T19:27:25.425Z
 started_at: 2026-04-16T07:32:20.549Z
+submitted_at: 2026-04-16T07:46:59.740Z
 todos: []
 automation: eligible

@@ -26385,7 +26385,7 @@
   type: task
   spec_ref: "@default-session-reflection-hook"
   plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 2
@@ -26397,6 +26397,7 @@
   todos_count: 0
   created_at: 2026-04-15T19:27:25.425Z
   started_at: 2026-04-16T07:32:20.549Z
+  submitted_at: 2026-04-16T07:46:59.740Z
   automation: eligible
 - _ulid: 01KP9S5KAZGRSRVJWSJ1FXY6RM
   slugs:
