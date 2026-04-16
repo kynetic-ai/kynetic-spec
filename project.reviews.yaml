@@ -148657,6 +148657,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-16T01:00:45.660Z
+      - _ulid: 01KP9XNJCYEBSV7T5AVTFGQB2E
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP9XNHF01XZK8QT795R0KQKB
+        timestamp: 2026-04-16T01:14:42.462Z
     examined_commit: 23efbc1be833d77a0410b2964d4eda5eb81e78a9
     external_links: []
     lifecycle_state: open
@@ -148666,8 +148673,30 @@ reviews:
       content_hash: ""
       ref: "@01KNXYJ5JCR99F76N8N7265E0B"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KP9XNHF01XZK8QT795R0KQKB
+        anchor:
+          type: code
+          commit: 23efbc1be833d77a0410b2964d4eda5eb81e78a9
+          line_end: 700
+          line_start: 687
+          path: src/cli/commands/upgrade.ts
+          side: head
+        entries:
+          - _ulid: 01KP9XNHF05FRA8PZD1HTNAKJ8
+            author: Jacob Chapel
+            body: "Upgrade never backfills missing core skills before re-rendering. This code only builds the
+              render set from skills already present in meta, so an older project missing a core
+              skill introduced in a newer release never gets that skill restored. I reproduced this
+              by initializing a temp project, deleting the core review-plan skill metadata/content
+              plus its rendered directory, then running 'kspec upgrade --force --json': the command
+              returned success, removed the orphaned rendered directory, and still left both
+              .kspec/skills/review-plan/SKILL.md and .agents/skills/kspec-review-plan/SKILL.md
+              missing afterward. That leaves upgraded projects incomplete and can strand agents like
+              plan-reviewer with references to a nonexistent skill."
+            created_at: 2026-04-16T01:14:41.504Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-16T01:00:24.906Z
-    updated_at: 2026-04-16T01:00:44.692Z
+    updated_at: 2026-04-16T01:14:41.504Z
     notes: []
