@@ -52,6 +52,17 @@ export interface UpgradeResult {
   noop: boolean;
   steps: UpgradeStepResult[];
   followUps: string[];
+  /**
+   * Release notes for every intervening version strictly after
+   * sourceVersion and up to (and including) targetVersion.
+   *
+   * When the source version is unknown, release notes include every entry
+   * up to targetVersion. When no RELEASE_NOTES.md file is found, this is
+   * an empty array — the upgrade still succeeds.
+   *
+   * AC: @release-notes-accessible ac-upgrade-surfaces-notes
+   */
+  releaseNotes: Array<{ version: string; heading: string; markdown: string }>;
 }
 
 // ─── Setup State ──────────────────────────────────────────────────────────────
@@ -343,6 +354,9 @@ export async function runUpgradePipeline(
       noop: true,
       steps: [],
       followUps: [],
+      // Already current — no intervening release notes to surface.
+      // AC: @release-notes-accessible ac-upgrade-surfaces-notes
+      releaseNotes: [],
     };
   }
 
@@ -532,6 +546,14 @@ export async function runUpgradePipeline(
 
   const allSuccess = steps.every((s) => s.status !== "failed");
 
+  // AC: @release-notes-accessible ac-upgrade-surfaces-notes
+  // Surface every release notes section strictly after the source version
+  // and up to the target version so users see behavioral changes inline.
+  const releaseNotes = await collectReleaseNotesForUpgrade(
+    source.version,
+    targetVersion,
+  );
+
   return {
     success: allSuccess,
     sourceVersion: source.version,
@@ -541,7 +563,44 @@ export async function runUpgradePipeline(
     noop: false,
     steps,
     followUps,
+    releaseNotes,
   };
+}
+
+/**
+ * Load release notes for every intervening version between source and target.
+ * Swallows missing-file errors (a project without RELEASE_NOTES.md still
+ * upgrades successfully) but surfaces parser errors so they are visible.
+ *
+ * AC: @release-notes-accessible ac-upgrade-surfaces-notes
+ */
+async function collectReleaseNotesForUpgrade(
+  sourceVersion: string | null,
+  targetVersion: string,
+): Promise<Array<{ version: string; heading: string; markdown: string }>> {
+  try {
+    const { loadReleaseNotes, getInterveningNotes, renderEntry } = await import(
+      "../../parser/release-notes.js"
+    );
+    // Resolve the package root where the shipped RELEASE_NOTES.md lives.
+    const { fileURLToPath } = await import("node:url");
+    const path = await import("node:path");
+    const here = fileURLToPath(import.meta.url);
+    const packageRoot = path.resolve(path.dirname(here), "..", "..", "..");
+
+    const notes = await loadReleaseNotes(packageRoot);
+    const entries = getInterveningNotes(notes, sourceVersion, targetVersion);
+    return entries.map((entry) => ({
+      version: entry.version,
+      heading: entry.heading,
+      markdown: renderEntry(entry),
+    }));
+  } catch {
+    // File missing or unreadable — surface no release notes but let the
+    // upgrade itself succeed. Authoring the file is documented in the
+    // release skill; its absence is not a blocker for upgrade.
+    return [];
+  }
 }
 
 // ─── Pipeline Step Implementations ────────────────────────────────────────────
@@ -1489,6 +1548,8 @@ export function registerUpgradeCommand(program: Command): void {
             details: s.details,
           })),
           follow_ups: result.followUps,
+          // AC: @release-notes-accessible ac-upgrade-surfaces-notes
+          release_notes: result.releaseNotes,
           ...(dryRun ? { dry_run: true } : {}),
         };
 
@@ -1552,6 +1613,16 @@ export function registerUpgradeCommand(program: Command): void {
             console.log(chalk.bold("\nManual follow-ups:"));
             for (const followUp of result.followUps) {
               console.log(`  • ${followUp}`);
+            }
+          }
+
+          // AC: @release-notes-accessible ac-upgrade-surfaces-notes
+          if (result.releaseNotes.length > 0) {
+            console.log(chalk.bold("\nRelease notes:"));
+            console.log();
+            for (const entry of result.releaseNotes) {
+              process.stdout.write(entry.markdown);
+              console.log();
             }
           }
 

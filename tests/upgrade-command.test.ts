@@ -1804,4 +1804,73 @@ describe("kspec upgrade", () => {
       expect(result.exitCode).toBe(0);
     });
   });
+
+  // ─── Release notes integration ────────────────────────────────────
+  // AC: @release-notes-accessible ac-upgrade-surfaces-notes
+  //
+  // Simulate a stale project that recorded an old version, then run upgrade
+  // and verify the intervening release notes appear in the output.
+  describe("release notes integration", () => {
+    // AC: @release-notes-accessible ac-upgrade-surfaces-notes
+    it("includes release notes for every intervening version in the output", async () => {
+      await initProject(tempDir);
+      // Pretend the project was last touched by a much older kspec
+      // version. The current installed version is whatever this repo's
+      // package.json says, so the delta covers several releases.
+      await writeLastKnownVersion(tempDir, "0.10.0");
+
+      const current = getCurrentVersion();
+      const result = kspecJson<{
+        success: boolean;
+        source_version: string;
+        target_version: string;
+        release_notes: Array<{ version: string; heading: string; markdown: string }>;
+      }>("upgrade", tempDir);
+
+      expect(result.source_version).toBe("0.10.0");
+      expect(result.target_version).toBe(current);
+      // The delta from 0.10.0 up to the current version must include at
+      // least v0.11.0 (the next released version after 0.10.0). Any later
+      // releases are version-dependent.
+      const versions = result.release_notes.map((n) => n.version);
+      expect(versions).toContain("0.11.0");
+      // Intervening notes strictly after source → 0.10.0 itself must not
+      // appear, only versions after it.
+      expect(versions).not.toContain("0.10.0");
+      // Each entry must carry the authored markdown including the
+      // level-2 heading.
+      for (const entry of result.release_notes) {
+        expect(entry.markdown).toMatch(/^##\s+v/);
+      }
+    });
+
+    // AC: @release-notes-accessible ac-upgrade-surfaces-notes
+    // AC: @single-command-version-upgrade ac-idempotent-when-current
+    it("emits no release notes when project is already at the current version", async () => {
+      await initProject(tempDir);
+      const current = getCurrentVersion();
+      await writeLastKnownVersion(tempDir, current);
+
+      const result = kspecJson<{
+        noop: boolean;
+        release_notes: Array<{ version: string }>;
+      }>("upgrade", tempDir);
+
+      expect(result.noop).toBe(true);
+      expect(result.release_notes).toEqual([]);
+    });
+
+    // AC: @release-notes-accessible ac-upgrade-surfaces-notes
+    it("surfaces release notes in the human-readable output too", async () => {
+      await initProject(tempDir);
+      await writeLastKnownVersion(tempDir, "0.10.0");
+
+      const result = kspec("upgrade", tempDir);
+      expect(result.exitCode).toBe(0);
+      // The human-readable output should show a "Release notes" section
+      // and at least the v0.11.0 heading.
+      expect(result.stdout).toMatch(/Release notes:/i);
+      expect(result.stdout).toContain("v0.11.0");
+    });
+  });
 });
