@@ -53146,7 +53146,7 @@ workspaces:
         head: 65feefa131b93d2617358b6cd9f0c93c8fbaa589
         last_seen_at: 2026-04-16T02:07:36.587Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-cli-agent-commands-session-store-tests-under-restricted-tmp-permissions-01kp9zw2
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 2d24a0b0a4d99e19df22ac5789c627697ac962be
     bootstrap:
       status: succeeded
@@ -53555,12 +53555,12 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-04-16T05:12:03.323Z
+      updated_at: 2026-04-16T05:13:00.630Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-16T05:12:03.323Z
+      updated_at: 2026-04-16T05:13:00.630Z
     integration:
       status: merged
       detail: integration:merged
@@ -53568,7 +53568,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
       target_commit: 2d24a0b0a4d99e19df22ac5789c627697ac962be
-      updated_at: 2026-04-16T05:12:03.323Z
+      updated_at: 2026-04-16T05:13:00.630Z
     lifecycle_state: closing
     resolved_base_branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
     task_ref: "@01KNXYJ5XEHD54A46S1988T3CV"
@@ -53576,9 +53576,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-16T04:59:32.253Z
-      last_reconciled_at: 2026-04-16T05:12:03.323Z
+      last_reconciled_at: 2026-04-16T05:13:00.630Z
       created_at: 2026-04-16T04:17:00.258Z
-      updated_at: 2026-04-16T05:12:03.323Z
+      updated_at: 2026-04-16T05:13:00.630Z
     workspace_id: dispatch-workspace-01KNXYJ5XEHD54A46S1988T3CV
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
