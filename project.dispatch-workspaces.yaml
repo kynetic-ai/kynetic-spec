@@ -52665,11 +52665,11 @@ workspaces:
     canonical_branch: dispatch/task/task-fix-cli-agent-session-store-eacces/01kp9s5k
     canonical_branch_head: 73f9daaedf7d2c63d635be9604cdbd8539f6b64c
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-04-16T00:23:54.462Z
+      updated_at: 2026-04-16T17:05:16.535Z
     health:
       status: healthy
       issues: []
@@ -52682,17 +52682,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: cd2c71e9466177bb37b9ab7f220d48722715539f
-      updated_at: 2026-04-16T00:23:54.462Z
-    lifecycle_state: closing
+      updated_at: 2026-04-16T17:05:16.535Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KP9S5KAZGRSRVJWSJ1FXY6RM"
     task_slug: task-fix-cli-agent-session-store-eacces
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:05:16.535Z
       last_active_at: 2026-04-16T00:11:00.672Z
-      last_reconciled_at: 2026-04-16T00:26:51.695Z
+      last_reconciled_at: 2026-04-16T17:05:16.535Z
       created_at: 2026-04-15T23:57:02.585Z
-      updated_at: 2026-04-16T00:26:51.695Z
+      updated_at: 2026-04-16T17:05:16.535Z
     workspace_id: dispatch-workspace-01KP9S5KAZGRSRVJWSJ1FXY6RM
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
