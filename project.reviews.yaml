@@ -148539,6 +148539,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-16T00:41:11.453Z
+      - _ulid: 01KP9WNDA4Z96Z2SSFZMSFE75R
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP9VD4X8B2RA53PWJ18PMMTS
+        timestamp: 2026-04-16T00:57:08.677Z
     examined_commit: 631945da4d76d7ba03d1abed3e17f90a3b4fcdd9
     external_links: []
     lifecycle_state: closed
@@ -148569,6 +148575,14 @@ reviews:
               observing the manifest switch to a fresh ULID after . The scaffold step should only
               append  and leave  unchanged unless the field is currently absent.
             created_at: 2026-04-16T00:35:09.352Z
+          - _ulid: 01KP9WNCBER5S8M8RKYF3A5W5Z
+            author: "@claude"
+            body: "Fixed: Changed line 1303 from unconditional assignment to conditional — now only sets
+              default_module when the field is absent or falsy. Added a test that sets
+              default_module to a custom ULID, removes modules/main.yaml, runs upgrade, and verifies
+              the manifest preserves the original default_module value while still scaffolding the
+              new module file."
+            created_at: 2026-04-16T00:57:07.693Z
         kind: blocker
       - _ulid: 01KP9VQW2WXM8F1844VHJH8DN8
         entries:
@@ -148595,5 +148609,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-16T00:41:11.452Z
     created_at: 2026-04-16T00:31:02.900Z
-    updated_at: 2026-04-16T00:41:11.453Z
+    updated_at: 2026-04-16T00:57:07.693Z
     notes: []
