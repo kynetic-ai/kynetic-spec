@@ -6366,11 +6366,11 @@ workspaces:
     canonical_branch: dispatch/task/implement-cross-agent-task-dispatch-exclusivity/01kksw26
     canonical_branch_head: fa9b6e1f0a6d301cd0d8d7104b7d388c97d2584d
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-19T03:56:16.440Z
+      updated_at: 2026-04-16T16:57:02.333Z
     health:
       status: stale
       issues:
@@ -6388,17 +6388,17 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
-      updated_at: 2026-03-19T03:56:16.440Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:57:02.333Z
+    lifecycle_state: closed
     resolved_base_branch: main
     task_ref: "@01KKSW263S036SS7QFQ5RTN813"
     task_slug: implement-cross-agent-task-dispatch-exclusivity
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:57:02.333Z
       last_active_at: 2026-03-15T23:59:24.921Z
-      last_reconciled_at: 2026-03-19T03:56:16.440Z
+      last_reconciled_at: 2026-04-16T16:57:02.333Z
       created_at: 2026-03-15T23:50:16.242Z
-      updated_at: 2026-03-19T03:56:16.440Z
+      updated_at: 2026-04-16T16:57:02.333Z
     workspace_id: dispatch-workspace-01KKSW263S036SS7QFQ5RTN813
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
