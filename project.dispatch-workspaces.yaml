@@ -7716,11 +7716,11 @@ workspaces:
     canonical_branch: dispatch/task/round-trip-stability-for-plan-record-yaml-writes/01kkx6c8
     canonical_branch_head: 8dabdab7f3df4458dc0e630b24f21b733e532d75
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-17T19:37:26.397Z
+      updated_at: 2026-04-16T16:57:26.441Z
     health:
       status: invalid
       issues:
@@ -7742,17 +7742,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 8ee6537e0a4a38b0435f8cb18987f5043eb8cb0c
-      updated_at: 2026-03-17T19:37:26.397Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:57:26.441Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KKX6C83WVQBYBZ5SWTXY1JKA"
     task_slug: round-trip-stability-for-plan-record-yaml-writes
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:57:26.441Z
       last_active_at: 2026-03-17T19:17:04.500Z
-      last_reconciled_at: 2026-03-17T19:37:26.397Z
+      last_reconciled_at: 2026-04-16T16:57:26.441Z
       created_at: 2026-03-17T12:18:18.813Z
-      updated_at: 2026-03-17T19:37:26.397Z
+      updated_at: 2026-04-16T16:57:26.441Z
     workspace_id: dispatch-workspace-01KKX6C83WVQBYBZ5SWTXY1JKA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
