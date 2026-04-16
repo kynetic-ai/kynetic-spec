@@ -6447,11 +6447,11 @@ workspaces:
     canonical_branch: dispatch/task/task-update-session-stream-spec-cleanup/01kksgt1
     canonical_branch_head: 7c2393ce417a2edefa67a17198107e6b788dfdec
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-19T03:56:16.605Z
+      updated_at: 2026-04-16T16:57:03.922Z
     health:
       status: stale
       issues:
@@ -6469,17 +6469,17 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
-      updated_at: 2026-03-19T03:56:16.605Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:57:03.922Z
+    lifecycle_state: closed
     resolved_base_branch: main
     task_ref: "@01KKSGT1SGVWACS5ET75Q87NPX"
     task_slug: task-update-session-stream-spec-cleanup
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:57:03.922Z
       last_active_at: 2026-03-16T00:14:06.961Z
-      last_reconciled_at: 2026-03-19T03:56:16.605Z
+      last_reconciled_at: 2026-04-16T16:57:03.922Z
       created_at: 2026-03-16T00:00:04.071Z
-      updated_at: 2026-03-19T03:56:16.605Z
+      updated_at: 2026-04-16T16:57:03.922Z
     workspace_id: dispatch-workspace-01KKSGT1SGVWACS5ET75Q87NPX
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
