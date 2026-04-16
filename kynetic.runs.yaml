@@ -27390,7 +27390,7 @@ runs:
     completed_at: 2026-04-16T06:38:08.457Z
   - _ulid: 01KPAHB9VK5N434HEEGXVN86JX
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -27405,7 +27405,21 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-16T06:59:52.448Z
-        completed_at: 2026-04-16T06:59:52.448Z
+        completed_at: 2026-04-16T07:00:36.030Z
+        notes: "High-confidence item identified: Audit-style tasks (e.g. 'audit every message for X')
+          benefit from codifying the invariant as a regression test rather than a per-string
+          assertion. In this session the first two fix cycles both failed because the audit was
+          incomplete — the reviewer found new offending paths each time. The ac-all-actionable test
+          was already present but only asserted non-empty guidance, not guidance specificity. Adding
+          a regex-based regression (generic 'kspec setup' without a specific flag is forbidden
+          unless the guidance also names a dedicated command) will prevent future paths from
+          drifting back to generic guidance as code evolves. This is concrete, systemic, and
+          generalizes to any audit task. Skipped friction item about 'audit tasks hit multiple fix
+          cycles' — too one-off / communication-level to generalize to a rule."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-16T07:00:36.030Z
+        completed_at: 2026-04-16T07:00:36.030Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-16T06:58:37.555Z
