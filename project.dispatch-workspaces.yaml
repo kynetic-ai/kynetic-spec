@@ -30415,11 +30415,11 @@ workspaces:
     canonical_branch: dispatch/task/task-fix-sessions-live-update-e2e-full-gate/01kn3q0c
     canonical_branch_head: 0ad631f6283837fdd78304944156bc7667d20366
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-04-01T08:29:41.179Z
+      updated_at: 2026-04-16T17:02:23.422Z
     health:
       status: healthy
       issues: []
@@ -30432,17 +30432,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: ba2271a6ea2603e84f9d067a330468bb9e08dd74
-      updated_at: 2026-04-01T08:29:41.179Z
-    lifecycle_state: closing
+      updated_at: 2026-04-16T17:02:23.422Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KN3Q0CXG130QGTF0W840KK4M"
     task_slug: task-fix-sessions-live-update-e2e-full-gate
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:02:23.422Z
       last_active_at: 2026-04-01T08:23:49.394Z
-      last_reconciled_at: 2026-04-01T08:30:00.513Z
+      last_reconciled_at: 2026-04-16T17:02:23.422Z
       created_at: 2026-04-01T07:30:00.528Z
-      updated_at: 2026-04-01T08:30:00.513Z
+      updated_at: 2026-04-16T17:02:23.422Z
     workspace_id: dispatch-workspace-01KN3Q0CXG130QGTF0W840KK4M
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
