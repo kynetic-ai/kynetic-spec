@@ -42942,11 +42942,11 @@ workspaces:
     canonical_branch: dispatch/task/extend-loadalltasks-to-return-history-alongside-task-data/01knn24y
     canonical_branch_head: bc0435b6cd39c76c9ffa63c060e74ccf4196cb4e
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-04-07T23:33:03.533Z
+      updated_at: 2026-04-16T17:04:42.016Z
     health:
       status: healthy
       issues: []
@@ -42959,17 +42959,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-cache-aware-command-execution/01knkf3b
       target_commit: 09384972c51b1a66addefe64fbe2d42a7c428f9f
-      updated_at: 2026-04-07T23:33:03.533Z
-    lifecycle_state: closing
+      updated_at: 2026-04-16T17:04:42.016Z
+    lifecycle_state: closed
     resolved_base_branch: plan/plan-cache-aware-command-execution/01knkf3b
     task_ref: "@01KNN24YV6T3TPR7R1Y2CTH66C"
     task_slug: extend-loadalltasks-to-return-history-alongside-task-data
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:04:42.016Z
       last_active_at: 2026-04-07T23:25:39.054Z
-      last_reconciled_at: 2026-04-07T23:34:10.265Z
+      last_reconciled_at: 2026-04-16T17:04:42.016Z
       created_at: 2026-04-07T23:07:45.167Z
-      updated_at: 2026-04-07T23:34:10.265Z
+      updated_at: 2026-04-16T17:04:42.016Z
     workspace_id: dispatch-workspace-01KNN24YV6T3TPR7R1Y2CTH66C
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
