@@ -2108,11 +2108,11 @@ workspaces:
     canonical_branch: dispatch/task/implement-droid-setup-status-reporting/01kkjkmb
     canonical_branch_head: 2fbde3c6bc1585be951554a2ccf78343a704b64e
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-29T03:33:17.398Z
+      updated_at: 2026-04-16T16:55:43.261Z
     health:
       status: stale
       issues:
@@ -2130,17 +2130,17 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: 48408281d10e9f1d5ec6ba581041cd9477006c46
-      updated_at: 2026-03-29T03:33:17.398Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:55:43.261Z
+    lifecycle_state: closed
     resolved_base_branch: main
     task_ref: "@01KKJKMB07ACRP29S80J2PB1RK"
     task_slug: implement-droid-setup-status-reporting
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:55:43.261Z
       last_active_at: 2026-03-13T18:38:38.157Z
-      last_reconciled_at: 2026-03-29T03:33:17.398Z
+      last_reconciled_at: 2026-04-16T16:55:43.261Z
       created_at: 2026-03-13T13:44:49.687Z
-      updated_at: 2026-03-29T03:33:17.398Z
+      updated_at: 2026-04-16T16:55:43.261Z
     workspace_id: dispatch-workspace-01KKJKMB07ACRP29S80J2PB1RK
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
