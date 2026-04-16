@@ -27309,7 +27309,7 @@ runs:
     completed_at: 2026-04-16T06:06:53.964Z
   - _ulid: 01KPAF4HGHB1R31NDRPDF0KH2D
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -27323,7 +27323,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-16T06:21:11.514Z
-        completed_at: 2026-04-16T06:21:11.514Z
+        completed_at: 2026-04-16T06:21:25.562Z
+        notes: "Identified 2 high-confidence items: (1) SUCCESS — reviewer runtime-probe repro in blocker
+          body made the fix trivially actionable; (2) FRICTION — stale doctrinal comments adjacent
+          to changed code repeating the same inaccuracy as the changed user-visible string. Both are
+          concrete, systemic, and verifiable against this session's artifacts."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-16T06:21:25.562Z
+        completed_at: 2026-04-16T06:21:25.562Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-16T06:19:58.865Z
