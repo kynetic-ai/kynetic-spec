@@ -54759,11 +54759,11 @@ workspaces:
     canonical_branch: dispatch/task/task-persist-cleanup-completion-status/01kpanm6
     canonical_branch_head: 4b0f5e254904f941870b59b0157a5fb9cd634308
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-04-16T09:01:05.578Z
+      updated_at: 2026-04-16T17:05:24.061Z
     health:
       status: healthy
       issues: []
@@ -54776,17 +54776,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 65feefa131b93d2617358b6cd9f0c93c8fbaa589
-      updated_at: 2026-04-16T09:01:05.578Z
-    lifecycle_state: closing
+      updated_at: 2026-04-16T17:05:24.061Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KPANM6STGNV5QMZFMC4AC8BM"
     task_slug: task-persist-cleanup-completion-status
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:05:24.061Z
       last_active_at: 2026-04-16T08:48:37.799Z
-      last_reconciled_at: 2026-04-16T09:03:23.502Z
+      last_reconciled_at: 2026-04-16T17:05:24.061Z
       created_at: 2026-04-16T08:15:12.258Z
-      updated_at: 2026-04-16T09:03:23.502Z
+      updated_at: 2026-04-16T17:05:24.061Z
     workspace_id: dispatch-workspace-01KPANM6STGNV5QMZFMC4AC8BM
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
