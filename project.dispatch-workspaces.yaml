@@ -12328,11 +12328,11 @@ workspaces:
     canonical_branch: dispatch/task/task-implement-cancelled-task-dependency-cleanup/01km43vy
     canonical_branch_head: 86035071daccf934787a0b9f1fe7a029e343d28a
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-20T01:41:43.187Z
+      updated_at: 2026-04-16T16:58:51.906Z
     health:
       status: invalid
       issues:
@@ -12354,17 +12354,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 146e2709913aa6c8f2e597da2e98c9d224b4255d
-      updated_at: 2026-03-20T01:41:43.187Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:58:51.906Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KM43VYQXEFJMMYK2184MR7FH"
     task_slug: task-implement-cancelled-task-dependency-cleanup
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:58:51.906Z
       last_active_at: 2026-03-20T00:26:20.714Z
-      last_reconciled_at: 2026-03-20T01:41:43.187Z
+      last_reconciled_at: 2026-04-16T16:58:51.906Z
       created_at: 2026-03-19T22:45:09.789Z
-      updated_at: 2026-03-20T01:41:43.187Z
+      updated_at: 2026-04-16T16:58:51.906Z
     workspace_id: dispatch-workspace-01KM43VYQXEFJMMYK2184MR7FH
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
