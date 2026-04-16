@@ -148942,9 +148942,25 @@ reviews:
           kind: nit
           thread_ulid: 01KP9ZXRWYTF3CKHN6TQFD1HZG
         timestamp: 2026-04-16T01:54:09.397Z
+      - _ulid: 01KP9ZY56E5V7MAHE0H9X9V22T
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-16T01:54:21.006Z
+      - _ulid: 01KP9ZY56EVPE74YZNZTM76K1K
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-16T01:54:21.007Z
     examined_commit: ce47669438108f7e8d2199c281a219cfbd16a69f
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -149022,7 +149038,14 @@ reviews:
               registration and setup helper reuse), security (no material findings).
             created_at: 2026-04-16T01:54:08.414Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-16T01:54:21.006Z
     created_at: 2026-04-16T01:39:35.422Z
-    updated_at: 2026-04-16T01:54:08.414Z
+    updated_at: 2026-04-16T01:54:21.006Z
     notes: []
