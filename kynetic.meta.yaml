@@ -14923,6 +14923,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-16T08:08:36.300Z
+  - _ulid: 01KPAPKXQ1J1VQV2RJ9CCPRGQR
+    type: friction
+    content: "Setup scaffolds that create runtime-active config (hooks, rules, dispatch entries) need
+      tests that exercise the semantic contract, not just creation shape. Default reflection hook
+      scaffold passed creation/idempotency/removability tests but shipped without a turn_count
+      filter; bug would only have surfaced in a multi-turn session. Pattern: at least one test
+      should drive the scaffolded artifact against representative event payloads."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-16T08:30:42.914Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:

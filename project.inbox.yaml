@@ -2724,3 +2724,17 @@ inbox:
       - search
     added_by: "@claude"
     created_at: 2026-04-16T08:26:43.063Z
+  - _ulid: 01KPAPKXY9F0CH0REN25YH1QM2
+    text: "When amending an AC (kspec item ac set) the CLI does not surface tests annotated to that AC
+      that may now be stale. Encountered when amending ac-reflection-hook-present: the existing test
+      assertion at tests/setup-reflection-hook.test.ts:108 codified the old wording and only a human
+      review caught the drift. Options: (1) kspec item ac set warns with a list of annotated tests,
+      (2) new kspec ac usages @spec ac-id command, (3) doctor check for AC annotations against
+      recently-modified ACs."
+    tags:
+      - dx
+      - ac
+      - tooling
+      - reflection
+    added_by: "@claude"
+    created_at: 2026-04-16T08:30:43.145Z
