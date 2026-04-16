@@ -6928,7 +6928,7 @@ modules:
           and CLI consumption stay in sync.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
