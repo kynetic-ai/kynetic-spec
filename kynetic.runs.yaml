@@ -27576,9 +27576,22 @@ runs:
     started_at: 2026-04-16T08:46:39.686Z
   - _ulid: 01KPARBPRD7KJPK93Q0P1D5YEF
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-16T09:01:10.797Z
+        completed_at: 2026-04-16T09:01:51.992Z
+        notes: "What worked well: The review path stayed efficient because the dispatch task note already
+          documented the blocked-path investigation and implementation plan, so verification could
+          focus on the diff and runtime behavior instead of reconstructing intent. Existing durable
+          shadow-branch tests around persistWorkspaceRecord and purgeDispatchWorkspaceRecord also
+          reduced ambiguity when evaluating the new cleanup persistence behavior."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-16T09:01:51.992Z
+        completed_at: 2026-04-16T09:01:51.992Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-16T09:01:10.797Z
