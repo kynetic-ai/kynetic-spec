@@ -389,3 +389,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-16T00:41:13.393Z
+  - _ulid: 01KP9WPJHA75TCAW4H7S9WT3W0
+    content: "Fix cycle 13: Addressed cycle 12 blocker — default_module rewrite. The scaffold step
+      unconditionally overwrote manifest.default_module with the new module ULID. Changed to
+      conditional assignment (only set when absent/falsy). Added behavioral test that sets a custom
+      default_module, removes modules/main.yaml, runs upgrade, and verifies the original
+      default_module is preserved. All 53 upgrade tests pass. The 5 failures in
+      cli-agent-commands.test.ts are pre-existing /tmp permission issues unrelated to upgrade."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-16T00:57:46.794Z
