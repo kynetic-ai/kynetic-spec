@@ -41726,11 +41726,11 @@ workspaces:
     canonical_branch: dispatch/task/task-cache-aware-meta/01knmbpe
     canonical_branch_head: cf0877725dfea92e556e66d3b3c50c9254e04263
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-04-07T19:35:51.877Z
+      updated_at: 2026-04-16T17:04:35.346Z
     health:
       status: healthy
       issues: []
@@ -41743,17 +41743,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-cache-aware-command-execution/01knkf3b
       target_commit: 052721e6a56ab4b9e41c3c3272ff82ee16e29059
-      updated_at: 2026-04-07T19:35:51.877Z
-    lifecycle_state: closing
+      updated_at: 2026-04-16T17:04:35.346Z
+    lifecycle_state: closed
     resolved_base_branch: plan/plan-cache-aware-command-execution/01knkf3b
     task_ref: "@01KNMBPE1VG2HJEQZBXT33W1R8"
     task_slug: task-cache-aware-meta
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:04:35.346Z
       last_active_at: 2026-04-07T19:28:55.195Z
-      last_reconciled_at: 2026-04-07T19:37:22.784Z
+      last_reconciled_at: 2026-04-16T17:04:35.346Z
       created_at: 2026-04-07T19:17:03.983Z
-      updated_at: 2026-04-07T19:37:22.784Z
+      updated_at: 2026-04-16T17:04:35.346Z
     workspace_id: dispatch-workspace-01KNMBPE1VG2HJEQZBXT33W1R8
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
