@@ -20152,11 +20152,11 @@ workspaces:
     canonical_branch: dispatch/task/task-agent-list-json-fields/01kme876
     canonical_branch_head: ae4a1eecdbeb1a3cf0d00e0029d82050a04e5644
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-23T21:36:54.382Z
+      updated_at: 2026-04-16T17:00:23.949Z
     health:
       status: invalid
       issues:
@@ -20177,17 +20177,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: a378987c30a659df68c0dbe60834ee97624fb9a8
-      updated_at: 2026-03-23T21:36:54.382Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T17:00:23.949Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KME876M1G9JTHMVDDE095T2E"
     task_slug: task-agent-list-json-fields
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:00:23.949Z
       last_active_at: 2026-03-23T21:24:14.954Z
-      last_reconciled_at: 2026-03-23T21:36:54.382Z
+      last_reconciled_at: 2026-04-16T17:00:23.949Z
       created_at: 2026-03-23T21:13:38.182Z
-      updated_at: 2026-03-23T21:36:54.382Z
+      updated_at: 2026-04-16T17:00:23.949Z
     workspace_id: dispatch-workspace-01KME876M1G9JTHMVDDE095T2E
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
