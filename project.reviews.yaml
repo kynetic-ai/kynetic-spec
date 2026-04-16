@@ -148229,6 +148229,12 @@ reviews:
         payload:
           thread_ulid: 01KP9S1FM4Y9K2MN7M72874F0B
         timestamp: 2026-04-16T00:27:29.791Z
+      - _ulid: 01KP9TZ8YWNAK0KPYQHKMFX2AR
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP9S1N87H8R06ZX5RFP1RN4P
+        timestamp: 2026-04-16T00:27:34.748Z
     examined_commit: 35e8acf2da1bea09aec4e82a607e00493b3ca4ac
     external_links: []
     lifecycle_state: closed
@@ -148316,6 +148322,8 @@ reviews:
               message contains 'would update' and that the manifest was not modified."
             created_at: 2026-04-16T00:27:17.970Z
         kind: blocker
+        resolved_at: 2026-04-16T00:27:33.795Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -148325,7 +148333,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T23:56:12.459Z
     created_at: 2026-04-15T23:42:18.937Z
-    updated_at: 2026-04-16T00:27:28.840Z
+    updated_at: 2026-04-16T00:27:33.795Z
     notes: []
   - _ulid: 01KP9T2Q405E2AJJA8DNQBTDSQ
     slugs: []
