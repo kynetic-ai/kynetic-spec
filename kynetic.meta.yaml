@@ -14683,6 +14683,25 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-16T00:42:39.719Z
+  - _ulid: 01KP9WS9HK07XC69Y9FB3Y528G
+    type: friction
+    content: "kspec task start && kspec task submit fails because submit reads stale shadow branch state
+      before the auto-commit from start has landed. Workaround: run start and submit as separate
+      invocations. This affects dispatch fix cycles where needs_work must transition through
+      in_progress to pending_review."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-16T00:59:15.891Z
+  - _ulid: 01KP9WS9RF2AQD1XVK7A7YAFQ5
+    type: success
+    content: "Fix cycle 13 on upgrade command completed in a single pass: reviewer reproduction steps
+      were clear enough to immediately understand, fix, test, and resubmit. Precise blocker threads
+      with reproduction steps dramatically reduce fix cycle time."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-16T00:59:16.111Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
