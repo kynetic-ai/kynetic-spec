@@ -12155,11 +12155,11 @@ workspaces:
     canonical_branch: dispatch/task/task-design-dispatch-shared-checkout-contract/01km3zmd
     canonical_branch_head: 146e2709913aa6c8f2e597da2e98c9d224b4255d
     cleanup:
-      status: scheduled
+      status: completed
       detail: task-abandoned
       eligible: true
       reason: task-abandoned
-      updated_at: 2026-03-19T21:58:49.541Z
+      updated_at: 2026-04-16T16:58:48.135Z
     health:
       status: invalid
       issues:
@@ -12181,17 +12181,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 146e2709913aa6c8f2e597da2e98c9d224b4255d
-      updated_at: 2026-03-19T21:58:49.541Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:58:48.135Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KM3ZMD8K6VNEVT4VR9R9YZQG"
     task_slug: task-design-dispatch-shared-checkout-contract
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:58:48.135Z
       last_active_at: 2026-03-19T21:51:42.474Z
-      last_reconciled_at: 2026-03-19T21:58:49.541Z
+      last_reconciled_at: 2026-04-16T16:58:48.135Z
       created_at: 2026-03-19T21:51:41.266Z
-      updated_at: 2026-03-19T21:58:49.541Z
+      updated_at: 2026-04-16T16:58:48.135Z
     workspace_id: dispatch-workspace-01KM3ZMD8K6VNEVT4VR9R9YZQG
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
