@@ -5143,11 +5143,11 @@ workspaces:
     canonical_branch: dispatch/task/task-migrate-inbox-triage/01kkqrk5
     canonical_branch_head: eef37a199858d8675ca70763465cd6919895271c
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-19T03:56:13.871Z
+      updated_at: 2026-04-16T16:56:41.251Z
     health:
       status: stale
       issues:
@@ -5165,17 +5165,17 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
-      updated_at: 2026-03-19T03:56:13.871Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:56:41.251Z
+    lifecycle_state: closed
     resolved_base_branch: main
     task_ref: "@01KKQRK5PM5VTQBBBMT11PMCE6"
     task_slug: task-migrate-inbox-triage
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:56:41.251Z
       last_active_at: 2026-03-15T07:40:01.461Z
-      last_reconciled_at: 2026-03-19T03:56:13.871Z
+      last_reconciled_at: 2026-04-16T16:56:41.251Z
       created_at: 2026-03-15T07:17:31.113Z
-      updated_at: 2026-03-19T03:56:13.871Z
+      updated_at: 2026-04-16T16:56:41.251Z
     workspace_id: dispatch-workspace-01KKQRK5PM5VTQBBBMT11PMCE6
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
