@@ -150528,7 +150528,18 @@ reviews:
     slugs: []
     title: Review task-doctor-accuracy (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Run 1: 2179/2179 suites passed, 7970 passed, 5 skipped. Run 2 returned the same passing
+          summary from the session cache because repo state was unchanged."
+        name: npm test
+        required: true
+        runner: test-runner
+        created_at: 2026-04-16T06:34:30.170Z
+        completed_at: 2026-04-16T06:34:30.170Z
     events:
       - _ulid: 01KPAFBJG7A9DD5JR0M6JJ9PAB
         actor: Jacob Chapel
@@ -150543,6 +150554,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-16T06:24:16.408Z
+      - _ulid: 01KPAFZ5BH6YW57K138DV9WTHK
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-16T06:34:31.154Z
     examined_commit: 6794e0ed53fa7832fed56de4b8bc31fcff73bd5e
     external_links: []
     lifecycle_state: open
@@ -150555,5 +150573,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-16T06:23:49.256Z
-    updated_at: 2026-04-16T06:24:15.408Z
+    updated_at: 2026-04-16T06:34:30.170Z
     notes: []
