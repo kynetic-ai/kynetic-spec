@@ -6042,11 +6042,11 @@ workspaces:
     canonical_branch: dispatch/task/task-yaml-seed-session-tests/01kks7bd
     canonical_branch_head: 1bde4a3176dfa189af74969df73b39e00a2adcc4
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-19T03:56:15.755Z
+      updated_at: 2026-04-16T16:56:56.336Z
     health:
       status: stale
       issues:
@@ -6064,17 +6064,17 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
-      updated_at: 2026-03-19T03:56:15.755Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:56:56.336Z
+    lifecycle_state: closed
     resolved_base_branch: main
     task_ref: "@01KKS7BD3N7DCQNS5GW8ZZSAZW"
     task_slug: task-yaml-seed-session-tests
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:56:56.336Z
       last_active_at: 2026-03-15T22:51:38.393Z
-      last_reconciled_at: 2026-03-19T03:56:15.755Z
+      last_reconciled_at: 2026-04-16T16:56:56.336Z
       created_at: 2026-03-15T22:39:41.894Z
-      updated_at: 2026-03-19T03:56:15.755Z
+      updated_at: 2026-04-16T16:56:56.336Z
     workspace_id: dispatch-workspace-01KKS7BD3N7DCQNS5GW8ZZSAZW
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
