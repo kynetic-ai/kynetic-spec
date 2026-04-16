@@ -1432,6 +1432,58 @@ describe("kspec upgrade", () => {
       expect(content).toContain("main");
     });
 
+    it("preserves existing default_module when scaffolding new module", async () => {
+      await initProject(tempDir);
+      await writeLastKnownVersion(tempDir, "0.8.0");
+
+      const specDir = path.join(tempDir, ".kspec");
+      const modulesDir = path.join(specDir, "modules");
+
+      // Read the manifest and set default_module to a custom ULID,
+      // then remove the default module file to trigger scaffold
+      const specFiles = await fs.readdir(specDir);
+      const manifestName = specFiles.find(
+        (f) =>
+          f.endsWith(".yaml") &&
+          !f.endsWith(".tasks.yaml") &&
+          !f.endsWith(".meta.yaml") &&
+          !f.startsWith("."),
+      );
+      expect(manifestName).toBeDefined();
+      const manifestPath = path.join(specDir, manifestName!);
+
+      const yaml = await import("yaml");
+      const manifestRaw = await fs.readFile(manifestPath, "utf-8");
+      const manifest = yaml.parse(manifestRaw) as Record<string, unknown>;
+      const customModuleUlid = "01TESTCUSTOMMODULE0000000";
+      manifest.default_module = customModuleUlid;
+      await fs.writeFile(manifestPath, yaml.stringify(manifest), "utf-8");
+
+      // Remove the default module file to trigger scaffold
+      const defaultModulePath = path.join(modulesDir, "main.yaml");
+      if (existsSync(defaultModulePath)) {
+        await fs.unlink(defaultModulePath);
+      }
+
+      const result = kspecJson<{
+        steps: Array<{ name: string; status: string; message: string }>;
+      }>("upgrade", tempDir);
+
+      const moduleStep = result.steps.find(
+        (s) => s.name === "Scaffold default module",
+      );
+      expect(moduleStep).toBeDefined();
+      expect(moduleStep!.status).toBe("done");
+
+      // Verify the module file was created
+      expect(existsSync(defaultModulePath)).toBe(true);
+
+      // Verify default_module in manifest was NOT overwritten
+      const manifestAfterRaw = await fs.readFile(manifestPath, "utf-8");
+      const manifestAfter = yaml.parse(manifestAfterRaw) as Record<string, unknown>;
+      expect(manifestAfter.default_module).toBe(customModuleUlid);
+    });
+
     // AC: @single-command-version-upgrade ac-dry-run-no-writes
     it("reports default module scaffold in dry-run without creating it", async () => {
       await initProject(tempDir);

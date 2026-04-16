@@ -1300,7 +1300,9 @@ items: []
           freshCtx.manifestPath,
         );
         if (manifestData) {
-          manifestData.default_module = moduleUlid;
+          if (!manifestData.default_module) {
+            manifestData.default_module = moduleUlid;
+          }
           const includes = manifestData.includes as string[] | undefined;
           if (!includes || !includes.includes("modules/main.yaml")) {
             manifestData.includes = [
