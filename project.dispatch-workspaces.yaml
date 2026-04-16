@@ -53589,7 +53589,7 @@ workspaces:
         head: 8527f5cea4d38938bcde4dbbc64aba92e315baf0
         last_seen_at: 2026-04-16T04:59:09.707Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-release-notes-01knxyj5
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 2d24a0b0a4d99e19df22ac5789c627697ac962be
     bootstrap:
       status: succeeded
@@ -53898,9 +53898,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-16T07:01:43.376Z
-      last_reconciled_at: 2026-04-16T07:15:02.849Z
+      last_reconciled_at: 2026-04-16T07:17:05.190Z
       created_at: 2026-04-16T04:59:35.849Z
-      updated_at: 2026-04-16T07:15:02.849Z
+      updated_at: 2026-04-16T07:17:05.190Z
     workspace_id: dispatch-workspace-01KNXYJ66ZQ5TBZ69YFCKK3J2T
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
