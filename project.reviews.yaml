@@ -149698,6 +149698,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-16T03:43:57.103Z
+      - _ulid: 01KPA709CSVBVCVJEW1N6BC90Q
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPA65Y4Z5M3V74BY3WV7Y412
+        timestamp: 2026-04-16T03:57:50.873Z
     examined_commit: 7315532b204c2a0be9b92296267e9955de501ded
     external_links: []
     lifecycle_state: closed
@@ -149994,6 +150000,14 @@ reviews:
                   When: used with other formatting flags
                   Then: --json takes precedence over other format options shows no acceptance criterion with that id. Because the annotation points to a nonexistent AC, completeness/coverage tooling cannot credit the test and this snapshot introduces invalid AC coverage metadata. Re-anchor the test to an existing AC or update the spec first.
             created_at: 2026-04-16T03:43:27.391Z
+          - _ulid: 01KPA708EA1YJWGGXWENE1TF0G
+            author: "@claude"
+            body: "Fixed: re-anchored the AC annotation from ac-records-current-version (non-existent) to
+              ac-detects-skew. The test protects the durable-persistence property that
+              ac-detects-skew's 'reads the recorded last-known version' contract implicitly requires
+              across invocations — if the shadow branch commit is missing, the next run cannot read
+              the recorded version. Updated comment to explain the anchor. Commit: 130ac7bcf."
+            created_at: 2026-04-16T03:57:49.898Z
         kind: blocker
       - _ulid: 01KPA660W1A310QGSTXWX0S778
         entries:
@@ -150039,5 +150053,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-16T03:43:57.102Z
     created_at: 2026-04-16T03:30:45.903Z
-    updated_at: 2026-04-16T03:43:57.103Z
+    updated_at: 2026-04-16T03:57:49.898Z
     notes: []
