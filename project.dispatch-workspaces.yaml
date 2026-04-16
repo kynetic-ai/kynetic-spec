@@ -45050,11 +45050,11 @@ workspaces:
     canonical_branch: dispatch/task/fix-daemon-dist-module-import-failures-in-test-runner/01knmcpt
     canonical_branch_head: efd95569e94451efa368054907859bca82fed913
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-04-08T14:14:43.280Z
+      updated_at: 2026-04-16T17:04:49.823Z
     health:
       status: healthy
       issues: []
@@ -45067,17 +45067,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 6a8fd6df49537d95cca2f6283be8a4aa82cc30c8
-      updated_at: 2026-04-08T14:14:43.280Z
-    lifecycle_state: closing
+      updated_at: 2026-04-16T17:04:49.823Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KNMCPT0W7P3V0PXESVZ40GFN"
     task_slug: fix-daemon-dist-module-import-failures-in-test-runner
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:04:49.823Z
       last_active_at: 2026-04-08T13:25:39.177Z
-      last_reconciled_at: 2026-04-08T14:16:01.995Z
+      last_reconciled_at: 2026-04-16T17:04:49.823Z
       created_at: 2026-04-08T10:23:05.575Z
-      updated_at: 2026-04-08T14:16:01.995Z
+      updated_at: 2026-04-16T17:04:49.823Z
     workspace_id: dispatch-workspace-01KNMCPT0W7P3V0PXESVZ40GFN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
