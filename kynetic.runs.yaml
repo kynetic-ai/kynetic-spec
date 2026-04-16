@@ -26775,9 +26775,21 @@ runs:
     completed_at: 2026-04-16T02:23:10.366Z
   - _ulid: 01KPA3EJES18P7R5N7Q2C3HSVG
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-16T02:55:44.601Z
+        completed_at: 2026-04-16T02:57:40.805Z
+        notes: "What worked: precise reviewer reproduction steps made root cause obvious in minutes;
+          searching for commitIfShadow usage in setup.ts found the canonical call pattern
+          immediately; manual reproduction of reviewer's scenario confirmed the fix before
+          resubmit."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-16T02:57:40.805Z
+        completed_at: 2026-04-16T02:57:40.805Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-16T02:55:44.601Z
