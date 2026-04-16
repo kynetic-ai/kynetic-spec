@@ -33722,11 +33722,11 @@ workspaces:
     canonical_branch: dispatch/task/task-stabilize-file-lock-maxhold-contention/01kn7t07
     canonical_branch_head: 48a4800bbfca53ff5425eba5a7c0c9ed7ae96ec0
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-04-02T20:01:52.497Z
+      updated_at: 2026-04-16T17:03:01.731Z
     health:
       status: healthy
       issues: []
@@ -33739,17 +33739,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
-      updated_at: 2026-04-02T20:01:52.497Z
-    lifecycle_state: closing
+      updated_at: 2026-04-16T17:03:01.731Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KN7T0787B3059SWKZN0ZWAAR"
     task_slug: task-stabilize-file-lock-maxhold-contention
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:03:01.731Z
       last_active_at: 2026-04-02T19:49:16.169Z
-      last_reconciled_at: 2026-04-02T20:04:09.199Z
+      last_reconciled_at: 2026-04-16T17:03:01.731Z
       created_at: 2026-04-02T19:34:13.988Z
-      updated_at: 2026-04-02T20:04:09.199Z
+      updated_at: 2026-04-16T17:03:01.731Z
     workspace_id: dispatch-workspace-01KN7T0787B3059SWKZN0ZWAAR
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
