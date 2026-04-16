@@ -53432,12 +53432,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-16T04:59:02.553Z
+      updated_at: 2026-04-16T04:59:09.707Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-16T04:59:02.553Z
+      updated_at: 2026-04-16T04:59:09.707Z
     integration:
       status: pending
       detail: null
@@ -53445,24 +53445,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
       target_commit: 2d24a0b0a4d99e19df22ac5789c627697ac962be
-      updated_at: 2026-04-16T04:59:02.553Z
-    lifecycle_state: ready
+      updated_at: 2026-04-16T04:59:09.707Z
+    lifecycle_state: integrating
     resolved_base_branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
     task_ref: "@01KNXYJ5XEHD54A46S1988T3CV"
     task_slug: task-release-notes
     timestamps:
       closed_at: null
       last_active_at: 2026-04-16T04:29:01.554Z
-      last_reconciled_at: 2026-04-16T04:59:02.553Z
+      last_reconciled_at: 2026-04-16T04:59:09.707Z
       created_at: 2026-04-16T04:17:00.258Z
-      updated_at: 2026-04-16T04:59:02.553Z
+      updated_at: 2026-04-16T04:59:09.707Z
     workspace_id: dispatch-workspace-01KNXYJ5XEHD54A46S1988T3CV
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 8527f5cea4d38938bcde4dbbc64aba92e315baf0
+        last_seen_at: 2026-04-16T04:59:09.707Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-release-notes-01knxyj5-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-release-notes/01knxyj5
-        head: 2d24a0b0a4d99e19df22ac5789c627697ac962be
-        last_seen_at: 2026-04-16T04:28:35.047Z
+        head: 8527f5cea4d38938bcde4dbbc64aba92e315baf0
+        last_seen_at: 2026-04-16T04:59:09.707Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-release-notes-01knxyj5
