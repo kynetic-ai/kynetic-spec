@@ -21,6 +21,7 @@ export { registerMetaCommands } from "./meta.js";
 export { registerModuleCommands } from "./module.js";
 export { registerPlanCommands } from "./plan.js";
 export { registerRefsCommand } from "./refs.js";
+export { registerReleaseNotesCommand } from "./release-notes.js";
 export { registerReviewCommands } from "./review.js";
 export { registerScheduleCommands } from "./schedule.js";
 export { registerSearchCommand } from "./search.js";
