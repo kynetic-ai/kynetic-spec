@@ -4648,11 +4648,11 @@ workspaces:
     canonical_branch: dispatch/task/task-tanstack-setup/01kkqrk0
     canonical_branch_head: 4ade1286688b363eda0f3643665549532524f769
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-19T03:56:12.862Z
+      updated_at: 2026-04-16T16:56:31.181Z
     health:
       status: stale
       issues:
@@ -4670,17 +4670,17 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
-      updated_at: 2026-03-19T03:56:12.862Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:56:31.181Z
+    lifecycle_state: closed
     resolved_base_branch: main
     task_ref: "@01KKQRK0ZZZ1QMCNHDHK3969AF"
     task_slug: task-tanstack-setup
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:56:31.181Z
       last_active_at: 2026-03-15T05:10:44.742Z
-      last_reconciled_at: 2026-03-19T03:56:12.862Z
+      last_reconciled_at: 2026-04-16T16:56:31.181Z
       created_at: 2026-03-15T04:21:20.365Z
-      updated_at: 2026-03-19T03:56:12.862Z
+      updated_at: 2026-04-16T16:56:31.181Z
     workspace_id: dispatch-workspace-01KKQRK0ZZZ1QMCNHDHK3969AF
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
