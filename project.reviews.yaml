@@ -149242,7 +149242,19 @@ reviews:
     slugs: []
     title: Review @01KNXYJ5JCR99F76N8N7265E0B
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Repo-wide validation still fails outside this task: schema error in
+          .kspec/modules/meta.yaml (modules[0].traits[0] expected string), orphaned skill directory
+          warnings, and broader existing completeness/alignment warnings."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-16T02:38:48.689Z
+        completed_at: 2026-04-16T02:38:48.689Z
     events:
       - _ulid: 01KPA25YS0RANVA4QNVDE138CH
         actor: Jacob Chapel
@@ -149264,6 +149276,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPA2FF60M1ZZJ09A40FSYSCV
         timestamp: 2026-04-16T02:38:46.514Z
+      - _ulid: 01KPA2FKGXG11H01XHCY0Y43XJ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-16T02:38:49.885Z
     examined_commit: c331f529f3ea258f9fd2190d3bfc17869d5d3333
     external_links: []
     lifecycle_state: open
@@ -149297,5 +149316,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-16T02:33:33.729Z
-    updated_at: 2026-04-16T02:38:45.441Z
+    updated_at: 2026-04-16T02:38:48.689Z
     notes: []
