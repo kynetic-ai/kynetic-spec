@@ -53146,7 +53146,7 @@ workspaces:
         head: 65feefa131b93d2617358b6cd9f0c93c8fbaa589
         last_seen_at: 2026-04-16T02:07:36.587Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-cli-agent-commands-session-store-tests-under-restricted-tmp-permissions-01kp9zw2
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 2d24a0b0a4d99e19df22ac5789c627697ac962be
     bootstrap:
       status: succeeded
@@ -53551,34 +53551,34 @@ workspaces:
     canonical_branch: dispatch/task/task-release-notes/01knxyj5
     canonical_branch_head: 8527f5cea4d38938bcde4dbbc64aba92e315baf0
     cleanup:
-      status: not_scheduled
-      detail: null
-      eligible: false
-      reason: null
-      updated_at: 2026-04-16T04:59:09.707Z
+      status: scheduled
+      detail: integrated-into-base-branch
+      eligible: true
+      reason: integrated-into-base-branch
+      updated_at: 2026-04-16T05:12:03.323Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-16T04:59:32.253Z
+      updated_at: 2026-04-16T05:12:03.323Z
     integration:
-      status: pending
-      detail: null
-      outcome: manual_merge
+      status: merged
+      detail: integration:merged
+      outcome: merged
       publication_mode: manual_merge
       target_branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
       target_commit: 2d24a0b0a4d99e19df22ac5789c627697ac962be
-      updated_at: 2026-04-16T04:59:09.707Z
-    lifecycle_state: integrating
+      updated_at: 2026-04-16T05:12:03.323Z
+    lifecycle_state: closing
     resolved_base_branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
     task_ref: "@01KNXYJ5XEHD54A46S1988T3CV"
     task_slug: task-release-notes
     timestamps:
       closed_at: null
       last_active_at: 2026-04-16T04:59:32.253Z
-      last_reconciled_at: 2026-04-16T04:59:32.253Z
+      last_reconciled_at: 2026-04-16T05:12:03.323Z
       created_at: 2026-04-16T04:17:00.258Z
-      updated_at: 2026-04-16T04:59:32.253Z
+      updated_at: 2026-04-16T05:12:03.323Z
     workspace_id: dispatch-workspace-01KNXYJ5XEHD54A46S1988T3CV
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
