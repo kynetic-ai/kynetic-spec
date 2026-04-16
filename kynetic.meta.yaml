@@ -14850,6 +14850,20 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-16T04:58:50.645Z
+  - _ulid: 01KPAF8QJ1YJWB1040Z8NMNZSH
+    type: friction
+    content: "When modifying a user-visible string that is also explained in adjacent prose/comments,
+      authors frequently update the string but miss the surrounding comment — even when the comment
+      is literally the next few lines. Observed this cycle on src/parser/doctor.ts: the
+      success-message suffix 'agent-specific locations' was audited, but the stale comment 10 lines
+      above that described status.skills.rendered as 'only counting agent-specific locations' was
+      missed, causing the reviewer to flag the same inaccuracy twice (once as a user-visible
+      blocker, once implicitly in the codebase). Pattern: when changing a user-facing string, grep
+      the surrounding file for other occurrences of the replaced phrase before committing."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-16T06:22:16.129Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
