@@ -14765,6 +14765,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-16T02:40:49.634Z
+  - _ulid: 01KPA46T4QSR20JRSS9AG9PRJ4
+    type: friction
+    content: Upgrade force-path semantics are brittle across scaffold steps. In this review cycle, the
+      reflection hook correctly respected prior user removal, but default agent/convention
+      scaffolding still recreated user-removed defaults when upgrade ran with --force. The same
+      user-intent rule is implemented in separate per-step code paths instead of one shared contract
+      or regression harness, which made fix-cycle regressions likely.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-16T03:08:58.903Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
