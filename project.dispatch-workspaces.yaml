@@ -3739,11 +3739,11 @@ workspaces:
     canonical_branch: dispatch/task/task-implement-review-cli-create-query/01kknrc3
     canonical_branch_head: 8793a119af5cd7a2b9248b2af0ba307bb6db5381
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-19T03:56:10.840Z
+      updated_at: 2026-04-16T16:56:14.096Z
     health:
       status: stale
       issues:
@@ -3761,17 +3761,17 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
-      updated_at: 2026-03-19T03:56:10.840Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:56:14.096Z
+    lifecycle_state: closed
     resolved_base_branch: main
     task_ref: "@01KKNRC3WFJDQX2KAS2129GZ2W"
     task_slug: task-implement-review-cli-create-query
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:56:14.096Z
       last_active_at: 2026-03-14T18:35:23.118Z
-      last_reconciled_at: 2026-03-19T03:56:10.840Z
+      last_reconciled_at: 2026-04-16T16:56:14.096Z
       created_at: 2026-03-14T18:00:09.677Z
-      updated_at: 2026-03-19T03:56:10.840Z
+      updated_at: 2026-04-16T16:56:14.096Z
     workspace_id: dispatch-workspace-01KKNRC3WFJDQX2KAS2129GZ2W
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
