@@ -6609,11 +6609,11 @@ workspaces:
     canonical_branch: dispatch/task/add-hooks-configuration-to-kspec-config-yaml-and-setup/01kkt042
     canonical_branch_head: 6cb2e0ae3f075407e0b5c2d606efd448d6d9df1e
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-19T03:56:16.947Z
+      updated_at: 2026-04-16T16:57:06.883Z
     health:
       status: stale
       issues:
@@ -6631,17 +6631,17 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
-      updated_at: 2026-03-19T03:56:16.947Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:57:06.883Z
+    lifecycle_state: closed
     resolved_base_branch: main
     task_ref: "@01KKT042895JSK5GS951Z5F1BR"
     task_slug: add-hooks-configuration-to-kspec-config-yaml-and-setup
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:57:06.883Z
       last_active_at: 2026-03-16T00:43:31.894Z
-      last_reconciled_at: 2026-03-19T03:56:16.947Z
+      last_reconciled_at: 2026-04-16T16:57:06.883Z
       created_at: 2026-03-16T00:31:43.445Z
-      updated_at: 2026-03-19T03:56:16.947Z
+      updated_at: 2026-04-16T16:57:06.883Z
     workspace_id: dispatch-workspace-01KKT042895JSK5GS951Z5F1BR
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
