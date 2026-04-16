@@ -19729,11 +19729,11 @@ workspaces:
     canonical_branch: dispatch/task/task-remove-duplicate-handle-registration/01kmbpya
     canonical_branch_head: 7156ce71b80632a7f36a0a148efe41ceb78f57b6
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-22T21:56:10.685Z
+      updated_at: 2026-04-16T17:00:19.392Z
     health:
       status: invalid
       issues:
@@ -19755,17 +19755,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 2da4a1f5163cdbd9acbb5a6acef049732b6b75c8
-      updated_at: 2026-03-22T21:56:10.685Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T17:00:19.392Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KMBPYA8WRP5WFQV53QQK3GW4"
     task_slug: task-remove-duplicate-handle-registration
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:00:19.392Z
       last_active_at: 2026-03-22T21:45:56.179Z
-      last_reconciled_at: 2026-03-22T21:56:10.685Z
+      last_reconciled_at: 2026-04-16T17:00:19.392Z
       created_at: 2026-03-22T21:37:31.931Z
-      updated_at: 2026-03-22T21:56:10.685Z
+      updated_at: 2026-04-16T17:00:19.392Z
     workspace_id: dispatch-workspace-01KMBPYA8WRP5WFQV53QQK3GW4
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
