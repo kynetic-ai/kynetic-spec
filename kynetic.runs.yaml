@@ -27434,7 +27434,7 @@ runs:
     started_at: 2026-04-16T06:58:37.555Z
     completed_at: 2026-04-16T07:01:00.222Z
   - _ulid: 01KPAJ8ENFPCQGXZD62YH7APB3
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -27482,7 +27482,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-04-16T07:16:13.308Z
-        completed_at: 2026-04-16T07:16:13.308Z
+        completed_at: 2026-04-16T07:16:33.011Z
+        notes: Captured one new friction observation for task-local/diff-aware validation signal during
+          review, and one success observation documenting the value of a fresh init/setup/doctor
+          repro for doctor/setup/upgrade work. Did not capture prompt-overflow friction because
+          existing observations already cover it.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-16T07:14:32.751Z
+    completed_at: 2026-04-16T07:16:33.011Z
