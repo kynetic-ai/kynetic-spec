@@ -27576,7 +27576,7 @@ runs:
     started_at: 2026-04-16T08:46:39.686Z
   - _ulid: 01KPARBPRD7KJPK93Q0P1D5YEF
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -27591,7 +27591,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-16T09:01:51.992Z
-        completed_at: 2026-04-16T09:01:51.992Z
+        completed_at: 2026-04-16T09:02:14.363Z
+        notes: "Friction points: 1. Manual reviewer merge path in detached snapshots is awkward when the
+          integration branch is already checked out in another worktree.  failed with 'already used
+          by worktree', so merge had to be redirected through  after extra verification. 2. Task
+          context can become oversized because notes may embed large raw task dumps and agent
+          failure payloads verbatim. In this session the completed task still contained a  note plus
+          a long task dump, which increased review/reflection context load without adding much
+          durable signal."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-16T09:02:14.363Z
+        completed_at: 2026-04-16T09:02:14.363Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-16T09:01:10.797Z
