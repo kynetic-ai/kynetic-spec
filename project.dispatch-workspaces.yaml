@@ -14898,11 +14898,11 @@ workspaces:
     canonical_branch: dispatch/task/fix-plans-page-progress-bar-using-unreliable-tailwind-arbitrary-value-classes/01km65j5
     canonical_branch_head: 6b9464befb19bc5ba24e78f661a6110b8d673ff3
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-20T18:17:22.261Z
+      updated_at: 2026-04-16T16:59:23.493Z
     health:
       status: invalid
       issues:
@@ -14925,17 +14925,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: a507fc148a704f8aa708f7e5599780cbbac0622f
-      updated_at: 2026-03-20T18:17:22.261Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:59:23.493Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KM65J5SV82ZJNT6XQX2YN1RS"
     task_slug: fix-plans-page-progress-bar-using-unreliable-tailwind-arbitrary-value-classes
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:59:23.493Z
       last_active_at: 2026-03-20T18:03:55.207Z
-      last_reconciled_at: 2026-03-20T18:17:22.261Z
+      last_reconciled_at: 2026-04-16T16:59:23.493Z
       created_at: 2026-03-20T17:56:42.451Z
-      updated_at: 2026-03-20T18:17:22.261Z
+      updated_at: 2026-04-16T16:59:23.493Z
     workspace_id: dispatch-workspace-01KM65J5SV82ZJNT6XQX2YN1RS
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
