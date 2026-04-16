@@ -26852,7 +26852,7 @@ runs:
     completed_at: 2026-04-16T03:08:33.342Z
   - _ulid: 01KPA59806TN6VSG4HJGDDZFFP
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -26867,7 +26867,20 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-16T03:28:32.914Z
-        completed_at: 2026-04-16T03:28:32.914Z
+        completed_at: 2026-04-16T03:28:52.614Z
+        notes: "Identified: (1) Primary friction in this session — scaffoldDefaults force semantics
+          re-seeding user-removed defaults on upgrade --force — is already captured verbatim by
+          @01KPA46T (created in this review cycle). Skip. (2) Success pattern (high confidence, not
+          yet captured): 'When a fix-cycle blocker repeats across sibling steps in the same scaffold
+          family, mirror the most recent prior fix in the step family before re-deriving a solution'
+          — this session's fix was identical in shape to the cycle-15 reflection-hook fix (remove a
+          force override of user-removal state), and searching git log for the preceding fix commit
+          in the same file produced the correct pattern immediately. (3) Low-confidence: no new
+          friction unique to this session beyond what @01KPA46T already captures."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-16T03:28:52.614Z
+        completed_at: 2026-04-16T03:28:52.614Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-16T03:27:47.206Z
