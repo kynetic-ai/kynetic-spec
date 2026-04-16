@@ -2838,11 +2838,11 @@ workspaces:
     canonical_branch: dispatch/task/update-branching-conventions-and-agent-docs-for-dispatch-compatible-task-branches/01kkk7rd
     canonical_branch_head: f3a111b5872f450beef3093dd527ed71e9875a02
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-19T03:56:08.987Z
+      updated_at: 2026-04-16T16:55:56.783Z
     health:
       status: stale
       issues:
@@ -2860,17 +2860,17 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: 38dc760d3353e2cde497e9150881b2c81da24679
-      updated_at: 2026-03-19T03:56:08.987Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:55:56.783Z
+    lifecycle_state: closed
     resolved_base_branch: main
     task_ref: "@01KKK7RD4RNFCQN29QVYRP8E0Z"
     task_slug: update-branching-conventions-and-agent-docs-for-dispatch-compatible-task-branches
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:55:56.783Z
       last_active_at: 2026-03-14T01:42:46.820Z
-      last_reconciled_at: 2026-03-19T03:56:08.987Z
+      last_reconciled_at: 2026-04-16T16:55:56.783Z
       created_at: 2026-03-14T01:29:39.354Z
-      updated_at: 2026-03-19T03:56:08.987Z
+      updated_at: 2026-04-16T16:55:56.783Z
     workspace_id: dispatch-workspace-01KKK7RD4RNFCQN29QVYRP8E0Z
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
