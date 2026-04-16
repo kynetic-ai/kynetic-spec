@@ -14900,6 +14900,17 @@ observations:
     resolved: false
     workflow_ref: "@01KPAJ8E"
     created_at: 2026-04-16T07:16:25.643Z
+  - _ulid: 01KPAM5SZ89EKANXSW6R170VD3
+    type: success
+    content: When a task description explicitly names the failure mode (e.g., "string values never match
+      exact-equality semantics"), writing a test that exercises that specific mode via the real
+      matching function — not a shape check — is straightforward and catches the regression the task
+      was written to prevent. Prefer pulling the actual production function (matchesFilter) into the
+      test over reimplementing equality checks.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-16T07:48:03.176Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:

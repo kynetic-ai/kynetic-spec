@@ -2631,3 +2631,24 @@ inbox:
       - coverage
     added_by: Jacob Chapel
     created_at: 2026-04-16T03:45:30.373Z
+  - _ulid: 01KPAM5STNW7ZCKZFQWP35A1NV
+    text: Pre-existing schema error in .kspec/modules/meta.yaml:modules[0].traits.0 — expected string,
+      received object. Affects every run of `kspec validate` and masks new schema failures in the
+      noise. Discovered while running `kspec validate` during the
+      default-reflection-hook-turn-filter task.
+    tags:
+      - bug
+      - schema
+      - validate
+    added_by: "@claude"
+    created_at: 2026-04-16T07:48:03.029Z
+  - _ulid: 01KPAM5SWZGN3V4NP7T25KVZ7X
+    text: "`architecture` meta convention contains a literal PLACEHOLDER rule that gets rendered into
+      kspec-agents.md on every `kspec agents generate`. Either populate it with real rules or remove
+      it so unrelated tasks that regenerate agent docs do not carry cosmetic drift."
+    tags:
+      - meta
+      - conventions
+      - docs
+    added_by: "@claude"
+    created_at: 2026-04-16T07:48:03.103Z
