@@ -52868,12 +52868,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-16T02:07:20.177Z
+      updated_at: 2026-04-16T02:07:36.587Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-16T02:07:20.177Z
+      updated_at: 2026-04-16T02:07:36.587Z
     integration:
       status: pending
       detail: null
@@ -52881,24 +52881,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 65feefa131b93d2617358b6cd9f0c93c8fbaa589
-      updated_at: 2026-04-16T02:07:20.177Z
-    lifecycle_state: ready
+      updated_at: 2026-04-16T02:07:36.587Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KP9ZW21H9AD2R127PS5MM6KQ"
     task_slug: stabilize-cli-agent-commands-session-store-tests-under-restricted-tmp-permissions
     timestamps:
       closed_at: null
       last_active_at: 2026-04-16T01:54:35.501Z
-      last_reconciled_at: 2026-04-16T02:07:20.177Z
+      last_reconciled_at: 2026-04-16T02:07:36.587Z
       created_at: 2026-04-16T01:54:08.609Z
-      updated_at: 2026-04-16T02:07:20.177Z
+      updated_at: 2026-04-16T02:07:36.587Z
     workspace_id: dispatch-workspace-01KP9ZW21H9AD2R127PS5MM6KQ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 65feefa131b93d2617358b6cd9f0c93c8fbaa589
+        last_seen_at: 2026-04-16T02:07:36.587Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-cli-agent-commands-session-store-tests-under-restricted-tmp-permissions-01kp9zw2-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/stabilize-cli-agent-commands-session-store-tests-under-restricted-tmp-permissions/01kp9zw2
         head: 65feefa131b93d2617358b6cd9f0c93c8fbaa589
-        last_seen_at: 2026-04-16T01:54:08.609Z
+        last_seen_at: 2026-04-16T02:07:36.587Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-cli-agent-commands-session-store-tests-under-restricted-tmp-permissions-01kp9zw2
