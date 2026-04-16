@@ -148722,6 +148722,13 @@ reviews:
           status: fail
           name: full test suite
         timestamp: 2026-04-16T01:14:51.588Z
+      - _ulid: 01KP9XPC4DMM0HFR0S0FYK9JHY
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KP9XPB5ZJS0MVFX6YHR8PSV5
+        timestamp: 2026-04-16T01:15:08.813Z
     examined_commit: 23efbc1be833d77a0410b2964d4eda5eb81e78a9
     external_links: []
     lifecycle_state: open
@@ -148754,7 +148761,40 @@ reviews:
               plan-reviewer with references to a nonexistent skill."
             created_at: 2026-04-16T01:14:41.504Z
         kind: blocker
+      - _ulid: 01KP9XPB5ZJS0MVFX6YHR8PSV5
+        entries:
+          - _ulid: 01KP9XPB5ZRG90G11BHMTS2E0B
+            author: Jacob Chapel
+            body: >-
+              Review evidence log
+
+
+              Files read: src/cli/index.ts, src/cli/commands/index.ts, src/cli/commands/upgrade.ts,
+              src/cli/commands/setup.ts, src/cli/commands/setup-defaults.ts, src/parser/config.ts,
+              src/parser/gitignore.ts, src/parser/meta.ts, src/parser/skill-render.ts,
+              tests/upgrade-command.test.ts.
+
+
+              Commands run: git diff/stat against
+              0501051eb49ee8db8faccedc035f1cb95cef85fc..23efbc1be833d77a0410b2964d4eda5eb81e78a9,
+              kspec task get, kspec item get, grep of AC annotations, kspec validate on snapshot and
+              base worktree, npm test, npm test -- --fresh tests/upgrade-command.test.ts, and a
+              manual temp-project reproduction of missing-core-skill upgrade behavior.
+
+
+              Claims verified: the submitted upgrade test file passes fresh; full-suite failures are
+              unrelated /tmp session-store permission errors; repo-wide validate failure is
+              pre-existing on the integration base; deleting a core skill from project state is not
+              repaired by upgrade.
+
+
+              Categories searched: correctness (1 blocker), edge cases (missing core skill
+              backfill), error handling (step failure propagation, JSON errors, exit codes),
+              integration (setup parity, daemon/proxy registration), and test quality (behavioral
+              coverage only; no source-scanning tests found in the submitted file).
+            created_at: 2026-04-16T01:15:07.839Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-16T01:00:24.906Z
-    updated_at: 2026-04-16T01:14:50.515Z
+    updated_at: 2026-04-16T01:15:07.839Z
     notes: []
