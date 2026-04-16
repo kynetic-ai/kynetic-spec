@@ -148667,6 +148667,19 @@ reviews:
         runner: kspec
         created_at: 2026-04-16T01:14:47.476Z
         completed_at: 2026-04-16T01:14:47.476Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Ran 'npm test': 7947 passed, 5 failed, 5 skipped. All failures were in
+          tests/cli-agent-commands.test.ts with EACCES mkdir errors under /tmp/.kspec-sessions;
+          stack points to src/sessions/store.ts:173, outside this change. Second run replayed cached
+          results."
+        name: full test suite
+        required: false
+        runner: npm
+        created_at: 2026-04-16T01:14:50.515Z
+        completed_at: 2026-04-16T01:14:50.515Z
     events:
       - _ulid: 01KP9WVCY9HY85GZ89TGD38EAF
         actor: Jacob Chapel
@@ -148702,6 +148715,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-16T01:14:48.513Z
+      - _ulid: 01KP9XNVA3TQ0ZTS9VE5ZW71GK
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: full test suite
+        timestamp: 2026-04-16T01:14:51.588Z
     examined_commit: 23efbc1be833d77a0410b2964d4eda5eb81e78a9
     external_links: []
     lifecycle_state: open
@@ -148736,5 +148756,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-16T01:00:24.906Z
-    updated_at: 2026-04-16T01:14:47.476Z
+    updated_at: 2026-04-16T01:14:50.515Z
     notes: []
