@@ -1782,11 +1782,11 @@ workspaces:
     canonical_branch: dispatch/task/implement-portable-skill-reference-resolution/01kkjkm9
     canonical_branch_head: 1c93e35676cbd49a96f26b678ab6b751e4c4eb72
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-29T04:13:13.670Z
+      updated_at: 2026-04-16T16:55:37.276Z
     health:
       status: stale
       issues:
@@ -1804,17 +1804,17 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: 48408281d10e9f1d5ec6ba581041cd9477006c46
-      updated_at: 2026-03-29T04:13:13.670Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:55:37.276Z
+    lifecycle_state: closed
     resolved_base_branch: main
     task_ref: "@01KKJKM9SGG5AV5N0EV3GFTMZ4"
     task_slug: implement-portable-skill-reference-resolution
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:55:37.276Z
       last_active_at: 2026-03-13T08:21:13.773Z
-      last_reconciled_at: 2026-03-29T04:13:13.670Z
+      last_reconciled_at: 2026-04-16T16:55:37.276Z
       created_at: 2026-03-13T06:33:53.248Z
-      updated_at: 2026-03-29T04:13:13.670Z
+      updated_at: 2026-04-16T16:55:37.276Z
     workspace_id: dispatch-workspace-01KKJKM9SGG5AV5N0EV3GFTMZ4
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
