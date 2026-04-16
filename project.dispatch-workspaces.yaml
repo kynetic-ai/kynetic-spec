@@ -23240,11 +23240,11 @@ workspaces:
     canonical_branch: dispatch/task/task-readtestoutput-small-batch/01kmfcp5
     canonical_branch_head: cc9e378eef103bfbe9e4d028633005fc89e74eea
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-24T23:52:44.508Z
+      updated_at: 2026-04-16T17:00:56.518Z
     health:
       status: invalid
       issues:
@@ -23265,17 +23265,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 25037298cf828f23a1b0966d113d7f295f917e4a
-      updated_at: 2026-03-24T23:52:44.508Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T17:00:56.518Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KMFCP5N7S1FPDPA9N7ZMM0AF"
     task_slug: task-readtestoutput-small-batch
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:00:56.518Z
       last_active_at: 2026-03-24T23:29:19.776Z
-      last_reconciled_at: 2026-03-24T23:52:44.508Z
+      last_reconciled_at: 2026-04-16T17:00:56.518Z
       created_at: 2026-03-24T23:12:23.411Z
-      updated_at: 2026-03-24T23:52:44.508Z
+      updated_at: 2026-04-16T17:00:56.518Z
     workspace_id: dispatch-workspace-01KMFCP5N7S1FPDPA9N7ZMM0AF
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
