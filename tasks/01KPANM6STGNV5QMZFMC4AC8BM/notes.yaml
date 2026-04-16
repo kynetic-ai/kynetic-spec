@@ -1,1 +1,35 @@
-notes: []
+notes:
+  - _ulid: 01KPANY14MK4NMG1RAZAMTBZRF
+    content: >-
+      Blocked-path shadow persistence investigation (step 5):
+
+
+      Found: Both blocked branches in reapDispatchWorkspace (workspace.ts:3049-3074) call
+      writeWorkspaceMetadata(existing.workerWorktreeDir, metadata), which writes only to the worker
+      worktree's on-disk .kspec-dispatch-workspace.json file. These paths do NOT: (a) acquire
+      withDispatchShadowMutationLock, (b) write to project.dispatch-workspaces.yaml registry, or (c)
+      call commitWorkspaceRegistryToShadow. No shadow commit is produced, so the blocked status is
+      lost if the worker worktree is removed or the process crashes.
+
+
+      Reconciliation does NOT compensate: createCleanupRecord (workspace.ts:1212-1223) only emits
+      'scheduled' or 'not_scheduled' — it never re-computes cleanup.status=blocked. Blocked status
+      originates exclusively from the reap path's writeWorkspaceMetadata call.
+
+
+      Gap: This violates @dispatch-workspace-registry ac-8 for blocked-state transitions. However,
+      in practice the next reconciliation cycle with cleanupEligible=true will compute
+      cleanup.status=scheduled (not blocked) and re-run reap, which will re-block. So the invariant
+      is eventually consistent via re-computation, not durably persisted.
+
+
+      Decision: Migrate the blocked path writes to the shadow persistence path
+      (withDispatchShadowMutationLock + saveWorkspaceRecordToRegistry +
+      commitWorkspaceRegistryToShadow) within this task. Rationale: (1) the primary fix already
+      introduces the shadow-persist pattern in reap, so using it consistently for both blocked and
+      completed paths is a minimal scope addition, not scope creep; (2) it closes the ac-8 gap
+      atomically rather than leaving a follow-up task for the same file; (3) it makes the reap
+      path's registry semantics uniformly durable, simplifying reasoning about invariants.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-16T08:18:45.524Z
