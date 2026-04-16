@@ -2515,11 +2515,11 @@ workspaces:
     canonical_branch: dispatch/task/task-remote-branch-fallback-in-workspace-health-reconci/01kkjyee
     canonical_branch_head: 8deacddc7bafc5049aac1e2fc274a5d1a3a3349c
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-29T00:15:15.852Z
+      updated_at: 2026-04-16T16:55:50.765Z
     health:
       status: stale
       issues:
@@ -2537,17 +2537,17 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: 88b68a229e7759cabb0a1a8c2e891d9b7e0b2bd3
-      updated_at: 2026-03-29T00:15:15.852Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:55:50.765Z
+    lifecycle_state: closed
     resolved_base_branch: main
     task_ref: "@01KKJYEETYYQABWJ2QWJGPEMRT"
     task_slug: task-remote-branch-fallback-in-workspace-health-reconci
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:55:50.765Z
       last_active_at: 2026-03-13T19:55:30.840Z
-      last_reconciled_at: 2026-03-29T00:15:15.852Z
+      last_reconciled_at: 2026-04-16T16:55:50.765Z
       created_at: 2026-03-13T19:45:31.226Z
-      updated_at: 2026-03-29T00:15:15.852Z
+      updated_at: 2026-04-16T16:55:50.765Z
     workspace_id: dispatch-workspace-01KKJYEETYYQABWJ2QWJGPEMRT
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
