@@ -26991,9 +26991,22 @@ runs:
     started_at: 2026-04-16T04:57:52.299Z
   - _ulid: 01KPAB8QEMHZK8YXDBMZCRGD3H
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-16T05:12:21.716Z
+        completed_at: 2026-04-16T05:13:37.119Z
+        notes: "Coverage check: workflow-show friction is already tracked by @01KKBD52, @01KKBD55,
+          @01KN0DG5Q, @01KNA4979, and @01KP9TWBQ. Review-time validate noise is already tracked by
+          @01KPA69N. The package-root resolution gotcha is already tracked by @01KPAAFZ5. The
+          successful temp-project/manual repro review pattern is already tracked by @01KP6M7BE,
+          @01KPA80N, and @01KPA46TF."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-16T05:13:37.119Z
+        completed_at: 2026-04-16T05:13:37.119Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-16T05:12:21.716Z
