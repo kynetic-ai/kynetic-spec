@@ -46983,11 +46983,11 @@ workspaces:
     canonical_branch: dispatch/task/task-cli-serve-test-daemon-cleanup/01kntacn
     canonical_branch_head: 57bb82ad5bbec60e2718054d5f350febed206225
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-04-10T01:59:46.329Z
+      updated_at: 2026-04-16T17:04:56.309Z
     health:
       status: healthy
       issues: []
@@ -47000,17 +47000,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 7b1b856564b91f28efc8bbb2d3b8e41034fd9a3f
-      updated_at: 2026-04-10T01:59:46.329Z
-    lifecycle_state: closing
+      updated_at: 2026-04-16T17:04:56.309Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KNTACN5YJKW4NE46WWDP95KY"
     task_slug: task-cli-serve-test-daemon-cleanup
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:04:56.309Z
       last_active_at: 2026-04-10T01:46:00.068Z
-      last_reconciled_at: 2026-04-10T02:00:47.605Z
+      last_reconciled_at: 2026-04-16T17:04:56.309Z
       created_at: 2026-04-10T00:27:23.331Z
-      updated_at: 2026-04-10T02:00:47.605Z
+      updated_at: 2026-04-16T17:04:56.309Z
     workspace_id: dispatch-workspace-01KNTACN5YJKW4NE46WWDP95KY
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
