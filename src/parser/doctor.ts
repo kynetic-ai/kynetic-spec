@@ -7,11 +7,17 @@
  * AC: @doctor-command
  */
 
+import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { getGitRoot, getShadowStatus, isGitRepo, type ShadowStatus } from "./shadow.js";
-import { getSetupStatus, type SetupStatus } from "./setup-status.js";
+import {
+  getSetupStatus,
+  hasAnyRenderedSkills,
+  type SetupStatus,
+} from "./setup-status.js";
 import { getDaemonStatus, type DaemonStatus } from "./daemon-status.js";
 import { findManifestInDir, readYamlFile } from "./yaml.js";
+import { CONFIG_FILENAME } from "./config.js";
 import type { Manifest } from "../schema/spec.js";
 
 /**
@@ -225,7 +231,18 @@ export async function getDoctorReport(
 
   // Build setup section
   // AC: @doctor-command ac-setup-agent-hooks, ac-setup-skills-agents-md, ac-partial-init, ac-staleness-unknown
-  buildSetupSection(report.setup, setupStatus);
+  // AC: @doctor-reports-actionable-state ac-skills-check-accurate, ac-skills-check-missing
+  //     — use a location-based scan (see hasAnyRenderedSkills) rather than
+  //     relying solely on status.skills.rendered, which only counts
+  //     agent-specific locations and misses plugin-provided core skills.
+  const anyRenderedSkills = await hasAnyRenderedSkills(projectRoot);
+  buildSetupSection(report.setup, setupStatus, { anyRenderedSkills });
+
+  // AC: @doctor-reports-actionable-state ac-config-scaffold-detected
+  await buildProjectConfigCheck(report.setup, projectRoot);
+
+  // AC: @doctor-reports-actionable-state ac-version-skew-detected
+  await buildVersionSkewCheck(report.setup, projectRoot);
 
   // Build task storage section — check if project needs migration
   await buildTaskStorageSection(report.taskStorage, projectRoot);
@@ -301,8 +318,13 @@ function buildShadowSection(section: ShadowSection, status: ShadowStatus): void 
 /**
  * Build setup section from SetupStatus
  * AC: @doctor-command ac-setup-agent-hooks, ac-setup-skills-agents-md, ac-partial-init, ac-staleness-unknown
+ * AC: @doctor-reports-actionable-state ac-skills-check-accurate, ac-skills-check-missing
  */
-function buildSetupSection(section: SetupSection, status: SetupStatus): void {
+function buildSetupSection(
+  section: SetupSection,
+  status: SetupStatus,
+  options: { anyRenderedSkills: boolean },
+): void {
   // Store metadata
   section.agentType = status.agent.detected;
   section.skillsRendered = status.skills.rendered;
@@ -364,21 +386,38 @@ function buildSetupSection(section: SetupSection, status: SetupStatus): void {
 
   // Skills check
   // AC: @doctor-command ac-setup-skills-agents-md
-  section.checks.push({
-    name: "skills",
-    severity:
-      status.skills.rendered > 0 ? (status.skills.drifted > 0 ? "warning" : "ok") : "warning",
-    message:
-      status.skills.rendered > 0
-        ? `${status.skills.rendered} skills rendered${status.skills.drifted > 0 ? `, ${status.skills.drifted} drifted` : ""}`
-        : "No skills rendered",
-    guidance:
-      status.skills.rendered === 0
-        ? "Run `kspec setup` to render skills"
-        : status.skills.drifted > 0
-          ? "Run `kspec setup --force` to re-render drifted skills"
-          : undefined,
-  });
+  // AC: @doctor-reports-actionable-state ac-skills-check-accurate —
+  //     report healthy when ANY supported rendered-skill location contains
+  //     kspec-managed skills (including plugin-provided core skills under
+  //     .claude/plugins/kspec/skills). Relying only on status.skills.rendered
+  //     caused a persistent false-positive warning on fully-set-up projects.
+  // AC: @doctor-reports-actionable-state ac-skills-check-missing —
+  //     warn only when none of the supported locations contain rendered
+  //     skills, and name the re-render command.
+  const anyRenderedSkills = options.anyRenderedSkills;
+  if (!anyRenderedSkills) {
+    section.checks.push({
+      name: "skills",
+      severity: "warning",
+      message: "No rendered skills found in any supported location",
+      guidance: "Run `kspec skill render` to re-render skills (or `kspec setup` for a full setup)",
+    });
+  } else if (status.skills.drifted > 0) {
+    section.checks.push({
+      name: "skills",
+      severity: "warning",
+      message: `${status.skills.rendered} skills rendered, ${status.skills.drifted} drifted`,
+      guidance: "Run `kspec skill render --force` to re-render drifted skills",
+    });
+  } else {
+    const renderedCount = status.skills.rendered;
+    const suffix = renderedCount > 0 ? ` (${renderedCount} in agent-specific locations)` : "";
+    section.checks.push({
+      name: "skills",
+      severity: "ok",
+      message: `Rendered skills present${suffix}`,
+    });
+  }
 
   // kspec-agents.md check
   // AC: @doctor-command ac-setup-skills-agents-md, ac-staleness-unknown
@@ -400,9 +439,11 @@ function buildSetupSection(section: SetupSection, status: SetupStatus): void {
       break;
     case "unknown":
       // AC: @doctor-command ac-staleness-unknown
+      // AC: @doctor-reports-actionable-state ac-all-actionable —
+      //     every warning must name a concrete command the user can run.
       agentsMdSeverity = "warning";
-      agentsMdMessage = "kspec-agents.md staleness unknown";
-      agentsMdGuidance = "Could not determine staleness (manifest or hash computation unavailable)";
+      agentsMdMessage = "kspec-agents.md staleness could not be determined";
+      agentsMdGuidance = "Run `kspec agents generate` to regenerate kspec-agents.md with a fresh hash";
       break;
     case "missing":
     default:
@@ -417,6 +458,118 @@ function buildSetupSection(section: SetupSection, status: SetupStatus): void {
     severity: agentsMdSeverity,
     message: agentsMdMessage,
     guidance: agentsMdGuidance,
+  });
+}
+
+/**
+ * Build the scaffolded project config check.
+ *
+ * Checks whether `kspec.config.yaml` exists at the project root. This file is
+ * scaffolded by `kspec setup` (first-time) and `kspec upgrade` (brings an
+ * existing project up to date). The user-facing single-command resolution is
+ * `kspec upgrade`; `kspec setup --force` is the lower-level fallback.
+ *
+ * AC: @doctor-reports-actionable-state ac-config-scaffold-detected — warns
+ * when missing and names the scaffold command.
+ */
+async function buildProjectConfigCheck(
+  section: SetupSection,
+  projectRoot: string,
+): Promise<void> {
+  const configPath = path.join(projectRoot, CONFIG_FILENAME);
+  let exists = false;
+  try {
+    await fs.access(configPath);
+    exists = true;
+  } catch {
+    exists = false;
+  }
+
+  if (exists) {
+    section.checks.push({
+      name: "project-config",
+      severity: "ok",
+      message: `${CONFIG_FILENAME} present`,
+    });
+  } else {
+    section.checks.push({
+      name: "project-config",
+      severity: "warning",
+      message: `${CONFIG_FILENAME} is missing`,
+      guidance: `Run \`kspec upgrade\` to scaffold ${CONFIG_FILENAME} (or \`kspec setup --force\` to re-scaffold)`,
+    });
+  }
+}
+
+/**
+ * Build the version skew check.
+ *
+ * Compares the `lastKnownVersion` recorded in `.kspec/.setup-state.json`
+ * (written by `kspec upgrade`) against the currently installed kspec package
+ * version. A mismatch indicates the project has not been upgraded since the
+ * kspec package was updated.
+ *
+ * When the state file is absent (pre-upgrade projects), no skew can be
+ * detected — the check is reported as ok rather than warning, to avoid noise
+ * on projects that have simply never run `kspec upgrade`.
+ *
+ * AC: @doctor-reports-actionable-state ac-version-skew-detected — warns when
+ * skew is detected and names the upgrade command.
+ */
+async function buildVersionSkewCheck(
+  section: SetupSection,
+  projectRoot: string,
+): Promise<void> {
+  const statePath = path.join(projectRoot, ".kspec", ".setup-state.json");
+  let lastKnownVersion: string | undefined;
+  try {
+    const raw = await fs.readFile(statePath, "utf-8");
+    const state = JSON.parse(raw) as { lastKnownVersion?: unknown };
+    if (typeof state.lastKnownVersion === "string" && state.lastKnownVersion.length > 0) {
+      lastKnownVersion = state.lastKnownVersion;
+    }
+  } catch {
+    // State file absent or unreadable; cannot detect skew.
+  }
+
+  let installedVersion: string | null = null;
+  try {
+    const { getKspecPackageVersion } = await import("../cli/commands/skill-install.js");
+    installedVersion = await getKspecPackageVersion();
+  } catch {
+    installedVersion = null;
+  }
+
+  if (!lastKnownVersion) {
+    // No baseline to compare against — report ok so this check never produces
+    // a non-actionable warning on pre-upgrade projects. A missing scaffold
+    // state is surfaced by the project-config check already.
+    section.checks.push({
+      name: "version-skew",
+      severity: "ok",
+      message: installedVersion
+        ? `Installed kspec version: ${installedVersion} (no baseline recorded)`
+        : "No version baseline recorded",
+    });
+    return;
+  }
+
+  if (installedVersion && lastKnownVersion !== installedVersion) {
+    section.checks.push({
+      name: "version-skew",
+      severity: "warning",
+      message: `Project initialized with kspec ${lastKnownVersion}, but ${installedVersion} is installed`,
+      guidance: "Run `kspec upgrade` to bring this project up to the installed version",
+    });
+    return;
+  }
+
+  section.checks.push({
+    name: "version-skew",
+    severity: "ok",
+    message: installedVersion
+      ? `kspec version matches baseline (${installedVersion})`
+      : `kspec version matches baseline (${lastKnownVersion})`,
   });
 }
 
@@ -481,12 +634,14 @@ function buildDaemonSection(section: DaemonSection, status: DaemonStatus): void 
 
   // Health endpoint check
   // AC: @doctor-command ac-daemon-unreachable
+  // AC: @doctor-reports-actionable-state ac-all-actionable —
+  //     every warning must name a concrete command the user can run.
   if (!status.healthReachable) {
     section.checks.push({
       name: "daemon-health",
       severity: "warning",
-      message: "Health endpoint unreachable",
-      guidance: "Daemon may be starting up or there may be a port conflict",
+      message: "Health endpoint unreachable (daemon may be starting up or there may be a port conflict)",
+      guidance: "Run `kspec serve restart` to restart the daemon, or `kspec serve status` to inspect",
     });
   } else {
     section.checks.push({
@@ -538,16 +693,19 @@ async function buildTaskStorageSection(
         name: "task-storage-format",
         severity: "warning",
         message: `Task storage format not explicitly set (kynetic: ${kyneticVersion})`,
-        guidance: 'Run "kspec task migrate" to set task_storage.format: split in your manifest.',
+        guidance: "Run `kspec task migrate` to set task_storage.format: split in your manifest",
       });
     } else {
       // Legacy project needs migration
+      // AC: @doctor-reports-actionable-state ac-all-actionable —
+      //     prefer the single-command upgrade path; task migrate is the
+      //     lower-level fallback for users who only want to migrate storage.
       section.checks.push({
         name: "task-storage-format",
         severity: "error",
         message: `Legacy task storage detected (kynetic: ${kyneticVersion}, no split format)`,
         guidance:
-          'Run "kspec task migrate" to convert to per-task directory storage and upgrade your manifest.',
+          'Run `kspec upgrade` to bring this project up to the installed version (or `kspec task migrate` to only convert to per-task directory storage).',
       });
     }
   }
