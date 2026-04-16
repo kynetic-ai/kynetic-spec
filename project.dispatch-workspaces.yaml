@@ -25710,11 +25710,11 @@ workspaces:
     canonical_branch: dispatch/task/add-update-alias-for-item-ac-set/01kmrtyx
     canonical_branch_head: 51c2d344148c824d6cba110a27bdb3628191d2e4
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-27T23:58:54.597Z
+      updated_at: 2026-04-16T17:01:25.463Z
     health:
       status: invalid
       issues:
@@ -25735,17 +25735,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: c3287fc736bce39629b1bdfda617808bd9ef55e0
-      updated_at: 2026-03-27T23:58:54.597Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T17:01:25.463Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KMRTYXRCP5VGBPT546FTX31W"
     task_slug: add-update-alias-for-item-ac-set
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:01:25.463Z
       last_active_at: 2026-03-27T23:50:22.411Z
-      last_reconciled_at: 2026-03-27T23:58:54.597Z
+      last_reconciled_at: 2026-04-16T17:01:25.463Z
       created_at: 2026-03-27T23:45:01.193Z
-      updated_at: 2026-03-27T23:58:54.597Z
+      updated_at: 2026-04-16T17:01:25.463Z
     workspace_id: dispatch-workspace-01KMRTYXRCP5VGBPT546FTX31W
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
