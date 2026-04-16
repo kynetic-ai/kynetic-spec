@@ -149084,6 +149084,18 @@ reviews:
         runner: test.cjs
         created_at: 2026-04-16T02:20:07.932Z
         completed_at: 2026-04-16T02:20:07.932Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Pre-existing failure on dev and task branch at 65feefa131b93d2617358b6cd9f0c93c8fbaa589:
+          .kspec/modules/meta.yaml modules[0].traits.0 Expected string, received object, plus
+          unrelated repo-wide warnings."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-16T02:20:11.242Z
+        completed_at: 2026-04-16T02:20:11.242Z
     events:
       - _ulid: 01KPA0RSD17QSYTVR3E0GCT6V7
         actor: Jacob Chapel
@@ -149112,6 +149124,13 @@ reviews:
           status: pass
           name: cli-agent-commands targeted
         timestamp: 2026-04-16T02:20:09.096Z
+      - _ulid: 01KPA1DG6FTX708G99YEADVJTA
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-16T02:20:12.367Z
     examined_commit: 65feefa131b93d2617358b6cd9f0c93c8fbaa589
     external_links: []
     lifecycle_state: open
@@ -149137,5 +149156,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-16T02:08:53.666Z
-    updated_at: 2026-04-16T02:20:07.932Z
+    updated_at: 2026-04-16T02:20:11.242Z
     notes: []
