@@ -34815,11 +34815,11 @@ workspaces:
     canonical_branch: dispatch/task/task-sync-active-target-acs/01kn8t18
     canonical_branch_head: fb3342db29d0f52d03646cc5ec095e7d9bd0c310
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-04-03T05:02:57.778Z
+      updated_at: 2026-04-16T17:03:14.061Z
     health:
       status: healthy
       issues: []
@@ -34832,17 +34832,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-workspace-scoped-integration-target-sync/01kn8bx4
       target_commit: fb3342db29d0f52d03646cc5ec095e7d9bd0c310
-      updated_at: 2026-04-03T05:02:57.778Z
-    lifecycle_state: closing
+      updated_at: 2026-04-16T17:03:14.061Z
+    lifecycle_state: closed
     resolved_base_branch: plan/plan-workspace-scoped-integration-target-sync/01kn8bx4
     task_ref: "@01KN8T18R7K60ZC1GAR8ZAGFZ6"
     task_slug: task-sync-active-target-acs
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:03:14.061Z
       last_active_at: 2026-04-03T04:53:04.101Z
-      last_reconciled_at: 2026-04-03T05:03:41.295Z
+      last_reconciled_at: 2026-04-16T17:03:14.061Z
       created_at: 2026-04-03T04:49:05.910Z
-      updated_at: 2026-04-03T05:03:41.295Z
+      updated_at: 2026-04-16T17:03:14.061Z
     workspace_id: dispatch-workspace-01KN8T18R7K60ZC1GAR8ZAGFZ6
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
