@@ -14218,11 +14218,11 @@ workspaces:
     canonical_branch: dispatch/task/task-auto-unregister-stale-projects/01km28a0
     canonical_branch_head: 28988e187a61dfc78211068ce94987f0fcdb39fe
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-20T14:31:09.317Z
+      updated_at: 2026-04-16T16:59:15.670Z
     health:
       status: invalid
       issues:
@@ -14243,17 +14243,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: afb99935cbc5b9605c1f0538421a39bda2884823
-      updated_at: 2026-03-20T14:31:09.317Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:59:15.670Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KM28A020C9M06YC8MA2E96NW"
     task_slug: task-auto-unregister-stale-projects
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:59:15.670Z
       last_active_at: 2026-03-20T14:23:14.475Z
-      last_reconciled_at: 2026-03-20T14:31:09.317Z
+      last_reconciled_at: 2026-04-16T16:59:15.670Z
       created_at: 2026-03-20T14:09:48.118Z
-      updated_at: 2026-03-20T14:31:09.317Z
+      updated_at: 2026-04-16T16:59:15.670Z
     workspace_id: dispatch-workspace-01KM28A020C9M06YC8MA2E96NW
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
