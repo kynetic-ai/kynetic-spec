@@ -86,3 +86,68 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-16T08:19:21.862Z
+  - _ulid: 01KPAQFTEJKJA2XY9JA739V4YJ
+    content: >-
+      Implementation complete. Summary:
+
+
+      1. reapDispatchWorkspace (src/agent-runtime/workspace.ts:3035): added idempotency
+      short-circuit when cleanup.status is already 'completed' (no write, no shadow commit). Added
+      post-removal call to persistCleanupCompletedState that writes cleanup.status='completed',
+      closed_at, updated_at via persistWorkspaceRecord (shadow-mutation path, produces shadow
+      commit).
+
+
+      2. persistCleanupBlockedState: new helper that migrates both blocked branches (active
+      invocation, unresolved integration) from writeWorkspaceMetadata-only to the shadow persistence
+      path. Updates the registry record's cleanup.status='blocked' through persistWorkspaceRecord.
+      Preserves cleanupScheduledAt on the worker metadata mirror for local-consistency callers.
+      Short-circuits re-entry on already-blocked records (ac-10).
+
+
+      3. persistCleanupCompletedState: new helper that writes the completion transition after
+      successful physical removal. Preserves existing closed_at if already set, otherwise sets it to
+      now.
+
+
+      4. workspacePhysicalArtifactsAbsent: new helper that checks canonical_branch ref, worker
+      worktree path, and reviewer worktree path (if present) are ALL gone.
+
+
+      5. reconcileDispatchWorkspaceRegistry: inserted self-heal step that detects the lost-write
+      state (cleanup.eligible=true, cleanup.status!=='completed' and !=='blocked', physical
+      artifacts absent) and sets cleanup={status:'completed', updated_at:now}. The existing
+      isWorkspaceRecordDirty + closed_at=now path then handles the durable shadow write.
+
+
+      6. Updated tests/dispatch-workspace-terminal-reconciliation.test.ts ac-12 test assertion to
+      allow either 'closed' (self-heal fired) or 'closing' (concurrent skip) for lifecycle_state —
+      the key assertion (branch NOT restored) is preserved.
+
+
+      New test file: tests/dispatch-workspace-cleanup-completion.test.ts (8 tests):
+
+      - persists cleanup.status=completed and closed_at on successful reap
+      (ac-successful-cleanup-persists-completion, ac-successful-cleanup-populates-closed-at, ac-8)
+
+      - lifecycle_state resolves to closed after successful reap
+      (ac-completed-cleanup-resolves-to-closed)
+
+      - idempotent re-reap does not bump updated_at (ac-10)
+
+      - partial-failure safety (chmod-based induced removal error)
+
+      - reconciliation self-heal for lost writes (ac-successful-cleanup-persists-completion)
+
+      - no rewrite of already-closed records during reconciliation (ac-10)
+
+      - blocked path persists through shadow (active invocation) (ac-8)
+
+      - blocked path persists through shadow (unresolved integration) (ac-8)
+
+
+      Test suite: 7772 passing (full run, no regressions beyond the one intentional ac-12 assertion
+      update documented above).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-16T08:45:57.074Z
