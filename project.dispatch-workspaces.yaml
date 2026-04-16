@@ -13402,11 +13402,11 @@ workspaces:
     canonical_branch: dispatch/task/preserve-user-defined-stop-hooks-during-kspec-setup/01km4n8k
     canonical_branch_head: d06d4de00e8aab12d98d39a3ab0632650990df40
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-20T05:09:01.432Z
+      updated_at: 2026-04-16T16:59:06.087Z
     health:
       status: invalid
       issues:
@@ -13428,17 +13428,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 82c29e1ab95912c9340f50d9aa649fbdc6fed8af
-      updated_at: 2026-03-20T05:09:01.432Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:59:06.087Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KM4N8K3JS9YR423HKSG2119K"
     task_slug: preserve-user-defined-stop-hooks-during-kspec-setup
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:59:06.087Z
       last_active_at: 2026-03-20T05:02:08.968Z
-      last_reconciled_at: 2026-03-20T05:09:01.432Z
+      last_reconciled_at: 2026-04-16T16:59:06.087Z
       created_at: 2026-03-20T04:53:23.689Z
-      updated_at: 2026-03-20T05:09:01.432Z
+      updated_at: 2026-04-16T16:59:06.087Z
     workspace_id: dispatch-workspace-01KM4N8K3JS9YR423HKSG2119K
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
