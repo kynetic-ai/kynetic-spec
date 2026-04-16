@@ -148654,6 +148654,19 @@ reviews:
         runner: npm
         created_at: 2026-04-16T01:14:44.424Z
         completed_at: 2026-04-16T01:14:44.424Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Ran 'kspec validate' on this snapshot and on integration base
+          0501051eb49ee8db8faccedc035f1cb95cef85fc. Both report the same pre-existing schema error
+          in .kspec/modules/meta.yaml (modules[0].traits.0 expected string, received object), so
+          this task did not introduce the validation failure.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-16T01:14:47.476Z
+        completed_at: 2026-04-16T01:14:47.476Z
     events:
       - _ulid: 01KP9WVCY9HY85GZ89TGD38EAF
         actor: Jacob Chapel
@@ -148682,6 +148695,13 @@ reviews:
           status: pass
           name: upgrade-command tests
         timestamp: 2026-04-16T01:14:45.516Z
+      - _ulid: 01KP9XNRA1W8Y4W30V8BCM39CP
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-16T01:14:48.513Z
     examined_commit: 23efbc1be833d77a0410b2964d4eda5eb81e78a9
     external_links: []
     lifecycle_state: open
@@ -148716,5 +148736,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-16T01:00:24.906Z
-    updated_at: 2026-04-16T01:14:44.424Z
+    updated_at: 2026-04-16T01:14:47.476Z
     notes: []
