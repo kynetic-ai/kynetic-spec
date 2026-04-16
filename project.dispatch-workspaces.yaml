@@ -21038,11 +21038,11 @@ workspaces:
     canonical_branch: dispatch/task/task-readtestoutput-workflow-runs/01kmfcnv
     canonical_branch_head: 9da8d7b6cd949a1efb3c2c329cbe1bbcf3ef7a94
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-24T21:21:46.777Z
+      updated_at: 2026-04-16T17:00:33.016Z
     health:
       status: invalid
       issues:
@@ -21063,17 +21063,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 9ae71df9a2921ca858f772c5b02f4a5dd864430a
-      updated_at: 2026-03-24T21:21:46.777Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T17:00:33.016Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KMFCNV6MRGT4BRKY8BZ29QJX"
     task_slug: task-readtestoutput-workflow-runs
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:00:33.016Z
       last_active_at: 2026-03-24T21:09:45.572Z
-      last_reconciled_at: 2026-03-24T21:21:46.777Z
+      last_reconciled_at: 2026-04-16T17:00:33.016Z
       created_at: 2026-03-24T21:00:26.846Z
-      updated_at: 2026-03-24T21:21:46.777Z
+      updated_at: 2026-04-16T17:00:33.016Z
     workspace_id: dispatch-workspace-01KMFCNV6MRGT4BRKY8BZ29QJX
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
