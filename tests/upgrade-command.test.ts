@@ -1649,6 +1649,109 @@ describe("kspec upgrade", () => {
       expect(hookStep!.status).toBe("skipped");
       expect(hookStep!.message).toContain("previously removed by user");
     });
+
+    // Cycle 16 blocker repro: upgrade --force was forwarding force: true
+    // into scaffoldDefaults(), which re-seeded default agents/conventions
+    // that the user had deliberately removed. The upgrade spec requires
+    // step 5 to "only create what is missing; never overwrite" — --force
+    // relaxes the idempotent-when-current skip, but must not override
+    // user-removal decisions. This parallels the cycle-15 fix for the
+    // reflection hook.
+    it("does not recreate user-removed default agents or conventions even with --force", async () => {
+      await initProject(tempDir);
+      await writeLastKnownVersion(tempDir, "0.8.0");
+
+      // Verify defaults are present after initial setup
+      const beforeAgents = kspecJson<{ items: Array<{ id: string }> }>(
+        "agent list --json",
+        tempDir,
+      );
+      const beforeAgentIds = beforeAgents.items.map((a) => a.id);
+      expect(beforeAgentIds).toContain("task-worker");
+      expect(beforeAgentIds).toContain("pr-reviewer");
+      expect(beforeAgentIds).toContain("primary-dev");
+      expect(beforeAgentIds).toContain("plan-reviewer");
+
+      const beforeConventions = kspecJson<Array<{ domain: string }>>(
+        "meta conventions --json",
+        tempDir,
+      );
+      const beforeConventionDomains = beforeConventions.map((c) => c.domain);
+      expect(beforeConventionDomains).toContain("commits");
+      expect(beforeConventionDomains).toContain("architecture");
+      expect(beforeConventionDomains).toContain("testing");
+
+      // User deliberately removes scaffolded defaults
+      kspec("meta delete @task-worker --confirm", tempDir);
+      kspec("meta delete @pr-reviewer --confirm", tempDir);
+      kspec("meta delete @primary-dev --confirm", tempDir);
+      kspec("meta delete @plan-reviewer --confirm", tempDir);
+      kspec("meta delete @architecture --confirm", tempDir);
+
+      // Verify they are gone
+      const afterRemoveAgents = kspecJson<{ items: Array<{ id: string }> }>(
+        "agent list --json",
+        tempDir,
+      );
+      const afterRemoveAgentIds = afterRemoveAgents.items.map((a) => a.id);
+      expect(afterRemoveAgentIds).not.toContain("task-worker");
+      expect(afterRemoveAgentIds).not.toContain("pr-reviewer");
+      expect(afterRemoveAgentIds).not.toContain("primary-dev");
+      expect(afterRemoveAgentIds).not.toContain("plan-reviewer");
+
+      const afterRemoveConventions = kspecJson<Array<{ domain: string }>>(
+        "meta conventions --json",
+        tempDir,
+      );
+      const afterRemoveConventionDomains = afterRemoveConventions.map(
+        (c) => c.domain,
+      );
+      expect(afterRemoveConventionDomains).not.toContain("architecture");
+
+      // Run upgrade --force — MUST NOT recreate the removed defaults
+      const result = kspecJson<{
+        steps: Array<{
+          name: string;
+          status: string;
+          message: string;
+          details?: {
+            items?: Array<{ type: string; id: string; status: string }>;
+          };
+        }>;
+      }>("upgrade --force", tempDir);
+
+      const scaffoldStep = result.steps.find(
+        (s) => s.name === "Scaffold default agents and conventions",
+      );
+      expect(scaffoldStep).toBeDefined();
+
+      // No item should be force-recreated or newly created
+      const items = scaffoldStep!.details?.items ?? [];
+      const recreatedIds = items
+        .filter(
+          (i) => i.status === "force-recreated" || i.status === "created",
+        )
+        .map((i) => i.id);
+      expect(recreatedIds).toEqual([]);
+
+      // And the defaults must still be gone on disk
+      const finalAgents = kspecJson<{ items: Array<{ id: string }> }>(
+        "agent list --json",
+        tempDir,
+      );
+      const finalAgentIds = finalAgents.items.map((a) => a.id);
+      expect(finalAgentIds).not.toContain("task-worker");
+      expect(finalAgentIds).not.toContain("pr-reviewer");
+      expect(finalAgentIds).not.toContain("primary-dev");
+      expect(finalAgentIds).not.toContain("plan-reviewer");
+
+      const finalConventions = kspecJson<Array<{ domain: string }>>(
+        "meta conventions --json",
+        tempDir,
+      );
+      const finalConventionDomains = finalConventions.map((c) => c.domain);
+      expect(finalConventionDomains).not.toContain("architecture");
+    });
   });
 
   // ─── Trait: @trait-error-guidance ──────────────────────────────────

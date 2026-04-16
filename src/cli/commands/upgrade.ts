@@ -1193,12 +1193,23 @@ dispatch:
   }
 
   // 5b: Scaffold default agents and conventions
+  //
+  // NOTE: We intentionally do NOT forward `force` to scaffoldDefaults here.
+  // The upgrade spec requires step 5 to "only create what is missing; never
+  // overwrite" — so a user who deliberately removed a default agent or
+  // convention must not see it reintroduced by `upgrade --force`. `--force`
+  // for upgrade relaxes the idempotent-when-current skip; it does not
+  // override user-removal decisions for scaffolded defaults.
+  //
+  // This mirrors the cycle-15 fix for the reflection hook below, which
+  // removed a `&& !force` guard that was silently re-seeding user-removed
+  // items.
   try {
     const { scaffoldDefaults } = await import("./setup-defaults.js");
     const { initContext } = await import("../../parser/index.js");
     const freshCtx = await initContext();
 
-    const scaffoldResult = await scaffoldDefaults(freshCtx, { dryRun, force });
+    const scaffoldResult = await scaffoldDefaults(freshCtx, { dryRun });
     const createdItems = scaffoldResult.items.filter(
       (i) => i.status === "created" || i.status === "force-recreated",
     );
