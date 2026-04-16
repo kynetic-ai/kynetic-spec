@@ -8062,11 +8062,11 @@ workspaces:
     canonical_branch: dispatch/task/task-review-api-websocket/01kktw6h
     canonical_branch_head: 761e941162ae4f892789085b2a60f1bb29d04fa1
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-17T19:53:26.742Z
+      updated_at: 2026-04-16T16:57:32.982Z
     health:
       status: invalid
       issues:
@@ -8087,17 +8087,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 65035b85142bbf7c16078777c730bc19413276a4
-      updated_at: 2026-03-17T19:53:26.742Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:57:32.982Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KKTW6HCFS1KY6X0KVF5F6RFP"
     task_slug: task-review-api-websocket
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:57:32.982Z
       last_active_at: 2026-03-17T19:43:39.416Z
-      last_reconciled_at: 2026-03-17T19:53:26.742Z
+      last_reconciled_at: 2026-04-16T16:57:32.982Z
       created_at: 2026-03-17T19:17:04.616Z
-      updated_at: 2026-03-17T19:53:26.742Z
+      updated_at: 2026-04-16T16:57:32.982Z
     workspace_id: dispatch-workspace-01KKTW6HCFS1KY6X0KVF5F6RFP
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
