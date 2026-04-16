@@ -18295,11 +18295,11 @@ workspaces:
     canonical_branch: dispatch/task/task-session-registry/01kma74d
     canonical_branch_head: 5447244e888087b2fa8ee12b5bcc163d321b474a
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-22T07:50:55.687Z
+      updated_at: 2026-04-16T17:00:03.872Z
     health:
       status: invalid
       issues:
@@ -18320,17 +18320,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 3997b9bdf83ad069eeae20912280def282bc6b77
-      updated_at: 2026-03-22T07:50:55.687Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T17:00:03.872Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KMA74DPD6ESYCQAT6YY8DXJJ"
     task_slug: task-session-registry
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:00:03.872Z
       last_active_at: 2026-03-22T07:40:48.889Z
-      last_reconciled_at: 2026-03-22T07:50:55.687Z
+      last_reconciled_at: 2026-04-16T17:00:03.872Z
       created_at: 2026-03-22T07:32:04.935Z
-      updated_at: 2026-03-22T07:50:55.687Z
+      updated_at: 2026-04-16T17:00:03.872Z
     workspace_id: dispatch-workspace-01KMA74DPD6ESYCQAT6YY8DXJJ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
