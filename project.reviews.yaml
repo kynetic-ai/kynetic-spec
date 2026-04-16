@@ -150243,6 +150243,25 @@ reviews:
         runner: npm
         created_at: 2026-04-16T05:11:02.921Z
         completed_at: 2026-04-16T05:11:02.921Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: RELEASE_NOTES.md, src/parser/release-notes.ts,
+          src/cli/commands/release-notes.ts, src/cli/commands/upgrade.ts, package.json,
+          src/cli/index.ts, src/cli/commands/index.ts, tests/release-notes-command.test.ts,
+          tests/release-notes-parser.test.ts, tests/upgrade-command.test.ts, rendered release skill
+          files. Commands run: git diff/stat, kspec task get, kspec item get, rg AC scans, kspec
+          validate, base-branch kspec validate, npm test, node dist/cli/index.js release-notes, node
+          dist/cli/index.js release-notes --from 0.10.0 --to 0.12.0 --json, parser helper
+          load/get/render checks. Claims verified: command outputs authored markdown; range output
+          is chronological; upgrade helper returns intervening versions only; full suite passes.
+          Categories searched: correctness, edge cases, error handling, test quality, integration."
+        name: review-evidence
+        required: false
+        runner: manual
+        created_at: 2026-04-16T05:11:05.739Z
+        completed_at: 2026-04-16T05:11:05.739Z
     events:
       - _ulid: 01KPAAJ5RMMWRMCPNCEM775SVA
         actor: Jacob Chapel
@@ -150264,6 +150283,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-16T05:11:03.897Z
+      - _ulid: 01KPAB6E8PP3QE880HERMR4S6N
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-04-16T05:11:06.774Z
     examined_commit: 8527f5cea4d38938bcde4dbbc64aba92e315baf0
     external_links: []
     lifecycle_state: open
@@ -150276,5 +150302,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-16T05:00:02.709Z
-    updated_at: 2026-04-16T05:11:02.921Z
+    updated_at: 2026-04-16T05:11:05.739Z
     notes: []
