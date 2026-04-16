@@ -27668,11 +27668,11 @@ workspaces:
     canonical_branch: dispatch/task/task-ui-unwrap-envelope/01kmw68m
     canonical_branch_head: 1377ddf5db42d1acc5b217e5c82bc24ac5281f4b
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-29T11:54:34.465Z
+      updated_at: 2026-04-16T17:01:48.613Z
     health:
       status: healthy
       issues: []
@@ -27685,17 +27685,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: d64e38817eb430d7496769373b2751bd89808a4d
-      updated_at: 2026-03-29T11:54:34.465Z
-    lifecycle_state: closing
+      updated_at: 2026-04-16T17:01:48.613Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KMW68M6EEC48D7WFTP623BHG"
     task_slug: task-ui-unwrap-envelope
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:01:48.613Z
       last_active_at: 2026-03-29T11:47:51.856Z
-      last_reconciled_at: 2026-03-29T11:55:09.011Z
+      last_reconciled_at: 2026-04-16T17:01:48.613Z
       created_at: 2026-03-29T11:03:40.751Z
-      updated_at: 2026-03-29T11:55:09.011Z
+      updated_at: 2026-04-16T17:01:48.613Z
     workspace_id: dispatch-workspace-01KMW68M6EEC48D7WFTP623BHG
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
