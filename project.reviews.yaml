@@ -150910,3 +150910,29 @@ reviews:
     created_at: 2026-04-16T07:02:15.241Z
     updated_at: 2026-04-16T07:13:19.525Z
     notes: []
+  - _ulid: 01KPAM8CPN14J0Q33EE4306A57
+    slugs: []
+    title: Review task-default-reflection-hook-turn-filter
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KPAM8CPN0TC9JVA3R4P85KXJ
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-16T07:49:27.893Z
+    examined_commit: a22365e8d21c2b7cd78f62bc226a6bcaf5e5263e
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KP99SNQHRTFMY4ZY6AZZRNA4"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-16T07:49:27.893Z
+    updated_at: null
+    notes: []
