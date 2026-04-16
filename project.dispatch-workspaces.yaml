@@ -12416,11 +12416,11 @@ workspaces:
     canonical_branch: dispatch/task/task-route-dispatch-sync-through-targeting-path/01km3zme
     canonical_branch_head: fadb999f740f18d9877355ad928dc71183a41c15
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-19T23:34:50.505Z
+      updated_at: 2026-04-16T16:58:54.009Z
     health:
       status: invalid
       issues:
@@ -12442,17 +12442,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: f90477c9945db0317d11955393f6089b4fed466a
-      updated_at: 2026-03-19T23:34:50.505Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:58:54.009Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KM3ZMEMA53X21SYPSRWRF6E8"
     task_slug: task-route-dispatch-sync-through-targeting-path
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:58:54.009Z
       last_active_at: 2026-03-19T23:26:19.306Z
-      last_reconciled_at: 2026-03-19T23:34:50.505Z
+      last_reconciled_at: 2026-04-16T16:58:54.009Z
       created_at: 2026-03-19T22:59:05.165Z
-      updated_at: 2026-03-19T23:34:50.505Z
+      updated_at: 2026-04-16T16:58:54.009Z
     workspace_id: dispatch-workspace-01KM3ZMEMA53X21SYPSRWRF6E8
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
