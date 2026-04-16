@@ -8603,6 +8603,18 @@ features:
                   next dispatch cycle, rather than being permanently discarded from the queue as
                   unhealthy
                 when: The dispatch scheduler evaluates the task for queue eligibility
+              - given: A workspace cleanup completes without a blocking condition
+                id: ac-successful-cleanup-persists-completion
+                then: The record's cleanup status is completed
+                when: The registry is next read
+              - given: A workspace cleanup completes without a blocking condition
+                id: ac-successful-cleanup-populates-closed-at
+                then: The record has a closed_at timestamp
+                when: The registry is next read
+              - given: A workspace record's cleanup status is completed
+                id: ac-completed-cleanup-resolves-to-closed
+                then: The lifecycle state resolves to closed
+                when: The lifecycle state is next evaluated
             tags: []
             requirements:
               - _ulid: 01KKFY93ZNBHPNV5S09KQEXBFA
