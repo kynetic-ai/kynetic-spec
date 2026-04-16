@@ -14702,6 +14702,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-16T00:59:16.111Z
+  - _ulid: 01KP9XR9SD4WE3NEAWC696A2Y6
+    type: friction
+    content: Reviewing regressions against an integration base is harder than it should be when ad hoc
+      base worktrees do not have reusable dependencies or a lightweight comparison path. In this
+      session, verifying whether full-suite failures were pre-existing required creating a detached
+      base worktree, then the test runner attempted dependency repair inside that worktree instead
+      of reusing the current workspace installation. A lower-friction base-branch comparison
+      workflow for reviewer snapshots would make regression classification faster and more reliable.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-16T01:16:11.949Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
