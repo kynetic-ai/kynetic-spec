@@ -26906,11 +26906,11 @@ workspaces:
     canonical_branch: dispatch/task/task-spec-update-data-freshness/01kmw68k
     canonical_branch_head: 6943dad4b8203281f7a00c18ae29804ce34c559a
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-29T07:16:30.903Z
+      updated_at: 2026-04-16T17:01:39.090Z
     health:
       status: healthy
       issues: []
@@ -26923,17 +26923,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 6943dad4b8203281f7a00c18ae29804ce34c559a
-      updated_at: 2026-03-29T07:16:30.903Z
-    lifecycle_state: closing
+      updated_at: 2026-04-16T17:01:39.090Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KMW68K2PP8BX24XEPK4XS9W5"
     task_slug: task-spec-update-data-freshness
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:01:39.090Z
       last_active_at: 2026-03-29T07:10:02.254Z
-      last_reconciled_at: 2026-03-29T07:16:35.311Z
+      last_reconciled_at: 2026-04-16T17:01:39.090Z
       created_at: 2026-03-29T07:05:48.225Z
-      updated_at: 2026-03-29T07:16:35.311Z
+      updated_at: 2026-04-16T17:01:39.090Z
     workspace_id: dispatch-workspace-01KMW68K2PP8BX24XEPK4XS9W5
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
