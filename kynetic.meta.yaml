@@ -14911,6 +14911,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-16T07:48:03.176Z
+  - _ulid: 01KPANBE6CCCHY02E1H5YBN582
+    type: friction
+    content: Review cycles still inherit unrelated kspec validate noise from unchanged repo state. In
+      this session, validation failed on .kspec/modules/meta.yaml modules[0].traits.0 expecting a
+      string and also warned about an orphaned skill directory, so the review had to record a
+      non-required failing check and explain it away before approving unrelated code. This should be
+      triaged into either fixing the stale metadata or making validate/reporting distinguish
+      pre-existing repo issues from task regressions more cleanly.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-16T08:08:36.300Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
