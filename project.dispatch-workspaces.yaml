@@ -376,11 +376,11 @@ workspaces:
     canonical_branch: dispatch/task/implement-droid-skill-renderer/01kkjkm7
     canonical_branch_head: 38b55150875d7e0ecc997a8d840787afd941d9c1
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-28T23:17:22.644Z
+      updated_at: 2026-04-16T16:55:12.797Z
     health:
       status: stale
       issues:
@@ -398,17 +398,17 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: e728c62710bbc6fe43d7bd1dfd135c092ef732f2
-      updated_at: 2026-03-28T23:17:22.644Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:55:12.797Z
+    lifecycle_state: closed
     resolved_base_branch: main
     task_ref: "@01KKJKM7Y5M5366F6XWC0KMHV5"
     task_slug: implement-droid-skill-renderer
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:55:12.797Z
       last_active_at: 2026-03-13T06:25:26.178Z
-      last_reconciled_at: 2026-03-28T23:17:22.644Z
+      last_reconciled_at: 2026-04-16T16:55:12.797Z
       created_at: 2026-03-13T04:53:07.037Z
-      updated_at: 2026-03-28T23:17:22.644Z
+      updated_at: 2026-04-16T16:55:12.797Z
     workspace_id: dispatch-workspace-01KKJKM7Y5M5366F6XWC0KMHV5
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
