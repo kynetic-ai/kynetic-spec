@@ -52553,7 +52553,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-16T00:23:54.462Z
+      updated_at: 2026-04-16T00:26:51.695Z
     integration:
       status: merged
       detail: integration:merged
@@ -52569,18 +52569,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-16T00:11:00.672Z
-      last_reconciled_at: 2026-04-16T00:26:50.244Z
+      last_reconciled_at: 2026-04-16T00:26:51.695Z
       created_at: 2026-04-15T23:57:02.585Z
-      updated_at: 2026-04-16T00:26:50.244Z
+      updated_at: 2026-04-16T00:26:51.695Z
     workspace_id: dispatch-workspace-01KP9S5KAZGRSRVJWSJ1FXY6RM
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 73f9daaedf7d2c63d635be9604cdbd8539f6b64c
-        last_seen_at: 2026-04-16T00:10:37.212Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-cli-agent-session-store-eacces-01kp9s5k-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-fix-cli-agent-session-store-eacces/01kp9s5k
