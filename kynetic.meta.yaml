@@ -14673,6 +14673,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-16T00:29:22.427Z
+  - _ulid: 01KP9VTWQ7FAGBTMXH5S8HPVQB
+    type: friction
+    content: Upgrade/backfill paths need preservation tests for existing manifest-owned identities, not
+      just existence checks. In this review, modules/main.yaml backfill correctly detected the
+      missing file but still rewrote manifest.default_module, changing project semantics. Review
+      caught it only after an end-to-end temp-project reproduction.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-16T00:42:39.719Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
