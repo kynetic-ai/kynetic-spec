@@ -16667,11 +16667,11 @@ workspaces:
     canonical_branch: dispatch/task/task-impl-split-storage/01km6yer
     canonical_branch_head: e3cad16ed523d9896944f9251cbb65fa5fd8f86d
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-21T07:44:42.028Z
+      updated_at: 2026-04-16T16:59:43.723Z
     health:
       status: invalid
       issues:
@@ -16692,17 +16692,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 61eb4369ce1f4ece77cb55bc19f888eebf4d78a8
-      updated_at: 2026-03-21T07:44:42.028Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:59:43.723Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KM6YERMDKKYA1XXRN025G0FT"
     task_slug: task-impl-split-storage
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:59:43.723Z
       last_active_at: 2026-03-21T07:36:53.046Z
-      last_reconciled_at: 2026-03-21T07:44:42.028Z
+      last_reconciled_at: 2026-04-16T16:59:43.723Z
       created_at: 2026-03-21T06:30:59.495Z
-      updated_at: 2026-03-21T07:44:42.028Z
+      updated_at: 2026-04-16T16:59:43.723Z
     workspace_id: dispatch-workspace-01KM6YERMDKKYA1XXRN025G0FT
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
