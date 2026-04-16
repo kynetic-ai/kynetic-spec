@@ -3083,11 +3083,11 @@ workspaces:
     canonical_branch: dispatch/task/fix-daemon-session-sync-hardcoded-manifest-path/01kknktf
     canonical_branch_head: 26cc351a2b8a94f2f693278de1a3a7c8244aa42f
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-19T03:56:09.489Z
+      updated_at: 2026-04-16T16:56:01.375Z
     health:
       status: stale
       issues:
@@ -3105,17 +3105,17 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: 8c2a386b10b0684fefcb86a4d3508279cc324a42
-      updated_at: 2026-03-19T03:56:09.489Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:56:01.375Z
+    lifecycle_state: closed
     resolved_base_branch: main
     task_ref: "@01KKNKTFJ0JB8JK0DNDMDCRXAG"
     task_slug: fix-daemon-session-sync-hardcoded-manifest-path
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:56:01.375Z
       last_active_at: 2026-03-14T07:45:44.674Z
-      last_reconciled_at: 2026-03-19T03:56:09.489Z
+      last_reconciled_at: 2026-04-16T16:56:01.375Z
       created_at: 2026-03-14T07:33:32.494Z
-      updated_at: 2026-03-19T03:56:09.489Z
+      updated_at: 2026-04-16T16:56:01.375Z
     workspace_id: dispatch-workspace-01KKNKTFJ0JB8JK0DNDMDCRXAG
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
