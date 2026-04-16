@@ -232,9 +232,11 @@ export async function getDoctorReport(
   // Build setup section
   // AC: @doctor-command ac-setup-agent-hooks, ac-setup-skills-agents-md, ac-partial-init, ac-staleness-unknown
   // AC: @doctor-reports-actionable-state ac-skills-check-accurate, ac-skills-check-missing
-  //     — use a location-based scan (see hasAnyRenderedSkills) rather than
-  //     relying solely on status.skills.rendered, which only counts
-  //     agent-specific locations and misses plugin-provided core skills.
+  //     — gate the health verdict on hasAnyRenderedSkills, which scans every
+  //     supported rendered-skill location (including plugin-provided core
+  //     skills under .claude/plugins/kspec/skills). status.skills.rendered
+  //     already reflects the same set, but hasAnyRenderedSkills gives a
+  //     stable boolean signal for the warning path independent of the count.
   const anyRenderedSkills = await hasAnyRenderedSkills(projectRoot);
   buildSetupSection(report.setup, setupStatus, { anyRenderedSkills });
 
@@ -410,8 +412,15 @@ function buildSetupSection(
       guidance: "Run `kspec skill render --force` to re-render drifted skills",
     });
   } else {
+    // AC: @doctor-reports-actionable-state ac-skills-check-accurate —
+    //     the count reported here is the sum across every supported
+    //     rendered-skill location (see getRenderedSkillLocations), which
+    //     includes plugin-provided core skills under
+    //     .claude/plugins/kspec/skills as well as agent-specific output
+    //     directories. The message must not imply the count is
+    //     agent-specific only — that was the original false claim.
     const renderedCount = status.skills.rendered;
-    const suffix = renderedCount > 0 ? ` (${renderedCount} in agent-specific locations)` : "";
+    const suffix = renderedCount > 0 ? ` (${renderedCount} across supported locations)` : "";
     section.checks.push({
       name: "skills",
       severity: "ok",

@@ -249,12 +249,14 @@ describe("Doctor Command", () => {
 
         expect(skillsCheck).toBeDefined();
         expect(skillsCheck!.severity).toBe("ok");
-        // The skills-check message format changed to describe rendered skill
-        // presence across all supported locations (not just the agent-specific
-        // count). The droid fixture has one skill in .factory/skills so the
-        // count is still surfaced as part of the message.
+        // The skills-check message describes rendered skill presence across
+        // every supported location, not just the agent-specific count.
+        // Earlier drafts claimed "in agent-specific locations" even when the
+        // count came from plugin-provided skills — that was a factual error
+        // the reviewer flagged. The message must not use that phrasing.
         expect(skillsCheck!.message).toContain("Rendered skills present");
-        expect(skillsCheck!.message).toContain("1 in agent-specific locations");
+        expect(skillsCheck!.message).toContain("1 across supported locations");
+        expect(skillsCheck!.message).not.toContain("agent-specific locations");
       } finally {
         if (previousFactoryProjectDir === undefined) {
           delete process.env.FACTORY_PROJECT_DIR;
@@ -761,6 +763,11 @@ describe("Doctor Command", () => {
       // Must NOT warn about missing rendered skills when plugin skills exist.
       expect(skillsCheck!.severity).not.toBe("warning");
       expect(skillsCheck!.message).not.toMatch(/no (rendered )?skills/i);
+      // Plugin-provided skills are NOT agent-specific — they are plugin
+      // output. The prior message wrongly attributed the count to
+      // "agent-specific locations" even when the only rendered skill lived
+      // under .claude/plugins/kspec/skills. Guard against regression.
+      expect(skillsCheck!.message).not.toContain("agent-specific locations");
     });
 
     // AC: @doctor-reports-actionable-state ac-skills-check-accurate
