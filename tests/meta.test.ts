@@ -1630,6 +1630,186 @@ describe("Integration: meta mutation commands", () => {
         expect(e.message).toContain("Meta item not found");
       }
     });
+
+    // AC: @meta-set-multi-value-parity ac-repeated-add-rule-all-kept
+    it("should preserve all rules when multiple --add-rule flags are passed in a single call", () => {
+      kspec("meta add convention --domain multi-rule-conv", tempDir);
+
+      kspec(
+        'meta set @multi-rule-conv --add-rule "Use snake_case" --add-rule "Max 80 chars" --add-rule "No globals"',
+        tempDir,
+      );
+
+      const conv = kspecJson<any>("meta get @multi-rule-conv", tempDir);
+      expect(conv.rules).toContain("Use snake_case");
+      expect(conv.rules).toContain("Max 80 chars");
+      expect(conv.rules).toContain("No globals");
+      expect(conv.rules).toHaveLength(3);
+    });
+
+    // AC: @meta-set-multi-value-parity ac-repeated-add-skill-all-kept
+    it("should preserve all skills when multiple --add-skill flags are passed in a single call", () => {
+      kspec('meta add agent --id multi-skill-agent --name "Multi Skill Agent"', tempDir);
+
+      kspec(
+        "meta set @multi-skill-agent --add-skill review --add-skill deploy --add-skill test",
+        tempDir,
+      );
+
+      const agent = kspecJson<any>("meta get @multi-skill-agent", tempDir);
+      expect(agent.skills).toContain("review");
+      expect(agent.skills).toContain("deploy");
+      expect(agent.skills).toContain("test");
+      expect(agent.skills).toHaveLength(3);
+    });
+
+    // AC: @meta-set-multi-value-parity ac-repeated-add-capability-all-kept
+    it("should preserve all capabilities when multiple --add-capability flags are passed in a single call", () => {
+      kspec('meta add agent --id multi-cap-agent --name "Multi Cap Agent"', tempDir);
+
+      kspec(
+        "meta set @multi-cap-agent --add-capability code --add-capability test --add-capability review",
+        tempDir,
+      );
+
+      const agent = kspecJson<any>("meta get @multi-cap-agent", tempDir);
+      expect(agent.capabilities).toContain("code");
+      expect(agent.capabilities).toContain("test");
+      expect(agent.capabilities).toContain("review");
+      expect(agent.capabilities).toHaveLength(3);
+    });
+
+    // AC: @meta-set-multi-value-parity ac-remove-flags-unchanged
+    it("should remove all named values when multiple remove flags are passed in a single call", () => {
+      kspec(
+        'meta add agent --id multi-rm-agent --name "Multi Remove Agent" --capability code --capability test --capability review --capability deploy',
+        tempDir,
+      );
+
+      kspec(
+        "meta set @multi-rm-agent --remove-capability test --remove-capability deploy",
+        tempDir,
+      );
+
+      const agent = kspecJson<any>("meta get @multi-rm-agent", tempDir);
+      expect(agent.capabilities).toContain("code");
+      expect(agent.capabilities).toContain("review");
+      expect(agent.capabilities).not.toContain("test");
+      expect(agent.capabilities).not.toContain("deploy");
+      expect(agent.capabilities).toHaveLength(2);
+    });
+
+    // AC: @meta-set-multi-value-parity ac-mixed-add-and-remove
+    it("should apply removes before adds when both are passed in a single call", () => {
+      kspec(
+        'meta add agent --id mixed-agent --name "Mixed Agent" --capability old1 --capability old2 --capability keep',
+        tempDir,
+      );
+
+      kspec(
+        "meta set @mixed-agent --remove-capability old1 --remove-capability old2 --add-capability new1 --add-capability new2",
+        tempDir,
+      );
+
+      const agent = kspecJson<any>("meta get @mixed-agent", tempDir);
+      expect(agent.capabilities).toContain("keep");
+      expect(agent.capabilities).toContain("new1");
+      expect(agent.capabilities).toContain("new2");
+      expect(agent.capabilities).not.toContain("old1");
+      expect(agent.capabilities).not.toContain("old2");
+      expect(agent.capabilities).toHaveLength(3);
+    });
+
+    // AC: @meta-set-multi-value-parity ac-mixed-add-and-remove
+    // Verifies remove-then-add ordering: removing and re-adding the same value works
+    it("should allow removing and re-adding the same value in one call (remove-before-add order)", () => {
+      kspec(
+        'meta add agent --id readd-agent --name "Readd Agent" --capability stale',
+        tempDir,
+      );
+
+      // Remove "stale" and re-add "stale" — net effect: value is present
+      kspec(
+        "meta set @readd-agent --remove-capability stale --add-capability stale",
+        tempDir,
+      );
+
+      const agent = kspecJson<any>("meta get @readd-agent", tempDir);
+      expect(agent.capabilities).toContain("stale");
+      expect(agent.capabilities).toHaveLength(1);
+    });
+
+    // AC: @meta-set-multi-value-parity ac-remove-flags-unchanged (tool variant)
+    it("should remove multiple tools in a single call", () => {
+      kspec(
+        'meta add agent --id multi-rm-tool-agent --name "Multi Remove Tool Agent" --tool bash --tool python --tool node',
+        tempDir,
+      );
+
+      kspec(
+        "meta set @multi-rm-tool-agent --remove-tool bash --remove-tool python",
+        tempDir,
+      );
+
+      const agent = kspecJson<any>("meta get @multi-rm-tool-agent", tempDir);
+      expect(agent.tools).toEqual(["node"]);
+    });
+
+    // AC: @meta-set-multi-value-parity ac-repeated-add-capability-all-kept (tool variant)
+    it("should add multiple tools in a single call", () => {
+      kspec('meta add agent --id multi-add-tool-agent --name "Multi Add Tool Agent"', tempDir);
+
+      kspec(
+        "meta set @multi-add-tool-agent --add-tool bash --add-tool python --add-tool node",
+        tempDir,
+      );
+
+      const agent = kspecJson<any>("meta get @multi-add-tool-agent", tempDir);
+      expect(agent.tools).toContain("bash");
+      expect(agent.tools).toContain("python");
+      expect(agent.tools).toContain("node");
+      expect(agent.tools).toHaveLength(3);
+    });
+
+    // Regression: meta add multi-value behavior must not be broken
+    it("should preserve meta add multi-value behavior (regression)", () => {
+      kspec(
+        'meta add agent --id meta-add-regression --name "Regression Agent" --capability code --capability test --skill review --skill deploy --tool bash --tool python',
+        tempDir,
+      );
+
+      const agent = kspecJson<any>("meta get @meta-add-regression", tempDir);
+      expect(agent.capabilities).toEqual(["code", "test"]);
+      expect(agent.skills).toEqual(["review", "deploy"]);
+      expect(agent.tools).toEqual(["bash", "python"]);
+    });
+
+    // Regression: meta add convention multi-rule behavior must not be broken
+    it("should preserve meta add convention multi-rule behavior (regression)", () => {
+      kspec(
+        'meta add convention --domain regression-conv --rule "Rule 1" --rule "Rule 2" --rule "Rule 3"',
+        tempDir,
+      );
+
+      const conv = kspecJson<any>("meta get @regression-conv", tempDir);
+      expect(conv.rules).toEqual(["Rule 1", "Rule 2", "Rule 3"]);
+    });
+
+    // Dedup: adding already-existing values should not create duplicates
+    it("should not create duplicates when adding already-existing values", () => {
+      kspec(
+        'meta add agent --id dedup-agent --name "Dedup Agent" --capability code --capability test',
+        tempDir,
+      );
+
+      kspec(
+        "meta set @dedup-agent --add-capability code --add-capability test --add-capability new",
+        tempDir,
+      );
+
+      const agent = kspecJson<any>("meta get @dedup-agent", tempDir);
+      expect(agent.capabilities).toEqual(["code", "test", "new"]);
+    });
   });
 
   describe("meta delete", () => {

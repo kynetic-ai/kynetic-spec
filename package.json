@@ -29,7 +29,8 @@
   "files": [
     "dist",
     "templates",
-    "plugin"
+    "plugin",
+    "RELEASE_NOTES.md"
   ],
   "type": "module",
   "main": "dist/index.js",

@@ -1316,11 +1316,14 @@ Examples:
           parsedPlan.tasks.additional_tasks.length > 0,
         );
 
+        // AC: @plan-import-format-guidance ac-empty-plan-derive-fails
         if (!hasSpecsToMaterialize && !hasManualTasksToMaterialize) {
           exitDeriveWithGuidance(
-            "Plan does not define derivable work. Add specs in a ## Specs section or tasks in a ## Tasks section.",
+            "Plan has no derivable work. Expected a ## Specs section with spec definitions " +
+              "and/or a ## Tasks section with task definitions or derive_from_specs: true, " +
+              "but neither section contains derivable content.",
             EXIT_CODES.USAGE_ERROR,
-            "Add specs in a ## Specs section or tasks in a ## Tasks section.",
+            `Update the plan document and re-import: kspec plan import <path> --into ${planRef}`,
           );
         }
 

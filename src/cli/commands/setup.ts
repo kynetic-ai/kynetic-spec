@@ -35,16 +35,11 @@ import {
   SHADOW_BRANCH_NAME,
   SHADOW_WORKTREE_DIR,
   SESSIONS_WORKTREE_DIR,
-  TRANSIENT_PLANS_DIR,
-  ensurePlansGitignore,
-  ensureSessionsGitignore,
   ensureShadowSessionsGitignore,
-  needsPlansGitignore,
-  needsSessionsGitignore,
   needsShadowSessionsGitignore,
   type ShadowOptions,
 } from "../../parser/shadow.js";
-import { loadProjectConfig } from "../../parser/config.js";
+import { loadProjectConfig, CONFIG_FILENAME } from "../../parser/config.js";
 import { detectAgentFromEnv, type AgentConfidence } from "../../parser/agent-detection.js";
 import { getSetupStatus as getSharedSetupStatus } from "../../parser/setup-status.js";
 import {
@@ -54,7 +49,8 @@ import {
 } from "../../lib/claude-hooks.js";
 import { errors } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
-import { error, output, success, warn } from "../output.js";
+import { error, isStructuredMode, output, success, warn } from "../output.js";
+import { resolveDefaultBranch } from "../../agent-runtime/workspace.js";
 
 /**
  * Log a message at debug level (only when KSPEC_DEBUG=1)
@@ -745,6 +741,8 @@ export interface SetupPipelineResult {
   agentsMdGenerated: boolean;
   permissionsSeeded: boolean;
   memorySeeded: boolean;
+  /** Current ref of the default module (dynamically resolved, may differ from @main if renamed) */
+  defaultModuleRef: string | null;
 }
 
 /**
@@ -842,102 +840,160 @@ function getHookInstallSkipMessage(agentType: AgentType): string {
   return `not applicable for ${agentType}`;
 }
 
+// ─── Scaffold State Persistence ───────────────────────────────────────────────
+
 /**
- * Ensure built-in worker and reviewer agent definitions exist in the project meta.
+ * Path to the scaffold state file that tracks which setup scaffolds have run.
+ * Used to detect user-removal of scaffolded items (e.g., reflection hook).
  *
- * Creates task-worker and pr-reviewer agents with dispatch rules that match
- * the prior built-in automation behavior. Skips creation if agents already
- * exist (idempotent).
- *
- * AC: @ralph-replacement ac-2 — built-in worker and reviewer agent definitions
- * created in kynetic.meta.yaml with default dispatch rules matching the prior
- * built-in automation behavior
+ * AC: @default-session-reflection-hook ac-hook-removable
  */
-async function ensureBuiltInAgents(
+function getScaffoldStatePath(projectDir: string): string {
+  return path.join(projectDir, ".kspec", ".setup-scaffold-state.json");
+}
+
+/**
+ * Scaffold state persisted across setup invocations.
+ */
+interface ScaffoldState {
+  /** Set to true after the default reflection hook is first scaffolded */
+  reflectionHookScaffolded?: boolean;
+}
+
+/**
+ * Read the scaffold state file, returning empty state if missing or invalid.
+ */
+async function readScaffoldState(projectDir: string): Promise<ScaffoldState> {
+  try {
+    const content = await fs.readFile(getScaffoldStatePath(projectDir), "utf-8");
+    return JSON.parse(content) as ScaffoldState;
+  } catch {
+    return {};
+  }
+}
+
+/**
+ * Write the scaffold state file.
+ */
+async function writeScaffoldState(projectDir: string, state: ScaffoldState): Promise<void> {
+  const statePath = getScaffoldStatePath(projectDir);
+  await fs.mkdir(path.dirname(statePath), { recursive: true });
+  await fs.writeFile(statePath, `${JSON.stringify(state, null, 2)}\n`, "utf-8");
+}
+
+// ─── Default Reflection Hook ─────────────────────────────────────────────────
+
+/**
+ * The deterministic name for the default reflection hook.
+ * Used to identify the hook in the hooks list for idempotency checks.
+ *
+ * AC: @default-session-reflection-hook ac-reflection-hook-present
+ */
+const DEFAULT_REFLECTION_HOOK_NAME = "default-session-reflect";
+
+/**
+ * Turn count value that marks the first session.idle event of an invocation.
+ *
+ * Session idle events are emitted per-turn. Filtering on turn_count === 1
+ * restricts the default reflection hook to the first idle event of each
+ * invocation instead of firing after every turn in a multi-turn session.
+ *
+ * This MUST remain a numeric literal. Hook filter matching uses strict
+ * equality (=== ) against the payload's turn_count, which is typed as
+ * z.number(). A string "1" would never match the numeric payload value
+ * and would silently disable the filter.
+ *
+ * AC: @default-session-reflection-hook ac-fires-once-per-invocation
+ */
+const DEFAULT_REFLECTION_HOOK_FIRST_TURN: number = 1;
+
+/**
+ * Ensure the default session reflection hook exists in the project meta.
+ *
+ * Creates a single hook that:
+ * - Fires on session.idle event
+ * - Applies to every agent session (not scoped to a specific agent)
+ * - Carries a filter restricting it to the first idle event (turn_count === 1)
+ *   so reflection runs once per invocation, not after every turn of a
+ *   multi-turn session
+ * - Prompts the session to run the reflect skill
+ *
+ * Idempotency rules:
+ * - If a hook named "default-session-reflect" already exists → skip (AC: ac-hook-idempotent)
+ * - If the hook was previously scaffolded but has been removed → skip (AC: ac-hook-removable)
+ * - Only creates when neither condition applies
+ *
+ * AC: @default-session-reflection-hook ac-reflection-hook-present
+ * AC: @default-session-reflection-hook ac-hook-idempotent
+ * AC: @default-session-reflection-hook ac-hook-removable
+ * AC: @default-session-reflection-hook ac-fires-once-per-invocation
+ */
+async function ensureDefaultReflectionHook(
   projectDir: string,
   dryRun: boolean,
-): Promise<{ created: string[]; skipped: string[] }> {
+  force: boolean,
+): Promise<{ status: "created" | "skipped"; reason: string }> {
   const { initContext } = await import("../../parser/index.js");
-  const { loadMetaContext, saveMetaItem } = await import("../../parser/meta.js");
+  const { loadMetaContext, saveHook } = await import("../../parser/meta.js");
   const { ulid } = await import("ulid");
-
-  const created: string[] = [];
-  const skipped: string[] = [];
 
   try {
     const ctx = await initContext();
     if (!ctx.manifestPath) {
-      return { created, skipped };
+      return { status: "skipped", reason: "no kspec project found" };
     }
 
     const meta = await loadMetaContext(ctx);
-    const existingIds = new Set((meta.agents || []).map((a) => a.id));
+    const existingHook = meta.hooks.find((h) => h.name === DEFAULT_REFLECTION_HOOK_NAME);
 
-    // Built-in agent definitions — preserve the prior built-in dispatch behavior
-    const builtInAgents = [
-      {
-        id: "task-worker",
-        name: "Task Worker",
-        description:
-          "Autonomous task worker. Picks up automation-eligible ready and needs_work tasks.",
-        capabilities: ["code", "test", "refactor"],
-        tools: ["kspec", "git", "npm"],
-        dispatch: [
-          { on: "task.in_progress", filter: { automation: "eligible" } },
-          { on: "task.ready", filter: { automation: "eligible" } },
-          { on: "task.needs_work", filter: { automation: "eligible" } },
-        ],
-        skills: ["task-work"],
-        concurrency: { max_concurrent: 1 },
-        auto_approve: true,
-      },
-      {
-        id: "pr-reviewer",
-        name: "PR Reviewer",
-        description:
-          "Automated PR reviewer. Reviews pending_review tasks and merges when quality gates pass.",
-        capabilities: ["review"],
-        tools: ["kspec", "git", "gh"],
-        dispatch: [{ on: "task.pending_review" }],
-        skills: ["pr-review"],
-        concurrency: { max_concurrent: 1 },
-        auto_approve: false,
-      },
-    ] as const;
-
-    for (const def of builtInAgents) {
-      if (existingIds.has(def.id)) {
-        skipped.push(def.id);
-        continue;
-      }
-
-      if (!dryRun) {
-        await saveMetaItem(
-          ctx,
-          {
-            _ulid: ulid(),
-            id: def.id,
-            name: def.name,
-            description: def.description,
-            capabilities: [...def.capabilities],
-            tools: [...def.tools],
-            conventions: [],
-            dispatch: def.dispatch.map((r) => ({ ...r })),
-            skills: [...def.skills],
-            concurrency: { ...def.concurrency },
-            auto_approve: def.auto_approve,
-          },
-          "agent",
-        );
-      }
-      created.push(def.id);
+    // AC: @default-session-reflection-hook ac-hook-idempotent
+    if (existingHook) {
+      return { status: "skipped", reason: "already exists" };
     }
-  } catch (err) {
-    debugLog("ensureBuiltInAgents failed", err);
-  }
 
-  return { created, skipped };
+    // AC: @default-session-reflection-hook ac-hook-removable
+    if (!force) {
+      const state = await readScaffoldState(projectDir);
+      if (state.reflectionHookScaffolded) {
+        return { status: "skipped", reason: "previously removed by user" };
+      }
+    }
+
+    // AC: @default-session-reflection-hook ac-reflection-hook-present
+    // AC: @default-session-reflection-hook ac-fires-once-per-invocation
+    if (!dryRun) {
+      await saveHook(ctx, {
+        _ulid: ulid(),
+        name: DEFAULT_REFLECTION_HOOK_NAME,
+        on: "session.idle",
+        // Restrict to the first idle event of an invocation so reflection
+        // does not fire after every turn of a multi-turn session.
+        // The filter value MUST be numeric; hook filter matching uses strict
+        // equality against a z.number() payload field.
+        filter: { turn_count: DEFAULT_REFLECTION_HOOK_FIRST_TURN },
+        action: {
+          type: "session_prompt",
+          prompt: "Run session reflection using /kspec:reflect",
+          skills: ["reflect"],
+        },
+        enabled: true,
+      });
+
+      // Record that we scaffolded this hook
+      const state = await readScaffoldState(projectDir);
+      state.reflectionHookScaffolded = true;
+      await writeScaffoldState(projectDir, state);
+    }
+
+    return { status: "created", reason: "default reflection hook" };
+  } catch (err) {
+    debugLog("ensureDefaultReflectionHook failed", err);
+    return { status: "skipped", reason: `error: ${err instanceof Error ? err.message : String(err)}` };
+  }
 }
+
+// ensureBuiltInAgents has been consolidated into scaffoldDefaults (setup-defaults.ts)
+// AC: @default-project-agents-and-conventions — single scaffold site for all defaults
 
 /**
  * Generate kspec-agents.md using the canonical implementation from agents.ts
@@ -1043,7 +1099,7 @@ async function generateAgentInstructions(
  * Install core skills for the setup pipeline
  * AC: @init-setup-integration ac-2 - core skills installed
  */
-async function installCoreSkillsForSetup(
+export async function installCoreSkillsForSetup(
   projectDir: string,
   dryRun: boolean,
 ): Promise<{
@@ -1154,6 +1210,147 @@ async function installCoreSkillsForSetup(
     debugLog("installCoreSkillsForSetup failed", err);
     return { installed: 0, skipped: 0 };
   }
+}
+
+/**
+ * Result of the project config scaffold step.
+ *
+ * AC: @trait-idempotent-file-scaffold ac-step-reports-action
+ */
+interface ScaffoldProjectConfigResult {
+  action: "created" | "skipped" | "force-recreated";
+  configPath: string;
+  backupPath?: string;
+}
+
+/**
+ * Scaffold a project config file (kspec.config.yaml) at the project root.
+ *
+ * Writes a template config with resolved defaults and commented placeholders
+ * for knobs that real projects are expected to customize.
+ *
+ * AC: @scaffolded-project-config ac-file-scaffolded — creates config at project root
+ * AC: @scaffolded-project-config ac-file-valid-on-load — validated after write
+ * AC: @scaffolded-project-config ac-placeholder-publication-mode — publication mode with comment
+ * AC: @scaffolded-project-config ac-placeholder-base-branch — resolved base branch
+ * AC: @scaffolded-project-config ac-placeholder-coverage — commented-out coverage section
+ * AC: @scaffolded-project-config ac-file-exists-preserved — skip if exists, no force
+ * AC: @scaffolded-project-config ac-file-force-overwrites — replace on force
+ * AC: @scaffolded-project-config ac-file-force-backup — backup before force overwrite
+ * AC: @trait-idempotent-file-scaffold ac-existing-file-preserved-without-force
+ * AC: @trait-idempotent-file-scaffold ac-force-backs-up-before-overwrite
+ * AC: @trait-idempotent-file-scaffold ac-fresh-file-creation
+ * AC: @trait-idempotent-file-scaffold ac-step-reports-action
+ */
+async function scaffoldProjectConfig(
+  projectDir: string,
+  dryRun: boolean,
+  force: boolean,
+): Promise<ScaffoldProjectConfigResult> {
+  const configPath = path.join(projectDir, CONFIG_FILENAME);
+
+  // AC: @scaffolded-project-config ac-file-exists-preserved
+  // AC: @trait-idempotent-file-scaffold ac-existing-file-preserved-without-force
+  if (existsSync(configPath)) {
+    if (!force) {
+      return { action: "skipped", configPath };
+    }
+
+    // AC: @scaffolded-project-config ac-file-force-backup
+    // AC: @trait-idempotent-file-scaffold ac-force-backs-up-before-overwrite
+    const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+    const ext = path.extname(configPath);
+    const base = configPath.slice(0, -ext.length);
+    const backupPath = `${base}.backup-${timestamp}${ext}`;
+
+    if (!dryRun) {
+      await fs.copyFile(configPath, backupPath);
+    }
+
+    // Write fresh template
+    if (!dryRun) {
+      const content = await generateConfigContent(projectDir);
+      await fs.writeFile(configPath, content, "utf-8");
+
+      // AC: @scaffolded-project-config ac-file-valid-on-load — validate after write
+      // Fail loudly: remove broken file and throw rather than leaving invalid config
+      const loadResult = await loadProjectConfig(projectDir, projectDir);
+      if (loadResult.warning) {
+        // Restore from backup instead of leaving a broken file
+        await fs.copyFile(backupPath, configPath);
+        throw new Error(
+          `Scaffolded config failed validation: ${loadResult.warning}. ` +
+            `Original file restored from backup at ${backupPath}. Fix the template and re-run kspec setup.`,
+        );
+      }
+    }
+
+    return { action: "force-recreated", configPath, backupPath };
+  }
+
+  // AC: @scaffolded-project-config ac-file-scaffolded
+  // AC: @trait-idempotent-file-scaffold ac-fresh-file-creation
+  if (!dryRun) {
+    const content = await generateConfigContent(projectDir);
+    await fs.writeFile(configPath, content, "utf-8");
+
+    // AC: @scaffolded-project-config ac-file-valid-on-load — validate after write
+    // Fail loudly: remove broken file and throw rather than leaving invalid config
+    const loadResult = await loadProjectConfig(projectDir, projectDir);
+    if (loadResult.warning) {
+      await fs.unlink(configPath);
+      throw new Error(
+        `Scaffolded config failed validation: ${loadResult.warning}. ` +
+          `Broken file removed. Fix the template and re-run kspec setup.`,
+      );
+    }
+  }
+
+  return { action: "created", configPath };
+}
+
+/**
+ * Generate the content for the scaffolded project config file.
+ *
+ * AC: @scaffolded-project-config ac-placeholder-publication-mode
+ * AC: @scaffolded-project-config ac-placeholder-base-branch
+ * AC: @scaffolded-project-config ac-placeholder-coverage
+ */
+async function generateConfigContent(projectDir: string): Promise<string> {
+  // Resolve the default branch for display in the commented-out placeholder.
+  // The value is commented out so loading the scaffolded file produces the
+  // same resolved config as an empty config (base_branch: null → dispatcher
+  // resolves deterministically at provisioning time).
+  const { branch, source } = await resolveDefaultBranch(projectDir);
+
+  const baseBranchSourceComment =
+    source === "remote-head"
+      ? "Resolved from repository default branch."
+      : source === "current-branch"
+        ? "Resolved from current branch — no remote HEAD found. Update if this is not your default branch."
+        : "Detected value is a fallback — no remote HEAD or current branch found. Update to your actual default branch.";
+
+  return `# kspec project configuration
+# This file was scaffolded by kspec setup. Review and customize for your project.
+# Documentation: https://github.com/lepahc/kynetic-spec
+
+dispatch:
+  # How dispatched agents publish completed work.
+  # Accepted values: pull_request, manual_merge, auto
+  publication_mode: auto
+
+  # Uncomment and set to pin the base/integration branch for dispatch workspaces.
+  # When omitted, the dispatcher resolves deterministically (remote HEAD → current branch → "main").
+  # ${baseBranchSourceComment}
+  # base_branch: "${branch}"
+
+# Uncomment to enable acceptance criteria coverage scanning.
+# scan_paths lists directories to scan for AC annotations in test files.
+# coverage:
+#   scan_paths:
+#     - "tests/"
+#     - "src/"
+`;
 }
 
 /**
@@ -1293,7 +1490,10 @@ export async function runSetupPipeline(
       });
     }
 
-    // Step 3a-ii: Ensure sessions directory and gitignore entries
+    // Step 3a-ii: Ensure gitignore managed block and sessions directory
+    // AC: @complete-auto-gitignore ac-all-transient-paths-present
+    // AC: @complete-auto-gitignore ac-existing-entries-preserved
+    // AC: @complete-auto-gitignore ac-kspec-entries-idempotent
     // AC: @session-storage-modes ac-gitignore, ac-sessions-dir-autocreate
     // AC: @session-legacy-migration ac-shadow-gitignore
     {
@@ -1314,33 +1514,68 @@ export async function runSetupPipeline(
         actions.push(`${dryRun ? "create" : "created"} ${SESSIONS_WORKTREE_DIR}/`);
       }
 
-      // Add .kspec-sessions/ to root .gitignore
+      // Ensure managed gitignore block with all kspec transient entries
+      // Load project config to get the configured shadow directory and dispatch worktree root
+      const { config: setupConfig } = await loadProjectConfig(projectDir, projectDir);
+      const shadowDir = setupConfig.shadow.directory || undefined;
+      const worktreeRoot = setupConfig.dispatch.worktree_root || undefined;
+
+      const { ensureKspecGitignore, updateManagedBlock, buildKspecGitignoreEntries, parseManagedBlock } =
+        await import("../../parser/gitignore.js");
+
+      const forceGitignore = options.force ?? false;
+
+      // AC: @trait-idempotent-file-scaffold ac-step-reports-action
       if (dryRun) {
-        const rootNeeded = await needsSessionsGitignore(projectDir);
-        if (rootNeeded) {
-          actions.push(`add ${SESSIONS_WORKTREE_DIR}/ to .gitignore`);
+        const gitignorePath = path.join(projectDir, ".gitignore");
+        let gitignoreContent = "";
+        let fileExists = false;
+        try {
+          gitignoreContent = await fs.readFile(gitignorePath, "utf-8");
+          fileExists = true;
+        } catch {
+          // File doesn't exist
+        }
+
+        // AC: @trait-idempotent-file-scaffold ac-existing-file-preserved-without-force
+        if (fileExists && parseManagedBlock(gitignoreContent).block === null && !forceGitignore) {
+          actions.push("skipped .gitignore (exists without managed block, use --force to add)");
+        } else if (fileExists && parseManagedBlock(gitignoreContent).block === null && forceGitignore) {
+          // AC: @trait-idempotent-file-scaffold ac-force-backs-up-before-overwrite
+          const entries = buildKspecGitignoreEntries(shadowDir, worktreeRoot);
+          actions.push(`force-recreate .gitignore (backup + add managed block: ${entries.join(", ")})`);
+        } else {
+          const dryResult = updateManagedBlock(gitignoreContent, buildKspecGitignoreEntries(shadowDir, worktreeRoot));
+          if (dryResult.result.changed) {
+            if (dryResult.result.blockCreated) {
+              actions.push(`create .gitignore with managed block: ${dryResult.result.entriesAdded.join(", ")}`);
+            } else {
+              actions.push(`add to .gitignore: ${dryResult.result.entriesAdded.join(", ")}`);
+            }
+          }
         }
       } else {
-        const rootAdded = await ensureSessionsGitignore(projectDir);
-        if (rootAdded) {
-          actions.push(`added ${SESSIONS_WORKTREE_DIR}/ to .gitignore`);
+        const gitignoreResult = await ensureKspecGitignore(projectDir, { shadowDir, worktreeRoot, force: forceGitignore });
+        if (gitignoreResult.skipped) {
+          // AC: @trait-idempotent-file-scaffold ac-existing-file-preserved-without-force
+          actions.push("skipped .gitignore (exists without managed block, use --force to add)");
+        } else if (gitignoreResult.changed) {
+          if (gitignoreResult.backupPath) {
+            // AC: @trait-idempotent-file-scaffold ac-force-backs-up-before-overwrite
+            actions.push(`backed up .gitignore to ${path.basename(gitignoreResult.backupPath)}`);
+            actions.push(`force-recreated .gitignore with managed block: ${gitignoreResult.entriesAdded.join(", ")}`);
+          } else if (gitignoreResult.blockCreated) {
+            // AC: @trait-idempotent-file-scaffold ac-fresh-file-creation
+            actions.push(`created .gitignore with managed block: ${gitignoreResult.entriesAdded.join(", ")}`);
+          } else {
+            actions.push(
+              `added to .gitignore: ${gitignoreResult.entriesAdded.join(", ")}`,
+            );
+          }
         }
       }
 
-      // Add plans/ to root .gitignore
-      if (dryRun) {
-        const plansNeeded = await needsPlansGitignore(projectDir);
-        if (plansNeeded) {
-          actions.push(`add ${TRANSIENT_PLANS_DIR}/ to .gitignore`);
-        }
-      } else {
-        const plansAdded = await ensurePlansGitignore(projectDir);
-        if (plansAdded) {
-          actions.push(`added ${TRANSIENT_PLANS_DIR}/ to .gitignore`);
-        }
-      }
-
-      // Add sessions/ to .kspec/.gitignore
+      // Add sessions/ to .kspec/.gitignore (shadow branch internal)
       if (dryRun) {
         const shadowNeeded = await needsShadowSessionsGitignore(projectDir);
         if (shadowNeeded) {
@@ -1354,7 +1589,7 @@ export async function runSetupPipeline(
       }
 
       steps.push({
-        name: "Ensure sessions directory",
+        name: "Ensure gitignore and sessions directory",
         status: actions.length > 0 ? "done" : "skipped",
         message: actions.length > 0 ? actions.join(", ") : "already configured",
       });
@@ -1486,20 +1721,85 @@ export async function runSetupPipeline(
       });
     }
 
-    // Step 4b: Ensure built-in worker and reviewer agent definitions exist
-    // AC: @ralph-replacement ac-2 — built-in agents created in kynetic.meta.yaml
+    // Step 4b: Scaffold default agents and conventions
+    // AC: @default-project-agents-and-conventions — single scaffold site for all defaults
     {
-      const agentsBuiltIn = await ensureBuiltInAgents(projectDir, dryRun);
-      const totalNew = agentsBuiltIn.created.length;
-      const totalSkipped = agentsBuiltIn.skipped.length;
-      if (totalNew > 0 || totalSkipped > 0) {
+      const { scaffoldDefaults } = await import("./setup-defaults.js");
+      const { initContext } = await import("../../parser/index.js");
+
+      try {
+        const ctx = await initContext();
+        const scaffoldResult = await scaffoldDefaults(ctx, {
+          dryRun,
+          force: options.force,
+        });
+
+        if (scaffoldResult.items.length > 0) {
+          steps.push({
+            name: "Scaffold default agents and conventions",
+            status: scaffoldResult.message.startsWith("failed:") ? "failed" : "done",
+            message: scaffoldResult.message,
+          });
+        }
+      } catch (err) {
+        debugLog("scaffoldDefaults step failed", err);
         steps.push({
-          name: "Ensure built-in agents",
-          status: "done",
-          message:
-            totalNew > 0
-              ? `created: ${agentsBuiltIn.created.join(", ")}`
-              : `already exist: ${agentsBuiltIn.skipped.join(", ")}`,
+          name: "Scaffold default agents and conventions",
+          status: "failed",
+          message: `failed: ${err instanceof Error ? err.message : String(err)}`,
+        });
+      }
+    }
+
+    // Step 4c: Ensure default session reflection hook
+    // AC: @default-session-reflection-hook ac-reflection-hook-present, ac-hook-idempotent, ac-hook-removable
+    {
+      const hookResult = await ensureDefaultReflectionHook(
+        projectDir,
+        dryRun,
+        options.force ?? false,
+      );
+      steps.push({
+        name: "Ensure reflection hook",
+        status: hookResult.status === "created" ? "done" : "skipped",
+        message: hookResult.reason,
+      });
+    }
+
+    // Step 4d: Scaffold project config file
+    // AC: @scaffolded-project-config ac-file-scaffolded — config created at project root
+    // AC: @trait-idempotent-file-scaffold ac-step-reports-action — action reported in summary
+    {
+      try {
+        const scaffoldResult = await scaffoldProjectConfig(projectDir, dryRun, options.force ?? false);
+
+        if (scaffoldResult.action === "created") {
+          steps.push({
+            name: "Scaffold project config",
+            status: "done",
+            message: `created ${scaffoldResult.configPath}`,
+          });
+        } else if (scaffoldResult.action === "skipped") {
+          steps.push({
+            name: "Scaffold project config",
+            status: "skipped",
+            message: `${CONFIG_FILENAME} already exists`,
+          });
+        } else if (scaffoldResult.action === "force-recreated") {
+          steps.push({
+            name: "Scaffold project config",
+            status: "done",
+            message: scaffoldResult.backupPath
+              ? `force-recreated (backup: ${scaffoldResult.backupPath})`
+              : "force-recreated",
+          });
+        }
+      } catch (err) {
+        debugLog("scaffoldProjectConfig failed", err);
+        steps.push({
+          name: "Scaffold project config",
+          status: "failed",
+          message: err instanceof Error ? err.message : "unknown error",
         });
       }
     }
@@ -1579,8 +1879,27 @@ export async function runSetupPipeline(
       }
     }
 
-    // Output summary
-    if (!dryRun) {
+    // Resolve the default module's current ref dynamically (it may have been renamed).
+    // Use the default_module ULID from the manifest to identify the correct module,
+    // regardless of load order. Fall back to the first module for backward compat.
+    let defaultModuleRef: string | null = null;
+    try {
+      const { loadAllItems, initContext: initCtx } = await import("../../parser/yaml.js");
+      const ctx = await initCtx();
+      const items = await loadAllItems(ctx);
+      const defaultModuleUlid = ctx.manifest?.default_module;
+      const targetModule = defaultModuleUlid
+        ? items.find((item) => item._ulid === defaultModuleUlid)
+        : items.find((item) => item.type === "module");
+      if (targetModule) {
+        defaultModuleRef = `@${targetModule.slugs?.[0] || targetModule._ulid}`;
+      }
+    } catch {
+      // Non-fatal: fall back to null (skip the default module message)
+    }
+
+    // Output summary (skip in structured mode — stdout must stay clean for JSON/YAML)
+    if (!dryRun && !isStructuredMode()) {
       console.log(chalk.bold("kspec Setup Summary\n"));
 
       for (const step of steps) {
@@ -1602,6 +1921,15 @@ export async function runSetupPipeline(
           console.log(chalk.gray(`  ${step.message}`));
         }
       }
+
+      // AC: @derivable-default-module — mention default module in setup summary
+      if (defaultModuleRef) {
+        console.log(
+          chalk.gray(
+            `\n  Default module available: ${defaultModuleRef} — use this ref for plan imports and spec placement`,
+          ),
+        );
+      }
     }
 
     const success = steps.every((s) => s.status !== "failed");
@@ -1615,6 +1943,7 @@ export async function runSetupPipeline(
       agentsMdGenerated,
       permissionsSeeded,
       memorySeeded,
+      defaultModuleRef,
     };
   } catch (err) {
     debugLog("runSetupPipeline failed", err);
@@ -1627,6 +1956,7 @@ export async function runSetupPipeline(
       agentsMdGenerated,
       permissionsSeeded,
       memorySeeded,
+      defaultModuleRef: null,
     };
   }
 }
@@ -1818,16 +2148,26 @@ export function registerSetupCommand(program: Command): void {
 
         // AC: @enhanced-setup ac-1 - Display summary
         // AC: @enhanced-setup ac-6 - dry-run displays planned actions
+        // AC: @trait-error-guidance ac-6 - structured error object in JSON mode
+        const scaffoldFailure = result.steps.find(
+          (s) => s.name === "Scaffold project config" && s.status === "failed",
+        );
+        const outputData: Record<string, unknown> = {
+          dry_run: dryRun,
+          success: !scaffoldFailure && result.success,
+          steps: result.steps.map((s) => ({
+            name: s.name,
+            status: s.status,
+            message: s.message,
+            details: s.details,
+          })),
+        };
+        if (scaffoldFailure) {
+          outputData.error = `Scaffold project config failed: ${scaffoldFailure.message}`;
+          outputData.suggestion = "Fix the issue and re-run kspec setup.";
+        }
         output(
-          {
-            dry_run: dryRun,
-            steps: result.steps.map((s) => ({
-              name: s.name,
-              status: s.status,
-              message: s.message,
-              details: s.details,
-            })),
-          },
+          outputData,
           () => {
             if (dryRun) {
               console.log(chalk.yellow("DRY RUN - No changes made\n"));
@@ -1861,11 +2201,22 @@ export function registerSetupCommand(program: Command): void {
 
             console.log();
 
+            // AC: @scaffolded-project-config ac-file-valid-on-load — fail loudly on scaffold failure
+            // Check for scaffold failure BEFORE printing success footer to avoid contradictory output
             if (dryRun) {
               console.log(chalk.yellow("Run without --dry-run to apply changes."));
+            } else if (scaffoldFailure) {
+              console.log(chalk.red(`Setup failed: ${scaffoldFailure.message}`));
+              console.log(chalk.gray("Fix the issue and re-run kspec setup."));
             } else {
               console.log(chalk.green("Setup complete."));
               console.log(chalk.gray("Restart your agent session for changes to take effect."));
+              // AC: @derivable-default-module — remind user about default module
+              if (result.defaultModuleRef) {
+                console.log(
+                  chalk.gray(`Default module available: ${result.defaultModuleRef} — use for plan imports and spec placement`),
+                );
+              }
             }
 
             const configureAuthorStep = result.steps.find(
@@ -1881,6 +2232,11 @@ export function registerSetupCommand(program: Command): void {
             }
           },
         );
+
+        // AC: @scaffolded-project-config ac-file-valid-on-load — fail loudly on scaffold failure
+        if (scaffoldFailure) {
+          process.exit(EXIT_CODES.ERROR);
+        }
       } catch (err) {
         error(errors.failures.setupFailed, err);
         process.exit(EXIT_CODES.ERROR);
