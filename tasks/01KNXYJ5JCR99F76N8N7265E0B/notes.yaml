@@ -457,3 +457,19 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-16T03:06:55.526Z
+  - _ulid: 01KPA589JCAH4VFER5CCSATJHC
+    content: "Fix cycle 17: addressed cycle 16 blocker — upgrade --force was re-seeding default
+      agents/conventions the user had deliberately removed. Root cause: step 5b in upgrade.ts
+      forwarded force directly into scaffoldDefaults(), whose force path intentionally re-seeds
+      missing items (correct for setup --force per ac-force-reseed, wrong for upgrade per the
+      upgrade spec's 'only create what is missing; never overwrite' rule). Fix: dropped the force
+      forwarding in the step-5b call only — setup.ts still passes its own options.force through,
+      preserving setup's ac-force-reseed contract. Added a behavioral regression test that removes 4
+      default agents (task-worker, pr-reviewer, primary-dev, plan-reviewer) and 1 default convention
+      (architecture), runs upgrade --force, and asserts no items are force-recreated and the removed
+      items stay removed. All 58 upgrade-command tests pass (was 57). Full suite: only 5
+      pre-existing /tmp/.kspec-sessions EACCES failures in cli-agent-commands.test.ts remain —
+      unrelated, tracked as inbox @01KPA3KE."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-16T03:27:16.044Z
