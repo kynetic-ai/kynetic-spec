@@ -26647,7 +26647,7 @@ runs:
     completed_at: 2026-04-15T23:58:36.755Z
   - _ulid: 01KP9TRR7E2G97FCY22E3007PQ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -26662,7 +26662,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-16T00:24:22.134Z
-        completed_at: 2026-04-16T00:24:22.134Z
+        completed_at: 2026-04-16T00:24:46.083Z
+        notes: "Friction points: 1) review workflows in detached snapshots still require locating the real
+          integration-branch worktree manually before merging, because the assigned review workspace
+          is detached and cannot host the target branch checkout. 2) workflow CLI ergonomics were
+          slightly opaque:  without a run ref failed with a bare missing-argument error
+          after  returned only a short run id. 3) the task description referenced older base/head
+          commits than the actual current integration target, so the review still needed fresh
+          verification rather than trusting the preserved task note."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-16T00:24:46.083Z
+        completed_at: 2026-04-16T00:24:46.083Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-16T00:24:01.006Z
