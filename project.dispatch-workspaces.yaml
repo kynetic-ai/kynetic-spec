@@ -20299,11 +20299,11 @@ workspaces:
     canonical_branch: dispatch/task/fix-web-ui-pages-not-rendering-on-initial-load/01kmehrd
     canonical_branch_head: 4043b05296911b0a7bcbb1d6547f32bddd1412ad
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-24T00:25:18.566Z
+      updated_at: 2026-04-16T17:00:25.469Z
     health:
       status: invalid
       issues:
@@ -20325,17 +20325,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 02ef0686e50d41b82f181c1d1f9f23e2b7417e20
-      updated_at: 2026-03-24T00:25:18.566Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T17:00:25.469Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KMEHRD4KBZG06321TVPA67HB"
     task_slug: fix-web-ui-pages-not-rendering-on-initial-load
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:00:25.469Z
       last_active_at: 2026-03-24T00:13:05.183Z
-      last_reconciled_at: 2026-03-24T00:25:18.566Z
+      last_reconciled_at: 2026-04-16T17:00:25.469Z
       created_at: 2026-03-23T23:58:26.691Z
-      updated_at: 2026-03-24T00:25:18.566Z
+      updated_at: 2026-04-16T17:00:25.469Z
     workspace_id: dispatch-workspace-01KMEHRD4KBZG06321TVPA67HB
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
