@@ -27254,9 +27254,20 @@ runs:
     completed_at: 2026-04-16T05:14:24.984Z
   - _ulid: 01KPAE9DZSEBMJQ1MNERDH90DD
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-16T06:05:10.521Z
+        completed_at: 2026-04-16T06:06:17.338Z
+        notes: "Friction points: shell-embedded review comment bodies are fragile when they contain
+          shell-sensitive characters like backticks; ad hoc tsx probes in this environment also hit
+          IPC/socket issues before the node --import tsx/esm fallback worked."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-16T06:06:17.338Z
+        completed_at: 2026-04-16T06:06:17.338Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-16T06:05:10.521Z
