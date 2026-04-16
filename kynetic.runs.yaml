@@ -26715,7 +26715,7 @@ runs:
     completed_at: 2026-04-16T00:26:04.590Z
   - _ulid: 01KPA1G3ZNVE5HGPFC7DV9Z783
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -26747,7 +26747,17 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-16T02:22:38.278Z
-        completed_at: 2026-04-16T02:22:38.278Z
+        completed_at: 2026-04-16T02:22:52.954Z
+        notes: "Proposed improvements: (1) Small/medium: document or automate how reviewers perform manual
+          merges from detached snapshots when the integration branch is already attached to another
+          worktree, including no-op detection when the task branch already equals the target branch.
+          This removes a recurring reviewer workaround. (2) Small: capture the branch-identity-first
+          duplicate-check pattern as a success observation so duplicate submissions can be closed
+          quickly with evidence instead of re-running merge attempts first."
+      - status: completed
+        step_index: 4
+        started_at: 2026-04-16T02:22:52.954Z
+        completed_at: 2026-04-16T02:22:52.954Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-16T02:21:38.166Z
