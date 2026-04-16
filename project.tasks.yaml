@@ -26392,7 +26392,7 @@
     - task-fix-cli-agent-session-store-eacces
   title: Fix session store EACCES in cli-agent-commands tests
   type: bug
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 2
@@ -26404,4 +26404,5 @@
   todos_count: 0
   created_at: 2026-04-15T23:56:04.831Z
   started_at: 2026-04-15T23:57:47.202Z
+  submitted_at: 2026-04-16T00:09:56.680Z
   automation: eligible
