@@ -148763,6 +148763,12 @@ reviews:
         payload:
           thread_ulid: 01KP9XPB5ZJS0MVFX6YHR8PSV5
         timestamp: 2026-04-16T01:37:38.119Z
+      - _ulid: 01KP9YZSAQGY6T2T842ZP8QMXA
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP9XPB5ZJS0MVFX6YHR8PSV5
+        timestamp: 2026-04-16T01:37:45.815Z
     examined_commit: 23efbc1be833d77a0410b2964d4eda5eb81e78a9
     external_links: []
     lifecycle_state: closed
@@ -148844,6 +148850,8 @@ reviews:
               not introduced by this task.
             created_at: 2026-04-16T01:37:37.156Z
         kind: nit
+        resolved_at: 2026-04-16T01:37:44.851Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -148853,5 +148861,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-16T01:15:17.408Z
     created_at: 2026-04-16T01:00:24.906Z
-    updated_at: 2026-04-16T01:37:37.156Z
+    updated_at: 2026-04-16T01:37:44.851Z
     notes: []
