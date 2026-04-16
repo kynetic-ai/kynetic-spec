@@ -11382,11 +11382,11 @@ workspaces:
     canonical_branch: dispatch/task/task-migrate-triggers/01kkzpw7
     canonical_branch_head: cae35ae3ffd1e6af9095ae533906687eaef9b211
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-18T17:17:40.290Z
+      updated_at: 2026-04-16T16:58:33.939Z
     health:
       status: invalid
       issues:
@@ -11407,17 +11407,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 9d5e929d1472e459b4ecb77108c3ba012ed963f9
-      updated_at: 2026-03-18T17:17:40.290Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:58:33.939Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KKZPW71H0KTRJY3HFF7YDNT9"
     task_slug: task-migrate-triggers
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:58:33.939Z
       last_active_at: 2026-03-18T17:09:18.227Z
-      last_reconciled_at: 2026-03-18T17:17:40.290Z
+      last_reconciled_at: 2026-04-16T16:58:33.939Z
       created_at: 2026-03-18T16:51:44.574Z
-      updated_at: 2026-03-18T17:17:40.290Z
+      updated_at: 2026-04-16T16:58:33.939Z
     workspace_id: dispatch-workspace-01KKZPW71H0KTRJY3HFF7YDNT9
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
