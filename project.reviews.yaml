@@ -148958,6 +148958,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-16T01:54:21.007Z
+      - _ulid: 01KP9ZZBT2CR7SZ9XW08TNXZB8
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP9ZX08RQTBY4SSYJPFJXE89
+        timestamp: 2026-04-16T01:55:00.546Z
     examined_commit: ce47669438108f7e8d2199c281a219cfbd16a69f
     external_links: []
     lifecycle_state: closed
@@ -148987,6 +148993,11 @@ reviews:
               decision. As written, any user who uses  for a safety refresh gets an intentionally
               deleted hook reintroduced."
             created_at: 2026-04-16T01:53:43.192Z
+          - _ulid: 01KP9ZZART39GCGC92XX247DP3
+            author: Jacob Chapel
+            body: Duplicate thread from a shell-quoting failure while recording the real finding; superseded by
+              thread 01KP9ZXACVAGQ9X02RDC4FPCRE.
+            created_at: 2026-04-16T01:54:59.481Z
         kind: blocker
       - _ulid: 01KP9ZXACVAGQ9X02RDC4FPCRE
         anchor:
@@ -149047,5 +149058,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-16T01:54:21.006Z
     created_at: 2026-04-16T01:39:35.422Z
-    updated_at: 2026-04-16T01:54:21.006Z
+    updated_at: 2026-04-16T01:54:59.481Z
     notes: []
