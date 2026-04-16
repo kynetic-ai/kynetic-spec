@@ -5548,11 +5548,11 @@ workspaces:
     canonical_branch: dispatch/task/task-fix-dispatch-engine-stop-await/01kks7am
     canonical_branch_head: eb224322abe7db2840eb0143173c0b3727f641a8
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-19T03:56:14.761Z
+      updated_at: 2026-04-16T16:56:48.832Z
     health:
       status: stale
       issues:
@@ -5570,17 +5570,17 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: 1cac2b1227fafaf4945fc413fbfd1eec4dc8a198
-      updated_at: 2026-03-19T03:56:14.761Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:56:48.832Z
+    lifecycle_state: closed
     resolved_base_branch: main
     task_ref: "@01KKS7AM5ABY67ESJAGBXAQT71"
     task_slug: task-fix-dispatch-engine-stop-await
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:56:48.832Z
       last_active_at: 2026-03-15T21:08:57.414Z
-      last_reconciled_at: 2026-03-19T03:56:14.761Z
+      last_reconciled_at: 2026-04-16T16:56:48.832Z
       created_at: 2026-03-15T17:05:58.160Z
-      updated_at: 2026-03-19T03:56:14.761Z
+      updated_at: 2026-04-16T16:56:48.832Z
     workspace_id: dispatch-workspace-01KKS7AM5ABY67ESJAGBXAQT71
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
