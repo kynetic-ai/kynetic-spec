@@ -4813,11 +4813,11 @@ workspaces:
     canonical_branch: dispatch/task/task-ws-enrichment/01kkqrk3
     canonical_branch_head: 42befa87a3439974aa7dce5ec45d33a97d61851a
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-19T03:56:13.209Z
+      updated_at: 2026-04-16T16:56:34.825Z
     health:
       status: stale
       issues:
@@ -4835,17 +4835,17 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
-      updated_at: 2026-03-19T03:56:13.209Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:56:34.825Z
+    lifecycle_state: closed
     resolved_base_branch: main
     task_ref: "@01KKQRK3BM6MARTC3MSE6YV4VY"
     task_slug: task-ws-enrichment
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:56:34.825Z
       last_active_at: 2026-03-15T05:46:44.152Z
-      last_reconciled_at: 2026-03-19T03:56:13.209Z
+      last_reconciled_at: 2026-04-16T16:56:34.825Z
       created_at: 2026-03-15T05:25:01.659Z
-      updated_at: 2026-03-19T03:56:13.209Z
+      updated_at: 2026-04-16T16:56:34.825Z
     workspace_id: dispatch-workspace-01KKQRK3BM6MARTC3MSE6YV4VY
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
