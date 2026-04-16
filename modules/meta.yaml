@@ -4148,6 +4148,9 @@ modules:
               check looks at the location where the checked artifact
               actually lives. Doctor is the single source of truth for
               whether a project is ready for normal work.
+            status:
+              maturity: draft
+              implementation: in_progress
             depends_on: []
             implements: []
             relates_to: []
