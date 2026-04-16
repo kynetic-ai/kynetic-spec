@@ -1,1 +1,46 @@
-notes: []
+notes:
+  - _ulid: 01KPAAPWQ78EG25FJYRDESDNM0
+    content: >-
+      Approach:
+
+
+      1. Skills check (ac-skills-check-accurate, ac-skills-check-missing): The existing check in
+      src/parser/setup-status.ts scans .claude/skills/ and .factory/skills/ for kspec-managed
+      markers. Core skills on claude-code render to .claude/plugins/kspec/skills/ and are
+      plugin-provided — setup-status does NOT scan that location. Result:
+      setup-status.skills.rendered can be 0 for a fully-set-up project, producing a false-positive
+      doctor warning.
+
+
+      Fix: Refactor the skills check in src/parser/doctor.ts (buildSetupSection) to use a new helper
+      hasRenderedSkills(projectDir) in setup-status.ts (or doctor.ts) that scans all supported
+      rendered skill locations (getPlatformDefaultOutputDir for all platforms + PLUGIN_SKILLS_DIR).
+      Report healthy when any supported location contains kspec-managed skills; report warning only
+      when none do, naming `kspec setup` as the re-render command.
+
+
+      2. Scaffold config check (ac-config-scaffold-detected): Add new check that looks for
+      CONFIG_FILENAME (kspec.config.yaml) at project root. If missing, emit warning naming `kspec
+      upgrade` (user-facing single-command upgrade that scaffolds missing files; fallback is `kspec
+      setup --force` per upgrade.ts code).
+
+
+      3. Version skew check (ac-version-skew-detected): Read lastKnownVersion from
+      .kspec/.setup-state.json and compare to getKspecPackageVersion(). If they differ, emit warning
+      naming `kspec upgrade`. If lastKnownVersion missing (pre-upgrade project), skip the check
+      silently.
+
+
+      4. Audit messages (ac-all-actionable): Audit every check in buildShadowSection,
+      buildSetupSection, buildTaskStorageSection, buildDaemonSection — ensure every warning/error
+      has a concrete guidance command. Update task-storage legacy error to name `kspec upgrade` as
+      preferred with `kspec task migrate` fallback. Update messages that just say 'kspec setup' to
+      name the specific subcommand/flag.
+
+
+      Tests: Integration tests in tests/parser/doctor.test.ts covering all 5 ACs. Use createTempDir
+      + initializeShadow + simulated rendered skills/config files. Snapshot-style assertion: every
+      warning/error check has a non-empty guidance field.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-16T05:02:37.287Z
