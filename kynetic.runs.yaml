@@ -27493,7 +27493,7 @@ runs:
     completed_at: 2026-04-16T07:16:33.011Z
   - _ulid: 01KPANTXAH9Q9XPD1SSWWX04MV
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -27507,7 +27507,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-16T08:17:28.867Z
-        completed_at: 2026-04-16T08:17:28.867Z
+        completed_at: 2026-04-16T08:17:53.517Z
+        notes: "Systemic frictions: (1) main-repo vs dispatch-repo branch ref drift — main repo local refs
+          of plan/* branches silently fall behind dispatch+origin when dispatch is the primary
+          consumer, causing wrong 'stale branch' reports; (2) no CLI surface for dispatch workspace
+          registry maintenance — investigation and recovery both fall back to raw YAML despite
+          AGENTS.md forbidding manual edits; (3) 'no compound conditions' convention is ambiguous
+          against existing specs (ac-14 uses compound Givens) — rule needs clarification; (4) git
+          cherry patch-id flagged commits as unmerged that were content-wise on dev via different
+          commits — always need content-level verification for 'is this merged' questions."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-16T08:17:53.517Z
+        completed_at: 2026-04-16T08:17:53.517Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-16T08:17:03.313Z
