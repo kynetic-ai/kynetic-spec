@@ -1,1 +1,11 @@
-notes: []
+notes:
+  - _ulid: 01KPA0MMJ1CP94TV2ZYN7MJEJN
+    content: "Investigation: This task is a duplicate of @task-fix-cli-agent-session-store-eacces
+      (01KP9S5K), which was already completed and merged into dev at commit 73f9daaed. The fix added
+      explicit sessionsDir parameters to all 5 runInvocation() calls in cli-agent-commands.test.ts
+      that were deriving sessionsDir as /tmp/.kspec-sessions from temp dirs under /tmp/. All 81
+      tests in cli-agent-commands.test.ts pass. Full suite: 2131 suites, 7764 tests passed, 0
+      failures."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-16T02:06:37.633Z
