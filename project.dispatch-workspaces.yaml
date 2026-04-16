@@ -51355,11 +51355,11 @@ workspaces:
     canonical_branch: dispatch/task/task-tests-suppress-cli-auto-start-daemon/01kp78s9
     canonical_branch_head: 582b948ce0f292d17dc405eb485dd7519f43ecbd
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-04-15T07:34:45.810Z
+      updated_at: 2026-04-16T17:05:11.541Z
     health:
       status: healthy
       issues: []
@@ -51372,17 +51372,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 8068a15ad06fdad3f38be42442b38a782e717b1c
-      updated_at: 2026-04-15T07:34:45.810Z
-    lifecycle_state: closing
+      updated_at: 2026-04-16T17:05:11.541Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KP78S9T0YHQWX9S35W8EFCRY"
     task_slug: task-tests-suppress-cli-auto-start-daemon
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:05:11.541Z
       last_active_at: 2026-04-15T07:22:11.828Z
-      last_reconciled_at: 2026-04-15T07:36:13.057Z
+      last_reconciled_at: 2026-04-16T17:05:11.541Z
       created_at: 2026-04-15T06:22:09.609Z
-      updated_at: 2026-04-15T07:36:13.057Z
+      updated_at: 2026-04-16T17:05:11.541Z
     workspace_id: dispatch-workspace-01KP78S9T0YHQWX9S35W8EFCRY
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
