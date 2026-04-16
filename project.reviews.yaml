@@ -149648,6 +149648,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPA65Y4Z5M3V74BY3WV7Y412
         timestamp: 2026-04-16T03:43:28.322Z
+      - _ulid: 01KPA661Y5Y81N1B4K6PA36CGD
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KPA660W1A310QGSTXWX0S778
+        timestamp: 2026-04-16T03:43:31.269Z
     examined_commit: 7315532b204c2a0be9b92296267e9955de501ded
     external_links: []
     lifecycle_state: open
@@ -149945,7 +149952,24 @@ reviews:
                   Then: --json takes precedence over other format options shows no acceptance criterion with that id. Because the annotation points to a nonexistent AC, completeness/coverage tooling cannot credit the test and this snapshot introduces invalid AC coverage metadata. Re-anchor the test to an existing AC or update the spec first.
             created_at: 2026-04-16T03:43:27.391Z
         kind: blocker
+      - _ulid: 01KPA660W1A310QGSTXWX0S778
+        entries:
+          - _ulid: 01KPA660W19KN9EBQHNA280RTP
+            author: Jacob Chapel
+            body: "Evidence log:\\nFiles read: src/cli/commands/upgrade.ts, src/cli/index.ts,
+              src/cli/commands/setup.ts, tests/upgrade-command.test.ts.\\nCommands run: git diff
+              --stat/name-only, kspec task get @01KNXYJ5JCR99F76N8N7265E0B, kspec item get
+              @single-command-version-upgrade, kspec validate, grep -Rni 'AC:
+              @single-command-version-upgrade\\|AC: @trait-' tests/upgrade-command.test.ts, rg -n
+              'ac-records-current-version' ., npm test, npm test --
+              tests/upgrade-command.test.ts.\\nClaims verified: the task-scoped test suite passes
+              (58/58); the full suite failures are isolated to pre-existing /tmp/.kspec-sessions
+              EACCES errors in tests/cli-agent-commands.test.ts; the new AC annotation at
+              tests/upgrade-command.test.ts:1204 does not exist on the current spec.\\nCategories
+              searched: correctness, edge cases, error handling, test quality, integration."
+            created_at: 2026-04-16T03:43:30.177Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-16T03:30:45.903Z
-    updated_at: 2026-04-16T03:43:27.391Z
+    updated_at: 2026-04-16T03:43:30.177Z
     notes: []
