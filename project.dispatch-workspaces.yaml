@@ -3329,11 +3329,11 @@ workspaces:
     canonical_branch: dispatch/task/task-implement-review-subject-bindings/01kknrbz
     canonical_branch_head: ea38c8241ed95df50503bbfbd360e28555ba2ec9
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-19T03:56:09.998Z
+      updated_at: 2026-04-16T16:56:06.681Z
     health:
       status: stale
       issues:
@@ -3351,17 +3351,17 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: 345842980ec9cc5474800e321ea89f3d20c5072a
-      updated_at: 2026-03-19T03:56:09.998Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:56:06.681Z
+    lifecycle_state: closed
     resolved_base_branch: main
     task_ref: "@01KKNRBZXF4B280EVREQJ6ZJRH"
     task_slug: task-implement-review-subject-bindings
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:56:06.681Z
       last_active_at: 2026-03-14T17:10:45.224Z
-      last_reconciled_at: 2026-03-19T03:56:09.998Z
+      last_reconciled_at: 2026-04-16T16:56:06.681Z
       created_at: 2026-03-14T10:27:04.030Z
-      updated_at: 2026-03-19T03:56:09.998Z
+      updated_at: 2026-04-16T16:56:06.681Z
     workspace_id: dispatch-workspace-01KKNRBZXF4B280EVREQJ6ZJRH
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
