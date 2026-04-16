@@ -1302,6 +1302,87 @@ describe("kspec upgrade", () => {
     });
   });
 
+  // ─── Core Skill Backfill ─────────────────────────────────────────
+
+  describe("core skill backfill", () => {
+    // AC: @single-command-version-upgrade ac-rerenders-skills
+    it("restores a deleted core skill during upgrade", async () => {
+      await initProject(tempDir);
+      await writeLastKnownVersion(tempDir, "0.8.0");
+
+      // Remove the "review-plan" core skill from meta + content + rendered output
+      const { parse, stringify } = await import("yaml");
+      const specDir = path.join(tempDir, ".kspec");
+      const metaFiles = (await fs.readdir(specDir)).filter((f) => f.endsWith(".meta.yaml"));
+      expect(metaFiles.length).toBeGreaterThan(0);
+      const metaPath = path.join(specDir, metaFiles[0]);
+      const metaRaw = await fs.readFile(metaPath, "utf-8");
+      const metaDoc = parse(metaRaw);
+
+      // Verify the skill exists before we remove it
+      const originalSkills = metaDoc.skills || [];
+      const targetSkillId = "review-plan";
+      const hadSkill = originalSkills.some(
+        (s: { id: string }) => s.id === targetSkillId,
+      );
+      expect(hadSkill).toBe(true);
+
+      // Remove the skill from meta
+      metaDoc.skills = originalSkills.filter(
+        (s: { id: string }) => s.id !== targetSkillId,
+      );
+      await fs.writeFile(metaPath, stringify(metaDoc), "utf-8");
+
+      // Remove skill content directory
+      const skillContentDir = path.join(tempDir, ".kspec", "skills", targetSkillId);
+      await fs.rm(skillContentDir, { recursive: true, force: true });
+
+      // Remove rendered skill directory
+      const renderedDir = path.join(tempDir, ".agents", "skills", `kspec-${targetSkillId}`);
+      await fs.rm(renderedDir, { recursive: true, force: true });
+
+      // Run upgrade
+      const result = kspecJson<{
+        steps: Array<{ name: string; status: string; details?: Record<string, unknown> }>;
+      }>("upgrade --force", tempDir);
+
+      // Verify backfill step ran and installed the skill
+      const backfillStep = result.steps.find(
+        (s) => s.name === "Backfill core skills",
+      );
+      expect(backfillStep).toBeDefined();
+      expect(backfillStep!.status).toBe("done");
+      expect((backfillStep!.details?.installed as number) || 0).toBeGreaterThan(0);
+
+      // Verify the skill content was restored
+      expect(existsSync(path.join(tempDir, ".kspec", "skills", targetSkillId, "SKILL.md"))).toBe(
+        true,
+      );
+
+      // Verify the rendered output was restored
+      expect(existsSync(path.join(tempDir, ".agents", "skills", `kspec-${targetSkillId}`, "SKILL.md"))).toBe(
+        true,
+      );
+    });
+
+    it("backfill step succeeds when all core skills are already present", async () => {
+      await initProject(tempDir);
+      await writeLastKnownVersion(tempDir, "0.8.0");
+
+      const result = kspecJson<{
+        steps: Array<{ name: string; status: string }>;
+      }>("upgrade", tempDir);
+
+      const backfillStep = result.steps.find(
+        (s) => s.name === "Backfill core skills",
+      );
+      expect(backfillStep).toBeDefined();
+      // When all core skills exist, the step updates them (ensuring latest version)
+      // so it may report "done" or "skipped" — both are valid success states
+      expect(backfillStep!.status).not.toBe("failed");
+    });
+  });
+
   // ─── Scaffold Missing Files ───────────────────────────────────────
 
   describe("scaffold missing files", () => {

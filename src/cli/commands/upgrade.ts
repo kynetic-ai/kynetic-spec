@@ -370,7 +370,34 @@ export async function runUpgradePipeline(
     });
   }
 
-  // ─── Step 2: Re-render skills ───────────────────────────────────────
+  // ─── Step 2: Backfill missing core skills ────────────────────────────
+  // AC: @single-command-version-upgrade ac-rerenders-skills
+  // Core skills introduced in newer releases must be installed into
+  // project meta before re-rendering, otherwise the render step only
+  // operates on skills that already exist and silently skips new ones.
+  try {
+    const backfillResult = await runBackfillCoreSkillsStep(
+      projectDir,
+      dryRun,
+    );
+    steps.push(backfillResult);
+    if (backfillResult.status === "done") {
+      const installed = (backfillResult.details?.installed as number) || 0;
+      if (installed > 0) {
+        followUps.push(
+          `Core skills: ${installed} missing skill(s) restored — review .kspec/skills/ for changes`,
+        );
+      }
+    }
+  } catch (err) {
+    steps.push({
+      name: "Backfill core skills",
+      status: "failed",
+      message: err instanceof Error ? err.message : String(err),
+    });
+  }
+
+  // ─── Step 3: Re-render skills ───────────────────────────────────────
   // AC: @single-command-version-upgrade ac-rerenders-skills
   try {
     const skillResult = await runRerenderSkillsStep(
@@ -398,7 +425,7 @@ export async function runUpgradePipeline(
     });
   }
 
-  // ─── Step 3: Regenerate agents file ─────────────────────────────────
+  // ─── Step 4: Regenerate agents file ─────────────────────────────────
   // AC: @single-command-version-upgrade ac-regenerates-agents-file
   try {
     const agentsResult = await runRegenerateAgentsStep(
@@ -417,7 +444,7 @@ export async function runUpgradePipeline(
     });
   }
 
-  // ─── Step 4: Restore gitignore entries ──────────────────────────────
+  // ─── Step 5: Restore gitignore entries ──────────────────────────────
   // AC: @single-command-version-upgrade ac-restores-gitignore-entries
   try {
     const gitignoreResult = await runGitignoreRepairStep(
@@ -439,7 +466,7 @@ export async function runUpgradePipeline(
     });
   }
 
-  // ─── Step 5: Scaffold missing files ─────────────────────────────────
+  // ─── Step 6: Scaffold missing files ─────────────────────────────────
   // AC: @single-command-version-upgrade ac-reports-manual-follow-ups
   try {
     const scaffoldResults = await runScaffoldMissingStep(
@@ -462,7 +489,7 @@ export async function runUpgradePipeline(
     });
   }
 
-  // ─── Step 6: Write lastKnownVersion ─────────────────────────────────
+  // ─── Step 7: Write lastKnownVersion ─────────────────────────────────
   // Only record the version when ALL prior steps succeeded. Recording
   // after a partial failure would suppress future upgrade attempts even
   // though some steps never completed.
@@ -656,7 +683,52 @@ async function runTaskStorageMigrationStep(
 }
 
 /**
- * Step 2: Re-render skills and remove obsolete rendered skills.
+ * Step 2: Backfill missing core skills.
+ * Reuses installCoreSkillsForSetup from setup.ts to ensure all core
+ * skills shipped with the current kspec version exist in project meta
+ * and have their content files in .kspec/skills/. This must run BEFORE
+ * the re-render step so newly backfilled skills get rendered.
+ *
+ * AC: @single-command-version-upgrade ac-rerenders-skills
+ */
+async function runBackfillCoreSkillsStep(
+  projectDir: string,
+  dryRun: boolean,
+): Promise<UpgradeStepResult> {
+  try {
+    const { installCoreSkillsForSetup } = await import("./setup.js");
+    const result = await installCoreSkillsForSetup(projectDir, dryRun);
+
+    const total = result.installed + result.skipped;
+    if (result.installed === 0) {
+      return {
+        name: "Backfill core skills",
+        status: "skipped",
+        message:
+          total > 0
+            ? `all ${total} core skill(s) already present`
+            : "no core skills in manifest",
+        details: { installed: 0, skipped: result.skipped },
+      };
+    }
+
+    return {
+      name: "Backfill core skills",
+      status: "done",
+      message: `${result.installed} core skill(s) installed`,
+      details: { installed: result.installed, skipped: result.skipped },
+    };
+  } catch (err) {
+    return {
+      name: "Backfill core skills",
+      status: "failed",
+      message: err instanceof Error ? err.message : String(err),
+    };
+  }
+}
+
+/**
+ * Step 3: Re-render skills and remove obsolete rendered skills.
  * Reuses the renderSkillsForSetup pattern from setup.ts,
  * plus orphan cleanup logic from skill-diff.ts --clean.
  *
@@ -843,7 +915,7 @@ async function runRerenderSkillsStep(
 }
 
 /**
- * Step 3: Regenerate agent instructions file.
+ * Step 4: Regenerate agent instructions file.
  * Reuses the generateAgentInstructions pattern from setup.ts.
  *
  * AC: @single-command-version-upgrade ac-regenerates-agents-file
@@ -979,7 +1051,7 @@ async function runRegenerateAgentsStep(
 }
 
 /**
- * Step 4: Restore gitignore entries.
+ * Step 5: Restore gitignore entries.
  * Reuses ensureKspecGitignore from parser/gitignore.ts.
  *
  * AC: @single-command-version-upgrade ac-restores-gitignore-entries
@@ -1057,7 +1129,7 @@ async function runGitignoreRepairStep(
 }
 
 /**
- * Step 5: Scaffold any missing files.
+ * Step 6: Scaffold any missing files.
  * Runs: scaffoldProjectConfig, scaffoldDefaults, ensureDefaultReflectionHook — but only creates what is missing.
  *
  * AC: @single-command-version-upgrade ac-reports-manual-follow-ups

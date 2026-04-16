@@ -1073,7 +1073,7 @@ async function generateAgentInstructions(
  * Install core skills for the setup pipeline
  * AC: @init-setup-integration ac-2 - core skills installed
  */
-async function installCoreSkillsForSetup(
+export async function installCoreSkillsForSetup(
   projectDir: string,
   dryRun: boolean,
 ): Promise<{
