@@ -148988,6 +148988,12 @@ reviews:
         payload:
           thread_ulid: 01KP9ZXRWYTF3CKHN6TQFD1HZG
         timestamp: 2026-04-16T02:31:21.986Z
+      - _ulid: 01KPA2265AT20RHVGMPSRX158Y
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KP9ZXRWYTF3CKHN6TQFD1HZG
+        timestamp: 2026-04-16T02:31:30.218Z
     examined_commit: ce47669438108f7e8d2199c281a219cfbd16a69f
     external_links: []
     lifecycle_state: closed
@@ -149089,6 +149095,8 @@ reviews:
             body: "Acknowledged. The scope of the fix is narrow: one-line condition change plus one new test."
             created_at: 2026-04-16T02:31:21.041Z
         kind: nit
+        resolved_at: 2026-04-16T02:31:29.309Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -149098,7 +149106,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-16T01:54:21.006Z
     created_at: 2026-04-16T01:39:35.422Z
-    updated_at: 2026-04-16T02:31:21.041Z
+    updated_at: 2026-04-16T02:31:29.309Z
     notes: []
   - _ulid: 01KPA0RSD218YP0469PCDD6PT0
     slugs: []
