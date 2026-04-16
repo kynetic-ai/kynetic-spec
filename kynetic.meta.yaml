@@ -14810,6 +14810,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-16T03:45:30.076Z
+  - _ulid: 01KPA69PD1BJ1X2VXXNS5BV3Q7
+    type: success
+    content: Running npm test -- tests/upgrade-command.test.ts after the full suite failed quickly
+      isolated the upgrade task's real signal from the known /tmp/.kspec-sessions EACCES failures,
+      which made the review verdict defensible without blocking on unrelated infra noise.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-16T03:45:30.530Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
