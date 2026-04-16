@@ -54354,7 +54354,7 @@ workspaces:
         head: a22365e8d21c2b7cd78f62bc226a6bcaf5e5263e
         last_seen_at: 2026-04-16T07:48:25.559Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-default-reflection-hook-turn-filter-01kp99sn
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 65feefa131b93d2617358b6cd9f0c93c8fbaa589
     bootstrap:
       status: succeeded
@@ -54763,12 +54763,12 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-04-16T09:00:48.495Z
+      updated_at: 2026-04-16T09:01:05.578Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-16T09:00:48.495Z
+      updated_at: 2026-04-16T09:01:05.578Z
     integration:
       status: merged
       detail: integration:merged
@@ -54776,7 +54776,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 65feefa131b93d2617358b6cd9f0c93c8fbaa589
-      updated_at: 2026-04-16T09:00:48.495Z
+      updated_at: 2026-04-16T09:01:05.578Z
     lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KPANM6STGNV5QMZFMC4AC8BM"
@@ -54784,9 +54784,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-16T08:48:37.799Z
-      last_reconciled_at: 2026-04-16T09:00:48.495Z
+      last_reconciled_at: 2026-04-16T09:01:05.578Z
       created_at: 2026-04-16T08:15:12.258Z
-      updated_at: 2026-04-16T09:00:48.495Z
+      updated_at: 2026-04-16T09:01:05.578Z
     workspace_id: dispatch-workspace-01KPANM6STGNV5QMZFMC4AC8BM
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
