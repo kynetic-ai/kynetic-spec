@@ -28067,11 +28067,11 @@ workspaces:
     canonical_branch: dispatch/task/task-ui-warming-skeletons/01kmw68m
     canonical_branch_head: 65b9cc87bfebad12330eaec3b14f345459cc8f92
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-29T13:36:37.163Z
+      updated_at: 2026-04-16T17:01:53.034Z
     health:
       status: healthy
       issues: []
@@ -28084,17 +28084,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 9b6b755439cc00d3bfe911f7974077e6942c6de5
-      updated_at: 2026-03-29T13:36:37.163Z
-    lifecycle_state: closing
+      updated_at: 2026-04-16T17:01:53.034Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KMW68MZ5Z281YD9Z87K2G55A"
     task_slug: task-ui-warming-skeletons
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:01:53.034Z
       last_active_at: 2026-03-29T13:25:19.223Z
-      last_reconciled_at: 2026-03-29T13:37:15.961Z
+      last_reconciled_at: 2026-04-16T17:01:53.034Z
       created_at: 2026-03-29T12:26:53.472Z
-      updated_at: 2026-03-29T13:37:15.961Z
+      updated_at: 2026-04-16T17:01:53.034Z
     workspace_id: dispatch-workspace-01KMW68MZ5Z281YD9Z87K2G55A
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
