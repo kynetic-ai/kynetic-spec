@@ -26896,7 +26896,7 @@ runs:
     completed_at: 2026-04-16T03:29:15.147Z
   - _ulid: 01KPA7320YDA60BYQ1KV5B37JH
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -26914,7 +26914,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-16T04:01:01.800Z
-        completed_at: 2026-04-16T04:01:01.800Z
+        completed_at: 2026-04-16T04:01:20.976Z
+        notes: "Identified candidates: (1) Friction: AC annotation pointed to nonexistent AC id with no
+          local-tool detection — DUPLICATE of inbox @01KPA69P. (2) Friction: /tmp/.kspec-sessions
+          EACCES review noise — DUPLICATE of inbox @01KPA3KE. (3) Friction: 18 fix cycles on one
+          task — one-off, low confidence on root cause. (4) Success: re-anchoring over spec-update —
+          decision pattern, low confidence as novel. (5) Friction: kspec workflow show requires
+          run-ref — DUPLICATE of inbox @01KJV1PFC. No novel high-confidence items remain."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-16T04:01:20.976Z
+        completed_at: 2026-04-16T04:01:20.976Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-16T03:59:21.630Z
