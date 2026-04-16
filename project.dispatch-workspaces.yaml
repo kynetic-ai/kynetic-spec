@@ -52708,7 +52708,7 @@ workspaces:
         head: 73f9daaedf7d2c63d635be9604cdbd8539f6b64c
         last_seen_at: 2026-04-16T00:10:37.212Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-cli-agent-session-store-eacces-01kp9s5k
-  - active_role: null
+  - active_role: worker
     base_branch_point: 65feefa131b93d2617358b6cd9f0c93c8fbaa589
     bootstrap:
       status: succeeded
@@ -52999,7 +52999,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-16T01:54:08.609Z
+      updated_at: 2026-04-16T01:54:35.501Z
     integration:
       status: pending
       detail: null
@@ -53008,16 +53008,16 @@ workspaces:
       target_branch: dev
       target_commit: 65feefa131b93d2617358b6cd9f0c93c8fbaa589
       updated_at: 2026-04-16T01:54:08.609Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KP9ZW21H9AD2R127PS5MM6KQ"
     task_slug: stabilize-cli-agent-commands-session-store-tests-under-restricted-tmp-permissions
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-04-16T01:54:08.609Z
+      last_active_at: 2026-04-16T01:54:35.501Z
+      last_reconciled_at: 2026-04-16T01:54:35.501Z
       created_at: 2026-04-16T01:54:08.609Z
-      updated_at: 2026-04-16T01:54:33.591Z
+      updated_at: 2026-04-16T01:54:35.501Z
     workspace_id: dispatch-workspace-01KP9ZW21H9AD2R127PS5MM6KQ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
