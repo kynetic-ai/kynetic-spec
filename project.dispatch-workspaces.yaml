@@ -1862,11 +1862,11 @@ workspaces:
     canonical_branch: dispatch/task/implement-droid-core-skill-install-support/01kkjkma
     canonical_branch_head: ff090642667eb75bae85500588d3a4f446287976
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-29T04:45:50.739Z
+      updated_at: 2026-04-16T16:55:38.842Z
     health:
       status: stale
       issues:
@@ -1884,17 +1884,17 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: 48408281d10e9f1d5ec6ba581041cd9477006c46
-      updated_at: 2026-03-29T04:45:50.739Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:55:38.842Z
+    lifecycle_state: closed
     resolved_base_branch: main
     task_ref: "@01KKJKMACTMKC8CNF9D9Y56B3C"
     task_slug: implement-droid-core-skill-install-support
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:55:38.842Z
       last_active_at: 2026-03-13T08:26:59.132Z
-      last_reconciled_at: 2026-03-29T04:45:50.739Z
+      last_reconciled_at: 2026-04-16T16:55:38.842Z
       created_at: 2026-03-13T08:14:07.606Z
-      updated_at: 2026-03-29T04:45:50.739Z
+      updated_at: 2026-04-16T16:55:38.842Z
     workspace_id: dispatch-workspace-01KKJKMACTMKC8CNF9D9Y56B3C
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
