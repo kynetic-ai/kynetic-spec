@@ -14664,6 +14664,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-16T00:25:59.500Z
+  - _ulid: 01KP9V2J3VNSKPN80SFRHFZQH8
+    type: friction
+    content: agents generate embeds a timestamp in the output, making content comparison for staleness
+      detection require a stripTimestamp workaround. The hash file should store an output content
+      hash alongside the meta hash so corruption detection is a simple hash comparison.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-16T00:29:22.427Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
