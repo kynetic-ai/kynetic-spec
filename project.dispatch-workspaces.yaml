@@ -798,11 +798,11 @@ workspaces:
     canonical_branch: dispatch/task/task-honor-derive-from-specs-false-in-plan-derive/01kkfz61
     canonical_branch_head: d489b7afdda63d572f89d26ff9980851a616b344
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-19T03:56:03.907Z
+      updated_at: 2026-04-16T16:55:20.208Z
     health:
       status: stale
       issues:
@@ -825,17 +825,17 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: a3120f904159a992682178398e87ffe5649ab7f5
-      updated_at: 2026-03-19T03:56:03.907Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:55:20.208Z
+    lifecycle_state: closed
     resolved_base_branch: main
     task_ref: "@01KKFZ61246P1HQKMP9HSM7D1F"
     task_slug: task-honor-derive-from-specs-false-in-plan-derive
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:55:20.208Z
       last_active_at: null
-      last_reconciled_at: 2026-03-19T03:56:03.907Z
+      last_reconciled_at: 2026-04-16T16:55:20.208Z
       created_at: 2026-03-12T23:14:42.085Z
-      updated_at: 2026-03-19T03:56:03.907Z
+      updated_at: 2026-04-16T16:55:20.208Z
     workspace_id: dispatch-workspace-01KKFZ61246P1HQKMP9HSM7D1F
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
