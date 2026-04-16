@@ -149682,9 +149682,25 @@ reviews:
           kind: blocker
           thread_ulid: 01KPA66F2YDPMBSDGZ44CK7SGT
         timestamp: 2026-04-16T03:43:45.695Z
+      - _ulid: 01KPA66V5ETYA26HQHBP0B0VZ6
+        actor: codex@openai.com
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-16T03:43:57.103Z
+      - _ulid: 01KPA66V5F21WKW88CC097EHME
+        actor: codex@openai.com
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-16T03:43:57.103Z
     examined_commit: 7315532b204c2a0be9b92296267e9955de501ded
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -150014,7 +150030,14 @@ reviews:
               Re-anchor the test to an existing AC or update the spec first.
             created_at: 2026-04-16T03:43:44.734Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai.com
+        role: reviewer
+        created_at: 2026-04-16T03:43:57.102Z
     created_at: 2026-04-16T03:30:45.903Z
-    updated_at: 2026-04-16T03:43:44.734Z
+    updated_at: 2026-04-16T03:43:57.103Z
     notes: []
