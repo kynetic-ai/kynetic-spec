@@ -14864,6 +14864,20 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-16T06:22:16.129Z
+  - _ulid: 01KPAHFEPY2FYJT2Q3ASAZ1W3B
+    type: success
+    content: "When a review finds 'this message/output is too vague', add a regex-based regression test
+      that codifies the specificity invariant — not just assertions on the specific new strings. In
+      task-doctor-accuracy, the original ac-all-actionable test only asserted non-empty guidance,
+      which let vague 'kspec setup' messages persist across code paths. Adding a test that rejects
+      any warning/error guidance matching /\\\\bkspec setup\\\\b(?\\!\\\\s+--)/ (unless paired with
+      a specific alternative command) converts a per-string fix into a durable invariant. This
+      pattern generalizes to any audit-style task ('audit every X'): the fix should include a test
+      that codifies the rule so future additions cannot regress."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-16T07:00:53.599Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
