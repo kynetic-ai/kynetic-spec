@@ -149521,6 +149521,12 @@ reviews:
         payload:
           thread_ulid: 01KPA41QDFSQQD12XRKN1YD8P5
         timestamp: 2026-04-16T03:26:56.939Z
+      - _ulid: 01KPA57Y5W9MWF76ZAZJ9P1Q2X
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KPA41QDFSQQD12XRKN1YD8P5
+        timestamp: 2026-04-16T03:27:04.380Z
     examined_commit: 2524a7824f0bd6b9c6f84371c1731532b9f9f7dc
     external_links: []
     lifecycle_state: closed
@@ -149549,6 +149555,8 @@ reviews:
               5b, removing the force forwarding into scaffoldDefaults().
             created_at: 2026-04-16T03:26:55.996Z
         kind: nit
+        resolved_at: 2026-04-16T03:27:03.455Z
+        resolved_by: "@claude"
       - _ulid: 01KPA4239ABQS1NW90THSKDDJZ
         anchor:
           type: code
@@ -149594,5 +149602,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-16T03:06:53.671Z
     created_at: 2026-04-16T02:59:57.857Z
-    updated_at: 2026-04-16T03:26:55.996Z
+    updated_at: 2026-04-16T03:27:03.455Z
     notes: []
