@@ -33,3 +33,56 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-16T08:18:45.524Z
+  - _ulid: 01KPANZ4M5YSTA0XMNCW3DW20J
+    content: >-
+      Implementation plan:
+
+
+      Approach:
+
+      1. Idempotency gate at entry to reap success path: If existing.metadata.cleanupState.status
+      === 'completed' OR the registry record's cleanup.status is already 'completed', short-circuit
+      and return action='reaped' without any writes. Per ac-10, no timestamp bump.
+
+
+      2. Post-removal shadow write on success path: After worktree removal + branch deletion succeed
+      (line 3119), load the current registry record for this workspace and invoke
+      persistWorkspaceRecord with cleanup.status='completed', cleanup.updated_at=now,
+      timestamps.updated_at=now, and timestamps.closed_at=existing||now. This goes through
+      withDispatchShadowMutationLock + saveWorkspaceRecordToRegistry +
+      commitWorkspaceRegistryToShadow (same pattern as line 1767).
+
+
+      3. Partial-failure safety: The physical-removal steps happen BEFORE the registry write. If
+      removal throws, the write never runs; record stays cleanup.status='scheduled' per the task
+      spec. No try/catch around removal — propagate errors.
+
+
+      4. Blocked paths migration: Replace writeWorkspaceMetadata calls in the two blocked branches
+      with a full persistWorkspaceRecord that writes cleanup.status='blocked' through the shadow
+      path. This closes ac-8 gap for blocked state.
+
+
+      5. Reconciliation self-heal in reconcileDispatchWorkspaceRegistry: Before computing cleanup
+      via resolveRegistryStateForTaskStatus, detect the lost-write state: (worker worktree
+      missing-from-disk OR branch missing-locally-and-not-restorable) AND cleanup.eligible AND
+      cleanup.status \!== 'completed'. When detected, set cleanup = {status: 'completed', eligible:
+      true, reason, detail, updated_at: now}. This lets resolveLifecycleState return 'closed' (via
+      cleanup.status check taking precedence). The health.status\!=='healthy' check order is
+      preserved — only cleanup.status takes precedence (existing line 1371).
+
+
+      6. Tests: in tests/dispatch-workspace-cleanup.test.ts add cases for:
+         - success path persists cleanup.status='completed' and closed_at
+         - lifecycle resolver returns 'closed' for completed
+         - idempotent re-entry does not bump updated_at
+         - lost-write self-heal via reconcileDispatchWorkspaceRegistry
+         - blocked path persists blocked status to shadow
+         - partial-failure: simulate worker removal failure -> cleanup.status remains 'scheduled'
+
+      Test plan covers ACs: ac-successful-cleanup-persists-completion,
+      ac-successful-cleanup-populates-closed-at, ac-completed-cleanup-resolves-to-closed, ac-8,
+      ac-10.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-16T08:19:21.862Z
