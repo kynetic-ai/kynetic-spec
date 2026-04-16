@@ -3823,11 +3823,11 @@ workspaces:
     canonical_branch: dispatch/task/task-implement-review-verdicts-and-resolution/01kknrc1
     canonical_branch_head: 89c53f72a11932602ce770ba3ce2af2c9e4f4d48
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-19T03:56:11.038Z
+      updated_at: 2026-04-16T16:56:15.626Z
     health:
       status: stale
       issues:
@@ -3845,17 +3845,17 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
-      updated_at: 2026-03-19T03:56:11.038Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:56:15.626Z
+    lifecycle_state: closed
     resolved_base_branch: main
     task_ref: "@01KKNRC1M21CX9TW44VZWMEHHZ"
     task_slug: task-implement-review-verdicts-and-resolution
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:56:15.626Z
       last_active_at: 2026-03-14T18:48:09.636Z
-      last_reconciled_at: 2026-03-19T03:56:11.038Z
+      last_reconciled_at: 2026-04-16T16:56:15.626Z
       created_at: 2026-03-14T18:15:58.408Z
-      updated_at: 2026-03-19T03:56:11.038Z
+      updated_at: 2026-04-16T16:56:15.626Z
     workspace_id: dispatch-workspace-01KKNRC1M21CX9TW44VZWMEHHZ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
