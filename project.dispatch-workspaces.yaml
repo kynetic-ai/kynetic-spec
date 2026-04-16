@@ -2435,11 +2435,11 @@ workspaces:
     canonical_branch: dispatch/task/implement-inline-registry-purge-for-closed-dispatch-workspace-records/01kkm1ca
     canonical_branch_head: 5ba2b29446388f515da521d6934ff542719962bc
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-28T22:54:51.590Z
+      updated_at: 2026-04-16T16:55:49.230Z
     health:
       status: stale
       issues:
@@ -2457,17 +2457,17 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: 88b68a229e7759cabb0a1a8c2e891d9b7e0b2bd3
-      updated_at: 2026-03-28T22:54:51.590Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:55:49.230Z
+    lifecycle_state: closed
     resolved_base_branch: main
     task_ref: "@01KKM1CAH2KSMH1TWS2E6079A1"
     task_slug: implement-inline-registry-purge-for-closed-dispatch-workspace-records
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:55:49.230Z
       last_active_at: 2026-03-13T19:45:05.396Z
-      last_reconciled_at: 2026-03-28T22:54:51.590Z
+      last_reconciled_at: 2026-04-16T16:55:49.230Z
       created_at: 2026-03-13T19:37:21.948Z
-      updated_at: 2026-03-28T22:54:51.590Z
+      updated_at: 2026-04-16T16:55:49.230Z
     workspace_id: dispatch-workspace-01KKM1CAH2KSMH1TWS2E6079A1
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
