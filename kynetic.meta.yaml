@@ -14787,6 +14787,20 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-16T03:08:59.251Z
+  - _ulid: 01KPA5BR024AVXESS63T8E5GQX
+    type: success
+    content: "When a fix-cycle blocker is a sibling of a step already fixed in the same scaffold family
+      (e.g., upgrade step 5b scaffoldDefaults force re-seeding vs upgrade step 5c reflection-hook
+      force re-seeding), the fastest route to a correct fix is to look up the most recent prior fix
+      in the same file or step family and mirror its shape. In this session, the cycle-15
+      reflection-hook fix (remove a force override of user-removal state) applied almost verbatim to
+      the scaffoldDefaults case, including the one-line change and the behavioral test structure.
+      Pattern for reviewers/workers: search git log for the preceding fix on the file under review
+      before re-deriving a solution."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-16T03:29:09.122Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
