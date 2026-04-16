@@ -10,7 +10,7 @@ description: "npm test fails in tests/cli-agent-commands.test.ts with five deter
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -20,6 +20,14 @@ tags:
   - infra
   - sessions
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/stabilize-cli-agent-commands-session-store-tests-under-restricted-tmp-permissions/01kp9zw2
+  captured_at: 2026-04-16T02:06:55.266Z
+  commit: 65feefa131b93d2617358b6cd9f0c93c8fbaa589
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KP9ZYJQBRA00FM133C5P962V
 history:
   - author: "@claude"
@@ -35,7 +43,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-16T01:55:25.294Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/stabilize-cli-agent-commands-session-store-tests-under-restricted-tmp-permissions/01kp9zw2
+          captured_at: 2026-04-16T02:06:55.266Z
+          commit: 65feefa131b93d2617358b6cd9f0c93c8fbaa589
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-04-16T02:06:55.270Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-16T02:06:55.270Z
 created_at: 2026-04-16T01:53:12.241Z
 started_at: 2026-04-16T01:55:25.294Z
+submitted_at: 2026-04-16T02:06:55.270Z
 todos: []
 automation: eligible
