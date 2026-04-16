@@ -39268,11 +39268,11 @@ workspaces:
     canonical_branch: dispatch/task/task-incremental-item-updates/01knddj3
     canonical_branch_head: 9d2241a2c40dde180fa6551bb9626fb278799152
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-04-07T03:33:01.516Z
+      updated_at: 2026-04-16T17:04:07.254Z
     health:
       status: healthy
       issues: []
@@ -39285,17 +39285,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-granular-cache-invalidation/01kndbmk
       target_commit: f79e50ae4981291472311faca180dcfcda98a05a
-      updated_at: 2026-04-07T03:33:01.516Z
-    lifecycle_state: closing
+      updated_at: 2026-04-16T17:04:07.254Z
+    lifecycle_state: closed
     resolved_base_branch: plan/plan-granular-cache-invalidation/01kndbmk
     task_ref: "@01KNDDJ3RK4K2HWH7TVY6F1V66"
     task_slug: task-incremental-item-updates
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:04:07.254Z
       last_active_at: 2026-04-07T03:23:25.414Z
-      last_reconciled_at: 2026-04-07T03:33:36.616Z
+      last_reconciled_at: 2026-04-16T17:04:07.254Z
       created_at: 2026-04-06T18:06:17.959Z
-      updated_at: 2026-04-07T03:33:36.616Z
+      updated_at: 2026-04-16T17:04:07.254Z
     workspace_id: dispatch-workspace-01KNDDJ3RK4K2HWH7TVY6F1V66
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
