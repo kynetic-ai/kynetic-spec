@@ -11985,11 +11985,11 @@ workspaces:
     canonical_branch: dispatch/task/fix-shadow-commit-call-sites-that-omit-entity-refs/01kkx6qp
     canonical_branch_head: 5ac40253e2bb3528cd818e098ca4a5639062d7fc
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-20T01:41:41.327Z
+      updated_at: 2026-04-16T16:58:44.413Z
     health:
       status: invalid
       issues:
@@ -12011,17 +12011,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 53be2094bc46d5c352d60c095941b9033e61d079
-      updated_at: 2026-03-20T01:41:41.327Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:58:44.413Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KKX6QPC0374PT4W93CMA7EMX"
     task_slug: fix-shadow-commit-call-sites-that-omit-entity-refs
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:58:44.413Z
       last_active_at: 2026-03-20T00:04:38.637Z
-      last_reconciled_at: 2026-03-20T01:41:41.327Z
+      last_reconciled_at: 2026-04-16T16:58:44.413Z
       created_at: 2026-03-19T06:53:50.346Z
-      updated_at: 2026-03-20T01:41:41.327Z
+      updated_at: 2026-04-16T16:58:44.413Z
     workspace_id: dispatch-workspace-01KKX6QPC0374PT4W93CMA7EMX
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
