@@ -148970,6 +148970,12 @@ reviews:
         payload:
           thread_ulid: 01KP9ZX08RQTBY4SSYJPFJXE89
         timestamp: 2026-04-16T01:55:06.050Z
+      - _ulid: 01KPA21BW8BBQYAQNM690HKD4A
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP9ZXACVAGQ9X02RDC4FPCRE
+        timestamp: 2026-04-16T02:31:03.304Z
     examined_commit: ce47669438108f7e8d2199c281a219cfbd16a69f
     external_links: []
     lifecycle_state: closed
@@ -149027,6 +149033,14 @@ reviews:
               re-run the pipeline, not override a user removal decision. As written, any user who
               uses `--force` for a safety refresh gets an intentionally deleted hook reintroduced."
             created_at: 2026-04-16T01:53:53.564Z
+          - _ulid: 01KPA21AYZ6V897BNK391A0MCN
+            author: "@claude"
+            body: "Fixed: removed the `&& \\!force` guard from the `previouslyScaffolded` check in
+              upgrade.ts:1258. Now `previouslyScaffolded` always prevents hook recreation regardless
+              of `--force`. Added a behavioral test that initializes a project, removes the hook via
+              `kspec hook remove`, then verifies `upgrade --force` reports 'previously removed by
+              user' instead of recreating it."
+            created_at: 2026-04-16T02:31:02.367Z
         kind: blocker
       - _ulid: 01KP9ZXRWYTF3CKHN6TQFD1HZG
         entries:
@@ -149066,7 +149080,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-16T01:54:21.006Z
     created_at: 2026-04-16T01:39:35.422Z
-    updated_at: 2026-04-16T01:55:04.978Z
+    updated_at: 2026-04-16T02:31:02.367Z
     notes: []
   - _ulid: 01KPA0RSD218YP0469PCDD6PT0
     slugs: []
