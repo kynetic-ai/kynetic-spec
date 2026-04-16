@@ -39787,11 +39787,11 @@ workspaces:
     canonical_branch: dispatch/task/stabilize-parser-integration-test-in-detached-review-worktrees/01knjya2
     canonical_branch_head: 6d5dc401948ad040abc126f208241b4694c3e881
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-04-07T04:07:43.107Z
+      updated_at: 2026-04-16T17:04:13.302Z
     health:
       status: healthy
       issues: []
@@ -39804,17 +39804,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 564fc9691ffbb185333b969ebce501d0abb71013
-      updated_at: 2026-04-07T04:07:43.107Z
-    lifecycle_state: closing
+      updated_at: 2026-04-16T17:04:13.302Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KNJYA2JZ6MGVY8QS55Y1AR09"
     task_slug: stabilize-parser-integration-test-in-detached-review-worktrees
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:04:13.302Z
       last_active_at: 2026-04-07T03:57:13.512Z
-      last_reconciled_at: 2026-04-07T04:07:58.016Z
+      last_reconciled_at: 2026-04-16T17:04:13.302Z
       created_at: 2026-04-07T03:45:20.833Z
-      updated_at: 2026-04-07T04:07:58.016Z
+      updated_at: 2026-04-16T17:04:13.302Z
     workspace_id: dispatch-workspace-01KNJYA2JZ6MGVY8QS55Y1AR09
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
