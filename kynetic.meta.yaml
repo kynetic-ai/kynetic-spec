@@ -14829,6 +14829,27 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-04-16T04:15:32.138Z
+  - _ulid: 01KPAAFZ5DHV91QDD1XZHY4G4E
+    type: friction
+    content: createRequire(import.meta.url).resolve() paths option does not accept relative specifiers
+      like "../../../package.json" — silently fails from non-package cwds. Other places in the
+      codebase (upgrade.ts) already use the simpler path.resolve(path.dirname(here), "..", "..",
+      "..") pattern. Consider a shared helper or a convention doc entry to prevent rediscovery.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-16T04:58:50.414Z
+  - _ulid: 01KPAAFZCN3YKS2S9R621HFEBW
+    type: friction
+    content: "Editing an existing project-local skill's SKILL.md content has no dedicated CLI surface:
+      kspec skill set only updates metadata, kspec skill import rejects existing IDs with CONFLICT.
+      Current working path is to edit the shadow-branch file directly and rely on kspec skill render
+      to auto-commit the change. A kspec skill update-content --file or kspec skill edit command
+      would close this gap."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-16T04:58:50.645Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
