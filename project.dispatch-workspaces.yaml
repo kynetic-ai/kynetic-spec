@@ -25140,11 +25140,11 @@ workspaces:
     canonical_branch: dispatch/task/task-update-daemon-server-desc/01kmmb3x
     canonical_branch_head: 098d671a198ed582216a99f69c059f0d562fa735
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-27T20:33:03.134Z
+      updated_at: 2026-04-16T17:01:19.411Z
     health:
       status: invalid
       issues:
@@ -25165,17 +25165,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 098d671a198ed582216a99f69c059f0d562fa735
-      updated_at: 2026-03-27T20:33:03.134Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T17:01:19.411Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KMMB3XHCBBHHWD0NFN2D57ST"
     task_slug: task-update-daemon-server-desc
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:01:19.411Z
       last_active_at: 2026-03-27T20:20:05.736Z
-      last_reconciled_at: 2026-03-27T20:33:03.134Z
+      last_reconciled_at: 2026-04-16T17:01:19.411Z
       created_at: 2026-03-27T20:16:33.534Z
-      updated_at: 2026-03-27T20:33:03.134Z
+      updated_at: 2026-04-16T17:01:19.411Z
     workspace_id: dispatch-workspace-01KMMB3XHCBBHHWD0NFN2D57ST
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
