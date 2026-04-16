@@ -150552,6 +150552,26 @@ reviews:
         runner: kspec
         created_at: 2026-04-16T06:34:33.024Z
         completed_at: 2026-04-16T06:34:33.024Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/parser/doctor.ts, src/parser/setup-status.ts,
+          tests/parser/doctor.test.ts, tests/droid-setup-status.test.ts, package.json, AGENTS.md,
+          kspec-agents.md. Commands run: kspec task get, kspec item get, git diff/stat/show/log, rg
+          AC annotations, kspec validate, node dist/cli/index.js setup --help, node
+          dist/cli/index.js doctor --json in temp repo, npm test. Claims verified: prior blocker
+          wording fix is present; doctor now scans supported skill locations; generic   cd
+          /home/chapel/Projects/kynetic-spec-dispatch && kspec setup guidance still remains on
+          warning/error paths and reproduces at runtime for agents-md missing. Categories searched:
+          correctness (1 blocker), edge cases (plugin-only skills, missing baseline), error
+          handling/actionability (1 blocker), test quality (coverage present, no source scanning in
+          changed tests), integration (runtime doctor output exercised)."
+        name: review-evidence
+        required: false
+        runner: codex-reviewer
+        created_at: 2026-04-16T06:34:35.870Z
+        completed_at: 2026-04-16T06:34:35.870Z
     events:
       - _ulid: 01KPAFBJG7A9DD5JR0M6JJ9PAB
         actor: Jacob Chapel
@@ -150580,6 +150600,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-16T06:34:34.011Z
+      - _ulid: 01KPAFZAZHFNA2BYQQHZ0PR1AH
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-04-16T06:34:36.913Z
     examined_commit: 6794e0ed53fa7832fed56de4b8bc31fcff73bd5e
     external_links: []
     lifecycle_state: open
@@ -150592,5 +150619,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-16T06:23:49.256Z
-    updated_at: 2026-04-16T06:34:33.024Z
+    updated_at: 2026-04-16T06:34:35.870Z
     notes: []
