@@ -303,6 +303,12 @@ function buildShadowSection(section: ShadowSection, status: ShadowStatus): void 
       });
 
       // AC: @artifacts-directory ac-doctor-checks
+      // AC: @doctor-reports-actionable-state ac-all-actionable —
+      //     name a specific setup subcommand/flag rather than generic
+      //     `kspec setup`. `--force` re-runs the full setup pipeline
+      //     including the artifacts-directory creation step, which is
+      //     what a user needs when the directory was removed after
+      //     initial setup completed.
       section.checks.push({
         name: "artifacts-dir",
         severity: status.artifactsDirExists ? "ok" : "warning",
@@ -311,7 +317,7 @@ function buildShadowSection(section: ShadowSection, status: ShadowStatus): void 
           : "Artifacts directory missing",
         guidance: status.artifactsDirExists
           ? undefined
-          : "Run `kspec setup` to create artifacts directory",
+          : "Run `kspec setup --force` to re-create .kspec/artifacts/ (or `mkdir -p .kspec/artifacts` to create it directly)",
       });
     }
   }
@@ -336,6 +342,9 @@ function buildSetupSection(
 
   // Agent type check
   // AC: @doctor-command ac-setup-agent-hooks
+  // AC: @doctor-reports-actionable-state ac-all-actionable —
+  //     name the specific `--agent` flag rather than generic setup, so
+  //     the user knows exactly how to resolve an undetectable agent.
   section.checks.push({
     name: "agent-type",
     severity: status.agent.detected !== "unknown" ? "ok" : "warning",
@@ -345,7 +354,7 @@ function buildSetupSection(
         : "Agent type: unknown",
     guidance:
       status.agent.detected === "unknown"
-        ? "Run `kspec setup` to configure agent integration"
+        ? "Run `kspec setup --agent <claude-code|cline|droid|cursor|windsurf>` to set the agent type explicitly"
         : undefined,
   });
 
@@ -358,6 +367,10 @@ function buildSetupSection(
     status.hooks.guardsPresent.length > 0;
   section.hooksInstalled = hooksInstalled;
 
+  // AC: @doctor-reports-actionable-state ac-all-actionable —
+  //     name the specific `--agent` flag so setup re-runs the hook
+  //     installation step for the detected agent, rather than leaving
+  //     the user to guess which setup invocation repairs hooks.
   const hooksCheck: {
     severity: Severity;
     message: string;
@@ -368,7 +381,9 @@ function buildSetupSection(
         message: hooksInstalled
           ? `Hooks installed (prompt-check: ${status.hooks.promptCheck}, stop: ${status.hooks.stop}, guards: ${status.hooks.guardsPresent.length})`
           : "No hooks installed",
-        guidance: hooksInstalled ? undefined : "Run `kspec setup` to install hooks",
+        guidance: hooksInstalled
+          ? undefined
+          : `Run \`kspec setup --agent ${status.agent.detected}\` to install hooks for ${status.agent.detected}`,
       }
     : {
         severity: "ok" as const,
@@ -456,9 +471,13 @@ function buildSetupSection(
       break;
     case "missing":
     default:
+      // AC: @doctor-reports-actionable-state ac-all-actionable —
+      //     name the specific `kspec agents generate` command, which
+      //     creates kspec-agents.md directly, instead of the broader
+      //     `kspec setup` pipeline.
       agentsMdSeverity = "error";
       agentsMdMessage = "kspec-agents.md does not exist";
-      agentsMdGuidance = "Run `kspec setup` to generate kspec-agents.md";
+      agentsMdGuidance = "Run `kspec agents generate` to create kspec-agents.md";
       break;
   }
 

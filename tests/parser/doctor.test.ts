@@ -162,7 +162,10 @@ describe("Doctor Command", () => {
       const artifactsCheck = report.shadow.checks.find((c) => c.name === "artifacts-dir");
       expect(artifactsCheck).toBeDefined();
       expect(artifactsCheck!.severity).toBe("warning");
-      expect(artifactsCheck!.guidance).toContain("kspec setup");
+      // AC: @doctor-reports-actionable-state ac-all-actionable —
+      //     guidance must name a specific setup flag, not generic `kspec setup`.
+      expect(artifactsCheck!.guidance).toContain("kspec setup --force");
+      expect(artifactsCheck!.guidance).not.toMatch(/\bkspec setup\b(?!\s+--)/);
     });
   });
 
@@ -180,6 +183,36 @@ describe("Doctor Command", () => {
       expect(agentCheck!.message).toContain("Agent type");
     });
 
+    // AC: @doctor-reports-actionable-state ac-all-actionable —
+    //     when agent type is unknown, guidance must name the specific
+    //     `--agent` flag, not generic `kspec setup`.
+    it("names the --agent flag when agent type is unknown", async () => {
+      initGitRepo(tempDir);
+      await initializeShadow(tempDir, { projectName: "test-project" });
+
+      // HOME points to tempDir which has no ~/.claude dir and no agent env
+      // vars — agent detection falls through to "unknown".
+      vi.stubEnv("HOME", tempDir);
+      vi.stubEnv("CLAUDECODE", "");
+      vi.stubEnv("CURSOR", "");
+      vi.stubEnv("WINDSURF", "");
+      vi.stubEnv("CLINE", "");
+      try {
+        const report = await getDoctorReport(tempDir);
+        const agentCheck = report.setup.checks.find((c) => c.name === "agent-type");
+        expect(agentCheck).toBeDefined();
+        if (agentCheck!.message === "Agent type: unknown") {
+          expect(agentCheck!.severity).toBe("warning");
+          expect(agentCheck!.guidance).toBeDefined();
+          expect(agentCheck!.guidance).toContain("kspec setup --agent");
+          // Guidance must not be the old generic `kspec setup` message.
+          expect(agentCheck!.guidance!).not.toMatch(/\bkspec setup\b(?!\s+--)/);
+        }
+      } finally {
+        vi.unstubAllEnvs();
+      }
+    });
+
     // AC: @doctor-command ac-setup-agent-hooks
     it("reports error when claude-code detected but no hooks configured", async () => {
       initGitRepo(tempDir);
@@ -194,7 +227,11 @@ describe("Doctor Command", () => {
         const hooksCheck = report.setup.checks.find((c) => c.name === "hooks");
         expect(hooksCheck).toBeDefined();
         expect(hooksCheck!.severity).toBe("error");
-        expect(hooksCheck!.guidance).toContain("kspec setup");
+        // AC: @doctor-reports-actionable-state ac-all-actionable —
+        //     guidance must name the specific `--agent` flag instead of
+        //     generic `kspec setup`.
+        expect(hooksCheck!.guidance).toContain("kspec setup --agent");
+        expect(hooksCheck!.guidance).toContain("claude-code");
       } finally {
         vi.unstubAllEnvs();
       }
@@ -299,6 +336,24 @@ describe("Doctor Command", () => {
       // agents.md doesn't exist in bare test
       expect(agentsMdCheck!.severity).toBe("error");
       expect(agentsMdCheck!.message).toContain("kspec-agents.md");
+    });
+
+    // AC: @doctor-reports-actionable-state ac-all-actionable —
+    //     when kspec-agents.md is missing, guidance must name the
+    //     specific `kspec agents generate` command, not generic
+    //     `kspec setup`.
+    it("names `kspec agents generate` when kspec-agents.md is missing", async () => {
+      initGitRepo(tempDir);
+      await initializeShadow(tempDir, { projectName: "test-project" });
+
+      const report = await getDoctorReport(tempDir);
+
+      const agentsMdCheck = report.setup.checks.find((c) => c.name === "agents-md");
+      expect(agentsMdCheck).toBeDefined();
+      expect(agentsMdCheck!.severity).toBe("error");
+      expect(agentsMdCheck!.guidance).toBeDefined();
+      expect(agentsMdCheck!.guidance!).toContain("kspec agents generate");
+      expect(agentsMdCheck!.guidance!).not.toMatch(/\bkspec setup\b(?!\s+--)/);
     });
   });
 
@@ -500,15 +555,40 @@ describe("Doctor Command", () => {
     });
 
     // AC: @doctor-command ac-partial-init
-    it("provides guidance to run kspec setup", async () => {
+    // AC: @doctor-reports-actionable-state ac-all-actionable —
+    //     every setup error must include a concrete, specific resolution
+    //     command (a specific setup subcommand/flag or a dedicated command
+    //     like `kspec agents generate`), not generic `kspec setup`.
+    it("provides specific, actionable guidance on every setup error", async () => {
       initGitRepo(tempDir);
       await initializeShadow(tempDir, { projectName: "test-project" });
 
       const report = await getDoctorReport(tempDir);
 
       const setupErrors = report.setup.checks.filter((c) => c.severity === "error");
-      const hasSetupGuidance = setupErrors.some((c) => c.guidance?.includes("kspec setup"));
-      expect(hasSetupGuidance).toBe(true);
+      expect(setupErrors.length).toBeGreaterThan(0);
+
+      // Every setup error must have a non-empty guidance string.
+      const withoutGuidance = setupErrors.filter(
+        (c) => !c.guidance || c.guidance.trim().length === 0,
+      );
+      expect(
+        withoutGuidance,
+        `Setup errors missing guidance: ${withoutGuidance.map((c) => c.name).join(", ")}`,
+      ).toHaveLength(0);
+
+      // Guidance must name a specific command: either a `kspec setup` flag
+      // (e.g. `--force`, `--agent`) or a dedicated non-setup command
+      // (e.g. `kspec agents generate`, `kspec skill render`).
+      const generic = setupErrors.filter(
+        (c) => c.guidance && /\bkspec setup\b(?!\s+--)/.test(c.guidance),
+      );
+      expect(
+        generic,
+        `Setup errors with generic \`kspec setup\` guidance: ${generic
+          .map((c) => `${c.name}: ${c.guidance}`)
+          .join("; ")}`,
+      ).toHaveLength(0);
     });
   });
 
@@ -997,6 +1077,73 @@ describe("Doctor Command", () => {
         unactionable,
         `Checks with no guidance: ${unactionable.map((c) => `${c.name} (${c.severity}): ${c.message}`).join("; ")}`,
       ).toHaveLength(0);
+    });
+
+    // AC: @doctor-reports-actionable-state ac-all-actionable —
+    //     messages that previously said "run setup" must now name the
+    //     specific subcommand or flag. Any guidance that says "kspec setup"
+    //     without a specific flag (e.g. --force, --agent) is disallowed
+    //     UNLESS the guidance also names a more specific primary command
+    //     (e.g. `kspec skill render`, `kspec agents generate`, `kspec upgrade`).
+    it("no warning or error guidance uses generic `kspec setup` as the only resolution", async () => {
+      initGitRepo(tempDir);
+      await initializeShadow(tempDir, { projectName: "test-project" });
+
+      // Simulate a maximally-degraded project so doctor surfaces every
+      // actionable check it can.
+      await fs.writeFile(
+        path.join(tempDir, ".kspec", ".setup-state.json"),
+        JSON.stringify({ lastKnownVersion: "0.0.0-old-test-fixture" }, null, 2) + "\n",
+        "utf-8",
+      );
+      await fs.rm(path.join(tempDir, ".kspec", "artifacts"), {
+        recursive: true,
+        force: true,
+      });
+
+      // Force claude-code detection so the hooks-missing error path fires.
+      vi.stubEnv("CLAUDECODE", "1");
+      vi.stubEnv("HOME", tempDir);
+      try {
+        const report = await getDoctorReport(tempDir);
+
+        const allChecks = [
+          ...report.shadow.checks,
+          ...report.setup.checks,
+          ...report.taskStorage.checks,
+          ...report.daemon.checks,
+        ];
+
+        const actionableSeverities: Array<"warning" | "error"> = ["warning", "error"];
+
+        // A guidance string is "specific enough" if, after we strip any
+        // `kspec setup` (no flag) substring, a specific resolution command
+        // remains — either `kspec setup` followed by a flag, or a non-setup
+        // kspec command.
+        const SPECIFIC_COMMANDS_RE =
+          /kspec setup\s+--|kspec (agents generate|skill render|upgrade|shadow repair|init|task migrate|serve (start|restart|status))/;
+        const GENERIC_SETUP_RE = /\bkspec setup\b(?!\s+--)/;
+
+        const offenders = allChecks.filter((c) => {
+          if (!actionableSeverities.includes(c.severity as "warning" | "error")) {
+            return false;
+          }
+          const guidance = c.guidance ?? "";
+          if (guidance.trim().length === 0) return false;
+          // Guidance is an offender only if it mentions generic `kspec setup`
+          // AND has no specific alternative command in the same string.
+          return GENERIC_SETUP_RE.test(guidance) && !SPECIFIC_COMMANDS_RE.test(guidance);
+        });
+
+        expect(
+          offenders,
+          `Checks with generic \`kspec setup\` guidance: ${offenders
+            .map((c) => `${c.name} (${c.severity}): ${c.guidance}`)
+            .join("; ")}`,
+        ).toHaveLength(0);
+      } finally {
+        vi.unstubAllEnvs();
+      }
     });
 
     // AC: @doctor-reports-actionable-state ac-all-actionable
