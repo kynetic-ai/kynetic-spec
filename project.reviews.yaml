@@ -150614,6 +150614,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPAFZCS67P3GYZ4QBKK1EHJB
         timestamp: 2026-04-16T06:34:39.752Z
+      - _ulid: 01KPAG08BQ49V8N45W3PH1GDHT
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPAG07D6YPP7NK53YP6XYVFS
+        timestamp: 2026-04-16T06:35:06.999Z
     examined_commit: 6794e0ed53fa7832fed56de4b8bc31fcff73bd5e
     external_links: []
     lifecycle_state: open
@@ -150645,7 +150652,28 @@ reviews:
               doctor output ambiguous in exactly the scenario this work was meant to fix."
             created_at: 2026-04-16T06:34:38.759Z
         kind: blocker
+      - _ulid: 01KPAG07D6YPP7NK53YP6XYVFS
+        anchor:
+          type: code
+          commit: 6794e0ed53fa7832fed56de4b8bc31fcff73bd5e
+          line_end: 461
+          line_start: 314
+          path: src/parser/doctor.ts
+          side: head
+        entries:
+          - _ulid: 01KPAG07D63EVVF0HXV54HF08X
+            author: Jacob Chapel
+            body: "The actionable-message audit is still incomplete. This file still emits generic `kspec setup`
+              guidance for multiple warning/error paths (`artifacts-dir`, `agent-type`, `hooks`, and
+              `agents-md` missing) instead of naming the exact setup action. I verified this is not
+              just dead code: running `node dist/cli/index.js doctor --json` in a fresh temp repo
+              produced the `agents-md` error with guidance `Run `kspec setup` to generate
+              kspec-agents.md`. Because the task explicitly called out replacing vague setup
+              guidance with specific commands/flags, these remaining branches still leave doctor
+              output ambiguous in exactly the scenario this work was meant to fix."
+            created_at: 2026-04-16T06:35:06.022Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-16T06:23:49.256Z
-    updated_at: 2026-04-16T06:34:38.759Z
+    updated_at: 2026-04-16T06:35:06.022Z
     notes: []
