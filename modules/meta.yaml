@@ -6779,7 +6779,7 @@ modules:
           to run when the project is already current.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
