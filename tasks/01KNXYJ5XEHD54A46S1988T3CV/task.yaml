@@ -78,8 +78,11 @@ description: |
 spec_ref: "@release-notes-accessible"
 plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Reviewed and approved. Merged dispatch/task/task-release-notes/01knxyj5 into
+  plan/plan-init-setup-and-upgrade-rough-edges/01knvahv at 142530452. Verified npm test passes;
+  base-branch kspec validate failure is pre-existing and unrelated to this task.
 depends_on:
   - "@task-upgrade-command"
 context: []
@@ -146,8 +149,24 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-16T05:00:05.740Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Reviewed and approved. Merged dispatch/task/task-release-notes/01knxyj5 into
+          plan/plan-init-setup-and-upgrade-rough-edges/01knvahv at 142530452. Verified npm test
+          passes; base-branch kspec validate failure is pre-existing and unrelated to this task.
+        previous: null
+      completed_at:
+        new: 2026-04-16T05:11:56.158Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-16T05:11:56.168Z
 created_at: 2026-04-11T09:39:26.766Z
 started_at: 2026-04-16T04:20:53.811Z
 submitted_at: 2026-04-16T04:57:27.461Z
+completed_at: 2026-04-16T05:11:56.158Z
 todos: []
 automation: eligible
