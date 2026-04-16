@@ -26270,7 +26270,7 @@
   type: task
   spec_ref: "@doctor-reports-actionable-state"
   plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-scaffold-project-config"
@@ -26284,7 +26284,7 @@
   todos_count: 0
   created_at: 2026-04-11T09:39:27.071Z
   started_at: 2026-04-16T06:58:10.352Z
-  submitted_at: 2026-04-16T06:19:37.254Z
+  submitted_at: 2026-04-16T06:58:13.851Z
   automation: eligible
 - _ulid: 01KNXYJ6GNEEFAAYRXSCPHVNSR
   slugs:
