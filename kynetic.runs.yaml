@@ -26852,9 +26852,22 @@ runs:
     completed_at: 2026-04-16T03:08:33.342Z
   - _ulid: 01KPA59806TN6VSG4HJGDDZFFP
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-16T03:27:47.206Z
+        completed_at: 2026-04-16T03:28:32.914Z
+        notes: Searched observations (13 existing, many covering this session's scope including @01KPA46T on
+          upgrade force-path brittleness, @01KPA3KE on /tmp/.kspec-sessions EACCES, @01KP9XR9 on
+          integration-base review methodology, @01KP9Z2V on installCoreSkillsForSetup, @01KPA0Q5 on
+          duplicate dispatch, @01KPA2K8 on commitIfShadow review heuristic). Searched inbox (11
+          items, @01KP8MAH already covers skill orphan cleanup dedup). Searched pending tasks (26).
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-16T03:28:32.914Z
+        completed_at: 2026-04-16T03:28:32.914Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-16T03:27:47.206Z
