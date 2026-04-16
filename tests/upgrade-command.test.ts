@@ -545,6 +545,53 @@ describe("kspec upgrade", () => {
       expect(migrationStep!.status).not.toBe("skipped");
     });
 
+    // AC: @single-command-version-upgrade ac-runs-task-storage-migration
+    // AC: @trait-dry-run ac-1
+    it("dry-run reports 'would update' for manifest, not 'updated'", async () => {
+      await initProject(tempDir);
+      await writeLastKnownVersion(tempDir, "0.8.0");
+
+      const specDir = path.join(tempDir, ".kspec");
+      const specFiles = await fs.readdir(specDir);
+      const manifestName = specFiles.find(
+        (f) => f.endsWith(".yaml") &&
+          !f.endsWith(".tasks.yaml") &&
+          !f.endsWith(".inbox.yaml") &&
+          !f.endsWith(".meta.yaml") &&
+          !f.startsWith("."),
+      );
+      expect(manifestName).toBeDefined();
+      const manifestPath = path.join(specDir, manifestName!);
+
+      // Downgrade manifest to old format (no split marker)
+      const yaml = await import("yaml");
+      const manifestRaw = await fs.readFile(manifestPath, "utf-8");
+      const manifest = yaml.parse(manifestRaw) as Record<string, unknown>;
+      delete manifest.task_storage;
+      manifest.kynetic = "1.0";
+      await fs.writeFile(manifestPath, yaml.stringify(manifest), "utf-8");
+
+      // No monolithic tasks, but manifest needs updating — dry-run should say "would update"
+      const result = kspecJson<{
+        steps: Array<{ name: string; status: string; message: string }>;
+      }>("upgrade --dry-run", tempDir);
+
+      const migrationStep = result.steps.find(
+        (s) => s.name === "Task storage migration",
+      );
+      expect(migrationStep).toBeDefined();
+      expect(migrationStep!.status).toBe("done");
+      // Must say "would update" in dry-run mode, not "updated"
+      expect(migrationStep!.message).toContain("would update");
+      expect(migrationStep!.message).not.toMatch(/(?<!\bwould )updated/);
+
+      // Verify manifest was NOT actually modified
+      const manifestAfter = await fs.readFile(manifestPath, "utf-8");
+      const manifestDataAfter = yaml.parse(manifestAfter) as Record<string, unknown>;
+      expect(manifestDataAfter.task_storage).toBeUndefined();
+      expect(manifestDataAfter.kynetic).toBe("1.0");
+    });
+
     // AC: @single-command-version-upgrade ac-rerenders-skills
     it("re-renders skills as part of upgrade", async () => {
       await initProject(tempDir);
@@ -597,6 +644,38 @@ describe("kspec upgrade", () => {
       );
       expect(agentsStep).toBeDefined();
       expect(["done", "skipped"]).toContain(agentsStep!.status);
+    });
+
+    // AC: @single-command-version-upgrade ac-regenerates-agents-file
+    it("recovers corrupted kspec-agents.md (regular file with wrong content) and regenerates", async () => {
+      await initProject(tempDir);
+
+      // Run upgrade once so the hash file is populated and kspec-agents.md exists
+      const firstRun = kspec("upgrade", tempDir);
+      expect(firstRun.exitCode).toBe(0);
+
+      // Overwrite kspec-agents.md with corrupted content (still a regular file)
+      const agentsFilePath = path.join(tempDir, "kspec-agents.md");
+      await fs.writeFile(agentsFilePath, "corrupted", "utf-8");
+
+      // Upgrade with --force should detect the content mismatch and regenerate,
+      // even though the meta hash file still matches the current meta inputs.
+      const result = kspecJson<{
+        success: boolean;
+        steps: Array<{ name: string; status: string; message?: string }>;
+      }>("upgrade --force", tempDir);
+
+      expect(result.success).toBe(true);
+      const agentsStep = result.steps.find(
+        (s) => s.name === "Regenerate agent instructions",
+      );
+      expect(agentsStep).toBeDefined();
+      expect(agentsStep!.status).toBe("done");
+
+      // Verify the file was regenerated with real content
+      const content = await fs.readFile(agentsFilePath, "utf-8");
+      expect(content).not.toBe("corrupted");
+      expect(content).toContain("kspec");
     });
 
     // AC: @single-command-version-upgrade ac-regenerates-agents-file

@@ -546,6 +546,30 @@ async function runTaskStorageMigrationStep(
 
   if (rawTaskCount === 0) {
     // Still upgrade the manifest to mark format as split
+    // Check whether the manifest already has the split format marker
+    let manifestAlreadySplit = false;
+    if (ctx.manifestPath) {
+      try {
+        const yaml = await import("yaml");
+        const raw = await fs.readFile(ctx.manifestPath, "utf-8");
+        const manifestData = yaml.parse(raw);
+        manifestAlreadySplit =
+          manifestData?.task_storage?.format === "split" &&
+          manifestData?.kynetic === "1.1";
+      } catch {
+        // Can't read — assume not split
+      }
+    }
+
+    if (manifestAlreadySplit) {
+      return {
+        name: "Task storage migration",
+        status: "done",
+        message: "no monolithic tasks to migrate; manifest already in split format",
+        details: { migrated: 0 },
+      };
+    }
+
     if (!dryRun) {
       const { writeYamlFilePreserveFormat } = await import("../../parser/yaml.js");
       if (ctx.manifestPath) {
@@ -565,7 +589,9 @@ async function runTaskStorageMigrationStep(
     return {
       name: "Task storage migration",
       status: "done",
-      message: "no monolithic tasks to migrate; manifest updated to split format",
+      message: dryRun
+        ? "no monolithic tasks to migrate; would update manifest to split format"
+        : "no monolithic tasks to migrate; manifest updated to split format",
       details: { migrated: 0 },
     };
   }
@@ -895,7 +921,24 @@ async function runRegenerateAgentsStep(
     // Missing
   }
 
+  // Even when the meta hash matches, verify the file content on disk actually
+  // matches what we would generate. A corrupted or manually overwritten file
+  // must be regenerated regardless of meta hash state.
+  // Compare content excluding the timestamp comment line (first line), which
+  // changes on every invocation and is not meaningful for staleness detection.
+  let contentMatchesGenerated = false;
   if (storedHash === metaHash && outputIsFile) {
+    try {
+      const existingContent = await fs.readFile(outputPath, "utf-8");
+      const stripTimestamp = (s: string) => s.replace(/^<!--[^\n]*-->\n/, "");
+      contentMatchesGenerated =
+        stripTimestamp(existingContent) === stripTimestamp(content);
+    } catch {
+      // Can't read — treat as not matching
+    }
+  }
+
+  if (storedHash === metaHash && outputIsFile && contentMatchesGenerated) {
     return {
       name: "Regenerate agent instructions",
       status: "skipped",
