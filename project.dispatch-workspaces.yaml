@@ -36512,11 +36512,11 @@ workspaces:
     canonical_branch: dispatch/task/task-monitoring-spec-active-session-acs/01knbk4t
     canonical_branch_head: 0d05e503f03020b11bd11616e265cc09f024f0d3
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-04-04T07:10:23.821Z
+      updated_at: 2026-04-16T17:03:34.691Z
     health:
       status: healthy
       issues: []
@@ -36529,17 +36529,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 0d05e503f03020b11bd11616e265cc09f024f0d3
-      updated_at: 2026-04-04T07:10:23.821Z
-    lifecycle_state: closing
+      updated_at: 2026-04-16T17:03:34.691Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KNBK4THQFPGXW7B226F7MPM0"
     task_slug: task-monitoring-spec-active-session-acs
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:03:34.691Z
       last_active_at: 2026-04-04T07:04:21.632Z
-      last_reconciled_at: 2026-04-04T07:12:07.460Z
+      last_reconciled_at: 2026-04-16T17:03:34.691Z
       created_at: 2026-04-04T06:45:26.292Z
-      updated_at: 2026-04-04T07:12:07.460Z
+      updated_at: 2026-04-16T17:03:34.691Z
     workspace_id: dispatch-workspace-01KNBK4THQFPGXW7B226F7MPM0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
