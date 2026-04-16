@@ -50,3 +50,47 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-16T04:28:23.775Z
+  - _ulid: 01KPAACV9AHPQAZKQQ2SBKRW2K
+    content: >-
+      Implementation complete. Summary:
+
+
+      - Added RELEASE_NOTES.md at repo root with entries for every released version (0.1.0 through
+      0.12.0) plus an Unreleased section for the current in-flight changes.
+
+      - Shipped RELEASE_NOTES.md in the published npm package (package.json files[]).
+
+      - New parser src/parser/release-notes.ts with loadReleaseNotes, getVersionNotes, getRangeNotes
+      (inclusive), getInterveningNotes (strictly after from). Heading-based markdown walker;
+      preserves authored content verbatim. Structured ReleaseNotesError with file_not_found,
+      version_not_found, invalid_range, parse_error codes and suggestions.
+
+      - New CLI command src/cli/commands/release-notes.ts wired through src/cli/commands/index.ts
+      and src/cli/index.ts. Default shows installed version; --from/--to show inclusive range in
+      chronological order. Resolves package root via module URL (works from any cwd). JSON mode
+      emits structured payload with markdown string.
+
+      - Upgrade command integration: collectReleaseNotesForUpgrade loads intervening entries
+      strictly after the detected source version up to the target version and prints them in both
+      human and JSON output. File-missing is swallowed so upgrade itself still succeeds.
+
+      - Updated release skill (.kspec/skills/release/SKILL.md) with a 'Maintaining release notes'
+      section covering file location, layout, required subsections (New or changed configuration,
+      Breaking changes), adding entries, promoting Unreleased at release time, and an awk-based
+      pre-release check.
+
+      - Tests: 24 parser unit tests covering parsing, lookup, ranges, rendering, and a
+      project-specific sanity check that every versioned entry has the required subsections + covers
+      every release since versioning began; 8 CLI E2E tests; 3 new upgrade integration tests for
+      release notes output; 1 test asserting the release skill contains the new section headings.
+
+      - Fixed CLI package-root resolution to use file URL path instead of require.resolve —
+      require.resolve's paths option does not accept relative module specifiers, which broke the
+      command from non-package cwds.
+
+
+      All 7992 tests pass. The initial EACCES failures on /tmp/.kspec-sessions were a pre-existing
+      environment issue (555 perms on the session cache dir) unrelated to this change.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-16T04:57:08.138Z
