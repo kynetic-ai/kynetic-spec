@@ -14801,6 +14801,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-16T03:29:09.122Z
+  - _ulid: 01KPA69NYWMA37STH7Y4TBAA9R
+    type: friction
+    content: Review-time kspec validate output is dominated by repo-wide pre-existing schema and AC
+      coverage debt, so a new invalid AC annotation in the upgrade test still required manual spec
+      lookup and targeted grep instead of a change-scoped validation signal.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-16T03:45:30.076Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
