@@ -120,11 +120,11 @@ workspaces:
     canonical_branch: dispatch/task/implement-droid-agent-detection/01kkjkm6
     canonical_branch_head: f64d3d8f722aebcf28b41a4a6299c94f31ddb2bb
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-29T03:51:02.017Z
+      updated_at: 2026-04-16T16:55:09.688Z
     health:
       status: stale
       issues:
@@ -142,17 +142,17 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: 38084e8cb463cf3128e69d2cac20fc6431452618
-      updated_at: 2026-03-29T03:51:02.017Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:55:09.688Z
+    lifecycle_state: closed
     resolved_base_branch: main
     task_ref: "@01KKJKM6NQ8M1W9MSAKGXDXW97"
     task_slug: implement-droid-agent-detection
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:55:09.688Z
       last_active_at: 2026-03-13T08:04:18.340Z
-      last_reconciled_at: 2026-03-29T03:51:02.017Z
+      last_reconciled_at: 2026-04-16T16:55:09.688Z
       created_at: 2026-03-13T04:01:50.333Z
-      updated_at: 2026-03-29T03:51:02.017Z
+      updated_at: 2026-04-16T16:55:09.688Z
     workspace_id: dispatch-workspace-01KKJKM6NQ8M1W9MSAKGXDXW97
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
