@@ -626,11 +626,11 @@ workspaces:
     canonical_branch: dispatch/task/durably-shadow-commit-dispatch-workspace-registry-writes/01kkjt2v
     canonical_branch_head: 975dede747a081507985a92d3164e0425718e275
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-29T00:10:47.851Z
+      updated_at: 2026-04-16T16:55:17.277Z
     health:
       status: stale
       issues:
@@ -648,17 +648,17 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: e728c62710bbc6fe43d7bd1dfd135c092ef732f2
-      updated_at: 2026-03-29T00:10:47.851Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:55:17.277Z
+    lifecycle_state: closed
     resolved_base_branch: main
     task_ref: "@01KKJT2VJPSPQRCVDW5NZ9G6TJ"
     task_slug: durably-shadow-commit-dispatch-workspace-registry-writes
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:55:17.277Z
       last_active_at: 2026-03-13T15:50:29.262Z
-      last_reconciled_at: 2026-03-29T00:10:47.851Z
+      last_reconciled_at: 2026-04-16T16:55:17.277Z
       created_at: 2026-03-13T05:30:39.118Z
-      updated_at: 2026-03-29T00:10:47.851Z
+      updated_at: 2026-04-16T16:55:17.277Z
     workspace_id: dispatch-workspace-01KKJT2VJPSPQRCVDW5NZ9G6TJ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
