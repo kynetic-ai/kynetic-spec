@@ -1591,6 +1591,30 @@ describe("kspec upgrade", () => {
       const moduleFilePath = path.join(modulesDir, "main.yaml");
       expect(existsSync(moduleFilePath)).toBe(false);
     });
+
+    it("does not recreate user-removed reflection hook even with --force", async () => {
+      await initProject(tempDir);
+      await writeLastKnownVersion(tempDir, "0.8.0");
+
+      // Remove the default reflection hook (simulates user intentionally removing it)
+      kspec("hook remove default-session-reflect --confirm", tempDir);
+
+      // Verify hook is gone
+      const hookCheck = kspec("hook list --json", tempDir);
+      expect(hookCheck.stdout).not.toContain("default-session-reflect");
+
+      // Run upgrade --force — should NOT recreate the hook
+      const result = kspecJson<{
+        steps: Array<{ name: string; status: string; message: string }>;
+      }>("upgrade --force", tempDir);
+
+      const hookStep = result.steps.find(
+        (s) => s.name === "Scaffold reflection hook",
+      );
+      expect(hookStep).toBeDefined();
+      expect(hookStep!.status).toBe("skipped");
+      expect(hookStep!.message).toContain("previously removed by user");
+    });
   });
 
   // ─── Trait: @trait-error-guidance ──────────────────────────────────

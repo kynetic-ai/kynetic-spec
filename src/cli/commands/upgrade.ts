@@ -1255,7 +1255,7 @@ dispatch:
           // No state file
         }
 
-        if (previouslyScaffolded && !force) {
+        if (previouslyScaffolded) {
           results.push({
             name: "Scaffold reflection hook",
             status: "skipped",
