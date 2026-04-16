@@ -8491,11 +8491,11 @@ workspaces:
     canonical_branch: dispatch/task/replace-hardcoded-branch-names-in-merge-skill-template-with-dynamic-references/01kkxemg
     canonical_branch_head: c7f0fed80c4192706ed6dc4c428abbfdb4f9fe88
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-18T01:38:43.851Z
+      updated_at: 2026-04-16T16:57:40.820Z
     health:
       status: invalid
       issues:
@@ -8518,17 +8518,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 8e8a1a565e469d277f1a05f0b69359cdd6c26c5d
-      updated_at: 2026-03-18T01:38:43.851Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:57:40.820Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KKXEMGJ20X5RB4GMFYGSQH6Y"
     task_slug: replace-hardcoded-branch-names-in-merge-skill-template-with-dynamic-references
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:57:40.820Z
       last_active_at: 2026-03-18T01:28:44.807Z
-      last_reconciled_at: 2026-03-18T01:38:43.851Z
+      last_reconciled_at: 2026-04-16T16:57:40.820Z
       created_at: 2026-03-18T01:18:51.822Z
-      updated_at: 2026-03-18T01:38:43.851Z
+      updated_at: 2026-04-16T16:57:40.820Z
     workspace_id: dispatch-workspace-01KKXEMGJ20X5RB4GMFYGSQH6Y
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
