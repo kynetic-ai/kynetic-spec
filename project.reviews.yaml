@@ -149641,6 +149641,13 @@ reviews:
           status: pass
           name: upgrade-command tests
         timestamp: 2026-04-16T03:43:25.564Z
+      - _ulid: 01KPA65Z21V4P70SGPNR4Z70T7
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPA65Y4Z5M3V74BY3WV7Y412
+        timestamp: 2026-04-16T03:43:28.322Z
     examined_commit: 7315532b204c2a0be9b92296267e9955de501ded
     external_links: []
     lifecycle_state: open
@@ -149650,8 +149657,295 @@ reviews:
       content_hash: ""
       ref: "@01KNXYJ5JCR99F76N8N7265E0B"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KPA65Y4Z5M3V74BY3WV7Y412
+        anchor:
+          type: code
+          commit: 7315532b204c2a0be9b92296267e9955de501ded
+          line_end: 1204
+          line_start: 1204
+          path: tests/upgrade-command.test.ts
+          side: head
+        entries:
+          - _ulid: 01KPA65Y4Z7YEP0S2ETPGQHTFZ
+            author: Jacob Chapel
+            body: >-
+              This test is annotated as , but Single-Command Version Upgrade
+
+              ────────────────────────────────────────
+
+              ULID:      01KNXYJ3EVJKEJDNRDZ55WM0KF
+
+              Slugs:     single-command-version-upgrade
+
+              Type:      requirement
+
+              Maturity:  draft
+
+              Implementation: in_progress
+
+
+              ─── Description ───
+
+              A dedicated upgrade command brings a project from any
+
+              previously-supported kspec version to the currently
+
+              installed version in a single invocation. The command
+
+              detects version skew, runs all required migrations,
+
+              re-renders skills, regenerates agent instructions, and
+
+              reports the net result. The upgrade is idempotent and safe
+
+              to run when the project is already current.
+
+
+
+              ─── Acceptance Criteria ───
+                [ac-detects-skew]
+                  Given: A project was initialized with an older kspec version
+              and its last-known version is recorded in project state
+
+                  When: The upgrade command runs
+
+                  Then: The command reads the recorded last-known version and
+              identifies it as the source version for the upgrade
+
+                [ac-source-version-fallback]
+                  Given: A project has no recorded last-known version
+
+                  When: The upgrade command runs
+
+                  Then: The command infers a source version from the shape of
+              project state and records it with approximate confidence
+
+                [ac-source-version-unknown]
+                  Given: A project's source version cannot be identified or
+              inferred
+
+                  When: The upgrade command runs
+
+                  Then: The command reports the source version as unknown,
+              names the target version, and proceeds with the full
+
+              upgrade pipeline as if the project were on the oldest
+
+              supported version
+
+                [ac-reports-skew]
+                  Given: The upgrade command has determined source and target
+              versions
+
+                  When: The command begins its upgrade pipeline
+
+                  Then: The command reports the source version and the target
+              version before any changes are applied, and marks the
+
+              source as approximate or unknown when it was inferred
+
+              rather than read directly
+
+                [ac-runs-task-storage-migration]
+                  Given: A project uses a task storage format that is no longer
+              current
+
+                  When: The upgrade command runs
+
+                  Then: The task storage migration is run as part of the upgrade
+              and reports whether any tasks were migrated
+
+                [ac-rerenders-skills]
+                  Given: A project has skill files rendered from a previous
+              version of the skill templates
+
+                  When: The upgrade command runs
+
+                  Then: Core skills are re-rendered so the rendered files match
+              the currently installed version and obsolete rendered
+
+              skills that no longer exist in the current version are
+
+              removed
+
+                [ac-regenerates-agents-file]
+                  Given: A project has an auto-generated agent instructions file
+              from a previous version
+
+                  When: The upgrade command runs
+
+                  Then: The auto-generated agent instructions file is
+              regenerated against the current templates
+
+                [ac-restores-gitignore-entries]
+                  Given: A project is missing one or more kspec gitignore entries
+              that are now required
+
+                  When: The upgrade command runs
+
+                  Then: Missing entries are appended to the gitignore and the
+              change is reported
+
+                [ac-idempotent-when-current]
+                  Given: A project is already at the current version with no
+              drift
+
+                  When: The upgrade command runs
+
+                  Then: The command completes successfully, reports that no
+              changes were necessary, and makes no modifications to
+
+              the project
+
+                [ac-reports-manual-follow-ups]
+                  Given: The upgrade applies changes that a user should review
+              (such as a scaffolded or updated config file, new
+
+              default agents, or new gitignore entries)
+
+                  When: The upgrade completes
+
+                  Then: The command reports each applied change with enough
+              context for the user to decide whether additional
+
+              manual follow-up is needed
+
+                [ac-dry-run-reports]
+                  Given: A user wants to preview an upgrade without making
+              changes
+
+                  When: The upgrade command runs with the dry-run flag
+
+                  Then: Every change the pipeline would apply is reported in
+              the same format as a real upgrade run
+
+                [ac-dry-run-no-writes]
+                  Given: The upgrade command is running with the dry-run flag
+
+                  When: The command completes
+
+                  Then: No filesystem modifications have been made at the
+              project root and no shadow branch commits have been
+
+              created
+
+
+
+              ─── Inherited from @trait-error-guidance ───
+                [ac-1] (from @trait-error-guidance)
+                  Given: command encounters error
+                  When: error message is shown
+                  Then: includes description of what went wrong
+                [ac-2] (from @trait-error-guidance)
+                  Given: command encounters error
+                  When: error message is shown
+                  Then: includes suggested action to resolve
+                [ac-3] (from @trait-error-guidance)
+                  Given: reference not found
+                  When: error is shown
+                  Then: suggests checking ref with kspec search or kspec <type> list
+                [ac-4] (from @trait-error-guidance)
+                  Given: invalid state transition
+                  When: error is shown
+                  Then: indicates current state and valid next states
+                [ac-5] (from @trait-error-guidance)
+                  Given: validation error
+                  When: error is shown
+                  Then: indicates which field/value failed validation
+                [ac-6] (from @trait-error-guidance)
+                  Given: error in JSON mode
+                  When: --json is active
+                  Then: guidance included in structured error object
+
+              ─── Inherited from @trait-semantic-exit-codes ───
+                [ac-1] (from @trait-semantic-exit-codes)
+                  Given: command completes successfully
+                  When: operation succeeds
+                  Then: exit code 0
+                [ac-2] (from @trait-semantic-exit-codes)
+                  Given: command encounters validation error
+                  When: user input is invalid
+                  Then: exit code 1
+                [ac-3] (from @trait-semantic-exit-codes)
+                  Given: command is cancelled by user
+                  When: confirmation prompt declined
+                  Then: exit code 2
+                [ac-4] (from @trait-semantic-exit-codes)
+                  Given: command encounters runtime error
+                  When: operation fails during execution
+                  Then: exit code 3
+                [ac-5] (from @trait-semantic-exit-codes)
+                  Given: command finds nothing
+                  When: query returns no results
+                  Then: exit code 0 with empty result set
+                [ac-6] (from @trait-semantic-exit-codes)
+                  Given: command used incorrectly
+                  When: invalid flags or arguments provided
+                  Then: exit code 1 with usage information
+                [ac-7] (from @trait-semantic-exit-codes)
+                  Given: batch operation completes
+                  When: partial failures occur
+                  Then: exit code 1
+                [ac-8] (from @trait-semantic-exit-codes)
+                  Given: command documentation
+                  When: developers implement commands
+                  Then: exit code meanings documented in code
+
+              ─── Inherited from @trait-dry-run ───
+                [ac-1] (from @trait-dry-run)
+                  Given: command supports dry run
+                  When: --dry-run flag is provided
+                  Then: show what would be changed without applying
+                [ac-2] (from @trait-dry-run)
+                  Given: dry run mode is active
+                  When: command completes
+                  Then: no files are modified
+                [ac-3] (from @trait-dry-run)
+                  Given: dry run mode is active
+                  When: output is shown
+                  Then: clear indication that this is a preview
+                [ac-4] (from @trait-dry-run)
+                  Given: dry run mode is active
+                  When: command would error
+                  Then: error shown but no state changed
+                [ac-5] (from @trait-dry-run)
+                  Given: --dry-run and --force both provided
+                  When: command executes
+                  Then: dry run takes precedence (no changes made)
+                [ac-6] (from @trait-dry-run)
+                  Given: dry run in JSON mode
+                  When: --dry-run --json provided
+                  Then: JSON output includes dry_run boolean field
+
+              ─── Inherited from @trait-json-output ───
+                [ac-1] (from @trait-json-output)
+                  Given: command supports JSON mode
+                  When: --json flag is provided
+                  Then: output is valid JSON with no ANSI color codes
+                [ac-2] (from @trait-json-output)
+                  Given: JSON mode is active
+                  When: command completes successfully
+                  Then: output includes all data available in human-readable mode
+                [ac-3] (from @trait-json-output)
+                  Given: JSON mode is active
+                  When: command encounters an error
+                  Then: error is returned as JSON object with error field
+                [ac-4] (from @trait-json-output)
+                  Given: JSON output contains references
+                  When: output is generated
+                  Then: references use @ prefix consistently
+                [ac-5] (from @trait-json-output)
+                  Given: JSON output contains timestamps
+                  When: output is generated
+                  Then: timestamps use ISO 8601 format
+                [ac-6] (from @trait-json-output)
+                  Given: command supports --json
+                  When: used with other formatting flags
+                  Then: --json takes precedence over other format options shows no acceptance criterion with that id. Because the annotation points to a nonexistent AC, completeness/coverage tooling cannot credit the test and this snapshot introduces invalid AC coverage metadata. Re-anchor the test to an existing AC or update the spec first.
+            created_at: 2026-04-16T03:43:27.391Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-16T03:30:45.903Z
-    updated_at: 2026-04-16T03:43:24.592Z
+    updated_at: 2026-04-16T03:43:27.391Z
     notes: []
