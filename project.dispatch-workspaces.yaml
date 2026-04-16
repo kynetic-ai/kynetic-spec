@@ -293,11 +293,11 @@ workspaces:
     canonical_branch: dispatch/task/implement-droid-acp-adapter/01kkjkm7
     canonical_branch_head: e8e48cd0d4c2abffea7647eb7c4111f1ea1038e5
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-28T21:54:47.081Z
+      updated_at: 2026-04-16T16:55:11.300Z
     health:
       status: stale
       issues:
@@ -315,17 +315,17 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: e728c62710bbc6fe43d7bd1dfd135c092ef732f2
-      updated_at: 2026-03-28T21:54:47.081Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:55:11.300Z
+    lifecycle_state: closed
     resolved_base_branch: main
     task_ref: "@01KKJKM79JZR25WY03DTZETJN7"
     task_slug: implement-droid-acp-adapter
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:55:11.300Z
       last_active_at: 2026-03-13T04:44:46.937Z
-      last_reconciled_at: 2026-03-28T21:54:47.081Z
+      last_reconciled_at: 2026-04-16T16:55:11.300Z
       created_at: 2026-03-13T04:33:22.590Z
-      updated_at: 2026-03-28T21:54:47.081Z
+      updated_at: 2026-04-16T16:55:11.300Z
     workspace_id: dispatch-workspace-01KKJKM79JZR25WY03DTZETJN7
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
