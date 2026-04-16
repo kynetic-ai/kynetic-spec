@@ -27435,7 +27435,7 @@ runs:
     completed_at: 2026-04-16T07:01:00.222Z
   - _ulid: 01KPAJ8ENFPCQGXZD62YH7APB3
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -27449,7 +27449,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-16T07:16:00.032Z
-        completed_at: 2026-04-16T07:16:00.032Z
+        completed_at: 2026-04-16T07:16:00.909Z
+        notes: "Friction points: repo-level kspec validate output remains extremely noisy during review
+          because unrelated schema/alignment/coverage issues swamp the task-local signal.
+          Prompt-too-long/context-overflow failures were also present in task history, but existing
+          observations already cover that class so it does not need a new capture."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-16T07:16:00.909Z
+        completed_at: 2026-04-16T07:16:00.909Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-16T07:14:32.751Z
