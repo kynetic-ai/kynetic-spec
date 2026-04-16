@@ -2622,3 +2622,12 @@ inbox:
       - sessions
     added_by: "@claude"
     created_at: 2026-04-16T02:58:24.353Z
+  - _ulid: 01KPA69P852SVDMGXP3NS8F8KD
+    text: Add task- or ref-scoped AC coverage validation for review workflows so reviewers can surface
+      invalid annotations in touched files without wading through repo-wide kspec validate debt.
+    tags:
+      - reflection
+      - review
+      - coverage
+    added_by: Jacob Chapel
+    created_at: 2026-04-16T03:45:30.373Z
