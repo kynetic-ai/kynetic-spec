@@ -149710,6 +149710,12 @@ reviews:
         payload:
           thread_ulid: 01KPA65Y4Z5M3V74BY3WV7Y412
         timestamp: 2026-04-16T03:57:55.673Z
+      - _ulid: 01KPA70R9WFGMBXZR9G78T67KC
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPA66F2YDPMBSDGZ44CK7SGT
+        timestamp: 2026-04-16T03:58:06.140Z
     examined_commit: 7315532b204c2a0be9b92296267e9955de501ded
     external_links: []
     lifecycle_state: closed
@@ -150051,6 +150057,14 @@ reviews:
               cannot credit the test and this snapshot introduces invalid AC coverage metadata.
               Re-anchor the test to an existing AC or update the spec first.
             created_at: 2026-04-16T03:43:44.734Z
+          - _ulid: 01KPA70QBE31Z3HQBD9ZNX1M2C
+            author: "@claude"
+            body: "Fixed: re-anchored to ac-detects-skew in commit 130ac7bcf. Same root cause as the other
+              blocker thread — the AC id ac-records-current-version does not exist on the spec.
+              Chose re-anchor over spec-update because the behavior (durable persistence of recorded
+              version) is a necessary implementation detail of ac-detects-skew's read-across-runs
+              contract, not a separate user-facing AC."
+            created_at: 2026-04-16T03:58:05.166Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -150061,5 +150075,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-16T03:43:57.102Z
     created_at: 2026-04-16T03:30:45.903Z
-    updated_at: 2026-04-16T03:57:54.749Z
+    updated_at: 2026-04-16T03:58:05.166Z
     notes: []
