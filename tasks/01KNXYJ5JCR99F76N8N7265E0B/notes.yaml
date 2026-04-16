@@ -478,3 +478,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-16T03:43:59.067Z
+  - _ulid: 01KPA71RGFG8QMXXKMGXR9X4G3
+    content: "Fix cycle 18: addressed both blocker threads on review 01KPA5EP. The regression test added
+      in cycle 17 used a non-existent AC id (ac-records-current-version). Re-anchored to
+      ac-detects-skew — the durable-persistence property is the mechanism that makes that AC work
+      across runs. Updated the test comment to explain the linkage. tests/upgrade-command.test.ts:
+      58/58 pass. Full suite remains: 5 pre-existing /tmp/.kspec-sessions EACCES failures in
+      cli-agent-commands.test.ts (inbox @01KPA3KE), unchanged. Commit: 130ac7bcf."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-16T03:58:39.119Z
