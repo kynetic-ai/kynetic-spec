@@ -151057,6 +151057,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-16T08:49:50.880Z
+      - _ulid: 01KPAR8CJXPXVG6681DZV0QSFS
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KPAR8BKXZ9NPGNFN4ZW3EY0P
+        timestamp: 2026-04-16T08:59:22.077Z
     examined_commit: 4b0f5e254904f941870b59b0157a5fb9cd634308
     external_links: []
     lifecycle_state: open
@@ -151066,8 +151073,26 @@ reviews:
       content_hash: ""
       ref: "@01KPANM6STGNV5QMZFMC4AC8BM"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KPAR8BKXZ9NPGNFN4ZW3EY0P
+        entries:
+          - _ulid: 01KPAR8BKX4952X4VQMEH3FTSQ
+            author: Jacob Chapel
+            body: "Review evidence log: Files read: src/agent-runtime/workspace.ts,
+              tests/dispatch-workspace-cleanup-completion.test.ts,
+              tests/dispatch-workspace-terminal-reconciliation.test.ts,
+              tests/dispatch-workspace-registry.test.ts,
+              tests/dispatch-workspace-unrecoverable-purge.test.ts. Commands run: git
+              diff/stat/show, kspec task get, kspec item get, kspec review for-task, kspec validate,
+              grep AC annotations, npm test. Claims verified: reap now persists completion through
+              persistWorkspaceRecord after physical removal; blocked cleanup transitions also use
+              the shadow-mutation path; reconciliation self-heals scheduled cleanup to completed
+              when tracked artifacts are absent; full suite passes on this snapshot. Categories
+              searched: correctness, edge cases, error handling, test quality, integration; no
+              task-introduced defects found."
+            created_at: 2026-04-16T08:59:21.085Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-16T08:49:26.402Z
-    updated_at: 2026-04-16T08:49:49.852Z
+    updated_at: 2026-04-16T08:59:21.085Z
     notes: []
