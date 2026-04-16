@@ -1201,12 +1201,14 @@ describe("kspec upgrade", () => {
       expect(recordedVersion).toBe("0.8.0");
     });
 
-    // AC: @single-command-version-upgrade ac-records-current-version
+    // AC: @single-command-version-upgrade ac-detects-skew
     // Regression: a successful upgrade must durably persist the recorded
     // version by auto-committing to the shadow branch. Without the commit,
     // the .setup-state.json change is left uncommitted in the shadow
-    // worktree and can be lost on the next clean checkout, causing
-    // subsequent upgrades to re-run the full pipeline.
+    // worktree and can be lost on the next clean checkout, causing the
+    // next invocation to be unable to read the last-known version —
+    // breaking the "reads the recorded last-known version" contract of
+    // ac-detects-skew across runs.
     it("commits the recorded version to the shadow branch", async () => {
       await initProject(tempDir);
       await writeLastKnownVersion(tempDir, "0.9.0");
