@@ -27493,7 +27493,7 @@ runs:
     completed_at: 2026-04-16T07:16:33.011Z
   - _ulid: 01KPANTXAH9Q9XPD1SSWWX04MV
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -27519,7 +27519,16 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-04-16T08:17:53.517Z
-        completed_at: 2026-04-16T08:17:53.517Z
+        completed_at: 2026-04-16T08:19:29.490Z
+        notes: "Coverage: (1) main/dispatch ref drift — NOT tracked; (2) workspace registry CLI — ALREADY
+          TRACKED twice (@01KKMJYM4 UI+CLI scope, @01KMVSNV2 purge scope) — created DUPLICATE
+          earlier this session; (3) compound condition convention ambiguity — NOT tracked; (4) git
+          cherry fragility — skip, low value. Search discipline failure: missed existing items
+          during earlier triage by using different keywords than the inbox items used."
+      - status: completed
+        step_index: 3
+        started_at: 2026-04-16T08:19:29.490Z
+        completed_at: 2026-04-16T08:19:29.490Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-16T08:17:03.313Z
