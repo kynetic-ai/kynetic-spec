@@ -150914,7 +150914,17 @@ reviews:
     slugs: []
     title: Review task-default-reflection-hook-turn-filter
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Cached full-suite rerun passed: 2187/2187 suites, 8010/8015 tests, 5 skipped."
+        name: npm test
+        required: true
+        runner: test-runner
+        created_at: 2026-04-16T08:06:15.054Z
+        completed_at: 2026-04-16T08:06:15.054Z
     events:
       - _ulid: 01KPAM8CPN0TC9JVA3R4P85KXJ
         actor: Jacob Chapel
@@ -150929,6 +150939,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-16T07:49:45.594Z
+      - _ulid: 01KPAN755YMDQGRBG3RE6VDMSB
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-16T08:06:15.998Z
     examined_commit: a22365e8d21c2b7cd78f62bc226a6bcaf5e5263e
     external_links: []
     lifecycle_state: open
@@ -150941,5 +150958,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-16T07:49:27.893Z
-    updated_at: 2026-04-16T07:49:44.379Z
+    updated_at: 2026-04-16T08:06:15.054Z
     notes: []
