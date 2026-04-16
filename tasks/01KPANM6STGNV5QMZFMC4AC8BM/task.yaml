@@ -1,0 +1,178 @@
+_ulid: 01KPANM6STGNV5QMZFMC4AC8BM
+slugs:
+  - task-persist-cleanup-completion-status
+title: Persist cleanup completion status on successful workspace reap
+type: bug
+description: >
+  What:
+
+
+  The dispatch workspace registry persists a cleanup.status field per workspace record with allowed
+  values not_scheduled, scheduled, blocked, completed. Each record also has closed_at and updated_at
+  timestamp fields already defined on the schema — this task populates them on successful cleanup
+  rather than adding new fields.
+
+
+  When a workspace's physical cleanup (worktree removal + dispatch branch deletion, performed by the
+  reap code path in src/agent-runtime/workspace.ts reapDispatchWorkspace) completes successfully,
+  the registry record must have cleanup.status transitioned to completed and closed_at populated.
+  Today, the reap path does not write this transition back to the registry: it removes physical
+  artifacts and returns action=reaped while leaving cleanup.status=scheduled. Because the
+  lifecycle-state resolver requires cleanup.status===completed to produce lifecycle_state=closed, no
+  record ever reaches closed, and the retention-purge path (closed records older than the retention
+  threshold, currently 7 days) never fires.
+
+
+  Why:
+
+
+  Because records never reach closed, several invariants break:
+
+
+  1. The workspace registry file grows unbounded — every provisioned workspace accumulates a record
+  instead of being retention-purged.
+
+
+  2. The dispatch engine's active target set (per @dispatch-remote-branch-sync
+  ac-active-target-rebuilt-on-start: every non-closed record's target branch contributes to the set)
+  continues to include target branches of workspaces whose work is long since merged. When operators
+  clean up deleted integration branches out-of-band, the periodic target-sync (60s interval) fetches
+  those deleted branches and produces warning log spam every cycle, indefinitely.
+
+
+  3. Because the lifecycle-state resolver checks health.status!==healthy BEFORE the
+  merge/cleanup-eligibility transitions, records whose worktrees have been physically removed (by
+  reap itself) get flipped to lifecycle_state=stale on the next reconciliation and remain stuck
+  there. The reap-success path actively creates stale records.
+
+
+  4. Operators cannot trust registry record counts as a signal of active workspaces — the count
+  monotonically grows.
+
+
+  Observed in the current deployment snapshot: 138 records stuck in closing, 252 records stuck in
+  stale, 0 records in closed.
+
+
+  How:
+
+
+  1. Ordering decision (important): Write the registry transition AFTER successful physical removal,
+  not before. Rationale: a pre-removal write would briefly advertise a record as closed while its
+  worktree still exists, and cleanup.status=completed takes resolver precedence over every other
+  state. A post-removal write window leaves a brief scheduled+missing-artifacts state which is safe
+  (resolver treats the record as stale until healed by reconciliation — see step 3 below).
+
+
+  2. On the success branch of reapDispatchWorkspace in src/agent-runtime/workspace.ts (after
+  worktree removal and branch deletion return without error), write a registry update that sets:
+     - cleanup.status = completed
+     - closed_at = <current ISO-8601 timestamp> (if not already set)
+     - updated_at = <current ISO-8601 timestamp>
+
+     Persist via the protected shadow-mutation write path matching @dispatch-workspace-registry ac-8 (commitWorkspaceRegistryToShadow or the equivalent guarded path). One shadow-branch commit per cleanup invocation.
+
+  3. Self-heal for lost writes: If the process crashes between physical removal and the shadow
+  commit, the record is left with cleanup.status=scheduled and no physical artifacts. Reconciliation
+  must detect this state and heal it forward: when reconciliation observes cleanup.eligible=true AND
+  no tracked physical artifacts remain AND cleanup.status!==completed, transition cleanup.status to
+  completed. This makes the invariant in @dispatch-workspace-registry
+  ac-successful-cleanup-persists-completion durable across interruptions.
+
+
+  4. Idempotency: If cleanup.status is already completed at entry to the reap path, do not re-write
+  the record and do not produce a new shadow commit. Per @dispatch-workspace-registry ac-10, no-op
+  reconciliation must not mutate updated_at.
+
+
+  5. Investigate blocked-path shadow persistence and capture findings as a task note: The two
+  existing blocked branches in reap call writeWorkspaceMetadata(existing.workerWorktreeDir, ...)
+  which writes to the worker worktree's on-disk metadata rather than the shadow registry.
+  Investigate whether this path satisfies @dispatch-workspace-registry ac-8 (protected
+  shadow-mutation path). Document findings as a task note immediately after investigation,
+  including: (a) whether the current path produces a shadow commit, (b) whether losing the worker
+  worktree would lose the blocked-status write, (c) the operational plan if a gap exists — either
+  migrate the write to the shadow path within this task, or record the decision to capture as a
+  follow-up task with rationale. Do not proceed with production changes to the blocked path without
+  recording that decision in a task note first.
+
+
+  6. Partial failure handling: Reap removes the reviewer worktree before the worker worktree. If
+  reviewer removal succeeds and worker removal fails, reap currently throws and never writes
+  completion. The record should remain cleanup.status=scheduled (consistent with partial physical
+  removal) and the caller should see the error. Do not attempt to write completed on partial
+  success.
+
+
+  Testing:
+
+
+  - Success path: A workspace record in closing lifecycle with cleanup.status=scheduled, when reap
+  runs to success, the record has cleanup.status=completed and closed_at populated on return.
+
+  - Lifecycle resolver: Given a record with cleanup.status===completed, the resolver returns closed.
+
+  - Shadow persistence (ac-8): The completion transition appears in a shadow-branch commit, not only
+  in working-tree state.
+
+  - Idempotent re-entry (ac-10): Calling reap a second time on an already-completed record does not
+  produce a new shadow commit and does not change updated_at.
+
+  - Lost-write self-heal: A record with cleanup.status=scheduled and no physical artifacts, when
+  reconciliation runs, transitions to cleanup.status=completed without requiring a second reap call.
+
+  - Blocked paths unchanged: A reap attempt blocked by active-invocation or unresolved-integration
+  checks still produces cleanup.status=blocked with cleanupBlockedReason preserved, not completed.
+
+  - Partial physical removal: If reviewer worktree removal succeeds but worker worktree removal
+  throws, the record remains cleanup.status=scheduled and the error propagates.
+
+  - Cross-feature regression: After a successful reap, the dispatch engine's active target set (via
+  /api/agents/dispatch/status) does not include the cleaned-up branch. Follows naturally from
+  @dispatch-remote-branch-sync ac-active-target-removed-on-cleanup once the transition lands.
+
+  - Existing reap-path tests continue to pass.
+
+
+  Rollout note:
+
+
+  First post-fix reconciliation may cascade roughly 138 closing records and 252 stale records
+  through closed in quick succession, with those older than the retention threshold being purged in
+  the same write. This could produce a large shadow commit. Observe the first-run size empirically;
+  if batching is needed, add it then. Do not pre-emptively add batching in this task — defer until
+  empirical need is confirmed.
+
+
+  Out of scope:
+
+
+  - Backfill or migration of the pre-fix stuck records. Tracked separately via an inbox item that
+  decides the backfill approach.
+
+  - Narrowing the dispatch target-sync filter to exclude stale/closing/cleanup_blocked lifecycle
+  states. Tracked separately via an inbox item about defense-in-depth filter narrowing.
+
+  - Migrating the blocked-path writes to the shadow path if step 5 discovers they are not ac-8
+  compliant AND the in-task fix would expand scope too far. Capture the decision and any follow-up
+  task in the task note from step 5.
+
+
+  Covers: @dispatch-workspace-registry ac-successful-cleanup-persists-completion,
+  ac-successful-cleanup-populates-closed-at, ac-completed-cleanup-resolves-to-closed, ac-8, ac-10.
+spec_ref: "@dispatch-workspace-registry"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - dispatch
+  - bug
+  - infra
+vcs_refs: []
+created_at: 2026-04-16T08:13:23.642Z
+todos: []
+automation: eligible

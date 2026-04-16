@@ -2652,3 +2652,53 @@ inbox:
       - docs
     added_by: "@claude"
     created_at: 2026-04-16T07:48:03.103Z
+  - _ulid: 01KPANM73TMKP22WCW5W1PY3WG
+    text: "Narrow dispatch sync-target filter to exclude stale/closing/cleanup_blocked lifecycle states.
+      The dispatch engine's active target set currently includes every workspace record whose
+      lifecycle is not closed (per @dispatch-remote-branch-sync ac-active-target-rebuilt-on-start).
+      Workspaces in stale, closing, or cleanup_blocked states — none of which can drive integration
+      progress — still contribute their target branch to periodic target-sync fetches.
+      Defense-in-depth: even after the cleanup-status transition bug
+      (@task-persist-cleanup-completion-status) is fixed so records reach closed naturally,
+      narrowing the filter to only provisioning/ready/active/integrating would prevent a recurrence
+      of sync-noise if the cleanup path ever regresses. Triage surfaced this design question
+      2026-04-16 while investigating log spam from deleted plan branches still tracked in the
+      registry."
+    tags:
+      - dispatch
+      - design
+      - post-mvp
+    added_by: "@claude"
+    created_at: 2026-04-16T08:13:23.962Z
+  - _ulid: 01KPANM75G93DDY7DH8M74N428
+    text: "Operator CLI for dispatch workspace record cleanup. No user-facing kspec command exists to
+      close or reap a workspace record when an operator cleans up a dispatch branch out-of-band
+      (e.g. git branch -D or git push --delete on merged plan branches). The registry then
+      references deleted branches indefinitely, and the dispatch engine's target-sync keeps
+      attempting to fetch them, producing warning log spam every 60s per deleted branch. A command
+      along the lines of kspec dispatch workspace close @task-ref or kspec dispatch workspace reap
+      @task-ref would let operators reconcile the registry after out-of-band branch cleanup.
+      Related: @dispatch-workspace-registry. Triage surfaced this workflow gap 2026-04-16."
+    tags:
+      - dispatch
+      - cli
+      - feature
+      - post-mvp
+    added_by: "@claude"
+    created_at: 2026-04-16T08:13:24.016Z
+  - _ulid: 01KPANM7718EZXK3JEH7Y802JT
+    text: "Decide backfill approach for pre-fix stuck workspace records. Observed at triage time on
+      2026-04-16: 138 records stuck in closing, 252 records stuck in stale, 0 records in closed —
+      all a consequence of the cleanup-completion transition bug tracked by
+      @task-persist-cleanup-completion-status. After that fix lands, options for the pre-fix
+      backlog: (a) let reconciliation self-heal them naturally over time (retention purge follows 7
+      days after closed state), (b) write a one-shot migration that transitions eligible records to
+      completed in a single shadow commit, or (c) manual reconciliation of specific records as
+      operators surface them. Needs a decision about operational risk (large shadow commit, data
+      loss if heuristic is wrong) vs. convenience (immediate registry cleanup)."
+    tags:
+      - dispatch
+      - operations
+      - post-mvp
+    added_by: "@claude"
+    created_at: 2026-04-16T08:13:24.065Z
