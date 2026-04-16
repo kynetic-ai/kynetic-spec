@@ -9,3 +9,13 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-15T23:59:51.119Z
+  - _ulid: 01KP9SYRRREC1VR857945D41QK
+    content: "Fix applied: added sessionsDir: path.join(testDir, '.kspec-sessions') to all 5
+      runInvocation() calls in the failing tests (AC-2, AC-3, AC-11, AC-12 streaming, AC-12 stderr
+      filter). Root cause was all tests deriving sessionsDir as /tmp/.kspec-sessions because their
+      testDir was a direct child of /tmp/. That shared directory had accumulated dr-xr-xr-x
+      permissions, causing EACCES on mkdir. Full test suite passes: 2131 suites, 7764 tests, 0
+      failures."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-16T00:09:49.592Z
