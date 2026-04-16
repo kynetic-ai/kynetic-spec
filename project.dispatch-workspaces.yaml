@@ -37652,11 +37652,11 @@ workspaces:
     canonical_branch: dispatch/task/task-daemon-spawn-runtime/01kne1nk
     canonical_branch_head: 0c2c3429c5ebde26f545bb6ea86b82dea8b170e6
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-04-05T09:17:14.025Z
+      updated_at: 2026-04-16T17:03:48.841Z
     health:
       status: healthy
       issues: []
@@ -37669,17 +37669,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-configurable-daemon-runtime/01kndgvz
       target_commit: f143b0818864b0b3aa69bafdb281d417e77bedd6
-      updated_at: 2026-04-05T09:17:14.025Z
-    lifecycle_state: closing
+      updated_at: 2026-04-16T17:03:48.841Z
+    lifecycle_state: closed
     resolved_base_branch: plan/plan-configurable-daemon-runtime/01kndgvz
     task_ref: "@01KNE1NKXMCW3FZTNYK2QK5WFT"
     task_slug: task-daemon-spawn-runtime
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:03:48.841Z
       last_active_at: 2026-04-05T09:10:54.838Z
-      last_reconciled_at: 2026-04-05T09:17:57.928Z
+      last_reconciled_at: 2026-04-16T17:03:48.841Z
       created_at: 2026-04-05T08:31:13.313Z
-      updated_at: 2026-04-05T09:17:57.928Z
+      updated_at: 2026-04-16T17:03:48.841Z
     workspace_id: dispatch-workspace-01KNE1NKXMCW3FZTNYK2QK5WFT
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
