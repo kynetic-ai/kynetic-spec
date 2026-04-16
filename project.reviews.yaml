@@ -150809,6 +150809,23 @@ reviews:
         runner: npm
         created_at: 2026-04-16T07:13:02.857Z
         completed_at: 2026-04-16T07:13:02.857Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/parser/doctor.ts, src/parser/setup-status.ts,
+          tests/parser/doctor.test.ts, tests/droid-setup-status.test.ts, src/cli/commands/setup.ts,
+          src/cli/commands/upgrade.ts, src/parser/skill-render.ts. Commands run: git
+          diff/stat/name-only, kspec task/item/review get, kspec validate, rg AC annotations, npm
+          test, manual init/setup/doctor repro via dist CLI. Claims verified: fresh init+setup
+          project reports zero doctor warnings; rendered skill locations match setup/skill-render
+          paths; upgrade/setup scaffold/version state align with new doctor checks. Categories
+          searched: correctness, edge cases, error handling, test quality, integration; no
+          task-specific findings."
+        name: review-evidence
+        required: false
+        created_at: 2026-04-16T07:13:05.672Z
+        completed_at: 2026-04-16T07:13:05.672Z
     events:
       - _ulid: 01KPAHHYE9W3MH8R9E3Z3QBZFF
         actor: Jacob Chapel
@@ -150830,6 +150847,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-16T07:13:03.796Z
+      - _ulid: 01KPAJ5TNGEND0SGS5DPGZF2BJ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-04-16T07:13:06.737Z
     examined_commit: 984280cf050f9a564882c8d0ee255f406314766b
     external_links: []
     lifecycle_state: open
@@ -150842,5 +150866,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-16T07:02:15.241Z
-    updated_at: 2026-04-16T07:13:02.857Z
+    updated_at: 2026-04-16T07:13:05.672Z
     notes: []
