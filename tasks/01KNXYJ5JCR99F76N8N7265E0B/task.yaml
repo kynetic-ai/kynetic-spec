@@ -115,8 +115,11 @@ description: |
 spec_ref: "@single-command-version-upgrade"
 plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to plan/plan-init-setup-and-upgrade-rough-edges/01knvahv after approved
+  review. Added the top-level upgrade command, upgrade pipeline steps, version recording, and
+  comprehensive upgrade-command integration coverage.
 depends_on:
   - "@task-scaffold-project-config"
   - "@task-complete-gitignore"
@@ -1375,9 +1378,25 @@ history:
         previous: "@01KPA5EPGFC8NNE26FYA2WTBJD"
     command: review-link
     timestamp: 2026-04-16T04:00:32.619Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to plan/plan-init-setup-and-upgrade-rough-edges/01knvahv after approved review. Added
+          the top-level upgrade command, upgrade pipeline steps, version recording, and
+          comprehensive upgrade-command integration coverage.
+        previous: null
+      completed_at:
+        new: 2026-04-16T04:13:51.173Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-16T04:13:51.202Z
 prior_status: null
 created_at: 2026-04-11T09:39:26.412Z
 started_at: 2026-04-16T03:58:52.117Z
 submitted_at: 2026-04-16T03:58:55.524Z
+completed_at: 2026-04-16T04:13:51.173Z
 todos: []
 automation: eligible
