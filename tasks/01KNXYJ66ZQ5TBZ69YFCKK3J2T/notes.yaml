@@ -90,3 +90,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-16T06:04:29.410Z
+  - _ulid: 01KPAF3AYP5XN4F9Z24QT5VHN7
+    content: "Fix cycle 1: addressed the single blocker thread on src/parser/doctor.ts:413. The
+      success-message suffix previously said '(N in agent-specific locations)', but
+      status.skills.rendered is now summed across every entry in getRenderedSkillLocations() —
+      including the plugin-provided .claude/plugins/kspec/skills path — so the wording was factually
+      wrong in the plugin-only case. Changed the suffix to 'across supported locations' and
+      corrected the stale comment above buildSetupSection that repeated the same inaccuracy.
+      Extended the plugin-only test to assert the old wording is absent, and updated the droid
+      fixture test to the new wording. Full suite: 7970 passed, 5 skipped (same as prior
+      submission)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-16T06:19:19.382Z
