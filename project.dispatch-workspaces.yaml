@@ -4234,11 +4234,11 @@ workspaces:
     canonical_branch: dispatch/task/suppress-no-op-workspace-registry-writes-during-periodic-reconciliation/01kkq4rk
     canonical_branch_head: 4b96becfce263ac70b6a1fc9aa531429f3b09932
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-19T03:56:11.951Z
+      updated_at: 2026-04-16T16:56:23.124Z
     health:
       status: stale
       issues:
@@ -4256,17 +4256,17 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
-      updated_at: 2026-03-19T03:56:11.951Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:56:23.124Z
+    lifecycle_state: closed
     resolved_base_branch: main
     task_ref: "@01KKQ4RKBQMPKJRG2G3ASM11YR"
     task_slug: suppress-no-op-workspace-registry-writes-during-periodic-reconciliation
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:56:23.124Z
       last_active_at: 2026-03-14T21:54:19.380Z
-      last_reconciled_at: 2026-03-19T03:56:11.951Z
+      last_reconciled_at: 2026-04-16T16:56:23.124Z
       created_at: 2026-03-14T21:42:54.416Z
-      updated_at: 2026-03-19T03:56:11.951Z
+      updated_at: 2026-04-16T16:56:23.124Z
     workspace_id: dispatch-workspace-01KKQ4RKBQMPKJRG2G3ASM11YR
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
