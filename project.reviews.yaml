@@ -149620,6 +149620,19 @@ reviews:
         runner: npm
         created_at: 2026-04-16T03:43:24.592Z
         completed_at: 2026-04-16T03:43:24.592Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test: 7952 passed, 5 failed, 5 skipped. All failures are pre-existing EACCES errors
+          creating /tmp/.kspec-sessions in tests/cli-agent-commands.test.ts, outside this branch's
+          touched files. Full log:
+          /tmp/kspec-test-cache/01KPA5D5RMBNNQDM0FPGS17931/695459991a9026c1.log"
+        name: full test suite
+        required: false
+        runner: npm
+        created_at: 2026-04-16T03:43:33.065Z
+        completed_at: 2026-04-16T03:43:33.065Z
     events:
       - _ulid: 01KPA5EPGEDN1W0VZ8H5R1FTGC
         actor: Jacob Chapel
@@ -149655,6 +149668,13 @@ reviews:
           kind: nit
           thread_ulid: 01KPA660W1A310QGSTXWX0S778
         timestamp: 2026-04-16T03:43:31.269Z
+      - _ulid: 01KPA664MS6E46008CDGZG27SG
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: full test suite
+        timestamp: 2026-04-16T03:43:34.042Z
     examined_commit: 7315532b204c2a0be9b92296267e9955de501ded
     external_links: []
     lifecycle_state: open
@@ -149971,5 +149991,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-16T03:30:45.903Z
-    updated_at: 2026-04-16T03:43:30.177Z
+    updated_at: 2026-04-16T03:43:33.065Z
     notes: []
