@@ -8663,11 +8663,11 @@ workspaces:
     canonical_branch: dispatch/task/task-review-interaction/01kktw6k
     canonical_branch_head: b8e97880d56954391d89ba68716ead3c757cefd8
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-18T02:28:48.432Z
+      updated_at: 2026-04-16T16:57:44.658Z
     health:
       status: invalid
       issues:
@@ -8688,17 +8688,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: c829472cb105c3047739feb9542b4c83a5ac9b73
-      updated_at: 2026-03-18T02:28:48.432Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:57:44.658Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KKTW6KXATJ0TEV1SF98ZK8PN"
     task_slug: task-review-interaction
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:57:44.658Z
       last_active_at: 2026-03-18T02:01:41.903Z
-      last_reconciled_at: 2026-03-18T02:28:48.432Z
+      last_reconciled_at: 2026-04-16T16:57:44.658Z
       created_at: 2026-03-18T01:47:39.508Z
-      updated_at: 2026-03-18T02:28:48.432Z
+      updated_at: 2026-04-16T16:57:44.658Z
     workspace_id: dispatch-workspace-01KKTW6KXATJ0TEV1SF98ZK8PN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
