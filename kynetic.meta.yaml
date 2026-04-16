@@ -14734,6 +14734,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-16T01:39:25.848Z
+  - _ulid: 01KPA0Q5N5T1TTABMZFKWAFJCF
+    type: friction
+    content: "Duplicate task dispatched: @01KP9ZW21H9AD2R127PS5MM6KQ duplicated already-completed
+      @task-fix-cli-agent-session-store-eacces. The dispatch engine created and dispatched a task
+      for an issue that had already been fixed and merged. Agent spent an invocation cycle (build +
+      full test suite) only to discover the work was done. Consider pre-dispatch dedup checks (e.g.,
+      search for completed tasks with overlapping description keywords or matching file paths before
+      creating new tasks)."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-16T02:08:00.678Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
