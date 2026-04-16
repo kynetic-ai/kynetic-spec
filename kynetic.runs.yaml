@@ -27493,7 +27493,7 @@ runs:
     completed_at: 2026-04-16T07:16:33.011Z
   - _ulid: 01KPANTXAH9Q9XPD1SSWWX04MV
     status: active
-    current_step: 4
+    current_step: 5
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -27539,7 +27539,18 @@ runs:
       - status: completed
         step_index: 4
         started_at: 2026-04-16T08:19:54.920Z
-        completed_at: 2026-04-16T08:19:54.920Z
+        completed_at: 2026-04-16T08:26:53.272Z
+        notes: "Captured: (1) consolidated dispatch workspace registry management item (merges @01KKMJYM4
+          broader UI+CLI scope + @01KMVSNV2 purge scope + this session's
+          operator-close-after-out-of-band-branch-deletion scenario, deleted the three source
+          items); (2) compound conditions convention clarification inbox item; (3) search guidance
+          inbox item (multi-vocabulary reminder plus kspec search no-result hints). User chose to
+          skip Proposal A (main/dispatch branch ref drift awareness) as low-value — one-time cost
+          this session."
+      - status: completed
+        step_index: 5
+        started_at: 2026-04-16T08:26:53.272Z
+        completed_at: 2026-04-16T08:26:53.272Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-16T08:17:03.313Z
