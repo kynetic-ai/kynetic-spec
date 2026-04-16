@@ -14626,6 +14626,24 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-15T23:41:48.735Z
+  - _ulid: 01KP9T10W0W70809SK6R6SA0ZG
+    type: success
+    content: Existing InvocationOptions.sessionsDir field made the EACCES fix trivial — no production
+      code changes needed. Good API design pays off.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-16T00:11:03.424Z
+  - _ulid: 01KP9T112ZENY2Q03AQRTCEXYS
+    type: friction
+    content: "Tests calling runInvocation() without explicit sessionsDir derive /tmp/.kspec-sessions
+      when testDir is under /tmp/, causing shared mutable state. agent-invocation-lifecycle.test.ts
+      already passes sessionsDir correctly; cli-agent-commands.test.ts did not. Convention gap: no
+      enforcement that test callers of runInvocation always pass sessionsDir."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-16T00:11:03.647Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
