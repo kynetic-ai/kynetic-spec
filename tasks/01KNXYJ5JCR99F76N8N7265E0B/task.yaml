@@ -115,7 +115,7 @@ description: |
 spec_ref: "@single-command-version-upgrade"
 plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
 origin: derived
-status: needs_work
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-scaffold-project-config"
@@ -134,12 +134,12 @@ review_ref: "@01KP9V5M7MJ397ZY84BXGP86Q2"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-upgrade-command/01knxyj5
-  captured_at: 2026-04-16T00:28:27.595Z
-  commit: 631945da4d76d7ba03d1abed3e17f90a3b4fcdd9
+  captured_at: 2026-04-16T00:58:04.431Z
+  commit: 23efbc1be833d77a0410b2964d4eda5eb81e78a9
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-upgrade-command/01knxyj5
-session_id: null
+session_id: 01KP9VVSBE0SYPMHPF7N02RP2W
 history:
   - author: Jacob Chapel
     changes:
@@ -1043,9 +1043,49 @@ history:
         previous: 01KP9T00WDCAWGSWTHC0M0P7A8
     command: review-verdict-needs-work
     timestamp: 2026-04-16T00:41:13.393Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KP9VVSBE0SYPMHPF7N02RP2W
+        previous: null
+      started_at:
+        new: 2026-04-16T00:57:57.048Z
+        previous: 2026-04-16T00:28:24.194Z
+    command: task-start
+    timestamp: 2026-04-16T00:57:57.049Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-upgrade-command/01knxyj5
+          captured_at: 2026-04-16T00:58:04.431Z
+          commit: 23efbc1be833d77a0410b2964d4eda5eb81e78a9
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-upgrade-command/01knxyj5
+        previous:
+          review_url: null
+          branch: dispatch/task/task-upgrade-command/01knxyj5
+          captured_at: 2026-04-16T00:28:27.595Z
+          commit: 631945da4d76d7ba03d1abed3e17f90a3b4fcdd9
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-upgrade-command/01knxyj5
+      submitted_at:
+        new: 2026-04-16T00:58:04.446Z
+        previous: 2026-04-16T00:28:27.608Z
+    command: task-submit
+    timestamp: 2026-04-16T00:58:04.447Z
 prior_status: null
 created_at: 2026-04-11T09:39:26.412Z
-started_at: 2026-04-16T00:28:24.194Z
-submitted_at: 2026-04-16T00:28:27.608Z
+started_at: 2026-04-16T00:57:57.048Z
+submitted_at: 2026-04-16T00:58:04.446Z
 todos: []
 automation: eligible
