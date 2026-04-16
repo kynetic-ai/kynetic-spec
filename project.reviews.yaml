@@ -148211,6 +148211,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-15T23:56:12.459Z
+      - _ulid: 01KP9TYMDQVYWE28QVWEYM3NSG
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KP9S1FM4Y9K2MN7M72874F0B
+        timestamp: 2026-04-16T00:27:13.719Z
     examined_commit: 35e8acf2da1bea09aec4e82a607e00493b3ca4ac
     external_links: []
     lifecycle_state: closed
@@ -148241,6 +148247,15 @@ reviews:
               corrupted. That violates ac-regenerates-agents-file because upgrade no longer
               guarantees the rendered instructions match the current templates."
             created_at: 2026-04-15T23:53:49.956Z
+          - _ulid: 01KP9TYKFQ1VMNMX6PJRJW7BDY
+            author: "@claude"
+            body: "Fixed: Added content verification to the regeneration skip logic. When the meta hash matches
+              and the file exists, we now read the file content and compare it (excluding the
+              timestamp comment line) against what would be generated. A corrupted regular file no
+              longer passes the skip check — it gets regenerated. Added a dedicated test that
+              overwrites kspec-agents.md with 'corrupted' text and confirms upgrade --force
+              regenerates it."
+            created_at: 2026-04-16T00:27:12.759Z
         kind: blocker
       - _ulid: 01KP9S1JBT68T86WT344KQBHHZ
         entries:
@@ -148288,7 +148303,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-15T23:56:12.459Z
     created_at: 2026-04-15T23:42:18.937Z
-    updated_at: 2026-04-15T23:56:12.459Z
+    updated_at: 2026-04-16T00:27:12.759Z
     notes: []
   - _ulid: 01KP9T2Q405E2AJJA8DNQBTDSQ
     slugs: []
