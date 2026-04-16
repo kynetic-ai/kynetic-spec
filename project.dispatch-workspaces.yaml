@@ -3991,11 +3991,11 @@ workspaces:
     canonical_branch: dispatch/task/task-implement-review-cli-mutations/01kknrc4
     canonical_branch_head: 82708deaf73c2543a74b26ba778c218a8ceb96a3
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-19T03:56:11.380Z
+      updated_at: 2026-04-16T16:56:18.581Z
     health:
       status: stale
       issues:
@@ -4013,17 +4013,17 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
-      updated_at: 2026-03-19T03:56:11.380Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:56:18.581Z
+    lifecycle_state: closed
     resolved_base_branch: main
     task_ref: "@01KKNRC4F8KAXMPAJCEVZEMNVH"
     task_slug: task-implement-review-cli-mutations
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:56:18.581Z
       last_active_at: 2026-03-14T19:48:55.527Z
-      last_reconciled_at: 2026-03-19T03:56:11.380Z
+      last_reconciled_at: 2026-04-16T16:56:18.581Z
       created_at: 2026-03-14T19:18:28.041Z
-      updated_at: 2026-03-19T03:56:11.380Z
+      updated_at: 2026-04-16T16:56:18.581Z
     workspace_id: dispatch-workspace-01KKNRC4F8KAXMPAJCEVZEMNVH
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
