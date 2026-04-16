@@ -36751,11 +36751,11 @@ workspaces:
     canonical_branch: dispatch/task/task-fd-regression-test-active-scoping/01knbk4v
     canonical_branch_head: d51b5485e0c0f3dc3a03e65d05524397937c0075
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-04-04T07:57:31.735Z
+      updated_at: 2026-04-16T17:03:37.796Z
     health:
       status: healthy
       issues: []
@@ -36768,17 +36768,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: d51b5485e0c0f3dc3a03e65d05524397937c0075
-      updated_at: 2026-04-04T07:57:31.735Z
-    lifecycle_state: closing
+      updated_at: 2026-04-16T17:03:37.796Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KNBK4V39J15YE6GHJTY10HEQ"
     task_slug: task-fd-regression-test-active-scoping
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:03:37.796Z
       last_active_at: 2026-04-04T07:49:41.209Z
-      last_reconciled_at: 2026-04-04T07:58:47.095Z
+      last_reconciled_at: 2026-04-16T17:03:37.796Z
       created_at: 2026-04-04T07:49:35.281Z
-      updated_at: 2026-04-04T07:58:47.095Z
+      updated_at: 2026-04-16T17:03:37.796Z
     workspace_id: dispatch-workspace-01KNBK4V39J15YE6GHJTY10HEQ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
