@@ -12676,11 +12676,11 @@ workspaces:
     canonical_branch: dispatch/task/task-test-dispatch-shared-checkout-safety/01km3zmf
     canonical_branch_head: 71a378aa525231a491e7c353dc542c159e2c980f
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-20T02:36:36.830Z
+      updated_at: 2026-04-16T16:58:58.370Z
     health:
       status: invalid
       issues:
@@ -12702,17 +12702,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 6385dea4f2dc4387f33bb3cb4dd8a99645d1e339
-      updated_at: 2026-03-20T02:36:36.830Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:58:58.370Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KM3ZMFYDXR42KW2KGZ09RYYD"
     task_slug: task-test-dispatch-shared-checkout-safety
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:58:58.370Z
       last_active_at: 2026-03-20T02:25:10.948Z
-      last_reconciled_at: 2026-03-20T02:36:36.830Z
+      last_reconciled_at: 2026-04-16T16:58:58.370Z
       created_at: 2026-03-20T02:15:53.422Z
-      updated_at: 2026-03-20T02:36:36.830Z
+      updated_at: 2026-04-16T16:58:58.370Z
     workspace_id: dispatch-workspace-01KM3ZMFYDXR42KW2KGZ09RYYD
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
