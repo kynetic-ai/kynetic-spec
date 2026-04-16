@@ -32427,11 +32427,11 @@ workspaces:
     canonical_branch: dispatch/task/fix-stale-worktree-removal-in-safelyremovedispatchworktree/01kn69s1
     canonical_branch_head: 4f39f67f8ada86dcca9d75681a2d9f44a8379d36
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-04-02T05:45:06.978Z
+      updated_at: 2026-04-16T17:02:46.399Z
     health:
       status: healthy
       issues: []
@@ -32444,17 +32444,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 4f626c918bc5b120e8be2c7894f5f7c5335d28d7
-      updated_at: 2026-04-02T05:45:06.978Z
-    lifecycle_state: closing
+      updated_at: 2026-04-16T17:02:46.399Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KN69S1WZC46EK5MG7Z5Y971P"
     task_slug: fix-stale-worktree-removal-in-safelyremovedispatchworktree
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:02:46.399Z
       last_active_at: 2026-04-02T05:30:28.975Z
-      last_reconciled_at: 2026-04-02T05:45:06.978Z
+      last_reconciled_at: 2026-04-16T17:02:46.399Z
       created_at: 2026-04-02T05:14:40.681Z
-      updated_at: 2026-04-02T05:45:06.978Z
+      updated_at: 2026-04-16T17:02:46.399Z
     workspace_id: dispatch-workspace-01KN69S1WZC46EK5MG7Z5Y971P
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
