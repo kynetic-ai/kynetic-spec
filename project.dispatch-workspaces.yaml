@@ -30693,11 +30693,11 @@ workspaces:
     canonical_branch: dispatch/task/task-fix-observations-e2e-full-gate/01kn3q08
     canonical_branch_head: 37e60220bea429eabfccfa1d3cf783112201a3d7
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-04-01T09:01:18.351Z
+      updated_at: 2026-04-16T17:02:26.539Z
     health:
       status: healthy
       issues: []
@@ -30710,17 +30710,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 8be59d805258ed10c50839a817a1c13148719464
-      updated_at: 2026-04-01T09:01:18.351Z
-    lifecycle_state: closing
+      updated_at: 2026-04-16T17:02:26.539Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KN3Q08YPMW3NFQKWB01XX9V2"
     task_slug: task-fix-observations-e2e-full-gate
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:02:26.539Z
       last_active_at: 2026-04-01T08:49:18.407Z
-      last_reconciled_at: 2026-04-01T09:01:26.862Z
+      last_reconciled_at: 2026-04-16T17:02:26.539Z
       created_at: 2026-04-01T08:39:55.093Z
-      updated_at: 2026-04-01T09:01:26.862Z
+      updated_at: 2026-04-16T17:02:26.539Z
     workspace_id: dispatch-workspace-01KN3Q08YPMW3NFQKWB01XX9V2
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
