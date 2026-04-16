@@ -5062,11 +5062,11 @@ workspaces:
     canonical_branch: dispatch/task/task-migrate-complex-pages/01kkqrk5
     canonical_branch_head: babc5539454cfac268f37840588b7f27c28d2a86
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-19T03:56:13.687Z
+      updated_at: 2026-04-16T16:56:39.679Z
     health:
       status: stale
       issues:
@@ -5084,17 +5084,17 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
-      updated_at: 2026-03-19T03:56:13.687Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:56:39.679Z
+    lifecycle_state: closed
     resolved_base_branch: main
     task_ref: "@01KKQRK53RE5Q3JHHH07W67NTJ"
     task_slug: task-migrate-complex-pages
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:56:39.679Z
       last_active_at: 2026-03-15T07:58:27.085Z
-      last_reconciled_at: 2026-03-19T03:56:13.687Z
+      last_reconciled_at: 2026-04-16T16:56:39.679Z
       created_at: 2026-03-15T06:47:12.066Z
-      updated_at: 2026-03-19T03:56:13.687Z
+      updated_at: 2026-04-16T16:56:39.679Z
     workspace_id: dispatch-workspace-01KKQRK53RE5Q3JHHH07W67NTJ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
