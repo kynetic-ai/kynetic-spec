@@ -68,5 +68,14 @@ tags:
   - setup
   - hooks
 vcs_refs: []
+history:
+  - author: "@claude"
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-04-16T07:29:37.537Z
 created_at: 2026-04-15T19:27:25.425Z
 todos: []
+automation: eligible
