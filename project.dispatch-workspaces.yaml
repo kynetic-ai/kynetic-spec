@@ -13253,11 +13253,11 @@ workspaces:
     canonical_branch: dispatch/task/fix-triage-record-cli-reporting-success-without-persisted-record/01km4mk0
     canonical_branch_head: 783b22ef544bed092175027cb2c631b044760c73
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-20T05:00:55.955Z
+      updated_at: 2026-04-16T16:59:04.496Z
     health:
       status: invalid
       issues:
@@ -13280,17 +13280,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: a88b2408c1ecfaa2d7b5b0400b233d0e0a361644
-      updated_at: 2026-03-20T05:00:55.955Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:59:04.496Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KM4MK0N1K71YCJ2PFVZGTSTE"
     task_slug: fix-triage-record-cli-reporting-success-without-persisted-record
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:59:04.496Z
       last_active_at: 2026-03-20T04:53:23.040Z
-      last_reconciled_at: 2026-03-20T05:00:55.955Z
+      last_reconciled_at: 2026-04-16T16:59:04.496Z
       created_at: 2026-03-20T04:45:19.327Z
-      updated_at: 2026-03-20T05:00:55.955Z
+      updated_at: 2026-04-16T16:59:04.496Z
     workspace_id: dispatch-workspace-01KM4MK0N1K71YCJ2PFVZGTSTE
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
