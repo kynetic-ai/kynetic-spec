@@ -30294,11 +30294,11 @@ workspaces:
     canonical_branch: dispatch/task/task-fix-sessions-detail-filter-e2e-full-gate/01kn3q0b
     canonical_branch_head: 13f962998b7bf1c94d456bbc5b963f7f25b468a9
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-04-01T07:04:44.016Z
+      updated_at: 2026-04-16T17:02:21.737Z
     health:
       status: healthy
       issues: []
@@ -30311,17 +30311,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: c33b26b5e198e2e8e13c92a35d1b6935217e335f
-      updated_at: 2026-04-01T07:04:44.016Z
-    lifecycle_state: closing
+      updated_at: 2026-04-16T17:02:21.737Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KN3Q0BXDE56CDNFDZXBFGGF9"
     task_slug: task-fix-sessions-detail-filter-e2e-full-gate
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:02:21.737Z
       last_active_at: 2026-04-01T06:43:50.823Z
-      last_reconciled_at: 2026-04-01T07:04:57.569Z
+      last_reconciled_at: 2026-04-16T17:02:21.737Z
       created_at: 2026-04-01T05:33:09.915Z
-      updated_at: 2026-04-01T07:04:57.569Z
+      updated_at: 2026-04-16T17:02:21.737Z
     workspace_id: dispatch-workspace-01KN3Q0BXDE56CDNFDZXBFGGF9
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
