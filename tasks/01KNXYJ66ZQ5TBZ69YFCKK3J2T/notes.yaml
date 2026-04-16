@@ -108,3 +108,27 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-16T06:35:37.204Z
+  - _ulid: 01KPAH9YZ4004VP115WGBRV4MN
+    content: >-
+      Fix cycle 2: addressed the single (duplicated) blocker thread on src/parser/doctor.ts:314. The
+      actionable-message audit was incomplete — four warning/error paths still emitted generic
+      'kspec setup' guidance. Replaced each with a specific subcommand or flag:
+
+
+      - artifacts-dir missing → kspec setup --force (or mkdir -p .kspec/artifacts fallback)
+
+      - agent-type unknown → kspec setup --agent <claude-code|cline|droid|cursor|windsurf>
+
+      - hooks missing → kspec setup --agent <detected-agent> (interpolated)
+
+      - agents-md missing → kspec agents generate (dedicated command)
+
+
+      Added dedicated tests for each path plus a strict @doctor-reports-actionable-state
+      ac-all-actionable regression that rejects any warning/error guidance whose only resolution is
+      bare 'kspec setup'. Verified the agents-md fix against the exact runtime reproduction the
+      reviewer described (node dist/cli/index.js doctor --json in a fresh temp repo). Full suite:
+      7973 passed, 5 skipped.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-16T06:57:53.636Z
