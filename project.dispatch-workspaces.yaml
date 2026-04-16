@@ -3493,11 +3493,11 @@ workspaces:
     canonical_branch: dispatch/task/task-implement-review-cli-surface/01kknrc3
     canonical_branch_head: 19240b190082e860e43b45c17825b411912d7977
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-19T03:56:10.336Z
+      updated_at: 2026-04-16T16:56:09.698Z
     health:
       status: stale
       issues:
@@ -3515,17 +3515,17 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
-      updated_at: 2026-03-19T03:56:10.336Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:56:09.698Z
+    lifecycle_state: closed
     resolved_base_branch: main
     task_ref: "@01KKNRC3AMTWV7SS9F6ZP2FCA7"
     task_slug: task-implement-review-cli-surface
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:56:09.698Z
       last_active_at: 2026-03-14T17:30:59.805Z
-      last_reconciled_at: 2026-03-19T03:56:10.336Z
+      last_reconciled_at: 2026-04-16T16:56:09.698Z
       created_at: 2026-03-14T17:10:46.081Z
-      updated_at: 2026-03-19T03:56:10.336Z
+      updated_at: 2026-04-16T16:56:09.698Z
     workspace_id: dispatch-workspace-01KKNRC3AMTWV7SS9F6ZP2FCA7
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
