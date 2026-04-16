@@ -1518,11 +1518,11 @@ workspaces:
     canonical_branch: dispatch/task/task-plan-embedded-views-mixed-task-precedence/01kkg0sn
     canonical_branch_head: a3120f904159a992682178398e87ffe5649ab7f5
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-14T22:12:58.386Z
+      updated_at: 2026-04-16T16:55:32.793Z
     health:
       status: invalid
       issues:
@@ -1549,17 +1549,17 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: a3120f904159a992682178398e87ffe5649ab7f5
-      updated_at: 2026-03-14T22:12:58.386Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:55:32.793Z
+    lifecycle_state: closed
     resolved_base_branch: main
     task_ref: "@01KKG0SN9325ERD0JW6H97SNFE"
     task_slug: task-plan-embedded-views-mixed-task-precedence
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:55:32.793Z
       last_active_at: null
-      last_reconciled_at: 2026-03-14T22:12:58.386Z
+      last_reconciled_at: 2026-04-16T16:55:32.793Z
       created_at: 2026-03-12T17:16:25.884Z
-      updated_at: 2026-03-14T22:12:58.386Z
+      updated_at: 2026-04-16T16:55:32.793Z
     workspace_id: dispatch-workspace-01KKG0SN9325ERD0JW6H97SNFE
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
