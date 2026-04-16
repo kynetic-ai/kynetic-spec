@@ -25839,11 +25839,11 @@ workspaces:
     canonical_branch: dispatch/task/task-fix-ws-watcher-registration/01kmsfmg
     canonical_branch_head: f8c4c2ab4017040dedf5b60dcda210f4e9f3b3cc
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-28T07:04:19.581Z
+      updated_at: 2026-04-16T17:01:26.969Z
     health:
       status: invalid
       issues:
@@ -25864,17 +25864,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: b89e7561869cc09edff3591d3db7461dcc17ccc4
-      updated_at: 2026-03-28T07:04:19.581Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T17:01:26.969Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KMSFMG5AJNYD4PWW8MNPVH5C"
     task_slug: task-fix-ws-watcher-registration
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:01:26.969Z
       last_active_at: 2026-03-28T06:47:24.172Z
-      last_reconciled_at: 2026-03-28T07:04:19.581Z
+      last_reconciled_at: 2026-04-16T17:01:26.969Z
       created_at: 2026-03-28T06:02:11.777Z
-      updated_at: 2026-03-28T07:04:19.581Z
+      updated_at: 2026-04-16T17:01:26.969Z
     workspace_id: dispatch-workspace-01KMSFMG5AJNYD4PWW8MNPVH5C
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
