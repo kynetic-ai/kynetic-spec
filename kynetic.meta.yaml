@@ -14724,6 +14724,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-16T01:16:12.251Z
+  - _ulid: 01KP9Z2V0R09108EYX7M1DXP8Z
+    type: friction
+    content: installCoreSkillsForSetup reports all core-origin skills as 'installed' even when they
+      already exist unchanged — makes it impossible for callers (like the upgrade backfill step) to
+      distinguish truly new installations from no-op updates. The upgrade step always reports 'done'
+      with installed > 0 even when nothing was actually missing.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-16T01:39:25.848Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
