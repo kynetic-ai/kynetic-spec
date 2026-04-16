@@ -14878,6 +14878,28 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-16T07:00:53.599Z
+  - _ulid: 01KPAJBWP7PQHRJF5VB56ANC8T
+    type: friction
+    content: Repo-level `kspec validate` output during review is dominated by unrelated pre-existing
+      schema, alignment, and AC-coverage issues, which makes it slow to determine whether a failure
+      was introduced by the current task. A task-local or diff-aware validation view would make
+      review evidence much cheaper to collect.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KPAJ8E"
+    created_at: 2026-04-16T07:16:25.415Z
+  - _ulid: 01KPAJBWXABBBYSE0WXRRG6FP7
+    type: success
+    content: For doctor/setup/upgrade changes, pairing full-suite results with a direct fresh
+      temp-project repro (`init` -> `setup` -> `doctor --json`) quickly confirms the real user path
+      stays warning-free and catches false-positive regressions more reliably than source-only
+      inspection.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KPAJ8E"
+    created_at: 2026-04-16T07:16:25.643Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
