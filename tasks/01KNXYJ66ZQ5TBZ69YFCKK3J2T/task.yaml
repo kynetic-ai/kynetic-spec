@@ -72,7 +72,7 @@ description: |
 spec_ref: "@doctor-reports-actionable-state"
 plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-scaffold-project-config"
@@ -83,6 +83,14 @@ tags:
   - cli
   - doctor
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-doctor-accuracy/01knxyj6
+  captured_at: 2026-04-16T05:48:50.434Z
+  commit: d463ef96be9ccd0cc9074bcccbf3e4a34b8afe19
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-doctor-accuracy/01knxyj6
 session_id: 01KPAAHZXNGS927K7TF6W63S9S
 history:
   - author: Jacob Chapel
@@ -105,7 +113,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-16T05:00:27.020Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-doctor-accuracy/01knxyj6
+          captured_at: 2026-04-16T05:48:50.434Z
+          commit: d463ef96be9ccd0cc9074bcccbf3e4a34b8afe19
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-doctor-accuracy/01knxyj6
+        previous: null
+      submitted_at:
+        new: 2026-04-16T05:48:50.437Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-16T05:48:50.437Z
 created_at: 2026-04-11T09:39:27.071Z
 started_at: 2026-04-16T05:00:27.020Z
+submitted_at: 2026-04-16T05:48:50.437Z
 todos: []
 automation: eligible
