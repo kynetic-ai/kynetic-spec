@@ -36890,11 +36890,11 @@ workspaces:
     canonical_branch: dispatch/task/task-fix-session-dir-fd-leak/01knbs17
     canonical_branch_head: f0b57ed462924ff708a9c0808453945da3599ec3
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-04-04T08:32:04.205Z
+      updated_at: 2026-04-16T17:03:39.363Z
     health:
       status: healthy
       issues: []
@@ -36907,17 +36907,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: d51b5485e0c0f3dc3a03e65d05524397937c0075
-      updated_at: 2026-04-04T08:32:04.205Z
-    lifecycle_state: closing
+      updated_at: 2026-04-16T17:03:39.363Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KNBS17JCVH7DPTJJNE3K5GCA"
     task_slug: task-fix-session-dir-fd-leak
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:03:39.363Z
       last_active_at: 2026-04-04T08:26:00.522Z
-      last_reconciled_at: 2026-04-04T08:32:53.643Z
+      last_reconciled_at: 2026-04-16T17:03:39.363Z
       created_at: 2026-04-04T08:17:09.134Z
-      updated_at: 2026-04-04T08:32:53.643Z
+      updated_at: 2026-04-16T17:03:39.363Z
     workspace_id: dispatch-workspace-01KNBS17JCVH7DPTJJNE3K5GCA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
