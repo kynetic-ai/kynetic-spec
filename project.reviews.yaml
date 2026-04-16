@@ -150384,6 +150384,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-16T06:03:56.591Z
+      - _ulid: 01KPAE78KX9YSXB8WN4TH8W65E
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPAE77MR9YA3CXKJRDRN4S3F
+        timestamp: 2026-04-16T06:03:59.485Z
     examined_commit: d463ef96be9ccd0cc9074bcccbf3e4a34b8afe19
     external_links: []
     lifecycle_state: open
@@ -150393,8 +150400,26 @@ reviews:
       content_hash: ""
       ref: "@01KNXYJ66ZQ5TBZ69YFCKK3J2T"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KPAE77MR9YA3CXKJRDRN4S3F
+        anchor:
+          type: code
+          commit: d463ef96be9ccd0cc9074bcccbf3e4a34b8afe19
+          line_end: 418
+          line_start: 413
+          path: src/parser/doctor.ts
+          side: head
+        entries:
+          - _ulid: 01KPAE77MSB00FHDQ5FBTA3AB1
+            author: Jacob Chapel
+            body: "The new success message still claims the count came from 'agent-specific locations', but  is
+              now incremented for every supported output directory in  (including plugin-provided
+              skills under ). I verified this with a runtime probe that created only a plugin skill
+              and called : the check came back as . That is factually wrong for this path and
+              undermines the task's requirement that doctor report the real state of the project."
+            created_at: 2026-04-16T06:03:58.489Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-16T05:51:10.937Z
-    updated_at: 2026-04-16T06:03:55.592Z
+    updated_at: 2026-04-16T06:03:58.489Z
     notes: []
