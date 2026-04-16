@@ -150109,7 +150109,17 @@ reviews:
     slugs: []
     title: Review implement single-command version upgrade (cycle 19)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- upgrade-command: 58/58 tests passed in 73.3s."
+        name: upgrade-command tests
+        required: true
+        runner: npm
+        created_at: 2026-04-16T04:13:08.196Z
+        completed_at: 2026-04-16T04:13:08.196Z
     events:
       - _ulid: 01KPA754G32EBKJG2X1N7HQ7M3
         actor: Jacob Chapel
@@ -150124,6 +150134,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-16T04:00:53.780Z
+      - _ulid: 01KPA7WA52AQ0ZHZ25P6PY536V
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: upgrade-command tests
+        timestamp: 2026-04-16T04:13:09.154Z
     examined_commit: 130ac7bcf81a1d8c73435c2b105019beb4aa4a0e
     external_links: []
     lifecycle_state: open
@@ -150136,5 +150153,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-16T04:00:29.699Z
-    updated_at: 2026-04-16T04:00:52.765Z
+    updated_at: 2026-04-16T04:13:08.196Z
     notes: []
