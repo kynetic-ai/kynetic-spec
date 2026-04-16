@@ -34398,11 +34398,11 @@ workspaces:
     canonical_branch: dispatch/task/stabilize-flaky-full-suite-tests-for-cli-serve-and-agent-dispatch-engine/01kn813j
     canonical_branch_head: 5e24ded90b046cac44f5568969374937df61bd84
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-04-02T22:57:16.201Z
+      updated_at: 2026-04-16T17:03:09.584Z
     health:
       status: healthy
       issues: []
@@ -34415,17 +34415,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 5e24ded90b046cac44f5568969374937df61bd84
-      updated_at: 2026-04-02T22:57:16.201Z
-    lifecycle_state: closing
+      updated_at: 2026-04-16T17:03:09.584Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KN813JEHA7251DWGYDGZYMXZ"
     task_slug: stabilize-flaky-full-suite-tests-for-cli-serve-and-agent-dispatch-engine
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:03:09.584Z
       last_active_at: 2026-04-02T22:45:18.139Z
-      last_reconciled_at: 2026-04-02T22:58:04.214Z
+      last_reconciled_at: 2026-04-16T17:03:09.584Z
       created_at: 2026-04-02T21:37:33.759Z
-      updated_at: 2026-04-02T22:58:04.214Z
+      updated_at: 2026-04-16T17:03:09.584Z
     workspace_id: dispatch-workspace-01KN813JEHA7251DWGYDGZYMXZ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
