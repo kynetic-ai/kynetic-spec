@@ -148921,6 +148921,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-16T01:53:41.345Z
+      - _ulid: 01KP9ZX184SV8DF7V9HBNANPFB
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KP9ZX08RQTBY4SSYJPFJXE89
+        timestamp: 2026-04-16T01:53:44.196Z
     examined_commit: ce47669438108f7e8d2199c281a219cfbd16a69f
     external_links: []
     lifecycle_state: open
@@ -148930,8 +148937,28 @@ reviews:
       content_hash: ""
       ref: "@01KNXYJ5JCR99F76N8N7265E0B"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KP9ZX08RQTBY4SSYJPFJXE89
+        anchor:
+          type: code
+          commit: ce47669438108f7e8d2199c281a219cfbd16a69f
+          line_end: 1300
+          line_start: 1258
+          path: src/cli/commands/upgrade.ts
+          side: head
+        entries:
+          - _ulid: 01KP9ZX08R2TWRHGSMWRHEQ1MS
+            author: Jacob Chapel
+            body: " recreates the default reflection hook after the user has explicitly removed it. Repro:
+              initialize a project with Project name (Task Upgrade Command 01knxyj5 Review): ,
+              remove  via , then run . The command reports  and the hook is present again. The task
+              spec says the upgrade scaffold phase should only backfill genuinely missing
+              fresh-project files;  is supposed to re-run the pipeline, not override a user removal
+              decision. As written, any user who uses  for a safety refresh gets an intentionally
+              deleted hook reintroduced."
+            created_at: 2026-04-16T01:53:43.192Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-16T01:39:35.422Z
-    updated_at: 2026-04-16T01:53:40.334Z
+    updated_at: 2026-04-16T01:53:43.192Z
     notes: []
