@@ -150160,6 +150160,13 @@ reviews:
           status: fail
           name: full test suite
         timestamp: 2026-04-16T04:13:12.091Z
+      - _ulid: 01KPA7WFW342P4AWJ7TQGKY457
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KPA7WEX0V8AA0D57A3JGN8A7
+        timestamp: 2026-04-16T04:13:15.011Z
     examined_commit: 130ac7bcf81a1d8c73435c2b105019beb4aa4a0e
     external_links: []
     lifecycle_state: open
@@ -150169,8 +150176,31 @@ reviews:
       content_hash: ""
       ref: "@01KNXYJ5JCR99F76N8N7265E0B"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KPA7WEX0V8AA0D57A3JGN8A7
+        entries:
+          - _ulid: 01KPA7WEX1J0NXY642FVJ1CZ6G
+            author: Jacob Chapel
+            body: >-
+              Evidence log:
+
+              Files read: src/cli/commands/upgrade.ts, src/cli/commands/setup.ts,
+              src/cli/commands/index.ts, src/cli/index.ts, src/parser/shadow.ts,
+              tests/upgrade-command.test.ts.
+
+              Commands run: git diff --stat, git diff, git log, kspec task get, kspec review get,
+              kspec validate, rg AC annotations, npm test -- upgrade-command, npm test, manual
+              temp-project upgrade repro.
+
+              Claims verified: worker claim that upgrade-command tests pass; worker claim that the
+              only full-suite failures are pre-existing /tmp/.kspec-sessions EACCES errors outside
+              this diff.
+
+              Categories searched: correctness, edge cases, error handling, test quality,
+              integration. No task-local regressions found.
+            created_at: 2026-04-16T04:13:14.017Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-16T04:00:29.699Z
-    updated_at: 2026-04-16T04:13:11.053Z
+    updated_at: 2026-04-16T04:13:14.017Z
     notes: []
