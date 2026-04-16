@@ -1141,6 +1141,7 @@ describe("AC-2: One-shot agent run with --task binding", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, ".kspec-sessions"),
       cwd: process.cwd(),
       taskRef,
       prompt: "Work on task",
@@ -1177,6 +1178,7 @@ describe("AC-3: One-shot agent run without task binding", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, ".kspec-sessions"),
       cwd: process.cwd(),
       taskRef: undefined,
       prompt: "Custom one-off prompt",
@@ -1894,6 +1896,7 @@ describe("AC-11: JSON mode suppresses streaming output", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, ".kspec-sessions"),
       cwd: process.cwd(),
       prompt: "test prompt",
       trigger: "manual",
@@ -1937,6 +1940,7 @@ describe("AC-12: Interactive mode streams text as it arrives", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, ".kspec-sessions"),
       cwd: process.cwd(),
       prompt: "test prompt",
       trigger: "manual",
@@ -1983,6 +1987,7 @@ describe("AC-12: suppress adapter rate_limit_event noise on stderr", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, ".kspec-sessions"),
       cwd: process.cwd(),
       prompt: "test prompt",
       trigger: "manual",
