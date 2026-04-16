@@ -29810,11 +29810,11 @@ workspaces:
     canonical_branch: dispatch/task/task-investigate-flaky-full-suite-dispatch-and-daemon-api-tests/01kn2fwe
     canonical_branch_head: a1e8232e6c4c544557f98b3223a10c3a544639c5
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-31T20:13:31.046Z
+      updated_at: 2026-04-16T17:02:14.403Z
     health:
       status: healthy
       issues: []
@@ -29827,17 +29827,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: bb9c6193f3f3c4f8a20c55c8bda4d87da90746cc
-      updated_at: 2026-03-31T20:13:31.046Z
-    lifecycle_state: closing
+      updated_at: 2026-04-16T17:02:14.403Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KN2FWE8F8R03JWB1FTJ2ZE1W"
     task_slug: task-investigate-flaky-full-suite-dispatch-and-daemon-api-tests
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:02:14.403Z
       last_active_at: 2026-03-31T20:01:54.962Z
-      last_reconciled_at: 2026-03-31T20:14:33.305Z
+      last_reconciled_at: 2026-04-16T17:02:14.403Z
       created_at: 2026-03-31T19:41:57.456Z
-      updated_at: 2026-03-31T20:14:33.305Z
+      updated_at: 2026-04-16T17:02:14.403Z
     workspace_id: dispatch-workspace-01KN2FWE8F8R03JWB1FTJ2ZE1W
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
