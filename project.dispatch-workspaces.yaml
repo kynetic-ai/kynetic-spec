@@ -4978,11 +4978,11 @@ workspaces:
     canonical_branch: dispatch/task/task-migrate-sidebar/01kkqrk4
     canonical_branch_head: b2a4795204090e1001b00342728b8dba565323dc
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-19T03:56:13.523Z
+      updated_at: 2026-04-16T16:56:38.053Z
     health:
       status: stale
       issues:
@@ -5000,17 +5000,17 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
-      updated_at: 2026-03-19T03:56:13.523Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:56:38.053Z
+    lifecycle_state: closed
     resolved_base_branch: main
     task_ref: "@01KKQRK4GRF9PBJVJG4S3BDE33"
     task_slug: task-migrate-sidebar
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:56:38.053Z
       last_active_at: 2026-03-15T06:32:51.203Z
-      last_reconciled_at: 2026-03-19T03:56:13.523Z
+      last_reconciled_at: 2026-04-16T16:56:38.053Z
       created_at: 2026-03-15T06:20:52.447Z
-      updated_at: 2026-03-19T03:56:13.523Z
+      updated_at: 2026-04-16T16:56:38.053Z
     workspace_id: dispatch-workspace-01KKQRK4GRF9PBJVJG4S3BDE33
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
