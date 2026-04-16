@@ -41587,11 +41587,11 @@ workspaces:
     canonical_branch: dispatch/task/task-cache-aware-plans-reviews/01knmbpd
     canonical_branch_head: 2723f252985dcc0d0a354d77d9c6aaccc5b81081
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-04-07T19:27:50.174Z
+      updated_at: 2026-04-16T17:04:33.413Z
     health:
       status: healthy
       issues: []
@@ -41604,17 +41604,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-cache-aware-command-execution/01knkf3b
       target_commit: c0d9fee072d7e8719e05e1d8a17ea7e6148140c8
-      updated_at: 2026-04-07T19:27:50.174Z
-    lifecycle_state: closing
+      updated_at: 2026-04-16T17:04:33.413Z
+    lifecycle_state: closed
     resolved_base_branch: plan/plan-cache-aware-command-execution/01knkf3b
     task_ref: "@01KNMBPDRSN3PXZ81CHXBWXKTN"
     task_slug: task-cache-aware-plans-reviews
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:04:33.413Z
       last_active_at: 2026-04-07T19:17:00.298Z
-      last_reconciled_at: 2026-04-07T19:28:24.800Z
+      last_reconciled_at: 2026-04-16T17:04:33.413Z
       created_at: 2026-04-07T18:34:37.775Z
-      updated_at: 2026-04-07T19:28:24.800Z
+      updated_at: 2026-04-16T17:04:33.413Z
     workspace_id: dispatch-workspace-01KNMBPDRSN3PXZ81CHXBWXKTN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
