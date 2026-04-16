@@ -148290,3 +148290,29 @@ reviews:
     created_at: 2026-04-15T23:42:18.937Z
     updated_at: 2026-04-15T23:56:12.459Z
     notes: []
+  - _ulid: 01KP9T2Q405E2AJJA8DNQBTDSQ
+    slugs: []
+    title: Review task-fix-cli-agent-session-store-eacces
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KP9T2Q40PDG8GRKM0YMNSVAG
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-16T00:11:58.976Z
+    examined_commit: 73f9daaedf7d2c63d635be9604cdbd8539f6b64c
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KP9S5KAZGRSRVJWSJ1FXY6RM"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-16T00:11:58.976Z
+    updated_at: null
+    notes: []
