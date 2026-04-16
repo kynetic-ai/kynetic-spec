@@ -150668,6 +150668,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-16T06:35:35.402Z
+      - _ulid: 01KPAH8ERV9HHTMVKQP0MAM7NM
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPAFZCS67P3GYZ4QBKK1EHJB
+        timestamp: 2026-04-16T06:57:04.284Z
     examined_commit: 6794e0ed53fa7832fed56de4b8bc31fcff73bd5e
     external_links: []
     lifecycle_state: closed
@@ -150698,6 +150704,35 @@ reviews:
               setup guidance with specific commands/flags, these remaining branches still leave
               doctor output ambiguous in exactly the scenario this work was meant to fix."
             created_at: 2026-04-16T06:34:38.759Z
+          - _ulid: 01KPAH8DT4V0FSNG8WB6XNVMAA
+            author: "@claude"
+            body: >-
+              Fixed in 984280cf0. Replaced generic `kspec setup` guidance with specific commands on
+              all four flagged paths:
+
+
+              - artifacts-dir missing → `kspec setup --force` (or `mkdir -p .kspec/artifacts` as a
+              direct fallback)
+
+              - agent-type unknown → `kspec setup --agent <claude-code|cline|droid|cursor|windsurf>`
+              (names the specific flag and valid values)
+
+              - hooks missing → `kspec setup --agent <detected-agent>` (interpolates the detected
+              agent so the command is directly runnable)
+
+              - agents-md missing → `kspec agents generate` (the dedicated command; replaces the
+              `kspec setup` fallback that was the original false claim)
+
+
+              Added dedicated tests for each path plus a strict regression on
+              @doctor-reports-actionable-state ac-all-actionable that flags any warning/error
+              guidance whose only resolution is bare `kspec setup` (regex: \`kspec
+              setup\\b(?!\\s+--)\`), exempt only when the same guidance also names a specific
+              alternative (`kspec agents generate`, `kspec skill render`, `kspec upgrade`, etc.).
+              Verified at runtime in a fresh temp repo: `node dist/cli/index.js doctor --json` now
+              produces the new guidance strings for hooks and agents-md. Full suite: 7973 passed, 5
+              skipped.
+            created_at: 2026-04-16T06:57:03.300Z
         kind: blocker
       - _ulid: 01KPAG07D6YPP7NK53YP6XYVFS
         anchor:
@@ -150729,5 +150764,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-16T06:35:35.402Z
     created_at: 2026-04-16T06:23:49.256Z
-    updated_at: 2026-04-16T06:35:35.402Z
+    updated_at: 2026-04-16T06:57:03.300Z
     notes: []
