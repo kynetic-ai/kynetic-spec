@@ -14714,6 +14714,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-16T01:16:11.949Z
+  - _ulid: 01KP9XRA2V3M9NYKEP398FB2J4
+    type: success
+    content: A small behavioral reproduction in a temp project was enough to validate the review finding
+      decisively. Deleting a core skill from project state and running 'kspec upgrade --force
+      --json' showed that upgrade reported success while leaving the core skill missing, which made
+      the blocker concrete without needing speculative reasoning or source-only inspection.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-16T01:16:12.251Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
