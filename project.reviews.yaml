@@ -150120,6 +150120,18 @@ reviews:
         runner: npm
         created_at: 2026-04-16T04:13:08.196Z
         completed_at: 2026-04-16T04:13:08.196Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test: reproduced 5 pre-existing EACCES failures in tests/cli-agent-commands.test.ts
+          (createSession mkdir /tmp/.kspec-sessions); 7952 passed, 5 skipped. Cached rerun matched
+          the same failures."
+        name: full test suite
+        required: false
+        runner: npm
+        created_at: 2026-04-16T04:13:11.053Z
+        completed_at: 2026-04-16T04:13:11.053Z
     events:
       - _ulid: 01KPA754G32EBKJG2X1N7HQ7M3
         actor: Jacob Chapel
@@ -150141,6 +150153,13 @@ reviews:
           status: pass
           name: upgrade-command tests
         timestamp: 2026-04-16T04:13:09.154Z
+      - _ulid: 01KPA7WD0VCVMQ5FGQ4G8S1V7R
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: full test suite
+        timestamp: 2026-04-16T04:13:12.091Z
     examined_commit: 130ac7bcf81a1d8c73435c2b105019beb4aa4a0e
     external_links: []
     lifecycle_state: open
@@ -150153,5 +150172,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-16T04:00:29.699Z
-    updated_at: 2026-04-16T04:13:08.196Z
+    updated_at: 2026-04-16T04:13:11.053Z
     notes: []
