@@ -150826,6 +150826,18 @@ reviews:
         required: false
         created_at: 2026-04-16T07:13:05.672Z
         completed_at: 2026-04-16T07:13:05.672Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Repo-level pre-existing validation issues remain in this snapshot, including
+          .kspec/modules/meta.yaml schema error and broad historical coverage/alignment warnings; no
+          evidence this task introduced them.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-16T07:13:08.616Z
+        completed_at: 2026-04-16T07:13:08.616Z
     events:
       - _ulid: 01KPAHHYE9W3MH8R9E3Z3QBZFF
         actor: Jacob Chapel
@@ -150854,6 +150866,13 @@ reviews:
           status: pass
           name: review-evidence
         timestamp: 2026-04-16T07:13:06.737Z
+      - _ulid: 01KPAJ5XJ072NFSYKHDHE3C4P9
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-16T07:13:09.696Z
     examined_commit: 984280cf050f9a564882c8d0ee255f406314766b
     external_links: []
     lifecycle_state: open
@@ -150866,5 +150885,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-16T07:02:15.241Z
-    updated_at: 2026-04-16T07:13:05.672Z
+    updated_at: 2026-04-16T07:13:08.616Z
     notes: []
