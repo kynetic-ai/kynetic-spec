@@ -149728,6 +149728,12 @@ reviews:
         payload:
           thread_ulid: 01KPA660W1A310QGSTXWX0S778
         timestamp: 2026-04-16T03:58:21.406Z
+      - _ulid: 01KPA71C0GZ5PH8N9SCRCY9VK2
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KPA660W1A310QGSTXWX0S778
+        timestamp: 2026-04-16T03:58:26.321Z
     examined_commit: 7315532b204c2a0be9b92296267e9955de501ded
     external_links: []
     lifecycle_state: closed
@@ -150058,6 +150064,8 @@ reviews:
               cli-agent-commands.test.ts (tracked: inbox @01KPA3KE), unchanged by this fix cycle."
             created_at: 2026-04-16T03:58:20.473Z
         kind: nit
+        resolved_at: 2026-04-16T03:58:25.378Z
+        resolved_by: "@claude"
       - _ulid: 01KPA66F2YDPMBSDGZ44CK7SGT
         anchor:
           type: code
@@ -150095,5 +150103,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-16T03:43:57.102Z
     created_at: 2026-04-16T03:30:45.903Z
-    updated_at: 2026-04-16T03:58:20.473Z
+    updated_at: 2026-04-16T03:58:25.378Z
     notes: []
