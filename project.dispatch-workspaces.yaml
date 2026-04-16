@@ -8405,11 +8405,11 @@ workspaces:
     canonical_branch: dispatch/task/detect-stale-integration-target-when-dispatch-base-branch-config-changes/01kkxekw
     canonical_branch_head: dd1a83cf431c45c1b19f24260b313b16ed42e96d
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-18T01:25:42.944Z
+      updated_at: 2026-04-16T16:57:39.065Z
     health:
       status: invalid
       issues:
@@ -8432,17 +8432,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 42a4d2777452d52a41990f9cde2c39326bf86295
-      updated_at: 2026-03-18T01:25:42.944Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:57:39.065Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KKXEKWMZN0E7E6V7458E0BV8"
     task_slug: detect-stale-integration-target-when-dispatch-base-branch-config-changes
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:57:39.065Z
       last_active_at: 2026-03-18T01:13:59.578Z
-      last_reconciled_at: 2026-03-18T01:25:42.944Z
+      last_reconciled_at: 2026-04-16T16:57:39.065Z
       created_at: 2026-03-18T00:24:21.425Z
-      updated_at: 2026-03-18T01:25:42.944Z
+      updated_at: 2026-04-16T16:57:39.065Z
     workspace_id: dispatch-workspace-01KKXEKWMZN0E7E6V7458E0BV8
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
