@@ -11551,11 +11551,11 @@ workspaces:
     canonical_branch: dispatch/task/fix-default-kspec-cli-path-pointing-to-nonexistent-bin-kspec-cjs/01km24pw
     canonical_branch_head: 0a4f8ab9550dfed4eec1c249f3cdd926b13ee0c2
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-19T04:55:20.575Z
+      updated_at: 2026-04-16T16:58:36.980Z
     health:
       status: invalid
       issues:
@@ -11578,17 +11578,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: bb5471acddfb9905490cdced154f7a52a26a0fdc
-      updated_at: 2026-03-19T04:55:20.575Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:58:36.980Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KM24PWVNKNRR0P0BDKB643ZT"
     task_slug: fix-default-kspec-cli-path-pointing-to-nonexistent-bin-kspec-cjs
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:58:36.980Z
       last_active_at: 2026-03-19T04:45:31.946Z
-      last_reconciled_at: 2026-03-19T04:55:20.575Z
+      last_reconciled_at: 2026-04-16T16:58:36.980Z
       created_at: 2026-03-19T04:33:24.141Z
-      updated_at: 2026-03-19T04:55:20.575Z
+      updated_at: 2026-04-16T16:58:36.980Z
     workspace_id: dispatch-workspace-01KM24PWVNKNRR0P0BDKB643ZT
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
