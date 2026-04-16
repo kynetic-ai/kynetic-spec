@@ -26818,7 +26818,7 @@ runs:
     completed_at: 2026-04-16T02:58:31.302Z
   - _ulid: 01KPA4487Q6M8KYW3NJ1J8EBX4
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -26830,7 +26830,14 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-16T03:08:24.143Z
-        completed_at: 2026-04-16T03:08:24.143Z
+        completed_at: 2026-04-16T03:08:27.404Z
+        notes: "Reflections: success = temp-project behavioral reproduction caught a real uncovered
+          regression; friction = force-path scaffold semantics are implemented inconsistently across
+          upgrade steps."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-16T03:08:27.404Z
+        completed_at: 2026-04-16T03:08:27.404Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-16T03:07:35.031Z
