@@ -892,11 +892,30 @@ async function writeScaffoldState(projectDir: string, state: ScaffoldState): Pro
 const DEFAULT_REFLECTION_HOOK_NAME = "default-session-reflect";
 
 /**
+ * Turn count value that marks the first session.idle event of an invocation.
+ *
+ * Session idle events are emitted per-turn. Filtering on turn_count === 1
+ * restricts the default reflection hook to the first idle event of each
+ * invocation instead of firing after every turn in a multi-turn session.
+ *
+ * This MUST remain a numeric literal. Hook filter matching uses strict
+ * equality (=== ) against the payload's turn_count, which is typed as
+ * z.number(). A string "1" would never match the numeric payload value
+ * and would silently disable the filter.
+ *
+ * AC: @default-session-reflection-hook ac-fires-once-per-invocation
+ */
+const DEFAULT_REFLECTION_HOOK_FIRST_TURN: number = 1;
+
+/**
  * Ensure the default session reflection hook exists in the project meta.
  *
  * Creates a single hook that:
  * - Fires on session.idle event
- * - Applies to every agent session (no filter)
+ * - Applies to every agent session (not scoped to a specific agent)
+ * - Carries a filter restricting it to the first idle event (turn_count === 1)
+ *   so reflection runs once per invocation, not after every turn of a
+ *   multi-turn session
  * - Prompts the session to run the reflect skill
  *
  * Idempotency rules:
@@ -907,6 +926,7 @@ const DEFAULT_REFLECTION_HOOK_NAME = "default-session-reflect";
  * AC: @default-session-reflection-hook ac-reflection-hook-present
  * AC: @default-session-reflection-hook ac-hook-idempotent
  * AC: @default-session-reflection-hook ac-hook-removable
+ * AC: @default-session-reflection-hook ac-fires-once-per-invocation
  */
 async function ensureDefaultReflectionHook(
   projectDir: string,
@@ -940,11 +960,17 @@ async function ensureDefaultReflectionHook(
     }
 
     // AC: @default-session-reflection-hook ac-reflection-hook-present
+    // AC: @default-session-reflection-hook ac-fires-once-per-invocation
     if (!dryRun) {
       await saveHook(ctx, {
         _ulid: ulid(),
         name: DEFAULT_REFLECTION_HOOK_NAME,
         on: "session.idle",
+        // Restrict to the first idle event of an invocation so reflection
+        // does not fire after every turn of a multi-turn session.
+        // The filter value MUST be numeric; hook filter matching uses strict
+        // equality against a z.number() payload field.
+        filter: { turn_count: DEFAULT_REFLECTION_HOOK_FIRST_TURN },
         action: {
           type: "session_prompt",
           prompt: "Run session reflection using /kspec:reflect",

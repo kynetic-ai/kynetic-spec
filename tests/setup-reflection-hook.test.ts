@@ -12,6 +12,7 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import * as YAML from "yaml";
+import { matchesFilter } from "../src/schema/hooks.js";
 import { cleanupTempDir, createTempDir, initGitRepo, kspec } from "./helpers/cli.js";
 
 /**
@@ -95,7 +96,8 @@ describe("default reflection hook creation", () => {
   });
 
   // AC: @default-session-reflection-hook ac-reflection-hook-present
-  it("creates a reflection hook that fires on session.idle with no agent filter", async () => {
+  // AC: @default-session-reflection-hook ac-fires-once-per-invocation
+  it("creates a reflection hook that fires on session.idle with a first-turn filter", async () => {
     const result = await kspec("setup --no-hooks --skip-skills", tempDir);
     expect(result.exitCode).toBe(0);
 
@@ -104,8 +106,15 @@ describe("default reflection hook creation", () => {
 
     expect(reflectHook).toBeDefined();
     expect(reflectHook!.on).toBe("session.idle");
-    expect(reflectHook!.filter).toBeUndefined();
     expect(reflectHook!.enabled).toBe(true);
+    // Hook is NOT scoped to a specific agent (no agent_id filter), but it
+    // IS restricted to the first idle event of an invocation via turn_count.
+    expect(reflectHook!.filter).toBeDefined();
+    expect(reflectHook!.filter).toEqual({ turn_count: 1 });
+    // turn_count must be numeric so strict-equality filter matching against
+    // the z.number() payload field works. A string "1" would silently
+    // disable the filter.
+    expect(typeof reflectHook!.filter!.turn_count).toBe("number");
   });
 
   // AC: @default-session-reflection-hook ac-reflection-hook-present
@@ -126,6 +135,71 @@ describe("default reflection hook creation", () => {
 
     const state = await readScaffoldState(tempDir);
     expect(state.reflectionHookScaffolded).toBe(true);
+  });
+
+  // AC: @default-session-reflection-hook ac-fires-once-per-invocation
+  // Semantic check: drive the hook filter through matchesFilter() with
+  // synthetic session.idle payloads and verify it matches the first turn
+  // and rejects a later turn. A shape-only assertion (filter.turn_count===1)
+  // does not exercise matchesFilter, so it would not catch a type drift
+  // (e.g. numeric → string) that silently disables the filter at runtime.
+  it("scaffolded hook matches the first session.idle event but not later turns", async () => {
+    await kspec("setup --no-hooks --skip-skills", tempDir);
+
+    const hooks = await readHooks(tempDir);
+    const reflectHook = hooks.find((h) => h.name === "default-session-reflect");
+    expect(reflectHook).toBeDefined();
+
+    const envelope = {
+      event_id: "01JEVENT000000000000000000",
+      event_type: "session.idle",
+      emitted_at: "2026-04-15T00:00:00.000Z",
+      source_type: "invocation_lifecycle",
+      source_id: "01JSESS000000000000000000",
+    };
+    const firstTurnPayload = {
+      session_id: "01JSESS000000000000000000",
+      agent_id: "task-worker",
+      task_ref: "@task-example",
+      turn_count: 1,
+      stop_reason: "end_turn",
+      turn_duration_ms: 1000,
+    };
+    const secondTurnPayload = { ...firstTurnPayload, turn_count: 2 };
+    const laterTurnPayload = { ...firstTurnPayload, turn_count: 7 };
+
+    expect(matchesFilter(reflectHook!.filter, envelope, firstTurnPayload)).toBe(true);
+    expect(matchesFilter(reflectHook!.filter, envelope, secondTurnPayload)).toBe(false);
+    expect(matchesFilter(reflectHook!.filter, envelope, laterTurnPayload)).toBe(false);
+  });
+
+  // AC: @default-session-reflection-hook ac-fires-once-per-invocation
+  // Round-trip check: write the scaffolded meta file and read it back through
+  // the YAML parser, then verify the filter's turn_count survives as a
+  // number. A string or accidental YAML quoting would silently change
+  // matchesFilter semantics, so type preservation through disk persistence
+  // is part of the acceptance criterion.
+  it("preserves numeric filter value through YAML round-trip", async () => {
+    await kspec("setup --no-hooks --skip-skills", tempDir);
+
+    const metaPath = path.join(tempDir, "kynetic.meta.yaml");
+    const rawYaml = await fs.readFile(metaPath, "utf-8");
+    const parsed = YAML.parse(rawYaml) as {
+      hooks?: Array<{
+        name: string;
+        filter?: Record<string, unknown>;
+      }>;
+    };
+    const reflectHook = (parsed.hooks || []).find((h) => h.name === "default-session-reflect");
+
+    expect(reflectHook).toBeDefined();
+    expect(reflectHook!.filter).toBeDefined();
+    const turnCount = reflectHook!.filter!.turn_count;
+    expect(typeof turnCount).toBe("number");
+    expect(turnCount).toBe(1);
+    // Belt-and-suspenders: explicitly assert it is NOT the string "1"
+    // since YAML.parse("'1'") returns a string that looks equal in stringification.
+    expect(turnCount).not.toBe("1");
   });
 });
 
