@@ -150607,6 +150607,13 @@ reviews:
           status: pass
           name: review-evidence
         timestamp: 2026-04-16T06:34:36.913Z
+      - _ulid: 01KPAFZDR7JA79TYHV1GPQKAY7
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPAFZCS67P3GYZ4QBKK1EHJB
+        timestamp: 2026-04-16T06:34:39.752Z
     examined_commit: 6794e0ed53fa7832fed56de4b8bc31fcff73bd5e
     external_links: []
     lifecycle_state: open
@@ -150616,8 +150623,29 @@ reviews:
       content_hash: ""
       ref: "@01KNXYJ66ZQ5TBZ69YFCKK3J2T"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KPAFZCS67P3GYZ4QBKK1EHJB
+        anchor:
+          type: code
+          commit: 6794e0ed53fa7832fed56de4b8bc31fcff73bd5e
+          line_end: 461
+          line_start: 314
+          path: src/parser/doctor.ts
+          side: head
+        entries:
+          - _ulid: 01KPAFZCS7VFTSW5QAFV7WJC52
+            author: Jacob Chapel
+            body: "The actionable-message audit is still incomplete. This file still emits generic `kspec setup`
+              guidance for multiple warning/error paths (, , , and  missing) instead of naming the
+              exact setup action. I verified this is not just dead code: running `node
+              dist/cli/index.js doctor --json` in a fresh temp repo produced the  error with
+              guidance `Run   cd /home/chapel/Projects/kynetic-spec-dispatch && kspec setup to
+              generate kspec-agents.md`. Because the task explicitly called out replacing vague
+              setup guidance with specific commands/flags, these remaining branches still leave
+              doctor output ambiguous in exactly the scenario this work was meant to fix."
+            created_at: 2026-04-16T06:34:38.759Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-16T06:23:49.256Z
-    updated_at: 2026-04-16T06:34:35.870Z
+    updated_at: 2026-04-16T06:34:38.759Z
     notes: []
