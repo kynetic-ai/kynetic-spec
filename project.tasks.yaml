@@ -26270,7 +26270,7 @@
   type: task
   spec_ref: "@doctor-reports-actionable-state"
   plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-scaffold-project-config"
@@ -26280,7 +26280,7 @@
     - cli
     - doctor
   review_ref: "@01KPAFBJG8K4ZGDTED0K2Y1KMA"
-  notes_count: 5
+  notes_count: 6
   todos_count: 0
   created_at: 2026-04-11T09:39:27.071Z
   started_at: 2026-04-16T06:07:58.680Z

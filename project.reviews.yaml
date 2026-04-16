@@ -150652,9 +150652,25 @@ reviews:
           status: pass
           name: review-evidence
         timestamp: 2026-04-16T06:35:22.420Z
+      - _ulid: 01KPAG143AMZJD0FP1F2GA2AK0
+        actor: codex-reviewer
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-16T06:35:35.402Z
+      - _ulid: 01KPAG143AHZBE3191D452CKGD
+        actor: codex-reviewer
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-16T06:35:35.402Z
     examined_commit: 6794e0ed53fa7832fed56de4b8bc31fcff73bd5e
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -150704,7 +150720,14 @@ reviews:
               output ambiguous in exactly the scenario this work was meant to fix."
             created_at: 2026-04-16T06:35:06.022Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex-reviewer
+        role: reviewer
+        created_at: 2026-04-16T06:35:35.402Z
     created_at: 2026-04-16T06:23:49.256Z
-    updated_at: 2026-04-16T06:35:21.450Z
+    updated_at: 2026-04-16T06:35:35.402Z
     notes: []
