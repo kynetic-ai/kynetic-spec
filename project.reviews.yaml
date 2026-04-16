@@ -150262,6 +150262,19 @@ reviews:
         runner: manual
         created_at: 2026-04-16T05:11:05.739Z
         completed_at: 2026-04-16T05:11:05.739Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Fails on reviewed snapshot and on integration base
+          2d24a0b0a4d99e19df22ac5789c627697ac962be with identical pre-existing shadow/meta issues
+          (schema error in .kspec/modules/meta.yaml plus longstanding warnings). Not introduced by
+          this task.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-16T05:11:08.695Z
+        completed_at: 2026-04-16T05:11:08.695Z
     events:
       - _ulid: 01KPAAJ5RMMWRMCPNCEM775SVA
         actor: Jacob Chapel
@@ -150290,6 +150303,13 @@ reviews:
           status: pass
           name: review-evidence
         timestamp: 2026-04-16T05:11:06.774Z
+      - _ulid: 01KPAB6H4P1W40A147Y10E27XF
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-16T05:11:09.718Z
     examined_commit: 8527f5cea4d38938bcde4dbbc64aba92e315baf0
     external_links: []
     lifecycle_state: open
@@ -150302,5 +150322,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-16T05:00:02.709Z
-    updated_at: 2026-04-16T05:11:05.739Z
+    updated_at: 2026-04-16T05:11:08.695Z
     notes: []
