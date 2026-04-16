@@ -2496,6 +2496,34 @@ export function isWorkspaceRecordDirty(
   return false;
 }
 
+/**
+ * Check whether all tracked physical artifacts for a workspace record are
+ * absent from the filesystem and git. Used by reconciliation self-heal to
+ * detect records whose reap removed artifacts but lost the completion
+ * write.
+ *
+ * Returns true only when BOTH the canonical branch ref is missing locally
+ * AND the worker worktree path is missing from disk. Either signal alone is
+ * insufficient — a branch can be missing because it was never created, and a
+ * worktree can be gone because it was never provisioned.
+ *
+ * AC: @dispatch-workspace-registry ac-successful-cleanup-persists-completion
+ */
+async function workspacePhysicalArtifactsAbsent(
+  projectDir: string,
+  record: DispatchWorkspaceRecord,
+): Promise<boolean> {
+  const branchExists = await refExists(projectDir, `refs/heads/${record.canonical_branch}`);
+  if (branchExists) return false;
+  const workerExists = await pathExists(record.worktrees.worker.path);
+  if (workerExists) return false;
+  if (record.worktrees.reviewer) {
+    const reviewerExists = await pathExists(record.worktrees.reviewer.path);
+    if (reviewerExists) return false;
+  }
+  return true;
+}
+
 export async function reconcileDispatchWorkspaceRegistry(
   projectDir: string,
   taskStatusByRef?: Map<string, ResolveDispatchWorkspaceCleanupStateOptions["taskStatus"]>,
@@ -2525,11 +2553,41 @@ export async function reconcileDispatchWorkspaceRegistry(
     ))
       ? await resolveCommit(projectDir, record.canonical_branch)
       : record.canonical_branch_head;
-    const { cleanup, integration } = resolveRegistryStateForTaskStatus(
+    let { cleanup, integration } = resolveRegistryStateForTaskStatus(
       currentTaskStatus,
       record,
       now,
     );
+
+    // AC: @dispatch-workspace-registry ac-successful-cleanup-persists-completion
+    // Self-heal for lost completion writes: if a reap successfully removed
+    // physical artifacts but the follow-up shadow commit was lost (crash
+    // between removal and commit), the record is stuck at
+    // cleanup.status=scheduled with no artifacts on disk. Heal it forward
+    // by transitioning cleanup.status to completed.
+    //
+    // Preconditions: cleanup.eligible must be true (i.e. integration is
+    // resolved and cleanup was scheduled), the cleanup status must not
+    // already be completed (idempotency), and the canonical branch +
+    // worker worktree must both be absent. The worker worktree check is
+    // needed because a standalone missing branch can also mean the branch
+    // was never created; combined with a missing worker worktree it's
+    // strong evidence that a reap ran physical removal.
+    if (
+      cleanup.eligible &&
+      cleanup.status !== "completed" &&
+      cleanup.status !== "blocked"
+    ) {
+      const physicalArtifactsGone = await workspacePhysicalArtifactsAbsent(projectDir, record);
+      if (physicalArtifactsGone) {
+        cleanup = {
+          ...cleanup,
+          status: "completed",
+          updated_at: now,
+        };
+      }
+    }
+
     const activeRole = activeRoleByTaskRef?.get(record.task_ref) ?? null;
     const lifecycleState = resolveLifecycleState(
       currentTaskStatus,
@@ -3045,32 +3103,36 @@ export async function reapDispatchWorkspace(
     return { taskRef, action: "none", blockedReason: null };
   }
 
+  // AC: @dispatch-workspace-registry ac-10
+  // Idempotency: if the registry already has cleanup.status=completed for
+  // this workspace, do not re-run physical cleanup and do not produce a new
+  // shadow commit. The record is terminal on the cleanup axis.
+  const existingRegistryRecord = await loadWorkspaceRecordForWorktreeRoot(
+    projectDir,
+    taskRef,
+    existing.metadata.worktreeRoot,
+  );
+  if (existingRegistryRecord?.cleanup.status === "completed") {
+    return { taskRef, action: "reaped", blockedReason: null };
+  }
+
   const activeTaskRefs = new Set(options?.activeTaskRefs ?? []);
   if (activeTaskRefs.has(taskRef)) {
     const blockedReason =
       "Cleanup blocked: canonical branch still has an active dispatch invocation.";
-    const metadata: DispatchWorkspaceMetadata = {
-      ...existing.metadata,
-      lifecycleState: "cleanup_blocked",
-      cleanupBlockedReason: blockedReason,
-      cleanupScheduledAt: existing.metadata.cleanupScheduledAt ?? new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-    await writeWorkspaceMetadata(existing.workerWorktreeDir, metadata);
+    // AC: @dispatch-workspace-registry ac-8
+    // Persist the blocked transition through the shadow-mutation path so it
+    // survives daemon restart and worker-worktree loss. The worker metadata
+    // file is also updated for local consistency.
+    await persistCleanupBlockedState(projectDir, existing, blockedReason);
     return { taskRef, action: "cleanup_blocked", blockedReason };
   }
 
   if (!existing.metadata.cleanupEligible) {
     const blockedReason =
       "Cleanup blocked: workspace integration outcome is unresolved, so the canonical branch must be retained.";
-    const metadata: DispatchWorkspaceMetadata = {
-      ...existing.metadata,
-      lifecycleState: "cleanup_blocked",
-      cleanupBlockedReason: blockedReason,
-      cleanupScheduledAt: existing.metadata.cleanupScheduledAt ?? new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-    await writeWorkspaceMetadata(existing.workerWorktreeDir, metadata);
+    // AC: @dispatch-workspace-registry ac-8
+    await persistCleanupBlockedState(projectDir, existing, blockedReason);
     return { taskRef, action: "cleanup_blocked", blockedReason };
   }
 
@@ -3116,7 +3178,141 @@ export async function reapDispatchWorkspace(
   } else if (existing.metadata.branchProvenance.rehydrated) {
     await deleteRehydratedAdoptedBranch(projectDir, existing.metadata.canonicalBranch);
   }
+
+  // AC: @dispatch-workspace-registry ac-successful-cleanup-persists-completion
+  // AC: @dispatch-workspace-registry ac-successful-cleanup-populates-closed-at
+  // AC: @dispatch-workspace-registry ac-8
+  // Write the completion transition AFTER successful physical removal so a
+  // pre-removal write cannot briefly advertise a record as closed while its
+  // worktree still exists. If the shadow commit fails after this point, the
+  // record is left with cleanup.status=scheduled and no physical artifacts;
+  // reconciliation self-heals that state forward on its next cycle.
+  await persistCleanupCompletedState(projectDir, taskRef, existingRegistryRecord);
+
   return { taskRef, action: "reaped", blockedReason: null };
+}
+
+/**
+ * Persist a blocked cleanup transition to the workspace registry through the
+ * shadow-mutation path, then mirror the state into the worker worktree's
+ * on-disk metadata file for local consistency.
+ *
+ * AC: @dispatch-workspace-registry ac-8
+ */
+async function persistCleanupBlockedState(
+  projectDir: string,
+  existing: {
+    canonicalBranch: string;
+    workerWorktreeDir: string;
+    metadata: DispatchWorkspaceMetadata;
+  },
+  blockedReason: string,
+): Promise<void> {
+  const now = new Date().toISOString();
+  const existingRecord = await loadWorkspaceRecordForWorktreeRoot(
+    projectDir,
+    existing.metadata.taskRef,
+    existing.metadata.worktreeRoot,
+  );
+
+  if (existingRecord) {
+    const alreadyBlocked =
+      existingRecord.cleanup.status === "blocked" &&
+      existingRecord.cleanup.reason === blockedReason &&
+      existingRecord.lifecycle_state === "cleanup_blocked";
+    if (alreadyBlocked) {
+      // AC: @dispatch-workspace-registry ac-10 — no-op re-entry must not
+      // bump updated_at or produce a shadow commit.
+      return;
+    }
+    const updatedRecord: DispatchWorkspaceRecord = {
+      ...existingRecord,
+      lifecycle_state: "cleanup_blocked",
+      cleanup: {
+        status: "blocked",
+        eligible: existingRecord.cleanup.eligible,
+        reason: blockedReason,
+        detail: blockedReason,
+        updated_at: now,
+      },
+      timestamps: {
+        ...existingRecord.timestamps,
+        updated_at: now,
+      },
+    };
+    await persistWorkspaceRecord(projectDir, updatedRecord);
+    // Preserve local-metadata fields that toMetadata() does not emit for
+    // non-eligible cleanup state (cleanupScheduledAt is null when
+    // cleanup.eligible=false). Callers of the on-disk metadata rely on
+    // cleanupScheduledAt as a signal that cleanup was attempted.
+    if (await pathExists(existing.workerWorktreeDir)) {
+      const refreshedMetadata = await readWorkspaceMetadata(existing.workerWorktreeDir);
+      if (refreshedMetadata) {
+        await writeWorkspaceMetadata(existing.workerWorktreeDir, {
+          ...refreshedMetadata,
+          cleanupBlockedReason: blockedReason,
+          cleanupScheduledAt:
+            refreshedMetadata.cleanupScheduledAt ?? existing.metadata.cleanupScheduledAt ?? now,
+        });
+      }
+    }
+    return;
+  }
+
+  // Fallback path: no registry record found. Update the worker worktree
+  // metadata file so local state reflects the block even without a registry
+  // record to update.
+  const metadata: DispatchWorkspaceMetadata = {
+    ...existing.metadata,
+    lifecycleState: "cleanup_blocked",
+    cleanupBlockedReason: blockedReason,
+    cleanupScheduledAt: existing.metadata.cleanupScheduledAt ?? now,
+    updatedAt: now,
+  };
+  await writeWorkspaceMetadata(existing.workerWorktreeDir, metadata);
+}
+
+/**
+ * Persist the cleanup-completed transition after successful physical removal.
+ * Writes cleanup.status=completed, closed_at, and updated_at through the
+ * shadow-mutation path.
+ *
+ * AC: @dispatch-workspace-registry ac-successful-cleanup-persists-completion
+ * AC: @dispatch-workspace-registry ac-successful-cleanup-populates-closed-at
+ * AC: @dispatch-workspace-registry ac-8
+ */
+async function persistCleanupCompletedState(
+  projectDir: string,
+  taskRef: string,
+  existingRegistryRecord: LoadedDispatchWorkspaceRecord | undefined,
+): Promise<void> {
+  if (!existingRegistryRecord) {
+    // No registry record exists to update. This is a legacy or
+    // pre-registry workspace — the caller has already removed physical
+    // artifacts; there is no registry state to transition.
+    return;
+  }
+
+  const now = new Date().toISOString();
+  const updatedRecord: DispatchWorkspaceRecord = {
+    ...existingRegistryRecord,
+    lifecycle_state: "closed",
+    cleanup: {
+      ...existingRegistryRecord.cleanup,
+      status: "completed",
+      updated_at: now,
+    },
+    timestamps: {
+      ...existingRegistryRecord.timestamps,
+      updated_at: now,
+      closed_at: existingRegistryRecord.timestamps.closed_at ?? now,
+    },
+  };
+  await persistWorkspaceRecord(projectDir, updatedRecord);
+  // commitWorkspaceRegistryToShadow runs inside persistWorkspaceRecord and
+  // will throw if the shadow commit fails. Let it propagate so callers know
+  // the completion state is not durable.
+  void taskRef;
 }
 
 export async function reconcileDispatchWorkspaceArtifacts(
