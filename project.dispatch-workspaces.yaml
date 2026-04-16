@@ -10788,11 +10788,11 @@ workspaces:
     canonical_branch: dispatch/task/task-event-cli/01kkzpw0
     canonical_branch_head: 2b12a78869dce6fc1d0f3f4d90926a3fd620cf54
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-18T15:21:48.632Z
+      updated_at: 2026-04-16T16:58:22.740Z
     health:
       status: invalid
       issues:
@@ -10813,17 +10813,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 2dcce1c1b50abdac83c5d5dd1add93610e82e8e4
-      updated_at: 2026-03-18T15:21:48.632Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:58:22.740Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KKZPW000MZT1YMECENJX42A0"
     task_slug: task-event-cli
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:58:22.740Z
       last_active_at: 2026-03-18T15:11:31.006Z
-      last_reconciled_at: 2026-03-18T15:21:48.632Z
+      last_reconciled_at: 2026-04-16T16:58:22.740Z
       created_at: 2026-03-18T14:59:01.764Z
-      updated_at: 2026-03-18T15:21:48.632Z
+      updated_at: 2026-04-16T16:58:22.740Z
     workspace_id: dispatch-workspace-01KKZPW000MZT1YMECENJX42A0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
