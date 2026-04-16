@@ -6923,6 +6923,9 @@ modules:
           of that file as part of its output. The file format is
           chosen and documented in the release skill so authoring
           and CLI consumption stay in sync.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
