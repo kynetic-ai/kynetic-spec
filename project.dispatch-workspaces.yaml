@@ -23665,11 +23665,11 @@ workspaces:
     canonical_branch: dispatch/task/fix-split-backend-mutex-hold-lock-through-write-flush/01kmknrv
     canonical_branch_head: 014232b9cee59638e28bac59aae8f6ff8b5e1f36
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-26T03:51:27.606Z
+      updated_at: 2026-04-16T17:01:01.014Z
     health:
       status: invalid
       issues:
@@ -23692,17 +23692,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 77b7853efbde33a5f1f229bf8623faaef696153c
-      updated_at: 2026-03-26T03:51:27.606Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T17:01:01.014Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KMKNRVZK0P81KHK5Z6RH841D"
     task_slug: fix-split-backend-mutex-hold-lock-through-write-flush
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:01:01.014Z
       last_active_at: 2026-03-26T03:34:14.975Z
-      last_reconciled_at: 2026-03-26T03:51:27.606Z
+      last_reconciled_at: 2026-04-16T17:01:01.014Z
       created_at: 2026-03-25T23:41:00.167Z
-      updated_at: 2026-03-26T03:51:27.606Z
+      updated_at: 2026-04-16T17:01:01.014Z
     workspace_id: dispatch-workspace-01KMKNRVZK0P81KHK5Z6RH841D
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
