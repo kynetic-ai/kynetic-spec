@@ -19139,11 +19139,11 @@ workspaces:
     canonical_branch: dispatch/task/task-ui-session-idle/01kma74f
     canonical_branch_head: ede5ca68ef95835b8de7f87e8914246c2e21ddb4
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-22T16:52:14.597Z
+      updated_at: 2026-04-16T17:00:13.186Z
     health:
       status: invalid
       issues:
@@ -19164,17 +19164,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 4415be9ef9c4a5e62b1e4c6e74d64d73d3ba0a3f
-      updated_at: 2026-03-22T16:52:14.597Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T17:00:13.186Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KMA74FB1KFR4938XKWNT6M2K"
     task_slug: task-ui-session-idle
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:00:13.186Z
       last_active_at: 2026-03-22T16:41:56.231Z
-      last_reconciled_at: 2026-03-22T16:52:14.597Z
+      last_reconciled_at: 2026-04-16T17:00:13.186Z
       created_at: 2026-03-22T16:25:02.039Z
-      updated_at: 2026-03-22T16:52:14.597Z
+      updated_at: 2026-04-16T17:00:13.186Z
     workspace_id: dispatch-workspace-01KMA74FB1KFR4938XKWNT6M2K
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
