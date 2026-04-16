@@ -439,3 +439,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-16T02:39:13.728Z
+  - _ulid: 01KPA3DKMHTNDXEFWHRD05K9MC
+    content: "Fix cycle 16: addressed cycle 15 blocker — upgrade was not durably persisting the recorded
+      version because step 7 wrote .setup-state.json directly but never committed the shadow
+      worktree. Root cause: the upgrade pipeline lacked a commitIfShadow() call after
+      writeSetupState(). Fix: added commitIfShadow(ctx.shadow, 'upgrade', undefined, 'v<version>')
+      immediately after writeSetupState() in src/cli/commands/upgrade.ts:504. Added regression test
+      that reproduces the reviewer's exact scenario: runs upgrade, asserts 'git status --short' in
+      the shadow worktree is empty, and asserts 'git show HEAD:.setup-state.json' contains the new
+      lastKnownVersion. Verified manually — shadow status is now clean and version is committed. All
+      57 upgrade tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-16T02:55:13.042Z
