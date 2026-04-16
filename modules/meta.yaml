@@ -6741,8 +6741,9 @@ modules:
           - given: |
               A fresh project completes full setup
             id: ac-reflection-hook-present
-            then: A single reflection hook is present that fires on the session idle event for every agent
-              session and prompts the session to run the reflect skill
+            then: A single reflection hook is present that triggers on session.idle events from any agent
+              session (not scoped to a specific agent) and prompts the session to run the reflect
+              skill. The hook may carry filters limiting which idle events trigger reflection
             when: |
               The hook list is inspected
           - given: |
