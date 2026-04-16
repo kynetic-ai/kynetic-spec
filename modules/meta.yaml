@@ -6730,7 +6730,7 @@ modules:
           an invocation, not on every turn of a multi-turn session.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to:
