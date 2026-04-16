@@ -26646,7 +26646,7 @@ runs:
     started_at: 2026-04-15T23:56:58.260Z
     completed_at: 2026-04-15T23:58:36.755Z
   - _ulid: 01KP9TRR7E2G97FCY22E3007PQ
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -26704,7 +26704,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-04-16T00:25:50.088Z
-        completed_at: 2026-04-16T00:25:50.088Z
+        completed_at: 2026-04-16T00:26:04.589Z
+        notes: "Captured two new friction observations: one for workflow CLI run-selection ergonomics and
+          one for stale review submission linkage versus the live integration target. Skipped
+          capture for detached-review merge friction because existing observations already cover
+          that pattern."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-16T00:24:01.006Z
+    completed_at: 2026-04-16T00:26:04.590Z
