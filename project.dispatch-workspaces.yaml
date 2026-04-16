@@ -2274,11 +2274,11 @@ workspaces:
     canonical_branch: dispatch/task/implement-branch-provenance-in-dispatch-workspace/01kkk7r8
     canonical_branch_head: f2759aed08a0cf49cc740f28b6a95001dbddbbbe
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-29T01:06:02.426Z
+      updated_at: 2026-04-16T16:55:46.252Z
     health:
       status: stale
       issues:
@@ -2296,17 +2296,17 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: 48408281d10e9f1d5ec6ba581041cd9477006c46
-      updated_at: 2026-03-29T01:06:02.426Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:55:46.252Z
+    lifecycle_state: closed
     resolved_base_branch: main
     task_ref: "@01KKK7R8XY5MSEEWA0E9NKEW76"
     task_slug: implement-branch-provenance-in-dispatch-workspace
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:55:46.252Z
       last_active_at: 2026-03-13T17:46:28.708Z
-      last_reconciled_at: 2026-03-29T01:06:02.426Z
+      last_reconciled_at: 2026-04-16T16:55:46.252Z
       created_at: 2026-03-13T16:32:24.945Z
-      updated_at: 2026-03-29T01:06:02.426Z
+      updated_at: 2026-04-16T16:55:46.252Z
     workspace_id: dispatch-workspace-01KKK7R8XY5MSEEWA0E9NKEW76
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
