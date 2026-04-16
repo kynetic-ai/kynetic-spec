@@ -35996,11 +35996,11 @@ workspaces:
     canonical_branch: dispatch/task/stabilize-flaky-file-lock-same-process-reclaim-test/01knabhk
     canonical_branch_head: c36094b173afa341f8e985018648d0c6363db25f
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-04-03T19:25:10.825Z
+      updated_at: 2026-04-16T17:03:28.119Z
     health:
       status: healthy
       issues: []
@@ -36013,17 +36013,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: fb3342db29d0f52d03646cc5ec095e7d9bd0c310
-      updated_at: 2026-04-03T19:25:10.825Z
-    lifecycle_state: closing
+      updated_at: 2026-04-16T17:03:28.119Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KNABHKZG59Z9JS7VDJCKFJ7H"
     task_slug: stabilize-flaky-file-lock-same-process-reclaim-test
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:03:28.119Z
       last_active_at: 2026-04-03T19:11:17.368Z
-      last_reconciled_at: 2026-04-03T19:25:53.342Z
+      last_reconciled_at: 2026-04-16T17:03:28.119Z
       created_at: 2026-04-03T19:02:05.868Z
-      updated_at: 2026-04-03T19:25:53.342Z
+      updated_at: 2026-04-16T17:03:28.119Z
     workspace_id: dispatch-workspace-01KNABHKZG59Z9JS7VDJCKFJ7H
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
