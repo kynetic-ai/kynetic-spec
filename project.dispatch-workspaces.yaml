@@ -29931,11 +29931,11 @@ workspaces:
     canonical_branch: dispatch/task/task-ci-full-e2e/01kmz1bx
     canonical_branch_head: 0235550eb614d651ed4c968d4eace64cded4a0ab
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-04-01T10:33:43.390Z
+      updated_at: 2026-04-16T17:02:16.205Z
     health:
       status: healthy
       issues: []
@@ -29948,17 +29948,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 53c43f40ee50dbb8e7935d9ccb9ebe69a5be4b1c
-      updated_at: 2026-04-01T10:33:43.390Z
-    lifecycle_state: closing
+      updated_at: 2026-04-16T17:02:16.205Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KMZ1BXPTATS8CAVJ2NMYADPW"
     task_slug: task-ci-full-e2e
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:02:16.205Z
       last_active_at: 2026-04-01T10:24:02.622Z
-      last_reconciled_at: 2026-04-01T10:34:45.873Z
+      last_reconciled_at: 2026-04-16T17:02:16.205Z
       created_at: 2026-03-31T20:13:04.624Z
-      updated_at: 2026-04-01T10:34:45.873Z
+      updated_at: 2026-04-16T17:02:16.205Z
     workspace_id: dispatch-workspace-01KMZ1BXPTATS8CAVJ2NMYADPW
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
