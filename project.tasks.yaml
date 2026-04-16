@@ -26412,7 +26412,7 @@
   slugs: []
   title: Stabilize cli-agent-commands session-store tests under restricted /tmp permissions
   type: bug
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 2
@@ -26426,4 +26426,5 @@
   created_at: 2026-04-16T01:53:12.241Z
   started_at: 2026-04-16T01:55:25.294Z
   submitted_at: 2026-04-16T02:06:55.270Z
+  completed_at: 2026-04-16T02:20:58.135Z
   automation: eligible

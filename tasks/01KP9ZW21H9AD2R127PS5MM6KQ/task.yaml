@@ -10,8 +10,12 @@ description: "npm test fails in tests/cli-agent-commands.test.ts with five deter
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Reviewed and approved. The task was a duplicate of
+  @task-fix-cli-agent-session-store-eacces; dev and the task branch were already identical at
+  65feefa131b93d2617358b6cd9f0c93c8fbaa589, so the manual merge was a no-op. Verified with targeted
+  cli-agent-commands tests and a full real npm test run.
 depends_on: []
 context: []
 priority: 2
@@ -71,8 +75,25 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-16T02:08:56.722Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Reviewed and approved. The task was a duplicate of @task-fix-cli-agent-session-store-eacces;
+          dev and the task branch were already identical at
+          65feefa131b93d2617358b6cd9f0c93c8fbaa589, so the manual merge was a no-op. Verified with
+          targeted cli-agent-commands tests and a full real npm test run.
+        previous: null
+      completed_at:
+        new: 2026-04-16T02:20:58.135Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-16T02:20:58.143Z
 created_at: 2026-04-16T01:53:12.241Z
 started_at: 2026-04-16T01:55:25.294Z
 submitted_at: 2026-04-16T02:06:55.270Z
+completed_at: 2026-04-16T02:20:58.135Z
 todos: []
 automation: eligible
