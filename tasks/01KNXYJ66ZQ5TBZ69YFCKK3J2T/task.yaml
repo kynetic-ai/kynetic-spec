@@ -72,7 +72,7 @@ description: |
 spec_ref: "@doctor-reports-actionable-state"
 plan_ref: "@plan-init-setup-and-upgrade-rough-edges"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-scaffold-project-config"
@@ -87,8 +87,8 @@ review_ref: "@01KPADFT2SV73JMA7ACM626N5V"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-doctor-accuracy/01knxyj6
-  captured_at: 2026-04-16T05:48:50.434Z
-  commit: d463ef96be9ccd0cc9074bcccbf3e4a34b8afe19
+  captured_at: 2026-04-16T06:19:37.250Z
+  commit: 6794e0ed53fa7832fed56de4b8bc31fcff73bd5e
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-doctor-accuracy/01knxyj6
@@ -164,8 +164,35 @@ history:
         previous: 2026-04-16T05:00:27.020Z
     command: task-start
     timestamp: 2026-04-16T06:07:58.680Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-doctor-accuracy/01knxyj6
+          captured_at: 2026-04-16T06:19:37.250Z
+          commit: 6794e0ed53fa7832fed56de4b8bc31fcff73bd5e
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-doctor-accuracy/01knxyj6
+        previous:
+          review_url: null
+          branch: dispatch/task/task-doctor-accuracy/01knxyj6
+          captured_at: 2026-04-16T05:48:50.434Z
+          commit: d463ef96be9ccd0cc9074bcccbf3e4a34b8afe19
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-doctor-accuracy/01knxyj6
+      submitted_at:
+        new: 2026-04-16T06:19:37.254Z
+        previous: 2026-04-16T05:48:50.437Z
+    command: task-submit
+    timestamp: 2026-04-16T06:19:37.254Z
 created_at: 2026-04-11T09:39:27.071Z
 started_at: 2026-04-16T06:07:58.680Z
-submitted_at: 2026-04-16T05:48:50.437Z
+submitted_at: 2026-04-16T06:19:37.254Z
 todos: []
 automation: eligible
