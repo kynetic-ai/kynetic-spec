@@ -11214,11 +11214,11 @@ workspaces:
     canonical_branch: dispatch/task/task-review-skill-version-docs/01km0nw5
     canonical_branch_head: 8902b7aa1f3e228f12750aa934dd24ec51b853f4
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-18T17:03:47.955Z
+      updated_at: 2026-04-16T16:58:30.473Z
     health:
       status: invalid
       issues:
@@ -11239,17 +11239,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 96603948244358b7704e3319071dc50f19c7613b
-      updated_at: 2026-03-18T17:03:47.955Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:58:30.473Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KM0NW5NMJJDWRHKVQGDERHQM"
     task_slug: task-review-skill-version-docs
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:58:30.473Z
       last_active_at: 2026-03-18T16:51:44.413Z
-      last_reconciled_at: 2026-03-18T17:03:47.955Z
+      last_reconciled_at: 2026-04-16T16:58:30.473Z
       created_at: 2026-03-18T16:01:01.743Z
-      updated_at: 2026-03-18T17:03:47.955Z
+      updated_at: 2026-04-16T16:58:30.473Z
     workspace_id: dispatch-workspace-01KM0NW5NMJJDWRHKVQGDERHQM
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
