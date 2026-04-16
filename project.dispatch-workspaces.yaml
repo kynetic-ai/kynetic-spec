@@ -51899,11 +51899,11 @@ workspaces:
     canonical_branch: dispatch/task/task-bootstrap-failure-output-tail/01kp7v4b
     canonical_branch_head: dc095a697b7ed17340c5951ce6652a7b79a2aebf
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-04-15T07:05:43.617Z
+      updated_at: 2026-04-16T17:05:13.113Z
     health:
       status: healthy
       issues: []
@@ -51916,17 +51916,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 8068a15ad06fdad3f38be42442b38a782e717b1c
-      updated_at: 2026-04-15T07:05:43.617Z
-    lifecycle_state: closing
+      updated_at: 2026-04-16T17:05:13.113Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KP7V4BT94ZKMQTSHMPG3BM10"
     task_slug: task-bootstrap-failure-output-tail
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:05:13.113Z
       last_active_at: 2026-04-15T06:53:07.825Z
-      last_reconciled_at: 2026-04-15T07:05:59.047Z
+      last_reconciled_at: 2026-04-16T17:05:13.113Z
       created_at: 2026-04-15T06:36:42.872Z
-      updated_at: 2026-04-15T07:05:59.047Z
+      updated_at: 2026-04-16T17:05:13.113Z
     workspace_id: dispatch-workspace-01KP7V4BT94ZKMQTSHMPG3BM10
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
