@@ -422,3 +422,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-16T01:54:22.984Z
+  - _ulid: 01KPA22NZX019K0CT2BRB2YREE
+    content: "Fix cycle 15: Addressed cycle 14 blocker — upgrade --force was recreating user-removed
+      reflection hook. Root cause: the previouslyScaffolded check at upgrade.ts:1258 had an `&&
+      \\!force` bypass that let --force override user removal decisions. The spec says scaffold
+      should 'only create what is missing; never overwrite' — --force means re-run when current, not
+      override user intent. Removed the `\\!force` guard and added a behavioral test that exercises
+      the exact repro scenario (init project, hook remove, upgrade --force). All 56 upgrade-command
+      tests pass. 5 pre-existing EACCES failures in cli-agent-commands.test.ts are unrelated
+      (/tmp/.kspec-sessions permission issue)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-16T02:31:46.429Z
