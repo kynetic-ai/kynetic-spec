@@ -39527,11 +39527,11 @@ workspaces:
     canonical_branch: dispatch/task/investigate-full-suite-instability-after-dependency-health-passes-in-review-worktrees/01knhz5f
     canonical_branch_head: 58d872ce04698b021e6dd29ddfefd0f6016406a6
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-04-07T03:06:26.204Z
+      updated_at: 2026-04-16T17:04:10.262Z
     health:
       status: healthy
       issues: []
@@ -39544,17 +39544,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 34dd3d45c187a99ec1c4944bb4914e6549935f6d
-      updated_at: 2026-04-07T03:06:26.204Z
-    lifecycle_state: closing
+      updated_at: 2026-04-16T17:04:10.262Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KNHZ5FH33G2C27BMG0SHPC74"
     task_slug: investigate-full-suite-instability-after-dependency-health-passes-in-review-worktrees
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:04:10.262Z
       last_active_at: 2026-04-07T02:49:41.996Z
-      last_reconciled_at: 2026-04-07T03:08:00.603Z
+      last_reconciled_at: 2026-04-16T17:04:10.262Z
       created_at: 2026-04-07T02:26:42.396Z
-      updated_at: 2026-04-07T03:08:00.603Z
+      updated_at: 2026-04-16T17:04:10.262Z
     workspace_id: dispatch-workspace-01KNHZ5FH33G2C27BMG0SHPC74
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
