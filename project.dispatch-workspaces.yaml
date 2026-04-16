@@ -19286,11 +19286,11 @@ workspaces:
     canonical_branch: dispatch/task/task-idle-grace-period/01kma74e
     canonical_branch_head: 338372aabcf716f9c3e0d2efadb6c29038a00a52
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-22T19:15:29.049Z
+      updated_at: 2026-04-16T17:00:14.792Z
     health:
       status: invalid
       issues:
@@ -19311,17 +19311,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 2b17942b090631adfdf011558a3454396cc157e8
-      updated_at: 2026-03-22T19:15:29.049Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T17:00:14.792Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KMA74EKPGJMJXEXMZMGWY51A"
     task_slug: task-idle-grace-period
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:00:14.792Z
       last_active_at: 2026-03-22T19:04:17.515Z
-      last_reconciled_at: 2026-03-22T19:15:29.049Z
+      last_reconciled_at: 2026-04-16T17:00:14.792Z
       created_at: 2026-03-22T18:48:44.297Z
-      updated_at: 2026-03-22T19:15:29.049Z
+      updated_at: 2026-04-16T17:00:14.792Z
     workspace_id: dispatch-workspace-01KMA74EKPGJMJXEXMZMGWY51A
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
