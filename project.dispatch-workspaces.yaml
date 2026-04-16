@@ -53146,7 +53146,7 @@ workspaces:
         head: 65feefa131b93d2617358b6cd9f0c93c8fbaa589
         last_seen_at: 2026-04-16T02:07:36.587Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-cli-agent-commands-session-store-tests-under-restricted-tmp-permissions-01kp9zw2
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 2d24a0b0a4d99e19df22ac5789c627697ac962be
     bootstrap:
       status: succeeded
@@ -53576,9 +53576,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-16T04:59:32.253Z
-      last_reconciled_at: 2026-04-16T05:13:00.630Z
+      last_reconciled_at: 2026-04-16T05:14:43.859Z
       created_at: 2026-04-16T04:17:00.258Z
-      updated_at: 2026-04-16T05:13:00.630Z
+      updated_at: 2026-04-16T05:14:43.859Z
     workspace_id: dispatch-workspace-01KNXYJ5XEHD54A46S1988T3CV
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
