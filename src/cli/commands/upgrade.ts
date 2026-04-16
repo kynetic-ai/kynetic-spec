@@ -501,6 +501,8 @@ export async function runUpgradePipeline(
         const state = await readSetupState(ctx.specDir);
         state.lastKnownVersion = targetVersion;
         await writeSetupState(ctx.specDir, state);
+        const { commitIfShadow } = await import("../../parser/shadow.js");
+        await commitIfShadow(ctx.shadow, "upgrade", undefined, `v${targetVersion}`);
         steps.push({
           name: "Record version",
           status: "done",

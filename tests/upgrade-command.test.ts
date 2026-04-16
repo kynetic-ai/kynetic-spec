@@ -1200,6 +1200,40 @@ describe("kspec upgrade", () => {
       const recordedVersion = await readLastKnownVersion(tempDir);
       expect(recordedVersion).toBe("0.8.0");
     });
+
+    // AC: @single-command-version-upgrade ac-records-current-version
+    // Regression: a successful upgrade must durably persist the recorded
+    // version by auto-committing to the shadow branch. Without the commit,
+    // the .setup-state.json change is left uncommitted in the shadow
+    // worktree and can be lost on the next clean checkout, causing
+    // subsequent upgrades to re-run the full pipeline.
+    it("commits the recorded version to the shadow branch", async () => {
+      await initProject(tempDir);
+      await writeLastKnownVersion(tempDir, "0.9.0");
+
+      const result = kspec("upgrade", tempDir);
+      expect(result.exitCode).toBe(0);
+
+      // After a successful upgrade, the shadow worktree should have no
+      // uncommitted changes — .setup-state.json must be committed.
+      const shadowStatus = execSync("git status --short", {
+        cwd: path.join(tempDir, ".kspec"),
+        encoding: "utf-8",
+      });
+      expect(shadowStatus.trim()).toBe("");
+
+      // Verify the recorded version is also visible in git history on the
+      // shadow branch (not just in the working tree).
+      const committedState = execSync(
+        "git show HEAD:.setup-state.json",
+        {
+          cwd: path.join(tempDir, ".kspec"),
+          encoding: "utf-8",
+        },
+      );
+      const parsed = JSON.parse(committedState);
+      expect(parsed.lastKnownVersion).toBe(getCurrentVersion());
+    });
   });
 
   // ─── Force Flag ───────────────────────────────────────────────────
