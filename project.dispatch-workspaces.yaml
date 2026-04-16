@@ -9426,11 +9426,11 @@ workspaces:
     canonical_branch: dispatch/task/task-session-events/01kkzpvp
     canonical_branch_head: 190e97ec96364c8eb3579b117d34e7ba3fac2f61
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-18T10:36:36.797Z
+      updated_at: 2026-04-16T16:57:58.259Z
     health:
       status: invalid
       issues:
@@ -9451,17 +9451,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: c9ead12eb04ffb581ba086d839a42abe111db2b1
-      updated_at: 2026-03-18T10:36:36.797Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:57:58.259Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KKZPVP61ABDF4Y79Q88T357P"
     task_slug: task-session-events
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:57:58.259Z
       last_active_at: 2026-03-18T10:23:10.732Z
-      last_reconciled_at: 2026-03-18T10:36:36.797Z
+      last_reconciled_at: 2026-04-16T16:57:58.259Z
       created_at: 2026-03-18T09:31:38.376Z
-      updated_at: 2026-03-18T10:36:36.797Z
+      updated_at: 2026-04-16T16:57:58.259Z
     workspace_id: dispatch-workspace-01KKZPVP61ABDF4Y79Q88T357P
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
