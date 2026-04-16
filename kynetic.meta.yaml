@@ -14934,6 +14934,34 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-16T08:30:42.914Z
+  - _ulid: 01KPAREZQ2TZZF57KY0MMGZ4CA
+    type: success
+    content: Task notes that record investigation findings and implementation plan before review
+      materially reduce reviewer rediscovery time; in this session they let review focus on diff
+      verification and runtime behavior instead of reconstructing intent.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-16T09:02:58.274Z
+  - _ulid: 01KPAREZYVB3F8K861M8TMPJ7Q
+    type: friction
+    content: Detached reviewer snapshots cannot directly checkout the integration branch when that
+      branch is already checked out in another worktree. Reviewers have to fall back to manual git
+      -C merges against the primary worktree, adding avoidable merge-path complexity.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-16T09:02:58.523Z
+  - _ulid: 01KPARF08ZJWTF460JSDC1FWKB
+    type: friction
+    content: Large raw task dumps and verbatim agent-failure payloads in task notes create prompt
+      pressure for later review and reflection passes. This session included a prompt-too-long
+      failure note embedded with a large task dump, which added context volume with little durable
+      value.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-16T09:02:58.847Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:

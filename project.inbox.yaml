@@ -2738,3 +2738,22 @@ inbox:
       - reflection
     added_by: "@claude"
     created_at: 2026-04-16T08:30:43.145Z
+  - _ulid: 01KPARF06X2N8XPCQ2TZRNN9ZN
+    text: "Reflection: add a reviewer merge helper or documented workflow for detached review snapshots
+      so approved work can merge into the integration branch even when the target branch is already
+      checked out in another worktree."
+    tags:
+      - reflection
+      - dispatch
+      - review
+    added_by: Jacob Chapel
+    created_at: 2026-04-16T09:02:58.781Z
+  - _ulid: 01KPARF0EC8WKTY86H3Q4451D9
+    text: "Reflection: reduce prompt pressure from task notes by adding guidance or tooling to summarize
+      large task-context dumps and agent failure payloads instead of storing them verbatim."
+    tags:
+      - reflection
+      - agents
+      - notes
+    added_by: Jacob Chapel
+    created_at: 2026-04-16T09:02:59.020Z
