@@ -1702,11 +1702,11 @@ workspaces:
     canonical_branch: dispatch/task/implement-core-skills-droid-platform-registration/01kkjkm9
     canonical_branch_head: d1b77a586b12c5925ceb0896dbe397874bf60ff1
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-29T04:50:54.361Z
+      updated_at: 2026-04-16T16:55:35.765Z
     health:
       status: stale
       issues:
@@ -1724,17 +1724,17 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: 48408281d10e9f1d5ec6ba581041cd9477006c46
-      updated_at: 2026-03-29T04:50:54.361Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:55:35.765Z
+    lifecycle_state: closed
     resolved_base_branch: main
     task_ref: "@01KKJKM94SSN5XJCTY5PPWSX8T"
     task_slug: implement-core-skills-droid-platform-registration
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:55:35.765Z
       last_active_at: 2026-03-13T08:09:51.073Z
-      last_reconciled_at: 2026-03-29T04:50:54.361Z
+      last_reconciled_at: 2026-04-16T16:55:35.765Z
       created_at: 2026-03-13T06:18:11.694Z
-      updated_at: 2026-03-29T04:50:54.361Z
+      updated_at: 2026-04-16T16:55:35.765Z
     workspace_id: dispatch-workspace-01KKJKM94SSN5XJCTY5PPWSX8T
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
