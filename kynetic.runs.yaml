@@ -27435,7 +27435,7 @@ runs:
     completed_at: 2026-04-16T07:01:00.222Z
   - _ulid: 01KPAJ8ENFPCQGXZD62YH7APB3
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -27466,7 +27466,16 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-16T07:16:01.738Z
-        completed_at: 2026-04-16T07:16:01.738Z
+        completed_at: 2026-04-16T07:16:12.422Z
+        notes: "Proposed improvement: add a task-local validation mode or filter for review sessions that
+          reports only issues introduced by the current task/diff, while leaving full-project
+          validate intact. This would reduce reviewer time spent classifying unrelated pre-existing
+          validation failures. Rough scope: medium, because it likely touches validation reporting
+          and diff-aware filtering."
+      - status: completed
+        step_index: 4
+        started_at: 2026-04-16T07:16:12.422Z
+        completed_at: 2026-04-16T07:16:12.422Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-16T07:14:32.751Z
