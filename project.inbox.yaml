@@ -1548,19 +1548,6 @@ inbox:
       - testing
     added_by: "@claude"
     created_at: 2026-03-13T18:56:54.611Z
-  - _ulid: 01KKMJYM45E0CPNJVVXG66X2PZ
-    text: Workspace registry management UI and CLI — expose dispatch workspace records
-      (project.dispatch-workspaces.yaml) through both the web UI and CLI commands. Enable viewing,
-      inspecting, and repairing workspace state (e.g. clearing stale worktree records, resetting
-      bootstrap state, forcing re-provisioning) without manual YAML surgery. Motivated by daemon
-      crash leaving a stale reviewer worktree record that blocked dispatch with no self-service
-      recovery path.
-    tags:
-      - dispatch
-      - cli
-      - web-ui
-    added_by: "@claude"
-    created_at: 2026-03-13T21:51:58.086Z
   - _ulid: 01KKNDFSNZ288SA77WFXPQ0HX6
     text: "Skill/workflow name collision: local-review exists as both a workflow (in meta) and a skill
       (in skills list). skill get local-review fails with 'Item local-review is not a skill' because
@@ -2020,16 +2007,6 @@ inbox:
       - meta
     added_by: "@claude"
     created_at: 2026-03-28T23:52:09.517Z
-  - _ulid: 01KMVSNV20CQ7WDSBJA4F602T1
-    text: Workspace registry CLI commands — at minimum a remove/purge command for operators to manually
-      remove stale workspace records without hand-editing YAML. Broader surface area (list, inspect,
-      reset) may also be valuable.
-    tags:
-      - dispatch
-      - cli
-      - workspace
-    added_by: "@claude"
-    created_at: 2026-03-29T03:19:53.152Z
   - _ulid: 01KMVSNV4BZ8MRVBR8GVP36B74
     text: "Shadow branch direct commit command (kspec shadow commit) — allow specifying files and
       message for legitimate manual repairs. Companion: kspec shadow status should show
@@ -2670,22 +2647,6 @@ inbox:
       - post-mvp
     added_by: "@claude"
     created_at: 2026-04-16T08:13:23.962Z
-  - _ulid: 01KPANM75G93DDY7DH8M74N428
-    text: "Operator CLI for dispatch workspace record cleanup. No user-facing kspec command exists to
-      close or reap a workspace record when an operator cleans up a dispatch branch out-of-band
-      (e.g. git branch -D or git push --delete on merged plan branches). The registry then
-      references deleted branches indefinitely, and the dispatch engine's target-sync keeps
-      attempting to fetch them, producing warning log spam every 60s per deleted branch. A command
-      along the lines of kspec dispatch workspace close @task-ref or kspec dispatch workspace reap
-      @task-ref would let operators reconcile the registry after out-of-band branch cleanup.
-      Related: @dispatch-workspace-registry. Triage surfaced this workflow gap 2026-04-16."
-    tags:
-      - dispatch
-      - cli
-      - feature
-      - post-mvp
-    added_by: "@claude"
-    created_at: 2026-04-16T08:13:24.016Z
   - _ulid: 01KPANM7718EZXK3JEH7Y802JT
     text: "Decide backfill approach for pre-fix stuck workspace records. Observed at triage time on
       2026-04-16: 138 records stuck in closing, 252 records stuck in stale, 0 records in closed —
@@ -2702,3 +2663,64 @@ inbox:
       - post-mvp
     added_by: "@claude"
     created_at: 2026-04-16T08:13:24.065Z
+  - _ulid: 01KPAPCKCB8S8BZK4B5Q05E4WM
+    text: "Dispatch workspace registry management — UI + CLI surface for operators to view, inspect, and
+      repair workspace records without hand-editing project.dispatch-workspaces.yaml. Motivating
+      scenarios: (a) daemon crash leaves a stale reviewer worktree record blocking dispatch with no
+      self-service recovery path; (b) operators want to remove or purge stuck records (observed
+      2026-04-16: 138 records stuck in closing and 252 stuck in stale lifecycle states from the
+      cleanup-completion transition bug tracked by @task-persist-cleanup-completion-status); (c)
+      operators clean up dispatch or plan branches out-of-band via git branch -D or git push
+      --delete, then need to close the referencing workspace record so the dispatch engine stops
+      attempting to sync the deleted branch. Minimum CLI surface: list, inspect (get), remove/purge,
+      close (force lifecycle to closed). Broader: reset bootstrap state, force re-provisioning,
+      unblock cleanup_blocked records. Web UI: same operations surfaced through the dashboard.
+      Related: @dispatch-workspace-registry. Consolidates prior inbox captures
+      01KKMJYM45E0CPNJVVXG66X2PZ (UI+CLI broader scope) and 01KMVSNV20CQ7WDSBJA4F602T1 (purge scope)
+      and the session-2026-04-16 operator-close-after-out-of-band-branch-deletion scenario."
+    tags:
+      - dispatch
+      - cli
+      - ui
+      - feature
+      - post-mvp
+      - operations
+    added_by: "@claude"
+    created_at: 2026-04-16T08:26:42.955Z
+  - _ulid: 01KPAPCKDX41ESRYZYNS6NG996
+    text: "Clarify the 'no compound conditions' convention for acceptance criteria. The current
+      spec-authoring guidance discourages compound conditions in Given/When/Then, but existing ACs
+      in the codebase contain compound Givens — for example @dispatch-workspace-registry ac-14
+      bundles 'record exists for non-terminal task AND reconciliation determines workspace is
+      unrecoverable AND all recovery paths have been attempted'. The rule needs an explicit
+      decision: does 'no compound conditions' mean (a) one fact per Given/When/Then clause, with
+      multiple Given lines acceptable to state independent preconditions, or (b) one fact per AC
+      total? Either codify the chosen interpretation in the testing/writing-specs convention text,
+      or retroactively refactor existing compound-Given ACs to match. Surfaced 2026-04-16 during AC
+      authoring for @task-persist-cleanup-completion-status where the rule's interpretation affected
+      how the draft ACs were structured."
+    tags:
+      - spec
+      - convention
+      - design
+    added_by: "@claude"
+    created_at: 2026-04-16T08:26:43.005Z
+  - _ulid: 01KPAPCKFQEF3QEKN6EDG6JFFY
+    text: "Search guidance — multi-vocabulary reminder plus no-result hints. Two parts: (1) document in
+      the triage/reflect/inbox-add workflows (and relevant kspec skills) that inbox and item
+      searches should try 2-3 keyword variants since the same concept may have been captured at
+      different times with different vocabulary, and include vocabulary-selection guidance
+      (synonyms, partial words, related concepts); (2) enhance 'kspec search' itself to provide
+      guidance on effective search, especially on zero-result responses — emit a short hint
+      suggesting synonyms, partial-word matches, or related-concept searches, and optionally link to
+      search docs or surface a short list of common variants. Surfaced 2026-04-16 after a duplicate
+      inbox item was created during a reflection step: the duplicate topic had been captured twice
+      before with different keywords than the ones searched, and the search commands returned no
+      matches for the searched terms. The reflection skill explicitly warns against duplication but
+      the search pattern used did not surface the prior captures."
+    tags:
+      - dx
+      - cli
+      - search
+    added_by: "@claude"
+    created_at: 2026-04-16T08:26:43.063Z
