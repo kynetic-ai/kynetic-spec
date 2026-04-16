@@ -39313,7 +39313,7 @@ plans:
         non-interactive so it can run in scripts and automation.
       - No web UI changes. The scaffolded defaults surface through
         the existing dynamic agent instruction generation.
-    status: active
+    status: completed
     approved_at: 2026-04-11T09:38:40.141Z
     branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
     derived_specs:
