@@ -50964,11 +50964,11 @@ workspaces:
     canonical_branch: dispatch/task/task-meta-set-multi-value/01knxyj6
     canonical_branch_head: d8f9c25d3b8dad39a6e1b074ec58733867fd3cd7
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-04-14T21:06:10.716Z
+      updated_at: 2026-04-16T17:05:09.925Z
     health:
       status: healthy
       issues: []
@@ -50981,17 +50981,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
       target_commit: f205808d2cf1f58d18f7fdf45435996b4092d52a
-      updated_at: 2026-04-14T21:06:10.716Z
-    lifecycle_state: closing
+      updated_at: 2026-04-16T17:05:09.925Z
+    lifecycle_state: closed
     resolved_base_branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
     task_ref: "@01KNXYJ6GNEEFAAYRXSCPHVNSR"
     task_slug: task-meta-set-multi-value
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:05:09.925Z
       last_active_at: 2026-04-14T20:54:54.440Z
-      last_reconciled_at: 2026-04-14T21:07:18.003Z
+      last_reconciled_at: 2026-04-16T17:05:09.925Z
       created_at: 2026-04-14T20:37:37.527Z
-      updated_at: 2026-04-14T21:07:18.003Z
+      updated_at: 2026-04-16T17:05:09.925Z
     workspace_id: dispatch-workspace-01KNXYJ6GNEEFAAYRXSCPHVNSR
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
