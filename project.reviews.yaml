@@ -150793,3 +150793,29 @@ reviews:
     created_at: 2026-04-16T06:23:49.256Z
     updated_at: 2026-04-16T06:57:27.614Z
     notes: []
+  - _ulid: 01KPAHHYE9NA11857TZAG952W6
+    slugs: []
+    title: Review task-doctor-accuracy (cycle 3)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KPAHHYE9W3MH8R9E3Z3QBZFF
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-16T07:02:15.241Z
+    examined_commit: 984280cf050f9a564882c8d0ee255f406314766b
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KNXYJ66ZQ5TBZ69YFCKK3J2T"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-16T07:02:15.241Z
+    updated_at: null
+    notes: []
