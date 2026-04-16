@@ -53594,3 +53594,79 @@ workspaces:
         head: 8527f5cea4d38938bcde4dbbc64aba92e315baf0
         last_seen_at: 2026-04-16T04:59:09.707Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-release-notes-01knxyj5
+  - active_role: null
+    base_branch_point: 2d24a0b0a4d99e19df22ac5789c627697ac962be
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-doctor-accuracy/01knxyj6
+    canonical_branch_head: 2d24a0b0a4d99e19df22ac5789c627697ac962be
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-04-16T04:59:35.849Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-04-16T04:59:35.849Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
+      target_commit: 2d24a0b0a4d99e19df22ac5789c627697ac962be
+      updated_at: 2026-04-16T04:59:35.849Z
+    lifecycle_state: ready
+    resolved_base_branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
+    task_ref: "@01KNXYJ66ZQ5TBZ69YFCKK3J2T"
+    task_slug: task-doctor-accuracy
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-04-16T04:59:35.849Z
+      created_at: 2026-04-16T04:59:35.849Z
+      updated_at: 2026-04-16T04:59:35.849Z
+    workspace_id: dispatch-workspace-01KNXYJ66ZQ5TBZ69YFCKK3J2T
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-doctor-accuracy/01knxyj6
+        head: 2d24a0b0a4d99e19df22ac5789c627697ac962be
+        last_seen_at: 2026-04-16T04:59:35.849Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-doctor-accuracy-01knxyj6
