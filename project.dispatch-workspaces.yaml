@@ -40325,11 +40325,11 @@ workspaces:
     canonical_branch: dispatch/task/stabilize-flaky-agent-dispatch-post-invocation-re-evaluation-tests/01knk2vk
     canonical_branch_head: 9b4b7ab8676f59ebf7555aa2a5df021f747a4750
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-04-07T05:33:37.213Z
+      updated_at: 2026-04-16T17:04:19.693Z
     health:
       status: healthy
       issues: []
@@ -40342,17 +40342,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: dfe2138f1545b01c3147f5f425dc3ef7cff403b1
-      updated_at: 2026-04-07T05:33:37.213Z
-    lifecycle_state: closing
+      updated_at: 2026-04-16T17:04:19.693Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KNK2VKWW5MPK2C0NSNF3FC90"
     task_slug: stabilize-flaky-agent-dispatch-post-invocation-re-evaluation-tests
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:04:19.693Z
       last_active_at: 2026-04-07T05:22:08.139Z
-      last_reconciled_at: 2026-04-07T05:35:06.890Z
+      last_reconciled_at: 2026-04-16T17:04:19.693Z
       created_at: 2026-04-07T05:08:08.245Z
-      updated_at: 2026-04-07T05:35:06.890Z
+      updated_at: 2026-04-16T17:04:19.693Z
     workspace_id: dispatch-workspace-01KNK2VKWW5MPK2C0NSNF3FC90
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
