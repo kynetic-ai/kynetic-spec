@@ -27492,7 +27492,7 @@ runs:
     started_at: 2026-04-16T07:14:32.751Z
     completed_at: 2026-04-16T07:16:33.011Z
   - _ulid: 01KPANTXAH9Q9XPD1SSWWX04MV
-    status: active
+    status: completed
     current_step: 5
     initiated_by: "@claude"
     step_results:
@@ -27550,7 +27550,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-04-16T08:26:53.272Z
-        completed_at: 2026-04-16T08:26:53.272Z
+        completed_at: 2026-04-16T08:27:01.824Z
+        notes: "Capture executed via atomic batch: 3 inbox deletes (consolidated duplicates), 3 inbox adds
+          (consolidated workspace registry mgmt item, compound conditions clarification, search
+          guidance). Workflow complete."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-16T08:17:03.313Z
+    completed_at: 2026-04-16T08:27:01.824Z
