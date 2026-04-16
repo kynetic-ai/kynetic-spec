@@ -6285,11 +6285,11 @@ workspaces:
     canonical_branch: dispatch/task/implement-session-summary-stats-persistence-and-live-counters/01kksrdq
     canonical_branch_head: bda09a73b3f4b505b817b870226d99c78b1893aa
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-19T03:56:16.260Z
+      updated_at: 2026-04-16T16:57:00.873Z
     health:
       status: stale
       issues:
@@ -6307,17 +6307,17 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
-      updated_at: 2026-03-19T03:56:16.260Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:57:00.873Z
+    lifecycle_state: closed
     resolved_base_branch: main
     task_ref: "@01KKSRDQY1HZBENKBD06V6KDGW"
     task_slug: implement-session-summary-stats-persistence-and-live-counters
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:57:00.873Z
       last_active_at: 2026-03-15T23:49:41.170Z
-      last_reconciled_at: 2026-03-19T03:56:16.260Z
+      last_reconciled_at: 2026-04-16T16:57:00.873Z
       created_at: 2026-03-15T23:30:41.721Z
-      updated_at: 2026-03-19T03:56:16.260Z
+      updated_at: 2026-04-16T16:57:00.873Z
     workspace_id: dispatch-workspace-01KKSRDQY1HZBENKBD06V6KDGW
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
