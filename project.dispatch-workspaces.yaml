@@ -53756,12 +53756,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-16T06:22:40.860Z
+      updated_at: 2026-04-16T06:22:48.080Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-16T06:22:40.860Z
+      updated_at: 2026-04-16T06:22:48.080Z
     integration:
       status: pending
       detail: null
@@ -53769,24 +53769,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
       target_commit: 2d24a0b0a4d99e19df22ac5789c627697ac962be
-      updated_at: 2026-04-16T06:22:40.860Z
-    lifecycle_state: ready
+      updated_at: 2026-04-16T06:22:48.080Z
+    lifecycle_state: integrating
     resolved_base_branch: plan/plan-init-setup-and-upgrade-rough-edges/01knvahv
     task_ref: "@01KNXYJ66ZQ5TBZ69YFCKK3J2T"
     task_slug: task-doctor-accuracy
     timestamps:
       closed_at: null
       last_active_at: 2026-04-16T06:07:23.542Z
-      last_reconciled_at: 2026-04-16T06:22:40.860Z
+      last_reconciled_at: 2026-04-16T06:22:48.080Z
       created_at: 2026-04-16T04:59:35.849Z
-      updated_at: 2026-04-16T06:22:40.860Z
+      updated_at: 2026-04-16T06:22:48.080Z
     workspace_id: dispatch-workspace-01KNXYJ66ZQ5TBZ69YFCKK3J2T
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 6794e0ed53fa7832fed56de4b8bc31fcff73bd5e
+        last_seen_at: 2026-04-16T06:22:48.080Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-doctor-accuracy-01knxyj6-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-doctor-accuracy/01knxyj6
-        head: d463ef96be9ccd0cc9074bcccbf3e4a34b8afe19
-        last_seen_at: 2026-04-16T06:07:19.575Z
+        head: 6794e0ed53fa7832fed56de4b8bc31fcff73bd5e
+        last_seen_at: 2026-04-16T06:22:48.080Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-doctor-accuracy-01knxyj6
