@@ -45985,11 +45985,11 @@ workspaces:
     canonical_branch: dispatch/task/task-fix-worktree-linkage-capture/01knqj4t
     canonical_branch_head: a6698d0d7053638669479e3bd101f8f3c6a2c693
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-04-08T22:55:26.453Z
+      updated_at: 2026-04-16T17:04:53.068Z
     health:
       status: healthy
       issues: []
@@ -46002,17 +46002,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 410b0321d2606f140f3db1ed76beecd87adf251b
-      updated_at: 2026-04-08T22:55:26.453Z
-    lifecycle_state: closing
+      updated_at: 2026-04-16T17:04:53.068Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KNQJ4TX3ZR80MSV8Q38RHG06"
     task_slug: task-fix-worktree-linkage-capture
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T17:04:53.068Z
       last_active_at: 2026-04-08T22:33:31.397Z
-      last_reconciled_at: 2026-04-08T22:56:10.159Z
+      last_reconciled_at: 2026-04-16T17:04:53.068Z
       created_at: 2026-04-08T22:07:31.582Z
-      updated_at: 2026-04-08T22:56:10.159Z
+      updated_at: 2026-04-16T17:04:53.068Z
     workspace_id: dispatch-workspace-01KNQJ4TX3ZR80MSV8Q38RHG06
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
