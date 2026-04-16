@@ -8148,11 +8148,11 @@ workspaces:
     canonical_branch: dispatch/task/round-trip-stability-for-triage-record-yaml-writes/01kkx6ce
     canonical_branch_head: 9f539356d7db57d8c6f6e8f0e94d487138f27c65
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-18T02:52:41.770Z
+      updated_at: 2026-04-16T16:57:34.418Z
     health:
       status: stale
       issues:
@@ -8170,17 +8170,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: c9d611f9fddad7ed70b5a553ccb097668ea3be1c
-      updated_at: 2026-03-18T02:52:41.770Z
-    lifecycle_state: stale
+      updated_at: 2026-04-16T16:57:34.418Z
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KKX6CEQFM17JX8AKKRPXQGR7"
     task_slug: round-trip-stability-for-triage-record-yaml-writes
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-16T16:57:34.418Z
       last_active_at: 2026-03-18T02:32:34.839Z
-      last_reconciled_at: 2026-03-18T02:52:41.770Z
+      last_reconciled_at: 2026-04-16T16:57:34.418Z
       created_at: 2026-03-17T19:50:36.635Z
-      updated_at: 2026-03-18T02:52:41.770Z
+      updated_at: 2026-04-16T16:57:34.418Z
     workspace_id: dispatch-workspace-01KKX6CEQFM17JX8AKKRPXQGR7
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
