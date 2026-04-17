@@ -27643,7 +27643,7 @@ runs:
     completed_at: 2026-04-16T09:03:09.858Z
   - _ulid: 01KPEPDEM5P68B35JE64SFR4KN
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -27661,7 +27661,24 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-17T21:44:28.677Z
-        completed_at: 2026-04-17T21:44:28.677Z
+        completed_at: 2026-04-17T21:44:44.311Z
+        notes: "Friction points: (1) kspec batch + task add crashes — resetCommandTree wipes Commander
+          defaults, parsePriority(undefined) throws. Root cause bug in batch-exec:640. Affects any
+          batched command that relies on option defaults. (2) kspec batch --dry-run only validates
+          argv schema, NOT action execution — gives false confidence. Passed with flying colors
+          before the real run crashed. Systemic signal: 'dry-run clean' is not a reliable signal
+          when the downstream command has a brittle init path. (3) No kspec plan delete — the
+          original trigger. Now tracked via @task-plan-delete-command but historically the 'D' of
+          CRUD has been missing for a while. (4) Long markdown descriptions in batch JSON are
+          painful — escaping backticks, newlines, quotes. A --description-file flag on task add, or
+          a batch-level {args_from_file: {description: 'path.md'}} sugar, would remove a whole class
+          of escaping bugs. (5) Cancelled task still holds its slug, can't free it except via
+          reset+set or a different slug. Conceptually parallel gap to plan delete — might be worth
+          considering 'task delete' once plan delete ships."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-17T21:44:44.311Z
+        completed_at: 2026-04-17T21:44:44.311Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-17T21:44:08.581Z
