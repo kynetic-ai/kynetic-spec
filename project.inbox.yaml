@@ -2771,3 +2771,32 @@ inbox:
       - notes
     added_by: Jacob Chapel
     created_at: 2026-04-16T09:02:59.020Z
+  - _ulid: 01KPEPNGDT2NPBMY2RHFKKF1P9
+    text: "kspec batch --dry-run validates argv schema but does not exercise command action/init paths,
+      so real execution can fail even after a clean dry-run (hit during @task-plan-delete-command
+      creation 2026-04-17, see inbox 01KMV62W for the specific parsePriority crash). Options to
+      investigate: (1) teach resetCommandTree in src/cli/batch-exec.ts:640 to preserve Commander
+      default values (use _optionValueSources to distinguish defaults from cli/env inputs) so
+      defaults survive between dispatches — this also fixes 01KMV62W at the root. (2) Minimum
+      viable: add a caveat line to dry-run output that it is schema-only and does not guarantee
+      execution success. Prefer (1) since it eliminates an entire class of silent failures."
+    tags:
+      - bug
+      - batch
+      - cli
+      - dry-run
+    added_by: "@claude"
+    created_at: 2026-04-17T21:48:32.570Z
+  - _ulid: 01KPEPNGGGHX36M8F26GBD2T25
+    text: Add --description-file <path> flag to kspec task add, item add, and similar commands that take
+      long-form --description text. Mirrors the --content-file flag already on plan add. Eliminates
+      JSON/shell-escaping pain for markdown descriptions (backticks, newlines, quotes) in both
+      direct CLI use and kspec batch payloads. Noticed during @task-plan-delete-command creation
+      where the what/why/how description was ~1200 words of markdown and required manual \n escaping
+      plus backtick survival in the batch JSON.
+    tags:
+      - feature
+      - cli
+      - dx
+    added_by: "@claude"
+    created_at: 2026-04-17T21:48:32.656Z

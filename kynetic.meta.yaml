@@ -14962,6 +14962,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-16T09:02:58.847Z
+  - _ulid: 01KPEPNGKAEQRNRMGT81ST70RA
+    type: friction
+    content: CRUD-completeness discoverability gap across durable-record types. kspec task delete exists
+      (@cmd-task-delete, implemented) but kspec plan delete does not (being added via
+      @task-plan-delete-command). Neither the reflecting agent nor the 2-week-old inbox item
+      01KMV62W knew task delete existed until a search surfaced it. Suggests (a) CRUD completeness
+      across record types (plans, tasks, inbox items, specs, reviews, plans, observations) should be
+      audited for gaps, and (b) discoverability of delete/cleanup commands is lower than expected.
+      Not urgent, but worth an audit pass once the plan delete task ships.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-17T21:48:32.746Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
