@@ -177,6 +177,14 @@ export class SessionWatcher {
     }
 
     if (status !== "active" || this.stopped) {
+      // AC: @daemon-file-monitoring ac-new-session-list-freshness
+      // Newly-discovered sessions that start in a non-active status still need
+      // one change notification so the sessions domain cache invalidates and
+      // picks them up in list responses. Per-session file watching is skipped
+      // per ac-active-only-watching to preserve the FD budget.
+      if (emitInitialChange && !this.stopped) {
+        this.handleFileChange(sessionRoot);
+      }
       return "inactive";
     }
 
