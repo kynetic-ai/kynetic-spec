@@ -2587,11 +2587,9 @@ export async function reconcileDispatchWorkspaceRegistry(
     ))
       ? await resolveCommit(projectDir, record.canonical_branch)
       : record.canonical_branch_head;
-    let { cleanup, integration } = resolveRegistryStateForTaskStatus(
-      currentTaskStatus,
-      record,
-      now,
-    );
+    const resolvedRegistryState = resolveRegistryStateForTaskStatus(currentTaskStatus, record, now);
+    let { cleanup } = resolvedRegistryState;
+    const { integration } = resolvedRegistryState;
 
     // AC: @dispatch-workspace-registry ac-successful-cleanup-persists-completion
     // Self-heal for lost completion writes: if a reap successfully removed
@@ -2607,11 +2605,7 @@ export async function reconcileDispatchWorkspaceRegistry(
     // needed because a standalone missing branch can also mean the branch
     // was never created; combined with a missing worker worktree it's
     // strong evidence that a reap ran physical removal.
-    if (
-      cleanup.eligible &&
-      cleanup.status !== "completed" &&
-      cleanup.status !== "blocked"
-    ) {
+    if (cleanup.eligible && cleanup.status !== "completed" && cleanup.status !== "blocked") {
       const physicalArtifactsGone = await workspacePhysicalArtifactsAbsent(projectDir, record);
       if (physicalArtifactsGone) {
         cleanup = {

@@ -65,13 +65,8 @@ function getInstalledVersion(): string {
 export function registerReleaseNotesCommand(program: Command): void {
   program
     .command("release-notes")
-    .description(
-      "Show release notes for the installed kspec version or a version range",
-    )
-    .option(
-      "--from <version>",
-      "Older bound of the inclusive range (e.g. 0.10.0)",
-    )
+    .description("Show release notes for the installed kspec version or a version range")
+    .option("--from <version>", "Older bound of the inclusive range (e.g. 0.10.0)")
     .option("--to <version>", "Newer bound of the inclusive range (e.g. 0.12.0)")
     .action(async (options: { from?: string; to?: string }) => {
       const fromRaw = options.from;
@@ -80,13 +75,10 @@ export function registerReleaseNotesCommand(program: Command): void {
       // --from and --to must be paired. Accepting only one would silently
       // change the meaning of the command, so reject early with guidance.
       if ((fromRaw && !toRaw) || (!fromRaw && toRaw)) {
-        error(
-          "--from and --to must be provided together.",
-          {
-            suggestion:
-              "Use both flags to show a range, or omit both to show the current version's notes.",
-          },
-        );
+        error("--from and --to must be provided together.", {
+          suggestion:
+            "Use both flags to show a range, or omit both to show the current version's notes.",
+        });
         process.exit(EXIT_CODES.USAGE_ERROR);
         return;
       }
@@ -121,9 +113,7 @@ export function registerReleaseNotesCommand(program: Command): void {
           },
           () => {
             if (entries.length === 0) {
-              console.log(
-                `No release notes in the range ${fromRaw} to ${toRaw}.`,
-              );
+              console.log(`No release notes in the range ${fromRaw} to ${toRaw}.`);
               return;
             }
             process.stdout.write(renderEntries(entries));
@@ -179,8 +169,7 @@ function handleReleaseNotesError(err: unknown): never {
   }
   const message = err instanceof Error ? err.message : String(err);
   error(`Failed to load release notes: ${message}`, {
-    suggestion:
-      "Check that RELEASE_NOTES.md exists at the project root and is readable.",
+    suggestion: "Check that RELEASE_NOTES.md exists at the project root and is readable.",
   });
   process.exit(EXIT_CODES.ERROR);
 }

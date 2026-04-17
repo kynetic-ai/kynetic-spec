@@ -11,11 +11,7 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
-import {
-  SHADOW_WORKTREE_DIR,
-  SESSIONS_WORKTREE_DIR,
-  TRANSIENT_PLANS_DIR,
-} from "./shadow.js";
+import { SHADOW_WORKTREE_DIR, SESSIONS_WORKTREE_DIR, TRANSIENT_PLANS_DIR } from "./shadow.js";
 
 // ── Sentinel markers ──────────────────────────────────────────────
 
@@ -29,35 +25,24 @@ export const MANAGED_BLOCK_END = "# <<< kspec managed";
  * at the project root. Accepts optional overrides for the shadow
  * directory and dispatch worktree root for custom-configured projects.
  */
-export function buildKspecGitignoreEntries(
-  shadowDir?: string,
-  worktreeRoot?: string,
-): string[] {
+export function buildKspecGitignoreEntries(shadowDir?: string, worktreeRoot?: string): string[] {
   const dir = shadowDir ?? SHADOW_WORKTREE_DIR;
   const wtRoot = worktreeRoot ?? ".kspec-worktrees";
-  const entries = [
-    `${dir}/`,
-    `${SESSIONS_WORKTREE_DIR}/`,
-    `${TRANSIENT_PLANS_DIR}/`,
-  ];
+  const entries = [`${dir}/`, `${SESSIONS_WORKTREE_DIR}/`, `${TRANSIENT_PLANS_DIR}/`];
   // Only add worktree root to .gitignore when it's a relative path (inside
   // the repo). Absolute paths point outside the project root and cannot be
   // matched by .gitignore patterns, which are repository-relative.
   if (!path.isAbsolute(wtRoot)) {
     entries.push(`${wtRoot}/`);
   }
-  entries.push(
-    ".kspec-dispatch-workspace.json",
-    ".kspec-dispatch-shadow-mutation",
-  );
+  entries.push(".kspec-dispatch-workspace.json", ".kspec-dispatch-shadow-mutation");
   return entries;
 }
 
 /**
  * Default entries using the default shadow directory (.kspec/).
  */
-export const KSPEC_GITIGNORE_ENTRIES: readonly string[] =
-  buildKspecGitignoreEntries();
+export const KSPEC_GITIGNORE_ENTRIES: readonly string[] = buildKspecGitignoreEntries();
 
 // ── Managed block helpers ─────────────────────────────────────────
 
@@ -122,13 +107,7 @@ export function serializeManagedBlock(
   blockLines: string[],
   after: string[],
 ): string {
-  const parts = [
-    ...before,
-    MANAGED_BLOCK_START,
-    ...blockLines,
-    MANAGED_BLOCK_END,
-    ...after,
-  ];
+  const parts = [...before, MANAGED_BLOCK_START, ...blockLines, MANAGED_BLOCK_END, ...after];
 
   let result = parts.join("\n");
   if (!result.endsWith("\n")) {

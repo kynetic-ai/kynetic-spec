@@ -125,10 +125,7 @@ describe.skipIf(!canRunShadowTests)("Derivable default module", () => {
     );
 
     // Import plan targeting the default module @main
-    kspec(
-      `plan import "${planPath}" --module @main --status approved`,
-      projectDir,
-    );
+    kspec(`plan import "${planPath}" --module @main --status approved`, projectDir);
 
     // Derive should succeed without needing a separate module add
     const result = kspecJson<{
@@ -183,10 +180,7 @@ describe.skipIf(!canRunShadowTests)("Derivable default module", () => {
 `,
     );
 
-    kspec(
-      `plan import "${planPath}" --module @main --status approved`,
-      projectDir,
-    );
+    kspec(`plan import "${planPath}" --module @main --status approved`, projectDir);
 
     const result = kspecJson<{
       module_ref: string;
@@ -238,10 +232,7 @@ describe.skipIf(!canRunShadowTests)("Derivable default module", () => {
 `,
     );
 
-    kspec(
-      `plan import "${planPath}" --module @custom-module --status approved`,
-      projectDir,
-    );
+    kspec(`plan import "${planPath}" --module @custom-module --status approved`, projectDir);
 
     const result = kspecJson<{
       module_ref: string;
@@ -258,10 +249,7 @@ describe.skipIf(!canRunShadowTests)("Derivable default module", () => {
   it("persists description changes", async () => {
     await setupFreshProject(projectDir);
 
-    kspec(
-      'item set @main --description "Updated description for the main module"',
-      projectDir,
-    );
+    kspec('item set @main --description "Updated description for the main module"', projectDir);
 
     const updatedModule = kspecJson<{
       description: string;
@@ -331,10 +319,7 @@ describe.skipIf(!canRunShadowTests)("Derivable default module", () => {
     );
     expect(manifestFile).toBeTruthy();
 
-    const manifestContent = await fs.readFile(
-      path.join(kspecDir, manifestFile!),
-      "utf-8",
-    );
+    const manifestContent = await fs.readFile(path.join(kspecDir, manifestFile!), "utf-8");
     expect(manifestContent).toContain("default_module:");
 
     // The ULID in the manifest should match the module's actual ULID
@@ -396,10 +381,7 @@ items: []
     });
 
     // Verify that @extra loads (sanity check)
-    const extraModule = kspecJson<{ type: string; slugs: string[] }>(
-      "item get @extra",
-      projectDir,
-    );
+    const extraModule = kspecJson<{ type: string; slugs: string[] }>("item get @extra", projectDir);
     expect(extraModule.type).toBe("module");
 
     // Run setup — should still report @custom-module (the renamed default),

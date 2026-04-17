@@ -569,8 +569,7 @@ async function ensureWorktree(autoWorktree: boolean): Promise<boolean> {
   // linked-worktree cwd (which the command-level guard in the setup
   // action already blocks), the subsequent repairShadow call receives
   // the main working tree root rather than a linked worktree root.
-  const projectRoot =
-    resolveProjectRoots(process.cwd())?.mainRoot ?? getGitRoot(process.cwd());
+  const projectRoot = resolveProjectRoots(process.cwd())?.mainRoot ?? getGitRoot(process.cwd());
   if (!projectRoot) {
     // Not in a git repo, skip worktree check
     return true;
@@ -988,7 +987,10 @@ async function ensureDefaultReflectionHook(
     return { status: "created", reason: "default reflection hook" };
   } catch (err) {
     debugLog("ensureDefaultReflectionHook failed", err);
-    return { status: "skipped", reason: `error: ${err instanceof Error ? err.message : String(err)}` };
+    return {
+      status: "skipped",
+      reason: `error: ${err instanceof Error ? err.message : String(err)}`,
+    };
   }
 }
 
@@ -1520,8 +1522,12 @@ export async function runSetupPipeline(
       const shadowDir = setupConfig.shadow.directory || undefined;
       const worktreeRoot = setupConfig.dispatch.worktree_root || undefined;
 
-      const { ensureKspecGitignore, updateManagedBlock, buildKspecGitignoreEntries, parseManagedBlock } =
-        await import("../../parser/gitignore.js");
+      const {
+        ensureKspecGitignore,
+        updateManagedBlock,
+        buildKspecGitignoreEntries,
+        parseManagedBlock,
+      } = await import("../../parser/gitignore.js");
 
       const forceGitignore = options.force ?? false;
 
@@ -1540,22 +1546,37 @@ export async function runSetupPipeline(
         // AC: @trait-idempotent-file-scaffold ac-existing-file-preserved-without-force
         if (fileExists && parseManagedBlock(gitignoreContent).block === null && !forceGitignore) {
           actions.push("skipped .gitignore (exists without managed block, use --force to add)");
-        } else if (fileExists && parseManagedBlock(gitignoreContent).block === null && forceGitignore) {
+        } else if (
+          fileExists &&
+          parseManagedBlock(gitignoreContent).block === null &&
+          forceGitignore
+        ) {
           // AC: @trait-idempotent-file-scaffold ac-force-backs-up-before-overwrite
           const entries = buildKspecGitignoreEntries(shadowDir, worktreeRoot);
-          actions.push(`force-recreate .gitignore (backup + add managed block: ${entries.join(", ")})`);
+          actions.push(
+            `force-recreate .gitignore (backup + add managed block: ${entries.join(", ")})`,
+          );
         } else {
-          const dryResult = updateManagedBlock(gitignoreContent, buildKspecGitignoreEntries(shadowDir, worktreeRoot));
+          const dryResult = updateManagedBlock(
+            gitignoreContent,
+            buildKspecGitignoreEntries(shadowDir, worktreeRoot),
+          );
           if (dryResult.result.changed) {
             if (dryResult.result.blockCreated) {
-              actions.push(`create .gitignore with managed block: ${dryResult.result.entriesAdded.join(", ")}`);
+              actions.push(
+                `create .gitignore with managed block: ${dryResult.result.entriesAdded.join(", ")}`,
+              );
             } else {
               actions.push(`add to .gitignore: ${dryResult.result.entriesAdded.join(", ")}`);
             }
           }
         }
       } else {
-        const gitignoreResult = await ensureKspecGitignore(projectDir, { shadowDir, worktreeRoot, force: forceGitignore });
+        const gitignoreResult = await ensureKspecGitignore(projectDir, {
+          shadowDir,
+          worktreeRoot,
+          force: forceGitignore,
+        });
         if (gitignoreResult.skipped) {
           // AC: @trait-idempotent-file-scaffold ac-existing-file-preserved-without-force
           actions.push("skipped .gitignore (exists without managed block, use --force to add)");
@@ -1563,14 +1584,16 @@ export async function runSetupPipeline(
           if (gitignoreResult.backupPath) {
             // AC: @trait-idempotent-file-scaffold ac-force-backs-up-before-overwrite
             actions.push(`backed up .gitignore to ${path.basename(gitignoreResult.backupPath)}`);
-            actions.push(`force-recreated .gitignore with managed block: ${gitignoreResult.entriesAdded.join(", ")}`);
+            actions.push(
+              `force-recreated .gitignore with managed block: ${gitignoreResult.entriesAdded.join(", ")}`,
+            );
           } else if (gitignoreResult.blockCreated) {
             // AC: @trait-idempotent-file-scaffold ac-fresh-file-creation
-            actions.push(`created .gitignore with managed block: ${gitignoreResult.entriesAdded.join(", ")}`);
-          } else {
             actions.push(
-              `added to .gitignore: ${gitignoreResult.entriesAdded.join(", ")}`,
+              `created .gitignore with managed block: ${gitignoreResult.entriesAdded.join(", ")}`,
             );
+          } else {
+            actions.push(`added to .gitignore: ${gitignoreResult.entriesAdded.join(", ")}`);
           }
         }
       }
@@ -1771,7 +1794,11 @@ export async function runSetupPipeline(
     // AC: @trait-idempotent-file-scaffold ac-step-reports-action — action reported in summary
     {
       try {
-        const scaffoldResult = await scaffoldProjectConfig(projectDir, dryRun, options.force ?? false);
+        const scaffoldResult = await scaffoldProjectConfig(
+          projectDir,
+          dryRun,
+          options.force ?? false,
+        );
 
         if (scaffoldResult.action === "created") {
           steps.push({
@@ -2166,72 +2193,69 @@ export function registerSetupCommand(program: Command): void {
           outputData.error = `Scaffold project config failed: ${scaffoldFailure.message}`;
           outputData.suggestion = "Fix the issue and re-run kspec setup.";
         }
-        output(
-          outputData,
-          () => {
-            if (dryRun) {
-              console.log(chalk.yellow("DRY RUN - No changes made\n"));
-            }
+        output(outputData, () => {
+          if (dryRun) {
+            console.log(chalk.yellow("DRY RUN - No changes made\n"));
+          }
 
-            // Pipeline already prints the summary when not dry-run
-            // For dry-run, print it here since the pipeline skips output
-            if (dryRun) {
-              console.log(chalk.bold("kspec Setup Summary\n"));
+          // Pipeline already prints the summary when not dry-run
+          // For dry-run, print it here since the pipeline skips output
+          if (dryRun) {
+            console.log(chalk.bold("kspec Setup Summary\n"));
 
-              for (const step of result.steps) {
-                const icon =
-                  step.status === "done"
-                    ? chalk.green("✓")
-                    : step.status === "skipped"
-                      ? chalk.gray("○")
-                      : chalk.red("✗");
-                const statusText =
-                  step.status === "done"
-                    ? ""
-                    : step.status === "skipped"
-                      ? chalk.gray(" (skipped)")
-                      : chalk.red(" (failed)");
+            for (const step of result.steps) {
+              const icon =
+                step.status === "done"
+                  ? chalk.green("✓")
+                  : step.status === "skipped"
+                    ? chalk.gray("○")
+                    : chalk.red("✗");
+              const statusText =
+                step.status === "done"
+                  ? ""
+                  : step.status === "skipped"
+                    ? chalk.gray(" (skipped)")
+                    : chalk.red(" (failed)");
 
-                console.log(`${icon} ${step.name}${statusText}`);
-                if (step.message) {
-                  console.log(chalk.gray(`  ${step.message}`));
-                }
+              console.log(`${icon} ${step.name}${statusText}`);
+              if (step.message) {
+                console.log(chalk.gray(`  ${step.message}`));
               }
             }
+          }
 
-            console.log();
+          console.log();
 
-            // AC: @scaffolded-project-config ac-file-valid-on-load — fail loudly on scaffold failure
-            // Check for scaffold failure BEFORE printing success footer to avoid contradictory output
-            if (dryRun) {
-              console.log(chalk.yellow("Run without --dry-run to apply changes."));
-            } else if (scaffoldFailure) {
-              console.log(chalk.red(`Setup failed: ${scaffoldFailure.message}`));
-              console.log(chalk.gray("Fix the issue and re-run kspec setup."));
-            } else {
-              console.log(chalk.green("Setup complete."));
-              console.log(chalk.gray("Restart your agent session for changes to take effect."));
-              // AC: @derivable-default-module — remind user about default module
-              if (result.defaultModuleRef) {
-                console.log(
-                  chalk.gray(`Default module available: ${result.defaultModuleRef} — use for plan imports and spec placement`),
-                );
-              }
+          // AC: @scaffolded-project-config ac-file-valid-on-load — fail loudly on scaffold failure
+          // Check for scaffold failure BEFORE printing success footer to avoid contradictory output
+          if (dryRun) {
+            console.log(chalk.yellow("Run without --dry-run to apply changes."));
+          } else if (scaffoldFailure) {
+            console.log(chalk.red(`Setup failed: ${scaffoldFailure.message}`));
+            console.log(chalk.gray("Fix the issue and re-run kspec setup."));
+          } else {
+            console.log(chalk.green("Setup complete."));
+            console.log(chalk.gray("Restart your agent session for changes to take effect."));
+            // AC: @derivable-default-module — remind user about default module
+            if (result.defaultModuleRef) {
+              console.log(
+                chalk.gray(
+                  `Default module available: ${result.defaultModuleRef} — use for plan imports and spec placement`,
+                ),
+              );
             }
+          }
 
-            const configureAuthorStep = result.steps.find(
-              (step) => step.name === "Configure author",
-            );
-            const needsManualInstructions =
-              configureAuthorStep?.status === "skipped" &&
-              !configureAuthorStep.message?.includes("already set") &&
-              (detected.type === "unknown" || detected.type === "droid");
+          const configureAuthorStep = result.steps.find((step) => step.name === "Configure author");
+          const needsManualInstructions =
+            configureAuthorStep?.status === "skipped" &&
+            !configureAuthorStep.message?.includes("already set") &&
+            (detected.type === "unknown" || detected.type === "droid");
 
-            if (needsManualInstructions) {
-              printManualInstructions(detected.type);
-            }
-          },
-        );
+          if (needsManualInstructions) {
+            printManualInstructions(detected.type);
+          }
+        });
 
         // AC: @scaffolded-project-config ac-file-valid-on-load — fail loudly on scaffold failure
         if (scaffoldFailure) {

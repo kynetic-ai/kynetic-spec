@@ -1410,9 +1410,19 @@ Examples:
     .option("--name <name>", "Update name (for agents)")
     .option("--description <desc>", "Update description")
     .option("--trigger <trigger>", "Update trigger (for workflows)")
-    .option("--add-capability <cap>", "Add capability (for agents)", collectRepeatedOptionValues, [])
+    .option(
+      "--add-capability <cap>",
+      "Add capability (for agents)",
+      collectRepeatedOptionValues,
+      [],
+    )
     .option("--add-tool <tool>", "Add tool (for agents)", collectRepeatedOptionValues, [])
-    .option("--add-convention <conv>", "Add convention reference (for agents)", collectRepeatedOptionValues, [])
+    .option(
+      "--add-convention <conv>",
+      "Add convention reference (for agents)",
+      collectRepeatedOptionValues,
+      [],
+    )
     .option("--adapter <adapter>", "Set adapter reference or npx package (for agents)")
     .option("--add-skill <skill>", "Add skill slug (for agents)", collectRepeatedOptionValues, [])
     .option(
@@ -1442,10 +1452,25 @@ Examples:
       "--initial-response-timeout-seconds <n>",
       "Set initial response timeout in seconds (for agents)",
     )
-    .option("--remove-capability <cap>", "Remove capability (for agents)", collectRepeatedOptionValues, [])
+    .option(
+      "--remove-capability <cap>",
+      "Remove capability (for agents)",
+      collectRepeatedOptionValues,
+      [],
+    )
     .option("--remove-tool <tool>", "Remove tool (for agents)", collectRepeatedOptionValues, [])
-    .option("--remove-convention <conv>", "Remove convention reference (for agents)", collectRepeatedOptionValues, [])
-    .option("--remove-skill <skill>", "Remove skill slug (for agents)", collectRepeatedOptionValues, [])
+    .option(
+      "--remove-convention <conv>",
+      "Remove convention reference (for agents)",
+      collectRepeatedOptionValues,
+      [],
+    )
+    .option(
+      "--remove-skill <skill>",
+      "Remove skill slug (for agents)",
+      collectRepeatedOptionValues,
+      [],
+    )
     .option("--add-tag <tag>", "Add tag (for agents)", collectRepeatedOptionValues, [])
     .option("--remove-tag <tag>", "Remove tag (for agents)", collectRepeatedOptionValues, [])
     .option("--add-rule <rule>", "Add rule (for conventions)", collectRepeatedOptionValues, [])

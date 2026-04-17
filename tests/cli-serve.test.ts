@@ -18,7 +18,7 @@ import {
 import { spawn, spawnSync, execSync } from "child_process";
 import { once } from "events";
 import { dirname, join } from "path";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
+import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { createServer } from "net";
 import type { ChildProcess } from "child_process";
 
@@ -368,7 +368,7 @@ describe("kspec serve commands", () => {
     );
 
     // Register PID-based cleanup before assertions
-    const pid = parseInt(readFileSync(globalPidFilePath, "utf-8").trim(), 10);
+    const pid = parseInt(readTestOutputSync(globalPidFilePath, "utf-8").trim(), 10);
     onTestFinished(() => killPid(pid));
 
     expect(result.stdout).toContain(`port ${customPort}`);
@@ -466,7 +466,7 @@ describe("kspec serve commands", () => {
     // Start daemon (uses --detach so serve status can find PID file)
     runKspec(`serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
 
-    const pid = parseInt(readFileSync(globalPidFilePath, "utf-8").trim(), 10);
+    const pid = parseInt(readTestOutputSync(globalPidFilePath, "utf-8").trim(), 10);
     onTestFinished(() => killPid(pid));
 
     await waitForDaemonHealth(port);
@@ -503,7 +503,7 @@ describe("kspec serve commands", () => {
     // Start daemon (uses --detach so serve status can find PID file)
     runKspec(`serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
 
-    const pid = parseInt(readFileSync(globalPidFilePath, "utf-8").trim(), 10);
+    const pid = parseInt(readTestOutputSync(globalPidFilePath, "utf-8").trim(), 10);
     onTestFinished(() => killPid(pid));
 
     await waitForDaemonHealth(port);
@@ -556,7 +556,7 @@ describe("kspec serve commands", () => {
 
     // AC2: This test uses its own isolated HOME, so the outer afterEach
     // cannot reach this daemon. Register cleanup targeting this daemon's PID.
-    const pid = parseInt(readFileSync(isolated.daemonPidFilePath, "utf-8").trim(), 10);
+    const pid = parseInt(readTestOutputSync(isolated.daemonPidFilePath, "utf-8").trim(), 10);
     onTestFinished(async () => {
       killPid(pid);
       await cleanupTempDir(emptyTempDir);
@@ -585,7 +585,7 @@ describe("kspec serve commands", () => {
     // Start daemon (uses --detach so serve status can find PID file)
     runKspec(`serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
 
-    const pid = parseInt(readFileSync(globalPidFilePath, "utf-8").trim(), 10);
+    const pid = parseInt(readTestOutputSync(globalPidFilePath, "utf-8").trim(), 10);
     onTestFinished(() => killPid(pid));
 
     await waitForDaemonHealth(port);
@@ -729,7 +729,7 @@ describe("kspec serve commands", () => {
       // AC2: This test uses its own isolated HOME (installDir), so the outer
       // afterEach cannot reach this daemon. Register PID-based cleanup.
       if (existsSync(isolated.daemonPidFilePath)) {
-        const pid = parseInt(readFileSync(isolated.daemonPidFilePath, "utf-8").trim(), 10);
+        const pid = parseInt(readTestOutputSync(isolated.daemonPidFilePath, "utf-8").trim(), 10);
         onTestFinished(() => killPid(pid));
       }
 
@@ -818,7 +818,7 @@ describe("kspec serve commands", () => {
       tempDir,
     );
 
-    const pid = parseInt(readFileSync(globalPidFilePath, "utf-8").trim(), 10);
+    const pid = parseInt(readTestOutputSync(globalPidFilePath, "utf-8").trim(), 10);
     onTestFinished(() => killPid(pid));
 
     expect(result.exitCode).toBe(0);
@@ -942,7 +942,7 @@ describe("kspec serve commands", () => {
 
     // AC5: Use process.kill directly for cleanup, not CLI subprocess
     // that depends on custom PATH resolution (which may fail silently).
-    const pid = parseInt(readFileSync(globalPidFilePath, "utf-8").trim(), 10);
+    const pid = parseInt(readTestOutputSync(globalPidFilePath, "utf-8").trim(), 10);
     onTestFinished(() => killPid(pid));
 
     expect(result.exitCode).toBe(0);
@@ -1057,7 +1057,7 @@ describe("kspec serve commands", () => {
         tempDir,
       );
 
-      const pid = parseInt(readFileSync(globalPidFilePath, "utf-8").trim(), 10);
+      const pid = parseInt(readTestOutputSync(globalPidFilePath, "utf-8").trim(), 10);
       onTestFinished(() => killPid(pid));
 
       // Compare JSON vs human output

@@ -87,11 +87,7 @@ describe("updateManagedBlock", () => {
   // AC: @complete-auto-gitignore ac-kspec-entries-idempotent
   it("returns unchanged when all entries already present", () => {
     const blockLines = [...KSPEC_GITIGNORE_ENTRIES];
-    const content = serializeManagedBlock(
-      ["node_modules/", ""],
-      blockLines,
-      [""],
-    );
+    const content = serializeManagedBlock(["node_modules/", ""], blockLines, [""]);
 
     const { result } = updateManagedBlock(content);
     expect(result.changed).toBe(false);
@@ -101,11 +97,7 @@ describe("updateManagedBlock", () => {
 
   it("adds missing entries to existing block without removing existing ones", () => {
     // Block only has .kspec/ — should add the rest
-    const content = serializeManagedBlock(
-      ["node_modules/", ""],
-      [".kspec/"],
-      [""],
-    );
+    const content = serializeManagedBlock(["node_modules/", ""], [".kspec/"], [""]);
 
     const { newContent, result } = updateManagedBlock(content);
     expect(result.changed).toBe(true);
@@ -309,12 +301,7 @@ describe("ensureKspecGitignore", () => {
 
   it("adds missing entries to an existing partial managed block", async () => {
     // Write a managed block with only .kspec/
-    const partial = [
-      MANAGED_BLOCK_START,
-      ".kspec/",
-      MANAGED_BLOCK_END,
-      "",
-    ].join("\n");
+    const partial = [MANAGED_BLOCK_START, ".kspec/", MANAGED_BLOCK_END, ""].join("\n");
     await fs.writeFile(path.join(testDir, ".gitignore"), partial, "utf-8");
 
     const result = await ensureKspecGitignore(testDir);
@@ -412,8 +399,6 @@ describe("kspec init gitignore integration", () => {
   it("running init twice does not duplicate entries", () => {
     const result1 = kspec("init --no-prompt", testDir);
     expect(result1.exitCode).toBe(0);
-
-    const content1 = readTestOutputSync(path.join(testDir, ".gitignore"));
 
     // Commit the gitignore changes so second init doesn't fail on uncommitted changes
     try {

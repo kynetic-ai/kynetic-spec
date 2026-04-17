@@ -9,7 +9,7 @@
  */
 import { execSync } from "node:child_process";
 import * as fs from "node:fs/promises";
-import { readFileSync, existsSync } from "node:fs";
+import { existsSync } from "node:fs";
 import * as path from "node:path";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import {
@@ -41,10 +41,7 @@ async function initProject(tempDir: string): Promise<void> {
 /**
  * Write the lastKnownVersion to the setup state file.
  */
-async function writeLastKnownVersion(
-  tempDir: string,
-  version: string,
-): Promise<void> {
+async function writeLastKnownVersion(tempDir: string, version: string): Promise<void> {
   const statePath = path.join(tempDir, ".kspec", ".setup-state.json");
   let state: Record<string, unknown> = {};
   try {
@@ -61,9 +58,7 @@ async function writeLastKnownVersion(
 /**
  * Read the lastKnownVersion from the setup state file.
  */
-async function readLastKnownVersion(
-  tempDir: string,
-): Promise<string | undefined> {
+async function readLastKnownVersion(tempDir: string): Promise<string | undefined> {
   const statePath = path.join(tempDir, ".kspec", ".setup-state.json");
   try {
     const raw = await fs.readFile(statePath, "utf-8");
@@ -79,7 +74,7 @@ async function readLastKnownVersion(
  */
 function getCurrentVersion(): string {
   const pkgPath = path.join(__dirname, "..", "package.json");
-  const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
+  const pkg = JSON.parse(readTestOutputSync(pkgPath, "utf-8"));
   return pkg.version;
 }
 
@@ -123,11 +118,7 @@ describe("kspec upgrade", () => {
         const raw = await fs.readFile(statePath, "utf-8");
         const state = JSON.parse(raw);
         delete state.lastKnownVersion;
-        await fs.writeFile(
-          statePath,
-          JSON.stringify(state, null, 2) + "\n",
-          "utf-8",
-        );
+        await fs.writeFile(statePath, JSON.stringify(state, null, 2) + "\n", "utf-8");
       } catch {
         // No state file — that's the test scenario
       }
@@ -153,11 +144,7 @@ describe("kspec upgrade", () => {
         const raw = await fs.readFile(statePath, "utf-8");
         const state = JSON.parse(raw);
         delete state.lastKnownVersion;
-        await fs.writeFile(
-          statePath,
-          JSON.stringify(state, null, 2) + "\n",
-          "utf-8",
-        );
+        await fs.writeFile(statePath, JSON.stringify(state, null, 2) + "\n", "utf-8");
       } catch {
         // no state file
       }
@@ -204,21 +191,13 @@ describe("kspec upgrade", () => {
       // Create a git worktree entry for .kspec
       const worktreeDir = path.join(tempDir, ".git", "worktrees", "-kspec");
       await fs.mkdir(worktreeDir, { recursive: true });
-      await fs.writeFile(
-        path.join(worktreeDir, "HEAD"),
-        "0".repeat(40) + "\n",
-        "utf-8",
-      );
+      await fs.writeFile(path.join(worktreeDir, "HEAD"), "0".repeat(40) + "\n", "utf-8");
       await fs.writeFile(
         path.join(worktreeDir, "gitdir"),
         path.join(specDir, ".git") + "\n",
         "utf-8",
       );
-      await fs.writeFile(
-        path.join(specDir, ".git"),
-        `gitdir: ${worktreeDir}\n`,
-        "utf-8",
-      );
+      await fs.writeFile(path.join(specDir, ".git"), `gitdir: ${worktreeDir}\n`, "utf-8");
 
       // Minimal manifest — intentionally using old format (kynetic_spec: "1.0"
       // does NOT match the "1.1" probe, so no versioned probe fires)
@@ -259,21 +238,13 @@ describe("kspec upgrade", () => {
       // Create a git worktree entry for .kspec
       const worktreeDir = path.join(tempDir, ".git", "worktrees", "-kspec");
       await fs.mkdir(worktreeDir, { recursive: true });
-      await fs.writeFile(
-        path.join(worktreeDir, "HEAD"),
-        "0".repeat(40) + "\n",
-        "utf-8",
-      );
+      await fs.writeFile(path.join(worktreeDir, "HEAD"), "0".repeat(40) + "\n", "utf-8");
       await fs.writeFile(
         path.join(worktreeDir, "gitdir"),
         path.join(specDir, ".git") + "\n",
         "utf-8",
       );
-      await fs.writeFile(
-        path.join(specDir, ".git"),
-        `gitdir: ${worktreeDir}\n`,
-        "utf-8",
-      );
+      await fs.writeFile(path.join(specDir, ".git"), `gitdir: ${worktreeDir}\n`, "utf-8");
 
       // Manifest with OLD format version (kynetic: "1.0" → caps at < 0.9)
       await fs.writeFile(
@@ -317,21 +288,13 @@ describe("kspec upgrade", () => {
 
       const worktreeDir = path.join(tempDir, ".git", "worktrees", "-kspec");
       await fs.mkdir(worktreeDir, { recursive: true });
-      await fs.writeFile(
-        path.join(worktreeDir, "HEAD"),
-        "0".repeat(40) + "\n",
-        "utf-8",
-      );
+      await fs.writeFile(path.join(worktreeDir, "HEAD"), "0".repeat(40) + "\n", "utf-8");
       await fs.writeFile(
         path.join(worktreeDir, "gitdir"),
         path.join(specDir, ".git") + "\n",
         "utf-8",
       );
-      await fs.writeFile(
-        path.join(specDir, ".git"),
-        `gitdir: ${worktreeDir}\n`,
-        "utf-8",
-      );
+      await fs.writeFile(path.join(specDir, ".git"), `gitdir: ${worktreeDir}\n`, "utf-8");
 
       // Old manifest with no versioned probes
       await fs.writeFile(
@@ -381,11 +344,7 @@ describe("kspec upgrade", () => {
         const raw = await fs.readFile(statePath, "utf-8");
         const state = JSON.parse(raw);
         delete state.lastKnownVersion;
-        await fs.writeFile(
-          statePath,
-          JSON.stringify(state, null, 2) + "\n",
-          "utf-8",
-        );
+        await fs.writeFile(statePath, JSON.stringify(state, null, 2) + "\n", "utf-8");
       } catch {
         // Fresh test
       }
@@ -409,7 +368,8 @@ describe("kspec upgrade", () => {
       // Find the manifest and tasks files (kspec init uses slug-based naming)
       const specFiles = await fs.readdir(specDir);
       const manifestName = specFiles.find(
-        (f) => f.endsWith(".yaml") &&
+        (f) =>
+          f.endsWith(".yaml") &&
           !f.endsWith(".tasks.yaml") &&
           !f.endsWith(".inbox.yaml") &&
           !f.endsWith(".meta.yaml") &&
@@ -418,9 +378,7 @@ describe("kspec upgrade", () => {
       expect(manifestName).toBeDefined();
       const manifestPath = path.join(specDir, manifestName!);
 
-      const tasksName = specFiles.find(
-        (f) => f.endsWith(".tasks.yaml"),
-      );
+      const tasksName = specFiles.find((f) => f.endsWith(".tasks.yaml"));
       expect(tasksName).toBeDefined();
       const tasksPath = path.join(specDir, tasksName!);
 
@@ -462,12 +420,15 @@ describe("kspec upgrade", () => {
       await fs.writeFile(tasksPath, yaml.stringify(monolithicTasks), "utf-8");
 
       const result = kspecJson<{
-        steps: Array<{ name: string; status: string; message: string; details?: Record<string, unknown> }>;
+        steps: Array<{
+          name: string;
+          status: string;
+          message: string;
+          details?: Record<string, unknown>;
+        }>;
       }>("upgrade", tempDir);
 
-      const migrationStep = result.steps.find(
-        (s) => s.name === "Task storage migration",
-      );
+      const migrationStep = result.steps.find((s) => s.name === "Task storage migration");
       expect(migrationStep).toBeDefined();
       // Migration should run — either it migrates the monolithic task or
       // at minimum upgrades the manifest to split format
@@ -483,7 +444,8 @@ describe("kspec upgrade", () => {
 
       const specFiles = await fs.readdir(specDir);
       const manifestName = specFiles.find(
-        (f) => f.endsWith(".yaml") &&
+        (f) =>
+          f.endsWith(".yaml") &&
           !f.endsWith(".tasks.yaml") &&
           !f.endsWith(".inbox.yaml") &&
           !f.endsWith(".meta.yaml") &&
@@ -492,9 +454,7 @@ describe("kspec upgrade", () => {
       expect(manifestName).toBeDefined();
       const manifestPath = path.join(specDir, manifestName!);
 
-      const tasksName = specFiles.find(
-        (f) => f.endsWith(".tasks.yaml"),
-      );
+      const tasksName = specFiles.find((f) => f.endsWith(".tasks.yaml"));
       expect(tasksName).toBeDefined();
       const tasksPath = path.join(specDir, tasksName!);
 
@@ -533,12 +493,15 @@ describe("kspec upgrade", () => {
       await fs.writeFile(tasksPath, yaml.stringify(monolithicTasks), "utf-8");
 
       const result = kspecJson<{
-        steps: Array<{ name: string; status: string; message: string; details?: Record<string, unknown> }>;
+        steps: Array<{
+          name: string;
+          status: string;
+          message: string;
+          details?: Record<string, unknown>;
+        }>;
       }>("upgrade", tempDir);
 
-      const migrationStep = result.steps.find(
-        (s) => s.name === "Task storage migration",
-      );
+      const migrationStep = result.steps.find((s) => s.name === "Task storage migration");
       expect(migrationStep).toBeDefined();
       // Must NOT be "skipped" — the actual task file has monolithic data
       expect(migrationStep!.status).toBe("done");
@@ -554,7 +517,8 @@ describe("kspec upgrade", () => {
       const specDir = path.join(tempDir, ".kspec");
       const specFiles = await fs.readdir(specDir);
       const manifestName = specFiles.find(
-        (f) => f.endsWith(".yaml") &&
+        (f) =>
+          f.endsWith(".yaml") &&
           !f.endsWith(".tasks.yaml") &&
           !f.endsWith(".inbox.yaml") &&
           !f.endsWith(".meta.yaml") &&
@@ -576,9 +540,7 @@ describe("kspec upgrade", () => {
         steps: Array<{ name: string; status: string; message: string }>;
       }>("upgrade --dry-run", tempDir);
 
-      const migrationStep = result.steps.find(
-        (s) => s.name === "Task storage migration",
-      );
+      const migrationStep = result.steps.find((s) => s.name === "Task storage migration");
       expect(migrationStep).toBeDefined();
       expect(migrationStep!.status).toBe("done");
       // Must say "would update" in dry-run mode, not "updated"
@@ -601,9 +563,7 @@ describe("kspec upgrade", () => {
         steps: Array<{ name: string; status: string }>;
       }>("upgrade", tempDir);
 
-      const skillStep = result.steps.find(
-        (s) => s.name === "Re-render skills",
-      );
+      const skillStep = result.steps.find((s) => s.name === "Re-render skills");
       expect(skillStep).toBeDefined();
       expect(["done", "skipped"]).toContain(skillStep!.status);
     });
@@ -622,9 +582,7 @@ describe("kspec upgrade", () => {
       const result = kspec("upgrade --json", tempDir);
       const parsed = JSON.parse(result.stdout);
 
-      const skillStep = parsed.steps.find(
-        (s: { name: string }) => s.name === "Re-render skills",
-      );
+      const skillStep = parsed.steps.find((s: { name: string }) => s.name === "Re-render skills");
       expect(skillStep).toBeDefined();
       expect(skillStep.status).toBe("failed");
       expect(result.exitCode).not.toBe(0);
@@ -639,9 +597,7 @@ describe("kspec upgrade", () => {
         steps: Array<{ name: string; status: string }>;
       }>("upgrade", tempDir);
 
-      const agentsStep = result.steps.find(
-        (s) => s.name === "Regenerate agent instructions",
-      );
+      const agentsStep = result.steps.find((s) => s.name === "Regenerate agent instructions");
       expect(agentsStep).toBeDefined();
       expect(["done", "skipped"]).toContain(agentsStep!.status);
     });
@@ -666,9 +622,7 @@ describe("kspec upgrade", () => {
       }>("upgrade --force", tempDir);
 
       expect(result.success).toBe(true);
-      const agentsStep = result.steps.find(
-        (s) => s.name === "Regenerate agent instructions",
-      );
+      const agentsStep = result.steps.find((s) => s.name === "Regenerate agent instructions");
       expect(agentsStep).toBeDefined();
       expect(agentsStep!.status).toBe("done");
 
@@ -702,9 +656,7 @@ describe("kspec upgrade", () => {
       }>("upgrade --force", tempDir);
 
       expect(result.success).toBe(true);
-      const agentsStep = result.steps.find(
-        (s) => s.name === "Regenerate agent instructions",
-      );
+      const agentsStep = result.steps.find((s) => s.name === "Regenerate agent instructions");
       expect(agentsStep).toBeDefined();
       expect(agentsStep!.status).toBe("done");
 
@@ -732,9 +684,7 @@ describe("kspec upgrade", () => {
         steps: Array<{ name: string; status: string; details?: Record<string, unknown> }>;
       }>("upgrade", tempDir);
 
-      const gitignoreStep = result.steps.find(
-        (s) => s.name === "Restore gitignore entries",
-      );
+      const gitignoreStep = result.steps.find((s) => s.name === "Restore gitignore entries");
       expect(gitignoreStep).toBeDefined();
       // Should restore the entries by creating the file
       expect(gitignoreStep!.status).toBe("done");
@@ -754,9 +704,7 @@ describe("kspec upgrade", () => {
         steps: Array<{ name: string; status: string; details?: Record<string, unknown> }>;
       }>("upgrade", tempDir);
 
-      const gitignoreStep = result.steps.find(
-        (s) => s.name === "Restore gitignore entries",
-      );
+      const gitignoreStep = result.steps.find((s) => s.name === "Restore gitignore entries");
       expect(gitignoreStep).toBeDefined();
       expect(gitignoreStep!.status).toBe("done");
 
@@ -782,9 +730,7 @@ describe("kspec upgrade", () => {
         steps: Array<{ name: string; status: string; message: string }>;
       }>("upgrade --dry-run", tempDir);
 
-      const gitignoreStep = result.steps.find(
-        (s) => s.name === "Restore gitignore entries",
-      );
+      const gitignoreStep = result.steps.find((s) => s.name === "Restore gitignore entries");
       expect(gitignoreStep).toBeDefined();
       expect(gitignoreStep!.status).toBe("done");
       expect(gitignoreStep!.message).toContain("would create managed block");
@@ -819,8 +765,8 @@ describe("kspec upgrade", () => {
         expect(followUp.length).toBeGreaterThan(0);
       }
       // At least one follow-up should mention the gitignore change
-      const hasGitignoreFollowUp = result.follow_ups.some(
-        (f) => f.toLowerCase().includes("gitignore"),
+      const hasGitignoreFollowUp = result.follow_ups.some((f) =>
+        f.toLowerCase().includes("gitignore"),
       );
       expect(hasGitignoreFollowUp).toBe(true);
     });
@@ -879,11 +825,7 @@ describe("kspec upgrade", () => {
         const raw = await fs.readFile(statePath, "utf-8");
         const state = JSON.parse(raw);
         delete state.lastKnownVersion;
-        await fs.writeFile(
-          statePath,
-          JSON.stringify(state, null, 2) + "\n",
-          "utf-8",
-        );
+        await fs.writeFile(statePath, JSON.stringify(state, null, 2) + "\n", "utf-8");
       } catch {
         // no state file
       }
@@ -974,10 +916,7 @@ describe("kspec upgrade", () => {
       await initProject(tempDir);
       await writeLastKnownVersion(tempDir, "0.8.0");
 
-      const result = kspecJson<{ dry_run: boolean }>(
-        "upgrade --dry-run",
-        tempDir,
-      );
+      const result = kspecJson<{ dry_run: boolean }>("upgrade --dry-run", tempDir);
       expect(result.dry_run).toBe(true);
     });
 
@@ -1017,9 +956,7 @@ describe("kspec upgrade", () => {
         steps: Array<{ name: string; status: string; details?: Record<string, unknown> }>;
       }>("upgrade --force --dry-run", tempDir);
 
-      const dryAgentsStep = dryResult.steps.find(
-        (s) => s.name === "Regenerate agent instructions",
-      );
+      const dryAgentsStep = dryResult.steps.find((s) => s.name === "Regenerate agent instructions");
       expect(dryAgentsStep).toBeDefined();
       expect(dryAgentsStep!.status).toBe("skipped");
 
@@ -1048,7 +985,8 @@ describe("kspec upgrade", () => {
       expect(result.exitCode).toBe(0);
       // Should be valid JSON (no ANSI codes)
       expect(() => JSON.parse(result.stdout)).not.toThrow();
-      expect(result.stdout).not.toMatch(/\x1b\[/); // No ANSI escape codes
+      // oxlint-disable-next-line no-control-regex -- asserting absence of ANSI escape codes in JSON stdout
+      expect(result.stdout).not.toMatch(/\x1b\[/);
     });
 
     // AC: @trait-json-output ac-2
@@ -1226,13 +1164,10 @@ describe("kspec upgrade", () => {
 
       // Verify the recorded version is also visible in git history on the
       // shadow branch (not just in the working tree).
-      const committedState = execSync(
-        "git show HEAD:.setup-state.json",
-        {
-          cwd: path.join(tempDir, ".kspec"),
-          encoding: "utf-8",
-        },
-      );
+      const committedState = execSync("git show HEAD:.setup-state.json", {
+        cwd: path.join(tempDir, ".kspec"),
+        encoding: "utf-8",
+      });
       const parsed = JSON.parse(committedState);
       expect(parsed.lastKnownVersion).toBe(getCurrentVersion());
     });
@@ -1277,9 +1212,7 @@ describe("kspec upgrade", () => {
         steps: Array<{ name: string; status: string; details?: Record<string, unknown> }>;
       }>("upgrade", tempDir);
 
-      const skillStep = result.steps.find(
-        (s) => s.name === "Re-render skills",
-      );
+      const skillStep = result.steps.find((s) => s.name === "Re-render skills");
       expect(skillStep).toBeDefined();
       expect(skillStep!.status).toBe("done");
       expect((skillStep!.details?.removed as number) || 0).toBeGreaterThan(0);
@@ -1326,9 +1259,7 @@ describe("kspec upgrade", () => {
         steps: Array<{ name: string; status: string; details?: Record<string, unknown> }>;
       }>("upgrade --dry-run", tempDir);
 
-      const skillStep = result.steps.find(
-        (s) => s.name === "Re-render skills",
-      );
+      const skillStep = result.steps.find((s) => s.name === "Re-render skills");
       expect(skillStep).toBeDefined();
       expect(skillStep!.status).toBe("done");
       expect((skillStep!.details?.removed as number) || 0).toBeGreaterThan(0);
@@ -1358,15 +1289,11 @@ describe("kspec upgrade", () => {
       // Verify the skill exists before we remove it
       const originalSkills = metaDoc.skills || [];
       const targetSkillId = "review-plan";
-      const hadSkill = originalSkills.some(
-        (s: { id: string }) => s.id === targetSkillId,
-      );
+      const hadSkill = originalSkills.some((s: { id: string }) => s.id === targetSkillId);
       expect(hadSkill).toBe(true);
 
       // Remove the skill from meta
-      metaDoc.skills = originalSkills.filter(
-        (s: { id: string }) => s.id !== targetSkillId,
-      );
+      metaDoc.skills = originalSkills.filter((s: { id: string }) => s.id !== targetSkillId);
       await fs.writeFile(metaPath, stringify(metaDoc), "utf-8");
 
       // Remove skill content directory
@@ -1383,9 +1310,7 @@ describe("kspec upgrade", () => {
       }>("upgrade --force", tempDir);
 
       // Verify backfill step ran and installed the skill
-      const backfillStep = result.steps.find(
-        (s) => s.name === "Backfill core skills",
-      );
+      const backfillStep = result.steps.find((s) => s.name === "Backfill core skills");
       expect(backfillStep).toBeDefined();
       expect(backfillStep!.status).toBe("done");
       expect((backfillStep!.details?.installed as number) || 0).toBeGreaterThan(0);
@@ -1396,9 +1321,9 @@ describe("kspec upgrade", () => {
       );
 
       // Verify the rendered output was restored
-      expect(existsSync(path.join(tempDir, ".agents", "skills", `kspec-${targetSkillId}`, "SKILL.md"))).toBe(
-        true,
-      );
+      expect(
+        existsSync(path.join(tempDir, ".agents", "skills", `kspec-${targetSkillId}`, "SKILL.md")),
+      ).toBe(true);
     });
 
     it("backfill step succeeds when all core skills are already present", async () => {
@@ -1409,9 +1334,7 @@ describe("kspec upgrade", () => {
         steps: Array<{ name: string; status: string }>;
       }>("upgrade", tempDir);
 
-      const backfillStep = result.steps.find(
-        (s) => s.name === "Backfill core skills",
-      );
+      const backfillStep = result.steps.find((s) => s.name === "Backfill core skills");
       expect(backfillStep).toBeDefined();
       // When all core skills exist, the step updates them (ensuring latest version)
       // so it may report "done" or "skipped" — both are valid success states
@@ -1436,9 +1359,7 @@ describe("kspec upgrade", () => {
         steps: Array<{ name: string; status: string; message: string }>;
       }>("upgrade", tempDir);
 
-      const configStep = result.steps.find(
-        (s) => s.name === "Scaffold project config",
-      );
+      const configStep = result.steps.find((s) => s.name === "Scaffold project config");
       expect(configStep).toBeDefined();
       expect(configStep!.status).toBe("done");
     });
@@ -1451,9 +1372,7 @@ describe("kspec upgrade", () => {
         steps: Array<{ name: string; status: string }>;
       }>("upgrade", tempDir);
 
-      const configStep = result.steps.find(
-        (s) => s.name === "Scaffold project config",
-      );
+      const configStep = result.steps.find((s) => s.name === "Scaffold project config");
       expect(configStep).toBeDefined();
       expect(configStep!.status).toBe("skipped");
     });
@@ -1473,9 +1392,7 @@ describe("kspec upgrade", () => {
         steps: Array<{ name: string; status: string; message: string }>;
       }>("upgrade", tempDir);
 
-      const moduleStep = result.steps.find(
-        (s) => s.name === "Scaffold default module",
-      );
+      const moduleStep = result.steps.find((s) => s.name === "Scaffold default module");
       expect(moduleStep).toBeDefined();
       expect(moduleStep!.status).toBe("done");
 
@@ -1499,9 +1416,7 @@ describe("kspec upgrade", () => {
         steps: Array<{ name: string; status: string }>;
       }>("upgrade", tempDir);
 
-      const moduleStep = result.steps.find(
-        (s) => s.name === "Scaffold default module",
-      );
+      const moduleStep = result.steps.find((s) => s.name === "Scaffold default module");
       expect(moduleStep).toBeDefined();
       expect(moduleStep!.status).toBe("skipped");
     });
@@ -1535,9 +1450,7 @@ describe("kspec upgrade", () => {
         steps: Array<{ name: string; status: string; message: string }>;
       }>("upgrade", tempDir);
 
-      const moduleStep = result.steps.find(
-        (s) => s.name === "Scaffold default module",
-      );
+      const moduleStep = result.steps.find((s) => s.name === "Scaffold default module");
       expect(moduleStep).toBeDefined();
       // Must scaffold — having a custom module is not enough, the default module is missing
       expect(moduleStep!.status).toBe("done");
@@ -1586,9 +1499,7 @@ describe("kspec upgrade", () => {
         steps: Array<{ name: string; status: string; message: string }>;
       }>("upgrade", tempDir);
 
-      const moduleStep = result.steps.find(
-        (s) => s.name === "Scaffold default module",
-      );
+      const moduleStep = result.steps.find((s) => s.name === "Scaffold default module");
       expect(moduleStep).toBeDefined();
       expect(moduleStep!.status).toBe("done");
 
@@ -1616,9 +1527,7 @@ describe("kspec upgrade", () => {
         steps: Array<{ name: string; status: string; message: string }>;
       }>("upgrade --dry-run", tempDir);
 
-      const moduleStep = result.steps.find(
-        (s) => s.name === "Scaffold default module",
-      );
+      const moduleStep = result.steps.find((s) => s.name === "Scaffold default module");
       expect(moduleStep).toBeDefined();
       expect(moduleStep!.status).toBe("done");
       expect(moduleStep!.message).toContain("would create");
@@ -1644,9 +1553,7 @@ describe("kspec upgrade", () => {
         steps: Array<{ name: string; status: string; message: string }>;
       }>("upgrade --force", tempDir);
 
-      const hookStep = result.steps.find(
-        (s) => s.name === "Scaffold reflection hook",
-      );
+      const hookStep = result.steps.find((s) => s.name === "Scaffold reflection hook");
       expect(hookStep).toBeDefined();
       expect(hookStep!.status).toBe("skipped");
       expect(hookStep!.message).toContain("previously removed by user");
@@ -1705,9 +1612,7 @@ describe("kspec upgrade", () => {
         "meta conventions --json",
         tempDir,
       );
-      const afterRemoveConventionDomains = afterRemoveConventions.map(
-        (c) => c.domain,
-      );
+      const afterRemoveConventionDomains = afterRemoveConventions.map((c) => c.domain);
       expect(afterRemoveConventionDomains).not.toContain("architecture");
 
       // Run upgrade --force — MUST NOT recreate the removed defaults
@@ -1730,17 +1635,12 @@ describe("kspec upgrade", () => {
       // No item should be force-recreated or newly created
       const items = scaffoldStep!.details?.items ?? [];
       const recreatedIds = items
-        .filter(
-          (i) => i.status === "force-recreated" || i.status === "created",
-        )
+        .filter((i) => i.status === "force-recreated" || i.status === "created")
         .map((i) => i.id);
       expect(recreatedIds).toEqual([]);
 
       // And the defaults must still be gone on disk
-      const finalAgents = kspecJson<{ items: Array<{ id: string }> }>(
-        "agent list --json",
-        tempDir,
-      );
+      const finalAgents = kspecJson<{ items: Array<{ id: string }> }>("agent list --json", tempDir);
       const finalAgentIds = finalAgents.items.map((a) => a.id);
       expect(finalAgentIds).not.toContain("task-worker");
       expect(finalAgentIds).not.toContain("pr-reviewer");

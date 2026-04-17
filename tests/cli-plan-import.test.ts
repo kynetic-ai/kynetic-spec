@@ -588,11 +588,9 @@ Updated body.
 `,
     );
 
-    const result = kspecRun(
-      `plan import "${editedPath}" --into @plan-ac-shape-plan`,
-      tempDir,
-      { expectFail: true },
-    );
+    const result = kspecRun(`plan import "${editedPath}" --into @plan-ac-shape-plan`, tempDir, {
+      expectFail: true,
+    });
 
     expect(result.exitCode).toBe(2);
     expect(result.stderr).toContain("feature-bad-ac");
@@ -610,10 +608,7 @@ Just prose, no specs or tasks.
 `,
     );
 
-    const result = kspecRun(
-      `plan import "${editedPath}" --into @plan-empty-into-plan`,
-      tempDir,
-    );
+    const result = kspecRun(`plan import "${editedPath}" --into @plan-empty-into-plan`, tempDir);
 
     expect(result.exitCode).toBe(0);
     expect(result.stderr).toContain("no derivable content");
@@ -1028,6 +1023,7 @@ Prose only.
     expect(parsed.error).toContain("json-feature");
     expect(parsed.error).toContain("ac-json-bad");
     // No ANSI codes in JSON output
+    // oxlint-disable-next-line no-control-regex -- asserting absence of ANSI escape char in JSON output
     expect(parsed.error).not.toMatch(/\u001b/);
   });
 });

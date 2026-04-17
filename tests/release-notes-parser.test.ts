@@ -23,7 +23,7 @@ import {
   renderEntries,
   renderEntry,
 } from "../src/parser/release-notes.js";
-import { cleanupTempDir, createTempDir } from "./helpers/cli.js";
+import { cleanupTempDir, createTempDir, readTestOutput } from "./helpers/cli.js";
 
 const WELL_FORMED = `# kspec Release Notes
 
@@ -113,11 +113,7 @@ describe("release-notes parser", () => {
   it("returns range entries in ascending chronological order", () => {
     const notes = parseReleaseNotes(WELL_FORMED, "/virtual/RELEASE_NOTES.md");
     const range = getRangeNotes(notes, "0.10.0", "0.12.0");
-    expect(range.map((e) => e.version)).toEqual([
-      "0.10.0",
-      "0.11.0",
-      "0.12.0",
-    ]);
+    expect(range.map((e) => e.version)).toEqual(["0.10.0", "0.11.0", "0.12.0"]);
   });
 
   // AC: @release-notes-accessible ac-version-range-notes
@@ -148,9 +144,7 @@ describe("release-notes parser", () => {
 
   it("rejects Unreleased as a range bound", () => {
     const notes = parseReleaseNotes(WELL_FORMED, "/virtual/RELEASE_NOTES.md");
-    expect(() => getRangeNotes(notes, "unreleased", "0.12.0")).toThrowError(
-      ReleaseNotesError,
-    );
+    expect(() => getRangeNotes(notes, "unreleased", "0.12.0")).toThrowError(ReleaseNotesError);
   });
 
   // AC: @release-notes-accessible ac-upgrade-surfaces-notes
@@ -275,10 +269,9 @@ describe("release-notes parser", () => {
       const notes = await loadReleaseNotes(projectRoot);
       const versioned = notes.entries.filter((e) => e.version !== "unreleased");
       for (const entry of versioned) {
-        expect(
-          entry.body,
-          `${entry.heading} missing '### Breaking changes' section`,
-        ).toMatch(/^###\s+Breaking changes\s*$/m);
+        expect(entry.body, `${entry.heading} missing '### Breaking changes' section`).toMatch(
+          /^###\s+Breaking changes\s*$/m,
+        );
       }
     });
 
@@ -331,7 +324,7 @@ describe("release-notes parser", () => {
       let content: string | null = null;
       for (const candidate of candidates) {
         try {
-          content = await fs.readFile(candidate, "utf-8");
+          content = await readTestOutput(candidate, "utf-8");
           break;
         } catch {
           // Try next candidate

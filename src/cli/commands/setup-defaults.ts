@@ -113,8 +113,7 @@ const DEFAULT_AGENTS: DefaultAgentDef[] = [
   {
     id: "task-worker",
     name: "Task Worker",
-    description:
-      "Autonomous task worker. Picks up automation-eligible ready and needs_work tasks.",
+    description: "Autonomous task worker. Picks up automation-eligible ready and needs_work tasks.",
     capabilities: ["code", "test", "refactor"],
     tools: ["kspec", "git", "npm"],
     dispatch: [
@@ -414,7 +413,9 @@ export async function scaffoldDefaults(
         });
       }
 
-      const createdItems = items.filter((i) => i.status === "created" || i.status === "force-recreated");
+      const createdItems = items.filter(
+        (i) => i.status === "created" || i.status === "force-recreated",
+      );
       const existingItems = items.filter((i) => i.status === "exists");
       const renamedItems = items.filter((i) => i.status === "renamed");
       const parts: string[] = [];

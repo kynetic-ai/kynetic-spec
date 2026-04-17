@@ -263,7 +263,7 @@ function extractSpecsSection(content: string, errors: ParseError[]): PlanSpec[] 
             message:
               `Acceptance criterion ${acLabel} in spec "${specLabel}" does not match the expected shape.\n` +
               "Required fields for an acceptance criterion:\n" +
-              "  - id: unique identifier for the criterion (e.g. \"ac-login-validates\")\n" +
+              '  - id: unique identifier for the criterion (e.g. "ac-login-validates")\n' +
               "  - given: the precondition or starting state\n" +
               "  - when: the action or event that occurs\n" +
               "  - then: the expected outcome or result",

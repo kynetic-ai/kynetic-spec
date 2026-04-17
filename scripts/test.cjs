@@ -611,7 +611,9 @@ async function main() {
     "--reporter=json",
     `--outputFile.json=${jsonOutPath}`,
     "--reporter=verbose",
-    ...(!verbose && process.env.KSPEC_TEST_PROGRESS !== "0" ? [`--reporter=${progressReporter}`] : []),
+    ...(!verbose && process.env.KSPEC_TEST_PROGRESS !== "0"
+      ? [`--reporter=${progressReporter}`]
+      : []),
   ];
 
   const cmd = ["npx", "vitest", "run", ...reporterArgs, ...vitestArgs];

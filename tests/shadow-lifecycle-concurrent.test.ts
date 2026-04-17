@@ -11,13 +11,7 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { execSync, spawn } from "node:child_process";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import {
-  createTempDir,
-  cleanupTempDir,
-  initGitRepo,
-  kspec,
-  CLI_PATH,
-} from "./helpers/cli.js";
+import { createTempDir, cleanupTempDir, initGitRepo, kspec, CLI_PATH } from "./helpers/cli.js";
 import { captureShadowBaseline, addLinkedWorktree } from "./helpers/worktree-baseline.js";
 
 interface ProcResult {

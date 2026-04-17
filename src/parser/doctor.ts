@@ -10,11 +10,7 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { getGitRoot, getShadowStatus, isGitRepo, type ShadowStatus } from "./shadow.js";
-import {
-  getSetupStatus,
-  hasAnyRenderedSkills,
-  type SetupStatus,
-} from "./setup-status.js";
+import { getSetupStatus, hasAnyRenderedSkills, type SetupStatus } from "./setup-status.js";
 import { getDaemonStatus, type DaemonStatus } from "./daemon-status.js";
 import { findManifestInDir, readYamlFile } from "./yaml.js";
 import { CONFIG_FILENAME } from "./config.js";
@@ -467,7 +463,8 @@ function buildSetupSection(
       //     every warning must name a concrete command the user can run.
       agentsMdSeverity = "warning";
       agentsMdMessage = "kspec-agents.md staleness could not be determined";
-      agentsMdGuidance = "Run `kspec agents generate` to regenerate kspec-agents.md with a fresh hash";
+      agentsMdGuidance =
+        "Run `kspec agents generate` to regenerate kspec-agents.md with a fresh hash";
       break;
     case "missing":
     default:
@@ -500,10 +497,7 @@ function buildSetupSection(
  * AC: @doctor-reports-actionable-state ac-config-scaffold-detected — warns
  * when missing and names the scaffold command.
  */
-async function buildProjectConfigCheck(
-  section: SetupSection,
-  projectRoot: string,
-): Promise<void> {
+async function buildProjectConfigCheck(section: SetupSection, projectRoot: string): Promise<void> {
   const configPath = path.join(projectRoot, CONFIG_FILENAME);
   let exists = false;
   try {
@@ -544,10 +538,7 @@ async function buildProjectConfigCheck(
  * AC: @doctor-reports-actionable-state ac-version-skew-detected — warns when
  * skew is detected and names the upgrade command.
  */
-async function buildVersionSkewCheck(
-  section: SetupSection,
-  projectRoot: string,
-): Promise<void> {
+async function buildVersionSkewCheck(section: SetupSection, projectRoot: string): Promise<void> {
   const statePath = path.join(projectRoot, ".kspec", ".setup-state.json");
   let lastKnownVersion: string | undefined;
   try {
@@ -668,8 +659,10 @@ function buildDaemonSection(section: DaemonSection, status: DaemonStatus): void 
     section.checks.push({
       name: "daemon-health",
       severity: "warning",
-      message: "Health endpoint unreachable (daemon may be starting up or there may be a port conflict)",
-      guidance: "Run `kspec serve restart` to restart the daemon, or `kspec serve status` to inspect",
+      message:
+        "Health endpoint unreachable (daemon may be starting up or there may be a port conflict)",
+      guidance:
+        "Run `kspec serve restart` to restart the daemon, or `kspec serve status` to inspect",
     });
   } else {
     section.checks.push({
@@ -733,7 +726,7 @@ async function buildTaskStorageSection(
         severity: "error",
         message: `Legacy task storage detected (kynetic: ${kyneticVersion}, no split format)`,
         guidance:
-          'Run `kspec upgrade` to bring this project up to the installed version (or `kspec task migrate` to only convert to per-task directory storage).',
+          "Run `kspec upgrade` to bring this project up to the installed version (or `kspec task migrate` to only convert to per-task directory storage).",
       });
     }
   }

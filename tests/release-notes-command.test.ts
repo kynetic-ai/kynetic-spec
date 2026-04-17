@@ -9,18 +9,18 @@
  */
 
 import * as path from "node:path";
-import { readFileSync } from "node:fs";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import {
   kspec,
   kspecJson,
   createTempDir,
   cleanupTempDir,
+  readTestOutputSync,
 } from "./helpers/cli.js";
 
 function getCurrentVersion(): string {
   const pkgPath = path.resolve(__dirname, "..", "package.json");
-  const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
+  const pkg = JSON.parse(readTestOutputSync(pkgPath, "utf-8"));
   return pkg.version as string;
 }
 
@@ -66,10 +66,7 @@ describe("kspec release-notes", () => {
   // AC: @release-notes-accessible ac-version-range-notes
   // AC: @trait-semantic-exit-codes ac-1
   it("shows release notes for every version in an inclusive range in chronological order", () => {
-    const result = kspec(
-      "release-notes --from 0.10.0 --to 0.12.0",
-      tempDir,
-    );
+    const result = kspec("release-notes --from 0.10.0 --to 0.12.0", tempDir);
     expect(result.exitCode).toBe(0);
     // All three versions' sections must appear.
     expect(result.stdout).toContain("v0.10.0");
@@ -101,11 +98,7 @@ describe("kspec release-notes", () => {
   // AC: @trait-error-guidance ac-1, ac-2
   // AC: @trait-semantic-exit-codes ac-2
   it("rejects an inverted range with a non-zero exit code and actionable guidance", () => {
-    const result = kspec(
-      "release-notes --from 0.12.0 --to 0.10.0",
-      tempDir,
-      { expectFail: true },
-    );
+    const result = kspec("release-notes --from 0.12.0 --to 0.10.0", tempDir, { expectFail: true });
     expect(result.exitCode).not.toBe(0);
     // Suggestion is emitted to stderr via the error() helper.
     const combined = result.stdout + result.stderr;
@@ -129,10 +122,7 @@ describe("kspec release-notes", () => {
   // message and exits 0 with an empty result set, matching the
   // semantic-exit-codes trait's "empty result" guidance.
   it("exits 0 with a helpful message when no versions fall in the range", () => {
-    const result = kspec(
-      "release-notes --from 99.99.99 --to 99.99.99",
-      tempDir,
-    );
+    const result = kspec("release-notes --from 99.99.99 --to 99.99.99", tempDir);
     expect(result.exitCode).toBe(0);
     expect(result.stdout).toMatch(/No release notes in the range/);
   });
@@ -145,7 +135,7 @@ describe("kspec release-notes", () => {
     expect(result.exitCode).toBe(0);
     // Read the on-disk file and assert the printed slice is a substring.
     const notesPath = path.resolve(__dirname, "..", "RELEASE_NOTES.md");
-    const notesRaw = readFileSync(notesPath, "utf-8");
+    const notesRaw = readTestOutputSync(notesPath, "utf-8");
     // Find the current version's section in the file and confirm our output
     // starts with the same heading.
     const heading = `## v${current}`;

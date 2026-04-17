@@ -72,9 +72,7 @@ export function getFixtureTaskCounts(): FixtureTaskCounts {
     }
 
     if (statuses.length === 0) {
-      throw new Error(
-        `No valid task.yaml files found in split directory: ${splitDir}`,
-      );
+      throw new Error(`No valid task.yaml files found in split directory: ${splitDir}`);
     }
   } else {
     // Fallback: read project.tasks.yaml

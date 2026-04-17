@@ -183,10 +183,10 @@ describe("Scaffold Project Config", () => {
         // Fetch to populate remote tracking refs, then manually set
         // refs/remotes/origin/HEAD to a nonexistent branch name.
         execSync("git fetch origin", { cwd: testDir, stdio: "pipe" });
-        execSync(
-          "git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/deleted-default",
-          { cwd: testDir, stdio: "pipe" },
-        );
+        execSync("git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/deleted-default", {
+          cwd: testDir,
+          stdio: "pipe",
+        });
 
         const initResult = kspec("init --no-prompt", testDir);
         expect(initResult.exitCode).toBe(0);

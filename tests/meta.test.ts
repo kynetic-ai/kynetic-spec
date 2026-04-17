@@ -1723,16 +1723,10 @@ describe("Integration: meta mutation commands", () => {
     // AC: @meta-set-multi-value-parity ac-mixed-add-and-remove
     // Verifies remove-then-add ordering: removing and re-adding the same value works
     it("should allow removing and re-adding the same value in one call (remove-before-add order)", () => {
-      kspec(
-        'meta add agent --id readd-agent --name "Readd Agent" --capability stale',
-        tempDir,
-      );
+      kspec('meta add agent --id readd-agent --name "Readd Agent" --capability stale', tempDir);
 
       // Remove "stale" and re-add "stale" — net effect: value is present
-      kspec(
-        "meta set @readd-agent --remove-capability stale --add-capability stale",
-        tempDir,
-      );
+      kspec("meta set @readd-agent --remove-capability stale --add-capability stale", tempDir);
 
       const agent = kspecJson<any>("meta get @readd-agent", tempDir);
       expect(agent.capabilities).toContain("stale");
@@ -1746,10 +1740,7 @@ describe("Integration: meta mutation commands", () => {
         tempDir,
       );
 
-      kspec(
-        "meta set @multi-rm-tool-agent --remove-tool bash --remove-tool python",
-        tempDir,
-      );
+      kspec("meta set @multi-rm-tool-agent --remove-tool bash --remove-tool python", tempDir);
 
       const agent = kspecJson<any>("meta get @multi-rm-tool-agent", tempDir);
       expect(agent.tools).toEqual(["node"]);

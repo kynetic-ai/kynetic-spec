@@ -2200,92 +2200,6 @@ async function hasUncommittedGitignore(projectRoot: string): Promise<boolean> {
 }
 
 /**
- * Commit only .gitignore with a message.
- *
- * @param projectRoot Git repository root
- * @param directoryName Shadow directory name (for commit message)
- */
-async function commitGitignore(projectRoot: string, directoryName: string): Promise<void> {
-  await runGitAsync(projectRoot, ["add", ".gitignore"]);
-  await runGitAsync(projectRoot, [
-    "commit",
-    "-m",
-    `chore: add ${directoryName}/ to .gitignore for shadow branch`,
-  ]);
-}
-
-/**
- * Add shadow directory to .gitignore if not already present.
- * Fails if .gitignore has uncommitted changes.
- * Commits the change after adding.
- *
- * AC: @config-shadow ac-2 — uses configured directory name
- * AC: @config-shadow ac-7 — defaults to .kspec when not provided
- *
- * @param projectRoot Git repository root
- * @param options Optional shadow configuration
- */
-async function ensureGitignore(projectRoot: string, options?: ShadowOptions): Promise<boolean> {
-  const directoryName = getDirectoryName(options);
-  const gitignorePath = path.join(projectRoot, ".gitignore");
-  const entry = `${directoryName}/`;
-
-  // Fail fast if .gitignore has uncommitted changes
-  if (await hasUncommittedGitignore(projectRoot)) {
-    throw new ShadowError(
-      ".gitignore has uncommitted changes",
-      "GIT_ERROR",
-      "Commit or stash your .gitignore changes before running kspec init.",
-    );
-  }
-
-  try {
-    let content = "";
-    try {
-      content = await fs.readFile(gitignorePath, "utf-8");
-    } catch {
-      // File doesn't exist, will create
-    }
-
-    // Check if already present (handle various formats)
-    const lines = content.split("\n");
-    const patterns = [
-      directoryName,
-      `${directoryName}/`,
-      `/${directoryName}`,
-      `/${directoryName}/`,
-    ];
-
-    for (const line of lines) {
-      const trimmed = line.trim();
-      if (patterns.includes(trimmed)) {
-        return false; // Already present
-      }
-    }
-
-    // Add to gitignore
-    const newContent =
-      content.endsWith("\n") || content === "" ? `${content}${entry}\n` : `${content}\n${entry}\n`;
-
-    await fs.writeFile(gitignorePath, newContent, "utf-8");
-
-    // Commit the change
-    await commitGitignore(projectRoot, directoryName);
-
-    return true;
-  } catch (error) {
-    if (error instanceof ShadowError) {
-      throw error;
-    }
-    throw new ShadowError(
-      `Failed to update .gitignore: ${error}`,
-      "GIT_ERROR",
-      "Check file permissions for .gitignore",
-    );
-  }
-}
-
-/**
  * Add .kspec-sessions/ to root .gitignore if not already present.
  * Does NOT commit — caller is responsible for committing if needed.
  *
@@ -2936,8 +2850,16 @@ export async function initializeShadow(
       // Manifest doesn't exist, create initial structure
       await fs.mkdir(modulesDir, { recursive: true });
       const defaultModuleUlid = ulid();
-      await fs.writeFile(manifestPath, generateShadowManifest(projectName, defaultModuleUlid), "utf-8");
-      await fs.writeFile(moduleFilePath, generateShadowModule(projectName, defaultModuleUlid), "utf-8");
+      await fs.writeFile(
+        manifestPath,
+        generateShadowManifest(projectName, defaultModuleUlid),
+        "utf-8",
+      );
+      await fs.writeFile(
+        moduleFilePath,
+        generateShadowModule(projectName, defaultModuleUlid),
+        "utf-8",
+      );
       await fs.writeFile(tasksPath, generateShadowTasks(projectName), "utf-8");
       await fs.writeFile(inboxPath, generateShadowInbox(), "utf-8");
 

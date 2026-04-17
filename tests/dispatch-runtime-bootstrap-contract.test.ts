@@ -1521,7 +1521,7 @@ describe("dispatch runtime bootstrap contract", { timeout: 60_000 }, () => {
         "  base_branch: agent-dev",
         "  bootstrap:",
         "    steps:",
-        '      - run: python3 -c "import sys; sys.stdout.write(\'A\' * 5000); sys.stderr.write(\'BOOTSTRAP_TAIL_SENTINEL_XYZ123\'); sys.exit(1)"',
+        "      - run: python3 -c \"import sys; sys.stdout.write('A' * 5000); sys.stderr.write('BOOTSTRAP_TAIL_SENTINEL_XYZ123'); sys.exit(1)\"",
       ].join("\n"),
       "utf-8",
     );

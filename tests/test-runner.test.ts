@@ -6,6 +6,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 /** Strip ANSI escape codes from a string for clean assertions. */
 function stripAnsi(str: string): string {
+  // oxlint-disable-next-line no-control-regex -- matching ANSI CSI escape sequences requires the control char
   return str.replace(/\x1b\[[0-9;]*m/g, "");
 }
 
@@ -739,10 +740,7 @@ it('fails', () => { expect(1).toBe(2); });
         { length: 20 },
         (_, i) => `it('test-${i}', () => { expect(${i}).toBe(${i}); });`,
       ).join("\n");
-      fs.writeFileSync(
-        tempTestFile,
-        `import { it, expect } from 'vitest';\n${tests}\n`,
-      );
+      fs.writeFileSync(tempTestFile, `import { it, expect } from 'vitest';\n${tests}\n`);
 
       const sessionId = `test-volume-${Date.now()}`;
       const cacheDir = path.join(os.tmpdir(), "kspec-test-cache", sessionId);
@@ -850,9 +848,9 @@ it('fails', () => { expect(1).toBe(2); });
 
         const logContent = stripAnsi(fs.readFileSync(path.join(cacheDir, logFiles[0]), "utf8"));
         // The log should not contain progress-style "PASS tests/..." lines
-        const logProgressLines = logContent.split("\n").filter(
-          (l) => l.trim().startsWith("PASS") && l.includes("_trivial-log-clean"),
-        );
+        const logProgressLines = logContent
+          .split("\n")
+          .filter((l) => l.trim().startsWith("PASS") && l.includes("_trivial-log-clean"));
         expect(logProgressLines.length).toBe(0);
       } finally {
         fs.rmSync(tempTestFile, { force: true });

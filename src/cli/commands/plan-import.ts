@@ -235,7 +235,12 @@ async function importPlan(planPath: string, options: ImportOptions): Promise<voi
   };
   const plan = createPlan(planInput);
 
-  await saveImportedPlan(ctx, plan, preview, emptyPlanWarnings.map((w) => w.message));
+  await saveImportedPlan(
+    ctx,
+    plan,
+    preview,
+    emptyPlanWarnings.map((w) => w.message),
+  );
 }
 
 async function saveImportedPlan(

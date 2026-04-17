@@ -115,9 +115,7 @@ export function assertShadowUnchanged(
     );
   }
   if (before.shadowBranchSha !== after.shadowBranchSha) {
-    diffs.push(
-      `shadow branch SHA changed: ${before.shadowBranchSha} -> ${after.shadowBranchSha}`,
-    );
+    diffs.push(`shadow branch SHA changed: ${before.shadowBranchSha} -> ${after.shadowBranchSha}`);
   }
   if (before.dotGitPointer !== after.dotGitPointer) {
     diffs.push(
@@ -128,9 +126,7 @@ export function assertShadowUnchanged(
     diffs.push(`.kspec/ inode changed: ${before.dirInode} -> ${after.dirInode}`);
   }
   if (before.dirMtimeMs !== after.dirMtimeMs) {
-    diffs.push(
-      `.kspec/ mtime changed: ${before.dirMtimeMs} -> ${after.dirMtimeMs}`,
-    );
+    diffs.push(`.kspec/ mtime changed: ${before.dirMtimeMs} -> ${after.dirMtimeMs}`);
   }
 
   if (diffs.length > 0) {

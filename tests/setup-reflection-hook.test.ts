@@ -13,7 +13,13 @@ import * as path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import * as YAML from "yaml";
 import { matchesFilter } from "../src/schema/hooks.js";
-import { cleanupTempDir, createTempDir, initGitRepo, kspec } from "./helpers/cli.js";
+import {
+  cleanupTempDir,
+  createTempDir,
+  initGitRepo,
+  kspec,
+  readTestOutput,
+} from "./helpers/cli.js";
 
 /**
  * Create a minimal kspec project in a temp dir (traditional layout).
@@ -44,9 +50,7 @@ async function setupMinimalProject(dir: string): Promise<void> {
 /**
  * Read hooks from the meta manifest.
  */
-async function readHooks(
-  dir: string,
-): Promise<
+async function readHooks(dir: string): Promise<
   Array<{
     _ulid: string;
     name: string;
@@ -57,7 +61,7 @@ async function readHooks(
   }>
 > {
   const metaPath = path.join(dir, "kynetic.meta.yaml");
-  const raw = YAML.parse(await fs.readFile(metaPath, "utf-8")) as {
+  const raw = YAML.parse(await readTestOutput(metaPath, "utf-8")) as {
     hooks?: Array<Record<string, unknown>>;
   };
   return (raw.hooks || []) as ReturnType<typeof readHooks> extends Promise<infer T> ? T : never;
@@ -66,9 +70,7 @@ async function readHooks(
 /**
  * Read the scaffold state file.
  */
-async function readScaffoldState(
-  dir: string,
-): Promise<{ reflectionHookScaffolded?: boolean }> {
+async function readScaffoldState(dir: string): Promise<{ reflectionHookScaffolded?: boolean }> {
   try {
     const content = await fs.readFile(
       path.join(dir, ".kspec", ".setup-scaffold-state.json"),

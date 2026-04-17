@@ -9,7 +9,13 @@ import {
   reconcileDispatchWorkspaceLifecycle,
   reconcileDispatchWorkspaceRegistry,
 } from "../src/agent-runtime/workspace.js";
-import { cleanupTempDir, createTempDir, initGitRepo, readTestOutput, testUlid } from "./helpers/cli.js";
+import {
+  cleanupTempDir,
+  createTempDir,
+  initGitRepo,
+  readTestOutput,
+  testUlid,
+} from "./helpers/cli.js";
 
 function git(cwd: string, command: string): string {
   return execSync(`git ${command}`, {
@@ -277,10 +283,7 @@ describe("reconciliation self-heal for lost completion writes", () => {
 
     // Run reconciliation. Task status is "completed" so reconciler knows
     // the workspace is done.
-    await reconcileDispatchWorkspaceRegistry(
-      tempDir,
-      new Map([[taskRef, "completed"]]),
-    );
+    await reconcileDispatchWorkspaceRegistry(tempDir, new Map([[taskRef, "completed"]]));
 
     const afterRecord = (await readRegistryRecords(tempDir)).find((r) => r.task_ref === taskRef);
     expect(afterRecord?.cleanup.status).toBe("completed");
@@ -324,10 +327,7 @@ describe("reconciliation self-heal for lost completion writes", () => {
     };
     await writeRegistryRecords(tempDir, records);
 
-    await reconcileDispatchWorkspaceRegistry(
-      tempDir,
-      new Map([[taskRef, "completed"]]),
-    );
+    await reconcileDispatchWorkspaceRegistry(tempDir, new Map([[taskRef, "completed"]]));
 
     const afterRecord = (await readRegistryRecords(tempDir)).find((r) => r.task_ref === taskRef);
     expect(afterRecord?.cleanup.status).toBe("completed");

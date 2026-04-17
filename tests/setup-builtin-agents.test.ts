@@ -12,7 +12,13 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import * as YAML from "yaml";
-import { cleanupTempDir, createTempDir, initGitRepo, kspec } from "./helpers/cli.js";
+import {
+  cleanupTempDir,
+  createTempDir,
+  initGitRepo,
+  kspec,
+  readTestOutput,
+} from "./helpers/cli.js";
 
 /**
  * Raw meta manifest shape for test assertions.
@@ -66,22 +72,20 @@ async function setupMinimalProject(dir: string): Promise<void> {
  */
 async function readMeta(dir: string): Promise<RawMeta> {
   const metaPath = path.join(dir, "kynetic.meta.yaml");
-  return YAML.parse(await fs.readFile(metaPath, "utf-8")) as RawMeta;
+  return YAML.parse(await readTestOutput(metaPath, "utf-8")) as RawMeta;
 }
 
 /**
  * Read setup state file.
  */
-async function readSetupState(
-  dir: string,
-): Promise<{
+async function readSetupState(dir: string): Promise<{
   defaultsSeeded?: boolean;
   defaultsSeededAt?: string;
   scaffoldedItems?: Array<{ type: string; id: string }>;
 }> {
   const statePath = path.join(dir, ".setup-state.json");
   try {
-    return JSON.parse(await fs.readFile(statePath, "utf-8"));
+    return JSON.parse(await readTestOutput(statePath, "utf-8"));
   } catch {
     return {};
   }

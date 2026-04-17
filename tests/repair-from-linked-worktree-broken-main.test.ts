@@ -15,10 +15,7 @@ import { execSync } from "node:child_process";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { createTempDir, cleanupTempDir, initGitRepo, kspec } from "./helpers/cli.js";
-import {
-  captureShadowBaseline,
-  addLinkedWorktree,
-} from "./helpers/worktree-baseline.js";
+import { captureShadowBaseline, addLinkedWorktree } from "./helpers/worktree-baseline.js";
 
 describe("kspec shadow repair from linked worktree (broken main)", () => {
   let tempDir: string;

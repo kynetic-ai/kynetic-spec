@@ -11,7 +11,7 @@ import * as path from "node:path";
 import chalk from "chalk";
 import type { Command } from "commander";
 import { EXIT_CODES } from "../exit-codes.js";
-import { error, isStructuredMode, output, success, warn } from "../output.js";
+import { error, output } from "../output.js";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -94,17 +94,10 @@ async function readSetupState(specDir: string): Promise<SetupState> {
   }
 }
 
-async function writeSetupState(
-  specDir: string,
-  state: SetupState,
-): Promise<void> {
+async function writeSetupState(specDir: string, state: SetupState): Promise<void> {
   const statePath = path.join(specDir, SETUP_STATE_FILE);
   await fs.mkdir(path.dirname(statePath), { recursive: true });
-  await fs.writeFile(
-    statePath,
-    JSON.stringify(state, null, 2) + "\n",
-    "utf-8",
-  );
+  await fs.writeFile(statePath, JSON.stringify(state, null, 2) + "\n", "utf-8");
 }
 
 // ─── Version Detection ────────────────────────────────────────────────────────
@@ -331,18 +324,14 @@ export async function runUpgradePipeline(
   const ctx = await initContext();
 
   if (!ctx.manifestPath || !ctx.specDir) {
-    throw new Error(
-      "No kspec project found. Run 'kspec init' first to initialize a project.",
-    );
+    throw new Error("No kspec project found. Run 'kspec init' first to initialize a project.");
   }
 
   const source = await detectSourceVersion(ctx.specDir, projectDir);
 
   // AC: @single-command-version-upgrade ac-idempotent-when-current
-  const isCurrent =
-    source.version === targetVersion && source.confidence === "exact";
-  const isRefresh =
-    source.version === targetVersion && source.confidence === "approximate";
+  const isCurrent = source.version === targetVersion && source.confidence === "exact";
+  const isRefresh = source.version === targetVersion && source.confidence === "approximate";
 
   if (isCurrent && !force) {
     return {
@@ -363,17 +352,12 @@ export async function runUpgradePipeline(
   // ─── Step 1: Task storage migration ─────────────────────────────────
   // AC: @single-command-version-upgrade ac-runs-task-storage-migration
   try {
-    const migrationResult = await runTaskStorageMigrationStep(
-      ctx,
-      dryRun,
-    );
+    const migrationResult = await runTaskStorageMigrationStep(ctx, dryRun);
     steps.push(migrationResult);
     if (migrationResult.status === "done") {
       const count = (migrationResult.details?.migrated as number) || 0;
       if (count > 0) {
-        followUps.push(
-          `Task storage: ${count} task(s) migrated to per-task directory format`,
-        );
+        followUps.push(`Task storage: ${count} task(s) migrated to per-task directory format`);
       }
     }
   } catch (err) {
@@ -390,10 +374,7 @@ export async function runUpgradePipeline(
   // project meta before re-rendering, otherwise the render step only
   // operates on skills that already exist and silently skips new ones.
   try {
-    const backfillResult = await runBackfillCoreSkillsStep(
-      projectDir,
-      dryRun,
-    );
+    const backfillResult = await runBackfillCoreSkillsStep(projectDir, dryRun);
     steps.push(backfillResult);
     if (backfillResult.status === "done") {
       const installed = (backfillResult.details?.installed as number) || 0;
@@ -414,10 +395,7 @@ export async function runUpgradePipeline(
   // ─── Step 3: Re-render skills ───────────────────────────────────────
   // AC: @single-command-version-upgrade ac-rerenders-skills
   try {
-    const skillResult = await runRerenderSkillsStep(
-      projectDir,
-      dryRun,
-    );
+    const skillResult = await runRerenderSkillsStep(projectDir, dryRun);
     steps.push(skillResult);
     if (skillResult.status === "done") {
       const renderedCount = (skillResult.details?.rendered as number) || 0;
@@ -426,9 +404,7 @@ export async function runUpgradePipeline(
       if (renderedCount > 0) parts.push(`${renderedCount} re-rendered`);
       if (removedCount > 0) parts.push(`${removedCount} obsolete removed`);
       if (parts.length > 0) {
-        followUps.push(
-          `Skills: ${parts.join(", ")} — review .agents/skills/ for changes`,
-        );
+        followUps.push(`Skills: ${parts.join(", ")} — review .agents/skills/ for changes`);
       }
     }
   } catch (err) {
@@ -442,10 +418,7 @@ export async function runUpgradePipeline(
   // ─── Step 4: Regenerate agents file ─────────────────────────────────
   // AC: @single-command-version-upgrade ac-regenerates-agents-file
   try {
-    const agentsResult = await runRegenerateAgentsStep(
-      projectDir,
-      dryRun,
-    );
+    const agentsResult = await runRegenerateAgentsStep(projectDir, dryRun);
     steps.push(agentsResult);
     if (agentsResult.status === "done" && !agentsResult.details?.skipped) {
       followUps.push("Agent instructions: kspec-agents.md regenerated — review for changes");
@@ -461,10 +434,7 @@ export async function runUpgradePipeline(
   // ─── Step 5: Restore gitignore entries ──────────────────────────────
   // AC: @single-command-version-upgrade ac-restores-gitignore-entries
   try {
-    const gitignoreResult = await runGitignoreRepairStep(
-      projectDir,
-      dryRun,
-    );
+    const gitignoreResult = await runGitignoreRepairStep(projectDir, dryRun);
     steps.push(gitignoreResult);
     if (gitignoreResult.status === "done") {
       const entries = gitignoreResult.details?.entriesAdded as string[] | undefined;
@@ -483,12 +453,7 @@ export async function runUpgradePipeline(
   // ─── Step 6: Scaffold missing files ─────────────────────────────────
   // AC: @single-command-version-upgrade ac-reports-manual-follow-ups
   try {
-    const scaffoldResults = await runScaffoldMissingStep(
-      projectDir,
-      ctx,
-      dryRun,
-      force,
-    );
+    const scaffoldResults = await runScaffoldMissingStep(projectDir, ctx, dryRun, force);
     for (const result of scaffoldResults) {
       steps.push(result);
       if (result.status === "done") {
@@ -549,10 +514,7 @@ export async function runUpgradePipeline(
   // AC: @release-notes-accessible ac-upgrade-surfaces-notes
   // Surface every release notes section strictly after the source version
   // and up to the target version so users see behavioral changes inline.
-  const releaseNotes = await collectReleaseNotesForUpgrade(
-    source.version,
-    targetVersion,
-  );
+  const releaseNotes = await collectReleaseNotesForUpgrade(source.version, targetVersion);
 
   return {
     success: allSuccess,
@@ -579,9 +541,8 @@ async function collectReleaseNotesForUpgrade(
   targetVersion: string,
 ): Promise<Array<{ version: string; heading: string; markdown: string }>> {
   try {
-    const { loadReleaseNotes, getInterveningNotes, renderEntry } = await import(
-      "../../parser/release-notes.js"
-    );
+    const { loadReleaseNotes, getInterveningNotes, renderEntry } =
+      await import("../../parser/release-notes.js");
     // Resolve the package root where the shipped RELEASE_NOTES.md lives.
     const { fileURLToPath } = await import("node:url");
     const path = await import("node:path");
@@ -626,7 +587,10 @@ async function runTaskStorageMigrationStep(
     const { rawTasks } = await extractRawTaskArray(indexPath);
     // Count monolithic entries (those without notes_count as a number)
     rawTaskCount = rawTasks.filter(
-      (t) => t && typeof t === "object" && typeof (t as Record<string, unknown>).notes_count !== "number",
+      (t) =>
+        t &&
+        typeof t === "object" &&
+        typeof (t as Record<string, unknown>).notes_count !== "number",
     ).length;
   } catch {
     // No tasks file — nothing to migrate
@@ -642,8 +606,7 @@ async function runTaskStorageMigrationStep(
         const raw = await fs.readFile(ctx.manifestPath, "utf-8");
         const manifestData = yaml.parse(raw);
         manifestAlreadySplit =
-          manifestData?.task_storage?.format === "split" &&
-          manifestData?.kynetic === "1.1";
+          manifestData?.task_storage?.format === "split" && manifestData?.kynetic === "1.1";
       } catch {
         // Can't read — assume not split
       }
@@ -728,10 +691,7 @@ async function runTaskStorageMigrationStep(
     return {
       name: "Task storage migration",
       status: "done",
-      message:
-        migrated > 0
-          ? `${migrated} task(s) migrated`
-          : "no tasks needed migration",
+      message: migrated > 0 ? `${migrated} task(s) migrated` : "no tasks needed migration",
       details: { migrated },
     };
   } catch (err) {
@@ -766,9 +726,7 @@ async function runBackfillCoreSkillsStep(
         name: "Backfill core skills",
         status: "skipped",
         message:
-          total > 0
-            ? `all ${total} core skill(s) already present`
-            : "no core skills in manifest",
+          total > 0 ? `all ${total} core skill(s) already present` : "no core skills in manifest",
         details: { installed: 0, skipped: result.skipped },
       };
     }
@@ -800,12 +758,8 @@ async function runRerenderSkillsStep(
   dryRun: boolean,
 ): Promise<UpgradeStepResult> {
   const { initContext, loadMetaContext } = await import("../../parser/index.js");
-  const {
-    getRenderer,
-    getSkillSubdir,
-    getAllRenderers,
-    isKspecManagedSkill,
-  } = await import("../../parser/skill-render.js");
+  const { getRenderer, getSkillSubdir, getAllRenderers, isKspecManagedSkill } =
+    await import("../../parser/skill-render.js");
 
   const ctx = await initContext();
 
@@ -887,9 +841,7 @@ async function runRerenderSkillsStep(
       if (!activeSubdirsByPlatform.has(platform)) {
         activeSubdirsByPlatform.set(platform, new Set());
       }
-      activeSubdirsByPlatform
-        .get(platform)!
-        .add(getSkillSubdir(skill.id, skill.origin, platform));
+      activeSubdirsByPlatform.get(platform)!.add(getSkillSubdir(skill.id, skill.origin, platform));
     }
   }
 
@@ -1064,8 +1016,7 @@ async function runRegenerateAgentsStep(
     try {
       const existingContent = await fs.readFile(outputPath, "utf-8");
       const stripTimestamp = (s: string) => s.replace(/^<!--[^\n]*-->\n/, "");
-      contentMatchesGenerated =
-        stripTimestamp(existingContent) === stripTimestamp(content);
+      contentMatchesGenerated = stripTimestamp(existingContent) === stripTimestamp(content);
     } catch {
       // Can't read — treat as not matching
     }
@@ -1121,11 +1072,8 @@ async function runGitignoreRepairStep(
   projectDir: string,
   dryRun: boolean,
 ): Promise<UpgradeStepResult> {
-  const {
-    ensureKspecGitignore,
-    updateManagedBlock,
-    buildKspecGitignoreEntries,
-  } = await import("../../parser/gitignore.js");
+  const { ensureKspecGitignore, updateManagedBlock, buildKspecGitignoreEntries } =
+    await import("../../parser/gitignore.js");
   const { loadProjectConfig } = await import("../../parser/config.js");
 
   const { config: projectConfig } = await loadProjectConfig(projectDir, projectDir);
@@ -1199,12 +1147,12 @@ async function runScaffoldMissingStep(
   projectDir: string,
   ctx: { manifestPath: string | null; specDir: string },
   dryRun: boolean,
-  force: boolean,
+  _force: boolean,
 ): Promise<UpgradeStepResult[]> {
   const results: UpgradeStepResult[] = [];
 
   // 5a: Scaffold project config
-  const { loadProjectConfig, CONFIG_FILENAME } = await import("../../parser/config.js");
+  const { CONFIG_FILENAME } = await import("../../parser/config.js");
   const { resolveDefaultBranch } = await import("../../agent-runtime/workspace.js");
   const configPath = path.join(projectDir, CONFIG_FILENAME);
 
@@ -1239,9 +1187,7 @@ dispatch:
     results.push({
       name: "Scaffold project config",
       status: "done",
-      message: dryRun
-        ? `would create ${CONFIG_FILENAME}`
-        : `created ${CONFIG_FILENAME}`,
+      message: dryRun ? `would create ${CONFIG_FILENAME}` : `created ${CONFIG_FILENAME}`,
     });
   } else {
     results.push({
@@ -1407,10 +1353,7 @@ dispatch:
     } else {
       // Create the default module and update manifest
       const { ulid: generateUlid } = await import("ulid");
-      const {
-        readYamlFile,
-        writeYamlFilePreserveFormat,
-      } = await import("../../parser/yaml.js");
+      const { readYamlFile, writeYamlFilePreserveFormat } = await import("../../parser/yaml.js");
       const { shadowAutoCommit } = await import("../../parser/shadow.js");
 
       const moduleUlid = generateUlid();
@@ -1440,19 +1383,14 @@ items: []
 
       // Update manifest with default_module and includes
       if (freshCtx.manifestPath) {
-        const manifestData = await readYamlFile<Record<string, unknown>>(
-          freshCtx.manifestPath,
-        );
+        const manifestData = await readYamlFile<Record<string, unknown>>(freshCtx.manifestPath);
         if (manifestData) {
           if (!manifestData.default_module) {
             manifestData.default_module = moduleUlid;
           }
           const includes = manifestData.includes as string[] | undefined;
           if (!includes || !includes.includes("modules/main.yaml")) {
-            manifestData.includes = [
-              ...(includes || []),
-              "modules/main.yaml",
-            ];
+            manifestData.includes = [...(includes || []), "modules/main.yaml"];
           }
           await writeYamlFilePreserveFormat(freshCtx.manifestPath, manifestData);
         }
@@ -1508,7 +1446,8 @@ export function registerUpgradeCommand(program: Command): void {
           // AC: @trait-error-guidance ac-1, ac-2
           // AC: @trait-json-output ac-3 — guidance included in structured error
           error("No kspec project found in the current directory.", {
-            suggestion: "Run 'kspec init' to initialize a project, or change to a directory with a .kspec/ directory.",
+            suggestion:
+              "Run 'kspec init' to initialize a project, or change to a directory with a .kspec/ directory.",
           });
           process.exit(EXIT_CODES.ERROR);
           return;
@@ -1567,12 +1506,8 @@ export function registerUpgradeCommand(program: Command): void {
           const sourceLabel = result.sourceVersion
             ? `${result.sourceVersion} (${result.confidence})`
             : `unknown`;
-          console.log(
-            `${chalk.gray("Source:")} ${sourceLabel}`,
-          );
-          console.log(
-            `${chalk.gray("Target:")} ${result.targetVersion}`,
-          );
+          console.log(`${chalk.gray("Source:")} ${sourceLabel}`);
+          console.log(`${chalk.gray("Target:")} ${result.targetVersion}`);
           console.log();
 
           // AC: @single-command-version-upgrade ac-idempotent-when-current
@@ -1599,8 +1534,7 @@ export function registerUpgradeCommand(program: Command): void {
                 : step.status === "skipped"
                   ? chalk.gray("○")
                   : chalk.red("✗");
-            const statusText =
-              step.status === "failed" ? chalk.red(" (failed)") : "";
+            const statusText = step.status === "failed" ? chalk.red(" (failed)") : "";
 
             console.log(`${icon} ${step.name}${statusText}`);
             if (step.message) {
@@ -1630,23 +1564,15 @@ export function registerUpgradeCommand(program: Command): void {
 
           if (!result.success) {
             // AC: @trait-error-guidance ac-1, ac-2
-            const failedSteps = result.steps.filter(
-              (s) => s.status === "failed",
-            );
-            console.log(
-              chalk.red(
-                `Upgrade completed with ${failedSteps.length} failed step(s).`,
-              ),
-            );
+            const failedSteps = result.steps.filter((s) => s.status === "failed");
+            console.log(chalk.red(`Upgrade completed with ${failedSteps.length} failed step(s).`));
             console.log(
               chalk.gray(
                 "Suggested action: review the failed steps above and re-run 'kspec upgrade'.",
               ),
             );
           } else if (dryRun) {
-            console.log(
-              chalk.yellow("Run 'kspec upgrade' without --dry-run to apply changes."),
-            );
+            console.log(chalk.yellow("Run 'kspec upgrade' without --dry-run to apply changes."));
           } else {
             console.log(chalk.green("Upgrade complete."));
           }

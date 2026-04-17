@@ -549,11 +549,17 @@ test.describe("Dashboard Overview", () => {
 
       // Verify each status count matches the fixture-derived expectation
       for (const [status, expectedCount] of Object.entries(expectedCounts.byStatus)) {
-        expect(statusCounts[status] ?? 0, `Expected ${expectedCount} tasks with status "${status}"`).toBe(expectedCount);
+        expect(
+          statusCounts[status] ?? 0,
+          `Expected ${expectedCount} tasks with status "${status}"`,
+        ).toBe(expectedCount);
       }
       // Verify no unexpected statuses appeared in the API response
       for (const [status, count] of Object.entries(statusCounts)) {
-        expect(expectedCounts.byStatus[status] ?? 0, `Unexpected status "${status}" in API response with count ${count}`).toBe(count);
+        expect(
+          expectedCounts.byStatus[status] ?? 0,
+          `Unexpected status "${status}" in API response with count ${count}`,
+        ).toBe(count);
       }
     });
 

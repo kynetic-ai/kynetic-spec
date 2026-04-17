@@ -36,7 +36,7 @@
         "vitest/no-disabled-tests": "warn",
         "vitest/no-conditional-tests": "warn",
         "vitest/expect-expect": "error",
-        "vitest/valid-expect": "error",
+        "vitest/valid-expect": ["error", { "maxArgs": 2 }],
         "vitest/no-identical-title": "error",
         "vitest/no-standalone-expect": "error",
         "no-source-scanning/no-source-file-reads": "error",

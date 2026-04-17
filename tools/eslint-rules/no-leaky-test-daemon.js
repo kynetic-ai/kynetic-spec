@@ -22,8 +22,7 @@ const noLeakyTestDaemon = {
   meta: {
     type: "problem",
     docs: {
-      description:
-        "Require cleanup registration for daemon-spawning patterns in test files",
+      description: "Require cleanup registration for daemon-spawning patterns in test files",
     },
     messages: {
       missingCleanup:
@@ -138,10 +137,7 @@ const noLeakyTestDaemon = {
      */
     function isAfterEachWithCleanup(node) {
       if (node.type !== "CallExpression") return false;
-      if (
-        node.callee.type !== "Identifier" ||
-        node.callee.name !== "afterEach"
-      ) {
+      if (node.callee.type !== "Identifier" || node.callee.name !== "afterEach") {
         return false;
       }
       const text = context.sourceCode.getText(node);
@@ -239,10 +235,7 @@ const noLeakyTestDaemon = {
         }
         return false;
       }
-      return (
-        parent.range[0] <= target.range[0] &&
-        parent.range[1] >= target.range[1]
-      );
+      return parent.range[0] <= target.range[0] && parent.range[1] >= target.range[1];
     }
 
     /**
@@ -271,10 +264,7 @@ const noLeakyTestDaemon = {
      * Check if any describe ancestor has an afterEach with cleanup.
      */
     function hasAncestorAfterEachCleanup() {
-      return (
-        hasTopLevelAfterEachCleanup ||
-        describeStack.some((d) => d.hasAfterEachCleanup)
-      );
+      return hasTopLevelAfterEachCleanup || describeStack.some((d) => d.hasAfterEachCleanup);
     }
 
     /**
@@ -282,9 +272,7 @@ const noLeakyTestDaemon = {
      */
     function isServeStartDetach(value) {
       return (
-        typeof value === "string" &&
-        value.includes("serve start") &&
-        value.includes("--detach")
+        typeof value === "string" && value.includes("serve start") && value.includes("--detach")
       );
     }
 
@@ -300,17 +288,13 @@ const noLeakyTestDaemon = {
           (callee.name === "spawn" || callee.name === "spawnSync")) ||
         (callee.type === "MemberExpression" &&
           callee.property.type === "Identifier" &&
-          (callee.property.name === "spawn" ||
-            callee.property.name === "spawnSync"));
+          (callee.property.name === "spawn" || callee.property.name === "spawnSync"));
 
       if (!isSpawnCall) return false;
 
       for (const arg of node.arguments) {
         const text = context.sourceCode.getText(arg);
-        if (
-          text.includes("DAEMON_ENTRY") ||
-          text.includes("dist/daemon/index.js")
-        ) {
+        if (text.includes("DAEMON_ENTRY") || text.includes("dist/daemon/index.js")) {
           return true;
         }
       }
@@ -345,10 +329,7 @@ const noLeakyTestDaemon = {
       if (callee.type === "Identifier") {
         return callee.name;
       }
-      if (
-        callee.type === "MemberExpression" &&
-        callee.property.type === "Identifier"
-      ) {
+      if (callee.type === "MemberExpression" && callee.property.type === "Identifier") {
         return callee.property.name;
       }
       return null;
@@ -385,7 +366,7 @@ const noLeakyTestDaemon = {
     /**
      * Central check: is this daemon spawn properly covered by cleanup?
      */
-    function isDaemonSpawnWithoutCleanup(node, pattern) {
+    function isDaemonSpawnWithoutCleanup(node, _pattern) {
       // Spawns in helper functions are assumed to have cleanup managed by callers
       if (isInHelperFunction(node)) return false;
 

@@ -222,7 +222,10 @@ test.describe("Tasks View", () => {
 
       // Set up response interception before triggering the filter
       const filteredResponse = page.waitForResponse(
-        (resp) => resp.url().includes("/api/tasks") && resp.url().includes("automation=eligible") && resp.status() === 200,
+        (resp) =>
+          resp.url().includes("/api/tasks") &&
+          resp.url().includes("automation=eligible") &&
+          resp.status() === 200,
       );
 
       // Select "eligible" automation status
@@ -234,7 +237,9 @@ test.describe("Tasks View", () => {
 
       // Verify the API response contains only eligible tasks
       const response = await filteredResponse;
-      const body = await response.json() as { data: Array<{ automation?: string; slugs?: string[]; _ulid?: string }> };
+      const body = (await response.json()) as {
+        data: Array<{ automation?: string; slugs?: string[]; _ulid?: string }>;
+      };
       expect(body.data.length).toBeGreaterThan(0);
       const eligibleRefs = new Set<string>();
       for (const task of body.data) {
@@ -251,7 +256,9 @@ test.describe("Tasks View", () => {
       expect(rowCount).toBeGreaterThan(0);
       for (let i = 0; i < rowCount; i++) {
         const ref = await taskItems.nth(i).getAttribute("data-task-ref");
-        expect(eligibleRefs, `rendered row ${i} ref "${ref}" should be in eligible set`).toContain(ref);
+        expect(eligibleRefs, `rendered row ${i} ref "${ref}" should be in eligible set`).toContain(
+          ref,
+        );
       }
 
       // Spot-check: click the first row and verify the detail panel shows eligible badge

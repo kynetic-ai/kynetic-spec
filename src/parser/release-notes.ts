@@ -63,11 +63,7 @@ export interface ReleaseNotes {
 export class ReleaseNotesError extends Error {
   constructor(
     message: string,
-    public code:
-      | "file_not_found"
-      | "version_not_found"
-      | "invalid_range"
-      | "parse_error",
+    public code: "file_not_found" | "version_not_found" | "invalid_range" | "parse_error",
     public suggestion?: string,
   ) {
     super(message);
@@ -79,9 +75,7 @@ export class ReleaseNotesError extends Error {
  * Locate the release notes file starting from a project root.
  * Returns the absolute path if it exists, otherwise null.
  */
-export async function findReleaseNotesFile(
-  projectDir: string,
-): Promise<string | null> {
+export async function findReleaseNotesFile(projectDir: string): Promise<string | null> {
   const filePath = path.join(projectDir, RELEASE_NOTES_FILENAME);
   try {
     const stat = await fs.stat(filePath);
@@ -108,10 +102,7 @@ export function normalizeVersion(raw: string): string {
  * entry. The parser preserves the body exactly as authored — it only
  * identifies heading boundaries.
  */
-export function parseReleaseNotes(
-  markdown: string,
-  filePath: string,
-): ReleaseNotes {
+export function parseReleaseNotes(markdown: string, filePath: string): ReleaseNotes {
   const lines = markdown.split(/\r?\n/);
 
   // Build entries by finding all `## ` (level-2) headings.
@@ -159,16 +150,11 @@ export function parseReleaseNotes(
  *
  * AC: @release-notes-accessible ac-current-version-notes
  */
-export async function loadReleaseNotes(
-  projectDir: string,
-): Promise<ReleaseNotes> {
+export async function loadReleaseNotes(projectDir: string): Promise<ReleaseNotes> {
   const filePath = await findReleaseNotesFile(projectDir);
   if (!filePath) {
     throw new ReleaseNotesError(
-      `Release notes file not found: ${path.join(
-        projectDir,
-        RELEASE_NOTES_FILENAME,
-      )}`,
+      `Release notes file not found: ${path.join(projectDir, RELEASE_NOTES_FILENAME)}`,
       "file_not_found",
       `Create ${RELEASE_NOTES_FILENAME} at the project root. See the release skill for the authoring conventions.`,
     );
@@ -201,16 +187,11 @@ export function compareVersions(a: string, b: string): number {
  *
  * AC: @release-notes-accessible ac-current-version-notes
  */
-export function getVersionNotes(
-  notes: ReleaseNotes,
-  version: string,
-): ReleaseNotesEntry {
+export function getVersionNotes(notes: ReleaseNotes, version: string): ReleaseNotesEntry {
   const target = normalizeVersion(version);
   const entry = notes.entries.find((e) => e.version === target);
   if (!entry) {
-    const known = notes.entries
-      .filter((e) => e.version !== "unreleased")
-      .map((e) => e.heading);
+    const known = notes.entries.filter((e) => e.version !== "unreleased").map((e) => e.heading);
     throw new ReleaseNotesError(
       `No release notes found for version ${version}`,
       "version_not_found",
@@ -230,11 +211,7 @@ export function getVersionNotes(
  * AC: @release-notes-accessible ac-version-range-notes
  * AC: @release-notes-accessible ac-upgrade-surfaces-notes
  */
-export function getRangeNotes(
-  notes: ReleaseNotes,
-  from: string,
-  to: string,
-): ReleaseNotesEntry[] {
+export function getRangeNotes(notes: ReleaseNotes, from: string, to: string): ReleaseNotesEntry[] {
   const lo = normalizeVersion(from);
   const hi = normalizeVersion(to);
   if (lo === "unreleased" || hi === "unreleased") {
@@ -254,9 +231,7 @@ export function getRangeNotes(
 
   const inRange = notes.entries.filter((e) => {
     if (e.version === "unreleased") return false;
-    return (
-      compareVersions(e.version, lo) >= 0 && compareVersions(e.version, hi) <= 0
-    );
+    return compareVersions(e.version, lo) >= 0 && compareVersions(e.version, hi) <= 0;
   });
 
   // AC: @release-notes-accessible ac-version-range-notes
