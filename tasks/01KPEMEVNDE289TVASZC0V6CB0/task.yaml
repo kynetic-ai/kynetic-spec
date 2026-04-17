@@ -297,5 +297,13 @@ history:
         previous: test description
     command: task-set
     timestamp: 2026-04-17T21:21:08.902Z
+  - author: "@claude"
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-04-17T21:42:35.278Z
 created_at: 2026-04-17T21:09:57.549Z
 todos: []
+automation: eligible

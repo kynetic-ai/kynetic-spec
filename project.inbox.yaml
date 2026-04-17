@@ -1979,9 +1979,23 @@ inbox:
     added_by: "@claude"
     created_at: 2026-03-28T15:38:44.185Z
   - _ulid: 01KMV62WZ5J9TFN2VZHPZQZQQ4
-    text: kspec batch task add crashes with TypeError when description is provided. The slug derivation
+    text: >-
+      kspec batch task add crashes with TypeError when description is provided. The slug derivation
       code runs replace() on an undefined value, suggesting it is processing the description field
       instead of the title. Direct CLI task add with --description works fine.
+
+
+      ---
+
+
+      Root cause confirmed (2026-04-17): resetCommandTree in src/cli/batch-exec.ts:640 wipes
+      Commander _optionValues between batch dispatches, which removes the defaults Commander applied
+      during option parsing (--priority "3", --type "task"). Then parsePriority(undefined) at
+      src/cli/validators.ts:67 does value.replace(/^[Pp]/, "") and crashes. Original hypothesis
+      (description-as-slug) is incorrect. Repro: echo ´[{"command":"task
+      add","args":{"title":"x"}}]´ | kspec batch. Workaround: explicitly pass priority and type in
+      batch args. Also noted: batch --dry-run does NOT exercise action paths — it passes even when
+      real execution will crash.
     tags:
       - bug
       - batch
