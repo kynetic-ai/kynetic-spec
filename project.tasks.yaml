@@ -26464,3 +26464,20 @@
   submitted_at: 2026-04-16T08:46:17.487Z
   completed_at: 2026-04-16T09:00:44.347Z
   automation: eligible
+- _ulid: 01KPEMEVNDE289TVASZC0V6CB0
+  slugs:
+    - task-plan-delete-command
+  title: Implement kspec plan delete command with referential safeguards
+  type: task
+  spec_ref: "@plan-crud"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 3
+  tags:
+    - cli
+    - plans
+    - feature
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-17T21:09:57.549Z
