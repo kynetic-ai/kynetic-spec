@@ -26470,7 +26470,7 @@
   title: Implement kspec plan delete command with referential safeguards
   type: task
   spec_ref: "@plan-crud"
-  status: pending
+  status: cancelled
   blocked_by: []
   depends_on: []
   priority: 3
