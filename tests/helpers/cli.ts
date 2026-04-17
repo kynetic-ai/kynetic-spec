@@ -43,6 +43,78 @@ export const CLI_PATH = path.join(__dirname, "..", "..", "dist", "cli", "index.j
 export const FIXTURES_DIR = path.join(__dirname, "..", "fixtures");
 
 /**
+ * Env vars that signal "I'm running under a dispatch loop or legacy session."
+ * Stripped so subprocess tests don't inherit the parent's dispatch context.
+ */
+const DISPATCH_ENV_VARS = [
+  "KSPEC_RALPH_SESSION",
+  "KSPEC_SESSION_ID",
+  "KSPEC_DISPATCH_CANONICAL_HEAD",
+  "KSPEC_SHADOW_MUTATION_LOCK_FILE",
+  "KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS",
+];
+
+/**
+ * Ambient agent-detection markers left by editors / runtimes.
+ * Stripped so CLI subprocess tests don't inherit whichever integration a prior
+ * Vitest file ran under.
+ */
+const AGENT_ENV_VARS = [
+  "CLAUDECODE",
+  "CLAUDE_CODE",
+  "CLAUDE_CODE_ENTRYPOINT",
+  "CLAUDE_PROJECT_DIR",
+  "CLAUDE_CODE_SESSION",
+  "CLINE_ACTIVE",
+  "CURSOR_TRACE_ID",
+  "WINDSURF_SESSION",
+  "AIDER_MODEL",
+  "AIDER_DARK_MODE",
+  "OPENCODE_CONFIG_DIR",
+  "OPENCODE_CONFIG",
+  "GEMINI_CLI",
+  "CODEX_THREAD_ID",
+  "CODEX_SANDBOX",
+  "CODEX_CI",
+  "CODEX_MANAGED_BY_NPM",
+  "FACTORY_PROJECT_DIR",
+  "COPILOT_MODEL",
+  "GH_TOKEN",
+  "AMP_API_KEY",
+  "AMP_TOOLBOX",
+];
+
+/**
+ * Runner-mode env vars that change subprocess output behavior (auto-verbose,
+ * progress reporter suppression, ANSI toggling). Stripped so tests exercising
+ * non-CI / dev-mode output paths stay deterministic when the parent Vitest
+ * worker runs under CI=true.
+ */
+const RUNNER_ENV_VARS = ["CI", "KSPEC_TEST_PROGRESS", "FORCE_COLOR", "NO_COLOR"];
+
+/**
+ * Build a clean env for a test-spawned subprocess.
+ *
+ * Starts from `process.env`, strips dispatch/agent/runner-mode vars that would
+ * otherwise leak the parent process's context into the subprocess, then layers
+ * `overrides` on top. Keys present in `overrides` are preserved regardless of
+ * the strip lists (caller opts in explicitly).
+ *
+ * Any test that spawns a subprocess inheriting the parent's env (kspec CLI,
+ * the test runner, a daemon helper, etc.) should route env through this
+ * helper instead of spreading `process.env` directly.
+ */
+export function buildTestSubprocessEnv(overrides: Record<string, string> = {}): NodeJS.ProcessEnv {
+  const cleanEnv = { ...process.env };
+  for (const key of [...DISPATCH_ENV_VARS, ...AGENT_ENV_VARS, ...RUNNER_ENV_VARS]) {
+    if (!(key in overrides)) {
+      delete cleanEnv[key];
+    }
+  }
+  return { ...cleanEnv, ...overrides };
+}
+
+/**
  * Options for running kspec CLI commands
  */
 export interface KspecOptions {
@@ -132,54 +204,9 @@ export function kspec(args: string, cwd: string, options: KspecOptions = {}): Ks
   }
   const { stdin, expectFail = false, env = {} } = options;
 
-  // Build clean env: strip dispatch/session vars that pollute tests when running
-  // inside a dispatch loop or legacy session. Tests that need these vars pass
-  // them explicitly via env.
-  const cleanEnv = { ...process.env };
-  const DISPATCH_ENV_VARS = [
-    "KSPEC_RALPH_SESSION",
-    "KSPEC_SESSION_ID",
-    "KSPEC_DISPATCH_CANONICAL_HEAD",
-    "KSPEC_SHADOW_MUTATION_LOCK_FILE",
-    "KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS",
-  ];
-  for (const key of DISPATCH_ENV_VARS) {
-    if (!(key in env)) {
-      delete cleanEnv[key];
-    }
-  }
-
-  // Strip ambient agent-detection vars so CLI subprocess tests don't inherit
-  // whichever editor/runtime markers a prior Vitest file left behind.
-  const AGENT_ENV_VARS = [
-    "CLAUDECODE",
-    "CLAUDE_CODE",
-    "CLAUDE_CODE_ENTRYPOINT",
-    "CLAUDE_PROJECT_DIR",
-    "CLAUDE_CODE_SESSION",
-    "CLINE_ACTIVE",
-    "CURSOR_TRACE_ID",
-    "WINDSURF_SESSION",
-    "AIDER_MODEL",
-    "AIDER_DARK_MODE",
-    "OPENCODE_CONFIG_DIR",
-    "OPENCODE_CONFIG",
-    "GEMINI_CLI",
-    "CODEX_THREAD_ID",
-    "CODEX_SANDBOX",
-    "CODEX_CI",
-    "CODEX_MANAGED_BY_NPM",
-    "FACTORY_PROJECT_DIR",
-    "COPILOT_MODEL",
-    "GH_TOKEN",
-    "AMP_API_KEY",
-    "AMP_TOOLBOX",
-  ];
-  for (const key of AGENT_ENV_VARS) {
-    if (!(key in env)) {
-      delete cleanEnv[key];
-    }
-  }
+  // Build clean env: strip dispatch/session, ambient agent, and runner-mode
+  // vars that pollute subprocess tests.
+  const cleanEnv = buildTestSubprocessEnv(env);
 
   // Give each CLI subprocess an isolated home/config root by default so global
   // plugin marketplace, daemon PID/port, and agent home-directory probes are

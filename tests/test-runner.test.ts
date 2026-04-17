@@ -3,6 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { buildTestSubprocessEnv } from "./helpers/cli";
 
 /** Strip ANSI escape codes from a string for clean assertions. */
 function stripAnsi(str: string): string {
@@ -24,7 +25,7 @@ function runTestRunner(
   const result = spawnSync("node", [runnerScript, ...args], {
     cwd: projectRoot,
     encoding: "utf8",
-    env: { ...process.env, ...env },
+    env: buildTestSubprocessEnv(env),
     timeout: 60_000,
   });
   return {
@@ -476,7 +477,7 @@ describe("test runner environment checks", () => {
           {
             cwd: projectRoot,
             encoding: "utf8",
-            env: { ...process.env, SKIP_BUILD: "1" },
+            env: buildTestSubprocessEnv({ SKIP_BUILD: "1" }),
             timeout: 30_000,
           },
         );
@@ -508,7 +509,7 @@ describe("test runner environment checks", () => {
           {
             cwd: projectRoot,
             encoding: "utf8",
-            env: { ...process.env, SKIP_BUILD: "1", KSPEC_SESSION_ID: sessionId },
+            env: buildTestSubprocessEnv({ SKIP_BUILD: "1", KSPEC_SESSION_ID: sessionId }),
             timeout: 30_000,
           },
         );
@@ -548,7 +549,7 @@ describe("test runner environment checks", () => {
           {
             cwd: projectRoot,
             encoding: "utf8",
-            env: { ...process.env, SKIP_BUILD: "1", KSPEC_SESSION_ID: sessionId },
+            env: buildTestSubprocessEnv({ SKIP_BUILD: "1", KSPEC_SESSION_ID: sessionId }),
             timeout: 30_000,
           },
         );
@@ -561,7 +562,7 @@ describe("test runner environment checks", () => {
           {
             cwd: projectRoot,
             encoding: "utf8",
-            env: { ...process.env, SKIP_BUILD: "1", KSPEC_SESSION_ID: sessionId },
+            env: buildTestSubprocessEnv({ SKIP_BUILD: "1", KSPEC_SESSION_ID: sessionId }),
             timeout: 30_000,
           },
         );
@@ -617,7 +618,7 @@ it('beta', () => { expect(2).toBe(2); });
           {
             cwd: projectRoot,
             encoding: "utf8",
-            env: { ...process.env, SKIP_BUILD: "1", KSPEC_SESSION_ID: sessionId },
+            env: buildTestSubprocessEnv({ SKIP_BUILD: "1", KSPEC_SESSION_ID: sessionId }),
             timeout: 30_000,
           },
         );
@@ -667,7 +668,7 @@ it('fails', () => { expect(1).toBe(2); });
           {
             cwd: projectRoot,
             encoding: "utf8",
-            env: { ...process.env, SKIP_BUILD: "1", KSPEC_SESSION_ID: sessionId },
+            env: buildTestSubprocessEnv({ SKIP_BUILD: "1", KSPEC_SESSION_ID: sessionId }),
             timeout: 30_000,
           },
         );
@@ -709,7 +710,7 @@ it('fails', () => { expect(1).toBe(2); });
           {
             cwd: projectRoot,
             encoding: "utf8",
-            env: { ...process.env, SKIP_BUILD: "1", KSPEC_SESSION_ID: sessionId },
+            env: buildTestSubprocessEnv({ SKIP_BUILD: "1", KSPEC_SESSION_ID: sessionId }),
             timeout: 30_000,
           },
         );
@@ -752,7 +753,7 @@ it('fails', () => { expect(1).toBe(2); });
           {
             cwd: projectRoot,
             encoding: "utf8",
-            env: { ...process.env, SKIP_BUILD: "1", KSPEC_SESSION_ID: sessionId },
+            env: buildTestSubprocessEnv({ SKIP_BUILD: "1", KSPEC_SESSION_ID: sessionId }),
             timeout: 30_000,
           },
         );
@@ -789,7 +790,7 @@ it('fails', () => { expect(1).toBe(2); });
           {
             cwd: projectRoot,
             encoding: "utf8",
-            env: { ...process.env, SKIP_BUILD: "1", KSPEC_SESSION_ID: sessionId },
+            env: buildTestSubprocessEnv({ SKIP_BUILD: "1", KSPEC_SESSION_ID: sessionId }),
             timeout: 30_000,
           },
         );
@@ -829,7 +830,7 @@ it('fails', () => { expect(1).toBe(2); });
           {
             cwd: projectRoot,
             encoding: "utf8",
-            env: { ...process.env, SKIP_BUILD: "1", KSPEC_SESSION_ID: sessionId },
+            env: buildTestSubprocessEnv({ SKIP_BUILD: "1", KSPEC_SESSION_ID: sessionId }),
             timeout: 30_000,
           },
         );
@@ -877,7 +878,7 @@ it('fails', () => { expect(1).toBe(2); });
           {
             cwd: projectRoot,
             encoding: "utf8",
-            env: { ...process.env, SKIP_BUILD: "1", KSPEC_SESSION_ID: sessionId },
+            env: buildTestSubprocessEnv({ SKIP_BUILD: "1", KSPEC_SESSION_ID: sessionId }),
             timeout: 30_000,
           },
         );
@@ -911,12 +912,11 @@ it('fails', () => { expect(1).toBe(2); });
           {
             cwd: projectRoot,
             encoding: "utf8",
-            env: {
-              ...process.env,
+            env: buildTestSubprocessEnv({
               SKIP_BUILD: "1",
               KSPEC_SESSION_ID: sessionId,
               KSPEC_TEST_PROGRESS: "0",
-            },
+            }),
             timeout: 30_000,
           },
         );
