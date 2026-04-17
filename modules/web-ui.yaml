@@ -3789,6 +3789,13 @@ features:
         id: ac-startup-active-only
         then: Only sessions with active status at startup time are watched
         when: File monitoring is initialized
+      - given: A new session directory appears in the sessions directory with any status (active or
+          non-active — completed, abandoned, failed, timed_out, stalled)
+        id: ac-new-session-list-freshness
+        then: Exactly one session-change notification is emitted so consumers (entity cache, WebSocket
+          broadcast) can refresh the session list, regardless of whether a per-session watcher is
+          attached
+        when: The top-level directory watcher detects the new entry and its session.yaml becomes readable
     tags: []
     requirements:
       - _ulid: 01KN7Q6A6JQEKA3ZG43BTVX0E7
