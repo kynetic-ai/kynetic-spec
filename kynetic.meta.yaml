@@ -481,6 +481,11 @@ conventions:
       - Test helpers that drive kspec CLI subprocesses must require an explicit cwd parameter. Never
         fall back to process.cwd() — a missing cwd is a test bug, not a default. A silent fallback
         caused a shadow worktree destruction incident on 2026-04-11.
+      - Test helpers that spawn subprocesses inheriting process.env must route env through
+        buildTestSubprocessEnv() (tests/helpers/cli.ts) so runner-mode vars (CI,
+        KSPEC_TEST_PROGRESS, FORCE_COLOR, NO_COLOR) plus dispatch/agent vars are stripped. Direct {
+        ...process.env, ... } spreads leak the parent's CI-mode behavior into the subprocess and
+        silently break non-verbose-path tests in CI.
   - _ulid: 01KHYXJVNDVVFF6PR7K4X6545H
     domain: development
     examples: []
