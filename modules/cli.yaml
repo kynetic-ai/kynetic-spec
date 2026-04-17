@@ -5636,6 +5636,78 @@ features:
             id: ac-31
             then: Output is JSON array of plan objects with summary fields
             when: kspec plan list --json is run
+          - given: A plan is in `draft` or `rejected` status and, at the time of the removal request, no
+              resolvable derived spec, resolvable derived task, or task plan-reference resolves to
+              it
+            id: ac-40
+            then: The plan record is removed, resolving its slug or ULID returns not-found, and it does not
+              appear in plan listings
+            when: A user requests removal of the plan
+          - given: A plan is in a status other than `draft` or `rejected`
+            id: ac-41
+            then: The removal is refused and the user is told the plan's current status prevents removal
+            when: A user requests removal of the plan
+          - given: At the time of the removal request, a plan has at least one derived spec or derived task
+              whose reference still resolves
+            id: ac-42
+            then: The removal is refused, the plan and its derived work remain, and the user is told which
+              derived items blocked removal
+            when: A user requests removal of the plan
+          - given: At the time of the removal request, all of a plan's derived-spec and derived-task entries
+              point at references that no longer resolve
+            id: ac-43
+            then: The plan is removed and the orphan entries are destroyed with it
+            when: A user requests removal of the plan (all other conditions satisfied)
+          - given: At the time of the removal request, at least one task has a plan-reference that resolves to
+              the plan, regardless of whether the reference was stored by slug or by ULID
+            id: ac-44
+            then: The removal is refused, the plan and the referencing tasks remain, and the user is told which
+              tasks block removal
+            when: A user requests removal of the plan
+          - given: A plan is eligible for removal and the user has not supplied an explicit confirmation-bypass
+              signal
+            id: ac-45
+            then: The user is prompted to confirm, and declining leaves the plan untouched
+            when: A user requests removal of the plan
+          - given: A plan is eligible for removal and the user supplies an explicit confirmation-bypass signal
+            id: ac-46
+            then: The plan is removed without prompting
+            when: A user requests removal of the plan
+          - given: A plan has notes attached
+            id: ac-47
+            then: The plan record, including all of its notes, is destroyed and is not recoverable via kspec
+              commands
+            when: The plan is successfully removed
+          - given: A plan has been successfully removed
+            id: ac-48
+            then: The removal appears as a commit with author and timestamp attributing the mutation
+            when: The shadow branch history is inspected
+          - given: A plan has a branch recorded on it
+            id: ac-49
+            then: The branch itself is not deleted; only the plan's record of it goes away with the plan
+            when: The plan is removed
+          - given: A removal is refused and the user requested structured output
+            id: ac-50
+            then: The structured payload lists every applicable refusal reason (any of status, derived work,
+              referencing tasks) with the blocking items for each, not just the first reason
+              detected
+            when: The refusal is emitted
+          - given: A user requests removal of a plan and the plan cannot be located by the given reference
+            id: ac-51
+            then: In structured output the outcome is a structured not-found payload distinguishable in shape
+              and message from any refusal payload; in human output the message clearly says
+              not-found and is distinguishable from refusal text
+            when: The outcome is emitted
+          - given: Multiple plans exist and one is removed
+            id: ac-52
+            then: All other plans retain their content, status, notes, derived-work links, branches, and
+              timestamps unchanged
+            when: The removal completes
+          - given: A plan has already been successfully removed
+            id: ac-53
+            then: The outcome is the not-found outcome (per ac-51), not a refusal, so automated callers can
+              treat repeated removals as idempotent
+            when: A user requests removal of the same plan reference again
         tags: []
         created: 2026-02-04T08:58:57.716Z
         notes: []

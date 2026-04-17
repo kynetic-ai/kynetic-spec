@@ -3,13 +3,137 @@ slugs:
   - task-plan-delete-command
 title: Implement kspec plan delete command with referential safeguards
 type: task
-description: test description
+description: >-
+  ## What
+
+
+  Add a `plan delete` subcommand to the `kspec plan` command group. The subcommand removes a plan
+  record from the durable plan store, enforcing a status gate and referential-integrity checks
+  before mutation. Provides an explicit confirmation bypass, and emits structured payloads that
+  enumerate all applicable refusal reasons for automation consumers.
+
+
+  ## Why
+
+
+  kspec has commands to create, read, update, list, and annotate plans but no way to remove one. The
+  `@plan-crud` spec is titled "Plan CRUD Operations" yet only covers CRU. Setting status to
+  `rejected` preserves the record and still counts in `kspec plan list`, so cleanup of test
+  leftovers and abandoned drafts is impossible — manual YAML edits to `.kspec/` are forbidden by the
+  shadow-branch rule. The plan list grows monotonically and signal degrades.
+
+
+  ## How
+
+
+  1. **Command registration.** Register `plan delete <ref>` in the plan command group alongside
+  `add`/`get`/`set`/`list`/`note`/`derive`/`branch`/`export`. Follow the `kspec inbox delete`
+  pattern: single positional ref, `--force` flag to skip confirmation.
+
+
+  2. **Ref resolution.** Resolve the ref against the plan store. On not-found, emit the structured
+  not-found payload defined by ac-51; do not fall through into the refusal path.
+
+
+  3. **Status gate.** If status is not `draft` or `rejected`, record a `status-blocked` refusal
+  reason naming the current status (ac-41).
+
+
+  4. **Referential-integrity checks.** Gather all applicable refusal reasons, do not short-circuit
+  on the first:
+     - **Derived work (resolvable-at-request-time).** Iterate the plan's `derived_specs` and `derived_tasks`. For each entry, attempt to resolve the reference through the `ReferenceIndex`. Collect each that still resolves as a `derived-work-blocked` reason with the resolved item's ref. Orphan entries (refs that no longer resolve) are skipped. If any resolved, record the reason (ac-42, ac-43).
+     - **Referencing tasks.** Iterate tasks with a non-null `plan_ref`. For each, call `ReferenceIndex.resolve()` on the raw `plan_ref` value — do not string-compare `plan_ref` to the target ULID. If the resolver returns the target plan's ULID, record the task as a `referencing-tasks-blocked` blocker. This correctly handles `plan_ref` values stored as either slug or ULID (99.5% of production values today are slug-form). (ac-44)
+
+  5. **Emit collected refusals.** If any reasons were collected, emit the complete set — human
+  output summarizes all applicable reasons; JSON output lists each with its blocking items under a
+  stable shape (ac-50). Do not proceed to confirmation or mutation. The human-readable refusal
+  message concatenates all applicable reasons per ac-50 — not just the first detected — so the
+  ac-42/ac-44 "the user is told" phrasing does not imply single-reason output.
+
+
+  6. **Confirmation.** If no refusal reasons were collected, prompt before mutating (ac-45).
+  `--force` bypasses the prompt (ac-46). Follow the same non-interactive conventions already used by
+  `item delete` / `inbox delete`; do not invent new policy for JSON / non-TTY modes — inherit from
+  the established pattern.
+
+
+  7. **Mutation via refactored `deletePlan()`.** The existing `deletePlan()` helper in
+  `src/parser/plans.ts` currently returns `Promise<boolean>` and silently collapses "not-found" and
+  caught I/O exceptions into `false`. Refactor it to `Promise<void>` that **throws** on not-found
+  and on I/O failure, matching the sibling helpers `savePlan` and `mutatePlanAtomically`. The
+  refactor is low-blast-radius: three test call sites in `tests/parser-plans.test.ts` and
+  `tests/yaml-round-trip-stability.test.ts` need updating; zero production callers exist today. In
+  the CLI handler, the not-found case is handled by the ref-resolution step (item 2), so
+  `deletePlan()` is only called with a known-present ULID; a try/catch around the call surfaces real
+  I/O errors as distinct from refusals. If `deletePlan` throws ENOENT (a concurrent writer removed
+  the plan between pre-resolution and unlink), convert the error to the ac-51 not-found outcome so
+  ac-53 idempotency holds under concurrency. Other I/O errors propagate.
+
+
+  8. **Audit trail.** The mutation flows through the standard shadow-branch auto-commit pipeline via
+  `commitIfShadow`, producing a commit with a conventional-commit message (e.g. `chore(plan): delete
+  @plan-slug`) that satisfies ac-48.
+
+
+  9. **Cache invalidation is automatic — do not add an explicit call.** The daemon watches
+  `.kspec/project.plans.yaml` via `KspecWatcher`. On write, the watcher invokes the registered
+  cache-invalidation callback, which maps the file to the `plans` cache domain and schedules a
+  debounced reload. The CLI-layer ref index is per-command (rebuilt on each invocation) — there is
+  no persistent ref-index state to invalidate. The task must **not** introduce an explicit
+  invalidation call; doing so would diverge from how `plan add` / `plan set` / `plan note` behave
+  today.
+
+
+  10. **Branch preservation.** The plan's `branch` field is a reference to a git branch created via
+  `kspec plan branch`. Do not delete the branch itself (ac-49).
+
+
+  11. **Idempotency.** Because not-found is returned for a second removal (ac-53), automated callers
+  can retry or double-invoke without a special refusal path. No explicit code is needed beyond item
+  2 — the ref-resolution step naturally produces the right outcome.
+
+
+  12. **Help content.** Update `kspec help plan` and any command-help manifests so `delete` appears
+  in the subcommand list.
+
+
+  13. **Tests.**
+      - Happy-path removal on `draft` plan; on `rejected` plan.
+      - Refuse on each of `active`, `approved`, `completed`; refusal reason `status-blocked` with current status.
+      - Refuse when a resolvable derived spec exists; reason `derived-work-blocked` with the blocking spec ref.
+      - Refuse when a resolvable derived task exists; reason `derived-work-blocked`.
+      - Succeed when all `derived_specs` and `derived_tasks` entries point at unresolvable refs (ac-43).
+      - Refuse when a task has `plan_ref` stored as the plan's slug (coverage for resolver-based matching, not raw string comparison).
+      - Refuse when a task has `plan_ref` stored as the plan's ULID.
+      - When refusal applies for multiple reasons simultaneously (e.g., status-blocked AND derived-work-blocked), the JSON payload lists both.
+      - Refusal where `plan_ref` resolves to the target plan AND all `derived_specs`/`derived_tasks` entries are orphaned — only `referencing-tasks-blocked` reason is emitted, with no empty `derived-work-blocked` entry in the payload.
+      - Confirmation declined leaves the plan intact; `--force` bypasses the prompt.
+      - Not-found ref returns the structured not-found payload; shape distinguishable from refusal payloads.
+      - Second removal after successful removal returns not-found, not a refusal (ac-53).
+      - Plan's notes are destroyed with the plan; git log of shadow branch still shows the pre-deletion state.
+      - Plan's git branch still exists as a git ref after plan removal (ac-49).
+      - Unrelated plans retain content, status, notes, derived-work links, branches, and timestamps (ac-52).
+      - Shadow-branch commit is produced with a conventional-commit message naming the deleted plan.
+      - `deletePlan()` throws on I/O failure (simulate with a locked-file or permission-denied fixture); the CLI surfaces a real error rather than a misleading not-found.
+      - Update the three existing `deletePlan()` test call sites to the new `Promise<void>` + throws contract.
+
+  ## Out of Scope
+
+
+  - Cascading delete (removing derived specs/tasks alongside the plan).
+
+  - Deleting the plan's git branch.
+
+  - Bulk deletion of multiple plans in one command.
+
+  - Soft-delete / undo / archive beyond the existing `rejected` status — the shadow-branch git
+  history is the recovery path.
 spec_ref: "@plan-crud"
 meta_ref: null
 plan_ref: null
-status: cancelled
+status: pending
 blocked_by: []
-closed_reason: test task - will recreate via batch
+closed_reason: null
 depends_on: []
 context: []
 priority: 3
@@ -29,5 +153,149 @@ history:
         previous: null
     command: task-cancel
     timestamp: 2026-04-17T21:10:04.885Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending
+        previous: cancelled
+      closed_reason:
+        new: null
+        previous: test task - will recreate via batch
+    command: task-reset
+    timestamp: 2026-04-17T21:21:08.022Z
+  - author: "@claude"
+    changes:
+      description:
+        new: >-
+          ## What
+
+
+          Add a `plan delete` subcommand to the `kspec plan` command group. The subcommand removes a
+          plan record from the durable plan store, enforcing a status gate and referential-integrity
+          checks before mutation. Provides an explicit confirmation bypass, and emits structured
+          payloads that enumerate all applicable refusal reasons for automation consumers.
+
+
+          ## Why
+
+
+          kspec has commands to create, read, update, list, and annotate plans but no way to remove
+          one. The `@plan-crud` spec is titled "Plan CRUD Operations" yet only covers CRU. Setting
+          status to `rejected` preserves the record and still counts in `kspec plan list`, so
+          cleanup of test leftovers and abandoned drafts is impossible — manual YAML edits to
+          `.kspec/` are forbidden by the shadow-branch rule. The plan list grows monotonically and
+          signal degrades.
+
+
+          ## How
+
+
+          1. **Command registration.** Register `plan delete <ref>` in the plan command group
+          alongside `add`/`get`/`set`/`list`/`note`/`derive`/`branch`/`export`. Follow the `kspec
+          inbox delete` pattern: single positional ref, `--force` flag to skip confirmation.
+
+
+          2. **Ref resolution.** Resolve the ref against the plan store. On not-found, emit the
+          structured not-found payload defined by ac-51; do not fall through into the refusal path.
+
+
+          3. **Status gate.** If status is not `draft` or `rejected`, record a `status-blocked`
+          refusal reason naming the current status (ac-41).
+
+
+          4. **Referential-integrity checks.** Gather all applicable refusal reasons, do not
+          short-circuit on the first:
+             - **Derived work (resolvable-at-request-time).** Iterate the plan's `derived_specs` and `derived_tasks`. For each entry, attempt to resolve the reference through the `ReferenceIndex`. Collect each that still resolves as a `derived-work-blocked` reason with the resolved item's ref. Orphan entries (refs that no longer resolve) are skipped. If any resolved, record the reason (ac-42, ac-43).
+             - **Referencing tasks.** Iterate tasks with a non-null `plan_ref`. For each, call `ReferenceIndex.resolve()` on the raw `plan_ref` value — do not string-compare `plan_ref` to the target ULID. If the resolver returns the target plan's ULID, record the task as a `referencing-tasks-blocked` blocker. This correctly handles `plan_ref` values stored as either slug or ULID (99.5% of production values today are slug-form). (ac-44)
+
+          5. **Emit collected refusals.** If any reasons were collected, emit the complete set —
+          human output summarizes all applicable reasons; JSON output lists each with its blocking
+          items under a stable shape (ac-50). Do not proceed to confirmation or mutation. The
+          human-readable refusal message concatenates all applicable reasons per ac-50 — not just
+          the first detected — so the ac-42/ac-44 "the user is told" phrasing does not imply
+          single-reason output.
+
+
+          6. **Confirmation.** If no refusal reasons were collected, prompt before mutating (ac-45).
+          `--force` bypasses the prompt (ac-46). Follow the same non-interactive conventions already
+          used by `item delete` / `inbox delete`; do not invent new policy for JSON / non-TTY modes
+          — inherit from the established pattern.
+
+
+          7. **Mutation via refactored `deletePlan()`.** The existing `deletePlan()` helper in
+          `src/parser/plans.ts` currently returns `Promise<boolean>` and silently collapses
+          "not-found" and caught I/O exceptions into `false`. Refactor it to `Promise<void>` that
+          **throws** on not-found and on I/O failure, matching the sibling helpers `savePlan` and
+          `mutatePlanAtomically`. The refactor is low-blast-radius: three test call sites in
+          `tests/parser-plans.test.ts` and `tests/yaml-round-trip-stability.test.ts` need updating;
+          zero production callers exist today. In the CLI handler, the not-found case is handled by
+          the ref-resolution step (item 2), so `deletePlan()` is only called with a known-present
+          ULID; a try/catch around the call surfaces real I/O errors as distinct from refusals. If
+          `deletePlan` throws ENOENT (a concurrent writer removed the plan between pre-resolution
+          and unlink), convert the error to the ac-51 not-found outcome so ac-53 idempotency holds
+          under concurrency. Other I/O errors propagate.
+
+
+          8. **Audit trail.** The mutation flows through the standard shadow-branch auto-commit
+          pipeline via `commitIfShadow`, producing a commit with a conventional-commit message (e.g.
+          `chore(plan): delete @plan-slug`) that satisfies ac-48.
+
+
+          9. **Cache invalidation is automatic — do not add an explicit call.** The daemon watches
+          `.kspec/project.plans.yaml` via `KspecWatcher`. On write, the watcher invokes the
+          registered cache-invalidation callback, which maps the file to the `plans` cache domain
+          and schedules a debounced reload. The CLI-layer ref index is per-command (rebuilt on each
+          invocation) — there is no persistent ref-index state to invalidate. The task must **not**
+          introduce an explicit invalidation call; doing so would diverge from how `plan add` /
+          `plan set` / `plan note` behave today.
+
+
+          10. **Branch preservation.** The plan's `branch` field is a reference to a git branch
+          created via `kspec plan branch`. Do not delete the branch itself (ac-49).
+
+
+          11. **Idempotency.** Because not-found is returned for a second removal (ac-53), automated
+          callers can retry or double-invoke without a special refusal path. No explicit code is
+          needed beyond item 2 — the ref-resolution step naturally produces the right outcome.
+
+
+          12. **Help content.** Update `kspec help plan` and any command-help manifests so `delete`
+          appears in the subcommand list.
+
+
+          13. **Tests.**
+              - Happy-path removal on `draft` plan; on `rejected` plan.
+              - Refuse on each of `active`, `approved`, `completed`; refusal reason `status-blocked` with current status.
+              - Refuse when a resolvable derived spec exists; reason `derived-work-blocked` with the blocking spec ref.
+              - Refuse when a resolvable derived task exists; reason `derived-work-blocked`.
+              - Succeed when all `derived_specs` and `derived_tasks` entries point at unresolvable refs (ac-43).
+              - Refuse when a task has `plan_ref` stored as the plan's slug (coverage for resolver-based matching, not raw string comparison).
+              - Refuse when a task has `plan_ref` stored as the plan's ULID.
+              - When refusal applies for multiple reasons simultaneously (e.g., status-blocked AND derived-work-blocked), the JSON payload lists both.
+              - Refusal where `plan_ref` resolves to the target plan AND all `derived_specs`/`derived_tasks` entries are orphaned — only `referencing-tasks-blocked` reason is emitted, with no empty `derived-work-blocked` entry in the payload.
+              - Confirmation declined leaves the plan intact; `--force` bypasses the prompt.
+              - Not-found ref returns the structured not-found payload; shape distinguishable from refusal payloads.
+              - Second removal after successful removal returns not-found, not a refusal (ac-53).
+              - Plan's notes are destroyed with the plan; git log of shadow branch still shows the pre-deletion state.
+              - Plan's git branch still exists as a git ref after plan removal (ac-49).
+              - Unrelated plans retain content, status, notes, derived-work links, branches, and timestamps (ac-52).
+              - Shadow-branch commit is produced with a conventional-commit message naming the deleted plan.
+              - `deletePlan()` throws on I/O failure (simulate with a locked-file or permission-denied fixture); the CLI surfaces a real error rather than a misleading not-found.
+              - Update the three existing `deletePlan()` test call sites to the new `Promise<void>` + throws contract.
+
+          ## Out of Scope
+
+
+          - Cascading delete (removing derived specs/tasks alongside the plan).
+
+          - Deleting the plan's git branch.
+
+          - Bulk deletion of multiple plans in one command.
+
+          - Soft-delete / undo / archive beyond the existing `rejected` status — the shadow-branch
+          git history is the recovery path.
+        previous: test description
+    command: task-set
+    timestamp: 2026-04-17T21:21:08.902Z
 created_at: 2026-04-17T21:09:57.549Z
 todos: []

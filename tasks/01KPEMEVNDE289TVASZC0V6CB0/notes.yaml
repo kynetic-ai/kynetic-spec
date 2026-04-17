@@ -1,1 +1,6 @@
-notes: []
+notes:
+  - _ulid: 01KPEN3ADPTZ2N0JRV2BGPEFG0
+    content: "Reset from cancelled to pending (was cancelled: test task - will recreate via batch)"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-17T21:21:08.022Z
