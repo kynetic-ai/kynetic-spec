@@ -27643,9 +27643,25 @@ runs:
     completed_at: 2026-04-16T09:03:09.858Z
   - _ulid: 01KPEPDEM5P68B35JE64SFR4KN
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-17T21:44:08.581Z
+        completed_at: 2026-04-17T21:44:28.677Z
+        notes: "What worked well: (1) Multi-pass review with independent agents — each pass found real
+          issues (v1: B1-B3 + S1-S6; v2: B-new-1-2 + S-new-1-5; v3: two polish items). (2)
+          Research-before-design: three parallel investigation agents (plan_ref storage impact,
+          deletePlan callers, cache invalidation API) grounded the final spec+task in reality
+          instead of speculation. (3) Spec-first discipline held — user kept nudging back to
+          behavioral contracts before implementation. (4) Dry-run + show + approve cycle for the
+          batch, even though dry-run had limits. (5) User's choice of direct CLI commands over plan
+          import for a small single-task scope was correct — import would have been overkill."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-17T21:44:28.677Z
+        completed_at: 2026-04-17T21:44:28.677Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-17T21:44:08.581Z
