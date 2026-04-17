@@ -27643,7 +27643,7 @@ runs:
     completed_at: 2026-04-16T09:03:09.858Z
   - _ulid: 01KPEPDEM5P68B35JE64SFR4KN
     status: active
-    current_step: 4
+    current_step: 5
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -27709,7 +27709,15 @@ runs:
       - status: completed
         step_index: 4
         started_at: 2026-04-17T21:45:41.766Z
-        completed_at: 2026-04-17T21:45:41.766Z
+        completed_at: 2026-04-17T21:48:40.142Z
+        notes: "User approved all three captures: (A) inbox for dry-run action-path gap — preserved 01KMV62W
+          for the core bug, added a new inbox for the dry-run-vs-execution behavior. (B) inbox for
+          --description-file feature. (C) friction observation for CRUD-completeness +
+          discoverability gap."
+      - status: completed
+        step_index: 5
+        started_at: 2026-04-17T21:48:40.142Z
+        completed_at: 2026-04-17T21:48:40.142Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-17T21:44:08.581Z
