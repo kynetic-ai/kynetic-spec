@@ -151402,3 +151402,29 @@ reviews:
     created_at: 2026-04-18T02:55:05.005Z
     updated_at: 2026-04-18T02:56:21.577Z
     notes: []
+  - _ulid: 01KPF8GH9MQJGR8NDNW1T00K1B
+    slugs: []
+    title: "Plan review: User Documentation Foundation (re-review)"
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KPF8GH9K0TGFFEEZGA3C7VPM
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-18T03:00:23.987Z
+    examined_commit: null
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-user-documentation-foundation"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-18T03:00:23.988Z
+    updated_at: null
+    notes: []
