@@ -151161,7 +151161,17 @@ reviews:
     slugs: []
     title: "Plan review: User Documentation Foundation"
     author: "@claude"
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Found non-behavioral description leakage (@user-documentation) and a non-durable AC
+          (@human-docs-site ac-searchable).
+        name: Spec quality
+        required: true
+        created_at: 2026-04-18T02:56:09.877Z
+        completed_at: 2026-04-18T02:56:09.877Z
     events:
       - _ulid: 01KPF86SSDY9XCH2PVASEEF1V5
         actor: "@claude"
@@ -151218,6 +151228,13 @@ reviews:
           kind: question
           thread_ulid: 01KPF88ANY2W45SVZBBEBWCBBC
         timestamp: 2026-04-18T02:55:59.058Z
+      - _ulid: 01KPF88T2A74111X1N8B6CSAWV
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: Spec quality
+        timestamp: 2026-04-18T02:56:10.826Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -151324,5 +151341,5 @@ reviews:
         kind: question
     verdicts: []
     created_at: 2026-04-18T02:55:05.005Z
-    updated_at: 2026-04-18T02:55:55.070Z
+    updated_at: 2026-04-18T02:56:09.877Z
     notes: []
