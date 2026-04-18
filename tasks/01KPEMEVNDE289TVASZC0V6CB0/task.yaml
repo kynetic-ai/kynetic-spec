@@ -131,7 +131,7 @@ description: >-
 spec_ref: "@plan-crud"
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: needs_work
 blocked_by: []
 closed_reason: null
 depends_on: []
@@ -151,7 +151,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: 01KPGT16MYME5F7A6GXFGV25WT
+session_id: null
 history:
   - author: "@claude"
     changes:
@@ -354,6 +354,16 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-18T17:57:01.836Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KPGT16MYME5F7A6GXFGV25WT
+    command: review-verdict-needs-work
+    timestamp: 2026-04-18T18:07:48.660Z
 created_at: 2026-04-17T21:09:57.549Z
 started_at: 2026-04-18T17:26:29.728Z
 submitted_at: 2026-04-18T17:54:26.696Z
