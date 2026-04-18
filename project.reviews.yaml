@@ -151718,6 +151718,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-18T18:07:27.638Z
+      - _ulid: 01KPGWDX8RKRF2CZQADY4FJ2F4
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KPGWDWBRSJ4P7KTQXANRVBG9
+        timestamp: 2026-04-18T18:07:43.896Z
     examined_commit: 731e81b05e2a02f29e8a18f0bda06632a69ed8da
     external_links: []
     lifecycle_state: open
@@ -151765,7 +151772,24 @@ reviews:
               still unverified.
             created_at: 2026-04-18T18:07:23.806Z
         kind: blocker
+      - _ulid: 01KPGWDWBRSJ4P7KTQXANRVBG9
+        entries:
+          - _ulid: 01KPGWDWBRZ5TP4RWYPGCJCQ7Q
+            author: Jacob Chapel
+            body: "Evidence log: Files read: src/cli/commands/plan.ts, src/parser/plans.ts,
+              src/strings/errors.ts, tests/cli-plan-delete.test.ts, tests/parser-plans.test.ts,
+              tests/yaml-round-trip-stability.test.ts, tests/helpers/cli.ts, src/parser/refs.ts,
+              src/parser/yaml.ts. Commands run: git diff/stat/name-only, kspec task get, kspec item
+              get @plan-crud, kspec review for-task, kspec validate, rg AC annotations, node
+              dist/cli/index.js plan --help, node dist/cli/index.js help plan, node
+              dist/cli/index.js plan delete @nonexistent-plan --force --json, npm test. Claims
+              verified: the new delete command is registered in the built CLI and returns structured
+              not-found JSON; full test suite passes; repo validation failures are
+              pre-existing/unrelated. Categories searched: correctness, edge cases, error handling,
+              test quality, integration."
+            created_at: 2026-04-18T18:07:42.968Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-18T17:56:58.815Z
-    updated_at: 2026-04-18T18:07:26.613Z
+    updated_at: 2026-04-18T18:07:42.968Z
     notes: []
