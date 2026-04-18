@@ -151183,6 +151183,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPF87SA3V8Y740TXTRF7DSGQ
         timestamp: 2026-04-18T02:55:38.229Z
+      - _ulid: 01KPF87VR89C70FQNYC1VY3JR5
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPF87SBGZ6YSW8YC2YSSGXFY
+        timestamp: 2026-04-18T02:55:39.784Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -151209,7 +151216,24 @@ reviews:
               existing specs.
             created_at: 2026-04-18T02:55:37.284Z
         kind: blocker
+      - _ulid: 01KPF87SBGZ6YSW8YC2YSSGXFY
+        anchor:
+          type: structured
+          field: ac-searchable
+          ref: "@human-docs-site"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KPF87SBGDCTW9QPJAWE6P948
+            author: "@claude"
+            body: ac-searchable is not a stable behavioral contract. Requiring any present term to appear within
+              the top three search results depends on ranking heuristics and corpus shape, so a
+              worker cannot prove it durably and maintainers cannot tell whether a later ranking
+              change is a spec regression or normal search behavior. Rewrite this AC around
+              observable discoverability, e.g. exact-term pages are returned or the containing page
+              is findable by search, without hard-coding ranking position.
+            created_at: 2026-04-18T02:55:37.328Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-18T02:55:05.005Z
-    updated_at: 2026-04-18T02:55:37.284Z
+    updated_at: 2026-04-18T02:55:37.328Z
     notes: []
