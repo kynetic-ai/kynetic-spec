@@ -131,9 +131,12 @@ description: >-
 spec_ref: "@plan-crud"
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
-closed_reason: null
+closed_reason: Approved review @01KPGXKR and merged dispatch/task/task-plan-delete-command/01kpemev
+  into dev at d6698c73e68192f7a8d6de58e47dca666c108011. Added plan delete command, referential
+  safeguards, deletePlan throw semantics, shadow commit naming, and behavioral coverage for delete
+  flows.
 depends_on: []
 context: []
 priority: 3
@@ -411,8 +414,25 @@ history:
         previous: "@01KPGVT79Z3DMQT6EHBHDXS5JN"
     command: review-link
     timestamp: 2026-04-18T18:28:27.219Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved review @01KPGXKR and merged dispatch/task/task-plan-delete-command/01kpemev into dev
+          at d6698c73e68192f7a8d6de58e47dca666c108011. Added plan delete command, referential
+          safeguards, deletePlan throw semantics, shadow commit naming, and behavioral coverage for
+          delete flows.
+        previous: null
+      completed_at:
+        new: 2026-04-18T18:39:46.536Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-18T18:39:46.546Z
 created_at: 2026-04-17T21:09:57.549Z
 started_at: 2026-04-18T18:26:42.786Z
 submitted_at: 2026-04-18T18:26:45.835Z
+completed_at: 2026-04-18T18:39:46.536Z
 todos: []
 automation: eligible
