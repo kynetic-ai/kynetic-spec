@@ -522,7 +522,7 @@ const DEFAULT_CONFIG: ResolvedKspecConfig = {
 
 // ── Loading ─────────────────────────────────────────────────────────────
 
-const CONFIG_FILENAME = "kspec.config.yaml";
+export const CONFIG_FILENAME = "kspec.config.yaml";
 
 /**
  * Result of loading project config.

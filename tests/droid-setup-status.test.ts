@@ -120,7 +120,8 @@ describe("Droid setup status reporting", () => {
   });
 
   // AC: @droid-setup-status ac-1
-  it("does not scan .factory/skills/ when agent is not droid", async () => {
+  // AC: @doctor-reports-actionable-state ac-skills-check-accurate
+  it("scans all supported rendered-skill locations regardless of detected agent", async () => {
     const projectDir = path.join(tempHome, "project");
     await fs.mkdir(projectDir, { recursive: true });
 
@@ -136,9 +137,13 @@ describe("Droid setup status reporting", () => {
       agentOverride: "claude-code",
     });
 
-    // .factory/skills/ should not be scanned for claude-code
-    expect(status.skills.rendered).toBe(0);
-    expect(status.skills.total).toBe(0);
+    // Rendered skills reflect past setup runs — which may have targeted any
+    // platform the project supports — so we must surface them regardless of
+    // the currently-detected agent. This prevents a false-positive
+    // "no rendered skills" warning on projects that rendered skills for
+    // another platform (e.g. a claude-code user opening a droid project).
+    expect(status.skills.rendered).toBe(1);
+    expect(status.skills.total).toBe(1);
   });
 
   // AC: @droid-setup-status ac-2

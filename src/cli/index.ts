@@ -37,6 +37,7 @@ import {
   registerModuleCommands,
   registerPlanCommands,
   registerRefsCommand,
+  registerReleaseNotesCommand,
   registerReviewCommands,
   registerScheduleCommands,
   registerSearchCommand,
@@ -49,6 +50,7 @@ import {
   registerTasksCommands,
   registerTraitCommands,
   registerTriageCommands,
+  registerUpgradeCommand,
   registerUtilCommands,
   registerValidateCommand,
   registerWorkflowCommand,
@@ -295,6 +297,8 @@ function configureProgram(program: Command): Command {
         "serve",
         "help",
         "setup",
+        "upgrade",
+        "release-notes",
         "shadow",
         "doctor",
         "clone-for-testing",
@@ -440,6 +444,8 @@ function configureProgram(program: Command): Command {
   registerScheduleCommands(program);
   registerAgentsCommands(program);
   registerAgentCommands(program);
+  registerUpgradeCommand(program);
+  registerReleaseNotesCommand(program);
 
   program.on("command:*", (operands) => {
     const unknownCommand = operands[0];

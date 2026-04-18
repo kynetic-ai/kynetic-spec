@@ -676,6 +676,9 @@ describe("CLI daemon proxy E2E", () => {
     writeFileSync(join(tempDir, ".kspec", "kynetic.yaml"), "project_name: test-project\n");
     writeFileSync(join(tempDir, ".kspec", "project.tasks.yaml"), "[]\n");
     writeFileSync(join(tempDir, ".kspec", "project.inbox.yaml"), "[]\n");
+    // Disable daemon auto-start so tests that clear KSPEC_NO_DAEMON for proxy
+    // detection don't leak orphan daemons via the implicit auto-start hook.
+    writeFileSync(join(tempDir, "kspec.config.yaml"), "daemon:\n  auto_start: false\n");
   });
 
   afterEach(async () => {

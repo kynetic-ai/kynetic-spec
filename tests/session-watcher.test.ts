@@ -169,7 +169,9 @@ describeOrSkip("SessionWatcher", () => {
   });
 
   // AC: @daemon-file-monitoring ac-new-session-conditional-watch
-  it("does not watch new non-active sessions", async () => {
+  // AC: @daemon-file-monitoring ac-new-session-list-freshness
+  // AC: @daemon-file-monitoring ac-new-session-conditional-watch
+  it("notifies once on new non-active session arrival but does not watch for ongoing changes", async () => {
     const onSessionChange = vi.fn();
     const watcher = new SessionWatcher({
       sessionsDir: join(projectDir, ".kspec-sessions"),
@@ -185,8 +187,15 @@ describeOrSkip("SessionWatcher", () => {
       "completed",
     );
     await waitForDebounce();
-    expect(onSessionChange).not.toHaveBeenCalled();
 
+    // Exactly one notification so the sessions domain cache invalidates and
+    // surfaces the new session in list responses.
+    expect(onSessionChange).toHaveBeenCalledTimes(1);
+    expect(onSessionChange).toHaveBeenCalledWith(sessionDir);
+
+    // No per-session watcher attached — subsequent writes inside the
+    // completed session directory must not trigger additional callbacks.
+    onSessionChange.mockClear();
     await writeFile(join(sessionDir, "events.jsonl"), '{"type":"session.updated"}\n', {
       flag: "a",
     });

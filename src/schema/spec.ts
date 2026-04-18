@@ -129,6 +129,10 @@ export const ManifestSchema = z.object({
   // External references (large projects)
   includes: z.array(z.string()).optional(),
 
+  // ULID of the default module created at init time.
+  // Used by setup to reliably identify the default module regardless of load order.
+  default_module: z.string().optional(),
+
   // Task storage format configuration
   // AC: @task-storage-activation ac-1, ac-2 — explicit setting controls format
   // Named task_storage to avoid collision with the `tasks:` array used

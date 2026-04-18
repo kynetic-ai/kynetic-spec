@@ -65,6 +65,67 @@ export interface GetSetupStatusOptions {
 }
 
 /**
+ * All supported rendered-skill locations for a project.
+ *
+ * These are the directories the setup pipeline (and skill render step) writes
+ * rendered SKILL.md files to. Doctor and setup-status scan these to decide
+ * whether any rendered skills exist.
+ *
+ * Kept in sync with `getPlatformDefaultOutputDir` in src/parser/skill-render.ts
+ * and `PLUGIN_SKILLS_DIR` (core claude-code skills are plugin-provided).
+ *
+ * AC: @doctor-reports-actionable-state ac-skills-check-accurate
+ * AC: @doctor-reports-actionable-state ac-skills-check-missing
+ */
+export function getRenderedSkillLocations(projectDir: string): string[] {
+  return [
+    // claude-code: project/local skills
+    path.join(projectDir, ".claude", "skills"),
+    // claude-code: core skills (plugin-provided by npm package)
+    path.join(projectDir, ".claude", "plugins", "kspec", "skills"),
+    // codex
+    path.join(projectDir, ".agents", "skills"),
+    // droid
+    path.join(projectDir, ".factory", "skills"),
+  ];
+}
+
+/**
+ * Whether any of the supported rendered-skill locations contain at least one
+ * kspec-managed skill file.
+ *
+ * AC: @doctor-reports-actionable-state ac-skills-check-accurate — reports
+ * rendered skills as present when any supported location contains them.
+ * AC: @doctor-reports-actionable-state ac-skills-check-missing — reports
+ * missing only when no supported location contains any rendered skills.
+ */
+export async function hasAnyRenderedSkills(projectDir: string): Promise<boolean> {
+  for (const dir of getRenderedSkillLocations(projectDir)) {
+    let entries: Array<{ name: string; isDir: boolean }> = [];
+    try {
+      const dirents = await fs.readdir(dir, { withFileTypes: true });
+      entries = dirents.map((d) => ({ name: d.name, isDir: d.isDirectory() }));
+    } catch {
+      // Directory doesn't exist; skip.
+      continue;
+    }
+    for (const entry of entries) {
+      if (!entry.isDir) continue;
+      const skillMd = path.join(dir, entry.name, "SKILL.md");
+      try {
+        const content = await fs.readFile(skillMd, "utf-8");
+        if (content.includes("<!-- kspec-managed -->")) {
+          return true;
+        }
+      } catch {
+        // No SKILL.md in this subdir; keep scanning.
+      }
+    }
+  }
+  return false;
+}
+
+/**
  * Guard scripts that can be installed
  */
 const GUARD_SCRIPTS: Record<string, boolean> = {
@@ -176,11 +237,14 @@ export async function getSetupStatus(
   const hashPath = path.join(projectDir, ".kspec", ".kspec-agents-hash");
   const claudeConfigPath = path.join(projectDir, ".claude", "settings.json");
   const hooksDir = path.join(projectDir, ".claude", "hooks");
-  // AC: @droid-setup-status ac-1 — scan .factory/skills/ for droid-rendered skills
-  const skillDirs = new Set<string>([path.join(projectDir, ".claude", "skills")]);
-  if (detected.type === "droid") {
-    skillDirs.add(path.join(projectDir, ".factory", "skills"));
-  }
+  // AC: @doctor-reports-actionable-state ac-skills-check-accurate —
+  // scan every location the setup pipeline renders to, regardless of detected
+  // agent type. Core claude-code skills render to .claude/plugins/kspec/skills
+  // (plugin-provided), codex skills to .agents/skills, droid skills to
+  // .factory/skills, and project/local claude-code skills to .claude/skills.
+  // Scanning only a subset caused a false-positive "no skills rendered"
+  // warning on fully-set-up projects.
+  const skillDirs = new Set<string>(getRenderedSkillLocations(projectDir));
 
   // Check hooks
   const hooks = {

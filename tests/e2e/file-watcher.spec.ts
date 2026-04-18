@@ -47,7 +47,7 @@ test.describe("File Watcher UI", () => {
 
     const taskItems = page.getByTestId("task-list-item");
     await expect(taskItems.first()).toBeVisible({ timeout: 10_000 });
-    await expect(taskItems).toHaveCount(7);
+    const countBefore = await taskItems.count();
 
     const tasksFile = join(daemon.kspecDir, "project.tasks.yaml");
     appendYamlBlock(
@@ -72,7 +72,7 @@ test.describe("File Watcher UI", () => {
     await expect(taskItems.filter({ hasText: "Watcher added task" })).toBeVisible({
       timeout: 10_000,
     });
-    await expect(taskItems).toHaveCount(8, { timeout: 10_000 });
+    await expect(taskItems).toHaveCount(countBefore + 1, { timeout: 10_000 });
   });
 
   // AC: @ui-data-freshness ac-3
@@ -143,7 +143,13 @@ test.describe("File Watcher UI", () => {
 
     const taskItems = page.getByTestId("task-list-item");
     await expect(taskItems.first()).toBeVisible({ timeout: 10_000 });
-    await expect(taskItems).toHaveCount(7);
+    // Capture the first-project task list snapshot before the second-project mutation
+    const countBefore = await taskItems.count();
+    const titlesBefore: string[] = [];
+    for (let i = 0; i < countBefore; i++) {
+      const title = await taskItems.nth(i).getByTestId("task-title").textContent();
+      titlesBefore.push(title ?? "");
+    }
     await expect(page.getByTestId("project-selector")).toContainText(
       projectNameFromPath(daemon.tempDir),
     );
@@ -180,6 +186,13 @@ test.describe("File Watcher UI", () => {
 
     expect(await unexpectedFirstProjectRefetch).toBe(false);
     await expect(taskItems.filter({ hasText: "Second project watcher task" })).toHaveCount(0);
-    await expect(taskItems).toHaveCount(7);
+    // First-project list should be unchanged after second-project mutation
+    await expect(taskItems).toHaveCount(countBefore);
+    const titlesAfter: string[] = [];
+    for (let i = 0; i < (await taskItems.count()); i++) {
+      const title = await taskItems.nth(i).getByTestId("task-title").textContent();
+      titlesAfter.push(title ?? "");
+    }
+    expect(titlesAfter).toEqual(titlesBefore);
   });
 });

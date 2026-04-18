@@ -416,6 +416,95 @@ User: /release 1.0.0
 Agent: [Creates v1.0.0 - useful for major milestones]
 ```
 
+## Maintaining release notes
+
+The `RELEASE_NOTES.md` file at the repository root is the single source of
+truth for kspec release notes. It is human-authored, reviewed by humans, and
+shipped in the published npm package so `kspec release-notes` and
+`kspec upgrade` can print it directly. There is no generator — edit the file
+by hand as part of the normal change flow.
+
+### Where the file lives
+
+- Path: `RELEASE_NOTES.md` at the repository root (the same directory as
+  `package.json`).
+- Packaged: listed in `package.json#files` so the published tarball
+  includes it. The CLI resolves it relative to its own install location.
+
+### File layout
+
+- A short top-of-file preamble explains the file.
+- Each release is a level-2 heading (`## vX.Y.Z`) with most-recent first.
+- An optional `## Unreleased` heading collects changes staged for the next
+  release. It lives above the top versioned section. Promote it to a
+  versioned heading as part of the release workflow (see below).
+
+### Required per-version subsections
+
+Every versioned section must contain the following level-3 subsections, in
+this order. Use the exact headings below — the CLI and release tests rely
+on them:
+
+1. `### New or changed configuration` — name every new config key and
+   describe what it controls. If there are none, write a single line
+   `- No new configuration keys.`
+2. `### Breaking changes` — call out behavior changes that require
+   consumer action. If there are none, write `- None.`
+
+Optional additional subsections (use the ones that apply): `### Features &
+Additions`, `### Bug Fixes`, `### Performance`, `### Documentation`,
+`### CI`, `### Other Changes`. Match the tone and writing guidelines in
+[Release Notes Format](#release-notes-format) above.
+
+### Adding an entry
+
+During normal work, edit the `## Unreleased` section to append bullet
+points describing the change. Put each item in the right subsection (new
+config under `### New or changed configuration`, breaking changes under
+`### Breaking changes`, everything else under the appropriate optional
+subsection). If a required subsection isn't present yet, add it.
+
+For cross-version aggregation, keep the most recent entries near the top of
+each subsection. Don't worry about chronological ordering within a section.
+
+### Promoting Unreleased at release time
+
+When starting a release:
+
+1. Rename the `## Unreleased` heading to `## vX.Y.Z` with the version
+   number being released.
+2. Make sure both required subsections are present and non-empty (write
+   `- None.` / `- No new configuration keys.` if there's nothing to say).
+3. Add a fresh empty `## Unreleased` section at the top for the next
+   release cycle. Leaving it off is fine, but having a placeholder makes
+   the next change's diff smaller.
+
+### Pre-release check
+
+Before running the rest of the release workflow (Phase 5 onwards), verify
+the notes for the version being released are present and non-empty. The
+exact check is:
+
+```bash
+VERSION="0.1.2"  # the version you are about to release
+awk -v v="$VERSION" '
+  $0 ~ "^## v?" v "([^0-9.]|$)" { in_section = 1; body = ""; next }
+  /^## / && in_section { exit }
+  in_section { body = body $0 "\n" }
+  END {
+    gsub(/[[:space:]]/, "", body)
+    if (!in_section) { print "error: no section for v" v " in RELEASE_NOTES.md"; exit 1 }
+    if (body == "") { print "error: section for v" v " is empty"; exit 1 }
+  }
+' RELEASE_NOTES.md
+```
+
+If the command exits non-zero, stop and author the missing notes before
+continuing. The release notes must be written and reviewed before the
+version bump PR is created — not as a follow-up commit — so the tagged
+commit and published tarball carry the notes users will read when they
+upgrade.
+
 ## Key Principles
 
 - **Version bump first**: PR before tag ensures package.json matches release
@@ -425,6 +514,8 @@ Agent: [Creates v1.0.0 - useful for major milestones]
 - **Branch protection compatible**: All changes via PR
 - **CI handles publishing**: Skill creates release, CI publishes to npm
 - **kspec integration**: Complete tasks before release, reference them in commits
+- **Release notes in the file**: Every released version has a non-empty
+  entry in `RELEASE_NOTES.md` — verified by the pre-release check above
 
 ## Troubleshooting
 

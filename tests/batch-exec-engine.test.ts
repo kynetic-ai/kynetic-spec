@@ -544,7 +544,7 @@ describe("batch command integration", () => {
     const child = spawn(process.execPath, [CLI_PATH, "batch"], {
       cwd: tempDir,
       stdio: ["pipe", "pipe", "pipe"],
-      env: { ...process.env, KSPEC_AUTHOR: "@test" },
+      env: { ...process.env, KSPEC_AUTHOR: "@test", KSPEC_NO_DAEMON: "1" },
     });
 
     let stderr = "";
@@ -791,7 +791,7 @@ No fenced YAML block in this section.
           cwd: tempDir,
           encoding: "utf-8",
           timeout: 30_000,
-          env: { ...process.env, KSPEC_AUTHOR: "@test" },
+          env: { ...process.env, KSPEC_AUTHOR: "@test", KSPEC_NO_DAEMON: "1" },
         },
       );
     }
