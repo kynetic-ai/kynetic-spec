@@ -131,7 +131,7 @@ description: >-
 spec_ref: "@plan-crud"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 closed_reason: null
 depends_on: []
@@ -146,11 +146,11 @@ review_ref: "@01KPGVT79Z3DMQT6EHBHDXS5JN"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-plan-delete-command/01kpemev
-  captured_at: 2026-04-18T17:54:26.693Z
-  commit: 731e81b05e2a02f29e8a18f0bda06632a69ed8da
-  remote: null
-  remote_url: null
-  upstream_ref: dev
+  captured_at: 2026-04-18T18:26:45.831Z
+  commit: 3bdfa87e044930b300fe4b063e7ca1ab76416d2c
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-plan-delete-command/01kpemev
 session_id: 01KPGWJQVCEN7FF4W83XMWGNK4
 history:
   - author: "@claude"
@@ -377,8 +377,35 @@ history:
         previous: 2026-04-18T17:26:29.728Z
     command: task-start
     timestamp: 2026-04-18T18:26:42.786Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-plan-delete-command/01kpemev
+          captured_at: 2026-04-18T18:26:45.831Z
+          commit: 3bdfa87e044930b300fe4b063e7ca1ab76416d2c
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-plan-delete-command/01kpemev
+        previous:
+          review_url: null
+          branch: dispatch/task/task-plan-delete-command/01kpemev
+          captured_at: 2026-04-18T17:54:26.693Z
+          commit: 731e81b05e2a02f29e8a18f0bda06632a69ed8da
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-04-18T18:26:45.835Z
+        previous: 2026-04-18T17:54:26.696Z
+    command: task-submit
+    timestamp: 2026-04-18T18:26:45.835Z
 created_at: 2026-04-17T21:09:57.549Z
 started_at: 2026-04-18T18:26:42.786Z
-submitted_at: 2026-04-18T17:54:26.696Z
+submitted_at: 2026-04-18T18:26:45.835Z
 todos: []
 automation: eligible
