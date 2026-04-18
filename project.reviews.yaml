@@ -151667,6 +151667,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-18T17:57:29.922Z
+      - _ulid: 01KPGWD4ZC5QCZ1R0MR2QH6F86
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPGWD42CQPQ18E3QHYC38KES
+        timestamp: 2026-04-18T18:07:19.020Z
     examined_commit: 731e81b05e2a02f29e8a18f0bda06632a69ed8da
     external_links: []
     lifecycle_state: open
@@ -151676,8 +151683,26 @@ reviews:
       content_hash: ""
       ref: "@01KPEMEVNDE289TVASZC0V6CB0"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KPGWD42CQPQ18E3QHYC38KES
+        anchor:
+          type: code
+          commit: 731e81b05e2a02f29e8a18f0bda06632a69ed8da
+          line_end: 493
+          line_start: 480
+          path: tests/cli-plan-delete.test.ts
+          side: head
+        entries:
+          - _ulid: 01KPGWD42D1R2A4EP8HWPEHMGE
+            author: Jacob Chapel
+            body: The ac-49 test does not verify that the git branch survives plan deletion. It only proves that
+              the branch field existed on the plan before deletion and that the plan record is gone
+              afterward. Because setupTempFixtures() just copies fixture files and never creates a
+              real git ref, this test would still pass even if plan deletion started deleting the
+              underlying branch, so the branch-preservation guarantee remains unproven.
+            created_at: 2026-04-18T18:07:18.093Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-18T17:56:58.815Z
-    updated_at: 2026-04-18T17:57:28.720Z
+    updated_at: 2026-04-18T18:07:18.093Z
     notes: []
