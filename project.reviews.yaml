@@ -151652,7 +151652,19 @@ reviews:
     slugs: []
     title: Review task-plan-delete-command
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Repo-wide pre-existing validation failure unrelated to this branch:
+          .kspec/modules/meta.yaml expected trait string, received object; plus existing
+          completeness/alignment warnings."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-18T18:07:20.918Z
+        completed_at: 2026-04-18T18:07:20.918Z
     events:
       - _ulid: 01KPGVT79Z52RF3X1B0WBEZMN5
         actor: Jacob Chapel
@@ -151674,6 +151686,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPGWD42CQPQ18E3QHYC38KES
         timestamp: 2026-04-18T18:07:19.020Z
+      - _ulid: 01KPGWD7VHSX4VA89VY68FN4DF
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-18T18:07:21.969Z
     examined_commit: 731e81b05e2a02f29e8a18f0bda06632a69ed8da
     external_links: []
     lifecycle_state: open
@@ -151704,5 +151723,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-18T17:56:58.815Z
-    updated_at: 2026-04-18T18:07:18.093Z
+    updated_at: 2026-04-18T18:07:20.918Z
     notes: []
