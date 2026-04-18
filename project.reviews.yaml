@@ -151564,6 +151564,18 @@ reviews:
         required: true
         created_at: 2026-04-18T03:03:29.875Z
         completed_at: 2026-04-18T03:03:29.875Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Reviewed the user-documentation plan against the prior blocker and neighboring
+          docs-boundary specs; the boundary contract is now expressed behaviorally as reflective vs
+          operational surfaces with no concrete runtime artifact names in the requirement
+          description or ACs.
+        name: Existing spec alignment
+        required: true
+        created_at: 2026-04-18T03:03:29.841Z
+        completed_at: 2026-04-18T03:03:29.841Z
     events:
       - _ulid: 01KPF8NRCPK8MJN03HR306XYKY
         actor: "@claude"
@@ -151592,6 +151604,13 @@ reviews:
           status: pass
           name: Task coverage and ordering
         timestamp: 2026-04-18T03:03:33.890Z
+      - _ulid: 01KPF8PC67R3FYC0JA989XPW1Y
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Existing spec alignment
+        timestamp: 2026-04-18T03:03:35.367Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -151604,5 +151623,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-18T03:03:15.094Z
-    updated_at: 2026-04-18T03:03:29.875Z
+    updated_at: 2026-04-18T03:03:29.841Z
     notes: []
