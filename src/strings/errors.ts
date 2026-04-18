@@ -440,6 +440,7 @@ export const operationFailures = {
   updatePlan: "Failed to update plan",
   listPlans: "Failed to list plans",
   addPlanNote: "Failed to add plan note",
+  deletePlan: "Failed to delete plan",
 
   // Inbox operations
   addInboxItem: "Failed to add inbox item",

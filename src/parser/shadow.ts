@@ -1084,6 +1084,8 @@ export function generateCommitMessage(operation: string, ref?: string, detail?: 
       return formatCommitOperation("Derive Plan", effectiveRef, effectiveDetail);
     case "plan-import":
       return formatCommitOperation("Import Plan", effectiveRef, effectiveDetail);
+    case "plan-delete":
+      return formatCommitOperation("Delete Plan", effectiveRef, effectiveDetail);
     case "triage-record":
       return formatCommitOperation("Record Triage", effectiveRef, effectiveDetail);
     case "triage-act":

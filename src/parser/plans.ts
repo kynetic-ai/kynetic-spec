@@ -371,30 +371,32 @@ export async function mutatePlanAtomically(
  *
  * Non-target plans are preserved as raw data (no schema parsing) to ensure
  * round-trip stability.
+ *
+ * Throws if the plan is not found (ENOENT-style) or on I/O failure,
+ * matching the contract of savePlan and mutatePlanAtomically.
+ *
+ * AC: @plan-crud ac-40
  */
-export async function deletePlan(ctx: KspecContext, planUlid: string): Promise<boolean> {
+export async function deletePlan(ctx: KspecContext, planUlid: string): Promise<void> {
   const plansPath = getPlansFilePath(ctx);
 
   // Lock the file to prevent concurrent read-modify-write races
-  return withFileLock(plansPath, async () => {
-    try {
-      // Load raw plan data without schema normalization
-      const { rawPlans, wrapperObj } = await extractRawPlanArray(plansPath);
+  await withFileLock(plansPath, async () => {
+    // Load raw plan data without schema normalization
+    const { rawPlans, wrapperObj } = await extractRawPlanArray(plansPath);
 
-      // Find plan to delete by ULID match on raw data
-      const index = findRawPlanIndex(rawPlans, planUlid);
-      if (index < 0) {
-        return false;
-      }
-
-      // Remove plan
-      rawPlans.splice(index, 1);
-
-      await writeRawPlanArray(plansPath, rawPlans, wrapperObj);
-      return true;
-    } catch {
-      return false;
+    // Find plan to delete by ULID match on raw data
+    const index = findRawPlanIndex(rawPlans, planUlid);
+    if (index < 0) {
+      const err = new Error(`Plan not found: ${planUlid}`);
+      (err as NodeJS.ErrnoException).code = "ENOENT";
+      throw err;
     }
+
+    // Remove plan
+    rawPlans.splice(index, 1);
+
+    await writeRawPlanArray(plansPath, rawPlans, wrapperObj);
   });
 }
 
