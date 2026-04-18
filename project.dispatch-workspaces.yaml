@@ -54958,18 +54958,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-plan-delete-command/01kpemev
-    canonical_branch_head: 731e81b05e2a02f29e8a18f0bda06632a69ed8da
+    canonical_branch_head: 3bdfa87e044930b300fe4b063e7ca1ab76416d2c
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-18T18:10:19.217Z
+      updated_at: 2026-04-18T18:25:54.131Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-18T18:10:22.953Z
+      updated_at: 2026-04-18T18:25:54.131Z
     integration:
       status: pending
       detail: null
@@ -54977,7 +54977,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 94bd75c1f59a5e7bb332a3cbd897996adf9cb279
-      updated_at: 2026-04-18T18:10:19.217Z
+      updated_at: 2026-04-18T18:25:54.131Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KPEMEVNDE289TVASZC0V6CB0"
@@ -54985,9 +54985,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-18T18:10:22.953Z
-      last_reconciled_at: 2026-04-18T18:10:22.953Z
+      last_reconciled_at: 2026-04-18T18:25:54.131Z
       created_at: 2026-04-18T17:25:29.507Z
-      updated_at: 2026-04-18T18:10:22.953Z
+      updated_at: 2026-04-18T18:25:54.131Z
     workspace_id: dispatch-workspace-01KPEMEVNDE289TVASZC0V6CB0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
