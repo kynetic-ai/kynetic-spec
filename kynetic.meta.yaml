@@ -15036,6 +15036,26 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-04-18T18:09:34.520Z
+  - _ulid: 01KPGXK7WHCDYGN4D16ZA0W3PD
+    type: friction
+    content: "New shadow branch operations (like plan-delete) can silently fall through to the default
+      commit message format in generateCommitMessage() without any lint or test catching the missing
+      case. The plan-delete case was missing from the switch in shadow.ts, producing raw plan-delete
+      slug instead of Delete Plan: @slug. Consider adding a test or lint that verifies all
+      commitIfShadow call-site operations have explicit mappings."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-18T18:28:07.185Z
+  - _ulid: 01KPGXK83VH3MPDSN6AT3C5GZ9
+    type: success
+    content: The shadow-commit-call-site-regression.test.ts pattern (real shadow worktree via kspec init
+      + inspecting git log in .kspec/) is a reliable way to behaviorally verify shadow commit
+      messages. Reused this pattern successfully for plan delete ac-48 coverage.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-18T18:28:07.419Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
