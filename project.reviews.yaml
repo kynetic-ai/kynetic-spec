@@ -151418,6 +151418,18 @@ reviews:
         required: true
         created_at: 2026-04-18T03:00:53.573Z
         completed_at: 2026-04-18T03:00:53.573Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: The prior blockers on @user-documentation, @human-docs-site ac-searchable,
+          @agent-mediated-mental-model, @auto-generated-reference removal, and @human-docs-site task
+          ownership are addressed, but @docs-vs-agent-runtime-boundary description still names
+          concrete runtime artifacts instead of stating the boundary behaviorally.
+        name: Spec quality
+        required: true
+        created_at: 2026-04-18T03:00:53.642Z
+        completed_at: 2026-04-18T03:00:53.642Z
     events:
       - _ulid: 01KPF8GH9K0TGFFEEZGA3C7VPM
         actor: "@claude"
@@ -151446,6 +151458,13 @@ reviews:
           status: pass
           name: Task coverage and ordering
         timestamp: 2026-04-18T03:00:54.607Z
+      - _ulid: 01KPF8HGPFK3FJGSSNYESE5E6C
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: Spec quality
+        timestamp: 2026-04-18T03:00:56.143Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -151475,5 +151494,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-18T03:00:23.988Z
-    updated_at: 2026-04-18T03:00:53.573Z
+    updated_at: 2026-04-18T03:00:53.642Z
     notes: []
