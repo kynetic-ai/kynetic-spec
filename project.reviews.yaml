@@ -151197,6 +151197,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPF87SBM6REPGKCH8CSVV1P9
         timestamp: 2026-04-18T02:55:41.356Z
+      - _ulid: 01KPF88BHKYR5JD7WZ9K5CP5PZ
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPF88AJXWQFSC62R8B1EN83M
+        timestamp: 2026-04-18T02:55:55.955Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -151256,7 +151263,23 @@ reviews:
               documentation behavior and purpose.
             created_at: 2026-04-18T02:55:37.332Z
         kind: blocker
+      - _ulid: 01KPF88AJXWQFSC62R8B1EN83M
+        anchor:
+          type: structured
+          ref: "@task-docs-site-bootstrap"
+          section: description
+        entries:
+          - _ulid: 01KPF88AJXTGQTYQYNFWG6TQAR
+            author: "@claude"
+            body: This task is the only work item attached to @human-docs-site, but its scope is limited to
+              infrastructure, search integration, and placeholder pages. @human-docs-site also
+              requires the docs surface to be reachable from public entry points within one click,
+              and the plan only later covers README trimming; npm/public entry-point linkage is
+              unassigned. Split or expand the tasking so every AC on @human-docs-site has an
+              explicit owner.
+            created_at: 2026-04-18T02:55:54.974Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-18T02:55:05.005Z
-    updated_at: 2026-04-18T02:55:37.332Z
+    updated_at: 2026-04-18T02:55:54.974Z
     notes: []
