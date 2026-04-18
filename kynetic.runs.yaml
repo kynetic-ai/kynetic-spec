@@ -27729,7 +27729,7 @@ runs:
     completed_at: 2026-04-17T21:48:47.819Z
   - _ulid: 01KPGWF2D42TVG5RH2FGGBAD4B
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -27743,7 +27743,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-18T18:09:07.875Z
-        completed_at: 2026-04-18T18:09:07.875Z
+        completed_at: 2026-04-18T18:09:34.104Z
+        notes: "High-confidence reflection: friction = fixture-only CLI tests can appear to cover git-ref
+          and shadow-history guarantees while only asserting record deletion. This is systemic
+          because setupTempFixtures is widely used and makes it easy to write non-behavioral tests
+          for destructive command ACs. Non-capture item: workflow show needing an explicit run ref
+          is already tracked in inbox @01KGGPJ6, so no duplicate capture."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-18T18:09:34.104Z
+        completed_at: 2026-04-18T18:09:34.104Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-18T18:08:21.924Z
