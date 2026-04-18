@@ -5593,7 +5593,7 @@ features:
         description: "Core plan management commands: add, get, set, list, note with JSON output support"
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
