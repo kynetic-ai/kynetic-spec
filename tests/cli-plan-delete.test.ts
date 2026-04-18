@@ -4,16 +4,21 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { execSync } from "node:child_process";
+import { existsSync } from "node:fs";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { stringify as yamlStringify } from "yaml";
 import {
   setupTempFixtures,
   cleanupTempDir,
+  createTempDir,
+  initGitRepo,
   kspec as kspecRun,
   kspecOutput as kspec,
   kspecJson,
 } from "./helpers/cli";
+import { SHADOW_WORKTREE_DIR } from "../src/parser/shadow.js";
 
 /**
  * Rewrite the plans YAML file with custom derived_specs/derived_tasks.
@@ -479,6 +484,14 @@ describe("Integration: plan delete", () => {
 
   // AC: @plan-crud ac-49 — branch not deleted
   it("should not delete git branch when plan with branch is deleted", () => {
+    // Create a real git branch so we can verify it survives deletion
+    initGitRepo(tempDir);
+    execSync('git add -A && git commit -m "initial" --allow-empty', {
+      cwd: tempDir,
+      stdio: "pipe",
+    });
+    execSync("git branch feat/plan-branch-test", { cwd: tempDir, stdio: "pipe" });
+
     kspec('plan add --title "Branched" --content "c" --slug plan-branched', tempDir);
     kspec("plan set @plan-branched --branch feat/plan-branch-test", tempDir);
 
@@ -487,9 +500,16 @@ describe("Integration: plan delete", () => {
 
     kspec("plan delete @plan-branched --force", tempDir);
 
-    // Plan is gone — only the plan's record is removed (ac-49)
+    // Plan record is gone
     const result = kspecRun("plan get @plan-branched --json", tempDir, { expectFail: true });
     expect(result.exitCode).toBe(3);
+
+    // Git branch still exists — plan deletion must not touch git refs
+    const branches = execSync("git branch --list feat/plan-branch-test", {
+      cwd: tempDir,
+      encoding: "utf-8",
+    }).trim();
+    expect(branches).toContain("feat/plan-branch-test");
   });
 
   // AC: @plan-crud ac-52 — other plans retain all data
@@ -528,14 +548,7 @@ describe("Integration: plan delete", () => {
     expect(planB.branch).toBe("feat/keep-b");
   });
 
-  // AC: @plan-crud ac-48 — shadow branch commit
-  it("should produce a shadow branch commit on deletion", () => {
-    kspec('plan add --title "Commit Plan" --content "c" --slug plan-commit-del', tempDir);
-    kspec("plan delete @plan-commit-del --force", tempDir);
-
-    const result = kspecRun("plan get @plan-commit-del --json", tempDir, { expectFail: true });
-    expect(result.exitCode).toBe(3);
-  });
+  // ac-48 shadow commit test moved to separate describe block below that uses a real shadow worktree
 
   // ── JSON output ──
 
@@ -579,4 +592,67 @@ describe("Integration: plan delete", () => {
   // contract. The CLI handler wraps deletePlan in try/catch and surfaces ENOENT
   // as not-found, other errors as failures. The concurrent-removal path (ENOENT
   // after pre-resolution) is tested via the idempotency tests above.
+});
+
+// ── Shadow commit test — requires real shadow worktree ──
+
+const projectCli = path.resolve(__dirname, "..", "dist", "cli", "index.js");
+const canRunShadowTests = (() => {
+  try {
+    const version = execSync("git --version", { encoding: "utf-8" }).trim();
+    const match = version.match(/(\d+)\.(\d+)/);
+    if (!match) return false;
+    const [, major, minor] = match.map(Number);
+    return (major > 2 || (major === 2 && minor >= 42)) && existsSync(projectCli);
+  } catch {
+    return false;
+  }
+})();
+
+function setupShadowProject(projectDir: string): void {
+  initGitRepo(projectDir);
+  execSync('git commit --allow-empty -m "initial"', {
+    cwd: projectDir,
+    stdio: "pipe",
+  });
+  const result = kspecRun("init --no-prompt", projectDir, {
+    env: { KSPEC_AUTHOR: "@test" },
+  });
+  if (result.exitCode !== 0) {
+    throw new Error(`kspec init failed: ${result.stderr}`);
+  }
+}
+
+function getShadowHeadSubject(projectDir: string): string {
+  return execSync("git log --format=%s -1", {
+    cwd: path.join(projectDir, SHADOW_WORKTREE_DIR),
+    encoding: "utf-8",
+    stdio: ["pipe", "pipe", "pipe"],
+  }).trim();
+}
+
+describe("Integration: plan delete — shadow commit", () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await createTempDir("kspec-plan-delete-shadow-");
+    setupShadowProject(tempDir);
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @plan-crud ac-48
+  it.skipIf(!canRunShadowTests)(
+    "should produce a shadow branch commit with plan ref on deletion",
+    () => {
+      kspec('plan add --title "Shadow Commit Plan" --content "c" --slug plan-shadow-del', tempDir);
+      kspec("plan delete @plan-shadow-del --force", tempDir);
+
+      const subject = getShadowHeadSubject(tempDir);
+      expect(subject).toContain("Delete Plan");
+      expect(subject).toContain("plan-shadow-del");
+    },
+  );
 });
