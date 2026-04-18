@@ -15024,6 +15024,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-18T17:55:31.915Z
+  - _ulid: 01KPGWH99RE0CSJYCS2ZCQXJNK
+    type: friction
+    content: Fixture-backed CLI tests can claim AC coverage for git-ref and shadow-history guarantees
+      without exercising real git refs or a real shadow worktree. Reviewing plan delete found
+      ac-48/ac-49 tests passed while only proving the plan record disappeared. The system needs a
+      clearer behavioral-test pattern or helper for commands whose guarantees depend on real
+      git/shadow state.
+    author: codex
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-04-18T18:09:34.520Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
