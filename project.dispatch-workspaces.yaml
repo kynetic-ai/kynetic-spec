@@ -54797,7 +54797,7 @@ workspaces:
         head: 4b0f5e254904f941870b59b0157a5fb9cd634308
         last_seen_at: 2026-04-16T08:48:15.298Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-persist-cleanup-completion-status-01kpanm6
-  - active_role: null
+  - active_role: worker
     base_branch_point: 94bd75c1f59a5e7bb332a3cbd897996adf9cb279
     bootstrap:
       status: succeeded
@@ -55088,7 +55088,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-18T17:25:29.507Z
+      updated_at: 2026-04-18T17:25:51.082Z
     integration:
       status: pending
       detail: null
@@ -55097,16 +55097,16 @@ workspaces:
       target_branch: dev
       target_commit: 94bd75c1f59a5e7bb332a3cbd897996adf9cb279
       updated_at: 2026-04-18T17:25:29.507Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KPEMEVNDE289TVASZC0V6CB0"
     task_slug: task-plan-delete-command
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-04-18T17:25:29.507Z
+      last_active_at: 2026-04-18T17:25:51.082Z
+      last_reconciled_at: 2026-04-18T17:25:51.082Z
       created_at: 2026-04-18T17:25:29.507Z
-      updated_at: 2026-04-18T17:25:49.104Z
+      updated_at: 2026-04-18T17:25:51.082Z
     workspace_id: dispatch-workspace-01KPEMEVNDE289TVASZC0V6CB0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
