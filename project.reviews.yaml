@@ -151568,9 +151568,16 @@ reviews:
           status: pass
           name: Spec quality
         timestamp: 2026-04-18T03:03:30.812Z
+      - _ulid: 01KPF8P97DAAH4RC84H252F6KC
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-04-18T03:03:32.334Z
     examined_commit: null
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: open
     related_refs: []
     subject:
       type: plan
@@ -151580,5 +151587,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-18T03:03:15.094Z
-    updated_at: 2026-04-18T03:03:29.838Z
+    updated_at: 2026-04-18T03:03:29.865Z
     notes: []
