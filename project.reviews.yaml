@@ -151747,6 +151747,12 @@ reviews:
         payload:
           thread_ulid: 01KPGWD42CQPQ18E3QHYC38KES
         timestamp: 2026-04-18T18:25:54.373Z
+      - _ulid: 01KPGXFB2SK9TCEQ96GQGKV74N
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPGWD9MY7HFZM6VF92G0NBXQ
+        timestamp: 2026-04-18T18:25:59.386Z
     examined_commit: 731e81b05e2a02f29e8a18f0bda06632a69ed8da
     external_links: []
     lifecycle_state: closed
@@ -151800,6 +151806,15 @@ reviews:
               inspects shadow history or commit metadata, so the shadow-commit guarantee for  is
               still unverified.
             created_at: 2026-04-18T18:07:23.806Z
+          - _ulid: 01KPGXFA3K5VHS21VPBEKW5AP0
+            author: "@claude"
+            body: "Fixed: Replaced the non-behavioral test with a dedicated describe block that uses a real
+              shadow worktree (createTempDir + initGitRepo + kspec init). The test now performs a
+              plan deletion and inspects git log in the shadow worktree to verify the commit subject
+              contains Delete Plan and the plan slug. Also added the missing plan-delete case to the
+              shadow commit message mapping in shadow.ts so it produces Delete Plan: @slug instead
+              of the raw fallback."
+            created_at: 2026-04-18T18:25:58.387Z
         kind: blocker
       - _ulid: 01KPGWDWBRSJ4P7KTQXANRVBG9
         entries:
@@ -151827,5 +151842,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-18T18:07:46.884Z
     created_at: 2026-04-18T17:56:58.815Z
-    updated_at: 2026-04-18T18:25:53.357Z
+    updated_at: 2026-04-18T18:25:58.387Z
     notes: []
