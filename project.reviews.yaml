@@ -151176,6 +151176,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-18T02:55:14.495Z
+      - _ulid: 01KPF87T7MSTRB893NHFMW05MZ
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPF87SA3V8Y740TXTRF7DSGQ
+        timestamp: 2026-04-18T02:55:38.229Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -151185,8 +151192,24 @@ reviews:
       content_hash: ""
       ref: "@plan-user-documentation-foundation"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KPF87SA3V8Y740TXTRF7DSGQ
+        anchor:
+          type: structured
+          ref: "@agent-mediated-mental-model"
+          section: description
+        entries:
+          - _ulid: 01KPF87SA40KQP8MJJS4R05JBB
+            author: "@claude"
+            body: This requirement bakes in a new product contract that conflicts with existing spec language.
+              @cli currently says the CLI is the primary interface to kspec, while this description
+              says the primary way users interact is by directing an AI agent. The plan needs to
+              reconcile that distinction explicitly (for example, CLI as system interface vs agent
+              as common user interaction layer) or soften the wording so it does not contradict
+              existing specs.
+            created_at: 2026-04-18T02:55:37.284Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-18T02:55:05.005Z
-    updated_at: 2026-04-18T02:55:13.509Z
+    updated_at: 2026-04-18T02:55:37.284Z
     notes: []
