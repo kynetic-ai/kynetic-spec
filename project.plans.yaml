@@ -39851,28 +39851,29 @@ plans:
               The change is reflected on the documentation surface
               without a separate authoring step or duplicated file
 
-      - title: Docs Surface Boundary With Agent Runtime Instructions
-        slug: docs-vs-agent-runtime-boundary
+      - title: Reflective and Operational Documentation Stay Separate
+        slug: reflective-operational-boundary
         type: requirement
         parent: "@user-documentation"
         description: |
-          The documentation surface (reflective, durable, for humans
-          primarily and agents secondarily) and the agent runtime
-          instructions (AGENTS.md, kspec-agents.md, skills — operational,
-          per-release, for agents primarily and humans secondarily)
-          have distinct roles and do not duplicate prose. Each is the
-          canonical home for its kind of content: the docs explain
-          what kspec is and when to use it; the runtime instructions
-          tell an agent what commands to run and conventions to follow
-          right now. When they reference shared ideas they link across
-          rather than copying text. An agent reading the docs as
-          context gains durable understanding; a human reading the
-          runtime instructions sees the current operational contract.
+          The project has two kinds of documentation with distinct
+          roles: reflective documentation that explains what kspec
+          is, why it exists, and when to use it — intended for durable
+          understanding that survives releases — and operational
+          documentation that tells an agent what commands to run and
+          what conventions to follow right now. These two surfaces
+          exist as separate bodies of content with no prose
+          duplication. Each is the canonical home for its kind of
+          content, and when they reference shared ideas they link
+          across rather than copying text. A reader of either surface
+          can tell which kind of content they are in from the surface
+          alone, and a contributor adding content knows which surface
+          owns it.
         acceptance_criteria:
           - id: ac-no-duplicate-prose
             given: |
-              An idea is explained in both the docs surface and the
-              agent runtime instructions
+              An idea is explained in both the reflective surface and
+              the operational surface
             when: |
               A maintainer audits the two surfaces
             then: |
@@ -39887,8 +39888,8 @@ plans:
               guidance
             then: |
               The guidance is unambiguous about whether the content
-              belongs in the docs surface (durable, reflective), the
-              runtime instructions (operational, executed), or both
+              belongs in the reflective surface (durable, explanatory),
+              the operational surface (executed, per-release), or both
               with one linking to the other
 
       - title: Docs Authoring Process Favors Timelessness
@@ -40117,9 +40118,9 @@ plans:
           - docs
           - readme
 
-      - title: Audit and resolve duplication between docs and agent runtime instructions
+      - title: Audit and resolve duplication between reflective and operational docs
         slug: task-docs-audit-boundary
-        spec_ref: "@docs-vs-agent-runtime-boundary"
+        spec_ref: "@reflective-operational-boundary"
         depends_on:
           - "@task-docs-getting-started"
           - "@task-docs-agent-mental-model"
@@ -40127,11 +40128,12 @@ plans:
           - "@task-docs-how-to-guides"
           - "@task-docs-troubleshooting"
         description: |
-          Inventory content that lives in both the docs surface and
-          AGENTS.md, decide the canonical owner per topic, replace the
-          non-canonical copies with cross-references, and record the
-          decision rule in the authoring conventions so future content
-          respects the boundary.
+          Inventory content that lives in both the reflective docs
+          surface and the operational instruction surface, decide the
+          canonical owner per topic, replace the non-canonical copies
+          with cross-references, and record the decision rule in the
+          authoring conventions so future content respects the
+          boundary.
         tags:
           - docs
           - audit
@@ -40169,10 +40171,9 @@ plans:
       human think clearly about kspec's model also helps an agent
       make better decisions. Docs are framed for humans — with a
       human reader's questions, vocabulary, and pace — and the
-      agent benefits from the same framing. The separate agent
-      runtime instructions (AGENTS.md, kspec-agents.md, skills)
-      remain the canonical operational contract an agent executes
-      against; the docs are the reflective "what and why."
+      agent benefits from the same framing. The separate operational
+      instruction surface remains the canonical contract an agent
+      executes against; the docs are the reflective "what and why."
 
       **Why this matters now.** kspec has reached a surface area
       where the only complete reference is the codebase, and most
@@ -40313,3 +40314,10 @@ plans:
           task-docs-troubleshooting to boundary audit depends_on"
         author: "@claude"
         created_at: 2026-04-18T02:59:15.184Z
+      - _ulid: 01KPF8M6C1NBDACY295GKVGCVW
+        content: "address cycle 2 blocker @01KPF8GH: reframed @docs-vs-agent-runtime-boundary as
+          @reflective-operational-boundary — spec description now describes the boundary
+          behaviorally (reflective vs operational) without naming concrete artifacts; updated
+          corresponding task; cleaned one implementation-notes reference"
+        author: "@claude"
+        created_at: 2026-04-18T03:02:23.873Z
