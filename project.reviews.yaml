@@ -151183,6 +151183,17 @@ reviews:
         required: true
         created_at: 2026-04-18T02:56:09.929Z
         completed_at: 2026-04-18T02:56:09.929Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "@agent-mediated-mental-model says agent direction is the primary interaction model, which
+          conflicts with the existing @cli module description that the CLI is the primary
+          interface."
+        name: Existing spec alignment
+        required: true
+        created_at: 2026-04-18T02:56:09.937Z
+        completed_at: 2026-04-18T02:56:09.937Z
     events:
       - _ulid: 01KPF86SSDY9XCH2PVASEEF1V5
         actor: "@claude"
@@ -151253,6 +151264,13 @@ reviews:
           status: fail
           name: Task coverage and ordering
         timestamp: 2026-04-18T02:56:12.349Z
+      - _ulid: 01KPF88X17SXMV4G1KW3MBFNZT
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: Existing spec alignment
+        timestamp: 2026-04-18T02:56:13.864Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -151359,5 +151377,5 @@ reviews:
         kind: question
     verdicts: []
     created_at: 2026-04-18T02:55:05.005Z
-    updated_at: 2026-04-18T02:56:09.929Z
+    updated_at: 2026-04-18T02:56:09.937Z
     notes: []
