@@ -151204,6 +151204,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPF88AJXWQFSC62R8B1EN83M
         timestamp: 2026-04-18T02:55:55.955Z
+      - _ulid: 01KPF88D1QX151HX0PNZ56KV8B
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPF88AKGH3CDG1FRRD4PX2TJ
+        timestamp: 2026-04-18T02:55:57.495Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -151279,7 +151286,22 @@ reviews:
               explicit owner.
             created_at: 2026-04-18T02:55:54.974Z
         kind: blocker
+      - _ulid: 01KPF88AKGH3CDG1FRRD4PX2TJ
+        anchor:
+          type: structured
+          ref: "@auto-generated-reference"
+        entries:
+          - _ulid: 01KPF88AKG7332DD0EK5CXRBV9
+            author: "@claude"
+            body: "This spec is introduced into the plan even though the implementation notes explicitly declare
+              exhaustive reference out of scope for this plan, and no task claims its acceptance
+              criteria. That leaves the derived plan internally inconsistent: reviewers will see a
+              requirement in scope with no executable work item to satisfy it. Either remove
+              @auto-generated-reference from this plan and leave it for the follow-up plan, or add a
+              concrete task that owns its ACs now."
+            created_at: 2026-04-18T02:55:54.992Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-18T02:55:05.005Z
-    updated_at: 2026-04-18T02:55:54.974Z
+    updated_at: 2026-04-18T02:55:54.992Z
     notes: []
