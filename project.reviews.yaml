@@ -151190,6 +151190,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPF87SBGZ6YSW8YC2YSSGXFY
         timestamp: 2026-04-18T02:55:39.784Z
+      - _ulid: 01KPF87X9CH2MKG01QS94025PH
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPF87SBM6REPGKCH8CSVV1P9
+        timestamp: 2026-04-18T02:55:41.356Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -151233,7 +151240,23 @@ reviews:
               is findable by search, without hard-coding ranking position.
             created_at: 2026-04-18T02:55:37.328Z
         kind: blocker
+      - _ulid: 01KPF87SBM6REPGKCH8CSVV1P9
+        anchor:
+          type: structured
+          ref: "@user-documentation"
+          section: description
+        entries:
+          - _ulid: 01KPF87SBM1RMZWTAYBQ9WJ2TH
+            author: "@claude"
+            body: The module description violates the project's spec-language rules by naming concrete artifacts
+              and relationships instead of staying at the behavioral boundary. It calls out
+              AGENTS.md, kspec-agents.md, skills, and @agent-integration directly. Those are
+              design/ownership notes that belong in plan notes or contributor guidance, not in the
+              spec contract itself. Rewrite the description so it only describes the user-facing
+              documentation behavior and purpose.
+            created_at: 2026-04-18T02:55:37.332Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-18T02:55:05.005Z
-    updated_at: 2026-04-18T02:55:37.328Z
+    updated_at: 2026-04-18T02:55:37.332Z
     notes: []
