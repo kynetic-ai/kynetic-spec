@@ -12,18 +12,138 @@ release workflow before tagging.
 
 ### New or changed configuration
 
-- `kspec release-notes` — new top-level CLI command that prints the release
-  notes for the installed version (no arguments) or for an inclusive version
-  range (`--from <version> --to <version>`). Reads directly from this file.
-- `kspec upgrade` now appends the release notes for every intervening
-  version to its output so upgrades can surface behavioral changes inline.
-- `RELEASE_NOTES.md` is now shipped in the published package; the release
-  skill documents the authoring conventions and the pre-release check that
-  enforces a non-empty entry for the version being released.
+- No new configuration keys.
 
 ### Breaking changes
 
 - None.
+
+## v0.13.0
+
+Significant release focused on a daemon entity cache, multi-turn session
+lifecycle, a new automation subsystem (hooks/schedules/events), split
+per-task storage with a required migration, a review records web UI, plan
+branches, and a single-command upgrade flow.
+
+### New or changed configuration
+
+- `daemon.runtime` — new `kspec.config.yaml` key selecting the daemon
+  runtime (`bun` or `node`). Defaults to `node`.
+- `dispatch.sync` — new `kspec.config.yaml` section controlling
+  integration branch sync cadence and behavior.
+- `coverage.scan_paths` and `coverage.exclude_patterns` — new
+  `kspec.config.yaml` section for the AC coverage scanner, making it
+  language-agnostic and allowing per-project include/exclude tuning.
+- `hooks:` meta domain — new top-level `kspec.meta.yaml` section for
+  event-driven hook actions, managed via
+  `kspec hook add/set/list/enable/disable/remove`. Distinct from the
+  existing `kspec.config.yaml#hooks` block that controls
+  checkpoint/prompt-check hook installation.
+- `schedules:` meta domain — new top-level `kspec.meta.yaml` section for
+  cron-style scheduled agent actions, managed via `kspec schedule`.
+- `session_prompt` action type — new action input for multi-turn session
+  lifecycle, with `prompt`/`prompt_template` and skill support.
+- `kspec setup` / `kspec init --setup` now scaffold `kspec.config.yaml`,
+  default agents, conventions, a session reflection hook (restricted to
+  the first idle event), the default module, and gitignore entries on
+  first run. Existing setups are preserved.
+- `kspec release-notes` — new top-level command that prints notes for the
+  installed version or an inclusive `--from <version> --to <version>`
+  range, reading directly from `RELEASE_NOTES.md`.
+- `kspec upgrade` now appends release notes for every intervening version
+  to its output so behavioral changes surface during upgrade.
+- `RELEASE_NOTES.md` is shipped in the published package; the release
+  skill documents the authoring conventions and the pre-release check
+  that enforces a non-empty entry for the version being released.
+
+### Breaking changes
+
+- **Task storage split requires migration.** Task data now lives in a
+  per-task directory layout (core, notes, history) instead of the single
+  `project.tasks.yaml` monolith. Existing projects must run
+  `kspec task migrate` to convert their task file to the split layout
+  and `kspec task storage activate` to enable the new backend. Tasks
+  continue to read from the monolithic format until activation, so the
+  migration can be staged, but task writes after upgrade require the
+  split layout.
+
+### Features & Additions
+
+- **Daemon entity cache** — tiered in-memory cache for items, tasks,
+  meta, plans, reviews, inbox, and triage, with watcher-driven
+  incremental invalidation, write-through updates, and cache-backed read
+  concurrency. Adds `GET /api/debug/cache-status` for diagnostics and a
+  `cache:status` WebSocket topic for domain-ready invalidation signals.
+- **Multi-turn session lifecycle** — active session registry, idle-grace
+  auto-close, `session.idle` event, `session_prompt` action type, and
+  dispatch engine integration for continuing work across turns.
+- **Automation subsystem** — hook, schedule, event, composition, and
+  action model with CLI commands (`kspec hook`, `kspec schedule`,
+  `kspec event`), a schedule tick engine, a hook execution engine, a
+  composition join accumulator, and shared action run tracking.
+  `kspec validate` now enforces hook/schedule/composition rules.
+- **Split per-task storage** — per-task directory layout with core data,
+  notes, and history files. Adds `kspec task migrate`,
+  `kspec task storage activate`, `kspec task rebuild-index`, write
+  buffering for multi-file transactions, and an in-file activity
+  timeline in `task get`.
+- **Review UI in the web app** — review list and detail pages with
+  thread view, revision selector, inline diff viewer with commenting,
+  structured content viewer for plan/spec reviews, verdict/check/
+  thread/lifecycle API endpoints, and WebSocket broadcasts for review
+  events. Task detail pages link to associated reviews.
+- **Plan branches** — new `branch` field on plans, `kspec plan branch`
+  command, `kspec plan derive` tasks by default, and dispatch workspace
+  base-branch resolution from plan branch.
+- **Single-command upgrade** — `kspec upgrade` migrates scaffold,
+  skills, and `kspec-agents.md` in one step, with corruption recovery,
+  orphan skill cleanup, and `--force` that preserves user-removed
+  defaults.
+- **Unified daemon API envelope** — all daemon routes return a typed
+  `ApiResponse<T>` wrapper. Read routes now serve from the entity
+  cache.
+- **Dispatch hardening** — session lifecycle event emission on terminal
+  states, stale integration target detection when base branch changes,
+  dispatch branch push lifecycle, and shadow worktree cross-
+  contamination guards.
+- **YAML round-trip stability** — raw-data preservation for workflow
+  runs and triage records.
+- **CLI ergonomics** — `kspec item ac update` alias, smarter rejection
+  messages when `kspec task set` rejects a status transition, automatic
+  dangling-reference cleanup on item deletion, and restore of pre-block
+  status on `kspec task unblock`.
+- **Web UI** — automation view with trigger editing, cache-warming
+  loading skeletons, session.idle event rendering, query retry
+  ceiling, and WebSocket invalidation replacing polling across more
+  surfaces.
+- **Test infrastructure** — smart test runner caching with condensed
+  output, per-file progress in non-verbose mode,
+  `no-source-scanning` and `no-leaky-test-daemon` oxlint rules,
+  `readTestOutput` helper.
+
+### Bug Fixes
+
+- `kspec setup` base-branch fallback now uses the full dispatch fallback
+  chain and handles stale remote HEAD.
+- Daemon emits cache-invalidation events for new non-active sessions.
+- Daemon loads config from worktree root instead of main repo root.
+- Batch atomic failures now report `rolled_back` correctly and include
+  a rollback note in output.
+- Web UI plan filter resolves via bidirectional ULID-prefix matching.
+- CLI auto-start of daemon is suppressed in dispatch sessions and on
+  `serve` commands.
+
+### Documentation
+
+- `AGENTS.md` trimmed to architecture/gotchas/decision frameworks; CLI
+  and workflow detail moved into skills.
+- New review-plan skill for plan document quality review.
+
+### Other Changes
+
+- oxlint + oxfmt replace Prettier in the lint/format pipeline.
+- Legacy `ralph` agent references removed; legacy agent config alias
+  retained for back-compat.
 
 ## v0.12.0
 
