@@ -39502,18 +39502,14 @@ plans:
           End-user-facing documentation for kspec: the material a
           developer adopting kspec reads to install it, connect it to
           their AI coding agent, understand what kspec does, and know
-          how and when to direct their agent to use it. Most users
-          reach kspec through an AI agent rather than the CLI
-          directly: they describe what they want in natural language
-          and the agent translates that into kspec commands. The
-          documentation's job is to help the human understand the
-          system well enough to ask for the right thing, and to help
-          the agent — when it reads the docs as context — make sound
-          decisions about how to act. Distinct from the agent
-          runtime instructions (AGENTS.md, kspec-agents.md, skills)
-          under @agent-integration, which tell the agent what to do
-          moment-to-moment; this module owns the reflective material
-          that explains what kspec is and when to use it.
+          how and when to use it. The documentation's job is to help
+          the reader build a durable understanding of the system so
+          they can frame their work in kspec's terms, whether they
+          invoke kspec directly or through an agent, and so an agent
+          reading the same material as context can make sound
+          decisions. The surface is reflective and explanatory rather
+          than operational: it explains what kspec is and when to use
+          it, not what commands to run moment-to-moment.
 
       - title: Human-Facing Documentation Site
         slug: human-docs-site
@@ -39553,12 +39549,13 @@ plans:
               communicate the kind of content inside
           - id: ac-searchable
             given: |
-              A reader knows a term they are looking for
+              A reader knows a term that appears in the documented
+              content
             when: |
               The reader uses the documentation surface's search
             then: |
-              A result surfaces within the top three matches when the
-              term is present anywhere in the documented content
+              The page containing the term is returned as a search
+              result
 
       - title: New-User Onboarding Path
         slug: new-user-onboarding-path
@@ -39614,17 +39611,17 @@ plans:
         type: requirement
         parent: "@user-documentation"
         description: |
-          The documentation makes explicit that the primary way a user
-          interacts with kspec is by directing an AI agent in natural
-          language, and gives the user the mental model they need to
-          frame those requests effectively. The user learns what kinds
-          of work are expressed as specs versus tasks versus plans
-          versus inbox items, when their agent should act
-          autonomously versus ask for a decision, which kinds of
-          changes warrant a spec update before implementation, and
-          how to read the shape of what the agent has done afterward.
-          The material is framed around the user's decisions, not
-          around command invocations.
+          A common path users take to reach kspec is by directing an
+          AI coding agent in natural language rather than invoking
+          commands themselves. The documentation gives the user the
+          mental model they need to frame those requests effectively.
+          The user learns what kinds of work are expressed as specs
+          versus tasks versus plans versus inbox items, when their
+          agent should act autonomously versus ask for a decision,
+          which kinds of changes warrant a spec update before
+          implementation, and how to read the shape of what the
+          agent has done afterward. The material is framed around
+          the user's decisions, not around command invocations.
         acceptance_criteria:
           - id: ac-decision-shapes-documented
             given: |
@@ -39944,47 +39941,6 @@ plans:
               source) rather than copying the enumeration inline, so
               the page does not go stale when the enumeration changes
 
-      - title: Exhaustive Reference Is Auto-Generated
-        slug: auto-generated-reference
-        type: requirement
-        parent: "@user-documentation"
-        description: |
-          Documentation that enumerates every command flag, schema
-          field, configuration key, error code, or exit status is
-          produced from the code that defines it, not hand-written.
-          When such reference exists in the documentation surface it
-          is regenerated on build from the canonical source (command
-          help output, Zod schemas, error catalog) so drift between
-          the code and the reference is not possible. Reference
-          generation is a larger, separable concern than the core
-          human-facing documentation covered by this module; the core
-          documentation does not depend on exhaustive reference being
-          present, and links to command help output in its absence.
-          The generated reference, when it exists, is consumed both by
-          users who invoke kspec directly and by agents that need
-          up-to-date option and field information.
-        acceptance_criteria:
-          - id: ac-no-hand-written-exhaustive-reference
-            given: |
-              A page in the documentation surface enumerates every
-              flag of a command, every field of a schema, or every
-              key of a configuration
-            when: |
-              A maintainer audits the page
-            then: |
-              The page is generated from the canonical source or it
-              is removed; no hand-written enumeration of this kind is
-              accepted in the documentation surface
-          - id: ac-core-docs-do-not-require-generated-reference
-            given: |
-              The auto-generated reference has not yet been built
-            when: |
-              A reader follows the core documentation (onboarding,
-              guides, concepts, troubleshooting)
-            then: |
-              The core documentation remains fully usable, with prose
-              pages linking to command help output for exhaustive
-              detail until the generated reference is available
       ```
 
       ## Tasks
@@ -40001,7 +39957,27 @@ plans:
           per top-level section (getting-started, guides, concepts,
           troubleshooting, release notes) — so subsequent tasks can
           land content without re-deciding infrastructure. Record the
-          choice rationale and the versioning decision.
+          choice rationale and the versioning decision. Covers
+          @human-docs-site ac-intent-driven-top-level and
+          ac-searchable.
+        tags:
+          - docs
+          - infra
+
+      - title: Wire public entry points to the docs site
+        slug: task-docs-public-entry-points
+        spec_ref: "@human-docs-site"
+        depends_on:
+          - "@task-docs-site-bootstrap"
+        description: |
+          Make the docs site reachable in one click from every public
+          entry point the project has: the repository README, the
+          package registry page, any other surface where a potential
+          user lands. The link is prominent (visible within the first
+          screen of the entry point), stable (survives README trims
+          and package republishes), and points to the docs surface
+          entry page. Covers @human-docs-site
+          ac-reachable-from-public-surface.
         tags:
           - docs
           - infra
@@ -40149,6 +40125,7 @@ plans:
           - "@task-docs-agent-mental-model"
           - "@task-docs-concepts"
           - "@task-docs-how-to-guides"
+          - "@task-docs-troubleshooting"
         description: |
           Inventory content that lives in both the docs surface and
           AGENTS.md, decide the canonical owner per topic, replace the
@@ -40167,22 +40144,24 @@ plans:
       mental model for directing an agent effectively, durable
       conceptual understanding, and recovery paths when things go
       wrong. Exhaustive command and schema reference is excluded from
-      this plan and treated as a separate, larger concern — see the
-      `@auto-generated-reference` spec and the note at the end of
-      this section.
+      this plan and treated as a separate, larger concern addressed
+      in a follow-up plan.
 
-      **How users actually use kspec.** The primary way a kspec user
-      interacts with the system is through an AI coding agent.
-      Users describe what they want in natural language ("create a
-      task for X", "import this plan", "what's left to ship this
-      branch") and the agent translates that into kspec commands.
-      Direct CLI invocation is a supported fallback, but it is not
-      the common path. This changes the center of gravity for the
-      documentation: the most valuable material is the one that helps
-      the user frame requests in kspec's terms, and helps the agent
-      — when it reads the docs as context — make sound decisions.
-      Command recipes matter less; durable mental models matter
-      more.
+      **How users actually reach kspec.** kspec's system interface
+      is the CLI (and the daemon and web UI that sit alongside it),
+      but a common path users take to reach that interface is
+      through an AI coding agent. Users describe what they want in
+      natural language ("create a task for X", "import this plan",
+      "what's left to ship this branch") and the agent translates
+      those requests into kspec commands. Direct CLI invocation is
+      fully supported and the CLI remains the canonical interface;
+      the agent-mediated path is added on top of it. This shapes
+      what the docs should emphasize: the material that helps the
+      user frame requests in kspec's terms and helps the agent —
+      when it reads the docs as context — make sound decisions is
+      more valuable than exhaustive command transcripts, because
+      both directly-invoking and agent-mediating users benefit from
+      understanding the shape of the system.
 
       **Dual audience, primary for humans.** The docs surface is
       primarily for humans but is also read by agents as context.
@@ -40235,11 +40214,12 @@ plans:
       not include authoring exhaustive CLI or schema reference
       pages. That work is larger, benefits from automation, and
       should not block the core documentation surface from existing.
-      The `@auto-generated-reference` spec captures the principle
-      that such reference, when it exists, is generated from the
-      canonical source rather than hand-written. A subsequent plan
-      should design and build that generation pipeline; until it
-      exists, the core docs link to `--help` output for exhaustive
+      The guiding principle for the follow-up plan is that such
+      reference, when it is built, should be generated from the
+      canonical source (command `--help` output, schema source,
+      error catalog) rather than hand-written, so that drift
+      between code and reference is not possible. Until that plan
+      ships, the core docs link to `--help` output for exhaustive
       detail. This split keeps the plan focused and shippable while
       preserving the path to a complete reference later, which
       benefits both direct-CLI users and agents needing up-to-date
@@ -40317,11 +40297,19 @@ plans:
       without a large catch-up effort.
     status: draft
     approved_at: null
-    branch: null
     derived_specs: []
     derived_tasks: []
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec/plans/user-documentation-foundation.md
     created_at: 2026-04-18T02:52:15.520Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KPF8EE3GE80S831QH6DGPH2N
+        content: "address plan-review blockers from @01KPF86S: reframed user-documentation module
+          description to remove implementation-detail leaks, rewrote ac-searchable around observable
+          discoverability, softened agent-mediated mental model description to not claim primacy
+          over @cli, removed @auto-generated-reference spec (deferred to follow-up plan), added
+          task-docs-public-entry-points covering ac-reachable-from-public-surface, added
+          task-docs-troubleshooting to boundary audit depends_on"
+        author: "@claude"
+        created_at: 2026-04-18T02:59:15.184Z
