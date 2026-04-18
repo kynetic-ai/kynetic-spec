@@ -151157,3 +151157,29 @@ reviews:
     created_at: 2026-04-16T08:49:26.402Z
     updated_at: 2026-04-16T08:59:37.521Z
     notes: []
+  - _ulid: 01KPF86SSDSAPK4754HQ269F8C
+    slugs: []
+    title: "Plan review: User Documentation Foundation"
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KPF86SSDY9XCH2PVASEEF1V5
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-18T02:55:05.005Z
+    examined_commit: null
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-user-documentation-foundation"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-18T02:55:05.005Z
+    updated_at: null
+    notes: []
