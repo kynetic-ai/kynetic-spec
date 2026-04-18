@@ -151693,6 +151693,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-18T18:07:21.969Z
+      - _ulid: 01KPGWDAMF82DD418EX7FC1S91
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPGWD9MY7HFZM6VF92G0NBXQ
+        timestamp: 2026-04-18T18:07:24.815Z
     examined_commit: 731e81b05e2a02f29e8a18f0bda06632a69ed8da
     external_links: []
     lifecycle_state: open
@@ -151721,7 +151728,26 @@ reviews:
               underlying branch, so the branch-preservation guarantee remains unproven.
             created_at: 2026-04-18T18:07:18.093Z
         kind: blocker
+      - _ulid: 01KPGWD9MY7HFZM6VF92G0NBXQ
+        anchor:
+          type: code
+          commit: 731e81b05e2a02f29e8a18f0bda06632a69ed8da
+          line_end: 582
+          line_start: 531
+          path: tests/cli-plan-delete.test.ts
+          side: head
+        entries:
+          - _ulid: 01KPGWD9MY04GY5RK2VTKGZKN8
+            author: Jacob Chapel
+            body: The ac-48 coverage here is not behavioral. The test only re-checks that  returns not-found
+              after deletion, which is already covered by earlier happy-path tests, and the trailing
+              comment replaces the requested failure-path coverage with prose. Since
+              setupTempFixtures() does not provision a real shadow worktree, this file never
+              inspects shadow history or commit metadata, so the shadow-commit guarantee for  is
+              still unverified.
+            created_at: 2026-04-18T18:07:23.806Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-18T17:56:58.815Z
-    updated_at: 2026-04-18T18:07:20.918Z
+    updated_at: 2026-04-18T18:07:23.806Z
     notes: []
