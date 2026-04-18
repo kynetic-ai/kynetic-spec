@@ -27765,7 +27765,7 @@ runs:
     started_at: 2026-04-18T18:08:21.924Z
     completed_at: 2026-04-18T18:09:57.722Z
   - _ulid: 01KPGY9HRBDVJP944DVQPNZ5V3
-    status: active
+    status: completed
     current_step: 3
     initiated_by: Jacob Chapel
     step_results:
@@ -27798,10 +27798,14 @@ runs:
           represented by @01KMQ2ZK and the plan-delete implementation-followed-existing-pattern
           success is already captured at @01KPGVQJ. Decision: skip capture because this session did
           not surface a unique high-confidence new item."
-      - status: completed
+      - status: skipped
         step_index: 3
         started_at: 2026-04-18T18:41:40.504Z
-        completed_at: 2026-04-18T18:41:40.504Z
+        completed_at: 2026-04-18T18:41:46.644Z
+        notes: No capture executed. All high-confidence friction and success patterns from this session were
+          already tracked, so adding another observation or inbox item would duplicate existing
+          reflection state.
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-18T18:40:18.187Z
+    completed_at: 2026-04-18T18:41:46.644Z
