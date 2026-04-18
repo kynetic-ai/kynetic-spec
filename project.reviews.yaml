@@ -151753,6 +151753,12 @@ reviews:
         payload:
           thread_ulid: 01KPGWD9MY7HFZM6VF92G0NBXQ
         timestamp: 2026-04-18T18:25:59.386Z
+      - _ulid: 01KPGXFM7RNRNBZCMN06X7EBWW
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KPGWD42CQPQ18E3QHYC38KES
+        timestamp: 2026-04-18T18:26:08.760Z
     examined_commit: 731e81b05e2a02f29e8a18f0bda06632a69ed8da
     external_links: []
     lifecycle_state: closed
@@ -151788,6 +151794,8 @@ reviews:
               deleting git refs, this test will catch it."
             created_at: 2026-04-18T18:25:53.357Z
         kind: blocker
+        resolved_at: 2026-04-18T18:26:07.773Z
+        resolved_by: "@claude"
       - _ulid: 01KPGWD9MY7HFZM6VF92G0NBXQ
         anchor:
           type: code
@@ -151842,5 +151850,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-18T18:07:46.884Z
     created_at: 2026-04-18T17:56:58.815Z
-    updated_at: 2026-04-18T18:25:58.387Z
+    updated_at: 2026-04-18T18:26:07.773Z
     notes: []
