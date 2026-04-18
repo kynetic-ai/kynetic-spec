@@ -151860,3 +151860,29 @@ reviews:
     created_at: 2026-04-18T17:56:58.815Z
     updated_at: 2026-04-18T18:26:12.688Z
     notes: []
+  - _ulid: 01KPGXKRNVN8CK42MXB2C2C7YZ
+    slugs: []
+    title: Review task-plan-delete-command (cycle 2)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KPGXKRNV9QPW38CVQ79P2B2D
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-18T18:28:24.379Z
+    examined_commit: 3bdfa87e044930b300fe4b063e7ca1ab76416d2c
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KPEMEVNDE289TVASZC0V6CB0"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-18T18:28:24.379Z
+    updated_at: null
+    notes: []
