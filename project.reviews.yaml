@@ -151483,9 +151483,25 @@ reviews:
           status: pass
           name: Existing spec alignment
         timestamp: 2026-04-18T03:00:57.727Z
+      - _ulid: 01KPF8HW9NJWDPKE5YM0KPA565
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-18T03:01:08.021Z
+      - _ulid: 01KPF8HW9N1NZBJG2NC4Z38ZXH
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-18T03:01:08.021Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -151510,7 +151526,14 @@ reviews:
               or generated artifacts.
             created_at: 2026-04-18T03:00:40.727Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-18T03:01:08.021Z
     created_at: 2026-04-18T03:00:23.988Z
-    updated_at: 2026-04-18T03:00:53.640Z
+    updated_at: 2026-04-18T03:01:08.021Z
     notes: []
