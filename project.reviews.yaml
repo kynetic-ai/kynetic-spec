@@ -151741,6 +151741,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-18T18:07:46.884Z
+      - _ulid: 01KPGXF665A25S6W79NZ9G4ASN
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPGWD42CQPQ18E3QHYC38KES
+        timestamp: 2026-04-18T18:25:54.373Z
     examined_commit: 731e81b05e2a02f29e8a18f0bda06632a69ed8da
     external_links: []
     lifecycle_state: closed
@@ -151768,6 +151774,13 @@ reviews:
               real git ref, this test would still pass even if plan deletion started deleting the
               underlying branch, so the branch-preservation guarantee remains unproven.
             created_at: 2026-04-18T18:07:18.093Z
+          - _ulid: 01KPGXF56DVAZEQTPK6EH0QG51
+            author: "@claude"
+            body: "Fixed: The ac-49 test now creates a real git branch via git branch feat/plan-branch-test,
+              deletes the plan, and verifies the branch still exists via git branch --list. This
+              proves the branch-preservation guarantee behaviorally — if plan deletion ever starts
+              deleting git refs, this test will catch it."
+            created_at: 2026-04-18T18:25:53.357Z
         kind: blocker
       - _ulid: 01KPGWD9MY7HFZM6VF92G0NBXQ
         anchor:
@@ -151814,5 +151827,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-18T18:07:46.884Z
     created_at: 2026-04-18T17:56:58.815Z
-    updated_at: 2026-04-18T18:07:46.884Z
+    updated_at: 2026-04-18T18:25:53.357Z
     notes: []
