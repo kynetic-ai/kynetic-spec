@@ -151172,6 +151172,17 @@ reviews:
         required: true
         created_at: 2026-04-18T02:56:09.877Z
         completed_at: 2026-04-18T02:56:09.877Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "@auto-generated-reference is in scope in the plan but has no task, and @human-docs-site
+          reachability work is not fully assigned. No circular dependency was found in the declared
+          graph."
+        name: Task coverage and ordering
+        required: true
+        created_at: 2026-04-18T02:56:09.929Z
+        completed_at: 2026-04-18T02:56:09.929Z
     events:
       - _ulid: 01KPF86SSDY9XCH2PVASEEF1V5
         actor: "@claude"
@@ -151235,6 +151246,13 @@ reviews:
           status: fail
           name: Spec quality
         timestamp: 2026-04-18T02:56:10.826Z
+      - _ulid: 01KPF88VHXZQ4E01RJPGS9Z4NX
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: Task coverage and ordering
+        timestamp: 2026-04-18T02:56:12.349Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -151341,5 +151359,5 @@ reviews:
         kind: question
     verdicts: []
     created_at: 2026-04-18T02:55:05.005Z
-    updated_at: 2026-04-18T02:56:09.877Z
+    updated_at: 2026-04-18T02:56:09.929Z
     notes: []
