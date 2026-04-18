@@ -14980,6 +14980,40 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-17T21:48:32.746Z
+  - _ulid: 01KPF8371F368X2TFCBMT95BTG
+    type: friction
+    content: "Initial bias toward treating an e2e failure as pre-existing flake based on PR #912's
+      3-failure-then-success pattern. Only user insistence surfaced the real race-conditional
+      SessionWatcher bug. Heuristic: N consecutive same-signature failures → treat as
+      bug-until-proven-flake, not flake-until-proven-bug. Reproduce locally before declaring flake."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-18T02:53:07.503Z
+  - _ulid: 01KPF8377PEZH02GEJ0PKN2GTX
+    type: success
+    content: "Extending the existing DISPATCH_ENV_VARS/AGENT_ENV_VARS allowlist in tests/helpers/cli.ts
+      with a third RUNNER_ENV_VARS category (CI, KSPEC_TEST_PROGRESS, FORCE_COLOR, NO_COLOR) cleanly
+      fixed the vitest-under-CI subprocess test failures. Pattern: when asking where should env
+      sanitation live, check whether an existing allowlist pattern fits before creating a new
+      mechanism. PR #913 commit 1fcf3f62e."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-18T02:53:07.702Z
+  - _ulid: 01KPF837D9AS9Q4ZAEWPAGRDGP
+    type: friction
+    content: "@daemon-file-monitoring ACs covered FD budget (active-only watching) and attach policy but
+      missed the adjacent concern of cache-freshness notifications for newly-added non-active
+      sessions. Task description even asserted freshness was 'sufficient' without an AC backing it.
+      Systemic gap: spec ACs written alongside an implementation can under-cover adjacent contracts
+      at the refactor seam (watcher↔cache, cache↔API). Consider adding an 'adjacent-contract
+      checklist' prompt to writing-specs skill — for each AC, ask what downstream system reads the
+      signal this AC governs, and does an AC protect that signal?"
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-18T02:53:07.881Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:

@@ -2800,3 +2800,14 @@ inbox:
       - dx
     added_by: "@claude"
     created_at: 2026-04-17T21:48:32.656Z
+  - _ulid: 01KPF836ZA5YCJQPZNSDZY1D19
+    text: "Run CI Tests workflow on push to dev (or on a schedule) so race-conditional e2e bugs and
+      accumulated lint drift surface before the next dev→main merge PR. Today dev only runs Tests on
+      pull_request to main — regressions from 2026-04-04 (session-watcher active-scoping) sat
+      undetected for 13 days until PR #913."
+    tags:
+      - reflection
+      - ci
+      - infra
+    added_by: "@claude"
+    created_at: 2026-04-18T02:53:07.434Z
