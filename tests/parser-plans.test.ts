@@ -236,17 +236,15 @@ plans:
     let loaded = await loadPlans(ctx as any);
     expect(loaded).toHaveLength(1);
 
-    const deleted = await deletePlan(ctx as any, plan._ulid);
-    expect(deleted).toBe(true);
+    await deletePlan(ctx as any, plan._ulid);
 
     loaded = await loadPlans(ctx as any);
     expect(loaded).toHaveLength(0);
   });
 
-  it("should return false when deleting non-existent plan", async () => {
+  it("should throw when deleting non-existent plan", async () => {
     const ctx = { specDir: kspecDir };
-    const deleted = await deletePlan(ctx as any, "nonexistent");
-    expect(deleted).toBe(false);
+    await expect(deletePlan(ctx as any, "nonexistent")).rejects.toThrow("Plan not found");
   });
 
   // AC: @plan-crud ac-7

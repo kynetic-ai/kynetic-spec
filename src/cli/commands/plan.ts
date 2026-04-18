@@ -22,6 +22,7 @@ import {
   buildIndexes,
   createPlan,
   createSpecItem,
+  deletePlan,
   findPlanByRef,
   filterPlansByStatus,
   getAuthor,
@@ -1229,6 +1230,191 @@ Examples:
         });
       } catch (err) {
         error(errors.failures.addPlanNote, err);
+        process.exit(EXIT_CODES.ERROR);
+      }
+    });
+
+  // kspec plan delete <ref>
+  // AC: @plan-crud ac-40 through ac-53
+  markMutating(plan.command("delete <ref>"))
+    .description("Delete a plan (draft or rejected only)")
+    .option("--force", "Skip confirmation")
+    .addHelpText(
+      "after",
+      `
+Examples:
+  $ kspec plan delete @plan-ref
+  $ kspec plan delete @plan-ref --force
+  $ kspec plan delete @plan-ref --json`,
+    )
+    .action(async (ref: string, options) => {
+      try {
+        const ctx = await initContext();
+        const plans = await loadPlans(ctx);
+
+        // AC: @plan-crud ac-51 — resolve ref; not-found is distinct from refusal
+        const cleanRef = ref.startsWith("@") ? ref.slice(1) : ref;
+        const foundPlan = plans.find(
+          (p) =>
+            p._ulid === cleanRef ||
+            p._ulid.toLowerCase().startsWith(cleanRef.toLowerCase()) ||
+            p.slugs.includes(cleanRef),
+        );
+
+        if (!foundPlan) {
+          error(`Plan not found: ${ref}`, isJsonMode() ? { error: "not_found", ref } : undefined);
+          process.exit(EXIT_CODES.NOT_FOUND);
+        }
+
+        const planRef = shortPlanRef(foundPlan, plans);
+
+        // Collect all refusal reasons (do not short-circuit)
+        const refusalReasons: Array<{
+          reason: string;
+          items?: Array<{ ref: string; title?: string }>;
+        }> = [];
+
+        // AC: @plan-crud ac-41 — status gate
+        const deletableStatuses = ["draft", "rejected"];
+        if (!deletableStatuses.includes(foundPlan.status)) {
+          refusalReasons.push({
+            reason: "status-blocked",
+            items: [{ ref: `status:${foundPlan.status}` }],
+          });
+        }
+
+        // AC: @plan-crud ac-42, ac-43 — derived work check
+        const { refIndex, tasks } = await buildIndexes(ctx, plans);
+        const blockingDerivedItems: Array<{ ref: string; title?: string }> = [];
+
+        for (const derivedRef of [...foundPlan.derived_specs, ...foundPlan.derived_tasks]) {
+          const resolveResult = refIndex.resolve(derivedRef);
+          if (resolveResult.ok) {
+            const item = resolveResult.item;
+            const itemTitle = "title" in item ? (item.title as string) : undefined;
+            const itemRef = `@${("slugs" in item && Array.isArray(item.slugs) && item.slugs[0]) || refIndex.shortUlid(resolveResult.ulid)}`;
+            blockingDerivedItems.push({ ref: itemRef, title: itemTitle });
+          }
+          // Orphan entries (unresolvable) are skipped per ac-43
+        }
+
+        if (blockingDerivedItems.length > 0) {
+          refusalReasons.push({
+            reason: "derived-work-blocked",
+            items: blockingDerivedItems,
+          });
+        }
+
+        // AC: @plan-crud ac-44 — referencing tasks check (via ReferenceIndex resolution)
+        const referencingTasks: Array<{ ref: string; title?: string }> = [];
+        for (const task of tasks) {
+          if (!task.plan_ref) continue;
+          const resolveResult = refIndex.resolve(task.plan_ref);
+          if (resolveResult.ok && resolveResult.ulid === foundPlan._ulid) {
+            const taskRef = `@${task.slugs[0] || refIndex.shortUlid(task._ulid)}`;
+            referencingTasks.push({ ref: taskRef, title: task.title });
+          }
+        }
+
+        if (referencingTasks.length > 0) {
+          refusalReasons.push({
+            reason: "referencing-tasks-blocked",
+            items: referencingTasks,
+          });
+        }
+
+        // AC: @plan-crud ac-50 — emit all refusal reasons if any
+        if (refusalReasons.length > 0) {
+          const parts: string[] = [];
+          for (const r of refusalReasons) {
+            if (r.reason === "status-blocked") {
+              parts.push(
+                `Plan status "${foundPlan.status}" prevents removal (must be draft or rejected)`,
+              );
+            } else if (r.reason === "derived-work-blocked") {
+              const refs = r.items!.map((i) => i.ref).join(", ");
+              parts.push(`Derived work still resolves: ${refs}`);
+            } else if (r.reason === "referencing-tasks-blocked") {
+              const refs = r.items!.map((i) => i.ref).join(", ");
+              parts.push(`Tasks reference this plan: ${refs}`);
+            }
+          }
+          error(
+            `Cannot delete plan: ${parts.join("; ")}`,
+            isJsonMode()
+              ? {
+                  error: "refused",
+                  ref: `@${foundPlan.slugs[0] || planRef}`,
+                  reasons: refusalReasons,
+                }
+              : undefined,
+          );
+          process.exit(EXIT_CODES.CONFLICT);
+        }
+
+        // AC: @plan-crud ac-45, ac-46 — confirmation
+        if (!options.force) {
+          if (isJsonMode()) {
+            error("Confirmation required. Use --force with --json");
+            process.exit(EXIT_CODES.USAGE_ERROR);
+          }
+
+          const isTTY = process.env.KSPEC_TEST_TTY === "true" || process.stdin.isTTY;
+          if (!isTTY) {
+            error("Non-interactive environment. Use --force to proceed");
+            process.exit(EXIT_CODES.USAGE_ERROR);
+          }
+
+          const readline = await import("node:readline");
+          const rl = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout,
+          });
+
+          const response = await new Promise<string>((resolve) => {
+            rl.question(`Delete plan "${foundPlan.title}"? [y/N] `, (answer) => {
+              rl.close();
+              resolve(answer.trim());
+            });
+          });
+
+          if (response.toLowerCase() !== "y") {
+            console.log("Cancelled");
+            process.exit(0);
+          }
+        }
+
+        // AC: @plan-crud ac-40, ac-47 — perform deletion
+        try {
+          await deletePlan(ctx, foundPlan._ulid);
+        } catch (err) {
+          // AC: @plan-crud ac-53 — concurrent removal yields not-found
+          if (err instanceof Error && (err as NodeJS.ErrnoException).code === "ENOENT") {
+            error(
+              `Plan not found: ${ref}`,
+              isJsonMode() ? { error: "not_found", ref } : undefined,
+            );
+            process.exit(EXIT_CODES.NOT_FOUND);
+          }
+          throw err;
+        }
+
+        // AC: @plan-crud ac-48 — shadow branch commit
+        await commitIfShadow(
+          ctx.shadow,
+          "plan-delete",
+          foundPlan.slugs[0] || foundPlan._ulid.slice(0, 8),
+        );
+
+        // AC: @plan-crud ac-49 — branch is NOT deleted (only the plan record)
+        success(`Deleted plan: ${planRef} - ${foundPlan.title}`, {
+          deleted: true,
+          ulid: foundPlan._ulid,
+          slug: foundPlan.slugs[0] || null,
+          title: foundPlan.title,
+        });
+      } catch (err) {
+        error(errors.failures.deletePlan, err);
         process.exit(EXIT_CODES.ERROR);
       }
     });
