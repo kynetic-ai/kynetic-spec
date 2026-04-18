@@ -151406,7 +151406,18 @@ reviews:
     slugs: []
     title: "Plan review: User Documentation Foundation (re-review)"
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: The added @task-docs-public-entry-points now gives @human-docs-site
+          ac-reachable-from-public-surface an explicit owner, and @task-docs-audit-boundary now
+          depends on @task-docs-troubleshooting consistent with the plan's stated ordering.
+        name: Task coverage and ordering
+        required: true
+        created_at: 2026-04-18T03:00:53.573Z
+        completed_at: 2026-04-18T03:00:53.573Z
     events:
       - _ulid: 01KPF8GH9K0TGFFEEZGA3C7VPM
         actor: "@claude"
@@ -151428,6 +151439,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPF8H1MQ7EMTGZ3KMVSM5N40
         timestamp: 2026-04-18T03:00:41.713Z
+      - _ulid: 01KPF8HF6FD7NJXX2AKRM5DAT7
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Task coverage and ordering
+        timestamp: 2026-04-18T03:00:54.607Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -151457,5 +151475,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-18T03:00:23.988Z
-    updated_at: 2026-04-18T03:00:40.727Z
+    updated_at: 2026-04-18T03:00:53.573Z
     notes: []
