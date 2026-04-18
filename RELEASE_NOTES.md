@@ -108,10 +108,10 @@ branches, and a single-command upgrade flow.
   contamination guards.
 - **YAML round-trip stability** — raw-data preservation for workflow
   runs and triage records.
-- **CLI ergonomics** — `kspec item ac update` alias, `kspec task set
-  --status` smart rejection messages, automatic dangling-reference
-  cleanup on item deletion, restore pre-block status on
-  `kspec task unblock`.
+- **CLI ergonomics** — `kspec item ac update` alias, smarter rejection
+  messages when `kspec task set` rejects a status transition, automatic
+  dangling-reference cleanup on item deletion, and restore of pre-block
+  status on `kspec task unblock`.
 - **Web UI** — automation view with trigger editing, cache-warming
   loading skeletons, session.idle event rendering, query retry
   ceiling, and WebSocket invalidation replacing polling across more
