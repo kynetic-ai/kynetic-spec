@@ -27766,7 +27766,7 @@ runs:
     completed_at: 2026-04-18T18:09:57.722Z
   - _ulid: 01KPGY9HRBDVJP944DVQPNZ5V3
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -27779,7 +27779,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-18T18:41:19.226Z
-        completed_at: 2026-04-18T18:41:19.226Z
+        completed_at: 2026-04-18T18:41:29.888Z
+        notes: "High-confidence items from this session: success - diff-first review plus full-suite rerun
+          and direct built-CLI verification produced a clean approval path. friction - detached
+          reviewer snapshots still make manual_merge awkward because the integration branch is
+          already checked out elsewhere, forcing a detached merge plus ref update. Coverage check:
+          that merge friction is already tracked by multiple observations/inbox items, and
+          review-time validate noise is also already tracked, so there is no high-confidence
+          untracked item to capture."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-18T18:41:29.888Z
+        completed_at: 2026-04-18T18:41:29.888Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-18T18:40:18.187Z
