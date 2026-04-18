@@ -151879,6 +151879,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-18T18:28:51.244Z
+      - _ulid: 01KPGY6MD9PJV1QNHATEZAFWWM
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KPGY6KE9HTBEMPSNPNHFVET7
+        timestamp: 2026-04-18T18:38:42.601Z
     examined_commit: 3bdfa87e044930b300fe4b063e7ca1ab76416d2c
     external_links: []
     lifecycle_state: open
@@ -151888,8 +151895,32 @@ reviews:
       content_hash: ""
       ref: "@01KPEMEVNDE289TVASZC0V6CB0"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KPGY6KE9HTBEMPSNPNHFVET7
+        entries:
+          - _ulid: 01KPGY6KEASPZP4G2R4VPE8WW2
+            author: Jacob Chapel
+            body: >-
+              Evidence log:
+
+              Files read: src/cli/commands/plan.ts, src/parser/plans.ts, src/parser/shadow.ts,
+              tests/cli-plan-delete.test.ts, tests/parser-plans.test.ts,
+              tests/yaml-round-trip-stability.test.ts, tests/helpers/cli.ts.
+
+              Commands run: kspec task get @01KPEMEVNDE289TVASZC0V6CB0, kspec item get @plan-crud,
+              kspec review for-task @01KPEMEVNDE289TVASZC0V6CB0, kspec review get
+              @01KPGVT79Z3DMQT6EHBHDXS5JN, git diff
+              94bd75c1f59a5e7bb332a3cbd897996adf9cb279...3bdfa87e044930b300fe4b063e7ca1ab76416d2c,
+              rg AC annotations, node dist/cli/index.js help plan, npm test (2 runs).
+
+              Claims verified: prior ac-48/ac-49 blocker fixes are present in code and tests; local
+              built CLI help lists delete; full suite passes with no observed flake.
+
+              Categories searched: correctness, edge cases, error handling, test quality,
+              integration. No blocking issues found.
+            created_at: 2026-04-18T18:38:41.610Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-18T18:28:24.379Z
-    updated_at: 2026-04-18T18:28:50.140Z
+    updated_at: 2026-04-18T18:38:41.610Z
     notes: []
