@@ -131,7 +131,7 @@ description: >-
 spec_ref: "@plan-crud"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 closed_reason: null
 depends_on: []
@@ -142,6 +142,14 @@ tags:
   - plans
   - feature
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-plan-delete-command/01kpemev
+  captured_at: 2026-04-18T17:54:26.693Z
+  commit: 731e81b05e2a02f29e8a18f0bda06632a69ed8da
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KPGT16MYME5F7A6GXFGV25WT
 history:
   - author: "@claude"
@@ -318,7 +326,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-18T17:26:29.729Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-plan-delete-command/01kpemev
+          captured_at: 2026-04-18T17:54:26.693Z
+          commit: 731e81b05e2a02f29e8a18f0bda06632a69ed8da
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-04-18T17:54:26.696Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-18T17:54:26.696Z
 created_at: 2026-04-17T21:09:57.549Z
 started_at: 2026-04-18T17:26:29.728Z
+submitted_at: 2026-04-18T17:54:26.696Z
 todos: []
 automation: eligible
