@@ -151271,9 +151271,25 @@ reviews:
           status: fail
           name: Existing spec alignment
         timestamp: 2026-04-18T02:56:13.864Z
+      - _ulid: 01KPF894J90QGDK7BNX6FJJFQR
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-18T02:56:21.577Z
+      - _ulid: 01KPF894J928652A9CGDQ9526T
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-18T02:56:21.577Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -151375,7 +151391,14 @@ reviews:
               that task as well or narrowing the audit scope explicitly.
             created_at: 2026-04-18T02:55:55.070Z
         kind: question
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-18T02:56:21.576Z
     created_at: 2026-04-18T02:55:05.005Z
-    updated_at: 2026-04-18T02:56:09.937Z
+    updated_at: 2026-04-18T02:56:21.577Z
     notes: []
