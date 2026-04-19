@@ -10,15 +10,15 @@
     "specification",
     "yaml"
   ],
-  "homepage": "https://github.com/kynetic-ai/kynetic-spec#readme",
+  "homepage": "https://github.com/lepahc/kynetic-spec#readme",
   "bugs": {
-    "url": "https://github.com/kynetic-ai/kynetic-spec/issues"
+    "url": "https://github.com/lepahc/kynetic-spec/issues"
   },
   "license": "MIT",
   "author": "Kynetic AI",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kynetic-ai/kynetic-spec.git"
+    "url": "git+https://github.com/lepahc/kynetic-spec.git"
   },
   "bin": {
     "kspec": "./dist/cli/index.js"
