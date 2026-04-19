@@ -2811,3 +2811,14 @@ inbox:
       - infra
     added_by: "@claude"
     created_at: 2026-04-18T02:53:07.434Z
+  - _ulid: 01KPJ8ASAJA9EB96NDK8V337HT
+    text: "publish.yml and test.yml drifted (missing Setup Bun in publish caused v0.13.0 release
+      failure). Investigate having publish.yml call/reuse the test.yml workflow directly, or extract
+      a shared composite action, so the two cannot diverge. Triggered by v0.13.0 release; see PR
+      #915 for the symptom fix."
+    tags:
+      - ci
+      - infra
+      - post-mvp
+    added_by: "@claude"
+    created_at: 2026-04-19T06:54:58.898Z
