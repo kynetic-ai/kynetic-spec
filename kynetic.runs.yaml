@@ -28028,7 +28028,7 @@ runs:
     completed_at: 2026-04-20T21:24:21.702Z
   - _ulid: 01KPPE450DRZT6FS5ZTMKDRBZ5
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -28058,7 +28058,15 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-20T21:54:03.581Z
-        completed_at: 2026-04-20T21:54:03.581Z
+        completed_at: 2026-04-20T21:54:13.063Z
+        notes: "Proposed improvement: add a reusable concurrency regression pattern for async registration
+          helpers, using overlapping calls rather than repeated sequential calls. Scope is small to
+          medium: one focused test addition or helper/guideline, but it closes a recurring
+          false-confidence gap around idempotency."
+      - status: completed
+        step_index: 4
+        started_at: 2026-04-20T21:54:13.063Z
+        completed_at: 2026-04-20T21:54:13.063Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-20T21:53:10.670Z
