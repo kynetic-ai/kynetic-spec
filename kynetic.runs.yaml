@@ -28027,7 +28027,7 @@ runs:
     started_at: 2026-04-20T21:22:55.509Z
     completed_at: 2026-04-20T21:24:21.702Z
   - _ulid: 01KPPE450DRZT6FS5ZTMKDRBZ5
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -28072,7 +28072,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-04-20T21:54:16.376Z
-        completed_at: 2026-04-20T21:54:16.376Z
+        completed_at: 2026-04-20T21:54:19.539Z
+        notes: "Capture: recorded one friction observation tied to @session-reflect for the
+          concurrency-testing gap. No additional task or inbox item was created because the concrete
+          fix belongs with the current needs_work task and the broader process issue is best tracked
+          as an observation first."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-20T21:53:10.670Z
+    completed_at: 2026-04-20T21:54:19.539Z
