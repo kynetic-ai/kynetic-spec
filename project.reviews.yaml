@@ -153026,6 +153026,13 @@ reviews:
           status: pass
           name: build:daemon
         timestamp: 2026-04-20T22:15:41.302Z
+      - _ulid: 01KPPFDF7PREEATXGDG43G83EB
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPPFDE39VEHQ5E1T6TJ4PB9E
+        timestamp: 2026-04-20T22:15:44.630Z
     examined_commit: 929a05c9360fb46abec33275dccda13e70791dd1
     external_links: []
     lifecycle_state: open
@@ -153035,8 +153042,30 @@ reviews:
       content_hash: ""
       ref: "@01KPP7XFJ7Z1MG2NQAXMWZTA6W"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KPPFDE39VEHQ5E1T6TJ4PB9E
+        anchor:
+          type: code
+          commit: 929a05c9360fb46abec33275dccda13e70791dd1
+          line_end: 124
+          line_start: 67
+          path: src/daemon/shadow-sync-manager.ts
+          side: head
+        entries:
+          - _ulid: 01KPPFDE3APPTNRFTAYYR47KSK
+            author: Jacob Chapel
+            body: " still races with unregistration. The new  guard only serializes concurrent starts; it does
+              not let  cancel or suppress an in-flight start. On the middleware and WebSocket
+              registration paths,  runs fire-and-forget, so a project can be unregistered
+              before  resolves. In that case  sees no scheduler and returns, then the in-flight
+              start resumes and installs one anyway, leaving background pulls running for an
+              unregistered project. I reproduced this against the real module with : start without
+              awaiting, call stop immediately, then await the start promise; the final state was .
+              That violates @config-shadow ac-15 and means watcher-permanent-failure / fast
+              unregister can leak schedulers."
+            created_at: 2026-04-20T22:15:43.466Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-20T22:11:25.660Z
-    updated_at: 2026-04-20T22:15:40.151Z
+    updated_at: 2026-04-20T22:15:43.466Z
     notes: []
