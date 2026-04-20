@@ -15056,6 +15056,28 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-18T18:28:07.419Z
+  - _ulid: 01KPPA8HENDSWY778X54YA0K5T
+    type: friction
+    content: src/daemon/ build requires manual file registration in scripts/build-daemon.cjs. Each new
+      .ts file needs an explicit copyFileSync line or the daemon dist/ silently omits it. The build
+      script enumerates files individually rather than copying the directory, so new modules are
+      invisible until manually added. Hit during shadow-sync-manager.ts extraction — vitest passed
+      but daemon E2E failed with Cannot find module. Consider changing build-daemon.cjs to copy all
+      src/daemon/*.ts files via directory enumeration.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-20T20:45:40.182Z
+  - _ulid: 01KPPA8HNMC8HPBQ964EGEHET4
+    type: success
+    content: Extracting daemon functionality into src/daemon/ (alongside entity-cache.ts) works well for
+      modules that need both vitest and daemon-build access. The sessionSyncSchedulers Map pattern
+      (idempotent start/stop helpers + registration callback wiring) is a proven template for
+      per-project daemon services.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-20T20:45:40.404Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
