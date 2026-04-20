@@ -152511,6 +152511,16 @@ reviews:
         runner: npm
         created_at: 2026-04-20T21:21:36.657Z
         completed_at: 2026-04-20T21:21:36.657Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 2202/2202 suites passed; 8063 tests passed, 5 skipped, 0 failed (npm test, ~31m).
+        name: npm-test
+        required: true
+        runner: npm
+        created_at: 2026-04-20T21:21:39.579Z
+        completed_at: 2026-04-20T21:21:39.579Z
     events:
       - _ulid: 01KPPBQMVPKH4QGWCX8NFRQS5S
         actor: Jacob Chapel
@@ -152539,6 +152549,13 @@ reviews:
           status: fail
           name: daemon-package-build
         timestamp: 2026-04-20T21:21:37.716Z
+      - _ulid: 01KPPCAF7CY24CVW5B66FC1YEC
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm-test
+        timestamp: 2026-04-20T21:21:40.588Z
     examined_commit: 7550973cbc98c5362af40c89b13f447d06efc248
     external_links: []
     lifecycle_state: open
@@ -152569,5 +152586,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-20T21:11:23.766Z
-    updated_at: 2026-04-20T21:21:36.657Z
+    updated_at: 2026-04-20T21:21:39.579Z
     notes: []
