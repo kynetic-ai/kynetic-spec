@@ -152004,6 +152004,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-20T20:18:46.302Z
+      - _ulid: 01KPP8QAYVXSZWHHXXDRX2C06X
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPP8Q8ED8WTKXSVATACC9FH4
+        timestamp: 2026-04-20T20:18:47.900Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -152013,8 +152020,23 @@ reviews:
       content_hash: ""
       ref: "@plan-user-documentation-foundation"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KPP8Q8ED8WTKXSVATACC9FH4
+        anchor:
+          type: structured
+          ref: "@task-docs-search"
+          section: dependencies
+        entries:
+          - _ulid: 01KPP8Q8ED0YRHMWD28CF6A3TH
+            author: "@claude"
+            body: This task claims full coverage of @docs-search ac-1 through ac-3, but it can complete before
+              @task-docs-release-notes-rendering and @task-docs-authoring-conventions. The spec
+              promises search over the full text of every docs page; without those dependencies, the
+              search index can ship missing at least the release-notes page and the
+              contributor-guidance page that the plan itself adds to the docs surface.
+            created_at: 2026-04-20T20:18:45.325Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-20T20:18:30.428Z
-    updated_at: 2026-04-20T20:18:45.300Z
+    updated_at: 2026-04-20T20:18:45.325Z
     notes: []
