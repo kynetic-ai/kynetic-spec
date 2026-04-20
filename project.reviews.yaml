@@ -152089,9 +152089,25 @@ reviews:
           status: fail
           name: Dependency ordering
         timestamp: 2026-04-20T20:19:09.420Z
+      - _ulid: 01KPP8R8K4J1Z7FDTGX68H97VS
+        actor: codex@local
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-20T20:19:18.244Z
+      - _ulid: 01KPP8R8K4RR6HHPV1ZTHPKJP6
+        actor: codex@local
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-20T20:19:18.244Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -152130,7 +152146,14 @@ reviews:
               rather than merely describe it in prose.
             created_at: 2026-04-20T20:18:45.339Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@local
+        role: reviewer
+        created_at: 2026-04-20T20:19:18.244Z
     created_at: 2026-04-20T20:18:30.428Z
-    updated_at: 2026-04-20T20:19:03.820Z
+    updated_at: 2026-04-20T20:19:18.244Z
     notes: []
