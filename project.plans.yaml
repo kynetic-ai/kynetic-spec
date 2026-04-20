@@ -39626,32 +39626,34 @@ plans:
         acceptance_criteria:
           - id: ac-1
             given: |
-              A reader opens the Getting Started section
+              The Getting Started section is published
             when: |
-              The reader reads the section's pages in order
+              A maintainer follows the section's pages in order in a
+              clean environment
             then: |
-              The reader has installed kspec, initialized a project,
-              completed agent integration, and performed at least
-              one authoring action directed through their agent
+              The pages cover install, project initialization, agent
+              integration, and at least one authoring action, with
+              the commands or procedure for each step shown on its
+              page in a form that can be executed without consulting
+              material outside Getting Started
           - id: ac-2
             given: |
-              A reader is on any Getting Started page except the last
+              A Getting Started page other than the last is published
             when: |
-              The reader reaches the end of the page
+              A reviewer reads the page
             then: |
-              A "next" link points to the subsequent page in the
-              sequence
+              The page ends with a "next" link pointing to the
+              subsequent page in the section's reading order
           - id: ac-3
             given: |
-              A reader completes the Getting Started section
+              The Initializing a Project page is published
             when: |
-              The reader encounters the project's shadow directory
-              or a shadow branch reference later
+              A reviewer reads the page
             then: |
-              The reader recognises the shadow branch from the
-              Initializing a Project page and knows which commands
-              to run for health checks rather than editing shadow
-              state by hand
+              The page names the shadow branch, identifies the
+              project's shadow directory, names the health-check and
+              repair commands, and instructs the reader not to edit
+              shadow state by hand
 
       - title: Concepts Section
         slug: docs-concepts-section
@@ -39696,14 +39698,14 @@ plans:
               present and linked from the landing page
           - id: ac-2
             given: |
-              A reader reads a Concepts page
+              A Concepts page is published
             when: |
-              The reader finishes the page
+              A reviewer reads the page
             then: |
-              The page has answered what the concept is, why it
-              exists, and how the reader will encounter it in use,
-              without enumerating command flags or schema fields
-              that change per release
+              The page answers what the concept is, why it exists,
+              and how the reader will encounter it in use, without
+              enumerating command flags or schema fields that change
+              per release
           - id: ac-3
             given: |
               A reader wants to decide whether a unit of work is a
@@ -39795,14 +39797,15 @@ plans:
         acceptance_criteria:
           - id: ac-1
             given: |
-              A reader encounters an unexpected error or state,
-              either directly or surfaced through their agent
+              A Troubleshooting entry is published
             when: |
-              The reader searches the Troubleshooting section
+              A reviewer reads the entry's title and opening
             then: |
-              An entry matches the symptom the reader observed
-              without requiring the reader to name the underlying
-              cause
+              The entry is titled and opened in terms of the symptom
+              the reader observes in their own output or their
+              agent's output, not in terms of the internal cause
+              name, so the entry is findable by readers who cannot
+              yet name what is wrong
           - id: ac-2
             given: |
               A reader reads a troubleshooting entry
@@ -39849,14 +39852,15 @@ plans:
               anchored so direct links to a version work
           - id: ac-2
             given: |
-              A contributor adds or edits a release notes entry
+              The docs surface is built
             when: |
-              The contributor updates the canonical release notes
-              source
+              A reviewer compares the rendered release-notes page
+              against the canonical release notes source file used
+              by the same build
             then: |
-              The change is reflected on the docs surface on the
-              next site build without a separate authoring step or
-              duplicated file in the repository
+              The rendered content is equivalent to the source file
+              and no second copy of release notes content exists
+              elsewhere in the repository
 
       - title: Docs Search
         slug: docs-search
@@ -39911,107 +39915,29 @@ plans:
           consisting of one or two commands plus a link to the docs
           surface, and a small set of cross-links into the docs
           sections. It does not embed guides, concept explanations,
-          or reference content.
+          or reference content — those live in the docs surface and
+          the README links to them.
         acceptance_criteria:
           - id: ac-1
             given: |
-              A reader opens the README
+              The README is published
             when: |
-              The reader reads it end to end
+              A reviewer reads the file end to end
             then: |
-              The file is under 100 lines of prose and contains at
-              minimum sections covering overview, installation,
-              first steps, and cross-links into the docs
+              The file contains at minimum sections covering
+              overview, installation, first steps, and cross-links
+              into the docs, and does not embed guides, concept
+              explanations, or reference content
           - id: ac-2
             given: |
-              A reader finishes the README
+              The README is published
             when: |
-              The reader wants to take a next action
+              A reviewer looks for next-step links
             then: |
               Links are present into the docs sections sufficient to
               reach Getting Started, Concepts, and Guides in one
               click from the README
 
-      - title: Reflective and Operational Documentation Stay Separate
-        slug: reflective-operational-boundary
-        type: requirement
-        parent: "@user-documentation"
-        description: |
-          The project has two kinds of documentation with distinct
-          roles: reflective documentation that explains what kspec
-          is, why it exists, and when to use it, intended for
-          durable understanding that survives releases; and
-          operational documentation that tells an agent what
-          commands to run and what conventions to follow right now.
-          These two surfaces exist as separate bodies of content
-          with no prose duplication. Each is the canonical home for
-          its kind of content, and when they reference shared ideas
-          they link across rather than copying text.
-        acceptance_criteria:
-          - id: ac-1
-            given: |
-              An idea is present in both the reflective surface and
-              the operational surface
-            when: |
-              A maintainer audits the two surfaces
-            then: |
-              One surface holds the canonical prose and the other
-              links to it rather than containing its own copy
-          - id: ac-2
-            given: |
-              A contributor needs to document a new behaviour
-            when: |
-              The contributor consults the authoring conventions
-            then: |
-              The conventions state unambiguously whether the
-              content belongs in the reflective surface, the
-              operational surface, or both with one linking to the
-              other
-
-      - title: Docs Authoring Conventions
-        slug: docs-authoring-conventions
-        type: requirement
-        parent: "@user-documentation"
-        description: |
-          A contribution guidance document names the intent of each
-          top-level docs section, the style convention for each,
-          the rule that exhaustive flag and field lists are not
-          transcribed inline (the page links to command help
-          instead), and the rule that governs the
-          reflective/operational boundary. The conventions are
-          reachable from the docs surface so contributors discover
-          them during authoring rather than in code review.
-        acceptance_criteria:
-          - id: ac-1
-            given: |
-              A contributor wants to add or edit a docs page
-            when: |
-              The contributor opens the contribution guidance
-            then: |
-              The guidance names the intent of each top-level section
-              (Getting Started, Guides, Concepts, Troubleshooting,
-              Release Notes) and states the style rule for each
-          - id: ac-2
-            given: |
-              A docs page wants to list every flag of a command,
-              every field of a format, or every entry of an
-              enumeration
-            when: |
-              A reviewer reads the page
-            then: |
-              The reviewer can cite the conventions to require the
-              page to link to command help rather than transcribe
-              the enumeration inline
-          - id: ac-3
-            given: |
-              A code change alters user-visible behaviour documented
-              in a docs prose page
-            when: |
-              The change is reviewed
-            then: |
-              The review checks that the relevant docs page has
-              been updated as part of the change, per the authoring
-              conventions
       ```
 
       ## Tasks
@@ -40200,7 +40126,6 @@ plans:
           - "@task-docs-guides-content"
           - "@task-docs-troubleshooting-content"
           - "@task-docs-release-notes-rendering"
-          - "@task-docs-authoring-conventions"
         description: |
           Add a search input on the docs surface that returns pages
           matching a query, works in both public and local
@@ -40229,61 +40154,6 @@ plans:
 
           Covers: @readme-landing-page ac-1, ac-2.
 
-      - title: Author docs authoring conventions and update reviewer guidance
-        slug: task-docs-authoring-conventions
-        priority: 3
-        tags: [docs, process, review]
-        spec_ref: "@docs-authoring-conventions"
-        depends_on:
-          - "@task-docs-section-scaffolding"
-        description: |
-          Publish the docs authoring conventions for contributors and
-          update reviewer-facing guidance so the rules are applied at
-          review time, not just at authoring time.
-
-          Why: ac-3 of @docs-authoring-conventions requires that
-          reviews actually check whether affected docs pages were
-          updated when user-visible behaviour changes. Publishing
-          contributor guidance alone does not satisfy that AC — the
-          review workflow has to surface the check.
-
-          What:
-          - A contribution document (or section within an existing
-            one) names the intent of each top-level docs section,
-            the style convention for each, the no-in-line-
-            enumerations rule for flag and field lists, the
-            reflective/operational boundary rule, and the
-            expectation that user-visible behaviour changes update
-            the corresponding docs page as part of the same PR.
-          - The project's review-side guidance (review skill,
-            review gates, or equivalent reviewer checklist) is
-            updated to include a docs-coverage check that cites
-            these conventions, so reviewers apply the rule during
-            review rather than it living only on the authoring side.
-          - The conventions are linked from the docs surface so
-            contributors discover them during authoring.
-
-          Covers: @docs-authoring-conventions ac-1, ac-2, ac-3.
-
-      - title: Audit and resolve duplication between reflective and operational docs
-        slug: task-docs-boundary-audit
-        priority: 4
-        tags: [docs, audit]
-        spec_ref: "@reflective-operational-boundary"
-        depends_on:
-          - "@task-docs-getting-started-content"
-          - "@task-docs-concepts-content"
-          - "@task-docs-guides-content"
-          - "@task-docs-troubleshooting-content"
-          - "@task-docs-authoring-conventions"
-        description: |
-          Inventory content that exists in both the new docs surface
-          and the operational instruction surface, decide the
-          canonical owner per topic, replace the non-canonical
-          copies with cross-references, and record the decision
-          rule in the authoring conventions.
-
-          Covers: @reflective-operational-boundary ac-1, ac-2.
       ```
 
       ## Implementation Notes
@@ -40359,8 +40229,12 @@ plans:
       symptom-based troubleshooting — go into docs. Content that
       answers no — flag enumerations, schema field lists, exact
       command output — is not hand-transcribed; pages link to the
-      authoritative source. The authoring conventions codify this
-      bias so the rule does not have to be rediscovered per page.
+      authoritative source. Contribution guidance and the
+      reflective/operational boundary between docs and agent
+      runtime instructions are external process concerns, out of
+      scope for this plan; they should be handled through the
+      project's normal contribution documentation rather than as
+      spec contracts.
 
       **Enumeration convention for content specs.** Content-section
       specs (Getting Started, Concepts, Guides, Troubleshooting)
@@ -40391,9 +40265,11 @@ plans:
       **Non-scope.** Auto-generated CLI and schema reference (a
       follow-up plan will design that pipeline); docs localization;
       multi-version docs builds; marketing content; embedded in-app
-      help beyond what the web UI already renders. `RELEASE_NOTES.md`
-      covers historical behaviour without a separate versioned docs
-      build.
+      help beyond what the web UI already renders; contribution
+      guidance and the reflective/operational docs boundary (both
+      are external process concerns rather than specification
+      contracts). `RELEASE_NOTES.md` covers historical behaviour
+      without a separate versioned docs build.
 
       **Order of operations.** Rendering and section scaffolding
       come first because everything else depends on them. Navigation
@@ -40401,11 +40277,10 @@ plans:
       authoring (Getting Started, Concepts, Guides, Troubleshooting)
       can proceed in parallel once scaffolding is in place;
       Troubleshooting depends on Concepts so its entries can link
-      cleanly. Release notes rendering and docs search are
-      independent. The README trim depends on Getting Started so the
-      trimmed README can point at real landing pages. The
-      reflective/operational boundary audit runs last because it
-      depends on the content being in place.
+      cleanly. Release notes rendering is independent. Docs search
+      depends on the page-producing work so the index covers all
+      content. The README trim depends on Getting Started so the
+      trimmed README can point at real landing pages.
 
       **Evaluation.** Success is not a page count. Success is that
       a developer who has never seen kspec before can install it,
@@ -40458,3 +40333,7 @@ plans:
         content: apply timelessness refinements
         author: "@claude"
         created_at: 2026-04-20T21:40:49.514Z
+      - _ulid: 01KPPMP0BB0H75KVCG68FQ4FMW
+        content: address user AC feedback
+        author: "@claude"
+        created_at: 2026-04-20T23:47:47.180Z
