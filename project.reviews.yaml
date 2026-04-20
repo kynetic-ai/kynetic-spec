@@ -152172,6 +152172,17 @@ reviews:
         required: true
         created_at: 2026-04-20T20:21:56.299Z
         completed_at: 2026-04-20T20:21:56.299Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Cycle 4 blockers resolved in stored plan: @task-docs-authoring-conventions now covers
+          @docs-authoring-conventions ac-1 through ac-3, making the reviewer-side docs-coverage
+          check executable from one task."
+        name: AC coverage by tasks
+        required: true
+        created_at: 2026-04-20T20:22:01.795Z
+        completed_at: 2026-04-20T20:22:01.795Z
     events:
       - _ulid: 01KPP8WFKGKWC2W0YHK0R6T4KV
         actor: "@claude"
@@ -152193,6 +152204,13 @@ reviews:
           status: pass
           name: Plan import dry-run
         timestamp: 2026-04-20T20:21:57.341Z
+      - _ulid: 01KPP8X9BT0C7ZV3XA48NNDAJH
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: AC coverage by tasks
+        timestamp: 2026-04-20T20:22:02.874Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -152205,5 +152223,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-20T20:21:36.496Z
-    updated_at: 2026-04-20T20:21:56.299Z
+    updated_at: 2026-04-20T20:22:01.795Z
     notes: []
