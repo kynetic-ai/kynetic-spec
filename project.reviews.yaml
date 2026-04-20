@@ -151989,7 +151989,17 @@ reviews:
     slugs: []
     title: "Plan re-review: User Documentation Foundation (major rewrite)"
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec plan import plans/user-documentation-foundation.md --dry-run parsed successfully on
+          2026-04-20 and preserved the stored title/status/content structure.
+        name: Plan import dry-run
+        required: true
+        created_at: 2026-04-20T20:19:03.749Z
+        completed_at: 2026-04-20T20:19:03.749Z
     events:
       - _ulid: 01KPP8PSWVVM9MDE8EZSX99DKD
         actor: "@claude"
@@ -152018,6 +152028,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPP8Q8ET7335XSXGC8FRM2HV
         timestamp: 2026-04-20T20:18:49.496Z
+      - _ulid: 01KPP8QVCWQV4ZXV6MRXQX9MCC
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Plan import dry-run
+        timestamp: 2026-04-20T20:19:04.732Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -152061,5 +152078,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-20T20:18:30.428Z
-    updated_at: 2026-04-20T20:18:45.339Z
+    updated_at: 2026-04-20T20:19:03.749Z
     notes: []
