@@ -152881,6 +152881,13 @@ reviews:
           status: fail
           name: kspec-validate
         timestamp: 2026-04-20T21:51:43.065Z
+      - _ulid: 01KPPE1JQVN837AH78EVWHFCBS
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPPE1HJXMDGRCEHR92RQPWE0
+        timestamp: 2026-04-20T21:51:46.427Z
     examined_commit: e8ba51fc71ee9cfdb64ce4899fc3f301bd48ee6d
     external_links: []
     lifecycle_state: open
@@ -152890,8 +152897,32 @@ reviews:
       content_hash: ""
       ref: "@01KPP7XFJ7Z1MG2NQAXMWZTA6W"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KPPE1HJXMDGRCEHR92RQPWE0
+        anchor:
+          type: code
+          commit: e8ba51fc71ee9cfdb64ce4899fc3f301bd48ee6d
+          line_end: 82
+          line_start: 59
+          path: src/daemon/shadow-sync-manager.ts
+          side: head
+        entries:
+          - _ulid: 01KPPE1HJYK3N2C87G75MQ118J
+            author: Jacob Chapel
+            body: The ac-16 idempotency guard is not safe under concurrent registration. Both callers check
+              `shadowSyncSchedulers.has(projectPath)` before awaiting `loadProjectConfig()`, so two
+              overlapping registrations of the same project can both pass the guard, both
+              construct/start a scheduler, and only the later one ends up stored in the map. I
+              reproduced this against `dist/daemon/shadow-sync-manager.js` with a temp git repo and
+              `Promise.all([startShadowSyncForProject(...), startShadowSyncForProject(...)])`, which
+              printed `{"starts":2,"schedulerCount":1}`. That still produces duplicate background
+              pulls even though the map finishes with one entry, so @config-shadow ac-16 is not
+              satisfied. Please serialize starts per project (for example with an in-flight promise
+              map or by reserving the entry before the await) and add a concurrent registration
+              test.
+            created_at: 2026-04-20T21:51:45.246Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-20T21:47:38.278Z
-    updated_at: 2026-04-20T21:51:41.877Z
+    updated_at: 2026-04-20T21:51:45.246Z
     notes: []
