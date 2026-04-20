@@ -152922,6 +152922,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-20T21:51:55.791Z
+      - _ulid: 01KPPF132NHMV96WR6G7NMYTZF
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPPE1HJXMDGRCEHR92RQPWE0
+        timestamp: 2026-04-20T22:08:58.965Z
     examined_commit: e8ba51fc71ee9cfdb64ce4899fc3f301bd48ee6d
     external_links: []
     lifecycle_state: closed
@@ -152955,6 +152961,14 @@ reviews:
               map or by reserving the entry before the await) and add a concurrent registration
               test.
             created_at: 2026-04-20T21:51:45.246Z
+          - _ulid: 01KPPF120HQMBW24733M5DHBDS
+            author: "@claude"
+            body: "Fixed: Added an in-flight promise map (inFlightStarts) that serializes concurrent starts per
+              project path. The second concurrent caller now awaits the first's completion and
+              returns without constructing a duplicate scheduler. Added a concurrent registration
+              test that fires two starts via Promise.all and verifies only one scheduler is created
+              (startSpy called once, map size 1). Full suite passes (8064 tests, 0 failures)."
+            created_at: 2026-04-20T22:08:57.873Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -152965,5 +152979,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-20T21:51:55.791Z
     created_at: 2026-04-20T21:47:38.278Z
-    updated_at: 2026-04-20T21:51:55.791Z
+    updated_at: 2026-04-20T22:08:57.873Z
     notes: []
