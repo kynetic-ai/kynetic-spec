@@ -66,7 +66,7 @@ description: >-
 spec_ref: "@config-shadow"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -81,8 +81,8 @@ review_ref: "@01KPPF5JAW4Z43DQG1FA1KQHQ0"
 submission_linkage:
   review_url: null
   branch: dispatch/task/extend-daemon-background-shadow-sync-to-all-registered-projects/01kpp7xf
-  captured_at: 2026-04-20T22:09:43.339Z
-  commit: 929a05c9360fb46abec33275dccda13e70791dd1
+  captured_at: 2026-04-20T22:39:05.532Z
+  commit: e74e79ee2864316da7f5bc658b8fa72753017f2e
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/extend-daemon-background-shadow-sync-to-all-registered-projects/01kpp7xf
@@ -322,8 +322,35 @@ history:
         previous: 2026-04-20T22:09:39.954Z
     command: task-start
     timestamp: 2026-04-20T22:39:02.004Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/extend-daemon-background-shadow-sync-to-all-registered-projects/01kpp7xf
+          captured_at: 2026-04-20T22:39:05.532Z
+          commit: e74e79ee2864316da7f5bc658b8fa72753017f2e
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/extend-daemon-background-shadow-sync-to-all-registered-projects/01kpp7xf
+        previous:
+          review_url: null
+          branch: dispatch/task/extend-daemon-background-shadow-sync-to-all-registered-projects/01kpp7xf
+          captured_at: 2026-04-20T22:09:43.339Z
+          commit: 929a05c9360fb46abec33275dccda13e70791dd1
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/extend-daemon-background-shadow-sync-to-all-registered-projects/01kpp7xf
+      submitted_at:
+        new: 2026-04-20T22:39:05.541Z
+        previous: 2026-04-20T22:09:43.345Z
+    command: task-submit
+    timestamp: 2026-04-20T22:39:05.542Z
 created_at: 2026-04-20T20:04:40.647Z
 started_at: 2026-04-20T22:39:02.002Z
-submitted_at: 2026-04-20T22:09:43.345Z
+submitted_at: 2026-04-20T22:39:05.541Z
 todos: []
 automation: eligible
