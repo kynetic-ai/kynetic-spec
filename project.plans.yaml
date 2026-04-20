@@ -39476,361 +39476,453 @@ plans:
       ## Specs
 
       ```yaml
-      - title: User Documentation Module
+      # ─── Module ───
+
+      - title: User Documentation
         slug: user-documentation
         type: module
         description: |
-          End-user-facing documentation for kspec: the material a
-          developer adopting kspec reads to install it, connect it to
-          their AI coding agent, understand what kspec does, and know
-          how and when to use it. The documentation's job is to help
-          the reader build a durable understanding of the system so
-          they can frame their work in kspec's terms, whether they
-          invoke kspec directly or through an agent, and so an agent
-          reading the same material as context can make sound
-          decisions. The surface is reflective and explanatory rather
-          than operational: it explains what kspec is and when to use
-          it, not what commands to run moment-to-moment.
+          End-user-facing documentation for kspec: the reflective
+          material a developer adopting kspec reads to understand
+          what the system is, how to install and set it up, how to
+          reason about their work in kspec's terms, and how to
+          recover when something unexpected happens. The surface
+          serves both a public audience learning about kspec and a
+          user who has installed kspec and is running the web UI
+          locally; both see the same content.
 
-      - title: Human-Facing Documentation Site
-        slug: human-docs-site
+      # ─── Structure ───
+
+      - title: Docs Top-Level Sections
+        slug: docs-section-taxonomy
+        type: decision
+        parent: "@user-documentation"
+        description: |
+          The docs surface presents five top-level sections, no more
+          and no fewer: Getting Started, Guides, Concepts,
+          Troubleshooting, and Release Notes. Each section has a
+          landing page and a set of child pages. Exhaustive
+          enumerations of every command flag or schema field are
+          explicitly absent and are left for a follow-up plan to
+          produce from canonical sources.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A reader opens the docs surface
+            when: |
+              The reader consults the primary docs navigation
+            then: |
+              The five top-level sections shown are Getting Started,
+              Guides, Concepts, Troubleshooting, and Release Notes,
+              in that order
+          - id: ac-2
+            given: |
+              A section has at least one page
+            when: |
+              The reader opens the section's landing page
+            then: |
+              The landing page summarises the section's purpose in
+              one paragraph and links to each child page in reading
+              order
+
+      - title: Docs Are Reachable From the Web UI and Work Offline
+        slug: docs-reachability
         type: requirement
         parent: "@user-documentation"
         description: |
-          A single, navigable documentation surface exists that a
-          developer adopting kspec can reach from the project's public
-          presence. The surface answers the questions a new user has:
-          what this is, how to install it, how to hook it into their
-          AI agent, how to think about their work in kspec's terms,
-          and what to do when something unexpected happens. It is
-          organized so the reader can predict where a given kind of
-          content lives, and it is structured for longevity — content
-          that does not change per release is preferred over content
-          that must be updated with every change in the code.
+          A reader already in the web UI (public or locally served)
+          reaches docs through the same primary navigation they use
+          to reach any other app destination. The docs surface does
+          not depend on the daemon at runtime: a reader who has
+          installed kspec and is running the UI against their own
+          project can read docs without internet access, and a
+          reader on the public deployment sees the same content
+          without any server-side help.
         acceptance_criteria:
-          - id: ac-reachable-from-public-surface
+          - id: ac-1
             given: |
-              A reader lands on the project's README, npm page, or any
-              public entry point
+              A reader is on any app route in the web UI
             when: |
-              The reader looks for documentation
+              The reader looks at the primary navigation
             then: |
-              A link to the documentation surface is visible within
-              the first screen of the entry point and reaches the
-              documentation in one click
-          - id: ac-intent-driven-top-level
+              A "Docs" entry is present and navigates to the docs
+              landing page
+          - id: ac-2
             given: |
-              A reader has a question
+              A reader is running the web UI against a local kspec
+              daemon, disconnected from the internet
             when: |
-              The reader opens the documentation surface
+              The reader navigates to the docs surface and reads a
+              page
             then: |
-              The top-level navigation separates getting-started
-              material, task-oriented guides, conceptual explanations,
-              and troubleshooting into distinct sections whose names
-              communicate the kind of content inside
-          - id: ac-searchable
+              The page renders fully without any network request to
+              a non-local host
+          - id: ac-3
             given: |
-              A reader knows a term that appears in the documented
-              content
+              A reader visits the publicly deployed docs
             when: |
-              The reader uses the documentation surface's search
+              The reader navigates between docs pages
             then: |
-              The page containing the term is returned as a search
-              result
+              Pages render without requiring a running kspec daemon
+              and without server-side rendering
 
-      - title: New-User Onboarding Path
-        slug: new-user-onboarding-path
+      - title: Docs Navigation and Page Shape
+        slug: docs-navigation-shape
         type: requirement
         parent: "@user-documentation"
         description: |
-          A reader who has never used kspec can become productive by
-          following a single contiguous path that begins at
-          installation and ends with the reader having asked their AI
-          agent to do something meaningful in a kspec project they set
-          up. The path covers installation, project initialization,
-          connecting kspec to the reader's agent of choice, and
-          directing the agent through a first meaningful action. The
-          reader comes away knowing what the shadow branch is, what a
-          spec and a task are, and what to ask their agent for next.
-          The path is self-contained — the reader does not need to
-          branch into other sections to proceed.
+          Within the docs surface, a sidebar shows the current
+          section's pages with the current page indicated, a table
+          of contents for the current page shows its headings, and
+          every heading carries an anchor that can be copied as a
+          stable direct link.
         acceptance_criteria:
-          - id: ac-single-linear-path
+          - id: ac-1
             given: |
-              A new reader opens the getting-started section
+              A reader is on a docs page
             when: |
-              The reader reads from the entry page forward
+              The reader views the layout
             then: |
-              Each page ends with a clear link to the next step and
-              the sequence of pages forms a complete end-to-end
-              onboarding without branching decisions required to
-              continue
-          - id: ac-covers-install-and-agent-integration
+              A sidebar lists the pages of the current section, the
+              current page is visually indicated, and a table of
+              contents for the current page's headings is present
+          - id: ac-2
             given: |
-              A reader follows the onboarding path end to end
+              A docs page has headings
             when: |
-              The reader reaches the end
+              The reader hovers or clicks a heading
             then: |
-              The reader has installed kspec, initialized a project
-              in an environment of their own, completed agent
-              integration for at least one supported agent, and
-              directed their agent through at least one concrete
-              authoring action
-          - id: ac-shadow-branch-demystified
-            given: |
-              A reader completes the onboarding path
-            when: |
-              The reader subsequently encounters the .kspec/ directory
-              or sees a shadow branch reference
-            then: |
-              The reader recognizes what it is, knows not to edit it
-              directly, and knows which commands to have their agent
-              run for health checks and repair
+              The heading has a stable anchor that can be copied as a
+              direct link to that section of the page
 
-      - title: Mental Model for Working With kspec Through an Agent
-        slug: agent-mediated-mental-model
+      # ─── Content ───
+
+      - title: Getting Started Section
+        slug: docs-getting-started-section
         type: requirement
         parent: "@user-documentation"
         description: |
-          A common path users take to reach kspec is by directing an
-          AI coding agent in natural language rather than invoking
-          commands themselves. The documentation gives the user the
-          mental model they need to frame those requests effectively.
-          The user learns what kinds of work are expressed as specs
-          versus tasks versus plans versus inbox items, when their
-          agent should act autonomously versus ask for a decision,
-          which kinds of changes warrant a spec update before
-          implementation, and how to read the shape of what the
-          agent has done afterward. The material is framed around
-          the user's decisions, not around command invocations.
-        acceptance_criteria:
-          - id: ac-decision-shapes-documented
-            given: |
-              A user wants to direct their agent to do something in
-              kspec
-            when: |
-              The user consults the documentation
-            then: |
-              The user finds material that names the decision they are
-              making — is this a spec, a task, a plan, or an inbox
-              item; is this a behavior change that needs a spec first;
-              is this something the agent can decide or something
-              that needs human input — and gives a durable rule of
-              thumb for each decision
-          - id: ac-request-framing-explained
-            given: |
-              A user is unsure how to phrase a request to their agent
-            when: |
-              The user consults the documentation
-            then: |
-              The documentation provides guidance on how to frame
-              requests in kspec's terms (what work to create, at what
-              granularity, with what relationships) without prescribing
-              exact command wording
-          - id: ac-agent-autonomy-expectations-set
-            given: |
-              A user wants to know what their agent will do on its own
-              versus what it will ask about
-            when: |
-              The user consults the documentation
-            then: |
-              The documentation describes the classes of decision that
-              belong to the user (scope, architecture, policy) and the
-              classes that an agent can act on (mechanical execution
-              within an approved scope) so the user's expectations
-              match what happens in practice
+          The Getting Started section walks a new reader from a
+          machine with nothing installed to a working kspec project
+          they have directed their agent through. It contains
+          exactly these pages, in this order:
 
-      - title: Concepts Explained for Humans
-        slug: concepts-explained
+          - Overview — what kspec is and who it is for
+          - Installation — install via npm, supported Node versions,
+            verifying the install
+          - Initializing a Project — running init and setup, what
+            gets created, what the reader should not edit by hand
+          - Connecting Your Agent — agent setup for at least one
+            supported agent family, and how to confirm the
+            connection works
+          - Your First Action — directing the agent through a first
+            meaningful authoring step
+          - Where to Go Next — pointers into Guides and Concepts
+
+          Pages are linear: each ends with a "next" link to the
+          following page.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A reader opens the Getting Started section
+            when: |
+              The reader reads the six pages in order
+            then: |
+              The reader has installed kspec, initialized a project,
+              completed agent integration, and performed at least
+              one authoring action directed through their agent
+          - id: ac-2
+            given: |
+              A reader is on any Getting Started page except the last
+            when: |
+              The reader reaches the end of the page
+            then: |
+              A "next" link points to the subsequent page in the
+              sequence
+          - id: ac-3
+            given: |
+              A reader completes the Getting Started section
+            when: |
+              The reader encounters the project's shadow directory
+              or a shadow branch reference later
+            then: |
+              The reader recognises the shadow branch from the
+              Initializing a Project page and knows which commands
+              to run for health checks rather than editing shadow
+              state by hand
+
+      - title: Concepts Section
+        slug: docs-concepts-section
         type: requirement
         parent: "@user-documentation"
         description: |
-          Every non-obvious idea a kspec user encounters has a
-          corresponding explanation page that tells the reader what
-          the idea is, why it exists, how it surfaces in day-to-day
-          use, and — where helpful — what alternatives exist and why
-          they were not chosen. Concept pages are written to be
-          timeless relative to the codebase: they describe the shape
-          of the system and its reasoning rather than the current
-          set of flags or fields. A reader who internalizes the
-          concepts can predict how kspec will behave in new situations
-          and can direct an agent effectively without knowing the
-          exact command syntax.
-        acceptance_criteria:
-          - id: ac-every-concept-has-a-page
-            given: |
-              A kspec idea exists that a reader cannot understand from
-              reading a command description alone (shadow branch,
-              spec-task relationship, plans, traits, dispatch, review
-              records, agents and skills)
-            when: |
-              A reader wants to understand that idea
-            then: |
-              A concept page exists that explains what it is, why it
-              exists, and how it surfaces in use
-          - id: ac-concept-pages-avoid-version-coupled-detail
-            given: |
-              A concept page explains an idea
-            when: |
-              A maintainer reads the page one release later
-            then: |
-              The page remains accurate without edits in the common
-              case, because details that change per release (exact
-              flag names, specific field enumerations) are either
-              linked out to authoritative sources or omitted in favor
-              of the stable shape
+          The Concepts section gives the reader durable mental
+          models for kspec. It contains these pages:
 
-      - title: Task-Oriented How-To Guides for End Users
-        slug: how-to-guides-task-oriented
+          - What kspec Is — the system's purpose and shape
+          - Working With kspec Through an Agent — the mental model
+            for directing an AI agent: how to frame requests, what
+            the agent decides on its own, what it asks about, and
+            how to read the shape of what it has done
+          - Specs, Tasks, Plans, and Inbox — the decision matrix for
+            what goes where
+          - The Shadow Branch — what it is, why spec state is kept
+            there, how it shows up in day-to-day use
+          - Traits — what they are and how they compose acceptance
+            criteria across specs
+          - Reviews — the per-cycle review record model and how it
+            gates work
+          - Agents and Dispatch — how agents execute work and how
+            dispatch assigns it
+          - The Web UI and the Daemon — what each surface is for and
+            when to use them
+
+          Each page follows the same shape: what it is, why it
+          exists, how it surfaces in use, and — where helpful —
+          what alternatives were considered.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A reader opens the Concepts section
+            when: |
+              The reader consults the section landing page
+            then: |
+              The eight pages listed in the description are present
+              and linked from the landing page
+          - id: ac-2
+            given: |
+              A reader reads a Concepts page
+            when: |
+              The reader finishes the page
+            then: |
+              The page has answered what the concept is, why it
+              exists, and how the reader will encounter it in use,
+              without enumerating command flags or schema fields
+              that change per release
+          - id: ac-3
+            given: |
+              A reader wants to decide whether a unit of work is a
+              spec, task, plan, or inbox item
+            when: |
+              The reader consults the Specs, Tasks, Plans, and Inbox
+              page
+            then: |
+              The page provides a decision rule for each of the four
+              kinds that the reader can apply without reading
+              further material
+
+      - title: Guides Section
+        slug: docs-guides-section
         type: requirement
         parent: "@user-documentation"
         description: |
-          Each common workflow a kspec user performs has a how-to
-          guide that walks them through the workflow as a sequence of
-          concrete steps framed around the user's goal. Because users
-          typically work through an agent, guides describe the
-          workflow in terms the user reasons about — what to ask the
-          agent for, what to decide along the way, how to know the
-          work is done — rather than the exact commands the agent
-          runs. The agent's role is acknowledged without being
-          prescribed. Users who do invoke the CLI directly can follow
-          the same workflows; the guides point to command help for
-          exhaustive detail.
-        acceptance_criteria:
-          - id: ac-guides-cover-common-end-user-workflows
-            given: |
-              A reader has a goal that falls within the intended use
-              of kspec (starting a new project, importing a plan,
-              authoring and completing a task, upgrading kspec,
-              recovering from a shadow branch issue)
-            when: |
-              The reader opens the guides section
-            then: |
-              At least one guide addresses that goal directly, or the
-              goal is composable from clearly cross-linked guides
-          - id: ac-guide-frames-around-user-decisions
-            given: |
-              A reader opens a how-to guide
-            when: |
-              The reader follows the guide in order
-            then: |
-              The steps are framed as decisions the reader makes or
-              outcomes the reader observes, not as literal command
-              invocations, and the reader reaches the stated goal
-              whether they drive kspec through an agent or directly
-          - id: ac-guide-defers-exhaustive-detail-to-help-output
-            given: |
-              A how-to guide names a command
-            when: |
-              The reader wants to see every flag that command accepts
-            then: |
-              The guide points the reader to the command's own help
-              output (or the auto-generated reference, when it exists)
-              rather than duplicating the list inline
+          The Guides section covers common end-user workflows as
+          sequential procedures framed around the reader's goal. It
+          contains these guides:
 
-      - title: Troubleshooting Indexed by Symptom
-        slug: troubleshooting-indexed
+          - Starting a New Project
+          - Directing Your Agent Effectively
+          - Importing and Approving a Plan
+          - Authoring and Completing a Task
+          - Reviewing an Agent's Work
+          - Upgrading kspec to a New Version
+          - Recovering From Shadow Branch Issues
+
+          Each guide begins with the reader's goal, lists the
+          prerequisites (including "completed Getting Started" where
+          applicable), provides the sequence of steps, and ends
+          with a verification the reader can perform to know the
+          goal is accomplished.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A reader opens the Guides section
+            when: |
+              The reader consults the section landing page
+            then: |
+              The seven guides listed in the description are present
+              and linked from the landing page
+          - id: ac-2
+            given: |
+              A reader opens any guide
+            when: |
+              The reader reads the guide in order
+            then: |
+              The guide states the reader's goal, names its
+              prerequisites, presents the steps in sequence, and
+              ends with a verification the reader can perform to
+              confirm the goal was met
+          - id: ac-3
+            given: |
+              A guide names a kspec command
+            when: |
+              The reader wants the full flag list for that command
+            then: |
+              The guide points the reader to the command's help
+              output rather than transcribing the flags inline
+
+      - title: Troubleshooting Section
+        slug: docs-troubleshooting-section
         type: requirement
         parent: "@user-documentation"
         description: |
-          Common error conditions, recovery paths, and diagnostic
-          commands are indexed in a single section so a reader
-          encountering an unfamiliar error or unexpected state can
-          find the recovery path without reading source code. The
-          index is organized by the symptom the reader observes — in
-          their own output or their agent's output — not by the
-          internal cause, so a reader who cannot yet name the problem
-          can still find the entry. Entries favor stable descriptions
-          of the recovery workflow over version-specific command
-          transcripts.
-        acceptance_criteria:
-          - id: ac-indexed-by-symptom
-            given: |
-              A reader encounters an unexpected error or state, either
-              directly or surfaced through their agent
-            when: |
-              The reader searches the troubleshooting section
-            then: |
-              An entry matches the symptom the reader observed, even
-              when the reader cannot name the underlying cause, and
-              the entry points to a specific recovery command or
-              procedure
-          - id: ac-diagnostic-commands-linked
-            given: |
-              A troubleshooting entry mentions a diagnostic or repair
-              command
-            when: |
-              The reader reads the entry
-            then: |
-              The command is named, the expected outcome on a healthy
-              system is described, and the reader is directed to the
-              command's own help output for its full flag list
+          The Troubleshooting section is an index of recovery
+          procedures keyed by the symptom the reader observes — in
+          their own output or in their agent's output. The initial
+          set of entries covers at minimum:
 
-      - title: README Is a Landing Page
-        slug: readme-landing-page
+          - Shadow branch is out of sync with remote
+          - Shadow branch worktree is broken or missing
+          - Daemon cannot bind to its port because the port is in use
+          - "Cannot run kspec from inside the shadow directory" error
+          - Upgrade reports a pre-plan state or partial scaffold
+          - Agent dispatch refuses to assign a task
+          - A review is blocking merge with an unresolved thread
+
+          Each entry follows the shape: symptom → what this means →
+          recovery procedure → commands to run by name → what a
+          healthy outcome looks like. Entries link to the
+          corresponding concept page where the underlying system is
+          explained rather than re-explaining the primitive inline.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A reader encounters an unexpected error or state,
+              either directly or surfaced through their agent
+            when: |
+              The reader searches the Troubleshooting section
+            then: |
+              An entry matches the symptom the reader observed
+              without requiring the reader to name the underlying
+              cause
+          - id: ac-2
+            given: |
+              A reader reads a troubleshooting entry
+            when: |
+              The reader follows the recovery procedure
+            then: |
+              The entry describes the symptom, explains what the
+              symptom means, states the recovery procedure in prose,
+              names the commands to run, and describes what a
+              healthy outcome looks like so the reader knows when
+              recovery has succeeded
+          - id: ac-3
+            given: |
+              A troubleshooting entry mentions a kspec primitive the
+              reader may not know
+            when: |
+              The reader wants to understand the primitive
+            then: |
+              The entry links to the corresponding page in the
+              Concepts section rather than re-explaining the
+              primitive inline
+
+      - title: Release Notes Available in Docs Without Duplication
+        slug: docs-release-notes-availability
         type: requirement
         parent: "@user-documentation"
         description: |
-          The README serves as a concise landing page: what kspec is,
-          who it is for, how to install it, and where to go next. It
-          does not duplicate material that belongs in the
-          documentation surface. A reader of the README leaves with
-          enough information to decide whether to adopt kspec and a
-          clear next click to learn more. Long-form onboarding,
-          guides, and concept explanations live only in the
-          documentation surface.
+          The docs surface presents release notes as a single page so
+          a reader can see what changed in the currently installed
+          version and any prior released version without leaving the
+          docs. The notes shown are always the same as the single
+          source of truth already consumed by the CLI's release-notes
+          command, so authoring release notes remains one action and
+          the docs cannot drift from what the CLI shows.
         acceptance_criteria:
-          - id: ac-readme-is-concise
+          - id: ac-1
             given: |
-              A reader opens the README
+              A reader is on the docs surface
             when: |
-              The reader skims the full file
+              The reader navigates to the release notes page
             then: |
-              The file contains an overview, an install section, and a
-              small set of links into the documentation, and does not
-              embed long-form guidance, reference material, or
-              extended workflow content
-          - id: ac-readme-links-cover-primary-intents
-            given: |
-              A reader finishes the README
-            when: |
-              The reader wants to take a next action
-            then: |
-              Links are present for getting started, guides, and
-              concepts, each pointing directly into the correct
-              section of the documentation surface
-
-      - title: Release Notes Surfaced on the Docs Site
-        slug: release-notes-on-docs
-        type: requirement
-        parent: "@user-documentation"
-        description: |
-          The documentation surface presents release notes so readers
-          can learn what changed in the installed or any prior
-          released version without leaving the docs. The surface does
-          not maintain a duplicate copy of release notes; it reads
-          from or links to the single source of truth already consumed
-          by the CLI's release-notes command, so release-notes
-          authoring remains a single action.
-        acceptance_criteria:
-          - id: ac-release-notes-visible-on-docs
-            given: |
-              A reader is on the documentation surface
-            when: |
-              The reader wants to see what changed in a version
-            then: |
-              A dedicated section presents release notes for the
-              current version and a navigable index of prior versions
-              without requiring the reader to leave the surface
-          - id: ac-single-source-of-truth
+              The page presents release notes for the current version
+              and an index of prior versions, with each version
+              anchored so direct links to a version work
+          - id: ac-2
             given: |
               A contributor adds or edits a release notes entry
             when: |
               The contributor updates the canonical release notes
               source
             then: |
-              The change is reflected on the documentation surface
-              without a separate authoring step or duplicated file
+              The change is reflected on the docs surface on the
+              next site build without a separate authoring step or
+              duplicated file in the repository
+
+      - title: Docs Search
+        slug: docs-search
+        type: feature
+        parent: "@user-documentation"
+        description: |
+          The docs surface has a search input that matches reader
+          input against the full text of every docs page and returns
+          direct links to matching pages. Search works identically
+          on the public deployment and in the locally-served UI,
+          runs entirely in the reader's browser, and requires no
+          external service.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A reader is on any docs page
+            when: |
+              The reader opens the docs search input and submits a
+              term that appears in a docs page
+            then: |
+              The page containing the term is returned as a search
+              result with a link to that page
+          - id: ac-2
+            given: |
+              A reader searches from within the locally-served UI
+              with no internet connection
+            when: |
+              The reader submits a search query
+            then: |
+              Results are returned without any network request to a
+              non-local host
+          - id: ac-3
+            given: |
+              A reader searches on the public deployment
+            when: |
+              The reader submits a search query
+            then: |
+              The same set of matching pages is returned as would be
+              returned from the locally-served UI against the same
+              docs content
+
+      # ─── Boundary With Other Surfaces ───
+
+      - title: README Is a Concise Landing Page
+        slug: readme-landing-page
+        type: requirement
+        parent: "@user-documentation"
+        description: |
+          The README is a concise landing page targeting a reader
+          deciding whether to adopt kspec. It contains an overview
+          paragraph, an install section, a first-steps pointer
+          consisting of one or two commands plus a link to the docs
+          surface, and a small set of cross-links into the docs
+          sections. It does not embed guides, concept explanations,
+          or reference content.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A reader opens the README
+            when: |
+              The reader reads it end to end
+            then: |
+              The file is under 100 lines of prose and contains
+              exactly these sections: overview, install, first
+              steps, and docs links
+          - id: ac-2
+            given: |
+              A reader finishes the README
+            when: |
+              The reader wants to take a next action
+            then: |
+              A link is present for each of Getting Started, Guides,
+              Concepts, and Release Notes, pointing directly to the
+              corresponding docs section
 
       - title: Reflective and Operational Documentation Stay Separate
         slug: reflective-operational-boundary
@@ -39839,90 +39931,79 @@ plans:
         description: |
           The project has two kinds of documentation with distinct
           roles: reflective documentation that explains what kspec
-          is, why it exists, and when to use it — intended for durable
-          understanding that survives releases — and operational
-          documentation that tells an agent what commands to run and
-          what conventions to follow right now. These two surfaces
-          exist as separate bodies of content with no prose
-          duplication. Each is the canonical home for its kind of
-          content, and when they reference shared ideas they link
-          across rather than copying text. A reader of either surface
-          can tell which kind of content they are in from the surface
-          alone, and a contributor adding content knows which surface
-          owns it.
+          is, why it exists, and when to use it, intended for
+          durable understanding that survives releases; and
+          operational documentation that tells an agent what
+          commands to run and what conventions to follow right now.
+          These two surfaces exist as separate bodies of content
+          with no prose duplication. Each is the canonical home for
+          its kind of content, and when they reference shared ideas
+          they link across rather than copying text.
         acceptance_criteria:
-          - id: ac-no-duplicate-prose
+          - id: ac-1
             given: |
-              An idea is explained in both the reflective surface and
+              An idea is present in both the reflective surface and
               the operational surface
             when: |
               A maintainer audits the two surfaces
             then: |
-              One surface is the canonical prose explanation and the
-              other links to it rather than containing its own copy of
-              the same material
-          - id: ac-each-surface-has-a-clear-role
+              One surface holds the canonical prose and the other
+              links to it rather than containing its own copy
+          - id: ac-2
             given: |
-              A contributor needs to document a new behavior
+              A contributor needs to document a new behaviour
             when: |
-              The contributor consults the documentation contribution
-              guidance
+              The contributor consults the authoring conventions
             then: |
-              The guidance is unambiguous about whether the content
-              belongs in the reflective surface (durable, explanatory),
-              the operational surface (executed, per-release), or both
-              with one linking to the other
+              The conventions state unambiguously whether the
+              content belongs in the reflective surface, the
+              operational surface, or both with one linking to the
+              other
 
-      - title: Docs Authoring Process Favors Timelessness
-        slug: docs-authoring-process
+      - title: Docs Authoring Conventions
+        slug: docs-authoring-conventions
         type: requirement
         parent: "@user-documentation"
         description: |
-          A contributor adding or changing documentation knows where
-          the content goes, which intent bucket it belongs to, and
-          what style conventions apply. The conventions bias toward
-          content that does not need to be edited on every release:
-          describing the shape of a workflow rather than transcribing
-          its current output, linking to authoritative sources for
-          details that change, and preferring durable mental-model
-          explanation over example-heavy prose that rots. When a code
-          change affects user-visible behavior documented in prose,
-          the contribution process names the page to update.
+          A contribution guidance document names the intent of each
+          top-level docs section, the style convention for each,
+          the rule that exhaustive flag and field lists are not
+          transcribed inline (the page links to command help
+          instead), and the rule that governs the
+          reflective/operational boundary. The conventions are
+          reachable from the docs surface so contributors discover
+          them during authoring rather than in code review.
         acceptance_criteria:
-          - id: ac-contribution-doc-exists
+          - id: ac-1
             given: |
-              A contributor wants to add or change a docs page
+              A contributor wants to add or edit a docs page
             when: |
-              The contributor consults the contribution guidance
+              The contributor opens the contribution guidance
             then: |
-              The guidance names each intent bucket (getting-started,
-              guides, concepts, troubleshooting), states which kinds
-              of content belong in each, and provides a style
-              convention for each that favors durable framing over
-              version-specific detail
-          - id: ac-code-change-signals-docs-change
+              The guidance names the intent of each top-level section
+              (Getting Started, Guides, Concepts, Troubleshooting,
+              Release Notes) and states the style rule for each
+          - id: ac-2
             given: |
-              A code change adds, removes, or modifies a user-facing
-              behavior
+              A docs page wants to list every flag of a command,
+              every field of a format, or every entry of an
+              enumeration
+            when: |
+              A reviewer reads the page
+            then: |
+              The reviewer can cite the conventions to require the
+              page to link to command help rather than transcribe
+              the enumeration inline
+          - id: ac-3
+            given: |
+              A code change alters user-visible behaviour documented
+              in a docs prose page
             when: |
               The change is reviewed
             then: |
-              The reviewer has a standard way to check whether the
-              corresponding docs surface was updated, and docs updates
-              are expected as part of the change when a prose page is
-              affected
-          - id: ac-prefer-links-over-transcripts
-            given: |
-              A docs page wants to show the full set of options,
-              fields, or error codes for a command or format
-            when: |
-              The author writes the page
-            then: |
-              The page links to the authoritative source (command help
-              output, auto-generated reference when available, schema
-              source) rather than copying the enumeration inline, so
-              the page does not go stale when the enumeration changes
-
+              The review checks that the relevant docs page has
+              been updated as part of the change, per the authoring
+              conventions
       ```
 
       ## Tasks
@@ -39930,357 +40011,368 @@ plans:
       derive_from_specs: false
 
       ```yaml
-      - title: Choose and bootstrap docs site infrastructure
-        slug: task-docs-site-bootstrap
-        spec_ref: "@human-docs-site"
+      - title: Set up docs rendering in the web UI
+        slug: task-docs-rendering
+        priority: 1
+        tags: [docs, web-ui, infra]
+        spec_ref: "@docs-reachability"
         description: |
-          Evaluate and choose the docs site generator, hosting target,
-          and build pipeline with maintainability as the primary
-          criterion. Establish the top-level directory structure on
-          disk and the minimum viable site skeleton — navigation
-          shell, search integration, and a single placeholder page
-          per top-level section (getting-started, guides, concepts,
-          troubleshooting, release notes) — so subsequent tasks can
-          land content without re-deciding infrastructure. Record the
-          choice rationale and the versioning decision. Covers
-          @human-docs-site ac-intent-driven-top-level and
-          ac-searchable.
-        tags:
-          - docs
-          - infra
+          Wire the web UI to render Markdown docs content at a
+          /docs/* route tree.
 
-      - title: Wire public entry points to the docs site
-        slug: task-docs-public-entry-points
-        spec_ref: "@human-docs-site"
+          Why: Docs are reached through the web UI per
+          @docs-reachability; the rendering pipeline is the bridge
+          from authored Markdown to rendered pages.
+
+          What: Extend packages/web-ui with a [...slug] dynamic
+          route under /docs that maps URL paths to Markdown files
+          under the repository's top-level docs/ directory, rendered
+          through the existing marked + Tailwind typography +
+          highlight.js pipeline. Docs content is bundled into the
+          static build so pages work in VITE_STATIC_MODE and in
+          daemon mode without any API call. Adjust vite.config.ts
+          (server.fs.allow) to permit reading from ../../docs.
+          Rendering produces anchored headings and client-side
+          routing for inter-page navigation.
+
+          Covers: @docs-reachability ac-2, ac-3,
+          @docs-navigation-shape ac-2.
+
+      - title: Establish docs section scaffolding at the repo root
+        slug: task-docs-section-scaffolding
+        priority: 1
+        tags: [docs, content]
+        spec_ref: "@docs-section-taxonomy"
         depends_on:
-          - "@task-docs-site-bootstrap"
+          - "@task-docs-rendering"
         description: |
-          Make the docs site reachable in one click from every public
-          entry point the project has: the repository README, the
-          package registry page, any other surface where a potential
-          user lands. The link is prominent (visible within the first
-          screen of the entry point), stable (survives README trims
-          and package republishes), and points to the docs surface
-          entry page. Covers @human-docs-site
-          ac-reachable-from-public-surface.
-        tags:
-          - docs
-          - infra
+          Create the top-level docs directory structure and the five
+          section landing pages so navigation and routing land on
+          valid content.
 
-      - title: Define docs authoring conventions and contribution flow
-        slug: task-docs-authoring-conventions
-        spec_ref: "@docs-authoring-process"
-        description: |
-          Write the contribution guidance that tells authors which
-          intent bucket content belongs to, the style convention for
-          each bucket, the bias toward durable framing over
-          version-specific transcripts, when to link to command help
-          instead of enumerating, how to preview changes locally, and
-          how docs changes interact with code review. Publish the
-          guidance where contributors will see it.
-        tags:
-          - docs
-          - process
+          What: Create docs/getting-started/, docs/guides/,
+          docs/concepts/, docs/troubleshooting/, and
+          docs/release-notes/ under the repository root. Each
+          section gets an index.md that states the section's
+          purpose and lists its child pages (initially a stub list).
+          Add a documented exclusion rule so docs/history/ and
+          other contributor-only files are not published to the
+          rendered site.
 
-      - title: Author the new-user onboarding path including agent setup
-        slug: task-docs-getting-started
-        spec_ref: "@new-user-onboarding-path"
+          Covers: @docs-section-taxonomy ac-1, ac-2.
+
+      - title: Integrate docs into primary web UI navigation
+        slug: task-docs-nav-integration
+        priority: 2
+        tags: [docs, web-ui]
+        spec_ref: "@docs-reachability"
         depends_on:
-          - "@task-docs-site-bootstrap"
-          - "@task-docs-authoring-conventions"
+          - "@task-docs-section-scaffolding"
         description: |
-          Author the linear onboarding path from installation through
-          project initialization, agent integration for at least one
-          supported agent, and the reader's first meaningful action
-          directed through that agent. Introduce the shadow branch
-          just enough for the reader not to fear it. Verify the path
-          end-to-end against a clean environment before merging.
-        tags:
-          - docs
-          - getting-started
+          Add a "Docs" entry to the web UI primary navigation and
+          build the docs-specific layout with section sidebar and
+          per-page table of contents.
 
-      - title: Author the agent-mediated mental model material
-        slug: task-docs-agent-mental-model
-        spec_ref: "@agent-mediated-mental-model"
+          What: Add Docs to the existing nav component. Add the
+          /docs layout component that renders a sidebar listing the
+          current section's pages (current page indicated) and a
+          table-of-contents column showing the current page's
+          headings. Reuse the existing UI components and theming.
+
+          Covers: @docs-reachability ac-1,
+          @docs-navigation-shape ac-1.
+
+      - title: Author the Getting Started section
+        slug: task-docs-getting-started-content
+        priority: 2
+        tags: [docs, content, getting-started]
+        spec_ref: "@docs-getting-started-section"
         depends_on:
-          - "@task-docs-site-bootstrap"
-          - "@task-docs-authoring-conventions"
+          - "@task-docs-section-scaffolding"
         description: |
-          Author the material that helps users frame their work in
-          kspec's terms when directing an agent: when to use specs
-          versus tasks versus plans versus inbox items, when a
-          behavior change needs a spec update first, what the agent
-          will decide autonomously and what it will ask the user
-          about, and how to read the shape of the agent's output. The
-          material centers on the user's decisions and gives durable
-          rules of thumb rather than command recipes.
-        tags:
-          - docs
-          - concepts
-          - agent-integration
+          Author the six Getting Started pages (Overview,
+          Installation, Initializing a Project, Connecting Your
+          Agent, Your First Action, Where to Go Next) in order.
 
-      - title: Author concept explanation pages
-        slug: task-docs-concepts
-        spec_ref: "@concepts-explained"
+          What: Each page is a self-contained walkthrough ending
+          with a "next" link. Verify the full sequence end to end
+          against a clean environment before marking complete. The
+          Initializing a Project page introduces the shadow branch
+          well enough that the reader does not fear the shadow
+          directory.
+
+          Covers: @docs-getting-started-section ac-1 through ac-3.
+
+      - title: Author the Concepts section
+        slug: task-docs-concepts-content
+        priority: 2
+        tags: [docs, content, concepts]
+        spec_ref: "@docs-concepts-section"
         depends_on:
-          - "@task-docs-site-bootstrap"
-          - "@task-docs-authoring-conventions"
+          - "@task-docs-section-scaffolding"
         description: |
-          Author the concept pages for the non-obvious ideas a reader
-          encounters: shadow branch, spec-task relationship, plans,
-          traits, dispatch, review records, agents and skills. Frame
-          each as what it is, why it exists, how it surfaces in use,
-          and what alternatives were considered where helpful. Keep
-          each page free of enumerations that change per release.
-        tags:
-          - docs
-          - concepts
+          Author the eight Concepts pages listed in
+          @docs-concepts-section.
 
-      - title: Author task-oriented how-to guides for end-user workflows
-        slug: task-docs-how-to-guides
-        spec_ref: "@how-to-guides-task-oriented"
+          What: Each page follows the what / why / how it surfaces /
+          alternatives-where-helpful shape. The Specs, Tasks, Plans,
+          and Inbox page includes a decision rule per kind. The
+          Working With kspec Through an Agent page gives durable
+          rules of thumb for framing requests, reading agent output,
+          and knowing when a change needs a spec update first.
+
+          Covers: @docs-concepts-section ac-1 through ac-3.
+
+      - title: Author the Guides section
+        slug: task-docs-guides-content
+        priority: 2
+        tags: [docs, content, guides]
+        spec_ref: "@docs-guides-section"
         depends_on:
-          - "@task-docs-site-bootstrap"
-          - "@task-docs-authoring-conventions"
+          - "@task-docs-section-scaffolding"
         description: |
-          Author guides for the end-user workflows: starting a new
-          project, importing and executing a plan, authoring and
-          completing a task, upgrading kspec, recovering from a
-          shadow branch issue. Frame each around the user's goal and
-          decisions rather than command invocations so the guide is
-          followable whether the user works through an agent or
-          directly. Defer exhaustive flag detail to --help output.
-        tags:
-          - docs
-          - how-to
+          Author the seven guides listed in @docs-guides-section.
 
-      - title: Author troubleshooting index keyed by symptom
-        slug: task-docs-troubleshooting
-        spec_ref: "@troubleshooting-indexed"
+          What: Each guide begins with a goal statement, lists
+          prerequisites, presents steps in sequence, and ends with a
+          verification. Guides name commands and link to kspec
+          <command> --help rather than transcribing flag lists.
+
+          Covers: @docs-guides-section ac-1 through ac-3.
+
+      - title: Author the Troubleshooting section seed entries
+        slug: task-docs-troubleshooting-content
+        priority: 2
+        tags: [docs, content, troubleshooting]
+        spec_ref: "@docs-troubleshooting-section"
         depends_on:
-          - "@task-docs-site-bootstrap"
-          - "@task-docs-authoring-conventions"
+          - "@task-docs-section-scaffolding"
+          - "@task-docs-concepts-content"
         description: |
-          Assemble the troubleshooting index. Seed with the recurring
-          end-user issues: shadow branch conflicts, daemon port
-          conflicts, setup scaffold gaps, upgrade recoveries, agent
-          dispatch failures. Each entry names the symptom (including
-          symptoms the user sees via their agent), the recovery
-          workflow in prose, and points to the diagnostic commands by
-          name rather than transcribing their output.
-        tags:
-          - docs
-          - troubleshooting
+          Author the initial troubleshooting entries listed in
+          @docs-troubleshooting-section.
 
-      - title: Surface release notes on the docs site
-        slug: task-docs-release-notes
-        spec_ref: "@release-notes-on-docs"
+          What: Each entry follows the shape symptom → what this
+          means → recovery procedure → commands by name → healthy
+          outcome, and links to the corresponding Concepts page
+          rather than explaining the primitive inline.
+
+          Covers: @docs-troubleshooting-section ac-1 through ac-3.
+
+      - title: Render release notes at /docs/release-notes from the canonical source
+        slug: task-docs-release-notes-rendering
+        priority: 2
+        tags: [docs, web-ui, release-notes]
+        spec_ref: "@docs-release-notes-availability"
         depends_on:
-          - "@task-docs-site-bootstrap"
+          - "@task-docs-rendering"
         description: |
-          Wire the docs site to render release notes from the
-          canonical RELEASE_NOTES source file. Provide a version
-          index and permalinks. Verify parity with the output of the
-          kspec release-notes CLI command.
-        tags:
-          - docs
-          - release-notes
+          Wire /docs/release-notes to render the repository's
+          top-level RELEASE_NOTES.md with stable version anchors,
+          without duplicating the file.
 
-      - title: Trim README and re-point it into the docs site
+          What: The route imports RELEASE_NOTES.md at build time and
+          renders it through the shared Markdown pipeline. Version
+          headings produce anchors of the form v<major>-<minor>-<
+          patch>. The rendered output matches the output of kspec
+          release-notes for the same content.
+
+          Covers: @docs-release-notes-availability ac-1, ac-2.
+
+      - title: Add docs search
+        slug: task-docs-search
+        priority: 3
+        tags: [docs, web-ui, search, infra]
+        spec_ref: "@docs-search"
+        depends_on:
+          - "@task-docs-rendering"
+          - "@task-docs-nav-integration"
+          - "@task-docs-getting-started-content"
+          - "@task-docs-concepts-content"
+          - "@task-docs-guides-content"
+          - "@task-docs-troubleshooting-content"
+        description: |
+          Add a search input on the docs surface that returns pages
+          matching a query, works in both public and local
+          deployments, and runs entirely in the browser.
+
+          What: Use a static, post-build indexing tool (Pagefind is
+          the evaluated choice) scoped to the docs routes. The
+          build produces a search index that ships with the static
+          output. A search input in the docs layout loads the index
+          lazily and shows matching pages as results.
+
+          Covers: @docs-search ac-1 through ac-3.
+
+      - title: Trim README and repoint it at the docs surface
         slug: task-docs-readme-trim
+        priority: 3
+        tags: [docs, readme]
         spec_ref: "@readme-landing-page"
         depends_on:
-          - "@task-docs-site-bootstrap"
-          - "@task-docs-getting-started"
+          - "@task-docs-getting-started-content"
         description: |
-          Revise the README to remove content that now lives in the
-          docs site and replace it with a concise pitch, install
-          section, and links into the relevant docs sections. Preserve
-          badges and project-level metadata unrelated to long-form
-          guidance.
-        tags:
-          - docs
-          - readme
+          Rewrite the README to the shape declared in
+          @readme-landing-page (overview, install, first steps, docs
+          links) and move any long-form content that currently
+          lives there into the appropriate docs section.
+
+          Covers: @readme-landing-page ac-1, ac-2.
+
+      - title: Author docs authoring conventions
+        slug: task-docs-authoring-conventions
+        priority: 3
+        tags: [docs, process]
+        spec_ref: "@docs-authoring-conventions"
+        depends_on:
+          - "@task-docs-section-scaffolding"
+        description: |
+          Publish the docs authoring conventions and link them from
+          the docs surface so contributors discover them during
+          authoring.
+
+          What: A contribution document (or section within an
+          existing one) names the intent of each top-level docs
+          section, the style convention for each, the no-in-line-
+          enumerations rule for flag and field lists, the
+          reflective/operational boundary rule, and the expectation
+          that user-visible behaviour changes update the
+          corresponding docs page as part of the same PR.
+
+          Covers: @docs-authoring-conventions ac-1 through ac-3.
 
       - title: Audit and resolve duplication between reflective and operational docs
-        slug: task-docs-audit-boundary
+        slug: task-docs-boundary-audit
+        priority: 4
+        tags: [docs, audit]
         spec_ref: "@reflective-operational-boundary"
         depends_on:
-          - "@task-docs-getting-started"
-          - "@task-docs-agent-mental-model"
-          - "@task-docs-concepts"
-          - "@task-docs-how-to-guides"
-          - "@task-docs-troubleshooting"
+          - "@task-docs-getting-started-content"
+          - "@task-docs-concepts-content"
+          - "@task-docs-guides-content"
+          - "@task-docs-troubleshooting-content"
+          - "@task-docs-authoring-conventions"
         description: |
-          Inventory content that lives in both the reflective docs
-          surface and the operational instruction surface, decide the
-          canonical owner per topic, replace the non-canonical copies
-          with cross-references, and record the decision rule in the
-          authoring conventions so future content respects the
-          boundary.
-        tags:
-          - docs
-          - audit
+          Inventory content that exists in both the new docs surface
+          and the operational instruction surface, decide the
+          canonical owner per topic, replace the non-canonical
+          copies with cross-references, and record the decision
+          rule in the authoring conventions.
+
+          Covers: @reflective-operational-boundary ac-1, ac-2.
       ```
 
       ## Implementation Notes
 
-      This plan treats end-user documentation as a product surface
-      and scopes it to the material a developer adopting kspec needs:
-      installation, first-project setup, agent integration, the
-      mental model for directing an agent effectively, durable
-      conceptual understanding, and recovery paths when things go
-      wrong. Exhaustive command and schema reference is excluded from
-      this plan and treated as a separate, larger concern addressed
-      in a follow-up plan.
+      **Why now.** kspec has grown a surface area that a new user
+      cannot discover from `--help` alone, and most users reach
+      kspec by directing an AI coding agent rather than by invoking
+      the CLI themselves. The project needs a single place a human
+      can go to learn what kspec is, install it, connect an agent,
+      and build enough of a mental model to ask their agent for the
+      right thing.
 
-      **How users actually reach kspec.** kspec's system interface
-      is the CLI (and the daemon and web UI that sit alongside it),
-      but a common path users take to reach that interface is
-      through an AI coding agent. Users describe what they want in
-      natural language ("create a task for X", "import this plan",
-      "what's left to ship this branch") and the agent translates
-      those requests into kspec commands. Direct CLI invocation is
-      fully supported and the CLI remains the canonical interface;
-      the agent-mediated path is added on top of it. This shapes
-      what the docs should emphasize: the material that helps the
-      user frame requests in kspec's terms and helps the agent —
-      when it reads the docs as context — make sound decisions is
-      more valuable than exhaustive command transcripts, because
-      both directly-invoking and agent-mediating users benefit from
-      understanding the shape of the system.
+      **Content structure.** Five top-level sections — Getting
+      Started, Guides, Concepts, Troubleshooting, Release Notes —
+      are the full taxonomy. The section shape comes from the
+      task-oriented split common to mature developer-tool CLIs and
+      is deliberately small: more sections invite overlap and decay.
+      Reference-style pages that enumerate every command flag or
+      schema field are intentionally out of scope for this plan and
+      belong to a follow-up that generates reference from canonical
+      sources.
 
-      **Dual audience, primary for humans.** The docs surface is
-      primarily for humans but is also read by agents as context.
-      That is a feature, not a conflict: the material that helps a
-      human think clearly about kspec's model also helps an agent
-      make better decisions. Docs are framed for humans — with a
-      human reader's questions, vocabulary, and pace — and the
-      agent benefits from the same framing. The separate operational
-      instruction surface remains the canonical contract an agent
-      executes against; the docs are the reflective "what and why."
+      **Implementation anchors.** The plan's specs describe
+      user-observable behaviour only; the following decisions
+      record how the team intends to realise that behaviour, but
+      they are implementation choices recorded here rather than
+      contractual requirements embedded in specs:
 
-      **Why this matters now.** kspec has reached a surface area
-      where the only complete reference is the codebase, and most
-      users are directing AI agents to use kspec without having any
-      single place to develop the mental model they need to ask for
-      the right thing. This plan fills that gap without creating a
-      second maintenance burden.
+      - **Content source location.** Documentation content is
+        authored as Markdown under `docs/` at the repository root.
+        The directory structure mirrors the URL structure so the
+        file path predicts the rendered URL. The pre-existing
+        `docs/history/` subtree is excluded from rendering via a
+        documented exclusion rule so design history remains in the
+        repo without leaking onto the site.
+      - **Rendering surface.** The existing `packages/web-ui`
+        SvelteKit package is extended with a `[...slug]` dynamic
+        route under `/docs` that reads Markdown from the repo's
+        `docs/` directory at build time and renders pages through
+        the package's existing `marked` + Tailwind typography +
+        `highlight.js` pipeline. This reuses the production-grade
+        static build, theming system, and `gh-pages-ui.yml` deploy
+        workflow the project already maintains. No separate docs
+        generator (VitePress, Docusaurus, Starlight) is introduced.
+      - **Local and public parity.** Because docs are bundled into
+        the static SPA at build time, the same build shipped to the
+        public GitHub Pages deployment is the build installed by
+        npm consumers and served by `kspec serve`. The docs surface
+        makes no daemon calls at runtime, so it works identically
+        across both contexts and offline.
+      - **Search.** Pagefind is the evaluated choice: it indexes
+        rendered HTML after the build, ships static JSON bundles,
+        runs entirely in the browser, and adds no external
+        dependency. A hosted service (Algolia DocSearch) was
+        rejected because it would fail the offline-local
+        requirement; ad-hoc client-side fuzzy search was rejected
+        because it scales poorly past a few dozen pages.
+      - **Release notes.** The existing `RELEASE_NOTES.md` is the
+        single source of truth already consumed by
+        `kspec release-notes`. The `/docs/release-notes` page
+        imports that file at build time and renders it through the
+        same Markdown pipeline as other docs pages.
 
-      **Maintainability is the primary non-functional goal.** Every
-      decision in this plan is filtered through one question: will
-      this content still be correct a year from now without edits?
-      Pages that answer yes — concepts, onboarding shape, workflow
-      steps, troubleshooting procedures, mental-model material — go
-      into the docs site. Content that answers no — specific flag
-      lists, schema fields, exact command output — does not, and is
-      either linked to the authoritative source or omitted in favor
-      of durable framing.
+      These are all implementation details: if the team later
+      switches the renderer, moves the source location, or replaces
+      the search tool, the specs remain valid because they describe
+      what the reader observes, not how it was produced.
 
-      **Structural approach.** Research across mature developer-tool
-      CLIs (Claude Code, Nx, Turborepo, pnpm, Biome, Deno) converges
-      on a Diátaxis-adjacent structure. This plan adopts a
-      four-bucket shape adapted to end-user focus:
+      **Maintainability bias.** Every authoring decision is filtered
+      through one question: will this content still be correct a
+      year from now without edits? Pages that answer yes — concept
+      explanations, onboarding shape, workflow procedures,
+      symptom-based troubleshooting — go into docs. Content that
+      answers no — flag enumerations, schema field lists, exact
+      command output — is not hand-transcribed; pages link to the
+      authoritative source. The authoring conventions codify this
+      bias so the rule does not have to be rediscovered per page.
 
-      - **Getting started** — install, initialization, agent
-        integration, first directed action. Linear, hands-on.
-      - **Guides** — task-oriented how-to for common workflows.
-        Framed around the user's goals and decisions, not commands.
-      - **Concepts** — timeless explanation of ideas and the
-        agent-mediated mental model. The most valuable section in a
-        world where users direct agents.
-      - **Troubleshooting** — symptom-indexed recovery paths,
-        including symptoms the user sees through their agent.
+      **Agent-mediated users.** A common path users take to reach
+      kspec is by directing an AI coding agent in natural language.
+      The Concepts section includes a dedicated page — Working With
+      kspec Through an Agent — that gives the reader durable rules
+      for framing requests, knowing what the agent should decide
+      versus ask about, and reading the shape of what the agent has
+      done. The rest of the docs remain useful to users who invoke
+      the CLI directly; the agent-mediated framing is additive.
 
-      Release notes are surfaced but not authored separately — they
-      are rendered from the canonical `RELEASE_NOTES.md` file that
-      the `kspec release-notes` command already consumes.
+      **Non-scope.** Auto-generated CLI and schema reference (a
+      follow-up plan will design that pipeline); docs localization;
+      multi-version docs builds; marketing content; embedded in-app
+      help beyond what the web UI already renders. `RELEASE_NOTES.md`
+      covers historical behaviour without a separate versioned docs
+      build.
 
-      **Explicit non-scope: exhaustive reference.** This plan does
-      not include authoring exhaustive CLI or schema reference
-      pages. That work is larger, benefits from automation, and
-      should not block the core documentation surface from existing.
-      The guiding principle for the follow-up plan is that such
-      reference, when it is built, should be generated from the
-      canonical source (command `--help` output, schema source,
-      error catalog) rather than hand-written, so that drift
-      between code and reference is not possible. Until that plan
-      ships, the core docs link to `--help` output for exhaustive
-      detail. This split keeps the plan focused and shippable while
-      preserving the path to a complete reference later, which
-      benefits both direct-CLI users and agents needing up-to-date
-      option information.
+      **Order of operations.** Rendering and section scaffolding
+      come first because everything else depends on them. Navigation
+      integration follows so content has a visible home. Content
+      authoring (Getting Started, Concepts, Guides, Troubleshooting)
+      can proceed in parallel once scaffolding is in place;
+      Troubleshooting depends on Concepts so its entries can link
+      cleanly. Release notes rendering and docs search are
+      independent. The README trim depends on Getting Started so the
+      trimmed README can point at real landing pages. The
+      reflective/operational boundary audit runs last because it
+      depends on the content being in place.
 
-      **Source-of-truth principles.**
-
-      - Command details that change per release live in `--help` and
-        nowhere else in prose documentation. Pages link to the
-        command, they do not transcribe it.
-      - Schema details that change per release live in the Zod
-        source and, eventually, in the auto-generated reference.
-      - Release notes live in a single file, consumed by the CLI and
-        rendered by the docs site.
-      - Docs and agent runtime instructions never duplicate prose.
-        Shared ideas live once, with the other surface linking in.
-        Ownership is declared in the authoring conventions.
-
-      **Authoring style.** Docs are written from the reader's point
-      of view, not the codebase's. A getting-started page describes
-      what the reader does. A how-to guide starts from the goal and
-      ends when the goal is accomplished — even when the reader
-      achieves it by asking an agent. A concept page answers "why
-      does this exist" before "what it is." A mental-model page
-      frames the user's decisions. A troubleshooting entry starts
-      from the symptom. These conventions are part of the
-      contribution process so authors do not rediscover them per
-      page.
-
-      **Order of operations.** Infrastructure and authoring
-      conventions come first because every subsequent task depends
-      on them. Getting-started comes next because it unlocks the
-      README trim. Concepts, mental-model material, guides, and
-      troubleshooting are parallelizable. Release notes surfacing is
-      independent. The boundary audit comes last because it depends
-      on the content being in place.
-
-      **Hosting and versioning.** The hosting and generator decision
-      is deferred to the first task. The evaluation should weigh
-      maintainability above feature richness: a static site
-      generator with minimal configuration and a standard hosting
-      target is preferable to a heavier platform that requires
-      ongoing upkeep. A reasonable default given the maintainability
-      goal is to track the latest release, link to the versioned
-      `RELEASE_NOTES.md` for historical behavior, and revisit
-      versioned docs only if a concrete reader need emerges.
-
-      **Research synthesis.** Claude Code's docs are flat with a
-      getting-started plus feature-guide pattern. Nx and Biome
-      adhere most closely to Diátaxis with explicit multi-bucket
-      structures. Turborepo centers configuration reference. pnpm
-      uses one-page-per-command CLI reference. Deno keeps a clean
-      getting-started / fundamentals / reference split. The common
-      thread across all of them is that task-oriented and
-      reference-oriented content live in separate sections and that
-      reference is kept mechanical while concepts and guides are
-      hand-crafted. This plan follows that thread, defers the
-      mechanical reference to a separate effort, and adds the
-      agent-mediated mental model as a first-class concern those
-      projects do not yet center because their users drive the CLI
-      directly more often.
-
-      **What is out of scope for this plan.** Auto-generated CLI and
-      schema reference. Localization. API client reference for
-      third-party daemon consumers. In-product docs embedded in the
-      web UI beyond the existing surfaces. Marketing content. Each
-      of those is worth its own plan if and when it becomes a
-      priority.
-
-      **Evaluation.** Success is not "every page exists." Success is
-      that a developer adopting kspec can go from zero to directing
-      their agent through kspec work effectively by following the
-      docs, a contributor adding prose knows where it goes and what
-      style to follow, and the docs are still correct a year later
-      without a large catch-up effort.
+      **Evaluation.** Success is not a page count. Success is that
+      a developer who has never seen kspec before can install it,
+      connect an agent, and direct that agent through a meaningful
+      first action by following Getting Started; a contributor
+      adding a page knows where it goes and what style to follow;
+      and the docs are still correct a year later without a large
+      catch-up effort.
     status: draft
     approved_at: null
     derived_specs: []
@@ -40310,3 +40402,10 @@ plans:
         content: "fix task section format: wrap in yaml code block and add derive_from_specs: false"
         author: "@claude"
         created_at: 2026-04-20T19:18:41.595Z
+      - _ulid: 01KPP8H4X8EFMZCAP3WYD0KWDT
+        content: "major rewrite: specs now describe observable behavior only; implementation decisions
+          (docs/ at repo root, web UI rendering, Pagefind, marked pipeline) moved to Implementation
+          Notes; enumerated page/guide/troubleshooting lists in content specs; added
+          @docs-reachability behavioral spec; 12 specs, 12 tasks"
+        author: "@claude"
+        created_at: 2026-04-20T20:15:25.097Z
