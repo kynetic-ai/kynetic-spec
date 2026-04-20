@@ -28083,7 +28083,7 @@ runs:
     completed_at: 2026-04-20T21:54:19.539Z
   - _ulid: 01KPPFSMS2WH7VSN0EM772ANDS
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -28095,7 +28095,14 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-20T22:22:57.753Z
-        completed_at: 2026-04-20T22:22:57.753Z
+        completed_at: 2026-04-20T22:22:59.934Z
+        notes: "Friction point: asynchronous registration hooks make lifecycle races easy to miss because
+          existing tests covered duplicate starts and ordinary unregister, but not unregister while
+          startShadowSyncForProject is still in flight."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-20T22:22:59.934Z
+        completed_at: 2026-04-20T22:22:59.934Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-20T22:22:23.522Z
