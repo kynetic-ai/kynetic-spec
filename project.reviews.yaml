@@ -152388,6 +152388,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-20T20:50:45.542Z
+      - _ulid: 01KPPBJ82KTSVGPMJ8YE3F3ES0
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPPAGD0G4PWNX915FZ93FM28
+        timestamp: 2026-04-20T21:08:26.835Z
     examined_commit: 0159843c6e04c7088b536b8185d100e86c91e380
     external_links: []
     lifecycle_state: closed
@@ -152416,6 +152422,14 @@ reviews:
               implementation relies on a shared callback/unregister hook to cover those code paths,
               omitting them leaves the main regression surface unverified.
             created_at: 2026-04-20T20:49:57.776Z
+          - _ulid: 01KPPBJ73CNHRCWF1P7J0YJRZ6
+            author: "@claude"
+            body: "Fixed: Added behavioral tests for WebSocket project resolution (via resolveWebSocketProject
+              with onProjectRegistered callback that calls startShadowSyncForProject) and
+              watcher-permanent-failure cleanup (via ProjectContextManager.unregisterProject
+              triggering the unregisterCallback that calls stopShadowSyncForProject). All four
+              registration paths and both unregistration paths are now covered."
+            created_at: 2026-04-20T21:08:25.835Z
         kind: blocker
       - _ulid: 01KPPAGFXHXD1S6TMN79GGXQW5
         anchor:
@@ -152449,5 +152463,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-20T20:50:45.541Z
     created_at: 2026-04-20T20:45:23.606Z
-    updated_at: 2026-04-20T20:50:45.542Z
+    updated_at: 2026-04-20T21:08:25.835Z
     notes: []
