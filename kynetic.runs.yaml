@@ -27926,9 +27926,19 @@ runs:
     completed_at: 2026-04-20T20:52:19.825Z
   - _ulid: 01KPPBN5H7W0DZTME6HM1KW6FG
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-20T21:10:02.535Z
+        completed_at: 2026-04-20T21:10:50.600Z
+        notes: "Gate passed: 1 fix-cycle commit, task transitioned needs_work → pending_review. Session was
+          a focused fix cycle addressing 2 review blockers."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-20T21:10:50.600Z
+        completed_at: 2026-04-20T21:10:50.600Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-20T21:10:02.535Z
