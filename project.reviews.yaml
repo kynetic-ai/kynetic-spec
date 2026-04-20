@@ -152842,6 +152842,17 @@ reviews:
         required: true
         created_at: 2026-04-20T21:51:38.306Z
         completed_at: 2026-04-20T21:51:38.306Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate reports a pre-existing schema error in .kspec/modules/meta.yaml (Expected
+          string, received object) plus existing repo-wide warnings; this branch does not modify
+          .kspec files.
+        name: kspec-validate
+        required: false
+        created_at: 2026-04-20T21:51:41.877Z
+        completed_at: 2026-04-20T21:51:41.877Z
     events:
       - _ulid: 01KPPDT0D56E4VHX39E4NZXYFG
         actor: Jacob Chapel
@@ -152863,6 +152874,13 @@ reviews:
           status: pass
           name: daemon-build
         timestamp: 2026-04-20T21:51:39.464Z
+      - _ulid: 01KPPE1FESRZW50ZJDYNHZAADB
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec-validate
+        timestamp: 2026-04-20T21:51:43.065Z
     examined_commit: e8ba51fc71ee9cfdb64ce4899fc3f301bd48ee6d
     external_links: []
     lifecycle_state: open
@@ -152875,5 +152893,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-20T21:47:38.278Z
-    updated_at: 2026-04-20T21:51:38.306Z
+    updated_at: 2026-04-20T21:51:41.877Z
     notes: []
