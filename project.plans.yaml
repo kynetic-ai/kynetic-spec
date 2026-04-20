@@ -40191,6 +40191,8 @@ plans:
           - "@task-docs-concepts-content"
           - "@task-docs-guides-content"
           - "@task-docs-troubleshooting-content"
+          - "@task-docs-release-notes-rendering"
+          - "@task-docs-authoring-conventions"
         description: |
           Add a search input on the docs surface that returns pages
           matching a query, works in both public and local
@@ -40219,27 +40221,41 @@ plans:
 
           Covers: @readme-landing-page ac-1, ac-2.
 
-      - title: Author docs authoring conventions
+      - title: Author docs authoring conventions and update reviewer guidance
         slug: task-docs-authoring-conventions
         priority: 3
-        tags: [docs, process]
+        tags: [docs, process, review]
         spec_ref: "@docs-authoring-conventions"
         depends_on:
           - "@task-docs-section-scaffolding"
         description: |
-          Publish the docs authoring conventions and link them from
-          the docs surface so contributors discover them during
-          authoring.
+          Publish the docs authoring conventions for contributors and
+          update reviewer-facing guidance so the rules are applied at
+          review time, not just at authoring time.
 
-          What: A contribution document (or section within an
-          existing one) names the intent of each top-level docs
-          section, the style convention for each, the no-in-line-
-          enumerations rule for flag and field lists, the
-          reflective/operational boundary rule, and the expectation
-          that user-visible behaviour changes update the
-          corresponding docs page as part of the same PR.
+          Why: ac-3 of @docs-authoring-conventions requires that
+          reviews actually check whether affected docs pages were
+          updated when user-visible behaviour changes. Publishing
+          contributor guidance alone does not satisfy that AC — the
+          review workflow has to surface the check.
 
-          Covers: @docs-authoring-conventions ac-1 through ac-3.
+          What:
+          - A contribution document (or section within an existing
+            one) names the intent of each top-level docs section,
+            the style convention for each, the no-in-line-
+            enumerations rule for flag and field lists, the
+            reflective/operational boundary rule, and the
+            expectation that user-visible behaviour changes update
+            the corresponding docs page as part of the same PR.
+          - The project's review-side guidance (review skill,
+            review gates, or equivalent reviewer checklist) is
+            updated to include a docs-coverage check that cites
+            these conventions, so reviewers apply the rule during
+            review rather than it living only on the authoring side.
+          - The conventions are linked from the docs surface so
+            contributors discover them during authoring.
+
+          Covers: @docs-authoring-conventions ac-1, ac-2, ac-3.
 
       - title: Audit and resolve duplication between reflective and operational docs
         slug: task-docs-boundary-audit
@@ -40409,3 +40425,7 @@ plans:
           @docs-reachability behavioral spec; 12 specs, 12 tasks"
         author: "@claude"
         created_at: 2026-04-20T20:15:25.097Z
+      - _ulid: 01KPP8T87Z3E692TQ8N5M0WRNQ
+        content: address cycle-4 blockers @01KPP8PS
+        author: "@claude"
+        created_at: 2026-04-20T20:20:23.424Z
