@@ -28155,7 +28155,7 @@ runs:
     completed_at: 2026-04-20T22:41:11.996Z
   - _ulid: 01KPPN33KDRJ0XPJNEEA4DR3QW
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -28188,7 +28188,17 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-20T23:56:04.101Z
-        completed_at: 2026-04-20T23:56:04.101Z
+        completed_at: 2026-04-20T23:56:05.111Z
+        notes: "Proposed improvements: 1) add targeted lifecycle-race regression coverage for daemon
+          per-project schedulers, specifically start-stop-reregister interleavings and other
+          cancellation/restart sequences, to reduce multi-cycle review churn; scope medium. 2) add
+          safer file-based payload input for review/comment/check commands (for example
+          body/evidence from file) or stronger CLI ergonomics around quoted payloads, so review
+          artifacts with code-like text do not break in the shell; scope medium."
+      - status: completed
+        step_index: 4
+        started_at: 2026-04-20T23:56:05.111Z
+        completed_at: 2026-04-20T23:56:05.111Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-20T23:54:56.493Z
