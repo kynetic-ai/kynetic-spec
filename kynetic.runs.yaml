@@ -27811,7 +27811,7 @@ runs:
     completed_at: 2026-04-18T18:41:46.644Z
   - _ulid: 01KPPA6E548MTP5AX2PEQ40R48
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -27828,7 +27828,27 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-04-20T20:45:08.536Z
-        completed_at: 2026-04-20T20:45:08.536Z
+        completed_at: 2026-04-20T20:45:28.893Z
+        notes: >-
+          Identified 1 high-confidence friction, 1 success:
+
+
+          FRICTION: src/daemon/ modules require manual build-daemon.cjs registration. Each new .ts
+          file in src/daemon/ must be manually added as a copyFileSync line in
+          scripts/build-daemon.cjs, or the daemon dist/ build silently omits it. Hit in this session
+          when shadow-sync-manager.ts compiled fine in vitest but daemon E2E tests failed with
+          'Cannot find module'. Not covered by existing observations — @01KNEAPHG is about targeted
+          build checks, @01KN5NAP is about old shx cp. This is a different class: the build script
+          uses explicit file enumeration rather than glob/directory copy for src/daemon/*.
+
+
+          SUCCESS: Mirroring sessionSyncSchedulers Map pattern for shadow sync was clean and
+          required minimal server.ts changes. The src/daemon/ extraction pattern (alongside
+          entity-cache.ts) worked well for testability.
+      - status: completed
+        step_index: 3
+        started_at: 2026-04-20T20:45:28.893Z
+        completed_at: 2026-04-20T20:45:28.893Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-20T20:44:31.268Z
