@@ -28,6 +28,11 @@ export const shadowSyncSchedulers: Map<string, ShadowSyncScheduler> = new Map();
 // Serializes concurrent starts per project to prevent TOCTOU races (ac-16)
 const inFlightStarts: Map<string, Promise<void>> = new Map();
 
+// Tracks projects whose stop was called while a start was in-flight (ac-15).
+// If doStart() finds its project in this set after the async config load,
+// it skips scheduler installation so the stop is not silently lost.
+const cancelledStarts: Set<string> = new Set();
+
 /**
  * Create a per-project onPull handler that refreshes the correct project's
  * shadow metadata cache after a successful pull.
@@ -82,6 +87,14 @@ export async function startShadowSyncForProject(
 
     const { loadProjectConfig } = await import("../parser/config.js");
     const { config } = await loadProjectConfig(projectPath);
+
+    // After the async config load, check whether stopShadowSyncForProject was
+    // called while we were awaiting.  If so, abandon the start so the stop is
+    // not silently lost.  (ac-15: stop-during-in-flight-start race)
+    if (cancelledStarts.has(projectPath)) {
+      return;
+    }
+
     const syncInterval = config.shadow.sync_interval;
     const worktreeDir = join(projectPath, config.shadow.directory);
 
@@ -109,15 +122,27 @@ export async function startShadowSyncForProject(
     await promise;
   } finally {
     inFlightStarts.delete(projectPath);
+    cancelledStarts.delete(projectPath);
   }
 }
 
 /**
  * Stop shadow sync scheduler for a specific project.
  *
+ * If a start is currently in-flight (awaiting config load), marks it as
+ * cancelled so the start will abandon scheduler installation when it resumes.
+ * This prevents the race where stop runs while start is suspended on an await,
+ * finds no scheduler, and returns — allowing the start to later install a
+ * scheduler for an already-unregistered project.
+ *
  * AC: @config-shadow ac-15 — background pulls stop when a project is removed
  */
 export function stopShadowSyncForProject(projectPath: string): void {
+  // Signal any in-flight start to abort after its async work completes.
+  if (inFlightStarts.has(projectPath)) {
+    cancelledStarts.add(projectPath);
+  }
+
   const scheduler = shadowSyncSchedulers.get(projectPath);
   if (scheduler) {
     scheduler.stop();

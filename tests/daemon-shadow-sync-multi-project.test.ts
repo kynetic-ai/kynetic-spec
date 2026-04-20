@@ -201,6 +201,46 @@ describe("Multi-project shadow sync", () => {
       stopShadowSyncForProject("/nonexistent/project");
       expect(stopSpy).not.toHaveBeenCalled();
     });
+
+    // AC: @config-shadow ac-15 — stop during in-flight start must suppress scheduler installation
+    it("should cancel an in-flight start so no scheduler leaks after stop", async () => {
+      // Use a deferred promise to control when loadProjectConfig resolves,
+      // opening a window for stop to run while start is suspended.
+      let resolveConfig!: () => void;
+      const configGate = new Promise<void>((r) => { resolveConfig = r; });
+
+      mockedLoadProjectConfig.mockImplementation(async () => {
+        await configGate;
+        return {
+          config: {
+            shadow: {
+              branch: "kspec-meta",
+              directory: ".kspec",
+              sync_interval: 60,
+              remote: { value: "origin", type: "named" as const },
+            },
+          },
+          configPath: "/fake/kspec.config.yaml",
+        } as never;
+      });
+
+      const pubsub = mockPubsub();
+      const getCache = mockGetEntityCache();
+
+      // 1. Start without awaiting — fires loadProjectConfig which is now suspended
+      const startPromise = startShadowSyncForProject(projectA, pubsub, getCache);
+
+      // 2. Stop while start is still in-flight
+      stopShadowSyncForProject(projectA);
+
+      // 3. Let loadProjectConfig resolve — doStart should see the cancellation
+      resolveConfig();
+      await startPromise;
+
+      // No scheduler should have been installed
+      expect(shadowSyncSchedulers.has(projectA)).toBe(false);
+      expect(startSpy).not.toHaveBeenCalled();
+    });
   });
 
   describe("Shutdown — stop all schedulers", () => {
