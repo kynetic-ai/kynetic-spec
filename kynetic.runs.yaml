@@ -27973,7 +27973,7 @@ runs:
     completed_at: 2026-04-20T21:11:37.193Z
   - _ulid: 01KPPCCRCNCTF9PPDC3P1F079Y
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -27986,7 +27986,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-20T21:23:52.395Z
-        completed_at: 2026-04-20T21:23:52.395Z
+        completed_at: 2026-04-20T21:24:01.660Z
+        notes: "Friction points: the default verification surfaces are uneven. Root typecheck excludes
+          packages/daemon, and the full passing test suite still left a package-local daemon import
+          regression undetected until an explicit package build check was run. That makes review
+          completeness depend on reviewer memory instead of a standard gate."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-20T21:24:01.660Z
+        completed_at: 2026-04-20T21:24:01.660Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-20T21:22:55.509Z
