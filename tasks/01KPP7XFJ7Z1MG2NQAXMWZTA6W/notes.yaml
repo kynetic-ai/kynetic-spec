@@ -132,3 +132,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-20T21:51:57.934Z
+  - _ulid: 01KPPF1YSGKGHRTW057MYZTVH7
+    content: "Fix cycle 3: addressed concurrent registration TOCTOU race (blocker). The
+      has()+await+set() pattern allowed two overlapping startShadowSyncForProject calls to both pass
+      the idempotency guard before either hit loadProjectConfig(). Fixed by introducing an
+      inFlightStarts Map<string, Promise<void>> that serializes concurrent starts per project path —
+      the second caller awaits the first's completion and returns. Added concurrent registration
+      test (Promise.all with two starts). All 8064 tests pass, daemon build passes. Re-verified
+      ac-16 (idempotent concurrent registration) and all other ACs (ac-13 through ac-17)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-20T22:09:27.344Z
