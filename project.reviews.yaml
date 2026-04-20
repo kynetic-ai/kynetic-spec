@@ -152287,7 +152287,19 @@ reviews:
     slugs: []
     title: Review extend daemon background shadow sync to all registered projects
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Ran 'npm test -- tests/daemon-shadow-sync-multi-project.test.ts
+          tests/daemon-read-path.test.ts --verbose'. Both files passed; 13 new multi-project shadow
+          sync tests and 26 daemon read-path tests passed.
+        name: targeted-daemon-tests
+        required: true
+        runner: npm-test
+        created_at: 2026-04-20T20:50:33.087Z
+        completed_at: 2026-04-20T20:50:33.087Z
     events:
       - _ulid: 01KPPA818N5B7ENGX8JGKJ3T6Q
         actor: Jacob Chapel
@@ -152316,6 +152328,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPPAGFXHXD1S6TMN79GGXQW5
         timestamp: 2026-04-20T20:50:01.821Z
+      - _ulid: 01KPPAHGEZ8VCRQG6MF4DHQP4T
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted-daemon-tests
+        timestamp: 2026-04-20T20:50:34.080Z
     examined_commit: 0159843c6e04c7088b536b8185d100e86c91e380
     external_links: []
     lifecycle_state: open
@@ -152370,5 +152389,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-20T20:45:23.606Z
-    updated_at: 2026-04-20T20:50:00.753Z
+    updated_at: 2026-04-20T20:50:33.087Z
     notes: []
