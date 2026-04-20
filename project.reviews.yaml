@@ -153289,6 +153289,17 @@ reviews:
         runner: kspec validate
         created_at: 2026-04-20T23:53:48.602Z
         completed_at: 2026-04-20T23:53:48.602Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Daemon build completed successfully and emitted dist/daemon/* output from the staged
+          source tree.
+        name: build:daemon
+        required: true
+        runner: npm run build:daemon
+        created_at: 2026-04-20T23:53:52.020Z
+        completed_at: 2026-04-20T23:53:52.020Z
     events:
       - _ulid: 01KPPMAVM615GCDZ6ZB1335X95
         actor: Jacob Chapel
@@ -153338,6 +153349,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-20T23:53:49.881Z
+      - _ulid: 01KPPN15S507JZBQHS7ZEEFDAE
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: build:daemon
+        timestamp: 2026-04-20T23:53:53.189Z
     examined_commit: e74e79ee2864316da7f5bc658b8fa72753017f2e
     external_links: []
     lifecycle_state: open
@@ -153371,7 +153389,7 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-20T23:41:41.895Z
-    updated_at: 2026-04-20T23:53:48.602Z
+    updated_at: 2026-04-20T23:53:52.020Z
     notes: []
   - _ulid: 01KPPMR2NVTY1SF9B0W3X5C8YY
     slugs: []
