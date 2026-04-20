@@ -27866,7 +27866,7 @@ runs:
     completed_at: 2026-04-20T20:45:52.772Z
   - _ulid: 01KPPAJZMPXAAC6PXTS4GQ7QM2
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -27880,7 +27880,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-20T20:51:35.885Z
-        completed_at: 2026-04-20T20:51:35.885Z
+        completed_at: 2026-04-20T20:51:36.784Z
+        notes: "Friction points: 1) 'kspec validate' is noisy because of long-standing unrelated failures,
+          so it carries limited review signal without extra triage. 2) The task required coverage
+          for all registration/unregistration paths, but the submitted tests left WebSocket
+          registration and watcher-permanent-failure cleanup unverified, which forced manual
+          code-path auditing to establish the gap."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-20T20:51:36.784Z
+        completed_at: 2026-04-20T20:51:36.784Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-20T20:51:22.390Z
