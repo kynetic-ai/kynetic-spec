@@ -28120,7 +28120,7 @@ runs:
     completed_at: 2026-04-20T22:23:14.795Z
   - _ulid: 01KPPGSB6XE6B40RR7MDRXE5FR
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -28132,7 +28132,14 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-20T22:40:48.775Z
-        completed_at: 2026-04-20T22:40:48.775Z
+        completed_at: 2026-04-20T22:40:56.020Z
+        notes: "Identified two high-confidence items: (1) Friction: async lifecycle start/stop race analysis
+          was incremental across fix cycles instead of exhaustive upfront. (2) Success:
+          deferred-promise test pattern for reproducing async races."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-20T22:40:56.020Z
+        completed_at: 2026-04-20T22:40:56.020Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-20T22:39:42.301Z
