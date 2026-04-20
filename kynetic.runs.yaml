@@ -27926,7 +27926,7 @@ runs:
     completed_at: 2026-04-20T20:52:19.825Z
   - _ulid: 01KPPBN5H7W0DZTME6HM1KW6FG
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -27938,7 +27938,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-20T21:10:50.600Z
-        completed_at: 2026-04-20T21:10:50.600Z
+        completed_at: 2026-04-20T21:11:04.147Z
+        notes: "Searched observations, inbox, tasks. No existing tracking for the vi.waitFor pattern. One
+          high-confidence friction point identified: when testing fire-and-forget async callbacks
+          (like onProjectRegistered in WebSocket resolution), vi.waitFor on the spy call count is
+          insufficient — must wait for the side effect (e.g. scheduler appearing in the map) since
+          the spy registers as called before the async body resolves. This is a concrete, repeatable
+          testing pattern in daemon callback tests. One success: review thread structure with clear
+          blockers made the fix cycle efficient and focused."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-20T21:11:04.147Z
+        completed_at: 2026-04-20T21:11:04.147Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-20T21:10:02.535Z
