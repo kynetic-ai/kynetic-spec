@@ -139,6 +139,23 @@ describe("Multi-project shadow sync", () => {
       expect(startSpy).toHaveBeenCalledTimes(1);
     });
 
+    // AC: @config-shadow ac-16 — concurrent registration safety
+    it("should create only one scheduler when the same project is registered concurrently", async () => {
+      setupConfigMock({ syncInterval: 60, hasRemote: true });
+      const pubsub = mockPubsub();
+      const getCache = mockGetEntityCache();
+
+      // Fire two starts concurrently — both should resolve, but only one scheduler should be created
+      await Promise.all([
+        startShadowSyncForProject(projectA, pubsub, getCache),
+        startShadowSyncForProject(projectA, pubsub, getCache),
+      ]);
+
+      expect(shadowSyncSchedulers.size).toBe(1);
+      expect(shadowSyncSchedulers.has(projectA)).toBe(true);
+      expect(startSpy).toHaveBeenCalledTimes(1);
+    });
+
     it("should not create a scheduler when sync_interval is 0", async () => {
       setupConfigMock({ syncInterval: 0, hasRemote: true });
       const pubsub = mockPubsub();

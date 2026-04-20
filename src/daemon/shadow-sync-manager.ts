@@ -25,6 +25,9 @@ export interface ShadowPullReloadableCache {
 // AC: @config-shadow ac-13 — per-project shadow sync schedulers
 export const shadowSyncSchedulers: Map<string, ShadowSyncScheduler> = new Map();
 
+// Serializes concurrent starts per project to prevent TOCTOU races (ac-16)
+const inFlightStarts: Map<string, Promise<void>> = new Map();
+
 /**
  * Create a per-project onPull handler that refreshes the correct project's
  * shadow metadata cache after a successful pull.
@@ -56,30 +59,56 @@ export async function startShadowSyncForProject(
   pubsub: ShadowSyncPubSub,
   getEntityCache: (projectPath: string) => ShadowPullReloadableCache | undefined,
 ): Promise<void> {
+  // Fast path: scheduler already running
   if (shadowSyncSchedulers.has(projectPath)) {
     return;
   }
 
-  const { loadProjectConfig } = await import("../parser/config.js");
-  const { config } = await loadProjectConfig(projectPath);
-  const syncInterval = config.shadow.sync_interval;
-  const worktreeDir = join(projectPath, config.shadow.directory);
+  // Serialize concurrent starts for the same project (ac-16).
+  // If another call is already in flight, await its completion rather than
+  // racing through the async config load and creating a duplicate scheduler.
+  const existing = inFlightStarts.get(projectPath);
+  if (existing) {
+    await existing;
+    return;
+  }
 
-  if (syncInterval > 0 && config.shadow.remote) {
-    const scheduler = new ShadowSyncScheduler({
-      worktreeDir,
-      intervalSeconds: syncInterval,
-      shadowOptions: {
-        branchName: config.shadow.branch,
-        directory: config.shadow.directory,
-        remote: config.shadow.remote?.value,
-        remoteType: config.shadow.remote?.type,
-      },
-      pubsub,
-      onPull: createShadowSyncOnPullHandler(projectPath, getEntityCache),
-    });
-    scheduler.start();
-    shadowSyncSchedulers.set(projectPath, scheduler);
+  const doStart = async (): Promise<void> => {
+    // Re-check after acquiring the slot — a previous in-flight call may have
+    // already created the scheduler before we were scheduled.
+    if (shadowSyncSchedulers.has(projectPath)) {
+      return;
+    }
+
+    const { loadProjectConfig } = await import("../parser/config.js");
+    const { config } = await loadProjectConfig(projectPath);
+    const syncInterval = config.shadow.sync_interval;
+    const worktreeDir = join(projectPath, config.shadow.directory);
+
+    if (syncInterval > 0 && config.shadow.remote) {
+      const scheduler = new ShadowSyncScheduler({
+        worktreeDir,
+        intervalSeconds: syncInterval,
+        shadowOptions: {
+          branchName: config.shadow.branch,
+          directory: config.shadow.directory,
+          remote: config.shadow.remote?.value,
+          remoteType: config.shadow.remote?.type,
+        },
+        pubsub,
+        onPull: createShadowSyncOnPullHandler(projectPath, getEntityCache),
+      });
+      scheduler.start();
+      shadowSyncSchedulers.set(projectPath, scheduler);
+    }
+  };
+
+  const promise = doStart();
+  inFlightStarts.set(projectPath, promise);
+  try {
+    await promise;
+  } finally {
+    inFlightStarts.delete(projectPath);
   }
 }
 
