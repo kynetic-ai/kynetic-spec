@@ -63,7 +63,7 @@ export async function startShadowSyncForProject(
   const syncInterval = config.shadow.sync_interval;
   const worktreeDir = join(projectPath, config.shadow.directory);
 
-  if (syncInterval > 0) {
+  if (syncInterval > 0 && config.shadow.remote) {
     const scheduler = new ShadowSyncScheduler({
       worktreeDir,
       intervalSeconds: syncInterval,

@@ -2,8 +2,9 @@
  * Tests for multi-project shadow sync in daemon
  *
  * Verifies that shadow sync schedulers are started/stopped for projects
- * registered and unregistered via the projects API, middleware auto-registration,
- * and that the shutdown handler stops all schedulers.
+ * registered and unregistered via all four registration paths (POST /api/projects,
+ * middleware auto-registration, WebSocket project resolution, startup) and both
+ * unregistration paths (API DELETE, watcher-permanent-failure), plus shutdown.
  *
  * Task: @01KPP7XFJ7Z1MG2NQAXMWZTA6W
  * Spec: @config-shadow (ac-13, ac-14, ac-15, ac-16, ac-17)
@@ -140,6 +141,18 @@ describe("Multi-project shadow sync", () => {
 
     it("should not create a scheduler when sync_interval is 0", async () => {
       setupConfigMock({ syncInterval: 0, hasRemote: true });
+      const pubsub = mockPubsub();
+      const getCache = mockGetEntityCache();
+
+      await startShadowSyncForProject(projectA, pubsub, getCache);
+
+      expect(shadowSyncSchedulers.has(projectA)).toBe(false);
+      expect(startSpy).not.toHaveBeenCalled();
+    });
+
+    // AC: @config-shadow ac-14 (task case (e): no remote tracking → no scheduler)
+    it("should not create a scheduler when project has no shadow remote tracking configured", async () => {
+      setupConfigMock({ syncInterval: 60, hasRemote: false });
       const pubsub = mockPubsub();
       const getCache = mockGetEntityCache();
 
@@ -319,6 +332,47 @@ describe("Multi-project shadow sync", () => {
       await vi.waitFor(() => expect(shadowSyncSchedulers.has(projectB)).toBe(true));
     });
 
+    // AC: @config-shadow ac-14
+    it("should start shadow sync when project is registered via WebSocket resolution", async () => {
+      setupConfigMock({ syncInterval: 60, hasRemote: true });
+
+      const { ProjectContextManager } = await import(
+        "../packages/daemon/src/project-context"
+      );
+      const { resolveWebSocketProject } = await import(
+        "../packages/daemon/src/websocket/project-resolution"
+      );
+
+      const manager = new ProjectContextManager();
+      const startWatcherSpy = vi.spyOn(manager, "startWatcher").mockResolvedValue(undefined);
+
+      const onRegistered = vi.fn(async (projectPath: string) => {
+        await startShadowSyncForProject(projectPath, mockPubsub(), mockGetEntityCache());
+      });
+
+      const request = new Request("http://localhost/ws", {
+        headers: { Host: "localhost", "X-Kspec-Dir": projectA },
+      });
+
+      const result = await resolveWebSocketProject({
+        request,
+        manager,
+        fallbackPath: "/fallback",
+        onProjectRegistered: onRegistered,
+      });
+
+      expect(result.resolvedPath).toBe(projectA);
+      expect(result.wasRegistered).toBe(true);
+      expect(startWatcherSpy).toHaveBeenCalledWith(projectA);
+
+      // onProjectRegistered is fire-and-forget — wait for the scheduler to appear
+      await vi.waitFor(() => expect(shadowSyncSchedulers.has(projectA)).toBe(true));
+      expect(onRegistered).toHaveBeenCalledTimes(1);
+      expect(startSpy).toHaveBeenCalled();
+
+      startWatcherSpy.mockRestore();
+    });
+
     // AC: @config-shadow ac-15
     it("should stop shadow sync when project is unregistered via DELETE", async () => {
       setupConfigMock({ syncInterval: 60, hasRemote: true });
@@ -360,6 +414,37 @@ describe("Multi-project shadow sync", () => {
       expect(response.status).toBe(200);
       expect(shadowSyncSchedulers.has(projectA)).toBe(false);
       expect(stopSpy).toHaveBeenCalled();
+    });
+
+    // AC: @config-shadow ac-15
+    it("should stop shadow sync when watcher reports permanent failure", async () => {
+      setupConfigMock({ syncInterval: 60, hasRemote: true });
+
+      // Pre-populate a scheduler for projectA
+      await startShadowSyncForProject(projectA, mockPubsub(), mockGetEntityCache());
+      expect(shadowSyncSchedulers.has(projectA)).toBe(true);
+
+      const { ProjectContextManager } = await import(
+        "../packages/daemon/src/project-context"
+      );
+
+      const manager = new ProjectContextManager();
+      manager.registerProject(projectA);
+
+      // Wire unregister callback the same way server.ts does — covers both
+      // API DELETE and watcher-permanent-failure paths
+      manager.setUnregisterCallback((projectPath: string) => {
+        stopShadowSyncForProject(projectPath);
+      });
+
+      // Simulate watcher permanent failure by calling unregisterProject directly,
+      // which is what the onPermanentFailure callback in project-context does
+      manager.unregisterProject(projectA);
+
+      expect(shadowSyncSchedulers.has(projectA)).toBe(false);
+      expect(stopSpy).toHaveBeenCalled();
+      // Project should also be removed from the manager
+      expect(manager.hasProject(projectA)).toBe(false);
     });
   });
 });
