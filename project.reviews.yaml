@@ -152311,6 +152311,18 @@ reviews:
         runner: npm-run-build
         created_at: 2026-04-20T20:50:36.050Z
         completed_at: 2026-04-20T20:50:36.050Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Ran 'kspec validate'. It failed for pre-existing repo-wide issues unrelated to this task
+          (meta.yaml schema error, orphaned skill directory, and longstanding coverage/alignment
+          warnings), so it was not treated as a regression introduced by 0159843c6e04.
+        name: kspec-validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-20T20:50:39.088Z
+        completed_at: 2026-04-20T20:50:39.088Z
     events:
       - _ulid: 01KPPA818N5B7ENGX8JGKJ3T6Q
         actor: Jacob Chapel
@@ -152353,6 +152365,13 @@ reviews:
           status: pass
           name: build
         timestamp: 2026-04-20T20:50:37.169Z
+      - _ulid: 01KPPAHPDTFCPK8WXRRADG3V2D
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec-validate
+        timestamp: 2026-04-20T20:50:40.187Z
     examined_commit: 0159843c6e04c7088b536b8185d100e86c91e380
     external_links: []
     lifecycle_state: open
@@ -152407,5 +152426,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-20T20:45:23.606Z
-    updated_at: 2026-04-20T20:50:36.050Z
+    updated_at: 2026-04-20T20:50:39.088Z
     notes: []
