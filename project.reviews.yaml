@@ -153028,6 +153028,25 @@ reviews:
         runner: kspec
         created_at: 2026-04-20T22:15:50.111Z
         completed_at: 2026-04-20T22:15:50.111Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: packages/daemon/src/server.ts, src/daemon/shadow-sync-manager.ts,
+          packages/daemon/src/shadow-sync-manager.ts, scripts/build-daemon.cjs,
+          tests/daemon-shadow-sync-multi-project.test.ts, packages/daemon/src/routes/projects.ts,
+          packages/daemon/src/middleware/project-context.ts,
+          packages/daemon/src/websocket/project-resolution.ts,
+          packages/daemon/src/project-context.ts. Commands run: git diff, kspec task get, kspec
+          review for-task, kspec item get, rg AC scans, kspec validate, npm test, npm run
+          build:daemon, targeted npx tsx reproduction. Claims verified: full suite passes on this
+          snapshot, daemon build succeeds, and unregistration race still exists. Categories
+          searched: correctness, edge cases, error handling, test quality, integration."
+        name: evidence log
+        required: false
+        runner: review
+        created_at: 2026-04-20T22:17:00.867Z
+        completed_at: 2026-04-20T22:17:00.867Z
     events:
       - _ulid: 01KPPF5JAWD9M4MD4TERBY62SZ
         actor: Jacob Chapel
@@ -153077,6 +153096,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPPFESDNW94QQV7XYGH9QHCE
         timestamp: 2026-04-20T22:16:28.965Z
+      - _ulid: 01KPPFFTS8FATRZTEYWSHF0CDX
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: evidence log
+        timestamp: 2026-04-20T22:17:01.994Z
     examined_commit: 929a05c9360fb46abec33275dccda13e70791dd1
     external_links: []
     lifecycle_state: open
@@ -153134,5 +153160,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-20T22:11:25.660Z
-    updated_at: 2026-04-20T22:16:27.830Z
+    updated_at: 2026-04-20T22:17:00.867Z
     notes: []
