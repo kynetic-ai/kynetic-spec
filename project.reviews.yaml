@@ -152574,6 +152574,13 @@ reviews:
           status: skipped
           name: kspec-validate
         timestamp: 2026-04-20T21:21:43.511Z
+      - _ulid: 01KPPCAY69WC6Q1TA8HHES332T
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPPCAX7MPFT3HASJAWD3KTTZ
+        timestamp: 2026-04-20T21:21:55.913Z
     examined_commit: 7550973cbc98c5362af40c89b13f447d06efc248
     external_links: []
     lifecycle_state: open
@@ -152602,7 +152609,29 @@ reviews:
               integration/build surfaces, error handling, edge cases."
             created_at: 2026-04-20T21:21:33.591Z
         kind: nit
+      - _ulid: 01KPPCAX7MPFT3HASJAWD3KTTZ
+        anchor:
+          type: code
+          commit: 7550973cbc98c5362af40c89b13f447d06efc248
+          line_end: 53
+          line_start: 48
+          path: packages/daemon/src/server.ts
+          side: head
+        entries:
+          - _ulid: 01KPPCAX7M4WGPX8605Q7FKJ7X
+            author: Jacob Chapel
+            body: "server.ts now imports ./shadow-sync-manager.js, but this branch only adds the helper at
+              src/daemon/shadow-sync-manager.ts; there is no sibling source module under
+              packages/daemon/src/. That means the daemon package's own source tree cannot resolve
+              the new import: npm --prefix packages/daemon run build -- --pretty false reports
+              TS2307 at src/server.ts:53, and the package still declares tsc and bun --watch
+              src/index.ts entrypoints that consume this source tree directly. Unless the helper is
+              moved into packages/daemon/src/ or the import path is made resolvable from source,
+              this change regresses the package-local daemon build/dev surface even though the
+              staged root daemon build passes."
+            created_at: 2026-04-20T21:21:54.932Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-20T21:11:23.766Z
-    updated_at: 2026-04-20T21:21:42.476Z
+    updated_at: 2026-04-20T21:21:54.932Z
     notes: []
