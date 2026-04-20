@@ -66,7 +66,7 @@ description: >-
 spec_ref: "@config-shadow"
 meta_ref: null
 plan_ref: null
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -77,6 +77,22 @@ tags:
   - infra
   - bug
 vcs_refs: []
+session_id: 01KPP80Y9YP39J93JH5DBZ8FP2
+history:
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KPP80Y9YP39J93JH5DBZ8FP2
+        previous: null
+      started_at:
+        new: 2026-04-20T20:06:59.246Z
+        previous: null
+    command: task-start
+    timestamp: 2026-04-20T20:06:59.247Z
 created_at: 2026-04-20T20:04:40.647Z
+started_at: 2026-04-20T20:06:59.246Z
 todos: []
 automation: eligible
