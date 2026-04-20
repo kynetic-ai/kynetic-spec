@@ -77,7 +77,7 @@ tags:
   - infra
   - bug
 vcs_refs: []
-review_ref: "@01KPPBQMVP3XCWGRMZKW76844T"
+review_ref: "@01KPPDT0D69TZSYCKKSGNH14P1"
 submission_linkage:
   review_url: null
   branch: dispatch/task/extend-daemon-background-shadow-sync-to-all-registered-projects/01kpp7xf
@@ -235,6 +235,13 @@ history:
         previous: 2026-04-20T21:09:31.522Z
     command: task-submit
     timestamp: 2026-04-20T21:45:49.527Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KPPDT0D69TZSYCKKSGNH14P1"
+        previous: "@01KPPBQMVP3XCWGRMZKW76844T"
+    command: review-link
+    timestamp: 2026-04-20T21:47:41.364Z
 created_at: 2026-04-20T20:04:40.647Z
 started_at: 2026-04-20T21:45:45.947Z
 submitted_at: 2026-04-20T21:45:49.527Z
