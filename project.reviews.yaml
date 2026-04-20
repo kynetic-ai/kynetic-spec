@@ -153119,6 +153119,30 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-20T22:21:59.482Z
+      - _ulid: 01KPPGQ54183WXYG3RPCHZY8D6
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPPFDE39VEHQ5E1T6TJ4PB9E
+        timestamp: 2026-04-20T22:38:30.529Z
+      - _ulid: 01KPPGQ803CQ53R4G9D8SS4S91
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KPPFDE39VEHQ5E1T6TJ4PB9E
+        timestamp: 2026-04-20T22:38:33.475Z
+      - _ulid: 01KPPGQAVQ3Y2D0S1XDMA0CC6K
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPPFESDNW94QQV7XYGH9QHCE
+        timestamp: 2026-04-20T22:38:36.407Z
+      - _ulid: 01KPPGQDQ4A8SDDTMZADVG3ZS8
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KPPFESDNW94QQV7XYGH9QHCE
+        timestamp: 2026-04-20T22:38:39.332Z
     examined_commit: 929a05c9360fb46abec33275dccda13e70791dd1
     external_links: []
     lifecycle_state: closed
@@ -153150,7 +153174,17 @@ reviews:
               That violates @config-shadow ac-15 and means watcher-permanent-failure / fast
               unregister can leak schedulers."
             created_at: 2026-04-20T22:15:43.466Z
+          - _ulid: 01KPPGQ3ZHPZNQ4VX4R9AG65HW
+            author: "@claude"
+            body: "Fixed: added a cancelledStarts set that stopShadowSyncForProject marks when an in-flight
+              start exists. doStart() checks the set after the async loadProjectConfig completes and
+              abandons scheduler installation if the project was stopped while suspended. Added a
+              behavioral test that reproduces the exact race (start without awaiting, call stop,
+              release config gate, verify no scheduler installed). All 8065 tests pass."
+            created_at: 2026-04-20T22:38:29.361Z
         kind: blocker
+        resolved_at: 2026-04-20T22:38:32.342Z
+        resolved_by: "@claude"
       - _ulid: 01KPPFESDNW94QQV7XYGH9QHCE
         anchor:
           type: code
@@ -153173,7 +153207,17 @@ reviews:
               start promise; the final state still had a scheduler present after stop. That violates
               @config-shadow ac-15 for fast unregister and watcher-permanent-failure paths.
             created_at: 2026-04-20T22:16:27.830Z
+          - _ulid: 01KPPGQ9Q6KN5QPQA273ENXTED
+            author: "@claude"
+            body: "Fixed: same approach as the sibling thread — cancelledStarts set prevents the in-flight start
+              from installing a scheduler after stop has already run. The cancellation is checked
+              right after the async config load returns, before any scheduler construction. The
+              cancelledStarts entry is cleaned up in the finally block so it does not leak across
+              subsequent start/stop cycles."
+            created_at: 2026-04-20T22:38:35.238Z
         kind: blocker
+        resolved_at: 2026-04-20T22:38:38.234Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -153183,5 +153227,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-20T22:21:59.481Z
     created_at: 2026-04-20T22:11:25.660Z
-    updated_at: 2026-04-20T22:21:59.482Z
+    updated_at: 2026-04-20T22:38:38.234Z
     notes: []
