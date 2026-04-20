@@ -83,3 +83,24 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-20T20:50:47.330Z
+  - _ulid: 01KPPBKPB75RYGPWZZJSGJ8M9E
+    content: >-
+      Fix cycle 1: addressed both review blockers.
+
+
+      1. Remote tracking guard (blocker): Added `config.shadow.remote` check to the scheduler
+      creation condition in startShadowSyncForProject (line 66). Projects without shadow remote
+      tracking configured now correctly skip scheduler creation, satisfying task case (e) and ACs
+      ac-13/ac-14.
+
+
+      2. Missing test coverage (blocker): Added 3 new test cases:
+         - WebSocket project resolution → shadow sync starts (via resolveWebSocketProject + onProjectRegistered callback)
+         - Watcher-permanent-failure → shadow sync stops (via ProjectContextManager.unregisterProject triggering unregisterCallback)
+         - No-remote-tracking project → no scheduler created
+
+      All 16 tests pass. Full suite (8032 tests) passes with no regressions. Re-verified all ACs
+      (ac-13 through ac-17) against implementation.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-20T21:09:14.215Z
