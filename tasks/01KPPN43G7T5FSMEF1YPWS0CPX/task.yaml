@@ -1,0 +1,33 @@
+_ulid: 01KPPN43G7T5FSMEF1YPWS0CPX
+slugs:
+  - task-docs-concepts-content
+title: Author the Concepts section
+type: task
+description: |
+  Author the eight Concepts pages listed in
+  @docs-concepts-section.
+
+  What: Each page follows the what / why / how it surfaces /
+  alternatives-where-helpful shape. The Specs, Tasks, Plans,
+  and Inbox page includes a decision rule per kind. The
+  Working With kspec Through an Agent page gives durable
+  rules of thumb for framing requests, reading agent output,
+  and knowing when a change needs a spec update first.
+
+  Covers: @docs-concepts-section ac-1 through ac-3.
+spec_ref: "@docs-concepts-section"
+plan_ref: "@plan-user-documentation-foundation"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-docs-section-scaffolding"
+context: []
+priority: 2
+tags:
+  - docs
+  - content
+  - concepts
+vcs_refs: []
+created_at: 2026-04-20T23:55:29.159Z
+todos: []

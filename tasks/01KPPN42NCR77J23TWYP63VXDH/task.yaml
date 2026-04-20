@@ -1,0 +1,35 @@
+_ulid: 01KPPN42NCR77J23TWYP63VXDH
+slugs:
+  - task-docs-section-scaffolding
+title: Establish docs section scaffolding at the repo root
+type: task
+description: |
+  Create the top-level docs directory structure and the five
+  section landing pages so navigation and routing land on
+  valid content.
+
+  What: Create docs/getting-started/, docs/guides/,
+  docs/concepts/, docs/troubleshooting/, and
+  docs/release-notes/ under the repository root. Each
+  section gets an index.md that states the section's
+  purpose and lists its child pages (initially a stub list).
+  Add a documented exclusion rule so docs/history/ and
+  other contributor-only files are not published to the
+  rendered site.
+
+  Covers: @docs-section-taxonomy ac-1, ac-2.
+spec_ref: "@docs-section-taxonomy"
+plan_ref: "@plan-user-documentation-foundation"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-docs-rendering"
+context: []
+priority: 1
+tags:
+  - docs
+  - content
+vcs_refs: []
+created_at: 2026-04-20T23:55:28.300Z
+todos: []

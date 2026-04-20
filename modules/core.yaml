@@ -2159,6 +2159,553 @@ features:
     tags: []
     created: 2026-04-08T07:14:02.061Z
     notes: []
+modules:
+  - _ulid: 01KPPN4244R4AH3WQGW4F8M1CF
+    slugs:
+      - user-documentation
+    title: User Documentation
+    type: module
+    description: |
+      End-user-facing documentation for kspec: the reflective
+      material a developer adopting kspec reads to understand
+      what the system is, how to install and set it up, how to
+      reason about their work in kspec's terms, and how to
+      recover when something unexpected happens. The surface
+      serves both a public audience learning about kspec and a
+      user who has installed kspec and is running the web UI
+      locally; both see the same content.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    tags: []
+    decisions:
+      - _ulid: 01KPPN4256NMCXR0DCXCZR8MT3
+        slugs:
+          - docs-section-taxonomy
+        title: Docs Top-Level Sections
+        type: decision
+        description: |
+          The docs surface presents five top-level sections, no more
+          and no fewer: Getting Started, Guides, Concepts,
+          Troubleshooting, and Release Notes. Each section has a
+          landing page and a set of child pages. Exhaustive
+          enumerations of every command flag or schema field are
+          explicitly absent and are left for a follow-up plan to
+          produce from canonical sources.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              A reader opens the docs surface
+            id: ac-1
+            then: |
+              The five top-level sections shown are Getting Started,
+              Guides, Concepts, Troubleshooting, and Release Notes,
+              in that order
+            when: |
+              The reader consults the primary docs navigation
+          - given: |
+              A section has at least one page
+            id: ac-2
+            then: |
+              The landing page summarises the section's purpose in
+              one paragraph and links to each child page in reading
+              order
+            when: |
+              The reader opens the section's landing page
+        tags: []
+        created: 2026-04-20T23:55:27.782Z
+        notes: []
+    features:
+      - _ulid: 01KPPN42AV1C9YJ3HGX6HR298N
+        slugs:
+          - docs-search
+        title: Docs Search
+        type: feature
+        description: |
+          The docs surface has a search input that matches reader
+          input against the full text of every docs page and returns
+          direct links to matching pages. Search works identically
+          on the public deployment and in the locally-served UI,
+          runs entirely in the reader's browser, and requires no
+          external service.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              A reader is on any docs page
+            id: ac-1
+            then: |
+              The page containing the term is returned as a search
+              result with a link to that page
+            when: |
+              The reader opens the docs search input and submits a
+              term that appears in a docs page
+          - given: |
+              A reader searches from within the locally-served UI
+              with no internet connection
+            id: ac-2
+            then: |
+              Results are returned without any network request to a
+              non-local host
+            when: |
+              The reader submits a search query
+          - given: |
+              A reader searches on the public deployment
+            id: ac-3
+            then: |
+              The same set of matching pages is returned as would be
+              returned from the locally-served UI against the same
+              docs content
+            when: |
+              The reader submits a search query
+        tags: []
+        created: 2026-04-20T23:55:27.963Z
+        notes: []
+    requirements:
+      - _ulid: 01KPPN425ZEHRK328NM6F0Z77Y
+        slugs:
+          - docs-reachability
+        title: Docs Are Reachable From the Web UI and Work Offline
+        type: requirement
+        description: |
+          A reader already in the web UI (public or locally served)
+          reaches docs through the same primary navigation they use
+          to reach any other app destination. The docs surface does
+          not depend on the daemon at runtime: a reader who has
+          installed kspec and is running the UI against their own
+          project can read docs without internet access, and a
+          reader on the public deployment sees the same content
+          without any server-side help.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              A reader is on any app route in the web UI
+            id: ac-1
+            then: |
+              A "Docs" entry is present and navigates to the docs
+              landing page
+            when: |
+              The reader looks at the primary navigation
+          - given: |
+              A reader is running the web UI against a local kspec
+              daemon, disconnected from the internet
+            id: ac-2
+            then: |
+              The page renders fully without any network request to
+              a non-local host
+            when: |
+              The reader navigates to the docs surface and reads a
+              page
+          - given: |
+              A reader visits the publicly deployed docs
+            id: ac-3
+            then: |
+              Pages render without requiring a running kspec daemon
+              and without server-side rendering
+            when: |
+              The reader navigates between docs pages
+        tags: []
+        created: 2026-04-20T23:55:27.807Z
+        notes: []
+      - _ulid: 01KPPN426KMG5PF2R7S5GRYVPM
+        slugs:
+          - docs-navigation-shape
+        title: Docs Navigation and Page Shape
+        type: requirement
+        description: |
+          Within the docs surface, a sidebar shows the current
+          section's pages with the current page indicated, a table
+          of contents for the current page shows its headings, and
+          every heading carries an anchor that can be copied as a
+          stable direct link.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              A reader is on a docs page
+            id: ac-1
+            then: |
+              A sidebar lists the pages of the current section, the
+              current page is visually indicated, and a table of
+              contents for the current page's headings is present
+            when: |
+              The reader views the layout
+          - given: |
+              A docs page has headings
+            id: ac-2
+            then: |
+              The heading has a stable anchor that can be copied as a
+              direct link to that section of the page
+            when: |
+              The reader hovers or clicks a heading
+        tags: []
+        created: 2026-04-20T23:55:27.827Z
+        notes: []
+      - _ulid: 01KPPN427AF18JGJGN3ER4S2AJ
+        slugs:
+          - docs-getting-started-section
+        title: Getting Started Section
+        type: requirement
+        description: |
+          The Getting Started section walks a new reader from a
+          machine with nothing installed to a working kspec project
+          they have directed their agent through. It contains, at
+          minimum, pages covering these stages, in this order:
+
+          - Overview — what kspec is and who it is for
+          - Installation — install via npm, supported Node versions,
+            verifying the install
+          - Initializing a Project — running init and setup, what
+            gets created, what the reader should not edit by hand
+          - Connecting Your Agent — agent setup for at least one
+            supported agent family, and how to confirm the
+            connection works
+          - Your First Action — directing the agent through a first
+            meaningful authoring step
+          - Where to Go Next — pointers into Guides and Concepts
+
+          The section may grow additional pages as kspec evolves
+          without breaking this contract, provided the stages above
+          are covered. Pages are linear: each ends with a "next"
+          link to the following page.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              The Getting Started section is published
+            id: ac-1
+            then: |
+              The pages cover install, project initialization, agent
+              integration, and at least one authoring action, with
+              the commands or procedure for each step shown on its
+              page in a form that can be executed without consulting
+              material outside Getting Started
+            when: |
+              A maintainer follows the section's pages in order in a
+              clean environment
+          - given: |
+              A Getting Started page other than the last is published
+            id: ac-2
+            then: |
+              The page ends with a "next" link pointing to the
+              subsequent page in the section's reading order
+            when: |
+              A reviewer reads the page
+          - given: |
+              The Initializing a Project page is published
+            id: ac-3
+            then: |
+              The page names the shadow branch, identifies the
+              project's shadow directory, names the health-check and
+              repair commands, and instructs the reader not to edit
+              shadow state by hand
+            when: |
+              A reviewer reads the page
+        tags: []
+        created: 2026-04-20T23:55:27.850Z
+        notes: []
+      - _ulid: 01KPPN427Z7FT6BAHH6T76ZYA8
+        slugs:
+          - docs-concepts-section
+        title: Concepts Section
+        type: requirement
+        description: |
+          The Concepts section gives the reader durable mental
+          models for kspec. It contains, at minimum, pages covering
+          these concepts:
+
+          - What kspec Is — the system's purpose and shape
+          - Working With kspec Through an Agent — the mental model
+            for directing an AI agent: how to frame requests, what
+            the agent decides on its own, what it asks about, and
+            how to read the shape of what it has done
+          - Specs, Tasks, Plans, and Inbox — the decision matrix for
+            what goes where
+          - The Shadow Branch — what it is, why spec state is kept
+            there, how it shows up in day-to-day use
+          - Traits — what they are and how they compose acceptance
+            criteria across specs
+          - Reviews — the per-cycle review record model and how it
+            gates work
+          - Agents and Dispatch — how agents execute work and how
+            dispatch assigns it
+          - The Web UI and the Daemon — what each surface is for and
+            when to use them
+
+          Each page follows the same shape: what it is, why it
+          exists, how it surfaces in use, and — where helpful —
+          what alternatives were considered. The section may grow
+          additional concept pages as kspec evolves without breaking
+          this contract, provided the concepts above remain covered.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              A reader opens the Concepts section
+            id: ac-1
+            then: |
+              The concept pages listed in the description are
+              present and linked from the landing page
+            when: |
+              The reader consults the section landing page
+          - given: |
+              A Concepts page is published
+            id: ac-2
+            then: |
+              The page answers what the concept is, why it exists,
+              and how the reader will encounter it in use, without
+              enumerating command flags or schema fields that change
+              per release
+            when: |
+              A reviewer reads the page
+          - given: |
+              A reader wants to decide whether a unit of work is a
+              spec, task, plan, or inbox item
+            id: ac-3
+            then: |
+              The page provides a decision rule for each of the four
+              kinds that the reader can apply without reading
+              further material
+            when: |
+              The reader consults the Specs, Tasks, Plans, and Inbox
+              page
+        tags: []
+        created: 2026-04-20T23:55:27.871Z
+        notes: []
+      - _ulid: 01KPPN428M7TPXS233WEK9RSMX
+        slugs:
+          - docs-guides-section
+        title: Guides Section
+        type: requirement
+        description: |
+          The Guides section covers common end-user workflows as
+          sequential procedures framed around the reader's goal. It
+          contains, at minimum, guides covering these workflows:
+
+          - Starting a New Project
+          - Directing Your Agent Effectively
+          - Importing and Approving a Plan
+          - Authoring and Completing a Task
+          - Reviewing an Agent's Work
+          - Upgrading kspec to a New Version
+          - Recovering From Shadow Branch Issues
+
+          Each guide begins with the reader's goal, lists the
+          prerequisites (including "completed Getting Started" where
+          applicable), provides the sequence of steps, and ends
+          with a verification the reader can perform to know the
+          goal is accomplished. The section may grow additional
+          guides as kspec evolves without breaking this contract,
+          provided the workflows above remain covered.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              A reader opens the Guides section
+            id: ac-1
+            then: |
+              The guides listed in the description are present and
+              linked from the landing page
+            when: |
+              The reader consults the section landing page
+          - given: |
+              A reader opens any guide
+            id: ac-2
+            then: |
+              The guide states the reader's goal, names its
+              prerequisites, presents the steps in sequence, and
+              ends with a verification the reader can perform to
+              confirm the goal was met
+            when: |
+              The reader reads the guide in order
+          - given: |
+              A guide names a kspec command
+            id: ac-3
+            then: |
+              The guide points the reader to the command's help
+              output rather than transcribing the flags inline
+            when: |
+              The reader wants the full flag list for that command
+        tags: []
+        created: 2026-04-20T23:55:27.892Z
+        notes: []
+      - _ulid: 01KPPN429CH4FSNJDW4X327P5M
+        slugs:
+          - docs-troubleshooting-section
+        title: Troubleshooting Section
+        type: requirement
+        description: |
+          The Troubleshooting section is an index of recovery
+          procedures keyed by the symptom the reader observes — in
+          their own output or in their agent's output. Entries grow
+          as new failure modes emerge in the system; the section's
+          initial coverage includes at minimum these symptoms:
+
+          - Shadow branch is out of sync with remote
+          - Shadow branch worktree is broken or missing
+          - Daemon cannot bind to its port because the port is in use
+          - "Cannot run kspec from inside the shadow directory" error
+          - Upgrade reports a pre-plan state or partial scaffold
+          - Agent dispatch refuses to assign a task
+          - A review is blocking merge with an unresolved thread
+
+          Each entry follows the shape: symptom → what this means →
+          recovery procedure → commands to run by name → what a
+          healthy outcome looks like. Entries link to the
+          corresponding concept page where the underlying system is
+          explained rather than re-explaining the primitive inline.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              A Troubleshooting entry is published
+            id: ac-1
+            then: |
+              The entry is titled and opened in terms of the symptom
+              the reader observes in their own output or their
+              agent's output, not in terms of the internal cause
+              name, so the entry is findable by readers who cannot
+              yet name what is wrong
+            when: |
+              A reviewer reads the entry's title and opening
+          - given: |
+              A reader reads a troubleshooting entry
+            id: ac-2
+            then: |
+              The entry describes the symptom, explains what the
+              symptom means, states the recovery procedure in prose,
+              names the commands to run, and describes what a
+              healthy outcome looks like so the reader knows when
+              recovery has succeeded
+            when: |
+              The reader follows the recovery procedure
+          - given: |
+              A troubleshooting entry mentions a kspec primitive the
+              reader may not know
+            id: ac-3
+            then: |
+              The entry links to the corresponding page in the
+              Concepts section rather than re-explaining the
+              primitive inline
+            when: |
+              The reader wants to understand the primitive
+        tags: []
+        created: 2026-04-20T23:55:27.916Z
+        notes: []
+      - _ulid: 01KPPN42A22H28TT8E28EE2CHS
+        slugs:
+          - docs-release-notes-availability
+        title: Release Notes Available in Docs Without Duplication
+        type: requirement
+        description: |
+          The docs surface presents release notes as a single page so
+          a reader can see what changed in the currently installed
+          version and any prior released version without leaving the
+          docs. The notes shown are always the same as the single
+          source of truth already consumed by the CLI's release-notes
+          command, so authoring release notes remains one action and
+          the docs cannot drift from what the CLI shows.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              A reader is on the docs surface
+            id: ac-1
+            then: |
+              The page presents release notes for the current version
+              and an index of prior versions, with each version
+              anchored so direct links to a version work
+            when: |
+              The reader navigates to the release notes page
+          - given: |
+              The docs surface is built
+            id: ac-2
+            then: |
+              The rendered content is equivalent to the source file
+              and no second copy of release notes content exists
+              elsewhere in the repository
+            when: |
+              A reviewer compares the rendered release-notes page
+              against the canonical release notes source file used
+              by the same build
+        tags: []
+        created: 2026-04-20T23:55:27.938Z
+        notes: []
+      - _ulid: 01KPPN42BM1NEZVW51EG5SV4AN
+        slugs:
+          - readme-landing-page
+        title: README Is a Concise Landing Page
+        type: requirement
+        description: |
+          The README is a concise landing page targeting a reader
+          deciding whether to adopt kspec. It contains an overview
+          paragraph, an install section, a first-steps pointer
+          consisting of one or two commands plus a link to the docs
+          surface, and a small set of cross-links into the docs
+          sections. It does not embed guides, concept explanations,
+          or reference content — those live in the docs surface and
+          the README links to them.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              The README is published
+            id: ac-1
+            then: |
+              The file contains at minimum sections covering
+              overview, installation, first steps, and cross-links
+              into the docs, and does not embed guides, concept
+              explanations, or reference content
+            when: |
+              A reviewer reads the file end to end
+          - given: |
+              The README is published
+            id: ac-2
+            then: |
+              Links are present into the docs sections sufficient to
+              reach Getting Started, Concepts, and Guides in one
+              click from the README
+            when: |
+              A reviewer looks for next-step links
+        tags: []
+        created: 2026-04-20T23:55:27.988Z
+        notes: []
+    created: 2026-04-20T23:55:27.748Z
+    notes: []
 requirements:
   - _ulid: 01KKB8FCEPMCC7J05GV278WKGT
     slugs:

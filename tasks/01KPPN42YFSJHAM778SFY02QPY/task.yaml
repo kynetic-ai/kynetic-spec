@@ -1,0 +1,33 @@
+_ulid: 01KPPN42YFSJHAM778SFY02QPY
+slugs:
+  - task-docs-nav-integration
+title: Integrate docs into primary web UI navigation
+type: task
+description: |
+  Add a "Docs" entry to the web UI primary navigation and
+  build the docs-specific layout with section sidebar and
+  per-page table of contents.
+
+  What: Add Docs to the existing nav component. Add the
+  /docs layout component that renders a sidebar listing the
+  current section's pages (current page indicated) and a
+  table-of-contents column showing the current page's
+  headings. Reuse the existing UI components and theming.
+
+  Covers: @docs-reachability ac-1,
+  @docs-navigation-shape ac-1.
+spec_ref: "@docs-reachability"
+plan_ref: "@plan-user-documentation-foundation"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-docs-section-scaffolding"
+context: []
+priority: 2
+tags:
+  - docs
+  - web-ui
+vcs_refs: []
+created_at: 2026-04-20T23:55:28.591Z
+todos: []

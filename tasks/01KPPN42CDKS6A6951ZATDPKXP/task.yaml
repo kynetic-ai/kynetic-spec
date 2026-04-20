@@ -1,0 +1,41 @@
+_ulid: 01KPPN42CDKS6A6951ZATDPKXP
+slugs:
+  - task-docs-rendering
+title: Set up docs rendering in the web UI
+type: task
+description: |
+  Wire the web UI to render Markdown docs content at a
+  /docs/* route tree.
+
+  Why: Docs are reached through the web UI per
+  @docs-reachability; the rendering pipeline is the bridge
+  from authored Markdown to rendered pages.
+
+  What: Extend packages/web-ui with a [...slug] dynamic
+  route under /docs that maps URL paths to Markdown files
+  under the repository's top-level docs/ directory, rendered
+  through the existing marked + Tailwind typography +
+  highlight.js pipeline. Docs content is bundled into the
+  static build so pages work in VITE_STATIC_MODE and in
+  daemon mode without any API call. Adjust vite.config.ts
+  (server.fs.allow) to permit reading from ../../docs.
+  Rendering produces anchored headings and client-side
+  routing for inter-page navigation.
+
+  Covers: @docs-reachability ac-2, ac-3,
+  @docs-navigation-shape ac-2.
+spec_ref: "@docs-reachability"
+plan_ref: "@plan-user-documentation-foundation"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - docs
+  - web-ui
+  - infra
+vcs_refs: []
+created_at: 2026-04-20T23:55:28.013Z
+todos: []

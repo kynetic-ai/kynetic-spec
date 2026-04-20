@@ -1,0 +1,40 @@
+_ulid: 01KPPN44NG07GJCSG9RMPSQ45W
+slugs:
+  - task-docs-search
+title: Add docs search
+type: task
+description: |
+  Add a search input on the docs surface that returns pages
+  matching a query, works in both public and local
+  deployments, and runs entirely in the browser.
+
+  What: Use a static, post-build indexing tool (Pagefind is
+  the evaluated choice) scoped to the docs routes. The
+  build produces a search index that ships with the static
+  output. A search input in the docs layout loads the index
+  lazily and shows matching pages as results.
+
+  Covers: @docs-search ac-1 through ac-3.
+spec_ref: "@docs-search"
+plan_ref: "@plan-user-documentation-foundation"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-docs-rendering"
+  - "@task-docs-nav-integration"
+  - "@task-docs-getting-started-content"
+  - "@task-docs-concepts-content"
+  - "@task-docs-guides-content"
+  - "@task-docs-troubleshooting-content"
+  - "@task-docs-release-notes-rendering"
+context: []
+priority: 3
+tags:
+  - docs
+  - web-ui
+  - search
+  - infra
+vcs_refs: []
+created_at: 2026-04-20T23:55:30.352Z
+todos: []

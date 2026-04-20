@@ -1,0 +1,33 @@
+_ulid: 01KPPN44C9V8R8S9GB3M2YZ02B
+slugs:
+  - task-docs-release-notes-rendering
+title: Render release notes at /docs/release-notes from the canonical source
+type: task
+description: |
+  Wire /docs/release-notes to render the repository's
+  top-level RELEASE_NOTES.md with stable version anchors,
+  without duplicating the file.
+
+  What: The route imports RELEASE_NOTES.md at build time and
+  renders it through the shared Markdown pipeline. Version
+  headings produce anchors of the form v<major>-<minor>-<
+  patch>. The rendered output matches the output of kspec
+  release-notes for the same content.
+
+  Covers: @docs-release-notes-availability ac-1, ac-2.
+spec_ref: "@docs-release-notes-availability"
+plan_ref: "@plan-user-documentation-foundation"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-docs-rendering"
+context: []
+priority: 2
+tags:
+  - docs
+  - web-ui
+  - release-notes
+vcs_refs: []
+created_at: 2026-04-20T23:55:30.057Z
+todos: []

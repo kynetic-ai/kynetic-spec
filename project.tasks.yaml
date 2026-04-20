@@ -26507,3 +26507,197 @@
   started_at: 2026-04-20T22:39:02.002Z
   submitted_at: 2026-04-20T22:39:05.541Z
   automation: eligible
+- _ulid: 01KPPN42CDKS6A6951ZATDPKXP
+  slugs:
+    - task-docs-rendering
+  title: Set up docs rendering in the web UI
+  type: task
+  spec_ref: "@docs-reachability"
+  plan_ref: "@plan-user-documentation-foundation"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - docs
+    - web-ui
+    - infra
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-20T23:55:28.013Z
+- _ulid: 01KPPN42NCR77J23TWYP63VXDH
+  slugs:
+    - task-docs-section-scaffolding
+  title: Establish docs section scaffolding at the repo root
+  type: task
+  spec_ref: "@docs-section-taxonomy"
+  plan_ref: "@plan-user-documentation-foundation"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-docs-rendering"
+  priority: 1
+  tags:
+    - docs
+    - content
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-20T23:55:28.300Z
+- _ulid: 01KPPN42YFSJHAM778SFY02QPY
+  slugs:
+    - task-docs-nav-integration
+  title: Integrate docs into primary web UI navigation
+  type: task
+  spec_ref: "@docs-reachability"
+  plan_ref: "@plan-user-documentation-foundation"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-docs-section-scaffolding"
+  priority: 2
+  tags:
+    - docs
+    - web-ui
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-20T23:55:28.591Z
+- _ulid: 01KPPN437HCT9928K709XV4CEE
+  slugs:
+    - task-docs-getting-started-content
+  title: Author the Getting Started section
+  type: task
+  spec_ref: "@docs-getting-started-section"
+  plan_ref: "@plan-user-documentation-foundation"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-docs-section-scaffolding"
+  priority: 2
+  tags:
+    - docs
+    - content
+    - getting-started
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-20T23:55:28.881Z
+- _ulid: 01KPPN43G7T5FSMEF1YPWS0CPX
+  slugs:
+    - task-docs-concepts-content
+  title: Author the Concepts section
+  type: task
+  spec_ref: "@docs-concepts-section"
+  plan_ref: "@plan-user-documentation-foundation"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-docs-section-scaffolding"
+  priority: 2
+  tags:
+    - docs
+    - content
+    - concepts
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-20T23:55:29.159Z
+- _ulid: 01KPPN43TRBTZC712K4JV1VSZB
+  slugs:
+    - task-docs-guides-content
+  title: Author the Guides section
+  type: task
+  spec_ref: "@docs-guides-section"
+  plan_ref: "@plan-user-documentation-foundation"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-docs-section-scaffolding"
+  priority: 2
+  tags:
+    - docs
+    - content
+    - guides
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-20T23:55:29.496Z
+- _ulid: 01KPPN4435PYT5BK4VFXTPR1F3
+  slugs:
+    - task-docs-troubleshooting-content
+  title: Author the Troubleshooting section seed entries
+  type: task
+  spec_ref: "@docs-troubleshooting-section"
+  plan_ref: "@plan-user-documentation-foundation"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-docs-section-scaffolding"
+    - "@task-docs-concepts-content"
+  priority: 2
+  tags:
+    - docs
+    - content
+    - troubleshooting
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-20T23:55:29.765Z
+- _ulid: 01KPPN44C9V8R8S9GB3M2YZ02B
+  slugs:
+    - task-docs-release-notes-rendering
+  title: Render release notes at /docs/release-notes from the canonical source
+  type: task
+  spec_ref: "@docs-release-notes-availability"
+  plan_ref: "@plan-user-documentation-foundation"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-docs-rendering"
+  priority: 2
+  tags:
+    - docs
+    - web-ui
+    - release-notes
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-20T23:55:30.057Z
+- _ulid: 01KPPN44NG07GJCSG9RMPSQ45W
+  slugs:
+    - task-docs-search
+  title: Add docs search
+  type: task
+  spec_ref: "@docs-search"
+  plan_ref: "@plan-user-documentation-foundation"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-docs-rendering"
+    - "@task-docs-nav-integration"
+    - "@task-docs-getting-started-content"
+    - "@task-docs-concepts-content"
+    - "@task-docs-guides-content"
+    - "@task-docs-troubleshooting-content"
+    - "@task-docs-release-notes-rendering"
+  priority: 3
+  tags:
+    - docs
+    - web-ui
+    - search
+    - infra
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-20T23:55:30.352Z
+- _ulid: 01KPPN44YXNT6N46A2NSJPBBY7
+  slugs:
+    - task-docs-readme-trim
+  title: Trim README and repoint it at the docs surface
+  type: task
+  spec_ref: "@readme-landing-page"
+  plan_ref: "@plan-user-documentation-foundation"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-docs-getting-started-content"
+  priority: 3
+  tags:
+    - docs
+    - readme
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-20T23:55:30.653Z

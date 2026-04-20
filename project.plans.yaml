@@ -40289,10 +40289,31 @@ plans:
       adding a page knows where it goes and what style to follow;
       and the docs are still correct a year later without a large
       catch-up effort.
-    status: approved
+    status: active
     approved_at: 2026-04-20T23:54:44.732Z
-    derived_specs: []
-    derived_tasks: []
+    derived_specs:
+      - "@user-documentation"
+      - "@docs-section-taxonomy"
+      - "@docs-reachability"
+      - "@docs-navigation-shape"
+      - "@docs-getting-started-section"
+      - "@docs-concepts-section"
+      - "@docs-guides-section"
+      - "@docs-troubleshooting-section"
+      - "@docs-release-notes-availability"
+      - "@docs-search"
+      - "@readme-landing-page"
+    derived_tasks:
+      - "@task-docs-rendering"
+      - "@task-docs-section-scaffolding"
+      - "@task-docs-nav-integration"
+      - "@task-docs-getting-started-content"
+      - "@task-docs-concepts-content"
+      - "@task-docs-guides-content"
+      - "@task-docs-troubleshooting-content"
+      - "@task-docs-release-notes-rendering"
+      - "@task-docs-search"
+      - "@task-docs-readme-trim"
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec/plans/user-documentation-foundation.md
     created_at: 2026-04-18T02:52:15.520Z
@@ -40337,3 +40358,138 @@ plans:
         content: address user AC feedback
         author: "@claude"
         created_at: 2026-04-20T23:47:47.180Z
+      - _ulid: 01KPPN4589NJEZ35VVJAMKA6JT
+        content: |-
+          **Why now.** kspec has grown a surface area that a new user
+          cannot discover from `--help` alone, and most users reach
+          kspec by directing an AI coding agent rather than by invoking
+          the CLI themselves. The project needs a single place a human
+          can go to learn what kspec is, install it, connect an agent,
+          and build enough of a mental model to ask their agent for the
+          right thing.
+
+          **Content structure.** Five top-level sections — Getting
+          Started, Guides, Concepts, Troubleshooting, Release Notes —
+          are the full taxonomy. The section shape comes from the
+          task-oriented split common to mature developer-tool CLIs and
+          is deliberately small: more sections invite overlap and decay.
+          Reference-style pages that enumerate every command flag or
+          schema field are intentionally out of scope for this plan and
+          belong to a follow-up that generates reference from canonical
+          sources.
+
+          **Implementation anchors.** The plan's specs describe
+          user-observable behaviour only; the following decisions
+          record how the team intends to realise that behaviour, but
+          they are implementation choices recorded here rather than
+          contractual requirements embedded in specs:
+
+          - **Content source location.** Documentation content is
+            authored as Markdown under `docs/` at the repository root.
+            The directory structure mirrors the URL structure so the
+            file path predicts the rendered URL. The pre-existing
+            `docs/history/` subtree is excluded from rendering via a
+            documented exclusion rule so design history remains in the
+            repo without leaking onto the site.
+          - **Rendering surface.** The existing `packages/web-ui`
+            SvelteKit package is extended with a `[...slug]` dynamic
+            route under `/docs` that reads Markdown from the repo's
+            `docs/` directory at build time and renders pages through
+            the package's existing `marked` + Tailwind typography +
+            `highlight.js` pipeline. This reuses the production-grade
+            static build, theming system, and `gh-pages-ui.yml` deploy
+            workflow the project already maintains. No separate docs
+            generator (VitePress, Docusaurus, Starlight) is introduced.
+          - **Local and public parity.** Because docs are bundled into
+            the static SPA at build time, the same build shipped to the
+            public GitHub Pages deployment is the build installed by
+            npm consumers and served by `kspec serve`. The docs surface
+            makes no daemon calls at runtime, so it works identically
+            across both contexts and offline.
+          - **Search.** Pagefind is the evaluated choice: it indexes
+            rendered HTML after the build, ships static JSON bundles,
+            runs entirely in the browser, and adds no external
+            dependency. A hosted service (Algolia DocSearch) was
+            rejected because it would fail the offline-local
+            requirement; ad-hoc client-side fuzzy search was rejected
+            because it scales poorly past a few dozen pages.
+          - **Release notes.** The existing `RELEASE_NOTES.md` is the
+            single source of truth already consumed by
+            `kspec release-notes`. The `/docs/release-notes` page
+            imports that file at build time and renders it through the
+            same Markdown pipeline as other docs pages.
+
+          These are all implementation details: if the team later
+          switches the renderer, moves the source location, or replaces
+          the search tool, the specs remain valid because they describe
+          what the reader observes, not how it was produced.
+
+          **Maintainability bias.** Every authoring decision is filtered
+          through one question: will this content still be correct a
+          year from now without edits? Pages that answer yes — concept
+          explanations, onboarding shape, workflow procedures,
+          symptom-based troubleshooting — go into docs. Content that
+          answers no — flag enumerations, schema field lists, exact
+          command output — is not hand-transcribed; pages link to the
+          authoritative source. Contribution guidance and the
+          reflective/operational boundary between docs and agent
+          runtime instructions are external process concerns, out of
+          scope for this plan; they should be handled through the
+          project's normal contribution documentation rather than as
+          spec contracts.
+
+          **Enumeration convention for content specs.** Content-section
+          specs (Getting Started, Concepts, Guides, Troubleshooting)
+          name specific pages and entries to make the initial delivery
+          executable and prevent scope creep during authoring. These
+          enumerations are *minimums, not ceilings*: the specs are
+          satisfied as long as the listed content is present, and the
+          sections may grow additional pages over time without breaking
+          the contracts. Adding a new page within an existing section is
+          ordinary content evolution and does not require a spec
+          revision. In contrast, the top-level section taxonomy
+          (@docs-section-taxonomy) is deliberately frozen at exactly five
+          sections — adding a sixth top-level section is an
+          architectural change that *should* require a plan-level
+          decision and a spec revision rather than quiet content creep.
+          This is the line between evolutionary growth (safe) and
+          taxonomic change (deliberate).
+
+          **Agent-mediated users.** A common path users take to reach
+          kspec is by directing an AI coding agent in natural language.
+          The Concepts section includes a dedicated page — Working With
+          kspec Through an Agent — that gives the reader durable rules
+          for framing requests, knowing what the agent should decide
+          versus ask about, and reading the shape of what the agent has
+          done. The rest of the docs remain useful to users who invoke
+          the CLI directly; the agent-mediated framing is additive.
+
+          **Non-scope.** Auto-generated CLI and schema reference (a
+          follow-up plan will design that pipeline); docs localization;
+          multi-version docs builds; marketing content; embedded in-app
+          help beyond what the web UI already renders; contribution
+          guidance and the reflective/operational docs boundary (both
+          are external process concerns rather than specification
+          contracts). `RELEASE_NOTES.md` covers historical behaviour
+          without a separate versioned docs build.
+
+          **Order of operations.** Rendering and section scaffolding
+          come first because everything else depends on them. Navigation
+          integration follows so content has a visible home. Content
+          authoring (Getting Started, Concepts, Guides, Troubleshooting)
+          can proceed in parallel once scaffolding is in place;
+          Troubleshooting depends on Concepts so its entries can link
+          cleanly. Release notes rendering is independent. Docs search
+          depends on the page-producing work so the index covers all
+          content. The README trim depends on Getting Started so the
+          trimmed README can point at real landing pages.
+
+          **Evaluation.** Success is not a page count. Success is that
+          a developer who has never seen kspec before can install it,
+          connect an agent, and direct that agent through a meaningful
+          first action by following Getting Started; a contributor
+          adding a page knows where it goes and what style to follow;
+          and the docs are still correct a year later without a large
+          catch-up effort.
+        author: "@claude"
+        created_at: 2026-04-20T23:55:30.953Z
