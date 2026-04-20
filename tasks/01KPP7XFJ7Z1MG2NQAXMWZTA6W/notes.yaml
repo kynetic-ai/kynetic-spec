@@ -148,3 +148,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-20T22:22:01.506Z
+  - _ulid: 01KPPGQRWTTAA5FFZ2BJDP48EG
+    content: "Fix cycle 4: addressed start/stop race condition (both blocker threads). The
+      inFlightStarts map only serialized concurrent starts but did not let stop cancel or suppress
+      an in-flight start. Added a cancelledStarts set: stopShadowSyncForProject marks the project as
+      cancelled when an in-flight start exists, and doStart() checks the set after the async
+      loadProjectConfig resolves — abandoning scheduler installation if the project was stopped
+      while suspended. Added a behavioral test reproducing the exact race described in the review
+      (start without awaiting, immediate stop, release config gate, verify no scheduler installed).
+      All 8065 tests pass, daemon build passes. Re-verified all ACs (ac-13 through ac-17)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-20T22:38:50.778Z
