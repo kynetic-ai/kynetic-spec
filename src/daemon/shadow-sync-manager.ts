@@ -1,9 +1,11 @@
 /**
  * Multi-project shadow sync scheduler management.
  *
- * Lives in src/daemon/ (not packages/daemon/src/) so that both vitest and the
- * daemon build can import it without path resolution issues. The daemon build
- * compiles src/daemon/ into dist/daemon/ alongside packages/daemon/src/.
+ * Lives in src/daemon/ so that both vitest and the daemon build can import it
+ * with correct parser path resolution. The daemon build (scripts/build-daemon.cjs)
+ * copies this file into the staging directory alongside packages/daemon/src/.
+ * A re-export shim at packages/daemon/src/shadow-sync-manager.ts makes the
+ * import visible in the daemon package source tree for IDE navigation.
  *
  * AC: @config-shadow ac-13, ac-14, ac-15, ac-16, ac-17
  */

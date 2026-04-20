@@ -51,6 +51,7 @@ async function main() {
 
   fs.cpSync(daemonSourceDir, stageDir, { recursive: true });
   fs.copyFileSync(entityCacheSource, path.join(stageDir, "entity-cache.ts"));
+  // Overwrite the re-export shim from packages/daemon/src/ with the real implementation
   fs.copyFileSync(shadowSyncManagerSource, path.join(stageDir, "shadow-sync-manager.ts"));
 
   const entryPoints = collectTypeScriptFiles(stageDir);
