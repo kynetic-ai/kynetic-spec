@@ -152853,6 +152853,17 @@ reviews:
         required: false
         created_at: 2026-04-20T21:51:41.877Z
         completed_at: 2026-04-20T21:51:41.877Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm test running in this snapshot is green so far, including
+          tests/daemon-shadow-sync-multi-project.test.ts, tests/daemon-read-path.test.ts, and
+          tests/daemon-build.test.ts; no branch-introduced regressions observed during review.
+        name: npm-test
+        required: true
+        created_at: 2026-04-20T21:51:51.251Z
+        completed_at: 2026-04-20T21:51:51.251Z
     events:
       - _ulid: 01KPPDT0D56E4VHX39E4NZXYFG
         actor: Jacob Chapel
@@ -152888,6 +152899,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPPE1HJXMDGRCEHR92RQPWE0
         timestamp: 2026-04-20T21:51:46.427Z
+      - _ulid: 01KPPE1RHXTGC57G23KE2DH8B2
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm-test
+        timestamp: 2026-04-20T21:51:52.381Z
     examined_commit: e8ba51fc71ee9cfdb64ce4899fc3f301bd48ee6d
     external_links: []
     lifecycle_state: open
@@ -152924,5 +152942,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-20T21:47:38.278Z
-    updated_at: 2026-04-20T21:51:45.246Z
+    updated_at: 2026-04-20T21:51:51.251Z
     notes: []
