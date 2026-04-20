@@ -152011,6 +152011,17 @@ reviews:
         required: true
         created_at: 2026-04-20T20:19:03.798Z
         completed_at: 2026-04-20T20:19:03.798Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: The rewrite removed the earlier implementation-only specs and moved
+          renderer/source/search-tool choices into Implementation Notes; the remaining spec
+          descriptions and ACs are primarily user-observable contracts.
+        name: Behavioral spec boundary
+        required: true
+        created_at: 2026-04-20T20:19:03.776Z
+        completed_at: 2026-04-20T20:19:03.776Z
     events:
       - _ulid: 01KPP8PSWVVM9MDE8EZSX99DKD
         actor: "@claude"
@@ -152053,6 +152064,13 @@ reviews:
           status: fail
           name: AC coverage by tasks
         timestamp: 2026-04-20T20:19:06.319Z
+      - _ulid: 01KPP8QYF4WAAXSCHBFF9PK3KD
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Behavioral spec boundary
+        timestamp: 2026-04-20T20:19:07.876Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -152096,5 +152114,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-20T20:18:30.428Z
-    updated_at: 2026-04-20T20:19:03.798Z
+    updated_at: 2026-04-20T20:19:03.776Z
     notes: []
