@@ -152581,9 +152581,25 @@ reviews:
           kind: blocker
           thread_ulid: 01KPPCAX7MPFT3HASJAWD3KTTZ
         timestamp: 2026-04-20T21:21:55.913Z
+      - _ulid: 01KPPCBHNJ6MB5JEXDZYZ7SBKZ
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-20T21:22:15.858Z
+      - _ulid: 01KPPCBHNJVJKJ3NFDBMK1PH6F
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-20T21:22:15.859Z
     examined_commit: 7550973cbc98c5362af40c89b13f447d06efc248
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -152631,7 +152647,14 @@ reviews:
               staged root daemon build passes."
             created_at: 2026-04-20T21:21:54.932Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-20T21:22:15.858Z
     created_at: 2026-04-20T21:11:23.766Z
-    updated_at: 2026-04-20T21:21:54.932Z
+    updated_at: 2026-04-20T21:22:15.858Z
     notes: []
