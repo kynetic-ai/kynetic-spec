@@ -47,3 +47,34 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-20T20:09:48.832Z
+  - _ulid: 01KPPA4T8XM57S9C3TY03XD7ZA
+    content: |-
+      Implementation complete. Changes:
+
+      1. Extracted shadow sync management into src/daemon/shadow-sync-manager.ts
+         - startShadowSyncForProject: idempotent via Map.has() guard, reads per-project config
+         - stopShadowSyncForProject: removes and stops scheduler entry
+         - createShadowSyncOnPullHandler: per-project cache refresh (was startup-project-only)
+         - shadowSyncSchedulers: exported Map<string, ShadowSyncScheduler>
+
+      2. server.ts changes:
+         - Imports from new manager module instead of inline definitions
+         - onProjectRegistered now calls startShadowSyncForProject
+         - setUnregisterCallback now calls stopShadowSyncForProject
+         - Startup shadow sync uses startShadowSyncForProject
+         - Shutdown iterates shadowSyncSchedulers.values() and clears
+
+      3. Build: scripts/build-daemon.cjs copies shadow-sync-manager.ts to staging dir
+
+      4. Tests: 13 behavioral tests in daemon-shadow-sync-multi-project.test.ts covering:
+         - ac-13: multi-project schedulers + per-project onPull
+         - ac-14: POST API + middleware registration → shadow sync starts
+         - ac-15: DELETE API + unregister callback → shadow sync stops
+         - ac-16: idempotent double-registration
+         - ac-17: shutdown stops all schedulers
+         - trait-error-guidance: all 6 ACs annotated N/A (background component)
+
+      5. Fixed daemon-read-path.test.ts import (createShadowSyncOnPullHandler moved)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-20T20:43:38.141Z
