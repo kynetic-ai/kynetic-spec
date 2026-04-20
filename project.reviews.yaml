@@ -152022,6 +152022,17 @@ reviews:
         required: true
         created_at: 2026-04-20T20:19:03.776Z
         completed_at: 2026-04-20T20:19:03.776Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "@task-docs-search can complete before @task-docs-release-notes-rendering and
+          @task-docs-authoring-conventions even though @docs-search promises results over every docs
+          page."
+        name: Dependency ordering
+        required: true
+        created_at: 2026-04-20T20:19:03.820Z
+        completed_at: 2026-04-20T20:19:03.820Z
     events:
       - _ulid: 01KPP8PSWVVM9MDE8EZSX99DKD
         actor: "@claude"
@@ -152071,6 +152082,13 @@ reviews:
           status: pass
           name: Behavioral spec boundary
         timestamp: 2026-04-20T20:19:07.876Z
+      - _ulid: 01KPP8QZZB71P5PBHSWJM9FAV8
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: Dependency ordering
+        timestamp: 2026-04-20T20:19:09.420Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -152114,5 +152132,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-20T20:18:30.428Z
-    updated_at: 2026-04-20T20:19:03.776Z
+    updated_at: 2026-04-20T20:19:03.820Z
     notes: []
