@@ -66,7 +66,7 @@ description: >-
 spec_ref: "@config-shadow"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -77,6 +77,14 @@ tags:
   - infra
   - bug
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/extend-daemon-background-shadow-sync-to-all-registered-projects/01kpp7xf
+  captured_at: 2026-04-20T20:43:45.004Z
+  commit: 0159843c6e04c7088b536b8185d100e86c91e380
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KPP80Y9YP39J93JH5DBZ8FP2
 history:
   - author: "@claude"
@@ -92,7 +100,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-20T20:06:59.247Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/extend-daemon-background-shadow-sync-to-all-registered-projects/01kpp7xf
+          captured_at: 2026-04-20T20:43:45.004Z
+          commit: 0159843c6e04c7088b536b8185d100e86c91e380
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-04-20T20:43:45.007Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-20T20:43:45.008Z
 created_at: 2026-04-20T20:04:40.647Z
 started_at: 2026-04-20T20:06:59.246Z
+submitted_at: 2026-04-20T20:43:45.007Z
 todos: []
 automation: eligible
