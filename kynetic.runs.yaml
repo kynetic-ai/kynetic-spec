@@ -27865,7 +27865,7 @@ runs:
     started_at: 2026-04-20T20:44:31.268Z
     completed_at: 2026-04-20T20:45:52.772Z
   - _ulid: 01KPPAJZMPXAAC6PXTS4GQ7QM2
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -27916,7 +27916,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-04-20T20:52:18.924Z
-        completed_at: 2026-04-20T20:52:18.924Z
+        completed_at: 2026-04-20T20:52:19.825Z
+        notes: "Capture decision: no new inbox items, tasks, or observations created. Existing tracking
+          already covers the meaningful systemic friction (@01KNTPX4T), and the path-coverage gap
+          belongs to task @01KPP7XFJ7Z1MG2NQAXMWZTA6W itself rather than a new reflection artifact."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-20T20:51:22.390Z
+    completed_at: 2026-04-20T20:52:19.825Z
