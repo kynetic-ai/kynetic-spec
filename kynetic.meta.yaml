@@ -15091,6 +15091,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-20T21:11:29.838Z
+  - _ulid: 01KPPDS1KCBHSM8VZYPYWDA7P9
+    type: success
+    content: "Re-export shim pattern for daemon cross-package modules: when adding new modules to
+      src/daemon/ that server.ts imports as sibling (./module.js), add a re-export shim at
+      packages/daemon/src/module.ts that forwards exports from ../../../src/daemon/module.js. The
+      build script copies the real implementation over the shim during staging. This matches
+      shadow-sync.ts and session-sync.ts precedent."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-20T21:47:06.732Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
