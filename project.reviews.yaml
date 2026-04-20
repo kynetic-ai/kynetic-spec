@@ -153233,7 +153233,28 @@ reviews:
     slugs: []
     title: Review extend daemon background shadow sync to all registered projects (cycle 5)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: packages/daemon/src/server.ts, packages/daemon/src/shadow-sync-manager.ts,
+          src/daemon/shadow-sync-manager.ts, scripts/build-daemon.cjs,
+          packages/daemon/src/{project-context,middleware/project-context,websocket/project-resolut\
+          ion,routes/projects}.ts,
+          tests/{daemon-shadow-sync-multi-project,daemon-read-path,daemon-session-sync-multi-projec\
+          t}.test.ts. Commands run: git diff/stat, kspec task get, kspec item get @config-shadow,
+          kspec validate, kspec review get prior cycle, npm run build:daemon, targeted daemon tests,
+          npm test, and an ad hoc repro via scripts/test.cjs. Claims verified: full suite passes;
+          daemon build passes; registration callbacks cover POST/middleware/WebSocket and unregister
+          callback covers delete/permanent failure; re-register race reproduced. Categories
+          searched: correctness (1 blocker), edge cases (race windows around
+          start/stop/re-register), error handling (no new blocker), test quality (new tests miss
+          this race), integration/build (build pass)."
+        name: evidence log
+        required: false
+        created_at: 2026-04-20T23:53:38.422Z
+        completed_at: 2026-04-20T23:53:38.422Z
     events:
       - _ulid: 01KPPMAVM615GCDZ6ZB1335X95
         actor: Jacob Chapel
@@ -153255,6 +153276,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPPN0M8E4QQ7Z3JDBZRJR04J
         timestamp: 2026-04-20T23:53:36.372Z
+      - _ulid: 01KPPN0RFWRSCS3KM7KQ6VAR38
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: evidence log
+        timestamp: 2026-04-20T23:53:39.581Z
     examined_commit: e74e79ee2864316da7f5bc658b8fa72753017f2e
     external_links: []
     lifecycle_state: open
@@ -153288,7 +153316,7 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-20T23:41:41.895Z
-    updated_at: 2026-04-20T23:53:35.248Z
+    updated_at: 2026-04-20T23:53:38.422Z
     notes: []
   - _ulid: 01KPPMR2NVTY1SF9B0W3X5C8YY
     slugs: []
