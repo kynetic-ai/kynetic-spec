@@ -28155,9 +28155,22 @@ runs:
     completed_at: 2026-04-20T22:41:11.996Z
   - _ulid: 01KPPN33KDRJ0XPJNEEA4DR3QW
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-20T23:54:56.493Z
+        completed_at: 2026-04-20T23:55:27.077Z
+        notes: "What worked well: reviewing from the raw diff before task notes prevented anchoring and
+          surfaced the real regression independently. Running daemon build, targeted daemon tests,
+          and the full npm test suite in parallel gave strong coverage without blocking on one
+          signal. The ad hoc repro test for the start-stop-reregister race converted a plausible
+          concern into confirmed evidence quickly."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-20T23:55:27.077Z
+        completed_at: 2026-04-20T23:55:27.077Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-20T23:54:56.493Z
