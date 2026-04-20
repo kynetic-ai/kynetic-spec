@@ -15123,6 +15123,28 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-20T22:10:32.512Z
+  - _ulid: 01KPPGV41VVBVQANN3ZB271BNQ
+    type: friction
+    content: "Fix cycle 4 for shadow sync task: concurrent start/stop coordination required multiple
+      review cycles because each cycle only fixed the race scenario the reviewer demonstrated (cycle
+      3: start-start race via inFlightStarts, cycle 4: start-stop race via cancelledStarts). Upfront
+      analysis of all interleaving scenarios (start-start, start-stop, stop-start, stop-stop) would
+      have caught both in one pass. When implementing async lifecycle pairs (start/stop,
+      register/unregister), enumerate all interleaving combinations before committing."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-20T22:40:40.507Z
+  - _ulid: 01KPPGV4BTBQ8ZD0YBQ0FB9G1Z
+    type: success
+    content: Deferred-promise test pattern (configGate) cleanly reproduced the exact race window
+      described in the review. Creating an explicit async gate in the mock lets the test control the
+      interleaving precisely — start fires, gate holds, stop runs, gate releases, assertion checks.
+      This pattern is reusable for any async lifecycle race condition test.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-20T22:40:40.826Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
