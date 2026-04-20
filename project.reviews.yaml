@@ -152521,6 +152521,17 @@ reviews:
         runner: npm
         created_at: 2026-04-20T21:21:39.579Z
         completed_at: 2026-04-20T21:21:39.579Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation reports pre-existing unrelated meta/schema issues in .kspec/modules/meta.yaml
+          plus repository-wide completeness warnings; diff contains no .kspec changes.
+        name: kspec-validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-20T21:21:42.476Z
+        completed_at: 2026-04-20T21:21:42.476Z
     events:
       - _ulid: 01KPPBQMVPKH4QGWCX8NFRQS5S
         actor: Jacob Chapel
@@ -152556,6 +152567,13 @@ reviews:
           status: pass
           name: npm-test
         timestamp: 2026-04-20T21:21:40.588Z
+      - _ulid: 01KPPCAJ2Q78JVQ602DAZ3X2R3
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec-validate
+        timestamp: 2026-04-20T21:21:43.511Z
     examined_commit: 7550973cbc98c5362af40c89b13f447d06efc248
     external_links: []
     lifecycle_state: open
@@ -152586,5 +152604,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-20T21:11:23.766Z
-    updated_at: 2026-04-20T21:21:39.579Z
+    updated_at: 2026-04-20T21:21:42.476Z
     notes: []
