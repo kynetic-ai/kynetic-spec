@@ -152183,6 +152183,17 @@ reviews:
         required: true
         created_at: 2026-04-20T20:22:01.795Z
         completed_at: 2026-04-20T20:22:01.795Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "@task-docs-search now depends on @task-docs-release-notes-rendering and
+          @task-docs-authoring-conventions in addition to the other page-producing prerequisites, so
+          search indexing cannot complete before the docs corpus is in place."
+        name: Dependency ordering
+        required: true
+        created_at: 2026-04-20T20:22:07.220Z
+        completed_at: 2026-04-20T20:22:07.220Z
     events:
       - _ulid: 01KPP8WFKGKWC2W0YHK0R6T4KV
         actor: "@claude"
@@ -152211,6 +152222,13 @@ reviews:
           status: pass
           name: AC coverage by tasks
         timestamp: 2026-04-20T20:22:02.874Z
+      - _ulid: 01KPP8XEN9E4RBYJ07M0B8HW9Q
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Dependency ordering
+        timestamp: 2026-04-20T20:22:08.297Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -152223,5 +152241,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-20T20:21:36.496Z
-    updated_at: 2026-04-20T20:22:01.795Z
+    updated_at: 2026-04-20T20:22:07.220Z
     notes: []
