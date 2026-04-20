@@ -27972,7 +27972,7 @@ runs:
     started_at: 2026-04-20T21:10:02.535Z
     completed_at: 2026-04-20T21:11:37.193Z
   - _ulid: 01KPPCCRCNCTF9PPDC3P1F079Y
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -28018,7 +28018,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-04-20T21:24:16.905Z
-        completed_at: 2026-04-20T21:24:16.905Z
+        completed_at: 2026-04-20T21:24:21.702Z
+        notes: "Capture: no new items added. Existing observation @01KNEAPHG already covers the main
+          friction, and prior review-workflow observations already cover the success pattern.
+          Avoided duplicate inbox/observation entries."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-20T21:22:55.509Z
+    completed_at: 2026-04-20T21:24:21.702Z
