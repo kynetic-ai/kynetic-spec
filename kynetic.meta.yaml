@@ -15102,6 +15102,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-20T21:47:06.732Z
+  - _ulid: 01KPPE5QQAQRXKPX1P037AJ67J
+    type: friction
+    content: "Concurrency test gap: async idempotency checks can pass sequentially while still allowing
+      duplicate work under overlapping calls. Add or document a standard pattern for
+      Promise.all-style concurrency tests on scheduler/registration helpers so ac-16 style
+      guarantees are verified behaviorally."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-04-20T21:54:02.602Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
