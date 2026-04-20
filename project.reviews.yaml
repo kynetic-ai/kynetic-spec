@@ -153266,7 +153266,17 @@ reviews:
     slugs: []
     title: "Plan re-review: User Documentation Foundation (cycle 7)"
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "2026-04-20: kspec plan import plans/user-documentation-foundation.md --dry-run parsed
+          successfully with full document storage preview."
+        name: Plan import dry-run
+        required: true
+        created_at: 2026-04-20T23:49:31.337Z
+        completed_at: 2026-04-20T23:49:31.337Z
     events:
       - _ulid: 01KPPMR2NVQ2VK24TWDSC340CD
         actor: "@claude"
@@ -153281,6 +153291,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-20T23:49:14.092Z
+      - _ulid: 01KPPMS76ZE9Y1P49QQKPM253E
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Plan import dry-run
+        timestamp: 2026-04-20T23:49:32.511Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -153293,5 +153310,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-20T23:48:55.099Z
-    updated_at: 2026-04-20T23:49:12.994Z
+    updated_at: 2026-04-20T23:49:31.337Z
     notes: []
