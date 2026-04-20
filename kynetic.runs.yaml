@@ -28028,7 +28028,7 @@ runs:
     completed_at: 2026-04-20T21:24:21.702Z
   - _ulid: 01KPPE450DRZT6FS5ZTMKDRBZ5
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -28042,7 +28042,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-20T21:54:01.114Z
-        completed_at: 2026-04-20T21:54:01.114Z
+        completed_at: 2026-04-20T21:54:02.149Z
+        notes: "Friction point: the task's new idempotency coverage only exercised sequential
+          re-registration, while the implementation had an await gap before the scheduler map write.
+          That made it easy for concurrent registrations to start duplicate schedulers even though
+          the map ended with one entry."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-20T21:54:02.149Z
+        completed_at: 2026-04-20T21:54:02.149Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-20T21:53:10.670Z
