@@ -55120,7 +55120,7 @@ workspaces:
         head: 3bdfa87e044930b300fe4b063e7ca1ab76416d2c
         last_seen_at: 2026-04-18T18:27:23.919Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-plan-delete-command-01kpemev
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 9d65ad244237659c2a29a45679392595ae0135ee
     bootstrap:
       status: succeeded
@@ -55409,12 +55409,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-20T22:10:19.180Z
+      updated_at: 2026-04-20T22:23:27.029Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-20T22:10:45.306Z
+      updated_at: 2026-04-20T22:23:27.029Z
     integration:
       status: pending
       detail: null
@@ -55422,7 +55422,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 9d65ad244237659c2a29a45679392595ae0135ee
-      updated_at: 2026-04-20T22:10:19.180Z
+      updated_at: 2026-04-20T22:23:27.029Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KPP7XFJ7Z1MG2NQAXMWZTA6W"
@@ -55430,9 +55430,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-20T22:10:45.306Z
-      last_reconciled_at: 2026-04-20T22:10:45.306Z
+      last_reconciled_at: 2026-04-20T22:23:27.029Z
       created_at: 2026-04-20T20:06:13.111Z
-      updated_at: 2026-04-20T22:10:45.306Z
+      updated_at: 2026-04-20T22:23:27.029Z
     workspace_id: dispatch-workspace-01KPP7XFJ7Z1MG2NQAXMWZTA6W
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
