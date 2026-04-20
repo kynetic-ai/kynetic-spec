@@ -1,1 +1,49 @@
-notes: []
+notes:
+  - _ulid: 01KPP86WH0G0494GQHR756KAHH
+    content: >-
+      Approach: Mirror sessionSyncSchedulers pattern for shadow sync.
+
+
+      1. Replace single `shadowSyncScheduler` variable with `shadowSyncSchedulers: Map<string,
+      ShadowSyncScheduler>`
+
+      2. Extract `startShadowSyncForProject(projectPath, pubsub, getEntityCache)` — idempotent via
+      .has() guard, reads per-project config, creates per-project onPull handler
+
+      3. Extract `stopShadowSyncForProject(projectPath)` — remove + stop if present
+
+      4. Wire startShadowSyncForProject into onProjectRegistered callback (alongside
+      startSessionSyncForProject)
+
+      5. Wire stopShadowSyncForProject into setUnregisterCallback (alongside
+      stopSessionSyncForProject)
+
+      6. Replace startup inline construction with startShadowSyncForProject call
+
+      7. Update shutdown to iterate shadowSyncSchedulers.values() and clear
+
+      8. Update createShadowSyncOnPullHandler to accept projectPath parameter (per-project cache
+      refresh)
+
+
+      Test plan: 7 test cases modeling daemon-session-sync-multi-project.test.ts:
+
+      (a) POST /api/projects → shadow pull starts
+
+      (b) X-Kspec-Dir middleware → shadow pull starts
+
+      (c) DELETE → shadow pull stops
+
+      (d) Single-project regression guard
+
+      (e) No remote tracking → no scheduler
+
+      (f) Double registration → single scheduler (idempotency)
+
+      (g) Per-project onPull refreshes correct project cache
+
+
+      Edge cases: idempotent start, cleanup on unregister, shutdown stops all.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-20T20:09:48.832Z
