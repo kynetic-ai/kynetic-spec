@@ -153356,9 +153356,25 @@ reviews:
           status: pass
           name: build:daemon
         timestamp: 2026-04-20T23:53:53.189Z
+      - _ulid: 01KPPN1K79B39BP9A4A8EEABYS
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-20T23:54:06.953Z
+      - _ulid: 01KPPN1K79DKREZDXMZERCCZCC
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-20T23:54:06.954Z
     examined_commit: e74e79ee2864316da7f5bc658b8fa72753017f2e
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -153387,9 +153403,16 @@ reviews:
               ac-14/ac-16 for rapid unregister/re-register cycles.
             created_at: 2026-04-20T23:53:35.248Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-20T23:54:06.953Z
     created_at: 2026-04-20T23:41:41.895Z
-    updated_at: 2026-04-20T23:53:52.020Z
+    updated_at: 2026-04-20T23:54:06.953Z
     notes: []
   - _ulid: 01KPPMR2NVTY1SF9B0W3X5C8YY
     slugs: []
