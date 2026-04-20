@@ -152513,6 +152513,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-20T21:12:41.196Z
+      - _ulid: 01KPPCA9DXZ9KQJFGW7Q0BFH84
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KPPCA8CQ2J4CBZZ7ZWEERCTK
+        timestamp: 2026-04-20T21:21:34.654Z
     examined_commit: 7550973cbc98c5362af40c89b13f447d06efc248
     external_links: []
     lifecycle_state: open
@@ -152522,8 +152529,26 @@ reviews:
       content_hash: ""
       ref: "@01KPP7XFJ7Z1MG2NQAXMWZTA6W"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KPPCA8CQ2J4CBZZ7ZWEERCTK
+        entries:
+          - _ulid: 01KPPCA8CQ0EAPJT329KRFYA7B
+            author: Jacob Chapel
+            body: "Evidence log:\\nFiles read: packages/daemon/src/server.ts, src/daemon/shadow-sync-manager.ts,
+              tests/daemon-shadow-sync-multi-project.test.ts,
+              tests/daemon-session-sync-multi-project.test.ts, scripts/build-daemon.cjs, AGENTS.md,
+              kspec-agents.md.\\nCommands run: git diff --stat/base...head, git diff on changed
+              files, kspec task get, kspec item get @config-shadow, grep for AC annotations, kspec
+              validate, npm test, npm run typecheck -- --pretty false, npm --prefix packages/daemon
+              run build -- --pretty false, ls packages/daemon/src, rg shadow-sync-manager.\\nClaims
+              verified: fix-cycle claim that no-remote projects skip schedulers (confirmed in
+              src/daemon/shadow-sync-manager.ts and tests/daemon-shadow-sync-multi-project.test.ts);
+              claim that WebSocket and watcher-failure paths are covered (confirmed by added tests
+              and passing npm test).\\nCategories searched: correctness, test quality,
+              integration/build surfaces, error handling, edge cases."
+            created_at: 2026-04-20T21:21:33.591Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-20T21:11:23.766Z
-    updated_at: 2026-04-20T21:12:39.974Z
+    updated_at: 2026-04-20T21:21:33.591Z
     notes: []
