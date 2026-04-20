@@ -153103,9 +153103,25 @@ reviews:
           status: pass
           name: evidence log
         timestamp: 2026-04-20T22:17:01.994Z
+      - _ulid: 01KPPFRX9TAF07YXEMT65K1JCS
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-20T22:21:59.482Z
+      - _ulid: 01KPPFRX9T3QH4EE3S77CY9EK9
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-20T22:21:59.482Z
     examined_commit: 929a05c9360fb46abec33275dccda13e70791dd1
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -153158,7 +153174,14 @@ reviews:
               @config-shadow ac-15 for fast unregister and watcher-permanent-failure paths.
             created_at: 2026-04-20T22:16:27.830Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-20T22:21:59.481Z
     created_at: 2026-04-20T22:11:25.660Z
-    updated_at: 2026-04-20T22:17:00.867Z
+    updated_at: 2026-04-20T22:21:59.482Z
     notes: []
