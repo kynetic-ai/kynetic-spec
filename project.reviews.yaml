@@ -153289,6 +153289,18 @@ reviews:
         required: true
         created_at: 2026-04-20T23:49:31.348Z
         completed_at: 2026-04-20T23:49:31.348Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Verified removed refs reflective-operational-boundary, docs-authoring-conventions,
+          task-docs-boundary-audit, and task-docs-authoring-conventions are absent from
+          plans/user-documentation-foundation.md; Non-scope and Order of operations now describe the
+          removals instead.
+        name: Cycle 7 scope cleanup
+        required: true
+        created_at: 2026-04-20T23:49:31.419Z
+        completed_at: 2026-04-20T23:49:31.419Z
     events:
       - _ulid: 01KPPMR2NVQ2VK24TWDSC340CD
         actor: "@claude"
@@ -153317,6 +153329,13 @@ reviews:
           status: pass
           name: AC verifiability re-check
         timestamp: 2026-04-20T23:49:34.363Z
+      - _ulid: 01KPPMSAVX4DG2K23KRNJKZCQ5
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Cycle 7 scope cleanup
+        timestamp: 2026-04-20T23:49:36.253Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -153329,5 +153348,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-20T23:48:55.099Z
-    updated_at: 2026-04-20T23:49:31.348Z
+    updated_at: 2026-04-20T23:49:31.419Z
     notes: []
