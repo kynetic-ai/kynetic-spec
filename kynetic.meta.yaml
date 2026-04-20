@@ -15078,6 +15078,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-20T20:45:40.404Z
+  - _ulid: 01KPPBQTSE4CFMZSK3KRZ9ATSZ
+    type: friction
+    content: "When testing fire-and-forget async callbacks in daemon tests (e.g. onProjectRegistered in
+      WebSocket resolution), vi.waitFor() on the spy call count is insufficient. The spy registers
+      as called before its async body resolves, so side effects (like a scheduler appearing in the
+      map) are not yet visible. Must wait for the side effect directly: await vi.waitFor(() =>
+      expect(map.has(key)).toBe(true)) instead of await vi.waitFor(() =>
+      expect(spy).toHaveBeenCalledTimes(1)). This applies to all daemon callback tests where the
+      callback does async work."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-20T21:11:29.838Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
