@@ -109,3 +109,21 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-20T21:22:17.670Z
+  - _ulid: 01KPPDP81GTYDAQ8E36NVR6Y16
+    content: >-
+      Fix cycle 2: addressed daemon package source tree blocker.
+
+
+      Added re-export shim at packages/daemon/src/shadow-sync-manager.ts that forwards all exports
+      from the canonical src/daemon/shadow-sync-manager.ts. This matches the existing pattern used
+      by shadow-sync.ts and session-sync.ts (re-export shims for parser modules). The build script
+      (build-daemon.cjs) already copies the real implementation over the shim during staging, so
+      runtime behavior and dist/ output are unchanged.
+
+
+      Verified: daemon build passes, all 8063 tests pass (0 failures),
+      dist/daemon/shadow-sync-manager.js contains the real implementation (not the shim).
+      Re-verified all ACs (ac-13 through ac-17).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-20T21:45:35.024Z
