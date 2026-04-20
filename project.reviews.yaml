@@ -153301,6 +153301,17 @@ reviews:
         required: true
         created_at: 2026-04-20T23:49:31.419Z
         completed_at: 2026-04-20T23:49:31.419Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Confirmed @task-docs-search no longer depends on removed task-docs-authoring-conventions,
+          and remaining dependency chain still matches the plan's Order of operations after the two
+          scope removals.
+        name: Dependency cleanup
+        required: true
+        created_at: 2026-04-20T23:49:45.878Z
+        completed_at: 2026-04-20T23:49:45.878Z
     events:
       - _ulid: 01KPPMR2NVQ2VK24TWDSC340CD
         actor: "@claude"
@@ -153352,6 +153363,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-20T23:49:46.956Z
+      - _ulid: 01KPPMSQ690XG6GPCWN96Z7VJ7
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Dependency cleanup
+        timestamp: 2026-04-20T23:49:48.873Z
     examined_commit: null
     external_links: []
     lifecycle_state: closed
@@ -153371,5 +153389,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-20T23:49:46.956Z
     created_at: 2026-04-20T23:48:55.099Z
-    updated_at: 2026-04-20T23:49:46.956Z
+    updated_at: 2026-04-20T23:49:45.878Z
     notes: []
