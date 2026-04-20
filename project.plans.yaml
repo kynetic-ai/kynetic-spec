@@ -40289,8 +40289,8 @@ plans:
       adding a page knows where it goes and what style to follow;
       and the docs are still correct a year later without a large
       catch-up effort.
-    status: draft
-    approved_at: null
+    status: approved
+    approved_at: 2026-04-20T23:54:44.732Z
     derived_specs: []
     derived_tasks: []
     module_ref: null
