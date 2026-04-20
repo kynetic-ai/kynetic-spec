@@ -28155,7 +28155,7 @@ runs:
     completed_at: 2026-04-20T22:41:11.996Z
   - _ulid: 01KPPN33KDRJ0XPJNEEA4DR3QW
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -28170,7 +28170,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-20T23:55:27.077Z
-        completed_at: 2026-04-20T23:55:27.077Z
+        completed_at: 2026-04-20T23:55:48.036Z
+        notes: "Friction points: the new shadow sync manager needed five review cycles because concurrency
+          edge cases were only partially covered at first; each fix addressed one race but left
+          another lifecycle interleaving untested. Recording rich review evidence through shell
+          commands was also brittle when command bodies contained backticks or punctuation, which
+          reinforces the project rule to use file-based payloads or safer quoting for kspec mutation
+          commands."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-20T23:55:48.036Z
+        completed_at: 2026-04-20T23:55:48.036Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-20T23:54:56.493Z
