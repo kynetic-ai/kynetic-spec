@@ -152300,6 +152300,17 @@ reviews:
         runner: npm-test
         created_at: 2026-04-20T20:50:33.087Z
         completed_at: 2026-04-20T20:50:33.087Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Ran 'npm run build'. TypeScript, daemon build, web UI build, and plugin build completed
+          successfully.
+        name: build
+        required: true
+        runner: npm-run-build
+        created_at: 2026-04-20T20:50:36.050Z
+        completed_at: 2026-04-20T20:50:36.050Z
     events:
       - _ulid: 01KPPA818N5B7ENGX8JGKJ3T6Q
         actor: Jacob Chapel
@@ -152335,6 +152346,13 @@ reviews:
           status: pass
           name: targeted-daemon-tests
         timestamp: 2026-04-20T20:50:34.080Z
+      - _ulid: 01KPPAHKFHB0HBAT84X473QJ51
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: build
+        timestamp: 2026-04-20T20:50:37.169Z
     examined_commit: 0159843c6e04c7088b536b8185d100e86c91e380
     external_links: []
     lifecycle_state: open
@@ -152389,5 +152407,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-20T20:45:23.606Z
-    updated_at: 2026-04-20T20:50:33.087Z
+    updated_at: 2026-04-20T20:50:36.050Z
     notes: []
