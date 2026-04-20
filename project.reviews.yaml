@@ -152302,6 +152302,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-20T20:45:41.669Z
+      - _ulid: 01KPPAGE0GH548TYP0EQ4CP0K3
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPPAGD0G4PWNX915FZ93FM28
+        timestamp: 2026-04-20T20:49:58.800Z
     examined_commit: 0159843c6e04c7088b536b8185d100e86c91e380
     external_links: []
     lifecycle_state: open
@@ -152311,8 +152318,27 @@ reviews:
       content_hash: ""
       ref: "@01KPP7XFJ7Z1MG2NQAXMWZTA6W"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KPPAGD0G4PWNX915FZ93FM28
+        anchor:
+          type: code
+          commit: 0159843c6e04c7088b536b8185d100e86c91e380
+          line_end: 363
+          line_start: 249
+          path: tests/daemon-shadow-sync-multi-project.test.ts
+          side: head
+        entries:
+          - _ulid: 01KPPAGD0GTEHP430S62FTRZQD
+            author: Jacob Chapel
+            body: The new coverage only exercises POST /api/projects, middleware auto-registration, and DELETE
+              unregistration. This task explicitly required all four registration paths plus both
+              unregistration paths, but there is still no behavioral test for WebSocket project
+              resolution and no test for watcher-permanent-failure cleanup. Because the
+              implementation relies on a shared callback/unregister hook to cover those code paths,
+              omitting them leaves the main regression surface unverified.
+            created_at: 2026-04-20T20:49:57.776Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-20T20:45:23.606Z
-    updated_at: 2026-04-20T20:45:40.553Z
+    updated_at: 2026-04-20T20:49:57.776Z
     notes: []
