@@ -152662,7 +152662,17 @@ reviews:
     slugs: []
     title: "Plan re-review: User Documentation Foundation (cycle 6)"
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Dry-run succeeded for plans/user-documentation-foundation.md on 2026-04-20; plan remained
+          importable after the timelessness refinements.
+        name: Plan import dry-run
+        required: true
+        created_at: 2026-04-20T21:42:14.810Z
+        completed_at: 2026-04-20T21:42:14.810Z
     events:
       - _ulid: 01KPPDFM8XMMYEZWT70M2084JY
         actor: "@claude"
@@ -152670,6 +152680,13 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-04-20T21:41:58.173Z
+      - _ulid: 01KPPDG5J9XKR4KDJ03GEQZDBH
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Plan import dry-run
+        timestamp: 2026-04-20T21:42:15.881Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -152682,5 +152699,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-20T21:41:58.173Z
-    updated_at: null
+    updated_at: 2026-04-20T21:42:14.810Z
     notes: []
