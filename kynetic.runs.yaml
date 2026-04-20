@@ -27866,7 +27866,7 @@ runs:
     completed_at: 2026-04-20T20:45:52.772Z
   - _ulid: 01KPPAJZMPXAAC6PXTS4GQ7QM2
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -27898,7 +27898,17 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-20T20:51:52.857Z
-        completed_at: 2026-04-20T20:51:52.857Z
+        completed_at: 2026-04-20T20:52:03.999Z
+        notes: "Proposed improvements: 1) Small/medium: add a focused task or observation to restore signal
+          in 'kspec validate' for reviewer workflows, either by fixing the standing meta/schema
+          issues or by exposing a task-scoped validation mode that can separate pre-existing
+          repository noise from branch regressions. No additional improvement is proposed for the
+          path-coverage gap because that is already part of the reviewed task's explicit acceptance
+          scope."
+      - status: completed
+        step_index: 4
+        started_at: 2026-04-20T20:52:03.999Z
+        completed_at: 2026-04-20T20:52:03.999Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-20T20:51:22.390Z
