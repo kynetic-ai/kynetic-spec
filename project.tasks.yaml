@@ -26525,6 +26525,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-20T23:55:28.013Z
+  automation: eligible
 - _ulid: 01KPPN42NCR77J23TWYP63VXDH
   slugs:
     - task-docs-section-scaffolding
@@ -26543,6 +26544,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-20T23:55:28.300Z
+  automation: eligible
 - _ulid: 01KPPN42YFSJHAM778SFY02QPY
   slugs:
     - task-docs-nav-integration
@@ -26561,6 +26563,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-20T23:55:28.591Z
+  automation: eligible
 - _ulid: 01KPPN437HCT9928K709XV4CEE
   slugs:
     - task-docs-getting-started-content
@@ -26580,6 +26583,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-20T23:55:28.881Z
+  automation: eligible
 - _ulid: 01KPPN43G7T5FSMEF1YPWS0CPX
   slugs:
     - task-docs-concepts-content
@@ -26599,6 +26603,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-20T23:55:29.159Z
+  automation: eligible
 - _ulid: 01KPPN43TRBTZC712K4JV1VSZB
   slugs:
     - task-docs-guides-content
@@ -26618,6 +26623,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-20T23:55:29.496Z
+  automation: eligible
 - _ulid: 01KPPN4435PYT5BK4VFXTPR1F3
   slugs:
     - task-docs-troubleshooting-content
@@ -26638,6 +26644,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-20T23:55:29.765Z
+  automation: eligible
 - _ulid: 01KPPN44C9V8R8S9GB3M2YZ02B
   slugs:
     - task-docs-release-notes-rendering
@@ -26657,6 +26664,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-20T23:55:30.057Z
+  automation: eligible
 - _ulid: 01KPPN44NG07GJCSG9RMPSQ45W
   slugs:
     - task-docs-search
@@ -26683,6 +26691,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-20T23:55:30.352Z
+  automation: eligible
 - _ulid: 01KPPN44YXNT6N46A2NSJPBBY7
   slugs:
     - task-docs-readme-trim
@@ -26701,3 +26710,4 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-20T23:55:30.653Z
+  automation: eligible

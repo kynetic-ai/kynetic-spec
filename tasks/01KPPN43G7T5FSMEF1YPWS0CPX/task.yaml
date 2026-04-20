@@ -29,5 +29,14 @@ tags:
   - content
   - concepts
 vcs_refs: []
+history:
+  - author: "@claude"
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-04-20T23:55:47.277Z
 created_at: 2026-04-20T23:55:29.159Z
 todos: []
+automation: eligible

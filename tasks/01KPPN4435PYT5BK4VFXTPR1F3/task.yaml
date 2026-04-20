@@ -28,5 +28,14 @@ tags:
   - content
   - troubleshooting
 vcs_refs: []
+history:
+  - author: "@claude"
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-04-20T23:55:49.216Z
 created_at: 2026-04-20T23:55:29.765Z
 todos: []
+automation: eligible
