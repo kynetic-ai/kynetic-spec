@@ -153070,6 +153070,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-20T22:15:51.320Z
+      - _ulid: 01KPPFETH5G6YX7TRPKFAKTR9K
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPPFESDNW94QQV7XYGH9QHCE
+        timestamp: 2026-04-20T22:16:28.965Z
     examined_commit: 929a05c9360fb46abec33275dccda13e70791dd1
     external_links: []
     lifecycle_state: open
@@ -153102,7 +153109,30 @@ reviews:
               unregister can leak schedulers."
             created_at: 2026-04-20T22:15:43.466Z
         kind: blocker
+      - _ulid: 01KPPFESDNW94QQV7XYGH9QHCE
+        anchor:
+          type: code
+          commit: 929a05c9360fb46abec33275dccda13e70791dd1
+          line_end: 124
+          line_start: 67
+          path: src/daemon/shadow-sync-manager.ts
+          side: head
+        entries:
+          - _ulid: 01KPPFESDPJN9YPKQK1ERZTMJ9
+            author: Jacob Chapel
+            body: startShadowSyncForProject still races with unregistration. The inFlightStarts map prevents
+              duplicate starts, but stopShadowSyncForProject has no way to cancel or suppress a
+              start that is already awaiting loadProjectConfig. Middleware and WebSocket
+              registration both launch onProjectRegistered asynchronously, so a project can be
+              unregistered before that await resolves. In that sequence, stopShadowSyncForProject
+              finds no scheduler and returns, then the in-flight start resumes and installs one for
+              a project that has already been removed. I reproduced this against the real module
+              with npx tsx by starting without awaiting, calling stop immediately, then awaiting the
+              start promise; the final state still had a scheduler present after stop. That violates
+              @config-shadow ac-15 for fast unregister and watcher-permanent-failure paths.
+            created_at: 2026-04-20T22:16:27.830Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-20T22:11:25.660Z
-    updated_at: 2026-04-20T22:15:50.111Z
+    updated_at: 2026-04-20T22:16:27.830Z
     notes: []
