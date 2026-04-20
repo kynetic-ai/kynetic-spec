@@ -152685,6 +152685,17 @@ reviews:
         required: true
         created_at: 2026-04-20T21:42:14.903Z
         completed_at: 2026-04-20T21:42:14.903Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: The refinements did not change task ordering. Rendering/scaffolding still precede nav and
+          content, Troubleshooting still waits on Concepts for concept links, and README trim still
+          waits on Getting Started.
+        name: Dependency ordering
+        required: true
+        created_at: 2026-04-20T21:42:14.847Z
+        completed_at: 2026-04-20T21:42:14.847Z
     events:
       - _ulid: 01KPPDFM8XMMYEZWT70M2084JY
         actor: "@claude"
@@ -152706,6 +152717,13 @@ reviews:
           status: pass
           name: Spec neighborhood
         timestamp: 2026-04-20T21:42:17.463Z
+      - _ulid: 01KPPDG8Q2QA8R3SMBF6C4B0RD
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Dependency ordering
+        timestamp: 2026-04-20T21:42:19.106Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -152718,5 +152736,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-20T21:41:58.173Z
-    updated_at: 2026-04-20T21:42:14.903Z
+    updated_at: 2026-04-20T21:42:14.847Z
     notes: []
