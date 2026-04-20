@@ -152309,6 +152309,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPPAGD0G4PWNX915FZ93FM28
         timestamp: 2026-04-20T20:49:58.800Z
+      - _ulid: 01KPPAGGYXCBN2MFCDXZZDWN50
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPPAGFXHXD1S6TMN79GGXQW5
+        timestamp: 2026-04-20T20:50:01.821Z
     examined_commit: 0159843c6e04c7088b536b8185d100e86c91e380
     external_links: []
     lifecycle_state: open
@@ -152338,7 +152345,30 @@ reviews:
               omitting them leaves the main regression surface unverified.
             created_at: 2026-04-20T20:49:57.776Z
         kind: blocker
+      - _ulid: 01KPPAGFXHXD1S6TMN79GGXQW5
+        anchor:
+          type: code
+          commit: 0159843c6e04c7088b536b8185d100e86c91e380
+          line_end: 80
+          line_start: 63
+          path: src/daemon/shadow-sync-manager.ts
+          side: head
+        entries:
+          - _ulid: 01KPPAGFXHY4XBESDYSE9TTJWY
+            author: Jacob Chapel
+            body: startShadowSyncForProject still creates a scheduler whenever sync_interval > 0, even when the
+              project has no shadow remote tracking configured. In this workspace kspec.config.yaml
+              has no shadow.remote, but running 'node --import tsx -e "import {
+              startShadowSyncForProject, stopShadowSyncForProject, shadowSyncSchedulers } from
+              './src/daemon/shadow-sync-manager.ts'; const project = process.cwd(); await
+              startShadowSyncForProject(project, { broadcast() {} }, () => undefined);
+              console.log(shadowSyncSchedulers.has(project), shadowSyncSchedulers.size);
+              stopShadowSyncForProject(project);"' printed that a scheduler was started and added to
+              the map. That violates @config-shadow ac-13/ac-14, and it also misses task case (e),
+              which requires projects without remote tracking to avoid scheduler creation entirely.
+            created_at: 2026-04-20T20:50:00.753Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-20T20:45:23.606Z
-    updated_at: 2026-04-20T20:49:57.776Z
+    updated_at: 2026-04-20T20:50:00.753Z
     notes: []
