@@ -152696,6 +152696,17 @@ reviews:
         required: true
         created_at: 2026-04-20T21:42:14.847Z
         completed_at: 2026-04-20T21:42:14.847Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "All refined ACs remain claimed: section-level growth-safe specs still map to their
+          content tasks, taxonomy freeze remains covered by task-docs-section-scaffolding, and
+          README reachability ACs remain covered by task-docs-readme-trim."
+        name: AC coverage by tasks
+        required: true
+        created_at: 2026-04-20T21:42:30.249Z
+        completed_at: 2026-04-20T21:42:30.249Z
     events:
       - _ulid: 01KPPDFM8XMMYEZWT70M2084JY
         actor: "@claude"
@@ -152731,6 +152742,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-20T21:42:20.735Z
+      - _ulid: 01KPPDGMK7Q5RJGZS7FB0WRY9T
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: AC coverage by tasks
+        timestamp: 2026-04-20T21:42:31.271Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -152743,5 +152761,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-20T21:41:58.173Z
-    updated_at: 2026-04-20T21:42:14.813Z
+    updated_at: 2026-04-20T21:42:30.249Z
     notes: []
