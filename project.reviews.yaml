@@ -152603,6 +152603,12 @@ reviews:
         payload:
           thread_ulid: 01KPPCAX7MPFT3HASJAWD3KTTZ
         timestamp: 2026-04-20T21:45:03.258Z
+      - _ulid: 01KPPDNE634FCQNXAXZ74P91C8
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KPPCAX7MPFT3HASJAWD3KTTZ
+        timestamp: 2026-04-20T21:45:08.548Z
     examined_commit: 7550973cbc98c5362af40c89b13f447d06efc248
     external_links: []
     lifecycle_state: closed
@@ -152663,6 +152669,8 @@ reviews:
               (build-daemon.cjs) verified passing, all 8063 tests pass."
             created_at: 2026-04-20T21:45:02.268Z
         kind: blocker
+        resolved_at: 2026-04-20T21:45:07.549Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -152672,7 +152680,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-20T21:22:15.858Z
     created_at: 2026-04-20T21:11:23.766Z
-    updated_at: 2026-04-20T21:45:02.268Z
+    updated_at: 2026-04-20T21:45:07.549Z
     notes: []
   - _ulid: 01KPPDFM8XNHC20KM56875XXSE
     slugs: []
