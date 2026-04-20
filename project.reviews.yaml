@@ -152597,6 +152597,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-20T21:22:15.859Z
+      - _ulid: 01KPPDN90TNG0V698REZ4WA26C
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPPCAX7MPFT3HASJAWD3KTTZ
+        timestamp: 2026-04-20T21:45:03.258Z
     examined_commit: 7550973cbc98c5362af40c89b13f447d06efc248
     external_links: []
     lifecycle_state: closed
@@ -152646,6 +152652,16 @@ reviews:
               this change regresses the package-local daemon build/dev surface even though the
               staged root daemon build passes."
             created_at: 2026-04-20T21:21:54.932Z
+          - _ulid: 01KPPDN81WD96TZE5JX6ZDW10G
+            author: "@claude"
+            body: "Fixed: Added a re-export shim at packages/daemon/src/shadow-sync-manager.ts that forwards all
+              exports from the canonical implementation at src/daemon/shadow-sync-manager.ts. This
+              makes the ./shadow-sync-manager.js import visible in the daemon package source tree
+              for IDE navigation, matching the existing pattern used by shadow-sync.ts and
+              session-sync.ts. The build script already copies the real implementation over the shim
+              during staging, so runtime behavior and dist/ output are unchanged. Daemon build
+              (build-daemon.cjs) verified passing, all 8063 tests pass."
+            created_at: 2026-04-20T21:45:02.268Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -152656,7 +152672,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-20T21:22:15.858Z
     created_at: 2026-04-20T21:11:23.766Z
-    updated_at: 2026-04-20T21:22:15.858Z
+    updated_at: 2026-04-20T21:45:02.268Z
     notes: []
   - _ulid: 01KPPDFM8XNHC20KM56875XXSE
     slugs: []
