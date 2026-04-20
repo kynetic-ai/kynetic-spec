@@ -39604,8 +39604,8 @@ plans:
         description: |
           The Getting Started section walks a new reader from a
           machine with nothing installed to a working kspec project
-          they have directed their agent through. It contains
-          exactly these pages, in this order:
+          they have directed their agent through. It contains, at
+          minimum, pages covering these stages, in this order:
 
           - Overview — what kspec is and who it is for
           - Installation — install via npm, supported Node versions,
@@ -39619,14 +39619,16 @@ plans:
             meaningful authoring step
           - Where to Go Next — pointers into Guides and Concepts
 
-          Pages are linear: each ends with a "next" link to the
-          following page.
+          The section may grow additional pages as kspec evolves
+          without breaking this contract, provided the stages above
+          are covered. Pages are linear: each ends with a "next"
+          link to the following page.
         acceptance_criteria:
           - id: ac-1
             given: |
               A reader opens the Getting Started section
             when: |
-              The reader reads the six pages in order
+              The reader reads the section's pages in order
             then: |
               The reader has installed kspec, initialized a project,
               completed agent integration, and performed at least
@@ -39657,7 +39659,8 @@ plans:
         parent: "@user-documentation"
         description: |
           The Concepts section gives the reader durable mental
-          models for kspec. It contains these pages:
+          models for kspec. It contains, at minimum, pages covering
+          these concepts:
 
           - What kspec Is — the system's purpose and shape
           - Working With kspec Through an Agent — the mental model
@@ -39679,7 +39682,9 @@ plans:
 
           Each page follows the same shape: what it is, why it
           exists, how it surfaces in use, and — where helpful —
-          what alternatives were considered.
+          what alternatives were considered. The section may grow
+          additional concept pages as kspec evolves without breaking
+          this contract, provided the concepts above remain covered.
         acceptance_criteria:
           - id: ac-1
             given: |
@@ -39687,8 +39692,8 @@ plans:
             when: |
               The reader consults the section landing page
             then: |
-              The eight pages listed in the description are present
-              and linked from the landing page
+              The concept pages listed in the description are
+              present and linked from the landing page
           - id: ac-2
             given: |
               A reader reads a Concepts page
@@ -39718,7 +39723,7 @@ plans:
         description: |
           The Guides section covers common end-user workflows as
           sequential procedures framed around the reader's goal. It
-          contains these guides:
+          contains, at minimum, guides covering these workflows:
 
           - Starting a New Project
           - Directing Your Agent Effectively
@@ -39732,7 +39737,9 @@ plans:
           prerequisites (including "completed Getting Started" where
           applicable), provides the sequence of steps, and ends
           with a verification the reader can perform to know the
-          goal is accomplished.
+          goal is accomplished. The section may grow additional
+          guides as kspec evolves without breaking this contract,
+          provided the workflows above remain covered.
         acceptance_criteria:
           - id: ac-1
             given: |
@@ -39740,8 +39747,8 @@ plans:
             when: |
               The reader consults the section landing page
             then: |
-              The seven guides listed in the description are present
-              and linked from the landing page
+              The guides listed in the description are present and
+              linked from the landing page
           - id: ac-2
             given: |
               A reader opens any guide
@@ -39768,8 +39775,9 @@ plans:
         description: |
           The Troubleshooting section is an index of recovery
           procedures keyed by the symptom the reader observes — in
-          their own output or in their agent's output. The initial
-          set of entries covers at minimum:
+          their own output or in their agent's output. Entries grow
+          as new failure modes emerge in the system; the section's
+          initial coverage includes at minimum these symptoms:
 
           - Shadow branch is out of sync with remote
           - Shadow branch worktree is broken or missing
@@ -39911,18 +39919,18 @@ plans:
             when: |
               The reader reads it end to end
             then: |
-              The file is under 100 lines of prose and contains
-              exactly these sections: overview, install, first
-              steps, and docs links
+              The file is under 100 lines of prose and contains at
+              minimum sections covering overview, installation,
+              first steps, and cross-links into the docs
           - id: ac-2
             given: |
               A reader finishes the README
             when: |
               The reader wants to take a next action
             then: |
-              A link is present for each of Getting Started, Guides,
-              Concepts, and Release Notes, pointing directly to the
-              corresponding docs section
+              Links are present into the docs sections sufficient to
+              reach Getting Started, Concepts, and Guides in one
+              click from the README
 
       - title: Reflective and Operational Documentation Stay Separate
         slug: reflective-operational-boundary
@@ -40354,6 +40362,23 @@ plans:
       authoritative source. The authoring conventions codify this
       bias so the rule does not have to be rediscovered per page.
 
+      **Enumeration convention for content specs.** Content-section
+      specs (Getting Started, Concepts, Guides, Troubleshooting)
+      name specific pages and entries to make the initial delivery
+      executable and prevent scope creep during authoring. These
+      enumerations are *minimums, not ceilings*: the specs are
+      satisfied as long as the listed content is present, and the
+      sections may grow additional pages over time without breaking
+      the contracts. Adding a new page within an existing section is
+      ordinary content evolution and does not require a spec
+      revision. In contrast, the top-level section taxonomy
+      (@docs-section-taxonomy) is deliberately frozen at exactly five
+      sections — adding a sixth top-level section is an
+      architectural change that *should* require a plan-level
+      decision and a spec revision rather than quiet content creep.
+      This is the line between evolutionary growth (safe) and
+      taxonomic change (deliberate).
+
       **Agent-mediated users.** A common path users take to reach
       kspec is by directing an AI coding agent in natural language.
       The Concepts section includes a dedicated page — Working With
@@ -40429,3 +40454,7 @@ plans:
         content: address cycle-4 blockers @01KPP8PS
         author: "@claude"
         created_at: 2026-04-20T20:20:23.424Z
+      - _ulid: 01KPPDDH794JS0N65BZVK53NYY
+        content: apply timelessness refinements
+        author: "@claude"
+        created_at: 2026-04-20T21:40:49.514Z
