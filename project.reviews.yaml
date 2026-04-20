@@ -152372,9 +152372,25 @@ reviews:
           status: skipped
           name: kspec-validate
         timestamp: 2026-04-20T20:50:40.187Z
+      - _ulid: 01KPPAHVN6FN6KKED5X0Y53J62
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-20T20:50:45.542Z
+      - _ulid: 01KPPAHVN62ZZYM5F4HWWQ21ZZ
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-20T20:50:45.542Z
     examined_commit: 0159843c6e04c7088b536b8185d100e86c91e380
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -152424,7 +152440,14 @@ reviews:
               which requires projects without remote tracking to avoid scheduler creation entirely.
             created_at: 2026-04-20T20:50:00.753Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-20T20:50:45.541Z
     created_at: 2026-04-20T20:45:23.606Z
-    updated_at: 2026-04-20T20:50:39.088Z
+    updated_at: 2026-04-20T20:50:45.542Z
     notes: []

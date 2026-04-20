@@ -66,7 +66,7 @@ description: >-
 spec_ref: "@config-shadow"
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on: []
 context: []
@@ -86,7 +86,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: 01KPP80Y9YP39J93JH5DBZ8FP2
+session_id: null
 history:
   - author: "@claude"
     changes:
@@ -128,6 +128,16 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-20T20:45:26.485Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KPP80Y9YP39J93JH5DBZ8FP2
+    command: review-verdict-needs-work
+    timestamp: 2026-04-20T20:50:47.331Z
 created_at: 2026-04-20T20:04:40.647Z
 started_at: 2026-04-20T20:06:59.246Z
 submitted_at: 2026-04-20T20:43:45.007Z
