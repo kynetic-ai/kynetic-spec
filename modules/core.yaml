@@ -729,6 +729,28 @@ features:
             then: The daemon performs a background shadow pull to pick up changes pushed by other clones, making
               remote shadow state available locally without requiring a manual kspec shadow sync
             when: A configurable sync interval elapses (default 60s)
+          - given: the daemon is serving multiple registered projects, each with shadow remote tracking
+              configured
+            id: ac-13
+            then: every such project receives a background shadow pull
+            when: the configured sync interval elapses
+          - given: a project is registered with a running daemon after startup
+            id: ac-14
+            then: background shadow pulls begin for that project without requiring a daemon restart
+            when: registration completes and that project has shadow remote tracking configured
+          - given: a registered project is removed from the daemon (either by explicit unregistration or because
+              the daemon can no longer observe it)
+            id: ac-15
+            then: background shadow pulls for that project stop
+            when: removal completes
+          - given: a project with shadow remote tracking is already receiving background pulls
+            id: ac-16
+            then: the pull cadence is unchanged and no duplicate pulls occur
+            when: the project is registered again via any registration path
+          - given: the daemon is running with one or more projects receiving background pulls
+            id: ac-17
+            then: background pulls stop for all such projects before the daemon process exits
+            when: the daemon shuts down
         tags: []
         features:
           - _ulid: 01KKCED6N48VAWE15SBABSC3MB

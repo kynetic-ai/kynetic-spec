@@ -26486,3 +26486,21 @@
   submitted_at: 2026-04-18T18:26:45.835Z
   completed_at: 2026-04-18T18:39:46.536Z
   automation: eligible
+- _ulid: 01KPP7XFJ7Z1MG2NQAXMWZTA6W
+  slugs: []
+  title: Extend daemon background shadow sync to all registered projects
+  type: task
+  spec_ref: "@config-shadow"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 3
+  tags:
+    - shadow
+    - daemon
+    - infra
+    - bug
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-20T20:04:40.647Z
+  automation: eligible

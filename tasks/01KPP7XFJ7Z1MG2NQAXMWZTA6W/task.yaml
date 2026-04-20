@@ -1,0 +1,82 @@
+_ulid: 01KPP7XFJ7Z1MG2NQAXMWZTA6W
+slugs: []
+title: Extend daemon background shadow sync to all registered projects
+type: task
+description: >-
+  What: The daemon must run background shadow-branch sync for every registered project with shadow
+  remote tracking, not only the project the daemon was launched with. Coverage includes all four
+  registration paths — daemon startup, POST /api/projects, middleware auto-registration via
+  X-Kspec-Dir, and WebSocket project resolution — plus unregistration cleanup (both explicit API
+  DELETE and watcher-permanent-failure) and daemon shutdown. Starting background pulls for a project
+  that already has them must be idempotent.
+
+
+  Why: Today the daemon instantiates a single ShadowSyncScheduler at startup bound to the startup
+  project path. Projects registered afterward receive file watchers and session-sync schedulers but
+  no shadow-sync scheduler. Their shadow branches never pick up remote changes until the user runs
+  `kspec shadow sync` manually. Users serving multiple projects from one daemon (common on developer
+  machines and during dispatch) expect each project to stay in sync. An analogous gap for session
+  sync was closed previously; shadow sync was missed.
+
+
+  How:
+
+  1. In packages/daemon/src/server.ts, replace the single `shadowSyncScheduler` variable with
+  `shadowSyncSchedulers: Map<projectPath, ShadowSyncScheduler>`, mirroring the shape of
+  `sessionSyncSchedulers`.
+
+  2. Extract `startShadowSyncForProject(projectPath)` and `stopShadowSyncForProject(projectPath)`
+  helpers. Start must be idempotent: if an entry already exists in the map for that project, return
+  without starting a second scheduler. Otherwise read per-project shadow config, return early if
+  remote tracking is not configured, and otherwise instantiate and start a scheduler. Stop removes
+  and stops the scheduler entry if present.
+
+  3. Change the startup block to call `startShadowSyncForProject(startupProjectPath)` instead of
+  constructing the scheduler inline.
+
+  4. Invoke `startShadowSyncForProject` from the shared `onProjectRegistered` callback in server.ts
+  — the same callback already passed to the projects API routes, the `project-context` middleware,
+  and WebSocket project resolution. This single wiring covers all four registration paths.
+
+  5. Invoke `stopShadowSyncForProject` via `projectContextManager.setUnregisterCallback` in
+  server.ts so that both API DELETE and watcher-permanent-failure paths stop pulls.
+
+  6. On daemon shutdown, iterate `shadowSyncSchedulers` and stop every scheduler before the process
+  exits.
+
+  7. Replace the startup-bound `onPull` handler with a per-project one: when the scheduler for a
+  given project pulls, refresh the shadow metadata cache for that specific project's entity cache —
+  not the startup project's.
+
+  8. Add behavioral tests modeled on tests/daemon-session-sync-multi-project.test.ts:
+     (a) Project registered via POST /api/projects after startup receives a background shadow pull on the next interval.
+     (b) Project registered via X-Kspec-Dir middleware receives a background shadow pull on the next interval.
+     (c) Explicitly unregistering a project (API DELETE) stops its background pulls.
+     (d) When only the startup project is registered, it still receives background pulls (single-project regression guard).
+     (e) A project registered without shadow remote tracking configured does not cause a scheduler to be created.
+     (f) Registering the same project twice (e.g., middleware auto-register followed by explicit POST /api/projects) results in only one scheduler being created — verified by counting scheduler constructions or interval firings.
+     (g) The per-project `onPull` handler, when invoked for a non-startup project, refreshes that project's shadow metadata cache and not the startup project's.
+
+  Acceptance criteria satisfied: @config-shadow ac-13, ac-14, ac-15, ac-16, ac-17.
+
+
+  Out of scope: Changes to the sync fetch/rebase/push logic itself. Dispatch-mode interaction with
+  shadow sync. Multi-daemon coordination. WebSocket broadcast of shadow_sync events (re-use existing
+  scheduler broadcast callback).
+spec_ref: "@config-shadow"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - shadow
+  - daemon
+  - infra
+  - bug
+vcs_refs: []
+created_at: 2026-04-20T20:04:40.647Z
+todos: []
+automation: eligible
