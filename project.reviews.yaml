@@ -152246,9 +152246,25 @@ reviews:
           status: pass
           name: Spec neighborhood
         timestamp: 2026-04-20T20:22:13.908Z
+      - _ulid: 01KPP8XSFF3X3M4449XP4MFGW2
+        actor: codex@local
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-04-20T20:22:19.375Z
+      - _ulid: 01KPP8XSFFYH11K54G8DNP8PW4
+        actor: codex@local
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-20T20:22:19.375Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -152256,7 +152272,14 @@ reviews:
       ref: "@plan-user-documentation-foundation"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex@local
+        role: reviewer
+        created_at: 2026-04-20T20:22:19.374Z
     created_at: 2026-04-20T20:21:36.496Z
-    updated_at: 2026-04-20T20:22:12.818Z
+    updated_at: 2026-04-20T20:22:19.375Z
     notes: []
