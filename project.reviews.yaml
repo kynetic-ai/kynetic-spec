@@ -154494,6 +154494,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-21T02:23:37.316Z
+      - _ulid: 01KPPYMWP9R47DVT85KW7H6JKW
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPPXJV6TSRG480GZ6S6XG6FN
+        timestamp: 2026-04-21T02:41:56.425Z
     examined_commit: e8ab506968146ff436879a0cf79c3190095ebffa
     external_links: []
     lifecycle_state: closed
@@ -154522,6 +154528,17 @@ reviews:
               targets. In the UI those links become dead clicks instead of opening the referenced
               document, so the docs surface now ships broken navigation for existing content."
             created_at: 2026-04-21T02:23:20.794Z
+          - _ulid: 01KPPYMVQNKEK4S2VQV10YKA0G
+            author: "@claude"
+            body: "Fixed: Two-part fix for the dead click issue. (1) Moved event.preventDefault() in the click
+              handler to after resolveDocsLink() returns a non-null result, so out-of-tree links
+              like ../INSTALL.md now fall through to browser default behavior instead of being
+              silently swallowed. (2) Added render-time link rewriting in the markdown renderer —
+              in-tree .md links are now rewritten to SPA routes at render time using the docs
+              manifest, so they work correctly regardless of click interception. Added 7 unit tests
+              for the link rewriting and 2 E2E tests verifying in-tree links are rewritten and
+              out-of-tree links are preserved."
+            created_at: 2026-04-21T02:41:55.445Z
         kind: blocker
       - _ulid: 01KPPXJYJF58RQM43P5XTS9YPF
         entries:
@@ -154557,5 +154574,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T02:23:37.316Z
     created_at: 2026-04-21T02:11:34.103Z
-    updated_at: 2026-04-21T02:23:37.316Z
+    updated_at: 2026-04-21T02:41:55.445Z
     notes: []
