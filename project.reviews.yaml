@@ -156229,6 +156229,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-21T04:55:55.802Z
+      - _ulid: 01KPQ6AAQ7PXDW2YQ7V7A7GBJJ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPQ6A9KSPB844VM7TDCWJXWH
+        timestamp: 2026-04-21T04:55:58.951Z
     examined_commit: e84d2e6c24c173fcc9d4cfec78dd7aa5b486d598
     external_links: []
     lifecycle_state: open
@@ -156257,7 +156264,26 @@ reviews:
               to  and  before this page is publishable.
             created_at: 2026-04-21T04:55:51.823Z
         kind: blocker
+      - _ulid: 01KPQ6A9KSPB844VM7TDCWJXWH
+        anchor:
+          type: code
+          commit: e84d2e6c24c173fcc9d4cfec78dd7aa5b486d598
+          line_end: 45
+          line_start: 44
+          path: packages/web-ui/vite-plugin-docs.ts
+          side: head
+        entries:
+          - _ulid: 01KPQ6A9KSZA7Q6DDSBMN3FE5H
+            author: Jacob Chapel
+            body: The new section landing pages are emitted as , , etc. because  only strips the  suffix. The
+              docs route does an exact  lookup, so  no longer resolves to the section landing page
+              even though that is the natural section URL and the existing docs tests/navigation
+              already assume section roots like . I verified the generated manifest only
+              contains  and , with no bare  slug. Either normalize  to the parent slug or add
+              equivalent route resolution before this scaffolding ships.
+            created_at: 2026-04-21T04:55:57.818Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-21T04:49:05.066Z
-    updated_at: 2026-04-21T04:55:54.733Z
+    updated_at: 2026-04-21T04:55:57.818Z
     notes: []
