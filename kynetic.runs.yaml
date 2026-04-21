@@ -30891,7 +30891,7 @@ runs:
     started_at: 2026-04-21T19:50:57.138Z
     completed_at: 2026-04-21T19:52:01.385Z
   - _ulid: 01KPRVE2JVXXECX6KQRPZ1F66K
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -30939,7 +30939,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-04-21T20:25:49.254Z
-        completed_at: 2026-04-21T20:25:49.254Z
+        completed_at: 2026-04-21T20:26:06.799Z
+        notes: "Capture summary: did not duplicate the already-tracked npm test teardown hang. Captured one
+          new friction observation for detached-review merge guidance when the integration branch is
+          already attached to another worktree."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T20:24:16.219Z
+    completed_at: 2026-04-21T20:26:06.799Z
