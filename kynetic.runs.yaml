@@ -28454,7 +28454,7 @@ runs:
     completed_at: 2026-04-21T01:01:01.841Z
   - _ulid: 01KPPVHK659HNTCXB6X63N2NAW
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -28479,7 +28479,16 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-04-21T01:48:55.377Z
-        completed_at: 2026-04-21T01:48:55.377Z
+        completed_at: 2026-04-21T01:48:56.341Z
+        notes: "Proposed improvements: 1) capture a friction observation that review guidance should treat
+          cached test-runner failures as provisional until a fresh rerun confirms them; this is
+          small process scope and could inform review conventions or tooling. 2) capture a success
+          observation that spec reviews should verify ACs at the rendered behavior layer, not only
+          helper/function tests, because that check caught a real coverage gap in this session."
+      - status: completed
+        step_index: 3
+        started_at: 2026-04-21T01:48:56.341Z
+        completed_at: 2026-04-21T01:48:56.341Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T01:47:42.661Z
