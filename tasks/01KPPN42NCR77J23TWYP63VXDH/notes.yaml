@@ -111,3 +111,11 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-21T05:52:23.015Z
+  - _ulid: 01KPQAPKVT9YG4MNJYSR3RYEDP
+    content: Merge to dev aborted after review approval because manual merge produced conflicts in
+      packages/web-ui/vite-plugin-docs.ts, packages/web-ui/vite.config.ts, and
+      tests/web-ui-docs-rendering.test.ts. Per dispatch merge policy, conflict resolution is
+      returned to the worker branch instead of being guessed in review.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-21T06:12:35.834Z
