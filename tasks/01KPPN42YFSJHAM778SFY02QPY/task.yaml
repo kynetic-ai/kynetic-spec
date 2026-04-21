@@ -19,8 +19,11 @@ description: |
 spec_ref: "@docs-reachability"
 plan_ref: "@plan-user-documentation-foundation"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved in review @01KPQKENTV5699CWAAZFYKGHWF and merged
+  dispatch/task/task-docs-nav-integration/01kppn42 into dev. Removed dead docs landing-page links
+  for empty sections and added manifest-backed landing-page link coverage.
 depends_on:
   - "@task-docs-section-scaffolding"
 context: []
@@ -144,8 +147,24 @@ history:
         previous: "@01KPQHCAFQVKD5R1M6EJ09808M"
     command: review-link
     timestamp: 2026-04-21T08:45:36.576Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved in review @01KPQKENTV5699CWAAZFYKGHWF and merged
+          dispatch/task/task-docs-nav-integration/01kppn42 into dev. Removed dead docs landing-page
+          links for empty sections and added manifest-backed landing-page link coverage.
+        previous: null
+      completed_at:
+        new: 2026-04-21T08:53:40.034Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-21T08:53:40.045Z
 created_at: 2026-04-20T23:55:28.591Z
 started_at: 2026-04-21T08:30:19.867Z
 submitted_at: 2026-04-21T08:43:39.877Z
+completed_at: 2026-04-21T08:53:40.034Z
 todos: []
 automation: eligible
