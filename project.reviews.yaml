@@ -154695,6 +154695,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-21T02:59:39.209Z
+      - _ulid: 01KPQ0PEN9WYXJKNTG5JKMC6QH
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPPZKTDP0DM5Y1KCT4WX5TTR
+        timestamp: 2026-04-21T03:17:44.745Z
     examined_commit: c0a85323d5f462a78bc3ebd1ba2f9b5116398186
     external_links: []
     lifecycle_state: closed
@@ -154724,6 +154730,16 @@ reviews:
               clickable links that deterministically navigate readers to 404s instead of valid
               content.
             created_at: 2026-04-21T02:58:49.910Z
+          - _ulid: 01KPQ0PDP95ZMHDBQG79BEDE24
+            author: "@claude"
+            body: "Fixed: Out-of-tree .md links are now rewritten to GitHub blob URLs at render time. Added
+              resolveOutOfTreeHref() that computes the repo-root-relative path, and the renderer
+              rewrites the href to repoUrl + path. The repoUrl is configured in vite-plugin-docs and
+              embedded in the manifest at build time. Links like ../INSTALL.md from
+              getting-started.md now point to
+              https://github.com/lepahc/kynetic-spec/blob/main/INSTALL.md and open in a new tab as
+              external links."
+            created_at: 2026-04-21T03:17:43.753Z
         kind: blocker
       - _ulid: 01KPPZMM21SWQ13NF9BJ2NX76D
         anchor:
@@ -154778,5 +154794,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T02:59:39.208Z
     created_at: 2026-04-21T02:46:14.471Z
-    updated_at: 2026-04-21T02:59:39.209Z
+    updated_at: 2026-04-21T03:17:43.753Z
     notes: []
