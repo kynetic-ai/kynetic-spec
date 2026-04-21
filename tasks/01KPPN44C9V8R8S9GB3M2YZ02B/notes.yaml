@@ -48,3 +48,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-21T05:19:06.858Z
+  - _ulid: 01KPQ8QD9WSFWS9Y1ZP9RS820W
+    content: "Fix cycle 1: addressed the blocker requesting integration tests against the real build
+      wiring. Added a 'real vite config wiring' test suite (3 tests) that uses the actual repository
+      paths — same as vite.config.ts — to verify the manifest includes a release-notes entry with
+      byte-for-byte content from RELEASE_NOTES.md, working version anchors, and no duplication.
+      Existing isolated plugin tests retained. Full suite passes (8129 tests, 0 failures). Both
+      review threads resolved."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T05:38:04.732Z
