@@ -29444,7 +29444,7 @@ runs:
     started_at: 2026-04-21T07:17:10.661Z
     completed_at: 2026-04-21T07:18:22.591Z
   - _ulid: 01KPQF9AVSYFTM6FN2EXK5JRYR
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -29497,7 +29497,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-04-21T07:34:13.786Z
-        completed_at: 2026-04-21T07:34:13.786Z
+        completed_at: 2026-04-21T07:34:24.727Z
+        notes: No new captures. Existing observations already cover the shell-sensitive review comment
+          payload friction, and the remaining spec_ref-less review-checklist gap is noted but not
+          captured because confidence is moderate and based on a single session.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T07:32:43.513Z
+    completed_at: 2026-04-21T07:34:24.727Z
