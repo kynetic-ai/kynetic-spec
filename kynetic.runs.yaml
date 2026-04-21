@@ -30482,7 +30482,7 @@ runs:
     completed_at: 2026-04-21T11:49:19.289Z
   - _ulid: 01KPQYCSZ1SGKK222A8VQ0E64G
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -30512,7 +30512,16 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-21T11:57:48.943Z
-        completed_at: 2026-04-21T11:57:48.943Z
+        completed_at: 2026-04-21T11:57:50.078Z
+        notes: "Friction points: this detached reviewer snapshot did not have  on PATH, so the review had to
+          switch to . That is systemic review-snapshot friction, but search showed it is already
+          tracked in existing observations. A second friction was shell quoting when recording
+          review checks with rich evidence strings; that was avoidable and not strong enough to
+          capture as systemic debt."
+      - status: completed
+        step_index: 4
+        started_at: 2026-04-21T11:57:50.078Z
+        completed_at: 2026-04-21T11:57:50.078Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T11:56:45.921Z
