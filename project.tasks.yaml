@@ -26561,7 +26561,7 @@
   type: task
   spec_ref: "@docs-reachability"
   plan_ref: "@plan-user-documentation-foundation"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-docs-section-scaffolding"
@@ -26572,6 +26572,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-20T23:55:28.591Z
+  started_at: 2026-04-21T07:54:17.916Z
   automation: eligible
 - _ulid: 01KPPN437HCT9928K709XV4CEE
   slugs:
