@@ -30992,7 +30992,7 @@ runs:
     completed_at: 2026-04-21T21:57:56.095Z
   - _ulid: 01KPS73N51KK146130NCQNTNTV
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -31005,7 +31005,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-21T23:49:33.353Z
-        completed_at: 2026-04-21T23:49:33.353Z
+        completed_at: 2026-04-21T23:49:34.334Z
+        notes: "Friction points: this snapshot still showed two recurring review problems. First,
+          docs-search on detail pages was hidden behind a desktop-only sidebar, so mobile coverage
+          regressed despite the feature appearing complete. Second, the new tests relied heavily on
+          source-scanning instead of behavioral verification. Repo-wide validation noise and the
+          test runner ending without a final summary also made it harder to use deterministic checks
+          as merge gates."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-21T23:49:34.334Z
+        completed_at: 2026-04-21T23:49:34.334Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T23:48:17.697Z
