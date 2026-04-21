@@ -29445,9 +29445,22 @@ runs:
     completed_at: 2026-04-21T07:18:22.591Z
   - _ulid: 01KPQF9AVSYFTM6FN2EXK5JRYR
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-21T07:32:43.513Z
+        completed_at: 2026-04-21T07:33:14.049Z
+        notes: "Worked well: the review flow was mechanically solid. Creating a fresh review record,
+          anchoring the blocker, recording checks, and letting the verdict auto-transition the task
+          to needs_work all behaved predictably. Running a direct tsx reproduction alongside npm
+          test was especially effective for disproving false positives and confirming the
+          stale-history regression."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-21T07:33:14.049Z
+        completed_at: 2026-04-21T07:33:14.049Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T07:32:43.513Z
