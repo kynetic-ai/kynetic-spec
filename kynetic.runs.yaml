@@ -30417,7 +30417,7 @@ runs:
     completed_at: 2026-04-21T11:23:51.408Z
   - _ulid: 01KPQXWDF56ZFGPX7KD61PVHXJ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -30432,7 +30432,26 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-21T11:48:20.582Z
-        completed_at: 2026-04-21T11:48:20.582Z
+        completed_at: 2026-04-21T11:48:57.123Z
+        notes: >-
+          High-confidence observations:
+
+
+          FRICTION: In dispatch worktree workspaces, 'kspec' is not on PATH — had to use 'npm exec
+          kspec --' for all kspec commands after the initial ones (which worked via shell profile).
+          This is a worktree-specific PATH issue. The bootstrap script (01KGHFM9, completed) may
+          have addressed the general case but the dispatch worktree scenario still hits this.
+          Searched: existing completed task 01KGHFM9 covers bootstrap broadly, but the mid-session
+          PATH loss pattern in worktrees may be a residual gap.
+
+
+          SUCCESS: The docs test pattern (loading real manifest from docs/ via docsPlugin, then
+          asserting on content and rendered HTML) is a strong, reusable pattern for content-oriented
+          AC verification. It tests behavior (bundled docs render correctly) not source code.
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-21T11:48:57.123Z
+        completed_at: 2026-04-21T11:48:57.123Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-21T11:47:48.837Z
