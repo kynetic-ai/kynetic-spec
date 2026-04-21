@@ -1,1 +1,48 @@
-notes: []
+notes:
+  - _ulid: 01KPPP8BBDMGFZVWBFEXZ9KNFQ
+    content: >-
+      Approach: Build-time bundling of docs content via Vite virtual module plugin.
+
+
+      Implementation plan:
+
+      1. Vite plugin (vite-plugin-docs.ts): Scans ../../docs/ at build time, reads all .md files,
+      exports a manifest (slug -> {title, content, path}) as a virtual module 'virtual:docs'. This
+      ensures zero runtime network requests - content is embedded in the JS bundle.
+
+      2. /docs/[...slug] catch-all route: Dynamic route that looks up slug in the manifest, renders
+      markdown through existing marked + highlight.js pipeline, produces anchored headings (id
+      attributes on h1-h6).
+
+      3. Navigation: Add 'Docs' entry to Sidebar (in a new group or alongside existing) and
+      MobileNav. Links to {base}/docs.
+
+      4. vite.config.ts: Add server.fs.allow for ../../docs so dev server can read the docs
+      directory.
+
+      5. Anchored headings: Custom marked renderer extension for h1-h6 that adds id attributes and
+      anchor links.
+
+
+      Key decisions:
+
+      - Using virtual module pattern (not raw file imports) for clean build-time bundling
+
+      - Content bundled into JS means it works in both VITE_STATIC_MODE and daemon mode without API
+      calls (AC ac-2, ac-3)
+
+      - Client-side routing via SvelteKit goto() for inter-page navigation
+
+      - Reusing existing renderMarkdown() pipeline with heading anchor extension
+
+
+      ACs covered:
+
+      - @docs-reachability ac-2: Content bundled at build time, no network requests needed
+
+      - @docs-reachability ac-3: Static pages, no daemon or SSR required
+
+      - @docs-navigation-shape ac-2: Anchored headings with stable direct links
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T00:15:16.845Z
