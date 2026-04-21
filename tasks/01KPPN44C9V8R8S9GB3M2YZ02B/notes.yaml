@@ -1,1 +1,23 @@
-notes: []
+notes:
+  - _ulid: 01KPQ63Q3S7G6TTWCEPQAM8DTZ
+    content: >-
+      Approach: 
+
+      1. Extend vite-plugin-docs to also bundle RELEASE_NOTES.md from repo root as a separate field
+      in the virtual module manifest (releaseNotes: { content, title }). This avoids duplicating the
+      file — the build reads the canonical source once.
+
+      2. Create a dedicated route at /docs/release-notes that renders the bundled content through
+      renderDocsMarkdown with TOC and anchored headings.
+
+      3. Fix slugifyHeading to convert dots to hyphens so version headings v0.13.0 produce anchors
+      like v0-13-0 (spec requires v<major>-<minor>-<patch>).
+
+      4. Add the release-notes entry to the docs manifest entries array so it appears in docs
+      navigation.
+
+      5. Tests: E2E-style test verifying the release notes entry is in the manifest and renders
+      correctly with version anchors.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T04:52:22.265Z
