@@ -28204,7 +28204,7 @@ runs:
     started_at: 2026-04-20T23:54:56.493Z
   - _ulid: 01KPPNB9TDA8M2KCTBH1WF3KT2
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -28233,7 +28233,14 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-21T03:16:31.980Z
-        completed_at: 2026-04-21T03:16:31.980Z
+        completed_at: 2026-04-21T03:16:35.023Z
+        notes: "Proposed and approved: (1) inbox item to codify decision-task anti-pattern in plan skill,
+          (2) inbox item for exemplar plans in skill folder. AC verifiability rejected as system
+          capture — already in skill."
+      - status: completed
+        step_index: 4
+        started_at: 2026-04-21T03:16:35.023Z
+        completed_at: 2026-04-21T03:16:35.023Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-20T23:59:25.005Z
