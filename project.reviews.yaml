@@ -158792,6 +158792,13 @@ reviews:
           kind: nit
           thread_ulid: 01KPQNAYXCZ5HB35XHXRZN3X8E
         timestamp: 2026-04-21T09:18:29.587Z
+      - _ulid: 01KPQNB3TT0KV42YJYNT9Z4V1S
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPQNB2JBWZVDMBEJCSYNB5AX
+        timestamp: 2026-04-21T09:18:33.306Z
     examined_commit: 48ec9274ce6f63470071c763e16b4d2fe3044f7e
     external_links: []
     lifecycle_state: open
@@ -158975,7 +158982,25 @@ reviews:
               quality, product/docs alignment, integration with current CLI behavior."
             created_at: 2026-04-21T09:18:28.269Z
         kind: nit
+      - _ulid: 01KPQNB2JBWZVDMBEJCSYNB5AX
+        anchor:
+          type: code
+          commit: 48ec9274ce6f63470071c763e16b4d2fe3044f7e
+          line_end: 57
+          line_start: 57
+          path: docs/concepts/specs-tasks-plans-inbox.md
+          side: head
+        entries:
+          - _ulid: 01KPQNB2JCVWD6C9309Y6CX1YS
+            author: Jacob Chapel
+            body: This paragraph says kspec session start shows active tasks, pending specs, open plans, and
+              inbox items, but the current command output only surfaces task and inbox context; it
+              does not list specs or plans. Readers who follow this page will look for UI that is
+              not there, so the Concepts section ends up documenting a workflow surface that does
+              not exist in the product.
+            created_at: 2026-04-21T09:18:32.012Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-21T09:16:51.337Z
-    updated_at: 2026-04-21T09:18:28.269Z
+    updated_at: 2026-04-21T09:18:32.012Z
     notes: []
