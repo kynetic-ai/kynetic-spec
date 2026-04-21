@@ -154471,6 +154471,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPPXJV6TSRG480GZ6S6XG6FN
         timestamp: 2026-04-21T02:23:22.022Z
+      - _ulid: 01KPPXJZQVPA64YJ5A5J1RCFBJ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KPPXJYJF58RQM43P5XTS9YPF
+        timestamp: 2026-04-21T02:23:25.435Z
     examined_commit: e8ab506968146ff436879a0cf79c3190095ebffa
     external_links: []
     lifecycle_state: open
@@ -154500,7 +154507,32 @@ reviews:
               document, so the docs surface now ships broken navigation for existing content."
             created_at: 2026-04-21T02:23:20.794Z
         kind: blocker
+      - _ulid: 01KPPXJYJF58RQM43P5XTS9YPF
+        entries:
+          - _ulid: 01KPPXJYJGK1YSZ3Z5TWN81BVE
+            author: Jacob Chapel
+            body: 'Evidence log:\nFiles read: packages/daemon/src/server.ts,
+              packages/web-ui/src/lib/components/{Sidebar.svelte,MobileNav.svelte},
+              packages/web-ui/src/lib/{docs.ts,docs-types.ts},
+              packages/web-ui/src/lib/utils/{docs-markdown.ts,docs-utils.ts,sanitize.ts},
+              packages/web-ui/src/routes/docs/{+page.svelte,[...slug]/+page.svelte},
+              packages/web-ui/vite-plugin-docs.ts, packages/web-ui/vite.config.ts,
+              tests/{web-ui-docs-rendering.test.ts,e2e/docs.spec.ts},
+              docs/{getting-started.md,history/KYNETIC_SPEC_DESIGN.md}.\nCommands run: git diff
+              --stat/name-only/log, kspec task get, kspec item get @docs-reachability, kspec item
+              get @docs-navigation-shape, kspec review get @01KPPT34JR4RSCYAJHQWBGK1WC, grep/rg for
+              AC coverage, kspec validate, npm test, npm run build, npm run test:e2e --
+              tests/e2e/docs.spec.ts, node --input-type=module -e "resolveDocsLink(...)".\nClaims
+              verified: full test suite passes; focused docs E2E passes; build passes on the
+              reviewed snapshot; prior review blockers for docs nav routing and AC-1 behavioral
+              coverage are addressed.\nCategories searched: correctness (found broken off-tree
+              markdown links), edge cases (relative link resolution inside vs outside docs tree),
+              error handling (missing-resolution path in click interceptor), test quality
+              (behavioral E2E now present), integration (daemon SPA routes and bundled docs build
+              path).'
+            created_at: 2026-04-21T02:23:24.240Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-21T02:11:34.103Z
-    updated_at: 2026-04-21T02:23:20.794Z
+    updated_at: 2026-04-21T02:23:24.240Z
     notes: []
