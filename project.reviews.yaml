@@ -153378,6 +153378,12 @@ reviews:
         payload:
           thread_ulid: 01KPPN0M8E4QQ7Z3JDBZRJR04J
         timestamp: 2026-04-21T00:08:57.995Z
+      - _ulid: 01KPPNX1RZDYSRDFEY2M3WSQ59
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KPPN0M8E4QQ7Z3JDBZRJR04J
+        timestamp: 2026-04-21T00:09:06.591Z
     examined_commit: e74e79ee2864316da7f5bc658b8fa72753017f2e
     external_links: []
     lifecycle_state: closed
@@ -153417,6 +153423,8 @@ reviews:
               that confirms the scheduler is installed for the re-registered project."
             created_at: 2026-04-21T00:08:57.007Z
         kind: blocker
+        resolved_at: 2026-04-21T00:09:05.597Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -153426,7 +153434,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-20T23:54:06.953Z
     created_at: 2026-04-20T23:41:41.895Z
-    updated_at: 2026-04-21T00:08:57.007Z
+    updated_at: 2026-04-21T00:09:05.597Z
     notes: []
   - _ulid: 01KPPMR2NVTY1SF9B0W3X5C8YY
     slugs: []
