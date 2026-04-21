@@ -30320,7 +30320,7 @@ runs:
     started_at: 2026-04-21T10:41:26.303Z
     completed_at: 2026-04-21T10:43:20.075Z
   - _ulid: 01KPQVKSS55NEF4KEHCZRYEH8A
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -30366,10 +30366,14 @@ runs:
         notes: "Discussion: reflection reviewed. No new item needs user approval because every meaningful
           friction point from this session is already represented in existing observations or prior
           reflection follow-ups. Avoiding duplicate capture is the right outcome here."
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-04-21T11:09:48.174Z
-        completed_at: 2026-04-21T11:09:48.174Z
+        completed_at: 2026-04-21T11:09:57.583Z
+        notes: "No capture: the useful reflections from this session are already tracked in existing
+          observations/follow-ups. Avoiding duplicate inbox items or observations is the correct
+          outcome."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T11:08:09.381Z
+    completed_at: 2026-04-21T11:09:57.583Z
