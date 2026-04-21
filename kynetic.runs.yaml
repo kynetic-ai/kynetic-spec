@@ -29564,7 +29564,7 @@ runs:
     completed_at: 2026-04-21T07:47:23.664Z
   - _ulid: 01KPQH7C3APMEW6W4QTDQGX6ZN
     status: active
-    current_step: 4
+    current_step: 5
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -29603,7 +29603,14 @@ runs:
       - status: completed
         step_index: 4
         started_at: 2026-04-21T08:08:08.024Z
-        completed_at: 2026-04-21T08:08:08.024Z
+        completed_at: 2026-04-21T08:08:10.950Z
+        notes: "Discussion outcome: capture the merge-worktree mismatch as a friction observation. Do not
+          capture a separate success item this session; the successful review pattern is useful but
+          already reflected in the review record and test evidence."
+      - status: completed
+        step_index: 5
+        started_at: 2026-04-21T08:08:10.950Z
+        completed_at: 2026-04-21T08:08:10.950Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T08:06:36.394Z
