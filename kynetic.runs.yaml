@@ -28700,7 +28700,7 @@ runs:
     completed_at: 2026-04-21T03:01:34.840Z
   - _ulid: 01KPQ1QEYYFHTYQKM6XCFB2JSF
     status: active
-    current_step: 4
+    current_step: 5
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -28740,7 +28740,14 @@ runs:
       - status: completed
         step_index: 4
         started_at: 2026-04-21T03:37:05.593Z
-        completed_at: 2026-04-21T03:37:05.593Z
+        completed_at: 2026-04-21T03:37:06.488Z
+        notes: "Discussion outcome: running autonomously at user request. High-confidence capture only.
+          Capture the untracked a11y/build-warning process insight as a friction observation; do not
+          capture the stale-dist issue because it is already tracked."
+      - status: completed
+        step_index: 5
+        started_at: 2026-04-21T03:37:06.488Z
+        completed_at: 2026-04-21T03:37:06.488Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T03:35:46.398Z
