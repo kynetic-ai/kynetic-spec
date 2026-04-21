@@ -151,3 +151,25 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-21T07:06:28.767Z
+  - _ulid: 01KPQF9DAKFG2KX3D3CGECGFBC
+    content: >-
+      Fix cycle 4: addressed the blocker about synthetic changelog section membership.
+
+
+      Root cause: The synthetic RELEASE_NOTES.md entry had path 'RELEASE_NOTES.md' (root-level), so
+      sectionKeyOf() returned null, and groupDocsSections() placed it in a sixth 'Docs' section
+      instead of 'Release Notes'. This violated @docs-section-taxonomy ac-1.
+
+
+      Fix: Changed the synthetic entry's path from 'RELEASE_NOTES.md' to
+      'release-notes/RELEASE_NOTES.md' in vite-plugin-docs.ts. This makes sectionKeyOf() correctly
+      return 'release-notes' as the section key.
+
+
+      Tests: Added two regression tests — one for groupDocsSections (verifies exactly 5 sections
+      with changelog in release-notes) and one for filterSectionEntries (verifies changelog appears
+      in release-notes section entries). Updated path assertions in existing tests. All 8150 tests
+      pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T07:32:46.035Z
