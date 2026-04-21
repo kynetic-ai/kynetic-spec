@@ -162281,9 +162281,25 @@ reviews:
           kind: blocker
           thread_ulid: 01KPS7274A08Q07B030HRMKF0A
         timestamp: 2026-04-21T23:47:31.681Z
+      - _ulid: 01KPS72P4RF09VMHZS9C9CE1JV
+        actor: codex@openai.com
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-21T23:47:45.944Z
+      - _ulid: 01KPS72P4RHWPNBFWFB1242E2N
+        actor: codex@openai.com
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-21T23:47:45.945Z
     examined_commit: ffccaaeb0d1ed717e535dc84fd5b49bdfba0b12d
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -162326,7 +162342,14 @@ reviews:
               if docs search stops working at runtime."
             created_at: 2026-04-21T23:47:30.570Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai.com
+        role: reviewer
+        created_at: 2026-04-21T23:47:45.944Z
     created_at: 2026-04-21T23:41:29.698Z
-    updated_at: 2026-04-21T23:47:30.570Z
+    updated_at: 2026-04-21T23:47:45.944Z
     notes: []

@@ -18,7 +18,7 @@ description: |
 spec_ref: "@docs-search"
 plan_ref: "@plan-user-documentation-foundation"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-docs-rendering"
@@ -231,6 +231,13 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-21T23:41:32.728Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+    command: review-verdict-needs-work
+    timestamp: 2026-04-21T23:47:47.925Z
 prior_status: null
 created_at: 2026-04-20T23:55:30.352Z
 started_at: 2026-04-21T13:33:22.143Z
