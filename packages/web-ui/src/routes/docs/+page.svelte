@@ -6,6 +6,7 @@
 <script lang="ts">
 	import { base } from '$app/paths';
 	import { getDocsEntries, groupDocsSections } from '$lib/docs';
+	import DocsSearch from '$lib/components/DocsSearch.svelte';
 
 	const entries = getDocsEntries();
 	const sections = groupDocsSections(entries);
@@ -16,6 +17,11 @@
 	<p class="text-muted-foreground mb-6">
 		Browse the kspec documentation. All content is available offline — no network requests required.
 	</p>
+
+	<!-- AC: @docs-search ac-1 — Search input on docs landing page -->
+	<div class="mb-6 max-w-md">
+		<DocsSearch />
+	</div>
 
 	{#each sections as section}
 		<div class="mb-6">
