@@ -28454,7 +28454,7 @@ runs:
     completed_at: 2026-04-21T01:01:01.841Z
   - _ulid: 01KPPVHK659HNTCXB6X63N2NAW
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -28469,7 +28469,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-21T01:48:35.241Z
-        completed_at: 2026-04-21T01:48:35.241Z
+        completed_at: 2026-04-21T01:48:55.377Z
+        notes: "Friction points: review triage got noisier than necessary because the first npm test result
+          came from the runner cache and reported a failure that disappeared on a real fresh rerun.
+          That forced extra classification work before I could decide whether the branch introduced
+          a regression. A smaller friction point was that review comment commands become fragile
+          when findings include shell-sensitive characters, so recording evidence sometimes needs
+          safer quoting than the straightforward command form."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-21T01:48:55.377Z
+        completed_at: 2026-04-21T01:48:55.377Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T01:47:42.661Z
