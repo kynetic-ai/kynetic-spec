@@ -158106,6 +158106,26 @@ reviews:
         runner: npm
         created_at: 2026-04-21T08:40:10.621Z
         completed_at: 2026-04-21T08:40:10.621Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: docs/getting-started/index.md, overview.md, installation.md,
+          initializing-a-project.md, connecting-your-agent.md, your-first-action.md,
+          where-to-go-next.md, tests/web-ui-docs-rendering.test.ts, docs/prime-mock.md,
+          .agents/skills/kspec-task-work/SKILL.md, kspec-agents.md. Commands run: kspec task get,
+          kspec item get, kspec review for-task/add/open, git diff, grep AC annotations, kspec
+          validate, kspec task branch --help, npm test, npm test --
+          tests/web-ui-docs-rendering.test.ts. Claims verified: worker claim that full suite passes
+          (confirmed with npm test); claim that docs tests pass (confirmed); claim that next
+          links/pages exist (confirmed by diff + focused tests). Categories searched: correctness
+          (found task-branch workflow blocker), edge cases (page order/last-page next-link behavior
+          checked), error handling (install/setup/troubleshooting commands checked), test quality
+          (new AC tests reviewed for strength), integration (links/index/rendering verified)."
+        name: evidence log
+        required: false
+        created_at: 2026-04-21T08:40:13.608Z
+        completed_at: 2026-04-21T08:40:13.608Z
     events:
       - _ulid: 01KPQJGBJ640ZX3DM0XVRZ30HR
         actor: Jacob Chapel
@@ -158127,6 +158147,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-21T08:40:11.652Z
+      - _ulid: 01KPQK4Z43FTZSEK6T9CS93Q19
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: evidence log
+        timestamp: 2026-04-21T08:40:14.724Z
     examined_commit: ffbf4c6cf9b9708303cfe4c45b0d864ceac72945
     external_links: []
     lifecycle_state: open
@@ -158139,5 +158166,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-21T08:28:59.334Z
-    updated_at: 2026-04-21T08:40:10.621Z
+    updated_at: 2026-04-21T08:40:13.608Z
     notes: []
