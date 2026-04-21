@@ -29,3 +29,32 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-21T04:34:09.304Z
+  - _ulid: 01KPQ5TH325JET7NB7B1YMAVNM
+    content: >-
+      Implementation complete. Created:
+
+      - Five section directories: getting-started/, guides/, concepts/, troubleshooting/,
+      release-notes/
+
+      - Landing page (index.md) for each with purpose paragraph and stub child page list
+
+      - Moved existing getting-started.md into getting-started/tutorial.md
+
+      - Added exclude option to vite-plugin-docs for history/, agents-eval-scenarios.md,
+      prime-mock.md
+
+      - Added DOCS_SECTION_ORDER and groupDocsSections to docs-utils.ts for canonical ordering
+
+      - Updated docs landing page to use ordered sections instead of alphabetical grouping
+
+      - All 8130 tests pass (240 new lines of tests added)
+
+
+      AC coverage:
+
+      - ac-1: groupDocsSections returns sections in canonical order (tested)
+
+      - ac-2: Each landing page has purpose paragraph and child page links (tested)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T04:47:21.186Z
