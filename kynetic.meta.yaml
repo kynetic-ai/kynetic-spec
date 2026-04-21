@@ -15263,6 +15263,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-21T02:10:06.434Z
+  - _ulid: 01KPPXPRE5A88R49W7NNAZQWCM
+    type: friction
+    content: Detached review snapshots can surface false-negative verification failures when generated
+      web UI build artifacts are missing. In this session, npm run build initially failed before
+      succeeding on rerun, and npm test repaired a missing dist/web-ui/index.html automatically.
+      Capture review-snapshot environment readiness explicitly so reviewers do not misclassify
+      artifact-prep noise as task regressions.
+    author: codex
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KPPXN2"
+    created_at: 2026-04-21T02:25:29.029Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
