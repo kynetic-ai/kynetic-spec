@@ -15738,6 +15738,17 @@ observations:
     resolved: false
     workflow_ref: "@01KPQT2W"
     created_at: 2026-04-21T10:43:18.636Z
+  - _ulid: 01KPQTVBCFVYYF4ATCNZ9VCA4G
+    type: success
+    content: "Docs content fix cycles benefit from a specific pattern: (1) fix content issues directly
+      in markdown, (2) add behavioral tests through the docs rendering pipeline (docsPlugin +
+      renderDocsMarkdown) rather than source scanning, (3) test rendered HTML structure not raw
+      markdown. The getting-started test suite provides a reliable template for new section
+      coverage."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-21T10:54:48.207Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
