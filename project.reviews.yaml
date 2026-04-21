@@ -156812,3 +156812,29 @@ reviews:
     created_at: 2026-04-21T05:25:36.964Z
     updated_at: 2026-04-21T05:29:03.083Z
     notes: []
+  - _ulid: 01KPQ8YY6P80N2KFABFMEZMPE1
+    slugs: []
+    title: Review task-docs-release-notes-rendering (cycle 2)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KPQ8YY6P6M7AQ6DY33JWR3GN
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-21T05:42:11.414Z
+    examined_commit: b9b3da5ae7273a4973fd8589f5b69f2c172d9dd6
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KPPN44C9V8R8S9GB3M2YZ02B"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-21T05:42:11.414Z
+    updated_at: null
+    notes: []
