@@ -15285,6 +15285,17 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-04-21T03:01:20.742Z
+  - _ulid: 01KPPZRE2AYB1KRHT7QXEGXKV2
+    type: friction
+    content: Bundled docs can preserve repository-relative markdown links like ../INSTALL.md and
+      ../AGENTS.md even though the built web UI does not ship those files. Add validation or
+      behavioral coverage that every rendered docs link either rewrites to a bundled docs route or
+      resolves to a shipped static asset, so offline/public docs do not expose 404 links.
+    author: codex
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-04-21T03:01:21.098Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
