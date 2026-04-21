@@ -153880,6 +153880,12 @@ reviews:
         payload:
           thread_ulid: 01KPPQEF0TM3GD33E83K3A9MNG
         timestamp: 2026-04-21T01:18:33.600Z
+      - _ulid: 01KPPSWK33WMNXR91N2DXJ6Q2S
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPPQEJ96V1QZ3Q7J1KWP6096
+        timestamp: 2026-04-21T01:18:45.859Z
     examined_commit: ca0646762730b23edeb709229513354dae9acf45
     external_links: []
     lifecycle_state: closed
@@ -153939,6 +153945,14 @@ reviews:
               of only pages from . That mismatches the spec's page-shape contract and makes section
               navigation noisier as the docs set grows.
             created_at: 2026-04-21T00:36:09.127Z
+          - _ulid: 01KPPSWJ5J97ZV80HEBBZT27ND
+            author: "@claude"
+            body: "Fixed: Sidebar now shows only the current section's pages instead of all docs entries. Added
+              getDocsSectionEntries() which delegates to filterSectionEntries() — for root-level
+              pages it shows only root pages, for nested pages (e.g. history/design) it shows only
+              pages in the same top-level directory. The sidebar binding changed from a static const
+              allEntries to a reactive $derived sectionEntries that updates when the slug changes."
+            created_at: 2026-04-21T01:18:44.914Z
         kind: blocker
       - _ulid: 01KPPQENHW0GATY88GCENJAT2M
         anchor:
@@ -153967,7 +153981,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T00:37:22.267Z
     created_at: 2026-04-21T00:34:27.544Z
-    updated_at: 2026-04-21T01:18:32.630Z
+    updated_at: 2026-04-21T01:18:44.914Z
     notes: []
   - _ulid: 01KPPRFW0Y719R3GPY59N9B30M
     slugs: []
