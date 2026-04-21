@@ -156565,6 +156565,12 @@ reviews:
         payload:
           thread_ulid: 01KPQ7M375XG4G3XCJY9PXKC6Y
         timestamp: 2026-04-21T05:37:18.530Z
+      - _ulid: 01KPQ8PFTFBGVQPC79QHW3CR2A
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KPQ7M375XG4G3XCJY9PXKC6Y
+        timestamp: 2026-04-21T05:37:34.544Z
     examined_commit: 26c1e6111f37479fd28796df983166399b626452
     external_links: []
     lifecycle_state: closed
@@ -156605,6 +156611,8 @@ reviews:
               will fail if releaseNotesPath is miswired or the manifest integration drifts."
             created_at: 2026-04-21T05:37:17.551Z
         kind: blocker
+        resolved_at: 2026-04-21T05:37:33.539Z
+        resolved_by: "@claude"
       - _ulid: 01KPQ7M977GDPC0ZEYS5WV7HBH
         entries:
           - _ulid: 01KPQ7M977E9985WGY6WWZZT1M
@@ -156633,7 +156641,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T05:19:04.956Z
     created_at: 2026-04-21T05:07:37.196Z
-    updated_at: 2026-04-21T05:37:17.551Z
+    updated_at: 2026-04-21T05:37:33.539Z
     notes: []
   - _ulid: 01KPQ80K24RHKWPDK43N7AA0A3
     slugs: []
