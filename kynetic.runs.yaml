@@ -30321,7 +30321,7 @@ runs:
     completed_at: 2026-04-21T10:43:20.075Z
   - _ulid: 01KPQVKSS55NEF4KEHCZRYEH8A
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -30335,7 +30335,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-21T11:09:37.488Z
-        completed_at: 2026-04-21T11:09:37.488Z
+        completed_at: 2026-04-21T11:09:38.442Z
+        notes: "Friction points: (1) review snapshots still do not guarantee kspec on PATH, forcing fallback
+          to node dist/cli/index.js. (2) Detached reviewer snapshots cannot directly check out the
+          integration branch when another worktree owns it, so merge completion remains awkward. (3)
+          Review/check comment bodies passed through shell strings are brittle when they contain
+          command-like text. (4) npm test streams cleanly but the final summary/result artifact
+          arrives late enough to slow crisp review closure."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-21T11:09:38.442Z
+        completed_at: 2026-04-21T11:09:38.442Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T11:08:09.381Z
