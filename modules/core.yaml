@@ -2390,6 +2390,9 @@ modules:
           without breaking this contract, provided the stages above
           are covered. Pages are linear: each ends with a "next"
           link to the following page.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
