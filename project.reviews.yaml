@@ -156651,6 +156651,26 @@ reviews:
         runner: npm
         created_at: 2026-04-21T05:28:50.828Z
         completed_at: 2026-04-21T05:28:50.828Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: docs/getting-started/index.md, docs/guides/index.md, docs/concepts/index.md,
+          docs/troubleshooting/index.md, docs/release-notes/index.md,
+          packages/web-ui/src/lib/utils/docs-utils.ts, packages/web-ui/src/routes/docs/+page.svelte,
+          packages/web-ui/vite-plugin-docs.ts, packages/web-ui/vite.config.ts,
+          tests/web-ui-docs-rendering.test.ts. Commands run: kspec task get
+          @01KPPN42NCR77J23TWYP63VXDH, kspec item get @docs-section-taxonomy, git diff/stat against
+          base, grep/rg for AC coverage, kspec review get prior review, kspec validate, npm test,
+          npm test -- tests/test-runner.test.ts. Claims verified: prior blocker fixes for slug
+          normalization and moved tutorial links are present in code and tests; docs landing-page
+          content still lacks required child-page lists in four section indexes. Categories
+          searched: correctness, AC coverage, edge cases around index slug normalization,
+          integration in docs manifest/router, and test quality."
+        name: review evidence
+        required: false
+        created_at: 2026-04-21T05:28:55.947Z
+        completed_at: 2026-04-21T05:28:55.947Z
     events:
       - _ulid: 01KPQ80K23BH0YTTT4MV1Y3XWN
         actor: Jacob Chapel
@@ -156686,6 +156706,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-21T05:28:52.572Z
+      - _ulid: 01KPQ86Q6M9GAG2RRE7E8CH39Z
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence
+        timestamp: 2026-04-21T05:28:57.812Z
     examined_commit: d5a234bdd2f3544b229648b31e8c65da0d474ca1
     external_links: []
     lifecycle_state: open
@@ -156719,5 +156746,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-21T05:25:36.964Z
-    updated_at: 2026-04-21T05:28:50.828Z
+    updated_at: 2026-04-21T05:28:55.947Z
     notes: []
