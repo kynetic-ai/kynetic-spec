@@ -159256,6 +159256,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPQQE1GWCECNQ10D66ETZ5FK
         timestamp: 2026-04-21T09:55:07.693Z
+      - _ulid: 01KPQQE65DE94SFG16AC40927X
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPQQE53SJHNWF2PXP4KAC1XJ
+        timestamp: 2026-04-21T09:55:11.149Z
     examined_commit: 4a5cf26e2eb17f36de729c6d75b7dfe35a2eb764
     external_links: []
     lifecycle_state: open
@@ -159539,7 +159546,25 @@ reviews:
               so readers who follow this guide will not get the described ready tasks.
             created_at: 2026-04-21T09:55:06.396Z
         kind: blocker
+      - _ulid: 01KPQQE53SJHNWF2PXP4KAC1XJ
+        anchor:
+          type: code
+          commit: 4a5cf26e2eb17f36de729c6d75b7dfe35a2eb764
+          line_end: 88
+          line_start: 30
+          path: docs/guides/upgrading-kspec.md
+          side: head
+        entries:
+          - _ulid: 01KPQQE53S8N2BS3DJQ44EB597
+            author: Jacob Chapel
+            body: This upgrade guide bypasses the supported kspec upgrade workflow and tells users to reinstall
+              the package manually plus rerun setup. In this repo, kspec upgrade performs the actual
+              project migration work, including task storage migration, skill rerendering, agents
+              regeneration, gitignore repair, and release-note surfacing. Sending users through npm
+              install -g instead can leave the project only partially upgraded.
+            created_at: 2026-04-21T09:55:10.073Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-21T09:42:34.957Z
-    updated_at: 2026-04-21T09:55:06.396Z
+    updated_at: 2026-04-21T09:55:10.073Z
     notes: []
