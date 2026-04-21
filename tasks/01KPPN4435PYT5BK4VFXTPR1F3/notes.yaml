@@ -1,1 +1,36 @@
-notes: []
+notes:
+  - _ulid: 01KPQVTYBA4GQXCTXT7MF55GB8
+    content: >-
+      Approach: 7 troubleshooting entries as individual .md files in docs/troubleshooting/, plus
+      updated landing page index.md.
+
+
+      Entries:
+
+      1. shadow-branch-out-of-sync.md — sync symptoms
+
+      2. shadow-branch-worktree-broken.md — broken/missing worktree  
+
+      3. daemon-port-in-use.md — port 3456 already bound
+
+      4. cannot-run-from-inside-kspec.md — running from .kspec/ dir
+
+      5. upgrade-pre-plan-state.md — upgrade partial scaffold
+
+      6. dispatch-refuses-to-assign.md — task not picked up
+
+      7. review-blocking-merge.md — unresolved review thread
+
+
+      Each follows: symptom title → what this means → recovery → commands → healthy outcome.
+
+      Cross-links to concept pages: the-shadow-branch.md, agents-and-dispatch.md, reviews.md,
+      web-ui-and-daemon.md.
+
+
+      Test plan: behavioral tests via docs plugin manifest—verify entries exist, titles are
+      symptom-phrased (ac-1), each has the 5-part structure (ac-2), concept cross-links resolve
+      (ac-3).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T11:12:03.434Z
