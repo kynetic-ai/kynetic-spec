@@ -153605,6 +153605,28 @@ reviews:
         runner: node
         created_at: 2026-04-21T00:32:53.460Z
         completed_at: 2026-04-21T00:32:53.460Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: AGENTS.md, kspec-agents.md, .agents/skills/review-gates/SKILL.md,
+          packages/daemon/src/server.ts, packages/daemon/src/shadow-sync-manager.ts,
+          src/daemon/shadow-sync-manager.ts, packages/daemon/src/websocket/project-resolution.ts,
+          packages/daemon/src/middleware/project-context.ts, packages/daemon/src/routes/projects.ts,
+          scripts/build-daemon.cjs, tests/daemon-shadow-sync-multi-project.test.ts,
+          tests/daemon-read-path.test.ts, src/parser/shadow-sync-scheduler.ts. Commands run: kspec
+          task get, kspec item get, kspec review for-task/get/add/open, git diff/stat/name-only, rg
+          AC scans, kspec validate, targeted npm test, daemon build, two fresh full npm test runs,
+          source lookups with sed/nl/rg. Claims verified: build succeeds; full suite passes twice;
+          targeted daemon tests pass; task adds no .kspec changes; prior race fix covers
+          re-register-after-cancel; shutdown path still only drains current scheduler map.
+          Categories searched: correctness (1 blocker: shutdown/in-flight-start race), edge cases
+          (shutdown race checked), error handling (no new issue), test quality (shutdown test misses
+          in-flight start case), integration (server registration/unregister wiring reviewed)."
+        name: evidence log
+        required: false
+        created_at: 2026-04-21T00:32:56.326Z
+        completed_at: 2026-04-21T00:32:56.326Z
     events:
       - _ulid: 01KPPP0XPJMB1ZT14WBH1SK3CG
         actor: Jacob Chapel
@@ -153640,6 +153662,13 @@ reviews:
           status: pass
           name: build:daemon
         timestamp: 2026-04-21T00:32:54.479Z
+      - _ulid: 01KPPQ8PZ26HCE0CZRE3P1ZACM
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: evidence log
+        timestamp: 2026-04-21T00:32:57.314Z
     examined_commit: e01fb1bf515ef05a575334191653ee8f7449ed18
     external_links: []
     lifecycle_state: open
@@ -153652,5 +153681,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-21T00:11:13.490Z
-    updated_at: 2026-04-21T00:32:53.460Z
+    updated_at: 2026-04-21T00:32:56.326Z
     notes: []
