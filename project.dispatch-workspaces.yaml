@@ -55606,18 +55606,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-docs-rendering/01kppn42
-    canonical_branch_head: c0a85323d5f462a78bc3ebd1ba2f9b5116398186
+    canonical_branch_head: bcb8e71562126b0b6adf00e60db288c5f76aa493
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-21T03:01:56.208Z
+      updated_at: 2026-04-21T03:17:45.509Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-21T03:02:00.058Z
+      updated_at: 2026-04-21T03:17:45.509Z
     integration:
       status: pending
       detail: null
@@ -55625,7 +55625,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 9d65ad244237659c2a29a45679392595ae0135ee
-      updated_at: 2026-04-21T03:01:56.208Z
+      updated_at: 2026-04-21T03:17:45.509Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KPPN42CDKS6A6951ZATDPKXP"
@@ -55633,9 +55633,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-21T03:02:00.058Z
-      last_reconciled_at: 2026-04-21T03:02:00.058Z
+      last_reconciled_at: 2026-04-21T03:17:45.509Z
       created_at: 2026-04-21T00:10:39.606Z
-      updated_at: 2026-04-21T03:02:00.058Z
+      updated_at: 2026-04-21T03:17:45.509Z
     workspace_id: dispatch-workspace-01KPPN42CDKS6A6951ZATDPKXP
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
