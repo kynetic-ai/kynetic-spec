@@ -354,7 +354,7 @@ describe("docs section filtering", () => {
     { slug: "history/design", title: "Design", content: "", path: "history/design.md" },
   ];
 
-  // AC: @docs-navigation-shape ac-1 — Sidebar lists pages of the current section
+  // Supports @docs-navigation-shape ac-1 — section filtering logic (E2E tests cover the rendered UI)
   it("filters entries to same section for nested slugs", () => {
     const result = filterSectionEntries(entries, "guides/setup");
 
