@@ -30163,7 +30163,7 @@ runs:
     completed_at: 2026-04-21T09:58:26.608Z
   - _ulid: 01KPQR9F003Q4YSERKRS98DCV4
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -30176,7 +30176,14 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-21T10:11:14.080Z
-        completed_at: 2026-04-21T10:11:14.080Z
+        completed_at: 2026-04-21T10:11:15.350Z
+        notes: "Friction: direct  commands failed because the CLI was not on PATH in this dispatched review
+          workspace, despite local instructions and task prompts assuming it was. I had to switch
+          to  mid-review."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-21T10:11:15.350Z
+        completed_at: 2026-04-21T10:11:15.350Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-21T10:10:04.928Z
