@@ -160058,6 +160058,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-21T10:39:53.256Z
+      - _ulid: 01KPQT04E7Q1GCTR046XMJZP06
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPQT039RGR3YZ97X25VC3FDW
+        timestamp: 2026-04-21T10:39:56.359Z
     examined_commit: fb6fc21cee4d59dfaf14316a6d2062f48a4f8999
     external_links: []
     lifecycle_state: open
@@ -160067,8 +160074,27 @@ reviews:
       content_hash: ""
       ref: "@01KPPN43TRBTZC712K4JV1VSZB"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KPQT039RGR3YZ97X25VC3FDW
+        anchor:
+          type: code
+          commit: fb6fc21cee4d59dfaf14316a6d2062f48a4f8999
+          line_end: 56
+          line_start: 52
+          path: docs/guides/reviewing-an-agents-work.md
+          side: head
+        entries:
+          - _ulid: 01KPQT039RBTT60HV6MGVDE2T2
+            author: Jacob Chapel
+            body: This review workflow hardcodes  as the diff base, but kspec explicitly supports configurable
+              integration branches and its own merge guidance says not to assume a branch name. In
+              repositories that use  or another integration target, these commands either fail or
+              compare against the wrong base, which makes the guide inaccurate for the supported
+              workflow. Replace  with instructions to use the actual integration branch for the task
+              or repository.
+            created_at: 2026-04-21T10:39:55.192Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-21T10:27:34.035Z
-    updated_at: 2026-04-21T10:39:52.137Z
+    updated_at: 2026-04-21T10:39:55.192Z
     notes: []
