@@ -1,1 +1,19 @@
-notes: []
+notes:
+  - _ulid: 01KPR439YKNHN97541FE6CTMR2
+    content: >-
+      Approach: Using Pagefind Node.js indexing API (addCustomRecord) to build a search index from
+      the bundled docs manifest at build time. The SPA bundles docs markdown into JS via
+      vite-plugin-docs — no pre-rendered HTML exists. Solution: 1) Post-build script reads the docs
+      manifest, renders markdown to HTML, feeds each entry into Pagefind's addCustomRecord() with
+      url/content/meta. 2) Search index written to build/pagefind/. 3) Svelte search component in
+      docs layout lazily imports Pagefind client JS and provides search UI. 4) Index ships with
+      static build — no network requests to non-local hosts. Works identically offline and on public
+      deployment.
+
+      Edge cases: Empty query, no results, special characters, base path handling for GitHub Pages.
+
+      Test plan: 3 ACs × behavioral tests: ac-1 (search returns matching pages), ac-2 (offline/local
+      — no non-local network requests), ac-3 (same results on public deployment = same index).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T13:36:26.067Z
