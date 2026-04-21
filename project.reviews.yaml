@@ -158729,6 +158729,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-21T09:17:48.209Z
+      - _ulid: 01KPQN9V3VWZAEGKTP22YW7AVY
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPQN9SZ2J9NS67A117GHRZXW
+        timestamp: 2026-04-21T09:17:51.611Z
     examined_commit: 48ec9274ce6f63470071c763e16b4d2fe3044f7e
     external_links: []
     lifecycle_state: open
@@ -158774,7 +158781,92 @@ reviews:
               out of the box.
             created_at: 2026-04-21T09:17:43.718Z
         kind: blocker
+      - _ulid: 01KPQN9SZ2J9NS67A117GHRZXW
+        anchor:
+          type: code
+          commit: 48ec9274ce6f63470071c763e16b4d2fe3044f7e
+          line_end: 57
+          line_start: 57
+          path: docs/concepts/specs-tasks-plans-inbox.md
+          side: head
+        entries:
+          - _ulid: 01KPQN9SZ2C98WXBYSVC07NG4Q
+            author: Jacob Chapel
+            body: >-
+              This paragraph says 
+
+              === Session Context ===
+
+              Generated: just now
+
+              Tasks: 1 active, 1 awaiting review, 26 ready, 0 blocked, 1315/1394 completed | Inbox:
+              256
+
+
+              --- Active Work ---
+                [in_progress] P2 @task-docs-guides-content Author the Guides section (started 2 minutes ago)
+                  Author the seven guides listed in @docs-guides-section.
+
+              What: Each guide begins with a goal statement, lists
+
+              prerequisites, presents steps in sequence, and ends with a
+
+              verification. Guides name commands and link to kspec
+
+              <command> --help rather than transcribing flag lists.
+
+
+              Covers: @docs-guides-section ac-1 through ac-3.
+
+                  Note (1 minute ago by @claude)
+                    Approach: Author seven guide pages per the spec's required workflows. Each guide follows the same pattern established by Getting Started: goal statement, prerequisites, sequential steps with kspec com...
+                [needs_work] P2 @task-triage-automation-eligible-missing-spec-ref Triage automation-eligible tasks missing spec_ref (started 3/7/2026)
+                  Review the automation-without-spec warning set and classify tasks into: should gain spec_ref, should be manual_only, or valid exception. Execute first batch of metadata corrections and document policy for future tasks.
+                  Note (3/7/2026 by Jacob Chapel)
+                    [FIX_CYCLE: 1] Review findings: MUST-FIX: PR #695 is stacked on unrelated CI/E2E commits from task @01KJD106N5ZQ3VB9T3EV3BHYZK. Restack or recreate the PR so the review artifact only contains the auto...
+                [needs_work] P3 @task-plan-completeness-warning-debt-reduction Create phased plan for completeness warning debt reduction (started 3/7/2026)
+                  Break down completeness warnings into executable waves (missing AC, missing descriptions, own AC coverage, trait AC coverage). Define acceptance gates per wave and identify areas where rule refinement is preferable to content churn.
+                  Note (3/7/2026 by Jacob Chapel)
+                    [FIX_CYCLE: 1] Review findings: MUST-FIX: PR #696 is conflated with unrelated CI/automation changes from other tasks and remote e2e checks are failing on the current PR head. Split this task onto a cl...
+
+              --- Awaiting Review ---
+                [pending_review] P2 @task-docs-concepts-content Author the Concepts section
+                  Note (5 minutes ago by @claude)
+                    Completed authoring all 8 concept pages. Each follows the what/why/how-it-surfaces shape per AC-2. The Specs Tasks Plans and Inbox page includes decision rules per kind (AC-3). Landing page updated wi...
+
+              --- Ready to Pick Up ---
+                P2 @task-triage-automation-eligible-missing-spec-ref Triage automation-eligible tasks missing spec_ref #validation #automation #tasks
+                P3 @task-plan-completeness-warning-debt-reduction Create phased plan for completeness warning debt reduction #validation #completeness #quality
+                P1 @task-investigate-npm-test-teardown-hang-after-green-suite-run Investigate npm test teardown hang after green suite run #testing #infra
+                P2 @task-concurrent-mutation-regression-suite Add concurrent mutation regression tests for write operations #testing #concurrency #parser
+                P2 @01KJWJ4J Universalize P-notation priority aliases across all CLI commands #cli #dx
+
+              --- Recent Activity ---
+                ○ 48ec927 docs: author the eight Concepts section pages (5 minutes ago, Jacob Chapel)
+                ✓ @task-docs-getting-started-content Author the Getting Started section (8 minutes ago) - Merged to dev after approved review. Added six Getting Start...
+                ✓ @task-docs-nav-integration Integrate docs into primary web UI navigation (24 minutes ago)
+                  └─ 5b98cb5 fix(docs): remove dead links from section landing pages and strengthen tests (35 minutes ago, Jacob Chapel)
+                ○ fc04b8b Merge branch 'dispatch/task/task-docs-nav-integration/01kppn42' into dev (24 minutes ago, Jacob Chapel)
+                ✓ @01KPQ7RD Make task reads immediately consistent after review verdict transitions (1 hour ago)
+                  ├─ d73e828 fix: add integration test for verdict-then-immediate-task-read consistency (2 hours ago, Jacob Chapel)
+                  └─ cd6316c fix: invalidate cached task history in applyTaskMutation (1 hour ago, Jacob Chapel)
+                ○ 4520787 Merge branch 'dispatch/task/make-task-reads-immediately-consistent-after-review-verdict-transitions/01kpq7rd' into dev (1 hour ago, Jacob Chapel)
+                ✓ @task-docs-section-scaffolding Establish docs section scaffolding at the repo root (1 hour ago)
+                  ├─ 9c3fa25 fix(docs): add stub child-page lists to all section landing pages (3 hours ago, Jacob Chapel)
+                  ├─ 1f63c6c fix(docs): resolve merge conflicts with dev and fix release-notes slug collision (2 hours ago, Jacob Chapel)
+                  └─ 0fa290b fix(docs): classify synthetic changelog entry under release-notes section (1 hour ago, Jacob Chapel)
+
+              --- Inbox (oldest first) ---
+                153 untriaged | 71 deferred | 256 total
+                Use: kspec triage inbox to triage untriaged items
+
+              --- Quick Commands ---
+                kspec task note @task-docs-guides-content "Progress..."  # document work
+                kspec task submit @task-docs-guides-content  # submit for review
+                kspec triage inbox  # triage untriaged inbox items shows , but the current command output only surfaces task and inbox context; it does not list specs or plans. Readers who follow this page will look for UI that is not there, so the Concepts section ends up documenting a workflow surface that does not exist in the product.
+            created_at: 2026-04-21T09:17:50.434Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-21T09:16:51.337Z
-    updated_at: 2026-04-21T09:17:46.972Z
+    updated_at: 2026-04-21T09:17:50.434Z
     notes: []
