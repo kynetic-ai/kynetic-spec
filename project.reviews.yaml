@@ -160976,6 +160976,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-21T11:56:00.027Z
+      - _ulid: 01KPQZF68XW3Q5VNRK8FQZSWSD
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPQYA0117HQ57NRNJE51GZE2
+        timestamp: 2026-04-21T12:15:32.637Z
     examined_commit: 10920edde46aec1b8ad86b90177e07fea0ef00fb
     external_links: []
     lifecycle_state: closed
@@ -161005,6 +161011,14 @@ reviews:
               recover. The entry needs a dispatch-safe branch in the procedure instead of
               unconditional stop/start guidance.
             created_at: 2026-04-21T11:55:13.826Z
+          - _ulid: 01KPQZF57HWDH4F6W2C5A2QPQZ
+            author: "@claude"
+            body: "Fixed: Split the How to Fix It section into two subsections — 'If you are running inside a
+              dispatch session' (warns against kspec serve stop/restart, explains the daemon is the
+              host process, directs to block and escalate) and 'If you are running outside dispatch'
+              (retains original stop/start procedure). Added cross-link to agents-and-dispatch
+              concept page for context."
+            created_at: 2026-04-21T12:15:31.569Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -161015,7 +161029,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T11:56:00.027Z
     created_at: 2026-04-21T11:54:36.135Z
-    updated_at: 2026-04-21T11:56:00.027Z
+    updated_at: 2026-04-21T12:15:31.569Z
     notes: []
   - _ulid: 01KPQYRG7PTDF4KHQQP8EJSWGT
     slugs: []
