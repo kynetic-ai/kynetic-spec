@@ -30260,7 +30260,7 @@ runs:
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T10:25:08.812Z
   - _ulid: 01KPQT2W8Z276J1S3R3C8JKMER
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -30311,7 +30311,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-04-21T10:43:18.933Z
-        completed_at: 2026-04-21T10:43:18.933Z
+        completed_at: 2026-04-21T10:43:20.074Z
+        notes: Captured one success observation for the live-CLI verification review pattern and one
+          friction observation for the docs-command validation gap. No capture created for shell
+          quoting because that friction is already tracked as @01KN818C.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T10:41:26.303Z
+    completed_at: 2026-04-21T10:43:20.075Z
