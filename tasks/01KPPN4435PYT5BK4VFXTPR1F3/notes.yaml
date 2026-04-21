@@ -77,3 +77,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-21T13:00:19.784Z
+  - _ulid: 01KPR2YNZRG3S033BA3JWM2VQJ
+    content: "Fix cycle 3: Addressed blocker from review @01KPR1DH. The stale-review recovery step in
+      review-blocking-merge.md incorrectly recommended kspec review refresh, which only works for
+      code-subject reviews. Replaced with kspec task submit, which creates a new review cycle — the
+      correct recovery path for task-subject reviews per the per-cycle model. Re-verified all 7
+      entries against all 3 ACs. All 8253 tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T13:16:25.977Z
