@@ -15534,6 +15534,27 @@ observations:
     resolved: false
     workflow_ref: "@01KPQK8M"
     created_at: 2026-04-21T08:43:50.276Z
+  - _ulid: 01KPQM1REB5XG2PXT5N7RRHJ45
+    type: friction
+    content: Detached review worktrees cannot always follow the documented merge flow because the
+      integration branch may already be checked out in another worktree. Review/merge guidance
+      should document a supported detached-checkout/update-ref path or provide a helper command for
+      this case.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-04-21T08:55:58.156Z
+  - _ulid: 01KPQM1RPCFXXJCGZNPXXZXQQX
+    type: success
+    content: Docs landing-page regressions were caught cleanly by validating child markdown links
+      against the generated docs manifest instead of asserting that link strings exist. This
+      behavioral check is a stronger pattern for future docs navigation coverage.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-04-21T08:55:58.412Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
