@@ -156061,6 +156061,16 @@ reviews:
         runner: kspec
         created_at: 2026-04-21T04:28:07.363Z
         completed_at: 2026-04-21T04:28:07.363Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "tests/e2e/docs.spec.ts passed: 9/9."
+        name: docs e2e
+        required: true
+        runner: playwright
+        created_at: 2026-04-21T04:28:13.319Z
+        completed_at: 2026-04-21T04:28:13.319Z
     events:
       - _ulid: 01KPQ41YRCH0JJW5CGTM4N5XGV
         actor: Jacob Chapel
@@ -156096,6 +156106,13 @@ reviews:
           kind: nit
           thread_ulid: 01KPQ4QD8ADJ9ZT1395MZ3P066
         timestamp: 2026-04-21T04:28:11.426Z
+      - _ulid: 01KPQ4QH642QTC5J446ZNQ0GCF
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: docs e2e
+        timestamp: 2026-04-21T04:28:14.404Z
     examined_commit: 498c3bfcac17469de57268f0f62fc08fca80ee33
     external_links: []
     lifecycle_state: open
@@ -156142,5 +156159,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-21T04:16:27.404Z
-    updated_at: 2026-04-21T04:28:10.378Z
+    updated_at: 2026-04-21T04:28:13.319Z
     notes: []
