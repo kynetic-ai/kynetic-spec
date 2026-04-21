@@ -161654,7 +161654,19 @@ reviews:
     slugs: []
     title: Review task-docs-troubleshooting-content (cycle 4)
     author: codex
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Pre-existing repo validation failure unrelated to this docs snapshot:
+          .kspec/modules/meta.yaml modules[0].traits.0 expected string, received object; plus
+          long-standing completeness/alignment warnings."
+        name: validate
+        required: false
+        runner: kspec validate
+        created_at: 2026-04-21T13:28:26.218Z
+        completed_at: 2026-04-21T13:28:26.218Z
     events:
       - _ulid: 01KPR3KXJ7ME8S8JGGGRXBQ26Q
         actor: codex
@@ -161669,6 +161681,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-21T13:28:24.000Z
+      - _ulid: 01KPR3MPE5VTGDMK6STJ9ZDMV1
+        actor: codex
+        event_type: check_added
+        payload:
+          status: fail
+          name: validate
+        timestamp: 2026-04-21T13:28:27.333Z
     examined_commit: 2e4af779415f5e36db24750589b2fbf49ea7d760
     external_links: []
     lifecycle_state: open
@@ -161681,5 +161700,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-21T13:28:01.863Z
-    updated_at: 2026-04-21T13:28:22.952Z
+    updated_at: 2026-04-21T13:28:26.218Z
     notes: []
