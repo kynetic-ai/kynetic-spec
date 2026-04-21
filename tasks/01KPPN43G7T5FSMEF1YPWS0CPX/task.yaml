@@ -18,7 +18,7 @@ description: |
 spec_ref: "@docs-concepts-section"
 plan_ref: "@plan-user-documentation-foundation"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-docs-section-scaffolding"
@@ -38,7 +38,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: null
+session_id: 01KPQPN0BW76FA8PV6QEZDTH8T
 history:
   - author: "@claude"
     changes:
@@ -97,8 +97,21 @@ history:
         previous: 01KPQM87G734Y15K9KVT5MY36B
     command: review-verdict-needs-work
     timestamp: 2026-04-21T09:20:02.940Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KPQPN0BW76FA8PV6QEZDTH8T
+        previous: null
+      started_at:
+        new: 2026-04-21T09:42:14.721Z
+        previous: 2026-04-21T09:00:26.126Z
+    command: task-start
+    timestamp: 2026-04-21T09:42:14.721Z
 created_at: 2026-04-20T23:55:29.159Z
-started_at: 2026-04-21T09:00:26.126Z
+started_at: 2026-04-21T09:42:14.721Z
 submitted_at: 2026-04-21T09:12:21.970Z
 todos: []
 automation: eligible
