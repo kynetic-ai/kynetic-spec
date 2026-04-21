@@ -11,7 +11,7 @@ description: After `kspec review verdict --decision request_changes` auto-transi
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -30,7 +30,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/make-task-reads-immediately-consistent-after-review-verdict-transitions/01kpq7rd
-session_id: null
+session_id: 01KPQFDG8KC0HNDD143MTD99GN
 history:
   - author: "@claude"
     changes:
@@ -139,8 +139,21 @@ history:
         previous: 01KPQD45Q45115G0FDM7JBFNGK
     command: review-verdict-needs-work
     timestamp: 2026-04-21T07:32:01.722Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KPQFDG8KC0HNDD143MTD99GN
+        previous: null
+      started_at:
+        new: 2026-04-21T07:51:58.856Z
+        previous: 2026-04-21T07:16:18.163Z
+    command: task-start
+    timestamp: 2026-04-21T07:51:58.856Z
 created_at: 2026-04-21T05:21:09.181Z
-started_at: 2026-04-21T07:16:18.163Z
+started_at: 2026-04-21T07:51:58.856Z
 submitted_at: 2026-04-21T07:16:25.429Z
 todos: []
 automation: eligible
