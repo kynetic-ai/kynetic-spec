@@ -18,7 +18,7 @@ description: |
 spec_ref: "@docs-concepts-section"
 plan_ref: "@plan-user-documentation-foundation"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-docs-section-scaffolding"
@@ -29,6 +29,14 @@ tags:
   - content
   - concepts
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-docs-concepts-content/01kppn43
+  captured_at: 2026-04-21T09:12:21.967Z
+  commit: 48ec9274ce6f63470071c763e16b4d2fe3044f7e
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KPQM87G734Y15K9KVT5MY36B
 history:
   - author: "@claude"
@@ -51,7 +59,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-21T09:00:26.126Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-docs-concepts-content/01kppn43
+          captured_at: 2026-04-21T09:12:21.967Z
+          commit: 48ec9274ce6f63470071c763e16b4d2fe3044f7e
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-04-21T09:12:21.970Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-21T09:12:21.970Z
 created_at: 2026-04-20T23:55:29.159Z
 started_at: 2026-04-21T09:00:26.126Z
+submitted_at: 2026-04-21T09:12:21.970Z
 todos: []
 automation: eligible
