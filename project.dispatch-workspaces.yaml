@@ -56580,12 +56580,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-21T07:52:36.222Z
+      updated_at: 2026-04-21T07:52:44.586Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-21T07:52:36.222Z
+      updated_at: 2026-04-21T07:52:44.586Z
     integration:
       status: pending
       detail: null
@@ -56593,24 +56593,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: a1fdd98a5197f3e792f8a2896bc20881c044d964
-      updated_at: 2026-04-21T07:52:36.222Z
-    lifecycle_state: ready
+      updated_at: 2026-04-21T07:52:44.586Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KPQ7RDHXBRGDZSDFF0XG13RT"
     task_slug: make-task-reads-immediately-consistent-after-review-verdict-transitions
     timestamps:
       closed_at: null
       last_active_at: 2026-04-21T07:35:00.539Z
-      last_reconciled_at: 2026-04-21T07:52:36.222Z
+      last_reconciled_at: 2026-04-21T07:52:44.586Z
       created_at: 2026-04-21T05:53:39.864Z
-      updated_at: 2026-04-21T07:52:36.222Z
+      updated_at: 2026-04-21T07:52:44.586Z
     workspace_id: dispatch-workspace-01KPQ7RDHXBRGDZSDFF0XG13RT
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: cd6316cb1358077ccf0680678b5659913b6d6a60
+        last_seen_at: 2026-04-21T07:52:44.586Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/make-task-reads-immediately-consistent-after-review-verdict-transitions-01kpq7rd-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/make-task-reads-immediately-consistent-after-review-verdict-transitions/01kpq7rd
-        head: d73e82876ce1e09e6033de3bc12b018dcbb5def4
-        last_seen_at: 2026-04-21T07:34:53.293Z
+        head: cd6316cb1358077ccf0680678b5659913b6d6a60
+        last_seen_at: 2026-04-21T07:52:44.586Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/make-task-reads-immediately-consistent-after-review-verdict-transitions-01kpq7rd
