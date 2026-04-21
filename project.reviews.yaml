@@ -156620,3 +156620,29 @@ reviews:
     created_at: 2026-04-21T05:07:37.196Z
     updated_at: 2026-04-21T05:19:04.957Z
     notes: []
+  - _ulid: 01KPQ80K24RHKWPDK43N7AA0A3
+    slugs: []
+    title: Review task-docs-section-scaffolding (cycle 2)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KPQ80K23BH0YTTT4MV1Y3XWN
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-21T05:25:36.964Z
+    examined_commit: d5a234bdd2f3544b229648b31e8c65da0d474ca1
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KPPN42NCR77J23TWYP63VXDH"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-21T05:25:36.964Z
+    updated_at: null
+    notes: []
