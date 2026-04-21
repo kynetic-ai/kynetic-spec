@@ -1,1 +1,25 @@
-notes: []
+notes:
+  - _ulid: 01KPQH9HB6HWQ7XFTGVWD0AQDF
+    content: >-
+      Verified all ACs already implemented by prior dependency tasks (task-docs-rendering,
+      task-docs-section-scaffolding, task-docs-release-notes-rendering) which were merged into this
+      branch.
+
+
+      AC coverage verified:
+
+      - @docs-reachability ac-1: Docs entry in Sidebar.svelte (Help group) and MobileNav.svelte (5th
+      primary nav item). Covered by 2 E2E tests in tests/e2e/docs.spec.ts.
+
+      - @docs-navigation-shape ac-1: Section sidebar with current page highlighting + TOC in
+      docs/[...slug]/+page.svelte. Covered by 3 E2E tests + unit tests for filterSectionEntries.
+
+      - @docs-navigation-shape ac-2: Anchored headings via slugifyHeading() in docs-markdown.ts with
+      anchor links. Covered by unit tests + E2E test + sanitizer test.
+
+
+      Full test suite passes: 8150 tests passed (5 skipped, 0 failures) including all 83 docs
+      rendering tests.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T08:07:47.303Z
