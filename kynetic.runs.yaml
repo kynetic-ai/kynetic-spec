@@ -29445,7 +29445,7 @@ runs:
     completed_at: 2026-04-21T07:18:22.591Z
   - _ulid: 01KPQF9AVSYFTM6FN2EXK5JRYR
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -29460,7 +29460,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-21T07:33:14.049Z
-        completed_at: 2026-04-21T07:33:14.049Z
+        completed_at: 2026-04-21T07:33:36.092Z
+        notes: "Friction points: 1) the generic reviewer checklist assumes a task-linked spec, but this bug
+          task had no spec_ref, so AC-oriented deterministic checks had to be adapted manually to
+          the changed code and runtime behavior. 2) workflow ergonomics are slightly rough: kspec
+          workflow show required an explicit run ref even though the skill examples omit it. 3)
+          shell-safe entry for review comment bodies with backticks still requires extra care when
+          using exec_command directly."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-21T07:33:36.092Z
+        completed_at: 2026-04-21T07:33:36.092Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T07:32:43.513Z
