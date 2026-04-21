@@ -29205,7 +29205,7 @@ runs:
     completed_at: 2026-04-21T05:50:39.914Z
   - _ulid: 01KPQAQNBD9VK73ZA8DCVQHJYK
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -29219,7 +29219,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-21T06:14:20.183Z
-        completed_at: 2026-04-21T06:14:20.183Z
+        completed_at: 2026-04-21T06:14:21.114Z
+        notes: "Friction points: (1) the merge workflow instructions assume the reviewer snapshot can check
+          out the integration branch, but detached review worktrees cannot check out  when that
+          branch is already in another worktree; reviewers must pivot to another worktree or bounce
+          the task. (2)  can report a false failure when nested runner invocations read a stale
+          shared  cache entry from earlier failed runs, which makes review-time reruns noisy and
+          hard to classify."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-21T06:14:21.114Z
+        completed_at: 2026-04-21T06:14:21.114Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-21T06:13:10.125Z
