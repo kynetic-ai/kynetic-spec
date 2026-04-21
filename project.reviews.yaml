@@ -160473,6 +160473,18 @@ reviews:
         runner: npm
         created_at: 2026-04-21T11:20:32.048Z
         completed_at: 2026-04-21T11:20:32.048Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Repo-wide pre-existing validation failures remain on this snapshot: 1 schema error in
+          .kspec/modules/meta.yaml plus broader alignment/completeness warnings; no evidence this
+          docs-only branch introduced them."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-21T11:20:38.386Z
+        completed_at: 2026-04-21T11:20:38.386Z
     events:
       - _ulid: 01KPQVPJ521ACYXPSFGTBDWNRF
         actor: Jacob Chapel
@@ -160501,6 +160513,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPQWAJ5J87ASYJQ7MPFTYEGH
         timestamp: 2026-04-21T11:20:36.347Z
+      - _ulid: 01KPQWAPAQYV99966MFN1S4D4Z
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-21T11:20:39.511Z
     examined_commit: 75957850232c7c98368ca335b3153531a766f794
     external_links: []
     lifecycle_state: open
@@ -160568,5 +160587,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-21T11:09:39.874Z
-    updated_at: 2026-04-21T11:20:35.250Z
+    updated_at: 2026-04-21T11:20:38.386Z
     notes: []
