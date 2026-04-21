@@ -15522,6 +15522,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-21T08:27:37.132Z
+  - _ulid: 01KPQKBHM4QDBGYX8VE0TC3ASX
+    type: friction
+    content: Immediately after a review verdict moved a task from pending_review to needs_work,
+      human-readable `kspec task get` output still showed the older status while `kspec task get
+      --json` and the activity log reflected the transition correctly. This creates uncertainty
+      during review closure and suggests a caching or formatting inconsistency in task-get
+      presentation after review-driven state changes.
+    author: codex@openai
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KPQK8M"
+    created_at: 2026-04-21T08:43:50.276Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
