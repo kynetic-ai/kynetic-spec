@@ -15866,6 +15866,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-21T20:11:47.059Z
+  - _ulid: 01KPRVHDN62M1KJ0FFZ4BPYBSR
+    type: friction
+    content: "Detached review snapshots can hit a merge workflow gap: the documented reviewer merge flow
+      says to check out the integration branch before merging, but in this session 'git checkout
+      dev' failed because dev was already attached to the main worktree. Reviewers had to merge via
+      the existing main worktree with a git -C <main-worktree> merge invocation instead. Consider
+      updating the merge skill and dispatch reviewer guidance to handle integration branches already
+      occupied by another worktree explicitly."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KPRVE2"
+    created_at: 2026-04-21T20:26:05.862Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
