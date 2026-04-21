@@ -156453,7 +156453,18 @@ reviews:
     slugs: []
     title: Review task-docs-release-notes-rendering
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed full suite in review snapshot: 2218/2218 suites, 8126 passed, 5 skipped, duration
+          1873.3s."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-21T05:18:50.600Z
+        completed_at: 2026-04-21T05:18:50.600Z
     events:
       - _ulid: 01KPQ6ZMKCW4GRCZ6R02JXB34Z
         actor: Jacob Chapel
@@ -156475,6 +156486,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPQ7M375XG4G3XCJY9PXKC6Y
         timestamp: 2026-04-21T05:18:48.632Z
+      - _ulid: 01KPQ7M79350DKVSDP8ZW4PK62
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-21T05:18:51.683Z
     examined_commit: 26c1e6111f37479fd28796df983166399b626452
     external_links: []
     lifecycle_state: open
@@ -156508,5 +156526,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-21T05:07:37.196Z
-    updated_at: 2026-04-21T05:18:47.525Z
+    updated_at: 2026-04-21T05:18:50.600Z
     notes: []
