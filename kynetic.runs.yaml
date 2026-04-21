@@ -29786,9 +29786,21 @@ runs:
     completed_at: 2026-04-21T08:45:49.004Z
   - _ulid: 01KPQKZE30HRE7XRDEX605NV2M
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-21T08:54:42.017Z
+        completed_at: 2026-04-21T08:55:30.232Z
+        notes: "What worked well: the review-first flow caught dead-link regressions before merge, and the
+          fix-cycle replacement test is stronger because it validates landing-page child links
+          against the generated docs manifest instead of asserting string presence. The detached
+          review snapshot also preserved a clean examined commit for approval and merge gating."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-21T08:55:30.232Z
+        completed_at: 2026-04-21T08:55:30.232Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T08:54:42.017Z
