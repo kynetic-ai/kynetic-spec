@@ -60284,12 +60284,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-21T21:43:20.167Z
+      updated_at: 2026-04-21T21:43:28.883Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-21T21:43:20.167Z
+      updated_at: 2026-04-21T21:43:28.883Z
     integration:
       status: pending
       detail: null
@@ -60297,24 +60297,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: c44f02d25346c627d747e12f6b641aeb12c9b692
-      updated_at: 2026-04-21T21:43:20.167Z
-    lifecycle_state: ready
+      updated_at: 2026-04-21T21:43:28.883Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KPRZ17RC7NPM3BSCAZX3ZJ0C"
     task_slug: task-narrow-dispatcher-runtime-mode-env-isolation
     timestamps:
       closed_at: null
       last_active_at: 2026-04-21T21:28:56.698Z
-      last_reconciled_at: 2026-04-21T21:43:20.167Z
+      last_reconciled_at: 2026-04-21T21:43:28.883Z
       created_at: 2026-04-21T21:28:12.545Z
-      updated_at: 2026-04-21T21:43:20.167Z
+      updated_at: 2026-04-21T21:43:28.883Z
     workspace_id: dispatch-workspace-01KPRZ17RC7NPM3BSCAZX3ZJ0C
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: eb78b5cd75d4836765997092e16a0ba688d7229c
+        last_seen_at: 2026-04-21T21:43:28.883Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-narrow-dispatcher-runtime-mode-env-isolation-01kprz17-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-narrow-dispatcher-runtime-mode-env-isolation/01kprz17
-        head: c44f02d25346c627d747e12f6b641aeb12c9b692
-        last_seen_at: 2026-04-21T21:28:12.545Z
+        head: eb78b5cd75d4836765997092e16a0ba688d7229c
+        last_seen_at: 2026-04-21T21:43:28.883Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-narrow-dispatcher-runtime-mode-env-isolation-01kprz17
