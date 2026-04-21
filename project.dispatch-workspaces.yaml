@@ -57704,7 +57704,7 @@ workspaces:
         head: 630b9ae88ce99ad14ec7ee3f6979c1c7ea92f533
         last_seen_at: 2026-04-21T10:26:16.532Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-concepts-content-01kppn43
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 5bb723c5fcc22435d779a9b683e0ae81b62b344a
     bootstrap:
       status: succeeded
@@ -57993,12 +57993,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-21T10:26:24.617Z
+      updated_at: 2026-04-21T10:43:53.996Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-21T10:26:52.074Z
+      updated_at: 2026-04-21T10:43:53.996Z
     integration:
       status: pending
       detail: null
@@ -58006,7 +58006,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 5bb723c5fcc22435d779a9b683e0ae81b62b344a
-      updated_at: 2026-04-21T10:26:24.617Z
+      updated_at: 2026-04-21T10:43:53.996Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KPPN43TRBTZC712K4JV1VSZB"
@@ -58014,9 +58014,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-21T10:26:52.074Z
-      last_reconciled_at: 2026-04-21T10:26:52.074Z
+      last_reconciled_at: 2026-04-21T10:43:53.996Z
       created_at: 2026-04-21T09:13:34.196Z
-      updated_at: 2026-04-21T10:26:52.074Z
+      updated_at: 2026-04-21T10:43:53.996Z
     workspace_id: dispatch-workspace-01KPPN43TRBTZC712K4JV1VSZB
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
