@@ -29785,7 +29785,7 @@ runs:
     started_at: 2026-04-21T08:44:06.113Z
     completed_at: 2026-04-21T08:45:49.004Z
   - _ulid: 01KPQKZE30HRE7XRDEX605NV2M
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -29893,7 +29893,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-04-21T08:56:06.048Z
-        completed_at: 2026-04-21T08:56:06.048Z
+        completed_at: 2026-04-21T08:56:14.799Z
+        notes: "Captured two observations for this session: one friction about merge guidance for detached
+          review worktrees when the integration branch is already checked out elsewhere, and one
+          success about validating docs child links against the generated manifest rather than
+          asserting string presence."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T08:54:42.017Z
+    completed_at: 2026-04-21T08:56:14.799Z
