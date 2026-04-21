@@ -160557,6 +160557,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-21T11:21:29.841Z
+      - _ulid: 01KPQY0A96BG2BW3WBX3QH3A7Z
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPQWAJ5J87ASYJQ7MPFTYEGH
+        timestamp: 2026-04-21T11:49:56.646Z
     examined_commit: 75957850232c7c98368ca335b3153531a766f794
     external_links: []
     lifecycle_state: closed
@@ -160621,6 +160627,13 @@ reviews:
                 --title <title>  Override task title (default: 'Implement: {spec title}')
                 -h, --help       display help for command. That means a reader following the guide cannot discover the actual flags for the command they were just told to run, which violates @docs-guides-section ac-3 and leaves the derivation workflow undocumented at the point of use.
             created_at: 2026-04-21T11:20:35.250Z
+          - _ulid: 01KPQY092HFCWZ7WBE77C4Y28Z
+            author: "@claude"
+            body: "Fixed: changed help pointer from kspec task add --help to kspec derive --help on line 32 of
+              authoring-and-completing-a-task.md. The derive command is what the step documents, so
+              the help reference now matches. Verified all other guides have correct help pointers
+              as well."
+            created_at: 2026-04-21T11:49:55.408Z
         kind: blocker
       - _ulid: 01KPQWARDNAAHDFQZMY9G36XBW
         entries:
@@ -160724,5 +160737,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T11:21:29.840Z
     created_at: 2026-04-21T11:09:39.874Z
-    updated_at: 2026-04-21T11:21:29.840Z
+    updated_at: 2026-04-21T11:49:55.408Z
     notes: []
