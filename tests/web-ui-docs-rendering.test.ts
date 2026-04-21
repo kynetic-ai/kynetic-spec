@@ -1410,3 +1410,156 @@ describe("getting started section content", () => {
     }
   });
 });
+
+// ─── Guides Section Content ─────────────────────────────────────────────────
+
+describe("guides section content", () => {
+  let docsPlugin: typeof import("../packages/web-ui/vite-plugin-docs")["docsPlugin"];
+  let renderDocsMarkdown: typeof import("../packages/web-ui/src/lib/utils/docs-markdown")["renderDocsMarkdown"];
+  let manifest: { entries: Array<{ slug: string; title: string; content: string; path: string }> };
+
+  beforeAll(async () => {
+    const pluginMod = await import("../packages/web-ui/vite-plugin-docs");
+    docsPlugin = pluginMod.docsPlugin;
+    const mdMod = await import("../packages/web-ui/src/lib/utils/docs-markdown");
+    renderDocsMarkdown = mdMod.renderDocsMarkdown;
+
+    const docsDir = join(__dirname, "..", "docs");
+    const plugin = docsPlugin(docsDir, {
+      exclude: ["history", "agents-eval-scenarios.md", "prime-mock.md"],
+    });
+    const load = plugin.load as (id: string) => string | undefined;
+    const result = load("\0virtual:docs")!;
+    manifest = JSON.parse(result.slice("export default ".length, -1));
+  });
+
+  function getEntry(slug: string) {
+    return manifest.entries.find((e) => e.slug === slug);
+  }
+
+  // The seven required guide pages
+  const GUIDE_PAGES = [
+    "guides/starting-a-new-project",
+    "guides/directing-your-agent",
+    "guides/importing-and-approving-a-plan",
+    "guides/authoring-and-completing-a-task",
+    "guides/reviewing-an-agents-work",
+    "guides/upgrading-kspec",
+    "guides/recovering-from-shadow-branch-issues",
+  ];
+
+  // AC: @docs-guides-section ac-1
+  describe("landing page links all required guides", () => {
+    // AC: @docs-guides-section ac-1
+    it("all seven guide pages exist in the manifest", () => {
+      for (const slug of GUIDE_PAGES) {
+        const entry = getEntry(slug);
+        expect(entry, `guide ${slug} should exist`).toBeDefined();
+      }
+    });
+
+    // AC: @docs-guides-section ac-1
+    it("landing page links to all seven guides", () => {
+      const indexEntry = getEntry("guides")!;
+      const expectedLinks = [
+        "./starting-a-new-project.md",
+        "./directing-your-agent.md",
+        "./importing-and-approving-a-plan.md",
+        "./authoring-and-completing-a-task.md",
+        "./reviewing-an-agents-work.md",
+        "./upgrading-kspec.md",
+        "./recovering-from-shadow-branch-issues.md",
+      ];
+
+      for (const link of expectedLinks) {
+        expect(indexEntry.content, `guides index should link to ${link}`).toContain(link);
+      }
+    });
+
+    // AC: @docs-guides-section ac-1
+    it("all landing page links resolve to real manifest entries", () => {
+      const indexEntry = getEntry("guides")!;
+      const allSlugs = new Set(manifest.entries.map((e) => e.slug));
+      const mdLinkPattern = /\[.+?\]\(\.\/(.+?)\.md\)/g;
+      const links: string[] = [];
+      let match;
+      while ((match = mdLinkPattern.exec(indexEntry.content)) !== null) {
+        links.push(match[1]);
+      }
+
+      expect(links.length).toBeGreaterThanOrEqual(7);
+      for (const linkedFile of links) {
+        const expectedSlug = `guides/${linkedFile}`;
+        expect(allSlugs.has(expectedSlug), `guides/index.md links to ./${linkedFile}.md but slug "${expectedSlug}" is not in the manifest`).toBe(true);
+      }
+    });
+  });
+
+  // AC: @docs-guides-section ac-2
+  describe("each guide has goal, prerequisites, steps, and verification", () => {
+    for (const slug of GUIDE_PAGES) {
+      const pageName = slug.split("/")[1];
+
+      // AC: @docs-guides-section ac-2
+      it(`${pageName} states the reader's goal`, () => {
+        const entry = getEntry(slug)!;
+        // The first paragraph after the H1 should describe the goal ("this guide walks/covers...")
+        // Check that the content has a goal-oriented opening
+        expect(entry.content).toMatch(/this guide (walks|covers|shows)/i);
+      });
+
+      // AC: @docs-guides-section ac-2
+      it(`${pageName} names its prerequisites`, () => {
+        const entry = getEntry(slug)!;
+        expect(entry.content).toMatch(/## Prerequisites/);
+      });
+
+      // AC: @docs-guides-section ac-2
+      it(`${pageName} presents steps in sequence`, () => {
+        const entry = getEntry(slug)!;
+        expect(entry.content).toMatch(/## Steps/);
+        // Should have numbered sub-steps
+        expect(entry.content).toMatch(/### \d+\./);
+      });
+
+      // AC: @docs-guides-section ac-2
+      it(`${pageName} ends with a verification section`, () => {
+        const entry = getEntry(slug)!;
+        expect(entry.content).toMatch(/## Verification/);
+        // Verification should be the last H2 in the document
+        const lastH2Index = entry.content.lastIndexOf("## ");
+        const verificationIndex = entry.content.lastIndexOf("## Verification");
+        expect(verificationIndex).toBe(lastH2Index);
+      });
+    }
+  });
+
+  // AC: @docs-guides-section ac-3
+  describe("guides reference --help instead of transcribing flags", () => {
+    for (const slug of GUIDE_PAGES) {
+      const pageName = slug.split("/")[1];
+
+      // AC: @docs-guides-section ac-3
+      it(`${pageName} points to --help for command details`, () => {
+        const entry = getEntry(slug)!;
+        // Guides that name kspec commands should reference --help
+        // Check that at least one --help reference exists
+        expect(entry.content).toMatch(/--help/);
+      });
+    }
+  });
+
+  // AC: @docs-guides-section ac-2
+  describe("each guide contains code blocks with commands", () => {
+    for (const slug of GUIDE_PAGES) {
+      const pageName = slug.split("/")[1];
+
+      // AC: @docs-guides-section ac-2
+      it(`${pageName} contains at least one code block`, () => {
+        const entry = getEntry(slug)!;
+        const rendered = renderDocsMarkdown(entry.content);
+        expect(rendered.html, `${pageName} should contain a code block`).toContain("<pre><code");
+      });
+    }
+  });
+});
