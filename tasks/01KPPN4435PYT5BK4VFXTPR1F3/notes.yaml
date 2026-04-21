@@ -61,3 +61,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-21T12:29:15.984Z
+  - _ulid: 01KPR18MAR7PBAPNVWF0Z69CMQ
+    content: "Fix cycle 2: Addressed both blockers from review @01KPQZKZW4CQBHMVBEVHZAYDBN. (1)
+      upgrade-pre-plan-state.md: Replaced kspec setup with kspec upgrade as the primary recovery
+      command, matching how the codebase treats version-skew/legacy scaffold as an upgrade flow.
+      Added --dry-run preview step. Mentioned kspec setup --force as lower-level fallback. Fixed
+      stale 'After running setup' in Verification section. (2) review-blocking-merge.md: Replaced
+      kspec task submit (which errors from pending_review state) with kspec review refresh for the
+      stale-review case. Re-verified all 3 ACs across all 7 entries. All 8253 tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T12:46:54.808Z
