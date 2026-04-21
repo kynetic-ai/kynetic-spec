@@ -185,3 +185,26 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-21T00:33:16.548Z
+  - _ulid: 01KPPRA69P4KK67C91TBCD20EM
+    content: >-
+      Fix cycle 6: addressed shutdown-misses-in-flight-starts blocker.
+
+
+      The review correctly identified that the shutdown handler only iterated shadowSyncSchedulers
+      (installed schedulers), missing starts that were still suspended in loadProjectConfig() with
+      no map entry. Those in-flight starts could resume after SIGTERM and install schedulers
+      post-shutdown, violating ac-17.
+
+
+      Fix: Added stopAllShadowSync() to shadow-sync-manager.ts that cancels all in-flight starts
+      (via cancelledStarts set) before stopping installed schedulers. server.ts shutdown now calls
+      this function instead of the manual loop+clear. Also updated the re-export shim in
+      packages/daemon/src/.
+
+
+      Added behavioral test reproducing the exact race: start without awaiting → stopAllShadowSync →
+      release config gate → verify no scheduler installed. All 8067 tests pass (0 failures). Daemon
+      build passes. Re-verified all ACs (ac-13 through ac-17).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T00:51:14.358Z
