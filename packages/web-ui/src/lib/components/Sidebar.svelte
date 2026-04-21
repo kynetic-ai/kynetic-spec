@@ -46,7 +46,8 @@
 		Settings,
 		ChevronDown,
 		MessageSquareText,
-		Zap
+		Zap,
+		BookOpen
 	} from 'lucide-svelte';
 
 	// AC: @ui-app-shell ac-1 — Grouped navigation sections
@@ -97,6 +98,11 @@
 				{ path: '/workflows', label: 'Workflows', icon: Workflow },
 				{ path: '/settings', label: 'Settings', icon: Settings }
 			]
+		},
+		// AC: @docs-reachability ac-1 — Docs entry in primary navigation
+		{
+			label: 'Help',
+			items: [{ path: '/docs', label: 'Docs', icon: BookOpen }]
 		}
 	];
 
