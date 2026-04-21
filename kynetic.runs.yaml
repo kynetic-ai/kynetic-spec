@@ -30723,7 +30723,7 @@ runs:
     started_at: 2026-04-21T13:17:06.131Z
     completed_at: 2026-04-21T13:19:08.645Z
   - _ulid: 01KPR3VNQ0R1C1QT1MCT9G915J
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -30771,7 +30771,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-04-21T13:33:53.041Z
-        completed_at: 2026-04-21T13:33:53.041Z
+        completed_at: 2026-04-21T13:34:03.072Z
+        notes: "Captured two friction observations: reviewer snapshots missing kspec on PATH, and merge
+          workflow guidance that is not worktree-safe when the integration branch is already checked
+          out elsewhere."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T13:32:15.968Z
+    completed_at: 2026-04-21T13:34:03.072Z
