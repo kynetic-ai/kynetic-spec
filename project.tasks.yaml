@@ -26514,7 +26514,7 @@
   type: task
   spec_ref: "@docs-reachability"
   plan_ref: "@plan-user-documentation-foundation"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   priority: 1
@@ -26523,7 +26523,7 @@
     - web-ui
     - infra
   review_ref: "@01KPPQBF2RRZYEYZP9F4EB9PSM"
-  notes_count: 2
+  notes_count: 3
   todos_count: 0
   created_at: 2026-04-20T23:55:28.013Z
   started_at: 2026-04-21T00:14:15.717Z

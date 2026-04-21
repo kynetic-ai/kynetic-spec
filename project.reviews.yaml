@@ -153829,9 +153829,25 @@ reviews:
           status: pass
           name: npm run build
         timestamp: 2026-04-21T00:37:01.714Z
+      - _ulid: 01KPPQGSPVQXVGQV484G59EJAC
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-21T00:37:22.268Z
+      - _ulid: 01KPPQGSPW6JV4V1E32GEJNGHX
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-21T00:37:22.268Z
     examined_commit: ca0646762730b23edeb709229513354dae9acf45
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -153896,7 +153912,14 @@ reviews:
               explicitly calls out as client-side docs navigation.
             created_at: 2026-04-21T00:36:12.476Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-21T00:37:22.267Z
     created_at: 2026-04-21T00:34:27.544Z
-    updated_at: 2026-04-21T00:37:00.482Z
+    updated_at: 2026-04-21T00:37:22.268Z
     notes: []
