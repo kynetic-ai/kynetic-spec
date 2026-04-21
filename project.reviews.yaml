@@ -156770,6 +156770,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-21T05:29:03.083Z
+      - _ulid: 01KPQ9GWNB33YGRSRWS2CG6FDN
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPQ82VRRVW6YDTFSP5VF5P76
+        timestamp: 2026-04-21T05:51:59.659Z
     examined_commit: d5a234bdd2f3544b229648b31e8c65da0d474ca1
     external_links: []
     lifecycle_state: closed
@@ -156800,6 +156806,15 @@ reviews:
               add an explicit stub child-page list for each section and strengthen the test to
               verify those links exist.
             created_at: 2026-04-21T05:26:51.416Z
+          - _ulid: 01KPQ9GVPC0JCRCW130E5KN48N
+            author: "@claude"
+            body: "Fixed: Replaced italic placeholder text in Guides, Concepts, Troubleshooting, and Release
+              Notes landing pages with explicit stub child-page lists. Each list entry links to a
+              planned child page (derived from the plan's spec descriptions) with a brief
+              description. Also strengthened the AC test to verify that every section landing page
+              contains at least one markdown link to a child page, and added dedicated per-section
+              tests for Guides, Concepts, Troubleshooting, and Release Notes."
+            created_at: 2026-04-21T05:51:58.668Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -156810,7 +156825,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T05:29:03.083Z
     created_at: 2026-04-21T05:25:36.964Z
-    updated_at: 2026-04-21T05:29:03.083Z
+    updated_at: 2026-04-21T05:51:58.668Z
     notes: []
   - _ulid: 01KPQ8YY6P80N2KFABFMEZMPE1
     slugs: []
