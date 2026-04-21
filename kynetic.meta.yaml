@@ -15307,6 +15307,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-21T03:19:42.955Z
+  - _ulid: 01KPQ1T9K10JAKHQ4VG99HDSFH
+    type: friction
+    content: Reviewing touched Svelte UI files still requires reading production build warnings, not
+      just focused unit/E2E results. In this docs review, the blocker came from a new Svelte a11y
+      warning on the changed route component even though docs unit tests and docs E2E both passed.
+      Treat build-output warnings on touched UI files as first-class review evidence.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-21T03:37:19.201Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
