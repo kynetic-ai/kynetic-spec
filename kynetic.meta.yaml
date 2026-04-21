@@ -15846,6 +15846,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-21T14:06:05.091Z
+  - _ulid: 01KPRS24VXE3DF9PNP3M42ZJZW
+    type: success
+    content: Detailed task descriptions with specific file paths, line numbers, function names, and
+      reproducer steps enabled single-pass implementation with zero ambiguity. The bootstrap
+      refactor task included exact removal targets, env var lists, and test specifications — work
+      completed in one pass without any scope questions or fix cycles.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-21T19:42:48.189Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
