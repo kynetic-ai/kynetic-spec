@@ -13,8 +13,11 @@ description: |
 spec_ref: "@readme-landing-page"
 plan_ref: "@plan-user-documentation-foundation"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev via 07eb9f412 after approved review 01KPQRT3. README now acts as a
+  concise landing page with docs cross-links, and README structure coverage was added in
+  tests/docs-readme-structure.test.ts.
 depends_on:
   - "@task-docs-getting-started-content"
 context: []
@@ -81,8 +84,24 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-21T10:19:13.798Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev via 07eb9f412 after approved review 01KPQRT3. README now acts as a concise
+          landing page with docs cross-links, and README structure coverage was added in
+          tests/docs-readme-structure.test.ts.
+        previous: null
+      completed_at:
+        new: 2026-04-21T10:24:42.174Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-21T10:24:42.183Z
 created_at: 2026-04-20T23:55:30.653Z
 started_at: 2026-04-21T09:56:28.097Z
 submitted_at: 2026-04-21T10:11:05.741Z
+completed_at: 2026-04-21T10:24:42.174Z
 todos: []
 automation: eligible
