@@ -57502,7 +57502,7 @@ workspaces:
         head: 26a2c1d83d9fe4ed39751239fb63ee8a0ecc20cc
         last_seen_at: 2026-04-21T08:58:41.546Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-getting-started-content-01kppn43
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: fc04b8b291e38268a9b1364bdf4b8d11047c937a
     bootstrap:
       status: succeeded
@@ -57796,7 +57796,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-21T09:54:49.882Z
+      updated_at: 2026-04-21T09:55:17.569Z
     integration:
       status: pending
       detail: null
@@ -57811,10 +57811,10 @@ workspaces:
     task_slug: task-docs-concepts-content
     timestamps:
       closed_at: null
-      last_active_at: 2026-04-21T09:41:26.863Z
-      last_reconciled_at: 2026-04-21T09:54:49.882Z
+      last_active_at: 2026-04-21T09:55:17.569Z
+      last_reconciled_at: 2026-04-21T09:55:17.569Z
       created_at: 2026-04-21T08:59:08.886Z
-      updated_at: 2026-04-21T09:55:11.472Z
+      updated_at: 2026-04-21T09:55:17.569Z
     workspace_id: dispatch-workspace-01KPPN43G7T5FSMEF1YPWS0CPX
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
