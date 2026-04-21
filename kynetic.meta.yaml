@@ -15776,6 +15776,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-21T12:02:45.790Z
+  - _ulid: 01KPR0CQ4SPDX7P4XR2RV4WGFH
+    type: friction
+    content: Docs content tests currently verify structure and cross-links but not whether recovery
+      procedures name commands and task states that actually work. In this review, troubleshooting
+      pages passed docs tests while recommending kspec setup where the product expects kspec
+      upgrade, and kspec task submit from a pending_review stale-review scenario where submit cannot
+      run. Add a docs validation pattern or helper that checks command availability and
+      state-transition correctness for procedural docs.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-21T12:31:40.185Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
