@@ -159242,6 +159242,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPQQDB68R1036C9QBRQQGHAK
         timestamp: 2026-04-21T09:54:44.711Z
+      - _ulid: 01KPQQDZDKJYZ78YRY39B1RTBP
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPQQDYCFRM4SH5A9YJYMJ0NV
+        timestamp: 2026-04-21T09:55:04.243Z
     examined_commit: 4a5cf26e2eb17f36de729c6d75b7dfe35a2eb764
     external_links: []
     lifecycle_state: open
@@ -159491,7 +159498,24 @@ reviews:
               changed 1 package in 174ms instead can leave the project only partially upgraded.
             created_at: 2026-04-21T09:54:43.529Z
         kind: blocker
+      - _ulid: 01KPQQDYCFRM4SH5A9YJYMJ0NV
+        anchor:
+          type: code
+          commit: 4a5cf26e2eb17f36de729c6d75b7dfe35a2eb764
+          line_end: 95
+          line_start: 42
+          path: docs/guides/reviewing-an-agents-work.md
+          side: head
+        entries:
+          - _ulid: 01KPQQDYCFE50C27AVKV20WKAC
+            author: Jacob Chapel
+            body: This guide tells readers to run kspec review create, kspec review thread, and kspec review
+              submit, but the actual CLI only exposes review add, review comment, and review
+              verdict. Following these steps from the published guide fails immediately, so the
+              review workflow is not usable as documented.
+            created_at: 2026-04-21T09:55:03.184Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-21T09:42:34.957Z
-    updated_at: 2026-04-21T09:54:43.529Z
+    updated_at: 2026-04-21T09:55:03.184Z
     notes: []
