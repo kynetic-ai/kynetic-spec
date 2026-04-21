@@ -30724,7 +30724,7 @@ runs:
     completed_at: 2026-04-21T13:19:08.645Z
   - _ulid: 01KPR3VNQ0R1C1QT1MCT9G915J
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -30737,7 +30737,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-21T13:33:16.053Z
-        completed_at: 2026-04-21T13:33:16.053Z
+        completed_at: 2026-04-21T13:33:16.955Z
+        notes: "Friction points: this detached reviewer snapshot did not expose 'kspec' on PATH, so review
+          commands had to fall back to 'node dist/cli/index.js'. Also, the merge skill assumes the
+          reviewer can 'git checkout dev' in the review worktree, but that fails when dev is already
+          checked out in another worktree; the merge had to be completed via 'git -C' against the
+          main worktree."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-21T13:33:16.955Z
+        completed_at: 2026-04-21T13:33:16.955Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T13:32:15.968Z
