@@ -30664,9 +30664,20 @@ runs:
     completed_at: 2026-04-21T13:03:37.504Z
   - _ulid: 01KPR2ZX6JWG9DAWM3NT7SDDPR
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-21T13:17:06.131Z
+        completed_at: 2026-04-21T13:17:56.729Z
+        notes: "Gate passed: Fix cycle 3 for task-docs-troubleshooting-content. One commit (2e4af7794)
+          fixing review-blocking-merge.md stale-review recovery procedure. Blocker: kspec review
+          refresh recommended for task-subject reviews but only works for code-subject reviews."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-21T13:17:56.729Z
+        completed_at: 2026-04-21T13:17:56.729Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-21T13:17:06.131Z
