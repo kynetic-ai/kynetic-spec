@@ -15675,6 +15675,17 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-04-21T10:11:14.508Z
+  - _ulid: 01KPQRC24WYHQ6FA44CGTV9VHE
+    type: friction
+    content: Dispatch review workspaces in this environment do not guarantee the kspec CLI is on PATH
+      even though task prompts, skills, and AGENTS instructions tell agents to run kspec commands
+      directly. Add PATH setup for the CLI in dispatched workspaces or document npm exec -- kspec as
+      the supported fallback so review/task commands do not fail mid-session.
+    author: codex@openai
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-04-21T10:11:30.076Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
