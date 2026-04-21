@@ -9,8 +9,8 @@
  */
 
 import { describe, it, expect, beforeAll } from "vitest";
-import { mkdirSync, writeFileSync, rmSync } from "node:fs";
-import { join } from "node:path";
+import { mkdirSync, writeFileSync, rmSync, readFileSync } from "node:fs";
+import { join, resolve } from "node:path";
 import { tmpdir } from "node:os";
 
 // ─── Vite Plugin Tests ────────────────────────────────────────────────────────
@@ -759,6 +759,71 @@ describe("release notes rendering", () => {
       } finally {
         rmSync(tempDocsDir, { recursive: true, force: true });
       }
+    });
+  });
+
+  // AC: @docs-release-notes-availability ac-1, ac-2 — Real build wiring integration
+  describe("real vite config wiring", () => {
+    // These paths mirror packages/web-ui/vite.config.ts — the test fails if
+    // the config ever stops pointing at the canonical RELEASE_NOTES.md.
+    const repoRoot = resolve(__dirname, "..");
+    const realDocsDir = resolve(repoRoot, "docs");
+    const realReleaseNotesPath = resolve(repoRoot, "RELEASE_NOTES.md");
+
+    it("produces a release-notes manifest entry from the canonical RELEASE_NOTES.md", () => {
+      const plugin = docsPlugin(realDocsDir, { releaseNotesPath: realReleaseNotesPath });
+      const load = plugin.load as (id: string) => string | undefined;
+      const result = load("\0virtual:docs")!;
+      const manifest = JSON.parse(result.slice("export default ".length, -1));
+
+      const rnEntry = manifest.entries.find(
+        (e: { slug: string }) => e.slug === "release-notes",
+      );
+      expect(rnEntry).toBeDefined();
+      expect(rnEntry.slug).toBe("release-notes");
+      expect(rnEntry.path).toBe("RELEASE_NOTES.md");
+
+      // Content matches the canonical source file byte-for-byte
+      const canonicalContent = readFileSync(realReleaseNotesPath, "utf-8");
+      expect(rnEntry.content).toBe(canonicalContent);
+    });
+
+    it("renders the canonical release notes with working version anchors", () => {
+      const canonicalContent = readFileSync(realReleaseNotesPath, "utf-8");
+      const { html, toc } = renderDocsMarkdown(canonicalContent);
+
+      // The real RELEASE_NOTES.md contains versioned headings — verify anchors
+      const versionPattern = /## v(\d+)\.(\d+)\.(\d+)/g;
+      const versions: string[] = [];
+      let match;
+      while ((match = versionPattern.exec(canonicalContent)) !== null) {
+        versions.push(`v${match[1]}-${match[2]}-${match[3]}`);
+      }
+
+      // There must be at least one released version
+      expect(versions.length).toBeGreaterThan(0);
+
+      // Each version heading produces a clickable anchor
+      for (const anchor of versions) {
+        expect(html).toContain(`id="${anchor}"`);
+        expect(html).toContain(`href="#${anchor}"`);
+      }
+
+      // TOC includes version entries for navigation
+      const tocVersions = toc.filter((e) => /^v\d/.test(e.text));
+      expect(tocVersions.length).toBe(versions.length);
+    });
+
+    it("includes exactly one release-notes entry — no duplication", () => {
+      const plugin = docsPlugin(realDocsDir, { releaseNotesPath: realReleaseNotesPath });
+      const load = plugin.load as (id: string) => string | undefined;
+      const result = load("\0virtual:docs")!;
+      const manifest = JSON.parse(result.slice("export default ".length, -1));
+
+      const releaseEntries = manifest.entries.filter(
+        (e: { slug: string }) => e.slug === "release-notes",
+      );
+      expect(releaseEntries).toHaveLength(1);
     });
   });
 });
