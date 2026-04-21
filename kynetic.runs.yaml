@@ -29506,7 +29506,7 @@ runs:
     started_at: 2026-04-21T07:32:43.513Z
     completed_at: 2026-04-21T07:34:24.727Z
   - _ulid: 01KPQG0Z7ZDYFASYTMQRGX0B5B
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -29555,7 +29555,10 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-04-21T07:46:40.390Z
-        completed_at: 2026-04-21T07:46:40.390Z
+        completed_at: 2026-04-21T07:47:23.664Z
+        notes: "Captured observations: friction @01KPQG3AK for detached-worktree reviewer merge friction,
+          success @01KPQG3AX for direct virtual-manifest probes during docs review."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T07:45:38.047Z
+    completed_at: 2026-04-21T07:47:23.664Z
