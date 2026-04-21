@@ -156089,6 +156089,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-21T04:28:08.435Z
+      - _ulid: 01KPQ4QE92NBZF2EXF0VW52RW9
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KPQ4QD8ADJ9ZT1395MZ3P066
+        timestamp: 2026-04-21T04:28:11.426Z
     examined_commit: 498c3bfcac17469de57268f0f62fc08fca80ee33
     external_links: []
     lifecycle_state: open
@@ -156098,8 +156105,42 @@ reviews:
       content_hash: ""
       ref: "@01KPPN42CDKS6A6951ZATDPKXP"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KPQ4QD8ADJ9ZT1395MZ3P066
+        entries:
+          - _ulid: 01KPQ4QD8APGGVY3AJ5CSFRJ58
+            author: Jacob Chapel
+            body: >-
+              Review evidence log
+
+
+              Files read: packages/web-ui/src/routes/docs/+page.svelte,
+              packages/web-ui/src/routes/docs/[...slug]/+page.svelte,
+              packages/web-ui/src/lib/docs.ts, packages/web-ui/src/lib/utils/docs-markdown.ts,
+              packages/web-ui/src/lib/utils/docs-utils.ts,
+              packages/web-ui/src/lib/components/Sidebar.svelte,
+              packages/web-ui/src/lib/components/MobileNav.svelte,
+              packages/web-ui/vite-plugin-docs.ts, packages/web-ui/vite.config.ts,
+              packages/web-ui/src/lib/utils/sanitize.ts, packages/daemon/src/server.ts,
+              tests/e2e/docs.spec.ts, tests/web-ui-docs-rendering.test.ts.
+
+
+              Commands run: kspec task get, kspec item get @docs-reachability, kspec item get
+              @docs-navigation-shape, kspec review get previous review, git diff against dev base,
+              grep AC annotations, kspec validate, npm test -- tests/web-ui-docs-rendering.test.ts
+              --verbose, npm run test:e2e -- tests/e2e/docs.spec.ts, npm test.
+
+
+              Claims verified: docs routes are reachable in daemon/static builds, docs nav entry
+              exists in desktop/mobile nav, current-section sidebar/TOC render, heading anchors
+              update hash, and out-of-tree .md links rewrite to GitHub blob URLs.
+
+
+              Categories searched: correctness, edge cases, error handling, test quality,
+              integration. No branch-introduced findings.
+            created_at: 2026-04-21T04:28:10.378Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-21T04:16:27.404Z
-    updated_at: 2026-04-21T04:28:07.363Z
+    updated_at: 2026-04-21T04:28:10.378Z
     notes: []
