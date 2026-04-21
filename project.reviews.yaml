@@ -153767,6 +153767,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPPQEJ96V1QZ3Q7J1KWP6096
         timestamp: 2026-04-21T00:36:10.296Z
+      - _ulid: 01KPPQEPQ6RBTPWSAJD2C2SJZF
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPPQENHW0GATY88GCENJAT2M
+        timestamp: 2026-04-21T00:36:13.670Z
     examined_commit: ca0646762730b23edeb709229513354dae9acf45
     external_links: []
     lifecycle_state: open
@@ -153816,7 +153823,25 @@ reviews:
               navigation noisier as the docs set grows.
             created_at: 2026-04-21T00:36:09.127Z
         kind: blocker
+      - _ulid: 01KPPQENHW0GATY88GCENJAT2M
+        anchor:
+          type: code
+          commit: ca0646762730b23edeb709229513354dae9acf45
+          line_end: 46
+          line_start: 42
+          path: packages/web-ui/src/routes/docs/[...slug]/+page.svelte
+          side: head
+        entries:
+          - _ulid: 01KPPQENHWNJ5T8115E1FQ4TB1
+            author: Jacob Chapel
+            body: Relative Markdown links that walk up a directory are rewritten to the wrong in-app
+              path.  strips only a leading  or  and then prefixes , so links like  and  from
+              docs/getting-started.md become  and  rather than a resolvable target. This breaks
+              inter-page navigation for existing authored docs content, which the task description
+              explicitly calls out as client-side docs navigation.
+            created_at: 2026-04-21T00:36:12.476Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-21T00:34:27.544Z
-    updated_at: 2026-04-21T00:36:09.127Z
+    updated_at: 2026-04-21T00:36:12.476Z
     notes: []
