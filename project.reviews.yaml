@@ -158870,6 +158870,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-21T09:20:00.662Z
+      - _ulid: 01KPQPQZ9T3EC5SYC1NF4FDR4G
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPQNAQW8WN72HN5CCDRK5T1B
+        timestamp: 2026-04-21T09:43:03.227Z
     examined_commit: 48ec9274ce6f63470071c763e16b4d2fe3044f7e
     external_links: []
     lifecycle_state: closed
@@ -159053,6 +159059,11 @@ reviews:
               makes the description inaccurate for users trying to understand how plans behave
               today.
             created_at: 2026-04-21T09:18:21.065Z
+          - _ulid: 01KPQPQY901FXEMF680C1M2RJ1
+            author: "@claude"
+            body: "Fixed: Added 'rejected' as a terminal status in the Plans lifecycle description, with a
+              sentence explaining its purpose."
+            created_at: 2026-04-21T09:43:02.176Z
         kind: blocker
       - _ulid: 01KPQNAYXCZ5HB35XHXRZN3X8E
         entries:
@@ -159098,7 +159109,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T09:20:00.662Z
     created_at: 2026-04-21T09:16:51.337Z
-    updated_at: 2026-04-21T09:20:00.662Z
+    updated_at: 2026-04-21T09:43:02.176Z
     notes: []
   - _ulid: 01KPQPQ3PD27DNKY1ZA91RQSPS
     slugs: []
