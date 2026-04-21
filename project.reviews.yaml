@@ -154253,6 +154253,12 @@ reviews:
         payload:
           thread_ulid: 01KPPV9G2P89BXTFK3DAF65BT3
         timestamp: 2026-04-21T02:07:50.564Z
+      - _ulid: 01KPPWPKYQWHP1NH5VNREEJAVJ
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPPV9KC5RBH9VV0387TZE27K
+        timestamp: 2026-04-21T02:07:55.863Z
     examined_commit: 2cfc5b801c74967628413dbf069a6bbf46c8ee26
     external_links: []
     lifecycle_state: closed
@@ -154309,6 +154315,16 @@ reviews:
               Replace or supplement it with a behavioral test at the route/component level that
               proves the actual page layout."
             created_at: 2026-04-21T01:43:20.709Z
+          - _ulid: 01KPPWPJZ2YMDD1FNTZWYXN484
+            author: "@claude"
+            body: "Fixed: Replaced the pure unit test AC annotation with E2E behavioral tests in
+              tests/e2e/docs.spec.ts. The main test navigates to /docs/getting-started and verifies:
+              (1) sidebar nav is visible with section page links, (2) the current page link has the
+              bg-accent active class, (3) the 'On this page' TOC heading is visible with anchor
+              fragment links. A separate test verifies non-current pages do NOT have the active
+              highlight. The filterSectionEntries unit test annotation was downgraded from 'AC:' to
+              'Supports' since the actual AC coverage is now at the E2E level."
+            created_at: 2026-04-21T02:07:54.850Z
         kind: blocker
       - _ulid: 01KPPV9PSXQ72T5V344695450P
         entries:
@@ -154338,5 +154354,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T01:47:06.960Z
     created_at: 2026-04-21T01:22:20.376Z
-    updated_at: 2026-04-21T02:07:49.558Z
+    updated_at: 2026-04-21T02:07:54.850Z
     notes: []
