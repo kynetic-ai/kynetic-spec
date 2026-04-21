@@ -1108,14 +1108,15 @@ describe("dispatch runtime bootstrap contract", { timeout: 60_000 }, () => {
   // AC: @dispatch-runtime-bootstrap-contract ac-11
   it("runs the declared command string without modification or addition by the dispatcher", async () => {
     await seedRepo(tempDir);
-    const envFile = path.join(tempDir, "bootstrap-argv-capture.json");
+    const captureFile = path.join(tempDir, "bootstrap-fidelity-capture.txt");
+    const declaredCommand = `printf '%s' "EXACT_COMMAND_STRING" > ${JSON.stringify(captureFile)}`;
     await setupProject(tempDir, {
       dispatchConfig: [
         "dispatch:",
         "  base_branch: agent-dev",
         "  bootstrap:",
         "    steps:",
-        `      - run: printf '%s' "EXACT_COMMAND_STRING" > ${JSON.stringify(envFile)}`,
+        `      - run: ${declaredCommand}`,
       ].join("\n"),
     });
 
@@ -1126,7 +1127,7 @@ describe("dispatch runtime bootstrap contract", { timeout: 60_000 }, () => {
       task: { title: "Command Fidelity Test", slugs: ["command-fidelity-test"] },
     });
 
-    await ensureWorkspaceBootstrap({
+    const result = await ensureWorkspaceBootstrap({
       projectDir: tempDir,
       workspaceDir: workspace.cwd,
       metadataPath: workspace.metadataPath,
@@ -1136,11 +1137,15 @@ describe("dispatch runtime bootstrap contract", { timeout: 60_000 }, () => {
       env: {},
     });
 
-    await expect(readTestOutput(envFile)).resolves.toBe("EXACT_COMMAND_STRING");
+    // Verify the command produced the expected output (proves it executed)
+    await expect(readTestOutput(captureFile)).resolves.toBe("EXACT_COMMAND_STRING");
+    // Verify the metadata recorded exactly the declared command — no prefix/suffix added
+    expect(result.metadata.bootstrap.steps).toHaveLength(1);
+    expect(result.metadata.bootstrap.steps[0].run).toBe(declaredCommand);
   });
 
   // AC: @dispatch-runtime-bootstrap-contract ac-11
-  it("produces zero spawns when no bootstrap steps are configured", async () => {
+  it("produces zero spawns when no bootstrap steps are configured even for a Node-like workspace", async () => {
     await seedRepo(tempDir);
     await setupProject(tempDir, {
       dispatchConfig: ["dispatch:", "  base_branch: agent-dev"].join("\n"),
@@ -1152,6 +1157,21 @@ describe("dispatch runtime bootstrap contract", { timeout: 60_000 }, () => {
       taskRef,
       task: { title: "No Steps Zero Spawns", slugs: ["no-steps-zero-spawns"] },
     });
+
+    // Seed the workspace with Node project markers (package.json + lockfile).
+    // If implicit bootstrap inference for package-based projects were
+    // reintroduced, this workspace would trigger synthetic install/build
+    // steps. With the inference removed, zero spawns must still result.
+    await fs.writeFile(
+      path.join(workspace.cwd, "package.json"),
+      JSON.stringify({ name: "test-project", version: "1.0.0", scripts: { build: "echo ok" } }),
+      "utf-8",
+    );
+    await fs.writeFile(
+      path.join(workspace.cwd, "package-lock.json"),
+      JSON.stringify({ name: "test-project", lockfileVersion: 3, packages: {} }),
+      "utf-8",
+    );
 
     const result = await ensureWorkspaceBootstrap({
       projectDir: tempDir,
