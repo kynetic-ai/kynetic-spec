@@ -2465,6 +2465,9 @@ modules:
           what alternatives were considered. The section may grow
           additional concept pages as kspec evolves without breaking
           this contract, provided the concepts above remain covered.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
