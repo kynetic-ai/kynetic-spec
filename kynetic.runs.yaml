@@ -30261,9 +30261,21 @@ runs:
     started_at: 2026-04-21T10:25:08.812Z
   - _ulid: 01KPQT2W8Z276J1S3R3C8JKMER
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-21T10:41:26.303Z
+        completed_at: 2026-04-21T10:42:33.800Z
+        notes: "What worked well: reviewing the docs diff against live CLI help and direct command execution
+          caught two user-facing command mismatches that the structural markdown tests did not
+          detect. Running the full suite afterwards confirmed the findings were documentation
+          correctness issues, not regressions."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-21T10:42:33.800Z
+        completed_at: 2026-04-21T10:42:33.800Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T10:41:26.303Z
