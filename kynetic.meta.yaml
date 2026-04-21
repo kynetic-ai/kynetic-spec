@@ -15856,6 +15856,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-21T19:42:48.189Z
+  - _ulid: 01KPRTQ6ZKB7S130BJ2HJ02FJA
+    type: success
+    content: Fix cycle on bootstrap AC-11 tests was completed in one pass. Metadata field assertions
+      (result.metadata.bootstrap.steps[].run) proved effective for verifying command fidelity
+      without needing subprocess-level mocking — simpler, behavioral, and sufficient for the
+      contract.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-21T20:11:47.059Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
