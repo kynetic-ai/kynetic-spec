@@ -157980,6 +157980,66 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-21T08:18:44.641Z
+      - _ulid: 01KPQK9C5C1YN71XVF2NH7X9XH
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPQHW95D05KWY6509NJFGFVH
+        timestamp: 2026-04-21T08:42:39.148Z
+      - _ulid: 01KPQK9EQBD09MWVDNGGFT2GCQ
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KPQHW95D05KWY6509NJFGFVH
+        timestamp: 2026-04-21T08:42:41.771Z
+      - _ulid: 01KPQK9HCX6SDCYDZ3391JPF5K
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPQHW293AK1VVK90829GSP2H
+        timestamp: 2026-04-21T08:42:44.509Z
+      - _ulid: 01KPQK9MA2PFK1FD195V20Q01A
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KPQHW293AK1VVK90829GSP2H
+        timestamp: 2026-04-21T08:42:47.490Z
+      - _ulid: 01KPQK9PZFWC4H57VKGH1JC9T4
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPQHW5RKB01DG4X05PW080KM
+        timestamp: 2026-04-21T08:42:50.223Z
+      - _ulid: 01KPQK9SKWTSY3QS7QEWVPXZVK
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KPQHW5RKB01DG4X05PW080KM
+        timestamp: 2026-04-21T08:42:52.925Z
+      - _ulid: 01KPQK9WDBKT4SSZ7T14ABWB1A
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPQHW94GE1GM91TKX260FDED
+        timestamp: 2026-04-21T08:42:55.787Z
+      - _ulid: 01KPQK9ZJPARFWSCSSM36K8AAY
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KPQHW94GE1GM91TKX260FDED
+        timestamp: 2026-04-21T08:42:59.030Z
+      - _ulid: 01KPQKA2AX0RZBTCEWR84T2GPH
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPQHX3FMKNZJE9CB06DF0B66
+        timestamp: 2026-04-21T08:43:01.853Z
+      - _ulid: 01KPQKA4XJZD4P2EVFTDR5BHM3
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KPQHX3FMKNZJE9CB06DF0B66
+        timestamp: 2026-04-21T08:43:04.499Z
     examined_commit: 020246046a960c53dccad0f689bb5f9260bcc649
     external_links: []
     lifecycle_state: closed
@@ -158006,7 +158066,14 @@ reviews:
               direct links that all terminate in the docs 404 state. That breaks the new primary-nav
               docs surface for readers who enter through this section."
             created_at: 2026-04-21T08:17:54.467Z
+          - _ulid: 01KPQK9GAN6JYZJ9WBDRATY8A8
+            author: "@claude"
+            body: "Fixed: removed all 8 stub child-page links from concepts/index.md. Same treatment as guides —
+              purpose paragraph retained, dead links removed."
+            created_at: 2026-04-21T08:42:43.413Z
         kind: blocker
+        resolved_at: 2026-04-21T08:42:46.414Z
+        resolved_by: "@claude"
       - _ulid: 01KPQHW5RKB01DG4X05PW080KM
         anchor:
           type: code
@@ -158023,7 +158090,14 @@ reviews:
               the page resolves to missing docs content. This leaves the section unusable until the
               linked pages exist.
             created_at: 2026-04-21T08:17:58.035Z
+          - _ulid: 01KPQK9NVW0CCYR1H5YD29HM99
+            author: "@claude"
+            body: "Fixed: removed all 7 stub child-page links from troubleshooting/index.md. Same treatment —
+              purpose paragraph retained, dead links removed."
+            created_at: 2026-04-21T08:42:49.084Z
         kind: blocker
+        resolved_at: 2026-04-21T08:42:51.852Z
+        resolved_by: "@claude"
       - _ulid: 01KPQHW94GE1GM91TKX260FDED
         anchor:
           type: code
@@ -158041,7 +158115,18 @@ reviews:
               the UI shipped dead links for Guides, Concepts, and Troubleshooting. Strengthen these
               tests so they fail when a landing page points at a missing document.
             created_at: 2026-04-21T08:18:01.488Z
+          - _ulid: 01KPQK9VBBCAV3PXYBN9H3NY4E
+            author: "@claude"
+            body: "Fixed: replaced the 4 'stub child pages' tests with a single 'every child-page link resolves
+              to a real manifest entry' test. This test extracts all markdown links from each
+              landing page and verifies each linked slug exists in the docs manifest. Also removed
+              the requirement that all sections must have child-page links (the ac-2 precondition is
+              'Given: A section has at least one page'). The getting-started test is retained since
+              it has real child content."
+            created_at: 2026-04-21T08:42:54.699Z
         kind: blocker
+        resolved_at: 2026-04-21T08:42:57.760Z
+        resolved_by: "@claude"
       - _ulid: 01KPQHW95D05KWY6509NJFGFVH
         anchor:
           type: code
@@ -158058,7 +158143,15 @@ reviews:
               navigates readers to a docs 404 instead of the promised guide content. Either remove
               these links until the pages exist or add the missing documents in the same change.
             created_at: 2026-04-21T08:18:01.517Z
+          - _ulid: 01KPQK9B4T6735NKHAXEMK7321
+            author: "@claude"
+            body: "Fixed: removed all 7 stub child-page links from guides/index.md. The landing page now shows
+              only the section purpose paragraph with a 'coming soon' note, so no dead links are
+              served."
+            created_at: 2026-04-21T08:42:38.106Z
         kind: blocker
+        resolved_at: 2026-04-21T08:42:40.793Z
+        resolved_by: "@claude"
       - _ulid: 01KPQHX3FMKNZJE9CB06DF0B66
         entries:
           - _ulid: 01KPQHX3FNPZN3T1GX717ZHJ8A
@@ -158078,7 +158171,14 @@ reviews:
               test quality, integration, edge cases around section entry resolution and docs link
               targets."
             created_at: 2026-04-21T08:18:28.469Z
+          - _ulid: 01KPQKA1910JF8Y8W5ZFRG3M42
+            author: "@claude"
+            body: Acknowledged. Also fixed the release-notes/index.md which had the same dead-link pattern
+              (linked to changelog.md that doesn't exist yet).
+            created_at: 2026-04-21T08:43:00.769Z
         kind: nit
+        resolved_at: 2026-04-21T08:43:03.462Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -158088,7 +158188,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T08:18:44.641Z
     created_at: 2026-04-21T08:09:18.583Z
-    updated_at: 2026-04-21T08:18:44.641Z
+    updated_at: 2026-04-21T08:43:03.462Z
     notes: []
   - _ulid: 01KPQJGBJ6GKWSZADR2C2Z37RZ
     slugs: []
