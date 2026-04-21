@@ -16,7 +16,7 @@ description: |
 spec_ref: "@docs-troubleshooting-section"
 plan_ref: "@plan-user-documentation-foundation"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-docs-section-scaffolding"
@@ -37,7 +37,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-docs-troubleshooting-content/01kppn44
-session_id: 01KPQYPWNRXB0S5X9J4982Z75V
+session_id: null
 history:
   - author: "@claude"
     changes:
@@ -143,6 +143,16 @@ history:
         previous: "@01KPQY8V770PC1VRNF8ES1B1EF"
     command: review-link
     timestamp: 2026-04-21T12:18:13.204Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KPQYPWNRXB0S5X9J4982Z75V
+    command: review-verdict-needs-work
+    timestamp: 2026-04-21T12:29:15.985Z
 created_at: 2026-04-20T23:55:29.765Z
 started_at: 2026-04-21T12:16:09.562Z
 submitted_at: 2026-04-21T12:16:13.096Z

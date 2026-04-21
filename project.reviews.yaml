@@ -161327,9 +161327,25 @@ reviews:
           status: fail
           name: validate
         timestamp: 2026-04-21T12:29:02.318Z
+      - _ulid: 01KPR088FRWDY1GDMV4379RR97
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-21T12:29:14.104Z
+      - _ulid: 01KPR088FR9D8KHRVC71W6RTPC
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-21T12:29:14.104Z
     examined_commit: bf321c0b40c7a606da6c665ae15d89955dd3629d
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -161374,7 +161390,14 @@ reviews:
               fresh review/refresh path instead of resubmitting from the wrong state.
             created_at: 2026-04-21T12:28:54.302Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-21T12:29:14.103Z
     created_at: 2026-04-21T12:18:09.924Z
-    updated_at: 2026-04-21T12:29:01.054Z
+    updated_at: 2026-04-21T12:29:14.104Z
     notes: []
