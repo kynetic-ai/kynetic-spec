@@ -15437,6 +15437,27 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-21T06:55:19.682Z
+  - _ulid: 01KPQDWZW1J3V93SPMY8HYKACW
+    type: friction
+    content: "Docs navigation helpers now mix two section-classification schemes: normalized section
+      pages are grouped by entry.path while synthetic entries are still modeled as repo-root files.
+      That let release-notes/changelog fall out of the Release Notes section and into a sixth root
+      Docs section, even though the task test suite stayed green because the tests only modeled
+      directory-backed entries."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-21T07:08:30.465Z
+  - _ulid: 01KPQDX041M4R895G6PM5PP0MW
+    type: success
+    content: During review, small executable repros against pure helpers (groupDocsSections and
+      filterSectionEntries) exposed a real docs regression faster than rerunning the full UI stack.
+      Keeping core docs logic in pure utilities made the blocker easy to prove with concrete
+      evidence.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-21T07:08:30.722Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
