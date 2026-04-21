@@ -157131,6 +157131,25 @@ reviews:
         runner: kspec
         created_at: 2026-04-21T06:43:23.392Z
         completed_at: 2026-04-21T06:43:23.392Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: kspec-agents.md, src/parser/task-data-manager.ts, src/daemon/entity-cache.ts,
+          src/cli/commands/review.ts, src/parser/review-task-integration.ts,
+          tests/task-data-manager.test.ts, tests/daemon-entity-cache.test.ts,
+          tests/review-task-integration.test.ts, tests/daemon-review-verdicts-api.test.ts. Commands
+          run: git diff/stat/name-only against base a1fdd98a5197, kspec task get, kspec review
+          for-task, kspec validate, rg AC annotations, rg targeted source/test searches, npm test.
+          Claims verified: the patch updates TaskDataManager mutate/create paths to call
+          applyTaskMutation and ProjectEntityCache mutates index/detail tiers, but no test covers
+          the actual review-verdict immediate-read regression path. Categories searched:
+          correctness, edge cases, test quality, integration."
+        name: manual review
+        required: false
+        runner: reviewer
+        created_at: 2026-04-21T06:43:26.716Z
+        completed_at: 2026-04-21T06:43:26.716Z
     events:
       - _ulid: 01KPQBTNCMNKD523XM6N93SJWK
         actor: Jacob Chapel
@@ -157166,6 +157185,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-21T06:43:24.517Z
+      - _ulid: 01KPQCF4EARC0NANHHMBXAXR70
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: manual review
+        timestamp: 2026-04-21T06:43:27.818Z
     examined_commit: 18e0da8abf85d37b2848252fcf45386e96d64941
     external_links: []
     lifecycle_state: open
@@ -157201,5 +157227,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-21T06:32:17.044Z
-    updated_at: 2026-04-21T06:43:23.392Z
+    updated_at: 2026-04-21T06:43:26.716Z
     notes: []
