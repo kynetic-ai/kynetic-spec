@@ -156639,6 +156639,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-21T05:26:13.853Z
+      - _ulid: 01KPQ82XK0RE5F937VZHG81WH2
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPQ82VRRVW6YDTFSP5VF5P76
+        timestamp: 2026-04-21T05:26:53.281Z
     examined_commit: d5a234bdd2f3544b229648b31e8c65da0d474ca1
     external_links: []
     lifecycle_state: open
@@ -156648,8 +156655,29 @@ reviews:
       content_hash: ""
       ref: "@01KPPN42NCR77J23TWYP63VXDH"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KPQ82VRRVW6YDTFSP5VF5P76
+        anchor:
+          type: code
+          commit: d5a234bdd2f3544b229648b31e8c65da0d474ca1
+          line_end: 5
+          line_start: 1
+          path: docs/guides/index.md
+          side: head
+        entries:
+          - _ulid: 01KPQ82VRRQ5B5TXHQMY7DKKJH
+            author: Jacob Chapel
+            body: The new section landing pages for Guides, Concepts, Troubleshooting, and Release Notes do not
+              list any child pages; each file stops after the purpose paragraph with italic
+              placeholder copy instead of a stub list. The task description requires every new
+              section index to state its purpose and list its child pages, so readers opening these
+              landing pages still have no navigable child-page inventory and the current AC test
+              misses that because it only asserts that rendered HTML contains a paragraph. Please
+              add an explicit stub child-page list for each section and strengthen the test to
+              verify those links exist.
+            created_at: 2026-04-21T05:26:51.416Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-21T05:25:36.964Z
-    updated_at: 2026-04-21T05:26:12.511Z
+    updated_at: 2026-04-21T05:26:51.416Z
     notes: []
